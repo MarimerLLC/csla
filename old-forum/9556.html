@@ -1,0 +1,6 @@
+<html><header><title>asynchronous saves</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>asynchronous saves</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9556.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fsl posted on Tuesday, September 21, 2010</h2><p>Hi there</p>
+<p>Is it possible to check whether any asynchronous saves are being performed/pending in the dataportal?</p>
+<p>I would like to insure that all async saves are completed, before the application shuts down.. (WPF desktop app)</p>
+<p>&nbsp;</p>
+<p><span style="font-size:small;">Regards,</span></p>
+<p><span style="font-size:small;">Fredrik</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 21, 2010</h2><p>You can probably create a static type that handles the static methods on Csla.DataPortal (DataPortalInvoke&nbsp;and&nbsp;DataPortalInvokeComplete), and in your event handlers implement <em>threadsafe</em> increment/decrement counters (probably using System.Threading.Interlocked) to maintain a count of outstanding data portal calls.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

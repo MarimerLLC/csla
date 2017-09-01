@@ -1,0 +1,75 @@
+<html><header><title>A tiny teeny suggestion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A tiny teeny suggestion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5041.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m posted on Tuesday, July 01, 2008</h2><P>Wouldn't it be nice if SetProperty method returned bool which would indicate&nbsp;if property value&nbsp;was actually modified&nbsp;? So we could write code like this:</P>
+<P>public string Dummy<BR>{<BR>&nbsp;get {.....}<BR>&nbsp;set<BR>&nbsp;{<BR>&nbsp;&nbsp;if (SetProperty&lt;string&gt;(DummyProperty, value))<BR>&nbsp;&nbsp;&nbsp;doSomething();<BR>&nbsp;}<BR>}<BR></P>
+<P>ie. setter could trigger some action when Dummy property actually gets a new value....</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lwmorris replied on Tuesday, July 01, 2008</h2>I second that motion!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, July 01, 2008</h2>Isn't&nbsp;<FONT size=2>OnPropertyChanged</FONT> and/or&nbsp;<FONT size=2>PropertyHasChanged</FONT> enough?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 01, 2008</h2><P>Or better yet, use the business rules functionality already in CSLA:</P>
+<P>private static bool DoSomething&lt;T&gt;(T target, RuleArgs e) where T : YourClass<BR>{<BR>&nbsp;&nbsp;// here you can&nbsp;manipulate target (the business object)<BR>&nbsp; // however you'd like in response to the property<BR>&nbsp; // having changed<BR>&nbsp; return true;&nbsp; // this rule is never broken, it just does work<BR>}</P>
+<P>Put your work in this method, then attach the method to the property and it just works.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Wednesday, July 02, 2008</h2><P>It's just that, at least&nbsp;to me, setters seem like a good place for this kind of code, more straightforward and intuitive than creating a business rule handler to run it. But it's not really a problem, sure it can be done through business rules functionality, or even within the setter (we can still "manually" compare new and old value of the property...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t disagree that setters are a good place for this type
+of code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But my goal with CSLA since version 2.0 has been to standardize
+property code to make properties &#8220;expendable&#8221;. Make it so you can
+use snippets or code-gen to create and recreate property declarations without
+risk of losing any meaningful behavior.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is important, because code in a property setter can&#8217;t
+easily be reused across different classes. If you find that a given property
+needs to exist in multiple object types (which is fairly common), it is relatively
+easy to reuse business/validation rules, but hard to reuse custom code in a
+getter/setter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> robert_m
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 02, 2008 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] A tiny teeny suggestion<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>It's just that, at least&nbsp;to me, setters seem like a good place for this
+kind of code, more straightforward and intuitive than creating a business rule
+handler to run it. But it's not really a problem, sure it can be done through
+business rules functionality, or even within the setter (we can still
+&quot;manually&quot; compare new and old value of the property...)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Thursday, July 03, 2008</h2>But remember that CheckRules is sometimes called without knowing which property changed at all...<br>e.g. after fetching the data from a datastore.<br><br>If the action is required ONLY if the property really changed, then reacting to PropertyHasChanged seems the only way to go.<br><br>Stefan<br><font size="2"></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

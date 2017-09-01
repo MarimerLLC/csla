@@ -1,0 +1,81 @@
+<html><header><title>CSLA .NET 3.8.0 Beta 3 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8.0 Beta 3 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7917.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, October 30, 2009</h2><P>CSLA .NET 3.8.0 Beta 3 is now available for download</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG>Windows download</STRONG></A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx"><STRONG>Silverlight download</STRONG></A></LI></UL>
+<P>Beta 3 includes fixes for some bugs found in Beta 2 (mostly in ViewModelBase and BusyAnimation), and two more significant changes:</P>
+<UL>
+<LI>InvokeMethod no longer attempts to manage the attached UI control’s IsEnabled property; this is a breaking change, but was necessary to avoid an otherwise unavoidable memory leak. It wasn’t a good practice anyway, so this implementation is both safer and better. 
+<LI>There’s a new Csla.Web.Mvc.CslaModelBinder class; it addresses a key issue around the data annotation validation attributes and how their validation information is reported back to the ASP.NET MVC framework. (I know I said Beta 1 was feature-complete, but this was too important to hold back…)</LI></UL>
+<P>I’ve also continued to update samples, and I think all the C# samples are now updated, as are some of the VB ones. Hopefully I can get the rest of the VB ones updated before final release.</P>
+<P>I am still on track to release 3.8.0 in about a week&nbsp;– hopefully Nov 6 or 9.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Sunday, November 01, 2009</h2>The cslacs project build failed because of a reference to System.Web.MVC. Probably needed for the second bullet about CSLA.Web.Mvc?<br /><br />Searching MS, it looks like this is the page install link: http://www.microsoft.com/web/gallery/install.aspx?appsxml=&amp;appid=MVC . Is that the correct Install? (FYI to others, it has to install Web Platform Installer before offering to install ASP.NET MVC 1.0.)<br /><br />If required going forward, reminder to add to ReadMe.<br /><br />Thanks, mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Sunday, November 01, 2009</h2>I went ahead and installed, and both cslacs and cslalightcs projects now build.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 01, 2009</h2>I'd forgotten that MVC was an extra install... I've added the note to the readme. Fortunately MVC is part of .NET 4.0, so this issue is short-lived.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bdbrodie replied on Monday, November 02, 2009</h2>Hi Rocky, <br><br>Great work on implementing MVVM!<br><br>Looking forward to the release.<br><br><br>Regards,<br>Ben<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Look here<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Wpf/">http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Wpf/</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The file is linked into the Silverlight project, but physically
+exists in the core CSLA directory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmnc replied on Thursday, November 05, 2009</h2><P>I have played around a bit with the new MVVM stuff and implemented a view model by inheriting from ViewModel. However the dependency properties declared in ViewModelBase are not accessible from XAML:</P>
+<P><FONT face="Courier New" size=2>&lt;local:MyViewModel x:Key="..." Model="..." /&gt;</FONT></P>
+<P><EM>MyViewModel does not contain a property with the name Model.</EM></P>
+<P>I wanted to take a peek at the MVVMexperimentWpf sample, but if I open up the DetailPage.xaml or ListPage.xaml then Visual Studio silently crashes right away. </P>
+<P>Any ideas what's wrong?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You use the designer? Really? You poor person&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The first thing I do when I install VS is switch the default
+editor for .xaml files to the code editor. The visual &#8220;designer&#8221; is so slow and
+crash-prone I can&#8217;t see how anyone could live with it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now in VS 2010 the designer is much nicer &#8211; it is actually
+useful &#8211; so I have not turned that one off.</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmnc replied on Thursday, November 05, 2009</h2>Actually I'm only using the full XAML view. I've tried on another machine and it doesn't crash.<br /><br />My main problem still exists. In a fresh C# project everthing works whereas in a fresh VB project the ViewModelBase properties like the Model property refuse to show up in XAML?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>If you only use the full XAML view you _really_ should switch the default to<br />the text editor. You still get all the intellisense and coloring, but at<br />twice the performance...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dmnc:</strong></div><div>In a fresh C# project everthing works whereas in a fresh VB project the ViewModelBase properties like the Model property refuse to show up in XAML?</div></BLOCKQUOTE></P>
+<P>I have no idea what is happening here.</P>
+<P>I can replicate your problem&nbsp;- the Model property shows up in code, but not in XAML in a VB project.</P>
+<P>In VS2010 VB works as expected, so this surely sounds like a VB bug in VB 9 or the VB XAML design experience or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmnc replied on Thursday, November 05, 2009</h2>Thanks for the editor tip and for confirming the issue. Good to know that it works in VS 2010.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

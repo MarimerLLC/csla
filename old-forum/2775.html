@@ -1,0 +1,9 @@
+<html><header><title>Validation Rules Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rules Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2775.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>eslater posted on Wednesday, April 25, 2007</h2><P>I am looking at what is involved in moving to CSLA 2.x from 1.5 and have a couple of questions about the new Validation Rules:</P>
+<P>1 - How would you create a rule for a required field that is not a string?&nbsp; Most of my FK fields are required and are guids</P>
+<P>2 - Do you require rules for Decimal.MinValue/Decimal.Max value?</P>
+<P>On a more general note is a realistic amount of time to upgrade a class and form to 2.x?</P>
+<P>Thanks for any help,<BR>Elliot</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 25, 2007</h2><P>In general terms, today in 1.5 you have something like</P>
+<P>&nbsp; BrokenRules.Assert(..., &lt;conditional&gt;)</P>
+<P>And in 2.1 this translates to a rule method like:</P>
+<P>&nbsp; Private Shared Function MyRule(...) As Boolean<BR>&nbsp;&nbsp;&nbsp; If Not &lt;conditional&gt; Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "You broke my rule"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<BR><BR>&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<BR>&nbsp;&nbsp;&nbsp; End If<BR>&nbsp; End Function</P>
+<P>Today you already have conditionals that check your Guid values and your Decimal values. All you need to do is move the &lt;conditional&gt; clause from the Assert() method into a rule method.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

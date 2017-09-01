@@ -1,0 +1,98 @@
+<html><header><title>Welcome to 2007</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Welcome to 2007</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, January 02, 2007</h2><P class=MsoNormal>I hope everyone here had a good holiday season and enjoyed the end of 2006!<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I would like to thank everyone who contributes to this forum, and to the CSLAcontrib project. The time and energy you have all put in over the past few months has been a great help to the CSLA .NET community, and I know there are many people out there who are grateful for your efforts!<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Most importantly though, I want to thank all the users of CSLA .NET and everyone who has purchased copies of my books. At the end of the year I received numerous emails thanking me for creating the framework (and I appreciate that), but I seriously want to thank all of you for making this a vibrant community. CSLA .NET is one of the most widely used development frameworks for .NET, and that is because each of you have taken the time to learn and use the framework. Thank you!<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>For me 2006 was a year of change. Starting with CSLA .NET 2.0 I've been viewing CSLA .NET as not just an offshoot of my books, but as a framework in its own right. Of course many people have been treating it that way for years now, but I hope it has been helpful to have me treat point releases a bit more formally over the past number of months.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This extends to version 2.1, which represents an even larger change for me. With version 2.1 I'm releasing my first self-published ebook to cover the changes. This ebook is not a standalone book, rather it is best thought of as a "sequel" to the 2005 book. However, it is well over 150 pages and covers both the changes to the framework itself, as well as how to use the changes in your application development. The ebook is undergoing technical review. That and the editing process should take 2-3 weeks, so the ebook will be available later this month.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Looking at the rest of 2007 it is clear that I'll be spending a lot of time around .NET 3.0 and 3.5. <o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I'll be merging the <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=0eec56bb-2a61-47c4-a9ca-f98371db1cad"><FONT color=#800080>WcfChannel</FONT></A> into CSLA .NET itself, as well as implementing support for the DataContract/DataMember concepts. This, possibly coupled with one WPF interface implementation for collections, will comprise CSLA .NET 3.0.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>It is not yet clear to me what changes will occur due to .NET 3.5, but I expect them to be more extensive. Some of the new C#/VB language features, such as extension methods and lambda expressions, have the potential to radically change the way we think about interacting with objects and fields. When you can add arbitrary methods to any type (even sealed types like String) many interesting options become available.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Then there's the impact of LINQ itself, and integration with the ADO.NET Entity Framework in one manner or another. <o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>ADO EF appears, at least on the surface, to be YAORM (yet another ORM). If that continues to be true, then it is a great way to get table data into data entities, but it doesn't <I>really</I> address mapping the data into objects designed around use cases and responsibility. If you search this forum for discussions on nHibernate you'll quickly see how ADO EF might fit into the CSLA .NET worldview just like nHibernate does today: as a powerful replacement for basic ADO.NET and/or the DAAB.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>LINQ is potentially more interesting, yet more challenging. It allows you to run select queries across collections. At first glance you might think this eliminates the need for things like SortedBindingList or FilteredBindingList. I’m not sure that’s true though, because the result of any LINQ query is an IEnumerable&lt;T&gt;. This is <I>the most basic</I> type of list in .NET; so basic that the result must often be converted to a more capable list type.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Certainly when you start thinking about n-level undo this becomes problematic. BusinessBase (BB) and BusinessListBase (BLB) work together to implement the undo capabilities provided by CSLA .NET. Running a LINQ query across a BLB results in an IEnumerable&lt;T&gt;, where T is your BB-derived child type. At this point you’ve lost all n-level undo support, and data binding (Windows Forms, and any WPF grid) won’t work right either.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>So at the moment, I’m looking at LINQ being most useful in the Data Access Layer, along with ADO EF, but time will tell.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The point of all this rambling is this: I didn’t rush CSLA .NET 1.0 or 2.0. They came out when I felt I had good understanding of the issues I wanted to address in .NET 1.0 and .20 respectively. And when I felt I had meaningful solutions or answers to those issues. I’m treating .NET 3.5 (and presumably CSLA .NET 3.5) the same way. I won’t rush CSLA .NET to meet an arbitrary deadline, and certainly not to match Microsoft’s release of .NET 3.5 itself. There’s no point coming out with version of CSLA .NET that misses the mark, or that provides poor solutions to key issues.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>So in 2007 I’ll most certainly be releasing the version 2.1 ebook and CSLA .NET 3.0 (probably with another small ebook). Given that Microsoft’s vague plans are to have .NET 3.5 out near the end of 2007, I don’t expect CSLA .NET 3.5 to be done until sometime in 2008; but you can expect to see beta versions and/or my experiments around .NET 3.5 as the year goes on.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Of course I’ll be doing other things beyond CSLA .NET in 2007. I’m lined up to speak at the SD West and VS Live San Francisco conferences in March. I’m speaking in Denver and Boulder later in January, and I’ll be doing other speaking around the country and/or world as the year goes on. <A href="http://www.lhotka.net/Presentations.aspx"><FONT color=#800080>Click here</FONT></A> for the page where I maintain a list of my current speaking engagements.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>To close, thank you all for your support of the CSLA .NET community, and for your kind words over the past many months. I wish you all the best in 2007.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Code well, have fun!</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Rocky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Tuesday, January 02, 2007</h2><P>I'm sure you heard this before&nbsp;Rocky... but I will say it again</P>
+<P>You have&nbsp;changed the way our office programs/develops OO applications. </P>
+<P>From all of us here.... WE THANK YOU FOR ALL YOUR EFFORTS and FOR CREATING CSLA!</P>
+<P>We look forward to the new year and the new changes coming up,</P>
+<P>ward0093 [Software Architech]</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Friday, January 05, 2007</h2><P><FONT size=1>I have said this to you before.. but I feel like I need to say it again.</FONT></P>
+<P><FONT size=1>YOU ROCK!</FONT></P>
+<P><FONT size=1>Csla.net has taught me soooo much.. I have read both C# books. I only wish I had more time to practice the object design part :) </FONT></P>
+<P><FONT size=1>Csla.net has saved me SOOO MUCH TIME!</FONT></P>
+<P><FONT size=1>Thank you again and Happy New Year Rocky!</FONT></P>
+<P>&nbsp;</P>
+<P><FONT size=1>I also need to add a BIG BIG THANK YOU! to everybody that has helped me on the forum over the past months in understanding Csla and how to apply it my project.</FONT></P>
+<P><FONT size=1>Thank you for making this a great forum. I hope that I will be able to return the favor :)</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BasharLulu replied on Saturday, January 06, 2007</h2><P>It's amazing how you manage to simplify even the toughest of subjects into tiny little understandable sentences. I for one salute you. The fact that you don't rush into things is extremely admirable.</P>
+<P>One question that keeps dangling in my mind is: what do you think the future of ORM tools would be in wake of things to come from Microsoft?</P>
+<P>Thank you for all you great work.</P>
+<P>Bashar Lulu</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 06, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>ORM tools, for the most part, have focused on exposing 
+tabular data from tables as tabular entity objects in memory. While some 
+reshaping of data is possible, in general ORM tools really haven't been 
+addressing the "impedance mismatch" problem.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>The impedance mismatch problem occurs because a good OO 
+model is quite different from a good relational model. They are different, 
+because a good OO model is responsibility/behavior driven, while a good 
+relational model is data driven. Mapping data from a relational model into a 
+good OO model is really quite hard - if you want to cover all the scenarios. 
+Though it is relatively easy for many common scenarios. </FONT></SPAN><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>But the problem 
+is hard enough, that most ORM tools simply don't address it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>Additionally, most ORM tools don't allow the use of widely 
+varying data sources. Suppose your objects require data from SQL, Oracle, a web 
+service, some screen-scraped data from a mainframe and some data from a CSV 
+file. Or some smaller combination of the above. Most ORM tools would have&nbsp;a 
+hard time supporting such a wide variation of data access - much less to 
+get/save data for a single object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>Microsoft's ADO.NET Entity Framework appears to be a pretty 
+good ORM - but it is in line with existing ORM tools. Notice that they call it 
+an "Entity" framework, and it is designed to load entity 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>In my view, this will often mean that we'll need a mapping 
+layer to solve the impedance mismatch problem between the entity objects and 
+behavioral business objects. The impedance mismatch problem ISN'T about getting 
+data into/out of the database. It is about mapping it between relational 
+and&nbsp;OO models. As long as ORM tools focus only on getting data into 
+relational entity objects, the impedance mismatch problem is not really 
+addressed, and I don't see much movement in this area from ADO.NET 
+EF.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>But time will tell. For many apps, there is only a SQL 
+database. And with clever/extensive use of views and joins you can probably do 
+your relational-OO mapping in the database itself: exposing a logical database 
+that matches your object model. If ADO EF allows templates for the classes it 
+generates, then you could merge a lot of CSLA-like functionality directly into 
+what EF generates. This wouldn't solve all cases, but it might hit 70%. And if 
+you are in that 70% it would really rock!</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=870123716-06012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

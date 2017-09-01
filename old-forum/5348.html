@@ -1,0 +1,97 @@
+<html><header><title>BindingSource - Relationships</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingSource - Relationships</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5348.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndyW posted on Friday, September 05, 2008</h2><P>Hi,</P>
+<P>I am using Janus MultiCheckBoxList and cannot get it to work with Csla.&nbsp;</P>
+<P>Below is some sample code of how it would work with a dataset, I just cannot get it to work with BindingSource control, my problem is with the relationship between the BindingSource data controls.</P>
+<P>Please can someone point me in the right direction.</P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> Form1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> dataSet <SPAN>As</SPAN> DataSet<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> Form1_Load(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> System.Object, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.EventArgs) <SPAN>Handles</SPAN> <SPAN>MyBase</SPAN>.Load<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CreateDummyData()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>BindCategoriesCombo()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> CreateDummyData()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Creating a DataSet with two tables: Contacts and Categories <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'with a many-to-many relation<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'using the auxiliary table Contacts-Categories<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dataSet = <SPAN>New</SPAN> DataSet()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Create table: "Contacts"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> contacts <SPAN>As</SPAN> <SPAN>New</SPAN> DataTable(<SPAN>"Contacts"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.Columns.Add(<SPAN>"ContactId"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>Integer</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.Columns.Add(<SPAN>"Name"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>String</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.Columns.Add(<SPAN>"Phone"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>String</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.PrimaryKey = <SPAN>New</SPAN> DataColumn() {contacts.Columns(<SPAN>"ContactId"</SPAN>)}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Create table: "Categories"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> categories <SPAN>As</SPAN> <SPAN>New</SPAN> DataTable(<SPAN>"Categories"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Columns.Add(<SPAN>"CategoryId"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>Integer</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Columns.Add(<SPAN>"CategoryName"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>String</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.PrimaryKey = <SPAN>New</SPAN> DataColumn() {categories.Columns(<SPAN>"CategoryId"</SPAN>)}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Create intermediate table "ContactCategories"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> contactCategories <SPAN>As</SPAN> <SPAN>New</SPAN> DataTable(<SPAN>"ContactCategories"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Columns.Add(<SPAN>"ContactId"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>Integer</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Columns.Add(<SPAN>"CategoryId"</SPAN>, <SPAN>GetType</SPAN>(<SPAN>Integer</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.PrimaryKey = <SPAN>New</SPAN> DataColumn() {contactCategories.Columns(<SPAN>"ContactId"</SPAN>), contactCategories.Columns(<SPAN>"CategoryId"</SPAN>)}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dataSet.Tables.Add(contacts)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dataSet.Tables.Add(categories)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dataSet.Tables.Add(contactCategories)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Define relations between tables<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dataSet.Relations.Add(<SPAN>"Contacts_ContactCategories"</SPAN>, contacts.Columns(<SPAN>"ContactId"</SPAN>), contactCategories.Columns(<SPAN>"ContactId"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dataSet.Relations.Add(<SPAN>"Categories_ContactCategories"</SPAN>, categories.Columns(<SPAN>"CategoryId"</SPAN>), contactCategories.Columns(<SPAN>"CategoryId"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Adding sample data<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.Rows.Add(1, <SPAN>"Paul Wagner"</SPAN>, <SPAN>"(466) 123-5532"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.Rows.Add(2, <SPAN>"Stephanie Welles"</SPAN>, <SPAN>"(423) 324-9836"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contacts.Rows.Add(3, <SPAN>"James Jones"</SPAN>, <SPAN>"(432) 566-8814"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Rows.Add(1, <SPAN>"Family"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Rows.Add(2, <SPAN>"Business"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Rows.Add(3, <SPAN>"Personal"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Rows.Add(4, <SPAN>"VIP"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Rows.Add(5, <SPAN>"Customers"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>categories.Rows.Add(6, <SPAN>"Suppliers"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Paul Wagner belongs to categories 2, 4 and 5<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Rows.Add(1, 2)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Rows.Add(1, 4)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Rows.Add(1, 5)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Stephanie Welles belongs to category 1<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Rows.Add(2, 1)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'James Jones Belongs to categories 2 and 6<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Rows.Add(3, 2)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>contactCategories.Rows.Add(3, 6)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> BindCategoriesCombo()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Set the datasource of the dropdown<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.DropDownDataSource = dataSet.Tables(<SPAN>"Categories"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.DropDownValueMember = <SPAN>"CategoryId"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.DropDownDisplayMember = <SPAN>"CategoryName"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Call RetrieveStructure to create the columns:<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.RetrieveStructure()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Set the datasource of the list of values that appear checked in the dropdown<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.ValuesDataSource = dataSet<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'DataMember must be equal to the name of the parent dataTable plus the name of the relation<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.ValuesDataMember = <SPAN>"Contacts.Contacts_ContactCategories"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Now, define which field in the list of values will be used as value<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.editCategories.ValueItemDataMember = <SPAN>"CategoryID"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal>
+<P class=MsoNormal><SPAN><SPAN><o:p></o:p></SPAN></SPAN></P><SPAN>End</SPAN><SPAN> <SPAN>Class</SPAN></SPAN>
+<P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justin.fisher replied on Friday, September 05, 2008</h2><font face="Courier New">I used to hate when people would make posts like this when I first started using CSLA . . . . . but it seems like the most appropriate thing to do here.<br><br>I would recommend you read Chapter 6: Databinding of the "Using CSLA.NET 3.0" ebook.&nbsp; It will explain how to create a bindingsource on a windows form from a business object and, more importantly, how to properly interact with the bindingsource.&nbsp; <br><br>Based on your question, I predict this book will pay for itself today in saved time.<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndyW replied on Friday, September 05, 2008</h2><P>&nbsp;</P>
+<P>Thank you&nbsp;for your suggestion, however I have read the eBooks and all the other books.&nbsp; </P>
+<P>I haven't had any problems with databinding before, my grids, text boxes and a multitude of other controls bind correctly, I just cannot get get it to work with this Janus Muli Select Check Box.</P>
+<P>Your are correct in the book paying for itself though&nbsp;:-)</P>
+<P>Thanks</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

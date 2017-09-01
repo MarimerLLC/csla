@@ -1,0 +1,49 @@
+<html><header><title>Copy &amp; Paste Business Object on Clipboard</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Copy &amp; Paste Business Object on Clipboard</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11998.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RolandoTonin posted on Wednesday, May 29, 2013</h2><p>Hy,</p>
+<p>I want to implement in my application (WPF user interface) copy and paste from/to separated views where Items view are business object (or better ui element with BO behind).</p>
+<p>My business layer is based on CSLA that has a specific factory object as root of each different chain where business object are child elements (child XXXBOList with child XXXBO object with a classic tree structure). When a specific BO has some other child BO objects (through child BOList) it demand to factory to load and get those child BO objects, passing ID as parameter.&nbsp; </p>
+<p>So, when user select items from a listview (for example) and clicks copy (command) my code extracts child BOs from a BOList, it clones (Clone() method) them, and it copy&nbsp; them into an ArrayList before load this list on Clipboard with Clipboard.SetaData() method.</p>
+<p>Next, the user moves to another view and clicks paste. My code extracts BO items from Clipboard.GetData() method and then tries to rebuild new BOs with the same property values of source BOs.</p>
+<p>All work fine except when source BO contains lazyload properties that require a factory call to get those child object. In this case factory root object is no longer &quot;Parent&quot; of those pasted objects and so factory parent object is null and I cannot rebuild those objects.</p>
+<p>I hope I was clear to explain my issue. How cai I resolve it?</p>
+<p>Best regards</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ColourHaze replied on Thursday, May 30, 2013</h2><p>Just a question and a quick thought:</p>
+<p>Does the user only select the child items, or also modify them?</p>
+<p>in the first case couldn&#39;t you just simply copy the object path, for example by the identities of the object path? This way you can simply request the root and its children in order of identity.</p>
+<p>Another option would maybe, also interesting if you do modify the data, is to add an initializer method for setting the properties from the arraylist data. Of course for this to work you need to solve the null root first.&nbsp;</p>
+<p>HTH</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 04, 2013</h2><p>Hi,</p>
+<p>I don&acute;t quite understand the entire problem. Can you provide us a small working sample to showcase the issue?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RolandoTonin replied on Wednesday, June 05, 2013</h2><p>Hy,</p>
+<p>My Business Framework layer is based on factory root object and many child objects &quot;linked&quot; to root object by childList.&nbsp;Child object, like TaskBO for example&nbsp;contains reference to other objects&nbsp;that are&nbsp;neither Parent&nbsp;nor TaskBO . Therefore to resolve loading&nbsp;of those objects in my framework I use a l&quot;azy load pattern&quot; in TaskBO (in this case = this) class like:</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">[<span style="color:#2b91af;">NotUndoable</span>]
+<span style="color:blue;">private</span>&nbsp;Guid&nbsp;GuidCommessaFaseTask&nbsp;=&nbsp;Guid.Empty;
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">CommessaFaseTaskBO</span>&gt;&nbsp;CommessaFaseTaskBOProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">CommessaFaseTaskBO</span>&gt;(c&nbsp;=&gt;&nbsp;c.Task,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.PrivateField);
+[<span style="color:#2b91af;">NotUndoable</span>]
+<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">CommessaFaseTaskBO</span>&nbsp;_CommessaFaseTaskBO&nbsp;=&nbsp;CommessaFaseTaskBOProperty.DefaultValue;
+<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">CommessaFaseTaskBO</span>&nbsp;Task
+{
+<span style="color:blue;">    get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_CommessaFaseTaskBO&nbsp;==&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;<span style="color:blue;">this</span>.GuidCommessaFaseTask&nbsp;!=&nbsp;Guid.Empty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>._CommessaFaseTaskBO&nbsp;=&nbsp;<span style="color:blue;">this</span>.Get&lt;<span style="color:#2b91af;">CommessaFaseTaskBO</span>&gt;(<span style="color:blue;">this</span>.GuidCommessaFaseTask);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(CommessaFaseTaskBOProperty,&nbsp;_CommessaFaseTaskBO);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(CommessaFaseTaskBOProperty,&nbsp;<span style="color:blue;">ref</span>&nbsp;&nbsp;_CommessaFaseTaskBO,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;</pre>
+<p>&nbsp;the method: &quot;T&nbsp;this.Get&lt;T&gt;(Guid rowGuid)&quot; route the call to the root object (factory object) that load T object (if it is not just in memory) and return&nbsp;the object&#39;s reference to the caller.</p>
+<p>So&nbsp;eveything works fine until the chain between factory object (root) and child caller&nbsp;object&nbsp;isn&#39;t interrupted. Right?</p>
+<p>My user interface app is a WPF application based on a &quot;MDI like&quot; interface with many child WPF views and where I&nbsp;would like to implement copy&nbsp;&amp; paste (via Clipboard). So:</p>
+<p>phase 1: the user select some TaskBO objects in a view and click copy command:&nbsp;my code create an ArrayList and&nbsp;fill it with selected TaskBO and passa the arraylist to Clipboard</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span style="color:#2b91af;">DataObject</span>&nbsp;data&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataObject</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ArrayList</span>&nbsp;ls&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ArrayList</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SelectedItems.ForEach(tf&nbsp;=&gt;&nbsp;ls.Add(tf.OggettoBO));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;data.SetData(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">TaskBO</span>).FullName,&nbsp;ls);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Clipboard</span>.SetDataObject(data);</pre>
+<p>phase 2:&nbsp;the user switch to another view and click paste command: my code recovers the arraylist from the clipboard and try to insert the TaskBO in these view:</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span style="color:#2b91af;">ArrayList</span>&nbsp;data&nbsp;=&nbsp;(<span style="color:#2b91af;">ArrayList</span>)<span style="color:#2b91af;">Clipboard</span>.GetData(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">TaskBO</span>).FullName);
+<span style="color:blue;">this</span>.factoryBO.CreateTaskFromOtherList((<span style="color:#2b91af;">IEnumerable</span>&lt;<span style="color:#2b91af;">TaskBO</span>&gt;)data,&nbsp;<span style="color:blue;">this</span>.DataRiferimento.Date);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">Therefore I try to recreate these object and relative child objects in a new list. All work fine if CommessaFaseTaskBO&nbsp;was just created before copy command but if it is not I cannot recreate it because GuidCommessaFaseTask&nbsp;is private and I don&#39;t want to public it.</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">I hope I&#39;ve clearified you.</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">Best Regards</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span class="hps">I hope I&#39;ve</span> <span class="hps">clarified</span> </pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,74 @@
+<html><header><title>CSLA Light KnownTypeAttribute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light KnownTypeAttribute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6747.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Monday, April 06, 2009</h2><P>Last week I ran into a problem where I was getting&nbsp;the KnownTypeAttribute error because I had a BO that had a property that was based on a struct.&nbsp; Taking advice from another post I converted the struct to a BO and I was able to move on.&nbsp; Now I have run into the same error, but this time due to a property that is based on an enumeration.&nbsp; I'm scratching my head on how to deal with this so I'm looking for some input.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 06, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+personally have int based property info / property to carry real values, and
+public property of type enum (without property info) to cast real property&#8217;s
+value to desired enumeration.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Just
+my 2 cents.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CampbellCM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 06, 2009 4:19 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA Light KnownTypeAttribute<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Last week I ran into a problem where I was getting&nbsp;the
+KnownTypeAttribute error because I had a BO that had a property that was based
+on a struct.&nbsp; Taking advice from another post I converted the struct to a
+BO and I was able to move on.&nbsp; Now I have run into the same error, but
+this time due to a property that is based on an enumeration.&nbsp; I'm
+scratching my head on how to deal with this so I'm looking for some input.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Monday, April 06, 2009</h2>Thanks Sergey, I followed your suggestion and it works just fine.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

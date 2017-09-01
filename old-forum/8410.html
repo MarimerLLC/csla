@@ -1,0 +1,212 @@
+<html><header><title>Child_Fetch parameter is null</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child_Fetch parameter is null</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8410.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sameer posted on Tuesday, January 26, 2010</h2>Hi,<br /><br />I have the following situation:<br /><br />I have an object model with an Editable Root object which has 2 Editable Child Collections. In the Editable Root I call a bunch of stored procedures and use the returned values to populate a strongly typed data container. I then pass the rows of the data container down the hierarchy to populate the object model. <br /> <br />It seems like if there is no rows for the editable child collection lists, in the Child_Fetch(parameter), the parameter is set to null. Example code follows:<br /><br />This is the Get factory method for the NotificationList class. At this point the 'rows' parameter has 0 rows and is passed to the DataPortal.FetchChild method.<br /><br />        internal static NotificationList GetNotificationList(DataTransferMgmtContainer.NotificationRow[] rows)<br />        {<br />            return DataPortal.FetchChild(rows);<br />        }<br /><br />The above code calls this method below and when this piece runs, the rows parameter is automatically set to null. <br /><br />private void Child_Fetch(DataTransferMgmtContainer.NotificationRow[] rows)<br />        {<br />            RaiseListChangedEvents = false;<br />            foreach (DataTransferMgmtContainer.NotificationRow row in rows)<br />            {<br />                Notification dt = Notification.GetNotification(row);<br />                this.Add(dt);<br />            }<br />            RaiseListChangedEvents = true;<br />        }<br /><br />Do I have to do null checks in the Child_Fetch? I did not have to do this in previous CSLA versions. The sample codes in the book does not check for the parameter == null. Any thoughts on this?<br /><br />Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 26, 2010</h2><P>What version of CSLA are you using?</P>
+<P>CSLA ultimately emulates method overloading to find the correct target method to invoke. The Child_XYZ methods accept a params parameter - which is an array.</P>
+<P>There's some really tricky behavior around identifying and dealing with array parameters being passed to a params parameter - primarily because the whole params concept doesn't actually exist at the CLR level - it is all compiler magic.</P>
+<P>There was a bug in this area at one point, which I believe was fixed, and so 3.8.1 may not have the issue. Or 3.8.2? I don't remember when I looked into this.</P>
+<P>And of course it is possible you've found another edge case - though your scenario looks familiar, so I think it is the one I fixed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, January 26, 2010</h2>He is right, I was able to reproduce the problem (CSLA 3.8.1)
+<br />
+<br />
+
+
+using System;<br />using System.IO;<br />using Csla;<br /><br />namespace ConsoleApplication1<br />{<br />    class Program<br />    {<br />        static void Main(string[] args)<br />        {<br />            Foo.FetchChildTest();<br />            Console.Read();<br />        }<br />    }<br /><br />    class Foo : BusinessBase&lt;Foo&gt;<br />    {<br />        public static Foo FetchChildTest()<br />        {<br />            string[] emptyString = new string[0];<br />            return DataPortal.FetchChild&lt;Foo&gt;(emptyString);<br />        }<br /><br />        private void Child_Fetch(string[] ms)<br />        {<br />            Console.WriteLine(ms == null);<br />        }<br />    }<br />}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 26, 2010</h2><P>That's unfortunate. As I said, this is tricky code, so I'll have to block out a day or two to go fight with this some more... Looking at my schedule, don't count on any progress for 3-4 weeks at this point :(</P>
+<P>I wonder if a workaround would be to wrap the array in a list. Convert it from a value type to a ref type - that might avoid the casting issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 26, 2010</h2><P>As I was watching my younger son's orchestra concert this evening I remembered the reason this was (to my knowledge) unfixable.</P>
+<P>&nbsp; class Program<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; static void Main(string[] args)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Test(null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object[] a = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Test(a);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; static void Test(params object[] e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("e is null");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(e.GetType().Name);<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp; }</P>
+<P>The output of this test is that both calls to Test() have a null value for e.</P>
+<P>The child data portal methods (like Child_Update(), etc) accept a params array just like Test() does here, thus allowing you to pass any parameters you want through to the target method.</P>
+<P>Of course there's a problem here, because null and an uninitialized array both appear as a null. It is impossible for the code in Test() to determine that the caller provided an actual null in one call and an unitialized (and thus null) array in the second call.</P>
+<P>If you can see a way by which these can be differentiated, I'm sure I can call the target method correctly - but I don't know how you'd do such a thing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sameer replied on Thursday, January 28, 2010</h2>You are right about the null array business. However, if you look at the code snippet above, the rows parameter in GetNotificationList is not null but an empty array with Count = 0. When the  DataPortal.FetchChild(rows) is called inside GetNotificationList method, the Child_Fetch method is called and its rows parameter is automatically being set to null. I would think the rows parameter in Child_Fetch would continue to be a empty array with Count = 0. Something between DataPortal.FetchChild() and Child_Fetch() the parameter is being set to null if an empty (not null) array is passed in.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ihate replied on Tuesday, March 16, 2010</h2><p>I think this change happened in 3.8.x, I noticed when I moved from 3.7.something. &nbsp;I just changed my Child_Fetch methods to start with a null check but it was still annoying.</p>
+<p>You can see this failure for yourself in the Project Tracker sample (I downloaded it in the last week or two)</p>
+<p>
+<ul>
+<li>Start PTWin</li>
+<li>Log in as pm/pm or admin/admin</li>
+<li>Under the &quot;Resources&quot; drop down menu, select &quot;Edit Resource&quot;</li>
+<li>In the dialog select &quot;Monroe, Marylin&quot; who has no resource assignments</li>
+<li>A NullReferenceException occurs in Child_Fetch of ResourceAssignments.cs (line 92)</li>
+</ul>
+</p>
+<p>In that case, it is passing a 0 element array as Sameer described, which is being turned into null in Csla.Reflection.MethodCaller.CallMethod(object, DynamicMethodHandle, params object[]) &nbsp;</p>
+<p>This only happens on methods whose single argument is an array... so there are some workarounds possible.</p>
+<p>
+<ul>
+<li>Change the argument list for your Child_Fetch and what you pass to it to something like (ProjectTracker.DalLinq.Assignment[] data, bool ignored)</li>
+<li>
+
+or rather just change the calling code to:<br />return DataPortal.FetchChild&lt;ResourceAssignments&gt;(new object[]{data});&nbsp;</li>
+<li>Change Csla.Reflection.MethodCaller.CallMethod to not create 1 element array with null parameter... I think it&#39;s harder to detect the case where not doing that is required from here (the type on the parameter array is lost when Csla.DataPortal.FetchChild is called, and trusting that wouldn&#39;t handle a legit object[] single parameter Child_Fetch the same way).</li>
+<li>in Csla.DataPortal create a templated overload like&nbsp;<br />public static&nbsp;T FetchChild&lt;T,A&gt;(A[] someArray) {&nbsp;return FetchChild&lt;T&gt;(new object[]{ someArray });&nbsp;}&nbsp;<br />and call it explictly:&nbsp;<br />internal static ResourceAssignments GetResourceAssignments(ProjectTracker.DalLinq.Assignment[] data)&nbsp;{<br />&nbsp;&nbsp;return DataPortal.FetchChild&lt;ResourceAssignments, ProjectTracker.DalLinq.Assignment&gt;(data);&nbsp;<br />}&nbsp;</li>
+</ul>
+</p>
+<p>I wish the template type on the Csla.DataPortal approach mentioned in the second bullet didn&#39;t require manually specifying both type params. &nbsp;Presumably DataPortal could be changed so that just this one method could have one type parameter (and thus, it could be implied by the calling code)... which would make the calling code look like:</p>
+<p>
+
+internal static ResourceAssignments GetResourceAssignments(ProjectTracker.DalLinq.Assignment[] data)&nbsp;{&nbsp;<br />return DataPortal&lt;ResourceAssignments&gt;.FetchChild(data);&nbsp;<br />}&nbsp;</p>
+<p>Notice now how DataPortal has a type param, and FetchChild has another (which is implied)</p>
+<p>Now that I think about it, I can create my own static class which does exactly that, and doesn&#39;t break code expecting all the other things Csla.DataPortal offers now. &nbsp;Here&#39;s the beginnings of said class:</p>
+<p>
+<p>static class MyDataPortal&lt;T&gt; {<br />&nbsp;&nbsp;public static T FetchChild&lt;TA&gt;(TA[] stuff) {<br />&nbsp;&nbsp; &nbsp;return DataPortal.FetchChild&lt;T&gt;(new object[] {stuff});<br />&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;public static T FetchChild(params object[] fetchParams) {<br />&nbsp;&nbsp; &nbsp;return DataPortal.FetchChild&lt;T&gt;(fetchParams);<br />&nbsp;&nbsp;}<br />}</p>
+</p>
+<p>&nbsp;</p>
+<p>Well, I can see this kind of change not happening in a future version of Csla... about 2/3rds of the exposed methods on DataPortal aren&#39;t typed, and it wouldn&#39;t be fun to fix existing code even for this simple (possibly mechanical) change... and it&#39;s probably not worth making redundant overloads like static class DataPortal&lt;T&gt;(params object[]){ public static T FetchChild&lt;T&gt;() just to not break existing code that have the method template params specified but not the class ones... if that would even work..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ihate replied on Wednesday, March 17, 2010</h2><p>It seems I was wrong about DataPortal_FetchChild. &nbsp;Changing it as follows does seem to behave like the templated overload version.</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;public static T FetchChild&lt;T&gt;(params object[] parameters)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p><span>		</span>// HACK? Fix issue where single Foo[] parameter is turned into apparent object[] of parameters</p>
+<p><span>		</span>if (parameters != null &amp;&amp; parameters.GetType() != typeof(object[])) {</p>
+<p><span>			</span>parameters = new object[] {parameters};</p>
+<p>}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;Server.ChildDataPortal portal = new Server.ChildDataPortal();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;return (T)(portal.Fetch(typeof(T), parameters));</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ihate replied on Wednesday, March 17, 2010</h2><p>Here&#39;s another kludge that doesn&#39;t use GetType(). &nbsp;I found it interesting that FetchChild(null) resolves to FetchChild(object[] list).</p>
+<p>&nbsp;</p>
+<p>Note that the behavior of the code below is different from the previous code when the passed list is actually an object[], it is now wrapped in another object[].</p>
+<p>&nbsp;</p>
+<p>// a kludge to act like params object[], but only when there&#39;s 1 or more than one params, and that one param can&#39;t implicitly be cast to object[]</p>
+<p>
+<p>public static T FetchChild&lt;T&gt;(object param0, params object[] otherParamaters) {</p>
+<p><span>			</span>if (otherParamaters == null || otherParamaters.Length == 0)</p>
+<p><span>				</span>return PrivateFetchChild&lt;T&gt;(new []{param0});</p>
+<p><span>			</span>object[] fullparamarray = new object[otherParamaters.Length + 1];</p>
+<p><span>			</span>fullparamarray[0] = param0;</p>
+<p><span>			</span>Array.ConstrainedCopy(otherParamaters, 0, fullparamarray, 1, otherParamaters.Length);</p>
+<p><span>			</span>return PrivateFetchChild&lt;T&gt;(fullparamarray);</p>
+<p><span>		</span>}</p>
+<p>&nbsp;&nbsp;<span>	</span>public static T FetchChild&lt;T&gt;(object[] list) {</p>
+<p><span>			</span>return PrivateFetchChild&lt;T&gt;(new object[] { list });</p>
+<p><span>	</span> &nbsp;}</p>
+<p><span>	</span>public static T FetchChild&lt;T&gt;() {</p>
+<p><span>		</span>return PrivateFetchChild&lt;T&gt;(new object[0]);</p>
+<p><span>	</span>}</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ihate replied on Wednesday, March 17, 2010</h2><p>&nbsp;</p>
+<p>Below is an approach that solves the problem you presented. Note: the constraints/consequences are different if my Foo methods below are changed to not have params[] overloads (though the below examples remain relatively unchanged). &nbsp;Also, the &quot;Automatic Type selection&quot; behavior isn&#39;t possible on the current Child_Fetch&lt;T&gt; method, the type parameters are (to my understanding) either all chosen by the&nbsp;compiler, or none of them are.</p>
+<p>&nbsp;</p>
+<p>But to respond directly to your particular point, you are correct, a method taking MyMethod(params object[] stuff) can&#39;t tell various things apart very well. &nbsp;Notably MyMethod(null), MyMethod((List&lt;int&gt;)null), MyMethod((int[])null) and MyMethod() are the same, and also&nbsp;MyMethod(5)&nbsp;and&nbsp;MyMethod(new int[]{5})&nbsp;seem the same (but in only the latter latter case, stuff.GetType() != typeof(object[])... MyMethod(5) turns into MyMethod(new object[]{5}) and MyMethod(new int[]{5}) turns into MyMethod((object[])(new int[]{5})))</p>
+<p>&nbsp;</p>
+<p>Also, the current (params object[] stuff) approach doesn&#39;t let you consistently distinguish between methods to call if there are more than one, for example what if I have two different Child_Fetch methods that look like Child_Fetch(string, string) and Child_Fetch(someobject, someotherobject), and call DataPortal.FetchChild&lt;T&gt;(null, null)?</p>
+<p>That said, I can see why it&#39;s disgusting to have to limit the number of parameters you pass to things, or put other constraints on them. (below looks like &quot;you can&#39;t have more than 2 parameters of different types&quot;). &nbsp;Although, you and I apparently agree on one limit, Child_Fetch itself can&#39;t be templated.</p>
+<p>If extending this further I would probably make a class to represent the method signature, and create it something like new MethodSignature(true, typeof(T1), typeof(T2)); and the constructor for MethodSignature would be MethodSignature(bool lastIsParamsArray, params Type[] types)</p>
+<p>All of this work and there are still cases where various calls would be ambiguous from the code&#39;s point of view... In the example below something compiled as (params int[]) may need to call something whose parameters are (int,int,int,int) merely because we don&#39;t have explicit overloads for that many parematers. Also your code would have to figure out that (lastIsParamsArray=false, int, string, int, DateTime) are best suited for calling a method that is (params object[]) but I think you&#39;ve thought about things like that already (or else the caller will have to explicitly cast each parameter to object first, in which case you would still need to notice that (lastIsParamsArray=false,&nbsp;object, object, object, object) can call (params object[])).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>using System;</p>
+<p>using System.Collections.Generic;</p>
+<p>using System.Linq;</p>
+<p>using System.Text;</p>
+<p>&nbsp;</p>
+<p>namespace MethodCallerStuff {</p>
+<p><span>	</span>class Program {</p>
+<p><span>		</span>static void Main(string[] args) {</p>
+<p><span>			</span>string str1 = &quot;Hello&quot;;</p>
+<p><span>			</span>string str2 = null;</p>
+<p><span>			</span>int[] intArray1 = new int[1];</p>
+<p><span>			</span>int[] intArray2 = null;</p>
+<p><span>			</span>object[] objArray1 = new object[1];</p>
+<p><span>			</span>object[] objArray2 = null;</p>
+<p>&nbsp;</p>
+<p><span>			</span>Example.Foo();<span>				</span>//Foo()</p>
+<p><span>			</span></p>
+<p><span>			</span>Console.WriteLine();</p>
+<p>&nbsp;</p>
+<p><span>			</span>// Examples with one argument</p>
+<p><span>			</span>//Example.Foo(null); // ambiguous, null can be a T1 or a T1[]</p>
+<p><span>			</span>Example.Foo(1);<span>				</span>//Foo&lt;System.Int32&gt;(System.Int32 param1)</p>
+<p><span>			</span>Example.Foo(str1);<span>			</span>//Foo&lt;System.String&gt;(System.String param1)</p>
+<p><span>			</span>Example.Foo(str2);<span>			</span>//Foo&lt;System.String&gt;(System.String param1)</p>
+<p><span>			</span>Example.Foo(intArray1);<span>		</span>//Foo&lt;System.Int32&gt;(params System.Int32[] param1)</p>
+<p><span>			</span>Example.Foo(intArray2);<span>		</span>//Foo&lt;System.Int32&gt;(params System.Int32[] param1)</p>
+<p><span>			</span>Example.Foo(objArray1);<span>		</span>//Foo&lt;System.Object&gt;(params System.Object[] param1)</p>
+<p><span>			</span>Example.Foo(objArray2);<span>		</span>//Foo&lt;System.Object&gt;(params System.Object[] param1)</p>
+<p>&nbsp;</p>
+<p><span>			</span>Console.WriteLine();</p>
+<p>&nbsp;</p>
+<p><span>			</span>// Examples with two arguments</p>
+<p><span>			</span>//Example.Foo(null, 1); // ambiguous, null can be a T1 or T1[]</p>
+<p><span>			</span>//Example.Foo(1, null); // ambiguous, null can be a T2 or T2[]</p>
+<p><span>			</span>Example.Foo(1, 1);<span>					</span>//Foo&lt;System.Int32,System.Int32&gt;(System.Int32 param1, System.Int32 param2)</p>
+<p><span>			</span>Example.Foo(1, str1);<span>				</span>//Foo&lt;System.Int32,System.String&gt;(System.Int32 param1, System.String param2)</p>
+<p><span>			</span>Example.Foo(1, str2);<span>				</span>//Foo&lt;System.Int32,System.String&gt;(System.Int32 param1, System.String param2)</p>
+<p><span>			</span>Example.Foo(1, intArray1);<span>			</span>//Foo&lt;System.Int32,System.Int32&gt;(System.Int32 param1, params System.Int32[] param2)</p>
+<p><span>			</span>Example.Foo(1, intArray2);<span>			</span>//Foo&lt;System.Int32,System.Int32&gt;(System.Int32 param1, params System.Int32[] param2)</p>
+<p><span>			</span>Example.Foo(1, objArray1);<span>			</span>//Foo&lt;System.Int32,System.Object&gt;(System.Int32 param1, params System.Object[] param2)</p>
+<p><span>			</span>Example.Foo(1, objArray2);<span>			</span>//Foo&lt;System.Int32,System.Object&gt;(System.Int32 param1, params System.Object[] param2)</p>
+<p><span>			</span>Example.Foo(intArray1, 1);<span>			</span>//Foo&lt;System.Int32[],System.Int32&gt;(System.Int32[] param1, System.Int32 param2)</p>
+<p><span>			</span>Example.Foo(intArray1, str1);<span>		</span>//Foo&lt;System.Int32[],System.String&gt;(System.Int32[] param1, System.String param2)</p>
+<p><span>			</span>Example.Foo(intArray1, str2);<span>		</span>//Foo&lt;System.Int32[],System.String&gt;(System.Int32[] param1, System.String param2)</p>
+<p><span>			</span>Example.Foo(intArray1, intArray1);<span>	</span>//Foo&lt;System.Int32[],System.Int32&gt;(System.Int32[] param1, params System.Int32[] param2)</p>
+<p><span>			</span>Example.Foo(intArray1, intArray2);<span>	</span>//Foo&lt;System.Int32[],System.Int32&gt;(System.Int32[] param1, params System.Int32[] param2)</p>
+<p><span>			</span>Example.Foo(intArray1, objArray1);<span>	</span>//Foo&lt;System.Int32[],System.Object&gt;(System.Int32[] param1, params System.Object[] param2)</p>
+<p><span>			</span>Example.Foo(intArray1, objArray2);<span>	</span>//Foo&lt;System.Int32[],System.Object&gt;(System.Int32[] param1, params System.Object[] param2)</p>
+<p><span>			</span>Example.Foo(intArray2, 1);<span>			</span>//Foo&lt;System.Int32[],System.Int32&gt;(System.Int32[] param1, System.Int32 param2)</p>
+<p><span>			</span>Example.Foo(intArray2, str1);<span>		</span>//Foo&lt;System.Int32[],System.String&gt;(System.Int32[] param1, System.String param2)</p>
+<p><span>			</span>Example.Foo(intArray2, str2);<span>		</span>//Foo&lt;System.Int32[],System.String&gt;(System.Int32[] param1, System.String param2)</p>
+<p><span>			</span>Example.Foo(intArray2, intArray1);<span>	</span>//Foo&lt;System.Int32[],System.Int32&gt;(System.Int32[] param1, params System.Int32[] param2)</p>
+<p><span>			</span>Example.Foo(intArray2, intArray2);<span>	</span>//Foo&lt;System.Int32[],System.Int32&gt;(System.Int32[] param1, params System.Int32[] param2)</p>
+<p><span>			</span>Example.Foo(intArray2, objArray1);<span>	</span>//Foo&lt;System.Int32[],System.Object&gt;(System.Int32[] param1, params System.Object[] param2)</p>
+<p><span>			</span>Example.Foo(intArray2, objArray2);<span>	</span>//Foo&lt;System.Int32[],System.Object&gt;(System.Int32[] param1, params System.Object[] param2)</p>
+<p>&nbsp;</p>
+<p><span>			</span>Example.Foo(1, 2, 3, 4); //Foo&lt;System.Int32&gt;(params System.Int32[] param1)</p>
+<p><span></span>//Example.Foo(1, DateTime.Now, &quot;Hello&quot;); //The type arguments can&#39;t be inferred by usage... I would need an overload with T1,T2, and T3</p>
+<p><span>		</span>}</p>
+<p><span>	</span>}</p>
+<p><span>	</span>static class Example {</p>
+<p><span>		</span>public static void Foo() {</p>
+<p><span>			</span>Console.WriteLine(&quot;Foo()&quot;);</p>
+<p><span>		</span>}</p>
+<p><span>		</span>public static void Foo&lt;T1&gt;(T1 param1) {</p>
+<p><span>			</span>Console.WriteLine(&quot;Foo&lt;{0}&gt;({0} param1)&quot;, typeof(T1));</p>
+<p><span>		</span>}</p>
+<p><span>		</span>public static void Foo&lt;T1&gt;(params T1[] param1) {</p>
+<p><span>			</span>Console.WriteLine(&quot;Foo&lt;{0}&gt;(params {0}[] param1)&quot;, typeof(T1));</p>
+<p><span>		</span>}</p>
+<p><span>		</span>public static void Foo&lt;T1,T2&gt;(T1 param1, T2 param2) {</p>
+<p><span>			</span>Console.WriteLine(&quot;Foo&lt;{0},{1}&gt;({0} param1, {1} param2)&quot;, typeof(T1), typeof(T2));</p>
+<p><span>		</span>}</p>
+<p><span>		</span>public static void Foo&lt;T1, T2&gt;(T1 param1, params T2[] param2) {</p>
+<p><span>			</span>Console.WriteLine(&quot;Foo&lt;{0},{1}&gt;({0} param1, params {1}[] param2)&quot;, typeof(T1), typeof(T2));</p>
+<p><span>		</span>}</p>
+<p><span>	</span>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>apparently I&#39;m having too much fun. &nbsp;local time it&#39;s 1:29AM. &nbsp;Hopefully the nested parenthesis in my prose and template abuse in the code haven&#39;t been too bad.</p>
+<div></div>
+<p>There&#39;s probably a concise way of solving this particular problem using linq and maybe expression trees. The only ways that come to mind right now essentially are DataPortal.Fetch_Child&lt;T&gt;((obj)=&gt;obj.Child_Fetch(stuff)) which is &quot;wrong&quot; in new and interesting ways... for example</p>
+<p>
+<p><span>	</span>public static class MoreInferredTypeAbuse {</p>
+<p><span>		</span>private class Something {</p>
+<p><span>			</span>public void SomeMethod(int a, string b) {</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<p><span>		</span>public static void Main(string[] args) {</p>
+<p><span>			</span>Example.Foo(</p>
+<p><span>				</span>// cheesy way to implicitly set T type parameter</p>
+<p><span>				</span>(Something)null,&nbsp;</p>
+<p><span>				</span>// method to call</p>
+<p><span>				</span>(thing, a, b) =&gt; thing.SomeMethod(a, b),&nbsp;</p>
+<p><span>				</span>// params</p>
+<p><span>				</span>1, &quot;Hello&quot;);</p>
+<p><span>		</span>}</p>
+<p><span>		</span>public static class Example {</p>
+<p><span>			</span>public delegate void MethodDelegate0&lt;T&gt;(T thing);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;public delegate void MethodDelegate1&lt;T, TP1&gt;(T thing, TP1 param1);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;public delegate void MethodDelegate2&lt;T, TP1, TP2&gt;(T thing, TP1 param1, TP2 param2);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;public delegate void MethodDelegate3&lt;T, TP1, TP2, TP3&gt;(T thing, TP1 param1, TP2 param2, TP3 param3);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;public delegate void MethodDelegate4&lt;T, TP1, TP2, TP3, TP4&gt;(T thing, TP1 param1, TP2 param2, TP3 param3, TP4 param4);</p>
+<p>&nbsp;</p>
+<p><span>			</span>public static void Foo&lt;T&gt;(T ignored, MethodDelegate0&lt;T&gt; md) {</p>
+<p><span>			</span>}</p>
+<p><span>			</span>public static void Foo&lt;T, TP1&gt;(T ignored, MethodDelegate1&lt;T, TP1&gt; md, TP1 p1) {</p>
+<p><span>			</span>}</p>
+<p><span>			</span>public static void Foo&lt;T, TP1, TP2&gt;(T ignored, MethodDelegate2&lt;T, TP1, TP2&gt; md, TP1 p1, TP2 p2) {</p>
+<p><span>			</span>}</p>
+<p><span>			</span>public static void Foo&lt;T, TP1, TP2, TP3&gt;(T ignored, MethodDelegate3&lt;T, TP1, TP2, TP3&gt; md, TP1 p1, TP2 p2, TP3 p3) {</p>
+<p><span>			</span>}</p>
+<p><span>			</span>public static void Foo&lt;T, TP1, TP2, TP3, TP4&gt;(T ignored, MethodDelegate4&lt;T, TP1, TP2, TP3, TP4&gt; md, TP1 p1, TP2 p2, TP3 p3, TP4 p4) {</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<p><span>	</span>}</p>
+<div></div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

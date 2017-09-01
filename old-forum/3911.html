@@ -1,0 +1,19 @@
+<html><header><title>CSLA version 3.0 error when loggin in.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA version 3.0 error when loggin in.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3911.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>elfstoneUK posted on Monday, November 19, 2007</h2><P><FONT face=Tahoma color=#000000>Ladies and Gentlemen your help please.</FONT></P>
+<P><FONT face=Tahoma>In view of my databinding I've been advised to use CSLA version 3. So I downloaded, compiled and referenced the CSLA.DLL, which built with no errors. Ran the ProjectTrackervb as a test but got the following error when I login in:</FONT></P>
+<P><EM><FONT color=#800080>Could not load type 'Csla.DataPortalClient.WcfProxy' from assembly 'Csla, Version=3.0.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30'.</FONT></EM></P>
+<P><FONT face=Tahoma>in DataPortal.vb file.</FONT></P>
+<P><FONT face=Tahoma color=#0000ff>Can anyone tell me what's wrong?</FONT></P>
+<P><FONT face=Tahoma><U>My system details:</U></FONT></P>
+<P><FONT face=Tahoma size=2>VS 2005 (using VB) with SP1</FONT></P>
+<P><FONT face=Tahoma size=2>OS - Windows XP SP2</FONT></P>
+<P><FONT face=Tahoma size=2>.NET Framework 3.0 is installed but we are not using any WCF, WPF, etc at this time.</FONT></P>
+<P><FONT face=Tahoma color=#0000ff>What is the significance of the WcfProxy in the error message?</FONT></P>
+<P><FONT face=Tahoma color=#000000>BTW ProjectTrackervb for CSLA 2.1.4 works ok.</FONT></P>
+<P><FONT face=Tahoma color=#000000>Thanks for reading</FONT></P>
+<P><FONT face=Tahoma></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Monday, November 19, 2007</h2><P>From memory I think if you are not using WCF or WPF you can remove those projects from the solution.&nbsp; That or there are some DEBUG symbols that you can set to switch the .Net 3.x stuff on and off.</P>
+<P>I haven't got the notes to hand but check Rocky's document about setting up CSLA and the demo projects - I'm sure I saw something in there about this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Monday, November 19, 2007</h2>Check you config file too to make sure you are using the right Dataportal channel.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>elfstoneUK replied on Monday, November 19, 2007</h2><P><FONT face=Tahoma>richard ,</FONT></P>
+<P><FONT face=Tahoma>thanks for your reply. I do remember the article from Rocky and was going to change that but since this is the ProjectTrackervb demo, it already contains that <FONT color=#0000ff>Custom Constants setting set to <STRONG>NET20.</STRONG></FONT></FONT></P>
+<P><FONT face=Tahoma color=#000000>However, I didn't check the app.config for the </FONT></P><FONT face=Tahoma color=#000000><FONT color=#800080 size=2>
+<P><STRONG>&lt;add key="CslaDataPortalProxy" value="Csla.DataPortalClient.WcfProxy, Csla"/&gt;</STRONG></P>
+<P></FONT><FONT color=#000000>..found it and commented it out and it has cured my error. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /> Very pleased, thanks Richard.</FONT></P>
+<P><img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

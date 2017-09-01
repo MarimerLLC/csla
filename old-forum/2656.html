@@ -1,0 +1,26 @@
+<html><header><title>Determine EditLevel?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Determine EditLevel?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2656.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer posted on Wednesday, April 04, 2007</h2>Is there a way to determine the current edit level of CSLA objects?<br><br>Rightly or wrongly, with some of my current forms there are times when I don't know how many times I've called BeginEdit. When I go to save, I need to call 'enough' ApplyEdits so that I can successfully save. <br><br>FYI: I am calling BeginEdit during the Loaded event of a WPF user control which is in a TabControl's TabItem. If the user goes back and forth between tabs, the Loaded event fires multiple times, and the EditLevel builds up. <br><br>There are solutions to this, but I was still wondering if there was a way (to determine editlevel).<br><br>cheers<br>FaiB<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FreeAsInBeer replied on Thursday, April 12, 2007</h2>just thought i'd bump this, incase someone with knowledge about this missed it<br><br>thanks :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, April 12, 2007</h2><P>Since .EditLevel is protected, the UI can't get to it directly. I thought I needed to use the .EditLevel once in my UI - can't quite remember why - so I added a public property to my subclassed BusinessBase. I've since commented it out, because I realized I didn't need it- again, I don't know why. Anyway, here's my 2.0.3 subclass, HTH:</P><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Buoy.Business</P>
+<P>{</P>
+<P>[</FONT><FONT color=#2b91af size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt; :</P>
+<P></FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt; </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#2b91af size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> MarkAsClean()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.MarkClean();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> MarkAsNew()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.MarkNew();</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>//public int LevelOfEdit</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// {</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// return this.EditLevel;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// }</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//}</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Mike</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

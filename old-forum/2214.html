@@ -1,0 +1,40 @@
+<html><header><title>nested bindingsource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>nested bindingsource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2214.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fred posted on Friday, January 26, 2007</h2><P>I have a manager class</P>
+<P>Public class Manager<BR>{<BR>&nbsp;&nbsp; string Name; //manager name<BR>&nbsp;&nbsp; stringcollection Members;<BR>}</P>
+<P>and &nbsp;a list of Manager:&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;Manager&gt; managers = new List&lt;Manager&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Manager p;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = new Manager("p1");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Members = new System.Collections.Specialized.StringCollection();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Members.Add("p1_attr1");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Members.Add("p1_attr2");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; managers.Add(p);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = new Manager("p2");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Members = new System.Collections.Specialized.StringCollection();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Members.Add("p2_attr1");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Members.Add("p2_attr2");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; managers.Add(p);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parentBindingSource.DataSource=managers;</P>
+<P>I have a form to edit managers: a&nbsp;textbox for editing name, a listbox for editing members.</P>
+<P>this.parentBindingSource= new System.Windows.Forms.BindingSource(this.components);<BR>his.ManagerBindingNavigator.BindingSource = this.parentBindingSource;<BR>this.parentBindingSource.DataSource = typeof(Manager);<BR>this.parentNameTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.parentBindingSource, "Name", true));<BR></P>
+<P>this.childBindingSource = new System.Windows.Forms.BindingSource(this.components);<BR>&nbsp;this.childBindingSource.DataMember = "Members";<BR>&nbsp;this.childBindingSource.DataSource = this.parentBindingSource;<BR>this.membersListBox.DataSource=this.childBindingSource;<BR></P>
+<P>My question is: if I add a member to listbox for Members and then choose to cancel the editing,&nbsp; it doesn't work.</P>
+<P>How can I implement this? I hope I can cancel the entire record editing no matter what changes you have made to the text box&nbsp; for name or listbox for members</P>
+<P>Thank you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 26, 2007</h2><P>Your example classes aren't shown inheriting from a CSLA base class, so you'd have to implement IEditableObject manually. You'd have an easier time if you inherit from BusinessBase.</P>
+<P>The trick is to make sure you have an snapshot of the object's state <EM>before</EM> any adding or removing of items in the collection.</P>
+<P>Assuming your collection is your root object, you probably want to call BeginEdit() explicitly on the collection itself <EM>before binding it to the BindingSource</EM>. That way its edit level will be 1 (and so will its children) before data binding gets involved.</P>
+<P>Then, to cancel, you would need to do a CancelEdit() on the <EM>BindingSource</EM> first to reduce the current row's edit level. Then an explicit CancelEdit() on the collection itself to reduce the overall collection's edit level back to 0 - undoing any changes made to the collection, including additions or deletions of items.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fred replied on Saturday, January 27, 2007</h2><P>Thank you for your response. Unfortunately, the collection&nbsp;&nbsp;is not a root object. Instead it is a property in another class. it is like</P>
+<P>public class Company<BR>{<BR>&nbsp;&nbsp; string name;<BR>&nbsp;&nbsp;&nbsp;List&lt;Department&gt; Departments;<BR>}</P>
+<P>public class Department<BR>{<BR>&nbsp; string name;<BR>&nbsp;&nbsp;&nbsp;List&lt;Manager&gt; Managers;<BR>}<BR>public class Manager:Employee<BR>{<BR>&nbsp;&nbsp;&nbsp;int level;<BR>}<BR>public class Employee<BR>{<BR>&nbsp;string Name;<BR>}<BR><BR>I knew I could implement IEditableObject, but making a backup copy before editing is too expensive. Inheriting from BusinessBase doesn't seem to be able to simplify the implementation.&nbsp;Isn't there any better way to do this?&nbsp; </P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 27, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2>I hate to say it, but the only way to get your objects to 
+return to a previous state is to have access to that previous state. The only 
+way your objects will know to return to that previous state is if they implement 
+IEditableObect - that's the way data binding works.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2>You can get to the previous state, generally speaking, in 
+two ways: taking a snapshot of the object's state like I do in CSLA, or 
+reloading the object from its original data source (like the 
+database).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2>Of those two, it is usually cheaper to copy the data in 
+memory than it is to reload everything from the database.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2>I didn't write all that n-level undo stuff into CSLA for 
+fun you know :)&nbsp; I wrote it to solve this exact issue.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=039013015-27012007></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=039013015-27012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

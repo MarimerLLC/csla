@@ -1,0 +1,122 @@
+<html><header><title>Yet another question about class inheritance and CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Yet another question about class inheritance and CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3063.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Doug Ramirez posted on Thursday, June 21, 2007</h2><P><FONT size=2><FONT face=Tahoma>Yes, this is indeed another question about class inheritance.&nbsp; I've read a lot of the other posts that discuss this but I have yet to implement a very simple example on my own, so please bear with me.<o:p></o:p></FONT></FONT></P>
+<P><FONT size=2><FONT face=Tahoma>What I am trying to accomplish is having a derived class (Child) save itself, but have its superclass (Parent) saved first.&nbsp; </FONT></FONT><FONT size=2><FONT face=Tahoma>In this example I would've expected to see the child's parent's data portal insert method called but it isn't.&nbsp; I can force Parent.DataPortal_Insert() to be called by adding:</P>
+<P class=MsoNormal><SPAN>base</SPAN><SPAN>.DataPortal_Insert();</SPAN></P><FONT size=1>
+<P></FONT>to Child.DataPortal_Insert(), although I'm not sure if that will have an unintended consequence and isn't 'in the spirit' of CSLA.</FONT></FONT></P>
+<P><FONT size=2><FONT face=Tahoma>Advice and especially code samples are welcomed.<o:p></o:p></FONT></FONT></P>
+<P><FONT size=2><FONT face=Tahoma>Doug<o:p></o:p></FONT></FONT></P><o:p><FONT face=Tahoma size=2><FONT color=#0000ff size=1>
+<P class=MsoNormal><SPAN><FONT color=#008000>// CSLA 2.1.4</FONT></SPAN></P>
+<P class=MsoNormal><SPAN>using</SPAN><SPAN><FONT color=#000000> System;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN>using</SPAN><SPAN><FONT color=#000000> Csla;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>namespace</SPAN><SPAN><FONT color=#000000> ConsoleApp<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>class</SPAN><FONT color=#000000> </FONT><SPAN>Program<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>public</SPAN><FONT color=#000000> </FONT><SPAN>static</SPAN><FONT color=#000000> </FONT><SPAN>void</SPAN><FONT color=#000000> Main()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>Child</SPAN><FONT color=#000000> child = </FONT><SPAN>Child</SPAN><FONT color=#000000>.NewChild();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>child.Save();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>Console</SPAN><FONT color=#000000>.ReadLine();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>public</SPAN><FONT color=#000000> </FONT><SPAN>class</SPAN><FONT color=#000000> </FONT><SPAN>Parent</SPAN><FONT color=#000000> : </FONT><SPAN>BusinessBase</SPAN><FONT color=#000000>&lt;</FONT><SPAN>Parent</SPAN><FONT color=#000000>&gt;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>protected</SPAN><FONT color=#000000> </FONT><SPAN>override</SPAN><FONT color=#000000> </FONT><SPAN>void</SPAN><FONT color=#000000> DataPortal_Insert()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>Console</SPAN><FONT color=#000000>.WriteLine(</FONT><SPAN>"Parent.DataPortal_Insert called..."</SPAN><FONT color=#000000>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>protected</SPAN><FONT color=#000000> </FONT><SPAN>override</SPAN><FONT color=#000000> </FONT><SPAN>object</SPAN><FONT color=#000000> GetIdValue() { </FONT><SPAN>return</SPAN><FONT color=#000000> </FONT><SPAN>null</SPAN><FONT color=#000000>; }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>class</SPAN><FONT color=#000000> </FONT><SPAN>Child</SPAN><FONT color=#000000> : </FONT><SPAN>Parent<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>public</SPAN><FONT color=#000000> </FONT><SPAN>static</SPAN><FONT color=#000000> </FONT><SPAN>Child</SPAN><FONT color=#000000> NewChild()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>return</SPAN><FONT color=#000000> </FONT><SPAN>DataPortal</SPAN><FONT color=#000000>.Create&lt;</FONT><SPAN>Child</SPAN><FONT color=#000000>&gt;();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>private</SPAN><FONT color=#000000> Child()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<SPAN>&nbsp; </SPAN></FONT><SPAN>/* Require use of factory methods */</SPAN><FONT color=#000000> }<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>protected</SPAN><FONT color=#000000> </FONT><SPAN>override</SPAN><FONT color=#000000> </FONT><SPAN>void</SPAN><FONT color=#000000> DataPortal_Create()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>Console</SPAN><FONT color=#000000>.WriteLine(</FONT><SPAN>"Child.DataPortal_Create() called..."</SPAN><FONT color=#000000>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#000000>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>protected</SPAN><FONT color=#000000> </FONT><SPAN>override</SPAN><FONT color=#000000> </FONT><SPAN>void</SPAN><FONT color=#000000> DataPortal_Insert()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN>Console</SPAN><FONT color=#000000>.WriteLine(</FONT><SPAN>"Child.DataPortal_Insert() called..."</SPAN><FONT color=#000000>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#000000>}</FONT></SPAN></FONT><FONT size=1></P></FONT></FONT></o:p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 21, 2007</h2><P>The data portal attempts to call the method on the leaf node (child) of any inheritance chain. It works up the chain toward the ultimate base if needed, but stops when it finds a method that it can call.</P>
+<P>The process is identical to how overridden virtual methods are invoked.</P>
+<P>So the data portal will always call the method on your actual type, not the base type, if it can.</P>
+<P>Obviously <EM>you</EM> can call into the base type, just like you would when overriding a virtual method - there's no problem there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Doug Ramirez replied on Thursday, June 21, 2007</h2><P class=MsoNormal><FONT face=Calibri><SPAN>Rocky, thanks for your reply.&nbsp; I'm able to do what you've suggested via an explicit call into&nbsp;the superclass' DataPortal_Insert.&nbsp; For example:</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>class</SPAN> <SPAN>Child</SPAN> : <SPAN>Parent<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>…</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>protected</SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> DataPortal_Insert()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>base</SPAN>.DataPortal_Insert();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Console</SPAN>.WriteLine(<SPAN>"Child.DataPortal_Insert() called..."</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P><SPAN>I'm still left wondering if overriding the subclass' Save method is a better approach, in the sense that the data portal isn't being 'manipulated' in a way that it wasn't intended.<SPAN>&nbsp; </SPAN>I've tried to override Save and call the base's Save, but I must be doing something wrong becuase the data portal insert method on the parent isn’t being called.<SPAN>&nbsp; </SPAN>For example, the following only fires the child's insert (Parent is the same as original post):</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>class</SPAN> <SPAN>Child</SPAN> : <SPAN>Parent<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>static</SPAN> <SPAN>Child</SPAN> NewChild()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>DataPortal</SPAN>.Create&lt;<SPAN>Child</SPAN>&gt;();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>private</SPAN> Child() {}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>override</SPAN> <SPAN>Parent</SPAN> Save()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>base</SPAN>.Save();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>protected</SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> DataPortal_Create()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Console</SPAN>.WriteLine(<SPAN>"Child.DataPortal_Create() called..."</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>protected</SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> DataPortal_Insert()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Console</SPAN>.WriteLine(<SPAN>"Child.DataPortal_Insert() called..."</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P><SPAN>Again, advice and code snippets are appreciated tremendously.<o:p></o:p></SPAN></P>
+<P><SPAN>Doug<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 21, 2007</h2><P>Here is how I code generate my base class.</P>
+<P>I break out the DataPortal_Insert into various Overridable methods so that when I derive a class from the Base class I can tweak the behavior by overriding only the parts I need to. If I do Override a method I can choose to perform the Base functionality first and then add more or I can skip the base functionality and just add new code. The transaction code is stuff I wrote too - you can replace it with normal ADO.Net transactions. I pass around MyUser (a custom Principal class) so that when I insert records to the DB I can get the userkey value from it and add it to the newly created record.</P><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#ff00ff size=2>" DataPortal_Insert "</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Insert()<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction = </FONT><FONT color=#0000ff size=2>Nothing<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Try<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>tr = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.BeginTransaction()<BR>&nbsp;&nbsp;&nbsp; DoInsert(tr)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.EndTransaction(tr)<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RollbackTransaction(tr)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Throw<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DoInsert(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction)<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> user </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyUser<BR>&nbsp; user = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(Thread.CurrentPrincipal, MyUser)<BR>&nbsp; InsertData(tr, user)<BR>&nbsp; PostInsertData(tr, user)<BR>&nbsp; UpdateChildren(tr)<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> InsertData(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> user </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyUser)<BR>&nbsp; DAL.ExecuteNonQuery(tr, CommandType.Text, DAOInsert(someSQL</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp; 'retrieve the newly generated Identity and update the PK in the BO so the child records will save correctly.<BR>&nbsp; </FONT><FONT size=2>mKey = </FONT><FONT color=#0000ff size=2>CInt</FONT><FONT size=2>(DAL.ExecuteScalar(tr, CommandType.Text, GetIdentity))<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> PostInsertData(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> user </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyUser)<BR>&nbsp; </FONT><FONT color=#008000 size=2>'marker method that can be overridden in child class<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overridable</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> UpdateChildren(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbTransaction)<BR>&nbsp; </FONT><FONT color=#008000 size=2>'marker method that can be overridden in child class<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</P></FONT>
+<P>&nbsp;</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Doug Ramirez replied on Sunday, June 24, 2007</h2><P><SPAN>Joe:<o:p></o:p></SPAN></P>
+<P><SPAN>Thanks for your reply.&nbsp; That's a very clever implementation of the data access methods.&nbsp; Do you do that for all of the CRUD operations?&nbsp; Any particular reason you explicitly code the transaction scope (as opposed to using method attributes)?<o:p></o:p></SPAN></P>
+<P><SPAN>Have you ever done anything similar with the Save, or Update, methods?&nbsp; What about the factory methods for New operations?<o:p></o:p></SPAN></P>
+<P><SPAN>Thanks again for you input.<o:p></o:p></SPAN></P>
+<P><SPAN>Doug</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 24, 2007</h2>Remember that the factory methods and Save() are <EM>client-side methods</EM>. You really can't affect data loading at that end, you can only do it through the DP_XYZ methods, or the methods/objects they call.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, June 24, 2007</h2><P>Doug,</P>
+<P>Yes - I have similar code for the other CRUD operations. Since I code gen all of it, it is very simple to build. The hand coded classes often override things like FetchData (which is the pure dr code) so that I can call MyBase.FetchData(dr) to get the code gened properties filled and then fill any others that I happen to get loaded in the dr in my developer level class.</P>
+<P>I also often override PostFetchData to grab other pieces of information for a BO. I had a Prefetch override for a while but never used it all so I ripped it out.</P>
+<P>UpdateChildren and PostUpdateData often get overridden too.</P>
+<P>I just made these all up because it made my coding easier in the long run. They aren't really "standard" CSLA constructs. But there is also nothing wrong with them and they work great for me.</P>
+<P>Ido not use method attributes for 2 reasons.</P>
+<P>1. I have to support SQL Server or Oracle. That is why I code to the interfaces of the ADO methods. Sometimes I get a SqlCommand and other times an OracleCommand. etc.</P>
+<P>2. I also support older versions of SQL Server. I think 2005 is the only one that doesn't promote tranactions to distributed ones. I do not need Enterprise Services either. So I do not need the perf hit.</P>
+<P>I have all of my Codesmith templates already set up to pass around the tr so it is easier and faster to just use it.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

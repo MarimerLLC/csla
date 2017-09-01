@@ -1,0 +1,17 @@
+<html><header><title>System.NotSupportedException: Invalid for root objects - use Delete instead</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.NotSupportedException: Invalid for root objects - use Delete instead</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hemant posted on Wednesday, May 14, 2014</h2><p>Hi Friends,</p>
+<p>I&#39;m new to CSLA and I&#39;m currently working on one of our project done using CSLA. I&#39;m getting the following exception when trying to remove an item from the collection. I tried the Delete method but that is not affecting the collection. Can you please shed some light on how to address this issue?</p>
+<p>System.NotSupportedException was caught</p>
+<p>&nbsp; Message=Invalid for root objects - use Delete instead</p>
+<p>&nbsp; Source=Csla</p>
+<p>&nbsp; StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.Core.BusinessBase.DeleteChild()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.Core.BusinessBase.Csla.Core.IEditableBusinessObject.DeleteChild()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.BusinessListBase`2.DeleteChild(C child)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.BusinessListBase`2.RemoveItem(Int32 index)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Collections.ObjectModel.Collection`1.RemoveAt(Int32 index)</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Hemant.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, May 14, 2014</h2><p>When you create the items as they are added to the list, are you using the DataPortal.ChildCreate for DataPortal.ChildFetch?&nbsp; If you&#39;re using the non-child versions, Csla marks the object as a root meaning it should have no parent, but if its in a list it must be a child.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hemant replied on Thursday, May 15, 2014</h2><p>Thanks Andy,</p>
+<p>Thank you for the direction. I added MarkAsChild for the collection entries and this solved the issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 15, 2014</h2><p>That will work, but normally the framework calls it for you provide you use FetchChild instead of Fetch on the DataPortal.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hemant replied on Thursday, May 15, 2014</h2><p>Thank you for the heads up Andy.</p>
+<p>Regards,</p>
+<p>Hemant.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

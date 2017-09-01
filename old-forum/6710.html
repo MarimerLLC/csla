@@ -1,0 +1,90 @@
+<html><header><title>How to set Bussinessobject  read only or can not write according to backing field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to set Bussinessobject  read only or can not write according to backing field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6710.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Wednesday, April 01, 2009</h2><P>for example:</P>
+<P>status of Purchase order&nbsp; below:</P>
+<P>1.Draft</P>
+<P>2.Wait to approve</P>
+<P>3.release</P>
+<P>4.Complete</P>
+<P>how to set&nbsp; the object&nbsp;read only&nbsp; in 2 or 3. 4.</P>
+<P>If&nbsp; readonlybase and bussinessobject can be tranfered to each other freely with a simple method or&nbsp;property&nbsp;will be perfect! </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 01, 2009</h2>You can override CanWriteProperty and have it base it's result on the state of the object.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ideally,
+you do want to sets of objects.&nbsp; A workaround would be to override
+CanWriteProperty, test the order status and return false when status indicates
+read-only state.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> simon
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 01, 2009 8:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] How to set Bussinessobject read only or can not
+write according to backing field<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>for example:<o:p></o:p></p>
+
+<p>status of Purchase order&nbsp; below:<o:p></o:p></p>
+
+<p>1.Draft<o:p></o:p></p>
+
+<p>2.Wait to approve<o:p></o:p></p>
+
+<p>3.release<o:p></o:p></p>
+
+<p>4.Complete<o:p></o:p></p>
+
+<p>how to set&nbsp; the object&nbsp;read only&nbsp; in 2 or 3. 4.<o:p></o:p></p>
+
+<p>If&nbsp; readonlybase and bussinessobject can be tranfered to each other
+freely with a simple method or&nbsp;property&nbsp;will be perfect! <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Wednesday, April 01, 2009</h2><font size="2" face="Arial">Alternatively, you could check in the set of each property and return if necessary. That way you have full control over which properties are read only. For example, you may have an internal notes field which can be edited at any time, but the order items may not be editable from step 3 onwards. This would work best with a set of properties such as CanEditOrderItems etc which you can bind to the Enabled state of controls in your forms.</font><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

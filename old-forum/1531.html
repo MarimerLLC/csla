@@ -1,0 +1,11 @@
+<html><header><title>OT: Web Security Guidelines</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Web Security Guidelines</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1531.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Wednesday, October 18, 2006</h2><P>Greetings:</P>
+<P>I've been thinking about web security - and in particular, things that can be done with the web.config file in order to beef things up a bit.&nbsp;&nbsp; One of the things I've been pounding my head on for two days is setting &lt;trust level="Medium"&gt; but that isn't possible with the use of CSLA (Medium level doesn't allow for reflection).&nbsp; It has been an interesting two days.</P>
+<P>Anyways, I'm putting together a little check list of helpful practices so that I don't get burned with anything obvious - I've been reading up on safe practices and I've come up with the following improvements:</P>
+<P>1: My business library is now signed.</P>
+<P>2: Turn off debugging before publishing the application to the web server.</P>
+<P>3: &lt;trace enabled="false" localonly="true"&gt;</P>
+<P>4: The CustomErrors attribute is set to "RemoteOnly" and I've redirect page.</P>
+<P>5: I've eliminated the serving of unnecessary files with System.Web.HttpForbbidenHandler.</P>
+<P>6: All values returned by the web page are filtered and all of them that are saved to the database are handled through parameterized stored procedures.</P>
+<P>Anyone else have any good security practices to include?</P>
+<P>I'm really bummed about not getting Medium Trust - although, according to what I've read it really isn't practical but it would have been nice to have in place.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

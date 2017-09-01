@@ -1,0 +1,31 @@
+<html><header><title>N-Level Undo performance in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>N-Level Undo performance in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7748.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Wednesday, October 07, 2009</h2>Because of the trimmed CLR of Silverlight (specifically it's reflection library),&nbsp;I see that Csla has&nbsp;used its IMobileFormatter serialization as its solution to n-level undo, correct?&nbsp;The downside I am seeing to this is a pretty significant performance bottleneck.&nbsp;Are there any techniques/tips that someone can offer to increase performance? Right now I'm just planning to roll my own N-level undo. Has anyone else had the same experience with this in Silverlight? </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 08, 2009</h2><P>If you do roll your own you'll effectively be creating a new formatter. If you have good luck making your formatter substantially faster than MobileFormatter please let me know, as I'm always looking for ways to improve its performance while maintaining its functionality.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 08, 2009</h2><P>Sorry rocky, I should have been more descriptive. When I say "roll my own" I mean I am going to create a custom implementation that will clone and backup my own class by explicitly calling the peices I want to back up one by one. I'd love to have the maintainability of a framework that could do this for me, but&nbsp;the current app I'm working on isn't too complex and the payoff is too great to ignore (takes the backup operation down from a couple seconds to a couple milliseconds). </P>
+<P>I've also noticed this drag in performance with clone operations in SL as well. I suppose this&nbsp;alludes that the current serialization process&nbsp;is quite intensive.&nbsp;I mean this to be a constructive criticism, because I am utterly greatful for everything Csla provides for me. </P>
+<P>Perhaps I'll take that challenge on in the future though to see if there's anything I can contribute. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I take no offense at valid feedback. I know MobileFormatter isn&#8217;t
+as fast as we&#8217;d all like, but the problem it is addressing is complex. Any opportunity
+to make it better/faster is something I&#8217;ll welcome! :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Are you just hard-coding the process of copying the property
+values?<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 09, 2009</h2>Yes exactly, I'm just hard code copying property values. Like I say, it's a poor solution for maintenance I know, but this project isn't too complex, so it actually is a viable solution. <br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

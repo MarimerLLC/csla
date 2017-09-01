@@ -1,0 +1,7 @@
+<html><header><title>MVC4 Binding an object which has a property of type BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVC4 Binding an object which has a property of type BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12013.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dsburny posted on Friday, June 07, 2013</h2><p>Hi</p>
+<p>I have a viewmodel set up which is of type object1. Object1 has some properties,&nbsp;one of which is another object(object2) of type BusinessListBase. Currently when I submit my form using defaultModelBinder, object2 always has count = 0.</p>
+<p>Is the only way to bind the list to use FormCollection as below from the using csla ebook:</p>
+<p>public ActionResult EditList(FormCollection collection) { var list = RoleEditList.GetRoles(); UpdateModel(list, collection); SaveObject(list, false); return View(); } </p>
+<p>If so, how does UpdateModel map the keys to the listitems, as the key does not exactly match, and it doesn&#39;t seem to do anything in my code?</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

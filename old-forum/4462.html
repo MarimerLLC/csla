@@ -1,0 +1,81 @@
+<html><header><title>CSLA Based Application using ADAM for authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Based Application using ADAM for authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4462.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>markme posted on Wednesday, March 05, 2008</h2><P><FONT size=2><STRONG>Has anyone, is it possible to utilize Active Directory Application Mode</STRONG> (<STRONG>ADAM) for authentication with a CSLA object based application?&nbsp; I know that CSLA supports Windows authentication so, in theory, this should be possible.&nbsp; Has anyone tried?&nbsp; Did it work?&nbsp; Any headaches?</STRONG></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCSoRocks replied on Thursday, April 10, 2008</h2>Did you ever have any success with this? I have a preexisting ADAM based authentication and authorization framework that I'm trying to port over to CSLA. At the moment I'm just working off of the book and others' examples to try and hook my stuff into it. The only thing I'm still trying to figure out is how to handle the actual calls to the ADAM server. In the examples I've seen so far the DataPortal is used for calls to SQL server. It seems though, that you can slap anything you want in there. Which, if that's the case, then I should be able to just take the Criteria object, send the username / password to my ADAM code for authentication and then load the roles. (Sounds easy when you just type it all in one sentence). <br><br>To anyone providing assistance - I'm new to this whole CSLA thing so bear with me if my questions seem obvious!<br><br>-John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I never used ADAM, but you are correct I believe.&nbsp; Simply put
+your code into YourCustomPrincipal.Login method and have it populate roles and
+validate the password/user name combination.&nbsp; If you look at the project
+tracker Principal and Identity classes, you will see the example on how to authenticate
+against SQL server.&nbsp; That is the code you need to replace with ADAM calls.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JCSoRocks
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 4:23 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Based Application using ADAM for
+authentication<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Did you ever have any success with this? I have a
+preexisting ADAM based authentication and authorization framework that I'm
+trying to port over to CSLA. At the moment I'm just working off of the book and
+others' examples to try and hook my stuff into it. The only thing I'm still
+trying to figure out is how to handle the actual calls to the ADAM server. In
+the examples I've seen so far the DataPortal is used for calls to SQL server.
+It seems though, that you can slap anything you want in there. Which, if that's
+the case, then I should be able to just take the Criteria object, send the
+username / password to my ADAM code for authentication and then load the roles.
+(Sounds easy when you just type it all in one sentence). <br>
+<br>
+To anyone providing assistance - I'm new to this whole CSLA thing so bear with
+me if my questions seem obvious!<br>
+<br>
+-John<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

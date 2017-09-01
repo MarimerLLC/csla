@@ -1,0 +1,420 @@
+<html><header><title>Silverlight-Newbie</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight-Newbie</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5719.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito posted on Saturday, November 01, 2008</h2>Hi,<br>
+This is my first post and I’m trying to use a framework with a new Silvelight
+LOB project. I find CSLA very interesting viewing some sample code over the
+internet.<br>
+<br>
+I have a some of questions:<br>
+<br>
+1) Where can I find reading material to lean CSLA to Silvelight, giving its
+learning curve? <br>
+(Will the Amazon "<span id="btAsinTitle">Expert C# 2008 Business Objects</span>"
+book explain CSLA to SL?)<br>
+<br>
+2) I haven't used tortoise before, but I have installed it in my PC, where do I
+get the info to fill in the blanks in the tortoise checkout for downloading the
+Rolodex sample? is there any other SL-2.0-RTW compatible project sample?<br>
+<br>
+3) I would like to keep "LINQ to (entities?)" for complex queries
+instead of Stored Procedures or ADOs raw selects. Is there any convention or
+best practice for CSLA here?<br><br>4) Any advice for when using or not using the CSLA generator (codesmith, i think) will be also appreciated. <br>
+<br>
+Sorry for the newbie questions, but I´m really interested in the CSLA framework
+and the way it orders aspects for scaling.<br>
+Rogercito.<o:p></o:p><p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, November 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here are some answers.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>I&#8217;d recommend SL 2.0 book in addition to CSLA.&nbsp; I am
+not sure how much 2008 book will cover in terms of SL specifics<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can just download the latest sample off CSLA for Silverlight
+download page on Lhotka.net.&nbsp; There is a half-a-dozen of samples for various
+scenarios.&nbsp; Rolodex is the most complete one, especially if you are using
+remote data portal.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can certainly use EF if you would like.&nbsp; CSLA does not
+really care where/how you get the data to populate business objects.&nbsp; I am
+not sure about best practices, seems like not too many people here on the forum
+are using EF.&nbsp; The pattern will be similar to Project Tracker which is
+using L2S.&nbsp; I think there is even an object manager class (</span><span>ObjectContextManager</span><span>) for
+EF context in 3.6 to help you manage the data context.&nbsp; Here is a unit
+tests we used to test the object, which will give you an idea on how to use it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>using</span><span> (<span>var</span>
+objectContextManager = <span>ObjectContextManager</span>&lt;<span>DataPortalTestDatabaseEntities</span>&gt;.GetManager(<span>&quot;DataPortalTestDatabaseEntities&quot;</span>, <span>true</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Assert</span>.IsNotNull(objectContextManager);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>var</span> query = <span>from</span> p <span>in</span> objectContextManager.ObjectContext.Table2<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> p;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Assert</span>.IsTrue(query.ToList().Count &gt; 0, <span>&quot;Data in table is missing&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, November 01, 2008 12:42 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight-Newbie<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+This is my first post and I???m trying to use a framework with a new Silvelight
+LOB project. I find CSLA very interesting viewing some sample code over the
+internet.<br>
+<br>
+I have a some of questions:<br>
+<br>
+1) Where can I find reading material to lean CSLA to Silvelight, giving its
+learning curve? <br>
+(Will the Amazon &quot;Expert C# 2008 Business Objects&quot; book explain CSLA
+to SL?)<br>
+<br>
+2) I haven't used tortoise before, but I have installed it in my PC, where do I
+get the info to fill in the blanks in the tortoise checkout for downloading the
+Rolodex sample? is there any other SL-2.0-RTW compatible project sample?<br>
+<br>
+3) I would like to keep &quot;LINQ to (entities?)&quot; for complex queries
+instead of Stored Procedures or ADOs raw selects. Is there any convention or
+best practice for CSLA here?<br>
+<br>
+Sorry for the newbie questions, but I??m really interested in the CSLA framework
+and the way it orders aspects for scaling.<br>
+Rogercito.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Sunday, November 02, 2008</h2>Thank you Sergey for the quick response.<br>I was able to download and got the rolodex app running successfully. I will do my homework analizing the code and reading the books.<br><br>Roger.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Sunday, November 02, 2008</h2>By the way, when I delete a line in the lower phone/fax grid of the rolodex app, it behaves strange(the row doesnt dissapear completly), and the cancel button doesnt refresh the this grid properly. I couldn't locate a post discussing this issue.<br>Any ideas what could be happening with this visual misbehavior?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, November 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am afraid you found an issue with SL grid that was reported a while
+ago.&nbsp; I have not seen it in a while, and I thought it was fixed.&nbsp; I
+think the only workaround I found (it has been a while though) was to create a
+new grid and bind it to BO after cancel.&nbsp; I am not 100% sure though on
+this workaround.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 02, 2008 6:53 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight-Newbie<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>By the way, when I delete a line in the lower phone/fax grid
+of the rolodex app, it behaves strange(the row doesnt dissapear completly), and
+the cancel button doesnt refresh the this grid properly. I couldn't locate a
+post discussing this issue.<br>
+Any ideas what could be happening with this visual misbehavior?<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Monday, November 03, 2008</h2>Just for feedback about this problem, it appears to be a <a href="http://silverlight.net/forums/p/41538/121028.aspx#121028">serious bug</a> of the SL2RTW version not present in the betas.<br><br><br>I played a little with the componentone and devexpress grids and they didnt show this problem (no ValidatedDataGridTextColumn tho)<br><br>Roger<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I was able to reproduce this issue even without using CSLA, actually,
+so the problem has nothing to do with validated columns.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 03, 2008 1:02 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Silverlight-Newbie<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Just for feedback about this problem, it appears to be a bug
+of the SL2RTW version not present in the betas.<br>
+http://silverlight.net/forums/p/41538/121028.aspx#121028<br>
+<br>
+I played a little with the componentone and devexpress grids and they didnt
+show this problem (no ValidatedDataGridTextColumn tho)<br>
+<br>
+Roger<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Monday, November 03, 2008</h2>Indeed, nothing to do with CSLA, hopefully the microsoft team solve this issue soon. <br>I didn't know how to use the ValidatedDataGridTextColumn with the C1 an Devexpress grid controls. <br><br>Roger<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You cannot.&nbsp; Those are setup for MS grid.&nbsp; You have to
+use template columns (if grid support those) probably add put PropertyStatus
+inside data template for those columns.&nbsp; I did the same as experiment for
+combo box column, and it works.&nbsp; You can look at this case in the latest
+Rolodex &#8211; contacts grid &#8211; combo box column.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 03, 2008 8:51 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Silverlight-Newbie<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Indeed, nothing to do with CSLA, hopefully the microsoft
+team solve this issue soon. <br>
+I didn't know how to use the ValidatedDataGridTextColumn with the C1 an
+Devexpress grid controls. <br>
+<br>
+Roger<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Tuesday, November 04, 2008</h2>Do you happen to know if Microsoft is fixing this 2.0 RTW DataGrid problem? <br>Its just so essential to build line of business applications, I can't think why isn't on the top of the bug list.<br><br>Roger<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 04, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I really do not know.&nbsp; It was reported to them, but somehow
+did not make the cut.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 04, 2008 1:35 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: Silverlight-Newbie<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Do you happen to know if Microsoft is fixing this DataGrid
+problem? <br>
+Its just so essential to build line of business applications, I don??t see why
+isn't on the top of the bug list.<br>
+<br>
+Roger<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Wednesday, November 12, 2008</h2>Would you paste the workaround code you use to make Csla work with this Microsoft RTW datagrid bug? for instance, with the Rolodex Sample?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Afontan replied on Saturday, December 20, 2008</h2><P>Hi Sergey</P>
+<P>There is a new grid version: </P>
+<P><A id=bp___v___r___postlist___EntryItems_ctl00_PostTitle href="http://blogs.msdn.com/scmorris/archive/2008/12/19/silverlight-2-datagrid-december-2008-release.aspx">Silverlight 2 DataGrid December 2008 Release</A></P>
+<P><A href="http://blogs.msdn.com/scmorris/archive/2008/12/19/silverlight-2-datagrid-december-2008-release.aspx">http://blogs.msdn.com/scmorris/archive/2008/12/19/silverlight-2-datagrid-december-2008-release.aspx</A></P>
+<P>I did all the steps to install this new version but the Rolodex app did not work. (Another simple grid control sample worked fine).</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Saturday, December 20, 2008</h2>I believe that the rolodex sample is now working fine with the december patch, did you replace the dll in the SL project part of the rolodex solution?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

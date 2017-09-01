@@ -1,0 +1,65 @@
+<html><header><title>interfaces generics and collections question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>interfaces generics and collections question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4651.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley posted on Wednesday, April 09, 2008</h2><P>I have three sets of objects with child objects:</P>
+<P>Action --&gt; ActionParts --&gt; ActionPart</P>
+<P>ServiceTask --&gt;TaskParts --&gt; TaskPart</P>
+<P>ServiceOrderTask --&gt; ServiceOrderTaskParts --&gt; ServiceOrderTaskPart</P>
+<P>All of the main classes implement iActionTask interface which sets up the common properties that they all have in common.</P>
+<P>The problem I am running into is that I have some methods that need to access those properties, which works fine, however I also need to retrieve part information from their child objects. My first thought was to create an interface for the collection and an interface for the child object and that would solve the problem. So this is what I did:</P>
+<P>&nbsp;</P><PRE>public interface iActionTask
+{
+        iActionTaskParts Parts
+        {
+            get;
+        }
+}
+
+public interface iActionTaskParts
+{
+
+}
+
+public interface iActionTaskPart
+    {
+        string PartNumber
+        {
+            get;
+            set;
+        }
+
+        string PartDescription
+        {
+            get;
+            set;
+        }
+
+        double Quantity
+        {
+            get;
+            set;
+        }
+}
+</PRE>
+<P>This all seemed fine except, the interface iActionTaskParts does not know that it is a collection or what type of objects it contains. So back to the drawing board with this: 
+<P>&nbsp;</P><PRE>
+    public interface iActionTaskParts 
+        where T : iActionTaskParts
+        where C : iActionTaskPart
+    {
+
+    }</PRE>
+<P>But this gives me errors because:<BR><PRE>iActionTaskParts Parts
+        {
+            get;
+        }
+</PRE><BR>needs to have two Type parameters and I am just stuck. I don't know that generics are the answer so I am hoping somebody smarter than I am can help me out.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, April 09, 2008</h2><P><FONT face=Tahoma size=2>If all you need to do is get the children, you can add some methods to your interface to get what you need.&nbsp; Unfortunately, interfaces don't allow for indexers that cast correctly - if you specify an indexer signature, it overrides the collection's indexer - so you have to name your routines something else.</FONT></P>
+<P><FONT face=Tahoma size=2>From a bare-bones perspective, you could simply add:</FONT></P>
+<P><FONT face="Courier New" size=2>iActionTaskPart GetChild(int index);</FONT></P>
+<P><FONT face=Tahoma size=2>to your "iActionTaskParts" interface and call it a day.&nbsp; However, unless your only access to the collection is by&nbsp;an index value that you know ahead of time, that doesn't get you much.&nbsp; So, you'll probably want some more properties/methods to get you a collection count, etc.</FONT></P>
+<P><FONT face=Tahoma size=2>Having said that, this isn't the route I recommend.&nbsp; A</FONT><FONT face=Tahoma size=2>t the end of the day, your "iActionTaskParts" interface is probably going to look&nbsp;a lot&nbsp;like the&nbsp;.NET "IList" interface, so you could just use that.&nbsp; Or you can go one step further and use the "IList&lt;T&gt;" generic interface, to get the strongly-typed stuff.&nbsp; So you get rid of your "iActionTaskParts" interface, and your "iActionTask" interface's one method&nbsp;signature looks like this:</FONT></P>
+<P><FONT face="Courier New" size=2>IList&lt;iActionTaskPart&gt; Parts { get; }</FONT></P>
+<P><FONT face=Tahoma size=2>Implementing that method in your main classes is fairly trivial - just create a "List&lt;iActionTaskPart&gt;" object, fill it with the collection's children, and return it.</FONT></P>
+<P><FONT face=Tahoma size=2>(You do have to do it that way, BTW&nbsp;- you can't cast your child collection member, because the CSLA collection classes don't implement "IList&lt;iActionTaskPart&gt;".)</FONT></P>
+<P><FONT face=Tahoma size=2>This all works if you don't want to bind based on these base interfaces.&nbsp; If you need to do that, then you have a whole different problem, and you'll probably&nbsp;want to move away from interfaces and head towards base classes.&nbsp; But if you just have some routines that need to model a generic parent/child relationship (for example, to do some simple totalling of your "Quantity" values), this should get you there.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, April 09, 2008</h2><P>Scott,</P>
+<P>You are a gentleman and a scholar! This worked great! I used the IList&lt;T&gt; method and it seems to be just the ticket.</P>
+<P>Ryan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

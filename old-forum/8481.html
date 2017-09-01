@@ -1,0 +1,231 @@
+<html><header><title>Input requested: Business rule subsystem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Input requested: Business rule subsystem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8481.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, February 05, 2010</h2><P>I'm in the middle of reimplementing the business/validation rules subsystem for CSLA 4, and would value the community's thoughts on the following:</P>
+<P>The CSLA business/validation rules subsystem has operated at a method level through its existence. You use AddRule() to link a delegate pointer to a method to a property of your business object.</P>
+<P>That has advantages - it is low overhead and it is&nbsp;easy to implement a rule - it is just a method after all.</P>
+<P>public static bool MyRule(object target, RuleArgs e)<BR>{<BR>&nbsp; // return true if success or<BR>&nbsp; // set e.Description and return false if failure<BR>}</P>
+<P>The primary alternative model is to elevate a rule to an object level. So a rule is defined as a method in a class, where that class typically implements an IBusinessRule interface or something like that.</P>
+<P>public class MyRule : IBusinessRule<BR>{<BR>&nbsp; public void Rule(RuleContext e)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; //&nbsp;use e.Results.AddResult() to indicate&nbsp;failure<BR>&nbsp; }<BR>}</P>
+<P>This requires an instance of MyRule be created, so there's a little overhead, and a little more code since the rule isn't just a method - it is also a class.</P>
+<P>But the advantage is that there can be a BusinessRule base class that you subclass to create rules. That base class can expose protected members much like ObjectFactory does.</P>
+<P>public class MyRule : BusinessRule<BR>{<BR>&nbsp; public override void Rule(RuleContext e)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; var x = ReadProperty(e.Target, Customer.IdProperty);<BR>&nbsp;&nbsp;&nbsp; LoadProperty(e.Target, Customer.DataProperty, x + 1);<BR>&nbsp;&nbsp;&nbsp; //&nbsp;use e.Results.AddResult() to indicate&nbsp;failure<BR>&nbsp; }<BR>}</P>
+<P>This would impact AddRule() of course - because your code would be more like this:</P>
+<P>BusinessRules.AddRule(new MyRule(), IdProperty);</P>
+<P>I'm <EM>strongly</EM> leaning toward doing this however, because it radically simplifies the process of passing parameters. Since the rule is <EM>your code</EM> you can have a meaningful ctor.</P>
+<P>public class&nbsp;MaxLength : BusinessRule<BR>{<BR>&nbsp; public int Max&nbsp;{ get; private set; }<BR><BR>&nbsp; public MaxLength(int max)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; Max = max;<BR>&nbsp; }<BR><BR>&nbsp; public override void Rule(RuleContext e)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; if (e.PropertyValues[0].ToString().Length &gt; Max)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Results.AddResult("Value exceeds max length", RuleSeverity.Error);<BR>&nbsp; }<BR>}</P>
+<P>Then the add is like this:</P>
+<P>BusinessRules.AddRule(new MaxLength(50), NameProperty);</P>
+<P>which is much, much simpler than the current model where you have to create a custom RuleArgs subclass and the business object developer has to magically know to use your custom args type, etc.</P>
+<P>One final point - no matter what, the CSLA 4 model will be a breaking change - no existing rule methods will carry forward without at least a little change. So arguing against this idea because it is a breaking change isn't really valid - I'm more looking for thoughts on whether the idea has broad merit over sticking with the current delegate/method-based model.</P>
+<P>Thoughts?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, February 05, 2010</h2><P>I like it. </P>
+<P>The RuleArgs classes were simple enough but if we can just get rid of them then even better. The idea of a Base Class for rules is interesting too.</P>
+<P>Here is one vote in favor.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 05, 2010</h2><P>A few thoughts... just throwing this out there.</P>
+<P>Would each instance have its own instance of the rule objects?&nbsp; Would it be somehow possible to "custom build" rule instances?&nbsp; </P>
+<P>Do you think this would lead to a rule object which does too many things?&nbsp; Or would you consider it valid for there to essentially be multiple rules.&nbsp; Say a ContactNameRule, which 1) requires a value, 2) says the value can't be more than 15 characters and 3) forces the value to all upper case.</P>
+<P>Will we have lots of problems because people make rule objects which have their own state, and thus one instance of a BO interfers with another?&nbsp; Along those lines, what about thread saftey?&nbsp; Especially if the rule instances are shared (one per type) and two BOs on two threads execute the same rule at the same time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 05, 2010</h2><P>Good thoughts Andy.</P>
+<P>Each <EM>type</EM> will have its own instance of the rule object. So you can have a rule type and apply it to different business object types - a different rule instance per business object type.</P>
+<P>I'm not sure what you mean by "custom build"?</P>
+<P>You could create a rule object that does many things. It is a specific goal to be able to create a "rule" that is actually invoking numerous rules - such as (for example) an external rules engine or workflow. Or all the ValidationRule attributes for a property. That's a goal regardless of whether a rule is an object or a method.</P>
+<P>It will be absolutely possible for people to create bad rule objects :)&nbsp;&nbsp; Rule objects must be designed to be threadsafe - so the Rule() method must be atomic and stateless. I can't help people do that right, but I can't provide ObjectFactory-like support without putting the rule methods in an object instance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 08, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>I&#39;m not sure what you mean by &quot;custom build&quot;?</div></p>
+<p>I guess i was thinking of two different things; one would be to generate code and compile a rule class, and then use it.&nbsp; I assume that answer would be yes.</p>
+<p>The other part was that since its an object, you could pass arguments to it, thus giving it some state. Which could be good, or bad.&nbsp; I can see someone passing a reference to the BO itself, which I imagine would not be pretty.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>It will be absolutely possible for people to create bad rule objects :)&nbsp;&nbsp; Rule objects must be designed to be threadsafe - so the Rule() method must be atomic and stateless. I can&#39;t help people do that right, but I can&#39;t provide ObjectFactory-like support without putting the rule methods in an object instance.</div></p>
+<p>So I take that to mean that when people create a rule type, there should be no fields whatsoever, static or instance.&nbsp; It also sounds like the instance RunRule should just be calling static methods to do its work.</p>
+<p>That seems like a lot of restrictions to make it work right, and doesn&#39;t feel very OO.&nbsp; I do like the idea, just wonder if this is going to be one of those things that generate a lot of support issues.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, February 05, 2010</h2>Hello,<br /><br />I'd personally prefer a class that implements IBusinessRule. It's easier to read and enforces code reuse.<br /><br />Thanks<br />-Blake Niemyjski<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Friday, February 05, 2010</h2>Hi,<br /><br />I like the idea of a Rule base class, so one vote in favor from me!<br /><br />Cheers,<br />Herman</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, February 05, 2010</h2>Rocky,&nbsp; <br>My vote for instance rule.&nbsp; The real question to me is what available on RuleContext.&nbsp; Looks like you can access property values and add validation result.&nbsp; <br><br>It'll be great if we RuleContext also keep previous value, broken rule result for other property, and also maybe ability to mark a property to also be validated.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, February 05, 2010</h2>This is good, but I think you need to up the ante a little bit here.<br /><br />Unless I am missing something obvious, I see no reason why no to be able to include the PropertyInfo parameter in the rule class too.<br /><br />So can you please consider something like the following?<br /><br /><br />---------------------------------------------------------------------------------<br />// Base class for all CSLA rules.<br />abstract class BusinessRule&lt;T&gt;<br />{<br />    // To be used by the CSLA to determined<br />    // what property this rule applies to<br />    internal PropertyInfo&lt;T&gt; ThePropInfo<br />    {<br />        get;<br />        private set;<br />    }<br /><br />    protected BusinessRule(PropertyInfo&lt;T&gt; prop)<br />    {<br />        ThePropInfo = prop;<br />    }<br /><br />    abstract public void Rule(RuleContext e);<br />}<br /><br /><br />---------------------------------------------------------------------------------<br />// Implementation of BusinessRule&lt;T&gt;. <br />// Note: This is a rule for **string** property<br />// so generic T is specified as string.<br />class MaxLength : BusinessRule&lt;string&gt;<br />{<br />    public int Max<br />    {<br />        get;<br />        private set;<br />    }<br /><br />    // This class is meant to be used by a string<br />    // property and we are able to enforce that<br />    // right on the constructor.<br />    public MaxLength(int max, PropertyInfo&lt;string&gt; theProp)<br />        : base(theProp)<br />    {<br />        Max = max;<br />    }<br /><br />    public override void Rule(RuleContext e)<br />    {<br />// My rules was design to work with string <br />// and since I only allow PropertyInfo&lt;string&gt; <br />// types I can rest assured that I wont get any<br />// surprised dealing with properties that don&#x2019;t <br />// return a string.<br />    }<br />}<br /><br /><br />---------------------------------------------------------------------------------<br />// Usage.<br />BusinessRules.AddRule(new MaxLength(50, NameProperty));<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 06, 2010</h2><P>Binding the entire concept to IPropertyInfo is maybe not a bad idea - though it would pose challenges for property-independent rules. That may be solvable another way though.</P>
+<P>The rule itself wouldn't work as you suggest. A rule is independent of any specific object type - or at least can be. Think about these things as being not unlike ValidationAttribute subclasses in the Microsoft DataAnnotations model - but more flexible in their usage perhaps - in that these can be for business processing and not just validation.</P>
+<P>In my current (very fluid) thinking there are just a small number of types:</P>
+<OL>
+<LI>BusinessRule (abstract implementation of IBusinessRule)</LI>
+<OL>
+<LI>DefaultDescription</LI>
+<LI>DefaultSeverity</LI>
+<LI>DefaultStopProcessing</LI>
+<LI>UserState&nbsp;- object</LI>
+<LI>Rule(RuleContext context)</LI></OL>
+<LI>RuleContext (passed to rule on invocation)</LI>
+<OL>
+<LI>InputPropertyValues - Dictionary&lt;IPropertyInfo, object&gt;</LI>
+<LI>PrimaryProperty&nbsp;- IPropertyInfo</LI>
+<LI>Result - List&lt;RuleResult&gt;</LI>
+<LI>RuleDefinition - RuleMethod</LI>
+<LI>Target - object</LI>
+<LI>IsAsync</LI>
+<LI>AddResult(RuleResult result)</LI>
+<LI>Complete()</LI></OL>
+<LI>RuleMethod (links rule to object property)</LI>
+<OL>
+<LI>InputProperties - List&lt;IPropertyInfo&gt;</LI>
+<LI>IsBusy</LI>
+<LI>PrimaryProperty&nbsp;- IPropertyInfo</LI>
+<LI>Priority</LI>
+<LI>Rule - IBusinessRule</LI>
+<LI>Invoke()</LI>
+<LI>BeginInvoke()</LI></OL>
+<LI>RuleResult (contains results that feed into BrokenRules)</LI>
+<OL>
+<LI>Description</LI>
+<LI>OutputPropertyValues - Dictionary&lt;IPropertyInfo, object&gt;</LI>
+<LI>Properties - List&lt;IPropertyInfo&gt;</LI>
+<LI>Severity</LI>
+<LI>StopProcessing</LI>
+<LI>Success - bool</LI></OL>
+<LI>BusinessRuleManager (essentially the existing manager)</LI>
+<OL>
+<LI>AddRule()</LI>
+<LI>AddDependentProperty()</LI>
+<LI>CheckRules()</LI>
+<LI>etc...</LI></OL></OL>
+<P>BusinessRuleManager will maintain lists of RuleMethod objects - the associations between rule objects and business object properties.</P>
+<P>Each association will have its own instance of an IBusinessRule/BusinessRule.</P>
+<P>Each invocation of a Rule() method will get a new instance of RuleContext, which will contain copies of the required business object property values. This ensures that the rule can always safely use those values, even in an async context.</P>
+<P>The RuleContext does include the Target property - a real reference to the business object. Using that in an async context will be certain doom, but I'm not sure I should coddle people. If they do stupid things like using Target while async, that's their problem. Or should I ensure that is null if the rule is invoked async? Maybe I should do a little coddling?</P>
+<P>The RuleResult is pretty rough right now - I'm still working out how to redo BrokenRulesCollection to be somewhat more efficient in terms of its key values The challenge here, is that you now get to make up your own results - plural. So I might just always blank the broken rules for a property and then add in any results values - dropping the unique rulename key requirement entirely.</P>
+<P>I also don't yet know how or if the rule:// URI concept will carry through. I'm not so sure it even matters now that DataAnnotations exist and do basically the same job but better.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 06, 2010</h2><P>For example, here's a MaxLength rule using the proposed model:</P><FONT size=2 face=Consolas><FONT size=2 face=Consolas>
+<P></FONT></FONT>&nbsp;&nbsp;&nbsp; public class MaxLength : BusinessRule<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Max { get; private set; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public MaxLength(int max)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Max = max;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Rule(RuleContext context)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var value = context.InputPropertyValues[context.PrimaryProperty].ToString();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value.Length &gt; Max)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddResult(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Format("{0} value too long", context.PrimaryProperty.FriendlyName));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>No reflection needed because the property value(s) are provided to the rule. No magic needed to get the friendly name, because it is in the IPropertyInfo object. No custom RuleArgs subclass needed, because the Max value is provided to the rule when the rule is instantiated.</P><FONT size=2 face=Consolas><FONT size=2 face=Consolas>
+<P>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, February 06, 2010</h2>The only thing I would say is that it seems we are loosing a bit of compile time checking going from existing AddRule and "staiuc bool SomeRule(T tartet, RuleArgs e)" to the new model.<br /><br />Thanks<br />Sergey</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 06, 2010</h2><p>True - at the moment the types are not generic, so the Target property is of type object.</p>
+<p>I tried making the types generic, but that seemed to be complicating things substantially. The reason is that in the end the only place you care about Target being a specific type is in the rule itself. That implies that IBusinessRule and BusinessRule need to be generic, and that they&#39;d have a constraint on the type of T. Which means the rule types would always be hard-coded to a specific business object type.</p>
+<p>That is a high price to pay, I think, for avoiding what comes down to one cast.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, February 07, 2010</h2><p>I like the new Rule class - so add my vote for that. </p>
+<p>Have you considered changes&nbsp; to (removing) FriendlyProperyName in PropertyInfo? Seems like it is only going to work as expected in Client scenarios and not in serverside applications. If you have a multi-culture application and have FriendlyName read from a resource file the serverside part would only use the &quot;culture&quot; from the first caller that initialized the static PropertyInfo objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 07, 2010</h2><p>I hadn&#39;t thought about removing FriendlyName.</p>
+<p>DataAnnotations has an attribute for a display/friendly name. Ideally that attribute would be used as the source value for a friendly name - and it supports localization.</p>
+<p>So perhaps the answer is to provide a function (maybe in the BusinessRule base class or in PropertyInfo&lt;T&gt;) that gets the display name value from DataAnnotations.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 08, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>So perhaps the answer is to provide a function (maybe in the BusinessRule base class or in PropertyInfo&lt;T&gt;) that gets the display name value from DataAnnotations.</div></p>
+<p>So moving forward it would be a requirement to use those attributes?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 08, 2010</h2><p>Requiring the DataAnnotations display name attribute is one option - which does solve the localization issue.</p>
+<p>Another option is to leave the friendly name in PropretyInfo&lt;T&gt;, but to have PropertyInto&lt;T&gt; maintain a reference to the underlying System.Reflection.PropertyInfo, making it easy for your rule to directly reflect against the property to get the attribute if you wanted to go that direction.</p>
+<p>But I&#39;m rather leaning toward using only the attribute. I suspect the DataAnnotations model will rapidly become a standard, as it is used already by ADNS, MVC 2 and the SL DataForm. I&#39;d be surprised if WPF doesn&#39;t get a DataForm, which would use it too.</p>
+<p>In other words, every major interface technology being actively worked on and promoted now has DataAnnotations support - so why <i>wouldn&#39;t</i> you use them?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, February 09, 2010</h2><p>This all sounds interesting.&nbsp; Most of the time we are talking about rules that check the validity of a single object.&nbsp; I would like to have the ability to easily check the validity of objects in a collection where the collection&#39;s validity is determined based on the inter relationship of the state&nbsp;of object(s) in the collection.&nbsp; For example, if the user answers Yes to a field in one object, the collection becomes invalid until a certain answer is provided to another object in the same collection.</p>
+<p>Jav&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>am_fusion replied on Sunday, February 07, 2010</h2><p>how useful is the Target property given that it&#39;s usage in an async context will cause problems.... in fact, what would the solution for an async &#39;mutex&#39; rule look like?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 07, 2010</h2><p>I am somewhat concerned about including the Target property for that reason.</p>
+<p>When you say &quot;async mutex&quot; do you mean a solution to make a business object threadsafe? That&#39;s essentially impossible. I suppose it could be somewhat possible if you never use data binding or allow any code to hook events from a business object - but that&#39;s pretty unrealistic.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>am_fusion replied on Monday, February 08, 2010</h2><p>
+
+
+
+
+
+
+ 
+  Normal
+  0
+  
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+ 
+ 
+
+
+
+
+
+<p class="MsoNormal">Mutex = rule that changes the BO.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I am thinking:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">class SomeEntity : BusinessBase</p>
+<p class="MsoNormal">{</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>public DateTime
+SomeDateProperty</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>private
+rangesStruct allowableRangesForSomeValues</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>public int
+SomeValue1Property</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>public int
+SomeValueNProperty</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>public override
+void AddBusinessRules()</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>{</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>ValidationRules.AddRule(getAllowableRanges,
+SomeDateProprty)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>validationRules.AddDependentProperty(allowableRangesForSomeValues,
+SomeValue1Property)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>validationRules.AddDependentProperty(allowableRangesForSomeValues,
+SomeValueNProperty)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>validationRules.AddRule(checkRange,
+SomeValue1Property)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>validationRules.AddRule(checkRange,
+SomeValueNProperty)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>}</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>private static void
+getAllowableRanges(object target, RuleArgs args)</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>{</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>rangesStruct
+newData;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>//async call to
+get allowableRangesForSomeValues</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>//in callback</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>newData =
+e.results;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>mre.set();</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>mre.waitOne<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>SetProperty(target, allowableRangesForSomeValues, newData)</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>}</p>
+<p class="MsoNormal">}</p>
+<p class="MsoNormal"><span>&nbsp; </span></p>
+<p class="MsoNormal">I would love to be able to do some kind of Async SetProperty
+inside of the callback...<span>&nbsp; </span>I am not so
+sure I have a full grasp of the </p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">complexity there... but I was thinking something like this:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">//in call back&nbsp; base=rule object</p>
+<p class="MsoNormal">using(base.AsyncPropSet(target))</p>
+<p class="MsoNormal">{</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; </span>SetProperty(target,
+allowableRangesForSomeValues, newData)</p>
+<p class="MsoNormal">}</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">where AsyncPropertySet somehow tells the target.SeProperty
+to use read\write locks or something similar?</p>
+<p class="MsoNormal">I am not so sure I grok the databinding problem, but
+wouldn&#39;t this approach ensure that no downstream property setting\reading logic
+</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">gets fired unexpectedly?<span>&nbsp;
+</span>The BO itself would not be threadsafe, but the properties would?<span>&nbsp; </span>Or am I really just missing something.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I suppose the argument can be the design itself is poor...
+better to have some factory of allowablerangesforsomevalues that must have fetched
+it&#39;s data before the rule has a chance to fire?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, February 09, 2010</h2><p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;mso-bidi-font-size:7.0pt;mso-ansi-language:EN-US;">Hi Rocky,</span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;mso-bidi-font-size:7.0pt;mso-ansi-language:EN-US;">I like your idea and I vote for the IBusinessRule concept. </span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;mso-bidi-font-size:7.0pt;mso-ansi-language:EN-US;">I also want to throw the idea in to the discussion to think about &quot;cross business type rules&quot;. In complex scenarios when you think about an&nbsp;entire tree of business object relations you sooner or later you&nbsp;need some kind of cross business rules that link depend properties for example between parent and child objects or between objects types&nbsp;at the same child level. Of cause the single business object should not know about its context or that is part of a whole. This should be implemented and managed inside the business rule? Maybe it&rsquo;s only an extension of the current BusinessRuleManager which already supports dependent rules, but only inside the same object type.</span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:10pt;mso-bidi-font-size:7.0pt;mso-ansi-language:EN-US;">Andreas</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 09, 2010</h2><p>Generally speaking a child shouldn&#39;t know about its parent. But a parent can absolutely know about its children - they are part of the parent through the composition relationship.</p>
+<p>If a child <i>has to know</i> about its parent, that should be abstracted through an interface if at all possible.</p>
+<p>Though in CSLA 4 the Parent properties are all public now, so it is terribly easy for a child to cheat an interact with its parent... But that doesn&#39;t mean people have to do it wrong - as long as it is done via interface it is generally acceptible.</p>
+<p>The point I&#39;m making is that you can create a rule that operates against an entire object graph - that&#39;s fine. It would ideally be attached to the root node of the graph, and if it can&#39;t be, then the rule should use an interface to interact with any objects higher in the graph than the object to which the rule is attached.</p>
+<p>None of that requires any real work on the part of CSLA - other than that we all must acknowledge that object-spanning rules must always be synchronous - trying to lock one object is nearly impossible, and trying to lock an entire object graph...ouch!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, February 09, 2010</h2><p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:11pt;mso-bidi-font-size:9.0pt;mso-ansi-language:EN-US;">That&#39;s sound all valid and reasonable but I think it&rsquo;s not easy to manage and from my point of view definitely not easy to&nbsp;implement. In our object model we make extensive use of lazy loading child objects. The instantiation of child objects depends on user interactions. So the root or parent in the tree doesn&rsquo;t know if the child object is already instantiated and can be validated against its own properties. Maybe it can check this withFieldManager.FieldExists(). But it currently can do this check only with its own and direct child properties. On the other hand the child object shouldn&rsquo;t know about its parent. So what if you want to reuse this child object type in other complete different object hierarchies. You better don&rsquo;t want to dependent on parent object types or interfaces only because you want check if&nbsp;the value of an integer property is in the range of certain values of some other object property in&nbsp;unknown leaf somewhere in the object tree. The only thing you probably&nbsp;know is that it may already exits somewhere in the tree. But as soon as it exists you want to use it in your validation logic. In these scenarios I was thinking about some kind of &ldquo;BusinessRule Property Registry&rdquo; that is part of the csla&rsquo;s BusinessRule subsystem where properties can registered to become validated when the owning business objects is instantiated. Again the current semantic of &quot;AddDependentProperty&quot; smells to be close to this but it should work on cross business object types or better it should work business object type agnostic.</span></p>
+<p><span lang="EN-US" style="font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:11pt;mso-bidi-font-size:9.0pt;mso-ansi-language:EN-US;">Andreas</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>am_fusion replied on Wednesday, February 10, 2010</h2><p>I still can&#39;t get over the thought that there should be a way to allow async access to properties (for a single object in the graph... not the whole object graph) but I have a clearer head now (I was all hopped up on NyQuil for my previous posts... now I am just hopped up on DayQuil) and I think I better understand the challenge.</p>
+<p>That being said, I would vote for either having the Target property (for the RuleContext) be null or throw a &quot;no async access to target&quot; exception when in an async context.&nbsp; Throwing an exception would better inform the developer why target is not accessible.</p>
+<p>Keeping the target property will allow for business rules that modify the object (which I believe is a valid use case)... the danger of course is if that rule somehow fires in an async manner.&nbsp; Out of curiosity, how would we specify that a rule should run async?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 10, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>am_fusion<br></b>
+<p>Out of curiosity, how would we specify that a rule should run async?</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>That remains an open question <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /> I&#39;m toying with a couple ideas. </p>
+<p>One is to have BusinessRules.CheckRules() and BusinessRules.BeginCheckRules(callback) so it is an explicit choice to run rules on a background thread. But I&#39;m not sure this is workable, since there are implementation differences in sync vs async rules. An async rule can always (?) be run synchronously, but a sync rule must be run synchronously. I&#39;ve started down this road, but I&#39;m increasingly convinced it is wrong.</p>
+<p>Another is to have a property in IBusinessRule such as ExecutionMode, which could be ExecutionModes.Any, ExecutionModes.SyncOnly, ExecutionModes.AsyncOnly. Then BusinessRules.CheckRules() would execute each rule based on that property value. Obviously I haven&#39;t thought this through entirely, but I rather suspect this is the correct solution.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 10, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>am_fusion<br></b>
+<p>That being said, I would vote for either having the Target property (for the RuleContext) be null or throw a &quot;no async access to target&quot; exception when in an async context.&nbsp; Throwing an exception would better inform the developer why target is not accessible.</div></p>
+<p>Yes, I think this is a good solution - having Target throw an exception if accessed while async.</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

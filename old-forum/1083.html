@@ -1,0 +1,87 @@
+<html><header><title>ChildObject Contains a collection ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildObject Contains a collection ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1083.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Thursday, August 31, 2006</h2><br>
+Hello, I have a little problem : <br>
+<br>
+---------------<br>
+<br>
+<i>public class Project : BusinessBase<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private <b>ProjectResources </b>_resources<br>
+...<br>
+}<br>
+</i><br>
+<i>pulibc class <b>ProjectResources </b>:&nbsp; BusinessListBase&lt;ProjectResources, ProjectResource&gt;<br>
+<br>
+public class ProjectResource :&nbsp; BusinessBase&lt;ProjectResource&gt;<br>
+<br>
+-----------------<br>
+</i><br>
+Here, no problem. But If my objet <i>ProjectResource </i>contains a collection, so :<br>
+<i><br>
+-----------------</i><br>
+&nbsp;<br>
+<i>public class ProjectResource :&nbsp; BusinessBase&lt;ProjectResource&gt;<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private <b>TestCollections </b>_testCollection<br>
+...<br>
+}<br>
+<br>
+</i><i>pulibc class<b> </b></i><b><i>TestCollections </i></b><i>BusinessListBase&lt;</i><i>TestCollections </i><i>, </i><i>TestCollection</i><i>&gt;<br>
+<br>
+public class </i><i>TestCollection </i><i>:&nbsp; BusinessBase&lt;</i><i>TestCollection </i><i>&gt;</i><br>
+<i><br>
+-----------------</i><br>
+<br>
+Which is the best solution ? Because it is not possible to charge all my objects starting from one only SELECT .<br>
+<br>
+Thank you<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 31, 2006</h2>The data access in this case is challenging. Many people use a DataSet to simplify the process, though other techniques exist, and have been discussed in previous threads dealing with data access for grandchild objects.<br><br>A strongly typed DataSet will reconcile the parent-child-grandchild relationships between your data automatically, making it relatively easy to load your objects with data. The root object simply creates the whole DataSet and passes it to the child collections rather than a datareader. Obviously there's some performance hit due to the overhead of the DataSet, but it is a simple coding model, and keeps you to one database hit per generation (root, child, grandchild).<br><br>Another approach is to have each child hit the database to get its grandchildren. In that case you'd have n+1 database hits, where n is the number of child objects. That can get expensive, but is also relatively easy to implement.<br><br>Another approach is to return all three generations from a single stored procedure, much like I show in the book. This requires the most coding, because your child collection needs to look at the grandchild data in the datareader and find the right child to which it should pass the datareader for those grandchildren. I don't find this code overwhelmingly difficult, but it certainly is more work than the previous options.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Friday, September 01, 2006</h2><br>Thank you.<br><br>I understand easily the first two approaches <br><br>I don't find in the book your third approach <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, September 01, 2006</h2>You may also want to search the forums for SafeDataRowReader.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Saturday, September 02, 2006</h2>Thank you <strong>Brian Criswell.</strong><br><br>Yes I researched for GrandChild. <br><br>And I found SafeDataRowReader. If I don't mistake it's the solution based on the DataSet. For the moment, I use the SafeDataRowReader, and I think that it's a good solution.<br><br>But I am interested by the solution exposed in the book but I don't find it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoOfMetL:</strong></div><div>Thank you <strong>Brian Criswell.</strong><br><br>Yes I researched for GrandChild. <br><br>And
+I found SafeDataRowReader. If I don't mistake it's the solution based
+on the DataSet. For the moment, I use the SafeDataRowReader, and I
+think that it's a good solution.<br><br>But I am interested by the solution exposed in the book but I don't find it.<br></div></BLOCKQUOTE><br>
+<br>
+Which page in the book refers to the stored procedure approach?&nbsp;
+The CodeSmith templates all use the datareader to fill the child
+objects so we would be interested in this approach.&nbsp; In another
+project, I have coded it so that each child fills it's child by passing
+the related id for the stored procedure.&nbsp; It wasn't to hard to do
+but if I can use the CodeSmith templates for the object code and only
+have to spend time with a more complex stored procedure, that is
+something we'd like to try.<br>
+<br>
+Thanks for any references....<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2>Is this the chuck of code from the ProjectTracker PTData stored procedures that you would be refering to....<br>
+<br>
+EXEC dbo.sp_executesql @statement = N'CREATE PROCEDURE getProject<br>
+<br>
+&nbsp;&nbsp;&nbsp; (<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; @id uniqueidentifier<br>
+<br>
+&nbsp;&nbsp;&nbsp; )<br>
+<br>
+AS<br>
+<br>
+&nbsp;&nbsp;&nbsp; SELECT Id,Name,Started,Ended,Description,LastChanged<br>
+<br>
+&nbsp;&nbsp;&nbsp; FROM Projects <br>
+<br>
+&nbsp;&nbsp;&nbsp; WHERE Id=@id<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; SELECT ResourceId,LastName,FirstName,Assigned,Role,Assignments.LastChanged AS LastChanged<br>
+<br>
+&nbsp;&nbsp;&nbsp; FROM Resources,Assignments <br>
+<br>
+&nbsp;&nbsp;&nbsp; WHERE ProjectId=@id AND ResourceId=Id<br>
+<br>
+&nbsp;&nbsp;&nbsp; RETURN' <br>
+<br>
+END<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, October 12, 2006</h2><br>
+Hi, <br>
+<br>
+I Don't think that is this code.<br>
+<br>
+For the grand child, I Use the SafeDataRowReader.<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

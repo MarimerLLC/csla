@@ -1,0 +1,134 @@
+<html><header><title>Object/Child Object - ASP.NET Databinding to Page/Web User Control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object/Child Object - ASP.NET Databinding to Page/Web User Control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4755.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds posted on Sunday, April 27, 2008</h2><P>I've encountered the following scenario a couple of times and always seem to be baffled by the best way of doing it... so I'm calling on anyone here to help!?</P>
+<P>I have a Customer object.&nbsp; A customer will have a billing address (Address object) with a 1 to 1 relationship.</P>
+<P>I have a registration page which will allow a user to enter both Customer details and the billing address (1 to 1 basis), with the address entry being on an AddressEntryControl.&nbsp; The customer details are in a FormView, which contains&nbsp;an AddressEntryControl being bound to Customer.BillingAddress (<FONT size=2>&lt;%# ((Customer)Container.DataItem).BillingAddress %&gt;).</FONT></P>
+<P>All binding is done using the CslaDataSource, with the CustomerDataSource_UpdateObject as the following:</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> CustomerDataSource_UpdateObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#2b91af size=2>UpdateObjectArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;Customer</FONT><FONT size=2> customer = GetCustomer();</P>
+<P>&nbsp;&nbsp;&nbsp;Csla.Data.</FONT><FONT color=#2b91af size=2>DataMapper</FONT><FONT size=2>.Map(e.Values, customer, </FONT><FONT color=#a31515 size=2>"Id"</FONT><FONT size=2>);</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;<FONT size=2>// etc...</FONT></P>
+<P><FONT size=2>}</P></FONT>
+<P>The data mapper will (currently) not update the BillingAddress&nbsp;which I assume is to do&nbsp;with the AddressEntryControl not storing the bound address in session... but... should the control's AddressDataSource save the billing address, or should this be the responsibility of the CustomerDataSource??</P>
+<P>Has anyone got any best practices?</P>
+<P>The BillingAddress property of the Customer object was previously using lazy loading.&nbsp; i.e. The Customer object had a billingAddressId, but also a non-serialized Address and a BillingAddress property that would call Address.GetAddress(this.billingAddressId) if the non serialized billingAddress property is null. If I were to make the BillingAddress a proper variable within the customer class then I guess it would be worth the Customer object data access saving/updating this address object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, April 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One approach that I used before in dealing with 1-1 db relationships
+that are entered on a single screen it roll them up into a single object.&nbsp;
+In other words, a single stored procedure would join two tables and return
+single result set.&nbsp; The update stored procedure would update both
+tables.&nbsp; The only trick part is to deal with absence of data in a related
+table.&nbsp; That time as part of &#8220;select&#8221; stored procedure I
+selected a flag that indicated absence of data in Address table.&nbsp; In other
+words, I used stored procedures in conjunction with customer object as ORM
+tool.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pfeds
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, April 27, 2008 9:24 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Object/Child Object - ASP.NET Databinding to
+Page/Web User Control<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've encountered the following scenario a couple of times and always seem to
+be baffled by the best way of doing it... so I'm calling on anyone here to
+help!?<o:p></o:p></p>
+
+<p>I have a Customer object.&nbsp; A customer will have a billing address
+(Address object) with a 1 to 1 relationship.<o:p></o:p></p>
+
+<p>I have a registration page which will allow a user to enter both Customer
+details and the billing address (1 to 1 basis), with the address entry being on
+an AddressEntryControl.&nbsp; The customer details are in a FormView, which
+contains&nbsp;an AddressEntryControl being bound to Customer.BillingAddress (<span>&lt;%# ((Customer)Container.DataItem).BillingAddress
+%&gt;).</span><o:p></o:p></p>
+
+<p>All binding is done using the CslaDataSource, with the
+CustomerDataSource_UpdateObject as the following:<o:p></o:p></p>
+
+<p><span>protected</span><span> <span>void</span>
+CustomerDataSource_UpdateObject(<span>object</span> sender,
+Csla.Web.<span>UpdateObjectArgs</span> e)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;Customer</span><span> customer = GetCustomer();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;Csla.Data.<span>DataMapper</span>.Map(e.Values, customer, <span>&quot;Id&quot;</span>);</span><o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;<span>// etc...</span><o:p></o:p></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p>The data mapper will (currently) not update the BillingAddress&nbsp;which I
+assume is to do&nbsp;with the AddressEntryControl not storing the bound address
+in session... but... should the control's AddressDataSource save the billing
+address, or should this be the responsibility of the CustomerDataSource??<o:p></o:p></p>
+
+<p>Has anyone got any best practices?<o:p></o:p></p>
+
+<p>The BillingAddress property of the Customer object was previously using lazy
+loading.&nbsp; i.e. The Customer object had a billingAddressId, but also a
+non-serialized Address and a BillingAddress property that would call
+Address.GetAddress(this.billingAddressId) if the non serialized billingAddress
+property is null. If I were to make the BillingAddress a proper variable within
+the customer class then I guess it would be worth the Customer object data
+access saving/updating this address object.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Monday, April 28, 2008</h2><P>Thanks Sergey - that's is a method I hadn't considered.</P>
+<P>I would preferably keep the two objects seperate at the moment&nbsp;if I can.&nbsp; There are other places in the website where I want functionality to pick the child&nbsp;address from a popup list.</P>
+<P>I'm having a real nightmare binding to the Address user control within the form view and can't seem to find much help on google. The code is roughly as follows:</P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>FormView</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="RegistrationFormView"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"...etc&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>/* Customer name, email, etc bound to&nbsp;Customer object&nbsp;*/</FONT></P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>uc1</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>AddressEntryControl</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="AddressEntryControl"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Address</FONT><FONT color=#0000ff size=2>='</FONT><FONT size=2>&lt;%# Bind("BillingAddress") %&gt;</FONT><FONT color=#0000ff size=2>'</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>/&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>/* Other customer information such as password bound to Customer object */</FONT></P>
+<P><FONT color=#0000ff size=2>&lt;/asp:FormView&gt;</FONT></P>
+<P>The problem is that when I click the submit button on the page I can map the values to the Customer object, but the difficulty is getting the Address information from the AddressEntryControl in the FormView.</P>
+<P>Surely somebody has a good method of doing this?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

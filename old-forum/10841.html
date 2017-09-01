@@ -1,0 +1,55 @@
+<html><header><title>Possible bug in code snippet from CSLA 4 MVC ebook</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible bug in code snippet from CSLA 4 MVC ebook</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10841.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Thursday, November 03, 2011</h2><p>I was looking to this code in page 18 of Using CSLA 4 ASP.NET MVC:</p>
+<p>&nbsp;&nbsp;&nbsp; [HttpPost]<br />&nbsp;&nbsp;&nbsp; public ActionResult Edit(int id, ProjectEdit item) <br />&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, ProjectEdit.IdProperty, id); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ViewData.Model = item; UpdateModel(item); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ViewData.Model = item.Save(true); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return RedirectToAction(&quot;Index&quot;); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException ex) <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ex.BusinessException != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModelState.AddModelError(&quot;&quot;, ex.BusinessException.Message); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModelState.AddModelError(&quot;&quot;, ex.Message); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return View(); } <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ModelState.AddModelError(&quot;&quot;, ex.Message); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return View(); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <br />&nbsp;&nbsp;&nbsp; }</p>
+<p>And I was wondering, why is a call to UpdateModel() here:</p>
+<p>ViewData.Model = item; UpdateModel(item); </p>
+<p>if we are receiving the ProjectEdit object as a parameter and the DefaultBinder already is giving us that object populated with the form values?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Thursday, November 03, 2011</h2><p>I&#39;m looking now at the implementation of Csla.Web.Mvc.Controller.SaveObject and I&#39;m more confused than before. In this method UpdateModel() is called. </p>
+<p>Is this necessary if we received our object via an action method parameter? That object is not already loaded with data from the binding process? What is the reason to call to UpdateModel again?</p>
+<p>It looks like what I thought about the binding process is not right.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 07, 2011</h2><p>If I recall correctly (and I might not, because I&#39;m on pain medication due to recent surgery - probably shouldn&#39;t be posting while impaire actually :) ), the challenge I&#39;m highlighting here is that the Id property is read-only, but it needs to be set.</p>
+<p>The model binder won&#39;t set read-only properties, so all other properties are set, but not that one. so LoadProperty is used to set that property, and then the model needs to be updated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Thursday, November 10, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>so LoadProperty is used to set that property, and then the model needs to be updated</div></p>
+<p>I was under the impression that when the method starts, you already have a business object with all the properties loaded through databinding (except the ID). Then you use LoadPropertyto to set the ID and after that you have the business object fully loaded and ready to be saved. Why do you have to call UpdateModel after that?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 10, 2011</h2><p>Yes, I think you are right, that call is superfluous.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Thursday, November 24, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>Yes, I think you are right, that call is superfluous.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hi Rocky,</p>
+<p>As you stated that the call to UpdateModel(item); is superfluous, this is the case where my business object is always failing to save. Below is an example of my Create method in controller.</p>
+<p>&nbsp;</p>
+<p>[HttpPost]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ActionResult Create(Company company)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ModelState.IsValid)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (SaveObject(company, false))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RedirectToAction(&quot;Confirmation&quot;, &quot;Wizard&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Csla.DataPortalException dpex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dpex.BusinessException != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;&quot;, dpex.BusinessException.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;&quot;, dpex.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;&quot;, ex.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>This is the same issue I&#39;ve posted one month back</p>
+<p><a href="http://forums.lhotka.net/forums/p/10789/50325.aspx#50325">http://forums.lhotka.net/forums/p/10789/50325.aspx#50325</a></p>
+<p>I&#39;ve tried the same method without using SaveObject(). I&#39;ve replaced the try block with the below code. Since I&#39;m creating new company, because of no need to set any private set properties, I&#39;ve skipped using UpdateModel(). The Bussiness object was saved successfully without any errors.</p>
+<p>ViewData.Model = company.Save(false);</p>
+<p>return RedirectToAction(&quot;Confirmation&quot;, &quot;Wizard&quot;);</p>
+<p>&nbsp;</p>
+<p>After confirming successful object save operation, I believe that this is a bug in the Controller.SaveObject() overloaded methods. This method works fine in Edit scenario but always failing in Create scenario.</p>
+<p>So I continued with this work-around (without SaveObject()).</p>
+<p>Let me know if this was fixed.</p>
+<p>FYI: I&#39;m using the latest beta release 4.2.1</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 24, 2011</h2><p>I think I missed your previous post. Added as a bug now:</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=991">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=991</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

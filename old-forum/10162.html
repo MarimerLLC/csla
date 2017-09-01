@@ -1,0 +1,8 @@
+<html><header><title>timestamp property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>timestamp property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10162.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Sunday, March 13, 2011</h2><p>Hi:</p>
+<p>Yesterday I bought the &quot;Creating business objects&quot; book. There is no treatment for the &quot;timestamp property&quot;, Will it be in the Data Access book?</p>
+<p>In the sample code I saw the &quot;timestamp property&quot; was treated like a managed backing field? Could somebody explain me why it canged from private to managed?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>LMSantin</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, March 13, 2011</h2><p>The reason for making it a private property with a managed backing field is so the business classes work with Silverlight and WP7.</p>
+<p>Yes, I could have overridden OnGetState and OnSetState to serialize a private backing field, but I think it is simpler to use a managed backing field so CSLA does the work for me and my business classes don&#39;t end up cluttered with serialization code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Monday, March 14, 2011</h2><p>Thanks Rocky</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

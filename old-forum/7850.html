@@ -1,0 +1,85 @@
+<html><header><title>Event when child added to list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Event when child added to list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7850.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele posted on Thursday, October 22, 2009</h2>Does Csla raise event when a new child is added to list of children?<br><br>Thanks<br>Fele<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>Yes, this is a standard behavior of .NET collections like BindingList&lt;T&gt; (which is the base class for all CSLA lists). The event is called ListChanged.</P>
+<P>On Silverlight the base class is ObservableCollection&lt;T&gt; and the event is called CollectionChanged.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>Oh, also...</P>
+<P>If you have an object structure like OrderEdit -&gt; LineItems -&gt; LineItem</P>
+<P>and if you want code in OrderEdit to know that a new item&nbsp;was added to the list, your easiest option is to override OnChildChanged() - don't mess with events at all because they require hooking and unhooking and rehooking, where an override is just a lot simpler.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Thursday, October 22, 2009</h2>Ok. I see it. <br>OnChildChanged was risen&nbsp; but I can't figure out how to find out if it is adding, deleting or updating child.<br><br><br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Thursday, October 22, 2009</h2>I will appreciate if you let me know if this is correct approach.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void OnChildChanged(ChildChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnChildChanged(e);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.PropertyChangedArgs != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (e.PropertyChangedArgs.PropertyName)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case "X1":<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CalcTotalAmt();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.ChildObject.ToString() == "ObjectList")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //check if added<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.ListChangedArgs.ListChangedType == ListChangedType.ItemAdded)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateOtherObj();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Only problem that I have my client classes linked to server ones and ListChangeType generate two errors: <br>1)'System.Collections.Specialized.NotifyCollectionChangedEventArgs' does not contain a definition for 'ListChangedType' and no extension method 'ListChangedType' accepting a first argument of type 'System.Collections.Specialized.NotifyCollectionChangedEventArgs' could be found (are you missing a using directive or an assembly reference?)&nbsp;&nbsp;&nbsp; <br>2) The name 'ListChangedType' does not exist in the current context&nbsp;&nbsp; <br><br>If I open this class on server side, it is OK. <br>On Client, I'm getting above errors.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that&#8217;s basically the idea &#8211; use the properties of
+ChildChangedEventArgs to determine what happened to what object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I realize there are differences between SL and .NET &#8211; that&#8217;s
+because collections aren&#8217;t the same on the two platforms. The easiest answer is
+probably to use compiler directives to handle the different events on each
+side.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>#if SILVERLIGHT<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#endif<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Friday, October 23, 2009</h2>Thanks for response.<br><br>If I correctly understood your last post, I should handle different events on client and server.<br>From my testing, I figured out that I can use OnChildChanged on server. I'm not sure which event I should handle on client. <br><br>If you can provide short&nbsp; code example, I will appreciate.<br><br>Thanks<br>Fele<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can override OnChildChanged() on client and server. What I
+am saying is that inside that override you&#8217;ll need to treat the &#8216;e&#8217; parameter
+differently because on the server it will contain the ListChanged event args
+and on the client it will contain the CollectionChanged event args:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>protected override void OnChildChanged(&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#if SILVERLIGHT<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; // use CollectionChanged event args<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; // use ListChanged event args<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#endif<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

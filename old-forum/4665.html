@@ -1,0 +1,192 @@
+<html><header><title>DataPortal_XYZ override methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_XYZ override methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4665.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>manulisa posted on Friday, April 11, 2008</h2><P>Hi,</P>
+<P>In the base class, all the DataPortal_XYZ methods are defined as protected virtual, so we can create an override in our # Data Region # for each of them:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create()</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> criteria)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Delete(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> criteria)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Update()</P></FONT>
+<P>But in the book Expert C# Objects, i see sometimes that the "override" is used, and some times the override is replaced by a "private" one, for example:</P><B><FONT face=TheSansMonoCondensed-Bold size=1>
+<P align=left>[RunLocal()]</P>
+<P align=left>private void DataPortal_Create(Criteria criteria)</P>
+<P align=left>{</P>
+<P align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id = Guid.NewGuid();</P>
+<P align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_started.Date = DateTime.Today;</P>
+<P align=left>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.CheckRules();</P>
+<P align=left>}</P>
+<P align=left>&nbsp;</P>
+<P align=left>why not : protected override void DataPortal_Create(Criteria criteria) ?</P>
+<P align=left>&nbsp;</P>
+<P align=left>Instead, for some others , like&nbsp; Insert, Update &amp; Delete, the "protected override" is used.</P>
+<P align=left>So to summarize:</P>
+<P align=left>Fetch, Create -&gt; "private" used instead of "override"</P>
+<P align=left>Update, Insert, Delete -&gt; "override" is used.</P>
+<P align=left>&nbsp;</P>
+<P align=left>So, my question is,&nbsp; why the "Fetch" and "Create" methods are redefined as "private", even when there exists a "protected virtual" which can be overriden, and for&nbsp;the other ones like Insert,Update,Delete, the "override" is used ...</P>
+<P align=left>I'm a bit confused here ...</P>
+<P align=left>Thanx for any response,</P>
+<P align=left>Manulisa.</P>
+<P align=left>&nbsp;</P>
+<P align=left>&nbsp;</P>
+<P align=left>&nbsp;</P>
+<P align=left>&nbsp;</P></B></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This may be done to support multiple signatures of a method.&nbsp;
+Data Portal will attempt to find the one that matches most closely to the
+DataPortal.XYZ call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> manulisa
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 8:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] DataPortal_XYZ override methods<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>In the base class, all the DataPortal_XYZ methods are defined as protected
+virtual, so we can create an override in our # Data Region # for each of them:<o:p></o:p></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Create()<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Fetch(<span>object</span>
+criteria)<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Insert()<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Delete(<span>object</span>
+criteria)<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Update()<o:p></o:p></span></p>
+
+<p>But in the book Expert C# Objects, i see sometimes that the
+&quot;override&quot; is used, and some times the override is replaced by a
+&quot;private&quot; one, for example:<o:p></o:p></p>
+
+<p><b><span>[RunLocal()]<o:p></o:p></span></b></p>
+
+<p><b><span>private
+void DataPortal_Create(Criteria criteria)<o:p></o:p></span></b></p>
+
+<p><b><span>{<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_id
+= Guid.NewGuid();<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_started.Date
+= DateTime.Today;<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.CheckRules();<o:p></o:p></span></b></p>
+
+<p><b><span>}<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p><b><span>why
+not : protected override void DataPortal_Create(Criteria criteria) ?<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p><b><span>Instead,
+for some others , like&nbsp; Insert, Update &amp; Delete, the &quot;protected
+override&quot; is used.<o:p></o:p></span></b></p>
+
+<p><b><span>So
+to summarize:<o:p></o:p></span></b></p>
+
+<p><b><span>Fetch,
+Create -&gt; &quot;private&quot; used instead of &quot;override&quot;<o:p></o:p></span></b></p>
+
+<p><b><span>Update,
+Insert, Delete -&gt; &quot;override&quot; is used.<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p><b><span>So,
+my question is,&nbsp; why the &quot;Fetch&quot; and &quot;Create&quot; methods
+are redefined as &quot;private&quot;, even when there exists a &quot;protected
+virtual&quot; which can be overriden, and for&nbsp;the other ones like
+Insert,Update,Delete, the &quot;override&quot; is used ...<o:p></o:p></span></b></p>
+
+<p><b><span>I'm
+a bit confused here ...<o:p></o:p></span></b></p>
+
+<p><b><span>Thanx
+for any response,<o:p></o:p></span></b></p>
+
+<p><b><span>Manulisa.<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, April 11, 2008</h2><P>Sergey is correct.</P>
+<P>Notice the 2 signatures in your example are different!</P>
+<P><SPAN>protected</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> DataPortal_Create()</SPAN></P><SPAN>
+<P><B><SPAN>private void DataPortal_Create(Criteria criteria)<O:P></O:P></SPAN></B></P>
+<P><O:P>The 1st signature is in CSLA and the 2nd in your BO. The 2nd does not in fact override the first since the signature is different. So when you call DataPortal.Create if you pass no parameters then the 1st signature is called, if you pass 1 parameter then the 2nd is called.</O:P></P>
+<P><O:P>Joe</O:P></P>
+<P><O:P></O:P></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, April 11, 2008</h2><P><FONT face=Tahoma size=2>It's not quite as simple as "Fetch and Create use private, others use override"... <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>Versions of CSLA prior to .NET 2.0 only had the virtual&nbsp;methods.&nbsp;&nbsp;A BO would override the appropriate one&nbsp;in their code based on whether criteria was needed or not.&nbsp; But you'll notice that the&nbsp;criteria parameter is an "object" type.&nbsp; This is because there wasn't a base criteria class at the time - Rocky's implementation relied on the criteria class being nested within the BO, so you could create almost anything for your criteria object.&nbsp; I know you can still do this in the 3.0.x versions, and I think 3.5&nbsp;still supports it as well.&nbsp; A base criteria class only came about a</FONT><FONT face=Tahoma size=2>fter some discussion with folks using code generation.</FONT></P>
+<P><FONT face=Tahoma size=2>When .NET 2.0 came along, Rocky&nbsp;modified the DataPortal code to look for&nbsp;DP_ routines&nbsp;by both&nbsp;name and parameter type(s).&nbsp; Doing so allows us to write DP_ routines&nbsp;that define strongly-typed criteria parameters, and&nbsp;the DataPortal&nbsp;will find them.&nbsp;&nbsp;The virtual methods are kept for backwards compatibility,&nbsp;as well as fallback methods - if a matching routine cannot be found using the parameter types, the DataPortal falls back to these "generic" methods.</FONT></P>
+<P><FONT face=Tahoma size=2>As far as "private" vs. "protected override", DP_ routines that use strongly-typed criteria parameters have no corresponding method in the base class (unless you have them in a custom base class of your own), so there is nothing to override.&nbsp; The choice of private vs. protected scope is a question of class design - if your BO is not going to be subclassed, you don't need to make the routine protected.&nbsp; You are certainly free to override the existing&nbsp;virtual methods in your BO's, but&nbsp;it's not a recommended practice for new code.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>manulisa replied on Saturday, April 12, 2008</h2><P>Hi, </P>
+<P>Ok, thanx to all of you, things are more clear now to me.<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Greetz,</P>
+<P>manulisa.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>Rule priorities not working</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rule priorities not working</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11625.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Thursday, October 04, 2012</h2><p>I have a child object with a some rules and some have to run before others. This one have to run first:</p>
+<p>
+<p>BusinessRules.AddRule&lt;ClientPurchaseOrderLineItem&gt;(ClientBusinessIdProperty,&nbsp;o =&gt;</p>
+<p>{</p>
+<p><span>					</span>var info = Business.GetInfo(o.ClientBusinessId);</p>
+<p>if (info != null)</p>
+<p><span>					</span>{</p>
+<p><span>						</span>o.LoadClodBusinessId(info.Id);</p>
+<p><span>						</span>o.BusinessName = info.Name;</p>
+<p><span>					</span>}</p>
+<p><span>					</span>else</p>
+<p><span>					</span>{</p>
+<p><span>						</span>o.LoadClodBusinessId(Guid.Empty);</p>
+<p><span>						</span>o.BusinessName = &quot;&quot;;</p>
+<p><span>					</span>}</p>
+<p>&nbsp;</p>
+<p><span>					</span>return info != null;</p>
+<p><span>				</span>},</p>
+<p><span>				</span>ClientPurchaseOrderLineItemResources.InvalidBusiness);</p>
+</p>
+<p>&nbsp;</p>
+<p>And this one later:</p>
+<p>&nbsp;</p>
+<p>BusinessRules.AddRule(new UniqueClientPurchaseOrderLineItemIdRule(PoLineItemIdProperty, ClodBusinessIdProperty) { Priority = 1 });</p>
+<p>&nbsp;</p>
+<p>That is why I set the priority to 1, but I set some breakpoints and this last rule always run before the other. What am I doing wrong?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, October 04, 2012</h2><p>PropertyRules is run in the context of a Property that has been changed. </p>
+<p>IE: The Priority is only applicable within a Property. Then rules for Affected propeties is checked (and agein on a Per-Property basis).&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Thursday, October 04, 2012</h2><p>Hi Jonny,</p>
+<p>Thanks for your answer. If I understood correctly that means that the priority is only applied to rules associated with the same property?</p>
+<p>&nbsp;</p>
+<p>How can I force one rule to run before the other if they are not related to the same property?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 04, 2012</h2><p>Yes, prioritiy is only applied to rules for the same property.</p>
+<p><b>You can&#39;t force one rule to run before the others when they are not related to the same property.</b>&nbsp; </p>
+<p>You should keep a mindset of :</p>
+<ul>
+<li>each properties rules is autonomous and does the actions necessary when a user change this property. </li>
+<li>this may require that rules be registered to more than one property!! </li>
+<li>AffectedProperties rules is rechecked - assuming that this rule may have updated the property value. </li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

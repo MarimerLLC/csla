@@ -1,0 +1,14 @@
+<html><header><title>CSLA and ADO Entity Framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and ADO Entity Framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9737.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>loch006 posted on Wednesday, November 10, 2010</h2><p>i was considering using ADO EF as the data layer for a new project i am working on and have found it to be extremely tedious and far less functional than simply using linq to sql...</p>
+<p>first problem is that output parameters from stored procedures have to be mapped as a result binding on the datatable object itself and can&#39;t be an actual OUTPUT param</p>
+<p>secondly i have to map every single property of the data object to a parameter of the stored procedure after setting a stored procedure as one of the CRUD operations for a specific data object</p>
+<p>and then in the dataportal methods, eg: the dataportal_insert method,&nbsp;i have to instantiate a new dataobject, fill&nbsp;every one of its&nbsp;parameters with the business object property values, and then call the .AddToWhatever table method on the dataobject</p>
+<p>if i try to add a stored procedure as a function import it can be executed by itself but still cannot use output parameters which would be ideal for the lastchanged values</p>
+<p>it seems liket his process takes way too much time for no extra added value and seems to tightly couple everything together to the point where each datatable object has stored procedures set for it that must be executed only under a certain context</p>
+<p>is there any reason to not just use linq to sql?</p>
+<p>im just wondering what other people think about CSLA and ADO EF</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>loch006<br></b>
+<p>is there any reason to not just use linq to sql?</p>
+</div></p>
+<p>The primary reason is that Microsoft isn&#39;t continuing to invest in L2S. They&#39;ll keep it running through the terms of their support agreements, but it isn&#39;t their area of focus. If you accept the obvious risks that come with what I just said, then there&#39;s no reason to stop using L2S :)</p>
+<p>I agree with you that EF is often tedious. Fwiw,&nbsp;I frequently still use standard ADO.NET.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

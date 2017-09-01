@@ -1,0 +1,77 @@
+<html><header><title>Help - PropertyHasChanged method causes two Tabs to exit field.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help - PropertyHasChanged method causes two Tabs to exit field.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6143.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Tuesday, January 13, 2009</h2><P>The PropertyHasChanged method is causing me to have to press Tab twice to exit a textbox. If I replace PropertyHasChanged with MarkDirty, then I have the desired behavior (single Tab to exit field).</P>
+<P>I have tried PropertyHasChanged with and without&nbsp;ValidationRules with no effect.</P>
+<P>I am using CLSA.Net 2.1.4 and am still having this problem after upgrading from 2.0. I run ProjectTracker without this issue. I have compared by classes with similar projecttrascker classes and cannot see a difference.</P>
+<P>Any help would be greatly appreciated (please don't tell me it fixed in 3.5 because it does not compile for .Net 2.0.)</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 13, 2009</h2><P>This is fixed in 3.5 ;)</P>
+<P>Fortunately it is also fixed in 3.0.5, which compiles fine for .NET 2.0 and is the current release for .NET 2.0.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Tuesday, January 13, 2009</h2><P>Thanks for the quick reply, Rocky. </P>
+<P>I must be missing something because I can't get CSLA 3.05 (Release 3.05-081009) to compile. I am on ASP.Net 2.0 framework. Do not have any WCF components installed.</P>
+<P>I tried compiling ProjectTracker as well as the core solution cslavb, no success. I'm not allowed to upgrade .Net framework, right now, or install additional components.</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There&#8217;s a page with instructions on <a href="http://www.lhotka.net/cslanet">www.lhotka.net/cslanet</a> about how to
+compile CSLA 3.0 for .NET 2.0 &#8211; I can&#8217;t find it for you right now,
+but it is easy enough.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> andrewrajcoomar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 11:10 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Help - PropertyHasChanged method causes two
+Tabs to exit field.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the quick reply, Rocky. <o:p></o:p></p>
+
+<p>I must be missing something because I can't get CSLA 3.05 (Release
+3.05-081009) to compile. I am on ASP.Net 2.0 framework. Do not have any WCF
+components installed.<o:p></o:p></p>
+
+<p>I tried compiling ProjectTracker as well as the core solution cslavb, no
+success. I'm not allowed to upgrade .Net framework, right now, or install
+additional components.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Andrew<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Wednesday, January 14, 2009</h2><P><STRONG>Solution:</STRONG> GetValueID must always return a unique value (and not Nulll), during an Insert operation. So basically, I added an ID property of type GUID to my class and my problem was solved. </P>
+<P>Originally I was returning my PK property, but that's null during an Insert because it's an identity column in SQL and is set to auto-increment.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

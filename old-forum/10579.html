@@ -1,0 +1,25 @@
+<html><header><title>MarkNew() in DataPortal_Fetch has no effect</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MarkNew() in DataPortal_Fetch has no effect</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10579.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kristof posted on Tuesday, August 02, 2011</h2><p>Hi,</p>
+<p><br />I have a fetch method that may not find a matching record so data would not be set. But, the fetch automatically sets the return object as isnew = false, regardless of success or not. So, to solve this, I use MarkNew() in case no data has been found.<br /><br />This mechanism seems to work, as if I put a breakpoint on the last } of the method, the isnew variable equals true.<br /><br />BUT ... when processing returns to the caller code, isnew is false again, nullifying the whole operation and resulting in an update attempt that ofcourse will fail as it does not exist.<br /><br />What do I need to do to make this work?<br /><br />Thx</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Tuesday, August 02, 2011</h2><p>When CSLA is configured to use the DataPortal_Fetch method it also calls MarkOld() for you, hence IsNew == false in the UI. &nbsp;The DataPortal_XYZ methods are designed to reduce the amount of repetitive coding required but are less flexible.</p>
+<p>Two solutions I can think of:</p>
+<p>1) Use the ObjectFactory DataPortal model, which gives you full control of the data portal process but requires more coding.</p>
+<p>2) In your factory method, first call an Exists command and then call either DataPortal.Fetch or DataPortal.Create; pseudo code:</p>
+<p>&nbsp;</p>
+<p>private static OrderEdit GetOrder(long id)</p>
+<p>{</p>
+<p>if (OrderExistsCommand.Exists(id))</p>
+<p>{</p>
+<p>return DataPortal.Fetch&lt;OrderEdit&gt;(id);</p>
+<p>}</p>
+<p>else</p>
+<p>{</p>
+<p>retrun DataPortal.Create&lt;OrderEdit&gt;();</p>
+<p>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kristof replied on Tuesday, August 02, 2011</h2><p>Hi,</p>
+<p>That ObjectFactory looks promising, i&#39;ll look into it. The other option needs very redundant logic, which is not very performant.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kristof replied on Tuesday, August 02, 2011</h2><p>Well I&#39;ve looked into it with a little more detail and it seems I&#39;m struggling to find&nbsp; a solution that does not mean a total refactoring of my Model.<br /><br />1) ObjectFactory: <br />The only version that I have that even recognizes the ObjectFactory attribute, is the CSLA 4.1 library, but that comes with so many changes, that the entire Model layer would need a serious overhaul. Not impossible, but a lot of work. And, since I don&#39;t know 4.1 at all, I am not inclined to use that right now.<br /><br />2) Essentially this is a by-pass of core CSLA functionality, and if I am not going to use CSLA, I am going to not use it all, rather than do some mutant hybrid form. And either way, that would mean a total overhaul of the entire Model, again.<br /><br />I hope there is something simple I am overlooking? Perhaps you can point me to a download&nbsp; link of a CSLA version that does support ObjectFactory without all those changes?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 02, 2011</h2><p>Object factory is available from Csla 3.6.0 and up&nbsp; so you will not have to move to Csla 4.1</p>
+<p>There has been several discussions on what to do if DataPortal_Fetch does not find an object. </p>
+<p>The recommended behaviour is to throw an Exception that no data was found (create your own serializable Exception object). <br />The client can then  add exception handling code to handle that exception and rather call DataPortal.Create to return a new object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kristof replied on Tuesday, August 02, 2011</h2><p>I got an ObjectFactory test using the 3.8.3 version working, so that seems feasible (and by far the best solution). Thanks. I&#39;ll have to see what that means for the entire model.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 02, 2011</h2><p>Jonny is correct though.</p>
+<p>The recommended solution is for a failed fetch to throw an exception. In your factory method you can catch this exception and return the result of a call to the create factory method - that would achieve your desired result without any fancy code or altering your model.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

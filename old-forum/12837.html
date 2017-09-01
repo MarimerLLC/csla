@@ -1,0 +1,89 @@
+<html><header><title>Object factory support for read only objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object factory support for read only objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12837.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkollath posted on Friday, February 27, 2015</h2><p>I am trying to implement object factory support with a read only object and would like to know the best way to populate it.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, February 28, 2015</h2><p>Hi, </p>
+<p>This very similar to&nbsp; an editable object - you just leave out the state management commands. <br />Make sure to use the helper methods in ObjectFactory base class and use managed properties in your read-only object. </p>
+<p>Sample her shown for a list:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">object</span>&nbsp;Fetch(<span style="color:blue;">string</span>&nbsp;criteria)
+{
+&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;list&nbsp;=&nbsp;(<span style="color:#2b91af;">CustomerList</span>)<span style="color:#2b91af;">MethodCaller</span>.CreateInstance(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">CustomerList</span>));
+ 
+ 
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;just&nbsp;sets&nbsp;up&nbsp;some&nbsp;mock&nbsp;data&nbsp;-&nbsp;could&nbsp;com&nbsp;from&nbsp;Xml,L2S,&nbsp;EF&nbsp;or&nbsp;othere&nbsp;sources&nbsp;unknown&nbsp;to&nbsp;the&nbsp;BO&nbsp;itself.&nbsp;</span>
+&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;customers&nbsp;=&nbsp;<span style="color:blue;">new</span>[]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CustomerData</span>&nbsp;{Id&nbsp;=&nbsp;1,&nbsp;Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Baker,&nbsp;Jonathan&quot;</span>},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CustomerData</span>&nbsp;{Id&nbsp;=&nbsp;2,&nbsp;Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Peterson,&nbsp;Peter&quot;</span>},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CustomerData</span>&nbsp;{Id&nbsp;=&nbsp;3,&nbsp;Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Olsen,&nbsp;Egon&quot;</span>},
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CustomerData</span>&nbsp;{Id&nbsp;=&nbsp;4,&nbsp;Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Hansen,&nbsp;hans&quot;</span>}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;};
+ 
+&nbsp;&nbsp;list.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;<span style="color:blue;">this</span>.SetIsReadOnly(list,&nbsp;<span style="color:blue;">false</span>);
+ 
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;tranform&nbsp;to&nbsp;my&nbsp;lists&nbsp;child&nbsp;type</span>
+&nbsp;&nbsp;list.AddRange(customers.Select(p&nbsp;=&gt; new CustomerInfoFactory().GetCustomerInfo(p)));
+ 
+&nbsp;&nbsp;<span style="color:blue;">this</span>.SetIsReadOnly(list,&nbsp;<span style="color:blue;">true</span>);
+&nbsp;&nbsp;list.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+ 
+&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;list;
+}</pre>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CustomerInfoFactory</span>&nbsp;:&nbsp;<span style="color:#2b91af;">ObjectFactory</span>
+{
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;Business.<span style="color:#2b91af;">CustomerInfo</span>&nbsp;GetCustomerInfo(DataEntitites.<span style="color:#2b91af;">CustomerData</span>&nbsp;data)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;customer&nbsp;=&nbsp;(<span style="color:#2b91af;">CustomerInfo</span>)<span style="color:#2b91af;">MethodCaller</span>.CreateInstance(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">CustomerInfo</span>));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(customer,&nbsp;<span style="color:#2b91af;">CustomerInfo</span>.IdProperty,&nbsp;data.Id);
+&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(customer,&nbsp;<span style="color:#2b91af;">CustomerInfo</span>.NameProperty,&nbsp;data.Name);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;customer;
+&nbsp;&nbsp;}
+}</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kris replied on Tuesday, March 03, 2015</h2><p>Hi Johnny,</p>
+<p>Thanks for that. But when I use the IntelliSense, somehow it is not pulling up the property name.</p>
+<p>Ex: When I gave CustomerInfo&nbsp; &amp; then a period, it shows the list of all methods (not properites). It shows the property only when&nbsp;I change the promerty to static&nbsp; (but the get method in that property is called by another staitic method)</p>
+<p>Thanks,</p>
+<p>Kris</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 03, 2015</h2><p>Your code must make sure that the PropertyInfo is defined as public.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kris replied on Wednesday, March 04, 2015</h2><p>Hi Jonny,</p>
+<p>This is what we are facing. </p>
+<p>public static readonly PropertyInfo&lt;System.Int32&gt; _CustomerIDProperty = RegisterProperty&lt;System.Int32&gt;(p =&gt; p.CustomerID, &quot;Customer I D&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public System.Int32 CustomerID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_CustomerIDProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>public class CustomerInfoFactory : ObjectFactory<br />{<br />&nbsp; public Business.CustomerInfo GetCustomerInfo(DataEntitites.CustomerData data)<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; var customer = (CustomerInfo)MethodCaller.CreateInstance(typeof(CustomerInfo));<br />&nbsp;<br />&nbsp;&nbsp;&nbsp; LoadProperty(customer, CustomerInfo._CustomerIDProperty, data.Id);</p>
+<p>But we want to refer &quot;CustomerID&quot; property&nbsp;instead of &quot;_CustomerIDProperty&quot;</p>
+<p>Ex:&nbsp; LoadProperty(customer, CustomerInfo.CustomerID, data.Id);</p>
+<p>I tried changing the actual property to static, but it won&#39;t work since the get operator is calling&nbsp; _CustomerIDProperty</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, March 06, 2015</h2><p>Hi,&nbsp;</p>
+<p>You have 2 options:</p>
+<p>&nbsp;</p>
+<ol>
+<li>Use LoadProperty with the PropertyInfo object as parameter&nbsp;</li>
+<li>Implement a property setter (internal?) and use InternalsVisibleToAttribute to make internal methods visible to ObjectFactory</li>
+</ol>
+<p>&nbsp;</p>
+<p><strong>You cannot use the actual property as a parameter to LoadProperty. </strong></p>
+<p>In the &quot;old days&quot; you could either use a &quot;propertyname&quot; or the PropertyInfo. In later versions IIRC there is only support for PropertyInfo as a parameter to LoadProperty.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkollath replied on Friday, March 06, 2015</h2><p>I&#39;m stuggling with the syntax of option 1.&nbsp; In this example I&#39;m trying to set the value of AccountID in a read-only class with its definition below.&nbsp; </p>
+<p>public AccountInfo Map(SafeDataReader reader)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = (AccountInfo)Methodcaller.CreateInstance(typeof(AccountInfo), true);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks(item))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty( item, PropertyInfo(&lt;System.Int32&gt; AccountInfo.AccountID), 123);&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; . . .&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">private static readonly PropertyInfo&lt;System.Int32&gt; _accountIDProperty = RegisterProperty&lt;System.Int32&gt;(p =&gt; p.AccountID, &quot;Account ID&quot;);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.ComponentModel.DataObjectField(true, true)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public System.Int32 AccountID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_accountIDProperty); }</span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 06, 2015</h2><p>public AccountInfo Map(SafeDataReader reader)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = (AccountInfo)Methodcaller.CreateInstance(typeof(AccountInfo), true);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks(item))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty( item, AccountInfo.<span style="font-size:x-small;font-family:Consolas;">_accountIDProperty</span>, 123);&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; . . .&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>
+<p><span style="FONT-SIZE:x-small;FONT-FAMILY:Consolas;"><span style="FONT-SIZE:x-small;FONT-FAMILY:Consolas;"><span style="font-family:Arial;">p</span>ublic&nbsp;static readonly PropertyInfo&lt;System.Int32&gt; _accountIDProperty = RegisterProperty&lt;System.Int32&gt;(p =&gt; p.AccountID, &quot;Account ID&quot;);</span></span></p>
+<p><span style="FONT-SIZE:x-small;FONT-FAMILY:Consolas;"><span style="FONT-SIZE:x-small;FONT-FAMILY:Consolas;">You need to make the PropertyInfo in your BO public and then use it as the second parameter of LoadProperty.</span></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkollath replied on Friday, March 06, 2015</h2><p>I&#39;m almost there, but am getting an error when referencing _accountIDProperty:&nbsp; &quot;PetShop.Business.AccountInfo&#39; does not contain a definition for &#39;_accountIDProperty&quot;. I don&#39;t know what it means by definition given that the property definition is public static</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; namespace petshop.business<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;System.Int32&gt; _accountIDProperty = RegisterProperty&lt;System.Int32&gt;(p =&gt; p.AccountID, &quot;Account ID&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.ComponentModel.DataObjectField(true, true)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public&nbsp; System.Int32 AccountID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(_accountIDProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; namespace Petshop.Data<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public AccountInfo Map(SafeDataReader reader)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = (AccountInfo)Methodcaller.CreateInstance(typeof(AccountInfo), true);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks(item))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._accountIDProperty, reader.GetInt32(&quot;AccountID&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._uniqueIDProperty, reader.GetInt32(&quot;UniqueID&quot;));&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._emailProperty, reader.GetString(&quot;Email&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._firstNameProperty, reader.GetString(&quot;FirstName&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._lastNameProperty, reader.GetString(&quot;LastName&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._address1Property,&nbsp; reader.GetString(&quot;Address1&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._address2Property, reader.GetString(&quot;Address&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._cityProperty, reader.GetString(&quot;City&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._stateProperty, reader.GetString(&quot;State&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._zipProperty, reader.GetString(&quot;Zip&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._countryProperty, reader.GetString(&quot;Country&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(item, AccountInfo._phoneProperty, reader.GetString(&quot;Phone&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return item;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 06, 2015</h2><p>With what you have posted here that should be compiling.&nbsp; Try deleting <strong>._accountIDProperty</strong> in your Map method, and then type the <strong>.</strong> after AccountInfo again on that line and see if you can find the property in intellisense.&nbsp; Maybe its _accountIdProperty ?&nbsp; Or maybe yoiu just need to recompile the business project before it works. Also double check your references; I assume both projects are in the same solution, make sure your reference in the Data project is using a Project Reference to the Business project.&nbsp; </p>
+<p>Are you using Resharper by any chance?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, March 07, 2015</h2><p>Hi,</p>
+<p>And there is no point in having using BypassPropertyCheck with this code.</p>
+<p>BypassPropertyCheck is only effective for Editable objects where you rather than use LoadPropery call the actual property setter in the object and want the SetProperty to work as LoadProperty. </p>
+<p>Otherwise the code looks to be correct..</p>
+<p>Make sure that your project references is not off (ex: dal references an assembly in bin folder and not the project in solution)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkollath replied on Tuesday, March 10, 2015</h2><p>I had to add &quot;using Csla.Reflection&quot; before I could see MethodCaller in the item declaration.&nbsp; I got a good compile after that.</p>
+<p>Thanks to all for the assist.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kris replied on Thursday, March 05, 2015</h2><p>Hi Jonny, did you got my previous reply </p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Kris</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

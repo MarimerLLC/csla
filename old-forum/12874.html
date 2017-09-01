@@ -1,0 +1,13 @@
+<html><header><title>Calling DataPortal from a Queue Handler</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calling DataPortal from a Queue Handler</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12874.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio posted on Wednesday, April 29, 2015</h2><p>Using Azure Service Bus Queue, when I receive a message that says run this task the Application tries to to run a DataPortal.Execute (command)&nbsp;</p>
+<p>In the Queue handler I setup the dataportal</p>
+<p>
+<code>
+ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;
+ApplicationContext.DataPortalUrlString = &quot;http://127.0.0.1:81/MobileDataPortal.svc&quot;</code></p>
+<p>When I execute the DataPortal.Execute I get&nbsp;</p>
+<p>&nbsp;{&quot;Content Type application/soap+xml; charset=utf-8 was not supported by service&nbsp;<span>http://127.0.0.1:81/MobileDataPortal.svc</span>.&nbsp;&nbsp;The client and service bindings may be mismatched.&quot;}</p>
+<p>&nbsp;</p>
+<p>The Server DataPortal is running and working on that URL and it is using basicHttpBinding, also when I use the WinRT app to connect to this URL, it works.</p>
+<p>&nbsp;</p>
+<p>What Am I missing?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 30, 2015</h2><p>Well, if you are using the MobileDataPortal then you are also using the MobileFormatter and this is not compatible with WcfPortal (or WCF).&nbsp;</p>
+<p>I believe you must change configuration to use MobileProxy rather than WcfProcy.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, April 30, 2015</h2><p>Yup that worked, thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

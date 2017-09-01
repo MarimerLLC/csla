@@ -1,0 +1,19 @@
+<html><header><title>How do you use AllowExecute/DenyExecute?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do you use AllowExecute/DenyExecute?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4349.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Thursday, February 14, 2008</h2><FONT size=2>
+<P>I'm trying to ensure only authorized roles can delete a 'User' (editable root).&nbsp; In the override or AddAuthorization rules I have the following (I assume ? is for anoymous and * is for everyone).</P>
+<P>&nbsp;</P>
+<P>AuthorizationRules.AllowExecute(</FONT><FONT color=#a31515 size=2>"Delete"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"AllowDeleteUser"</FONT><FONT size=2>);</P>
+<P>AuthorizationRules.AllowExecute(</FONT><FONT color=#a31515 size=2>"DeleteUser"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"AllowDeleteUser"</FONT><FONT size=2>);</P>
+<P>AuthorizationRules.DenyExecute(</FONT><FONT color=#a31515 size=2>"Delete"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"*"</FONT><FONT size=2>);</P>
+<P>AuthorizationRules.DenyExecute(</FONT><FONT color=#a31515 size=2>"DeleteUser"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"*"</FONT><FONT size=2>);</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>However when calling</FONT></P>
+<P><FONT size=2>User.Delete();</FONT></P>
+<P><FONT size=2>User.Save();</FONT></P>
+<P><FONT size=2>or</FONT></P>
+<P><FONT size=2>User.DeleteUser(id);</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Using someone who isn't in these roles I don't get an error?&nbsp; Do I have to call something in each DataPortal_XYZ method to check roles?&nbsp; What's the point then in even putting anything in the AddAuthorizationRules method; I figured this would all work automatically the way business rules checks work.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Also in ListBase is there a AllowAddItem, AllowDeleteItem method?&nbsp; I want to prevent users not in the right role from adding or removing child object items.&nbsp; They are allowed to edit the parent, and edit the children, but they can't add new items or remove current items...that's a different role.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Thanks</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 14, 2008</h2>Those methods are normally for allowing / denying access to your own custom methods on an object.&nbsp; For example, I have a method called Lock on my Invoice object that locks the invoice.&nbsp; <br><br>In your case, the normal pattern is to check your CanDeleteObject() static method in an override of Save and thrown an exception if the access method returns false.&nbsp; Check out the PTracker sample.<br><br>It does raise an intereting point though.. maybe Rocky should add a CanExecuteMethod check to the Delete method.&nbsp; That way it functions more closely to a method you'd write, and a user couldn't put the object into the deleted state if they didn't have permission.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, February 14, 2008</h2><P>Thanks.&nbsp; I had a feeling that might be the answer but I was hoping I was wrong because I've come to expect that the CSLA will encapsulate all of this for me; the way business rules does.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

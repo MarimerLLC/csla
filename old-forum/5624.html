@@ -1,0 +1,76 @@
+<html><header><title>Debugging Help: 2 lists, one works fine adding object, other loses first keystroke?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Debugging Help: 2 lists, one works fine adding object, other loses first keystroke?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5624.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Saturday, October 18, 2008</h2><P>This a weird WinForms problem using a DevExpress grid and I was just hoping someone could point me in the right direction. </P>
+<P>When I start typing in the "new item row" in one list, it works perfectly. The child object gets created and initialized and the first keystroke shows up in the field. </P>
+<P>In the problem list, a child object is created, but the property setter for the property mapped to the column I'm editing doesn't get called, and the first keystroke doesn't show up. However, it works fine after that. It doesn't matter which column I type in or what data type it is (or even if I'm using a DevExpress editor control like a drop-down to supply the value) -- the&nbsp; very first property change is lost. </P>
+<P>Any thoughts on how I might troubleshoot this? The ironic thing is that both the lists are the same class type. It's a generic "MyBusinessListBase&lt;T&gt;" class where the only thing different is T, so I'd think it would have to be related to something specific about the class supplied for T. </P>
+<P>It's probably raising some event (or not raising the right event) during creation of the child object in AddNewCore, but I'm not sure where to start. &nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Sunday, October 19, 2008</h2>Just thinking:<br><br>Look at any method overrrides in your problematic class.<br>Maybe you forgot to call the method implementation in the base class <br>(MyBase.MethodName) or you encounter an exception, <br>thus breaking the flow of events...?<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, October 20, 2008</h2><P>Sigh. It turns out I'm just meddling with things without completely understanding the implications. This a seemingly constant peril for a recovering C++ programmer who only moved to&nbsp; C# and .NET a year ago. :)</P>
+<P>It turns out the problem wasn't with C (sorry, I had this confused earlier), but with my override of AddNewCore() in MyBusinessListBase&lt;T, C&gt;. </P>
+<P>I tracked this down by testing MyEditableRootListBase&lt;T, C&gt; with the same&nbsp;class C, and it worked fine. So, I just analyzed what was different between them.</P>
+<P>Doesn't work:</P>
+<P>protected override void OnAddingNew(AddingNewEventArgs e)<BR>{<BR>&nbsp;&nbsp; C newObject = CreateChild();<BR>&nbsp;&nbsp; e.NewObject = newObject;<BR>}<BR>protected override object AddNewCore()<BR>{<BR>&nbsp;&nbsp; object result = base.AddNewCore();</P>
+<P>&nbsp;&nbsp; // Propagate parent primary key to foreign key references when new<BR>&nbsp;&nbsp; // child object added to exsting object</P>
+<P>&nbsp;&nbsp; SetChildForeignKey(result);<BR>&nbsp;&nbsp; return result;</P>
+<P>}<BR></P>
+<P>Works:</P>
+<P>protected override object AddNewCore()<BR>{<BR>&nbsp;&nbsp; C result;</P>
+<P>&nbsp;&nbsp; result = CreateChild();<BR>&nbsp;&nbsp; OnAddingNew(new AddingNewEventArgs(result));</P>
+<P>&nbsp;&nbsp; // Propagate parent primary key to foreign key references when new<BR>&nbsp;&nbsp; // child object added to exsting object</P>
+<P>&nbsp;&nbsp; SetChildForeignKey(result);<BR>&nbsp;&nbsp; Add(result);<BR>&nbsp;&nbsp; return result;<BR>}</P>
+<P>&nbsp;</P>
+<P>Maybe someone can enlighten me, but I have to just chalk this up to voodoo for the moment... :( </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, October 20, 2008</h2><P>OK, some of the voodoo is starting to clear. </P>
+<P>In trying to clean this up, I prompt broke it again without realizing it. I had tried to move some code to an override of InsertItem, calling BusinessListBase.InsertItem() first, and </P>
+<P>It looks it's probably related to&nbsp;something that&nbsp;fires a property change after the list events have been hooked in InsertItem (e.g.&nbsp;during the processing of AddNewCore()) causes the behavior I observed. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Monday, October 20, 2008</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>I seem to remember getting something like this 
+during the development of a form using the DataGridView. Unfortunately I cannot 
+remember what I did about it. I have had a look at the code in&nbsp;that form 
+and there is nothing obvious. All I can suggest is that is something to do with 
+the code already in your form. How about chopping out code in your form bit by 
+bit&nbsp;on a trial basis until the&nbsp;issue goes away. Clearly this is not a 
+solution, but it&nbsp;may help&nbsp;identify the code that is causing the 
+problem.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Regards,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Patrick</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV>----- Original Message ----- </DIV>
+<BLOCKQUOTE>
+  <DIV><B>From:</B> 
+  <A title=cslanet@lhotka.net href="mailto:cslanet@lhotka.net">rsbaker0</A> 
+  </DIV>
+  <DIV><B>To:</B> <A title=patrick@ashmeadapplications.co.uk href="mailto:patrick@ashmeadapplications.co.uk">patrick@ashmeadapplications.co.uk</A> 
+  </DIV>
+  <DIV><B>Sent:</B> Saturday, October 18, 2008 1:54 
+  PM</DIV>
+  <DIV><B>Subject:</B> [CSLA .NET] Debugging Help: 2 
+  lists, one works fine adding object, other loses first keystroke?</DIV>
+  <DIV><BR></DIV>
+  <P>This a weird WinForms problem using a DevExpress grid and I was just hoping 
+  someone could point me in the right direction. </P>
+  <P>When I start typing in the "new item row" in one list, it works perfectly. 
+  The child object gets created and initialized and the first keystroke shows up 
+  in the field. </P>
+  <P>In the problem list, a child object is created, but the property setter for 
+  the property mapped to the column I'm editing doesn't get called, and the 
+  first keystroke doesn't show up. However, it works fine after that. It doesn't 
+  matter which column I type in or what data type it is (or even if I'm using a 
+  DevExpress editor control like a drop-down to supply the value) -- the&nbsp; 
+  very first property change is lost. </P>
+  <P>Any thoughts on how I might troubleshoot this? The ironic thing is that 
+  both the lists are the same class type. It's a generic 
+  "MyBusinessListBase&lt;T&gt;" class where the only thing different is T, so 
+  I'd think it would have to be related to something specific about the class 
+  supplied for T. </P>
+  <P>It's probably raising some event (or not raising the right event) during 
+  creation of the child object in AddNewCore, but I'm not sure where to start. 
+  &nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

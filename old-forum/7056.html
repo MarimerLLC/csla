@@ -1,0 +1,173 @@
+<html><header><title>Bind Silverlight Grid To Data Provider and selecte new item</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bind Silverlight Grid To Data Provider and selecte new item</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7056.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry posted on Friday, June 05, 2009</h2><P>Hi.&nbsp; I'm trying to tie a Silverlight data grid and data provider together and set the grid selection to a new item when it's added through the data provider.&nbsp; So far, no luck.&nbsp; The provider adds the new object but the grid selects the first item in the grid, not the new one.&nbsp; I realize this is more of a WPF thing than a csla thing but I thought someone might have a suggestion.</P><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>CslaDataProvider</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Key</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDpClient"</FONT></FONT><FONT size=2> <BR></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>DataChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDpClient_DataChanged"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ManageObjectLifetime</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="True"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>IsInitialLoadEnabled</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="False"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ObjectType</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="HorizonSoftware.OSMobileStock.BusinessObjects.ClientList, HorizonSoftware.OSMobileStock.BusinessObjects, Version=..., Culture=neutral, PublicKeyToken=null"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>FactoryMethod</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="BeginGetClientList"</FONT></FONT><FONT size=2> <BR></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>PropertyChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDpClient_PropertyChanged"</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>/&gt;</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>data</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>DataGrid</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> AutoGenerateColumns</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="False"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> HeadersVisibility</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Column"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="dgClient"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> LoadingRow</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="dgClient_LoadingRow"</FONT></FONT><FONT size=2><FONT color=#000000> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ItemsSource</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Margin</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="8,0,8,0"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> SelectionChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="DataGrid_SelectionChanged"&gt;</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Button</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="BtnAdd"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Margin</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="0,0,3,0"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.MethodName</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="AddNewItem"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.Resource</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>StaticResource</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> CslaDpClient</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.TriggerEvent</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Click"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>IsEnabled</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Mode</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=OneWay,</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Path</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=CanAddNewItem,</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Source</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>={</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>StaticResource</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> CslaDpClient</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}}"&gt;</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>No luck trying to do it in code either, which is wierd...</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> dgClient_LoadingRow(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataGridRowEventArgs</FONT></FONT><FONT size=2> e){<BR>HzBo.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2> client = e.Row.DataContext </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> HzBo.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (client != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2> &amp;&amp; client.IsNew){<BR>dgClient.SelectedItem = client;<BR>dgClient.UpdateLayout();<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//HzBo.ClientList list = dgClient.DataContext as HzBo.ClientList;<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//dgClient.SelectedIndex = list.Count - 1;</FONT></FONT><FONT size=2>}}</P></FONT></FONT></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, June 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+think doing this in code is the easiest route, and you would need not to use
+InvokeMethod on your button, but have a direct Click event.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>The
+AddNewCore in your list would be like this<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>AddNewCore()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Client
+newClient = Client.NewClient()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Add(newClient)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>OnAddedNew(newClient)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In
+your Button_Click<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>((ClientList)this.DataContext).AddedNew+=CLientAdded;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>((ClientList)this.DataContext).AddNew();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private
+void ClientAdded(&#8230;.)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>myGrid.SelectedItem
+= e.newObject<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>myGrid.ScrollIntoView(e.NewObject)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>((ClientList)this.DataContext).AddedNew-=CLientAdded;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I
+do not guarantee the exact syntax on the grid, but it should be pretty close.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esaulsberry
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 05, 2009 6:10 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Bind Silverlight Grid To Data Provider and selecte
+new item<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi.&nbsp; I'm trying to tie a Silverlight data grid and data provider
+together and set the grid selection to a new item when it's added through the
+data provider.&nbsp; So far, no luck.&nbsp; The provider adds the new object
+but the grid selects the first item in the grid, not the new one.&nbsp; I
+realize this is more of a WPF thing than a csla thing but I thought someone
+might have a suggestion.<o:p></o:p></p>
+
+<p><span>&lt;</span><span>csla</span><span>:</span><span>CslaDataProvider</span><span> x</span><span>:</span><span>Key</span><span>=&quot;CslaDpClient&quot;</span><span> <br>
+<span>DataChanged</span><span>=&quot;CslaDpClient_DataChanged&quot;<br>
+</span><span>ManageObjectLifetime</span><span>=&quot;True&quot;<br>
+</span><span>IsInitialLoadEnabled</span><span>=&quot;False&quot;<br>
+</span><span>ObjectType</span><span>=&quot;HorizonSoftware.OSMobileStock.BusinessObjects.ClientList,
+HorizonSoftware.OSMobileStock.BusinessObjects, Version=..., Culture=neutral,
+PublicKeyToken=null&quot;<br>
+</span><span>FactoryMethod</span><span>=&quot;BeginGetClientList&quot;</span>
+<br>
+<span>PropertyChanged</span><span>=&quot;CslaDpClient_PropertyChanged&quot;</span>
+<span>/&gt;</span></span><o:p></o:p></p>
+
+<p><span>&lt;</span><span>data</span><span>:</span><span>DataGrid</span><span> AutoGenerateColumns</span><span>=&quot;False&quot;</span><span>
+HeadersVisibility</span><span>=&quot;Column&quot;</span><span> x</span><span>:</span><span>Name</span><span>=&quot;dgClient&quot;</span><span> LoadingRow</span><span>=&quot;dgClient_LoadingRow&quot;</span><span> </span><span>ItemsSource</span><span>=&quot;{</span><span>Binding</span><span>}&quot;</span><span>
+Margin</span><span>=&quot;8,0,8,0&quot;</span><span> SelectionChanged</span><span>=&quot;DataGrid_SelectionChanged&quot;&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>Button</span><span> x</span><span>:</span><span>Name</span><span>=&quot;BtnAdd&quot;</span><span> Margin</span><span>=&quot;0,0,3,0&quot;<br>
+</span><span>csla</span><span>:</span><span>InvokeMethod.MethodName</span><span>=&quot;AddNewItem&quot;<br>
+</span><span>csla</span><span>:</span><span>InvokeMethod.Resource</span><span>=&quot;{</span><span>StaticResource</span><span> CslaDpClient</span><span>}&quot;<br>
+</span><span>csla</span><span>:</span><span>InvokeMethod.TriggerEvent</span><span>=&quot;Click&quot;<br>
+</span><span>IsEnabled</span><span>=&quot;{</span><span>Binding</span><span> Mode</span><span>=OneWay,</span><span> Path</span><span>=CanAddNewItem,</span><span> Source</span><span>={</span><span>StaticResource</span><span> CslaDpClient</span><span>}}&quot;&gt;<o:p></o:p></span></p>
+
+<p><span>No luck trying to do it in code
+either, which is wierd...<o:p></o:p></span></p>
+
+<p><span>private void
+dgClient_LoadingRow(object sender, </span><span>DataGridRowEventArgs</span><span> e){<br>
+HzBo.</span><span>Client</span><span> client = e.Row.DataContext as HzBo.</span><span>Client</span><span>;<br>
+if (client != null &amp;&amp; client.IsNew){<br>
+dgClient.SelectedItem = client;<br>
+dgClient.UpdateLayout();<br>
+</span><span>//HzBo.ClientList list =
+dgClient.DataContext as HzBo.ClientList;<br>
+//dgClient.SelectedIndex = list.Count - 1;</span><span>}}<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Monday, June 08, 2009</h2><P>Code it is.&nbsp; I think sometimes I try too hard to do things in the declarative syntax instead of "code" (as if that markup goobly-gook isn't code).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fel replied on Friday, July 31, 2009</h2>This is your code:<br><br><font><font><font><font><font><font><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2">private</font></font><font size="2"> </font><font color="#0000ff" size="2"><font color="#0000ff" size="2">void</font></font><font size="2"> dgClient_LoadingRow(</font><font color="#0000ff" size="2"><font color="#0000ff" size="2">object</font></font><font size="2"> sender, </font><font color="#2b91af" size="2"><font color="#2b91af" size="2">DataGridRowEventArgs</font></font><font size="2"> e){<br>HzBo.</font><font color="#2b91af" size="2"><font color="#2b91af" size="2">Client</font></font><font size="2"> client = e.Row.DataContext </font><font color="#0000ff" size="2"><font color="#0000ff" size="2">as</font></font><font size="2"> HzBo.</font><font color="#2b91af" size="2"><font color="#2b91af" size="2">Client</font></font><font size="2">;<br></font><font color="#0000ff" size="2"><font color="#0000ff" size="2">if</font></font><font size="2"> (client != </font><font color="#0000ff" size="2"><font color="#0000ff" size="2">null</font></font><font size="2"> &amp;&amp; client.IsNew){<br>dgClient.SelectedItem = client;<br>dgClient.UpdateLayout();<br><br><font color="#000000">Try<br><br></font></font></font></font></font></font></font></font></font></font></font></font></font></font><font><font><font><font><font><font><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2">private</font></font><font size="2"> </font><font color="#0000ff" size="2"><font color="#0000ff" size="2">void</font></font><font size="2"> dgClient_LoadingRow(</font><font color="#0000ff" size="2"><font color="#0000ff" size="2">object</font></font><font size="2"> sender, </font><font color="#2b91af" size="2"><font color="#2b91af" size="2">DataGridRowEventArgs</font></font><font size="2"> e){<br>HzBo.</font><font color="#2b91af" size="2"><font color="#2b91af" size="2">Client</font></font><font size="2"> client = e.Row.DataContext </font><font color="#0000ff" size="2"><font color="#0000ff" size="2">as</font></font><font size="2"> HzBo.</font><font color="#2b91af" size="2"><font color="#2b91af" size="2">Client</font></font><font size="2">;<br></font><font color="#0000ff" size="2"><font color="#0000ff" size="2">if</font></font><font size="2"> (client != </font><font color="#0000ff" size="2"><font color="#0000ff" size="2">null</font></font><font size="2"> &amp;&amp; client.IsNew){<br>dgClient.SelectedItem = client;<br>dgClient.UpdateLayout();<br>dgClient.ScrollIntoView(client,dgClient.Columns[0])&nbsp;&nbsp; //<font color="#ff0000">new line</font><br><br><br></font></font></font></font></font></font></font></font></font></font></font></font></font><font><font><font><font><font><font><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font color="#0000ff" size="2"><font size="2">&nbsp;<br></font></font></font></font></font></font></font></font></font></font></font></font></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

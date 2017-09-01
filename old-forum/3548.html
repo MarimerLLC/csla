@@ -1,0 +1,91 @@
+<html><header><title>editableRootListBase delete error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>editableRootListBase delete error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3548.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Sunday, September 16, 2007</h2><P>Here is the case.</P>
+<P>EditableRootListBase is bound to a datagridview. I delete a row. The delete fails at the database due to contrainsts. The error gets displayed to user, and the row remains in the grid. No problem.</P>
+<P>But now when I select another row, I get a datarow error again, because it is still trying to delete the initial row.&nbsp;I know it is the same row as I check the Id in the delete method. </P>
+<P>So then,&nbsp;when I initially try deleting, I use cancel edit in the datarow exception handler. This is not working because I am still getting&nbsp;dataError exception. &nbsp;</P>
+<P>One problem I will try is: Maybe I am throwing the wrong type of exception in the dataportal. When I catch the contraint exception, I throw an application exception. Maybe I have to throw a dataportal exception?</P>
+<P>One more thing: When I handle the dataError:</P>
+<UL>
+<LI>on initial delete&nbsp;I&nbsp;get the delete error context</LI>
+<LI>on selecting another row I get a different error context.</LI></UL>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 16, 2007</h2><P>Is this with a local or remote data portal configuration?</P>
+<P>If local, I have a suspicion as to the cause - ERLB doesn't clone the object before saving it, and so when the failure occurs the object's state is left still changed (IsDeleted is true).</P>
+<P>If this is the case, you may try changing the SaveItem() method in ERLB from this:</P><FONT size=3>
+<BLOCKQUOTE dir=ltr>
+<P>try<BR>{<BR>&nbsp; // do the save<BR>&nbsp; this[index] = (T)item.Save();<BR>}</P></BLOCKQUOTE></FONT>
+<P>to this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>try<BR>{<BR>&nbsp; // do the save<BR>&nbsp; this[index] = ((T)((ICloneable)item.Clone())).Save();<BR>}</P></BLOCKQUOTE>
+<P>In 3.0.2 I'm looking to resolve this in a more automated fashion - and actually <EM>did</EM> resolve it in Csla.Wpf.CslaDataProvider - but I forgot that the issue existed here as well. I'll need to add that change to ERLB as well.</P>
+<P>(the real change is slightly more sophisticated, because it is potentially smart enough to not do the clone if the data portal is running in remote mode - and uses a new config setting to be that smart)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Monday, September 17, 2007</h2><P>I am running locally during development.</P>
+<P>I have tried cloning the object prior to saving, then when the delete fails, I replace the object in the binding source. Didn't work. In the end I had to clone the entire list, and then replace the datasource. </P>
+<P>I will try changing the saveItem method. Once I switch over to running remotely, I suppose this will cause a little extra overhead, but not nearly as much as cloning the entire datasource.</P>
+<P>&nbsp;</P>
+<P>Thanx</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 17, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Prior to 3.0.2 switching to a remote data portal would cause
+extra overhead. However, in 3.0.2 I&#8217;ve added a new config setting so you
+can turn on a switch so the data portal itself will do the clone, but only when
+necessary. In 3.0.2 the default is to have this option off (for backward
+compatibility), but in 3.5 I intend to change the default to true - a breaking
+change, but one which makes everything work much smoother in the long run.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhw
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 17, 2007 9:16 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] editableRootListBase delete error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am running locally during development.<o:p></o:p></p>
+
+<p>I have tried cloning the object prior to saving, then when the delete fails,
+I replace the object in the binding source. Didn't work. In the end I had to
+clone the entire list, and then replace the datasource. <o:p></o:p></p>
+
+<p>I will try changing the saveItem method. Once I switch over to running
+remotely, I suppose this will cause a little extra overhead, but not nearly as
+much as cloning the entire datasource.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanx<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

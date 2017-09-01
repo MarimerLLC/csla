@@ -1,0 +1,91 @@
+<html><header><title>My first post in CSLA (Filtered List)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>My first post in CSLA (Filtered List)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3769.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_shah posted on Wednesday, October 24, 2007</h2><P>Using VB 2005 and CSLA 2.1</P>
+<P>I created an editable root collection using CSLA generator&nbsp;, for some reason that collection can not be filtered (I thought .NET 2.0 has <FONT size=2>IBindingListView.Filter)</FONT></P>
+<P><FONT size=2>What do i need to do to enable filtering in my collection?</FONT><FONT size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 24, 2007</h2>CSLA includes FilteredBindingList, which provides a filtered view of any list. On CSLAcontrib there's an IBindingListView implementation you may choose to use instead.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, October 24, 2007</h2><P>The object from CSLAContrib is called ObjectListView. It supports sorting&nbsp;on multiple columns/properties&nbsp;and filtering.</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Wednesday, October 24, 2007</h2><P>Hello,</P>
+<P>How can I use the ObjectListView in my project.I did download it long time back and used the DLL but was not able to use it.Is there an example or code that shows it being used to filter the List and bind the list back to the control?</P>
+<P>Thanks In Advance</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_shah replied on Wednesday, October 24, 2007</h2><P>I have similar question</P>
+<P>My objects currently implements BusinessBase (of T) should i simply change it to&nbsp; FilteredBindingList? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No. BusinessBase creates single objects. BusinessListBase
+creates lists of BusinessBase objects. FilteredBindingList is a way to get a
+view of a BusinessListBase that is filtered.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Read the <i>CSLA .NET Version 2.1 Handbook</i> for details on
+how FilteredBindingList works and is used. In short:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Dim original As CustomerList(Of Customer)&nbsp; &#8216; where
+Customer is a BusinessBase(Of Customer)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>original = CustomerList.GetList()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Dim filtered As New FilteredBindingList(Of Customer)(original)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>filtered.ApplyFilter(&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now you can use &#8216;filtered&#8217; as a binding source or
+whatever you want, and it provides a filtered view of &#8216;original&#8217;.
+The original list is still there, this is merely a filtered view.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> c_shah
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 24, 2007 3:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] My first post in CSLA (Filtered List)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have similar question<o:p></o:p></p>
+
+<p>My objects currently implements BusinessBase (of T) should i simply change
+it to&nbsp; FilteredBindingList? <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_shah replied on Wednesday, October 24, 2007</h2>Awesome...lots of learning in my first post...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 24, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Inquistive_Mind:</strong></div><div>
+<P>Hello,</P>
+<P>How can I use the ObjectListView in my project.I did download it long time back and used the DLL but was not able to use it.Is there an example or code that shows it being used to filter the List and bind the list back to the control?</P>
+<P>Thanks In Advance</P>
+<P></div></BLOCKQUOTE></P>
+<P>Take a look at this thread:</P>
+<P><A HREF="/forums/thread/10100.aspx">http://forums.lhotka.net/forums/thread/10100.aspx</A></P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

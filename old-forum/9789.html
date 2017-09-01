@@ -1,0 +1,18 @@
+<html><header><title>How to: ledger running balance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to: ledger running balance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9789.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Monday, November 22, 2010</h2><p>My accounting project requires a &quot;running balance/&quot; column. how do i implement it?</p>
+<p>&nbsp;</p>
+<p>Thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Monday, November 22, 2010</h2><p>It probably depends on how you&#39;re implementing the rest of your app. &nbsp;I have a feeling that you&#39;ll receive better answers if you can share just a bit more context with your question.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Tuesday, November 23, 2010</h2><p>Thank you for the reply. I will try to explain my problem.</p>
+<p>A sample ERO business object would have the following properties:</p>
+<p>ID</p>
+<p>PostDate</p>
+<p>AccountID</p>
+<p>DepositAmount</p>
+<p>WithdrawAmount</p>
+<p>&nbsp;</p>
+<p>A ReadOnly Root List object will have all&nbsp; the properties of the ERO, plus a running balance/total property.</p>
+<p>How do I implement an ReadOnly Root List that shows the &quot;running balance/total?&quot;</p>
+<p>&nbsp;</p>
+<p>Thank you.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Tuesday, November 23, 2010</h2><p>Assuming that the running balance is only available while the list is loaded (that is, it is not persisted to the database), I would load the transactions in ascending PostDate order (either thru a database query or using Linq OrderBy() extension method) and iterate through the list updating the running balance total property on each detail object.&nbsp; Nothing magical, just code.</p>
+<p>&nbsp;</p>
+<p>Jon Stonecash</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,72 @@
+<html><header><title>Alternative to FilteredBindingList in Silverlight Suggestions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Alternative to FilteredBindingList in Silverlight Suggestions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7454.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, August 13, 2009</h2><P>I just had a revalation today while I was porting&nbsp;some of my&nbsp;Csla 3.0.5.0 libraries up to Csla3.7 for Silverlight. There doesn't seem to be a Csla.FilteredBindingList in the CslaLight assembly :( Sorry if this is a RTFM question, but what should I use instead for filtered lists?</P>
+<P>I appreciate the help. Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 13, 2009</h2><P>Generally you should use LINQ. </P>
+<P>I view SBL and FBL as essentially obsolete, but of course I'll leave them in the framework while there's WinForms support, because WinForms likes them much better than it likes LINQ.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, August 14, 2009</h2><P>Thanks, LINQ is something I'm dying to get more experience with anyway, but the dinosaurs in my office have been dragging their feet on adoption of it, so I rarely get to&nbsp;code for it. Looks like I now have even more an excuse to get them to get of their butts.</P>
+<P>Just curious, I hadn't heard anything about WinForms disagreeing with LINQ. If you don't mind, do you care to elaborate on that? </P>
+<P>Thanks a million Rocky.</P>
+<P>BTW, just a suggestion: I would be all for marking the SLB &amp; FLB classes and ctors with an Obsolete attribute, just without an exception thrown so not to break anything. Stuff like that would help slackers like me get aware sooner =P</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&#8220;Disagreeing&#8221; might be a strong word.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Windows Forms controls like to interact with collections that
+implement IBindingList. All the auto-sorting and so forth works through that interface,
+as does normal datagrid behaviors like rolling back when the user presses ESC
+or adding a new row when the user moves to the bottom of the datagrid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>None of those features exist on the results of a LINQ query,
+because LINQ returns an IEnumerable&lt;T&gt;, not an IBindingList.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA .NET tries to mitigate this through the LinqBindingList, so
+if you do an identity projection query you&#8217;ll get back an LBL&lt;T&gt;, not an
+IEnumerable&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>// returns LBL<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var data = from r in Customers where r.SalesTotal &lt; 500000
+select r;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you do a non-identity projection then you&#8217;ll get back a
+normal LINQ result: IEnumerable&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>// returns IEnumerable&lt;T&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>var data = from r in Customers where r.SalesTotal &lt; 500000
+select new { Id = r.Id, Name = r.Name, Sales = r.SalesTotal };<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So while CSLA .NET tries to make LINQ work better for Windows
+Forms, the reality is that LINQ is part of the new wave of technologies, and
+Windows Forms is a legacy technology.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, August 20, 2009</h2><P>Funny you bring that up, because I was just battling the same thing recently, but for different reasons.&nbsp; </P>
+<P>On my last reply on <A HREF="/forums/thread/35552.aspx">this </A>thread is a workaround for just that, allowing you to still use LINQ in WinForms, by exposing a factory method that performs the linq and then adding the IEnumerable to&nbsp;a&nbsp;newly constructed Csla List Object. </P>
+<P>The only downside is that you have to encapsulate the LINQ in the factory method, but honestly I like this 100 X better than writing FLB/SLB anyway. (plus for <EM>my </EM>common tasks at work,&nbsp;encapsulation of the filter is usually preferred anyway).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

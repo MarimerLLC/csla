@@ -1,0 +1,22 @@
+<html><header><title>Sql Error in ProjectTracker Library 3.03-071127</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sql Error in ProjectTracker Library 3.03-071127</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4372.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Burldo posted on Tuesday, February 19, 2008</h2><P>I've been working with Unit Testing that's available in VS-2008 Pro now. In the Project Tracker library, Project.vb Exists function. I keep getting data portal errors.</P><FONT color=#0000ff size=2>
+<P>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Execute()</FONT></P>
+<P><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Database.PTrackerConnection)</P>
+<P>cn.Open()</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlCommand = cn.CreateCommand</P>
+<P>cm.CommandType = CommandType.Text</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"SELECT Id FROM Projects WHERE Id=@id"</P></FONT><FONT size=2>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@id"</FONT><FONT size=2>, mId)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> count </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>CInt</FONT><FONT size=2>(cm.ExecuteScalar)</P>
+<P>mExists = (count &gt; 0)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT>I believe the Sql should be: <FONT color=#a31515 size=2></P>
+<P>"SELECT COUNT(Id) FROM Projects WHERE Id=@id"</P>
+<P><FONT color=#000000><FONT size=3>This is in Visual Basic&nbsp; version 3.0.3-071127</FONT> </FONT></P>
+<P><FONT color=#000000 size=3>I love this framework by the way and looking forward to the VB version of your 3.5 version book. That will be out before the C# version, right? <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></FONT></P>
+<P><FONT color=#000000 size=3>Burl</FONT></P>
+<P><FONT color=#000000 size=3></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 20, 2008</h2><P>Huh... Actually, it should use the stored procedure:</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P>cm.CommandType = CommandType.StoredProcedure<BR>cm.CommandText = </FONT><FONT color=#a31515 size=2>"existsProject"<BR></FONT><FONT size=2>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@id"</FONT><FONT size=2>, mId)<BR></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> count </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>CInt</FONT><FONT size=2>(cm.ExecuteScalar)</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

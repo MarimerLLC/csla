@@ -1,0 +1,210 @@
+<html><header><title>Infragistics &amp; Csla 3?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Infragistics &amp; Csla 3?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3048.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, June 18, 2007</h2>Hi,<br><br>I'm trying Csla 3 to see if it helps with an issue I'm having with a grid editing an EditableRootListBase class.&nbsp; <br><br>Unfortunately, it seems that the grid control simply does not behave correctly at all; any form with a grid attached to an editable collection throws the new UndoException, Edit level mismatch.<br><br>Has anyone else had these problems? <br><br>Thanks<br>Andy<br><br>Edit:&nbsp; Looking at the code for CopyState (which is the method throwing the UndoException), it looks like its comparing the parents edit level to the current items edit level <b><i>+ 1</i></b>.&nbsp; I don't claim to understand the code, but it the plus one seems odd.&nbsp; Isn't the code checking to see that the edit levels are the same?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, June 18, 2007</h2>It seems like the problem is that I have a root object + binding source, and a child collection + binding source.&nbsp; Setting the binding source to the child collection, then setting the other binding source to the root object apparently causes problems. <br><br>Reversing the order of the calls initially seems to correct this problem.&nbsp; I'm going to try some other forms to see if simply changing the order in which I set the datasource for the binding sources corrects these issues.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 18, 2007</h2><P>Check the code in PTWin in svn. Getting data binding to cooperate in a parent-child relationship turns out to be a bit of a challenge, but I believe the code in ProjectEdit (for example) is correct and works.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 19, 2007</h2>I looked at the sample that came with the beta, hopefully that is similar to the svn.<br><br>It seems that you're using one binding source as the datasource for the child's binding source.&nbsp; Is that the perfered method of linking the objects together? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is similar, but subsequent to the beta (I think &#8211;
+things are so busy I&#8217;m not sure about order-of-events sometimes) I worked
+through a couple very tough issues with data binding in Windows Forms &#8211;
+especially around the Cancel button &#8211; that are reflected in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/ProjectTrackercs/PTWin/ProjectEdit.cs?view=markup">Click
+here</a> to see the current c# code for ProjectEdit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/ProjectTrackervb/PTWin/ProjectEdit.vb?view=markup">Click
+here</a> to see the current vb code for ProjectEdit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In any case, a child bindingsource should use the parent
+bindingsource as its data source, yes. That&#8217;s the way data binding knows
+about the parent-child relationship, and it is the behavior you get when doing
+drag-and-drop design of your form in VS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 19, 2007 8:42 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Infragistics &amp; Csla 3?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I looked at the sample that came with the beta, hopefully
+that is similar to the svn.<br>
+<br>
+It seems that you're using one binding source as the datasource for the child's
+binding source.&nbsp; Is that the perfered method of linking the objects
+together? <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 19, 2007</h2>I've done as you suggested, and set secondary bindingsource objects to have the primary bindingsource as their datasource.&nbsp; That seems to have cleared up all the issues.<br><br>The one part that was difficult was a form where I actually have a control specifically built to handle the editing of single child objects.&nbsp; I had to modify the control to accept a BindingSource component instead of the child object type.<br><br>Thanks for the help.<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 20, 2007</h2>I guess I spoke too soon.&nbsp; The form now loads, but I didn't try saving.<br><br>The problem is that I clone my BO ApplyEdit and save the clone.&nbsp; I get UndoException however on a rebind.<br><br>The issue is that the child objects somehow get to EditLevel two, and after applying the edit, they still have an EditLevel of one.<br><br>It seems that the secondary binding source is still calling BeginEdit on the child object, even though the secondary bindingsource's datasource is the "root" bindingsource.&nbsp; Since BeginEdit was never called on the child object (and thus the bindingEdit flag is still false), it does another CopyState.<br><br>Am I still doing something wrong?&nbsp; <br><br>The secondary BS is on a UserControl, if that makes any difference.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The trick is that you have to unbind, or work with an unbound
+copy, of the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As soon as you call bs.EndEdit() or bs.CancelEdit() the
+bindingsource calls BeginEdit(). Every time, and immediately. So as long as
+your object is bound to a bindingsource, it is (or one child is) at an elevated
+edit level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So to save or cancel you must unbind so you can get the edit
+levels down to 0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 20, 2007 10:33 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Infragistics &amp; Csla 3?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I guess I spoke too soon.&nbsp; The form now loads, but I
+didn't try saving.<br>
+<br>
+The problem is that I clone my BO ApplyEdit and save the clone.&nbsp; I get
+UndoException however on a rebind.<br>
+<br>
+The issue is that the child objects somehow get to EditLevel two, and after
+applying the edit, they still have an EditLevel of one.<br>
+<br>
+It seems that the secondary binding source is still calling BeginEdit on the
+child object, even though the secondary bindingsource's datasource is the
+&quot;root&quot; bindingsource.&nbsp; Since BeginEdit was never called on the
+child object (and thus the bindingEdit flag is still false), it does another
+CopyState.<br>
+<br>
+Am I still doing something wrong?&nbsp; <br>
+<br>
+The secondary BS is on a UserControl, if that makes any difference.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 20, 2007</h2>Ok.. I missed the part in projectedit where you were calling EndEdit on the binding sources before doing the clone.&nbsp; I've done that, and it seems to have fixed my issues..<br><br>Thanks for sticking with me on this.&nbsp; It would seem I have not been working with data binding very well at all..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, neither was I (or probably anyone else) until I put that
+code in 3.0 to throw exceptions when the edit levels got out of sync. In
+retrospect I really wish I&#8217;d put that code in a long time ago&#8230; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 20, 2007 12:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Infragistics &amp; Csla 3?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok.. I missed the part in projectedit where you were calling
+EndEdit on the binding sources before doing the clone.&nbsp; I've done that,
+and it seems to have fixed my issues..<br>
+<br>
+Thanks for sticking with me on this.&nbsp; It would seem I have not been
+working with data binding very well at all..<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

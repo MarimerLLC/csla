@@ -1,0 +1,33 @@
+<html><header><title>CSLA 1.5: Two Child Collections per Business Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 1.5: Two Child Collections per Business Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/924.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Thursday, August 17, 2006</h2><P>Hi everyone,</P>
+<P>Is it possible to have two or more child collections per business object, e.g.</P>
+<P>BO is Person</P>
+<P>First child object collection is Vehicles</P>
+<P>Second child object collection is&nbsp;Houses</P>
+<P>In the Person object I would then declare:</P>
+<P>private PersonVehicles _personVehicles = PersonVehicles.NewPersonVehicles();</P>
+<P>private PersonHouses _personHouses = PersonHouses.NewPersonHouses();</P>
+<P>And then have two properties declared:</P>
+<P>public PersonVehicles Vehicles</P>
+<P>{get {return _vehicles;}}</P>
+<P>public PersonHouses Houses</P>
+<P>{get {return _houses;}}</P>
+<P>In the fetch:</P><FONT size=2>
+<P><FONT size=3>_vehicles = PersonVehicles.GetPersonVehicles(dr);</FONT></P>
+<P><FONT size=3>_houses = PersonHouses.GetPersonHouses(dr);</FONT></P>
+<P><FONT size=3>etc....</FONT></P>
+<P><FONT size=3>In the end I want to display the Person properties on the form, with a list of all houses and a list of all vehicles, exactly the same way Rocky did with the ProjectTracker code in the 1.5 version of the book code.</FONT></P>
+<P><FONT size=3>Regards,</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Thursday, August 17, 2006</h2><P>Hi cjherasmus</P>
+<P>Yes you can have multiple child collections per business object. You own example is exactly how you want to do this.</P>
+<P>If you are using a GetPerson sproc to retrieve your data, this will also have to retrieve the vehicles and houses related to the person, then your DataPortal_Fetch will look like this:</P>
+<P>...<BR>//Read person data from data reader<BR>...<BR><BR>dr.NextResult()<BR>_vehicles = PersonVehicles.GetPersonVehicles(dr);<BR><BR>dr.NextResult()<BR>_hourse = PersonHouses.GetPersonHouses(dr);<BR><BR>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, August 17, 2006</h2><P>How would you handle&nbsp;a collection of people?</P>
+<P>If you had People.Person.PersonVehicles.GetPersonVehicles(dr)?</P>
+<P>When you select from the person table you select all the related vechiles and houses. So each dataset would have data relating to multiple people.</P>
+<P>Datareaders are forward only so once you read the last record for a PersonsVehicle the dataReader will automatically read the next row so you will be on a different persons list of vehicles I think.</P>
+<P>Maybe for this instances it's better to use a dataset instead of a datareader?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Thursday, August 17, 2006</h2><P>Henrik,</P>
+<P>I initially thought my problem must be solved somewhere above or beneath the "dr.NextResult" line. You've made it clear to me. Never thought of having two dr.NextResult lines.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Thursday, August 17, 2006</h2><P>There's no problem with using multiple child collections. I have one BO that has about 20 child collections (yeah, I should probably refactor that one some day...) Make sure to add each one as part of your .IsDirty and .IsValid overloads to have the parent object reflect the full status if necessary. </P>
+<P>Additionally, there's no problem with using datasets with data relations to populate the results. Another option would be to lazy load the children collections. One method I use is as follows (in pseudocode)</P>
+<P>Select records for parent object collection based on a filter and fill it<BR>Select records for child objects joined to the parent table based on the parent table's filter as above, including the parent's id column<BR>&nbsp;&nbsp; while reading results from&nbsp;the child query<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Find the parent object in the collection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add a new child to the&nbsp;selected collection by passing the datareader row (note, we do not recreate the collection each time and return that as would be typical of a dataportal call.&nbsp;The entire fetch is occuring&nbsp;on the server side and the tree will be returned in one call)</P>
+<P>Note, I only use this&nbsp;scheme when&nbsp;loading the full tree is necessary.&nbsp;Hopefully this makes enough sense to not include some full code.</P>
+<P>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley">http://devauthority.com/blogs/jwooley</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

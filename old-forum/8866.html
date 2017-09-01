@@ -1,0 +1,27 @@
+<html><header><title>Save and reread Child-Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Save and reread Child-Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8866.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl posted on Sunday, May 02, 2010</h2><p>Hi.</p>
+<p>I have troubles with Save and Reread Child-Objects. </p>
+<p>I have the fallowing Objects:</p>
+<p>Activity<br />ActivityDocument (wich is a child of Activity)<br />Checkout (which is a child of ActivityDocument).</p>
+<p>Now, I do the fallowing:</p>
+<p>&nbsp; var activity = Activity.GetActivity(new Guid(&quot;...&quot;));<br />&nbsp; var doc = ActivityDocument.GetActivityDocument(activity.ActivityDocumentList[0].Id);<br />&nbsp; var n = doc.CheckoutList.Count;<br /><br />&nbsp; var c = doc.CheckoutList.AddNew();<br />&nbsp; // ... setting some properties<br />&nbsp; doc = doc.Save();<br /><br />&nbsp; n = doc.CheckoutList.Count;</p>
+<p>at the end, n has the correct count - after the first execution - 1. Now, when I retry this, n is after getting doc 0 and at the end one more time 1. When I restart the Service with the WCF-Dataportal, the count will be correct. It seems, that there is a problem about the caching. Do I making something wrong with saving my objects?</p>
+<p>I use CSLA 3.8.2.</p>
+<p>Thanks for your help!</p>
+<p>Best Regards, Thomas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, May 02, 2010</h2><p>You can&#39;t save a child object directly.</p>
+<p>So doc=doc.Save should not work.</p>
+<p>You need to save the root which saves its children:</p>
+<p>activity = activity.Save()</p>
+<p>Joe</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Monday, May 03, 2010</h2><p>Hi Joe</p>
+<p>When I do</p>
+<p> var doc = 
+ActivityDocument.GetActivityDocument(activity.ActivityDocumentList[0].Id);</p>
+<p>doc is now an EditableRoot.</p>
+<p>I have the same problem on one layer higher:<br /><br />Activity is an EditableRoot<br />ActivityDocumentList is a ChildCollection of Activity</p>
+<p>public void CreateNewActivityDocument() {<br />&nbsp; var activity = Activity.GetActivity(new Guid(&quot;58823196-3597-4549-ADD2-E32432F4B3F5&quot;));<br />&nbsp; var ad = activity.ActivityDocumentList.AddNew();<br />&nbsp; var x = activity.ActivityDocumentList.Count&nbsp;&nbsp;&nbsp; <br />&nbsp; // ... setting some properties to ad<br />&nbsp; activity = activity.Save();<br />&nbsp; var y = activity.ActivityDocumentList.Count&nbsp;&nbsp;&nbsp; <br />}</p>
+<p>When I do CreateNewActivityDocument() the first time x and y are:<br />x = 0<br />y = 1<br /><br />The problem is now, when I do CreateNewActivityDocument() one more time I have the same results for x and y <br />x = 0<br />y = 1</p>
+<p>I think, there will be a caching of the EditableRoot and the ChildCollectionList. But I expect, that this cache should be updated when I call Save() of the EditableRoot.</p>
+<p>Best Regards, Thomas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 03, 2010</h2><p>Read (or re-read) <i>Expert 2008 Business Objects</i> chapters 1-5, with a focus on chapter 4. It is important to understand how CSLA expects you to construct your object relationships.</p>
+<p>An object graph can have exactly one root object. Only the root object can be directly retrieved or saved. All other objects in the graph are child objects, and are retrieved/saved as part of the root object.</p>
+<p>The one exception to this is lazy loading, in which case child objects are retrieved independently from the root, but are still saved as part of the root.</p>
+<p>I suppose EditableRootListBase (a dynamic list) is an exception too - it is a specialized collection that contains root objects.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

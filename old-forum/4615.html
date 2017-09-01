@@ -1,0 +1,14 @@
+<html><header><title>How would you design this?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How would you design this?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4615.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmo145 posted on Thursday, April 03, 2008</h2><P>Hi all,</P>
+<P>I can't quite get this. I have an app that saves applicants for jobs. A job can have many applicants. Before an applicant is allowed to be added to a job a bunch of things need to be checked on the state of the job. This leads me to think I should have something like:</P>
+<P>Job BO - contain the rules governing whether an applicant can be added to itself</P>
+<P>JobApplicant Child BO - responsible for saving a valid applicant, regardelss of job.</P>
+<P>I'm curious if this&nbsp;makes it to complex in situations where Applicant has its own children. So, should applicant require a child list of resumes (which i think&nbsp;is coming), i'd be left with a grandchild situation which&nbsp;should be really rare (scary).&nbsp;Also, Applicant and Job are saved in different DBs. </P>
+<P>So, given that, should I have something like:</P>
+<P>Job BO - contain the rules governing whether&nbsp;an application can be added to itself</P>
+<P>JobApplicant Child BO - responsible for managing the association of applicant to job</P>
+<P>Applicant BO - responsible for saving a valid applicant</P>
+<P>This also bothers&nbsp;me&nbsp;since an applicant can never exist without being associated with a job. It also can't be associated with multiple jobs. So JobApplicant seems kinda useless. Because Appplicant requires a job and needs a jobs permission to exist, calling applicant a root&nbsp;seems kinda&nbsp;dumb and misleading.&nbsp;However,&nbsp;this does seem to avoid&nbsp;the complications of the grandchild.</P>
+<P>Or (since I'm basically&nbsp;visualizing&nbsp;a screen where the job is already known and user is filling out information about the applicant) should I just have an ApplicantBO thats responsible for figuring out by itself if it can be added to a job? Maybe require a jobID in the constructor and do somthing form there? This&nbsp;way the client never needs to work with the job, just know how to id it.</P>
+<P>I think I'm just jamming myself up. This should be obvious. Any advice? </P>
+<P>Thanks everyone,</P>
+<P>Dane</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

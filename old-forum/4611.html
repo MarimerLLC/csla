@@ -1,0 +1,67 @@
+<html><header><title>CSLA .NET 3.5 available for download</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.5 available for download</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4611.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, April 03, 2008</h2><TABLE id=ctl00_ContentPlaceHolder1_GridView1 cellSpacing=0 cellPadding=3>
+
+<TR>
+<TD><SPAN id=ctl00_ContentPlaceHolder1_GridView1_ctl02_Label2>
+<DIV><A HREF="/Themes/default/images/common/csla_title.jpg"><IMG src="http://www.lhotka.net/images/csla_logo1_72.png" width=211 border=0></A></DIV>
+<P>CSLA .NET version 3.5 for .NET 3.5 and Visual Studio 2008 is now available for download from <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>. This version of CSLA .NET includes support for LINQ and provides substantial code reduction (often around 40%) when coding your business objects.</P>
+<P>Check out the <A href="http://www.dotnetrocks.com/default.aspx?showNum=330">official launch announcement </A>on DotNetRocks!</P>
+<P>If you are using .NET 2.0 or 3.0 with Visual Studio 2005 or 2008 then you'll want to use CSLA .NET version 3.0.4. Version 3.0.4 includes some data binding bug fixes over version 3.0.3, and it works with .NET 2.0 or .NET 3.0. It is also available from the <A href="http://www.lhotka.net/cslanet/download.aspx">download page</A>.</P>
+<P>As always, questions and comments are welcome on the forum at <A HREF="/">http://forums.lhotka.net</A>. </P></SPAN></TD></TR></TABLE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cine replied on Thursday, April 03, 2008</h2>Congratulations and thanks for all the effort and hard work you have put in it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cliffordru replied on Thursday, April 03, 2008</h2>You are the man!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, April 03, 2008</h2><P>Awesome!</P>
+<P>Downloading DotNetRocks now to hear your live comments.</P>
+<P>Congratulations.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Thursday, April 03, 2008</h2><P>Yeah, congratulations!! - NOW, get the book done :) :) :)</P>
+<P>Looking forward working with 3.5.</P>
+<P>And thanks for keeping ud the good work with CSLA - I couldn't do my applications with it.</P>
+<P>Thanks,</P>
+<P>Jimmy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Tuesday, April 08, 2008</h2>How much code will I have to change to upgrade to the new version of CSLA?<BR><BR>Since there is no book yet, how much code will I have to change on my 3.0 code?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 08, 2008</h2><P>I did a quick test in my large web app and only had to change a few things.</P>
+<P>1. Change AddDependantProperty to AddDependentProperty. The&nbsp;original code is mis-spelled and Rocky has deprecated it.&nbsp;<BR><BR>2. There are many places where we use Reflection.xyz. Most of them are Reflection.PropertyInfo.<BR><BR>&nbsp;&nbsp; When we added CSLA 3.5 to the solution, there was a conflict in the namespaces for CSLA.Reflection and System.Reflection.&nbsp;&nbsp;&nbsp;We&nbsp;just removed the "Reflection." from the code and used PropertyInfo&nbsp;and added Imports System.Reflection at the top of the page.</P>
+<P>&nbsp;&nbsp; Ditto for Reflection.BindingFlags.NonPublic - add Imports and strip off the extra qualifier.</P>
+<P>Joe</P>
+<P>PS - this upgrade is amazingly simple compared to the 1.x to 2.x upgrade which was tremendously difficult due to all the Rule changes. That required 4 developers for a month to go over all the code - there were so many breaking changes. Plus the sorting and filtering were different and we used them in many web pages.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, April 08, 2008</h2><P>Rocky,</P>
+<P>You Rock!&nbsp; Thanks for all the hard work and effort you put into CSLA.&nbsp; It makes our jobs as developers Ssssooooo much easier.</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, April 09, 2008</h2><P>Congratulations!!</P>
+<P>How is that new book coming along? Is there a new estimated date of arrival?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Husker Dan replied on Thursday, April 10, 2008</h2><P>According to the Apress website it looks like the C# version is scheduled for September. I did not see the VB version listed.</P>
+<P>&nbsp;</P>
+<P>
+<TABLE cellSpacing=1 cellPadding=2 align=center>
+
+<TR>
+<TD>978-1-4302-1019-1</TD>
+<TD><A href="http://www.apress.com/book/view/9781430210191">Expert C# 2008 Business Objects</A></TD>
+<TD>Lhotka, Rockford</TD>
+<TD>Sep 2008</TD></TR></TABLE></P>
+<P>&nbsp;</P>
+<P><A href="http://www.apress.com/book/catalog">http://www.apress.com/book/catalog</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, the plan is to have the C# book available in September,
+with VB available a couple months after that point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ErikPhilips replied on Sunday, April 13, 2008</h2><P>Rocky,</P>
+<P>Thanks for your hard work!&nbsp; I just got started with CSLA and it looks fantastic.</P>
+<P>EAP</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

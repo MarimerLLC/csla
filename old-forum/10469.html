@@ -1,0 +1,165 @@
+<html><header><title>Add / Remove collection items authorization rule.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Add / Remove collection items authorization rule.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10469.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Monday, June 27, 2011</h2><p>
+<p>Hello,</p>
+<p>I am trying to limit the ability to add / remove collection items to certain users. Ideally, I was looking for something quick and simple like:</p>
+<p>BusinessRules.AddRule(new IsInRole(AuthorizationActions.AddChild, SomeCollectionProperty, &ldquo;Supervisor&rdquo;));</p>
+<p>Such feature does not appear to exist however and something tells me there is a good reason for it so I am curious.</p>
+<p>As of right now, I am thinking of creating my own authorization rule, subscribe to the CollectionChanged event of the collection and call the rule every time the CollectionChanged event fires.</p>
+<p>I am sure there is better ways of doing this so I appreciate your feedback.</p>
+<p>Thanks.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 27, 2011</h2><p>In terms of encapsulation - I&#39;d rather implement these checks in the ChildObject to check that the user has permission to create/delete object and a corresponding static authorization rule. (this would also work nicely with the Csla.Xaml.ViewModel). </p>
+<p>For child objects you need to enforce the rule in your own code (authz rules is only enforced by the &quot;root&quot; DataPortal).</p>
+<p>Another possibility is to use the RegisterMethod (similar to RegisterProperty but for a method) for a &quot;custom&quot; CreateChild method and add authorization+checks to that method. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, June 28, 2011</h2><p>&nbsp;</p>
+<p class="MsoNormal">Thanks for you feedback guys, I really appreciate it.</p>
+<p class="MsoNormal"><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>In terms of encapsulation - I&#39;d rather implement these checks in the ChildObject to check that the user has permission to create/delete object and a corresponding static authorization rule. (this would also work nicely with the Csla.Xaml.ViewModel).</p>
+<div style="clear:both;"></div>
+<p></div>&nbsp;</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">I understand your point about encapsulation but I see things
+differently. Needless to say, 99.9% of the population (including Rocky) probably
+won&rsquo;t agree with my way of thinking but&hellip;<img src="http://forums.lhotka.net/emoticons/emotion-3.gif" alt="Surprise" /></p>
+<p class="MsoNormal">For the most part (not talking about corner cases here), in my world, broken rules and authorization rules should be enforced
+on the object that is ultimately responsible for enforcing such rule. In the
+case of children on a collection, it is the collection the one that has the
+ultimate say on whether a child is allowed to be added or deleted to it.</p>
+<p class="MsoNormal">I realize that the child could impose rules on itself to
+prevent itself from being created, edited or deleted and that is fine. But no
+matter what kind of fight the child puts on, if the collection says that the
+child will not be added or deleted to it, then it won&rsquo;t be and that is final. I
+know all this is philosophical garbage but that is just my opinion <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p class="MsoNormal">So in a way, I kind of like Tiago approach better except
+that collection object are somewhat treated as a second class citizens in the
+CSLA (such as they don&rsquo;t have a broken rule collection etc), So I end up
+enforcing the rule on the parent object of the collection, not because I want
+to do that but because I have no other choice, at least not without adding significant
+work to me.</p>
+<p class="MsoNormal">I am curious however about the &ldquo;<strong><i>this would also work nicely
+with the Csla.Xaml.ViewModel</i></strong>&rdquo;, I am not familiar with that (too much corporate Unix,
+Java, Flex, Mainframe in my life not much experience with MVVM). Do you think
+that if I was to go my way this will create havoc with the<strong><i> Csla.Xaml.ViewModel</i></strong>
+if I end up using it?</p>
+<p class="MsoNormal">Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 28, 2011</h2><p>Csla.Xaml.ViewModel has &quot;meta&quot; data based properties for the item type&nbsp;of a List, such as:</p>
+<p><strong><em>CanAddNew<br />CanRemove</em></strong></p>
+<p>And for the actual model object as well: </p>
+<p><strong><em>CanSave<br />CanCancel<br />CanDelete<br />CanFetch<br /></em></strong>&nbsp;</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">if</span>&nbsp;(Csla.Rules.<span style="COLOR:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="COLOR:#2baf9a;">AuthorizationActions</span>.DeleteObject,&nbsp;itemType)&nbsp;&amp;&amp;&nbsp;list.Count&nbsp;&gt;&nbsp;0&nbsp;&amp;&amp;&nbsp;!isObjectBusy)
+&nbsp;&nbsp;&nbsp;CanRemove&nbsp;=&nbsp;<span style="COLOR:blue;">true</span>;
+<span style="COLOR:blue;">else</span>
+ &nbsp;&nbsp;CanRemove&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+ </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:#fafafa;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">if</span>&nbsp;(Csla.Rules.<span style="COLOR:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="COLOR:#2baf9a;">AuthorizationActions</span>.CreateObject,&nbsp;itemType)&nbsp;&amp;&amp;&nbsp;!isObjectBusy)
+&nbsp;&nbsp;&nbsp;CanAddNew&nbsp;=&nbsp;<span style="COLOR:blue;">true</span>;
+<span style="COLOR:blue;">else</span>
+&nbsp;&nbsp;&nbsp;CanAddNew&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;&nbsp;</pre>
+<p>So as you can see - for a list the ViewModel knows the item type and has properties (with PropertyChanged events) so that you can use them for databinding on f.ex Enabled property of buttons. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, June 29, 2011</h2><p>&nbsp;</p>
+<p>I see, thank for the help Jonny.</p>
+<p>By the way, I was not being clear on my original&nbsp;question. I don&#39;t have a root collection object, I have&nbsp;business&nbsp;base root object instead (<strong><i>parent -&gt; collection -&gt; child).</i></strong></p>
+<p>What I want to do is to prevent add / delete on the collection object (a child of the root object in my case). I realize that you suggestion still apply, just wanted to clarify my original question.</p>
+<p>Thanks for your time.</p>
+<p><strong><i><br /></i></strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, June 27, 2011</h2><p>One solution is do it like Jonny says. The other is check at the collection level the add / remove authorization.</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Adds&nbsp;a&nbsp;new&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;DocFolder&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;object&nbsp;to&nbsp;the&nbsp;DocFolderColl&nbsp;collection.</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;item&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">The&nbsp;item&nbsp;to&nbsp;add.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;exception&nbsp;cref=</span><span style="COLOR:gray;">&quot;System.Security.SecurityException&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">if&nbsp;the&nbsp;user&nbsp;isn&#39;t&nbsp;authorized&nbsp;to&nbsp;add&nbsp;items&nbsp;to&nbsp;the&nbsp;collection.</span><span style="COLOR:gray;">&lt;/exception&gt;</span>
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">Add</span>(<span style="COLOR:darkblue;">DocFolder</span>&nbsp;item)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(!<span style="COLOR:darkcyan;">CanAddObject</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">throw</span>&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">System</span>.<span style="COLOR:darkblue;">Security</span>.<span style="COLOR:darkblue;">SecurityException</span>(<span style="COLOR:#a31515;">&quot;User&nbsp;not&nbsp;authorized&nbsp;to&nbsp;create&nbsp;a&nbsp;DocFolder.&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">base</span>.<span style="COLOR:darkcyan;">Add</span>(item);
+}
+ 
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Removes&nbsp;a&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;DocFolder&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;object&nbsp;from&nbsp;the&nbsp;DocFolderColl&nbsp;collection.</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;item&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">The&nbsp;item&nbsp;to&nbsp;remove.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;returns&gt;&lt;c&gt;</span><span style="COLOR:green;">true</span><span style="COLOR:gray;">&lt;/c&gt;</span><span style="COLOR:green;">&nbsp;if&nbsp;the&nbsp;item&nbsp;was&nbsp;removed&nbsp;from&nbsp;the&nbsp;collection,&nbsp;otherwise&nbsp;</span><span style="COLOR:gray;">&lt;c&gt;</span><span style="COLOR:green;">false</span><span style="COLOR:gray;">&lt;/c&gt;</span><span style="COLOR:green;">.</span><span style="COLOR:gray;">&lt;/returns&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;exception&nbsp;cref=</span><span style="COLOR:gray;">&quot;System.Security.SecurityException&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">if&nbsp;the&nbsp;user&nbsp;isn&#39;t&nbsp;authorized&nbsp;to&nbsp;remove&nbsp;items&nbsp;from&nbsp;the&nbsp;collection.</span><span style="COLOR:gray;">&lt;/exception&gt;</span>
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;<span style="COLOR:darkcyan;">Remove</span>(<span style="COLOR:darkblue;">DocFolder</span>&nbsp;item)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(!<span style="COLOR:darkcyan;">CanDeleteObject</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">throw</span>&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">System</span>.<span style="COLOR:darkblue;">Security</span>.<span style="COLOR:darkblue;">SecurityException</span>(<span style="COLOR:#a31515;">&quot;User&nbsp;not&nbsp;authorized&nbsp;to&nbsp;remove&nbsp;a&nbsp;DocFolder.&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">base</span>.<span style="COLOR:darkcyan;">Remove</span>(item);
+}</pre>
+<p>&nbsp;...</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;"><span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Adds&nbsp;the&nbsp;object&nbsp;authorization&nbsp;rules.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:darkcyan;">AddObjectAuthorizationRules</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">BusinessRules</span>.<span style="color:darkcyan;">AddRule</span>(<span style="color:blue;">typeof</span>(<span style="color:darkblue;">DocFolderColl</span>),&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:darkblue;">IsInRole</span>(<span style="color:darkblue;">AuthorizationActions</span>.<span style="font-weight:bold;color:purple;">CreateObject</span>,&nbsp;<span style="color:#a31515;">&quot;Archivist&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">BusinessRules</span>.<span style="color:darkcyan;">AddRule</span>(<span style="color:blue;">typeof</span>(<span style="color:darkblue;">DocFolderColl</span>),&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:darkblue;">IsInRole</span>(<span style="color:darkblue;">AuthorizationActions</span>.<span style="font-weight:bold;color:purple;">DeleteObject</span>,&nbsp;<span style="color:#a31515;">&quot;Admin&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;Manager&quot;</span>));
+}
+ 
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Checks&nbsp;if&nbsp;the&nbsp;current&nbsp;user&nbsp;can&nbsp;create&nbsp;a&nbsp;new&nbsp;DocFolderColl&nbsp;object.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;if&nbsp;the&nbsp;user&nbsp;can&nbsp;create&nbsp;a&nbsp;new&nbsp;object;&nbsp;otherwise,&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">false</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">.</span><span style="color:gray;">&lt;/returns&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;<span style="color:darkcyan;">CanAddObject</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">BusinessRules</span>.<span style="color:darkcyan;">HasPermission</span>(<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">AuthorizationActions</span>.<span style="font-weight:bold;color:purple;">CreateObject</span>,&nbsp;<span style="color:blue;">typeof</span>(<span style="color:darkblue;">DocFolderColl</span>));
+}
+ 
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Checks&nbsp;if&nbsp;the&nbsp;current&nbsp;user&nbsp;can&nbsp;delete&nbsp;a&nbsp;DocFolderColl&nbsp;object.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;if&nbsp;the&nbsp;user&nbsp;can&nbsp;delete&nbsp;the&nbsp;object;&nbsp;otherwise,&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">false</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">.</span><span style="color:gray;">&lt;/returns&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;<span style="color:darkcyan;">CanDeleteObject</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">BusinessRules</span>.<span style="color:darkcyan;">HasPermission</span>(<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">AuthorizationActions</span>.<span style="font-weight:bold;color:purple;">DeleteObject</span>,&nbsp;<span style="color:blue;">typeof</span>(<span style="color:darkblue;">DocFolderColl</span>));
+}&nbsp;&nbsp;</pre>
+<p>Anyway keep in mind authorization is checked by Csla only on DataPortal calls.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 28, 2011</h2><p>Hi Tiago, </p>
+<p>I am not quite comfortable with your sample code in that it mixes the </p>
+<ul>
+<li>Authz rules for Create/Delete of the collection object with </li>
+<li>Authorization for Create/Delete item object. </li>
+</ul>
+<p><b>Example: If the collection is a &quot;root&quot; object the DataPortal will NOT allow Create or Delete of the list object. </b></p>
+<p>I&#39;d still prefer to have the Authz rules on the Child type and you could just as easily have the list object check permissions on the child type.</p>
+<pre style="font-size:13px;background:none repeat scroll 0% 0% white;color:black;font-family:Consolas;"><span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Checks&nbsp;if&nbsp;the&nbsp;current&nbsp;user&nbsp;can&nbsp;create&nbsp;a&nbsp;new&nbsp;DocFolder item object.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;if&nbsp;the&nbsp;user&nbsp;can&nbsp;create&nbsp;a&nbsp;new&nbsp;object;&nbsp;otherwise,&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">false</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">.</span><span style="color:gray;">&lt;/returns&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;<span style="color:darkcyan;">CanAddObject</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">BusinessRules</span>.<span style="color:darkcyan;">HasPermission</span>(<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">AuthorizationActions</span>.<span style="font-weight:bold;color:purple;">CreateObject</span><br />       ,&nbsp;<span style="color:blue;">typeof</span>(<span style="color:darkblue;">DocFolder</span>));
+}
+ 
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Checks&nbsp;if&nbsp;the&nbsp;current&nbsp;user&nbsp;can&nbsp;delete&nbsp;a&nbsp;DocFolder item object.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;if&nbsp;the&nbsp;user&nbsp;can&nbsp;delete&nbsp;the&nbsp;object;&nbsp;otherwise,&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">false</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">.</span><span style="color:gray;">&lt;/returns&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;<span style="color:darkcyan;">CanDeleteObject</span>()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">BusinessRules</span>.<span style="color:darkcyan;">HasPermission</span>(<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>.<span style="color:darkblue;">AuthorizationActions</span>.<span style="font-weight:bold;color:purple;">DeleteObject</span><br />       ,&nbsp;<span style="color:blue;">typeof</span>(<span style="color:darkblue;">DocFolder</span>));
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, July 01, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b> </p>
+<p>Hi Tiago, </p>
+<p>I am not quite comfortable with your sample code in that it mixes the </p>
+<ul>
+<li>Authz rules for Create/Delete of the collection object with </li>
+<li>Authorization for Create/Delete item object. </li>
+</ul>
+<p></div></p>
+<p>Hi Jonny,</p>
+<p>While re-doing that part for CslaGenFork templates I was faced with the decision of how to control the Add/Remove authorization.</p>
+<p>There are a lot of possibilities here and there is also this edge situation here role AAA can do whatever he wants to the collection but can do nothing at all to the collection items.</p>
+<p>Let&#39;s discuss a bit the exact meaning of AuthrizationActions, first at the collection level</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="FONT-WEIGHT:bold;COLOR:purple;">CreateObject - create a collection </span>
+<span style="FONT-WEIGHT:bold;COLOR:purple;">GetObject - read the collection (meaning get the collection items)</span>
+<span style="FONT-WEIGHT:bold;COLOR:purple;">EditObject - edit a collection looks like adding or removing collection items, since there is nothing more to do to a Csla collection object</span>
+<span style="FONT-WEIGHT:bold;COLOR:purple;">DeleteObject - delete the collection, anf thus removing/deleting all items of the collection, </span></pre>
+<p>Now let&#39;s take a look at the collection items level</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="FONT-WEIGHT:bold;COLOR:purple;">CreateObject - I can create an item, but what&#39;s that good for if I can&#39;t add it to the collection? It looks I also need EditObject at the collection level</span>
+<span style="FONT-WEIGHT:bold;COLOR:purple;">GetObject - I can read a collection item. But can I read the collection? If not, how come I am allowed to read a page of a book I&#39;m not aloowed to read</span>
+<span style="FONT-WEIGHT:bold;COLOR:purple;">EditObject - I can edit (change) an item properties, this is fine even if I can&#39;t read collection items (GetObject at the collection level)</span>
+<span style="FONT-WEIGHT:bold;COLOR:purple;">DeleteObject - delete a collection item (idem) </span></pre>
+<p>So... this isn&#39;t an easy issue. I&#39;m not re-evaluating the solution I adopted in CslaGenFork, but may be it needs to be re-evaluated.</p>
+<p>The fact is certain combinations don&#39;t make sense.</p>
+<p>1) The <span style="FONT-WEIGHT:bold;COLOR:purple;">GetObject </span>AuthorizationAction should always be the same at the collection and item levels or else there is a potential for weirdness (read bugs you loose hours to try to explain to your users).</p>
+<p>2) The <span style="FONT-WEIGHT:bold;COLOR:purple;">DeleteObject </span>AuthorizationAction for collections should imply <span style="FONT-WEIGHT:bold;COLOR:purple;">DeleteObject </span>for items but noit vice versa.</p>
+<p>3) The <span style="FONT-WEIGHT:bold;COLOR:purple;">CreateObject </span>and <span style="FONT-WEIGHT:bold;COLOR:purple;">DeleteObject&nbsp;</span>for items should imply <span style="FONT-WEIGHT:bold;COLOR:purple;">EditObject </span>for collection but noit vice versa.</p>
+<p>And that&#39;s about all that should be enforced.</p>
+<p>Please comments.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

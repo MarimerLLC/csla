@@ -1,0 +1,13 @@
+<html><header><title>no error-message, no data in my grid, no Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>no error-message, no data in my grid, no Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1490.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ton Smeets posted on Sunday, October 15, 2006</h2><P>Hello,</P>
+<P>Still figuring out how CSLA works, I tried to build a programm.&nbsp;Everytime I started it,&nbsp;I got no data on my screen. I started with the templates, while reading in the book. I wanted a simple Fetch, but in the template as well in the book, both Factory methods to 'Getmydata' call the Dataportal.Create method.</P>
+<P><FONT color=#0000ff size=2>public static EditableRoot <U>Get</U>EditableRoot(int id)</FONT></P>
+<P><FONT color=#0000ff size=2>{</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return DataPortal.<U>Create</U>&lt;EditableRoot&gt;(new Criteria(id));</FONT></P>
+<P><FONT color=#0000ff size=2>}</FONT></P>
+<P>I changed this to Dataportal.Fetch and now it works. Cann someone please confirm that this is correct. I did not find any errata. You can look it up on page 381 of the book.</P>
+<P>Tell me I'm not wrong here, otherwise I will go back and start reading the book again.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Sunday, October 15, 2006</h2>Yes, DataPortal.Fetch is the correct method to use there.&nbsp; You may want to post which templates/pages you got the DataPortal.Create from so that they can be corrected.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, October 15, 2006</h2><P>There is errata for the books on Rocky's site.</P>
+<P><A href="http://www.lhotka.net/Area.aspx?id=6">http://www.lhotka.net/Area.aspx?id=6</A></P>
+<P>The one you are referring to is on Page 385 (according to the errata.)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

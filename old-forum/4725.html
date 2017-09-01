@@ -1,0 +1,67 @@
+<html><header><title>Binding a CSLA collection in Workflow</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding a CSLA collection in Workflow</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4725.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Monday, April 21, 2008</h2>I'm trying to bind a CSLA business collection to&nbsp;replicator activity's intialChildData property.&nbsp;&nbsp; I get an error that it the property must be an IList object.&nbsp; I'm using CSLA.net 2.x.&nbsp; Does the business collection support IList in CSLA.net 3.0 or 3.5?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm. .. Sounds strange.&nbsp; BusinessListBase does implement
+IList.&nbsp; Try to look at your collection in object browser to see if you
+also can trace it to IList.&nbsp; I was able to.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Here is my inheritance tree:&nbsp; BusinessListBase (Of T, C) -&gt;
+ExtendedBindingList (Of C) -&gt; BindingList(of T) -&gt; IList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 5:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Binding a CSLA collection in Workflow<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm trying to bind a CSLA business collection
+to&nbsp;replicator activity's intialChildData property.&nbsp;&nbsp; I get an
+error that it the property must be an IList object.&nbsp; I'm using CSLA.net
+2.x.&nbsp; Does the business collection support IList in CSLA.net 3.0 or 3.5?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, April 23, 2008</h2>You are right my objects to implement IList.&nbsp; However, the Workflow dialog disagrees.&nbsp; I've found if I manually type in the binding into the propertybox instead of using the dialog that it works.&nbsp; I'm using VS2005 Pro with the Workflow extensions.&nbsp; I wonder if WF works any better in VS2008, it is a bit rough in VS2005.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

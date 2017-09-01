@@ -1,0 +1,32 @@
+<html><header><title>Error: 'Csla.Utilities' is inaccessible due to its protection level</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error: 'Csla.Utilities' is inaccessible due to its protection level</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/35.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>redgoblin83 posted on Tuesday, May 09, 2006</h2><P>Where do I have to create my own Validation rules. I made a copy of the StringMaxLenght but now it is StringMinLenght, p 275 of book, and added it into my Object. As a Class.</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>MinLenghtRuleArgs</FONT><FONT size=1> : </FONT><FONT color=#008080 size=1>RuleArgs</P></FONT><FONT size=1>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> _minLenght;</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> MinLenght</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>get</FONT><FONT size=1> { </FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> _minLenght; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> MinLenghtRuleArgs(</FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> propertyName, </FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> minLenght)</P>
+<P>: </FONT><FONT color=#0000ff size=1>base</FONT><FONT size=1>(propertyName)</P>
+<P>{</P>
+<P>_minLenght = minLenght;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> ToString()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>base</FONT><FONT size=1>.ToString() + </FONT><FONT color=#800000 size=1>"!"</FONT><FONT size=1> + _minLenght.ToString();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> StringMinLenght(</FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1> target, </FONT><FONT color=#008080 size=1>RuleArgs</FONT><FONT size=1> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> min = ((</FONT><FONT color=#008080 size=1>MinLenghtRuleArgs</FONT><FONT size=1>)e).MinLenght;</P>
+<P></FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> value = (</FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1>)Utilities.CallByName(target, e.PropertyName, CallType.Get);</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (!</FONT><FONT color=#008080 size=1>String</FONT><FONT size=1>.IsNullOrEmpty(value) &amp;&amp; (value.Length &lt; min))</P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1>.Format(</FONT><FONT color=#800000 size=1>"{0} can not be les then {1} characters"</FONT><FONT size=1>, e.PropertyName, min.ToString());</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P>}</P>
+<P><FONT size=3>What do I have to do ?</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 09, 2006</h2><P>The Utilities.CallByName() method is internal/Friend in scope. It probably could be public, but I was very conservative in terms of which parts of the framework I made public. To some degree this was to reduce the surface area for testing - this method is supposed to provide C# with a match for the capabilities of CallByName() in VB. But it is used in a limited capacity in CSLA, and so I only tested the parts that I needed - it may or may not actually do everything the VB method does.</P>
+<P>That was my reasoning. Still, I am considering making CallByName(), along with other methods in Utilities and MethodCaller, public in the next release of the framework. There are cases (like yours) where having access to these methods would be useful.</P>
+<P>In the meantime, you can look at CallByName - it isn't that complex, and merely wraps some use of reflection. You can copy it into your project, or use reflection in a more direct way as you choose.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

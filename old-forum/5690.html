@@ -1,0 +1,158 @@
+<html><header><title>rolodex editLevel exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>rolodex editLevel exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5690.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido posted on Wednesday, October 29, 2008</h2><P>Hi,</P>
+<P>I have the rolodex sample up and running. I can add a company ok. When I attempt to add a contact I get the following exception thrown:</P>
+<P>&nbsp;void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool parentBindingEdit)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.EditLevel - 1 != parentEditLevel)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "AcceptChanges"));</P>
+<P>I got the code from the codeplex article.</P>
+<P>Any suggestions what may be causing this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The code for the article is probably a over two months
+old.&nbsp; My first suggestion is to get the latest version from SVN or CSLA
+Light download page and try that version.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 8:32 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] rolodex editLevel exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I have the rolodex sample up and running. I can add a company ok. When I
+attempt to add a contact I get the following exception thrown:<o:p></o:p></p>
+
+<p>&nbsp;void Core.IUndoableObject.AcceptChanges(int parentEditLevel, bool
+parentBindingEdit)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.EditLevel - 1 != parentEditLevel)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new
+UndoException(string.Format(Properties.Resources.EditLevelMismatchException,
+&quot;AcceptChanges&quot;));<o:p></o:p></p>
+
+<p>I got the code from the codeplex article.<o:p></o:p></p>
+
+<p>Any suggestions what may be causing this?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Wednesday, October 29, 2008</h2><P>Thanks for the reply.</P>
+<P>&nbsp;</P>
+<P>Could you post the URL for the CSLA Light download page please?</P>
+<P>I am having difficulty finding it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Samples column is the link to sample zip file.&nbsp;
+Alternatively, you can download the same from SVN.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 9:40 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: rolodex editLevel exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the reply.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Could you post the URL for the CSLA Light download page please?<o:p></o:p></p>
+
+<p>I am having difficulty finding it.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Wednesday, October 29, 2008</h2>Appreciated, thank you.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

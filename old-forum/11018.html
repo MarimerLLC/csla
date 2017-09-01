@@ -1,0 +1,88 @@
+<html><header><title>DiffGram cannot delete treenode.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DiffGram cannot delete treenode.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11018.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Sunday, December 25, 2011</h2><p>I have tree model us diffgram。 the model &nbsp;as below:</p>
+<p>objects</p>
+<p>---object&nbsp;</p>
+<p>-----objects.</p>
+<p>in the UI will be show as below:</p>
+<p>Node1</p>
+<p>--Node2</p>
+<p>&nbsp;</p>
+<p>If i create Node1 &amp; Node 2 and save them use below code is Ok:</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;public class DiffGramGenerator : Csla.DiffGram.DiffGramGenerator</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public override void IntegrateGraph(IExportData root, DataItem dtoGraph)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (root != null &amp;&amp; root.IsParticipating)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (root.Key == dtoGraph.Key)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (root is ICollection)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleChilren(root, dtoGraph);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; root.ImportFrom(dtoGraph);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ((root as Csla.Core.ITrackStatus).IsDeleted)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleChilren(root, dtoGraph);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; root.ImportFrom(dtoGraph);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; root.ImportFrom(dtoGraph);&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleChilren(root, dtoGraph);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new Exception(&quot;Root object keys don&#39;t match&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; private void HandleChilren(IExportData root, DataItem dtoGraph)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var child in root.GetChildren().Where(c =&gt; c.IsParticipating))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dto = (from d in dtoGraph.Children</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;where d.Key == child.Key</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;select d).SingleOrDefault();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dto != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IntegrateGraph(child, dto);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new Exception(&quot;Child key not in DTO graph&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>If I get node1 and node 2 from database and use below code delete &nbsp;node1 and node2 (i delete node1, and backhind code delete the node2), It&#39;s work fine.</p>
+<p>
+<p>&nbsp; &nbsp;private void OnRemoveNode(ObjectViewModel row)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //row.IsExpanded = true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (row.Model .Children.Count &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var temp = this.Model;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; for (int i = row.Children.Count-1; i &gt;=0; i--)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnRemoveNode(row.Children<img src="http://forums.lhotka.net/emoticons/emotion-55.gif" alt="Idea" /> as ObjectViewModel);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (row.Parent is ObjectsViewModel)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (row.Parent as ObjectsViewModel).Objects.Remove(row);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DoRemove(row.Model);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (row.Parent as ObjectViewModel).Children.Remove(row);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (row.Parent as ObjectViewModel).Model.Children.Remove(row.Model);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>but I create node 1,node2 and save them, then delete node1. will raise error. because &nbsp;&nbsp; var dto = dg.GenerateGraph(this) can not get the Node2. &nbsp;please give me and advise..</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Monday, December 26, 2011</h2><p>How to upload the source code to help me analyze this issue?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Monday, December 26, 2011</h2><p>I found that &nbsp;created node1,node2 &nbsp;and save them, &nbsp;then delete node1 &amp; node2 use&nbsp;<span>OnRemoveNode method. the children&#39;s DeleteList is null.&nbsp;</span></p>
+<p><span>but if the node1 &amp; node 2 fetch from database, then delete node1 use&nbsp;</span><span>OnRemoveNode to remove node1 &amp; node2. the children&#39;s DeletedList is not null. cantains node2.&nbsp;</span></p>
+<p>this problem trouble me several days. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>simon replied on Tuesday, December 27, 2011</h2><p>It&#39;s Ok, I forget set&nbsp;&nbsp;ManageObjectLifetime = false within ObjectViewModel.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

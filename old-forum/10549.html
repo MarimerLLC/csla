@@ -1,0 +1,38 @@
+<html><header><title>LoadProperty OnChildChanged not working</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LoadProperty OnChildChanged not working</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10549.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta posted on Thursday, July 21, 2011</h2><p>Hey guys i have 2 problems both is the same but they&#39;re still 2 problems</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>1). When a change the value of a property (which is &nbsp;a collections of objects) it does not trigger any rules to run, this is the first problem why the rule doesn&#39;t run when the value changes - unless I&#39;m thinking because that property is a readOnly property - ??</p>
+<p>&nbsp;</p>
+<p>2). so in order to fix the first problem what i have done is, in the OnChildChanged method I did a local variable to calculate the Total of items in the collection object here is the code</p>
+<p>&nbsp;</p>
+<p>double _total = (from items _Item........................................).sum</p>
+<p>LoadProperty(totalProperty, _Total)</p>
+<p>but ....... the property does not change the value unless i&#39;m doing like this</p>
+<p>&nbsp;</p>
+<p>Toatl = _toal;</p>
+<p>&nbsp;</p>
+<p>and then the rules start to trigger 1 after the other </p>
+<p>can someone explain how i need to get this done</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 21, 2011</h2><p>The LoadProperty method doesn&#39;t run any rules. It is intended to be a light weight way to set the &quot;field&quot; for the property, without running any rules. Assuming a private backing field for a property, LoadProperty is basically the same as this:</p>
+<p>_myBackingField&nbsp;= newValue</p>
+<p>The SetProperty method runs rules. It is intended to set the property, after checking authorization rules, and then it runs business/validation rules, and then it marks the object as dirty, and raises the PropertyChanged event.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Thursday, July 21, 2011</h2><p>Thanks for the reply, i guess i did not describe my self good my problem is when i&#39;m changing the propertyValue through the LoadProperty method from the base class for some reason it&nbsp;don&#39;t change the value to the UI field - i&#39;m using WinForms -; in short my question is why is the UI not responding to the LoadProperty method and it&nbsp;doesn&#39;t&nbsp;meter&nbsp;&nbsp;if im calling through the a business rule like traget.LoadProperty or in the OnChildChange method, </p>
+<p>&nbsp;</p>
+<p>the only way it works if setting the Property it self Like SaleTotal = _MyBackingField, is there any reason why this should be. thanks in advance for you&#39;r reply&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 21, 2011</h2><p>The UI updates due to data binding, and data binding listens for the PropertyChanged event to know that the value has changed. Because LoadProperty doesn&#39;t raise PropertyChanged, it won&#39;t update the UI.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Thursday, July 21, 2011</h2><p>But 1 minute does not the &quot;Csla.Rules.RuleContext&quot; AddOutValue property need to change the UI?&nbsp;</p>
+<p>and why is it so if the collection is being changed, it does not trigger any business rules, and i need to call it&nbsp;manually &nbsp;like BusinessRules.CheckRules(SaleTotalProperty)</p>
+<p>my code is here&nbsp;</p>
+<p>
+<p>&nbsp;Protected Overrides Sub Execute(ByVal context As Csla.Rules.RuleContext)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim _Action As SalesItemsAction = context.Target</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim summary As Double = (From item As SaleItem In _Action.ReadProperty(ItemsProperty) Select item.PricePaid).Sum</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span style="font-style:italic;text-decoration:underline;"> context.AddOutValue(PrimaryProperty, summary) &nbsp; ----------------- </span>&nbsp; why does this not refresh the UI</p>
+<p>&nbsp; End Sub</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 21, 2011</h2><p>When rules are automatically run, they are run by a method in BusinessBase that does automatically raise PropertyChanged for all affected properties.</p>
+<p>You can trigger this behavior by calling the protected method named PropertyHasChanged in an editable business class. This will trigger all appropriate processing for a changed property - just like SetProperty does for you. In fact, SetProperty calls PropertyHasChanged to run all appropriate processing.</p>
+<p>Also, you might notice that BusinessRules.CheckRules() returns a List&lt;string&gt; - which is the list of affected properties. You can use this to raise PropertyChanged for all those properties. You can (should?) do this if you choose to avoid the automatic processing of SetProperty and instead do your own thing by calling LoadProperty where you still want rule processing to occur.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Thursday, July 21, 2011</h2><p>We&#39;ve done a couple things in this area -</p>
+<p>In our base class, we have introduced &quot;SetPropertyWithElevatedPermissions&quot;.&nbsp; This basically will set the property without giving attention to CanWriteProperty but it causes rules to run and bindings to take place.&nbsp; We have &quot;property level permissions&quot; which might prevent the user from manipulating the object but we don&#39;t necessarily want the object prohibited from changing its state and causing rules/etc to fire.</p>
+<p>We also have used something to deal with &quot;related records&quot; of a main root reflecting changes made while the main root is open.&nbsp; In this case, we&#39;re updating read only information on the main root that is open and so all we want to do is LoadProperty followed by an OnPropertyChanged for that property.</p>
+<p>A collegue actually suggested a LoadProperty with some sort of bitted enumeration of &quot;check rules?&quot;, &quot;refresh bindings?&quot; etc... </p>
+<p>Sometimes SetProperty and LoadProperty isn&#39;t entirely what you want to have happen.&nbsp; You have the ability to introduce variations on those in your classes.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

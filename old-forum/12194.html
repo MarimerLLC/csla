@@ -1,0 +1,8 @@
+<html><header><title>Serialization Exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialization Exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12194.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pearljam posted on Wednesday, October 23, 2013</h2><p>I am attempting to bind a business list to the WPF Toolkit datagrid. I have exceptions when I went to edit a cell stating that such and such class was not marked as Serializable. So I added that to my list class, and my business object classes. Now I get the following exception:</p>
+<p>&nbsp;</p>
+<p>Type &#39;Csla.PropertyInfo`1[[System.String, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089]]&#39; in Assembly &#39;Csla, Version=4.3.14.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; is not marked as serializable.</p>
+<p>Anyone know why that is? If additional info is needed let me know. Thank you!</p>
+<p>&nbsp;</p>
+<p>Jason</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsvideo replied on Wednesday, October 23, 2013</h2><p>Hello Jason,</p>
+<p>are you using any enum that is not marked as serializable ?<br />or a value that is not in your enum list ?<br />That was a Problem i&#39;am having.</p>
+<p>Greetings<br />Thilo</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

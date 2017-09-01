@@ -1,0 +1,163 @@
+<html><header><title>HUGE difference in performance using CSLA over Datatable -- CSLA is SLOW!!!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>HUGE difference in performance using CSLA over Datatable -- CSLA is SLOW!!!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4293.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillyM posted on Monday, February 04, 2008</h2><P class=MsoNormal><SPAN>I am seeing a HUGE performance hit in populating a large list via WCF using CSLA as opposed to simply using a DataSet and am assuming we are doing something fundamentally wrong.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Returning 5000 rows reuslts in:<o:p></o:p></SPAN></P>
+<UL>
+<LI>
+<DIV class=MsoNormal><SPAN>Dataset: 136 ms<o:p></o:p></SPAN></DIV>
+<LI>
+<DIV class=MsoNormal><SPAN>public class CustomerList : ReadOnlyListBase&lt;CustomerList, Customer&gt;: 76212 ms<o:p></o:p></SPAN></DIV></LI></UL>
+<P class=MsoNormal><SPAN>The problem appears to be in the DataPortal.Fetch method, which is averaging approximately 15 ms each.</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><STRONG><FONT size=6>CODE SNIPPETS</FONT></STRONG></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><EM>Stored Procedure Call:<o:p></o:p></EM></SPAN></P>
+<P class=MsoNormal><SPAN>ALTER<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>procedure [dbo].[sp_GetCustomer] </SPAN><SPAN>As </SPAN></P>
+<P class=MsoNormal><SPAN></SPAN><SPAN>Select top 5000 customer_id,name_first,name_middle,name_last, phone_home </SPAN><SPAN>from customer</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><EM><U><STRONG>I) DataTable ACCESS (136 ms):</STRONG></U></EM></SPAN></P>
+<P class=MsoNormal><SPAN><EM><U><o:p></o:p></U></EM></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>public DataTable GetAllCustomers(string connectionString)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>SqlParameter[] parameters = { };<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>return = SqlAccessor.ExecuteDataSet(connectionString, SqlAccessor.SqlCommandBuilder(new SqlCommand("sp_GetCustomer"), parameters), CommandType.StoredProcedure, "").Tables[0];</SPAN><SPAN><SPAN>&nbsp;</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><EM><U><STRONG>II) CSLA ACCESS (76212 ms):</STRONG></U></EM></SPAN></P>
+<P class=MsoNormal><SPAN><EM><U><o:p></o:p></U></EM></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><EM><STRONG>CustomerList: (Performance hit is in the "while" loop processing 5000 records – it is KILLING us)</STRONG></EM></SPAN></P>
+<P class=MsoNormal><SPAN><EM><o:p></o:p></EM></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><EM>public class CustomerList : ReadOnlyListBase&lt;CustomerList, Customer&gt;</EM></SPAN>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><SPAN>private void Fetch()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;{</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>this.RaiseListChangedEvents = false;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>using (SqlConnection cn = new SqlConnection(Database.ConnectionString))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cn.Open();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>using (SqlCommand cm = cn.CreateCommand())<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.CommandType = CommandType.StoredProcedure;</SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>cm.CommandText = "sp_GetCustomer";</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>{<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>IsReadOnly = false;</SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><FONT color=#ff0000>while (dr.Read())<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Customer info = Customer.GetCustomer(dr.GetDecimal("customer_id"));<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>this.Add(info);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT color=#ff0000></FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>IsReadOnly = true;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>this.RaiseListChangedEvents = true;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><EM><STRONG>CUSTOMER: (Averages approx 15 ms per access)</STRONG></EM></SPAN></P>
+<P class=MsoNormal><SPAN><STRONG><EM></EM></STRONG></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><EM>public class Customer : BusinessBase&lt;Customer&gt;</EM></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>public static Customer GetCustomer(decimal customer_id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>return cust = DataPortal.Fetch&lt;Customer&gt;(new Criteria(customer_id));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Monday, February 04, 2008</h2>Normally when you create a ReadOnlyList you create it of ReadOnlyObjects, which you aren't doing in this case.&nbsp; I am not sure in what scenario you would actually do this, but your real problem is you are hitting the database 5001 times in the CSLA code.&nbsp; From what I can see the stored procedure already pulls back all the information you need to populate the Customer.&nbsp; So you could create a new method on the Customer Class as such:<br><br>public static Customer LoadCustomer(SafeDataReader dr)<br>{<br>&nbsp;&nbsp;&nbsp; _customerId = dr.GetInt32("customer_id);<br>&nbsp;&nbsp;&nbsp; _firstName = dr.GetString("name_first");<br>&nbsp;&nbsp;&nbsp; //so on<br>}<br><br>Once you do this you should find that the performance of CSLA is actually faster than the DataSet/DataTable.<br><br>Hope this helps,<br>Mike<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, February 04, 2008</h2><P>I agree with the above. Its the fact that you are doing the one main database access and then 5000 more (one&nbsp;for each item) and you are going&nbsp;through the dataprotal&nbsp;5001 times. As said above you should have the one SQL statement which returns all data that is required and then pass the datareader through to the load method (or what ever method you have). Once you so this you will see much better <SPAN>performance</SPAN>.</P>
+<P>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, February 04, 2008</h2><P>I just wanted to add to this thread to add agreement to the prior two posters as well as refer to a thread where there is some performance discussion.</P>
+<P><A href="/forums/thread/16966.aspx">http://forums.lhotka.net/forums/thread/16966.aspx</A></P>
+<P>ozitraveler also cited some statistics in this thread:</P>
+<P><FONT color=#99aa99><A href="/forums/thread/4044.aspx">http://forums.lhotka.net/forums/thread/4044.aspx</A></FONT> </P>
+<P>Truly, the first post of this thread is, as the other two posters above me stated, not comparing apples to apples. The DataTable in the GetAllCustomers method seems to indicate that the sp_GetCustomer stored procedure will pull down all customers with the right parameters. </P>
+<P>To adequately modify the Csla case, I would change the items in red to this:</P>
+<P><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><FONT color=#ff0000>while (dr.Read())<O:P></O:P></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<O:P></O:P></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Customer info = Customer.GetCustomer(dr);<O:P></O:P></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>this.Add(info);<O:P></O:P></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><O:P><FONT color=#ff0000></FONT></O:P></SPAN></P>
+<P class=MsoNormal><SPAN><FONT color=#ff0000><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}</FONT></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT color=#000000>The factory method GetCustomer would contain an internal overload that takes a datareader and loads the customer data from the datareader. </FONT></SPAN></P>
+<P class=MsoNormal><SPAN>I would encourage the author to make these changes and then cite the new statistics. If it's still slow, then I'd myself be interested in running a test of my own. But I would highly suspect that the author will find markedly different results when comparing apples to apples. </SPAN></P>
+<P class=MsoNormal><SPAN>Chris</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 05, 2008</h2>Hi,<br><br>First of all - you are using an Editable object in a ReadOnlyList. You should be using a ReadOnlyBase object in a ReadOnlyList (and thus you should set the private variables in the readonly object and have a very good performance).<br><br>Next thing to check: <br>In your business object - are you using the standard Set/Get methods? Specifically the CanWriteProperty(true). This method uses reflection and can severly slow down your application. You should change to CanWriteProperty("propertyname", true) IF you need this type of protection. The same goes for CanReadProperty and PropertyHasChanged methods also. <br><br>/jonnybee<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillyM replied on Tuesday, February 05, 2008</h2><P>Thanks everyone. The team made the following changes:</P>
+<UL>
+<LI>Modified Customer to use ReadOnlyBase.</LI>
+<LI>Added "Internal Customer(decimal customer_Id, string name_First, string name_Last, string name_Niddle, string phone_Home)" constructer to Customer.</LI>
+<LI>Added "Customer info = new Customer(dr.GetDecimal("customer_id), dr.GetString("name_first"), dr.GetString("name_middle"), dr.GetString("name_last"), dr.GetString("phone_home"));" to the Fetch() method.</LI>
+<LI>Modified Get/Set methods to use the form "CandReadProperty("Phone_Home", true);</LI></UL>
+<P>New benchmarks are:</P>
+<P>CSLA</P>
+<UL>
+<LI>875 ms</LI>
+<LI>890 ms</LI>
+<LI>859 ms</LI>
+<LI>843 ms</LI></UL>
+<P>DataTable</P>
+<UL>
+<LI>625 ms</LI>
+<LI>531 ms</LI>
+<LI>515 ms</LI>
+<LI>515 ms</LI></UL></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 05, 2008</h2>You didn't mention it... but in your Customer constructor, are you setting the fields directly or through the property code?&nbsp; You should be setting them directly via the fields.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillyM replied on Tuesday, February 05, 2008</h2><P>We are setting the fields.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lawrencek replied on Tuesday, February 05, 2008</h2><P>you can get a small performance increase by using the&nbsp;int overloads of the Get methods on the data reader&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 06, 2008</h2><P>Also make sure you are using 2.1.4 or preferably 3.0.3+. If you are using 2.0.x you are missing out on some important performance enhancements that would impact this scenario.</P>
+<P>It is also important to be aware of what code is running during the load process. If you are calling ValidationRules.CheckRules() in each object's Fetch(), for example, then you are triggering a bunch of work - which may be beneficial, but takes time.</P>
+<P>It is always important to remember that performance isn't the only metric - beneficial behaviors are sometimes worth some processing time. But it is also important to be aware of which behaviors are being triggered and to not trigger those you don't need.</P>
+<P>Another thing to check is to make sure that your collection object turned off its eventing during the load process - no sense wasting time processing/raising events that go nowhere, and that you wouldn't want even if they did go somewhere.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Wednesday, February 06, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>It is also important to be aware of what code is running during the load process. If you are calling ValidationRules.CheckRules() in each object's Fetch(), for example, then you are triggering a bunch of work - which may be beneficial, but takes time.</P>
+<P>It is always important to remember that performance isn't the only metric - beneficial behaviors are sometimes worth some processing time. But it is also important to be aware of which behaviors are being triggered and to not trigger those you don't need.</P>
+<P></div></BLOCKQUOTE></P>
+<P>And to draw a dotted line to a related matter, if you are just pulling the dataset and then doing some validation later you may be only deferring your performance 'hit'.&nbsp; I mean if you are doing all the validation using CSLA the process might be taking ~800ms, but doing everything, where if you are doing a load with a straight dataset it might be taking ~500ms but later on when you do your processing/validation it might be adding more time.</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillyM replied on Wednesday, February 06, 2008</h2>Rocky... We are using 3.0.2... will that be a problem?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Should be fine &#8211; 2.1 was where the big perf changes
+happened that would affect this scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> BillyM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 06, 2008 2:47 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] HUGE difference in performance using CSLA over
+Datatable -- CSLA is SLOW!!!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky... We are using 3.0.2... will that be a problem?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, February 07, 2008</h2><P>Just for comparison sake, we are using CSLA bolted over an ORMapper (mainly because it provides a database-independent DAL), and we can retrieve 2000+ BusinessBase objects / second even from a lowly workstation database. </P>
+<P>No, this isn't as fast as your data table, but it's much faster than the technology we are porting from. </P>
+<P>We really didn't notice any difference in this performance when we added CSLA into the mix (originally we talked directly to the mapper). </P>
+<P>(NHibernate, incidentally, was a good deal faster than the mapper we use - 8,000 + objects/second, but only because it generates fast property access code at run time. If this feature was turned off, it was about the same).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maqster replied on Friday, February 08, 2008</h2>Hi rsbaker0, I'm interested in knowing what mapper you are using?<br><br>/Maqster<br><strong><b></b></strong></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, February 12, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Maqster:</strong></div><div>Hi rsbaker0, I'm interested in knowing what mapper you are using?<BR><BR>/Maqster<BR><STRONG><B></B></STRONG></div></BLOCKQUOTE></P>
+<P>We're using the Wilson ORMapper. </P>
+<P>We looked at several alternatives because we have some specific requirements. We were migrating a legacy application in which users have the capability to modify both the size of existing fields (both numeric and character) as well as add additional custom fields and tables, which was very limiting in terms of what would work. NHibernate can do this "out of the box", but figuring out how to dynamically modify it's "session factory" at runtime&nbsp;to recognize the additional fields was *very* daunting. Wilson's mapper is small, acceptably fast, nicely written, and easy to modify. It also generates very nice, parameterized SQL.</P>
+<P>As to the thread topic, Wilson implements an IObjectHelper interface that sets the fields when loading objects instead of using the properties (which cause all sorts of events and virtual method hits), so we noticed literally no change in loading a CSLA object versus a native mapped object. This as true even though we basically have to "clone" each object as it is loaded as Wilson's mapper doesn't have the capability to populate an object you have already created (which is what DataPortal_Fetch wants to do). </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

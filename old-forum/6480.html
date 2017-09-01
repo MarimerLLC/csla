@@ -1,0 +1,19 @@
+<html><header><title>Root object with multiple child relations</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Root object with multiple child relations</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6480.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stiv posted on Sunday, February 22, 2009</h2><P>Hello everybory,</P>
+<P>I´m new to Csla and i have the following situation in my business model i have a root object with multiple child relations so it seems is a lot of code to type.</P>
+<P>Looking at the code generation tools i wonder if it is possible to generation an object like the one i`m describing.</P>
+<P>If the answer is yes, which one is the right one? If the answer is is no, is there any chance to narrow the building process?</P>
+<P>Any help will be appreciated.</P>
+<P>Stiv</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, February 22, 2009</h2><P>Yes, this is quite possible. </P>
+<P>We use a lazy loading technique combined with having a table of all foreign key relationships for the entire database available (as well as what object Type corresponds with each table).</P>
+<P>So, if you have a parent child relationship between types P and C, the advent of managed properties has allowed us to do this in one line, that looks something like this. </P>
+<P>public BusinessList&lt;C&gt; GetChildList()</P>
+<P>{</P>
+<P>return GetRelatedList&lt;C&gt;();</P>
+<P>}</P>
+<P>The relationship table maps parent and child foreign key names between types P and C and can generate the actual SQL to fetch the child lists. If you have multiple relationships to the same table, then there are overrides in which you specify the name of the foreign key field to match up on (as well as even the ability to include conditions for non-standard scenarios)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

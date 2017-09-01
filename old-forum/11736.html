@@ -1,0 +1,10 @@
+<html><header><title>CSLA 3.8 Children/ Windows Forms Data Grid View</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8 Children/ Windows Forms Data Grid View</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11736.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebick posted on Saturday, December 08, 2012</h2><p>I&#39;m not too versed in using the DataGridView control for editing, but I am having an issue that I hope someone can assist with.</p>
+<p>I have a parent business base object and a child business base object. &nbsp;The OK button on the edit form is bound to the parent&#39;s issavable property. &nbsp;The grid is bound to the child collection. &nbsp;When I edit the column in the grid, it hits the child&#39;s property just fine and sets the child bo to is dirty. &nbsp;The parent&#39;s reference to the child collection recognizes that the child collection is now dirty. &nbsp;</p>
+<p>However, the ok button does not light up.....it doesn&#39;t seem to be refreshing that binding. &nbsp;</p>
+<p>&nbsp;</p>
+<p>The setting for the binding is on OnPropertyChange.</p>
+<p>Any thoughts?</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, December 09, 2012</h2><p>The IsXYZ properties does not implement OnPropertyChanged in CSLA 3.x so this will no work.</p>
+<p><b>You should rather set the &lt;Button&gt;.Enabled in the Form by hooking into the &lt;bo&gt;.OnPropertyChanged and &lt;bo&gt;.OnChildChanged events. </b></p>
+<p>Databinding in WindowsForms is not so &quot;friendly&quot; for having OnPropertyChanged on all the IsXYZ properties.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

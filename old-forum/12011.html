@@ -1,0 +1,54 @@
+<html><header><title>Linq to SQL with CSLA - Property evaluation failed error when passing parent object to child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq to SQL with CSLA - Property evaluation failed error when passing parent object to child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12011.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bala345 posted on Thursday, June 06, 2013</h2><p>I have a business object with 20+ properties. &nbsp;And child having 15+ properties which is a Businesslistbase. &nbsp;I require the Root object property values in updating some child property values.&nbsp;</p>
+<p>When I use linq to sql and pass the root object in the Dataportal_Update() method like below</p>
+<p>&nbsp;&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</p>
+<p>&nbsp; Protected Overrides Sub DataPortal_Update()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of DalLinq.DartDBDataContext).GetManager(connection, False)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ctx.datacontext.Root.updateRootStoredProcedure( propertvalue1, propertyvalue2, 3, 4 .....)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Fieldmanager.UpdateChildren(me)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;End using.</p>
+<p>End sub</p>
+<p>and in the Child_Update() method in the child object I can not read the values of the Root object.&nbsp;</p>
+<p>It gives the error like &quot;property evaluation failed &quot;&nbsp;</p>
+<p><span>&quot;Cannot evaluate expression because we are stopped in a place where garbage collection is impossible&quot;</span></p>
+<p>Is there a way to solve this problem?</p>
+<p>But If I take out the using statements and linq update methods at both Root and Child,</p>
+<p> and just used the FieldManager.UpdateChildren(me) &nbsp;method , &nbsp;I can read the root object values inside the Child_Update method.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span><br /></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 06, 2013</h2><p>When do you call ctx.datacontext.SubmitChanges()?&nbsp;</p>
+<p>Do you use callbacks to update primary key values in the business object?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bala345 replied on Thursday, June 06, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>When do you call ctx.datacontext.SubmitChanges()?&nbsp;</p>
+<p>Do you use callbacks to update primary key values in the business object?&nbsp;</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Thanks for replying.&nbsp;</p>
+<p>No. I use storedprocedures and reference variable to update the timestamp and primary key values &nbsp;back to the objects as in ProjectTracker.Library. &nbsp;Will try without stored procedures. And will get back.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bala345 replied on Wednesday, June 12, 2013</h2><p>&nbsp;</p>
+<p>Finally I found out the reason.&nbsp;</p>
+<p>I was using storedprocedure with linq like this</p>
+<p><span>&nbsp;ctx.datacontext.Root.updateRootStoredProcedure( Root.propertvalue1, Root.propertyvalue2, 3, 4 ... Child.Propertyval1, Child.Propertyvalue2 ......) - &nbsp;with arguments numbering 30+. &nbsp;</span></p>
+<p>with these I was getting the message - property evaluation failed when try to read the rootobject propertis, even child&#39;s own properties inside the function.&nbsp;</p>
+<p>&nbsp;</p>
+<p>I tried to convert the function arguments to construct sql parameters to work with normal sql ado command object (instead of using Linq). This one also failed to read &nbsp;and gave the same error message.&nbsp;</p>
+<p>But if I modified the function with less arguments like the one below - it worked.&nbsp;</p>
+<p>private sub constructinsertParameters(byval cmd as sqlcommand, byval Root as MyBOClass , &nbsp;Byval child as MyChildClass)</p>
+<p>&nbsp; &nbsp; with cmd.parameters</p>
+<p>.addwithvalue(&quot;@param1&quot;, &nbsp;root.propertyvalue1)</p>
+<p>.addwithvalue(&quot;@param2&quot;, root.propertyvalue2)</p>
+<p>.</p>
+<p>.</p>
+<p>.</p>
+<p>.</p>
+<p>&nbsp; &nbsp; end with</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>But it tool whole day to find out the reason. &nbsp;Hope it will help somebody avoid wasting time like me who may a newbee like me. .&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span><br /></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

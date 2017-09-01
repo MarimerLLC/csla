@@ -1,0 +1,16 @@
+<html><header><title>Is it possible to bind CSLA BusinessListBase list to crystal report</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is it possible to bind CSLA BusinessListBase list to crystal report</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11418.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vladakg85 posted on Friday, June 15, 2012</h2><p>
+<p>I have a CSLA list class that is inherited from:</p>
+<pre class="lang-cs prettyprint"><code><span class="typ">BusinessListBase</span><span class="pln"><br /></span></code></pre>
+<p>Now I wan&#39;t to pass this list somehow to crystal report document.<br />So I have tried this:</p>
+<pre class="lang-cs prettyprint"><code><span class="pln">reportDocument1</span><span class="pun">.</span><span class="typ">SetDataSource</span><span class="pun">(</span><span class="pln">cslaListOfObjects</span><span class="pun">);</span><span class="pln"><br /></span></code></pre>
+<p>But I get error that&nbsp;<strong>crystal report can&#39;t receive nullable parameters.</strong><br />And also when I create crystal report I don&#39;t know how to set fields on report. Because I don&#39;t know what to put as data source type.&nbsp;<br />So I wonder is it possible to somehow pass this list to CR and made it to work?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Friday, June 15, 2012</h2><p>Hi!</p>
+<p>I never did this with Crystal Reports but used CSLA along with SQL Reporting Services and it makes a nice mix.&nbsp; I can reuse my business rules to calculate values, create a list of dto&#39;s from my BO&#39;s and I bind the dtos to the report using an XML data source.</p>
+<p>&nbsp;</p>
+<p>Hope this helps!</p>
+<p>&nbsp;</p>
+<p>Etienne</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vladakg85 replied on Friday, June 15, 2012</h2><p>Hi,</p>
+<p>Thanks for direction. When you make a dto from business object do you use some tool to generate XML or you write it all manually?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Monday, June 18, 2012</h2><p>Hi!</p>
+<p>We generate dto&#39;s using CodeSmith with our own templates.</p>
+<p>&nbsp;</p>
+<p>Good luck!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

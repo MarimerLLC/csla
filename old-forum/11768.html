@@ -1,0 +1,26 @@
+<html><header><title>Designing based on Behaviors Philosophy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Designing based on Behaviors Philosophy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11768.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, January 03, 2013</h2><p>Hi.. </p>
+<p>I want to share and ask about any suggestions, or feedback about what i have already done with CSLA on my last several projects. ( about 3 / 4 projects ) So I still need a lot of learning.</p>
+<p>What I have done in my projects are like these : </p>
+<p>1. I identify user stories into use cases. Almost all&nbsp; ( not all ) use cases become or have User Interfaces.</p>
+<p>&nbsp;&nbsp; This is help me to get a lot what users will doing with my application.</p>
+<p>2. So I design CSLA Objects based on each use cases with behaviors concept not data centric concept.</p>
+<p>&nbsp;&nbsp; =&gt; In this step I fell that each use case become a user interface and then I design a CSLA objects based on those UIs.</p>
+<p>3. As I said in the first step NOT ALL USE CASE become UI. ( From my 3 or 4 experiences ) several behaviors can&#39;t be implemented into interactivity Business Objects. I will tell in an example for people understand easier</p>
+<p>ex : I have one project about Junior High School Academic System ( one module about Annual Report Calculation, in my country the final result is not in A, B, C, etc. BUT in number like 89, 77, 54, etc ).</p>
+<p>And each subjects has a little different property value ( I stored on DB ) that make a calculation formula a little different. </p>
+<p>And then the scenario is : a user choose from the UI which grade he / she will start calculation.</p>
+<p>I implement this using server side business object ( CommandObject )&nbsp; because I think business logic ( calculation ) is not an interactivity case. </p>
+<p>I don&#39;t know why at this step I Fell that I tend to write a procedural code for calculation logic which is wrapped in the execute method of CommandObject !!! </p>
+<p>My Point Is : What I actually want to do is I want to implement this calculation business logic in more object oriented manner for example I want to implement strategy pattern for this calculation logic. BUT currently I still not successful ( I don&#39;t how to implement this in CSLA or may be any better ways to doing this )</p>
+<p>Because the calculation rule is often changed because of Government Regulation.</p>
+<p>&nbsp;</p>
+<p>For the record : I&#39;m reading a design pattern book I like the principles SOLID. I think in several business case I can used that to solve my problem which is more maintainable and then lower cost development ( Like the Goal of Behavior Design Concept , CSLA too ). But Currently I just used CSLA or Get benefit from CSLA in the area of DataPortal for server client comunication , BusinessBase ( for interactivity ),&nbsp; Business Rule Like Validation Rule, etc.</p>
+<p>&nbsp;</p>
+<p>I hope anyone could give me any suggesstions :)</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p>
+<p>stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, January 13, 2013</h2><p>Sounds like you&#39;re on the right path. Csla based object typically are the ones your users interact with via your UI layer, and they enforce the same rules.&nbsp; You certainly will have other non-interactive cases, and your classes here may or may not be Csla based; it depends on if there is any value to be had from Csla.&nbsp; I&#39;ve found even in a few non-interactive cases Csla is helpful.&nbsp; For example I have a synchronization service, and I create a Csla based object, set its properties, and then ask if its valid to synchronize.&nbsp; If it is, I Save it and in my logic figure out all the tables that need to have data changed.&nbsp; If its not, I log that fact to another table, with the description of each broken rule.</p>
+<p>For your calculation, you may have a Command object that fetches the result of the calculation (assuming you need to hit the db, you&#39;ll need to have something that can cross the tier boundary if you have your layers on multiple physical tiers), but perhaps the logic to do so is implemented by non-Csla classes which the command just tells to execute.</p>
+<p>Finally SOLID is a good set of principles to go by, but sometimes you need to decide to bend them, you&#39;ll normally need to be more pragmatic about it than just saying &quot;we can&#39;t do that because it violates a SOLID principle.&quot;&nbsp; Csla actually makes a choice to violate Single Responsibility (in favor of keeping encapsulation) by having business logic enforcement and data access in the same class.&nbsp; But these are the kinds of trade off you need to consider for yourself and make the best choice appropriate to your situation.</p>
+<p>HTH</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

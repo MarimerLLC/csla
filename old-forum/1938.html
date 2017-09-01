@@ -1,0 +1,30 @@
+<html><header><title>Data Portal Error has me stumped.. Any Ideas?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Portal Error has me stumped.. Any Ideas?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1938.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Saturday, December 09, 2006</h2>I'm getting an error when I'm trying to create a class like so "MyObject mo =  MyObject.GetNewMyObject ();" with in another method.<br>
+<br><br>
+MyObject inherits from an abstract Base Class that inherits from BusinessBase. 
+<br><br>
+The Error is as follows:
+<br>
+DataPortal.Create failed (System.NotSupportedException: Invalid operation - create not allowed\r\n   at <br>Csla.Core.BusinessBase.DataPortal_Create() in C:\\csla20cs\\Csla\\Core\\BusinessBase.cs:line 983)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Saturday, December 09, 2006</h2><P>Your bo class needs to override any DataPortal_XXX methods you want to support. I use the CodeSmith templates and the _Create looks like this:</P><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Data Access - Create</P>
+<P>[</FONT><FONT color=#008080 size=2>RunLocal</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>//Data Access - Create</P></FONT>
+<P>This is described in chapter 2, under the heading "BusinessBase"</P>
+<P>Regards,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Saturday, December 09, 2006</h2>I just figured out what was causing the error. But I don't really understand why
+
+I was declaring a variable inside the abstract base class like so
+
+MyOtherObject  myOO = MyOtherObject.GetNewOtherObject();
+
+Can you not created instances of CSLA based object within abstract classes?
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Saturday, December 09, 2006</h2>You can not create an instance of an abstract class.&nbsp; You must inherit from it and then instantiate this inherited class.&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Sunday, December 10, 2006</h2>Thanks everybody that helped :)
+
+Sorry for the delayed reply.. I'm on a killer deadline and was a little stressed LOL!
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

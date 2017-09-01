@@ -1,0 +1,52 @@
+<html><header><title>Binding an Enum to an asp:DropDownList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding an Enum to an asp:DropDownList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5115.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamnationx posted on Thursday, July 17, 2008</h2>Hey,<br><br>I've been trying to track down a post that addresses this
+for a while today with no luck. I have an asp:FormView bound to my
+Order business object that contains a field, OrderState, which is
+internally tied to an Enum. I am trying to add an asp:DropDownList to
+the FormView which will be bound to my business object's OrderState
+property and populated from the Enum's values. I'm setting the Enum as
+the DropDownList's datasource in the code behind by iterating the enum
+and storing the name/value pairs in a hashtable. That seems to work
+fine. Here's my problem, though. When I try to bind the DropDownList's
+SelectedValue property to my business object's OrderState property, I
+get an ArgumentOutOfRangeException:<br><br><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><br>
+
+            </font><blockquote><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><b> Exception Details: </b>System.ArgumentOutOfRangeException:
+'cboOrderStates' has a SelectedValue which is invalid because it does
+not exist in the list of items.</font><br><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif ">Parameter name: value</font><br></blockquote><br>I'm
+trying to set the DropDownLists's datasource in the Page_Load handler,
+and walking through it in debug, I notice that the exception is thrown
+when I try to reference the DropDownList (before I even get to set the
+datasource). Here's the code I'm talking about. The line the exception
+is thrown on is marked.<br><br><blockquote><b>DropDownList cboOrderStates = (DropDownList)<br>&nbsp;&nbsp;&nbsp;&nbsp;FormView1.Row.FindControl("pnlPageContent").FindControl("cboOrderStates");</b><br>cboOrderStates.DataSource = BindToEnum(typeof(Order.OrderStates));&nbsp; // Hashtable<br>cboOrderStates.DataBind();<br></blockquote>
+
+I guess that when I try to reference the DropDownList, it binds (or
+realizes it has already been bound) to my BO's OrderState property.
+This is on an Edit page, so the BO's property loads with a non-null
+value, and since I haven't populated the DropDownList yet, it chokes
+up. Honestly, though, I could be completely wrong about that. Either
+way, I would really appreciate some help figuring out how to overcome
+this. If it helps, here's the line in my .aspx file that binds the
+DropDownList to my BO's OrderState property:<br>
+<br>
+&lt;asp:DropDownList ID="cboOrderStates" runat="server"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataTextField="Key" DataValueField="Value" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SelectedValue='&lt;%# Bind("OrderState") %&gt;' /&gt;<br>
+<br>
+Thanks in advance for any help you guys might be able to give me on this!!<br>
+<br>
+-Adam</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>IanK replied on Friday, July 18, 2008</h2><P>Adam,</P>
+<P>I'm not a ASP developer but Rocky did a post last year on converting on building an namevaluelist from an Enumerator. You would then use this instead to do your binding rather than the Enumerator. Sample population of NVL where Enumerator is defined in Btier.Enumerators.States as follows:</P><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria)</FONT></P>
+<P><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> CurrentState </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BTier.Enumerators.States </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> System.Enum.GetValues(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(BTier.Enumerators.States))</P>
+<P>Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Csla.NameValueListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>).NameValuePair(CurrentState, _</P>
+<P>System.Enum.GetName(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(BTier.Enumerators.States), CurrentState)))</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> Ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P></FONT><FONT color=#0000ff size=2>Throw</FONT><FONT size=2> Ex</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>adamnationx replied on Monday, July 21, 2008</h2>Oh, sweet. Thanks for the help, Ian!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

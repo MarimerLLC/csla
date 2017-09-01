@@ -1,0 +1,16 @@
+<html><header><title>Child dataportal option to send calls to application server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child dataportal option to send calls to application server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12392.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Sunday, February 23, 2014</h2><p>Is it possible...SCRATCH THAT...Is it reasonable and useful to add a bool to the DataPortal.XChild calls so that you can control whether it goes across the barrier or not?&nbsp; Wouldn&#39;t that make things simpler.&nbsp; No forcing us to use Creator patterns?</p>
+<p>Personally I find it very confusing that DataPortal calls don&#39;t cross the dataportal??&nbsp; Wouldn&#39;t it make more sense to have the portal say &quot;hmmm I know I am on the client...let me cross over unless the person specifically says no do it locally&quot;.&nbsp; Not sure if it is related but there was a RunLocal attribute that handled that.</p>
+<p>Getting way to complex for me to track let alone those I am going to be training.&nbsp; Conversation goes like this: </p>
+<p>Me - &quot;Because this is a child dataportal call you DON&#39;T cross the dataportal so you have to use a ReadOnly or a CommandObject like a creator to ACTUALLY cross the dataportal.&nbsp; THEN you call the child dataportal method.&nbsp; The child dataportal methods just stay on whichever side they are called&quot;</p>
+<p>Them - &quot;But it says DataPortal.ChildCreate.&nbsp; Why doesn&#39;t it use the dataportal?&quot;</p>
+<p>Me - &quot;I know but it&#39;s not actually using the portal part of the portal...its setting MarkAsChild for you automatically and other stuff.&quot;</p>
+<p>Them - &lt;blank stare&gt; &quot;This is confusing&quot;</p>
+<p>Sorry, maybe just showing my ignorance and theirs at the same time by raising this question :-)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, February 23, 2014</h2><p>Assuming it is NOT practical/helpful etc.</p>
+<p>My option is to code a normal DataPortal_Fetch etc. on the child object and then:</p>
+<p>- markaschild()&nbsp; do i do this on return or before that while it is in its dataportal method?</p>
+<p>- anything else?</p>
+<p>Mostly this will be for Creates and Fetches especially for lazy loading.</p>
+<p>I just can&#39;t get over creating a creator for every child object.&nbsp; I know I know</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, February 23, 2014</h2><p>I really the &quot;Using CSLA 4&quot; ebooks. All 4 first books in the series + whichever UI techbology you use.<br />&nbsp;<a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4</a></p>
+<p>Your scenario is typical for &quot;lazy loaded&quot; objects or objects that need to get to the server for initialization.</p>
+<p>In these circumstances you must use the DataPortal.Fetch or Create to pass tiers and call MarkAsChild on the object.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

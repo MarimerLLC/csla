@@ -1,0 +1,38 @@
+<html><header><title>Lazy Loading of certain properties in an Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy Loading of certain properties in an Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/310.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Wednesday, June 07, 2006</h2><DIV>&nbsp;Hi,</DIV>
+<DIV>I have an Invoice object and it has some accounting information which would be set based on other properties of the invoice object. I have a&nbsp;table in my database which has the various rules for setting this information. As soon as the user clicks on a button, I want to run these rules and fetch the necessary acc. information.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Question:</DIV>
+<DIV>Can I have two fetch methods (not sure if even&nbsp;CSLA will allow this)&nbsp;in my invoice object's one for fetching the whole data and one for fetching the acc information alone. Or should I&nbsp;create a separate accinfo object inside invoice object and write a fetch method inside it?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Could any one tell, which is the better way.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank You</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>I very, very strongly recommend against implementing lazy loading within the context of an object. Lazy loading is rarely a good idea in any case, and is usually a symptom of data-centric object design.</P>
+<P>However, there are some cases where lazy loading of child objects can make sense, because the use case calls for incremental creation of objects/information. That may be the case here, you'll have to be the judge.</P>
+<P>If you are going to use lazy loading, it is best to do it at the object level, so you'd want to do it as a child object of Invoice. Just remember to define a single, clear responsibility for each object as I discuss in Chapter 6 and that will help keep things managible.</P>
+<P>The question I have is whether this "accounting information" is read-only or editable? From your description it certainly sounds like it could be read-only information that is used by the Invoice object in order to implement various business logic. In that case you might have some very clear responsibilities:</P>
+<P>Invoice: Enter/edit valid invoice data</P>
+<P>AccountingInfo: Provide read-only access to accounting parameters/settings</P>
+<P>In this case it is absolutely valid for Invoice to have a "using" relationship (NOT parent-child) with AccountingInfo. In other words, the Invoice object, at the appropriate time, might just ask for the AccountingInfo object - which would be a read-only root object all by itself:</P>
+<P>[NonSerialized][NotUndoable]<BR>private AccountingInfo _acctInfo;</P>
+<P>// ...</P>
+<P>&nbsp; if (_acctInfo == null)<BR>&nbsp;&nbsp;&nbsp; _acctInfo = AccountingInfo.GetInfo(supply params here);</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Wednesday, June 07, 2006</h2><DIV>Rocky,</DIV>
+<DIV>Thanks for the reply.&nbsp;You are right about the "using" relationship. The invoice object uses Accounting info object. But it is editable though.&nbsp; I have a set of rules which I want to maintain in the database for flexibility. These rules are based on different properties of the invoice. So as soon as the user set the properties on the invoice object and hit a button (GetInvoiceData), I pass in all required information to the database and run my rules.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This would later return me a set of accounting information. If my invoice information did not satisfy any of the rules, these will be blank and the user can manually set them (for now it is editable, but I am sure in the future it is going to be read-only since it is sensitive data).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I thought about using the CommandBase object, but it just has Update method. So think my option now is to create a new AccountingInfo object (inheriting from BusinessBase) and have a criteria object inside it. This will have a fetch method, which basically will run all the rules and return the necessary information.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks again...</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>To lazy load a child object you implement the object following the child template (MarkAsChild is called, and so forth), but you also implement a factory method (typically internal/Friend) and a DataPortal_Fetch() method. The data portal itself has no idea about root or child objects - it just routes calls to DataPortal_XYZ methods.</P>
+<P>If I were you I'd carefully walk through the use case though, and identify sub use cases and the objects required by each. I have a suspicion that the accounting info object is not actually a child of Invoice, but rather is an editable root on its own, and that it is part of a sub use case within the overall "Create an Invoice" use case. I could be wrong, as I don't know your domain, but this is my guess.</P>
+<P>Either that or you have two Invoice objects - the "Collect data" one and the "Processed data" one. In other words, I suspect that this is what happens:</P>
+<OL>
+<LI>User enters data into Invoice</LI>
+<LI>Invoice is processed on server, with rules applied</LI>
+<LI>User edits data on Invoice</LI></OL>
+<P>I think what you have here are three objects: InvoiceCollector, InvoiceProcessor and Invoice - for steps 1, 2 and 3 respectively.</P>
+<P>InvoiceCollector is probably not a root object as such. It is probably more like a non-persisting object as I just described to Barry here (<A HREF="/forums/permalink/1417/1496/ShowThread.aspx#1496">http://forums.lhotka.net/forums/permalink/1417/1496/ShowThread.aspx#1496</A>).</P>
+<P>InvoiceProcessor is probably a CommandBase object that moves InvoiceCollector to the server and processes it there - then discards it, and creates an Invoice object based on the processed results. This Invoice object is then returned to the UI through InvoiceProcessor.</P>
+<P>This allows step 3 to have an Invoice object that is post-processed, with your rules applied.</P>
+<P>Hopefully this makes sense in some way.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

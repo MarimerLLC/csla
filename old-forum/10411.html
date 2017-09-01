@@ -1,0 +1,18 @@
+<html><header><title>Best Approach - DataMapper vs DataContractJsonSerializer</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best Approach - DataMapper vs DataContractJsonSerializer</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10411.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhsimkin posted on Thursday, June 02, 2011</h2><p>I am working on a business object that will contain a root object and several child objects.&nbsp; All these objects are rolled together into a JSON or XML string for saving in the database.&nbsp; The object contains a list of custom fields that the user would like to be displayed on a profile/survey.</p>
+<p>I&#39;m trying to determine what would be the best approach for serializing and deserializing this object.&nbsp; My choices are:</p>
+<ol>
+<li>The DataMapper class and a duplicate set of objects.</li>
+<li>The DataContractJsonSerializer (or the DataContractSerializer)</li>
+</ol>
+<p>If I use the DataContractSerializer classes, what would happen to the various state flags and events that fire when a business object is changed?</p>
+<ul>
+<li>Will the event still fire, if so how can I prevent them from firing?</li>
+<li>Will the objects be marked as new and dirty?</li>
+</ul>
+<p>Any thoughts/suggestions?</p>
+<p>Thanks</p>
+<p>marc</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, June 02, 2011</h2><p>If you just want to persist your BO as xml, I&#39;d just go with creating an XDocument in your DP_IU methods and having the children add their values to this document.&nbsp; </p>
+<p>I wouldn&#39;t store the result of DCS or DCJS; serialization is meant to move an object across the wire only, not to put it in a form for persistence.&nbsp; you&#39;ll hit versioning problems attempting this, and possible loss of data.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 02, 2011</h2><p>Actually DCS and DCJS are not overly version sensitive - not like BinaryFormatter or NDCS or MobileFormatter. So it isn&#39;t uncommon to use DCS for primitive persistence.</p>
+<p>The thing is, CSLA business objects can&#39;t be directly serialized/deserialized using DCS/DCJS - you really need to define a formal set of contract types (DTOs) and serialize them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mhsimkin replied on Friday, June 03, 2011</h2><p>Thank you Rocky.</p>
+<p>If I use the DataMapper class, will it be able to walk the object graph?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 03, 2011</h2><p>DataMapper does not walk an object graph, no. It maps one object to another.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

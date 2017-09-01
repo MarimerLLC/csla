@@ -1,0 +1,39 @@
+<html><header><title>Copy Rows with BusinessObject.Clone()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Copy Rows with BusinessObject.Clone()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3097.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Tuesday, June 26, 2007</h2><P>Hi!</P>
+<P>What is the correct&nbsp;way to copy&nbsp;rows from a BusinessObject Collection into itself based on some condition?</P>
+<P>e.g.</P>
+<P>I have 10 rows in my ProjectList BO Collection and I want to add a new rows based on some condition&nbsp;but new rows should have their own new ID's. If I use clone then I cannot change the new row's ID as the ID is readonly so the effect is that these new rows don't get saved back into the DB.</P>
+<P>Thanks</P>
+<P>Sarosh</P>
+<P>Project ItemNew;</P>
+<P>foreach(Project Item in ProjectList)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;if (Item.Active) // Copy only rows which are Active</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; ItemNew = Project.NewProject();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ItemNew = Item.Clone() // this creates a copy&nbsp;but it now has the current rows ID </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// How do&nbsp;I copy all values from Item into ItemNew except the ID</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// How do I specify that this is a new row</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 27, 2007</h2>You're probably best creating a Duplicate method for your Item class.&nbsp; Duplicate would use clone, but before return the result would reset the id number.<br><br>HTH<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, June 27, 2007</h2><P>Hi!</P>
+<P>Yes, I ended up doing that plus I had to call MarkNew() as well otherwise that new row would not be added back to DB during a Save().</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 27, 2007</h2><P>I do something like this in a couple of places.</P>
+<P><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DuplicateBO(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> source </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BO)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> newBO </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BO = BO.NewBO</P>
+<P>newBO.Field1 = source.Field1<BR>newBO.Field2 = source.Field2<BR>newBO.Field3 = source.Field3<BR>etc.</P>
+<P><FONT size=3>The nice thing about this method is that I get total control over which fields from the source BO get brought into the new BO. I can also set things like userkey based on the currentUser's key value.</FONT></P>
+<P><FONT size=3>Or I can conditionally change values if the conditions warrant it.</FONT></P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, June 27, 2007</h2><P>Hi!</P>
+<P>I guess that would work too, but in our case we have lots of columns/properties and to manually add them is PIA plus if you add new cols/props then we have to remember to go back and update this method too.</P>
+<P>Maybe a better option is add an Attribute&nbsp;&lt;Duplicatable&gt; (if there is such a word) to the properties that you want to be able to duplicate and then the Duplicate method loops through all props with that Attribute set and does its thing.</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Wednesday, June 27, 2007</h2><P>Hi!</P>
+<P>I have completed my BO.Duplicate() method in my class and it is working fine but now how do I convert this code into my abstract base class using generics so that all my subclass get this method automatically through inheritance?</P>
+<P>Here is the code for the Duplicate method in my Project concrete class:</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ProjectList</FONT><FONT size=2> Duplicate()</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>ProjectList</FONT><FONT size=2> New = </FONT><FONT color=#2b91af size=2>ProjectList</FONT><FONT size=2>.NewProjectList();</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> IDTemp = New.ID;</P>
+<P>New = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Clone();</P>
+<P>New._id = IDTemp;</P>
+<P>New.MarkNew();</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> New;</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

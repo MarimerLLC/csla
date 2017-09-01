@@ -1,0 +1,64 @@
+<html><header><title>Using DataPortal for custom Fetch method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using DataPortal for custom Fetch method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10369.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Sulkowski posted on Friday, May 13, 2011</h2><p>I&#39;m using DataPortal to call server-side factory methods in a data access assembly.</p>
+<p>One such method is called like this:</p>
+<p>DataPortal.Fetch&lt;SomeRootObject&gt;(criteria);</p>
+<p>And there is a corresponding factory object method like this:</p>
+<p>public SomeRootObject Fetch(SomeCriteria criteria) { .... }</p>
+<p>&nbsp;</p>
+<p>I&#39;d like another method on that factory object like this:</p>
+<p>public List&lt;Guid&gt; Fetch(SomeCriteria criteria) { .... }</p>
+<p>Can I call it using the DataPortal like this?</p>
+<p>DataPortal.<span style="font-size:x-small;"><span style="font-size:x-small;">Fetch&lt; List&lt;Guid&gt; </span><span style="font-size:x-small;">&gt;(criteria);</span></span></p>
+<p>
+<p><span style="font-size:x-small;">Will there be any problems for DataPortal to recognize which method it should call on the data access object?</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">Mark Sulkowski<br />Link&ouml;ping, Sweden</span><span style="font-size:x-small;"></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, May 13, 2011</h2><p>The data portal implements the same method overload behaviors as .NET.</p>
+<p>For example:</p>
+<ul>
+<li>DataPortal.Fetch&lt;T&gt;(int) calls DataPortal_Fetch(int)</li>
+<li>DataPortal.Fetch&lt;T&gt;(string) calls DataPortal_Fetch(string)</li>
+<li>DataPortal.Fetch&lt;T&gt;(CriteriaType1) calls DataPortal_Fetch(CriteriaType1)</li>
+<li>DataPortal.Fetch&lt;T&gt;(CriteriaType2) calls DataPortal_Fetch(CriteriaType2)</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, May 13, 2011</h2><p>Yes, in .NET with standard serializers you can use the DataPortal with any serializable object, in Silverlight and Windows Phone the object must be serializable by MobileFormatter and implement one of the Mobile list types like MobileList&lt;T&gt;. You cannot however use the List&lt;T&gt; directly -&nbsp; you must hav a class in your app toadd the ObjectFactory attribute to. </p>
+<p>Your List:</p>
+<pre style="font-family:Consolas;font-size:13;color:#f6e9c0;background:#160d03;"><span style="color:#e2b155;">namespace</span>&nbsp;TestApp.Business
+{
+&nbsp;&nbsp;[<span style="color:#a9d3df;">Serializable</span>]
+&nbsp;&nbsp;[<span style="color:#a9d3df;">ObjectFactory</span>(<span style="color:#c9722b;">&quot;TestApp.ObjectFactoryDAL.ListClassFactory,TestApp.ObjectFactoryDAL&quot;</span>)]
+&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">class</span>&nbsp;<span style="color:#a9d3df;">ListClass</span>&nbsp;:&nbsp;<span style="color:#a9d3df;">List</span>&lt;<span style="color:#a9d3df;">Guid</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">static</span>&nbsp;<span style="color:#a9d3df;">ListClass</span>&nbsp;Fetch(<span style="color:#e2b155;">string</span>&nbsp;criteria)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">return</span>&nbsp;Csla.<span style="color:#a9d3df;">DataPortal</span>.Fetch&lt;<span style="color:#a9d3df;">ListClass</span>&gt;(criteria);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}</pre>
+<p>or if in Silverlight or WindowsPhone (will also work on .NET4) </p>
+<pre style="font-family:Consolas;font-size:13px;color:#f6e9c0;background:none repeat scroll 0% 0% #160d03;"><span style="color:#e2b155;">namespace</span>&nbsp;TestApp.Business
+{
+&nbsp;&nbsp;[<span style="color:#a9d3df;">Serializable</span>]
+&nbsp;&nbsp;[<span style="color:#a9d3df;">ObjectFactory</span>(<span style="color:#c9722b;">&quot;TestApp.ObjectFactoryDAL.ListClassFactory,TestApp.ObjectFactoryDAL&quot;</span>)]
+&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">class</span>&nbsp;<span style="color:#a9d3df;">ListClass</span>&nbsp;:&nbsp;<span style="color:#a9d3df;">MobileList</span>&lt;<span style="color:#a9d3df;">Guid</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">static</span>&nbsp;<span style="color:#a9d3df;">ListClass</span>&nbsp;Fetch(<span style="color:#e2b155;">string</span>&nbsp;criteria)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">return</span>&nbsp;Csla.<span style="color:#a9d3df;">DataPortal</span>.Fetch&lt;<span style="color:#a9d3df;">ListClass</span>&gt;(criteria);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}</pre>
+<p>and your DAL:</p>
+<pre style="font-family:Consolas;font-size:13px;color:#f6e9c0;background:none repeat scroll 0% 0% #160d03;"><span style="color:#e2b155;">namespace</span>&nbsp;TestApp.ObjectFactoryDAL
+{
+&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">class</span>&nbsp;<span style="color:#a9d3df;">ListClassFactory</span>&nbsp;:&nbsp;<span style="color:#a9d3df;">ObjectFactory</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">public</span>&nbsp;<span style="color:#e2b155;">object</span>&nbsp;Fetch&nbsp;(<span style="color:#e2b155;">string</span>&nbsp;criteria)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e2b155;">return</span>&nbsp;<span style="color:#e2b155;">new</span>&nbsp;<span style="color:#a9d3df;">ListClass</span>()&nbsp;{<span style="color:#a9d3df;">Guid</span>.NewGuid()};
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

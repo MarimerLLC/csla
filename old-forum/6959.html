@@ -1,0 +1,135 @@
+<html><header><title>Child objects not saving?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child objects not saving?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6959.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB posted on Sunday, May 17, 2009</h2><P>I have an object with a child list. I call Save() on the root level object and use the FieldManager to call update on the child objects. It all seems to be working but in the end, the changes are not persisted.</P>
+<P>I have stepped through the code to ensure that my child objects have the most recent values and they do.... I use Transactional attribute with TransactionScope as they type. Do I have to call Commit or is this done by the CSLA framework?</P>
+<P>&nbsp;</P>
+<P>Any clues?</P>
+<P>Mike B</P>
+<P>Here is the Child_Update code:</P>
+<P>[RunLocal()]</P>
+<P>[Transactional(TransactionalTypes.TransactionScope)]</P>
+<P>private void Child_Update(object parent)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;using(ObjectContextManager&lt;InformEntities&gt; manager</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;= ObjectContextManager&lt;InformEntities&gt;.GetManager("InformEntities", true))</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InformModel.TimesheetActivity activity = new InformModel.TimesheetActivity();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ObjectToEntity(activity);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;activity.EntityKey = new System.Data.EntityKey("InformEntities.TimesheetActivities", "Id", activity.Id)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;manager.Context.Attach(activity);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;manager.SaveChanges();</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 17, 2009</h2><P>You should read Chapter 18 (and 17) of <EM>Expert 2008 Business Objects</EM> to get an understanding of the data access models supported by CSLA .NET.</P>
+<P>At a high level:</P>
+<OL>
+<LI>The RunLocal attribute is only valid on root object methods - it is ignored on Child_XYZ methods</LI>
+<LI>The Transactional attribute is only valid on root object methods - it is ignored on Child_XYZ methods</LI>
+<LI>Your root object's DataPortal_XYZ method must trigger saving the child by calling either the data portal for each child object, or the field manager's helper method to update all child objects</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Sunday, May 17, 2009</h2><P>Thanks for the reply Rocky:</P>
+<P>So, would 1 and / or 2 stopped my object from saving. You stating that the RunLocal and Tansactional attributes are ignored at the child level tells me no. This leaves the DataPortal_XYZ method. I do call UpdateChildren(this) from the parent method, and my Child_Update(...) does get called....I get no exceptions, no errors, but also, no persistence.</P>
+<P>I have read chapter 18 of your book and I understand the data access methods which should be used. Well I thought I did anyway. The RunLocal and Transactional attributes were remnants left behind&nbsp;before I implemented Child_Update (Originally I had everything as a root level object). The classes were all genereated from a template using MyGeneration...</P>
+<P>Any idea why this will not save?&nbsp;Here is my parent DataPortal_Update(...) function.&nbsp;I am using Entity Framework for data access....&nbsp;Anything&nbsp;apparently wrong with&nbsp;this? Remember, the Child_Update() is getting called.....&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT size=2>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RunLocal</FONT></FONT><FONT size=2>()]</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Transactional</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalTypes</FONT></FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InformEntities</FONT></FONT><FONT size=2>&gt; manager</P>
+<P>= </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InformEntities</FONT></FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"InformEntities"</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P>InformModel.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Department</FONT></FONT><FONT size=2> newObj = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> InformModel.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Department</FONT></FONT><FONT size=2>();</P>
+<P>ObjectToEntity(newObj);</P>
+<P>newObj.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"InformEntities.Departments"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"DepartmentId"</FONT></FONT><FONT size=2>, newObj.DepartmentId);</P>
+<P>manager.ObjectContext.Attach(newObj);</P>
+<P>manager.ObjectContext.SaveChanges();</P>
+<P><STRONG>FieldManager.UpdateChildren(</STRONG></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><STRONG>this</STRONG></FONT></FONT><FONT size=2><STRONG>);</STRONG></P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, May 18, 2009</h2>I don't know EF, but maybe the SaveChanges (if it's equivolent to SubmitChange on the l2s DataContext) should be after the FieldManger call.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Monday, May 18, 2009</h2><P>Yeah, I think your right.&nbsp;Unfortunately, I&nbsp;became really overwhelmed with my generated classes trying to change&nbsp;root objects to child objects&nbsp;etc... so I deleted them all and&nbsp;started handcoding them from scratch&nbsp;to get a better feel for the framework and how it works....&nbsp;</P>
+<P>My only problem now is I cannot figure out the indtended way to create child objects..... Even with the book, I find it difficult to follow ProjectTracker project.</P>
+<P>If I have a Order object with an OrderItem collection. Am I supposed to create a AddNewOrderItem(....) method in the Order object where I pass all the arguments? Or do I just ask the Order for a new Blank Order Item, fill out the details and pass back to the Order for saving? </P>
+<P>Thanks for the reply....</P>
+<P>Mike B&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I tend to create my classes following a consistent structure,
+and this was a reason I created the child data portal concept &#8211; to increase
+the consistency.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I tend to create a factory on every class (public for a root,
+internal for a child) and have that factory call the data portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then I implement the real work in the DataPortal_XYZ or Child_XYZ
+method (or in a factory object).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Typically a child object is contained in a collection, and
+collections have Add() and AddNew() methods. When possible, I&#8217;ll support
+AddNew() by overriding AddNewCore():<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>protected override object AddNewCore()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; var item = ChildType.NewChild();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Add(item);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; return item;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If that&#8217;s not realistic because some values are necessary
+to create a new child, then I won&#8217;t take that approach, and instead will do
+one of two things<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Have a public static factory method on the child class so anyone
+can create a child (and then use Add() to add it to the collection)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Have an overload for Add() on the collection that takes the
+required parameters, calls the internal factory method on the child class to
+create the child, and then calls Add() to add the item to the collection<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At this point though, we&#8217;ve hit a point where style and
+choice enters the picture. It doesn&#8217;t really matter to CSLA how you
+choose to do this (there are variants beyond these two) as long as you
+ultimately have a child object and Add() it to the collection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Monday, May 18, 2009</h2><P>Thanks for the reply Rocky.... Makes perfect sence,&nbsp;I figured&nbsp;it was really up to the "implementer" but&nbsp;I thought maybe there were prefered methods.&nbsp;</P>
+<P>Mike B</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

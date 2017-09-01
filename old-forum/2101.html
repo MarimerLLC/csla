@@ -1,0 +1,120 @@
+<html><header><title>Converting Objects to XML</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Converting Objects to XML</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Tuesday, January 09, 2007</h2><P>I'm putting some error trapping into my web pages and I think a helpful thing to record would be an XML version of the object to the database so I can get an idea of what the user was working with when the web page erred.&nbsp;&nbsp; I figure the best way to store it would be as XML.</P>
+<P>So I'd like a way to cause an object and all of it's children/collections to be converted to XML so it may be saved in a database as a text field.&nbsp; This way I can examine the object in instances of hard to crack bugs.</P>
+<P>I suppose I could just serialize it out?</P>
+<P>Thoughts?</P>
+<P>Suggestions?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snesbitt replied on Tuesday, January 09, 2007</h2><P>The WCF DataContractSerializer does a great job of serializing objects that contain&nbsp;collections and lists.&nbsp; The resulting XML is very clean and you have full control to re-order and re-name the resulting XML elements.&nbsp; I've used this serializer with good results in my last project when I needed to serialize an object that contained collections -&nbsp;even though I was not&nbsp;using any other WCF functionality.&nbsp; The downside is that you need to go back and define your objects as DataContracts and all properties you want serialized as DataMembers (this new&nbsp;serializer uses an opt-in policy unlike the XmlSerializer).&nbsp; This may sound like a big task but it&nbsp;really is&nbsp;quite straight-forward - provided you aren't dealing with 100's of objects and properties of course.&nbsp; Your objects can continue to be used in the same way after they've been decorated it with the WCF attributes.</P>
+<P>If you havent delved into WCF yet and you want any further help, just let me know.</P>
+<P>Best of luck,</P>
+<P>Steve</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Monday, June 04, 2007</h2><P>I have this problem serializing CSLA BO into XML. I use XMLSerializer, the error as follows:</P>
+<P>There was an error reflecting type object type.</P>
+<P><BR>Cannot serialize member 'Csla.Core.BusinessBase.BrokenRulesCollection' of type 'Csla.Validation.BrokenRulesCollection', see inner exception for more details.</P>
+<P>Csla.Validation.BrokenRule cannot be serialized because it does not have a parameterless constructor.</P>
+<P>How to ignore the Csla.Validation.BrokenRule member in XML serialization?</P>
+<P>Also, I would like to know what you had done in the above case?</P>
+<P>Thanks,<BR>RSB</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Tuesday, June 05, 2007</h2><P>CSLA comes with ObjectAdapter implementation, which converts your object or&nbsp;collection into a DataSet/DataTable. This might be a quick solution for you; or, it serves as a base to start your own XML serialization.</P>
+<P>Regards,<BR>William</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, June 05, 2007</h2>ObjectAdaptor has its problems - which Rocky admits to (see recent posts) . Currently it can't deal with Nullables, which is causing me an issue. Also it will only produce a DataTable of the parent object or collection public properties (including IsDirty, IsValid, and BrokenRules etc.). rather than a DataSet containing all child objects.<br><br>Jimbo<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Tuesday, June 05, 2007</h2><P>Oh, this is the problem I am facing now. Any other suggestions?</P>
+<P>Thanks,<BR>RSB</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Tuesday, June 05, 2007</h2><P>William,</P>
+<P>Thank you, This worked. But How do I get the XML for the child object which is a list. For example, A business object has a property which is a childList. How do I get the XML for this one along with the parent? I am getting the Parent properties.</P>
+<P>&lt;XML-Parent&gt;</P>
+<P>&nbsp;&nbsp; &lt;ChildList&gt; </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; &lt;Child&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Child&gt;</P>
+<P>&nbsp; &lt;/ChildList&gt;</P>
+<P>&lt;XML-Parent&gt;</P>
+<P>Thank you<BR>RSB</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Tuesday, June 05, 2007</h2>I think ObjectAdapter does not automatically work with child objects. However,&nbsp; you can still use ObjectAdapter and follow the patterns of DataSet, where your BO exposes a GetXml() method. Internal to this method, use ObjectAdapter on the object as well as all child objects to get DataSet presentation then to XML.<br><br>Regards,<br>William<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, June 05, 2007</h2>You can implement IXmlSerializable&nbsp; in your classes and do the serialization by hand. It isn't awfully hard, but it's not as straightforward as using the xmlserializer without implementing that ;).<br><br>I wonder why doesn't Rocky just mark those properties with an XmlIgnore attribute so that people can serialize their objects to xml if they want to. Then it's up to you if you want to "break the model" and have a public parameterless constructor, being aware of the limitations of the xml serializer, of course (public r/w props only).<br><br>Then again, if we're talking about breaking the model, you may as well mark those conflicting properties with XmlIgnore in your own version of csla and that's it.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Wednesday, June 06, 2007</h2><P>Thank you folks!</P>
+<P>I have started writing my own serializer. I am using the reflection and xml namespaces.&nbsp; I am passing in the object, getting its all properties and the propertyinfo using PropertyInfo class. (FieldInfo class can also be used).&nbsp; My problem is, if there is a child list in the parent object, I have to get the childlist object, cast it to the BusinessListBase. This is the place, I am stuck!!I am not sure on how to do this?? Code as below, any help appreciated !!</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Serialize( </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> o, </FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> t)</P>
+<P>{</P>
+<P></P>
+<P></FONT><FONT color=#008000 size=2>//string str = pi.GetValue(pi,0).ToString();</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// start writing!</P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#2b91af size=2>PropertyInfo</FONT><FONT size=2>[] pi = t.GetProperties();</P>
+<P></FONT><FONT color=#2b91af size=2>XmlTextWriter</FONT><FONT size=2> writer = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>XmlTextWriter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"c:/test.xml"</FONT><FONT size=2>, System.Text.</FONT><FONT color=#2b91af size=2>Encoding</FONT><FONT size=2>.UTF8);</P>
+<P>writer.WriteStartDocument();</P>
+<P>writer.WriteStartElement(</FONT><FONT color=#a31515 size=2>"root"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>PropertyInfo</FONT><FONT size=2> p </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> pi)</P>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (p.PropertyType.BaseType.Name.Equals(</FONT><FONT color=#a31515 size=2>"BusinessListBase`2"</FONT><FONT size=2>)) </P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>string s = p.Name;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //property Name</FONT></P>
+<P><FONT color=#0000ff size=2>object</FONT><FONT size=2> ox = p.GetValue(o,</FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>);&nbsp;&nbsp;&nbsp; &nbsp;// property Value</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (ox.GetType() == </FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(BusinessListBase</FONT><FONT size=2>))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //if child list object</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> ti = ox.GetType();</P>
+<P></FONT><FONT size=2><FONT color=#008000>// how to get the child object value ??</FONT></FONT></P>
+<P><FONT size=2><FONT color=#008000>//recursively call Serialize<BR>// Serialize(object childObject, type BusinessListBase)</FONT></FONT><FONT size=2></P></FONT><FONT size=2>
+<P>}</P>
+<P></P>
+<P>}</P>
+<P>else // normal property</P>
+<P>{</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;object</FONT><FONT size=2> op = p.GetValue(o, </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>);</P>
+<P>&nbsp;writer.WriteElementString(p.Name, op.ToString());</P>
+<P>}</P>
+<P>}</P>
+<P>writer.WriteEndElement();</P>
+<P>writer.WriteEndDocument();</P>
+<P>writer.ToString();</P>
+<P>writer.Close();</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>""</FONT><FONT size=2>;</P>
+<P></P>
+<P></P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Thanks,<BR>RSB</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snesbitt replied on Wednesday, June 06, 2007</h2><P><FONT color=#000000 size=2>RSB,</FONT></P>
+<P><FONT size=2>I think this will be close to what you need.</FONT></P>
+<P><FONT size=2>Hope this helps</FONT></P>
+<P><FONT size=2>Steve</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT color=#008000 size=2>// ... extract from above ...</FONT></P>
+<P><FONT color=#0000ff size=2>if</FONT><FONT size=2> (ox.GetType() == </FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(BusinessListBase</FONT><FONT size=2>))&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>//if child list object</FONT></P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>foreach</FONT> (<FONT color=#0000ff>object</FONT> childObject <FONT color=#0000ff>in</FONT> (<FONT color=#7fffd4>IBindingList</FONT>)p.GetValue(ox, null))</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Serialize(childObject, <FONT color=#0000ff>typeof</FONT>(childObject));</P>
+<P>&nbsp;&nbsp;&nbsp;}</P></FONT><FONT size=2>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Wednesday, June 06, 2007</h2><P>Thank you Steve,</P>
+<P>I get error in the place where I typecast the object as <FONT color=#0000ff>in</FONT> (<FONT color=#7fffd4>IBindingList</FONT>)p.GetValue(ox, null)).&nbsp; It says object target not matched, target exception thrown.&nbsp; I used IExtendedBindingList ..</P>
+<P>Thank you !<BR>RSB</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 05, 2007</h2><P>YOu can't use the XmlSerializer for Csla based objects.&nbsp; That requires that all properties have get AND set methods, and that you have a public, parameterless constructor.&nbsp; Both of those things go against the grain of Csla design.&nbsp; </P>
+<P>If the ObjectAdapter doesn't work for you, you may have to come up with a similar class.&nbsp; It sounds like others say you can use the new serializer in WCF to get xml, that's probably the best way to go.&nbsp; You need to avoid binary formats because if you update your BO assembly, you may lose the ability to read the data into an object again.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snesbitt replied on Tuesday, June 05, 2007</h2>The WCF serializer will have the same requirements as XmlSerializer in that all props need getters and setters, public parameterless constructor etc.&nbsp; So that wont help you I'm afriad.&nbsp; My original post about the WCF serializer was misleading in that I havent used it with CSLA objects - just home grown objects. Sorry.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 05, 2007</h2>Hmm.. I didn't think the WCF serializer had that limitation, especially since Rocky enables us to use it for N-level undo... perhaps I'm thinking of something else in WCF though.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, June 05, 2007</h2><P><FONT color=#000000><FONT face=Arial><FONT size=2>The built-in&nbsp;serializer (System.Xml.Serialization.XmlSerializer)&nbsp;provided at part of the .NET Framework&nbsp;has the following well-documentation short-comings:</FONT></P></FONT></FONT>
+<UL>
+<LI><FONT color=#000000><FONT face=Arial><FONT size=2>System.Xml.Serialization.XmlSerializer only works with public types.</FONT></LI></FONT></FONT>
+<LI><FONT color=#000000><FONT face=Arial><FONT size=2>System.Xml.Serialization.XmlSerializer&nbsp;requires public get and set property accessors.</FONT></LI></FONT></FONT>
+<LI><FONT color=#000000><FONT face=Arial><FONT size=2>System.Xml.Serialization.XmlSerializer does not support collections that implement the System.Collections.IDictionary interface.</FONT></LI></FONT></FONT>
+<LI><FONT color=#000000><FONT face=Arial><FONT size=2>System.Xml.Serialization.XmlSerializer ignores a collection's properties.</FONT></LI></FONT></FONT>
+<LI><FONT face=Arial><FONT size=2><FONT color=#000000>Objects must have a default, parameter-less constructor.&nbsp; Although&nbsp;t</FONT><FONT color=#000000>he constructor does not have to be public.</LI></FONT></FONT></FONT>
+<LI><FONT color=#000000><FONT face=Arial size=2>No code-access security checks may be performed during deserialization.</FONT></LI></FONT>
+<LI><FONT color=#000000><FONT face=Arial size=2>Properties cannot return interfaces.</FONT></LI></FONT>
+<LI><FONT color=#000000><FONT face=Arial size=2>Properties cannot return multi-dimensional arrays.</FONT></LI></FONT>
+<LI><FONT color=#000000><FONT face=Arial size=2>Object graphs cannot contain circular references.</FONT></LI></FONT>
+<LI><FONT color=#000000><FONT face=Arial size=2>Object references will be serialized each time they are encountered (resulting in multiple instances on deserialization instead of the expected behavior, which Rocky documents).</FONT></LI></FONT>
+<LI><FONT color=#000000><FONT face=Arial><FONT size=2>Collections must implement&nbsp;System.Runtime.Serialization.ISerializable to be serializable.</FONT></LI></UL></FONT></FONT>
+<P><FONT face=Arial size=2>I am not familiar with the WCF Serializer, yet, and had to develop my own custom serializer a couple of years ago to get around these limitations because it was the only way to support it with Csla.&nbsp; With it, what you are asking to do is as sinple as calling the ToXML() method on my BO.&nbsp; Unfortunately, the code is proprietary to the employer but I can tell you that it isn't that hard to do - just takes time.</FONT></P>
+<P><FONT face=Arial size=2>HTH</FONT></P>
+<P>&nbsp;</P>
+<P><FONT size=2><FONT face=Arial></FONT><FONT color=#000000>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 07, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Hmm.. I didn't think the WCF serializer had that limitation, especially since Rocky enables us to use it for N-level undo... perhaps I'm thinking of something else in WCF though.</div></BLOCKQUOTE></P>
+<P>The WCF&nbsp;<EM>DataContractSerializer</EM> has many of the limitations of the XmlSerializer. However, the <EM>NetDataContractSerializer</EM> is what I use in CSLA, because it works the same as the BinaryFormatter, but produces and consumes XML instead of a binary blob.</P>
+<P>It is important to realize, however, that serializing an object graph in a way that you can put it back together as an exact clone requires that the XML contain more data than just the simple &lt;name&gt;value&lt;/name&gt; content... If you look at the output from DCS you'll see a simple format, which is why it isn't useful to CSLA - because it can not create an exact clone. The NDCS produces slightly more complex XML - but it can create an exact clone.</P>
+<P>I don't recommend the SoapFormatter, because it is deprecated. That, and it produces <EM>really complex</EM> XML using&nbsp;a now-defunct serialization scheme from the SOAP spec.</P>
+<P>But what you might consider is writing your own. If all you need to do is serialization - NOT deserialization - then it is really quite easy to use reflection to create your own serializer. You can model it after the code in UndableBase - or look back at CSLA .NET 1.x, which had (on and off) an ObjectDumper (or something) method that would serialize an object graph into text for debugging.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Thursday, June 07, 2007</h2><P>I don't know Rocky, that seems like a lot of work for not a lot of benefit.&nbsp; As I understand the situation all he wants is to write out the current state of his object when an error occurs on his website to help with debugging.</P>
+<P>Sure the SOAPFormatter my be depreciated and the contents convoluted, but does that really matter?&nbsp; You can read through it to see the memory variables with not too much trouble or if you are really stuck just reconstitute the object with almost no code.&nbsp; If (and this may never happen)&nbsp;at a later date he upgrades to some later version of .Net that doesn't include the SOAPFormatter then he can rewrite his centralized error handling scheme at that time.&nbsp; It's not like he is going to care that the format of his serialized objects for helping with debugging has changed.&nbsp; </P>
+<P>He may never rewrite his application to use a later version of .Net or if he does custom serialization that may also need to be rewritten.&nbsp; If he is smart and has a centralized handler for writing out his error information its not like he will be rewriting much and when whatever version of .Net he is switching to comes out he may have a better&nbsp;understanding of the best way of&nbsp;serializing them for that version.&nbsp; Just write a few simple lines of code with the SOAPFormatter and be done with it and get back to the real business problems.&nbsp; IMHO, of course.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 07, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The WCF&nbsp;<EM>DataContractSerializer</EM> has many of the limitations of the XmlSerializer. However, the <EM>NetDataContractSerializer</EM> is what I use in CSLA, because it works the same as the BinaryFormatter, but produces and consumes XML instead of a binary blob.</div></BLOCKQUOTE></P>
+<P>Ahh... didn't notice from the discussions that there were two different serializers.&nbsp; Good to know.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, June 07, 2007</h2>Rocky, this may be a dumb question, but could you use a combination of NDCS and the undoable code to send the information over the DataPortal and back into the same object that it originated from?&nbsp; In essence, this would mean that you would not need to use the instance = instance.Save() (and have to rehook events, etc.).&nbsp; You could instead just call instance.Save, even when using the remote DataPortal.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Wednesday, June 06, 2007</h2><P>I know this may be too easy but have you considered just using the SOAP serializer and being done with it.&nbsp; SOAP is XML after all so you will be able to read the output in notepad.&nbsp;&nbsp;It will also&nbsp;do a deep&nbsp;serialization of your objects unlike the XML serializer so you will also be able to see all the private members.&nbsp; Best of all it will take you about two lines of code, no muss, no fuss.</P>
+<P>The only drawback is a bit of extra information about the version of the object so it know how to recreate it and some extra envelope stuff, but that may be important&nbsp;for your debugging&nbsp;too.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Wednesday, June 06, 2007</h2><P>Hi Kevin,</P>
+<P>I havent tried SOAP serializer, but does it do the child objects too? </P>
+<P>Thanks,<BR>RSB</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Wednesday, June 06, 2007</h2><P>Full deep copy, child objects too.&nbsp; Basically for deep serialization you have&nbsp;the Binary and SOAP formatters.&nbsp; Binary is what you are most likely using if you have a remote data portal.&nbsp; It should be trivially easy for you to try and see if you like the results.&nbsp; This code will copy it to a file stream so you can look at it but you could just as easily copy it to a memory stream (or any other type of stream) for database persistence.</P>
+<P>try&nbsp;<BR>{<BR>&nbsp; FileStream fs = new FileStream("mySerializedObject.txt", FileMode.Create);<BR>&nbsp; SoapFormatter myFormatter = new SoapFormatter();<BR>&nbsp; myFormatter.Serialize(fs, myObjectInstanceVariable);<BR>}<BR>finally<BR>{<BR>&nbsp; fs.Close();<BR>}</P>
+<P>The nice thing is if you really want to you can they recreate the instance of the object as it was when the error occurred using the Deserialize method or just look through the SOAP&nbsp;text for visual inspection.&nbsp; Since SOAP messages are XML I suspect&nbsp;they would save to the SQL Server 2005 XML data type but I haven't tried it.&nbsp; Certainly it would save to a VarChar or any other text type.</P>
+<P>Edit to add, don't forget to mark all your CSLA based classes with the Serializable attribute but you should be doing that anyway, particularly if you are ever planning on using a remote data portal.</P>
+<P>Thanks,</P>
+<P>Kevin<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>Avoiding Serialization of events</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Avoiding Serialization of events</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10374.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mudit posted on Monday, May 16, 2011</h2><p>Hi all<br />
+&nbsp;<br />
+I am working on a application following MVVM, there are lot of 
+properties directly binded to the Business Base model layer( like - Binding 
+=&quot;ViewModelProperty.ModelProperty.Text&quot; )<br />
+&nbsp;<br />
+when i try to save the business object the following error is thrown:<br />
+&nbsp;<br />
+Type &#39;System.ComponentModel.PropertyChangedEventManager&#39; in Assembly 
+&#39;WindowsBase, Version=3.0.0.0, Culture=neutral, 
+PublicKeyToken=31bf3856ad364e35&#39; is not marked as serializable.<br />
+&nbsp;<br />
+I understand that there might be few (INotify)event subscriptions with the object which wont allow it to serialize.<br />
+&nbsp;<br />
+I cant use [field:NonSerialized] as we dont have access the code for csla.<br />
+&nbsp;<br />
+Has anyone faced this type of scenario ever? if so how did you get rid of it ?<br />
+&nbsp;<br />
+thanks.<br />
+&nbsp;<br />
+Mudit
+	</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mudit replied on Monday, May 16, 2011</h2><p>and when i use ISerializable</p>
+<p>&nbsp;</p>
+<p>Type &#39;Csla.Core.BusinessBase+BypassPropertyChecksObject&#39; in Assembly &#39;Csla, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; is not marked as serializable.</p>
+<p>&nbsp;</p>
+<p>this is thrown</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, May 16, 2011</h2><p>Use of ISerializable is not supported with CSLA .NET.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

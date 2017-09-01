@@ -1,0 +1,26 @@
+<html><header><title>Bone Head or Bug in 2.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bone Head or Bug in 2.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/982.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Tuesday, August 22, 2006</h2><P>I have a unit test that I was expecting to pass, but it doesn't.&nbsp; It almost feels like there are two instances of the CommentResponse object.&nbsp; One with the value from the database, and one that was changed to string.empty.&nbsp; I havn't tried it with 2.03.</P>
+<P>Anyone see a bonehead mistake in the code?</P><FONT size=2>
+<P>&lt;Test()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ChangeProperty()</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Dim</FONT><FONT size=2> testEval </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Evaluation = Evaluation.GetEvaluation(_eval.EvaluationID)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> r </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AbstractResponse </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> _eval.Responses</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> r.QuestionID = _commentQuestion.QuestionID </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_commentResponseID = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(r, CommentResponse).ResponseID</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CType</FONT><FONT size=2>(r, CommentResponse).Comment = </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Empty</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Next</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;Assert.AreEqual(</FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Empty, </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(testEval.Responses.GetItem(_commentResponseID),&nbsp;&nbsp;&nbsp;&nbsp;CommentResponse).Comment)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></P>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT color=#000000 size=2> GetItem(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> ResponseID </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT color=#000000 size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> IResponse</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> r </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AbstractResponse </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> r.ResponseID = ResponseID </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return</FONT><FONT size=2> r</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>UnitTest Result:</FONT></P>
+<P><FONT color=#0000ff size=2>EPAS.BusinessObjects.UnitTests.ResponseTestFixtures.CommmentResponseFixture.ChangeProperty : <BR>&nbsp;String lengths differ.&nbsp; Expected length=0, but was length=4.<BR>&nbsp;Strings differ at index 0.<BR>&nbsp;expected: &lt;""&gt;<BR>&nbsp; but was: &lt;"Test"&gt;<BR>&nbsp;------------^</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Baldu replied on Tuesday, August 22, 2006</h2>You're iterating over _eval.Responses when you set the Comment to String.Empty, but you use testEval.Responses in your Assert statement.&nbsp; I'm assuming you are returning a new object from GetEvaluation.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Tuesday, August 22, 2006</h2><P>Bonehead it is!&nbsp;</P>
+<P>Thanks you for the help.</P>
+<P>Jeff</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

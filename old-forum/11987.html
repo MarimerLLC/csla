@@ -1,0 +1,45 @@
+<html><header><title>Error with Dynamanic List and Sorting Lists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error with Dynamanic List and Sorting Lists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11987.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 posted on Monday, May 20, 2013</h2><p>Hello, </p>
+<p>I&nbsp;am experiencing&nbsp;a problem with CSLA that didn&#39;t seem to be in the forums, until last week when someone else was experiencing the same problems as me. the post the question is in is marked with a suggested answer so this might be the reason why you have not seen it. however I am reposting it here in hope for a answer.</p>
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<p>&nbsp;Original Post from&nbsp; <a href="http://forums.lhotka.net/user/Profile.aspx?UserID=12503"><span style="color:#3366cc;">Cymro</span></a>&nbsp;in forum post <a href="http://forums.lhotka.net/forums/t/11781.aspx" class="ForumNameRead"><strong><span style="color:#888888;">Error when pressing escape key on a filtered list bound datagridview</span></strong></a> </p>
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<p>I have tested this further and it appears that there are other issues around the CancelNew behaviour with a DataGridView.&nbsp; The reason I was looking at this was because we are attempting to use a SortedBindingList and FilteredBindingList with a DynamicBindingListBase derived class.&nbsp; The issue here is that when the list is Sorted (or filtered) the cancel new fails and leaves the invalid new item in the list.</p>
+<p>I have tracked this down and found the issue but not a satisfactory resolution <img src="http://forums.lhotka.net/emoticons/emotion-7.gif" alt="Tongue Tied" /></p>
+<p>When a new row is added to a DataGridView the AddNew adds the object to the end of the list.&nbsp; Even if the sorted is list is sorted it still goes at the end of the sorted list (which is what we want).</p>
+<p>The issue is with the way that the DataGridView&#39;s DataBinding handles the cancelling.&nbsp; </p>
+<ol>
+<li>The DataGridView calls&nbsp;CancelEdit on the child object through (IEditableObject.CancelEdit).&nbsp; </li>
+<li>The changes get&nbsp;rolled back&nbsp;in the child object, but this has the side effect of raising OnUnknownPropertyChanged. </li>
+<li>PropertyChanged is handled by the parent BindingList and raises the IBindingList.ListChanged event with a ListChangeType of &quot;Reset&quot;.&nbsp; </li>
+<li>The&nbsp;SortedBindingList handles the ListChanged of the source list and calls DoSort, resorting all the items in the list (including the new item).&nbsp; <strong><em>This is where the problem lies!!!</em></strong> </li>
+<li>The DataGridView then calls ICancelAddNew.CancelNew&nbsp;passing the last row index - but this is no longer where our item is, because it has been re-sorted into the middle of the list somewhere. </li>
+</ol>
+<p>We do not see the effect of this issue in a BusinessBindingListBase because as part of the CancelEdit on the child, it calls to the parent list to remove it (when the EditLevel &lt; EditLevelAdded) using IParent.RemoveChild(T child).&nbsp; With a BusinessBindingListBase the implementation of this method&nbsp;removes the child, whereas with a DynamicBindingList does not.&nbsp; Therefore, with a BusinessBindingListBase the new child is removed from the list before the CancelNew is even called (as part of step 2 above) which masks the issue with the CancelNew implementation of the SortedBindingList.</p>
+<p>I am unhappy with this &quot;fix&quot; for two reasons. Firstly, the original comment in the method...</p>
+<p>...suggests that this was thought about and decided this should not be done here.&nbsp; And secondly because this just masks the real issue of the list getting re-sorted during the whole cancel process.</p>
+<p>Now the obvious &quot;fix&quot; is to have the DynamicBindingList remove the child as part of the IParent.RemoveChild implementation as follows...</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;">    <span style="COLOR:gray;">///</span><span style="COLOR:green;"> </span><span style="COLOR:gray;">&lt;summary&gt;</span>
+    <span style="COLOR:gray;">///</span><span style="COLOR:green;"> This method is called by a child object when it</span>
+    <span style="COLOR:gray;">///</span><span style="COLOR:green;"> wants to be removed from the collection.</span>
+    <span style="COLOR:gray;">///</span><span style="COLOR:green;"> </span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+    <span style="COLOR:gray;">///</span><span style="COLOR:green;"> </span><span style="COLOR:gray;">&lt;param name=</span><span style="COLOR:gray;">&quot;child&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">The child object to remove.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+    <span style="COLOR:blue;">void</span> Core.<span style="COLOR:#2b91af;">IEditableCollection</span>.RemoveChild(Csla.Core.<span style="COLOR:#2b91af;">IEditableBusinessObject</span> child)
+    {</pre>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;">      Remove((C)child);
+    }</pre>
+<p>I am unhappy with this &quot;fix&quot; for two reasons. Firstly, the original comment in the method...</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="COLOR:green;">// do nothing, removal of a child is handled by</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="COLOR:green;">// the RemoveItem override</span></p>
+<p>...suggests that this was thought about and decided this should not be done here. And secondly because this just masks the real issue of the list getting re-sorted during the whole cancel process.&nbsp; Does anyone have any thoughts?</p>
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<p>EDIT:</p>
+<p>---------------------------------------------------------------------------------------------------------------------------------------------------------</p>
+<p>Forgot to mention that I am using CSLA 4.0.1 and have also tried this on 4.2.something </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>harrybow5 replied on Wednesday, June 12, 2013</h2><p>Its been a few weeks and no reply on this which was a bit gutting as I really wanted to use the dynamic list. </p>
+<p>however I did find a work around of such, I have implemented a editable root list and made it act as a dynamic. </p>
+<ul>
+<li>Leaving a row - on the row validate check that the object is valid otherwise don&#39;t allow the user to move </li>
+<li>Successful leaving of a row results in a save </li>
+<li>if you are leaving a row and it is not a valid object but its a new then drop the row </li>
+<li>if you are deleting in row then save </li>
+<li>if you press esc on a new row delete the new row</li>
+</ul>
+<p>This wasn&#39;t what we really wanted to do however it does seem to of worked rather well. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

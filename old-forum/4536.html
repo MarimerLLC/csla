@@ -1,0 +1,9 @@
+<html><header><title>Strange WPF Principal Problem </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange WPF Principal Problem </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG posted on Friday, March 21, 2008</h2><P>I have a WPF application that is displaying a strage problem.</P>
+<P>My business objects, in this particular case, all override the Save methd and check to see if the user is able to save (by checking a shard CanEdit function.</P>
+<P>When the control loads I also check the CanEdit method and Enable/Disable various controls based on if the user CanEdit, etc.</P>
+<P>When I try to save the list it throws an error because the principal is no longer authenticated.&nbsp; </P>
+<P>However, if I then go and make an edit on another list, that does NOT check CanEdit on Save all subsequent attempts to sav eth original list work.</P>
+<P>It seems only if I try to save an object which shcecks on Save does the Principal appear to be InValid.</P>
+<P>I realize WPF is not thread safe but should it either work or not?</P>
+<P>I am using the latest code from the repository and have the same layout as ProjectTracker (Adding a Handler&nbsp;for DataPortalInitInvoke in the constructor)&nbsp;as well as&nbsp;Inheriting from a Base Form.</P>
+<P>Does anybody have any insight?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

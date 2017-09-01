@@ -1,0 +1,18 @@
+<html><header><title>How to have (logical) joins with easy UI binding?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to have (logical) joins with easy UI binding?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndresN posted on Sunday, November 28, 2010</h2><p>
+<p>Identity Projections in LINQ to CSLA.NET do wonderful job while binding to data controls.</p>
+<p>But this can&#39;t be achieved when LINQ query is a join (working with CSLA version 3.8.4).</p>
+<p>I can see the reasons behind the limitation, but unfortunately this is exactly what my application needs.</p>
+<p>I need to join, and I need to bind to UI controls.</p>
+<p>Now what I&#39;m thinking about is some &quot;fake&quot; CSLA objects, that would appear as an entity towards UI (doing&nbsp;LINQ to CSLA.NET&nbsp;Identity Projections), but internally it would decompose into a few &quot;real&quot; CSLA classes, with some kind of automatic dependencies linking them.</p>
+<p>Kind of manual join, preserving the merits of Identity Projections.</p>
+<p>Does this sound as a good idea solving the situation? (and if yes then is there something handy in CSLA to use, to get these automatic dependedncies going? or anyone having solved something similar somehow?)</p>
+</p>
+<p>thank you,<br />Andres</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, November 28, 2010</h2><p>Business objects should be designed to match the needs of the use case or user scenario. Which is a fancy way of saying that if you need to do joins across business domain objects to get them into the right shape, then you didn&#39;t do a good job of object design.</p>
+<p>Joining data entity objects makes sense, they are often in the wrong shape because some tool created them based on the shape of the database.</p>
+<p>But business domain objects should have been designed from the start to match the needs of the user scenario, and therefore should be in the right shape - kind of by definitiion.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndresN replied on Sunday, November 28, 2010</h2><p>thank you, this makes me thinking indeed.</p>
+<p>By the way, the real reason behind these joins is that I have different data sources that I have to blend into a single datagrid.</p>
+<p>Data sources are like live stock data, which I have to blend together with editable sql-stored data (against that same stock symbol). And yet another live source against a given symbol.</p>
+<p>I have to think whats the good design here, at some point it obviously has to branch, but where...</p>
+<p>Andres</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, November 28, 2010</h2><p>This is the purpose of the data access layer - to encapsulate mapping of data from your data sources into and out of your business domain objects.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

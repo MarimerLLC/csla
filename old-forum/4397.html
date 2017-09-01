@@ -1,0 +1,181 @@
+<html><header><title>Getting started with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Getting started with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4397.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elizabeth posted on Friday, February 22, 2008</h2>
+
+<p>Getting
+started with CSLA</p>
+
+<p>&nbsp;</p>
+
+<p>Hi
+all,</p>
+
+<p>&nbsp;</p>
+
+<p>I'm
+new to CSLA, in fact this will be my first project using it.</p>
+
+<p>&nbsp;</p>
+
+<p>Here
+is what I believe I need.</p>
+
+<p>EditableRootObject
+"Configuration"</p>
+
+<p>EditableRootObject
+"Drug"</p>
+
+<p>EditableRootObject
+"Location"</p>
+
+<p>EditableRootObject
+"Facility"</p>
+
+<p>&nbsp;</p>
+
+<p>I
+also need list objects - EditableRootLists - . DrugList, LocationList and
+FacilityList</p>
+
+<p>&nbsp;</p>
+
+<p>What
+I want to do is have the "Configuration" object be my main container
+object, I want it to contain or at least be able to access all the other
+objects through it. I'm not sure which CSLA base types I need to use to create
+my objects. I also don't really understand how to embed one object in another
+one (composite object), Is all I need to do is call the listObjects factory method and return the result?. Is there an example somewhere? Does my Drug object
+need to be an ChildObject in order for me to use it with DrugList? Or
+do I need 3 classes? An EditableRoot, EditableRootList and an EditableChild,
+such as this Drug, DrugList, DrugListChild ?</p>
+
+<p>&nbsp;</p>
+
+<p>Is
+what I'm trying to do reasonable, as far as CSLA goes? In general?</p>
+
+<p>&nbsp;</p>
+
+<p>Thanks
+in advance</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 22, 2008</h2><P>I recommend that you design your objects based on use cases, not data relationships. There are some excellent threads discussing object design on this forum, covering how to avoid using data-centric object design and instead to use responsibility-driven behavioral design.</P>
+<P>You can use <A href="http://www.lhotka.net/search.aspx">www.lhotka.net/search.aspx</A> to look for them. Here's one though: <A HREF="/forums/thread/18668.aspx">http://forums.lhotka.net/forums/thread/18668.aspx</A>.</P>
+<P>Also, I'd recommend reading "Object Thinking" by David West (<A href="http://www.lhotka.net/weblog/WhatIGotOutOfObjectThinking.aspx">http://www.lhotka.net/weblog/WhatIGotOutOfObjectThinking.aspx</A>).</P>
+<P>What you propose with a single root object that contains all other objects won't work with CSLA - not unless you want to load much of your database into memory. CSLA is not designed for that data-centric approach.</P>
+<P>Instead, you should look at the various tasks your users need to accomplish, their use cases. Design objects to meet the requirements of each use case, so the objects are small and focused on specific responsibilities.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, February 23, 2008</h2><P>It is hard to give you a specific answer without knowing more about your use cases. Some of what you propose is fine but you could also swap some of it with ReadOnlyLists and their self contained Info objects which are "lighter" and "faster".</P>
+<P>One way to break down your use cases is to mock out the various screens of your UI. Then figure out what BO(s) are required to satisfy a given screen.</P>
+<P>If you have a single gigantic screen then you may need a gigantic object that contains everything else.</P>
+<P>But it is more likely you will have many screens that do different things.</P>
+<P>e.g. Create a new Drug / Facility / Location (that's 3 screens!)</P>
+<P>Edit the same things. Maybe on the same 3 screens.</P>
+<P>etc.</P>
+<P>As far as embedding one CSLA object within another it is very easy.</P>
+<P>Private mOtherBO As OtherBO</P>
+<P>Public ReadOnly Property TheOtherBO As OtherBO<BR>&nbsp; Get<BR>&nbsp;&nbsp;&nbsp; If mOtherBO&nbsp;Is Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mOtherBO = OtherBO.GetOtherBO(someID)<BR>&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; Return mOtherBO&nbsp;<BR>&nbsp;&nbsp;End Get<BR>End Property</P>
+<P>You typically expose the contained BO as a ReadOnly Property so that the UI can interact with it but not create a New instance of it and replace the one that you have provided.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elizabeth replied on Tuesday, February 26, 2008</h2>Thanks for the advice. <br><br>I've gone back to the use cases to determine what objects I'll need to fulfill the use case needs.<br><br>I'm sure I'll have more questions once implementations starts.<br><br>Thanks again, for your prompt help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk replied on Tuesday, February 26, 2008</h2>As another CSLA (and C#) newbie I would like to share my latest learnings, which support what Rocky is saying about responsibility-driven behavior.<br><br>I just completed development of my first CSLA winform application that has two fairly large entry forms.&nbsp; The application is now in user acceptance testing and I am having to tweak the validation rules as they discover issues.&nbsp; Each form has several dozen data bound entry controls that share at least 75% common functionality and data.&nbsp; I thought it would be much easier to sustain if I create a single set of objects (5 in total) to support both forms.&nbsp; Big mistake.<br><br>Yesterday, as I was adding more validation rules, I quickly discovered that a user in one form could run into "invalid object" exceptions where the invalid data is not even visible in the form they are in.&nbsp; Remember, I said that the two forms were about 75% the same, but the other 25% is data that is visible on one form, but not the other.<br><br>Today I will be refactoring my objects into two separate sets.&nbsp; One to support the use case for the first form and the second....<br><br>I should also mention that as I neared the end of the development cycle, I started refactoring extensively by moving a large amounts of code from the client to the objects.&nbsp; Although this dramatically reduced the amount of source in the client, I now have to be very careful when I modify my objects.&nbsp; Of course, effective unit testing would reduce the risks of breaking things, but I haven't found a way to unit test without hitting the database yet (lots of mock discussion here, just search) so I haven't created any yet.&nbsp; No excuse, but that is now my reality.<br><br>I just hope my pain can help others.<br><br>Kevin<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Tuesday, February 26, 2008</h2><P>I'm just getting into mocking the database...it's really interesting.&nbsp; If I can pass on a couple links:</P>
+<P><A href="http://aspalliance.com/1400_Beginning_to_Mock_with_Rhino_Mocks_and_MbUnit__Part_1.all">http://aspalliance.com/1400_Beginning_to_Mock_with_Rhino_Mocks_and_MbUnit__Part_1.all</A></P>
+<P><A href="http://aspalliance.com/1456_Beginning_to_Mock_with_Rhino_Mocks_and_MbUnit__Part_2">http://aspalliance.com/1456_Beginning_to_Mock_with_Rhino_Mocks_and_MbUnit__Part_2</A></P>
+<P>I've tried this in one place (non CSLA project), in one particular unit test and so far I like the concept.</P>
+<P>I am starting a new project where I am considering doing this for the whole thing (green field app).&nbsp; If I find anything interesting I'll write it up.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elizabeth replied on Tuesday, February 26, 2008</h2>
+
+<p>Thanks
+Kevin, Ryan for sharing. </p>
+
+<p>I
+think part of my problem may have been codegen tools. Actually mostly my mind
+set.</p>
+
+<p>The tools
+seem to be very data centric, specify a table and bam, all your CSLA code!! No
+typing. I thought this was the greatest thing since sliced bread. Now, I'm not
+so sure. OOAD, Rocky and JOE tell me to design from my uses cases, but codegen
+was so appealing, I so wanted that to work. Oh well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Tuesday, February 26, 2008</h2><P>Check out Codebreeze or my languishing project on Codeplex.</P>
+<P>Codebreeze is definately more feature rich, but both will let you step away from the database when it comes to designing your objects.&nbsp; Codebreeze will use your database as a starting point to which you can then go in and reshape your objects to your needs.&nbsp; Mine starts by making you&nbsp;define all your properties (doesn't use a database at all) and then it just generates basic code from there. (Based on ProjectTracker).</P>
+<P>I have 3.5 version in the works but it's slow going (lot's of irons in the fire at the moment).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk replied on Tuesday, February 26, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Elizabeth:</strong></div><div><p>I
+think part of my problem may have been codegen tools.</p></div></BLOCKQUOTE><br><br>Personally, I think there is nothing wrong with codegen.&nbsp; I generated all my classes using CodeSmith and the stored procs using My Generation.&nbsp; This was a great starting point, but that was all it was.&nbsp; I could net regenerate my classes as I have altered them a lot.<br><br>Kevin<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You know, the thing is they aren&#8217;t always mutually
+exclusive.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you look at a typical app, a large percentage of forms are
+admin/maintenance forms. Each one tends to have a one-form-to-one-table
+relationship, though often with some NVL objects for validation. Each of these
+admin forms typically represents a very simple add/edit use case, and one where
+you really can use a data-driven code-gen tool to create the objects (and maybe
+even the UI).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then a typical app also has a smaller number of complex forms
+where the real work happens, and where the users spend the bulk of their time.
+It is rare that these forms have any sort of 1:1 relationship with tables, and
+your objects should reflect the use case, not the data. But these forms are
+usually in a minority, and are the &#8220;interesting&#8221; ones anyway, so it
+is where you <i>want</i> to spend your design time to get everything right.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So personally I think the data-centric code-gen tools are great &#8211;
+you just have to realize they apply to just a part of your app (though often a
+large part &#8211; and the boring part).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Elizabeth
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 26, 2008 2:33 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Getting started with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Kevin, Ryan for sharing. <o:p></o:p></p>
+
+<p>I think part of my problem may have been codegen tools. Actually mostly my
+mind set.<o:p></o:p></p>
+
+<p>The tools seem to be very data centric, specify a table and bam, all your
+CSLA code!! No typing. I thought this was the greatest thing since sliced
+bread. Now, I'm not so sure. OOAD, Rocky and JOE tell me to design from my uses
+cases, but codegen was so appealing, I so wanted that to work. Oh well.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, February 27, 2008</h2><P>I agree with Rocky.</P>
+<P>(How many times has *that* been said on this forum?)</P>
+<P>I use Codesmith to generate base classes for my BOs from my DB tables. And then I write code in a derived class to enhance the BO for my use case. The "boring part" is done in a few seconds and the "interesting part" is much simpler to handle.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>override DataPortal_OnDataPortalException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>override DataPortal_OnDataPortalException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8601.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby posted on Wednesday, March 03, 2010</h2><p>Hi Rocky,</p>
+<p>I wish to be able to take the innerexception of a DataPortalException and use the Microsoft Exception Handling Block to replace the exception and pass to client.</p>
+<p>Ultimate goal is to strip off the DataPortalException at the Silverlight end and have all the obtuse exceptions server side to be converted to a user friendly one.</p>
+<p>Initially I was hoping to override</p>
+<p>&nbsp;protected virtual void DataPortal_OnDataPortalException(DataPortalEventArgs e, Exception ex)</p>
+<p>However the calling code</p>
+<p>
+<p>catch (Exception ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (target != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;target.DataPortal_OnDataPortalException(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new DataPortalEventArgs(context, objectType, operation), ex);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;lb.CallMethodIfImplemented(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&quot;DataPortal_OnDataPortalException&quot;,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;new DataPortalEventArgs(context, objectType, operation), ex);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;catch</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// ignore exceptions from the exception handler</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;throw new DataPortalException(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&quot;DataPortal.Update &quot; + Resources.FailedOnServer,&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ex, new DataPortalResult(obj));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>ignores exceptions being thrown from the handler and also does not allow me to set ex.</p>
+<p>Would it be appropriate to make ex a ref parameter allowing this functionality otherwise have you got any suggestions on how I can achieve this.</p>
+<p>Many Thanks</p>
+<p>Jeremy</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 03, 2010</h2><p>Are you asking about the issue reported here:</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=679">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=679</a></p>
+<p>Right now it is not possible to alter the exception as it flows back to the client. I hope to rework the pipeline model of the data portal in CSLA 4 to enable that scenario, but I don&#39;t know if I&#39;ll have time or not at this point...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Thursday, March 04, 2010</h2><p>Thanks Rocky,</p>
+<p>The link you sent for the feature request is correct.&nbsp;</p>
+<p>I altered CSLA so that the ex parameter is now a ref and it currently performs as I expect but obviously will take a refactoring hit when we upgrade CSLA in the future.</p>
+<p>Thanks again</p>
+<p>Jeremy</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

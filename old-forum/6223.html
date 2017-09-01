@@ -1,0 +1,107 @@
+<html><header><title>WPF, UserControls and the dreaded NotifyPartitionIsZombie error.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF, UserControls and the dreaded NotifyPartitionIsZombie error.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6223.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv posted on Wednesday, January 21, 2009</h2>I am wondering if anyone has experienced a similar issue to the one I am about to describe.<br><br>I am developing a WPF application using CSLA 3.6 and .net 3.5sp1.&nbsp; For the initial dev work I set up a parent window with menu items.&nbsp; Clicking a menu item did the following:<br>1. Find the user control display Grid and remove/dispose the user control hosted there (if any).<br>2. Create a new user control (depends on the menu item clicked), the usercontrol hosts the UI interface for a specific BO.<br>3. Load the new user control to the display Grid.<br><br>Worked fine, but I really wanted to allow the user to have multiple BO interfaces open.&nbsp; No worries simply replace the Grid with a tab control and host the user control one per tab.&nbsp; I hooked this up and it initially appeared to work, though switching between tabs was a little sluggish.&nbsp; The problem came when I edited one of the business objects and then switched off the tab, and then switched back to the same tab...BOOM!<br><br><font size="2">System.InvalidOperationException was unhandled<br>&nbsp; Message="An unspecified error occurred on the render thread."<br>&nbsp; Source="PresentationCore"<br>&nbsp; StackTrace:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Media.MediaContext.NotifyPartitionIsZombie(Int32 failureCode)<br>...<br>...<br><font color="#000000"><br>Some research on Google brought up some discussions (pre 3.5sp1) concerning one or more of: the WPF rendering thread, video drivers, how they interact with directx 9, the use of the Window property AllowsTransparency being set to true, and something returing a value that is NaN.&nbsp; An issue seemingly fixed with sp1. Since my main Window has the AllowsTransparency set to false, and since I am using sp1, I am stumped.&nbsp; Attaching with a debugger yielded no further info as to the source.<br><br>I have changed directions and implementing what amounts to a card stack instead.&nbsp; Gone is the exception, and switching between user controls is also faster than with the tabs.&nbsp; But I am still uneasy due to the error.<br><br>Anyone have any similar experiences or insights?<br><br>-- Fintan<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What you see I&nbsp; believe is a known issues of tab control,
+that is the result of total rebinding on tab switches.&nbsp; I think if you
+google it, you will find you are not alone.&nbsp; In our app we actually are
+not using tab control, but instead simulating it with a stack panel full of
+buttons with the grid underneath.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fintanv
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 11:20 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] WPF, UserControls and the dreaded
+NotifyPartitionIsZombie error.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am wondering if anyone has experienced a similar issue to
+the one I am about to describe.<br>
+<br>
+I am developing a WPF application using CSLA 3.6 and .net 3.5sp1.&nbsp; For the
+initial dev work I set up a parent window with menu items.&nbsp; Clicking a
+menu item did the following:<br>
+1. Find the user control display Grid and remove/dispose the user control
+hosted there (if any).<br>
+2. Create a new user control (depends on the menu item clicked), the
+usercontrol hosts the UI interface for a specific BO.<br>
+3. Load the new user control to the display Grid.<br>
+<br>
+Worked fine, but I really wanted to allow the user to have multiple BO
+interfaces open.&nbsp; No worries simply replace the Grid with a tab control
+and host the user control one per tab.&nbsp; I hooked this up and it initially
+appeared to work, though switching between tabs was a little sluggish.&nbsp;
+The problem came when I edited one of the business objects and then switched
+off the tab, and then switched back to the same tab...BOOM!<br>
+<br>
+<span>System.InvalidOperationException was unhandled<br>
+&nbsp; Message=&quot;An unspecified error occurred on the render thread.&quot;<br>
+&nbsp; Source=&quot;PresentationCore&quot;<br>
+&nbsp; StackTrace:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+System.Windows.Media.MediaContext.NotifyPartitionIsZombie(Int32 failureCode)<br>
+...<br>
+...<br>
+<span><br>
+Some research on Google brought up some discussions (pre 3.5sp1) concerning one
+or more of: the WPF rendering thread, video drivers, how they interact with
+directx 9, the use of the Window property AllowsTransparency being set to true,
+and something returing a value that is NaN.&nbsp; An issue seemingly fixed with
+sp1. Since my main Window has the AllowsTransparency set to false, and since I
+am using sp1, I am stumped.&nbsp; Attaching with a debugger yielded no further
+info as to the source.<br>
+<br>
+I have changed directions and implementing what amounts to a card stack instead.&nbsp;
+Gone is the exception, and switching between user controls is also faster than
+with the tabs.&nbsp; But I am still uneasy due to the error.<br>
+<br>
+Anyone have any similar experiences or insights?<br>
+<br>
+-- Fintan<br>
+</span></span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

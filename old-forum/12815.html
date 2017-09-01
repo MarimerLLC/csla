@@ -1,0 +1,10 @@
+<html><header><title>CSLA 3.8 Question - is it possible to log Data Portal Exceptions on the server side?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8 Question - is it possible to log Data Portal Exceptions on the server side?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12815.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman posted on Thursday, January 15, 2015</h2><p>I know that this capability has been added to CSLA 4.x with the inclusion of the IDataPortalExceptionInspector.&nbsp; We have an old &quot;legacy&quot; project using CSLA 3.0.x (but which I just verified today could be upgraded to 3.8 in a couple of hours if need be).</p>
+<p>We would like to add server-side data portal exception logging (since the server is in our dmz which has access to our database where we can log it. )</p>
+<p>Can this be done in 3.8x?&nbsp; I was hoping that it would raise some kind of exception event that we could subscribe too but I don&#39;t see anything.</p>
+<p>It is NOT a have-to-do item but would be nice.&nbsp; Any ideas?</p>
+<p>Seth</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 17, 2015</h2><p>Hi,&nbsp;</p>
+<p>The only way to do this is to implement DataPortal_OnDataPortalException method in your &quot;root&quot; objects (read: Object that your code call DataPortal.Create/Fetch/Execute/Update/Delete root methods on). You may also choose to implement these in your own intermediate base classes.</p>
+<p>This will give you access to the exception that occurred but you cannot change the exception.</p>
+<p>Not sure when this method was implemented. it is not in CSLA 3.0.5 but is in CSLA 3.8.x.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

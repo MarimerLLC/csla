@@ -1,0 +1,31 @@
+<html><header><title>Upgrading CSLA 2.x to 4.x</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading CSLA 2.x to 4.x</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11879.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Borc posted on Wednesday, March 13, 2013</h2><p>Hello. </p>
+<p>Several years ago, I inherited a web application that uses CSLA&nbsp;2.1.0.22. Since then I have upgraded the application to 3.5 then to 4.0 with no issues. This whole time we kept CSLA at its version as we didn&#39;t realize it was being kept up to date. &nbsp; I am looking at upgrading the web application to 4.5 soon and I see there is a corresponding CSLA version. &nbsp;What are the suggested steps to upgrading an existing application that uses CSLA 2.x to 4.x? &nbsp;Is it advisable? Is it necessary? &nbsp;Any information would be appreciated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 13, 2013</h2><p>Hi,</p>
+<p>There is a lot of breaking changes - so I highly recommend the Using CSLA 4 ebooks from Rocky and that you go through all the ReleaseNotes and look at the samples.&nbsp;</p>
+<p>And there is several threads here about upgrading as well:</p>
+<p><a href="http://forums.lhotka.net/forums/p/10810/50414.aspx#50414">http://forums.lhotka.net/forums/p/10810/50414.aspx#50414</a>&nbsp;&nbsp;</p>
+<p><a href="http://forums.lhotka.net/forums/p/11408/52956.aspx#52956">http://forums.lhotka.net/forums/p/11408/52956.aspx#52956</a></p>
+<p><a href="http://forums.lhotka.net/forums/p/4083/19986.aspx#19986">http://forums.lhotka.net/forums/p/4083/19986.aspx#1998</a>6 &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, March 13, 2013</h2><p>If you&#39;re on 2.x, I would really take a hard look as to whether what you gain is worth the effort.&nbsp; It&#39;s not trivial and if it was built w/ CSLA 2.1 you&#39;re probably looking at a relatively stable application.</p>
+<p>If you don&#39;t have a lot of unit/integration tests to back you up with all your refactoring, you could easily just be giving yourself a headache.</p>
+<p>Are there any plans to leverage other UIs now? (not potentially in the future, but now).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Borc replied on Friday, March 15, 2013</h2><p>We may go with MVC or WEB API, but I don&#39;t see that as an issue.&nbsp; I see that 4.x may be quite an undertaking.&nbsp; However, I have read that it is highly suggested to go from 2.x to 3.x due to some bug fixes.&nbsp; Is the upgrade from 2.x to 3.x less painful?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, March 15, 2013</h2><p>You should read this for sure:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/CslaVersions.ashx">http://www.lhotka.net/cslanet/faq/CslaVersions.ashx</a></p>
+<p>Moving from 2.1 to 3.0.5 is pretty straightforward unless you are using Windows Forms. </p>
+<p>Even then, the things you&#39;ll need to fix in Windows Forms are bugs that CSLA 3.0.5 will reveal for you (bugs that you&#39;ve always had, but might not have understood you had).</p>
+<p>Getting to 3.8 or higher is more work. Actually 3.8 might not be that bad because we still support a lot of the old-style property implementation concepts in 3.8. </p>
+<p>But by the time you get to CSLA 4 I started deprecating some of the &quot;worst&quot; old-style property implementation techniques, and CSLA 4 has an entirely reworked rules engine.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, November 17, 2013</h2><p>I am posting a reply because we have the same problem. We are actually looking for professinal service to provide technical support (remotely) for the onsite consultant who will carryout the migration of the ASP.NET Solution from CSLA 2.x .NET 2.x VS 2005 ---&gt; to ---&gt; .NET 4.x and VS 2013. Then decided the latest compatible CSLA Version with minimum re-work and re-coding.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sander replied on Tuesday, August 12, 2014</h2><p>Thank you for all the tips in this thread regarding upgrade. I have 1 follow-up question:</p>
+<p>My job is to update a Company Framework using CSLA 2.1.4 to CSLA 4.5<br />It is used with Codesmith templates for code generation and contains a lot of customization, so simply using new templates is not an option :(</p>
+<p>Advised upgrade path:<br />2.x -&gt; 3.0.5<br />3.0.5 -&gt; 3.8(.3)<br />3.8 -&gt; 4.x</p>
+<p>Should I go straight from 3.8 to 4.5 or is it better to step into 4.0 first and then move to 4.5?<br />I know from the change log and reading other topics there are several breaking changes (especially rules) which all should be checked manually, but I&#39;m in doubt :</p>
+<ul>
+<li>3.8 -&gt; 4.0 -&gt; 4.5<br />or</li>
+<li>3.8 -&gt; 4.5</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sander replied on Monday, October 20, 2014</h2><p>I followed this path successfully:<br />3.8 -&gt; 4.5 </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, October 21, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>Sander<br></b></p>
+<p>I followed this path successfully:<br />3.8 -&gt; 4.5 </p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Thank you Sander for the update. Might need to come back to you for help, or probably consultation <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" /> .</p>
+<p>Did you work with CSLA 2.X?</p>
+<p>Tarek</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sander replied on Friday, October 24, 2014</h2><p>Hi Tarek,</p>
+<p>Nope, I did not work with 2.1 sorry. I only followed the upgrade path as described above to update our company Framework to use CSLA 4.5...</p>
+<p>Sander</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

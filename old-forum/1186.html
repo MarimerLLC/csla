@@ -1,0 +1,33 @@
+<html><header><title>the Strange _stateStack  in UndoBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>the Strange _stateStack  in UndoBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1186.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jason2000 posted on Tuesday, September 12, 2006</h2><P>"Undo" is very complex mechanism in CSLA and I study it with the version 2.1,</P>
+<P>1.start debug;<BR>2.select the project "Expert VB 2005 Business Objects" to edit.The project has three resources;<BR>3.do nothing in the edit form(window);<BR>4.click "cancel" button;<BR>5.debug into BusinessBase.CancelEdit()<BR>6.in the watch window,I found the value of _stateStack.Count of the first resource&nbsp; is 2,but&nbsp; the value of _stateStack.Count&nbsp; of other resources is 1;<BR>7.then step out;<BR>8.loop step 4 to 7,I found the value of _stateStack of the first resource would step up,but&nbsp; the value of _stateStack.Count&nbsp; of other resources keeps 1 all the time;<BR>9.I debug it using version 2.0.3, I found the same problem except different value;</P>
+<P>What is wrong with it?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 12, 2006</h2><P>There&nbsp;are&nbsp;some errata/notes you can find on <A href="http://www.lhotka.net/cslanet">www.lhotka.net/cslanet</A> regarding the way data binding interacts with your object. If you are using data binding, you need to be fully aware of how the bindingsource object invokes the IEditableObject methods to understand how the n-level undo is being used on your behalf.</P>
+<P>If you really want to just study the n-level undo functionality, I recommend <EM>against</EM> using data binding to avoid that complication.</P>
+<P>(note that for real apps I DO recommend using data binding!! but for focusing in on the mechanics of n-level undo for learning purposes, data binding makes things quite complex...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jason2000 replied on Tuesday, September 12, 2006</h2><P>Thanks. Rocky. </P>
+<P>I am going to develop an information management system based on CSLA.NET.Which version should I use, version 2.1(beta), version 2.1 or pending version 3.0?</P>
+<P>&nbsp;I need your advice.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=811155210-13092006><FONT face=Arial color=#0000ff size=2>If you haven't started yet, then I think I'd go with 2.1 so 
+you are as current as possible.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=811155210-13092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=811155210-13092006><FONT face=Arial color=#0000ff size=2>If you already have a code base the decision is more 
+complex, because there are some breaking changes from 2.0 to 
+2.1.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=811155210-13092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=811155210-13092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> jason2000 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, September 12, 2006 10:18 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] the Strange _stateStack in 
+  UndoBase<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Thanks. Rocky. </P>
+  <P>I am going to develop an information management system based on 
+  CSLA.NET.Which version should I use, version 2.1(beta), version 2.1 or pending 
+  version 3.0?</P>
+  <P>&nbsp;I need your advice.<BR></P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

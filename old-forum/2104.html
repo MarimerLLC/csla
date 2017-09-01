@@ -1,0 +1,18 @@
+<html><header><title>Re: Using a custom interface.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Using a custom interface.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2104.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sashidhar posted on Tuesday, January 09, 2007</h2><P><FONT face=Arial>I am kinda new to CSLA, so...the following can as well be put into the "Silly/Stupid" question category.</FONT></P>
+<P><FONT face=Arial>How do I define an interface using csla ? </FONT></P>
+<P><FONT face=Arial>Using&nbsp;a base class would solve the problem, but I wanted to see how I can declare and inherit from an interface while using clsa?</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>Thanks in advance,</FONT></P>
+<P><FONT face=Arial>Sashidhar Kokku</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 10, 2007</h2>You define and implement interfaces in your Csla based objects just as you would normally.<br><br>Sometimes its helpful to have your interface specify that one of the Csla interfaces be implemented as well.&nbsp; <br><br>For example:<br><br>public interface MyInterface : Csla.Core.IEditableBusinessObject {<br>&nbsp;&nbsp; // interace members<br>}<br><br>Then anything which implements MyInterface must also implement IEditableBusinessObject.&nbsp; Normally that would be the case, because your BO would subclass BusinessBase.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ColourHaze replied on Thursday, December 05, 2013</h2><p>Hi,</p>
+<p>A response to a quite old question, however this was the only post I could find.</p>
+<p>Inheriting from the core interface was not really the issue, however it results in some methods that might not want to be exposed:</p>
+<ul>
+<li>DeleteChild;</li>
+<li>SetParent.</li>
+</ul>
+<p>Any thoughts on what is the best way to handle this?</p>
+<p>Best regards,</p>
+<p>Peter</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 05, 2013</h2><p>Hi,</p>
+<p>Other than to look for maybe another interface higher in the hierarchy then no. </p>
+<p>You _can_ implement the methods explicitly so that they are only available when you use the interface (cast) but once it is defined in the interface the methods/properties have to be implemented and available. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

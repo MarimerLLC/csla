@@ -1,0 +1,59 @@
+<html><header><title>GetDeleteList cast error when using inheritance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GetDeleteList cast error when using inheritance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8502.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>terrycasper posted on Tuesday, February 09, 2010</h2><p>
+<p class="MsoNormal"><span>I
+have an object model that emulates a table structure. &nbsp;The model
+implements 3 specific types of tables, a code list, decision table and version
+control. &nbsp;A table has columns and rows and a row has cells. &nbsp;I have
+abstract base classes for table, column, row and cell and their lists.
+&nbsp;Then I have concrete classes for each type of table. &nbsp;without
+getting into every class in the inheritance tree, here is a short example:</span></p>
+<p class="MsoNormal"><span>Base
+classes</span></p>
+<p class="MsoNormal"><span>public
+abstract class Rows&lt;TList, TEntity&gt; : BusinessListBase&lt;Rows&lt;TList,
+TEntity&gt;, Row&lt;TEntity&gt;&gt;</span></p>
+<p class="MsoNormal"><span>where
+TList : Rows&lt;TList, TEntity&gt;</span></p>
+<p class="MsoNormal"><span>where
+TEntity : Row&lt;TEntity&gt;</span></p>
+<p class="MsoNormal"><span>[Serializable]</span></p>
+<p class="MsoNormal"><span>public
+abstract class Row&lt;TEntity&gt; : PersistableItem&lt;TEntity&gt;, IRow where
+TEntity : AqsBusinessBase&lt;TEntity&gt;</span></p>
+<p class="MsoNormal"><span>public
+abstract class AqsBusinessBase&lt;T&gt; : BusinessBase&lt;T&gt;</span></p>
+<p class="MsoNormal"><span>where
+T : AqsBusinessBase&lt;T&gt;</span></p>
+<p class="MsoNormal"><span>Concrete</span></p>
+<p class="MsoNormal"><span>[Serializable]</span></p>
+<p class="MsoNormal"><span>[ObjectFactory(FactoryNames.DecisionTableRowFactoryName)]</span></p>
+<p class="MsoNormal"><span>public
+class DecisionTableRow : Row&lt;DecisionTableRow&gt;</span></p>
+<p class="MsoNormal"><span>[Serializable]</span></p>
+<p class="MsoNormal"><span>[ObjectFactory(FactoryNames.DecisionTableRowsFactoryName)]</span></p>
+<p class="MsoNormal"><span>public
+class DecisionTableRows : Rows&lt;DecisionTableRows, DecisionTableRow&gt;</span></p>
+<p class="MsoNormal"><span>Everything
+works fine. &nbsp;All my factories work. &nbsp;I can fetch data, create new
+data, edit data and persist the data to the DB. &nbsp;Where I am experiencing
+an issue is in deleting from any list. &nbsp;When I call GetDeletedList in my
+DecisontableRowsFactory,I get the following exception:</span></p>
+<p class="MsoNormal"><span>DataPortal.Update
+failed (System.InvalidCastException: Unable to cast object of type
+&#39;Csla.Core.MobileList`1[AQS.ProductDefinition.DomainCSLA.Repository.Business.Row`1[AQS.ProductDefinition.DomainCSLA.Repository.Business.DecisionTableRow]]&#39;&nbsp;</span></p>
+<p class="MsoNormal"><span>to
+type &#39;Csla.Core.MobileList`1[AQS.ProductDefinition.DomainCSLA.Repository.Business.DecisionTableRow]&#39;.</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;
+at Csla.Server.ObjectFactory.GetDeletedList<img src="http://forums.lhotka.net/emoticons/emotion-44.gif" alt="Coffee" />(Object obj) in C:\Visual
+Studio&nbsp;</span></p>
+<p class="MsoNormal"><span>The
+call is made as:</span></p>
+<p class="MsoNormal"><span>var
+deletedList = GetDeletedList&lt;DecisionTableRow&gt;(rows);</span></p>
+<p class="MsoNormal"><span>I
+thought I had all the template inheritance figured out but I am obviously
+missing something. &nbsp;Anyone have any ideas?</span></p>
+<p class="MsoNormal"><span>Thanks.</span></p>
+<p class="MsoNormal"><span>Terry</span></p>
+<p class="MsoNormal">&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>terrycasper replied on Tuesday, February 09, 2010</h2><p>Never mind. &nbsp;Sorry to bother the forum, I have ti resolved. &nbsp;Had to call GetDeletedList with the proper signature&nbsp;GetDeletedList&lt;Row&lt;DecisionTableRow&gt;&gt;(rows);</p>
+<p>Terry</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

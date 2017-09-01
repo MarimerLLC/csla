@@ -1,0 +1,185 @@
+<html><header><title>Async DataPortal Criteria problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async DataPortal Criteria problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9004.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov posted on Thursday, May 27, 2010</h2><p>I have a problem where the Async DataPortal is not passing data (via arguments)&nbsp;to a DAL Fetch() method (via the ObjectFactory pattern). The same DAL and arguments work fine when invoked synchronously.</p>
+<p>BusinessObject:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>[Csla.Server.</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">ObjectFactory</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(</span></span><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;"><span style="font-size:x-small;color:#a31515;font-family:Consolas;">&quot;Csla_ProjectTracker_BusObj.DAL.ProjectDAL_EditRoot, Csla_ProjectTracker_BusObj&quot;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)]</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">[</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Serializable</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">]<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">partial</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">class</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRoot</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> : </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">BusinessBase</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt; </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRoot</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> &gt;</span></span></p>
+<p>{</p>
+<p>....&nbsp; properties (business methods)</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;&nbsp;&nbsp;&nbsp; [</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Serializable</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">]<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp; public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">partial</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">class</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">ParmValues</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> : </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">CriteriaBase</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt;</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">ParmValues</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt;</span></span></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // embedded class in business object used to pass various criteria</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string Name = null;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string ???? = null;&nbsp;&nbsp; // fields for all criteria choices</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParmValues(string name) { this.Name = name; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; #region Factory methods</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp; public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">static</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRoot</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> GetProject_EditRoot(string name</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)
+<p>&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // this works.&nbsp; value set in parms.Name&nbsp; is seen in DAL Fetch(parms)</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParmValues</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> parms = </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">ParmValues(name</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">);<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">DataPortal</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">.Fetch&lt; </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRoot</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> &gt;(parms);
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">static</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">void</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> GetProject_EditRoot(string name</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">,</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">&nbsp;&nbsp;&nbsp; EventHandler</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt;</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">DataPortalResult</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt; </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRoot</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> &gt;&gt; callback)
+<p>&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp; // this does NOT work&nbsp;&nbsp; parms.Name in DAL Fetch(parms) is null.</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+</p>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> dp = </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">DataPortal</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt; </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRoot</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> &gt;();
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.FetchCompleted += callback;</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ParmValues</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> parms = </span></span><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">ParmValues(name</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">);
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginFetch(parms);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;&nbsp; #endregion</p>
+<p>
+<p>}</p>
+<p>If I create a DAL Fetch(string name) signature, then the value passes OK as a simple type. It seems the Async data portal processing&nbsp;does not persist values contained in complex types. OR am I doing something incorrect?</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, May 28, 2010</h2><p>Hi</p>
+<p>Which version of CSLA are you using and how is the Fetch method defined in your ObjectFactory? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov replied on Friday, May 28, 2010</h2><p><em>It&#39;s CSLA 4 Beta 2.</em></p>
+<p><em>The fetch() in the DAL&nbsp;is:</em></p>
+<p><em><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font size="2" face="Consolas"><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></font></span><font size="2" face="Consolas">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;"><span style="font-size:x-small;color:#0000ff;font-family:Consolas;">internal</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> BusObj.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRootList</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Fetch(BusObj.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">Project_EditRootList</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">.</span></span><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;"><span style="font-size:x-small;color:#2b91af;font-family:Consolas;">ParmValues</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> parms)
+<p>{</p>
+<p>&nbsp;&nbsp; ....</p>
+<p>}</p>
+</span></span></p>
+</em></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Monday, May 31, 2010</h2><p>I don&#39;t see all of your ParamValues implementation but&nbsp;I suggest you override OnGetState and OnSetState to handle the serialization and deserialization of your criteria class.&nbsp; That&#39;s what we do when we use criteria classes in an async (or not) factory method called from a SL client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov replied on Tuesday, June 01, 2010</h2><p>Thanks for the reply. Is it possible you could include example code?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Wednesday, June 02, 2010</h2><p>Let&#39;s suppose you have 2 private fields in your criteria class, named _intField and _stringField.</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">override</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> OnGetState(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">SerializationInfo</span></span><span style="font-size:x-small;"> info, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">StateMode</span></span><span style="font-size:x-small;"> mode) </span></p>
+<p>{</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">base</span></span><span style="font-size:x-small;">.OnGetState(info, mode);</span><span style="font-size:x-small;"> </span>&nbsp;</p>
+<p>info.AddValue(<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;_stringField&quot;</span></span><span style="font-size:x-small;">, _s<span style="color:#a31515;">tringField</span>);</span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>info.AddValue(<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;_intField&quot;</span></span><span style="font-size:x-small;">, <span style="color:#a31515;">_intField</span>);</span></p>
+</font></span></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">override</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> OnSetState(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">SerializationInfo</span></span><span style="font-size:x-small;"> info, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">StateMode</span></span><span style="font-size:x-small;"> mode)</span></p>
+<p><span style="font-size:x-small;">{<span style="font-size:x-small;"> </span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">base</span></span><span style="font-size:x-small;">.OnSetState(info, mode);</span></p>
+<p><span style="font-size:x-small;"></span>
+<p>Hope this helps!</p>
+</p>
+<p><span style="color:#a31515;">_stringField </span>= info.GetValue&lt;string&gt;(<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;_stringField&quot;</span></span><span style="font-size:x-small;">);</span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p><span style="color:#a31515;">_intField </span>= info.GetValue&lt;int&gt;(<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;_intField&quot;</span></span><span style="font-size:x-small;">);</span></p>
+</font></span></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>If your criteria class also has some reference type fields, you should also handle serialization by overriding OnGetChildren and OnSetChildren.&nbsp; For example, let&#39;s suppose you have a field named&nbsp;SelectedEmployee of type Employee.</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">override</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> OnGetChildren(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">SerializationInfo</span></span><span style="font-size:x-small;"> info, Csla.Serialization.Mobile.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">MobileFormatter</span></span><span style="font-size:x-small;"> formatter) <span style="font-size:x-small;">
+<p>&nbsp;</p>
+<span style="font-size:x-small;"><font size="2">
+<p>{</p>
+</font></span></span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">base</span></span><span style="font-size:x-small;">.OnGetChildren(info, formatter); <span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span></span></span><span style="font-size:x-small;"><span style="color:#0000ff;">var </span>employeeFieldManagerInfo = formatter.SerializeObject(SelectedEmployee ); </span></p>
+<p>&nbsp;</p>
+<p>info.AddChild(&quot;SelectedEmployee &quot;, employeeFieldManagerInfo.ReferenceId);</p>
+<p>}</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">override</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> OnSetChildren(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">SerializationInfo</span></span><span style="font-size:x-small;"> info, Csla.Serialization.Mobile.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">MobileFormatter</span></span><span style="font-size:x-small;"> formatter)
+<p>{</p>
+</span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">base</span></span><span style="font-size:x-small;">.OnSetChildren(info, formatter);<span style="font-size:x-small;"> </span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">var</span></span><span style="font-size:x-small;"> employeeData = info.Children[&quot;SelectedEmployee &quot;];<span style="font-size:x-small;">
+<p>SelectedEmployee = (</p>
+</span></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Employee</span></span><span style="font-size:x-small;">)formatter.GetObject(employeeData.ReferenceId);</span></p>
+<p>&nbsp;</p>
+<p>}<span style="font-size:x-small;"></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov replied on Wednesday, June 02, 2010</h2><p>Thanks for the samples. I&#39;ll look into my various options.</p>
+<p>But, just to clarify my post. None of my fields are private, they are all public.</p>
+<p>The structure serilizes just fine when using synchronous DataPortal calls.&nbsp; The only case serilization fails is when using the exact same code with asynchronous DataPortal calls.&nbsp; This seemed like it was a bug in CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 02, 2010</h2><p>I&#39;ve put it on the bug list, and will try to replicate the issue when I get a chance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 02, 2010</h2><p>Also, you said you are using CSLA 4 beta 2 - but are you using Silverlight, or WPF?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov replied on Wednesday, June 02, 2010</h2><p>I&#39;m using SilverLight</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov replied on Wednesday, June 02, 2010</h2><p>Also, my current structures are using fields. I also tried converting a couple of the fields (not all)&nbsp;to properties, and it still was failing.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, June 02, 2010</h2><p>OK, and you are aware that if you are using fields it is your responsibility to participate in the serialization process right? So you have overrides of OnGetState and OnSetState and are properly getting and putting your field data into the serialization context?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>theGov replied on Thursday, June 03, 2010</h2><p>I was not aware of that.&nbsp; Since this was working OK in an old web project, and the only change for SL was using async methods I assumed that something was not working correctly. I was not aware that SL had this requirement.</p>
+<p>Does this mean that I should follow the sample code above for the SL business objects only, in my style I&#39;m using conditional compliation statements in the business objects. Or is this a general practice, and I was just lucky it worked before with the old web project?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 03, 2010</h2><p>CSLA .NET for Silverlight includes its own serializer - MobileFormatter. If you search the forum for MobileFormatter you&#39;ll almost certainly find numerous good threads. There are also several blog posts on my blog about this, most notably these:</p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx">http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightSerializationImplementation.aspx">http://www.lhotka.net/weblog/CSLALightSerializationImplementation.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightDataPortalAndNlevelUndo.aspx">http://www.lhotka.net/weblog/CSLALightDataPortalAndNlevelUndo.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightDataPortalOptions.aspx">http://www.lhotka.net/weblog/CSLALightDataPortalOptions.aspx</a></p>
+<p>MobileFormatter exists to overcome the fact that SL doesn&#39;t have a BinaryFormatter or NDCS. It doesn&#39;t have them, because of SL limitations on reflection that make it impossible to create such serializers.</p>
+<p>MobileFormatter overcomes this by requiring the participation of the objects it is serializing. The new managed backing field syntax (well, &quot;new&quot; is relative since I added this syntax in 3.5 in anticipation of Silverlight coming along, so it is now several years old) allows CSLA to automatically handle the details for you. But if you are using private backing fields then you must write the code to include those fields in the serialization process.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>subhaskar replied on Thursday, June 03, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>CSLA .NET for Silverlight includes its own serializer - MobileFormatter. If you search the forum for MobileFormatter you&#39;ll almost certainly find numerous good threads. There are also several blog posts on my blog about this, most notably these:</p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx">http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightSerializationImplementation.aspx">http://www.lhotka.net/weblog/CSLALightSerializationImplementation.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightDataPortalAndNlevelUndo.aspx">http://www.lhotka.net/weblog/CSLALightDataPortalAndNlevelUndo.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/CSLALightDataPortalOptions.aspx">http://www.lhotka.net/weblog/CSLALightDataPortalOptions.aspx</a></p>
+<p>MobileFormatter exists to overcome the fact that SL doesn&#39;t have a BinaryFormatter or NDCS. It doesn&#39;t have them, because of SL limitations on reflection that make it impossible to create such serializers.</p>
+<p>MobileFormatter overcomes this by requiring the participation of the objects it is serializing. The new managed backing field syntax (well, &quot;new&quot; is relative since I added this syntax in 3.5 in anticipation of Silverlight coming along, so it is now several years old) allows CSLA to automatically handle the details for you. But if you are using private backing fields then you must write the code to include those fields in the serialization process.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Thanks for posting those links. They helped me too. Thanks again :)</p>
+<p>
+<a href="http://exzorders.com/">S</a><a href="http://resellgoldclub.com/">hu</a><a href="http://detnoxregistrycleaner.com/">bh</a><a href="http://besthelptips.com/">a</a><a href="http://digitalpicsmanager.com/">s</a><a href="http://easypicsmanager.com/"> S</a><a href="http://imagearranger.com/">ar</a><a href="http://www.mosttalkednews.com/">kar</a><a href="http://nuttiecontent.com">r</a><a href="http://financeplr.com">o</a><a href="http://fatlossplr.com">n</a><a href="http://implrs.com">a</a><a href="http://seasonalplr.com">ld</a><a href="http://datingplr.com"> C</a><a href="http://onestepreviews.com">r</a><a href="http://halloweenproductreviews.com">uz</a><a href="http://xmasproductreviews.com/">a</a><a href="http://fatgoneproductreviews.com/">g</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

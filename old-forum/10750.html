@@ -1,0 +1,104 @@
+<html><header><title>Possible Authorization Caching Bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible Authorization Caching Bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10750.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Friday, October 07, 2011</h2><p>&nbsp;</p>
+<p>Below is the code&nbsp;for the&nbsp;&ldquo;CanWriteProperty()&rdquo; function. I copied and pasted the code here so that anyone interested can more easily fallow&nbsp;along my explanation of the issue. Please take a second to get familiar with this code.</p>
+<p>-----------------------------------------------------</p>
+<p>public virtual bool CanWriteProperty(Csla.Core.IPropertyInfo property)<br />{<br />&nbsp;&nbsp;&nbsp; bool result = true;</p>
+<p>&nbsp;&nbsp;&nbsp; VerifyAuthorizationCache();</p>
+<p>&nbsp;&nbsp;&nbsp; if (!_writeResultCache.TryGetValue(property.Name, out result))<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = BusinessRules.HasPermission(AuthorizationActions.WriteProperty, property);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (BusinessRules.CachePermissionResult(AuthorizationActions.WriteProperty, property))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // store value in cache<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _writeResultCache[property.Name] = result;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; return result;<br />}</p>
+<p>-----------------------------------------------------</p>
+<p>As you can see from the code above, the &ldquo;CanWriteProperty()&rdquo;&nbsp;function internally&nbsp;calls the &ldquo;BusinessRules.HasPermission()&rdquo; function if the authorization result is not found in the&nbsp;cache. </p>
+<p>If we now look inside the &ldquo;BusinessRules.HasPermission()&rdquo; function, we will find&nbsp;the following first couple of lines of code:</p>
+<p><br />&nbsp;----------------------------------------------------- </p>
+<p><br />public bool HasPermission(AuthorizationActions action, Csla.Core.IMemberInfo element)<br />{<br />&nbsp;&nbsp;&nbsp; if (_suppressRuleChecking)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;</p>
+<p>...</p>
+<p>...</p>
+<p>-----------------------------------------------------</p>
+<p>As you can see, when we call the &quot;HasPermission()&quot; function while we&nbsp;suppress rule checking (_suppressRuleChecking == true), the function immediately returns &ldquo;true&rdquo; which is not necessarily a bad thing except&nbsp;for what the &ldquo;CanWriteProperty()&rdquo; function does once control returns to it.</p>
+<p>When control returns to the&nbsp;&ldquo;CanWriteProperty()&rdquo;, the next thing the function&nbsp;does is to make a call to the &ldquo;BusinessRules.CachePermissionResult()&rdquo; function and this is where things start to go in the wrong way. If the &ldquo;BusinessRules.CachePermissionResult()&rdquo;&nbsp;returns &quot;true&quot; then the authorization result will be cached and that is where the bug occurs.</p>
+<p>The reason why this is not good behavior is because we never ran the authorization rule for the property. We are caching a value of &quot;true&quot; because that is what the &quot;HasPermission()&quot; function returned due to rule check suppressing and not because of the result of running the rule.</p>
+<p>I am not too familiar with the CSLA code so perhaps I am wrong about this but I thought I would post what I think may be an issue.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, October 08, 2011</h2><p>Yes,</p>
+<p>That looks like a bug. </p>
+<p>We should have a TryHasPermission or move the check for supressRuleChecking into CanWriteProperty/CanReadProperty/CanExecuteMethod and only update cache when rule checking is not supressed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, October 08, 2011</h2><p>Actually, the easiest fix is to change BusinessRules.CachePermissionResult to this: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CachePermissionResult(<span style="color:#2baf9a;">AuthorizationActions</span>&nbsp;action,&nbsp;Csla.Core.<span style="color:#2baaaf;">IMemberInfo</span>&nbsp;element)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_suppressRuleChecking)&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>; <br /><br />as there is no point in allowing to cache the PermissionResult when SupressRuleChecking is True. <br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, October 08, 2011</h2><p>See: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=975">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=975</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, October 08, 2011</h2><p>Thanks Jonny,
+</p>
+<p>Well, I wish I could offer an educated opinion regarding your proposed fix but my knowledge of the CSLA interworking is not good enough so I can&rsquo;t!
+</p>
+<p>However, I think there is at least one other ghosts hiding in the current implementation. Even after your proposed fix, the other issue I am seeing here is that if we don&rsquo;t suppress rule checking then the rule will execute this time.... but is that really a good thing? ..... is really only a good thing if the rule runs at the appropriate time right?</p>
+<p>For example, rules (at least authorization rules) should not be executed as a result of a property value being set inside a DataPortal Ceate or Fetch call. The reason for this is that during these two data portal calls, the object is on an&nbsp;indeterminate state (properties are being set during these data portal calls). </p>
+<p>So for example,  if an authorization rule is executed while setting the value of property &ldquo;A&rdquo; and the rule for property &ldquo;A&rdquo; requires the value of property &ldquo;B&rdquo; and property &ldquo;B&rdquo; has  not been set yet, then we may get an error or worst we may end up with some undefined condition. You could run into the same issue even outside a DataPortal call but i am using the DataPortal call example as an easy to explain the problem scenario.</p>
+<p>So I think we should defer running any rules until after the object is on a determined state. Kind of what we do with the DataPortal_Create, we call the &ldquo;BusinessRules.CheckRules()&rdquo; method after we know the state of the object is set.</p>
+<p>
+So in short, I think we should get rid of running authorization rules on demand (as property values are being set), and move to a predictable and deterministic method where we can decide when authz rules are run, for example, via a &ldquo;BusinessRules.CheckAuthzRules()&rdquo;&nbsp;function&nbsp;call or something like that.
+</p>
+<p>Again, I stopped messing around with the internal CSLA implementation code sometime ago so I may be talking nonsense here.
+</p>
+<p>
+Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 09, 2011</h2><p>Hi, </p>
+<p>The Authz rules that only check Roles (in IPrincipal) can be cached, can run whenever a user has been is logged in and the result will never change. Hence the result can be cached as it will never change for this instance of the BO..</p>
+<p><b>Instance Authz rule that rely on the content of a BO should NOT be cached and should have CacheResult return false.</b><br /><b>Caching is per instance of the BO. <br /></b></p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Rene Elizondo<br></b>So for example,  if an authorization rule is executed while setting the value of property &ldquo;A&rdquo; and the rule for property &ldquo;A&rdquo; requires the value of property &ldquo;B&rdquo; and property &ldquo;B&rdquo; has  not been set yet, then we may get an error or worst we may end up with some undefined condition. You could run into the same issue even outside a DataPortal call but i am using the DataPortal call example as an easy to explain the problem scenario.</div></p>
+<p>For these situations you will either use LoadProperty or BypassPropertyChecks (and set property values) without calling the Authz rules. And any Authz rule that relies on the content of the BO (ex other properties) can NOT cache the result. These rules must always call the Execute method and have CacheResult set to false.&nbsp;<b> <br /></b></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, October 09, 2011</h2><p>Thanks Jonny,</p>
+<p>The fact that the code:</p>
+<p>----------------------------------------<br />this.PropertyA = 123;<br />this.PorpertyB = 456;<br />----------------------------------------</p>
+<p>And the reverse:</p>
+<p>----------------------------------------<br />this.PorpertyB = 456;<br />this.PropertyA = 123;<br />----------------------------------------</p>
+<p>Could potentially produce different cached authorization results without any clear and ovious indications to the developers seems wrong to me.</p>
+<p>Imagine what would happen if a developer innocently moves the order of how the property values get set while refactoring some code. Not only could this lead to bugs that are difficult to trace, but also behaviors like this are (in my opinion) security holes waiting to be happen.</p>
+<p>Without giving this issue too much thought and without having a good understanding of the interworking of the CSLA I would recommend the following changes:</p>
+<ol>
+<li>&nbsp;Remove the &ldquo;IAuthorizationRule.CacheResult&rdquo; property.</li>
+<li>Create a new &ldquo;CacheAuthorizationRulesNow(params IPropertyInfo)&rdquo; method somewhere that would need to get call every time the user wants to cache authorization results for any given number of properties.</li>
+</ol>
+<p>The benefits of these changes would be:</p>
+<ol>
+<li>Simplification of the CSLA framework code since we could eliminate all the CSLA code that tries to dynamically figure out what and when to cache results.</li>
+<li>More importantly, it makes it very clear to the developers when and which authorization rules are cached.</li>
+<li>An authorization rule class can be used in both cached and none cached modes. If the &ldquo;CacheAuthorizationRulesNow()&rdquo; function call include &ldquo;ProeprtyA&rdquo; as one of its arguments, then the authorization result&nbsp;associated with &quot;PropertyA&quot;&nbsp;will get cached otherwise it would not.</li>
+<li>The default behavior of an authorization rule would be to never cache an authorization result, thus eliminating any surprises to the user.</li>
+</ol>
+<p>Perhaps I am trying to solve some corner case scenario, I am not sure. But it looks to me like this is the&nbsp;right thing to do.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 09, 2011</h2><p>I&#39;ve seen several cases where a property can only be set when certain conditions is met is a business requirement and will change as the user edits the fields of the BO.&nbsp; </p>
+<p>And so the sequence _MAY_ be important unless you specifically want it to be otherwise in your code. </p>
+<p>The simplest solution (inside the BO)&nbsp; is: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(BypassPropertyChecks)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Country&nbsp;=&nbsp;<span style="color:#a31515;">&quot;US&quot;</span>;<span style="font-weight:bold;color:darkblue;">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-weight:bold;color:darkblue;">State</span><span style="font-weight:bold;color:darkblue;">&nbsp;</span><span style="font-weight:bold;color:darkblue;">=</span><span style="font-weight:bold;color:darkblue;">&nbsp;</span><span style="font-weight:bold;color:darkblue;">&quot;AZ&quot;</span><span style="font-weight:bold;color:darkblue;">;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.CheckRules();</pre>
+<p>Another option that can be used on the outside of the BO (calling code): </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;root&nbsp;=&nbsp;<span style="color:#2b91af;">Root</span>.NewEditableRoot();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;suppress&nbsp;=&nbsp;(Csla.Core.<span style="color:#2baaaf;">ICheckRules</span>)&nbsp;root;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suppress.SuppressRuleChecking();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;sequence&nbsp;does&nbsp;not&nbsp;matter</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.Country&nbsp;=&nbsp;<span style="color:#a31515;">&quot;US&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.State&nbsp;=&nbsp;<span style="color:#a31515;">&quot;AZ&quot;</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suppress.ResumeRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;suppress.CheckRules();</pre>
+<p>(semantically - this is actually what the CslaModelBinder does in ASP.NET MVC to update the fields from http POST).</p>
+<p>Your proposed changes would be breaking changes and I do not agree with them. You could just as easy cache Authz rules that should not be cached - only now it is in your code!! </p>
+<p>Since all rules are now classes - I like to create several base classes and one of them is a <b>PropertyAuthorizationRule </b>that by default has CacheResult return false. You can create a number of helpful base classes for BusinessRules too. We wanted to keep the baseclasses within the framework as simple as possible and allow developers to create these (and share with the community).</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">abstract</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">PropertyAuthorizationRule</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">AuthorizationRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;PropertyAuthorizationRule(<span style="color:#2baf9a;">AuthorizationActions</span>&nbsp;action)&nbsp;:&nbsp;<span style="color:blue;">base</span>(action)
+&nbsp;&nbsp;&nbsp;&nbsp;{}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;PropertyAuthorizationRule(<span style="color:#2baf9a;">AuthorizationActions</span>&nbsp;action,&nbsp;<span style="color:#2baaaf;">IMemberInfo</span>&nbsp;element)&nbsp;:&nbsp;<span style="color:blue;">base</span>(action,&nbsp;element)
+&nbsp;&nbsp;&nbsp;&nbsp;{}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span> <span style="color:blue;">bool</span>&nbsp;CacheResult
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

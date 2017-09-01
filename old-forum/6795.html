@@ -1,0 +1,70 @@
+<html><header><title>HElP!!! How to save parent and child data on single click</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>HElP!!! How to save parent and child data on single click</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6795.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>khoogavin posted on Tuesday, April 14, 2009</h2><P>How to save parent and child data on single click. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 14, 2009</h2><P>This is the normal default behavior for CSLA objects. You can't actually call Save() on a child, you can only call Save() on a parent, and that will save the children too.</P>
+<P>Please refer to Chapters 17 and 18 for much more detail.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>khoogavin replied on Wednesday, April 15, 2009</h2><P>Expert VB2005 Business Object (Second Edition).</P>
+<P>This is the book we have. But we can't found the Chapter 17 and 18 in this book.</P>
+<P>And the maximum Chapter in this book 12 only.</P>
+<P>Can you give some example regarding this issue.</P>
+<P>For our senario to create an Invoice, we need to create Invoice Header and Detail in single transaction but base on the example (ProjectTracker) , it'll insert the header and detail separately but this structure is not match for our senario.</P>
+<P>Thanks and wait for your reply.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkD replied on Wednesday, April 15, 2009</h2><br>You will want to look at Chapter 8 in the Expert VB2005 Business Objects (second edition). <br><br>In the DP_Update and DP_Insert of the parent, you'll have to call childCollection.Update<br><br>A sample of this can be found on page 435.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>khoogavin replied on Saturday, April 18, 2009</h2><P>The update command for detail row in grid worked now by using below command</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> QuotationDataSource_UpdateObject( _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Web.UpdateObjectArgs) _</P>
+<P></FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> QuotationDataSource.UpdateObject</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> obj </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Quotation = GetQuotation()</P>
+<P></FONT><FONT color=#008000 size=2>Dim rid As Integer = CInt(e.Keys("QuotationID"))</FONT><FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> res </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> QuotationDetNew = obj.Quotation.GetItem(rid)</P>
+<P>Csla.Data.DataMapper.Map(e.Values, res)</P>
+<P></FONT><FONT color=#008000 size=2>'e.RowsAffected = SaveQuotation(obj)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#000000 size=2>But i facing a problem when i want to insert a&nbsp;detail row&nbsp;in grid (child)&nbsp; such as quotation line items. Can somebody tell me how to save the key in values in grid instead direct to database. My problem code is below</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P><FONT size=2>
+<P>QuotationDataSource_InsertObject</P></FONT><FONT color=#0000ff size=2><FONT color=#008000 size=2>
+<P><FONT color=#000000>Dim res As QuotationDetNew = obj.Resources.GetItemDet("")</FONT></P><FONT size=2>
+<P><FONT color=#000000>Dim</FONT></FONT><FONT color=#000000><FONT size=2> res </FONT><FONT size=2>As</FONT></FONT><FONT size=2><FONT color=#000000> QuotationDetNew = obj.Resources.GetItemDetCreate()</FONT></P>
+<P><FONT color=#000000>Csla.Data.DataMapper.Map(e.Values, res)</FONT></P></FONT>
+<P><FONT color=#000000><U>QuotaionDets.vb</U></FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetItemDet(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> QuotationID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> QuotationDetNew</P>
+<P></FONT>
+<P><FONT color=#008000 size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> QuotationDetNew.AddQuotationDetNew()</FONT><FONT color=#0000ff size=2> 
+<P></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#000000 size=2><U>QuotationDet.vb</U></FONT></P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT color=#000000 size=2> UnitPrice() </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Decimal</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> ms_UnitPrice</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Decimal</FONT><FONT size=2>)</P>
+<P>CanWriteProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> ms_UnitPrice &lt;&gt; Value </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>ms_UnitPrice = Value</P>
+<P>PropertyHasChanged()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> CostingLineNo() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> ms_CostingLineNo</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>CanWriteProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> ms_CostingLineNo &lt;&gt; Value </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>ms_CostingLineNo = Value</P>
+<P>PropertyHasChanged()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> AddQuotationDetNew() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> QuotationDetNew</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> QuotationDetNew(</FONT><FONT color=#800000 size=2>"ABC"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>MarkAsChild()</P>
+<P></FONT>
+<P><FONT color=#008000 size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT> 
+<P><FONT color=#000000><FONT size=2>Am I miss out somethings? </FONT><FONT size=2>Hope to here your reply.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Thanks.</FONT></P></FONT></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

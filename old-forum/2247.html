@@ -1,0 +1,10 @@
+<html><header><title>CSLA Template suggestion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Template suggestion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2247.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Wednesday, January 31, 2007</h2><P>hi</P>
+<P>For the templates, I would suggest that there's some code added to handle the cases when you do a get/fetch , but there's no data in the DB found, like adding if the DataReader actually has some valid data to read:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> FetchObject(</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr)<BR>{<BR></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (dr.Read())<BR>{<BR>&nbsp;&nbsp; _settingName = dr.GetString(</FONT><FONT color=#a31515 size=2>"SettingName"</FONT><FONT size=2>);<BR></FONT><FONT size=2>&nbsp; _value = dr.GetString(</FONT><FONT color=#a31515 size=2>"Value"</FONT><FONT size=2>);<BR>&nbsp; _description = dr.GetString(</FONT><FONT color=#a31515 size=2>"Description"</FONT><FONT size=2>);<BR>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>///Do some handling of Data not found</P>
+<P>}</P>
+<P>}</P>
+<P>Personally,&nbsp; I don't know how I should handle data-not-found issues, anyone who can help out?</P>
+<P>and perhaps also include that into the templates?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Wednesday, January 31, 2007</h2>The issue above is for a "Editable Root Object".</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

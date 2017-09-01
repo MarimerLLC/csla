@@ -1,0 +1,70 @@
+<html><header><title>IndexOutOfRangeException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IndexOutOfRangeException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5478.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mase posted on Friday, September 26, 2008</h2>I'm using CSLA 2.1 and have been having these error intermittently since the launch of the web application. I'm not able to reproduce it or track it down and need help!<br>I posted about it here a while back: http://forums.lhotka.net/forums/post/23987.aspx<br><br>I have a pretty standard and basic Business Object library. I do not utilize Authorization Rules and sometimes add Validation Rules.&nbsp; It doesn't appear to be consistent either. It happens on any/all business objects and always seems to stem from the CanReadProperty()<br><br><font face="Courier New">Index was outside the bounds of the array.<br><br>Exception type 'System.IndexOutOfRangeException' was caught.<br>Source: mscorlib<br>Target Site: Void Insert(TKey, TValue, Boolean)<br>Stack Trace:<br>&nbsp;&nbsp; at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)<br>&nbsp;&nbsp; at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)<br>&nbsp;&nbsp; at Csla.Security.SharedAuthorizationRules.GetManager(Type objectType, Boolean create) in C:\www\myApp\v6\CSLA\Security\SharedAuthorizationRules.cs:line 36<br>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.get_TypeRules() in C:\www\myApp\v6\CSLA\Security\AuthorizationRules.cs:line 50<br>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.HasReadAllowedRoles(String propertyName) in C:\www\myApp\v6\CSLA\Security\AuthorizationRules.cs:line 226<br>&nbsp;&nbsp; at Csla.ReadOnlyBase`1.CanReadProperty(String propertyName) in C:\www\myApp\v6\CSLA\ReadOnlyBase.cs:line 258<br>&nbsp;&nbsp; at Csla.ReadOnlyBase`1.CanReadProperty(Boolean throwOnFalse) in C:\www\myApp\v6\CSLA\ReadOnlyBase.cs:line 187<br>&nbsp;&nbsp; <br>&nbsp;&nbsp; <br>Index was outside the bounds of the array.<br><br>Request.URL.PathAndQuery: /artists/Articles.aspx?artistID=2625<br>Exception type 'System.IndexOutOfRangeException' was caught.<br>Source: mscorlib<br>Target Site: Void Insert(TKey, TValue, Boolean)<br>Stack Trace:<br>&nbsp;&nbsp; at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)<br>&nbsp;&nbsp; at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)<br>&nbsp;&nbsp; at Csla.Security.SharedAuthorizationRules.GetManager(Type objectType, Boolean create) in C:\www\myApp\v6\CSLA\Security\SharedAuthorizationRules.cs:line 36<br>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.get_TypeRules() in C:\www\myApp\v6\CSLA\Security\AuthorizationRules.cs:line 50<br>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.HasReadAllowedRoles(String propertyName) in C:\www\myApp\v6\CSLA\Security\AuthorizationRules.cs:line 226<br>&nbsp;&nbsp; at Csla.ReadOnlyBase`1.CanReadProperty(String propertyName) in C:\www\myApp\v6\CSLA\ReadOnlyBase.cs:line 258<br>&nbsp;&nbsp; at Csla.ReadOnlyBase`1.CanReadProperty(Boolean throwOnFalse) in C:\www\myApp\v6\CSLA\ReadOnlyBase.cs:line 187<br>&nbsp;&nbsp; at myApp.BusinessObjects.UserSession.get_Username() in C:\www\myApp\v6\BusinessObjects\Objects\UserSession.cs:line 67<br>&nbsp;&nbsp; at myApp.UI.Master_controls_Nav.SetLoginTab()<br>&nbsp;&nbsp; at myApp.UI.Master_controls_Nav.DataBind()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBindChildren()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBindChildren()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBindChildren()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBindChildren()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBindChildren()<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind(Boolean raiseOnDataBinding)<br>&nbsp;&nbsp; at System.Web.UI.Control.DataBind()<br>&nbsp;&nbsp; at Artists_Articles.Page_Load(Object sender, EventArgs e)<br>&nbsp;&nbsp; at System.Web.Util.CalliHelper.EventArgFunctionCaller(IntPtr fp, Object o, Object t, EventArgs e)<br>&nbsp;&nbsp; at System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e)<br>&nbsp;&nbsp; at System.Web.UI.Control.OnLoad(EventArgs e)<br>&nbsp;&nbsp; at myApp.UI.BasePage.OnLoad(EventArgs e)<br>&nbsp;&nbsp; at myApp.UI.ArtistBasePage.OnLoad(EventArgs e)<br>&nbsp;&nbsp; at System.Web.UI.Control.LoadRecursive()<br>&nbsp;&nbsp; at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)<br>&nbsp;&nbsp; <br>&nbsp;&nbsp; <br><br>Index was outside the bounds of the array.<br><br>Request.URL.PathAndQuery: /Shows/Shows.aspx?VenueID=10313<br>Exception type 'System.IndexOutOfRangeException' was caught.<br>Source: mscorlib<br>Target Site: Void Insert(TKey, TValue, Boolean)<br>Stack Trace:<br>&nbsp;&nbsp; at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)<br>&nbsp;&nbsp; at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)<br>&nbsp;&nbsp; at Csla.Security.SharedAuthorizationRules.GetManager(Type objectType, Boolean create) in C:\www\myApp\v6\CSLA\Security\SharedAuthorizationRules.cs:line 36<br>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.get_TypeRules() in C:\www\myApp\v6\CSLA\Security\AuthorizationRules.cs:line 50<br>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.HasReadAllowedRoles(String propertyName) in C:\www\myApp\v6\CSLA\Security\AuthorizationRules.cs:line 226<br>&nbsp;&nbsp; at Csla.Core.BusinessBase.CanReadProperty(String propertyName) in C:\www\myApp\v6\CSLA\Core\BusinessBase.cs:line 448<br>&nbsp;&nbsp; at Csla.Core.BusinessBase.CanReadProperty(Boolean throwOnFalse) in C:\www\myApp\v6\CSLA\Core\BusinessBase.cs:line 376<br>&nbsp;&nbsp; at myApp.BusinessObjects.Venue.get_State() in C:\www\myApp\v6\BusinessObjects\Objects\Venue.cs:line 174<br>&nbsp;&nbsp; at Shows_Shows2.SetTitles()<br>&nbsp;&nbsp; at Shows_Shows2.DisplayShows()<br>&nbsp;&nbsp; at Shows_Shows2.OnLoad(EventArgs e)<br>&nbsp;&nbsp; at System.Web.UI.Control.LoadRecursive()<br>&nbsp;&nbsp; at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint)</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, September 26, 2008</h2><P>I&nbsp;do not utilize Authorization Rules </P>
+<P>It happens on any/all business objects and always seems to stem from the CanReadProperty</P>
+<P>==============================================================</P>
+<P>Since you are not using Authorization rules, just remove the CanReadProperty code from your Properties. Then see if the problem goes away.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mase replied on Friday, September 26, 2008</h2>I will give that a shot and see if it works. <br><br>I had the CanReadProperty() and CanWriteProperty() because I imagined introducing Authorization rules eventually.<br><br>Can you refresh my memory as to what Authorization rules would be used for? What is the situation and benefit for using them?&nbsp; Is it essentially for permissions and roles on the business level?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mase replied on Friday, September 26, 2008</h2>Also, I can't figure out why it happens sometimes but not consistently. Why would having this code (CanReadProperty(true)) work ok 90% of the time and then produce an exception the rest of the time? Espeically if I have not setup Authorization rules, I would expect it should behave the same way each time. <br><br>Thanks for the help<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 29, 2008</h2>Don't use the overloads of CanXXXProperty that don't take the property name.&nbsp; They have been depreciated in future versions, and have been the source of many problems.&nbsp; You may be hitting the debug vs. release compilation issues.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mase replied on Monday, September 29, 2008</h2>Ok, great. This is exactly what I have been wondering about. Good to know. Removing them and hopefully will see these errors disappear.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 29, 2008</h2>Well, if you want to use auth rules you should still call CanXXXProperty... just don't call the ones that omit the propertyName parameter.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think (pretty sure) those signatures of CanXXXProperty now
+generate &#8220;deprecated&#8221; warnings during compile time.&nbsp; So, you
+should be able to easily find all the instances when you are using old signatures
+that does not take property name as parameter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 3:34 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] IndexOutOfRangeException<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, if you want to use auth rules you should still call
+CanXXXProperty... just don't call the ones that omit the propertyName
+parameter.&nbsp; <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

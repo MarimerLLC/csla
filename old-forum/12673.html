@@ -1,0 +1,31 @@
+<html><header><title>Calling ViewModel with Business Object parameter</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calling ViewModel with Business Object parameter</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12673.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Thursday, June 19, 2014</h2><p>I&#39;m calling this code from my front-end to load a filtered read-only list:</p>
+<p>Bxf.Shell.Instance.ShowView(typeof(Views.MyList).AssemblyQualifiedName, &quot;myListViewSource&quot;, new ViewModels.MyList(), &quot;Dashboard&quot;);</p>
+<p>My viewmodel looks like this where the parameter is hard-coded:</p>
+<p>public class MyList : ViewModel&lt;NGIS.Business.MyList&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Mylist()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ManageObjectLifetime = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BeginRefresh(callback =&gt; MyList.Get(54930, callback));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>}</p>
+<p>My view displays correct with the data.</p>
+<p>When I change my calling code in the front-end to this. I&#39;m now passing the parameter:</p>
+<p>Bxf.Shell.Instance.ShowView(typeof(Views.MyList).AssemblyQualifiedName, &quot;myListViewSource&quot;, new ViewModels.MyList(recordId), &quot;Dashboard&quot;);</p>
+<p>And change my viewmodel to look like this:</p>
+<p>public class MyList : ViewModel&lt;NGIS.Business.MyList&gt;</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Mylist(int recordId)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ManageObjectLifetime = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BeginRefresh(callback =&gt; MyList.Get(recordId, callback));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>}</p>
+<p>My view is then not displayed. It seems that calling the ViewModel with a parameter doesn&#39;t work as expected.</p>
+<p>What am I doing wrong here please?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Thursday, July 03, 2014</h2><p>So it appears that I can&#39;t pass a parameter into the ViewModel constructor like I wanted to.</p>
+<p>What options are left: dependency injection / properties / interfaceclass inbetween ?</p>
+<p>What is the best option to use for CSLA?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 07, 2014</h2><p>We don&#39;t use a formal MVVM framework.&nbsp; We extend ViewModelBase in CSLA, etc.</p>
+<p>Pretty large Silverlight CSLA 4.x commercial app.</p>
+<p>We frequently just have the user control invoke an &quot;Initialize&quot; method on the view model, passing the ID or whatever is needed.&nbsp; That Initialize method does the BeginRefresh.</p>
+<p>When dealing with a Silverlight application at this point, I think expediency should take precedence to ideals.&nbsp; I wouldn&#39;t personally advocate trying to figure out some nuanced no-code-behind approach to tackle this scenario at this point.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

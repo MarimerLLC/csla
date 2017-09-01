@@ -1,0 +1,9 @@
+<html><header><title>customize serialization in csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>customize serialization in csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10864.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tonylife posted on Thursday, November 10, 2011</h2><p>Hi </p>
+<p>We are using csla and we like it very well.</p>
+<p>One thing we want to improve is the performance of our app. Our&nbsp;silverlight client&nbsp;currently serializes huge business object and children&nbsp;objects,&nbsp;and then send it to server side every time even we just&nbsp;changed one small property, which slows down the app. Is there a way we can customize serialization in csla, for example, write our own json serializer instead, to&nbsp;pass limited&nbsp;data between client and server in&nbsp;different scenario?</p>
+<p>Thanks,</p>
+<p>Tony</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 10, 2011</h2><p>This has been discussed recently on another thread, and on Facebook.</p>
+<p>Version 4.3 will allow you to provide your own ISerializationFormatter implementation. Writing one of these isn&#39;t easy, and there are a lot of restrictions - like that it must provide equivalent functionality to MobileFormatter at a behavioral level.</p>
+<p>Version 4.3 will also include a new CslaFormatter, which is more efficient than MobileFormatter.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

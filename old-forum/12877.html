@@ -1,0 +1,21 @@
+<html><header><title>CSLA / Reactive Extensions Serialization issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA / Reactive Extensions Serialization issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12877.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bradtwurst posted on Tuesday, May 05, 2015</h2><p>Attempting to use CSLA (latest version) along with ReactiveUI and Reactive Extensions.</p>
+<p>When creating the WPF bindings using reactiveUI, the underlying logic uses the reactive extensions Observable.FromEventPattern to hook into the CSLA model&#39;s PropertyChanged events in BindableBase.</p>
+<p>The problem that is occurring is that CSLA believes that these handlers should be serializable. &nbsp;</p>
+<p>This is determined by the code,</p>
+<pre><span>if</span>&nbsp;(<span>value</span>.Method.IsPublic&nbsp;&amp;&amp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span>value</span>.Method.DeclaringType.IsSerializable&nbsp;||&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>value</span>.Method.IsStatic))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_serializableChangedHandlers&nbsp;=&nbsp;(PropertyChangedEventHandler)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.<span>Delegate</span>.Combine(_serializableChangedHandlers,&nbsp;<span>value</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_nonSerializableChangedHandlers&nbsp;=&nbsp;(PropertyChangedEventHandler)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.<span>Delegate</span>.Combine(_nonSerializableChangedHandlers,&nbsp;<span>value</span>);</pre>
+<pre>In this situation, the method is an anonymous delegate created within reactive extensions&nbsp;where</pre>
+<pre>the value.Method is public and the value.Method.DeclaringType is System.Action`2[[System.Object],[System.ComponentModel.PropertyChangedEventArgs]]&nbsp;</pre>
+<pre>which is marked as IsSerializable is true</pre>
+<pre>This causes the handler to be added to the serializable list.</pre>
+<pre>Any suggestions on what I might be able to do to change this situation?</pre>
+<pre></pre>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 20, 2015</h2><p>I did accept your pull request regarding this issue, thank you.</p>
+<p>Fwiw, I didn&#39;t <em>like</em> accepting the pull request, because really what we&#39;re doing is accommodating a flawed implementation in ReactiveUI - at least that&#39;s my view.</p>
+<p>I&#39;d like to understand why they made their types serializable if they aren&#39;t, in fact, serializable or intended to be serialized.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

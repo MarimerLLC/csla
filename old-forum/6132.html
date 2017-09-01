@@ -1,0 +1,147 @@
+<html><header><title>Remoting dataportal  using ssl</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remoting dataportal  using ssl</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6132.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fjlycsy posted on Monday, January 12, 2009</h2><P>Hi Brett,</P>
+<P>The remoting server can be as secure as you can make any website if its hosted in IIS.&nbsp; For example you could run the dataportal using remoting and then set your IIS to use SSL, which means all data will be encrypted.</P>
+<P>Whether I don't need to change anything in your code just enable SSL ,If&nbsp;&nbsp;&nbsp;it must&nbsp;be changed,could you tell me how to do?</P>
+<P>Hope this helps</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 13, 2009</h2>You are asking how to use SSL with Remoting? As far as I know, you just use an https:// address instead of http:// and it will use SSL.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fjlycsy replied on Tuesday, January 13, 2009</h2><DIV id=result_box>Thank you for your reply,
+<DIV id=result_box>my application useing of&nbsp;csla.net framework and&nbsp; remoting channel.</DIV>
+<DIV>
+<DIV id=result_box>In order to prevent the anonymous call, my IIS server requires the client to submit a digital certificate, and now I would like to know how my digital certificates and server interaction, I also tried some code, but the server always return 403 errors,&nbsp;</DIV>
+<DIV>could&nbsp;you tell me how to use the certificate in csla.net ?</DIV></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you need to customize the remoting channel in any substantial
+way, and it sounds like you do, then you&#8217;ll need to create a custom data
+portal proxy class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is not too difficult. Just copy the RemotingProxy code from
+the CSLA project into your project, and customize the way the remoting proxy
+object is created so it includes your certificate.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then set the CslaDataPortalProxy configuration value to use your
+new RemotingProxy type instead of the one from Csla.dll.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> fjlycsy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 9:18 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Remoting dataportal using ssl<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div id="result_box">
+
+<p class=MsoNormal>Thank you for your reply, <o:p></o:p></p>
+
+<div id="result_box">
+
+<p class=MsoNormal>my application useing of&nbsp;csla.net framework and&nbsp;
+remoting channel.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div id="result_box">
+
+<p class=MsoNormal>In order to prevent the anonymous call, my IIS server
+requires the client to submit a digital certificate, and now I would like to
+know how my digital certificates and server interaction, I also tried some
+code, but the server always return 403 errors,&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>could&nbsp;you tell me how to use the certificate in
+csla.net ?<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fjlycsy replied on Wednesday, January 14, 2009</h2><P>Thank you for your reply, it gave me great help! </P>
+<P>There is also a problem, it may be very simple for you, but I have not been successful, I have access to a lot of books, but also through the MSDN, Google to understand, but little information in this regard. </P>
+<P>&nbsp;Remoting proxy object Is there a property to bind my digital certificate?</P>
+<P>&nbsp;The following are some of my code fragment, please advise whether the omission of what?</P>
+<P>"&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>IService service = (IService)RemotingServices.Connect(typeof(IService), "<A href="https://192.168.0.74/HttpBinary/SAService.rem">https://192.168.0.74/HttpBinary/SAService.rem</A>");</P>
+<P>X509Store&nbsp; x509Store = new X509Store("MY", StoreLocation.CurrentUser);<BR>&nbsp;x509Store.Open(OpenFlags.ReadOnly | OpenFlags.OpenExistingOnly);<BR>X509Certificate2Collection&nbsp; x509Selected = x509Store.Certificates;</P>
+<P>IDictionary dictionary = ChannelServices.GetChannelSinkProperties(service);<BR>&nbsp;dictionary["certificates"] = x509Selected[0];</P>
+<P>&nbsp;Console.WriteLine("The server says : " + <FONT color=#ff0000>service.GetServerString()</FONT> );</P>
+<P>"</P>
+<P><FONT color=#ff0000><FONT color=#000000>When run</FONT>"&nbsp;service.GetServerString()</FONT>&nbsp; "&nbsp; it will&nbsp;return 403 error!</P>
+<P>I use a digital certificate to access my web page, it is correct, so IIS settings should be correct.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m sorry, I don&#8217;t know how to attach a certificate
+to the remoting proxy&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fjlycsy replied on Thursday, January 15, 2009</h2>In any case, very grateful for your help!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fjlycsy replied on Sunday, February 01, 2009</h2><P>Hi Rocky:</P>
+<P><BR>Again disturb </P>
+<P>&nbsp;use csla.net</P>
+<P>&nbsp;use iis </P>
+<P>&nbsp;use wcf </P>
+<P>&nbsp;use x.509 </P>
+<P>&nbsp;how to attach a certificate to the wcf proxy?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 02, 2009</h2>I’m sorry, I don’t know how to attach a certificate to the remoting proxy…<br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

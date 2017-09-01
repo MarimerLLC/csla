@@ -1,0 +1,63 @@
+<html><header><title>FetchChildren : Why Call DataPortal.Create&lt;T&gt; of Child ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FetchChildren : Why Call DataPortal.Create&lt;T&gt; of Child ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1151.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Thursday, September 07, 2006</h2>Hello I use the template of CodeSmith.&nbsp;&nbsp; <br>
+<br>
+&nbsp;I have one:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; EditableRoot&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; EditableChildList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; EditableChild&nbsp;&nbsp;&nbsp; <br>
+<br>
+When I call the static method&nbsp; : <br>
+&nbsp;&nbsp;&nbsp; GetXXX<br>
+the method call method Fetch then FetchChildren&nbsp;&nbsp; <br>
+<br>
+&nbsp;.....&nbsp;&nbsp;&nbsp; <br>
+<br>
+and foreach Children : <br>
+<br>
+T child = DataPortal.Create&lt;T&gt; ();&nbsp; <br>
+child. Fetch (Dr.);&nbsp; <br>
+return child;&nbsp;&nbsp;&nbsp; <br>
+<br>
+So, the method :<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [RunLocal]<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; protected override void DataPortal_Create(Object criteria)&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MarkAsChild();&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+of each of my child is call.<br>
+<br>
+But by is defect, the method is marked like RunLocal, if I am not
+mistaken, this code is run on the server, each child will be sent on
+the Client to run the code, then to be turned on the server ? <br>
+<br>
+Useless transport of data <br>
+<br>
+perhaps can be to replace&nbsp; : T child = DataPortal.Create&lt;T&gt;(); by call the defaut constructor of the object ?<br>
+<br>
+
+Is a this error, or my reasoning is bad? <br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 07, 2006</h2>I'm not familiar with the CS templates, so someone else will have to step in there.<br><br>But in general, the data portal is <i>only </i>used to interact with the root object. The child collection and child objects are all loaded by calling an internal method - NOT DataPortal_Create() or DataPortal_Fetch().<br><br>So the problem you are talking about does not exist, because the data portal is not used to call the methods on the child objects.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, September 07, 2006</h2>&nbsp;It agrees what I thought that :<br>
+<br>
+'The child collection and child objects are all loaded by calling an
+internal method - NOT DataPortal_Create() or DataPortal_Fetch().'<br>
+<br>
+&nbsp;I will defer the problem on the forum CSLA NET Contrib.<br>
+<br>
+Thank you<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, September 07, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I'm not familiar with the CS templates, so someone else will have to step in there.<br><br>But in general, the data portal is <i>only </i>used to interact with the root object. The child collection and child objects are all loaded by calling an internal method - NOT DataPortal_Create() or DataPortal_Fetch().<br><br>So the problem you are talking about does not exist, because the data portal is not used to call the methods on the child objects.<br></div></BLOCKQUOTE><br>I remember when you made a 1.x change and recommended that every new object, child or root went through the DataPortal.Create method.&nbsp; What changed?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, September 07, 2006</h2><P>JoOfMetL,</P>
+<P>Unless I'm missing something, but how would you call the default constructor from base/abstract class.</P>
+<P>The generated code that you've described is for User-Base class scenario.&nbsp; The DataPortal.Create method was use as a convinience way to instantiate an object from the base class; otherwise you need to write your own reflection code to do that.</P>
+<P>Other solution is to move the method to user class, which the place where you can use private contructor.&nbsp; To me this is not too favorable compare to the current solution.</P>
+<P>Ricky Supit</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Friday, September 08, 2006</h2><br>
+Hello Ricky Supit,<br>
+<br>
+I did not seek the best manner yet to replace DataPorta_Create. <br>
+<br>
+The problem for me, it is the fact tocall DataPortal_Create for a
+child, when I use the Fetch method for EditableRoot. I don't know what
+occurs for CSLA, since the method is marked like RunLocal, and if
+understood this code well is run on the server ? <br>
+<br>
+Is it annoying ?<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,63 @@
+<html><header><title>Braking rules that are not broken.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Braking rules that are not broken.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10561.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Monday, July 25, 2011</h2><p>&nbsp;</p>
+<p class="MsoNormal">I REALLY hate property rules that depend on other properties
+because I can never make up my mind on how to deal with these type of broken rules.</p>
+<p class="MsoNormal">The canonical example is the Start and End time properties when
+both of these properties reside on the same object. For example, supposed that &ldquo;Start Time&rdquo;
+has a value of 1/1/2010 and &ldquo;End Time&rdquo; a value of 1/1/2009. What is broken
+here? Is it that &ldquo;Start Time&rdquo; should be lower than &ldquo;End Time&rdquo;? <span>&nbsp;</span>-Or - is it that &ldquo;End Time&rdquo; should be higher
+than &ldquo;Start Time&rdquo;? You really can&rsquo;t tell because is not possible for a
+developer to anticipate what date values (Start or End time) may be correct. So
+my guess is that what most people would do when presented with this predicament
+is to add a broken rule to both properties but that seems wrong to me because
+one of the properties could be correct so why mark that property as broken?</p>
+<p class="MsoNormal">What works for me is to have an object level broken rule&nbsp;essentially&nbsp;detached from the Start and End times but I am wondering if I am the only one
+that is doing something like that.</p>
+<p class="MsoNormal">How do you normally deal with situation like the one
+explained above?</p>
+<p class="MsoNormal">Thank you.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Monday, July 25, 2011</h2><p>Generally in a case like this I would determine one property only as the primary, in this case I would nominate end-date and build the rule and then also add a start-date as a dependent property (using 3.8 rules engine). So that when the start date value was changed it will fire the end-date business rules and only that property will be marked as broken. While this can cause some confusion, like you said it&#39;s better than showing both properties as invalid.</p>
+<p>The other example of this is we have a payslip production method which when set to email, the email address must be entered and valid. So while the user may change one property, it actually fires rules of for another and thus invalidates that property.</p>
+<p>We aren&#39;t using the latest 4.0 rules engine yet, so I&#39;m unsure as to the best practices in that circumstances; but I imagine the principles wouldn&#39;t have changed. Also don&#39;t forget that CSLAContrib has a set of common rules, so you could see what they do for these sort of rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 25, 2011</h2><p>I&#39;d probably add a </p>
+<ul>
+<li><b>LessThan </b>rule to StartDate and </li>
+<li><b>GreaterThan </b>rule to EndDate</li>
+<li>Dependency rule from StartDate to EndDate</li>
+<li>Dependency rule from EndDate to StartDate</li>
+</ul>
+<p>so that both fields would show an Error icon. If you don&#39;t want Error for both fields then StartDate would be set as Warning.</p>
+<p>Starting from CSLA 4.2 you could solve this with just 1-one custom rule that would: </p>
+<ul>
+<li>Have StartDate and EndDate as InputProperties</li>
+<li>Set message and level on both EndDate and StartDate</li>
+<li>Will treat InputProperties as implicit Dependency (so rule will run when one of InputProperties is changed)</li>
+</ul>
+<p>or use 1 &quot;generic rule2 for each property:</p>
+<ul>
+<li><b>LessThan </b>rule to StartDate and </li>
+<li><b>GreaterThan </b>rule to EndDate</li>
+</ul>
+<p>So from 4.2 one property rule can set message on other properties than just PrimaryProperty. And considering both AffectedProperties and InputProperties as dependencies should eliminate much of the need for declaring Dependencies between properties. </p>
+<p>The EMail address problem I would have<br />Pre 4.x</p>
+<ul>
+<li>Override CanWriteProperty and add a test for EMail address is writable only when PayslipProductionMethod is EMail</li>
+<li>Add Dependency rule from PayslipProductionMethod to EMail </li>
+<li>Use Rule Priority to declare <br />
+<ul>
+<li>StopIfNotCanWrite at Priority -1 (ie Shortcut rule for property if not Writable, even works with DataAnnotation)</li>
+<li>Required rule at default priority (0) either as DataAnnotation rule or Required rule. </li>
+</ul>
+</li>
+</ul>
+<p>Starting from Csla 4.x</p>
+<ul>
+<li>Add an Authz rule for Write to EMail property that will check PayslipProductionMethod </li>
+<li>Add a Dependency rule from PayslipProductionMethod to EMail</li>
+<li>Use Rule Priority to declare <br />
+<ul>
+<li><b>StopIfNotCanWrite </b>at Priority -1 (ie Shortcut rule for property if not writable, even works with DataAnnotation)</li>
+<li>Required rule at default priority (0) either as DataAnnotation rule or Required rule. </li>
+</ul>
+</li>
+</ul>
+<p><b>The LessThan, GreaterThan, StopIfNotCanWrite and more rules are available on CslaContrib. </b></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

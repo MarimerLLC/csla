@@ -1,0 +1,107 @@
+<html><header><title>Rolodex WCF Timeout check clientaccesspolicy.xml</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex WCF Timeout check clientaccesspolicy.xml</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5621.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Friday, October 17, 2008</h2>I'm playing with rolodex sample app on the CSLA Silverlight 3.6 RC using the RTM Silver2 tools.&nbsp; Everything compiles just fine.&nbsp; I'm using the default cassini web server.&nbsp; When I login the async call timeout with a message that basically says there is a communication error and that I need to make sure I have clientaccesspolicy.xml file.&nbsp; I have checked the policy file and .svc file and can access them through internet explorer.&nbsp; I don't know why my silverlight app can't get to them.&nbsp; The inner exception just says SecurityException: Security Error.&nbsp; There are no other details.&nbsp; Any ideas on this?&nbsp; I verified that the serviceconfig file's URL and port number match the wcfwebhost projects address and port.&nbsp; I'm stuck.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, October 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am guessing that SQL server connection string in web.config is
+not correct on your computer.&nbsp; Please verify that you have SQL Express
+running and your connection string is pointing to correct folder.&nbsp; If
+database is not a problem, here is the easiest way I found to debug wcf
+service.&nbsp; Add the following to web.config to the web site that hosts wcf
+service<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><span>&lt;system.diagnostics&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;sources&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source
+name=&quot;System.ServiceModel&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+switchValue=&quot;Information, ActivityTracing&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+propagateActivity=&quot;true&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;listeners&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;add name=&quot;traceListener&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+type=&quot;System.Diagnostics.XmlWriterTraceListener&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+initializeData= &quot;c:\Traces.svclog&quot; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/listeners&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/source&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/sources&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/system.diagnostics&gt;</span></span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Run the app again, then double-click on c:\traces.svclog.&nbsp;
+It will open in default viewer, and you can just look for error messages &#8211;
+they will be highlighted in red in the list of messages on the left hand
+side.&nbsp; This trick actually works on any wcf service, even hosted in
+windows service.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JonM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 17, 2008 10:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex WCF Timeout check clientaccesspolicy.xml<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm playing with rolodex sample app on the CSLA Silverlight
+3.6 RC using the RTM Silver2 tools.&nbsp; Everything compiles just fine.&nbsp;
+I'm using the default cassini web server.&nbsp; When I login the async call
+timeout with a message that basically says there is a communication error and
+that I need to make sure I have clientaccesspolicy.xml file.&nbsp; I have
+checked the policy file and .svc file and can access them through internet
+explorer.&nbsp; I don't know why my silverlight app can't get to them.&nbsp;
+The inner exception just says SecurityException: Security Error.&nbsp; There
+are no other details.&nbsp; Any ideas on this?&nbsp; I verified that the
+serviceconfig file's URL and port number match the wcfwebhost projects address
+and port.&nbsp; I'm stuck.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Saturday, October 18, 2008</h2>Thanks for the help.&nbsp; I put the code in and did not get anything in my log!&nbsp; I was baffled at first.&nbsp; I started down the fiddler debugging path.&nbsp; Fiddler didn't show anything either!&nbsp; I eventually figured it out.&nbsp; Basically I'm using the default debug config that uses the built-in cassini web server.&nbsp; Once instance hosts the WCFhost and the other instance hosts the silverlight application.&nbsp; I noticed that when I hit F5 to start the app I got 2 internet explorer windows.&nbsp; The first opened to the wcfhost port.&nbsp; The second one opened the rolodex app with a login screen.&nbsp; The problem is that the rolodex app was NOT pointing the URL off its cassini web server.&nbsp; Instead it just had a local path in it 'C:\Projects\..blah..blah\Rolodex\LoginPage.htm'.&nbsp;&nbsp; This was the problem!&nbsp; When I manually type in the URL and login to that page everything works!&nbsp; It turns out I had my start up projects set to WCFhostWeb, and Rolodex.&nbsp; I should have started up the 'Web' project instead of the Rolodex project directly.&nbsp; Starting the silverlight app directly just opens a IE page to its local path.&nbsp;&nbsp; Wow what a pain to figure out!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

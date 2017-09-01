@@ -1,0 +1,19 @@
+<html><header><title>EditableRootListBase exception handling</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase exception handling</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9136.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>michu posted on Friday, June 25, 2010</h2><p>
+<p class="MsoNormal"><span lang="EN-US">Hello, </span></p>
+<p class="MsoNormal"><span lang="EN-US">I have an EditableRootListBase
+object bind with DataGridViev by Bindingsource object.<span>&nbsp; </span>The problems starts when database error occur
+(ex. Primary key validation &ndash; database is Postgresql) , I get an unhandled
+exception.</span></p>
+<p class="MsoNormal"><span lang="EN-US">My intentions
+is<span>&nbsp; </span>to catch that exception in UI layer, provide
+processed message to user and set original data back in the grid. <span>&nbsp;</span>I&rsquo;ve tried event handler DataError in grid and in<span>&nbsp;</span>Bindingsource , but it doesn&rsquo;t work. </span></p>
+<p class="MsoNormal"><span lang="EN-US">Could you
+tell me where can I catch that exception or how can I handle it other way?</span></p>
+<p class="MsoNormal"><span lang="EN-US"><span>&nbsp;</span>Thanks,</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>michu replied on Saturday, June 26, 2010</h2><p>
+<p class="MsoNormal"><span lang="EN-US">Ok, sorry
+for bothering in that issue, <span>&nbsp;</span>I&rsquo;m quite
+new in that area. <span>&nbsp;</span>It was VS &quot;feature&quot; ,
+connected with &ldquo;user-handled exception&rdquo;. After changing that settings I was
+able to catch an error in DataError handler in DataGridView.</span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

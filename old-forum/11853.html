@@ -1,0 +1,12 @@
+<html><header><title>CSLA version confusion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA version confusion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11853.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF posted on Monday, February 25, 2013</h2><p>A few months back I downloaded what appears to be version 4.5.3.0. But the new download page on GitHub seems to indicate that the latest stable version is 4.5.10 and the latest beta version is 4.5.12. Am I looking at something wrong? How did the version go backwards? Is it normal for release version numbers&nbsp;to be behind the beta/RC version numbers?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>richardb replied on Monday, February 25, 2013</h2><p>4.5.Three &lt; 4.5.Ten &lt; 4.5.Twelve</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Monday, February 25, 2013</h2><p>Duh...I wasn&#39;t thinking in those terms. Thinking instead of decimals for some reason. Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2013</h2><p>I&#39;ve adopted a version numbering scheme that I hope will be consistent for a long time to come.</p>
+<p>Ideally I&#39;d use the build number - something like 4.5.1.x and increment &#39;x&#39; for small changes.</p>
+<p>But not all the Microsoft platforms (notably Silverlight) honor the build number, so it turns out to be useless.</p>
+<p>As a result, all I have to work with is major.minor.revision</p>
+<p>Major and Minor are pretty easy - I try to keep those in sync with the primary .NET framework version I&#39;m targeting.</p>
+<p>And that leaves Revision to cover everything else - like adding support for WP8, or mono, or ...</p>
+<p>My scheme then is this:</p>
+<ul>
+<li>If the Revision ends in a zero (such as 10, 20, 30, etc.) that&#39;s a release</li>
+<li>If the Revision ends in a non-zero (such as 11, 12, 23, 42, etc.) that&#39;s a pre-release building toward the next zero ending</li>
+</ul>
+<p>So right now I&#39;m prepping 4.5.13, which is a pre-release for the upcoming 4.5.20 release.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

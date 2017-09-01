@@ -1,0 +1,11 @@
+<html><header><title>Problem with transactions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with transactions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3318.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Viktor posted on Friday, August 03, 2007</h2>I have a problem using transactions. I use transaction when saving the BO «Order», that changes other BOs. I use DataPortal_Execute with attribute: « [Transactional(TransactionalTypes.TransactionScope)]» for transaction. When I get one of the BOs from the database to change this BO, sometimes I receive a SQL Exception:
+<br>
+Transaction context in use by another session
+<br><br>
+I found, it happens when system tries to check validation rule of the getting BO. The BO applies to the stored procedure using DataPortal_Execute in this rule.
+I have no transactions in SQL stored procedures. 
+<br>
+How can I correct this error?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, August 03, 2007</h2><P>Just out of curiostiy, why do you change another BO (if I understand well)&nbsp;by fetching and modifying it from within your &lt;&lt;Order&gt;&gt; DataPortal_Execute? I can imagine that will prolong your original transaction in the first place. Maybe you would like to review and move this functionality within you Save() method.<BR>Anyhow, the problem probably lies in the fact you fetch a BO after you started your transaction within your DataPortal_Execute with another seperate connection (again if I understand well). To prove if that is the case, try fetching your other BO using the same attribute [Transactional(TransactionalTypes.TransactionScope)].<BR>Also are you using SQL Server 2000 or 2005?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Viktor replied on Friday, August 03, 2007</h2>Thanks a lot, I’ll try it but in fact I used fetch in transaction some times and it works fine. I used «[Transactional(TransactionalTypes.TransactionScope)]» in other BOs and that error appeared again.
+<br>
+I’m using SQL 2005
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

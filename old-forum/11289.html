@@ -1,0 +1,80 @@
+<html><header><title>NameValueList question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValueList question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11289.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, April 10, 2012</h2><p>Hi</p>
+<p>Noticed NaveValueList only seems to accept an &lt;int, string&gt; - so there appears no facility to handle a key value other than int - how do we handle this e.g. when the key is say a guid or string?</p>
+<p>Richard</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>msrs_it replied on Tuesday, April 10, 2012</h2><p>Hi,</p>
+<p>The NameValueList will accept any datatypes. consider the following example below.</p>
+<p><i><span>using</span>&nbsp;System;<br />
+<span>using</span>&nbsp;Csla;<br />
+<br />
+<span>namespace</span>&nbsp;NameValueListExample<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>class</span>&nbsp;Program<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;<span>Main</span>(<span>string</span>[]&nbsp;args)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//Console.WriteLine(&quot;Hello World!&quot;);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;userList = UserList.<span>GetList</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>foreach</span>&nbsp;(<span>var</span>&nbsp;element&nbsp;<span>in</span>&nbsp;userList)&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span>WriteLine</span>(<span>string</span>.<span>Format</span>(<span>&quot;Key: {0}, Value: {1}&quot;</span>,element.Key,element.Value));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span>Write</span>(<span>&quot;Press any key to continue . . . &quot;</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Console.<span>ReadKey</span>(<span>true</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>class</span>&nbsp;UserList : NameValueListBase&lt;Guid,<span>string</span>&gt;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;UserList&nbsp;<span>GetList</span>()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;DataPortal.Fetch&lt;UserList&gt;();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;<span>DataPortal_Fetch</span>()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;rlce = RaiseListChangedEvents;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents=<span>false</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly=<span>false</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>for</span>(<span>int</span>&nbsp;i =<span>0</span>;&nbsp;i&lt;<span>10</span>;i++)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Add</span>(<span>new</span>&nbsp;<span>NameValuePair</span>(Guid.<span>NewGuid</span>(),&nbsp;<span>string</span>.<span>Format</span>(<span>&quot;User{0}&quot;</span>,i+<span>1</span>)));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly=<span>true</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents=rlce;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}</i></p>
+<p>&nbsp;</p>
+<p><span style="text-decoration:underline;">The program output will be like this</span></p>
+<p>
+<p>Key: df9bf737-397e-452a-82bd-9237e29a496d, Value: User1</p>
+<p>Key: 2602d50d-cb34-44b4-86c4-5f2384a36517, Value: User2</p>
+<p>Key: 3433a71b-5973-4b75-8ad5-4c76ec384639, Value: User3</p>
+<p>Key: 13546196-5a5f-4caf-ab55-e4eae9a2b93d, Value: User4</p>
+<p>Key: cd29cd22-6030-4bac-b82f-f4f5450f551e, Value: User5</p>
+<p>Key: 251eaa69-c66f-4381-a7c4-5807a9911be2, Value: User6</p>
+<p>Key: a73e7417-f520-4cc4-a332-f2f0f1e38339, Value: User7</p>
+<p>Key: 765358aa-06e1-46b0-b28c-92691b0a7072, Value: User8</p>
+<p>Key: cfaf159e-23e1-4116-9de5-4bb28df9d64d, Value: User9</p>
+<p>Key: 83b2641e-77a6-434c-9e72-5e1d27dbcaac, Value: User10</p>
+<p>Press any key to continue . . .</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Wednesday, April 11, 2012</h2><p>This is what I thought but I am getting compilation errors.....</p>
+<p>
+<p>D:\Users\Richard\Development\VS2010\SLApps\WACA\WACA.Business\Collections\NVL\RoleList.cs(129,25): error CS1502: </p>
+<p>The best overloaded method match for &#39;Csla.NameValueListBase&lt;int,string&gt;.NameValuePair.NameValuePair(int, string)&#39; has some invalid arguments</p>
+<p>D:\Users\Richard\Development\VS2010\SLApps\WACA\WACA.Business\Collections\NVL\RoleList.cs(129,43): error CS1503: </p>
+<p>Argument 1: cannot convert from &#39;System.Guid&#39; to &#39;int&#39;</p>
+</p>
+<p>for the line of code:</p>
+<p>
+<pre>&nbsp;Add(<span>new</span>&nbsp;<span>NameValuePair</span>(<span>Guid</span>.NewGuid(),&nbsp;<span>string</span>.Format(<span>&quot;User{0}&quot;</span>,&nbsp;i&nbsp;+&nbsp;1)));
+</pre>
+<pre></pre>
+<pre>Any reason for this?</pre>
+<pre></pre>
+<pre></pre>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, April 11, 2012</h2><p>The type of NameValuePair must match the definition of the class: </p>
+<p><i>&nbsp;&nbsp;&nbsp; <span>public</span>&nbsp;<span>class</span>&nbsp;UserList : <b>NameValueListBase&lt;Guid,<span>string</span>&gt;</b></i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Wednesday, April 11, 2012</h2><p>Thanks Jonny Bee - spot on (thanks &nbsp;also SreeRamaSaran)</p>
+<h1 class="CommonTitle"><span style="font-weight:normal;"><br /></span></h1></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

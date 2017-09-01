@@ -1,0 +1,33 @@
+<html><header><title>Remote object URL fails from hardcoded string but works from appsettings - very odd</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remote object URL fails from hardcoded string but works from appsettings - very odd</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3347.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phillipjohnson posted on Wednesday, August 08, 2007</h2><P>I have a dll that uses Rocky Lhotka's CSLA.&nbsp; The CSLA relies on some settings in an app.config for remoting but my dll is not used by one of my apps so I have no control over the app.config.</P>
+<P>The point where the string is set with the url of the remote object is:</P>
+<P><STRONG>string data = ConfigurationSettings.AppSettings["PortalServer"];</STRONG></P>
+<P>and the setting in app.config is:</P>
+<P><STRONG>&lt;add key="PortalServer" value="</STRONG><A href="http://localhost/RemotingTest2/dataportal.rem"><STRONG>http://localhost/RemotingTest2/dataportal.rem</STRONG></A><STRONG>" /&gt;</STRONG></P>
+<P>BUT when I change the initialization of the string to be hardcoded rather than from appsettings, like this:</P>
+<P><STRONG>string data = "</STRONG><A href="http://localhost/RemotingTest2/dataportal.rem"><STRONG>http://localhost/RemotingTest2/dataportal.rem</STRONG></A><STRONG>";</STRONG></P>
+<P>I get this error at the point the code tries to create the remote object:</P>
+<P><STRONG>"The Type System.Xml.XmlDocument in Assembly System.Xml, Version=1.0.5000.0, Culture=neutral, PublicKeyToken=b77a5c561934e089 is not marked as serializable."</STRONG></P>
+<P>If I switch the line back to the original one getting the url from the appsettings, it all works again..... This is the only thing I am changing and it works every time from appsettings but never when I hardcode the string!</P>
+<P>I have tried escaping the string and casting it to a string etc, like this:</P>
+<P><STRONG>string data = (string)@"</STRONG><A href='http://localhost/RemotingTest2/dataportal.rem".ToString'><STRONG>http://localhost/RemotingTest2/dataportal.rem".ToString</STRONG></A><STRONG>();</STRONG></P>
+<P>and every time, the string variable looks exactly the same as setting it from the appsettings but I get the error when the url is hardcoded.</P>
+<P>This is a real showstopper for me, so I would really appreciate any help that anybody can give me.</P>
+<P>I even emailed Rocky himself but he could not think of why it could be happening.</P>
+<P>Thanks.</P>
+<P>-- <BR>Regards,</P>
+<P>Phil Johnson (MCAD)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, August 08, 2007</h2><P>There should be 2 config files involved. One on the web server and one on the remoting server.</P>
+<P>Did you change the settings for both of them?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phillipjohnson replied on Thursday, August 09, 2007</h2><P>Hi Joe,</P>
+<P>Thanks for the response.</P>
+<P>This is where my problems start... I am creating a dll with shell namespace extensions (i.e. a plugin for internet explorer) so on the client, the dlls will run in the process of explorer.exe (i.e. Windows Explorer).&nbsp; </P>
+<P>The dll is expecting to find the settings in explorer.exe.config.... I really want to avoid creating a one (or modifying one if one already exists when deployed on the client)&nbsp;so I was looking to either hardcode the urls for the remoting config or change the CSLA dll to use a resource file for the settings rather than the appsettings.</P>
+<P>Every time I cahnge the code though that gets the setting from appsettings, or even modify that static property, I get the XmlDocument serialization error.&nbsp; But when I change it back, or comment out the changes, it works!</P>
+<P>The strange thing is... if I get the setting from appsettings, but then return a hardcoded string, the code works.... but the instant I comment out the line that gets the appsetting I get the error.</P>
+<P>Strangest behaviour I have ever seen.</P>
+<P>At least I have the fallback of creating an explorer.exe.config file I suppose.</P>
+<P>If anybody can think of anything that could make this change work though, please let me know.</P>
+<P>Thanks,</P>
+<P>Phil.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2><P>Is it possible that your hardcoded string is then also being used on the app server? </P>
+<P>Normally the app server wouldn't have any data portal config values set, so it would run in local mode. But if you are hardcoding the values, and deploying your assembly to both client and server, then the server might be in some sort of nasty loop because it would <EM>also be configured for remote data portal calls</EM>.</P>
+<P>Also, are you testing inside or outside of IE? Are you aware of the special serialization issues you encounter when hosting in IE (similar to those in COM+ or other hosts)?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

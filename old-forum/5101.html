@@ -1,0 +1,100 @@
+<html><header><title>RadioButton Binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RadioButton Binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Tuesday, July 15, 2008</h2><P>Has anyone had issues with binding to a RadioButton in a WinForm application?&nbsp; My fields is a bit in the SQL database and I am trying to setup&nbsp;two RadioButtons based on it.&nbsp; Basically, one is for True and the other False.&nbsp; Thanks.</P>
+<P>Jonathan</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The way I did it is to create a fake property in CSLA class:<br>
+:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Property SomeValueIsSet<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Get: Return &nbsp;_value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Set: _value = value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Property SomeValueIsNotSet<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Return Not _value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Set _value = Not Value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then I bind one radio button to one property, the other button
+to the other property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Does this make sense?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 15, 2008 5:57 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] RadioButton Binding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Has anyone had issues with binding to a RadioButton in a WinForm
+application?&nbsp; My fields is a bit in the SQL database and I am trying to
+setup&nbsp;two RadioButtons based on it.&nbsp; Basically, one is for True and
+the other False.&nbsp; Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, July 15, 2008</h2>The way I've done it is with a simple user control that contains the two radio buttons and has a single boolean "Value" property which binds nicely to a boolean property on my object. It's easily extended to more than two radio buttons to give something other than a boolean.<br><br>With radio buttons and checkboxes I change the binding to "OnPropertyChanged" (in advanced settings) so things happen instantly when clicking the control.<br><br>I'm sure <img alt="">Sergey's simpler way works fine too :)<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jfreeman:</strong></div><div>Has anyone had issues with binding to a RadioButton in a WinForm application?&nbsp; My fields is a bit in the SQL database and I am trying to setup&nbsp;two RadioButtons based on it.&nbsp; Basically, one is for True and the other False.&nbsp; Thanks.</div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Wednesday, July 16, 2008</h2><P>You wouldn't happen to have some code that you could share, do you?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, July 17, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jfreeman:</strong></div><div>You wouldn't happen to have some code that you could share, do you?&nbsp; Thanks.</div></BLOCKQUOTE><br>There's not much to it.<br><br>Create a user control with your two radio buttons.&nbsp; Let's say they're called radioButton1 and radioButton2. If radioButton2 is checked then we want the value to be true.<br><br>Create a property like this: (there's nothing special about the name property name Value).<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public bool Value<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return radioButton2.Checked; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; radioButton1.Checked = !value;&nbsp; // (you might not have to set both but this works for sure)<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; radioButton2.Checked = value; <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>The magic happens by implementing INotifyPropertyChanged. Add INotifyPropertyChanged to the class declaration and this code:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public event PropertyChangedEventHandler PropertyChanged;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private void OnValueChanged(string propertyName)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (PropertyChanged != null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; PropertyChanged(this, new PropertyChangedEventArgs(propertyName));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>Then fire the event when the buttons change:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private void radioButton1_CheckedChanged(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; OnValueChanged("Value");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private void radioButton2_CheckedChanged(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; OnValueChanged("Value");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; (You could hook them both to the same event.)<br><br>Compile and put an instance of the control on your form. It should work like any other control.&nbsp; In DataBindings in the properties list, click Advanced, find the Value field. It will be in "All". There's an attribute which I don't recall that you can add to the property in the control to make it appear in "Common".&nbsp; Bind it to the BO property you want and change the update mode to "OnPropertyChanged".<br><br>My code is kind of old so I didn't use INotifyPropertyChanged. I created a plain old EventHandler event called ValueChanged. That works because databinding recognizes events with a name ending in Changed. I think that method has been superseeded by INotifyPropertyChanged. I just did a quick to see that it works.<br><br>Cheers<br>Ross<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

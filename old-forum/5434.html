@@ -1,0 +1,271 @@
+<html><header><title>Inherited property is not registered?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inherited property is not registered?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5434.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tchimev posted on Friday, September 19, 2008</h2>I want to inherit Csla BusinessBase object.<br>In my parent object I declare an ID property.<br>When I create derived object there is no ID property in the object’s FieldManager list.<br>I found out that RegisterProeprty() method inside base class never called(may be because it is static).<br><br>How should I declare properties in the base class?<br><br>Here is the example code:<br><br>class Program<br>{<br>&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Company company = Company.NewCompany();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; company.Name = "NewTest";<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //error: "One or more properties are not registered for this type"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(company.ID);<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>public abstract class Party&lt;T&gt; : BusinessBase&lt;T&gt; where T : Party&lt;T&gt;<br>{<br>&nbsp;&nbsp;&nbsp; protected static PropertyInfo&lt;int&gt; _id =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;int&gt;(typeof(T), new PropertyInfo&lt;int&gt;("ID")); <br>&nbsp;&nbsp;&nbsp; public int ID<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;int&gt;(_id); }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>public class Company : Party&lt;Company&gt;<br>{<br>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;string&gt; _name =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(new PropertyInfo&lt;string&gt;("Name"));<br>&nbsp;&nbsp;&nbsp; public string Name<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;string&gt;(_name); }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;string&gt;(_name, value); }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public static Company NewCompany() { return DataPortal.Create&lt;Company&gt;(); }<br><br>&nbsp;&nbsp;&nbsp; private Company() { }<br>}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, September 19, 2008</h2>Search the forum for recent threads containing '<b>_dummy</b>' or just '<b>dummy</b>'<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, September 19, 2008</h2>This is the link to the workaround: <A HREF="/forums/thread/24472.aspx">http://forums.lhotka.net/forums/thread/24472.aspx</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2008</h2><P>Just to restate the solution (because this is clearly going to be a common problem):</P>
+<P>In <EM>every class where you use inheritance from your own base classes</EM> you must force all static/Shared fields to initialize. The safest, surest and simplest way to do this is like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>public class MyClass : MyBaseClass&lt;MyClass&gt;<BR>{<BR>&nbsp; private static int _forceInit;<BR><BR>&nbsp; protected MyClass()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; _forceInit = 0;<BR>&nbsp; }<BR><BR>&nbsp; protected override OnDeserialized(...)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; _forceInit = 0;<BR>&nbsp; }<BR>}</P></BLOCKQUOTE>
+<P>The way, when the first instance of the type is created (either directly or through deserialization) all static/Shared fields defined <EM>in this class</EM> are initialized. You must repeat this pattern in your custom base classes and subclasses.</P>
+<P>If you inherit directly from a CSLA base class (like BusinessBase&lt;T&gt;) then you don't need to worry about this issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Just to restate the solution (because this is clearly going to be a common problem):</P>
+<P>In <EM>every class where you use inheritance from your own base classes</EM> you must force all static/Shared fields to initialize. The safest, surest and simplest way to do this is like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>public class MyClass : MyBaseClass&lt;MyClass&gt;<BR>{<BR>&nbsp; private static int _forceInit;<BR><BR>&nbsp; protected MyClass()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; _forceInit = 0;<BR>&nbsp; }<BR><BR>&nbsp; protected override OnDeserialized(...)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; _forceInit = 0;<BR>&nbsp; }<BR>}</P></BLOCKQUOTE>
+<P>The way, when the first instance of the type is created (either directly or through deserialization) all static/Shared fields defined <EM>in this class</EM> are initialized. You must repeat this pattern in your custom base classes and subclasses.</P>
+<P>If you inherit directly from a CSLA base class (like BusinessBase&lt;T&gt;) then you don't need to worry about this issue.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Rocky,</P>
+<P>Can you please clarify this for me?</P>
+<P>Here is a sample inheritance hierarchy:</P>
+<P>1. CSLA BusinessBase</P>
+<P>2. My Base Class (Inherits 1)</P>
+<P>3. My CodeGen Class (Inherits 2)</P>
+<P>4. My DeveloperLevel Class (Inherits 3)</P>
+<P>5. My FinalType Class (Inherits 4)</P>
+<P>Where do I need to add the static int code?</P>
+<P>A. Just 2</P>
+<P>B. In 2,3,4 and 5.</P>
+<P>C. Some other combination?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to insert the _forceInit code in 2-5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 02, 2008</h2><P>Great. Much clearer.</P>
+<P>=========================</P>
+<P>Now what about this statement you made:</P>
+<P>"If you inherit directly from a CSLA base class (like BusinessBase&lt;T&gt;) then you don't need to worry about this issue."</P>
+<P>Assuming this inheritance chain:</P>
+<P>1. CSLA BusinessBase</P>
+<P>2. My FinalType Class (Inherits 1)</P>
+<P>Where do I need to add the static int code?</P>
+<P>A. No place (according to your statement)</P>
+<P>B. In 2 (why does this not need it when the other inheritance chain needed it on every step?)</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ll try to be as clear as I can </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are exactly two scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Your business class inherits directly from a CSLA base class.<br>
+<br>
+In this case you don&#8217;t need to do anything special, your code should just
+work.<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Your business class inherits from a custom base class that
+inherits from a CSLA base class. This scenario can go n levels deep.<br>
+<br>
+In this case you must include the _forceInit code in EVERY ONE OF YOUR CLASSES
+in that inheritance hierarchy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using code-gen, I&#8217;d just put it in the template
+and always include the _forceInit code. It doesn&#8217;t cause harm, and would
+simplify template creation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chenzd replied on Tuesday, October 21, 2008</h2><P>Add a static constructor function to Company as following:</P>
+<P>static Company()</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;Party._id = RegisterProperty&lt;int&gt;(typeof(T), new PropertyInfo&lt;int&gt;("ID"));</P>
+<P>&nbsp;&nbsp;&nbsp;_name = RegisterProperty&lt;string&gt;(typeof(Company), new PropertyInfo&lt;string&gt;("Name"));<BR>}</P>
+<P>&nbsp;</P>
+<P>The field&nbsp;_propertyList managing&nbsp;registered properties is marked for NonSerializedAttrube,sothey are found after deserialized.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Unfortunately I&#8217;ve run into a scenario where just having a
+static constructor is not enough to trigger initialization of static fields. I don&#8217;t
+remember the specifics, but it had to do with serializing objects to/from
+Silverlight, and seems to violate the .NET rules on static field
+initialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The _forceInit technique appears to work in all scenarios, and
+so it is the technique I&#8217;m recommending. If you use inheritance, ALL YOUR
+CLASSES should do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public class &lt;my class&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private static int _forceInit;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private &lt;my class&gt;()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _forceInit = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; protected override void OnDeserialized(&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _forceInit = 0;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Monday, December 15, 2008</h2>Shouldn't the OnDeserialized overload call base.OnDeserialized? I'm thinking it should be declared like this:<br /><br />  protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)<br />  {<br />    base.OnDeserialized(context);<br />    _forceInit = 0;<br />  }</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Tuesday, December 16, 2008</h2>For some time I have attempted to use the above solution to work around the "property not registered" error, to no avail. Despite that fact that I had the above code (with the addition of a call to base.OnDeserialized) in each of the classes in my inheritance hierarchy, I would still get the error.<br /><br />Finally I found the problem, which I think might be a CSLA bug: if SetProperty or LoadProperty is called, no subsequent RegisterProperty calls are honoured! I had the following in a MyBusinessBase class, inherited from CSLA:<br /><br />private static int _forceInit;<br />private static int lastGeneratedId = -1;<br />protected MyBusinessBase()<br />{<br />    _forceInit = 0;<br />    this.id = Interlocked.Decrement(ref lastGeneratedId);<br />}<br /><br />"this.id" is a property that performs a "LoadProperty" on IdProperty.<br /><br />Because I was initializing this in the constructor, none of the properties in inherited classes were being registered!<br /><br />Here is a simple test to demonstrate the problem more succinctly:<br /><br />class RegisterPropertyTest : BusinessBase<br />{<br />    public void Test()<br />    {<br />        var stringProp = RegisterProperty(new PropertyInfo("Test"));<br />        SetProperty(stringProp, "test");<br />        var intProp = RegisterProperty(new PropertyInfo("Id"));<br />        SetProperty(intProp, 1);<br />    }<br />}<br /><br />This code demonstrates the failure: new RegisterPropertyTest().Test();<br /><br />I suspect that this also affects cases where property values are set in OnDeserialized.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Thursday, December 18, 2008</h2><P>Looking into the CSLA code a bit, it appears that this problem is due to the way that FieldDataManager optimizes the list of PropertyInfo objects. On constructor of a FieldDataManager for a given type, all of the PropertyInfo objects registered in the inheritance hierarchy are pulled into a local list. I don't believe that this list is being invalidated when a new property is registered, effectively causing any new&nbsp;properties to be ignored.</P>
+<P>One .Net feature is that&nbsp;static field initializers are called as the fields are referenced (you can work around this by setting a static field, as in the _forceInit hack documented in this post). I <EM>suspect </EM>that this whole problem could be avoided by modifying CSLA to update the FieldDataManager consolidated list when a new property is registered. That way, every time a new Property is referenced by executing code, it would be registered <EM>and</EM> added to the FieldDataManager; there would be no need to force all of the properties to register at class instantiation.</P>
+<P>Rocky, would this be a viable approach?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 20, 2008</h2>This isn't a bug, it is a feature :)<br /><br />Seriously though, I'm (we're) dealing with the way the .NET runtime itself<br />works here. I'm not making the rules, Microsoft made the rules in 1999, and<br />we're stuck with them - at least in terms of static field initialization.<br /><br />I could perhaps do some clever fix-up code to reassess the list of<br />properties on each SetProperty/LoadProperty call - but the perf implications<br />are horrendous. How do I know when all the static fields have initialized? I<br />can't know. So all I can do is one of two things:<br /><br />1. Assume they've all be initialized before the first<br />SetProperty/LoadProperty call (which is what I do)<br /><br />2. Recheck for new field initializations on each SetProperty/LoadProperty<br />call (which would be slow and complex)<br /><br />You might wonder why CSLA cares. It is because the order of the fields<br />matters for serialization. Each PropertyInfo is assigned a numeric index,<br />and the field values are stored in a list, indexed off that numeric value. I<br />need a way to generate those index values that is consistent on the client,<br />the server, on Silverlight, etc. So they are sorted by class (in the<br />inheritance hierarchy), then by name, then the indexes are assigned.<br /><br />You then might wonder why the numeric index scheme? I could just allow<br />positioning to occur based on the order the PropertyInfo objects were<br />registered. This isn't safe, because there's no specification controlling<br />the order that methods/properties/fields are placed in the IL by a compiler.<br />In fact, it is known that VB and C# do not use the same algorithm - and I<br />shudder to think whether .NET and Silverlight use the same algorithm even<br />within one programming language.<br /><br />So I had to come up with some scheme that was repeatable, and independent of<br />compiler whims.<br /><br />In the end, then, if someone can come up with some scheme by which all the<br />PropertyInfo objects in an object instance (across the inheritance<br />hierarchy) can be ordered in a repeatable manner WHEN THE ORDER OF STATIC<br />FIELD INITIALIZATION MAY BE UNKNOWN I'm happen to entertain alternatives.<br /><br />But without that solution, what can (and does) happen is that one class in<br />the inheritance hierarchy gets initialized, and you can start calling<br />SetProperty/GetProperty on the fields IN THAT CLASS - and I need to store<br />those values somewhere such that I can get them back out again, even if the<br />object is serialized/deserialized.<br /><br />If some base class LATER gets initialized, then what?<br /><br />I should also point out that my first run at this was to use a<br />Dictionary where the full type/field name was used as a key.<br />This solves the whole problem, but performance was unacceptable. A<br />dictionary is simply too slow, which is the reason I switched to the numeric<br />index into a list (array) which is, of course, very fast.<br /><br />Rocky <br /><br />-----Original Message-----<br />From: JoshL [mailto:cslanet@lhotka.net] <br />Sent: Friday, December 19, 2008 11:51 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] Inherited property is not registered?<br /><br />For some time I have attempted to use the above solution to work around the<br />"property not registered" error, to no avail. Despite that fact that I had<br />the above code (with the addition of a call to base.OnDeserialized) in each<br />of the classes in my inheritance hierarchy, I would still get the error.<br /><br />Finally I found the problem, which I think might be a CSLA bug: if<br />SetProperty or LoadProperty is called, no subsequent RegisterProperty calls<br />are honoured! I had the following in a MyBusinessBase class, inherited from<br />CSLA:<br /><br />private static int _forceInit;<br />private static int lastGeneratedId = -1;<br />protected MyBusinessBase()<br />{<br />    _forceInit = 0;<br />    this.id = Interlocked.Decrement(ref lastGeneratedId);<br />}<br /><br />"this.id" is a property that performs a "LoadProperty" on IdProperty.<br /><br />Because I was initializing this in the constructor, none of the properties<br />in inherited classes were being registered!<br /><br />Here is a simple test to demonstrate the problem more succinctly:<br /><br />class RegisterPropertyTest : BusinessBase<br />{<br />    public void Test()<br />    {<br />        var stringProp = RegisterProperty(new PropertyInfo("Test"));<br />        SetProperty(stringProp, "test");<br />        var intProp = RegisterProperty(new PropertyInfo("Id"));<br />        SetProperty(intProp, 1);<br />    }<br />}<br /><br />This code demonstrates the failure: new RegisterPropertyTest().Test();<br /><br />I suspect that this also affects cases where property values are set in<br />OnDeserialized.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Saturday, December 20, 2008</h2>Got it - I figured there was a performance implication, but wasn't aware of the serialization complexities.<br /><br />It would be nice if the properties could be assigned unique numbers at compile time that you could use, rather than generating indexes based on a sorted list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 20, 2008</h2>Forcing the developer to assign unique numeric index values that span an<br />inheritance hierarchy seems like a real maintenance nightmare though doesn't<br />it?<br /><br />The index values aren't just unique within each class - they are unique for<br />the object instance, and so must take into account all base classes too.<br /><br />I totally agree with you though - if there's some way this could be done at<br />compile time that'd be better.<br /><br />There is one possible solution using reflection - though it won't work with<br />Silverlight. I do know the first time a PropertyInfo is requested for a<br />specific business object type. When that happens, I could loop through the<br />entire inheritance hierarchy and use reflection to read one static field<br />value from each class. That would have the same basic effect as the<br />_forceInit scheme, but would be automatic.<br /><br />This would work in .NET because reflection can access the non-public static<br />fields. It won't work in Silverlight because private reflection isn't<br />allowed. So I am nervous about making such a change, because this discussion<br />wouldn't go away - it would just get worse (in a sense) because people would<br />have "working code" that would all of a sudden break when they tried to use<br />it on Silverlight...<br /><br />So I would really like to come up with some more elegant answer...<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Monday, December 15, 2008</h2>Is this due to a C# optimization, an issue with generics, or a csla quirk? After banging my head against a wall for four hours, I'm a little curious.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 15, 2008</h2><P>What? The need to call the base implementation? That's standard OO programming - and is one of the weaknesses of OOP, and specifically with inheritance.</P>
+<P>In fact, this is one of the primary reasons the saying is "favor composition over inheritance". Inheritance is one of the most tightly coupled (and thus bad) types of relationship that can exist between classes.</P>
+<P>One side-effect of this, is that some methods can be virtual, so a subclass can override that method. The fewer virtual methods the better. Zero would be a good number.</P>
+<P>Obviously that's unrealistic...</P>
+<P>Why are virtual methods bad? Because the base class(es) might have behavior in those methods. If you override a virtual method, how do you know whether you need to call the base method? And if you do need to call it, do you need to call it first, last, or in the middle of your override?</P>
+<P>The only way to know is to look at the code for all base classes, understand that code, and then you can know if you need to make that call.</P>
+<P>In short, virtual methods are bad.</P>
+<P>Of course all OO code uses inheritance and virtual methods - we take the bad with the good...</P>
+<P>In the case of OnDeserialized(), you need to invoke the base method. And it doesn't (shouldn't) matter if you call the base first, last or in the middle.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Monday, December 15, 2008</h2>My question was about _forceInit. I thought we could rely on C# static field initialization? </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Me too :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But several months ago I discovered that what I thought were the
+rules about static fields were not really true. I blogged about it then, and
+there was a thread on the forum. The real key is a blog post by Brad Abrams on
+the topic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It turns out that the real rule for static field initialization
+is this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><i><span>Static fields in a class are initialized immediately before the
+first static field in that class is accessed (get or set), or when the static
+constructor is executed.<o:p></o:p></span></i></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, at least during the beta of Silverlight, I noticed a
+scenario where the static constructor didn&#8217;t trigger initialization of
+the static fields, so I switched completely to using the _forceInit technique.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is important to notice the use of the word &#8220;class&#8221;,
+not &#8220;object&#8221; in that rule. Fields are initialized at the class
+level, which means that each class in an inheritance hierarchy must have at
+least one static field touched (get/set) to ensure the fields initialize.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On deserialization your constructor code doesn&#8217;t get
+executed. .NET uses a different scheme to create the object instances in that
+case. This is why you need to ensure OnDeserialized() calls the base
+implementation, so the _forceInit field in each class gets set.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So this is not a C# thing, it is a .NET thing &#8211; an implementation
+decision in the .NET runtime itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Tuesday, December 16, 2008</h2>Thanks for the explanation.&nbsp;I remember hearing "a good programmer looks left and right before crossing a one way street." I guess we need to be looking up and down too. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, December 16, 2008</h2>For the record, and I appreciate that there may not be a solution, but this code is giving off an awful smell!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

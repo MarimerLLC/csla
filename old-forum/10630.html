@@ -1,0 +1,78 @@
+<html><header><title>ViewModelBase - BeginSave and DoSave have Implicit EditLevel = 0 to correctly execute.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModelBase - BeginSave and DoSave have Implicit EditLevel = 0 to correctly execute.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10630.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Tuesday, August 23, 2011</h2><p>G&#39;day,</p>
+<p>When binding XAML windows/controls to ViewModelBase, users who edit multiple fileds will cause the edit level to increase by 1 on every edit. If you then try and bind the BeginSave or DoSave method to a button via the TriggerAction it can fail with a message like - &quot;Object is still being edited and can not be saved&quot;. I had to debug through to the CSLA codebase to realise why my records were not saving.</p>
+<p>I needed to put codebehind the XAML buttons which use the save method, which I didn&#39;t believe was the aim of the ViewModelBase BeginSave and DoSave methods.</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;(VB.net example) WPF&nbsp;will&nbsp;remember&nbsp;all&nbsp;the&nbsp;edits&nbsp;prior&nbsp;to&nbsp;saving&nbsp;the&nbsp;data,&nbsp;so&nbsp;we&nbsp;will&nbsp;have&nbsp;to&nbsp;commit all&nbsp;those&nbsp;changes.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;<span style="color:blue;">TypeOf</span>&nbsp;Model&nbsp;<span style="color:blue;">Is</span>&nbsp;Csla.Core.<span style="color:#2b91af;">IUndoableObject</span>&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">For</span>&nbsp;index&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Integer</span>&nbsp;=&nbsp;0&nbsp;<span style="color:blue;">To</span>&nbsp;<span style="color:blue;">CType</span>(Model,&nbsp;Csla.Core.<span style="color:#2b91af;">IUndoableObject</span>).EditLevel&nbsp;-&nbsp;1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model.ApplyEdit()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Next</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoSave()</pre>
+<p>Recommended change to ViewModelBase c# code in BeginSave and DoSave methods (see <span style="color:#008000;">//apply changes</span>)</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="color:green;">          //apply&nbsp;changes</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;undoable&nbsp;=&nbsp;savable&nbsp;<span style="color:blue;">as</span>&nbsp;Csla.Core.<span style="color:#2b91af;">ISupportUndo</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(undoable&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="background-color:#ffff99;"><span style="color:green;">//&nbsp;ensure&nbsp;the&nbsp;full&nbsp;edit&nbsp;history&nbsp;is&nbsp;applied&nbsp;before&nbsp;saving,&nbsp;so&nbsp;the&nbsp;edit&nbsp;level&nbsp;=&nbsp;0&nbsp;prior&nbsp;to&nbsp;saving.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;undoableobject&nbsp;=&nbsp;(Csla.Core.<span style="color:#2b91af;">IUndoableObject</span>)undoable;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">for</span>&nbsp;(<span style="color:blue;">int</span>&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;undoableobject.EditLevel&nbsp;-&nbsp;1;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;undoable.ApplyEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Your thoughts? </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">I noticed that the CSLA 4 video&#39;s only seemed to include editing of one BusinessObject field at a time before saving.</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 23, 2011</h2><p>No, no, no, no </p>
+<p>What you are describing here is that BeginEdit is called every time you edit a property. You should fix that issue rather than creating a new fix in DoSave. </p>
+<p>Which version of CSLA are you using? </p>
+<p>In Csla.Xaml.ViewModelBase, BeginEdit is only called in DoCance()l and the dependency property ModelProperty. When a property is set on your BO in Xaml there should be no calls to BeginEdit, CancelEdit or ApplyEdit. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Tuesday, August 23, 2011</h2><p>Jonny,</p>
+<p>Thanks for the heads up. I am using Csla 3.8.2 (Csla.Wpf namespace)&nbsp;+ VS 2010 + WPF + .net 4. </p>
+<p>I&#39;m just doing direct XAML databinding, but will review the underlying Business object as recommended. The XAML is a wizard that passes the Business object through 4 ViewModels which are bound to different pages in the wizard. Essentially the Wizard control is orchestrating the wizard pages and the code follows the excellent MVVM pattern example from CodeProject, but with a Csla ViewModel approach. <a href="http://www.codeproject.com/KB/WPF/InternationalizedWizard.aspx">http://www.codeproject.com/KB/WPF/InternationalizedWizard.aspx</a></p>
+<p>Will upgrade to csla 3.8.4 and do a full debug test to determine the cause of the issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Tuesday, August 23, 2011</h2><p>Code Sample that triggered the issue.</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:green;">&#39;&#39;&#39;&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+<span style="COLOR:green;">&#39;&#39;&#39;&nbsp;Creates&nbsp;a&nbsp;collection&nbsp;of&nbsp;ViewModels&nbsp;that&nbsp;share&nbsp;a&nbsp;common&nbsp;Csla&nbsp;business&nbsp;object&nbsp;(model)&nbsp;between&nbsp;them.</span>
+<span style="COLOR:green;">&#39;&#39;&#39;&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+<span style="COLOR:green;">&#39;&#39;&#39;&nbsp;</span><span style="COLOR:gray;">&lt;remarks&gt;&lt;/remarks&gt;</span>
+<span style="COLOR:blue;">Public</span>&nbsp;<span style="COLOR:blue;">Overrides</span>&nbsp;<span style="COLOR:blue;">Sub</span>&nbsp;CreateWizardPages()
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">&#39;&nbsp;&nbsp;&nbsp;Load&nbsp;a&nbsp;new&nbsp;payment&nbsp;business&nbsp;object&nbsp;into&nbsp;a&nbsp;shared&nbsp;model&nbsp;for&nbsp;use&nbsp;by&nbsp;multiple&nbsp;pages&nbsp;in&nbsp;a&nbsp;wizard</span>
+&nbsp;&nbsp;&nbsp;&nbsp;SharedModel&nbsp;=&nbsp;Iims.BL.<span style="COLOR:#2b91af;">Payment</span>.NewPayment
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;logger.Trace(<span style="COLOR:#a31515;">&quot;Started:&nbsp;Loading&nbsp;Wizard&nbsp;ViewModels&nbsp;into&nbsp;a&nbsp;collection&nbsp;and&nbsp;sharing&nbsp;default&nbsp;payment&nbsp;data&nbsp;with&nbsp;all.&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;logger.Debug(<span style="COLOR:#a31515;">&quot;Edit&nbsp;level&nbsp;=&nbsp;{0}.&quot;</span>,&nbsp;<span style="COLOR:blue;">CType</span>(SharedModel,&nbsp;Csla.Core.<span style="COLOR:#2b91af;">IUndoableObject</span>).EditLevel)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Dim</span>&nbsp;vmList&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:blue;">New</span>&nbsp;<span style="COLOR:#2b91af;">List</span>(<span style="COLOR:blue;">Of</span>&nbsp;<span style="COLOR:#2b91af;">IWizardPage</span>)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">With</span>&nbsp;vmList
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add(<span style="COLOR:blue;">New</span>&nbsp;PayRun1PreparationViewModel(SharedModel))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add(<span style="COLOR:blue;">New</span>&nbsp;PayRun2SettingsViewModel(SharedModel))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add(<span style="COLOR:blue;">New</span>&nbsp;PayRun3ReviewViewModel(SharedModel))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.Add(<span style="COLOR:blue;">New</span>&nbsp;PayRun4OutputViewModel(SharedModel))
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">With</span>
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;Pages&nbsp;=&nbsp;<span style="COLOR:blue;">New</span>&nbsp;<span style="COLOR:#2b91af;">ReadOnlyCollection</span>(<span style="COLOR:blue;">Of</span>&nbsp;<span style="COLOR:#2b91af;">IWizardPage</span>)(vmList)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">&#39;&nbsp;&nbsp;&nbsp;Configure&nbsp;the&nbsp;first&nbsp;page.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;CurrentPage&nbsp;=&nbsp;Pages(0)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">&#39;&nbsp;&nbsp;&nbsp;Reminder&nbsp;for&nbsp;future&nbsp;wizards&nbsp;that&nbsp;addopt&nbsp;this&nbsp;pattern</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;<span style="COLOR:blue;">CType</span>(SharedModel,&nbsp;Csla.Core.<span style="COLOR:#2b91af;">IUndoableObject</span>).EditLevel&nbsp;&gt;&nbsp;0&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;logger.Fatal(<span style="COLOR:#a31515;">&quot;Edit&nbsp;level&nbsp;=&nbsp;{0},&nbsp;but&nbsp;should&nbsp;be&nbsp;0.&nbsp;Please&nbsp;ensure&nbsp;BO.ApplyEdit&nbsp;is&nbsp;completd&nbsp;when&nbsp;populating&nbsp;the&nbsp;ViewModels&nbsp;via&nbsp;a&nbsp;contructor.&quot;</span>,&nbsp;<span style="COLOR:blue;">CType</span>(SharedModel,&nbsp;Csla.Core.<span style="COLOR:#2b91af;">IUndoableObject</span>).EditLevel)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;logger.Trace(<span style="COLOR:#a31515;">&quot;Finished:&nbsp;Loading&nbsp;Wizard&nbsp;ViewModels.&quot;</span>)
+ 
+<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Sub</span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">#Region</span>&nbsp;<span style="COLOR:#a31515;">&quot;ViewModel&nbsp;Constructor&nbsp;&quot;</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Public</span>&nbsp;<span style="COLOR:blue;">Sub</span>&nbsp;<span style="COLOR:blue;">New</span>(<span style="COLOR:blue;">ByRef</span>&nbsp;value&nbsp;<span style="COLOR:blue;">As</span>&nbsp;Iims.BL.<span style="COLOR:#2b91af;">Payment</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">MyBase</span>.Model&nbsp;=&nbsp;value
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">&#39;&nbsp;&nbsp;&nbsp;LL:&nbsp;Commit&nbsp;the&nbsp;change&nbsp;to&nbsp;the&nbsp;current&nbsp;view&nbsp;model&nbsp;so&nbsp;the&nbsp;edit&nbsp;level&nbsp;=&nbsp;0.&nbsp;(thanks&nbsp;Jonny&nbsp;B!)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">MyBase</span>.Model.ApplyEdit
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Sub</span>
+ 
+<span style="COLOR:blue;">#End</span>&nbsp;<span style="COLOR:blue;">Region</span>&nbsp;</pre>
+</span></pre>
+<p>Full from Humble Pie.<img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,43 @@
+<html><header><title>Business Rules contex getting lost ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules contex getting lost ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10914.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>olawal posted on Wednesday, November 23, 2011</h2><p>the following code is in&nbsp; my buisnesslistbase class which is a collection of my AssignMent object.&nbsp; Basically when the collection that of Assignment objects changes i.e</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">Protected</span>&nbsp;<span style="COLOR:blue;">Overrides</span>&nbsp;<span style="COLOR:blue;">Sub</span>&nbsp;OnCollectionChanged(e&nbsp;<span style="COLOR:blue;">As</span>&nbsp;System.Collections.Specialized.<span style="COLOR:#2b91af;">NotifyCollectionChangedEventArgs</span>)
+		<span style="COLOR:blue;">MyBase</span>.OnCollectionChanged(e)
+ 
+		<span style="COLOR:blue;">If</span>&nbsp;<span style="COLOR:blue;">Me</span>.AssignmentCollectionChanged&nbsp;<span style="COLOR:blue;">IsNot</span>&nbsp;<span style="COLOR:blue;">Nothing</span>&nbsp;<span style="COLOR:blue;">Then</span>
+			<span style="COLOR:blue;">Me</span>.AssignmentCollectionChanged.Invoke()
+		<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+	<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Sub</span></pre>
+<p>&nbsp;I invoke the callback function that checks the rules in the dataportal fetch. of the holder</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">Me</span>.Assignments.AssignmentCollectionChanged&nbsp;=&nbsp;<span style="COLOR:blue;">Sub</span>()&nbsp;<span style="COLOR:blue;">Me</span>.BusinessRules.CheckRules()
+</pre>
+<p>&nbsp;now this happens intermitently , if the rule is broken the following line is executed :</p>
+<p>I have a buisnes s rule that when the rule fails the following function is executed</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">If</span>&nbsp;returnMessage.Length&nbsp;&gt;&nbsp;2&nbsp;<span style="COLOR:blue;">Then</span>
+				returnMessage&nbsp;=&nbsp;returnMessage.Substring(0,&nbsp;returnMessage.Length&nbsp;-&nbsp;1)
+				context.AddErrorResult(returnMessage)
+<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Now for some reason the method that does is building the collection does not for 
+always retain the error result when the the following check is run:</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">For</span>&nbsp;<span style="COLOR:blue;">Each</span>&nbsp;assignment&nbsp;<span style="COLOR:blue;">In</span>&nbsp;assignmentCollection.Assignments
+			<span style="COLOR:blue;">If</span>&nbsp;assignment.BrokenRulesCollection.Count&nbsp;&gt;&nbsp;0&nbsp;<span style="COLOR:blue;">Then</span>
+				canSave&nbsp;=&nbsp;<span style="COLOR:blue;">False</span>
+				<span style="COLOR:blue;">For</span>&nbsp;<span style="COLOR:blue;">Each</span>&nbsp;assignErr&nbsp;<span style="COLOR:blue;">In</span>&nbsp;assignment.BrokenRulesCollection
+					errorMessages.Add(assignErr.Description)
+				<span style="COLOR:blue;">Next</span>
+			<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+<span style="COLOR:blue;">Next</span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;"></span>&nbsp;</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Somtimes it works and the broken rules collection does contain the errors raised </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">any ideas ?</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;"></span>&nbsp;</pre>
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 24, 2011</h2><p>Hi, </p>
+<p>1: You should never call BusinessRules.CheckRules() on a background thread.&nbsp; The CheckRules method may raise OnPropertyChanged and you will get cross thread exception when databound to UI (rich client). </p>
+<p>2: You should not run async rules on the serverside of the data portal. If deployed in a 3 tier layer your object will be serialized and returned to the client in the middle of rule checking (and possible in an indetermined/invalid state). </p>
+<p>3: If deployed in a 3 tier layer or using the AutoCloneOnUpdate (which is on by default)&nbsp; you must reestablish the AssignmentCollectionChanged event in the OnDeserialized event.</p>
+<p>4: You could also look at the BusinessRules.GetAllbrokenRules() method that will safely traverse your object structure and return the broken rules. </p>
+<p>5: Is your (parent object) rules depending on values from Assignments)? If they are then I&#39;d rather call &lt;bo&gt;.CheckObjectRules() or PropertyHasChanged(propertyInfo) for that specific property. When running in a rich client these 2 methods are the <b>ONLY </b>ones that will notify the UI of changes in property/rules.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>olawal replied on Monday, November 28, 2011</h2><p>I&#39;m not using a rich client thankfully, it is just a jquery html grid application , I did not write the original code, so I am trying to navigate it and figure out what&nbsp; they were doing prior to my arrival.&nbsp; </p>
+<p>I have a feeling you are right that the issue is due to where the checkRules is being called from, I am really at a loss here trying to figure out what the contractor was thinking lol.&nbsp; </p>
+<p>I am thinking of just prevalidating from the UI instead of having to re-write thier CSLA code.&nbsp; </p>
+<p>First I will try the BusinessRules.GetAllbrokenRules()&nbsp; to see if the broken rulues are captured there I guess</p>
+<p>I don&#39;t think I can use your option 5 becase I do not have a rich client like silverlight.</p>
+<p>let me know what you think and thanks </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

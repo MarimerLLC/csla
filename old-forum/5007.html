@@ -1,0 +1,59 @@
+<html><header><title>CopyState bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CopyState bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5007.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jureleskovec posted on Sunday, June 22, 2008</h2>Last week I've been experimenting with csla 3.5. I'm trying to rebuild my task tracker (csla3.0) using csla3.5.<br>I ran on the exception in CopyState method:<br>"Edit level mismatch in CopyState".<br><br>It happened because I refer the same object with 2 properties. I didn't trace the execution closely, but I strongly belive the CopyState is called two times.<br><br>This worked fine in csla 3.0 so I assume we have a bug here.<br><br>-- Jure<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 23, 2008</h2><P>You have one object instance that is a child of two different objects?</P>
+<P>If so, that isn't a supported scenario in general - I'm only surprised that it worked ever - I would have expected lots of issues.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jureleskovec replied on Tuesday, June 24, 2008</h2>I'm sorry for not being clear enough. I was trying to say that child object (Responsibility) is (indirectly) referenced by its parent (Task) through two of its properties (Task.FirstResponsibility, Task.MyResponsibility).<br>Later, on the client-side I call 'task.BeginEdit()' which produces exception in 'CopyState' method of the 'Responsibility' object referenced through the properties mentioned before. As I said I belive it happens because the same object is in 'CopyState' visited twice.<br><br>For better understanding:<br>This is another issue/task tracker where everything revolves around two BOs: 'Task' and 'Responsibility'. The basic idea is that a task can be created and with it the (author's) responsibility. Then author can delegate this task to someone else (this way new responsibility is created). In general there is so called responsibility chain which is my object model represented as a linked list. This is way the 'Task' object has a reference to the first responsibility in the inked list (FirstResponsibility) but also MyResponsibility which is a responsibility (one of the objects in the linked list) of currently logged in user.<br><br>Another question (about cyclic references):<br>In the first place I didn't avoid cyclic references ('Responsibility' had 'Previous' and 'Next' properties) hence I ran on exception. This is why I avoided them and put the 'Previous' property out.<br>In general, I need to traverse the chain in both directions so the two way referencing would be an elegant solution. I don't see why such technical limitation since BinarySerializer can easily deal with cyclic references.<br><br>thx,<br>-- jure<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interesting.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in CSLA 3.0 you implemented two properties, but a single
+backing field? If you had two backing fields in 3.0 it would have called
+CopyState() twice there too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And in 3.5 you are using the managed backing field approach and
+thus have two properties, now effectively with two backing fields.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, I see where that would cause the double call to
+CopyState().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I could fix this in CSLA with some effort, but I suspect this is
+an edge case &#8211; I wonder if anyone else does this at all?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you could fix this in 3.5 by having a single managed backing
+field. Basically a single private property that is managed, and have your other
+two properties delegate to that property (so they aren&#8217;t managed
+properties at all). That way you&#8217;d have the same behavior (and
+implementation) as you did in 3.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jureleskovec replied on Wednesday, June 25, 2008</h2><span><BLOCKQUOTE><div>So in CSLA 3.0 you implemented two properties, but a single
+backing field?</div></BLOCKQUOTE><br>Oh, I told you a lie. In the time of the writing of my previous post I forgot that I changed the model. So the behavior was probably the same in csla3.0 as it is now.<br><br></span><span><BLOCKQUOTE><div></span><span>And in 3.5 you are using the managed backing field approach and
+thus have two properties, now effectively with two backing fields.</span><span></div></BLOCKQUOTE><br>These to properties/fields do not reference the same child object, but in general they do.<br><br><BLOCKQUOTE><div></span><span>I could fix this in CSLA with some effort...</span><span></div></BLOCKQUOTE><br>From what I've seen in 'CopyState' method this shouldn't be too difficult. just befor the child.CopyState call there should be simple check if object's been visited yet.<br><br></span><span><BLOCKQUOTE><div>...</span><span>, but I suspect this is
+an edge case – I wonder if anyone else does this at all?</div></BLOCKQUOTE><br>I'm really&nbsp; surprised I'm the first one who ran on the issue since the required behavior is demanded by various scenarios. This is why I don't see the expected behavior be in question to implement. It shouldn't be considered as a feature of csla, this behavior should be implemented by default.<br><br>In my case there are two child objects referenced by (their) two fields/propeties and I just don't know to solve the problem.<br><br><br>regards,<br>Jure<br></span></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

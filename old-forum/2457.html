@@ -1,0 +1,63 @@
+<html><header><title>Validation Rules Not Updating</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rules Not Updating</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2457.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 posted on Thursday, March 01, 2007</h2><P>I have a CUSTOMER object with a collection of ADDRESSES (or ADDRESS is the business base object)</P>
+<P>I have a part of our system&nbsp;where I create a new customer... then I import address data inside the customer object like this:</P>
+<P>cust = library.customer.newroot()</P>
+<P>cust.importAddressData(thedata)</P>
+<P>&nbsp;</P>
+<P>Inside the "ImportAddressData" I check to see if an Address Object exists, if not, i add one in this method.&nbsp; I then update each property on the address object where appropriate.&nbsp; However, the validation rules "String Required" does not get updating through the "PropertyHasChanged" function that is fired in the property SET portion.</P>
+<P>therefore my customer object is InValid because this address object is InValid!&nbsp; What is going on or what am i doing wrong???</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, March 01, 2007</h2><P>I forgot to add... when I run this inside my IDE on my dev machine... it works fine (address object is valid)... but all our test and prod. machines... the address is InValid for all properties (Property or String is Required).</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Friday, March 02, 2007</h2><P>I fixed it but only by adding a ValidationRules.CheckRules() call after I updated all the address properties... </P>
+<P>I shouldn't have to do that, should I?&nbsp; The properties should clear the broken rule after they are updated (through the PropertyHasChanged() call) correct?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>Perhaps, since it works in debug but not in release that you need to
+ensure that you have applied the NoInlining attribute to your property
+setters and getters.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Friday, March 02, 2007</h2><P>Really?&nbsp; I did not know you had to do that!</P>
+<P>Do you have an example I can reference? is that in Rockys Book?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Friday, March 02, 2007</h2><P>just found it in the project tracker... do I have to apply this attribute to ALL my properties in ALL my objects????</P>
+<P>That is a lot of code!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>If you application has dozens of classes&nbsp; like some of mine then you need a boy who is adept at doing the copy paste task.<br>
+&nbsp; I'm not the guru on this subject .. but it brought me to grief without doing what Rocky et al have strongly recommend.<br>
+Otherwise, you can dispense with PropertyHaschanged() and reflection by
+using explicit PropertyHasChanged("PropName") in your setters but this
+still requires the same amount of revisits to your code and can
+introduce typo bugs. Note even if you use literals in
+PropertyHasChanged("name") in the setters the attribute must also be
+applied to getters. <br>
+Im sure you will get a response from the masters on this issue.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, March 02, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div> Note even if you use literals in PropertyHasChanged("name") in the setters the attribute must also be applied to getters. <BR></div></BLOCKQUOTE></P>
+<P>Are you sure about this?</P>
+<P>I re-read some threads and Rocky's blog post and this was never mentioned.</P>
+<P>Rocky specifically said that if you use on emthod or the other you are fine.</P>
+<P>He never said what you just stated.</P>
+<P>Can someone please confirm this?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Friday, March 02, 2007</h2>This really depends on how/if you are implementing the CanReadProperty and CanWriteProperty.&nbsp; If you don't include the PropertyName in the call it to either method the code uses the stack trace to determine which property you are referring too.&nbsp; <br><br>If you are including the property name or you don't call the CanReadProperty in the setter then it doesn't make a difference.<br><br>Mike<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>In reference to joe's comment. I really meant that I don't know for
+sure&nbsp; if the attribute is still required on the getters when you
+use literal property names in the setters.<br>
+In reference to mr lasseter's comment. I think he means
+"CanWriteProperty in the setter"&nbsp; not "CanReadProperty&nbsp; in
+the setter" <br>
+<br>
+Generally however CanReadProperty&nbsp; and CanWriteProperty are not the main issue here.&nbsp; <br>
+<br>
+As an aside,&nbsp; I have not been able to implement either CanRead or
+CanWrite. Although object level authorization is mostly enough. The
+property read/write auth&nbsp; methods require a Custom
+Principal/Identity&nbsp; managed by csla ApplicationContext and so-far
+I have not had any success in casting our custom&nbsp; role security
+context into an principal object that will stick.<br>
+<br>
+.<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 02, 2007</h2>If you are calling CanReadProperty without the literal property name, then yes you'll need the attribute.&nbsp; Personally I always enter the literal property name when I call CanReadProperty, CanWriteProperty and PropertyHasChanged.&nbsp; If you don't use the string literal for any one of those, you'll need the attribute (and at that point you should just remove the literal from the other method calls within that property as well).<br><br>What is your CslaAuthentication setting in your .config file?&nbsp; I think you'll need to use Csla if you want to use custom prinicpals and have them stick..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Friday, March 02, 2007</h2>Andy,<br>
+hate to move the subject off the original point but...<br>
+Its been a few months since I played with this but I was using Csla authorization.<br>
+Creating the custom principal /identity on startup and assigning roles
+works fine; but when I get it back from csla ApplicationContext it
+resolves to the original Windows Principal&nbsp; - suggesting perhaps
+that the UI is on a different thread - although i was lead to beleive
+that a Windows app is single threaded.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 02, 2007</h2>A windows app is by no means single threaded; I use threading quite a bit to keep the UI responsive on long running operations.<br><br>When you create the principal, are you assigning it to Csla.ApplicationContext.User?&nbsp; If you are, it should be sorting things out correctly, assuming you have the config file set to use Csla authentication.&nbsp; Otherwise it might be trying to restore the Windows principal... but I'm not sure if it actually does so or not..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 02, 2007</h2>Yes, if you are calling CanRead / CanWrite without specifying a property name.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

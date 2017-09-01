@@ -1,0 +1,141 @@
+<html><header><title>help !! entity framework / connection string(s) for tier-ed deployment </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>help !! entity framework / connection string(s) for tier-ed deployment </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8086.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mondoh posted on Thursday, December 03, 2009</h2><P>I'm&nbsp;doing some prototyping / learning &nbsp;to use EF to create DTO's for my business objects ... </P>
+<P>just did a quick search here and it looks like I might be on the bleeding edge ... no&nbsp;documentation &nbsp;from anyone who has dealt with the challenge (connection string info not being passed to ORM&nbsp;in teir-ed architecture ).&nbsp; I&nbsp;want to implement:</P>
+<UL>
+<LI>EF at the bottom of the stack exposing the ORM to LINQ<BR></LI>
+<LI>A "Model" layer .... the place where I will be coding the LINQ to pass either EF data objects or lightweight DTO's to ...<BR></LI>
+<LI>The Controller Layer .... that requests the LINQ generated ORM objects and at some point ( I'm just playing with read-only functions now ) will interface with the C and U and D functions ...<BR>&nbsp;</LI>
+<LI>My business objects ... once I get the above figured out I'm hoping to take advantage of CSLA to talk to the Controllers to&nbsp;catch the Read-only DTO's &nbsp;and handle the CUD functions<BR></LI>
+<LI>And of course the consumers of the BO's ... presentation layer and WFC services</LI></UL>
+<P>I'm into day 2 on this and keep running into connection string resolution problems when in development mode .... </P>
+<P>I did see a blog post with a sample of how to pass the connection strings in code to the Data Context ... will be trying that but am not overly optimistic.</P>
+<P>Can anyone point me to a "best practice" from experience ??</P>
+<P>&nbsp;I'm assuming that I should be aiming for a solution where there is not a need for multiple app configs with the same connection strings ... something that is complicated by the fact that the connection string in EF is a combination of the SQL connection and the path to some of the EF metadata schema.</P>
+<P>Sharing a fix for this will be greatly appreciated.</P>
+<P>Steve</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mondoh replied on Thursday, December 03, 2009</h2><P>ok ... unless there's someone who has mastered this and can give me a simple cook book approach ... per this:</P>
+<P><A href="http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/d0261818-ed96-43b6-adfd-3c146d8e1a68/">http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/d0261818-ed96-43b6-adfd-3c146d8e1a68/</A></P>
+<P>it looks like ... during development ... I'm going to need to put the connection string in every assembly "that consumes" an EF object ..... </P>
+<P>So I guess we can raise the discussion to the architecture level here ... the main reason I am going with entities and LINQ is to be able to do joins and poplulate BO's with data from multiple services ... and possibly heterogenous platforms on the back-end (talking to my "Model" layer ) ... some XML DTO's others ADO EF objects</P>
+<P>I would like to wrap my head around how this can fit into an architecture where databases and services are on different machines .... both in my domain where I can go with NamedPipes and in othere scenarios where I will be consuming via HTTP ... REST-FUL of&nbsp; course&nbsp; .... and then there is Azure ....</P>
+<P>.... and of course&nbsp;whether it makes sense to&nbsp;follow / how to implement using CSLA's Object In Control&nbsp;function.</P>
+<P>Clearly my goal here is to do a lot of integration and mashing-up .... a performance nightmare ???</P>
+<P>thx,</P>
+<P>Steve</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 04, 2009</h2>Hi, <br><br>You can downoad the <a href="http://cid-2383900f69b808e0.skydrive.live.com/browse.aspx/.res/2383900F69B808E0%21244%20">RolodexEF</a> project from Sergey Barskiy's blog: This project uses EF as DAL with optimizations on storage. <br><br>And take a look at the ProjectTrackerWithObjectFactory in the samples download for CSLA 3.8. This project uses ObjectFactory and with just 1 line in app.config/web.config you can switch from ADO.NET, Linq2Sql or Linq2EF as data access layer. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, December 04, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+am not sure I follow the issue.&nbsp; I only have connection strings in two
+spots: app.config in EF project (contains EF models only) and in web.config in
+the csla WCF server project.&nbsp; I always copy one into another.&nbsp; It
+does help if all developer machines are the same though, so none has to change
+a connection string.&nbsp; If they do, they will have those config files
+checked out all the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mondoh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 03, 2009 12:32 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] help !! entity framework / connection string(s) for
+tier-ed deployment<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm&nbsp;doing some prototyping / learning &nbsp;to use EF to create DTO's
+for my business objects ... <o:p></o:p></p>
+
+<p>just did a quick search here and it looks like I might be on the bleeding
+edge ... no&nbsp;documentation &nbsp;from anyone who has dealt with the
+challenge (connection string info not being passed to ORM&nbsp;in teir-ed
+architecture ).&nbsp; I&nbsp;want to implement:<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>EF at the bottom of the stack exposing the ORM to
+     LINQ<o:p></o:p></li>
+ <li class=MsoNormal>A &quot;Model&quot; layer .... the place where I
+     will be coding the LINQ to pass either EF data objects or lightweight
+     DTO's to ...<o:p></o:p></li>
+ <li class=MsoNormal>The Controller Layer .... that requests the LINQ
+     generated ORM objects and at some point ( I'm just playing with read-only
+     functions now ) will interface with the C and U and D functions ...<br>
+     &nbsp;<o:p></o:p></li>
+ <li class=MsoNormal>My business objects ... once I get the above
+     figured out I'm hoping to take advantage of CSLA to talk to the
+     Controllers to&nbsp;catch the Read-only DTO's &nbsp;and handle the CUD
+     functions<o:p></o:p></li>
+ <li class=MsoNormal>And of course the consumers of the BO's ...
+     presentation layer and WFC services<o:p></o:p></li>
+</ul>
+
+<p>I'm into day 2 on this and keep running into connection string resolution
+problems when in development mode .... <o:p></o:p></p>
+
+<p>I did see a blog post with a sample of how to pass the connection strings in
+code to the Data Context ... will be trying that but am not overly optimistic.<o:p></o:p></p>
+
+<p>Can anyone point me to a &quot;best practice&quot; from experience ??<o:p></o:p></p>
+
+<p>&nbsp;I'm assuming that I should be aiming for a solution where there is not
+a need for multiple app configs with the same connection strings ... something
+that is complicated by the fact that the connection string in EF is a
+combination of the SQL connection and the path to some of the EF metadata
+schema.<o:p></o:p></p>
+
+<p>Sharing a fix for this will be greatly appreciated.<o:p></o:p></p>
+
+<p>Steve<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2><P>I'm puzzled as well.</P>
+<P>The EF designer maintains a connection string for convenience during development - and that's not in the config file.</P>
+<P>But in production the connection string should come from your config file, and there's only one config file per app ever - either web.config on a server, or myprogram.exe.config (app.config) on a smart client.</P>
+<P>If you really don't want to use a config file for some reason you'll be fighting .NET all over the place. But you can do it by creating an assembly with a static class that has a static read-only property that returns the connection string - then use that global property value every time you create an object context. Not a great solution, but .NET is designed around the use of config files...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

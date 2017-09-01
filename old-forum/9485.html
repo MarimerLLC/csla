@@ -1,0 +1,405 @@
+<html><header><title>More Windows DataBinding Woes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>More Windows DataBinding Woes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9485.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor posted on Thursday, September 09, 2010</h2><p>Can anyone tell me where I am going wrong please...?</p>
+<p>My problem relates to WinForms databinding and its relationship with a CSLA business object. In fact its CSLA business objects that in turn contain child collections that are really causing me trouble.</p>
+<p>I fully understand about the need to disconnect the BO from the UI at the point I wish to cancel or revert changes.&nbsp;There are lots of examples in Rocky&#39;s book to demonstrate this. However to make for a&nbsp;pleasing user experience I need to invoke the following functionality.</p>
+<p>1). Load the appropriate business object ( and its child collections ). The form obviously contains parent and child bindingsources.</p>
+<p>2). Begin the edit.</p>
+<p>3). Let the user make as may changes as they like to the BO&nbsp;and&nbsp;any of its child members.</p>
+<p>4). Allow the user to save or revert&nbsp;ALL the changes made since the start of the edit session on the current BO. ( so I only want to be able to save/rollback at the parent level )</p>
+<p>The only way that I can make this scenario work is to set DisableIEditableObject to true on both the parent and the child business objects. That way I have complete control over when BeginEdit(), ApplyEdit(), or CancelEdit()&nbsp;are called. If I dont do this for some reason the child edit levels get out of sync with the parent ( caused during child navigation via a datagrid no doubt ), and when I call CancelEdit() on the parent, it throws an exception.</p>
+<p>I know Rocky says&nbsp;that setting DisableIEditableObject&nbsp;is the wrong road to take and he is ( as always&nbsp;) right, as some of my bound windows components don&#39;t seem to update quite properly with this setting enabled.&nbsp;Surely I dont have to start drilling down into the children and calling CancelEdit() on each one of them do I ?</p>
+<p>So, how do I control a save / undo process at the parent level only ?</p>
+<p>Sorry if this is going over old ground, but I find windows databinding really frustrating! <img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" /></p>
+<p>Thanks,</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 09, 2010</h2><p>Hi, </p>
+<p>When a business object/list is bound to a BindingSource the BindongSource (and DataBinding) assumes it has full control over the objects.</p>
+<p>What this means is:</p>
+<p>1. Startup semantics:</p>
+<ul>
+<li>Get your root object instance</li>
+<li>Call root.BeginEdit()</li>
+<li>&quot;bind&quot; BO&#39;s to BindingSources</li>
+</ul>
+<p>2. Save semantics:</p>
+<ul>
+<li>&quot;Unbind&quot; BO from bindingsources&nbsp;</li>
+<li>Call root.ApplyEdit()</li>
+<li>Call root.Save()</li>
+</ul>
+<p>3. Undo semantics</p>
+<ul>
+<li>&quot;Unbind&quot; BO from bindingsources&nbsp;</li>
+<li>Call root.CancelEdit()
+  </li>
+<li>repeat step1 if user shall stay in form and start new edit session</li>
+</ul>
+<p>YOU MUST NEVER CALL BeginEdit, ApplyEdit or CancelEdit on an object that is bound to a BindingSource.,</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Thursday, September 09, 2010</h2><p>I totally agree JonnyBee!</p>
+<p>The business object is cloned and the bindingsource datasource set to null etc. before I attempt to do anything to the business object itself...</p>
+<p>Sorry for not making this clear.</p>
+<p>Nick</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, September 09, 2010</h2><p>Jonny is right, but it sounds like you&#39;ve already dug into the <i>Using CSLA .NET 3.0</i> ebook in some depth and probably have the basic concept.</p>
+<p>If you want a top-level Cancel button, you need to manually call BeginEdit on the root object <i>before you bind it to the UI</i>. And then you need to unbind the entire graph from the UI and call either CancelEdit or ApplyEdit on the root to cancel or before saving.</p>
+<p>N-level undo will manage the canceling of all changes to the entire object graph - but not automatically. When <i>data binding</i> calls these methods they act differently (specifically to emulate the way a DataSet/DataTable work). So there really is no &quot;n-level&quot; undo with data binding, because data binding only supports one level.</p>
+<p>But if you <i>manually</i> call BeginEdit/CancelEdit/AppyEdit on the root (making sure to <i>never</i> do this to a bound object graph) then you actually get n-level undo.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Thursday, September 09, 2010</h2><p>Yes Rocky, I have done a lot of reading on the subject, but I still find it confusing!</p>
+<p>I do indeed call BeginEdit() on the root before it is bound to the&nbsp;UI. I also unbind the root before I Cancel or Apply the edit.</p>
+<p>Because I have a child grid bound to the child bindingsource ( as well as the user editable text boxes ), I assume that windows databinding calls BeginEdit() and ApplyEdit()&nbsp;etc on the children automatically because its designed to commit data as the active row changes.</p>
+<p>What I am still slightly confused about is why the edit level between the parent and children is&nbsp;out of sync, and I get the error. It appears that my approach is correct, so I should not get the error.</p>
+<p>If I manually call BeginEdit() before I bind, I dont care what windows binding does in between, at the point I unbind and then call CancelEdit(), I should be able to get back to where I started.&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Thursday, September 09, 2010</h2><p>Rocky,</p>
+<p>All your examples populate a bindingsource with one business object at a time ( other than child collections of course ). If I wanted to use a bindingsource to hold multiple root objects ( say a list of customers ) and then allow a user to edit those one at a time, is this possible ?</p>
+<p>In other words if I load a bindingsource with a bunch of customers&nbsp;( so as to provide a nice easy way of navigating around ) by just adding them one at a time, could I do something like the following when the user navigates to a new customer in the list:-</p>
+<p>int position = bindingSourceCustomers.Position;</p>
+<p>bindingSourceCustomers.RaiseListChangedEvents = false;</p>
+<p>BoCustomer currentCustomer = (BoCustomer)bindingSourceCustomers[position];</p>
+<p>bindingSourceCustomers[position] = null;&nbsp; // Unbind</p>
+<p>currentCustomer.BeginEdit(); // Start the edit</p>
+<p>bindingSourceCustomers[position] = currentCustomer; // Rebind the UI</p>
+<p>bindingSourceCustomers.RaiseListChangedEvents = true;</p>
+<p>bindingSourceCustomers.ResetCurrentItem();</p>
+<p>Sorry if that sounds mad, but what I am trying to do is have a navigation ( i.e. a&nbsp;bound treeview&nbsp;)&nbsp;that keeps up to date with the changes being made to customer data. By trying to work with one list only this becomes much easier. I dont feel&nbsp;the need for a dedicated CSLA list as this seems overkill.</p>
+<p>If this is a bad idea I&#39;ll not take it any further...!</p>
+<p>Thanks,</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 09, 2010</h2><p>Hi Nick,</p>
+<p>No - this is not the proper way to handle bind/unbind or interact with a list. </p>
+<p>How do you handle bind/unbind of BindingSources?</p>
+<p>Is your problem that you get exception with EditLevel mismatch? </p>
+<p>Typical problem is that you must unbind in the opposite order of bind and Bind should keep this order:</p>
+<ul>
+<li>namevaluelists (for comboboxes)</li>
+<li>root object</li>
+<li>child list</li>
+<li>grandchild list. </li>
+</ul>
+<p>I use the following helper extension methods in my apps and very rarely have problems with editlevel mismatch.</p>
+<p>
+
+</p>
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">public</span>&nbsp;<span style="color:#cc7832;">static</span>&nbsp;<span style="color:#cc7832;">class</span>&nbsp;<span style="color:#ffc66d;">BindingSourceExtensions</span><br />&nbsp;&nbsp;&nbsp;&nbsp;{<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Unbinds&nbsp;the&nbsp;binding&nbsp;source&nbsp;and&nbsp;the&nbsp;Data&nbsp;object.&nbsp;Use&nbsp;this&nbsp;Method&nbsp;to&nbsp;safely&nbsp;disconnect&nbsp;the&nbsp;data&nbsp;object&nbsp;from&nbsp;a&nbsp;BindingSource&nbsp;before&nbsp;saving&nbsp;data.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;source&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;source.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;cancel&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">if&nbsp;set&nbsp;to&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;then&nbsp;call&nbsp;CancelEdit&nbsp;else&nbsp;call&nbsp;EndEdit.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;isRoot&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">if&nbsp;set&nbsp;to&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;this&nbsp;BindingSource&nbsp;contains&nbsp;the&nbsp;Root&nbsp;object.&nbsp;Set&nbsp;to&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">false</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;for&nbsp;nested&nbsp;BindingSources</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">public</span>&nbsp;<span style="color:#cc7832;">static</span>&nbsp;<span style="color:#cc7832;">void</span>&nbsp;Unbind(<span style="color:#cc7832;">this</span>&nbsp;BindingSource&nbsp;source,&nbsp;<span style="color:#cc7832;">bool</span>&nbsp;cancel,&nbsp;<span style="color:#cc7832;">bool</span>&nbsp;isRoot)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IEditableObject&nbsp;current&nbsp;<span style="font-weight:400;">=</span>&nbsp;<span style="color:#cc7832;">null</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;position&nbsp;may&nbsp;be&nbsp;-1&nbsp;if&nbsp;bindigsource&nbsp;is&nbsp;already&nbsp;unbound&nbsp;which&nbsp;results&nbsp;in&nbsp;Exception&nbsp;when&nbsp;trying&nbsp;to&nbsp;address&nbsp;current</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;((source<span style="font-weight:400;">.</span>DataSource&nbsp;<span style="font-weight:400;">!=</span>&nbsp;<span style="color:#cc7832;">null</span>)&nbsp;<span style="font-weight:400;">&amp;&amp;</span>&nbsp;(source<span style="font-weight:400;">.</span>Position&nbsp;<span style="font-weight:400;">&gt;</span>&nbsp;<span style="font-weight:400;">-</span><span style="color:#6897bb;">1</span>))&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current&nbsp;<span style="font-weight:400;">=</span>&nbsp;source<span style="font-weight:400;">.</span>Current&nbsp;<span style="color:#cc7832;">as</span>&nbsp;IEditableObject;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;set&nbsp;Raise&nbsp;list&nbsp;changed&nbsp;to&nbsp;True</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>RaiseListChangedEvents&nbsp;<span style="font-weight:400;">=</span>&nbsp;<span style="color:#cc7832;">false</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;tell&nbsp;currency&nbsp;manager&nbsp;to&nbsp;suspend&nbsp;binding</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>SuspendBinding();<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;(isRoot)&nbsp;source<span style="font-weight:400;">.</span>DataSource&nbsp;<span style="font-weight:400;">=</span>&nbsp;<span style="color:#cc7832;">null</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;(current&nbsp;<span style="font-weight:400;">==</span>&nbsp;<span style="color:#cc7832;">null</span>)&nbsp;<span style="color:#cc7832;">return</span>;<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;(cancel)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current<span style="font-weight:400;">.</span>CancelEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">else</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current<span style="font-weight:400;">.</span>EndEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Rebinds&nbsp;the&nbsp;binding&nbsp;source.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;source&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;source.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;data&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;data.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">public</span>&nbsp;<span style="color:#cc7832;">static</span>&nbsp;<span style="color:#cc7832;">void</span>&nbsp;Rebind(<span style="color:#cc7832;">this</span>&nbsp;BindingSource&nbsp;source,&nbsp;<span style="color:#cc7832;">object</span>&nbsp;data)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>Rebind(data,&nbsp;<span style="color:#cc7832;">false</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Rebinds&nbsp;the&nbsp;binding&nbsp;source.</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;source&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;source.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;data&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;data.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;metadataChanged&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">if&nbsp;set&nbsp;to&nbsp;</span><span style="color:gray;">&lt;c&gt;</span><span style="color:green;">true</span><span style="color:gray;">&lt;/c&gt;</span><span style="color:green;">&nbsp;then&nbsp;metadata&nbsp;(object/list&nbsp;type)&nbsp;was&nbsp;changed.</span><span style="color:gray;">&lt;/param&gt;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">public</span>&nbsp;<span style="color:#cc7832;">static</span>&nbsp;<span style="color:#cc7832;">void</span>&nbsp;Rebind(<span style="color:#cc7832;">this</span>&nbsp;BindingSource&nbsp;source,&nbsp;<span style="color:#cc7832;">object</span>&nbsp;data,&nbsp;<span style="color:#cc7832;">bool</span>&nbsp;metadataChanged)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">if</span>&nbsp;(data&nbsp;<span style="font-weight:400;">!=</span>&nbsp;<span style="color:#cc7832;">null</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>DataSource&nbsp;<span style="font-weight:400;">=</span>&nbsp;data;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;set&nbsp;Raise&nbsp;list&nbsp;changed&nbsp;to&nbsp;True</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>RaiseListChangedEvents&nbsp;<span style="font-weight:400;">=</span>&nbsp;<span style="color:#cc7832;">true</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;tell&nbsp;currency&nbsp;manager&nbsp;to&nbsp;resume&nbsp;binding&nbsp;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>ResumeBinding();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">//&nbsp;Notify&nbsp;UI&nbsp;controls&nbsp;that&nbsp;the&nbsp;dataobject/list&nbsp;was&nbsp;reset&nbsp;-&nbsp;and&nbsp;if&nbsp;metadata&nbsp;was&nbsp;changed&nbsp;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source<span style="font-weight:400;">.</span>ResetBindings(metadataChanged);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Thursday, September 09, 2010</h2><p>Hmmm, you may be on to something there I think...!</p>
+<p>Yes, I&#39;m guilty as charged in that its an EditLevel mismatch exception...!</p>
+<p>Fortunately my list example was only hypothetical, BUT, you may well be right regarding the order in which my unbind was happening. I will investigate and report back. </p>
+<p>Out of interest do you think that a bindingsource can be used as a suitable container to hold a list of BOroot objects ?</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Thursday, September 09, 2010</h2><p>JonnyBee, I&#39;m sure we have moved a step closer, but its stil complaining of an &quot;Edit level mismatch in UndoChanges&quot; error.</p>
+<p>This is the code I am using to populate the bindingsource:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// stop the flow of events</span></span></p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">//&nbsp;Grab the object</span></span></p>
+<p><span style="font-size:x-small;">_activity = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BoCustomerCRMActivity</span></span><span style="font-size:x-small;">.GetByCustomerCRMActivityID(1);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// Begin the edit</span></span></p>
+<p><span style="font-size:x-small;">
+<p>_activity.BeginEdit();</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// Rebind the UI</span></span></p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.DataSource = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">null</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.DataSource = _activity;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.DataSource = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">true</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">true</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.ResetBindings(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.ResetBindings(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">);</span></p>
+<p><span style="font-size:x-small;">In this case bindingSourceActivity is the parent, and bindingSourceExpenses in the child. As per earlier in the post I am beginning an edit before I bind the BO so that I can return here when the edit is over.</span></p>
+<p><span style="font-size:x-small;">As for the cancel or apply method ( note that applyChanges is obviously a boolean parameter passed from outside the method ):-</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// stop the flow of events</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// Disconnect the UI</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>UnbindBindingSource(bindingSourceExpenses, applyChanges, </p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">);<font size="2">
+<p>UnbindBindingSource(bindingSourceActivity, applyChanges, </p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">true</span></span><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><strong>if</strong></span></span>
+<p><span style="font-size:x-small;"><strong> (applyChanges)</strong>
+<p><strong>_activity.ApplyEdit();</strong></p>
+<font size="2">
+<p><strong></strong></p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><strong>else</strong></span></span></p>
+<span style="font-size:x-small;">
+<p><strong>_activity.CancelEdit();</strong></p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// Rebind the UI</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.DataSource = _activity;<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.DataSource = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity;<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#008000;"></span>this</span></span><span style="font-size:x-small;">.bindingSourceActivity.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">true</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.RaiseListChangedEvents = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">true</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceActivity.ResetBindings(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.bindingSourceExpenses.ResetBindings(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">);</span></p>
+</p>
+<p><span style="font-size:x-small;">The code in bold is the code which generates the error. If I&#39;m reading Rocky&#39;s reply correctly, this should work, but it doesn&#39;t.</span></p>
+<p><span style="font-size:x-small;">Any thoughts ?</span></p>
+<p><span style="font-size:x-small;">Nick</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 09, 2010</h2><p>Hi Nick, </p>
+<p>i&#39;d like to know a little more about your program: </p>
+<p>Which version of Csla are you using? </p>
+<p>Do you add new items to the child/grandchild list?</p>
+<p>You may also look at the RootChildGrandchildWinFormTest project in the samples folder. This project show an implementation of &quot;DumpEditLevels&quot; that you can implement in your objects and helps you to easier determinate which object(s) have Editlevel out of sync. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Friday, September 10, 2010</h2><p>Hi Jonny,</p>
+<p>I currently run CSLA version 3.8.1.</p>
+<p>I am also using Infragistics UI components such as grids and treeviews, and&nbsp;in this instance the child collection has both a grid and a treeview associated with&nbsp;its bindingsource&nbsp;so that the user can navigate around the collection. </p>
+<p>Yes, the Child and GrandChild lists need to be editable by the user, so they are subject to having rows added and removed from the collections.</p>
+<p>Forgive my ignorance, but where is the samples folder ?!</p>
+<p>Cheers,</p>
+<p>Nick</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 10, 2010</h2><p>Hi, </p>
+<p>The samples is packaged in own corresponding downloads available on the download page: <a title="http://lhotka.net/cslanet/Download.aspx" href="http://lhotka.net/cslanet/Download.aspx">http://lhotka.net/cslanet/Download.aspx</a> </p>
+<p>I&#39;d also recommend the <a title="DataBindingFAQ" href="http://www.google.no/url?sa=t&amp;source=web&amp;cd=1&amp;ved=0CBcQFjAA&amp;url=http%3A%2F%2Fwww.windowsclient.net%2FSamples%2FGo%2520To%2520Market%2FData%2520Binding%2FDataBinding%2520FAQ.doc&amp;ei=osWJTLetM9SCOKaJvaIL&amp;usg=AFQjCNFkLy7CoMoC5jnGKjuoTEhk6xQUcQ&amp;sig2=EefcIzRko5kh6SSxMcnMFA">DataBindingFAQ</a> from WindowsClient.net if you are not already familiar with this document. </p>
+<p>Is the grid and treeview connected to the same BindingSource? </p>
+<p>I&#39;d recommend to investigate which objects are out of sync on EditLevel after unbind.This&nbsp; should give you some clue as to where EditLevel gets out of sync.</p>
+<p>Some &quot;classic&quot; problems I have experienced:</p>
+<ul>
+<li>new child added with EditLevel = 0 (EditLevel should normally be rest to correct level by Csla when new items are added to list)</li>
+<li>bind/unbind not following proper sequence (doesn&#39;t seem to be the cause here)</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Friday, September 10, 2010</h2><p>Great, got them now thanks...</p>
+<p>As it happens,&nbsp;we also appear to have fixed my problem too. <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>You were definitely correct in that I wasn&#39;t unbinding in the right sequence. But, looking at your prompt about the grid binding I realised that I had messed up as I had another grid on the form bound to the wrong bindingsource and I belive this was&nbsp;fouling up the edit levels. Now this has been corrected the problem has gone, and my parent level undo is working!</p>
+<p>I presume the DumpEditLevels method is placed in the required BO and then simply called when required ?</p>
+<p>For some reason, the line of code:-<span style="font-size:x-small;">
+<p>gc.DumpEditLevels(sb);</p>
+<p>Shows as an invalid method. Do you know if this was added after version 3.8.1 or am I missing the point ?</p>
+<p>Cheers,</p>
+<p>Nick</p>
+</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 10, 2010</h2><p>Good to hear that you fixed the problem. </p>
+<p>The DumpEditLevels may be implemented by your BOs (not a part of CSLA framework classes nor the GarbageCollector) and would most likely be used after you have done Unbind to discover which object(s) in your object graph are out of sync on EditLevel.</p>
+<p>Not much point in calling this method when DataBinding is active as BeginEdit/EndEdit etc is called repeatedly by DataBinding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal replied on Sunday, October 31, 2010</h2><p>Hi Jonny, Thanks&nbsp;for your help.&nbsp;this thread&nbsp;helped me to solve the &quot;Edit Level mismatch error&quot;.</p>
+<p>I am using the BindingSourceExtensions as told by you and it really worked to unbind and rebind safely.</p>
+<p>But, there is another problem that it don&#39;t Mark Root as old after save()....When i call save for a New Root. It runs DataPortal_Insert (), and when i again make changes to object and call save, ite again runs dataportal_insert instead of DataPortal_Update....!!</p>
+<p>Actually After Save, the Root object property IsNew not sets False..???</p>
+<p><strong>My Code is:</strong>&nbsp;</p>
+<p>&nbsp;</p>
+<p>#region Binding Methods</p>
+<p>public void BindUI()</p>
+<p>{</p>
+<p>try</p>
+<p>{</p>
+<p>_Root.BeginEdit();</p>
+<p>RootBindingSource.DataSource =_Root;</p>
+<p>OnBinded();</p>
+<p>}</p>
+<p>catch (Exception ex)</p>
+<p>{</p>
+<p>ControlsGlobal.WriteToTrace(ex.GetBaseException().Message, true); ;</p>
+<p>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>protected void RebindUI(bool saveObject, bool rebind)</p>
+<p>{</p>
+<p>try</p>
+<p>{</p>
+<p>// unbind the UI</p>
+<p>BindingSourceExtensions.Unbind(this.RootLineBindingSource, !saveObject, false);</p>
+<p>BindingSourceExtensions.Unbind(this.RootBindingSource, !saveObject, true);</p>
+<p>this.RootLineBindingSource.DataSource = this.RootBindingSource;</p>
+<p>// save or cancel changes</p>
+<p>if (saveObject)</p>
+<p>{</p>
+<p>_Root.ApplyEdit();</p>
+<p>try</p>
+<p>{</p>
+<p>if (_AddCharge.IsValid)</p>
+<p>{</p>
+<p>OnSaving();</p>
+<p>_Root.Save();</p>
+<p>ControlsGlobal.WriteToTrace(&quot;Record Saved.&quot;, true);</p>
+<p>this.errorProvider1.BlinkStyle = ErrorBlinkStyle.NeverBlink;</p>
+<p>OnSaved();</p>
+<p>}</p>
+<p>else</p>
+<p>{</p>
+<p>this.errorProvider1.BlinkStyle = ErrorBlinkStyle.AlwaysBlink;</p>
+<p>}</p>
+<p>}</p>
+<p>catch (Exception ex)</p>
+<p>{</p>
+<p>ControlsGlobal.WriteToTrace(ex.GetBaseException().Message, true); ;</p>
+<p>}</p>
+<p>}</p>
+<p>else</p>
+<p>{</p>
+<p>_Root.CancelEdit();</p>
+<p>}</p>
+<p>}</p>
+<p>finally</p>
+<p>{</p>
+<p>// rebind UI if requested</p>
+<p>if (rebind)</p>
+<p>BindUI();</p>
+<p>if (rebind)</p>
+<p>{</p>
+<p>// refresh the UI if rebinding</p>
+<p>BindingSourceExtensions.Rebind(RootBindingSource,_Root, false);</p>
+<p>BindingSourceExtensions.Rebind(RootLineBindingSource,RootBindingSource, false);</p>
+<p>}</p>
+<p>}</p>
+<p>}</p>
+<p>#endregion</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 31, 2010</h2><p>Hi, </p>
+<p>The Save method actually returns a new instance of your root object (and structure) as the result of&nbsp; Save so you code should be: </p>
+<p>_Root = _Root.Save();</p>
+<p>That should fix it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal replied on Monday, November 01, 2010</h2><p>Thanks Jonny. you solved my problem.....</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlfernandezmiranda replied on Thursday, November 04, 2010</h2><p>Hi jonny, do you know why in RootChildGrandchildWinFormTest example this code is needed?</p>
+<p>&nbsp; void childrenBindingSource_CurrentChanged(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.grandchildrenBindingSource.EndEdit();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>how does it works?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal replied on Tuesday, November 16, 2010</h2><p>it solved the problem for ParentChild Relation....</p>
+<p>But not for parentChildGrandchild Relation...</p>
+<p>When i use </p>
+<p>_Root = _Root.Save(); for oneParent with Multiple children it work fine. </p>
+<p>but when i use it for one parent with multiple children further multiple grandchildren for children<strong>&nbsp;it dont marks the _Root.IsDirty to false</strong>....</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 16, 2010</h2><p>Then you should inspect your object graph to find which object(s) are Dirty </p>
+<p>Could be some ValidationRule or Save code that sets a value and makes the object dirty. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Friday, July 19, 2013</h2><p>Hello,</p>
+<p>I am using the above&nbsp;<span>&nbsp;</span><span>helper extension methods in my apps</span><span>&nbsp;as well, but what I would like to know is if it is possible to cancel the entries without having to unbind and then bind datasources again.</span></p>
+<p>I have something like this in my code</p>
+<p>case actionList.Cancel: &nbsp; &nbsp; &nbsp; &nbsp; </p>
+<p style="padding-left:30px;">UnbindAll();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (_receipt.IsNew)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _receipt = null;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _receipt = Receipt.GetEditableRoot(_receipt.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; finally</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BindAll();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; break;</p>
+<p>&nbsp;</p>
+<p>What I would like is to simply call _receipt.CancelEdit() and all entered data in the grids to be erased without having to rebind the datasources again. &nbsp;I am running into performance issues when unbind/rebind datasources.</p>
+<p>Thanks in advance,</p>
+<p>Tanja</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 20, 2013</h2><p>Hi,</p>
+<p>You should think about this as your list may have edited items, removed items and added/new items. </p>
+<p>So would it be faster to raise a LOT of changed events inline with the UI or do a restore without the UI? I&#39;d say the last alternative is a LOT safer (and maybe even the first is impossible to get the sequence correct as items must be reordered as well).</p>
+<p>So the fastest solution should be</p>
+<p>&nbsp;</p>
+<ul>
+<li>restore list with no UI (and no events to force an update of the UI as this would slow down the process)</li>
+<li>tell the binding source to rebind/reset the list and make the UI components reread the items of the list.&nbsp;</li>
+</ul>
+<p>&nbsp;</p>
+<p>So when you run into performance issues you should look at the events and handling in the UI and/or inspect the design of your form if there is a LOT of data retrieved that cause the app to have poor performance.&nbsp;</p>
+<p>Oh, I noticed that you get the object again in Cancel. I would suggest that you look at the N-level undo mechanism. See other posts here on the forum as well - as this will allow you to create a snapshot and later restore the snapshot in a cancel operation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Wednesday, July 24, 2013</h2><p>JonnyBee,</p>
+<p>Thank you for your quick answer; I will do more research on the &quot;<span>N-level undo mechanism</span>&quot; and see if that will help me fix the issue I am dealing with. &nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

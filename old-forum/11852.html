@@ -1,0 +1,54 @@
+<html><header><title>WPF &amp; IsValid Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF &amp; IsValid Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11852.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>clodewyks posted on Monday, February 25, 2013</h2><p>Hi All,</p>
+<p>In my WPF application I have a DataGrid that is bound to a&nbsp;<span>BusinessBindingListBase, I have added a column that will show an image in the DataGrid depending on the IsValid property of each item.</span></p>
+<p><span>This works fine the first time, but the IsValid property does not notify the UI that it has changed. Is there something I am missing? Is there another property I should be using or a workaround for this issue?</span></p>
+<p><span>Thanks in advance</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 25, 2013</h2><p>You should inherit from BusinessListBase and use the latest version of CSLA.</p>
+<p>Latest version of CSLA will give OnPropertyChanged for the metadata properties. &nbsp;<br />Earlier version do not give OnPropertyChanged for the metadata properties.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clodewyks replied on Monday, February 25, 2013</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>Thanx for the reply, I have updated to version 4.5.10 now using NuGet, but now it seems I cannot Override the Save() method anymore.</p>
+<p>Is this intentional? Should I be using something else now?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 25, 2013</h2><p>Look at the change log.&nbsp;</p>
+<p>You must now override SaveAsync method in 4.5.10.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2013</h2><p>The problem was that we&#39;d been sloppy on allowing methods to be virtual, such that lots of methods were virtual, even though they all collapsed behind the scenes into a single point.</p>
+<p>In other words, if there are numerous overloads for a method, behind the scenes you&#39;d hope/expect that they all ultimately invoke exactly one of the overloads, and that one overload is the only virtual one.</p>
+<p>In the 4.5 data portal everything goes through SaveAsync, so it is the only virtual method.</p>
+<p>Even in 4.5.10 there are two virtual overloads, and that&#39;ll be fixed in 4.5.20.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clodewyks replied on Tuesday, February 26, 2013</h2><p>Okay,</p>
+<p>I have updated to version 4.5.10 using NuGet, changed all of my Save() overrides to SaveAsync(boolforceUpdate).</p>
+<p>Then I received an error that my app requires the Entity Framework, I went ahead and installed that using NuGet aswell.</p>
+<p>Now I get 15 of the following errors:</p>
+<p>{&quot;&nbsp;Declaration referenced in a method implementation cannot be a final method.&nbsp; Type: &quot;X.X.X&#39;.&nbsp; Assembly: &quot;X, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39;.&quot;:&quot;X.X.X&quot;}</p>
+<p>Any ideas what might be going on here?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2013</h2><p>I don&#39;t know what triggered the EF dependency.</p>
+<p>Jonny, did we have that in 4.5.10? I know it is separated out in&nbsp;4.5.11+...</p>
+<p>I&#39;ve seen errors like you describe when a nuget package is updated. In those cases I&#39;ve had to remove and re-add the nuget packages. The worst case was with the Microsoft async targeting pack update - I don&#39;t think you can do an in-place update there at all...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clodewyks replied on Wednesday, February 27, 2013</h2><p>Hi Rocky,</p>
+<p>I tried removing CSLA 4.5.10 and EntityFramework packages via NuGet, this is all that has changed before the error started, without any luck. I still get the same amount of errors. What I have found:</p>
+<p>&quot;T<span style="text-transform:none;background-color:#ffffff;text-indent:0px;letter-spacing:normal;white-space:normal;float:none;color:#333333;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">he problem was trying to override a non virtual method.&quot;</span></p>
+<p><span style="text-transform:none;background-color:#ffffff;text-indent:0px;letter-spacing:normal;white-space:normal;float:none;color:#333333;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">But SaveAsync(bool forceUpdate) is virtual.</span></p>
+<p><span style="text-transform:none;background-color:#ffffff;text-indent:0px;letter-spacing:normal;white-space:normal;float:none;color:#333333;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">Here is my code to see if there is something that I am doing wrong:</span></p>
+<p><span style="text-transform:none;background-color:#ffffff;text-indent:0px;letter-spacing:normal;white-space:normal;float:none;color:#333333;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;System.Threading.Tasks.<span style="color:#2b91af;">Task</span>&lt;<span style="color:#2b91af;">Policy</span>&gt;&nbsp;SaveAsync(<span style="color:blue;">bool</span>&nbsp;forceUpdate)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!_ignoreBenefitCheck)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(Flags.Count&nbsp;!=&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">PolicyFlagValidator</span>&nbsp;polValidator&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">PolicyFlagValidator</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;polValidator.CheckFlag(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">BenefitIncreaseFlag</span>&nbsp;benefitValidator&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">BenefitIncreaseFlag</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;benefitValidator.CheckIncreaseFlag(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.SaveAsync(forceUpdate);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clodewyks replied on Thursday, February 28, 2013</h2><p>Hi All,</p>
+<p>I&#39;ve decided to remove all csla references in my projects and replaced them with 4.3.1, then my application works perfectly. I upgraded my projects to .NET 4.5 and added references to 4.5.10 again, via NuGet. Then I receive the above mentioned error.</p>
+<p>I get 15 of these errors and thats the same amount as how many overrides I have of the SaveAsync(bool forceUpdate) method.</p>
+<p>Any help would be appreciated.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 28, 2013</h2><p>In 4.5.13+ the only virtual SaveAsync method is the protected one that accepts several parameters. You might try overriding that method instead (allowing the IDE to create the new method template) and see if that helps at all.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>clodewyks replied on Tuesday, March 05, 2013</h2><p>I tried overriding only the SaveAsync with multiple parameters, I do reference the EF Framework 5 and yet no change.</p>
+<p>I have check all of my overrides within the classes that gives the errors and all of them are still virtual as one site suggested it might be that I am overriding a non-virtual void.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 28, 2013</h2><p>CSLA 4.5.10&nbsp;had references to EF 4.3.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>clodewyks replied on Tuesday, March 05, 2013</h2><p>I have found the solution. It can be found here -&nbsp;http://stackoverflow.com/questions/15155312/system-typeloadexception/15218113#15218113</p>
+<p>(Sorry for some reason I can&#39;t post hyperlinks).</p>
+<p>Turns out it was a simple .dll mismatch in my MEF folder.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 05, 2013</h2><p>I am glad, because I just compiled this successfully :)</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]<br />&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">TestItem</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">TestItem</span>&gt;<br />&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:#2b91af;">Task</span>&lt;<span style="color:#2b91af;">TestItem</span>&gt;&nbsp;SaveAsync(<span style="color:blue;">bool</span>&nbsp;forceUpdate,&nbsp;<span style="color:blue;">object</span>&nbsp;userState,&nbsp;<span style="color:blue;">bool</span>&nbsp;isSync)<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.SaveAsync(forceUpdate,&nbsp;userState,&nbsp;isSync);<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;}<br /></pre>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

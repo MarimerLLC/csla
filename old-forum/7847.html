@@ -1,0 +1,42 @@
+<html><header><title>Perf Issues with &quot;Large&quot; List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Perf Issues with &quot;Large&quot; List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7847.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper posted on Thursday, October 22, 2009</h2>Hello everyone, its been a while since I've been on the forums (version 2.4 maybe?). A lot of stuff has definitely changed, so I've been reading the 2008 book and trying to get something rolling for a new project I am on. Basically, there are a bunch of grid-style CRUD screens in our app that allows the user to configure setup data so I was thinking CSLA is perfect for this (Undo, dirty tracking, rich validation, property level authorization, ...)<br><br>I put together an editable root list that has about 7000 child items. If i edit one of those items and try to save, its about 10 seconds for a call to EditableRootList.Save() to invoke ChildItem_Update(). I keep telling myself that have something setup incorrectly, but nothing comes to mind or sticks out when I browse through the book.<br><br>Can someone confirm that this should be almost instantaneous?<br><br>Just to provide more context:<br>- I am 2 tier<br>- I do not have any code in ChildItem_Update() besides a log statement<br>- I am databound<br>- I am not using BeginEdit()/ApplyEdit() yet... Undo will come later<br>- No validation rules<br>- No authorization rules<br><br>This is pure CSLA routing/reflection time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>One thing that takes time here is that the object graph gets cloned and the data update occurs on the clone.</P>
+<P>The clone process is handled by the .NET BinaryFormatter, which serializes and deserializes the graph. It seems unlikely that this would take 10 seconds, but maybe? You can find out easily enough, by manually invoking Clone() on your root object to see how long it takes.</P>
+<P>The only other thing I can see is that the default Child_Update() implementation in BLB doesn't check IsDirty - it blindly uses the child data portal to insert/update each child. So it will invoke Child_Update() on every child, even if that child hasn't changed.</P>
+<P>You could override Child_Update() in your collection and try this code:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var oldRLCE = this.RaiseListChangedEvents;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var child in DeletedList)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.UpdateChild(child, parameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeletedList.Clear();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var child in this)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>if (child.IsDirty) </STRONG>DataPortal.UpdateChild(child, parameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = oldRLCE;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>That may be an optimization that should be in the framework itself - I'll be interested to see if that makes a measurable difference.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 22, 2009</h2>Interesting, because I was expecting it to do that check for me.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> Interesting, because I was expecting it to do that
+check for me.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, I think it should do the check &#8211; I was a bit surprised when
+I looked at the code too&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll probably fix it in 3.8.<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Friday, October 23, 2009</h2>Cloning the collection takes 5+ seconds, and that added on top of debug mode in VS seems to drag the operation out to about 8-9 seconds. I've been thinking about how I could address this and here's a brain dump:<br><br>1. Pull the source and drop the Clone() call during the dataportal update. Thinking through the fail scenarios, the edit levels could get all out of sync and that wouldn't be good. I could get around this by catching a dataportal exception and reloading a new list.<br><br>2. Rethink my editable root list as a .non-CSLA list of editable root objects. Add a Save() method to the list that loops through and checks for dirty root objects and invokes each save accordingly. I will lose list-level validation rules (e.g. a unique constraint on a field), but I could probably hack around this. I do not need atomicity across all root objects, and my objects will always be 2-tier so I wont need to use the mobile object concept at the list level. <br><br>I kind of like #2. Thoughts? Additions to the list?<br><br>BTW, I'm loving the new property syntax. Not having to override IsDirty, IsValid, ... is sweeeettt! :)<br><br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2><P>There's a sample (in 3.8, maybe 3.7.1) called Csla.DiffGram you might consider as an option 3.</P>
+<P>This sample illustrates how to have the client pull out only the changed objects from an object graph, build what's called a diffgram, send it to the server in a command object to be updated, and then reintegrate the diffgram back into your object graph.</P>
+<P>This isn't entirely trivial, and you lose symmetry between client and server (the server object model is a bastardized subset of the real object graph - only what's in the diffgram), but when updating a small number of items in a large list it can provide major perf benefits.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

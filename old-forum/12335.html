@@ -1,0 +1,42 @@
+<html><header><title>Utility to deserialize request data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Utility to deserialize request data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12335.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>raesene posted on Monday, January 27, 2014</h2><p>Hi, </p>
+<p>I&#39;m looking at a Silverlight application written using CSLA and I was wondering if there are any utilities available to deserialize data as seen in Fiddler, to show it in an ASCII/readable sense?</p>
+<p>At the moment I can see requests with XML elements but as all the data is serialized, it&#39;s kind of hard to debug.</p>
+<p>Thanks</p>
+<p>Rory</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, January 27, 2014</h2><p>IMHO, you should instead log on the server or the client. &nbsp;Stream could be quite large, and Fiddler will likely truncate it anyway. &nbsp;On both server and client you can implement custom proxy/server class and log from that class. &nbsp;You could de-serialize the data there and look for whatever information you are looking for.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raesene replied on Tuesday, January 28, 2014</h2><p>thanks for the response :)</p>
+<p>At the moment I only have access to the client and not the server so I guess I&#39;ll need to work from that end.&nbsp; Do you know are there is there any sample code I could look at for deserializing dataportal requests?</p>
+<p>Thanks</p>
+<p>Rory</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 28, 2014</h2><p>if you download samples for version 4.3.1&nbsp;http://www.cslanet.com/Download.html you will find InventoryDemo under Samples\Silverlight\cs. &nbsp;It has proxy class and host class, both doing compression of the stream. &nbsp;Instead of compression you can do logging. &nbsp;Without access to the server I think you will struggle though.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raesene replied on Tuesday, January 28, 2014</h2><p>Thanks, I&#39;ll go look at them.</p>
+<p>You&#39;re likely right about it being tricky without the server ..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 28, 2014</h2><p>I wonder what issues do you actually have in debugging.&nbsp;</p>
+<p>If you have no access to the server side AND you also must have the same business objects assembly on the client side - then what is the issues you have to debug?&nbsp;</p>
+<p>The problem with a custom Proxy is that this intercepts the data BEFORE it is deserialized - so you will only get the data, as- is, on the wire.&nbsp;</p>
+<p>You should rather look into the&nbsp;<span><b>IInterceptDataPortal </b>interface as this hooks into the dataportal BEFORE or AFTER the data has been serialized/deserialized. This is a better place to do some custom logging.&nbsp;</span></p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implement&nbsp;this&nbsp;interface&nbsp;to&nbsp;create&nbsp;a&nbsp;data</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;portal&nbsp;interceptor&nbsp;that&nbsp;is&nbsp;notified&nbsp;each</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;time&nbsp;the&nbsp;data&nbsp;portal&nbsp;is&nbsp;invoked&nbsp;and</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;completes&nbsp;processing.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">interface</span>&nbsp;<span style="color:#2b91af;">IInterceptDataPortal</span>
+{
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Invoked&nbsp;at&nbsp;the&nbsp;start&nbsp;of&nbsp;each&nbsp;server-side</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;data&nbsp;portal&nbsp;invocation,&nbsp;immediately&nbsp;after</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;the&nbsp;context&nbsp;has&nbsp;been&nbsp;set,&nbsp;and&nbsp;before</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;authorization.</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;e&quot;</span><span style="color:gray;">&gt;&lt;/param&gt;</span>
+&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;Initialize(<span style="color:#2b91af;">InterceptArgs</span>&nbsp;e);
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Invoked&nbsp;at&nbsp;the&nbsp;end&nbsp;of&nbsp;each&nbsp;server-side</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;data&nbsp;portal&nbsp;invocation&nbsp;for&nbsp;success</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;and&nbsp;exception&nbsp;scenarios.</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;e&quot;</span><span style="color:gray;">&gt;&lt;/param&gt;</span>
+&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;Complete(<span style="color:#2b91af;">InterceptArgs</span>&nbsp;e);
+}<br /><br /><br />This interface is introduced in CSLA 4.5.<br /><br />Read more about it here: <a href="http://www.lhotka.net/weblog/MoreDataPortalEnhancementsForCSLA45.aspx">http://www.lhotka.net/weblog/MoreDataPortalEnhancementsForCSLA45.aspx</a>  <br /></pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raesene replied on Wednesday, January 29, 2014</h2><p>Hi,&nbsp;</p>
+<p>Thanks for the information. &nbsp;In terms of the debugging, I&#39;m doing a black-box security review of an app based on silverlight and CSLA, so it would be useful for that to be able to look at the content of messages as they go over the network, beyond just seeing the serialized data.</p>
+<p>cheers</p>
+<p>Rory</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

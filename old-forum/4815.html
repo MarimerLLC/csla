@@ -1,0 +1,250 @@
+<html><header><title>Hijri/Gregorian Converter Business Object using CSLA .NET.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Hijri/Gregorian Converter Business Object using CSLA .NET.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4815.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Wednesday, May 07, 2008</h2><P>I am developing a Business Object using CSLA .NET to perform Conversion from/to Hijri/Gregorian Calendar. Although there is a class in .NET for this purpose, but, still there is a good chance there will be a mistake by at least one day +/- in few cases. In any case, I may&nbsp;depend on this class for conversion, when needed. On the other hand, I already developed this conversion logic under MS Access, and I want to re-use&nbsp;parts of the work&nbsp;done&nbsp;of it in .NET.&nbsp;</P>
+<P>I will post the BO specs summary here to give you an idea about the requirement, so that I can get your feedback, and I will be posting questions mainly related to how to make this BO most efficient, because eventually it will be exposed via a web service.</P>
+<P><STRONG><U>The Database:</U></STRONG></P>
+<P>I am storing the required data in tables in MS Access DB, and following is a sample of such tables:</P>
+<P>
+<TABLE cellSpacing=0 bgColor=#ffffff><FONT face=Arial color=#000000>
+<B>tDOW</B></FONT>
+
+<TR>
+<TH><FONT face=Arial color=#000000>DOW</FONT></TH>
+<TH><FONT face=Arial color=#000000>DOWArb</FONT></TH>
+<TH><FONT face=Arial color=#000000>DOWEng</FONT></TH></TR>
+
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1</FONT></TD>
+<TD><FONT face=Arial color=#000000>سبت</FONT></TD>
+<TD><FONT face=Arial color=#000000>Sat</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>2</FONT></TD>
+<TD><FONT face=Arial color=#000000>أحد</FONT></TD>
+<TD><FONT face=Arial color=#000000>Sun</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>3</FONT></TD>
+<TD><FONT face=Arial color=#000000>إثنين</FONT></TD>
+<TD><FONT face=Arial color=#000000>Mon</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>4</FONT></TD>
+<TD><FONT face=Arial color=#000000>ثلاثاء</FONT></TD>
+<TD><FONT face=Arial color=#000000>Tue</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>5</FONT></TD>
+<TD><FONT face=Arial color=#000000>أربعاء</FONT></TD>
+<TD><FONT face=Arial color=#000000>Wed</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>6</FONT></TD>
+<TD><FONT face=Arial color=#000000>خميس</FONT></TD>
+<TD><FONT face=Arial color=#000000>Thu</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>7</FONT></TD>
+<TD><FONT face=Arial color=#000000>جمعة</FONT></TD>
+<TD><FONT face=Arial color=#000000>Fri</FONT></TD></TR>
+</TABLE></P>
+<P>
+<TABLE cellSpacing=0 bgColor=#ffffff><FONT face=Arial color=#000000>
+<B>tHMonth</B></FONT>
+
+<TR>
+<TH><FONT face=Arial color=#000000>HMnth</FONT></TH>
+<TH><FONT face=Arial color=#000000>HMnthNameArb</FONT></TH>
+<TH><FONT face=Arial color=#000000>HMnthNameEng</FONT></TH>
+<TH><FONT face=Arial color=#000000>DftDays</FONT></TH></TR>
+
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1</FONT></TD>
+<TD><FONT face=Arial color=#000000>محرم</FONT></TD>
+<TD><FONT face=Arial color=#000000>Muharram</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>2</FONT></TD>
+<TD><FONT face=Arial color=#000000>صفر</FONT></TD>
+<TD><FONT face=Arial color=#000000>Safar</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>3</FONT></TD>
+<TD><FONT face=Arial color=#000000>ربيع الأول</FONT></TD>
+<TD><FONT face=Arial color=#000000>Rabii' I</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>4</FONT></TD>
+<TD><FONT face=Arial color=#000000>ربيع الآخر</FONT></TD>
+<TD><FONT face=Arial color=#000000>Rabii' II</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>5</FONT></TD>
+<TD><FONT face=Arial color=#000000>جمادى الأولى</FONT></TD>
+<TD><FONT face=Arial color=#000000>Jumada' I</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>6</FONT></TD>
+<TD><FONT face=Arial color=#000000>جمادى الآخرة</FONT></TD>
+<TD><FONT face=Arial color=#000000>Jumada' II</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>7</FONT></TD>
+<TD><FONT face=Arial color=#000000>رجب</FONT></TD>
+<TD><FONT face=Arial color=#000000>Rajab</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>8</FONT></TD>
+<TD><FONT face=Arial color=#000000>شعبان</FONT></TD>
+<TD><FONT face=Arial color=#000000>Sha'ban</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>9</FONT></TD>
+<TD><FONT face=Arial color=#000000>رمضان</FONT></TD>
+<TD><FONT face=Arial color=#000000>Ramadan</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>10</FONT></TD>
+<TD><FONT face=Arial color=#000000>شوال</FONT></TD>
+<TD><FONT face=Arial color=#000000>Shawal</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>11</FONT></TD>
+<TD><FONT face=Arial color=#000000>ذو القعدة</FONT></TD>
+<TD><FONT face=Arial color=#000000>Dhul-Qa'dah</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>12</FONT></TD>
+<TD><FONT face=Arial color=#000000>ذو الحجة</FONT></TD>
+<TD><FONT face=Arial color=#000000>Dhu Al-Hijja</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD></TR>
+</TABLE></P>
+<P>Following is the main conversion table which is updated/initialized at the beginning of each new Hijri Year and when needed (mainly at the beginning of Ramadan):</P>
+<P>
+<TABLE cellSpacing=0 bgColor=#ffffff><FONT face=Arial color=#000000>
+
+<P><B>tHYearMonth</B></P></FONT>
+
+<TR>
+<TH><FONT face=Arial color=#000000>HYear</FONT></TH>
+<TH><FONT face=Arial color=#000000>HMnth</FONT></TH>
+<TH><FONT face=Arial color=#000000>DaysCnt</FONT></TH>
+<TH><FONT face=Arial color=#000000>FromDateGrg</FONT></TH>
+<TH><FONT face=Arial color=#000000>ToDateGrg</FONT></TH></TR>
+
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>1</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>10/01/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>07/02/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>2</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>08/02/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>08/03/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>3</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>09/03/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>06/04/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>4</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>07/04/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>05/05/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>5</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>06/05/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>04/06/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>6</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>05/06/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>03/07/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>7</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>04/07/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>01/08/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>8</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>02/08/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>31/08/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>9</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>01/09/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30/09/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>10</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>01/10/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29/10/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>11</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30/10/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>28/11/2008</FONT></TD></TR>
+<TR>
+<TD align=right><FONT face=Arial color=#000000>1429</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>12</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>30</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>29/11/2008</FONT></TD>
+<TD align=right><FONT face=Arial color=#000000>28/12/2008</FONT></TD></TR>
+</TABLE></P>
+<P><STRONG><U>BO Class Specs:</U></STRONG></P>
+<P>Class Name: <STRONG>HijriGreg</STRONG><BR>Class Member:</P>
+<OL>
+<LI><STRONG>LastTimeDataLoaded</STRONG>: The date/time the data was loaded from </LI>
+<LI><STRONG>DayOfWeek</STRONG>: DataSet/DataView loaded from the related table above.</LI>
+<LI><STRONG>HijriMonth</STRONG>: DataSet/DataView loaded from the related table above.</LI>
+<LI><STRONG>HijriYearMonth</STRONG>: DataSet/DataView loaded from the related conversion table above.</LI></OL>
+<P>Do you have any comment on how to represent the above&nbsp;data in .NET ? I was thinking to use XML, bu I need a quick and easy way to perform look-up which is probably better done using DataView? <FONT color=#ff0000>I need help in this area.</FONT></P>
+<P><STRONG><U>Comments about Class Members:</U></STRONG></P>
+<P>I want to load the above DataSet/Views once and make them available to all users (Application Scope)&nbsp;to make it more efficient by minimizing Database Access Operations.</P>
+<P>Only for the DataSet of <STRONG>HijriYearMonth</STRONG> Conversion Table must be re-loaded say once every few days or something like that, because it may change at the beginning of every month at worst case.</P>
+<P>I can make the above members as Public Shared, but this will violate the concept of Encapsulation, so how I can define them in such a way to make them persistent and available to all the users of the application ? Of course, in this case I have to Synchronize the Locks to the shared resources to make it thread safe.<FONT color=#ff0000> I need help in this area.</FONT></P>
+<P><STRONG><U>Initialization Methods:</U></STRONG></P>
+<P>I think the initialization methods should be called when needed and must be private. For example:</P>
+<P>- <STRONG>Sub HijriGreg.InitializeIfNeeded()</STRONG>: It will check if the class variables are Nothing, and load each each one at a time. For the case of the <STRONG>HijriYearMonth</STRONG> Conversion Table, it will check if the data is expired (using LastTimeDataLoaded) and re-loaded if needed.</P>
+<P>- <STRONG>Method/Function HijriGreg.GetHijriFromGreg(...) as String:<BR></STRONG>&nbsp; - Input: GregDateDMY, a String Variable of input Gregorian Date&nbsp;in DD/MM/YYYY format.<BR>&nbsp; - Output: Returns a String of HijtiDateDMY in DD/MM/YYY format.<BR>&nbsp; I am not sure if this method will be Shared or not ? <FONT color=#ff0000>I need help in this area..</FONT></P>
+<P><FONT color=#000000><STRONG>- Method/Function HijriGreg.GetGregFromHijri(...) as String:</STRONG><BR>&nbsp; - Input: HijriDateDMY, a String Variable of Hijri Date&nbsp;in DD/MM/YYYY format.<BR>&nbsp; - Output: Returns a String of HijtiDateDMY in DD/MM/YYY format.<BR>&nbsp; I am not sure if this method will be Shared or not ? <FONT color=#ff0000>I need help in this area..</FONT></FONT></P>
+<P><FONT color=#000000>The algorithms for the above methods are available with me and already implemented in VBA and it is working properly for the past 5 years.</FONT></P>
+<P><FONT color=#000000><STRONG><U>How to make the BO HijriGreg visible to all users:</U></STRONG></FONT></P>
+<P><FONT color=#000000>Should I create an instance of the HijriGreg Object and store it in Application(..) variable ? So that in the subsequent calls to this object, it can be restored from the Application Variable Objects.</FONT></P>
+<P><FONT color=#000000>How to make such process thread safe ?</FONT></P>
+<P><FONT color=#000000><FONT color=#ff0000>I need help in this area.</FONT></FONT></P>
+<P><FONT color=#000000>After implementing this BO, I need to wrap it in a Web Service. I will talk about this later.</FONT></P>
+<P><FONT color=#000000>Thank&nbsp;you for your help in advance.</FONT></P>
+<P><FONT color=#000000>Tarek.</FONT><FONT color=#000000></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KennyKen replied on Wednesday, May 07, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>Do you have any comment on how to represent the above&nbsp;data in .NET ? I was thinking to use XML, bu I need a quick and easy way to perform look-up which is probably better done using DataView? <FONT color=#ff0000>I need help in this area.</FONT><STRONG><U></div></BLOCKQUOTE></U></STRONG></P>
+<P>There are many options to choose from.&nbsp; CSLA business objects would do this nicely.&nbsp; Alternatively, you could use a DataSet to hold the data.&nbsp; A DataView is used to look at data in a DataSet.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>I can make the above members as Public Shared, but this will violate the concept of Encapsulation, so how I can define them in such a way to make them persistent and available to all the users of the application ? Of course, in this case I have to Synchronize the Locks to the shared resources to make it thread safe.<FONT color=#ff0000> I need help in this area</FONT><FONT color=#000000>.</div></BLOCKQUOTE></FONT></P>
+<P><FONT color=#000000>This sounds like the Singleton pattern.&nbsp; I don't know that you would need to synchronize anything since you will always be reading the data and never writing to it.&nbsp; Writes would obviously need to be synchronized.</FONT></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>- <STRONG>Method/Function HijriGreg.GetHijriFromGreg(...) as String:<BR></STRONG>&nbsp; - Input: GregDateDMY, a String Variable of input Gregorian Date&nbsp;in DD/MM/YYYY format.<BR>&nbsp; - Output: Returns a String of HijtiDateDMY in DD/MM/YYY format.<BR>&nbsp; I am not sure if this method will be Shared or not ? <FONT color=#ff0000>I need help in this area..</FONT></P>
+<P><FONT color=#000000><STRONG>- Method/Function HijriGreg.GetGregFromHijri(...) as String:</STRONG><BR>&nbsp; - Input: HijriDateDMY, a String Variable of Hijri Date&nbsp;in DD/MM/YYYY format.<BR>&nbsp; - Output: Returns a String of HijtiDateDMY in DD/MM/YYY format.<BR>&nbsp; I am not sure if this method will be Shared or not ? <FONT color=#ff0000>I need help in this area..</FONT></FONT><FONT color=#000000></div></BLOCKQUOTE></FONT></P>
+<P>I would make both of these methods shared/static since they wouldn't use any class's member fields.</P>
+<P><FONT color=#000000><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>Should I create an instance of the HijriGreg Object and store it in Application(..) variable ? So that in the subsequent calls to this object, it can be restored from the Application Variable Objects.</FONT></P>
+<P><FONT color=#000000>How to make such process thread safe ?</FONT></P>
+<P><FONT color=#000000><FONT color=#ff0000>I need help in this area.</FONT></FONT><FONT color=#000000></div></BLOCKQUOTE></FONT></P>
+<P>If those are the&nbsp;only methods (GetGregFromHijri and GetHijriFromGreg) that you're trying to support then I would recommend making them Shared/Static methods on a utility class which then use Singleton instances of the lookup tables you described.&nbsp; You wouldn't store anything in Application variables.&nbsp; The process is already thread safe because data is only being read, not updated/written.</P>
+<P>-- Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, May 07, 2008</h2><p>Ken, thanks a lot for your great feedback.</p><p>Please allow me to clarify some points as follows and and rephrase some questions:</p><p>- I think using DataView/DataSet to hold the data in the tables is probably better than using CSLA List Objects, this is because I think such CSLA Objects are used for the purpose of Data Binding and exposing the content of RDBMS Tables to the Presentation Layer. However, in my case, these tables are used by the algorithm which is converting from/to Hijri/Gregorian, and the result is a simple String. Probably, I can use CSLA to make the result of the conversion bind-able to UI Controls.</p><p>- I was thinking to use Singleton Object, but was not sure if such object will survive (remain active) across multiple calls from the Client to the Web Server (after a round trip). I always thought that I have to create such object and store it in an Application Variable to make it visible to current and all other threads/users of the application and to avoid creating it more than once and to avoid loading the DataSets over and over.</p><font color="#ff0000">I want to load the tables into member variables as DataSets only once, and I want them to be accessible (public) for all the users of this HijriGreg Singleton Object.&nbsp; How I can achieve this in .NET/CSLA ?</font><br><p>- Yes, in general I am not writing to the tables, and they are mainly used for reading. Only one table will be initialized once every year, and rarely will e updated during the year, and such updates will be carried out only by authorized users. I think I need to Synchronize the process only at the time of loading the DataSets, since this is the only time when the program is writing to memory variables (DataSet). I think I still need to synchronize writes to public shared memory variables. <font color="#ff0000">Correct ?</font><br></p><p>- For the time being, I only have the methods "GetHijriFromGreg" and "GetGregFromHijri" they will have to use the member variables which are actually the DataSets/DataViews which represent the tables mentioned earlier. They will be used to perform the conversion and optionally return the DOW Name and Hijri Month Name, if needed.</p><p>So, probably I will make such methods as Public Shared/Static and the related member variables (DataSet/DataViews) must be in this case as "<b>private shared/static</b>". No one outside the scope of the HijriGreg object need to know anything about the internal details of the tables/data used to perform the conversion. <font color="#ff0000">Correct ?</font><br></p><p>Also, as per my understanding is that a Static/Shared methods can be called without the need to create an instance of the class. Also, shared methods can use shared variables which are visible to all the users of the class/object. As a mater of fact, this concept is still not 100% clear to me and still seems confusing to me, and not yet sure how to use it to meet my requirements. The reason why I am confused is that when I use a Singleton object, this means I will have to instantiate a Single Object of the HijriGreg Class, and in this case, there is no need to make such methods as Public/Share. <font color="#ff0000">I still need help here.</font><br></p><p>Your feedback will be appreciated.</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KennyKen replied on Thursday, May 08, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div> - I was thinking to use Singleton Object, but was not sure if such object will survive (remain active) across multiple calls from the Client to the Web Server (after a round trip). I always thought that I have to create such object and store it in an Application Variable to make it visible to current and all other threads/users of the application and to avoid creating it more than once and to avoid loading the DataSets over and over.<FONT color=#ff0000>I want to load the tables into member variables as DataSets only once, and I want them to be accessible (public) for all the users of this HijriGreg Singleton Object.&nbsp; How I can achieve this in .NET/CSLA ?</FONT></div></BLOCKQUOTE> 
+<P>A singleton instance would behave the same as an Application variable.&nbsp; It is created/instantiated the first time the web application/service references it.&nbsp; It falls out of scope/is destroyed&nbsp;when the application is unloaded.</P>
+<P>public class MySingleton<BR>{<BR>&nbsp;&nbsp;&nbsp;private static MySingleton _instance = new MySingleton();<BR>&nbsp;&nbsp;&nbsp;public static MySingleton Instance { get { return _instance; } }<BR>&nbsp;&nbsp;&nbsp;private MySingleton() { /* your initialization code goes here */ }<BR>}</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>- Yes, in general I am not writing to the tables, and they are mainly used for reading. Only one table will be initialized once every year, and rarely will e updated during the year, and such updates will be carried out only by authorized users. I think I need to Synchronize the process only at the time of loading the DataSets, since this is the only time when the program is writing to memory variables (DataSet). I think I still need to synchronize writes to public shared memory variables. <FONT color=#ff0000>Correct ?</FONT></div></BLOCKQUOTE></P>
+<P>I understand what you're saying but it's my understanding (and maybe&nbsp;I am wrong) that if you implement the singleton pattern how&nbsp;I have it above then you do <U>not</U> need to syncrhonize anything.&nbsp; If you can guarnatee the web application gets restarted after you update the lookup tables then everything should work as intended.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>- For the time being, I only have the methods "GetHijriFromGreg" and "GetGregFromHijri" they will have to use the member variables which are actually the DataSets/DataViews which represent the tables mentioned earlier. They will be used to perform the conversion and optionally return the DOW Name and Hijri Month Name, if needed.</P>
+<P>So, probably I will make such methods as Public Shared/Static and the related member variables (DataSet/DataViews) must be in this case as "<B>private shared/static</B>". No one outside the scope of the HijriGreg object need to know anything about the internal details of the tables/data used to perform the conversion. <FONT color=#ff0000>Correct ?</FONT></P>
+<P>Also, as per my understanding is that a Static/Shared methods can be called without the need to create an instance of the class. Also, shared methods can use shared variables which are visible to all the users of the class/object. As a mater of fact, this concept is still not 100% clear to me and still seems confusing to me, and not yet sure how to use it to meet my requirements. The reason why I am confused is that when I use a Singleton object, this means I will have to instantiate a Single Object of the HijriGreg Class, and in this case, there is no need to make such methods as Public/Share. <FONT color=#ff0000>I still need help here.</FONT><FONT color=#000000></div></BLOCKQUOTE></FONT></P>
+<P><FONT color=#000000>Okay, there are many, many ways of architecting this.&nbsp; Here's how I would do it.&nbsp; I'm sure other people will have different ways.</FONT></P>
+<P>A class HijriLookupDataSet which inherits DataSet and implements the Singleton pattern I described above.&nbsp; In the class's private constructor I would create the DataTables and load the data into them.</P>
+<P>Another class called HijriDateUtilities that had the two static methods.&nbsp; This class would implement the two methods by using HijriLookupDataSet.Instance.</P>
+<P>When you need to use those functions you would do something like:&nbsp; TextBox1.Text = HijriDateUtilities.GregToHijri(System.DateTime.Now.ToString("M/d/yyyy"));</P>
+<P>-- Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, May 09, 2008</h2><p>Ok, great ! I liked the Singleton implementation.</p><p>Just to reassure about the following points:</p><p>1. What is the added value of putting HijriLookupDataSet in&nbsp; different class than that of the class HijriDateUtilities ? Is it for the purpose of separating Data Layer from the Business Layer or for the purpose making the Singleton Object to as a reusable shared object which has the required data ?</p><p>2. I prefer to hide the internal implementation of the data used to perform the conversion. If I expose the Dataset Singleton Object to other developers, they they will be tempted to develop other conversion implementations.</p><p>How about consolidating both classes into one class (for simplifying the implementation) and make it as a Singleton object, and hide the internal implementation of the Lookup Tables (Encapsulation) ? Or, is there a way to prevent others from using the Singleton object directly by using special declaration qualifiers or something like that ?</p><p>3. In case I will be using an Instantiated (Singleton) Object, then I do not see the need to make the methods "HijriToGreg" and "GregToHijri" as static/shared. So I think making them as public methods will do also. What do you think ? In other words, it does not mater in this case how such methods will be declared, right ?</p><p>4. The conversion methods mentioned earlier will have to use some intermediate variables to perform the conversion, and of course, such (temporary memory) variables will be updated in different ways. Since we have only one instance of this object, then it appears to me that we have to Synchronize both conversion methods, because we have only one object and all callers are using the same methods and same variables, even if such variable are local to the method. Correct ?</p><p>5. If I use one Singleton object/class, then I think I have to initialize it using some kind of Factory Method in the Global.asax Event "Application_OnStart" or something like that ? The same applies if I use one Singleton Object for Dataset and one class for the conversion logic ?<br></p><p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, May 10, 2008</h2><p>I have developed a sample Class Library to test to Singleton concept and it worked 100% as expected ... Thanks a lot Ken for guiding me to this direction.</p><p>As a mater of fact, most questions above have been answered after I developed the sample project.</p><p>In general, I will use one class to encapsulate the object's data and its behavior (logic). This same class will implement the Singleton object also.</p>Since there is only one object, then any variables updated inside this object must be synchronized, so all methods (public shared or public only) will have to be synchronized. The only exception to this is the Static Initialization of the Singleton during declaration, as in this case .NET framework will ensure that the update is synchronized.<br><p>This means that the methods "HijriToGreg()" and "GregToHijri()" must be synchronized. <font color="#ff0000">Please correct me if I am wrong</font>.</p><p>I noticed that the Singleton object is created at the first time a reference is made to the class members. But, I could not find and easy way to destroy the object, and force re-initialization, and this only could happen after I restart IIS. I also implemented IDisposable Class but still not working. But if I use "lazy initialization" i.e. manual creation of the Singleton, then I can control the Disposal and re-creation of the object.</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, May 12, 2008</h2>Yes, you'll have to ensure that all instance members are syncronized properly.&nbsp; If you want to re-initialize the singleton, you'll have to do so by providing a method.&nbsp; Likely just setting the static instance to null, and again you'll have to ensure that method is syncronized.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, May 12, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Yes, you'll have to ensure that all instance members are syncronized properly.</div></BLOCKQUOTE><p>Ok, great ! I was thinking about the difference of shared and non-shared methods. Also, such methods have local variables. I was thinking that only and only if I use non-shared (non-static) methods, which are updating local variables to the method, then in this case there is no need to synchronize such methods. All other shared methods/variables need need to by synchronized. Correct ?<br></p><p>I am asking this because I could not find a reference document talking about this subject which is very important. All references are talking about the need to sync the initialization of the Singleton.<br></p><BLOCKQUOTE><div>If you want to re-initialize the singleton, you'll have to do so by providing a method.&nbsp; Likely just setting the static instance to null, and again you'll have to ensure that method is syncronized.</div></BLOCKQUOTE><br><p>I created a shared method method "reset()" which simply makes the shared instance as Nothing. And I create a Factory Shared Method "GetSingleton()" to create the shared instance. I have tested this and it is working. But, since I am just making the instance as nothing, then is there a need to sync this method ?</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, May 17, 2008</h2><p>Completed the design and implementation of HijriGregCalendar.</p><p>Mainly, it has the following 2 public methods:</p><p>1. Public Function HijriToGreg(HijriDateDMY as String) as string,</p><p>2. Public Function GregToHijri(GregDateDMY as String) as String.</p><p>and one Public Shared Method:</p><p>public shared GetSginleton() as HijriGregCalendar</p><p>And I used CSLA .NET Data Access approach to load the lookup tables into the DataViews members of this class.<br></p><p>Everything is working properly when I test the above class from a normal ASPX Web Page.</p><p>But, when I tried to develop a Web Service wrapper for the above class, I am unable to call the GetSingleton() method to get shared instance object of this class. This method is not visible from Web Service. Other methods are visible.<br></p><p>Any idea why ? What is the proper way to provide the above functionality under a Web Service ?</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, May 19, 2008</h2><p>Everything is OK now. In case someone is interested, I am able to call the HijriGregCalendar via a Web Service Wrapper Class from VB Script as follows:</p>
+<p><BLOCKQUOTE><div><br></p><pre class="coloredcode"><span class="kwd">Const</span> BaseWebServiceURL = <span class="st">"http://server/cslawebservices/HijriGreg/"</span><br><span class="kwd">Const</span> WebService = <span class="st">"HijriGregService.asmx"</span><br><span class="kwd">Const</span> Operation = <span class="st">"HijriToGreg"</span><br><span class="kwd">Const</span> prmHijriDateDMY= <span class="st">"1/5/1429"</span><br><span class="kwd">Const</span> prmGregDateDMY = <span class="st">"1/5/2008"</span><br>dim PostedURL<br>dim xmlhttp<br><span class="cmt">' Create the HTTP object</span><br><span class="kwd">Set</span> xmlhttp = CreateObject(<span class="st">"Microsoft.XMLHTTP"</span>)<br>PostedURL = BaseWebServiceURL &amp; WebService <br><span class="cmt">'msgbox "Posted URL = " &amp; PostedURL<br>'xmlhttp.open "POST", PostedURL, false<br>'xmlhttp.setRequestHeader "Content-Type", "text/xml"<br><br>'MsgBox xmlhttp.responseText</span><br>MsgBox <span class="st">"Hijri conversion from "</span> &amp; prmHijriDateDMY &amp; <span class="st">" to Greg is: "</span> &amp; HijriToGreg(prmHijriDateDMY)<br><br>MsgBox <span class="st">"Gregorian conversion from "</span> &amp; prmGregDateDMY &amp; <span class="st">" to Hijri is: "</span> &amp; GregToHijri(prmGregDateDMY)<br><br>function HijriToGreg(prmHijriDateDMY) <br>	xmlhttp.open <span class="st">"POST"</span>, PostedURL, false<br>	xmlhttp.setRequestHeader <span class="st">"Content-Type"</span>, <span class="st">"text/xml"</span><br>	xmlhttp.setRequestHeader <span class="st">"SOAPAction"</span>, <span class="st">"WebServices.HijriGreg/HijriToGreg"</span><br>	PostMsg = _<br>	   <span class="st">"&lt;?xml version=""1.0"" encoding=""utf-8""?&gt; "</span> &amp; _<br>	   <span class="st">"&lt;soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/""&gt; "</span> &amp; _<br>	   <span class="st">"&lt;soap:Body&gt; "</span> &amp; _<br>	   <span class="st">"  &lt;GregToHijri xmlns=""WebServices.HijriGreg""&gt; "</span> &amp; _<br>	   <span class="st">"    &lt;GregDateDMY&gt;"</span> &amp; prmGregDateDMY &amp; <span class="st">"&lt;/GregDateDMY&gt; "</span> &amp; _<br>	   <span class="st">"  &lt;/GregToHijri&gt; "</span> &amp; _<br>	   <span class="st">"&lt;/soap:Body&gt; "</span> &amp; _<br>	   <span class="st">"&lt;/soap:Envelope&gt;"</span><br><br>	xmlhttp.send PostMsg<br><br>	<span class="cmt">'MsgBox xmlhttp.responseText</span><br>	HijriToGreg = xmlhttp.responseXML.selectSingleNode(<span class="st">"//HijriToGregResult"</span>).text<br>end function<br><br>function GregToHijri(prmGregDateDMY) <br>	<span class="cmt">'Set xmlhttp = CreateObject("Microsoft.XMLHTTP")<br>	'PostedURL = BaseWebServiceURL &amp; WebService <br>	'msgbox "Posted URL = " &amp; PostedURL</span><br>	xmlhttp.open <span class="st">"POST"</span>, PostedURL, false<br>	xmlhttp.setRequestHeader <span class="st">"Content-Type"</span>, <span class="st">"text/xml"</span><br>	xmlhttp.setRequestHeader <span class="st">"SOAPAction"</span>, <span class="st">"WebServices.HijriGreg/GregToHijri"</span><br>	PostMsg = _<br>	   <span class="st">"&lt;?xml version=""1.0"" encoding=""utf-8""?&gt; "</span> &amp; _<br>	   <span class="st">"&lt;soap:Envelope xmlns:xsi=""http://www.w3.org/2001/XMLSchema-instance"" xmlns:xsd=""http://www.w3.org/2001/XMLSchema"" xmlns:soap=""http://schemas.xmlsoap.org/soap/envelope/""&gt; "</span> &amp; _<br>	   <span class="st">"&lt;soap:Body&gt; "</span> &amp; _<br>	   <span class="st">"  &lt;GregToHijri xmlns=""WebServices.HijriGreg""&gt; "</span> &amp; _<br>	   <span class="st">"    &lt;GregDateDMY&gt;"</span> &amp; prmGregDateDMY &amp; <span class="st">"&lt;/GregDateDMY&gt; "</span> &amp; _<br>	   <span class="st">"  &lt;/GregToHijri&gt; "</span> &amp; _<br>	   <span class="st">"&lt;/soap:Body&gt; "</span> &amp; _<br>	   <span class="st">"&lt;/soap:Envelope&gt;"</span><br>	xmlhttp.send PostMsg<br><br>	<span class="cmt">'MsgBox xmlhttp.responseText</span><br>	GregToHijri = xmlhttp.responseXML.selectSingleNode(<span class="st">"//GregToHijriResult"</span>).text<br>end function</pre><p></div></BLOCKQUOTE> 
+</p><p></p>
+<p>Tarek.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

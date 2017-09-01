@@ -1,0 +1,376 @@
+<html><header><title>SilverLight Client Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SilverLight Client Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7337.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, July 24, 2009</h2><DIV>If I wanted to manually create an object on the SL client.</DIV>
+<DIV><BR>I am struggling with the syntax on how to do it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am not sure what I pass in for the "callback" param from a syntax standpoint.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I thought I could do something like this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>EventHandler&lt;Csla.DataPortalResult&lt;MyClass&gt;&gt; myClsCallback</DIV>
+<DIV><BR>MyClass variable;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>variable = MyClass.NewMethod(myClassCallback) <BR><BR>Delegates are my strong suit.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any thoughts?<BR><BR>NOTE: I am doing this, because I have an ItemsControl control and a Chart Control on my page.<BR>For some reason, it is only binding the chart control and not the ItemsControl.</DIV>
+<DIV><BR>It's like after it binds once, it can't bind anymore.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, July 24, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;d
+just use lambdas:<o:p></o:p></span></p>
+
+<p class=MsoNormal>MyClass.NewMethod((o,e) + <o:p></o:p></p>
+
+<p class=MsoNormal>{<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyClass
+thing = e.NewObject;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#8230;
+do stuff<o:p></o:p></p>
+
+<p class=MsoNormal>});<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 24, 2009 2:03 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SilverLight Client Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>If I wanted to manually create an object on the SL client.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+I am struggling with the syntax on how to do it.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I am not sure what I pass in for the &quot;callback&quot;
+param from a syntax standpoint.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I thought I could do something like this.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>EventHandler&lt;Csla.DataPortalResult&lt;MyClass&gt;&gt;
+myClsCallback<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+MyClass variable;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>variable = MyClass.NewMethod(myClassCallback) <br>
+<br>
+Delegates are my strong suit.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Any thoughts?<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, July 24, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal>I meant<o:p></o:p></p>
+
+<p class=MsoNormal>MyClass.NewMethod((o,e) =&gt; <o:p></o:p></p>
+
+<p class=MsoNormal>{<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MyClass thing = e.NewObject;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#8230; do stuff<o:p></o:p></p>
+
+<p class=MsoNormal>});<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1026" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 24, 2009 4:17 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] SilverLight Client Object<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I&#8217;d
+just use lambdas:<o:p></o:p></span></p>
+
+<p class=MsoNormal>MyClass.NewMethod((o,e) + <o:p></o:p></p>
+
+<p class=MsoNormal>{<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MyClass thing = e.NewObject;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&#8230; do stuff<o:p></o:p></p>
+
+<p class=MsoNormal>});<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 24, 2009 2:03 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SilverLight Client Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>If I wanted to manually create an object on the SL client.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+I am struggling with the syntax on how to do it.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I am not sure what I pass in for the &quot;callback&quot;
+param from a syntax standpoint.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I thought I could do something like this.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>EventHandler&lt;Csla.DataPortalResult&lt;MyClass&gt;&gt;
+myClsCallback<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+MyClass variable;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>variable = MyClass.NewMethod(myClassCallback) <br>
+<br>
+Delegates are my strong suit.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Any thoughts?<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brad replied on Saturday, July 25, 2009</h2>There are two callback syntaxes which I have started using (granted, I've only been looking at Silverlight/CSLA for a couple of days).<br /><br />MyClass.NewMethod((o,e) =><br />{<br />    this.DataContext = e.Object;<br />});<br /><br />or:<br /><br />Where you want to load:<br />MyClass.NewMethod(BindMyClass);<br /><br />Then create the BindMyClass method:<br />private void BindMyClass(object sender, Csla.DataPortalResult e)<br />{<br />    this.DataContext = e.Object;<br />}<br /><br />Note that you would probably want to add some error handling, as it's quite possible that there may be exceptions thrown during normal running (dropped connections, etc).<br /><br />Hope this helps!<br />-Brad</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

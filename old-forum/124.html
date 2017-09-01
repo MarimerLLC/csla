@@ -1,0 +1,10 @@
+<html><header><title>For Reference Only: Integrated Windows Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>For Reference Only: Integrated Windows Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/124.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ListMaster posted on Wednesday, May 17, 2006</h2><P>For Reference Only (no help needed)… Thanks</P>
+<P>INTEGRATED WINDOWS AUTHORIZATION</P>
+<P>I’m posting this for anyone who may need this in the future. I’m not an expert on any of this and I am just summarizing info I found in other messages and sites.<BR>&nbsp;<BR>When anonymous access is allowed to DataPortal site all is well, when turned off 401 occurs.</P>
+<P>The code I could not find in Rocky’s book to do integrated authorization:</P>
+<P><BR>Public Class DataPortal<BR>…<BR>Shared Sub New()…<BR>…<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim properties As New Hashtable<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; properties("name") = "HttpBinary"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; properties("useDefaultCredentials") = "true"<BR>…<BR>End Class</P>
+<P><BR>This is the only extra code needed to make it work.<BR>--&gt;&nbsp; properties("useDefaultCredentials") = "true" &lt;--</P>
+<P>Also, watch for useDefaultCredential some of the other posts forgot the “s”.</P>
+<P>Additionally, some sites talked about adding&nbsp;&lt;identity impersonate="true" /&gt; but I did not need too.</P>
+<P>&nbsp;</P>
+<P>Other terms I searched for help: IWAM, localhost, IIS<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

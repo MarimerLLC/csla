@@ -1,0 +1,32 @@
+<html><header><title>Linq to entities</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq to entities</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5911.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>koen@skn.be posted on Monday, December 01, 2008</h2><P>Hello,</P>
+<P>i am new to CSLA and i am looking for&nbsp;some samples :</P>
+<P>1) CSLA with linq to entities for example the CustomerList.Fetch.</P>
+<P>2)&nbsp;An object factory in a seperate assembly, so my business objects are completely seperated from my database(s), so my application can run on different databases just by using a different DAL.</P>
+<P>&nbsp;</P>
+<P>Can anyone help me find these samples ?</P>
+<P>Thx</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, December 01, 2008</h2><P>If you order the preview of the ebook then&nbsp;#2 should be answered there.</P>
+<P>Rocky shows #1 with L2S in the book&nbsp;not L2E.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2>Fortunately, at least in terms of design, the use of L2E is the same as L2S. There are some minor coding differences (because EF is a little more picky and complex than L2S), but the techniques used in the book for L2S are the same techniques for EF and/or L2E.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>koen@skn.be replied on Tuesday, December 02, 2008</h2><P>I downloaded the book and found this on p.18-6, isn't the fetch method missing in this class ?</P>
+<P>What does this Fetch method return ?</P><FONT face="Times New Roman" size=3><FONT face="Times New Roman" size=3>
+<P align=left>Assuming the factory object is in a separate assembly, here’s an example of a</P>
+<P align=left>factory class with a </FONT></FONT><B><FONT face=TheSansMonoConNormalBold color=#008100 size=2><FONT face=TheSansMonoConNormalBold color=#008100 size=2><FONT face=TheSansMonoConNormalBold color=#008100 size=2>Fetch() </B></FONT></FONT></FONT><FONT face="Times New Roman" size=3><FONT face="Times New Roman" size=3>method:</P></FONT></FONT><B><FONT face=TheSansMonoConNormalBold size=2><FONT face=TheSansMonoConNormalBold size=2>
+<P align=left>public class CustomerFactory : ObjectFactory</P>
+<P align=left>{</P>
+<P align=left>using (var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager("MyDb"))</P>
+<P align=left>{</P>
+<P align=left>using (var cm = ctx.Connection.CreateCommand())</P>
+<P align=left>{</P>
+<P align=left>cm.CommandType = CommandTypes.Text;</P>
+<P align=left>cm.CommandText = "SELECT Id, Name FROM Customer WHERE id=@id";</P>
+<P align=left>using (var dr = new SafeDataReader(cm.ExecuteReader()))</P>
+<P align=left>{</P>
+<P align=left>dr.Read();</P>
+<P align=left>var result = (BusinessLibrary.CustomerEdit)Activator.CreateInstance(</P>
+<P align=left>typeof(BusinessLibrary.CustomerEdit), true);</P>
+<P align=left>MarkNew(result);</P>
+<P align=left>result.LoadData(dr);</P>
+<P align=left>return result;</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P>}</P></B></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

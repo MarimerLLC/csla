@@ -1,0 +1,1317 @@
+<html><header><title>CSLA MVVM Blog Post</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA MVVM Blog Post</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7375.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Friday, July 31, 2009</h2>Rocky,<br><br>If you haven't already have a look at Silverlight.FX - it addresses a few of the issues you brought up and Nikhil is pretty tight with the SL group.&nbsp; Much of his SL2 framework was implemented in SL3.&nbsp; <br><br>He has integrated the ViewModel as a dependency property (some issues with that) but with the XAML I have the ability to say TriggerAction($model.SomeFunc($dataContext.Property)<br><br>So I can generically just pass in the entire data context or a specific property or an XAML property or bind to another Element etc.<br><br>I'm sure you can quickly see how he is doing it and replicate it for CSLA.<br><br>Some of his implementations though are not compatible with Blend which is disappointing but I believe he is trying to address those.<br><br>He has some pretty cool UI glitz as well.<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, July 31, 2009</h2><font face="Tahoma">Rocky,<br><br>Is SL3 /w ElementBinding can you not just bind the methodParam to the listbox selectedItem?<br><br></font><blockquote><font face="Tahoma">&lt;ListBox <b>x:Name="MyListBox"</b> ItemsSource="{Binding
+Path=Model}" </font><br><font face="Tahoma">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ItemTemplate="{StaticResource DataList}" </font><br><font face="Tahoma">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.TriggerEvent="SelectionChanged" </font><br><font face="Tahoma">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.Resource="{StaticResource ListModel}" </font><br><font face="Tahoma">
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.MethodName="ShowItem" </font><br><font face="Tahoma">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<b>csla:InvokeMethod.MethodParameter="{Binding SelectedItem, ElementName=MyListBox}"/&gt;
+</b></font></blockquote><p>
+</p><font face="Tahoma">
+
+for your pseudocode of:<br></font>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-CA
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+
+
+
+<blockquote><p><font face="Tahoma">&lt;ListBox ItemsSource="{Binding
+Path=Model}" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ItemTemplate="{StaticResource DataList}" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.TriggerEvent="SelectionChanged" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.Resource="{StaticResource ListModel}" <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+csla:InvokeMethod.MethodName="ShowItem" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>&nbsp;
+csla:InvokeMethod.MethodParameter="{Element.SelectedItem}"/&gt;
+</b></font>
+</p></blockquote>
+
+<font face="Tahoma"><br>While I haven't had time to look at all the new attached behaviours could you not take this one step further and make a bunch of reusable behaviors for common tasks and end up with a CSLA library of attached behavious for all the standard actions?&nbsp; You could probably eliminate a couple of lines of code as you know it is a selectionchanged behavior and how know you are using the Element.SelectedItem object.<br><br><br><br>Jack<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 31, 2009</h2><P>That was my morning post, after which I spent time working on the problem. At the core of the issue (as I suspected) is that the SL2 controls in Csla.Silverlight need updating to take advantage of the SL3 features.</P>
+<P>So in fact it all works very nicely now that I've reworked InvokeMethod somewhat.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ListBox ItemsSource="{Binding Path=Model}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ItemTemplate="{StaticResource DataList}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="SelectionChanged"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Target="{Binding}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="ShowItem"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodParameter=<BR>&nbsp;&nbsp;&nbsp; "{Binding SelectedItem, RelativeSource={RelativeSource Self}}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.ManualEnableControl="True" /&gt; </P>
+<P>And the ShowItem() method accepts a single parameter which is the selected item value from the ListBox.</P>
+<P>This even works with multiselect, because you can bind MethodParameter to SelectedItems and a list of selected items is passed into ShowItem().</P>
+<P>I made this all work in WPF too, even though arguably commanding is the better solution. But I say arguably, because InvokeMethod is more flexible than commanding, and I think the result is somewhat simpler code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, August 01, 2009</h2><P>Couple of rambling Saturday morning thoughts:</P>
+<P>1) Without sounding ignorant because I haven't spent much time looking into them but could this now be wrapped up as a behavior CslaSelectionChangedBehavior that eliminated having to replicate all this code for each control?&nbsp; Really it is all the same code except for the method=ShowItem line.&nbsp; You could even get rid of that if you defaulted the methodName to the "ControlNameSelectionChangedSelectedItem()"</P>
+<P>2) My other thought is forgetting about behaviours and just exending the InvokeMethod to remove some of the redundant lines of code.&nbsp; It could be coupled with an ICslaModelInvokeShortcuts so that the model would always implement the expected functionality or more importantly the correct format or all the required extra objects (say a CslaModelProvider in your VM).</P>
+<P>Anyhow, could this not lead to </P>
+<P>&lt;ListBox ItemsSource="{Binding Path=Model}"&nbsp;ItemTemplate="{StaticResource DataList}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeSelectionChangedMethod.MethodName="ShowItem"/&gt; </P>
+<P>I don't know how the InvokeSelectionChangedMethod actually gets the other arguments but it would be nice if they could just be derived from the InvokeSelectionChanged implementation.</P>
+<P>3) It would be pretty cool if your CSLA implementations of the InvokeMethod or behaviors or whatever was built around an plan for an extensible library.&nbsp; I know you were disappointed with people complaining about the set of standard rules (email example) but if you put together the basics and made it easy to plug in,&nbsp;refactor,&nbsp;and override I think we could easily have a nice CSLA community set of behaviors and addins.&nbsp;It would certainly take a lot of the fear out of many people looking to leap from WinForms to an XAML implementation and having to wonder how on earth to do anything without using the dreaded codebehind.</P>
+<P>I&nbsp;could see add-ons that let&nbsp;Sergey provide a SaveAs behavior that could be linked to a button and triggers off his local database in isolated storage functionality to directly save a CSLA BO.</P>
+<P>Is this starting to sound like the CslaUIFramework you said you would never tackle?</P>
+<P>Jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 01, 2009</h2><P>I think that's the broad idea behind MVVM - you can create a VM object that provides actions and data for your View and mediates interactions with the Model.</P>
+<P>If the View is pure XAML (my goal anyway) and the Model is a CSLA business object (again, my goal), then the ViewModel needs to do at least two things:</P>
+<OL>
+<LI>Load the Model on request (or on load)</LI>
+<LI>Expose the Model to the View</LI></OL>
+<P>But real business forms often need more than one business object (at least to populate combobox controls). So in reality, the VM must be able to load and expose multiple Model objects to meet the needs of the View.</P>
+<P>Beyond that, the VM must provide a set of actions, and possibly other data, required by the View.</P>
+<P>I'm focusing on the actions, which would (in my view) be simple methods that can be invoked when something happens in the View.</P>
+<P>So that's what InvokeMethod does - it is triggered by an event in the View, and it invokes a simple method in the VM.</P>
+<P>Now you could create a UI framework around that - very probably by creating one or more VM base classes that expose different common actions.</P>
+<P>I have a simple CslaViewModel&lt;T&gt; base class, for example, that exposes one Model and implements basic Save, Cancel, AddNew, Remove and Delete actions. Everything you get from CslaDataProvider in Silverlight actually.</P>
+<P>As always with CSLA, I only write enough UI goo to enable key scenarios. Creating and maintaining a UI framework is a full-time project on its own, so if I decided to do that it is a certainty that CSLA would suffer for it.</P>
+<P>From what I gather, there are numerous alternatives to InvokeMethod out there. I'm sure many/most will work with CSLA objects. So I don't feel real pressured to make the ultimate solution here. However, I do feel pressured to make the <EM>minimum solution</EM> necessary to create a basic UI entirely with CSLA&nbsp;- and that's what I'm driving at with these changes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, August 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think it would be very beneficial, at least to me, to see
+examples that do in fact implement the realities of multiple models.&nbsp; While
+you are not providing a standard and there are a dozen ways to do anything,
+your direction and how it relates to CSLA, is very much appreciated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One think I have done within the Silverlight.Fx framework is exposing
+child models from my ViewModel via databinding.&nbsp; So essentially the
+DataContext of the view is the CoreViewModel and then I databind to the other
+models when I need them (say I want to open a form that has its own ViewModel).&nbsp;
+As per our earlier thread I exposed a single dataprovider as a property in my ViewModel
+baseClass that I'm essentially using to manage the DataPortal actions and the
+CanXYZ methods so I think your implementation is going to be great for me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm quite happy with it but I'm still struggling a little bit
+with large composite views and how best to manage those.&nbsp; I think the
+reality is I made my BO's a bit to big with a giant master/parent and then
+umpteen children.&nbsp; But we'll see how that all refactors out as I learn and
+better understand more.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The one big thing I have really really struggled with respect to
+MVVM is the manner in which to handle confirmation messages and getting direct
+feedback from the user.&nbsp; The simple example being a user wants to delete
+some important data and I want to make them confirm.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The simple way is codebehind on the click, get the response, and
+then re-engage the ViewModel to finish the job.&nbsp; I think what I need to
+start doing is building some generic behaviors or implementing some ActionConfirm+Action
+in one step vs. just Action to the ViewModel and then the viewModel deciding
+that it needs to confirm or not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It can be difficult to state that a ConfirmationRequest is a BusinessRule
+or a UI rule. &nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it is a business rule then I should expose it as a property?
+Maybe I can start adding a 'CanActionWithoutConfirm' property here and there
+but that starts to feel like a lot of extra effort.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>If it is a UI rule then who should manage it ?&nbsp; the View or
+the ViewModel?&nbsp; If it's the View then how to do it without code behind
+which ultimately involves the ViewModel etc. etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm really curious how you plan to tackle that in your LOB
+implementations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> August-01-09 1:40 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I think that's the broad idea behind MVVM - you can create a VM object that
+provides actions and data for your View and mediates interactions with the
+Model.<o:p></o:p></p>
+
+<p>If the View is pure XAML (my goal anyway) and the Model is a CSLA business
+object (again, my goal), then the ViewModel needs to do at least two things:<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>Load the Model on request (or on load)<o:p></o:p></li>
+ <li class=MsoNormal>Expose the Model to the View<o:p></o:p></li>
+</ol>
+
+<p>But real business forms often need more than one business object (at least
+to populate combobox controls). So in reality, the VM must be able to load and
+expose multiple Model objects to meet the needs of the View.<o:p></o:p></p>
+
+<p>Beyond that, the VM must provide a set of actions, and possibly other data,
+required by the View.<o:p></o:p></p>
+
+<p>I'm focusing on the actions, which would (in my view) be simple methods that
+can be invoked when something happens in the View.<o:p></o:p></p>
+
+<p>So that's what InvokeMethod does - it is triggered by an event in the View,
+and it invokes a simple method in the VM.<o:p></o:p></p>
+
+<p>Now you could create a UI framework around that - very probably by creating
+one or more VM base classes that expose different common actions.<o:p></o:p></p>
+
+<p>I have a simple CslaViewModel&lt;T&gt; base class, for example, that exposes
+one Model and implements basic Save, Cancel, AddNew, Remove and Delete actions.
+Everything you get from CslaDataProvider in Silverlight actually.<o:p></o:p></p>
+
+<p>As always with CSLA, I only write enough UI goo to enable key scenarios.
+Creating and maintaining a UI framework is a full-time project on its own, so
+if I decided to do that it is a certainty that CSLA would suffer for it.<o:p></o:p></p>
+
+<p>From what I gather, there are numerous alternatives to InvokeMethod out
+there. I'm sure many/most will work with CSLA objects. So I don't feel real
+pressured to make the ultimate solution here. However, I do feel pressured to
+make the <em>minimum solution</em> necessary to create a basic UI entirely with
+CSLA&nbsp;- and that's what I'm driving at with these changes.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Confirmation is a UI rule. I feel comfortable saying that,
+because if you consider that the interface might be an XML service, where would
+the concept of &#8220;confirmation&#8221; fit in?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you tell me that it still fits in, then you are telling me
+that you have a multi-step workflow requirement, and that&#8217;s fine, but is
+quite a different thing than a standard CRUD-type scenario that happens to have
+a confirmation dialog.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Does that make sense?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So for the 99.9% case, confirmation is a UI rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And in a MVVM world, the View has no code (in my view), so any
+UI behaviors occur thanks to the VM. Since the VM is part of the presentation
+layer, there&#8217;s absolutely no problem with having the VM pop up a dialog. It
+isn&#8217;t really any different from the VM navigating the user to a different
+View (and associated VM).<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, August 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Okay I agree and can live with that statement.&nbsp; Where it gets
+tricky is how does the VM popup a dialog?&nbsp; (very similar to you previous
+email about showForm).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>With navigation I'm setting a URI property on a UI control that swaps
+its content and it is more of a one way action. &nbsp;Sure I can go back if I
+have a pageCache or something but the original view has no role.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;With a Dialog I need to show something visual, get it some
+data, get a response, get the response back to the VM, and then do something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also with a Dialog you want it to be totally generic so you only
+have to worry about a type of dialog (alert/question/confirm) and then some
+text and a result type.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm really trying to improve my UI's so that dialog boxes don't
+really exist but there is a lot of extra effort involved there and really a
+popup with some child data telling the parent to refresh after closing is almost
+the same scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> August-01-09 2:44 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Confirmation is a UI rule. I feel comfortable saying that,
+because if you consider that the interface might be an XML service, where would
+the concept of &#8220;confirmation&#8221; fit in?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you tell me that it still fits in, then you are telling me that
+you have a multi-step workflow requirement, and that&#8217;s fine, but is quite
+a different thing than a standard CRUD-type scenario that happens to have a
+confirmation dialog.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Does that make sense?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So for the 99.9% case, confirmation is a UI rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And in a MVVM world, the View has no code (in my view), so any
+UI behaviors occur thanks to the VM. Since the VM is part of the presentation
+layer, there&#8217;s absolutely no problem with having the VM pop up a dialog.
+It isn&#8217;t really any different from the VM navigating the user to a
+different View (and associated VM).<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Sunday, August 02, 2009</h2><P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>Hi,</FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3><o:p></o:p></FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>I think this discussion of possible MVVM implementations strategies with CSLA seems to be on the right track! We are currently working on an online banking application for private financial management and the UI processes are pretty complex and need to provide different views and editable capabilities on business entities including transactional update/cancel/undo functionality. Following I would like to outline our approach which mirrors some of the points above and probably <SPAN>&nbsp;</SPAN>solved some the problems mentioned above.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3><SPAN>&nbsp;</SPAN>We use CSLA for our business layer and PRISM for the interface implementation strategy. We try to force the “ViewModel first” principle. We are not 100% there - but soon. And we also tried to force no code behind. But there are certain cases were we need to call back in to the UI, like Jack mentioned (things like QueryForSave() before we call the DataPortal etc.). To wire everything together we have implemented a ViewMode Interface IBusinessEntityViewMode&lt;TEntity&gt; and IBusinessEntityCollectionViewModel&lt;TCollection, TEntity&gt;. TEntity is derived from IBusinessEntity and TCollection is derived from IBusinessEntityList. </FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3><o:p></o:p></FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>interface</SPAN> <SPAN>IBusinessEntity</SPAN> : <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IAuthorizeReadWrite</SPAN>, <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IMobileObject<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IEditableBusinessObject</SPAN>, <SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IParent</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ICloneable</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ISavable</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>INotifyChildChanged</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>INotifyPropertyChanged</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>ISerializationNotification</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>INotifyPropertyChanging<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> IsSelected { <SPAN>get</SPAN>; <SPAN>set</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>event</SPAN> <SPAN>EventHandler</SPAN> SelectedChanged;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>interface</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IBusinessEntityList</SPAN>&lt;ContainingEntityType&gt; :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IExtendedBindingList</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>INotifyBusy</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IMobileObject,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IEditableCollection</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IUndoableObject</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN><SPAN>ISavable</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>IParent</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>INotifyBusy</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>INotifyChildChanged</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IEnumerable</SPAN>&lt;ContainingEntityType&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>where</SPAN> ContainingEntityType : <SPAN>IBusinessEntity<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>You will have noticed that these Interfaces are all implemented by BusinessBase and BusinessListBase of CSLA. <SPAN>&nbsp;</SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>And here is corresponding interface of our ViewModel every Business-Developer needs to implement and should write Unit tests for: <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>interface</SPAN> <SPAN>IBusinessEntityCollectionViewModel</SPAN>&lt;TSetType, TType&gt; <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>: <SPAN>INotifyPropertyChanged<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>where</SPAN> TSetType : <SPAN>IBusinessEntitySet</SPAN>&lt;TType&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>where</SPAN> TType : <SPAN>IBusinessEntity<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>event</SPAN> <SPAN>Action</SPAN>&lt;<SPAN>object</SPAN>&gt; OnLoadedEvent;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>event</SPAN> <SPAN>Action</SPAN>&lt;TType&gt; OnSavedEvent;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>event</SPAN> <SPAN>Action</SPAN>&lt;TType&gt; OnCanceledEvent;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>event</SPAN> <SPAN>Action</SPAN>&lt;TType&gt; OnRemovedItemEvent;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DelegateCommand</SPAN>&lt;TType&gt; CancelCommand { <SPAN>get</SPAN>; <SPAN>set</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DelegateCommand</SPAN>&lt;TType&gt; UndoCommand { <SPAN>get</SPAN>; <SPAN>set</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DelegateCommand</SPAN>&lt;<SPAN>object</SPAN>&gt; LoadCommand { <SPAN>get</SPAN>; <SPAN>set</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DelegateCommand</SPAN>&lt;TType&gt; SaveCommand { <SPAN>get</SPAN>; <SPAN>set</SPAN>;<SPAN>&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DelegateCommand</SPAN>&lt;TType&gt; RemoveItemCommand { <SPAN>get</SPAN>; <SPAN>set</SPAN>;<SPAN>&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> RemoveItem(TType item);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> CanRemoveItem(TType item);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> CanSave(TType arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> Save(TType arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// arg can any type…<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> CanLoad(<SPAN>object</SPAN> arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> Load(<SPAN>object</SPAN> arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> Cancel(TType arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> CanCancel(TType arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> Undo(TType arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> CanUndo(TType arg);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>TSetType Model { <SPAN>get</SPAN>; <SPAN>set</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>IList</SPAN>&lt;TType&gt; SelectedEntities { <SPAN>get</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>The DelegateCommand&lt;T&gt; was taken from PRISM. <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=3 face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>One additional property we needed was the IsSelected property on an IBusinessEntity. Not for identifying the selected entities (this is can also be done through the SelectedEntites Collection of the IBusinessEntitySetViewModel) but more importantly in situations where only the ViewModel or the Entity itself has to determine which Entities need to be selected (after Save operation or after sort operations). If this property is bound to the IsSelected DependencyProperty of the ItemsControls in XAML it visuals the selection in the view and fires the SelectedItemsChanged event on the Selector-Control and so syncs up the ViewModel again.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=3 face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>The strategy how we “load” ViewModels was taken from Eric Van Der Walk’s great and lightweight ApplicationUseCase Model Framework <SPAN>&nbsp;</SPAN>he wrote on top of PRISM to implement “Outlook Style Applications” (btw a very interesting approach to <SPAN>&nbsp;</SPAN>implement flexible and pluggable Outlook-like applications with PRISM). <SPAN>&nbsp;</SPAN></FONT></FONT><A href="http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx"><FONT size=3 face=Calibri>http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</FONT></A><FONT size=3 face=Calibri> and </FONT><A href="http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx"><FONT size=3 face=Calibri>http://blogs.msdn.com/erwinvandervalk/archive/2009/04/29/how-to-build-an-outlook-style-application-with-prism-v2-part-2.aspx</FONT></A><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>One of his core framework classes is the “ModelVisualizer” (a UserControl derived from ContentControl) and a class called “ViewModelRegistry” (he also needed to add and replace some of PRISMs behaviors to integrate it smoothly into PRISM). With it you are able to “register” ViewModel types (or instances) with a Region (not view types as with standard PRISM). </FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3><o:p></o:p></FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>//somewhere in the initalization code…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>modelVisualizationRegistry.Register&lt;<SPAN>EmailToolBarViewModel</SPAN>, <SPAN>EmailToolBar</SPAN>&gt;();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>ViewToRegionBinder.Add(<SPAN>"ToolbarRegion"</SPAN>, <SPAN>this</SPAN>.emailToolBarViewModel);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=3 face="Courier New">&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>If PRISM finds a Region where a ViewModel was registered for, he <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoListParagraphCxSpFirst><FONT size=3><SPAN><SPAN><FONT face=Calibri>1.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN><FONT face=Calibri>creates a ModelVisualizer-Control, <o:p></o:p></FONT></SPAN></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT size=3><SPAN><SPAN><FONT face=Calibri>2.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN><FONT face=Calibri>instantiates the View and ViewModel <SPAN>&nbsp;</SPAN>(by using Microsofts Unity Ioc container), <o:p></o:p></FONT></SPAN></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT size=3><SPAN><SPAN><FONT face=Calibri>3.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN><FONT face=Calibri>assigns the ViewModel instance to the DataContext Property of the View <o:p></o:p></FONT></SPAN></FONT></P>
+<P class=MsoListParagraphCxSpMiddle><FONT size=3><SPAN><SPAN><FONT face=Calibri>4.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN><FONT face=Calibri>assigns the View to its Content property<o:p></o:p></FONT></SPAN></FONT></P>
+<P class=MsoListParagraphCxSpLast><FONT size=3><SPAN><SPAN><FONT face=Calibri>5.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN><FONT face=Calibri>and finally adds itself to the ItemsSource of the ItemsControl where the Region was attached to.<o:p></o:p></FONT></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=3 face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>We extended his implementation a little to support our above ViewModel-Interface. So it fires the LoadCommand where the BusinessEntities- LoadHandler implements how to load the Entities from the DataPortal and assigns it the the Model property of the ViewModel Interface. <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>In XAML we have to decide which SelectionMode triggers the SelectedEntitiesChanged event to the ViewModel:<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;ItemsControl .... BusinessEntitySetViewModel.SelectionMode=”Click” ..../&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>Other SelectionMode options we needed are “DoubleClick”, “Enter” and “DoubleClickEnter”. This Attached Property wires up the right event handlers and makes sure that the SelectedEntities Collection is filled and the SelectetEntitiiesChanged Event of the ViewModel is fired.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>All what we implemented so far works pretty good with simple and complex UI processes and as more use case we are implementing the maturity and stability of this approach grows continuously. So I am looking forward on what this discussion will bring up in the future and probably in terms of additional CSLA framework classes supporting MVVM ;-)</FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3></FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Calibri><FONT size=3>Andreas<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT size=3 face=Calibri>&nbsp;</FONT></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Sunday, August 02, 2009</h2>Thank you, Andreas, for taking the time to post that information. <br /><br />That looks perfect for what we are in the beginning stages of upgrading. We are bringing an sizable Case management system from a WinForm, CSLA 2.0, .Net v2.0 application forward. Management would like a Smart Client, and I was already looking to use PRISM. <br /><br />It would be great to be able to see a working sample solution. Though I realize that might not be a reasonable request due to restirction sharing code and/or the time needed to create an example that can be shared with the public. But I can dream of learning form the efforts of others, and avoiding the pitfalls others have already identified and resolved.<br /><br />But I see a lot of potential for this approach from your post. <br /><br />Again, Thx<br />mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, August 04, 2009</h2><P><SPAN>I&nbsp;refactored&nbsp;ProjectTracker to work with&nbsp;PRISM&nbsp;and Eric's&nbsp;ApplicationUseCase&nbsp;model.&nbsp;Before I can&nbsp;post&nbsp;it&nbsp;I have to eliminate some of my&nbsp;internal test cases.&nbsp;It should work&nbsp;with&nbsp;WPF and Silverlight 3. I will come back to this thread when ready (probably in the next two or three weeks) and then can email it to you.&nbsp;<o:p></o:p></SPAN></P><SPAN>&nbsp;</SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, August 04, 2009</h2>My last post was a reply to mbblum.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am happy to make you a contributor to CSLAcontrib on codeplex
+if you&#8217;d like to put the code up there for people to use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 04, 2009 7:17 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I&nbsp;refactored&nbsp;ProjectTracker to work with&nbsp;PRISM&nbsp;and
+Eric's&nbsp;ApplicationUseCase&nbsp;model.&nbsp;Before I
+can&nbsp;post&nbsp;it&nbsp;I have to eliminate some of my&nbsp;internal test
+cases.&nbsp;It should work&nbsp;with&nbsp;WPF and Silverlight 3. I will come
+back to this thread when ready (probably in the next two or three weeks) and
+then can email it to you.&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, August 04, 2009</h2>Yes, I will.<br /><br />Andreas</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Wednesday, August 05, 2009</h2>Andreas, Thank you.<br /><br />And this looks like something useful to many of us, so glad Rocky suggested using Contrib.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 05, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Andreas:</strong></div><div>Yes, I will. Andreas</div></BLOCKQUOTE></P>
+<P>That's wonderful, thank you!</P>
+<P>Just email me your account name on CodePlex and I can add you as a contributor.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Tuesday, September 01, 2009</h2>Has Andreas shared his sample ProjectTracker using Prism? <br /><br />Is so, where is it within the cslacontrib.codeplex.com website?<br /><br />I am looking forward to seeing the sample to learn more about using Prism with CSLA.<br /><br />Thank you. mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, September 02, 2009</h2><P><SPAN>I didn't had enough spare time to cleanup everything but I am pretty close now. Hope to finish everything by beginning of next week.<o:p></o:p></SPAN></P>
+<P><SPAN>Andreas<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, September 09, 2009</h2><P class=MsoNormal><SPAN>Finally I finished PTP (ProjectTracker for PRISM).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I restructured the source code a little so that PTP is fully MVVM based with “ZERO” Code Behind. To understand the structure one need to have a good understanding of PRISM (Composite Application Library for WPF and Silverlight,</SPAN><SPAN> </SPAN><SPAN><A href="http://compositewpf.codeplex.com/">http://compositewpf.codeplex.com/</A>) and Erwin van der Walk’s smart, lightweight and very powerful “Outlook Style Prism” Framework which sits on top of PRISM:</SPAN><SPAN> </SPAN><SPAN><A href="http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</A><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>There are still some small missing pieces that I will add soon (like busy animations etc.). The next step will be to implement a Tabed-layout for the “MainRegion”, so that all modules can be selected via tab or "outlook bar style buttons" and&nbsp;thanh&nbsp;a port to Silverlight 3 (huuuch).</SPAN></P>
+<P class=MsoNormal><SPAN>I will upload the source as part of the ProjectTracker sample project&nbsp;to Codplex Csla Contrib project as soon as Rocky lets me in.</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, September 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hi
+Rocky!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Finally
+I finished PTP (ProjectTracker for PRISM).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I
+restructured the source code a little so that PTP is fully MVVM based with
+&#8220;ZERO&#8221; Code Behind. To understand the structure one need to have a
+good understanding of PRISM (Composite Application Library for WPF and
+Silverlight,</span><span> </span><span><a href="http://compositewpf.codeplex.com/">http://compositewpf.codeplex.com/</a>)
+and Erwin van der Walk&#8217;s smart, lightweight and very powerful
+&#8220;Outlook Style Prism&#8221; Framework which sits on top of PRISM:</span><span> </span><span><a href="http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>There
+are still some small missing pieces that I will add soon (like busy animations
+etc.). The next step will be to implement a Tabed-layout for the
+&#8220;MainRegion&#8221;, so that all modules can be selected via tab or
+outlook bar buttons. The next step is a port to Silverlight 3 (huuuch)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My
+Codplex username ist &#8220;AndyK&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I
+am not sure how to handle the source code. Currently I&#8217;ve added a solution
+folder to the ProjectTracker sample solution, because it uses its infrastructure.
+I also think that&#8217;s the best way to deploy it because user can easily compare
+it with the original version. What do you think?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regards,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Andreas<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>Von:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Gesendet:</b> Dienstag, 4. August 2009 17:14<br>
+<b>An:</b> Kuhlmann Andreas<br>
+<b>Betreff:</b> RE: [CSLA .NET] RE: CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am happy to make you a contributor to CSLAcontrib on codeplex
+if you&#8217;d like to put the code up there for people to use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, August 04, 2009 7:17 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p><span>I&nbsp;refactored&nbsp;ProjectTracker
+to work with&nbsp;PRISM&nbsp;and
+Eric's&nbsp;ApplicationUseCase&nbsp;model.&nbsp;Before I
+can&nbsp;post&nbsp;it&nbsp;I have to eliminate some of my&nbsp;internal test cases.&nbsp;It
+should work&nbsp;with&nbsp;WPF and Silverlight 3. I will come back to this
+thread when ready (probably in the next two or three weeks) and then can email
+it to you.&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><br>
+<br>
+<o:p></o:p></span></p>
+
+</div>
+
+
+<p><span>
+BUHL DATA SERVICE GMBH<BR>
+Am Siebertsweiher 3/5<BR>
+D-57290 Neunkirchen<BR>
+Gesch&auml;ftsf&uuml;hrer: Martin Buhl & Peter Glowick<BR>
+Handelsregister: AG Siegen, HRB 3015
+</span></p>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ve added you to cslacontrib.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Please coordinate with jonnybee, as he&#8217;s managing the
+cslacontrib project and overall structure and can help you figure out how/where
+to put the code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kuhlmann Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 09, 2009 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> [CSLA .NET] PTP: ProjectTracker for PRISM<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi Rocky!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Finally I
+finished PTP (ProjectTracker for PRISM).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I
+restructured the source code a little so that PTP is fully MVVM based with
+&#8220;ZERO&#8221; Code Behind. To understand the structure one need to have a good
+understanding of PRISM (Composite Application Library for WPF and Silverlight,</span>
+<span><a href="http://compositewpf.codeplex.com/">http://compositewpf.codeplex.com/</a>)
+and Erwin van der Walk&#8217;s smart, lightweight and very powerful &#8220;Outlook Style
+Prism&#8221; Framework which sits on top of PRISM:</span> <span><a href="http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx">http://blogs.msdn.com/erwinvandervalk/archive/2009/03/02/how-to-build-an-outlook-style-application.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>There are
+still some small missing pieces that I will add soon (like busy animations
+etc.). The next step will be to implement a Tabed-layout for the &#8220;MainRegion&#8221;,
+so that all modules can be selected via tab or outlook bar buttons. The next
+step is a port to Silverlight 3 (huuuch)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My Codplex
+username ist &#8220;AndyK&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I am not
+sure how to handle the source code. Currently I&#8217;ve added a solution folder to
+the ProjectTracker sample solution, because it uses its infrastructure. I also
+think that&#8217;s the best way to deploy it because user can easily compare it with
+the original version. What do you think?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regards,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Andreas<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Wednesday, September 09, 2009</h2>Great! I am looking forward to looking at and learning from your (Andreas) experiences. This pattern looks like exactly what is needed to update the application I am with.<br /><br />The past month has been focused on adding/updating features in the current version based on CSLA v2.0. That is looking stable, which will permit me to really focus on this upgrade over the next few weeks. <br /><br />Thanks, mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, September 21, 2009</h2>Is there any update on this? I am looking to learn more about PRISM (especially in the context of CSLA) so an example project would be quite useful. <br /><br />Specifically, has Project Tracker for PRISM been uploaded somewhere? I didn't see it in contrib. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, September 22, 2009</h2><P>You can download the source here:</P>
+<P><A href="http://cslacontrib.codeplex.com/SourceControl/ListDownloadableCommits.aspx">http://cslacontrib.codeplex.com/SourceControl/ListDownloadableCommits.aspx</A></P>
+<P>Click on the Download link. Right hand in the "Lastest Version" section. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, September 30, 2009</h2>Has the Silverlight version of this been finished? I should have been more specific - thanks for your contribution!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Thursday, October 01, 2009</h2><SPAN>Not yet. The port is still in progress (during in my spare time). I will ask Jonny Bee as the contrib admin to announce it when finished. I expect the first release end of October. </SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In terms of additional CSLA classes to support MVVM, I am open
+to suggestions &#8211; keeping in mind that my philosophy with CSLA is that it
+is a business layer (Model) framework, and only fills in the minimum gaps
+necessary to play well with Visual Studio data binding models.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course right now there is no MVVM support in Visual Studio,
+and we might have to wait until 2011 or 2012 to see any &#8211; so anything we
+do now is speculation&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if it is good speculation &#8211; if I can do things that are
+likely to simplify working with whatever Microsoft does support in the future &#8211;
+that&#8217;s the game, and that&#8217;s good stuff.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Tuesday, August 04, 2009</h2><P>To answer your question on "how does the VM popup a dialog", I went with the addage, 'Sometimes you just need to get work done'.&nbsp; Rather than twist myself into knots trying to do a simple dialog the pure MVVM way (is there a pure way anyways?), I went back to the reason for doing the MVVM pattern; testability.&nbsp; So I wanted a dialog that could work in two modes; interactive for UI use, and non-interactive for testing.&nbsp; </P>
+<P>Karl Shifflett came up with a custom dialog that does just that.&nbsp; If you go to his <A href="http://karlshifflett.wordpress.com/">blog </A>you can download the materials from his recent MVVM teaching tour and get the source code for it there.&nbsp; Works a charm, looks slick, gets the job done simply.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>To follow up to my own reply though&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My biggest struggle at the moment, with MVVM and zero
+code-behind, is loading a new form.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Consider a scenario where I&#8217;m on a <i>List of Customers</i>
+form. The user double-clicks a customer in the list and I use InvokeMethod to
+call ShowCustomer(), passing the CustomerInfo object as a parameter. So far so
+good.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But ShowCustomer() needs to navigate me to another form. That
+means creating a new UserControl (the CustomerDetail form) and providing it
+with enough information so that form can render itself &#8211; probably the
+CustomerInfo.Id property or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick then, is how does the CustomerDetail form, or its
+ViewModel object, get this Id value? If I pass it to the form, that means
+creating a constructor overload in the form and that&#8217;s code-behind. Oops.
+If I create a ViewModel and pass it the Id, that&#8217;s OK, that&#8217;s not
+code-behind, but now who&#8217;s creating CustomerDetail, and more importantly,
+how does it get access to this new ViewModel object without code-behind?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I&#8217;m willing to have a custom UserControl base class I can
+streamline this to some degree, but that way leads to the slippery slope of a
+UI framework, and imposes a burden on the XAML designer person, because their
+XAML needs to use this custom base type. A tall order for pure XAML-slingers.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, August 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don't see a way without a custom UserControl Base that can
+either receive the model via its constructor or you can pass it via DataBinding.&nbsp;
+That other FX UI framework does just that with a custom View control.&nbsp; I
+would open a new form by using the ShowForm action which has two DependencyProperties
+FormType and FormModel.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I have done, in your CustomerDetail model, is to have a
+CustomerDetailVM in my ViewModel.&nbsp; I expose it as a property and in the
+Get accessor I would either instatiate it or modify it to put my current data into
+it.&nbsp; This means of course your VM must know which Customer is currently
+selected.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you end up with:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CusterListViewModel{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int
+SelectedCustomerId {get;set;}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+CustomerDetailViewModel _customerDetailVM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+CustomerDetailViewModel&nbsp; CustomerDetailVM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(_customerDetailVM
+== null) _customerDetailVM = new CustomerDetailVM() { p1,p2, set any defaults...
+};<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _customerDetailVM.CustomerDetailId
+= SelectedCustomerID<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then the XAML is &lt;ActionShowForm &nbsp;FormType=&quot;CustomerDetailForm&quot;
+FormModel=&quot;{Binding CustomerDetailVM}&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Depending on what my child form needs I have either passed just
+the Id and let the childForm get the data when Binding occurs or I just replace
+SelectedCustomerId with SelectedChildBO and pass the whole child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Bottomline though there is a UserControl that lets me pass in
+the ViewModel to the new form via the constructor or I can databind to it because
+the Model is exposed as a DependencyProperty and then the DataContext is set to
+that Model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm currently trying to determine the best way to modify the
+ActionShowForm so that I can trigger a method on my ViewModel once the FormCloses.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> August-01-09 2:50 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>To follow up to my own reply though&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My biggest struggle at the moment, with MVVM and zero
+code-behind, is loading a new form.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Consider a scenario where I&#8217;m on a <i>List of Customers</i>
+form. The user double-clicks a customer in the list and I use InvokeMethod to
+call ShowCustomer(), passing the CustomerInfo object as a parameter. So far so
+good.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But ShowCustomer() needs to navigate me to another form. That
+means creating a new UserControl (the CustomerDetail form) and providing it
+with enough information so that form can render itself &#8211; probably the
+CustomerInfo.Id property or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick then, is how does the CustomerDetail form, or its
+ViewModel object, get this Id value? If I pass it to the form, that means
+creating a constructor overload in the form and that&#8217;s code-behind. Oops.
+If I create a ViewModel and pass it the Id, that&#8217;s OK, that&#8217;s not
+code-behind, but now who&#8217;s creating CustomerDetail, and more importantly,
+how does it get access to this new ViewModel object without code-behind?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I&#8217;m willing to have a custom UserControl base class I
+can streamline this to some degree, but that way leads to the slippery slope of
+a UI framework, and imposes a burden on the XAML designer person, because their
+XAML needs to use this custom base type. A tall order for pure XAML-slingers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>prasnair replied on Tuesday, August 18, 2009</h2><P>Hi Rocky,</P>
+<P>Forgive the probable naiveness; but where can&nbsp;I find the CslaViewModel&lt;T&gt;&nbsp;class that you referred to ?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>prasnair replied on Wednesday, August 19, 2009</h2><P>Hi Rocky,</P>
+<P>We are using CSLA for an application and are currently architecting the UI framework...</P>
+<P>We were looking at leveraging the composite app features provided by Prism along with a suitable pattern that separates concerns betwen the UI layout and logic. Most of the guidances/suggestions regarding WPF UI patterns focus on the MVVM[or a variant(?) thereof, such as MVP].</P>
+<P>As of now, we are thinking of using the tools provided by CSLA for WPF and fitting them into the MVVM pattern, so that we maximise the usage of what is available 'in the box'. It is in this direction that your mention of the 'CslaViewModel&lt;T&gt;' class seemed to be of particular interest.</P>
+<P>Any guidance on how to forward on this would be invaluable...</P>
+<P>Thanks in advance...<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think some UI framework is important for any application &#8211;
+web, Windows Forms or XAML. The unique characteristics of XAML and its binding infrastructure
+seem to leave MVC and MVP (in their traditional forms) out in the cold.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve never thought they worked well in Windows Forms for
+the same reason &#8211; they don&#8217;t exploit data binding well. But XAML
+takes that to a whole new level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The MVVM &#8220;pattern&#8221; is a potential model on which to
+build a UI framework that does exploit the XAML binding feature. In my work
+with the pattern (and in discussions in person and via my blog) it has become
+clear to me that MVVM is very nebulous, and that its goals don&#8217;t include
+reduction of code or simplicity &#8211; two goals I value highly at all times. So
+my attitude toward MVVM is not real positive at the moment, since I don&#8217;t
+want something that increases my coding work (especially in the UI) and that
+doesn&#8217;t decrease complexity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>At the same time, MVVM <i>feels correct</i> &#8211; at least the
+underlying principles of the pattern feel right to me. I just think the trick
+is to figure out a way to go where the pattern wants to go, but in a way that
+does reduce code and complexity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So my experiments with the Csla.Silverlight.ViewModel&lt;T&gt;
+class (in 3.8) are around enabling something like MVVM (or maybe MVVM itself &#8211;
+depends on who&#8217;s interpretation of the pattern you listen to :) )&nbsp;
+Personally I think I&#8217;m implementing MVVM, but with some extra goals
+around code reduction and simplicity &#8211; if I can get it to work nicely.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What isn&#8217;t entirely known at this point, is what kind of
+designer support or constraints Visual Studio 2010 will impose (or enable). Those
+concerns will be for CSLA .NET 4.0, not 3.8.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> prasnair
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 19, 2009 7:19 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA MVVM Blog Post<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>We are using CSLA for an application and are currently architecting the UI
+framework...<o:p></o:p></p>
+
+<p>We were looking at leveraging the composite app features provided by Prism
+along with a suitable pattern that separates concerns betwen the UI layout and
+logic. Most of the guidances/suggestions regarding WPF UI patterns focus on the
+MVVM[or a variant(?) thereof, such as MVP].<o:p></o:p></p>
+
+<p>As of now, we are thinking of using the tools provided by CSLA for WPF and
+fitting them into the MVVM pattern, so that we maximise the usage of what is
+available 'in the box'. It is in this direction that your mention of the
+'CslaViewModel&lt;T&gt;' class seemed to be of particular interest.<o:p></o:p></p>
+
+<p>Any guidance on how to forward on this would be invaluable...<o:p></o:p></p>
+
+<p>Thanks in advance...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

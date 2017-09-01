@@ -1,0 +1,23 @@
+<html><header><title>TriggerAction for multiple TargetControl</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TriggerAction for multiple TargetControl</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10115.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker posted on Monday, February 28, 2011</h2><p>I am taking my first steps here with&nbsp;<span>TriggerAction and ViewModel in CSLA.</span></p>
+<p>&nbsp;</p>
+<p><span>After creation of a&nbsp;</span><span>TriggerAction and binding it to a button the following question pops up:</span></p>
+<p>How do you organize your TriggerActions in the XAML? It seems like there will be a</p>
+<p>whole bunch of&nbsp;<span>TriggerAction for things like Save, AddNew.</span></p>
+<p>And must I declare two separate&nbsp;<span>TriggerAction to get a Save Button and a Save Menu Item?</span></p>
+<p><span><br /></span></p>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, March 01, 2011</h2><p>Yes, one TriggerAction listens to one event, from one UI control. So you need a different TriggerAction to listen to each UI event of each different UI control.</p>
+<p>This isn&#39;t the only option out there, and if this approach disturbs you, one option is to evaluate some of the other options:</p>
+<ol>
+<li>Commanding</li>
+<li>Various commanding frameworks that make commanding more broadly useful</li>
+<li>Expression Blend SDK trigger event and behavior concepts</li>
+<li>Solutions provided with various UI and/or MVVM frameworks out there</li>
+<li>SL5 event binding (when SL5 comes out)</li>
+</ol>
+<p>Basically, Microsoft didn&#39;t provide a comprehensive solution in the box - certainly not one that does everything we all want, and also works with the VS designer and with the Blend designer.</p>
+<p>So everyone has had to create some solution of their own.</p>
+<p>TriggerAction is the third solution I&#39;ve come up with - after InvokeMethod and Execute. It isn&#39;t perfect, but it is (imo) better than the previous two attempts.</p>
+<p>I really like the Blend SDK solution, except that attached properties aren&#39;t supported by the VS designer, so that solution forces you to type lots of XAML by hand...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

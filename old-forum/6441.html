@@ -1,0 +1,29 @@
+<html><header><title>Draw an image over child controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Draw an image over child controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6441.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lalit posted on Tuesday, February 17, 2009</h2><P>Hi, I need to draw an image on a panel, containing some child controls. I dont want to let it hide behind those controls, which is the case right now when m drawing the image on paint event. For that i overriden OnPaint method but its not working. Please suggest something to overcome this prob. M pasting the code below.</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnPaint(</FONT><FONT color=#2b91af size=2>PaintEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.OnPaint(e);</P>
+<P></FONT><FONT color=#008000 size=2>//Draw icon for views at top right corner of the panel.</P></FONT><FONT size=2>
+<P>e.Graphics.SmoothingMode = System.Drawing.Drawing2D.</FONT><FONT color=#2b91af size=2>SmoothingMode</FONT><FONT size=2>.HighQuality;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_viewButton != </FONT><FONT color=#2b91af size=2>ViewButton</FONT><FONT size=2>.None)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Brush</FONT><FONT size=2> menuBrush = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SolidBrush</FONT><FONT size=2>(_viewButton == </FONT><FONT color=#2b91af size=2>ViewButton</FONT><FONT size=2>.Highlighted ? </FONT><FONT color=#2b91af size=2>Color</FONT><FONT size=2>.Black : </FONT><FONT color=#2b91af size=2>Color</FONT><FONT size=2>.Gray);</P>
+<P>e.Graphics.FillPolygon(menuBrush, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>[] { </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Width - 29, 03), </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Width - 19, 03), </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Point</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Width - 24, 09) });</P>
+<P>menuBrush.Dispose();</P>
+<P></FONT><FONT color=#008000 size=2>//Draw border of the panel.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>Rectangle</FONT><FONT size=2> borderRect = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Rectangle</FONT><FONT size=2>(0, 0, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Width - 1, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Height - 1);</P>
+<P></FONT><FONT color=#2b91af size=2>GraphicsPath</FONT><FONT size=2> borderPath = GetRoundPath(borderRect, 8);</P>
+<P>e.Graphics.DrawPath(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Pen</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Color</FONT><FONT size=2>.LightGray), borderPath);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IDSException</FONT><FONT size=2>(ex);</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, February 17, 2009</h2><P><FONT face=Tahoma size=2>This looks to me like you're in WinForms.&nbsp; If that's not the case, then you can ignore this, because it's all different in WPF - and I can't yet speak intelligently about that.</FONT></P>
+<P><FONT face=Tahoma size=2>(Of course, from what I do know about WPF, you shouldn't be having this problem there...)</FONT></P>
+<P><FONT face=Tahoma size=2>The problem you're seeing is that the controls contained in your panel have their own window handle, and essentially "own" the space they occupy.&nbsp; Nothing you do in the graphics arena can override that.&nbsp; If you want to draw "on top" of your contained controls, you will have to create another control (something like a PictureBox will probably do), draw in that control,&nbsp;and set its ZIndex so that it sits on top of the other controls.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

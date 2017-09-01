@@ -1,0 +1,11 @@
+<html><header><title>Property level authorization in a web form.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property level authorization in a web form.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3865.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pixel posted on Thursday, November 08, 2007</h2><P>Another newbie question.&nbsp; </P>
+<P>Are there any examples around of property level authorization in a web form?&nbsp; My business object deny's read access to one property based on the role but the web page just bombs out instead of making the textbox invisible.<BR><BR>Do I need to test authorization for each property in the UI page load and make it invisible myself?</P>
+<P>Pixel</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, November 08, 2007</h2><P>It matters which style you use for PropertyAuthorization. The common style throws an exception which is probably why your page "bombs". For read access of a Property change to the Boolean style instead and return a neutral value if denied. ("" for Strings and 0 for numeric values)</P>
+<P>e.g.</P>
+<P>If CanReadProperty("Prop")=True Then</P>
+<P>&nbsp; Return mProp</P>
+<P>Else</P>
+<P>&nbsp; Return ""</P>
+<P>End If</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

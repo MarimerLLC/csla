@@ -1,0 +1,19 @@
+<html><header><title>Not more then two decimal places.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Not more then two decimal places.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10599.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>San posted on Monday, August 08, 2011</h2><p>Hi,</p>
+<p>I am wondering is there a way to implement Error Message when there are more than two decimal places?</p>
+<p>e.g., 50.678 throw error message or 50.6.7.8 throw error message</p>
+<p>Please let me know if there is a way to acheieve this functionality in CSLA.</p>
+<p>For now i am using regular expressions, but i would like to implement this in CSLA.</p>
+<p>&nbsp;</p>
+<p>Thanks!</p>
+<p>San</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, August 08, 2011</h2><p>You won&#39;t be able to use one of the seeded business rules.&nbsp; You would have to create a custom business rule to handle this.&nbsp; In your first case of 50.678, you could use a round to round it to 2 decimals, then compare that value with the original.&nbsp; If they are different, you know you have more than 2 decimal places.&nbsp; I&#39;m a little confused with your second example of 50.6.7.8&nbsp;&nbsp; Is this field a string or number?&nbsp; What values are valid?&nbsp; Can they have more than one decimal point and it still be valid?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>San replied on Monday, August 08, 2011</h2><p>I understood, but &nbsp;I am missing the formatting logic.</p>
+<p>
+<p>&nbsp;private static bool IntegerValidation&lt;T&gt;(T target, RuleArgs e) where T : ClassName</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; if (target.ReadProperty(txtbox1proprty) != null &amp;&amp;.........</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; e.Description = &quot;Do not allow decimals&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; return false;</p>
+<p>&nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>Thanks!</p>
+<p>San</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, August 08, 2011</h2><p>Sorry, I had just edited my above comment.&nbsp; It has a little more detail, but what exactly are you trying to accomplish?&nbsp; By the name IntegerValidation, I assume you are determining if this is an integer, which is not what you specified to begin with.&nbsp; Normally when dealing with numbers and not allowing users to enter non-numeric data, I do it at the control level instead of the rule level.&nbsp; i.e. I will use a third party numeric map&nbsp;textbox or there are also examples out on the internet on customizing the native textbox to only allow a valid number.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

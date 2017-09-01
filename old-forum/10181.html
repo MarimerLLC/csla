@@ -1,0 +1,47 @@
+<html><header><title>CSLA.NET Silverlight Fetch Same Amount Data with WCF vs. CSLA Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET Silverlight Fetch Same Amount Data with WCF vs. CSLA Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10181.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chenlu posted on Saturday, March 19, 2011</h2><p>I am working on improving the performance of our web hosted silverlight application.&nbsp; This is the application written in CSLA.NET for Silverlight.&nbsp; End user will access the website through internet, so we are trying to reduce the size of the message transferring between Silverlight client and Web Site.</p>
+<p>On thing we found out, when fetching same amount data (same amount of row from same table), the size of message body created by CSLA Portal is at least 2 - 5 times larger than using standard WCF Service.</p>
+<p>Yes, we are using IIS compression to compress message.&nbsp; But still compressed message body by CSLA Portal is much larger (2 - 5 times) than using standard WCF Service.&nbsp; Also, technically the time to process large message will be much longer than small message on both Silverlight client and Web Site.</p>
+<p>Since this is a internet basd Silverlight application with potential thounsands of concurrent users, smaller message boday as well as quicker message processing will be appreciated.</p>
+<p>E.g.,</p>
+<p>CSLA Portal:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Fetch()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:#2b91af;">MyEntities</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MyEntities</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;orders&nbsp;=&nbsp;ctx.Orders.ToList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;readOnlyOrders&nbsp;=&nbsp;<span style="color:blue;">from</span>&nbsp;order&nbsp;<span style="color:blue;">in</span>&nbsp;orders
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">select</span>&nbsp;<span style="color:#2b91af;">ReadOnlyOrder</span>.GetOrder(order);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.AddRange(readOnlyOrders);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>WCF Service:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Order</span>&gt;&nbsp;GetOrders()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Order</span>&gt;&nbsp;orders&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:#2b91af;">MyEntities</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MyEntities</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;orders&nbsp;=&nbsp;ctx.Orders.ToList();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;orders;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Sunday, March 20, 2011</h2><p>You don&#39;t say what your &quot;WCF Service&quot; technology is, but I&#39;m going to assume it&#39;s either L2S or EF, based on the code.</p>
+<p>Given that, this is not an apples-to-apples comparison.</p>
+<p>CSLA objects contain quite a bit more functionality than L2S or EF entities do, and as such will be sending quite a bit more information over the wire.</p>
+<p>If message size is a great concern to you, you might consider switching to a more SOA-style infrastructure.&nbsp; In this case, you aren&#39;t sending CSLA objects over the wire - you&#39;re sending DTO&#39;s (or EF entities or whatever) over the wire, and creating your business objects on each side&nbsp;based on that data.&nbsp; Rocky&#39;s books (and e-books) talk about this.&nbsp; You trade message size with processing time (and a slightly more complicated codebase), but in your case I would think it&#39;s at least worth investigating.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, March 20, 2011</h2><p>Csla is probably including some other meta data.&nbsp; remember its not just the data in the list, but GlobalContext and ClientContext gets transfered as well (ClientContext only from client to server though, not the other way around).&nbsp;&nbsp; if this data is important, you&#39;ll have to just accept that.</p>
+<p>However you could change your Silverlight objects to call a Wcf service instead of&nbsp;using the mobile object pattern you&#39;re currently using.&nbsp; This will likely increase your maintance costs though, as you&#39;re now basically supporting two applications.&nbsp; one application is your silverlight client and silverlight bos, then your other application is the web service layer + dtos, behind that is your Csla objects and then your dal which the BOs use.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, March 20, 2011</h2><p>First, there is nothing stopping you from using CSLA to create the edge application that runs on the client, and to have it call a set of services. That is SOA, and it is a perfectly good architectural model - if a little expensive. That scenario is entirely supported by CSLA - that&#39;s what the local data portal exists in Silverlight.</p>
+<p>In the end it is a business decision. You need to decide if the features and simplicity provided by the data portal (which translate to cheaper development/maintenance) are able to offset the difference in network bandwidth consumption. Or if the network bandwidth savings by using an SOA model offset the increased cost of development/maintenance of the app.</p>
+<p>Now on to your question itself. </p>
+<p>The primary reason for the difference is that CSLA requires that object graphs flow across the network with 100% fidelity. Normal services do not - they assume you have desigend your message graph so it lives within the limitations of service message standards. To clone an object graph with 100% fidelity, the object graph needs to contain type information, relative position information, inter-graph link information, etc.</p>
+<p>If you try to send a normal object graph through a service, you&#39;ll get a different object graph on the other side. You&#39;ll lose some data, and duplicate other data. Obviously nobody does this, because it woudl break your app - so most people reshape their object graph to meet the requirements of the service standards (100% public read-write fields, no duplicate or lateral references in the object graph, no business logic in the classes, etc).</p>
+<p>Or they use CSLA so the object graphs move over the network, retaining their non-public field values, multiple references within the graph, and business logic in the classes).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

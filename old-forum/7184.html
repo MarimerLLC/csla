@@ -1,0 +1,280 @@
+<html><header><title>What are the best practices in providing lookup values?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What are the best practices in providing lookup values?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7184.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Saturday, June 27, 2009</h2>hello!<br><br>I am new to CSLA.NET. Right now, I am creating a simple application to learn how to use the framework.<br><br>I have a Person.Profile table with columns like<br><ul><li>PersonType (Student, Employee)<br></li><li>Sex (Male, Female)</li><li>MaritalStatus (Single, Married, Widow, Separated)</li><li>EducationID (379, 380, ..., 384)<br></li><li>EmploymentID (385, 386, ..., 396)</li><li>Nationality (Filipino, Chinese, Indian, ...)</li><li>Religion (Roman Catholic, ...)</li><li>Ethnicity (Tagalog, Ilocano, Ibanag, ...)</li><li>BloodType (A, B, AB, O)</li><li>DiffAbility (None, Blind, Mute...)</li><li>UniformSize (Small, Medium, Large, Extra Large)</li><li>Etc.</li></ul>As you can see, these columns will need several lookup tables.<br>What are the best practices in providing lookup values in a scenario like this?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 28, 2009</h2>You should look at the NameValueListBase class. I recommend reading at least chapters 1-5 and 17-18 of the <EM>Expert 2008 Business Objects</EM> book to get a solid understanding of the framework and the basics of how to use it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Sunday, June 28, 2009</h2>Thanks, Rocky. Yap, I have read the chapters, and I understand how to use the NameValueListBase class.<br><br>In my simple case then, I will be creating the Person Object, and 11 NameValueList Objects (one for each lookup value).<br><br>Will this be an efficient strategy/technique? Won't this cause several round trips to the server?<br><br>In my previous ado.net projects, I create or check for the existence of an XML file which I load as a dataset at runtime. This dataset will then serve as a source of the datatables=&gt;binding source for the lookup values. <br><br>Do we have a similar implementation using CSLA? Or is there a better option?<br><br>Thanks, Rocky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>A couple things.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>First, I tend to cache NVL objects in static fields (for a smart
+client), so I really only get them once in most cases. Obviously there are
+exceptions for volatile data, but usually this is a big help.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Second, if I know that I am going to need a set of NVL objects
+for a given user scenario, I&#8217;ll often create a separate ReadOnlyBase
+subclass that has the sole responsibility of retrieving the NVL objects. Something
+like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>[Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>public class LookupListRetriever :
+ReadOnlyBase&lt;LookupListRetreiver&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public Categories Categories { get; private set; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public States States { get; private set; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public static LookupListRetriever GetData()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; var obj =
+DataPortal.Fetch&lt;LookupListRetriever&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Categories.SetCache(this.Categories);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; States.SetCache(this.States);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private void DataPortal_Fetch()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; this.Categories = Categories.GetList();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; this.States = States.GetList();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This avoids the round-trips. Notice that the factory forces a
+load of the static caches for each NVL type. You may have different techniques
+for caching &#8211; just remember that the DataPortal_Fetch() method runs on the
+server, so <i>something</i> needs to update the client-side cache once the
+DataPortal.Fetch() call is complete.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>A couple things.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>First, I tend to cache NVL objects in static fields (for a smart
+client), so I really only get them once in most cases. Obviously there are
+exceptions for volatile data, but usually this is a big help.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Second, if I know that I am going to need a set of NVL objects
+for a given user scenario, I&#8217;ll often create a separate ReadOnlyBase
+subclass that has the sole responsibility of retrieving the NVL objects. Something
+like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>[Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>public class LookupListRetriever :
+ReadOnlyBase&lt;LookupListRetreiver&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public Categories Categories { get; private set; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public States States { get; private set; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public static LookupListRetriever GetData()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; var obj =
+DataPortal.Fetch&lt;LookupListRetriever&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Categories.SetCache(this.Categories);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; States.SetCache(this.States);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private void DataPortal_Fetch()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; this.Categories = Categories.GetList();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; this.States = States.GetList();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This avoids the round-trips. Notice that the factory forces a
+load of the static caches for each NVL type. You may have different techniques
+for caching &#8211; just remember that the DataPortal_Fetch() method runs on the
+server, so <i>something</i> needs to update the client-side cache once the
+DataPortal.Fetch() call is complete.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Tuesday, June 30, 2009</h2>how do you use the LookupListRetriever in the win forms (loading, binding, etc.)?<br><br>thanks a lot.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Thursday, July 02, 2009</h2>Rocky,<br><br>I understand how to use the lookupretriver but how do i 'setcache' ?<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You&#8217;ll need to implement static SetCache() methods on your
+NVL classes.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Friday, July 03, 2009</h2>How do i accomplish that? Any light/easy example or link to do 'SetCache'?<br>Can anybody provide a sample NVL object that uses setcache?<br><br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>public class MyList : NameValueListBase&lt;&#8230;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private static MyList _cache;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public static void SetCache(MyList obj)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _cache = obj;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> superkuton
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 03, 2009 10:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: What are the best practices in
+providing lookup values?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>How do i accomplish that? Any light/easy example or link to
+do 'SetCache'?<br>
+<br>
+Thanks.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Saturday, August 01, 2009</h2>Thanks, Rocky. <br><br>I finally made an implementation of it in a simple application I am working on.<br><br>At the app start-up/initialization, I am 'caching' the lookup values. But now I have the following concerns:<br><br>1.&nbsp; It takes some some time to cache the values from the server.<br><br>2.&nbsp; The values are cached from the server each time the application is opened or started.<br><br>Are there ways to improve the caching up of lookup values?<br><br>I am thinking of a dataset/datatable technique of storing the values in an xml file. When the app is started the values are loaded from the xml file in the client, avoiding the fetching from the server. When the values are altered, an 'invalidate' pattern is employed.<br><br>Can we store the values in the client in a similar technique?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Sunday, August 02, 2009</h2>I created this long ago which does the same thing..<br /><br />http://www.universalthread.com/ViewPageArticle.aspx?Session=415747326476515A5455343D202B4A31507762596B5055516A5A78734A73614D656D513D3D<br /><br />http://www.universalthread.com/ViewPageArticle.aspx?Session=4F5847576B4A6652486C733D2037645241674E554234476C5054664F306473575135513D3D<br /><br />After this I hv done many changes like at form startup values are auto catched (when user requests for adding for fetching records)..<br /><br />At form closeup values are auto cleared.. <br /><br />Controls like comboboxes, text controls, lists etc. are auto filled..<br /><br />and most imp i switched from vb to c# :)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

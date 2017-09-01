@@ -1,0 +1,96 @@
+<html><header><title>testbox asp 2.0 databinding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>testbox asp 2.0 databinding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3814.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred posted on Tuesday, October 30, 2007</h2><P>Hello,</P>
+<P>I am having problems with a textbox in a detailsview, this textbox is bound to a property based on a nullable integer.</P>
+<P>But when the textbox dets displayed and should be displaying no data, an empty string, it displays a zero. </P>
+<P>I just don't get it, There is no reason for a zero to be displayed, the value in the database is Null upon reading (i have added a method to read the null value in the safedatareader).</P>
+<P>The property get method returns an "" when it has no value.</P>
+<P>But still i get this 0 on my textbox. When i place the row in editmode the zero is still there. And when I update the zero finds it's way to the database. When I empty the textbox and click update a null finds it's way back to the database.&nbsp; I don't know where to look, i just can't get the zeroes to disappear, i was already thinking of binding the datasource myself. </P>
+<P>&nbsp;</P>
+<P>You can see the datareader methods i use.</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetInt32Nullable(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> i </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Nullable(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mDataReader.IsDBNull(i) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mDataReader.GetInt32(i)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetInt32Nullable(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Nullable(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> index </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GetOrdinal(name)</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GetInt32(index)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Thank's for the advice </FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Wilfred</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2><P>How is your public property declared? If it is declared as a numeric type, data binding is probaby putting the 0 in there because that is the default numeric value.</P>
+<P>You might need to expose the property as type string so data binding understands that "" is a valid value?</P>
+<P>If you were in WinForms or Wpf there are formatting/conversion events you can handle to fix this at the UI layer (leaving the object's property as a numeric type). I'm not sure if there's any counterpart in Web Forms - perhaps a more web-savvy person knows?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, October 31, 2007</h2><P>What is code for your&nbsp;property like?&nbsp; Is the property a String?</P>
+<P>And are you using an MS standard textbox control?&nbsp; It's not a 3rd party control is it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred replied on Wednesday, October 31, 2007</h2><FONT color=#0000ff size=2>
+<P>Hello,</P>
+<P>I have used integer for the 'Get part'&nbsp;too, but it was also a problem, as for the s'Set part' i know i have left some code out, but when opening a record containing a Null&nbsp; value (for this property)&nbsp; in SQL SERVER 2005, a zero gets displayed. In the cod below i use String.Empty, but i also tried "". It makes no difference.</P>
+<P>The textbox is MS, I even removed the validator, but to no avail. </P>
+<P>&nbsp;</P>
+<P>dim mFunctioneleTaalvaardigheid as Nullable (of Integer)</P>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> FunctioneleTaalvaardigheid() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P>CanReadProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mFunctioneleTaalvaardigheid.HasValue </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mFunctioneleTaalvaardigheid.ToString</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Empty</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>CanWriteProperty(</FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P>mFunctioneleTaalvaardigheid = Cint(value)</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;PropertyHasChanged()</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred replied on Friday, November 02, 2007</h2>Anybody</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, November 02, 2007</h2>Can you post the relevant code from the ASPX that shows the control you are binding to and the object data source?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred replied on Friday, November 02, 2007</h2><FONT color=#0000ff size=2>
+<P>Actually I don't really know what you want, but I added some code, and some markup. The real detailsview has more fields, and the object as well. But i'have added the field that is zero, when it should be blank.</P>
+<P>I hope you see more than I can. Thank's for your time.</P>
+<P>Bye</P>
+<P>Wilfred</P>
+<P>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> LeerlingASPVDataSource_SelectObject( _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Web.SelectObjectArgs) _</P>
+<P></FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> LeerlingASPVDataSource.SelectObject</P>
+<P>Session(</FONT><FONT color=#a31515 size=2>"currentObject"</FONT><FONT size=2>) = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Csla.ApplicationContext.User.Identity.IsAuthenticated </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>e.BusinessObject = GetLeerlingASPVRapporten(</FONT><FONT color=#0000ff size=2>CInt</FONT><FONT size=2>(Session(</FONT><FONT color=#a31515 size=2>"llid"</FONT><FONT size=2>)))</P>
+<P>Session(</FONT><FONT color=#a31515 size=2>"currentObject"</FONT><FONT size=2>) = e.BusinessObject</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetLeerlingASPVRapporten(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> leerlingid </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Rapporten.LeerlingASPVRapporten</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> businessObject </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2> = Session(</FONT><FONT color=#a31515 size=2>"currentObject"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> businessObject </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>OrElse</FONT><FONT size=2> _</P>
+<P></FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>TypeOf</FONT><FONT size=2> businessObject </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> Rapporten.LeerlingASPVRapporten </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>businessObject = Rapporten.LeerlingASPVRapporten.GetLeerlingASPVRapporten(leerlingid)</FONT><FONT size=2>Session(</FONT><FONT color=#a31515 size=2>"currentObject"</FONT><FONT size=2>) = businessObject</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(businessObject, Rapporten.LeerlingASPVRapporten)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>csla</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CslaDataSource</FONT><FONT color=#000000 size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="LeerlingASPVDataSource"</FONT><FONT color=#000000 size=2> </FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"</FONT><FONT size=2><FONT color=#000000> </FONT></P>
+<P></FONT><FONT color=#ff0000 size=2>TypeName</FONT><FONT color=#0000ff size=2>="Rapporten.LeerlingASPVRapporten"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>TypeAssemblyName</FONT><FONT color=#0000ff size=2>="Rapporten"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>csla</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>CslaDataSource</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DetailsView</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="DetailsView1"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>AutoGenerateRows</FONT><FONT color=#0000ff size=2>="False"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>DataSourceID</FONT><FONT color=#0000ff size=2>="LeerlingASPVDataSource" </FONT><FONT color=#ff0000 size=2>DataKeyNames</FONT><FONT color=#0000ff size=2>="Id"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Height</FONT><FONT color=#0000ff size=2>="50px"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Width</FONT><FONT color=#0000ff size=2>="125px"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>AllowPaging</FONT><FONT color=#0000ff size=2>="True"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>EmptyDataText</FONT><FONT color=#0000ff size=2>="Nvt"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>Fields</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>TemplateField</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>HeaderText</FONT><FONT color=#0000ff size=2>="Functionele taalvaardigheid"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>SortExpression</FONT><FONT color=#0000ff size=2>="FunctioneleTaalvaardigheid"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ConvertEmptyStringToNull</FONT><FONT color=#0000ff size=2>="False"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>EditItemTemplate</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>RangeValidator</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="RangeValidator1"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Type</FONT><FONT color=#0000ff size=2>="Integer"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>ControlToValidate</FONT><FONT color=#0000ff size=2>="TextBox2"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>MaximumValue</FONT><FONT color=#0000ff size=2>="10"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>MinimumValue</FONT><FONT color=#0000ff size=2>="0"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ErrorMessage</FONT><FONT color=#0000ff size=2>="Moet tussen 0 en 10 zijn"&gt;&lt;/</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>RangeValidator</FONT><FONT color=#0000ff size=2>&gt;</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>TextBox</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="TextBox2"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Text</FONT><FONT color=#0000ff size=2>='</FONT><FONT size=2>&lt;%# Bind("FunctioneleTaalvaardigheid") %&gt;</FONT><FONT color=#0000ff size=2>'&gt;&lt;/</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>TextBox</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>EditItemTemplate</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>ItemTemplate</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Label</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>ID</FONT><FONT color=#0000ff size=2>="Label2"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>runat</FONT><FONT color=#0000ff size=2>="server"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Text</FONT><FONT color=#0000ff size=2>='</FONT><FONT size=2>&lt;%# Bind("FunctioneleTaalvaardigheid") %&gt;</FONT><FONT color=#0000ff size=2>'</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>&gt;&lt;/</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>Label</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>ItemTemplate</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>TemplateField</FONT><FONT color=#0000ff size=2>&gt;</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;/</FONT><FONT color=#a31515 size=2>Fields</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#a31515 size=2>asp</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#a31515 size=2>DetailsView</FONT><FONT color=#0000ff size=2>&gt;</P></FONT></FONT></FONT>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred replied on Saturday, November 03, 2007</h2><P>Problem is out of the way now, forgot to change something in the datareader.</P>
+<P>&nbsp;</P>
+<P>Thank's for the attention.</P>
+<P>&nbsp;</P>
+<P>bye</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

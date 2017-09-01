@@ -1,0 +1,9 @@
+<html><header><title>samples trunk is gone</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>samples trunk is gone</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7959.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Friday, November 06, 2009</h2><P>Hi Rocky</P>
+<P><FONT face=Tahoma>svn://svn.lhotka.net/csla/samples/trunk</FONT> is missing.<BR>Only <FONT face=Tahoma>svn://svn.lhotka.net/csla/samples/tags</FONT> and <FONT face=Tahoma>svn://svn.lhotka.net/csla/samples/branches</FONT> are showing up.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 08, 2009</h2><P>Yes, I'm doing some rearranging in preparation for 4.0 work, including getting the repository structure set up to make my release process simpler. Some of what I've done is experimental, and so may or may not stay as I have it - but all the primary versions of CSLA and their sample apps are now under /core/trunk.</P>
+<P>The thing is, in 4.0 there'll be at least 3 "flavors" of CSLA .NET:</P>
+<UL>
+<LI>Core/server - the full framework you know today</LI>
+<LI>Client - a subset of the framework built for the 4.0 client profile</LI>
+<LI>Silverlight - a subset of the framework build for Silverlight 3 (eventually 4 of course)</LI></UL>
+<P>Client and Silverlight link most/all of their files from Core/server.</P>
+<P>My current plan is to only do a single release, unlike today where I release Windows and Silverlight separately. I think that's artificial&nbsp;- and will become sillier as time goes on. At the very least almost everyone will need Core and Client, but I think a lot of people (most?) will need Silverlight too.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

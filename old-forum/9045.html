@@ -1,0 +1,28 @@
+<html><header><title>How best to query and cache database result set in a NameValueListBase object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How best to query and cache database result set in a NameValueListBase object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9045.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 posted on Monday, June 07, 2010</h2><p><br />Hi there</p>
+<p>I would like to cache the database result on the client after the DataPortal_Fetch has fired for the first time. Is this a reliable approach?</p>
+<p>1. In the factory method check a static field for some data<br />2. If it&#39;s null call DataPortal.Fetch() first and copy to the field<br />3. Query the cached data and return.</p>
+<p>It means that I need to populate the list on the client-side rather than on the server in the DataPortal_Fetch method, e.g.</p>
+<p>public static GroupsList GetList(// some optional params<br />&nbsp;&nbsp;&nbsp; )<br />{<br />&nbsp;&nbsp;&nbsp; if (_data == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Fetch&lt;GroupsList&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp; // query or remove items from _data<br />&nbsp;&nbsp;&nbsp; var list = new GroupsList();<br />&nbsp;&nbsp;&nbsp; list.RaiseListChangedEvents = false;<br />&nbsp;&nbsp;&nbsp; list.IsReadOnly = false;<br />&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; foreach (var item in _data)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Add(new NameValuePair(item.GroupID, item.Name));</p>
+<p>&nbsp;&nbsp;&nbsp; list.IsReadOnly = true;<br />&nbsp;&nbsp;&nbsp; list.RaiseListChangedEvents = true;<br />&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; return list;<br />}</p>
+<p>This does look a bit clunky. Is there a more appropriate pattern I should follow?</p>
+<p>Thanks<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, June 07, 2010</h2><p>If there any particular reason why not just do:</p>
+<p>&nbsp;</p>
+<p>public static GroupsList GetList()<br />{<br />&nbsp;&nbsp;&nbsp; if (_data == null)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;_data =&nbsp;GroupsList&nbsp;.Get();</p>
+<p>&nbsp;&nbsp; &nbsp;return&nbsp;_data;</p>
+<p>}</p>
+<p>That static property could reside on your &quot;GroupsList&quot; object.</p>
+<p>Of course, if you are going to have optional parameters then you are going to have to have some logic to see if you already have&nbsp;retrieve&nbsp;a list with those specific&nbsp;parameter values, if yes then return that list if not then you have to execute the fetch again.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 replied on Monday, June 07, 2010</h2><p>Hi Rene</p>
+<p>Yes I do need to query the data before it&#39;s added to the NameValue list. Do you think my approach above is acceptable? Do I need to do any other checks on the _data field for example?</p>
+<p>Thanks<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, June 07, 2010</h2><p>Hi Andrew,</p>
+<p>I guess I am just not sure why are you refilling the object again with the cached data. I am sure I am missing something as usual but here is a quick example of somethign that I may consider doing (this sample code was not compiled or tested):</p>
+<p>---------------------------</p>
+<p>private static Dictionary&lt;int, GroupsList&gt; cachedLists = new Dictionary&lt;int, GroupsList&gt;();<br />public static GroupsList GetList(int param)<br />{<br />&nbsp;&nbsp;&nbsp; GroupsList _data;<br />&nbsp;&nbsp;&nbsp; cachedLists.TryGetValue(param, out _data);</p>
+<p>&nbsp;&nbsp;&nbsp; if (_data == null)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _data = DataPortal.Fetch&lt;GroupsList&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cachedLists[param] = _data;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; return _data;<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j055 replied on Tuesday, June 08, 2010</h2><p>Hi again</p>
+<p>Your suggestion is good but it does mean a new database hit for each int value. Perhaps I&#39;m trying to over engineer the solution. In practice there may only need to be 4/5 items in the cache array.</p>
+<p>I&#39;m&nbsp;just trying to find an elegant solution within CSLA BOs.</p>
+<p>Cheers<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 08, 2010</h2><p>I usually use the technique Rene demonstrated.</p>
+<p>But if you want to get all the possible lists in one call - pre-populate the whole cache - you might consider creating another ReadOnlyBase object that knows how to load the entire list of NVL objects. You can use that specialized object in your list&#39;s factory method to load the cache - and then simply use Rene&#39;s code to return items out of the cache on demand.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>Manually break an object rule on parent</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Manually break an object rule on parent</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Wednesday, March 12, 2014</h2><p>Working on a project where there is missing Ref Int on the SQL database.&nbsp; Business objects have to handle scenario of missing data by IDs.&nbsp; (ugh I know).</p>
+<p>During lazyload of child collection, if I detect there is some piece of data missing from the DB, I skip loading that child.</p>
+<p>But I would like to provide feedback (Warning rule) on Parent that alerts user that the BusinessObjects have detected a referential integrity problem and what are the IDs associated with the problem.&nbsp; This would give the customer some very helpful information to give to their DBA to go fix the issue.</p>
+<p>How would I have the child collection tell the root/parent to break a warning rule with relevant info?</p>
+<p>How would I write the rule on the root/parent so it only gets broken when the child collection says so.</p>
+<p>Seems like broken rules is a good place to put this, maybe I am wrong?</p>
+<p><br />Thanks</p>
+<p>Sean</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, March 13, 2014</h2><p>Hi, </p>
+<p>The obvious solution is to have a broken rule with severity Warning and visualize this in some way on your client. </p>
+<p>YOU SHOULD NOT INTERACT WITH BROKEN RULES DIRECTLY!!! </p>
+<p>The RuleEngine assumes ownership and will clear these rules (and rerun rules) whenever it needs to.</p>
+<p>So the recommended solution is to </p>
+<ol>
+<li>make the data access/child set a field/property on the parent object to a given value </li>
+<li>make this trigger a business rule in the parent object (different techniques for property and object level rules)</li>
+<li>make this rule inspect the given value and set the result to a Warning message.&nbsp;</li>
+</ol>
+<p>OR </p>
+<p>just add a new text property on the parent object and set in your data access to a given message and display this in your form. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

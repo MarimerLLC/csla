@@ -1,0 +1,25 @@
+<html><header><title>What is the validation pattern that ensures a unique combination of 2 (or more) property values? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What is the validation pattern that ensures a unique combination of 2 (or more) property values? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9988.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Wednesday, January 26, 2011</h2><p>Given:</p>
+<p>Two properties; both are required, and the combination of values must be unique.</p>
+<p>I want...</p>
+<p>- to check for uniqueness whenever one of the two prop values changes</p>
+<p>- that the check for uniqueness only runs once when calling CheckRules()</p>
+<p>- that both, or at least one, of the props is able to notify a UI if the check for uniqueness fails</p>
+<p>Heading for a solution:</p>
+<p>Both properties get assigned a &#39;required&#39;-rule, at priority 0.</p>
+<p>I create a third property prop3 as a dummy, and tell validation that prop3 is a dependent property on prop1 and prop2. Then I assign the check-for-uniqueness-rule to prop3, with priority 1.</p>
+<p>Question:</p>
+<p>1. Does the check-for-uniqueness-rule run only once when CheckRules() is called?</p>
+<p>2. Can I somehow ensure that, with the above setup, the check-for-uniqueness-rule runs last? </p>
+<p>3. How can i achieve that the broken check-for-uniqueness rule is displayed on prop1 and/or prop2?</p>
+<p>4. Is there a way in Csla 3.8.x?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 26, 2011</h2><p>Is the questions for Csla 4 or Csla 3.8 or both? </p>
+<p>The new BusinessRules in Csla 4 provides more options that the ValidationRules in Csla 3.x.</p>
+<p>I will assume Csla 4 for my reply: </p>
+<p>1&nbsp; I would create 3 properties with <b>field3 </b>being the &quot;unique&quot;&nbsp; field.<br />2. I would create a &quot;SetUniqueField&quot; rule to set the unique value in <b>field3 </b>and attach the rule to both <b>field1 </b>and <b>field2</b><br />3. I would attach the &quot;uniqueness&quot; rule to <b>field3</b><br />&nbsp;&nbsp; This rule may set the error message on just one or both properties (field1 and field2) with <br />&nbsp;&nbsp; context.AddErrorResult(&lt;IPropertyInfo&gt;, errorMessage)&nbsp; and could do the <br />&nbsp;&nbsp; check for both required and unique. <i>You control the flow inside the rule. </i></p>
+<p>4. I didn&#39;t take csla 3.8.x into consideration here. This is much easier to solve in Csla 4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Wednesday, January 26, 2011</h2><p>I need to implement it with 3.8.x.</p>
+<p>But knowing how to do it in 4.x would surely help too.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 26, 2011</h2><p>A little more tricky to resolve all requirements ...</p>
+<p>1. Create 3 separate managed fields, field1 to field3<br />2. Attach format rules (ex required rule) to <b>field1 </b>and <b>field2</b>. <br />3. Create uniqueness rule and attach to <b>field1</b>.<br />4. Override &quot;OnPropertyChanged&quot; and add code after base.OnPropertyChanged():</p>
+<ul>
+<li>if <b>field1 </b>or <b>field2 </b>was changed set <b>field3 </b>to composite key&nbsp;</li>
+<li>if <b>field2 </b>was changed call CheckRules(&quot;field1&quot;)</li>
+</ul>
+<p>You would only get the uniqueness error message on <b>field1 </b>and the uniqueness rule will only execute once when you call CheckRules(). </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

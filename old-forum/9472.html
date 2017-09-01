@@ -1,0 +1,10 @@
+<html><header><title>ViewModelBase.DoCancel()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModelBase.DoCancel()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl posted on Saturday, September 04, 2010</h2><p>Hi. </p>
+<p>I have seen, that DoCancel() of ViewModelBase calls</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; undo.CancelEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; undo.BeginEdit();</p>
+<p>I ask me, why is DoCancel() calling Beginedit()? - I run in the fallowing Problem:</p>
+<p>I open a EditableRoot-Object vor Editing. There is calling a BeginEdit(). Now, I open a Child-object of the Root-Object for Editing. There is now a BeginEdit on the Child. Now, I cancel the ChildEdit. DoCancel() now calls CancelEdit() and BeginEdit(). When I save now the root-object, I run into a EditLevel-Mismatch. The reason about this is the BeginEdit()-call of DoCancel(). I ask me now, why is DoCancel() calling also BeginEdit() and what I am doing wrong.</p>
+<p>Thanks for your help.</p>
+<p>Best Regards, Thomas</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Saturday, September 04, 2010</h2><p>If it didn&#39;t, the user would then make some changes and hit cancel again, and nothing would happen.</p>
+<p>For your child, I think in it&#39;s ViewModel class you would set ManageObjectLifetime to false to disable that behavior since it&#39;s covered by the parent.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Sunday, September 05, 2010</h2><p>Hi Andy</p>
+<p>Thank you for your reply. I have solved my problem now with setting ManageObjectLifetime to false in the &quot;Child-VM&quot;.</p>
+<p>Thomas</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

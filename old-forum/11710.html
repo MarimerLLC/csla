@@ -1,0 +1,13 @@
+<html><header><title>Silverlight - Using async / await with Csla.Xaml.ViewModelBase&lt;T&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight - Using async / await with Csla.Xaml.ViewModelBase&lt;T&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11710.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, November 19, 2012</h2><p>We have a few Silverlight projects using CSLA, and specifically a viewmodel base class that ultimately inherits from <strong>Csla.Xaml.ViewModelBase&lt;T&gt;</strong></p>
+<p>So I&#39;m wondering how (if at all) one would use the async/await pattern with this view model. For example, the <strong>BeginRefresh</strong>( factoryWithCallback ) method expects a CSLA factory method that uses the <strong>DataPortalResult&lt;T&gt;</strong> handler callback.</p>
+<p>If we are working towards a unified pattern that aims to do away with the<strong> DataPortalResult&lt;T&gt;</strong> callback and standardise on the the usual synchronous (.NET) factory together with the new async / await factories (for XAML based UIs - Silverlight, WPF, WinRT) then I&#39;m curios to see how this impacts the <strong>ViewModelBase</strong> (which is still dependent on the old callback pattern.)</p>
+<p>It does seem as if the <strong>SaveAsync</strong> method has been added to the view model base class at some point.</p>
+<p>Thanks,<br />Jaans</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 20, 2012</h2><p>To use async/await properly you need to use it all the way down the call stack. That means the UI code that initializes the viewmodel needs to await that operation.</p>
+<p>You can&#39;t mark a constructor as async, nor can you await a constructor. So the old pattern of initializing the viewmodel via the constructor doesn&#39;t work anymore.</p>
+<p>To overcome this, I added an InitAsync method to ViewModelBase. This method will await a protected DoInitAsync method.</p>
+<p>So your UI code looks like this:</p>
+<p>var vm = new MyViewModel();<br />this.DataContext = await vm.InitAsync();</p>
+<p>and your viewmodel is initialized by overriding DoInitAsync:</p>
+<p>protected override async Task&lt;MyBusinessClass&gt; DoInitAsync()</p>
+<p>{<br />&nbsp; return await MyBusinessClass.NewMyBusinessClassAsync();<br />}</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

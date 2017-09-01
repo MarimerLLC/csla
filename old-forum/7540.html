@@ -1,0 +1,237 @@
+<html><header><title>CSLA for Silverlight: How to improve performance?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for Silverlight: How to improve performance?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7540.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb posted on Monday, August 31, 2009</h2>I have been doing some investigation into a particularly slow load time being experienced when pulling back a fairly large object graph and populating this into a DataGrid.<br><br>Using some simple debug writelns, I've been able to seperate the time taken as follows:<br><br>Total Time from calling Refresh() on CslaDataProvider, to DataGrid being fully loaded:<b> 7-8 secs</b><br>Total object graph size before compression: 16MB<br>Total object graph size after compression: 760KB<br><br>I have a custom WcfProxy and WcfPortal on the SL and server sides respectively which apply zip compression to the ObjectData going between server and SL client.<br><br>My debug output is as follows:<br><br>End documents fetch at: 5:37:09 PM&nbsp; <b>&lt;-- This is at the end of my main DataPortal_Fetch</b><br>Start compress at: 5:37:10 PM&nbsp;<b> &lt;-- This is the WcfPortal (server-side) compression</b><br>End compress at: 5:37:10 PM; elapsed time: 00:00:00.2656250<br>Start decompress at: 5:37:10 PM&nbsp; <b>&lt;-- This is the WcfProxy (SL-side) decompression</b><br>End decompress at: 5:37:10 PM; elapsed time: 00:00:00.4062500<br>ModelChanged at: 5:37:14 PM&nbsp; <b>&lt;-- This is when the CslaDataProvider.DataChanged event fires</b><br><br>From here, theres another 2-3 secs being spent loading the DataGrid after the ItemsSource is reassigned.&nbsp; I don't think this part can be optimised much more since most of the code executing is internal to the DataGrid control.<br><br>My current focus for optimisation is the 4 second delay between when the object graph has been decompressed on the SL client and the DataChanged event being raised by the CslaDataProvider.&nbsp; <br><br>I know there is a fair bit of serialisation that takes place in this area and I am wondering whether there is anything that can be done to improve this.&nbsp; <br>I am also puzzled as to why the serialisation on the server side is so fast compared to the SL side - since the time between my DataPortal_Fetch completing and the server-side compression begin is only ~1 sec.<br><br>Note all the code is executing on my local PC so the server-side and SL-side is on the same hardware.<br><br>Any suggestions welcome.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, August 31, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>How
+many rows do you have in that graph?&nbsp; I think having hundreds or, even worse,
+thousands of rows anywhere in Silverlight application is going to be a problem.&nbsp;
+In this cases I tend to re-design the user interface and introduce some kind of
+search screen to reduce number of rows shown at any given time on the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, August 31, 2009 3:47 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA for Silverlight: How to improve performance?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I have been doing some investigation into a particularly
+slow load time being experienced when pulling back a fairly large object graph
+and populating this into a DataGrid.<br>
+<br>
+Using some simple debug writelns, I've been able to seperate the time taken as
+follows:<br>
+<br>
+Total Time from calling Refresh() on CslaDataProvider, to DataGrid being fully
+loaded:<b> 7-8 secs</b><br>
+Total object graph size before compression: 16MB<br>
+Total object graph size after compression: 760KB<br>
+<br>
+I have a custom WcfProxy and WcfPortal on the SL and server sides respectively
+which apply zip compression to the ObjectData going between server and SL
+client.<br>
+<br>
+My debug output is as follows:<br>
+<br>
+End documents fetch at: 5:37:09 PM&nbsp; <b>&lt;-- This is at the end of my
+main DataPortal_Fetch</b><br>
+Start compress at: 5:37:10 PM&nbsp;<b> &lt;-- This is the WcfPortal
+(server-side) compression</b><br>
+End compress at: 5:37:10 PM; elapsed time: 00:00:00.2656250<br>
+Start decompress at: 5:37:10 PM&nbsp; <b>&lt;-- This is the WcfProxy (SL-side)
+decompression</b><br>
+End decompress at: 5:37:10 PM; elapsed time: 00:00:00.4062500<br>
+ModelChanged at: 5:37:14 PM&nbsp; <b>&lt;-- This is when the
+CslaDataProvider.DataChanged event fires</b><br>
+<br>
+From here, theres another 2-3 secs being spent loading the DataGrid after the
+ItemsSource is reassigned.&nbsp; I don't think this part can be optimised much
+more since most of the code executing is internal to the DataGrid control.<br>
+<br>
+My current focus for optimisation is the 4 second delay between when the object
+graph has been decompressed on the SL client and the DataChanged event being
+raised by the CslaDataProvider.&nbsp; <br>
+<br>
+I know there is a fair bit of serialisation that takes place in this area and I
+am wondering whether there is anything that can be done to improve this.&nbsp; <br>
+I am also puzzled as to why the serialisation on the server side is so fast
+compared to the SL side - since the time between my DataPortal_Fetch completing
+and the server-side compression begin is only ~1 sec.<br>
+<br>
+Note all the code is executing on my local PC so the server-side and SL-side is
+on the same hardware.<br>
+<br>
+Any suggestions welcome.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, August 31, 2009</h2>I'm pulling back 100 rows but the individual objects are pretty heavy - around 10-20 properties are child objects and there is a fair bit of data coming back.&nbsp; This cannot be worked around though given the requirements we have - which is to provide a data-rich interface.<br><br>We also already have data paging in place which defaults to 20 rows per page - however the users can go as high as they want, so we're using 100 rows per page as a ceiling baseline for testing.<br><br>The thing that I am wondering is why the deserialisation seems to take ~4 secs on the SL client, yet the serialisation on the server-side is in the order of ~1 sec.<br>Is this something where the new binary serialisation in Csla 3.8 might show improvement?<br>Is there anything else I can turn on/off to improve performance - e.g. turn off undo completely?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2><P>One thing you might try for a baseline is to do a clone on the server - just to get a timing.</P>
+<P>Serialization is a lot simpler than deserialization, which could explain some of the difference.</P>
+<P>But your server could be more powerful. Or .NET might be better at this than SL for some reason.</P>
+<P>So timing the deserialization on the server would be interesting, because it would provide a more meaningful basis for comparison to help identify whether the difference is something in .NET/SL, the computer or CSLA's MobileFormatter.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, August 31, 2009</h2>OK, I added a clone to my Documents object which occurs right at the end of the DataPortal_Fetch on the server. <br>Output is as follows:<br><br><b>Fetching 20 Document rows into Documents</b><br>End documents fetch at: 8:55:02 AM<br>End documents clone at: 8:55:02 AM; elapsed time is 00:00:00.2343750<br>Start compress at: 8:55:03 AM<br>End compress at: 8:55:03 AM; elapsed time: 00:00:00.0781250<br>Start decompress at: 8:55:03 AM<br>End decompress at: 8:55:03 AM; elapsed time: 00:00:00.1093750<br>ModelChanged at: 8:55:04 AM; elapsed time: 00:00:00.9531250<br><br><b>Fetching 100 Document rows in Documents</b><br>End documents fetch at: 8:55:41 AM<br>End documents clone at: 8:55:42 AM; elapsed time is 00:00:00.7031250<br>Start compress at: 8:55:43 AM<br>End compress at: 8:55:43 AM; elapsed time: 00:00:00.3125000<br>Start decompress at: 8:55:43 AM &nbsp; &nbsp;  &lt;-- (WcfProxy.ConvertResponse)<br>End decompress at: 8:55:43 AM; elapsed time: 00:00:00.3750000&nbsp; &lt;-- (WcfProxy.ConvertResponse)<br>ModelChanged at: 8:55:47 AM; elapsed time: 00:00:03.2812500<br><br>The clone on the server-side is around 3x faster than the SL client side deserialisation.&nbsp; <br>I am using Csla 3.7 atm and I am running all of this on my local PC, so it can't be hardware since the server is local to my PC too.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You know I misled you with using the term &#8220;clone&#8221;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use Clone() you are using BinaryFormatter &#8211; an entirely
+different technology.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You need to write your own &#8216;clone&#8217; that uses MobileFormatter to
+serialize/deserialize the object graph to get an accurate picture. You can grab
+the clone code from the Silverlight base class, but execute it on the .NET
+server side.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sorry about that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, August 31, 2009</h2>Ah yes I used Clone() :P<br><br>I'll try out the MobileFormatter code asap.&nbsp; I think this looks like something that 3.8 may fix - I'll try with that too.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, August 31, 2009</h2>OK, haven't had time to copy over the MobileFormatter code, but I did try to run the same test case and diagnostics using the CSLA 3.8 Alpha release:<br><br><b>20 Rows</b><br>End documents fetch at: 12:09:51 PM<br>Start compress at: 12:09:51 PM<br>End compress at: 12:09:51 PM; elapsed time: 00:00:00.0625000<br>Start decompress at: 12:09:51 PM<br>End decompress at: 12:09:52 PM; elapsed time: 00:00:00.0781250<br>ModelChanged at: 12:09:52 PM; elapsed time: 00:00:00.8125000<br><br><b>100 Rows</b><br>End documents fetch at: 12:10:32 PM<br>Start compress at: 12:10:33 PM<br>End compress at: 12:10:33 PM; elapsed time: 00:00:00.2031250<br>Start decompress at: 12:10:33 PM<br>End decompress at: 12:10:33 PM; elapsed time: 00:00:00.2343750<br>ModelChanged at: 12:10:36 PM; elapsed time: 00:00:02.7031250<br><br>So the new serialisation code in 3.8 does seem to reduce the SL deserialisation time by around 0.5 secs (it took 3.28 secs on Csla 3.7 and now takes 2.7 secs) on a big object graph.<br>I think the actual ObjectData byte[] is a little smaller too, hence some minor improvements in the compress/decompress times too.<br><br>Obviously would still be good to try to reduce this further, so later this week I'll probably move into the Csla code and see if I can isolate the time consuming areas.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, August 31, 2009</h2>I've been tinkering with the MobileFormatter's Deserialize method to see if I can isolate the time consuming portions.<br>Basically on a 100 row object graph, the line below takes up 1.4 secs of the total 2.75 secs spent in the Deserialize method:<br><font size="2" face="Courier New">List&lt;SerializationInfo&gt; deserialized = dc.ReadObject(reader) as List&lt;SerializationInfo&gt;;</font><br><br>Given the size of the object graph (16MB), this isn't unexpected and there doesn't seem to be any kind of optimization possible.<br><br>I then looked through what goes on after the deserialized list is loaded and found that I could save 0.3 sec on the 100 row test if I cached the Types that are normally loaded over and over via reflection.<br><br>I added a static cache of the type names and Types:<br><br><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp; private static Dictionary&lt;string, Type&gt; _typeCache =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Dictionary&lt;string, Type&gt;();<br><br>&nbsp;&nbsp;&nbsp; private static Type GetTypeFromCache(string typeName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_typeCache.ContainsKey(typeName)) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var type = Csla.Reflection.MethodCaller.GetType(typeName);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (type == null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new SerializationException(string.Format(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Resources.MobileFormatterUnableToDeserialize,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typeName));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _typeCache.Add(typeName, type);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _typeCache[typeName];<br>&nbsp;&nbsp;&nbsp; }</font><br><br>And then changed the Deserialize(XmlReader reader) method to use the GetTypeFromCache method:<br><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _deserializationReferences = new Dictionary&lt;int, IMobileObject&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (SerializationInfo info in deserialized)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Type type = <b>GetTypeFromCache(info.TypeName);</b><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (type == typeof(NullPlaceholder))</font><br><br>Having a static Dictionary of types may be more memory usage, but maybe the performance gain is worth it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Can we do this with an instance cache inside the MobileFormatter
+object &#8211; thus gaining most of the benefit, but without the permanent memory
+cost?</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Tuesday, September 01, 2009</h2>I did originally have an instance cache and the performance gain was pretty similar, so yeah an instance cache is certainly viable too.<br><br>I went static because I liked the idea of persisting across multiple deserialization calls, thus avoiding the initial reflection cost after the first time a Type is ever encountered by the MobileFormatter.&nbsp; A lot of the calls made within my application involve the same classes, with repetitive fetches -e.g. in the case of data paging.<br><br>I have also looked at whether or not a similar cache approach could be used to cache the type's ConstructorInfo so that Activator.CreateInstance can be dropped in favour of just invoking the cached ctor delegate.&nbsp; <br>So far there has not been a noticable improvement in performance, however I believe there is some kind of internal caching in the Activator class up to 16 unique types.&nbsp; So it might just be that my tests are not putting enough different types through the deserialisation (and thus Activator) as yet.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I wouldn&#8217;t spend a lot of time on the CreateInstance(), as Justin
+is working on an enhancement to MethodCaller that will do the work with an
+Expression &#8211; reflect once, compile and then execute for the rest.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think in the general case the instance cache is the better
+answer. I understand what you are saying, but some applications have
+little-used types that&#8217;d end up cached &#8211; and in a large app that could be
+problematic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>3.8 might help with the binary XML, but I don&#8217;t know how big a
+difference it will make.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

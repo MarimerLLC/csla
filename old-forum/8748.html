@@ -1,0 +1,35 @@
+<html><header><title>Passing authentication data via a host in the middle</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Passing authentication data via a host in the middle</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8748.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kboutsen posted on Thursday, April 01, 2010</h2><p>Hello,</p>
+<p>the scenario I have is the following:</p>
+<p>I basically have 2 host&#39;s running.</p>
+<p>Host1: a Csla host that takes care of data handling, authenticating users,...</p>
+<p>Host 2: a second host (no Csla host) that has a WCF REST interface (created with the <span id="TitleLabel" class="CodePlexPageHeader"><a href="http://aspnet.codeplex.com/releases/view/24644">WCF REST Starter Kit Preview 2</a></span>). This WCF REST interface is used to do some easy things like getting a list of objects of type A. For example I can go to http://localhost/ListA to get a list of objects of type A. Internally it uses host 1 to get the data. </p>
+<p>When I now connect with host 2 (via http://localhost/ListA) I want to be able to use the correct authorization rules that the logged in user has on the data. Therefor I need host 2 to be able to login on host 1 with the credentials given by the WCF REST headers (in these headers, the username/password that are valid for host 1 are given). But host 2 can&#39;t login with the given username/password, since the Principal object is stored in a static variable (Csla.ApplicationContext), making it not multi-threaded. How can host 2 get the data from host 1 with the given username/password?</p>
+<p>Simplified it is this:</p>
+<ul>
+<li>An http client goes to http://localhost/ListA. In the header it adds a username and password</li>
+<li>Host 2 gets the request and tries to login on Host 1 with the given username and password
+<ul>
+<li><span style="color:green;">But it cannot use the regular login function. What if there are 2 users that connect? The static Principal object is overriden.</span></li>
+</ul>
+</li>
+<li>Host 2 gets the data from host 1 and sends it back to the http client
+<ul>
+<li><span style="color:green;">How can we tell host 1 which user logged in?</span></li>
+</ul>
+</li>
+</ul>
+<p>The problem I see is that host 2 cannot login on host 1, because of the shared principle object. Therefor it is not multi-threaded.</p>
+<p>How can I solve this?</p>
+<p>&nbsp;</p>
+<p>Kind regards,</p>
+<p>Koen</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 01, 2010</h2><p>ApplicationContext.User is stored differently on different platforms.</p>
+<ul>
+<li>On Silverlight it is static - global to the SL app.</li>
+<li>On WPF it is static - global to the WPF app.</li>
+<li>On Windows Forms it is per-thread (System.Threading.Thread.CurrentPrincipal)</li>
+<li>In a Windows service it is per-thread 
+(System.Threading.Thread.CurrentPrincipal)</li>
+<li>On ASP.NET it is in HttpContext which is per-thread (HttpContext.Current.User)</li>
+</ul>
+<p>If I understand your question, you want a user to pass credentials in the HTTP header to host 2. You then want host 2 to use those credentials to authenticate with host 1.</p>
+<p>Host 2 is running in ASP.NET, so ApplicationContext.User will be stored in HttpContext and so is per-thread (actually per-request, because ASP.NET can switch your code between threads, so real per-thread storage isn&#39;t safe in ASP.NET - which was the original reason I created ApplicationContext.User in 2004).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

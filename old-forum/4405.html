@@ -1,0 +1,36 @@
+<html><header><title>ValidationRules not getting triggered</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidationRules not getting triggered</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4405.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk posted on Monday, February 25, 2008</h2>I have a form that has parent -&gt; child -&gt; grandchild data displayed through common winform controls, including 2 grids.<br><br>Parent is a BusinessBase<br>Child is a BusinessListBase<br>Grandchild is a BusinesListBase<br><br>My form is setup as follows:<br><br>On Form_Load, I call a methed to get my data.&nbsp; The populates the parent and child.&nbsp; The grandchild is populated in the _PositionChanged event of the child datasource.&nbsp; Immediately after acquiring the data for the parent and child, I bind the objects to the binding sources and set the binding source RaiseListChangedEvents = true.&nbsp; This was basically copied from the Project Tracker sample application.<br><br>Problem:<br><br>For both the child and grandchild, my ValidationRules fire properly and I get the round red icon next to the control that is in error.&nbsp; However, the rules never fire for the parent and I am always able to save invalid data<br><br>Unfortunately, this application is now in user acceptance test so I need to resolve asap.&nbsp; This is my last issue to resolve and I will have deployed my first CSLA application to production.<br><br>Any ideas, thoughts, steps to track down?<br><br>Thx,<br>Kevin<br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2008</h2><P>When you say "the rules never fire" for the parent, you mean that the rules never execute in the business object itself? So the object never goes into an invalid state?</P>
+<P>Or just that the broken rules don't appear in the UI? In which case the user should get a ValidationException when they try to save the objec.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk replied on Monday, February 25, 2008</h2>After removng my custom validation directly in the form, I can see that the ValidationRules DO execute in the business object so it appears the problem is that the broken rules simply don't work in the UI.<br><br>Thanks Rocky, this gives me any "search" parameter....&nbsp; I never even thought to search for Broken Rules :)<br><br>Kevin<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk replied on Monday, February 25, 2008</h2>I just traced through the code and the ValidationRules are definitely getting invoked, I just don't get the red icon notification in the UI.<br><br>Thx,<br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, February 25, 2008</h2><P>By the way when you say the parent is invalid do you mean that a property (or a rule specific to the parent) is invalid or that the parent is invalid because even though all its properties are fine, its children are invalid?</P>
+<P>I just now encountered a scenario with a master/detail grid where some of my children are invalid (thus making the parent invalid to me as far as I am concerned) and the red exclamation mark only appears when the invalid children are shown. But never on the parent record... I kind of think that's the problem you are facing... If so I would be interested in a solution <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If the object&#8217;s rules are running and you just aren&#8217;t
+seeing the results in the UI then you probably have your ErrorProvider set up
+wrong.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You need on ErrorProvider per object or bindingsource (so a
+different one for the parent and child or whatever) but you don&#8217;t need
+one for data in a grid (because the grid does this itself).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>meierk replied on Monday, February 25, 2008</h2>Thanks Rocky.&nbsp; I added an errorprovider for the parent binding source and I now get the error icon.<br><br>Although I understand that data grids may set the error provider automatically, I still don't understand why this affecting this form, but yet I have another form (with the same 3 binding sources) with numerous TextBox components bound to properties in my Child object and the icons show up fine without using an error provider.<br><br>Can you shed any light on this?<br><br>Kevin<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

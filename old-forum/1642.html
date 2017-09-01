@@ -1,0 +1,37 @@
+<html><header><title>HOWTO: Make a ReadOnlyChildList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>HOWTO: Make a ReadOnlyChildList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1642.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zoreloth posted on Tuesday, October 31, 2006</h2><P>I'm needing to implement a ReadOnlyChildList. Specifically, I need a collection that instantiates as the EditableChildCollection does (accepting a SafeDataReader) but has the 'readonly' functionality of the ReadOnlyList. The only way I'm seeing to do this is to actually implement an EditableChildList and override the Add/Remove/etc... methods. Is that my only option, or is there something better I'm missing?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 31, 2006</h2><P class=MsoNormal>Noooooooooooooooooooooo......</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Just add a readonly property in you Editable Root Object.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><STRONG>c# (in your editable root object...)</STRONG></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>private SomeListBO _someList = null;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>public SomeListBO SomeList<BR>{<BR>&nbsp;&nbsp; get<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this._ someList == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._someList = SomeListBO.GetList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (this._someList);<BR>&nbsp;&nbsp; }<BR>}</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Thas is it.&nbsp; You now have a readonly list tied to your editable root object.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Hope this helps<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zoreloth replied on Tuesday, October 31, 2006</h2><P>guyroch,</P>
+<P>Yes, thank you and understood...but doesn't the implementation you're suggesting allow me to still:</P>
+<P>editableRootObject.SomeList.Add(anItem);</P>
+<P>I don't want a UI client to be able to do that, therefore my thinking that a ReadOnlyList is in order. But, I also need to instantiate that collection by passing it a SafeDataReader (containing a second result set).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 31, 2006</h2><P>No. it won't allow you to add an item.&nbsp; By default, ReadOnlyList in CSLA will not let you do this.</P>
+<P>The only time you can _add_ objects in your ReadOnlyList is when its IsReadOnly variable is set to false.&nbsp; Typically you will set the IsReadOnly variable to false in the dp_fetch method and then set it back to true before leaving the dp_fetch.</P>
+<P>ReadOnlyList means just that, READONLY, so it won't allow you to add an item other than inside your dp_fetch method... unless of course you forget to set it back to IsReadOnly = false at the end of your dp_fetch.&nbsp; But if you do, its a bug :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 31, 2006</h2><P>...and... make sure your list (SomeListBO)&nbsp;inherits from ReadOnlyListBase and not BusinessListBase...<FONT color=#008080 size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zoreloth replied on Tuesday, October 31, 2006</h2><P>guyroch,</P>
+<P>Ok then, now I'm back where I started. I had presumed that ReadOnlyList was necessary in order to get the behavior I require. But, I'm struggling with how to implement ReadOnlyList as a "child" ReadOnlyList where I pass the GetReadOnlyList factory method a SafeDataReader as opposed to Criteria arguments. Or, is that just it...do I pass the SafeDataReader through the Criteria class?</P>
+<P>(Edit: This "child" behavior is desired because my SafeDataReader already contains the result set for the ReadOnlyList retrieved when I went to the db in dp_fetch for the EditableRootObject)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 31, 2006</h2><P>Why do you want to pass the SafeDataReader?&nbsp;</P>
+<P>Doing it this way will _lazy_load_ your list - a great performance improvement IMHO.&nbsp; By that I mean it will get loaded only when you make a call to it.&nbsp; Your db_fetch inside your ReadOnlyList will create it own instance of SafeDataReader and will load itself.</P>
+<P class=MsoNormal>public SomeListBO SomeList<BR>{<BR>&nbsp;&nbsp; get<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this._ someList == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._someList = SomeListBO.GetList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (this._someList);<BR>&nbsp;&nbsp; }<BR>}</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Nothing prevents you to create a Criteria class (and Factory mehtod) that take in your Editable Root Object ID so that you dp_fetch inside your ReadOnlyList loads only what it needs.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>this._someList = SomeListBO.GetList(<FONT color=#0000ff><STRONG>MyRootBO.ObjectId</STRONG></FONT>);<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 31, 2006</h2><P>"This child behavior is desired because my SafeDataReader already contains the result set for the ReadOnlyList retrieved"</P>
+<P>And change your query to only return the Root BO data.</P>
+<P>Then when your request the ROC you can either get all records or pass in a simple criteria to it like Root.ID to narrow down the list.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zoreloth replied on Tuesday, October 31, 2006</h2>Good point...and, even more applicable when considering the ReadOnlyList contains application security permissions read from the database. In reality, the ReadOnlyList will be called each time CanAddObject, CanEditObject, CanDeleteObject on any business object is called. That's a lot of trips to the database - but, it also guarantees current security is in effect (in case rights are changed while user is logged in). So, will definitely consider the options. Thanks for the help...much appreciated!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 31, 2006</h2><P>Based on the lazy load code above your ROC will only be fetched once and then you can use it multiple times. I think this is a better solution than hitting the DB everytimeCanAddObject is called. Most users are used to logging out and back in to "pick up" any new permissions/rights. I do not think the perms need to be live 100% of the time.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zoreloth replied on Tuesday, October 31, 2006</h2>Doh! I totally missed the "load if null reference" in that code snippet! Thanks gents, I will use the implementation suggested.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

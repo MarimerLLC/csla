@@ -1,0 +1,10 @@
+<html><header><title>Linq to entity orderby?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq to entity orderby?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6972.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB posted on Tuesday, May 19, 2009</h2><P>I have the following:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>var</FONT></FONT><FONT size=2> collection = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> o </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> manager.ObjectContext.Countries</P>
+<P>.Include(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Provinces"</FONT></FONT><FONT size=2>)</P>
+<P>.Include(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Provinces.Regions"</FONT></FONT><FONT size=2>)</P>
+<P>.Include(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Provinces.Regions.Cities"</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>orderby</FONT></FONT><FONT size=2> o.Name</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> o;</FONT></P>
+<P><FONT size=2>How do I include ordering for Provinces, Regions and Cities?</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Mike B</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

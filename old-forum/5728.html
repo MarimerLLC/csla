@@ -1,0 +1,68 @@
+<html><header><title>DataPortalException not caught on the client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortalException not caught on the client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5728.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff posted on Tuesday, November 04, 2008</h2>I am trying to catch a DataPortalException on the client but it is only working on my local machine (remoting through localhost). In a web scenario I only get back an Exception and am unable to further inspect it as it only says "the remote server has encountered an error...". The config files look the same on both ends. What could be going on here?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 04, 2008</h2>You'll only get a DataPortalException if the call actually gets into the remote data portal. If there's a pure connectivity problem you'll get whatever exception occurs as a result of that problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff replied on Tuesday, November 04, 2008</h2>I raise an OrderNumberExistsException in my dataportal code. For some reason though, the error on the client is just an Exception. I'm having trouble diagnosing since it only happens when using my web server.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 04, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is your OrderNumberExistsException serializable (including the
+required constructor and get state override)?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is possible that the exception can&#8217;t be serialized back
+over the wire, which would cause a low-level data transport failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jeff
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 04, 2008 12:57 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DataPortalException not caught on the client<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I raise an OrderNumberExistsException in my dataportal code.
+For some reason though, the error on the client is just an Exception. I'm
+having trouble diagnosing since it only happens when using my web server.<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff replied on Tuesday, November 04, 2008</h2>&nbsp;&nbsp;&nbsp; [Serializable]<br>&nbsp;&nbsp;&nbsp; public class OrderNumberExistsException : Exception<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public OrderNumberExistsException()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected OrderNumberExistsException(System.Runtime.Serialization.SerializationInfo info, System.Runtime.Serialization.StreamingContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(info, context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { }<br>&nbsp;&nbsp;&nbsp; }<br><br><br>I am using log4net and on the server logs I see that this exception was thrown but it isn't making it back. I am seeing it work using localhost. Probably something easy I'm missing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, November 04, 2008</h2><P>There is a web.config setting about showing exceptions to *remote* users.</P>
+<P>When you are local, you see the full exception.</P>
+<P>When remote the same exception is hidden with the message you saw.</P>
+<P>You need to change your config file.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff replied on Friday, November 07, 2008</h2>Change the config to what? I already have:<br><br>&lt;customErrors mode="off"&gt;&lt;/customErrors&gt;<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 08, 2008</h2><P>Can you create a small repro of the issue that you could post here?</P>
+<P>Also, what data portal channel are you using (WCF, etc)?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, March 10, 2010</h2><p>Jeff,</p>
+<p>What ever became of your issue? I am curious how you solved it.</p>
+<p>Thanks,<br />John</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

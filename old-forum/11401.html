@@ -1,0 +1,42 @@
+<html><header><title>CSLA 4.2 and silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.2 and silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11401.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, June 07, 2012</h2><p>Hi all..</p>
+<p>I want to ask about my problem here</p>
+<p>I want to do a personal learning to migrate my wpf app into silverlight use CSLA.NET</p>
+<p>I use csla.net 4.2 and silverlight 4.</p>
+<p>I don&#39;t know why after I created a business object in Lib.Net project ( .NET Class) and then I used that class as a Linked class from silverlight project which is ( Silverlight Class Library )</p>
+<p>My Business Object Class can&#39;t compile !!!</p>
+<p>I got these :</p>
+<p>1. System.SerializationAttribute is inaccessible due to it&#39;s protection level.</p>
+<p>2. [Serializable] could not be found ..</p>
+<p>&nbsp;</p>
+<p>Is there some thing I&#39;m missing ??</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 07, 2012</h2><p>Make sure your Silverlight class library project is referencing the <em>Silverlight</em> version of Csla.dll and that the .NET library is referencing the <em>.NET</em> version of Csla.dll.</p>
+<p>The Csla.dll for .NET <em>is not the same</em> as the one for Silverlight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, June 07, 2012</h2><p>Hi Rocky thanks for your quick response...</p>
+<p>&nbsp;</p>
+<p>Yes I have do that.</p>
+<p>Lib.Net reference to Csla of .NET version</p>
+<p>Lib.Sl reference to Csla of Silverlight version</p>
+<p>&nbsp;</p>
+<p>and I can&#39;t use System.Data in my silverlight class BUT</p>
+<p>for example in my ReadOnlyBase Class ( CustInfo), I need a System.Data.IReader for my Child_Fetch method,</p>
+<p>How to do that ? </p>
+<p>&nbsp;</p>
+<p>thanks a lot Roc</p>
+<p>stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Friday, June 08, 2012</h2><p>Hi Rocky ..</p>
+<p>&nbsp;</p>
+<p>I&#39;m sorry I forgot to tell a little bit info.</p>
+<p>What should i used for Serialization ?</p>
+<p>Csla.Serialization OR System.Serialization ?? ( I&#39;m sorry because I&#39;m still in the middle to develop app and learn csla with ui framework too )</p>
+<p>so I often to miss something when I&#39;ve never faced a problem.</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 08, 2012</h2><p>I recommend using the data portal to communicate from the client to an app server. Your objects can then run on the client and app server, and the data portal takes care of serialization for you.</p>
+<p>Your data access code runs on the app server. I typically surround my DataPortal_XYZ methods with a #if !SILVERLIGHT compiler directive, because there isn&#39;t a data access stack (no System.Data) on Silverlight.</p>
+<p>There are numerous samples showing how this is done. And of course the <em>Using CSLA 4</em> books cover all this in detail.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

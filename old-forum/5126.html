@@ -1,0 +1,99 @@
+<html><header><title>WinForms dataBinding issue in 3.5.1 beta and a few questions.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinForms dataBinding issue in 3.5.1 beta and a few questions.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5126.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz posted on Friday, July 18, 2008</h2>Hi Rocky and all<br><br>I'm finally making the effort to move to .NET 3.5 and CSLA 3.5. It looks great. Thanks for your efforts.<br><br>I'm having a problem with a simple EditableRootParent which has an EditableChildList which is bound to a form with a couple of text boxes for the root and a DataGridView for the children.<br><br>The list has AllowNew = true and AddNewCore() is overridden so that the grid can add items.<br><br>The problem occurs if I use a managed field for the childen list. As soon as I type in the last line of the grid, the new row is committed. I don't get the opportunity to cancel by pressing esc. It works fine if I change the children list to a traditional property with a private field variable.<br><br>I have a bare bones example (no db needed) to illustrate the problem if that would be useful. I had weirder things happening with my Janus grid so I thought I better try the DataGridView. Hopefully solving this problem will solve the Janus problems because that works nicely too with a traditional property / field.<br><br>Am I correct to assume that the advantage of using a managed field for the list property is that it then takes care of IsDirty and IsValid without me needing to override those?<br><br>I notice that the objects in ProjectTracker don't override GetIdValue(). Is that because it's using reference equality now so the id value is not used?<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 20, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div></P>
+<P>I have a bare bones example (no db needed) to illustrate the problem if that would be useful. I had weirder things happening with my Janus grid so I thought I better try the DataGridView. Hopefully solving this problem will solve the Janus problems because that works nicely too with a traditional property / field.<BR></div></BLOCKQUOTE><BR>Ross, Please share the bare bones example, that should help find the problem. Others have reported similar things, but I don't have a simple, direct repro of the issue.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div><BR>Am I correct to assume that the advantage of using a managed field for the list property is that it then takes care of IsDirty and IsValid without me needing to override those?<BR></div></BLOCKQUOTE><BR>Yes, exactly. And all the parent-child event hookups for event cascading, and resetting the Parent reference on deserialization. All the hard-to-remember things you had to do to make parent-child really work are now automatic.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div></P>
+<P>I notice that the objects in ProjectTracker don't override GetIdValue(). Is that because it's using reference equality now so the id value is not used?<BR><BR></div></BLOCKQUOTE></P>
+<P>That's right. Thanks to WPF rewriting the rules of equality (or at least severly restricting them), GetIdValue() is now totally optional - left in only for backward compat actually, but not really used in any meaningful way anymore.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 21, 2008</h2>Ok, thanks Rocky. Attached is CSLATest.zip. You should be able to just update the reference to CSLA and build.<br><br>Click on the last row of the grid and the new item is immediately committed.<br><br>Comment and uncomment a couple of things in EditableRootParent to change the Children property it to a regular property and it all comes right. Click in the last row and the * is still there in the row header, type something in that new row and the pencil icon appears along with the next new row. Hit esc and we're correctly back to where we were.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Wow!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(thanks for the simple repro &#8211; VERY useful)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I found the issue, and it amazes me that no one encountered this
+years ago.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>People constantly implement event cascading &#8211; where a
+change in a child object (or list) results in a changed event at the parent
+level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That turns out to be bad. Very bad. Having the parent raise a
+PropertyChanged event when its child list changes causes Windows Forms data
+binding to react badly. From what I can see, it causes the currency to &#8220;flicker&#8221;
+&#8211; change just long enough to force a commit of the current row in the
+grid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So this is unfortunate. It means that BusinessBase can&#8217;t
+bubble a child list&#8217;s ListChanged event up as a PropertyChanged event.
+That was a very cool feature I added in 3.5 because a lot of people seem to do
+this on their own quite often (you can find many threads about that here on the
+forum). It is unfortunate that no one who&#8217;s done this on their own has
+encountered (or mentioned anyway) this really nasty side-effect&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m thinking that what I&#8217;ll do as an alternative, is
+have a virtual OnChildChanged() method in BusinessBase that gets called when a
+child&#8217;s ListChanged or PropertyChanged event comes in. That will allow
+notification to the parent that its child has changed. But I <i>won&#8217;t</i>
+continue to raise a PropertyChanged event because that&#8217;s obviously bad.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The other thing I could do is have BusinessBase declare a
+ChildChanged event that it can raise. That would also allow for the parent
+notification scenario, and would allow the UI to hook the event if it cared as
+well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Opinions on which is better?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 21, 2008</h2><P>Thanks Rocky. I'm pleased you can see the problem. Microsoft must surely owe you something by now for the hours of frustation you must have spent messing with databinding and&nbsp;finding nearly every quick and "undocumented feature" in their code. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I found the issue, and it amazes me that no one encountered this years ago.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</div></BLOCKQUOTE></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>I've always had problems, especially with grids,&nbsp;whenever I've tried bubbling up ListChanged events.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>Here's a post from over two years talking about something similar.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p><A HREF="/forums/permalink/3821/3742/ShowThread.aspx#3742">http://forums.lhotka.net/forums/permalink/3821/3742/ShowThread.aspx#3742</A></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P></o:p></SPAN>
+<P class=MsoNormal><SPAN>I’m thinking that what I’ll do as an alternative, is have a virtual OnChildChanged() method in BusinessBase that gets called when a child’s ListChanged or PropertyChanged event comes in. That will allow notification to the parent that its child has changed. But I <I>won’t</I> continue to raise a PropertyChanged event because that’s obviously bad.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN></SPAN><SPAN>The other thing I could do is have BusinessBase declare a ChildChanged event that it can raise. That would also allow for the parent notification scenario, and would allow the UI to hook the event if it cared as well.</SPAN></P>
+<P class=MsoNormal><SPAN>Opinions on which is better?</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>I think I'd vote for the&nbsp;option 1 although I don't really have a strong preference. If you did option 2 then wouldn't you effectively do option 1 anyway as part of the standard event pattern?</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 21, 2008</h2>Hmm, I'll have to watch for this when I update Csla next.&nbsp; I've bubbled events when one of my Csla BO's is actually a facade around other Csla BO's.&nbsp; This made maintence easier, because each of the encapuslated BOs had distinct responsiblities, and made the UI easier, because there was only one object to which to bind.<br><br>I do have problem with grids sometimes though; the "new" row will drop down and there'll still be a "new" empty row.&nbsp; Sometimes I have to highlight the empty gray row where new items are added and hit delete to get rid of it.. perhaps this behavior was caused by this bubbling?&nbsp; I'm not sure I was bubbling anything in that case though either... could just be bad behavior on the part of Infragistics.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2><P>I've decided on the ChildChanged event idea. That's more flexible overall, and supports the needs of both a parent object author and any UI author who cares that a child changed.</P>
+<P>I've put the change into 3.5.1 in svn.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 21, 2008</h2>I got the update. It's working nicely. Thanks.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,193 @@
+<html><header><title>Serialization exception for UnauthenticatedPrincipal in IIS 7 (not Cassini)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialization exception for UnauthenticatedPrincipal in IIS 7 (not Cassini)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11501.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette posted on Monday, July 23, 2012</h2><p>I am running my .NET 4.0 application in Vista 32bit IIS 7 version 7.0.6000.16386. &nbsp;I am using CSLA.NET 3.8.2</p>
+<p>I get a serialization exception, either after a number of cache accesses or after some period of time has expired (not sure which yet). &nbsp;I was already familiar with the Cassini issues but this is not related to Cassini. &nbsp;The code that is executing is just going after some cached data. &nbsp;The code fails on the return statement. &nbsp;Once it fails, it continues to fail until IIS is reset. &nbsp;I&#39;m lost on this one.</p>
+<p>Sorry the error and stack trace below are being cuttoff in the browser. &nbsp;The error is:</p>
+<p>Exception: System.Runtime.Serialization.SerializationException: Type is not resolved for member &#39;Csla.Security.UnauthenticatedPrincipal,Csla, Version=3.8.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39;.</p>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>static</span>&nbsp;<span>object</span>&nbsp;_lock&nbsp;=&nbsp;<span>new</span>&nbsp;<span>object</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>IEnumerable</span>&lt;<span>CountryState</span>&gt;&nbsp;States
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>ObjectCache</span>&nbsp;cache&nbsp;=&nbsp;<span>MemoryCache</span>.Default;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(!cache.Contains(CacheKey))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>lock</span>&nbsp;(_lock)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(!cache.Contains(CacheKey))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>CountryStateDao</span>&nbsp;dao&nbsp;=&nbsp;<span>new</span>&nbsp;<span>CountryStateDao</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>using</span>&nbsp;(<span>IDataReader</span>&nbsp;reader&nbsp;=&nbsp;dao.FetchStatesReader())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Dictionary</span>&lt;<span>int</span>,<span>CountryState</span>&gt;&nbsp;states&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reader.AsEnumerable().
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Select((record)&nbsp;=&gt;&nbsp;<span>new</span>&nbsp;<span>CountryState</span>(record)).
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ToDictionary((state)&nbsp;=&gt;&nbsp;state.Id);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cache[CacheKey]&nbsp;=&nbsp;states;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;(<span>IEnumerable</span>&lt;<span>CountryState</span>&gt;)(((<span>Dictionary</span>&lt;<span>int</span>,<span>CountryState</span>&gt;)cache[CacheKey]).Values);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>A Webhost unhandled exception occurred.
+ Sender Information: System.AppDomain/61002492
+ Exception: System.Runtime.Serialization.SerializationException: Type is not resolved for member &#39;Csla.Security.UnauthenticatedPrincipal,Csla, Version=3.8.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39;.
+   at System.Web.Hosting.ApplicationManager.GetUpdatedTotalCacheSize(Int64 sizeUpdate)
+   at System.Web.Hosting.ObjectCacheHost.System.Runtime.Caching.Hosting.IMemoryCacheManager.UpdateCacheSize(Int64 size, MemoryCache memoryCache)
+   at System.Runtime.Caching.CacheMemoryMonitor.GetCurrentPressure()
+   at System.Runtime.Caching.MemoryMonitor.Update()
+   at System.Runtime.Caching.MemoryCacheStatistics.CacheManagerThread(Int32 minPercent)
+   at System.Runtime.Caching.MemoryCacheStatistics.CacheManagerTimerCallback(Object state)
+   at System.Threading._TimerCallback.TimerCallback_Context(Object state)
+   at System.Threading.ExecutionContext.runTryCode(Object userData)
+   at System.Runtime.CompilerServices.RuntimeHelpers.ExecuteCodeWithGuaranteedCleanup(TryCode code, CleanupCode backoutCode, Object userData)
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean ignoreSyncCtx)
+   at System.Threading._TimerCallback.PerformTimerCallback(Object state)
+ Process Name: w3wp
+ Process ID: 6948</pre>
+<pre></pre>
+<pre>Your insight is appreciated,</pre>
+<pre>Rich</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Monday, July 30, 2012</h2><p>No takers from Magenic?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 30, 2012</h2><p>I have no idea. It is from one of the Microsoft serializers (BinaryFormatter?).</p>
+<p>The best way to narrow this down (in my experience) is to use the object cloner method to clone the ApplicationContext.User property and see if you can make the serialization fail outside the data portal. Primarily because it is easier to debug a simple clone call.</p>
+<p>Just use Csla.ObjectCloner.Clone() to clone the object.</p>
+<p>Run that in an ASP.NET web page or MVC controller and see what happens.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Tuesday, July 31, 2012</h2><p>Thank you for responding Rocky. &nbsp; &nbsp;I tried the code you suggested, even going so far as to do so in multiple threads like</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>void</span>&nbsp;Page_Load(<span>object</span>&nbsp;sender,&nbsp;<span>EventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</pre>
+<pre>             Parallel.For(0,&nbsp;1000,&nbsp;(p)&nbsp;=&gt;&nbsp;Csla.Core.ObjectCloner.Clone(Csla.ApplicationContext.User));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>I then executed my caching code above in the loop And I was unable to get the error. &nbsp;I also tried waiting for the asp.net application to end and no luck.</p>
+<p>
+The only thing similar to this issue that I have been able to find was this MS Connect article.
+<a href="http://connect.microsoft.com/VisualStudio/feedback/details/675188/a-memorycache-hosted-in-asp-net-sometimes-breaks-in-its-timer-callback-to-update-the-cache-size">http://connect.microsoft.com/VisualStudio/feedback/details/675188/a-memorycache-hosted-in-asp-net-sometimes-breaks-in-its-timer-callback-to-update-the-cache-size</a>
+</p>
+<p>
+I have to admit I don&#39;t understand what the relationship between  MemoryCache and ExecutionContext is or why the Thread principal is being serialized during a cache read operation since everything is in memory. I wouldn&#39;t expect any serialization to be occurring unless cloning via serialization is happening under the covers.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 31, 2012</h2><p>OK, that&#39;s unfortunate (that the easy test didn&#39;t fail).</p>
+<p>Now we probably enter the realm of increasingly obscure possibilities...</p>
+<p>.NET itself does sometimes serialize objects. For example, anything put into Session may be serialized using the BinaryFormatter in the case that Session is maintained out of proc. It is extremely likely that any caching scheme will also serialize objects, because they can&#39;t cache object references, only data.</p>
+<p>In the darker and more obscure corners of serialization there are some holes. Most notably, serialization acts differently depending on the hosting process type. As an example, there&#39;s a difference between doing serialization in a .NET EXE as compared to code hosted in COM+ (Enterprise Services).</p>
+<p>The primary difference, and perhaps what you are encountering, is that on deserialization the .NET runtime doesn&#39;t always find types that it actually knows about. It turns out that this is because the .NET type system apparently maintains four lists of known types, and in a .NET hosted process it checks all the lists. But in some cases (COM+, IE, other non-.NET hosts) it doesn&#39;t check all four lists.</p>
+<p>Why? Nobody has ever been able to tell me. It was hard enough to find someone that even knew there were four lists in the type system - that took many conversations with many people over a period of years.</p>
+<p>If this _is_ the problem, then there&#39;s a possible workaround (maybe). If you can run some of your code as the host starts up, you can hook an AppDomain level event that is raised when a type isn&#39;t resolved. In that event handler you can ask .NET to resolve the type - which will cause it to check all four lists.</p>
+<p>This code is actually in CSLA .NET - look at the SerializationWorkaround method here:</p>
+<p><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V4-3-x/Source/Csla/Server/Hosts/EnterpriseServicesPortal.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V4-3-x/Source/Csla/Server/Hosts/EnterpriseServicesPortal.cs?view=markup</a></p>
+<p>This should be invoked exactly one time during the life of the AppDomain, and it will find the known type even when deserialization doesn&#39;t.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Wednesday, August 01, 2012</h2><p>More details. &nbsp; This is releated to a WCF 4.0 service call. &nbsp; &nbsp;A JSON service specifically. &nbsp; I didn&#39;t notice that until I looked in the windows event log. &nbsp; I will also try the fix you linked to.</p>
+<p>The following are specifics of the service config if you are interested. &nbsp;&nbsp;</p>
+<pre style="white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word;"><span><br /></span></pre>
+<pre style="white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word;font-size:.85em;"><span>    [ServiceBehavior(Name = &quot;QuestionService&quot;,
+     ConcurrencyMode = ConcurrencyMode.Multiple,
+     InstanceContextMode = InstanceContextMode.Single,
+     AddressFilterMode = AddressFilterMode.Any),
+    System.ServiceModel.Activation.AspNetCompatibilityRequirements(
+     RequirementsMode = AspNetCompatibilityRequirementsMode.Required)]
+    public class UserProfileService : IUserProfileService
+    {
+        
+         WebInvoke(Method = &quot;GET&quot;,
+               RequestFormat = WebMessageFormat.Json,
+               ResponseFormat = WebMessageFormat.Json,
+               UriTemplate = &quot;FetchUserProfileByPersonId/{personId}&quot;)]
+        public UserProfileDto FetchUserProfileByPersonId(string personId)
+        {
+            int id = Int32.Parse(personId);
+            return FetchUserProfileByPersonId(id);
+        }
+
+        private static UserProfileDto FetchUserProfileByPersonId(int personId)
+        {
+            UserProfile profile = UserProfile.Fetch(personId);
+            UserProfileDto profileDto = new UserProfileDto(profile);
+            return profileDto;
+        }
+
+        private static int CurrentPersonId()
+        {
+            MyHomeWorksIdentity identity = MyHomeWorksIdentity.Current;
+            int personId = 0;
+            if (identity != null &amp;&amp; identity.IsAuthenticated)
+            {
+                personId = MyHomeWorksIdentity.Current.PersonId;
+            }
+            return personId;
+        }
+        
+    }</span></pre>
+<pre style="white-space:pre-wrap;white-space:-moz-pre-wrap;white-space:-pre-wrap;white-space:-o-pre-wrap;word-wrap:break-word;font-size:.85em;"><span>&lt;</span><span>system.serviceModel</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;!--</span><span>&nbsp;Uncomment&nbsp;to&nbsp;enable&nbsp;service&nbsp;logging</span><span>--&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>diagnostics</span><span>&nbsp;</span><span>wmiProviderEnabled</span><span>=</span>&quot;<span>false</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>messageLogging</span><span>&nbsp;</span><span>logEntireMessage</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>logMalformedMessages</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>logMessagesAtServiceLevel</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>logMessagesAtTransportLevel</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>maxMessagesToLog</span><span>=</span>&quot;<span>3000</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>diagnostics</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>standardEndpoints</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>webHttpEndpoint</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>standardEndpoint</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;&quot;<span>&nbsp;</span><span>helpEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>automaticFormatSelectionEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>webHttpEndpoint</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>standardEndpoints</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>behaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>endpointBehaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behavior</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>JsonEndpointBehavior</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>webHttp</span><span>&nbsp;</span><span>defaultOutgoingResponseFormat</span><span>=</span>&quot;<span>Json</span>&quot;<span>&nbsp;</span><span>automaticFormatSelectionEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>faultExceptionEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>helpEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>httpCachePolicy</span><span>&nbsp;</span><span>cacheability</span><span>=</span>&quot;<span>NoCache</span>&quot;<span>/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behavior</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>endpointBehaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceBehaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span>The&nbsp;default&nbsp;service&nbsp;behavior</span><span>--&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behavior</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span>Enable&nbsp;http&nbsp;get&nbsp;of&nbsp;service&nbsp;format&nbsp;(wsdl&nbsp;or&nbsp;REST&nbsp;help)</span><span>--&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceMetadata</span><span>&nbsp;</span><span>httpGetEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span>Exception&nbsp;detail&nbsp;should&nbsp;not&nbsp;be&nbsp;included&nbsp;in&nbsp;production,&nbsp;use&nbsp;retail&nbsp;mode&nbsp;or&nbsp;disable&nbsp;service&nbsp;debug</span><span>--&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceDebug</span><span>&nbsp;</span><span>includeExceptionDetailInFaults</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>httpHelpPageEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceAuthorization</span><span>&nbsp;</span><span>principalPermissionMode</span><span>=</span>&quot;<span>Custom</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>authorizationPolicies</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>policyType</span><span>=</span>&quot;<span>Hsb.ServiceModel.Security.Web.FormsAuthenticationAuthorizationPolicy,&nbsp;Hsb.ServiceModel</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>authorizationPolicies</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceAuthorization</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceCredentials</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>userNameAuthentication</span><span>&nbsp;</span><span>userNamePasswordValidationMode</span><span>=</span>&quot;<span>Custom</span>&quot;<span>&nbsp;</span><span>customUserNamePasswordValidatorType</span><span>=</span>&quot;<span>Hsb.ServiceModel.Security.Web.FormsAuthenticationTicketUserNamePasswordValidator,&nbsp;Hsb.ServiceModel</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceCredentials</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behavior</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behavior</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>FormsAuthenticationBehavior</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceMetadata</span><span>&nbsp;</span><span>httpGetEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceDebug</span><span>&nbsp;</span><span>httpHelpPageEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceAuthorization</span><span>&nbsp;</span><span>principalPermissionMode</span><span>=</span>&quot;<span>Custom</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>authorizationPolicies</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>policyType</span><span>=</span>&quot;<span>Hsb.ServiceModel.Security.Web.FormsAuthenticationAuthorizationPolicy,&nbsp;Hsb.ServiceModel</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>authorizationPolicies</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceAuthorization</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceCredentials</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>userNameAuthentication</span><span>&nbsp;</span><span>userNamePasswordValidationMode</span><span>=</span>&quot;<span>Custom</span>&quot;<span>&nbsp;</span><span>customUserNamePasswordValidatorType</span><span>=</span>&quot;<span>Hsb.ServiceModel.Security.Web.FormsAuthenticationTicketUserNamePasswordValidator,&nbsp;Hsb.ServiceModel</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceCredentials</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behavior</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceBehaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>behaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>services</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>service</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>MyHomeWorks.ServiceModel.UserProfile.UserProfileService</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>endpoint</span><span>&nbsp;</span><span>kind</span><span>=</span>&quot;<span>webHttpEndpoint</span>&quot;<span>&nbsp;</span><span>behaviorConfiguration</span><span>=</span>&quot;<span>JsonEndpointBehavior</span>&quot;<span>&nbsp;</span><span>contract</span><span>=</span>&quot;<span>MyHomeWorks.ServiceModel.UserProfile.IUserProfileService</span>&quot;<span>/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>service</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>services</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>serviceHostingEnvironment</span><span>&nbsp;</span><span>aspNetCompatibilityEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>multipleSiteBindingsEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceActivations</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>clear</span><span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>service</span><span>=</span>&quot;<span>MyHomeWorks.ServiceModel.UserProfile.UserProfileService</span>&quot;<span>&nbsp;</span><span>relativeAddress</span><span>=</span>&quot;<span>~/Services/UserProfileService.svc</span>&quot;<span>/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceActivations</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>serviceHostingEnvironment</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>extensions</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behaviorExtensions</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span>&nbsp;Microsoft&nbsp;Connect&nbsp;Issue&nbsp;ID&nbsp;216431:&nbsp;The&nbsp;full&nbsp;assembly&nbsp;qualified&nbsp;typename&nbsp;including&nbsp;version,&nbsp;culture&nbsp;and&nbsp;key&nbsp;must&nbsp;be&nbsp;specified.</span><span>--&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;!--</span><span>&nbsp;The&nbsp;following&nbsp;endpoint&nbsp;behavior&nbsp;extension&nbsp;element&nbsp;sets&nbsp;the&nbsp;endpoint&#39;s&nbsp;address&nbsp;filter&nbsp;mode&nbsp;to&nbsp;any.&nbsp;&nbsp;This&nbsp;allows&nbsp;the&nbsp;service</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;to&nbsp;operate&nbsp;behind&nbsp;an&nbsp;SSL&nbsp;load&nbsp;balancer&nbsp;where&nbsp;externally&nbsp;https&nbsp;is&nbsp;used&nbsp;and&nbsp;internally&nbsp;http&nbsp;is&nbsp;used.</span><span>--&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>addressFilterModeAny</span>&quot;<span>&nbsp;</span><span>type</span><span>=</span>&quot;<span>Hsb.ServiceModel.Configuration.AddressFilterModeAnyElement,&nbsp;Hsb.ServiceModel,&nbsp;Version=1.0.0.0,&nbsp;Culture=neutral,&nbsp;PublicKeyToken=null</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>add</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>httpCachePolicy</span>&quot;<span>&nbsp;</span><span>type</span><span>=</span>&quot;<span>Hsb.ServiceModel.Configuration.HttpCachePolicyElement,&nbsp;Hsb.ServiceModel,&nbsp;Version=1.0.0.0,&nbsp;Culture=neutral,&nbsp;PublicKeyToken=null</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behaviorExtensions</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>extensions</span><span>&gt;</span>
+<span>&lt;/</span><span>system.serviceModel</span><span>&gt;</span>
+</pre>
+<pre><span><br /></span></pre>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, August 01, 2012</h2><p>Well that&#39;s a whole other ball game.</p>
+<p>CSLA objects (and most .NET objects in general) can&#39;t be reliably serialized by things like the XmlSerializer, JsonSerializer, etc. Those serializers can only reliably serialize objects with public read/write properties, public default constructors, no private fields, and no non-public properties.</p>
+<p>This is why the data portal uses the BinaryFormatter, NetDataContractSerializer, or MobileFormatter - all of which are able to serialize objects with full fidelity, because they operate at the field level, not the property level.</p>
+<p>In short, CSLA objects don&#39;t support the concept of being serialized by anything other than those three serializers.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2012</h2><p><a href="http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx">http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Wednesday, August 01, 2012</h2><p>You skipped looking at the code.&nbsp; I am using data transfer objects and not sending the business object over the wire.&nbsp;&nbsp; However, the cache is being utilized during a WCF call which seems at least in some aspect similar to the MS Connect issue in which the cache was being used in a remoting scenario.&nbsp; On the other hand I am running in ASP.NET compatibility mode so it should be similar to a standard asp.net pipeline call. &nbsp; This is a common architecture so I can&#39;t imagine why I&#39;m seeing an issue that hasn&#39;t previously been seen. &nbsp; </p>
+<p>I didn&#39;t get a chance to add the fix code today but should get to it tomorrow.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

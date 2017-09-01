@@ -1,0 +1,16 @@
+<html><header><title>OT: Sharing libraries across applications</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Sharing libraries across applications</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3218.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena posted on Tuesday, July 17, 2007</h2><P>Hi,</P>
+<P>This is definitely off-topic, but it is hard to find forums with such variety of experience as I have found here. I am hoping to get some insight on how I might best share my class libraries across different applications. I foresee a future need to have both a web-based and windows based implementation of the same business case. If at any point, those two diverge slightly and I have to update the shared class library to accomodate the differences, then one of the applications will be out of synch. </P>
+<P>Do I...</P>
+<P>1) Recompile the other application with the new DLL as well whenever the changes are made?</P>
+<P>2) Leave the application out of synch until it needs to be modified?</P>
+<P>3) Use remoting to share objects instead of DLLs? Or web services to process transactions?</P>
+<P>Any input is appreciated.</P>
+<P>Thank you,</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 17, 2007</h2><P>In my view you have two general options.</P>
+<OL>
+<LI>Treat "both applications" as a single application with multiple user interfaces (Windows, web). <BR><BR>In this case it is perfectly legal to use the same assembly behind multiple UIs, because it is conceptually all one application. And in this case, changing the business assembly means rebuilding the app - including both UIs.<BR></LI>
+<LI>Treat "both applications" as separate applications. And applications should be independant of each other, and thus should share no code. So you should not share the assembly at all. Instead, you should use service-oriented concepts. <BR><BR>Put the logic on one application or the other, and have that application expose services for use by any other applications. Then have those other application(s) call the services to get at the functionality. <BR><BR>Remember that the services ARE AN INTERFACE, and so which ever app (probably web) that gets the service interface is actually an example of option #1 (since you'll have both an HTML and XML UI to your app).</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Wednesday, July 18, 2007</h2><P>Rocky,</P>
+<P>Thank you for the reply. I suspect that of the two options you outlined, option #2 is the preferred method here. I will try that approach on a sample application to see if the effort is worth it.</P>
+<P>Thank you,</P>
+<P>Christian</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

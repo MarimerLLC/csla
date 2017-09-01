@@ -1,0 +1,11 @@
+<html><header><title>DeleteSelf - Grandparent, Parent, Child responsibilities.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DeleteSelf - Grandparent, Parent, Child responsibilities.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/173.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Tuesday, May 23, 2006</h2><P>When I have this sort of situation:</P>
+<P>GrandParent - ParentCollection - Parent - ChildCollection - Child </P>
+<P>Considering deletion, a couple different scenarios:</P>
+<P>1) Child is deleted - so it&nbsp;is added&nbsp;to the deleted list of the child collection. Come time for updating the root (GrandParent), it&nbsp;tells the ParentCollection to update. The Parent containing the child will have its Update called along with all the other parents. </P>
+<P>The Parent's update, regardless of the Parent's IsDirty status, should call the child collection's Update method. The child collection's deleted list&nbsp;iteration will encounter the deleted child and call the DeleteSelf() of the child. The responsibility of the child's DeleteSelf() is to do what is needed to remove any persistence for the child...</P>
+<P>2) Parent is deleted - so it is added to the deleted list of the parent collection. Come time for updating the root (GrandParent) it tells the ParentCollection to update. The ParentCollection will encounter the deleted parent and call the Parent's DeleteSelf().</P>
+<P>---</P>
+<P>So my question is - do you give the Parent's DeleteSelf() the responsibility for removing persistence of the child objects within its child collection? Or, within the Parent's DeleteSelf do you just iterate through the child collection and call each item's DeleteSelf()?</P>
+<P>It seems like the responsibility might belong to the child object but performance wise you could make one stored procedure call versus one for each child.&nbsp; </P>
+<P>Hope I've articulated this correctly. Thanks. </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

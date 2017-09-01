@@ -1,0 +1,35 @@
+<html><header><title>Deleting children with factory object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deleting children with factory object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10352.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark Sulkowski posted on Monday, May 09, 2011</h2><p>As I understand it, any child objects marked for deletion are put in a&nbsp;collection called DeleteList in&nbsp;the child&#39;s&nbsp;list object.&nbsp; This apparently has usefulness for undo functionality, but it also seems handy for containing objects that have recently been deleted and must&nbsp;be deleted from the database after a call to Save().</p>
+<p>When using a Data Access layer with factory classes that takes care of such database functions as&nbsp;Update(), Insert(), and Delete(), a call on the Save() method of a root object would call&nbsp;Update() on&nbsp;that root object&#39;s data access factory object, and then cascade the updates by calling the Save() method on&nbsp;every child&nbsp;list object owned by the root object, which would then call the Update() method on the list object&#39;s factory object, which could then take care of any further updates, insertions, and deletions.</p>
+<p>I notice that the DeleteList collection is protected, which means that any data access layer factory object can&#39;t get to the list directly.&nbsp; So, I am wondering how I may best&nbsp;take care of&nbsp;any deletions.</p>
+<p>Should I override the business list object&#39;s Save() method to iterate through both the DeletedList and active child list objects and call the appropriate methods on those child objects, and then clear the DeletedList?&nbsp; Or should an Update() method on the data access factory object for the list object take care of calling the delete methods on every child in the DeletedList collection (but how, since that is protected, and how could I clear it)?&nbsp; Or have I misunderstood something and there&nbsp;is there some better approach?</p>
+<p>&nbsp;</p>
+<p>Mark Sulkowski</p>
+<p>Link&ouml;ping, Sweden</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 09, 2011</h2><p>Your root object factory classes should cascade the save directly to the factory classes for it&#39;s child lists/objects. </p>
+<p>the ObjectFactory base class exposes access to internal/protected methods like:</p>
+<ul>
+<li>GetDeletedList</li>
+<li>CheckRules</li>
+<li>LoadProperty</li>
+<li>ReadProperty</li>
+<li>MarkOld</li>
+<li>MarkNew</li>
+<li>MarkAsChild</li>
+<li>BypassProperyChecks</li>
+<li>SetIsReadOnly</li>
+</ul>
+<p>The ObjectFactory attribute is only used in root DataPortal (not Child DataPortal methods), ie:</p>
+<ul>
+<li>DataPortal.Fetch</li>
+<li>DataPortal.Create</li>
+<li>DataPortal.Update</li>
+<li>DataPortal.Delete</li>
+<li>DataPortal.Execute</li>
+</ul>
+<p>are the only calls that will use the ObjectFactoryAttribute. </p>
+<p>You are not allowed to call Save on an object that is marked as Child -&nbsp; so your root object factory should call the object factpries for its child lists/objects that in turn should cacade down to grandchildren etc. </p>
+<p>The lists objct factory should:</p>
+<ol>
+<li>Process the deleted list and call the item object factory Delete method</li>
+<li>Clear the deleted list</li>
+<li>Process the list items and if child is dirty&nbsp; call item object factory Insert/Update method </li>
+</ol></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>Application_AcquireRequestState</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Application_AcquireRequestState</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mking posted on Tuesday, May 15, 2007</h2><P>I'm using CSLA in an ASP.NET web site.&nbsp; The problem I'm experiencing is that when I set the site to run in release mode (by setting debug="false" in web.config) the WebResource.axd scripts stop working.&nbsp;&nbsp;WebResource.axd is the thing that sends javascript to the browser for the menu, atlas controls, etc.&nbsp; In debug mode, it works fine.&nbsp; But in release mode, the WebResource.axd gives the following error message:<SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN></P>
+<BLOCKQUOTE dir=ltr>
+<P><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p></o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p>Object reference not set to an instance of an object</o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN></P>
+<P><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p>System.Web.HttpContext.RequestRequiresAuthorization()</o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN></P></BLOCKQUOTE>
+<P><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p>I figured out that if I remove the code in&nbsp; <FONT size=2><FONT face="Courier New">Application_AcquireRequestState</FONT>&nbsp; <FONT size=3>that is in the Global.asax file, the problem goes away.&nbsp; When I remove the following code, I can run my site in release mode.</FONT></FONT></o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN></P>
+<P><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p>If anyone could help me understand what the following code does, and why removing it makes WebResource.axd work in release mode, it would be much, much appreciated.</o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN></P><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><SPAN class=sourcerowtext><FONT face="Times New Roman" size=3><SPAN><o:p><FONT size=2><FONT size=3><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Application_AcquireRequestState(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.AuthenticationType == </FONT><FONT color=#a31515 size=2>"Windows"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Security.Principal.</FONT><FONT color=#2b91af size=2>IPrincipal</FONT><FONT size=2> principal;</P>
+<P></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal = Oms.Oscar.Bo.</FONT><FONT color=#2b91af size=2>BoHelper</FONT><FONT size=2>.MyPrincipal;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (principal == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (Request.IsAuthenticated &amp;&amp; Request.Path.Contains(</FONT><FONT color=#a31515 size=2>"aspx"</FONT><FONT size=2>))</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// user still authenticated, but principal not on session</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// so create new principal by using logoncode stored in auth ticket</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// no need to verify password becuase user already authenticated</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;string</FONT><FONT size=2> cookieName = </FONT><FONT color=#2b91af size=2>FormsAuthentication</FONT><FONT size=2>.FormsCookieName;</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;HttpCookie</FONT><FONT size=2> authCookie = Context.Request.Cookies[cookieName];</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FormsAuthenticationTicket</FONT><FONT size=2> authTicket = </FONT><FONT color=#2b91af size=2>FormsAuthentication</FONT><FONT size=2>.Decrypt(authCookie.Value);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal = Oms.Oscar.Bo.</FONT><FONT color=#2b91af size=2>OmsPrincipal</FONT><FONT size=2>.GetOmsPrincipal(authTicket.Name);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Oms.Oscar.Bo.</FONT><FONT color=#2b91af size=2>BoHelper</FONT><FONT size=2>.MyPrincipal = (Oms.Oscar.Bo.</FONT><FONT color=#2b91af size=2>OmsPrincipal</FONT><FONT size=2>)principal;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// use the principal from Session</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User = principal;</P>
+<P></P>
+<P>}</P></FONT></FONT></FONT></o:p></SPAN></FONT></SPAN></SPAN></FONT></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mking replied on Tuesday, May 15, 2007</h2><P>I found some information in another thread on this forum.&nbsp; </P>
+<P>I added the following line of code to Application_AcquireRequestState and I think this fixed the problem.</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (System.Web.</FONT><FONT color=#2b91af size=2>HttpContext</FONT><FONT size=2>.Current.Session == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2>;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

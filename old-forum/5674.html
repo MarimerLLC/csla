@@ -1,0 +1,314 @@
+<html><header><title>Silverlight 3.6 cross-domain error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight 3.6 cross-domain error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5674.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KingTuck68 posted on Saturday, October 25, 2008</h2>Hi,<br><br>I've gotten the entire Rolodex project setup and built successfully. After I get to the login screen, enter User/user and click the login button, I get this exception:<br><br><i>System.ServiceModel.CommunicationException was unhandled by user code<br>&nbsp; Message="An error occurred while trying to make a request to URI 'http://localhost:2430/WcfPortal.svc'. This could be due to attempting to access a service in a cross-domain way without a proper cross-domain policy in place, or a policy that is unsuitable for SOAP services. You may need to contact the owner of the service to publish a cross-domain policy file and to ensure it allows SOAP-related HTTP headers to be sent. Please see the inner exception for more details."</i><br><br>Anybody know how to get around this? The cross-domain xml files are all there, so I'm not sure why it's not working. I am loading this up and running with file system type access with Cassini.<br><br>Thanks much!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, October 26, 2008</h2><P>"... Cassini."</P>
+<P>My guess is that if you used IIS you would not have this problem.</P>
+<P>Not sure how you configure Cassini to use a known port - but that may be part of this issue. It keeps changing ports as you start up.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, October 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think in Rolodex port is hard-coded to avoid the issue with
+Cassini.&nbsp; This project should run just fine in Cassini, as this is how it
+was developed.&nbsp; The likeliest problem in database connection string.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, October 26, 2008 11:28 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight 3.6 cross-domain error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>&quot;... Cassini.&quot;<o:p></o:p></p>
+
+<p>My guess is that if you used IIS you would not have this problem.<o:p></o:p></p>
+
+<p>Not sure how you configure Cassini to use a known port - but that may be
+part of this issue. It keeps changing ports as you start up.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 26, 2008</h2><P>I suspect the most common cause of this problem is that you aren't running the web site, but rather you are running the Silverlight app project. Right-click on the web project in Solution Explorer and set it as the startup project.</P>
+<P>What happens otherwise, is that VS creates a temporary web page to run the Silverlight project directly, so it runs in its own instance of the web server. Of course the app then tries to communicate with the web project - which is a different web server (and thus is cross-domain) and that fails because we don't have a cross-domain access file in the web project.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KingTuck68 replied on Monday, October 27, 2008</h2>Rocky wins the prize! Setting the right startup seems to be the problem! I'm getting invalid logins for all the users now instead of the previous error. I'll do some debugging, but I have another question:<br><br>There are two connection strings in the host web.config. Do both get used or just one? I have the database setup to use SQL Server Developer and the first entry seemed to be the one, so I commented the other out. Is this correct?<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is fine.&nbsp; There are two connection strings there to
+demonstrate the user of SQL Express attach DB functionality as well as SQL
+Server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KingTuck68
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 27, 2008 9:14 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight 3.6 cross-domain error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky wins the prize! Setting the right startup seems to be
+the problem! I'm getting invalid logins for all the users now instead of the
+previous error. I'll do some debugging, but I have another question:<br>
+<br>
+There are two connection strings in the host web.config. Do both get used or
+just one? I have the database setup to use SQL Server Developer and the first
+entry seemed to be the one, so I commented the other out. Is this correct?<br>
+<br>
+Thanks!<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, October 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Pretty much all errors in SL are reported as 404, including DB
+errors.&nbsp; The first thing is to very that DB access is correct.&nbsp; Check
+web.config in wcf project and verify that connection corresponds to your
+machine&#8217;s setup.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KingTuck68
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, October 25, 2008 10:35 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight 3.6 cross-domain error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I've gotten the entire Rolodex project setup and built successfully. After I
+get to the login screen, enter User/user and click the login button, I get this
+exception:<br>
+<br>
+<i>System.ServiceModel.CommunicationException was unhandled by user code<br>
+&nbsp; Message=&quot;An error occurred while trying to make a request to URI
+'http://localhost:2430/WcfPortal.svc'. This could be due to attempting to
+access a service in a cross-domain way without a proper cross-domain policy in
+place, or a policy that is unsuitable for SOAP services. You may need to
+contact the owner of the service to publish a cross-domain policy file and to
+ensure it allows SOAP-related HTTP headers to be sent. Please see the inner
+exception for more details.&quot;</i><br>
+<br>
+Anybody know how to get around this? The cross-domain xml files are all there,
+so I'm not sure why it's not working. I am loading this up and running with
+file system type access with Cassini.<br>
+<br>
+Thanks much!<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fedge replied on Tuesday, November 25, 2008</h2><P>Anyone else fixed this? I've made sure my sql express db path is OK&lt; but still getting error.</P>
+<P><EM>'http://localhost:2430/WcfPortal.svc' also reports ok -</EM></P>
+<P>You have created a service. </P>
+<P class=intro>To test this service, you will need to create a client and use it to call the service. You can do this using the svcutil.exe tool from the command line with the following syntax:</P>
+<P><BR>&nbsp;</P><PRE>svcutil.exe <A href="http://localhost:2430/WcfPortal.svc?wsdl">http://localhost:2430/WcfPortal.svc?wsdl</A></PRE>
+<P></P>
+<P class=intro>This will generate a configuration file and a code file that contains the client class. Add the two files to your client application and use the generated client class to call the Service. For example:<BR>
+<P class=intro><B>C#</B></P><PRE><FONT color=blue>class </FONT><FONT color=teal>Test
+</FONT>{
+<FONT color=blue>    static void </FONT>Main()
+    {
+        <FONT color=teal>WcfPortalClient</FONT> client = <FONT color=blue>new </FONT><FONT color=teal>WcfPortalClient</FONT>();
+
+<FONT color=green>        // Use the 'client' variable to call operations on the service.
+
+</FONT><FONT color=green>        // Always close the client.
+</FONT>        client.Close();
+    }
+}
+</PRE>
+<P><BR>&nbsp;</P>
+<P class=intro><B>Visual Basic</B></P><PRE><FONT color=blue>Class </FONT><FONT color=teal>Test
+</FONT><FONT color=blue>    Shared Sub </FONT>Main()
+<FONT color=blue>        Dim </FONT>client As <FONT color=teal>WcfPortalClient</FONT> = <FONT color=blue>New </FONT><FONT color=teal>WcfPortalClient</FONT>()
+<FONT color=green>        ' Use the 'client' variable to call operations on the service.
+
+</FONT><FONT color=green>        ' Always close the client.
+</FONT>        client.Close()
+<FONT color=blue>    End Sub
+</FONT><FONT color=blue>End Class</FONT></PRE>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fedge replied on Tuesday, November 25, 2008</h2>please ignore previous, I got stuck mid thread and never saw everyones replies! doh! wrong start up project, sorry</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Silverlight has specific rules about calling services.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It can call a service from the same domain where the xap file
+originated (where it was downloaded from).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It can call a service in another domain only if the root of that
+domain has a cross domain policy file granting permission to make the call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When running most of our Silverlight samples, I have noticed
+that Visual Studio often chooses the wrong default startup application when you
+first load a solution. By default, it seems to pick the Silverlight application
+project, not the web site project.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick is that Visual Studio WILL run the Silverlight application
+directly &#8211; it just creates a temporary web page to host the xap. But that
+web page is now hosted in a different web server (different domain) from the
+web site project. So when the Silverlight app tries to talk to the web site app
+(where the service is located) you get a cross domain error.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The solution is simple &#8211; just make sure Visual Studio is
+set so the web site project is the default startup project.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

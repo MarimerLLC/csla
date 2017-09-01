@@ -1,0 +1,487 @@
+<html><header><title>Business Rule Shortcomings in the framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule Shortcomings in the framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2810.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Wednesday, May 02, 2007</h2><P>One of the main reasons I settled on CSLA was for its integrated support for business rules.&nbsp; Overall, it does a very fine job.</P>
+<P>That said, here are some issues that I have with the way business rules are handled:</P>
+<UL>
+<LI>ReadOnlyBase does not support business rules.</LI>
+<LI>The publicly available information about rules in the object is incomplete.</LI>
+<LI>The publicly available information about CommonRules is insufficient to display a meaningful list of rules to the user.</LI></UL>
+<P>I'll cover these points in detail:</P>
+<P><STRONG>ReadOnlyBase does not support business rules.</STRONG></P>
+<P>In prior versions, all rules had an implied severity = Error.&nbsp; A broken rule prevented the object from persisting its data.&nbsp; Therefore, a read-only version of that object, by definition, had no broken rules.</P>
+<P>In the current version, rules can also have a severity of Info or Warning, and objects can persist their data at those severity levels.&nbsp; Thus, a read-only version can have broken rules!&nbsp; Just because the user of that object cannot change the data does not mean they don't want to know about its problems!</P>
+<P><STRONG>The publicly available information about rules in the object is incomplete.</STRONG></P>
+<P>If I ask the framework for a list of rules, I get a collection of items formatted like this:</P><FONT color=#008000 size=2>
+<P>rule://TheRuleName/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</P></FONT>
+<P>The severity and priority of the rule is not included in the above format.&nbsp;&nbsp; </P>
+<P>I would accept the argument that priority is a technical implementation choice and should not be made public.&nbsp; (Although it would be useful for those testing the application to know...)</P>
+<P>But severity is clearly a business issue.&nbsp;&nbsp; Since the rule information uses URL format, maybe we could put the severity level in the port slot, with 0,1,2 as the values. (0=error, 1 = warning, 2 = info)</P>
+<P><FONT color=#008000 size=2>rule://TheRuleName:80/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</FONT></P>
+<P><STRONG>The publicly available information about CommonRules is insufficient to display a meaningful list of rules to the user.</STRONG></P>
+<P><FONT color=#000000>There is real business value in enabling the user to get a list of business rules that are being enforced.&nbsp; With the proper UI implementation of this knowledge, training times to use a new application can be reduced.&nbsp; So can product support costs.</FONT></P>
+<P><FONT color=#000000>I think we would all agree that presenting to users the list of business rules the object enforces in the following format is less than user friendly. :)</FONT></P>
+<P><FONT color=#008000 size=2>rule://TheRuleName:80/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</FONT></P>
+<P>We need to be able to turn this back into a useful error message in the user's language.&nbsp; For the rules that come in CommonRules, there is no way to programmatically deduce which resource key goes with which rule.&nbsp; A human can figure it out at a glance, but a program cannot.&nbsp; The names of the rules and the names of the error message key do not <STRONG>exactly</STRONG> agree.</P>
+<P>I suggest a convention for naming the rule error message like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>ruleTheRuleName</P></BLOCKQUOTE>
+<P dir=ltr>This has the additional advantage of putting all the rule error messages together in the resource file instead of having them scattered around&nbsp;along with other messages.</P>
+<P dir=ltr>Second, even if the correct base error message string is retrieved, it will look something like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>{0} must be&nbsp;greater than {1} and less than {2}.</P></BLOCKQUOTE>
+<P>Or, it might have been written:</P>
+<BLOCKQUOTE dir=ltr>
+<P>{0} must be less than {1} and greater than {2}.</P></BLOCKQUOTE>
+<P>Now, any human might, after a bit of thought, be able to deduce the correct replacements.&nbsp; But a general purpose program can have no way of knowing which of these {} tags represents the property name, the first parameter or the second parameter.</P>
+<P>I suggest that the error messages be written in the following manner:</P>
+<BLOCKQUOTE dir=ltr>
+<P>{rulePropertyName} must be&nbsp;greater than {theFirstParameterName} and less than {theSecondParameterName}.</P>
+<P>{rulePropertyName} must be less than {theSecondParameterName} and greater than {theSecondParameterName}.</P></BLOCKQUOTE>
+<P>This would mean, of course, that String.Format wouldn't work inside the rule code, and that String.Replace would have to be used instead.</P>
+<P><STRONG>Examples of Use</STRONG></P>
+<P>The CslaContrib project has a C# sub-project that has re-implemented CommonRules (as StdRules) using this method.&nbsp; (I have only converted the English resource files at this time.)&nbsp; </P>
+<P>RuleBusinessBase is a subclass of BusinessBase, and it exposes the collection of Rules (and Broken Rules) as properties.</P>
+<P>PublicRuleInfo and PublicRuleInfoList contain the list of business rules in human-readable format.</P>
+<P>I had to jump thru some hoops to do the coding because my code is in an extension DLL, not the CSLA dll itself.&nbsp; Obviously, the code might be simpler if it had direct access to the data it needed.&nbsp; It might also be simpler if I were a more experienced C# programmer, but we all learn by doing. :)</P>
+<P>I have not added rule capability to RuleReadOnlyBase like I did with RuleBusinessBase.&nbsp; I decided to create a new subclass, called RuleReadOnlyRuledBase (horrible name! yuck!) that would implement rule support.&nbsp; That way, if an read-only object had no warning/info rules, it wouldn't have the overhead associated with them.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 02, 2007</h2><P>I missed this post earlier, so here are my comments:</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></P>
+<P><STRONG>ReadOnlyBase does not support business rules.</STRONG></P>
+<P>In prior versions, all rules had an implied severity = Error.&nbsp; A broken rule prevented the object from persisting its data.&nbsp; Therefore, a read-only version of that object, by definition, had no broken rules.</P>
+<P>In the current version, rules can also have a severity of Info or Warning, and objects can persist their data at those severity levels.&nbsp; Thus, a read-only version can have broken rules!&nbsp; Just because the user of that object cannot change the data does not mean they don't want to know about its problems!</P>
+<P></div></BLOCKQUOTE></P>
+<P>I suggest using a BB-derived object with read-only properties for this purpose. The goal of ROB is to provide for very light-weight and fast data retrieval. There's a fair amount of unavoidable cost to incorporating validation rule support into the base class, and I don't want ROB to slow down.</P>
+<P>BB already has all the functionality you want, and if you build a BB object with read-only properties you get the ROB behavior of a read-only object, but with all the validation behaviors you are after.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></P>
+<P><STRONG>The publicly available information about rules in the object is incomplete.</STRONG></P>
+<P>If I ask the framework for a list of rules, I get a collection of items formatted like this:</P><FONT color=#008000 size=2>
+<P>rule://TheRuleName/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</P></FONT>
+<P>The severity and priority of the rule is not included in the above format.&nbsp;&nbsp; </P>
+<P>I would accept the argument that priority is a technical implementation choice and should not be made public.&nbsp; (Although it would be useful for those testing the application to know...)</P>
+<P>But severity is clearly a business issue.&nbsp;&nbsp; Since the rule information uses URL format, maybe we could put the severity level in the port slot, with 0,1,2 as the values. (0=error, 1 = warning, 2 = info)</P>
+<P><FONT color=#008000 size=2>rule://TheRuleName:80/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>The issue here is that severity is set by the rule method. So even if severity were included here, all you'd get is the most recent severity returned by the rule. That could be quite unpredictable for rules that change the severity depending on how the rule is broken.</P>
+<P>Priority, on the other hand, can't change over time, and so it could be included here in a meaningful way. As you note however, its value is limited to testing, because it is hard to imagine how you'd use it at runtime.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></P>
+<P><STRONG>The publicly available information about CommonRules is insufficient to display a meaningful list of rules to the user.</STRONG></P>
+<P><FONT color=#000000>[...]</FONT></P>
+<P>We need to be able to turn this back into a useful error message in the user's language.&nbsp; For the rules that come in CommonRules, there is no way to programmatically deduce which resource key goes with which rule.&nbsp; A human can figure it out at a glance, but a program cannot.&nbsp; The names of the rules and the names of the error message key do not <STRONG>exactly</STRONG> agree.</P>
+<P><FONT color=#000000>[...]</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>Unfortunately this problem (which I'm not sure I fully understand to be honest) may get worse in 3.0, due to the introduction of DecoratedRuleArgs.</P>
+<P>There's another problem with rule methods that you haven't mentioned, which is that the use of strongly typed RuleArgs subclasses makes code generation (or at least designer support) really hard. So I'm solving that issue by using the decorator design pattern in the form of DecoratedRuleArgs, which is a subclass of RuleArgs.</P>
+<P>DecoratedRuleArgs is a dictionary of name/value pairs, with each name corresponding to a parameter required by the rule method, and each value containing the value for that property.</P>
+<P>The CommonRules rule methods now all use DecoratedRuleArgs to do their work, which means that a code generator and/or designer tool can now use a simple grid (or similar control like the VS property control) to get the required arguments from the user and pass them through to the rule method.</P>
+<P>For backward compatibility, the strongly typed RuleArgs subclasses continue to work - but they now subclass DecoratedRuleArgs and load the dictionary with values rather than using their own fields. I thought that was a clever solution <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>A side-effect of this however, is that the order of the parameter values is no longer determinate. In other words, you can't count on there being a "first parameter" and "second parameter" because someone could load the dictionary in reverse or random order.</P>
+<P>On the upside, 3.0 now includes a RuleDescription class that understands how to parse the rule:// URI in a friendly way. It is similar to System.Uri, but is tailored to the specific implementation of the rule:// URI contents. It doesn't solve your issue (I don't think), but it certainly makes working with rule:// URIs much easier. (thanks to <A href="http://www.magenic.com">Magenic</A>'s Brant Estes for helping put this together)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 02, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>I missed this post earlier, so here are my comments:</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></P>
+<P><STRONG>ReadOnlyBase does not support business rules.</STRONG></P>
+<P>In prior versions, all rules had an implied severity = Error.&nbsp; A broken rule prevented the object from persisting its data.&nbsp; Therefore, a read-only version of that object, by definition, had no broken rules.</P>
+<P>In the current version, rules can also have a severity of Info or Warning, and objects can persist their data at those severity levels.&nbsp; Thus, a read-only version can have broken rules!&nbsp; Just because the user of that object cannot change the data does not mean they don't want to know about its problems!</P>
+<P></div></BLOCKQUOTE></P>
+<P>I suggest using a BB-derived object with read-only properties for this purpose. The goal of ROB is to provide for very light-weight and fast data retrieval. There's a fair amount of unavoidable cost to incorporating validation rule support into the base class, and I don't want ROB to slow down.</P>
+<P>BB already has all the functionality you want, and if you build a BB object with read-only properties you get the ROB behavior of a read-only object, but with all the validation behaviors you are after.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Brilliant!&nbsp; Duh!&nbsp; (Duh! is addressed to me.)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></P>
+<P><STRONG>The publicly available information about rules in the object is incomplete.</STRONG></P>
+<P>If I ask the framework for a list of rules, I get a collection of items formatted like this:</P><FONT color=#008000 size=2>
+<P>rule://TheRuleName/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</P></FONT>
+<P>The severity and priority of the rule is not included in the above format.&nbsp;&nbsp; </P>
+<P>I would accept the argument that priority is a technical implementation choice and should not be made public.&nbsp; (Although it would be useful for those testing the application to know...)</P>
+<P>But severity is clearly a business issue.&nbsp;&nbsp; Since the rule information uses URL format, maybe we could put the severity level in the port slot, with 0,1,2 as the values. (0=error, 1 = warning, 2 = info)</P>
+<P><FONT color=#008000 size=2>rule://TheRuleName:80/ThePropertyName?theFirstParameterName=Value1&amp;theSecondName=Value2</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>The issue here is that severity is set by the rule method. So even if severity were included here, all you'd get is the most recent severity returned by the rule. That could be quite unpredictable for rules that change the severity depending on how the rule is broken.</P>
+<P>Priority, on the other hand, can't change over time, and so it could be included here in a meaningful way. As you note however, its value is limited to testing, because it is hard to imagine how you'd use it at runtime.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That's an interesting concept. When I read your rule changes for 2.1, I assumed we should set the severity when the rule is added to the validation list.&nbsp; You are having the rule set the severity at rule execution runtime.&nbsp; To me, that would have been two rules:</P>
+<UL>
+<LI>(Error) You must do this.</LI>
+<LI>(Warn) You should do that.</LI></UL>
+<P>If the framework is going to keep the concept that the innards of the rule decide whether it's an error or not, rather than the assignment of the rule to the object, you are right, it can't be included in the public info.&nbsp; Conceptually, I don't agree with you, though. :)&nbsp; To me, the business&nbsp;policies and rules come first, and the objects exist to instantiate them.&nbsp;&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></P>
+<P><STRONG>The publicly available information about CommonRules is insufficient to display a meaningful list of rules to the user.</STRONG></P>
+<P><FONT color=#000000>[...]</FONT></P>
+<P>We need to be able to turn this back into a useful error message in the user's language.&nbsp; For the rules that come in CommonRules, there is no way to programmatically deduce which resource key goes with which rule.&nbsp; A human can figure it out at a glance, but a program cannot.&nbsp; The names of the rules and the names of the error message key do not <STRONG>exactly</STRONG> agree.</P>
+<P><FONT color=#000000>[...]</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>Unfortunately this problem (which I'm not sure I fully understand to be honest) may get worse in 3.0, due to the introduction of DecoratedRuleArgs.</P>
+<P>There's another problem with rule methods that you haven't mentioned, which is that the use of strongly typed RuleArgs subclasses makes code generation (or at least designer support) really hard. So I'm solving that issue by using the decorator design pattern in the form of DecoratedRuleArgs, which is a subclass of RuleArgs.</P>
+<P>DecoratedRuleArgs is a dictionary of name/value pairs, with each name corresponding to a parameter required by the rule method, and each value containing the value for that property.</P>
+<P>The CommonRules rule methods now all use DecoratedRuleArgs to do their work, which means that a code generator and/or designer tool can now use a simple grid (or similar control like the VS property control) to get the required arguments from the user and pass them through to the rule method.</P>
+<P>For backward compatibility, the strongly typed RuleArgs subclasses continue to work - but they now subclass DecoratedRuleArgs and load the dictionary with values rather than using their own fields. I thought that was a clever solution <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>A side-effect of this however, is that the order of the parameter values is no longer determinate. In other words, you can't count on there being a "first parameter" and "second parameter" because someone could load the dictionary in reverse or random order.</P>
+<P>On the upside, 3.0 now includes a RuleDescription class that understands how to parse the rule:// URI in a friendly way. It is similar to System.Uri, but is tailored to the specific implementation of the rule:// URI contents. It doesn't solve your issue (I don't think), but it certainly makes working with rule:// URIs much easier. (thanks to <A href="http://www.magenic.com">Magenic</A>'s Brant Estes for helping put this together)</P>
+<P></div></BLOCKQUOTE></P>
+<P>Actually, the DecoratedRuleArgs sounds much better for what I want to do.&nbsp; It should make what I want to do much easier!</P>
+<P>The order of parameters in a rule&nbsp;URI isn't the issue, it's matching up those parameters to the {0}, {1} tags in the error message text in the resource string that is the problem.&nbsp; That's why I want us to use {parameterName} and {rulePropertyName} tags instead of numeric {} tags.&nbsp; That, along with resource keys that exactly match the rule name means we can parse the&nbsp;rule to get back a description for the rule.</P>
+<P>I'll take a look at the 3.0 beta version this weekend.&nbsp;&nbsp; If I've understood what you're telling me correctly, I may be able to quickly show you how to modify RuleDescription, common rules,&nbsp;and the resource file entries so that it can return a user-friendly message describing the rule.&nbsp; If you like it, I'll do the leg work on updating the resource files&nbsp;in all the different languages, plus the common rules.&nbsp; Should be able to knock out the C# version changes in a long evening.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Before replacing string.format with a series of string.replace
+calls, we need to evaluate the likely perf cost. It may be trivial, but it may
+not, and I don&#8217;t want to find out after the fact that n string.replace
+calls is a lot slower than one string.format call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 02, 2007</h2><P>I'll set up a performance test to go along with it.</P>
+<P>&nbsp;</P>
+<P>Remember, the String.Format/String.Replace calls only happen if the rule is broken.</P>
+<P>Users can only type so fast! :)</P>
+<P>The only way I see it might be&nbsp;a performance problem would be if we loaded a collection of thousands of objects, each of which had lots and lots of warning/info only broken rules.</P>
+<P>My expectation is that it would usually turn out to be a trivial difference.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 02, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<P class=MsoNormal><SPAN>Before replacing string.format with a series of string.replace calls, we need to evaluate the likely perf cost. It may be trivial, but it may not, and I don’t want to find out after the fact that n string.replace calls is a lot slower than one string.format call.<o:p></o:p></SPAN></P>
+<P class=MsoNormal>
+<P class=MsoNormal><SPAN></SPAN><o:p></o:p></P></div></BLOCKQUOTE></P>
+<P class=MsoNormal>It just dawned on me that using the named tags {paramNameOne}&nbsp;is better for globalization purposes than the numbered {1} tags.&nbsp; </P>
+<P class=MsoNormal>With numbered tags, the translated message must keep the same relative order of tags in the message text.&nbsp; That may cause some very unnatural translations, as sentence structure varies between different languages.</P>
+<P class=MsoNormal>A typical English sentence is written in Subject - Verb - Object (SVO) order.</P>
+<BLOCKQUOTE class=Section1 dir=ltr>
+<P class=MsoNormal>I am going to the market.</P></BLOCKQUOTE>
+<P class=MsoNormal>I believe some languages prefer to use Verb - Object - Subject (VOS) or Verb - Subject - Object order.</P>
+<BLOCKQUOTE class=Section1 dir=ltr>
+<P class=MsoNormal>Going to market am I.</P></BLOCKQUOTE>
+<P class=MsoNormal dir=ltr>Wikipedia has a brief overview of these concepts.</P>
+<P class=MsoNormal dir=ltr><A href="http://en.wikipedia.org/wiki/Verb_Subject_Object">http://en.wikipedia.org/wiki/Verb_Subject_Object</A></P>
+<P class=MsoNormal dir=ltr><A href="http://en.wikipedia.org/wiki/Subject_Object_Verb">http://en.wikipedia.org/wiki/Subject_Object_Verb</A></P>
+<P class=MsoNormal dir=ltr>etc.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you misunderstand the way the numbered tags work in
+string.format.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The <i>order</i> of the tags doesn&#8217;t matter. The tag
+number (0, 1, 2, etc) is relative to the order of the parameter on the
+string.format call itself, and that is constant because it is hard-coded in the
+rule method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>String.format(&#8220;Hi {0}, {1}&#8221;, &#8220;Rocky&#8221;, &#8220;how
+are you&#8221;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>String.format(&#8220;Hello, {1} {0}?&#8221;, &#8220;Rocky&#8221;,
+&#8220;how are you&#8221;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Both work, even though I&#8217;ve reversed the order of the 0
+and 1 parameters in the format string.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 02, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I think you misunderstand the way the numbered tags work in string.format.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The <I>order</I> of the tags doesn’t matter. The tag number (0, 1, 2, etc) is relative to the order of the parameter on the string.format call itself, and that is constant because it is hard-coded in the rule method.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>String.format(“Hi {0}, {1}”, “Rocky”, “how are you”)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>And <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>String.format(“Hello, {1} {0}?”, “Rocky”, “how are you”)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Both work, even though I’ve reversed the order of the 0 and 1 parameters in the format string.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Right you are.&nbsp; My thinking cap had a short circuit in it.&nbsp; That's my story and I'm sticking to it. :)</P>
+<P>I do think </P>
+<P>"Hi {personName}, {greetingPhrase}?"</P>
+<P>and</P>
+<P>"Hello, {greetingPhrase} {personName}?"&nbsp; </P>
+<P>are more self-documenting when it's known that the {} contain the relevant parameter names.</P>
+<P>I'm writing up a performance test to check String.Format vs Replace().&nbsp; <EM>(Can you tell I'm excited about this?)</EM> &nbsp;I'm replacing two values, as 1, 2 or 3 values seem to be the most likely.</P>
+<P>I'll start out by grabbing both resource strings, so the first method does not have to pay any startup cost to grab a resource.</P>
+<P><STRONG>Resource Strings:</STRONG></P>
+<P>MessageKeyFormat&nbsp;&nbsp;&nbsp;&nbsp; {0} must be less than {1}.&nbsp;<BR>MessageKeyReplace&nbsp;&nbsp;&nbsp;&nbsp;{rulePropertyName} must be less than {maxValue}.&nbsp;</P>
+<P>I'm using the StopWatch class to capture elapsed time.</P>
+<P>StopWatch Frequency = 3579545</P>
+<P>StopWatch HighResolution = true<BR></P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> PerformFormatTest()<BR>{<BR>&nbsp;&nbsp;&nbsp; formatStartTimestamp = </FONT><FONT color=#008080 size=2>Stopwatch</FONT><FONT size=2>.GetTimestamp();</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i = 0; i &lt; 10000; i++)<BR>&nbsp;&nbsp; {<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int</FONT><FONT size=2> j = 50000;</P>
+<P></FONT><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String</FONT><FONT size=2> s = </FONT><FONT color=#008080 size=2>String</FONT><FONT size=2>.Format(Properties.</FONT><FONT color=#008080 size=2>Resources</FONT><FONT size=2>.MessageKeyFormat, </FONT><FONT color=#800000 size=2>"Salary"</FONT><FONT size=2>, j);<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; formatEndTimestamp = </FONT><FONT color=#008080 size=2>Stopwatch</FONT><FONT size=2>.GetTimestamp();</P>
+<P>&nbsp;&nbsp;&nbsp; System.</FONT><FONT color=#008080 size=2>Console</FONT><FONT size=2>.WriteLine(</FONT><FONT color=#800000 size=2>"Format test length: "</FONT><FONT size=2> <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + ((</FONT><FONT color=#0000ff size=2>long</FONT><FONT size=2>)(formatEndTimestamp - formatStartTimestamp)).ToString());</P>
+<P>}</P>
+<P>//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> PerformReplaceTest()<BR>{<BR>&nbsp;&nbsp;&nbsp; replaceStartTimestamp = </FONT><FONT color=#008080 size=2>Stopwatch</FONT><FONT size=2>.GetTimestamp();<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> k = 0; k &lt; 10000; k++)<BR>&nbsp;&nbsp;&nbsp; {<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int</FONT><FONT size=2> j = 50000;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string</FONT><FONT size=2> s = Properties.</FONT><FONT color=#008080 size=2>Resources</FONT><FONT size=2>.MessageKeyReplace.ToString().Replace(</FONT><FONT color=#800000 size=2>"{rulePropertyName}"</FONT><FONT size=2>,</FONT><FONT color=#800000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Salary"</FONT><FONT size=2>).Replace(</FONT><FONT color=#800000 size=2>"{maxValue}"</FONT><FONT size=2>, j.ToString());</P>
+<P>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>}</P>
+<P>&nbsp;&nbsp;&nbsp; replaceEndTimestamp = </FONT><FONT color=#008080 size=2>Stopwatch</FONT><FONT size=2>.GetTimestamp();</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp; System.</FONT><FONT color=#008080 size=2>Console</FONT><FONT size=2>.WriteLine(</FONT><FONT color=#800000 size=2>"Replace test length: "</FONT><FONT size=2> <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; + ((</FONT><FONT color=#0000ff size=2>long</FONT><FONT size=2>)(replaceEndTimestamp - replaceStartTimestamp)).ToString());</P>
+<P>}</P></FONT></FONT></FONT><FONT size=2>
+<P><FONT size=3><STRONG>Test Results</STRONG></FONT></P><FONT size=3>
+<P dir=ltr><FONT size=2><FONT size=3>Here are the results, averaged over 10 runs of 10,000 iterations, each of which represents a broken rule:</FONT></P>
+<P></FONT>Format Test:&nbsp;&nbsp;&nbsp; 56167</FONT></P>
+<P><FONT size=3>Replace Test:&nbsp; 70973</FONT></P>
+<P><FONT size=3>Typical time to perform the loop, instantiate an int variable, and instantiate a string with just the properties.resources text in it was approximately&nbsp;15000, so the remainder represents the string processing to do the subsitute and replace.</FONT></P>
+<P><FONT size=3>Average time over 10 runs of 100 iterations, each of which represents a broken rule:</FONT></P>
+<P><FONT size=3>Format Test: 674</FONT></P>
+<P><FONT size=3>Replace Test: 771</FONT></P>
+<P><FONT size=3>There may be faster ways to write the replace code, I'm still learning C# nuances.</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, May 08, 2007</h2><P>I took a look at RuleDescription this weekend.&nbsp; It looks like a perfect candidate for the extension I have in mind.&nbsp; (But I've had a tooth-ache so I haven't coded it yet.&nbsp; Hard to concentrate!)</P>
+<P>Question:</P>
+<P>I don't want to put my custom rule&nbsp;messages into the CSLA Properties.Resources file because they would get overwritten by a new release.</P>
+<P>I don't want to put them into my own application's resource file because RuleDescription won't be able to find it - it does not recieve "rule DLL parentage information".</P>
+<P>I'm thinking of adding a CustomProperties folder to CSLA and putting a resources file in it.</P>
+<P>Rule Description, when putting together a human-ready error message, would first look in the standard resources file, and if not successful, look in the custom resources file.</P>
+<P>Anyone got a better idea?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2007</h2><P>This is not the sort of thing I'd put into the core framework. The reason is that the rule descriptions (rule://) are static information about the rule methods. They <EM>can't</EM> contain information about the human-readable description, or the severity, because those things can be changed by the rule itself.</P>
+<P>You can easily envision a rule that returns various possible human-readable descriptions depending on how the rule is broken - and each of them might be at a different&nbsp;severity.</P>
+<P>You can even envision a rule method that invokes other rule methods, aggregating their results together into a consolidated result. That one is tricky, because the "sub-rules" would never even show up in the rule:// list. Odds are this hypothetical "router rule" would call specific sub-rules depending on the state of the object at the time, so there's no static way to know which ones would be called when.</P>
+<P>The rule infrastructure is really quite a lot more dynamic than it might first appear, and I don't want to do anything that would limit or restrict that flexibility.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 09, 2007</h2><P>I'm coming at this discussion&nbsp;from the point of view that an object should be self-documenting, that it should be able to present, upon demand, a list of the rules it enforces in human-readable format.&nbsp; And that this capability has the ability, if properly harnessed, to provide significant business value.</P>
+<P>As a framework architect and developer, you do not want to break existing code or limit your developers' technical options.</P>
+<P>I believe that these two goals are not mutually exclusive.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><BR>You can easily envision a rule that returns various possible human-readable descriptions depending on how the rule is broken - and each of them might be at a different&nbsp;severity.<BR></div></BLOCKQUOTE></P>
+<P>Yes I can, but I can equally envisage a general purpose explanation of the rule.&nbsp;<EM> The general rule is what should be displayed when the user is presented a list of rules</EM>.&nbsp; For example:</P>
+<P>(General rule statement)</P>
+<UL>
+<LI>Email addresses must be in the following format: <A href="mailto:yourname@someplace.someextension">yourname@someplace.someextension</A>.</LI></UL>
+<P>(Specific error messages in response to user input)</P>
+<UL>
+<LI>You must include only one @ sign in the email address.</LI>
+<LI>There must be at least one . after the @ sign in the email address.</LI>
+<LI>There must be at least one character before the @ sign in the email address.</LI></UL>
+<P>In theory, the rule might return all three of the above messages if the user was really not paying attention!&nbsp;</P>
+<P>Regardless, the general rule did not change regardless of the specifics of how the user broke the rule.</P>
+<P>The rule the user must follow, and the specific coaching they receive upon breaking the rule are not quite the same thing.&nbsp; </P>
+<P>The current method of storing messages in resource files works great to handle this. In the example above, there would be four resource tags and their associated text messages.&nbsp; (I'll use really long names for the tags to make the connections clearer):</P>
+<UL>
+<LI>ruleIsValidEmailAddr</LI>
+<LI>ruleIsValidEmailAddrOnlyOneAtSign</LI>
+<LI>ruleIsValidEmailAddrDotAfterAtSign</LI>
+<LI>ruleIsValidEmailAddrCharacterBeforeAtSign</LI></UL>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The reason is that the rule descriptions (rule://) are static information about the rule methods. They <EM>can't</EM> contain information about the human-readable description, or the severity, because those things can be changed by the rule itself.<BR></div></BLOCKQUOTE></P>
+<P>I disagree that the rule should decide whether violating it is an error or a warning.&nbsp; The <EM><STRONG>assignment</STRONG></EM> of the rule to the object should decide.&nbsp; </P>
+<P>For example, in one situation, StringRequired might be an error, in another, it might be a warning.</P>
+<UL>
+<LI>Middle Name is required. </LI></UL>
+<P>This might raise a warning on an Employee object, but might raise an error on a GovernmentSecurityClearance object.</P>
+<P>Your approach forces us to write two rules, because the rule decides instead of the object using it.</P>
+<P>To counter that, from what I perceive to be your approach, you might argue that some user input might qualify as an error but other input might qualify as a warning in the same rule, and that my approach would require splitting up that rule function into two - one that would be assigned an error status by the object and one that would be assigned a warning status by the object.&nbsp; Yep.&nbsp; Exactly right.&nbsp; It would!&nbsp; These are, in fact, two separate rules in my view:</P>
+<UL>
+<LI>You must do this.</LI>
+<LI>You should do that.</LI></UL>
+<P>The above approach has the advantage of the object being able to instruct the user as to the rules it follows.&nbsp; </P>
+<P>The current method does not.</P>
+<P><STRONG>Based on your explanation, as I understand it, severity cannot be added to the rule uri because of how existing systems have been coded.&nbsp; That makes sense to me.</STRONG>&nbsp; (Doesn't make me happy, but I understand and agree with your call! :)<BR><BR>Incidentally, did you realize that the current method of assigning a rule is also flexible enough to specify the severity when the rule is assigned to the object?&nbsp; The syntax is a bit clunky, but it can be done. :)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><BR>You can even envision a rule method that invokes other rule methods, aggregating their results together into a consolidated result. That one is tricky, because the "sub-rules" would never even show up in the rule:// list. Odds are this hypothetical "router rule" would call specific sub-rules depending on the state of the object at the time, so there's no static way to know which ones would be called when.<BR></div></BLOCKQUOTE></P>
+<P>I can also envision providing a general rule statement covering said consolidated results.</P>
+<P>For example, a GoldDigger object, when it's spouse property is set to a non-blank value, might trigger the following General Rule:</P>
+<UL>
+<LI>Spouses of Gold Diggers must be wealthy, indulgent, not overly young or healthy, and not have any serious communicable diseases.</LI></UL>
+<P>Our consolidation rule might call several complex functions, such as:</P>
+<UL>
+<LI>bool IsWealthy(personId)</LI>
+<LI>bool IsIndulgent(personId)</LI>
+<LI>bool IsTooYoung(personId)</LI>
+<LI>bool IsTooHealthy(personId)</LI>
+<LI>bool HasYuckyDiseaseIMightCatch(personId)</LI>
+<LI>bool HasQuicklyTerminalDiseaseIWillNotCatch(personId)</LI></UL>
+<P>If we are unable to come up with a general purpose rule description, I would first argue that we might be asking a rule to do too much, much as we can ask an&nbsp;object to assume too many responsibilities.&nbsp; Maybe it should really be two or more rules.&nbsp; Aside from that, the only harm done would be the rule&nbsp;text message&nbsp;for that rule would be blank or default back to the rule URI.&nbsp; Given that all rule text messages are blank now, that is hardly a problem. In fact, a configuration switch could be made to&nbsp;force a URI to always be listed, for those who do not want this feature or code in a manner inappropriate for it. :)</P>
+<P>People who do not want to use this portion of the framework would simply ignore it.&nbsp; People who wanted to use it would do so, and make sure their general rule messages made sense.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><BR>The rule infrastructure is really quite a lot more dynamic than it might first appear, and I don't want to do anything that would limit or restrict that flexibility.<BR></div></BLOCKQUOTE></P>
+<P>I completely agree that the current approach is very flexible, and I certainly would not want you to add limitations to it! :)</P>
+<P>I hope I've shown that the method I'm proposing is also flexible, and that it does not have to be implemented in a way that limits how the existing system works.&nbsp; If I haven't done so to your satisfaction, please explain where I fell short.&nbsp; It will probably simply have been failure of communication on my part.</P>
+<P>Regardless, thanks for considering this!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 10, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>
+<P>I'm coming at this discussion&nbsp;from the point of view that an object should be self-documenting, that it should be able to present, upon demand, a list of the rules it enforces in human-readable format.&nbsp; And that this capability has the ability, if properly harnessed, to provide significant business value.</P>
+<P>As a framework architect and developer, you do not want to break existing code or limit your developers' technical options.</P>
+<P>I believe that these two goals are not mutually exclusive.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I agree entirely that this is a good goal. Without restricting the types of rule methods that can be created, and with the limitation of globalization support, I'm not sure how to make this work in any easy way.</P>
+<P>The RuleMethod class contains metadata for each property&lt;-&gt;rule. This object is created based on the data you provide when you call ValidationRules.AddRule(), and so this is the sole entry point for setting up this sort of metadata.</P>
+<P>It would be possible to add a Description value to RuleMethod, and of course a whole host of overloads to AddRule.</P>
+<P>Then the rule:// URI could include __priority and __description as property values along with all the other properties specified by RuleArgs (perhaps __description only appears if it has been set). This should enable the scenario you are after, and would allow people like me who take a different approach to the rule method design to also provide a description if desired.</P>
+<P>Since the description would be set by the business object when AddRule() is called, globalization becomes easy, because the value would come from the business assembly's resources.</P>
+<P>The only issue I have is including __priority in the URI, because you <EM>know</EM> there'll be continual threads spawned as people wonder why that value is not consistent over time (when their rule methods change the value). That's a support headache I don't want or need. But perhaps RuleArgs can keep the original priority value in a field, and use that value to build the URI, rather than whatever the current value might be at the time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, May 11, 2007</h2><P>Adding Rule Description to the rule arguments would work for me.&nbsp; Would you like me to ripple that thru the code for you?&nbsp; I can get it to you by the end of next week.</P>
+<P>Priority is a nice-to-have for the testers, but not essential.&nbsp; If listed, it should be called "CurrentPriority"&nbsp; </P>
+<P>Severity would be far more useful to the users, but, as you've pointed out before, that's not a path that will work given the existing code base. If it were listed, I would call it CurrentSeverity.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, May 11, 2007</h2><P>Ok, while getting my tooth drilled this morning, I did some more thinking about adding a RuleDescription property in RuleArgs.</P>
+<P>There are good and bad points to it, as compared to the solution I proposed earlier, which would have the rule look up the description in the resources file and do the substitutions using {tags} that match the rule arguments.</P>
+<P><STRONG>For adding RuleDescription argument:</STRONG></P>
+<UL>
+<LI>Simple to code.</LI>
+<LI>Simple to understand, less training needed to use.</LI>
+<LI>Programmers can completely ignore it if they want to.</LI></UL>
+<P><STRONG>Against adding RuleDescription argument:</STRONG></P>
+<UL>
+<LI>Puts burden of supplying correct rule description for common rules on the person who uses a rule, instead of the person who designs and codes the rule.</LI>
+<LI>RAM is used to store rule descriptions even if they are never asked for.</LI>
+<LI>(I'm not sure on this one: Could we get into difficulties if two users were sharing the same object, and each was using a different human language?&nbsp; Because the rule description would be loaded using the first person's language.&nbsp; I'm still learning this stuff! :)</LI>
+<LI>More work to use once you are trained.</LI></UL>
+<P><STRONG>For using Rule Messages with resource keys that use tags that match argument names:</STRONG></P>
+<UL>
+<LI>Puts burden of supplying corect rule description for common rules on the person who codes the rule, not the person who uses it.</LI>
+<LI>RAM for storing rule descriptions only used on demand.</LI>
+<LI>Programmers can completely&nbsp;ignore it if they want to.</LI>
+<LI>Less work to use once you are trained.</LI></UL>
+<P><STRONG>For using Rule Messages with resource keys that use tags that match argument names:</STRONG></P>
+<UL>
+<LI>Less intuitive method for supplying rule descriptions, requires more training for rule writers.</LI>
+<LI>People are sloppy, and will key in {tags} that do not exactly match the rule argument names.&nbsp; Ditto for the base rule description key not matching the rule name exactly.&nbsp; So, the correct one will not always be found, and that will be learned at run time instead of compile time.</LI>
+<LI>Requires a "CustomResource file" that comes with CSLA, but which is overwritten by the developer.&nbsp; Someone will surely replace it with the blank one when upgrading to a new CSLA version.</LI></UL>
+<P>If I were building this for just my team, I would go with the approach I put forward.</P>
+<P>If I were in your shoes, having to support lots of people all over the place, I would be sorely tempted to go with the RuleDescription argument you've proposed.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I agree that it is not ideal to put the burden on the consumer
+of the rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately I can&#8217;t figure out any realistic way to
+provide a rule description from the rule itself, given the following
+constraints:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Globalization<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Rule descriptions (e.Description) could be hard-coded &#8211;
+they don&#8217;t have to come from resource files<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Rules can return different e.Description values based on how the
+rule is broken<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Without the globalization requirement, I&#8217;d just use an
+attribute on the rule method and we&#8217;d be done. But there&#8217;s no way
+(that I know of) to localize the value passed into an attribute, because it
+must be a constant. And you can&#8217;t even pass in the <i>name of the
+resource</i>, because it is the attribute code that is resolving that name, so
+all rule description names would then need to be in Csla.dll (or associate
+resource files) and that&#8217;s not acceptable. The resource text should come
+from the assembly that implements the rule method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The second issue is a big one too. I&#8217;m guessing a lot of
+people hard-code their rule description text into the rule method. I only use
+resources in CommonRules because CSLA is localizable, but when I&#8217;m
+building apps for US companies who aren&#8217;t worried about globalization of
+their code, I put the text directly into the rule method. There&#8217;s no way
+to extract that text to build the rule:// URI in this (most common) case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And the third one is a show stopper on using e.Description, and
+I do this fairly often &#8211; especially when using severities. Different
+severities of a rule result in slightly different descriptions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So another alternative, is to have an <i>external cross
+reference table</i> that translates a rule method name into a description. This
+would be outside CSLA itself, and would belong to your app. Since
+RuleDescription gives you the rule method name, it would be an easy thing for
+you to translate that to some rule description text based on your own resource
+file, database table, XML xref data or whatever.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I rather prefer this solution </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, May 11, 2007</h2><P>I found a way around the resource file problem.&nbsp; If you have the appropriate object reference, you can get to the correct resources file.</P>
+<P>You can see an example in the PublicRuleInfo class in CslaContrib.</P>
+<P>Basically, PublicRuleInfoList (containing&nbsp;PublicRuleInfo)&nbsp;is instantiated inside RuleBusinessBase (which is a subclass of BusinessBase).&nbsp; We pass in a reference to the object it belongs to.</P>
+<P>PublicRuleInfo checks the Resources file that it belongs to for the message string that goes with the rule.&nbsp; (The message string is keyed by the rule name in the URI.)</P>
+<P>If it finds&nbsp;a match, uses that message string as the base for the rule description.</P>
+<P>If it doesn't find&nbsp;a match, it uses the object reference to check that objects properties.</P>
+<P>(I did it in this order on the assumption that there would be more hits on CommonRules than custom ones.)</P>
+<P>Take a look at it and see if it wouldn't work as an approach.&nbsp;&nbsp; My URI parsing code is a bit ratty compared to your new RuleDescription class, but that's because you know more than I do about this stuff!&nbsp; (I'm planning to update the code as soon as I can using your example.)</P>
+<P>Basically, if I put a GetResourceString in each class, it seems to work great.</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, May 11, 2007</h2><P>Take a look at PublicRuleInfo, PublicRuleInfoList and RuleBusinessBase and&nbsp;the associated Resources file&nbsp;in the CslaContrib project (in the&nbsp;CslaSrd sub-project).</P>
+<P>I think I've found a way past the resources file problem, and in a way that does not put the burden of a general rule definition on the user of the rule.&nbsp; It pulls in the rule text from the the standard rules resource file or the user's assembly resource file, as appropriate.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

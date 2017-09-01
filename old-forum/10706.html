@@ -1,0 +1,88 @@
+<html><header><title>localization in SL-app</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>localization in SL-app</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Thursday, September 22, 2011</h2><p>Hi,</p>
+<p>wheras using winforms &amp; CSLA 3.8 I never had probs with getting the correct culture (as long as users have set their OS-culture set the right way, of course ;-)), I run out of ideas with SL &amp; CSLA 4.</p>
+<p>Where is the right place to set UI-culture, so it&#39;s transfered to the server and back to the client to show validation messages in the correct language?</p>
+<p>Thanks for answers &amp; help</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 22, 2011</h2><p>You should be able to set this on the current thread in SL, ex:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.CurrentThread.CurrentCulture = new System.Globalization.CultureInfo(&quot;FR&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.CurrentThread.CurrentUICulture = new System.Globalization.CultureInfo(&quot;FR&quot;);</p>
+<p>And these will be transferred to server at set on the serverside thread when you use the DataPortal.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Thursday, September 22, 2011</h2><p>Hi Jonny,</p>
+<p>thanks for your answer.<br />Unfortunatly exactly that doesn&#39;t work;-( (as other approaches like params in aspx/html don&#39;t)</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Thread</span>.CurrentThread.CurrentCulture&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CultureInfo</span>(<span style="color:#a31515;">&quot;de-DE&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Thread</span>.CurrentThread.CurrentUICulture&nbsp;=&nbsp;<span style="color:#2b91af;">Thread</span>.CurrentThread.CurrentCulture</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">Any other hints?</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">Volker</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Thursday, September 22, 2011</h2><p>Hi,</p>
+<p>after some testing it looks as if it&#39;s a problem with accessing the resources, since the culture seems to be set correctly...</p>
+<p>Any ideas?</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Monday, September 26, 2011</h2><p>Hi,</p>
+<p>both, SL-clientside and serverside thread carry the correct culture/UI-culture. But unfortunatly CSLA seems to fall back to the default language resource which is english and ignores the culture setting<img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /></p>
+<p>So, what are the prerequisites for CSLA for accessing the correct language resource? Even the SL-sample behaves this way</p>
+<p>Thanks for any help!</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Monday, September 26, 2011</h2><p>Hi, Do you mean the messages from CSLA itself? </p>
+<p>Then, it&#39;s probably missing the de\Csla.resources.dll <br />As far as I remember it&#39;s not included in the binaries, you have to build the solution yourself to get it.</p>
+<p>HTH</p>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Tuesday, September 27, 2011</h2><p>Hi Stefan, </p>
+<p>indeed it&#39;s about the messages created by CSLA itself, validation, for example.</p>
+<p>Does this mean to re-compile CSLA by myself?</p>
+<p>Thx for answering</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Tuesday, September 27, 2011</h2><p>Yes, it does mean to build CSLA from the source by yourself. </p>
+<p>It&#39;s no big deal. But I also don&#39;t understand, why they are not already included.</p>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 27, 2011</h2><p>Jonny generally knows a lot more about this than I do.</p>
+<p>But when you build Csla.dll for Silverlight it does create the satellite assemblies with the localized resources you&#39;d expect. So I don&#39;t see why you would have to build Csla.dll yourself, because those assemblies should be there as part of our installer.</p>
+<p>I don&#39;t know if they come with the nuget package - that could be different I suppose.</p>
+<p>I also don&#39;t know if those satellite assemblies are automatically included in your xap file, or if you need to take extra steps to have them added when you build your application. This is where Jonny probably knows a lot more than me.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 10, 2011</h2><p>Hi, </p>
+<p>Been digging into this a bit myself and there is 2 important points here:</p>
+<p>1. In your SL app you must edit the project file to include the supported languages: <br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;SupportedCultures&gt;no,de&lt;/SupportedCultures&gt;&nbsp;&nbsp; (Here Norwegian and Deutch - Default language is implicit).<br />&nbsp;&nbsp;&nbsp; This is to required to add the satellite resource files to &lt;application&gt;.xap file. <br />&nbsp;&nbsp;&nbsp; Unfortunately - Microsoft has not provide any means to edit this in the Project Properties.</p>
+<p>2. To change language you must set Culture property on the generated resource code. <br />&nbsp;&nbsp;&nbsp; Example (Strings is a resource file) :</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listBox1.Items.Clear();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listBox1.Items.Add(<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;Language:</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&quot;</span>,&nbsp;<span style="color:#2b91af;">Strings</span>.Language));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Strings</span>.Culture&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CultureInfo</span>(<span style="color:#a31515;">&quot;nb-NO&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listBox1.Items.Add(<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;Language:</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&quot;</span>,&nbsp;<span style="color:#2b91af;">Strings</span>.Language));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Strings</span>.Culture&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CultureInfo</span>(<span style="color:#a31515;">&quot;de-DE&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;listBox1.Items.Add(<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;Language:</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&quot;</span>,&nbsp;<span style="color:#2b91af;">Strings</span>.Language));<br /><br />generates the following output:<br />      Language:Default<br />      Language:Norsk<br />      Language:Deutsch<br /><br />or write your own &quot;resource&quot; code that uses Thread.CurrentThread.CurrentUICulture to lookup resources. <br /><br /><br />The default generated code is like this:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">global</span>::System.Globalization.<span style="color:#2b91af;">CultureInfo</span>&nbsp;resourceCulture;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;&nbsp;&nbsp;Overrides&nbsp;the&nbsp;current&nbsp;thread&#39;s&nbsp;CurrentUICulture&nbsp;property&nbsp;for&nbsp;all</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;&nbsp;&nbsp;resource&nbsp;lookups&nbsp;using&nbsp;this&nbsp;strongly&nbsp;typed&nbsp;resource&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:blue;">global</span>::System.ComponentModel.<span style="color:#2b91af;">EditorBrowsableAttribute</span>(<span style="color:blue;">global</span>::System.ComponentModel.<span style="color:#2baf9a;">EditorBrowsableState</span>.Advanced)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">internal</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">global</span>::System.Globalization.<span style="color:#2b91af;">CultureInfo</span>&nbsp;Culture&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;resourceCulture;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;resourceCulture&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;&nbsp;&nbsp;Looks&nbsp;up&nbsp;a&nbsp;localized&nbsp;string&nbsp;similar&nbsp;to&nbsp;Default.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">internal</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Language&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;ResourceManager.GetString(<span style="color:#a31515;">&quot;Language&quot;</span>,&nbsp;resourceCulture);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br /></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Wednesday, October 12, 2011</h2><p>Hi Jonny,</p>
+<p>well the project-file of my SL app already contains &lt;SupportedCultures&gt;de&lt;/SupportedCultures&gt; and adding &#39;no&#39; indeed results in a no-Folder AND&nbsp;de-folder&nbsp;beeing added to my xap-file.&nbsp;The de-folder contains a bunch of dll&#39;s which, as far as I can see&nbsp;contain german messages (esp. System.ComponentModel.DataAnnotations.resources.dll)&nbsp;So far, so good, this works as expected (but unfortunatly doesn&#39;t lead to localized messages).</p>
+<p>As I&#39;m not used to work with resource files, since my apps didn&#39;t need localization, I didn&#39;t get the sense of your second point without digging deeper...</p>
+<p>(Should &lt;SupportedCultures&gt; reside in other project-files, too?)</p>
+<p>Setting Culture/UI-Culture at applications startup definitly doesnt result in accessing those ...resources.dlls <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /></p>
+<p>Thanks</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Monday, October 17, 2011</h2><p>Hi Volker,</p>
+<p>Just to make sure I understand your problem: </p>
+<p>You&#39;re using CommonRules and want localized messages when rules are broken? <br />Are you using&nbsp; &quot;BusinessRules.AddRule(...some common rule....)&quot; in method AddBusinessRules&nbsp; or&nbsp;&nbsp; DataAnnotations attributes? <br />Is there in folder de\ the assembly Csla.resources.dll (on the tier/s where rules are used)? </p>
+<p>If you&#39;re using ValidationAttribute, this<a title="this forum post" href="http://stackoverflow.com/questions/1481376/asp-net-mvc-validationattribute-and-localized-errormessage"> http://stackoverflow.com/questions/1481376/asp-net-mvc-validationattribute-and-localized-errormessage</a> might be helpful. I&#39;ve not been using the attributes yet.</p>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Thursday, October 20, 2011</h2><p>Hi Stefan,</p>
+<p>sorry for the late response, but business...</p>
+<p>&quot;You&#39;re using CommonRules and want localized messages when rules are broken?&quot; &lt;-exactly</p>
+<p>&quot;Are you using &quot;BusinessRules.AddRule&quot; &lt;- yes and &quot;or DataAnnotations attributes&quot; &lt;- no</p>
+<p>This seems to be the point:<br />&quot;Is there in folder de\ the assembly Csla.resources.dll (on the tier/s where rules are used)?&quot; It resides in the SL and the NET part of the libs, in the SL-application, too, but is missing in the xap-File, where the folder is present, but not the csla.resources.dll inside.</p>
+<p>I&#39;ll check that and give feedback if copying the file helps...</p>
+<p>Thanks.</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Friday, October 21, 2011</h2><p>With Wpf projects (non SL) I copied the files in a directory structure like this:</p>
+<p>
+<span style="font-family:courier new,courier;">&nbsp; &nbsp;&nbsp;&nbsp; Libraries\Csla.dll<br />&nbsp;&nbsp;&nbsp; &nbsp; Libraries\de\Csla.resources.dll<br /><br />&nbsp;&nbsp;&nbsp; &nbsp; Source\SomeProject\</span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>From SomeProject I reference the Csla.dll assembly (using browse...) and when built the de\Csla.resources.dll is automatically copied to a bin\Debug folder, and to any output folders of&nbsp; projects referencing SomeProject. </p>
+<p>But I don&#39;t know, whether this works with SL and xap files, too.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

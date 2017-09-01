@@ -1,0 +1,58 @@
+<html><header><title>Control_TargetTypeMismatch (Silverlight)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Control_TargetTypeMismatch (Silverlight)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6206.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeterKisell posted on Tuesday, January 20, 2009</h2><P>Hello again.</P>
+<P>I have a problem trying to display PropertyStatus. Here is some of my code. </P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>TextBox</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="FirstNameTextbox"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Grid.Column</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="1"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Grid.Row</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="0"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> HorizontalAlignment</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Stretch"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Margin</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="6,6,6,6"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Text</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Mode</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=TwoWay,</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Path</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=Data.FirstName}"/&gt;</P></FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>PropertyStatus</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> RelativeTargetName</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="FirstNameTextbox"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Property</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="FirstName"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Source</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Path</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=Data}"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Grid.Column</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="2"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Grid.Row</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="0"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> HorizontalAlignment</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Left"/&gt;</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>Blend displays the PropertyStatus as an error notifying Control_TargetMismatch and I also get the error "VisualTreeHelper_ReferenceIsNotAValidDO". The last error disappears when I remove the RelativeTargetName</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>LayoutRoot is set up to have a business object called Player as DataContext.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>Everything works fine when I use control:DataGrid.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>Appreciate any help.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000></FONT></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000>/Peter</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2><P>&gt;<FONT size=2>Everything works fine when I use control:DataGrid.</FONT></P>
+<P>What does this mean?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeterKisell replied on Wednesday, January 21, 2009</h2><P>Oh, sorry I missed a few things there :/</P>
+<P>I also use a DataGrid that is bound to same source. That DataGrid contains a few &lt;csla:ValidatedDataGridTextColumn&gt;&nbsp; These give a notification if the business object is valid or not.</P>
+<P>Somehow I can't get the PropertyStatus control from the Csla.Silverlight library to work. I can't even get them displayed in Blend, since I get the error Control_TargetTypeMismatch, and also the "VisualTreeHelper_ReferenceIsNotAValidDO" when I set the RelativeTargetName to&nbsp;a textbox.</P>
+<P>&nbsp;</P>
+<P>/Peter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeterKisell replied on Wednesday, January 21, 2009</h2><P>Another small update. I managed to get the PropertyStatus to be displayed in my application when running it. But it's impossible to open it in design view in Expression Blend, and Blend also gives a notification that the XAML is faulty.</P>
+<P>VS 2008 does not have any problem with the XAML, and the application runs just perfectly.</P>
+<P>/Peter</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Fwiw, the code I showed is from the SimpleApp sample in the
+Samples download &#8211; though I did add the RelativeTargetName to match what
+you are doing. But I am able to open that XAML page in Blend, and interact with
+the PropertyStatus control.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Thursday, April 02, 2009</h2><P>Did anyone find a solution&nbsp;for the Control_TargetTypeMismatch.</P>
+<P>I find it happens on the &lt;csla:BusyAnimation </P>
+<P>and the &lt;csla:PropertyStatus</P>
+<P>Strange thing is one day it could be perfectly fine and then the next it does not work at all. Problem does not seem to effect VS2008 builds</P>
+<P>Thanks</P>
+<P>Jeremy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2><P>I'm not sure what to suggest. I do my binding expressions a little differently from what you are doing (and I know we have samples like yours - I just prefer this other approach). My guess is that you have some mix-up in the binding expressions.</P>
+<P>Here's mine:</P>
+<BLOCKQUOTE dir=ltr>
+<P>&lt;Grid x:Name="LayoutRoot" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataContext="{Binding Source={StaticResource MyData}, Path=Data}"&gt;</P></BLOCKQUOTE>
+<P>That sets the overall context to the business object. Notice the Path=Data on the context line, so the overall context isn't the dataprovider, it is the business object.</P>
+<BLOCKQUOTE dir=ltr>
+<P>&lt;TextBox x:Name="NameTextBox" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Width="150" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Text="{Binding Name, Mode=TwoWay}" /&gt;<BR>&lt;csla:PropertyStatus RelativeTargetName="NameTextBox" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Property="Name" Source="{Binding}" /&gt;</P></BLOCKQUOTE>
+<P>Here I'm just binding against the business object. I don't see where the RelativeTargetName is different from your approach - though it is important to understand that the TextBox and PropertyStatus controls are in the same container, so no relative path is required to navigate from one to the other.</P>
+<P>And maybe the binding expressions aren't the issue either, I don't know. I'm just comparing code I have running to yours to see differences.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

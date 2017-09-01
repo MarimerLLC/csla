@@ -1,0 +1,32 @@
+<html><header><title>Adding UpdatedBy to Business Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding UpdatedBy to Business Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5124.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren posted on Friday, July 18, 2008</h2><P>All users of my winform SQL Server app connect to the database via a single SQL Server<BR>userid. Each user is assigned an application userid and role based on their Windows logon which <BR>is authenticated via LDAP.</P>
+<P>This has been working real well and management approves because I have locked down the <BR>database to sproc access only for the single SQL Server userid yet authentication is <BR>achieved against the each user's Windows userid, I don't&nbsp;store passwords in the application database.</P>
+<P>My issue now is how to best populate the updatedby column in the database tables.&nbsp; I cannot <BR>use the SQL Server SUSER_NAME() in my sprocs since it returns the database connected user and I need my application user. </P>
+<P>I have read another post where the writer suggested their approach would be a shared function <BR>on the Identity object which returns the user name and then provides this to the Save method et al?</P>
+<P>Any others care to share how they have done this sort of thing?</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, July 18, 2008</h2><P>The Csla.<FONT color=#2b91af>ApplicationContext</FONT>.User contains the current user and identity, so you can just grab this right when saving your object when appropriate. I'm doing this now for our similar auditing requirement.</P>
+<P>Another possibility, from our legacy application, is that we have the capability to store the current user in a temporary table in the database that maintains separate data for each connection. Then you can record the update in your stored procedure or trigger. However, this requires that you maintain the value in the database temporary table. (Easy in old-style application that opens and holds the connection for the duration for the application session, more involved in a web or connection sharing situation)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 21, 2008</h2><P>The Identity carries the information you need and is available on both sides of the DataPortal.</P>
+<P>All you need to do is use it.</P>
+<P>So for a SQL statement that saves a new record you might have something like:</P>
+<P>Public&nbsp;Function Insert(ByVal code As String, ByVal name As String,&nbsp;ByVal userid As Integer) As String</P>
+<P>And when you call the function you pass:</P>
+<P>mBO.code, mBO.name, user.userid</P>
+<P>Joe</P>
+<P><BR>&nbsp;&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Monday, July 21, 2008</h2><P>In the past I have 'overloaded' the workstation id connection string parameter to hold the identity of the user accessing the database.&nbsp; Take a look at: <A href="http://articles.techrepublic.com.com/5100-10878_11-6084879.html">http://articles.techrepublic.com.com/5100-10878_11-6084879.html</A>&nbsp;for information on the parameters you can add to the connection string.</P>
+<P>Regards,<BR>Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Monday, July 21, 2008</h2><P>I use CSLAGen and this is quite simple to do.</P>
+<P>1) Add a&nbsp;function like the following: </P>
+<P><STRONG><FONT size=2>Public Module Helpers</FONT></STRONG></P>
+<P><STRONG><FONT size=2>' Get the Username of the current user from the CSLA Identity Object<BR>Public Function GetUserName() As String<BR>&nbsp;&nbsp; Return Csla.ApplicationContext.User.Identity.Name<BR>End Function</FONT></STRONG></P>
+<P><STRONG><FONT size=2>End Module</FONT></STRONG></P>
+<P>In the CSLAGen value properties for the business object, just set the default to GetUserName().</P>
+<P>Thanks for all the great feedback everyone!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone replied on Monday, August 04, 2008</h2><P>I have a completely local Windows client app.&nbsp; The UI, BO, and db are all on my PC.</P>
+<P>Csla.ApplicationContext.User returns a GenericIdentity and Csla.ApplicationContext.User.Name is an empty string.</P>
+<P>I know I am logged on.&nbsp; What am I missing?&nbsp; Do I have to set the principal somewhere?</P>
+<P>Jim</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, August 05, 2008</h2><P>You have to manually set the Csla.ApplicationContext.User property to the appropriate Principal object.&nbsp; This is typically done when the app starts.&nbsp; With single sign-on (i.e. Windows authentication), you'll just grab to the Threading.CurrentPrincipal and use that.</P>
+<P>Back to the original question...&nbsp; In the first post, Warren indicated that:</P>
+<BLOCKQUOTE dir=ltr>
+<P><EM>Each user is assigned an application userid and role based on their Windows login which is authenticated&nbsp;via LDAP.</EM></P></BLOCKQUOTE>
+<P>This is basically the way we do it.&nbsp; We have our custom "User" object, which implements IPrincipal, exposes the UserID guid property.&nbsp; We then set this object to Csla.ApplicationContext.User.&nbsp; In our business objects, before posting to the database (insert/update), we type check the AppContext.User to make sure it is our User object and, if so, use the UserID property to set the LastModifiedBy value.</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, May 06, 2009</h2><P>I use <FONT face="Courier New" color=#a52a2a>AppUser.UserID</FONT> from the code in <A HREF="/forums/thread/28161.aspx">http://forums.lhotka.net/forums/thread/28161.aspx</A></P>
+<P>On the <FONT face="Courier New" color=#a52a2a>DataPortal_Update()</FONT> I <FONT color=#000000>have</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a>_lastChangedBy = AppUser.UserID;<BR>...<BR>cmd.Parameters.AddWithValue("@LastChangedBy", _lastChangedBy);<BR>...<BR></FONT><BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

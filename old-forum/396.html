@@ -1,0 +1,24 @@
+<html><header><title>does businessbase gets collection of items</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>does businessbase gets collection of items</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/396.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink posted on Friday, June 16, 2006</h2><P>I am new to CSLA.I would like to know if we can do a collection or list of items from database in the businessbase instead of&nbsp; businesscollection base.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, June 16, 2006</h2><P>Hello yh_ink,</P>
+<P>I hope I understand you correctly.&nbsp;It sounds like&nbsp;you want a single root object that contains a collection of child objects. If so, yes. An example would be the Project class in the ProjectTracker sample application.</P>
+<P>Let me know if I misunderstood.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Friday, June 16, 2006</h2><P>hey michel,</P>
+<P>&nbsp;i need single root object which contains the collection.i dont want any child objects....Where can i get a good example of the collection with in root.And would you please let me know about the sites related to csla framework.</P>
+<P>please let me know about this...</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, June 16, 2006</h2><P>&gt;&gt;i need single root object which contains the collection.i dont want any child objects</P>
+<P>I guess I don't understand. You need a root object that contains a collection, I assume you mean a collection of business objects. Is that right? Maybe if you could explain what you need to at a higher level I'd get the picture.</P>
+<P>As far as sites for CSLA, check out the "Other resources" link at the top of the page.</P>
+<P>Do you have the CSLA book?</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Saturday, June 17, 2006</h2><P>Hey Michael,</P>
+<P>Let me be clear in what i am trying to do.I have a web form where there is a list box.I got to get the contents&nbsp;of the &nbsp;list box.So the list box will have more data.My question is can i do that just having a businessbase alone.</P>
+<P>I know that if i have a businesscollectionbase we can do that.But in csla can we get the collection of data be displayed just using businessbse instead of having both businessbase &amp; businesscollectionbase.(as collection would require businessbase tooo root object)&nbsp;</P>
+<P>yep i have the book,</P>
+<P>thanks</P>
+<P>please let me know if u understand my question</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Saturday, June 17, 2006</h2><P>yh_ink,</P>
+<P>I think I understand now. I'm no expert at CSLA, maybe someone else will chime in and confirm, but I think you'll need two classes. Since you'll have a collection of objects in your list box, I think you might want to have an Editable Root Collection (BusinessListBase) which holds a collection of Editable Child (BusinessBase) objects.</P>
+<P>That's of course if you need them to be editable, otherwise it would be read only.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 18, 2006</h2><P>If this is just to populate a list box, you should use a ReadOnlyListBase-derived root object, which would contain ReadOnlyBase-derived child objects for each "row" of data.</P>
+<P>Alternately, you might consider using the NameValueListBase, because it is specifically designed to simplify the process of getting data to load combo box and list box controls.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Sunday, June 18, 2006</h2><P>so using NameValueListBase i&nbsp;can&nbsp;fill the listbox&nbsp; with values by calling the database table.Is that a better way of doing.</P>
+<P>Or can i have businessCollectionBase and BusinessBase instead.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 18, 2006</h2>Read chapters 6 and 7, they should help quite a lot in explaining the purpose behind each of the base classes.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

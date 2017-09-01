@@ -1,0 +1,183 @@
+<html><header><title>NameValueList checkboxlist binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValueList checkboxlist binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3024.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nige posted on Tuesday, June 12, 2007</h2><P>Hi,</P>
+<P>i am a csla newbie and would like to be able to bind a namevaluelist to a checkboxlist on a web form. the caveat is that the value of the namevalue pair is a custom object (StatusInfo) &nbsp;i am using to store the selected property. It has the following properties</P>
+<P>ID,Status,Enabled</P>
+<P>&nbsp;</P>
+<P>my question is how do i bind the value of the namevaluelist (statusinfo object) to the selectedvalue and datatextfield and checked properties of the checkboxlist.</P>
+<P>I need this to be two way so that if checkbox is checked the enabled property would be set on the child statusinfo object.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2>You can't use NVLB for this purpose, you need to create a BusinessListBase/BusinessBase type collection, because that's how you get editable objects (for your selected property).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nige replied on Tuesday, June 12, 2007</h2><P>thanks for your reply, i was wondering on a similar issue how you bind to a selected property of a business object if it is a nested property within the class</P>
+<P>e.g. </P>
+<P>customer.address.streename </P>
+<P>i know is is a problem with ojectdatasource in terms of two way binding at least, is this still an issue when using csladatasource?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You create one CslaDataSource per object-to-which-you-want-to-bind.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you use the dynamic binding statements in your ASPX markup
+(that allows you to bind to arbitrary values, call methods, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Personally I go for the first option and create one CslaDataSource
+per object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nige
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 12, 2007 9:52 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] NameValueList checkboxlist binding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>thanks for your reply, i was wondering on a similar issue how you bind to a
+selected property of a business object if it is a nested property within the
+class<o:p></o:p></p>
+
+<p>e.g. <o:p></o:p></p>
+
+<p>customer.address.streename <o:p></o:p></p>
+
+<p>i know is is a problem with ojectdatasource in terms of two way binding at
+least, is this still an issue when using csladatasource?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nige replied on Tuesday, June 12, 2007</h2><P>Sorry to be stupid, but not sur i follow what you mean, if i am trying o bind a complex object to a databound&nbsp;control (checkboxlist or otherwise) how do i assign a child property of the object to the control with a seperate csladatasource, how would i link the two datasources together? wouldn't this have to be done in the databinding event? as i would want each row to access this property not just rows that are being edited</P>
+<P>thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry, misunderstood what you were asking.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The answer is to create a UI &#8220;helper&#8221; object that
+reshapes the data from your business object into a form that matches what the
+UI is looking for. This helper object would merely delegate all its calls to
+the real object, but would expose properties as needed by the UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Class CustomerReshaper<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Private _original As Customer<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Public Sub New(original As Customer)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _original = original<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Public ReadOnly Property Name() As String<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Return _original.FirstName &amp; &#8220; &#8220;
+&amp; _original.LastName<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Property<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &#8216; &#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Class<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That sort of thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nige
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 12, 2007 11:34 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: NameValueList checkboxlist binding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sorry to be stupid, but not sur i follow what you mean, if i am trying o
+bind a complex object to a databound&nbsp;control (checkboxlist or otherwise)
+how do i assign a child property of the object to the control with a seperate
+csladatasource, how would i link the two datasources together? wouldn't this
+have to be done in the databinding event? as i would want each row to access
+this property not just rows that are being edited<o:p></o:p></p>
+
+<p>thanks<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

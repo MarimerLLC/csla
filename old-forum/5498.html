@@ -1,0 +1,144 @@
+<html><header><title>Connection Sharing and DataReaders</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Connection Sharing and DataReaders</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5498.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Tuesday, September 30, 2008</h2><P>I spent a bunch of time converting several objects to share their connection using ConnectionManager and and adding the TransactionScope attribute above the DataPortal_Insert/Update/Delete methods so they will run in the same transaction.&nbsp; I decided to use the ConnectionManager to share connections to avoid DTC overhead on the transactions.</P>
+<P>And I thought life was good until I ran my code.&nbsp; Now I'm getting error messages about the connection only being able to have one DataReader open at a time.&nbsp; Doh!&nbsp; I totally should have seem this coming but somehow I missed it.&nbsp; I'm about to start digging into my code and I have a feeling I'm going to find a few situations where I can't get the datareader closed before a child object tries to reuse the connection and open a second datareader.&nbsp; </P>
+<P>Has anyone else run into this problem and have any advice/suggestions?&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Tuesday, September 30, 2008</h2><P>Initially it seems I may just be getting burned when I re-use the connection in DataPortal_Fetch.&nbsp; Maybe I can't re-use the connection in DataPortal_Fetch (where I open a reader).....but that seems lame.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Tuesday, September 30, 2008</h2>I don't think I can always use the same reader.&nbsp; Some of the child objects are actual "child" objects so they expect to be passed a reader.&nbsp; But a few of the child objects are re-used "root" objects that need to open their own reader.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see&#8230;&nbsp; So you &#8220;root&#8221; object can open
+there own connections then, could they?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xxxJasonxxx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 30, 2008 3:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Connection Sharing and DataReaders<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I don't think I can always use the same reader.&nbsp; Some
+of the child objects are actual &quot;child&quot; objects so they expect to be
+passed a reader.&nbsp; But a few of the child objects are re-used
+&quot;root&quot; objects that need to open their own reader.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Tuesday, September 30, 2008</h2><P>Yeah, I think you're right.....those child root objects are going to have to open their own connections in DataPortal_Fetch instead of grabbing the shared connection from the ConnectionManager.&nbsp; Seems disappointing but I don't see how to get around that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, September 30, 2008</h2><P>You are correct.</P>
+<P>When a root opens a dr then a child cannot use the same connection. So I create a 2nd connection and open dr2 to pass to the child.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One suggestion is to use MARS and load all the data from single stored
+procedure using single reader and iterating through result sets.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xxxJasonxxx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 30, 2008 3:04 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Connection Sharing and DataReaders<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I spent a bunch of time converting several objects to share their connection
+using ConnectionManager and and adding the TransactionScope attribute above the
+DataPortal_Insert/Update/Delete methods so they will run in the same
+transaction.&nbsp; I decided to use the ConnectionManager to share connections
+to avoid DTC overhead on the transactions.<o:p></o:p></p>
+
+<p>And I thought life was good until I ran my code.&nbsp; Now I'm getting error
+messages about the connection only being able to have one DataReader open at a
+time.&nbsp; Doh!&nbsp; I totally should have seem this coming but somehow I
+missed it.&nbsp; I'm about to start digging into my code and I have a feeling
+I'm going to find a few situations where I can't get the datareader closed
+before a child object tries to resuse the connection and open a second
+datareader.&nbsp; <o:p></o:p></p>
+
+<p>Has anyone else run into this problem and have any advice/suggestions?&nbsp;
+<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

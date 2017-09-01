@@ -1,0 +1,34 @@
+<html><header><title>Reusing Controls and Binding them to Different DataSource at Run time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Reusing Controls and Binding them to Different DataSource at Run time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2135.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Friday, January 12, 2007</h2><P>Hello,</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; How can&nbsp;I bind the controls to different CSLA Datasources based on different events at run time.For Example.I have say 5 buttons&nbsp;and &nbsp;DataGrid .How can I bind 5 different datasources to the same grid based on the click event of each button?Is it possible to do so?</P>
+<P>Thanks</P>
+<P>V</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 12, 2007</h2>Windows or web?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Monday, January 15, 2007</h2><P>Sorry about that Rocky,</P>
+<P>Its a web application.C# based.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 16, 2007</h2><P>So you want to click a button and show data set A, then click a different button to see data set B?</P>
+<P>Remember that it is <EM>your code</EM> that returns the data to the CslaDataSource in the SelectObject event handler. So when the user clicks on a button, you could simply load a form-level field with the data to be displayed and then call DataBind() on the grid control to force it to refresh. </P>
+<P>The SelectObject event will be raised due to your DataBind() call on the grid control. In your event handler, you can just return the data that was already loaded by the button click event handler:</P>
+<P>&nbsp; e.BusinessObject = _dataToDisplay;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Wednesday, January 17, 2007</h2><P>Thanks a Lot Rocky, but I could not get it to work completely.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The DataSource does get bound to the Datagrid on the click event of the button but for some reason I have to click the button twice.On the first click only one row is displayed in the grid and on the second click all the rows get displayed.Something to do with refreshing the grid datasource???</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I am attaching the code here...</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> dsWorkOrderList_SelectObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#008080 size=2>SelectObjectArgs</FONT><FONT size=2> e)</P>
+<P>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.BusinessObject = .</FONT><FONT color=#008080 size=2>WorkOrderList</FONT><FONT size=2>.Get(</FONT><FONT color=#008080 size=2>Convert</FONT><FONT size=2>.ToInt32(Session[</FONT><FONT color=#800000 size=2>"fid"</FONT><FONT size=2>])); }</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> dsWorkOrderSearchList_SelectObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#008080 size=2>SelectObjectArgs</FONT><FONT size=2> e)</P>
+<P>{ e.BusinessObject = </FONT><FONT color=#008080 size=2>WorkOrderListOnMyShops</FONT><FONT size=2>.Get(</FONT><FONT color=#008080 size=2>Convert</FONT><FONT size=2>.ToInt32(Session[</FONT><FONT color=#800000 size=2>"fid"</FONT><FONT size=2>])); }</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnMyShop_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{&nbsp;&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;WebGrid1.DataMember = </FONT><FONT color=#800000 size=2>"Default"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebGrid1.DataSourceID = </FONT><FONT color=#800000 size=2>"dsWorkOrderSearchList"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebGrid1.DataBind();</P>
+<P></P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnMyWO_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebGrid1.DataMember = </FONT><FONT color=#800000 size=2>"Default"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebGrid1.DataSourceID = </FONT><FONT color=#800000 size=2>"dsWorkOrderList"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; WebGrid1.DataBind();</P>
+<P>}</P>
+<P>By default the grid contains some rows when the page is loaded first.</P>
+<P>Im new to ASP.Net and CSLA kindly ignore my coding standards but please do let me know if there&nbsp;are better ways of implementing the same.</P>
+<P>&nbsp;Thanks In Advance</P>
+<P>V</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

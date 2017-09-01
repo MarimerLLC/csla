@@ -1,0 +1,90 @@
+<html><header><title>Get PTWin sample project to work with Click Once deployment?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Get PTWin sample project to work with Click Once deployment?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3940.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alancaster posted on Monday, November 26, 2007</h2><P><FONT face=Arial size=2>Hello,</FONT></P>
+<P><FONT face=Arial size=2>I am trying to get the PTWin sample project to work via Click-Once deployment on the&nbsp;.Net 2.0 framework.</FONT></P>
+<P><FONT face=Arial size=2>I downloaded version 2.1.4 of the CSLA Framework, unzipped and compiled the projects on my machine.&nbsp; I attached the Security and PTracker DBs to my local SQL 2005 DB, changed the connection strings to point to the SQL 2005 DB and everything works fine in VS.Net.&nbsp; I changed the config file in PTWin to use remoting through the RemotingHost and removed the DB connection string keys and that works fine too.&nbsp; So far so good.</FONT></P>
+<P><FONT face=Arial size=2>Now all I want to see work is the PTWin project via Click Once deployment.&nbsp; I created a virtual folder in IIS to hold deployed Click Once apps and VS 2008 publishes the files there just fine, but when I click on the Run button to download and run the app via Click Once on my local machine I get the following error:</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a size=1>See the end of this message for details on invoking <BR>just-in-time (JIT) debugging instead of this dialog box.</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a size=1><FONT color=#a52a2a>************** Exception Text **************<BR></FONT>System.AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt.<BR>&nbsp;&nbsp; at System.Windows.Forms.SafeNativeMethods.ShowWindow(HandleRef hWnd, Int32 nCmdShow)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.SetVisibleCore(Boolean value)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.SetVisibleCore(Boolean value)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.set_Visible(Boolean value)<BR>&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<BR>&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.ShowDialog(IWin32Window owner)<BR>&nbsp;&nbsp; at PTWin.MainForm.DoLogin()<BR>&nbsp;&nbsp; at PTWin.MainForm.MainForm_Load(Object sender, EventArgs e)<BR>&nbsp;&nbsp; at System.EventHandler.Invoke(Object sender, EventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.OnLoad(EventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.OnCreateControl()<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl()<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.WmShowWindow(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.ScrollableControl.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.ContainerControl.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.WmShowWindow(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)</FONT></P>
+<P><BR><FONT face="Courier New" color=#a52a2a size=1>************** Loaded Assemblies **************<BR>mscorlib<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/Microsoft.NET/Framework/v2.0.50727/mscorlib.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>PTWin<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 1.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 1.0.0.0<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/Documents%20and%20Settings/Alex/Local%20Settings/Apps/2.0/BH27VLRG.DHK/52EHXY2L.9LX/ptwi..tion_54c8d0f60adfe8a2_0001.0000_15a6ac43956fc11d/PTWin.exe</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>Microsoft.VisualBasic<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 8.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 8.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/Microsoft.VisualBasic/8.0.0.0__b03f5f7f11d50a3a/Microsoft.VisualBasic.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/System/2.0.0.0__b77a5c561934e089/System.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System.Windows.Forms<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/System.Windows.Forms/2.0.0.0__b77a5c561934e089/System.Windows.Forms.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System.Drawing<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/System.Drawing/2.0.0.0__b03f5f7f11d50a3a/System.Drawing.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System.Configuration<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/System.Configuration/2.0.0.0__b03f5f7f11d50a3a/System.Configuration.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System.Xml<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/System.Xml/2.0.0.0__b77a5c561934e089/System.Xml.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System.Runtime.Remoting<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_MSIL/System.Runtime.Remoting/2.0.0.0__b77a5c561934e089/System.Runtime.Remoting.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>Csla<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.1.4.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 1.0.0.0<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/Documents%20and%20Settings/Alex/Local%20Settings/Apps/2.0/BH27VLRG.DHK/52EHXY2L.9LX/ptwi..tion_54c8d0f60adfe8a2_0001.0000_15a6ac43956fc11d/Csla.DLL</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>ProjectTracker.Library<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 1.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 1.0.0.0<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/Documents%20and%20Settings/Alex/Local%20Settings/Apps/2.0/BH27VLRG.DHK/52EHXY2L.9LX/ptwi..tion_54c8d0f60adfe8a2_0001.0000_15a6ac43956fc11d/ProjectTracker.Library.DLL</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------<BR>System.Web<BR>&nbsp;&nbsp;&nbsp; Assembly Version: 2.0.0.0<BR>&nbsp;&nbsp;&nbsp; Win32 Version: 2.0.50727.1433 (REDBITS.050727-1400)<BR>&nbsp;&nbsp;&nbsp; CodeBase: </FONT><A><FONT face="Courier New" color=#a52a2a size=1>file:///C:/WINDOWS/assembly/GAC_32/System.Web/2.0.0.0__b03f5f7f11d50a3a/System.Web.dll</FONT></A><BR><FONT face="Courier New" color=#a52a2a size=1>----------------------------------------</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a size=1>************** JIT Debugging **************<BR>To enable just-in-time (JIT) debugging, the .config file for this<BR>application or computer (machine.config) must have the<BR>jitDebugging value set in the system.windows.forms section.<BR>The application must also be compiled with debugging<BR>enabled.</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a size=1>For example:</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a size=1>&lt;configuration&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;system.windows.forms jitDebugging="true" /&gt;<BR>&lt;/configuration&gt;</FONT></P>
+<P><FONT face="Courier New" color=#a52a2a size=1>When JIT debugging is enabled, any unhandled exception<BR>will be sent to the JIT debugger registered on the computer<BR>rather than be handled by this dialog box.</FONT></P>
+<P><BR><FONT face=Arial size=2>Does anyone know how to fix this and make PTWin run via Click Once deployment?</FONT></P>
+<P><FONT face=Arial size=2>I would like to be able to deliver&nbsp;a CSLA smart client win app via Click Once deployment that uses a RemotingHost for all&nbsp;the business objects, so the only way the smart client gets its data is through the RemotingHost data portal.</FONT></P>
+<P><FONT face=Arial size=2>Thank You.</FONT></P>
+<P><FONT face=Arial size=2>Alex</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 26, 2007</h2><P>When you published your app from VS did you make sure to set its security requirements? I think ClickOnce defaults to a pretty low level of security, but Remoting requires FullTrust (and so does CSLA .NET).</P>
+<P>If you set that when publishing, then the user (on first install) is notified that the app wants elevated permissions and they need to accept that this is OK. After that, all should be well on the .NET permission front.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alancaster replied on Monday, November 26, 2007</h2>
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Hi Rocky,<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>In VS.Net 2008 when you right-click properties of the PTWin project, on the Security Tab, the “Enable ClickOnce Security Settings” is checked and the “This is a full trust application” is selected.&nbsp; On the Publish Tab, for prerequisites the “.Net Framework 2.0 (x86)” is checked and the “Windows Installer 3.1” is checked.&nbsp; The RemotingHost is the only thing that needs to talk to SQL Server so I removed the DB connection strings from PTWin project and I unchecked the box for “SQL Server 2005 Express Edition” under prerequisites in the PTWin project.</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>When I publish the PTWin app to the virtual directory and try to launch&nbsp;it via the web browser however, I get the error “</SPAN></FONT><FONT face=Arial color=maroon size=2><SPAN>System.AccessViolationException: Attempted to read or write protected memory. This is often an indication that other memory is corrupt.</SPAN></FONT><FONT face=Arial color=navy size=2><SPAN>”</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>I don’t see any other obvious security settings for Click-Once deployment that I can set.&nbsp; Have you tried this on your own workstation yet and got it to work?&nbsp; Perhaps there is something else the PTWin app is doing that is causing the AccessVioliationException error?</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>My goal is to be able to have a windows smart client app that uses CSLA 2.x and the RemotingHost for the data portal, and is easily updated and deployed via the Click-Once feature included in .Net 2.x.&nbsp; At my work we are still using CSLA 1.x and .Net Framework 1.x with NetRun as the mechanism for deploying our smart client apps.&nbsp; In order to move to CSLA 2.x we need to be able to use Click-Once deployment because there is no more NetRun in CSLA 2.x</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Thank You.</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN></SPAN></FONT>&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alancaster replied on Thursday, January 17, 2008</h2><P>Hi Rocky,</P>
+<P>I ended up opening a ticket with Microsoft MSDN Support over this and it took 4 week to find the root&nbsp;cause of this problem.&nbsp; It turns out the Kensington Expert Mouse driver interferes with launching ClickOnce applications because the mouse driver only allows 128 characters in it's path to launch apps, and the ClickOnce folder structure on the client is often longer than 128 characters.</P>
+<P>As soon as I rolled back my mouse driver to the standard Windows mouse driver, all my ClickOnce apps&nbsp;worked perfectly, including the PTracker.</P>
+<P>So, the moral of the story is beware the Kensington Expert Mouse driver, for it will render all your ClickOnce apps inoperable.&nbsp; I wrote a letter to Kensington about this so I will have to wait and see what they say.</P>
+<P>Thanks.</P>
+<P>Alex</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 17, 2008</h2>That is simply amazing!!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alancaster replied on Saturday, January 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal>Hi Rocky,<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I got your new CSLA 2008 book the other day and it looks
+great.&nbsp; It is one of the main programming books I want to read this year.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I just wanted to thank you for making such a great
+framework, and documenting it so well with your books and CodeSmith
+templates.&nbsp; Your framework solves a lot of common &amp; tricky problems
+for business application development, and the fact that it is open source is
+really awesome.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I hope you have a fun and productive 2009.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks again.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Alex Lancaster<o:p></o:p></p>
+
+<p class=MsoNormal>IEEE Sr. Member<o:p></o:p></p>
+
+<p class=MsoNormal>Computer Society<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

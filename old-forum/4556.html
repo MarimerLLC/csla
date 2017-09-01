@@ -1,0 +1,47 @@
+<html><header><title>why is there so many errors in the csla.net 3.5 build?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>why is there so many errors in the csla.net 3.5 build?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4556.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Tuesday, March 25, 2008</h2><P>I am seeing alot of errors where variables are not defined in the VB version of csla.net 3.5 build. In the C# version the same variables are being defined as var, which doesn't mean anything. How can this be fixed?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Tuesday, March 25, 2008</h2><P>In C# var is used for an anonymous type...which definately has meaning and is on purpose.</P>
+<P>Make sure you are trying to build with VS2008 and don't change the targeted framework from .Net 3.5 to anything else.</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 25, 2008</h2><P>Yes, CSLA .NET 3.5 <EM>requires</EM> .NET 3.5. </P>
+<P>If you are using .NET 2.0 or 3.0 then you should be using CSLA .NET 3.0.x.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, March 26, 2008</h2><P>I am using .net 3.5</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 26, 2008</h2><P>The feature is called type inference. In C# it is like</P>
+<P>var x&nbsp;= 10;</P>
+<P>and in VB it is like</P>
+<P>Dim x = 10</P>
+<P>In both cases 'x' ends up being of type int/Integer.</P>
+<P>In VB you can turn this feature on/off using an Option statement at the top of each file, or at the project level. The Csla project should have inference turned on - but perhaps somehow it is not turned on for you?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, March 26, 2008</h2>thanks rockford. i know this was a simple thing to explain, but it was something i needed to understand, and it wasn't being done in the previous versions of csla</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, March 26, 2008</h2>my Option statements are turned on at the project level. I'm not sure which Option you are referring to, but Option Explicit = On, Option Strict = On, Option Compare = binary</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, March 26, 2008</h2><P>In VS 2008 check</P>
+<P>Tools</P>
+<P>Options</P>
+<P>Projects And Solutions</P>
+<P>VB Defaults</P>
+<P>Option Infer - set it to On.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, March 26, 2008</h2>I'm not working with VS2008. I have VS2005 which does not have Option Infer.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 26, 2008</h2>Well Csla 3.5 requires Vs2008 / .Net 3.5... so you should look at 3.0.3.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>To reiterate:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA .NET 3.5 requires Microsoft .NET 3.5 and Visual Studio
+2008.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, March 26, 2008</h2>AAAAAAAAHHHHHHHH crap!!!... well at least i dont have to worry about upgrading any time soon... thats a headache off my mind... =)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

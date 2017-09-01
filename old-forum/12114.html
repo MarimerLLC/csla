@@ -1,0 +1,51 @@
+<html><header><title>Child_Fetch not working as expected</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child_Fetch not working as expected</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12114.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BrettJaner posted on Wednesday, August 14, 2013</h2><p>Using Csla 4.5</p>
+<p>&nbsp;</p>
+<p>I recently added an additional Child_Update method to a BusinessBase to support its Parent BusinessListBase in bulk saving. &nbsp;However, this seemed to of introduced a bug in our system. &nbsp;It looks like if you have two Child_Update methods, the parameterless one won&#39;t be called. &nbsp;Even if you specify the DataPortal.UpdateChild with no additional parameters beyond the Child Object.</p>
+<pre class="lang-cs prettyprint prettyprinted"><code><strong><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">SomeChild</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="typ">BusinessBase</span><span class="pun">&lt;</span><span class="typ">SomeChild</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="com">//No longer called</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> </span><span class="typ">Child_Update</span><span class="pun">()</span><span class="pln"> </span><span class="pun">{}</span><span class="pln">
+
+    </span><span class="com">//Newly added</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> </span><span class="typ">Child_Update</span><span class="pun">(</span><span class="typ">SomeNewParent</span><span class="pln"> parent</span><span class="pun">)</span><span class="pln"> </span><span class="pun">{}</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">SomeLegacyParent</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="typ">BusinessBase</span><span class="pun">&lt;</span><span class="typ">SomeLegacyParent</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">readonly</span><span class="pln"> </span><span class="typ">PropertyInfo</span><span class="pun">&lt;</span><span class="typ">SomeChild</span><span class="pun">&gt;</span><span class="pln"> </span><span class="typ">SomeChildProperty</span><span class="pln"> </span><span class="pun">=</span><span class="pln">
+        </span><span class="typ">RegisterProperty</span><span class="pun">&lt;</span><span class="typ">SomeChild</span><span class="pun">&gt;(</span><span class="pln">x </span><span class="pun">=&gt;</span><span class="pln"> x</span><span class="pun">.</span><span class="typ">SomeChild</span><span class="pun">,</span><span class="pln"> </span><span class="typ">RelationshipTypes</span><span class="pun">.</span><span class="typ">Child</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">SomeChild</span><span class="pln"> </span><span class="typ">SomeChild</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        get </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">GetProperty</span><span class="pun">(</span><span class="typ">SomeChildProperty</span><span class="pun">);</span><span class="pln"> </span><span class="pun">}</span><span class="pln">
+        </span><span class="typ">set</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="typ">SetProperty</span><span class="pun">(</span><span class="typ">SomeChildProperty</span><span class="pun">,</span><span class="pln"> value</span><span class="pun">);</span><span class="pln"> </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">//Use to call Child_Update(), but now</span><span class="pln">
+    </span><span class="com">//calls Child_Update(SomeNewParent parent)</span><span class="pln">
+    </span><span class="typ">DataPortal</span><span class="pun">.</span><span class="typ">UpdateChild</span><span class="pun">(</span><span class="typ">ReadProperty</span><span class="pun">(</span><span class="typ">SomeChildProperty</span><span class="pun">));</span><span class="pln">
+</span><span class="pun">}</span><span class="pln">
+
+</span><span class="kwd">public</span><span class="pln"> </span><span class="kwd">class</span><span class="pln"> </span><span class="typ">SomeNewParent</span><span class="pln"> </span><span class="pun">:</span><span class="pln"> </span><span class="typ">BusinessBase</span><span class="pun">&lt;</span><span class="typ">SomeNewParent</span><span class="pun">&gt;</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+    </span><span class="kwd">private</span><span class="pln"> </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">readonly</span><span class="pln"> </span><span class="typ">PropertyInfo</span><span class="pun">&lt;</span><span class="typ">SomeChild</span><span class="pun">&gt;</span><span class="pln"> </span><span class="typ">SomeChildProperty</span><span class="pln"> </span><span class="pun">=</span><span class="pln">
+        </span><span class="typ">RegisterProperty</span><span class="pun">&lt;</span><span class="typ">SomeChild</span><span class="pun">&gt;(</span><span class="pln">x </span><span class="pun">=&gt;</span><span class="pln"> x</span><span class="pun">.</span><span class="typ">SomeChild</span><span class="pun">,</span><span class="pln"> </span><span class="typ">RelationshipTypes</span><span class="pun">.</span><span class="typ">Child</span><span class="pun">);</span><span class="pln">
+
+    </span><span class="kwd">public</span><span class="pln"> </span><span class="typ">SomeChild</span><span class="pln"> </span><span class="typ">SomeChild</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+        get </span><span class="pun">{</span><span class="pln"> </span><span class="kwd">return</span><span class="pln"> </span><span class="typ">GetProperty</span><span class="pun">(</span><span class="typ">SomeChildProperty</span><span class="pun">);</span><span class="pln"> </span><span class="pun">}</span><span class="pln">
+        </span><span class="typ">set</span><span class="pln"> </span><span class="pun">{</span><span class="pln"> </span><span class="typ">SetProperty</span><span class="pun">(</span><span class="typ">SomeChildProperty</span><span class="pun">,</span><span class="pln"> value</span><span class="pun">);</span><span class="pln"> </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+
+    </span><span class="com">//Calls Child_Update(SomeNewParent parent) --- as expected</span><span class="pln">
+    </span><span class="typ">DataPortal</span><span class="pun">.</span><span class="typ">UpdateChild</span><span class="pun">(</span><span class="typ">ReadProperty</span><span class="pun">(</span><span class="typ">SomeChildProperty</span><span class="pun">),</span><span class="pln"> </span><span class="kwd">this</span><span class="pun">);</span><span class="pln">
+</span><span class="pun">}</span></strong></code></pre>
+<p>I&#39;ve attached a small code sample which demonstrates the above. &nbsp;Is this a bug?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 19, 2013</h2>Jonny, could you help determine if this is a bug or by design?  If it&#39;s by design do you know the rationale?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 20, 2013</h2><p>I will look into it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 20, 2013</h2><p>It seems to be by design - as the internal code will pass null as parameter and so the MethodCaller will look a method that has on parameter (by default) and only call the non-parameter method when there is no method with that name that accepts on parameter.</p>
+<p>This behavior _may_ be changed/updated and the only place where this is done right now is when calling Child_Update on a list/collection - not on a direct child object.</p>
+<p>I do agree that this behavior should be the same whether you call into a single child object or a list of child objects. So in my opinion this is a bug.</p>
+<p>@Rocky - please comment if you disagree with me.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BrettJaner replied on Tuesday, August 20, 2013</h2><p>@JonnyBee - Thanks for looking into this for me. &nbsp;</p>
+<p>I just would like to add something. &nbsp;Inside ChildDataPortal.Update the following call is made:</p>
+<p>lb.CallMethod(&quot;Child_Update&quot;, parameters);</p>
+<p>This LateBoundObject function internally makes the call to MethodCaller.CallMethod(obj, method, hasParameters, parameters) with hasParameters = true, so regardless if it is a direct child or not, I get similar results.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, August 21, 2013</h2><p>Merged into github repository now.</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/196">https://github.com/MarimerLLC/csla/issues/196</a>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

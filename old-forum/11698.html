@@ -1,0 +1,55 @@
+<html><header><title>CSLA 4.3.13 ProjectTracker</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.3.13 ProjectTracker</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11698.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Monday, November 12, 2012</h2><p>Hi&nbsp;</p>
+<p>I&#39;m write a small sample so I can get my head around a later version of csla and hoping some can help me.</p>
+<p>So far I have implemented a Dal, DalAdo and Library similar to Tracker. I have also implemented a wrapper for csla MyCsla just in case I wanted to add features later. I have a Winforms UI with a single form with a datagridview on it. The grid loads synchronously, so it works, so far.</p>
+<p>Now to my question. I want to be able to load the grid asynchronously and I have implemented methods similar to:</p>
+<p>
+<p>&nbsp; &nbsp; public static void GetProjectList(EventHandler&lt;DataPortalResult&lt;ProjectList&gt;&gt; callback)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; DataPortal.BeginFetch&lt;ProjectList&gt;(callback);</p>
+<p>&nbsp; &nbsp; }</p>
+<p>I problem is that I don&#39;t know how to implement the call to GetProjectList from the UI to populate the grid. Calling&nbsp;DisplayList(ProjectList.GetProjectList()); from the UI invokes the synchronous method. </p>
+<p>I&#39;m really stuck and been banging my head on this for a while now, &nbsp;so I&#39;m hoping some can explain what I&#39;m missing.</p>
+</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p>
+<p>Ozi</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, November 13, 2012</h2><p>You can send in a parameter of either lambda expression or a method for callback after the async Fetch is completed. </p>
+<p>BTW: The &quot;old&quot; style naming convention is to prefix async methods with <i>Begin</i>. <br />With the new async/await in .NET 4.5 the naming convention is to use <i>Async&nbsp; </i>as suffix. </p>
+<p>With a Callback function: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">Root</span>.BeginFetchRoot(FetchCompleted);
+&nbsp;&nbsp;&nbsp;&nbsp;} 
+ 
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;FetchCompleted(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">Root</span>&gt;&nbsp;e)
+&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span>&nbsp;(e.Error&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">// Fetch failed&nbsp;-&nbsp;tell&nbsp;the&nbsp;user&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">//&nbsp;add&nbsp;code&nbsp;to&nbsp;setup&nbsp;databinding&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;&nbsp; }<br /><br />Or with a lambda callback:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:#2b91af;">Root</span>.BeginFetchRoot((o,e)&nbsp;=&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.Error&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">// Fetch failed&nbsp;-&nbsp;tell&nbsp;the&nbsp;user&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;add&nbsp;code&nbsp;to&nbsp;setup&nbsp;databinding&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, November 13, 2012</h2><p>Thanks JonnyBee that&#39;s excellent, and appreciate your time in answering my question.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, November 13, 2012</h2><p>I&#39;d also like to added a feature to return a dataset/datatable for reporting and search screens and thought that using the &nbsp;a class derived from CommandBase for the purpose. I thought I would populate a hashtable or dictionary from the fields in a special criteria user control for reporting and searching.</p>
+<p>Is there a better way to go that someone might have?</p>
+<p>Ozi</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2012</h2><p>You can return a DataTable because they are serializable. You should be aware that the DataSet/DataTable don&#39;t exist on any modern platforms (Silverlight, Windows Phone, Windows 8 WinRT). As a result, using the DataTable or related types on a client workstation is generally a very bad idea because it will prevent you from upgrading to modern client platforms.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Tuesday, November 13, 2012</h2><p>Hi Rocky</p>
+<p>Thanks for the heads up, but for the time being I&#39;m only using winforms. But now you&#39;ve peaked my curiosity, how would I convert an app, that uses datatables, from winforms to one of those modern platforms?</p>
+<p>&nbsp;</p>
+<p>Cheers</p>
+<p>Ozi</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2012</h2><p>My recommendation is that you follow the guidance in my books and build your UI based on top of a well designed set of business objects derived from the CSLA .NET base classes. </p>
+<p>We&#39;ve put a lot of work into making sure your business classes support data binding on all UI technologies from Windows Forms to WinRT. And to making it reasonable to think that (with little or no code changes) you can just recompile your business code for the various Microsoft platforms (.NET, Silverlight, WinRT, WinPRT) and have the code continue to work as expected.</p>
+<p>Microsoft effectively abandoned the DataSet several years ago (2007 or so) when they didn&#39;t port it to Silverlight, and then didn&#39;t port it to the phone, and stopped building any new tools on or around that technology, instead switching everything to EF. So the deprecation of the DataSet isn&#39;t a new phenomenon. And correspondingly, one of the major benefits of using CSLA .NET to build your business layer is that CSLA .NET helps shield you (to some degree) from this type of change in Microsoft&#39;s data access strategy over time.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Wednesday, November 14, 2012</h2><p>Hi Ricky</p>
+<p>Thank you for the explanation, and for reminding me why I decided to go with CLSA.Net in the first place and why I continue to use and promote it today.</p>
+<p>Cheers</p>
+<p>Ozi</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

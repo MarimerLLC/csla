@@ -1,0 +1,16 @@
+<html><header><title>CSLA Suitability</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Suitability</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4067.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pixel posted on Thursday, December 20, 2007</h2><P>Every now and again I pop up asking a newbie question.&nbsp; I've looked into CSLA.net and been to a few seminars with Rocky even tyhough I live in the UK.....but I've never started a commercial project with CSLA.net.</P>
+<P>I need some ammunition to persuade senior management of this approach.<BR><BR>We have two projects I think suitable for CSLA.net</P>
+<P>1) e-commerce site and internal backoffice/site maintenance</P>
+<P>2) Management Information system connecting to Sharepoint.<BR><BR>Does everyone else think CSLA is a good fit for these two projects?&nbsp; Im a little concerned about the second project as it's all just data and charts probably coming from Analysis Services.<BR><BR>Has anyone else built a CSLA.net based e-commerce website possibly with a Windows forms backoffice?&nbsp;&nbsp; <BR><BR>Any thoughts would be really appreciated.</P>
+<P>Pixel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 20, 2007</h2><P>I built a large e-commerce web site using CSLA.Net. I am into my 4th year with it and it works great. I can't recommend it highly enough.</P>
+<P>I just added charting and graphing using Infragistics controls. They are amazingly powerful - you can draw/color just about anything you can imagine - and then some.</P>
+<P>I fetch the data using a Read Only Collection. I could probably do a direct bind to the chart if I wanted to - but I wanted to add some fancy logic and decided to loop over the ROC instead and build a datatable in code which has the right shape of the data I want to graph. It works beautifully.</P>
+<P>I have never interacted with Sharepoint - but I know you can query it using various tools so I guess that you could populate a BO from it .</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, December 20, 2007</h2><P>CSLA is a great framework.&nbsp; I highly recommend it.</P>
+<P>The only caveat I would offer has to do with trust issues.&nbsp; It's my understanding that, since CSLA uses reflection, it has to have a higher level of trust than many 3rd-party hosting services will accept.</P>
+<P>(I'm sure someone will correct me if I've misunderstood that.)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pixel replied on Friday, December 21, 2007</h2><P>Does that affect Sharepoint then?&nbsp; Hosting within a Sharepoint environment requires a lot of security fudging already.....</P>
+<P>Are there any more sample applications other than Project Tracker?&nbsp; Surely there must be a sample invoice/ordering system.</P>
+<P>Pixel.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

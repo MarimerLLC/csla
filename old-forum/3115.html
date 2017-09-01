@@ -1,0 +1,16 @@
+<html><header><title>Undo Functionality</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undo Functionality</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3115.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>scruffyduck posted on Thursday, June 28, 2007</h2><DIV>Let me say up front that I am a beginner in the area of CSLA and I come to it via the Book Expert C# Business Objects.&nbsp;&nbsp; I will also confess straight away that I am trying to use the n-level undo model in an application that I am writing.&nbsp; So I hope you will not mind too much!</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have taken the UndoableBase Class and IUndoableObject interface and applied them to my particular situation.&nbsp; I have, as it happens, modified it to allow redo as well as undo using two stacks instead of one.&nbsp; This works as expected for the primary object.&nbsp; However I am not getting what I epxect with fields in the primary object that are IUndoableObjects.&nbsp;&nbsp;&nbsp; They are certainly being called and are pushing the serialized state onto thier stacks.&nbsp; In fact one problem seems to be that they are pushing twice as when I look at things I have one undo object stacked in the primary object and two in the secondary.&nbsp; However that is not my main concern.&nbsp; The concern is that I can undo tha ctions on the primary object but those on the secondary do not seem to undo.&nbsp; I have not modified the code for CopyState or UndoChanged and watching things in stepper mode shows that I am calling the subobjects CopyState as expected.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Apologies in advance if I am not explaining myself very well.&nbsp; Reflection, for one thing is something I have not used before and I am a self taught amateur C# programmer.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks for any help</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Jon</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 29, 2007</h2>All I can say is good luck and test a lot. Getting undo to work across entire object graphs such that state remains consistent, eventing and data binding don't get messed up and so forth was quite difficult.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>scruffyduck replied on Sunday, July 01, 2007</h2><DIV>Hi Rocky</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks.&nbsp; In the end I used the concepts behind your undo class and created my own.&nbsp; Not quite as elegant since it uses the Memento pattern and saves state as another copy of the object.&nbsp; It is 90% working now and although it is a bit messy at least it is my mess and I understand it (almost <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />)</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>However I would not have getten this far without the classes you developed so thank you!</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Jon</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

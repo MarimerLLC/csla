@@ -1,0 +1,8 @@
+<html><header><title>How to raise property change event of list member in root class - to fire valdation rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to raise property change event of list member in root class - to fire valdation rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3944.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Soumya posted on Tuesday, November 27, 2007</h2><P><FONT size=2>Hi All,</FONT></P>
+<P><FONT size=2>&nbsp; I'm using a case where I have Invoice class (Businessbase) and a member InvoiceItems a list.(BusinessListBase). I have a validation rule which checks for some of my list items must match to my base invoiceamount. I'm able to raise propertychange on my root invoice, muts unable to fire it when my List object changed and eventuall raise validation rule checked.</FONT></P>
+<P><FONT size=2>looked at one of the suggestions in the forum 4151. its in C#.&nbsp; and donot know where should I define them in parent invoice class or InvoiceItems class. And please provide code sample in VB.net</FONT></P>
+<P><FONT size=2>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Soumya replied on Tuesday, November 27, 2007</h2><P>Hi All,</P>
+<P>never mind. I got answer. </P>
+<P>I defined my list member with events and handling ListChanged in parent</P>
+<P>Thanks</P>
+<P>Soumya</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

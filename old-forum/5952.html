@@ -1,0 +1,39 @@
+<html><header><title>How to bind Image Binary Data to FormView ItemTemplate Fields.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to bind Image Binary Data to FormView ItemTemplate Fields.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5952.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Monday, December 08, 2008</h2><P>I have developed a nice Business Object named "StaffBasicInfo" based on CSLA .NET. This object retrieves the Staff HRMD Info in addition to a URL to the Staff Photo Image. The main reason to develop this BO is to implement fine control and authorization logic.</P>
+<P>I&nbsp;developed a FormView&nbsp;with&nbsp;"<FONT color=#a31515 size=2>ItemTemplate" </FONT>which has Label Elements with all the correct binding to StaffBasicInfo Properties including the URL to the Image file. I did the bindings using CslaDataSourse object. I bound the URL of "Pic" image using function "GetStaffPhotoURL()"</P>
+<P>So far, every thing works fine.</P>
+<P>Please see sample of code below:</P><PRE class=coloredcode>&lt;<SPAN class=tag>asp:FormView</SPAN><SPAN class=attr> ID=</SPAN><SPAN class=attrv>"frmStaffBasicInfo"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr> DataSourceID=</SPAN><SPAN class=attrv>"srcStaffBasicInfo"</SPAN><SPAN class=attr> CssClass=</SPAN><SPAN class=attrv>"frmStaffBasicInfo"</SPAN>&gt;
+&lt;<SPAN class=tag>ItemTemplate</SPAN>&gt;
+    &lt;<SPAN class=tag>div</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr> id=</SPAN><SPAN class=attrv>"divStaffPhoto"</SPAN><SPAN class=attr> class=</SPAN><SPAN class=attrv>"divStaffPhoto"</SPAN>&gt;
+        &lt;<SPAN class=tag>asp:Image</SPAN><SPAN class=attr> ID=</SPAN><SPAN class=attrv>"Pic"</SPAN><SPAN class=attr> runat=server ToolTip=</SPAN><SPAN class=attrv>"Picture"</SPAN><SPAN class=attr>   ImageUrl=</SPAN><SPAN class=attrv>'<SPAN class=dir>&lt;%#</SPAN> GetStaffPhotoURL( Eval("StaffID") ) <SPAN class=dir>%&gt;</SPAN>'</SPAN> /&gt;
+    &lt;/<SPAN class=tag>div</SPAN>&gt;
+    &lt;<SPAN class=tag>div</SPAN><SPAN class=attr> style=</SPAN><SPAN class=attrv>"display:inline; width:80% "</SPAN>&gt;
+    &lt;<SPAN class=tag>table</SPAN><SPAN class=attr> style=</SPAN><SPAN class=attrv>" font-size:10pt;"</SPAN>&gt;
+        &lt;<SPAN class=tag>tr</SPAN>&gt;
+            &lt;<SPAN class=tag>td</SPAN><SPAN class=attr> style=</SPAN><SPAN class=attrv>"width: 13px; background-color: #eff3fa;"</SPAN>&gt;
+            &lt;<SPAN class=tag>asp:Label</SPAN><SPAN class=attr> ID=</SPAN><SPAN class=attrv>"Label25"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr>  Text=</SPAN><SPAN class=attrv>"Staff ID:"</SPAN><SPAN class=attr> CssClass=</SPAN><SPAN class=attrv>"lblClass"</SPAN><SPAN class=attr> Width=</SPAN><SPAN class=attrv>"72px"</SPAN>&gt;&lt;/<SPAN class=tag>asp:Label</SPAN>&gt;&lt;/<SPAN class=tag>td</SPAN>&gt;
+            &lt;<SPAN class=tag>td</SPAN><SPAN class=attr> style=</SPAN><SPAN class=attrv>"width: 100px; height: 21px; background-color: #eff3fa;"</SPAN>&gt;
+            &lt;<SPAN class=tag>asp:Label</SPAN><SPAN class=attr> ID=</SPAN><SPAN class=attrv>"txtStaffID"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr> cssclass=</SPAN><SPAN class=attrv>"fldClass"</SPAN><SPAN class=attr> Style=</SPAN><SPAN class=attrv>"z-index: 100; left: 64px; top: 14px"</SPAN><SPAN class=attr> Width=</SPAN><SPAN class=attrv>"99px"</SPAN><SPAN class=attr> Text=</SPAN><SPAN class=attrv>'<SPAN class=dir>&lt;%#</SPAN> Eval("StaffId") <SPAN class=dir>%&gt;</SPAN>'</SPAN>&gt;&lt;/<SPAN class=tag>asp:Label</SPAN>&gt;&lt;/<SPAN class=tag>td</SPAN>&gt;
+        &lt;/<SPAN class=tag>tr</SPAN>&gt;<BR>.....
+    &lt;/<SPAN class=tag>table</SPAN>&gt;
+    &lt;/<SPAN class=tag>div</SPAN>&gt;
+    &lt;<SPAN class=tag>div</SPAN><SPAN class=attr> id=</SPAN><SPAN class=attrv>"MsgLiteralDiv"</SPAN><SPAN class=attr> class=</SPAN><SPAN class=attrv>"MsgLiteral"</SPAN>&gt;
+        &lt;<SPAN class=tag>asp:Literal</SPAN><SPAN class=attr> ID=</SPAN><SPAN class=attrv>"MsgLiteral"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr> Text=</SPAN><SPAN class=attrv>'<SPAN class=dir>&lt;%#</SPAN> Eval("Msg") <SPAN class=dir>%&gt;</SPAN>'</SPAN>&gt;&lt;/<SPAN class=tag>asp:Literal</SPAN>&gt;
+    &lt;/<SPAN class=tag>div</SPAN>&gt;
+&lt;/<SPAN class=tag>ItemTemplate</SPAN>&gt;
+&lt;/<SPAN class=tag>asp:FormView</SPAN>&gt;
+&lt;<SPAN class=tag>csla:CslaDataSource</SPAN><SPAN class=attr> ID=</SPAN><SPAN class=attrv>"srcStaffBasicInfo"</SPAN><SPAN class=attr> runat=</SPAN><SPAN class=attrv>"server"</SPAN><SPAN class=attr> TypeAssemblyName="" TypeName=</SPAN><SPAN class=attrv>"CSLAIDB.Library.StaffBasicInfo, CSLAIDB.Library"</SPAN><SPAN class=attr> TypeSupportsPaging=</SPAN><SPAN class=attrv>"False"</SPAN><SPAN class=attr> TypeSupportsSorting=</SPAN><SPAN class=attrv>"False"</SPAN>&gt;
+&lt;/<SPAN class=tag>csla:CslaDataSource</SPAN>&gt;
+</PRE><PRE class=coloredcode>    <SPAN class=kwd>Friend Function</SPAN> GetStaffPhotoURL(<SPAN class=kwd>ByVal</SPAN> prmStaffID <SPAN class=kwd>As String</SPAN>) <SPAN class=kwd>As String
+        Dim</SPAN> theURL <SPAN class=kwd>As String
+        If Not</SPAN> File.Exists(Server.MapPath(<SPAN class=st>"."</SPAN>) &amp; <SPAN class=st>"\Images\StaffPhotos\"</SPAN> &amp; prmStaffID &amp; <SPAN class=st>".jpg"</SPAN>) <SPAN class=kwd>Then</SPAN>
+            theURL = <SPAN class=st>"~/Images/StaffPhotos/NotAvail3.gif"</SPAN>
+        <SPAN class=kwd>Else</SPAN>
+            theURL = <SPAN class=st>"~/Images/StaffPhotos/"</SPAN> &amp; prmStaffID &amp; <SPAN class=st>".jpg"</SPAN>
+        <SPAN class=kwd>End If
+        Return</SPAN> theURL
+    <SPAN class=kwd>End Function</SPAN></PRE>
+<P><STRONG><U>The Question:</U></STRONG></P>
+<P>How I can bind the image "Pic" to the binary representation of the image so that I will prevent the end users from knowing the URL of the image and to prevent unauthorized users to view the pictures of other staff ?</P>
+<P>I want to place the Staff Photos in a Folder on the Server which is not under a Virtual Folder and cannot be accessed directly from the IE, and yet be able to display the staff photo of selected staff as per the logic defined in the Business Object.</P>
+<P>Please help.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

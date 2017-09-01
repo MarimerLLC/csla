@@ -1,0 +1,16 @@
+<html><header><title>Object Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5466.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies posted on Thursday, September 25, 2008</h2><P>Hi </P>
+<P>I need some insight into the following user scenario and would like some thoughts and suggestions&nbsp;where possible to see if I am in the correct state of mind :) I hope this makes sense.</P>
+<P>The&nbsp;scenario;</P>
+<P>A user configures award settings (Award Date, Award Price, Tranche Settings etc)&nbsp;and then <STRONG>allocates</STRONG>&nbsp;a number of options to to <STRONG>one or more participants</STRONG>. The particular award of options <STRONG>only becomes available in tranches</STRONG>&nbsp; for example;</P>
+<P>A users receives 100 options on 01/01/2000&nbsp;and they vest (become available) in intervals 50 on 01/01/2001 and 50 on 01/01/2002.</P>
+<P>OR Tranches&nbsp;can be&nbsp;determined through a range of settings for example. 10 %&nbsp; of Options vest on 01/01/2001 and thereafter 3% Monhtly or specific dates can be specifiied in advance like I mentioned above. </P>
+<P>To translate the user scenario into objects I have the following objects in place</P>
+<P>Award (Parent)<BR>AwardTransactions(Child)<BR><BR>I am not sure if I should have a seperate object for recording the vestings of the award for a participant or have it as part of the AwardTransaction object, i.e. put all the calculation logic to determine the tranche detail within Private Sub Child_Insert of the AwardTransaction object as it the tranches are only determined once the award has taken place and is essentialy part of the "Award Transaction"<FONT size=1></P></FONT>
+<P>I currently have the following tables in place to store the data required;</P>
+<P><STRONG>Award Table<BR></STRONG>AwardID<BR>....</P>
+<P><STRONG>Participant Table<BR></STRONG>ParticipantID<BR>...</P>
+<P><STRONG>Transactions Table</STRONG><BR>TransactionID<BR>AwardID<BR>ParticipantID<BR>Units</P>
+<P><STRONG>ParticipantAwardVestings Table<BR></STRONG>ParticipantID<BR>AwardID<BR>Units<BR>VestingDate</P>
+<P>I hope this paints the picture to trigger some thought.</P>
+<P>Thanks</P>
+<P>John</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>C# Byte Array (byte[]) as a BO property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>C# Byte Array (byte[]) as a BO property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1830.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jervit posted on Friday, November 24, 2006</h2><P><FONT face=Arial size=2>Hi</FONT></P>
+<P><FONT face=Arial size=2>Have any of you had experience using byte[] in C# as a property for saving file attachments?</FONT></P>
+<P><FONT face=Arial size=2>I have this property in a BO</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[] BinaryForm</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;get</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty(</FONT><FONT color=#800000 size=2>"BinaryForm"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> _binaryForm;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;set</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanWriteProperty(</FONT><FONT color=#800000 size=2>"BinaryForm"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (!_binaryForm.Equals(</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>))</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_binaryForm = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged(</FONT><FONT color=#800000 size=2>"BinaryForm"</FONT><FONT size=2>);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P></FONT>
+<P><FONT face=Arial size=2>I am experiencing a NullReferenceException when assigning to it in a WinForm app like this</FONT></P><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_verification.Attachments[e.RowIndex].BinaryForm = binaryForm;</P>
+<P><FONT face=Arial>The same verification BO is also used as bindingdatasource for a datagridview.</FONT></P>
+<P><FONT face=Arial>Thanks for any help.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Saturday, November 25, 2006</h2><P>Yeah,</P>
+<P>Make sure to initialize your variable. e.g. private byte[] _binaryForm&nbsp;= new byte[42]. Otherwise it will be null when it does the .Equals check.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Saturday, November 25, 2006</h2><font size="2">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;set<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CanWriteProperty("</font><font color="#800000" size="2">BinaryForm</font><font size="2">", true);<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;if ((</font><font size="2">_binaryForm==null &amp;&amp; value!=null) || (!_</font><font size="2">binaryForm.Equals(value)))<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;_</font><font size="2">binaryForm</font><font size="2">= value;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;PropertyHasChanged("</font><font color="#800000" size="2">BinaryForm</font><font size="2">");<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br></font>But...<br>If you don't have a special matter you can use<br><font size="2">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;CanWriteProperty("</font><font color="#800000" size="2">BinaryForm</font><font size="2">", true);<br></font><font size="2">&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; _</font><font size="2">binaryForm</font><font size="2">= value;<br>
+&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("</font><font color="#800000" size="2">BinaryForm</font><font size="2">");<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; }<br>
+</font>Bye.<br>Fabio.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

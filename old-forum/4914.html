@@ -1,0 +1,48 @@
+<html><header><title>Using DataGridView - Newbie question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using DataGridView - Newbie question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4914.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Entity posted on Thursday, May 29, 2008</h2>I'm a DBA re-commissioned into a VB programmer role in a CSLA environment, so I apologize if this an absurdly basic question.<br><br>I have a Lookups class inheriting BusinessCollectionBase.&nbsp; I am attempting to bind this to a DataGridView using the following commands:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lookups = Lookups.GetLookups("All Types")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.dgvLookups.DataSource = _lookups<br><br>It displays all the data, but I don't have a row to add a new row, can't edit any values, and can't delete a row.&nbsp; Readonly is set to false and all the "AllowUserTo..." are set appropriately.<br><br>I haven't added any code to write back the adds, deletes, and updates, but I would think I could still place values in the datagrid even if I don't write them back.<br><br>I'm guessing I'm making a rookie mistake, because I'm a rookie.&nbsp; Could someone please point me in the right direction?&nbsp; Am I using the wrong type of class?&nbsp; <br><br>Many thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 29, 2008</h2><P>Assuming Lookups is a BusinessListBase, what you need to do is add code in its constructor to enable those features:</P>
+<BLOCKQUOTE dir=ltr>
+<P>Private Sub New()<BR>&nbsp; AllowNew = True<BR>&nbsp; ' ...<BR>End Sub</P></BLOCKQUOTE>
+<P>And if you allow new, then you must also override AddNewCore() as discussed in <EM>Expert 2005 Business Objects</EM>, and illustrated in the ProjectTracker sample app.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Entity replied on Friday, May 30, 2008</h2>Rocky and Joe,<br><br>Thanks both for your help.&nbsp; I now have the "Add New" line showing up in the datagridview, so that is awesome!&nbsp; I still can't edit any values in there though.<br><br>I tried overriding AddNewCore() as shown in E2BO, but it looks like this doesn't exist in the version of CSLA (1.51?) this app is built on (much of it is inherited code).&nbsp; Is converting to version 2.0 or 3.04 difficult?&nbsp; Is there backwards compatibility built in or will I end up changing a lot of code?<br><br>Thanks!<br><br>-Joshua<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, May 30, 2008</h2><P>There were some late changes on CSLA 1.x which I never made (rule handling, etc.)</P>
+<P>This made the transition to CSLA 2. x enormously difficult. The pain was well worth the effort but it took 4 developers almost a month to convert the large app we have been developing. I have older posts with more detail but it was not a simple exercise.</P>
+<P>Given your current situation and exeprience I would not recommend an upgrade.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Entity replied on Friday, May 30, 2008</h2>Joe and Rocky,<br><br>Thanks for your help!&nbsp; You've certainly given me some areas to research and some approaches to consider.<br><br>I noticed that Jeff Zuerlein once suggested a best practices area for the datagridview for CSLA.&nbsp; That sounds like a great idea.&nbsp; Unfortunately, all I would be able to contribute at this point is how not to do it.<br><br>Thanks!<br><br>-Joshua<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>AddNewCore() comes from BindingList&lt;T&gt; (or perhaps
+Collection&lt;T&gt;?). That&#8217;s a .NET 2.0 feature, and so CSLA 1.x couldn&#8217;t
+use it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, IBindingList existed in .NET 1.x, and is used by CSLA
+1.x. And that interface defines the concept of adding a new item. I must
+confess that I don&#8217;t remember how I had it working back then, but I&#8217;m
+pretty sure CSLA supported the concept of adding new items to a collection via
+IBindingList.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, May 29, 2008</h2><P>I think you have to have an override for AddNewCore in your collection class which returns a New item of the BO in the collection initialized however you want.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

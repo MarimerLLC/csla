@@ -1,0 +1,42 @@
+<html><header><title>Polymorphic Instantiation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Polymorphic Instantiation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3146.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wile E. Coyote posted on Thursday, July 05, 2007</h2><P><FONT face=Arial size=2>Hi,</FONT></P>
+<P><FONT face=Arial size=2>How do you go about polymorphic instantiation using CSLA? Here's a simplified&nbsp;example: </FONT></P>
+<P><FONT face=Arial size=2>Person (abstract base class), Student (first concrete child class) and Lecturer(second concrete child class). The concrete&nbsp;type is represented by a flag on the Person table as "S" or "L". How do I go about fetching&nbsp;a Person with name = "Joe Blogs"&nbsp; and instantiating the correct concrete instance (student or lecturer)? Let's assume that a Person can either a Student or a Lecturer and not both for simplicity purposes. The DataPortal_Fetch method instantiates an instance of a particular class based on the declaring type of the criteria object (in this case Person). How do I go about&nbsp;only instantiating the concrete type based on the flag "S" or "L".</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>Is there any simple and most importantly correct method to accomplish this in the framework?</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>Thanks for the help</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 05, 2007</h2><P>Hello,</P>
+<P>Because your Person is an abstract generic and doesn't really have responsibility to know of the subclasses, I would suggest a PersonFactory static class. </P>
+<P>PersonFactory could have classes such as: Exists(string personName), GetPerson(string personName), GetPerson(int personId).</P>
+<P>The return values on the GetPerson methods would be IPerson. IPerson should be an interface that exposes everything from your person class, and Person should thus implement IPerson. </P>
+<P>By that nature, Student and Lecturer will implement IPerson. So when your factory does the retrieval in GetPerson, it should first just nab the flag, and then call the appropriate factory method on the concrete class. </P>
+<P>Something like: </P>
+<P>public static IPerson GetPerson(int personId)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;if (Student.Exists(personId))</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Student.GetStudent(personId);</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;else if (Lecturer.Exists(personId))</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return Lecturer.GetLecturer(personId);</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;else</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//throw exception - not found</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>That's how I do it, and it works well. </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, July 05, 2007</h2><P>I can see&nbsp;how this could work just fine but have a couple of questions/remarks. Wouldn't it be better to have a Person.Exists(int id) and then do the fetching within GetPerson(). Then depending on the person type field you call either Student.GetStudent(IPerson person) or Lecturer.GetLecturer(IPerson person)?</P>
+<P>That would reduce the database hits but not sure if its a valid OO design. It would also remove the filtering logic from the database and place it within your class (although this might mean introducing database logic in your objects?).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 05, 2007</h2><P>PersonFactory shouldn't fetch each of the concrete classes - that is, have any knowledge on the internal fetching &amp; population of the classes - any concrete class could have their own data requirements that would require a different fetching &amp; population algorithm. </P>
+<P>PersonFactory should simply facilitate requests in a generic manner and handle the delegation to the appropriate classes. </P>
+<P>If you have common fetching components you would be able to introduce that in protected instance methods in the Person class which could be leveraged by the fetching logic for your student and lecturer classes. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 05, 2007</h2><P>BTW, if you meant having the factory methods right off of Person - that's not possible - because Person is likely a Generic Class for him/her. Can't invoke a static method on a generic class - like Person&lt;T&gt;.GetPerson() - no can do. </P>
+<P>Person&lt;T&gt; : BusinessBase&lt;Person&gt;, IPerson where T : Person&lt;T&gt;</P>
+<P>Lecturer : Person&lt;Lecturer&gt;</P>
+<P>Student : Person&lt;Student&gt;</P>
+<P>(At least that's what I suspect he has for his classes)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wile E. Coyote replied on Friday, July 06, 2007</h2><P><FONT face=Arial size=2>Thanks for the replies. It just the a bit "clunky" for want of a better word. What I'd like to do is fetch the single result set from the database and based on the flag field instantiate the concrete instance.</FONT></P>
+<P><FONT face=Arial size=2>Is there no simple way to do this in the framework?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 06, 2007</h2>You'd need to create a PersonFactory class, which would likely be static.&nbsp; Its get could return a Person instance. The factory would execute the dataportal, load the data, decide which concrete type to create and create it, passing it the data it needs to load.<br><br>If you need one of the subclasses, you'll have to create static factory methods on the subclass, but you would need to know what kind of person you expect to create in advance.<br><br>Does that make sense?<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

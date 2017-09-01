@@ -1,0 +1,21 @@
+<html><header><title>Csla.Validation.BrokenRule cannot be serialized because it does not have a parameterless constructor. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Validation.BrokenRule cannot be serialized because it does not have a parameterless constructor. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10165.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kalpesh posted on Monday, March 14, 2011</h2><p>I have written&nbsp;a Web service in .Net 2008, with following Web method -</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;WebMethod()&gt; _</p>
+<p>&nbsp;&nbsp; Public Function GetCurrency(ByVal ID As Guid) As Currency</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim mCurrency As Currency = Currency.GetCurrency(ID)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mCurrency</p>
+<p>&nbsp;&nbsp;&nbsp; End Function</p>
+<p>WHERE &#39;Currency&#39; is CSLA.net object. WHILE running web service its giving subjected error.</p>
+<p>PLEASE guide me as I am new to this.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 14, 2011</h2><p>This is a frequently asked question. Frequent enough that it is covered in the FAQ:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx">http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx</a></p>
+<p>It is also the subject of Chapter 21 in the <em>Expert 2008 Business Objects</em> book.</p>
+<p>In short, you can&#39;t use the XmlSerializer, DataContractSerializer, JsonSerializer, or the other more limited serializers to directly convert a CSLA object into and out of a data format.</p>
+<p>And you shouldn&#39;t want to do this anyway. It would be an architectural disaster to tightly couple your internal object design to an external interface. Especially a service interface, because they are really hard to version in any case.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kalpesh replied on Monday, March 14, 2011</h2><p>Thanks. </p>
+<p>Can you please explain how should I work arround in this situation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 15, 2011</h2><p>As I said, Chapter 21 explains in detail. In summary:</p>
+<ol>
+<li>Define your external service interface - this is often done using an XSD or DataContract class - in any case you&#39;ll end up with proxy types representing the service interface</li>
+<li>Implement your service to create instances of the proxy types, and to load them with data from your business objects - you can often use Csla.Data.DataMapper to simplify this code</li>
+<li>Return the proxy type as the result of your service - it will serialize fine because it is a service proxy type</li>
+</ol>
+<p>There&#39;s also a lot of information (mostly architecture related) on my blog in the Service Oriented category:</p>
+<p><a href="http://www.lhotka.net/weblog/CategoryView,category,Service-Oriented.aspx">http://www.lhotka.net/weblog/CategoryView,category,Service-Oriented.aspx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

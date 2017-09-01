@@ -1,0 +1,30 @@
+<html><header><title>List of root objects, EditableRootListBase not helping.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>List of root objects, EditableRootListBase not helping.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2489.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrazyLegz posted on Thursday, March 08, 2007</h2><P>Fellow CSLA users I have a headbraking problem,</P>
+<P>&nbsp;</P>
+<P>I have a list with root objects wich have no child relations.</P>
+<P>I want to bind this list to a grid (GridEX, Janus components).</P>
+<P>I also want to be able to edit them, but not save them right away.</P>
+<P>So the new EditableRootListBase isn't an option because it saves immidiatly.</P>
+<P>Once an OK button is pressed, I want to save them.</P>
+<P>It also depends on wheter the list with objects is valid if the OK button is Enabled or not.</P>
+<P>&nbsp;</P>
+<P>How should I approach this situation?</P>
+<P>It's keeping me busy for quite some time now.</P>
+<P>&nbsp;</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, March 08, 2007</h2><P>I wonder if you might be confused about what an EditableRootList (or EditableRootCollection as it was known in CSLA 1) really is.&nbsp; I think many here believe it to be a collection of Root objects.&nbsp; A collection can never contain Root objects.&nbsp; By its nature, it can only contain Children.</P>
+<P>I'm also not sure what you mean by "not save them right away."&nbsp; I'm going to assume you mean that you want the whole "list of them" updated to the database in one UI operation and any edits that you make to individual members aren't persisted to the database individually.&nbsp; </P>
+<P>If that's correct, you can change your EditableRootObjects be Switchable instead.&nbsp; Then use them as Children in this scenario and the EditableRootList will work just fine for you.&nbsp; </P>
+<P>If you find the Switchable class too confusing, just create an Editable&nbsp;Child Class for them and use it in this context (Use Case), but continue to use the EditableRoot in those other Cases for which it is appropriate.</P>
+<P>This is just another variation on the long-running theme here about designing objects based on their desired <STRONG>behavior</STRONG>.&nbsp; These Business "entities" behave one way for some Use Cases (when your original selection for implementation of EditableRootObject was correct) but quite differently when they are members of a list offered in the U.I.&nbsp; </P>
+<P>It's pretty common in my experience to&nbsp;implement the same "business entity" (a Customer, Employee, Invoice, Timesheet, etc) with two or more CSLA types in the same application.&nbsp; This is very common in applications that provide lots of data entry and entity maintenance in the U.I.&nbsp; Apps that provide primarily processing activities (where the UI basically offers a place to select processing options and the opportunity to view processing output) don't&nbsp;usually require&nbsp;this "multiple-type" entity implementation.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrazyLegz replied on Thursday, March 08, 2007</h2><P>Thanks for your reply Q Johnson.</P>
+<P>Well your assumptions are correct thats exactly what i ment.</P>
+<P>It's an interesting reply you wrote and very usefull.</P>
+<P>But i'm a bit confused if you are reffering to EditableRootListBase or EditableRootList wich is a template.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 08, 2007</h2>CrazyLegz,<br><br>I think what you'll need to do is change your root objects to child objects, and use the standard BusienssListBase, not the EditableRootListBase class.<br><br>The root is the object responsible for managing the transaction, and from what you described you want ALL items in the list saved within a transaction.&nbsp; <br><br>EditableRootListBase was created specifically for the behavior you don't want; which is that each item in the collection can be saved independately, and each item in the collection manages its own transaction which the other items don't participate in.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, March 08, 2007</h2><FONT face="Times New Roman" size=3>
+<P align=left>FYI - from the eBook:</P>
+<P align=left>Behind the scenes the implementation of the “child” objects is different as well.</P></FONT><FONT face="Courier New" size=1>
+<P align=left>EditableRootListBase </FONT><FONT face="Times New Roman" size=3>is designed to contain editable root objects, rather than editable child</P>
+<P align=left>objects. In other words, it contains objects that inherit from </FONT><FONT face="Courier New" size=1>BusinessBase </FONT><FONT face="Times New Roman" size=3>that do </FONT><I><FONT face="Times New Roman" size=3>not </I></FONT><FONT face="Times New Roman" size=3>call</P></FONT><FONT face="Courier New" size=1>
+<P>MarkAsChild() </FONT><FONT face="Times New Roman" size=3>in their constructor.</FONT></P>
+<P><FONT face="Times New Roman" size=3></FONT>&nbsp;</P>
+<P><FONT face="Times New Roman" size=3>Joe</FONT></P>
+<P><FONT face="Times New Roman" size=3>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

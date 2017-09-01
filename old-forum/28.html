@@ -1,0 +1,18 @@
+<html><header><title>CSLA 1.5 DataBinding in NetAdvantage</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 1.5 DataBinding in NetAdvantage</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/28.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep posted on Monday, May 08, 2006</h2><DIV>Hi all,</DIV>
+<DIV>I am using CSLA 1.5 and NetAdvantage for my UI. I have a form which uses a CSLA businessBase derived object as the base object. In the form I have a NetAdvantage Toolbar with a save button.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am not sure how to bind the IsValid property of my base object to this toolbar button. Looks like the NetAdvantage toolbar button does not have a databinding's property. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So If anyone have come across this problem please let me know how you fixed it. I didn't get any help from Infragistics support on this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank you in advance...</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Monday, May 08, 2006</h2><P>I have tried it many differennt ways... the fact is that there is no Databinding in the ToolbarManager at all... I have a similiar setup...&nbsp; You have to program the toolclick even manaully.</P>
+<P>If I am wrong please let me know.</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pradeep replied on Monday, May 08, 2006</h2><DIV>On just trying out few things, I noticed one more issue.&nbsp; I have a Order form. This inside&nbsp;has Order Control and LineItems control. When I first create a new Order, I will create a new Order object (Order.NewOrder())&nbsp; in the Order Form and pass that object to the Order control. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>What's&nbsp;happening is that, the Save button is on&nbsp;the Order Form and NOT on Order control. So I think, the IsDirtyChanged event is not propagated properly to the Order Form and thus not enabling the Save button, when there are any modifications to the fields in the Order Control.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>On the other hand, I tried keeping all the Order form without Order control (meaning having all order properties just on form not inside a control). In this case, the Save button on the orde form is getting enabled properly.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any thoughts ??</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,32 @@
+<html><header><title>How to wrap a DataMember list with a SortedBindingList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to wrap a DataMember list with a SortedBindingList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2698.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Saturday, April 14, 2007</h2>Can someone show how we wrap a DataMember of a parent BindingSource with a SortedBindingList ?<br>
+mRootList<br>
+
+
+&nbsp;&nbsp;&nbsp; RootListItem<br>
+
+
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; pChildList (prop)<br>
+
+<br>
+It is straight forward to wrap and bind a root list to a binding source
+with a SortedBindingList (as for example see PTWin ProjectList) as it
+is strongly typed.<br>
+<br>
+RootListBindingSource.DataSource = New SortedBindingList(of myRootListType) (mRootList)<br>
+<br>
+However when it comes to a list that is a child in a Parent-Child
+relationship the issue is different because the DataMember property of
+the BindingSource requires a string literal.<br>
+<br>
+ChildListBindingSource.DataSource = RootListBindingSource<br>
+ChildListBindingSoutce.DataMember = "pChildList"&nbsp; <br>
+<br>
+Jimbo<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Sunday, April 22, 2007</h2>Is this question too hard ? or am I missing something ?<br>
+<br>
+Jimbo<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Sunday, April 22, 2007</h2>If I remember correctly, the binding source has an InnerList property (or something along those lines).<br>You can use that in order to get the actual list.<br><br>Also, you don't necessarily need to use the main binding source as datasource and specify a datamember. You can do this:<br><br>childBindingSource.DataSource = New SortedBindingList(Of Child)(mRootObject.ChildList)<br><br>As a last resort, you could create a property such as this inside your root object:<br><br>&nbsp;&nbsp;&nbsp; &lt;NonSerialized(), NotUndoable()&gt; _<br>&nbsp;&nbsp;&nbsp; Private m_SortedChildren As SortedBindingList(Of MyChild)<br>&nbsp;&nbsp;&nbsp; Public ReadOnly Property SortedChildren() As SortedBindingList(Of MyChild)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If m_SortedChildren Is Nothing Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_SortedChildren = New SortedBindingList(Of MyChild)(Me.m_Children)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_SortedChildren.ApplySort("SomeField", _<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ComponentModel.ListSortDirection.Descending)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return m_SortedChildren<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp; End Property<br><br><br><br>That way, you can use that "SortedChildren" property as a datamember and that would be it. This is particularily useful for grandchildren, where you'd have to reassign the granchild bindingsource's datasource whenever the "current child" changes...<br><br>Some could argue that this is suboptimal because these lists should be part of the ui, but hey, sometimes you just have to get the job done!! <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, May 23, 2007</h2>Thanks Andres,<br><br>I use your first solution quite often, but in this case the second idea is the best.<br><br>Prior to using csla and also now I have been doing much like you suggest in the second solution - ie have a pre-wrapped sortable list object exposed through a readonly property.<br><br>Horses for courses.<br><br>Regards,<br>Jimbo<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

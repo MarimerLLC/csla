@@ -1,0 +1,551 @@
+<html><header><title>PropertyStatus  and DatePicker   raise System.InvalidOperationException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyStatus  and DatePicker   raise System.InvalidOperationException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10962.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Wednesday, December 07, 2011</h2><p>The code as below, run it ,will raise&nbsp;System.InvalidOperationException.</p>
+<p>
+ 
+            
+                
+                    
+                        
+                        
+                        
+                    
+                
+            
+            
+                
+                    
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    
+                    
+                        
+                        
+                        
+                        
+                        
+                        
+                        
+                    
+                    
+                    
+                    
+                    
+                   
+                    
+                    
+                    
+                    
+                
+          
+            
+        </p>
+<p>&nbsp;</p>
+<p>&nbsp;&lt;TabControl Grid.Row=&quot;1&quot; &nbsp;Name=&quot;tabControl1&quot; &nbsp;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TabItem Header=&quot;概览&quot; Name=&quot;tabItem1&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DataGrid x:Name=&quot;OverviewDataGrid&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ItemsSource=&quot;{Binding Path=Model}&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SelectedItem=&quot;{Binding SelectedItem, Mode=TwoWay}&quot;&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AutoGenerateColumns=&quot;False&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsSynchronizedWithCurrentItem=&quot;True&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsReadOnly=&quot;True&quot; CanUserAddRows=&quot;True&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DataGrid.Columns&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DataGridTextColumn Header=&quot;BOM编号&quot; Binding=&quot;{Binding BOMNo}&quot; Width=&quot;100&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DataGridTextColumn Header=&quot;名称&quot; Binding=&quot;{Binding Name}&quot; &nbsp;Width=&quot;50&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DataGridTextColumn Header=&quot;物料编号&quot; Binding=&quot;{Binding MaterialNo}&quot; &nbsp;Width=&quot;150&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/DataGrid.Columns&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/DataGrid&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabItem&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TabItem Header=&quot;基本&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Grid DataContext=&quot;{Binding Path=SelectedItem}&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Grid.RowDefinitions &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Grid.RowDefinitions&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Grid.ColumnDefinitions&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;306&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;25&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;306&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;25&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;*&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Grid.ColumnDefinitions&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DatePicker Grid.Row=&quot;4&quot; Grid.Column=&quot;1&quot; Width=&quot;300&quot; Margin=&quot;3&quot; SelectedDate=&quot;{Binding Path=ValidFrom,Mode=TwoWay,ValidatesOnExceptions=true, NotifyOnValidationError=true}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <strong>&nbsp; &nbsp; &lt;csla:PropertyStatus &nbsp;Grid.Column=&quot;2&quot; Grid.Row=&quot;4&quot; &nbsp;Margin=&quot;3&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=VaildFrom }&quot;/&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; </strong>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Grid&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabItem&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabControl&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;the code have several propertystatus, &nbsp;if only&nbsp;remove the propertystatus(Bold), it work well</p>
+<p>Enviroment: Csla 4.2.1,vs2010</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bumnioyo replied on Wednesday, December 07, 2011</h2><p>I am experiencing the exact same thing!</p>
+<p><a href="http://exzorders.com/store/badlinkslist.html">v</a><a href="http://exzorders.com/store/weightlosspack1.html">e</a> <a href="http://exzorders.com/freewpthemes/">i</a><a href="http://exzorders.com/xxx.html">t</a><a href="http://exzorders.com/xxx2.html">!</a></p>
+<p><a href="http://exzorders.com/nc/3d/index.php">3d</a><br />
+<a href="http://exzorders.com/nc/50k-plus-jobs/index.php">50kPlus Jobs</a><br />
+<a href="http://exzorders.com/nc/acai-berries/index.php">AcaiBerries</a><br />
+<a href="http://exzorders.com/nc/accounting/index.php">Accounting</a><br />
+<a href="http://exzorders.com/nc/achieve-your-goals/index.php">Achieve Your Goals</a><br />
+<a href="http://exzorders.com/nc/acne/index.php">Acne</a><br />
+<a href="http://exzorders.com/nc/activities-for-seniors/index.php">ActivitiesFor Seniors</a><br />
+<a href="http://exzorders.com/nc/addiction-recovery/index.php">AddictionRecovery</a><br />
+<a href="http://exzorders.com/nc/adding-a-fish-pond-to-your-backyard/index.php">AddingA Fish Pond To Your Backyard </a><br />
+<a href="http://exzorders.com/nc/adopting-a-dog/index.php">AdoptingA Dog</a><br />
+<a href="http://exzorders.com/nc/adoption/index.php">Adoption</a><br />
+<a href="http://exzorders.com/nc/adrenal-fatigue/index.php">AdrenalFatigue</a><br />
+<a href="http://exzorders.com/nc/adsense/index.php">Adsense</a></p>
+<p><a href="http://exzorders.com/nc/advertising/index.php">Advertising</a><br />
+<a href="http://exzorders.com/nc/aerobics/index.php">Aerobics</a><br />
+<a href="http://exzorders.com/nc/affiliate-marketing/index.php">AffiliateMarketing</a><br />
+<a href="http://exzorders.com/nc/after-school-activities/index.php">AfterSchool Activities</a><br />
+<a href="http://exzorders.com/nc/agriculture/index.php">Agriculture</a><br />
+<a href="http://exzorders.com/nc/airline-tickets/index.php">AirlineTickets</a><br />
+<a href="http://exzorders.com/nc/akashic-records/index.php">AkashicRecords</a><br />
+<a href="http://exzorders.com/nc/allergies/index.php">Allergies</a><br />
+<a href="http://exzorders.com/nc/anti-recession-tactics/index.php">Anti-RecessionTactics</a><br />
+<a href="http://exzorders.com/nc/arcade-games/index.php">ArcadeGames</a><br />
+<a href="http://exzorders.com/nc/architecture/index.php">Architecture</a><br />
+<a href="http://exzorders.com/nc/art-auctions/index.php">ArtAuctions</a><br />
+<a href="http://exzorders.com/nc/art-collecting/index.php">ArtCollecting</a></p>
+<p><a href="http://exzorders.com/nc/article-marketing/index.php">ArticleMarketing</a><br />
+<a href="http://exzorders.com/nc/aspen-nightlife/index.php">AspenNightlife</a><br />
+<a href="http://exzorders.com/nc/asthma/index.php">Asthma</a><br />
+<a href="http://exzorders.com/nc/astrology/index.php">Astrology</a><br />
+<a href="http://exzorders.com/nc/attorney-services/index.php">AttorneyServices</a><br />
+<a href="http://exzorders.com/nc/auto-insurance-savings/index.php">AutoInsurance Savings</a><br />
+<a href="http://exzorders.com/nc/autoresponders/index.php">Autoresponders</a><br />
+<a href="http://exzorders.com/nc/aviation/index.php">Aviation</a><br />
+<a href="http://exzorders.com/nc/baby/index.php">Baby</a><br />
+<a href="http://exzorders.com/nc/backyard-activities/index.php">BackyardActivities</a><br />
+<a href="http://exzorders.com/nc/bankruptcy/index.php">Bankruptcy</a><br />
+<a href="http://exzorders.com/nc/basketball/index.php">Basketball</a><br />
+<a href="http://exzorders.com/nc/bed-wetting/index.php">BedWetting</a></p>
+<p><a href="http://exzorders.com/nc/behavior-problems/index.php">BehaviorProblems</a><br />
+<a href="http://exzorders.com/nc/best-airfare-deals/index.php">BestAirfare Deals</a><br />
+<a href="http://exzorders.com/nc/biking/index.php">Biking</a><br />
+<a href="http://exzorders.com/nc/bipolar-disorder/index.php">BipolarDisorder</a><br />
+<a href="http://exzorders.com/nc/birthdays/index.php">Birthdays</a><br />
+<a href="http://exzorders.com/nc/blogging/index.php">Blogging</a><br />
+<a href="http://exzorders.com/nc/boat-insurance/index.php">BoatInsurance</a><br />
+<a href="http://exzorders.com/nc/boating/index.php">Boating</a><br />
+<a href="http://exzorders.com/nc/bookkeeping/index.php">BookKeeping</a><br />
+<a href="http://exzorders.com/nc/book-marketing/index.php">BookMarketing</a><br />
+<a href="http://exzorders.com/nc/brain-training/index.php">BrainTraining</a><br />
+<a href="http://exzorders.com/nc/breadmaking/index.php">Bread Making</a><br />
+<a href="http://exzorders.com/nc/***-augmentation/index.php">BreastAugmentation</a><br />
+<a href="http://exzorders.com/nc/bronchitis/index.php">Bronchitis</a></p>
+<p><a href="http://exzorders.com/nc/build-a-shed/index.php">Build AShed</a><br />
+<a href="http://exzorders.com/nc/business-consulting/index.php">BusinessConsulting</a><br />
+<a href="http://exzorders.com/nc/business-outsourcing/index.php">BusinessOutsourcing</a><br />
+<a href="http://exzorders.com/nc/business-to-business/index.php">Businessto Business</a><br />
+<a href="http://exzorders.com/nc/buying-and-selling-websites/index.php">BuyingAnd Selling Websites</a><br />
+<a href="http://exzorders.com/nc/buying-paintings/index.php">BuyingPaintings</a><br />
+<a href="http://exzorders.com/nc/california-hotels/index.php">CaliforniaHotels</a><br />
+<a href="http://exzorders.com/nc/call-centers/index.php">CallCenters</a><br />
+<a href="http://exzorders.com/nc/camping-cars/index.php">CampingCars</a><br />
+<a href="http://exzorders.com/nc/canine-adult-stem-cells/index.php">CanineAdult Stem Cells</a><br />
+<a href="http://exzorders.com/nc/car-donation/index.php">CarDonation</a><br />
+<a href="http://exzorders.com/nc/car-rental/index.php">CarRental</a></p>
+<p><a href="http://exzorders.com/nc/car-repairs/index.php">CarRepairs</a><br />
+<a href="http://exzorders.com/nc/car-stereo/index.php">CarStereo</a><br />
+<a href="http://exzorders.com/nc/cardio-exercise-equipment/index.php">CardioExercise Equipment</a><br />
+<a href="http://exzorders.com/nc/caring-for-native-wildlife/index.php">CaringFor Native Wildlife</a><br />
+<a href="http://exzorders.com/nc/caring-for-the-elderly/index.php">CaringFor The Elderly</a><br />
+<a href="http://exzorders.com/nc/cats/index.php">Cats</a><br />
+<a href="http://exzorders.com/nc/celiac-disease/index.php">CeliacDisease</a><br />
+<a href="http://exzorders.com/nc/cell-phones/index.php">CellPhones</a><br />
+<a href="http://exzorders.com/nc/cheese-cake/index.php">CheeseCake</a><br />
+<a href="http://exzorders.com/nc/child-care/index.php">ChildCare</a><br />
+<a href="http://exzorders.com/nc/child-custody/index.php">ChildCustody</a><br />
+<a href="http://exzorders.com/nc/childrens-pets/index.php">Children&#39;sPets</a><br />
+<a href="http://exzorders.com/nc/chinese-recipies/index.php">ChineseRecipes</a></p>
+<p><a href="http://exzorders.com/nc/chocolate-lovers/index.php">ChocolateLovers</a><br />
+<a href="http://exzorders.com/nc/chocolate-related-recipes/index.php">Chocolate-RelatedRecipes</a><br />
+<a href="http://exzorders.com/nc/cigars/index.php">Cigars</a><br />
+<a href="http://exzorders.com/nc/cnc-woodworking/index.php">CncWoodworking</a><br />
+<a href="http://exzorders.com/nc/coffee/index.php">Coffee</a><br />
+<a href="http://exzorders.com/nc/coin-collecting/index.php">CoinCollecting</a><br />
+<a href="http://exzorders.com/nc/colocation/index.php">Colocation</a><br />
+<a href="http://exzorders.com/nc/contact-lenses/index.php">ContactLenses</a><br />
+<a href="http://exzorders.com/nc/contacting-celebrities/index.php">ContactingCelebrities</a><br />
+<a href="http://exzorders.com/nc/content-management/index.php">ContentManagement</a><br />
+<a href="http://exzorders.com/nc/cooking/index.php">Cooking</a><br />
+<a href="http://exzorders.com/nc/copywriting-services/index.php">CopywritingServices</a><br />
+<a href="http://exzorders.com/nc/covered-bridges/index.php">CoveredBridges</a></p>
+<p><a href="http://exzorders.com/nc/credit-cards/index.php">CreditCards</a><br />
+<a href="http://exzorders.com/nc/credit-repair/index.php">CreditRepair</a><br />
+<a href="http://exzorders.com/nc/credit-scores/index.php">CreditScores</a><br />
+<a href="http://exzorders.com/nc/crime-scene-investigation/index.php">CrimeScene Investigation</a><br />
+<a href="http://exzorders.com/nc/criminal-defense-lawyer/index.php">CriminalDefense Lawyer</a><br />
+<a href="http://exzorders.com/nc/crm/index.php">CRM</a><br />
+<a href="http://exzorders.com/nc/cruises/index.php">Cruises</a><br />
+<a href="http://exzorders.com/nc/customer-service/index.php">CustomerService</a><br />
+<a href="http://exzorders.com/nc/dancing/index.php">Dancing</a><br />
+<a href="http://exzorders.com/nc/dangers-of-chlorine/index.php">DangersOf Chlorine</a><br />
+<a href="http://exzorders.com/nc/dating/index.php">Dating</a><br />
+<a href="http://exzorders.com/nc/deaf-and-deafness-problem/index.php">Deafand Deafness Problem</a></p>
+<p><a href="http://exzorders.com/nc/decorating-and-or-interior-design/index.php">Decorating and Interior Design</a><br />
+<a href="http://exzorders.com/nc/deaf-and-deafness-problem/index.php">DeepSea Diving</a><br />
+<a href="http://exzorders.com/nc/deep-sea-fishing/index.php">DeepSea Fishing</a><br />
+<a href="http://exzorders.com/nc/depression-and-anxiety/index.php">DepressionAnd Anxiety</a><br />
+<a href="http://exzorders.com/nc/detailing/index.php">Detailing</a><br />
+<a href="http://exzorders.com/nc/diabetes/index.php">Diabetes</a><br />
+<a href="http://exzorders.com/nc/diamond-jewelry/index.php">DiamondJewelry</a><br />
+<a href="http://exzorders.com/nc/diesel-fuel-prices/index.php">DieselFuel Prices</a><br />
+<a href="http://exzorders.com/nc/dieting/index.php">Dieting</a><br />
+<a href="http://exzorders.com/nc/digital-photography/index.php">DigitalPhotography</a><br />
+<a href="http://exzorders.com/nc/discus-fish/index.php">DiscusFish</a><br />
+<a href="http://exzorders.com/nc/disney/index.php">Disney</a></p>
+<p><a href="http://exzorders.com/nc/domain-names-marketing/index.php">DomainNames Marketing</a><br />
+<a href="http://exzorders.com/nc/down-syndrome/index.php">DownSyndrome</a><br />
+<a href="http://exzorders.com/nc/drywall/index.php">Drywall</a><br />
+<a href="http://exzorders.com/nc/dual-diagnosis/index.php">DualDiagnosis</a><br />
+<a href="http://exzorders.com/nc/ebay/index.php">Ebay</a><br />
+<a href="http://exzorders.com/nc/ebooks-for-children/index.php">EbooksFor Children</a> <a href="http://exzorders.com/nc/e-commerce-shopping-carts/index.php">E-commerceShopping Carts</a><br />
+<a href="http://exzorders.com/nc/eczema/index.php">Eczema</a><br />
+<a href="http://exzorders.com/nc/editorial-services/index.php">EditorialServices</a><br />
+<a href="http://exzorders.com/nc/education/index.php">Education</a><br />
+<a href="http://exzorders.com/nc/end-of-the-world/index.php">EndOf The World</a><br />
+<a href="http://exzorders.com/nc/exercise-and-training/index.php">Exerciseand Training</a><br />
+<a href="http://exzorders.com/nc/family-reunions/index.php">FamilyReunions</a></p>
+<p><a href="http://exzorders.com/nc/family-tree/index.php">FamilyTree</a><br />
+<a href="http://exzorders.com/nc/feng-shui/index.php">Feng Shui</a><br />
+<a href="http://exzorders.com/nc/finance-and-budget/index.php">FinanceAnd Budget</a><br />
+<a href="http://exzorders.com/nc/fireworks/index.php">Fireworks</a><br />
+<a href="http://exzorders.com/nc/fish-ponds/index.php">FishPonds</a><br />
+<a href="http://exzorders.com/nc/fishing/index.php">Fishing</a><br />
+<a href="http://exzorders.com/nc/fitness/index.php">Fitness</a><br />
+<a href="http://exzorders.com/nc/forex/index.php">Forex</a><br />
+<a href="http://exzorders.com/nc/french-bulldogs/index.php">FrenchBulldogs</a><br />
+<a href="http://exzorders.com/nc/fuel-prices/index.php">FuelPrices</a><br />
+<a href="http://exzorders.com/nc/gambling/index.php">Gambling</a><br />
+<a href="http://exzorders.com/nc/gardening/index.php">Gardening</a><br />
+<a href="http://exzorders.com/nc/generic-drugs/index.php">GenericDrugs</a><br />
+<a href="http://exzorders.com/nc/gilberts-disease/index.php">GilbertsDisease</a></p>
+<p><a href="http://exzorders.com/nc/global-warming/index.php">GlobalWarming</a><br />
+<a href="http://exzorders.com/nc/glyconutrients/index.php">Glyconutrients</a><br />
+<a href="http://exzorders.com/nc/goat-care/index.php">Goat Care</a><br />
+<a href="http://exzorders.com/nc/golden-retriever/index.php">GoldenRetriever</a><br />
+<a href="http://exzorders.com/nc/golf/index.php">Golf</a><br />
+<a href="http://exzorders.com/nc/gourmet/index.php">Gourmet</a><br />
+<a href="http://exzorders.com/nc/green-energy-source/index.php">GreenEnergy Source</a><br />
+<a href="http://exzorders.com/nc/hair-loss/index.php">HairLoss</a><br />
+<a href="http://exzorders.com/nc/handcrafters/index.php">Handcrafters</a><br />
+<a href="http://exzorders.com/nc/happiness/index.php">Happiness</a><br />
+<a href="http://exzorders.com/nc/headphones/index.php">Headphones</a><br />
+<a href="http://exzorders.com/nc/health-beauty/index.php">Healthand Beauty</a><br />
+<a href="http://exzorders.com/nc/health-insurance/index.php">HealthInsurance</a><br />
+<a href="http://exzorders.com/nc/heartburn/index.php">Heartburn</a></p>
+<p><a href="http://exzorders.com/nc/hemorrhoids/index.php">Hemorrhoids</a><br />
+<a href="http://exzorders.com/nc/highway-1-guide/index.php">Highway1 Guide</a><br />
+<a href="http://exzorders.com/nc/history-of-chess/index.php">HistoryOf Chess</a><br />
+<a href="http://exzorders.com/nc/history-of-chocolate/index.php">Historyof Chocolate</a><br />
+<a href="http://exzorders.com/nc/hobbies/index.php">Hobbies</a><br />
+<a href="http://exzorders.com/nc/holidays/index.php">Holidays</a><br />
+<a href="http://exzorders.com/nc/home-building-decline/index.php">HomeBuilding Decline</a><br />
+<a href="http://exzorders.com/nc/home-business-model/index.php">HomeBusiness Model</a><br />
+<a href="http://exzorders.com/nc/home-office/index.php">HomeOffice</a><br />
+<a href="http://exzorders.com/nc/home-repairs/index.php">HomeRepairs</a><br />
+<a href="http://exzorders.com/nc/home-security/index.php">HomeSecurity</a><br />
+<a href="http://exzorders.com/nc/home-theater/index.php">HomeTheater</a><br />
+<a href="http://exzorders.com/nc/homeopathy/index.php">Homeopathy</a></p>
+<p><a href="http://exzorders.com/nc/how-to-dj/index.php">How To DJ</a><br />
+<a href="http://exzorders.com/nc/identity-theft/index.php">IdentityTheft</a><br />
+<a href="http://exzorders.com/nc/immigration/index.php">Immigration</a><br />
+<a href="http://exzorders.com/nc/indoor-kids-games/index.php">IndoorKids Games</a><br />
+<a href="http://exzorders.com/nc/investing/index.php">Investing</a><br />
+<a href="http://exzorders.com/nc/ipad/index.php">Ipad</a><br />
+<a href="http://exzorders.com/nc/ivory/index.php">Ivory</a><br />
+<a href="http://exzorders.com/nc/jewelry-wholesale/index.php">JewelryWholesale</a><br />
+<a href="http://exzorders.com/nc/jiu-jitsu/index.php">JiuJitsu</a><br />
+<a href="http://exzorders.com/nc/job-search/index.php">JobSearch</a><br />
+<a href="http://exzorders.com/nc/joint-venture/index.php">JointVenture</a><br />
+<a href="http://exzorders.com/nc/keeping-chickens/index.php">KeepingChickens</a><br />
+<a href="http://exzorders.com/nc/keeping-ducks/index.php">KeepingDucks</a><br />
+<a href="http://exzorders.com/nc/kickboxing/index.php">Kickboxing</a></p>
+<p><a href="http://exzorders.com/nc/kidney-stones/index.php">KidneyStones</a><br />
+<a href="http://exzorders.com/nc/landscaping/index.php">Landscaping</a><br />
+<a href="http://exzorders.com/nc/laptop-computer-parts/index.php">LaptopComputer Parts</a><br />
+<a href="http://exzorders.com/nc/law-of-attraction/index.php">LawOf Attraction</a><br />
+<a href="http://exzorders.com/nc/lawn-mowers/index.php">LawnMowers</a><br />
+<a href="http://exzorders.com/nc/leadership-development/index.php">LeadershipDevelopment</a><br />
+<a href="http://exzorders.com/nc/leads/index.php">Leads</a><br />
+<a href="http://exzorders.com/nc/learn-baseball/index.php">LearnBaseball</a><br />
+<a href="http://exzorders.com/nc/learn-hindi/index.php">LearnHindi</a><br />
+<a href="http://exzorders.com/nc/learn-spanish/index.php">LearnSpanish</a><br />
+<a href="http://exzorders.com/nc/learn-standup-comedy/index.php">LearnStandup Comedy</a><br />
+<a href="http://exzorders.com/nc/legal-forms/index.php">LegalForms</a><br />
+<a href="http://exzorders.com/nc/life-coaching/index.php">LifeCoaching</a></p>
+<p><a href="http://exzorders.com/nc/lift-chairs/index.php">LiftChairs</a><br />
+<a href="http://exzorders.com/nc/lilies/index.php">Lilies</a><br />
+<a href="http://exzorders.com/nc/livestock/index.php">Livestock</a><br />
+<a href="http://exzorders.com/nc/living-will/index.php">LivingWill</a><br />
+<a href="http://exzorders.com/nc/local-home-repairman/index.php">LocalHome Repairman</a><br />
+<a href="http://exzorders.com/nc/lymphoma/index.php">Lymphoma</a><br />
+<a href="http://exzorders.com/nc/marketing/index.php">Marketing</a><br />
+<a href="http://exzorders.com/nc/marraige-help/index.php">MarriageHelp</a><br />
+<a href="http://exzorders.com/nc/massage/index.php">Massage</a><br />
+<a href="http://exzorders.com/nc/medical-tourism/index.php">MedicalTourism</a><br />
+<a href="http://exzorders.com/nc/mental-health/index.php">MentalHealth</a><br />
+<a href="http://exzorders.com/nc/metal-detecting/index.php">MetalDetecting</a><br />
+<a href="http://exzorders.com/nc/mircrowaves/index.php">Microwaves</a><br />
+<a href="http://exzorders.com/nc/mixed-martial-arts/index.php">MixedMartial Arts</a></p>
+<p><a href="http://exzorders.com/nc/mobile-computing/index.php">MobileComputing</a><br />
+<a href="http://exzorders.com/nc/mortgages/index.php">Mortgages</a><br />
+<a href="http://exzorders.com/nc/motivation/index.php">Motivation</a><br />
+<a href="http://exzorders.com/nc/motorcycles/index.php">Motorcycles</a><br />
+<a href="http://exzorders.com/nc/motorhomes/index.php">Motorhomes</a><br />
+<a href="http://exzorders.com/nc/movie-download/index.php">MovieDownload</a><br />
+<a href="http://exzorders.com/nc/muay-thai/index.php">Muay Thai</a><br />
+<a href="http://exzorders.com/nc/multiple-sclerosis/index.php">MultipleSclerosis</a><br />
+<a href="http://exzorders.com/nc/musical-instruments/index.php">MusicalInstruments</a><br />
+<a href="http://exzorders.com/nc/natural-health/index.php">NaturalHealth</a><br />
+<a href="http://exzorders.com/nc/networking/index.php">Networking</a><br />
+<a href="http://exzorders.com/nc/new-forms-of-income/index.php">NewForms of Income</a><br />
+<a href="http://exzorders.com/nc/new-york/index.php">New York</a></p>
+<p><a href="http://exzorders.com/nc/newport-beach/index.php">NewportBeach</a><br />
+<a href="http://exzorders.com/nc/niche-marketing/index.php">NicheMarketing</a><br />
+<a href="http://exzorders.com/nc/nursing-careers/index.php">NursingCareers</a><br />
+<a href="http://exzorders.com/nc/office-furniture/index.php">OfficeFurniture</a><br />
+<a href="http://exzorders.com/nc/offline-marketing/index.php">OfflineMarketing</a><br />
+<a href="http://exzorders.com/nc/online-college-degrees/index.php">OnlineCollege Degrees</a><br />
+<a href="http://exzorders.com/nc/online-consulting/index.php">OnlineConsulting</a><br />
+<a href="http://exzorders.com/nc/online-games/index.php">OnlineGames</a><br />
+<a href="http://exzorders.com/nc/optinlist/index.php">Optinlist</a><br />
+<a href="http://exzorders.com/nc/options-trading/index.php">OptionsTrading</a><br />
+<a href="http://exzorders.com/nc/organization-tips/index.php">OrganizationTips</a><br />
+<a href="http://exzorders.com/nc/outdoors/index.php">Outdoors</a><br />
+<a href="http://exzorders.com/nc/p90x/index.php">P90x</a></p>
+<p><a href="http://exzorders.com/nc/pain-relief/index.php">PainRelief</a><br />
+<a href="http://exzorders.com/nc/paint-ball/index.php">PaintBall</a><br />
+<a href="http://exzorders.com/nc/parenting/index.php">Parenting</a><br />
+<a href="http://exzorders.com/nc/pastlife-regression/index.php">Pastlife Regression</a><br />
+<a href="http://exzorders.com/nc/pc-security/index.php">PCSecurity</a><br />
+<a href="http://exzorders.com/nc/pet-health-care/index.php">PetHealth Care</a><br />
+<a href="http://exzorders.com/nc/pc-security/index.php"></a> <a href="http://exzorders.com/nc/pc-security/index.php"></a><a href="http://exzorders.com/nc/pilates/index.php">Pilates</a><br />
+<a href="http://exzorders.com/nc/plasma-tvs/index.php">PlasmaTvs</a><br />
+<a href="http://exzorders.com/nc/plastic-surgery/index.php">PlasticSurgery</a><br />
+<a href="http://exzorders.com/nc/play-drums/index.php">PlayDrums</a><br />
+<a href="http://exzorders.com/nc/podcasting/index.php">Podcasting</a><br />
+<a href="http://exzorders.com/nc/porcelain/index.php">Porcelain</a></p>
+<p><a href="http://exzorders.com/nc/portrait-photography/index.php">PortraitPhotography</a><br />
+<a href="http://exzorders.com/nc/power-generator/index.php">PowerGenerator</a><br />
+<a href="http://exzorders.com/nc/power-of-attorney/index.php">PowerOf Attorney</a><br />
+<a href="http://exzorders.com/nc/ppc/index.php">PPC </a><br />
+<a href="http://exzorders.com/nc/precious-metals/index.php">PreciousMetals</a><br />
+<a href="http://exzorders.com/nc/pregnancy-dress/index.php">PregnancyDress</a><br />
+<a href="http://exzorders.com/nc/preselling/index.php">Preselling</a><br />
+<a href="http://exzorders.com/nc/presentation/index.php">Presentation</a><br />
+<a href="http://exzorders.com/nc/pressure-washers/index.php">PressureWashers</a><br />
+<a href="http://exzorders.com/nc/private-label-resell-rights/index.php">PrivateLabel Resell Rights</a><br />
+<a href="http://exzorders.com/nc/productivity/index.php">Productivity</a><br />
+<a href="http://exzorders.com/nc/psychology/index.php">Psychology</a><br />
+<a href="http://exzorders.com/nc/public-relations/index.php">PublicRelations</a></p>
+<p><a href="http://exzorders.com/nc/quilting/index.php">Quilting</a><br />
+<a href="http://exzorders.com/nc/racing-pigeons/index.php">RacingPigeons</a><br />
+<a href="http://exzorders.com/nc/racquetball/index.php">Racquetball</a><br />
+<a href="http://exzorders.com/nc/radio/index.php">Radio</a><br />
+<a href="http://exzorders.com/nc/real-estate/index.php">RealEstate</a><br />
+<a href="http://exzorders.com/nc/recycling/index.php">Recycling</a><br />
+<a href="http://exzorders.com/nc/reiki/index.php">Reiki</a><br />
+<a href="http://exzorders.com/nc/retirement/index.php">Retirement</a><br />
+<a href="http://exzorders.com/nc/reverse-mortgages/index.php">ReverseMortgages</a><br />
+<a href="http://exzorders.com/nc/role-playing-games/index.php">RolePlaying Games</a><br />
+<a href="http://exzorders.com/nc/roofing/index.php">Roofing</a><br />
+<a href="http://exzorders.com/nc/rosea-rhodiola/index.php">RoseaRhodiola</a><br />
+<a href="http://exzorders.com/nc/rss/index.php">RSS</a><br />
+<a href="http://exzorders.com/nc/running/index.php">Running</a><br />
+<a href="http://exzorders.com/nc/san-diego/index.php">San Diego</a></p>
+<p><a href="http://exzorders.com/nc/sanfransisco/index.php">San Francisco</a><br />
+<a href="http://exzorders.com/nc/satellite-tv/index.php">SatelliteTV</a><br />
+<a href="http://exzorders.com/nc/saving-energy/index.php">SavingEnergy</a><br />
+<a href="http://exzorders.com/nc/schools/index.php">Schools</a><br />
+<a href="http://exzorders.com/nc/scientology/index.php">Scientology</a><br />
+<a href="http://exzorders.com/nc/scissorlift-equipment/index.php">ScissorliftEquipment</a><br />
+<a href="http://exzorders.com/nc/scotch/index.php">Scotch</a><br />
+<a href="http://exzorders.com/nc/search-engine-optimization/index.php">SearchEngine Optimization</a><br />
+<a href="http://exzorders.com/nc/seattle/index.php">Seattle</a><br />
+<a href="http://exzorders.com/nc/self-hypnosis/index.php">SelfHypnosis</a><br />
+<a href="http://exzorders.com/nc/self-improvement/index.php">SelfImprovement</a><br />
+<a href="http://exzorders.com/nc/selling-your-house/index.php">SellingYour House</a><br />
+<a href="http://exzorders.com/nc/service-dogs-dog-training/index.php">ServiceDogs Dog Training</a></p>
+<p><a href="http://exzorders.com/nc/setting-up-your-home-aquarium/index.php">SettingUp Your Home Aquarium</a><br />
+<a href="http://exzorders.com/nc/shiatsu-massage/index.php">ShiatsuMassage</a><br />
+<a href="http://exzorders.com/nc/sinus-infections/index.php">SinusInfections</a><br />
+<a href="http://exzorders.com/nc/six-pack-abs/index.php">SixPack Abs</a><br />
+<a href="http://exzorders.com/nc/six-sigma/index.php">Six Sigma</a><br />
+<a href="http://exzorders.com/nc/skateboard/index.php">Skateboard</a><br />
+<a href="http://exzorders.com/nc/ski-vacations/index.php">SkiVacations</a><br />
+<a href="http://exzorders.com/nc/skin-care/index.php">Skin Care</a><br />
+<a href="http://exzorders.com/nc/sky-diving/index.php">SkyDiving</a><br />
+<a href="http://exzorders.com/nc/slot-cars/index.php">Slot Cars</a><br />
+<a href="http://exzorders.com/nc/small-business/index.php">SmallBusiness</a><br />
+<a href="http://exzorders.com/nc/social-networking/index.php">SocialNetworking</a><br />
+<a href="http://exzorders.com/nc/solar-power/index.php">SolarPower</a></p>
+<p><a href="http://exzorders.com/nc/spells/index.php">Spells</a><br />
+<a href="http://exzorders.com/nc/spinning-and-weaving/index.php">SpinningAnd Weaving</a><br />
+<a href="http://exzorders.com/nc/spiritual/index.php">Spiritual</a><br />
+<a href="http://exzorders.com/nc/sports-car/index.php">SportsCar</a><br />
+<a href="http://exzorders.com/nc/sports-fishing/index.php">SportsFishing</a><br />
+<a href="http://exzorders.com/nc/stock-market/index.php">StockMarket</a><br />
+<a href="http://exzorders.com/nc/stress-management/index.php">StressManagement</a><br />
+<a href="http://exzorders.com/nc/student-loans/index.php">StudentLoans</a><br />
+<a href="http://exzorders.com/nc/stun-guns/index.php">Stun Guns</a><br />
+<a href="http://exzorders.com/nc/stuttering/index.php">Stuttering</a><br />
+<a href="http://exzorders.com/nc/submission-wrestling/index.php">SubmissionWrestling</a><br />
+<a href="http://exzorders.com/nc/summer-vacations/index.php">SummerVacations</a><br />
+<a href="http://exzorders.com/nc/sunglasses/index.php">Sunglasses</a><br />
+<a href="http://exzorders.com/nc/surfing/index.php">Surfing</a></p>
+<p><a href="http://exzorders.com/nc/swimming-pools/index.php">SwimmingPools</a><br />
+<a href="http://exzorders.com/nc/tattoo/index.php">Tattoo</a><br />
+<a href="http://exzorders.com/nc/taxes-and-your-online-business/index.php">TaxesAnd Your Online Business</a><br />
+<a href="http://exzorders.com/nc/teaching/index.php">Teaching</a><br />
+<a href="http://exzorders.com/nc/tennis/index.php">Tennis</a><br />
+<a href="http://exzorders.com/nc/thailand-vacations/index.php">ThailandVacations</a><br />
+<a href="http://exzorders.com/nc/time-management/index.php">TimeManagement</a><br />
+<a href="http://exzorders.com/nc/time-share-property/index.php">TimeShare Property</a><br />
+<a href="http://exzorders.com/nc/tinnitus-ear-ringing/index.php">Tinnitus(Ear Ringing)</a><br />
+<a href="http://exzorders.com/nc/toothache-and-tooth-care/index.php">ToothacheAnd Tooth Care</a><br />
+<a href="http://exzorders.com/nc/tracking-software/index.php">TrackingSoftware</a><br />
+<a href="http://exzorders.com/nc/trademarks/index.php">Trademarks</a></p>
+<p><a href="http://exzorders.com/nc/trading-stocks-online/index.php">TradingStocks Online</a><br />
+<a href="http://exzorders.com/nc/traffic-school/index.php">TrafficSchool</a><br />
+<a href="http://exzorders.com/nc/trains/index.php">Trains</a><br />
+<a href="http://exzorders.com/nc/travel/index.php">Travel</a><br />
+<a href="http://exzorders.com/nc/tropical-fish/index.php">TropicalFish</a><br />
+<a href="http://exzorders.com/nc/us-bank-accounts/index.php">U.S.Bank Accounts</a><br />
+<a href="http://exzorders.com/nc/universal-studio-tours/index.php">UniversalStudio Tours</a><br />
+<a href="http://exzorders.com/nc/vacation-in-greece/index.php">VacationIn Greece</a><br />
+<a href="http://exzorders.com/nc/valentines-day/index.php">Valentine&#39;sDay</a><br />
+<a href="http://exzorders.com/nc/video-sites/index.php">VideoSites</a><br />
+<a href="http://exzorders.com/nc/vintage-posters/index.php">VintagePosters</a><br />
+<a href="http://exzorders.com/nc/viral-marketing/index.php">ViralMarketing</a><br />
+<a href="http://exzorders.com/nc/virus-alert/index.php">VirusAlert</a></p>
+<p><a href="http://exzorders.com/nc/vitamins-and-supplements/index.php">VitaminsAnd Supplements</a><br />
+<a href="http://exzorders.com/nc/voip/index.php">VoiceOver Internet Protocol</a><br />
+<a href="http://exzorders.com/nc/watercolor/index.php">Water Color</a><br />
+<a href="http://exzorders.com/nc/water-ski/index.php">WaterSki</a><br />
+<a href="http://exzorders.com/nc/waterproofing/index.php">Waterproofing</a><br />
+<a href="http://exzorders.com/nc/web-conferencing/index.php">WebConferencing</a><br />
+<a href="http://exzorders.com/nc/web-design/index.php">WebDesign</a><br />
+<a href="http://exzorders.com/nc/webhosting/index.php">Web Hosting</a><br />
+<a href="http://exzorders.com/nc/webtraffic/index.php">WebTraffic</a><br />
+<a href="http://exzorders.com/nc/weddings/index.php">Weddings</a><br />
+<a href="http://exzorders.com/nc/weightloss/index.php">WeightLoss</a><br />
+<a href="http://exzorders.com/nc/wi-fi-spots/index.php">Wi FiSpots</a><br />
+<a href="http://exzorders.com/nc/wine-and-spirits/index.php">WineAnd Spirits</a></p>
+<p><a href="http://exzorders.com/nc/wine-gift-baskets/index.php">WineGift Baskets</a><br />
+<a href="http://exzorders.com/nc/winterizing/index.php">Winterizing</a><br />
+<a href="http://exzorders.com/nc/women-self-defense/index.php">WomenSelf Defense</a><br />
+<a href="http://exzorders.com/nc/womens-health/index.php">Women&#39;sHealth</a><br />
+<a href="http://exzorders.com/nc/woodworking/index.php">Woodworking</a><br />
+<a href="http://exzorders.com/nc/workplace-safety/index.php">WorkplaceSafety</a><br />
+<a href="http://exzorders.com/nc/yoga/index.php">Yoga</a> <a href="http://exzorders.com/nc/links/">Ebooks</a> | <a href="http://exzorders.com/nc/contact.php">Contact Us</a> | <a href="http://exzorders.com/nc/about.php">About</a> | <a href="http://exzorders.com/nc/advertising">Advertisewith Us</a> |<a href="http://exzorders.com/nc/index.php">Sitemap</a> |<a href="http://exzorders.com/nc/misc/index.php">Miscellaneous Articles</a> | <a href="http://exzorders.com/nc/links.php"> Extras</a> | <a href="http://exzorders.com/nc/misc/misc1/index.php">Misc1</a> | <a href="http://exzorders.com/nc/misc/misc2/index.php">Misc2</a> | <a href="http://exzorders.com/nc/misc/misc3/index.php">Misc3</a> | <a href="http://exzorders.com/nc/misc/misc4/index.php">Misc4</a> | <a href="http://exzorders.com/nc/misc/misc5/index.php">Misc5</a> | <a href="http://exzorders.com/nc/misc/misc6/index.php">Misc6</a> | <a href="http://exzorders.com/nc/misc/misc7/index.php">Misc7</a> | <a href="http://exzorders.com/nc/misc/misc8/index.php">Misc8</a> | <a href="http://exzorders.com/nc/misc/misc9/index.php">Misc9</a> | <a href="http://exzorders.com/nc/misc/misc10/index.php">Misc10</a> | <a href="http://exzorders.com/nc/misc/misc11/index.php">Misc11</a> | <a href="http://exzorders.com/nc/misc/misc12/index.php">Misc12</a> | <a href="http://exzorders.com/nc/misc/misc13/index.php">Misc13</a> }| <a href="http://exzorders.com/nc/misc/misc14/index.php">Misc14</a> | <a href="http://exzorders.com/nc/misc/misc15/index.php">Misc15</a> | <a href="http://exzorders.com/nc/misc/misc16/index.php">Misc16</a> | <a href="http://exzorders.com/nc/misc/misc17/index.php">Misc17</a> | <a href="http://exzorders.com/nc/misc/misc18/index.php">Misc18</a> | <a href="http://exzorders.com/nc/misc/misc19/index.php">Misc19</a> | <a href="http://exzorders.com/nc/misc/misc20/index.php">Misc20</a> 
+	  | <a href="http://exzorders.com/nc/misc/misc21/index.php">Misc21</a> | <a href="http://exzorders.com/nc/misc/misc22/index.php">Misc22</a> | <a href="http://exzorders.com/nc/misc/misc23/index.php">Misc23</a> | <a href="http://exzorders.com/nc/misc/misc24/index.php">Misc24</a> | <a href="http://exzorders.com/nc/misc/misc25/index.php">Misc25</a> | <a href="http://exzorders.com/nc/misc/misc26/index.php">Misc26</a> | <a href="http://exzorders.com/nc/misc/misc27/index.php">Misc27</a>  | <a href="http://exzorders.com/nc/misc/misc28/index.php">Misc28</a> | <a href="http://exzorders.com/nc/misc/misc29/index.php">Misc29</a>  |  <a href="http://exzorders.com/nc/misc/misc30/index.php">Misc30</a>  | <a href="http://exzorders.com/nc/misc/misc31/index.php">Misc31</a>  | <a href="http://exzorders.com/nc/misc/misc32/index.php">Misc32</a>  |  <a href="http://exzorders.com/nc/misc/misc33/index.php">Misc33</a>  |  <a href="http://exzorders.com/nc/misc/misc34/index.php">Misc34</a>  |  <a href="http://exzorders.com/nc/misc/misc35/index.php">Misc35</a>  | <a href="http://exzorders.com/nc/misc/misc36/index.php">Misc36</a>  | <a href="http://exzorders.com/nc/misc/misc37/index.php">Misc37</a><a href="http://implrs.com">T</a><a href="http://financeplr.com">h</a><a href="http://datingplr.com">i</a><a href="http://seasonalplr.com">s</a> <a href="http://arindamchakraborty.com">i</a><a href="http://datingproductreviews.com">s</a> <a href="http://valentineproductreviews.com">a</a><a href="http://fatgoneproductreviews.com">n</a> <a href="http://movingreel.com">e</a><a href="http://fitproductreviews.com">x</a><a href="http://hostinganddomainreviews.com">c</a><a href="http://imstuffreviews.com">e</a><a href="http://seasonalstuffreviews.com">l</a><a href="http://softwareandscriptreviews.com">l</a><a href="http://techgoreviews.com">e</a><a href="http://onestepreviews.com/">n</a><a href="http://www.mosttalkednews.com/">t</a> <a href="http://halloweenproductreviews.com/">s</a><a href="http://xmasproductreviews.com/">i</a><a href="http://fatlossplr.com/">t</a><a href="http://nuttiecontent.com/make-money">e</a> <a href="http://nuttiepartners.com/join.html">I</a> <a href="http://nuttiegraphics.com/conduite-template1/">love</a>  <a href="http://detnoxregistrycleaner.com">i</a><a href="http://totalinfotips.com">t</a> </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Wednesday, December 07, 2011</h2><p>I look up a old post:<a href="http://forums.lhotka.net/forums/p/7389/35383.aspx#35383">http://forums.lhotka.net/forums/p/7389/35383.aspx#35383</a>. &nbsp; I tried to remove the tabcontrol, but it still not work.&nbsp;and i change my code as below, it can work.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&lt;TabItem Header=&quot;基本&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Grid &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Grid.RowDefinitions &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;RowDefinition Height=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Grid.RowDefinitions&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Grid.ColumnDefinitions&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;306&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;25&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;Auto&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;306&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;25&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;ColumnDefinition Width=&quot;*&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Grid.ColumnDefinitions&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Label &nbsp;Content=&quot;物料清单编号:&quot; Grid.Row=&quot;0&quot; Grid.Column=&quot; 0&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBox Grid.Row=&quot;0&quot; Grid.Column=&quot;1&quot; Width=&quot;300&quot; Text=&quot;{Binding SelectedItem.BOMNo,UpdateSourceTrigger=PropertyChanged}&quot; Style=&quot;{StaticResource DefaultTextBoxStyle}&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Label Content=&quot;物料清单名称:&quot; Grid.Row=&quot;1&quot; Grid.Column=&quot;0&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBox &nbsp;Grid.Row=&quot;1&quot; Grid.Column=&quot;1&quot; Width=&quot;300&quot; Text=&quot;{Binding SelectedItem.Name,UpdateSourceTrigger=PropertyChanged}&quot; Style=&quot;{StaticResource DefaultTextBoxStyle}&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Label Content=&quot;描述：&quot; Grid.Row=&quot;2&quot; Grid.Column=&quot;0&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBox Grid.Row=&quot;2&quot; Grid.Column=&quot;1&quot; Grid.ColumnSpan=&quot;4&quot; Width=&quot;483&quot; Height=&quot;40&quot; Text=&quot;{Binding Path=Descripition, UpdateSourceTrigger=PropertyChanged }&quot; &nbsp;Style=&quot;{StaticResource DefaultTextBoxStyle}&quot; Margin=&quot;3,3,0,3&quot; /&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Label Content=&quot;物料:&quot; Grid.Row =&quot;3&quot; Grid.Column=&quot;0&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;StackPanel Grid.Row=&quot;3&quot; Grid.Column=&quot;1&quot; Width=&quot;300&quot; HorizontalAlignment=&quot;Left&quot; &nbsp;Orientation=&quot;Horizontal&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBox Width=&quot;250&quot; Margin=&quot;3&quot; Text=&quot;{Binding Path=SelectedItem.MaterialNo}&quot; IsReadOnly=&quot;True&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Button Width=&quot;30&quot; Margin=&quot;3&quot; Content=&quot;...&quot; Command=&quot;{Binding Path=DataContext.SetMaterialCommand, RelativeSource={RelativeSource FindAncestor, AncestorType=TabControl}}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/StackPanel&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Label Grid.Row=&quot;3&quot; Grid.Column=&quot;3&quot; Content=&quot;{Binding MaterialName}&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Label Content=&quot;生效日期:&quot; Grid.Row=&quot;4&quot; Grid.Column=&quot;0&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;DatePicker Grid.Row=&quot;4&quot; Grid.Column=&quot;1&quot; Width=&quot;300&quot; Margin=&quot;3&quot; SelectedDate=&quot;{Binding Path=SelectedItem.ValidFrom,Mode=TwoWay,ValidatesOnExceptions=true, NotifyOnValidationError=true}&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;csla:PropertyStatus Grid.Column=&quot;2&quot; Grid.Row=&quot;0&quot; Margin=&quot;3&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=SelectedItem.BOMNo }&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;csla:PropertyStatus Grid.Column=&quot;2&quot; Grid.Row=&quot;1&quot; Margin=&quot;3&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=SelectedItem.Name }&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;csla:PropertyStatus Grid.Column=&quot;2&quot; Grid.Row=&quot;3&quot; Margin=&quot;3&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=<b>SelectedItem.MaterialNo</b> }&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;csla:PropertyStatus &nbsp;Grid.Column=&quot;2&quot; Grid.Row=&quot;4&quot; &nbsp;Margin=&quot;3&quot; Width=&quot;20&quot; Height=&quot;20&quot; Property=&quot;{Binding Path=<b>SelectedItem.VaildFrom</b>}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Grid&gt;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TabItem&gt;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Thursday, December 08, 2011</h2><p>
+<p>用户代码未处理 System.NullReferenceException</p>
+<p>&nbsp; Message=未将对象引用设置到对象的实例。</p>
+<p>&nbsp; Source=Csla</p>
+<p>&nbsp; StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 Csla.Reflection.MethodCaller.GetPropertyValue(Object obj, PropertyInfo info)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 Csla.Xaml.PropertyStatus.GetRealSource(Object source, String bindingPath)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 Csla.Xaml.PropertyStatus.SetSource(Object dataItem)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 Csla.Xaml.PropertyStatus.&lt;.ctor&gt;b__2(Object o, DependencyPropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.FrameworkElement.RaiseDependencyPropertyChanged(EventPrivateKey key, DependencyPropertyChangedEventArgs args)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.FrameworkElement.OnDataContextChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DependencyObject.OnPropertyChanged(DependencyPropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.FrameworkElement.OnPropertyChanged(DependencyPropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DependencyObject.NotifyPropertyChange(DependencyPropertyChangedEventArgs args)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DependencyObject.UpdateEffectiveValue(EntryIndex entryIndex, DependencyProperty dp, PropertyMetadata metadata, EffectiveValueEntry oldEntry, EffectiveValueEntry&amp; newEntry, Boolean coerceWithDeferredReference, Boolean coerceWithCurrentValue, OperationType operationType)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.TreeWalkHelper.OnInheritablePropertyChanged(DependencyObject d, InheritablePropertyChangeInfo info)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1._VisitNode(DependencyObject d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.VisitNode(FrameworkElement fe)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.VisitNode(DependencyObject d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.WalkLogicalChildren(FrameworkElement feParent, FrameworkContentElement fceParent, IEnumerator logicalChildren)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.WalkFrameworkElementLogicalThenVisualChildren(FrameworkElement feParent, Boolean hasLogicalChildren)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.IterateChildren(DependencyObject d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1._VisitNode(DependencyObject d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.VisitNode(FrameworkElement fe)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.VisitNode(DependencyObject d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.WalkLogicalChildren(FrameworkElement feParent, FrameworkContentElement fceParent, IEnumerator logicalChildren)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.WalkFrameworkElementLogicalThenVisualChildren(FrameworkElement feParent, Boolean hasLogicalChildren)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.IterateChildren(DependencyObject d)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DescendentsWalker`1.StartWalk(DependencyObject startNode, Boolean skipStartNode)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.FrameworkElement.OnPropertyChanged(DependencyPropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DependencyObject.NotifyPropertyChange(DependencyPropertyChangedEventArgs args)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DependencyObject.UpdateEffectiveValue(EntryIndex entryIndex, DependencyProperty dp, PropertyMetadata metadata, EffectiveValueEntry oldEntry, EffectiveValueEntry&amp; newEntry, Boolean coerceWithDeferredReference, Boolean coerceWithCurrentValue, OperationType operationType)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.DependencyObject.InvalidateProperty(DependencyProperty dp)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.Data.BindingExpressionBase.Invalidate(Boolean isASubPropertyChange)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.Data.BindingExpression.TransferValue(Object newValue, Boolean isASubPropertyChange)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.Data.BindingExpression.ScheduleTransfer(Boolean isASubPropertyChange)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 MS.Internal.Data.ClrBindingWorker.NewValueAvailable(Boolean dependencySourcesChanged, Boolean initialValue, Boolean isASubPropertyChange)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 MS.Internal.Data.PropertyPathWorker.UpdateSourceValueState(Int32 k, ICollectionView collectionView, Object newValue, Boolean isASubPropertyChange)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 MS.Internal.Data.ClrBindingWorker.OnSourcePropertyChanged(Object o, String propName)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 MS.Internal.Data.PropertyPathWorker.System.Windows.IWeakEventListener.ReceiveWeakEvent(Type managerType, Object sender, EventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.Windows.WeakEventManager.DeliverEventToList(Object sender, EventArgs args, ListenerList list)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 System.ComponentModel.PropertyChangedEventManager.OnPropertyChanged(Object sender, PropertyChangedEventArgs args)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 Csla.Xaml.ViewModelBase`1.OnPropertyChanged(String propertyName)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;在 MES.Presentation.WPF.Client.MM.Views.BOMViews.BOMsViewModel.set_SelectedItem(BOMItemViewModel value) 位置 E:\MES\MES.Presentation.WPF.Client.MM\Views\BOMViews\BOMsViewModel.cs:行号 53</p>
+<p>&nbsp; InnerException:&nbsp;</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Sunday, December 11, 2011</h2><p><img src="http://forums.lhotka.net/emoticons/emotion-42.gif" alt="Confused" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

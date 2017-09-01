@@ -1,0 +1,9 @@
+<html><header><title>Valication Rules on ReadOnly Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Valication Rules on ReadOnly Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5199.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin posted on Wednesday, August 06, 2008</h2><P>Hallo all</P>
+<P>I just notice that we can't have validation rules on a ReadOnly Object (Hoped I'm not missing anything)</P>
+<P>in my scenario&nbsp;I'm using Warning &amp; Info severity a lot and sometimes I need have to add a new error validation where we've actually have it's broken in our database.</P>
+<P>and the problem is I need to implment those rules on my readonly object so users can see the informations and for the error rules they will do some fixes. </P>
+<P>currently I forced to use editable object event though I'm not using them for editing.</P>
+<P>FYI, I usually using ReadOnlyCollection for may data broser and then use EditableRoot for the Insert/Edit </P>
+<P>&nbsp;</P>
+<P>Regards</P>
+<P>Fahmi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 06, 2008</h2>You should probably be using BusinessBase for your objects; read-only objects are just that, and since they can't change they don't support rule checking.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

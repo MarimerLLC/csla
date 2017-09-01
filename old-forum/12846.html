@@ -1,0 +1,55 @@
+<html><header><title>Losing Csla Context on continuation when async/await returns</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Losing Csla Context on continuation when async/await returns</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12846.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Thursday, March 12, 2015</h2><p>I&#39;m running into an issue where the continuation code (i.e. the code that is run when an &quot;await&quot; call returns) loses the CSLA contexts (<i>ApplicationContext, GlobalContext, etc.</i>).</p>
+<p>Here&#39;s a pseudo example of what I&#39;m doing (standard async/await CSLA Factory stuff). This is the calling code:</p>
+<p>
+<code>line 1: var businessObject = await BusinessLogic.MyType.GetAsync();<br />line 2: DoSomethingWith(businessObject);&nbsp;</code></p>
+<p>The <i>MyType.GetAsync()</i> factory implementation uses the async DataPortal, like this:</p>
+<p>
+<code>...<br />return await DataPortal.FetchAsync&lt;MyType&gt;(...);<br />...&nbsp;</code></p>
+<p>I have some values set in Csla.<b>GlobalContext</b>, <span style="text-decoration:underline;">and prior to line 1&nbsp;executing</span>, these values can be accessed. However, when the continuation returns <span style="text-decoration:underline;">on line 2, the Csla.GlobalContext would be empty</span>.</p>
+<p>Have I missed something regarding the use of CSLA with async/await when it comes to the CSLA Contexts &nbsp;? My expectation would have been that CSLA await continuations would implicitly re-apply the original context, or have I just missed something silly like a configuration option or something?</p>
+<p>I&#39;m using CSLA 4.5.601.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, March 16, 2015</h2><p>Hi Jaans,&nbsp;</p>
+<p>I would expect that you had the ApplicationContext available after you return from the async method.&nbsp;</p>
+<p>Do you return on the same thread ID?&nbsp;</p>
+<p>Which dataportal proxy do you use?&nbsp;</p>
+<p>My expexted behavior would be that the ApplicationContext would be transferred to the background tread but NOT updated when the call returns (as you could have multiple async operations going in parallell).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, March 16, 2015</h2><p>Hei Jonny</p>
+<p>This is implemented in a <strong>Windows Service</strong> project, and the continuation doesn&#39;t return on the same thread no.</p>
+<p>The data portal proxy being used is the <strong>WcfPortal</strong> (<i>Csla.Server.Hosts.IWcfPortal</i>).</p>
+<p>I&#39;ve been fiddling with this, and found that if I use the <i>Csla.Threading.<strong>CslaTaskScheduler</strong></i>&nbsp;to manually create the Tasks from, then the returning continuation does indeed have the CSLA contexts (ApplicationContext, GlobalContext, etc.) setup, even if returning on a different thread. </p>
+<p>Unfortunately, it creates a lot of ugly plumbing code for each <i>async</i> based call, and it makes me wonder if CSLA could/should not be doing this implicitly.<br /><br /><span style="text-decoration:underline;">Here&#39;s a example of it:</span></p>
+<p><span style="color:green;">// We need to use the cslaTaskScheduler if we wish to retain the csla context on the continuation<br />// - Also, see this link about &quot;await await&quot; usage: http://blogs.msdn.com/b/pfxteam/archive/2011/10/24/10229468.aspx</span></p>
+<p><code style="color:blue;">var cslaTaskScheduler = new Csla.Threading.CslaTaskScheduler();<br />var uowResult = await await Task.Factory.StartNew( () =&gt; BusinessLogic.XXXX.YYYY.SomeObjectList.Get( id ), CancellationToken.None, TaskCreationOptions.DenyChildAttach, cslaTaskScheduler );<br /></code></p>
+<p>It works well enough, but it&#39;s butt-ugly and our juniors will likely trip over this. Not sure if I can create a pretty Extension method alternative for it somehow.&nbsp;</p>
+<p><i>PS: The double &#39;await await&#39; is intentional - refer to the interesting link in the comments for more</i></p>
+<p>Thanks,<br />Jaans&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 17, 2015</h2><p>Hi,</p>
+<p>That explains it. Csla.ApplicationContext is stored in a named slot on the current thread. So if the continuation is run on another thread then the context is lost.&nbsp;</p>
+<p>The issue here being that ConsoleApplications and Windows Services runs under the default SynchroizationContext only.&nbsp;</p>
+<p>See this articla for how to run with a custom SynchronizationContext:</p>
+<p>http://blogs.msdn.com/b/pfxteam/archive/2012/01/20/10259049.aspx&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, March 17, 2015</h2><p>Thanks Jonny - that article is great!</p>
+<p>At first glance, it would be useful if CSLA had some built-in support for this, perhaps even some sort of SynchronisationContextProvider that hooks intro the DataPortal mechanism that applies a SynchronizationContext for the caller&#39;s continuation.</p>
+<p>OTOH, if CSLA had some custom SynchronizationContext&#39;s available that would be helpful too, as I&#39;m sure I&#39;m not the only person needing this, and it would be needed for UnitTests too if one needed the Contexts restored after the continuation.</p>
+<p>I&#39;m thinking something like one or two custom SynchronizationContext&#39;s for non-UI / non-Web scenarios, the first being a RestoreCslaContextSynchronizationContext that can restore the CSLA Contexts for the continuation (even if on a separate thread to the initial invocation). And maybe a second one, something like a ContinueOnOriginalThreadSynchronizationContext that runs the continuation on the original thread.</p>
+<p>Just thinking out load there, though a RestoreCslaContextSynchronizationContext would be super!</p>
+<p>I&#39;ll work through the article and try to create something myself and see how I go with that.</p>
+<p>Thanks for the guidance, very helpful indeed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, March 19, 2015</h2><p>Hi Jaans,</p>
+<p>Just some general caution.</p>
+<p>
+<ul>
+<li>while doing async operation values may be changed or added to ApplicationContext</li>
+<li>ApplicationContext.LocalContext is always considered local to the Thread</li>
+<li>ApplicationContext.ClientContext and ApplicationContext.GlobalContext is transferred to other threads (CslaTaskScheduler) and To remote dataportal.</li>
+</ul>
+</p>
+<p>There is an internal class Csla.Threading.ContextParams that could be made public.</p>
+<p>This class holds the context values (except LocalContext) and can restore the values on another thread. (in CslaTaskSchduler to set the ApplicationContext and User on the async thread)</p>
+<p>You could also consider to use:<br />&lt;businssBase&gt;.SaveAsync(false, contextParams, false) <br />(or create another wrapper) so that you can pass the contextParamers as a userState (pass-through) and restore values in OnSaved event. &nbsp;</p>
+<p>You could also consider to hook into the DataPortal.DataPortalInvokeComplete to set the ApplicationContext.ClientContext and GlobalContext when a dataportal call is completed. You have access to the DataPortalContext object in this event and the DPC contains both User, calling threads cultures and ClientContext + GlobalContext (altho the ClientContext and GlobalContext is internal - so you must use reflection).</p>
+<p>I believe there are 2 issues with possible solutions here:&nbsp;</p>
+<p><ol>
+<li>Make sure to return from async call on the same caller thread where the ApplicationContext still exists.</li>
+<li>Set the context values on DataPortalInvokeCompleted</li>
+<li>pass contextParams as a pass-through object and restore values in OnSaved event</li>
+</ol></p>
+<p>1) may be resolved with a custom synchronization context (non CSLA specific)<br />2) or &nbsp;3) may be resolved with using Reflection or make some changes to CSLA codebase.</p>
+<p>If you choose to use Reflection have a look at Fasterflect - It has helped me numerous times.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

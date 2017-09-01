@@ -1,0 +1,34 @@
+<html><header><title>SetProperty inside DataPortal_Insert Fails</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SetProperty inside DataPortal_Insert Fails</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6594.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>misogsk posted on Wednesday, March 11, 2009</h2><P>Hi All, </P>
+<P>I'm indicating a very strange problem. I have property named IDProperty, with default value set to 0. I want to insert a new object to database using LINQ. Then I need to save a new ID retrieved from LINQ object to IDProperty to use it later.</P>
+<P>Problem is that IDProperty is still set to 0 even when I used SetProperty(IDProperty, order.ID);</P>
+<P>Can someone help me, please?</P>
+<P>Thanks in advance</P>
+<P>&nbsp;</P>
+<P>Here is my code:</P>
+<P>//Property declaration</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PropertyInfo</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt; IDProperty =</P>
+<P>RegisterProperty(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>BusinessUnit</FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>PropertyInfo</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2>"ID"</FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> ID</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetProperty(IDProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { SetProperty(IDProperty, </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>); }</P>
+<P>}</P>
+<P>//Data portal</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>var</FONT><FONT size=2> ctx = </FONT><FONT color=#2b91af size=2>ContextManager</FONT><FONT size=2>&lt;Arrow.BusinessObjects.Core.Dbml.</FONT><FONT color=#2b91af size=2>ArrowDBDataContext</FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#a31515 size=2>"ArrowDB"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>))</P>
+<P>{</P>
+<P>Arrow.BusinessObjects.Core.Dbml.</FONT><FONT color=#2b91af size=2>BusinessUnit</FONT><FONT size=2> obj = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Arrow.BusinessObjects.Core.Dbml.</FONT><FONT color=#2b91af size=2>BusinessUnit</FONT><FONT size=2>();</P>
+<P>obj.Name = GetProperty(NameProperty);</P>
+<P>ctx.DataContext.BusinessUnits.InsertOnSubmit(obj);</P>
+<P>ctx.DataContext.SubmitChanges();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.SetProperty(IDProperty, obj.ID);</P>
+<P></P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 11, 2009</h2>There doesn't seem to be any problem with the code you've posted, so the issue is likely somewhere else.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>misogsk replied on Wednesday, March 11, 2009</h2>Should the problem be in core of CSLA.NET or do I need some special options for properties?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 11, 2009</h2><P>Two things to consider.</P>
+<P>First, you should typically use LoadProperty() and ReadProperty() in your data portal methods, not SetProperty() and GetProperty().</P>
+<P>Second, when you call Save() on the client, are you using the result of that call?</P>
+<P>_cust = _cust.Save()</P>
+<P>As I discuss in chapters 1 and 2 of the book, the Save() method returns a new object, and if you don't use that new object then you'll never see the changes made to your data in the DataPortal_XYZ methods.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>misogsk replied on Wednesday, March 11, 2009</h2>Thank you very much. I appreciate your help. I forgot to save the result object.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

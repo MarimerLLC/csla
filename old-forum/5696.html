@@ -1,0 +1,274 @@
+<html><header><title>Wpf &amp; Csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wpf &amp; Csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5696.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, October 29, 2008</h2>Hi,<br><br>I'm creating Wpf user-controls, which I'll combine in my main program to build the application.&nbsp; <br><br>I've been getting designer crashes and not being able to render the Wpf user controls in the designer sometimes.<br><br>I've tracked the problem to some of my code actually executing in the designer.&nbsp; I found the IsInDesignerMode attached property, and notice that Csla handly wraps this for use via Csla.DataPortal.IsInDesignMode static property.<br><br>So... it's clear that you need to take addition measures when building Wpf application to avoid running some code while in design mode.<br><br>Any advice along these lines, best practices, etc?&nbsp; Will this be discussed at all in the forthcoming book?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Also, I noticed this code:<br><br>&nbsp;&nbsp;&nbsp; <font color="#0000ff">private </font>Csla.Server.<font color="#008000">DataPortalResult </font>CreateDesignTimeObject(<font color="#008000">Type </font>objectType, <font color="#0000ff">object </font>criteria, Csla.Server.<font color="#008000">DataPortalContext </font>context)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">var </font>obj = <font color="#008000">Activator</font>.CreateInstance(objectType, <font color="#0000ff">true</font>);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">object </font>returnValue = <font color="#0000ff">null</font>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returnValue = <font color="#008000">MethodCaller</font>.CallMethodIfImplemented(obj, <font color="#ff0000">"DesignTime_Create"</font>);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#0000ff"> return new</font> Csla.Server.<font color="#008000">DataPortalResult</font>(returnValue);<br>&nbsp;&nbsp;&nbsp; }<br><br>Does this mean that our BO's should implement DesignTime_Create to provide better designer support?<font color="#ff0000"><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Only if you are interested in seeing some sample data in Blend
+(or VS designer) for WPF and SL applications.&nbsp; The default will return
+null.&nbsp; The problem used to be that you would get errors in blend as objects
+were instantiated and trying to connect to application server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 1:27 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Wpf &amp; Csla<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Also, I noticed this code:<br>
+<br>
+&nbsp;&nbsp;&nbsp; <span>private </span>Csla.Server.<span>DataPortalResult </span>CreateDesignTimeObject(<span>Type </span>objectType, <span>object </span>criteria,
+Csla.Server.<span>DataPortalContext </span>context)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>var </span>obj = <span>Activator</span>.CreateInstance(objectType, <span>true</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>object </span>returnValue
+= <span>null</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returnValue = <span>MethodCaller</span>.CallMethodIfImplemented(obj,
+<span>&quot;DesignTime_Create&quot;</span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span> return new</span>
+Csla.Server.<span>DataPortalResult</span>(returnValue);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Does this mean that our BO's should implement DesignTime_Create to provide
+better designer support?<span><br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Sample data might be useful, since the Infragistics grid doesn't display anything it seems without it.<br><br>I've had errors because the CslaDataProvider was raising DataChanged, which had an error that I attempt to handle.&nbsp; Of course, it doesn't work in design mode, and thus VS crashes... <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Hmm.. I'm not getting any sample data back, but I seem to not be crashing anymore due to some checks I've added.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should get some sample data.&nbsp; I verrifed this in Blend,
+and I was able to see the data given that I overrode design_create method.&nbsp;
+There is actually a demo project (WpfDesignTimeSupportDemo) that I used for
+testing in WPF.&nbsp; Maybe you can loot and see what the differences are
+between your implementation and sample implementation.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 2:56 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Wpf &amp; Csla<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hmm.. I'm not getting any sample data back, but I seem to
+not be crashing anymore due to some checks I've added.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Ok, I'll check it out. I'm using VS, haven't tried Blend yet.<br><br>Is it Design_Create or DesignTime_Create?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Does DesignTime_Create have to return this?&nbsp; I have it as a void method.<br><br>Mine is a little more complex... I try to follow the same data access patterns I usaually would and have calls to DataPortal.ChildFetch.&nbsp; Would that screw things up?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it does have to return design-time object.&nbsp; It does
+not have to return &#8220;this&#8221;, you could use some kind of factory
+instead.&nbsp; You can probably use design time flag to bypass some other run
+time functionality as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 3:24 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Wpf &amp; Csla<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Does DesignTime_Create have to return this?&nbsp; I have it
+as a void method.<br>
+<br>
+Mine is a little more complex... I try to follow the same data access patterns
+I usaually would and have calls to DataPortal.ChildFetch.&nbsp; Would that
+screw things up?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Hmm.. ok, I looked again and saw that I missed it was returning a value.<br><br>It threw me because it had already created an instance and was calling an instance method.&nbsp; I'll fix my code.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Hmm... still no joy.&nbsp; Not a huge deal.&nbsp; I'm more concerned if there are any well known gotacha's when coding for Wpf using Csla... like specifically what code might get run if you follow the pattern in the Wpf sample.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Weird that this does not work &#8211; unless VS designer works differently
+from Blend.&nbsp; You can try to attach debugger to blend and see if your
+design time code gets hist.&nbsp; This will at least narrow down problem
+areas.&nbsp; If you have data providers with initial load enabled, data portal
+will try to call fetch, but it should design time proxy currently, thus
+bypassing normal portal operations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 4:10 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Wpf &amp; Csla<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hmm... still no joy.&nbsp; Not a huge deal.&nbsp; I'm more
+concerned if there are any well known gotacha's when coding for Wpf using
+Csla... like specifically what code might get run if you follow the pattern in
+the Wpf sample.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 29, 2008</h2>Ya, I tried attaching a debugger and seeing if the DesignTime_Create was called.&nbsp; My assembly was loaded as the breakpoint turned solid, but it never got hit.<br><br>I do feel a bit better though; the sample in svn doesn't work for me either, nor do my project or the sample work in Blend 2 SP1.<br><br>I'm on Vista Business with UAC.. but I wouldn't think that should matter.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

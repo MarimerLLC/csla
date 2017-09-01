@@ -1,0 +1,181 @@
+<html><header><title>Saved event is not being called the second time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Saved event is not being called the second time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5810.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Sunday, November 16, 2008</h2><P>Following scenario:</P>
+<P>Put "this.Close()" in comment of&nbsp;the class&nbsp;RolesEdit.cs of the ProjectTracker application.</P>
+<P>So the form will stay on the screen when you click Save.</P>
+<P>Problem:</P>
+<P>The event Roles_Saved doesn't get executed anymore when you click a second time on Save:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Roles_Saved(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Core.</FONT><FONT color=#2b91af size=2>SavedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// this runs on the client and invalidates</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// the RoleList cache</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>RoleList</FONT><FONT size=2>.InvalidateCache();</P>
+<P>}</P>
+<P>What can be the reason that the Roles_Saved doesn't get called anymore?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 16, 2008</h2><P>The Saved event is raised by an object instance.</P>
+<P>When you call Save() you get back a new object instance.</P>
+<P>Any handler for the Saved event must hook the new Saved event from the new object instance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, November 17, 2008</h2>This is true when you are talking about trapping the Saved event in the
+UI. Then you have to pay attention to subscribe to the new instance
+after the Save() method is been called.<br>
+But in your sample application, you trap the event also in the Business
+Layer. The purpose is to invalidate the cache of the RoleList
+collection.<br>
+So you are subscribing to the Saved event in the constructor of the Roles class<br>
+<br>
+private Roles()<br>
+{<br>
+&nbsp;&nbsp;&nbsp; this.Saved += new EventHandler&lt;Csla.Core.SavedEventArgs&gt;(Roles_Saved);<br>
+&nbsp;&nbsp;&nbsp; this.AllowNew = true;<br>
+}<br>
+<br>
+The weird thing is that in the UI when you click the second time on the Save button in the RolesEdit form the method <font color="#0000ff" size="2">private</font><font size="2"> </font><font color="#0000ff" size="2">void</font><font size="2"> Roles_Saved(</font><font color="#0000ff" size="2">object</font><font size="2"> sender, Csla.Core.</font><font color="#2b91af" size="2">SavedEventArgs</font><font size="2"> e) <font size="3">is not been called anymore.<br>
+Some extra information:<br>
+</font><font size="3">When you don't change anything in the </font></font>RolesEdit
+form then you can click as many times you want to Save button, the
+event is been called anytime. But when you do some changes in the
+RolesEdit form, then click save, the save event will also be called.
+But when you do again some changes, then click again on the Save
+button, the saved event is NOT been called anymore.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interesting. I think this is due to serialization, and it is a
+bug in the Roles class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now that I think about it, when the new object comes back from
+the server, it is deserialized onto the client. The deserialization process
+doesn&#8217;t run any constructors (not normal ones anyway), and so that code
+doesn&#8217;t execute.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So what&#8217;s needed is this code:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>protected</span> <span>override</span> <span>void</span> OnDeserialized()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<span>base</span>.OnDeserialized();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>this</span>.Saved += Roles_Saved;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That should re-establish the event handler in the new instance.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m glad you discovered this!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, November 18, 2008</h2>
+
+<p class="MsoNormal">Great. This is the missing code.<br>
+I was wondering because I'm using a 2-tier architecture (physical), so my first
+thought was that I don't need to worry about serializing. But after some
+investigation I discovered that your save method is automatically cloning the
+object in CSLA 3.5.2. The code for your cloning is using Serialize and Deserialize and that
+is the reason we have to implement OnDeserialized method. Correct me if I'm
+wrong.<br>
+<br>
+The code I added is the following:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void
+OnDeserialized(System.Runtime.Serialization.StreamingContext context)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Saved += new
+EventHandler&lt;Csla.Core.SavedEventArgs&gt;(Roles_Saved);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+Alef</p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are correct, and that should be the right answer. I&#8217;ve
+added that code into ProjectTracker too, so the next person won&#8217;t have to
+figure this out :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 18, 2008 7:57 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Saved event is not being called the second
+time<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Great.
+This is the missing code.<br>
+I was wondering because I'm using a 2-tier architecture (physical), so my first
+thought was that I don't need to worry about serializing. But after some
+investigation I discovered that your save method is automatically cloning the
+object in CSLA 3.5.2. The code for your cloning is using Serialize and
+Deserialize and that is the reason we have to implement OnDeserialized method.
+Correct me if I'm wrong.<br>
+<br>
+The code I added is the following:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext
+context)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Saved += new
+EventHandler&lt;Csla.Core.SavedEventArgs&gt;(Roles_Saved);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+Alef<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

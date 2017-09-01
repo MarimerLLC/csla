@@ -1,0 +1,34 @@
+<html><header><title>Convert DataReader to Entity list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Convert DataReader to Entity list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2328.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kobruleht posted on Monday, February 12, 2007</h2><P>I need to convert datareader to strongly typed entity list.<BR>The following procedure returns error.<BR>How to fix this ?</P>
+<P><STRONG>List&lt;xEntity&gt; CreateEntityList&lt;xEntity&gt;(IDataReader dataReader) {</STRONG></P>
+<P><STRONG>List&lt;xEntity&gt; list = new List&lt;xEntity&gt;();<BR>while (dataReader.Read()) {<BR>&nbsp;object[] o;<BR>&nbsp;dataReader.GetValues(o);<BR>&nbsp;// the following line causes errors:<BR>&nbsp;//Error&nbsp;1&nbsp;The best overloaded method match for <BR>&nbsp;// 'System.Collections.Generic.List&lt;xEntity&gt;.Add(xEntity)' has <BR>&nbsp;//some invalid arguments&nbsp;<BR>&nbsp;//Error&nbsp;2&nbsp;Argument '1': cannot convert from 'object[]' to 'xEntity'<BR>&nbsp;list.Add(o);<BR>&nbsp;}<BR>dataReader.Close();<BR>return list;<BR>}</STRONG><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, February 12, 2007</h2><P>I'm not sure what you are expecting...</P>
+<P>You're getting an array of object with GetValues. The generic list collectionly has one Add(), and that's to take an instance of whatever your generic is. </P>
+<P>It's expecting that you add an xEntity - not an array of object values. </P>
+<P>If you wanted to have a factory method on xEntity such as:</P>
+<P>public static xEntity NewxEntity(object[] params)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;// Build and return xEntity instance</P>
+<P>}</P>
+<P>Then you could do:</P>
+<P>List&lt;xEntity&gt;.Add(xEntity.NewxEntity(o));</P>
+<P>But typically you wouldn't be using generic list collections with CSLA (I occasionally use them for certain purposes but not for main entities).</P>
+<P>Perhaps a little more context to your question would help.</P>
+<P>&nbsp;</P>
+<P>Good luck,</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kobruleht replied on Wednesday, February 14, 2007</h2><P>I'm sorry for unclear question.</P>
+<P>I have lot of entity classes like</P>
+<P><STRONG>class CustomerEntity {</STRONG></P>
+<P><STRONG>&nbsp; public string Name { </STRONG></P>
+<P><STRONG>&nbsp;&nbsp; get {&nbsp;return&nbsp; Row["Name"] ;}</STRONG></P>
+<P><STRONG>&nbsp;&nbsp; set { Row["Name"]=value; }</STRONG></P>
+<P><STRONG>&nbsp; }</STRONG></P>
+<P><STRONG>DataRow Row;</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P>I have BO classes for every entity class. In business object class data retrieval method&nbsp;I want to convert datareader to entity list&nbsp; like :</P>
+<P><STRONG>public List&lt;CustomerEntity&gt; GetCustomerList() {</STRONG></P>
+<P><STRONG>IDataReader dr;</STRONG></P>
+<P><STRONG>dr = .... </STRONG>code to create datareader</P>
+<P><STRONG>return CreateEntityList&lt;CustomerEntity&gt;(dr);</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P>I need to create generic CreateEntityList method using probably reflection.&nbsp; Can I use DataMapper class for this ?</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

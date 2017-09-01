@@ -1,0 +1,40 @@
+<html><header><title>How do i display e.Description in UI</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do i display e.Description in UI</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1503.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dstarkey posted on Monday, October 16, 2006</h2><P>I am catching the error here, this works cuz stepping through code.&nbsp; </P><FONT size=2>
+<P>Session[</FONT><FONT color=#800000 size=2>"currentEmployee"</FONT><FONT size=2>] = obj.Save();</P>
+<P>e.RowsAffected = 1;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>ValidationException</FONT><FONT size=2> ve)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ErrorLabel.Text = ve.Message;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ErrorLabel.Text += ve.Data.Keys.ToString();</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ErrorLabel.Text += ve.Data.Values;</P>
+<P>e.RowsAffected = 0;</P>
+<P>}</P>
+<P>Here is my custom Validation Rule:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> ValidHourlyEntry(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, Csla.Validation.</FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (hourly)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"S"</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"H"</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>"C"</FONT><FONT size=2>:</P>
+<P>e.Description = </FONT><FONT color=#800000 size=2>"Valid Entries: S -Salary, H -Hourly, C -Commission!"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>default</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>I keep getting a generic error message:</P>
+<P><SPAN id=ctl00_ContentPlaceHolder1_ErrorLabel>Object is not valid and can not be savedSystem</SPAN></P>
+<P><SPAN>Would like to display the custom error message e.Description !!</SPAN></P>
+<P><SPAN>Thanks, <BR>Appreciate your help</SPAN></P>
+<P><SPAN>Don</SPAN></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Monday, October 16, 2006</h2><P>I would think that you should just check if it is valid (Object.IsValid)&nbsp;before saving the object.&nbsp;You can see the specific rules that are broken&nbsp;by checking the BrokenRulesCollection (assuming CSLA v.2.0.3) on the object you are validating.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dstarkey replied on Monday, October 16, 2006</h2><P>Could you please post me sample code to do this?&nbsp; I just searched the entire book for any instance of e.Description being displayed in the ui and cannot find a sample.&nbsp; Still new to Csla, so this is probably a very simple question. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dstarkey replied on Monday, October 16, 2006</h2>Also want to mention that the UI is a web form.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Monday, October 16, 2006</h2><P>I've not worked with CSLA and Web Forms, but I am not sure that it matters...</P>
+<P>&nbsp;</P><PRE>if (!obj.IsValid)
+&nbsp;&nbsp; lblErrors.Text = obj.BrokenRulesCollection.ToString();
+else
+&nbsp;&nbsp; Session["CurrentObject"] = obj.Save();</PRE>
+<P>&nbsp;</P>
+<P>Hope that clears it up.</P>
+<P>Another thing... Set the error description only if the validation fails. Right now, you are setting the error description if the validation passes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 16, 2006</h2>Look in Chapter 10, at the PTWeb project - specifically the ProjectEdit.aspx page. There's code in that page to catch the validation exception and display all the validation rule descriptions from the object by using the IDataErrorInfo interface.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

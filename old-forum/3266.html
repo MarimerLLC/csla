@@ -1,0 +1,30 @@
+<html><header><title>data portal exception. ASP.NET account security issue?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>data portal exception. ASP.NET account security issue?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3266.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CMoreno posted on Wednesday, July 25, 2007</h2><P class=MsoNormal><SPAN>Hello,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Currently we are trying to set up our web portal. We already have created our windows application which is working great on csla. However we are experiencing some issues with the web portal. After the attempt of login in, the data portal throws this exception:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>DataPortal.Fetch failed (System.Data.SqlClient.SqlException: Login failed for user ''. The user is not associated with a trusted SQL Server connection.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Line:</SPAN><SPAN> result = proxy.Fetch(objectType, criteria, dpContext);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It seems that there is a problem with the connection with the database even though we are using the same connection string that we use for the windows application and the windows application does not have any problem connecting to the database. The connection string is as follows:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>connectionString="Data Source=192.168.0.5;Initial Catalog=XE700-Development;Integrated Security=SSPI;" name="XE700" providerName="System.Data.SqlClient"<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It is a local dataportal; however sql server is hosted on a Windows server 2003. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We are using custom membership <SPAN>&nbsp;</SPAN>with an identity and principal.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In addition we are using asp’s forms authentication.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Does this have anything to do with the ASP.NET account? But as far as I know to log into the database it is using windows integrated security.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I will appreciate any sugestion.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thank you,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>XE Corp.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 26, 2007</h2><P>Isn't this an example of the&nbsp;"double hop" issue?</P>
+<P>When you use Windows security the Identity is passed to the We server, but the Web server won't pass it to the SQL Server as that would be a second hop.</P>
+<P>Integrated Security=SSPI;</P>
+<P>You can use&nbsp;Google for more info and potential solutions.</P>
+<P>One idea is to use a single UID for the DB (a general&nbsp;Application user) and then encrypt the connection string.</P>
+<P>This has lots of benefits (like solving your problem) and using thread pooling.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

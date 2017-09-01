@@ -1,0 +1,79 @@
+<html><header><title>DataPortal.ChildCreate &amp; access from database?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.ChildCreate &amp; access from database?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5867.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, November 24, 2008</h2>Hi,<br><br>I currently have a child object, and the New factory method uses DataPortal.ChildCreate to create the child.&nbsp; I need to hit the database for some defaults.. but it doesn't look like the child DP will use remoting... or am I reading the code wrong?&nbsp; Should I use the normal Create and call MarkAsChild?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, you are correct, child portal is not going to the
+server.&nbsp;&nbsp; So you&nbsp; have to options:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Allow the root&#8217;s Create to fire remotely and populate children
+once you inside the DataPortal_Create<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Instead of create child call MyChild.GetDefault that will call
+the DataPortal.Fetch or fire a command object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In either case you have to manually call MarkAsChild()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 24, 2008 11:42 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] DataPortal.ChildCreate &amp; access from database?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I currently have a child object, and the New factory method uses
+DataPortal.ChildCreate to create the child.&nbsp; I need to hit the database
+for some defaults.. but it doesn't look like the child DP will use remoting...
+or am I reading the code wrong?&nbsp; Should I use the normal Create and call
+MarkAsChild?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 24, 2008</h2>Thanks Sergey, just wanted to make sure I didn't miss something.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

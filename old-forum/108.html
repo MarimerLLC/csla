@@ -1,0 +1,13 @@
+<html><header><title>Putting the TEMPLATES to good use?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Putting the TEMPLATES to good use?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/108.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianinspain posted on Monday, May 15, 2006</h2>I downloaded the code and saw the code snippets and templates... I know where to copy my code snippets to show up...<br><br>But i wonder if its possible or anybody managed to copy the templates somewhere so you can do Add New Item in VS 2005 and it shows up in the list under templates or even better in a sub group of there own under templates.??<br><br>Is this possible ?? is this what they are meant to do ???<br><br>Any ideas?<br><br>Thnaks in advance<br><br>Ian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaxman2 replied on Monday, May 15, 2006</h2><P>I believe you would:</P>
+<P>First open the templates.sln solution</P>
+<P>Then do a File-&gt;Export Template...</P>
+<P>Then select Item Template</P>
+<P>Click Next</P>
+<P>Click on the files you want to make into templates (I.E. NameValueList.vb)</P>
+<P>Click Next</P>
+<P>Then select the references you would like (I would do CSLA, System, System,data, and system.xml) </P>
+<P>Click Next</P>
+<P>Then you can set the template name and description to your liking. You are shown where the files will be exported (usually your Documents and settings\&lt;user&gt;\My Documents\Visual Studio 2005\My Exported Templates\&lt;name of template&gt;.zip.</P>
+<P>Then click finish. </P>
+<P>You should now be able to add your custom template from the My Templates section of the Add New Item dialog..</P>
+<P>The My Exported Templates is a backup location, the export wizard copies this same file to the Documents and settings\&lt;user&gt;\My Documents\Visual Studio 2005\Templates\Item Templates folder for use by Visual Studio. So if you change you mind and want to delete them, you should delete them from both places...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

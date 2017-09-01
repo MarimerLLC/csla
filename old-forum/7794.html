@@ -1,0 +1,106 @@
+<html><header><title>Question about Csla 3.8b1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about Csla 3.8b1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7794.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Thursday, October 15, 2009</h2><P>Ok, I completed a small application utilizing Csla 3.7.1 and when 3.78b1 was released, I copied the application to another directory and linked with the Csla assemblies (both .NET and SL).&nbsp; The application is a Silverlight 3.0 application and upon compiling, I am getting a number of errors pertaining to the XAML controls.&nbsp; For example an error is as follows:<BR><BR>Error&nbsp;44&nbsp;The property 'Resource' does not exist on the type 'Button' in the XML namespace 'clr-namespace:Csla.Silverlight;assembly=Csla'.&nbsp;D:\VisualStudio\2008\CSLAVersions\3.8b1\BelAirPricingEF\BelAirPricing\DataEntryControls\NYMEXPricing\NYMEXHistory315Control.xaml&nbsp;99&nbsp;8&nbsp;BelAirPricing<BR><BR>for the control line: <BR><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla:InvokeMethod.Resource</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>{StaticResource NYMEXHistory315}</FONT></FONT><FONT size=2>"</FONT></P>
+<P><FONT size=2>Did something for Silverlight radically change in 3.8b1?</FONT></P>
+<P><FONT size=2>CyclingFoodmanPA</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, October 15, 2009</h2><P>More confusion!&nbsp; I run the Rolodex example utilizing Csla 3.8b1 and it compiles, but I get runtime errors on the RanksEditor.xaml control on the line <BR><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla:InvokeMethod.Resource</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>{StaticResource RanksData}</FONT></FONT><FONT size=2>"<BR><BR>I got a couple of other runtime errors also, but I wanted to keep it on the same statement - csla:InvokeMethod.Resource as the previous one.&nbsp; <BR><BR>Any ideas anyone?</FONT></P>
+<P><FONT size=2>CyclingFoodmanPA</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What
+errors are you seeing?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 15, 2009 11:33 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Question about Csla 3.8b1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>More confusion!&nbsp; I run the Rolodex example utilizing Csla 3.8b1 and it
+compiles, but I get runtime errors on the RanksEditor.xaml control on the line <br>
+<span>csla:InvokeMethod.Resource</span><span>=</span><span>&quot;<span>{StaticResource RanksData}</span>&quot;<br>
+<br>
+I got a couple of other runtime errors also, but I wanted to keep it on the
+same statement - csla:InvokeMethod.Resource as the previous one.&nbsp; <br>
+<br>
+Any ideas anyone?</span><o:p></o:p></p>
+
+<p><span>CyclingFoodmanPA<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 15, 2009</h2><P>There are definite breaking changes in the XAML controls going into 3.8. This includes InvokeMethod, which no longer has a 'Resource' property. Instead InvokeMethod binds to the current DataContext and invokes methods on that object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, October 15, 2009</h2>Rocky,<br><br>Just to confirm - does the object in the DataContext have to derive from a ViewModel&lt;T&gt;?<br><br>I'm only planning on exposing my ViewModel&lt;T&gt; derived models as child properties on my UI View.&nbsp; I had always assumed yes but I hadn't plugged anything in yet.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t think anything requires the use of ViewModel&lt;T&gt; - that&#8217;s
+just a helper to make it easier to create a viewmodel object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>InvokeMethod and Execute have minimal requirements about the
+method signatures of the methods they can invoke, but that&#8217;s true of any similar
+MVVM UI component, and has no dependency on ViewModel&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Friday, October 16, 2009</h2><P>Ok, this answers a number of questions.&nbsp; I am on a roll now and will stick with 3.7.1 for the production app. I am working on, but will play with 3.8b1 as I always like to play with the latest and greatest.</P>
+<P>Keith</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

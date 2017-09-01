@@ -1,0 +1,76 @@
+<html><header><title>The ListChanged event is called too many times - Controls are very slow</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The ListChanged event is called too many times - Controls are very slow</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12014.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Friday, June 07, 2013</h2><p>Hi,</p>
+<p>I have a Add/Edit screen, where the controls are bound to properties in a business base class. There are many business rules written to&nbsp;modify the control behaviour. </p>
+<p>When any of the property is changed in the form,&nbsp;the gets are callled for every property in the class. And The Dependancy rule is observed to be calling the list changed event multiple times. If I remove the dependancy rules and run, the list changed event is calling only once. And on form load also list changed event is called many times.</p>
+<p>As the List changed event is called multiple times, the UI seems to be slower than the usual behaviour. Could you please suggest some ideas to make the UI faster.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 07, 2013</h2><p>Which version of CSLA do you use and which UI technology.&nbsp;</p>
+<p>If you use WindowsForms it is important to configure the PropertyChangedMode in app.config. as for CSLA 4 the default is Xaml.&nbsp;</p>
+<pre><span style="color:blue;">&lt;?</span><span style="color:#a31515;">xml</span><span style="color:blue;">&nbsp;</span><span style="color:red;">version</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">1.0</span>&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">encoding</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">utf-8</span>&quot;<span style="color:blue;">&nbsp;?&gt;</span>
+<span style="color:blue;">&lt;</span><span style="color:#a31515;">configuration</span><span style="color:blue;">&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&lt;</span><span style="color:#a31515;">appSettings</span><span style="color:blue;">&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#a31515;">add</span><span style="color:blue;">&nbsp;</span><span style="color:red;">key</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">CslaPropertyChangedMode</span>&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">value</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">Windows</span>&quot;<span style="color:blue;">&nbsp;/&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&lt;/</span><span style="color:#a31515;">appSettings</span><span style="color:blue;">&gt;</span>
+<span style="color:blue;">&lt;/</span><span style="color:#a31515;">configuration</span><span style="color:blue;">&gt;</span><span><br /><br /></span><br /><span><span style="color:#333333;font-family:Arial, Helvetica;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:#ffffff;float:none;">The thing to understand is that Windows Forms does a full refresh of bound controls on<span class="Apple-converted-space">&nbsp;</span></span><em style="color:#333333;font-family:Arial, Helvetica;font-size:12px;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:#ffffff;">every</em><span style="color:#333333;font-family:Arial, Helvetica;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:#ffffff;float:none;"><span class="Apple-converted-space">&nbsp;</span>PropertyChanged event. XAML does a refresh of only the specific property that has changed.<br /><br />As yoiu can see from the code here in CSLA 4.5 this will also prevent OnPropertyChanged on the IsXYZ metastate properties. <br /></span><br /></span>&nbsp;&nbsp;&nbsp; <span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Raises&nbsp;OnPropertyChanged&nbsp;for&nbsp;meta&nbsp;properties&nbsp;(IsXYZ)&nbsp;when&nbsp;PropertyChangedMode&nbsp;is&nbsp;not&nbsp;Windows</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;name&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">meta&nbsp;property&nbsp;name&nbsp;that&nbsp;has&nbsp;cchanged.</span><span style="color:gray;">&lt;/param&gt;<br />    </span><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;MetaPropertyHasChanged(<span style="color:blue;">string</span>&nbsp;name)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.PropertyChangedMode&nbsp;!=&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2b91af;">PropertyChangedModes</span>.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Check&nbsp;rules&nbsp;for&nbsp;the&nbsp;property&nbsp;and&nbsp;notifies&nbsp;UI&nbsp;of&nbsp;properties&nbsp;that&nbsp;may&nbsp;have&nbsp;changed.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;property&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;property.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">EditorBrowsable</span>(<span style="color:#2b91af;">EditorBrowsableState</span>.Advanced)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CheckPropertyRules(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;propertyNames&nbsp;=&nbsp;BusinessRules.CheckRules(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.PropertyChangedMode&nbsp;==&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2b91af;">PropertyChangedModes</span>.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;name&nbsp;<span style="color:blue;">in</span>&nbsp;propertyNames)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Wednesday, June 19, 2013</h2><p>Hi JhonnyBee,</p>
+<p>&nbsp;</p>
+<p>The CSLA version is 4.2.1.0 and We are using Windows forms - Dot.Net framework 4.0, tool Visual studio 2010. </p>
+<p>&nbsp;</p>
+<p>Actually, The issue is that the screen is very slow. I have around 33 properties that are bound to 33 controls in the form. When I enter a character in the textbox, it is taking around 2 to 4 seconds to&nbsp;accept the next character input. I have tried the app setting key, it threw an error saying something like &quot;The operation could not be completed as the file is used by someone else&quot;. </p>
+<p>Any setting do u recommend to solve this issue ?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 19, 2013</h2><p>You must stop your application before you can edit the file.&nbsp;</p>
+<p>I am fairly certain this is part of your problem.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Thursday, June 20, 2013</h2><p>Hi,</p>
+<p>Yes, stopping the application and running it again worked. </p>
+<p>But adding the key didnot change the speed of my form. Do you suggest something else ?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 20, 2013</h2><p>Hi,</p>
+<p>Use a performance profiler to get insight into what is using time in your application.&nbsp;</p>
+<p>Visual Studio 2012 (Professional or higher) &nbsp;has a built-in profiler. <br />Other options is the Redgate ANTS Profiler and JetBrains dotTrace products.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, June 20, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Arjun<br></b>
+<p>When I enter a character in the textbox, it is taking around 2 to 4 seconds to&nbsp;accept the next character input.</p>
+</div></p>
+<p>Hi Arjun,</p>
+<p>How is the DataBinding set? Are you using</p>
+<p>a) DataSourceUpdateMode.OnPropertyChanged</p>
+<p>or</p>
+<p>b) DataSourceUpdateMode.OnValidation</p>
+<p>According to your statement above, it looks like you are using OnPropertyChanged.</p>
+<p>Did you try to use OnValidation?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 21, 2013</h2><p>Hi,</p>
+<p>One obvious possibility is the combination of updating the datas property with OnPropertyChanged and running synchronous rulers that does lookup/validation theat requires 2 to 4 seconds. </p>
+<p>This will show up quickly in a performance profile. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Saturday, June 22, 2013</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>Yeah, I have tried OnValidation. With OnValidation, The business rules triggers only after the tab out which may not be intutive to the user. I was just trying to make the business rules to be triggered immediately when a character is entered.</p>
+<p>And also, with OnValidation, the same lazy loading observed not for every character but on tab press. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, June 22, 2013</h2><p>Hi,</p>
+<p>So does this mean that you do syncronous lazy loading of properties in your business object?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Monday, June 24, 2013</h2><p>Hi Jonny,</p>
+<p>&nbsp;</p>
+<p>Yes exactly. Is this only because of the more number of properties?&nbsp; In one of my previous applications, I have dealt with more number of controls in the screen, but the screen was fast enough. So, I guess, there is some project related setting or must be some difference in the way the object is created first.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

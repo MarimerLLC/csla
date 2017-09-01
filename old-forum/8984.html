@@ -1,0 +1,11 @@
+<html><header><title>Bug in DataPortal.Update with ObjectFactory implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in DataPortal.Update with ObjectFactory implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8984.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Monday, May 24, 2010</h2><p>Hi Rocky</p>
+<p>I think I&#39;ve found a bug in the DataPortal class when using an ObjectFactory. I&#39;m using an older version but I&#39;ve checked and it still seems to be in CSLA 4 beta too.</p>
+<p>Anyway, the problem is that when using an object factory, and doing an update of a newly created business object, the wrong authorization permission is checked. Currently, it always checks:</p>
+<p>&nbsp;Csla.Security.AuthorizationRules.CanEditObject(objectType)</p>
+<p>&nbsp;even if the business object is new - i.e. it should be checking CanCreateObject(objectType)</p>
+<p>&nbsp;</p>
+<p>The code is correct for the non-ObjectFactory branch, but is incorrect in the ObjectFactory branch.</p>
+<p>Of course, this manifests itself as a user having Create but not Edit permissions being able to Create in the UI (because the function is enabled) but then encountering a security exception when they save (because they&#39;re not in the Edit role)</p>
+<p>Thanks,</p>
+<p>Craig</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, May 24, 2010</h2><p>Thanks, that sounds like a bug.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

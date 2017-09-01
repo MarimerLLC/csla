@@ -1,0 +1,64 @@
+<html><header><title>How would you do this?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How would you do this?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/337.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay posted on Saturday, June 10, 2006</h2><P>Can any of you guys give me your opinion on how to model this simple situation?</P>
+<P>Lets say you are dealing with race car drives.</P>
+<P>Each driver drives a specific model of car, and each model is a brand of car.</P>
+<P>So Bill might drive a Boxter, which is a Porche.</P>
+<P>=== skip this part if you don't care about the DB schema ===<BR>In the DB, the Driver has a CarModelId value that is a FK to the CarModel table.&nbsp; The CarModel table has a CarBrandId which is a FK to the CarBrand table<BR>So each driver has a car model, and each model has a brand.<BR>=== end&nbsp;DB part ==</P>
+<P>Now, when creating the Driver class, and the form to edit the drivers info, would you say that the Driver is the parent of a Car object, which contains both the Model and Brand, or would you just have the Driver contain 3 properties: iCarId, sCarModel, sCarBrand ?</P>
+<P>If you think I should use an object instead of the 3 properties, how would I "mark" that object.&nbsp; I&nbsp;don't think it should be readonly b/c I want to be able to change what car is assigned to that driver, but I don't want to update the car object itself (e.g. I want to change Bill from driving a Boxter to driving a 911; I don't want to change the NAME of the Boxter to "911" in the database)</P>
+<P>Any suggestions which path would be corret?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Saturday, June 10, 2006</h2>No you should separate the Car and the Driver. They are both root objects. Take a look at the books&nbsp;about Projects and Resources and their assignments. It has a really good example.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Sunday, June 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>You need to break this "simple situtation" down into all 
+the use cases you need to support.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>Your focus seems to be on a use case relating to the 
+assignment of a car to a driver.&nbsp; But you&nbsp;may need some or all of 
+these others:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp; 1 Create/Modify Make List 
+(Brands)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp; 2 Create/Modify Model List</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp; 3 Create/Modify Car (which would have Model 
+and Make/Brand property values at a minimum and perhaps several others 
+including, perhaps, a list of possible drivers or even a driver 
+history)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>Your <STRONG>implementation</STRONG> of the driver class 
+will be affected, of course, by the availablility (or lack) of those other 
+objects.&nbsp;&nbsp;You certainly want to have your driver 
+class&nbsp;offer&nbsp;text representations of Car,&nbsp;Brand/Make, and Model 
+for the UI (which will all be properties, of course).&nbsp; But any or all of 
+these may be tied to other objects or not.&nbsp; Your implementation of the 
+class&nbsp;might involve the use&nbsp;of ID fields to pull data from other 
+tables, of course.&nbsp; But don't&nbsp;put those&nbsp;IDs into the properties 
+here.&nbsp; That's just&nbsp;data-centric object thinking.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>You drive a&nbsp;car (or cars), right?&nbsp; Do you think 
+of your car by its VIN?&nbsp;&nbsp;The user of your driver object probably 
+doesn't think about the race car that way either.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2>If your application is successful with the capability of a 
+model in which there is one driver to one car, you should probably be expecting 
+to need to enhance it in the future for scenarios in which more than one driver 
+might drive a car or a driver might drive more than one car.&nbsp; It might be 
+to enlarge the scope to mulitiple races during some time frame or it might be to 
+provide race history.&nbsp; You should probably consider those N-to-N 
+drivers-to-cars requirements in the design of current version so that the 
+enhanced functionality will be easy to provide in the future, if 
+needed.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=484481014-11062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=484481014-11062006></SPAN>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Sunday, June 11, 2006</h2><P>One more thing to keep in mind, that I think has been lost so far, is that the car's model &amp; brand are singular to the Driver.&nbsp; You wouldn't want to be able to assign a Boxter model and Ford brand.&nbsp;The DB model you described does tightly-couple the brand to the model, so a Boxter directly corresponds to Porche as would be expected.&nbsp; But, from the driver's perspective, he/she is assigned a Porche Boxter and the user should not be given the option of assigning from a list of models AND a list of makes.</P>
+<P>With this in mind, I would agree that the sample app included in the book describes this scenario very well and your model will suffice for a very basic application.&nbsp; You should look at the N-to-N approach; however, as it probably models real-world better.</P>
+<P>Anyway, what you'd have is a Driver object with a Model property that references the particular object assigned to that Driver.&nbsp; In your drop-down list of cars to assign to the driver in your UI,&nbsp;a read-only ModelList can be set as the data source.&nbsp; Set your unique key as the drop-down list's key/value and the ToString() method for the text.&nbsp; Then, override the ToString() method in the Model object to:</P>
+<P><CODE>public override System.String ToString()<BR>{<BR>&nbsp; &nbsp; return Make.ToString() + " " + this.Name;<BR>}</CODE></P>
+<P>The result will be a list of names like "Porche Boxter" which will make more since to your users when assigning the cars.</P>
+<P>Hope this helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Sunday, June 11, 2006</h2><P>I understand that&nbsp;N-to-N&nbsp;cardinality might seem like a good way to design this, but in the context of my application doesn't really apply.&nbsp; </P>
+<P>Unless I missed it, the examples in the book use collections where the child object knows which parent it belongs to.</P>
+<P>So if I was going to say that each driver could have a collection of cars, and I added an extra table to the DB to do this, then the example would line up pretty well.</P>
+<P>But, instead of having a CarAssignment table, or something like that, the Driver has the CarId as part of his table, b/c he can only have 1 car.</P>
+<P>So is it correct that&nbsp;what I should be doing is </P>
+<P>1) create a ReadOnlyChild object to represent the Car (meaning that you can't change the car name or brand)<BR>2) make the property on the parent a read/write (meaning you can assign a different car)<BR></P>
+<P>Does that sound right?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jinchun replied on Sunday, June 11, 2006</h2>I would actually do just that. From my own personal experience, it is much easier to keep parent/child relationships in object extremely flat, meaning, you can always logically get from one to the other, whether through direct object references, or unique id's/natural id's that associate one to the other. From what I have found, it is much simpler to do the latter in most non-trivial circumstances, which also seems to ease mapping to tables relatively straight forward.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay replied on Monday, June 12, 2006</h2><P>I built a form to edit my Driver, but now I have a problem with editing.</P>
+<P>I had planned on having a car dropdown list to select from, built from NameValueList, but I don't think I can do that b/c my driver has a property for Car, not a property for CarId.</P>
+<P>So should I be databinding against a dropdown that has a collection of Car objects, rather than a NameValueList?&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

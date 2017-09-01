@@ -1,0 +1,24 @@
+<html><header><title>Performance impact of NonPublic PropertyInfo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance impact of NonPublic PropertyInfo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1384.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik posted on Wednesday, October 04, 2006</h2><P class=MsoNormal><SPAN>Hi guys<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have implemented a rather complex inheritance hierarchy for my Party system, where I have a PartyBase which is subclassed by PersonBase and OrganizationBase. These are again subclassed by concrete BO’s like User, Member, Company, Contact and so on.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I know that I should always favor composition over inheritance and I normally follow that route. However, this is for a generic base class library and I have had a lot of trouble getting to the BrokenRulesCollection of the embedded objects if I use interface inheritance and I don't want all my concrete Party BO's to expose a public Party property just for that, so I have chosen to use inheritance instead.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Anyway, my PartyBase has a lot of common properties that subclasses may choose to expose publicly. These are properties like FirstName, MiddleName, LastName and OrganizationName. These properties are scoped as protected in the PartyBase class. The PersonBase subclass will have public FirstName, MiddleName and LastName properties which forwards the get/set to the PartyBase class. The OrganizationBase subclass will in contrast only have a public OrganizationName which is also forwarded to PartyBase.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This all works nicely.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Now, the PartyBase has validation rules that checks the maxlength of these properties. These rules use the CommonRules method StringMaxLength and this is where I ran my head against the wall. The StringMaxLength use the CallByName syntax to retrieve the value of the property being validated. It can only do this on public properties. I’ve made my own extension to the CommonRules where I instead of CallByName get a PropertyInfo object to the property (just like the MaxValue rulemethod does):<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> pi <SPAN>As</SPAN> PropertyInfo = target.GetType.GetProperty(e.PropertyName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>However this will also only get public properties. This is where my question comes in: <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I specify to retrieve non public properties as well like this:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> pi <SPAN>As</SPAN> PropertyInfo = target.GetType.GetProperty(e.PropertyName, _<BR><SPAN>&nbsp; </SPAN>BindingFlags.FlattenHierarchy <SPAN>Or</SPAN> _<BR><SPAN>&nbsp; </SPAN>BindingFlags.Instance <SPAN>Or</SPAN> _<BR><SPAN>&nbsp; </SPAN>BindingFlags.NonPublic <SPAN>Or</SPAN> _<BR><SPAN>&nbsp; </SPAN>BindingFlags.Public)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>will this perform worse (and maybe how much worse) than CallByName?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>To solve my problem, for the moment, I have implemented the rules as static rules inside my PartyBase class using the generic method. I may stick with this method, since it doesn’t use reflection at all and will therefore be faster.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>/Henrik<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

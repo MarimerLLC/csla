@@ -1,0 +1,13 @@
+<html><header><title>RuleContext - Missing overload? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RuleContext - Missing overload? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10752.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Sunday, October 09, 2011</h2>I&#39;m trying to implement a rule in Csla 4.1.0 that, when broken, will stop processing.  However, there doesn&#39;t appear to be an overload that takes the property, description and the flag to stop processing.  Am I missing something?</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, October 09, 2011</h2><p>In Csla 4.1 you should only use the
+</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddErrorResult(<span style="color:blue;">string</span>&nbsp;description,&nbsp;<span style="color:blue;">bool</span>&nbsp;stopProcessing)   or<br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddErrorResult(<span style="color:blue;">string</span>&nbsp;description)<br /><br />and similar overloads for AddXYZResult.</pre>
+<p>The BusinessRules class has several issues in 4.1 with adding error/warning/info to other properties than PrimaryProperty. These have been fixed for CSLA 4.2. </p>
+<p>The important part is - your property level rules must have a PrimaryProperty and should only use the AddXYZResult that do NOT take an IPropertyInfo as parameter (at least until you move up to Csla 4.2).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;"><br /></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, October 09, 2011</h2><p>Oh, I didn&#39;t even notice those. Thanks, that solves the problem. Rocky, it may be worthwhile to point out in the Using Csla 4 Objects eBook to prefer the methods which don&#39;t take an IPropertyInfo.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

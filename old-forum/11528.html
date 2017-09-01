@@ -1,0 +1,112 @@
+<html><header><title>CSLA 4.5, Async &amp; Csla.Data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5, Async &amp; Csla.Data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11528.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Tuesday, August 14, 2012</h2><p>Hi,</p>
+<p>Are there any move to make the Csla.Data classes &#39;Async ready&#39;?</p>
+<p>For insance, getting a TransactionManager (opening connection &amp; transaction) with the new 4.5 async APIs added to ADO.NET?</p>
+<p>This is an open question. <br />We are looking benefits we can get from&nbsp;upgrading to .NET 4.5 (from CSLA 4.3 to CSLA 4.5) with .NET 4.5. As we will rewrite key Dataportal_Update&nbsp;with the Async spirit on a 2 tiers winform application mainly monothreaded application, opening DB connections is also part what make our application unresponsive (when not on the LAN).</p>
+<p>Regards,</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 14, 2012</h2><p>To start with - in CSLA 4.5 you can return Task&lt;T&gt; from DataPortal_XYZ methods and thus make the Data Access methods run async (even if the DataAccess itself is sync and you have a 3-tier application). </p>
+<p>You also have DataPortal.XYZAsync methods that return Task&lt;T&gt; to make the client run asynchronous (rather than use DataPortal.BeginXYZ with a callback in the &quot;old&quot; style).&nbsp;&nbsp; </p>
+<p>IE: You can write code like this in the client:</p>
+<p><i>As a result, it is now possible to use the new async and await keywords 
+to consistently call the data portal in .NET, WinRT, and Silverlight 5.<br /><br /><span> var obj = await DataPortal.FetchAsync&lt;Customer</span></i> <i><span class="word_break"></span>Edit&gt;();</i></p>
+<p>From what is already in the brugtracker (<a href="http://www.lhotka.net/cslabugs">http://www.lhotka.net/cslabugs</a>) this is planned for CSLA 4.5:<br /><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1077">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1077</a> : <i><span id="static_short_desc" class="edit_bug_static" style="width:500px;">SafeDataReader needs to support new async DR features</span></i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Tuesday, August 14, 2012</h2><p>Thanks for the clarification. </p>
+<p>It seems I&nbsp;did not look carefully enough inside the bugtracker, thanks for the link!</p>
+<p>I alread played a little with CSLA 4.5 (with .SaveAsync), result is really&nbsp;really great. We can really improve responsiveness with very little development/maintenance costs!</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 14, 2012</h2><p>Yes, I believe the DataPortal.XYZAsync methods will go a long way in a 2-tier application to make the DataAccess run async from the client without further changes in the DataAccess code. This will make your application a lot more responsive to the user. </p>
+<p>Plus - you can also use </p>
+<p><i>try<br />{<br /></i><i><span>&nbsp;&nbsp;&nbsp;&nbsp; var obj = await DataPortal.FetchAsync&lt;Customer</span> </i><i><span class="word_break"></span>Edit&gt;();<br />}<br />catch (Exception ex)<br />{<br />&nbsp;&nbsp;&nbsp; // Exception handling code here <br />}</i></p>
+<p>just as it was when the code was synchronous.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bchase replied on Friday, August 24, 2012</h2><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>I am attempting to use the 4.5 alpha in a Silverlight 5.0&nbsp;application&nbsp;in order to use the new&nbsp;async/await features.&nbsp; The following contrived&nbsp;example does not compile under VS11/.NET 4.5/Silverlight 5.0/CSLA 4.5.&nbsp;</p>
+<p>Error: <span style="font-family:Consolas;color:#1e1e1e;font-size:xx-small;"><span style="font-family:Consolas;color:#1e1e1e;font-size:xx-small;"><span style="font-family:Consolas;color:#1e1e1e;font-size:xx-small;">
+<p>Cannot find all types required by the &#39;async&#39; modifier. Are you targeting the wrong framework version, or missing a reference to an assembly?</p>
+</span></span></span></p>
+<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>
+<p>&nbsp;How does one use the async feature within Silverlight client in tandem with CSLA 4.5 alpha?&nbsp; </p>
+<p>public </p>
+</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></p>
+<p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">async</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Task</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Customer</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; GetCustomerByCustomerIdAsync( </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Guid</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> id)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">{</span></span></p>
+</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">try</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Task</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Customer</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; obj = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.FetchAsync&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Customer</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(new CritereaPassenger(id));</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">return obj;
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">catch</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Exception</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> ex)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">// Exception handling code here </span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Thanks for you help</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>You must add a reference to <b>AsyncTargetingPack </b>to the SL project from NuGet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bchase replied on Monday, August 27, 2012</h2><p>I had misunderstood the documentation on AsyncTargetingPack and believed that with VS11 and 4.5 .NET, the pack was unneeded. &nbsp;But with Silverlight 5.0, it is required no matter as you point out.&nbsp;</p>
+<p>Next question: &nbsp;In&nbsp;the Silverlight client side,&nbsp;why does one function hang and whereas the other does not? Both appear to legal forms from what i have read. The following is simplified code of the problem. &nbsp;</p>
+<p>This hangs:</p>
+<p>public static async Task(MyClass) GetMyClassById(Guid Id)</p>
+<p>{</p>
+<p>&nbsp; &nbsp;MyClass myclass = await DataPortal.FetchAsync&lt;MyClass&gt;(new CriteriaMyClass(Id)); // hangs here...&nbsp;</p>
+<p>&nbsp; return myclass; // never makes it here</p>
+<p>}</p>
+<p>Whereas this does not hang and I can access the instance of the MyClass object in the dictionary:</p>
+<p>static Dictionary&lt;Guid,MyClass&gt;&nbsp;&nbsp;ListOfReturns&nbsp;= new Dictionary&lt;Guid,MyClass&gt;();</p>
+<p>
+<p>public static async void GetMyClassById(Guid Id)</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp;MyClass myclass = await DataPortal.FetchAsync&lt;MyClass&gt;(new CriteriaMyClass(Id)); // does not hang</p>
+<p>&nbsp; &nbsp; &nbsp;ListOfReturns.Add(Id,myclass); // adds the instance of MyClass correctly</p>
+<p>}</p>
+</p>
+<p>Thanks in advance</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 27, 2012</h2><p>The async/await keywords aren&#39;t always as simple as they might appear on the surface.</p>
+<p>The problem I think you are encountering is one I&#39;ve been fighting with as well. If you block the UI thread by synchronously calling an async method, and that async method ultimately does something (like call WCF) that has a callback occur on a background thread, the await keyword can&#39;t marshal the call back onto the UI thread because the UI thread is blocked.</p>
+<p>The secret to success is to NEVER block the UI thread with a synchronous call. In other words, the code that&#39;s calling your GetMyClassById method must await the result in order to avoid blocking the UI thread.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bchase replied on Wednesday, September 05, 2012</h2><p>Rocky,</p>
+<p>Thank you for the reply. &nbsp;</p>
+<p>As I understand it, the async and await keywords in conjunction with the method name ending in &quot;Async&quot; &nbsp;are forcing the compiler to output code that essentially causes an otherwise synchronous call to become asynchronous for the line that contains &quot;await&quot;. That is, the method cannot continue/regain control on the&nbsp;&quot;await&quot; line until the information is returned. &nbsp;If one uses the &quot;Task&quot; keyword, this is further this is further complicated -- but let&#39;s keep it simple.</p>
+<p>My question... I am trying to poke holes into the last method that I used in which I put the await results into a static dictionary and used that result -- from the dictionary -- after the return of the &quot;GetMyClassById&quot; method. This methodology does not hang the UI thread and the results are correct. &nbsp;The newest information from the database would be represented in the object (MyClass) in the dictionary. I just don&#39;t like this methodology -- but it works in the Silverlight client. &nbsp;What am I missing?</p>
+<p>As a side note, I cannot find within the Silverlight client a methodology that uses the Task&lt;TResult&gt; in conjuction with the async and await keywords that allows for a call to the DataPortal.FetchAsync without hanging the UI thread. &nbsp;</p>
+<p>Bruce</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 05, 2012</h2><p>That is tricky, and not just in SL.</p>
+<p>The short answer to solving this is to await the object factory (or data portal) call within an async void method - often a UI event handler.</p>
+<p>When an async void method is invoked it will return immediately, and your await inside that method therefore doesn&#39;t block the UI thread.</p>
+<p>For example, I usually initialize my viewmodel as the page loads. So you can make the Loaded event handler async, then do the await in that handler.</p>
+<p>For that matter, I&#39;ve taken to making my viewmodels expose an awaitable InitAsync method (the new ViewModelBase does this, delegating to a protected DoInitAsync method you can override).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,29 @@
+<html><header><title>Problem with Datareader and 'using' statement</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with Datareader and 'using' statement</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12178.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Coderforlife posted on Thursday, October 10, 2013</h2><p>I am trying to implement Editable rootlist&nbsp; stereotype in my project, my list (collection) class is TestList.cs and my child object is TestEdit.cs, I have also a TestDal.cs class, I am following Rocky&#39;s samples and encapsulated invoke for data access.</p>
+<p>Inside my Testlist.cs I have this method</p>
+<p>&nbsp;private void DataPortal_Fetch()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rlce = RaiseListChangedEvents;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var dalManager = DataAccess.DalFactory.GetManager())<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dal = dalManager.GetProvider&lt;DataAccess.ITestDal&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Data.SafeDataReader data = new Csla.Data.SafeDataReader(dal.Fetch());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (data.Read())</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(DataPortal.FetchChild&lt;TestEdit&gt;(data));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = rlce;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>While inside my TestDal.cs I have </p>
+<p><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public IDataReader Fetch()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(&quot;MyDBConnection&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cm = ctx.Connection.CreateCommand();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = System.Data.CommandType.StoredProcedure;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = &quot;usp_tblBlahSelecttAll&quot;;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return cm.ExecuteReader();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>When I get the datareader back in DataPortal_Fetch (inside Testlist.cs) , the datareader is already closed. I&nbsp; removed the &#39;using&#39; statement from the Fetch method inside TestDal.cs and used just </p>
+<p>var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(&quot;MyDBConnection&quot;));</p>
+<p>and then it worked!</p>
+<p>&nbsp;but I have two questions.</p>
+<p>1) If I remove the &#39;using&#39;&nbsp; statement as stated above, where will my datareader get closed?</p>
+<p>2) I am wondering if there is a typo in the sample code (specifically the example EncapsulatedInvoke for &#39;DataAcess&#39; samples)? or I might not be following it correctly?</p>
+<p>&nbsp;</p>
+<p>Thanks for your time.</p>
+<p>Coder</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Coderforlife replied on Thursday, October 10, 2013</h2><p>I have a few more questions about this stereotype</p>
+<p>1) How do we get a specific child object ? back in CSLA 1.x I used to write my own methods in the collection (list) class something like getchild(int ChildID).</p>
+<p>2)Rocky has discussed three&nbsp;techniques of adding a child to&nbsp;a list but how about removing a child object?</p>
+<p>Thanks</p>
+<p>Coder</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Thursday, October 10, 2013</h2><p>&quot;<span>2)Rocky has discussed three&nbsp;techniques of adding a child to&nbsp;a list but how about removing a child object?&quot;</span></p>
+<p>Simply call remove on the list object with a reference to the child object - MyList.Remove(MyChild)</p>
+<p>CSLA will call Child_DeleteSelf on the child object when it is saved.</p>
+<p><span><br /></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

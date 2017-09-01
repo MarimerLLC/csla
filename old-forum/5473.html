@@ -1,0 +1,10 @@
+<html><header><title>WCF portal hosted in WAS</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF portal hosted in WAS</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5473.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman posted on Friday, September 26, 2008</h2><P>Hi,</P>
+<P>I need a way to dynamically instantiate some objects before calling Dataportal.XYZ using WCF&nbsp;portal hosted in IIS7(WAS). For example I have a static class that holds things like connection strings and so on… This static class should be initialized before the DataPortal.XYZ methods use a property from these objects. Any ideas?</P>
+<P>Kind regards,</P>
+<P>George B</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 26, 2008</h2><P>There are two options.</P>
+<P>In CSLA 3.0+ you can add code into your custom base classes, in the DataPortal_OnDataPortalInvoke() override, to see if you need to initialize the static data. This presupposes you have your own custom base classes, and all your business objects inherit from your base classes.</P>
+<P>In CSLA 3.6+ you can supply a custom authentication provider that is invoked on every data portal call, before any other processing occurs. You could see if you need to initialize the static data in this method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Monday, September 29, 2008</h2><P>Thank you,</P>
+<P>I found a way but seemed more like a hack to me... I've derived from ServiceHostFactory and then I've overridden the ApplyConfiguration method and injected my custom initialization code...</P>
+<P>Anyway your solution seems far more elegant...</P>
+<P>Thanks,</P>
+<P>GB<FONT color=#ffc66d size=2><FONT color=#ffc66d size=2></P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

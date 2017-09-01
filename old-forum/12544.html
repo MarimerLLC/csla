@@ -1,0 +1,25 @@
+<html><header><title>PCL Portable Class Libraries and multi platform support</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PCL Portable Class Libraries and multi platform support</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12544.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom posted on Wednesday, March 26, 2014</h2><p>Microsoft is interested in buying Xamarian. &nbsp;More MVVM frameworks are now working better with PCL and multi platform solutions such as MVVMCROSS. &nbsp;With these changes in the multi platform arena, has there been any readdressing of the issue of building a CSLA Core module compatible with Portable Class Libraries? &nbsp;I am now having to face the decision of leaving behind my beloved CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, March 27, 2014</h2><p>Thanks for the heads up re: Microsoft and Xamarin.&nbsp; That&#39;s potentially exciting news.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, March 27, 2014</h2><p>Here&#39;s one article on it.</p>
+<p>http://www.zdnet.com/is-microsoft-about-to-buy-xamarin-7000027434/</p>
+<p>Still rumours, but I can&#39;t think why Microsoft wouldn&#39;t do it. &nbsp;It would be a huge win for them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, April 07, 2014</h2><p>Wow, Universal applications look really promising. &nbsp;I wonder how this will play into the whole question. &nbsp;Perhaps the Universal shared project would be a better solution than PCLs?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 10, 2014</h2><p>We don&#39;t currently support a PCL with CSLA, primarily because the lowest common denominator is pretty low compared to some of the features we are currently able to implement via multi-targeting.</p>
+<p>That said, CSLA 4.5.500 supports the following platforms:</p>
+<ul>
+<li>.NET (ASP.NET, WPF, Windows Forms)</li>
+<li>Silverlight 5</li>
+<li>Windows Phone (Silverlight/WinPRT)</li>
+<li>Android via Xamarin</li>
+<li>iOS via Xamarin</li>
+<li>Linux/OS X via mono</li>
+<li>WinRT</li>
+</ul>
+<p>We will also support the new Universal App model announced at Build. In fact we might already support it thanks to our support for WinRT, but I want to confirm that&#39;s true before making such a statement.</p>
+<p>Once we support the Universal App model (which Xamarin will support as well) then via that avenue we&#39;ll reach the following:</p>
+<ul>
+<li>WinRT (Windows 8)</li>
+<li>WinRT (Windows Phone 8.1)</li>
+<li>WinRT (Xbox - presumably at some point anyway)</li>
+<li>Android</li>
+<li>iOS</li>
+<li>OS X (if Xamarin releases a product for OS X as rumored)</li>
+</ul>
+<p>In summary, you shouldn&#39;t have to give up CSLA just to reach these platforms. In fact, if you are using CSLA it will make your life almost infinitely easier when you want to move to these platforms because all your business code will work unchanged.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 22, 2014</h2><p>I do plan to support the Universal PCL model and have started that work</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/267">https://github.com/MarimerLLC/csla/issues/267</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

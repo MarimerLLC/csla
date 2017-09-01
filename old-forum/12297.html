@@ -1,0 +1,52 @@
+<html><header><title>How does Csla.ApplicationContext.User work?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How does Csla.ApplicationContext.User work?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12297.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SMILEMan posted on Monday, January 06, 2014</h2><p>I&#39;m testing my application that has a BusinessIdentity based on CslaIdentityBase&lt;BusinessIdentity&gt; using direct database connections (i.e. using connection strings in the config or development testing).</p>
+<p>After I do the logon, Csla.ApplicationContext.User.Identity returns a BusinessIdentity, but in my Data Access project (I&#39;m using the Encapsulated Invocation model), Csla.ApplicationContext.User.Identity returns a System.Security.Principal.GenericIdentity and the cast to a BusinessIdentity fails with an InvalidCastException.</p>
+<p>I&#39;ve noticed some discussions that Csla.ApplicationContext has changed during the 4.x development but didn&#39;t see a comprehensive discussion on how this works.</p>
+<p>Ray.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 06, 2014</h2><p>The default behavior of the User property varies depending&nbsp;on the client UI technology you are using (ASP.NET,&nbsp;WPF, etc.)&nbsp; - which are you using?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SMILEMan replied on Monday, January 06, 2014</h2><p>I&#39;m using WPF for the client.</p>
+<p>Ray Klaassen</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, January 07, 2014</h2><p>You must make sure to have Csla.Xaml,dll in your references (and bin folder) of the application anmd Csla.Web must NOT be present.. </p>
+<p>Csl.ApplicationContext uses a ApplicationContextManager and will use the ApplicationContextManager from Csla.Xaml when present.</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">IPrincipal</span>&nbsp;User
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;ContextManager.GetUser();&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;ContextManager.SetUser(<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>So the Csla.Xaml assembly has its own implementation of ApplicationContextManager:<br /></p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">IPrincipal</span>&nbsp;_principal;
+</pre>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:gray;">    ///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;current&nbsp;principal.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">IPrincipal</span>&nbsp;GetUser()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IPrincipal</span>&nbsp;current;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(System.Windows.<span style="color:#2b91af;">Application</span>.Current&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_principal&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.AuthenticationType&nbsp;!=&nbsp;<span style="color:#a31515;">&quot;Windows&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_principal&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;Csla.Security.<span style="color:#2b91af;">UnauthenticatedPrincipal</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_principal&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">WindowsPrincipal</span>(<span style="color:#2b91af;">WindowsIdentity</span>.GetCurrent());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current&nbsp;=&nbsp;_principal;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current&nbsp;=&nbsp;<span style="color:#2b91af;">Thread</span>.CurrentPrincipal;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;current;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Sets&nbsp;the&nbsp;current&nbsp;principal.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;principal&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Principal&nbsp;object.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;SetUser(<span style="color:#2b91af;">IPrincipal</span>&nbsp;principal)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(System.Windows.<span style="color:#2b91af;">Application</span>.Current&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_principal&nbsp;=&nbsp;principal;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Thread</span>.CurrentPrincipal&nbsp;=&nbsp;principal;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SMILEMan replied on Tuesday, January 07, 2014</h2><p>Thank you.</p>
+<p>Does anything need to change if I want to deploy the&nbsp;WPF application&nbsp;with data access&nbsp;using a WCF DataPortal hosted by IIS rather than direct connections?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 07, 2014</h2><p>Ray, have you read through the &quot;CSLA 4: Data Portal Configuration&quot; book? It covers a lot of these things (I hope) pretty well.</p>
+<p>There are client and server configuration settings that control how (and if) the data portal tries to flow the client-side principal to the server, and those do matter as soon as you use a 3-tier deployment model.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

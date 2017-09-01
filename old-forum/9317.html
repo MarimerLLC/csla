@@ -1,0 +1,14 @@
+<html><header><title>EF, updating inserted child object's auto incremented id</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EF, updating inserted child object's auto incremented id</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9317.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot posted on Tuesday, August 03, 2010</h2><p>Hello,</p>
+<p>I&#39;m using EF4 to access my DB. I have a little hierarchy with a root BO (let&#39;s call it RootBO), a child list BO (deriving from BusinessListBase, let&#39;s call it ChildListBO), and finally children (deriving from BusinessBase, let&#39;s call them ChildBO).It looks simple.</p>
+<p>Here is my question: when in a UI, I edit a RootBO object with all the descending objects (down to ChildBO), and that a ChildBO instance has newly be created, how can I update easily it&#39;s id ? I mean, when you reach the Child_Insert(..) method, and that you get a context from the parent objects, it is not possible to get back the auto generated id (by the DB) at that moment.</p>
+<p>Is there another trick than just reloading the full hierarchy after RootBO&#39;s DataPortal_Update() ? How can we proceed?</p>
+<p>&nbsp;</p>
+<p>My code looks like:</p>
+<p>private void Child_Insert(EntitiesContext o_context, DBEntity1 parentEntity)<br />{<br /><br />Entity2 o_new = new Entity2();<br />o_new.Label = Label;<br /><br />parentEntity.ChildrenEntities.Add(o_new);<br /><br />//at this point I do not have any id of the new created entity,</p>
+<p>//so my BO&#39;s data is not complete<br /><br />}</p>
+<p>&nbsp;</p>
+<p>(I&#39;m just wondering more and more why I still should continue to use EF to access my DB. I think that the good old SQL code could handle it as nice as EF)</p>
+<p>&nbsp;</p>
+<p>Thanks a lot,</p>
+<p>Christophe</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, August 04, 2010</h2><p>I&#39;m not sure if this will work in EF but in Linq to Sql I would hook up a PropertyChanged event handler and when the Id property changes and record it.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Thursday, August 05, 2010</h2><p>If you are passing the context around, you don&#39;t need to worry about setting the id&#39;s, EF will do it for you (you have to attach all the entities first before saving however as I understand it).</p>
+<p>If you are not passing in the context, then traditionally, you would pass the parent as a reference, which at that point is saved and has the id you need.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

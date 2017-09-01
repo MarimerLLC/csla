@@ -1,0 +1,43 @@
+<html><header><title>CSLA .NET 3.6 (Windows and Silverlight) Beta 1 refresh</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6 (Windows and Silverlight) Beta 1 refresh</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5564.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, October 09, 2008</h2><P>I have posted a Beta 1 refresh (Beta 1a) of version 3.6 on <A href="http://www.lhotka.net">www.lhotka.net</A>.</P>
+<P>On the .NET/Windows side there are some interesting things here:</P>
+<UL>
+<LI>Visual Studio 2008 templates 
+<LI>Add design-time support for Expression Blend so you can provide sample data for your objects 
+<LI>Add BypassPropertyChecks to temporarily disable authorization and validation processing 
+<LI>BusyAnimation control for Windows Forms 
+<LI>Several bug fixes (thanks to people on this list!!!)</LI></UL>
+<P>On the Silverlight side:</P>
+<UL>
+<LI>Add design-time support for Expression Blend so you can provide sample data for your objects 
+<LI>Add BypassPropertyChecks to temporarily disable authorization and validation processing 
+<LI>Fix issues with WCF 404 errors so the default is now for the data portal to use WcfProxy (parallel calls are really parallel) 
+<LI>Several bug fixes (thanks to people on this list!!!)</LI></UL>
+<P>We're on the way to Beta 2 in a couple weeks, and are purely in stabilization mode at this point. This code should be pretty darn good, and is final - assuming no more bugs are found :)</P>
+<P><STRONG>In other words, please download and use this code - for Windows and/or Silverlight - and let us know if you find any issues.</STRONG></P>
+<P>I'm targeting 10/20 for a Beta 2 release - just over a week away! And I expect we're just a very few weeks from a final release - all building toward us releasing 3.6 as soon after Silverlight 2.0 is released as possible.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, October 10, 2008</h2>I am testing CSLA.NET 3.6 (built from SVN)<br><br>I am getting a <b>System.InvalidCastException</b> resulting from a OnPropertyChanged called from within <br>a BLB derived class.<br><br>My test scenario looks like this:<br>EditableRoot (BusinessBase derived with three intermediate types)<br>&nbsp;- ReadOnlyChild (managed child, ReadOnlyBase derived with two intermediate types)<br>&nbsp;- EditableChild (managed child, BusinessBase derived with three intermediate types)<br>&nbsp;- EditableChildList (managed child list; BusinessListBase derived with two intermediate types)<br>&nbsp;&nbsp;&nbsp; - EditableChildListItem (BusinessBase derived with two intermediate types; two registered <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string-properties with a private backing field)<br><br>The EditableRoot object is bound to a Windows Form following the PT pattern (BindUI/UnbindUI).<br>The child list is bound to a DataGridView.<br><br>When I change a value in one of the EditableChildListItem object, the following happens:<br><br>In <b>ExtendedBindingList</b>, <b>Child_PropertyChanged</b> is called:<br><font size="2">&nbsp;&nbsp;&nbsp; private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnChildChangedInternal(this, new ChildChangedEventArgs(sender, e, null));<br>&nbsp;&nbsp;&nbsp; }<br></font>Then in <b>BusinessListBase</b>, <b>OnChildChangedInternal</b> is called:<br><font size="2">&nbsp;&nbsp;&nbsp; protected internal override void OnChildChangedInternal(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object sender, ChildChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (RaiseListChangedEvents &amp;&amp; e.PropertyChangedArgs != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeferredLoadIndexIfNotLoaded();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_indexSet.HasIndexFor(e.PropertyChangedArgs.PropertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReIndexItem((C)sender, e.PropertyChangedArgs.PropertyName);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int index = <b>IndexOf((C)sender)</b>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (index &gt;= 0)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyDescriptor descriptor = <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (descriptor != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged(new ListChangedEventArgs(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ListChangedType.ItemChanged, <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; index, GetPropertyDescriptor(e.PropertyChangedArgs.PropertyName)));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged(new ListChangedEventArgs(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ListChangedType.ItemChanged, index));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnChildChangedInternal(sender, e);<br>&nbsp;&nbsp;&nbsp; }<br></font><br>I marked the line where the exception happens: In my case, the sender is the list itself.<br>The list item (of Type C), which initially triggered PropertyHasChanged, <br>can be reached through the ChildChangedEventArgs parameter e...<br><br><br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks, that is something I just changed, and I obviously
+introduced a bug.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

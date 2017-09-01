@@ -1,0 +1,130 @@
+<html><header><title>ProjectTracker Question: State Loss when Insert has BrokenRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectTracker Question: State Loss when Insert has BrokenRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/509.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RubyRed93 posted on Thursday, June 29, 2006</h2><P>This is my first post and let me apologize for not having the ProjectTracker application up and running.&nbsp; I'm working on my own application while looking at the book and code.&nbsp; I'm having an issue with my app and wondering about the best possible solution.&nbsp; It also appears to me, without running the app, that the ProjectTracker may have a similar issue with ProjectEdit page?</P>
+<P>When entering data into a form via the DetailsView and this newly created object fails to insert, won't the user's entered data be lost (controls cleared).&nbsp; It appears to me that Bind will once again be applied to the controls via the EditItemTemplate where an empty object exists?</P>
+<P>Hope my question makes sense and that someone can clear this up for me as to how to avoid such data loss and re-entry.&nbsp; My app notifies the user regarding broken rules, but controls are cleared.&nbsp; Maybe this is not the case and I've completely gone off the deep end with my code.&nbsp; Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Thursday, June 29, 2006</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Are you talking about ASP.NET app or winforms?</P>
+<P>If its ASP.net and your performing a post back for validation I think you will need to rebind the textboxes, I'm a little rusty with asp.net.&nbsp; Another option is to enable viewstate on your contols so that your textboxes retain the user entered data when a postback occurs.</P>
+<P>Regards</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, June 29, 2006</h2><P>You are running across a problem I experienced - you're talking about ASP.NET.</P>
+<P>What I believe I will end up always doing (and I did with a little prototype) is to create a new business object and bind it in edit mode, rather than ever use the insert mode. </P>
+<P>It is a little fuzzy to me exactly what I ran into (I was also new to CSLA at the time), but from your e-mail I'm absolutely sure you're running into the same issues I did. Here's a link to my old post: <A href="http://www.searchcsla.com/Details.aspx?msn_id=25495">http://www.searchcsla.com/Details.aspx?msn_id=25495</A>&nbsp;Look at the "second part of my problem". This is before I decided to stay away from the insert mode. (On a side note, the issue with the datamapper seems to have remedied itself in the updated 2.x CSLA downloads, but that's irrelevant) </P>
+<P>So as&nbsp;I mentioned, from here on out I will likely&nbsp;be avoiding the insert mode when using the CslaDataSource, and will instead create a new object and bind the new object to it in <EM>edit</EM> mode.&nbsp;After I took that avenue with my first prototype I was pleased with the direction I took. It may not be "consistent" with the usage of the object the CslaDataSource was meant to solve, but it's a lot easier to deal with for me.</P>
+<P>Obviously, you're trying to work through the example in the book so alternative approaches don't help you work through your current problem - but I <EM>believe</EM> the answer is that it's just a problem with the example application - so I'd suggest not getting too hung up on it. I just think there is just a problem with using the detailsview in insert mode in conjunction with CSLA. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RubyRed93 replied on Friday, June 30, 2006</h2><STRONG>skagen00 </STRONG>you rock!&nbsp; Yes, you speak of the exact problem I was having with ASP.NET.&nbsp; I'm a long time fan of CSLA, all the way back to the nasty VB 5 version.&nbsp;&nbsp;I read the book on CSLA.NET, but haven't yet had time to read up on CSLA.NET 2.0.&nbsp; I haven't been able to find any answers to this problem in the book nor online until now.&nbsp; This forum is great!&nbsp; But I would love to hear Rocky comment on this matter.&nbsp; I hate to use the DetailsView in Edit mode when I should be doing an Insert, but it sounds to me that you've found a work around.&nbsp; I will look into it further and work with your solution.&nbsp; Thank you very much!!!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 13, 2006</h2><DIV align=left><SPAN class=475485214-13072006><FONT face=Arial color=#000000 size=2>Thanks for bringing this to my attention. I don't have an answer without doing further research, but this is certainly an unforseen issue...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=475485214-13072006><FONT face=Arial color=#000000 size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=475485214-13072006><FONT face=Arial color=#000000 size=2>What I don't understand, at least initially, is why (in ProjectTracker anyway) the same object isn't carried forward. The GetProject() method should carry the same object. Perhaps in the case of an insert data binding doesn't even populate the controls based on the underlying object? If that's the case then I'd think it is a flaw with how they built data binding, as it would preclude the use of default values from the data source in any case (not just with CSLA objects).</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 13, 2006</h2><P>Yeah, there are two things going on here. </P>
+<P>First, it does appear that the DetailsView control doesn't read values from the data source when in insert mode&nbsp;- which (imo) is a poor choice on Microsoft's part, and may render insert mode largely useless in some cases... </P>
+<P>Second, there is an issue with my code in the ProjectEdit form - when handling the ItemInserted event. The code should read</P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Sub</SPAN> DetailsView1_ItemInserted( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Handles</SPAN> DetailsView1.ItemInserted<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> project <SPAN>As</SPAN> Project = GetProject()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> project.IsNew <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Response.Redirect(<SPAN>"ProjectEdit.aspx?id="</SPAN> &amp; project.Id.ToString)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>In the original, I was blindly redirecting, even if the insert failed. That's not good, so this only does a redirect in the case of success (the new object isn't new any more).</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>But this doesn't make values appear in the DetailsView on insert. And I don't see how to make that happen, because it doesn't appear that DetailsView is populating the controls in this case (which is odd, because it DOES ask the datasource control for a data source - so why it would then ignore that data source I don't know...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RubyRed93 replied on Friday, July 14, 2006</h2>Thank you for taking the time to respond and address this!&nbsp; I just wanted to make sure that some of us weren't completely off track here and missing something somewhere.&nbsp; Maybe Microsoft will address this soon.&nbsp; Thanks again!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 14, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=772013113-14072006><FONT face=Arial color=#0000ff size=2>I still find it hard to believe that there's no provision 
+to show default values when in insert mode... I don't have time to do more 
+in-depth research on it just now, but there must be some answer to this 
+problem...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=772013113-14072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=772013113-14072006><FONT face=Arial color=#0000ff size=2>You may want to try posting at <A href="http://www.asp.net">www.asp.net</A> (isn't that the ASP.NET forum site?) 
+to see if the ASP.NET gurus have figured something out.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=772013113-14072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=772013113-14072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> RubyRed93 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, July 14, 2006 7:52 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] ProjectTracker Question: 
+  State Loss when Insert has BrokenRules<BR></FONT><BR></DIV>
+  <DIV></DIV>Thank you for taking the time to respond and address this!&nbsp; I 
+  just wanted to make sure that some of us weren't completely off track here and 
+  missing something somewhere.&nbsp; Maybe Microsoft will address this 
+  soon.&nbsp; Thanks again!<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Thursday, July 20, 2006</h2><P>The problem appears to be that if the dataview is in insert mode, the datasource OnSelectObject event does not trigger.</P>
+<P>I have tried all sort of workarounds and the easiest way round this seems to be to always use the dataview in edit mode as the post above suggested.</P>
+<P>This means removing any code in ApplyAuthorisationRules() that sets the dataview mode:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj.IsNew)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.DetailsView1.DefaultMode = DetailsViewMode.Insert;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.DetailsView1.DefaultMode = DetailsViewMode.Edit;<BR></P>
+<P>and also remove the datasource insertobject event. You may also need to check when the ID is passed/allowed to be updated. All works fine now.</P>
+<P>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 20, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=950192421-20072006><FONT face=Arial color=#0000ff size=2>Yeah, I looked into that too. And it isn't that 
+CslaDataSource doesn't raise the event - but that data binding doesn't appear to 
+request the data. Apparently they must assume that since they know the shape of 
+the end object, they don't need to create an instance to build the page - which 
+is obviously true.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=950192421-20072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=950192421-20072006><FONT face=Arial color=#0000ff size=2>But then you must wonder - how to load default values in a 
+new page? They must have some mechanism for doing this - perhaps there's some 
+event on the grid control that is raised so you can load default values? This 
+isn't something I've researched, but it would be common to all web development, 
+so perhaps ASP.NET 2.0 gurus and/or books have the answer?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=950192421-20072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=950192421-20072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Arial color=#0000ff size=2></FONT><FONT face=Arial color=#0000ff size=2></FONT><BR>The problem appears to be that if the dataview is in insert 
+  mode, the datasource OnSelectObject event does not 
+trigger.</DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phuff replied on Monday, July 24, 2006</h2><P class=MsoNormal><SPAN>When DetailsView goes into Insert mode, the DetailsView does not request data from the data source because it doesn’t need it to render UI to create a new record. <SPAN>&nbsp;</SPAN>This makes the Insert scenario faster and prevents requesting data from the database when the data isn’t needed.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If you need to show default values in the Insert UI, there are two different ways you can go.<SPAN>&nbsp; </SPAN>The first is suggested above- you can add a new “default” record to your database, then edit it when the user clicks “Insert”. <SPAN>&nbsp;</SPAN>The other (arguably simpler) way to go is to handle the DetailsView’s DataBound event, check if the control is in Insert mode, and if so populate the UI with default values. <SPAN>&nbsp;</SPAN>The drawback to this approach is that the default field values are stored with the web application rather than with the data.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>One post touched on how to handle an error during insertion.<SPAN>&nbsp; </SPAN>The best thing to do is to handle the ItemInserted event. <SPAN>&nbsp;</SPAN>The exception is available in the event arguments, along with a Boolean property called KeepInInsertMode which will keep the DetailsView from rebinding. <SPAN>&nbsp;</SPAN>Setting KeepInInsertMode to true will preserve the user’s entered values instead of clearing them.<SPAN>&nbsp; </SPAN>There’s a similar property on DetailsViewUpdatedEventArgs called KeepInEditMode to leave the user’s values in the edit UI.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Hope this helps…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Polita<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RubyRed93 replied on Monday, July 24, 2006</h2>So per this latest post, does CSLA.NET now need to do something to expose these additional values?&nbsp; For example, KeepInInsertMode via Csla.Web.InsertObjectArgs?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2><P class=MsoNormal>That is great info phuff!</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Certainly the KeepInInsertMode is easy enough to do – just change the existing ItemInserted event handler to this:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Sub</SPAN> DetailsView1_ItemInserted( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.Web.UI.WebControls.DetailsViewInsertedEventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Handles</SPAN> DetailsView1.ItemInserted<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> project <SPAN>As</SPAN> Project = GetProject()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> project.IsNew <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Response.Redirect(<SPAN>"ProjectEdit.aspx?id="</SPAN> &amp; project.Id.ToString)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></B></P>
+<P class=MsoNormal><B><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.KeepInInsertMode = <SPAN>True<o:p></o:p></SPAN></SPAN></B></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>That does keep the existing values in the control.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The lack of decent support for loading default data values is unfortunate. The ItemCreated event appears to be the correct answer here (not DataBind), but it is such a hack:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Sub</SPAN> DetailsView1_ItemCreated( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.EventArgs) <SPAN>Handles</SPAN> DetailsView1.ItemCreated<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> obj <SPAN>As</SPAN> Project = GetProject()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CType</SPAN>(DetailsView1.Rows(0).Cells(1).Controls(0), TextBox).Text = obj.Id.ToString<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CType</SPAN>(DetailsView1.Rows(1).Cells(1).Controls(0), TextBox).Text = obj.Name<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CType</SPAN>(DetailsView1.Rows(2).Cells(1).Controls(0), TextBox).Text = obj.Started<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CType</SPAN>(DetailsView1.Rows(3).Cells(1).Controls(0), TextBox).Text = obj.Ended<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>CType</SPAN>(DetailsView1.FindControl(<SPAN>"TextBox1"</SPAN>), System.Web.UI.WebControls.TextBox).Text = obj.Description<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>It rather boggles my mind that this is the best way to load default values into a DetailsView…</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 24, 2006</h2><P>Frankly I will continue to utilize the object in the edit mode. The object goes to the database only to the extent you need it to. When assigning the business object in the selectobject, if it's a matter of Customer.NewCustomer(), that's really not going to be much and likely nothing if it's set to RunLocal. The consistency of the UI (only having one path - that of editing an object that may or may not be new and then saving the object which may or may not have broken rules) is the way to go IMO.</P>
+<P>I plan on utilizing lean wizards when creating new records for users - that which will help the user "initialize" their new record (along with duplicate checking) prior to being dumped into the main maintenence form with their new (but partially populated) object. Even if I wasn't using wizards, I'd go with the edit mode over insert mode. </P>
+<P>(If I remember right, it's also one less template to configure and keep in synch&nbsp;when dealing with something such as a FormView). </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

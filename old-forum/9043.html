@@ -1,0 +1,37 @@
+<html><header><title>CommonBusinessRule -&gt; MinValue&lt;T&gt; Rule (CSLA 4.0)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CommonBusinessRule -&gt; MinValue&lt;T&gt; Rule (CSLA 4.0)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9043.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Sunday, June 06, 2010</h2><p>&nbsp;</p>
+<p>Hello.</p>
+<p>I was just looking at the MinValue&lt;T&gt; rule implementation and I wanted to bring up some minor issues I have with the rule implementation.</p>
+<p>--------------------------------------------------</p>
+<p>1) &nbsp;The documentation for the &ldquo;IComparable&rdquo; interface *return* value states the following: A value that indicates the relative order of the objects being compared. The return value has these meanings: <i><span style="text-decoration:underline;">Value Meaning Less than zero This instance is less than obj</span></i>. Zero This instance is equal to obj. Greater than zero This instance is greater than obj.</p>
+<p>I underlined the text that I wanted to bring up to your attention. On the rule implementation we compare for &ldquo;result &lt;= -1&rdquo; when I think we should really be comparing for &ldquo;result &lt; 0&rdquo; right?</p>
+<p><span style="background-color:#ffff00;">*** EDIT: I am such a big <strong><span style="text-decoration:underline;">IDIOT</span></strong>, IComparable-&gt;CompareTo() returns an Integer so there will never be the case where the CopareTo will return something like a 0.5 so the current implementation i s100% fine..... I tell you, sometimes I wonder if the thing above my shoulder is my head or my @ss</span> <img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p>
+<p>--------------------------------------------------</p>
+<p>2) &nbsp;The other thing that I wanted to bring up is that we totally ignore the possibility of the value contained for the &ldquo;PrimaryProperty&rdquo; being &ldquo;null&rdquo;. Personally, I think that if the &ldquo;PrimaryProperty&rdquo; value is null, then the rule should pass and not throw an NullReferenceException when we execute the &ldquo;value.CompareTo(Min)&rdquo; code.</p>
+<p>If we don&rsquo;t want to deal with nulls, then perhaps we should add another constraint to the rule class of &ldquo;struct&rdquo; to formalize our intentions of not being able to deal with null such as:</p>
+<p>public class MinValue&lt;T&gt; : CommonBusinessRule where T : struct, IComparable</p>
+<p>--------------------------------------------------</p>
+<p>3) &nbsp;The constructor for the rule class calls for a parameter of type &ldquo;Csla.Core.IPropertyInfo&rdquo;, is there any particular reason why the parameter can&rsquo;t be generic such as &ldquo;Csla.Core.IPropertyInfo&lt;T&gt;&rdquo;? </p>
+<p>Would there be a problem with creating a &ldquo;Csla.Core.IPropertyInfo&lt;T&gt;&rdquo; that inherits from &ldquo;Csla.Core.IPropertyInfo&rdquo; and have the generic &ldquo;IPropertyInfo&lt;T&gt;&rdquo; as the base class for all &ldquo;PropertyInfo&rdquo; implementations? Using the generic parameter will completely eliminate possible runtime cast exceptions when we do the following cast on the &quot;Execute&quot; method:</p>
+<p>T value = (T)context.InputPropertyValues[PrimaryProperty];</p>
+<p>The&nbsp;constructor&nbsp;can look like the example below, note that PropertyInfo has a value of type T as does the min paramter.</p>
+<p>public MinValue(Csla.Core.IPropertyInfo&lt;T&gt; primaryProperty, T min)</p>
+<p>--------------------------------------------------</p>
+<p>4) &nbsp;I know it&#39;s silly but I felt that in the old CSLA the &quot;RuleName&quot; concatenated the &quot;EventArgs&quot; parameters using proper casing. So in the case of the &quot;MinValue&quot; rule, I would have expected for the&nbsp;AddQueryParameterto() to use &quot;Min&quot; instead of &quot;min&quot; as:</p>
+<p>this.RuleUri.AddQueryParameter(&quot;Min&quot;, min.ToString());</p>
+<p>I know I can use whatever I want, but is there any relevant reason why not using the actual name of the property which in the case of this rule is &quot;Min&quot; and not &quot;min&quot;?</p>
+<p>--------------------------------------------------</p>
+<div>5) &nbsp;The xml documentation for the &quot;min&quot; paramter states:</div>
+<p>&lt;param name=&quot;min&quot;&gt;Min length value.&lt;/param&gt;</p>
+<p>I think it should be:</p>
+<p>&lt;param name=&quot;min&quot;&gt;Min value.&lt;/param&gt;</p>
+<p>--------------------------------------------------</p>
+<p>Assuming that anything that I have said makes any sense, then other rules should also be updated but no point on mentioning them if my points don&rsquo;t have any real value.</p>
+<p>--------------------------------------------------</p>
+<p>Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, June 06, 2010</h2><p>Moved to:&nbsp;<a href="http://forums.lhotka.net/forums/t/9046.aspx">http://forums.lhotka.net/forums/t/9046.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, June 08, 2010</h2><p>
+<p>I have decided to delete this post because it may contain questions that have obvious answers if I just take some time to research rather than just jump into asking.</p>
+<p>Unfortunately, I can&rsquo;t seem to find the &ldquo;Delete/Remove&rdquo; button anywhere. As usual, I am sure that deleting a post is straight forward but for some reason I am not able to find a way to do it.</p>
+<p>Adim, can you please delete this post as well as the&nbsp;<a href="http://forums.lhotka.net/forums/t/9046.aspx">http://forums.lhotka.net/forums/t/9046.aspx</a>&nbsp; one?</p>
+<p>Thank you.</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,220 @@
+<html><header><title>MVC and Csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVC and Csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4969.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cliffordru posted on Thursday, June 12, 2008</h2>
+
+<p class="MsoNormal">In the following post by Rocky <a href="http://www.lhotka.net/weblog/RepostFromAnMSDNForumDiscussion.aspx">http://www.lhotka.net/weblog/RepostFromAnMSDNForumDiscussion.aspx</a>
+he references how well Csla can work with the current Microsoft MVC framework.&nbsp;
+Conceptually this makes sense and MVC looks very promising for some scenarios, but I am curious
+if anyone has done any work with MVC and Csla?&nbsp; If so, any recommendations
+such as using MVC Contrib, how about the data binding support, active record
+(from a testability perspective) within the MVC framework, etc., and if you
+think the current MVC and Csla versions (practically speaking) would be ready
+for a production application (or at least when MS does a release with a go live
+for MVC)? <br>
+<br>
+Would like to hear people's thoughts/experiences...<span><o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2><P>Fwiw, my work has been entirely at the proof of concept level - making sure CSLA works as-is with MVC.</P>
+<P>MVC has no data binding, so there's no issue there. An MVC View looks very much like 1997 ASP Classic code - a mix of html and &lt;% %&gt; code. The only real difference is that there are some helpers that make it easier to emit some of the html. I could see some CSLA-specific helpers that generate certain CSLA-specific html fragments, specifically around validation, and perhaps around authorization.</P>
+<P>MVC is stateless by default, which can impact your object model design. Specifically, to create a stateless object model you must bastardize a "normal" object model and pretty much only create read-only lists of read-only objects, and single editable root objects. That's kind of painful, but has nothing to do with MVC - it is an artifact of being stateless.</P>
+<P>The real key is that CSLA objects provide a Model that encapsulates all the business logic. Some MVC purists seem to think this is bad, but I don't think so. What it means is that you create a View that displays the data from the object's properties (if allowed), and a Controller that calls the object's factory and hands the result to the View.</P>
+<P>On a postback, the Controller gets the values from the html form and can use the MVC helper (which looks a lot like Csla.Data.DataMapper) to copy the values into the object's properties. Then it calls Save() on the object and that's it. The only catch here is the normal one around being stateless - the html form must have <EM>all the property data, even for properties it doesn't display</EM> so it can reload the object from scratch.</P>
+<P>Alternately, of course, if you can't put all the property data in the html form, you can just reload the object, then put the form values into it and then call Save(). There's a perf hit obviously, but this is a pretty common solution to the stateless issue - and still only requires 3-4 lines of code in the Controller.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, June 12, 2008</h2>I have worked both with Csla and MVC, have presented to different groups on both frameworks separately.<br><br>I guess I will repeat the same statement that Rocky has made.&nbsp; There are no issues in using Csla inside MVC project.&nbsp; Utilizing Csla can actually greatly simplify the design of both Busines and Data Access Layers in a MVC application.<br><br>With that said, what do I see as a potential problem?&nbsp; The key point here is that MVC framework does not utilize databinding, postback model, and does not try to "map" stateless/disconected nature of the web into a web development model that "fakes" stateful (through usages of things as Viewstate, Session, etc).&nbsp; Due to that, portions of the Csla.Net framework that help with databinding and preserving state (n-pevel undo for example) might become useless in MVC app.&nbsp; <br><br>However thankfully there are many other reasons that you still need Csla, and Csla can help you in design of your MVC application (Predefined set of patterns that deal with object creation loading, mapping, mobile objects, encapsulation of object serialization as a part of the object itself, business and authentication rules, etc...)<br><br>Another sticking point, and this is something Rocky has also touched in his answer is what MVC purists keep pointing to is the fact that most of the MVC implementations build their Business layer around one or other Dependency Injection framework.&nbsp; Dependency Injection meaning that at runtime controller as well as the whole object tree needed by a Controller class can be defined outside of the Controller itself (and the registration of each dependency and how it is created/instantiated can be pushed to a XML configuration file)<br><br>This design makes unit testing easier, as you can focus your unit tests only on the unit/object being tested and "fake" these other loosely coupled dependencies (which are basically defined by an interface only)<br><br>So this DI model requires a whole set of objects in the Business and Data Access Layer.<br>Controller Requires Service Object.&nbsp; Service is in charge of Retreiving, setting, arranging Business Entiity objects (only Controller and Service objects can be "Injected").&nbsp; Business Entity Objects are returned by a Repository objects which encapsulate data access and/or data mapping of DTOs to Business Objects.<br><br>This whole set of objects can be replaced by single Csla object - it acts both as a Service and Enity object, and it can encapsulate Repository features inside itself.&nbsp; So we are talking then about different approaches to BO layer design.<br><br>Why not use CSLA inside of the DI model?&nbsp; Many argued that you can not "inject" Csla object.&nbsp; In couple of other discussions in this forum we have proven that false, and I think we have both StructureMap and Windsor examples of "Injecting" Csla object.<br><br>There is one problem with Dependency Injection.&nbsp; You can not "inject" different points individually in the Csla Object hierarchy.&nbsp; Lets say you have Project object that contains a list of child objects - Assignments.&nbsp; You can not inject the Repository that loads Project, Repository that Loads Assignments or Assignments themselves, since to Csla Mobile Object feature, root object is created in a completely different context (could be accross network), and that includes creation of data access / repository objects as well as all child objects.&nbsp; SInce they are not in the same cotext as the DI framework, DI framework cannot construct them.&nbsp; <br><br>And that is the whole problem with Csla.&nbsp; Its tightly coupled object hierarchy of Root-&gt;Child objects as well as encapsulation of data access code, objects is  the primary reason that the MVC purist refuse to utilize it in their MVC web implementations.<br><br>My point is that:&nbsp; If you really are not concerned about "loose coupling" of the layers of the App and BOs hierarchies (in other words it is not a business requirement for app you are building) you really do not have to utilize the whole DI approach, and there is no reason not to consider a lot simpler Csla architecture.<br><br>Nermin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Friday, June 13, 2008</h2><P>So a lingering MVC question that I've had (not necessarily CSLA specific)&nbsp;(mind you I have no experience with MVC outside the Hello World app), if there is no Viewstate or Session, does Authorization have to occur on every request?&nbsp; Normally we stuff the Principal into a Session variable and use it from there all over the place...with MVC are we passing credentials on each request?&nbsp; Or does ApplicationContext still take care of that?</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Csla.ApplicationContext doesn&#8217;t take care of it, no.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you don&#8217;t have Session then you are left with few (all
+unpleasant) choices for hydrating your Principal object:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Serialize the Principal into the authentication cookie &#8211;
+which only works if it is small, because there&#8217;s a pretty low size limit
+on cookies<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Reload the Principal from the database on each page request<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Reload the Principal from a file or some other temporary store
+of your creation<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As you say, this is not a CSLA issue, but rather a stateless web
+issue. You can encounter this issue without MVC today &#8211; just turn off
+Session on your web site and you face the same problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I haven&#8217;t looked to see if MVC supports Session at all. I
+suspect it does though, and if it does, then you&#8217;d have the option of
+using Session just like you do today in a typical Web Forms app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Friday, June 13, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I haven’t looked to see if MVC supports Session at all. I suspect it does though, and if it does, then you’d have the option of using Session just like you do today in a typical Web Forms app.<o:p></o:p></SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I would hope it does but either it's implied that it doesn't or I'm just improperly inferring that it doesn't.&nbsp; It would be an ugly world without SOME kind of state persistance on the web...and no cookies don't count. :-)</P>
+<P>I just looked on the forums.asp.net site and there are discussions about sessions and MVC and they are supported.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Friday, June 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Session is available through HttpContext:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>HttpContext.Session[<span>&quot;Key&quot;</span>]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> webjedi
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 13, 2008 11:27 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: MVC and Csla<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+haven???t looked to see if MVC supports Session at all. I suspect it does
+though, and if it does, then you???d have the option of using Session just like
+you do today in a typical Web Forms app.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>I would hope it does but either it's implied that it doesn't or I'm just
+improperly inferring that it doesn't.&nbsp; It would be an ugly world without
+SOME kind of state persistance on the web...and no cookies don't count. :-)<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cliffordru replied on Monday, June 16, 2008</h2><P>Thanks for the replies, this is very helpful.&nbsp; I will continue to dig into and post anything interesting I come across.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, February 10, 2009</h2><P>Dear All,</P>
+<P>We are in the process of finalizing the use of a framework like CSLA .NET for application development. I proposed CSLA some time ago, and just recently,&nbsp;some of&nbsp;my colleagues are competing with my proposal with the following arguments:</P>
+<P>1. We are moving to VS 2008, and there is no need to use a framework like CSLA. The new features of VS 2008 have all the features of CSLA .NET.</P>
+<P>2. CSLA is not a Microsoft product, not supported by Microsoft, it is open-source and free, so it has limited support. We should consider a Microsoft alternative like the newly released ASP.NET MVC.</P>
+<P>3. We should consider ASP.NET MVC because it is supported by Microsoft and has all the features of CSLA.</P>
+<P>I have made very little research about ASP.NET MVC, so I am not sure if the above arguments are correct.</P>
+<P>I need your feedback about the above arguments.</P>
+<P>Thank you.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2><P>Comparing ASP.NET MVC and CSLA .NET is like comparing apples and oranges.</P>
+<P>ASP.NET MVC is a UI framework that helps you build web interfaces for your application. I like it quite a lot, and it works very well with CSLA .NET. But it does nothing that CSLA does, and CSLA does nothing that the MVC framework does.</P>
+<P>CSLA .NET is a business object framework that helps you build a formal business layer for your application. In the MVC world, the CSLA framework helps you build the "M" (Model).</P>
+<P>To directly answer your questions:</P>
+<P>1. That is false - nothing new in VS 2008 changes the value of CSLA .NET</P>
+<P>2. That is mostly true - CSLA .NET is not a Microsoft product, it has limited support (this forum) and it is free. It is arguably open-source. But there is no Microsoft alternative - they don't have a product that does what CSLA .NET does, which is why I created and continue to maintain CSLA.</P>
+<P>3. You probably should consider MVC, but as I note above, the two frameworks are entirely different, and work well together.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, February 10, 2009</h2><P>Thanks a lot !</P>
+<P>So, it looks like MVC will close the loop I was looking for since ever I started this exercise about 1 year ago !</P>
+<P>Do you mind if you send me your email contact in case I want to use your reply as a reference, just in case. Probably it may not be a good idea to use this post/forum as a reference.</P>
+<P>But, we are now on VS 2005 ... so if we want to use MVC, then we have to upgrade all our PCs and skills to VS 2008, which will involve additional cost/licensing/effort ...etc... correct ?</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I prefer to handle dialog through the forum rather than via
+direct email. I already get far more direct email than I can manage :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know what kind of licensing you have today, and I&#8217;m
+not a licensing expert. If you have MSDN or an EA I&#8217;m sure you get VS
+2008 automatically, beyond that I have no idea.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I didn&#8217;t find moving from VS 2005 to 2008 to require much
+learning. They aren&#8217;t that different, though 2008 does have some more
+features and capabilities.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would guess that your learning curve will be mostly with
+ASP.NET MVC and CSLA .NET, as you&#8217;ll need to learn both frameworks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Wednesday, July 29, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div>Do you mind if you send me your email contact in case I want to use your reply as a reference, just in case. Probably it may not be a good idea to use this post/forum as a reference.</div></BLOCKQUOTE><br /><br />Tarekahf,<br /><br />If you didn't already know, Rocky is the creator of CSLA and while he is extremely helpful and active in the forum, I don't think he randomly offers his email out on the net.  You certainly wouldn't consider asking Bill Gates for his personal email so that you could use him as a reference to defend a Windows vs Mac discussion.  Rocky is the Gates of CSLA... just less a few 0's in the checking account.  :)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

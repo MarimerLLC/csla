@@ -1,0 +1,38 @@
+<html><header><title>CSLA .NET 3.6.3 test release available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6.3 test release available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6961.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, May 18, 2009</h2><P>I just posted a test release of CSLA .NET 3.6.3</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx">CSLA .NET for Windows</A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx">CSLA .NET for Silverlight</A></LI></UL>
+<P>Read the change logs for details, but the primary focus of this release (at least thus far) is on some bug fixing and fixing some areas where the Windows and Silverlight frameworks weren't quite the same.</P>
+<P>There is one breaking change, which is on the Silverlight side and will only affect you if you are doing client-side data access with an object factory. The data portal will no longer automatically call MarkOld(), MarkNew(), etc on your root object in this case, which brings the behavior in line with the Windows framework and is more consistent overall.</P>
+<P>If you are running 3.6.2, please give this new version a try and let me know if you encounter any issues, thank you!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, May 20, 2009</h2>I cannot get the inventory demo app to work anymore.&nbsp; I downloaded the new samples but I'm getting errors with the Navigator<br><br>Line: 1<br>Error: 'Sys' is undefined<br><br>Any ideas?&nbsp; I tried removing the entire solution folder and re-adding from the zip but no go.<br><br>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That error occurs because the AJAX support isn&#8217;t being
+downloaded to the browser by ASP.NET.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Check to make sure the web project is the startup project, that&#8217;s
+the most common reason for failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

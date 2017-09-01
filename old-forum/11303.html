@@ -1,0 +1,17 @@
+<html><header><title>ReportViewer Collision with CustomIdentity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReportViewer Collision with CustomIdentity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11303.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Sunday, April 15, 2012</h2><p>Hi all,</p>
+<p>I have a problem of collision between ReportViewer ( rdlc ) with CustomIdentity and CutomPrincipal</p>
+<p>My Situation : </p>
+<p>1. I used WPF , CSLA 4 and user rdlc + reportviewer ( WinForm ) as a reporting.</p>
+<p>everything work okay before I add CustomIdentity and CustomPrincipal in my project.</p>
+<p>&nbsp;</p>
+<p>What I Found :</p>
+<p>the problem arise when I Login and My CustomPrincipal do this : ( Set CustomPrincipal on Application.Context )</p>
+<p>Csla.ApplicationContext.User = new CustomPrincipal(identity);</p>
+<p>the problem is : My Report Viewer Can&#39;t work and display an error like : Can&#39;t Initialize Custom Identity Type [ Something like this, i forget the detail ].</p>
+<p>&nbsp;</p>
+<p>Is there anyone have got this problem ? </p>
+<p>Could you give me any suggestion ??</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>Stefanus</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

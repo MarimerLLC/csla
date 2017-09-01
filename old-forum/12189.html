@@ -1,0 +1,36 @@
+<html><header><title>What is a proper way to implement dynamic cached list?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What is a proper way to implement dynamic cached list?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12189.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Friday, October 18, 2013</h2><p>&quot;ProjectTracker&quot; has a good example of cached list &quot;RoleList&quot;.<br /><br />But I would like to have something like dynamic list. What I mean?<br /><br />Well, let&#39;s say we have cached list of employees. That list contains only actual employees. So, it doesn&#39;t contains employees which doesn&#39;t work already. But when I need to get some employee info from list that doesn&#39;t exists in that list, I would like somehow to append it to list. <br />What is a proper way to do it with CSLA?<br /><br /><br /><br />I hope I explained it well :-) </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Friday, October 18, 2013</h2><p>I&#39;m not sure I entirely understand, but I&#39;ll say this -</p>
+<p>We do have cached user/employee lists ourselves and in many times in our read only lists we have a method to &quot;append no selection option&quot; (whether that&#39;s entirely proper or not, it works for us - we take our cached list, clone, and tweak it for the UI in certain circumstances).&nbsp; There&#39;s no reason why you wouldn&#39;t be able to provide a mechanism to include a method to append additional items to your cached list.&nbsp; If you do that - depending on how your cache works, you may or may not want to Clone() the list before you start monkeying with it as you won&#39;t necessarily want to reflect your cached list as having any &quot;adjustments&quot;.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Saturday, October 19, 2013</h2><p>Well, I thought about that. But I was not sure if that is right solution.</p>
+<p>Now I have another question. Take a look on this method:</p>
+<div style="border:#000080 1px solid;color:#000;font-family:&#39;Courier New&#39;, Courier, Monospace;font-size:10pt;">
+<div style="background-color:#ffffff;overflow:auto;padding:2px 5px;white-space:nowrap;"><span style="color:#0000ff;">private</span> <span style="color:#0000ff;">void</span> DataPortal_Fetch(<span style="color:#0000ff;">int</span> id)<br />
+{<br />
+&nbsp;&nbsp;<span style="color:#0000ff;">using</span> (var ctx = MyProject.Dal.DalFactory.GetManager())<br />
+&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;var dal = ctx.GetProvider&lt;MyProject.Dal.IVacationDal&gt;();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;var data = dal.Fetch(id);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">using</span> (BypassPropertyChecks)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id = data.Id;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EmployeeId = data.EmployeeId;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;EmployeeName = EmployeeCachedList.GetList().GetName(data.EmployeeId);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;}<br />
+}</div>
+</div>
+<p>&nbsp;</p>
+<p>&quot;GetName&quot; &nbsp;is a method where we &#39;append&#39; our addition item.</p>
+<p>Is this proper way to use dynamic cached list? I mean in DataPortal, on server side etc.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, October 20, 2013</h2><p>Hi,</p>
+<p>The main challenge of cached lists is syncronization and making sure you have thread safe code. You may use the threadsafe collection available in .NET but the collection classes in CSLA are NOT theadsafe as the are based on BindingList or ObservableCollection.&nbsp;</p>
+<p>For my own preference I would make the metods more like:</p>
+<p><i>EmployeCachedList.GetList.GetItem(data.EmployeeId).Name;</i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, October 21, 2013</h2><p><em>&quot;The main challenge of cached lists is syncronization&quot;</em></p>
+<p>&nbsp;</p>
+<p>This is probably what bothered me. Maybe you could explain it more detailed?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 21, 2013</h2><p>Hi,&nbsp;</p>
+<p>IE: It is difficult to make your code thread safe - especially if you need to add items dynamically.&nbsp;</p>
+<p>Linq queries and foreach loops will throw exception if the collection is modified (items added or removed) on another thread during execution.&nbsp;</p>
+<p>Recently the Immutable collections was released in .NET: &nbsp;<a href="http://www.nuget.org/packages/Microsoft.Bcl.Immutable">Microsoft.Bcl.Immutable NuGet package</a><span>.&nbsp;</span></p>
+<p><a href="http://blogs.msdn.com/b/dotnet/archive/2013/09/25/immutable-collections-ready-for-prime-time.aspx">http://blogs.msdn.com/b/dotnet/archive/2013/09/25/immutable-collections-ready-for-prime-time.aspx</a></p>
+<p><span><i>While creating and running concurrently is easier than ever, one of the fundamental problems still exists: mutable shared state. Reading from multiple threads is typically very easy, but once the state needs to be updated, it gets a lot harder, especially in designs that require locking.</i></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, October 21, 2013</h2><p>One thing I cannot recommend enough - if you cache a BO - if you have a static object on your server that is &quot;cached&quot; -&nbsp;make sure CanReadProperty returns true - override, and &quot;return true&quot; assuming your business rules allow it.&nbsp;&nbsp; </p>
+<p>We cache a number of BOs and my colleague is very careful with us being thread-safe and minimizing such concerns - but the simple &quot;CanReadProperty&quot; override to just return &quot;true&quot; was something that took a server-crashing lockup issue we were having&nbsp;to being&nbsp;a non-issue.&nbsp; This same general concern happened to at least one other CSLA user in regards to CPU lockup.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Tuesday, October 22, 2013</h2><p>Thank you guys!</p>
+<p>I think I&#39;ve got all information what I needed.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

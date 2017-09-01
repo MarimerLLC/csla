@@ -1,0 +1,519 @@
+<html><header><title>CslaDataSource error - Please Help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataSource error - Please Help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/425.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichaelBosch posted on Tuesday, June 20, 2006</h2>I keep getting this strange error when I try using the CslaDataSource for a FormView control:<br>
+<br>
+&lt;csla:CslaDataSource ID="dataCsla" runat="server"
+TypeAssemblyName="gomovo.Library"
+TypeName="gomovo.Library.SomeObject"&gt;&lt;/csla:CslaDataSource&gt;<br>
+<br>
+<br>
+When I try to set the FormView's datasourceid to "dataCsla" I get this error:<br>
+"Could not load the file or assembly 'file:///C:\Documents and
+Settings\[username]\Local Settings\Application
+Data\Microsoft\VisualStudio\8.0\ProjectAssemblies\_rsgdbzy01\gomovo.Library.dll'
+or one of its dependencies.&nbsp; The system cannot find the file
+specified."<br>
+<br>
+Eeeeeh? <br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Tuesday, June 20, 2006</h2>I've had the roughly the same thing happen - with both my ASP.NET project and with PTWeb.&nbsp; <br>
+<br>
+I created an edit page like ProjectEdit. I added a detailsview which
+never displayed any data.&nbsp; I gave up, and when I came back the
+next day I got the same sort of message as above on this control and on
+the ProjectEdit detailsview.&nbsp; The messages mentioned being able to
+locate Library.dll in Documents and Settings, as well in the ASP.NET
+Temp&nbsp; Files directory under the framework in Windows.&nbsp; It
+ultimately seemed the problem was the csla:CslaDataSource because that
+showed the same message. <br>
+<br>
+I ended erasing the files in both those locations and erasing and
+relocating PTracker into Visual Studio Projects instead of
+Inetpub.&nbsp; I recreated my form. Those steps fixed things. &nbsp; I
+have no idea why it happened - several times over - and why what I did
+fixed it.&nbsp; <br>
+<br>
+Bob Hagan<br>
+<br>
+<br>
+<br>
+&nbsp; &nbsp;  <br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 20, 2006</h2><P>The problem is likely with CslaDataSource... At least if you are using 2.0.1 or higher.</P>
+<P>The broader issue is this: </P>
+<P>The Web Forms designer does some funky stuff with shadow directories so it can reload your assemblies during development as you change them. In other words, your assemblies aren't loaded directly, but first they are copied into a shadow directory and they are loaded from there (presumably into a temporary AppDomain). This allows Visual Studio to reload them when you change them over time.</P>
+<P>The CslaDataSource also needs to load your assemblies (at least the one you reference with the control) in order to get at its metadata. This is discussed in the book, and you can see there how the metadata is loaded from the assembly in order to provide the right shape and sample data for the Web Forms designer.</P>
+<P>The version of CslaDataSource in the book just uses straight reflection to load the assembly - which you'd think would work fine, but it doesn't. The reason it doesn't work is that the CONTROL is loaded from the first shadow directory created by VS and it is never unloaded. When CslaDataSource uses reflection to load the business assembly, that assembly is loaded into that same, unchanging, AppDomain from that&nbsp;same, original, shadow directory.</P>
+<P>If you then change and rebuild the business assembly, the new version goes into a new shadow directory - but CslaDataSource continues to load from that original shadow directory, and continues to run in that original AppDomain.</P>
+<P>So the trick then, is to figure out how to get CslaDataSource to load your updated business assembly from the new shadow directories as they are created. And to load them into new AppDomains so they can be unloaded over time too. Unfortunately it doesn't appear that there's any supported way within .NET to actually do this.</P>
+<P>So what I did in 2.0.1, concious that this is a hack, is to infer the path of the shadow directory based on where CslaDataSource comes from. Using that information I can find all the other shadow directories used by VS, and I can find the latest one and then I can load your business assembly from that location.</P>
+<P>This appeared to work fine in my testing - I used it on various simple projects. I don't know though, that I tested it with a virtual root that is hosted in IIS, or if I just tested with Cassini.</P>
+<P>I am also nervous about possible changes when using the upcoming web project concept that Microsoft is currently testing. If that somehow changes the way the shadow directories are created/used it would break my code as well.</P>
+<P>So I'll repeat my original plea - if anyone does know of a way to get the path to the current shadow directory I'll gladly put it into the control. </P>
+<P>Otherwise, any help tracing down the specific details of any failure cases is also greatly appreciated. Specifically, tell me how you created the project, the web page, how you referenced the business library, etc. </P>
+<P>I'll be honest - debugging web controls is a serious pain. It is a long, tedious process of debugging and sometimes doing tons of trace statements into a log. Getting CslaDataSource to where it is has taken more hours of work than any other single part of CSLA .NET.</P>
+<P>But given detailed info about failure scenarios I'm glad to try and replicate them in an attempt to find solutions to get the control working.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Wednesday, June 21, 2006</h2>&lt;If you then change and rebuild the business assembly, the new version
+goes into a new shadow directory - but CslaDataSource continues to load
+from that original shadow directory, and continues to run in that
+original AppDomain.&gt;<br>
+<br>
+I erased PTracker several times and recopied it back into Inetpub where
+I had first installed it,&nbsp; without having any effect.&nbsp; That's
+why I finally erased the directories in Documents and Settings and
+ASP.NET Temporary Files.&nbsp; On my test application, I copied
+PTracker into another directory in Inetpub and then began renaming the
+forms and references. My original ClientEdit form was a copy of
+ProjectEdit. When it broke (at the same time as PTracker), I&nbsp;
+recreated my form from scratch. It still did not work.&nbsp;&nbsp;
+After I erased the shadow directories for both applications and
+recompiled, both worked. (Seems like fairly drastic solution.)<br>
+<br>
+What is odd though, is that the lookup pages and their data sources on both applications worked all the way through.<br>
+&nbsp;  <br>
+I'm not sure about references - I need to think about that more. I know
+that when I tried to repoint the renamed sample forms to my data
+sources,&nbsp; I had trouble at first getting them to update.&nbsp; <br>
+<br>
+Bob Hagan<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Sunday, June 25, 2006</h2>I've now had pretty much no success. <br>
+
+<br>
+
+My method of creating MySample by copying and modifying PTracker left
+some references to the PTracker dll.&nbsp;&nbsp; I again erased the shadow
+directories and downloaded version 2.02.&nbsp; I located the framework in
+E:\Visual Studio Projects and the application files in
+Inetpub\wwwroot.&nbsp; After compiling csla, I&nbsp; made sure to reference that
+in first the Library and recompiling that, then resetting the
+references in the other projects to the original clsa.dll, and to the
+PTracker.Library.dll.&nbsp; The sample application again worked.<br>
+
+<br>
+
+I followed the same process with MySample.&nbsp; I erased all the old dlls,
+and did exactly as above.&nbsp; Now the ClientList page gives this error: <br>
+
+A data item was not found in the container. The container must either
+implement IDataItemContainer, or have a property named DataItem. <br>
+
+<br>
+
+This occurs when returning from CslaDataSource: protected override System.Collections.IEnumerable <br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ExecuteSelect(DataSourceSelectArguments arguments) <br>
+
+<br>
+
+Since PTracker worked, I tried adding this page into the PTracker
+application.&nbsp; It broke the PTracker. All data sources thought they had
+to look in CIMS.Library.<br>
+
+&nbsp;<br>
+
+I've recreated the PTracker and My application. PTracker again works. If I recompile it with my pages inserted it breaks.&nbsp; <br>
+
+<br>
+
+My list pages now error: &nbsp;<br>
+
+Error setting value 'StaffListDataSource to property 'DataSourceID' Details: Could not load type <br>
+
+'CIMS20.Library.StaffList from assembly 'CIMS20.Library, Version=1.0.0.0 Culture=neutral, PublicKeyToken=null'<br>
+
+<br>
+
+I can add the code in the page and the grid display properly in design mode, but still errors at run <br>
+
+time as above: <br>
+
+<br>
+
+A data item was not found in the container. The container must either
+implement IDataItemContainer, or have a property named DataItem<br>
+
+<br>
+
+There are very few other people (1) reporting problems with this.&nbsp; So what am I doing different?<br>
+
+<br>
+
+Bob Hagan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2><P>Hmm. I don't know what is different about your configuration. If you are willing, perhaps we can work to figure it out.</P>
+<P>Debugging a web UI control is not fun, but it is possible. I think the first thing to do is figure out what path the control is trying to use when looking for the assembly - then you can see if there's actually an assembly by that name at the path.</P>
+<P>To do this, do the following:</P>
+<OL>
+<LI>Open your project in VS and make sure all designers are closed</LI>
+<LI>Close VS</LI>
+<LI>Open your project in VS - DO NOT open anything</LI>
+<LI>Open the Csla project in another instance of VS </LI>
+<LI>In VS #2 use Tools|Attach to Process to attach the debugger to the the VS #1 process</LI>
+<LI>Set a breakpoint in Csla\Web\Design\TypeLoader.GetFields on the second line (which calls GetType())</LI>
+<LI>Return to VS #1 and open the web form in the designer </LI></OL>
+<P>VS #2 should pop up in the debugger at your breakpoint. You should be able to step through the GetType() method to see the path and file name of the assembly it is trying to load. That might provide some insight into where it is looking and why it can't find it.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Tuesday, June 27, 2006</h2>&lt;...That might provide some insight into where it is looking and why it can't find it.&gt;<br>
+<br>
+The Error message on the control points to a directory in Documents and Settings, but the Library.dll isn't there.<br>
+<br>
+The debugger points to an existing directory in ...ASP.Net Temp
+Files.&nbsp; The dlls are there, but the name of the Library dll is not
+in the error message.&nbsp; (See attached screen shots - 2 zipped files
+- not sure both attached properly)<br>
+<br>
+Thanks for the suggestion. I hope this makes sense to you.<br>
+<br>
+Bob Hagan<br>
+.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Tuesday, June 27, 2006</h2>Only one attached - this has the shots from the debugger.<br>
+<br>
+Bob Hagan<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mking replied on Monday, July 03, 2006</h2><P>I'm getting the same error when I set the DataSourceID of a gridview to a CslaDataSource.</P>
+<P><FONT face="Courier New">Error setting value 'VenDataSource' to property 'DataSourceID'.&nbsp; Details:&nbsp; Could not load file or assembly 'file:///C:\WINDOWS\assembly\GAC_MSIL\Csla\2.0.1.0__93be5fdc093e4c30\MyDLL.dll' or one of its dependencies.&nbsp; The system cannot find the file specified.</FONT></P>
+<P>MyDLL is a project reference and it's not in the GAC.&nbsp; I'm not sure why it's looking in the GAC.</P>
+<P>Any help would be appreciated.&nbsp; Thanks.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 04, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>Did you put Csla.dll into the GAC? That is not a scenario I 
+have tested, but it could easily lead to problems - ones that I do not know how 
+to resolve.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>As I've discussed in previous threads, the original 
+CslaDataSource implemention in the book suffers from the problem that it doesn't 
+reload your business assembly as it changes over time. On the upside, it does 
+work fine as long as you are willing to close VS each time you update your 
+business assembly. :-(</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>To fix this, version 2.0.1 does some trickery. Since 
+Microsoft doesn't provide any way (that I or any of my contacts can find) to 
+determine the current shadow directory from which the business assembly is being 
+loaded by VS, I am stuck. So what I do is look at the directory from where 
+Csla.dll is being loaded, and then infer the shadow directory path from that 
+directory.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>If you put Csla.dll into the GAC it would totally throw 
+that scheme off - and it would also leave me with no way at all to find the 
+shadow directories...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>Yes, this is unfortunate. No, I am not pleased with the 
+current solution. But no, I have no better alternative. Neither 2.0 nor 2.0.1+ 
+are good answers - but lacking any solution to find the shadow directory, these 
+are the choice we are faced with at the moment...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> mking [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, July 03, 2006 4:34 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CslaDataSource error - 
+  Please Help<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I'm getting the same error when I set the DataSourceID of a gridview to a 
+  CslaDataSource.</P>
+  <P><FONT face="Courier New">Error setting value 'VenDataSource' to property 
+  'DataSourceID'.&nbsp; Details:&nbsp; Could not load file or assembly 
+  'file:///C:\WINDOWS\assembly\GAC_MSIL\Csla\2.0.1.0__93be5fdc093e4c30\MyDLL.dll' 
+  or one of its dependencies.&nbsp; The system cannot find the file 
+  specified.</FONT></P>
+  <P>MyDLL is a project reference and it's not in the GAC.&nbsp; I'm not sure 
+  why it's looking in the GAC.</P>
+  <P>Any help would be appreciated.&nbsp; Thanks.</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mking replied on Thursday, July 06, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>Did you put Csla.dll into the GAC? That is not a scenario I have tested, but it could easily lead to problems - ones that I do not know how to resolve.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>As I've discussed in previous threads, the original CslaDataSource implemention in the book suffers from the problem that it doesn't reload your business assembly as it changes over time. On the upside, it does work fine as long as you are willing to close VS each time you update your business assembly. :-(</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>To fix this, version 2.0.1 does some trickery. Since Microsoft doesn't provide any way (that I or any of my contacts can find) to determine the current shadow directory from which the business assembly is being loaded by VS, I am stuck. So what I do is look at the directory from where Csla.dll is being loaded, and then infer the shadow directory path from that directory.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>If you put Csla.dll into the GAC it would totally throw that scheme off - and it would also leave me with no way at all to find the shadow directories...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>Yes, this is unfortunate. No, I am not pleased with the current solution. But no, I have no better alternative. Neither 2.0 nor 2.0.1+ are good answers - but lacking any solution to find the shadow directory, these are the choice we are faced with at the moment...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></div></BLOCKQUOTE></DIV>
+<P>Thanks for the help, Rocky.&nbsp; I really appreciate it.&nbsp; (Hope you're feeling better.)</P>
+<P>I did have Csla.dll in the GAC.&nbsp; (It was also a project reference in my solution.)</P>
+<P>When I removed Csla from the GAC, I started getting&nbsp;a different&nbsp;error which I corrected by switching from the project setting of "Use default web server" to "Use custom server".</P>
+<P>Now I'm able to use the CslaDataSource&nbsp;control at design time.</P>
+<P>-Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 06, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>The proposed changes for 2.0.3 (in cvs) _should_ allow you 
+to put Csla.dll into the GAC - and should provide more reliable results overall. 
+In my limited testing these changes resolved the quirky issues I was having from 
+time to time, which is encouraging.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>If you get a chance, Mike, would you be willing to try 
+those changes?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>Thx, Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>(Thanks for the well wishes; I'm starting to feel better - 
+summer colds are just no fun at all...)</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV></DIV>
+  <P>Thanks for the help, Rocky.&nbsp; I really appreciate it.&nbsp; (Hope 
+  you're feeling better.)</P>
+  <P>I did have Csla.dll in the GAC.&nbsp; (It was also a project reference in 
+  my solution.)</P>
+  <P>When I removed Csla from the GAC, I started getting&nbsp;a 
+  different&nbsp;error which I corrected by switching from the project setting 
+  of "Use default web server" to "Use custom server".</P>
+  <P>Now I'm able to use the CslaDataSource&nbsp;control at design 
+time.</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mking replied on Monday, July 10, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>The proposed changes for 2.0.3 (in cvs) _should_ allow you to put Csla.dll into the GAC - and should provide more reliable results overall. In my limited testing these changes resolved the quirky issues I was having from time to time, which is encouraging.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>If you get a chance, Mike, would you be willing to try those changes?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>Thx, Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=764430515-06072006><FONT face=Arial color=#0000ff size=2>(Thanks for the well wishes; I'm starting to feel better - summer colds are just no fun at all...)</FONT></SPAN></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Sorry for the delayed response.</P>
+<P>I used cvs to get&nbsp;your code and upgraded my machine from 2.0.1 to 2.0.3.&nbsp; I put Csla back in the GAC.&nbsp; Now I do not get the design time error I was getting before.&nbsp; Now I can&nbsp;start my web site from Visual Studio using either "Use default Web Server" or "Use custom server".</P>
+<P>I haven't done any other testing of the web site.&nbsp; I will post any problems I find that are new to 2.0.3.</P>
+<P>Thanks for coding the fix.</P>
+<P>-Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, August 03, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>To fix this, version 2.0.1 does some trickery. Since Microsoft doesn't provide any way (that I or any of my contacts can find) to determine the current shadow directory from which the business assembly is being loaded by VS, I am stuck. So what I do is look at the directory from where Csla.dll is being loaded, and then infer the shadow directory path from that directory.</FONT></SPAN></DIV>
+<DIV align=left></div></BLOCKQUOTE></DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Are all the shadow directories for a project off of the same root directory?&nbsp; If so, why not just take the latest version (by file timestamp) in any shadow directory you find?</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>I'm betting it's not that easy, but...</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>That's exactly what I do :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>The problem is that I need to find the shadow directory 
+root path to start with - and I do that by loading the type in the first place 
+(using GetType(), which gets it from the original shadow directory). With a new 
+class that GetType() call fails...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> david.wendelken 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Thursday, August 03, 2006 9:21 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: 
+  CslaDataSource error - Please Help<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=140533100-05072006><FONT face=Arial color=#0000ff size=2>To fix this, version 2.0.1 does some trickery. Since 
+    Microsoft doesn't provide any way (that I or any of my contacts can find) to 
+    determine the current shadow directory from which the business assembly is 
+    being loaded by VS, I am stuck. So what I do is look at the directory from 
+    where Csla.dll is being loaded, and then infer the shadow directory path 
+    from that directory.</FONT></SPAN></DIV>
+    <DIV align=left></DIV></DIV></BLOCKQUOTE>
+  <DIV></DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>Are all the shadow directories for a project off of the same 
+  root directory?&nbsp; If so, why not just take the latest version (by file 
+  timestamp) in any shadow directory you find?</DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>I'm betting it's not that easy, but...</DIV><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, August 03, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>That's exactly what I do :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>The problem is that I need to find the shadow directory root path to start with - and I do that by loading the type in the first place (using GetType(), which gets it from the original shadow directory). With a new class that GetType() call fails...</FONT></SPAN></div></BLOCKQUOTE></DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>I don't think I was clear.&nbsp; (Then again, maybe I was and I'm just wrong this time! :)</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>My machine has thousands of directories on it, but VS Studio surely isn't randomly picking a different one each time to build a shadow directory in.&nbsp; Surely it uses the same directory to build each shadow directory structure in?&nbsp; Each and every time?&nbsp; Or at least for&nbsp;any given solution or project?</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>If so, and if I record that directory someplace where your code can find it, then a search of all directories underneath it for the latest version of the assembly in question would seem like it would work.&nbsp; </DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Ok, it's a kluge, but so its the whole moving&nbsp;shadow directory idea.&nbsp;&nbsp; You can put lipstick on the pig, but it still wallows in garbage.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 04, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2>Yes, VS has a common root location for the shadow 
+directories. But each project/web site gets its own sub-dir, within which the 
+actual shadow directories are created. The names are arbitrary, and so can't be 
+used to determine a relationship between the project and its shadow directory 
+root.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2>I was (in 2.0.2) using the location of Csla.dll to find the 
+right project sub-dir, but that doesn't work if you put Csla.dll in the GAC... 
+So I changed the code to find it by type, but that causes this new-class 
+problem...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2>At the moment I'm trying to just load the assembly, without 
+getting the specific type - but thus far I haven't been able to make that 
+work...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=021313305-04082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=021313305-04082006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> david.wendelken 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Thursday, August 03, 2006 11:22 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: 
+  CslaDataSource error - Please Help<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>That's exactly what I do :)</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=615423102-04082006><FONT face=Arial color=#0000ff size=2>The problem is that I need to find the shadow directory 
+    root path to start with - and I do that by loading the type in the first 
+    place (using GetType(), which gets it from the original shadow directory). 
+    With a new class that GetType() call 
+  fails...</FONT></SPAN></DIV></DIV></BLOCKQUOTE>
+  <DIV></DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>I don't think I was clear.&nbsp; (Then again, maybe I was and 
+  I'm just wrong this time! :)</DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>My machine has thousands of directories on it, but VS Studio 
+  surely isn't randomly picking a different one each time to build a shadow 
+  directory in.&nbsp; Surely it uses the same directory to build each shadow 
+  directory structure in?&nbsp; Each and every time?&nbsp; Or at least 
+  for&nbsp;any given solution or project?</DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>If so, and if I record that directory someplace where your 
+  code can find it, then a search of all directories underneath it for the 
+  latest version of the assembly in question would seem like it would 
+  work.&nbsp; </DIV>
+  <DIV align=left>&nbsp;</DIV>
+  <DIV align=left>Ok, it's a kluge, but so its the whole moving&nbsp;shadow 
+  directory idea.&nbsp;&nbsp; You can put lipstick on the pig, but it still 
+  wallows in garbage.</DIV><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Truth replied on Tuesday, July 04, 2006</h2>I am also now getting this error in the designer.&nbsp; The web app seems to function fine, but I cannot modify my FormView.<br><br>To solve the problem, I simply deleted any copies that resided in those _shadow folders.&nbsp; All is well now.<br><br>Jeff<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 04, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2>Yeah, I am beginning to think that my gamble with the 
+shadow directories is not going to work.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2>Of course the alternative is to revert to the 2.0 behavior 
+- which means restarting VS to pick up changes to the business assembly over 
+time. But at least 2.0 works reliably in terms of page 
+development...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2>If you look in Chapter 5, you'll see that CslaDataSource 
+itself is trivial - which is why the app runs just fine. But the designer 
+support is seriously complex - and is far, far more complex&nbsp; in 2.0.1+ 
+where I'm trying to infer the shadow directory so I can load changes to the 
+business assembly over time.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2>I hate to give up the 2.0.1 functionality, but it may be 
+the only viable solution :(</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=859254100-05072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Truth [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, July 04, 2006 12:34 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CslaDataSource error - 
+  Please Help<BR></FONT><BR></DIV>
+  <DIV></DIV>I am also now getting this error in the designer.&nbsp; The web app 
+  seams to function, but I cannot modify my FormView.<BR><BR>Haven't been able 
+  to get very far with solving it.<BR><BR>Jeff<BR><BR><BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 04, 2006</h2><P>Maybe stress isn't all bad. I've got an incredibly bad head cold, primarily due to overdoing it during this long 4th of July weekend (swimming, waterskiing, knee-boarding, tubing, camping, etc.). So I thought I'd lay down and catch a bit of a nap before we head out to watch the fireworks (kids gotta have their fireworks, even if I can't breath <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /> )</P>
+<P>Anyway, as is often the case, as I was drifting off to sleep my brain solved the issue - or at least so I hope.</P>
+<P>If you go to <A href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</A> you can download Csla\Web\Design\TypeLoader and Csla\Web\Design\ObjectViewSchema (in either VB or C#). Replace your 2.0.1 or 2.0.2 files of the same names with these and rebuild Csla.dll.</P>
+<P>What I am now doing is getting the business type like I did with version 2.0. But I'm not using that Type object; instead I'm just using it to find the original (typically old) shadow directory path. Then I pass that path to the temporary AppDomain like in 2.0.1, so I can find the shadow directory for the most recent business assembly.</P>
+<P>This seems to get the right path, without issues around having Csla.dll in the GAC and so forth.</P>
+<P>If those of you having immediate problems could download and try these two files - and let me know your results - I would appreciate it. If it is a real fix I'll put it into 2.0.3.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Truth replied on Tuesday, July 04, 2006</h2>I'll give it a shot tomorrow, though I haven't had the problem since then.<br><br>Jeff<br><br>PS:&nbsp; Rocky, I happened to meet you and your wife at the Metallica concert in the BORN suite back in the good old days (ha, just post release of the VB6 BO book). Just thought i'd pass that along.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Truth replied on Friday, July 07, 2006</h2>It does appear to solve the issue.&nbsp; Will need a bit more validation though to prove it.<br><br>Here's what happended:<br><br>I ran into the same issue as previously mentioned, so I grabbed those files from CVS and rebuilt CSLA.dll (C# version).&nbsp; I then replaced all versions of csla.dll I had locally with the newly compiled version.&nbsp; When I reloaded the project the CSLDADataSource objects no longer appeared broken, but when trying to set a GridView datasource, I got a different error related to not being able to find CLSA version 2.0.2 (or something similar).&nbsp; I just redragged the CSLADataSource component back onto the form and all was fixed. (Sounds like just an issue with having rebuilt CSLA and getting a reference to it).<br><br>Jeff<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=296283319-07072006><FONT face=Arial color=#0000ff size=2>Yes, I have found that it can be tricky to convince VS to 
+use updated controls - often involving a couple restarts of 
+VS...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296283319-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296283319-07072006><FONT face=Arial color=#0000ff size=2>Once you are comfortable that this change is good please 
+let me know, and I'll publish 2.0.3 on my web site as an official 
+update.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296283319-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296283319-07072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Truth [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, July 07, 2006 1:20 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CslaDataSource error - 
+  Please Help<BR></FONT><BR></DIV>
+  <DIV></DIV>It does appear to solve the issue.&nbsp; Will need a bit more 
+  validation though to prove it.<BR><BR>Here's what happended:<BR><BR>I ran into 
+  the same issue as previously mentioned, so I grabbed those files from CVS and 
+  rebuilt CSLA.dll (C# version).&nbsp; I then replaced all versions of csla.dll 
+  I had locally with the newly compiled version.&nbsp; When I reloaded the 
+  project the CSLDADataSource objects no longer appeared broken, but when trying 
+  to set a GridView datasource, I got a different error related to not being 
+  able to find CLSA version 2.0.2 (or something similar).&nbsp; I just redragged 
+  the CSLADataSource component back onto the form and all was fixed. (Sounds 
+  like just an issue with having rebuilt CSLA and getting a reference to 
+  it).<BR><BR>Jeff<BR><BR><BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Saturday, July 08, 2006</h2>This change seems to have fixed my problem as well.&nbsp; As soon as I
+recompiled csla and replaced the dlls in my project and PTracker, the
+problems with the designer disappeared.<br>
+<br>
+Now I have to try creating new forms.&nbsp; <br>
+<br>
+Thank you, Thank you<br>
+<br>
+Bob Hagan<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Truth replied on Wednesday, September 13, 2006</h2>I just ran into another similar but not identical issue even with 2.1.<br><br>I was developing a new "EditableRootList" style class and compiled my new library (which is part of a solution of a Web Project and a C# Library).&nbsp; I then went to a webform and setup the CslaDataSource , which worked fine. When tring to add a DetailsView control that referenced that CslaDataSource, the DetailsView kept throwing errors saying it couldn't load that new class, but the error reported the wrong assembly version (1.1.0.0 vs. 1.2.0.0).&nbsp; Several rebuilds and re-references later it still wasn't fixed.<br><br>I had to go back out and do the delete _shadow folders trick and that fixed it.<br><br>Ugh.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Thursday, September 14, 2006</h2>I am still having various problems with this.&nbsp; Here is my situation:<br><br>I had version 2.0.3.0.&nbsp; I downloaded the fixes for the two Design files from the cvs folder and recompiled to 2.0.3.1.&nbsp; I deleted all project references to csla.dll and replaced the dll in each project's bin folder.&nbsp; I then re-added the reference at a project-by-project level by doing VS.NET Add Reference and selecting the csla.dll in the bin folder.&nbsp; I removed the CslaDataSource toolbox item and re-added it, using the dll in the web project's bin folder.<br><br>If I add the CslaDataSource manually and and then try to associate my DropDownList to it through the Choose Data Source wizard, when I select the CslaDataSource from the list, the wizard closes and does not add the data source.<br><br>If I manually associate the DataSource to the control (DataSourceID="ChargeListDataSource" DataTextField="Value" DataValueField="Key") and then try to go through the designer to Choose Data Source, I still get the "Could not load file or assembly 'MyNamespace.MyProject' or one of its dependencies. etc. <br><br>After downloading v. 2.1.0.0, I still cannot use the designer to create the control.&nbsp; I tried running it anyway, with manually created CslaDataSource, and it works fine.&nbsp; However, when I return to my designer, the whole ContentPlaceHolder is displayed as an error (meaning I can't use the designer at all to do anything with my page).&nbsp; The error says:&nbsp; <br><br>Error Creating Control - content1<br>'MyNamespace.MyLibrary' could not be set on property 'TypeAssemblyName'<br><br>I think I may have seen this with the previous version, so I wouldn't necessarily attribute this to the version.<br><br>I did delete all the stuff from the C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files folder several times, but perhaps not on the last round of deleting dlls and such.<br><br>I am set up to use the "Default Web Server".&nbsp;&nbsp; Honestly, if I wanted to use Cassini, I'm not sure how, but I don't know that I want to.<br><br>Thanks.<br><br><br>Another update:&nbsp; Reloaded VS.NET and now my ContentPlaceHolder is back.&nbsp; All happy.&nbsp; Gotta love it.<br><br>Still can't use the designer to associate control w/DataSource, though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2>As you were switching to use the 2.0.3.1 version, did you make sure to close and reopen VS? If not, VS almost certainly still had an instance of the previous version in memory...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Thursday, September 14, 2006</h2>Yes, I did.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Friday, September 15, 2006</h2>Here's an update on this.&nbsp; With version 2.1, I still get the "Error invoking 'Choose Data Source...' error for drop-down lists bound to CslaDataSources representing Name/Value lists in design view.&nbsp; But they&nbsp; work at runtime if manually configured and both the CslaDataSource and the control display normally in design view.<br><br>However, for my CslaDataSource bound to a GridView control and an Editable collection, the CslaDataSource appears okay on the page but the GridView is not usable in design view unless I remove the data bindings.&nbsp; It appears with the following message:<br><br>"There was an error rendering the control.<br>Could not load file or assembly 'MyNameSpace.MyLibrary' or one of its dependencies.&nbsp; The system could not find the file specified."<br><br>The object to which this is bound is in the same project/dll as the others.&nbsp; However, one difference may be that the exposed properties are not value types.&nbsp; Our project uses custom objects to wrap int, short, DateTime, etc. (like the Csla Date, though we don't use that).&nbsp; These objects handle null values at both the UI and DB level (translating nulls to empty strings for display and to DBNull for parameters).&nbsp; The NameValue pairs also use a wrapper for int, but I changed one of them to a straight int, recompiled, closed VSS, deleted temp folder, reopened VSS and checked again and still get the "Error invoking 'Choose Data Source" error.&nbsp; So, this may be a red herring, but wanted to give the full scenario.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Wednesday, July 12, 2006</h2><P>Rocky,</P>
+<P>I've applied the changes from the 2 files in CSV and it seemed to work fine on the page I was working on at that time (a week ago), this cslaDataSource control made use of a library.dll not included in the solution (just a reference). Now I'm picking up where I left of last week, in the same project and am now trying to use the cslaDataSource in several new pages but I can't seem to get it to work again, trying to use a library.dll wich is part of the solution. I can click on 'Refresh schema' without errors occuring, but when I then try to set the datasource of a gridview to the cslaDataSource I get the following error </P>
+<P>'Could not load file or assembly 'avuCsla' or one of its dependencies. The system cannot find the file specified.'</P>
+<P>I know that all references used in my avuCsla project are also in my avuWb web application. It's driving me nuts, I can't make any progress...</P>
+<P>I have also tried not to reference the project avuCsla in my webapp but directly reference the dll in the bin\debug folder but that doesn't help either.<BR><BR>I do not have any of my assemblies (or Csla ) in the GAC.<BR><BR>Regards,<BR>Jurjen.</P>
+<P>P.S.&nbsp; I am using Petar's ActiveObjects</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwink replied on Wednesday, July 12, 2006</h2><P>Jurjen,</P>
+<P>I'm using VB with the 2 files in CSV&nbsp;and attached to the devenv process that Rocky referred to in this thread.&nbsp; It errored loading&nbsp;the assembly in CslaDataSource.[GetType].&nbsp; Turns out the reference to the assembly&nbsp;is case sensitive and I was off one letter in my .aspx file.&nbsp; (TypeAssembly="RnD.Library"&nbsp; vs. TypeAssembly="RND.Library")</P>jwink</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Thursday, July 13, 2006</h2><P>jwink,</P>
+<P>You're right, that solved it, TypeNameAssembly is also case-sensitive... It works great now...</P>
+<P>jurjen.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mking replied on Thursday, August 03, 2006</h2>FYI - I'm using CSLA version 2.0.3.0 and I'm still getting the file not found error when using the CSLADataControl in design time.&nbsp; It happens sporadically.&nbsp; I just closed visual studio 2005, opened it back up again, and now the error is gone.<FONT color=#800000 size=2>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2><P>I realize this isn't always easy - but if you can provide details about how you were doing your development up to the failure that would help. I obviously have no way to try and replicate a sporadic problem without details...</P>
+<P>In particular, did you just reference the business dll, or just rebuild it? Did you set up the CslaDataSource first, or the grid/details control first? Were you editing a different page just prior to editing this page? Is this a new page or an existing page?</P>
+<P>The more detail you can provide, the more likely it is that I'll be able to help.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, August 03, 2006</h2><P>I have noticed that when on a Form&nbsp;I drag a new Control, say a GridView, and from the Choose Data Source dropdown in GridView Tasks I select &lt;New Data Source&gt;, I get an error that says;</P>
+<P>"Error setting value '&lt;New Data Source...&gt;' to Property DataSourceID. Details: The path is not a legal form."</P>
+<P>When I click Ok, and select &lt;New Data Source&gt; again, invariably the Data Source Configuration Wizard comes right up, including the CslaDataSource as an option.</P>
+<P>I have always assumed that this was problem with Asp and not with Csla.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=584040502-04082006><FONT face=Arial color=#0000ff size=2>One thing to keep in mind is that the approach I ended up 
+taking in 2.0.3 won't find new classes that you've added to your assembly. It 
+will pick up changes to existing classes, but new classes won't be 
+found.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=584040502-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=584040502-04082006><FONT face=Arial color=#0000ff size=2>I'm still hopeful that I can get&nbsp;a better solution. 
+Microsoft has no answer, because the solution appears to be embedded in 
+internal/Friend classes within .NET itself... In other words, I may be able to 
+use reflection to invoke some of their code to solve the problem - rather a 
+hack, but then so is the current solution...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=584040502-04082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=584040502-04082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> mking [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, August 03, 2006 11:27 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CslaDataSource error - 
+  Please Help<BR></FONT><BR></DIV>
+  <DIV></DIV>FYI - I'm using CSLA version 2.0.3.0 and I'm still getting the file 
+  not found error when using the CSLADataControl in design time.&nbsp; It 
+  happens sporadically.&nbsp; I just closed visual studio 2005, opened it back 
+  up again, and now the error is gone.<FONT color=#800000 size=2> 
+  <P>&nbsp;</P></FONT><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

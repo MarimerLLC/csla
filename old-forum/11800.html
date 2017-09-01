@@ -1,0 +1,7 @@
+<html><header><title>msbuild and DAL projects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>msbuild and DAL projects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11800.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo posted on Tuesday, January 22, 2013</h2><p>I have just started using the encapulated invocation model(like the&nbsp;DataAccess e-book)&nbsp;for my DAL on a new MVC project.&nbsp; I also use TFS to automate builds.&nbsp; I am running into an issue since the concrete DAL implementations aren&#39;t referenced by the web project or its children, the DAL dlls don&#39;t get copied out to the bin folder in the _PublishedWebSites&nbsp;&nbsp;folder during a team build process.</p>
+<p>This is what I put in the post-build even on the project to get to work locally,&nbsp;but I have to take it out since it obviously doesn&#39;t work on a remote build on a TFS box: </p>
+<p>copy /Y &quot;$(TargetDir)$(ProjectName).dll&quot; &quot;$(SolutionDir)Nca.Web\bin\$(ProjectName).dll&quot;</p>
+<p>Does anyone have the changes needed to the msbuild script to get these ouputted durring an automated build as well as a local Visual Studio build?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

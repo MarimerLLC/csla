@@ -1,0 +1,20 @@
+<html><header><title>Binding Property To Multi-Select List Box</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding Property To Multi-Select List Box</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6100.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Wednesday, January 07, 2009</h2><P>I'm binding one of my business objects to my UI.&nbsp; </P>
+<P>I've done a single-selection drop down list before by binding to an Integer property on my object.....no problem.</P>
+<P>But now I've got a multi-select list box on the UI and I need to create a new property on the object to bind to.&nbsp; What is the best way to create a property to handle this multiple selection?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 08, 2009</h2>Well, what's the use case?&nbsp; Does the BO need to know what objects are selected?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, January 08, 2009</h2><P>Yes, the business object needs to know which options are selected and which options are not selected.&nbsp; Right now there are just 3 options, but that number could increase in the future.</P>
+<P dir=ltr>I had 2 initial ideas, but I don't think they're a good solution:</P>
+<P>1.) Try to use a string property and somehow store/bind the selections as a comma separated string.&nbsp; I'm pretty sure this will NOT work.<BR></P>
+<P>2.) Create a property that contains a collection of "Option" objects.&nbsp; The "Option" object would&nbsp;have 3 properties: Id (Integer), Description (String), Selected (Boolean).&nbsp; I think I could get this to work but I have doubts about whether this is a good solution.</P>
+<P>Multi-select list boxes are a commonly used control.....so surely someone else has run into this.&nbsp; Can anybody make some suggestions or give examples of how you've handled this?&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 08, 2009</h2>Option 2 would sound like your best bet.&nbsp; I assume you're going to store the fact that one of the options is selected, correct?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Thursday, January 08, 2009</h2><P>Just an idea, but would a "flagged enum" be thinkable ?</P>
+<P>Make the BO property of type YourEnum, and since it's a flagged enum, you can use a mask to check which one is active/inactive. Then it becomes a matter of making the UI control display those properly.</P>
+<P>If you need to map some more data to each enum, like a description etc, then a dictionnary&lt;MyEnum, MyEnumInfo&gt; could be used, where MyEnumInfo would hold all thge necessary data associated with each option.</P>
+<P>How does that sound ?</P>
+<P>Regards</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Thursday, January 08, 2009</h2>I implemented option 2 in one or two of my business classes and was quite happy with it</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, January 08, 2009</h2><P>I have the Id (Integer) and Description (String) binding correctly.&nbsp; </P>
+<P>But I'm struggling with the Selected (Boolean).</P>
+<P>How did you bind the boolean "Selected" property on your busines object to the "Selected" property on the ListItem?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Thursday, January 08, 2009</h2>Hi,<br><br>I don't know if this would help the Original Poster, but please take a look at the attached sample C# project.<br><br>It implements the idea I mentioned in my previous post in this thread.<br><br>Hope this helps.<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

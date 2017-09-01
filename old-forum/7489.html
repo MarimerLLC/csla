@@ -1,0 +1,32 @@
+<html><header><title>BusinessListBase in base class issue.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase in base class issue.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7489.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheEld posted on Friday, August 21, 2009</h2><P>Everything here pertains to CSLA for Windows 3.7...</P>
+<P>I have a <FONT face="Courier New">BusinessListBase&lt;T,C&gt;</FONT> that contains polymorphyic child and when impleneted as below all works fine.&nbsp; </P>
+<P><FONT face="Courier New">public interface ICorrespondenceChild : IEditableBusinessObject<BR>{<BR>}</FONT></P>
+<P><BR><FONT face="Courier New">[Serializable] public class CorrespondenceChildList : BusinessListBase&lt;CorrespondenceChildList, ICorrespondenceChild&gt;<BR>{<BR>}</FONT></P>
+<P>I also have dozens of other <FONT face="Courier New">BusinessListBase&lt;T,C&gt;</FONT> based classes that do not take polymorphic children and when implemeneted as below all works fine.</P>
+<P><FONT face="Courier New">[Serializable] public class SubmittalItemChildList : ChildListBase&lt;SubmittalItemChildList, SubmittalItemChild&gt;<BR>{<BR>}</FONT></P>
+<P><FONT face="Courier New">[Serializable] public Class SubmittalChild : BusinessBase&lt;SubmittalChild&gt;<BR>{<BR>}</FONT></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>I am now trying to introduce a base class for all my <FONT face="Courier New">BusinessListBase&lt;T,C&gt;</FONT> based classes and have the following</P>
+<P><BR><FONT face="Courier New">[Serializable] public class ChildListBase&lt;T, C&gt; : BusinessListBase&lt;T, C&gt; <BR>&nbsp;&nbsp;&nbsp; where T : ChildListBase&lt;T, C&gt; <BR>&nbsp;&nbsp;&nbsp; where C : BusinessBase&lt;C&gt;<BR>{<BR>}</FONT></P>
+<P><BR>When changing the non-polymorphic child list all is well.&nbsp; I have... </P>
+<P><FONT face="Courier New">[Serializable] public class SubmittalItemChildList : ChildListBase&lt;SubmittalItemChildList, SubmittalItemChild&gt;<BR>{<BR>}</FONT></P>
+<P>But for the polymorphic child list (code below) I get the error below...</P>
+<P><BR><FONT face="Courier New">[Serializable] public class CorrespondenceChildList : ChildListBase&lt;CorrespondenceChildList, ICorrespondenceChild&gt;<BR>{<BR>}</FONT></P>
+<P><BR>error CS0311: The type 'ICorrespondenceChild' cannot be used as type parameter 'C' in the generic type or method 'ChildListBase&lt;L,C&gt;'. There is no implicit reference conversion from 'ICorrespondenceChild' to 'Csla.BusinessBase&lt;Ccs.BusinessLibrary.ICorrespondenceChild&gt;'.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><BR>I am looking for help on making this work.&nbsp; I have tried changing <FONT face="Courier New">ChildListBase</FONT> to whats below, but have code in the class like <FONT face="Courier New">C.Save()</FONT> and get other compile errors about the call to Save() being unknown.&nbsp; I would perfer to change <FONT face="Courier New">ICorrespondenceChild</FONT>, but will take any ideas. </P>
+<P><BR><FONT face="Courier New">[Serializable] public class ChildListBase&lt;T, C&gt; : BusinessListBase&lt;T, C&gt; <BR>&nbsp;&nbsp;&nbsp; where T : ChildListBase&lt;T, C&gt; <BR>&nbsp;&nbsp;&nbsp; where C : <FONT color=#ff0000>IEditableBusinessObject</FONT><BR>{<BR>}</FONT></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>THANKS IN ADVANCE FOR YOU HELP.&nbsp; ESPECIALLY SINCE THIS IS PROBABLY MORE A C# ISSUE THEN A CSLA ONE.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, August 21, 2009</h2><P><FONT face=Tahoma size=2>Well... CSLA's BusinessListBase only requires that "C" be an IEditableBusinessObject, which is why your initial code is working.&nbsp; If you want to create polymorphic children using interfaces, you don't have much choice - you can't require that "C" be BusinessBase.&nbsp; BusinessBase may implement IEditableBusinessObject, but as the compiler is telling you, there is no way to convert your ICorrespondenceChild interface into a BusinessBase instance.</FONT></P>
+<P><FONT face=Tahoma size=2>An option is to use a base class instead of an interface.&nbsp; Your base class should inherit from BusinessBase, but you can make it a non-generic abstract class.&nbsp; Then you can require that "C" be your base-class type.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TheEld replied on Friday, August 21, 2009</h2><P>Thanks Scott.</P>
+<P>That all looks good except in by child class I need to override <FONT face="Courier New">Save()</FONT> (with an eventual call to <FONT face="Courier New">base.Save()</FONT>) and if I derive from <FONT face="Courier New">BusinessBase</FONT> and not from <FONT face="Courier New">BusinessBase&lt;T&gt;</FONT> I loose <FONT face="Courier New">Save()</FONT> to override.</P>
+<P>-David</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, August 21, 2009</h2><P><FONT size=2 face=Tahoma>You should be able to create a virtual "Save" method in your base class that delegates to the BusinessBase&lt;T&gt; version.&nbsp; Then your subclasses can override your new "Save", which ultimately gets back to the BusinessBase version.</FONT></P>
+<P><FONT size=2 face=Tahoma>HTH</FONT></P>
+<P><FONT size=2 face=Tahoma>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

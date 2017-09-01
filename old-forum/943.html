@@ -1,0 +1,15 @@
+<html><header><title>CSLA Templates?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Templates?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/943.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Friday, August 18, 2006</h2><P>I've been meaning to ask this... </P>
+<P>I noticed that templates pass SqlDataReader in as a type for a datareader instead of SafeDataReader. Is this just a typo or&nbsp;on purpose?</P>
+<P>Also</P>
+<P>&nbsp;</P>
+<P>In the editablechild template this method is defined like so:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// TODO: load default values, or remove method</P></FONT><FONT size=2>
+<P>}</P>
+<P>But in EditableRootParent it is like so:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// TODO: load default values</P></FONT><FONT size=2>
+<P>}</P>
+<P>Is that a typo or on purpose?</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

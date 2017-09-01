@@ -1,0 +1,350 @@
+<html><header><title>BusinessListBase.Child_PropertyChanged discussion</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase.Child_PropertyChanged discussion</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3557.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben posted on Monday, September 17, 2007</h2><P class=MsoNormal><SPAN><FONT face=Arial>Hi<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>I’ve been studying the <I>BusinessListBase.Child_PropertyChanged</I> method and I think there may be a BUG. <o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>The <I>BindingList.RaiseListChangedEvents</I> property is used to stop raising <I>ListChanged</I> events in some circumstances (i.e. <I>BusinessListBase.Removeitem</I>). The <I>Child_PropertyChanged</I> is supposed to substitute the <I>BindingList</I> functionality when a list item raises the PropertyChanged event.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>If I’m not wrong, if an inheritor of <I>BusinessListBase</I> uses Remoting then the <I>Child_PropertyChanged</I> method won’t take in account the <I>RaiseListChangedEvents</I> property and so the expected behaviour won’t be like without using Remoting. Am I right?<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>To solve this issue the <I>Child_PropertyChanged</I> method should take in account the property <I>BindingList.RaiseListChangedEvents</I>, to avoid raising undesired events.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>Other difference I see is when a list item raises its event <I>PropertyChanged</I> with the <I>PropertyName</I> argument equal to an empty string (<I>PropertyName</I> = “”). With the CSLA code the <I>BusinessListBase</I> always will raise a <I>ListChanged</I> event with <I>ListChangedType</I> = <I>ItemChanged</I>. Instead, when we are not using Remoting the same object would raise the <I>ListChanged</I> event with <I>ListChangedType</I> = <I>Reset</I>.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>To solve this problem the only thing I see is to avoid using the <I>BindingList</I> behaviour and use only the CSLA implementation. To get it, the CSLA would need: <o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>Set the <I>BindingList.RaiseListChangedEvents</I> property to False. It may do this in the <I>BusinessListBase</I> constructor.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>Provide its own <I>BusinessListBase.RaiseListChangedEvents</I> property to be able to control the raising of events.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>Add handlers to the <I>PropertyChanged</I> event of each child object when they are added to the list. This may be done in the InsertItem method.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>Remove handlers from the <I>PropertyChanged</I> event of child objects when they are removed from the list. This may be done in the RemoveItem method.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>I’m evaluating doing these changes to the framework and I would be very grateful if you give me your opinion.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>Thanks in advance.<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial>Benjamin Moles<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Arial>&nbsp;</FONT></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 17, 2007</h2><P>Do you have unit tests showing these problems?</P>
+<P>If not, can you create them? You don't need to use remoting btw, you can just use Clone() to get the same effect as remoting.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, September 18, 2007</h2><P><A HREF="/forums/thread/4078.aspx">http://forums.lhotka.net/forums/thread/4078.aspx</A></P>
+<P>This may be related to the older thread above? </P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Wednesday, September 19, 2007</h2><P>Hi Chris,</P>
+<P>Thanks for your comment, but I have already seen those posts. The problem that I'm talking about is related to them but it's a different issue.</P>
+<P>Thanks again.</P>
+<P>Benjamin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Wednesday, September 19, 2007</h2><P class=MsoNormal><SPAN>Hi <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Here you have a small testing application that can be used to compare the behaviour of an example of business object. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>With this tool I’ve confirmed what I suspected. There are differences in the objects behaviour when they are serialized and when they’re not.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’ve coded some tests that you can check to see it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>To see what happens with each test you can see the member “<SPAN>DoTest</SPAN>” in the following classes:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>ListChanged_Test1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>ListChanged_Test2<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>-<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><SPAN>RaiseListChangedEvents_Test1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In that method you’ll find the sequence of steps followed to do the test.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You also can use the manual test to do anything you want to the sample SalesOrder objects (and its child objects also).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;Benjamin</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Monday, September 24, 2007</h2><P>Hi Rocky</P>
+<P>Have you seen my sample application?</P>
+<P>Ben</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, but I&#8217;m under some tight deadlines and probably won&#8217;t
+have time to really look at this for a couple weeks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ben
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 24, 2007 10:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] BusinessListBase.Child_PropertyChanged
+discussion<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky<o:p></o:p></p>
+
+<p>Have you seen my sample application?<o:p></o:p></p>
+
+<p>Ben<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Sunday, September 30, 2007</h2><P class=MsoNormal><SPAN>I’ve got a workarund to resolve both problems: <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>First problem: <o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><I><SPAN>Description: <o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>BindingList (Of T) raises OnListChanged (Reset) after one item raises PropertyChanged event with PropertyName = String.Empty (OnUnknownPropertyChanged).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><I><SPAN>Solution:<o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Modify “BindableBase.vb”:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Public</SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> BindableBase<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' Allow to get the PropertyChanged handler of any obsever<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' that implement it<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;remarks&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;para&gt;</SPAN><SPAN>BindingList (Of T) raises OnListChanged (Reset) <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' after one item raises PropertyChanged event with <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' PropertyName = String.Empty (OnUnknownPropertyChanged).</SPAN><SPAN>&lt;/para&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;para&gt;</SPAN><SPAN>This is a problem because of one change in one item <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' makes a hole collection to be refetched in any grid or similar.</SPAN><SPAN>&lt;/para&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;para&gt;</SPAN><SPAN>All inheritors of BindingList should implemen<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' this interface in order to allow us to replace the <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' default handler of BindingList for other smarter handler.</SPAN><SPAN>&lt;/para&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;/remarks&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Friend</SPAN><SPAN> <SPAN>Interface</SPAN> IPropertyChangedObserver<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Function</SPAN> PropertyChangedHandler() <SPAN>As</SPAN> PropertyChangedEventHandler<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Interface</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Custom</SPAN> <SPAN>Event</SPAN> PropertyChanged <SPAN>As</SPAN> PropertyChangedEventHandler _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>Implements</SPAN> INotifyPropertyChanged.PropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>AddHandler</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> PropertyChangedEventHandler)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' Workaround to avoid using BindableList(Of T) implementation.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> value.Method.DeclaringType.Name = <SPAN>"BindingList`1"</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> targetObserver <SPAN>As</SPAN> IPropertyChangedObserver<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>targetObserver = <SPAN>TryCast</SPAN>(value.Target, IPropertyChangedObserver)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> targetObserver <SPAN>IsNot</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>value = targetObserver.PropertyChangedHandler<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> value.Method.IsPublic <SPAN>AndAlso</SPAN> _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>(value.Method.DeclaringType.IsSerializable <SPAN>OrElse</SPAN> _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>value.Method.IsStatic) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mSerializableHandlers = _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DirectCast</SPAN>(System.Delegate.Combine( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mSerializableHandlers, value), PropertyChangedEventHandler)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mNonSerializableHandlers = _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DirectCast</SPAN>(System.Delegate.Combine( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mNonSerializableHandlers, value), PropertyChangedEventHandler)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>AddHandler<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Event<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Modify “BusinessListBase.vb”:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Public</SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> BusinessListBase( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN><SPAN>Of</SPAN> T <SPAN>As</SPAN> BusinessListBase(<SPAN>Of</SPAN> T, C), C <SPAN>As</SPAN> {Core.IEditableBusinessObject})<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Inherits</SPAN> Core.ExtendedBindingList(<SPAN>Of</SPAN> C)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN><SPAN> BindableBase.IPropertyChangedObserver</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> Core.IEditableCollection<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> Core.IUndoableObject<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> ICloneable<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> ISavable<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN></SPAN><SPAN>Implements</SPAN><SPAN> IParent<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Cascade Child events "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN><SPAN> <SPAN>Function</SPAN> MyPropertyChangedHandler() <SPAN>As</SPAN> PropertyChangedEventHandler _<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> BindableBase.IPropertyChangedObserver.PropertyChangedHandler<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>AddressOf</SPAN> <SPAN>Me</SPAN>.Child_PropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Modify “EditableRootListBase.vb”:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Public</SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> EditableRootListBase (<SPAN>Of</SPAN> T <SPAN>As</SPAN> {Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable})<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Inherits</SPAN> Core.ExtendedBindingList(<SPAN>Of</SPAN> T)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN><SPAN> </SPAN></SPAN><SPAN>Csla.Core.</SPAN><SPAN>BindableBase.IPropertyChangedObserver</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Implements</SPAN> Core.IParent<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Cascade Child events "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN><SPAN> <SPAN>Function</SPAN> MyPropertyChangedHandler() <SPAN>As</SPAN> PropertyChangedEventHandler _<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> Csla.Core.BindableBase.IPropertyChangedObserver.PropertyChangedHandler<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>AddressOf</SPAN> <SPAN>Me</SPAN>.Child_PropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>Second problem: <o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><I><SPAN>Description: <o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>BusinessListBase.Child_PropertyChanged and EditableRootListBase.Child_PropertyChanged do not take in account property “RaiseListChangedEvents”. To work as BindingList(Of T).Child_PropertyChanged should do it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><I><SPAN>Solution:<o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Modify “BusinessListBase.vb”:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Public</SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> BusinessListBase( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN><SPAN>Of</SPAN> T <SPAN>As</SPAN> BusinessListBase(<SPAN>Of</SPAN> T, C), C <SPAN>As</SPAN> {Core.IEditableBusinessObject})<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Inherits</SPAN> Core.ExtendedBindingList(<SPAN>Of</SPAN> C)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Cascade Child events "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> Child_PropertyChanged(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.ComponentModel.PropertyChangedEventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN><SPAN> <SPAN>Me</SPAN>.RaiseListChangedEvents <SPAN>Then</SPAN> <SPAN>' CSLA modification</SPAN></SPAN><SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>For</SPAN> index <SPAN>As</SPAN> <SPAN>Integer</SPAN> = 0 <SPAN>To</SPAN> Count - 1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> ReferenceEquals(<SPAN>Me</SPAN>(index), sender) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> descriptor <SPAN>As</SPAN> PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> descriptor <SPAN>IsNot</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>OnListChanged(<SPAN>New</SPAN> System.ComponentModel.ListChangedEventArgs( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ComponentModel.ListChangedType.ItemChanged, index, descriptor))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnListChanged(<SPAN>New</SPAN> System.ComponentModel.ListChangedEventArgs( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ComponentModel.ListChangedType.ItemChanged, index))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Exit</SPAN> <SPAN>For<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Next<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN><SPAN> <SPAN>If</SPAN></SPAN><SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN></SPAN><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Modify “EditableRootListBase.vb”:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Public</SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> EditableRootListBase (<SPAN>Of</SPAN> T <SPAN>As</SPAN> {Core.IEditableBusinessObject, Core.IUndoableObject, Core.ISavable})<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Inherits</SPAN> Core.ExtendedBindingList(<SPAN>Of</SPAN> T)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN><SPAN> Csla.Core.BindableBase.IPropertyChangedObserver</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN><SPAN>Implements</SPAN> Core.IParent<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Cascade Child events "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> Child_PropertyChanged(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.ComponentModel.PropertyChangedEventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN><SPAN> <SPAN>Me</SPAN>.RaiseListChangedEvents <SPAN>Then</SPAN> <SPAN>' CSLA modification</SPAN></SPAN><SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>For</SPAN> index <SPAN>As</SPAN> <SPAN>Integer</SPAN> = 0 <SPAN>To</SPAN> Count - 1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> ReferenceEquals(<SPAN>Me</SPAN>(index), sender) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> descriptor <SPAN>As</SPAN> PropertyDescriptor = GetPropertyDescriptor(e.PropertyName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> descriptor <SPAN>IsNot</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnListChanged(<SPAN>New</SPAN> System.ComponentModel.ListChangedEventArgs( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ComponentModel.ListChangedType.ItemChanged, index, descriptor))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OnListChanged(<SPAN>New</SPAN> System.ComponentModel.ListChangedEventArgs( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ComponentModel.ListChangedType.ItemChanged, index))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Exit</SPAN> <SPAN>For<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Next<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN><SPAN> <SPAN>If</SPAN></SPAN><SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN></SPAN><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Sunday, October 21, 2007</h2><P>The fact that Child_PropertyChanged does not take RaiseListChangedEvents into account does create problems. (Just wasted about 6 hours or so trying to figure this out.) I had validation rules that&nbsp;were triggered by ListChanged events to make sure the child&nbsp;items were appropriate for the list, and since the parent entity had to be taken into account,&nbsp;the validation rule&nbsp;had to go into the parent. Well, all was working fine, until I started using the WCF DataPortal. Sure, enough, tracked it down to MarkOld triggering the list changed event, and I ended up getting database timeout errors due to locks. I found this posting, and was able to replicate the problem by using the Clone method, as Rocky mentioned.</P>
+<P>Anyway, I agree that the codebase should be updated to take RaiseListChangedEvents into account. However,&nbsp;another workaround, that seems to be working, is to remove the even handler prior to calling Update() on my child collection, and then adding it immediately after. I'd rather not modify our CSLA codebase, as I'm afraid someone else may replace the CSLA assembly without my knowledge, and they may not have the "fix".</P>
+<P>I too vote for the suggested fix to go into the codebase.</P>
+<P>William</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

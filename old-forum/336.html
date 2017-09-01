@@ -1,0 +1,24 @@
+<html><header><title>GetIdValue in xxInfo Class </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GetIdValue in xxInfo Class </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/336.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan posted on Saturday, June 10, 2006</h2>I'm starting to translate an application from csal 1x, and am stuck already.<br>
+<br>
+To understand the code, I took the PTracker ProjectList and substituted my Client table fields into<br>
+a ClientInfo class&nbsp; The GetIdValue section uses a  character field, client_id.<br>
+When I call ClientList, the query returns rows, but when the code gets
+to ReadOnlyBase.GetHashcode, client_id is null and causes an exception.<br>
+<br>
+This must be pretty simple, because there are almost no questions on this.<br>
+What am I missing?<br>
+<br>
+Bob Hagan<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Saturday, June 10, 2006</h2>Don't capitalize the values in the constructor<br>
+<br>
+internal ClientInfo(string client_id, string client_nm)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _client_id = client_id;<br>
+&nbsp;NOT&nbsp;&nbsp; _client_id = Client_nm;<br>
+<br>
+Duh<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

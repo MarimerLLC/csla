@@ -1,0 +1,60 @@
+<html><header><title>Transferring child object from one root to another</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transferring child object from one root to another</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2420.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattapayne posted on Friday, February 23, 2007</h2><P>Hi,</P>
+<P>I can make this work with a hack, but I'd rather not. Here's the scenario:</P>
+<P>I have a root object - let's call it Project. The Project root has a collection of children - let's call them SubProject objects. The SubProject objects are added to the root object in the typical manner - by loading the root and then looping over the result set and adding each child to the collection of children.</P>
+<P>The requirement now is that I need to provide the ability to reassign SubProject children to other Project root objects.</P>
+<P>The problem with the obvious approach - remove the child from the source collection and add it to the destination collection - is that the child is marked for deletion when removed from the source collection. Obviously this is not the behavior that I'm looking for. I actually just want the SubProject object to become dirty so that when save is called on its new root, the added child is updated with references to the new root.</P>
+<P>Any thoughts are appreciated,</P>
+<P>Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Friday, February 23, 2007</h2>Perhaps your projects should have a "transfer" or "reassign" method. Specifically, the list of subprojects in the collection will have this method. It could take the destination project object as a parameter. The list would then add the subproject to the destination project,&nbsp; remove the sub project as normal from itself,and then remove the subproject from its internal deleted list. This way, the list won't try to remove the sub project from the database when it is updated.<br><br>You have a relationship that needs to be updated, and some object needs to be responsible for updating that relationship. Without knowing your data schema, I can't offer any advice in that regard.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattapayne replied on Friday, February 23, 2007</h2>Hmmm ... is this a really stupid question, or just not enough detail to answer it?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattapayne replied on Friday, February 23, 2007</h2><P>Thanks for the response hurcane, didn't see it until after I posted the last one. I did think about that approach - I guess I was just wondering what the alternative are. I'll look into what you suggest.</P>
+<P>Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 24, 2007</h2><P>You should also remember to adjust edit levels. You don't know that the edit levels of the source list and target list are the same, so you probably need to </P>
+<OL>
+<LI>remove the child from the source list</LI>
+<LI>drop the edit level of the child to 0</LI>
+<LI>add the child to the target list</LI>
+<LI>make sure its edit level is brought up to the level of the target list</LI></OL>
+<P>The other issue, and I'm sure you hit this one, is that removing the child from the source list marks it as deleted. hurcane offers a good answer to part of the issue: remove the child from _deletedList after it has been deleted.</P>
+<P>But you also need to get IsDeleted back to false. There are a couple options here</P>
+<OL>
+<LI>clone the object before removing it, then add the clone to the target list (with edit level adjustments)</LI>
+<LI>call BeginEdit() on the child before deleting it, then call CancelEdit() after it has been deleted - that should (I think) restore IsDeleted to its previous value without any side-effects</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Saturday, February 24, 2007</h2>Actually, you also need to make sure the object is marked as new so that it is inserted and dirty otherwise it'll be ignored when the object is persisting...<br>If I were in your position, I'd add a new copy of the object (not necessarily cloning). That way you don't have to worry about the edit level, or whether the object is in a state where it will be inserted.<br><br>Hurcane has a point though, without knowing your db schema, it's hard to say what you actually need to do. Does this reassignment change a value in a row in the parent or child table? Or is it a many to many?<br><br>If it changes the parent table, then, it should be in the first object's delete list, because it needs to mark that field in the parent's row as null.<br>If it changes the child table, then you could remove it from the deleted list of the original object, since adding the new one will change the same field in the same row at that table.<br>If it's a many to many table, then you have to delete the row linking the original object (which is handled by the original object's delete list) and then add the new one, which is in turn handled by the new child in the second object.<br><br>The exception would be if you took care of all possible scenarios in a single stored procedure, removing the necessary rows, nullifying the necessary fields and adding the new data. That's up to you, but personally I like to keep my stored procs pretty dumb :). (unless there's a compelling reason not to).<br><br>Note that in some of those scenarios you'll need to save both the original object and the new object. That wouldn't be necessary if you handled everything in your sprocs though.<br><br>If you do end up saving both, and you want all to happen in a transaction, then a command object would let you do the save for both within the same transaction.<br><br><br>So.... coming back to your second question: No, your original question was not stupid at all <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>Andrés<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well the object might not need to be marked as new. Suppose it
+does already exist and all he&#8217;s doing is changing the foreign key? That&#8217;d
+be an update operation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is the problem though &#8211; we&#8217;re all offering
+solutions when we don&#8217;t really know the problem </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattapayne replied on Saturday, February 24, 2007</h2><P>That's great, guys, thanks a lot for the insight.</P>
+<P>&nbsp;</P>
+<P>Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattapayne replied on Saturday, February 24, 2007</h2><P>Just to clarify: the SubProject children are pre-existing. This is definitely an issue of updating the child SubProject to ensure that the foreign key reference to the parent Project get updated after the reassignment. There is no situation in which a newly created SubProject would get reassigned (ie: prior to the first save).</P>
+<P>The relationship between Project and SubProjects is one to many. Essentially, what I have are SubProjects assigned to a Project - some of which the user may want to reassign to a different Project. </P>
+<P>The act of reassignment, in my opinion, should remove the SubProject from the list of SubProjects on the source Project (and also remove it from the deleted list, since I don't want to delete it) and add it to the list of SubProjects on the destination Project. In doing so, it seems to me that the moved SubProject needs to get marked as dirty and remain NOT new and NOT deleted, so that when the destination Project persists itself, the SubProject will update its foreign key reference to the new parent Project. (The only database changes would occur in the table containing the SubProjects - updating the Project foreign key).</P>
+<P>I can definitely appreciate the edit level modifications that might be necessary, as I actually do need to support at least one level of undo (ie: user clicks edit, makes some reassignments and then decides to undo his/her changes).</P>
+<P>Again, thanks for the help. I think I'm on solid ground now.</P>
+<P>Matt</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

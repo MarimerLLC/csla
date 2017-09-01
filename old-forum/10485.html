@@ -1,0 +1,32 @@
+<html><header><title>Adding child object to collection (with parameter)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding child object to collection (with parameter)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10485.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Friday, July 01, 2011</h2><p>I was reading &quot;Creating business objects&quot;, the section with title &quot;Collection Adds Item&quot; and I have&nbsp;a doubt:</p>
+<p>If my new child object needs to receive some parameters in Child_Create and then go to the database,&nbsp;can I just call DataPortal.CreateChild from the Add method in my collection and then in Child_Create use some other object to go to the database, or I have to call a Creator object from the collection as explained in the book?</p>
+<p>Ex:</p>
+<p>In the collection:</p>
+<p>public UserGroupOfUser Add(Guid userGroupId) </p>
+<p>{</p>
+<p>var child = DataPortal.FetchChild&lt;UserGroupOfUser&gt;(userGroupId);<br />Add(child);<br />return child;</p>
+<p>}</p>
+<p><br />And in the child object:</p>
+<p>protected void Child_Create(Guid userGroupId)</p>
+<p>{</p>
+<p>//Verify if the user group exists<br />var getInfo = UserGroups.GetUserGroupInfo.GetInfo(userGroupId);</p>
+<p>if (!getInfo.Exists)<br />&nbsp; throw new ApplicationException(UserGroupOfUserResources.InvalidUserGroup);</p>
+<p>using (BypassPropertyChecks)<br />{<br />Id = userGroupId;<br />Name = getInfo.Info.Name;<br />IsSupport = getInfo.Info.IsSupport;<br />Active = getInfo.Info.Active;<br />}</p>
+<p>base.Child_Create();</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, July 02, 2011</h2><p>You can&#39;t use CreateChild if you need to hit the database and you&#39;re on the client.&nbsp; You&#39;ll have to do a normal Create call, and implement DataPortal_Create which takes your parameters.&nbsp; Just make sure you call MarkAsChild somewhere in your DP_C.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Saturday, July 02, 2011</h2><p>Thank you for your answer Andy.&nbsp;I&#39;m aware&nbsp;the code in Child_Create is on the client and&nbsp;I understand the approach you are proposing, but I want to know if what I did is Ok. </p>
+<p>If you look at the code,&nbsp;in&nbsp;Child_Create I use an object called GetUserGroupInfo and that object is the responsible for going to the database. However I&#39;m not sure yet if I can do that from Child_Create safelly (I can&#39;t test it yet). Basically instead of calling a creator object from the Add method in the collection or implementing DataPortal_Create in child, I&#39;m calling a creator object&nbsp;from&nbsp;Child_Create. Can that be a problem?</p>
+<p>The code in GetUserGroupInfo is this:</p>
+<p>&nbsp;using System;<br />using Csla;</p>
+<p>namespace AccountsManagement.Library.Security.UserGroups<br />{<br />&nbsp; [Serializable]<br />&nbsp; public class GetUserGroupInfo : ReadOnlyBase&lt;GetUserGroupInfo&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; #region Business</p>
+<p>&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;UserGroupInfo&gt; InfoProperty = RegisterProperty&lt;UserGroupInfo&gt;(p =&gt; p.Info);<br />&nbsp;&nbsp;&nbsp; public UserGroupInfo Info<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(InfoProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set { LoadProperty(InfoProperty, value); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public bool Exists<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return Info != null; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public override string ToString()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Info == null ? &quot;&quot; : Info.Name;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; #endregion</p>
+<p>&nbsp;&nbsp;&nbsp; #region Factory</p>
+<p>#if !SILVERLIGHT<br />&nbsp;&nbsp;&nbsp; internal static GetUserGroupInfo GetInfo(Guid id)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;GetUserGroupInfo&gt;(id);<br />&nbsp;&nbsp;&nbsp; }<br />#endif</p>
+<p>&nbsp;&nbsp;&nbsp; public static void GetInfo(Guid id, EventHandler&lt;DataPortalResult&lt;GetUserGroupInfo&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;GetUserGroupInfo&gt;(id, callback);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; #endregion</p>
+<p>&nbsp;&nbsp;&nbsp; #region DataPortal</p>
+<p>#if !SILVERLIGHT<br />&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(Guid id)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = AccountsManagement.Dal.DalFactory.GetManager())<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dal = ctx.GetProvider&lt;AccountsManagement.Dal.Security.UserGroups.IUserGroupDal&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Info = DataPortal.FetchChild&lt;UserGroupInfo&gt;(dal.Fetch(id));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }<br />#endif</p>
+<p>&nbsp;&nbsp;&nbsp; #endregion<br />&nbsp; }<br />}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, July 05, 2011</h2><p>Oh sorry, I missed that in your code.&nbsp; I don&#39;t see why that wouldn&#39;t work.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,37 @@
+<html><header><title>Estimates for increased development effort required to use CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Estimates for increased development effort required to use CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3681.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillyM posted on Tuesday, October 09, 2007</h2><P class=MsoNormal><FONT face=Calibri>I have a question and am looking for real-world responses. Has anyone who has used CSLA for a significant project done an analysis on the impact to development effort (i.e., development costs). If so, what has been the rule of thumb? </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>For example, does it impact the effort by -- say -- +10%, 0%, -10%.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I really like this framework and what it does for us, but still must be sensitive to development costs.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Tuesday, October 09, 2007</h2>Compared to what? Not using a framework. Not using the code generation options that come with using CSLA. <br>
+<br>
+Assume framwork saves you 20 to 25% of the coding effort. And Code
+generation another 20 to 25% of the effort. The cost of not using it,
+and doing everything yourself is 40 to 50% of the development effort. <br>
+<br>
+How big a system are you building? I'm currently involved in one 2 to 3
+year offshore project using CSLA and&nbsp; expect to save a substantial
+amount of money during its development.by taking advantage of CSLA. But
+funily enough, I'm funding that project from money earned working at a
+place using an older programming language, where they won't invest in a
+framework, and where nobody bu me uses code generation, and yes
+everything is taking at least twice as long. Actaully, much longer then
+that, as most of the code being produced by others is procedural, and
+each developer follows his own flaveor ("standard"), so everytime you
+try to reuse anyones code, its a learning exercise, and also needs to
+be considerably refactored to be more OOP like for efficient reuse.<br>
+<br>
+Bottomline, CSLA will not increase your costs, if you use it well. But
+as I've indicated, I could not convince my main client of that,
+however, I believe in it so much, that I'm investing my own money in a
+separate project that uses it.<br>
+<br>
+Cheers,<br>
+<br>
+Des Nolan<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Wednesday, October 10, 2007</h2><P>It's tempting to just blurt out that it <STRONG>couldn't</STRONG> cost you MORE time to develop using CSLA.&nbsp; But it really just depends on the types of projects you build.&nbsp; If the apps you build don't require n-tier architechture (for a variety of reasons - see the Complexity section in the first chapter), using an n-tier architechture (even with a good framework), will increase the amount of design and implementation work you have to do.&nbsp; You would basically be over-building.</P>
+<P>But if your apps require n-tier, and you're comparing designing and developing with CSLA to no framework at all, CSLA WILL save you a LOT of effort.&nbsp; And I believe the savings are approximated well in the&nbsp;earlier reply.&nbsp; </P>
+<P>Be sure and take at least SOME advantage of the code generation capabilities that supplement this great framework, too (no matter what tool you choose for that).&nbsp; It really is a separate topic, of course.&nbsp; But to miss out on the opportunity to save the effort eliminated by code generation of your business classes would be a real shame.&nbsp; </P>
+<P>There are other frameworks to choose from and I have no experience with any of them.&nbsp; But if you are going to try and make some comparisons between CSLA and another framework, be sure and take the community support into consideration.&nbsp; The "peer" support here is awesome and Rocky is here frequently, too.</P>
+<P>You&nbsp;may not&nbsp;realize the gains on your first project; there is, after all, some learning curve here (and with your code generation tool, as well).&nbsp; But the savings on future projects will make it well worth the climb(s).</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillyM replied on Wednesday, October 10, 2007</h2><P>These are both excellent responses. In looking over the code samples provided to me, it appears the comparison is between CSLA and Datasets. This strikes me as apples or oranges as that actually boils down to a decision between <EM>Business Objects</EM> or Datasets, which is a different matter entirely.</P>
+<P>I would agree that intially it is much easier to drag and drop a table from Server Explorer to create a Dataset that provides generic support for SQL databases, which is what I have generally done historically. However, I also agree with Rocky on the value of using Smart Data in order to contstrain business logic and prevent diffusing it throughout the application, which will eventually become a maintenance and support issue.</P>
+<P>I have not looked into any of the code generation aspects regarding CSLA applications. Sounds like this is an area I need to do additional research.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

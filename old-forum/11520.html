@@ -1,0 +1,24 @@
+<html><header><title>Embedding a object of type dynamic and use its properties as backing fields</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Embedding a object of type dynamic and use its properties as backing fields</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11520.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JanR posted on Wednesday, August 08, 2012</h2><p>I have data transfer objects of type dynamic which I want to use as backing store for my CSLA business objects but I have a problem with the SetProperty-method.</p>
+<p>I tried this:</p>
+<p>[Serializable]<br />public class MyBusinessObject : BusinessBase&lt;MyBusinessObject&gt;
+<br />{
+<br />	private dynamic _ddto;
+&nbsp;
+<br />	<br />public static readonly PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(c =&gt; c.Id, RelationshipTypes.PrivateField);<br />
+	public int Id
+<br />	{
+<br />		get { return GetProperty(IdProperty, _ddto.ExceptionId); }<br />set { SetProperty(IdProperty, ref _ddto.ExceptionId, value); }
+<br />	}
+<br />}</p>
+<p>The error I am getting is &#39;ref&#39; argument is not classified as a variable.</p>
+<p>Any guesses what am I doing wrong?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, August 08, 2012</h2><p>This is not a good idea. </p>
+<p>You need the values to be serializable and preferrably (in the future) with MobileFormatter. </p>
+<p>When you register a PropertyInfo CSLA itself will maintain a Dictionary&lt;string, object&gt; as backing store for all property values - so there is no need for a dynamic backing field that will also require extra plumbing code for serializing and deserializing of the object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JanR replied on Thursday, August 09, 2012</h2><p>Thanks for your advice, I know that CSLA is able to store the properties in automatic backing fields and we have used this in many situations. But this time&nbsp;we have several reasons to have this dynamic object a backing store. The need depends on severeal other components.Furthermore it is serializable and implements IMobileObject. So serialization is no problem, neither .net nor silverlight.</p>
+<p>Evereything already works except for the SetProperty-Method. At the moment we just directly set the properties of the object, but this way business rules checking does not happen.</p>
+<p>Besides your advice of not to do what we want to do, are there any other hints to make it work?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, August 09, 2012</h2><p>If you do not need AuthorizationRules on the field you may get away with: </p>
+<p>public int Id
+<br />	{
+<br />		get { return GetProperty(IdProperty, _ddto.ExceptionId); }<br />set <br />&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp; //SetProperty(IdProperty, ref _ddto.ExceptionId, value); <br />&nbsp;&nbsp;&nbsp;&nbsp; if (_ddto.ExceptionId != value)<br />&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ddto.ExceptionId = value;<br />&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; PropertyHasChanged(IdProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp; }
+<br />	}
+</p>
+<p>You could also create new SetProperty overloads that gets a lambda to set the actual value but maybe you don&#39;t need this.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

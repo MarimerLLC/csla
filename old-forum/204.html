@@ -1,0 +1,54 @@
+<html><header><title>ot-parent child encapsulation issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ot-parent child encapsulation issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean posted on Thursday, May 25, 2006</h2>Hi All,<br><br>I have a situation that must be fairly common but haven't seen anything in the forum specifically - I have child objects (in a collection) whose behaviour often is tightly coupled to the state of the parent. The parent is an order - later it is invoiced. Once it is invoiced child objects cannot be deleted (or added). So how to handle this while keeping things nicely encapsulated? Referencing a parent property in the child? Use events to keep the child aware of the parent state? Feed all request for deleting/adding to the collection thru the parent? Any thoughts or advice?<br><br>Thanks,<br><br>Dean<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>I would define an interface that the parent and collection implement, which contains a method the child can call to ask whether the order has been invoiced.<br><br>The implementation in the collection would delegate to the root parent, which can answer the question. This does require that your Order object provide the collection with a parent reference upon creation - but that can be easily handled through the collection's Friend/internal factory method.<br><br>The end result though, is that the interface provides relative loose coupling, and the child only knows about its immediate parent (the collection), which it already knows about anyway (due to IEditableObject). Note the protected Parent property that already exists for this purpose.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Thursday, May 25, 2006</h2>Thanks Rocky,<br><br>so you feel the child object maintaining a reference to the parent, as opposed to the collection, is a bad idea?<br><br>Dean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2>Well in an ideal world a child object never knows about its 
+parent at all - that's one of the rules of OOP. The most broken rule I'm 
+guessing :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2>Since the child already does know about its immediate 
+parent, I'd just use that pre-existing knowledge rather than adding and 
+maintaining yet another reference. By using an interface to do this, the child 
+is none the wiser about the nature of the actual parent object, and so you get 
+decently loose coupling.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2>Oh - and make sure the parent reference (the field) in the 
+collection is marked as NotUndoable and NonSerialized, and make sure it is reset 
+on deserialization. You can look at the way this is done in BusinessListBase for 
+inspiration.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=238513301-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Thursday, May 25, 2006</h2><span>You do not want a child to contain a reference
+to a concrete parent because your child will be tightly coupled to the parent.<span>&nbsp; </span>This creates a rigid design and does no make
+your code reusable.<span>&nbsp; </span>One of the
+fundamental principles of OOP is to program to an interface not an
+implementation. You want to try to&nbsp; program against abstract classes or interfaces, not
+concrete objects.<span>&nbsp; </span>This will give you
+more flexible and reusable code.<span>&nbsp; </span>Using
+an interface in this case will allow your child to interact with any object
+that implements the interface.<span>&nbsp; </span></span><br>
+<br>
+<span><span> </span></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fabiousa7 replied on Friday, January 05, 2007</h2><P>I am now having a problem just like this, I looked over the forum and found lots of discussion on this issue, but i have not yet found something that satisfy my needs.</P>
+<P>Let me be a little more specific about what i want to do and what i've tried to do so far, so maybe someone can give an insight about it.</P>
+<P><B>Problem:</B><BR>In ascenario ERoot &gt; EChildList &gt; EChild.</P>
+<P>When im adding EChilds to the collection i want to validate it agains some properties from ERoot.</P>
+<P>i.e.: Lets suppose ERoot is a box and and EChildList is a collection of little pieces that goes inside of it. In order for me to "put it inside", i have to validate EChild.Width and EChild.Height to make sure its smaller or equals to the ERoot.Width and Height.</P>
+<P><B>Attempts:</B><BR>I added a validation rule within the CustomRules in the EChild that would check it the way i wanted BUT the built in property "PARENT" was null. (do i have to instanciate it or its done automaticaly by the framework?)<BR>If I do Parent.GetParent(_parentId) it goes into an infinite loop.</P>
+<P>I tried doing the validation within the constructor, (I know its bad, i had to try) still didnt work.</P>
+<P>I tried other things, but havent got to a working solution, I am just lost!<BR>Would anyone please help, some sample code would help a lot.</P>
+<P>Thanks,<BR>Fabio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Wednesday, January 10, 2007</h2>The built in parent property is not set until the constructor is completed if I remember correctly. In the end I built an interface to my parent and created my own parent property in the child. (Parent passes to collection which passes to child). <br><br>&lt;NonSerialized(), NotUndoable()&gt; Private mParent as iParent<br><br>Dean<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham replied on Thursday, February 14, 2008</h2><P>I am trying to do something that seems very similar to this.&nbsp; I am trying to set child authorization (overriding CanWriteProperty) based on parent properties (status).&nbsp; </P>
+<P>Here is basic class diagram of my app.</P>
+<P><STRONG>Use case one - editing a promotion event</STRONG></P>
+<P>Promotional Event (Business Base - Parent)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PromoList (Read-Only Collection)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PromoInfo (Read-Only Child)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PriceList (Business&nbsp;List - Child)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Price (Business Base - Child)</P>
+<P><STRONG>Use case two - editing a promotion</STRONG></P>
+<P>Promo (Business Base - Parent)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PromoProducts (Business List - Child)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PromoProduct (Business Base - Child)</P>
+<P>Once my Promotional Event is in submitted or approved status (property of object), I want to set the CanWriteProperty to false for the event and ALL children.&nbsp; How do I implement the interface on the Promotional Event and Price List objects?&nbsp; And, how do I make the Price object see the status?</P>
+<P>Further, how do&nbsp;I make the Promo object (from the other use case - but still only exists in the context of a promotional&nbsp;event) see the status and set the CanWriteProperty for itself and it's own children?&nbsp; Is that even possible?</P>
+<P>I understand this is also similar to work flow.&nbsp; And, conceptually I understand the theory behind implementing an interface on the parent and the collection and calling a method in the child to use that interface.&nbsp; However, I don't understand how to actually do the code for this.&nbsp; Can somebody please provide a sample of some kind?</P>
+<P>Thanks in advance for any help!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

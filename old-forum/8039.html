@@ -1,0 +1,46 @@
+<html><header><title>View Model Anyone?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>View Model Anyone?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8039.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kevnworking posted on Tuesday, November 24, 2009</h2><font size="3"><font face="Tahoma">Hey All,<br><br>Disclaimer: I'm new to the view model concept, never used it before but have need for it now.<br><br>When creating a view model for the collection, how else can I associate the business object with the view model besides using DoRefresh?&nbsp; The real issue I have is trying to figure out how I can create a view model for a collection/BO that is the child of another object.&nbsp; The DoRefresh method wants the factory method of the collection, which of course used to reside in the property declaration and DataPortal_Fetch method of the parent object.<br><br>So how can I create a view model but still have the child object associated with it's parent?<br><br>See where I am struggling?&nbsp; If someone could point me to an example I would be most appreciative.&nbsp; I have studied Lhotka's view model example but this type of scenario is not covered near as I can tell...&nbsp; I only need a view model for this one child collection.<br><br>Happy Thanksgiving!<br><br>Kevin<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 24, 2009</h2><P>There are different interpretations of MVVM - some work better with anemic models and some with rich models.</P>
+<P>CSLA .NET helps you create rich models.</P>
+<P>If you have an anemic model, you may need to wrap every object with a viewmodel. That's a lot of work, because it means you need to create a viewmodel object graph that mirrors the shape of the model and then you must keep them in sync. It is a real pain.</P>
+<P>Fortunately CSLA helps you create a rich model, so you shouldn't have to go through nearly so much pain.</P>
+<P>When creating a viewmodel for a <EM>rich model</EM>, the shape of the viewmodel should be determined more by the view than the model. I tend to create a viewmodel for each logical region or section on my form. So I'll usually have one viewmodel for the entire form, which wraps the root object from the model. Then if I have a region of the form where I show&nbsp;a list of child objects, I might have a viewmodel for that region of the form, wrapping the child collection.</P>
+<P>To make that easy, the ViewModelBase class exposes&nbsp;a Model property that is bindable. In other words, you can chain the viewmodel objects, so your child viewmodel binds to the appropriate property of the parent viewmodel (or model).</P>
+<P>This is illustrated in the MVVMexperiment project, though the child isn't a collection, it is a single object. But the concept is exactly the same.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kevnworking replied on Tuesday, November 24, 2009</h2><font size="3"><font face="Tahoma">Hey Rocky!&nbsp; Thanks for the quick reply.<br><br>I understand ALMOST everything you told me - wrap the parent class in a view model and that will give me the ability to create another view model for one of it's child collections.&nbsp; I hadn't thought of exposing the child collections that way.<br><br>Here is where I'm still a bit fuzzy - you said:<br></font></font>you can chain the viewmodel objects, so your child viewmodel binds to
+the appropriate property of the parent viewmodel (or model)<br><br><font face="Tahoma">Could you expand a bit on this statement?&nbsp; It seems like you are saying that I could wrap the child collection object in a view model via the child collection object's exposure through the model property of the parent view model.<br><br>I guess I'm confused as to what the child collection view model's constructor would look like.&nbsp; Basically, how the child collection view model would be "loaded".<br><br>Thanks again for helping me understand this!<br><br>Kevin<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You don&#8217;t really need a constructor. The idea is to set the
+Model property of the child viewmodel from a property on the parent model &#8211;
+purely through XAML.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;this:ParentViewModel x:Key=&#8221;RootVM&#8221;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;this:ChildViewModel x:Key=&#8221;ChildVM&#8221; Model=&#8221;{Binding Source={StaticResource
+RootVM},Path=Model.ChildList}&#8221;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ParentViewModel would typically have a ctor where you load
+its Model with something valid. But the ChildViewModel gets its Model property
+set through binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kevnworking replied on Tuesday, December 29, 2009</h2><font size="3"><font face="Arial">I have been away from this project a while but am now back on it - I was able to get the view model's working (thanks Rocky!).<br><br>My "Save" and "Cancel" buttons were not working and I realized it's because I still have them bound to the CSLA Data Provider that no longer exists.&nbsp; Because my root object is now wrapped in a view model class, what is the best way to handle the save and undo?&nbsp; Should I mimic the way the buttons work in a Windows forms example?<br><br>Thanks,<br><br>Kevin<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 29, 2009</h2>The ViewModelBase (and therefore ViewModel)&nbsp;class implements a number of public properties like CanSave, CanCancel, etc. You can bind to those to control most buttons or similar UI action elements.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

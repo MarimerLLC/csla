@@ -1,0 +1,16 @@
+<html><header><title>CSLA &amp; Asp.net</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp; Asp.net</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6333.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Wednesday, February 04, 2009</h2><DIV>I am using a hosting provider.<BR><BR>I am using a few CSLA business objects.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>These objects are being stored in session variables.<BR><BR>For some reason, we keep getting a "Service Unavailable" error every once in awhile.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I know this error doesn't say much here.</DIV>
+<DIV><BR>But could CSLA be a possible problem here?<BR><BR>Thanks</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, February 04, 2009</h2><P>I doubt it.</P>
+<P>Sounds much more like an ASP.Net Session issue.</P>
+<P>There are 3 models for this:</P>
+<P>1. In process - fastest but riskiest as you lose all session data when the AppDomain recycles - which happens more often than you might think.</P>
+<P>2. Session State Server - Out of process - in memory of some server (even itself) - slower as you have to serialize the session blob in and out - but safer as you do not lose anything when the AppDomain recycles.</P>
+<P>3. Database - Out of process - about the same speed as #2. Even safer as you do not lose anything even if the web server goes down.</P>
+<P>Your problem may exist due to #1.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, February 05, 2009</h2><P>The "Service Unavailable" message is a catch-all when an exception happens during processing of your ASP.NET request.&nbsp; Make sure you set the "mode" attribute on the &lt;customErrors&gt; element in your web.config file to "Off" - the default is "RemoteOnly".&nbsp; This will allow you to see the details of any error that occurs.&nbsp; If you still get the generic "Service Unavailable" message, then it is something outside of your application such as what Joe described above.</P>
+<P>Remember to set this attribute back to "RemoteOnly" when releasing your application into production as you don't want users to see the details.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2>Though I got this just "service unavailable" a couple days ago, because I'd foolishly forgotten to switch the virtual root from .NET 1 to 2... No amount of config file changes can help you then... :(</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

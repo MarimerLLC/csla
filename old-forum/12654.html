@@ -1,0 +1,145 @@
+<html><header><title>CSLA 4.x TransactionalDataPortal has a breaking change compared to CSLA 3.8</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.x TransactionalDataPortal has a breaking change compared to CSLA 3.8</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, June 02, 2014</h2><p>Houston we have a problem. I&#39;ve been using both CSLA 4.x and
+3.8 for some time now, and haven&#39;t run across this issue until now, where we
+are upgrading a CSLA 3.8 based project to CSLA 4.5.</p>
+<p>This specific project executes
+along with other external application components from COM+ (Enterprise
+Services), making it sensitive to 2PC and Transaction Isolation levels.</p>
+<p>Context: I&#39;m referring to
+using the <strong><i>[Transactional( TransactionalTypes.TransactionScope
+)]</i></strong> attribute on the DataPortal_XYZ methods.</p>
+<p>For most CSLA projects, the transaction
+starts from the DataPortal_XYZ methods and seldom goes further to include other
+transactions. We have combinations of both, and specifically, we let the
+DataPortal_XYZ methods &quot;take-on&quot; the transaction isolation level of the caller.
+This may vary in that one caller has one isolation level, and another caller
+may use a different one (don&#39;t you just love integration work <img src="http://forums.lhotka.net/emoticons/emotion-41.gif" alt="Ick!" />&nbsp;).</p>
+<p>What cannot be done is to have a caller
+use one isolation level, and then have the subsequent DataPortal_XYZ method
+execute under a different isolation level, when it is enrolled in the same
+transaction scope of the caller (TransactionScope = Required).</p>
+<p>The implementation of the CSLA
+3.8 Transactional DataPortal code had created a new <strong><i>System.Transactions.TransactionScope</i></strong>
+instance using the <span style="text-decoration:underline;">default parameterless constructor</span>. This default constructor
+assumes a Scope = <strong><i>Required</i></strong> but specficially does not
+specify an isolation level. There is no default here, it&#39;s unspecified.</p>
+<p>Here is the code for the CSLA
+3.8 version:&nbsp;<a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Server/TransactionalDataPortal.cs?revision=4288&amp;view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Server/TransactionalDataPortal.cs?revision=4288&amp;view=markup</a></p>
+<p>The implementation of the CSLA 4.5 Transactional DataPortal
+looks to have some refactorings and actually creates a new <strong><i>System.Transactions.TransactionScope</i></strong>
+instance using a constructor overload that takes <span style="text-decoration:underline;">both the Scope and the Isolation
+level as parameters</span>. The Scope is defaulted to <strong><i>Required</i></strong>
+(when not expressly specified in the DataPortal_XYZ attribute), which matches
+the original behaviour. But, the isolation level is also specified in this overload, using a
+default value of&nbsp;<i>Serializable</i>
+and therein lies the rub, it&#39;s not unspecified/omitted.</p>
+<p>Here is the code for the latest CSLA 4.5.x version: <a href="https://github.com/MarimerLLC/csla/blob/master/Source/Csla/Server/TransactionalDataPortal.cs">https://github.com/MarimerLLC/csla/blob/master/Source/Csla/Server/TransactionalDataPortal.cs</a></p>
+<p>This default of <i>Serializable</i>
+is the safest (though most expensive) isolation level and makes a good default.
+Unfortunately, it is not the same behaviour as with CSLA 3.8, and does not allow the &quot;flow from caller&quot; scenario.</p>
+<p>Please note I&#39;m pointing out a
+subtle difference here. <br />
+Of course you can specify any isolation level that you want in the
+DataPortal_XYZ attribute (e.g. <strong><i>[Transactional(
+TransactionalTypes.TransactionScope,&nbsp;<span style="text-decoration:underline;">TransactionIsolationLevel.RepeatableRead</span>&nbsp;)]</i></strong> but
+that is not the issue. The issue is that by specifying it in the first place, results
+that it will always be that isolation level, regardless of the isolation level flowed from caller&#39;s scope (if one is present).</p>
+<p>With CSLA 3.8&#39;s implementation
+it would also have IMPLICITLY defaulted to serializable, but only if the
+isolation level from a caller&#39;s scope was not different, in which case it
+would&#39;ve taken the isolation level of the caller.</p>
+<p>With CSLA 4.5&#39;s implementation
+it is EXPLICITLY set to serializable by CSLA&#39;s default behavior, resulting in a
+transaction exception faulting the mismatch of isolation levels (the one from
+the callers scope not matching the one set on the DataPortal_XYZ.</p>
+<p>It turns out the <strong><i>System.Transactions.IsolationLevel</i></strong>
+enumeration has an <strong><i>Unspecified</i></strong> option. <br />
+Refer: <a href="http://msdn.microsoft.com/en-au/library/system.transactions.isolationlevel.aspx">http://msdn.microsoft.com/en-au/library/system.transactions.isolationlevel.aspx</a></p>
+<p>I&#39;ve done some tests and if I manually create a transaction
+scope using the same overload as CSLA 4 but then use this &quot;<strong><i>Unspecified</i></strong>&quot;
+option is works as expected and behaves as per CSLA 3.8 allowing me to &quot;flow&quot; the
+isolation level from the caller.</p>
+<p>Unfortunately, the <strong><i>ApplicationContext.DefaultTransactionIsolationLevel</i></strong>
+does not have an <strong><i>Unspecified</i></strong> enumeration either).</p>
+<p>@Jonny / @Rocky - Would you
+accept this as an issue for rectification?</p>
+<p>I really hope so, as this is a show stopper for our project
+development at the moment.</p>
+<p>In mind, the fix would be to either:</p>
+<ul class="unIndentedList">
+<li>
+Add a matching &quot;Unspecified&quot; option to the CSLA
+TransactionIsolationLevel enumeration and use that is the default value instead
+of Serializable in the method:<br />
+<strong><i><a href="https://github.com/MarimerLLC/csla/blob/master/Source/Csla/Server/TransactionalDataPortal.cs">private
+IsolationLevel GetIsolationLevel(TransactionIsolationLevel
+transactionIsolationLevel) {...}</a></i></strong><br />
+<br />
+(Probably the easiest and least amount of code changes).<br />
+<br />
+alternatively,
+</li>
+<li>
+Find some way call the same default
+parameterless constructor as CSLA 3.8 when no express values are set for the <strong><i>Transactional</i></strong> attribute on the DataPortal_XYZ methods.</li>
+</ul>
+<p>&nbsp;</p>
+<p>I&#39;d be happy to try and put a pull-request together if that would help further.<br />Thanks a million,</p>
+<p>Jaans</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 06, 2014</h2><p>I think the normal response to requests along these lines is to just not use the attribute, and instead use Manual and create the TS yourself inside the DP methods.&nbsp; I&#39;ve done this since we need to use the ReadCommitted isolation level; its not that big a deal, just two lines of code (and some braces).</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 06, 2014</h2><p>I&#39;m open to improving the existing implementation, and from what I can see this is a reasonable suggestion for improvement - why wouldn&#39;t we support the unspecified option?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, June 06, 2014</h2><p>Thanks Rocky.</p>
+<p>To my mind this is somewhat of an edge case, given that CSLA 4.x has been around a while and this hasn&#39;t surfaced sooner (including from us as we have many other projects already on CSLA 4.x. </p>
+<p>That said, making the default behaviour the same as previous version of CSLA would be more consistent. Also, when the <b>Unspecified </b>option is the default, it still results in the same behaviour currently where it ends up in the safest isolation mode of <b>Serialized</b>.</p>
+<p>To me that suggests this change to the defaults doesn&#39;t break behaviour currently expected and used by CSLA 4.5 users, and adds support for &quot;flowing&quot; the isolation level from the caller when needed.</p>
+<p>In addition, there is always the fall-back option for specifying the appSetting &quot;<b>CslaDefaultTransactionIsolationLevel</b>&quot; in the configuration file.</p>
+<p>If you are still happy to make the change, do you want me to create and issue and create a PR or can I leave that for you?</p>
+<p>Thanks again,<br />Jaans&nbsp;</p>
+<p><i>PS: Is there any information/updates on CSLA.js initiative yet? Would be keen to see where it&#39;s headed.</i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, June 16, 2014</h2><p>Hi Rocky / Jonny</p>
+<p>I&#39;ve discovered another problem (in addition to the above discussion to add the &quot;<strong><i>Unspecified</i></strong>&quot; Isolation level and to then change the default transaction isolation level to &quot;<i>Unspecified</i>&quot;).</p>
+<p>Specifically I have found that if you are making use of <i>Async/Await</i> calls <span style="text-decoration:underline;">inside of a <i>DataPortal_XYZ</i> method</span> that has been decorated with the <i>[Transactional( TransactionalTypes.TransactionScope )]</i> attribute (as you would typically do if you are using a transactional resource / service) then the TransactionScope transaction <span style="text-decoration:underline;">does not flow across the Task thread(s)</span><span>&nbsp;for them</span>.</p>
+<p>Took a while to figure out what is going on, because there is no error - it&#39;s quite subversive in that the roll-back just fails to happen when you need it - really nasty stuff tends to ensue then.</p>
+<p>Turns out that MS has added some additional <i>TransactionScope</i> constructors to take in a new enum parameter called &quot;<strong><i>TransactionScopeAsyncFlowOption</i></strong>&quot;. Refer&nbsp;<a target="_blank" title="MSDN" href="http://msdn.microsoft.com/en-us/library/dn261473.aspx">http://msdn.microsoft.com/en-us/library/dn261473.aspx</a><br /><br />This has a value of &quot;<i>TransactionScopeAsyncFlowOption.<b>Enabled</b></i>&quot; that resolves the above gotcha, and allows scenarios like this:</p>
+<pre class="lang-cs prettyprint prettyprinted"><code><span class="com">// transaction scope</span><span class="pln">
+using </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> scope </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">TransactionScope</span><span class="pun">(...</span><span class="pln"> </span><span class="pun">,</span><span class="pln"> </span><strong><span style="font-weight:bold;" class="typ">TransactionScopeAsyncFlowOption</span><span style="font-weight:bold;" class="pun">.</span><span class="typ"><b>Enabled</b></span></strong><span class="pun">))</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+  </span><span class="com">// connection</span><span class="pln">
+  using </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> connection </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">SqlConnection</span><span class="pun">(</span><span class="pln">_connectionString</span><span class="pun">))</span><span class="pln">
+  </span><span class="pun">{</span><span class="pln">
+    </span><span class="com">// open connection asynchronously</span><span class="pln">
+    await connection</span><span class="pun">.</span><span class="typ">OpenAsync</span><span class="pun">();</span><span class="pln">
+
+    using </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> command </span><span class="pun">=</span><span class="pln"> connection</span><span class="pun">.</span><span class="typ">CreateCommand</span><span class="pun">())</span><span class="pln">
+    </span><span class="pun">{</span><span class="pln">
+      command</span><span class="pun">.</span><span class="typ">CommandText</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> </span><span class="pun">...;</span><span class="pln">
+
+      </span><span class="com">// run command asynchronously</span><span class="pln">
+      using </span><span class="pun">(</span><span class="kwd">var</span><span class="pln"> dataReader </span><span class="pun">=</span><span class="pln"> await command</span><span class="pun">.</span><span class="typ">ExecuteReaderAsync</span><span class="pun">())</span><span class="pln">
+      </span><span class="pun">{</span><span class="pln">
+        </span><span class="kwd">while</span><span class="pln"> </span><span class="pun">(</span><span class="pln">dataReader</span><span class="pun">.</span><span class="typ">Read</span><span class="pun">())</span><span class="pln">
+        </span><span class="pun">{</span><span class="pln">
+          </span><span class="pun">...</span><span class="pln">
+        </span><span class="pun">}</span><span class="pln">
+      </span><span class="pun">}</span><span class="pln">
+    </span><span class="pun">}</span><span class="pln">
+  </span><span class="pun">}</span><span class="pln">
+  scope</span><span class="pun">.</span><span class="typ">Complete</span><span class="pun">();</span><span class="pln">&nbsp;</span></code></pre>
+<p><span>}</span>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, July 03, 2014</h2><p>@Johnny / @Rocky</p>
+<p>I would just like to follow up and ensure this doesn&#39;t &quot;fall off the bus&quot;. As stated before, I&#39;d be happy to create Issues for these in Github if preferred - and if need be I&#39;d try to create a pull-request if you want me to.</p>
+<p>These two TransactionScope issues are becoming ever frustrating to work around - and the dev team keeps assuming the normal way with CSLA 4 will work like always.</p>
+<p>To summarise:</p>
+<p><ol>
+<li>We need an additional enumeration for the CSLA&nbsp;<span class="n">TransactionIsolationLevel enumeration, called &quot;Unspecified&quot; to match those from System.Transactions<br />&nbsp;</span></li>
+<li><span class="n">This additional enumeration should be the default TransactionIsolationLevel for the CSLA Transactional DataPortal when none is specifically stated to match the behaviour from pre CSLA 4 times.<br /><br /></span></li>
+<li><span class="n">Support for flowing Transactions when using Async / Await pattern. Requires using a different constructor overload for the TransactionScope object,&nbsp;<span class="n">that specifies the parameter &quot;</span><i>TransactionScopeAsyncFlowOption.<b>Enabled&quot;</b></i>. This for the CSLA Transactional DataPortal,&nbsp;</span></li>
+</ol></p>
+<p>Thanks again, and apologies if my repeated follow-ups seem &quot;strong&quot; - it&#39;s just an important issue for us and took some work to find in the first place.</p>
+<p>Regards,<br />Jaans&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 03, 2014</h2><p>Please do add an issue to GitHub, and if you have a solution please feel free to submit a pull request with the fix and I&#39;ll review it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, July 03, 2014</h2><p>Excellent. Will do as soon as I&#39;m able.&nbsp;</p>
+<p>Thank you</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, July 04, 2014</h2><p>Hi Rocky</p>
+<p>I&#39;ve created the two issues on GitHub:</p>
+<ul>
+<li><a target="_blank" title="Issue # 287" href="https://github.com/MarimerLLC/csla/issues/287">#287</a> :&nbsp;Add &quot;Unspecified&quot; to TransactionIsolationLevel enumeration (matching System.Transactions) and make default Transactional DataPortal.</li>
+<li><a target="_blank" title="Issue # 288" href="https://github.com/MarimerLLC/csla/issues/288">#288</a> : Add default support for flowing of Transactions (System.Transactions) when using `Async / Await` pattern</li>
+</ul>
+<p>I&#39;ve created a pull request <a target="_blank" title="Pull Request # 289" href="https://github.com/MarimerLLC/csla/pull/289">#289</a> that addresses issue #287.</p>
+<p>Unfortunately, the PR for issue #288 will have to wait until CSLA targets 4.5.1 (as opposed to just 4.5) since the support for flowing async TransactionScope requires .NET 4.5.1 or later. I&#39;ve updated the GitHub issue with the relevant comment.</p>
+<p>Thanks,<br />Jaans&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

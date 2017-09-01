@@ -1,0 +1,16 @@
+<html><header><title>FieldDataManager Reflection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldDataManager Reflection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10370.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kriya posted on Friday, May 13, 2011</h2><p>
+<p class="MsoNormal"><span><span>How do I get the child object fields from parent BusinessBase using Reflection?.I have an BO Customer and want to replace &nbsp; the Primary key value of BO CustomerOrder to New GUID and save that record .I m using CSLA 3.0.</span></span></p>
+<p class="MsoNormal"><span><span>&nbsp;m not geting the properties of FieldDataManager&nbsp;.Any Solution?</span></span></p>
+<p class="MsoNormal"><span><span>Type</span> t
+= Customer.GetType();</span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>FieldInfo</span>
+field= t.GetField(<span>&quot;_cutomerOrder&quot;</span>,</span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>BindingFlags</span>.Instance
+| <span>BindingFlags</span>.Public | <span>BindingFlags</span>.NonPublic | <span>BindingFlags</span>.Static);</span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>object</span>
+fieldDataManager = property.GetValue(Customer);</span></p>
+<p class="MsoNormal">Thanks in Advance.</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, May 13, 2011</h2><p>CSLA 3.0 didn&#39;t have the field manager. You must be using 3.6 or higher?</p>
+<p>The purpose of the field manager is to help you (and me) avoid the use of reflection for things like this. There&#39;s a method on the field manager that will give you a list of the child properties in your business object.</p>
+<p>The child object can ask its field manager for its list of properties, and that list can be returned through an internal method.</p>
+<p>That would allow the parent to get a list of the child object&#39;s properties without using any reflection at all.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

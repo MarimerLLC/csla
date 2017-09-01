@@ -1,0 +1,10 @@
+<html><header><title>'System.Runtime.Serialization.SerializationException' in mscorlib.dll</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>'System.Runtime.Serialization.SerializationException' in mscorlib.dll</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5770.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Yosarian posted on Sunday, November 09, 2008</h2><P>Hi there,</P>
+<P>I have a problem with security and CSLA.NET 1.1. When I try the Login with PTracker the message 'System.Runtime.Serialization.SerializationException' appears. It happens in the function Fetch of the DataPortal in the CSLA Project</P>
+<P><FONT color=#0000ff>Else</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;Return Portal.Fetch(Critera,GetPrincipal)</FONT></P>
+<P><FONT color=#0000ff>End If</FONT></P>
+<P>The message says also that the type 'CSLA.Security.BusinessIdentity+Criteria' can't be used because of missing the rights.</P>
+<P>All involved classe (BussinesIdentity, BusinessPrincipal) are &lt;serializable&gt; . </P>
+<P>What can be the problem?</P>
+<P>Sorry for my bad english :-)</P>
+<P>Thomas (from Germany)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 10, 2008</h2>Have you tried Csla 1.53?&nbsp; That's the latest (and last) version designed to run on .Net 1.x framework.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

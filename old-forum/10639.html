@@ -1,0 +1,41 @@
+<html><header><title>Bug in FetchChild / method caller</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in FetchChild / method caller</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10639.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Thursday, August 25, 2011</h2><p>I have a child collection that loads from an array. Particularly, a DataRow array.</p>
+<p>When the datarow array&#39;s length is 0, Child_Fetch gets a null reference.</p>
+<p>Example:</p>
+<p>class Class1 : Csla.BusinessBase&lt;Class1&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; void Child_Fetch(DataRow[] p)<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(p == null); }<br />&nbsp; }</p>
+<p>&nbsp;</p>
+<p>So when you do this:</p>
+<p>Csla.DataPortal.FetchChild&lt;Class1&gt;(new DataRow[] { });</p>
+<p>The expected result is to get an empty datarow array in Child_Fetch.</p>
+<p>&nbsp;</p>
+<p>The problem is that if you call FetchChild() without passing any parameter, the method gets an empty object array anyway instead of null.</p>
+<p>&nbsp;</p>
+<p>This could be solved by creating overloads for FetchChild (and the other methods) that don&#39;t take any param array and can pass null instead of an empty object[] down the pipeline.</p>
+<p>&nbsp;</p>
+<p>Ideas?</p>
+<p>Cheers,</p>
+<p>Andr&eacute;s</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, August 25, 2011</h2><p>This is a known issue, and it is (to my knowledge) unsolvable.</p>
+<p>The problem is that, at runtime, we don&#39;t have enough information to differentiate between an array, the param array, and a null value. The end result is that at least one scenario can&#39;t be made to work:</p>
+<ul>
+<li>FetchChild()</li>
+<li>FetchChild(int)</li>
+<li>FetchChild(int, int)</li>
+<li>FetchChild(int[]) // with a null array</li>
+<li>FetchChild(int[]) // with an empty array</li>
+<li>FetchChild(int[]) // with a populated array</li>
+<li>FetchChild(null)</li>
+</ul>
+<p>I&#39;ve spent many, many hours on this without finding a solution. I think Blake spent a bunch of time on this too, as did Justin at one point.</p>
+<p>If you can solve it, I&#39;d love to see the answer. :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, August 25, 2011</h2><p>Hi Rocky!</p>
+<p>Thanks for your reply. I was able to make those changes successfully.</p>
+<p>Tested with these calls:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class1&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class1&gt;(1);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class1&gt;(1, 2);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class1&gt;(null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class1&gt;(new int[] { });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class1&gt;(new int[] { 0 });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class2&gt;(null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class2&gt;(new object());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class2&gt;(&quot;&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortal.FetchChild&lt;Class2&gt;(new Class2());</p>
+<p>Against these objects:</p>
+<p>&nbsp; class Class1 : Csla.BusinessBase&lt;Class1&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; void Child_Fetch(int[] p)<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(p == null); }<br />&nbsp;&nbsp;&nbsp; void Child_Fetch(int a)<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(&quot;{0}&quot;, a); }<br />&nbsp;&nbsp;&nbsp; void Child_Fetch(int a, int b)<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(&quot;{0}, {1}&quot;, a, b); }<br />&nbsp;&nbsp;&nbsp; void Child_Fetch()<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(&quot;parameterless&quot;); }<br />&nbsp; }<br />&nbsp; class Class2 : Csla.BusinessBase&lt;Class1&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; void Child_Fetch(object p)<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(&quot;object overload. IsNull = {0}&quot;, p == null); }<br /><br />&nbsp;&nbsp;&nbsp; void Child_Fetch(string p)<br />&nbsp;&nbsp;&nbsp; { Console.WriteLine(&quot;String overload. IsNull = {0}&quot;, p == null); }<br />&nbsp; }</p>
+<p>&nbsp;</p>
+<p>The fix involves mostly adding overloads to indicate whether an argument has been explicitly passed or not, such as this:</p>
+<p>&nbsp;&nbsp;&nbsp; private object Fetch(Type objectType, bool hasParameters, params object[] parameters)</p>
+<p>&nbsp;&nbsp;&nbsp; public object Fetch(Type objectType, params object[] parameters)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Fetch(objectType, true, parameters);<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; public object Fetch(Type objectType)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Fetch(objectType, false, null);<br />&nbsp;&nbsp;&nbsp; }<br /></p>
+<p>I will forward this changes to you by email.</p>
+<p>&nbsp;</p>
+<p>Cheers</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,119 @@
+<html><header><title>ComboBox DataBinding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ComboBox DataBinding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/616.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell posted on Thursday, July 13, 2006</h2>Searching Google and such has not yielded any ideas, so here goes.<br><br>I have a ComboBox that is bound to a BindingSource that has a BusinessListBase&lt;T,C&gt; as its DataSource.&nbsp; The ValueMember points to a Guid property in T and the DisplayMember points to a String property.&nbsp; A Guid in a BusinessBase&lt;T&gt; is bound to the SelectedValue.&nbsp; I would like to allow the user to type in one of the items in the BusinessListBase in the ComboBox, because the list could have hundreds of items that start with the same prefix (so allowing the user to type past the prefix and then hit the up and down arrow keys would be useful).&nbsp; I thought of binding to not only SelectedValue but also Text, but that binds to the Guid and displays the Guid in the text area instead of the String value.&nbsp; Any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 13, 2006</h2>I think you need another type of combobox control (though I'd love to be wrong). You may have to create your own to get the behavior you want - that's what I've had to do in the past anyway...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeterRigbye replied on Friday, July 14, 2006</h2><P>I'm afraid Rocky's correct, this is one of the biggest pains in my opinion trying to deliver Windows-like functionality in a web browser.</P>
+<P>You will need a 3rd-party control (or suite). We've used the webcombo product from Intersoft for the past three years, but there are quite a few others on the market.</P>
+<P>I did see an atricle recently on using Atlas/AJAX to achieve similar results without buying a control, but never got to try it out.</P>
+<P>Cheers,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, July 14, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>PeterRigbye:</strong></div><div><p>I'm afraid Rocky's correct, this is one of the biggest pains in my opinion trying to deliver Windows-like functionality in a web browser.</p>
+<p>You will need a 3rd-party control (or suite). We've used the webcombo product from Intersoft for the past three years, but there are quite a few others on the market.</p>
+<p>I did see an atricle recently on using Atlas/AJAX to achieve similar results without buying a control, but never got to try it out.</p>
+<p>Cheers,</p></div></BLOCKQUOTE><br><br>Sorry that I did not make it clear, but I am doing this in a Windows Forms application.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slipmat replied on Sunday, July 16, 2006</h2>The win forms combobox in .Net 2.0 includes autocomplete functionality.<br>Set the AutoCompleteMode to Suggest or SuggestAppend<br>&amp; set the AutoCompleteSource to ListItems. This should give you the behaviour your after.<br>Bind the Display Member to the String property, Value Member to GUID property and then SelectedValue to the GUID property in the root object.<br>You don't need to bind the Text property.<br><br>Cheers<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Sunday, July 16, 2006</h2>Thanks, that did most of what I wanted.&nbsp; The only downside is that the user gets no indication if they type in somthing that is not in the list.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 17, 2006</h2>Your BO should have a business rule that makes sure the value put into your BO via the combo box is a value in the list.<br><br>Also, try setting AutoCompleteMode to SuggestAppend, this will give the user's a 'match as they type' experience.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, July 17, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Your BO should have a business rule that makes sure the value put into your BO via the combo box is a value in the list.<br><br>Also, try setting AutoCompleteMode to SuggestAppend, this will give the user's a 'match as they type' experience.<br></div></BLOCKQUOTE><br>No invalid value is entering the business object because the user typed in a string that did not match any item in the list.&nbsp; If you look at a different object in the UI and then come back to the one that was edited with the invalid value, you will see that it still has its previous value.&nbsp; What I had been hoping for was a databinding error to pop up on the error provider.&nbsp; Oh well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 17, 2006</h2>That seems odd.&nbsp; Are you binding SelectedValue to the BO's property which is entered via the combobox?&nbsp; I thought that if the user typed something that didn't match, it would attempt to set null as the value.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, July 17, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>That seems odd.&nbsp; Are you binding SelectedValue to the BO's property which is entered via the combobox?&nbsp; I thought that if the user typed something that didn't match, it would attempt to set null as the value.<br></div></BLOCKQUOTE><br>SelectedValue is bound to the Guid.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Thursday, February 15, 2007</h2><P>Were you ever able to figure this out?&nbsp; I am running into the same scenario and it seems that if the item is not in the list the value does not get pushed back to the business object.&nbsp; I have tried using the Format and Parse events, but they are not called either.&nbsp; I would think that this is a pretty common scenario.</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeterRigbye replied on Thursday, February 15, 2007</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Mike,<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Had forgotten this &#8211;
+long time ago.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>We use a 3<sup>rd</sup> party control
+(webcombo from Intersoft) which does this fine. I don&#8217;t have any
+experience with doing Windows apps.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div>
+
+<address><i><font size=2 color=black face="Franklin Gothic Book"><span>Cheers,</span></font><font color=navy><span><o:p></o:p></span></font></i></address>
+
+<address><strong><b><i><font size=3 color=navy face="Franklin Gothic Book"><span>Peter
+Rigbye</span></font></i></b></strong><font color=navy><span><o:p></o:p></span></font></address>
+
+<address align=left><i><font size=2 color=teal face="Franklin Gothic Book"><span>Managing&nbsp;Director</span></font><font color=navy><span><o:p></o:p></span></font></i></address>
+
+<address align=left><i><font size=2 color=teal face="Franklin Gothic Book"><span>PASR
+Technologies Pte Ltd</span></font><font color=navy><span><o:p></o:p></span></font></i></address>
+
+<address align=left><i><font size=1 color=teal face="Franklin Gothic Book"><span>Reg. No.
+200002233K</span></font><font color=navy><span><o:p></o:p></span></font></i></address>
+
+<address align=left><U1:ADDRESS><U3:ADDRESS><st1:address><i><font size=2 color=teal face="Franklin Gothic Book"><span>16
+  Mohamed Sultan Road, #03-02</span></font></i></st1:address></U3:ADDRESS></U3:ADDRESS><font color=navy><span><o:p></o:p></span></font></address>
+
+<address align=left><i><font size=2 color=teal face="Franklin Gothic Book"><span>Singapore, 238965</span></font><font color=navy><span><o:p></o:p></span></font></i></address>
+
+<address align=left><i><font size=2 color=teal face="Franklin Gothic Book"><span>T: +65 </span></font></i><font size=2 color=blue face="Franklin Gothic Book"><span>6238-3416</span></font><font size=2 color=teal face="Franklin Gothic Book"><span>&nbsp;
+M: +65 </span></font><font size=2 color=blue face="Franklin Gothic Book"><span>9635-6482</span></font><font size=2 color=teal face="Franklin Gothic Book"><span> F: +65 </span></font><font size=2 color=blue face="Franklin Gothic Book"><span>6738-3864</span></font><font color=navy><span><o:p></o:p></span></font></address>
+
+<address align=left><i><font size=1 color=teal face="Franklin Gothic Book"><span>E: </span></font><font color=blue><span><a href="mailto:peter.rigbye@pasr.com.sg" title="mailto:peter.rigbye@pasr.com.sg"><font size=1 face="Franklin Gothic Book"><span><span><span><span>peter.rigbye@pasr.com.sg</span></span></span></font></span></a></span></font></i><font size=1 color=teal face="Franklin Gothic Book"><span>&nbsp; W:
+</span></font><font color=blue><span><a href="http://www.pasr.com.sg/" title="http://www.pasr.com.sg/"><font size=1 face="Franklin Gothic Book"><span><span><span><span>http://ww</span></span></span></font></span></a></span></font><u><font size=1 color=blue face="Franklin Gothic Book"><span><a href="http://www.pasr.com.sg/" title="http://www.pasr.com.sg/"><span><span><span><span>w.pasr.com.sg</span></span></span></a></span></span></font></u><o:p></o:p></address>
+
+</div>
+
+</div>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> mr_lasseter [mailto:cslanet@lhotka.net]
+<br>
+<b><span>Sent:</span></b> Friday, 16 February 2007
+3:27 AM<br>
+<b><span>To:</span></b> Peter Rigbye<br>
+<b><span>Subject:</span></b> Re: [CSLA .NET] ComboBox
+DataBinding</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Were you
+ever able to figure this out?&nbsp; I am running into the same scenario and it
+seems that if the item is not in the list the value does not get pushed back to
+the business object.&nbsp; I have tried using the Format and Parse events, but
+they are not called either.&nbsp; I would think that this is a pretty common
+scenario.<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>&nbsp;<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Thanks,<o:p></o:p></span></font></p>
+
+<p><font size=3 face="Times New Roman"><span>Mike<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

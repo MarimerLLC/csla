@@ -1,0 +1,231 @@
+<html><header><title>LINQ in CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LINQ in CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/54.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrnail23 posted on Wednesday, May 10, 2006</h2>Just wondering, but is anyone looking to incorporate Microsoft's upcoming LINQ technology in CSLA?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 10, 2006</h2><P>I've done some research in this area. Of course LINQ continues to evolve, so it is impossible to say exactly what will be possible.</P>
+<P>The primary issue (difficulty) is that LINQ generates IEnumerable&lt;T&gt; as a result - so it doesn't have any automatic way to put objects into an intelligent collection like one derived from BusinessListBase. This tends to limit what one can do. Still, I have tried a few things:</P>
+<OL>
+<LI>You can use LINQ to extract data from CSLA objects into DTOs - reshaping and creating new views (not really updatable) of your objects.</LI>
+<LI>You can use LINQ to create an IEnumerable&lt;T&gt; list of editable root objects - though this (today at least) requires that you create a factory method to accept every data field you want in your object.</LI>
+<LI>You can use DLinq instead of ADO.NET to load data to/from the database. This gives you an alternate way to implement the DataPortal_XYZ methods, and arguably makes it easier to move the actual data access code out of your object itself (and into DLinq essentially).</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skip replied on Tuesday, May 16, 2006</h2><P>What about having LINQ objects as private data members (or lists thereof)&nbsp;inside of CSLA business objects?&nbsp; The public properties of the business objects could&nbsp;access the LINQ object properties directly when there happened to be a clean mapping.</P>
+<P>I'm just not sure if the LINQ objects would&nbsp;be able to ride along as mobile children back and forth between client and server.&nbsp; Could they be serialized?&nbsp; Also, I'm not sure this would work becuase each&nbsp;LINQ object is tied to a DataContext object, which I think would need to stay alive on the server because it holds on to a db connection.&nbsp; Anybody have any thoughts?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 16, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=921045515-16052006><FONT face=Arial color=#0000ff size=2>This DataContext issue is one of the big issues with DLinq 
+as it stands. This concept precludes remoting of DLinq data objects - which 
+means DLinq is currently (effectively) useless for any sort of n-tier 
+application involving an application server.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921045515-16052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921045515-16052006><FONT face=Arial color=#0000ff size=2>This is why, thus far anyway, I've been focusing on how to 
+use DLinq (or LINQ in general) to populate CSLA style business objects. CSLA is 
+specifically designed to support the idea of remoting objects between a cilent 
+and an application server. At the same time, DLinq offers some nice features as 
+well, but not in an n-tier setting.</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, April 02, 2007</h2><P>FWIW - I haven't looked at LINQ as a way to retrieve my BO's from the database (yet) but have rather considered this as a significant step forward in the ability to provide dynamic search capability.&nbsp; The issue I see here is that by returning an IEnumerable&lt;T&gt;, it is possible to return objects that aren't pre-defined in our object graph.&nbsp; HOWEVER, we control the interface, don't we?&nbsp; So, it should be easy enough, or realistic enough, to limit access to what we expose from our BO's.</P>
+<P>What I mean by this, and what I have toyed with in my investigation of LINQ thus far, is extending the base classes and data portal mechanism to include&nbsp;"Search"-like methods that provides the interface to LINQ.&nbsp; For example, we could now have a Where() method on our Person BO (following the LINQ syntax) that would return a PersonCollection containing the objects that matched our criteria.&nbsp; Under the hood, the Where() method would pass the LINQ criteria through the data portal to a new DataPortal_Search method in our BO which would inact the LINQ command, retrieve the selected records and return them as BO's contained in the collection class.</P>
+<P>This sounds like a lot of work, but with generics and reflection, I'm sure much of it can be coded at a base-class level to eliminate much of the work for developers.</P>
+<P>In addition, this approach will&nbsp;support the "traditional" data portal methods to instantiate and update our BO's while leaving the door open for LINQ to be implemented within the DataPortal_XYZ methods as Rocky described.&nbsp; Plus, because all of the actual LINQ-based actions take place on the "other side" of the data portal, the n-tier limitations Rocky explains are not an issue.</P>
+<P>In the end, we have LINQ under the covers as a technology for data access and retrieval that is transparent to the BO and UI developers.&nbsp; As a development tool and class library designer who passes most of his work on to others to use in their development efforts, this is ideal.&nbsp; I don't see LINQ as changing the way we code our objects but rather a way to extend what we can do now, hopefully simplifying some of the extensive work that we've done in the past to implement the same features, and gives us an alternative way of bridging the BO to database gap.</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shailensukul replied on Thursday, December 20, 2007</h2><P>I am also new to LINQ and will be reading more about it in detail (in between my Biztalk exam preparation). The possibilities it presents are interesting. </P>
+<P>I think you are correct above becuase if the BusinessBase classes were modified to support LINQ-style queries, it would theoretically be possible to do </P>
+<P>IEnumerable&lt;Businesscustomers&gt; customers&nbsp;= Customer.Where(c =&gt; c.Type="Business")</P>
+<P>The concern is that, this would mean tying CSLA to LINQ. Maybe it is possible to create BusinessBaseLinq style classes separately? </P>
+<P>Not only will this make the Customer class more dynamic, it will also remove the dependence on the Critieria class. The Data_Portal methods like DataPortal_Execute could still occur on the server side as per normal but use LINQ instead of ADO.NET.</P>
+<P>I do not think I have enough knowledge of LINQ and CSLA.NET to make that call yet.</P>
+<P>Make Rocky has some thoughts on that?</P>
+<P>&nbsp;</P>
+<P>--<BR>With Regards</P>
+<P>Shailen Sukul<BR>Software Architect/Developer/Consultant<BR>(BSc | Mcts (Biztalk (IP))&nbsp; | Mcpd | Mcts (Web, Win, Dist Apps) | Mcsd.NET | Mcsd | Mcad)<BR>Ashlen Consulting Services Pty Ltd<BR>(<A href="http://www.ashlen.com.au">http://www.ashlen.com.au</A>)</P>
+<P>MSN | Skype | GTalk Id: shailensukul<BR>Ph:&nbsp; +61 0421 277 812 <BR>Fax: +61 3 9011 9732<BR>Linked In: <A href="http://www.linkedin.com/in/shailensukul">http://www.linkedin.com/in/shailensukul</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 20, 2007</h2><P>This thread is pretty old <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>If you look at the CSLA .NET 3.5 change log, there's already some good activity around LINQ support, and the results are, and will be, very cool.</P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=71994329-d218-4c02-a4d4-ce5ea4ac8d4b">http://www.lhotka.net/Article.aspx?area=4&amp;id=71994329-d218-4c02-a4d4-ce5ea4ac8d4b</A></P>
+<P>Remember that LINQ is not just one thing. There's LINQ to SQL, LINQ to XML and LINQ to Objects and LINQ to DataSets and LINQ to Entities. There'll be more as time goes on. Each is part of the family, but they are not the same thing.</P>
+<P>I'm only focusing on the two primaries: LINQ to Objects and LINQ to SQL.</P>
+<P>The two major areas of LINQ to Objects integration are:</P>
+<P><STRONG>One: </STRONG>The merging in of Aaron Erickson's indexed query concepts, so you can mark properties of a child class in a BusinessListBase list to be indexed, and if one of those properties is used in a Where clause then the index is used. This results in a major performance improvement, though there's a cost to building the index. But if you are doing multiple queries over a list and/or the list is very large then this feature can have a big benefit.</P>
+<P><STRONG>Two: </STRONG>Ensuring that a non-projection query against a CSLA list will result in a live view, much like FilteredBindingList, of the original list. This is important because otherwise you get a disconnected IEnumerable&lt;T&gt; which can be confusing. By default, adding/removing items from that list has no impact on the real list, and thus has no impact on the data when saved. That's a problem. To solve this, queries (non-projection) against CSLA lists will result in a richer return type that is a live view against the original list, so adding/removing items from that view adds/removes the items from the real list (almost exactly like FilteredBindingList). This results in a much more natural and (I think) expected set of behaviors.</P>
+<P>We're not going as far as the SyncLinq project, which should even keep projections in sync. However, it appears that SyncLinq will be compatible with CSLA and so I don't feel the need to duplicate all that effort. At the same time, the non-projection query issue is <EM>so</EM> common that I want to ensure it is a built-in feature of CSLA.</P>
+<P>All that is just LINQ to Objects.</P>
+<P>I'm concurrently working on LINQ to SQL support. L2S is primarily a replacement for ADO.NET in the CSLA .NET architecture. I don't believe it will replace criteria objects though, because LINQ querys are not serializable and even if they were they'd require too much knowledge of the data schema on the client to really be appropriate. Ultimately I think that L2S must be viewed as just another data access technology like DAO,RDO,ADO,ADO 2.0,ADO.NET and ADO.NET 2.0. That is to say the use of L2S should be <EM>strongly restricted</EM> within an application because the odds of you needing to replace it with "The Next Big Thing" in 2.6 years is very, very high.</P>
+<P>Well, actually The Next Big Thing is ADO.NET Entity Framework, which is merely months away, so we're not going to get anywhere near the 2.6 year average lifetime for a data access technology this time around...</P>
+<P>There are other issues to deal with around L2S (and ADO.NET EF) because of the way those technologies use "context". They both have non-serializable context objects that listen for events on the DTO/entity objects and monitor which ones are new/deleted/changed. That works fine in a stateful 2-tier world, but is really problematic in either a stateless or n-tier scenario.</P>
+<P>CSLA .NET supports n-tier scenarios - that is a core part of its identity. So right there we have issues with this context concept.</P>
+<P>And CSLA .NET supports stateless scenarios like stateless web apps, services, workflow activities, etc. That's a <EM>double</EM> blow to the context issue.</P>
+<P>Fortunately CSLA objects have always maintained this contextual state themselves. So it isn't like the state is ever lost, but the L2S or EF context object does get lost (by definition - it isn't serializable and can't be maintained in a stateless scenario like the data portal). </P>
+<P>None of this is a problem with <EM>retrieving</EM> data. But it is a problem when doing insert/update/delete operations, because things get complex. Your options (in general) are:</P>
+<OL>
+<LI>Recreate the context by requerying the database (yuck!)</LI>
+<LI>Recreate the context by creating an empty context and calling some advanced methods to "trick" the context into knowing what's new/deleted/changed (challenging)</LI>
+<LI>Skip the whole thing and just do insert/update/delete commands much like today (only better when using L2S with sprocs)</LI></OL>
+<P>There's no clear winner there. Certainly option 1 seems very poor. Option 2 is my area of focus, to see if I can help simplify the otherwise unpleasant code - but I have yet to hit on a good solution. Option 3 is totally workable, and is actually quite nice if you are using the command concepts in L2S, where L2S abstracts the CUD operations into a set of nice, strongly-typed methods. It is particularly nice if you use atomic sprocs, because you can just drag the sprocs onto the designer and that gives you all the nice strongly-typed methods to call - very smooth.</P>
+<P>As you can see, I personally really like option 3, but it offers no clear benefit over using the DAAB or other code-genned DAL - because basically it uses L2S just like a code-genned DAL (which it is, so that makes sense <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />).</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, May 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The two major areas of LINQ to Objects integration are:
+<p><strong>One: </strong>The merging in of Aaron Erickson's indexed query concepts, so you can mark properties of a child class in a BusinessListBase list to be indexed, and if one of those properties is used in a Where clause then the index is used. <br></p><p><strong>Two: </strong>Ensuring that a non-projection query against a CSLA list will result in a live view, much like FilteredBindingList, of the original list. </div></BLOCKQUOTE></p>Hi, <br><br>I would love to use this on my Business Classes. Are there any samples on how to use it? E.g. how to mark the properties?<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are no samples outside of the unit test code, sorry.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it is pretty easy &#8211; just put the Indexable attribute
+on your property and it will get indexed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Right now the indexing only works for equality-based clauses
+like <i>where id == 10</i> or something like that. The index is a hash table,
+and so can&#8217;t do &lt; or &gt; operators (though Aaron is working on that
+for a future point release).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justin.fisher replied on Thursday, May 22, 2008</h2><font face="Courier New">I actually prefer a seperation when it comes to data access.&nbsp; The current implementation provides a pretty nice seperation, the data access objects (ado.net, linq, whatever) get instantiated used and fall out of scope all right there inside the dataportal_xyz methods.&nbsp; If the business objects were tied at the hip to LINQ (or anything else for that matter) then that could create some real problems if ever we wanted to do data access differently.<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Friday, May 23, 2008</h2><P>The reality is that all objects that you can have more than one of at&nbsp;the same time&nbsp;are tied at the hip to LINQ.&nbsp; Mostly because all collections - anything that is enumerated in a foreach loop, now have the ability to do linq queries against them.</P>
+<P>Its ok - I spend a lot of time in my talks helping people understand that LINQ is a technology for thinking about groups of things and the set theory that underlies that, and that LINQ to SQL is a specific technology (as is LINQ to Entities, LINQ to CSLA, and dozens of other IQueryable implementations) are simply optimizations of the original LINQ to objects.</P>
+<P>Which is really cool if you think about it.&nbsp; Every case where you had a foreach with a condition statement inside it is now a LINQ candidate.&nbsp; What took multiple statements can now be done more expressivley in a single statement.&nbsp; Less code, IMHO, is a good thing most of the time - especially when you lose no fidelity (i.e. var mySubset = from g in myColleciton where g.SomeProp == 69 select g) is much easier to understand than the alternatives which span sometimes 5 lines of code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justin.fisher replied on Tuesday, May 27, 2008</h2><font face="Courier New">My thinking on this has been that LINQ to SQL is used to map the datareader columns into the properties of my business objects at which point LINQ to SQL is no longer required.&nbsp; The thought of somehow exposing the results of LINQ to SQL does not sound like a great option at all.&nbsp; <br><br>My first impressions of this technology is to use it (LINQ2SQL) as a mapper and then discard it.&nbsp; I'm not saying never use LINQ to query against you lists but exposing data through it just 'sounds' like a bad idea.<br><br>Thanks for the comments.<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Saturday, July 12, 2008</h2><p class="MsoNormal">Just wondering if anything more has happened with integrating
+Bindable Linq (aka SyncLinq) into CSLA for full syncing? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span>Just wondering if anything more has happened
+with integrating <span><br>
+&gt;</span>Bindable Linq (aka SyncLinq) into CSLA for full syncing? <span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>No,
+there&#8217;s never been any attempt to integrate synclinq into CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>CSLA
+.NET 3.5 includes &#8220;LINQ to CSLA&#8221;, which addresses two major areas
+of concern when using LINQ to Objects against CSLA business objects:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>When doing a non-projection query against an editable collection
+(BLB subclass), LINQ to CSLA ensures that you get a &#8220;live view&#8221; as
+a result of your query. This means that when you add/edit/remove items in the
+query result, you are actually affecting the original list.<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The functionality of i4o (indexed queries against objects) is
+included directly into CSLA .NET. This means you can apply the Indexable
+attribute to a property of a child object, and when you do a query against the
+list that contains that child and the where clause uses an equality check
+against the indexed property, the query will use the index to find the result.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Of
+the two, the one that impacts nearly everyone is the first feature. Without
+that feature a UI developer might have been tempted to do a query and bind the
+result to the UI &#8211; which would appear to work up to the point that the
+user tried to save the data. At that point the developer would discover that
+the original list (which is what gets saved) wouldn&#8217;t contain all the
+changes made by the user. But with LINQ to CSLA, the developer <i>can</i> bind
+the query result to the UI and they&#8217;ll get the expected results when
+saving.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>The
+second feature, indexing, is useful in limited scenarios. Specifically where
+you are doing many queries against the same source list, and where the queries
+involve an equality check against a specific property of the child objects.
+This is particularly useful against large read-only lists that are cached for
+the lifetime of the app, and where other parts of the app often need to look up
+values against that large read-only list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Hopefully
+CSLA .NET 3.6 (which is in active development) will include an enhanced
+implementation of the indexed queries so more operators are supported,
+including &lt;, &gt;, &lt;=, &gt;= and =. While this feature will always be
+targeted at scenarios where you are doing many queries against the same list,
+supporting more operators will broaden its usefulness quite a lot.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Saturday, July 12, 2008</h2>Hi Rocky<br>Thanks for the reply. My asking the question was simply a miss understanding of something you said earlier <br><br>"We're not going as far as the SyncLinq project, which should even keep
+projections in sync. <i>However</i>, it appears that SyncLinq will be
+compatible with CSLA and so I don't feel the need to duplicate all that
+effort. At the same time, the non-projection query issue is <em>so</em> common that I want to ensure it is a built-in feature of CSLA."<br><br>So thanks for clearing that up and I am looking forward to future releases.<br>Cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw replied on Wednesday, December 03, 2008</h2><P>Just wondering, is it possible to have something like below:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Project</FONT></FONT><FONT size=2> GetProject(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Func&lt;Project, bool&gt; criteria</FONT></FONT><FONT size=2>){<BR></FONT><FONT size=2></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp; return DataPortal.Fetch&lt;Project&gt;(<FONT color=#2b91af>criteria</FONT>);<BR></FONT></FONT><FONT size=2>}</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Func</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Project</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2>&gt; criteria){<BR></FONT><FONT size=2>//somehow can map to linq expression like this<BR>System.Linq.Expressions.<FONT color=#2b91af size=2><FONT color=#2b91af size=2>Expression</FONT></FONT><FONT size=2>&lt;Func&lt;<FONT size=2>ProjectTracker.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Project, bool&gt;&gt; = CLinqExpression(<FONT color=#000000>criteria);</FONT></FONT></FONT></FONT></FONT></P>
+<P>...</P>
+<P><FONT size=2><FONT size=2><FONT color=#2b91af size=2><FONT color=#2b91af size=2><FONT color=#000000>// so we can do something like this<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> p </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> ctx.DataContext.Projects</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>.Where(predicate.Compile()) </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> p).Single();</FONT></FONT></FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT color=#2b91af size=2><FONT color=#2b91af size=2><FONT color=#000000><FONT size=2>...</P></FONT></FONT></FONT></FONT></FONT></FONT>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, in concept that is possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is tricky, because you need to convert the Func&lt;&gt; into
+something that is serializable, then convert it back on the server. I think
+that both LLBLgen and IdeaBlade do that sort of thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Personally I think it is a bad idea, because it pushes knowledge
+of the database/entity schema up into the UI. It is UI code that calls
+GetProject(), and basically you&#8217;d be coupling the UI directly to the data
+shape.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In my mind, one of the goals of having an object-oriented
+business layer composed of responsibility-based domain objects is so the UI
+does NOT know about the shape of the database or entities. The UI should
+interact only with domain objects that are designed to solve the problems of
+the use case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,70 @@
+<html><header><title>Csla 4.2 Rules Makeover</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4.2 Rules Makeover</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10541.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee posted on Wednesday, July 20, 2011</h2><p>Hi all, <br /><br />I have experienced some challenges with the rule engine and have been working on improvements for Csla 4.2 that I&#39;d like to geed feedback on.</p>
+<p><b>Please -&nbsp; read on and consider where you have had shortcomings/challenges with the rule engine and if these changes will allow you to create rules as you&nbsp; need them!!</b></p>
+<p><b>Feedback is really appreciated. </b></p>
+<p><br /><b>The primary goal and guidelines: </b></p>
+<ul>
+<li>Configure async lookup rules to execute only when user has edited a field.</li>
+<li>All rules that set error/warn/info should run when CheckRules is called on the client<br /> (like before a save operation)</li>
+<li>Rules
+ that validates user input ONLY (not data loaded from database) should 
+not run on DataPortal serverside, f.es sync lookup rules. </li>
+<li>Better distinction of Client and Property level rules. </li>
+</ul>
+<p>Existing problem areas:</p>
+<ul>
+<li>AddError/Warn/Info to other properties than PrimaryProperty in a rule does not work as expected</li>
+<li>There is no way to instruct the rule engine of when a rule is allowed to run. F.ex
+<ul>
+<li>Rule should only run on the &quot;client&quot; side when user has edited a value or 
+  </li>
+<li>CheckRules is called on the client (not on DataPortal serverside, when DAL calls CheckRules)</li>
+</ul>
+</li>
+<li>An async lookup rule should only run when user has edited a value 
+(not on server side, not in CheckRules, not as affected property from 
+another rule)</li>
+<li>It is sometimes hard to see if a rule is ObjectRule og PropertyRule (PrimaryProperty == null or has value) </li>
+</ul>
+<p><b>Implicit dependencies? </b><br />(So far) whenever I have InputProperties to a rule I find that I need to add a Dependency rule for each InputProperty to make the rule run whenever one of the input properties is changed. </p>
+<p><b>So should the rule engine after completing rules for this PrimaryProperty then rerun rules for both&nbsp; affected properties AND properties where this PrimaryProperty is an InputProperty (that is - implicit Dependency based on InputProperties)?</b><br /><br /><b>Changes for Csla 4.2 that will now enable us to:</b></p>
+<ul>
+<li>Add Error/Warn/Info to other properties and these broken rules will remain even when code calls BusinessRules.CheckRules(property).</li>
+<li>Added RunMode (flags) to BusinessRule to specify when rules is not allowed to run. </li>
+</ul>
+<p><b>This also enables us to create new rule base classes like:</b> <br />&nbsp;&nbsp; - <b>BusinessRule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>- existing base class with no restrictions on when rule runs. <br />&nbsp;&nbsp; - <b>ObjectRule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>- will always have PrimaryProperty == null.<br />&nbsp;&nbsp; - <b>PropertyRule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>- basic PropertyRule with no restrictions on when rule runs<br />&nbsp;&nbsp; - <b>PropertyInputRule&nbsp; </b>- validate user input on client side of DataPortal, ie run on PropertyChanged and as <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AffectedProperty from another rule and CheckRules but NOT on DataPortal <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; serverside (DAL code).<br />&nbsp;&nbsp; - <b>LookupRule&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </b>- lookup data on client side when user edited a field,&nbsp; NOT <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; run as AffectedProperty, CheckRules or on DataPortal <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; serverside (DAL code).<br /><br />The restrictions is (at the base class level) implemented as boolean properties (suggested names):<br />&nbsp;&nbsp; CanRunOnServer<br />&nbsp;&nbsp; CanRunInCheckRules<br />&nbsp;&nbsp; CanRunAsAffectedProperty</p>
+<p><b>I&#39;m sure there are other problems/challenges that you have experienced? </b></p>
+<p><b>Will these changes help you create better and simpler rules?</b></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, July 20, 2011</h2><p>Sorry, I don&#39;t have any suggestions, but it looks like you&#39;ve spelled out all the issues I&#39;ve had and I think your solutions are reasonable.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, July 22, 2011</h2><p>Can you please expand a little more on how LookupRule would work. From the post above, the&nbsp;PropertyInputRule&nbsp;sounds like a &quot;Command Object&quot; that hits a local store for &quot;constraint&quot; validation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 22, 2011</h2><p>Hi Blake, </p>
+<p>Good question. </p>
+<p>Lookup rule is configured to run as async (by default) to perform lookups only when a property has been changed/edited by the user and most probably only in a rich-client UI.&nbsp; And LookupRules should not do validation. </p>
+<p>PropertyInputRule would be preferred for validation and sync rules in a Web/RichClient environment. </p>
+<p>My own personal guidance:<br /><b>All rules that perform validation should run on CheckRules and (CheckObjectRules or CheckRulesForProperty). </b></p>
+<p>LookupRules would typically only run on PropertyHasChanged and NOT CheckRules </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Thursday, February 09, 2012</h2><p>I have just come across an issue with the new feature:</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p><b>Implicit dependencies? </b><br />(So far) whenever I have InputProperties to a rule I find that I need to add a Dependency rule for each InputProperty to make the rule run whenever one of the input properties is changed. </p>
+<p><b>So should the rule engine after completing rules for this PrimaryProperty then rerun rules for both&nbsp; affected properties AND properties where this PrimaryProperty is an InputProperty (that is - implicit Dependency based on InputProperties)?</b><br /><br />
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>When I execute BusinessRules.CheckRules() the same rule gets executed multiple times, once for the PrimaryPrimary and then once for each InputProperty.&nbsp; This is an issue since my rules&nbsp;can be async.&nbsp; My perference is the old behaviour.&nbsp; If I want the rule to execute I will add the the property to the AffectedProperties.&nbsp; Is there any way of turning&nbsp;off the InputProperties dependencies?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 09, 2012</h2><p>Hi, </p>
+<p>True, a rule can be executed many times during CheckRules.</p>
+<p>For async rules I typically inherit from CommonRules.CommonBusinessRule and sets all the CanZYZ flags to false:</p>
+<p><i>&nbsp;&nbsp; CanRunOnServer<br />&nbsp;&nbsp; CanRunInCheckRules<br />&nbsp;&nbsp; CanRunAsAffectedProperty</i></p>
+<p>The end result is that the rule is only executed when the PrimaryProperty is changed on the &quot;Client&quot; side and typically by the end user. If you allow any asyn rule to execute as AffectedProperty (or Dependency) from other fields then it will run multiple times even when there is only AffectedProperties as dependencies (the &quot;old&quot; style).</p>
+<p>There is no way of turning off the InputProperties as dependencies other than not adding InputProperties. </p>
+<p>You should be aware that the rule engine will merge all AffectedProperties and InputProperties - select distinct where Property != PrimaryProperty and rerun the rules. It will not run multiple time as the result of that single property.</p>
+<p>I am considering this one change tho&#39;: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1007"><br />http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1007 </a><br />as this would stop CheckRules from running the rule unnecessarily many times, whether the rule is sync or async.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Thursday, February 09, 2012</h2><p>I run the CheckRules in DataPortal_Create and DataPortal_Fetch because I do not trust the data in the database.&nbsp; Is there another way of passing a value to the rule without using InputProperties or by setting it in the rule constructor?</p>
+<p>The change to stop CheckRules from running rules unnecessarily is good.&nbsp; It is a start but you also need to stop any&nbsp;dependencies from running the rules. e.g. A Start date before End date rule currently executes 4 times.&nbsp; It only needs to execute 2 times, once for StartDate and once for EndDate.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 09, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>jhardman<br></b></p>
+<p>The change to stop CheckRules from running rules unnecessarily is good.&nbsp; It is a start but you also need to stop any&nbsp;dependencies from running the rules. e.g. A Start date before End date rule currently executes 4 times.&nbsp; It only needs to execute 2 times, once for StartDate and once for EndDate.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>That is a whole other aspect and we are not planning on changing that. </p>
+<p>When the rule engine checks the rules for StartDate and that rule has EndDate as AffectedProperty (or a separate DependencyRule) the RuleEngine runs that rule as if the StartDate propert was changed in CheckRules. <b>The Rule engine will have no knowlegde of whether the rule also changed EndDate (ie - the rule updated another field) or not </b>and so the effect is: </p>
+<p>StartDate - check rule for EndDate too.<br />EndDate - check rule for StartDate too.</p>
+<p>Assuming that you have the same rule for both properties then yes - that rule is executed 4 times. </p>
+<p>Having InputProperties as dependency means that you do not have to add dependency rules or set the other property as affected property of first property.</p>
+<p>Also remember - rules can update field by calling LoadProperty or AddOutValue. The latter one may be tested for - the first is unknown to the rule engine.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

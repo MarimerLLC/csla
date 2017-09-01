@@ -1,0 +1,79 @@
+<html><header><title>Format BrokenRule.Description</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Format BrokenRule.Description</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Tuesday, September 19, 2006</h2><P>I could swear this has been discussed lately, but I couldn't find.</P>
+<P>Is there a recommended approach to formatting what the description is for a broken rule? For example, I have something like</P><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#008080 size=2>CommonRules</FONT><FONT size=2>.StringRequired, </FONT><FONT color=#800000 size=2>"SerialNumber"</FONT><FONT size=2>);</P></FONT>
+<P>Of course the .Description is "SerialNumber required". I'd like to have it say "Serial Number is required" or similar.</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>P.S.</P>
+<P>I recently subclassed BusinessBase and have a public get property that will return all my broken rules as a string. With data binding and all that, when I drag from the Data Sources pane, this property is automatically there - cool! Even better, when a broken rule is fixed, this text box is automagically updated - way cool! I think this is better than the ErrorProvider. Really neat UI stuff. I can see having a ListView or similar that has the rules, and a red X or green check mark depending on broken rule status. This way the user doesn't have to mouse over the error provider icon to see what the issue is. That's my end goal.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Wednesday, September 20, 2006</h2><P><SPAN>Michael<o:p></o:p></SPAN></P>
+<P><SPAN>I've subclassed the Validation.RuleArgs class into an ExtRuleArgs which has an overloaded constructor that can take a description string:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> ExtRuleArgs<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>Inherits</SPAN><SPAN> RuleArgs<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>(<SPAN>ByVal</SPAN> propertyName <SPAN>As</SPAN> <SPAN>String</SPAN>, <SPAN>ByVal</SPAN> description <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>MyBase</SPAN>.New(propertyName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>MyBase</SPAN>.Description = description<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN></SPAN><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’ve also created my own ExtCommonRules module (which I’ve attached to this post), where I’ve rewritten the common rules, so they only return true or false and doesn’t set the description.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This allows me to pass my own description into the rule like this:<BR>(These are the validation rules for an address)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Sub</SPAN> AddBusinessRules()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>With</SPAN> ValidationRules<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'AddressTypeId (Byte)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>AddressOf</SPAN> ExtCommonRules.NotEmpty(<SPAN>Of</SPAN> <SPAN>Byte</SPAN>), _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>New</SPAN><SPAN> EmptyValueRuleArgs(<SPAN>Of</SPAN> <SPAN>Byte</SPAN>)(<SPAN>"AddressTypeId"</SPAN>, 0, _<BR><SPAN>My</SPAN>.Resources.AddressTypeRequired))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Street (AnsiString)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>AddressOf</SPAN> ExtCommonRules.StringRequired, _ <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>New</SPAN> ExtRuleArgs(<SPAN>"Street"</SPAN>, <SPAN>My</SPAN>.Resources.StreetRequired))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>AddressOf</SPAN> ExtCommonRules.StringMaxLength, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>New</SPAN> ExtMaxLengthRuleArgs(<SPAN>"Street"</SPAN>, 180, <SPAN>My</SPAN>.Resources.StreetTooLong))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'PostalCode (AnsiString)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>AddressOf</SPAN> ExtCommonRules.StringMaxLength, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>New</SPAN> ExtMaxLengthRuleArgs(<SPAN>"PostalCode"</SPAN>, 11, <SPAN>My</SPAN>.Resources.PostalCodeTooLong))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'City (AnsiString)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>AddressOf</SPAN> ExtCommonRules.StringMaxLength, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>New</SPAN> ExtMaxLengthRuleArgs(<SPAN>"City"</SPAN>, 35, <SPAN>My</SPAN>.Resources.CityTooLong))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Area (AnsiString)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>AddressOf</SPAN> ExtCommonRules.StringMaxLength, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>New</SPAN> ExtMaxLengthRuleArgs(<SPAN>"Area"</SPAN>, 50, <SPAN>My</SPAN>.Resources.AreaTooLong))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>With<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The first rule (NotEmpty) is a generic rule, that can check whether a field of type T is empty. The second parameter of the EmptyValueRuleArgs defines what an empty value for this type is.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Hope this helps<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>/Henrik<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, September 20, 2006</h2><P>Henrik,</P>
+<P>Nice. Thank you for posting the code.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 20, 2006</h2><P>I made virtually the exact same extension (just a different class name). The Description is an Optional Parameter. If I do not pass in a Description then I do a lookup in a dictionary for the property name and return the extended description from that. Loading the dictionary only occurs once. </P>
+<P>=============================================================</P>
+<P>All of my rules use code like this:</P>
+<P>&nbsp;&nbsp;&nbsp; e.Description = GetDescription(target, propertyName, propertyDescription) &amp; " the rest of the phrase for this rule."</P>
+<P>=============================================================</P>
+<P>Public Function GetDescription(ByVal target As Object, ByVal propertyName As String, ByVal propertyDescription As String) As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim result As String = ""</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If propertyDescription &lt;&gt; "" Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = propertyDescription<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'since no propertyDescription was passed in, look up the default value&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If TranslationList.ContainsKey(propertyName) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = TranslationList.Item(propertyName)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = propertyName<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result<BR>&nbsp;&nbsp;End Function</P>
+<P>=============================================================</P>
+<P>&nbsp;Private mTranslationList As Generic.Dictionary(Of String, String)</P>
+<P>=============================================================</P>
+<P>&nbsp;Private ReadOnly Property TranslationList() As Generic.Dictionary(Of String, String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mTranslationList IsNot Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTranslationList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTranslationList = New Generic.Dictionary(Of String, String)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'load the list the first time it is asked for. Subsequent requests will return the fully loaded list.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTranslationList.Add("Acctcode", "Account code")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mTranslationList.Add("Acctdesc", "Account description")</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'TODO: add more fields here in alphabetical order.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'OR: create a database table and pull the values from there instead.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'no re-compile required just to change the list.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mTranslationList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>&nbsp;</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Wednesday, October 11, 2006</h2><DIV>Rocky,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Do you think it is a good idea to include this "standard" capability as part of the common rule library in CSLA?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>Yes, a solution, of some sort, to this issue is on my <a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36">list-of-things-to-consider</a> for future versions.<br><br>Obviously any solution I implement in CommonRules would need to preserve backward compatibility, and so that complicates things a bit. But it is solvable, and so this is a likely change for a future version.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

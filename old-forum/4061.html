@@ -1,0 +1,18 @@
+<html><header><title>Object reference not set to an instance of an object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object reference not set to an instance of an object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ata posted on Wednesday, December 19, 2007</h2><P>Hi,</P>
+<P>I am new to CSLA. I tried to set up the sample project and I got this error message:</P>
+<P><SPAN></P>
+<H1>Server Error in '/PTWeb' Application. 
+<HR>
+</H1>
+<H2>Object reference not set to an instance of an object. </H2>
+<P></SPAN>Description: An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR>Exception Details: System.NullReferenceException: Object reference not set to an instance of an object.<BR><BR>Source Error: <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><PRE>Line 186:        ApplicationContext.SetGlobalContext(result.GlobalContext)
+Line 187:      End If
+Line 188:      Throw New DataPortalException( _
+Line 189:        String.Format("DataPortal.Fetch {0} ({1})", My.Resources.Failed, ex.InnerException.InnerException), _
+Line 190:        ex.InnerException, result.ReturnObject)</PRE></TD></TR></TABLE></P>
+<P>Source File: D:\WebSites\CSLA\csla20vb\Csla\DataPortal\Client\DataPortal.vb &nbsp;&nbsp; Line: 188 </P>
+<P>Thanks in advance...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 19, 2007</h2>Did you follow the instructions available as a PDF from <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>? </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ata replied on Thursday, December 20, 2007</h2>Yes I did...</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

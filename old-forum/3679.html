@@ -1,0 +1,826 @@
+<html><header><title>Lazy loading and applyedit</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy loading and applyedit</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3679.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>eloycm posted on Tuesday, October 09, 2007</h2>hello<br>I hava a parent object that has some lazy loading "childs". I'm experiencing troubles with beginedit applyedit, i can't find a way to keep their editlevel value aligned, because they are in fact independent objects so independent calls to their apply edit will result in an error<br>thanks in advance for your help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 09, 2007</h2><P>When you do lazy loading you must bring the new child object's edit level up to the level of the parent that is creating it. For example:</P>
+<P>Public ReadOnly Property MyChild() As Child<BR>&nbsp; Get<BR>&nbsp;&nbsp;&nbsp; If _myChild Is Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _myChild = Child.GetChild(...)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For index As Integer = 1 To Me.EditLevel<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _myChild.BeginEdit()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; Return _myChild<BR>&nbsp; End Get<BR>End Property</P>
+<P>From this point forward the child's edit level should be automatically maintained by CSLA and you shouldn't have to worry about it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 12, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>When you do lazy loading you must bring the new child object's edit level up to the level of the parent that is creating it.</div></BLOCKQUOTE></P>
+<P>You could make argument that this a workaround and really doesn't reflect what is actually happening (at least in the way I understand it).</P>
+<P>If I am at EditLevel 2 and lazily load a child at level 2, the reference to that child didn't exist at level 1. If you&nbsp;cancel edit on the parent, it will go back to edit level 1. Shouldn't the child reference be null at level 1 since it was null when BeginEdit was called at level 1? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 12, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not really a workaround. N-level undo expects (now requires)
+that the entire object graph be in sync. If you load a child object late, then
+you must bring it in sync with the rest of the graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you cancel the parent, the lazy loaded child will actually go
+away btw. Look at the undo code in UndoableBase &#8211; there&#8217;s a check
+there to see if the prior value was null, and if it was, then any current value
+is removed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 12, 2007 3:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Lazy loading and applyedit<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>When you do lazy loading you must bring the new child object's edit level up
+to the level of the parent that is creating it.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>You could make argument that this a workaround and really doesn't reflect
+what is actually happening (at least in the way I understand it).<o:p></o:p></p>
+
+<p>If I am at EditLevel 2 and lazily load a child at level 2, the reference to
+that child didn't exist at level 1. If you&nbsp;cancel edit on the parent, it
+will go back to edit level 1. Shouldn't the child reference be null at level 1
+since it was null when BeginEdit was called at level 1? <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 15, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>You could make argument that this a workaround and really doesn't reflect what is actually happening (at least in the way I understand it).
+<p>If I am at EditLevel 2 and lazily load a child at level 2, the reference to that child didn't exist at level 1. If you&nbsp;cancel edit on the parent, it will go back to edit level 1. Shouldn't the child reference be null at level 1 since it was null when BeginEdit was called at level 1?</div></BLOCKQUOTE></p>Ok, well what would be the result if you loaded the list up front, no changes where made, but BeginEdit was called on the parent object twice?&nbsp; The result would be exactly the same.. so I'm not sure I call that a work around.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, October 15, 2007</h2><P>Rocky claims that the child added in the middle will just "go away" when UndoChanges is called, so it's probably OK.&nbsp; </P>
+<P>I'd just prefer the framework had an official way for parents to "adopt" lazy children rather than make the parent be concerned about&nbsp;the details of the undo implementation. (e.g. OnChildLoaded(), etc... )</P>
+<P>I'm also not sure how to make this work with the lazy instantiation capabilities of an object mapper like NHibernate or the Wilson ORMapper, but that's another subject.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That may happen at some point. I&#8217;ve mentioned this before
+too &#8211; at some point I&#8217;d like to create a &#8220;child manager&#8221;.
+Like a build-in BLB basically. This would change the way you&#8217;d declare
+and use child objects in your code, but would allow me to do some nice things
+on your behalf.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As I say, I haven&#8217;t done this, but the concept is along
+this line (for lazy loading):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Class Parent<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Inherits BusinessBase(Of Parent)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Public ReadOnly Property Child() As Child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me.Children(&#8220;Child&#8221;).IsEmpty
+Then<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Me.Children.SetChild(&#8220;Child&#8221;,
+Child.GetChild(Me._id))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;End If<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return CType(Me.Children(&#8220;Child&#8221;).Child,
+Child)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; End Get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Property<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>End Class<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Such a child manager would integrate directly with the n-level undo
+functionality, and so would already know the edit level at which the child
+should be &#8211; so it could force the child to that edit level in the
+SetChild() method, and track previous values and so forth.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Additionally, this child manager could handle the Parent
+reference stuff, so your single child objects and your BLB&#8217;s would get
+that set automatically. And the event hooking/rehooking for ListChanged and
+PropertyChanged would become automatic as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Finally, and this is a bigger deal, I&#8217;ve considered
+creating a BusinessChildBase class. Just like BusinessBase&lt;T&gt;, except for
+a child object. The value of doing this is that (coupled with a child manager)
+I could further automate some of the behaviors, including abstracting data
+access to a large degree &#8211; automatically cascading Update(), Insert() and
+DeleteSelf() type calls down through the children.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 15, 2007 8:06 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Lazy loading and applyedit<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky claims that the child added in the middle will just &quot;go
+away&quot; when UndoChanges is called, so it's probably OK.&nbsp; <o:p></o:p></p>
+
+<p>I'd just prefer the framework had an official way for parents to
+&quot;adopt&quot; lazy children rather than make the parent be concerned
+about&nbsp;the details of the undo implementation. (e.g. OnChildLoaded(),
+etc... )<o:p></o:p></p>
+
+<p>I'm also not sure how to make this work with the lazy instantiation
+capabilities of an object mapper like NHibernate or the Wilson ORMapper, but
+that's another subject.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 17, 2007</h2><P>So I have been experimenting with this more and have run into something else. </P>
+<P>If I have found that calling AcceptChanges() on the parent will not call AcceptChanges on the children if the parent is still bound (which happens when the parent is in a list on the form), so when I attempt to save the entire list, the children are at edit level &gt; parent after AcceptChanges is called. </P>
+<P>The particular line of code is:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// it is a child object so cascade the call</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_bindingEdit)</P>
+<P>((Core.</FONT><FONT color=#2b91af size=2>IUndoableObject</FONT><FONT size=2>)value).AcceptChanges(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.EditLevel);</P></FONT>
+<P>The save operation doesn't care about this, but CopyState() fails with an edit mismatch if you try to call BeginEdit() on the list again. </P>
+<P>Any thoughts?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 17, 2007</h2>Are you following the example from Csla 3.0.2?&nbsp; You have to unbind your objects before you can save them.&nbsp; See the PTracker example.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 17, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Are you following the example from Csla 3.0.2?&nbsp; You have to unbind your objects before you can save them.&nbsp; See the PTracker example.<BR></div></BLOCKQUOTE></P>
+<P>Unbinding the object won't correct the mismatched edit levels. </P>
+<P>While the list of parent objects was bound to a grid on the form, the grid called BeginEdit/ApplyEdit on each parent as it was being edited, bumping up the edit level of the parent during the edit process. The parent may have lazily loaded children, which are being manually&nbsp;"bumped up" to&nbsp;match the edit level of the parent.</P>
+<P>When the grid calls EndEdit, the parent edit level is reduced, but the lazily loaded children are not reduced.&nbsp; </P>
+<P>Unbinding after this has happened (before attempting to save) won't fix these already mismatched edit levels.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 17, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see what you are saying. That is an interesting problem. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Prior to CSLA 3.0 this would have &#8220;worked&#8221; because
+the IEditableObject.ApplyEdit call would have cascaded to child objects.
+Unfortunately that isn&#8217;t how data binding expects it to work, and if any
+of those child objects were bound too, then it all got messed up. So in CSLA
+3.0 I changed it so those calls don&#8217;t cascade to child objects &#8211;
+matching what data binding expects to happen &#8211; but making your scenario
+difficult (at best).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know of any obvious answer. It seems that there
+are (generally) three options. Either lazy load the child _<i>before</i>_ the
+edit is started, or bring the child to EditLevel-1 (but only if the parent is
+bound &#8211; which it can&#8217;t detect), or manually call *Edit() on the
+child when the parent&#8217;s ApplyEdit()/CancelEdit() is called (which you can
+detect, but can&#8217;t know if it was called due to IEditableObject).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately I don&#8217;t have time to research this in the
+near future, but I look forward to hearing anything you can figure out.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 17, 2007 10:29 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Lazy loading and applyedit<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>ajj3085:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Are you following the example from Csla 3.0.2?&nbsp; You
+have to unbind your objects before you can save them.&nbsp; See the PTracker
+example.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Unbinding the object won't correct the mismatched edit levels. <o:p></o:p></p>
+
+<p>While the list of parent objects was bound to a grid on the form, the grid
+called BeginEdit/ApplyEdit on each parent as it was being edited, bumping up
+the edit level of the parent during the edit process. The parent may have
+lazily loaded children, which are being manually&nbsp;&quot;bumped up&quot;
+to&nbsp;match the edit level of the parent.<o:p></o:p></p>
+
+<p>When the grid calls EndEdit, the parent edit level is reduced, but the
+lazily loaded children are not reduced.&nbsp; <o:p></o:p></p>
+
+<p>Unbinding after this has happened (before attempting to save) won't fix
+these already mismatched edit levels.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 17, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I see what you are saying. That is an interesting problem. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>Prior to CSLA 3.0 this would have “worked” because the IEditableObject.ApplyEdit call would have cascaded to child objects.&nbsp;...</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></div></BLOCKQUOTE>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>Maybe I'm just missing something, but it seems like this should work. Here are a few more details.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>The basic editing paradigm here is that I hand a business&nbsp;object to a form. Before doing any binding, I call BeginEdit() so that any changes can be cancelled. If the user presses OK, then you ApplyEdit() and the Save the object, otherwise you CancelEdit() and discard the changes. </o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>So, everything loaded&nbsp;when the form loads&nbsp;is at EditLevel 1 at this point. </o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>The form&nbsp;binds child-parent objects (child object which also is a parent), which may&nbsp;lazily load "grandchildren", to controls on the form. A grid control on the form in particular is what is giving me trouble, since it calls BeginEdit() as you enter each row and EndEdit() as you leave.&nbsp;The lazy grandchildren will be loaded and manually bumped up to&nbsp;EditLevel 2 during the edit. The grid calls EndEdit, and the child-parent object goes back to EditLevel 1 because ApplyEdit is called, but the grandchildren stay at </o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>EditLevel 2. </o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>If you try to save, it seems to work (bound or unbound, doesn't really&nbsp;matter at that point), but the object can't be edited again because the edit levels don't match. Subsequent CopyState() will throw an exception.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>When lazy loading a child&nbsp;object, it is possible to know whether you are bound or not via BindingEdit, which might make it possible to make adjustments in the editing level you bump to, but it's not clear to me whether n-1 would only work for this case and might not work for deeper editing levels. </o:p></SPAN></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 17, 2007</h2><P>^^^^ </P>
+<P>OK, syncing the EditLevel up to n-1 when lazy loading a child instead of n when BindingEdit is true seems to work for this particular form. I'll have to do more testing with more complicated scenarios.</P>
+<P>In any case, this has been very educational. I had to write a&nbsp;quick debugging interface that detects any mismatch in EditLevel regardless of how deep it is in the object hierarchy (as well as tracing of all the object and child edit levels), so I have some good tools for future problems.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 17, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There&#8217;s a whole thread on this, and I discuss it in the
+3.0 ebook.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The rule is that you cannot call BeginEdit(), CancelEdit() or
+ApplyEdit() on the object while the object is data bound in Windows Forms. If
+you do, it confuses Windows Forms data binding and ultimately leaves the object
+graph in an incorrect state.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Look at the PTWin code in 3.0.2 to see the correct binding
+model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 17, 2007 9:04 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Lazy loading and applyedit<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So I have been experimenting with this more and have run into something
+else. <o:p></o:p></p>
+
+<p>If I have found that calling AcceptChanges() on the parent will not call
+AcceptChanges on the children if the parent is still bound (which happens when
+the parent is in a list on the form), so when I attempt to save the entire
+list, the children are at edit level &gt; parent after AcceptChanges is called.
+<o:p></o:p></p>
+
+<p>The particular line of code is:<o:p></o:p></p>
+
+<p><span>// it is a child object so
+cascade the call<o:p></o:p></span></p>
+
+<p><span>if</span><span> (!_bindingEdit)<o:p></o:p></span></p>
+
+<p><span>((Core.<span>IUndoableObject</span>)value).AcceptChanges(<span>this</span>.EditLevel);<o:p></o:p></span></p>
+
+<p>The save operation doesn't care about this, but CopyState() fails with an
+edit mismatch if you try to call BeginEdit() on the list again. <o:p></o:p></p>
+
+<p>Any thoughts?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sigmondzavion replied on Tuesday, August 25, 2009</h2>I have tried this lazy-load technique, as suggested by Rocky - but with no success.  It seems that I can't call BeginEdit() on a BLB that has been designated as a child (a child list).<br /><br />So ... the question is ... How do I get the child list up to the proper EditLevel when lazy loading?<br /><br />Any suggestions would be welcome.  I have been wrestling with Data Binding &amp; Lazy Loading for the past 2 days with little success.<br /><br />BTW:  I love this framework.  This is the first significant snag I have encountered.  I am using CSLA 3.0.5</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 25, 2009</h2>One suggestion, fwiw, is to upgrade to 3.5 or higher, where you can make<br />your child reference be a managed property and let CSLA .NET do the work for<br />you. Even if you are stuck on .NET 2.0, there's now the N2 project so you<br />can get 3.6.3 for .NET 2.0.<br /><br />Rocky<br /><br />-----Original Message-----<br />From: sigmondzavion [mailto:cslanet@lhotka.net] <br />Sent: Tuesday, August 25, 2009 3:14 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] Lazy loading and applyedit<br /><br />I have tried this lazy-load technique, as suggested by Rocky - but with no<br />success.  It seems that I can't call BeginEdit() on a BLB that has been<br />designated as a child (a child list).<br /><br />So ... the question is ... How do I get the child list up to the proper<br />EditLevel when lazy loading?<br /><br />Any suggestions would be welcome.  I have been wrestling with Data Binding &amp;<br />Lazy Loading for the past 2 days with little success.<br /><br />BTW:  I love this framework.  This is the first significant snag I have<br />encountered.  I am using CSLA 3.0.5<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sigmondzavion replied on Thursday, August 27, 2009</h2>Rocky:<br /><br />Thank you, for the prompt reply.  We want to upgrade.  However, the timing is not good for us, at the moment.<br /><br />In the meantime, I have added 1 constructor &amp; 1 factory method to our Child List implementation as below:<br /><br /><pre><br /><strong>private</strong> <font color="#2040a0">ChildList</font><font color="4444FF"><strong>(</strong></font><font color="#2040a0">DataReader</font> <font color="#2040a0">dr</font>, <strong>int</strong> <font color="#2040a0">parentEditLevel</font>, <font color="#2040a0">bool</font> <font color="#2040a0">parentBindingEdit</font><font color="4444FF"><strong>)</strong></font><br /><font color="4444FF"><strong>{</strong></font><br />	<font color="#2040a0">Fetch</font><font color="4444FF"><strong>(</strong></font><font color="#2040a0">dr</font><font color="4444FF"><strong>)</strong></font><font color="4444FF">;</font><br />	<strong>for</strong> <font color="4444FF"><strong>(</strong></font><strong>int</strong> <font color="#2040a0">i</font> <font color="4444FF">=</font> <font color="#2040a0">parentBindingEdit</font> ? <font color="#FF0000">1</font> <font color="4444FF">:</font> <font color="#FF0000">0</font><font color="4444FF">;</font> <font color="#2040a0">i</font> <font color="4444FF">&amp;lt;</font> <font color="#2040a0">parentEditLevel</font><font color="4444FF">;</font> <font color="#2040a0">i</font><font color="4444FF">+</font><font color="4444FF">+</font><font color="4444FF"><strong>)</strong></font><br />		<font color="#2040a0">BeginEdit</font><font color="4444FF"><strong>(</strong></font><font color="4444FF"><strong>)</strong></font><font color="4444FF">;</font> <font color="#444444">// Bring 'this' to proper EditLevel</font><br />	<font color="#2040a0">MarkAsChild</font><font color="4444FF"><strong>(</strong></font><font color="4444FF"><strong>)</strong></font><font color="4444FF">;</font> <font color="#444444">// Last thing we do</font><br /><font color="4444FF"><strong>}</strong></font><br /> <br /><font color="#2040a0">internal</font> <strong>static</strong> <font color="#2040a0">ChildList</font> <font color="#2040a0">Get</font><font color="4444FF"><strong>(</strong></font><font color="#2040a0">DataReader</font> <font color="#2040a0">dr</font>, <strong>int</strong> <font color="#2040a0">parentEditLevel</font>, <font color="#2040a0">bool</font> <font color="#2040a0">parentBindingEdit</font><font color="4444FF"><strong>)</strong></font><br /><font color="4444FF"><strong>{</strong></font><br />	<strong>return</strong> <strong>new</strong> <font color="#2040a0">ChildList</font><font color="4444FF"><strong>(</strong></font><font color="#2040a0">dr</font>, <font color="#2040a0">parentEditLevel</font>, <font color="#2040a0">parentBindingEdit</font><font color="4444FF"><strong>)</strong></font><font color="4444FF">;</font><br /><font color="4444FF"><strong>}</strong></font><br /> <br /></pre><br /><br />The key here, is to make sure that "MarkAsChild()" is the last thing called in the constructor.  <br />This allows us to call "BeginEdit()" ... which brings the EditLevel of the child list to its proper level.<br /><br />Notice that we are also examining the parent's "BindingEdit" property (via parentBindingEdit) to help determine the child's designated EditLevel.  This is because the parent may be bound and in the processes of editing.<br /><br />Of course, the parent was modified to call the new ChildList factory method, when lazy loading.<br /><br />With limited testing, this work-around has worked well for us (so far ;).  I hope this may help someone else out there.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Codelines replied on Monday, August 01, 2011</h2><p>I know that what I&#39;m gonna say isn&#39;t a solution, but using proxies perhaps we can circumvent problems related to lazy loading. From the parent point of view, all objects are eager loaded, but into the proxy the inner object will be lazy loaded when any proxy method be called. Using a code generator, creating proxies for business objects would not be a heavy work and the use of proxies can bring other gains besides a circumvent for problems with lazy loading. Using proxies we have another option to do the lazy loading too. For example, having a big collection, we can bring the data from the database and store the object data in the child proxies leaving the inner objects instantiation and initialization to be done on demand. This would give a gain in performance. Using proxies, when the business object is saved, the only reference to be updated is that into the proxy even if the proxy is multireferenced. Using proxies makes easier to implement the pattern &quot;one instance, multiple references&quot; for the real business object if desired.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, July 14, 2011</h2><p>Is this still the recommended way to handle synching the edit level of lazily loaded children with their parent?</p>
+<p>Taken from a very old post:</p>
+<p>Public ReadOnly Property MyChild() As Child<br />&nbsp; Get<br />&nbsp;&nbsp;&nbsp; If _myChild Is Nothing Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _myChild = Child.GetChild(...)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For index As Integer = 1 To Me.EditLevel<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _myChild.BeginEdit()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp; Return _myChild<br />&nbsp; End Get<br />End Property</p>
+<p>My case specifically is this (Silverlight):</p>
+<p>I have 2 grids:&nbsp;grid 1&nbsp;is bound to editable roots.&nbsp; Selecting an editable root lazily loads it&#39;s children and displays them in grid 2.</p>
+<p>The problem happens when you click an editable&nbsp;cell in grid 1.&nbsp; What happens is that the root object enters edit mode (so now&nbsp;root&nbsp;is in EditLevel 1).</p>
+<p>Then the children list comes back and is set via LoadProperty.&nbsp; But because the children are set after the EditLevel has incremented, AcceptChanges&nbsp;throws an exception when navigating to the next&nbsp;root.&nbsp; </p>
+<p>Any thoughts!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 15, 2011</h2><p>Just an update as I work through this.</p>
+<p>Setting the children when they come back to the parent&#39;s edit level <span style="text-decoration:underline;">doesn&#39;t</span> work.</p>
+<p>What happens is that if the parent&#39;s (root) edit level is 1, the children are set to 1.&nbsp; But if you edit one of the children, the edit level for that child is now = 2.&nbsp; And of course, saving invokes AcceptChanges which again, throws the UndoException as the edit levels of the parent and edited child are out of sink.</p>
+<p>Also, the following block of code taken from the Creating Business Objects eBook does not fix this problem.&nbsp; It presents the same issue unfortunately:</p>
+<p><span style="font-size:xx-small;">
+
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;PropertyInfo&lt;AddressEditList&gt;&nbsp;AddressesProperty&nbsp;=&nbsp;RegisterProperty&lt;AddressEditList&gt;(c&nbsp;=&gt;&nbsp;c.Addresses,&nbsp;RelationshipTypes.Child&nbsp;|&nbsp;RelationshipTypes.LazyLoad);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AddressEditList&nbsp;Addresses&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!FieldManager.FieldExists(AddressesProperty))&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.BeginFetch&lt;AddressListCreator&gt;((o,&nbsp;e)&nbsp;=&gt;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.Error&nbsp;!=&nbsp;<span style="color:blue;">null</span>)&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;e.Error;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;Addresses&nbsp;=&nbsp;e.Object.Result;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">null</span>;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(AddressesProperty);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(AddressesProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(AddressesProperty);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>
+<pre></pre>
+</p>
+</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 15, 2011</h2><p>I was able to successfully get the lazy loading - edit level mismatch issue resolved.&nbsp; I am&nbsp;a bit uneasy about haveing had to add this logic, as I&#39;m not entirely sure of the ramifications of doing this.&nbsp; But things seem to be working, so here&#39;s what I did (code in bold):</p>
+<p>So basically this going to commit the changes first before assigning the lazily loaded is assigned to the parent object (not ideal, but it works).&nbsp;&nbsp;&nbsp;</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:blue;">readonly</span>&nbsp;PropertyInfo&lt;AddressEditList&gt;&nbsp;AddressesProperty&nbsp;=&nbsp;RegisterProperty&lt;AddressEditList&gt;(c&nbsp;=&gt;&nbsp;c.Addresses,&nbsp;RelationshipTypes.Child&nbsp;|&nbsp;RelationshipTypes.LazyLoad);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;AddressEditList&nbsp;Addresses&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">get</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(!FieldManager.FieldExists(AddressesProperty))&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.BeginFetch&lt;AddressListCreator&gt;((o,&nbsp;e)&nbsp;=&gt;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(e.Error&nbsp;!=&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">throw</span>&nbsp;e.Error;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">for</span>&nbsp;(<span style="COLOR:blue;">int</span>&nbsp;i&nbsp;=&nbsp;0;&nbsp;i&nbsp;&lt;&nbsp;EditLevel;&nbsp;i++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">this</span>.ApplyEdit();</strong>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Addresses&nbsp;=&nbsp;e.Object.Result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">null</span>;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">else</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(AddressesProperty);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">set</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(AddressesProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(AddressesProperty);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Also, I think I have identified a bug (or at least i&#39;m unsure why this is happening).&nbsp; </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">If you have a grid bound to the address list via ItemsSource=&quot;{Binding Parent.Addresses}&quot;, </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">the addresses <span style="text-decoration:underline;">will not update</span> the UI after lazy loading if you have the RelationshipTypes.Child and </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">RelationshipTypes.LazyLoad specified in the AddressesProperty declaration.&nbsp; </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">OnPropertyChanged() doesn&#39;t seem to have any effect either.&nbsp; Removing the bitwise operations from the </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">declaration seems to work, so I am no longer using them in the AddressesProperty declaration.</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Monday, July 18, 2011</h2><p>Interesting that no one has replied to any of this yet.&nbsp; I kind of perceive this as a big deal.&nbsp; My solution doesn&#39;t work in all situations either, btw.&nbsp; </p>
+<p>So now what I&#39;m doing is locking the UI with a busy indicator when a root object needs to lazy load its children.&nbsp; Once the children are loaded, the busy indicator goes away, <span style="text-decoration:underline;">then</span> the user can double click the root object to edit.&nbsp; It works, but definitely not ideal.</p>
+<p>I guess it&#39;s not the end of the world that the UI is now responsible for protecting the state of objects, but it&#39;s certainly not ideal and forces the UI to have knowledge as to how those business objects must work so they don&#39;t break.</p>
+<p>It sure would be helpful for someone from the team to chime in on this.&nbsp; </p>
+<p>I&#39;m sure I haven&#39;t been the first nor will I be the last to run into this issue.&nbsp; It&#39;d also be helpful for CSLA to automatically handle edit level synchronization of asynch lazily loaded children.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 18, 2011</h2><p>The delay in response could have something to do with me being on vacation. As much as I love CSLA, I really do need to take a break now and then - and there was no real cell coverage where I was fishing and camping with my family (and that was AWESOME btw! :) )</p>
+<p>You are describing an interaction between data binding and the objects. Because every UI technology is diffferent (and within each UI technology, not all datagrid controls are equal either), I need to know the UI technology and specific UI control(s) being used to even start to provide insight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Monday, July 18, 2011</h2><p>Oh, this doesn&#39;t require an immediate response as I have an acceptable solution right now.&nbsp; I&#39;m using SL as the UI technology.&nbsp; The datagrids are the issue.&nbsp; There are&nbsp;multiple issues, however, so I would encourage you to read through my last 4 posts when you return as I think you might find some valuable insight into reproducing and hopefully fixing the errors.</p>
+<p>Have a good trip!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, July 18, 2011</h2><p>Hi Rocky,</p>
+<p>I&#39;m glad you enjoyed your vacation.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>The delay in response could have something to do with me being on vacation. As much as I love CSLA, I really do need to take a break now and then - and there was no real cell coverage where I was fishing and camping with my family (and that was AWESOME btw! :) )</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Concerning the LazyLoad issue, please have a look at <a href="http://forums.lhotka.net/forums/t/10507.aspx">http://forums.lhotka.net/forums/t/10507.aspx</a></p>
+<p>I&#39;m told the asynchronous examples in the ebook have some problems, so a real working exampleof an asynchronous child lazyload would be a must.</p>
+<p>Tiago</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 22, 2011</h2><p>I think the issue in this thread is a misunderstanding about how data binding interacts with the objects. Or perhaps a misuse of a viewmodel - I&#39;m not entirely sure which.</p>
+<p>When you get the root object, and manage it with a ViewModelBase&lt;T&gt;, by default the viewmodel will support the Cancel verb. To do this it calls BeginEdit on the root object - raising the entire object graph&#39;s edit level to 1.</p>
+<p>When you lazy load the child collection, CSLA will ensure the child collection&#39;s edit level matches the root - so it will be set to 1 also. That is correct and expected behavior. Because the child object is a collection, this really means that every item in the collection has its edit level set to 1.</p>
+<p>When you bind the collection to the UI there&#39;s a concept called &#39;currency&#39;. One item in the collection is current. That item will have its edit level raised by 1 <em>while the user is editing that row in the datagrid</em>. That is normal and expected behavior.</p>
+<p>That basic behavior is pretty consistent for WinForms, WPF, and Silverlight data binding.</p>
+<p>I am guessing though, that you have a viewmodel for the root object, and another viewmodel for the child collection. And that&#39;s fine, but &quot;child&quot; viewmodel types must set ManageObjectLifetime to false to prevent the child viewmodel from elevating the edit level unexpectedly.</p>
+<p>So if you are seeing that your lazy loaded collection is raised to EL 2 (all items in the list go to EL 2), that is because some code is calling BeginEdit on the collection. This is almost certainly a viewmodel that has ManageObjectLifetime set to the default value of true.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Tuesday, July 26, 2011</h2><p>Rocky, thanks for the follow up on this.&nbsp; I checked out your lazy loading demo too, which seems to work.&nbsp; I&#39;m going to make a few modifications to the project to see if I can reproduce the behavior that I spoke of in previous posts.&nbsp; Where can I send that when I&#39;m done so that you can take a look?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 26, 2011</h2><p>You should be able to attach it to a reply post in this thread.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Wednesday, July 27, 2011</h2><p>Rocky I&#39;ve been trying to upload for a while now, but with no success.&nbsp; It&#39;s only 12K, so i&#39;m not sure what&#39;s going on.&nbsp; Can I email it to you?</p>
+<p>Also, here is a short summary of what I&#39;ve done and how to reproduce:</p>
+<p>What I ended up doing was taking your EncapsulatedInvoke project from the DataAccess book and modifying it.&nbsp; </p>
+<p>Because I&#39;m having the issue with Silverlight, I created an SL app and a hosting Web app, so please run the web app so that you can reproduce the behavior.&nbsp; The web app is using the mock data layer.</p>
+<p>There is one view (MainPage) and it uses a VM, but it does not inherit the CSLA VM. </p>
+<p>I created an OrderEditList that retrieves ALL OrderEdits, which the VM exposes.</p>
+<p>MainPage displays 2 DataGrids; the first grid displays all Orders exposed from the VM, and the second grid displays the LineItems from the currently selected Order.&nbsp; I changed OrderEdit to lazily load its LineItems, and put a Thread.Sleep in there to simulate lag time on load.</p>
+<p>TO TEST:</p>
+<p>Double click on either of the date fields of an Order (the properties are now editable).&nbsp; This does 2 things: it causes the EditLevel of the OrderEdit to change to 1, and it also lazily loads the children.&nbsp; </p>
+<p>After the children have loaded and are displayed in the LineItems grid, double click the ship date to edit.&nbsp; You will receive and &quot;Edit level mismatch&quot; exception.</p>
+<p>This is exactly what I hoped CSLA would handle for me.&nbsp; I would think that when the children are added, their edit level would be changed to match that of their parent.&nbsp; As a work around, I disable the Order from being edited in the UI until its children are loaded, but again, I don&#39;t think this is a good solution.&nbsp; This puts too much responsibility on the UI and requires the UI developer to be aware of this bug.&nbsp; </p>
+<p>I should also point out that if you declare the backing field for OrderLineItems with the RelationshipTypes like so:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">OrderLineItems</span>&gt;&nbsp;OrderLineItemsProperty&nbsp;=&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">RegisterProperty&lt;<span style="color:#2b91af;">OrderLineItems</span>&gt;(c&nbsp;=&gt;&nbsp;c.OrderLineItems,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.Child&nbsp;|&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.LazyLoad);
+</pre>
+<p>You will no longer see the items appear in the grid after they have been lazily loaded.</p>
+<p>I had to remove them and declare it like this:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">OrderLineItems</span>&gt;&nbsp;OrderLineItemsProperty&nbsp;=&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">RegisterProperty&lt;<span style="color:#2b91af;">OrderLineItems</span>&gt;(c&nbsp;=&gt;&nbsp;c.OrderLineItems);
+</pre>
+<p>Thanks again, looking forward to your thoughts.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 28, 2011</h2><p>You can send it to rocky at lhotka dot net.</p>
+<p>Be aware though, that I&#39;m on an extended vacation. Though I&#39;m poking my head into the forum from time to time, I&#39;m not spending any serious time at the keyboard this summer. So I don&#39;t know when I&#39;ll look at this to be honest.</p>
+<p>The issue is almost certainly in the interplay between the various UI elements and data binding. It sounds like you have multiple datagrid controls, and that means you have multiple currency managers.</p>
+<p>The only thing the CSLA lazy loading infrastructure does, is ensure that a newly loaded child is set to the same edit level as its immediate parent. That edit level could be elevated (or not) based on whether it has currency, and whether the viewmodel has called BeginEdit.</p>
+<p>I strongly suggest you look at that new lazy load sample I put into svn, and use that as a starting point. Specifically because the objects in that example expose an EditLevel property so you can see how the edit level is affected by currency. You should be able to extend that sample to use two datagrid controls to see if you can replicate the issue you are seeing.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 29, 2011</h2><p>Thanks, I&#39;ll be sending over the solution.&nbsp; I did look at your sample, and it does work as expected.&nbsp; The difference is that you&#39;re not making any calls to a server though, so I&#39;m wondering if that&#39;s the issue?</p>
+<p>In any case, the solution that i&#39;m sending is taking what you did in the lazy sample, but instead using your EncapsulatedInvoke project, as it saved me time from having to setup the wcf bindings, web project, etc.&nbsp; This is a more accurate setup of how our app is currently setup and the only way I can get the error(s) to occur.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 29, 2011</h2><p>Ok, no go on the file, my email keeps getting bounced.&nbsp; The file is 4.25mb, is that too large?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 29, 2011</h2><p>Doesn&#39;t sound terribly big, no... gmail is bouncing it? Or your outbound server?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, August 26, 2011</h2><p>Hi Rocky,&nbsp;I was wondering if you&#39;ve had any time to look at the sample app that I sent to you regarding the LazyLoading bug?</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Sunday, September 18, 2011</h2><p>Hi Rocky,&nbsp;I was wondering if you&#39;ve had any time to look at the sample app that I sent to you regarding the LazyLoading bug?</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 22, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b>
+<p>I&#39;m told the asynchronous examples in the ebook have some problems, so a real working exampleof an asynchronous child lazyload would be a must.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>In the <em>Using CSLA 4</em> ebook? I would like to know the problems then, because I use the technique shown in the ebook and it works fine for me.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 22, 2011</h2><p>Also, to answer the request, I did create a simple LazyLoad sample that is currently in svn:</p>
+<p><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/Silverlight/cs/LazyLoad/">http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/Silverlight/cs/LazyLoad/</a></p>
+<p>This uses the technique shown in the ebook series, and displays the edit levels of the child objects in the datagrid so you can see how they move up and down as the user edits each row.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Monday, July 25, 2011</h2><p>If anyones interested - I&#39;ve had an issue with a similar lazyload implementation - it stems from the lazyloaded property being queried more than once (simultaneously or thereabouts)&nbsp;by different UI elements - it helps to initialise the fieldmanager immediately after seeing that it has not yet been initialised and use GetProperty to return the result to any additional threads (I&#39;ve used a little locking to prevent any threads from sneaking past the fieldmanager.fieldexists check).</p>
+<p>(Please note this is in Silverlight)</p>
+<p>I&#39;ve had strange behaviour where a routed command would query for execution and see that the property was set, but a binding to the property was using the fallback value as it received a null from the property get. Also I&#39;ve had the property be set before the null value was even returned (the dataportal ran local and hit the callback before the original thread had returned the null value, which was confusing to say the least... in the watch window the property is set, but the UI hasn&#39;t updated?!)</p>
+<p>Also you may find that multiple fetches/news are being executed over the dataportal</p>
+<p>Simplified it looks like (on client side): </p>
+<p>lock(propLock)</p>
+<p>{</p>
+<p>&nbsp;&nbsp; if(!fieldmanager.fieldexists(prop))</p>
+<p>&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; loadproperty(prop, null)</p>
+<p>// &nbsp;&nbsp;&nbsp; do fetch/create etc</p>
+<p>&nbsp;&nbsp; }</p>
+<p>return getproperty(prop)</p>
+<p>}</p>
+<p>There&#39;s a work item on the codeplex CSLAGen site and this image shows one of the issues</p>
+<p>http://cslagenfork.codeplex.com/Project/Download/AttachmentDownload.ashx?ProjectName=cslagenfork&amp;WorkItemId=595&amp;FileAttachmentId=108</p>
+<p>This may not be a problem for everyone, but it was an issue for me :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 26, 2011</h2><p>I understand the LoadProperty call to create the field in field manager - that&#39;s a good suggestion.</p>
+<p>The threading lock shouldn&#39;t be necessary though. CSLA objects aren&#39;t threadsafe. If you have multiple threads hitting this property getter, you have way more problems than just the lazy loading...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Wednesday, July 27, 2011</h2><p>Hi Rocky,</p>
+<p>Though CSLA objects are not threadsafe, they are ok with async heavy Silverlight because most of the time&nbsp;the UI/user&nbsp;only&nbsp;does one thing at a time. I wouldn&#39;t see much benefit in my app in which a multithreaded process would modify an object - but it&#39;s sometimes a requirement that multiple UI controls would want to query a property for it&#39;s value, and if a form loads it kicks off these property gets almost simultaneously.</p>
+<p>The example I posted was very simple - just two fields on a standard data grid which are looking at the same lazyloaded&nbsp;property cause this issue. Not that this would be a real world example, but it highlights how easy it is to get multiple loads kicking off. This could still happen with the LoadProperty(prop,null) in the absence of a lock</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 27, 2011</h2><p>To be precise, they are OK with lots of SL async stuff, because the property code is always used by the UI thread. So while there&#39;s async going on, it is never multi-threaded. Therefore the lock statement isn&#39;t required.</p>
+<p>The LoadProperty to immediate initialize the field manager - that is important, and I&#39;ll add that to the ebook as errata next time I do an update on the content.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Wednesday, July 27, 2011</h2><p>You&#39;re right - I didn&#39;t consider the UI thread, I was considering Silverlight as multi-threaded. To be honest I haven&#39;t tried it without the lock as I was under presumption that the cause for my issues was due to multiple threads hitting the prop</p>
+<p>That&#39;s why you&#39;re the expert :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Monday, August 01, 2011</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  HE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal" style="text-indent:-0.9pt;"><span style="font-size:14pt;">Hi AaronHi was
+having the same problem for a very long time but now i do like your work around
+that you have for the lazyLoad but it seems to me that this approach will only
+work when creating a new object because if I&#39;m doing a Fetch method it will
+load the object in the DataPortal_Fetch Method so the logic test of</span><strong><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;">&nbsp;&nbsp; </span></strong><span style="color:blue;">if</span><span>&nbsp;(!FieldManager.FieldExists(AddressesProperty))&nbsp;
+&nbsp;</span><span style="font-size:14pt;"> will all ways be false, unless a new object
+is</span><span>
+</span><span style="font-size:14pt;">being created</span></p>
+<p class="MsoNormal" style="text-indent:-0.9pt;">&nbsp;</p>
+<p class="MsoNormal" style="text-indent:-0.9pt;"><span style="font-size:14pt;">please let me know if there is any approach while loading an old object <br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Monday, August 01, 2011</h2><p>vbbeta, if you want lazy loading to work, you need to leave the code out of your DataPortal_Fetch method that is loading your addresses.&nbsp; </p>
+<p>It sounds to me like you&#39;re eager loading them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Tuesday, August 02, 2011</h2><p>Basically i did that i just added another if statement to the Lazy-load property Like this </p>
+<pre id="code-result" class="brush:csharp">public Setup LocationSetup {
+	get {
+		if (!FieldManager.FieldExists(LocationSetupProperty)) {
+			if (this.IsNew) {
+				LoadProperty&lt;Setup&gt;(LocationSetupProperty, Setup.CreateSetup());
+			} else {
+				LoadProperty&lt;Setup&gt;(LocationSetupProperty, Setup.GetSetup(mId()));
+			}
+			for (int i = 0; i &lt;= this.EditLevel - 1; i++) {
+				this.ApplyEdit();
+			}
+		}
+		return GetProperty&lt;Setup&gt;(LocationSetupProperty);
+	}
+}<br /><br />But here is the problem, when I&#39;m adding a new item to the collection in my &quot;Devexpress Winforms GridView&quot; 1 item before the last is getting an EditLevel<br />&nbsp;to 1 which causes to thrown an exception Edit level mismatch in copy state, have any noticed this before </pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Tuesday, August 02, 2011</h2><p>This is what I&#39;m hoping that Rocky answers for me.&nbsp; I personally wouldn&#39;t manipulate ApplyEdit() as that introduced nasty bugs.&nbsp; I&#39;m hoping that after a collection comes back asynchronously and set via LoadProperty that the EditLevel of the children are set appropriately.</p>
+<p>It doesn&#39;t look like you&#39;re lazy loading in an asynch fashion, where i believe the issue to be.</p>
+<p>If you&#39;re synchronously lazy loading children, you shouldn&#39;t run into the issue that i&#39;m running into, which is a user edits a root while the children are still loading.&nbsp; When the children come back from the server and set on teh root object, there is a mismatch between edit levels.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbbeta replied on Tuesday, August 02, 2011</h2><p>Thanks for your replies i&nbsp;researched&nbsp;my issue and here is what i discovered;</p>
+<p>My error occurs after the object is being saved and the UI is rebinding it so it starts a BeginEdit but my properties already have a value so it don&#39;t have a chance any more to Loop&nbsp;through&nbsp;all editLevel and change the State</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

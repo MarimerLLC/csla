@@ -1,0 +1,20 @@
+<html><header><title>Do Something based on Validation Result</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Do Something based on Validation Result</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12089.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Wednesday, July 24, 2013</h2><p>Hi all..</p>
+<p>&nbsp;</p>
+<p>I have a case : on my UI I want to do something like display a window or refresh some label base on the result of validation on my certain property and display an error too for INVALID state</p>
+<p>BUT as long as I know the result of validation is add on BrokenRulesCollection when InValid, so My Idea is to check on BrokenRuleCollection for that property. </p>
+<p>And My Question is I want to check the result as soon as the rule is executed, how to do that ?</p>
+<p>Is there any features like hook a callback which is executed when validation finished ?</p>
+<p>Note : I use MVVM on SL / WPF.</p>
+<p>&nbsp;</p>
+<p>another sugessstion is welcome </p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 25, 2013</h2><p>There is several possibilities:</p>
+<p><ol>
+<li>Hook into PropertyChanged event and update status (this is what the PropertyStatus does)</li>
+<li>Hook into ValidationCompleted event</li>
+</ol></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Thursday, July 25, 2013</h2><p>Hi jonny, nice quick respond.. :) thanks a lot before</p>
+<p>Is there any examples for your suggestions ? </p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>As i write in my previous post - look at Csla.Xaml.PropertyStatus</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

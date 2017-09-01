@@ -1,0 +1,19 @@
+<html><header><title>Performance problem in Get/Set Property when using private backing fields</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance problem in Get/Set Property when using private backing fields</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10964.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Wednesday, December 07, 2011</h2><p>Hey everyone, I found an issue in the latest version.</p>
+<p>BusinessBase has this code:</p>
+<p>&nbsp;&nbsp;&nbsp; protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty&lt;P&gt;(<b>propertyInfo.Name</b>, field, propertyInfo.DefaultValue, Security.NoAccessBehavior.SuppressException);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>Then the string version of GetProperty that this is calling gets the property info object based on the string name like this:</p>
+<p>var propertyInfo = FieldManager.GetRegisteredProperties().Where(c =&gt; c.Name == propertyName).FirstOrDefault();</p>
+<p>if the propertyInfo object returned is null, it throws an exception.</p>
+<p>&nbsp;</p>
+<p>This would all be better if all the logic in that function was moved to </p>
+<p>protected P GetProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P field, P defaultValue, Security.NoAccessBehavior noAccess)</p>
+<p>&nbsp;</p>
+<p>I tested this change in a dummy business object with 3 properties and the perfomance improvement was 4 times better. I&#39;m sure the results would vary depending on the number of properties.</p>
+<p>&nbsp;</p>
+<p>It would also be good to implement some better method for looking up propertyinfo objects by name, probably by using a dictionary, as opposed to the current &quot;.Where(c =&gt; c.Name == propertyName).FirstOrDefault();&quot; I could explore this as well if you&#39;re interested.</p>
+<p>&nbsp;</p>
+<p>Anyway, I&#39;m adding an attachment to this post with the proposed changes so far, just moving code from one method to the other. This affects all versions of GetProperty, SetProperty for private fields and their *Convert versions.</p>
+<p>&nbsp;</p>
+<p>Cheers,</p>
+<p>Andr&eacute;s</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

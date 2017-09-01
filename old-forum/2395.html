@@ -1,0 +1,20 @@
+<html><header><title>How to create Varying No of Columns in Child Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to create Varying No of Columns in Child Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2395.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Wednesday, February 21, 2007</h2><P>i have a table say color which is having color of garment, this is associated with a size table which define sizes. so let us say</P>
+<P>Blue Color is having S, M, L, XL sizes. </P>
+<P>Red Color is having 2X, 3X size</P>
+<P>How i can&nbsp; create Varying No of Columns in Child Object in this way(this is some thing like a cross tabular report)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 21, 2007</h2><P>For read-write data this could be quite challenging (hard to hook up the rules). But for read-only data there are two reasonable solutions: use a DataTable or implement ICustomTypeDescriptor.</P>
+<P>Either way, you have a dynamically shaped object that can describe, to data binding, what columns are in the object. The DataTable is able to change shape because it implements ICustomTypeDescriptor - so that interface is really at the root of the solution either way.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, February 21, 2007</h2><P>Actually this is read write. and infact each size will be having more then one properties associate with it i.e. No of pcs etc.</P>
+<P>So final way it will look like this</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Sizes</P>
+<P>Color&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P>Blue&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;S&nbsp;&nbsp;&nbsp;M&nbsp;&nbsp;&nbsp;L&nbsp;&nbsp;&nbsp;XL</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;3&nbsp;&nbsp;&nbsp;1 (No of pieces, plus one or more associated properties)..</P>
+<P>Can you suggest any idea on how to implement this..</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, February 21, 2007</h2><P>I know you want the&nbsp;cross-tab look/feel, but this seems like it should be implemented a bit differently.</P>
+<P>I'd think you should a 'Garment' root object.&nbsp; It would contain a child collection of 'AvailableColors'.&nbsp; Each 'AvailableColor' child object would have an 'AvailableSizes' child collection that contains all the available sizes (plus whatever properties you need).</P>
+<P>Garment </P>
+<P>-&gt; AvailableColors</P>
+<P>&nbsp;&nbsp; -&gt; AvailableColor (Red/Blue/Green)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; AvailableSizes</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; AvailableSize (S/M/L) along w/piece count, whatever</P>
+<P>On the DB side, you'd have a Garment table, a master Color table, a master Size table, and then the tables that relate everything together (GarmetColor, ColorSize, or whatever you want to call them).</P>
+<P>Now that design is somewhat complete, the only challenge left is to get this into a cross-tab look/feel (for UI display? reporting?).&nbsp; For reporting, it's just a matter of writing the SQL (or using a report writer) to transform the data the way you want.&nbsp; For UI display, it might be a bit more challenging depending on what controls you're using, but it should be doable.</P>
+<P>Just my 2 cents...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

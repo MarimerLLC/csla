@@ -1,0 +1,128 @@
+<html><header><title>WPF Command binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF Command binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6540.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, March 02, 2009</h2>Hi,<br><br>I was wondering how people handle common wpf commands, like ApplicationCommands.Print.&nbsp; Looking at the CslaDataProviderCommandManager, you can see that it tells wpf to enable the Save command if the BO IsSavable.&nbsp;&nbsp;&nbsp; I'm assuming that putting an IsPrintable property on my BOs isn't the way to go.&nbsp; Not only does that seem to ask the BO for knowledge it probably should have, you'd have to modify CslaDataProviderCommandManager to hook the bindings in.<br><br>So.. what is everyone else doing?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 02, 2009</h2><P>I think it depends on who is responsible for printing. Probably not the business object, and thus probably not the CslaDataProvider.</P>
+<P>Microsoft has been talking up this ViewModel pattern (Model/View/ViewModel and maybe Controller) idea. The gist of it is that WPF commanding is great, but needs a target. The target shouldn't be the view or the controller or the model, so they invented the ViewModel.</P>
+<P>The ViewModel is part of the UI, and basically provides a way to get at the Model, and a way to expose methods for commanding.</P>
+<P>In a sense, the CslaDataProvider is a ViewModel - just one that exposes a very defined set of methods for commanding. But conceptually, a ViewModel does exactly what CslaDataProvider does - grants access to the Model (the business object) and supports various commands for the UI.</P>
+<P>I have just one quibble with the ViewModel idea: I think the ViewModel is likely to gather business logic, even though it is part of the UI. It is just too darn convenient as a location to do validation-before-save and that sort of thing - so it may lead to really fancy/complex VB3 style coding.</P>
+<P>But I guess that's true of anything we come up with - it can be misused...</P>
+<P>Anyway, in general terms, you can probably combine the concepts. Use a CslaDataProvider to do the basic CRUD operations, because it supports those. And create a ViewModel or CommandProcessor object to which you can bind your other buttons.</P>
+<P>If you have a controller, the controller is really responsible for most of what CslaDataProvider does - you just write the code yourself instead of using a pre-built component. And in that case the ViewModel pattern probably makes more sense overall, and you may just implement all the data provider operations in your controller code.</P>
+<P>But if you manage everything purely through XAML, then you may not have a discrete controller. In that case having a data provider plus a command processor may be a better alternative. This is the angle I've been exploring.</P>
+<P>In your resources then, you'd have two things:</P>
+<P>&lt;..Resources&gt;<BR>&nbsp; &lt;csla:CslaDataProvider x:Key="MyData" ... /&gt;<BR>&nbsp; &lt;this:PrintHandler x:Key="PrintHandler"&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataContext="{StaticResource MyData}" /&gt;<BR>&lt;/..Resources&gt;<BR></P>
+<P>And then your Print button can use the PrintHandler as a target.</P>
+<P>The thing is, nearly any .NET object (with a public default constructor) can be used as a resource like this. It doesn't need anything special really. Though to be a command target the object does need to inherit from UIElement (which is the whole reason CslaDataProviderCommandManager exists).</P>
+<P>So your PrintHandler class would just inherit from UIElement and would include the code necessary to implement the Print command - much like CslaDataProviderCommandManager does with its commands.</P>
+<P>The DataContext (or you can use the Source model I've been doing for Silverlight) allows PrintHandler to gain access to the business object you want to print.</P>
+<P>If you look at the way I use Csla.Wpf.ObjectContext in the 2008 book, you'll see that I use it in a manner very similar to what I'm talking about here. It doesn't support any commands, but does expose a bunch of bindable properties based on the state of the business object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 03, 2009</h2>Wow... much more involved than I thought, but it doesn't seem too difficult.&nbsp; I'll try this approach.. thanks for the detailed answer!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It isn&#8217;t difficult really :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing is, that some bit of code has to handle the command.
+Commanding is only magical at the XAML level, but behind the scenes there&#8217;s
+always a command hander that does some actual work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Btw, you can create your own commands too &#8211; you aren&#8217;t
+limited to just those defined by the standard list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, March 03, 2009</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>Microsoft has been talking up this ViewModel pattern (Model/View/ViewModel and maybe Controller) idea. The gist of it is that WPF commanding is great, but needs a target. The target shouldn't be the view or the controller or the model, so they invented the ViewModel.</FONT></P>
+<P><FONT face=Tahoma size=2>The ViewModel is part of the UI, and basically provides a way to get at the Model, and a way to expose methods for commanding.</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>I will admit that I'm still a WPF newbie, not to mention the whole MVC/MVVM concept.&nbsp; And this certainly isn't a CSLA-specific question.&nbsp; But I'm curious - why would the Controller not be a good target for a WPF command?&nbsp; Isn't the point of WPF commands to provide a way for multiple UI elements to fire off the same code?&nbsp; Since the Controller is designed to handle the user interaction with the view... why wouldn't you target a WPF command at your Controller?&nbsp; Why the need for a ViewModel?</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know that I can do justice to the MVVM pattern,
+you should really read the content put out by its proponents.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My understanding is that the Controller should be UI-neutral.
+There&#8217;s still this (imo mythical) thought that you can create a
+Controller that works for Windows, web, WPF and other interface types, so the
+controller shouldn&#8217;t be specific to any UI technology.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think that&#8217;s unrealistic, because the typical user
+experience and UI flow for a smart client and a web client are quite different.
+Maybe, just maybe, you could share a Controller between a WinForms and WPF and
+Silverlight UI, but the web is so different they just don&#8217;t line up.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Anyway, I suspect that&#8217;s the rationalization &#8211; keep the
+Controller independent of the specific UI technology &#8211; which means it
+couldn&#8217;t be a command target, because then it would have to inherit from
+UIElement and would be tied directly to WPF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Putting my skepticism aside just a bit &#8211; I think you
+really could envision a Controller that supported both WPF and Silverlight UIs,
+because they are nearly the same. But the <i>implementation</i> isn&#8217;t the
+same at the moment, so it would be bad to tie the Controller directly to WPF or
+Silverlight even in this case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ViewModel provides a layer of abstraction between the View
+and the Controller (and the Model) that can be safely UI specific. At least
+that&#8217;s my understanding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, March 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I don’t know that I can do justice to the MVVM pattern, you should really read the content put out by its proponents.<o:p></o:p></SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P><FONT face=Tahoma size=2>Great - more reading to add to my list.&nbsp; And since MVVM seems to be the "it" way of building WPF apps, I suppose I can't dodge this one...&nbsp;&nbsp;*sigh*</FONT></P>
+<P><FONT face=Tahoma size=2>This is getting a little far afield of Andy's original question, but I wanted to comment that I&nbsp;agree that building the "uber-Controller" to handle any and all UI comers is a pipe dream.&nbsp; If you could do that, then you wouldn't have different UI constructs - because they'd all work the same.&nbsp; At that point, it's just transport differences.</FONT></P>
+<P><FONT face=Tahoma size=2>Just MHO.&nbsp; Thanks.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SeVa replied on Wednesday, March 04, 2009</h2>The CompositeWPF introduces two new commands that can be routed outside the boundaries of the logical tree and that do not require handling logic in the code behind.<br /><A href="http://codingandcoffee.com/Blog/archive/2009/02/15/8.aspx">Trying to leverage the CslaDataProvider(CompositePTracker)</A><br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

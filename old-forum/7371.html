@@ -1,0 +1,274 @@
+<html><header><title>n level undo break after csla.dll upgrade when there is no data binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>n level undo break after csla.dll upgrade when there is no data binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7371.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslauser posted on Thursday, July 30, 2009</h2>Hi,<br><br>Recently when I upgrade the csla.dll from 2.0.1.0 to 3.5.3.0, my application breaks.&nbsp; When I look through the upgrade log, I found that there is a breaking change in csla 3.0.2 for people who uses data binding.<br><br>I am not using data binding at all.&nbsp; I even call DisableIEditableObject on my BO just in case I my code&nbsp; inadvertently bind to data somewhere.&nbsp; I rely totally on manually calling BeginEdit, ApplyEdit and CancelEdit and I always maintained the symmetry of BeginEdit matched by ApplyEdit or CancelEdit.&nbsp;&nbsp; Now when I click the OK button or a Cancel button, I get an error of the object's EditLevel is mismatched with its parent's EditLevel (I forgot the exact wording, but it is something to that effect).&nbsp; When I revert back the csla.dll to 2.0.1.0, everything works again.<br><br>I looked through the forum and find that the problem always has to do with data binding.&nbsp; I want to know if anybody not using data binding has similiar problem as mine.<br><br>Kam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2><P>The change doesn't apply only to data binding, it applies to any code using the undo features of CSLA .NET.</P>
+<P>The change is pretty straightforward - CSLA now ensures that ApplyEdit() or CancelEdit() isn't called on a parent when any child has an elevated edit level. The change is specifically designed to help people find bugs in their code as they call the undo methods on their objects.</P>
+<P>The most common source of bugs was incorrect use of Windows Forms data binding, which is why you find all sorts of threads and discussion on that topic.</P>
+<P>But it is quite possible to have a mismatch in hand-written code as well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslauser replied on Thursday, July 30, 2009</h2>Hi Rocky,<br><br>Thanks for your quick reply.<br><br>So does this mean that somewhere in my code, the BeginEdit is not properly matched with an ApplyEdit or CancelEdit?<br><br>If this is the case, does this mean that in the older version of csla.dll, mismatch of BeginEdit and ApplyEdit or CancelEdit is tolerated?&nbsp; Since everything works fine when I revert to my older version of csla.dll.<br><br>I have been trying to fix this for several days and I am pretty sure my BeginEdit is properly matched.&nbsp; But again I might be wrong.<br><br>On a related note, in one of your reply to another user, you said we can expose the edit level for easier debugging of the BO by <br><br><div align="left"><span class="775364215-30062006"><font size="2" color="#0000ff" face="Arial">Public ReadOnly Property CurrentEditLevel() As 
+Integer</font></span></div>
+<div align="left"><span class="775364215-30062006"><font size="2" color="#0000ff" face="Arial">&nbsp; Get</font></span></div>
+<div align="left"><span class="775364215-30062006"><font size="2" color="#0000ff" face="Arial">&nbsp;&nbsp;&nbsp; Return EditLevel</font></span></div>
+<div align="left"><span class="775364215-30062006"><font size="2" color="#0000ff" face="Arial">&nbsp; End Get</font></span></div>
+<div align="left"><span class="775364215-30062006"><font size="2" color="#0000ff" face="Arial">End Property</font></span></div><br>I tried this on the BO but didn't find the EditLevel in intellisense.&nbsp; What did I miss?<br><br>Kam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, older versions of CSLA didn&#8217;t enforce edit levels,
+and so tolerated mismatches (with various nasty and subtle side-effects).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>EditLevel doesn&#8217;t appear in intellisense because it is
+marked as an Advanced member (or maybe to never appear). That doesn&#8217;t
+mean it isn&#8217;t there &#8211; just that it is hidden from intellisense
+because there&#8217;s no normal scenario where you&#8217;d want to see it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, July 30, 2009</h2>Rocky,<br><br>Thats a nice 'debugging' feature I didn't know existed.&nbsp; Maybe we can start another 'FAQ' on debugging or Tips &amp; Tricks where some of these subtle things can go.<br><br>There must be a dozen (or so) issues that everybody, especially new to CSLA or new to your methodologies, goes through.&nbsp; I know a lot of the CSLA veterans often have tips to share.<br><br>Many of them are framework vs. development environment (SL vs. Winforms)<br><br>jack&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslauser replied on Monday, August 03, 2009</h2>Hi Rocky,<br><br>I exposed the BO's EditLevel and found that the child collection's EditLevel is not correct, as expected.&nbsp; I&nbsp; think my problem is that the child collection is presented to the UI dialog box at the wrong level.<br><br>If I am not mistaken, the pattern of the UI for csla is that if you want to add, edit a child BO, you open up a new dialog box.&nbsp; In the dialog box load event, you call BeginEdit to take a snapshot of the BO.&nbsp; Then when you dismiss the dialog box, you either match it with a ApplyEdit or CancelEdit, depending whether you click the OK button or the Cancel button.&nbsp; Then if you want to add, edit a child BO of this child BO, you open up another level of dialog box, call BeginEdit in this dialog box load event and so on.&nbsp; That is, successive child BO has to be add, edit on its own level of dialog box.<br><br>What happen in my UI code I think is that I expose the child BO on the wrong level, its parent BO's level dialog box.&nbsp; Hence the mismatch in EditLevel.&nbsp; Also I use lazy loading pattern for the child BO collection property.&nbsp; That is, the child BO collection was not created when the object tree was fetched, rather it only get created the first time the child BO collection was accessed.&nbsp; I wonder whether this has anything contributing to the mismatch in EditLevel.<br><br>Now since I know what the child BO's EditLevel should be and what it actually is, I tried to manually call the child BO's BeginEdit the right amount of times in an attempt to make it right.&nbsp; But I got an error saying I cannot directly call a child BO's BeginEdit.<br><br>So my question is, how to fix this kind of EditLevel mismatch problem?<br><br>Kam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA doesn&#8217;t really care what your UI does, as long as it
+follows one basic rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every BeginEdit() on an object must be matched by a CancelEdit()
+or ApplyEdit() on that object <i>before the parent object&#8217;s edit level is
+altered</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The edit level mismatch exception occurs if you don&#8217;t
+follow that rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only exception here, is if you use IEditableObject (or data
+binding, which uses IEditableObject), in which case there are other rules. You
+aren&#8217;t using that, so it should have no impact.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are no rules around calling these methods on parent or
+child objects. You can call these methods on any editable object (BusinessBase or
+BusinessListBase subclass).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslauser replied on Monday, August 03, 2009</h2>Hi Rocky,<br><br>You said "<span>There are no rules around calling these methods on parent or
+child objects. You can call these methods on any editable object (BusinessBase or
+BusinessListBase subclass)".&nbsp; But </span>when I call the BeginEdit of a BO, I got an error from csla saying I cannot directly call the child's BO BeginEdit.&nbsp; What causes this error?<br><br>Kam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2>What is the exception?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslauser replied on Tuesday, August 04, 2009</h2>The exception is thrown from the csla BusinessListBase BeginEdit method.&nbsp; The exception message is "BeginEdit is not valid on a child object".<br><br>This exception is triggered when I called a child collection's BeginEdit in the load event of a dialog box in an attempt to make the EditLevel right (Since I knew what its parent BO EditLevel and the child collection EditLevel were).&nbsp; I tried calling this both before and after the parent of this child collection BeginEdit and both get this exception.<br><br>You mentioned that EditLevel can get mess up if BeginEdit is not matched by ApplyEdit or CancelEdit but I am pretty sure in my code they are all matched up.<br><br>Kam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, yes, a collection is different.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can&#8217;t explicitly call the methods on a child collection
+because the collection is part of the parent, and so its edit level is bound
+directly to the parent&#8217;s edit level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You need to call the methods on each item in the collection if
+you want that particular item to have its own edit state.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslauser replied on Tuesday, August 04, 2009</h2>OK.&nbsp; So here is the problem.&nbsp; Since the collection is part of the parent and its edit level is bound directly to its parent, what is/are the circumstance(s) that will make a child collection different than its parent BO?<br><br>Here is what I observed:<br><br>By exposing the EditLevel, I found the Parent BO is at edit level 2.&nbsp; I found its child collection is at edit level 0.&nbsp; There is no object in the child collection, in other words the child collection is empty.&nbsp; This is the reason that prompt me to call the child collection's BeginEdit in the first place.&nbsp; To artificially inflate the child collection's edit level in order to make my program not throw an exception by csla.<br><br>Since I am not using databinding at all, the only possibility that causes this problem I know of at this point is a BeginEdit - ApplyEdit mismatch or a BeginEdit - CancelEdit mismatch.&nbsp; Am I right?<br><br>Kam<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>See if you can replicate your issue using this code:<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span>using System;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>using System.Collections.Generic;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>using System.Linq;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>using System.Text;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>using Csla;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>namespace UndoTest<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; class Program<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; static void Main(string[] args)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var root = new Root();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine(&quot;Root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {0}&quot;,
+root.EditLevel);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(&quot;ChildList
+{0}&quot;, root.EditLevel);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine(&quot;Root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {0}&quot;,
+root.EditLevel);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(&quot;ChildList
+{0}&quot;, root.EditLevel);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root.CancelEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Console.WriteLine(&quot;Root&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {0}&quot;,
+root.EditLevel);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(&quot;ChildList
+{0}&quot;, root.EditLevel);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; [Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public class Root : BusinessBase&lt;Root&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; public int EditLevel { get { return
+base.EditLevel; } }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;ChildList&gt;
+ChildListProperty = RegisterProperty&lt;ChildList&gt;(c =&gt; c.ChildList);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; public ChildList ChildList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty(ChildListProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; public Root()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ChildListProperty,
+new ChildList());<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; [Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public class ChildList : BusinessListBase&lt;ChildList,
+Child&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; public int EditLevel { get { return
+base.EditLevel; } }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; [Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public class Child : BusinessBase&lt;Child&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; public int EditLevel { get { return
+base.EditLevel; } }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

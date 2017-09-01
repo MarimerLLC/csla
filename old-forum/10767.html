@@ -1,0 +1,35 @@
+<html><header><title>To use or not to use DTOs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>To use or not to use DTOs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10767.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Wednesday, October 12, 2011</h2><p>Hi Rocky,</p>
+<p>On <strong>Using CSLA4 - 3 Data Access</strong> ebook you show two implementations of Encapsulated Invoke model:<br />- DataReadder DAL interface<br />- DTO based DAL interface</p>
+<p>As far as I can see, the former uses a data reader but just for the fetching part and uses parameter passing otherwise. The later uses DTOs for all operations.</p>
+<p>I understand that passing too much parameters is against the (good) practices as it becomes difficult to read the code. <strong>Code Complete</strong> says:<br /><em>Limit the number of a routine&#39;s parameters to about seven. Seven is a magic number for people&#39;s comprehension</em> (p. 108).</p>
+<p>Using a DTO is the way to avoid exceeding this magical number. It&#39;s easy to have objects with more than 7 properties; 5 &quot;payload&quot; properties plus Id and timestamp. Talking of Id and timestamp,&nbsp; on object creation we need to pass them back from the DAL to the Business Layer. Unless we use a DTO, our Insert method on IEmployeeDal must return an EmployeeReturn object that holds two properties: EmployeeId and EmployeeRowVersion (timestamp).</p>
+<p>For Insert and Update methods, using a DTO is mostly a matter a parameter counting. The Delete method doesn&#39;t need a DTO as you show in the EncapsulatedInvokeDto sample.</p>
+<p>I understand your ebooks have an illustrative purpose so this isn&#39;t a criticism.</p>
+<p>Now comes the question (or at least the debatable PoV)...</p>
+<p>What about the Fetch method? Suppose my SQL query fetches one root parent, a child collection and also grand-children collections? The best choice wouldn&#39;t be to use a DTO but to stick to a DataReader as using the DTO just adds complexity.</p>
+<p>My point is: use a DTO only if you need to pass more than 7 parameters from the business layer to the DAL.</p>
+<p>If you don&#39;t have that many parameters to pass to the DAL and need to return more than one value from the DAL, use a result object. Strictly speeking, there is no need to use a DTO in that case.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 13, 2011</h2><p>There is no doubt that the DTO approach adds overhead. But it also adds abstraction and clarity.</p>
+<p>This means it is a trade-off decision that you have to make. That is why the ebook shows both techniques, so you can evaluate the options and choose what works best for you.</p>
+<p>I really like the datareader approach, because it offers good performance, and I don&#39;t think it adds that much complexity.</p>
+<p>But if I think I&#39;ll need to support non-relational data stores (xml files, Excel documents, web services, etc) then I&#39;ll almost always use DTOs, because their increased abstraction makes it easier to write and understand the code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, October 13, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>But if I think I&#39;ll need to support non-relational data stores (xml files, Excel documents, web services, etc) then I&#39;ll almost always use DTOs, because their increased abstraction makes it easier to write and understand the code.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Point taken.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Thursday, October 13, 2011</h2><p>Hi</p>
+<p>A month ago I has been asking myself the same. I added a switch to the object factories and run several performance sessions. The scenario might not be the most typical one, but the best a had at hand:&nbsp; Fetch about 20&#39;000 Persons with their Adresses (usually 1 per Person), afterwards the tests does lazy load the other contact mechanisms (phone, email etc), which are 11&#39;000 rows in the DB. </p>
+<p>Fetching the 20k person data counts 24k samples, which includes 14k samples to fetch the adresses for each person. </p>
+<p>Fetching the  contact mechanisms per person counts 25k samples. </p>
+<p>Creating the DTOs and fill them with possibly converted data (Convert.ToXX) takes max. 3000 (~6%). </p>
+<p>On the other hand, a better loading strategy could easly half the work; unnecessarily use of some Set/GetProperty instead of Load/ReadProperty (or BypassPropertyChecks) costs 2% or more.&nbsp;</p>
+<p>In my scenario (a lot of Fetch invocations), the top methods have been: </p>
+<p>- GetCustomAttributes()&nbsp; 16%</p>
+<p>- GetType() 14%, before I provided an ObjectFactoryLoader as explained in the ebook DataAccess. </p>
+<p>- ExecuteReader() 11%</p>
+<p>&nbsp;</p>
+<p>My lessons learned: </p>
+<p>- I&#39;ll stick on DTOs, because it simplifies code, especially loading root with children and gand-children. </p>
+<p>- I was a little surprised how much the authorizations checks of Get/SetProperty costs when Read/LoadProperty cost (possibly filling a cache is overweigthed in my scenario). </p>
+<p>- and of course design the loading strategy / object graphs properly</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

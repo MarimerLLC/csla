@@ -1,0 +1,22 @@
+<html><header><title>Fetch-root-plus-children BUT create-if-not-found best practice question !!??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Fetch-root-plus-children BUT create-if-not-found best practice question !!??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/837.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lewischris posted on Monday, August 07, 2006</h2><P>Hi,</P>
+<P>I am VERY&nbsp; new to CSLA (about 3 days), and am currently using v1.5 as we are still .NET 1.1. Please forgive any terminology issues!</P>
+<P>I have an object hierarchy as follows:</P>
+<P>CardHolder (root)</P>
+<P>&nbsp;&nbsp;&nbsp;-&gt; Card (child)</P>
+<P>&nbsp;&nbsp;&nbsp;-&gt; DrivingLicence (child)</P>
+<P>&nbsp;&nbsp;&nbsp;-&gt; DriverCardHolder (child - controls assignment of a driver record to a CardHolder record)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; Driver (switchable grandchild - can be root)</P>
+<P>&nbsp;&nbsp;&nbsp;-&gt; CardHolderDepots (child list)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; CardHolderDepot (child - controls assignment of a depot record to a CardHolder record)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; Depot (switchable grandchild - can be root)</P>
+<P>I should emphasise that I am working with an existing database with legacy tables and data, but with new tables being added for new objects. </P>
+<P>When fetching a CardHolder instance from the database, I first need to check on its existence using a key, and apply these rules:</P>
+<P>If it does not exist, then create it and it's children as necessary. This I think is straightforward enough.</P>
+<P>ELSE</P>
+<P>If an instance of CardHolder can be found, then fetch it. My question is: At this stage I also need to populate the object hierarchy BUT (and this is the where I need some design-style advice) at any level in the hierarchy the child/grandchild objects are not guaranteed to exist or new instances may need to be created to reflect changes - so they must be created as needed - how should this be coded? Does this kind of logic go inside business objects? I haven't seen any examples of "Fetch but create (plus children) if it's not there" type methods?</P>
+<P>I hope this makes sense!</P>
+<P>Thanks for any help.</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 07, 2006</h2>I recommend looking at this from the use case viewpoint rather than the data viewpoint. You already have a switchable object, which should be very, very rare - a move of last resort actually. This indicates (in most cases) a data-centric design rather than a behavior-driven design.<br><br>I assume Depot is a root because you can edit Depot objects as a seperate use case. That's fine - but there should be a set of objects for that use case - different from the set of objects that allow you to associate a CardHolder with a Depot. In other words, CardHolder should have a collection of AssociatedDepot objects rather than Depot objects. (it is unlikely that CardHolder actually has ownership over a Depot).<br><br>In terms of your original question - yes, the child objects should be added through their parent - typically actually being only added to the database when the root object is saved.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lewischris replied on Tuesday, August 08, 2006</h2><P>Thanks for the insight - it's helped me get my thinking straight.</P>
+<P>You're quite right - I'm migrating code from a very data-centric design, and need to start thinking in terms of object behaviour on a use-case context basis.</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

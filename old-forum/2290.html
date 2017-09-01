@@ -1,0 +1,12 @@
+<html><header><title>BindingSource And User Controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingSource And User Controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2290.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Tuesday, February 06, 2007</h2><P>I have a situation where I'm trying to get some code reuse in my GUI, by using a custom user control.&nbsp; As an example...I have two forms, one to display people and a second to display companies.&nbsp; Both forms have a detail section to display addresses.&nbsp; My idea was to create a custom control to display addresses, and add it to both the person form, and the company form.&nbsp; </P>
+<P>Both of the forms have a BindingSource object.&nbsp; The address user control has a BindingSource as well.&nbsp; </P><FONT color=#0000ff>
+<P>Me</FONT><B>.ucAddresses.AddressesBindingSource.DataSource = </B><FONT color=#0000ff>Me</FONT><B>.PersonBindingSource</B></P>
+<P>My problem is that in the custom user control, I need to add an item to the Person.Addresses collection.&nbsp; It won't let me, because there is no public constructor.&nbsp; I was expecting it would use the AddNewCore() function, but that doesn't appear to be the case.</P>
+<P>cur = <FONT color=#0000ff>Me</FONT><B>.AddressesBindingSource.AddNew()</B></P>
+<P>Does anyone have any suggestions on how I should deal with this problem?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, February 07, 2007</h2>Well, how did you override AddNewCore() ? Can we see the code?<br>Did you set AllowNew = True for your collection?<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Wednesday, February 07, 2007</h2><P>My bad. </P>
+<P>On the form I was testing, the line....</P><B>
+<P></B><FONT color=#0000ff>Me</FONT><B>.ucAddresses.AddressesBindingSource.DataSource = </B><FONT color=#0000ff>Me</FONT><B>.PersonBindingSource</B></P>
+<P>was not getting executed.</P>
+<P>Thanks,</P>
+<P>Jeff</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

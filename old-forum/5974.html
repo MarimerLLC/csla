@@ -1,0 +1,9 @@
+<html><header><title>HELP - PropertyHasChanged causes user to press Tab twice to exit TextBox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>HELP - PropertyHasChanged causes user to press Tab twice to exit TextBox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5974.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Wednesday, December 10, 2008</h2><P>I noticed a few other old posts on this issue, but didn't find a solution. My issue is PropertyHasChanged is forcing the user to press Tab twice to exit a textbox control when a change is made. I read in another post that a Null Exception caused by ValidationRules was the cause. I have commented out my validation rules, but that didn't help.</P>
+<P><STRONG>However, if&nbsp;I replace PropertyHasChanged with Me.IsDirty, then a single Tab works. </STRONG>This is not feasible, as I do need to CheckRules method called by PropertyHasChanged.</P>
+<P>I am using CSLA Runtime Version v2.0.50727 (version 2.1.4.0) on .Net 2.0 framework.</P>
+<P>Hoping someone can help me out on this.</P>
+<P>Thanks,</P>
+<P>Andrew</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 11, 2008</h2>You may consider upgrading to the latest 3.0.x version. That is compatible with .NET 2.0, and includes a lot of bug fixes around data binding. This issue sounds vaguely familiar, and I suspect it was addressed in 3.0.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

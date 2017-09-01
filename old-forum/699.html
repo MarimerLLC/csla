@@ -1,0 +1,8 @@
+<html><header><title>Error: ApplicationContext is ambiguous in the namespace CSLA </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error: ApplicationContext is ambiguous in the namespace CSLA </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/699.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwink posted on Friday, July 21, 2006</h2><P>When deploying to my web server, I get a 'ApplicationContext is ambiguous in the namespace CSLA' error in global.asax at the following line</P>
+<P><FONT color=#000000>Csla.ApplicationContext.User = principal<BR></FONT><FONT color=#000000></FONT></P>
+<P><FONT color=#000000>IIS is set up for both .Net 1.1 and .Net 2.0 with separate application pools.&nbsp; I am running CSLA 1.5 in the .Net 1.1 pool and now want to run CSLA 2.0 in the .Net 2.0 pool.&nbsp; My understanding is that the conflict should not be caused by dll's of the same name in different application pools.</FONT></P>
+<P><FONT color=#000000>I deleted all files from C:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files with the same result.</FONT></P>
+<P><FONT color=#000000>Any suggestions are appreciated,</FONT></P>
+<P><FONT color=#000000>jwink</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwink replied on Monday, July 24, 2006</h2><P>Had a couple extra dll's in the same directory which must have lead to the conflict.&nbsp; Removing them eliminated the error.</P>
+<P>jwink</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

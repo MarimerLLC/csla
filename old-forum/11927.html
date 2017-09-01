@@ -1,0 +1,39 @@
+<html><header><title>Could not load file or assembly System.Threading.Tasks</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Could not load file or assembly System.Threading.Tasks</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11927.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Tuesday, April 09, 2013</h2><p>Hiii,</p>
+<p>I have created an application using CSLA &amp; silverlight.</p>
+<p>I have used recent new dll from CSLA4.5 20</p>
+<p>I am getting&nbsp;the following&nbsp;error at the statement:</p>
+<p>DataPortal.BeginFetch&lt;CompanyList&gt;(callback);</p>
+<p>in Library project.</p>
+<p>&nbsp;</p>
+<p>
+<p>
+<p>Error - Could not load file or assembly &#39;System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<p>Any suggestions?</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>BenBoneyIII replied on Tuesday, April 16, 2013</h2><p><strong>mayurimalgave,</strong></p>
+<p><strong>I had this same problem with an WPF/CSLA app after upgrading to CSLA 4.5.22. &nbsp;I think it has to do with Microsoft.BCL.Async. &nbsp;System.Runtime and System.Threading.Tasks are referenced in my WPF project. &nbsp;These references were added via Nuget when I upgraded CSLA from 2.5.10 to 2.5.22. &nbsp;However, in my case, ClickOnce does not recognize these assemblies as required files. &nbsp;So, the files were never pushed to the end user. &nbsp;This seems to be an issue with .NET 4 only, not 4.5.</strong></p>
+<p><strong>My solution was to manually add those 2 dll&#39;s to the root of my project as Content. &nbsp;This forced ClickOnce to publish the files and then my app was happy. &nbsp;Perhaps your installation to the WCF &quot;server&quot; does not include these files?</strong></p>
+<p>&nbsp;</p>
+<p><strong>Hope this helps</strong></p>
+<p><strong>Ben</strong></p>
+<p><strong><br /></strong></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Friday, April 19, 2013</h2><p>Thanks Ben.</p>
+<p>But </p>
+<p>I solved this problem by doing following steps.</p>
+<p>1.Open Visual Studio.</p>
+<p>2.Go to Tools -&gt; Library Package Manager -&gt; Package Manager console.</p>
+<p>3.Run the following command:</p>
+<p>PM&gt;Install-Package Microsoft.Bcl.Async </p>
+<p>For reference,follow a link: <a href="http://nuget.org/packages/Microsoft.Bcl.Async/">http://nuget.org/packages/Microsoft.Bcl.Async/</a></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>QOfLight replied on Tuesday, April 16, 2013</h2><p>I am also getting this, so if you solve, please let me know.</p>
+<p>This is what I have tracked down thus far. Silverlight 5 Tools or SDK installs a different version of mscorlib which is 5.xxxxx, and there is another version 4.xxxxx which this project seems to have been compiled with. General rule is the most recent is used. I deinstalled silverlight 4 just in case.</p>
+<p>I am trying to specify an assembly version for mscorlib in the web.config (either the one with CSLA or this newer one)&nbsp;but that did not fix it either.</p>
+<p>It seems to&nbsp;me that something older (which could have been compiled to target a specific version is somehow loading the old 2.x mscorlib/&nbsp;Threading which of course doesn&#39;t have .Tasks. If I get desperate I will have to install something that says who loaded which assembly.</p>
+<p>Rocky ? </p>
+<p>Thanks,</p>
+<p>Mary</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Friday, April 19, 2013</h2><p>&nbsp;hi QOfLight,</p>
+<p>I solved this problem by doing following steps.</p>
+<p>1.Open Visual Studio.</p>
+<p>2.Go to Tools -&gt; Library Package Manager -&gt; Package Manager console.</p>
+<p>3.Run the&nbsp;following command:</p>
+<p>PM&gt;Install-Package Microsoft.Bcl.Async </p>
+<p>For reference,follow a link: <a href="http://nuget.org/packages/Microsoft.Bcl.Async/">http://nuget.org/packages/Microsoft.Bcl.Async/</a></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

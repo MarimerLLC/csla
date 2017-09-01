@@ -1,0 +1,122 @@
+<html><header><title>Data Binding - DataGridView and Detail Controls - Changes Not Reflected</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Binding - DataGridView and Detail Controls - Changes Not Reflected</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3528.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Thursday, September 13, 2007</h2><P><FONT face=Arial size=2>Hi guys,</FONT></P>
+<P><FONT face=Arial size=2>Thanks for taking the time to read my post.</FONT></P>
+<P><FONT face=Arial size=2>I'm having a strange issue with business objects bound to Windows controls and some changes not being reflected.&nbsp; I'm hoping one of you guys has seen this before and can offer some suggestions.</FONT></P>
+<P><FONT face=Arial size=2>I am using CSLA version 2.1.4.0.&nbsp; I’ve created a Purchase Order object (editable root), which contains a Payments collection (editable child list), which holds Payments objects (editable child).</FONT></P>
+<P><FONT face=Arial size=2>I set up each of these objects as a "Data Source" in Visual Studio 2005, so I could drag and drop the objects or their properties onto a Windows form as bound controls.</FONT></P>
+<P><FONT face=Arial size=2>At the top of my Windows form, I dragged the Payments collection onto the form as a DataGridView.&nbsp; I set the DataGridView to readonly because I do not want the users making changes directly inside the grid.&nbsp; The grid displays only minimal payment information necessary to help the user identify which payment he/she is looking for.</FONT></P>
+<P><FONT face=Arial size=2>At the bottom of the form I dragged various properties from the Payments object, like "Amount" or "Payment Type", onto the form as textboxes, listboxes, etc.&nbsp; These controls show all detailed information about one payment.</FONT></P>
+<P><FONT face=Arial size=2>My intentions for this layout are that the user will select a payment in the DataGridView at the top of the form and then at the bottom of the form the user will view or edit all the details of the selected payment using the various textboxes, listboxes, etc.</FONT></P>
+<P><FONT face=Arial size=2>At the bottom of the form, I also placed an "Add" button for adding new payments (to the Payments collection and DataGridView) and a “Remove” button for removing them.</FONT></P>
+<P><FONT face=Arial size=2>At first it appeared that everything worked as I expected.&nbsp; For example, I would make a change to the "Amount" textbox at the bottom of the screen and once I tabbed away from the textbox, the "Amount" value would also change inside the DataGridView at the top of the form.</FONT></P>
+<P><FONT face=Arial size=2>Then I noticed something really weird after I clicked the “Add” button a few times.&nbsp; I can add one payment and everything works fine.&nbsp; But if I add two or more payments, things break – data changes made inside the controls at the bottom of the form are no longer reflected in the DataGridView at the top of the form.&nbsp; The weirdest thing is that everything still works perfectly for any original payments that were in the DataGridView when the form was first loaded and still works perfectly for the first new payment that I added.&nbsp; But for the second new payment and all new payments after that, changes to the detail controls at the bottom of the form are not reflected in the DataGridView at the top of the form.&nbsp; Doh!&nbsp; </FONT></P>
+<P><FONT face=Arial size=2>Using the debugger I was able to confirm that my Payment object’s properties (like “Amount”) are always being changed correctly, regardless of whether the DataGridView reflects the changes or not.</FONT></P>
+<P><FONT face=Arial size=2>Here’s the relevant code from my “New” constructor where my Order object is passed in as a parameter:<BR>&nbsp;&nbsp; Me.PaymentsBindingSource.DataSource = mobjOrder.Payments</FONT></P>
+<P><FONT face=Arial size=2>Here’s the relevant code from my “Add” button’s click handler:<BR>&nbsp;&nbsp; mobjOrder.Payments.AddNew(mobjOrder)</FONT></P>
+<P><FONT face=Arial size=2>There’s not a lot of code other than that – most of the functionality is being done automatically by Windows data-binding and the CSLA framework.</FONT></P>
+<P><FONT face=Arial size=2>Does anybody have any suggestions about what is happening and how I can resolve this?</FONT></P>
+<P><FONT face=Arial size=2>Thanks,</FONT></P>
+<P><FONT face=Arial size=2>Jason<BR></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, September 13, 2007</h2>This usually has to do with the GetIdValue() override not returning a unique value. Any chance that's the case?<br>It usually is with int IDs and them defaulting to "0".<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Thursday, September 13, 2007</h2><P>I've seen that problem as well. Like Andres said, it is about a non unique value. If the database already uses an int as a key, then I add a guid for identifying things locally while working with them. That has solved this problem for me.</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, September 13, 2007</h2><P>I think you're right.&nbsp; I checked my Payment object -&nbsp;a new payment&nbsp;does not have an Id value until after the it saved for the first time (it gets the Id from the database insert).&nbsp; So the "GetIdValue" method is returning an empty string until the payment is saved once.&nbsp; I'm going to try assigning a temporary unique Id when a new payment is created so the "GetIdValue" method works correctly prior to saving and then change the Id&nbsp;to the real value after the save.&nbsp; I'll post again later and confirm whether that worked.&nbsp; I bet you've found the problem though.&nbsp; Thanks for the help!</P>
+<P>Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 13, 2007</h2>I'm actually considering making GetIdValue() virtual, but not abstract, and providing a default implementation using Guid values. This would be in the base classes. That would avoid these issues in the default case, and would still allow you to do an override when desired.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, September 13, 2007</h2><P>Just wanted to confirm - that did fix the problem.&nbsp; Thanks again!</P>
+<P>Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, September 13, 2007</h2>Rocky,<br>Do you think it's really worth it? It means adding yet another field to the base class that could be pottentially big (if you're aiming at guids). Sometimes we move a lot of data through remoting and that could be a big perf hit. I know: overriding it would keep it null so it might not be such a big problem, but thenagain, you're opening the door for people to ignore that they need to override it and that could create perf problems and usage problems that would very difficult to track to GetIdValue().<br><br>Am I being too dramatic? Perhaps it's not such a big deal, but I'm sceptic when it comes to changing something that creates an issue from time to time to something else that could create new/undiscovered issues.<br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 13, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is why I bring it up &#8211; soliciting feedback.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It does seem to be a recurring pain point for many people
+though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 13, 2007 4:36 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Data Binding - DataGridView and Detail Controls
+- Changes Not Reflected<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+Do you think it's really worth it? It means adding yet another field to the
+base class that could be pottentially big (if you're aiming at guids).
+Sometimes we move a lot of data through remoting and that could be a big perf
+hit. I know: overriding it would keep it null so it might not be such a big
+problem, but thenagain, you're opening the door for people to ignore that they
+need to override it and that could create perf problems and usage problems that
+would very difficult to track to GetIdValue().<br>
+<br>
+Am I being too dramatic? Perhaps it's not such a big deal, but I'm sceptic when
+it comes to changing something that creates an issue from time to time to
+something else that could create new/undiscovered issues.<br>
+<br>
+<br>
+AndrÃ©s<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Monday, September 17, 2007</h2><P class=MsoNormal><SPAN>I think these unique Id issues&nbsp;are a significant concern that probably warrants exploration.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I suspect that many people probably run into trouble with this......especially people like me who are forced to get their unique ids from a legacy app’s database and therefore don't have an real Id until after their object is saved for the first time.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I peeked inside the CSLA framework code, but could not come up with a good generic way of dealing with this unique Id issue from inside the framework that would cover all scenarios.<SPAN>&nbsp; </SPAN>Hopefully, one of you more experienced guys will eventually come up with a good solution.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I ended up generating and setting a temporary unique Id (global variable) while in "DataPortal_Create()".<SPAN>&nbsp; </SPAN>Then in "GetIdValue()", I check "IsNew()" to determine whether to return the value of the temporary id variable or the real id variable.<SPAN>&nbsp; </SPAN>I don't know if this is the best or most elegant solution, but so far it looks like this is going to work for me.<SPAN>&nbsp; </SPAN>If anyone has a better idea, please post it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For what it’s worth, my current opinion is that these unique Id issues will probably have to be resolved by training rather than by tweaking the framework.<SPAN>&nbsp; </SPAN>The CSLA framework is pretty awesome and makes our life so much easier, but a framework can only do so much.<SPAN>&nbsp; </SPAN>At some point it’s up to all of us programmers to take the time to read the entire book, read this forum, and learn how to use the CSLA framework correctly. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky….thanks so much for the framework, books, forums (especially your frequent participation)…..you’re awesome!<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Jason<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JugerHiTech replied on Wednesday, March 24, 2010</h2><p>Hi Jason,</p>
+<p>&nbsp; Can you send me the solution for this issue....Very Thank You~~</p>
+<p><span>I ended up generating and setting a temporary unique Id (global variable) while in &quot;DataPortal_Create()&quot;.<span>&nbsp; </span>Then in &quot;GetIdValue()&quot;, I check &quot;IsNew()&quot; to determine whether to return the value of the temporary id variable or the real id variable.<span>&nbsp; </span></span></p>
+<p><span>Thank you for your kindly help</span></p>
+<p><span>Edwin</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 24, 2010</h2><p>That should be the solution... although if you&#39;re using a newer version of Csla, there&#39;s no need to override GetIdValue at all anymore.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JugerHiTech replied on Wednesday, March 24, 2010</h2><p>Hi Andy,</p>
+<p>&nbsp; Thank you for your answer.</p>
+<p>I&nbsp;<span style="font-size:x-small;"> am using CSLA version 3.8.2.&nbsp; But I still got this issue...</span></p>
+<p><span style="font-size:x-small;">My app got one window, which has one tab control on that.</span></p>
+<p><span style="font-size:x-small;">On the tab control, I got 2 tab:&nbsp; </span></p>
+<p><span style="font-size:x-small;">one tab is datagridview (that datasource is a bindingsource which is come from businesslistbase)(7 columns)</span></p>
+<p><span style="font-size:x-small;">another tab is detailview(7 columns map to the columns in the datagridview)</span></p>
+<p><span style="font-size:x-small;">Now when I load all data from db, the datagridview and detailview work very well (ex, move row, add row,&nbsp;change column value)</span></p>
+<p><span style="font-size:x-small;">but&nbsp;after I&nbsp;save all the modified rows(New, Update rows) for the first time, something happened....</span></p>
+<p><span style="font-size:x-small;">When I modify the detailview column (ex, StorerTypeID), and click the gridview tab, the (StorerTypeID) column in the gridview</span></p>
+<p><span style="font-size:x-small;">didn&#39;t change its value... and when I click the (StorerTypeID) column in the gridview, then it refresh the new value!</span></p>
+<p><span style="font-size:x-small;">Also, when I change the (StorerTypeID) column in the gridview, then click the detailview tab,</span></p>
+<p><span style="font-size:x-small;">the (StorerTypeID) column in the detailview didn&#39;t change its value, even when I click that column, it still cann&#39;t change</span></p>
+<p><span style="font-size:x-small;">to the new value which I just maintain in the gridview....</span></p>
+<p>Could&nbsp;you give me some advise or some example for that ?&nbsp; Very Thanks.</p>
+<p>&nbsp;</p>
+<p>Edwin</p>
+<p><span style="font-size:x-small;"></span></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

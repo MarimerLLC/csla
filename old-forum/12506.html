@@ -1,0 +1,22 @@
+<html><header><title>Clarify - Private backing fields, LoadProperty, and Common rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Clarify - Private backing fields, LoadProperty, and Common rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12506.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Wednesday, March 19, 2014</h2><p>Hi there,</p>
+<p>Need some clarification on this statement from <a target="_blank" title="this post" href="http://forums.lhotka.net/forums/p/12381/56888.aspx#56888">previous post</a>:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;padding-left:30px;">My key issue is that there is a LOT you must make sure to NOT use, such as the standard rules, the CslaContrib rules <br />or the CslaGenFork rules. </pre>
+<ul>
+</ul>
+<p>Refresh of my situation:</p>
+<ul>
+<li>I am using DTO from my DAL as a private field in BusinessBase object.&nbsp; The individual PropertyInfo objects are marked with PrivateField and the Getters/Setters use the GetProperty and SetProperty.</li>
+<li>I cannot bring myself to write a LoadProperty/ReadProperty overload for every property!&nbsp; It is too unmaintainable unless I only had a couple properties.</li>
+</ul>
+<p>Currently I am using the CommonRules and they work great!!&nbsp; Only the DataAnnotation rules do not work.&nbsp; I debugged the CommonRule, the execution does a Using ByPassPropertyChecks and then calls my getter on the primary property using the DynamicMethodGetter.</p>
+<p>Given the following parameters (question below)</p>
+<ul>
+<li>I do not use Async rules</li>
+<li>I do not use the CSLAContrib or CSLAGenFork rules</li>
+<li>I do not use Input or OutputProperties</li>
+<li>I do not target async clients (WinRt, WPhone, Silverlight)</li>
+<li>If I DO ever write an async rule with no Target access OR if I use input/output properties I will do Load/ReadProperty overload for the few relevant properties</li>
+</ul>
+<p>Am I missing something?&nbsp; Thanks for patience as I understand the guts of what is going on.&nbsp; </p>
+<p>This code is screaming fast and I like not having to load my business object properties one by one from the DAL layer at fetch and update!&nbsp; Yes my DTO is tied into my BusinessLayer, but I am willing to live with that for the benefit.</p>
+<p>Extra benefit is I want to spin up a ReadOnly version I can transfer the DTO to a ReadOnly Friend factory method and viola!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

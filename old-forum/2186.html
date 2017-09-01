@@ -1,0 +1,10 @@
+<html><header><title>Possible to do from StackTrace? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible to do from StackTrace? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2186.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Monday, January 22, 2007</h2><P><FONT face=Arial size=2>I've leveraged the same sort of call as "CanReadProperty", etc do in something else of mine: </FONT></P><FONT color=#008080>
+<P><FONT face=Arial size=2>MethodBase</FONT></FONT><FONT face=Arial size=2> callingMethod = <FONT color=#0000ff>new</FONT> System.Diagnostics.<FONT color=#008080>StackTrace</FONT>().GetFrame(1).GetMethod();</FONT></P>
+<P><FONT face=Arial size=2>What I'd like to do, if possible, is get the parameters that said method was called with.</FONT></P>
+<P><FONT face=Arial size=2>That is, if I have:</FONT></P>
+<P><FONT face=Arial size=2>public void MethodA(int myVar) { MethodB(); }</FONT></P>
+<P><FONT face=Arial size=2>protected void MethodB()</FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT face=Arial size=2>// I want to not only get the calling method (via stacktrace) but also get the parameters of method A - that is, I want to get an object collection or array of which there would be one member - the <STRONG>value</STRONG> of myVar. (not the types) </FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>I understand it's unorthodox - but I want to do it for some of the same reasons CanReadProperty utilizes it - to save room for error (string literals), etc. </FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

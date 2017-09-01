@@ -1,0 +1,18 @@
+<html><header><title>Beginner's question - DataPortal_Insert</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Beginner's question - DataPortal_Insert</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7379.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>erict2000 posted on Friday, July 31, 2009</h2>Hi -- I'm following the PTracker, and have started my own simple project.  I can retrieve lists and objects from the DB and create a new object. When the LINQ returns from the Stored Proc that inserts a new row, I get back the new ID value (identity PK), and put that into _id.  Debug shows that it's there.  Then I step out of DataPortal_Insert and a whole bunch of CSLA functions until I finally get back to my caller that did thing.Save().  At this point the _id variable is back to 0, instead of the identity value I put in in DataPortal_Insert.  
+<br><pre>        protected override void DataPortal_Insert()
+        {
+            using (var ctx = ContextManager.GetManager(o.DAL.Database.DB, false))
+            {
+                int? newId = null;
+                ctx.DataContext.addThing(_name, _location, ref newId);
+                _id = System.Convert.ToInt32(newId);
+                FieldManager.UpdateChildren(this);
+            }
+        }
+</pre>
+<br>My question: Why doesn't the update of _id in DataPortal_Insert keep the value?  Is it a proxy object, and if so, what will transfer the value from the proxy into my object?
+Thanks for any clues here.
+<br>Eric T.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 31, 2009</h2><P>This is probably the most commonly asked question (one way or another) asked by newcomers to CSLA .NET.</P>
+<P>Notice that Save() returns a value. In fact, it returns the saved object, which is different from the one you started with. So you must use that return value:</P>
+<P>_customer = _customer.Save()</P>
+<P>The reason for this is explained in the first couple chapters of <EM>Expert 2008 Business Objects</EM>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>erict2000 replied on Friday, July 31, 2009</h2>Doh -- Thanks!&nbsp; I had skipped Ch 4 - 16.&nbsp; Looks like that was a bad move.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

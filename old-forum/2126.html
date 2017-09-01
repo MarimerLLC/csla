@@ -1,0 +1,12 @@
+<html><header><title>Object Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2126.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Thursday, January 11, 2007</h2><P>I have an object called&nbsp;contacts that contains name and address info, that can be a vendor or client that links to a vendor or client table based&nbsp;on its type(Vendor or Client).</P>
+<P>I'm not sure if I should create one&nbsp;contact object&nbsp;with 2 child properties. or 2 objects that inherit from contacts.</P>
+<P>I was leaning towards 2 objects that inherit from contacts.</P>
+<P>Any guidance would be appreciated.</P>
+<P>Thanks </P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 11, 2007</h2><P>To get the most out of CSLA .NET you should consider focusing your object design on what the objects <EM>do</EM> rather than on what they contain.</P>
+<P>What you've described thus far is merely data, which doesn't give enough information to recommend a good approach for an object design. The real question is what are these objects for? What do they do?</P>
+<P>To answer those questions you need a use case. Objects don't exist in a vaccuum, nor do they exist at the application level. They exist at the use case level - they exist to fill a specific role within the context of a specific sequence of actions that make up that use case.</P>
+<P>Odds are you have a couple use cases: enter/edit vendor and enter/edit client. These two different use cases should have two different sets of objects. Using inheritance to get reuse should only occur to get reuse of <EM>behavior</EM>, not properties (which are really just data). Using inheritance to reuse data/properties merely couples use cases together where they should not be coupled, and the result is typically a hard to maintain system.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Friday, January 12, 2007</h2><P>Rocky,</P>
+<P>Thanks for your help.&nbsp;It makes sense to treat them as seperate objects.&nbsp; Thinking about the specail validation cases would be difficult to maintain.</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,165 @@
+<html><header><title>Parameter for Winpart controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parameter for Winpart controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4826.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren posted on Thursday, May 08, 2008</h2><P>My application is designed on Ptracker and uses WinPart. My mainform is using the following routines to load the winpart control after the menu is item is selected: </P>
+<P>&nbsp;Private Sub chosenToolStripMenuItem_Click(ByVal sender As Object, ByVal e As EventArgs) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim currentAssembly As Assembly = Assembly.GetAssembly(GetType(MainForm))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim mi As ToolStripMenuItem = DirectCast(sender, ToolStripMenuItem)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim classToInstantiate As String = "MyAppWin." + DirectCast(mi.Tag, String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim selectedForm As System.Object = currentAssembly.CreateInstance(classToInstantiate)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ShowSelectedForm(DirectCast(selectedForm, WinPart))<BR>&nbsp;End Sub<BR>&nbsp;&nbsp; <BR>&nbsp;Public Sub ShowSelectedForm(ByVal formToLoad As WinPart)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' see if this form is already loaded <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each ctl As Control In MainFormPanel.Controls<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If TypeOf ctl Is WinPart Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If formToLoad.GetIdValue().Equals(DirectCast(ctl, WinPart).GetIdValue()) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' project already loaded so just <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' display the existing winpart <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ShowWinPart(DirectCast(ctl, WinPart))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; formToLoad.Dispose()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next...</P>
+<P>Private Sub AddWinPart(ByVal part As WinPart)<BR>&nbsp;&nbsp;&nbsp;&nbsp; AddHandler part.CloseWinPart, AddressOf CloseWinPart<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; part.BackColor = ToolStrip1.BackColor<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MainFormPanel.Controls.Add(part)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.DocumentsToolStripDropDownButton.Enabled = True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ShowWinPart(part)<BR>&nbsp;End Sub</P>
+<P><BR>In some cases I want to send a parameter to the Winpart control but am unsure of the best way to accomplish this. I realize that this is mostly a .NET question but I know other are using the winpart design and likely have a solution implemented.&nbsp; My first instinct is to go with an optional parameter in ShowSelectedForm&nbsp;but after reading about the use of optinal parameters I think this is poor design. </P>
+<P><BR>I have created a winpart control which contains the reportviewer control&nbsp;for a specific report. All works well for the single report but now I I need to make this control generic so I can use a single winpart control for all my reports. This control will accept a report name and then based on this name will aquire the correct&nbsp; datasoure, perform binding etc. I am unsure how to add the report name parameter in this case.</P>
+<P>Any advice is truly appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One way is to have a Public Sub New(reportName as string) in
+your winpart control that contains report viewer.&nbsp; You will need to store
+that controls class name and report name inside the tag of a menu item, maybe
+separated by a comma, such as .Tag = &#8220;rprtviewer, itemsreports&#8221;.&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Then you will have <o:p></o:p></span></p>
+
+<p class=MsoNormal>If DirectCast(mi.Tag, String).Contans(&#8220;,&#8221;)<o:p></o:p></p>
+
+<p class=MsoNormal>&#8216;split the string into class
+name and parameter: clasToInstantiate and reportName<o:p></o:p></p>
+
+<p class=MsoNormal>selectedForm =
+currentAssembly.CreateInstance(classToInstantiate, new object() {reportName})<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Else<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>selectedForm =
+currentAssembly.CreateInstance(classToInstantiate)<o:p></o:p></p>
+
+<p class=MsoNormal>End If<br>
+<br>
+<br>
+<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Warren
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 08, 2008 3:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Parameter for Winpart controls<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>My application is designed on Ptracker and uses WinPart. My mainform is
+using the following routines to load the winpart control after the menu is item
+is selected: <o:p></o:p></p>
+
+<p>&nbsp;Private Sub chosenToolStripMenuItem_Click(ByVal sender As Object,
+ByVal e As EventArgs) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim currentAssembly As Assembly =
+Assembly.GetAssembly(GetType(MainForm))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim mi As ToolStripMenuItem = DirectCast(sender,
+ToolStripMenuItem)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim classToInstantiate As String =
+&quot;MyAppWin.&quot; + DirectCast(mi.Tag, String)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim selectedForm As System.Object =
+currentAssembly.CreateInstance(classToInstantiate)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ShowSelectedForm(DirectCast(selectedForm,
+WinPart))<br>
+&nbsp;End Sub<br>
+&nbsp;&nbsp; <br>
+&nbsp;Public Sub ShowSelectedForm(ByVal formToLoad As WinPart)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' see if this form is already loaded <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each ctl As Control In
+MainFormPanel.Controls<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If TypeOf ctl Is WinPart Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+formToLoad.GetIdValue().Equals(DirectCast(ctl, WinPart).GetIdValue()) Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' project already loaded so just <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+' display the existing winpart <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ShowWinPart(DirectCast(ctl, WinPart))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+formToLoad.Dispose()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Return<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next...<o:p></o:p></p>
+
+<p>Private Sub AddWinPart(ByVal part As WinPart)<br>
+&nbsp;&nbsp;&nbsp;&nbsp; AddHandler part.CloseWinPart, AddressOf CloseWinPart<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; part.BackColor = ToolStrip1.BackColor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MainFormPanel.Controls.Add(part)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.DocumentsToolStripDropDownButton.Enabled =
+True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ShowWinPart(part)<br>
+&nbsp;End Sub<o:p></o:p></p>
+
+<p><br>
+In some cases I want to send a parameter to the Winpart control but am unsure
+of the best way to accomplish this. I realize that this is mostly a .NET
+question but I know other are using the winpart design and likely have a
+solution implemented.&nbsp; My first instinct is to go with an optional
+parameter in ShowSelectedForm&nbsp;but after reading about the use of optinal
+parameters I think this is poor design. <o:p></o:p></p>
+
+<p><br>
+I have created a winpart control which contains the reportviewer
+control&nbsp;for a specific report. All works well for the single report but
+now I I need to make this control generic so I can use a single winpart control
+for all my reports. This control will accept a report name and then based on
+this name will aquire the correct&nbsp; datasoure, perform binding etc. I am
+unsure how to add the report name parameter in this case.<o:p></o:p></p>
+
+<p>Any advice is truly appreciated.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Friday, May 09, 2008</h2><P><FONT face="Courier New" size=2>Hi Sergey, </FONT></P>
+<P><FONT face="Courier New" size=2>Thanks for pointing the way. I ended up going with the following which seems to work, any suggestions&nbsp;for&nbsp;improvement are welcome.</FONT></P>
+<P><FONT size=1><FONT face="Courier New">'</FONT><FONT face=Arial size=2> Split the tag string into class name and parameter<BR>If classToInstantiate.Contains(",") Then<BR>&nbsp;&nbsp; parmString = Mid(classToInstantiate, InStr(classToInstantiate, ",") + 1)<BR>&nbsp;&nbsp; classToInstantiate = Mid(classToInstantiate, 1, InStr(classToInstantiate, ",") - 1)<BR>&nbsp;&nbsp; selectedForm = Activator.CreateInstance(Type.GetType(classToInstantiate), New Object() {parmString})<BR>Else<BR>&nbsp;&nbsp; selectedForm = currentAssembly.CreateInstance(classToInstantiate)<BR>End If</FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Saturday, May 10, 2008</h2><P>I read some up on best practices for .Net and removed references to Microsoft.VisualBasic.dll assembly and use native .NET types instead:</P>
+<P>&nbsp; '<FONT size=2> Split the tag string into class name and parameter<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If tagClassToInstantiate.Contains(",") Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tagParm = tagClassToInstantiate.Substring(tagClassToInstantiate.IndexOf(",", 0) + 1)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tagClassToInstantiate = tagClassToInstantiate.Substring(0, tagClassToInstantiate.IndexOf(tagParm, 0) - 1)</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; selectedForm = Activator.CreateInstance(Type.GetType(tagClassToInstantiate), New Object() {tagParm})<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; selectedForm = currentAssembly.CreateInstance(tagClassToInstantiate)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR></FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

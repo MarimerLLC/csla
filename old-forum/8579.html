@@ -1,0 +1,51 @@
+<html><header><title>Linq query returning incorrect results when object is not saved..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq query returning incorrect results when object is not saved..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8579.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Thursday, February 25, 2010</h2><p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">
+<p>I&#39;m calling following code from my validation method.. This seems to work when the object is saved.. if i delete a item and add it again (without saving) then this is returning incorrect results.. whereas in debugger i can see that item is sucessfully deleted and added but linq query is not returning correct result.. It seems like a bug...</p>
+<p>DateTime MaxDepDate = (from J in target.JoinInfoList</p>
+<p>where J.JoinFlag == DepDtId</p>
+<p>orderby J.InfoDate.XToDateTime() descending</p>
+<p>select J.InfoDate.XToDateTime()).FirstOrDefault();</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bartol replied on Thursday, February 25, 2010</h2><p>Are you sure that DeptId is not zero before the object is saved? If that property is a foreign key that is only set after the insert then it would explain the problem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Sunday, February 28, 2010</h2><p>depdtid is a fix field which i&#39;m retrieving from my global control filler.. it is not zero but a valid value which points to a id.. as long as i can see in my tests, it seems like a bug..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 28, 2010</h2><p>JoinInfoList is a BLB?</p>
+<p>And you are removing an item, then adding another item that has the same DepDtd value?</p>
+<p>What do you think should happen in that case? I would expect that the query should work against this newly added item.</p>
+<p>When you delete the item, it is moved to DeletedList. When you add another item with the same DepDtd value it is added to the active list. When you save the list, DeletedList items are deleted first, then active items are inserted/updated.</p>
+<p>But the active list is always can always be queried, and whatever is in the active list should be part of the results.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, March 01, 2010</h2><p>i think maybe i&#39;m not understanding it correctly.. this is the replacement code which i&#39;m using which solves the issue.. you are writing that linq should return the result from current items but that is not happenning, it is returning from the last saved items.. Maybe i&#39;m not understanding your post correctly..</p>
+<p>Here is the object graph EmpMain is the parent which is having Child list as JoinInfoList with JoinInfo child objects.. The below validation is called from parent i.e. EmpMain..</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DateTime</span></span><span style="font-size:x-small;"> MaxJoinDate = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DateTime</span></span><span style="font-size:x-small;">.MinValue;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DateTime</span></span><span style="font-size:x-small;"> MaxDepDate = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DateTime</span></span><span style="font-size:x-small;">.MinValue;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DateTime</span></span><span style="font-size:x-small;"> TmpDt = </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DateTime</span></span><span style="font-size:x-small;">.MinValue;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">foreach</span></span><span style="font-size:x-small;"> (</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">var</span></span><span style="font-size:x-small;"> item </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">in&nbsp;</span></span><span style="font-size:x-small;"> target.JoinInfoList)
+<p>{</p>
+<p>TmpDt = item.InfoDate.XToDateTime();</p>
+<p>&nbsp;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">if&nbsp;</span></span><span style="font-size:x-small;"> (item.JoinFlag == JoinDtId &amp;&amp; TmpDt &gt; MaxJoinDate)
+<p>MaxJoinDate = TmpDt;</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">if&nbsp;</span></span><span style="font-size:x-small;"> (item.JoinFlag == DepDtId &amp;&amp; TmpDt &gt; MaxDepDate)</span></p>
+<p>}</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 01, 2010</h2><p>LINQ should just do its query over the items that are active in the BLB. In fact, LINQ queries over objects typically translate into foreach statements. So I don&#39;t know why there would be different behavior - but obviously you have a workaround, so that&#39;s probably what counts most.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

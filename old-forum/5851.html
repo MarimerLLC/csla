@@ -1,0 +1,16 @@
+<html><header><title>SecurityDataContext - (First CSLA/Linq application) - Chapter 18</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SecurityDataContext - (First CSLA/Linq application) - Chapter 18</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5851.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>William.Hullsiek posted on Friday, November 21, 2008</h2><P><FONT face=Verdana color=#000000 size=2>I am working on my first CSLA application using the new 3.6 release and the 'alpha' copy of the VS-2008 book.&nbsp;</FONT></P>
+<P><FONT face=Verdana size=2>PTTracker is working as advertised along with PTWeb.&nbsp; Great learning tool -&nbsp;reminds&nbsp;of Kernghan and Plauger Software Tools. </FONT></P>
+<P><FONT face=Verdana size=2>Have created my Security.dbml for the Dal and "copied code" from&nbsp; PTIdentity and PTPrincipal into my application.&nbsp; I then dragged [dbo].[Users] and [dbo].[Roles] from a test copy of my production SQL-Server 2005 database (not SQL-Express)&nbsp; The stored procedures (<FONT face="Courier New">uspCSLA_&lt;Method&gt;)</FONT> were dragged into the methods area of dbml. </FONT></P>
+<P><FONT face=Verdana size=2>Encountering a problem in the Identity class&nbsp;in the DataPortal_Fetch methods: ContextManager&lt;SecurityDataContext&gt;.&nbsp;</FONT></P>
+<P><FONT size=2><FONT face="Courier New">The type 'Application.DalLinq.Security.SecurityDataContext' cannot be used as type parameter 'C' in the generic type or method 'Csla.Data.ContextManager&lt;C&gt;'. There is no implicit reference conversion from 'Application.DalLinq.Security.SecurityDataContext' to 'System.Data.Linq.DataContext'.</FONT><BR></FONT><FONT size=2></FONT></P>
+<P><FONT size=2><FONT face=Verdana>What step did I miss?</FONT>&nbsp;&nbsp; </FONT></P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William.Hullsiek replied on Tuesday, November 25, 2008</h2><P><FONT face=Verdana size=2>Problem was resolved by removing the CSLA reference and adding it back in again.</FONT>&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeMcClintock replied on Friday, May 29, 2009</h2><P>I'm having this same problem.&nbsp; I removed and readded the CSLA reference, but that didn't help.</P>
+<P>GetManager works, but the context can't convert.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeMcClintock replied on Friday, May 29, 2009</h2><P>Added reference to system.data.linq</P>
+<P>&nbsp;</P>
+<P>All is good.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

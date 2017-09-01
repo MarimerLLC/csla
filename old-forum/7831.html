@@ -1,0 +1,52 @@
+<html><header><title>sorting and filtering in ReadOnlyListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>sorting and filtering in ReadOnlyListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7831.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft posted on Tuesday, October 20, 2009</h2>i'm new to csla, especially working with linq, and databinding. from projecttrackercs, and other examples i was able to create my own objects. i have a ROLB with ROB objects.<br>i want to display the data on a win gui in a grid.<br>so far so good...<br>but i would like to filter the data, and sort the data.<br>i thought that the filter i can manage with some linq query<br>and the sorting with the SortedBindingList object.<br><br>_list is the ROLB.<br><br>but i'm not able to implement both requirements.<br>just filtering is working:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var list = from r in _list where r.Name.Contains(textBox1.Text) select r;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainItemListBindingSource.DataSource = list;<br><br>just sorting is also working:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.mainItemListBindingSource.DataSource = new SortedBindingList&lt;MainItemInfo&gt;(_list);<br><br>how can i filter and sort the data?<br><br>another question relating to linq query.<br>in the first example (just filtering), is there any database read action? or is it just filtering the collection in memory?<br><br>thanks in advance<br>Ivan<br>&nbsp;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 21, 2009</h2><P>Windows Forms data binding and LINQ aren't fully compatible. </P>
+<P>LINQ to Objects returns IEnumerable&lt;T&gt; collections - the simplest type of collection in .NET. </P>
+<P>Windows Forms data binding is designed to work with BindingList&lt;T&gt; collections, which have more features.</P>
+<P>So binding to a L2O query result in Windows Forms only works in the most simple scenarios.</P>
+<P>Of course a read-only list is a simple scenario, and so what you are trying to do should generally work.</P>
+<P>However, you might have better luck using the SortedBindingList and FilteredBindingList classes provided by CSLA .NET. These pre-date L2O and are designed primarily to support sorting and filtering in a way that works well with Windows Forms data binding.</P>
+<P>Again, for your simpler scenario, L2O queries should work fine. Because this is LINQ to <EM>Objects</EM>, there is no database access - LINQ is just looping through the items in your collection and creating a new collection that only contains the items you specify based on your where clause.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pillesoft replied on Wednesday, October 21, 2009</h2>ok, thanks<br><br>i know there is a LinqBindingList object in 3.8, but i couldn't find any tutorial for that. is it more compatible with windows forms?<br><br>actually what i have missed was very simple.<br>var list = _list.SearchByExpression(x =&gt; x.Name.Contains(textBox1.Text));<br> this.mainItemListBindingSource.DataSource = new SortedBindingList&lt;MainItemInfo&gt;(list.ToList());<br><br>i'll try to use ROLB objects in the grid as much as possible, and display a dialog if the user adds or modifies a record with BO.<br><br>i have some data which are not so volatile, there i can use a fetch at the beginning and after just work in memory.<br>how filteredbindinglist filters the data? is it accessing the database or working in memory?<br><br>Ivan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, the purpose of LinqBindingList is to provide better Windows
+Forms support when doing a query over a BusinessListBase.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s no real tutorial because it is automatic. Any identity
+projection query over a BusinessListBase will return a LinqBindingList &#8211; that just
+happens with no effort. And LinqBindingList is a BindingList&lt;T&gt;, and is
+also a view over the original list, so any insert/update/remove operations
+affect the real list as well as the LBL view. Again, all automatic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>FilteredBindingList is also a view over the original list, and
+so doesn&#8217;t talk to the database. In fact LinqBindingList is just a variation on
+the pattern established by SortedBindingList and FilteredBindingList &#8211; all three
+are just bindable views over the real collection.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 21, 2009</h2><P>To be clear, the LinqBindingList is only created for Editable Collections.<BR>It&nbsp;is NOT&nbsp;created for Read Only Collections.</P>
+<P>Also, there is a class called ObjectListView in CSLA Contrib which I used to use prior to LINQ. It has the advantage of being able to sort more than one field at a time which is a limitation of SortedBindingList.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Wednesday, January 20, 2010</h2><P>I know this thread is a little bit old, but I'm just starting to play around with csla 3.8 (was using 3.0), and I'm still trying to wrap my head around a few concepts, and linqbindinglist is one of them.</P>
+<P>The book mentions that sortedbindinglist and filteredbindinglist are still there just for backwards compatibility, and that linqbindinglist should replace them. However, by looking at Rocky's posts in this thread, it appears that they're still a valid option specially in windows applications. I have gotten it to work (to some extent) with linqbindinglist, but I have found some issues that make me wonder if sortedbindinglist would be a better option. But I don't want to start something new on classes that will be no longer supported. </P>
+<P>So, what is the current status of sortedbindinglist? What is its future?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 20, 2010</h2>Hi, <br><br>You should view Sorting and Filtering at a UI level - and select the technology that suits your UI technology best. SortedBindingList and FilteredBindingList works very well with Windows Forms whereas LinqBindingList fits good with WPF and Silverlight. <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

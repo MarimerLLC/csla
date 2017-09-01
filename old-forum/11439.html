@@ -1,0 +1,62 @@
+<html><header><title>Upgrading from 3.8.1 to 4.2.2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading from 3.8.1 to 4.2.2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11439.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr posted on Thursday, June 28, 2012</h2><p>Hi all,</p>
+<p>I have a project&nbsp;which is using CSLA 3.8.1 with .NET&nbsp;F/W 3.5&nbsp;and now that has to be converted to 4.2.2 with .NET&nbsp;F/W 4.0. Now that i am facing some issues is changes in method names and properties. For instance, &quot;ValidationRules&quot; class has been changed to &quot;BusinessRules&quot;. So similarly &quot;Csla.Rules.CommonRules.IntegerMinValue&quot; has been changed to what? is there any place where I can see comparision? Please respond as this issue has bcome showstopper for me. Your early response would be appriciated <img src="http://forums.lhotka.net/emoticons/emotion-18.gif" alt="Huh?" /></p>
+<p>Thanks in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 28, 2012</h2><p>Hi,</p>
+<p>The best resource on how to use CSLA 4 is Rockys ebook series: <a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4</a> </p>
+<p>Available for purchase here. <a href="http://store.lhotka.net/Store/tabid/1560/ProductID/22/List/1/Default.aspx%20">http://store.lhotka.net/Store/tabid/1560/ProductID/22/List/1/Default.aspx </a></p>
+<p>And of course also the change log for each release: <a title="http://www.lhotka.net/cslanet/ " href="http://www.lhotka.net/cslanet/%20">http://www.lhotka.net/cslanet/</a>&nbsp; </p>
+<p>The 3.x rule engine is gone and there is an entire new rule engine where all rules are classes in 4.x.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr replied on Friday, June 29, 2012</h2><p>Thanks for quick response Mr.JonnyBee</p>
+<p>I have a time constraint, I dont have enough time to read complete book. And change log is not so clear. Is there any other link where in I can get diff b/w various version, as I said I have very less time <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 29, 2012</h2><p>Hi, </p>
+<p>Basic summery and few links in this release post:&nbsp; <a href="http://forums.lhotka.net/forums/p/9260/43936.aspx">http://forums.lhotka.net/forums/p/9260/43936.aspx</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr replied on Thursday, July 19, 2012</h2><p>Hi,</p>
+<p>sorry for posting the comments on diffeent threads. now its that&nbsp;
+Csla.Validation&nbsp;had <i>public void AddRule(RuleHandler handler, IPropertyInfo propertyInfo); </i>in 3.V now AddRule has only 5 overloaded <i>1. methods&nbsp;AddRule(System.Type objectType, Csla.Rules.IAuthorizationRule rule, string ruleSet) 2.&nbsp;AddRule(System.Type objectType, Csla.Rules.IAuthorizationRule rule) 3.&nbsp;AddRule(Csla.Rules.IAuthorizationRule rule) 4.&nbsp;AddRule(Csla.Rules.IBusinessRule rule, string ruleSet) 5.&nbsp;AddRule(Csla.Rules.IBusinessRule rule)</i></p>
+<p>now i am adding a rule&nbsp;<i>BusinessRules.AddRule(CustomRules.ValidatingExtendedBindingListIsValid&lt;IDeviceInfo&gt;, _deviceListProperty);</i> where&nbsp;<i>ValidatingExtendedBindingListIsValid </i>is a class and&nbsp;<i>IDeviceInfo </i>is an interface which implements&nbsp;<i>CslaExtensions.IReadOnlyBase, IDeviceKey, IEquatable&lt;IDeviceInfo&gt;</i></p>
+<p>
+<p><i>public class ValidatingExtendedBindingListIsValid&lt;T&gt; : BusinessRule where T : class</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;protected override void Execute(RuleContext context)</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var value = Utilities.CallByName(context.Target, context.OriginPropertyName, CallType.Get);</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //var rv = true;</i></p>
+<p><i><br /></i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var validatingCollection = value as ValidatingExtendedBindingList&lt;T&gt;;</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (validatingCollection != null)</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var errorMessages = new List&lt;string&gt;(validatingCollection.ValidationErrors());</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (errorMessages.Count != 0)</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var flattenedErrors = new StringBuilder();</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var error in errorMessages)</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; flattenedErrors.AppendLine(error);</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddInformationResult(string.Format(CultureInfo.CurrentCulture,</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Properties.Resources.CollectionHasValidationErrors,</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.GetType().GetProperty(context.OriginPropertyName),</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; flattenedErrors));</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; }</i></p>
+<p>now how do i add my rule?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 19, 2012</h2><p>create an instance of your rule and call BusinessRules.AddRule, ex:</p>
+<p>BusinessRules.AddRule(new MyRule&lt;type&gt;(primaryProperty));</p>
+<p>I do recommend that you buy the Using CSLA 4 : Creating Business Objects ebook.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr replied on Thursday, July 19, 2012</h2><p>Yes, the class&nbsp;<i>ValidatingExtendedBindingListIsValid </i>was converted to implement&nbsp;<i>BusinessRule</i>&nbsp;, and as you see it does not have any constructor with no arguments. Also to add a point, i am bit new to OOPS concepts<img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr replied on Friday, July 20, 2012</h2><p>Hi,</p>
+<p>as recommanded by you, i got the ebook, but in ebook no where Csla.Validations.<span>DecoratedRuleArgs is mentioned. Really feeling diffuculties in upgradation, why so many breaking changes?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 20, 2012</h2><p>The ebook documents how to use CSLA 4.x - not 3.8x or migration to 4.x.</p>
+<p>RuleArgs/DecoratedRuleArgs no longer exists in 4.x - you now use properties on your rule to pass/read values from the BO (possibly aided by the rule engine itself).&nbsp;</p>
+<p>The new rule engine provides the same progrmming model/unit testing experience no matter if he rule is sync or async and it is much easier to create generic - reusable rules. You should focus on understanding the new rule programming model - and how to wriite rules - rater the mapping fetures from the old rule engine.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr replied on Friday, July 20, 2012</h2><p>any recommanded books for conversion? if not any link(except change log) in the site which clearly specify changes from version to version?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockyRocks replied on Saturday, July 21, 2012</h2><p>Doing an upgrade without allowing yourself time to learn the changes is a stressful route to have chosen. There are rarely shortcuts to learning new things.</p>
+<p>What is forcing the upgrade? If you are running on full .NET then using multiple .NET frameworks is fine; you should be able to compile your app against .NET 4.0 even if using CSLA 3.8x</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chethantr replied on Wednesday, September 12, 2012</h2><p>Hi,</p>
+<p>Back with one more query, how to add the arguments to business rules?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, September 12, 2012</h2><p>If you think of parameters that can be defined in AddBusnessRules then add as properties on the rule class and add as parameter to constructor. <br /><br />See f.ex MaxLength rule that gets the maxlength as a parameter.</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">MaxLength</span> : <span style="color:#2b91af;">CommonBusinessRule</span></p>
+<p style="margin:0px;">&nbsp; {</p>
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">int</span> Max { <span style="color:blue;">get</span>; <span style="color:blue;">private</span> <span style="color:blue;">set</span>; }
+<p style="margin:0px;">&nbsp;</p>
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span> MaxLength(Csla.Core.<span style="color:#2b91af;">IPropertyInfo</span> primaryProperty, <span style="color:blue;">int</span> max)
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; : <span style="color:blue;">base</span>(primaryProperty)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; Max = max;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; <span style="color:blue;">this</span>.RuleUri.AddQueryParameter(<span style="color:#a31515;">&quot;max&quot;</span>, max.ToString());</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; InputProperties = <span style="color:blue;">new</span> <span style="color:#2b91af;">List</span>&lt;Core.<span style="color:#2b91af;">IPropertyInfo</span>&gt; { primaryProperty };</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; }</p>
+</div>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ........</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,8 @@
+<html><header><title>MyGeneration CSharp Templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MyGeneration CSharp Templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3036.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichMark posted on Wednesday, June 13, 2007</h2><P>I've placed some MyGeneration&nbsp;CSharp Templates on CSLAcontrib.</P>
+<P>They include support for:</P>
+<P>* ForeignKeys including Parent/Child relationships.</P>
+<P>* propertygrid.</P>
+<P>* Lazy Loading of related data</P>
+<P>* Other items.</P>
+<P>I've also included a sample application for the Northwind database.&nbsp; This consists of a listbox to select an employee, and a propertygrid of all information related to the employee.&nbsp; The data is editable in the propertygrid.</P>
+<HR align=left></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichMark replied on Monday, June 18, 2007</h2>I found a problem in the logic for IsDirty and IsValid related to Lazy Loading of required fields.&nbsp; I fixed this by separating the validation logic into the rules and simply ignoring validation and "dirty" for items that are not loaded.&nbsp; (i.e. If it's not loaded, it must be clean and valid)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

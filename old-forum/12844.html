@@ -1,0 +1,23 @@
+<html><header><title>Chaining authorization rules?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Chaining authorization rules?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12844.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, March 10, 2015</h2><p>Is there a supported way to chain authorization rules?&nbsp; There&#39;s no GetChainedContext method, and I&#39;m ending up having to write a new class for each unique set of permissions I need.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 10, 2015</h2><p>Hi,</p>
+<p>No, you cannot chain but you may subclass authorization rules or call other rules/logic from within the Execute method.</p>
+<p>There&#39;s only one purpose for an authorization rule and that is to set context.HasPermission so there is no need for a GetChainedContext.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 10, 2015</h2><p>I though chaining was required to be able to call other rules but if that&#39;s not the case i&#39;ll go that route.&nbsp; It might be nice to have Csla offer some auth rules to combine other rules (like and / or rules).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 11, 2015</h2><p>Hi,</p>
+<p>I believe it was a design that was built in to CSLA to ensure that authorization rules should be considered singeltons and be quick. Especially for propery level rules the rules will be called many times during databinding.</p>
+<p>I find my preferences to be:</p>
+<ul>
+<li>use the builtin authz rules for role based authorization (only called once and then cached) </li>
+<li>override CanReadProperty / CanWriteProperty / CanExecuteMethod for the property level rules where I have business logic that dictates whether a field should be read/write or a method may be called.&nbsp;</li>
+<li>use custom authz rules for Create / Get /Edit / Delete actions when needed.</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 11, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Hi,</p>
+<p>I believe it was a design that was built in to CSLA to ensure that authorization rules should be considered singeltons and be quick. Especially for propery level rules the rules will be called many times during databinding.</p>
+<p>I find my preferences to be:</p>
+<ul>
+<li>use the builtin authz rules for role based authorization (only called once and then cached) </li>
+<li>override CanReadProperty / CanWriteProperty / CanExecuteMethod for the property level rules where I have business logic that dictates whether a field should be read/write or a method may be called.&nbsp; </li>
+<li>use custom authz rules for Create / Get /Edit / Delete actions when needed. </li>
+</ul>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I understand the design decisions but sometimes authorization is complex.&nbsp; The current project I&#39;m working the caching is actually an issue because a users permissions can change based on the organization they are currently in.&nbsp; </p>
+<p>I also much prefer classes to represent auth rules over putting the code in CanRead/Write/Execute methods.&nbsp; Code in the CanXYZ methods tends to end up a giant switch statement and the logic can easily become convoluted and hard to maintain.&nbsp; Its possible to avoid that if everyone involved has a high level of discipline, but I&#39;ve found that&#39;s often not the case including for me.&nbsp; We have some pretty complex auth rules which often take into account the current state of the object they are applied to.</p>
+<p>Pulling the code into classes helps with this a lot and makes unit testing the auth rules much simpler.&nbsp; In the project I&#39;m working on we just moved from Csla 3.8 to 4.5 and the business rules (including auth) becoming classes to me is by far one of the biggest benefits of Csla 4 and the first thing I always point to when talking about Csla.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,229 @@
+<html><header><title>Using Set/LoadProperty when type for generic isn't known at compile time... </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Set/LoadProperty when type for generic isn't known at compile time... </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4262.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Thursday, January 31, 2008</h2><P>Hey guys <BR>Just wondering, if i am using the managed fields and&nbsp;I don’t know the type of the object at compile time how do i set/load a field with a value?<BR><BR>The scenario i have is that i want to loop through the fields in a data reader and automatically load the values from the read into the field manager, but&nbsp;to do this at the current time (unless i am missing something) you can only set/load values via generics.&nbsp;So if this is the case i can not loop through these items because&nbsp;I don't know what the&nbsp;type is.<BR><BR>For example CSLA currently wants me to do this something like this:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;Guid&gt;(IdProperty, data.Id);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;string&gt;(NameProperty, data.Name);<BR><BR>But i need to be able to go (note this isn't complete but it shows what i am trying to do):<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; dataReader.FieldCount; i++) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(dataReader.GetName(i), dataReader.GetValue(i));<BR><BR>Any ideas let me know. Also if a new with the above loop scenario i can also get out the type of the current columns object, but this doesn't really help with the current requirement for generics if a simple solution if desired.<BR><BR>Thanks <BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Thursday, January 31, 2008</h2><P>I have not caught up with the new property management stuff in CSLA 3.5 yet, however FWIW, may initial take is that you are going to have to use reflection to resolve the correct generic method. MakeGenericMethod will come into play to close the genericity of the&nbsp;MethodInfo&nbsp;after you have reflected out the open generic MethodInfo. </P>
+<P>Hope that points you in the right direction as I havent had to go there yet</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 31, 2008</h2><P>That's an interesting scenario, and not one I'd thought of. Though I do have some half-baked DataMapper code I'm still working on that has a similar issue - but I'd planned to solve that with some internal methods. Maybe those methods should be protected internal.</P>
+<P>Specifically, LoadProperty() and ReadProperty() methods that are non-generic and do coercion of the value. The PropertyInfo object knows the required end-type and so it is quite possible for these methods to coerce the supplied value into the needed type (unless it can't be coerced, in which case there'd be an exception).</P>
+<P>But it still won't work quite like your code, because the managed field API only accepts PropertyInfo objects to identify a property - never just the property name. The PropertyInfo is required because it supplies other important information beyond just the name (such as the required type of the field).</P>
+<P>As you probably know, I made a lot of changes to this post-Beta 1 due to fast feedback on the forum. There'll be a method on FieldDataManager you can use inside your business object to get a list of the PropertyInfo objects for your object - kind of like a high-speed replacement for using reflection.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, January 31, 2008</h2><P>Definitely if you have a LoadProperty() and ReadProperty() that&nbsp;provide a&nbsp;non-generic signature would be a big plus. Simply from the point of view of creating core methods that can load and set properties automatically and various other situations that i can think of. <BR>Keep us informed on anything that you have planned in area. It would be greatly appreciated.<BR>Thanks <BR>Anthony <o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amselem replied on Thursday, January 31, 2008</h2><P>I don't have looked too much into the CSLA 3.5 code so maybe this is a nonsense, but can't you simply use generics with the Object type?<BR><BR>LoadProperty&lt;Object&gt;(datareader.GetName(i), dataReader.GetValue(i));</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, maybe. That was my original thought. But the method
+requires a PropertyInfo&lt;T&gt;, and you wouldn&#8217;t have a
+PropertyInfo&lt;object&gt; - normally at least.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But the new methods I added today should help. For example:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>LoadProperty(propertyInfo, dataReader.GetValue(i));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The first parameter is the polymorphic IPropertyInfo type, so
+any PropertyInfo&lt;T&gt; will work, regardless of T. You could create your own
+subclass of PropertyInfo&lt;T&gt; that extends the type to include the ordinal
+position of the value in the datareader, or the column name. Then your code
+would be like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var propertyList = FieldManager.GetRegisteredProperties();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>foreach (var p in propertyList)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; LoadProperty(p, dataReader.GetValue(((IExtendedPropertyInfo)p).DataIndex));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var propertyList = FieldManager.GetRegisteredProperties();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>foreach (var p in propertyList)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; LoadProperty(p, dataReader.GetValue(((IExtendedPropertyInfo)p).ColumnName));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Again, you&#8217;d need to have created a custom interface
+(IExtendedPropertyInfo) and a custom subclass (ExtendedPropertyInfo&lt;T&gt;)
+that added either that DataIndex or ColumnName property. Then your property registration
+would be:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private static ExtendedPropertyInfo&lt;string&gt; NameProperty =
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; RegisterProperty&lt;string&gt;(typeof(myobject), new ExtendedPropertyInfo&lt;string&gt;(&#8220;Name&#8221;,
+&#8220;S_NAME&#8221;));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Notice the column name being provided to the constructor.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>A positive side-effect: this overload uses the same type
+coercion used by DataMapper, which is seriously nice stuff! For example,
+suppose your property type is an enum and the database value is a string. This
+line of code will automatically parse the string into the enum type. And it
+will do all sorts of date conversions to handle DateTime, DateTime?,
+DateTimeOffset, SmartDate, etc. And lots of other stuff like that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> amselem
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 31, 2008 5:57 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using Set/LoadProperty when type for generic
+isn't known at compile time...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I don't have looked too much into the CSLA 3.5 code so maybe this is a
+nonsense, but can't you simply define use generics with the Object type?<br>
+<br>
+LoadProperty&lt;Object&gt;(datareader.GetName(i), dataReader.GetValue(i));<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, January 31, 2008</h2><P>Sounds like a great solution. Do you think that there will be much of a performance difference between the generic versions and this new version?<o:p></o:p></P>
+<P>"A positive side-effect: this overload uses the same type coercion used by DataMapper, which is seriously nice stuff! For example, suppose your property type is an enum and the database value is a string. This line of code will automatically parse the string into the enum type. And it will do all sorts of date conversions to handle DateTime, DateTime?, DateTimeOffset, SmartDate, etc. And lots of other stuff like that."<BR><BR>And yes this does sound really cool. Just one question through, i am assuming that the overload you are referring to is "LoadProperty(p, dataReader.GetValue(((IExtendedPropertyInfo)p).DataIndex));". Meaning that when i load the property the mapping/date conversions will happen automatically?<BR><BR>Also when is Beta 2 coming out? How long have you got planned before we get another release?<BR><BR>Thanks for the great work.<BR>Anthony <o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are different possibilities performance-wise.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The generic versions avoid casting/boxing/unboxing in most
+cases, because the type is known and flows through. There&#8217;s a little
+casting to get the IFieldData to be IFieldData&lt;T&gt;, but the actual value
+does need a cast or box/unbox. The non-generic version obviously would
+box/unbox any primitive value because the intermediate type is object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The coercion is reasonably smart. If the source and target types
+are the same then it does no work. It only does coercion if the source and
+target types are different. I suppose, though, that they&#8217;ll always be
+different when coming from a datareader &#8211; but that&#8217;d be true with
+the generic overloads too &#8211; those SqlClient data types must always be coerced
+into native .NET types I suppose.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in the end, I&#8217;m guessing (for the datareader scenario)
+there should be little to no perf difference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t know when beta 2 will come out. People are
+identifying issues with beta 1 and it is just a couple days old. It is _<i>wonderful</i>_
+how much testing is being done &#8211; thank you all!!&nbsp; Beta 2 will come
+out when the bug reports for beta 1 dry up </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 31, 2008 8:17 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using Set/LoadProperty when type for
+generic isn't known at compile time...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sounds like a great solution. Do you think that there will be much of a
+performance difference between the generic versions and this new version?<o:p></o:p></p>
+
+<p>&quot;A positive side-effect: this overload uses the same type coercion used
+by DataMapper, which is seriously nice stuff! For example, suppose your
+property type is an enum and the database value is a string. This line of code
+will automatically parse the string into the enum type. And it will do all
+sorts of date conversions to handle DateTime, DateTime?, DateTimeOffset,
+SmartDate, etc. And lots of other stuff like that.&quot;<br>
+<br>
+And yes this does sound really cool. Just one question through, i am assuming
+that the overload you are referring to is &quot;LoadProperty(p,
+dataReader.GetValue(((IExtendedPropertyInfo)p).DataIndex));&quot;. Meaning that
+when i load the property the mapping/date conversions will happen
+automatically?<br>
+<br>
+Also when is Beta 2 coming out? How long have you got planned before we get
+another release?<br>
+<br>
+Thanks for the great work.<br>
+Anthony <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, January 31, 2008</h2>Everyone stop sending in issues that way we get beta 2... ;)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 01, 2008</h2>Ha.&nbsp; I am pretty eager for 3.5 too, but at the same time I'm not ready to move to .Net 3.5 so... but think of it this way, if they find all the bugs in beta 1, beta 2 will be bug free and can be moved to the RC and final versions! <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,120 @@
+<html><header><title>PTracker - Inconsistent approach to Declaring Properties... why? which is more CSLA Compliant?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PTracker - Inconsistent approach to Declaring Properties... why? which is more CSLA Compliant?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6452.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ejlatstl posted on Wednesday, February 18, 2009</h2><P>Greeting All,</P>
+<P>In studying the PTracker example I noticed 2 different approaches to 'Declaring' Properties. The Resource Class is a good example:</P>
+<P>Last Name:</P><FONT size=2></FONT><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> PropertyInfo&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; LastNameProperty = RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(Resource), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> PropertyInfo&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"LastName"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Last name"</FONT></FONT><FONT size=2>));</P></FONT></FONT>
+<P><FONT size=2>First Name:</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> PropertyInfo&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; FirstNameProperty = RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> PropertyInfo&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"FirstName"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"First name"</FONT></FONT><FONT size=2>));</FONT></P>
+<P><FONT size=2>So... I recognize that RegisterProperty is overloaded. In one case the first method parameter is to pass in the class of the parent class and in the other case there is just the PropertyInfo parameter.</FONT></P>
+<P><FONT size=2>DO I... need to include the 'typeof()' if the PropertyInfo that will be passed in is not going to be 'project unique'?</FONT></P>
+<P><FONT size=2>If so, is there any harm in always including the 'typeof()' parameter? (CodeGen... consistant is better!)</FONT></P>
+<P><FONT size=2>Thanks and Cheers,</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Ed</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 18, 2009</h2><P>This is the ongoing challenge with ProjectTracker, as it serves two (well, three) purposes:</P>
+<OL>
+<LI>Show the various ways you can do things</LI>
+<LI>Show the best way to do things</LI>
+<LI>Allow me to test the various ways to do things</LI></OL>
+<P>If you look at PTracker for only number 2 you'll be disappointed, because it is outnumbered by 1 and 3...</P>
+<P>In general, you should avoid the typeof() parameter for RegisterProperty(). Why? Because it introduces bugs as you copy-paste code between classes. And who among us doesn't do <EM>that</EM> from time to time???</P>
+<P>However, not all base classes are generic (CriteriaBase, CommandBase, CslaIdentity) and so they don't have the same overloads for RegisterProperty() and you must use the typeof() parameter.</P>
+<P>It is likely that I'll add generic CriteriaBase and CommandBase classes in the future - specifically to solve this issue.</P>
+<P>However, if you are using codegen and never writing this code by hand, then using the typeof() parameter seems fine to me. It is human error that causes the problem, so automated codegen should be fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interesting thing is that now there is a third way to register
+properties &#8211; which will come out in Csla 3.6.2 ( I hope).&nbsp; It can be
+seen if you get the latest Csla.Net code and PTracker code from Subversion:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>private</span> <span>static</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;
+NameProperty = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RegisterProperty&lt;<span>string</span>&gt;(p=&gt;p.Name, <span>&quot;Project name&quot;</span>);</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Or<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>private</span> <span>static</span> <span>PropertyInfo</span>&lt;<span>SmartDate</span>&gt;
+StartedProperty = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RegisterProperty&lt;<span>SmartDate</span>&gt;(p=&gt;p.Started);</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>The advantage of this approach should be getting rid of string
+constant used for property name, and a slightly shorter syntax.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 18, 2009 11:28 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] PTracker - Inconsistent approach to Declaring
+Properties... why? which is more CSLA Compliant?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This is the ongoing challenge with ProjectTracker, as it serves two (well,
+three) purposes:<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>Show the various ways you can do things<o:p></o:p></li>
+ <li class=MsoNormal>Show the best way to do things<o:p></o:p></li>
+ <li class=MsoNormal>Allow me to test the various ways to do things<o:p></o:p></li>
+</ol>
+
+<p>If you look at PTracker for only number 2 you'll be disappointed, because it
+is outnumbered by 1 and 3...<o:p></o:p></p>
+
+<p>In general, you should avoid the typeof() parameter for RegisterProperty().
+Why? Because it introduces bugs as you copy-paste code between classes. And who
+among us doesn't do <em>that</em> from time to time???<o:p></o:p></p>
+
+<p>However, not all base classes are generic (CriteriaBase, CommandBase,
+CslaIdentity) and so they don't have the same overloads for RegisterProperty()
+and you must use the typeof() parameter.<o:p></o:p></p>
+
+<p>It is likely that I'll add generic CriteriaBase and CommandBase classes in
+the future - specifically to solve this issue.<o:p></o:p></p>
+
+<p>However, if you are using codegen and never writing this code by hand, then
+using the typeof() parameter seems fine to me. It is human error that causes
+the problem, so automated codegen should be fine.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wrvasquez replied on Thursday, May 07, 2009</h2><P>How can I do declare a Property RegisterProperty&lt;SmartDate&gt; ???</P>
+<P>I have a code:</P>
+<P>private static PropertyInfo&lt;SmartDate&gt; FechaNaciemientoProperty = RegisterProperty&lt;SmartDate&gt;(c =&gt; c.FechaNaciemiento);<BR>public string FechaNaciemiento<BR>{<BR>&nbsp; get { return GetPropertyConvert&lt;SmartDate, string&gt;(FechaNaciemientoProperty); }<BR>&nbsp; set { SetPropertyConvert&lt;SmartDate, string&gt;(FechaNaciemientoProperty, value); }<BR>}</P>
+<P>But I have an error:<BR>Error&nbsp;1&nbsp;Cannot convert lambda expression to type 'Csla.PropertyInfo&lt;Csla.SmartDate&gt;' because it is not a delegate type&nbsp;C:\Wagner\CSLA.Net\BLL\Utpl.Syllabus.Library\Utpl.Syllabus.Library\Estudiante.cs&nbsp;61&nbsp;95&nbsp;Utpl.Syllabus.Library</P>
+<P><BR>Why it is??</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 07, 2009</h2>Please make sure you are using version 3.6.2 of CSLA .NET. I have code exactly like yours, but it does require 3.6.2 to compile.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slh4342 replied on Monday, September 07, 2009</h2>I am seeing the same lambda expression error in 3.7 <br /><br />private static PropertyInfo CreateDateProperty = RegisterProperty(c => c."CreateDate"); //, "Create Date", new SmartDate());<br />		public string CreateDate<br />		{<br />		  get { return GetPropertyConvert(CreateDateProperty); }<br />		  set { SetPropertyConvert(CreateDateProperty, value); }<br />		}<br />		private static PropertyInfo LastUpdateDateProperty = RegisterProperty(c => c."LastUpdateDate", "Last Update", new SmartDate());<br />		public string LastUpdateDate<br />		{<br />		  get { return GetPropertyConvert(LastUpdateDateProperty); }<br />		  set { SetPropertyConvert(LastUpdateDateProperty, value); }<br />		}</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, September 07, 2009</h2>Just to chime in, I've also seen this error, using 3.7, and haven't been able to figure it out. There are a few of my classes where I've *had* to use the old syntax and not the lambda expressions. Very strange!<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 07, 2009</h2>This is not in a criteria or command object right? CommandBase and<br />CriteriaBase are not generic, and so the same overloads of<br />RegisterProperty() aren't available in those base classes.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, September 07, 2009</h2>Hi Rocky<br /><br />Yes, this was on a BusinessBase-derived class. However, I have had a look through my source code and I can't find it now, so maybe I managed to correct the problem and forgot about it :-)<br /><br />Craig</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

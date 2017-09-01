@@ -1,0 +1,61 @@
+<html><header><title>4.5.20 on .NET 4.0 with WPF CslaDataProvider and BusinessBindingListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>4.5.20 on .NET 4.0 with WPF CslaDataProvider and BusinessBindingListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11952.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Turntwo posted on Tuesday, April 23, 2013</h2><p>In my application I have a EditListView that is the UI to maintain simple tables represented by BusinessBindingListBase derived classes (not BusinessListBase as the 3rd party grid we use wasn&#39;t playing nice with the newer Collection types, despite being WPF). &nbsp;The EditListView uses a CslaDataProvider to manage the list objects, with a Save button bound to the save command. &nbsp;This works fine for non-List objects in other views. &nbsp;</p>
+<p>However, when I click Save in the EditListView, the application locks up - the CslaDataProvider is waiting for the save to complete but it never does. &nbsp;The changes are saved to the database (Child_Update/Insert runs fine), but the async call seems to get stuck in limbo. &nbsp;</p>
+<p>This is a pretty serious issue, since I can&#39;t complete the upgrade if none of the table maintenance views are going to allow saving. &nbsp;</p>
+<p>I tried switching from BusinessBindingListBase to BusinessListBase and setting IsAsynchronous on the CslaDataProvider to True. &nbsp;Neither had any effect. &nbsp;</p>
+<p>&nbsp;</p>
+<p>Looked into what is different in BusinessBase (where the save through CslaDataProvider worked), and there is an isSync parameter passed to the SaveAsync - if it is true, the SaveSync does a synchronous update on the DataPortal. &nbsp;Hacked up BusinessBindingListBase to do the same, and it works now. &nbsp;</p>
+<p>Since there is already a SaveAsync(bool), I went with the quite ugly version:</p>
+<p>
+<p>private bool isSync;</p>
+<p>&nbsp;public T Save()</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p><span>	</span> &nbsp; <b>&nbsp;isSync = true;</b></p>
+<p><b>&nbsp; &nbsp; &nbsp; &nbsp; var result = SaveAsync().Result;</b></p>
+<p><b><span>	</span> &nbsp; &nbsp;isSync = false;</b></p>
+<p><b><span>	</span> &nbsp; &nbsp;return result;</b></p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; catch (AggregateException ex)</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; if (ex.InnerExceptions.Count &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw ex.InnerExceptions[0];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw;</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>
+<p>public virtual async Task&lt;T&gt; SaveAsync()</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; T result;</p>
+<p>&nbsp; &nbsp; &nbsp; if (this.IsChild)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; throw new InvalidOperationException(Resources.NoSaveChildException);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; if (_editLevel &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; throw new InvalidOperationException(Resources.NoSaveEditingException);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; if (!IsValid)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; throw new Rules.ValidationException(Resources.NoSaveInvalidException);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; if (IsBusy)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; // TODO: Review this resource text</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; if (IsDirty)</p>
+<p><b><span>		</span>if (isSync)</b></p>
+<p><b><span>			</span>result = DataPortal.Update((T)this);</b></p>
+<p><b><span>		</span>else</b></p>
+<p><b><span>			</span>result = await DataPortal.UpdateAsync&lt;T&gt;((T)this);</b></p>
+<p>&nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; result = (T)this;</p>
+<p>&nbsp; &nbsp; &nbsp; OnSaved(result, null, null);</p>
+<p>&nbsp; &nbsp; &nbsp; return result;</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>This looks like a bug to me, and I&#39;m sure you can come up with a more elegant fix - also needs to be fixed in BusinessListBase. &nbsp;</p>
+<p>&nbsp;</p>
+<p>Thanks,&nbsp;</p>
+<p>Jason</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 24, 2013</h2><p>This is fixed in the upcoming release.</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues?milestone=4&amp;page=1&amp;state=closed">https://github.com/MarimerLLC/csla/issues?milestone=4&amp;page=1&amp;state=closed</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 26, 2013</h2><p>I recommend trying the 4.5.24 RC prerelease I just made available in nuget. That version should resolve your issue.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

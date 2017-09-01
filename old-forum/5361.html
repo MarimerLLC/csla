@@ -1,0 +1,15 @@
+<html><header><title>Can not directly save a child object </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can not directly save a child object </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5361.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Monday, September 08, 2008</h2><P>I must have took a wrong turn somewhere in developing this BO.&nbsp; I have a Parent object that contains several properties (2 of them are child List objects).</P>
+<P>To update the children in my data access, I call _myChildObject.Save() But I throw a NotSupportedException of "Can not directly save a child object".&nbsp; If I'm not supposed to update my child objects this way, how is it supposed to be&nbsp;done?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mary replied on Monday, September 08, 2008</h2><P>Hi,</P>
+<P>You can use the Update function in data-access region of your child object list for saving the child object. <FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update() // in parent</P>
+<P>{</P>
+<P>//write data access code to update parent object</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// then update child objects eg. </FONT></FONT><FONT size=2>Child.Update(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2>Within the Child.Update() write code for deleting/inserting/updating child objects.</FONT></P>
+<P><FONT size=2>Csla ProjectTracker application example provided with Csla downloads have sample code for this if you want to refer to.</FONT></P>
+<P><FONT size=2>Hope this helps.</FONT></P>
+<P><FONT size=2>Mary</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

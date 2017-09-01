@@ -1,0 +1,66 @@
+<html><header><title>Error with ReadOnlyListBase(of Objects, ObjectInfo)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error with ReadOnlyListBase(of Objects, ObjectInfo)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2592.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Tuesday, March 27, 2007</h2><P>Error&nbsp;39&nbsp;Type argument 'CreativeKnights.Library.CreativeKnights.Web.Components.Commerce.Products' does not inherit from or implement the constraint type 'CreativeKnights.Library.CreativeKnights.ReadOnlyBase(Of CreativeKnights.Library.CreativeKnights.Web.Components.Commerce.Products)'.&nbsp;C:\Documents and Settings\Strangepain\My Documents\Visual Studio 2005\Projects\NewCK (2)\CreativeKnights.Library\CreativeKnights.Web.Components.Commerce.vb&nbsp;4&nbsp;32&nbsp;CreativeKnights.Library<BR></P>
+<P>&nbsp;</P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Products</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> ReadOnlyListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> <U><FONT color=#ff0000 size=3>Products</FONT></U>, ProductInfo)</P>
+<P>#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"Factory Methods"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetProductList() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Products</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Products)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Criteria)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetProductList(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Products</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> DataPortal.Fetch(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Products)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> FilteredCriteria(name))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</P></FONT><FONT size=2>
+<P>#</FONT><FONT color=#0000ff size=2>Region</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"Data Access"</P></FONT><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Criteria</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> FilteredCriteria</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2>""</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Name() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mName</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>mName = name</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> dataportal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria)</P>
+<P>Fetch(</FONT><FONT color=#a31515 size=2>""</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Dataportal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> FilteredCriteria)</P>
+<P>Fetch(criteria.Name)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> nameFilter </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Data.SqlClient.SqlConnection()</P>
+<P>cn.Open()</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Data.SqlClient.SqlCommand = cn.CreateCommand</P>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> cm</P>
+<P>.CommandType = System.Data.CommandType.StoredProcedure</P>
+<P>.CommandText = </FONT><FONT color=#a31515 size=2>""</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> CreativeKnights.Data.SafeDataReader(.ExecuteReader)</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>While</FONT><FONT size=2> dr.Read</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> ProductInfo(dr.GetGuid(0), dr.GetString(1))</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Len(nameFilter) = 0 </FONT><FONT color=#0000ff size=2>OrElse</FONT><FONT size=2> info.ModelName.IndexOf(nameFilter) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(info)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></P>
+<P>#</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Region</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>What am I doing wrong?</FONT></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

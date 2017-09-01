@@ -1,0 +1,60 @@
+<html><header><title>Generics and Base Form</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generics and Base Form</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3346.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>webdevl posted on Wednesday, August 08, 2007</h2><P><FONT color=#000000>I have a number of classes that are of type Csla.BusinessListBase&lt;T,C&gt;&nbsp; I would like to create a base form that is able to handle them using a constructor like this</FONT></P>
+<P><FONT color=#000000>public RefListManagement(Csla.BusinessListBase&lt;T,C&gt; dataSource)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;//Bind to object datasource</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>and have the form call a common save like this</FONT></P>
+<P><FONT color=#000000>private</FONT><FONT color=#000000> void Save(bool</FONT><FONT color=#000000> rebind)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>// stop the flow of events</FONT></P>
+<P><FONT color=#000000>reflistBindingSource.RaiseListChangedEvents = </FONT><FONT color=#000000>false</FONT><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000></FONT></P>
+<P><FONT color=#000000>// do the save</FONT></P>
+<P><FONT color=#000000>reflistBindingSource.EndEdit();</FONT></P>
+<P><FONT color=#000000></FONT></P>
+<P><FONT color=#000000>try</FONT></P><FONT color=#000000>
+<P>{</P></FONT>
+<P><FONT color=#000000>Csla.BusinessListBase&lt;T,C&gt;&nbsp;dataSource = ((Csla.BusinessListBase&lt;T,C&gt;</FONT><FONT color=#000000>)reflistBindingSource.DataSource);</FONT></P>
+<P><FONT color=#000000>if(</FONT><FONT color=#000000>dataSource.IsSavable)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>dataSource.Save();</FONT></P>
+<P><FONT color=#000000>dataSource.BeginEdit();</FONT></P>
+<P><FONT color=#000000>if</FONT><FONT color=#000000> (rebind)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>// rebind the UI</FONT></P>
+<P><FONT color=#000000>reflistBindingSource.DataSource = </FONT><FONT color=#000000>null</FONT><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>reflistBindingSource.DataSource = dataSource;</FONT></P>
+<P><FONT color=#000000></FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>else</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>MessageBox.Show("The data cannot be saved, because there is a data entry error. Please fix the highlighted error and resave.", "Save Error", MessageBoxButtons</FONT><FONT color=#000000>.OK);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>catch (DataPortalException</FONT><FONT color=#000000> ex)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>//ExceptionManagement.ExceptionManagement.HandleDataException(ex);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>catch (Exception</FONT><FONT color=#000000> ex)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>//ExceptionManagement.ExceptionManagement.HandleGenericException(ex);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P><FONT color=#000000>finally</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>reflistBindingSource.RaiseListChangedEvents = </FONT><FONT color=#000000>true</FONT><FONT color=#000000>;</FONT></P>
+<P><FONT color=#000000>reflistBindingSource.ResetBindings(</FONT><FONT color=#000000>false</FONT><FONT color=#000000>);</FONT></P>
+<P><FONT color=#000000>}</FONT></P>
+<P>&nbsp;</P>
+<P>however I cannot figure out how to cast to the generic.&nbsp; Is this possible?&nbsp; </P>
+<P>&nbsp;</P>
+<P><FONT color=#000000></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Wednesday, August 08, 2007</h2>What I have done in the past when I wanted to treat a set of generic classes in an abstract way was to define a non-generic interface for the abstract interaction.&nbsp; The interface would contain methods for each of the interactions (such as Save in your case).&nbsp; Each object would implement the interface and map the calls to the interface methods to the actual methods within that class.&nbsp; This can be a bit more work but it is, in my opinion, a much cleaner answer.&nbsp;  <br><br>Jon Stonecash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, August 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JonStonecash:</strong></div><div>What I have done in the past when I wanted to treat a set of generic classes in an abstract way was to define a non-generic interface for the abstract interaction.&nbsp; The interface would contain methods for each of the interactions (such as Save in your case).&nbsp; Each object would implement the interface and map the calls to the interface methods to the actual methods within that class.&nbsp; This can be a bit more work but it is, in my opinion, a much cleaner answer.&nbsp;  <br><br>Jon Stonecash<br></div></BLOCKQUOTE><br><br>I heartily agree with Jon's comments above.&nbsp;&nbsp; Generics and Interfaces (with an occasional abstract method) really reinforce one another.<br><br>But I'm confused a bit.&nbsp; What are you trying to cast?&nbsp; <br><br>Your class is already strongly datatyped using the T and C operands.&nbsp; If the base class all your business objects has all the methods and properties you need, you can just use those methods and properties in your code.&nbsp;&nbsp;&nbsp; Those functions can be defined as abstract and overridden in each business object if you can't figure out a generic way to do it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webdevl replied on Monday, August 13, 2007</h2><P>Being fairly new the generics I was&nbsp;not sure if there&nbsp;was a way to do this without using&nbsp;an interface, but, but the interface method makes perfect sense and works very well.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, August 21, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>webdevl:</strong></div><div>
+<P><FONT color=#000000>I have a number of classes that are of type Csla.BusinessListBase&lt;T,C&gt;&nbsp; I would like to create a base form that is able to handle them using a constructor like this</FONT></P>
+<P><FONT color=#000000>public RefListManagement(Csla.BusinessListBase&lt;T,C&gt; dataSource)</FONT></P>
+<P><FONT color=#000000>{</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;//Bind to object datasource</FONT></P>
+<P><FONT color=#000000></div></BLOCKQUOTE><BR></FONT></P>
+<P><FONT color=#000000>This is a different way of doing it.&nbsp; Note that you can insist upon the classes implementing certain interfaces that your code expects:</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>GenericGridForm</FONT><FONT size=2>&lt;T, C&gt; : System.Web.UI.</FONT><FONT color=#008080 size=2>Page<BR></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>RuleBusinessListBase</FONT><FONT size=2>&lt;T, C&gt;, </FONT><FONT color=#008080 size=2>IRuleBusinessList</FONT><FONT size=2>&lt;T,C&gt;<BR></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : </FONT><FONT color=#008080 size=2>RuleBusinessBase</FONT><FONT size=2>&lt;C&gt;, Csla.Core.</FONT><FONT color=#008080 size=2>IEditableBusinessObject</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>IExtendSort</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>IRuleBusiness</FONT><FONT size=2>&lt;C&gt;</P></FONT>
+<P>I put my&nbsp;common code in this class.&nbsp;&nbsp; Each actual web page is a subclass of this and contains the code parts that I can't make generic. (About 10% of the code by # of lines.)</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

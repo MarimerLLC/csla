@@ -1,0 +1,36 @@
+<html><header><title>Stack overflow exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stack overflow exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5132.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sasi posted on Tuesday, July 22, 2008</h2><P><FONT face=Verdana size=2><FONT color=#ff0000>Stack overflow exception in mscorlib.dll</FONT>. I have migrated from CSLA 1.52 to CSLA 2.1.4.0. I know its because of some circular reference or recursive calling.</FONT></P><FONT face=Verdana size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>:Csla.</FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>&gt; this is my business object and </FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParamList</FONT><FONT size=2> : Csla.</FONT><FONT color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>CscSearchParamList</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>&gt; is my list. </FONT></P>
+<P><FONT size=2>I am trying to bind this list to Infragistics(v6.1) ultrawingrid and i am getting stack overflow exception.</P></FONT></FONT></FONT>
+<P><FONT face=Verdana size=2>My first guess is the below method in CscSearchParam which might be causing recursive calling. Buy why will this method be called while binding data to a grid.?&nbsp;</FONT></P><FONT face=Verdana size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Equals(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> obj)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Equals(obj </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This method returns true if the two input objects are equal.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Equals(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> objA, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> objB)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (objA </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2> &amp;&amp; objB </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (objA </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>).Equals(objB </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CscSearchParam</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>Please help me if any one has idea what method might be causing circular reference or repetitive recursion&nbsp;while binding data to grid.</FONT></FONT></P>
+<P><FONT face=Verdana size=2>Thanks in Advance.</FONT></P>
+<P><FONT face=Verdana size=2>Sasidhar</FONT></P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sasi replied on Thursday, July 24, 2008</h2><P><FONT face=Verdana size=2>Thanks everyone for visiting my post. </FONT></P>
+<P><FONT face=Verdana size=2>I found the circular reference <img src="/emoticons/emotion-49.gif" alt="Cake [^]" />, just needed to add&nbsp; attribute - [NotUndoable] to the CscSearchParamList variable declaration in CscSearchParam class.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

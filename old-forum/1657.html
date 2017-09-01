@@ -1,0 +1,20 @@
+<html><header><title>Object Types Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Types Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1657.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Wednesday, November 01, 2006</h2><P>When you create an object of type EditableSwitchable is it ever necessary to also have an EditableRoot and EditableChild object also? Or is simply having the EditableSwitchable enough and you then create them as whichever you need?</P>
+<P>Working with a code generator I am trying to&nbsp; derive as many objects from the metadata as possible and I am wondering if I should go ahead and create all 3 types or just create the EditableSwitchable.</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, November 01, 2006</h2>It is the whole intent of the EditableSwitchable to avoid having to implement a separate EditableRoot and EditableChild. <br><br>There are only few use cases for EditableSwitchables, as far as I know the only time you opt for this one is when you have a lot of common code in the EditableRoot and EditableChild otherwise.<br><br>But since you have a codegen .... I would suggest to refrain from EditableSwitchables unless you really have a compelling case where you need them.<br><br>Btw: what are you currently working with? Dollard's stuff or did you get too addicted to CodeSmith? ;-)<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, November 01, 2006</h2><P>Bayu is right in that the intent of a Switchable object is just that, to be able to either instantiate it as a root here and&nbsp;as a child there, etc...</P>
+<P>But beware.&nbsp; I can certainly understand was you would want to create _all_ of your objects as swtichable objects, but a switchable object is in most cases a sign of bad design.</P>
+<P>I think you should nail down your object's responsibility and then create (generate) the appropriate root or child objects as required.&nbsp; You should, at least IMHO, put the breaks on using nothing but switchable objects.</P>
+<P>Anyway, that is my 2 cents :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, November 01, 2006</h2><P>Sorry to jump in here, but this brings up something I've wondered about since using CSLA.</P>
+<P>I've never used a switchable object, and the mantra is it's usually bad design to do so. But it's included in the framework, so I guess there are valid reasons to use a switchable object? Can anyone give an example of when it's a good idea to use a switchable object?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Wednesday, November 01, 2006</h2><P>Thanks guys.</P>
+<P>I will remove my generation for EditableSwitchable and simply generate the Parent and Child objects.</P>
+<P>This clarifies a lot.</P>
+<P>And yes, I am addicted to CodeSmith now. I am currently working a master template to generate a bulk of my business objects and all of my stored procedures.</P>
+<P>&nbsp;</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fabiousa7 replied on Wednesday, November 01, 2006</h2><P>Will,</P>
+<P>EditableSwitchable is a class type for objects that are times root and times child of another object or collection.</P>
+<P>If you create your objects as EditableSwitchable you dont have to do the other two, but having&nbsp;all objects as editableSwitchable will make them do a lot of extra work and expose it to possible miss-usage by the UI.</P>
+<P>Fabio</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

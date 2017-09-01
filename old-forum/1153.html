@@ -1,0 +1,10 @@
+<html><header><title>Only one overload of CanReadProperty is Overridable?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Only one overload of CanReadProperty is Overridable?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1153.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM posted on Thursday, September 07, 2006</h2><P>Does anybody know why&nbsp;the function&nbsp;CanReadProperty(ByVal propertyName As String) in BusinessBase is Overridable, but the other two overloads of the same function are not?</P>
+<P>Is this an oversight in BusinessBase, or is there a good reason for this to be this way?&nbsp; &nbsp;I can still write "Overloads" functions in BusinessBase derived classes with the same signatures and will do so unless there's a good reason not to.</P>
+<P>Thanks.</P>
+<P>BBM</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, September 07, 2006</h2><P>This is a common practice when overloading functions to provide different signatures (e.g. argument lists).&nbsp; Typically all of the overloads will defer to a single method that actually performs the work.&nbsp; This is the method that you would want virtual/Overridable so that derived classes can implement their own method.&nbsp; Since the other methods do nothing but call this one, there really is no benefit to overriding them.</P>
+<P>Hope that helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Thursday, September 07, 2006</h2><P>Thanks, that makes sense.</P>
+<P>Hey, I guess I should look at the code first next time!</P>
+<P>Thanks again.</P>
+<P>BBM</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,264 @@
+<html><header><title>.Net Framework 3.5 Checker</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>.Net Framework 3.5 Checker</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4786.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Thursday, May 01, 2008</h2><DIV>Is there a way to check an see what versions of the .Net Framework installed on the client's machine?<BR><BR>I am assuming something would have to be written in C++ to do this.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, May 01, 2008</h2><P>Probably isn't fool proof, but you can look at the Windows\Microsoft.NET\Framework folder and see what is installed. All the frameworks begin with a "v" e.g. v2.0.50727.</P>
+<P>Although I can't remember what the variable is, in a web app, you can also check the request variables. "SERVER_VARIABLES" or something like that lists all the frameworks installed on the client machine.</P>
+<P>Now that I think about that, must be an API or somethng somewhere to populate that. No idea though.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, May 01, 2008</h2>Well, <BR><BR>I don't have any experience with C++, so I am looking for a component or something to check that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, May 01, 2008</h2><P>Was looking around because I was curious, didn't find an API real quick, but this program seems nifty, and free.</P>
+<P><A href="http://www.tmgdevelopment.co.uk/versioncheck.htm">http://www.tmgdevelopment.co.uk/versioncheck.htm</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, May 01, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div>
+<P>Was looking around because I was curious, didn't find an API real quick, but this program seems nifty, and free.</P>
+<P><A href="http://www.tmgdevelopment.co.uk/versioncheck.htm">http://www.tmgdevelopment.co.uk/versioncheck.htm</A></P>
+<DIV></div></BLOCKQUOTE></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Michael,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I ran into this program, but it doesn't seem to support the 3.5 framework yet :(</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, May 01, 2008</h2><P>Ah, I saw it but didn't try it. Does just looking at the folders work for you? You could make a simple batch file like</P>
+<P>DIR /AD %systemroot%\Microsoft.NET\Framework<BR>PAUSE</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, May 01, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div>
+<P>Ah, I saw it but didn't try it. Does just looking at the folders work for you? You could make a simple batch file like</P>
+<P>DIR /AD %systemroot%\Microsoft.NET\Framework<BR>PAUSE</P>
+<DIV></div></BLOCKQUOTE></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>How would I loop through the result set to find the 3.5 framework, than if it is not found, to download the framework from the internet?.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>If it is found, run the program instead.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This is my problem.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, May 01, 2008</h2>I see what you're getting at. Sorry I haven't done that. Been spoiled by ClickOnce.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Thursday, May 01, 2008</h2>You could use this as a starting point:<br><br><a href="http://www.codeproject.com/KB/cs/frameworkversiondetection.aspx">http://www.codeproject.com/KB/cs/frameworkversiondetection.aspx</a><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 02, 2008</h2>You could also check the registry:<br>HKEY_LOCAL_MACHINE\SOFTWARE\Microsoft\NET Framework Setup\NDP<br><br>As for installing the framework, VS can build a package that will do the necessary steps for you.&nbsp; Try creating an installer project.&nbsp; Alternately, ClickOnce can also do those tasks as well.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Friday, May 02, 2008</h2><DIV>I believe VS2008 already has what I am looking for.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><A href="http://weblogs.asp.net/scottgu/archive/2008/02/19/net-3-5-client-product-roadmap.aspx">http://weblogs.asp.net/scottgu/archive/2008/02/19/net-3-5-client-product-roadmap.aspx</A></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobfox replied on Thursday, May 01, 2008</h2>
+
+
+
+
+
+
+
+
+ 
+  
+  1024x768
+ 
+
+ 
+  Clean
+  Clean
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  DE-AT
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This
+is a batch file which checks for all installed .NET versions:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.dzaebel.net/Downloads/netversions.zip">http://www.dzaebel.net/Downloads/netversions.zip</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span class=SpellE><span>regards</span></span><span>, Robert<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Thursday, May 01, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>bobfox:</strong></div><div> 
+
+
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>This is a batch file which checks for all installed .NET versions:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><A href="http://www.dzaebel.net/Downloads/netversions.zip">http://www.dzaebel.net/Downloads/netversions.zip</A><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN class=SpellE><SPAN>regards</SPAN></SPAN><SPAN>, Robert<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></DIV>
+<DIV></div></BLOCKQUOTE></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Bob,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This may check it, but how would I tell it to download a particular version of .Net, else run the .Net exe.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Friday, May 02, 2008</h2><P>Why not&nbsp;consider using Click Once?</P>
+<P>If you use netversions as per link above&nbsp;for checking and then either</P>
+<OL>
+<LI>Navigate the user to microsoft downloads to download and install the required&nbsp;framework version or 
+<LI>include the framework redistributable package in your installation package and launch it if the check fails</LI></OL></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

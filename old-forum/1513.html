@@ -1,0 +1,54 @@
+<html><header><title>CSLA V2.1 c# Static validation example?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA V2.1 c# Static validation example?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1513.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Tuesday, October 17, 2006</h2><P>Hi</P>
+<P>I have searched and searched for a good sample on how to apply the static validation in 2.1 (in a correct way) but not found any good one.</P>
+<P>Anyone who can point me to an C# example of that? (just so that I don't do anything wrong.....)</P>
+<P>//andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Tuesday, October 17, 2006</h2><P><FONT face=Arial size=2>Hi Andy</FONT></P>
+<P><FONT face=Arial size=2>I'm not much of a C# coder so bare over with the syntax. This is how I do it internally in an object (let's call it&nbsp;Person)&nbsp;in VB</FONT></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> ValidateName(<SPAN>ByVal</SPAN> target <SPAN>As</SPAN> Person, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> RuleArgs) <SPAN>As</SPAN> <SPAN>Boolean</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN></SPAN><SPAN>If</SPAN><SPAN> (target._name.Trim.Length &gt; 0) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN>"Name is required!"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>Return</SPAN> <SPAN>False<BR>&nbsp; </SPAN></SPAN><SPAN>End</SPAN><SPAN> <SPAN>If<BR>&nbsp; </SPAN></SPAN><SPAN>Return</SPAN><SPAN> <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2>I guess the C# syntax would be</FONT></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><SPAN>private static bool ValidateName&lt;T&gt;(T target, RuleArgs e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>if (target._name.Length() &lt;= 0)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN>e.Description = <SPAN>"Name is required!"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>return false;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>return true;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>To add the rule in AddBusinessRules you use the following syntax:</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>VB</P>
+<P class=MsoNormal><SPAN>.AddRule(<SPAN>Of</SPAN> Person)(<SPAN>AddressOf</SPAN> ValidateName, <SPAN>"Name"</SPAN>)<BR></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal>C#</P>
+<P class=MsoNormal><SPAN>ValidationRules.AddRule&lt;Person&gt;(ValidateName&lt;Person&gt;, <SPAN>"Name"</SPAN>);</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial size=2>Hope this helps</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial size=2>/Henrik</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Tuesday, October 17, 2006</h2><P>Thanks</P>
+<P>I should put it in the static contructor (if I am not wrong) do you know I should write that to make it correct?</P>
+<P>or just simple</P>
+<P>&nbsp;</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> MyCSLAObject()<BR>{</P>
+<P><SPAN>ValidationRules.AddRule&lt;Person&gt;(ValidateName&lt;Person&gt;, <SPAN>"Name"</SPAN>);</SPAN></P>
+<P><SPAN></SPAN>}</P></FONT>
+<P>would that be correct?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Tuesday, October 17, 2006</h2><P>Andy,</P>
+<P>No you must override the AddBusinessRules method and add your rules in there. This method get's called automatically by the framework when an object is instantiated.</P>
+<P class=MsoNormal><SPAN>protected</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>void</SPAN> AddBusinessRules()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>ValidationRules.AddRule&lt;Person&gt;(ValidateName&lt;Person&gt;, <SPAN>"Name"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P>I recommend that you download Rocky's ProjectTracker sample app, and have a look at the source files in the ProjectTracker.Library.</P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Tuesday, October 17, 2006</h2><P>Aha.</P>
+<P>Correct, Thanks. Now I get it .</P>
+<P>I didn't get the difference between </P>
+<P><FONT size=2><FONT face="Courier New">AddBusinessRules()<o:p></o:p></FONT></FONT></P>
+<P>and </P>
+<P><FONT face="Courier New" size=2>AddInstanceBusinessRules() </FONT></P>
+<P><FONT face="Courier New" size=2>until now.</FONT></P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

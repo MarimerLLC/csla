@@ -1,0 +1,44 @@
+<html><header><title>Heavyweight properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Heavyweight properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3592.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>krevak posted on Tuesday, September 25, 2007</h2><P>Hi</P>
+<P>I am just investigating CSLA and am quite impressed.&nbsp; </P>
+<P>One of the things that bothers me though is the redundant code necessary in the business object property set/get. (eg CanRead, CanWrite, PropertyChanged)&nbsp; Is it possible to use classes instead of base types as the properties and still have them bound to the db and UI?&nbsp; </P>
+<P>My reasoning is that that will allow you to have much smarter business objects.&nbsp; SmartDates are in the same mindspace.&nbsp; In the example I seen (dnrTv), the BO uses a SmartDate internally but exposes a string property to manage the UI set/get of the date.&nbsp; Seems to me that you would then need to expose another property&nbsp; to handle get/set as a date.&nbsp; Would it not be better to have a DateProperty class that exposes a Value that is of type date and has a UIString that handles conversion to/from strings?&nbsp; The CanRead/CanWrite/PropertyChanged logic would only need to be implemented in the DateProperty class and not in every BO that uses it.&nbsp; There is&nbsp;of course a whole whack of other intelligence that the DateProperty class&nbsp;could implement.</P>
+<P>Code generators are sometimes suggested but they just allow one to generate more redundant code faster and would clutter up the BO namespace with DateAsUIString and DateAsDate properties.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 03, 2007</h2><P>You are right, it would be nicer to expose the properties as a more complex type that could not only provide the property value, but also metadata and other functions around that property.</P>
+<P>Unfortunately, data binding doesn't work with that model. So following that model means abandoning data binding - or coming up with some abstraction layer that would sit between data binding and your objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>krevak replied on Wednesday, October 03, 2007</h2><P>I have had some luck implementing ICustomTypeDescriptor, PropertyDescriptor, ITypedList (and soon IBindignList).&nbsp; It seems to work okay at run time but I have having little luck at design time (ASP.NET).&nbsp; Am not sure if I want to keep persuing this angle or give up and use vanilla business objects.</P>
+<P>Ken</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, October 03, 2007</h2>I assume you're talking about two way databinding. Maybe I'm stating the obvious but, for what its worth, databinding seems to work just fine in the readonly direction for complex properties.<br><br>Lets say I have an Order BO with a CustomerId property then within Order I often have a CustomerInfo object which is exposed as a property called CustomerInfo, usually with lazy loading. CustomerInfo is just a simple object which is not much more than a tidy way of grouping my borrowed fields such as CustomerName, CustomerType etc. I sometimes have an observer pattern that updates CustomerInfo if a real Customer BO is saved elsewhere in the app. <br><br>Anyway ... there is no problem binding a Textbox to Order.CustomerInfo.Name.&nbsp; Visual Studio only shows CustomerInfo when I pick from properties of Order but then I manually append .Name to the end.<br><br>Ross<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>You are right, it would be nicer to expose the properties as a more complex type that could not only provide the property value, but also metadata and other functions around that property.</p>
+<p>Unfortunately, data binding doesn't work with that model. So following that model means abandoning data binding - or coming up with some abstraction layer that would sit between data binding and your objects.</div></BLOCKQUOTE></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>When I say &#8220;data binding&#8221; I mean across Windows
+Forms, Web Forms and WFP. Since CSLA supports all the UI technologies, anything
+I build into the framework needs (in my view) to support all of those options.
+I don&#8217;t think they all support dot-notation for binding, at least if you
+want to use the designers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

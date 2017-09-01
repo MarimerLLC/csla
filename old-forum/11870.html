@@ -1,0 +1,424 @@
+<html><header><title>DataPortal_Fetch() for silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Fetch() for silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11870.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Wednesday, March 06, 2013</h2><p>I have created a simple silverlight using CSLA.I have created only one BusinessBase class.&nbsp;The code of the BusinessBase class&nbsp;is as follows:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">class</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> : </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BusinessBase</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">{<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">readonly</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; IdProperty = RegisterProperty&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(c =&gt; c.Id);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Id
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">get</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">GetProperty(IdProperty); }<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">set</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { SetProperty(IdProperty, </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">value</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">); }
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">readonly</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; DescriptionProperty = RegisterProperty&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(c =&gt; c.Description);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Description
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">get</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> GetProperty(DescriptionProperty); }<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">set</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { SetProperty(DescriptionProperty, </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">value</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">); }
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">readonly</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">byte</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">[]&gt; TimeStampProperty = RegisterProperty&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">byte</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">[]&gt;(c =&gt; c.TimeStamp);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">byte</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">[] TimeStamp
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">get</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">GetProperty(TimeStampProperty); }<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">set</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { SetProperty(TimeStampProperty, </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">value</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">); }
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> NewDesignationEdit(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">EventHandler</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortalResult</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt; callback)<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>{</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.BeginCreate&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(callback);}<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> GetDesignationEdit(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> id, </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">EventHandler</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortalResult</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;&gt; callback)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.BeginFetch&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(id, callback);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>#if</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">!WINDOWS_PHONE<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">async</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Task</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; NewDesignationEditAsync()
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.CreateAsync&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">async</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Task</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; GetDesignationEditAsync(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> id)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.FetchAsync&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(id);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> DataPortal_Fetch(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">id)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> result = </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Fetch&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(id);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(result.BypassPropertyChecks)
+<p>{</p>
+<p>Id = result.Id;</p>
+<p>Description = result.Description;</p>
+<p>TimeStamp = result.TimeStamp;</p>
+<p>}}</p>
+<p>&nbsp;</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">&nbsp;</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>#endif</p>
+<font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>#if</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">!SILVERLIGHT<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> NewDesignationEdit()
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Create&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> GetDesignationEdit(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;id)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Fetch&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(id);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> DeleteDesignationEdit(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">id)<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="color:#000000;">{</span></span></span></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DataPortal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Delete&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(id);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">#endif</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>}</p>
+</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;The code of MainPage.xaml.cs is as follows:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>public</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">partial</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">class</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MainPage</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> : </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">UserControl</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> MainPage()
+<p>{</p>
+<p>InitializeComponent();</p>
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">private</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">async</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> UserControl_Loaded(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">object</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> sender, </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RoutedEventArgs </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">e)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.DataContext = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DesignationEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetDesignationEditAsync(1);</span></span></p>
+<p>}</p>
+<p>}</p>
+<p>I have created Library,Dal,DalEf,WcfAppServer projects.Application builds successfully.But when i run the application,it gives the error at DataPortal_Fetch() as: </p>
+<p>An unhandled exception of type &#39;System.StackOverflowException&#39; occurred in mscorlib.dll</p>
+<p>I want to write DataPortal_Fetch() as follows in !WindowsPhone region:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>private</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> DataPortal_Fetch(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> id)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> ctx = SimpleNTier.Dal.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DalFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetManager())
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> dal = ctx.GetProvider&lt;SimpleNTier.Dal.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IDesignationDal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> data = dal.Fetch(id);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(BypassPropertyChecks)</span></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>{</p>
+<p>Id = data.Id;</p>
+<p>Description = data.Description;</p>
+<p>TimeStamp = data.LastChanged;</p>
+<p>}</p>
+<p>}</p>
+<p>}</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>But it gives an error as Dal doesnt exists in this context. Then how should i write DataPortal_Fetch() for silverlight in the business base class itself?</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,71 @@
+<html><header><title>WcfProxy - NullReferenceException - Csla 4.5.10</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WcfProxy - NullReferenceException - Csla 4.5.10</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11721.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabiano posted on Friday, November 23, 2012</h2><p>Hi all,</p>
+<p>If&nbsp;<span class="hps">error</span> <span class="hps">occurs</span> <span class="hps">in</span> <span class="hps">the&nbsp;W</span><span class="hps">cfService</span> the SL client throws a&nbsp;<span class="hps">NullReferenceException</span><span>.</span><br /><br /><span class="hps">Following the WcfProxy</span>&nbsp;<span class="hps">code</span>&nbsp;at <span class="hps">line</span> <span class="hps">number</span> <span class="hps">645</span> <span class="hps">is the code</span> <span class="hps">below</span><span>:</span></p>
+<p><span><span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">try</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">{<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>Csla.WcfPortal.</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">WcfResponse</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> response = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (e.Error == </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)
+<p>response = ConvertResponse(e.Result);</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> globalContext = (</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ContextDictionary</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MobileFormatter</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Deserialize(response.GlobalContext); ----&gt; if e.Error != null response is always null</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">so the NullReferenceException is raised.</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">May I use the work around below?</span></span></p>
+</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;color:#808080;font-size:x-small;"><span style="font-family:Consolas;color:#808080;font-size:x-small;"><span style="font-family:Consolas;color:#808080;font-size:x-small;">
+<p>var globalContext = response == null ? ApplicationContext.GlobalContext : (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);</p>
+<p>&nbsp;</p>
+<p>Best regards,</p>
+<p>Fabiano Rezende</p>
+</span></span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, November 24, 2012</h2><p>This is a known bug that will be fixed in the next release.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Monday, December 03, 2012</h2><p>Same problem for me, my service was misconfigured:</p>
+<p>In case this help someone else until the fix is released, I personally updated (take care to update all Create/Fetch/Update/Delete):</p>
+<p><span style="font-size:xx-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (e.Error == </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-size:xx-small;">) </span></span></span></p>
+<p>&nbsp;&nbsp; response = ConvertResponse(e.Result);</p>
+<p><span style="font-size:xx-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> globalContext = (</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ContextDictionary</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MobileFormatter</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Deserialize(response.GlobalContext); </span></span></span></p>
+<p><span style="font-size:xx-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></span></p>
+<p>
+<p>into:</p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ContextDictionary</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> globalContext = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">; <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</span></span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p>
+<p>&nbsp;</p>
+</p>
+</p>
+</span></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (e.Error == </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">null</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">) {&nbsp;</span></span>&nbsp;</p>
+</p>
+<p>
+<p>&nbsp;&nbsp; response = ConvertResponse(e.Result);</p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;&nbsp; globalContext = (C<span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ontextDictionary</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MobileFormatter</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Deserialize(response.GlobalContext);</span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span></span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></span></span></span></span></span></span></span></span>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">}</span></span></p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 06, 2012</h2><p>Fix is in svn now</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1131">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1131</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

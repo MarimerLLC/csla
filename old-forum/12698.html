@@ -1,0 +1,24 @@
+<html><header><title>DynamicBindingListBase SaveItem (4.5.600)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DynamicBindingListBase SaveItem (4.5.600)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12698.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BlueScreen posted on Tuesday, July 15, 2014</h2><p>Hello,</p>
+<p>we are currently refactoring our client application to a SOA (ASP.NET MVC, Web Service, new HTTP Channel)</p>
+<p>We make use of DynamicBindingListBase, but it does not support async save.</p>
+<p>Is this intended, what should be do?</p>
+<p>&nbsp;</p>
+<p>Thanks in advance</p>
+<p>Blue</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 15, 2014</h2><p>DynamicBindingListBase exists for one purpose: to create a collection that can be bound to a datagrid control in a smart client application (like WPF).</p>
+<p>For all other purposes you should use BusinessListBase.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BlueScreen replied on Tuesday, July 15, 2014</h2><p>Hi Rocky,</p>
+<p>&nbsp;</p>
+<p>thats exactly what we do. We use most lists for trees (which are some kind of grids) in WinForms.</p>
+<p>The point is we save each item on it&#39;s own, with SaveItem(item). But now that we have to do everything in an async way, we can not do that.</p>
+<p>I created a work around by overriding the SaveItem(index) method and changed the Save on the Savable object to SaveAsync, which is working perfectly fine.</p>
+<p>I am just wondering why the list does not support that by default like the BusinessBindingList (of course, we use that one too, but for other purposes and use cases).</p>
+<p>&nbsp;</p>
+<p>Blue</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 15, 2014</h2><p>fwiw, if you look inside the code for the dynamic list implementation it is async. But because the save method is intended to be called by a datagrid&#39;s event handler indicating that the user moved focus off the row, the public interface to the save isn&#39;t &quot;async&quot;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BlueScreen replied on Wednesday, July 16, 2014</h2><p>Hello again and thanks for your response,</p>
+<p>&nbsp;</p>
+<p>the implementation of SaveItem() looks like this:</p>
+<p><b>// do the save</b></p>
+<p><b>result = (T)savable.Save();</b></p>
+<p>I cant see how the implementation is async in any way. I must be missing something here.</p>
+<p>Are you saying that there is no way to save in an async manner when using this type of list?</p>
+<p>Does that mean I can not use the original at all when working with the new DataPortal http channel?</p>
+<p>&nbsp;</p>
+<p>Blue</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

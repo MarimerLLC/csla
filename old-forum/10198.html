@@ -1,0 +1,63 @@
+<html><header><title>Defining our own facade with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Defining our own facade with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10198.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Irfan.Baig posted on Wednesday, March 23, 2011</h2><p>Hi Rocky</p>
+<p>I am new to CSLA. Have seen a few of your videos and read a bit from your book and it&#39;s great. </p>
+<p>We are developing a business application where we would like our business logic to be behind a WCF layer. This will be consumed by a silverlight client but in future will have more clients like a mobile one, web clients for some specialized functionality. Also in future we intend to expose a public API facade from our WCF layer.</p>
+<p>We would like to use CSLA in our Silverlight client. An initial study shows me that the facade has to have 5 methods that are Create(), Fetch(), Update(), Delete(), Execute(). There is a routing mechanism in place which routes to the correct BusinessObject on the server based on some parameters behind the scenes in a default WCFPortal implementation.</p>
+<p><span style="text-decoration:underline;">Questions are </span></p>
+<p>1)To communicate with a CSLA service, should all our clients need to be built up on CSLA ?</p>
+<p>2)We would like to expose business operations through our WCF facade layer which behind the scenes do insert, update, delete based on some business logic rather than just the Create,Fetch, Update and Delete operations. Most importantly for the public API we must expose more meaningful business methods. Is it possible with CSLA not to be restricted to Create, fetch, update, delete, execute methods and define our own facade layer ?</p>
+<p>3) Is it possible that our Service (.svc files) be hosted in a separate application rather than in the web application where the silverlight application is hosted ?</p>
+<p>The intention is just to achieve loose coupling as most of the business applications do. </p>
+<p>- A service that talks on standards &nbsp;such as Http &amp; SOAP and exposes a proper business layer as facades.</p>
+<p>- Any type of client should be able to consume the service to extend the functionality..</p>
+<p>&nbsp;</p>
+<p>I will be really grateful if you can take out some of your precious time to post a reply.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 23, 2011</h2><p>CSLA supports two basic models for distributed apps:</p>
+<ol>
+<li>n-tier via a remote data portal</li>
+<li>SOA via a local data portal</li>
+</ol>
+<p>Either way you use the data portal, but in different ways. And the core architecture of your system is different. I use the word system, not application, because in the loosely coupled SOA model you have multiple applications by definition - so we have to talk about it as a system.</p>
+<p>I&#39;ve blogged about this a lot - select the &quot;Service-oriented&quot; tag at <a href="http://www.lhotka.net/weblog">http://www.lhotka.net/weblog</a> to see those posts.</p>
+<p>In short though.</p>
+<p>If you want to exploit the productivity and automation provided by the mobile object architecture, you should look at using CSLA on your client and server and communicating via the data portal. This is an n-tier architecture and is not loosely coupled - which is why it is so productive, feature-rich, and relatively low-cost.</p>
+<p>This is NOT&nbsp;a good architecture for a WP7 or other mobile app though, because you have such limited control over when, or if, the user updates the client. It is a great architecture for ASP.NET apps, WPF apps, Silverlight apps, or Windows Forms apps - because in those technologies you can have total control over client updates, thereby ensuring they stay in sync with your server.</p>
+<p>If you are building a mobile client, or want to support unknown clients by exposing a service interface, then you should do just that: expose a service interface. That means being service-oriented, and that&#39;s more complex and expensive. By definition, you are now creating an application that has a &quot;UI&quot; composed of XML or JSON message contracts.</p>
+<p>Conceptually you can think of a service interface as being just like a web interface, except you send and consume XML/JSON instead of HTML. In fact that&#39;s a healthy way to think about it.</p>
+<p>Do you trust a web client? No? Of course not - you validate, verify, and recheck anything you get in a web postback.</p>
+<p>The exact same paranoia is required when implementing a service interface.</p>
+<p>The primary difference is conceptual - with a service interface the service <em>is a standalone app</em>. It is not a tier. It is not in any way part of the consuming app, nor is the consuming app in any way part of the service. <em>They must be viewed as separate apps</em>.</p>
+<p>Given all that, you should understand that CSLA can be used to create the consuming app, or the service, or both. But even if you use CSLA to create both - you should never think about sharing code. As soon as the two apps share code, they are tightly coupled and you are no longer SOA. Period, end of story.</p>
+<p>For my part, I&#39;d probably build the Silverlight app as an n-tier app, using the data portal to communicate between the application code running on the Silverlight client and the application code running on my app server - all one app, but with multiple tiers.</p>
+<p>And I&#39;d probably use <em>those same objects</em> to build a service interface (SOAP or REST). I already have the objects, they are already running in my server environment, so if possible I&#39;d reuse them.</p>
+<p>Then I&#39;d create a <em>totally separate app</em> for the mobile device. Let&#39;s say it is WP7. I might use CSLA to build that client app too - but it would be a 1-tier app that calls the services running on my server. This mobile app is sometimes called an &quot;edge app&quot; because it runs on the edge of my service-oriented system.</p>
+<p>The formal and unchanging service contract provides the loose coupling, allowing the Silverlight app and server objects to change over time, without changing the service interface. Changing the service interface is a big deal, because it breaks the contract with all service consumers - so you have to have a careful and clear versioning and migration story for that (part of why SOA is not cheap).</p>
+<p>If you&#39;ve been around long enough, you might remember how VB6 worked with COM interfaces and &quot;binary compatibilty&quot;. Those exact same versioning rules apply to SOAP services, and similar rules apply to REST services. If you didn&#39;t do VB6/COM work, I&#39;m not aware of another really good analogy (I should probably work on one - as time goes by fewer and fewer people have that experience).</p>
+<p>In terms of reference material.</p>
+<p>The <em>Using CSLA 4: Data Portal Configuration</em> ebook I&#39;m currently writing covers the n-tier scenario quite thoroughly, including sample code with a Silverlight client.</p>
+<p>The most current information about building service interfaces with CSLA objects is Chapter 21 of <em>Expert 2008 Business Objects</em>.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Irfan.Baig replied on Thursday, March 24, 2011</h2><p>
+<div>
+<p>Hi Rocky</p>
+<p>Thanks a lot for a quick response and for taking out the time to write a detailed explanation. It pretty much addresses most of my questions. Not only that it provides guidelines to help selecting way forward.</p>
+<p>We will give more thought into this before deciding on an approach. I will post more when I have more queries. Thanks again.</p>
+<p>Regards,</p>
+<p>Irfan</p>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Irfan.Baig replied on Thursday, March 24, 2011</h2><p>Hi Rocky</p>
+<p>Sorry. Just another question. I am a bit unclear on the Data Portal concept. As I understand is, </p>
+<p>- DataPortal is something like a service (e.g. CSLA&#39;s &nbsp;WcfDataPortal) is this correct? </p>
+<p>- What is the difference between a local and remote data portal? Is it that the local dataportal resides in the same app domain as the consuming application? If yes then how does SOA come into play with a local data portal?</p>
+<p>These questions may sound completely basic but as I said, I am new to CSLA.</p>
+<p>Irfan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 24, 2011</h2><p>You may consider getting the <a href="http://store.lhotka.net">Using CSLA 4 ebook series</a>, or at least the <em>Using CSLA 4: CSLA .NET Overview</em> book - it is hard to replace that information via forum threads.</p>
+<p>The data portal itself uses a set of design patterns and technologies to abstract the communication between client and server, and to enable the mobile object concept in CSLA.</p>
+<p>In local mode the data portal runs the client-side and &quot;server-side&quot; code all on the client.</p>
+<p>In remote mode the data portal&#39;s client-side code invokes the server-side code on a server. The communication is handled by something called a data portal channel. Channels loaded using a provider pattern, and CSLA comes with WCF, Remoting, and Enterprise Services channels. You can create your own as well - but usually the WCF channel works well.</p>
+<p>The data portal itself is service-oriented, but it provides n-tier functionality to the application. This is because the mobile object architecture is an n-tier architecture and so is not service-oriented.</p>
+<p>The <em>Using CSLA 4: Data Portal Configuration</em> ebook I&#39;m working on right now (chapters 1-3 are online, 4-5 yet to go) provides a lot of detail about what I&#39;m describing here.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Irfan.Baig replied on Thursday, March 24, 2011</h2><p>Thanks again Rocky. We might consider getting these books now or might be as a final version is available. I already have an older version of the book and am refering to that for concepts. Thanks again for the assistance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>selim51 replied on Monday, June 18, 2012</h2><p>Hi Rocky!</p>
+<p>We are at the beginning to develop an application. Right from the start we have to make architectural decisions. First we want to build a web application followed by other&nbsp;UI technologies (Windows&nbsp;and/or Outlook AddIn). As soon as the web app is done, other 3rd party applications (devloped by ourselves) should consume the new application, mostly read operations. Some of my co-workers have the idea to build a webservice, and right on top the different UIs. The webservice will be also&nbsp;consumed by the 3rd party applications.</p>
+<p>I am against this idea because we have to expose all the buisness behaviour through the webservice. That means that the 3rd party applications can access for example the write operations which should be allowed for the application&#39;s UIs only.</p>
+<p>My colleagues argue that there should be one central application (bussiness tier)&nbsp;for all the UIs. In my opinion we have to build two webservices, one full blown for the UIs and another light webservice for the 3rd party applications.</p>
+<p>A second idea is to write a n-tier&nbsp;application like you have suggested above. I understand a n-tier app as one application with one UI. Technically it is possible to implement an n-tier application (WcfPortal)&nbsp;with multiple UIs. I don&#39;t&nbsp; know if this is a good idea. One question I have is versioning. What happens if one UI is up to date and another has an old behaviour (maybe a business object&nbsp;with a missing new property).</p>
+<p>My preferred way is to build seperate 2-tier applications for each UI. Each of the applications talk directly to the database through the BLL and DAL.</p>
+<p>What would you suggest to do? Maybe Irfan can share his experience with his application, too,&nbsp;if he reads this post.</p>
+<p>Yavuz</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

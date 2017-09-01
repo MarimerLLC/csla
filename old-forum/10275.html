@@ -1,0 +1,1442 @@
+<html><header><title>CSLA performance issues with large data sets</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA performance issues with large data sets</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JFernando posted on Monday, April 18, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">Hello folks, <br /></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">Though CSLA works
+quite nicely with smaller datasets I am seeing a performance issue when
+accessing larger data sets.<span>&nbsp; </span>In particular
+I have a CSLA <b>Read Only List Object</b>
+that in some cases could contain over 19K child elements. In these cases, I am
+observing that </span><b><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.ReadOnlyBase.LoadProperty</span></b><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;"> chews up majority of
+time (in reflection) when building the list; and of course, this significantly
+impacts performance! <span>&nbsp;&nbsp;</span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">{To the interested
+reader &ndash; the profiling data is given below}</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">&nbsp;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">Has anyone seen this
+performance issue before?<span>&nbsp; </span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">Has this been fixed
+in the framework (I am currently using CSLA Ver 4.0.1.0) or is there a
+workaround?</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;"><br /></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">Here&rsquo;s the stack </span></p>
+<table class="MsoNormalTable" style="background:none repeat scroll 0% 0% white;border-collapse:collapse;border:medium none;" width="653" border="1" cellpadding="0" cellspacing="0">
+<thead>
+  
+<tr>
+<td style="width:251.25pt;border:1pt inset #cccccc;background:none repeat scroll 0% 0% #eeeeee;padding:2.25pt 3.75pt;" width="335">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Function Name</span></p>
+</td>
+<td style="width:45pt;background:none repeat scroll 0% 0% #eeeeee;padding:2.25pt 3.75pt;border:1pt 1pt 1pt medium inset inset inset none #cccccc #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Inclusive Samples</span></p>
+</td>
+<td style="width:36.5pt;background:none repeat scroll 0% 0% #eeeeee;padding:2.25pt 3.75pt;border:1pt 1pt 1pt medium inset inset inset none #cccccc #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Exclusive Samples</span></p>
+</td>
+<td style="width:40pt;background:none repeat scroll 0% 0% #eeeeee;padding:2.25pt 3.75pt;border:1pt 1pt 1pt medium inset inset inset none #cccccc #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Inclusive Samples %</span></p>
+</td>
+<td style="width:45pt;background:none repeat scroll 0% 0% #eeeeee;padding:2.25pt 3.75pt;border:1pt 1pt 1pt medium inset inset inset none #cccccc #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Exclusive Samples %</span></p>
+</td>
+<td style="width:1in;background:none repeat scroll 0% 0% #eeeeee;padding:2.25pt 3.75pt;border:1pt 1pt 1pt medium inset inset inset none #cccccc #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Module Name</span></p>
+</td>
+</tr>
+</thead>
+ 
+<tbody>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">-</span></b></p>
+</td>
+<td style="width:235.7pt;padding:0in;" width="314">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">MiddleTier.Library.AMS360ReadOnlyBase`1.LoadProperties(object)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">6,562</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">1</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">96.01</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">0.01</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">MiddleTier.Library.DLL</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:15pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.1pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">-</span></b></p>
+</td>
+<td style="width:236.45pt;padding:0in;" width="315">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">MiddleTier.Library.AMS360ReadOnlyBase`1.LoadProperties(object,string[])</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">6,561</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">32</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">95.99</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">0.47</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">MiddleTier.Library.DLL</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:30pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">-</span></b></p>
+</td>
+<td style="width:220.95pt;padding:0in;" width="295">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.ReadOnlyBase`1.LoadProperty(class
+    Csla.Core.IPropertyInfo,object)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">5,544</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">43</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">81.11</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">0.63</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.DLL</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:45pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">&nbsp;</span></b></p>
+</td>
+<td style="width:205.95pt;padding:0in;" width="275">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">System.RuntimeType.GetMethods(valuetype
+    System.Reflection.BindingFlags)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">1,633</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">1,633</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">23.89</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">23.89</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">mscorlib.ni.dll</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:45pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.1pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">&nbsp;</span></b></p>
+</td>
+<td style="width:206.45pt;padding:0in;" width="275">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">System.Reflection.RuntimeMethodInfo.MakeGenericMethod(class
+    System.Type[])</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">1,603</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">1,603</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">23.45</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">23.45</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">mscorlib.ni.dll</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:45pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">&nbsp;</span></b></p>
+</td>
+<td style="width:192.5pt;padding:0in;" width="257">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">System.Reflection.MethodBase.Invoke(object,object[])</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">1,164</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">908</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">17.03</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">13.28</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">mscorlib.ni.dll</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:45pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">-</span></b></p>
+</td>
+<td style="width:205.95pt;padding:0in;" width="275">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">System.Linq.Enumerable.FirstOrDefault(class
+    System.Collections.Generic.IEnumerable`1&lt;!!0&gt;)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">929</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">334</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">13.59</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">4.89</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">System.Core.ni.dll</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:60pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">&nbsp;</span></b></p>
+</td>
+<td style="width:190.95pt;padding:0in;" width="255">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.ReadOnlyBase`1.&lt;LoadProperty&gt;b__a(class
+    System.Reflection.MethodInfo)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">595</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">222</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">8.71</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">3.25</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.DLL</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:30pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">-</span></b></p>
+</td>
+<td style="width:216.95pt;padding:0in;" width="289">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.Reflection.MethodCaller.CallPropertyGetter(object,string)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">570</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">50</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">8.34</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">0.73</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.DLL</span></p>
+</td>
+</tr>
+<tr>
+<td style="width:251.25pt;padding:1.5pt;border:medium 1pt 1pt none inset inset -moz-use-text-color #cccccc #cccccc;" width="335">
+  
+<table class="MsoNormalTable" style="margin-left:45pt;background:none repeat scroll 0% 0% white;border-collapse:collapse;" border="0" cellpadding="0" cellspacing="0">
+<tbody>
+<tr>
+<td style="width:8.6pt;padding:0in 3.75pt 0in 0in;" valign="top" width="11">
+<p class="MsoNormal"><b><span style="font-size:8pt;font-family:&#39;Courier New&#39;;">&nbsp;</span></b></p>
+</td>
+<td style="width:205.95pt;padding:0in;" width="275">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.Reflection.MethodCaller.GetCachedProperty(class
+    System.Type,string)</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">413</span></p>
+</td>
+<td style="width:36.5pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="49">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">9</span></p>
+</td>
+<td style="width:40pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="53">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">6.04</span></p>
+</td>
+<td style="width:45pt;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="60">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">0.13</span></p>
+</td>
+<td style="width:1in;padding:1.5pt;border:medium 1pt 1pt medium none inset inset none -moz-use-text-color #cccccc #cccccc -moz-use-text-color;" width="96">
+<p class="MsoNormal"><span style="font-size:8pt;font-family:&#39;Tahoma&#39;,&#39;sans-serif&#39;;">Csla.DLL</span></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">&nbsp;<span>&nbsp;</span><span>&nbsp; </span></span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:Consolas;">And the function that takes up
+time</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:8pt;font-family:Consolas;"> <span style="color:blue;">virtual</span> <span style="color:blue;">void</span> LoadProperty(<span style="color:#2b91af;">IPropertyInfo</span>
+propertyInfo, <span style="color:blue;">object</span> newValue)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;
+{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> t = <span style="color:blue;">this</span>.GetType();</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> flags = System.Reflection.<span style="color:#2b91af;">BindingFlags</span>.Public | System.Reflection.<span style="color:#2b91af;">BindingFlags</span>.NonPublic | System.Reflection.<span style="color:#2b91af;">BindingFlags</span>.Instance;</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;background:none repeat scroll 0% 0% yellow;">var</span><span style="background:none repeat scroll 0% 0% yellow;"> method =
+t.GetMethods(flags).Where(c =&gt; c.Name == <span style="color:#a31515;">&quot;LoadProperty&quot;</span>
+&amp;&amp; c.IsGenericMethod).FirstOrDefault();</span></span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;background:none repeat scroll 0% 0% yellow;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span> gm = method.MakeGenericMethod(propertyInfo.Type);</span><span style="font-size:8pt;font-family:Consolas;"></span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">var</span> p = <span style="color:blue;">new</span> <span style="color:blue;">object</span>[] { propertyInfo, newValue };</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;gm.Invoke(<span style="color:blue;">this</span>, p);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:8pt;font-family:Consolas;">&nbsp;&nbsp;&nbsp;
+}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">thanks,</p>
+<p class="MsoNormal">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, April 19, 2011</h2><p>Could you show us an example of your DataAccess code? </p>
+<p>If your DAL code could be changed to call the generic LoadProperty&lt;P&gt; you would not have the cost of reflection.</p>
+<p>Another option would be to expand the Csla.Refelction,.MethodCaller with a new CallGenericMethod and&nbsp; cache the reflected method.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, April 19, 2011</h2><p>Using</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:blue;">using</span>&nbsp;(<span style="COLOR:purple;">BypassPropertyChecks</span>)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">DocID</span>&nbsp;=&nbsp;dr.<span style="COLOR:darkcyan;">GetInt32</span>(<span style="COLOR:#a31515;">&quot;DocID&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">DocDate</span>&nbsp;=&nbsp;dr.<span style="COLOR:darkcyan;">GetDateTime</span>(<span style="COLOR:#a31515;">&quot;Date&quot;</span>).<span style="COLOR:darkcyan;">ToString</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Subject</span>&nbsp;=&nbsp;dr.<span style="COLOR:darkcyan;">GetString</span>(<span style="COLOR:#a31515;">&quot;Subject&quot;</span>);
+}</pre>
+<p>must be faster than</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;"><span style="color:darkcyan;">LoadProperty</span>(<span style="color:purple;">DocIDProperty</span>,&nbsp;dr.<span style="color:darkcyan;">GetInt32</span>(<span style="color:#a31515;">&quot;DocID&quot;</span>));
+<span style="color:darkcyan;">LoadProperty</span>(<span style="color:purple;">DocDateProperty</span>,&nbsp;dr.<span style="color:darkcyan;">GetDateTime</span>(<span style="color:#a31515;">&quot;Date&quot;</span>));
+<span style="color:darkcyan;">LoadProperty</span>(<span style="color:purple;">SubjectProperty</span>,&nbsp;dr.<span style="color:darkcyan;">GetString</span>(<span style="color:#a31515;">&quot;Subject&quot;</span>));
+</pre>
+<p>but I didn&#39;t test...</p>
+<p>&nbsp;[edit]</p>
+<p>On secondthoughts, it must be the exact same timings...</p>
+<p>[/edit]</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JFernando replied on Tuesday, April 19, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">Per my understanding this codebase was initially setup by <b>Magenic
+</b>and the DataAccess in the BusinessObject is as follows</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp; </span><span style="color:blue;">private</span> <span style="color:blue;">void</span> Child_Fetch(<span style="color:#2b91af;">AlertNotificationRecipientViewInfoDTO</span>
+childData)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span>.LoadProperties(childData);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Which bubbles down to</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:9.5pt;font-family:Consolas;">
+<span style="color:blue;">void</span> LoadProperties(<span style="color:blue;">object</span>
+sourceBusinessObject)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">string</span>[]
+ignorelist = <span style="color:blue;">new</span> <span style="color:blue;">string</span>[0];</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>LoadProperties(sourceBusinessObject,
+ignorelist);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">And </p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:9.5pt;font-family:Consolas;">
+<span style="color:blue;">void</span> LoadProperties(<span style="color:blue;">object</span>
+sourceBusinessObject, <span style="color:blue;">params</span> <span style="color:blue;">string</span>[] ignoreList)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt; ignore = <span style="color:blue;">new</span>
+<span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;(ignoreList);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">var</span>
+listofRegisteredProperies = FieldManager.GetRegisteredProperties();</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">foreach</span>
+(<span style="color:blue;">var</span> propertyName <span style="color:blue;">in</span>
+GetPropertyNames(sourceBusinessObject.GetType()))</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span>
+(!ignore.Contains(propertyName))</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:blue;">object</span>
+value = <span style="color:#2b91af;">MethodCaller</span>.CallPropertyGetter(sourceBusinessObject,
+propertyName);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:green;">//This
+will avoid access to Modified Closure</span></span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">string</span>
+name = propertyName;</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">var</span>
+pinfo = listofRegisteredProperies.Find(x =&gt; x.Name == name);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="background:none repeat scroll 0% 0% yellow;">LoadProperty(pinfo, value);</span></span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">And now note the LoadProperty call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 19, 2011</h2><p>Although this technique is fine for small object graphs, you can clearly see how it wouldn&#39;t be appropriate for large object graphs.</p>
+<p>I am firm believer in avoiding the anti-pattern of premature optimization&nbsp;- which is to say that I see nothing wrong with using a pragmatic solution like this code - when it works. The non-generic LoadProperty method exists for low-volume dynamic data scenarios, mostly centered around implementation of service interfaces or web UI postbacks. But if it works for DAL interaction in object graphs, then that&#39;s good - pragmatism is valuable.</p>
+<p>But I&#39;m also a firm believer in applying optimization when appropriate. Obviously a 19k element list is huge, and as I said in my earlier post, I&#39;m not surprised that using the non-generic LoadProperty is causing an issue in such a scenario. When a performance problem is encountered, then fixing it is no longer premature optimization :)</p>
+<p>There are three possible solutions. </p>
+<ol>
+<li>The best is to redesign the scenario to avoid retrieving such a huge list - but I understand that end users can be stubborn creatures, so this is often not possible :)</li>
+<li>The second best is to implement some type of paging - especially if this is a web app, where paging is expected. If it is a smart client app (WPF or SL in particular) I&#39;d look at doing async background loading of everything after the first page. There&#39;s an example of this in the Samples download.</li>
+<li>The third option is to use the generic LoadProperty for this particular business class. I wouldn&#39;t give up the reusable productivity of the existing code (I assume it is widely used) for other types, just for this type.</li>
+</ol>
+<p>Obviously these solutions can also be used in combination if necessary.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JFernando replied on Tuesday, April 19, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">Indeed,
+as indicated the perf issues becomes acute with large datasets and not necessarily
+visible with smaller data sets.<span>&nbsp;&nbsp; </span>If possible
+I would like to keep the coding pattern consistent, and this would be possible
+if the framework could implement a generic solution that could scale by caching
+and reusing the dynamically created info&hellip; thoughts?</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">&nbsp;Yes,
+though we reduce the data transfer volumes fine-tuning the query or via paging,
+there are scenarios where we have to access a bit of data&hellip; and unfortunately this
+is one of them&hellip;</span></p>
+<p class="MsoNormal"><span style="font-size:10pt;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;">From
+what I understand, the pattern set by <b>Magenic </b>in our codebase was to merely
+uses the non-generic LoadProperty pattern, Do you have some sample where you
+use the generic LoadProperty overload? If so, can you share this sample?&nbsp; <br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 19, 2011</h2><p>Nearly every sample in the Samples download, and all the samples provided in the <em>Using CSLA 4: Data Access</em> ebook use the generic LoadProperty overload - either directly or (more commonly) indirectly through the property setter with BypassPropertyChecks.</p>
+<p>As I said in my previous post, looking at the code you provided, it makes sense how the non-generic LoadProperty is being used to implement a dynamic data loader. That approach is fine for smaller object graphs, but obviously won&#39;t work for a list of 19k items.</p>
+<p>If the DAL implementation doesn&#39;t allow for plugging custom code for a&nbsp; specific object type, you&#39;ll need to enhance the implementation so it has that flexibility.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>appWPF replied on Monday, February 10, 2014</h2><p>Hi, I am using WPF and I don&#39;t have silverlight installed. So I was wondering if the sample your are talking about, concerning paging, do you have it in WPF version?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 19, 2011</h2><p>fwiw, &quot;enhancing the implementaiton&quot; looks pretty easy. It looks to me like you can make the LoadProperties method virtual, so a specific business class can override the method to implement strong-typed behavior when needed to optimize for performance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JFernando replied on Tuesday, April 19, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal"><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;">Indeed, thanks all &ndash; this has been helpful.<span>&nbsp; </span>We have ~80% perf improvement on this scenario. </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, April 19, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>fwiw, &quot;enhancing the implementaiton&quot; looks pretty easy. It looks to me like you can make the LoadProperties method virtual, so a specific business class can override the method to implement strong-typed behavior when needed to optimize for performance.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Hi Rocky,</p>
+<p>What do you mean by &quot;enhancing the implementation&quot;? I looked it up in <em><strong>Using Csla4</strong></em>, both <em><strong>Object</strong></em> and <em><strong>Data Access</strong></em> but found nothing like it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 20, 2011</h2><p>In the ebooks I show the direct techniques for implementing the interface to the DAL, using strong typing. I don&#39;t have a dynamic loader example, because (imo) that&#39;s an advanced scenario. So is creating a more abstract dynamic DAL.</p>
+<p>The people on this project implemented a more abstract dynamic DAL, presumably to meet some client requirement(s). And (from the code posted in this thread) it looks like the abstraction was done in custom base classes - which is a recommended technique, so that&#39;s good.</p>
+<p>It just looks like the DAL methods weren&#39;t virtual, and that&#39;d prevent a specific subclass from overriding the dynamic implementation with a strongly typed implementation when necessary.</p>
+<p>So &quot;enhancing the implementation&quot;, in this case, probably (hopefully) just meant adding the virtual keyword, and overriding the method in the specific business class that was having the perf issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 19, 2011</h2><p>Why is your DAL using the non-generic LoadProperty?</p>
+<p>It is not a surprise at all that this method is comparatively slow, because it does use reflection. It isn&#39;t really designed or intended for bulk data loads, where you should have access to the static metadata field for each property and can therefore use the generic LoadProperty overload.</p>
+<p>In fact, the use of reflection in this non-generic overload exists specifically so it can invoke the generic implementation - by dynamically creating the info necessary to invoke that generic implementation.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

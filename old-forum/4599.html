@@ -1,0 +1,14 @@
+<html><header><title>Error (Csla.DataPortalException:DataPortal Update failed)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error (Csla.DataPortalException:DataPortal Update failed)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4599.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maqinfo posted on Wednesday, April 02, 2008</h2><P>Hi</P>
+<P>I am using&nbsp;CSLA 3.5 beta 2&nbsp;in mine new WPF project.</P>
+<P>I have&nbsp;4 projects in mine solutions</P>
+<P>1)&nbsp;OTWPF( Windows Presentation Foundation Application)</P>
+<P>2) OTBIZLIB&nbsp;&nbsp;(Business Library which uses CSLA reference and also OTLinq project reference)</P>
+<P>3) OTLINQ (A LINQ Project which uses LINQ to Sql class and also have csla reference)</P>
+<P>4) WCFHost (WCF Service library project, All files in this project are imported from sample Project Traker project and have made change in config files)</P>
+<P>When I am trying to save the New Record</P>
+<P>I am getting this error</P>
+<P>{"DataPortal.Fetch failed ()"}</P>
+<P>{"Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal"}</P>
+<P>I am not able to get clue where i am going wrong. Please help</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 02, 2008</h2><P>Your app is configured to use CSLA custom authentication, so the data portal is passing the client-side principal to the server. But that principal is not a valid principal (doesn't inherit from BusinessPrincipal). You need to log in (or out) before making calls through the data portal so the principal is valid (even if unauthenticated).</P>
+<P>Odds are you know this, and already have code in your app to set the principal. But WPF makes this complicated, because it will clear the principal and/or your data call might be on a background thread where the principal isn't set.</P>
+<P>The <EM>Using CSLA .NET 3.0</EM> ebook discusses this principal issue and illustrates a workaround - which you can also see in the PTWpf app.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

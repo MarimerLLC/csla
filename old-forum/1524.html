@@ -1,0 +1,22 @@
+<html><header><title>Reg: Physical Model</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Reg: Physical Model</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1524.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Reva posted on Wednesday, October 18, 2006</h2><font face="Courier New"><span>Hi,<br>
+<br>
+I *just* started reading the V1 of the book (Only which is available to me).<br>
+<br>
+In the first chapter / Applying the Logical Architecture / <a name="62"></a><a name="ch01lev3sec91C890A0B-FC91-4033-B87C-B1A9"></a>High-Scalability-Intelligent
+Client<br>
+<br>
+I was expecting the below </span><span>logical </span><span>to </span><span></span><span>physical </span><span>model mapping:-<br>
+<br>
+First Physical machine:&nbsp; Presentation + UI<br>
+<br>
+Second Physical machine: <b><font color="#000000">Business Logic + Data Access</font></b><br>
+<br>
+Third Physical Machine: Data Storgage+Management<br>
+<br>
+But, the book surprised me by moving the "Business Logic" logical
+layer to the first machine instead of second machine<br>
+<br>Can anyone kindly explain why the author has taken this decision? or point to me a location where this is already address or discussed.<br>
+<br>
+Thanks in advance,<br>
+Kishor</span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Reva replied on Wednesday, October 18, 2006</h2><span><font face="Courier New">Please Ignore My above Question, I Figured it
+out in the next pages in the book</font><br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 18, 2006</h2>What you'll find, and this is explained better in the 2005 book (I try to refine my explanations when possible), is that the Business Layer actually runs on <i>both </i>the client and application server machines when deployed in a physical 3-tier model. This is the goal the data portal in CSLA .NET, and to do this I am using the concept of mobile objects.<br><br>The idea is to keep the processing as physically close to any required resource as is possible. So when the object needs to interact with the user (a resource), the closer the object can get to the user the better. Similarly, when the object needs to interact with the database (another resource), the closer the object can get to the database the better.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

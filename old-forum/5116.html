@@ -1,0 +1,277 @@
+<html><header><title>CanWriteProperty and CanReadProperty - Where?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CanWriteProperty and CanReadProperty - Where?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5116.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 posted on Thursday, July 17, 2008</h2>Hi all,<br>This question was already posted in this thread: http://forums.lhotka.net/forums/post/13181.aspx. But there were not many answers, I hope I have more luck.<br><br>The setter of a property usually looks like this:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [MethodImpl(MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ff0000">CanWriteProperty(true);</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_description.Equals(value)) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _description = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>If one were to move the call to CanWriteProperty like the following, would that have any negative implications?<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [MethodImpl(MethodImplOptions.NoInlining)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_description.Equals(value)) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ff0000">CanWriteProperty(true);</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _description = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>There are basically two reason it occured to me to do it this way. One is performace: If the property hasn't changed, you can avoid the penalty hit of using CanWriteProperty. The second has to do with data binding. Right now I'm working on a web projecte where certain users don't have access to a specific property, and DataMapper still tries to set the value in that property (even if the field was disabled and thus wasn't changed) and an exception is thrown. <br><br>Is there any reason not to do this?<br><br>Thanks,<br>- Miguel <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, July 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>But then you are not performing your authorization at the beginning
+of the &#8220;set&#8221; block &#8211; actually not performing it at all &nbsp;and
+although user is trying to set the property (though with the same value), there
+is no Authorization exception.&nbsp; To me that makes it harder to test.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I guess the question becomes whether to you authorization is
+limiting access to the set block of the property, or authorization is
+preventing the change of the underlying field. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I personally want my authorization rule to fire each time I am
+trying to set the value to the property.&nbsp; I am curious though what would
+Rocky and others say about this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikemir8
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 17, 2008 4:57 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] CanWriteProperty and CanReadProperty - Where?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi all,<br>
+This question was already posted in this thread: http://forums.lhotka.net/forums/post/13181.aspx.
+But there were not many answers, I hope I have more luck.<br>
+<br>
+The setter of a property usually looks like this:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[MethodImpl(MethodImplOptions.NoInlining)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>CanWriteProperty(true);</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!_description.Equals(value)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_description = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PropertyHasChanged();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+If one were to move the call to CanWriteProperty like the following, would that
+have any negative implications?<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[MethodImpl(MethodImplOptions.NoInlining)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!_description.Equals(value)) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>CanWriteProperty(true);</span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_description = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PropertyHasChanged();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+There are basically two reason it occured to me to do it this way. One is
+performace: If the property hasn't changed, you can avoid the penalty hit of
+using CanWriteProperty. The second has to do with data binding. Right now I'm
+working on a web projecte where certain users don't have access to a specific
+property, and DataMapper still tries to set the value in that property (even if
+the field was disabled and thus wasn't changed) and an exception is thrown. <br>
+<br>
+Is there any reason not to do this?<br>
+<br>
+Thanks,<br>
+- Miguel <br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 17, 2008</h2><P>I think Nermin is correct, while this will work it could make testing harder. Especially in the case you describe where the value may or may not be different, so the user may or may not get an exception in different cases - that could be quite confusing.</P>
+<P>Also, if you are worried about performance, you should switch to the overload where you provide the explicit property name. The authorization results are cached after they are first calculated, but you pay the cost of finding the property name every time when using the overload in your code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Friday, July 18, 2008</h2>I'm curious then to know how others are handling the issue I describe. <br><br>Here are more details. I have a editable root list (StationList) containing Station objects. Admin users can edit all the properties in the Station objects, while regular users can only update the IsActive property. I'm binding this list to a GridView in a Asp .Net project through a CslaDataSource. In edit mode, the Enabled property of the textboxes is databound to the result of CanWriteProperty, so that regular user will only have one field enabled and the rest disabled.<br><br>In the DataSource_UpdateObject event, I'm pushing the values to the object using DataMapper. But DataMapper also tries to set values on properties even if CanWriteProperty is false for a certain property and even if the value didn't change.<br><br>So here are the alternatives I see:<br>* Move the position of CanWriteProperty inside the setter. Already discussed here.<br>* Change DataMapper so that it either checks for CanWriteProperty or for a changed value. It requires messing with the a Csla class, which I don't like. Besides it could introduce other types of confusion while testing.<br>* Call DataMapper.Map with the suppressExceptions set to true. The exceptions are still generated so performance wise is not a good idea, besides you can allow other types of exceptions to go unnoticed.<br>* Create a list of properties to ignore. The work involved seems to defeat the purpose of using DataMapper.<br><br>Any ideas?<br><br>- Miguel<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Friday, July 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The way I was handling cases like that was to add an override in
+your business object to CanWritePropert()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Inside of it check if the property name is &#8220;IsActive&#8221;.&nbsp;
+This is allowed for all roles and in that case you return
+base.CanWriteProperty().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then bellow that you simply check if user is in Admin role &nbsp;and
+base.CanWriteProperty() returns true.&nbsp; If both of those conditions are true,
+you allow writing to the property.&nbsp; Otherwise your CanWriteProperty() override
+returns false.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To me that is the simplest way to implement that business rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikemir8
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 18, 2008 11:48 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CanWriteProperty and CanReadProperty -
+Where?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm curious then to know how others are handling the issue I
+describe. <br>
+<br>
+Here are more details. I have a editable root list (StationList) containing
+Station objects. Admin users can edit all the properties in the Station
+objects, while regular users can only update the IsActive property. I'm binding
+this list to a GridView in a Asp .Net project through a CslaDataSource. In edit
+mode, the Enabled property of the textboxes is databound to the result of
+CanWriteProperty, so that regular user will only have one field enabled and the
+rest disabled.<br>
+<br>
+In the DataSource_UpdateObject event, I'm pushing the values to the object
+using DataMapper. But DataMapper also tries to set values on properties even if
+CanWriteProperty is false for a certain property and even if the value didn't
+change.<br>
+<br>
+So here are the alternatives I see:<br>
+* Move the position of CanWriteProperty inside the setter. Already discussed
+here.<br>
+* Change DataMapper so that it either checks for CanWriteProperty or for a
+changed value. It requires messing with the a Csla class, which I don't like.
+Besides it could introduce other types of confusion while testing.<br>
+* Call DataMapper.Map with the suppressExceptions set to true. The exceptions
+are still generated so performance wise is not a good idea, besides you can
+allow other types of exceptions to go unnoticed.<br>
+* Create a list of properties to ignore. The work involved seems to defeat the
+purpose of using DataMapper.<br>
+<br>
+Any ideas?<br>
+<br>
+- Miguel<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Friday, July 18, 2008</h2>My question is not how to setup the authorization rules. I have that setup correctly (I'm using AddAuthorizationRules, by the way, instead of what you propose).<br><br>My doubt is how to prevent DataMapper from failing when it tries to set a (non-changed) value on a property that is not available to the current user.<br><br>- Miguel<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Monday, July 21, 2008</h2>Any ideas anyone?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, July 21, 2008</h2><P>I don't use the DataMapper but instead an ORM, and load the data directly into the backing fields rather than through properties. I'm not sure if loading using the backing fields is an option for you, but it avoids both execution of authorization and business rules when objects are being initially populated. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2><P>Your best bet might be to alter DataMapper to only set values that have changed.</P>
+<P>In other words, have DataMapper read the current value from the property, compare it to the new value, and only try to set the property if they are different.</P>
+<P>This would avoid the exception in the normal case, but would throw an exception if the UI did accidentally allow the user to change a value they shouldn't be able to change (and so would make testing possible).</P>
+<P>This is probably a good idea for the wish list for DataMapper actually.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>
+<P>I don't use the DataMapper but instead an ORM, and load the data directly into the backing fields rather than through properties. I'm not sure if loading using the backing fields is an option for you, but it avoids both execution of authorization and business rules when objects are being initially populated. </P>
+<P></div></BLOCKQUOTE></P>
+<P>That would be true for loading data from the database. But surely you don't use an ORM to copy values from a web page postback into your object?</P>
+<P>This is a case where you <EM>would</EM> want the business logic to run, because you wouldn't want to automatically trust the data coming from the UI.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikemir8 replied on Monday, July 21, 2008</h2>Ok, I'll go the route of changing the DataMapper. It would be nice to have this feature added on a future release.<br><br>Thanks Rocky!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I did add it to the wish list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think it would have to be an option, because you wouldn&#8217;t
+always want it to do that check, but it would be a good option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mikemir8
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 21, 2008 12:37 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CanWriteProperty and CanReadProperty -
+Where?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok, I'll go the route of changing the DataMapper. It would
+be nice to have this feature added on a future release.<br>
+<br>
+Thanks Rocky!<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

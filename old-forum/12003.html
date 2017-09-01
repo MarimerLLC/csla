@@ -1,0 +1,26 @@
+<html><header><title>Version 4.5.31 beta on nuget</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 4.5.31 beta on nuget</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12003.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, June 04, 2013</h2><p>I have uploaded version 4.5.31 beta to nuget as a prelease.</p>
+<p>Change log is here</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues?milestone=6&amp;page=1&amp;state=closed">https://github.com/MarimerLLC/csla/issues?milestone=6&amp;page=1&amp;state=closed</a></p>
+<p>The most notable changes include:</p>
+<ul>
+<li>Android support (requires the latest Xamarin beta)
+<ul>
+<li>Support for async/await and other new CSLA 4.5 features</li>
+<li>Data portal now known to work via WCF</li>
+<li>Added Csla.Axml project with some Android UI helpers (data binding)</li>
+</ul>
+</li>
+<li>CslaTaskFactory now in Csla.Threading (still a work in progress, but please help us test)</li>
+<li>Support for MobileProxy in .NET 4.0</li>
+<li>Projects now use folder linking for easier maintenance of the framework</li>
+</ul>
+<p>As with all prereleases, this is only available via nuget. You can always download the source from <a href="http://www.cslanet.com">http://www.cslanet.com</a> if you need the samples, source, or other assets. My current plan is for the next stable release to be around the end of June.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, June 05, 2013</h2><p>Since Csla 4.5.30 you could use your 4.3.14 non-Silverlight code on the latest Csla version. Provided you changed to NET 4,5, you could enjoy the much faster speed of MobileProxy. The problem is NET 4.5 means VS2012 and not everyone is using VS2012.</p>
+<p>Those using NET 4.0 and VS2010, couldn&#39;t use the MobileProxy nor the WcfBfProxyHost (aka BinaryFormatter). So they were forced to use the regular WcfProxy that is slow, too much slow. Moving to Csla 4.5 could have very bad results.</p>
+<p>Now this is over. Although beta, I consider this release&nbsp;a landmark because now you can</p>
+<ul>
+<li>use the 4.3.14&nbsp;code on the latest Csla version</li>
+<li>enjoy the lightning&nbsp;speed of&nbsp; the MobileProxy</li>
+<li>and go on using NET 4.0 and VS2010</li>
+</ul>
+<p>So for me the 4.3.x branch is dead.</p>
+<p>By the way, ProjectTracker&#39;s WfUI illustrates how to use the MobileProxy.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

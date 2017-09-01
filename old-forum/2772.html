@@ -1,0 +1,59 @@
+<html><header><title>OT:  Desperate plea for help! :)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT:  Desperate plea for help! :)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2772.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville posted on Tuesday, April 24, 2007</h2><DIV>This a problem I am having. It is a copy/past from my blog so some of the information might be obvious.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Occasionally one user will get another's user data.&nbsp; For example there are assignment types associated with each Section the instructor teaches. Occasionally an instructor will see a list of assignment types from another instructors section.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>A bit of background. We are using ASP.NET, IIS6, .NETv2 and AJAXPro.NET.&nbsp; It is an nTier application and CLSA is the middle tier.&nbsp; We use the single page "model" for the development.&nbsp; This means that when an action is performed the user is not taken to another page. In fact, because of AJAX, new controls are written to the page.&nbsp; Also in ASP.NET/IIS each user gets a "session variable" that stores information specific to that user and only that user.&nbsp; This is managed by various technologies and while I, the developer, can screw it up it isn't easy.&nbsp; The main use of session state in our app is to store the principle object to enable role based security.&nbsp; We also use forms authentication.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>All calls to the database to get the data for the logged in user goes through what I call an entry point.&nbsp; Basically it gets the Principle from the current thread and associates that principle with a specific instructor. Through that instructor it get all further information such as the Section and Assignment Types for that section.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But, as I said, sometime a Instructor will see Assignment Types from a different section.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Other problems/clues</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>1. This only happens about once per 100,000 calls. (rough estimated)<BR>2. It has never happened in development or testing.<BR>3. It doesn't happen on every site.<BR>4. Testing is done on both local and the production servers.<BR>5. It has never happened during training. Training is done on the production servers.<BR>6. I have made the same calls done in the web application 1 million times with 10 simulated users and never saw this bug.<BR>7. Because it happens so rarely it is hard to set up logging to capture all the information.&nbsp; What logging I have been able to do doesn't show me anything unexpected.<BR>8. The session isn't "switched".&nbsp; The next AJAX call or refreshing the page shows everything just as it should be.<BR>9. It doesn't cross applications.&nbsp; The bad information only comes from <BR>10. Almost all of the users are behind a firewall/proxy.<BR>11. We use a load balancer that basically keeps sending calls from the same IP to the same server.<BR>12. This load balancer times out after 15 minutes but our session timeout on the server is set at something like 8 hours. Form authentication is also set at 8 hrs.<BR>13. To keep the user going to the same sever we make "dummy" Ajax calls very 14 minutes. We are very certain that the users are being kept on the same server. We verified this through the logs.<BR>13. We have a total of 4 web servers.&nbsp; No web gardens are used. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>In the AquireRequestState I do</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>System.Threading.Thread.CurrentPrincipal = HttpContext.Current.Session("CSLA-principal") </DIV>
+<DIV><BR>HttpContext.Current.User = HttpContext.Current.Session("CSLA-principal") </DIV>
+<DIV><BR>This is my wild, crazy guess.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Two users are making a call for the same AJAX method at the same time. Some place and time after the application sends the responses one of the users get the other users response.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Another idea I had is that their could be a some thread switching going on that I don't understand.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any other ideas?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>*Edit&nbsp; Also we use both in process and SQL server session state. Happen with both.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, April 25, 2007</h2><P>I have seen this in the past. In my case it was directly related to the cache. I have some BOs which read data from the Db and then I cache them because the values rarely change. (In mnay cases I also have DB cache invalidation set up but that is a topic for a different thread.) These BOs are mostly read only collections (ROCs.)</P>
+<P>In one case I had an expensive BO to create which I thought could be cached. The problem is that this BO is a Root BO which can be edited. I figured if I cloned the new cached value and returned that to the user that it would be acceptable. But it was not. The Root BO contained other BOs which were references and when they got updated my cached data was also updated (because it had the same references.) This caused other users to see each others data.</P>
+<P>Bottom line - in ASP.Net,&nbsp;never cache a BO that can be edited. Only use Read Only BOs.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, April 25, 2007</h2><DIV>This is the first thing I thought of when this started happening (about 6 months ago).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I did have&nbsp;four lists set up as singletons.&nbsp; But I removed them and&nbsp;it still happened.&nbsp; The lists where not used in the section of code this appears to be happening in.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So I don't think the data showing up is cached anyplace.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>If I have missed one somewhere wouldn't this symptom show up more often?&nbsp; It only shows up about 1/100,000 (probably much less) calls.&nbsp; And if the user continues or refreshes the page,&nbsp;the data is displayed correctly. </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thank you for the input, though. It is appreciated.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, April 25, 2007</h2><P>"Thread switching" - Rocky has mentioned that ASP.Net does have some thread switching occur in some advanced scenarios:</P>
+<P><FONT face="Times New Roman" size=3>"The only safe way to share global data for a user is by putting it on the current </FONT><FONT face="Courier New" size=1>Thread </FONT><FONT face="Times New Roman" size=3>object. There is some complexity introduced by ASP.NET, because the data stored on the </FONT><FONT face="Courier New" size=1>Thread </FONT><FONT face="Times New Roman" size=3>object isn’t guaranteed to be consistently available in that environment.When running in ASP.NET, this type of data should be stored in the current </FONT><FONT face="Courier New" size=1>HttpContext </FONT><FONT face="Times New Roman" size=3>object."</P></FONT>
+<P>"... when code is running inside ASP.Net the only reliable way to find the user's principal is through HttpContext.Current.User."</P>
+<P>By using the ApplicationContext.User property consistently, you do not need to worry about where the BO is being run - Windows or ASP.Net.</P>
+<P>See page 236 of the VB Book for 2.0.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, April 25, 2007</h2><DIV>That sound very promising.&nbsp; Thanks!</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I don't have the 2.0 book. Still using 1.5x stuff but it is probably the same issue.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, April 25, 2007</h2><DIV>Just adding this if other shappen upon this topic.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Also in&nbsp;Rocky's blog, that Joe mentions, is this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>"First, ASP.NET doesn’t change your thread at “random” or “without warning” (phrases I’d used in describing my worries). It changes it only in a clearly defined scenario. Specifically, when your thread performs an async IO operation. Scott points out that this is perhaps most common in a page that takes advantage of the new async page capability, or within a HttpModule that uses any async IO."</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I don't know if any of this is going on but I am using AJAXPro.Net and it might.&nbsp; Or some other third party control might.&nbsp; Never know do we?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So I am going to try and pass in the HTTPContext.User to the factory methods to get the logged in instructor.&nbsp; Currently I am getting the IPrinciple from the thread.&nbsp; Hopefully this will work.&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>If it doesn't, and I might not know for a long time since it happens so rarely, I am at a loss.&nbsp; So if anybody else has any suggestions....</DIV>
+<DIV>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

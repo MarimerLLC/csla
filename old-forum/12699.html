@@ -1,0 +1,32 @@
+<html><header><title>AddObjectAuthorizationRules() Implementation Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddObjectAuthorizationRules() Implementation Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12699.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslasoup posted on Tuesday, July 15, 2014</h2><p>My team and I have been using CSLA.NET for a while now and recently we got the requirement to update how roles are processed.</p>
+<p>In classic ASP.NET Membership you have a role. &nbsp;For simplicity, let&#39;s just say it is the &quot;ReadOnly&quot; role. &nbsp;To limit BusinessBase authorization for the that role, you would do something like the following:</p>
+<pre style="overflow-x:auto;">protected static void AddObjectAuthorizationRules() {
+&nbsp; &nbsp; string[] read = new string[] { &quot;ReadOnly&quot; };
+&nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(LookUp), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.GetObject, read));
+}</pre>
+<p>Our new role structure appends a user&#39;s Department to the role so now our roles look like &quot;DeptName:RoleName&quot;. &nbsp;We have the roles populating in our custom membership code/tables and we have a way to check the roles. &nbsp;Here is what we will be implementing (code brevity to keep focus on the question&#39;s scope; new code is <strong>bolded</strong>):</p>
+<pre style="overflow-x:auto;">protected static void AddObjectAuthorizationRules() {
+&nbsp; &nbsp; List&lt;string&gt; readUsers = new List&lt;string&gt;() { &quot;ReadOnly&quot;};
+&nbsp; &nbsp;&nbsp;Csla.Rules.BusinessRules.AddRule(typeof(LookUp), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.GetObject, <strong>ProcessAuthorizationRoles(readUsers)</strong>));
+}
+
+<strong>private static List&lt;string&gt; ProcessAuthorizationRoles(List&lt;string&gt; pDefinedRoles) {
+&nbsp; &nbsp;&nbsp;List&lt;string&gt; _userRoles = ((CustomIdentityClass)Csla.ApplicationContext.User.Identity).Roles;
+</strong><p><strong>&nbsp; &nbsp;&nbsp;return _userRoles.FindAll(x =&gt; pDefinedRoles.Exists(y =&gt; x.Contains(string.Format(&quot;:{0}&quot;, y))));
+}</strong>
+</p></pre>
+<p>How we can keep our code DRY within the CSLA framework without having to implement the same function (ProcessAuthorizationRoles) in each BusinessBase object?</p>
+<p>Thanks in advance!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, July 21, 2014</h2><p>Hi,</p>
+<p>I am a bit puzzeled as to why you would need a &quot;ProcessAuthorizationRoles&quot; method in the first place.&nbsp;</p>
+<p>The IsInRole rule only needs get the pre-defined roles/permissions for having the permission.&nbsp;</p>
+<p>And AddObjectAuthorizationRules is only called once per type so you cannot have dynamic behavior (like editing permissions for this type in a database and expect these to take effect while the application is running). &nbsp;</p>
+<p>When the rule is executed it will ask the ApplicationContext.User (principal) if the user has any of the required permission (IsInRole).&nbsp;</p>
+<p>So:</p>
+<p>
+<ul>
+<li>An object has to know (in advance) the required roles/permissions in order to use the built-in authorization rules</li>
+<li>Or create your own Authz rules that will check against the database&nbsp;</li>
+<li>Or create a custom Principal object and implement your own check in IsInRole()</li>
+<li>Or move the ProcessAuthorizationRules to a static helper class.&nbsp;</li>
+</ul>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

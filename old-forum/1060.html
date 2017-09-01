@@ -1,0 +1,514 @@
+<html><header><title>CSLA Security - BusinessPricipal.Login - System.NullReferenceExeption</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Security - BusinessPricipal.Login - System.NullReferenceExeption</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1060.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos posted on Tuesday, August 29, 2006</h2>I have successfully finishing coding my first application using CSLA.NET for Framwork 1.1. <br>Initialy I have not implementet any security mechanism. Everything runs perfectly either setting the app.config to run locally or remotely.<br><br>Now I have made some experiments using CSLA security.<br>Running locally everything still works fine, but if I set the application.config to run remotely the following exception raises at the line <br><br>BusinessPricipal.Login("User", "Password")<br><br>exeption:<br><br>"System.NullReferenceExeption"<br><br>As everything works if app.cofing is set to run locally I assume that it cannot be a bug in the code,<br>actually I am afraid that mayby IIS is not configured correctly, but I am no expert on IIS.<br><br>Can somebody help?<br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, August 29, 2006</h2>When using remoting, you're supposed to run Logout before attempting to login...<br>Anyway, that particularily won't raise a nullreference exception, so it must be something in your login code...<br>Did you try debugging your DataPortal_Fetch method? Does it even get there?<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Tuesday, August 29, 2006</h2>Dear Andrés,<br><br>many thanks for your prompt reply!<br><br>The strange thing is that if I set app.config to run locally it works, but if set to remote it don't.<br>I don't thing it has somenthing to do with the DataPortal_Fetch method.<br><br>Below you can see the code from a Testing Form which should only show a MsgBox with the number of Objects in the Collection and the another confirming that the thread current pricible has a certain role. As set above everything works, but if the app.config is set as follows the System.NullReferenceExecption in CSLA.dll is raised.<br><br>Best Regards<br><br>Frank<br>
+
+<p class="MsoNormal"><span>Private Sub Form1_Load(ByVal sender As System.Object,
+ByVal e As System.EventArgs) Handles MyBase.Load<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessPrincipal.Login("admin", "123")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+Thread.CurrentPrincipal.Identity.IsAuthenticated Then<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim test As BOATestList = BOATestList.GetTestList<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MsgBox(test.Count) 'should return 5<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+If Thread.CurrentPrincipal.IsInRole("Administrator") Then
+MsgBox("Hi, Administrator!")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; End Sub<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>APP.CONFIG<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;?xml version="1.0"
+encoding="utf-8" ?&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;configuration&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;appSettings&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;add key="Authentication" value="CSLA" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;add key="PortalServer"
+value="http://localhost/DataPortal/DataPortal.rem" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;add key="ServicedPortalServer"
+value="http:localhost/DataPortal/ServicedDataPortal.rem" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+--&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/appSettings&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;/configuration&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>WEB.CONFIG IN DATAPORTAL<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>============================<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;?xml version="1.0"
+encoding="utf-8" ?&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;configuration&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; &lt;appSettings&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;add
+key="Authentication" value="CSLA" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!-- TODO: update connection
+strings as appropriate --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;add key="DB:Security"
+value ="data source=localhost; initial catalog=Security; integrated
+security=SSPI" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;add key="DB:TST"
+value = "data source=localhost; initial catalog=TestDB; integrated
+security=SSPI" /&gt;&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; &lt;/appSettings&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; &lt;system.runtime.remoting&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;application&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;wellknown mode="SingleCall" <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+objectUri="DataPortal.rem" <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+type="CSLA.Server.DataPortal, CSLA.Server.DataPortal" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;wellknown mode="SingleCall" <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+objectUri="ServicedDataPortal.rem" <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+type="CSLA.Server.ServicedDataPortal.DataPortal,
+CSLA.Server.ServicedDataPortal" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;channels&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;channel
+ref="http"&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;serverProviders&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;provider ref="wsdl" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;!-- TODO: comment the following two lines for .NET 1.0 --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;formatter ref="soap" typeFilterLevel="Full" /&gt; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;formatter ref="binary" typeFilterLevel="Full" /&gt; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/serverProviders&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/channel&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/channels&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;/application&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; &lt;/system.runtime.remoting&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; &lt;system.web&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; DYNAMIC DEBUG
+COMPILATION<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set compilation debug="true" to insert debugging symbols (.pdb
+information)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+into the compiled page. Because this creates a larger file that executes<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+more slowly, you should set this value to true only when debugging and to<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+false at all other times. For more information, refer to the documentation
+about<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+debugging ASP.NET files.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;compilation
+defaultLanguage="vb" debug="true" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; CUSTOM ERROR MESSAGES<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set customErrors mode="On" or "RemoteOnly" to enable custom
+error messages, "Off" to disable. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Add &lt;error&gt; tags for each of the errors you want to handle.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;customErrors
+mode="RemoteOnly" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; AUTHENTICATION <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This section sets the authentication policies of the application. Possible
+modes are "Windows", <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"Forms", "Passport" and "None"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;authentication
+mode="Windows" /&gt; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; AUTHORIZATION <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This section sets the authorization policies of the application. You can allow
+or deny access<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+to application resources by user or role. Wildcards: "*" mean
+everyone, "?" means anonymous <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+(unauthenticated) users.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;authorization&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;allow
+users="*" /&gt; &lt;!-- Allow all users --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;!--&nbsp; &lt;allow&nbsp;&nbsp;&nbsp;&nbsp; users="[comma separated
+list of users]"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+roles="[comma separated list of roles]"/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;deny&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; users="[comma separated list of
+users]"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;roles="[comma
+separated list of roles]"/&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+--&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;/authorization&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; APPLICATION-LEVEL
+TRACE LOGGING<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Application-level tracing enables trace log output for every page within an
+application. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Set trace enabled="true" to enable application trace logging.&nbsp;
+If pageOutput="true", the<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+trace information will be displayed at the bottom of each page.&nbsp;
+Otherwise, you can view the <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+application trace log by browsing the "trace.axd" page from your web
+application<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+root. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;trace enabled="false"
+requestLimit="10" pageOutput="false"
+traceMode="SortByTime" localOnly="true" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; SESSION STATE
+SETTINGS<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+By default ASP.NET uses cookies to identify which requests belong to a
+particular session. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+If cookies are not available, a session can be tracked by adding a session
+identifier to the URL. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+To disable cookies, set sessionState cookieless="true".<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;sessionState <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mode="InProc"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+stateConnectionString="tcpip=127.0.0.1:42424"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+sqlConnectionString="data source=127.0.0.1;user id=sa;password="<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cookieless="false" <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+timeout="20" <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;!--&nbsp; GLOBALIZATION<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+This section sets the globalization settings of the application. <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; --&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;globalization
+requestEncoding="utf-8" responseEncoding="utf-8" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp; </span><span>&lt;/system.web&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>&lt;/configuration&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, August 29, 2006</h2>Is this 2.0? here's a sample of my app.config for 2.0:<br>&lt;appSettings&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;add key="CslaAuthentication" value="Csla"/&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;add key="CslaDataPortalProxy" value="Csla.DataPortalClient.RemotingProxy, Csla"/&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;add key="CslaDataPortalUrl" value="http://localhost/DP/RemotingPortal.rem"/&gt;<br> &lt;/appSettings&gt;<br><br><br>Still, remember that if you use remoting, you MUST call Logout before calling login...<br><br>So your Load should be like:<br><br><p class="MsoNormal"><span>Private Sub Form1_Load(ByVal sender As System.Object,
+ByVal e As System.EventArgs) Handles MyBase.Load<o:p></o:p></span></p>
+
+<p class="MsoNormal"><b><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>BusinessPrincipal.Logout()</span></b><span>  <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessPrincipal.Login("admin", "123")<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+Thread.CurrentPrincipal.Identity.IsAuthenticated Then<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim test As BOATestList = BOATestList.GetTestList<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MsgBox(test.Count) 'should return 5<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+If Thread.CurrentPrincipal.IsInRole("Administrator") Then
+MsgBox("Hi, Administrator!")<o:p></o:p></span></p>
+
+<br><p class="MsoNormal"><span><o:p>&nbsp;</o:p></span><span>&nbsp;&nbsp;&nbsp; End Sub</span></p><br><p class="MsoNormal">Also, your Logout method should be setting an Unauthenticated identity.</p><br><p class="MsoNormal">Andrés<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pirithoos replied on Tuesday, August 29, 2006</h2><P>No I use Version 1 (download from Rocky site: CSLA10vb-060519) and ASP.NET 1.1.4322</P>
+<P>In this CSLA Framework there is no method ' BusinessPricipal.Logout () '</P>
+<P>Also in Rocky's book (Chapter 8 Windows Forms UI) Sample application there is no method </P>
+<P>BusinessPricipal.Logout() </P>
+<P>mentioned.</P>
+<P>I still assume it must have something todo with the configuration from either app.config/web.config or IIS or SQL2000Server.</P>
+<P>The funny thing is I just found out that if I set the web.config and app.config to Windows instead of CSLA, then is works also remotely !!! know I am totally confused...., but at least it works</P>
+<P>Anyway I am curious to learn how this works / not works if Authetication is set to CSLA as prescribed in Rocky's book.</P>
+<P>See following configs which make my sample application run remotely using CSLA Security:</P><FONT color=#0000ff size=2>
+<P><FONT color=#000000><U><STRONG>********* APP.CONFIG **********</STRONG></U></FONT></P>
+<P>&lt;?</FONT><FONT color=#800000 size=2>xml</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>version</FONT><FONT color=#0000ff size=2>="1.0"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>encoding</FONT><FONT color=#0000ff size=2>="utf-8"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>?&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><STRONG><FONT size=5><FONT size=4><FONT color=#0000ff>&lt;</FONT><FONT color=#800000>add</FONT><FONT color=#ff00ff> </FONT><FONT color=#ff0000>key</FONT><FONT color=#0000ff>="Authentication"</FONT><FONT color=#ff00ff> </FONT><FONT color=#ff0000>value</FONT><FONT color=#0000ff>="Windows"</FONT><FONT color=#ff00ff> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT></FONT></FONT></STRONG><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>--</P>
+<P>&lt;add key="DB:Security" value = "data source=localhost; initial catalog=Security; integrated security=SSPI" /&gt;</P>
+<P>&lt;add key="DB:TST" value = "data source=localhost; initial catalog=TestDB; integrated security=SSPI" /&gt;</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="PortalServer"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="http://localhost/DataPortal/DataPortal.rem"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="ServicedPortalServer"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="http://localhost/DataPortal/ServicedDataPortal.rem"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</P></FONT>
+<P><STRONG><U>********* WEB.CONFIG **********</U></STRONG></P><FONT color=#0000ff size=2>
+<P>&lt;?</FONT><FONT color=#800000 size=2>xml</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>version</FONT><FONT color=#0000ff size=2>="1.0"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>encoding</FONT><FONT color=#0000ff size=2>="utf-8"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>?&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT size=4><STRONG><FONT color=#0000ff>&lt;</FONT><FONT color=#800000>add</FONT><FONT color=#ff00ff> </FONT><FONT color=#ff0000>key</FONT><FONT color=#0000ff>="Authentication"</FONT><FONT color=#ff00ff> </FONT><FONT color=#ff0000>value</FONT><FONT color=#0000ff>="Windows"</FONT><FONT color=#ff00ff> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT></STRONG></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- TODO: update connection strings as appropriate --</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="DB:Security"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>="data source=localhost; initial catalog=Security; integrated security=SSPI"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="DB:TST"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>"data source=localhost; initial catalog=chemtradmin; integrated security=SSPI"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</FONT><FONT size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>system.runtime.remoting</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>application</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>service</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>wellknown</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="SingleCall"</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>objectUri</FONT><FONT color=#0000ff size=2>="DataPortal.rem"</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>type</FONT><FONT color=#0000ff size=2>="CSLA.Server.DataPortal, CSLA.Server.DataPortal"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>wellknown</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="SingleCall"</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>objectUri</FONT><FONT color=#0000ff size=2>="ServicedDataPortal.rem"</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>type</FONT><FONT color=#0000ff size=2>="CSLA.Server.ServicedDataPortal.DataPortal, CSLA.Server.ServicedDataPortal"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>service</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>channels</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>channel</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="http"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>serverProviders</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>provider</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="wsdl"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- TODO: comment the following two lines for .NET 1.0 --</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>formatter</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="soap"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>typeFilterLevel</FONT><FONT color=#0000ff size=2>="Full"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>formatter</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="binary"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>typeFilterLevel</FONT><FONT color=#0000ff size=2>="Full"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>serverProviders</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>channel</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>channels</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>application</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>system.runtime.remoting</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>system.web</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- DYNAMIC DEBUG COMPILATION</P>
+<P>Set compilation debug="true" to insert debugging symbols (.pdb information)</P>
+<P>into the compiled page. Because this creates a larger file that executes</P>
+<P>more slowly, you should set this value to true only when debugging and to</P>
+<P>false at all other times. For more information, refer to the documentation about</P>
+<P>debugging ASP.NET files.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>compilation</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>defaultLanguage</FONT><FONT color=#0000ff size=2>="vb"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>debug</FONT><FONT color=#0000ff size=2>="true"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- CUSTOM ERROR MESSAGES</P>
+<P>Set customErrors mode="On" or "RemoteOnly" to enable custom error messages, "Off" to disable. </P>
+<P>Add &lt;error&gt; tags for each of the errors you want to handle.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>customErrors</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="RemoteOnly"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- AUTHENTICATION </P>
+<P>This section sets the authentication policies of the application. Possible modes are "Windows", </P>
+<P>"Forms", "Passport" and "None"</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>authentication</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="Windows"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</FONT><FONT size=2> </P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- AUTHORIZATION </P>
+<P>This section sets the authorization policies of the application. You can allow or deny access</P>
+<P>to application resources by user or role. Wildcards: "*" mean everyone, "?" means anonymous </P>
+<P>(unauthenticated) users.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>authorization</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>allow</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>users</FONT><FONT color=#0000ff size=2>="*"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- Allow all users --</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- &lt;allow users="[comma separated list of users]"</P>
+<P>roles="[comma separated list of roles]"/&gt;</P>
+<P>&lt;deny users="[comma separated list of users]"</P>
+<P>roles="[comma separated list of roles]"/&gt;</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>authorization</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- APPLICATION-LEVEL TRACE LOGGING</P>
+<P>Application-level tracing enables trace log output for every page within an application. </P>
+<P>Set trace enabled="true" to enable application trace logging. If pageOutput="true", the</P>
+<P>trace information will be displayed at the bottom of each page. Otherwise, you can view the </P>
+<P>application trace log by browsing the "trace.axd" page from your web application</P>
+<P>root. </P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>trace</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>enabled</FONT><FONT color=#0000ff size=2>="false"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>requestLimit</FONT><FONT color=#0000ff size=2>="10"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>pageOutput</FONT><FONT color=#0000ff size=2>="false"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>traceMode</FONT><FONT color=#0000ff size=2>="SortByTime"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>localOnly</FONT><FONT color=#0000ff size=2>="true"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P>
+<P>&nbsp;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- SESSION STATE SETTINGS</P>
+<P>By default ASP.NET uses cookies to identify which requests belong to a particular session. </P>
+<P>If cookies are not available, a session can be tracked by adding a session identifier to the URL. </P>
+<P>To disable cookies, set sessionState cookieless="true".</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>sessionState</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="InProc"</P></FONT><FONT color=#ff00ff size=2>
+<P></FONT><FONT color=#ff0000 size=2>stateConnectionString</FONT><FONT color=#0000ff size=2>="tcpip=127.0.0.1:42424"</P></FONT><FONT color=#ff00ff size=2>
+<P></FONT><FONT color=#ff0000 size=2>sqlConnectionString</FONT><FONT color=#0000ff size=2>="data source=127.0.0.1;user id=sa;password="</P></FONT><FONT color=#ff00ff size=2>
+<P></FONT><FONT color=#ff0000 size=2>cookieless</FONT><FONT color=#0000ff size=2>="false"</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>timeout</FONT><FONT color=#0000ff size=2>="20"</FONT><FONT color=#ff00ff size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- GLOBALIZATION</P>
+<P>This section sets the globalization settings of the application. </P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>globalization</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>requestEncoding</FONT><FONT color=#0000ff size=2>="utf-8"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>responseEncoding</FONT><FONT color=#0000ff size=2>="utf-8"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#0000ff size=2>/&gt;</P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>system.web</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>Generic and Inheriting from BusinessBase&lt;T&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic and Inheriting from BusinessBase&lt;T&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1744.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>William posted on Sunday, November 12, 2006</h2><DIV>It is recommended to create our own base class for each business object type supported in CSLA.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>My first attempt would be,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public abstract class MyBusinessBase&lt;T&gt; : BusinessBase&lt;MyBusinessBase&lt;T&gt;&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{ ...&nbsp;}</FONT></DIV>
+<DIV><FONT face="Courier New" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public class Customer : MyBusinessBase&lt;Customer&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{ ... }</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>In this case, BusinessBase takes MyBusinessBase&lt;T&gt; as my business object type and generates the Save method as follows, which the return type is not the target business object type.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public MyBusinessBase&lt;T&gt; BusinessBase&lt;T&gt;.Save() </FONT><FONT face="Courier New" size=2>{ ... }</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I change the generic inheritance to:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public abstract class MyBusinessBase&lt;T&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>: BusinessBase&lt;T&gt; where T : MyBusinessBase&lt;T&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{ ... }</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>In this version, the Save method from BusinessBase is generated as follows, which is correct in syntax.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public T BusinessBase&lt;T&gt;.Save() { ... }</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is this the correct way to use generic inheritance for CSLA classes?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, November 13, 2006</h2><P>There are already several threads that cover this.&nbsp; You might want to do a search for them.</P>
+<P>Alternatively, take a look at RuleBusinessBase and RuleBusinessListBase in the CSLA Contrib project.&nbsp; They subclass BusinessBase and BusinessListBase.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

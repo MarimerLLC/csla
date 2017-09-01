@@ -1,0 +1,27 @@
+<html><header><title>Multiple Root BO's containing the same Editable Child Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Root BO's containing the same Editable Child Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3619.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Saturday, September 29, 2007</h2><FONT face="Times New Roman">
+<P>Now that I have moved away from creating my Root business objects (e.g.: Employee.HourlyEmployee and Employee.ExemptEmployee) using SuperType / SubType inheritance I'm now confronted with figuring out the best practice for coding and maintaining the child collections that are contained within the multiple de-normalized EditableRoot BO's.</P>
+<P>Both Hourly and Exempt employees contain a collection of PerformanceReviews and TrainingCredits ... and I am wondering about the alternatives that I need to consider when coding the Insert() and Update() functions in those EditableChild BO's and the Update() function in the EditabaleChildList().</P>
+<P>Will I&nbsp;have to create 2 separate sets of EditableChild and EditableChild list classes for each of the (very similar) collections in the Root ?</P>
+<P>ie: HourlyEmployee.PerformanceReview and ExemptEmployee.PerformanceReview</P>
+<P>and</P>
+<P>HourlyEmployee.PerformanceReviewList and ExemptEmployee.PerformanceReviewList</P>
+<P>I could get around the need to name the classes uniquely by putting them in separate namespaces and packages/directories</P>
+<P>But I still need to resolve the issue of using strongly typed parameters to the Insert() and Update() methods of the EditableChildren and the Update() method of the EditableChild list.</P>
+<P>Is this a case where I implement an IEmployee interface in Exempt and Hourly and type the parameters to the Insert and Update methods in the contained collections and editable children using&nbsp;IEmployee ???</P>
+<P>Will implementing IEmployee allow me to pass that interface instead of an&nbsp;object Type to the methods in the editable child and editbable child lists ????&nbsp;</P>
+<P>Steve</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 01, 2007</h2><P>Steve,</P>
+<P>Just remove the question marks and you provided your own answer.</P>
+<P>e.g.<BR>This is a case where you should&nbsp;implement an IEmployee interface in Exempt and Hourly and type the parameters to the Insert and Update methods in the contained collections and editable children using&nbsp;IEmployee.</P>
+<P>Implementing IEmployee will&nbsp;allow&nbsp;you to pass that interface instead of an&nbsp;object Type to the methods in the editable child and editbable child lists.</P>
+<P>Note: I decided a while back to only bother passing the Parent object to the child in the Insert method. And then, only if there is a database Identity field involved. In your case, if an employee is added to the DB and EmpId is an Identity which is generated upon Insert, then the BO will get a new updated value which must be passed to its children so they can be properly inserted. I haven't had much use for passing the Parent in other cases, so I don;t bother anymore.</P>
+<P>Due to this I created an Interface named IParent (I think Rocky just created one with that name recently too) with a single Property of Key as Integer. This way I can always pass the BO that implements this interface as the parameter to the child objects and get the new Key value from it.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Monday, October 01, 2007</h2><P>ok ... I'll go with that pattern ... thanks, Joe ...</P>
+<P>I *am curious* however ... is there much overhead passing a reference to the entire parent object .... seems like there is not much need for the child to know about the parent except for it's ID ...</P>
+<P>Any elaboration on this IParent functionality related to this ????</P>
+<P>thx,</P>
+<P>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 02, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tsaltd:</strong></div><div><BR>is there much overhead passing a reference to the entire parent object .... seems like there is not much need for the child to know about the parent except for it's ID ...<BR></div></BLOCKQUOTE></P>
+<P>1. Passing a reference to an object is very lightweight as it is only a memory pointer to the real object.<BR>You can't get much lighter weight than that.</P>
+<P>2. I concluded the same thing about the ID so that is exactly why I built my interface with a single property named Key As Integer. So if I have an InvoiceKey or ReceiptKey or PurchaseOrderKey I can just use the Interface to pass the object to its children where they can extract the key. Again, I only found this necessart because they are Identity fields in SQL Server and the parent BO does not have the correct value until the Insert occurs.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

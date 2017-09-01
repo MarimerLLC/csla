@@ -1,0 +1,87 @@
+<html><header><title>Binding to DS error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding to DS error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/643.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo posted on Monday, July 17, 2006</h2>
+
+<p class="MsoNormal">I have the following bit of code...<br>
+<br>
+I have a DataGridView, which is bound to a BindingSource. I then bind a child
+collection to the binding source, before doing so, I turn off the event
+listener, set the bS.Datasource to null, and then bind my new child collection.<br>
+<br>
+When I do this, my application seems to just close without a single warning. I
+did get the application to crash before if I didn't turn off the event listener
+(call stack below), does anyone have any ideas?<br>
+<br>
+Background: I'm using a third party tool to handle docking in my application. I
+did check the event log and the only item logged was a failure audit, but my
+object was loaded.</p>System.NullReferenceException was unhandled<o:p></o:p>
+
+<p class="MsoNormal"><span>&nbsp; </span>Message="Object
+reference not set to an instance of an object."<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;
+</span>Source="System.Windows.Forms"<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp; </span>StackTrace:<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.DataGridViewRow.GetErrorText(Int32 rowIndex)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.DataGridViewRow.Paint(Graphics graphics, Rectangle
+clipBounds, Rectangle rowBounds, Int32 rowIndex, DataGridViewElementStates
+rowState, Boolean isFirstDisplayedRow, Boolean isLastVisibleRow)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.DataGridView.PaintRows(Graphics g, Rectangle boundingRect,
+Rectangle clipRect, Boolean singleHorizontalBorderAdded)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.DataGridView.PaintGrid(Graphics g, Rectangle gridBounds,
+Rectangle clipRect, Boolean singleVerticalBorderAdded, Boolean singleHorizontalBorderAdded)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.DataGridView.OnPaint(PaintEventArgs e)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.PaintWithErrorHandling(PaintEventArgs e, Int16
+layer, Boolean disposeEventArgs)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.WmPaint(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.DataGridView.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg,
+IntPtr wparam, IntPtr lparam)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp; msg)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(Int32
+dwComponentID, Int32 reason, Int32 pvLoopData)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32
+reason, ApplicationContext context)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason,
+ApplicationContext context)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.Run(Form mainForm)<o:p></o:p></p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 17, 2006</h2><P>Are you also binding the parent object to another bindingsource? If so, you probably shouldn't set the child bindingsource to null, but rather to the parent bindingsource </P>
+<P><A href="http://www.lhotka.net/Cs2005Errata.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8">http://www.lhotka.net/Cs2005Errata.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8</A></P>
+<P>I have run into similar null reference issues, and it is usually due to a linkage between data binding objects that triggers an attempted refresh of data when you don't have any data available because you've set something to null.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo replied on Monday, July 17, 2006</h2>Yes, I do bind some properties of the customer to my form, while at the time I display the collections of address, invoices, etc in a datagridview.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

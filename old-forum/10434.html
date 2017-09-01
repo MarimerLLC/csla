@@ -1,0 +1,48 @@
+<html><header><title>Running an Item Business Rule After It Has Been Added To A Collection </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Running an Item Business Rule After It Has Been Added To A Collection </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10434.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Friday, June 10, 2011</h2><p>I&#39;m asking this question in relation to a&nbsp;BusinessListBase collection bound to Silverlight grid control.</p>
+<p>The collection has FromDate and ToDate properties.</p>
+<p>The BusinessBase items within the collection have a Date property, with a business rule to check if the Date is between the From and To dates. &nbsp;The rule only runs when the item parent property is the collection.</p>
+<p>The grid has an insert function where by it creates a new&nbsp;instance&nbsp;of an item and adds it to the collection, I would like the Date validation to run at this point so the UI is updated and notifies the user if the Date value is valid or not.&nbsp; In the collection I overrode OnCollectionChanged to run the item business rule whenever it was added to the collection. &nbsp;The main problem I found was that&nbsp;OnCollectionChanged was being called as a result of deserialization and during the fetch method of my factory object.</p>
+<p>My&nbsp;solution&nbsp;follows but I&#39;m thinking that there must be a better&nbsp;technique?</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void OnCollectionChanged(System.Collections.Specialized.NotifyCollectionChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (this.RaiseListChangedEvents) // don&#39;t call during DataPortal.Fetch or Deserialization (requires code in OnSetChildren override)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ((e.Action == NotifyCollectionChangedAction.Add)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; || (e.Action == NotifyCollectionChangedAction.Replace)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; || (e.Action == NotifyCollectionChangedAction.Reset))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (BBEdit item in e.NewItems)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.CheckRulesRequiringParentCollection();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.OnCollectionChanged(e);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div></div>
+</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var originalRaiseListChangedEvents = this.RaiseListChangedEvents;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.RaiseListChangedEvents = false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.OnSetChildren(info, formatter);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; finally</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.RaiseListChangedEvents = originalRaiseListChangedEvents;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div></div>
+</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 10, 2011</h2><p>I don&#39;t know for sure about a better answer (though I suspect you might be better off overriding the collection method that runs when an item is added?).</p>
+<p>But I did add a wish list item to suppress raising of the event, for perf reasons if nothing else: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=935">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=935</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

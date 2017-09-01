@@ -1,0 +1,18 @@
+<html><header><title>Child Collection - ApplyEdit</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Collection - ApplyEdit</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1469.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Thursday, October 12, 2006</h2>Hi,<br>
+<br>
+In our root object we have a child collection, when we call ApplyEdit()
+on the root object should the child collection automatically apply it's
+edits?<br>
+<br>
+Thanks.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>N-level undo is relatively complex - or can be anyway. So here are some basic rules about how it works.<br><ol><li>Every BeginEdit must have a corresponding CancelEdit or ApplyEdit on that same object - this is called "closing the edit"</li><li>Calling BeginEdit on an object causes an implicit BeginEdit on all descendants (children, grandchildren, etc.) of that object - the same is true for CancelEdit and ApplyEdit<br></li><li>You can not call CancelEdit or ApplyEdit on a parent when there's an open edit on any descendant of that parent - if you do, you'll get unpredictable results</li></ol>So n-level undo is a nested operation - you can call BeginEdit on many objects, but you always must close that edit at that level, before closing any outstanding edits at a higher level.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Thursday, October 12, 2006</h2>Thanks Rocky.<br>
+<br>
+I wonder if this is the reason for some of the strange issues we are
+seeing with our datagrids that I mentioned in my other post this
+morning...<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>You certainly need to be careful about working with grids and data binding. Data binding will call BeginEdit through the IEditableObject interface as the user edits each row. So if you have explicitly called BeginEdit on a parent of the items in the collection, you must ensure that data binding knows to complete the edit on that child in the grid first.<br><br>It turns out, and there's errata about this on lhotka.net, that when using data binding you should pretty much never explicitly call BeginEdit, CancelEdit or ApplyEdit in your objects. Instead, you should allow data binding to do this for you - though you do need to call EndEdit on the bindingsource controls yourself. But you should go through the bindingsource, rather than talking to the object itself!<br><br>So in short - UI code should always interact with data binding and the bindingsource controls, allowing data binding to take care of interacting with the underlying business object.<br><br>For people who are a fan of the MVP (model view presenter) design pattern, this should seem familiar. You create the view, your objects are the model, and data binding is the presenter.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Thursday, October 12, 2006</h2>Thanks once agian!&nbsp; :)&nbsp; I'll have to double check as just why
+we called ApplyEdits(), maybe it's not doing what we thought it was.<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

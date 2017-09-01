@@ -1,0 +1,35 @@
+<html><header><title>This is a bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>This is a bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Monday, June 19, 2006</h2><P class=MsoNormal><SPAN>Hi!<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have a problem, it crash my project at runtime.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have Employee BO(Employee is only an example, my project has many complex class)</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>[<SPAN>Serializable</SPAN>()]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>class</SPAN> <SPAN>Employee</SPAN>:Csla.<SPAN>BusinessBase</SPAN>&lt;<SPAN>Employee</SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>private string _Name;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>private Em</SPAN>ployee _Manager;<o:p></o:p></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>// All properties and mothod is OK<o:p></o:p></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My data: Employee_A{“Ronaldinho”, Employee_B)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN>Employee_B(“Ronaldo”, Employee_C)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN>Employee_C(“Calos”, Employee_A)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When edit an employee, stack will overflow in UndoableBase class, at following code:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>// When field name is _Manager<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>object</SPAN><SPAN> value = field.GetValue(<SPAN>this</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>if</SPAN><SPAN> (<SPAN>typeof</SPAN>(Csla.Core.<SPAN>IUndoableObject</SPAN>).IsAssignableFrom(field.FieldType))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>// make sure the variable has a value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (value == <SPAN>null</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// variable has no value - store that fact<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>state.Add(GetFieldName(field), <SPAN>null</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// this is a child object, cascade the call<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>((Core.<SPAN>IUndoableObject</SPAN>)value).CopyState(); <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>// <B>This command is called much time until program is cracked<o:p></o:p></B></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P><SPAN>}</SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miroslav replied on Tuesday, June 20, 2006</h2>You have a circular reference between the Employee_A and the Employee_C.<br>The Employee_A contains reference to the Employee_B, which contains reference to the Employee_C, which contains reference to the Employee_A.<br><br>When you (or Windows Forms binding) call Employee.BeginEdit(), UndoableBase will try to serialize entire Employee's object graph. If the Employee contains other IUndoableObject objects (Manager), the call is cascaded to that object. The call will eventualy be cascaded back to the starting object, because of the circular reference. The whole thing will start all over again and repeat until the stack is full. StackOverflow!!!<br><br>You should probeably review your use cases first. Should this be allowed? If Ronaldinho is Ronaldo's manager and Ronaldo is Carlos' manager, can Carlos be Ronaldinho's manager?<br><br>If this kind of relations is allowed in your use cases, then you need to implement the Employee class differently. <br>You can mark the _Manager field with [NotUndoable] attribute, and add another field, i.e.: _ManagerName of type string. This way, the _Manager field will not participate in Undo operations, but the _ManagerName will. The _ManagerName will be saved as the part of Employee object's state. Now you need to override the UndoChangesComplete() method and to get back the reference to the _Manager object using the _ManagerName field.<br><br>Hope this helps.<br>Miroslav<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

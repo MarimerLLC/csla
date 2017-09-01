@@ -1,0 +1,116 @@
+<html><header><title>N-Level Undo Issue / Edit Level Mismatch in AcceptChanges</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>N-Level Undo Issue / Edit Level Mismatch in AcceptChanges</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3674.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Monday, October 08, 2007</h2><div><font face="Arial" size="2">I've got issues with 3.0.2 regarding saving/edit 
+levels etc. First let me say that it was working with 3.0.1. Here is what I 
+have:</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2"><b>Notes</b>:<br>-- myBusObject (of type 
+BusinessBase)<br>-- UnbindBindingSource code is exactly the same as Rocky's in 
+3.0.1/2<br>-- BindUI is exactly the same as Rocky's in 3.0.1/2</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">Private Sub RebindUI(ByVal saveObject As Boolean, 
+ByVal rebindCtrls As Boolean)</font></div>
+
+<div>&nbsp;<font face="Arial" size="2">&nbsp;&nbsp;&nbsp; '-- Disable events<br>&nbsp;&nbsp;&nbsp; 
+Me.bsParentObject.RaiseListChangedEvents = False<br>&nbsp;&nbsp;&nbsp; 
+Me.bsChildObject1.RaiseListChangedEvents = False<br>&nbsp;&nbsp;&nbsp; 
+Me.bsChildObject2.RaiseListChangedEvents = False</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp; Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Unbind the UI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+UnbindBindingSource(Me.bsChildObject1, saveObject, False)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+UnbindBindingSource(Me.bsChildObject2, saveObject, False)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+UnbindBindingSource(Me.bsParentObject, saveObject, True)</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Save or cancel changes<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If 
+saveObject Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myBusObject.ApplyEdit()</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim tempBO As BO 
+= myBusObject.Clone<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myBusObject = tempBO.Save</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As 
+Csla.DataPortalException<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As 
+Exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myBusObject.CancelEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Rebind the UI if requested<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+If rebindCtrls Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp; Finally<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Restore 
+events<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.bsParentObject.RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Me.bsChildObject1.RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Me.bsChildObject2.RaiseListChangedEvents = True</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If rebindCtrls Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- 
+Refresh the UI if rebinding<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Me.bsParentObject.ResetBindings(False)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Me.bsChildObject1.ResetBindings(False)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Me.bsChildObject2.ResetBindings(False)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp; End 
+Try</font></div>
+<div>&nbsp;</div>
+<div><font face="Arial" size="2">End Sub</font></div>
+<div>&nbsp;</div><font face="Arial" size="2">
+</font><div><font face="Arial" size="2"><br>I get a errors when I cancel or save.</font></div>
+<div><font face="Arial" size="2">&nbsp;</font></div>
+<div><font face="Arial" size="2"><b>Cancel</b><br>According to Rocky in several post, "Never interact with the 
+business object directly while it is data bound. Instead, always interact with 
+the binding source object." Well I know that by the time I call CancelEdit, my 
+BO is no longer data bound but it still throws the exception if I call 
+myBusObject.CancelEdit(). If I change it to Me.bsParentObject.CancelEdit(), it 
+works.</font></div>
+<div><font face="Arial" size="2">&nbsp;</font></div>
+<div><font face="Arial" size="2"><b>Save</b><br>I am not making any changes to any of the children, just data on 
+the parent. I consistently blow up on the myBusObject.ApplyEdit(). The code 
+breaks in 'BusinessListBase.vb -&gt; AcceptChanges method'.<br><br>The error message 
+says '<i>Edit Level Mismatch in AcceptChanges</i>', the message and stack trace 
+says:<br>"<i>The generic type 'Csla.BusinessListBase`2' was used with the wrong 
+number of generic arguments in assembly 'Csla, Version=3.0.2.0, Culture=neutral, 
+PublicKeyToken=93be5fdc093e4c30'</i>."</font></div>
+<div><font face="Arial" size="2">&nbsp;</font></div>
+<div><font face="Arial" size="2">Any ideas? Again, the code you see above worked with 3.0.1. I have a 
+grid which is filled with a BLB of BB objects. The user can click a row and 
+choose Edit. On edit I do the following:<br>myBO = selectedItem (this is a BB 
+object)<br>BindUI()</font></div>
+<div><font face="Arial" size="2">&nbsp;</font></div>
+<div><font face="Arial" size="2">Does the fact that I am using a BLB instead of a ROLB matter?</font></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 09, 2007</h2>Search the forum, this has been discussed before.&nbsp; The short answer is that you need to look at teh PTracker sample to see how to unbind and accept changes before saving.&nbsp; You MUST follow that pattern exactly.<br><br>It doesn't matter that you're code worked in 3.0.1; there was a bug in that version regarding undo.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Tuesday, October 09, 2007</h2>ajj3085,<br><br>I agree but if you read my post you will see that I am doing exactly as Rocky suggest. The only difference between my code and the PTWin code is resetting the binding source for any child objects. My issue was also with Saving not just Cancel.<br><br>After reworking some stuff this AM I am now wondering if I am using the BLB correctly. Are there any best practices for working with BB objects in a BLB?<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 09, 2007</h2>Ahh, sorry.<br><br>I think this though is your problem:<br><font face="Arial" size="2"><i>The generic type 'Csla.BusinessListBase`2' was used with the wrong 
+number of generic arguments<br><br></i></font>I'm not quite sure what would lead to that problem, but I'm on 3.0.2 now and am not getting this problem.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 09, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Ahh, sorry.<BR><BR>I think this though is your problem:<BR><FONT face=Arial size=2><I>The generic type 'Csla.BusinessListBase`2' was used with the wrong number of generic arguments<BR><BR></I></FONT>I'm not quite sure what would lead to that problem, but I'm on 3.0.2 now and am not getting this problem.<BR></div></BLOCKQUOTE></P>
+<P>I have seen the argument error in a couple of&nbsp;places in my code and also in the Watch window.</P>
+<P>Here is what I have learned about it.</P>
+<P>A lot of code assumes a collection has a single Item property with a single parameter of index As Integer. For example in a reflection helper class I saw this code:</P>
+<P>Member = Type.GetMember(propertyNoIndex, MemberAccess)(0)</P>
+<P>GetMember returns an array of MemberInfo objects and the (0) at the end says to use the first one.</P>
+<P>If you overload the Item method in CSLA 1.x then it is probable that your code looks something like this:</P>
+<P>Item(ByVal index As Integer)<BR>Item(ByVal code As String)</P>
+<P>In this case, the reflection code above sees index As Integer as the 0 element and code As String as the 1 element.</P>
+<P>Moving to CSLA 2.x - Rocky moved the Item method into his Base class so you do not have to write it (or code gen ) it in your collection classes anymore.</P>
+<P>BUT - this changed the way that reflection looks at the array of MemberInfo objects!</P>
+<P>It seems that relfection code "sees" the Item method and its overloads in the order of the most concrete class and working up the inheritance chain to the base classes.</P>
+<P>So for CSLA 2.x,&nbsp;the reflection code above sees index As Integer as the 1 element and code As String as the 0 element.</P>
+<P>To make it even more confusing I added a 3rd overload in my base class which derives from CSLA2 and it pushed the index As Integer to the 2 element and my other overload became the 1 element.</P>
+<P>e.g.<BR>Item(ByVal code As String)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;0 element<BR>Item(ByVal index As Integer, someParam As String)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1 element<BR>Item(ByVal index As Integer)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2 element</P>
+<P>I had a very similar issue with the ObjectListView. The same error was returned because&nbsp;the code used to identify the Item property did not anticipate overloads or moving the index As Integer method into a Base class.</P>
+<P>I now use code like this to specifically identify WHICH overload of Item I want to use:</P>
+<P>Dim itemProp As PropertyInfo = Parent.GetType().GetProperty("Item", New Type() {GetType(Integer)})</P>
+<P>This code always grabs the correct version of Item that uses index As Integer.</P>
+<P>Joe</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Tuesday, October 09, 2007</h2>Joe,<br><br>Have you subclassed the framework? I did and was wondering if this was the problem although I just tried again going directly to the framework and received the same error.<br><br>FWIW, this is what I have in my class in order to subsclass BLB. I believe that this is correct.<br><br>Namespace MyNameHere<br><br>Public MustInherit Class BusinessListBase(Of T As BusinessListBase(Of T, C), C As {Csla.BusinessBase(Of C)})<br>&nbsp;&nbsp;&nbsp; Inherits Csla.BusinessListBase(Of T, C)<br><br>End Namespace<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 09, 2007</h2><P>Yes. I sub-classed the framework. It is highly recommended and very valuable to have.</P>
+<P>This is what I have:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> MyBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C), C </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyBusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> C))<BR></FONT><FONT color=#0000ff size=2>&nbsp; Inherits</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C)<BR></FONT></P>
+<P>I am not sure why you have curly braces on your 2nd parameter.</P>
+<P>Also, you did not re-name your sub classes - you used the same name as Rocky. I added "My" in front of my sample names. (I really used company initials though).</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Tuesday, October 09, 2007</h2>The curly braces come from other examples I've seen of people subclassing the framework. Not being an expert on CSLA yet I wanted to make sure that I was doing what others were doing who had success.<br><br>As for the naming, I control access to my objects via namespaces. I tend to like it better this way. So far no issues.<br><br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, October 10, 2007</h2><div>ok, so I solved my own problem. It appears that my issues were because I was using a BLB as a root for my BO's. I did not think this would be an issue and maybe it's 
+not but if someone has any ideas on maybe what I may being doing incorrectly please 
+let me know.<br><br>Original:<br>BLB filled with BB BO's. - Did not work at all 
+in 3.0.2 but it did in 3.0.1<br><br>Solution:<br>ROLB filled with BB BO's - 
+Works like a charm!<br><br>Again, any ideas on why my first solution would not 
+work? I read through Rocky's book again to see if I missed anything but I've got 
+nothing.....<br><br>John</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 10, 2007</h2>Your original solution would be fine, as long as your BO's contined in the list were calling MarkAsChild in their constructor.&nbsp; Then you would ONLY call save on the BLB, never on the BB objects.<br><br>It sounds like you used BLB to contain ROOT business objects, which is not supported.&nbsp;&nbsp; ROLB should NOT contain BB objects either; if you NEED a list of root objects, you should use ERLB. <br><br>In this case, root vs. child indicates 1) the transaction scope; a root object is the root of the transaction, while its child object updtes WILL take place within the transaction and 2)&nbsp; the child objects CANNOT be saved independantly; it only makes sense to save them at the same time as the root.<br><br>I would check out the book again if that's not clear.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, October 10, 2007</h2>
+
+
+
+
+
+
+
+
+<p><font size="2">I actually had a typo. The solution is a ROLB of ROB objs. When the user selects an item I retrieve a BB obj. As for the BLB, your explanation would expain my problem.<br>
+<br>
+Thanks for your help.<br></font></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 10, 2007</h2>Ahh, ok.&nbsp; That makes sense then, although I'm suprised the compiler didn't point out the problem immedately.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, October 10, 2007</h2>Not to prolong this any further but what would you expect the compiler to "say"?<br><br>Also I wanted to jump back to the subject of ROLB. I just copied this from Rocky's book:<br><br><b>ReadOnlyListBase Class</b><br>Like the ReadOnlyBase class, ReadOnlyListBase is quite simple to create. It is designed to make it<br>easy for a business developer to create a business collection that doesn’t allow items to be added<br>or removed. <b>Presumably, it will be used to contain read-only child objects, but any type of child object is allowed.</b><br><br>So is it considered to be a best practice to NOT to stuff anything but a ROB obj in a ROLB?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 10, 2007</h2>Oh, you're right.&nbsp; I thought it was like BLB, where it required that objects contained in the list would inherit from ROB.&nbsp; My mistake.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

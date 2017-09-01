@@ -1,0 +1,11 @@
+<html><header><title>CSLA in WorkflowService</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA in WorkflowService</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9787.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Sunday, November 21, 2010</h2><p>Hey guys, I&#39;m toying around with WCF Workflow Services and I&#39;ve run into a snag with using CSLA objects.</p>
+<p>I&#39;ve got a business layer generated with CodeSmith that contains an Account editable root object.<br />The service has a Recieve task that accepts accountID. I want to use the accountID to see if a record exists for it. Any idea how this is done in WF?</p>
+<p>My first guess was to define a variable of type Account and use an InvokeMethod operation to call the factory method passing the accountID. However, as soon as I try to create a variable of type Account I get a message box telling me &quot;The selected type could not be created&quot;.</p>
+<p>I even when into the generated code and made the constructor public just for grins and I get the same error.</p>
+<p>Have any of you experienced this? What was the fix?<br />Thanks,<br />Will</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Monday, November 22, 2010</h2><p>This can be ignored. I&#39;m not sure what the issue is but I got to work and tried a similar scenario using a different generated business layer and I can indeed use CSLA objects in the Workflow Service. Has to be some configuration with my other project.</p>
+<p>Will</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, November 23, 2010</h2><p>
+<p>Hello,</p>
+<p>I think Rocky is on vacation... I&#39;m not that familiar with Workflow Service but I&#39;ll take a look. Can you please attach or email me your sample repro solution and database script for this table and I&#39;ll take a look and see if I can figure it out.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

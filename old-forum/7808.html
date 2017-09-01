@@ -1,0 +1,37 @@
+<html><header><title>LoadProperty not &quot;loading&quot; the property.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LoadProperty not &quot;loading&quot; the property.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Saturday, October 17, 2009</h2><P class=MsoNoSpacing><FONT face=Calibri>I'm sure I'm missing something but I'm not sure what it is.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><B><FONT face=Calibri>Business.dll<o:p></o:p></FONT></B></P>
+<P class=MsoNoSpacing><SPAN>[<SPAN>Serializable</SPAN>()]<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>[Csla.Server.<SPAN>ObjectFactory</SPAN>(<SPAN>"DataAccess.MenuItemFactory, DataAccess"</SPAN>)]<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>public</SPAN><SPAN> <SPAN>class</SPAN> <SPAN>MenuItem</SPAN> : <SPAN>BusinessBase</SPAN>&lt;<SPAN>MenuItem</SPAN>&gt;</SPAN></P>
+<P class=MsoNoSpacing><FONT face=Calibri>{</FONT></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>PropertyInfo</SPAN>&lt;<SPAN>string</SPAN>&gt; DescriptionProperty =<SPAN>&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>RegisterProperty&lt;<SPAN>string</SPAN>&gt;(m =&gt; m.Description);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>string</SPAN> _description = DescriptionProperty.DefaultValue;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>string</SPAN> Description{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>get</SPAN><SPAN> { <SPAN>return</SPAN> GetProperty(DescriptionProperty, _description);}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp; </SPAN><SPAN>set</SPAN> { SetProperty(DescriptionProperty, <SPAN>ref</SPAN> _description, <SPAN>value</SPAN>); }}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri>}</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><B><FONT face=Calibri>DataAccess.dll</FONT></B></P>
+<P class=MsoNoSpacing><SPAN>public</SPAN><SPAN> <SPAN>class</SPAN> <SPAN>MenuItemFactory</SPAN> : <SPAN>ObjectFactory</SPAN></SPAN></P>
+<P class=MsoNoSpacing><FONT face=Calibri>{</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><SPAN>public</SPAN><SPAN> <SPAN>MenuItem</SPAN> Fetch(<SPAN>SingleCriteria</SPAN>&lt;<SPAN>MenuItem</SPAN>, <SPAN>int</SPAN>&gt; criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>var</SPAN><SPAN> efMenuItem = context.MenuItem... <SPAN>// Entity Framework to SQL DB query</SPAN> <o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>MenuItem</SPAN><SPAN> menuItem = (<SPAN>MenuItem</SPAN>)<SPAN>Activator</SPAN>.CreateInstance(<SPAN>typeof</SPAN>(<SPAN>MenuItem</SPAN>), <SPAN>true</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>LoadProperty(menuItem, <SPAN>MenuItem</SPAN>.DescriptionProperty, efMenuItem.Description);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>MarkOld(menuItem);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>return</SPAN><SPAN> menuItem<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>}</SPAN></P>
+<P class=MsoNoSpacing><FONT face=Calibri>}</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>From a console app that references both these projects</FONT></P>
+<P class=MsoNormal><SPAN>MenuItem</SPAN><SPAN> menuItem = <SPAN>MenuItem</SPAN>.GetMenuItem(1);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNoSpacing><FONT face=Calibri>At this point menuItem.Description is empty string.<SPAN>&nbsp; </SPAN>It should not be.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Using debug I’ve confirmed that in MenuItemFactor.Fetch<SPAN>&nbsp;</SPAN>efMenuItem.Description has a value at the time the LoadProperty method is called however GetMenuItem returns a MenuItem with an empty Description.<SPAN>&nbsp; </SPAN>What am I missing?</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 18, 2009</h2>Hi, <br><br>LoadProperty is only intended for ManagedProperties and does not work with private backing fields. Your DAL must set the private variable, preferrably by using:<br><br>using (BypassPropertyChecks(menuItem) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; menuItem.Description = efMenuItem.Description;<br>}<br><br>BypassProprtyChecks makes the Set Property in your BO work similar to LoadProperty.<br><br>So your code loads a managed property but the property get returns a private backingfield that is still empty or null.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, December 09, 2009</h2>Can you explain this further? I'm having the same problem, but I don't have this "BypassPropertyChecks" method. What version of csla is this referring to?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 09, 2009</h2><P>Well, BypassPropertyChecks is a property on the BO instance you're trying to load.&nbsp; So usually its using ( menuitem.ByPassPropertyChecks ) { // load here }.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Monday, December 14, 2009</h2>actually what fixed it was making the variable private _ID as guid=guid.empty for example a nullable variable. Like so, private _ID as Nullable(of GUID)=Guid.Empty</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

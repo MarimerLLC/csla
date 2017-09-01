@@ -1,0 +1,48 @@
+<html><header><title>Business Properties with defaulting values from other properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Properties with defaulting values from other properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10474.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman posted on Tuesday, June 28, 2011</h2><p>I have a scenario where a property&nbsp;has a default value based on another property.&nbsp; However, once the property has been set, the defaulting stops.&nbsp; e.g.</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objPerson.FirstName&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;M&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">Console</span>.WriteLine(objPerson.KnownAs);&nbsp;<span style="COLOR:green;">//M</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objPerson.FirstName&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;Michael&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">Console</span>.WriteLine(objPerson.KnownAs);&nbsp;<span style="COLOR:green;">//Michael</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objPerson.LastName&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;Jackson&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">Console</span>.WriteLine(objPerson.KnownAs);&nbsp;<span style="COLOR:green;">//Michael&nbsp;Jackson</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objPerson.KnownAs&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;Wacko&quot;</span>;&nbsp;<span style="COLOR:green;">//defaulting&nbsp;for KnownAs now&nbsp;stops</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">Console</span>.WriteLine(objPerson.KnownAs);&nbsp;<span style="COLOR:green;">//Wacko</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objPerson.FirstName&nbsp;=&nbsp;<span style="COLOR:#a31515;">&quot;Mikey&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">Console</span>.WriteLine(objPerson.KnownAs);&nbsp;<span style="COLOR:green;">//Wacko</span></pre>
+<span style="COLOR:green;"><span style="color:#000000;">
+<p class="MsoNormal" style="LINE-HEIGHT:normal;MARGIN:0cm 0cm 10pt;mso-margin-top-alt:auto;mso-margin-bottom-alt:auto;"><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">How would I achieve this using the CSLA business properties?</span><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;mso-fareast-font-family:&#39;Times New Roman&#39;;mso-fareast-language:EN-NZ;"></span></p>
+</span></span></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, June 29, 2011</h2><p>I&#39;d probably do something like this:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;FirstNameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.FirstName);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;FirstName
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(FirstNameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(FirstNameProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;LastNameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.LastName);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;LastName
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(LastNameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(LastNameProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;KnownAsProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.KnownAs);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;KnownAs
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!FieldManager.FieldExists(KnownAsProperty))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&nbsp;</span><span style="color:mediumseagreen;">{1}</span><span style="color:#a31515;">&quot;</span>,&nbsp;FirstName,&nbsp;LastName).Trim();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(KnownAsProperty);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(KnownAsProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And add these rules to notify the UI of KnownAs has also changed: </p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(FirstNameProperty,&nbsp;KnownAsProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(LastNameProperty,&nbsp;KnownAsProperty));</pre>
+<p>Once&nbsp;KnownAs is set the FieldManager.FieldExists will return true. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Wednesday, June 29, 2011</h2><p>Thanks mate, such a nice and elegant solution.&nbsp; I was thinking along the lines of creating a business rule that modified the KnownAs property but was unsure how to turn off the defaulting.&nbsp; With your solution, if there was a StringLength rule on the KnownAs property, would the rule be executed if it was using the default value?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 29, 2011</h2><p>Yes, the Depency rule add properties to Affected properties of each PrimaryProperty (ie rule instance) and will make</p>
+<ul>
+<li>Csla RuleEngine recheck&nbsp;rules for Affected properties</li>
+<li>and raise OnPropertyChanged on AffectedPropertes to refresh the UI</li>
+</ul>
+<p>So, yes you should be OK with adding a MaxLength rule to KnownAs property. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Wednesday, June 29, 2011</h2><p>Thanks mate.&nbsp; Your solution is perfect.&nbsp; I appreciate the time you spend on this forum.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

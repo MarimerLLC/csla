@@ -1,0 +1,35 @@
+<html><header><title>GridView Sorting - Help needed with Implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GridView Sorting - Help needed with Implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7999.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewR posted on Sunday, November 15, 2009</h2><P>Hello,</P>
+<P>I'm revisiting this issue as I now <STRONG><U>have</U></STRONG> to find a solution for my users. I need to allow sorting on the gridview columns. My gridview is bound to a csladatasource. A while back I had found some code that implemented sorting using linq, but it seems the csladatasource does not play nicely with the implementation.</P>
+<P>I am hoping someone has a solution for sorting, and hopefully it's implemented on the csladatasource.</P>
+<P>I am using csla.net 3.5 with .net 3.5 framework. Please see:</P><FONT color=#008000 size=2><FONT color=#008000 size=2>
+<P>SelfSortingGridView - GridView from www.singingeels.com</P></FONT></FONT>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 16, 2009</h2><P>The <EM>CSLA .NET Version 2.1 Handbook</EM> ebook has a section that walks through the various sort options available when using CSLA. In general the model relies on ASP.NET data binding&nbsp;providing the sort column and direction, along with page and item count values for paging, which it does with the standard Microsoft controls at least, and probably with third party controls I assume.</P>
+<P>That information is provided in the arguments to the select event that is raised by the CslaDataSource. In other words, you get that information provided to you in your select event handler. At that point there are four possible places for you to do a sort (or filter):</P>
+<OL>
+<LI>In the CslaDataProvider select event handler (typically in your code-behind file)</LI>
+<LI>In the business object's static factory method (invoked by your select handler)</LI>
+<LI>In the DataPortal_Fetch() method</LI>
+<LI>In the database</LI></OL>
+<P>Options 1 and 2 are the least efficient (usually), but are easy to do with LINQ to Objects or the Csla.SortedBindingList class.</P>
+<P>Options 3 and 4 are usually much more efficient and how they work depends on your data access technology and/or database.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewR replied on Monday, November 16, 2009</h2><P>Thanks Rocky. I was able to implement osrting this way:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> dsAssetTransferList_SelectObject(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Web.SelectObjectArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Handles</FONT></FONT><FONT size=2> dsAssetTransferList.SelectObject</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' get list</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> list </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> AssetTransferList = GetAssetTransferList()</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' do sort</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>.IsNullOrEmpty(e.SortExpression) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' return unsorted list</P></FONT></FONT><FONT size=2>
+<P>e.BusinessObject = list</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Else</P></FONT></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> sortedList </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> SortedBindingList(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> AssetTransferInfo)(list)</P>
+<P>sortedList.ApplySort(e.SortProperty, e.SortDirection)</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' return sorted list</P></FONT></FONT><FONT size=2>
+<P>e.BusinessObject = sortedList</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</P></BLOCKQUOTE></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P>Not the most elegant or exotic, but it works for me especially since the list object is cached; need not do a round trip to SQL.</P>
+<P>Thanks,</P>
+<P>Andrew.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

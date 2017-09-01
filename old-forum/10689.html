@@ -1,0 +1,19 @@
+<html><header><title>Best practice 3-tier WCF authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best practice 3-tier WCF authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10689.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GlennMiller posted on Thursday, September 15, 2011</h2><p>
+<p class="MsoNormal">We are developing an ASP.NET MVC 3 application using CSLA in
+3-tier remoting mode using WCF communication between the external facing hosted
+app computer and behind the firewall app server computer. </p>
+<p class="MsoNormal">What is the
+recommended best practice to secure the communication between the tiers? I&rsquo;ve
+read older documentation (including Rocky&rsquo;s CSLA 2008 book) that recommends certificate
+authentication using Chain Trust. Is that still best practice? If you do
+certificate authentication, is creating a custom UserNamePasswordValidator
+necessary or recommended for added security?</p>
+<p class="MsoNormal">Any thoughts or example articles on securing 3-tiers would
+be greatly appreciated.</p>
+<p class="MsoNormal">Thank-you.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 16, 2011</h2><p>The general recommendation is to use SSL. That is secure, and is the easiest thing to get working.</p>
+<p>Surely you&#39;d use that between the browser and your web server.</p>
+<p>Between the web server and the app server most people don&#39;t use an encrypted transfer. But if you need to (due to HIPPA or something) then SSL is still the easiest answer. Otherwise between your servers you can use x.509 certificates.</p>
+<p>See the WCF security guidance book on CodePlex for information about these and other options.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

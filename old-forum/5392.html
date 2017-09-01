@@ -1,0 +1,48 @@
+<html><header><title>CSLA Web Service Interoperability or lack of  </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Web Service Interoperability or lack of  </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5392.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>srnichols posted on Friday, September 12, 2008</h2><P class=MsoNormal><FONT face=Calibri>Looking for any suggestions on the best way to expose your CSLA objects as heterogeneous SOAP web services that other platforms can consume? <SPAN>&nbsp;</SPAN>Basically, we have Java and Adobe Flex apps that need to consume data from our CSLA applications API.<SPAN>&nbsp; </SPAN>The problem I am seeing is that the WCF message CSLA returns is basically a SOAP packet that just raps the .Net object (base64 encode). <SPAN>&nbsp;&nbsp;</SPAN>These other teams are expecting a nicely formatted SOAP message that they can easily read and work with.&nbsp; Not an encoded .Net object.<SPAN>&nbsp;&nbsp;</SPAN><o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Anyone else have problems like this?<SPAN>&nbsp; </SPAN>How did you get around it? <SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN></FONT><o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, September 12, 2008</h2><P>I have not yet delved into the world of WCF so forgive if this is not relevant, but in the past I have exposed CSLA BO's via web services by putting a thin layer in between, that use DTO's.&nbsp; The web method would call the BO and get back the object, then use the object to load the DTO which would be returned to the client.&nbsp; A little extra overhead, but it protects the web service contract from change in your underlying BO's.&nbsp; </P>
+<P>-- Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>srnichols replied on Friday, September 12, 2008</h2><P class=MsoNormal><FONT face=Calibri>Well there can’t be that many "Fintan‘s" <SPAN>&nbsp;</SPAN>that use CSLA and the V must be for “Van Ommen Kloeke”, hast to be.<SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>Great to see you are still working with CSLA.<SPAN>&nbsp;&nbsp; </SPAN>I left our old employer and am now playing application architect for another large company in the valley. <SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN>Trying to get them to see the goodness of CSLA and not make the same mistake we made by building our own BO framework. <SPAN>&nbsp;</SPAN>I don’t want to go through that again.<SPAN>&nbsp; </SPAN><o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>What you wrote makes sense, <SPAN>&nbsp;</SPAN>I figured I might have to do some type of abstraction web service layer over my CSLA BO’s to make those Java guys happy, was just hoping there might be an easier way.<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Talk later<o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>-Scott Nichols <SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN></FONT><o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 12, 2008</h2><P>The data portal is absolutely NOT intended to be used for interoperable SOA. It is designed to clone objects between client and app server.</P>
+<P>Chapter 11 discusses the techniques you should use when implementing message-based services.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>srnichols replied on Friday, September 12, 2008</h2><P class=MsoNormal><FONT face=Calibri>Thanks for the fast response Rocky! <o:p></o:p></FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Yep, Chap 11 confirmed what I needed to know, its. been a couple of years since I read the book, forgot about that chapter. <SPAN>&nbsp;</SPAN><SPAN>&nbsp;</SPAN></FONT><o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, September 12, 2008</h2>I hope this method will also work with Adobe LiveCycle Forms, since they support connecting a standard .NET WSDL interface.<br><br>I once developed a simple .NET Web Service Example (not using CSLA) and it worked easily with Adobe LC Form as a front-end (when run under Acrobat 7.0.5 and above).<br><br>I am making the assumption here is that if it worked with Standard .NET web service interface, there is noting that will stop it for working with the CSLA Version of the same !<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you follow the techniques in chapter 11, it is entirely up to
+you (and either asmx or WCF) as to whether your service can be consumed by
+other technologies.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If Adobe&#8217;s technology works with standard WSDL, then it
+should work with asmx web services, or WCF with basicHttpBinding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But none of that has anything at all to do with CSLA &#8211;
+that is purely a matter of the service interface you implement.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

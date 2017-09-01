@@ -1,0 +1,23 @@
+<html><header><title>MVVM WCF Silverlight Factory Methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVVM WCF Silverlight Factory Methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10287.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad posted on Wednesday, April 20, 2011</h2><p>Hello,</p>
+<p>I have a Factory method called GetTerritories, and it is found in the Model.</p>
+<p>Remark: It is found in the <strong>if&nbsp; ! SILVERLIGHT </strong>bloc.</p>
+<p>My Question is :</p>
+<p>How can I call this function from the view model? Can I use the BeginRefresh method in order to call it?</p>
+<p>Note: I&#39;ve configured all the WCF stuff</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, April 20, 2011</h2><p>The Silverlight ViewModelBase only supports async interaction with factory methods, and therefore assumes async factory methods.</p>
+<p>Async factory methods are different from sync factory methods, because they require a callback parameter. Normally I implement the async factory methods for all code, and only the sync methods for .NET (so inside the # !SILVERLIGHT block).</p>
+<p>If you have an async factory method on your business class, then the BeginRefresh method in the viewmodel will invoke that method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad replied on Wednesday, April 20, 2011</h2><p>Thanks for your reply!</p>
+<p>I&#39;m somehow confused, my library is as the following:</p>
+<p>1. library.Client &nbsp;which is the silverlight library</p>
+<p>2. library.Server which is the C# library</p>
+<p>in this library, I&#39;ve defined all the async functions in the Silverlight bloc and all the sync functions in the ! Silverlight bloc.&nbsp;</p>
+<p>How can I call the Remote DataPortal_Fetch() method, which is found in the ! Silverlight bloc, from the static method factory that is found in the Silverlight bloc? In other words, If I have the following:</p>
+<p>#if Silverlight</p>
+<p>public static void GetTerritories(EventHandler&lt;DataPortalResult&lt;Territories&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dp = new DataPortal&lt;Territories&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.FetchCompleted += callback;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginFetch();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>#else</p>
+<p>protected void DataPortal_Fetch()</p>
+<p>{</p>
+<p>}</p>
+<p>#endif</p>
+<p>So I want my static factory method to call the Remote DataPortal_fetch and not the local one? how can I do this?</p>
+<p>Thanks, </p>
+<p>Ziad</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

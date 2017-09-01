@@ -1,0 +1,133 @@
+<html><header><title>How to implement BrokenRulesCollection in Lists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to implement BrokenRulesCollection in Lists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2871.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rosjon posted on Tuesday, May 15, 2007</h2><P>Hi, </P>
+<P>My webapplication gives the user the possibility to change a lot of things about a Store,for instance openinghours and openinghours exception(a store will have openinghours 10-20 each day but on may 1st it is open only 10-14). Where do I implement a validationrule for unique dates, that is only one openinghoursexception on may 1st. My users wants this errormessage when they save the store not when adding the exception as it will require a postback.</P>
+<P>There is no brokenrulescollection for lists, so I cant implement this rule in the list. I could add this rule to the Store object (having an OpeningHoursExceptionList) but the rule doesnt only apply to stores, it applies to every thing having openinghours exceptions. And sometimes this list is not "owned" by any parent, as it is possible to create a template list of openinghours exceptions to be used for new stores.</P>
+<P>I have several other types of list with list specific validation. I have a list of concepts where the names of the concepts must be unique.Other examples of rules are that only three of the same types of store in the same area e.t.c. </P>
+<P>Anyone have any suggestions? Why doesnt the lists have a brokenrulescollection and why cant u add businessrule to them?</P>
+<P>It is impossible to create your own implementation of Brokenrulescollection as you cant inherit it (sealed) and not instatiate it(internal constructor)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, May 15, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rosjon:</strong></div><div> 
+<P>It is impossible to create your own implementation of Brokenrulescollection as you cant inherit it (sealed) and not instantiate it(internal constructor)</P>
+<P></div></BLOCKQUOTE></P>
+<P>Check out the CslaContrib project.&nbsp;&nbsp; (Links are on the forum home page).</P>
+<P>Download the CslaContrib code, and Look for the CslaSrd project inside of it.</P>
+<P>If they don't do what you want, you might still pick up some useful background info.</P>
+<P>Classes of interest:</P>
+<P>RuleBusinessBase -&gt; subclasses BusinessBase, includes a BrokenRules and Rules property.</P>
+<P>RuleBusinessListBase -&gt; subclasses BusinessListBase</P>
+<P>PublicRuleInfo and PublicRuleInfoList (a collection of all rules)</P>
+<P>Resources File (rule error messages rewritten slightly so PublicRuleInfo can display them.)</P>
+<P>StdRules -&gt; a clone of CommonRules where the rules use the new Resources file error strings.</P>
+<P>============</P>
+<P>other classes of interest, but off this topic, are SmartInt16, SmartInt32, SmartInt64, SmartFloat, SmartDecimal and SmartBool, plus SmartSafeDataReader (which adds support for the new smart classes.)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 15, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rosjon:</strong></div><div>
+<P>Anyone have any suggestions? Why doesnt the lists have a brokenrulescollection and why cant u add businessrule to them?</P>
+<P></div></BLOCKQUOTE></P>
+<P>The reason lists don't have this concept, is because data binding has no way to display such error data. There's no equivalent to IDataErrorInfo for lists, and so putting a list into an invalid state with a list of broken rules is problematic - there's no pre-existing way to display such error information to the user in Windows, Web or WPF.</P>
+<P>I typically just override Save() and check my list-based rules there - throwing a ValidationException if a rule is violated. The UI can handle that exception and give the user some meaningful display indicating the nature of the problem.</P>
+<P>Even if BrokenRulesCollection were public, it wouldn't be useful. A broken rules collection from a list wouldn't be listing broken rules per-property, but rather perhaps per-child or something like that. The existing BRC is the wrong type to provide this sort of data. Really, I imagine what you would need from a list is much simpler - just a list of human-readable strings, because they'd never be attached to a specific property, and really shouldn't be attached to a specific child (because if that were the case than that child should be the object that is invalid).</P>
+<P>So what you could do is create your own subclass of BLB, declare a protected virtual method like CheckRules()&nbsp;and override Save(). Also in your subclass you'd define a new public property that returns a read-only list of string values.</P>
+<P>In Save() you would:</P>
+<OL>
+<LI>Clear the list of string values</LI>
+<LI>Invoke CheckRules()</LI>
+<LI>If&nbsp;list-of-string-values.Length&gt;0 throw a ValidationException</LI>
+<LI>If list-of-string-values.Length=0 continue</LI>
+<LI>Call MyBase.Save()</LI></OL>
+<P>This would roughly mirror the behavior of BusinessBase, and your UI, after catching the exception, could figure out how to display the list of errors to the user.</P>
+<P>Obviously your actual business collections would override CheckRules() and would do any collection-level rule-checking there - adding a human-readable text description of any errors into the list of strings.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 16, 2007</h2><P>Hmm... As a work-around, here's a completely <EM><STRONG>untested</STRONG></EM> idea. :)</P>
+<OL>
+<LI>Write code in the list to check thru the list for whatever problems you are concerned about.&nbsp; It should return a go/no-go status or a detailed message, as needed.&nbsp; (The code could also be inside the object contained in the list.)</LI>
+<LI>Create a rule on the object contained in the list.&nbsp; Have it invoke the method in the list.</LI></OL>
+<P>I think this should work even for empty lists, because as you add objects to it, they will follow the rules.</P>
+<P>If you expose the child object's broken rules collection, it can be databound and thus displayed.</P>
+<P>As a possible optimization, if you don't want it looping thru the list with every update of every object in it, you might have the rule automatically pass if it's not the first object in the list.&nbsp; If you go this route, you might need to modify the save logic in the list to check whether the first object has any broken rules before saving.&nbsp; Might need some additional UI coding to make for a more pleasant user experience, as a record they weren't working on could suddenly get broken.</P>
+<P>Hope that gives you some ideas.&nbsp; Let us know what works!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, May 16, 2007</h2><P>Check out this thread for one way to implement rules for collections. I use this for my ASP.Net app to return a list of broken rules.</P>
+<P><A HREF="/forums/post/7444.aspx">http://forums.lhotka.net/forums/post/7444.aspx</A></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, May 16, 2007</h2>While this is not strictly related, it might be relevant. I wrote a blog post recently on validating date ranges inside a collection.<br>My rationale here is that (with the exception of some very very rare cases) the collection is not the one that is "invalid". It's the item inside the collection that's breaking a rule, and thus, you should be able to inform the user which item is invalid. This of course sometimes involves checking data in other lists or within the items contained in the same list (like my scenario of validating date ranges).<br>You can read more about it and get the code <a href="http://www.softwarethinking.com/blogs/xal/archive/2007/05/03/4.aspx">here</a>.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Tuesday, October 02, 2007</h2><P class=MsoNormal><SPAN>Hi Andrés,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m afraid you have a BUG in your code. Please try this:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>1 Execute your example application.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>2 Go to the last row of the grid.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>3 Type “18/12/2014” in the StartDate column. See that this change makes a conflict with previous row which is marked as invalid (IsValid = False) but the last row isn’t marked as invalid. The last item is not Validated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The problem is in “</SPAN><SPAN>DateRangeCollection.vb</SPAN><SPAN>“. Here you have a possible solution: <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> DisjointDecimalIntervalList(<SPAN>Of</SPAN> T <SPAN>As</SPAN> DisjointDecimalIntervalList(<SPAN>Of</SPAN> T, C), C <SPAN>As</SPAN> DisjointDecimalInterval(<SPAN>Of</SPAN> C))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Protected</SPAN><SPAN> <SPAN>Sub</SPAN> ValidateRange(<SPAN>ByVal</SPAN> typeRange <SPAN>As</SPAN> List(<SPAN>Of</SPAN> C), <SPAN>ByVal</SPAN> addedItem <SPAN>As</SPAN> C)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> typeRange.Count = 0 <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'nothing to do<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Exit</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ElseIf</SPAN> typeRange.Count = 1 <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'only one item can't<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>typeRange(0).ResetDateRangeOverlap()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>typeRange(0).ValidateRange()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Exit</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'In order to avoid unnecesary nested loops, we make sure none are marked as overlapping first.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'This will not trigger unnecesary validation routines inside the object.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> adding <SPAN>As</SPAN> <SPAN>Boolean</SPAN> = addedItem <SPAN>IsNot</SPAN> <SPAN>Nothing<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> adding <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>For</SPAN> <SPAN>Each</SPAN> i <SPAN>As</SPAN> C <SPAN>In</SPAN> typeRange<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>i.ResetDateRangeOverlap()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Next<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>addedItem.ResetDateRangeOverlap()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> total <SPAN>As</SPAN> <SPAN>Integer</SPAN> = typeRange.Count - 1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'If Not adding Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>total -= 1<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'End If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>For</SPAN> idxi <SPAN>As</SPAN> <SPAN>Integer</SPAN> = 0 <SPAN>To</SPAN> total - 1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> i <SPAN>As</SPAN> C = typeRange(idxi)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> adding <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> ReferenceEquals(i, addedItem) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> i.DateRangeOverlap <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> i.IsDateRangeOverlapped(addedItem) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>addedItem.DateRangeOverlap = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>i.DateRangeOverlap = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ElseIf</SPAN> <SPAN>Not</SPAN> addedItem.DateRangeOverlap <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>addedItem.DateRangeOverlap = addedItem.IsDateRangeOverlapped(i)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>For</SPAN> idxj <SPAN>As</SPAN> <SPAN>Integer</SPAN> = idxi + 1 <SPAN>To</SPAN> total<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> j <SPAN>As</SPAN> C = typeRange(idxj)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> ReferenceEquals(i, j) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> i.DateRangeOverlap <SPAN>OrElse</SPAN> <SPAN>Not</SPAN> j.DateRangeOverlap <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> i.IsDateRangeOverlapped(j) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>i.DateRangeOverlap = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>j.DateRangeOverlap = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'Exit For<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Next<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>i.ValidateRange()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Next<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> adding <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>addedItem.ValidateRange()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else </SPAN><SPAN>' Init ********<SPAN>&nbsp; </SPAN>Solution to the BUG! </SPAN></SPAN><SPAN>***********</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> lastItem <SPAN>As</SPAN> C = typeRange(total)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>lastItem.</SPAN><SPAN>ValidateRange</SPAN><SPAN>()</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' End ********<SPAN>&nbsp; </SPAN>Solution to the BUG! ***********</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Tank you very much for your contribution. It has been very helpful to me.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>ben.m.s(at)terra.es<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>PS. I am from Spain so you can speak (write) in Spanish to me if you want to.<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

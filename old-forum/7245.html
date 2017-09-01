@@ -1,0 +1,78 @@
+<html><header><title>ContextManager for EntityFramework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ContextManager for EntityFramework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7245.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nampord posted on Wednesday, July 08, 2009</h2><P>Hi</P>
+<P>I am curretnly trying to implement a DAL with the EntityFramework. In this context it would be handy to have a ContextManager similar to the one for Linq to SQL, but managing the EF context.</P>
+<P>Does this exist already somewhere? If not any recommendations on how to best implement this? Would that be a feature of general interest?</P>
+<P>Thanks for your feeedback</P>
+<P>Frank</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Wednesday, July 08, 2009</h2>it already exists and works quite well.<br><br>using (var ctx =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectContextManager&lt;SpectrumEstimationEntities&gt;.GetManager(Database.MyDatabase)) {<br><br>}<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It
+does.&nbsp; I think you need 3.6.2 or higher.&nbsp; It is called </span><span>ObjectContextManager</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nampord
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 08, 2009 4:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] ContextManager for EntityFramework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi<o:p></o:p></p>
+
+<p>I am curretnly trying to implement a DAL with the EntityFramework. In this
+context it would be handy to have a ContextManager similar to the one for Linq
+to SQL, but managing the EF context.<o:p></o:p></p>
+
+<p>Does this exist already somewhere? If not any recommendations on how to best
+implement this? Would that be a feature of general interest?<o:p></o:p></p>
+
+<p>Fhanks fro your feeedback<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

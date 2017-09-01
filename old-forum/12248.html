@@ -1,0 +1,30 @@
+<html><header><title>How do you use RegisterProperty with Inheritance??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do you use RegisterProperty with Inheritance??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12248.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi posted on Wednesday, December 04, 2013</h2><p>I have a base class called MyBase which inherits from Csla.BusinessBase(Of MyBase) like so</p>
+<p>Protected Class MyBase(Of T As BusinessBase(Of T))<br />&nbsp; &nbsp; &nbsp;Inherits BusinessBase(Of T)&nbsp;</p>
+<p>End Class</p>
+<p>I then have another class that inherits from MyBase, called MyParent, like so</p>
+<p>Public Class MyParent(Of T As MyBase(Of T))<br />&nbsp; &nbsp; &nbsp;Inherits MyBase(Of T)</p>
+<p>End Class</p>
+<p>Now 2 questions really...<br />1. &nbsp;Is this the correct way to implement inheritance, using the Of T command, like Csla?<br />2. &nbsp;I thought inheritance was supposed to be done like this because I read a while ago that inheriting objects should declare proeprties using the RegisterProperty constructor that accepts a Type paramter, like so</p>
+<p>Private Shared IdProperty As PropertyInfo(Of Integer) = RegisterProperty(GetType(MyBase(Of T)), New PropertyInfo(Of Integer)(&quot;Id&quot;))</p>
+<p>Is this still the case? &nbsp;Do you need the specify the type parameter on any object that uses inheritance? &nbsp;If not, then i wonder if my objects could be simplified to something like<br /><br />&nbsp;Protected Class MyBase(Of T As BusinessBase(Of T))</p>
+<p>&nbsp; &nbsp; &nbsp;Inherits BusinessBase(Of T)&nbsp;</p>
+<p>End Class</p>
+<p>Public Class MyParent</p>
+<p>&nbsp; &nbsp; &nbsp;Inherits MyBase(Of MyParent)</p>
+<p>End Class</p>
+<p>So as stated before, what is the correct way to implement inheritance in csla? And which is the correct/preferred way to define Properties in objects with inheritance?</p>
+<p>Thanks in advance</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 04, 2013</h2><p>Hi,</p>
+<p>1. Yes, this is the correct way to implement inheritance &nbsp;for generic classes. If you need a common access method the the base class you should also create an Interface for each base class with the properties/methods.&nbsp;</p>
+<p>2. You are not required to use the RegisterProperty methods that specify the actual type.&nbsp;<br />&nbsp; &nbsp; &nbsp;In C# the statement &nbsp;</p>
+<pre><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);
+</pre>
+<p>will use the generic constraint on the class to find the type.&nbsp;</p>
+<p>You cannot create a non-generic MyParent class and continue to inherit from that class. Only the &quot;last&quot; class can be non-generic. So your simplified solution will give a runtime exception when you run (due to how CSLA register the properties on a Type).&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Thursday, December 05, 2013</h2><p>JonnyBee,</p>
+<p>Thanks so i guess i am doing it correctly at the moment then.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>If you need a common access method the the base class you should also create an Interface for each base class with the properties/methods.&nbsp;</div></p>
+<p>So, say i have an object and i need to cast it as MyBase, i should create an interface called IMyBase and cast the object using that interface?</p>
+<p>Dim lMyObject As IMyBase = DirectCast(Session(&quot;Object_In_Session&quot;), IMyBase)</p>
+<p>Is this what you are saying, as that was going to be my next question, as you cannot cast something to an object Of T</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 05, 2013</h2><p>Yes,</p>
+<p>As the base class is generic and anyone interested in the common properties/methods should not have knowledge of the actual subclass (the generic constraint) and thus you need a non-generic interface to expose the properties/methods.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

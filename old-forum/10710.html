@@ -1,0 +1,99 @@
+<html><header><title>ThreadPool.QueueUserWorkItem and ApplicationContext/ClientContext</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ThreadPool.QueueUserWorkItem and ApplicationContext/ClientContext</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10710.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi posted on Friday, September 23, 2011</h2><p>It was suggested in a previous post that i should use the Csla.Threading.BackgroundWorker to perform some background tasks, but this doesnt seem to be an option anymore, as i need to about 60+ tasks all at once. I tried to split the tasks up and running 1 at a time, but the Completed event in the Csla.Threading.BackgroundWorker never seems to fire?? &nbsp;bug?? &nbsp;Not sure, will post code below.</p>
+<p>I was wondering, that since i have so many tasks, could i use&nbsp;ThreadPool.QueueUserWorkItem?? &nbsp;This seems to offer a good way to queue the tasks up, but when the task is passed to the queue, the ApplicationContext/ClientContext are blank and i need these populating to run my code.</p>
+<p>How can i use&nbsp;ThreadPool.QueueUserWorkItem and also ApplicationContext etc?? &nbsp;Anyone know how to copy the values over, or is there a csla.ThreadPool.QueueUserWorkItem??</p>
+<p>My code that wasnt firing the Completed event for the BackgroundWorker is as follows. &nbsp;I call the code using</p>
+<p>Dim lAsyncProcess as New AsyncProcess(Objects Here)</p>
+<p>lAsyncProcess.Run()</p>
+<p>----------</p>
+<p>
+<p>Public Class AsyncProcess</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Class AsyncWorker</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Report As IBaseReport</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public WaitHandle As AutoResetEvent</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Sub New(ByVal pReport As IBaseReport, ByVal pWaitHandle As AutoResetEvent)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Report = pReport</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; WaitHandle = pWaitHandle</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Class</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public WaitHandle1 As WaitHandle</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public WaitHandle2 As WaitHandle</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public BuiltReports As Dictionary(Of Integer, IBaseReport)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public WithEvents BackgroundWorker1 As New Csla.Threading.BackgroundWorker</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public WithEvents BackgroundWorker2 As New Csla.Threading.BackgroundWorker</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Sub New(ByVal pReports As Dictionary(Of Integer, IBaseReport))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BuiltReports = New Dictionary(Of Integer, IBaseReport)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim lLoopCount As Integer</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; create wrappers</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; While lLoopCount &lt; pReports.Count</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BuiltReports.Add(pReports.ElementAt(lLoopCount).Value.ReportId, pReports.ElementAt(lLoopCount).Value)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lLoopCount += 1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End While</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Sub Run()</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim lLoopCount As Integer = 0</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim lWaitHandles As New List(Of AutoResetEvent)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; While lLoopCount &lt; BuiltReports.Count</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lWaitHandles.Clear()</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lWaitHandles.Add(New AutoResetEvent(False))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BackgroundWorker1.RunWorkerAsync(New AsyncWorker(BuiltReports.ElementAt(lLoopCount).Value, lWaitHandles(0)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lLoopCount += 1</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If lLoopCount &lt; BuiltReports.Count Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lWaitHandles.Add(New AutoResetEvent(False))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BackgroundWorker2.RunWorkerAsync(New AsyncWorker(BuiltReports.ElementAt(lLoopCount).Value, lWaitHandles(1)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; WaitHandle.WaitAll(lWaitHandles.ToArray)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lLoopCount += 1</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End While</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Sub BackgroundWorker1_DoWork(ByVal sender As Object, ByVal e As System.ComponentModel.DoWorkEventArgs) Handles BackgroundWorker1.DoWork, BackgroundWorker2.DoWork</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim lAsyncWorker As AsyncWorker = DirectCast(e.Argument, AsyncWorker)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lAsyncWorker.Report.Build()</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39;lAsyncWorker.WaitHandle.Set()</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; e.Result = Nothing</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Public Sub BackgroundWorker1_RunWorkerCompleted(ByVal sender As Object, ByVal e As System.ComponentModel.RunWorkerCompletedEventArgs) Handles BackgroundWorker1.RunWorkerCompleted, BackgroundWorker2.RunWorkerCompleted</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim lAsyncWorker As AsyncWorker = e.Result</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim lIndex As Integer = 0</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; While lIndex &lt; BuiltReports.Count</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If BuiltReports.ElementAt(lIndex).Value.ReportId = lAsyncWorker.Report.ReportId Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BuiltReports(lAsyncWorker.Report.ReportId) = lAsyncWorker.Report</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lAsyncWorker.WaitHandle.Set()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lIndex = BuiltReports.Count</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lIndex += 1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End While</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Class</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 25, 2011</h2><p>Hi,</p>
+<p>
+In a &quot;rich&quot; client the ApplicationContext is actually storerd in a named slot on the Thread. </p>
+<p>The methods required to set the application context is internal in Csla. </p>
+<p>You may look into Csla.Threading.Backgroundworker to see how the &quot;object&quot; + ApplicationContext, CultureInfos and User is wrapped in an object and sent to the background thread. The background thread must then make sure to set these on the background thread before calling the actual method. You could use MethodCaller or reflection to call that method on the ApplicationContext (even if it is internal).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

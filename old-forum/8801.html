@@ -1,0 +1,20 @@
+<html><header><title>Type is not resolved for member, CustomPrincipal, IIS</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type is not resolved for member, CustomPrincipal, IIS</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8801.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fsl posted on Thursday, April 15, 2010</h2><p>Hi there</p>
+<p>I&#39;m using a remote wcf dataportal hosted in IIS7. I&#39;m getting a, &quot;Type is not resolved for member... CustomPrincipal&quot; error. I&#39;ve read several threads in the forum stating that this should not be an issue with IIS only with the built in development server..&nbsp;</p>
+<p>Any suggestions on how to fix this?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, April 15, 2010</h2><p>Make sure you are using the same CslaAuthorization config setting on client and server - that will make sure CSLA properly passes the client principal through to the server (or that it won&#39;t - depending on the setting).</p>
+<p>Do other types flow through the data portal properly? In other words, is this problem unique to the principal object, or does it affect otther objects as well?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fsl replied on Friday, April 16, 2010</h2><p>Thank for the quick answer.</p>
+<p>The problem is unique for CustomPrincipal. The problem went away when i changed the annotation Serializable to DataContract (for the CustomPrincipal class) !</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 16, 2010</h2><p>Are you still getting correct authorization behaviors on the server? Switching to DataContract probably means the class is coming across, but with no data inside (since to get the data, all the properties or fields would need to be marked with DataMember - and they are not).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, March 25, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>fsl<br></b> </p>
+<p>The problem is unique for CustomPrincipal. The problem went away when i changed the annotation Serializable to DataContract (for the CustomPrincipal class) !</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>This is 100% correct! All you have to do is:</p>
+<p>1) add System.Runtime.Serialization to the references</p>
+<p>2) add [DataContract] attribute to your custom principal class declaration.</p>
+<p>I&#39;m using Csla 4.3.10&nbsp;with VS2010 (and not using IIS Express)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 25, 2012</h2><p>The problem is typically unique to the dev web server. Using datacontract instead of serializable will generally cause all sorts of problems for business objects, so be careful!!!</p>
+<p>To do it right, you must mark all fields with datamember, including any in the base class and any referenced objects. Also you must use the config setting to force CSLA to always use the NDCS, and you can&#39;t then use SL, WP7, or WinRT...</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, March 25, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>The problem is typically unique to the dev web server.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I guess you are rigth. I was using <strong>Visual Studio Development Server</strong> and changed to <strong>IIS Express</strong>. No need for DataContract after all.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

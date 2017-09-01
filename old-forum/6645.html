@@ -1,0 +1,45 @@
+<html><header><title>Need security suggestion/guideline</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need security suggestion/guideline</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6645.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ToddH posted on Friday, March 20, 2009</h2><P>I'm working on the security aspect of a project and need some suggestions. The project will be web based. I'm creating a 'SecurityUser' class similar to a Windows User. It's basically what I will use as a user logon account.</P>
+<P>Here's my scenario: When I create a new SecurityUser class, I need to assign a password. A password is required.&nbsp;When the user saves the object for the first time, the password info (salt/hash) gets sent to the database with the other user&nbsp;info. However, the password info gets sent back and forth if I continue to modify and save the object.&nbsp;With that,&nbsp;the password info is getting saved in the session state.</P>
+<P>Is this a security vulnerability? I usually do WinForms programming and not web-based stuff. Or am I overthinking the issue? At this point, I'm working on just a foundation for future apps that I create, but I want the best possible security model.</P>
+<P>Thanks in advance,<BR>Todd</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2><P>Have you considered using the ASP.NET MembershipProvider? </P>
+<P>Microsoft already did all this work for you, and it was done by people with deep understanding of security and associated ramifications, and it is designed to work for the web.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ToddH replied on Friday, March 20, 2009</h2><P>I guess I understated it a little bit: I'm writing the app for Web and WinForms. However,&nbsp;at this point, I don't have much understanding of the ASP.NET security side of things yet.</P>
+<P>Also, I'm making the security very granular. I've already built the database stuff, along with&nbsp;SecurityUser and SecurityGroup to be allowed Access/Deny on Read/Write/Execute, etc on whatever objects that I create within my app. Objects can be added to Users, Users can be added to Groups, Groups can be added to Groups, etc. ....auditing password history, allowing custom password complexity rules...you name it. There's probably more--but you get the point.</P>
+<P>I guess my question regards the best practice for transferring password info&nbsp;back and forth--and whether or not to hold that stuff in memory on the client side. If anything, the password info is always transferred at least once, when logging in. I just don't want to give a "man in the middle" access to the info unecessarily. I just don't want to play the odds.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In short, the password should not be retained on either client
+or server, and the user credentials should be passed using an encrypted channel
+like SSL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Once the user&#8217;s identity has been established, you can
+maintain the principal/identity objects, but they won&#8217;t contain anything
+like the user&#8217;s password or even the hashed value &#8211; just the
+username, roles, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ToddH replied on Friday, March 20, 2009</h2><P>Thanks Rocky.</P>
+<P>That's what I kinda figured. I'll have to separate the password info from the SecurityUser class&nbsp;so that it's not hanging around.</P>
+<P>Todd</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

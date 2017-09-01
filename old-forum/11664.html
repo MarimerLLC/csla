@@ -1,0 +1,40 @@
+<html><header><title>Seperating BAL and DAL, CSLA.Net framework 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Seperating BAL and DAL, CSLA.Net framework 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11664.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Sunday, October 28, 2012</h2><p>Hi,</p>
+<p>I have recently started using CSLA.net. I really like the way the CSLA enforcing the best practices of class - object concepts. Thanks for such a nice framework.</p>
+<p>And my question is on the architecture of application using CSLA.NET 4.</p>
+<p>I saw some&nbsp;exising code in CSLA framework, where i have observed both Business layer(factory methods)&nbsp;and data access layer (Dataportal_Insert(), DataPortal_Delete()...etc) in the same class. I want to seperate the BAL and DAL, like all business layer related code in one class library project and the Data access layer related code in another project. Can we do this in CSLA ? if so, Please let me know the best practice to seperate&nbsp;and pros and cons, if any.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, October 28, 2012</h2><p>Yes, you can. </p>
+<p>Use the ObjectFactory pattern to separate&nbsp; BAL and DAL into separate assemblies. <br />This is my preferred coding style. </p>
+<p>You can look at the SimpleNtier sample. </p>
+<p>I often use a MEF container for IoC and buildup of DataAccess classes simply because it&#39;s sufficient for my needs and a standard component in .NET.</p>
+<p>Pros:</p>
+<ul>
+<li>Your BAL code will look the same no matter what UI style or DataAccess style your app uses</li>
+<li>You get a clear separation of BAL and DataAccess</li>
+<li>You may declare interfaces for you dal classes </li>
+</ul>
+<p>Cons:</p>
+<ul>
+<li>You must handle BO state yourself (MarkOld/MarkNew/MarkClean)</li>
+<li>You cannot use the ChildDataportal helper methods (UpdateChildren/UpdateChild)</li>
+</ul>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">Sample:</p>
+<p style="margin:0px;">&nbsp; [<span style="color:#2b91af;">Serializable</span>]</p>
+<p style="margin:0px;">&nbsp; [Csla.Server.<span style="color:#2b91af;">ObjectFactory</span>(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">IOrderFactory</span>))]</p>
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">Order</span> : <span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Order</span>&gt;</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; [<span style="color:#2b91af;">Export</span>(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">IOrderFactory</span>))]</p>
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">OrderFactory</span> : <span style="color:#2b91af;">ObjectFactory</span>, <span style="color:#2b91af;">IOrderFactory</span></p>
+<p style="margin:0px;">&nbsp; {</p>
+</div>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">When you use a MEFObjectFactoryLoader (available on http://CslaContrib.CodePlex.com)</p>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Monday, October 29, 2012</h2><p>Thank you very much for your suggestion, will start digging throgh the suggested concepts.</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, October 28, 2012</h2><p>The &#39;Using CSLA 4: Data Access&#39; book from <a href="http://store.lhotka.net">http://store.lhotka.net</a> covers this topic in substantial detail.</p>
+<p>Information is also on the FAQ: <a href="http://www.lhotka.net/cslanet/faq/DataFaq.ashx">http://www.lhotka.net/cslanet/faq/DataFaq.ashx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

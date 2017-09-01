@@ -1,0 +1,10 @@
+<html><header><title>Bug(s) in BusinessListBase and ReadOnlyBindingList?!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug(s) in BusinessListBase and ReadOnlyBindingList?!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4555.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus posted on Tuesday, March 25, 2008</h2><P>Hi all,</P>
+<P>We found the following two problems in CSLA 3.5 beta 2:</P>
+<OL>
+<LI>BusinessListBase throws a NullReferenceException when ClearItems() is called and the collection does not contain any items. The exception is thrown because the field _positionMap is null in this case.Possible solution: call DeferredLoadPositionMapIfNotLoaded() before calling _positionMap.ClearMap()</LI>
+<LI>ReadOnlyBindingList throws a NullReferenceException when ClearItems() is called and the collection does not contain any items. The exception is thrown because the field _indexSet is null in this case. Possible solution: call DeferredLoadIndexIfNotLoaded() before calling&nbsp;_indexSet.ClearIndexes()</LI></OL>
+<P>Hopefully these problems can be fixed before CSLA 3.5 is released?!</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 25, 2008</h2>I believe these were reported a few days ago and were addressed. Please give the new RC1 build (online today) a try and see if that resolves the issues.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Wednesday, March 26, 2008</h2><P>Rocky,</P>
+<P>In ReadOnlyBindingList the issue is solved indeed.</P>
+<P>However, in BusinessListBase the exception still occurs. Note that in BusinessListBase the exception is thrown because _positionMap is null. The field _indexSet is handled correctly.</P>
+<P>Cheers,<BR>Herman</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

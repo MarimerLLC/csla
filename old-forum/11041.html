@@ -1,0 +1,28 @@
+<html><header><title>Silverlight Video Demo004 in VS10 - Could not find default endpoint element that references contract</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Video Demo004 in VS10 - Could not find default endpoint element that references contract</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11041.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Monday, January 09, 2012</h2><p>Hi guys,</p>
+<p>
+<p><span>I&#39;ve just completed watching &nbsp;the CSLA Silverlight video series and have some issue to make work the Demo004.</span></p>
+<p>Actually, i wondering if anyone is using VS10 (SP1), CSLA (3.8.4) SL, targeting SL 3.0.&nbsp;</p>
+<p> Here is the scenario:</p>
+<p>1.) Download &quot;SLVid01-V3.8.1-091204&quot; samples and open the Demo004 into VS10</p>
+<p>2.) Remove the broken references to CSLA and CSLA SL</p>
+<p>3.) Add the 3.8.4 CSLA and CSLA SL&nbsp;projects to the solution - convert as well</p>
+<p>4) Build and run (it will build just fine)</p>
+<p>I receive the following exception:</p>
+<p><strong>Could not find default endpoint element that references contract &#39;WcfPortal.IWcfPortal&#39; in the ServiceModel client configuration section. This might be because no configuration file was found for your application, or because no endpoint element matching this contract could be found in the client element.</strong></p>
+<p><span>In my case, this.DataPortalUrl is always null.&nbsp; (Even before I removed the &quot;CSLA&quot; from the contract in teh ClientConfig.</span>
+</p>
+<p>Any thoughts or related experiences would be greatly appreciated!</p>
+<p>Cedric</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 09, 2012</h2><p>The SLVID videos and samples were created for Silverlight 2 and CSLA .NET 3.7, so it isn&#39;t surprising that there are some WCF issues when using Silverlight 3 or 4. Microsoft changed WCF over time.</p>
+<p>If I remember correctly, they changed something subtle about the client-side config file. I think you need to provide more (or less?) of the proxy type name&nbsp;or contract type name in the config file as compared to SL2. It has been a few years, and I&#39;m afraid I don&#39;t remember the specifics.</p>
+<p>My recommendation is to look at one of the current SL samples and compare their client config entries to the old SL2 ones - you should be able to spot the difference.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, January 09, 2012</h2><p>Thanks Rocky.</p>
+<p>You&#39;r right about client-side config file. I found the instruction on this link :http://dotnetbyexample.blogspot.com/2010/03/running-cslalight-382-under-net-4-and.html</p>
+<p>&nbsp;Actually, I have to remove the &ldquo;Csla.&rdquo; prefix, including the dot from the <b>text<strong>contract=&quot;Csla.WcfPortal.IWcfPortal&quot;</strong></b>&nbsp;to obtain this text &nbsp;<b>contract=&quot;WcfPortal.IWcfPortal&quot;</b>&nbsp;&nbsp;
+</p>
+<p><span>After I made the modification, i dont get the endpoint exception but a new &nbsp;wcf exception : Remote server not found.</span></p>
+<p><span>I have look at the current samples but so far i didnt find others differences.</span></p>
+<p>Thanks for your help.</p>
+<p>Cedric</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, January 09, 2012</h2><p>I found it.</p>
+<p>In the Demo.web project I have a copy to the CslaLight assembly instead of the CslaNET assembly. This is why I was getting an error about the type WcfPortal could not be found.</p>
+<p>Best regards,</p>
+<p>Cedric</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

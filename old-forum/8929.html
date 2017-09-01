@@ -1,0 +1,47 @@
+<html><header><title>How can I use a ContextManager to retrieve a list of objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How can I use a ContextManager to retrieve a list of objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8929.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Thursday, May 13, 2010</h2><p>Hello:</p>
+<p>I&#39;m starting with the CSLA 3.5, so pray for me!!!</p>
+<p>I&acute;m &quot;coding&quot; my classes and I&#39;ve been trying to code the Fetch Method with no good results.</p>
+<p>I need to get a list of objects and I wrote a stored procedure for it.</p>
+<p>Words from Mr. Lhotka in the book: &quot;So, I typically compromise, using LINQ to SQL to query for data and using stored procedures (called through LINQ to SQL) for insert, update, and delete operations.&quot;</p>
+<p>The problem is that I want to query for data using store procedures (called through LINQ to SQL). My stored procedure returns a sets or list of objects because it has a &quot;Select....&quot; instruction.</p>
+<p>But (always bitting the eternal BUT)</p>
+<p>When I write:</p>
+<p>Dim data = ctx.DataContext.spMyStoredProcedure(criteria.Name, criteria.Active,criteria.Date1, criteria.Date2)</p>
+<p>and try to make:</p>
+<p>Me.AddRange(data)</p>
+<p>Referring to &quot;data&quot;, VS says that:</p>
+<p>Value of type &#39;Integer&#39; cannot be converted to &#39;System.Collections.Generic.IEnumerable(Of GoldenTitanium.Library.InfoMyObject)</p>
+<p>I hope somebody can help and I apologize for my english, I&#39;m not english-spoken people.</p>
+<p>Thaks,</p>
+<p>LazaroMS</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 13, 2010</h2><p>It sounds like your stored procedure is returning a single Integer result, not a list of data.</p>
+<p>You need to get the stored procedure call working first, then get the data loaded into your business object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Friday, May 14, 2010</h2><p>Sorry Mr. Lhotka but that is the main problem.</p>
+<p>The following is my stored procedure:</p>
+<p><i>ALTER PROCEDURE [dbo].[spPrueba]<br /><br />AS<br />&nbsp; <br />CREATE TABLE #tmp_ListaPolos(polo_Id UniqueIdentifier, polo_Nomb varchar(50)) <br />&nbsp;<br />INSERT INTO #tmp_ListaPolos <br /><br />SELECT trsx_Polo.polo_Id, trsx_Polo.polo_Nomb FROM trsx_Polo ORDER BY trsx_Polo.polo_Id <br /><br />return SELECT * FROM #tmp_ListaPolos<br /><br />DROP TABLE #tmp_ListaPolos</i></p>
+<p>When I drag % drop to the DBML, it automatically generates a function as integer.</p>
+<p>I checked into the PTracker.designer.vb and it has some <i>Partial Classes defined</i> to use them as Auto-Generated Types.</p>
+<p>I noted that those <i>Auto-Generated types</i> are used in the functions that need another type but integer.</p>
+<p>I don&#39;t know how to make that my DBML generates/creates automatically those Partial Classes and I noted that those partial classes are a representacion of the info an object, like a member of a readonly list of objects.</p>
+<p>I hope you can help me.</p>
+<p>&nbsp;</p>
+<p>Lazaro</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 14, 2010</h2><p>I really can&#39;t provide support for Microsoft&#39;s LINQ to SQL technology, sorry. But maybe someone here has encountered that issue and can help - or you can try the MSDN forums, as I&#39;m sure there&#39;s a L2S forum where L2S experts might answer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisghardwick replied on Friday, May 14, 2010</h2><p>Not really knowing that your procedure is trying to do, but taking a wild guess:</p>
+<p>Change:</p>
+<p>&nbsp;&nbsp;<em>return SELECT * FROM #tmp_ListaPolos</em></p>
+<p><em></em>To:</p>
+<p><em>SELECT * FROM #tmp_ListaPolos</em><br />&nbsp;</p>
+<p>That will have your procedure return the data from <em>#tmp_ListaPolos</em> rather than as the status of the execution of the procedure. From books online:</p>
+<p>When used with a stored procedure, <span style="background-color:#3399ff;color:#ffffff;">RETURN</span> cannot <span style="background-color:#3399ff;color:#ffffff;">return</span> a null value. If a procedure tries to <span style="background-color:#3399ff;color:#ffffff;">return</span> a null value (for example, using <span style="background-color:#3399ff;color:#ffffff;">RETURN</span> <b>@status</b> when <b>@status</b> is NULL), a warning message is generated and a value of 0 is returned.</p>
+<p>USE AdventureWorks;<br />GO<br />CREATE PROCEDURE checkstate @param varchar(11)<br />AS<br />IF (SELECT StateProvince FROM Person.vAdditionalContactInfo WHERE ContactID = @param) = &#39;WA&#39;<br />&nbsp;&nbsp;&nbsp; <span style="background-color:#3399ff;color:#ffffff;">RETURN</span> 1<br />ELSE<br />&nbsp;&nbsp;&nbsp; <span style="background-color:#3399ff;color:#ffffff;">RETURN</span> 2;<br />GO</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Friday, May 14, 2010</h2><p>Hi Cris:</p>
+<p>Thank you for your response and sorry for my misstype.</p>
+<p>What I.m trying to do with that procedure is:</p>
+<p>-Create a temporal table.</p>
+<p>-Fill the tmp table with a result of a query</p>
+<p>-Return the content of the tmp table</p>
+<p>-Delete the tmp table</p>
+<p>&nbsp;</p>
+<p>ALTER PROCEDURE [dbo].[spPrueba]<br /><br />AS<br />&nbsp;<br />CREATE TABLE #tmp_ListaPolos(polo_Id UniqueIdentifier, polo_Nomb varchar(50))<br />&nbsp;<br />INSERT INTO #tmp_ListaPolos<br /><br />SELECT trsx_Polo.polo_Id, trsx_Polo.polo_Nomb FROM trsx_Polo ORDER BY trsx_Polo.polo_Id<br /><br />SELECT * FROM #tmp_ListaPolos<br /><br />DROP TABLE #tmp_ListaPolos</p>
+<p>&nbsp;</p>
+<p>I have not found a way to make the O/R designer &quot;understand&quot; that the result is rather an objectinfo type tahan an integer type.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>lazaroms replied on Wednesday, June 30, 2010</h2><p>Finally I dit it.</p>
+<p>The solution is working on the vb module of the DBML, not in the designer.vb module.</p>
+<p>Your need to create a class for your returning type and then create a method for the sotred procedure.</p>
+<p>The structure of the SP method is the same that the DBML autogenerates for the other SP.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,1175 @@
+<html><header><title>Entity Framework Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Entity Framework Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7628.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Tuesday, September 15, 2009</h2><P>Ok, I have an object named NYMEXHistory, whose entity set name is NYMEXHistories.&nbsp; It has a number of fields including one called NYMEXProductId which is tied to the named object NYMEXProduct, whose entity set name is NYMEXProducts.&nbsp; I am having a problem executing an update on the NYMEXHistory&nbsp;object.&nbsp; When I go to update the NYMEXProductId I am getting the error "Object reference not set to an instance of an object."</P>
+<P>Here is what I have for code:<BR><FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update()<BR>{<BR></FONT><FONT size=2>LastChangedBy = Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.Name;<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt; manager&nbsp;&nbsp; =</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;BelAirPricingEF.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataConnection</FONT></FONT><FONT size=2>.BelAirPricingConnectionName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>))</P>
+<P>{ </P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2> update = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2>();<BR>update.NYMEXHistoryId = ReadProperty(NYMEXHistoryIdProperty);<BR>update.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXHistories"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXHistoryId"</FONT></FONT><FONT size=2>,&nbsp;&nbsp; update.NYMEXHistoryId);<BR></FONT><FONT size=2>manager.ObjectContext.Attach(update); </P>
+<P></P>
+<P>update.NYMEXDate = ReadProperty(NYMEXDateProperty);<BR>update.NYMEXProduct.NYMEXProductId = ReadProperty(NYMEXProductIdProperty);&nbsp; &lt;-- here is where the exception occurs.</P>
+<P>update.ForwardDate = ReadProperty(ForwardDateProperty);<BR>update.ForwardMonth = ReadProperty(ForwardMonthProperty);<BR>update.NYMEXLow = ReadProperty(NYMEXLowProperty);<BR>update.NYMEXHigh = ReadProperty(NYMEXHighProperty);<BR>update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<BR>update.LastChangedBy = ReadProperty(LastChangedByProperty);</P>
+<P></P>
+<P>manager.ObjectContext.SaveChanges(); <BR>}<BR>}</P>
+<P>Any ideas on how to do this would be helpfull.&nbsp; Do I need to create a new NYMEXProduct object that is part of a NYMEXHistory object?&nbsp; I tried that and it didn't work, but I think I am close to figuring it out.</P>
+<P>Thanks in advance for your help.</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Tuesday, September 15, 2009</h2>Hi,<br><br>Does the related NYMEXProduct already exist in the database ? I think you'd have to first retrieve it into the context, and then you'd be able to associate it with the NYMEXHistory object.<br><br>If it doesn't exist, then you'd have to create it, and associate it.<br><br>By "associating" I really mean assigning. So you'd assign update.NYMEXProduct = theProduct; before trying to set its ID.<br><br>It's been a while since I played with EF, so I may be completely wrong <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>regards<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Update.NYMERXProduct
+is null.&nbsp; You never populated it with any values.&nbsp; It is not as
+straightforward process as one would like.&nbsp; It will be improved in v2.0.&nbsp;
+Now you have to create an instance of NUMEXProduct object, set its EntityKey,
+attach to context, then either attach (if not changed) &#8220;update&#8221; to
+it or set &#8220;update.NymexProduct&#8221; (if product ID changes) to the
+entity you created for NYMEXProduct.&nbsp; I&#8217;d recommend buying a book on
+EF to make some of these pains go away.&nbsp; This is only the first issue you
+will encounter in N-Tier EF implementations, but there will be more.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 15, 2009 10:45 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok, I have an object named NYMEXHistory, whose entity set name is
+NYMEXHistories.&nbsp; It has a number of fields including one called
+NYMEXProductId which is tied to the named object NYMEXProduct, whose entity set
+name is NYMEXProducts.&nbsp; I am having a problem executing an update on the
+NYMEXHistory&nbsp;object.&nbsp; When I go to update the NYMEXProductId I am
+getting the error &quot;Object reference not set to an instance of an
+object.&quot;<o:p></o:p></p>
+
+<p>Here is what I have for code:<span><o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span>
+DataPortal_Update()<br>
+{<br>
+LastChangedBy = Csla.<span>ApplicationContext</span>.User.Identity.Name;<br>
+<span>using</span> (<span>ObjectContextManager</span>&lt;<span>BelAirPricingEntities</span>&gt; manager&nbsp;&nbsp; =<span>ObjectContextManager</span>&lt;BelAirPricingEF.<span>BelAirPricingEntities</span>&gt;.GetManager(<span>DataConnection</span>.BelAirPricingConnectionName, <span>true</span>))<o:p></o:p></span></p>
+
+<p><span>{ <o:p></o:p></span></p>
+
+<p><span>NYMEXHistory</span><span> update = <span>new</span> <span>NYMEXHistory</span>();<br>
+update.NYMEXHistoryId = ReadProperty(NYMEXHistoryIdProperty);<br>
+update.EntityKey = <span>new</span> System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXHistories&quot;</span>,
+<span>&quot;NYMEXHistoryId&quot;</span>,&nbsp;&nbsp;
+update.NYMEXHistoryId);<br>
+manager.ObjectContext.Attach(update); <o:p></o:p></span></p>
+
+<p><span>update.NYMEXDate =
+ReadProperty(NYMEXDateProperty);<br>
+update.NYMEXProduct.NYMEXProductId =
+ReadProperty(NYMEXProductIdProperty);&nbsp; &lt;-- here is where the exception
+occurs.<o:p></o:p></span></p>
+
+<p><span>update.ForwardDate =
+ReadProperty(ForwardDateProperty);<br>
+update.ForwardMonth = ReadProperty(ForwardMonthProperty);<br>
+update.NYMEXLow = ReadProperty(NYMEXLowProperty);<br>
+update.NYMEXHigh = ReadProperty(NYMEXHighProperty);<br>
+update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<br>
+update.LastChangedBy = ReadProperty(LastChangedByProperty);<o:p></o:p></span></p>
+
+<p><span>manager.ObjectContext.SaveChanges(); <br>
+}<br>
+}<o:p></o:p></span></p>
+
+<p><span>Any ideas on how to do this would be
+helpfull.&nbsp; Do I need to create a new NYMEXProduct object that is part of a
+NYMEXHistory object?&nbsp; I tried that and it didn't work, but I think I am
+close to figuring it out.<o:p></o:p></span></p>
+
+<p><span>Thanks in advance for your help.<o:p></o:p></span></p>
+
+<p><span>CyclingFoodmanPA<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, September 15, 2009</h2><P>Hey Sergey,</P>
+<P>Thanks for the response and I am getting closer.&nbsp; I do have Julia Lerman's book, which is an excellent book and I am getting there, but I am getting a different error now.&nbsp; For some reason EF thinks I am ADDING a relationship instead of modifying one.&nbsp; Here is how I modified my code:<BR><BR><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXProduct</FONT></FONT><FONT size=2> updateNYMEXProduct = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXProduct</FONT></FONT><FONT size=2>();<BR>updateNYMEXProduct.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXProducts"</FONT></FONT><FONT size=2>,</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>&nbsp;&nbsp; <BR></FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "NYMEXProductId"</FONT></FONT><FONT size=2>, ReadProperty(NYMEXProductIdProperty));<BR></FONT><FONT size=2>update.NYMEXProduct = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXProduct</FONT></FONT><FONT size=2>)manager.ObjectContext.GetObjectByKey <BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (updateNYMEXProduct.EntityKey); </FONT></P>
+<P><FONT size=2>Everything looks good in the update.NYMEXProduct variable.&nbsp; However, when I run the SaveChanges(), I get an exception that reads as follows:<BR></FONT><FONT size=2><FONT color=#008000 size=2><FONT color=#008000 size=2>//? ex.Message<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//"A relationship is being added or deleted from an AssociationSet 'FK_NYMEXProduct_NYMEXHistory'. With cardinality constraints, a corresponding 'NYMEXHistory' must also be added or deleted."</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#008000 size=2><FONT color=#008000 size=2>So, I am getting close :) but something is still missing.</P></FONT></FONT></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+probably need to set History column in Products table (</span><span>updateNYMEXProduct.NYMEXHistory</span><span>) to satisfy this constraint.&nbsp;
+Hard to tell without full code and model available.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 15, 2009 12:34 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hey Sergey,<o:p></o:p></p>
+
+<p>Thanks for the response and I am getting closer.&nbsp; I do have Julia
+Lerman's book, which is an excellent book and I am getting there, but I am
+getting a different error now.&nbsp; For some reason EF thinks I am ADDING a
+relationship instead of modifying one.&nbsp; Here is how I modified my code:<br>
+<br>
+<span>NYMEXProduct</span><span> updateNYMEXProduct = <span>new</span>
+<span>NYMEXProduct</span>();<br>
+updateNYMEXProduct.EntityKey = <span>new</span> System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>,<span>&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;NYMEXProductId&quot;</span>,
+ReadProperty(NYMEXProductIdProperty));<br>
+update.NYMEXProduct = (<span>NYMEXProduct</span>)manager.ObjectContext.GetObjectByKey
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (updateNYMEXProduct.EntityKey); </span><o:p></o:p></p>
+
+<p><span>Everything looks good in the
+update.NYMEXProduct variable.&nbsp; However, when I run the SaveChanges(), I
+get an exception that reads as follows:<br>
+<span>//? ex.Message<br>
+//&quot;A relationship is being added or deleted from an AssociationSet
+'FK_NYMEXProduct_NYMEXHistory'. With cardinality constraints, a corresponding
+'NYMEXHistory' must also be added or deleted.&quot;</span></span><o:p></o:p></p>
+
+<p><span>So, I am getting close :) but
+something is still missing.<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, September 15, 2009</h2><P>Ok, I got it to work, but I had to read the record in again.&nbsp; Here is the code I got to work:</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Transactional</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalTypes</FONT></FONT><FONT size=2>.TransactionScope)]<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update()<BR>{<BR>LastChangedBy = Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.Name;<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt; manager =<BR></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;BelAirPricingEF.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataConnection</FONT></FONT><FONT size=2>.BelAirPricingConnectionName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>))<BR>{<BR></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2> nh = (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> oneNH </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> manager.ObjectContext.NYMEXHistories.Include(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXProduct"</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>where</FONT></FONT><FONT size=2> oneNH.NYMEXHistoryId == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.NYMEXHistoryId<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> oneNH).First();<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.IsDirty)<BR>{ <BR>nh.ForwardDate = ReadProperty(ForwardDateProperty);<BR>nh.ForwardMonth = ReadProperty(ForwardMonthProperty);<BR>nh.NYMEXLow = ReadProperty(NYMEXLowProperty);<BR>nh.NYMEXHigh = ReadProperty(NYMEXHighProperty);<BR>nh.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<BR>nh.LastChangedBy = ReadProperty(LastChangedByProperty);<BR></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXProduct</FONT></FONT><FONT size=2> updateNYMEXProduct = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXProduct</FONT></FONT><FONT size=2>();<BR>updateNYMEXProduct.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXProducts"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXProductId"</FONT></FONT><FONT size=2>, ReadProperty(NYMEXProductIdProperty));<BR>nh.NYMEXProduct = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXProduct</FONT></FONT><FONT size=2>)manager.ObjectContext.GetObjectByKey(updateNYMEXProduct.EntityKey);</P>
+<P>manager.ObjectContext.SaveChanges(); <BR>} <BR>}<BR>}</P>
+<P>Sergey, I was basing a lot on your RolodexEF example and you instantiated a new Companies object even for the update.&nbsp; I couldn't get the update to work in the Rolodex because of some date error.&nbsp; A buddy of mine were emailing back and forth and this is what I came up with and it worked.&nbsp; However, is this the "correct solution" or is there a more correct one that I haven't found yet.</P>
+<P>CyclingFoodmanPA</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yep,
+and you really do not want to do that.&nbsp; What you need to do instead is
+create a History record based on some ID, and attach it to the context.&nbsp; That
+way you do not need to round-trip to database during updates/inserts/deletes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 15, 2009 1:10 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok, I got it to work, but I had to read the record in again.&nbsp; Here is
+the code I got to work:<o:p></o:p></p>
+
+<p><span>[<span>Transactional</span>(<span>TransactionalTypes</span>.TransactionScope)]<br>
+<span>private</span> <span>void</span>
+DataPortal_Update()<br>
+{<br>
+LastChangedBy = Csla.<span>ApplicationContext</span>.User.Identity.Name;<br>
+<span>using</span> (<span>ObjectContextManager</span>&lt;<span>BelAirPricingEntities</span>&gt; manager =<br>
+<span>ObjectContextManager</span>&lt;BelAirPricingEF.<span>BelAirPricingEntities</span>&gt;.GetManager(<span>DataConnection</span>.BelAirPricingConnectionName, <span>true</span>))<br>
+{<br>
+<span>NYMEXHistory</span> nh = (<span>from</span>
+oneNH <span>in</span>
+manager.ObjectContext.NYMEXHistories.Include(<span>&quot;NYMEXProduct&quot;</span>)<br>
+<span>where</span> oneNH.NYMEXHistoryId == <span>this</span>.NYMEXHistoryId<br>
+<span>select</span> oneNH).First();<br>
+<span>if</span> (<span>this</span>.IsDirty)<br>
+{ <br>
+nh.ForwardDate = ReadProperty(ForwardDateProperty);<br>
+nh.ForwardMonth = ReadProperty(ForwardMonthProperty);<br>
+nh.NYMEXLow = ReadProperty(NYMEXLowProperty);<br>
+nh.NYMEXHigh = ReadProperty(NYMEXHighProperty);<br>
+nh.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<br>
+nh.LastChangedBy = ReadProperty(LastChangedByProperty);<br>
+<span>NYMEXProduct</span> updateNYMEXProduct = <span>new</span> <span>NYMEXProduct</span>();<br>
+updateNYMEXProduct.EntityKey = <span>new</span> System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>,
+<span>&quot;NYMEXProductId&quot;</span>,
+ReadProperty(NYMEXProductIdProperty));<br>
+nh.NYMEXProduct = (<span>NYMEXProduct</span>)manager.ObjectContext.GetObjectByKey(updateNYMEXProduct.EntityKey);<o:p></o:p></span></p>
+
+<p><span>manager.ObjectContext.SaveChanges(); <br>
+} <br>
+}<br>
+}<o:p></o:p></span></p>
+
+<p><span>Sergey, I was basing a lot on your RolodexEF
+example and you instantiated a new Companies object even for the update.&nbsp;
+I couldn't get the update to work in the Rolodex because of some date
+error.&nbsp; A buddy of mine were emailing back and forth and this is what I
+came up with and it worked.&nbsp; However, is this the &quot;correct
+solution&quot; or is there a more correct one that I haven't found yet.<o:p></o:p></span></p>
+
+<p><span>CyclingFoodmanPA<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, September 15, 2009</h2><br><br>Ok, I finally got it!&nbsp; Here is what I finally had that worked:<br><br>[Transactional(TransactionalTypes.TransactionScope)]<br>private void DataPortal_Update()<br>{<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LastChangedBy = Csla.ApplicationContext.User.Identity.Name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (ObjectContextManager&lt;BelAirPricingEntities&gt; manager =&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectContextManager&lt;BelAirPricingEF.BelAirPricingEntities&gt;.GetManager(DataConnection.BelAirPricingConnectionName, true))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NYMEXHistory update = new NYMEXHistory();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXHistoryId = ReadProperty(NYMEXHistoryIdProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.EntityKey = new System.Data.EntityKey("BelAirPricingEntities.NYMEXHistories", "NYMEXHistoryId", update.NYMEXHistoryId);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b> // This is what did it and it has to be placed BEFORE the Attach!</b><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; update.NYMEXProductReference.EntityKey = new System.Data.EntityKey("BelAirPricingEntities.NYMEXProducts", "NYMEXProductId", ReadProperty(NYMEXProductIdProperty));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; manager.ObjectContext.Attach(update);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXDate = ReadProperty(NYMEXDateProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.ForwardDate = ReadProperty(ForwardDateProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.ForwardMonth = ReadProperty(ForwardMonthProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXLow =&nbsp; ReadProperty(NYMEXLowProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXHigh = ReadProperty(NYMEXHighProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.LastChangedBy = ReadProperty(LastChangedByProperty);&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int rowsAffected = manager.ObjectContext.SaveChanges();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>Here is the link that finally got it to work and got the concept to sink in: 
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+
+<span><a href="http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/cde2bb42-8978-4c18-bd52-e56814096881/">http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/cde2bb42-8978-4c18-bd52-e56814096881/</a><br><br>CyclingFoodmanPA<br><br><br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, September 17, 2009</h2><P>Hmmm, I just discovered that the changes are not being saved to the database.&nbsp; After I execute the <BR>int rowsAffected = manager.ObjectContext.SaveChanges();<BR>rowsAffected = 1, which is good, however, I query the DB in SQL Enterprise Manager and the value of NYMEXProduct has not changed.&nbsp; Any ideas here!&nbsp; And I thought I had things figured out :(.&nbsp; Murphy has moved into EF!!</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 17, 2009</h2>Do you have a transaction, and is it being committed?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, September 17, 2009</h2>Hmmm, you are on to something.&nbsp; The routine looks as follows:<BR><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Transactional</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalTypes</FONT></FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P>LastChangedBy = Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.Name;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt; manager =</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;BelAirPricingEF.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataConnection</FONT></FONT><FONT size=2>.BelAirPricingConnectionName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2> update = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// NYMEXHistory key</P></FONT></FONT><FONT size=2>
+<P>update.NYMEXHistoryId = ReadProperty(NYMEXHistoryIdProperty);</P>
+<P>update.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXHistories"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXHistoryId"</FONT></FONT><FONT size=2>, update.NYMEXHistoryId);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Foreign keys - NYMEXProduct</P></FONT></FONT><FONT size=2>
+<P>update.NYMEXProductReference.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXProducts"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXProductId"</FONT></FONT><FONT size=2>, ReadProperty(NYMEXProductIdProperty));</P>
+<P>manager.ObjectContext.Attach(update);</P>
+<P>update.NYMEXDate = ReadProperty(NYMEXDateProperty);</P>
+<P>update.ForwardDate = ReadProperty(ForwardDateProperty);</P>
+<P>update.ForwardMonth = ReadProperty(ForwardMonthProperty);</P>
+<P>update.NYMEXLow = ReadProperty(NYMEXLowProperty);</P>
+<P>update.NYMEXHigh = ReadProperty(NYMEXHighProperty);</P>
+<P>update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);</P>
+<P>update.LastChangedBy = ReadProperty(LastChangedByProperty);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> rowsAffected = manager.ObjectContext.SaveChanges(); </P>
+<P>}</P>
+<P>}</P>
+<P>So it does have the attribute Transaction Transaction.Scope but I am basing my example on Sergey's RolodexEF and he is not doing anything after the update.&nbsp; What should I be doing after the SaveChanges?</P>
+<P>Thanks for the insight!</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, September 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+do not need to do anything else.&nbsp; I&#8217;d put a breakpoint in the update
+to make sure the values that are put into EF object are correct.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 17, 2009 11:52 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hmmm, you are on to something.&nbsp; The routine looks as
+follows:<span><o:p></o:p></span></p>
+
+<p><span>[<span>Transactional</span>(<span>TransactionalTypes</span>.TransactionScope)]<o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span>
+DataPortal_Update()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>LastChangedBy = Csla.<span>ApplicationContext</span>.User.Identity.Name;<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>ObjectContextManager</span>&lt;<span>BelAirPricingEntities</span>&gt; manager =<o:p></o:p></span></p>
+
+<p><span>ObjectContextManager</span><span>&lt;BelAirPricingEF.<span>BelAirPricingEntities</span>&gt;.GetManager(<span>DataConnection</span>.BelAirPricingConnectionName, <span>true</span>))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>NYMEXHistory</span><span> update = <span>new</span> <span>NYMEXHistory</span>();<o:p></o:p></span></p>
+
+<p><span>// NYMEXHistory key<o:p></o:p></span></p>
+
+<p><span>update.NYMEXHistoryId =
+ReadProperty(NYMEXHistoryIdProperty);<o:p></o:p></span></p>
+
+<p><span>update.EntityKey = <span>new</span>
+System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXHistories&quot;</span>, <span>&quot;NYMEXHistoryId&quot;</span>,
+update.NYMEXHistoryId);<o:p></o:p></span></p>
+
+<p><span>// Foreign keys - NYMEXProduct<o:p></o:p></span></p>
+
+<p><span>update.NYMEXProductReference.EntityKey = <span>new</span> System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>, <span>&quot;NYMEXProductId&quot;</span>,
+ReadProperty(NYMEXProductIdProperty));<o:p></o:p></span></p>
+
+<p><span>manager.ObjectContext.Attach(update);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXDate =
+ReadProperty(NYMEXDateProperty);<o:p></o:p></span></p>
+
+<p><span>update.ForwardDate =
+ReadProperty(ForwardDateProperty);<o:p></o:p></span></p>
+
+<p><span>update.ForwardMonth =
+ReadProperty(ForwardMonthProperty);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXLow =
+ReadProperty(NYMEXLowProperty);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXHigh =
+ReadProperty(NYMEXHighProperty);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXSettle =
+ReadProperty(NYMEXSettleProperty);<o:p></o:p></span></p>
+
+<p><span>update.LastChangedBy =
+ReadProperty(LastChangedByProperty);<o:p></o:p></span></p>
+
+<p><span>int</span><span> rowsAffected = manager.ObjectContext.SaveChanges(); <o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>So it does have the attribute Transaction
+Transaction.Scope but I am basing my example on Sergey's RolodexEF and he is
+not doing anything after the update.&nbsp; What should I be doing after the
+SaveChanges?<o:p></o:p></span></p>
+
+<p><span>Thanks for the insight!<o:p></o:p></span></p>
+
+<p><span>CyclingFoodmanPA<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, September 17, 2009</h2><P>Hey Sergey, </P>
+<P>I am stepping through and it is putting the correct value into the&nbsp;(went from a 4 to a 5) update.NYMEXProductReferenct.EntitryKey and the rowsAffected = getting a 1 so something is happening, however, it is&nbsp;just not persisting to the DB for some reason.</P>
+<P>I just went into the SQL Profiler and noticed the following SQL was executed:</P>
+<P>exec sp_executesql N'update [dbo].[NYMEXHistory]<BR>set [NYMEXDate] = @0, [ForwardDate] = @1, [ForwardMonth] = @2, [NYMEXLow] = @3, [NYMEXHigh] = @4, [NYMEXSettle] = @5, [LastChangedBy] = @6<BR>where ([NYMEXHistoryId] = @7)<BR>select [LastChanged]<BR>from [dbo].[NYMEXHistory]<BR>where @@ROWCOUNT &gt; 0 and [NYMEXHistoryId] = @7',N'@0 datetime,@1 datetime,@2 int,@3 decimal(18,6),@4 decimal(18,6),@5 decimal(18,6),@6 varchar(8),@7 int',@0='2009-09-17 00:00:00:000',@1='2009-10-01 00:00:00:000',@2=1,@3=1.234500,@4=1.234500,@5=1.234500,@6='ksafford',@7=671840</P>
+<P>It was not updating the NYMEXProductId in there.&nbsp; Even though rowsAffected said 1, probably because the LastUpdated Timestamp was updated it knew it was updated.</P>
+<P>CyclingFoodmanPA</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, September 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So,
+you are trying to update product ID, and that column is not updated?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 17, 2009 12:40 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hey Sergey, <o:p></o:p></p>
+
+<p>I am stepping through and it is putting the correct value into
+the&nbsp;(went from a 4 to a 5) update.NYMEXProductReferenct.EntitryKey and the
+rowsAffected = getting a 1 so something is happening, however, it is&nbsp;just
+not persisting to the DB for some reason.<o:p></o:p></p>
+
+<p>I just went into the SQL Profiler and noticed the following SQL was
+executed:<o:p></o:p></p>
+
+<p>exec sp_executesql N'update [dbo].[NYMEXHistory]<br>
+set [NYMEXDate] = @0, [ForwardDate] = @1, [ForwardMonth] = @2, [NYMEXLow] = @3,
+[NYMEXHigh] = @4, [NYMEXSettle] = @5, [LastChangedBy] = @6<br>
+where ([NYMEXHistoryId] = @7)<br>
+select [LastChanged]<br>
+from [dbo].[NYMEXHistory]<br>
+where @@ROWCOUNT &gt; 0 and [NYMEXHistoryId] = @7',N'@0 datetime,@1 datetime,@2
+int,@3 decimal(18,6),@4 decimal(18,6),@5 decimal(18,6),@6 varchar(8),@7
+int',@0='2009-09-17 00:00:00:000',@1='2009-10-01
+00:00:00:000',@2=1,@3=1.234500,@4=1.234500,@5=1.234500,@6='ksafford',@7=671840<o:p></o:p></p>
+
+<p>It was not updating the NYMEXProductId in there.&nbsp; Even though
+rowsAffected said 1, probably because the LastUpdated Timestamp was updated it
+knew it was updated.<o:p></o:p></p>
+
+<p>CyclingFoodmanPA<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, September 17, 2009</h2><P>Correct.&nbsp; Now,&nbsp;NYMEXDate and NYMEXProductId are set up as an index in the DB, but I don't think the EF has anything to do with that.&nbsp; I could see in the debugger that the value was changing, but the SQL Profiler identified that the value was not being updated in the SQL created from the EF update.</P>
+<P>CyclingFoodmanPA</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, September 17, 2009</h2><P>Ok, I FINALLY got things figured out and it is NOT pretty when you have to change a foreign key.&nbsp; Here is my final code:<BR>&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<BR>&nbsp;&nbsp;&nbsp; private void DataPortal_Update()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LastChangedBy = Csla.ApplicationContext.User.Identity.Name;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (ObjectContextManager&lt;BelAirPricingEntities&gt; manager =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectContextManager&lt;BelAirPricingEF.BelAirPricingEntities&gt;.GetManager(DataConnection.BelAirPricingConnectionName, true))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NYMEXHistory update = new NYMEXHistory();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // NYMEXHistory key<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXHistoryId = ReadProperty(NYMEXHistoryIdProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.EntityKey = new System.Data.EntityKey("BelAirPricingEntities.NYMEXHistories", "NYMEXHistoryId", update.NYMEXHistoryId);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Get old and new NYMEXProducts<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var oldNYMEXProduct = manager.ObjectContext.NYMEXProducts.FirstOrDefault(c =&gt; c.NYMEXProductId == oldNYMEXProductId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var newNYMEXProduct = manager.ObjectContext.NYMEXProducts.FirstOrDefault(c =&gt; c.NYMEXProductId == NYMEXProductId);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Check to see if it changed<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (oldNYMEXProductId != NYMEXProductId)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Yep, a change was made, get the NYMEXProduct of the old NYMEXProductId and the EntityKey<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Data.EntityKey ek = manager.ObjectContext.CreateEntityKey("BelAirPricingEntities.NYMEXProducts", oldNYMEXProduct);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXProductReference.EntityKey = ek;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Attach the object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; manager.ObjectContext.Attach(update);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Again, check to see if it changed and if so, modify the entity key with the new NYMEXProduct<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (oldNYMEXProductId != NYMEXProductId)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXProductReference.EntityKey = manager.ObjectContext.CreateEntityKey("BelAirPricingEntities.NYMEXProducts", newNYMEXProduct);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp; </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Do rest of updates and save changes<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXDate = ReadProperty(NYMEXDateProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.ForwardDate = ReadProperty(ForwardDateProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.ForwardMonth = ReadProperty(ForwardMonthProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXLow =&nbsp; ReadProperty(NYMEXLowProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXHigh = ReadProperty(NYMEXHighProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.LastChangedBy = ReadProperty(LastChangedByProperty);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int rowsAffected = manager.ObjectContext.SaveChanges();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>Geeze, this is a real pain.&nbsp; Not to mention, when I read the object in, I have to create a NYMEXProductId and an oldNYMEXProductId to see if anything changed to be able to compare and modify the NYMEXProductId.&nbsp; I consider this a major hack.&nbsp; I understand why things are more difficult because it is an actual relationship and not just a number in the table, but come on Microsoft.&nbsp; I have hammered out lots of code in a few hours and it has taken me a couple of days to figure this out.&nbsp; With some help from Sergey, my buddy Chris Russi and a few others who have responded to my posts.&nbsp; </P>
+<P>I just hope I made it easier for some other poor sucker to figure this out when they have to do it!!!</P>
+<P>CyclingFoodmanPA</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Thursday, September 17, 2009</h2><P>Ok, I modified it so you only had to make the 2 fetches to the Db IF and ONLY IF, you changed the NYMEXProductId.&nbsp; The code is as follows:</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Transactional</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalTypes</FONT></FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P>LastChangedBy = Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.Name;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt; manager =</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;BelAirPricingEF.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BelAirPricingEntities</FONT></FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataConnection</FONT></FONT><FONT size=2>.BelAirPricingConnectionName, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2> update = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NYMEXHistory</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// NYMEXHistory key</P></FONT></FONT><FONT size=2>
+<P>update.NYMEXHistoryId = ReadProperty(NYMEXHistoryIdProperty);</P>
+<P>update.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXHistories"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXHistoryId"</FONT></FONT><FONT size=2>, update.NYMEXHistoryId);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Check to see if it changed</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/de8db712-46d1-4d0d-8678-3f686575b574</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//The above link is how I figured out how to do this</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (oldNYMEXProductId != NYMEXProductId)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Get old and new NYMEXProducts</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> oldNYMEXProduct = manager.ObjectContext.NYMEXProducts.FirstOrDefault(c =&gt; c.NYMEXProductId == oldNYMEXProductId);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> newNYMEXProduct = manager.ObjectContext.NYMEXProducts.FirstOrDefault(c =&gt; c.NYMEXProductId == NYMEXProductId);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Foreign key - old NYMEXProduct</P></FONT></FONT><FONT size=2>
+<P>System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2> ek = manager.ObjectContext.CreateEntityKey(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXProducts"</FONT></FONT><FONT size=2>, oldNYMEXProduct);</P>
+<P>update.NYMEXProductReference.EntityKey = ek;</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Attach the updated entity</P></FONT></FONT><FONT size=2>
+<P>manager.ObjectContext.Attach(update);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Foreign key - new NYMEXProduct</P></FONT></FONT><FONT size=2>
+<P>update.NYMEXProductReference.EntityKey = manager.ObjectContext.CreateEntityKey(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXProducts"</FONT></FONT><FONT size=2>, newNYMEXProduct);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Foreign keys - NYMEXProduct</P></FONT></FONT><FONT size=2>
+<P>update.NYMEXProductReference.EntityKey = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EntityKey</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"BelAirPricingEntities.NYMEXProducts"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NYMEXProductId"</FONT></FONT><FONT size=2>, ReadProperty(NYMEXProductIdProperty));</P>
+<P>manager.ObjectContext.Attach(update);</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Do rest of updates and save changes</P></FONT></FONT><FONT size=2>
+<P>update.NYMEXDate = ReadProperty(NYMEXDateProperty);</P>
+<P>update.ForwardDate = ReadProperty(ForwardDateProperty);</P>
+<P>update.ForwardMonth = ReadProperty(ForwardMonthProperty);</P>
+<P>update.NYMEXLow = ReadProperty(NYMEXLowProperty);</P>
+<P>update.NYMEXHigh = ReadProperty(NYMEXHighProperty);</P>
+<P>update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);</P>
+<P>update.LastChangedBy = ReadProperty(LastChangedByProperty); </P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> rowsAffected = manager.ObjectContext.SaveChanges(); </P>
+<P>}</P>
+<P>}</P>
+<P>Yes, I consider it a major hack and a real pain in the butt!&nbsp; I am glad I figured it out, but I have much less hair now!</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, September 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+should not need to do those fetches.&nbsp; You should be able to create Entity
+Keys without them.&nbsp; I think code should look something like this:<o:p></o:p></span></p>
+
+<p><span>System.Data.<span>EntityKey</span>
+ek = manager.ObjectContext.CreateEntityKey(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>,
+&#8220;NYMEXProductId&#8221;, NYMEXProductId);<o:p></o:p></span></p>
+
+<p><span>Then you need to issue GetEntityByKey to make
+sure the product with this key is not in the context.&nbsp; If not, you need to
+create new instance of NYMEXProduct, set its&#8217; key to ek, then attach it
+to the context.&nbsp; Same as getting it from DB, but no round-tripping
+involved.<o:p></o:p></span></p>
+
+<p><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 17, 2009 3:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok, I modified it so you only had to make the 2 fetches to the Db IF and
+ONLY IF, you changed the NYMEXProductId.&nbsp; The code is as follows:<o:p></o:p></p>
+
+<p><span>[<span>Transactional</span>(<span>TransactionalTypes</span>.TransactionScope)]<o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span>
+DataPortal_Update()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>LastChangedBy = Csla.<span>ApplicationContext</span>.User.Identity.Name;<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>ObjectContextManager</span>&lt;<span>BelAirPricingEntities</span>&gt; manager =<o:p></o:p></span></p>
+
+<p><span>ObjectContextManager</span><span>&lt;BelAirPricingEF.<span>BelAirPricingEntities</span>&gt;.GetManager(<span>DataConnection</span>.BelAirPricingConnectionName, <span>true</span>))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>NYMEXHistory</span><span> update = <span>new</span> <span>NYMEXHistory</span>();<o:p></o:p></span></p>
+
+<p><span>// NYMEXHistory key<o:p></o:p></span></p>
+
+<p><span>update.NYMEXHistoryId =
+ReadProperty(NYMEXHistoryIdProperty);<o:p></o:p></span></p>
+
+<p><span>update.EntityKey = <span>new</span>
+System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXHistories&quot;</span>, <span>&quot;NYMEXHistoryId&quot;</span>,
+update.NYMEXHistoryId);<o:p></o:p></span></p>
+
+<p><span>//Check to see if it changed<o:p></o:p></span></p>
+
+<p><span>//http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/de8db712-46d1-4d0d-8678-3f686575b574<o:p></o:p></span></p>
+
+<p><span>//The above link is how I figured
+out how to do this<o:p></o:p></span></p>
+
+<p><span>if</span><span> (oldNYMEXProductId != NYMEXProductId)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>//Get old and new NYMEXProducts<o:p></o:p></span></p>
+
+<p><span>var</span><span> oldNYMEXProduct = manager.ObjectContext.NYMEXProducts.FirstOrDefault(c
+=&gt; c.NYMEXProductId == oldNYMEXProductId);<o:p></o:p></span></p>
+
+<p><span>var</span><span> newNYMEXProduct = manager.ObjectContext.NYMEXProducts.FirstOrDefault(c
+=&gt; c.NYMEXProductId == NYMEXProductId);<o:p></o:p></span></p>
+
+<p><span>//Foreign key - old NYMEXProduct<o:p></o:p></span></p>
+
+<p><span>System.Data.<span>EntityKey</span>
+ek = manager.ObjectContext.CreateEntityKey(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>,
+oldNYMEXProduct);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXProductReference.EntityKey = ek;<o:p></o:p></span></p>
+
+<p><span>//Attach the updated entity<o:p></o:p></span></p>
+
+<p><span>manager.ObjectContext.Attach(update);<o:p></o:p></span></p>
+
+<p><span>//Foreign key - new NYMEXProduct<o:p></o:p></span></p>
+
+<p><span>update.NYMEXProductReference.EntityKey =
+manager.ObjectContext.CreateEntityKey(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>,
+newNYMEXProduct);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>// Foreign keys - NYMEXProduct<o:p></o:p></span></p>
+
+<p><span>update.NYMEXProductReference.EntityKey = <span>new</span> System.Data.<span>EntityKey</span>(<span>&quot;BelAirPricingEntities.NYMEXProducts&quot;</span>, <span>&quot;NYMEXProductId&quot;</span>,
+ReadProperty(NYMEXProductIdProperty));<o:p></o:p></span></p>
+
+<p><span>manager.ObjectContext.Attach(update);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>//Do rest of updates and save
+changes<o:p></o:p></span></p>
+
+<p><span>update.NYMEXDate =
+ReadProperty(NYMEXDateProperty);<o:p></o:p></span></p>
+
+<p><span>update.ForwardDate = ReadProperty(ForwardDateProperty);<o:p></o:p></span></p>
+
+<p><span>update.ForwardMonth =
+ReadProperty(ForwardMonthProperty);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXLow =
+ReadProperty(NYMEXLowProperty);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXHigh =
+ReadProperty(NYMEXHighProperty);<o:p></o:p></span></p>
+
+<p><span>update.NYMEXSettle =
+ReadProperty(NYMEXSettleProperty);<o:p></o:p></span></p>
+
+<p><span>update.LastChangedBy =
+ReadProperty(LastChangedByProperty); <o:p></o:p></span></p>
+
+<p><span>int</span><span> rowsAffected = manager.ObjectContext.SaveChanges(); <o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>Yes, I consider it a major hack and a real
+pain in the butt!&nbsp; I am glad I figured it out, but I have much less hair
+now!<o:p></o:p></span></p>
+
+<p><span>CyclingFoodmanPA<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Friday, September 18, 2009</h2><P>Hmmm, to CreateEntityKey, you need the object so you have to make a call to the DB to get the object.&nbsp; I have been battling with this for a few days and finally found something that works.&nbsp; How would you use the GetEntityByKey?&nbsp; I searched on msdn and there wasn't a whole lot out there to explain its useage.</P>
+<P>The foreign key stuff is a real pain!&nbsp; I was making great progress until I had to write code to change a FK.</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 18, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Get
+entity by key would be done something like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public
+static T GetEntityByKey&lt;T&gt;(this ObjectContext context, string
+idColumnValue, string idColumnName, bool allowNulls) where T : EntityObject<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+T returnValue = null;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.Data.EntityKey typeKey = new
+System.Data.EntityKey(context.GetType().Name + &quot;.&quot; + typeof(T).Name,
+idColumnName, idColumnValue);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+System.Data.Objects.ObjectStateEntry entry;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (!context.ObjectStateManager.TryGetObjectStateEntry(typeKey, out entry))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And
+yes, foreign keys are bad in version 1.0.&nbsp; Version 2.0 (.NET 4.0) should
+make things a lot easier.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 18, 2009 11:46 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: Entity Framework Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hmmm, to CreateEntityKey, you need the object so you have to make a call to
+the DB to get the object.&nbsp; I have been battling with this for a few days
+and finally found something that works.&nbsp; How would you use the
+GetEntityByKey?&nbsp; I searched on msdn and there wasn't a whole lot out there
+to explain its useage.<o:p></o:p></p>
+
+<p>The foreign key stuff is a real pain!&nbsp; I was making great progress
+until I had to write code to change a FK.<o:p></o:p></p>
+
+<p>CyclingFoodmanPA<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, September 22, 2009</h2><P>Finally, I have gotten my update to work at what I think is the most efficient method yet.&nbsp; I have only 1 trip to the db and that is to acquire the record which is being changed, make the changes, and save it.&nbsp; EF 1.0 is NOT friendly with Foreign Keys but after battling with it for a few days, I got things working.&nbsp; Here is my final result:</P>
+<P>&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<BR>&nbsp;&nbsp;&nbsp; private void DataPortal_Update()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LastChangedBy = Csla.ApplicationContext.User.Identity.Name;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (ObjectContextManager&lt;BelAirPricingEntities&gt; manager =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectContextManager&lt;BelAirPricingEF.BelAirPricingEntities&gt;.GetManager(DataConnection.BelAirPricingConnectionName, true))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NYMEXHistory update = (from oneNH in manager.ObjectContext.NYMEXHistories.Include("NYMEXProduct")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where oneNH.NYMEXHistoryId == NYMEXHistoryId<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select oneNH).First();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.IsDirty)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXDate = ReadProperty(NYMEXDateProperty);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Update the EntityKey to NYMEXProduct<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXProductReference.EntityKey = new System.Data.EntityKey("BelAirPricingEntities.NYMEXProducts", "NYMEXProductId", ReadProperty(NYMEXProductIdProperty));&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.ForwardDate = ReadProperty(ForwardDateProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.ForwardMonth = ReadProperty(ForwardMonthProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXLow = ReadProperty(NYMEXLowProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXHigh = ReadProperty(NYMEXHighProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.NYMEXSettle = ReadProperty(NYMEXSettleProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; update.LastChangedBy = ReadProperty(LastChangedByProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int rowsAffected = manager.ObjectContext.SaveChanges();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(LastChangedProperty, update.LastChanged);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>Hope this helps someone else battling with this concept.</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Energiz0r replied on Friday, November 06, 2009</h2>This helped me alot! I have been battling with this problem all morning, everything seemed to be working fine, no exceptions and no obvious problems.. <br>Except that the data was not changed in the DB.. <br><br>Thanks to CyclingFoodmanPA and Sergey for making this day much easier!<b><span></span></b> <br><br>- Energiz0r -<br><b><span> </span></b></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,108 @@
+<html><header><title>Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1279.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Wednesday, September 20, 2006</h2><br>
+Hi, <br>
+<br>
+I have a question concerning the design of my application. <br>
+<br>
+C<i>ompany has an address.&nbsp; <br>
+Person has a list of address.</i><br>
+<br>
+So I have :<br>
+<br>
+&nbsp;&nbsp;&nbsp; Company : EditableRoot<br>
+&nbsp;&nbsp;&nbsp; Person : EditableRoot<br>
+&nbsp;&nbsp;&nbsp; PersonAdresses: EditableChildList<br>
+&nbsp;&nbsp;&nbsp; Adresse : ??<br>
+<br>
+<u>With :</u> <br>
+<br>
+Company {<br>
+<br>
+&nbsp; &nbsp;&nbsp; Adresse _adresse;<br>
+<br>
+}&nbsp;&nbsp;&nbsp;  <br>
+<br>
+Is this possible ?<br>
+<br>
+Thank you<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>Yes, its possible.&nbsp; The question though is do the addresses behave the same when attached to a person and company?&nbsp; Address would be an EditableChild.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, September 20, 2006</h2><br>
+The object is the same.<br>
+<br>
+But the stored procedures are different according to whether I insert an address for a companie or a person. <br>
+<br>
+&nbsp;In the same way, for a person, the Update method of adress takes
+in parameter the parent object (persone) and not for a company. <br>
+<br>
+It would thus be necessary that I make several methods update? <br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, September 20, 2006</h2><P>You may consider making an interface shared by company and/or person, such as&nbsp;"IContact". </P>
+<P>Then, pass along IContact as the parent object to the Address's update(). </P>
+<P>Since you need to use different stored procedures from what you say, just do a comparison on IContact such as "if (IContact Is Person)" then run your one stored procedure for persons, otherwise run the one for companies. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, September 20, 2006</h2><br>
+I thought used an interface but I did not know if it were the good solution<br>
+<br>
+Thank you. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>JoOfMetL:</strong></div><div>
+The object is the same.<br>
+<br>
+But the stored procedures are different according to whether I insert an address for a companie or a person. </div></BLOCKQUOTE><br><br>This raises a question which I often struggle with:&nbsp; Is how the object persists itself part of its behavior?<br><br>More and more I've been answering that with a 'yes.'&nbsp; The reason is that you may change a contact's address in such a way that it breaks the companies address.<br><br>For example, in my application, contacts have a single address.&nbsp; A department could only have one.&nbsp; Now the requirements have changed, and departments can have many addresses, and each address must have a Type asssigned (receiving, mailing, shipping, etc).&nbsp; <br><br>I would say create two classes.&nbsp; The data access for both classes can be refactored into another, internal class.&nbsp; I have done this, and it seems to work much better than creating a single Address class.<br><br>Common address rules may also be refactored in this way.&nbsp; You can now have two classes which share much of their code.&nbsp; Maintaining each one is eaiser, because you know a change to one won't break the other, and their common code can be reused.<br><br>HTH<br>andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, September 20, 2006</h2>
+
+<p class="MsoNormal">The behavior of objects can change dynamically.<span>&nbsp; </span>Take a look at the strategy pattern and other
+similar patterns.<span>&nbsp; </span>If there are small differences
+between two address classes, swap out the behavior at runtime for the behavior you
+need.<span>&nbsp; </span>This is a much better solution
+than creating two separate address object because you are favoring composition
+and you are reusing most of the code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>The problem is that a DepartmentAddress has an AddressType property, where as ContactAddress does not.&nbsp; I'm not sure how that fits into the Strategy pattern.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Wednesday, September 20, 2006</h2><P>Andy, Is it not a contact address?</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>In my application, a contact is a person.&nbsp; Companies and departments are not contacts.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, September 20, 2006</h2><P>The AddressType defines the "relationship" and not the address itself.&nbsp; Does the type affect how the address behaves?&nbsp; Probably not because you can have the same address for different types (such as billing and mailing).</P>
+<P>This is a situation I have run into frequently and have yet to come up with a graceful solution - how to incorporate complex relationships such as this into the design.&nbsp; Should your DepartmentAddress class, with its AddressType property inherit from the common Address class so that you can take advantage of the code that already exists in that class?</P>
+<P>And, when you change the AddressType aren't you actually changing the relationship and not the underlying address?&nbsp; So, if you derived DepartmentAddress from Address, the primary key you have points to the record in your Addresses table - how do you reference the many-to-many table containing the AddressType column so that it can be changed?</P>
+<P>Again, I've put together a couple of different solutions to this but I've never been real happy with any of them, so I'm looking forward to hearing your take on it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>I agree, at the database level.<br><br>At the business level though you wouldn't (I don't think) create a class for the relationship which contains the address.&nbsp; Well maybe that's one way to go.. encapuslate the address class.&nbsp; Hadn't thought of that.<br><br>To dig deeper, the address type may affect behavior.&nbsp; A shipping address might reject PO boxes while a billing address would not (although i admit I'm straying from my previous example).<br><br>To answer your question about how I perform the data access..<br><br>I have an AddressData internal class, which accepts classes implementing IAddress.&nbsp; This handles the Address data modifications.&nbsp; The DepartmentAddress BO uses AddressData to create the address record, then it goes and works on creating the row in the many to many DepartmentAddress table..&nbsp; The DepartmentAddress class 'knows' about the many to many relationship.<br><br>I'm fairly happy with this solution; its kind of an extension to the solution which Rocky provides in the PTracker demo.&nbsp; Of course there is much code which is similar... but i might be able to eliminate this by encapsulating a generic Address class.. an interesting idea I think.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, September 20, 2006</h2>Andy,<br>
+<br>
+<br>
+In regard to your specific example, no the strategy pattern doesn’t
+work for the address type.<span>&nbsp; </span>I was not
+trying to address you specific example with my answer.<span>&nbsp; </span>I will try to address your specific
+example.<span>&nbsp; </span>First, the address class should
+not contain logic that determines how many the parent can contain of it.<span>&nbsp; </span>This logic doesn’t belong in the address
+class.<span>&nbsp; </span>For the address type issue, there
+are a few ways you can approach this.<span>&nbsp; </span>You
+could set the address type to all of them for a contact since the receiving,
+mailing, and shipping address for a contact would most likely be the same.<span>&nbsp; </span>There are other approaches as well. This is a
+better than creating two classes just because one has an address type.<span>&nbsp; </span>An address type is data not behavior anyway. An
+address is an address, there should not be many differences in behavior between
+a contact address and a department address.
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, September 20, 2006</h2><P>Could you have it built in where you have a properties on your company to point to specific address instances&nbsp;in your collection - "ShippingAddress", "ReceivingAddress", etc? </P>
+<P>Could have validation rules such that all four fields must have an address assigned, and default the first address of the collection to fulfill all of these roles.&nbsp; </P>
+<P>Just a suggestion! </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, September 20, 2006</h2>You can but besides the DBA's going nuts, what if you want to add or remove a type from the app?&nbsp; This approach isn't extensible - which may or may not be a problem.&nbsp; Even if its not going to be used, I prefer to leave apps extensible cuz things always change.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, September 20, 2006</h2><P>I wouldn't advocate structuring the database the same way. </P>
+<P>You'd have company, address, and companyaddress. </P>
+<P>You'd also have addresspurpose and companyaddresspurpose. </P>
+<P>addresspurpose would contain values of Shipping, etc. </P>
+<P>companyaddresspurpose would have a primary key of companyid and addresspurpose, and have a foreign key to the companyaddress table.&nbsp; </P>
+<P>That way you don't have to pester the DBA if additional types get added. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>malloc,<br><br>I don't think I said the Address should limit how many shipping etc. addresses that a department can have.&nbsp; At least I never meant to.<br><br>It seems like bad design for me for an contact address to have a type property which is not used at all.<br><br>In my database, I have a many to many table for DepartmentAddress which does what you'd expect.&nbsp; This is where the AddressType is kept.&nbsp; For a contact though, the AddressId (since contacts can have one and only one address in my world) is stored directly in the Person table.<br><br>I agree that AddressType is not a behavior, but I don't think having a property which does nothing is a good idea either.&nbsp; What happens when setting AddressType to a certain value affects behavior?&nbsp; Do you create a new class?&nbsp; Or do you have a rule that checks type and say the Lines of the address for PO?&nbsp; Addresses and PhoneNumbers have been pretty challenging to 'figure out' in the behavior / business object world for me.&nbsp; I'd like to hear how others have handled these issues.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, September 20, 2006</h2>Andy,<br>
+<br>
+
+
+<p class="MsoNormal">IMO, it is better to have a class that contains a property
+that you aren’t going to use than create a new class based on data.<span>&nbsp; </span>An address class represents an address not
+the data you have in your database.<span>&nbsp; </span>Two
+class that have the same behavior but different properties are really the same
+class.<span>&nbsp; </span>If setting the address type
+changes behavior, you simply swap in behavior that does nothing for an object
+that doesn’t use an address type.</p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>Well, lets take this to an extreme.&nbsp; Not an address class, but another class.&nbsp; The behvior is the same in all uses of this class, but parent classes of that class only use at most a quarter of any of the properties.&nbsp; Does it still make sense to use that class in all cases?<br><br>I'd love to hear from Rocky on this.&nbsp; I personally don't think they are the same at that point.. after all and object is "smart data," which I think is even in his book...<br><br>Take data out of classes, and we basically are back to procedural programming, aren't we?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, September 20, 2006</h2>Andy,<br><br>Rocky would probably say that this is a differnet use-case and therefore should be seperate classes.&nbsp; I believe CSLA was designed with a use-case driven design in mind.&nbsp; I think that a use-case driven design is different than a pure OOD desgin, although I could be wrong about that.&nbsp; It seems to me that a use-case driven design doesn't promote reuse as much.&nbsp; I would love to hear more about the differences beteween the two if they exist.<br><br><br>As far as your most recent&nbsp; example I would create a class that encapsulates the common behavior in a seperate class. I would create a class for the different types.&nbsp; Each of those classes would delegate its behavior to the class that contains the common behavior.&nbsp; There might be a more elegant solution, but I would have to think about it more.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 20, 2006</h2>Isn't that the solution I suggested for the orginal address problem though (DepartmentAddress and ContactAddress)? <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, September 20, 2006</h2>Andy,<br>
+<br>
+lol.&nbsp; It is similar to what you suggested in the first place.<span>&nbsp; </span>However, I am not completely satisfied with the address solution.<span>&nbsp; </span>You shouldn’t have to create a
+new address class just because one address has an address type.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Wednesday, September 20, 2006</h2><P>That was in fact what I meant above about a "contact address" type. Probably never used but keeps the shape of the data constant. No need for a second Address type or record schema.</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, September 20, 2006</h2><br>
+Thank you,<br>
+<br>
+I had not thought of it. <br>
+<br>
+It is a good idea and I think that I will make like you. <br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

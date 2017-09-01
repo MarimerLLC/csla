@@ -1,0 +1,75 @@
+<html><header><title>Root or child?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Root or child?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4831.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tchimev posted on Saturday, May 10, 2008</h2>Hello,<br><br>I'm new to CSLA and trying to build my first simple project using CSLA.<br>So I have a class Product which inherits from BusinessBase. And another class ProductList which inherits from BusinessListBase.<br>The ProductList is bind to a DataGridView in Windows form, and I want to insert/update/delete products in the grid, but I can not decide how to implement my Product as a root object or as a child of ProductList.<br>Do I have two root object or one of them is child?<br>Which is the correct way ot solve this?<br><br>Thank you.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, May 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Product should be a child of Product List.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I.e. ProductList is BLB/root (of ProductList, Product), Product
+is a BB/child (of Product) .<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tchimev
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, May 10, 2008 4:13 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Root or child?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello,<br>
+<br>
+I'm new to CSLA and trying to build my first simple project using CSLA.<br>
+So I have a class Product which inherits from BusinessBase. And another class
+ProductList which inherits from BusinessListBase.<br>
+The ProductList is bind to a DataGridView in Windows form, and I want to insert/update/delete
+products in the grid, but I can not decide how to implement my Product as a
+root object or as a child of ProductList.<br>
+Do I have two root object or one of them is child?<br>
+Which is the correct way ot solve this?<br>
+<br>
+Thank you.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tchimev replied on Monday, May 12, 2008</h2>Thank you for your answer, but can you explain why.<br>Is it always like that when you have an object and a list of that object?<br><br>thank you<br><br>EDIT: I think I found the answer:&nbsp; <a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=7c8e39ba-ea0c-43fe-9a2b-94440d51d75a"><font size="2"><span id="ctl00_ContentPlaceHolder1_TitleLabel">Defining parent and child objects</span></font></a><br><a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=7c8e39ba-ea0c-43fe-9a2b-94440d51d75a"><font size="2"><span id="ctl00_ContentPlaceHolder1_TitleLabel"><br></span></font></a></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

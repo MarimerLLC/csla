@@ -1,0 +1,97 @@
+<html><header><title>EditableRootListBase Woes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase Woes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4277.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Friday, February 01, 2008</h2>I have some issues I'm trying to work through with the ERLB. I'm close but I am starting to wonder if I am using the right Csla base class for what my use case calls for.<br><br>I have a grid/listbox (ERLB) filled with BB objects. I don't want the ERLB to save immediately as it is designed for nor do I want to use a BLB which supports the batch updates. I want the user to select an item from the grid/list, edit, and me force the save.<br><br>The number of objects that I am loading are relatively small (10-150), so I figured that I would get everything in one trip since I don't have to worry about concurrency issues and I don't have to repeatedly hit the db while the user clicks around.<br><br>Is the ERLB the best 'tool' for this? Am I way off?<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 01, 2008</h2><P>You need to do this in your subclass of ERLB:</P>
+<OL>
+<LI>Override SaveItem() so it is a no-op</LI>
+<LI>Add your own ManualSaveItem() method that calls base.SaveItem()</LI></OL>
+<P>In the UI:</P>
+<OL>
+<LI>Call your ManualSaveItem() when you want to save an item</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Friday, February 01, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br>In the UI:
+<ol>
+<li>Call your ManualSaveItem() when you want to save an item</li></ol>
+</div></BLOCKQUOTE><br><br>Ok, so it should look like the following?<br><br>&nbsp;&nbsp;&nbsp; Public Sub SaveMyItem(ByVal accountToSave As Account)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.SaveItem(accountToSave)<br>&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp; Public Overrides Sub SaveItem(ByVal index As Integer)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Do nothing<br>&nbsp;&nbsp;&nbsp; End Sub<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 01, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think that should work, yes. Though I can&#8217;t say I&#8217;ve
+tested it, so there could be unforeseen complications (especially around
+removing items perhaps?).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JohnB
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 01, 2008 1:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] EditableRootListBase Woes<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+In the UI: <o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>Call your ManualSaveItem() when you want to save
+     an item<o:p></o:p></li>
+</ol>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+Ok, so it should look like the following?<br>
+<br>
+&nbsp;&nbsp;&nbsp; Public Sub SaveMyItem(ByVal accountToSave As Account)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.SaveItem(accountToSave)<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+<br>
+&nbsp;&nbsp;&nbsp; Public Overrides Sub SaveItem(ByVal index As Integer)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '-- Do nothing<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Thursday, February 07, 2008</h2>Rocky,<br><br>That almost worked. I had to do a little more work to get it just right.<br><br>First, for SaveMyItem, I was unable to just call MyBase.SaveItem(accountToSave). ERLB uses the index position to save the object. So I had to do the following:<br><br><font color="#0000ff">Public Sub SaveMyItem(ByVal accountToSave As Account)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.SaveItem(Me.IndexOf(accountToSave))<br>End Sub</font><br><br>No big deal. The delete was rather interesting like you mentioned since upon calling ERLB.Remove, the object is removed from the collection. That means the SaveMyItem would fail since Me.IndexOf(accountToSave) is -1. The solution was to override RemoveItem:<br><br><font color="#0000ff">Protected Overrides Sub RemoveItem(ByVal index As Integer)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Account.DeleteAccount(Me.Item(index).UserID)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.RemoveItem(index)<br>End Sub</font><br><br>So I call my factory method on the object to delete it and then remove it from the collection. This works fine. So at this point it is doing everything I wanted it to do. Not sure if this is the best implementation but it gives me the functionality that I need.<br><br>Thanks,<br>John<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

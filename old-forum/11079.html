@@ -1,0 +1,56 @@
+<html><header><title>Cross Domain Policy error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cross Domain Policy error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11079.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shivam.ms posted on Monday, January 23, 2012</h2><p>I am getting this error when try to create object in server from SilverLight UI</p>
+<p>&nbsp;</p>
+<p>An error occurred while trying to make a request to URI &#39;http://localhost:1406/PTAppSchedulerSL.web/WcfPortal.svc&#39;. This could be due to attempting to access a service in a cross-domain way without a proper cross-domain policy in place, or a policy that is unsuitable for SOAP services. You may need to contact the owner of the service to publish a cross-domain policy file and to ensure it allows SOAP-related HTTP headers to be sent. This error may also be caused by using internal types in the web service proxy without using the InternalsVisibleToAttribute attribute. Please see the inner exception for more details.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, January 23, 2012</h2><p>Hi,</p>
+<p>Normally, you will set the startup project to the website that host the Silverlight container. </p>
+<p>I believe you try to run the Silverlight UI project directly - not the web project.</p>
+<p>Alternatively - you will have to add cclientaccesspolicy and/or crossdomainpolicy. Read more here:</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/cc197955%28v=vs.95%29.aspx">http://msdn.microsoft.com/en-us/library/cc197955%28v=vs.95%29.aspx </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shivam.ms replied on Monday, January 23, 2012</h2><p>Thank you so much Jhonny.&nbsp;&nbsp; Luckily I already did that and now i am not getting that error.&nbsp; But the object is not created and returned from server and i get the error message from callback that &quot;The remote server returned an error: NotFound&quot;...</p>
+<p>Please help me...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, July 19, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Normally, you will set the startup project to the website that host the Silverlight container.</div></p>
+<p>What if in your program you cannot go straight to the SL project. In other words, what if the user needs to select an item - a person perhaps - from a list before going over to the SL project.</p>
+<p>I have had my project working just fine for months, but now suddenly I am getting the same error (but only when the project is istalled on the Server - it works fine when using /localhost:). I do have both, the clientaccesspolicy AND the crossdomainpolicy files in the project.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, July 20, 2012</h2><p>Finally found a solution - in other words discovered what I was doing wrong and what I was not doing at all.&nbsp; Thought I&#39;ll share since&nbsp;the problem is commonplace.</p>
+<p>1.&nbsp; I&nbsp;had both, the ClientAccessPolicy AND the CrossDomainPolicy files in the project - it turns out only one is needed, so &nbsp;now I only have one:&nbsp;ClientAccessPolicy</p>
+<p>2. Just about every person answering forum messages offers the following ClientAccessPolicy</p>
+<div class="e"><span class="b"></span><span style="color:#0000ff;"><span class="m">&lt;?</span><span class="pi">xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; </span><span class="m">?&gt;</span></span> </div>
+<div class="e">
+<div class="c" style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><a href="http://forums.lhotka.net/forums/AddPost.aspx?ReplyToPostID=53261&amp;Quote=False" class="b"><strong><span style="font-family:Courier New;color:#ff0000;">-</span></strong></a> <span class="m"><span style="color:#0000ff;">&lt;</span></span><span class="t"><span style="color:#990000;">access-policy</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+<div>
+<div class="e">
+<div class="c" style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><a href="http://forums.lhotka.net/forums/AddPost.aspx?ReplyToPostID=53261&amp;Quote=False" class="b"><strong><span style="font-family:Courier New;color:#ff0000;">-</span></strong></a> <span class="m"><span style="color:#0000ff;">&lt;</span></span><span class="t"><span style="color:#990000;">cross-domain-access</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+<div>
+<div class="e">
+<div class="c" style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><a href="http://forums.lhotka.net/forums/AddPost.aspx?ReplyToPostID=53261&amp;Quote=False" class="b"><strong><span style="font-family:Courier New;color:#ff0000;">-</span></strong></a> <span class="m"><span style="color:#0000ff;">&lt;</span></span><span class="t"><span style="color:#990000;">policy</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+<div>
+<div class="e">
+<div class="c" style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><a href="http://forums.lhotka.net/forums/AddPost.aspx?ReplyToPostID=53261&amp;Quote=False" class="b"><strong><span style="font-family:Courier New;color:#ff0000;">-</span></strong></a> <span class="m"><span style="color:#0000ff;">&lt;</span></span><span style="color:#990000;"><span class="t">allow-from</span><span class="t"> http-request-headers</span></span><span class="m"><span style="color:#0000ff;">=&quot;</span></span><b>SOAPAction,Content-Type</b><span style="color:#0000ff;"><span class="m">&quot;</span><span class="m">&gt;</span></span></div>
+<div>
+<div class="e">
+<div style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;</span></span><span class="t"><span style="color:#990000;">domain</span></span> <span class="t"><span style="color:#990000;">uri</span></span><span class="m"><span style="color:#0000ff;">=&quot;</span></span><b>*</b><span style="color:#0000ff;"><span class="m">&quot;</span><span class="m"> /&gt;</span></span> </div>
+</div>
+<div><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;/</span></span><span class="t"><span style="color:#990000;">allow-from</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+</div>
+</div>
+<div class="e">
+<div class="c" style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><a href="http://forums.lhotka.net/forums/AddPost.aspx?ReplyToPostID=53261&amp;Quote=False" class="b"><strong><span style="font-family:Courier New;color:#ff0000;">-</span></strong></a> <span class="m"><span style="color:#0000ff;">&lt;</span></span><span class="t"><span style="color:#990000;">grant-to</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+<div>
+<div class="e">
+<div style="TEXT-INDENT:-2em;MARGIN-LEFT:1em;"><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;</span></span><span class="t"><span style="color:#990000;">resource</span></span> <span class="t"><span style="color:#990000;">path</span></span><span class="m"><span style="color:#0000ff;">=&quot;</span></span><b>/</b><span class="m"><span style="color:#0000ff;">&quot;</span></span><span class="t"><span style="color:#990000;"> include-subpaths</span></span><span class="m"><span style="color:#0000ff;">=&quot;</span></span><b>true</b><span style="color:#0000ff;"><span class="m">&quot;</span><span class="m"> /&gt;</span></span> </div>
+</div>
+<div><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;/</span></span><span class="t"><span style="color:#990000;">grant-to</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+</div>
+</div>
+<div><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;/</span></span><span class="t"><span style="color:#990000;">policy</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+</div>
+</div>
+<div><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;/</span></span><span class="t"><span style="color:#990000;">cross-domain-access</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+</div>
+</div>
+<div><span class="b"></span><span class="m"><span style="color:#0000ff;">&lt;/</span></span><span class="t"><span style="color:#990000;">access-policy</span></span><span class="m"><span style="color:#0000ff;">&gt;</span></span></div>
+</div>
+</div>
+<p>3.&nbsp; Woudn&#39;t that be like saying to every thief, robber and scoundrel to &quot;Just Come On In - the door is open&quot;.&nbsp; After suffering through days of frustration, if this file makes things work, people like me are not ever going to mess with it - lest it breaks again.</p>
+<p>Here&#39;s what I have now:</p>
+<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;<br />&lt;access-policy&gt;<br />&nbsp; &lt;cross-domain-access&gt;<br />&nbsp;&nbsp;&nbsp; &lt;policy&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;allow-from http-request-headers=&quot;SOAPAction&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;domain uri=&quot;<a href="http://xxx.WebsiteName.xxx&quot;/">http://xxx.WebsiteName.xxx&quot;/</a>&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;domain uri=&quot;<a href="https://xxx.WebsiteName.xxx&quot;/">https://xxx.WebsiteName.xxx&quot;/</a>&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/allow-from&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;grant-to&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;resource path=&quot;/&quot; include-subpaths=&quot;true&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/grant-to&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/policy&gt;<br />&nbsp; &lt;/cross-domain-access&gt;<br />&lt;/access-policy&gt;</p>
+<p>Of course&nbsp;&nbsp;<span style="text-decoration:underline;"><span style="color:#0066cc;">xxx.WebsiteName.xxx</span></span>&nbsp;is the name of your website. You are blocking all access to your project except from your own site.<br />&nbsp;</p>
+<p>&nbsp;4. It is probably not enough to just add this file to the root of your project.&nbsp; I found a couple of authoritative voices suggest that this file be paced in: c:\Inetpub\wwwroot and that&#39;s what I did.<br />&nbsp; <br />Since the problem in my case was always when I installed the project on the Server, so the&nbsp;c:\Inetpub\wwwroot is the folder on the Server.&nbsp; As soon as I did that, it was like the sun came out.&nbsp; My Internet Explorer stopped freezing, as it had done about 100 times (slight exageration) in the past 3 days, and everything has been working as it should.</p>
+<p>Javed</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

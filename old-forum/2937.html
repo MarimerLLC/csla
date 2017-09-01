@@ -1,0 +1,71 @@
+<html><header><title>Newbie here - Validation Rules question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie here - Validation Rules question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2937.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kennedystephen posted on Wednesday, May 23, 2007</h2><P>I'm brand new to CSLA. While refactoring, I changed&nbsp;the name of a property from 'BookName' to just 'Name'. But I neglected to change the corresponding parameter name in ValidationRules.AddRule. Is there a better way to&nbsp;determine the name of the property to validate in the&nbsp;.AddRule method, so that I'd get a design-time error if I'm using a invalid parameter name? Thanks for your help. - Steve<FONT color=#0000ff size=2></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 23, 2007</h2>I have never been able to find a better solution. There's no language construct in VB or C# that corresponds to a property name...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcleven replied on Wednesday, May 23, 2007</h2><P>I am far from an expert on CSLA ... but I can't think of any way to make your build break when you have a mismatch. </P>
+<P>I write Unit tests for my validation rules and make sure I can break my rules to prove they are working. This way after you refactor you run your unit tests and find your failure.</P>
+<P>Doug</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, May 23, 2007</h2>Rocky, have you ever considered creating a rule attribute where you can pass the delegate? Maybe a couple of overloads where you can define a friendly name and maybe even default severity?<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, May 23, 2007</h2>On the same subject, what about a CanReadPropertyAttribute (and the same for write) where you can pass the roles?<br><br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I&#8217;ve considered this &#8211; for validation and
+authorization both.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This could be in addition to the current scheme, but not in
+place of. The current scheme supports good globalization and dynamic
+configuration (data-driven) of the objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It would be slower of course, because getting custom attributes
+is one of, if not the, slowest reflection operation. But if done only for
+per-type rules it probably wouldn&#8217;t make any meaningful difference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 23, 2007 5:19 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Newbie here - Validation Rules question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky, have you ever considered creating a rule attribute
+where you can pass the delegate? Maybe a couple of overloads where you can
+define a friendly name and maybe even default severity?<br>
+<br>
+<br>
+AndrÃ©s<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

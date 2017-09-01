@@ -1,0 +1,28 @@
+<html><header><title>Custom Principal/HttpContext/Application Context problem.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Principal/HttpContext/Application Context problem.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1717.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent posted on Wednesday, November 08, 2006</h2><P class=MsoNormal>We have&nbsp;a recently deployed website that receives a large amount of traffic.&nbsp; I'll try to describe the problem.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>UserA logs in which creates the principal object in the application context as in the book.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>UserB navigates to the login page.&nbsp; When the page is loading, if I check HttpContext.Current.User, I find UserA with their authenticated Identity.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Our application handles sessions a little differently since we use a single sign on system.<SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN>Therefore it’s possible that a User is authenticated but that their session has timed out.<SPAN>&nbsp; </SPAN>In such cases we check Request.IsAuthenticated and if so logout the user and redirect them back to the login page (so login controls, etc can reinitialize).</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>As you might guess, what happens is that UserB will end up in an endless loop of redirects until some user of the application logs out, finally removing the authentication from the HttpContext.Current.User.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>One thing that we are doing differently from the book is that we don’t user the global.asax to recreate the Principal in the session.<SPAN>&nbsp; </SPAN>We use an HttpModule instead.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Can anyone think of why the principal for UserA is ending up the HttpContext.Current.User for UserB?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m stretched on this one.<SPAN>&nbsp; </SPAN>Thanks for you help.</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, November 08, 2006</h2><P>I'm afraid I don't have the answer for you myself but I thought I'd mention that I&nbsp;could have sworn I've seen this brought up somewhat recently. (You might find your answer on a prior post). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent replied on Wednesday, November 08, 2006</h2><P>Before I posted I searched:</P>
+<P>Principal ApplicationContext</P>
+<P>Principal AppDomain</P>
+<P>Custom Principal HttpContext</P>
+<P>ApplicationContext HttpContext</P>
+<P>and a few others.</P>
+<P>I couldn't find a post with this problem.</P>
+<P>Brent</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 08, 2006</h2>Yes, this was discussed somewhat recently in <a HREF="/forums/thread/7364.aspx">this thread</a>. The problem, in that case, and probably this one, is the use of some static/Shared field within the context of the web site.<br><br>static/Shared fields exist at the AppDomain level - which in ASP.NET means at the virtual root level. Anything you store in such a field is shared across all users of the site, which is often a bad thing.<br><br>My guess, based on your description, is that you are doing something with caching and/or a static field as part of your HttpModule or other pre-page processing. As a result you are somehow accidentally "bleeding" user A's data into subsequent page requests.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent replied on Wednesday, November 08, 2006</h2><P>Thanks Rocky.&nbsp; We had investigated the potential of a static method but didn't find anything.&nbsp; We have however solved the problem and while it doesn't directly apply to CSLA I thought I would respond with our solution in case someone else runs into the same problem.<o:p></o:p></P>
+<P>As I stated, we use an HttpModule to handle the regeneration of the ApplicationContext.User.&nbsp; What we were not aware of is that IIS only loads this module one time per appdomain and then runs each applicable request thru the one instance.&nbsp; I had placed properties on the HttpModule for certain authentication properties to regenerate the User.&nbsp; If a new user who had no previous authentication cookie came to the login page, these properties were not overridden with those in the user’s cookie.&nbsp; Therefore, our HttpModule was regenerating the ApplicationContext.User with the last successful logged in user's credentials.<o:p></o:p></P>
+<P>We move the properties into a separate object that is declared and initialized on app_BeginRequest to ensure that each user's credentials are uniquely generated for each request.<SPAN>&nbsp; </SPAN>That solved the problem.</P>
+<P>It was an interesting problem that was difficult to track down because of our rather complex single-sign-on system we use for our enterprise applications but we learned a lot in the process.</P>
+<P>Thanks for taking the time to help.</P>
+<P>P.S.<SPAN>&nbsp; </SPAN>We’ve been using CSLA now for about a year and have run into few if any problems.<SPAN>&nbsp; </SPAN>Thanks!<o:p></o:p></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

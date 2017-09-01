@@ -1,0 +1,83 @@
+<html><header><title>List Save is Slow</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>List Save is Slow</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4640.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Liza posted on Tuesday, April 08, 2008</h2><P>This is my first post so please be gentle!&nbsp; I am writing an application to keep track of appointments.&nbsp; An editable root list is bound to the schedule.&nbsp; I am using the version just before 3.5.&nbsp; My problem is that there may be 350 objects on the schedule and my save is slow.&nbsp; I am using remoting.&nbsp; My question is, when a list of 350 objects contains 2 objects that are dirty, how much of the list is transferred over the WAN to save those 2?&nbsp; Does it transfer the list to the remoting site then execute Save() on the 2 dirty objects?&nbsp; If so how would you recommend I deal with this?&nbsp; </P>
+<P>Code is like this:</P>
+<P>//say this returns 500 objects<BR>Appointments a = Appointments.GetAppointments(some criteria data);<BR>//then through the course of operations say 2 get updated<BR>.........<BR>//now we save<BR>a.ApplyEdit();<BR>//this call goes to some www. remoting portal<BR>a = a.Save();</P>
+<P>&nbsp;</P>
+<P>Please help!&nbsp; </P>
+<P>Thanks.</P>
+<P>Liza</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Liza replied on Tuesday, April 08, 2008</h2>HTTP compression is on on the server IIS btw.&nbsp; Just forgot to mention that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Thursday, April 10, 2008</h2><P>Liza,</P>
+<P>The thing to remember when remoting is that&nbsp;anything that happens inside a DataPortal_XXX method is happening on the server. It is likely that your list is&nbsp;being transferred to the server before being saved. Do you have a check in the DataPortal update to check if the objects are dirty?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Liza replied on Thursday, April 10, 2008</h2><P>So my question is "How would you handle it?".&nbsp; Assume we have 500 items in a read write root list.&nbsp; Of those 500,&nbsp;4 are dirty.&nbsp; If when using Remoting the whole list is sent to the server and then saved, How could we get out those two, save, and remerge? them into the original list elegantly?&nbsp; Is that even what I should do?&nbsp; I could brute force it but I figure you guys being the experts, you probably have already dealt with this.</P>
+<P>Thanks in advance!</P>
+<P>Liz</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, April 11, 2008</h2>Hi,<br><br>here is something that I am carrying in the back of my mind for quite some time, but haven't tested yet:<br><br>Create an object that contains<br>- a readonly list of readonly info objects; <br>This list is marked as &lt;NonSerialized()&gt; and is always accessed through a public readonly property.<br>When this property is called the first time (most probably by databinding), 500 objects are loaded into the child list. This would be the only time, when a great number of object data would go over the wire,<br>assuming that you wish to cache the list.<br><br>- an editable list containing your editable objects;<br><span>You would create Public ReadOnly Property for that list, and decorate that property with &lt;Browsable(false)&gt;, so that drag 'n drop databinding would omit it.<br>This list is for internal use only and not meant for databinding!<br>Nevertheless you will need that property if you want to implement ValidationRules that are triggered by list changes...<br></span>This child list is implemented in the standard manner, meaning that the Data Portal takes care of its persistence. It is empty by default!<br><br>Then, each time the user selects an item from the readonly list, you would tell your object to load the respective editable object, add it to the hidden editable list, and display it for editing. Before fetching the object from the server, you would check if it was already added to the editable list, and then display that one instead.<br>When you save, only those objects which were touched by the <b>use case</b> are sent to the server side.<br><br>I think this is a good example of an object serving as a Use-Case-Controller.<br><br>Depending on the kind of your editable objects (root or child) your editable list would inherit from <br>EditableRootListBase or just EditableListBase.<br><br>Hope that helps,<br><br>Stefan<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Liza replied on Friday, April 11, 2008</h2>That is a very interesting approach.&nbsp; What I will have to resolve is rebuilding the list when a new item is added.&nbsp; Should not be to hard though.&nbsp; Very good.&nbsp; I will tinker with that today.&nbsp; Any other ideas?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Friday, April 11, 2008</h2><P>I have used a technique similar to the one Stefan explains and it did&nbsp;work.</P>
+<P>You might want to do a bit of experimenting before you go down that route to see if your performance problem really is with the transmission over the wire or with the database update. You could write some tests to compare the time taken to do a save when 4, 10, 40, 100, all the&nbsp;objects in the list are dirty. If you see the length of time taken increasing roughly in proportion to the number of dirty objects then your bottleneck is to do with writing to the database rather than moving the list to the server.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you would like a quick test to see how large objects are
+(which would affect transmission time), you can use BinaryFormatter (which is
+what remoting is using) to serialize your object graph to a file and see what
+file size is.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RikGarner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 10:45 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] List Save is Slow<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have used a technique similar to the one Stefan explains and it
+did&nbsp;work.<o:p></o:p></p>
+
+<p>You might want to do a bit of experimenting before you go down that route to
+see if your performance problem really is with the transmission over the wire
+or with the database update. You could write some tests to compare the time
+taken to do a save when 4, 10, 40, 100, all the&nbsp;objects in the list are
+dirty. If you see the length of time taken increasing roughly in proportion to
+the number of dirty objects then your bottleneck is to do with writing to the
+database rather than moving the list to the server.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

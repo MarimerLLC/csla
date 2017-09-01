@@ -1,0 +1,14 @@
+<html><header><title>OO Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OO Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12250.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chris.murphy posted on Wednesday, December 04, 2013</h2><p>I have resently started working for a company using CSLA. I have been referencing the sample projects heavily trying to understand good oo design principles and CSLA. I have been having a discussion with my co worker about proper use of encapsulation and how best to implement this.&nbsp;</p>
+<p>In the sample ProjectTracker.Library there is the ResourceAssignmentEdit class. In that class there is a reference to the ProjectName and ProjectID. Why are these individual properties instead of a property for the ProjectEdit class. It seems like the Project Name and ID are attributes of the Project and the resource assignement uses them but should not contain them.</p>
+<p>Should there be a reference to the Project Edit object in the Resource Assignment object? If not how does apply to encapsulation.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, December 04, 2013</h2><p>This is where you quickly get into trouble with serialization and you must understand how CSLA handle ownership.&nbsp;</p>
+<p>CSLA defaults to owning references. F.ex when you call BeginEdit the object creates a snapshop if itself and all its children. Imagine what happens when you have circular references.&nbsp;</p>
+<p>Or imagine how serialization in a N-tier deployment must be handled.&nbsp;</p>
+<p>In &nbsp;the&nbsp;<strong><a href="http://store.lhotka.net/Default.aspx?tabid=1560&amp;ProductID=24">Using CSLA 4: Creating Business Objects </a></strong>you will find documentation of&nbsp;</p>
+<p>
+<ul>
+<li>owning reference</li>
+<li>inter-graph reference</li>
+<li>using reference</li>
+</ul>
+</p>
+<p>and how to implement these.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

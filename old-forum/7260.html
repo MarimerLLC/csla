@@ -1,0 +1,173 @@
+<html><header><title>Why does object factory type is required to be found on the client side?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why does object factory type is required to be found on the client side?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7260.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell posted on Sunday, July 12, 2009</h2>Hi.<br>The ObjectFactory attribute receives the object factory name and not its type for a good reason - not to couple the client side with the server side. However, inside the data portal there is an attempt to access the object factory type on the client side. Granted, it does not attempt to instantiate it on the client side, but still it requires that the object factory assembly be found on the client side. All of this is in order to check if the respective factory method is attributed with the RunLocal attribute.<br>It seems to be a bug. I suggest adding a new parameter to the ObjectFactoryAttribute - CheckFactoryType, which is false by default. Only if it is set will the client side data portal try to reflect on the actual factory type, otherwise it just assumes RunLocal as false and everything is fine.<br>What do you think?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2><P>I almost can't believe I'm going to say this - but this is a feature not a bug :)</P>
+<P>As you note, this behavior is necessary to make RunLocal work, and so it is intentional - I did think through this issue.</P>
+<P>I am open to debate on alternative solutions. I'm a bit skeptical about a CheckFactoryType property, because that seems very cryptic and someone trying (and failing) to use RunLocal would probably never discover that they also need to apply CheckFactoryType to a totally different class.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Monday, July 13, 2009</h2>Well, it looks like a bug, because if the type is actually required and there is no way around it, then why does ObjectFactoryAttribute receives a string and not a Type parameter? This way everything is clear and the intentions are well communicated. But, it receives a string after all.<br><br>As of now, the need to examine the RunLocal attribute prevents clear separation of the client from the server - the client side demands server side assemblies, which is sometimes unacceptable. When I weigh the benefits of RunLocal versus client/server separation this is not even an issue - RunLocal is totally beaten. <br><br>However, the way is immaterial here. I will gladly adopt any other solution, which will allow one to achieve the aforementioned separation.<br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>RunLocal is invaluable, though, because many (probably most)
+Create() operations end up as RunLocal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In Silverlight I used a different approach, where the data
+portal methods accept a parameter to indicate whether the code should run locally
+&#8211; which means the factory method has the knowledge of running local or
+remote. So no RunLocal attribute and no messy stuff with ObjectFactory, because
+this knowledge is centralized in the factory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But even that&#8217;s not really perfect, because the data
+method itself (DataPortal_Create() or whatever) is obviously coded to run local
+or not &#8211; so technically the knowledge is still in two places: the factory
+and the data method itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which is why RunLocal is the best overall answer &#8211; because
+that attribute is applied to the method, and the method is implemented to run
+locally (or not). So all the knowledge is centralized in that one location.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Saturday, January 09, 2010</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br />... the data method itself (DataPortal_Create() or whatever) is obviously coded to run local or not ...<br /></div></BLOCKQUOTE><br /><br />I am not sure its really that obvious.  I mean, it is possible that code on a method such "DataPortal_Create()" to be location agnostic right?<br /><br />For example:<br /><br />private void DataPortal_Create()<br />{<br /> if(ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Client)<br />{<br />   // We are here because the User has very slow internet connection. So <br />   // lets get place-holder values from some file cached in the local machine.<br />}<br />else<br />{<br />   // The user has fast internet connection, we can go to the<br />   // the server and get the real values.<br />}<br /><br />In a case such as the one mentioned above, you would need to let the DataPortal know to go local or remote somewhere else other than with an attribute on the method. You would need to do something like what I think is done in CSLA for SilverLight.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 10, 2010</h2><P>If you have some RunLocal methods and some server-only methods, you'd need two DAL assemblies to contain these different methods.</P>
+<P>You'd then deploy the RunLocal assembly to both client and server, and the server-only assembly to the server, not the client.</P>
+<P>The data portal would succeed in finding the RunLocal attribute on the assemblies that do exist on the client, and would run that code on the client. It would obviously fail to find the types for the server-only code, and so RunLocal defaults to false and the server call is made.</P>
+<P>The Silverlight model is different. I'm not sure it is better. It was an experiment of a sort, to try a different solution to the problem. I dislike it, because one concept is split into different places in the code.</P>
+<P>You write your method, and you'll write it to be location neutral or not. So as you write the method, you know whether the method can run locally or only on the server - and putting a RunLocal attribute on the method makes sense, because it keeps that knowledge contained to the method.</P>
+<P>In the SL model you write the method. But it is the method <EM>caller</EM> that says whether the method is location neutral or not. So the knowledge is split - the method is implemented correctly, and then in an entirely different part of your app you decide how the method is to be invoked. A developer can't look just one place to find how the method works and is invoked.</P>
+<P>On the other hand, the SL model is easy to use and understand, and it completely avoids the need to reflect to find the RunLocal attribute. But I'm not convinced that the loss of elegance and maintainability&nbsp;is actually worth it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, July 09, 2010</h2><p>This problem will also bite me in the future.</p>
+<p>How about we have two attributes RemoteObjectFactory and LocalObjectFactory.&nbsp; If the class is decorated with LocalObjectFactory then creations are done locally by either a specified factory or a default implementation.&nbsp; RemoteObjectFactory is a rename of ObjectFactory (not essential but clearer).</p>
+<p>[LocalObjectFactory(ProductFactory)]</p>
+<p>[RemoteObjectFactory(&quot;Server.ProductFactory,Server&quot;)]</p>
+<p>public class Product...</p>
+<p>{</p>
+<p>}</p>
+<p>Then instead of having to touch the RemoteObjectFactory type you could just check for the existance of LocalObjectFactory decoration.&nbsp; </p>
+<p>&nbsp;</p>
+<p>However, it only really makes sense to Create locally nothing else.&nbsp; So the attribute could be: </p>
+<p>LocalCreation().&nbsp; No parameters looks for DataPortal_Create in the BO or just creates an instance after security check.</p>
+<p>LocalCreation(Type)</p>
+<p>&nbsp;</p>
+<p>My Thoughts, I haven&#39;t looked at the Silverlight way.</p>
+<p>Regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 09, 2010</h2><p>You are absolutely <i>not</i> required to have the object factory assembly on the client.</p>
+<p>The only times you need to have the object factory assembly on the client are:</p>
+<ol>
+<li>You are using a local (client-side) data portal, so the object factory code is running on the client</li>
+<li>You are using RunLocal on one or more object factory methods, so that code is running on the client</li>
+</ol>
+<p>If you are using a remote data portal configuration, and you are not using RunLocal, then there is no need at all to have the object factory assembly on the client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Monday, July 12, 2010</h2><p>Well I must be doing something wrong then,&nbsp; Is the FactoryLoader required on the client?&nbsp; I&#39;m using a specific loader.</p>
+<p>Regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Monday, July 12, 2010</h2><p>Well I don&#39;t get this at all.</p>
+<p>Ok, FactoryLoader needs to be on the client, i&#39;ll have to split my data assembly for this.</p>
+<p>I&#39;ve looked at the source (including latest) and the factory type is required on the client.&nbsp;&nbsp; The client DataPortal reflects it.</p>
+<p>Unless I&#39;m looking in the wrong place, which I probably am!</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 12, 2010</h2><p>Hi Kevin, </p>
+<p>Yes -&nbsp; the factory loader should be in a separate assembly and available on the client. </p>
+<p>But your ObjectFactory classes are not required to be present on the client, only those classes that contain methods tagged with RunLocal must be on the client in order to be executed there.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, July 13, 2010</h2><p>Thanks for the reply.</p>
+<p>This is only true if the loader has the smarts to determine running location and not return the type that only exists on the server.&nbsp; If we always return that type from GetFactoryType then a FileLoadException(see below) is raised because the type is not on the client when it scans for RunLocal attribute.</p>
+<p>None of my factories have RunLocal.</p>
+<p>The best solution for now seems to be configuring the client to use a different loader than the server.</p>
+<p>Regards</p>
+<p>Kevin</p>
+<p>--Stack Trace--</p>
+<p>System.IO.FileLoadException<br /><br />&nbsp;&nbsp; at System.RuntimeTypeHandle._GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp; stackMark, Boolean loadTypeFromPartialName)<br />&nbsp;&nbsp; at System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp; stackMark)<br />&nbsp;&nbsp; at System.RuntimeType.PrivateGetType(String typeName, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp; stackMark)<br />&nbsp;&nbsp; at System.Type.GetType(String typeName)<br />&nbsp;&nbsp; at Csla.Server.ObjectFactoryLoader.GetFactoryType(String factoryName)<br />&nbsp;&nbsp; at Csla.Server.DataPortalMethodCache.GetFetchMethod(Type objectType, Object criteria)<br />&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br />&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria)<br /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 13, 2010</h2><p>&nbsp;Kevin, </p>
+<p>Have a look at the SimpleNTier (WinForms sample) and PagedList demo (Silverlight) for CSLA4. </p>
+<p>Both samples use ObjectFactory and the ObjectFactory assemblies are NOT required to exist on the client. </p>
+<p>Just so we can understand your code:</p>
+<ol>
+<li>What type of client are you using?</li>
+<li>Which version of CSLA are you using?</li>
+<li>Are you using the default ObjectFactoryLoader or you own?</li>
+<li>What is the Objectfactory attibute on your class?</li>
+</ol>
+<p>And check that your application is configured to use remote dataportal. </p>
+<p>Note that the default objet factory loader (or rather the .Net Type.GetType does not accept any white spaces in the class name)<br />So this one will fail: [ObjectFactory(&quot;Namespace.Type , Assembly&quot;)]&nbsp; <i>(due to whitespace before comma).</i></p>
+<p>If you are using the<i> SimpleDataPortal </i>then the ObjectFactory assemblies must be in the bin folder of your client (and the would normally not be present as the Business assembly should not have any references to the object factories).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, July 13, 2010</h2><p>Solved!</p>
+<p>In my custom factory loader there was a call to the following which needed removing:<br />
+<pre style="font-family:consolas;"><span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">Type</span>.GetType(parser.FactoryType<b><span style="text-decoration:line-through;">, true</span></b>);<br /><br /></pre>
+</p>
+<p>This is throwing exceptions if the type is not found, Doh!&nbsp; I&#39;ll have to check the rest of my factory as generic types are built to form a generic factory type.&nbsp; </p>
+<p>This method (GetFactoryType in ObjectFactory) must return null on the client, or a specific client factory.</p>
+<p>Thanks for your help</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, July 14, 2010</h2><p>Just to confirm that the assembly&#39;s with objectfactories are not needed at the client. A (large) project with 2000+ fte hours of work in it is running on a 3 tier setup where the client&#39;s don&#39;t have the server assemblies (containing the factory&#39;s)</p>
+<p>And yes, our custom FactoryLoader&nbsp;is indeed available on the client, but there isn&#39;t an registration of it using appSettings CslaObjectFactoryLoader or in-code</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, July 14, 2010</h2><p>Not sure I follow.&nbsp; Why have a custom FactoryLoader on the client if you&#39;re not actually using it on the client?&nbsp; Surely if it&#39;s not registerd in AppSettings the default ObjectFactoryLoader will be being used, therefore you don&#39;t need any loader on the client.</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, July 14, 2010</h2><p>I didn&#39;t check page 2, sorry for the reply in that case.. didn&#39;t read the message that u solved it. Anyway the custom factoryloader is only available because it&#39;s in our own business layer assembly framework.business and the clients are using that. no big deal.</p>
+<p>I&#39;m glad u solved it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, July 14, 2010</h2><p>No probs, thanks.&nbsp; I was intrigued there for a second, you must be doing something magic!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2><P>Now that I've had my morning coffee, I should also point out that the "type name" parameter you provide to the ObjectFactory attribute is not actually a type name. It is just a string.</P>
+<P>The default interpreter for that string (something called a factory loader) takes that string value and looks for the corresponding type.</P>
+<P>But you can provide your own interpreter for that string, which can use that string in other ways.</P>
+<P>One solution to the issue we're discussing here, is for you to create your own factory loaded for the client, that alters the string value slightly - possibly by altering the assembly name. So this:</P>
+<P>[ObjectFactory("Namespace.Type, Assembly")]</P>
+<P>would load this type: "Namespace.Type, AssemblyClient" because the factory loader just adds "Client" to the end of the assembly.</P>
+<P>This allows you to have a client-only assembly with the RunLocal methods, and a server-only assembly with the rest of the methods. You end up with the separation of concerns you are looking for, and with all the local/remote functionality supported by the data portal.</P>
+<P>In other words, you just have two DAL assemblies: Dal and DalClient. And you have a factory loader that is used only on the client (or only on the server - you could do it either way) that alters the assembly name as appropriate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Monday, July 13, 2009</h2>OK. Let me get it straight. The alternative to the obscure boolean flag is to have another assembly and if I never use RunLocal in the first place, the second assembly is just sitting there to satisfy type resolution on the client side.<br>The factory loader will have to determine on which side it is running in order to mangle the given string on the client side and leave it as is on the server. Or there should be two factory loaders and the code returning one will decide which factory loader to return.<br><br>I guess I will prefer to stick with the obscure boolean flag. Its default value may leave the current semantics unchanged, but once client is separated from server (thus making local runs impossible) and the type resolution failures manifest themselves, one can simply turn the flag off (or on, depending on the perspective). <br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>LOL!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If we&#8217;re looking for architectural purity, using the IoC scheme
+supported by ObjectFactory with a factory loader is far more pure than a
+limited API scheme to address one narrow issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The primary motivation for people to use the more difficult
+ObjectFactory scheme in the first place is architectural purity and separation
+of concerns &#8211; so my laughter comes through the irony of using a more
+complex pure model, and then putting a hack in the API to simplify its use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Barring others joining the discussion in favor of some sort of
+API change, my inclination is to leave things as they are. A lot of work went
+into making the object factory and factory loader concept super-flexible to
+support many different scenarios (including ones we can&#8217;t foresee), and I&#8217;m
+not ready just yet to implement a solution that feels like a one-off hack.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Monday, July 13, 2009</h2>It is indeed a hack. I will keep it until a real solution arrives.<br>Thanks for the prompt replies.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

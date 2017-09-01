@@ -1,0 +1,12 @@
+<html><header><title>One datagridview is in readonly mode when bound to a class that inherits from: Csla.ReadOnlyListBase </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One datagridview is in readonly mode when bound to a class that inherits from: Csla.ReadOnlyListBase </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8571.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tutus posted on Wednesday, February 24, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>I have 2 datagridviews bound to 2 different&nbsp;Bindingsources:: DMsBindingSource and DepotsBindingSource.</p>
+<p>&nbsp;</p>
+<p>In code, I bind DMsBindingSource to an object/datasource : <strong><span style="text-decoration:underline;">DMs</span></strong>. That s a collection that inherits from Csla.ReadOnlyListBase </p>
+<p>And I bind DepotsBindingSource to another object/datasource : <span style="text-decoration:underline;"><strong>Depots</strong></span></p>
+<p>Depots and DMs are instances of 2 different read-only-collection classes that both&nbsp;inherit from Csla.ReadOnlyListBase.</p>
+<p>The problem is why is one grid in readonly (all cells are readonly)&nbsp;mode while the 2nd grid can be&nbsp;editable</p>
+<p>I want the 1st grid to be editable as well like checking off checkboxes.</p>
+<p>Pls note that even the proiperties that are not readonly properties are disabled in the 1sr gridview.</p>
+<p>Also my gridview has the property ReadOnly = false and so does the columns.</p>
+<p>Any thought pls?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tutus replied on Wednesday, February 24, 2010</h2><p>Sorry , even the grid that s working is bound to list(of DepotInfo) that s may be why it worked. So now for the grid that s not editable i bind it also to a List(Of DMInfo) instead of to RadOnlyBaseList collection. Now it s working thanks for ur time :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

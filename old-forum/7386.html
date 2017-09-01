@@ -1,0 +1,96 @@
+<html><header><title>Slow Response Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Slow Response Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7386.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mafaraz posted on Sunday, August 02, 2009</h2>Hi All,<br><br>We have developed an in-house product using the CSLA framework. It’s an enterprise level application with 500 users and around 300 plus screens. Its an N-tier application with winforms is used as frontend; dataportal is at the middle tier and Oracle 9i is used as the database. <br><br>The Dataportal &amp; Database servers are hosted in the data center. Front-end application is used locally as well as in other outstations. For the local users performance is good and they are satisfied as we have almost unlimited bandwidth locally. But for the outstation users application performance is erratic sometimes its ok; sometimes its very poor. There are many factors contributing in the slow response like UI, network, database etc.<br><br>Dataportal server is setup in resilience environment. HTTP channel is used for remoting and the Dataportal server is hosted in IIS application. Public internet is used for the connectivity between outstation PCs and the dataportal server. Average bandwidth is around 512 Kbps between outstation PCs and the dataportal server.<br><br>Can anyone help us in suggesting the ways to reduce the slow response.<br><br>Regards<br>Faraz</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The
+quickest way I could think of is to convert portal to be WCF portal and use
+HTPP channel that implements compression.&nbsp; You will just need to find a
+post here that has WCF HTTP compression library.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mafaraz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 02, 2009 4:47 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Slow Response Issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi All,<br>
+<br>
+We have developed an in-house product using the CSLA framework. It???s an
+enterprise level application with 500 users and around 300 plus screens. Its an
+N-tier application with winforms is used as frontend; dataportal is at the
+middle tier and Oracle 9i is used as the database. <br>
+<br>
+The Dataportal &amp; Database servers are hosted in the data center. Front-end
+application is used locally as well as in other outstations. For the local
+users performance is good and they are satisfied as we have almost unlimited
+bandwidth locally. But for the outstation users application performance is
+erratic sometimes its ok; sometimes its very poor. There are many factors
+contributing in the slow response like UI, network, database etc.<br>
+<br>
+Dataportal server is setup in resilience environment. HTTP channel is used for
+remoting and the Dataportal server is hosted in IIS application. Public
+internet is used for the connectivity between outstation PCs and the dataportal
+server. Average bandwidth is around 512 Kbps between outstation PCs and the
+dataportal server.<br>
+<br>
+Can anyone help us in suggesting the ways to reduce the slow response.<br>
+<br>
+Regards<br>
+Faraz<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Sunday, August 02, 2009</h2><P>I have deployed my app in very similar environment.&nbsp; <BR>I had performance issue during initial deployement stage.<BR>The performance was connection pool for odp.net.&nbsp; I simply enabled it via configuration and resolved the issue.&nbsp; Database connection is very resource intensive so one needs to treat with care.<BR>I am still using .net remoting and do not see a need to switch over to WCF yet.<BR>Just for your info, I have west coast users access my centralized server in the east coast&nbsp;with no performance issue at all.&nbsp; I would suggest you to fine tune your&nbsp;back-end database.&nbsp; It could be your app's major bottle neck.</P>
+<P>&nbsp;</P>
+<P>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Sunday, August 02, 2009</h2>Also make sure to remove un-needed saves and fetches to reduce network load.  <br /><br />In an app I inherited, the client app continually updated Date Last Maintained and Last User fields, causing every object to save even though nothing else changed. Revising the objects so these two fields did not cause IsDirty made a major performance improvement for us.<br /><br />Smart loading or cache of lists, if not already being done, will help perforamance.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mafaraz replied on Monday, August 03, 2009</h2><font face="Tahoma" size="2"><br>Dear All,<br><br>Thank you all for your valuable inputs.<br><br>@<a> sergeyb</a>: Unfortunately we cannot change the application architecture as it requires lot of effort and time.<br><br>@<a> andy</a>: Connection pooling is enabled at the database level and at the odp.net level.<br><br>@ 										<a>mbblum</a>: We have reviewed the entire application and reduce the no. of database calls. Also all the master data is cached at the application loading time asynchrounsly.<br><br>Regards,<br>Faraz<br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Monday, August 03, 2009</h2>We started using Noemax about six months ago with good success. We cut our payload almost in half using Fast Infoset with compression. We're using WPF with our dataportal installed on an IIS7 web farm.<br><br><a href="http://www.noemax.com/products/wcfx/index.html">http://www.noemax.com/products/wcfx/index.html</a><br><br>-Paul<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Monday, August 03, 2009</h2><P>Without know&nbsp;much detail about your implemtation / architeural design.&nbsp;&nbsp; It's very difficult to pin point the problem.<BR>Here are something you might want to explore:</P>
+<P>1) Implement lazy loading(database intensive query for child list)&nbsp;</P>
+<P>2) Loading your object graph using "deep data" technique from Rocky.<BR></P>
+<P>My application have quite complex struture(parent-&gt;child-list-&gt;grand-child-list).<BR>These techniques&nbsp;do really boost my application performance&nbsp;tremendously.</P>
+<P>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks replied on Monday, August 03, 2009</h2>We have also had to overcome poor performance with enterprise windows-form applications.  Here are our top tips, but I am sure that you have thought of these already.<br /><br />You will probably find that the problem falls into 4 parts:<br />A: Form Painting - If you use a lot of custom controls you will need to optimise their painting.  To get started profile your performance and understand where your bottlenecks are.  Try using Jet-Brains performance tool if you are doing .NET forms.<br /><br />B: Message Latency (i.e. ping time).  Every client/server message exchange will be impacted by the time it takes the message to get there and back.  Two things to tackle here are B1 - good-hosting to minimise the ping time for most users.  B2 - alter your architecture to cut the NUMBER of synchronous messages. <br /><br />C: Message Size.  Larger messages take longer to process.  If using WCF use custom binding to enable you to send data in binary rather than text format.  Also look at the impact of message encryption, headers and the frequency of security information being exchanged.  Also adjust business objects so that you only retrieve the data you need and post back data that has actually changed.  Use a network trace tool to log all of you application in and out messages - this can be quite revealing.<br /><br />D: Asynchronous / Synchronous behaviour.  Ideally parts of your windows forms that can paint before data has arrived should do so.  i.e. try and get some processing done whilst data is being read/written.  Showing an animated "waiting" symbol can also make users more likely to be happy with poor performance.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 03, 2009</h2>I think B &amp; D are good ideas.<br /><br />Remember... you don't actually need to increase performance, only make it SEEM as if its quicker.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2><P>One thing to consider to achieve B, is to use <EM>unit of work</EM> objects.</P>
+<P>If a form needs the business object, plus a few NVL or ROL objects, you really don't want to round-trip to the app server numerous times to get all those objects.</P>
+<P>So create a unit of work object (usually a ReadOnlyBase or CommandBase) that goes to the server, gets all the needed objects and returns them in one call.</P>
+<P>The most common scenario for a UOW is loading a form, and creating a ReadOnlyBase object to do this is pretty trivial.</P>
+<P><A HREF="/forums/permalink/35162/35162/ShowThread.aspx#35162">http://forums.lhotka.net/forums/permalink/35162/35162/ShowThread.aspx#35162</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2><P>Also, although Remoting is very old now, you may be able to still find vendors with alternative Remoting channel implementations - possibly including a compressed channel?</P>
+<P>Or, if you are using HTTP maybe you can turn on HTTP compression in IIS and get compression that way - I don't remember if Remoting was compatible with that option or not.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

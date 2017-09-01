@@ -1,0 +1,48 @@
+<html><header><title>ClientContext and Asp.net</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ClientContext and Asp.net</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5260.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, August 18, 2008</h2>Hi,<br><br>I have built a winforms app on Csla.&nbsp; For my applications, I have the concept of a session.. similar to logging in, but done automatically using Windows authentication.&nbsp; I'm trying to use the same concept for a web application I'm building.&nbsp; In my global.asax on Session start and end, I call my Application.Session.OpenSession and CloseSession, which allows my business layer to ask about the current user, if the application is a beta version, etc.&nbsp; <br><br>I've been storing all this information in Csla.ApplicationContext.ClientContext.. but it seems like this information is lost between requests.&nbsp; My first thought is to update my business layer to use Asp.Net Session to store the information if it detects its running under Asp.Net.&nbsp; <br><br>Is there another way I should do this?&nbsp; Is the ClientContext really lost between each Asp.Net request?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 18, 2008</h2><P>As I recall SessionEnd does not fire reliably. If you are really planning to take action when a users session ends then you probably need to get more creative.</P>
+<P>I keep information about the logged on user in my custom Principal object which is always available. </P>
+<P>If you have other information (which is not user specific) like Version number then you need to add it to the ASP.Net cache or some read only object which you then cache. Since it is not user specific it does not belong in Session state. By using the cache, it is available at the application level. If oyu need it on both sides of the dataportal you can choose to either pass it as part of context or just re-fetch and re-cache it on the other side. Obviously things like cache expiration are going to be a big deal. You can either decide that a 20 minute cache expiration is acceptable or else you can go with more advanced strategies.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 18, 2008</h2>Thanks Joe,<br><br>Right now the only action I take is to reset the principal to an unauthenticated one, and clearing ClientContext.&nbsp; So as long as those happen anyway, I should be good for now.&nbsp; Just out of curiosity, when does SessionEnd not fire reliably?&nbsp; Any known reason? (AppDomain resetting, perhaps?)<br><br>The other application vars I store in static variables, which is fine to be at the AppDomain level.&nbsp; they really are global to the application.&nbsp; I'm all set with caching, as I&nbsp; use the Caching Application Block.<br><br>I know there's something I need to do in the Global.asax .. but I can search here for that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, August 19, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><BR>Just out of curiosity, when does SessionEnd not fire reliably?&nbsp; <BR></div></BLOCKQUOTE></P>
+<P>I guess the most common reason is that the user can close their browser window and the server won't know about it. I'm sure Google can come up with some more reasons. &lt;g&gt;</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 19, 2008</h2>Wouldn't the session on the server though just timeout and end?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, August 19, 2008</h2><P><FONT face=Tahoma size=2>I have run into situations where that doesn't seem to happen, and I can't tell you why.&nbsp; I&nbsp;remember reading in some documentation that the Session_End event will not fire if nothing has been put into the Session object.&nbsp; Whether that's true or not, I can't say - I've never been able to reliably test it.&nbsp; But I will agree that Session_End is not the most reliable thing.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 19, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Hi,<BR><BR>I've been storing all this information in Csla.ApplicationContext.ClientContext.. but it seems like this information is lost between requests.&nbsp; My first thought is to update my business layer to use Asp.Net Session to store the information if it detects its running under Asp.Net.&nbsp; <BR><BR>Is there another way I should do this?&nbsp; Is the ClientContext really lost between each Asp.Net request?<BR></div></BLOCKQUOTE></P>
+<P>Yes, ClientContext is lost between page requests. Nothing in ApplicationContext survives a page transition, because neither the thread nor the HttpContext survive - and those are the two places CSLA can store values.</P>
+<P>While Session might exist, a lot of web sites turn it off to avoid the overhead. So CSLA never assumes Session exists - though personally I use Session in most web apps I build.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 20, 2008</h2>Hmm.. I think I'll require session for now... until I can think of a better way to store the session information.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can read web dev books to get the various state management
+options. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But this is the web architecture&#8217;s Achilles&#8217; Heel,
+never in the history of computing (and hopefully never again in the future)
+will we stumble into such an ill-conceived technology&#8230; The way you have
+to deal with state in the web illustrates just how much the web technologies
+were NOT planned, but rather clumsily evolved&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 20, 2008</h2>Ya, I came to the realization years ago that the web isn't something which applications should be built on.&nbsp; But, unfortunately, people want web apps.. Bleh.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

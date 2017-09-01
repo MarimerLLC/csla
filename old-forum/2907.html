@@ -1,0 +1,83 @@
+<html><header><title>Securing CSLA.NET applications</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Securing CSLA.NET applications</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2907.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Voss posted on Saturday, May 19, 2007</h2><P>Hi everyone</P>
+<P>I've recently finished my first application based on CSLA.NET, so I have come to an important milestone, <STRONG>deployment</STRONG>.</P>
+<P>I am sure I am not alone in wanting to protect my application against reverse engineering and modification that could possibly lead to malicious use, theft of business process/intellectual property and of course piracy; which leads me to obfuscation.</P>
+<P>Obfuscation, for peoples out there scratching their heads is (in the case of .NET applications) the transforming of the easily readable intermediate language and all of it's descriptively named classes, members and functions contained in your final executeable to an executeable that contains renamed (usually nonsense, or maximally overloaded) classes, members and functions. The purpose of this transformation is to make the reverse engineering efforts (which can be as simple as using a free readily available program called Reflector) extremely ambiguous due to the renaming, hard to follow due to techniques such as spaghetti code, or non-deterministic due to techniques such as introducing forward executing control structures.</P>
+<P>I have come to a conclusion through personal experience and reading posts in this forum about obfuscation and CSLA.NET that CSLA.NET is not obfuscation friendly.</P>
+<P>It is my current understanding that it is however a possibility to obfuscate an application based on CSLA.NET by:</P>
+<P>1. Modifying the framework to use interfaces (details on this process are sketchy) and/or</P>
+<P>2. Exclude the DataPortal_XYZ methods, and any other overridden method (like AddBusinessRules() and AddAuthorizationRules())&nbsp;from being renamed in the obfuscation process.</P>
+<P>3. Deal with the problems when using the PropertyHasChanged("propertyNameHere") method call, which is useful sometimes to call in code outside of a mutator (set) method. The problem occurs because&nbsp;the member has been renamed from the supplied property name string, to my knowledge there is no obfuscator that looks for and replaces method or property names in strings.</P>
+<P>4. The validation and authorization rules sections also need a lot of work, since they take a string representing the property name, which is changed during the obfuscation process. I understand you could exclude these properties from being renamed as a quick and nasty fix but then what would be the point of obfuscating your code in the first place if you were going to leave that amount of information still in the code?</P>
+<P>To get to the point of this increasingly long post I'll use a question in the form of an analogy:</P>
+<P><STRONG>If you owned an expensive&nbsp;car that was powerfully engineered (a CSLA.NET framework application) and it contained a host of innovative features (business processes/intellectual property) would you be willing to park it in a bad neighbourhood (the internet) with the doors unlocked and the keys in the ignition (MSIL) and walk away?</STRONG></P>
+<P>Hmmm, no.</P>
+<P>Keeping your application secure is of paramount concern for developers (and more practical than income/life insurance!), it would be nice if CSLA.NET included some features that could enhance security outside of the application-to-datastore and application-to-O.S. relationships, perhaps a neat way to manage licensing for the application&nbsp;and/or&nbsp;perhaps an amendment to Rocky's fantastic books that includes&nbsp;the topic "How to Secure/Obfuscate your CSLA.NET application". </P>
+<P>It is my belief that since developers&nbsp;have a large influence on&nbsp;the technologies employed when making an application, they would undoubtably choose the technologies that offer <STRONG>them</STRONG>&nbsp;the most attractive features, and being able to easily secure your application is a very attractive feature.</P>
+<P>Food for thought,</P>
+<P>Voss Burton</P>
+<P>Post your shouts, opinions and flames if applicable.</P>
+<P>All trademarks are property of their respective owners.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Saturday, May 19, 2007</h2><P>have you seen this software :-</P>
+<P><A href="http://www.remotesoft.com/linker/">http://www.remotesoft.com/linker/</A></P>
+<P>this converts your .net code to native code. i haven't tested it myself but this is different then normal Obfuscation. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Voss replied on Saturday, May 19, 2007</h2><P>Hello Vinodonly,</P>
+<P>I had a read of the website you linked to and I can not see how the Salamander product would help, since the process of obfuscation involves the renaming of classes, methods and properties, which is the source of the problem (outlined in my original post) when using CSLA.NET.</P>
+<P>I appreciate the effort you made to reply however what you&nbsp;are suggesting is&nbsp;using a different product that also comes with happy endorsement from MS, that will <STRONG>achieve the same undesireable result</STRONG>.</P>
+<P>The Salamander product does offer some different features, but none of them solve the&nbsp;issues encountered when using obfuscation as a method of securing CSLA.NET applications.</P>
+<P>Voss Burton</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Sunday, May 20, 2007</h2><P>sorry, i have posted a wrong link, Product is Salmander Protector which is bundled with 3 products, here is the link :-</P>
+<P><A href="http://www.remotesoft.com/salamander/protector.html">http://www.remotesoft.com/salamander/protector.html</A></P>
+<P><A href="http://www.remotesoft.com/news.html">http://www.remotesoft.com/news.html</A></P>
+<P>Product claims to handle reflection and other issues then other similar products which are the main issues encountered when using CSLA. Pls read the FAQ section on the site, also given is the extract from their site :-</P>
+<P>Our protector is not an obfuscator, rather it converts the decompilable Microsoft Intermediate Language code (MSIL or CIL) of your assemblies into native format while keeping all .NET metadata intact, and thus it provides the same level of protection as native C/C++ code. Further more, it offers code, string and resource encryption, and therefore, it provides even better protection than native C/C++ code.</P>
+<P>here is the extract on reflection from FAQ :-</P>
+<OL>
+<LI>
+<P><FONT size=2><FONT face=Arial><STRONG>How is remotesoft protector different from an obfuscator?</STRONG> </FONT></FONT></P>
+<P><FONT face=Arial size=2>An obfuscator provides limited protection through modifying symbol names to confuse someone from understanding the decompiled code, but it has no mechanism to hide and protect CIL code, the obfuscated executables still use CIL code, and thus can be decompiled. It provides no protection over disassembling, i.e., you can always use ILDASM to view the CIL code. </P>
+<P>To make things worse, an obfuscator can not guarantee code equivalence, for example, if a program contains System.Reflection calls, it may not work after obfuscation. The following is an example that you can try, run it before and after obfuscation, and you will see the difference.</FONT></P><PRE><FONT size=2>
+using System;
+using System.Reflection;
+
+class ReflectionTest
+{	
+  int which;
+  string name;
+	
+  ReflectionTest(int which)
+  {
+    this.which = which;
+    name = "Christina Zhang";
+  }
+
+  public static void Main()
+  {
+    int data = 1234;
+    ReflectionTest rt = new ReflectionTest(data);
+
+    try {
+      // use reflection to get the field value
+      FieldInfo fi = typeof(ReflectionTest).GetField("which", BindingFlags.Public|BindingFlags.NonPublic|BindingFlags.Instance);
+      Console.WriteLine("You should see {0}, here: {1}", data, fi.GetValue(rt));
+    } catch (Exception e) {
+      Console.WriteLine(e.Message);
+    }
+    // display field directly
+    Console.WriteLine("name = {0}", rt.name);
+  }
+}
+</FONT>
+  </PRE><FONT face=Arial><FONT size=2>Overall, what an obfuscator really does is replacing symbol names with meaningless ones so any decompilation of the resulting file will be hard to understand. The flow and data structures could still be decompiled. If a vendor claims that its obfuscator can prevent your code from decompilation, take it with salts. </FONT></FONT>
+<P><FONT face=Arial><FONT size=2>Remotesoft .NET protector is not an obfuscator, it uses totally different approach, and it changes the underlying CIL code to native code. It completely stops decompilation, so no one can steal your source code. It completely stops CIL disassembling, so no one can even view your CIL code. </FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>In short, an obfuscator modifies symbol names to make decompilation harder, while our protector changes underlying code to make CIL decompilation and disassembling impossible. </FONT></FONT></P></LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Voss replied on Sunday, May 20, 2007</h2><P>Thanks for the info, but I still can't see that this Salamander Protector suite fixes the issue I've been encountering, and I've already spent thousands of dollars on another product that was fully endorsed by MS and their people and will not be doing that again any time soon.</P>
+<P>As a side note, it is entirely possible that all their claims that changing CIL / MSIL code to native code will not stop disassembly completely, since x86 and the art of reverse engineering has been around for a couple of decades I am sure there would be mature tools available to revert the native code&nbsp;to a higher language, after all, people didn't just start reverse engineering when .NET was released a few years ago.</P>
+<P>Voss Burton</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Voss:</strong></div><div>
+<P>I have come to a conclusion through personal experience and reading posts in this forum about obfuscation and CSLA.NET that CSLA.NET is not obfuscation friendly.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't have a good answer to all your points - it is true that CSLA uses some technqiues that are not friendly to obfuscation.</P>
+<P>However, most obfuscators apparently have an attribute you an apply to specific methods to prevent them from being obfuscated. If you apply such an attribute to your DP_XYZ methods the data portal should work.</P>
+<P>(you'll also need to apply them to CSLA itself - to MarkNew, MarkDirty, etc.)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Voss:</strong></div><div></P>
+<P>3. Deal with the problems when using the PropertyHasChanged("propertyNameHere") method call, which is useful sometimes to call in code outside of a mutator (set) method. The problem occurs because&nbsp;the member has been renamed from the supplied property name string, to my knowledge there is no obfuscator that looks for and replaces method or property names in strings.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Here you can use the PropertyHasChanged() overload (and CanReadProperty/CanWriteProperty overloads) that don't specify the property name. Though this incurs a (typically) trivial performance hit, it also auto-corrects for the name of the property at runtime, so even an obfuscated property name should continue to function correctly.</P>
+<P>I don't have any good answer for the validation/authorization issue. It is not at all clear that there's any easy solution to that issue, because there's no design-time construct that represents a property at runtime. In other words, there's no way I'm aware of to write code to interact with an arbitrary property without using that property's name - because there's no strongly-typed, named, representation of a property available in VB or C#.</P>
+<P>Even the new dependency property concept in .NET 3.0 doesn't solve this issue, because Microsoft uses literal strings to link the actual property implementation to the dependency property... In fact, it now occurs to me that this may prevent obfuscation of most WPF and WF code, because any real app will use dependency properties - they are too deeply embedded in these new technologies and you can't avoid them.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

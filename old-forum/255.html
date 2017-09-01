@@ -1,0 +1,34 @@
+<html><header><title>Trouble with generics in 2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trouble with generics in 2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/255.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>miker55 posted on Friday, June 02, 2006</h2><P>In Csla 1.5 I had a BusinessBase class and a BusinessCollectionBase class.&nbsp; This allowed me to declare a variable like so:</P>
+<P>public IList&lt;BusinessCollectionBase&gt; DetailTables;</P>
+<P>I have tried everything I can think of to declare a similar variable in 2.0.&nbsp; I was only able to do this:</P>
+<P>public IList&lt;IEditableCollection&gt; DetailTables;</P>
+<P>But then this code breaks:</P>
+<P>foreach (BusinessBase obj in DetailTables[ii])</P>
+<P>It tells me "foreach statement cannot operate on variables of type 'Csla.Core.IEditableCollection' because 'Csla.Core.IEditableCollection' does not contain a public definition for 'GetEnumerator'"</P>
+<P>Basically, I need to be able to do two things in 2.0 that I can't figure out yet: </P>
+<P>&nbsp; a.) declare a variable whose type is a list of BusinessListBase objects</P>
+<P>&nbsp; b.) enumerate through that list and call methods from BusinessBase on each object in each list</P>
+<P>Is this even possible with the new generic&lt;t,c&gt; structure?&nbsp; It seems very limiting in this regard...</P>
+<P>TIA,</P>
+<P>Mike Rodriguez</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, June 02, 2006</h2><P>You will need to translate the following VB suggestions into C#.</P>
+<P>Csla.BusinessListBase is a MustInherit class, from which you can derive a collection class like:</P>
+<P><FONT size=2>Public Class AddressCollection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inherits Csla.BusinessListBase(Of AddressCollection, Address)</FONT></P>
+<P><FONT size=2>End Class</FONT></P>
+<P><FONT size=2><FONT size=3>For this to work, you will also need</FONT>&nbsp;</FONT></P>
+<P><FONT size=2>Public Class Address<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inherits Csla.BusinessBase(Of Address)</FONT></P>
+<P><FONT size=2>End Class</FONT>&nbsp;</P>
+<P>You can now do<BR><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim Coll as AddressCollection = AddressCollection.GetAddressCollection(.....)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;For each obj as Address in Coll<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.city = "Chicago"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End For</FONT></P>
+<P>I hope this helps.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miker55 replied on Friday, June 02, 2006</h2>
+
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Hi Jav,<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>That works fine if you know the type.&nbsp; My collection is generic (not literally) and the type won’t be known until runtime.&nbsp; It was easy to make a generic list of the type BusinessListBase before, then at runtime fill it with different classes.&nbsp; You can’t do that now in 2.0 because you need specific type info.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<DIV>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Thanks,<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Mike</SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=3><SPAN><o:p></o:p></SPAN></FONT>&nbsp;</P></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 02, 2006</h2>You need to find a non-generic base type for BindingList&lt;T&gt; (because that's what I inherit from to create BusinessListBase&lt;T,C&gt;). IList is probably your answer, because BindingList&lt;T&gt; implements IList&lt;T&gt;, which includes IList.<br><br>So I think (haven't tried, as I'm theoretically on holiday) that you could do this:<br><br>public IList&lt;IList&gt; DetailTables;<br><br>Since IList comes from IEnumerable, there should be support for foreach.<br><br>foreach (IList obj in DetailTables[ii])<br><br>If that doesn't work, it might be that BindingList&lt;T&gt; also includes ICollection - but I'm not sure about that (it might be ICollection&lt;T&gt;, which wouldn't be directly useful).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, June 02, 2006</h2>Mike,<br>What are you using this code? is it a form? or another class?<br><br>I have some generic controls / forms and when I use lists I declare them like:<br><br>Public Class SomeClass(Of T as BusinessListBase(Of T, C), C as BusinessBase(Of C))<br><br>Public DetailTables as IList(Of T)<br><br>End Class<br><br>The only "issue" is that you have to specify the type of C. <br>I hope that's what you're looking for.<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

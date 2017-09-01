@@ -1,0 +1,19 @@
+<html><header><title>editablechildlist</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>editablechildlist</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1785.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng posted on Friday, November 17, 2006</h2><P>Have a little problem to create the ProjectResource.cs and ProjectResources.cs object with codesmith and the latest csla templates.</P>
+<P>If I have got it right... ProjectResources is a editablechildlist with Project as parent. The output of the generated code is </P><FONT color=#0000ff>
+<P>foreach</FONT> (<FONT color=#008080>ProjectResource</FONT> child <FONT color=#0000ff>in</FONT> <FONT color=#0000ff>this</FONT>)</P>
+<P>{ </P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;if</FONT>(child.IsNew)</P>
+<P>child.Insert(cn, parent);</P>
+<P><FONT color=#0000ff>else</P></FONT>
+<P>child.Update(cn, parent);</P>
+<P>}</P>
+<P>but this gives med compile error: no overload for method 'insert' takes '2' arguments..</P>
+<P>and in the ProjectResource file the code is</P><FONT color=#0000ff size=2>
+<P><FONT size=3>internal</FONT></FONT> <FONT color=#0000ff>void</FONT> Update(<FONT color=#008080>SqlConnection</FONT> cn)</P>
+<P>which should have been </P>
+<P>internal void Update(Sqlconnection cn, ProjectResource project)</P>
+<P>or something like that? Is it me doing something&nbsp;wrong or is the template wrong?</P>
+<P>--</P>
+<P>Peder</P>
+<P>&nbsp;</P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Tuesday, November 21, 2006</h2>Peder,<br>If you search on "editablechildlist" and "parent" you'll find many discussions on this issue.&nbsp; The short answer is, you need to define parent on ProjectResource<br><br>Ricky<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,33 @@
+<html><header><title>how to know &quot;logically&quot; on server side of DataPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how to know &quot;logically&quot; on server side of DataPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6685.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Thursday, March 26, 2009</h2><P>Hey yall.&nbsp; Looking for different ideas on how to achieve this elegantly.</P>
+<P>I would like to have a flag that says that we have logically gone through the DataPortal mechanism...don't care&nbsp;about the&nbsp;physical location...local or remote.</P>
+<P>On the surface one might think (as I first did) to use the Csla.ApplicationContext.ExecutionLocations.Server feature.&nbsp; The problem is that this property maps to the '<STRONG>physical'</STRONG> location of the code.&nbsp; So in a local deployment that property will never say Server even though logically we are operating on the server side of the DataPortal.&nbsp; I want&nbsp;a way to know that I am on the <STRONG>"logical" </STRONG>server side of the DataPortal.<FONT size=2></P>
+<P></FONT>Obviously I could</P>
+<OL>
+<LI>Subclass CSLA objects and add my flag in the OnDataPortalInvoke &amp;&nbsp; OnDataPortalInvokeComplete &amp; OnDataPortalException methods</LI>
+<LI>Capture those events in each of my business classes</LI>
+<LI>Alter CSLA framework</LI></OL>
+<P>Problem with #1 is it runs me into the issue that Rocky discusses on page 249 of his latest book.<BR>Problem with #2 is it is a lot of redundant code<BR>Problem with #3 is it makes it that much harder to keep updated with new CSLA updates later</P>
+<P>Any other bright ideas out there</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, March 26, 2009</h2><P>Seek and ye shall find!&nbsp; LOL :-)</P>
+<P>Looks like someone already asked for this because I just noticed the property </P>
+<P>Csla.<FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LogicalExecutionLocation</FONT></P>
+<P>Sweet!&nbsp; I have to remember to poke around in intellesense first next time.</P>
+<P>Sean</P><FONT size=2>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ctkach replied on Friday, March 27, 2009</h2><P>Any idea what version of the framework this is in?&nbsp; I tried looking through the change management logs but couldn't find this property being added and I can't find it in the current version I'm using (3.5.1).</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>- Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 27, 2009</h2>I think it was added at some point in the 2.x series.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Friday, March 27, 2009</h2><P>I am using the latest 3.6 code.&nbsp; I also didn't remember it being there before, but maybe I just missed it.</P>
+<P>Works great!</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, March 29, 2009</h2><P>Have you tried this when using the local data portal?</P>
+<P>I'm running CSLA 3.5.1, and it appears in the CSLA code that the value of ExecutionLocation remains "client" all the time unless you are using a remote data portal:</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> SetContext(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalContext</FONT></FONT><FONT size=2> context)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// if the dataportal is not remote then</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// do nothing</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!context.IsRemotePortal) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// set the context value so everyone knows the</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// code is running on the server</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.SetExecutionLocation(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ExecutionLocations</FONT></FONT><FONT size=2>.Server);</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 30, 2009</h2>Right... that's why the ApplicationContext.<b>LogicalExeutionLocation</b> was added.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, March 30, 2009</h2><P>Mea culpa. I should have been paying closer attention. </P>
+<P>(And that looks like another reason to upgrade to 3.6...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 30, 2009</h2>Hey, it's Monday. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, March 29, 2009</h2><P>It was added in 3.6 version</P>
+<P>--Sergey.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,9 @@
+<html><header><title>cascade deletetes and child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>cascade deletetes and child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3540.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Friday, September 14, 2007</h2><P>When we delete a root object we mark it as new as it no longer is in the db.</P>
+<P>If the root object has children that are deleted through cascade deletes, should we just expose the markNew sub as a friend or is there a different recommended system for csla.</P>
+<P>The database already exists, and the cascade deleted already are in place. It seems like a lot of extra processing to manually delete the children instead of just letting the cascade deletes do the work. Is there any good reason not to let the cascade deletes do there work, and just expose the markNew method?</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 14, 2007</h2><P>My recommendation is to do the cascade deletes at the database level (or do it via sprocs).</P>
+<P>At the object level, I usually just clear the child references. So if the root has a list of children, I'll just create a new, blank, list object to replace the old one. No sense setting properties on child objects - their data is gone, they are gone, so just get rid of them.</P>
+<BLOCKQUOTE dir=ltr>
+<P>Protected Overrides Sub DataPortal_DeleteSelf()<BR>&nbsp; ' delete root data<BR>&nbsp; _childList = MyChildListType.NewList()<BR>&nbsp; MarkNew()<BR>End Sub</P></BLOCKQUOTE>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

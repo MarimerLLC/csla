@@ -1,0 +1,74 @@
+<html><header><title>How much async is too much?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How much async is too much?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12349.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brad Rem posted on Friday, February 07, 2014</h2><p>For an ASP.NET MVC application I&#39;m wondering how much is too much. Here&#39;s some example code that I&#39;ve tried to make as async as possible.</p>
+<p>For MVC, at what point is async not doing us any favors?</p>
+<p>Drilling down from the Controller action: </p>
+<pre style="margin:0em;overflow:auto;background-color:#ffffff;"><code style="font-family:Consolas,&#39;Courier New&#39;,Courier,Monospace;font-size:10pt;color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">async</span> Task&lt;ActionResult&gt; DetailsAsync(<span style="color:#0000ff;">int</span> id)
+{
+  ViewData.Model = <span style="color:#0000ff;">await</span> ProjectEdit.GetProjectAsync(id);
+  <span style="color:#0000ff;">return</span> View();
+}
+</code></pre>
+<p>CSLA business object and DAL:</p>
+<pre style="margin:0em;overflow:auto;background-color:#ffffff;"><code style="font-family:Consolas,&#39;Courier New&#39;,Courier,Monospace;font-size:10pt;color:#000000;"><span style="color:#0000ff;">public</span> <span style="color:#0000ff;">static</span> <span style="color:#0000ff;">async</span> Task&lt;ProjectEdit&gt; GetProjectAsync(<span style="color:#0000ff;">int</span> id)
+{
+  <span style="color:#0000ff;">return</span> <span style="color:#0000ff;">await</span> DataPortal.FetchAsync&lt;ProjectEdit&gt;(id);
+}
+
+<span style="color:#0000ff;">private</span> <span style="color:#0000ff;">async</span> Task DataPortal_FetchAsync(<span style="color:#0000ff;">int</span> id)
+{
+  <span style="color:#0000ff;">using</span> (<span style="color:#0000ff;">var</span> ctx = ProjectTracker.Dal.DalFactory.GetManager())
+  {
+    <span style="color:#0000ff;">var</span> dal = ctx.GetProvider&lt;ProjectTracker.Dal.IProjectDal&gt;();
+    <span style="color:#0000ff;">var</span> data = <span style="color:#0000ff;">await</span> dal.FetchAsync(id);
+    <span style="color:#0000ff;">using</span> (BypassPropertyChecks)
+    {
+        id = data.Id;
+        <span style="color:#008000;">//....</span>
+    }
+  }
+}
+
+<span style="color:#0000ff;">public</span> <span style="color:#0000ff;">async</span> Task&lt;ProjectDto&gt; FetchAsync(<span style="color:#0000ff;">int</span> id)
+{
+  <span style="color:#0000ff;">using</span> (<span style="color:#0000ff;">var</span> ctx = ObjectContextManager&lt;PTrackerEntities&gt;.GetManager(<span style="color:#a31515;">&quot;PTrackerEntities&quot;</span>))
+  {
+    <span style="color:#0000ff;">var</span> result = from r <span style="color:#0000ff;">in</span> ctx.ObjectContext.Projects
+                 where r.ProjectId == id
+                 select <span style="color:#0000ff;">new</span> ProjectDto
+                 {
+                   ProjectId = r.ProjectId
+                 };
+    <span style="color:#0000ff;">return</span> <span style="color:#0000ff;">await</span> result.FirstAsync();
+  }
+}
+</code></pre>
+<pre style="margin:0em;overflow:auto;background-color:#ffffff;"><code style="font-family:Consolas,&#39;Courier New&#39;,Courier,Monospace;font-size:10pt;color:#000000;"></code></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 25, 2014</h2><p>Remember that async usually does NOT mean multiple threads. It means concurrent IO.</p>
+<p>What you get from concurrent IO on a web server is really two things.</p>
+<p>First, the web server gets to reuse your thread when you code gets blocked by IO - at least that&#39;s my understanding. This improves the overall scalability of the server, but does nothing for your particular web request.</p>
+<p>Second, IF you are doing multiple concurrent IO requests, and IF you structure your code to make those requests concurrently, then your web request might gain some performance because the IO requests are concurrent instead of sequential.</p>
+<p>If you do this:</p>
+<p>var a = await obi.Request1();<br />var b = await obi.Request2();</p>
+<p>Then you get nothing, because these requests will be &quot;async&quot;, but sequential. So what you need to do is something like this (from memory, so might not be perfect):</p>
+<p>var tasks = new List&lt;Task&gt;();<br />tasks.Add(obj.Request1());<br />tasks.Add(obj.Request2());<br />await Tasks.WaitAll(tasks);</p>
+<p>It&nbsp;is something like that anyway - basically get the Task objects from the&nbsp;methods you want to run concurrently, then use a wait statement so you can await the completion of all the tasks in the list.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brad Rem replied on Monday, March 10, 2014</h2><p>What my question really asks is how deep do we take the async and can we end up penalizing ourselves?</p>
+<p>I understand (or think I do) how web requests work.&nbsp; I envision it like a sort-of-fast food restaurant:</p>
+<p>Customers arrive at the counter and ask a Worker for food (let&#39;s just call the stuff fast-food produces &quot;food&quot;). The Worker brings the Customer food. </p>
+<p>So, a Customer arrives and asks for Fries. The Worker goes over the Fry station and drops a basket of Fries into the boiling oil.&nbsp; In a synchronous scenario, the Worker would remain at the Fry station until the Fries were done. What&#39;s bad about this is that you have Customers queuing up at the counter with nobody to serve them.</p>
+<p>But, in the asynchronous model, the Worker would drop the Fries into the oil, set the timer alarm, and return back to the counter to take another order. While the Fries are cooking, they could take an order for a drink or an ice cream or something like that, completing the order for several customers. When the Fries are done and the alarm goes off, a free Worker goes gets the Fries and gives them to the customer that originally asked for them.</p>
+<p>If we modeled that in MVC with CSLA:</p>
+<p>&nbsp;<br />// the controller action<br />public async Task&lt;ActionResult&gt; GetFries()<br />{<br />&nbsp; &nbsp;var fries = await Fries.GetCollectionAsync();</p>
+<p>&nbsp;&nbsp;&nbsp; return View(new FryModel(fries));<br />}</p>
+<p>// the code in the CSLA business class<br />public static async Task&lt;Fries&gt; GetCollectionAsync()<br />{<br />&nbsp; return await DataPortal.FetchAsync&lt;Fries&gt;();<br />}</p>
+<p>If a Customer makes a web request to GetFries(), thanks to our await, we free up the request thread so it can handle other requests while the IO of the CSLA object is happening.&nbsp; </p>
+<p>And now we&#39;re just getting to the kernel of my question.&nbsp; In this mythical Fries CSLA collection, what would the difference of these two DataPortal_Fetch methods be if you consider the above code?</p>
+<p>private void DataPortal_Fetch()<br />{<br />&nbsp; using (var ctx = FastFood.Dal.DalFactory.GetManager())<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; var dal = ctx.GetProvider&lt;FastFood.Dal.IFryDal&gt;();<br />&nbsp;&nbsp;&nbsp; var rows = dal.Fetch();<br />&nbsp;&nbsp;&nbsp; foreach (var row in rows)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(Fry.GetChild(row));<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br />}</p>
+<p>---- or ------</p>
+<p>private async Task DataPortal_FetchAsync()<br />{<br />&nbsp; using (var ctx = FastFood.Dal.DalFactory.GetManager())<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; var dal = ctx.GetProvider&lt;FastFood.Dal.IFryDal&gt;();<br />&nbsp;&nbsp;&nbsp; var rows = await dal.FetchAsync();<br />&nbsp;&nbsp;&nbsp; foreach (var row in rows)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(Fry.GetChild(row));<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br />}</p>
+<p>The first DataPortal_Fetch does not contain any asynchronous calls, but the second DataPortal_Async awaits the call to the DAL where you can presume that there are some async calls with Entity Framework fetching from a SQL server.</p>
+<p>I should ask, though, Is it true that I could interchangability use either of the two above DataPortal Fetch methods with this calling code:<br />&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; // this will either work with DataPortal_Fetch or DataPortal_FetchAsync, right?<br />&nbsp;&nbsp;&nbsp; await DataPortal.FetchAsync&lt;FryList&gt;();</p>
+<p>What I&#39;m driving at is that in regards to ASP.NET, I don&#39;t see any real difference between making the DAL asynchronous.</p>
+<p>Said another way, AFTER you call &quot;await DataPortal.FetchAsync&lt;FryList&gt;()&quot;, does it even matter if the DataPortal_Fetch or the calls to the ORM are synchronous or asynchronous?&nbsp; </p>
+<p>I&#39;m tending to believe that after you call &quot;await DataPortal.FetchAsync&quot; it no longer matters if the methods deeper than that call contain asynchronous calls. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 10, 2014</h2><p>It is _very_ important to understand that async doesn&#39;t mean parallel. It might, but it might not, and usually it doesn&#39;t.</p>
+<p>Using the async/await keywords usually does _not_ result in a background thread running a background task. Usually what happens is that it results in a blocking IO operation and your original (and only) thread is able to do some other work until the IO operation completes. In ASP.NET that thread may not even be working for you, it might be servicing some other request.</p>
+<p>So on a web server using async helps the scalability of the server as a whole, not necessarily your app.</p>
+<p>On a smart client the same thing is generally true - usually blocking IO - but the benefit there is that the UI remains responsive to the user - that&#39;s what the would-be-idle thread is doing is processing the Windows message queue.</p>
+<p>Now if you actually create a thread (Task.Run or something) then async really is parallel in that you have multiple CPU activities running at once. That&#39;s not what normally happens though, because most of the libraries you call are doing IO at some level, not spinning up new threads.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

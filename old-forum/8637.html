@@ -1,0 +1,80 @@
+<html><header><title>DataPortal_Insert Cancel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Insert Cancel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8637.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker posted on Wednesday, March 10, 2010</h2><p>in&nbsp;DataPortal_Insert I use a stored procedure to get</p>
+<p>the next free key to assign to my BusinessObject when beeing inserted into the</p>
+<p>database. As the key generation saves the used key to the database, I would prefer not to</p>
+<p>get the key prior to&nbsp;<span style="font-size:10px;">DataPortal_Insert.</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:11.6667px;">What would be the best way to communicate back and cancel the insertion, when no more keys</span></p>
+<p>are available?</p>
+<p><span style="font-size:11.6667px;">I tried to throw an expection, but then I got a DataPortalException was unhandled by user code.</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:11.6667px;">Thanks for an ideas and hints.</span></p>
+<p><span style="font-size:11.6667px;"><br /></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, March 10, 2010</h2><p>Well, throwing an exception is probably your best bet.&nbsp; If you don&#39;t want the UI to handle a DataPortalException, and instead handle your specific exception, you can override your Save method and throw the BusinessException from the DataPortalException.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Wednesday, March 10, 2010</h2><p>Hi Andy.</p>
+<p><span style="font-size:11.6667px;">Yep, I thought so too.&nbsp;</span></p>
+<p>&nbsp;</p>
+<p>In the DataPortal_insert()</p>
+<p>I got something like this:</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (NoMoreKeys)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw new DataPortalException(&quot;no keys&quot;, this);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>and on the UI side</p>
+<p>
+<p>try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;businessObject=&nbsp;<span style="font-size:10px;">businessObject</span>.Save();</p>
+<p><span style="font-size:11.6667px;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (DataPortalException ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // do something</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>but then I got an &quot;DataPortalException was unhandled by user code&quot; error</p>
+<p>Where am I missing the point?</p>
+<p>&nbsp;</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 10, 2010</h2><p>Well you wouldn&#39;t throw&nbsp; a DataPortalException;&nbsp; create your own exception like NoMoreKeysException.</p>
+<p>Although the handler you have should be working, although there is Csla.DataPortalException and Csla.Server.DataPortalException.&nbsp; Perhaps you&#39;re throwing the one in the server namespace (b/c you have using Csla.Server for some reason) and on your UI side you have a using Csla;</p>
+<p>Either way still make your own specific exception :-)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Wednesday, March 10, 2010</h2><p>Thanks for the hint,</p>
+<p>the own exception is cleaner code for sure.</p>
+<p>but even with this one I get the error, that the NoMoreKeysException was unhandled by user code.</p>
+<p>I think I forgot something important, but can not put a finger on it.</p>
+<p>&nbsp;</p>
+<p><span style="font-size:10px;">
+<p>data portal insert:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (NoMoreKeys)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw new NoMoreKeysException(&quot;no keys&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>and on the UI side</p>
+<p>&nbsp;</p>
+<p>try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;businessObject=&nbsp;<span>businessObject</span>.Save();</p>
+<p><span>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</span></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (DataPortalException ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // do something</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, March 10, 2010</h2><p>Remember that an exception thrown inyour DP_I method will be wrapped by a DataPortalException, unless you unwrap it on the client and rethrow (likely in your Save override).</p>
+<p>Also keep in mind that if you&#39;re debugging, your settings in VS will affect if your exception code gets to run.&nbsp; Maybe you should try doing a Debug -&gt; Exceptions, and then clicking the Reset All button.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Thursday, March 11, 2010</h2><p>Yep, the wrapping was in my mind, but wasn&#39;t the problem.</p>
+<p>You pointed me into the right direction, its VS.</p>
+<p>&nbsp;</p>
+<p><a href="http://blogs.msdn.com/scottno/archive/2005/05/10/416133.aspx">http://blogs.msdn.com/scottno/archive/2005/05/10/416133.aspx</a></p>
+<p><span style="font-size:10px;">
+<p>This is where it happens:</p>
+<p><span style="font-size:10px;">Of course, if&nbsp;you really don&#39;t want to hear about these events, you can go to Debug-&gt;Exceptions and deselect the &quot;user-unhandled&quot; column.</span></p>
+<div><span style="font-size:medium;"><span><span style="font-size:small;"><span><br /></span></span></span></span></div>
+</span></p>
+<p><span style="font-size:10px;">How to: Break on User-Unhandled Exceptions&nbsp;<span style="font-size:11.6667px;"><a href="http://msdn.microsoft.com/en-us/library/038tzxdw(VS.80).aspx">http://msdn.microsoft.com/en-us/library/038tzxdw(VS.80).aspx</a></span></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:11.6667px;">I knew that I&#39;m a CSLA beginner, now I now that even in VS a lot is still terra incognita to me.</span></p>
+<p>Thanks, that was a great help for me.</p>
+<p><span style="font-size:x-small;"><span><br /></span></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:10px;"><br /></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

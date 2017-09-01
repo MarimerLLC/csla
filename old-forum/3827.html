@@ -1,0 +1,53 @@
+<html><header><title>Calculating Totals in Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calculating Totals in Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3827.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah posted on Thursday, November 01, 2007</h2><P>I've got a collection of items, each item has a weight, price, etc. At the collection level I've&nbsp;created the Total properties (TotalWeight, etc).<BR><BR>1000 items is common in our collections and&nbsp;we actually&nbsp;have everything performing beautifully when binding to the grid.</P>
+<P>The problem is when we start filling out the quantities and calculating the totals, it's painfully slow as the method that calculates has to traverse thousands of items (even though not all of them have quantities). It's about a 1/2 second to calculate them, which makes rapid data entry out of the question.</P>
+<P>I'm not sure this is really a Csla thing, but more of a design question maybe? I have tried turning RaiseListChanged off and back on but it doesn't seem to do much.<BR><BR>One option is to make the method that calculates these items operate in the UI since it's calculated on the fly anyways, and have that method operate in a different thread that sets the total on the textbox when it's done? That way the UI won't seem to lag.</P>
+<P>Was curious what other people do if they've seen this problem?</P>
+<P>Thanks,<BR>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 01, 2007</h2>There's a bugfix in 3.0.3 (test) which may help this.&nbsp; You may want to try upgrading and seeing if changing the RaiseListChangedEvents works or not.&nbsp; I wouldn't think it should cause that much of a deal to iterate over 1000 items and add some numbers.. computers are supposed to be good at that :-)<br><br>But if there are a lot of ListChanged events firing for some reason, that WILL cause alot of speed issues.&nbsp; I've had to resolve these myself, although I'm wondinger if 3.0.3 will help (I thought setting RaiseListChangedEvents on the BindingSource would propigate the call to the underlying list, but it doesn't... maybe I was seeing a side effect of a bug in BLB that wasn't honoring that flag).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cslah replied on Thursday, November 01, 2007</h2><P>Thanks for the tip.<BR><BR>I've just updated my project to&nbsp;3.0.3 and don't really notice a difference.</P>
+<P>What I've done for now is not databind the total property (from the parent object) to the label&nbsp;on my winform. Instead I&nbsp;trap the bindingsource ListChanged event on my form and manually calculate the totals. This is still a tiny bit slow but much better than before. In either case I had to call .ResetBindings(False) on the parent to get the totals to refresh. I do have a BindingSourceRefresh on my winform but it doesn't seem to work for the child collection changing.</P>
+<P>So, I guess some of the speed problems are in databinding?<BR><BR>Thanks again,<BR>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 01, 2007</h2>Brian,<br><br>Well, even with the changes in 3.0.3, i'm not sure setting the BindingSources RaiseListChangedEvents will propogate to the underlying list.&nbsp; In my case, I set both the lists and Bindingsource's RLCEs = false.&nbsp; If you just set the BS, it won't raise events, but it will still receive events from the list.&nbsp; That will slow things up.<br><br>Your best be is to change your BOs programatically, without using databinding, to see if databinding is the culprit or not.&nbsp; If you change the child then immediately read the total and time it, you'll see where the problem is.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Thursday, November 01, 2007</h2>You could always raise an event in your child class when the wieght changes.&nbsp; This event could provide the delta of the weight change.&nbsp; Then in your Collection class you either add or subtract the changes to TotalWeight.&nbsp; With this approach you don't have to worry about traversing through the list except on the initial load.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 02, 2007</h2>That falls apart as soon as you turn off RLCEs to do some updates to multiple rows at once.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 02, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>That falls apart as soon as you turn off RLCEs to do some updates to multiple rows at once.&nbsp; <BR></div></BLOCKQUOTE></P>
+<P>Not necessarily. Turning off ListChanged has no impact on the PropertyChanged events of the child objects.</P>
+<P>So if the recalc is triggered by PropertyChanged (or the custom event idea someone mentioned earlier, or the callback idea William suggested), the list object would still get that notification and would know to recalc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 02, 2007</h2>I meant that listening for the ListChanged event to update the data would not work if you turn off RLCEs.&nbsp; Listening to the PropertyChanged events should wok though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Thursday, November 01, 2007</h2>A suggestion by coupling the collection and the item a bit. See if this works.
+
+// ItemCollection
+public class ItemCollection : BusinessListBase
+{
+    private decimal _totalWeight;
+
+    public decimal TotalWeight { get { return _totalWeight; } }
+
+    internal void RecalculateTotalWeight(decimal offsetValue)
+    {
+        _totalWeight += offsetValue;
+    }
+}
+
+// Item
+public class Item : BusinessBase
+{
+    [NotUndoable]
+    private ItemCollection _parent;
+
+    public decimal Weight
+    {
+        get { return _weight; }
+        set
+        {
+            if (_weight != value)
+            {
+                _parent.RecalculateTotalWeight(-_weight + value);
+                _weight = value;
+                PropertyHasChanged("Weight");
+            }
+        }
+    }
+}
+
+
+Regards,
+William
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2><P>Honestly though, if recalculating takes .5 seconds, then recalculating from scratch every time may be unrealistic.</P>
+<P>Is it possible to keep a "running total"? In other words, if the parent object were notified each time a specific child's specific property was changed, could it do an incremental adjustment?</P>
+<P>Presumably this would require knowing the previous value too - but it may be worth coming up with a way to provide that. The </P>
+<P>Suppose the child had a Friend/internal PreviousWeight property?</P>
+<P>public class Child : ...<BR>{<BR>&nbsp; private int _weight;<BR>&nbsp; private int _lastWeight;<BR>&nbsp; public int Weight <BR>&nbsp; { <BR>&nbsp;&nbsp;&nbsp; get { return _weight; }<BR>&nbsp;&nbsp;&nbsp; set { _lastWeight = _weight; _weight = value; PropertyHasChanged("Weight"); }<BR>&nbsp; }<BR>&nbsp; internal int LastWeight<BR>&nbsp; { get { return _lastWeight; } }<BR>}</P>
+<P>Then your collection could update the TotalWeight value by backing out the LastWeight and adding in the new Weight each time it handles PropertyChanged for Weight. That'd be a lot faster than trying to recalc from scratch every time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Thursday, November 01, 2007</h2>Sorry. There is text formatting issue in my previous post.<br><br>A suggestion by coupling the collection and the item a bit. See if this works.<br><br><font face="Courier New" size="2">// ItemCollection<br>public class ItemCollection : BusinessListBase&lt;ItemCollection&gt;<br>{<br>&nbsp;&nbsp;&nbsp; private decimal _totalWeight;<br>&nbsp;&nbsp;&nbsp; public decimal TotalWeight { get { return _totalWeight; } }<br><br>&nbsp;&nbsp;&nbsp; internal void RecalculateTotalWeight(decimal offsetValue)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _totalWeight += offsetValue;<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>// Item<br>public class Item : BusinessBase&lt;Item&gt;<br>{<br>&nbsp;&nbsp;&nbsp; [NotUndoable]<br>&nbsp;&nbsp;&nbsp; private ItemCollection _parent;<br><br>&nbsp;&nbsp;&nbsp; public decimal Weight<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return _weight; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (_weight != value)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _parent.RecalculateTotalWeight(-_weight + value);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _weight = value;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; PropertyHasChanged("Weight");<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}</font><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

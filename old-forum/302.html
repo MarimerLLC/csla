@@ -1,0 +1,1119 @@
+<html><header><title>Version 2.1 comments</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 2.1 comments</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/302.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, June 07, 2006</h2><P>OK, I know 2.0 just came out, but during the months it took to write the book other ideas/concepts were coming to me. Scope management dictated that they be put on hold so I could actually get the books and version 2.0 out the door. Now that the book is out, I can start applying some of those other ideas into version 2.1.</P>
+<P>Not that version 2.1 is just around the corner. Mostly it is still some ideas I've had, along with a couple new ideas from readers. You can see what I'm actively working on by looking at the change log</P>
+<P><A href="http://www.lhotka.net/Articles.aspx?id=f12cc951-0452-42d1-96a6-cfa7656863b1">http://www.lhotka.net/Articles.aspx?id=f12cc951-0452-42d1-96a6-cfa7656863b1</A></P>
+<P>If you have comments or thoughts, please feel free to share them. </P>
+<P>But as I did with CSLA .NET 1.x, I'll avoid breaking changes as much as humanly possible. Any change might break someone of course - that's always a risk. But if at all possible I won't do anything that causes wholesale breaks or radical changes to existing code. (though to use a new feature you might need radical changes, but that would be optional)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Wednesday, June 07, 2006</h2><P>Hi Rocky,</P>
+<P>First: thanks for the great CSLA framework.</P>
+<P>We are a transport company in Germany and are using CSLA in our own transport planning software since the end of 2003. I started to upgrade our CSLA 1.x classes to version 2.0 a few weeks ago.</P>
+<P>I tried to use CSLA 1.x and CSLA 2.0 in the same project simultaneously so that I can upgrade my classes step by step - and this seems to work. First I renamed the assembly names of the old framework to CSLA1.*.dll and the namespaces too. The first classes I upgraded were BusinessPrincipal and BusinessIdentity. Now it is even possible to upgrade a child collection first and its root object anytime later.</P>
+<P>What do you suggest is the best practise to upgrade an existing project with lots of classes?</P>
+<P>Greetings,<BR>Christian </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2>Hi Christian,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2>Running two versions of CSLA in one app is an interesting 
+idea, and it it works for you then it seems like a nice way to do an incremental 
+upgrade.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2>I'd be worried about the remote data portal (the old and 
+new don't work quite the same) and about ApplicationContext (because it is in 
+thread-local storage and there could be a conflict). </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2>But if you aren't using a remote data portal then these two 
+issues shouldn't be a problem for you.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  </DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Tahoma><FONT size=2><B>From:</B> Massong 
+  [mailto:cslanet@lhotka.net]&nbsp;<BR><SPAN class=703132915-07062006><FONT face=Arial color=#0000ff>&nbsp;</FONT></SPAN></FONT></FONT></DIV>
+  <DIV class=OutlookMessageHeader align=left>Hi Rocky,</DIV>
+  <P>First: thanks for the great CSLA framework.</P>
+  <P>We are a transport company in Germany and are using CSLA in our own 
+  transport planning software since the end of 2003. I started to upgrade our 
+  CSLA 1.x classes to version 2.0 a few weeks ago.</P>
+  <P>I tried to use CSLA 1.x and CSLA 2.0 in the same project simultaneously so 
+  that I can upgrade my classes step by step - and this seems to work. First I 
+  renamed the assembly names of the old framework to CSLA1.*.dll and the 
+  namespaces too. The first classes I upgraded were BusinessPrincipal and 
+  BusinessIdentity. Now it is even possible to upgrade a child collection first 
+  and its root object anytime later.</P>
+  <P>What do you suggest is the best practise to upgrade an existing project 
+  with lots of classes?</P>
+  <P>Greetings,<BR>Christian </P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Those sound like excellent ideas.&nbsp; <br><br>Csla has proven to be a great framework to build business objects on, and the improvements from v1 to v2 made things even better.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, June 07, 2006</h2><P class=MsoNormal><SPAN>Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m not sure I understand the value proposition of having a <B>“Csla – Data portal”</B> that would give power to the developer to write a replacement for <SPAN class=codeinline>SimpleDataPortal</SPAN> and have that be invoked instead. <SPAN>&nbsp;</SPAN>I think this would complicate things.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It is relatively simple as it is to let CSLA call the dataportal and then code the appropriate DataPortal_XYZ method to fulfill it duties.<SPAN>&nbsp; </SPAN>In fact, the legacy approach is even more compelling as _all_ of the object code such as business rules, loading it, and persisting it are all local, in the same object. <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m I missing something?<SPAN>&nbsp; </SPAN>Perhaps one of 2 use cases / persona would help.&nbsp; I don't mean to be negative here, in fact I'm a huge admirer of all to good things you do for all of us out there, but I'm just failing to understand the rational behind this approach.</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<BLOCKQUOTE>
+  <P class=MsoNormal><SPAN><FONT face=Arial color=#0000ff size=2></FONT><O:P></O:P></SPAN></P>
+  <P class=MsoNormal><SPAN>Ibm not sure I understand the value proposition of 
+  having a <B>bCsla b Data portalb</B> that would give power to the developer 
+  to write a replacement for <SPAN class=codeinline>SimpleDataPortal</SPAN> and 
+  have that be invoked instead. <SPAN>&nbsp;</SPAN>I think this would complicate 
+  things.<O:P></O:P></SPAN></P>
+  <DIV><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV></BLOCKQUOTE>
+<DIV><SPAN class=812420318-07062006>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2><SPAN class=812420318-07062006>I should be clear - my goal 
+isn't for business developers to write a SimpleDataPortal replacement. I'm 
+decoupling that component so _I_ can write alternatives. A side-effect is that 
+other framework developers could do so as well - just like they can write other 
+data portal channel components, etc.</SPAN></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2><SPAN class=812420318-07062006></SPAN></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2><SPAN class=812420318-07062006>Of course, if this does turn 
+out to be a bad idea as I work with it, I reserve the right to drop the whole 
+thing :)</SPAN></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2><SPAN class=812420318-07062006></SPAN></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2>While it is most certainly possible for you to call an 
+external data access layer (DAL) from within an existing DataPortal_XYZ method, 
+it does somewhat complicate things.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2>Either your business object assembly has a reference to the 
+DAL, or the DAL has a reference to the business object assembly. But in that 
+latter case, the DataPortal_XYZ method must use reflection to create the DAL 
+object - which is the type of code no business developer should write (imo). Yet 
+if the business assembly references the DAL, then the DAL has no easy way to 
+load the business object, because it can't have a strongly typed reference to 
+the business object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2>So I've been giving a lot of thought to various solutions - 
+in the general sense - to this problem. A variety of specific solutions have 
+been discussed on threads here and in the old forum, and in a couple articles on 
+my web site. But whether you load the object using reflection, an interface, a 
+DTO or whatever - the fact remains that there's this broader reference issue 
+between the business object and the DAL - and so the business developer ends up 
+manually using reflection either in the DataPortal_XYZ or in the DAL 
+methods.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2>Note that I'm not trying to avoid reflection as such - I'm 
+trying to avoid a business developer needing to know about or directly use 
+reflection. Reflection is plumbing, and business developers shouldn't have to 
+deal directly with plumbing. (at least that's one of my guiding 
+principles)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006></SPAN><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2>One answer is for me to create a formal DAL concept in CSLA 
+.NET. In that case I'd be truly entering the ORM space, and I'm not convinced 
+that is wise. Though ObjectSpaces is dead and gone, I doubt Microsoft is 
+entirely sitting still in this area (DLinq is a limited move in this area for 
+example).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2>Another answer is for me to create a way by which you can 
+have the data portal directly invoke the DAL, so the DAL can have a strong 
+reference to the business object. This means that there's no reason at all for 
+the business object to reference the DAL.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2>An interesting side-effect of this approach is that I 
+(almost automatically) simplify testing, by allowing you to create a mock DAL - 
+without having to do arcane things like mocking part or all of ADO.NET or 
+anything. You just have to mock the 6 DataPortal_XYZ methods and use your mock 
+assembly instead of the real one. That, of course, doesn't test the actual data 
+access, but it makes it easy to test the loading and usage of your 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial><FONT color=#0000ff size=2>I am also specifically looking forward to DLinq. Whether it 
+is the best answer or not, it is pretty clear that Anders isn't going to allow 
+anything to get in the way of DLinq shipping. At the moment it is clear that 
+Dlinq doesn't support distributed computer well at all, nor does it have 
+capabilities for loading complex collection types (like BusinessListBase-derived 
+collections). So the question I'm wrestling with is how to implement an editable 
+root collection with DLinq. I do think this can be addressed with CSLA as-is, 
+but I want to explore the possibility that it might be simpler with an external, 
+function-based, DAL.</FONT></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2>I honestly remain skeptical that this is a good idea - so I 
+share the sentiment in your email :)&nbsp; At the same time, I've been having a 
+hard time deciding whether it is smart or not in a totally theoretical sense and 
+so I've been playing with implementation.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2>If you look in cvs you won't find any changes along this 
+line. That's because I don't like any of what I've done thus far. I may yet 
+return to some formalized DAL scheme where the DAL is invoked from within the 
+existing DataPortal_XYZ methods...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=812420318-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></SPAN></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mountain replied on Wednesday, June 07, 2006</h2><P>I would like to propose an idea. I do recognize that it may be too disruptive to incorporate into the main line CSLA code, but it may be something that we implement in a modified CSLA.</P>
+<P>The idea is something I'll call "double-walled business objects" because each business object consists of two objects, each of which honors encapsulation. It's a variation on a DTO, but without the drawbacks (afaik). There is no copying of data from a DTO to a BO, no violation of encapsulation, etc. On top of that, it solves the problem with old vs. new references to BO upon an update (as described on page 81 of the C# book).</P>
+<P>To implement this,&nbsp;each Xyz&nbsp;business class has a corresponding Xyz EntityData class (or struct) that represents all the data fields that would have gone into the Xyz&nbsp;business class. The EntityData object encapsulates the data fields, but not the business logic. The logic still goes into the Xyz&nbsp;business class, as before. </P>
+<P>To comment briefly on how this works with updates, the inner Xyz EntityData object is replaced upon an update, but the wrapper around it, which is the original Xyz&nbsp;business object remains valid and doesn't have to be updated.</P>
+<P>In this design, an appropriate EntityData object is an integral part of&nbsp;each business object. Each property of the business object "delegates" the data (only the data) to the EntityData object. (Therefore, no copying of data after it is fetch from the db.) The business object has a field of type Xyz EntityData called _entityData. Then each property on the business object looks like this (in C#):</P>
+<P>public IReturnType&nbsp;SomeProperty<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;get { return _entityData.SomeProperty; }<BR>&nbsp;&nbsp;&nbsp;set { _entityData.SomeProperty= value; }<BR>&nbsp;&nbsp;}</P>
+<P>In the code, it's simply a matter of changing "this" (or the equivalent VB keyword) to _entityData. This design has a nice effect of keeping all data fields grouped together, and it also works really well with code generation. We've been using something like this (without CSLA) for more than a year and it has worked out well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2>Mountain,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2>This is very comparable to the approach I used in the VB5 
+and VB6 versions of CSLA. And it did work well - except that it prevents the 
+direct/easy use of .NET's support for serialization and thus mobile 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2>Combining the various state objects from a complex object 
+graph and then reassembling it requires a fair bit of work - most of which can 
+be done in a framework of course. I had given this serious thought back in 1999 
+when I started working on the .NET version of CSLA&nbsp;- and it was compelling 
+because it would have more closely followed the old VB/COM 
+approach.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2>In the end however, I felt it was better to exploit the 
+mobile object support provided by .NET and so I went with the approach used in 
+the framework today.&nbsp;I don't regret that decision, but there's no doubt 
+that a somewhat similar framework could have been built on that other 
+concept.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=109312802-08062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>To implement this,&nbsp;each Xyz&nbsp;business class has a corresponding 
+  Xyz EntityData class (or struct) that represents all the data fields that 
+  would have gone into the Xyz&nbsp;business class. The EntityData object 
+  encapsulates the data fields, but not the business logic. The logic still goes 
+  into the Xyz&nbsp;business class, as before. </P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Friday, June 09, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+<blockquote>
+  <p class="MsoNormal"><span><font color="#0000ff" face="Arial" size="2"></font><o:p></o:p></span></p></blockquote><div><span class="015245717-07062006"></span><span class="812420318-07062006">
+<div align="left"><span class="015245717-07062006"><font color="#0000ff" face="Arial" size="2">While it is most certainly possible for you to call an 
+external data access layer (DAL) from within an existing DataPortal_XYZ method, 
+it does somewhat complicate things.</font></span></div>
+<div align="left"><span class="015245717-07062006"></span>&nbsp;</div>
+<div align="left"><span class="015245717-07062006"><font color="#0000ff" face="Arial" size="2">Either your business object assembly has a reference to the 
+DAL, or the DAL has a reference to the business object assembly. But in that 
+latter case, the DataPortal_XYZ method must use reflection to create the DAL 
+object - which is the type of code no business developer should write (imo). Yet 
+if the business assembly references the DAL, then the DAL has no easy way to 
+load the business object, because it can't have a strongly typed reference to 
+the business object.</font></span></div>
+<div align="left"><span class="015245717-07062006"></span></div></span></div></BLOCKQUOTE><br>
+<br>
+
+
+
+
+
+
+<p class="MsoNormal">Now you got me thinking... let me explain...<br>
+<br>
+I've always been from the school of thoughts that in a true multi-tier
+application the rule of thumb was to have your UI consume your Business Logic layer
+and have your Business Logic layer consume your Data Access layer. <span>&nbsp;</span>So, to do so it is quite natural to have your
+UI reference your BL assemblies, and in turn have your BL reference your DAL
+assemblies.&nbsp; <br>
+<span></span><o:p><br>
+</o:p></p>
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><o:p></o:p>Now, while this is only a rule of thumb, there is _some_
+cases for instance where you need to go at it the other way around for some
+specific operations.<span>&nbsp; </span>Then you have a
+fighting chance of achieving this with reflection.<br>
+<o:p></o:p><br>
+</p>
+<p class="MsoNormal">While I understand that this proposed change in CSLA 2.1
+will not be a breaking change as it will be optional, I’m more concerned about
+how developers might abuse this flexibility without fully understanding the ramification.&nbsp;
+<br>
+<span></span><o:p><br>
+</o:p></p>
+<p class="MsoNormal"><o:p></o:p>By that I mean that I don’t believe that it is the DAL’s responsibility
+to load the Business Object but rather the Business Object’s responsibility to
+consume the DAL (any DAL) and load itself, whereever the data may be coming from. <span>&nbsp;</span>Why I’m from this school of thought?<span>&nbsp; </span>A DAL should be application agnostic so that
+is can be reused for other applications.<br>
+<br>
+<o:p>
+</o:p></p>
+<p class="MsoNormal"><o:p></o:p>Any thoughts?</p>
+
+<br>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 09, 2006</h2>GuyRoch,<br><br>This has been my opinion for quite some time.&nbsp; The Business layer is a consumer of the DAL.&nbsp; The only wrinkle is that the DAL is usually System.Data.SqlClient; that I believe to be a mistake. <br><br>A more formal DAL is needed, to give you the flexibility of changing your database (not that it happens very often, but if it does and you're using SqlClient, you'll likely have to hit all your BOs to make the change).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2><P>guy,</P>
+<P>The more time I've been spending on that particular idea, the less I'm liking it. Though I can do it and retain backward compatibility, it complicates the data portal rather a lot (well, "complicates" isn't right, so much as causes me to rewrite very large sections of it). But more importantly, it doesn't offer significant code savings.</P>
+<P>The only benefit I've found is in exactly one scenario: where you want a polymorphic factory for your objects. In other words, suppose you have a set of three editable root objects which are polymorphic: A1, A2, A3, all inheriting from A&lt;T&gt; and implementing interface IA, which inherits from BusinessBase&lt;T&gt;. Then you want a common factory:</P>
+<P>x = AFactory.GetA(blah)</P>
+<P>Now suppose that you can't know which type of A to return until you are already talking to the database. It is data in the database that defines which A to instantiate.</P>
+<P>Today the easiest answer is to use a command object, so AFactory.GetA() looks like this:</P>
+<P>public static IA GetA(int id)<BR>{<BR>&nbsp; return AGetter.GetA(id);<BR>}</P>
+<P>Where AGetter is a CommandBase-derived object that runs over to the server to do the data access to create and retrieve the appropriate type of A.</P>
+<P>Of course the concept I proposed in the 2.1 change log doesn't really help to solve this <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; In fact solving this issue probably means putting the factory attribute on the Criteria object, or making you supply it as part of the DataPortal.Fetch() call or something. If on the criteria then the factory becomes:</P>
+<P>public static IA GetA(int id)<BR>{<BR>&nbsp; return DataPortal.Fetch&lt;IA&gt;(new Criteria(id));<BR>}</P>
+<P>The thing is, that all I've done here is had you write a Criteria object instead of a Command object - and the amount of overall code is almost identical either way. Sure, this second way saves about 4 lines, but I'm not sure 4 lines is worth introducing a whole new model for working with the data portal. The resulting increase in the surface area of CSLA .NET means training/learning is harder and that merely reduces productivity.</P>
+<P>In short, I am leaning more and more AWAY from the idea of having the data portal directly invoke a DAL. Instead I may return to my very original thoughts around having the business object call a more formalized DAL concept.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>colinjack replied on Monday, July 10, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>guyroch:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<BLOCKQUOTE>
+<P class=MsoNormal><SPAN><FONT face=Arial color=#0000ff size=2></FONT><o:p></o:p></SPAN></P></BLOCKQUOTE>
+<DIV><SPAN class=015245717-07062006></SPAN><SPAN class=812420318-07062006>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2>While it is most certainly possible for you to call an external data access layer (DAL) from within an existing DataPortal_XYZ method, it does somewhat complicate things.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015245717-07062006><FONT face=Arial color=#0000ff size=2>Either your business object assembly has a reference to the DAL, or the DAL has a reference to the business object assembly. But in that latter case, the DataPortal_XYZ method must use reflection to create the DAL object - which is the type of code no business developer should write (imo). Yet if the business assembly references the DAL, then the DAL has no easy way to load the business object, because it can't have a strongly typed reference to the business object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015245717-07062006></SPAN></DIV></SPAN></div></BLOCKQUOTE><BR><BR>
+<P class=MsoNormal>Now you got me thinking... let me explain...<BR><BR>I've always been from the school of thoughts that in a true multi-tier application the rule of thumb was to have your UI consume your Business Logic layer and have your Business Logic layer consume your Data Access layer. <SPAN>&nbsp;</SPAN>So, to do so it is quite natural to have your UI reference your BL assemblies, and in turn have your BL reference your DAL assemblies.&nbsp; <BR><SPAN></SPAN><o:p><BR></o:p></P>
+<P class=MsoNormal><o:p></o:p>Now, while this is only a rule of thumb, there is _some_ cases for instance where you need to go at it the other way around for some specific operations.<SPAN>&nbsp; </SPAN>Then you have a fighting chance of achieving this with reflection.<BR><o:p></o:p><BR></P>
+<P class=MsoNormal>While I understand that this proposed change in CSLA 2.1 will not be a breaking change as it will be optional, I’m more concerned about how developers might abuse this flexibility without fully understanding the ramification.&nbsp; <BR><SPAN></SPAN><o:p><BR></o:p></P>
+<P class=MsoNormal><o:p></o:p>By that I mean that I don’t believe that it is the DAL’s responsibility to load the Business Object but rather the Business Object’s responsibility to consume the DAL (any DAL) and load itself, whereever the data may be coming from. <SPAN>&nbsp;</SPAN>Why I’m from this school of thought?<SPAN>&nbsp; </SPAN>A DAL should be application agnostic so that is can be reused for other applications.<BR><BR><o:p></o:p></P>
+<P class=MsoNormal><o:p></o:p>Any thoughts?<BR></div></BLOCKQUOTE></P></DIV>
+<P>Most OO books I've read teach you not to include any data access code in your business objects as the data access code will vary for different reasons from the business code (plus it doesn't help coupling/cohesion).</P>
+<P>Therefore your business objects shouldn't directly interact with the DAL and, if anything,&nbsp; they would call to other objects (data mappers or whatever) to interact with the data layer.</P>
+<P>However I wonder if&nbsp;a better approach is to keep the the two things seperate, so your business objects don't directly use the data layer and they don't even access the data mapper classes (yhey just concentrate on being business objects). I'd hope to have one data mapper class for each type of business object and it would know about the business object but the business object wouldn't know about it.</P>
+<P>It seems like this is possible with the way CSLA does things (through the Data Portal and using reflection) but&nbsp;I've read that the&nbsp;calls (e.g. _Fetch)&nbsp;need to go through the business objects so I'm not sure its possible.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 10, 2006</h2>There's no reason you couldn't use Csla and an ORM mapper for the data access.&nbsp; Yes, the business object ends up still running after the DataPortal call, so it would likely need some knowledge of how to persit itself, but that shouldn't be a huge deal.&nbsp; After all, if you're swapping out the data access code, you'll need to make some changes no matter what.<br><br>The only alternative I can think of is that the data layer knows about the BOs, a less desireable situtation, I would think.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>colinjack replied on Tuesday, July 11, 2006</h2><P>I haven't gotten into the data poral in detail but I'd have imagined it would be possible to configure which class handled the persistence related calls for a particular type of business object. </P>
+<P>So in a configuration file I'd say mapperA handles persistence calls for classA, mapperA would then have to know about classA but classA wouldn't need to know about persistence at all. I realise it isn't that bad for the business entity to call out to the data mapper, and that could be the default, but I'd also like the option of not having the business entity involved in the CRUD stuff for it at all.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>On the surface this would seem to be true. And for 2.1 I'd 
+considered making a change along this line.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>However, it is actually more complex. The data portal looks 
+at the method to be called a couple times - once on the client to support the 
+RunLocal attribute (which would be entirely impossible with the new scheme) and 
+a couple times on the server (to determine whether the method wants tansactions, 
+and then to actually invoke it).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>While making such a change would certainly be possible, I 
+ultimately decided it just didn't have enough value to be worth all the 
+effort.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>In the end, you need to (or at least I need to) have a very 
+clearly defined scenario where directly calling a DAL (rather than having a 
+DataPortal_XYZ method call a DAL) provides substantial code savings or clarity. 
+I have yet to find a scenario where there's any substantial code savings - and 
+usually it is the reverse, where more code is required on your part (because 
+with a separate DAL the data portal can't create the instance of the business 
+object, and with a private ctor you are left writing your own reflection code to 
+determine the business object type and create it).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>The one remaining possibility is a viable/useful scenario 
+where a separate DAL would allow for some functionality that you can't get by 
+having the data call route through the root object. The only cases along this 
+line I've come up with involve various levels of loose typing or polymorphic 
+behavior. And these are interesting, but I've not convinced myself they are 
+worth such deep, fundamental changes to the data portal.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>One such example is this: you want a root object, but you 
+don't know what kind. So you call the data portal and get back something that 
+matches a&nbsp;common interface. This is possible because the DAL makes the 
+determination of what type of object to create based on the criteria. Pretty 
+cool!</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>Of course I could enable this in a simpler way, without the 
+need for radical data portal changes... If I make CriteriaBase.ObjectType 
+virtual/Overridable, then you'd just have your criteria inherit from 
+CriteriaBase, and when ObjectType is invoked you'd do what you need to do to 
+determine the type of object should actually be created. I do think that's an 
+odd solution, but it would work :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>In the end though, the question is whether it is worth the 
+effort involved to change/test/support (it is the support one that's hard for me 
+to swallow) the changes to the data portal to call an external 
+DAL</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>1) in client-side data portal, skip all RunLocal processing 
+in this case</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>2) in Server\DataPortal, detect this case for transactional 
+attribute checking (instead of looking at DataPortal_XYZ)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>3) in Server\SimpleDataPortal, detect this case and 
+create/invoke the DAL object instead of the business object</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>4) do I provide helper support for your DAL code? like to 
+determine the type of the business object and created it like the data portal 
+does today? how about loading the private fields, do I provide reflection 
+wrappers for you? I think so, because (especially in C#) reflection is a PITA, 
+and even in VB if I wrap the calls I could eventually make them more efficient 
+in a transparent way (Reflection.Emit, etc.)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>I'd originally considered this change to make some 
+percentage of people happy. To me there is great hurmor here, because in my 
+VB5-6 framework I had a separate DAL, with no option for total encapsulation. 
+This made some people happy, and others unhappy - most were neutral. In the .NET 
+framework I have total encapsulation with (I think) a reasonable option for a 
+separate DAL. This made some people happy, and others unhappy - most are 
+neutral.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>To misquote Abe Lincoln: you can make some of the people 
+happy, some of the time... :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>So my CURRENT thinking is this: if you want a "separate" 
+DAL, subclass BusinessBase&lt;T&gt; and provide implementations of the 
+DataPortal_XYZ methods that invoke the DAL (using dynamic assembly loading based 
+on a config file, etc). Then in your actual business classes, you never need to 
+implement the DataPortal_XYZ methods. The base class implementations are always 
+invoked, calling the DAL on your behalf.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>The end result is that your business object code always 
+percieves the use of a separate DAL, and never includes the data code. So the 
+desired separation is achieved, within the context of the existing 
+framework.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796523513-11072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> colinjack [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, July 11, 2006 3:30 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: Version 2.1 
+  comments<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I haven't gotten into the data poral in detail but I'd have imagined it 
+  would be possible to configure which class handled the persistence related 
+  calls for a particular type of business object. </P>
+  <P>So in a configuration file I'd say mapperA handles persistence calls for 
+  classA, mapperA would then have to know about classA but classA wouldn't need 
+  to know about persistence at all.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Tuesday, July 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><div align="left"><span class="796523513-11072006"><font color="#0000ff" face="Arial" size="2">So my CURRENT thinking is this: if you want a "separate" 
+DAL, subclass BusinessBase&lt;T&gt; and provide implementations of the 
+DataPortal_XYZ methods that invoke the DAL (using dynamic assembly loading based 
+on a config file, etc). Then in your actual business classes, you never need to 
+implement the DataPortal_XYZ methods. The base class implementations are always 
+invoked, calling the DAL on your behalf.</font></span></div>
+<div align="left"><span class="796523513-11072006"><font color="#0000ff" face="Arial" size="2"></font></span>&nbsp;</div>
+<div align="left"><span class="796523513-11072006"><font color="#0000ff" face="Arial" size="2">The end result is that your business object code always 
+percieves the use of a separate DAL, and never includes the data code. So the 
+desired separation is achieved, within the context of the existing 
+framework.</font></span></div>
+<div align="left"><span class="796523513-11072006"></span></div></div></BLOCKQUOTE><br><br>YES MAN!<br>With actual implementation we can work with or without DAL.<br>I'm using CSLA with NHibernate in one application. <br>The problem of many FW, but CSLA, is to understand that a collection IS a Bo and is NOT only a Bo set.... so using other persistent FW we need some overhead... :( this is the life....<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, June 07, 2006</h2><P>Those are fantastic enhancements. Can't wait.&nbsp; Thank you.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, June 07, 2006</h2><P>Will you be able to mix-and-match with the validation rules?&nbsp; For example, store 10 rules statically and 2 rules per-instance?&nbsp; I like the idea of storing &lt;some&gt; rules statically.&nbsp; I just don't want to have to store all my rules that way (mainly the validation routines that aren't part of 'CommonRules').</P>
+<P>Take the following rule from ProjectTracker...</P>
+<P>private bool StartDateGTEndDate(object target, Csla.Validation.RuleArgs e)<BR>{<BR>&nbsp;&nbsp; if (_started &gt; _ended)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "Start date can't be after end date";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp; }<BR>&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>}</P>
+<P>Obviously, this rule couldn't be stored statically as-is since it references instance variables.&nbsp; But the other rules (StringRequired, StringMaxLength) could be stored statically, since they already use reflection.&nbsp; </P>
+<P>Anyway - the proposed changes for 2.1 do sound great...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <DIV></DIV>
+  <P>Will you be able to mix-and-match with the validation rules?&nbsp; For 
+  example, store 10 rules statically and 2 rules per-instance?&nbsp; I like the 
+  idea of storing &lt;some&gt; rules statically.&nbsp; I just don't want to have 
+  to store all my rules that way (mainly the validation routines that aren't 
+  part of 'CommonRules').</P></BLOCKQUOTE>
+<P><SPAN class=875022118-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</P>
+<P><SPAN class=875022118-07062006><FONT face=Arial color=#0000ff size=2>This is 
+under consideration. My primary concern is whether it makes the usage too 
+complex. I can just see myself spending a lot of time over the next few years 
+explaining to people why their validation rules all run twice - and it is 
+because they did the association at both the shared and instance 
+levels.</FONT></SPAN></P>
+<P><SPAN class=875022118-07062006><FONT face=Arial color=#0000ff size=2>To do 
+the dual-scheme approach, ValidationRules would simply do what it already does 
+at the instance level, plus run rules from an associated shared list at the type 
+level. Easy enough for me to do, but it is the resulting complexity/confusion 
+that I fear.</FONT></SPAN></P>
+<P><SPAN class=875022118-07062006><FONT face=Arial color=#0000ff size=2>Thoughts?</FONT></SPAN></P>
+<P><SPAN class=875022118-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, June 07, 2006</h2><P>Is&nbsp;it possible to keep the developer ignorant of how/where the rules are stored?&nbsp; Can you use reflection to check the method signature for the RuleHandler that's passed during AddRule?&nbsp; If it's a static method, you would add it to the static list of ValidationRules.&nbsp; If it's an instance method, you'd add it to the instance list of ValidationRules.</P>
+<P>If this is possible, we'd have the best of both worlds without having to worry about the behind-the-scenes details...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Perhaps a more clean break between static and instance rules.&nbsp; <br><br>If you want to add an instance rule, you do what you'd normally do.&nbsp; For static, you would have to add them to SharedValidationRules.<br><br>Perhaps the shared version could even check to make sure the RuleMethod is a static method somehow.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>Yes ajj, I think you are on to 
+something.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>So Validation Rules would look like 
+this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>static MyObject</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>{</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>&nbsp; 
+Csla.Validation.SharedValidationRules.AddRule(myRule, typeof(MyObject), 
+"Name");</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>}</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>protected override void 
+AddBusinessRules()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>{</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>&nbsp; this.ValidationRules.AddRule(otherRule, 
+"Name");</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>}</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>Much cleaner, and allows the dual mode approach.&nbsp;I am 
+still nervous about confusion, but this is more clear.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=687195119-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2>The problem is that a "rule method" is defined by not just 
+the method, but also by the RuleArgs. You can associate the same rule method 
+with a property multiple times, with different argument parameters, and that 
+qualifies as a set of different "rule methods". </FONT></SPAN><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2>Due to this, it 
+would be relatively difficult (expensive in terms of performance) to do a set of 
+comparisons against existing rules every time AddRule() is called. 
+</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2>Not impossible of course, but I'm not sure it is wise. To 
+do the comparison I have to instantiate the RuleMethod object so it can generate 
+its unique RuleName, and then see if that rule is already in the list of rules 
+for the property. Doing this would, I think, defeat the whole reason for 
+enabling type-level rules in the first place, which is to allow the rules to be 
+associated once per type rather than once per instance for performance 
+reasons.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2>The trigger isn't so much whether the _method_ is static or 
+not, but whether you want a custom rule for a specific instance that is 
+different from the rules for the type as a whole.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2>It is true that only static methods are allowed at the 
+per-type level. But at the per-instance level both instance and static methods 
+are fine - and there could be valid reasons for both, in the case that you are 
+customizing the rules on a per-instance basis.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437361819-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Mark [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, June 07, 2006 2:05 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: Version 2.1 
+  comments<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Is&nbsp;it possible to keep the developer ignorant of how/where the rules 
+  are stored?&nbsp; Can you use reflection to check the method signature for the 
+  RuleHandler that's passed during AddRule?&nbsp; If it's a static method, you 
+  would add it to the static list of ValidationRules.&nbsp; If it's an instance 
+  method, you'd add it to the instance list of ValidationRules.</P>
+  <P>If this is possible, we'd have the best of both worlds without having to 
+  worry about the behind-the-scenes details...</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, June 07, 2006</h2><P>Whatever the solution is - it does need to be kept simple and straightforward and (fairly) idiot-proof.&nbsp; Based on your sample in the 2.1 change log, what would happen if a developer were to do this...</P>
+<P>private static ValidationRulesManager _validationRulesMgr = new ValidationRulesManager();</P>
+<P>static MyBusinessObject()<BR>{<BR>&nbsp; _validationRulesMgr.AddRule(CommonRules.StringRequired, "Name");<BR>&nbsp; _validationRulesMgr.AddRule(CommonRules.StringRequired, "City");<BR>}</P>
+<P>protected override void AddBusinessRules()<BR>{<BR>&nbsp;&nbsp; ValidationRules.UseRulesManager(_validationRulesMgr);<BR>&nbsp;&nbsp; ValidationRules.AddRule(StartDateGTEndDate, "Started");<BR>&nbsp;&nbsp; ValidationRules.AddRule(StartDateGTEndDate, "Ended");<BR>}</P>
+<P>private bool StartDateGTEndDate(object target, Csla.Validation.RuleArgs e)<BR>{<BR>&nbsp;&nbsp; if (_started &gt; _ended)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "Start date can't be after end date";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp; }<BR>&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>}</P>
+<P>This is definitely a mix-and-match situation and at first glance would appear to work just fine.&nbsp; :-)&nbsp; In fact, this is what I'd like to see work.&nbsp; Just not sure if it's realistic.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Perhaps this minor tweak, so that BO developers needn't worry about managing the creation or storage of validationRulesManager.&nbsp; <br><br>validationRules = Csla.Validation.ValidationRules.GetRulesManager&lt;myBO&gt;();<br><br>Behind the scenes, there would be a static Dictionary in ValidationRules to keep a singleton reference to the ValidationRulesManager.<br><br>Thoughts?<br><br>Also Rocky, I have to give you a lot of credit for how often you're on the forum.&nbsp; You're here quite a bit and offer some great advice.&nbsp; Personally if I was in your position I'd probably be saying "That's answered in Chap. 3, if you buy the book." and leave it at that. <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2>ajj, Check out the updated 2.1 change 
+log</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2><A href="http://www.lhotka.net/Articles.aspx?id=f12cc951-0452-42d1-96a6-cfa7656863b1">http://www.lhotka.net/Articles.aspx?id=f12cc951-0452-42d1-96a6-cfa7656863b1</A></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2>I think I've got it pretty well abstracted now - to the 
+point that management of all plumbing (like ValidationRulesManager objects) is 
+entirely encapsulated. In fact I've changed ValidationRulesManager from public 
+to internal, as there's no longer any need for a business developer to see 
+it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><SPAN class=828253720-07062006><FONT face=Arial color=#0000ff size=2>p.s.&nbsp;I really do hope people buy the book - but I want 
+people to be successful too, as I expect more success leads to more goodwill, 
+which maybe leads to more word-of-mouth sales of the books 
+:)</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, June 07, 2006</h2><P>Excellent! We get the best of both worlds, the most flexibility, without breaking existing code.</P>
+<P>&lt;bowing to the ground&gt; We're not worthy... We're not worthy...<img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PatrickVD replied on Monday, July 10, 2006</h2><P>Hi,</P>
+<P>As the&nbsp;use of&nbsp;the 'shared/static' validation rules seems to 'stabilize', I'd like to throw another&nbsp;concept into the discussion.</P>
+<P>I was recently reading an article in 'Visual Studio Magazine' about 'Validate Business Objects Declaratively' (for the record, this was in the June 2006 edition). <BR>As I was reading this, I kinda immediately started thinking on how this could also be implemented in CSLA... <BR>Hasn't anybody considered using declarative (attribute-based) validation rules in CSLA yet? </P>
+<P>I know this would require the use of Reflection, but I think the cost of using reflection in order to 'load' the shared validation rules (via the attributes)&nbsp;should not be as expensive as this would be for 'instance-based' validation rules... </P>
+<P>I'd like to hear what the 'Csla-fans' think about this...</P>
+<P>Regards,</P>
+<P>Patrick.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, July 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>PatrickVD:</strong></div><div>
+<P>Hi,</P>
+<P>As the&nbsp;use of&nbsp;the 'shared/static' validation rules seems to 'stabilize', I'd like to throw another&nbsp;concept into the discussion.</P>
+<P>I was recently reading an article in 'Visual Studio Magazine' about 'Validate Business Objects Declaratively' (for the record, this was in the June 2006 edition). <BR>As I was reading this, I kinda immediately started thinking on how this could also be implemented in CSLA... <BR>Hasn't anybody considered using declarative (attribute-based) validation rules in CSLA yet? </P>
+<P></div></BLOCKQUOTE></P>
+<P>The thing that got me excited was Examples (with apologies for syntax boo-boos - haven't had time to learn it yet):</P>
+<P>[Required=true]<BR>[MaxLength=128]<BR>[Label="Project Name"]<BR>[Hint="This is the official&nbsp;name for the project."]<BR>[RegEx=""]<BR>[DropDownList="ProjectNameValue"]<BR><BR>or<BR><BR>[FieldProperties Required=true MaxLength=128 Label="Project Name" Hint="This is the official&nbsp;name for the project." RegEx="" DropDownList="ProjectNameValue"]<BR><BR>The later might be more efficient to pull out of the object.</P>
+<P>Others might be:</P>
+<P>[case="upper"]&nbsp;&nbsp; // or mixed or lower<BR><BR>for numbers:</P>
+<P>[scale=5]<BR>[precision=7]<BR><BR>And yes, some of the above could be done with regular expressions.&nbsp;&nbsp; And I could get my tooth pulled by my neighbor using a pair of pliers with a shot of bourbon for an anesthetic, too. :)&nbsp;<BR><BR>To me, the idea behind this is to make simple things very simple and very quick.<BR>Most of the suggested tags could be deduced straight from the data model 95% of the time, which means code generation support would be easy to implement.&nbsp; (The rest could be supplemented with some additional meta-data that the code generator could access.&nbsp; I'm experimenting with extended properties in SqlServer for this purpose.)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, June 07, 2006</h2>Rocky, there is an issue with your current implementation:<br>
+If you have a intermediate class between businessbase and your bo that
+also defines rules, then those rules will not be added to your bo's
+type rules, but rather to their own type rules and they will never run
+in your bo.<br>
+<br>
+<br>
+Now, in order to get this to work there are some things to consider: (I have been working on this all day long...)<br>
+<br>
+-Shared/Static constructors aren't called in any particular order.<br>
+-Given the avobe, the base class' rules might be adding themselves
+after the derived class' rules, and so we cant rely on the cache in
+mManagers to get the rules for the base class.<br>
+<br>
+<br>
+Here are the neccesary changes for everything to work as expected:<br>
+In SharedValidationRules:<br>
+<br>
+<br>
+Friend Function GetManager(ByVal objectType As Type) As ValidationRulesManager<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mManagers.ContainsKey(objectType) Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mManagers.Item(objectType)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EnsureTypeInitialization(objectType.BaseType)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mManagers.ContainsKey(objectType.BaseType) Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rules As ValidationRulesManager<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rules = New ValidationRulesManager(mManagers.Item(objectType.BaseType))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mManagers.Add(objectType, rules)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mManagers.Add(objectType, New ValidationRulesManager)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mManagers.Item(objectType)<br>
+&nbsp;&nbsp;&nbsp; End Function<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; Private Sub EnsureTypeInitialization(ByVal t As Type)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If t.Equals(GetType(Object)) Then Return<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Make sure the base type is initialized.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EnsureTypeInitialization(t.BaseType)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Check for static fields<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim fields() As Reflection.FieldInfo = t.GetFields(Reflection.BindingFlags.Static Or Reflection.BindingFlags.NonPublic)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If fields.Length = 0 Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'if the type has no static fields, we can safely call it's shared constructor<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'if the type has static fields, calling their initializers could cause trouble<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'because it could reset fields values.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'to overcome this we will attempt to get a fields value,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'which will take care of our problems<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fields(0).GetValue(Nothing)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+<br>
+<br>
+<br>
+The validation rules manager should have a constructor that allows
+itself to copy from another one and besides the standard public one:<br>
+<br>
+<br>
+&nbsp; Friend Sub New(ByVal Rules As ValidationRulesManager)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim enumerator As Generic.Dictionary(Of String, List(Of RuleMethod)).Enumerator<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enumerator = Rules.mRulesList.GetEnumerator()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; While enumerator.MoveNext()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.RulesList.Add(enumerator.Current.Key, enumerator.Current.Value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End While<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+&nbsp;&nbsp;&nbsp; Public Sub New()<br>
+<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+<br>
+<br>
+<br>
+I have tested this and it works as expected, but it could use some more testing...<br>
+I'll be creating a new thread discussing other things about how the rules could be managed.<br>
+<br>
+<br>
+Andrés<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, June 07, 2006</h2>Rocky,<br>This is a great addition, thank you for adding this.<br><br>As for the instance rules, my opinion is that now that we have the possibility to use type rules it's best to stay away from instance rules:<br>-The make the code slower. This is specially true for large objects with many children.<br>-Rules really apply to the type, you should not selectively add rules based on object's data, you should always add all the rules for your object (or now type) and let the rule take care of itself. The reason I think this is because it's easier to maintain and it's less error prone.<br><br>Again, this is just my oppinion. There is room for discussion.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Wednesday, June 07, 2006</h2><P>I tend to agree - validation rules should primarily be listed by type rather than by-instance.&nbsp; The rules themselves should be aware if they're needed (or not).</P>
+<P>On the security side of the house (AuthorizationRules) - would there ever be a need to have AuthorizationRules listed by instance rather than by type (other than to keep backwards compatibility)?&nbsp; You're typically not checking instance data here (I never have anyway)&nbsp;- you're just associating roles and access rights with property names, which are obviously part of the type definition.&nbsp; Still, I guess it's nice to have the flexibility to go per-instance if needed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 08, 2006</h2>Well, I don't think there's a problem keeping the instance validation rules; if you don't use them there's no overhead, thats how they are designed, and I don't think adding static (shared) rules changes this.<br><br>I would hate to have the option of instance rules removed only to come across a ligitimate case where I need them.<br><br>I like were Rocky is going with the Shared rules; I think its pretty clear, SharedValidationRules and ValidationRules.&nbsp; XML comments could clearly state the difference between the two.&nbsp; Some people may still have some confusion, but we could politely send them to a FAQ (or better yet the book) to explain it.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBonner replied on Thursday, June 08, 2006</h2><P>We have business models where I think we'd need AuthorizationRules by instance.&nbsp; We oversee grants to various agencies within our state and each agency has a service area.&nbsp; Generally one agency services one county.&nbsp; For some of the small counties one agency may service multiple-counties.&nbsp; For some of the larger counties multiple agencies may service a single county delegated by zip-code regions.&nbsp; In the latter case all agencies within a single county can view all the county data but can only update information in their own delegated regions.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=253104721-09062006><FONT face=Arial color=#0000ff size=2>I view validation and authorization rules as requiring 
+parity. Though I haven't gotten to auth rules yet, I expect to implement them in 
+the same way I did validation rules - so both per-type and per-instance are 
+intermixed.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=253104721-09062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=253104721-09062006><FONT face=Arial color=#0000ff size=2>The primary difference is that you can override the way 
+rules are handled - and when I make this change I'll break anyone who has 
+overridden the CSLA behaviors - because there'll now be (potentially) multiple 
+lists to check for each for allow/deny read/write. But that can't be helped, and 
+I doubt too many people will have gone there... (or so I 
+hope)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=253104721-09062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=253104721-09062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> MBonner [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, June 09, 2006 4:38 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: RE: Version 2.1 
+  comments<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>We have business models where I think we'd need AuthorizationRules by 
+  instance.&nbsp; We oversee grants to various agencies within our state and 
+  each agency has a service area.&nbsp; Generally one agency services one 
+  county.&nbsp; For some of the small counties one agency may service 
+  multiple-counties.&nbsp; For some of the larger counties multiple agencies may 
+  service a single county delegated by zip-code regions.&nbsp; In the latter 
+  case all agencies within a single county can view all the county data but can 
+  only update information in their own delegated regions.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Saturday, June 10, 2006</h2>Rocky, I've been rethinking a bit about the way the rules are loaded.<br>I remember that at some point we discussed the possibility of having a cache in businessbase to solve the inheritance of rules issue. But then at some point we started talking about loading them in the cctor and that complicated matters quite a bit.<br><br>We're now loading rules inside AddBusinessRules and in cctor. And when we start validating rules, we are walking up the inheritance chain to discover inherited rules.<br>I remember you said "I really don't want to be adding rules in Initialize()", how is adding them in the constructor any different? It does complicate things, and it's even more complex if you're using code generation.<br><br>So, consider this:<br>How about having some method in business base like "AddSharedBusinessRules()" that would only be called if the shared rules were not loaded (which is how this whole thing started). Businessbase could Call SharedRules.Exists(GetType(Me)) to find out if the rules where loaded, and if not, then you call AddSharedBusinessRules.<br><br>The derived classes would do:<br><br>Protected Sub AddSharedBusinessRules()<br>&nbsp;&nbsp;&nbsp; MyBase.AddSharedBusinessRules()<br>&nbsp;&nbsp;&nbsp; <br>End Sub<br><br>Also, since the base classes now know the actual type, we can create some methods to add shared rules that don't require that we pass the type, which makes things even simpler and now exactly the same as in AddBusinessRules.<br><br>What do you think?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, June 12, 2006</h2>Hi Rocky!<br>There's a bug in ValidationRules.vb line 57:<br>SharedValidationRules.GetManager(currentType.GetType, False)<br><br>should be: <br>SharedValidationRules.GetManager(currentType, False)<br><br><br>Have you given any thought to my previous post? There is an added value in that: overriding rules. Since the validation methods are not overridable because they are shared, you can effectively override the rules defined in the base class by not calling MyBase.AddSharedBusinessRules(). I'm not sure why anyone would want that but, who knows?<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=753275321-12062006><FONT face=Arial color=#0000ff size=2>I did fix the bug in cvs, thanks.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=753275321-12062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=753275321-12062006><FONT face=Arial color=#0000ff size=2>I haven't had time to work on this further, and won't for a 
+couple weeks due to travel and other work.&nbsp;And I want to get 2.0.2 out 
+soon, as it includes a couple important bug fixes.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=753275321-12062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=753275321-12062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> xal [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, June 12, 2006 8:26 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: RE: RE: Version 
+  2.1 comments<BR></FONT><BR></DIV>
+  <DIV></DIV>Hi Rocky!<BR>There's a bug in ValidationRules.vb line 
+  57:<BR>SharedValidationRules.GetManager(currentType.GetType, 
+  False)<BR><BR>should be: <BR>SharedValidationRules.GetManager(currentType, 
+  False)<BR><BR><BR>Have you given any thought to my previous post? There is an 
+  added value in that: overriding rules. Since the validation methods are not 
+  overridable because they are shared, you can effectively override the rules 
+  defined in the base class by not calling MyBase.AddSharedBusinessRules(). I'm 
+  not sure why anyone would want that but, who 
+  knows?<BR><BR><BR>AndrC)s<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2>OK, I think I follow, though I wonder if there isn't 
+another answer.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2>What you want, if I understand correctly, is to allow a 
+base class to define a set of per-type rules, and then a subclass to define a 
+set of per-type rules and have both sets of rules checked by 
+CheckRules()?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2>Why not just have CheckRules() walk up the inheritance 
+hierarchy to run each set of rules? In other words, why go through the work of 
+touching each type during initialization, and copying collection items around, 
+when we can just store the collection items by type and execute them as 
+needed?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2>This could be optimized a bit by having ValidationRules 
+assemble a List(Of ValidationRulesManager) in the TypeRules property, so it 
+would just keep direct references to all the ValidationRulesManager objects in 
+its inheritance hierarchy. This would avoid any need to forcibly trigger the 
+static constructors on other types - because by the time your object has been 
+instantiated you are guaranteed that those ctors will have run, and TypeRules 
+could find them.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=062295122-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> xal [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, June 07, 2006 5:11 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: RE: Version 2.1 
+  comments<BR></FONT><BR></DIV>
+  <DIV></DIV>Rocky, there is an issue with your current implementation:<BR>If 
+  you have a intermediate class between businessbase and your bo that also 
+  defines rules, then those rules will not be added to your bo's type rules, but 
+  rather to their own type rules and they will never run in your 
+  bo.<BR><BR><BR>Now, in order to get this to work there are some things to 
+  consider: (I have been working on this all day long...)<BR><BR>-Shared/Static 
+  constructors aren't called in any particular order.<BR>-Given the avobe, the 
+  base class' rules might be adding themselves after the derived class' rules, 
+  and so we cant rely on the cache in mManagers to get the rules for the base 
+  class.<BR><BR><BR>Here are the neccesary changes for everything to work as 
+  expected:<BR>In SharedValidationRules:<BR><BR><BR>Friend Function 
+  GetManager(ByVal objectType As Type) As 
+  ValidationRulesManager<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If 
+  mManagers.ContainsKey(objectType) 
+  Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 
+  mManagers.Item(objectType)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End 
+  If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  EnsureTypeInitialization(objectType.BaseType)<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  If mManagers.ContainsKey(objectType.BaseType) 
+  Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rules As 
+  ValidationRulesManager<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rules = 
+  New 
+  ValidationRulesManager(mManagers.Item(objectType.BaseType))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  mManagers.Add(objectType, rules)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mManagers.Add(objectType, 
+  New ValidationRulesManager)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End 
+  If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 
+  mManagers.Item(objectType)<BR>&nbsp;&nbsp;&nbsp; End 
+  Function<BR><BR><BR>&nbsp;&nbsp;&nbsp; Private Sub 
+  EnsureTypeInitialization(ByVal t As 
+  Type)<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If t.Equals(GetType(Object)) Then 
+  Return<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Make sure the base type is 
+  initialized.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  EnsureTypeInitialization(t.BaseType)<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  'Check for static fields<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim fields() As 
+  Reflection.FieldInfo = t.GetFields(Reflection.BindingFlags.Static Or 
+  Reflection.BindingFlags.NonPublic)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If 
+  fields.Length = 0 Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'if the 
+  type has no static fields, we can safely call it's shared 
+  constructor<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(t.TypeHandle)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'if the type has static 
+  fields, calling their initializers could cause 
+  trouble<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'because it could reset 
+  fields values.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'to overcome this 
+  we will attempt to get a fields 
+  value,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'which will take care of 
+  our problems<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  fields(0).GetValue(Nothing)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End 
+  If<BR><BR><BR>&nbsp;&nbsp;&nbsp; End Sub<BR><BR><BR><BR>The validation rules 
+  manager should have a constructor that allows itself to copy from another one 
+  and besides the standard public one:<BR><BR><BR>&nbsp; Friend Sub New(ByVal 
+  Rules As ValidationRulesManager)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim 
+  enumerator As Generic.Dictionary(Of String, List(Of 
+  RuleMethod)).Enumerator<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; enumerator = 
+  Rules.mRulesList.GetEnumerator()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; While 
+  enumerator.MoveNext()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  Me.RulesList.Add(enumerator.Current.Key, 
+  enumerator.Current.Value)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End 
+  While<BR>&nbsp;&nbsp;&nbsp; End Sub<BR>&nbsp;&nbsp;&nbsp; Public Sub 
+  New()<BR><BR>&nbsp;&nbsp;&nbsp; End Sub<BR><BR><BR><BR>I have tested this and 
+  it works as expected, but it could use some more testing...<BR>I'll be 
+  creating a new thread discussing other things about how the rules could be 
+  managed.<BR><BR><BR>AndrC)s<BR><BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, June 07, 2006</h2>Sure! That's just the way I thought of it... you always seem to come up with a better solution! <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /><br><br>Now, we wouldn't be walking up the hierarchy every time CheckRules is called, right?<br>Maybe adding a boolean "IHaveAlreadyDoneTheWalkingUpTheHierarchyThing" field could help.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=093495300-08062006><FONT face=Arial color=#0000ff size=2>Nope, no walking up the hierarchy the way I did it. When 
+the per-type rules are invoked the first time on a given type the walking is 
+done to assemble a list of all the ValidationRulesManager objects for that 
+hierarchy (which will usually be just one - or perhaps two I should think). 
+After that, the lists are already known and are readily 
+available.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=093495300-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=093495300-08062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>Now, 
+  we wouldn't be walking up the hierarchy every time CheckRules is called, 
+  right?<BR>Maybe adding a boolean 
+  "IHaveAlreadyDoneTheWalkingUpTheHierarchyThing" field could 
+help.<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 08, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+<div align="left"><span class="828253720-07062006"><font color="#0000ff" face="Arial" size="2">ajj, Check out the updated 2.1 change 
+log</font></span></div>
+<div align="left"><span class="828253720-07062006"><font color="#0000ff" face="Arial" size="2"></font></span>&nbsp;</div>
+<div align="left"><span class="828253720-07062006"><font color="#0000ff" face="Arial" size="2"><a href="http://www.lhotka.net/Articles.aspx?id=f12cc951-0452-42d1-96a6-cfa7656863b1">http://www.lhotka.net/Articles.aspx?id=f12cc951-0452-42d1-96a6-cfa7656863b1</a></font></span></div>
+<div align="left"><span class="828253720-07062006"><font color="#0000ff" face="Arial" size="2"></font></span>&nbsp;</div>
+<div align="left"><span class="828253720-07062006"><font color="#0000ff" face="Arial" size="2">I think I've got it pretty well abstracted now - to the 
+point that management of all plumbing (like ValidationRulesManager objects) is 
+entirely encapsulated. In fact I've changed ValidationRulesManager from public 
+to internal, as there's no longer any need for a business developer to see 
+it.</font></span></div>
+<div align="left"><span class="828253720-07062006"></span></div></BLOCKQUOTE><br><br>Looks good to me.<br></div><br><div align="left"><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>&nbsp;
+
+
+
+<span class="828253720-07062006"></span><br></div>
+<div align="left"><span class="828253720-07062006"><font color="#0000ff" face="Arial" size="2">p.s.&nbsp;I really do hope people buy the book - but I want 
+people to be successful too, as I expect more success leads to more goodwill, 
+which maybe leads to more word-of-mouth sales of the books 
+:)</font></span></div></div></BLOCKQUOTE><br><br>Well your strategry seems to be working; I'm always encouraging people to check the book and the framework out.&nbsp;&nbsp; It definately helps me 'think object oriented.'&nbsp; Can't wait to see what might be in Version 3.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BARRY4679 replied on Wednesday, June 07, 2006</h2><p>Hi Rocky,<br /><br />sounds good. On the subject of Authorisation it would be good to have a static way of getting to CanReadProperty and CanWriteProperty information, as there is with CanGetObject etc.<br /><br />The reason is because in a child|parent situation, where the parent may or may not have children, we can&#39;t setup the UI completely until we have stuck a parent that actually does have children. This is because databinding doesn&#39;t create the child object until that time I presume. <br /><br />Upon the subject of the optional Data Portal&nbsp; would that mean that the framework would become more easily applicable in a situation where there is no requirement to persist the objects to a database? I am working on something at the moment which has a number of clases which get created and used, but are never persisted. I didn&#39;t use any of CSLA because I couldn&#39;t get my head around removing the data portal. It would be nice to be having all the business rules, serialisation (for backtracking momentos), clone support, data binding support, etc. <br /><br />I suppose that it would have been a doable thing, but seemed too hard at the time. It would be good to have a &quot;no portal&quot; option out of the box IMO.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>Barry, you need is easily met today without any change to the data portal. You just don't use it - that's all.</P>
+<P>[Serializable]<BR>public class MySimpleObject<BR>{<BR>&nbsp; // properties as normal<BR>&nbsp; // validation rules as normal<BR>&nbsp; // authorization rules as normal<BR><BR>&nbsp; public static MySimpleObject NewObject()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return new MySimpleObject();<BR>&nbsp; }<BR><BR>&nbsp; private MySimpleObject()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; //&nbsp;initialize object here<BR>&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules();<BR>&nbsp; }<BR>}</P>
+<P>That's it. You can opt to skip the factory method and make the ctor public if you want - that's up to you and how you wrestle with the demons of consistency vs reduction of code.</P>
+<P>Since the object doesn't persist you don't need a "Get" factory. The only things you might consider doing are overriding Save() and Delete() (in 2.0.2) to immediately throw exceptions - or perhaps shadowing them to hide them (yuck!).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mountain replied on Wednesday, June 07, 2006</h2><P>On page 175 of the C# book, you discuss the different ways the framework can invoke the 10 DataPortal_XYZ methods [Table 4-10] on the business objects: 1) interface or abstract base class, 2) virtual methods in base class, 3) reflection.<o:p></o:p></P>
+<P>I would really like to explore the possibility of using interfaces for this purpose. Therefore, I would like to make some comments about the 3 interface-related points you list in the book and see if you think they make sense.</P>
+<P>The three&nbsp;paraphrased statements from the book are in bold, and my comments are in standard font below.<o:p><o:p></P>
+<P><B>Using an interface isn't ideal because not all classes will implement all 10 DataPortal_XYZ methods:<o:p></o:p></B></P>
+<P>First, I think it is equally less than ideal to use reflection in this situation because if some class has not implemented a DataPortal_XYZ when it should, this will not be discovered until run time, when it should be discovered at compile time.</P>
+<P>Now, more directly to the point, it seems to make a lot of sense to me break the 10 DataPortal_XYZ methods into groups. </P>
+<P>I believe the 3 event-related methods (_OnDataPortalInvoke, _OnDataPortalInvokeComplete, _OnDataPortalException) would be ideal as virtual base class methods. Incurring the overhead of reflection for these methods doesn’t make sense to me in any case. Am I overlooking something here?</P>
+<P>There is a group of DataPortal_XYZ methods that satisfies read only business objects. This group consists of the single DataPortal_Fetch method. An interface can be clearly defined for read only business objects.</P>
+<P>There is a second group of DataPortal_XYZ methods that satisfies the needs of editable root objects. This group consists of the DataPortal_Fetch and the DataPortal_Update methods. This second interface would implement the first one and define one more method.</P>
+<P>I believe there is a third group of DataPortal_XYZ methods that satisfies the needs of all other business objects. This group consists of:</P>
+<P><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>DataPortal_Create</P>
+<P><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>DataPortal_Fetch</P>
+<P><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>DataPortal_Insert</P>
+<P><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>DataPortal_Update</P>
+<P><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>DataPortal_DeleteSelf</P>
+<P><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN>DataPortal_Delete</P>
+<P>The interface would implement the prior interface (for my second group) and add 4 methods.</P>
+<P>Finally, there is an interface for Command Objects that include DataPortal_Execute.</P>
+<P>If I have overlooked something, then maybe the interfaces can be made more granular. I would even be OK if each interface contained only 1 or 2 methods, and there were some convenience interfaces that 'assembled' the interfaces that are commonly used together.</P>
+<P>When a business developer implements a business object, he or she will definitely know which DataPortal_XYZ methods are required by that business object. Therefore, it will be trivial to select the correct interface. In fact, in Visual Studio, using the interfaces makes implementing the methods even easier (because the IDE writes the stubs).</P>
+<P>By using appropriately granular interfaces, we eliminate the objection stated in the book and gain the benefit of more robust, clear code.</P>
+<P><B>Defining the DataPortal_XYZ methods at such an abstract level prevents the use of strong typing. Since the data types of the parameters being passed to the server by the client are defined by the business application, there’s no way the framework can anticipate all the types – meaning that the parameters must be passed as type </B><B><SPAN>object</SPAN> or other very generic base type:</B></P>
+<P>Is there a reason that generics wouldn’t solve this issue?&nbsp;I would think that generics would be an easy, elegant solution to this. (If generics can't completely solve it, then maybe a bit of lightweight reflection might be appropriate in places, in combination with the use of interfaces. Light (and fast) reflection includes most of the type operations.&nbsp;Heavy-weight reflection is the stuff required to find methods, etc. and the use of interfaces will eliminate the need for that heavy-weight reflection while also improving the clarity and robustness of&nbsp;the business code.</P><o:p>
+<P><B>The DataPortal_XYZ methods end up being publicly available, so a UI developer could call them:</B></P><o:p>
+<P>Is there a reason that internal interfaces and Friend assemblies wouldn’t solve this? I think that would be really easy and really elegant. (If that isn't a complete solution, blending in the use of some abstract base classes might be the next step, in combination with some of the interfaces.)</P></o:p></o:p></o:p></o:p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2><P>Mountain,</P>
+<P>I honestly don't view the use of reflection as an issue. I fully recognize that some people do, but given how it is used within the context of the data portal (especially in any remote setting) it is the least of the overhead worries we face.</P>
+<P>More importantly at this point, is that changing to use interfaces would be a major breaking change that would impact every root object in every application out there. Everyone would have to touch every existing DataPortal_XYZ method to conform to the new model - and I am just not willing to break compatibility to such a degree.</P>
+<P>Also, I don't think generics offer any answer to the loose typing issue. The data portal never has access to the actual types until runtime, and to use generics the data portal would need to call the interface like this:</P>
+<P>IPersistData obj = (IPersistData)theBusinessObject;<BR>obj.DataPortal_Fetch&lt;theBusinessObject.GetType()&gt;(criteria);</P>
+<P>And that won't work. Generics are primarily a compile-time (well, JIT-time) artifact. By the time your code is running it is too late. So to use generics the data portal would have to become aware of your business types - and that's not workable.</P>
+<P>Another alternative is that the data portal could call some business intermediary - that you'd write - which would implement loosely typed methods conforming to the interface, and would then be able to convert those into strongly typed calls. But at this point I think we've entered the realm of being silly <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>So the fact is, using interfaces means being loosely typed and forcing you to cast the types manually within the DataPortal_XYZ methods. It also means returning to a single DataPortal_Fetch() for all types of criteria in an object and implementing your own branching. The current ability to have overloaded DataPortal_Fetch() methods is (I think) a major improvement over version 1.x.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rangda replied on Monday, June 12, 2006</h2>Actually there are ways to manipulate generics at runtime.&nbsp; The
+following method creates a List&lt;T&gt; based on a type provided at
+runtime:<br><br><font face="Courier New" size="2">private IList CreateGenericList(Type memberType)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; // We need a sample type to create a specific generic List&lt;&gt; object.<br>
+&nbsp;&nbsp;&nbsp; // We just use List&lt;object&gt;.<br>
+&nbsp;&nbsp;&nbsp; Type sampleType = typeof(List&lt;object&gt;);<br>
+<br>
+&nbsp;&nbsp;&nbsp; // Generate a Type for List&lt;memberType&gt;.&nbsp; To do that we need to <br>
+&nbsp;&nbsp;&nbsp; // </font><font face="Courier New" size="2">get the generic type </font><font face="Courier New" size="2">from our sample type, then from that we <br>
+&nbsp;&nbsp;&nbsp; // can make a new generic List&lt;&gt; type with<br>
+&nbsp;&nbsp;&nbsp; // memberType as the type of the contained items.<br>
+&nbsp;&nbsp;&nbsp; Type listType = sampleType.GetGenericTypeDefinition().MakeGenericType(<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Type[] { memberType });<br>
+<br>
+&nbsp;&nbsp;&nbsp; // List&lt;&gt; implements the default constructor so we can use <br>
+&nbsp;&nbsp;&nbsp; // </font><font face="Courier New" size="2">that to create the </font><font face="Courier New" size="2">List&lt;memberType&gt; intance.<br>
+&nbsp;&nbsp;&nbsp; ConstructorInfo constructor = listType.GetConstructor(Type.EmptyTypes);<br>
+&nbsp;&nbsp;&nbsp; IList instance = (IList) constructor.Invoke(null);<br>
+&nbsp;&nbsp;&nbsp; return instance;<br>
+}<br>
+</font><br>
+You could do something similar to use generics in the data portal, if
+desired. (which is entirely independent of whether you want to or
+should, I just wanted to point out that you can <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />)<br><br><blockquote><p><font color="#000080">Also, I don't think generics offer any answer to the loose typing
+issue. The data portal never has access to the actual types until
+runtime, and to use generics the data portal would need to call the
+interface like this:</font></p><p><font color="#000080">IPersistData obj = (IPersistData)theBusinessObject;<br>obj.DataPortal_Fetch&lt;theBusinessObject.GetType()&gt;(criteria);</font></p><p><font color="#000080">And that won't work. Generics are primarily a compile-time (well,
+JIT-time) artifact. By the time your code is running it is too late. So
+to use generics the data portal would have to become aware of your
+business types - and that's not workable.</font></p><font color="#000080"><br></font></blockquote></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=971352521-12062006><FONT face=Arial color=#0000ff size=2>The idea was to AVOID reflection :)</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> rangda [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, June 12, 2006 1:37 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Version 2.1 
+  comments<BR></FONT><BR></DIV>
+  <DIV></DIV>Actually there are ways to manipulate generics at runtime.&nbsp; 
+  The following method creates an IList&lt;T&gt; based on a type provided at 
+  runtime:<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mountain replied on Monday, June 12, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=971352521-12062006><FONT face=Arial color=#0000ff size=2>The idea was to AVOID reflection :)</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> rangda [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Monday, June 12, 2006 1:37 PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Version 2.1 comments<BR></FONT><BR></DIV>
+<DIV></DIV>Actually there are ways to manipulate generics at runtime.&nbsp; The following method creates an IList&lt;T&gt; based on a type provided at runtime:<BR></BLOCKQUOTE>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, but I wouldn't characterize my suggestion in _exactly_ that way. What I was after was stronger typing, removing certain issues such as having to update all object references after the update method is called, and some better solutions for persistence. (I am also seeking a nice way to integrate CSLA with an MVC framework we're using, but that's a separate issue.)</P>
+<P>As part of this, I was&nbsp;hoping that reflection could be be avoided as much as possible for finding members and invoking members. Disregarding any performance issues related to those heavy-weight reflection operations, there are problems with strong typing when using reflection like this.</P>
+<P>Having strong runtime typing is only part of what strong typing is about. The full benefits of strong typing come when the compiler can catch problems that otherwise would not be caught until runtime (exception). That full strong typing is missing from many parts of CSLA 2.0 at this time, and I would like to work on changing that.</P>
+<P>However, as you pointed out Rocky, some of the changes I had in mind would probably be breaking changes, and that might not be acceptable to some.</P>
+<P>I guess where that leaves my team is using a modified version of CSLA. However, that's better than no CSLA at all! </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, June 08, 2006</h2><font size="2"><span id="lblText">Great changes!!<br>The rules (validation and authorization) hare loaded just one time when we work with List (childs).<br>DataPortal changes? simply super-great to work better whit another DAL.<br>Best of all? All changes mantein backdraw compatibility.<br>Thanks Rocky.<br></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, June 08, 2006</h2>Now (2.1) that we have rules for type we can have, may be in the future, an XML to mapping rules for a BusinessObject something like:<br><font size="2">&lt;?xml version="1.0" encoding="utf-8" ?&gt;<br>&lt;csla-mapping xmlns="urn:csla-mapping-2.1"&gt;<br>&nbsp;&nbsp; &nbsp;&lt;class name="MyNameSpace.MyClass"&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;validation-rules&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;rule method="Csla.Validation.CommonRules.StringRequired" property="MyPropertyName" decription="{0} required"/&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/validation-rules&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;authorization-rules&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;property name="MyPropertyName" allowwrite="true" allowread="true"&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;role name="ProjectManager"/&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;role name="AnotherRole"/&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/property&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/authorization-rules&gt;<br>&nbsp;&nbsp; &nbsp;&lt;/class&gt;<br>&lt;/csla-mapping&gt;<br></font>Mapping file can be standard named: className.cslam.xml<br><br>We can have one more sintax to separate mapping for validation and authorization.<br><font size="2">&lt;csla-mapping xmlns="urn:csla-mapping-2.1"&gt;<br>&nbsp;&nbsp; &nbsp;&lt;class name="MyNameSpace.MyClass"&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;validation-rules&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;.....<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/validation-rules&gt;<br>&nbsp;&nbsp; &nbsp;&lt;/class&gt;<br>&lt;/csla-mapping&gt;<br><br>&lt;csla-mapping xmlns="urn:csla-mapping-2.1"&gt;<br>&nbsp;&nbsp; &nbsp;&lt;class name="MyNameSpace.MyClass"&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;authorization-rules&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ....<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&lt;/authorization-rules&gt;<br>&nbsp;&nbsp; &nbsp;&lt;/class&gt;<br>&lt;/csla-mapping&gt;<br></font><br>The Csla.Validation.SharedValidationRules may need some more methods:<br>AddAssembly(Assembly assembly)<br>AddAssembly(string assemblyname)<br>AddFile(string xmlfilepath)<br>... and so on<br><br>Similar change need Csla.Security.SharedAuthorizationRules.<br><br>Now the *.cslam.xml can be distributed in the same assembly of a businessObject like embedded resource, in a separate assemby and so on.<br><br>Like now (2.0), we can have a separate assembly, for one or more BO, with static class and static methods for the business rules of a specific BO but, unlike now, the logical layer hare not hardcoded.<br><br>Bye.<br>Fabio.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, June 08, 2006</h2>Fabio,<br>If you really wanted that you could create a static method that handles the complexity.<br>In your bo you'd do something like:<br>Public Class SomeClass<br>&nbsp;&nbsp;&nbsp; Shared Sub New<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RuleLoader.LoadRules(GetType(SomeClass))<br>&nbsp;&nbsp;&nbsp; End Sub<br>End Class<br><br>Anyway, are you sure you want this? It kind of beats the idea of strong typing...<br>Also, you're exposing yourself to the "naughty user", the kind of user that likes to get into config files to see what he can do. Not that there are many, but you never know....<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, June 08, 2006</h2>Hi Andrés.<br><br>Xml can be compiled in a DLL, i know some "naughty user" ;)<br>I can do a change in my BO (a BusinessBase inherited from Csla.BusinessBase) but i think is better for us not only for me.<br>The proposal mantein backdraw compatibility so, if you want, you can work like 2.0, 2.1 or 2.1XmlM....<br><br>Think about this:<br>If you have investigate a business problem, probally, you have all right property and logical for all your's customers, but each customer can have some difference on validation rules or some difference in the authorization architecture. Using XML mapping strategy for validation and authorization you can divide one Bo in 4 DLL (or 2 DLLs and 2 XmlFiles, or 2DLL and 1 XmlFiles).<br>DLL1&nbsp; with&nbsp; pure Bo<br>DLL2 with XML for validation<br>DLL3 with XML for authorization<br>DLL4 with methods for Bo's validation rules<br><br>If a customer say you "I can't have invoice with amount less then 2$" you don't need to make any change on DLL1 but only in DLL2 and you can send him a specialized DLL3 (named MyNameSpace.CustomerName.BoName.Validate.DLL). So you have a standard DLL1 a customized DLL2 an a special DLL3.<br>The Rocky's solution give us a great future: now we can have CustomizableRules for each of our's customer.<br>GREAT ROCKY!!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, June 08, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Fabio:</strong></div><div><br>If a customer say you "I can't have invoice with amount less then 2$" you don't need to make any change on DLL1 <br></div></BLOCKQUOTE><br><br>One more thing...<br>Rules in XML en hardcoded rules can coexist so you don't need to write all rules in the XML but only configurable rules.<br>For example you can have an hardcoded rule for InvoiceNeedCustomer (CUSTOMERID in the invoice is not nullable) and then you can have some configurable rules un the XML.<br><br>GREAT GREAT ROCKY!!! ;)) :))<br><br>sorry but i'm so happy....<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, June 08, 2006</h2>Fabio,<br>Why not just create static methods that add these rules in another class and spare yourself the xml mainteinance nightmare?<br><br><br>Public Class MyClass<br>Shared Sub New<br>&nbsp;&nbsp;&nbsp; SomeNamespaceInSomeOtherAssembly.ValidationRules.AddRulesForMyClass<br>End Sub<br>End Class<br><br>Public Module ValidationRules<br>&nbsp;&nbsp;&nbsp; Public Sub AddRulesForMyClass()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Csla.Validation.SharedValidationRules.AddRule( _<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; AddressOf RuleMethodName, _<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; GetType(MyClass), _<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; "FieldName")<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; End Sub<br>End Module<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Friday, June 09, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>xal:</strong></div><div><br>Why not just create static methods that add these rules in another class and spare yourself the xml mainteinance nightmare?<br></div></BLOCKQUOTE><br>
+<br>
+You mean i must separe from xml mainteinance nightmare and go to C#/Vb code mainteinance nightmare ?<br>
+But this isn't the metter.<br>
+<br>
+If Rocky give us a IClassValidationLoader and an IClassAutorizationLoader we can work like each prefer.<br>
+If you need, you can also load validation and authorization from the db or you can have a mixed behavior.<br>
+If each class can have it's own loader (by a config) you have one more
+power, and its not mean that you must use it because you can work like
+now (2.0).<br>
+Finally... with rules for class instead rules for instance Rocky
+introduce not only a increase of performance when we work with
+BusinessListBase but the possibility to introduce more powerfull future
+to CSLA.<br>
+<br>
+Fabio.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=437303213-08062006><FONT face=Arial color=#0000ff size=2>Fabio's idea is quite good. Magenic has at least one client 
+that loads their rules from a database, which is a very similar concept. I don't 
+know that I'll put such a thing into the framework itself - because I can 
+already see that Fabio wants it from XML and others want it from the database, 
+and who knows where yet others might want to load from...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=437303213-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=437303213-08062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  </DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Tahoma><FONT size=2><B>From:</B> xal 
+  [mailto:cslanet@lhotka.net]&nbsp;<BR><SPAN class=437303213-08062006><FONT face=Arial color=#0000ff>&nbsp;</FONT></SPAN></FONT></FONT></DIV>
+  <DIV class=OutlookMessageHeader align=left>Anyway, are you 
+  sure you want this? It kind of beats the idea of strong typing...<BR>Also, 
+  you're exposing yourself to the "naughty user", the kind of user that likes to 
+  get into config files to see what he can do. Not that there are many, but you 
+  never know....<BR></DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Friday, June 09, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+<div align="left"><span class="437303213-08062006"><font color="#0000ff" face="Arial" size="2">Magenic has at least one client 
+that loads their rules from a database, which is a very similar concept. I don't 
+know that I'll put such a thing into the framework itself - because I can 
+already see that Fabio wants it from XML and others want it from the database, 
+and who knows where yet others might want to load from...</font></span></div>
+<div align="left"><span class="437303213-08062006"></span></div></div></BLOCKQUOTE><br><br>Thank's Rocky.<br>You know that i would like to load rules from DB too. I had implement that in a "Delphi version" of the old csla... you know.... my own interpretation of old csla....<br>Now you don't need to implement a way for a DB loader o a XML loader of rules.<br>You can limit you to <u>illuminate the way to us</u> giving us two interfaces for validation and autorization rules loader, then we can send you some implementation.<br>I have some more idea about <i>rules for class</i>, like a lazy loading of rules at the first time a instance of a BO is used but this is another story....<br>I think that is better to open a new thread to speak about rules, posible rules loader and so on, so all interested csla developers can give its opinions.<br>Fabio.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong replied on Thursday, June 08, 2006</h2><SPAN><o:p>
+<P class=MsoNormal><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>could you please add a TcpRemotingProxy to the new version of the CSLA framework for the people using a windows service for remoting instead of the IIS?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I added a copy of the RemotingProxy to my copy of CSLA and changed the constructor to use the TCP channel instead of HTTP:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' Configure .NET Remoting to use a binary<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' serialization technology when using<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' the TCP channel. Also ensures that the<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' user's Windows credentials are passed to<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' the server appropriately.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>''' </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Shared</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' create and register a custom TCP channel<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' that uses the binary formatter<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> properties <SPAN>As</SPAN> <SPAN>New</SPAN> Hashtable<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>properties(<SPAN>"name"</SPAN>) = <SPAN>"TcpBinary"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> ApplicationContext.AuthenticationType = <SPAN>"Windows"</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' make sure we pass the user's Windows credentials<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' to the server<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>properties(<SPAN>"useDefaultCredentials"</SPAN>) = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> formatter <SPAN>As</SPAN> <SPAN>New</SPAN> BinaryClientFormatterSinkProvider<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> channel <SPAN>As</SPAN> <SPAN>New</SPAN> TcpChannel(properties, formatter, <SPAN>Nothing</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>ChannelServices.RegisterChannel(channel, EncryptChannel)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Christian<o:p></o:p></SPAN></P>
+<P class=MsoNormal></o:p></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 09, 2006</h2>
+<O:P>
+
+
+
+<DIV align=left><SPAN class=187153113-08062006><FONT face=Arial color=#0000ff size=2>That shouldn't be necessary. There's no reason to 
+explicitly configure a TCP channel, as Remoting does that for you 
+automatically.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=187153113-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=187153113-08062006><FONT face=Arial color=#0000ff size=2>In other words, the existing remoting channel will work 
+with TCP - you just need to put a tcp:// url in your client config 
+file.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=187153113-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=187153113-08062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE><SPAN>
+  <P class=MsoNormal><SPAN>could you please add a TcpRemotingProxy to the new 
+  version of the CSLA framework for the people using a windows service for 
+  remoting instead of the 
+IIS?<O:P></O:P></SPAN></P></SPAN></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag replied on Thursday, June 08, 2006</h2><font face="Verdana" size="1">I would be interested in a SafeRowReader (for datarows) to go along with a SafeDataReader.&nbsp; You could even create a new ISafeReader interface that includes GetSmartDate and have SafeRowReader and SafeDataReader implement this interface.<br><br>Petar used to have a SafeRowReader in 1.x ActiveObjects - it looks like he removed it.&nbsp; I personally use it for loading "parent/child/grandchild" object graphs via a dataset.<br><br>matt tag<br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ryancammer replied on Tuesday, June 13, 2006</h2><P>this isn't that big of a deal, but one of the first things i did with the source was take resharper to it in order to clean up the unnecessary using directives and other housekeeping tasks. for the next version (2.2?), there's no reason not to just give the code a quick run-through with resharper.</P>
+<P>my 2 cents.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 17, 2006</h2><P>ryan, is resharper free? And remember, I have to do everything in both the VB and C# code bases and keep them in sync across the board. By the name, I'm guessing resharper isn't open minded enough to provide support for VB, in which case there's the lovely idea of doing manual diffing of the C# source and reapplying it to the VB code. Not my idea of a fun time. </P>
+<P>Which isn't to say I won't do it, but this is the sort of thing that is <EM>work</EM> with no payoff in terms of satisfaction, so it is the kind of thing I tend to do when there's nothing in the queue that provides actual intellectual stimulation <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, June 22, 2006</h2><P>Resharper isn't free, but it's a good tool. I used it in VS2003, but didn't bother buying it for 2005 because of all the IDE improvements in 2005. And yes, it only supports C#.</P>
+<P>Resharper does a lot of things, one is to notice unneccesary "using" statements and flag them as warnings. You like to have all green lights when using Resharper. Of course, the using statements are just an IDE thing, and don't affect the MSIL.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, June 29, 2006</h2>Here's something I've just implemented which I think people might find useful in the framework. Its specifically for comboboxes etc to bind to and have the typical "Select Item" or "Show All" pseudo item at the top. I'm happy to share it although its nothing special in terms of code. It was easier than I thought it would be.<br><br>I've called it a ViewWithHeaders (I'm thinking now it should be called HeadedBindingList). Its along the same lines as SortedBindingList and, I assume, FilteredBindingList. In a sense, its the opposite of a filter.<br><br>Its constructor takes an IList&lt;T&gt; and an array of T. From the outside it looks like the original list but with the array items at the top. It has an overload which takes a single object rather than an array. <br><br>I recall Rocky you mentioning people building custom controls for this. I think you'd need to do something like this inside the control if you want it to efficiently respond to ListChanged events. The way I'm doing it now my business layer provides a "pure" singleton with only real data. Then I have another singleton in my UI with the key part being something like:<br><br>private static ViewWithHeaders&lt;MyInfo&gt; _dropdownList = null;<br>[singleton logic (if null etc)]<br>_dropdownList = new ViewWithHeaders(MyList.SingleList, new MyInfo(0, "Select Item"));<br>
+<br>My combobox datasource gets set to the new view.<br><br>If that was inside a custom control, it wouldn't easily be able to be a singleton thoughout the application. Not that it really matters I guess because the whole idea is that it takes very little resources. ie it doesn't duplicate the collection or the items. Internally it mostly just does some fiddling with the index to cope with the extra items at the top.<br><br>Anyway ... its solves an issue that I've always found a bit awkward. I know I've done some kludgy stuff with this in the past with pre .NET VB and classic ADO etc. I remember putting a "UNION ALL" in a lot of my dynamic SQL to add a fixed item <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /><br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=182250123-29062006><FONT face=Arial color=#0000ff size=2>Ross, now that is a clever idea! As long as this view is 
+logically considered as part of the UI layer (like you describe), this seems 
+like a really nice solution.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=182250123-29062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=182250123-29062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, June 30, 2006</h2><P>I apologize if this has been addressed - I just don't have time to read this entire thread.</P>
+<P>With Csla 1.x I built a UI framework around my custom sortable AND filterable list.&nbsp; It makes for a very&nbsp;rich and powerful selection form.</P>
+<P>With the two distinct&nbsp;classes you're&nbsp;making would you just nest them to accomplish this?&nbsp; Are you testing that?</P>
+<P>Also, have you considered just making the "normal" list classes sortable/filterable rather than requiring the use of the intermediate object by the UI developer.&nbsp; I realize it would take some significant rework, but wouldn't it be easier to use at the end of the day if you just made your lists in the standard way and sorted/filtered them when desired.&nbsp;&nbsp;Since the default (with no sorting applied) is just to return the raw list, it doesn't seem like this would cause any performance or memory&nbsp;concerns until it was necessary.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>Dan,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=806450514-30062006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=806450514-30062006></SPAN><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>The 
+SortedBindingList and FilteredBindingList are composable, yes. So you can create 
+a list, apply a filter and then apply a sort.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>At this time I don't plan to merge the functionality into 
+BusinessListBase and ReadOnlyListBase, no. While I understand what you are 
+saying about simpler use, I think there's a very good argument to be made that 
+sorting and filtering are typically a UI behavior, not a business behavior. By 
+putting these concepts into separate objects, I allow you to use them purely at 
+the UI layer where they typically belong, rather than cluttering up the business 
+layer with a lot of extra code.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, July 07, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>Dan,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=806450514-30062006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=806450514-30062006></SPAN><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>The SortedBindingList and FilteredBindingList are composable, yes. So you can create a list, apply a filter and then apply a sort.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>At this time I don't plan to merge the functionality into BusinessListBase and ReadOnlyListBase, no. While I understand what you are saying about simpler use, I think there's a very good argument to be made that sorting and filtering are typically a UI behavior, not a business behavior. By putting these concepts into separate objects, I allow you to use them purely at the UI layer where they typically belong, rather than cluttering up the business layer with a lot of extra code.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Good point Rocky.&nbsp; In support of that, I was a little surprised to find the DevExpress grid able to sort the collection with the column heading click even when using a standard CSLA list object, so it is apparently doing it's own version of what&nbsp;the SortedBindingList does.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=468441117-07072006><FONT face=Arial color=#0000ff size=2>I think the idea of having UI components do their own views 
+is excellent! That is the point of the UI after all :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=468441117-07072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=468441117-07072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DansDreams [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, July 07, 2006 12:06 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: RE: Version 2.1 
+  comments<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>Dan,</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=806450514-30062006></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=806450514-30062006></SPAN><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>The 
+    SortedBindingList and FilteredBindingList are composable, yes. So you can 
+    create a list, apply a filter and then apply a sort.</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>At this time I don't plan to merge the functionality 
+    into BusinessListBase and ReadOnlyListBase, no. While I understand what you 
+    are saying about simpler use, I think there's a very good argument to be 
+    made that sorting and filtering are typically a UI behavior, not a business 
+    behavior. By putting these concepts into separate objects, I allow you to 
+    use them purely at the UI layer where they typically belong, rather than 
+    cluttering up the business layer with a lot of extra 
+    code.</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=806450514-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+    <P></P></DIV></BLOCKQUOTE>
+  <P></P>
+  <P>Good point Rocky.&nbsp; In support of that, I was a little surprised to 
+  find the DevExpress grid able to sort the collection with the column heading 
+  click even when using a standard CSLA list object, so it is apparently doing 
+  it's own version of what&nbsp;the SortedBindingList 
+  does.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Saturday, June 17, 2006</h2>Could we have the assembly marked as <br>[assembly: CLSCompliant(true)]<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 18, 2006</h2>Brian, I'll mark 2.0.3 and higher CLS compliant. It amazes me that the C# defaults to a false setting in this case - it seems like it should be a concious choice to do the bad thing and mark your assembly as being not compliant...&nbsp; VB does default to being CLS compliant, which seems like the right approach to me. This change is good because it brings the two versions into sync in this regard.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Tuesday, July 11, 2006</h2><P>Some "small" suggestions for the 2.1 version.</P>
+<P>1. CommonRules.MinStringLength??? Couldn't find that... perhaps useful?</P>
+<P>2. For CommonRules.RegExMatch (or what it now was called) to allow us to specify a custom error message that is returned to the client? </P>
+<P>Of course I can create my own rules, but it would be nice to see them here.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

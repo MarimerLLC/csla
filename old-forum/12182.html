@@ -1,0 +1,78 @@
+<html><header><title>_daltype in dalfactory return null</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>_daltype in dalfactory return null</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12182.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mohamed posted on Sunday, October 13, 2013</h2><p>hello guys i am new in csla 2 days learn by practice i tried new asp project connectiong to sqlserver 2012&nbsp;</p>
+<p>i start doing IDalManager which contain GetProvider</p>
+<p>&nbsp;public &nbsp;interface IDalManagerCslaExample:IDisposable</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;T GetProvider&lt;T&gt;() where T : class;</p>
+<p>&nbsp; &nbsp; }</p>
+<p>also i creat DalManagerClass which implemnt IDalManager Interface</p>
+<p>&nbsp;public class DalManagerCslaExample:IDalManagerCslaExample</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static readonly string TypeMask =</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; typeof(DalManagerCslaExample).FullName.Replace(&quot;DalManagerCslaExample&quot;,@&quot;{0}&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ConnectionManager&lt;SqlConnection&gt; ConnectionManager {get; private set;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public DalManagerCslaExample()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //calling connection string from web.config</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ConnectionManager = ConnectionManager&lt;SqlConnection&gt;.GetManager(&quot;CslaExample&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (ConfigurationErrorsException ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ConnectionManager == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new ArgumentException(string.Format(&quot;ConnectionString {0} Couldnt be found&quot;,&quot;CslaExample&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private const string BaseNamespace = &quot;CslaExample.DataAccess&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public T GetProvider&lt;T&gt;() where T : class</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string typeName;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var namespaceDiff = typeof(T).Namespace.Length - BaseNamespace.Length;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (namespaceDiff &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; typeName = string.Format(TypeMask, typeof(T).Namespace.Substring(BaseNamespace.Length + 1,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; namespaceDiff - 1)) + &quot;.&quot; + typeof(T).Name.Substring(1);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; typeName = string.Format(TypeMask, typeof(T).Name.Substring(1));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var type = Type.GetType(typeName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (typeName != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return Activator.CreateInstance(type) as T;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NotImplementedException(typeName);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>then i created dalFactory class</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; public class DalFactoryCslaExample</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static Type _daltype;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public static IDalManagerCslaExample GetManager()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (_daltype == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dalTypeName = ConfigurationManager.AppSettings[&quot;CslaExample.DalManagerType&quot;];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!string.IsNullOrEmpty(dalTypeName))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _daltype = Type.GetType(dalTypeName);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NullReferenceException(&quot;CslaExample.DalManagerType&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (_daltype == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new ArgumentNullException(string.Format(&quot;Type {0} couldnt be found&quot;, dalTypeName));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return (IDalManagerCslaExample)Activator.CreateInstance(_daltype);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>and on web.config i add thos lines to consume the DalManagerType</p>
+<p>&nbsp;&lt;appSettings&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;CslaExample.DalManagerType&quot; value=&quot;CslaExample.DataAccess.Sql.DalManagerCslaExample,CslaExample&quot;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &lt;/appSettings&gt;</p>
+<p>&nbsp; &nbsp; &lt;connectionStrings&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;add name=&quot;CslaExample&quot; connectionString=&quot;Data Source=192.168.1.3;Initial Catalog=FinalInvintoryDesign;User ID=sa;Password=123&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; providerName=&quot;System.Data.SqlClient&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;/connectionStrings&gt;</p>
+<p>&nbsp;</p>
+<p>and all thos classes i did in 1 project but in sperated folders what exactly i miss and plz if some one have free tutorial explain this data access Technic that will be greaaat help</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mohamed replied on Sunday, October 13, 2013</h2><p>never mind guys it worked all i need is fixing my namespace in config file but i still ask fir help good tutorial to explain how data access work please hope no one tell me buy using csla 4 or some video training from store i am absoultly 100 % it worth every benny but unfornutly i dont have a mastercard to buy it from internet&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

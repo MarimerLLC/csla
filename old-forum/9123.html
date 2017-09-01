@@ -1,0 +1,8 @@
+<html><header><title>??  PTWeb /  Windows Authentication -- Linq Query uses Schema Name</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>??  PTWeb /  Windows Authentication -- Linq Query uses Schema Name</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9123.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 posted on Wednesday, June 23, 2010</h2><p>Looking at ProjectTracker 3.8 MVC -- I had to change my connection string to use SQL Server authentication -- when using Windows Authentication DML statements (LoginSP) ... failed with </p>
+<p>&quot;invalid object name .. dbo.User&quot;</p>
+<p>Looks like the Linq ... when using integrated security ( have not checked it with ss authentication ) ... generates [schema].[table]&nbsp;select statement&nbsp;from sp -- doing project tracker login --&nbsp;</p>
+<p>But even tho the windows login that I have in my config file has dbo permissions and access to that schema .... data portal fails with &quot;invalid object dbo.xxx&quot;</p>
+<p>what am I missing ???</p>
+<p>thx,</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, June 24, 2010</h2><p>You may want to post your connection strings (sans actual passwords, of course).&nbsp; The only thing I can think of at this point is your connection string isn&#39;t specifying an initial catalog and the Windows logon has master set for the default database.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

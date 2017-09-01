@@ -1,0 +1,241 @@
+<html><header><title>Re: CSLA performance issues with large data sets</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: CSLA performance issues with large data sets</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10280.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JFernando posted on Tuesday, April 19, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">Per my understanding this codebase was initially setup by Magenic
+and the DataAccess in the BusinessObject is as follows</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp; </span><span style="color:blue;">private</span> <span style="color:blue;">void</span> Child_Fetch(<span style="color:#2b91af;">AlertNotificationRecipientViewInfoDTO</span>
+childData)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span>.LoadProperties(childData);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Which bubbles down to</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:9.5pt;font-family:Consolas;">
+<span style="color:blue;">void</span> LoadProperties(<span style="color:blue;">object</span>
+sourceBusinessObject)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">string</span>[]
+ignorelist = <span style="color:blue;">new</span> <span style="color:blue;">string</span>[0];</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>LoadProperties(sourceBusinessObject,
+ignorelist);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">And </p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;color:blue;">protected</span><span style="font-size:9.5pt;font-family:Consolas;">
+<span style="color:blue;">void</span> LoadProperties(<span style="color:blue;">object</span>
+sourceBusinessObject, <span style="color:blue;">params</span> <span style="color:blue;">string</span>[] ignoreList)</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt; ignore = <span style="color:blue;">new</span>
+<span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;(ignoreList);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">var</span>
+listofRegisteredProperies = FieldManager.GetRegisteredProperties();</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">foreach</span>
+(<span style="color:blue;">var</span> propertyName <span style="color:blue;">in</span>
+GetPropertyNames(sourceBusinessObject.GetType()))</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span>
+(!ignore.Contains(propertyName))</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:blue;">object</span>
+value = <span style="color:#2b91af;">MethodCaller</span>.CallPropertyGetter(sourceBusinessObject,
+propertyName);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:green;">//This
+will avoid access to Modified Closure</span></span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">string</span>
+name = propertyName;</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">var</span>
+pinfo = listofRegisteredProperies.Find(x =&gt; x.Name == name);</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="background:none repeat scroll 0% 0% yellow;">LoadProperty(pinfo, value);</span></span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-left:0.5in;"><span style="font-size:9.5pt;font-family:Consolas;"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">And now note the LoadProperty call.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

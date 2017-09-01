@@ -1,0 +1,44 @@
+<html><header><title>beginners guide on implementating business rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>beginners guide on implementating business rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12041.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brendt posted on Wednesday, June 26, 2013</h2><p>good day, i am an absolute beginner trying to figure out CSLA. i am struggling to grasp how to check business rules and display errors in my UI.</p>
+<p>in my Customer class i have the following:</p>
+<p>&nbsp;public class Customer : BusinessBase&lt;Customer&gt;</p>
+<p>{</p>
+<p>public static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(NameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(NameProperty, value); } <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;#region business rules<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void AddBusinessRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.AddBusinessRules();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Required(NameProperty) { MessageText = &quot;Name Required&quot; });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion //business rules</p>
+<p>}</p>
+<p>i have setup all my properties eg. Name, LastName, etc. and have added the above &#39;AddBusinessRules&#39; no i&#39;m stumped on where to actually check these rules or break them is the property does not meet the rule and how to display a message on my UI if these rules are broken.</p>
+<p>do i require another class to handle it?</p>
+<p>any help would be much appreciated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 26, 2013</h2><p>Look at the sample projects&nbsp;</p>
+<p>Net\cs\BusinessRuleDemo<br />Net\cs\RuleTutorial</p>
+<p>Basically:</p>
+<p>
+<ul>
+<li>base.DataPortal_Create will call BusinessRules.CheckRules() to make sure all rules up-to date with data values.</li>
+<li>SetProperty method will automatically call BusinessRules.CheckRules(property) to run rules for that property when value is changed.&nbsp;</li>
+</ul>
+</p>
+<p>How you visualize broken rules in the UI will depend on which UI technology you use.&nbsp;</p>
+<p>I highly recommend the 3 first <b>Using CSLA 4 ebooks </b>by Rocky.&nbsp;</p>
+<p><a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4</a>&nbsp;<br /><a href="http://store.lhotka.net/Default.aspx?tabid=1560&amp;ProductID=22">http://store.lhotka.net/Default.aspx?tabid=1560&amp;ProductID=22</a>&nbsp;&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brendt replied on Wednesday, June 26, 2013</h2><p>Hi Jonny.</p>
+<p>&nbsp;</p>
+<p>thanks for your reply.</p>
+<p>ok that makes sense, i see that my rule is being checked when 
+creating my customer. nut i see now that my rule is not actually broken 
+when i create a new customer, only after i change the property &#39;Name&#39; 
+and take out all of its contents so that it is empty is my object not 
+valid, why is that? shouldnt the rullebe broken to begin with seen that 
+there is nothing in the &#39;Name&#39; property? how would i make sure that the 
+rule is broken to begin with?</p>
+<p>im using WinForms so what would be the best way to get a list of all 
+broken rules and display on my UI form? i tried this but i dont seem to 
+get the desired results back.</p>
+<p>&nbsp;public List&lt;string&gt; CheckRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.CheckObjectRules();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;string&gt; msgs = new List&lt;string&gt;();<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var rule in this.BrokenRulesCollection)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; msgs.Add(rule.Description);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return msgs;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 26, 2013</h2><p>Hi,</p>
+<p>Use the builtin ErrorProvider in Windows Forms or the ErrorWarnInfoProvider available on <a href="http://cslacontrib.codeplex.com%20">http://cslacontrib.codeplex.com </a>&nbsp;to vusalize the broken rules in your application.&nbsp;</p>
+<p>How do you create your object?</p>
+<p>Do you call DataPortal.Create() and do you have code in DataPortal_Create method?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brendt replied on Wednesday, June 26, 2013</h2><p>In My Customer Class i have the following Method:</p>
+<p>&nbsp; public static Customer NewCustomer()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Create&lt;Customer&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>which in turn calls a method in my CustomerFactory class:</p>
+<p>&nbsp;public Customer Create()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = (Customer)MethodCaller.CreateInstance(typeof(Customer));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(obj, Customer.NameProperty, &quot;&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkNew(obj);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return obj;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>is this the incorrect way to do this? also re the broken rules, i would like to display the list of broken rules on a label is that possible. please excuse all the silly questions, I&#39;m really new to CSLA (in fact i only start looking at it about 3 days ago)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 26, 2013</h2><p>In order to check rules you must call CheckRules(obj) in your create method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brendt replied on Wednesday, June 26, 2013</h2><p>Fantastic!!! JonnyBee you are a legend!</p>
+<p>&nbsp;</p>
+<p>thanks so much for your help on this. I&#39;m sure I&#39;ll be coming back soon for more help.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

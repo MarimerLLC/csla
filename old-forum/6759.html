@@ -1,0 +1,6 @@
+<html><header><title>CSLA Light - DataPortal.Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light - DataPortal.Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6759.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Tuesday, April 07, 2009</h2><P>I'm in the process of wiring up a new CSLA Light project and I'm getting the following error:</P>
+<P>DataPortal.Fetch failed (Index was outside the bounds of the array.)</P>
+<P>I've been stepping through the code and I can see that we're hitting the BeginFetch and FetchCompleted code but I can also see that we never hit the server code for the BO.</P>
+<P>I've triple checked everything in the project but I must still be missing something.</P>
+<P>Any ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, April 07, 2009</h2><P>Never mind.&nbsp; I checked again and I had defined the wrong Fetch methods in the ROLB.&nbsp; I had Child_Fetch instead of DataPortal_Fetch.</P>
+<P>All I had to do was post and look foolish. ;)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

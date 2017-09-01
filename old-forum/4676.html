@@ -1,0 +1,76 @@
+<html><header><title>problem in binding business list to the datagrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>problem in binding business list to the datagrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4676.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fastianumair posted on Friday, April 11, 2008</h2><P>I am having problem in binding list to the Datagrid in windows application. my business list clas(CustomerList) is a csla BusinessList and data has been populated in the list(that i have checked) but when i bind the list with the DataGrid, it shows some rows but they are empty.</P>
+<P>why is it happenning? how to resolve this?</P>
+<P>thanks.</P>
+<P>regards,</P>
+<P>Umair.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did you configure the columns for the grid?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> fastianumair
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 8:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] problem in binding business list to the datagrid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am having problem in binding list to the Datagrid in windows application.
+my business list clas(CustomerList) is a csla BusinessList and data has been
+populated in the list(that i have checked) but when i bind the list with the
+DataGrid, it shows some rows but they are empty.<o:p></o:p></p>
+
+<p>why is it happenning? how to resolve this?<o:p></o:p></p>
+
+<p>thanks.<o:p></o:p></p>
+
+<p>regards,<o:p></o:p></p>
+
+<p>Umair.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Saturday, April 12, 2008</h2>Maybe CanReadProperty(&lt;YourPropertyNameString&gt;) ist returning false for each property in your customer object (the item type inside your CustomerList).<br><br>Look at the AddAuthorizationRules call...<br>The current user might not be allowed to read the properties, <br>and the property getters probably are all returning String.Empty.<br><br>This results in the list being display as empty rows<br><br>Stefan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

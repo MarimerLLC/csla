@@ -1,0 +1,22 @@
+<html><header><title>Facing issues when calling the csla classes from silver light</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Facing issues when calling the csla classes from silver light</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9184.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Santosh posted on Thursday, July 08, 2010</h2><p><br />I am getting the below error when i am trying to call the public method of the CSLA class.</p>
+<p><strong>Error Details</strong></p>
+<p>&nbsp;Type &#39;HIA.BM.BL.CSLAClasses.SpreadofResults+Criteria&#39; with data contract name &#39;SpreadofResults.Criteria:http://schemas.datacontract.org/2004/07/HIA.BM.BL.CSLAClasses&#39; is not expected. Add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to DataContractSerializer.</p>
+<p>I have a class SpreadofResults and&nbsp; in this class i have declared another class Criteria .</p>
+<p>I have declared Serializable Attribute on both the classes.</p>
+<p>&nbsp;</p>
+<p><br />Can any one help me to solve this issue.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 08, 2010</h2><p>Objects must be marked as Serializable and must implement IMobileObject to be serialized by the CSLA .NET for Silverlight data portal. The easiest way to ensure your object implements IMobileObject is to inherit from a pre-existing CSLA base class (like CriteriaBase).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Santosh replied on Friday, July 09, 2010</h2><p>Thanks Rocky </p>
+<p>Now i am facing another problem, My criteria class values are not passed to the Dataportal Fetch Method.</p>
+<p>Below is my criteria class and DataPortal Fetch Method.</p>
+<p>&nbsp;</p>
+<p>&nbsp;[Serializable]</p>
+<p>public class Criteria :CriteriaBase&lt;Criteria&gt; <br />{</p>
+<p>　public short TaxonomyId { get; set; } <br />&nbsp;<br />public long EntityId { get; set; } <br />&nbsp;<br />public long PeerGroupId { get; set; } <br />&nbsp;<br />public string ReportType { get; set; } <br />&nbsp;<br />public int Year { get; set; } <br />&nbsp;<br />public string Ratio { get; set; } <br />&nbsp;<br />public decimal LowerRatio { get; set; } <br />&nbsp;<br />public decimal UpperRatio { get; set; } <br />&nbsp;<br />public int[] filterIds { get; set; } <br />&nbsp;<br />public bool hideAllOtherMembers { get; set; } <br />&nbsp;<br />public bool ShowLocalMembers { get; set; } <br />&nbsp;<br />public bool ShowCoreMembers { get; set; } <br />&nbsp;<br />public string DatasetType { get; set; } <br />&nbsp;<br />public string YearString { get; set; } <br />}</p>
+<p><br />private void DataPortal_Fetch(Criteria criteria)</p>
+<p>{</p>
+<p><strong>//here Criteria object values are coming as null.&quot;</strong></p>
+<p>}</p>
+<p><br />Can you give some example for CSLA.Net with Silver Light.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 09, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Santosh<br></b></p>
+<p>Can you give some example for CSLA.Net with Silver Light.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Yes, there are a whole bunch of samples in the Samples download in the \CslaLight folder, including several that use criteria classes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

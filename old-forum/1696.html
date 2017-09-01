@@ -1,0 +1,55 @@
+<html><header><title>get error when running PTServiceClient </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>get error when running PTServiceClient </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1696.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tseveryn posted on Monday, November 06, 2006</h2><P>Hi,</P>
+<P>Need a little bit of help please.</P>
+<P>I got PTWin and &nbsp;PTWeb working. Also got <A href="http://localhost/PTWebSrvice/PTService.asmx">http://localhost/PTWebSrvice/PTService.asmx</A> working (all with the local data portal using CSLA authentication), however when running PTServiceClient get the following error:</P>
+<P class=MsoNormal><SPAN><STRONG>System.Web.Services.Protocols.SoapException was unhandled<o:p></o:p></STRONG></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Actor=""<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Lang=""<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Message="System.Web.Services.Protocols.SoapException: Server was unable to process request. ---&gt; System.Data.SqlClient.SqlException: User does not have permission to perform this action.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>at PTService.GetProjectList() in C:\WorkSpace\Projects\csla20vb\csla20vb\PTWebService\App_Code\PTService.vb:line 40<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>--- End of inner exception stack trace ---"<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Node=""<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Role=""<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>Source="System.Web.Services"<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>StackTrace:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Web.Services.Protocols.SoapHttpClientProtocol.ReadResponse(SoapClientMessage message, WebResponse response, Stream responseStream, Boolean asyncCall)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Web.Services.Protocols.SoapHttpClientProtocol.Invoke(String methodName, Object[] parameters)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at PTServiceClient.PTService.PTService.GetProjectList() in C:\WorkSpace\Projects\csla20vb\csla20vb\PTServiceClient\Web References\PTService\Reference.vb:line 131<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at PTServiceClient.MainForm.MainForm_Load(Object sender, EventArgs e) in C:\WorkSpace\Projects\csla20vb\csla20vb\PTServiceClient\MainForm.vb:line 7<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.EventHandler.Invoke(Object sender, EventArgs e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN>at System.Windows.Forms.Form.OnLoad(EventArgs e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Form.OnCreateControl()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.CreateControl()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.WmShowWindow(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.WndProc(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.ScrollableControl.WndProc(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.ContainerControl.WndProc(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Form.WmShowWindow(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Form.WndProc(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.SafeNativeMethods.ShowWindow(HandleRef hWnd, Int32 nCmdShow)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.SetVisibleCore(Boolean value)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Form.SetVisibleCore(Boolean value)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Control.set_Visible(Boolean value)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Windows.Forms.Application.Run(ApplicationContext context)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[] commandLine)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at PTServiceClient.My.MyApplication.Main(String[] Args) in 17d14f5c-a337-4978-8281-53493378c1071.vb:line 81<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.AppDomain.nExecuteAssembly(Assembly assembly, String[] args)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Threading.ThreadHelper.ThreadStart_Context(Object state)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>at System.Threading.ThreadHelper.ThreadStart()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P>Thank you very much,</P>
+<P>Teresa Severyn</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 07, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tseveryn:</strong></div><div><p class="MsoNormal"><span><strong>System.Web.Services.Protocols.SoapException was unhandled<o:p></o:p></strong></span></p>
+<p class="MsoNormal"><span><span>&nbsp; </span>Actor=""<o:p></o:p></span></p>
+<p class="MsoNormal"><span><span>&nbsp; </span>Lang=""<o:p></o:p></span></p>
+<p class="MsoNormal"><span><span>&nbsp; </span>Message="System.Web.Services.Protocols.SoapException: Server was unable to process request. ---&gt; System.Data.SqlClient.SqlException: User does not have permission to perform this action.<o:p></o:p></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>at PTService.GetProjectList() in C:\WorkSpace\Projects\csla20vb\csla20vb\PTWebService\App_Code\PTService.vb:line 40<o:p></o:p></span></p></div></BLOCKQUOTE><br><br>The exception tells you the issue: the user doesn't have permission to perform the action. Since this is a SqlException, the problem is coming from the database itself, so it is a good bet that the connection string for the database is incorrect and the user is unable to log into the database to get the data.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

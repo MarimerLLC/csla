@@ -1,0 +1,19 @@
+<html><header><title>BusinessBase.IsSave can not reflact enable property of Button in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessBase.IsSave can not reflact enable property of Button in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11311.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>patelravij@gmail.com posted on Tuesday, April 17, 2012</h2><p>I have ViewModel&lt;T&gt; business class and I have added Property of another businessclass to Validate search parameter. I have bound&nbsp;IsEnabled property of search button with&nbsp;businessclass object.IsValid Property. </p>
+<p>But it does not get&nbsp;reflated when all required fields are selected.</p>
+<p>Any Idea how to reflect UI with businessobject IsValid property</p>
+<p>Does&nbsp;IsValid&nbsp; is dependency property?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 17, 2012</h2><p>That is correct. None of the metastate properties of business objects are bindable in the current versions of CSLA.</p>
+<p>You should use ViewModelBase to access bindable versions of these properties, as shown in the video series and ebook series.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>patelravij@gmail.com replied on Tuesday, April 17, 2012</h2><p>Thanks for your replay.</p>
+<p>I have created a&nbsp;dependency&nbsp;Property in ViewModel and added&nbsp;Event handler BrokenRulesCollection.CollectionChanged for businessbase object property. Then set dependency property in event by checking count of brokernRules and bind with IsEnable property of the search button&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>if (this.Criteria.BrokenRulesCollection != null &amp;&amp; this.Criteria.BrokenRulesCollection.Count != 0)</p>
+<p>{</p>
+<p><span>	</span>this.CanSearch = false;</p>
+<p>}</p>
+<p>else</p>
+<p>{</p>
+<p><span>	</span>this.CanSearch = true;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Its works fine.!!! But is it proper way achieve above&nbsp;scenario?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 17, 2012</h2><p>You can look at the implementation of the various properties (like CanSave) in the ViewModelBase class in Csla.Xaml. There are some tricks to making these properties work correctly - and they don&#39;t need to be a DependencyProperty&nbsp;- just a bindable property that raises PropertyChanged.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

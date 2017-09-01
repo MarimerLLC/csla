@@ -1,0 +1,80 @@
+<html><header><title>The case of the ApplicationContext.ClientContext disappearance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The case of the ApplicationContext.ClientContext disappearance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12029.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio posted on Monday, June 17, 2013</h2><p>It seems that the content of ApplicationContext.ClientContext disappear . &nbsp;During the login proess i put the user id in the clientContext, then i use my implementation of&nbsp;IAuthorizeDataPortal to recreate the user and get the stuff i need from it. &nbsp; Now this is working fine for a couple of back and forth and than suddenly no more userID in the ClientContext, this can happen at any time, i there seems to have no pattern.</p>
+<p>&nbsp;</p>
+<p>By reading the previous post, a recurring anwser is make sure you have the csla web in the folder, and i do.</p>
+<p>&nbsp;</p>
+<p>i&#39;m using Win8 with CSLA&nbsp;Core.4.5.30. on .net 4.5</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 17, 2013</h2><p>Which UI technology do you use?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Tuesday, June 18, 2013</h2>We are using xaml and,c# </div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, June 18, 2013</h2><p>Hi,</p>
+<p>For WPF you must make sure that Csla.Xaml.dll is present in your bin folder.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Tuesday, June 18, 2013</h2><p>We are using XAML C#&nbsp; on &nbsp;Windows 8&nbsp; and we do have CSLA.xaml.dll in the .Net for Windows Store Apps&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, June 20, 2013</h2><p>When i say windows 8 i mean Windows Store Apps and we do have the csla.xaml in the Windows Store App referecnces</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 21, 2013</h2><p>Is the ClientContext being lost on the client, or is it just not making it to the server via the data portal?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Friday, June 21, 2013</h2><p>seems to have been lost on the client as well :-\</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, June 30, 2013</h2><p>it seems to be happening only or more during development then when running the application. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 30, 2013</h2><p>In WinRT the application context values are stored in a static fields, so they are global to the app. This does mean that changes to the values on background threads are global to the app. It also means that if the appdomain is reset somehow that the values would be lost. I don&#39;t know how _that_ would happen in WinRT though.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 30, 2013</h2><p>Hi,</p>
+<p>I kinda suspect there is at least 2 other possible explanations as having applicationcontext in static variables breaks the DataPortal logic for SetContext &nbsp;/ ClearContext when running in local mode.&nbsp;</p>
+<p>1. Making 2 async DataPortal calls in parallel will make the second call start with&nbsp;<span>ExecutionLocations</span>.Server and then call &nbsp;ClearContext when complete.&nbsp;</p>
+<p>2. Calling f.ex a new DataPortal.Fetch method from within another DataPortal.Fetch will make the second call start &nbsp;with&nbsp;<span>ExecutionLocations</span>.Server and then call &nbsp;ClearContext when complete.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 30, 2013</h2><p>You are probably right. And there&#39;s no easy solution because we have no access to TLS or ExecutionContext. As a result I do have an issue in the backlog on GitHub to develop&nbsp;my own&nbsp;equivalent to ExecutionContext for use in WinRT.&nbsp;I guess the priority of that issue should be elevated...&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 30, 2013</h2><p>Been digging into the code and it does not seem to be the issue.&nbsp;</p>
+<p>There is an extra check for context.IsRemote before the ApplicationContext.Clear() so I am not able to recreate the issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, May 21, 2015</h2><p>after all these years <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" />, i&#39;m still having the issue, as you said JonnyBee it seem to be happening a lot more when i do a&nbsp;DataPortal.Fetch&nbsp;inside another DataPortal.Fetch but it is very strange, as it does not happen all the time and at the same place????</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Friday, May 22, 2015</h2><p>By digging a bit more it seem to be happening when there is more than one Dataportal call coming from the WinRT app at some point it looses the ApplicationContext.ClientContext in the backend ????&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Wednesday, June 03, 2015</h2><p>Digging more into this issue i realized that CSLA seems to be dropping the ClientContext when calling a DataPortal inside another DataPortal&nbsp;</p>
+<p>For Example:</p>
+<p>Client Code</p>
+<p>Csla.ApplicationContext.ClientContext[Key] = &quot;SomeData&quot;</p>
+<p>Csla.ApplicationContext.ClientContext[Key2] = &quot;SomeOtherData&quot;</p>
+<p>&nbsp;</p>
+<p>DataPortal.Fetch(some criteria)</p>
+<p>&nbsp;</p>
+<p>Server Code&nbsp;</p>
+<p>DataPortal_Fetch(some criteria)&nbsp;</p>
+<p>{</p>
+<p>&nbsp; &nbsp; Csla.ApplicationContext.ClientContext &nbsp;has 2 item</p>
+<p>&nbsp; &nbsp; Get Data from a database</p>
+<p>&nbsp; &nbsp; &nbsp;DataPortal.FetchChild&lt;someChildObject&gt;(some criteria));</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>SomChildObject()&nbsp;</p>
+<p>{</p>
+<p>&nbsp;private void Child_Fetch(somecriteria)</p>
+<p>{</p>
+<p>&nbsp; &nbsp; Csla.ApplicationContext.ClientContext &nbsp;is empty (Sometimes)</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Anybody seen this before?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 04, 2015</h2><p>Hi, </p>
+<p>Are you sure the ClientContext is till present <strong><i>after </i></strong>data access from database?&nbsp;</p>
+<p>If you have async or tasks in the data access that would explain how the code could be running on another thread and hence has lost the application context.&nbsp;</p>
+<p>DataPortal.FetchChild does NOT use task or async and does not interact with ApplicationContext.&nbsp;</p>
+<p>The semenatics of DataPortal.FetchChild is:&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>create instance of object</li>
+<li>Call Child_OnDataPortalInvoke() if implemented</li>
+<li>Call MarkAsChild() if implemented</li>
+<li>Call MarkOld() if implemented</li>
+<li>Call ChildFetch(parameters)&nbsp;</li>
+<li>Call Child_OnDataPortalInvokeCompleted () if implemented</li>
+<li>return the object</li>
+</ul>
+<p>Another culprit may be if you have async/tasks in one of the other methods that may be called.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, June 04, 2015</h2><p>Givin that how do I get it back? I need the clientcontext all the way down to the DataPortal.FetchChild</p>
+<p>I do have Async Tasks in some methods and I do need the client context, can I do something to keep it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2015</h2><p>The clientcontext is attached to the primary thread. If you somehow make a call that ends up running on another thread it is up to you to copy the clientcontext from the original thread to the new thread.</p>
+<p>A typical async/await call won&#39;t actually jump threads btw - but if you do Task.Run or something along that line the result would be a new thread.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, June 04, 2015</h2><p>I&#39;m Only using Async/Await and by adding the CSLA code to MY project to see what&#39;s going on, I see that at the beginning of the CSLA stack the ClentContext is there but than a bit later it disappear for some reason.</p>
+
+I&#39;ll send some screen shot that shows what Im saying</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 04, 2015</h2><p>Hi,&nbsp;</p>
+<p>Do you use the Csla.Threading.CslaTaskScheduler when you run tasks?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, June 07, 2015</h2><p>As you can see in the picture I do have the ClientContext.</p>
+<p>Here is the steps</p>
+<p>1. I use DataPortal_Fetch to get my Invoice</p>
+<p>2. I Add a Part on it, doing this triggers an Async Business rule </p>
+<p>2.1 That calls a DataPortal_Execute (a Command) </p>
+<p>2.2 That command Load the part again (DataPortal_Fetch) but this time in edit mode so it can set some missign attributes</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;When I&#39;m Loading the properties of the last Fetch - The context is lost,&nbsp;</p>
+<p>&nbsp;</p>
+<p>In the picture included here you can see the CSLA call stack.</p>
+<p>&nbsp;</p>
+<p>Am I doing something wrong?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, June 11, 2015</h2><p>I&#39;m using a lot of Async business Rules and it seems to be happening more in them!!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 11, 2015</h2><p>All your code (1 through 2.2) is 100% server-side?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, June 11, 2015</h2><p>1. Is from the UI , It call the server to get the list of Invoices</p>
+<p>but the rest is all server side.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 12, 2015</h2><p>So your Part object is a child of something like Invoice.PartList, but is also a root object in that it has a DataPortal_Fetch method (not just a Child_Fetch)?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 12, 2015</h2><p>Also, is the async rule that is run in the Part object a per-type or per-property rule? What triggers this rule to run when the object is created?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, June 14, 2015</h2><p>These rules are per-property rules.</p>
+<p>We use &nbsp;BusinessRules.CheckRules(PartTypeProperty);</p>
+<p>So it loads a list immediately for the user to select, to set another property.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 14, 2015</h2><p>So you use use a rule to do lazy loading of a property?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, June 14, 2015</h2><p>The setting of a property load a list for the user to be able to set another property.</p>
+<p>&nbsp;</p>
+<p>Property A is set -&gt; triggers a rule to load the possible choices for Property B</p>
+<p>&nbsp;</p>
+<p>Hope that clarifies</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 15, 2015</h2><p>I&#39;m not sure I see how this scenario gets you to loading a child object as a root? What do you do, load it, pull the collection from it, and then discard it?</p>
+<p>Why not just load the filtered collection directly?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 15, 2015</h2><p>As I start to move the forum to GitHub, I&#39;ll move active threads there via link. Here&#39;s the link to continue this thread:</p>
+<p><span style="font-size:x-small;">
+<p><a href="https://github.com/MarimerLLC/cslaforum/issues/3">https://github.com/MarimerLLC/cslaforum/issues/3</a></p>
+</span>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, June 14, 2015</h2><p>That&#39;s right, we use it as both a child and a Root object.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

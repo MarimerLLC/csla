@@ -1,0 +1,187 @@
+<html><header><title>Parent Object Changes - How to handle in validation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent Object Changes - How to handle in validation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6389.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle posted on Tuesday, February 10, 2009</h2><P>Ok, so we have 2 different object trees, that look like this:&nbsp; (these are purely theoretical...the real objects wouldn't make sense to those outside of the industry)</P>
+<P>Teacher(BB)</P>
+<P>&nbsp;&nbsp;&nbsp;Student (BB)</P>
+<P>&nbsp;</P>
+<P>Teacher(BB)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Students(BLB)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Student(BB)</P>
+<P>&nbsp;</P>
+<P>If i had a requirement to validate a Students age against a teachers age, then i run into a problem where I do not have a consistent parent relationship in my validation method.&nbsp; So, I know I could do a branch like so</P>
+<P>&nbsp;&nbsp;&nbsp;if Student.Parent is Teacher&nbsp; //Teacher is parent </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'do some action</P>
+<P>&nbsp;&nbsp;&nbsp;else</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;'do some other action&nbsp;&nbsp;&nbsp;//Students is parent</P>
+<P>&nbsp;</P>
+<P>I do not like branching code to handle this though...is there a better option?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2><P>I think your object model is incorrect from the start.</P>
+<P>A Teacher doesn't own a Student, nor does a Student own a Teacher. At least in the US it is illegal for one person to own another :)</P>
+<P>Really, a Teacher has a collection of AssignedStudents or CurrentStudents or maybe has a Class.</P>
+<P>And a Class is a collection of Attendee objects.</P>
+<P>And each Attendee object represents the relationship between the Teacher and a Student.</P>
+<P>If you read the chapter(s) in the Expert Business Objects book about object design you can get a much more complete discussion about why to do your object model like this, and a more complete example as I walk through the design of the ProjectTracker object model. ProjectTracker has exactly this M:M relationship.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Tuesday, February 10, 2009</h2><P>Well, I was trying to illustrate an example of the problem without getting into domain specific language.</P>
+<P>But our real scenerio is this:</P>
+<P>DealShortTerm (of type Deal)</P>
+<P>&nbsp;&nbsp;&nbsp;Package</P>
+<P>&nbsp;</P>
+<P>DealLongTerm (of type Deal)</P>
+<P>&nbsp;&nbsp;&nbsp;Packages</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Package</P>
+<P>&nbsp;</P>
+<P>And a deal can indeed be of a type that it can only have a single package, or of a different type that would allow for multiple packages.&nbsp; To fulfill these requirements, we are inheriting from Deal to have a DealShortTerm, and a DealLongTerm</P>
+<P>In both cases, I have the requirement to compare the value of Package.MDQ to Deal.MDQ to ensure that the Package.MDQ &lt; Deal.MDQ</P>
+<P>&nbsp;</P>
+<P>so, inside of my validation routine, I again have code similiar to before:</P>
+<P>if target.Parent is DealShortTerm</P>
+<P>&nbsp;&nbsp;&nbsp;//compare target.MDQ &lt; (Deal)target.Parent.MDQ</P>
+<P>else</P>
+<P>&nbsp;&nbsp;&nbsp;//compare target.MDQ &lt; (Deal)target.Parent.Parent.MDQ</P>
+<P>&nbsp;</P>
+<P>Again, I am trying to avoid the ugly branching here, but I need a way to get at the Deal.MDQ property, when I do not have a consistent parent.&nbsp; This is not a many to many relationship...it is truly a one to one or a one to many relationship depending on what type of deal you have.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 10, 2009</h2>I think Rocky's answer still applies.&nbsp; You're faced with this "ugly branching code."&nbsp; That's a good clue your design is heading down the wrong path.&nbsp; His answer still may help; it sounds like a Package is something that is defined elsewhere, and so you have a class IncludedPackages or SelectedPackage.<br><br>It also sounds like the Deal should be checking it's child (or children) to ensure that your rule is met.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The trick is to put the responsibility where it belongs. If your
+code feels awkward (and branching is awkward) then the responsibility is in the
+wrong location.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;d consider having the Deal class define a method to do
+the comparison &#8211; but an abstract method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then each Deal subclass would implement that comparison method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then your code is more like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var p = target.Parent as Deal;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>if (p != null)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; p.Comparevalue(&#8230;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No branching &#8211; you allow the object model to naturally
+figure out the right course.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Tuesday, February 10, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Then your code is more like this:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>var p = target.Parent as Deal;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>...&nbsp;</o:p></SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>target.Parent is not necessarily a Deal...that is the whole point of my original question.&nbsp; We are re-evaluating our model now, but I really do not have high hopes of restructuring this in such a way as to solve this.&nbsp; I do appreciate your time in answering though.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Obviously I don&#8217;t know the specifics of your model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The solution however, is generally the same (though there are different
+techniques you can use). You need to invert how you think about the problem, so
+the decision point of what rule implementation is executed flows naturally from
+the object model itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, February 10, 2009</h2><P>If you are constrained to where heavily modifying your object model is not an option or if you believe (I haven't read the thread thoroughly) that your package needs to be a child of deal, one option would be to set an internal property on "IsPackageValidForDeal" on package.</P>
+<P>You would, in your "Deal" class, respond to child events / changes in package(s)' MDQ value.</P>
+<P>Both deal classes&nbsp;would look at it's own MDQ and compare it to the value of the child being changed, and change the IsPackageValidForDeal property on the child.&nbsp; </P>
+<P>A change in the MDQ on the deal would presumably have an effect too - it would need to potentially change the IsPackageValidForDeal values on the child or children. Since you'd be doing this from DealShortTerm or DealLongTerm, you'd know whether or not to do it to the child or the collection of children. </P>
+<P>On the Package, you'd have a validation rule tied to IsPackageValidForDeal. If that value is changed to true, the validation rule passes. If the value is changed to false, the validation rule fails and you can display an error message -- that child package would be invalid.&nbsp; (i.e. it's a very simple validation rule that simply uses the valid value the deal gave it). </P>
+<P>Anyways, just another option for you... </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, February 10, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+ 
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+
+<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, February 10, 2009</h2>Create an interface called IMDQ that contains a MDQ property.&nbsp; Implement this interface in Deal and Packages.&nbsp; In Deal, return the MDQ value.&nbsp; In Packages, return Parent.MDQ.&nbsp; Program to the interface and you won’t need the if-else statements. &nbsp;<br><br>Compare target.MDQ &lt; (IMDQ)Parent.MDQ</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Wednesday, February 11, 2009</h2>How about thinking in this way:<br><ul><li>ShortTermDeal (only) hasone Package</li><li>LongTermDeal hasmany Packages</li></ul>Which means if Package.Parent is not a Deal type, validation should always return true. Only check parent type, but doesn't care any parent type other than Deal. <br><br>Then override Package's isValid property to implement the validation rule for package list. I think it's better to separate the validation rule between the single Package and the Package group/list.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>Validation rules not firing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rules not firing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8993.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Wednesday, May 26, 2010</h2><p>Hi,</p>
+<p>I am having a little trouble with validation rules not firing on a&nbsp;BusinessBase object, here is my&nbsp;AddBusinessRules method:</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p><span style="font-size:12.1528px;">&nbsp;ValidationRules.AddRule(CustomCommonRules.UniqueCombination&lt;CheckProductPriceVendorAndPriceGroup&gt;, IdProperty, VendorIdProperty, PriceGroupIdProperty);</span></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>Now if I change the PriceGroupId property the rules don&#39;t fire.</p>
+<p>What I did is to override the OnPropertyChanged and fire the rules like ValidationRules.CheckRules, but this gives me a&nbsp;different&nbsp;error.</p>
+<p>&quot;Cannot change ObservableCollection during a CollectionChanged or PropertyChanged event.&quot;</p>
+<p>Any idea on how can I work around this ?</p>
+<p>&nbsp;</p>
+<p>Thank you,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 26, 2010</h2><p>Your code is adding an async rule to the IdProperty. You need to add the rule to PriceGroupId, or make PriceGroupId a dependent property on IdProperty if you want the rule to run when PriceGroupId is changed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Friday, May 28, 2010</h2><p>Thank you, this did the trick.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

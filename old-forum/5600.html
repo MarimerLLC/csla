@@ -1,0 +1,235 @@
+<html><header><title>Parent object's IsDirty Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent object's IsDirty Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5600.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mushroom posted on Wednesday, October 15, 2008</h2><P>Hi All,</P>
+<P>I looked and was not able to find an answer to my question. Kindly link me to the answer if there is already one.</P>
+<P>So, I have a parent object with a collection of child objects whose structure is similar to the ProjectTracker sample. These are what my objects basically look like:</P>
+<P>Parent Object</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>public</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>class</FONT></FONT><FONT size=1> </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ParentObject </FONT></FONT><FONT size=1>: </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>BusinessBase</FONT></FONT><FONT size=1>&lt;</FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ParentObject</FONT></FONT><FONT size=1>&gt;</P>
+<P>{</P><FONT color=#0000ff size=1><FONT color=#0000ff size=1>
+<BLOCKQUOTE dir=ltr>
+<P>private</FONT></FONT><FONT size=1> </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetails </FONT></FONT><FONT size=1>_childDetails = </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetails</FONT></FONT><FONT size=1>.NewChildDetails();</FONT></P><FONT size=1><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>public</FONT></FONT><FONT size=1> </FONT><FONT size=1><FONT color=#2b91af size=1>ChildDetails&nbsp;</FONT></FONT><FONT size=1><FONT color=#2b91af>ChildList </FONT></P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>get</FONT></FONT><FONT size=1> { </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>return</FONT></FONT><FONT size=1> _childDetails ; }</P></BLOCKQUOTE>
+<P>}</P></FONT></BLOCKQUOTE></FONT>
+<P>}</P></FONT>
+<P>Child Object</P><FONT size=1>
+<P>[</FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>Serializable</FONT></FONT><FONT size=1>()]</P>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>public</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>class</FONT></FONT><FONT size=1> </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetails </FONT></FONT><FONT size=1>: </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>BusinessListBase</FONT></FONT><FONT size=1>&lt;</FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetails </FONT></FONT><FONT size=1>, </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetail</FONT></FONT><FONT size=1>&gt;</P>
+<P>{</FONT><FONT size=1></P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>public</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>void</FONT></FONT><FONT size=1> Assign(</FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>int</FONT></FONT><FONT size=1> id, </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>string</FONT></FONT><FONT size=1> desc</FONT><FONT size=1>)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>if</FONT></FONT><FONT size=1> (!Contains(id))</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetail</FONT></FONT><FONT size=1>item = </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>ChildDetail</FONT></FONT><FONT size=1>.NewChildDetail(id, desc); </P>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>this</FONT></FONT><FONT size=1>.Add(item);</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>else</P></FONT></FONT><FONT size=1>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>throw</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>new</FONT></FONT><FONT size=1> </FONT><FONT color=#2b91af size=1><FONT color=#2b91af size=1>InvalidOperationException</FONT></FONT><FONT size=1>(</FONT><FONT color=#a31515 size=1><FONT color=#a31515 size=1>someMessage</FONT></FONT><FONT size=1>);</P></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+<P>}</P>
+<P>The NewChildDetail method:</P><FONT color=#0000ff size=1><FONT color=#0000ff size=1>
+<P>private</FONT></FONT><FONT size=1> ChildDetail(</FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>int</FONT></FONT><FONT size=1> id, string desc</FONT><FONT size=1>)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>MarkAsChild();</P>
+<P>_id = id;</P>
+<P>_desc = dessc;</P></BLOCKQUOTE>
+<P>}</P></FONT>
+<P><FONT size=3>When adding a ChildDetail object I have this code:</FONT></P>
+<P><FONT color=#2b91af>ParentObject </FONT>parent = <FONT color=#2b91af>ParentObject</FONT>.GetParentObject(idParent);</P><FONT size=3><FONT size=1>
+<P>parent.<FONT color=#2b91af>ChildList</FONT>.Assign(numX, strX); //where parent is a valid instance of ParentObject. The data was populated by a similar method </P>
+<P><FONT size=3>after that line, checking parent.IsDirty shows false. My problem here is that the child objects are not persisted because the parent.IsDirty is false. That leads to BusinessBase.Save not calling the DataPortal.Update.</FONT></P>
+<P>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are not using 3.5/3.6 syntax for property declarations,
+you will need to override dirty and valid in your parent to account for child
+list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Dirty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Return MyBase.IsDirty OrElese _childDetails.IsDirty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Valid<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Return MyBase.IsValid AndAlso _childDetails.IsValid<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you can switch to 3.5 syntax and let CSLA manage those for
+you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mushroom
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 15, 2008 1:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Parent object's IsDirty Property<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi All,<o:p></o:p></p>
+
+<p>I looked and was not able to find an answer to my question. Kindly link me
+to the answer if there is already one.<o:p></o:p></p>
+
+<p>So, I have a parent object with a collection of child objects whose
+structure is similar to the ProjectTracker sample. These are what my objects
+basically look like:<o:p></o:p></p>
+
+<p>Parent Object<o:p></o:p></p>
+
+<p><span>public</span><span> <span>class</span> <span>ParentObject </span>: <span>BusinessBase</span>&lt;<span>ParentObject</span>&gt;<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>private</span><span> <span>ChildDetails </span>_childDetails
+= <span>ChildDetails</span>.NewChildDetails();<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>ChildDetails&nbsp;ChildList
+</span><o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>get</span><span> { <span>return</span> _childDetails ; }<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p>Child Object<o:p></o:p></p>
+
+<p><span>[<span>Serializable</span>()]<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>class</span> <span>ChildDetails </span>: <span>BusinessListBase</span>&lt;<span>ChildDetails </span>, <span>ChildDetail</span>&gt;<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>public</span><span> <span>void</span> Assign(<span>int</span> id, <span>string</span> desc)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>if</span><span> (!Contains(id))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>ChildDetail</span><span>item = <span>ChildDetail</span>.NewChildDetail(id,
+desc); <o:p></o:p></span></p>
+
+<p><span>this</span><span>.Add(item);<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>throw</span><span> <span>new</span> <span>InvalidOperationException</span>(<span>someMessage</span>);<o:p></o:p></span></p>
+
+</blockquote>
+
+</blockquote>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>The NewChildDetail method:<o:p></o:p></span></p>
+
+<p><span>private</span><span> ChildDetail(<span>int</span> id,
+string desc)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<blockquote>
+
+<p><span>MarkAsChild();<o:p></o:p></span></p>
+
+<p><span>_id = id;<o:p></o:p></span></p>
+
+<p><span>_desc = dessc;<o:p></o:p></span></p>
+
+</blockquote>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p>When adding a ChildDetail object I have this code:<span><o:p></o:p></span></p>
+
+<p><span>ParentObject </span><span>parent = <span>ParentObject</span>.GetParentObject(idParent);<o:p></o:p></span></p>
+
+<p><span>parent.<span>ChildList</span>.Assign(numX,
+strX); //where parent is a valid instance of ParentObject. The data was
+populated by a similar method <o:p></o:p></span></p>
+
+<p>after that line, checking parent.IsDirty shows false. My problem here is
+that the child objects are not persisted because the parent.IsDirty is false.
+That leads to BusinessBase.Save not calling the DataPortal.Update.<span><o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mushroom replied on Wednesday, October 15, 2008</h2><P>How careless of me. I have that test on my other Parent objects. I forgot to include the test for the child objects on this class. Thanks a lot!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>eulerthegrape replied on Wednesday, October 15, 2008</h2>In your parent object override the IsDirty (and probably the IsValid) methods to include the validity of your child collection.<br><br>ChildDetails _children = ChildDetails.NewChildDetails();<br><br>public override bool IsValid<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.IsValid &amp;&amp; _children.IsValid;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override bool IsDirty<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.IsDirty || _children.IsDirty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>Lookupedit add and remove items ? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lookupedit add and remove items ? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12595.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dong posted on Wednesday, April 23, 2014</h2><p><span lang="en" id="result_box"><span class="hps">Can Lookupedit</span> <span class="hps">add</span> <span class="hps">and remove</span> <span class="hps">each</span> <span class="hps">item&nbsp;</span><span>?</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 23, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>dong<br></b><span id="result_box" lang="en"><span class="hps">Can Lookupedit</span> <span class="hps">add</span> <span class="hps">and remove</span> <span class="hps">each</span> <span class="hps">item&nbsp;</span><span>?</span></span></div></p>
+<p>I think we need a bit more context to answer your question?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dong replied on Wednesday, April 23, 2014</h2><p><span lang="en" class="short_text" id="result_box"><span class="hps">I</span> <span class="hps">add</span> <span class="hps">each</span>&nbsp;Item (record)<span class="hps">&nbsp;into</span> <span class="hps">Lookupedit</span> <span class="hps">but</span> <span class="hps">an error</span></span></p>
+<p><blockquote style="overflow-x: scroll;"><pre style="margin: 0px;"></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Open connection database</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Cnn.ConnectSQL(); &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SqlDataAdapter da = new SqlDataAdapter(&quot;SELECT TabSTAFF.IDSTAFF, TabSTAFF.NAMESTAFF&nbsp;FROM TabSTAFF ORDER BY TabSTAFF.IDSTAFF;&quot;, Cnn.objConnect);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataSet ds = new DataSet(); &nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataTable dt = new DataTable();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; da.Fill(ds, &quot;TabSTAFF&quot;); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dt = ds.Tables[&quot;TabSTAFF&quot;];</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; kpNhanvien.EditValue = dt.Rows[0][&quot;NAMESTAFF&quot;].ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (DataRow dr in dt.Rows)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span class="hps">/</span> <span class="hps">/</span> <span class="hps">Get an error</span> <span class="hps">immediately</span> <span class="hps">below</span> <span class="hps">this</span> <span class="hps">line</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lkpNhanvien.Properties.Columns.Add(new LookUpColumnInfo(dr[&quot;IDSTAFF&quot;].ToString(), dr[&quot;NAMESTAFF&quot;].ToString())); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //lkpQuyensd.Properties.DataSource = dt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lkpNhanvien.Properties.DisplayMember = &quot;NameS<span lang="en" id="result_box">taff</span>&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lkpNhanvien.Properties.ValueMember = &quot;ID<span lang="en" id="result_box">staff</span>&quot;;</p>
+<p>&nbsp;</p>
+<p><span lang="en" class="short_text"><span class="hps"></span></span></p>
+<p></pre></blockquote></p>
+<p><span lang="en" id="result_box"><span class="hps">And</span> <span class="hps">I</span> <span class="hps">want to remove</span> <span class="hps">each</span> <span class="hps">item in Lookupedit&nbsp;</span><span>?</span> <span class="hps">how</span> <span class="hps">to write</span> <span class="hps">code looupedit&nbsp;</span>?</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

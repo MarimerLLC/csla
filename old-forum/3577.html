@@ -1,0 +1,39 @@
+<html><header><title>Binding a property, containing a child object, to a combo box</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding a property, containing a child object, to a combo box</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3577.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Friday, September 21, 2007</h2><P class=MsoNormal>Hi guys,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks for taking the time to read my post.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’ve run into a weird programming challenge that occurs when I need to bind a property, that gets/sets a child object, to a combo box.<SPAN>&nbsp; </SPAN>This situation occurs in multiple places throughout my business objects and my UI.<SPAN>&nbsp; </SPAN>I suspect many of you guys have also run into this&nbsp;and I’m hoping you can offer some suggestions.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Here's an example - I have an editable “Payment” object with a child “Type” (payment type) object…</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>PAYMENT, editable parent object:</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- Id<SPAN>&nbsp; </SPAN>(read only property, integer)</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- Amount<SPAN>&nbsp; </SPAN>(editable property, decimal)</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- Type<SPAN>&nbsp; </SPAN>(editable property, business object) </P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- other editable properties</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>TYPE, read only child object:</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- Id<SPAN>&nbsp; </SPAN>(read only property, integer)</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- Description<SPAN>&nbsp; </SPAN>(read only property, string)</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- other read only properties</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>So it is&nbsp;totally clear.....the "Type" or Payment Type I'm talking about would be things like cash, Mastercard, Visa, check, etc.</o:p></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P>
+<P class=MsoNormal>I am binding all of the Payment object’s properties to Windows form controls to eliminate as much UI coding as possible.<SPAN>&nbsp; </SPAN>It’s worked fine for properties that are strings or numbers, like “Id” or “Amount” – I bound them to a textbox and I was done (no UI code!).<SPAN>&nbsp; </SPAN>But then I looked at binding the “Type” property (object) to a combo box and things got ugly.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am populating the “Payment Type” combo box using a separate CSLA Name-Value-List object that contains the Ids and Descriptions for the various payment types.<SPAN>&nbsp; </SPAN>I bound the combo box’s “SelectedValue” property to Payment.Type.Id – this binding made it so that when the object is changed, the combo box automatically changes itself to whatever payment type is selected in the object.<SPAN>&nbsp; </SPAN>BUT, the change relationship does not work in reverse – a change to the combo box does not update the object.<SPAN>&nbsp; </SPAN>That doesn’t work because the combo box selects an integer (type id) and the payment object’s “Type” property gets/sets a “Type” (payment type) object.<SPAN>&nbsp; </SPAN>So I am forced to write one line of code (oh no!) in the combo box’s “LostFocus” or “SelectedIndexChanged” handler to instantiate and assign a new object to the “Type” property.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m trying hard to make it so our UI developers write as little code as possible.<SPAN>&nbsp; So </SPAN>I really want to get rid of that one line of code!<SPAN>&nbsp; </SPAN>I’ve explored various solutions to eliminate this line of code, all of which I do NOT think are very clean or elegant.<SPAN>&nbsp; </SPAN>The best of the bad solutions I’ve come up with is this…</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m considering adding a new editable property to the Payment object called “TypeId” (integer).<SPAN>&nbsp; </SPAN>Then I’d change the original “Type” property (object) to be read only.<SPAN>&nbsp; </SPAN>I still want to keep the original “Type” property (object) because its data is used for display purposes other UI screens.<SPAN>&nbsp; </SPAN>My thought is that the new editable “TypeId” property (integer) will not only change itself but, behind the scenes, it will also change the original “Type” property (object) too.<SPAN>&nbsp; </SPAN>Then I’d bind to combo box to the new “TypeId” property (integer) and changes would then be affected in both directions – object to combo box and combo box to object.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal>However…</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The nit-picky, anal-retentive side of me does not like the fact that there is going to be somewhat duplicate properties…..Type and TypeId.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Has anyone else run into this and thought of a more elegant solution?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Wednesday, September 26, 2007</h2><P>Or has anyone run into this same problem and resolved it the same way I did?</P>
+<P>Or have I done something weird with my object design and created a situation that should not ever occur?&nbsp; (the unusual lack of responses makes me concerned about this)</P>
+<P>Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 26, 2007</h2>Hi<br><br>I've done this, and hit my head on it many times.&nbsp; I solved it by creating an NVL of Types, and then having Payment's Type be a simple string.&nbsp; In the property getter or setter, I look use GetKey of NVL to get the id of the payment type, and store that. <br><br>This should work if you have a more complex BO as a Value part of the NVL as well.. but you'll probably need to code a method that looks for the type's name and returns the correct key.<br><br>HTH<br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

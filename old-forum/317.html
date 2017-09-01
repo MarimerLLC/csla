@@ -1,0 +1,12 @@
+<html><header><title>Newbie trouble - missing methods?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie trouble - missing methods?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/317.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Thursday, June 08, 2006</h2><P>Hi,</P>
+<P>I'm pretty new to CSLA and the CodeSmith templates I got from gotdotnet. Having a little trouble generating my first classes.</P>
+<P>I have a table named PrintItem which holds information about photographic prints. I used the EditableRoot.cst template to generate the business object code and that works fine. I also need to work with a collection of PrintItems, so I tried using the EditableRootList.cst. I set the ChildName to PrintItem, the object name to PrintItemList and the RootTable to dbo.PrintItem.</P>
+<P>I get some errors compiling PrintItemList. It's saying the PrintItem does not contain definitions for DeleteSelf, Insert and Update.</P>
+<P>Looking at CSLA's sample application, ProjectTracker, I'm comparing my classes to ResourceAssignment and ResourceAssignments. I see that ResourceAssignment has these methods.</P>
+<P>Should I just add these methods to my BusinessBase class or am I not understanding CSLA quite right?</P>
+<P>Any help is appreciated.</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>Apologies, but I'm cross posting this on CodeSmith and the CSLA forum as I'm not sure where is the best place to post.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 08, 2006</h2>There are many ways to have a parent interact with its children. It is possible that the CodeSmith templates weren't authored to follow the pattern I used in the book, and if so then you'll need to conform to the pattern used by those templates, or alter the templates to follow the book's approach.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, June 08, 2006</h2><P>Thanks for the reply. I need to revisit my issue as I recently learned - from my other thread today - that I didn't understand how to work CSLA in the first place. The templates are probably fine.</P>
+<P>Regards,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

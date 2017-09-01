@@ -1,0 +1,11 @@
+<html><header><title>MappingName for Windows Forms DataGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MappingName for Windows Forms DataGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/968.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy posted on Monday, August 21, 2006</h2><P>I am trying to make my own TableStyle for a DataGrid.&nbsp; It isn't being used, instead it seems to be using the default TableStyle and&nbsp;auto creating the columns.&nbsp; I beleive it is because i am not setting the correct MappingName.</P>
+<P>This works but it doesn't use my custom TableStyles.</P>
+<P>&nbsp;dataGrid1.SetDataBinding(account.MyDetailCollection(), "");</P>
+<P>I have tried using the parent and child class names like the following but I get an error "Cannot create a child list for field".</P>
+<P>dataGrid1.SetDataBinding(account.MyDetailCollection(), "BOMyDetail");</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy replied on Tuesday, August 22, 2006</h2><P>In case someone needs it I figured it out.</P>
+<P>I got this to work and use my styles.</P>
+<P>myTableStyle.MappingName&nbsp;&nbsp;&nbsp;= "MyDetailCollection"&nbsp; // Need to use the Class name</P>
+<P>...rest of TableStyle code</P>
+<P>MyDetailCollection myDetailCollection&nbsp;&nbsp;&nbsp;= MyDetailCollection.GetCollection();</P>
+<P>dataGrid1.DataSource = myDetailCollection;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

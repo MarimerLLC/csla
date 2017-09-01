@@ -1,0 +1,89 @@
+<html><header><title>Minimizing network hops during saving</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Minimizing network hops during saving</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3892.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, November 13, 2007</h2>Hi,<br><br>My application is working, and my users are mostly happy.&nbsp; One thing is that some users are now in another office, so performance over our T1 is becoming an issue.&nbsp; For the most part, its an issue for users saving quotes or orders, etc.<br><br>The problem is that each object persists itself, resulting in a call to the db.&nbsp; Everything is running in local mode.&nbsp; With a large document, this can generate around 55 seperate calls (50 items each, and then a few more of "header" information).&nbsp; <br><br>Pre-Csla, I wrote functionality into the our custom data layer which allowed you to "batch" commands.&nbsp; It basically would not execute the sql call, instead it would build it and tack it onto the end of a string.&nbsp; When you called the finish, it sent the entire string (which would be all the individual calls) to the database and get the results back.&nbsp; I don't think i can do something similar here.<br><br>One option would be to turn on Remoting.&nbsp; I think that would work, since the remoting host would be the database server itself, and it would mean only one back and forth over the network.&nbsp; Although I thought I followed all the Csla best practices, there does seem to be issues with going this route that I'll have to debug.&nbsp; I'm also not sure if that would be the proper solution to my problem.<br><br>Any other ideas out there?&nbsp; Or should I just use remoting?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2007</h2><P>Networking infrastructure requirements/limitations is one of the primary drivers for switching from 2-tier to 3-tier. If I were you, I'd try to resolve the issues you mention and just try using a remote data portal. Odds are good that this will improve performance for the people making those calls across&nbsp;the constricted network link.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, November 13, 2007</h2>Rocky, <br><br>I'll go this route then; I thought I had the wrong reasons for switching to remote, but it sounds like I have all the right ones.<br><br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I always encourage people to go with 2-tier deployments if
+possible, because more tiers increases complexity and cost.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it is important to recognize when the value of 3-tier
+outweighs that complexity/cost. The primary three motivators are:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><b><span>Security</span></b><span> &#8211;
+using an app server allows you to shift the database credentials from clients
+to the server, adding security because a would-be hacker (or savvy end-user)
+would need to hack into the app server to get those credentials.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><b><span>Network infrastructure limitations</span></b><span> &#8211;
+sometimes a 3-tier solution can help offload processing from CPU-bound or
+memory-bound machines, or it can help minimize network traffic over slow or
+congested links. This is your situation the way it sounds, because direct
+database communication is a chatty dialog, and using an app server allows a
+single blob of data to go across the slow link, and the chatty dialog to occur
+across a fast link, so it should result in a net win for performance.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><b><span>Scalability</span></b><span> &#8211;
+using an app server provides for database connection pooling. The trick here,
+is that if you don&#8217;t need it, you&#8217;ll <i>harm performance</i> by
+having an app server, so this is only useful if database connections are taxing
+your database server. Given the state of modern database hardware/software,
+scalability isn&#8217;t a big deal for the vast majority of applications
+anymore.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 13, 2007 3:59 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Minimizing network hops during saving<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky, <br>
+<br>
+I'll go this route then; I thought I had the wrong reasons for switching to
+remote, but it sounds like I have all the right ones.<br>
+<br>
+<br>
+Thanks<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

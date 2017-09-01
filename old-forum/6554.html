@@ -1,0 +1,13 @@
+<html><header><title>Web Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6554.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby posted on Wednesday, March 04, 2009</h2><P>Hi,</P>
+<P>I have a case where a user assigns employees to a calandar year clicking new on a gridview.</P>
+<P>This creates a new blank record and offers them a DropDownList to pick the employee.</P>
+<P>The problem lies that as they build up records the amount of employees they are aloud to pick from decreases. ie Can't pick the same person twice.</P>
+<P>One other little hurdle is this is done in a wizard style scenario and all database updates are done at the end of the Wizard.&nbsp; Hence I am making changes to the objects and storing in Session.</P>
+<P>So I thought have&nbsp;a businessbase&nbsp;acting as a Parent Wizard &nbsp;and then have a EmployeeAssignmentList with EmployeeAssignmentInfo.</P>
+<P>Now this is where my question lies :) </P>
+<P>At first I thought add another List of AllowedEmployees and then the Wizard could use the OnChildChanged event to keep the AllowedEmployees in sync with what they have inserted. However should they Edit the record again then the DropDownList will not have the SelectedValue of the item being edited.</P>
+<P>Next I thought I only really need the AllowedEmployees when editing one record at a time so I thought maybe using&nbsp;a Lazy Loading style scenario and Generate the AllowedEmployees as I need them.</P>
+<P>Could anyone offer any suggestions as to handle this problem bearing in mind its a Web Application</P>
+<P>Thanks</P>
+<P>Jeremy</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

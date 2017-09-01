@@ -1,0 +1,13 @@
+<html><header><title>Problem with principal using Ajax</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with principal using Ajax</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4955.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>edika99 posted on Tuesday, June 10, 2008</h2><P>I'm trying to use some ajax method to execute operation on the ProjectTrackerSample. I0ve notice a strange behaviour in the global.asax when calling Ajax method. The principal in the session is null so the ApplicationContext.User is reintiliazied to a null principal each time I use an ajax method.</P>
+<P>There is a way to avoid this behaviour?</P>
+<P>&nbsp;</P>
+<P>Thanks.</P>
+<P>Edika</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2>I don't know, but it sounds like Session may not be loaded yet in the event you are handling in global.asax. You may need to move the auth code to another event that fires later in the page load processing - after Session has been initialized.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Thursday, June 12, 2008</h2><P>Edika</P>
+<P>I assume that you are calling&nbsp;an ASMX webservice.</P>
+<P>In the global.asax you must restore the authenticated principal, from session state, as Rocky shows in the Project Tracker web sample application.</P>
+<P>Furthermore you must enable session state in the service method. For ASMX services you do this by adding EnableSession:=True to the WebMethod attribute.</P>
+<P>[Example]<BR><FONT face="Courier New" size=2>&lt;WebMethod(EnableSession:=True)&gt; _<BR>Public Function DoSomething() As String<BR>&nbsp;...<BR>End Function</FONT></P>
+<P>Hope this helps.</P>
+<P>Cheers<BR>/Henrik</P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

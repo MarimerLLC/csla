@@ -1,0 +1,49 @@
+<html><header><title>Grid with ERLB doesn't immediately &quot;see&quot; changes to object when UndoChanges() called</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Grid with ERLB doesn't immediately &quot;see&quot; changes to object when UndoChanges() called</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5668.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Friday, October 24, 2008</h2><P>This seems like a simple problem but I'm not sure what I'm missing. </P>
+<P>If I call UndoChanges on an object in an ERLB+Grid, the Grid doesn't show the object changes immediately. However, I know it's holding the same reference because as soon as I type any value in a field on the adjacent form and tab out, the grid shows the updated value. </P>
+<P>So, what event should fire to tell the the grid to update itself when UndoChanges is called on an object in the list?</P>
+<P>I can live with it as is, because the grid updates itself immediately when you click back on the row, but it's not nice aesthetically. Old values, error provider icons, etc, are still shown in the grid until you click on it or change a value manually. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 24, 2008</h2><P>Windows Forms data binding has one very simple rule:</P>
+<P><EM>You can never call methods on your business object while the object is bound to the UI. You must always interact with the BindingSource instead.</EM></P>
+<P>Or you can unbind from the UI, interact with the object, then rebind to the UI.</P>
+<P>This is true for ERLB as well as everything else.</P>
+<P>If you want to do an undo - call CancelEdit() on the BindingSource - that'll cancel edits to the current row.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 24, 2008</h2><P>I've turned off&nbsp; IEditableObject -- does this still apply? </P>
+<P>I'd think the object would ignore the call from CancelEdit() on the BindingSource since DisableIEditableObject = = true.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, you are in uncharted waters here&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ERLB is designed to react to data binding. If you turn off data
+binding you&#8217;re outside of the design scope.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suspect that you&#8217;ll need to get your object to raise a
+PropertyChanged(null) event &#8211; which it should do when you call
+CancelEdit() (though not necessarily UndoChanges()). That should trigger a
+ListChanged event from ERLB that tells the UI to refresh.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 24, 2008</h2><P>OK. I actually was calling CancelEdit(), but I think it almost immediately calls UndoChanges() -- and I don't see the PropertyChanged(null) call but I'll look further -- that may be all that's missing. </P>
+<P>I&nbsp; may be&nbsp;getting confused on the term&nbsp;"data binding" versus IEditableObject. </P>
+<P>My understanding is that everything is still data bound, the object just ignores the calls to BeginEdit(), EndEdit(), etc. raised by WinForms rather than doing the undo state management it would otherwise. So, I wouldn't expect to see any change in behavior at all except as far as the handling undo (and saving when you move from row to row). I've already called BeginEdit on the object myself, so this is exactly what I want it to do. </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

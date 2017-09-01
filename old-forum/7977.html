@@ -1,0 +1,85 @@
+<html><header><title>Multiple CslaDataProviders with IsAsynchronous = True</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple CslaDataProviders with IsAsynchronous = True</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7977.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Wednesday, November 11, 2009</h2><br>Hi,<br><br>Im not sure if im using the CslaDataProvider so here goes.... I have two CslaDataProviders on a form hooked up similarly to the ProjectEdit form from the project tracker sample as shown below. The main difference being both are set IsAsynchronous = True;<br><br>&nbsp;&lt;csla:CslaDataProvider x:Key="ShelfLife" ObjectType="{x:Type Domain:ShelfLifeLookup}" FactoryMethod="Get" IsAsynchronous="True"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&lt;csla:CslaDataProvider x:Key="Item"&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectType="{x:Type Domain:Item}"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FactoryMethod="GetById"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsAsynchronous="True"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsInitialLoadEnabled="False" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataChanged="DataChanged"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ManageObjectLifetime="True"/&gt;<br><br>I bind most of my controls on the form to the Item dataprovider, with no problems. However, when I bind a combobox to&nbsp; the ShelfLife DataProvider, no data is returned, no data portal fetch is called.<br><br>When i open another instance of the form with the same data, the ShelfLife DataProvider calls the data portal fetch and the combo is populated correctly.<br><br>I need both CslaDataProviders to fetch asynchronously due to an animation i use on the form during its creation/display.<br><br>Any pointers would be greatly appreciated as always :-)<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, November 13, 2009</h2>Any ideas on this one, we're a bit stuck?<br><br>Does the CslaDataProvider support multiple async calls?<br><br>In ProjectTracker.ProjectEdit.xaml setting the two CslaDataProviders to IsAsynchronous="True" causes the form not to be displayed (even after a long wait...).<br><br>Regards<br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+had to write a little helper class in these cases that I would pass the combo
+box provider in (or multiple for that matter), this helper would monitor data
+changed events, and raise its own event when all providers are done.&nbsp; In
+that final event handler I would call main provider.&nbsp; Otherwise, I was
+having binding problems&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 13, 2009 8:06 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Multiple CslaDataProviders with IsAsynchronous
+= True<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Any ideas on this one, we're a bit stuck?<br>
+<br>
+Does the CslaDataProvider support multiple async calls?<br>
+<br>
+In ProjectTracker.ProjectEdit.xaml setting the two CslaDataProviders to
+IsAsynchronous=&quot;True&quot; causes the form not to be displayed (even after
+a long wait...).<br>
+<br>
+Regards<br>
+Kevin<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2><P>I'm puzzled too.</P>
+<P>I just created a very simple WPF app to try and replicate the issue in a focused setting, but the problem doesn't manifest.</P>
+<P>I think the problem must have to do with some WPF data binding interaction. If you put breakpoints in the factory methods (or even back in CslaDataProvider itself) it turns out that the NVL object is never being requested by data binding.</P>
+<P>In other words, CslaDataProvider isn't even being invoked by WPF to get the RoleList object.</P>
+<P>The Project object, on the other hand, is retreived and returned to the UI. The DataChanged event is raised as appropriate, so WPF should be fully aware that the object is there...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2><P>One more clue - it isn't dual async that's the issue. If you set the RoleList provider to not be async the problem still manifests.</P>
+<P>In other words, the problem is purely around making the Project provider be async, and again, appears to be somehow related to data binding somehow being confused.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2><P>Oh. Doh!</P>
+<P>The problem in the ProjectEdit form isn't a bug. It is an implementation choice.</P>
+<P>If you look at the XAML you'll notice that the Project provide has IsInitialLoadEnabled="False", and the actual load is triggered in the form's Loaded event handler in the code-behind.</P>
+<P>That code in the Loaded event is not designed to support async behavior. It starts the provider's query, but <EM>immediately</EM> checks the Data property for a result - which it clearly can't do if the provider is async because the result won't have returned yet.</P>
+<P>This probably just goes to show how evil code-behind really is, and why the MVVM pattern turns out to be better than the data provider model...</P>
+<P>Or perhaps it illustrates that any code-behind you do write had better always be written assuming async, just in case some XAML jockey changes the data provider to be async :)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

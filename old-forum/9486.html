@@ -1,0 +1,9 @@
+<html><header><title>Determining instance authorization for the UI</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Determining instance authorization for the UI</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9486.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette posted on Thursday, September 09, 2010</h2><p>On page 366 of Expert C# 2008 Business objects, instance authorization methods are discussed.&nbsp;&nbsp; However, I am not able to locate them in the framework.&nbsp;&nbsp; In this discussion:</p>
+<p>http://forums.lhotka.net/forums/p/5164/25044.aspx</p>
+<p>Rocky mentions that the instance authorization methods should not be used and that instance authorization should be performed by the save, delete, etc methods themselves.&nbsp; (So I assume at this point these methods have been removed from the framework). &nbsp;&nbsp; However, this does not address the need for the UI to enable/disable controls based on authorization rules for the object instance.</p>
+<p>What would be the consistent way of performing these types of checks in the UI?</p>
+<p>Thanks,</p>
+<p>Rich</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, September 09, 2010</h2><p>Hi, </p>
+<p>From the UI perspective you can ask the BO instance for:</p>
+<p>CanExecuteMethod<br />CanReadProperty<br />CanWriteProperty</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

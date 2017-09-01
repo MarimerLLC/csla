@@ -1,0 +1,11 @@
+<html><header><title>DataPortal.Fetch using Datacontext query</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Fetch using Datacontext query</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6667.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Wednesday, March 25, 2009</h2><P>Can someone please interpret because i can't figure it out</P>
+<P>Error&nbsp;1&nbsp;The type 'KISS.DalLinq.KissBDbDataContext' cannot be used as type parameter 'C' in the generic type or method 'Csla.Data.ContextManager&lt;C&gt;'. There is no implicit reference conversion from 'KISS.DalLinq.KissBDbDataContext' to 'System.Data.Linq.DataContext'.&nbsp;E:\Source CS\KISS\HumanResources.Library\Tax\TaxScale.cs&nbsp;74&nbsp;45&nbsp;HumanResources.Library<BR></P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 26, 2009</h2>Check your KissBDbDataContext class to see what it inherits from. Apparently it doesn't inherit from the DataContext base class, which is a requirement when using the CSLA ContextManager.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, March 26, 2009</h2><P>Hi Rocky,</P>
+<P>I thought it had, but i will check again. </P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeMcClintock replied on Friday, May 29, 2009</h2>Mine is inheriting from DataContext, but getting same error.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeMcClintock replied on Friday, May 29, 2009</h2><P>Ok, I was missing a reference to system.data.linq</P>
+<P>&nbsp;</P>
+<P>I had system.linq but not system.data.linq</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

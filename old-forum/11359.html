@@ -1,0 +1,22 @@
+<html><header><title>Load AuthorizationRules from Database for CSLA 3.8.4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Load AuthorizationRules from Database for CSLA 3.8.4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11359.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson posted on Monday, May 14, 2012</h2><p>Hello everyone.</p>
+<p>&nbsp;</p>
+<p>I would like to ask to someone who knows how to load AddAuthorizationRules from a table of customes roles in a database.</p>
+<p>I still use CSLA 3.8.4 i a realy need to load the AuthorizationRules from a database. I a newbie and I don&acute;t know how to do it, i google in the CSLA Forum but no luke.</p>
+<p>Can someone give me an example please.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p>
+<p>NickyLarson</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, May 15, 2012</h2><p>I can think of two alternatives:</p>
+<p>1: Get roles from database and add as parameter to Authz rules, using the built-in Csla authz rules:<br />In your BO AddAuthorizationRules you should use a CommandObject or ReadOnly object to load the rule info from the database and then add Authz rules with roles from database unsing the built-in roles based authz rules. </p>
+<p>2. Create a generic Authz rule that uses a cache of roles from database (load on app startup?)</p>
+<p>You must avoid frequent data access - so prefer on application startup or when adding type authz rules (executed just once per type).</p>
+<p>See also some older posts:</p>
+<p><a href="http://forums.lhotka.net/forums/p/3433/17077.aspx#17077">http://forums.lhotka.net/forums/p/3433/17077.aspx#17077 <br />http://forums.lhotka.net/forums/p/1981/10399.aspx#10399</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Thursday, May 17, 2012</h2><p>Dear JonnyBee,</p>
+<p>&nbsp;</p>
+<p>Thansk you for yours help.</p>
+<p>I&acute;ve done the first solution you have point to me and it&acute;s working well, It was not so dificullt at all.</p>
+<p>Thanks you again.</p>
+<p>&nbsp;</p>
+<p>Best Regards.</p>
+<p>NickyLarson</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

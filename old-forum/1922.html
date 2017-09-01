@@ -1,0 +1,41 @@
+<html><header><title>Custom Principal problem with EntLib DAAB</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Principal problem with EntLib DAAB</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1922.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PaulB posted on Thursday, December 07, 2006</h2>When I call myPrincipal.Logout, then myPrincipal.Login(...) I get <br><font color="#a52a2a">System.Runtime.Serialization.SerializationException: Type is not resolved for member 'myPrincipal,myAssem, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.<br></font><br>If I don't call Logout first, it works fine.<br><br>I am using the EntLib Data Access Block to access my database to get the custom roles. The connection string contains the User and Password. When the the DatabaseFactory.CreateDatabase(...) call is made, I get the exception.<br><br>I believe this has to do with the custom principal and the DAAB trying to login with Integrated Security, but am not sure. <br><br>Does anyone have any suggestions as to how to resolve this, or know if it is a problem if I don't call Logout first?<br><br>Thanks,<br>Paul<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 07, 2006</h2><P>Something in your code is causing the thread to marshal from one AppDomain to another - or something along that line - and the other AppDomain doesn't have access to the directory containing your assemblies.</P>
+<P>This happens all the time with nunit, and with Cassini - the ASP.NET Web Development server.</P>
+<P>I'll venture to guess that you are using Cassini for debugging, and are getting bit by the fact that it doesn't work the same as IIS - and really doesn't work with referenced assemblies worth a darn...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PaulB replied on Thursday, December 07, 2006</h2>I read a lot of posts about Cassini and Nunit, but still couldn't get it to work.<br>I am not doing any remoting yet, just running local. I am trying to run in VS using Nunit and ReSharper to execute the tests.<br><br>When this goes to production it will be multi-tier with a WinForms app and an application server, so there will be remoting, most likely hosting in IIS. I am concerned that when it is in that environment that it will be a problem.<br><br>The goal is to have a version that will have several authentication fall back scenarios. <br>First I would like to use Windows authentication so I can just pick up the users windows identity and have it authenticate. It sounds like the way to do that is to setup IIS to use windows authentication. The problem we have right now is our domains/ active directory is not built out correctly so the user may not be in the valid when they hit the IIS server.<br>Fallback scenarios: Ask the user for credentials, Call Principal Login which will then try AD authentication on the application server, if that fails it the falls back to authenticating against SQL Server with SQL login.<br><br>If authentication is successful then always get role from the application database using a&nbsp; application SQL login. <br><br>It appears that the DAAB is causing one more complication by trying to use windows (trusted) authentication when connecting to the database the first time.<br><br>If you think that the inital problem is with ReSharper/Nunit and have a workaround please let me know.<br>If you have any feedback on the whole fall back authentication scheme, I would love to hear that too.<br><br>Thanks,<br>Paul<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>You need to understand the nature of the issue you are 
+seeing.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>You are getting a serializion exception - which is really a 
+DEserialization exception. During deserialization of your principal object, the 
+.NET runtime is unable to locate your assembly.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>The reason this happens is because your thread of execution 
+has been transferred from one AppDomain to another. The first AppDomain is 
+running on top of your "bin" directory where all your assemblies are located, so 
+.NET can find your assemblies. The second AppDomain is running on top of some 
+OTHER directory, which does not include your assemblies. Due to this, the .NET 
+runtime can't locate your assemblies - and thus can't create an instance of your 
+custom principal object to deserialize the object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>I very much doubt the DAAB is creating AppDomain objects 
+and transferring control from one AppDomain to another - that just doesn't make 
+sense.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>However, both nunit and Cassini do exactly that. Other 
+runtime environments might do that as well.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>The only solution I'm aware of is to ensure that the 
+System.Threading.Thread.CurrentPrincipal is null/Nothing (or a GenericPrincpal 
+or a WindowsPrincipal) BEFORE that AppDomain switch occurs.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>In the case of nunit testing this means that you MUST reset 
+this value before returning from a test method - because that's the point at 
+which the thread of execution leaves the test AppDomain and returns to the host 
+nunit AppDomain (which is, of course, running from the nunit directory, not your 
+test directory).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=689374802-08122006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

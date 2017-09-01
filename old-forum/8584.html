@@ -1,0 +1,17 @@
+<html><header><title>BLB to notify another BLB of child collection changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BLB to notify another BLB of child collection changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8584.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel posted on Friday, February 26, 2010</h2><p>Probably, it is not the first time someone asking this question.</p>
+<p>But I cannot find a direction.</p>
+<p>How one collection can notify another one that child added/deleted?</p>
+<p>Observer pattern implemented for CSLA?</p>
+<p>Now it works for me with Public Event and UI implementation, but I know this is not a right way to do it.</p>
+<p>Thanks everybody,</p>
+<p>Pavel</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 26, 2010</h2><p>This is harder than it would at first appear.</p>
+<p>Yes, you need a pub/sub or observer pattern as a solution.</p>
+<p>But that ends up creating references between various objects that can cause issues (memory leaks, serialization failures, etc).</p>
+<p>So you need to make sure your scheme has a way to unhook the lists from the observer before trying to do anything like a Save() operation. And/or make sure the observer&#39;s scope is at something like the form level, so you don&#39;t accidentally keep your lists around in memory forever.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Friday, February 26, 2010</h2><p>In my case it is simplier as I never save objects to a database directly. </p>
+<p>They will be used to provide data to another object that would be saved. it&#39;s a way I have to implement it.</p>
+<p>Is there any contribution project&nbsp; or&nbsp; a bit of code to see how to implement event notification?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, February 26, 2010</h2><p>If both BLB&#39;s are contained in the same parent BB object, I think the parent would receive notifications (via Child_ListChanged) and would pass them on via OnChildChanged(), which you can either override since it is virtual or hook via the ChildChanged event. </p>
+<p>So (at least on the surface), it seems that putting both lists under the umbrella of a single parent object might do the trick without requiring anything fancy.&nbsp; The parent could coordinate the interaction between the two child lists. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Friday, February 26, 2010</h2><p>Nice idea!</p>
+<p>Probably, I can make a try on this</p>
+<p>&nbsp;</p>
+<p>Thanks,</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

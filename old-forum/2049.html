@@ -1,0 +1,144 @@
+<html><header><title>Naming Conventions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Naming Conventions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2049.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwillmore posted on Friday, December 29, 2006</h2><P>Good afternoon all,</P>
+<P>I am wondering what folks are using for naming conventions for CSLA objects. I am running into a minor problem in that we have so far avoided the situation where we had readonly and writeable objects that acted on the same database table, but now I am precisely in that situation. </P>
+<P>I need to update data in a table called individuals and we already have 3 readonly objects for that table called individual, indivudualInfo, and IndividualList. Our convention has always been to use the Info extension to show that this object is meant to be used as a list member and the List extension is obviously a collection of Info objects. The object without any extention, Individual, is not intended to be part of a collection, instead it represents just a single record. Again, the 3 existing objects are read only and are used by several applications that do not need to edit the data. </P>
+<P>Now I need to create new objects that update the database table called Individual, and I will need a collection object and an object that will be used to fill the collection. Obviously I can't call my new objects IndividualInfo and IndividualList and keep them in the same namespace, although that is exactly what I need to do. </P>
+<P>I don't want to change the existing objects to be writeable because I don't know what problems that would cause in the apps that use them. Plus, the existing object only pull those columns that are needed to describe an individual. But the Individual table is in a proprietary DB and has another 50 or so columns that are not used by our read-only objects. In order to update a record in this table, I have to use a stored procedure provided by the database and it requires that I send all column values, both old and new values, when I update the row. So I really don't want to modify the existing objects to include all the columns in the table because they don't need them and I don't know how that will affect the applications that use the objects. </P>
+<P>So what do you do to help distinguish objects that are read only and those that are read/write? I could just add RW to the name, but I am hoping you have a more "standard" or "conventional" suggestion.</P>
+<P>BTW,&nbsp;by read/write object I mean an object that&nbsp;inherits from &nbsp;BusinessBase or BusinessListBase while a read-only object is one that inherits from ReadOnlyBase or ReadOnlyListBase. </P>
+<P>Thanks</P>
+<P>URW</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, December 29, 2006</h2><P>My Editable Bos use the names you gave to your existing Read Only BOs.</P>
+<P>My Read Only BOs have the suffix RO and ROC on them.</P>
+<P>ROC takes the place of "List".</P>
+<P>So I would have:</P>
+<P>Individual&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; Editable Root<BR>Indiviuals (or IndividualECC) - Editable Child Collection<BR>IndividualInfo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&nbsp;Editable Child&nbsp;(nested inside ECC)<BR>IndividualRO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - Read Only (stand alone)<BR>IndividualInfo&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Read Only (nested inside ROC)<BR>IndividualROC&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Read Only Collection</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, January 02, 2007</h2><P>My suggestion is to look through the .NET Framework classes provided by Microsoft for naming suggestions.&nbsp; It is my preference to adhere to the guidelines provided by MS and used in the FCL.&nbsp; You will find this is especially useful (and required!) when sharing your code with other developers.&nbsp; This may or may not apply to your&nbsp;situation (today), but it is still a good idea to adhere to industry standards as best as possible.</P>
+<P>With that in mind, there are a few areas where you won't find MS conventions helpful, such as differentiating between the various CSLA classes.&nbsp; Here you will find many preferences.</P>
+<P>In my case, I try to keep it simple (I'll use Project to make it more tangible):</P>
+<P>
+<TABLE>
+
+<TR>
+<TD>Project</TD>
+<TD>editable object (root)</TD></TR>
+<TR>
+<TD>ProjectList</TD>
+<TD>editable collection of Project items</TD></TR>
+<TR>
+<TD>ProjectInfo</TD>
+<TD>read-only object (root)</TD></TR>
+<TR>
+<TD>ProjectInfoList</TD>
+<TD>read-only collection of ProjectInfo items</TD></TR>
+<TR>
+<TD>ProjectResource</TD>
+<TD>editable dependant (child) object</TD></TR>
+<TR>
+<TD>ProjectResourceList</TD>
+<TD>editable collection of ProjectResource items</TD></TR></TABLE>
+<P>In other words, the following convention:</P>
+<P>
+<TABLE>
+
+<TR>
+<TD>[Root]</TD>
+<TD>editable object (root)</TD></TR>
+<TR>
+<TD>[Root]List</TD>
+<TD>editable collection of [Root] items</TD></TR>
+<TR>
+<TD>[Root]Info</TD>
+<TD>read-only object (root)</TD></TR>
+<TR>
+<TD>[Root]InfoList</TD>
+<TD>read-only collection of [Root]Info items</TD></TR>
+<TR>
+<TD>[Root][Child]</TD>
+<TD>editable dependant (child) object</TD></TR>
+<TR>
+<TD>[Root][Child]List</TD>
+<TD>editable collection of [Root][Child] items</TD></TR></TABLE>
+<P>Of course, MS would recommend that you use a "ReadOnly" prefix instead of the "Info" suffix, but this is a convention that I prefer because it results in shorter names and allows objects to be grouped together in the Solution Explorer, but I would acquiesce to other's preference to use the "ReadOnly" prefix (e.g. ReadOnlyProject instead of ProjectInfo).</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Thursday, October 04, 2007</h2>As always; great advice!<br><br>Thanks, SonOfPirate! <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /><br><br>However, I am curious how to solve this simple example of businessobjects:<br><br>Estate contains several objects of type Building, which again contains several objects of type Room.<br>This means the objects would summarize to the following list:<br>Estate<br>EstateList<br>EstateInfo
+<br>EstateInfoList<br>EstateBuilding<br>EstateBuildingList<br>Building<br>BuildingList<br>BuildingInfo<br>BuildingInfoList<br>BuildingRoom<br>BuildingRoomList<br>Room<br>RoomList<br>RoomInfo<br>RoomInfoList<br><br>Unless I've missed something, thats a pretty long list of types for just 3 businessobjects.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 04, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>skaue:</strong></div><div></P>
+<P>Unless I've missed something, thats a pretty long list of types for just 3 businessobjects.<BR></div></BLOCKQUOTE></P>
+<P>If you have use cases requiring read-only and read-write access to all the data in all the objects, then that's probably what you end up with. Not all apps need read-only access to the entire set of data like that though - often some of the read-only access ends up in NV lists instead, which is simpler.</P>
+<P>In many projects I use namespaces to seperate read-only and editable objects. That helps make intellisense more useful.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Thursday, October 04, 2007</h2>You're probably right, Rockford. The namespace-tip might come in handy. Could you give an example?<br>Would it be like Company.Solution.BO.Readonly.BuildingList and Company.Solution.BO.Editable.BuildingList?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 04, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure, just like that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Edit.CustomerEdit<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Edit.CustomerEditList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.View.CustomerInfo<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.View.CustomerList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or whatever fits into your namespace model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skaue
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 04, 2007 2:34 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Naming Conventions<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You're probably right, Rockford. The namespace-tip might
+come in handy. Could you give an example?<br>
+Would it be like Company.Solution.BO.Readonly.BuildingList and
+Company.Solution.BO.Editable.BuildingList?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Sunday, October 21, 2007</h2>csla provides a lot of ways to control access to editable objects and
+properties without needing to have separate RO and RW types.<br>
+CanWriteProperty and its derivatives is there to help in access
+control. Unfortunately (as at V2)&nbsp; you can't have an instance
+method for the likes of CanEditObject..<br>
+<br>
+Jimbo<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

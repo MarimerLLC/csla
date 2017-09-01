@@ -1,0 +1,91 @@
+<html><header><title>How do I prevent fake credentials when using custom authentication and a desktop application?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do I prevent fake credentials when using custom authentication and a desktop application?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ihate posted on Saturday, March 13, 2010</h2><p>I have a windows forms application that uses CSLA.net and binary remoting. &nbsp;Unfortunately I&#39;ve noticed that a modified client application, or the client application running an a modified environment can have a fake principal/identity. &nbsp;I would like to solve this using sessions like you would do in asp.net. &nbsp;</p>
+<p>&nbsp;</p>
+<p>Here&#39;s an example of what I mean. &nbsp;</p>
+<p>
+<ul>
+<li>Download the Project Tracker sample</li>
+<li>Fix all the references to csla to be to your version of the csla</li>
+<li>Fix all App.config references to the database location to point to the correct file (I did a global find/replace)</li>
+<li>Create a new C# Windows Forms project named FakeAuthentication</li>
+<li>Add references in the new FakeAuthentication project to the PTWin project, and ProjectTracker.Library project. &nbsp;Also to the Csla.</li>
+<li>Double click on the designer of Form1 to create a Form1_Load method handling the form&#39;s Load event</li>
+<li>Replace Form1.cs with the code below</li>
+<li>Run. &nbsp;Ignoring the fact that the &quot;Login/Not Authenticated&quot; buttons show wrong you will have full&nbsp;privileges&nbsp;without having to log in.</li>
+</ul>
+</p>
+<p>
+<p>using System;</p>
+<p>using System.Collections.Generic;</p>
+<p>using System.ComponentModel;</p>
+<p>using System.Data;</p>
+<p>using System.Drawing;</p>
+<p>using System.Linq;</p>
+<p>using System.Reflection;</p>
+<p>using System.Text;</p>
+<p>using System.Windows.Forms;</p>
+<p>using Csla.Security;</p>
+<p>using ProjectTracker.Library.Security;</p>
+<p>&nbsp;</p>
+<p>namespace FakeAuthentication {</p>
+<p><span>	</span>public partial class Form1 : Form {</p>
+<p><span>		</span>public Form1() {</p>
+<p><span>			</span>InitializeComponent();</p>
+<p><span>		</span>}</p>
+<p>&nbsp;</p>
+<p><span>		</span>private void Form1_Load(object sender, EventArgs e) {</p>
+<p><span>			</span></p>
+<p><span>			</span></p>
+<p><span>			</span>// Note: I could also call the internal static call PTIdentity.GetIdentity(&quot;admin&quot;), but this is more telling:</p>
+<p><span>			</span>// Note: can also call (PTIdentity)System.Runtime.Serialization.FormatterServices.GetUninitializedObject(typeof(PTIdentity))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// as deserialization does, and this doesn&#39;t run the constructors</p>
+<p>&nbsp;</p>
+<p><span>			</span>var identity = (PTIdentity)Activator.CreateInstance(typeof(PTIdentity), true);</p>
+<p>&nbsp;</p>
+<p><span>			</span>// load identity fields:</p>
+<p><span>			</span>var propBindingFlags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance |</p>
+<p><span>			</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BindingFlags.FlattenHierarchy;</p>
+<p>&nbsp;</p>
+<p><span>			</span>typeof (CslaIdentity).GetProperty(&quot;Name&quot;, propBindingFlags).SetValue(identity, &quot;Mr. Super Awesome Fake User&quot;, null);</p>
+<p><span>			</span>typeof(CslaIdentity).GetProperty(&quot;IsAuthenticated&quot;, propBindingFlags).SetValue(identity, true, null);</p>
+<p><span>			</span>var roleList = new Csla.Core.MobileList&lt;string&gt;();</p>
+<p><span>			</span>roleList.Add(&quot;Administrator&quot;);</p>
+<p><span>			</span>roleList.Add(&quot;ProjectManager&quot;);</p>
+<p><span>			</span>typeof(CslaIdentity).GetProperty(&quot;Roles&quot;, propBindingFlags).SetValue(identity, roleList, null);</p>
+<p><span>			</span></p>
+<p><span>			</span>var principal = (PTPrincipal) typeof (PTPrincipal).GetConstructor(</p>
+<p><span>			</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span>	</span>BindingFlags.NonPublic | BindingFlags.Instance,</p>
+<p><span>			</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span>	</span>null, new Type[] {typeof (System.Security.Principal.IIdentity)}, null).Invoke(</p>
+<p><span>			</span> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<span>	</span>new object[] {identity});</p>
+<p><span>			</span>Csla.ApplicationContext.User = principal;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span>			</span>var form = new PTWin.MainForm();</p>
+<p><span>			</span>// remove &quot;show login prompt&quot; check from main form</p>
+<p><span>			</span>form.Load -= (EventHandler)Delegate.CreateDelegate(typeof(EventHandler), form, &quot;MainForm_Load&quot;);</p>
+<p><span>			</span>// call ApplyAuthorizationRules</p>
+<p><span>			</span>typeof (PTWin.MainForm).GetMethod(&quot;ApplyAuthorizationRules&quot;, BindingFlags.Instance | BindingFlags.NonPublic).Invoke(</p>
+<p><span>				</span>form, null);</p>
+<p><span>			</span>form.ShowDialog(this);</p>
+<p><span>		</span>}</p>
+<p><span>	</span>}</p>
+<p>}</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, March 13, 2010</h2><p>First, if you don&#39;t trust the client workstation you should not be using an n-tier architecture, instead you should use a service-oriented architecture.</p>
+<p>The web is intrinsically service-oriented - there are two apps - the browser, and the web app on the server. People don&#39;t always make that mental separation, but is is very much there. The server never trusts the browser.</p>
+<p>This is fundamentally different from an n-tier app, where the tiers are all part of the same application, and thus trust each other to a large degree.</p>
+<p>If you don&#39;t trust the client, you should make it be a separate app, using services to call another app. Neither app should trust the other, or at the very least the server app shouldn&#39;t trust any client app.</p>
+<p>The data portal is designed, when running in remote mode, to provide powerful n-tier behaviors, including trust. If you don&#39;t trust the client, use the data portal in local mode on the client, and in the DataPortal_XYZ methods have the client app call services to interact with the server app.</p>
+<p>This is a major architectural difference, with many ramifications. Not least of which is that the <em>client app</em> needs to authenticate with the server app, and the server will give it an encrypted token, signed and with an expiration. If you want to prevent replay attacks, the server app will provide the client app with a <em>new token</em> on every service call, so any given token is only used exactly once.</p>
+<p>Getting real security in a distributed setting is extremely hard. Just ask Valve or any of the other game manufacturers. They fight a non-stop running battle against hackers, because as soon as you think you have all the holes filled a hacker figures out a clever trick.</p>
+<p>This is why security is about assessing the threats, the likelihood of those threats, the cost of the threat being exploited and the cost of the threat being mitigated. Only threats with a high enough probability+cost to offset the cost of mitigation are actually mitigated. And that&#39;s not a technical descision, it is a business descision, because we&#39;re talking real serious money to address anything but the most trivial scenarios.</p>
+<p>If you don&#39;t trust the client, plan to spend some serious time and money, and hire a security expert - there are only a handful of people in the world actually qualified to combat the hackers, and I&#39;m surely not one of them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Sunday, March 14, 2010</h2><p>Is there a event in the DataPortal where you can check for a condition (e.g. if some custom token / value is available) before doing DataPortal_XYZ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 14, 2010</h2><p>Yes, there&#39;s an authentication hook that is invoked immediately after the client-side request has been deserialized and the server-side context set, but before any non-CSLA code has been invoked (other than the deserialization, which can run custom code if the business class was authored to do so).</p>
+<p>I don&#39;t remember all the details off the top of my head (I&#39;m on the road), but you implement Csla.Security.I&lt;some interface&gt;, and then set a config file value to tell CSLA the assembly qualified type name of your implementation so it can invoke your code.</p>
+<p>This is explained in the last video in the <a href="http://store.lhotka.net">Core 3.8 video series</a>, and I&#39;m pretty sure I discussed it in the Expert 2008 Business Objects book as well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 14, 2010</h2><p>You might also look into signing your assemblies. The data portal serializes your objects (including your custom principal) between client and server. While not foolproof by any means, you&#39;d certainly make it less convenient for a would-be hacker to alter your code if you sign your assembly, because changing the client-side code would prevent serialization from working between client and server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ihate replied on Tuesday, March 16, 2010</h2><p>Thanks everyone for the feedback and&nbsp;suggestions.&nbsp;I&#39;m disappointed that the answer is essentially &quot;Don&#39;t use CSLA&quot; mostly because it works quite well otherwise and will be a significant amount of work to change the CSLA or our code.</p>
+<p>That said, I don&#39;t believe that signing our assemblies will be helpful given the powers of reflection. &nbsp;For example, I doubt the sample I originally posted would be thwarted by having signed assemblies. &nbsp;Am I wrong?</p>
+<p>&nbsp;</p>
+<p>I imagine the approach I will take will act like web forms, where validation may be done on the client side, but is validated on the server too. &nbsp;And also in this case the security context will not ever come from the client, but a server-chosen randomly generated session key will be instead. &nbsp;I&#39;ll probably continue to use business objects, but will understand that I can&#39;t prevent them from being manipulated in invalid ways on the client (thus, a modified client could read/write any field in a business object... but only business objects they can legitimately access, and only if the changes are otherwise valid).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 17, 2010</h2><p>The answer was not &quot;Don&#39;t&nbsp; use Csla,&quot; the answer was basically &quot;you need to build two different applications.&quot;</p>
+<p>Which you would (should) have to do even if you didn&#39;t have Csla.</p>
+<p>Take Csla out of the mix; you still have the same problem, which is that you can&#39;t build an n-tier application because you don&#39;t trust the client.&nbsp; You need to build a client application which communicates with a web service application.&nbsp; Csla can help you with that.</p>
+<p>The suggestion about signing assemblies has nothing to do with reflection; it has to do with the fact that the assembly&#39;s full name (which includes its public key) HAS to match on each side, client and server, or serialization will fail.&nbsp; Its not technically security, but a hacker would be hard pressed to manipulate the client assembly and still have it execute server code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Monday, March 15, 2010</h2><p>CSLA provides the Csla.Server.IAuthorizeRequest. The AppServer&#39;s web.config can specify the appsetting key=CslaAuthorizationProvider, which will execute the object specified in&nbsp;Value . It provides an opportunity to refuse the incoming request before the business objects are executed. Look for ServerAuthorizer project in&nbsp;the sample code solutions for an example. </p>
+<p>This can provide some protection, though as Rocky notes it has limits.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Monday, March 15, 2010</h2><p>Thanks for the info. I will take a look at it.</p>
+<p>I&#39;m already signing my assemblies, but thought about adding an extra layer of security. I&#39;m not a security expert either.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

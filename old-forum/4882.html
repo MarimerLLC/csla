@@ -1,0 +1,32 @@
+<html><header><title>Newbie question BusinessListBase and Child Class/Root Class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie question BusinessListBase and Child Class/Root Class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4882.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Martin Sørensen posted on Thursday, May 22, 2008</h2><SPAN><FONT face=Calibri>
+<P class=MsoNormal><SPAN>Newbie question BusinessListBase and Child Class<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Hey All. I’m new to CSLA and is starting on my first project. I’m trying to make at list of root objects.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN>I’m using CSLA 3.5 and would like to see an example of at List of Editable Root objects, These objects come out of a database.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have been looking at the Project Tracker example but still not sure about the right way to this.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Regards Martin<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 22, 2008</h2><P>It sounds like your list object is the root - the object you want to fetch. And it contains other objects.</P>
+<P>There are two models:</P>
+<OL>
+<LI>Root list of child objects - in this model you fetch/save the list, and the objects in the list are retrieved/saved as a group - batch transaction for the insert/update/delete</LI>
+<LI>Dynamic list of root objects - in this model you fetch the list, but individual objects in the list are saved as the user moves from row to row in a data bound Windows Forms grid&nbsp;- the saves are immediate and individual</LI></OL>
+<P>Model 1 is far more common and is what you'll find in ProjectTracker and the <EM>Expert 2005 Business Objects</EM> book.</P>
+<P>Model 2 exists to support a specific user experience in Windows Forms (and probably WPF once it has a data grid control), and is far less common. You'll find details about this in the&nbsp;<EM>CSLA .NET Version 2.1 Handbook</EM> ebook, because Csla.EditableRootListBase was introduced in version 2.1.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Martin Sørensen replied on Thursday, May 22, 2008</h2><P class=MsoNormal><SPAN>Hi </SPAN><SPAN>Rocky thanks for your replay and your great work…. Maybe I should try to explain that I’m trying to…. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This is properly a design question ;o) <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have an object… in this case “Site” that have different methods I want to executed. I have a number of “Site” object what I want to executed a method on. So my idée was to put these object in at List and make a method on that list object that would loop thru all object and executed a method on that object and at the same time update data in that object. This would properly be a windows service that would invoke the list object<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Would that be a subject for model2 ???, if this is the case is this root object in the dynamic list also a normal root object <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Regards Martin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Thursday, May 22, 2008</h2><P>What you probably want is some kind of Controller object that loads a simple list of Sites and processes each one. That way, you only load a light list of Sites and only have one full Site at any given moment.</P>
+<P>Class SiteProcessor<BR>{<BR>&nbsp;&nbsp;&nbsp;public void Process()<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SiteList list = SiteList.GetList();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach(SiteInfo item in list)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Site obj = Site.GetSite(item.Id);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Process();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;}<BR>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Martin Sørensen replied on Thursday, May 22, 2008</h2><P class=MsoNormal><SPAN><FONT face=Calibri>Thanks … this was also one of my first idea’s but I thought <SPAN>&nbsp;</SPAN>that I could spare a class ;o) <SPAN>&nbsp;</SPAN>by using a Root List… I will try your suggestion <o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Regards Martin<o:p></o:p></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 22, 2008</h2><P>I agree with someguy. Also, this is probably a scenario where you'd want to use a command object - your 'controller' is a process object, and so should subclass CommandBase. The loop should be in the DataPortal_Execute() method.</P>
+<P>Also, if you want an overall transaction, you can put the Transactional attribute on the DP_Execute() method. And if you are using TransactionScope, make sure to open your db connection outside the loop and reuse the same connection for all the objects in the loop.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,66 @@
+<html><header><title>Change of Modifer in CSLA4.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Change of Modifer in CSLA4.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11764.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NET-H24 posted on Thursday, December 27, 2012</h2><p>Hi,<br /><br />I was trying to upgrade my application from CSLA 4.3.13 to CSLA 4.5, and the code didn&#39;t Compiled.</p>
+<p><br />Noticed that<br /><br />public virtual T Save() of abstract class BusinessBase&lt;T&gt;<br /><br />is changed to<br /><br />public T Save() of abstract class BusinessBase&lt;T&gt;<br /><br />Is there any specific reason of removing the Virtual from the method signature.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 27, 2012</h2><p>It is because the method you should override now is SaveAsync as this is called for BOTH sync and async save method.&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">async</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;System.Threading.Tasks.<span style="color:#2b91af;">Task</span>&lt;T&gt;&nbsp;SaveAsync(<span style="color:blue;">bool</span>&nbsp;forceUpdate)
+<br /><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NET-H24 replied on Thursday, December 27, 2012</h2><p>Thanks for the updates.</p>
+<p>I saw that method, but as i mentioned that we have an existing application, changing the name from Save to SaveAsync will lead to rework on entire application.</p>
+<p>Won&#39;t it be a good idea to keep supporting the Sync method Override?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 28, 2012</h2><p>The point of override method is just that - you want to override the default behavior and alter/replace with your own. </p>
+<p>The code that you would override is moved to SaveAsync - hence if we allowed you to override Save then YOUR application would potentially have a different behavior than it did before&nbsp; - as the code that you want to override is moved. So for your app to behave as before you must update your code to override SaveAsync.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sander replied on Tuesday, September 16, 2014</h2><p>I know this is an old thread, but I&#39;m having the same difficulties during an upgrade from 3.8 -&gt; 4.5</p>
+<p>I found out the SaveAsync method which is the only overridable Save method now, could be decorated with an async and await keyword, then the behavior remains the same when you call the Bo.Save() method from your old code.</p>
+<p>it is possible to move your behavior from old Save() method to the new SaveAsync.For me it was about catching some specific exceptions:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">protected</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">override</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">async</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> System.Threading.Tasks.</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Task</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt; </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Achterstandswijk</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt; SaveAsync(</span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">bool</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> forceUpdate, </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">object</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> userState, </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">bool</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> isSync)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">try</span></span></span>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> {<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">return</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">await</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">base</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">.SaveAsync(forceUpdate,userState,isSync);<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>} </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">catch</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> (</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">DataPortalException</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> e) {<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">....</span></span></p>
+</p>
+</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>}</p>
+<p>}</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2014</h2><p>I realize breaking changes are problematic.</p>
+<p>At the same time, we&#39;d become really sloppy about having more than 1 virtual method for a given set of related operations, thus requiring people to override multiple methods to ensure their code was actually executed.</p>
+<p>In the case of a &#39;save&#39; operation I think we were up to 3 methods you had to override to ensure your code would run during every save operation. That&#39;s just terrible if you think about it - the odds of someone forgetting 1-2 of those overrides was very high, and even if you did the overrides you&#39;d be left dealing with writing your code so it could run behind sync and async calls. What a mess!</p>
+<p>Resolving that obviously required a breaking change, for which I am sorry. But the benefits of the change are so compelling that (imo) they outweighed the cost of the breaking change.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sander replied on Monday, October 20, 2014</h2><p>Thank you for your explanation, I totally agree it is better to handle the Save in just 1 method!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

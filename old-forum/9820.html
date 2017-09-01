@@ -1,0 +1,42 @@
+<html><header><title>Child Property is required if Parent Property equals to &quot;Y&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Property is required if Parent Property equals to &quot;Y&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9820.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Costin Geana posted on Wednesday, December 01, 2010</h2><p>Hi all,</p>
+<p>I have the following situation:</p>
+<p>There is a simple object graph like this:</p>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.00.71.69/ParentChildDiagram.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.00.71.69/ParentChildDiagram.png" width="178" border="0" height="261" alt="" /></a></p>
+<p>Having the above object graph I want to add a business rule that sounds like this: &quot;if the RealEstate.Status == 1 then Address.PostCode is required&quot;.</p>
+<p> Also I would like to add this business rule to the child (i.e. Address) business rules collection not to the parent (i.e. RealEstate) business rules collection.</p>
+<p>Can this be achieved with CSLA?</p>
+<p>Thanks in advance!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 01, 2010</h2><p>Hi,</p>
+<p>Do not model your Business Objects as they are represented in the database model. </p>
+<p>Your BO&#39;sshould be modeled from a use case perspective and hierarcies should be flattened when you have 1:1 relationships. This will make it MUCH easier to create rules and increase mainainability. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Costin Geana replied on Thursday, December 02, 2010</h2><p>Hi Jonny,</p>
+<p>Thank you for your advice. I totally agree to that.</p>
+<p>In the previous post I didn&#39;t choose a good example. I am going to offer a new one modeled by a Use Case.</p>
+<p>The Use Case sound like this: </p>
+<p>I have a form which edits the <b>Company</b> business object. The form contains fields for Company basic type properties (Name, RegistrationNumber, IsActive) plus a grid that contains the Company Locations. The grid allows you to add, edit, delete a Location business object.</p>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.00.71.69/ClassDiagram.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.00.71.69/ClassDiagram.png" border="0" alt="" /></a></p>
+<p>My Use Case has a parent business object (Company) that contains a list of children business objects (Location).</p>
+<p>The question is if I can have a business rule like this: if Company.IsActive is true then foreach Location in Locations the PostCode is required.</p>
+<p>Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 02, 2010</h2><p>Hi,</p>
+<p>Interesting problem with inter-object dependencies - and a new possible solution in csla4:</p>
+<p>1: Use RuleSets and expose a method to set active ruleset&nbsp; and call CheckRules when the property for IsActive is changed.&nbsp; Will work nice if you have only one or 2 dependencies but may be harder to use if yu have many rules and more dependencies. Ie: Have one ruleset for &quot;Active&quot; and one ruleset for &quot;Passive&quot;. </p>
+<p>2. Have rules that walk the &quot;Parent&quot; tree and read the IsActive to dermine validation. This is also painful in that you probably must add a custom interface and method on your BOs to call CheckRules on your children, custom interface/methods on the parent to define the IsActive property and custom code when IsValid is changed to to propagate CheckRules to the children. Also painful that the rules will not work properly on new objects until the parent property has been set.</p>
+<p>We have done 2) in pojects that target pre Csla 4 and it is a pain. Especially handling that must occur when Parent is set (and also trigger a new CheckRules).</p>
+<p>I&#39;d love to hear if anyone has tried RuleSets.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Costin Geana replied on Thursday, December 02, 2010</h2><p>Hi,</p>
+<p>Thank you, Jonny, once again for your answer. </p>
+<p>I started to dig in the csla 4 last week, in conclusion I don&#39;t know its power yet. </p>
+<p>In the first ebook Using Csla 4 when Rocky speaks about Business, Validation and Authorization Rules he enumerates some types of rules. The second type is &quot;Validation of values across multiple objects in an object graph&quot;. I am wondering if my problem is contained in this type of rule! </p>
+<p>Anyway one thing is truly certain: I have to study more about the Business Rule Engine in csla 4.&nbsp; </p>
+<p>Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, December 02, 2010</h2><p>I would continue your research, as it does sound like that would be the way to go if you&#39;re on Csla 4.</p>
+<p>If you&#39;re on an earlier version, there are a few choices.&nbsp; </p>
+<p>One is for the parent to implement the rule, and check all of its children.&nbsp; Fairly easy using Linq.&nbsp; The problem is you need to manually run the rule whenever a child changes, and there&#39;s no easy way to provide indication to the user as to what&#39;s wrong.</p>
+<p>The second approrach would have a rule in the child ask its parent (the collection) for the root BO.&nbsp; The rule would return true (valid) if the state on the BO isn&#39;t one which requires the postal code, or it could call the CommonRules.StringRequired rule to continue validation.&nbsp; In this way, each postal code in the grid would have an error indicator automatically show.</p>
+<p>The choice is up to you, and how you want to present the validation results to the user.</p>
+<p>HTH</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Costin Geana replied on Friday, December 03, 2010</h2><p>Hi Andy,</p>
+<p>Thank you for your suggestions.They are useful.</p>
+<p>I am using indeed an earlier version of csla. In this context, from your suggestions I would choose the second one due to the fact that an error indicator can be shown automatically on the PostCode field. The rule sits, indeed, on the child (Location in this case) and is check by the Child when the Location.PostCode property changes and is checked by the parent (i.e. Company) when the Company.State property is changing. Please, correct me if I&#39;m wrong!</p>
+<p>The scenario I presented (i.e. Company having a list of Locations) can be extended. Maybe I&#39;m wrong but I would venture to say that it would be good to have the possibility to implement business rules between objects in an object graph without breaking the object design principles. </p>
+<p>Thank you for your time, guys, and for your useful suggestions.</p>
+<p>Muntean</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,82 @@
+<html><header><title>MembershipIdentity vs. CslaIdentity??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MembershipIdentity vs. CslaIdentity??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5777.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Monday, November 10, 2008</h2>Hi guys <br>Just wondering if anyone know the difference between MembershipIdentity and CslaIdentity. <br><br>The description says that MembershipIdentity "Implements a .NET identity object that automatically authenticates against the ASP.NET membership provider." and the CslaIdentity "Provides a base class to simplify creation of a .NET identity object for use with BusinessPrincipalBase.". But to me I can't see anything that makes MembershipIdentity web specific and CslaIdentity not. <br><br>To me MembershipIdentity implements more and would be the choice i would make (regardless of asp.net or not) but PT uses CslaIdentity...<br><br>Cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, November 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The key difference is that Membership Identity is authenticating
+against Membership Provider (built-in or custom implementation) and CSLA
+Identity is relying on the developer to authenticate, most commonly retrieve credential
+from custom database.&nbsp; I guess in theory you could use membership identity
+all the time, but it is not what it was designed for.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 10, 2008 6:03 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] MembershipIdentity vs. CslaIdentity??<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi guys <br>
+Just wondering if anyone know the difference between MembershipIdentity and
+CslaIdentity. <br>
+<br>
+The description says that MembershipIdentity &quot;Implements a .NET identity
+object that automatically authenticates against the ASP.NET membership
+provider.&quot; and the CslaIdentity &quot;Provides a base class to simplify
+creation of a .NET identity object for use with BusinessPrincipalBase.&quot;.
+But to me I can't see anything that makes MembershipIdentity web specific and
+CslaIdentity not. <br>
+<br>
+To me MembershipIdentity implements more and would be the choice i would make
+(regardless of asp.net or not) but PT uses CslaIdentity...<br>
+<br>
+Cheers<br>
+Anthony<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 11, 2008</h2><P>I don't see why you'd use MembershipIdentity unless you already have an ASP.NET membership provider that you want to leverage.</P>
+<P>If you are authenticating against some other custom source like a SQL table or an LDAP server, it is probably far easier to create your own custom identity by subclassing CslaIdentity.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, November 11, 2008</h2>cool thanks<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

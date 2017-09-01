@@ -1,0 +1,41 @@
+<html><header><title>Silverlight design time error using VS 2010</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight design time error using VS 2010</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9062.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbianco21 posted on Thursday, June 10, 2010</h2><p>Using CLSA 3.8.3, VS2010, .NET 3.5, SL 3.0. I am getting the following error in design time only. Help!</p>
+<p>P.S. I will get this error in Blend 3, but not in VS 2008.</p>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.01.10.05/cslaDesigntimeError.GIF"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.01.10.05/cslaDesigntimeError.GIF" border="0" alt="" /></a></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 10, 2010</h2><p>It looks like your data access code is being invoked when the designer loads some part of your UI. That&#39;s not uncommon - the XAML designers create instances of UI types, which might create an instance of your viewmodel or business object. In the end, your factory method is being called.</p>
+<p>Of course you have no config file for blend, so the data portal is unable to find your app server and/or database.</p>
+<p>You need to block the factory method from being called, or make the factory method not do anything - when the code is running in design mode.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbianco21 replied on Thursday, June 10, 2010</h2><p>That makes sense. It is the &quot;how to&quot; part I was after. In the snipet below, is there anyway to check whether I am in design mode in the xaml and switch the&nbsp;<b>IsInitialLoadEnabled to false</b>? (Which solves the problem). Aren&#39;t others having this problem? I am following a pretty basic and common pattern I learned from the video series. Any recommendation would help. Thanks in advance.</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &lt;csla:CslaDataProvider&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x:Name=&quot;FSAListProvider&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ObjectType=Business.FSAList, Stock.Business&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ManageObjectLifetime=&quot;True&quot;&nbsp;&nbsp; FactoryMethod=&quot;GetFSAList&quot; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataChangedHandler=&quot;{StaticResource DataErrorDialog}&quot;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>IsInitialLoadEnabled=&quot;True&quot;</b>&nbsp;&nbsp;&gt;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbianco21 replied on Friday, June 11, 2010</h2><p>Okay. This is what I came up with- at least for the time being (and I can get back to work). This is on the <b>client</b>....If anyone has something better, I would love to hear...</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public static void GetFSAList(EventHandler&lt;DataPortalResult&lt;FSAList&gt;&gt; callback)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b>if (!System.ComponentModel.DesignerProperties.GetIsInDesignMode(System.Windows.Application.Current.RootVisual))&nbsp;&nbsp;{</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var dp = new DataPortal&lt;FSAList&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dp.FetchCompleted += callback;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;dp.BeginFetch();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; <b>&nbsp;}&nbsp;</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 11, 2010</h2><p>Now that I&#39;m home and have a couple minutes, I can provide a little more background.</p>
+<p>Prior to 3.8.2 the data portal did this check for you, and routed data portal calls to a &quot;design time create/fetch method&quot;.</p>
+<p>There were two problems with that.</p>
+<ol>
+<li>There&#39;s apparently a SL/.NET runtime bug that causes this to fail with a Win32 exception under high load (that&#39;s really bad)</li>
+<li>VS 2010 has a different way of handling design time data</li>
+</ol>
+<p>CSLA 4 entirely eliminates the design time concept - since there&#39;s this new model.</p>
+<p>CSLA 3.8.2 has a quick fix that eliminates the design time check to avoid the runtime issue that several people had encountered - it just never detects that the code is in design time...</p>
+<p>The drawback is that you end up having to handle it yourself. The benefit is we avoid issue #1.</p>
+<p><i>However</i>, you should probably wrap your design time check code in &quot;#if DEBUG&quot; blocks, so that code doesn&#39;t get compiled into your deployed code (which would be release mode of course) - otherwise I suspect you run the risk of encountering the same runtime Win32 error.</p>
+<p>Finally, and you probably won&#39;t like this, the whole data provider model appears to have lost support from Microsoft. Not that they are removing the feature, just that they aren&#39;t using it - which means it is effectively legacy technology. Instead, you are probably better off looking at the MVVM design pattern and using a viewmodel instead of a data provider.</p>
+<p>CSLA 3.8 and higher has a ViewModel&lt;T&gt; base class that gives you a viewmodel with most of the functionality of the data provider - so the switch isn&#39;t <i>too</i> bad - but it is a slightly different architectural choice. The benefit of a viewmodel is that you write the constructor, which is where you invoke the factory method of the business type - so you can keep the design time check in the viewmodel (which is part of the presentation layer), and avoid having a WPF/SL-specific check in your business layer.</p>
+<p>Architecturally, it is really terrible to put the design time check in the business class - but when using the data provider there&#39;s no good way to move it out, while with a viewmodel there&#39;s a good answer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbianco21 replied on Tuesday, June 15, 2010</h2><p>Thanks Rocky, appriecitate it. Hello viewmodel!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 15, 2010</h2><p>I do have a question about this, several really.</p>
+<p>First, at my new gig, we are doing a lot of stuff I haven&#39;t done before, namely mocking and ICO for tighter unit tests.&nbsp; Static factory methods can&#39;t be mocked away.&nbsp; For a PoC I&#39;ve been working on, I just created a factory object to wrap the call to the static method.&nbsp; Not quite sure if that&#39;s the proper solution.&nbsp; What are others&#39; consensus on this when unit testing the view model? (I assume you&#39;d want to, as there we have had good results unit testing the controller in MVC).</p>
+<p>Second, won&#39;t the data access run this way when working with the designer, since it will create a view model?&nbsp; I know I&#39;ve hit wierd exceptions in the 2008 Wpf &quot;designer&quot; which turned out to be exceptions thrown when the dataportal didn&#39;t work properly (because the database connection wasn&#39;t available).&nbsp; Am I missing something, or do you still have to consider this?</p>
+<p>Thanks</p>
+<p>Andy</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

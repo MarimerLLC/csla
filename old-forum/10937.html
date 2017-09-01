@@ -1,0 +1,76 @@
+<html><header><title>CSLA 4 version 4.2 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.2 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10937.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, December 01, 2011</h2><p>CSLA 4 version 4.2 is now released and available for download.</p>
+<ul>
+<li><a href="http://www.lhotka.net/cslanet/download.aspx">CSLA download page</a></li>
+<li><a href="http://nuget.org/List/Search?packageType=Packages&amp;searchCategory=All+Categories&amp;searchTerm=csla">NuGet</a></li>
+</ul>
+<p>The primary focus of this release is the introduction of support for mono (Mac, Linux), monotouch (iPhone, iPad), and mono for Android.&nbsp;</p>
+<p>You can now reuse your business code across&nbsp;.NET, Silverlight, Windows Phone, and these newly supported platforms as well. As demand grows to build applications that must work on various mobile devices, the ability to directly reuse your business classes is compelling!</p>
+<p>Version 4.2 also includes a number of enhancements to the existing CSLA 4 rule engine, along with various other features and bug fixes. Check out the <a href="http://www.lhotka.net/Article.aspx?id=2607a4ef-e6a9-4801-aa0b-518c51267339">change log</a> for more information.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, December 01, 2011</h2><p>Very small item.&nbsp; The license agreement when running the installer is for version 4.0.1</p>
+<p>&nbsp;</p>
+<p>Thanks for all the great work.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 01, 2011</h2><p>It is actually version 4.0.1 of the license :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, December 01, 2011</h2><p>I can never understand&nbsp;legal mucky-de-muck anyway. <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Friday, December 02, 2011</h2><p>Rocky,</p>
+<p>I updated from the 4.2&nbsp;beta to the release&nbsp;and something has broke.&nbsp;It appears to me that my ObjectFactoryLoader is not being called after I updated the csla.dll, so I rolled back to the previous beta version&nbsp;and it worked fine.</p>
+<p>Todd</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lds replied on Friday, December 02, 2011</h2><p>I have just updated a small silverlight app to use CSLA 4.2 via NuGet, and now I&#39;m getting the following error:</p>
+<p><strong>Could not load file or assembly &#39;Csla, Version=4.2.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)</strong></p>
+<p>I also have downloaded the samples for Version 4.2.0 and when I run&nbsp; CslaSamples-4.2.0.1103\Samples\Silverlight\cs\SimpleApp I get the same error.</p>
+<p>Can someone shed some light on it.</p>
+<p>Thank You</p>
+<p>Luigi</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 02, 2011</h2><p>Unreal.</p>
+<p>Silverlight ignores the last part of version numbers. So 4.2.0.1103 is 4.2.0.0 in Silverlight.</p>
+<p>Basically this means we can&#39;t use the revision part of the version number.</p>
+<p>That&#39;s pretty messed up, and will force me to re-release 4.2.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Friday, December 02, 2011</h2><p>Rocky,</p>
+<p>I&#39;m using Silverlight as well.&nbsp; Sorry for not stating that!</p>
+<p>Todd</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 02, 2011</h2><p>I&#39;ve updated the download page and nuget with 4.2.1 and I believe all is now well - grab the new version and all should be well.</p>
+<p>I think starting with 4.3 I&#39;m going to adopt a new versioning scheme to use the x in 4.3.x as an increment for every release. With nuget and msi setup projects the version number is important - even during the alpha/beta phases.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Thursday, December 08, 2011</h2><p>Just now downloaded the 4.2 installer for windows.</p>
+<p>This is probably a stupid question but I don&#39;t understand why the 4.2 install debug BIN folder has a separate Client and Server version of CSLA.dll that are different sizes and the release bin folder only has a CSLA.dll in the Client folder.</p>
+<p>When developing and debugging do I just take the one in the client folder and ignore that different sized one in the server folder or...?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 08, 2011</h2><p>The folder structure mirrors the structure in our dev environment - the \bin folder structure is the same.</p>
+<p>I tried to change it, but the setup projects in VS are so fragile that it broke the setup project... I&#39;ll probably try again at some point, but I suspect it will require completely recreating the setup project from scratch, and that&#39;s time consuming and tedious (to say the least).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, December 12, 2011</h2><p>I&#39;m seeing other problems with it now as well.&nbsp; I think you might need to pull it entirely, I think the System.Web... assemblies in the 4.2 debug server folder are still referencing CSLA 4.1 not 4.2 as I&#39;m getting all manner of errors and there are at least two different CSLA.dll files of different sizes in there as well.</p>
+<p>Update: just tried the nuget variation and now everything builds and runs properly.&nbsp; I&#39;ll use that from now on and skip the installer which is clearly broken and I would like to suggest that you pull it in order to avoid further confusion for others in future.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 12, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b>
+<p>I&#39;m seeing other problems with it now as well.&nbsp; I think you might need to pull it entirely, I think the System.Web... assemblies in the 4.2 debug server folder are still referencing CSLA 4.1 not 4.2 as I&#39;m getting all manner of errors and there are at least two different CSLA.dll files of different sizes in there as well.</p>
+<p>Update: just tried the nuget variation and now everything builds and runs properly.&nbsp; I&#39;ll use that from now on and skip the installer which is clearly broken and I would like to suggest that you pull it in order to avoid further confusion for others in future.</p>
+<p></div></p>
+<p>I can&#39;t just pull it - I need to fix it :)</p>
+<p>This is the problem with rushing through things. I have a release process checklist, but when the 4.2.0.1103 release failed I was running through the checklist to do the 4.2.1 release quickly - in between a whole host of scheduled meetings and conference calls. I clearly missed a step in the process in the middle of all that chaos.</p>
+<p>Now I&#39;ll need to do a 4.2.2 release to make the installer/setup work right.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, December 12, 2011</h2><p>Oh, you sounded down on it earlier like you were thinking of pulling it anyway.&nbsp; :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 12, 2011</h2><p>I&#39;ve put 4.2.2 online - both through nuget and at <a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a></p>
+<p>Can you do me a favor and make sure I got it all right this time?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, December 12, 2011</h2><p>Seems ok in that all .dll&#39;s now are 4.2.2.0, however the folders: C:\Program Files\Marimer LLC\CSLA .NET\4.2.0\Bin\Debug\Server and C:\Program Files\Marimer LLC\CSLA .NET\4.2.0\Bin\Debug\Client both have a csla.dll with different sizes as I noted before so that&#39;s unchanged or supposed to be like that (I thought there would only be one csla.dll but I might be confused on this, I just used the Client one before with 4.2.1 and it seemed fine.</p>
+<p>I can&#39;t test the actual reference problem I had earlier without significantly changing my project structure back from using Nuget but the Nuget stuff worked fine and all tests pass after updating about 10 separate projects that go into the whole.</p>
+<p>The NuGet link is now correct as well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 12, 2011</h2><p>Good, thanks for the confirmation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Monday, December 12, 2011</h2><p>I have just tried to compile Csla.Ios in MonoTouch and it has 5 build errors in Csla.Core.BusinessBase.&nbsp; There are&nbsp;really 2 different errors and they are:</p>
+<p>Line 59 Type of namespace name &#39;INotifyDataError&#39; could not be found.</p>
+<p>Line 3424 Type of namespace name &#39;DataErrorsChangedEventArgs&#39; could not be found.</p>
+<p>&nbsp;</p>
+<p>Note that the source code used to compile was from the downloaded msi.</p>
+<p>What do I need to do to make it compile?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 13, 2011</h2><p>I&#39;ve asked Stuart to take a look.</p>
+<p>Unfortunately he&#39;s the only one on the dev team with a Mac. This means the rest of us can too easily make a change to the code (it is almost all shared code) that breaks iOS and we can&#39;t find out :(</p>
+<p>I surely wish Apple didn&#39;t impose the legal requirement that iOS stuff can only compile on OS X - it makes it impossible to have things like a unified build server, or any sort of unified build at all really.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stuart.bale replied on Tuesday, December 13, 2011</h2><p>Hi jhardman,</p>
+<p>Try getting the source code down directly from the repository. &nbsp;The details are on this page:</p>
+<p>http://www.lhotka.net/cslanet/Repository.aspx</p>
+<p>You will need MonoDevelop on Mac OSX. &nbsp;I am running MonoDevelop 2.8.2, Mac OSX 10.6.8, Mono 2.10.6 with Monotouch 5.0.2.</p>
+<p>Please let me know if you still have any errors.</p>
+<p>Regards,</p>
+<p>Stuart Bale</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stuart.bale replied on Tuesday, December 13, 2011</h2><p>Hi jhardman,</p>
+<p>Just wanted to confirm with you that Csla.Ios is in fact &#39;broken&#39; in 4.2.2.</p>
+<p>I will co-ordinate with Rocky to arrange a fix, and let you know the outcome.</p>
+<p>Regards,</p>
+<p>Stuart</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Tuesday, December 13, 2011</h2><p>Thanks for the update. I had just downloaded the source code from the trunk and can also confirm that it is not compiling. &nbsp;I am using MonoDevelop 2.8.4.2 and MonoTouch 5.0.3 which has come out within the last week.</p>
+<p>Cheers, Jason</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Wednesday, December 14, 2011</h2><p>Hi Stuart,</p>
+<p>Any idea on how to get it to compile or when the fixes will be available?</p>
+<p>Cheers.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman replied on Wednesday, December 14, 2011</h2><p>I have managed to get it to compile.&nbsp; In Csla.Core.BusinessBase I had to add IOS to the #if statements where ever it mentioned __ANDROID__.&nbsp; I also had to add links to the new files in the Csla\Serialization\Mobile folder.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stuart.bale replied on Sunday, December 18, 2011</h2><p>Hi Jason,</p>
+<p>Sorry for taking a little longer to reply. For now, it might be best to grab the code at:</p>
+<p><span>svn://svn.lhotka.net/csla/core/branches/V4-2-x</span></p>
+<p>as this contains the latest &#39;release&#39; code.</p>
+<p>I have this morning committed a fix for the compiler directives.</p>
+<p>I&#39;ll soon be updating the trunk with the changes you mentioned in your latest post.</p>
+<p>I notice from this &nbsp;post:</p>
+<p>http://forums.lhotka.net/forums/t/10991.aspx</p>
+<p>that you&#39;ve deployed to a device, and uncovered further issues, so I will review that over the next couple of days, and update you in that post.</p>
+<p>Sorry you are encountering issues - you are somewhat of a pioneer in with Csla.Ios. &nbsp;If you&#39;d like to email me directly, feel free to do so on&nbsp;stuart at stuartbale dot com.</p>
+<p>Regards,</p>
+<p>Stuart</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, December 12, 2011</h2><p>Almost forgot: the NuGet link is incorrect, they probably changed the search url.&nbsp; It&#39;s wrong here in your post and it&#39;s wrong on the download page: http://www.lhotka.net/cslanet/download.aspx</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 12, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b>
+<p>Almost forgot: the NuGet link is incorrect, they probably changed the search url.&nbsp; It&#39;s wrong here in your post and it&#39;s wrong on the download page: http://www.lhotka.net/cslanet/download.aspx</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>They must have just changed that in the past few days - they need to adopt a permalink scheme - this isn&#39;t the first time they&#39;ve done this...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>CSLA 2.1.4: ReadOnlyBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.1.4: ReadOnlyBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2815.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Thursday, May 03, 2007</h2><P>Good Day,</P>
+<P>I've created a readonlybase BO which has amonst others,&nbsp;a latitude and a longitude property. I would like the developer to be able to choose between display formats, i.e. degrees, minutes, seconds or decimal degrees. The database stores degrees ,minutes and seconds in separate fields. I have a conversion routine to convert back and forth between the two options.</P>
+<P>My question:</P>
+<P>Should I build the conversion routine into my derived readonlybase BO or should I enhance the original base class with an additional overriden "ToDMS"&nbsp;or "ToDecimalDegrees" method similar as "ToString". I might want to use this routine in more than one derived BO?</P>
+<P>My next question:</P>
+<P>I also have a routine that convert strings to proper case. The database stores all capital letters so I would like to populate my BO with the proper case strings. As with previous question, where should I implement my conversin routine?</P>
+<P>Hope, it's all clear.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 03, 2007</h2><P>If you have methods (behaviors) that may be used by many objects, then you should normalize those behaviors into their own objects.</P>
+<P>It sounds to me like you should probably have a GeographicCoordinate class that contains functionality around latitude and logitude values.</P>
+<P>Similarly, you might have a StringUtilities class to contain helper methods related to string values.</P>
+<P>But here's the fun part: you may very likely decide to have a ToDecimalDegrees method on your ROB business class, because that may be the most logical and discoverable place for such a method. The important thing to understand is that the <EM>behavior implementation</EM> is never duplicated, but rather you are merely using that behavior from multiple locations.</P>
+<P>You can think of it much like the My namespace in VB. Most of the functionaltiy exposed by My is buried somewhere in the .NET base class library. Technically you could go find it all and cobble together your own abstractions. But My provides some common abstractions and shortcuts for you, so you don't have to write them yourself. They <EM>do not duplicate logic</EM>, but rather they just expose or abstract it in useful ways.</P>
+<P>That's a good model. Write a behavior one time, then use it where needed, providing abstractions or discoverable entry points where appropriate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Wednesday, May 09, 2007</h2><P>Thanks, Rocky.</P>
+<P>Just to make sure I understand correctly</P>
+<P>If I use a "ToDecimalDegrees" method within the ROB business class, I could&nbsp;do something like:</P>
+<P>textBox1.Text = Point.Latitude.ToDecimalDegrees();</P>
+<P>where "Point" is the ROB and "Latitude" is a property.</P>
+<P>But wouldn't this mean that I will have to create a special data type ?</P>
+<P>Or do you mean something like:</P>
+<P>textBox1.Text = Point.ToDecimalDegrees(StringFormat);</P>
+<P>Regards,</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

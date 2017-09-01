@@ -1,0 +1,104 @@
+<html><header><title>ASP.Net Validators and BrokenRules?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.Net Validators and BrokenRules?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/801.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Thursday, August 03, 2006</h2>Is there a simple way to link these two so that a control's underlying
+business object's 'broken rule' appears as a validator error message? I
+believe this is straightforward with WinForms, but with a web form?
+(see <a href="http://www.primos.com.au/primos/Articles/CSLAversion2whatsinitforme/tabid/67/Default.aspx?PageContentID=55">here</a> )<br>
+<br>
+Currently, I am simply populating a list with the error text, and would
+rather show validation errors in the more conventional way.<br>
+<br>
+TIA<br>
+<br>
+James.<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>No, unfortunately ASP.NET doesn't have any way to support this...<br><br>I know that some people have written UI components that reflect against business object properties to pick up attributes that trigger dynamic application of validation controls. That doesn't cover all cases, but does cover the ones you can handle with simple validation controls.<br><br>This is made harder yet in ASP.NET 2.0, because you are likely using a DetailsView control, and dynamically adding validation controls there is a bit more challenging. I think that Dino Esposito wrote an MSDN article about doing this a few months ago - it was pretty challenging, but he got it to work.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Wednesday, August 09, 2006</h2><P>I have managed to do this as follows:</P>
+<P>1. I placed a validation summary control on the master page.</P>
+<P>2. I created a class containing a&nbsp;dummy validator (code found on web somewhere - see below)</P>
+<P>3. If your csla class is invalid, you can pass the broken rule collection to the following method (I placed all this code in a base page class). I also use <FONT size=2>ShowPageError() to display exceptions.</FONT>&nbsp;</P>
+<P>Works very well - the same validation summary on the master page can be used by both the client side validators and the csla server side validation.</P>
+<P>*********&nbsp; base page code ****************</P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ValidationSummary</FONT><FONT size=2> _customSummary = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ValidationSummary</FONT><FONT size=2> CustomSummary</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_customSummary == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_customSummary = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ValidationSummary</FONT><FONT size=2>();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _customSummary;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ShowBrokenRules(</FONT><FONT color=#008080 size=2>BrokenRulesCollection</FONT><FONT size=2> brokenRulesCollection)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>BrokenRule</FONT><FONT size=2> br </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> brokenRulesCollection)</P>
+<P>{</P>
+<P>ShowPageError(br.Description);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ShowPageError(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> errorDescription)</P>
+<P>{</P>
+<P>System.Web.UI.</FONT><FONT color=#008080 size=2>Page</FONT><FONT size=2> pageRef = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Page;</P>
+<P>CustomSummary.AddErrorMessage(errorDescription, pageRef);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>&nbsp;</P>
+<P>*********&nbsp; Dummy Validator class****************</P>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Data;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Configuration;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Web;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Web.Security;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Web.UI;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Web.UI.WebControls;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Web.UI.WebControls.WebParts;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Web.UI.HtmlControls;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> MyNamespace</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This control inherits the ASP.NET ValidationSummary control but adds</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the ability to dynamically add error messages without requiring </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> validation controls.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ValidationSummary</FONT><FONT size=2> : System.Web.UI.WebControls.</FONT><FONT color=#008080 size=2>ValidationSummary</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Allows the caller to place custom text messages inside the validation</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> summary control</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="msg"&gt;</FONT><FONT color=#008000 size=2>The message you want to appear in the summary</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="pageRef"&gt;</FONT><FONT color=#008000 size=2>The page where the message will appear</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddErrorMessage(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> msg, System.Web.UI.</FONT><FONT color=#008080 size=2>Page</FONT><FONT size=2> pageRef) </P>
+<P>{</P>
+<P>System.Web.UI.</FONT><FONT color=#008080 size=2>Page</FONT><FONT size=2> mypageRef = pageRef; </P>
+<P>mypageRef.Validators.Add(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DummyValidator</FONT><FONT size=2>(msg));</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The validation summary control works by iterating over the Page.Validators</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> collection and displaying the ErrorMessage property of each validator</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> that return false for the IsValid() property. This class will act </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> like all the other validators except it always is invalid and thus the </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> ErrorMessage property will always be displayed.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DummyValidator</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>IValidator</FONT><FONT size=2> </P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> errorMsg;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> DummyValidator(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> msg) </P>
+<P>{</P>
+<P>errorMsg = msg;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> ErrorMessage</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2>{ </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> errorMsg;}</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2>{ errorMsg = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsValid</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2>{</FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;}</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2>{}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Validate() </P>
+<P>{</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

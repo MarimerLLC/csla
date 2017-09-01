@@ -1,0 +1,64 @@
+<html><header><title>Locking in ConnectionManager&lt;C&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Locking in ConnectionManager&lt;C&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7876.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>LParker posted on Monday, October 26, 2009</h2><P>I'm looking at the code for the ConnectionManager&lt;C&gt; class and have some questions about locking.</P>
+<P>One of the static GetManager method overloads does a lock, and the book says that this "ensures that only one thread at a time can attempt to create an open connection."&nbsp; Is there a reason that you'd want to prevent multiple threads from simultaneously creating an open connection?&nbsp; What's the harm in allowing them to do so?&nbsp; They are different connection instances.</P>
+<P>Also, the DeRef method does another lock.&nbsp; I'm guessing that this is done to protect the mRefCount instance field, but since the ConnectionManager&lt;C&gt; instances are stored in thread-local-storage, I wouldn't think that DeRef on a particular instance would ever get called across threads anyway.&nbsp; Therefore, it seems that guarding mRefCount is unnecessary since it's not shared mutable data.</P>
+<P>Since the synchronization object is the same for GetManager and DeRef, that would mean that one thread could be calling GetManager but would have to wait until another thread's execution of DeRef was complete.&nbsp; The two methods don't seem to be related, but since they lock on the same static object, one will have to (unnecessarily) wait for the other.</P>
+<P>Unless I'm missing something, locking is not needed at all in this class, and its presence just leads to liveness issues.</P>
+<P>Please clarify.&nbsp; Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2><P>Keep in mind that TLS is only used in a 2-tier smart client scenario.</P>
+<P>If your data access code is running on a server (so in a web app or 3-tier deployment) then HttpContext is used to store the connection, and it could very well be shared across threads.</P>
+<P>So you are right - in a 2-tier smart client scenario the locking is probably not needed. But the code would be entirely unreliable in many server scenarios without the locking...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LParker replied on Monday, October 26, 2009</h2><P>As an FYI, I'm not currently using CSLA.NET as a whole, but I am utilizing your ConnectionManager and LocalContext / TLS approach.&nbsp; It definitely solves the DTC problem and allows my data access layer to work in a multi-threaded environment.&nbsp; So thank you!</P>
+<P>My app server is actually a WCF service, and I'm running in 3-tier mode but not using ASP.NET, so HttpContext is null.&nbsp; Therefore,&nbsp;TLS will be used by ConnectionManager in my app server, and the locking is not relevant (at least for how I am using it).</P>
+<P>I'm not that knowledgable about ASP.NET, so pardon my ignorance, but if the connection manager instance is stored in HttpContext wouldn't that particular instance be accessed by no more than a single thread at once, even if the thread changed between ASP server calls?&nbsp; If that's not the case and multiple threads can simultaneously access that instance, then yes the locking does make sense.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LParker replied on Monday, October 26, 2009</h2><P>I just talked to a guy on my end who works in ASP.NET and he said that if you store something in HttpContext.Current, then it will only be accessible by one thread at a time.</P>
+<P>So if that is indeed true, then I wouldn't think you'd need locking in ConnectionManager at all.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>HttpContext.Current is available to one ASP.NET worker thread at
+a time, that&#8217;s true.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is my understanding however, that if your ASP.NET page
+creates a thread to do a background task, that the background thread can use
+HttpContext as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I&#8217;m wrong, and there&#8217;s an MSDN article or some
+definitive Microsoft source around this, I&#8217;ll happily reconsider the lock
+scheme in the various manager classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the other hand, this is one area where you really don&#8217;t
+want to make a mistake, because if it turns out that in some high-volume cases
+you can hit threading issues I surely don&#8217;t want to trash someone&#8217;s
+production environment :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LParker replied on Tuesday, October 27, 2009</h2><P>The worker thread is an interesting point, but this is a luxury only when using HttpContext and not for thread-local-storage.&nbsp;&nbsp;If I use ConnectionManager&lt;C&gt; outside of ASP.NET and spin a worker thread, it will create *another* connection because the worker thread won't find the connection manager in its own TLS.</P>
+<P>So it seems that if concurrency applies at all in ConnectionManager&lt;C&gt;, it's only when you're running under ASP.NET, and only when you create a worker thread.&nbsp; But I didn't think that connections were thread safe anyway, so it's probably not a good idea to use the same connection across multiple threads.&nbsp; So in the event of a worker thread being created, you'll probably need your own connection.&nbsp; Therefore, ConnectionManager&lt;C&gt; still doesn't need to lock because a connection won't (or at least shouldn't) be used across threads.</P>
+<P>But even if we keep the locking in place, I still have a couple of concerns.&nbsp; Your sync object is a static field, which means that all ConnectionManager&lt;C&gt; instances will synchronize around this object in DeRef, and all calls to the static GetManager method will sync around this as well.&nbsp; In high-volume cases, that will hurt performance because everyone will be waiting.</P>
+<P>For example, say you have an app server that receives 50 hits at the exact same time.&nbsp; Everybody then calls GetManager.&nbsp; Since it locks on the static field, everybody needs to wait.&nbsp; I'm still not understanding why the lock is needed in GetManager, but I can see the need in DeRef since you want to guard the mRefCount instance field (if it needs to be guarded at all).&nbsp; But DeRef should probably lock on its own instance sync object -- otherwise, you're holding everybody else up even though they're trying to decrement mRefCount for their *own* instance of ConnectionManager&lt;C&gt;, and you're also holding up calls to GetManager.</P>
+<P>I'm also curious why you're not locking around mRefCount in AddRef.&nbsp; To make it truly thread-safe, you would have to do this (and use the same instance sync object that DeRef would use -- not the static sync object).&nbsp; The way it currently stands, there is no lock and you could have a race condition when two threads call GetManager under ASP.NET and obtain the same ConnectionManager&lt;C&gt; instance.&nbsp; This could mess up the reference counting.</P>
+<P>As an aside, if you just need to increment or decrement mRefCount in a thread-safe manner, you could use Interlocked.Increment and Interlocked.Decrement and avoid the sync object altogether.</P>
+<P>Anyway, I hope I'm making sense with all of this.&nbsp; As I said, it doesn't look like you need locking at all because when you're not using ASP.NET you're using TLS and are therefore enforcing thread-confinement, and when you are using ASP.NET you probably don't want want a worker thread to reuse a connection since that would most likely cause threading problems for the connection.&nbsp; But in any event, the existing code does seem to have liveness issues since everything is synched around the static field.&nbsp; That is something that could affect existing users with high-volume app / web servers.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 27, 2009</h2><P>Fair enough, I've added this to the wish list.</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=625">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=625</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LParker replied on Tuesday, October 27, 2009</h2>Great, thanks.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 20, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>Fair enough, I&#39;ve added this to the wish list. </p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=625">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=625</a>&nbsp;</div></p>
+<p>Sorry for bumping an old posting, but I was wondering what the status of this request ended up being.&nbsp; I followed the link here but the tracker doesn&#39;t seem to have a bug with id 625.</p>
+<p>I&#39;m posting because we are using Csla 3.7 (I know, we&#39;re behind, but we&#39;re going to be moving forward soon) and have updated our code to use connectionmanager&lt;T&gt; but when we deploy to production and our normal load hits (which is pretty high), we end up seeing the remoting calls hang and never respond or timeout.&nbsp; I was looking at the code for CM&lt;T&gt; and was wondering if somehow the locking is getting hung up, perhaps a connection is taking a long time to be established but while this is happening everyone else is waiting.&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

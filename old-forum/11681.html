@@ -1,0 +1,42 @@
+<html><header><title>Windows forms and n-level undo problems</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows forms and n-level undo problems</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11681.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 posted on Wednesday, November 07, 2012</h2><p><br />Hi</p>
+<p>I&#39;m trying to update an old windows forms project with business objects databinding and n-level undo. I have a main form with a button to open a modal dialog. In the constructor of the dialog I get a child object from the parent and call BeginEdit before binding to a BindingSource.</p>
+<p>If the user hits ok after editing I ApplyEdit before the dialog closes. I have been motitoring the editlevel:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.WriteLine(((IUndoableObject)_rule).EditLevel);</p>
+<p>It is &#39;1&#39; when the form closes. But when I try to remove the child from it&#39;s collection in a DataGridView in the main form I get an error:</p>
+<p>UndoException: Edit level mismatch in AcceptChanges</p>
+<p>If I try to unbind the object, using the project tracker UnbindBindingSource method, I get a first chance &#39;Csla.Core.UndoException&#39;, the edit level changes to &#39;0&#39; but I can them remove the item from the datagridview on the main form.</p>
+<p>I&#39;ve tried to read up about n-level undo in the&nbsp; Using CSLA 4 book but there is&nbsp;almost nothing about it. And I can&#39;t find my CSLA C# 2008 book!</p>
+<p>Can you point me in the right direction? Is it worth me buying the 2008 book from amazon again?</p>
+<p>Any help you can give me is appreciated.<br />Thanks<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 07, 2012</h2><p>Some basic guidelines for Windows Forms:</p>
+<p><i>Bind2UI:</i></p>
+<ol>
+<li><i><b>Always DataBind DropDown lists first</b></i></li>
+<li><i><b>Then databind data objects - start from &quot;root&quot; or &quot;top -most&quot; object and god down in object-structure</b></i></li>
+</ol>
+<p><i>Unbind:</i></p>
+<ol>
+<li><i><b>Unbind in opposite sequence from 2) above.</b></i></li>
+</ol>
+<p><i>Additional rules</i>:</p>
+<ul>
+<li><i><b>Make sure to Unbind dataobjects in FormClosed event as above </b></i>(otherwise properties may be <br />changed/faulted by datasources being disposed in wrong order - especially when itemlist <br />for ComboBox is disposed while databinding is active for data field) </li>
+<li><i><b>a) NEVER CALL BeginEdit/ApplyEdit/CancelEdit on objects that are databound to UI !!!</b></i></li>
+</ul>
+<p><b>a) </b>When objects are databound - Windows Forms databinding will assume it has total control of <br />BeginEdit/EndEdit/CancelEdit and you should NEVER call any of these methods on a databound object. </p>
+<p>The reason can be found here in MSDN:<br /><a title="http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit.aspx" href="http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit.aspx">http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit.aspx</a><i><b><br />&quot;If <span><span class="selflink">BeginEdit</span></span> is called on an object that is already being edited, the second and subsequent calls are ignored.&quot; <br /></b></i>(JB) IE: The next EndEdit/CancelEdit/ApplyEdit will act on the first BeginEdit that was called from DataBinding)</p>
+<p>CSLA follows the above requirement from MSDN documentation when BeginEdit is called by DataBinding<br />(through the IEditableObject.BeginEdit method) and thus follows - NEVER CALL any of these methods manually<br />when an object is databound <i><b>. DataBinding will call these methods for EACH time the user enters/leaves a field <br />or row and assumes total ownership. </b></i></p>
+<p>You may also read my blogpost for more details:<br /><a href="http://jonnybekkum.wordpress.com/2009/10/20/forms-databinding-the-magic-sequence-of-binduiunbindui/%20">http://jonnybekkum.wordpress.com/2009/10/20/forms-databinding-the-magic-sequence-of-binduiunbindui/ </a></p>
+<p>Hope this helps.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Thursday, November 08, 2012</h2><p>Thanks for the guidelines and BindingHelper class. I am still having problems when I call ApplyEdit on my child object after unbinding the datasource.</p>
+<p>&nbsp;&#39;Edit level mismatch in AcceptChanges&#39;</p>
+<p>The object exists in the following graph:</p>
+<p>&nbsp;BusinessBase, BusinessBindingListBase, BusinessBase</p>
+<p>Is it because I am working on a child object? I also made sure the child list is unbound from it&#39;s binding datasource in the parent form.</p>
+<p>I wondered if I should create a separate BO to edit instead of editing the child in the dialog window, although it suits my use case as it is.</p>
+<p>All I&#39;m trying to achieve is editing a form bound to the child object. If the OK button is clicked the changes are applied. If the form is canceled the obect is reverted to the previous state before the BeginEdit. </p>
+<p>I&#39;m running out of things I can try now. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 08, 2012</h2><p>Start by checking the EditLevel in the entire object structure before you open the child form and again before you call ApplyEdit. &nbsp;</p>
+<p>You should make sure to UnBind the entire object structure - &nbsp;not the child list only. </p>
+<p>If this doesn&acute;t help - create a sample project and post as attachment here. This will make it much easier to help us pinpoint the correct solution..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Friday, November 09, 2012</h2><p>I&nbsp;managed to find out why I was getting the error. I needed to do an EndEdit on the BindingSource used by the DataGridView in the main form. I have tested it and things seem to behave as expected. </p>
+<p>I am unsure about the requirement to unbind the whole object graph before using the n-level stuff in the BO. In my example I have the main form then a modal dialog, which also has another modal dialog. If I have to unbind the whole graph I would need to pass the main form binding source into each of the modal dialogs constructors and when I unbind, the rows in the datagrid will disappear untill I rebind. </p>
+<p>Is this really what you mean by unbinding the whole structure?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 10, 2012</h2><p>In general terms - yes I prefer to have the entire object structure unboud. Some third party grid controls will assume total ownership of the structure and call BeginEdit all child and grandchild objects too. </p>
+<p>If you stick with standard windows controls - then yes your solution is good and you may also look into Suspend/Resume binding. . </p>
+<p>I would however not allow the Modal Dialogs to have knowlegde og and N-level undo - their responsibility should only be the objects involved and bind/unbind databinding safely.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

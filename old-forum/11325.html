@@ -1,0 +1,37 @@
+<html><header><title>CSLA 1.0 buisness principal and printing the end result of a query.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 1.0 buisness principal and printing the end result of a query.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11325.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lunatikzx posted on Monday, April 23, 2012</h2><p>First of all i must say i am not a CSLA programmer, im a web programmer with the mandate to convert a part of a &quot;winform&nbsp; CSLA 1.0&quot; application to an ASP.NET application using the same core as the winform app (and i should mention i am sorry for the bad english my french sometimes takes over ) . And since we are a small team, i am the one&nbsp; to code the conversion. </p>
+<p>the app: <br />This app is quite simple in fact, it takes data from a database and use it in a CRYSTAL report. The problem is that i have to open the crystal report generated PDF in the user screen.</p>
+<p>First the context :&nbsp;</p>
+<p>At first i had some problems understanding
+ the Buisness principal error i got then i read ... A LOT then i found 
+that i had to log in to CSLA with&nbsp; 
+CSLA.Security.BusinessPrincipal.Login(user, pass) but then another 
+problem arose. </p>
+<p>The problem: </p>
+<p>I cant open the pdf, the pdf is generated in a folder i created but i cant open it for the user so he can save it . I have an error that read like this : </p>
+<p>Le type n&#39;est pas r&eacute;solu pour le membre &#39;CSLA.Security.BusinessPrincipal,CSLA, Version=1.0.2693.15966, Culture=neutral, PublicKeyToken=null&#39;.</p>
+<p>Which can be translated to </p>
+<p>The member type cannot be resolve for &#39;CSLA.Security.BusinessPrincipal,CSLA, Version=1.0.2693.15966, Culture=neutral, PublicKeyToken=null&#39;.</p>
+<p>What can be the problem? In fcat i am mostly sure that its related to the buisness principal and the system principal. But how can i resolve the issue that i dont know. Is there a way to kill the buisness principal object&nbsp; or replace it by the system principal ( here i am only theorizing) .</p>
+<p>Anyway thatnks for all the answers im really stuck here ... lol </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lunatikzx replied on Monday, April 23, 2012</h2><p>can it be caused by the test server i use? (MS test server Cassinni)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2012</h2><p>You do need to make sure the CSLA assemblies are in the \bin folder of the web site.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lunatikzx replied on Monday, April 23, 2012</h2><p>The assembleis are in the bin folder of the app </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lunatikzx replied on Monday, April 23, 2012</h2><p>Can this be the bug i just read about coming from Cassinni VS test server </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, April 23, 2012</h2><p>Yes, Cassinni is a problem. It does not support custom .NET principal types.</p>
+<p>You should use IIS Express or full IIS.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lunatikzx replied on Monday, April 23, 2012</h2><p>thanks a lot very useful </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shrikant44 replied on Tuesday, April 24, 2012</h2><p>I cant open the pdf, the pdf is generated in a folder i created but i 
+cant open it for the user so he can save it . I have an error that read 
+like this.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<table frame="VOID" rules="NONE" border="0" cellspacing="0">
+<colgroup><col width="171"></col></colgroup>
+	
+<tbody>
+<tr>
+<td align="LEFT" height="17" width="171"><a href="http://www.rent-solutions.realpropertymgt.com/">concord property management</a></td>
+</tr>
+</tbody>
+</table></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lunatikzx replied on Tuesday, April 24, 2012</h2><p>what is generating you r pdf</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

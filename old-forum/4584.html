@@ -1,0 +1,71 @@
+<html><header><title>WPF collections and observableCollections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF collections and observableCollections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4584.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elizabeth posted on Saturday, March 29, 2008</h2>Hi, I'm hoping someone can point me in the right direction here.<br><br>I'm working on my first CSLA project, I'm createing the csla objects (version 3.0.3). The GUI is being done by another person, they've asked that I make all my CSLA collections (businessBaseLilst&lt;&gt;) objects implement observableCollection. They've wrapped my current objects in a wrapper that inhertits from observableCollection for the time being. They say this is to make the lists work otherwise they do not do not function correctly (highlighting acts oddly, grid doesn't update properly).&nbsp; I have read the CSLA 3.0 eBook and I didn't see anything mentioned about collections having to inherit/implement ObservableCollection. We are using infragistics, .netAdvantage wpf controls, the grid in particular.&nbsp; I've searched here and at infragistics and google and I can find nothing about CSLA and the observableCollection. <br><br>Has anyone else had this issue? or anything similar<br>In case my question was lost was not clear .... do I need to modify my CSLA list objects to implement the observableCollection for the objects to function correctly in WPF?<br><br>Thanks<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 30, 2008</h2><P>WPF works with lists that implement either IBindingList (BindingList&lt;T&gt;) or INotifyCollectionChanged (ObservableCollection&lt;T&gt;).</P>
+<P>CSLA lists implement IBindingList so the objects work not only with WPF, but also with Web Forms, Windows Forms, etc.</P>
+<P>You can't implement both interfaces - that confuses WPF terribly, because it honors both of them.</P>
+<P>If they <EM>really</EM> need INotifyCollectionChanged they should be able to create a wrapper that translates the ListChanged event from IBindingList into the CollectionChanged event from INotifyCollectionChanged. Not that I've tried this, but it seems like it would be practical.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Elizabeth replied on Wednesday, April 02, 2008</h2>Thanks for the info.<br><br>I'm emberassed to say that I forgot a rather important fact. The problems only start when the user adds more than 2 new items to the list. The new items being added to the list all the same ID. This does not appear to be a problem with WinForms (else my my tests are really bad). Modified adding new items to the list so that the new items have unique ids (-1, -2, etc) and this solves the problem in wpf.<br><br>I'm suprised that winforms and wpf don't behave the same. Either that or my test were crap.<br><br>Can anyone shed some light on this for me. I've searched but have not found an answer. There was a refrence made to the faq in the wiki, but I didn't find anything on uniqueIds or datagrids.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>WPF uses equality differently than any previous Microsoft
+technology &#8211; which triggered a change in CSLA 3.5 where GetIdValue() is
+no longer used to determine equality between objects (and thus is now
+optional). I blogged about this a while back &#8211; logical equality and WPF
+simply don&#8217;t mix.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Elizabeth
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 02, 2008 9:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] WPF collections and observableCollections<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the info.<br>
+<br>
+I'm emberassed to say that I forgot a rather important fact. The problems only
+start when the user adds more than 2 new items to the list. The new items being
+added to the list all the same ID. This does not appear to be a problem with
+WinForms (else my my tests are really bad). Modified adding new items to the
+list so that the new items have unique ids (-1, -2, etc) and this solves the
+problem in wpf.<br>
+<br>
+I'm suprised that winforms and wpf don't behave the same. Either that or my test
+were crap.<br>
+<br>
+Can anyone shed some light on this for me. I've searched but have not found an
+answer. There was a refrence made to the faq in the wiki, but I didn't find
+anything on uniqueIds or datagrids.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

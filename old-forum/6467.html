@@ -1,0 +1,88 @@
+<html><header><title>How to navigate between data without List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to navigate between data without List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6467.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 posted on Friday, February 20, 2009</h2><P class=MsoNormal><SPAN>Hi all,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I wish to navigate (next, previous, first, last) between data of an entity (customer for example) for a field (Id or Name or ..) but without to use a List (BLB, ERLB ..) or collection.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I want to display a BO (BusinessBase) and then, with navigation buttons , to be able to display the next (by Id or Name ..), the previous, the first or the last BO existing in the database for the same entity.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How do you do for that ? <SPAN>&nbsp;of course </SPAN>the most generic as possible.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I thought to use a CommandBase and keep the CurrentRow in MyBusinessBase (between the BO and BusinessBase). Is there another solution ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>What is the best : direct Sql or stored procedures ? I don't want to have too many stored proc (I want to use this navigation for all entities of the application).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your best advices.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 20, 2009</h2><P>So we must assume that you have some way to find the "previous" or "next" item based on having the id value of the "current" item. I'm not sure how you do that - it depends on your data model and expertise with SQL I'm guessing.</P>
+<P>But if I assume you have some way to get the right data from the database, I'd just have an extra couple factories on the business class:</P>
+<P>var obj = CustomerEdit.GetCustomer(5); // gets customer 5</P>
+<P>var obj = CustomerEdit.GetPreviousCustomer(5); // gets the customer before 5</P>
+<P>var obj = CustomerEdit.GetNextCustomer(5); // gets the customer after 5</P>
+<P>That should make it pretty easy for the UI to do its thing, doesn't complicate the business model at all, and pushes the complexity into the data access layer (or database).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, February 20, 2009</h2><P class=MsoNormal><SPAN>Thanks, Rocky, for your (very) quick answer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I thought to your suggest code, but it adds 4 methods for each entity (GetNextCustomer, GetPreviousCustomer, GetFirstCustomer, GetLastCustomer).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I prefer to add these methods in MyBusinessBase<SPAN>&nbsp; </SPAN>(GetNext, GestFirst, GestPrevious, GetLast).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Do you think it is realist ? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It is sure, it is well (not only for performance) to push the complexity into the database .. but .. I am also the DBA and I am not a truly expert in SQL <SPAN>&nbsp;</SPAN>;-)<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You could do this too:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public enum RecordTypes<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Current,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Previous,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Next<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then in your factories:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var obj = CustomerEdit.GetCustomer(5, RecordTypes.Current);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That doesn&#8217;t cause a lot more factories &#8211; just one
+more parameter per factory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, February 20, 2009</h2><P class=MsoNormal><SPAN>Yes, I think it is a good idea to use a second parameter for the criteria of the Get method of the BO.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Now I need to find good stored proc to do the work.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, February 20, 2009</h2><P class=MsoNormal><SPAN>I think I found good answers for the stored proc on :<SPAN>&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><A href="http://www.sqlteam.com/forums/topic.asp?TOPIC_ID=82422"><FONT color=#800080>http://www.sqlteam.com/forums/topic.asp?TOPIC_ID=82422</FONT></A> <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next:<BR>SELECT </SPAN><SPAN>TOP 1</SPAN><SPAN> * FROM table_name WHERE Field_Name </SPAN><SPAN>&gt;</SPAN><SPAN> Criteria </SPAN><SPAN>ORDER BY SomeKey(s)</SPAN><SPAN><BR><BR>Previous:<BR>SELECT </SPAN><SPAN>TOP 1</SPAN><SPAN> * FROM table_name WHERE Field_Name </SPAN><SPAN>&lt;</SPAN><SPAN> Criteria </SPAN><SPAN>ORDER BY SomeKey(s) <B>DESC</B></SPAN><SPAN><BR><BR>First / Last just leave out the WHERE but keep the ORDER BY<BR><BR>Its a bit more complicated if your CRITERIA is on multiple fields:<BR><BR>Next:<BR>WHERE MyColumn1 &gt; @Parameter1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>OR (MyColumn1 = @Parameter1 AND MyColumn2 &gt; @Parameter2)<o:p></o:p></SPAN></P><SPAN><BR>and the reverse for Previous.<BR><BR></SPAN></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

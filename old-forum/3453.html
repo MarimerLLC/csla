@@ -1,0 +1,31 @@
+<html><header><title>Order Details how to lookup products in combo box</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Order Details how to lookup products in combo box</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3453.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g18c posted on Wednesday, August 29, 2007</h2><P class=MsoNormal><FONT face=Calibri>Hi, until now I had only written simple CSLA based apps where the object child details were simple rows and referenced no other objects themselves. I have a different requirement now however, it is best explained with the Order, OrderDetails scenario. Please excuse my silly questions as I am slightly confused!<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>The Order object would have a list of OrderDetail objects, that im happy with. But each OrderDetail object would have a Product property, whereby the actual product being ordered would be selected. I can think of the problem however in that the combo box would need to be populated with a list of Products (a true instantiated list of objects), and im thinking it is not entirely sensible to pull all that across over the data portal.<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Its past midnight now and rather than pick up the CSLA book I would rather ask for confirmation of my thoughts, in that the correct way of dealing with this is have a property ProductID in the OrderDetail object, which would be an int (or guid, whatever data type the identity is) instead of an actual object? That way I could load the combo box with a name value list. How does that sound?<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I guess to be honest I was thinking about business objects too much and confused myself a little, in terms of modelling the business object so strictly that an object contained a list of OrderDetals, which in turn referenced a true, instantiated Products object. I guess this is the purist form but would lead to massive performance issues, and isn’t entirely sensible.<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I’m about to start some code generation (first time I’ve never used it before) with CSLA Gen and Codesmith, would anybody be kind enough to comment on how the above scenario is dealt with this tool?<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Many thanks for putting up with my ramblings!<o:p></o:p></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Chris<o:p></o:p></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Wednesday, August 29, 2007</h2><P>Hi Chris</P>
+<P>Have a look at the ProjectTracker example that comes in the CSLA download. It has has a couple of master/detail type forms. ProjectEdit is probably the one to look at. Role is the combobox on tne DataGridView.</P>
+<P>Cheers</P>
+<P>Ozi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, August 29, 2007</h2><P>You are right about using the NVL instead of the full blown object.</P>
+<P>Also the use of a ProductID as the key and the Product Descr as the Value are correct.</P>
+<P>Sometimes I will make the NVL a Property of the Order class. </P>
+<P>Other times I will have a larger BO which is used to fetch all the BOs for a screen. This is often called a Use Case Controller as it fetches everything needed for the use case. I called it a Unit Of Work but that is probably not 100% correct - but I have a lot of UOW business objects in my project and I am not anboutto re-name them all. This UOW is simply a normal Root BO that contains other root BOs and NVLs and ROCs and ... (you get the idea).</P>
+<P>It is responsible for saving all the contained BOs in a transaction.</P>
+<P>HTH</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Thursday, August 30, 2007</h2><P>We have an Order Detail - Product scenario too and as we had lots of products we just had a ProductID property on the OrderItem object (plus some readonly ProductName and ProductDescription properties to make the Order UI display nice text).</P>
+<P>In the UI we didn't use a combo to select the product.&nbsp; Instead we used a button that loaded up a search form which called and returned a ReadOnlyCollection of products which the user could then select from.&nbsp; The form then returned the selected PproductID and this was set on the OrderDetail.</P>
+<P>On setting the Product ID we would load up the full Product BO to get the description details (or you might have a lighter object just to get the Name and Description) if you really need to optimise.</P>
+<P>So many ways of doing the same thing.</P>
+<P>We also extended the OrderDetail object to have AddProduct methods which was overloaded so we could AddProduct(ProductID) or AddProduct(ProductObject) or AddProduct(ProductInfoObject).</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

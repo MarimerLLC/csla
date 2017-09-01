@@ -1,0 +1,12 @@
+<html><header><title>How to use method SetIsReadOnly()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use method SetIsReadOnly()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6657.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Monday, March 23, 2009</h2><P>As&nbsp;the title </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, March 24, 2009</h2><font size="2" face="Arial">I'm not quite sure what you mean, Simon. I don't see a SetIsReadOnly method anywhere in CSLA. Please explain?<br><br>Regards<br>Michael</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Wednesday, March 25, 2009</h2><P class=MsoNormal><B>ObjectFactory (090222)<o:p></o:p></B></P>
+<P class=MsoNormal><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=353"><FONT color=#0000ff>http://www.lhotka.net/cslabugs/edit_bug.aspx?id=353</FONT></A></P>
+<P class=MsoNormal>Add a <SPAN class=CodeInline><SPAN><FONT face="Courier New" color=#008000>SetIsReadOnly()</FONT></SPAN></SPAN> method to the <SPAN class=CodeInline><SPAN><FONT face="Courier New" color=#008000>ObjectFactory</FONT></SPAN></SPAN> base class.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>the method shown in the change log, but i don't know how to use it.</o:p></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P>
+<P class=MsoNormal><o:p>thank you for reply.</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 25, 2009</h2><P>SetIsReadOnly() is in 3.6.2. This method is necessary to create a Fetch() method for a ReadOnlyListBase or NameValueListBase object.</P>
+<P>Those objects default to IsReadOnly=true, which means you can't load them with data. So your Fetch() method must set the list to be writable, load the object, then set it to read-only.</P>
+<P>This is the same code you'd write in DataPortal_Fetch(), except that IsReadOnly has no public setter, so you need the SetIsReadOnly() helper to alter the property value.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Thursday, March 26, 2009</h2><P>I see.</P>
+<P>Thank you and your framework. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

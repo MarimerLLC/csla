@@ -1,0 +1,103 @@
+<html><header><title>Translating VB DeepData.DTO.OrderDto.LineItems Setter to C#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Translating VB DeepData.DTO.OrderDto.LineItems Setter to C#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3561.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Tuesday, September 18, 2007</h2><P>I've run the DeepData app in VB debugger a few times and have not hit the OrderDto Setter method ... I'm looking into the "back-door" ? approach to setting _lineItems.</P>
+<P>So #1 I'm curious about the Use Case where&nbsp;</P>
+<BLOCKQUOTE dir=ltr>
+<P>&nbsp;OrderDTO.LineItems =&nbsp; _LineItemDTOArray</P></BLOCKQUOTE>
+<P dir=ltr>Would be called ....</P>
+<P dir=ltr>And&nbsp;am I converting/translating &nbsp;that OrderDTO.LineItems setter method correctly from VB to C# ???</P>
+<P dir=ltr>Thanks,</P>
+<P dir=ltr>Steve</P>
+<P><FONT size=4><STRONG>VB</STRONG></FONT></P>
+<P><FONT size=1>Private _lineItems As List(Of LineItemDto)<BR>&nbsp; &lt;Xml.Serialization.XmlIgnore()&gt; _<BR>&nbsp; Public ReadOnly Property LineItemsList() As List(Of LineItemDto)<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If _lineItems Is Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lineItems = New List(Of LineItemDto)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _lineItems<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp; End Property</FONT></P>
+<P><FONT size=1>&nbsp; Public Property LineItems() As LineItemDto()<BR>&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return LineItemsList.ToArray<BR>&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; <FONT color=#006400><STRONG><FONT size=2>Set(ByVal value As LineItemDto())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lineItems = New List(Of LineItemDto)(value)<BR>&nbsp;&nbsp;&nbsp; End Set</FONT></STRONG><BR></FONT>&nbsp; End Property</FONT></P>
+<P><STRONG><FONT size=4>C#</FONT></STRONG></P>
+<P><FONT size=1>private List&lt;LineItemDto&gt; _lineItems ;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Xml.Serialization.XmlIgnore()]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public List&lt;LineItemDto&gt; LineItemsList&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_lineItems == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lineItems = new List&lt;LineItemDto&gt;();</FONT></P>
+<P><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _lineItems;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public LineItemDto[] LineItems<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return LineItemsList.ToArray();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<STRONG> </STRONG><FONT color=#006400 size=2><STRONG>set<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lineItems = new List&lt;LineItemDto&gt;(value);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></STRONG></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 18, 2007</h2><P>That code exists to support the serialization process. If you aren't serializing your DTOs (like sending them through a web service) then this code would never be run.</P>
+<P>Remember, DeepData illustrates a lot of things, including direct use of a DTO, using a DTO via a web service and using the DTOs created by LINQ. The DTO code supports the first two scenarios, and it is the web service part that you are seeing here.</P>
+<P>Web services like arrays better than lists (they often can't serialize lists). But lists are much easier to work with than arrays. So as a pattern, I expose a list for my internal use, and the array property for the XmlSerializer to use.</P>
+<P>But if you are using the direct DTO approach, then you'd never serialize the DTOs and this code has no value.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Tuesday, September 18, 2007</h2><P>Thanks, Rocky ...</P>
+<P>Our plan may include a web service interface, but we are definitely going to&nbsp; be using a remote data portal .... </P>
+<P>We'll be passing back a serialized business object, right ??&nbsp;... and the framework takes care of that work, right ???</P>
+<P>That method is not used for remote calls via WCF ????</P>
+<P>Steve</P>
+<P>PS .. re the code I supplied ... I was confused by the VB Setter method having a parameter in the signature ...&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x.EquipmentItems = SomeEquipmentDTO_GenericList </P>
+<P>will work ???&nbsp; The C# Setter method is coded correctly ????</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, the data portal passes serialized objects back and forth.
+That is true for all data portal channels, including WCF. The framework (either
+.NET and/or CSLA) does take care of all this for you. All you need to do is mark
+your objects as Serializable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>VB explicitly defines a parameter to the Set block to avoid
+making &#8220;value&#8221; into a reserved word. C# is the same basic
+structure, but the &#8220;value&#8221; field is a mystical creation of the compiler
+</span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tsaltd
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 18, 2007 11:53 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Translating VB DeepData.DTO.OrderDto.LineItems
+Setter to C#<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks, Rocky ...<o:p></o:p></p>
+
+<p>Our plan may include a web service interface, but we are definitely going
+to&nbsp; be using a remote data portal .... <o:p></o:p></p>
+
+<p>We'll be passing back a serialized business object, right ??&nbsp;... and
+the framework takes care of that work, right ???<o:p></o:p></p>
+
+<p>That method is not used for remote calls via WCF ????<o:p></o:p></p>
+
+<p>Steve<o:p></o:p></p>
+
+<p>PS .. re the code I supplied ... I was confused by the VB Setter method
+having a parameter in the signature ...&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;x.EquipmentItems =
+SomeEquipmentDTO_GenericList <o:p></o:p></p>
+
+<p>will work ???&nbsp; The C# Setter method is coded correctly ????<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

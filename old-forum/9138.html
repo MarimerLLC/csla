@@ -1,0 +1,12 @@
+<html><header><title>why Model equals to null?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>why Model equals to null?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9138.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhangxijun posted on Monday, June 28, 2010</h2><p>I use csla for silverlight to build my project, but when the home page loaded, the content display blank, Why&nbsp;the Model equals null ? So I have to load it again?</p>
+<p>even I set receiveTimeout and others to &quot;10:10:00&quot; in ServiceRefrence.Clientconfig file.</p>
+<p>public class HomeViewModel : ViewModel&lt;HomeModel&gt;</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; public HomeViewModel() {&nbsp; BeginRefresh(&quot;BeginGetHomeModel&quot;); }</p>
+<p>&nbsp;&nbsp;&nbsp; protected override void OnRefresh()</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(Model == null){ BeginRefresh(&quot;BeginGetHomeModel&quot;); }&nbsp; //Retrive Model Again!</p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 28, 2010</h2><p>You should check the Error property to see if there&#39;s some exception occurring during that first load.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhangxijun replied on Wednesday, June 30, 2010</h2><p>Thanks, the error message follows:</p>
+<p>DataPortal.Fetch failed(could not load file or assembly &#39;system.ComponentModel.DataAnnatations&#39; or one of its dependencies.</p>
+<p>It seems that I should install the .net framework 3.5 sp1.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

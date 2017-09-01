@@ -1,0 +1,14 @@
+<html><header><title>Authorization rule with an additional boolean parameter</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization rule with an additional boolean parameter</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11795.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Thursday, January 17, 2013</h2><p>Is it possible to create an authorization rule having an additional boolean parameter and the rule result will also depend on the boolean parameter?</p>
+<p>The value of the boolean parameter could change during the life cycle of the instance.</p>
+<p>My question is because when the AddObjectAuthorizationRules() loads the authorization rules the boolean parameter will have a value and that value could change during the life cycle of the instance.</p>
+<p>&nbsp;</p>
+<p>Thanks for your help.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, January 17, 2013</h2><p>The only way would be to create an AuthorizationRule that accepts a lambda expression with statements that use the bool parameter.&nbsp;</p>
+<p>You can also read a value from the actual object (when provided) or read values from f.ex ApplicationContext or your own context within the rules Execute method.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Thursday, January 17, 2013</h2><p>Hi JonnyBee:</p>
+<p>I was thinking in using the AuthorizationContext to access the property Target and then get the value from the property.</p>
+<p>Like in the sample in the book:</p>
+<p>protected override void Execute(Csla.Rules.AuthorizationContext context)</p>
+<p> {</p>
+<p> var target = context.Target as ProductEdit;</p>
+<p>.....</p>
+<p>Can I do that with an interface too?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 17, 2013</h2><p>Yes</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Thursday, January 17, 2013</h2><p>Thanks JonyBee.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

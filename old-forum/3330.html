@@ -1,0 +1,31 @@
+<html><header><title>DataGridView Columns order</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView Columns order</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3330.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SergioTorres posted on Sunday, August 05, 2007</h2><P>Hi There,</P>
+<P>I'm brand new to CSLA, so please forgive my questions.</P>
+<P>I am using a ReadOnlyList and a ReadOnlyChild (which I generated using cslagen)&nbsp;classes to fill a datagridview.</P>
+<P>My problem is that,&nbsp;although my&nbsp;stored procedure has a given&nbsp;columns order, the datagridview columns appear with a different one. My datagridview.autogeneratecolumns property is set to True.</P>
+<P>How can I get the datagridview columns to appear in the same order the stored procedure columns are? Shouldn't it be&nbsp;by default?</P>
+<P>Thanks,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Sunday, August 05, 2007</h2><font size="2"><span>Sergio,</span><br><br><span>The key here is that the datagridview is bound to your ReadOnlyList which is separate from the stored procedure results. Unless you are using an index to retrieve the values from the database, but if you are using the safedatareader and using a string to identify the columns, then it doesn't matter what order the columns are returned in; the objects would be identical. </span><br><br><span>The grid that you are binding to does not even know that this stored procedure really exists, other than the fact that the ReadOnlyList would be using it to create itself.</span><br><br><span>However, I've yet to find any standard sequence in which the columns are created; either in datagridview or using DevExpress XtraGrid (both of which do the same thing). I'm about to start doing some research on this, but am eager to see what over type of responses that you get. Might save me some work!</span><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Monday, August 06, 2007</h2>Ditto! This is a (relatively minor) pain in the rump.<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ambgabi replied on Monday, December 31, 2007</h2><P>I set up my grid once when the form loads.</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ObjectBindingSource</FONT><FONT size=2> _sessionsBindingSource = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ObjectBindingSource</FONT><FONT size=2>();</FONT></P><FONT size=2><FONT size=2>
+<P>_sessionsBindingSource.DataSource = _sessions; //_sessions is a <FONT color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>SessionList</FONT><FONT size=2>, </FONT><FONT color=#008080 size=2>Session</FONT><FONT size=2>&gt;, youmay just want to bind it to a new BusinessBaseList</FONT></P>
+<P><FONT size=2><FONT color=#008000 size=2>foreach (PropertyDescriptor prop_descr in TypeDescriptor.GetProperties</P>
+<P>(typeof(Session), new Attribute[] { new BrowsableAttribute(true) }))</P>
+<P>{</P>
+<P>_sessionsBindingSource.BindableProperties.Add</P>
+<P>(new BindableProperty(prop_descr.Name, prop_descr.DisplayName));</P>
+<P>}</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>foreach</FONT><FONT color=#000000 size=2> (</FONT><FONT color=#008080 size=2>DataGridViewColumn</FONT><FONT color=#000000 size=2> c </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2><FONT color=#000000> grdResults.Columns)</FONT></P>
+<P>{</P>
+<P>c.ReadOnly = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>c.Visible = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> colCounter = 0;</P>
+<P>grdResults.Columns[</FONT><FONT color=#800000 size=2>"ScheduleGroup_Enrollment_Child_Name"</FONT><FONT size=2>].DisplayIndex = colCounter++;</P>
+<P>grdResults.Columns[</FONT><FONT color=#800000 size=2>"ScheduleGroup_Enrollment_Child_Name"</FONT><FONT size=2>].Visible = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>grdResults.Columns[</FONT><FONT color=#800000 size=2>"ScheduleGroup_Enrollment_Child_Name"</FONT><FONT size=2>].Width = 100;</P>
+<P>grdResults.Columns[</FONT><FONT color=#800000 size=2>"ScheduleGroup_Enrollment_Child_Name"</FONT><FONT size=2>].HeaderText = </FONT><FONT color=#800000 size=2>"Child"</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>Rebind it if your source changed</FONT></P><FONT size=2><FONT size=2>
+<P>_sessionsBindingSource.DataSource = _sessions;</P>
+<P>grdResults.DataSource = _sessionsBindingSource;</P>
+<P>&nbsp;</P>
+<P>This way the order of the columns will be as you want them</P>
+<P>Make sure to set them up only once, not every time your source changes</P></FONT></FONT></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

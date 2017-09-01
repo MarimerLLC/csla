@@ -1,0 +1,70 @@
+<html><header><title>OO design: child of multiple collections and validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OO design: child of multiple collections and validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/836.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewCr posted on Monday, August 07, 2006</h2><P class=MsoNormal>A question for the OO gurus here.<SPAN>&nbsp; </SPAN>I’ve read the book, and the “Basic Concepts” thread, but I’m still struggling.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’m working on a delivery dispatch system.<SPAN>&nbsp; </SPAN>I have root objects representing an Order (responsibility: adds and edits a valid order) and Trip (responsibility: adds and edits a valid trip.)<SPAN>&nbsp; </SPAN>These have an N to N relationship, is an order may require several trips, and a trip may carry several orders.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The Order object contains a collection of Stop (responsibility: adds and edits a stop) objects.<SPAN>&nbsp; </SPAN>A Stop includes the information about where the stop is, what to pick up or drop off, when to be there, etc.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The Trip object likewise contains a collection of Stop objects, but possibly from a number of different Orders.<SPAN>&nbsp; </SPAN>The Stops within a Trip are ordered in the way the truck will pick them up and drop them off.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The Stop objects are pretty similar, so I think I can get away with using the same object in both cases, although I’m willing do make them different if need be.<SPAN>&nbsp; </SPAN>The problem is the collections.<SPAN>&nbsp; </SPAN>The OrderStopCollection and the TripStopCollection have different validation logic (the Order wants to know that anything picked up has a matching drop-off, while the Trip wants to know that the Stops remain in order.)<SPAN>&nbsp; </SPAN>If I edit a Stop from either collection, I need to run both sets of validation logic.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>For example, let’s say after an order is entered, a customer calls in and changes the delivery time.<SPAN>&nbsp; </SPAN>I assume I want to instantiate the Order, get the Stop and change that property.<SPAN>&nbsp; </SPAN>However, if the Stop’s already assigned to a Trip, I also need to instantiate the Trip as well and run its validation.<SPAN>&nbsp; </SPAN>And, to validate itself, it may need to load all the other Stops on the Trip.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I know all this derives from having a single object as a child of two different collections (specifically cited as “should be avoided” in chapter 6 of the latest CSLA books.)<SPAN>&nbsp; </SPAN>But I can’t figure out a better way to do this.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Any ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewCr replied on Tuesday, August 08, 2006</h2><P class=MsoNormal>Hmm, no responses?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I’ve looked at this a number of different ways, and I think the biggest problem I keep running into is the notion of validating interrelated objects.<SPAN>&nbsp; </SPAN>It’s fine if the objects form a strict child-parent hierarchy since they can notify each other of changes and all dave together.<SPAN>&nbsp; </SPAN>The problems arise when the validity of an object is based on object(s) that are not part of its family tree.<SPAN>&nbsp; </SPAN>If/when those objects change, is there a good way to find and re-validate all dependent objects.<SPAN>&nbsp; </SPAN>Also, bear in mind that the dependent objects may or may note be instantiated and may even have edits in progress.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Once again, any ideas?<SPAN>&nbsp; </SPAN>Am I trying to do something ridiculous?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marklindell replied on Tuesday, August 08, 2006</h2>I mentioned this to other CSLA members when asking tough design questions.&nbsp; I find it works best if you do the following:<br><br><ol><li>Clearly define all your use cases.</li><li>Design an object graph for each use case</li><li>Refactor your object graphs to satisfy as many as the use cases as possible balancing complexity.</li><li>Then begin to code your CSLA objects.</li></ol>I first encountered this when I was trying to design a graph for a senario where I needed to select single objects from a list and edit them.&nbsp; I could have designed using a BusinessListBase containing BusinessBase objects but instead I choose to use a ReadOnlyListBase containing ReadOnlyBase objects and an additional BusinessBase object to satisfy the edit.&nbsp; I have very complex concurrency rules and the complexity in implementing UI resolution of the single editable object was much simpler than the complexity if many objects were editted and were in various concurrency states.<br><br>If you design a single graph centerned around your complex validation requirements you may find it much simpler than a graph that meets all use cases.<br><br>Sorry I don't have a specific answer to your question but I hope this helps.<br><br>Mark Lindell<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewCr replied on Wednesday, August 09, 2006</h2><P class=MsoNormal>Thanks for the feedback.<SPAN>&nbsp; </SPAN>I’m still in the design stage for the general case I described, so I’m still doing use cases and laying out my object relationships.<SPAN>&nbsp; </SPAN>(Although I’m already coding for a subset of this problem&nbsp;-- pesky deadlines!)<SPAN>&nbsp; </SPAN>Anyway, I guess I’m resigned to the fact that it’s a deceptively hard problem.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If anyone else wants to weigh in on handling objects that are dependent on one another for validation but aren’t parent/children of one another, I’m all ears.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Andy</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>I think that your Stop objects are different for Order from Trip.<br><br>Sure, from a data perspective they both "add and edit a stop". But from a business perspective (which is far more important) they are quite different.<br><br>An Order has a Stop which is all about what to pick up and drop off, and about some guarantee of timely delivery. Additionally, this Stop is a request, not a real stop. In other words, only a Trip has real Stop objects, Orders probably have StopRequest objects.<br><br>A Trip has a Stop which is all about time and place. When to be where, and probably for how long. <br><br>I would suggest that these differences are such that they indicate using seperate objects - at least until you prove to yourself that they are the same.<br><br>But I'd speculate that Trip creation involves reviewing StopRequestInfo objects (another type) to organize them into a set of Stop objects reflecting the most efficient way to route the Trip.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewCr replied on Thursday, August 10, 2006</h2><P class=MsoNormal>Yes, what you say about the differences between the Stop objects is exactly true, and making this change both helps and hinders the inter-object validation problem.<SPAN>&nbsp; </SPAN>On the one hand, the Trip doesn’t have to worry about validating the Stop Requests from the Order, only the sequence of actual Stops, as planned on the Trip.<SPAN>&nbsp; </SPAN>On the other, as we divorce the order requests from the planning objects, the problem re-arises when there are after-the-fact changes/edits in the Order.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Suppose the customer calls back and changes the requested pickup time on the Order.<SPAN>&nbsp; </SPAN>How do we notify the Trip to check that the stops meet the request?<SPAN>&nbsp; </SPAN>Worse yet, suppose we assign a Driver to the Trip based on his availability or other fitness for the job.<SPAN>&nbsp; </SPAN>If the Order changes or the Driver changes (suppose his previous Trip is going to finish late) we need to load and revalidate the Trip.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I know I’m describing a very complex system, and I don’t expect the forum folks here to solve it for me.<SPAN>&nbsp; </SPAN>(Although if you can, I can get you a job. <SPAN>&nbsp;</SPAN>8) <SPAN>&nbsp;</SPAN>)<SPAN>&nbsp; </SPAN>But I do keep running into one recurring problem -- how to validate objects that are dependent on non-parent/non-child objects that can change?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 10, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2>What you are describing though, is another use case - the 
+"existing stop modification" use case or something like 
+that.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2>Don't complicate the "enter an order/add a stop" and 
+"schedule a trip" use cases by merging in this "modification" use case - handle 
+each one by itself. Only merge objects if it is clear _after the fact_ that they 
+have the same responsibility. ("after the fact" means after designing all three 
+use cases, not after coding them...)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2>I think you are thinking too much in terms of what your 
+existing objects can do for you, and not what you can do for your objects (OK, 
+that was bad... &lt;g&gt;)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2>But seriously, focus on the use cases and design them 
+individually - THEN figure out if existing objects can help you, or if you have 
+different objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2>What I'm getting at, is that you may not have 
+"cross-object" validation. The "modify" use case may have its own objects that 
+validate themselves and/or modify the trip in ways that a Trip object (for 
+adding a trip) doesn't do, and is unaware of. The rules for "modify" are 
+possibly quite different from the rules for "add".</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=688015614-10082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P class=MsoNormal>Suppose the customer calls back and changes the requested 
+  pickup time on the Order.<SPAN>&nbsp; </SPAN>How do we notify the Trip to 
+  check that the stops meet the request?<SPAN>&nbsp; </SPAN>Worse yet, suppose 
+  we assign a Driver to the Trip based on his availability or other fitness for 
+  the job.<SPAN>&nbsp; </SPAN>If the Order changes or the Driver changes 
+  (suppose his previous Trip is going to finish late) we need to load and 
+  revalidate the Trip.</P></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

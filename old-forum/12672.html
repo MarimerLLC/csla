@@ -1,0 +1,14 @@
+<html><header><title>CSLA 4 version 4.5.600 release with iOS support</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.5.600 release with iOS support</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12672.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, June 18, 2014</h2><p>This release adds the following key features: </p>
+<ol>
+<li>Support for iOS </li>
+<li>Support for WinRT on Windows Phone 8.1 </li>
+<li>Support for Universal Apps that target WinRT on Windows 8.1 and Windows Phone 8.1 </li>
+<li>A new HttpProxy/Host data portal channel that doesn&#39;t rely on WCF </li>
+<li>A new BrokeredProxy/Host data portal channel that allows a WinRT (Win8) app to call a local data portal running in full .NET</li>
+</ol>
+<p>Here is the <a href="https://github.com/MarimerLLC/csla/issues?milestone=8&amp;page=1&amp;state=closed">version 4.5.600 change log</a>. </p>
+<p>You can download the msi installer from the <a href="https://github.com/MarimerLLC/csla/releases/tag/v4.5.600">release page</a>, or better yet add references to the framework <a href="http://www.nuget.org/packages?q=csla">via NuGet</a>. </p>
+<p>Version 4.5.600 includes support for iOS (via Xamarin) and for WinRT on Windows Phone 8.1 in the WinRT.Phone project. This also means you can use the new Universal solution/project type to build WinRT apps for Windows 8.1 and Windows Phone 8.1. </p>
+<p>This prerelease also includes the new HttpProxy/Host and BrokeredProxy/Host data portal channels. </p>
+<p>The Http data portal channel allows you to host the data portal server directly in ASP.NET MVC 4 or MVC 5 without the need for WCF. It relies only on the HttpClient library to invoke the server, so the client has no dependency on WCF - important for the new Windows Phone 8.1 programming model where WCF doesn&#39;t exist. </p>
+<p>The Brokered data portal channel allows you to host the data portal server in .NET as a brokered assembly, thus available to a WinRT client app. This means you can build a WinRT app that makes data portal calls, where the &quot;server-side&quot; code is also running on the client device, but has access to full .NET. This will only work on Intel-based devices where full .NET assemblies can be deployed. It will only work with side-loaded apps, not apps from the Windows Store.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

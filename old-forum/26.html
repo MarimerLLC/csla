@@ -1,0 +1,400 @@
+<html><header><title>n-level undo and Windows Forms data binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>n-level undo and Windows Forms data binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/26.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, May 08, 2006</h2><P>There's been some discussion around some issues with n-level undo and data binding - specifically some nasty interactions between the BindingSource controls and the IEditableObject interface implemented by BusinessBase.</P>
+<P>(this is the source of at least one thread in the old forum, and at least two email discussions I've been having with readers)</P>
+<P>The primary symptom is that some object ends up with its edit level at 1 even though, by all understanding, all objects should have edit level of 0. </P>
+<P>The most common scenario is where a parent object, with a collection of child objects, is bound to controls on a single form (detail controls for the parent, grid for the child collection). In this scenario, one of the child objects ends up at edit level 1, even though the parent and all other child objects edit levels are at 0 because of an ApplyEdit call.</P>
+<P>After researching this, I think I have the answer. This is not due to a bug in CSLA, or even misbehavior by either data binding or CSLA. Rather it is a lack of complete understanding (at least on my part) as to how to properly use the BindingSource controls (or at least that's how I'm viewing this at the moment <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />)</P>
+<P>When you set up data binding in your form's constructor or load event handler, you may or may not manually call BeginEdit on the parent object (let's call it Employee). Then you set the BindingSource control's DataSource property:</P>
+<P>Dim emp As Employee&nbsp;= Employee.GetEmployee(42)<BR>emp.BeginEdit() ' optional<BR>Me.EmployeeBindingSource.DataSource = emp</P>
+<P>This not only starts data binding on the parent, but on its list of child objects (let's say phone numbers). Data binding, at this point, uses IEditableObject to call BeginEdit on the parent object - which is why the explicit BeginEdit call is optional - that call will happen one way or the other, but CSLA automatically makes sure only one call is actually honored.</P>
+<P>Later, behind your Save button things get complex. In the book what I did (which is wrong) is to call ApplyEdit and Save. This, as it turns out, doesn't work right. Instead, you need to call EndEdit() on the BindingSource controls (not just the parent one, but the child one too!!) like this:</P>
+<P>Me.EmployeeBindingSource.EndEdit()<BR>Me.PhoneListBindingSource.EndEdit()</P>
+<P>The first line automatically calls ApplyEdit (actually IEditableObject.EndEdit) on the parent object, which cases a cascade call down to all child objects. This puts all objects at edit level 0 EXCEPT for the one row in the grid that is currently being edited by the user.</P>
+<P>The second line causes an ApplyEdit (actually IEditableObject.EndEdit) call to the <EM>currently selected</EM> child object in the child collection. The result is that its edit level is now also set to 0.</P>
+<P>With that done, you can proceed to save your object - using or not using the Clone() technique as discussed in the book, etc.</P>
+<P>I think this resolves the issues people have been having. Certainly it appears to resolve them in my testing around this problem. Once I have independant confirmation (which can come from any/all of you who care to test the solution) I'll put entries on <A href="http://www.lhotka.net">www.lhotka.net</A> as errata.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BARRY4679 replied on Monday, May 08, 2006</h2><p>I am seeing what I assume to be another aspect of this problem, which doesn&#39;t involve the save button. <br />To use your example I have an employee with it&#39;s grid of phone numbers. I click on a grid row to open up a modal dialogue box for one of the phone numbers. I do a beginedit in the dialogue box because it would be confusing if a undo action inside the dialogue box was able to undo an uncommitted change which was made back in the mainform. The closing event of my dialogue box has a canceledit.<br /><br />Use of the dialogue box elevates the editlevel of the examined phone number with relation to unexamined phone numbers (presumably due to the implicit beginedit mentined in your post, and Ross&#39; (Tetranz4) post in the old newsgroup.<br /><br />This means that a canceledit back in the mainform can cause corruption, as any rows examined by the dialogue box are not undone.<br /><br />The issue can be resolved by calling canceledit twice on the phone number in the closing event of the dialogue box. Once for my BeginEdit and once for the implicit BeginEdit caused by the attachment of the datasource.<br /><br />However, unless I have a bug of my own this observation seems to call into question whether, in this case, you are correct when you say &quot;but CSLA automatically makes sure only one call is actually honored.&quot; ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 09, 2006</h2><P>CSLA automatically makes sure one call through IEditableObject is honored. It honors <EM>all</EM> explicit calls to BeginEdit, etc. </P>
+<P>But I think your issue comes from the same source. The current row in the grid has its edit level elevated. Then you open your modal dialog, and so that child object's edit level isn't where it should be. I think that <EM>before opening the dialog</EM> you need to do an EndEdit on the BindingSource for the grid, thus lowering the edit level of the child object to match that of its parent and siblings.</P>
+<P>This way the modal dialog can do its own BeginEdit, and Cancel/ApplyEdit (or use the BindingSource to do it).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BARRY4679 replied on Tuesday, May 09, 2006</h2><p>Thanks, that works.<br /><br />I was getting confused thinking that the EndEdit would commit the change, but of course it won&#39;t because the row is a child.<br /><br />This is a tricky issue isn&#39;t it? We are having to explicitly back out the change to an invisible thing (editlevel) which was called by an implict call that we didn&#39;t make. This new .NET data binding support is helping productivity, but has it&#39;s traps for young players.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, May 09, 2006</h2>Just a question (I haven't tested this thoroughly yet):<br>Does this also happen if your collection has allowedit = false and your grid is read only?<br>I'm not sure the collection's allowedit has anything to do here, because it's the child raising it's edit level, but if you have the grid as read only it shouldn't be raising the edit level. Right?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 09, 2006</h2>I haven't tested this with the grid and/or collection disallowing edit.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>albator replied on Tuesday, May 09, 2006</h2><P>Hi<o:p></o:p></P>
+<P>I doesn't make the test with CSLA 2.0 but with the version 1.5 each time you move from one row to another in a readonly grid, BeginEdit is called causing serialization&nbsp;of the data bound business object.<o:p></o:p></P>
+<P>The ApplyEdit /EndEdit/cancelEdit is never called because we don't make any modification operation on the row item.&nbsp; The edit level is incremented by one each time you select another row.<o:p></o:p></P>
+<P>This has big&nbsp;resource and performance impact.<o:p></o:p></P>
+<P>In CSLA 1.5,&nbsp;I made a patch for temporally disable beginedit(serialization) for business object bound to a readonly grid.<o:p></o:p></P>
+<P>Do you think the problem still existing in version 2.0?<o:p></o:p></P>
+<P>Is there another way to avoid BeginEdit execution on readonly grid?<o:p></o:p></P>
+<P>Thanks<o:p></o:p></P>
+<P>Alain<o:p></o:p></P>
+<P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Tuesday, May 09, 2006</h2><P>I was one of the people who had an issue with this, but have not had a chance to do any testing yet.&nbsp; However, I will point out that I feel it is very confusing for a UI developer to have to call BeginEdit on the Object but then EndEdit on the BindingSource, especially when they have to do so for both the parent and child.&nbsp; I get the feeling I will still have to leave the IEditableObject stuff out which is a shame as I do not want to change the Csla unless absolutely necessary.</P>
+<P>John.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 10, 2006</h2><P>1) There is no way I know of to prevent Windows Forms from calling BeginEdit. And if you defeat that call, then the user couldn't press ESC in a grid and have the cancel operation work. In other words, BeginEdit is actually required if you are doing in-place editing in a grid, or the user won't get the expected experience.</P>
+<P>2) You <EM>do not</EM> have to manually call BeginEdit in .NET 2.0. I suggested doing that in the book, and it doesn't hurt anything - but in researching this issue it has become clear that the new BindingSource controls are very aggressive in calling BeginEdit (they do it immediately) and so there is no reason to call BeginEdit manually.</P>
+<P>In .NET 1.x calling BeginEdit manually was wise because it avoided some edge case issues where edits could happen before BeginEdit was called automatically. But in .NET 2.0 this no longer appears to be the case and so I don't think calling it manually is important any more. Hopefully this addresses the UI developer confusion worry.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norma_B replied on Thursday, June 29, 2006</h2><P>I'm hesitant to resurrect an older thread, but I'm having a problem with a situation almost like the one described here.</P>
+<P>I have a Products object (type BusinessListBase) which contains Product objects (BusinessBase). The Products object is bound to a Binding Source, which is used by a grid. Users can select a Product from the grid to display information in databound controls on the same form. That part is &nbsp;working, as well as the code to save the Products back to the database.</P>
+<P>Here's where it goes awry: The users can also select a Product and choose to edit it on another form. That form has a Binding Source, to which I pass the Product in question. They can use it to capture changes, and when closing the form have the choice to keep them (bsProduct.EndEdit) or discard them (bsProduct.CancelEdit). The first time the users open the form, capture changes, and save them, the changes are correctly saved. But second and subsequent times the form is used (and they are that indecisive, I've watched them do it), the changes do not make it, even though Product.IsDirty, IsValid (and therefore IsSavable, IIRC)&nbsp;are all True.</P>
+<P>I've tried every fix proposed in this thread, to no avail. (but I've also put in almost 120 hours at work in the last 7 calendar days, so I'm not feeling very smart) Please tell me what I'm missing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 29, 2006</h2>Do you call EndEdit on the first form's bindingsource, before passing the child object reference to the second form? And is that second form a modal dialog?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norma_B replied on Friday, June 30, 2006</h2>EndEdit yes, Modal no (I'll try that). If they want to continue editing the object on the main form, do I have to call any methods / reset any bindings?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2>I don't know for sure - in that case you are entering 
+territory I haven't researched. You just need to review Chapter 3 in terms of 
+now n-level undo is implemented, and then be aware of how data binding will be 
+invoking IEditableObject "on your behalf".</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2>It seems quite possible that, with a non-modal window, both 
+bindingsource objects will call BeginEdit on your object - elevating your edit 
+level by 2. Yet navigating in the grid from one row to another will cause a call 
+to ApplyEdit or CancelEdit, lowering it by 1 and possibly causing the loss of 
+data in the non-model window.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2>Yeah, the more I think about this, the more I think it 
+won't work. The problem is that you end up with dueling bindingsource objects. I 
+wonder if Microsoft thought through this particular scenario when they created 
+the bindingsource control...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=103470015-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Norma_B [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, June 30, 2006 9:25 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] n-level undo and Windows 
+  Forms data binding<BR></FONT><BR></DIV>
+  <DIV></DIV>EndEdit yes, Modal no (I'll try that). If they want to continue 
+  editing the object on the main form, do I have to call any methods / reset any 
+  bindings?<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Norma_B replied on Friday, June 30, 2006</h2>Thanks for your time, I'll make the detail forms modal and see how that works.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>One thing you can do for debugging is to expose a public 
+CurrentEditLevel property in your objects:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>Public ReadOnly Property CurrentEditLevel() As 
+Integer</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>&nbsp; Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Return EditLevel</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>&nbsp; End Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>End Property</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>This way you could show the value in a label or column and 
+thus monitor the current edit level of the object as it is used over time. You'd 
+be able to see, on the form, what happens to the value.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>You might need to override the CopyStateComplete and 
+similar methods (see the UndoableBase discussion in Chapter 3) to call 
+OnPropertyChanged for CurrentEditLevel so data binding knows when the value 
+changes.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=775364215-30062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Norma_B [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, June 30, 2006 10:39 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: n-level undo and 
+  Windows Forms data binding<BR></FONT><BR></DIV>
+  <DIV></DIV>Thanks for your time, I'll make the detail forms modal and see how 
+  that works.<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Friday, July 21, 2006</h2>Hi Rocky and all<br><br>I'm resurrecting this thread and its related errata for page 491 of the C# book. I'm trying to build my own reference application a bit like ProjectTracker with everything "just right" <br><br>I think there is still an edit level problem when calling CancelEdit(). I can observe this with ProjectEdit.&nbsp; The edit level of the child (ie ProjectResource) being edited does not go down when CancelEdit() is called on Project.<br><br>For debugging, I've exposed a public property EL on Project and ProjectResource which returns Editlevel. Then I have a button on ProjectEdit to show a message box.<br><br>Its kind of confusing clicking around with this but here's one set of steps that appears to go wrong somewhere.<br><br>The following three numbers are edit levels on:<br>_project, _project.Resources[0] and _project.Resources[1]<br><br>Open exiting project for edit<br>1,2,1 (Constructor called BeginEdit otherwise I guess it would be 0,1,0&nbsp; before editing)<br><br>Edit a project field<br>1,2,1<br><br>Hit Cancel.<br>0,2,0<br><br>Edit a project field<br>1,3,1<br><br>Hit Cancel.<br>
+0,3,0<br>
+<br>Edit a project field<br>
+1,4,1<br>
+<br>etc ...<br><br>adding resourcesBindingSource.EndEdit() before _project.CancelEdit() seems to fix it. Does that seem a reasonable thing to do?&nbsp; Also, I wonder if to be consistent with the constructor code we should probably have a _project.BeginEdit() after the CancelEdit(). I guess that doesn't make much difference.<br><br>Thanks<br>Ross<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>There's been some discussion around some issues with n-level undo and data binding - specifically some nasty interactions between the BindingSource controls and the IEditableObject interface implemented by BusinessBase.</p>
+<p>(this is the source of at least one thread in the old forum, and at least two email discussions I've been having with readers)</p>
+<p>The primary symptom is that some object ends up with its edit level at 1 even though, by all understanding, all objects should have edit level of 0.</p>[Snip ...]</div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=403134303-22072006><FONT face=Arial color=#0000ff size=2>I think the ultimate resolution here was that you shouldn't 
+call CancelEdit on the object at all. Though that probably came up in a 
+different thread.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=403134303-22072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=403134303-22072006><FONT face=Arial color=#0000ff size=2>But the end result of this was that you should 
+<EM>only</EM> interact with the bindingsource object in terms of 
+begin/cancel/end edit calls.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=403134303-22072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=403134303-22072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 24, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><div align="left"><span class="403134303-22072006"><font color="#0000ff" face="Arial" size="2">But the end result of this was that you should 
+<em>only</em> interact with the bindingsource object in terms of 
+begin/cancel/end edit calls.</font></span></div>
+<div align="left"><span class="403134303-22072006"></span></div></div></BLOCKQUOTE>Thanks Rocky, that seems to work. My cancel button now calls CancelEdit on the collection bindingSource and then CancelEdit on the root bindingSource.<br><br>A note of caution though. If you have ListChanged events from the collection bubbling up to the root and raising a PropertyChanged event (probably IsDirty), then you need to set RaiseListChangedEvents on the root bindingSource to false before calling the CancelEdits otherwise things get screwed up again. After the cancel you need to call ResetBindings() to catch up. That's the only way I've got it to work properly.<br><br>I'm finding that I really have to observe and test this EditLevel thing carefully. Its very easy to get it wrong.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>derfy replied on Sunday, July 30, 2006</h2><P>Hi, </P>
+<P>Having made some tests on ProjectTracker, i discovered that when CopyState method <BR>gets called on a collection like projects, for example after a manual or a framework-call BeginEdit,&nbsp;&nbsp;_bindingEdit is not set to true on the projectresources child objects as i would have been expected. I'm asking if is this the expected behaviour. If not so, is it correct overriding the&nbsp; CopyStateComplete method on BusinessBase class end setting _bindingEdit to true, there?</P>
+<P>I'm just a CSLA .NET newbie, so forgive me for the silly question, and for my english!</P>
+<P>Thanks,</P>
+<P>Nando</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>_bindingEdit should only be set to true in the case that 
+BeginEdit was called through the IEditableObject interface.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>CSLA .NET supports n-level undo. IEditableObject only 
+supports 1 level undo. The _bindingEdit flag exists to allow IEditableObject to 
+do its 1 level of undo by using the pre-existing n-level undo support in 
+CSLA.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>I discuss this quite a bit in Chapter 3 in the book, I 
+recommend reading through that to get a better understanding of the design 
+tradeoffs involved here.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> derfy [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Sunday, July 30, 2006 11:32 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] n-level undo and Windows 
+  Forms data binding<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi, </P>
+  <P>Having made some tests on ProjecTracker, i discovered that when CopyState 
+  method <BR>gets called on a collection like projects, for example after a 
+  manual or a framework-call BeginEdit,&nbsp;&nbsp;_bindingEdit is not set to 
+  true on the projectresources child objects as i would have been expected. I'm 
+  asking if is this the expected behaviour. If not so, is it correct overriding 
+  the&nbsp; CopyStateComplete method on BusinessBase class end setting 
+  _bindingEdit to true, there?</P>
+  <P>I'm just a CLSA newcomer, so forgive me for the silly question, and for my 
+  english!</P>
+  <P>Thanks.</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>derfy replied on Sunday, July 30, 2006</h2><P>Hi Rocky,<BR>What i missed before, was why the _bindingEdit member of the _project instance is set to true at the<BR>&nbsp;_project.BeginEdit() call in the ResourceEdit constructor, but not the _bindingEdit member of its <BR>ProjectResources children objects. Your timely reply helped me to further clarify the role of the _bindingEdit member.<BR></P>
+<P>Thanks again for your patience.</P>
+<P>Nando.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Sunday, July 30, 2006</h2>Hi all from the other thread.<br><br>I too have put in over 120 hours chasing things related to binding and have to come to the following conclusion: It isn't worth the trouble. I'm going back to my old tried and true FillFormFromObject, and FillObjectFromForm methods. I call the first immediately after the object is populated by query or is new (which handles getting default values up on the form and all other fields cleared) and as the first action in my save button. After FillObjectFromForm has run, obj.IsDirty is true only if there were actually edits so puting the ApplyEdit and Save calls inside a test of obj.IsDirty avoids any unnecessary database calls.<br><br>It's simple, clean and trouble free AND it doesn't take 70 seconds to process the save like the bound version does, it only takes 500 miliseconds.<br><br>My conclusion: The CSLA Framework is great and MS data binding sucks. Any great thing can be dragged down by something really bad so I'm just going to side-step the bad and enjoy the framework.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, January 18, 2007</h2>Mr DanEssen sounds like the project manager who cant graduate from 1999
+technology. yes, FillFormFromObject, and FillObjectFromForm methods
+work fine in our vb6 apps, but that is just what we are attempting to
+replace with business objects and binding sources. One of the aspects
+that some poeple seem to misunderstand is that FillFormFromObject, and
+FillObjectFromForm methods, while reliable, put a totally different
+aspect on the overall application behaviour ( apart from OO) . The main
+aspect being that the business object (class) is not in control.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 18, 2007</h2>Databinding is reliable as well, as long as you use it correctly.&nbsp; It sounds like the speed problems from DanEssen could easily be solved by turning of RaiseListChangedEvents to false while saving, then after the save turning it on again.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, January 18, 2007</h2>Follow the master ajj<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, March 22, 2007</h2>This is an area that needs considerable help for most of my
+co-developers. It is fine to say that it is covered in the book; but
+this does not necessarily help in regard to concrete solutions. (
+Project Tracker for example&nbsp; in v1.1.2 avoids the implementation
+of undo) .<br>
+Let me set out a typical rather basic scenario:<br>
+<br>
+We have a root collection business object.<br>
+This is bound to a DataGridView via a BindingSource.<br>
+In the UI (form) constructor, BeginEdit is set on the collection object. (standard stuff to initiate csla undo)<br>
+An item in the grid is edited and you tab off the row.<br>
+At this point the&nbsp; grid binding has (presumably)_ Applied the edit.<br>
+You now click on Cancel (expecting to apply CancelEdit) but the edited row content remains undone.<br>
+You may also have edited many rows.. again expecting that all edits
+will be undone. As at no point did we manually or programatically call
+Begin, Apply or CancelEdit. Meaning, to most peoples that the edit
+level should still be at the point that we initiated in the constructor
+and that all action since would be undone.<br>
+But this is not the case ... Please explain how we deal with this and achieve the user experience that is expected.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, March 27, 2007</h2>Considering the number of tyre (tire) kickers on this thread, I would have expected more attention from the moderator.<br>The metrics indicate that this is a very important topic ( presumably because the thread title is carefully and appropriately worded by it's initiator)<br>Rocky .. would you please review my last question?<br><br>Jimbo<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 27, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div>In the UI (form) constructor, BeginEdit is set on the collection object. (standard stuff to initiate csla undo)</div></BLOCKQUOTE><br><br>Do not call BeginEdit, AcceptEdit or CancelEdit on the collection object.&nbsp; You must do so on the BindingSource component, so that it can stay 'in the loop.'&nbsp; Also, I think the grid will automatically call BeginEdit for you as soon as you binding the grid to the BS.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div>As at no point did we manually or programatically call
+Begin, Apply or CancelEdit. Meaning, to most peoples that the edit
+level should still be at the point that we initiated in the constructor
+and that all action since would be undone.</div></BLOCKQUOTE><br><br>The grid will call those methods though, so that may not be true.&nbsp; <br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jimbo:</strong></div><div>But this is not the case ... Please explain how we deal with this and achieve the user experience that is expected.</div></BLOCKQUOTE><br><br>I think as long as you call CancelEdit on the BindingSource, you should get the experience you want.&nbsp; Doing so will cause the grid to again call BeginEdit I believe though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, March 27, 2007</h2>ajj,<br>I dont know where you are coming from ...<br>1. your recommendation goes against all that is in the book and the csla application examples.<br>2. The BindingSource control does not implement BeginEdit or IEditableObject etc.<br>Show me an example.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Tuesday, March 27, 2007</h2>ajj,<br>Moving on from my previous reply ... You are certainly right that calling CancelEdit on the BindingSource works in this scenario - but only in some cases. It seems to be unreliable if changes/s have been applied programatically to items in the underlying datasource rather than edited individually in the grid. Presumably we have to do something more to notify windows binding (or csla) that the source data has changed and to reset BeginEdit.<br>But I can still only call BeginEdit on the list (collection) object and am (perhaps) redundantly calling CancelEdit on the list bject <br><br><br>Jimbo</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 27, 2007</h2>Jimbo,<br><br>You're right; there's no BeginEdit on the BS, but I think it will call that automatically for you (there is an EndEdit).&nbsp; As far as going against the book, if you search the forum you'll see that at the time of the writing, Rocky wasn't aware of the problems of not keeping the BS 'in the loop.'&nbsp; He now recommends you interact only with the binding source.<br><br>Now, when you say its unreliable when applying changes programatically.. how are you doing so?&nbsp; Are you calling EndEdit on the binding source?&nbsp; If not, you'll run into similar problems.<br><br>To successfully use the n-level undo, I think you'll have to keep a 'hands off' approach until you actually want to cancel or accept all changes on the collection... and then you should only do so through the binding source.&nbsp; Data binding should be calling BeginEdit for you automatically... what are the specific symptoms?&nbsp; Also, what kind of control are you using?&nbsp; Different controls from other companies behave in slightly different ways, and don't always interact with databinding as you'd expect.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 27, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I was at a conference last week, and am at a different one this
+week (and unfortunately got the flu too &#8211; bad enough I spent half of
+today in the hospital </span><span>L</span><span> )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>While flying out to the conferences I did a little testing on
+this, and my preliminary findings are that the DataGridView calls EndEdit &#8220;on
+your behalf&#8221; when the grid loses focus. Of course it loses focus when you
+click the Cancel button&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your cancel button is on a toolstrip though, then it doesn&#8217;t
+get focus and the issue doesn&#8217;t appear to occur.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I didn&#8217;t post this earlier, because I didn&#8217;t get a
+lot of time to fully explore this effect, but given my past few days, it is
+clear I won&#8217;t get to it until late next week at the earliest. Jimbo, you
+may want to check on this focus/endedit issue and see if putting your cancel
+button in a toolstrip solves your issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 27, 2007 1:28 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: n-level undo and Windows Forms data binding<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Jimbo,<br>
+<br>
+You're right; there's no BeginEdit on the BS, but I think it will call that
+automatically for you (there is an EndEdit).&nbsp; As far as going against the
+book, if you search the forum you'll see that at the time of the writing, Rocky
+wasn't aware of the problems of not keeping the BS 'in the loop.'&nbsp; He now
+recommends you interact only with the binding source.<br>
+<br>
+Now, when you say its unreliable when applying changes programatically.. how
+are you doing so?&nbsp; Are you calling EndEdit on the binding source?&nbsp; If
+not, you'll run into similar problems.<br>
+<br>
+To successfully use the n-level undo, I think you'll have to keep a 'hands off'
+approach until you actually want to cancel or accept all changes on the
+collection... and then you should only do so through the binding source.&nbsp;
+Data binding should be calling BeginEdit for you automatically.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, March 27, 2007</h2>Wow, is that documented somewhere?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 28, 2007</h2><P class=MsoNormal><SPAN>To do my test I just overrode the AcceptChangesComplete and CancelChangesComplete so I could put breakpoints and see the call stack.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Interestingly enough – and this is why I was hesitant to talk about this – my Cancel button code DID NOT RUN after that automatic EndEdit. I can’t believe that’s actually the case, so I assume I had a bug in my test …<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>macu replied on Tuesday, April 10, 2007</h2><P class=MsoNormal><SPAN>I have also problems with DataGridView and undo. I think there is a bug somewhere . How to reproduce it :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>1.Open “ProjectTracker20cs”<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>2.Run PTWin <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>3. login as pm <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>4. Edit <SPAN>&nbsp;</SPAN>“Expert One-on-One VB Business Objects<SPAN>&nbsp; </SPAN>“<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>5. Change Role in all records <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>6. Set focus on one record in the grid <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>7. Press Cancel <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You will se that only 2 rows did undo operation . One row was unchanged . <o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>macu replied on Sunday, May 06, 2007</h2><P class=MsoNormal><SPAN>Look at this : <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> Cancel_Button_Click(<SPAN>object</SPAN> sender, <SPAN>EventArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.projectBindingSource.CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.resourcesBindingSource.CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I transformed it to <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> Cancel_Button_Click(<SPAN>object</SPAN> sender, <SPAN>EventArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.projectBindingSource.DataSource = <SPAN>typeof</SPAN>(ProjectTracker.Library.<SPAN>Project</SPAN>); ;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Project.CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.projectBindingSource.DataSource = Project;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>And noticed that line:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>this</SPAN><SPAN>.projectBindingSource.DataSource = Project;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>calls BeginEdit() twice . <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>one at:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>project.BeginEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>second at:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>project.resources[0].BeginEdit(); <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>this result in situation like this :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>name<SPAN>&nbsp;&nbsp; </SPAN>EditLevel <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>project<SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>1</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource1 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>2<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource2 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource3<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When we fire undo operation it lower our level by one <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>name<SPAN>&nbsp;&nbsp; </SPAN>EditLevel <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>project<SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>0</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource1 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource2 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>0<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource3<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>0 <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>and again there are two calls from binding sources: <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>First:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>name<SPAN>&nbsp;&nbsp; </SPAN>EditLevel <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>project<SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>1</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource1 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>2<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource2 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource3<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>1 <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Second:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>name<SPAN>&nbsp;&nbsp; </SPAN>EditLevel <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>project<SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>1</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource1 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>3<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource2 <SPAN>&nbsp;&nbsp;&nbsp;</SPAN>1<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>resource3<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>1 <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I think that Parent editLevel<SPAN>&nbsp; </SPAN>and collection editLevel should be <SPAN>&nbsp;</SPAN>&gt;= resource editlevel . I tried this : <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>this</SPAN><SPAN>.ResourcesDataGridView.DataSource = <SPAN>typeof</SPAN>(ProjectTracker.Library.<SPAN>ProjectResource</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>((ProjectTracker.Library.<SPAN>ProjectResource</SPAN>)<SPAN>this</SPAN>.resourcesBindingSource.Current).CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>((ProjectTracker.Library.<SPAN>ProjectResource</SPAN>)<SPAN>this</SPAN>.resourcesBindingSource.Current).CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.projectBindingSource.CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.resourcesBindingSource.CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.ResourcesDataGridView.DataSource = resourcesBindingSource;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>On each call:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>((ProjectTracker.Library.<SPAN>ProjectResource</SPAN>)<SPAN>this</SPAN>.resourcesBindingSource.Current).CancelEdit();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>i got BeginEdit() on thesame object so this line does nothing :/<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I dont have a clue how to solove this :( . <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 06, 2007</h2><P>I just discovered this too - the issue (I think) is that there's a bug in the cancel button handler. Notice that the parent bindingsource is canceled before the child - that's wrong. It should be</P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.resourcesBindingSource.CancelEdit();<BR><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>this</SPAN>.projectBindingSource.CancelEdit();</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN><O:P></O:P></SPAN>&nbsp;</P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2><P>It turns out that the <EM>real</EM> solution is a bit more complex than what's been discussed here. In CSLA .NET 3.0 I added code so objects will refuse to apply/cancel their changes if there's a mismatch between the parent and child edit levels. This revealed some lurking issues with Windows Forms data binding and cancel buttons.</P>
+<P>As a result, the new ProjectTracker's PTWin app has corrected code as described in <A href="http://www.lhotka.net/Article.aspx?id=91e15def-fa1c-4236-86b5-b204bfc4a0aa">this article</A>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nagendrad replied on Wednesday, January 17, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>_bindingEdit should only be set to true in the case that BeginEdit was called through the IEditableObject interface.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>CSLA .NET supports n-level undo. IEditableObject only supports 1 level undo. The _bindingEdit flag exists to allow IEditableObject to do its 1 level of undo by using the pre-existing n-level undo support in CSLA.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>I discuss this quite a bit in Chapter 3 in the book, I recommend reading through that to get a better understanding of the design tradeoffs involved here.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=156050220-30072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> derfy [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Sunday, July 30, 2006 11:32 AM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] n-level undo and Windows Forms data binding<BR></FONT><BR></DIV>
+<DIV></DIV>
+<P>Hi, </P>
+<P>Having made some tests on ProjecTracker, i discovered that when CopyState method <BR>gets called on a collection like projects, for example after a manual or a framework-call BeginEdit,&nbsp;&nbsp;_bindingEdit is not set to true on the projectresources child objects as i would have been expected. I'm asking if is this the expected behaviour. If not so, is it correct overriding the&nbsp; CopyStateComplete method on BusinessBase class end setting _bindingEdit to true, there?</P>
+<P>I'm just a CLSA newcomer, so forgive me for the silly question, and for my english!</P>
+<P>Thanks.</P><BR><BR><BR></BLOCKQUOTE></div></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

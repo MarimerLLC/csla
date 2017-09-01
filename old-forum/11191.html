@@ -1,0 +1,26 @@
+<html><header><title>DataPortal_Update fail for one computer only</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Update fail for one computer only</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11191.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel posted on Thursday, February 23, 2012</h2><p>Application return an error message references the </p>
+<p>at myLibrary.SomeList.DataPortal_Update()</p>
+<p>at dm(Object, Object[])</p>
+<p>at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[]parameters))</p>
+<p>during child insert/update.</p>
+<p>What very strange is that it happened only for one computer.</p>
+<p>I tried my application with different accounts and from different computers and only this one give this kind of error.</p>
+<p>How can I explain this?</p>
+<p>This is 3-tier application, so the error happened on a server side.</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 24, 2012</h2><p>To start with you must identify exactly which exception is thrown and the callstack to identify where in the code.</p>
+<p>Then you can dig into what is causing that exception to be thrown.. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Friday, February 24, 2012</h2><p>Thanks,</p>
+<p>I am working on this issue right now....do you have any idea how it can happens only on one particular workstation?</p>
+<p>I am very curious even to get a simple idea for the explanation<img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 24, 2012</h2><p>Some possibilities:</p>
+<ol>
+<li>wrong assembly version</li>
+<li>timezone differences (datetime changes to previous date)</li>
+<li>configuration errors</li>
+<li>....</li>
+</ol></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Pavel replied on Friday, February 24, 2012</h2><p>It is simple when you know the problem....</p>
+<p>It was Regional Setting setup not right on that machine.</p>
+<p>Good programming habit would be a rule: never trust a user setting 
+and convert date types to a right one. It complains on database level, 
+as CAST function was not implemented.</p>
+<p>Thanks again for your help,</p>
+<p>There is no money to buy an experience !!!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

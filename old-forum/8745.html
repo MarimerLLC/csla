@@ -1,0 +1,17 @@
+<html><header><title>visual studio vs 10 RC Could not find default endpoint element that references contract WcfPortal.IWcfPortal in the ServiceModel client configuration section</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>visual studio vs 10 RC Could not find default endpoint element that references contract WcfPortal.IWcfPortal in the ServiceModel client configuration section</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8745.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH posted on Wednesday, March 31, 2010</h2><p>Wondering if anyone is using VS10 RC, CSLA SL, targeting SL 3.0.&nbsp; Here is the scenario:</p>
+<p>1.) Download 3.8.2 samples</p>
+<p>2.) Open RemotePortalWithCompressedProxy with VS10 and allow it to convert.</p>
+<p>3.) Remove the broken references to CSLA and CSLA SL</p>
+<p>4.) Add the 3.8.2 CSLA and CSLA SL&nbsp;projects to the solution - convert as well</p>
+<p>5.) Create project references between the existing projects in the solution to the CSLA projects.</p>
+<p>6.) Build and run (it will build just fine)</p>
+<p>I receive the following exception:</p>
+<p><strong>Could not find default endpoint element that references contract &#39;WcfPortal.IWcfPortal&#39; in the ServiceModel client configuration section. This might be because no configuration file was found for your application, or because no endpoint element matching this contract could be found in the client element.</strong></p>
+<p>Any thoughts?&nbsp; I&#39;ve been at this on and off for weeks now.&nbsp; Unfortunately, I am having the same issue with my production project code, which disallows me from stepping through the CSLA code.&nbsp; Fortunately I can get my code to run if I reference .dll&#39;s rather than project references, but then I do NOT get to walk through CSLA code, which I need to do to fix some bugs (for some reason, my pdb&#39;s are being ignored as well).</p>
+<p>Any thoughts or related experiences would be greatly appreciated!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, March 31, 2010</h2><p>Try dropping the &quot;Csla.&quot; off the start of the contract name so it looks like this</p>
+<p>contract=&quot;WcfPortal.IWcfPortal&quot;</p>
+<p>I had to do this to my clientconfig files to get things to work in VS10. I assume it is a bug in WCF, or perhaps a &quot;feature&quot; of some sort - but for some reason using the full namespace doesn&#39;t work anymore.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Wednesday, March 31, 2010</h2><p>Ok, that helped get past the original exception.&nbsp; But now it can&#39;t find a matching endpoint.</p>
+<p><strong>The remote server returned an error: NotFound.</strong>&nbsp; </p>
+<p>It&#39;s weird, in the WcfProxy.GetProxy() method, the following check is made:</p>
+<p>if (!string.IsNullOrEmpty(this.DataPortalUrl) &amp;&amp; this.Binding != null)</p>
+<p>In my case, this.DataPortalUrl is always null.&nbsp; (Even before I removed the &quot;CSLA&quot; from the contract in teh ClientConfig.&nbsp; Not sure why.&nbsp; I&#39;ll keep cracking at it and update on my progress...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

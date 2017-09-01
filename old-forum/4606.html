@@ -1,0 +1,15 @@
+<html><header><title>Collection was modified; enumeration operation may not execute.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Collection was modified; enumeration operation may not execute.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4606.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan posted on Wednesday, April 02, 2008</h2>I am getting this error intermittently  and I am woundering if anyone else has seen it before. It seems like its in the Csla.Validation.ValidationRules.CheckRules(List`1 list) method but I bought its a CSLA error. Did I implement something wrong? I can send code if need be. We are running version 2.1.0.<br><br>Here is the stack trace on the error:<br><font color="#a9a9a9">System.Web.HttpUnhandledException: Exception of type 'System.Web.HttpUnhandledException' was thrown. ---&gt; System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; Csla.DataPortalException: DataPortal.Fetch failed (System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+   at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+   at System.Collections.Generic.List`1.Enumerator.MoveNext()
+   at Csla.Validation.ValidationRules.CheckRules(List`1 list)
+   at Csla.Validation.ValidationRules.CheckRules()
+   at ASH2.Data.Benefits.Group.ExecuteFetch(Criteria criteria, SqlConnection cn) in C:\projects\Namespaces\ASH2.Data.Benefits\Generated\Group.vb:line 583
+   at ASH2.Data.Benefits.Group.OnFetch(Object criteria) in C:\projects\Namespaces\ASH2.Data.Benefits\Generated\Group.vb:line 567
+   at ASH2.Data.Benefits.Group.DataPortal_Fetch(Object criteria) in C:\projects\Namespaces\ASH2.Data.Benefits\PartialClasses\Group.vb:line 23) ---&gt; Csla.Server.CallMethodException: DataPortal_Fetch method call failed ---&gt; System.InvalidOperationException: Collection was modified; enumeration operation may not execute.
+   at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource)
+   at System.Collections.Generic.List`1.Enumerator.MoveNext()
+   at Csla.Validation.ValidationRules.CheckRules(List`1 list)
+   at Csla.Validation.ValidationRules.CheckRules()
+   at ASH2.Data.Benefits.Group.ExecuteFetch(Criteria criteria, SqlConnection cn) in C:\projects\Namespaces\ASH2.Data.Benefits\Generated\Group.vb:line 583
+   at ASH2.Data.Benefits.Group.OnFetch(Object criteria) in C:\projects\Namespaces\ASH2.Data.Benefits\Generated\Group.vb:line 567
+   at ASH2.Data.Benefits.Group.DataPortal_Fetch(Object criteria) in C:\projects\Namespaces\ASH2.Data.Benefits\PartialClasses\Group.vb:line 23</font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan replied on Monday, April 07, 2008</h2>This issue was fixed in version 3.0.4.<br><br>JT<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

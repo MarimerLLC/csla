@@ -1,0 +1,32 @@
+<html><header><title>Changes to To BusinessRules in 4.3 (or 4.2)?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Changes to To BusinessRules in 4.3 (or 4.2)?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11652.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwadecsee posted on Monday, October 22, 2012</h2><p>Hello,</p>
+<p>I recently upgraded my company&#39;s framework from 4.1 to 4.3. We make pretty extensive use of BusinessRules. We have several different named sets of rules that run in different situations. So in our extension of BusinessBase we have some methods that do stuff like this:</p>
+<p>
+<p><span>void CheckValidationRules()</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; if (this.IsSelfDirty)</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; {</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.SuppressRuleChecking = false;</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = &quot;Validation&quot;;</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = &quot;default&quot;;</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.SuppressRuleChecking = true;</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp;
+&nbsp; &nbsp; }</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;........</span></p>
+<p>&nbsp;</p>
+<p>After the upgrade to 4.3, I had to remove the line that sets the RuleSet back to &quot;default.&quot; I found that every time you change the RuleSet name, any results are being cleared.</p>
+<p>This certainly wasn&#39;t a big deal, I just wanted to confirm that this is expected behaviour. I couldn&#39;t find it documented anywhere. Could anyone confirm?</p>
+</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Joe</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, October 22, 2012</h2><p>Yes, that change was intentional.&nbsp;</p>
+<p>This was done as part of the overhaul to make the rule engine support rules that add XYZResult to other properties.<br />This may have seemed to work earlier - but in reality did not. </p>
+<p>Rulesets should be considered as entirely different sets of rules and cannot be mixed. &nbsp;<br />A BO can only have one active ruleset at any time.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwadecsee replied on Monday, October 22, 2012</h2><p>Great, thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

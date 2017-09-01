@@ -1,0 +1,748 @@
+<html><header><title>CSLA .NET 3.8.0 alpha 3 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8.0 alpha 3 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7703.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, September 29, 2009</h2><P>Just in case you didn't have enough to look at with the 3.7.1 release and VB 3.6.3 release - here's more :)</P>
+<P>CSLA .NET version 3.8.0 alpha 3 is now available.</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG>Windows download</STRONG></A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx"><STRONG>Silverlight download</STRONG></A></LI></UL>
+<P>The primary focus of version 3.8 is to enable more seamless support for the MVVM design pattern in Silverlight and WPF. The alpha 3 release brings the features I’ve been implementing in Silverlight into WPF. </P>
+<P>Also, the samples downloads now include my MVVM experimental applications. I suppose you can call these samples, but they are really the apps I’m using to try out different ideas&nbsp;– so they aren’t what I’d consider a “full sample”. Still, you can see how the various new features work, and how the MVVM features allow creation of at least&nbsp;a basic CRUD UI (with some navigation) with no code-behind any XAML.</P>
+<P><STRONG>Please note </STRONG>that version 3.8 requires System.Windows.Interactivity.dll to build. This assembly is installed with Expression Blend 3, or the Blend 3 SDK. You must install at least the SDK before you can build CSLA .NET 3.8.0.</P>
+<P>The new features (now in Silverlight and WPF) include:</P>
+<UL>
+<LI>New ViewModelBase and ViewModel base classes to simplify the creation of view model types in your application. ViewModelBase provides protected methods to simplify interaction with business object types, and ViewModel is an example subclass that exposes public methods for use by InvokeMethod or Execute 
+<LI>CslaDataProvider enhancements to allow “chaining” of data providers (so a child data provider’s ObjectInstance property can be bound to a property from a parent data provider’s business object) 
+<LI>InvokeMethod enhancements to handle essentially any UI control event, and to invoke either data provider or view model methods, including passing parameter values from data bound sources in the UI. Additionally, InvokeMethod is now fully bindable which simplifies (but changes) the XAML needed to use the control 
+<LI>Execute trigger action, which is somewhat like InvokeMethod, but is an action used within a System.Windows.Interactivity trigger handler. The trigger action model imposes some limitations on data binding, so Execute isn’t quite as powerful as InvokeMethod, but it is more compatible with the Blend 3 designer model 
+<LI>PropertyStatus enhancements so you can bind your UI control’s properties to properties on PropertyStatus to control its visual state. This is instead of having PropertyStatus try to directly manipulate the visual state of the UI control. Additionally, PropertyStatus is now fully bindable which simplifies (but changes) the XAML needed to use the control 
+<LI>MobileFormatter now uses binary XML by default to help improve performance</LI></UL>
+<P>Please give these new features a try and let me know your thoughts.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Wednesday, September 30, 2009</h2>Thanks Rocky,<br><br>I was waiting to see that stuff for WPF <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 01, 2009</h2>How much in flux is the 3.8.0 stuff? I've been following your blog postings and it sounded like you were getting closer to how you were going to handle eventing but still sounded like you were contending with having to do a couple hackish things to make commanding work between the view and viewmodel. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 01, 2009</h2>Commanding just doesn't work (out of the box anyway) with MVVM.<br /><br />All the MVVM UI frameworks out there either replace or extend commanding.<br />CSLA .NET has InvokeMethod and Execute, both of which replace commanding -<br />and work on Silverlight where there is no commanding. They work with the<br />ViewModel class - so if you create your viewmodel classes by subclassing<br />ViewModel it just works.<br /><br />Additionally, the ViewModelBase class can be used to create viewmodel<br />classes that work with any other UI framework. In fact, ViewModel is just<br />a subclass of ViewModelBase that adds public methods for<br />InvokeMethod/Execute. You can subclass ViewModelBase directly and create<br />your own public methods that work with any of the other MVVM UI frameworks<br />out there.<br /><br />So 3.8 is not in flux anymore. I'm pretty comfortable with the approach I'm<br />using to support MVVM and the data provider models - both work well.<br /><br />The last feature I'm adding to 3.8, for Beta 1, is support for data<br />annotation attributes. This is to integrate naturally with the way the<br />Silverlight DataForm works, but also with various other areas of .NET where<br />data annotations are becoming valuable.<br /><br />While working on that, I discovered some oversights and bugs with<br />PropertyStatus (especially on WPF), so those will be fixed too.<br /><br />I really hope to release beta 1 tomorrow (Friday), before I head to Orlando<br />for VS Live. And I really hope people take the time to give beta 1 a good<br />try, because now is the time to provide feedback. Once I get to beta 2 and<br />to release it is obviously too late to make any serious changes in now I'm<br />supporting MVVM, SL3 and data annotations.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, October 05, 2009</h2><P>Rocky,</P>
+<P>I'm plugging in the ViewModel&lt;T&gt; as&nbsp;child ViewModels in my pre-exisiting UI ViewModel.&nbsp; I'm going to expose&nbsp;them &nbsp;as DataXyz depending on how many I end up using.</P>
+<P>When I trigger a save I need to know that all the children have saved okay or do something specific post save.</P>
+<P>Anyhow I need to&nbsp;subscribe to the Saved event which right now is only available by copying what you do in the ViewModelBase of (Model as ISaveable).Saved.&nbsp; Would it not make sense to expose a Saved event in the ViewModel that you can trigger via OnSaved in the ViewModelBase.</P>
+<P>Thanks</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 05, 2009</h2><P>That is a good point. You could see that Model or Error changed - but that'd be awkward too.</P>
+<P>I wonder if ViewModelBase shouldn't have a protected virtual OnSaved() that you can override to do any post-processing. If you want a public Saved method you could implement one, but if you just wanted your viewmodel to alter some properties (and thus indirectly the UI) you could do that too.</P>
+<P>So you could do this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>protected override void OnSaved()<BR>{<BR>&nbsp; if (Error != null)<BR>&nbsp;&nbsp;&nbsp; // handle exception<BR>&nbsp; else<BR>&nbsp;&nbsp;&nbsp; // handle new Model<BR>}</P></BLOCKQUOTE>
+<P>Does this seem like a good plan?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, October 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Works perfectly for me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-05-09 3:06 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>That is a good point. You could see that Model or Error changed - but that'd
+be awkward too.<o:p></o:p></p>
+
+<p>I wonder if ViewModelBase shouldn't have a protected virtual OnSaved() that
+you can override to do any post-processing. If you want a public Saved method
+you could implement one, but if you just wanted your viewmodel to alter some
+properties (and thus indirectly the UI) you could do that too.<o:p></o:p></p>
+
+<p>So you could do this:<o:p></o:p></p>
+
+<blockquote>
+
+<p>protected override void OnSaved()<br>
+{<br>
+&nbsp; if (Error != null)<br>
+&nbsp;&nbsp;&nbsp; // handle exception<br>
+&nbsp; else<br>
+&nbsp;&nbsp;&nbsp; // handle new Model<br>
+}<o:p></o:p></p>
+
+</blockquote>
+
+<p>Does this seem like a good plan?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good, I&#8217;ll make it happen then.</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do not get or see how the CanSave is ever set to true.&nbsp;
+The SetProperties is not really attached to very much.&nbsp; Should it not fire
+when a property in the model changes or something?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I must be missing something...&nbsp; I thought I was getting a
+lot of the plumbing from the DataProvider.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> October-05-09 3:56 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Good, I&#8217;ll make it happen then.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 07, 2009</h2><P>This is a beta, and so there could very easily be bugs - which is why I'm so happy you are working with it! :)</P>
+<P>This is ViewModel&lt;T&gt; you are using?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I hooked up a save button with IsEnabled = MyUIModel.CanSave
+(SomeLogic &amp;&amp; ViewModel&lt;abc&gt;.CanSave).&nbsp; It never enables or
+updates.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I was expecting something to be connected to IsDirty etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-07-09 7:28 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This is a beta, and so there could very easily be bugs - which is why I'm so
+happy you are working with it! :)<o:p></o:p></p>
+
+<p>This is ViewModel&lt;T&gt; you are using?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If IsBusy then CanSave and CanCancel should be false<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-07-09 7:36 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I hooked up a save button with IsEnabled = MyUIModel.CanSave
+(SomeLogic &amp;&amp; ViewModel&lt;abc&gt;.CanSave).&nbsp; It never enables or
+updates.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I was expecting something to be connected to IsDirty etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-07-09 7:28 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This is a beta, and so there could very easily be bugs - which is why I'm so
+happy you are working with it! :)<o:p></o:p></p>
+
+<p>This is ViewModel&lt;T&gt; you are using?<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 07, 2009</h2>On the same OnSaved note, I think it would be nice to also have OnRefreshed as well.  Reason being is that it would be nice to have a spot to plug in error handling during Refresh call.
+
+Thanks.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 07, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div>On the same OnSaved note, I think it would be nice to also have OnRefreshed as well. Reason being is that it would be nice to have a spot to plug in error handling during Refresh call. Thanks.</div></BLOCKQUOTE></P>
+<P>Yes, very good idea!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Should there be an OnXyz for any other?&nbsp; OnCancelled, etc<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also would it be useful nice to be able to force a SetProperties
+call?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-07-09 8:31 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>On the same OnSaved note, I think it would be nice to also
+have OnRefreshed as well. Reason being is that it would be nice to have a spot
+to plug in error handling during Refresh call. Thanks.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Yes, very good idea!<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 07, 2009</h2><P>I don't understand what you are looking for then?</P>
+<P>If I create DoRefresh(string factoryMethodName) as an overload you still can't pass your null?</P>
+<P>Right now I can call DoRefresh() in several ways:</P>
+<P>DoRefresh("NewCustomerEdit");</P>
+<P>DoRefresh("GetCustomerEdit", 123);</P>
+<P>DoRefresh("GetCustomerList", "Ander*", DateTime.Now);</P>
+<P>and so forth.</P>
+<P>What kind of call are you hoping to achieve that isn't currently covered?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 07, 2009</h2>I must be doing something wrong because in the downloaded version I did not see DoRefresh that takes one parameter - it seems to require two.
+
+Thanks.
+Sergey.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 09, 2009</h2>Sergey and Jack, if you have the capability you should probably be grabbing the code out of svn directly. I've addressed some of the issues you've brought up, and will address more as time permits. I really appreciate your feedback - this is very useful!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, October 10, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Unless I'm in the wrong spot I can't get to it.&nbsp; I know I've
+done it before...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>An Exception Has Occurred<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>trunk:
+unknown location<o:p></o:p></span></p>
+
+<p class=MsoNormal><b>HTTP
+Response Status<o:p></o:p></b></p>
+
+<p class=MsoNormal><span>404
+Not Found<o:p></o:p></span></p>
+
+<div class=MsoNormal align=center>
+
+<hr align=center>
+
+</div>
+
+<p class=MsoNormal><b>Python
+Traceback<o:p></o:p></b></p>
+
+<p class=MsoNormal><span>Traceback
+(most recent call last):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+File &quot;C:\Program Files\viewvc-1.0.0\lib\viewvc.py&quot;, line 3629, in
+main<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+request.run_viewvc()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+File &quot;C:\Program Files\viewvc-1.0.0\lib\viewvc.py&quot;, line 314, in
+run_viewvc<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+% self.where, '404 Not Found')<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ViewVCException:
+404 Not Found: trunk: unknown location<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-08-09 11:32 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Sergey and Jack, if you have the capability you should
+probably be grabbing the code out of svn directly. I've addressed some of the
+issues you've brought up, and will address more as time permits. I really
+appreciate your feedback - this is very useful!<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I rearranged the svn repository last week. The new /trunk URL is<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/">http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/</a><o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Sunday, October 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I had a question about the chaining of CSLADataProviders for
+parent/child and what the real use case of this is.&nbsp; Is it basically just
+so you can databind to the child dp in lieu of the parent instead of using dot
+notation?&nbsp; Can you provide a basic&nbsp; example where this would benefit
+a developer?&nbsp; I have lots of UOW type base objects with
+EditableChildLists.&nbsp; I'm just trying to see where this would benefit me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Moving further from that is where does the DataProvider fit with
+the ViewModel?&nbsp; Does it fit in anymore?&nbsp; Or is the fact we can do all
+that in simple code in the ViewModel mean we don't need it (my assumption).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-08-09 11:32 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Sergey and Jack, if you have the capability you should
+probably be grabbing the code out of svn directly. I've addressed some of the
+issues you've brought up, and will address more as time permits. I really
+appreciate your feedback - this is very useful!<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 07, 2009</h2>One more suggestion - have DoRefresh overload that does not take parameters, just factory method name.
+
+Thanks
+Sergey.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 07, 2009</h2>I'm pretty sure DoRefresh() already takes the method name and a param array, so you can use no parameters.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 07, 2009</h2>True, you just cannot pass in Null for param array - Base class throws an exception.  I had to pass in an empty array instead.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 07, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I hooked up a save button with IsEnabled = MyUIModel.CanSave (SomeLogic &amp;&amp; ViewModel&lt;abc&gt;.CanSave).&nbsp; It never enables or updates.</SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>That sounds like&nbsp;a bug, I'll look into it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, October 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Have you tried databinding to the Model property?&nbsp; Say in a
+MainView with a few childViews.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;MyLib.SomeChildView x:Name=&quot;ChildViewABC&quot;
+Model=&quot;{Binding Path=ChildViewABCModel}&quot; /&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is that a supported feature?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:jaddington@alexandergracie.com] <br>
+<b>Sent:</b> October-07-09 7:36 AM<br>
+<b>To:</b> 'cslanet@lhotka.net'<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I hooked up a save button with IsEnabled = MyUIModel.CanSave
+(SomeLogic &amp;&amp; ViewModel&lt;abc&gt;.CanSave).&nbsp; It never enables or
+updates.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I was expecting something to be connected to IsDirty etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-07-09 7:28 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA .NET 3.8.0 Beta 1<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This is a beta, and so there could very easily be bugs - which is why I'm so
+happy you are working with it! :)<o:p></o:p></p>
+
+<p>This is ViewModel&lt;T&gt; you are using?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 08, 2009</h2>I think that should work, though I don't know if I've tried it yet. Model is a dependency property though, so it should be a valid binding target.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 08, 2009</h2>Onre more request - have OnStateChanged (or something like that)- called after Can__ properties are refreshed.
+
+Thank you.
+Sergey.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Luzius replied on Sunday, October 11, 2009</h2><P>Hi Rocky,</P>
+<P>&nbsp;</P>
+<P>do you plan to release an eBook/Video in the next couple months on the new features as an update to the 2008 book?</P>
+<P>&nbsp;</P>
+<P>Regards Luzius</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I am working on a video series for 3.8.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The planned structure for the video series is in two parts.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s the &#8220;core series&#8221; which is a 6 part set covering object
+design, data access, the data portal, security and so forth. Things that are
+common to any interface type. My plan is to sell this core series as a unit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then there&#8217;ll be interface-specific videos for WPF, ASP.NET MVC,
+etc. Those will be sold individually, but will assume you&#8217;ve seen the core
+series first.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

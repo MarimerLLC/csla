@@ -1,0 +1,92 @@
+<html><header><title>Different Business Rules for Same Class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Different Business Rules for Same Class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4918.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ssuing8825 posted on Friday, May 30, 2008</h2><P>I have a class Bank Account to do standard payment senerio. It has a NameOnAccount, AccountNumber, AccountConfirmNumber, and RoutingNumber. The First Case that I had to code used all the fields and was able to add validation for the use case (about 8 rules total).</P>
+<P>Now I have a second use case and the use case doesn't require the NameOnAccount or the AccountConfirm. So the validation is about 4 rules total.</P>
+<P>I could use inheritance to to add rules on top of rules, but that doesn't seem very flexible. What if I wanted different rules based on user role or runtime context</P>
+<P>I could change the actual rules to take into account user role or some other property of the object, but then I would have to write specific rules that can't be reused.</P>
+<P>What I think makes sense is to be able to inject the rules or be able to set a property of the object before the rules are added. But&nbsp; they are added when the object is instanciated, so I never get a chance to get into it.</P>
+<P>What are some strategies/best practices for handling this situation?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In my past experience I always wrote custom rules in such cases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ssuing8825
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 30, 2008 8:25 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Different Business Rules for Same Class<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a class Bank Account to do standard payment senerio. It has a
+NameOnAccount, AccountNumber, AccountConfirmNumber, and RoutingNumber. The
+First Case that I had to code used all the fields and was able to add
+validation for the use case (about 8 rules total).<o:p></o:p></p>
+
+<p>Now I have a second use case and the use case doesn't require the
+NameOnAccount or the AccountConfirm. So the validation is about 4 rules total.<o:p></o:p></p>
+
+<p>I could use inheritance to to add rules on top of rules, but that doesn't
+seem very flexible. What if I wanted different rules based on user role or
+runtime context<o:p></o:p></p>
+
+<p>I could change the actual rules to take into account user role or some other
+property of the object, but then I would have to write specific rules that
+can't be reused.<o:p></o:p></p>
+
+<p>What I think makes sense is to be able to inject the rules or be able to set
+a property of the object before the rules are added. But&nbsp; they are added
+when the object is instanciated, so I never get a chance to get into it.<o:p></o:p></p>
+
+<p>What are some strategies/best practices for handling this situation?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 30, 2008</h2>Sounds like you have two different use cases here, so you should have two different BOs.&nbsp; You can refactor all the common stuff to a third helper class to avoid duplication.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ssuing8825 replied on Friday, May 30, 2008</h2><P>There are indeed 2 use cases here and I can see creating 2 BO. But from flexiblity standpoint it would be nice to compose the BO at runtime vs at design time (at least the rules.). That would give me much more flexibility especially if I had 5 different roles and the validation is different for all of them. I could always change the protection level on the Validatation rules so that I could do that, but wanted to see what others were doing first. To look further, if I had to add a 6th role then I would only have to change the Rules, not add an entirely new BO.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

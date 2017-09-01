@@ -1,0 +1,13 @@
+<html><header><title>BeginRefresh can not asynchronously excute in Csla 4.5.10</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BeginRefresh can not asynchronously excute in Csla 4.5.10</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11704.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Friday, November 16, 2012</h2><p>In my WPF ViewModel &nbsp;populate data as below:</p>
+<p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;public void PopulateData()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BeginRefresh(callback =&gt; ProductCategoryEditList.GetList(callback));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>In Csla 4.3.13 it can&nbsp;asynchronously excute and not block the UI thread. After update to csla 4.5.10. the UI will block until the method are excuted.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 16, 2012</h2><p>Is this with a local or remote data portal configuration?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Friday, November 16, 2012</h2><p>I didn&#39;t config the &nbsp;CslaDataPortalProxy.</p>
+<p>Just now &nbsp;I add &nbsp; &lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Local&quot; /&gt; &nbsp;into app.config. then run the code.</p>
+<p>the problem still exist.</p>
+<p>I</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 16, 2012</h2><p>I am able to confirm this issue, and will add it to the bug list.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,161 @@
+<html><header><title>Child property changes in CSLA 3.5.1 do not cause BusinessListBase to reindex</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child property changes in CSLA 3.5.1 do not cause BusinessListBase to reindex</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6780.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Sunday, April 12, 2009</h2><P>I'm finding changes to an indexed&nbsp;object in the list do not cause it to be reindexed.</P>
+<P>This appears to be because Child_PropertyChanged is not being hooked to PropertyChanged for objects in my list. </P>
+<P>The only reference I can find for Child_PropertyChanged being set as the event handler is in&nbsp;OnDeserialized, so I'm not sure how this works with a local data portal. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2><P>The way the .NET collection base class (BindingList&lt;T&gt;) handles PropertyChanged is odd (broken I think).</P>
+<P>They automatically hook the child object's PropertyChanged events and raise a corresponding ListChanged. However, on deserialization they don't automatically rehook the event processing, and so CSLA has to basically reimplement the code from BindingList&lt;T&gt;. Very sad really.</P>
+<P>But this is why the only explicit hooking of PropertyChanged is on deserialization - because otherwise PropertyChanged is hooked automatically by BindingList&lt;T&gt; itself, outside of the control of my code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, April 13, 2009</h2><P>Can you suggest any way I can trouble-shoot this? </P>
+<P>I must be doing something in my list construction that prevents the event from being hooked the first time, but I sure can't see what it is. </P>
+<P>(1) Newly fetched list: Child_PropertyChanged never called</P>
+<P>(2) Once list deserialized: Child_PropertyChanged called when property changed. </P>
+<P>My BLB class basically reads some objects fetched by the ORM from the database and calls a routine that looks like this:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Add(IEnumerable list)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Stop raising events while the list is modified<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (object o in list)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Get each object to perform any initialization required on itself...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; C businessObject = (C)o;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; businessObject.Init(true);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ...and then add it to the list<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(businessObject);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Start raising events again<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m sorry, I&#8217;m not saying there&#8217;s not a bug in
+the code somewhere.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m just saying that the behavior of the list before and
+after deserialization is fundamentally different.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The Child_PropertyChanged method is designed to duplicate the
+behavior <i>already in BindingList&lt;T&gt;</i>. If we hooked that for a
+non-deserialized object it would break many things, because the behavior (or
+parts of it anyway) would run twice. At a minimum, the ListChanged event would
+get raised twice for each child change, and that&#8217;d be a serious mess.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, April 13, 2009</h2><P>Just to clarify, what I'm observing is "normal"&nbsp; -- e.g. Child_PropertyChanged isn't being called for my lists at all?</P>
+<P>This gets me back to my original problem, which is that the internal LINQ index doesn't stay up to date with changes made to the data in the list after it is loaded. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What you are observing is normal, assuming you aren&#8217;t
+serializing/deserializing your lists.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The original problem sounds like a bug, and it may have crept in
+when I was fixing the ChildChanged event handling for 3.6.2.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are using 3.6.2?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 13, 2009 1:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Child property changes in CSLA 3.5.1 do not
+cause BusinessListBase to reindex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Just to clarify, what I'm observing is &quot;normal&quot;&nbsp; -- e.g.
+Child_PropertyChanged isn't being called for my lists at all?<o:p></o:p></p>
+
+<p>This gets me back to my original problem, which is that the internal LINQ
+index doesn't stay up to date with changes made to the data in the list after
+it is loaded. <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, April 13, 2009</h2><P>Thanks for your patience and help on this.&nbsp; No, I'm using 3.5.1 for the time being. </P>
+<P>It's not a big deal for me at the moment, but I was very concerned I had messed up some some fundamental part of the framework in my intermediate base class implementation. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are quite a few changes in the event handling from 3.6.1
+to 3.6.2, much less 3.5.x. The ChildChanged handling was broken, and it has
+taken a couple revisions to (hopefully) get it working correctly. Obviously
+that affects the LINQ to CSLA index too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,22 @@
+<html><header><title>Visual Inheritance and Generic Forms / Controls Part 2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Visual Inheritance and Generic Forms / Controls Part 2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/80.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Friday, May 12, 2006</h2>Hi all!<br><br>I've updated my Generic Inheritance Sample to add support for altering the inherited controls.<br><br>This means that if your base class contains a button, you'll be able to move it around and change it's properties in the inherited form's designer.<br><br>Since this forum lacks file upload capability I posted it in the old forum:<br><a href="http://groups.msn.com/cslanet/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=26430">Here's the link</a><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Friday, May 12, 2006</h2><P>Side note - it does look like the forum has upload capability, it's just we don't have permission to upload.&nbsp; If you click on the "Options" tab when composing a message, there *is* a File Attachment "Add/Update" button.&nbsp; Just doesn't work (yet).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, May 12, 2006</h2>Sorry, for the ones that don't know what the hell I'm talking about:<br>
+<br>
+-This is a sample you can use to create a base form (that may be MustInherit or not) that supports generic types.<br>
+<br>
+This is an operation that is not supported be the vs designer, but with
+the example I posted you can make the VS 2005 designer support it.<br>
+<br>
+So now you can create a form like :<br>
+Public Class MustInherit MyBaseForm(Of T as BusinessBase(Of T))<br>
+...<br>
+'It can contain things such as:<br>
+'Public Property DataSource As T<br>
+'Public MustOverride Function DoSomething()<br>
+<br>
+'You can also have all your security handled here, or the common save procedures<br>
+'or whatever you think you can reuse....<br>
+...<br>
+End Class<br>
+<br>
+This is a real time saver, it allows you to take advantage of all the great features in .net 2.0 and have a better oo design in your ui.<br>
+<br>
+Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, May 15, 2006</h2>Now that we can post attachments, I decided I might as well do it..!<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>burmajam replied on Tuesday, August 01, 2006</h2>Hi xal<br><br>Few months ago I tried this stuff with C# but couldn't make it. Is there somewhere C# example of this usefull techinque?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, August 01, 2006</h2>Hey!<br>The project I posted is based on this article:<br><font face="Arial,Helvetica,Sans Serif" size="2">http://www.urbanpotato.net/Default.aspx/document/2001<br><br>The original code was in c# and I ported it to vb. The original code didn't have support for generics and it failed to let you control the inherited controls (you couldn't move them around and change their properties).<br><br>It took a lot of time to develop that because I had to do it blindly. Anyway, I currently don't have time to port that to c# but I'd like to. <br><br>One thing I'm not sure about is how c# exposes controls in windows forms. In vb, even though they are actually fields, when you reflect upon the controls, you find that a protected button named "button1" is actually a private field named "_button1" and a protected property named "button1".<br>If the behaviour in c# is the same, you could use the attributes as they are and just reference the dll that contains them (you'd have to make them public though). If it's not, you could still use the attributes, but you just won't be able to drag/resize/alter inherited controls in any way (from the designer). If you really need that (which in 90% of the times I don't) you can just change the fragment of code that uses reflection to get the controls and add them to the design site. It's an event handler in one of the attributes.<br><br>You could also use reflector to help you port it to c#.<br><br>Andrés<br></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

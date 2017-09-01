@@ -1,0 +1,16 @@
+<html><header><title>Server side business objects to Data Access Layer over WCF?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Server side business objects to Data Access Layer over WCF?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8691.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KevinKlasman posted on Thursday, March 18, 2010</h2><p>My company&#39;s architect would like to have the option of moving our data access layer (which will be a separate assembly in any case) off the application server to another server, with communication via WCF. This will be an SL4 application and we&#39;re considering using Csla as the business framework (our first foray into Csla).</p>
+<p>I think he&#39;s thinking that this may allow for greater scalability than simply having multiple application servers running the server side business object and data access layer components together. I&#39;m assuming the latter scenario is possible, although how would the framework know about the multiple&nbsp;application servers?</p>
+<p>Does Csla help in this scenario, or is it really only of value in the client side business object to server side business object communication?</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 18, 2010</h2><p>CSLA .NET for Silverlight supports 2- through 4-tier physical deployments.</p>
+<p>In a 4-tier deployment the tiers are:</p>
+<ol>
+<li>Client</li>
+<li>Web server</li>
+<li>App server</li>
+<li>Database server</li>
+</ol>
+<p>The data portal takes your object from the client through to the app server. You have the opportunity to inspect the object at the web server before allowing it through to the app server, which is important for DMZ security models.</p>
+<p>In general this is not something you do for scalability - 4-tier models are not normally more scalable than 3-tier models.</p>
+<p>This is something you typically do for security, because your web server is external-facing and can&#39;t access the database, so the app needs to tunnel through a second firewall to get past the DMZ into your internal network.</p>
+<p>The reality is that a 4-tier model costs you measurable performance. It <i>might</i> get you scalability, but that&#39;s a long shot. It will get you security, but again, all at the cost of performance.</p>
+<p>The <a href="http://store.lhotka.net">CSLA .NET for Silverlight video series</a> directly covers the n-tier deployment options and shows how to configure each of them.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,18 @@
+<html><header><title>Edit level mismatch in UndoChanges using BindingSourceHelper</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in UndoChanges using BindingSourceHelper</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10883.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda posted on Wednesday, November 16, 2011</h2><p>&nbsp;</p>
+<p>Hi all,</p>
+<p>there is lot of questions about this or similar issues in this forum, but I didn&#39;t found any answer on it. :-(</p>
+<p>Lets start describing the situation. The target application is Windows Forms application.</p>
+<p>I took as an example the ProjectTracker the one with methods (you probably already know) BindUI(), Save() and Cancel() which operate over BindingSourceHelper and it&#39;s BindingSourceNode objects.</p>
+<p>I&#39;m having currently issues when I call Cancel() in which you invoke BindingSourceNode.Cancel(myBO).</p>
+<p>When my business object model is composed from one root without children objects in it, e.g it contains only simple properties, the Cancel works fine and it can undo any changes in it.</p>
+<p>But when my business object has one child object, the problem arrise. When called Cancel, it throws exception &quot;Edit level mismatch in UndoChanges&quot;.</p>
+<p>After a quit long investigation I found that the problem is caused by calling BeginEdit and CancelEdit from two different interfaces. The first one is IEditableObject (from System.ComponentModel) and second one is ISupportUndo (from CSLA). The first one is called by databinding and the second one from my UI through BindingSourceNode object. This creates internal inconsistencies because databinging calls IEditableObject interface by his mind and is called several times. This behaviour of databinding is handled in IEditableObject implementation by using flag, to prevent from being called more then once. On the other hand ISupportUndo allowes to be called any number of times (which is supposed to be allowed).</p>
+<p>So after that I tried to replace ISupportUndo with IEditableObject in Bind, Apple and Cancel methods of BindingSourceNode class. And as I supposed it worked.</p>
+<p>What do you think about it?</p>
+<p>I think it should be correct fix, because you should keep the same number of calls of BeginEdit on business object whether it is called from databinging through IEditableObejct or through ISupportUndo.</p>
+<p>The other question arise, when you want to achieve more then one level of undo. You will not be able to call it through BindingSourceNode, but only through business object, which I think should be also OK.</p>
+<p>&nbsp;</p>
+<p>Thank You very much for your soon answers</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

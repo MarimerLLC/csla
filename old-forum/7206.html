@@ -1,0 +1,22 @@
+<html><header><title>Cancel button is not working anymore after a failed save.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cancel button is not working anymore after a failed save.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7206.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Wednesday, July 01, 2009</h2>Steps in the projecttracker application to reproduce the problem<br>
+- Edit a project<br>
+- Change some fields<br>
+- Stop the database to simulate an error<br>
+- Click on Apply<br>
+- An error will occur as expected because we stopped SQL server<br>
+- Start the database again<br>
+- When we try to cancel the changes (_project.CancelEdit();) nothing happens<br>
+<br>
+I should expect that the cancel should still work because the save
+operation didn't succeeded, so the user should still be able to cancel.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 01, 2009</h2><P>You can do this, but it is relatively expensive, which is why it isn't the default behavior.</P>
+<P>When you save an object, CSLA does this (by default):</P>
+<OL>
+<LI>ApplyEdit() to get edit level to 0</LI>
+<LI>Clone original object</LI>
+<LI>Save clone</LI>
+<LI>If Save succeeds, return new object</LI>
+<LI>If Save fails, return original object </LI></OL>
+<P>If you want the Cancel button to still be available when Save fails, you'll need <EM>another</EM> clone of the object before ApplyEdit() is called. Since cloning an object graph isn't free (in terms of performance), that isn't the default behavior - but you can certainly do that clone yourself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 01, 2009</h2><P>I guess I should be more clear in terms of timing.</P>
+<P>The other issue is that the UI does the ApplyEdit() - <EM>before CSLA gets the object</EM>. So it is actually your UI code that needs to do the clone before calling ApplyEdit() and (probably) before unbinding the object from the UI's data binding.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

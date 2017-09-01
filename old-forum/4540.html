@@ -1,0 +1,35 @@
+<html><header><title>WPF Security Loosing Principal until first save</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF Security Loosing Principal until first save</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4540.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG posted on Sunday, March 23, 2008</h2><P>I have a WPF application using the latest CSLA 3.5<BR><BR>When I first log in and open a form the principal settings are correctly set for the user.</P>
+<P>HOWEVER when I next open a form the credentials are not on the same thread and the UI acts as if I am not authentiacated and they are reset in DataPortal_DataPortalInitInvoke.</P>
+<P>HOWEVER if I save an item that does not check to see if I can save, the credentials from that point forward are reporting the correct user.</P>
+<P>I do have <FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> Csla.DataPortal.DataPortalInitInvoke, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> DataPortal_DataPortalInitInvoke <FONT size=3>in the constructor of the main window's constructor as well</FONT></FONT>&nbsp;the approproate method.</P>
+<P>Putting a stop in DataPortal_DataPortalInitInvoke shows the principal has to be reset each time UNTIL THE FIRST SAVE then it is retained (AKA executing on the same thread)</P>
+<P>Any help would be appreciated</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 23, 2008</h2><P>The only solution I've found is the one in the 3.0 ebook - </P>
+<OL>
+<LI>when the user logs in store the principal in a static/Shared field</LI>
+<LI>in the data portal's init event handler ensure the current principal matches the one in the static/Shared field</LI></OL>
+<P>Ugly and hacky, but WPF explicitly clears the principal following some arcane (and apparently intentional, and even worse seemingly undocumented) rules. The WPF team told me this was intentional and somehow enhances security - but it seems totally messed up to me... Honestly it makes no sense to me at all - but it is what it is...</P>
+<P>However, if you allow the multi-threaded nature of using a data provider to enter the picture then it makes some sense. I still don't know why they clear the main thread - but data providers loading data on a worker thread is a known issue - the worker thread needs your principal and doesn't have it - so the DP_DPInitInvoke can be used to set the principal on that thread.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BillG replied on Monday, March 24, 2008</h2><P>Thanks for the reply</P>
+<P>I was using the model you had from your 3.0 which was still loosing it somehow.&nbsp; I was setting the principle, as you described and illustrated, in the Main window.&nbsp; This exhibited the behavior I described, which still "misplaced" the thread until the first save is successful.&nbsp; </P>
+<P>My solution was to take the login/out functionality out of the main window and into a user control which updated the shared/static filed on the Main window.&nbsp; This seems to address the issue.</P>
+<P>The question still remains WHY</P>
+<P>On another note, I have been an avid reader and "implementor" of your framework since (are I say) VB6 and it keeps getting better!&nbsp;</P>
+<P>This stuff is great and makes developement of serious applications interesting and profitable. </P>
+<P>Thanks for everything you have contrubuted to th ecommunity</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Monday, February 22, 2010</h2><p>Rocky,</p>
+<p>&nbsp;</p>
+<p>I have found that if you set the principle on the AppDomain i.e. <span style="font-size:xx-small;"><font size="1">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#2b91af;font-size:xx-small;"><span style="color:#2b91af;font-size:xx-small;">AppDomain</span></span><span style="font-size:xx-small;">.CurrentDomain.SetThreadPrincipal(principal);</span></p>
+<p><span style="font-size:xx-small;"><span style="font-size:x-small;">You can avoid this bug. Do you see any issues with doing it that way?</span></span></p>
+<p><span style="font-size:xx-small;"><span style="font-size:x-small;"></span></span></p>
+<p><span style="font-size:xx-small;"><span style="font-size:x-small;">Thanks,</span></span></p>
+<p><span style="font-size:xx-small;"><span style="font-size:x-small;">Brette</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 22, 2010</h2><p>SetThreadPrincipal() has some consequences.</p>
+<p>It controls the principal set on threads created from that point forward. And it can only be called once per AppDomain lifetime.</p>
+<p>So if your user must log in before doing anything in the app. And if logging out occurs by shutting down the app. Then this is a good answer.</p>
+<p>However, if your user can interact with the app (possibly creating threads in the threadpool) before logging in, then those threads wouldn&#39;t get the right principal.</p>
+<p>Or if your user can log out and another user log in while the app is running, then this approach won&#39;t work.</p>
+<p>So yes, it is a good answer for some apps, but it is not a general solution.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

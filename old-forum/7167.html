@@ -1,0 +1,61 @@
+<html><header><title>Custom Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7167.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bhavener posted on Thursday, June 25, 2009</h2><P><FONT face=Arial size=2>Rocky,</FONT></P>
+<P><FONT face=Arial size=2>I have implemented Windows-based Authentication with Active Directory checking per your new book 'Expert C# 2008', but I am running into an issue with the authentication and wanted to ask you for a 'best practice'.</FONT></P>
+<P><FONT face=Arial size=2>I have created both CustomPrincipal and CustomIdentity classes which descend from BusinessPrincipalBase and CslaIdentity (respectively). My custom authorization flow needs to go through the following:</FONT></P>
+<P><FONT face=Arial size=2>1) Look at the custom User business object which lives in a property within my CustomIdentity class<BR>2) Inspect one or more properties within the User business object against properties found in the business object being Created/Updated/Read/Deleted<BR>3) Return the type-level authorization&nbsp;based on the results of comparing attributes of the current user to the BO in question</FONT></P>
+<P><FONT face=Arial size=2>I know that the type-based authorization within CSLA is role-based and works in a fashion where each business object only needs to load roles once per application lifecycle and all CRUD operations are then authorized based on teh role of the User. What would you recommend for implementing the authorization I laid out above?</FONT></P>
+<P><FONT face=Arial size=2>Any/all insights are&nbsp;much appreciated!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2><P>I think your only option is to override CanReadProperty() and CanWriteProperty() in a custom base class so you can call some more advanced method on your principal object that accepts the business object and role as parameters.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bhavener replied on Thursday, June 25, 2009</h2><FONT face=Arial size=2>
+<P>I&nbsp;actually don't have any property specific authorization needs - I am looking to handle all of this for CRUD operations. It would seem my best approach to&nbsp;create a custom base class with overrides the AllowCreate(), AllowGet(), AllowEdit(), AllowDelete(), but it looks like those methods are all 'static'??</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You may need to create a parallel authorization object for that
+purpose.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Those methods have to be static, otherwise you&#8217;d be forced
+to create an instance of the object to find out if you are allowed to create an
+instance of the object :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In 3.6 they aren&#8217;t on each business class, they are
+centralized in Csla.Security.AuthorizationRules. And what I&#8217;m suggesting
+then, is that you choose to not use the Csla.Security.AuthorizationRules
+per-type functionality, and instead create your own equivalent that operates on
+broader context information.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Though now that I say that, it occurs to me that what you are
+asking is for a per-instance AllowCreate() method &#8211; which is nonsensical,
+as you&#8217;ve obviously already created the instance and it is too late to
+find out you aren&#8217;t allowed to create the instance&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suppose a per-instance AllowEdit() or AllowDelete() could make
+sense &#8211; and that is something you could add to your custom base class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

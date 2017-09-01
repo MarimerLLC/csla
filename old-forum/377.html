@@ -1,0 +1,33 @@
+<html><header><title>Indexing collections on multiple keys</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Indexing collections on multiple keys</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/377.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveInCO posted on Wednesday, June 14, 2006</h2><P>Hello,</P>
+<P>I recently started a project using CSLA 2.0. So far, I like it pretty well, but there is one common situation that I have come across that&nbsp;I haven't figured out an easy way to accomplish yet.</P>
+<P>I have a collection of objects which contain what basically amounts to static data. It rarely if ever changes, so I typically load it in memory and keep it cached there to avoid having to hit the DB every time I use it. No problem, I could use a ReadOnlyListBase for that.</P>
+<P>The problem comes in that I need to be able to retrieve objects from that collection in different ways. For instance, sometimes I will want to get an object using the Name property as the key, sometimes I might want to get it using the ID of the object. The NameValueListBase comes to mind since it allows you to use the value or the key to retrieve one another. </P>
+<P>But that still won't do the trick, because the value is really an object with several properties on it, not just a value and a key. I can retrieve them by name easy enough, but ID &lt;&gt; index for the collection.</P>
+<P>For example, I would like to do this, but using ReadOnlyBase objects:<BR>(simplified for illustrative purposes)</P>
+<P>MyItem.Name = "This"<BR>MyItem.ID = 7<BR>MyItem.Description = "A description"<BR><BR>MyCollection.Add MyItem<BR><BR>AnotherItem = MyCollection.ItemByName("This") ' Gets the object with the name field = "This"<BR>AnotherItem = MyCollection.ItemByID(7) ' Gets the object with ID field = 7<BR>AnotherItem = MyCollection.Item(0) ' Gets the first object in the collection<BR></P>
+<P>The way&nbsp;I have accomplished this in the past (in VB6) was to create two hidden VB collections within the MyCollection class and add a reference to the MyItem object to each during the Add method, one using the Name as the key and the other using the ID. The ItemByName and ItemById methods simply used the appropriate collection.</P>
+<P>I realize I could write the ItemByName and ItemById methods to simply roll through the collections and return the item matching the appropriate value, but that seems rather inefficient, especially if the size of the collection grew to more than just a handful of items.</P>
+<P>Any suggestions on how to do something similar? </P>
+<P>BTW: I am fairly new to VB.NET as well, although I've done VB since the VB4 days, so maybe there is a way to do this that has nothing to do with the framework...</P>
+<P>Thanks.</P>
+<P>---Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Thursday, June 15, 2006</h2><P dir=ltr><FONT color=#000000>Hi Steve</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><EM><FONT color=#0000ff>"I&nbsp;realize I could write the ItemByName and ItemById methods to simply roll through the collections and return the item matching the appropriate value, but that seems rather inefficient, especially if the size of the collection grew to more than just a handful of items."</FONT></EM></P></BLOCKQUOTE>
+<P dir=ltr>This is the method I use.&nbsp; I havent; had any perfomance issues at all with looping through a collection to find an item.&nbsp; Some of my collections have hundreds of items in them.</P>
+<P dir=ltr>I would suggest getting your largest static data collection, and implementing the "roll through" method and see how long it takes before dismissing the idea.</P>
+<P dir=ltr>Regards</P>
+<P dir=ltr>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, June 15, 2006</h2><P>Steve,</P>
+<P>An alternative answer.&nbsp; Rather than transfering your data into a Read-Only List, could you hide your "list(s)" inside a Read-Only BO in&nbsp;a HashTable(s) instead?&nbsp; </P>
+<P>The HashTable would be private keyed on whatever "key(s)" you need.&nbsp; You could have multiple hidden lists inside the same Read-Only BO.</P>
+<P>That way you can implement whatever lookup strategy you need in the RO class by adding the appropriate methods, but using the hidden HashTable(s) as the source of the data.</P>
+<P>Just an idea.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveInCO replied on Thursday, June 15, 2006</h2><P>David,</P>
+<P>That is an interesting idea. I will look in to that a bit more. </P>
+<P>Thanks!</P>
+<P>---Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Thursday, June 15, 2006</h2>I have to second Craig and say that this is the method I use as well. In fact, if the members of my collections do not use a single int for their PK, I typically provide an indexer using the PK, be it a composite key or Guid or whatever.<br><br>I've successfully used this looping concept on collections containing 6,000+ items with no significant performance degredation.<br><br>If you had 100,000 items, this might not make sense and you should consider another method.<br><br>- John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveInCO replied on Thursday, June 15, 2006</h2><P>John &amp; Craig,</P>
+<P>Thanks for the reply. </P>
+<P>You are correct that in most cases, rolling through the list is no big deal. </P>
+<P>The problem comes in when you have an object that needs a cached object which also references another cached object...and so on. Things start to go up exponentially and performance goes south in a big hurry. Sometimes I'm dealing over&nbsp;100,000 objects.</P>
+<P>I ran in to a situation like that in a previous project I did. There were no performance issues at all for our typical customer, but then we installed a big customer that had one of those cached tables that contained 150 items instead of the typical 10-20. To our shock, wait times for some operations went from 1-2 seconds to 5-10 minutes! </P>
+<P>Needless to say we had to do some quick optimizations, so I'm a little nervous about introducing the same sort of situation again.</P>
+<P>---Steve</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

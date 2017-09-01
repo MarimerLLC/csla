@@ -1,0 +1,34 @@
+<html><header><title>Having issue with EF and CSLA under constant high load</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Having issue with EF and CSLA under constant high load</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12170.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Wednesday, October 02, 2013</h2><p>Hi All,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; I am facing a very peculiar problem with EF. We are having an ERP for educational institutes. The application is written using CSLA 3.5, Silverlight 5,WCF and EF 4 with .NET 4.0. And we are using SQL Server 2008.&nbsp;</p>
+<p>&nbsp;During high usage (say 30 users working at once) the application starts behaving strangely after serveral hours of use. The errors we get are something like these</p>
+<p>&nbsp;</p>
+<pre class="ReadMailPlainText">1) &quot;DataPortal.Fetch failed (The specified cast from a materialized &#39;System.Guid&#39; type to the&nbsp;</pre>
+<pre class="ReadMailPlainText">    &#39;System.Int32&#39; type is not valid.)&quot;</pre>
+<pre class="ReadMailPlainText">2) &quot;DataPortal.Fetch failed (The &#39;GroupName&#39; property on &#39;ModuleShellLicense&#39; could not be set&nbsp;</pre>
+<pre class="ReadMailPlainText">to a &#39;DateTime&#39; value. You must set this property to a non-null value of type &#39;String&#39;. )&quot;</pre>
+<pre class="ReadMailPlainText"></pre>
+<pre class="ReadMailPlainText">3) &quot;at Csla.Server.ChildDataPortal.Fetch(Type objectType, Boolean hasParameters, Object[] parameters)&nbsp;</pre>
+<pre class="ReadMailPlainText">System.InvalidOperationException: The &#39;ID&#39; property on &#39;LanguageType&#39; could not be set to a &#39;Int32&#39; value.&nbsp;</pre>
+<pre class="ReadMailPlainText">You must set this property to a non-null value of type &#39;Guid&#39;.&nbsp;&quot;</pre>
+<pre class="ReadMailPlainText">4) &quot;at Csla.Server.ChildDataPortal.Fetch(Type objectType, Boolean hasParameters, Object[] parameters) &nbsp;</pre>
+<pre class="ReadMailPlainText">System.InvalidOperationException: The &#39;ID&#39; property on &#39;TUTN_Invoice&#39; could not be set to a &#39;Int32&#39; value.&nbsp;</pre>
+<pre class="ReadMailPlainText">You must set this property to a non-null value of type &#39;Guid&#39;.&nbsp;&quot;</pre>
+<pre class="ReadMailPlainText">5) &quot;at Csla.Server.ChildDataPortal.Fetch(Type objectType, Boolean hasParameters, Object[] parameters)&nbsp;</pre>
+<pre class="ReadMailPlainText">System.InvalidOperationException: The specified cast from a materialized &#39;System.Guid&#39; type to&nbsp;</pre>
+<pre class="ReadMailPlainText">the &#39;System.Int32&#39; type is not valid.&quot;</pre>
+<pre class="ReadMailPlainText"></pre>
+<pre class="ReadMailPlainText">Our objectcontext is enclosed in a using block. and for every fetch we create a new objectcontext. We do&nbsp;</pre>
+<pre class="ReadMailPlainText">not get these exception under low load for a long time. But we only get these errors under loads of 30&nbsp;</pre>
+<pre class="ReadMailPlainText">users or&nbsp;more who are using the system constantly for atleast 4-5 hrs or more.</pre>
+<p>The application server is hosted in a quad core xeon server machine with 16 GB ram (We are using two machines one for IIS another for SQL Server). some of the tables like the tables related to grades and attendance have records more than a million each. Also just to let you know we do not have explicit indexes in the foreign key columns in the tables we mentioned (I am not an SQL expert but I think we do needt to add the indexes as well. ). &nbsp;</p>
+<p>I am not sure whom should I start asking for so I started by asking you guys. &nbsp;I would really appreciate if you can give some hints about what could be causing the error.&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Wednesday, October 02, 2013</h2><p>I forgot to mention. SessionState is turned off for the system. And the application is running on its own application pull. The WFC service is configured PerCall</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 02, 2013</h2><p>Have you monitored memory usage on the IIS machines?</p>
+<p>I can&#39;t say those errors look familiar to me, but we had some sort of a very slow leak over time in our application - something that requires a kill of the application pool&#39;s process every week or two.&nbsp; </p>
+<p>We ended up adding a setting to the application pool to recycle itself after it hit a certain memory threshhold.&nbsp;&nbsp; It would recycle and not appear to have any effect on users currently logged in - it ended up solving our problem in particular.</p>
+<p>Who is to say - but what you talk about - heavy usage over a period of time causing the problem - could be indicative of something funky happening that might be resolvable through an app pool recycling.&nbsp; Clearly it&#39;s not the ideal - ideal is we found what exactly was leaking - but this was an easy remedy with no apparent negative consequence for us.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Thursday, October 03, 2013</h2><p>Hi&nbsp;<span>skagen00,</span></p>
+<p><span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Thank you for your reply. I will try to see if we are having a memory leak. Just to let you know we even thought that the app pool may be getting flooded for some unknown reason and as a quick fix we even set recycling to 2 hrs (I know it is insane.). But it is still not helping much. As you said I will keep an eye on the memory usage of that particular app pool in IIS and keep you posted.&nbsp;</span></p>
+<p><span>Regards</span></p>
+<p>Tiklu</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,86 @@
+<html><header><title>A declarative way of handling property changed notifications</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A declarative way of handling property changed notifications</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10941.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stephen.fung posted on Sunday, December 04, 2011</h2><p>We have a large WinForms application based on CSLA.NET, and one of the most painful parts of it has been making sure that all the relevant properties and flags get changed depending on different conditions.</p>
+<p>I recently worked on adding some library code that enables us to declaratively define calculated properties without having to worry about manually carefully implementing INotifyPropertyChanged whenever any of the source properties change. &nbsp;It made our code base much easier to work with. &nbsp;I blogged about it here:</p>
+<p><a href="http://www.archonsystems.com/devblog/2011/12/04/a-declarative-way-of-handling-property-changed-notifications/">http://www.archonsystems.com/devblog/2011/12/04/a-declarative-way-of-handling-property-changed-notifications/</a></p>
+<p>I wanted to bring this up as a suggestion for a future version of CSLA.NET. &nbsp;I think it&#39;s applicable to WPF as well and likely other frameworks, but my experience has only been with WinForms thus far. &nbsp;I can post some more code if anybody&#39;s interested.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, December 04, 2011</h2><p>We&#39;ve done some improvements for CSLA 4.2 and this should be solved by a BusinessRule. </p>
+<p>Take for example this rule:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CalcTotal</span>&nbsp;:&nbsp;Csla.Rules.CommonRules.<span style="color:#2b91af;">CommonBusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_qtyProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;_priceProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;CalcTotal(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;qtyProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;priceProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_qtyProperty&nbsp;=&nbsp;qtyProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_priceProperty&nbsp;=&nbsp;priceProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MobileList</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;()&nbsp;{qtyProperty,&nbsp;priceProperty};
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">dynamic</span>&nbsp;qty&nbsp;=&nbsp;context.InputPropertyValues[_qtyProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">dynamic</span>&nbsp;price&nbsp;=&nbsp;context.InputPropertyValues[_priceProperty];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(qty&nbsp;*&nbsp;price);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}<br /><br />usage: <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CalcTotal</span>(SumTotalProperty,&nbsp;QtyProperty,&nbsp;PriceEaProperty));<br /><br />Now this rule will automatically recalculate the SumTotal whenever Qty or PriceEa is changed  <br />and raise the appropriate OnPropertyChanged event to notify the UI. <br /><br />It is done by one of the enhancements to the rule engine by considering InputProperties as dependencies. <br /><br />You should also note that the rule has no knowledge of the business object type. <br /><br />As for when a user is allowed to read/edit a field should be handled (declaratively) by authorization rules. </pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stephen.fung replied on Tuesday, December 06, 2011</h2><p>Ah that&#39;s great... it&#39;s a big improvement with only a minor conceptual change to the framework! &nbsp;You might want to consider taking that a little further to offer some shorthand notation where you can add these sorts of rules right at the property definition:</p>
+<p>public static PropertyInfo SubtotalProperty = For&lt;Line&gt;(l =&gt; l.Subtotal).Define(l =&gt; l.Qty * l.PriceEa);</p>
+<p>The nice thing about this is the compact syntax, and how it&#39;s clear right from where you define the property how it&#39;s going to be used -- this works really well with Go To Definition in Visual Studio.</p>
+<p>I&#39;ve got something like that working (outside of CSLA). &nbsp;The For method returns an intermediate object, then the Define method parses its expression into input properties and stores a list of these rules. &nbsp;Then there&#39;s a listener whenever a property changes that goes through the list and updates any dependent calculated properties using its expression.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 06, 2011</h2><p>Our current support for at-property-declaration rules uses DataAnnotations attributes. This has the potential to tie into other Microsoft technologies that also use those attributes (such as ASP.NET MVC), and still provides some of the readability you are looking for.</p>
+<p>I don&#39;t know whether you could create a custom attribute that works like you describe, but it might be possible.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, December 15, 2011</h2><p>I like the idea&nbsp;having business calculations in one BusinessRule. That helps to reuse the business calculations across &quot;same&quot; B.O. for different user stories. </p>
+<p>However, I see two minor drawbacks: <br />1) Set calculated values when loading: You must not forget to put a&nbsp;&nbsp;<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">BusinessRules.CheckRules(calcedProperty);</span></span>&nbsp; after all other properties are loaded. <br />2) You cannot reuse the rule as it is in ReadOnlyBase&lt;&gt; (again when values are loaded). Here I think if the core calculation is factored out in a static method of the rule, we can reuse this method. </p>
+<p>Are there other / better&nbsp;ideas solving these points?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, December 15, 2011</h2><p>OOps,</p>
+<p><div style='padding-left: 50px;background-color:silver'><b> stefan cop<br></b>You cannot reuse the rule as it is in ReadOnlyBase&lt;&gt; </div></p>
+<p>I haven&#39;t recognized that there is a BusinessRules property in ReadOnlyBase. Great! </p>
+<p>And kick the rules explicitly&nbsp;when loading is done makes sense.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 15, 2011</h2><p>One more option:</p>
+<p>If you have a calculated value in the getter only (maybe even without using a backing field) all you need is to get a OnPropertyChanged for that field when one of the input property values are changed. </p>
+<p>Meaning - that f you can create an empty rule with just PrimaryProperty and InputProperties:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">NotifyChangedWhenInputChanged</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;NotifyChangedWhenInputChanged(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;inputProperties)&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;InputProperties&nbsp;??&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(inputProperties);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)&nbsp;{&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">and you have f.ex  3 properties in your BO: </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;Param1Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Param1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Param1
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Param1Property);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Param1Property,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;Param2Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Param2);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Param2
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Param2Property);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Param2Property,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;CalculatedProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Calculated);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Calculated
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">,&nbsp;</span><span style="color:mediumseagreen;">{1}</span><span style="color:#a31515;">&quot;</span>,&nbsp;ReadProperty(Param1Property),&nbsp;ReadProperty(Param2Property));&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">and this rule is used: </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">NotifyChangedWhenInputChanged</span>(CalculatedProperty,&nbsp;Param1Property,&nbsp;Param2Property));
+</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">You will get PropertyChanged event (and UI will reread the property value) for CalculatedProperty when </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">any of the input values is changed. </pre>
+</pre>
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, December 15, 2011</h2><p>Ok, that&#39;s a good option for easy calculations. </p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">string</span>&nbsp;Calculated &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">string</span>.Format(<span style="COLOR:#a31515;">&quot;</span><span style="COLOR:mediumseagreen;">{0}</span><span style="COLOR:#a31515;">,&nbsp;</span><span style="COLOR:mediumseagreen;">{1}</span><span style="COLOR:#a31515;">&quot;</span>,&nbsp;ReadProperty(Param1Property),&nbsp;ReadProperty(Param2Property));&nbsp;} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;</p>
+<pre></pre>
+<p></div></p>
+<p>&nbsp;</p>
+<p>But I&#39;m looking for good practice of reusing real business calculation and decisions across different object graphs (for different user stories). </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stephen.fung replied on Monday, December 19, 2011</h2><p>@Rocky: &nbsp;I looked briefly into using attributes, but C# doesn&#39;t allow attributes to take lambda expressions as parameters unfortunately.</p>
+<p>I&#39;ve posted some code for the at-property compact syntax here: &nbsp;<a href="http://www.archonsystems.com/devblog/2011/12/04/a-declarative-way-of-handling-property-changed-notifications/">http://www.archonsystems.com/devblog/2011/12/04/a-declarative-way-of-handling-property-changed-notifications/</a>&nbsp;(link at the bottom). &nbsp;</p>
+<p>I&#39;d appreciate any feedback. &nbsp;The Model.cs file shows the main usage. &nbsp;The example there&#39;s not coupled with CSLA, but I&#39;m sure the concepts could be applied to fit into the CSLA BusinessRules paradigm, perhaps by translating into a custom business rule. &nbsp;I think the main benefit is that by using a lambda expression, the InputProperties can be automatically captured (except for some gotchas with function calls) and the target property value can be set.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

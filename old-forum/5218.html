@@ -1,0 +1,189 @@
+<html><header><title>A very annoying issue in BusinessListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A very annoying issue in BusinessListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5218.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Friday, August 08, 2008</h2>I am developing a small software of school management. In each new school-year the user must do some changes to transfer data from old school-year. Eg, pupils in class 1A will become in class 2A, pupils in class 1B will become in class 2B ... (the number 1, 2 means grade numbers). <br><br>For more clearly, I propose here a simple scenario. My db has a table named TBL_Class that has only 1 field [ClassName] (this field is also marked as PrimaryKey). This table has records like bellow:<br><br>TBL_Class (ClassName)<br>-----------------------------<br>1A<br>1B<br>2A<br>2B<br>3A<br>3B<br>-----------------------------<br>
+<br>As normally, I will create 2 classes in BusinessLogic layer:<br><br>[Serializable]<br>puplic class Class : BusinessBase&lt;Class&gt;<br>{<br>&nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; public string ClassName { ... }<br>&nbsp;&nbsp;&nbsp; ...<br>}<br><br>[Serializable]<br>
+puplic class ClassList : BusinessBaseList&lt;ClassList, Class&gt;<br>
+{<br>&nbsp;&nbsp;&nbsp; ...<br>
+}<br><br>In each new school-year, the user will make changes on ClassList like bellow:<br><br>ClassList list = ClassList.GetClassList();<br><br>// Delete class of the last grade (3A, 3B)<br>list.RemoveAt(5);<br>list.RemoveAt(4);<br><br>// Changes 2B-&gt;3B, 2A-&gt;3A, 1B -&gt; 2B, 1A -&gt; 2A<br>list[3].ClassName = "3B";<br>list[2].ClassName = "3A";<br>
+list[1].ClassName = "2B";<br>
+list[0].ClassName = "2A";<br>
+<br>// Add 2 new classes 1A, 2A<br>Class item;<br>item = list.AddNew()<br>item.ClassName = "1A";<br>item = list.AddNew()<br>
+item.ClassName = "1B";<br><br>// Error will occur when Save<br>list.Save(); <br>
+----------------- End ----------------<br><br>You see that all changes user has done with ClassList are totally correct but user cannot Save the list to db. An error always occurs. <br><br>If you read the code of BusinessBaseList.Save method you will see the list Saves dirty items from begin to end of list. In my scenario:<br>1. ClassList Delete 2 item "3B", "3A". That's OK, no error. Now the table TBL_Class has 4 records ("1A", "1B", "2A", "2B")<br>2. ClassList Saves dirty items. Firstly, ClassList saves the first item "2A" in to the first record. Unfortunately, the TBL_Class already contains "2A" in the third record. So the error occurs.<br><br>Until now, I cannot find any good solution to resolve this issues. I hope to receives suguestions to resolve this headadche problem. <br><br>Thank you very much.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, August 09, 2008</h2><P>This problem really isn't specific to BusinessListBase (BLB). If you had been using another interface that saved the changes as you went, you would have gotten errors as you went along. </P>
+<P>Anytime you are reusing primary keys like this there is the potential for problems for which the solution can be&nbsp;non-trivial. </P>
+<P>One possibility (haven't looked at the CSLA code) would be for you to override the Save() code and save the items in an order that the database would allow, but this would require you to analyze the changes and save the non-conflicting ones first. </P>
+<P>I still think&nbsp;there is the potential for problems you can't solve this way, though. </P>
+<P>Say you only have 2 items in your list, 1A and 2A. </P>
+<P>The user wants to swap these. This cannot be done in one step like you are proposing without an intermediate rename of one of the classes to some other value that the user didn't even directly specify. </P>
+<P>(That being said, maybe you could craft a soluton that renames ALL the items in the list to some temporary value say you put -T at the end, and then renames them again to the desired user values)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Saturday, August 09, 2008</h2><p><b>This problem really isn't specific to BusinessListBase (BLB). If you had been using another interface that saved the changes as you went, you would have gotten errors as you went along. </b></p>
+<p>I am 100% sure there is not any error in code of Class and ClassList. <br></p><p><b>Anytime you are reusing primary keys like this there is the potential for problems for which the solution can be&nbsp;non-trivial. </b></p>
+<p>For a simplified scenario, so I propose the TBL_Class have only filed ClassName. The same error also occurs if I add ClassId filed and mark it as PrimaryKey.&nbsp; Of course in this case the ClassName has UniqueKey. <br></p><p><b>One possibility (haven't looked at the CSLA code) would be for you to override the Save() code and save the items in an order that the database would allow, but this would require you to analyze the changes and save the non-conflicting ones first. </b></p>
+<p>The snippet code above only mimics a case that user usually does to transfer data from old school-year to new school-year. But user can do many other ways.<br></p>
+<p><b>I still think&nbsp;there is the potential for problems you can't solve this way, though.Say you only have 2 items in your list, 1A and 2A. </b></p>Of course, no error occurs if there are 2 items in ClassList. Maybe my English is too bad so you did not understand exactly this issue.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, August 10, 2008</h2><P>I based my reply on this specific reference to the error in your first post:</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Cuong:</strong></div><div></P>
+<P>2. ClassList Saves dirty items. Firstly, ClassList saves the first item "2A" in to the first record. Unfortunately, the TBL_Class already contains "2A" in the third record. So the error occurs.<BR></div></BLOCKQUOTE></P>
+<P>So, you are trying to save multiple primary key changes at the same time. If a record with a primary particular key value already exists in the database, it can't be saved. </P>
+<P>So, your other 2A record has to be renamed "out of the way" before the first one can be saved. The user changed it's name, so if it has been saved first, it <EM>might </EM>have worked, but my last comment was that you can contrive a case when the user is manually changing keys like this that can't be solved without programmatically doing a temporary rename of the values to avoid a key conflict. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, August 11, 2008</h2><P>From your first post:</P>
+<P><EM>My db has a table named TBL_Class that has only 1 field [ClassName] (this field is also marked as PrimaryKey). </EM></P>
+<P>So, I assume you are getting a primary key violation (for reasons I discussed earlier). </P>
+<P>One approach you might consider this that would avoid the problem is having an explicit "Promote" function to promote a class from one grade to the next. This function could delete the existing class (e.g. if it's the last grade and isn't needed any more) first, and then apply the class name change to the class that is moving up. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo replied on Monday, August 11, 2008</h2>This looks much more like a database design issue than a CSLA one.&nbsp; You are using a natural key (ClassName) when you need a surrogate key.&nbsp; Since the data that you are using as a primary key is variable (changes each year), you end up with changing keys.&nbsp; This rarely works. is almost always a sign that something is wrong, and as you have found, non-trival to implement.<br><br>I would suggest that you create a "real" primary key column (like ClassId) for each class of pupils (int or guid) to your Class table.&nbsp;&nbsp; Make your classnames value (1A, 1B)  a foreign key to a "ClassNames" table.&nbsp; Then you will be able to just update the ClassName pointer when you roll-over the year.<br><br>I would also think you would want YearFrom and YearTo fields on your Class table and then do new inserts when you roll over the year.&nbsp; Otherwise you are overwriting last year's data with no historical record?&nbsp;&nbsp; Actually if you added these to your ClassName key you would end up with a compsite key (classname, yearto, yearfrom) that would allow you to roll forward the year by doing an insert without the need for the serrogate key.<br><br>Of course one nice thing about using the ClassId key would be that other tables such as Pupil could reference the Class table by a single key; thus simplifying the joins.<br><br>Cheers.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Sunday, August 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>You should give here errors for more
+detail. I think you use incorrect template?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Which template do you use for Class?
+ClassList? Lookup in <b><span>Template folder<o:p></o:p></span></b></span></font></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><b><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></b></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Are you from Vietnam? Contact me at yahoo chat: nhat_nam_2008<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<div>
+
+<div class=MsoNormal align=center><font size=3 face="Times New Roman"><span>
+
+<hr align=center>
+
+</span></font></div>
+
+<p class=MsoNormal><b><font size=2 face=Tahoma><span>From:</span></font></b><font size=2 face=Tahoma><span> Cuong [mailto:cslanet@lhotka.net] <br>
+<b><span>Sent:</span></b> Saturday, August 09, 2008
+08:37<br>
+<b><span>To:</span></b> phucphlq@softech.vn<br>
+<b><span>Subject:</span></b> [CSLA .NET] A very
+annoying issue in BusinessListBase</span></font><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=3 face="Times New Roman"><span>I am developing a small software of school management. In each new
+school-year the user must do some changes to transfer data from old
+school-year. Eg, pupils in class 1A will become in class 2A, pupils in class 1B
+will become in class 2B ... (the number 1, 2 means grade numbers). <br>
+<br>
+For more clearly, I propose here a simple scenario. My db has a table named
+TBL_Class that has only 1 field [ClassName] (this field is also marked as
+PrimaryKey). This table has records like bellow:<br>
+<br>
+TBL_Class (ClassName)<br>
+-----------------------------<br>
+1A<br>
+1B<br>
+2A<br>
+2B<br>
+3A<br>
+3B<br>
+-----------------------------<br>
+<br>
+As normally, I will create 2 class in BusinessLogic layer:<br>
+<br>
+[Serializable]<br>
+puplic class Class : BusinessBase&lt;Class&gt;<br>
+{<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+&nbsp;&nbsp;&nbsp; public string ClassName { ... }<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}<br>
+<br>
+[Serializable]<br>
+puplic class ClassList : BusinessBaseList&lt;ClassList, Class&gt;<br>
+{<br>
+&nbsp;&nbsp;&nbsp; ...<br>
+}<br>
+<br>
+In each new school-year, the user will make chages on ClassList like bellow:<br>
+<br>
+ClassList list = ClassList.GetClassList();<br>
+<br>
+// Delete class of the last grade (3A, 3B)<br>
+list.RemoveAt(6);<br>
+list.RemoveAt(5);<br>
+<br>
+// Changes 2B-&gt;3B, 2A-&gt;3A, 1B -&gt; 2B, 1A -&gt; 2A<br>
+list[4].ClassName = &quot;3B&quot;;<br>
+list[3].ClassName = &quot;3A&quot;;<br>
+list[2].ClassName = &quot;2B&quot;;<br>
+list[1].ClassName = &quot;2A&quot;;<br>
+<br>
+// Add 2 new classes 1A, 2A<br>
+Class item;<br>
+item = list.AddNew()<br>
+item.ClassName = &quot;1A&quot;;<br>
+item = list.AddNew()<br>
+item.ClassName = &quot;1B&quot;;<br>
+<br>
+// Error will occurs when Save<br>
+list.Save(); <br>
+----------------- End ----------------<br>
+<br>
+You will see that all changes user has done with ClassList are totally correct
+but user cannot Save the list to db. An error always occurs. <br>
+<br>
+If you read the code of BusinessBaseList.Save method you will see the list
+Saves dirty-items from begin to end of list. In my scenario:<br>
+1. ClassList Delete 2 item 3B&quot;, &quot;3A&quot;. That' OK, no error. Now
+the table TBL_Class has 4 records (&quot;1A&quot;, &quot;1B&quot;,
+&quot;2A&quot;, &quot;2B&quot;)<br>
+2. ClassList Saves dirty items. Firstly, ClassList saves the item
+&quot;2A&quot; in to the first record. Unfortunately, the TBL_Class already
+contains &quot;2A&quot; in the third record. So the error occurs.<br>
+<br>
+Until now, I cannot find any good solution to resolve this issues. I hope to
+receives suguestions to resolve this headadche proble. <br>
+<br>
+Thank you very much.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Monday, August 11, 2008</h2>Yes, I am from VN (Vinh, Nghe An).<br><br>I already described the reason why the error occurs in post #1. And I am 100% sure there is not any error in code of Class, ClassList.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

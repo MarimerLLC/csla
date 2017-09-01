@@ -1,0 +1,82 @@
+<html><header><title>Silverlight Unit Testing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Unit Testing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6189.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC posted on Sunday, January 18, 2009</h2>One weakness of silverlight at the moment seems to be the lack of unit testing options compared to dotNet. From what I can see both NUnit and MbUnit doesn't support it.<br>For consistency I would prefer to use the same framework for my dotNet and silverlight tests. I don't know much about the Microsoft testing framework and I've heard some bad things about it but it has probably matured since then.<br>One problem I do have with it is the testing program is integrated into the IDE. Although that has some advantages I've found that it's more trouble than it's worth. Too many times when I've used that setup I've being stepping through my tests, found out what's wrong and without thinking about it hit stop which means that my cleanup code doesn't get run (and I have to go through my database and manually clean it up). I much prefer the NUnit runner separate and attaching to the process. When I hit stop it just stops being attach but the program keeps running and runs my clean up code.<br><br>I know that Rocky has written UnitDriven.NET but there really isn't a lot of documentation on it. What's the best setup for testing a silverlight, dotNet solution?<br><br>Thanks,<br>Chris.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, January 18, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you would like to see UnitDriven testing examples, you can
+see them in SVN under cslalighttest/unittest.&nbsp; It illustrates pretty well
+how to use the framework.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> TAC
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 18, 2009 5:00 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight Unit Testing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>One weakness of silverlight at the moment seems to be the
+lack of unit testing options compared to dotNet. From what I can see both NUnit
+and MbUnit doesn't support it.<br>
+For consistency I would prefer to use the same framework for my dotNet and
+silverlight tests. I don't know much about the Microsoft testing framework and
+I've heard some bad things about it but it has probably matured since then.<br>
+One problem I do have with it is the testing program is integrated into the
+IDE. Although that has some advantages I've found that it's more trouble than
+it's worth. Too many times when I've used that setup I've being stepping
+through my tests, found out what's wrong and without thinking about it hit stop
+which means that my cleanup code doesn't get run (and I have to go through my
+database and manually clean it up). I much prefer the NUnit runner separate and
+attaching to the process. When I hit stop it just stops being attach but the
+program keeps running and runs my clean up code.<br>
+<br>
+I know that Rocky has written UnitDriven.NET but there really isn't a lot of
+documentation on it. What's the best setup for testing a silverlight, dotNet
+solution?<br>
+<br>
+Thanks,<br>
+Chris.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

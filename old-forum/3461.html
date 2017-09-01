@@ -1,0 +1,51 @@
+<html><header><title>Exception of type System.StackOverflowException was thrown</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception of type System.StackOverflowException was thrown</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3461.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Aqalmal posted on Friday, August 31, 2007</h2><P>Hello,</P>
+<P>I am a beginer user of CSLA. I am reading </P>
+<H1><A name=_Toc167096514></A><A name=_Toc122852662><SPAN><SPAN>Expert C# Business Objects</SPAN></SPAN></A><SPAN> <o:p></o:p></SPAN></H1>
+<P class=MsoNormal><FONT size=2><SPAN>Rockford</SPAN><SPAN> Lhotka<o:p></o:p></SPAN></FONT></P>
+<P class=first-para><FONT face=Arial size=2>Apress®</FONT></P>
+<P class=copyright><SPAN>© 2004 Rockford Lhotka</SPAN></P>
+<P class=copyright><SPAN>I complete the CSLA frame work and Project Tracker from this book.</SPAN></P>
+<P class=copyright><SPAN>When I try to create a new instance of Project class I received the following Error.</SPAN></P>
+<P class=copyright><SPAN>I compare my code with one on the Web site its look like same.</SPAN></P>
+<P class=copyright><SPAN><FONT color=#ff0000><STRONG>Line 77:&nbsp;&nbsp;&nbsp;	return Activator.CreateInstance(businessType, true);<BR></STRONG></FONT></SPAN></P>
+<P class=copyright><SPAN><FONT color=#000080>StackOverflowException: Exception of type System.StackOverflowException was thrown.]<BR><BR>[TargetInvocationException: Exception has been thrown by the target of an invocation.]<BR>&nbsp;&nbsp; System.RuntimeType.CreateInstanceImpl(Boolean publicOnly) +0<BR>&nbsp;&nbsp; System.Activator.CreateInstance(Type type, Boolean nonPublic) +66<BR>&nbsp;&nbsp; CSLA.Server.DataPortal.CreateBusinessObject(Object criteria) in d:\myprojects\visual studio projects\csla\csla.server.dataportal\dataportal.cs:77<BR>&nbsp;&nbsp; CSLA.Server.DataPortal.Create(Object criteria, Object principal) in d:\myprojects\visual studio projects\csla\csla.server.dataportal\dataportal.cs:142<BR>&nbsp;&nbsp; CSLA.DataPortal.Create(Object criteria) in d:\myprojects\visual studio projects\csla\csla\dataportal.cs:137<BR>&nbsp;&nbsp; ProjectTracker.Library.Project.NewProject() in d:\myprojects\visual studio projects\projecttracker\projecttracker.library\project.cs:205<BR>&nbsp;&nbsp; PTWeb.Projects.btnNewProject_Click(Object sender, EventArgs e) in c:\inetpub\wwwroot\ptweb\projects.aspx.cs:81<BR>&nbsp;&nbsp; System.Web.UI.WebControls.LinkButton.OnClick(EventArgs e) +108<BR>&nbsp;&nbsp; System.Web.UI.WebControls.LinkButton.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument) +57<BR>&nbsp;&nbsp; System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument) +18<BR>&nbsp;&nbsp; System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData) +138<BR>&nbsp;&nbsp; System.Web.UI.Page.ProcessRequestMain() +1244</FONT></SPAN></P>
+<P><SPAN><FONT color=#000000>If any one can shed some light on it.</FONT></SPAN></P>
+<P><SPAN></SPAN>&nbsp;</P>
+<P><SPAN>Thanks,</SPAN></P>
+<P><SPAN>Aqal</SPAN></P>
+<P><SPAN><FONT color=#000080>&nbsp;</P>
+<P class=copyright><BR></P></FONT></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 01, 2007</h2>What code do you have in your object's constructor? To get a stack overflow, you almost certainly have a recursive call, and since this happens in the Activator.CreateInstance() call, the only thing .NET will be executing is your constructor.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Aqalmal replied on Sunday, September 02, 2007</h2><P>According to book I don't have any thing in constructor&nbsp; below is the code</P>
+<P>#region Constructor<BR>&nbsp;&nbsp;private Project()<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;// To prevent direst instantiation<BR>&nbsp;&nbsp;}<BR>&nbsp;&nbsp;#endregion</P>
+<P>and below is the static method...</P>
+<P>#region Static Methods<BR>&nbsp;&nbsp;public static Project NewProject()<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;if(!Thread.CurrentPrincipal.IsInRole("ProjectManager"))<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;throw new System.Security.SecurityException("User not authorized to add project");<BR>&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;return (Project)DataPortal.Create(new Criteria(Guid.Empty)); <BR>&nbsp;&nbsp;}</P>
+<P>Best,</P>
+<P>Aqal</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Then all you can do is use the debugger to walk through the code
+to see where it goes. A stack overflow is always due to something spinning and
+eating up stack memory. It is <i>almost</i> always due to accidental recursion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,24 @@
+<html><header><title>What is the Syntex to get the value of CanSave from ViewModelBase?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What is the Syntex to get the value of CanSave from ViewModelBase?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11261.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Plum posted on Monday, March 26, 2012</h2><p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">I have a Property Change event from ViewModel.&nbsp; In ViewModel Base there is a CanSave property and I don&#39;t know the C# Syntex to get this value from the Property Change event, object sender.</span></span></span></p>
+<p><span style="color:#0000ff;"></span></p>
+<p><span style="color:#0000ff;">Object Hierarchy:</span></p>
+<p><span style="color:#0000ff;">Csla.Xaml.ViewModelBase</span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Property Change Event:</span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> ViewModel_PropertyChanged(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">object</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> sender, System.ComponentModel.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyChangedEventArgs </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">e)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">{</span></p>
+</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>// The code below does not work.</p>
+<p>Csla.Xaml.ViewModelBase obj = (Csla.Xaml.ViewModelBase)sender;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+</span></span></span></span></p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

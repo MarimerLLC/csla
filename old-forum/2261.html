@@ -1,0 +1,81 @@
+<html><header><title>Can't Paging Support be simplify</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't Paging Support be simplify</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2261.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro posted on Friday, February 02, 2007</h2>I wonder wy paging support such a burden issue?<br>Can we just grap all the data from the data store and pass it to CslaDataSource then CslaDataSource deal with the UI which part of data it need to past back to the UI base on the PageIndex.<br><br>PersonList list = PersonList.GetPersonList(); // return 20 records<br>e.BusinessObject = list; // <br><br><b>And if these block of could exist:</b><br><br>int totalRow = e.BusinessObject.TotalRow; // would return 20<br>e.BusinessObject.PageSize = 10;<br>e.BusinessObject.PageIndex = 0;<br><br>Let see if we want to know how many records do list.Count.<br>I think it is the CslaDataSource problem to deal with the UI the BO code shouldn't have to deal with these thing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic replied on Friday, February 02, 2007</h2>I believe that the reason the BO needs to be involved is so that it knows how&nbsp; many records it should pull.<BR><BR>I am assuming that 20 records are ALL records, but are only displaying 10 of them (the other 10 get returned, but are not displayed).&nbsp; By involving the BO, you are telling it how many can be displayed and only returns those&nbsp;(10) while populating the count (20) to allow for the paging.<BR><BR>Basically, it needs to know how many are going to be displayed so it can only return those, otherwise it returns all records and depends on the GUI to display what it can and the remaining are wasted.<BR><BR>Please correctly if I'm wrong.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Friday, February 02, 2007</h2>Yes, what you believe is true and I think that what rocky had in mind.<br>In some situation I might want to load 2 pages to reduce round trip to server, that not possible now.<br><br>But anyway now I am clear and prepare to live with it well :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 02, 2007</h2><P>You do have a lot of flexibility here.</P>
+<P>If you are willing to store the full data set in memory in the web server (in Session or System.Web.Caching or something) then you absolutely could write your code to retrieve the full set of data on the first call and then only return a page at a time. That model would be quite different from what I show in the 2.1 Handbook, but it would be relatively easy to do.</P>
+<P>But I think most people use paging to <EM>avoid</EM> bringing all the data back from the database, and so that's the approach I show in the 2.1 Handbook.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Sunday, February 04, 2007</h2><P>If you use some of the commercial grids available, I think you can jsut bind a full list of data to them and they will handle all the pagin stuff for you.</P>
+<P>I have done this with relatively small lists (100 or less records), and just fill a collection, and my grid handles the paging, I just click the Enable Paging option, simple as that.</P>
+<P>I use telerik controls for web stuff, and infragistics for winforms.&nbsp; Not sure about infragistics, but telerik seems to hanlde the paging itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Sunday, February 04, 2007</h2>Yes, that my point.<br>Paging is UI responsibility since CslaDataSource is the one component that deal with UI we should force responsibility upon it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 04, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh I see, you want CslaDataSource to keep a copy of the complete
+collection and return only a subset of that collection on demand?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That would be difficult (though not impossible) with the CSLA
+.NET data portal model. You&#8217;d still have to do some extra work in your
+business collection class, because this scheme would require that the
+collection be created via DP_Fetch(), but that object would never be publicly
+exposed. Rather, there&#8217;d need to be some new mechanism by which
+CslaDataSource could create new instances of your collection class, and
+indicate that you should load that new instance with just one page of data from
+the existing complete list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Again, in the web model the typical idea behind paging is to
+avoid loading all the data from the database in one shot &#8211; which this
+would require &#8211; so I&#8217;m not convinced that it is a good idea, or one
+that most people would even consider using.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> kids_pro
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 04, 2007 7:21 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Can't Paging Support be simplify<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes, that my point.<br>
+Paging is UI responsibility since CslaDataSource is the one component that deal
+with UI we should force responsibility upon it.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

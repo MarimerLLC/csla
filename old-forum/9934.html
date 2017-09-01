@@ -1,0 +1,20 @@
+<html><header><title>Using a COM interface for data access in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using a COM interface for data access in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9934.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andrew Smith posted on Tuesday, January 11, 2011</h2><p>Hi,</p>
+<p>We&#39;ve been using CSLA for a couple of months, but I&#39;ve run into a bit of a problem on our latest project.</p>
+<p>Our CSLA objects need to interface with an accounting system which provides a COM interface.</p>
+<p>Usually we would create a connection to the accounting system and use that connection for the life of the application, since opening that connection can be an expensive operation.</p>
+<p>Since opening the connection within each CSLA object would really hurt the performance of the application, I thought I could open the connection and then pass it into each CSLA object for use with the DataPortal calls. That created a problem since there&#39;s an issue with serializing COM objects.</p>
+<p>I was thinking about trying to store the connection object within the authorization object, so that each business object would have access to the connection,&nbsp;but I suspect I&#39;ll run into the same problem with serialization.</p>
+<p>The data portal is running locally.</p>
+<p>Any advice?</p>
+<p>Thanks,</p>
+<p>Andrew</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, January 11, 2011</h2><p>You should separate your concerns.</p>
+<ol>
+<li>You have business objects that need data.</li>
+<li>You have a data access layer that interacts with the data storage mechanism.</li>
+<li>You have a data storage mechanism that uses a COM API (I assume actually DCOM given the perf issue).</li>
+<li>Your COM API doesn&#39;t currently have any connection pooling or reuse mechanism like you&#39;d find with SQL Server.</li>
+</ol>
+<p>Solving the lack of connection pooling isn&#39;t an issue to be addressed by the business objects, and probably not even the data access layer. It is something that would ideally be solved at the data storage API level.</p>
+<p>Assuming that&#39;s the correct train of thought, the question then becomes how to construct a connection pool for the COM connection - basically how do you wrap the RCW with a singleton that can survive the normally stateless nature of the server-side data portal.</p>
+<p>If your app is a smart client app, where each client directly makes the COM calls you can put the RCW into Csla.ApplicationContext.LocalContext and reuse it from there. You can look at Csla.Data.ConnectionManager for some ideas on how you might abstract this idea in an elegant manner.</p>
+<p>If your app is calling an app server, so it is actual server-side code that is making the COM call, that&#39;s harder, because you need some way to share the RCW across multiple client calls, and you probably need to ensure only one client can use it at a time to avoid threading issues. Remember that the app server is multi-threaded, but most COM components aren&#39;t thread-safe. In this scenario you probably need to write a real connection pooling mechanism that can safely &quot;issue&quot; an RCW to a client from the pool, ensuring that no other client is using it at the same time. Basically this would work exactly like the connection pooling provided by System.Data.SqlClient for example.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andrew Smith replied on Wednesday, January 12, 2011</h2><p>Thanks for the help Rocky, it&#39;s very much appreiciated.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

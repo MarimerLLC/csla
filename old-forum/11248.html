@@ -1,0 +1,52 @@
+<html><header><title>child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11248.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence posted on Wednesday, March 21, 2012</h2><p>I am having issues with my child object ALWAYS being dirty. How do I fix this?</p>
+<p>
+<p>public ActionResult Edit(int id)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewData.Model = PressReleaseEdit.AdminGetPressReleaseById(id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TempData[&quot;obj&quot;] = ViewData.Model;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // bind dropdownlist</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewBag.BoilerPlateList = new SelectList(BoilerPlateList.GetReadOnlyList(), &quot;BoilerPlateId&quot;, &quot;Name&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>
+<p>[HttpPost]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [ValidateInput(false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ActionResult Edit(FormCollection collection, PressReleaseEdit pe, int id, Guid? radioValue, Guid? highlightImage)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PressReleaseEdit mainObject = (PressReleaseEdit)TempData[&quot;obj&quot;];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //if (obj == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // &nbsp; &nbsp;return RedirectToAction(&quot;Edit&quot;, new { id=Request.QueryString[&quot;id&quot;] });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // pe.PressReleaseId = obj.PressReleaseId;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (radioValue.HasValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; pe.PressReleaseDigitalAsset.DigitalAssetGuid = (Guid)radioValue;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // check if object is dirty, rebind values to pe</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; #region Highlight</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (pe.Highlight.IsDirty)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; { // ALWAYS DIRTY????, // ALWAYS NEW, even if have done nothing to the object...</p>
+<p>What makes even less sense, is mainObject.Highlight is NOT dirty... help!</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence replied on Wednesday, March 21, 2012</h2><p>Sorry, mainObject.Highlight IS dirty. So confused.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 21, 2012</h2><p>Remember that on a post-back you are creating&nbsp;a new object graph, and setting its property values based on those in the postback data. Or CslaModelBinder does this for you - but either way, this is what happens.</p>
+<p>As a result, all the objects <em>will be dirty</em> because they are all new, and all their properties were just changed.</p>
+<p>The easiest way to avoid this is to fetch the object graph, set the property values, and then save the object graph. This does mean hitting the database to get the existing values, but by having those existing values it allows the object to know whether the &quot;new&quot; property values from the postback are actually different from the existing values.</p>
+<p>Ultimately that&#39;s the key right? Somehow you or the object need to know whether the data in the postback is different from the data in the database&nbsp;- that&#39;s the definition of &quot;IsDirty&#39;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xequence replied on Wednesday, March 21, 2012</h2><p>Is this how I would wire this up then?</p>
+<p>
+<p>[HttpPost]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [ValidateInput(false)]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ActionResult Edit(FormCollection collection, PressReleaseEdit pe, int id, Guid? radioValue, Guid? highlightImage)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var model = PressReleaseEdit.AdminGetPressReleaseById(id);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.Highlight = pe.Highlight;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; etc.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 21, 2012</h2><p>I show how to do this in the <em>ASP.NET MVC</em> book on page 21. You need to fetch the object, call UpdateModel, and then set any non-public properties.</p>
+<p>In other words, you can still use binding, you just need to call it explicitly via UpdateModel.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jtrotman replied on Wednesday, April 18, 2012</h2><p>I was just fighting this same battle and came across this.&nbsp; The code that I think you&#39;re talking about on page 21 looks like this:</p>
+<p>[HttpPost]<br />public ActionResult Edit(int id, FormCollection collection)<br />{<br />&nbsp; var project = ProjectEdit.NewProject();<br />&nbsp; UpdateModel(project, collection);<br />&nbsp; LoadProperty(project, ProjectEdit.IdProperty, id);</p>
+<p>For project to not be dirty, I think it needs to be:</p>
+<p><em>var project = ProjectEdit.GetProject(id)</em></p>
+<p>right?&nbsp; Just wanted to make sure I&#39;m following you.</p>
+<p>&nbsp;</p>
+<p><span style="font-size:xx-small;"></span><span style="font-size:xx-small;"></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

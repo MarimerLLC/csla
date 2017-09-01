@@ -1,0 +1,25 @@
+<html><header><title>DataPortalMethodCache.GetMethodInfo &amp; ArgumentException &quot;An item with the same key has already been added.&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortalMethodCache.GetMethodInfo &amp; ArgumentException &quot;An item with the same key has already been added.&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4375.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vmattila posted on Wednesday, February 20, 2008</h2>Hello all,<br><br>I've been evaluating CSLA .NET 3.5 for a while in a test project and it seems to be promising. As soon we'd have compression enabled in WCF DataPortal, CSLA would be perfect!<br><br>Currently I have a strange error that I encounter when I fetch a business object in an ASP.NET HTTP Handler. An external system requests the handler, and the handler generally only fetches a business object (BusinessObject.GetObject() that just calls Csla.DataPortal.Fetch(Of BusinessObject)(Criteria)) whichafter the handler updates the object in a simple way.<br><br>When external requests happen to hit the handler concurrently, up to four or five requests at the same time, only one request is completed. Other requests will throw an exception, that is:<br>
+
+
+
+
+
+<p class="MsoPlainText"><font face="Courier New" size="2">[ArgumentException: An item with the same key has already
+been added.]<span></span></font></p><p class="MsoPlainText"><font face="Courier New" size="2"><span></span>System.ThrowHelper.ThrowArgumentException(ExceptionResource
+resource) +48<span></span><br></font></p><p class="MsoPlainText"><font face="Courier New" size="2">System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value,
+Boolean add) +2668392</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp;
+</span>Csla.Server.DataPortalMethodCache.GetMethodInfo(Type objectType, String
+methodName, Object[] parameters) +162</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp;
+</span>Csla.Server.DataPortalMethodCache.GetFetchMethod(Type objectType, Object
+criteria) +107</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp;
+</span>Csla.DataPortal.Fetch(Type objectType, Object criteria) +524</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp;
+</span>Csla.DataPortal.Fetch(Object criteria) +75</font></p>I suppose this has something to do with threading, however I haven't found a solution yet how to solve it...<br><br>Well, any ideas?<br><br>Thanks,<br>Ville<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, February 21, 2008</h2>Rocky,<br>This may be due to no lock in GetMethodInfo when trying to access shared/static dictionary.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vmattila replied on Thursday, February 21, 2008</h2>The missing lock seems to be the reason. I enclosed some CSLA-related code inside a SyncLock in the handler, which solved the problem.<br><br>Maybe this kind of issues should be managed at framework level?<br><br>Best regards,<br>Ville<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 21, 2008</h2><P>That's why it is beta code <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Thank you for finding this issue - I agree that it is a missing lock in the cache handling.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

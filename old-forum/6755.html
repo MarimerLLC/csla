@@ -1,0 +1,77 @@
+<html><header><title>Delete, Referential Constraint</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delete, Referential Constraint</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6755.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>LTW posted on Tuesday, April 07, 2009</h2>I have a child object that has the "Delete_Self(parent)" method called by way of the the parent object implementing the "FieldManager.UpdateChildren()" method. In the Delte_Self method I call a Stored Procedure that Deletes the object. However, the Row that is deleted is the parent of another child, which is represented as a Primary Key/Foreign Key relationship in the database. Therefore, a "reference constraint" error is thrown when the attempt is made to delete the row. What I need to do is have the Child objects deleted before the parent is. My question is, does CSLA have a way to deal with this. I do not see anything&nbsp; in C# 2008 Business Objects book. My idea was to clear() the child collection and than call the save() method on the child collection inside the "Delete_Self" method of the parent, before I call the stored procedure, but it seems to me CSLA would have something built in to deal with this. Any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, April 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If
+it is SQL Server DB, you can setup relationship to cascade deletes.&nbsp; Otherwise,
+you will need to override DataPortal_Delete in the parent and manually perform
+delete operations in desired order by calling deletes of children first, then
+parent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> LTW
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, April 07, 2009 12:52 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Delete, Referential Constraint<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I have a child object that has the
+&quot;Delete_Self(parent)&quot; method called by way of the the parent object
+implementing the &quot;FieldManager.UpdateChildren()&quot; method. In the
+Delte_Self method I call a Stored Procedure that Deletes the object. However,
+the Row that is deleted is the parent of another child, which is represented as
+a Primary Key/Foreign Key relationship in the database. Therefore, a
+&quot;reference constraint&quot; error is thrown when the attempt is made to
+delete the row. What I need to do is have the Child objects deleted before the
+parent is. My question is, does CSLA have a way to deal with this. I do not see
+anything&nbsp; in C# 2008 Business Objects book. My idea was to clear() the
+child collection and than call the save() method on the child collection inside
+the &quot;Delete_Self&quot; method of the parent, before I call the stored
+procedure, but it seems to me CSLA would have something built in to deal with
+this. Any ideas?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, April 08, 2009</h2>Sergey is 100% correct.<br /><br />In my Delete methods I always call DeleteChildren first.Thta is a method I added to my templates so I would not forget to call it. If the parent has no child records then it does not do anything. BUt if child records exist then I call a SP to delete the child records based on the parent ID and then I can safely delete the parent.<br /><br />Or your SP can be smart enough to know it needs to do the same thing and save you the extra call.<br /><br />Looping over a collection to remove child objects 1 at a time is not a good plan. If there are 100 children you run 100 seperate delete statements instead of a single delete to remove all of them at once. The collection delete code is really only useful when you are adding removing and editing a few rows in a grid or something. If the user wants them all deleted then you should skip over the collection and "just do it".<br /><br />Joe</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

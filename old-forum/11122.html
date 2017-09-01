@@ -1,0 +1,37 @@
+<html><header><title>How to add a property to a listbase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to add a property to a listbase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11122.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Thursday, February 02, 2012</h2><p>Ugh...I&#39;ve used CSLA for over 7 years and I can&#39;t answer this silly question.</p>
+<p>I have a BusinessListBase (root) and I want to add a property on it.&nbsp; It looks like that doesn&#39;t have the nice helpful PropertyInfo / RegisterProperty etc.</p>
+<p>How would I ensure my property serializes?</p>
+<p>The property is a Guid</p>
+<p>Thanks</p>
+<p>Sean</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>swegele replied on Thursday, February 02, 2012</h2><p>OK OK it just occurred to me that the need for a property on a collection is telling me I need a parent BusinessBase with that property and the collection becomes a child collection.</p>
+<p>Sorry <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Monday, February 06, 2012</h2><p>If you don&#39;t need business rules&nbsp;attached&nbsp;to the properties you can override Csla.Serialization.Mobile.IMobileObject on BusinessListBase.</p>
+<p>&nbsp;</p>
+<p>
+<p>public DateTime FromDate { get; set; }</p>
+<p>public DateTime ToDate { get; set; }</p>
+<p>&nbsp;</p>
+<p>protected override void OnGetState(Csla.Serialization.Mobile.SerializationInfo info)</p>
+<p>{</p>
+<p><span>	</span>info.AddValue(ObjectPropertyName.FromDate, this.FromDate);</p>
+<p><span>	</span>info.AddValue(ObjectPropertyName.ToDate, this.ToDate);</p>
+<p>&nbsp;</p>
+<p><span>	</span>base.OnGetState(info);</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>protected override void OnSetState(Csla.Serialization.Mobile.SerializationInfo info)</p>
+<p>{</p>
+<p><span>	</span>this.FromDate = info.GetValue&lt;DateTime&gt;(ObjectPropertyName.FromDate);</p>
+<p><span>	</span>this.ToDate = info.GetValue&lt;DateTime&gt;(ObjectPropertyName.ToDate);</p>
+<p>&nbsp;</p>
+<p><span>	</span>base.OnSetState(info);</p>
+<p>}</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, February 06, 2012</h2><p>Thanks Peran,</p>
+<p>You are right on how to get a property on a BusinessListBase and that is what I asked.&nbsp; </p>
+<p>But I found myself wondering &quot;Why isn&#39;t that ability built into the BusinessListBase already?&quot;&nbsp; I mean if it is a valid need, then usually Rocky et al. will put that ability in the object.</p>
+<p>The problem is not with BusinessListBase...the problem was with my design.&nbsp; Trying to make BusinessListBase do a behavior that it wasn&#39;t meant for.</p>
+<p>When I find myself walking down a road alone, I have to pause and ask why isn&#39;t anyone else here.&nbsp; While there is a valid case for pioneers and path makers...one must be careful to be sure.&nbsp; The CSLA framework and community is a sanity check for me as I code.&nbsp; When I don&#39;t find ANY posts on people trying to put properties on BusinessListBase then I seriously have to think why the heck am I trying to do it.&nbsp; </p>
+<p>At least in my case it was because I wasn&#39;t seeing I needing a root BusinessBase with the property that applied to all the children in the collection.</p>
+<p>Scary how dumb I am sometimes after all these years of programming.</p>
+<p>But Rocky&#39;s (or David West&#39;s) mantra of &quot;Design your objects after behavior not data&quot; is finally beginning to sink in.</p>
+<p>Thanks again Peran!&nbsp; Good coding.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,37 @@
+<html><header><title>eBook CSLA Overview Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>eBook CSLA Overview Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10001.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Friday, January 28, 2011</h2><p>&nbsp;</p>
+<p class="MsoNormal">Hi guys,&nbsp;</p>
+<p class="MsoNormal">Page 25, on section titled &ldquo;High-Scalability Smart Client&rdquo;,
+states:&nbsp;</p>
+<p class="MsoNormal"><strong><i>Going further, it is possible to trade
+performance to gain scalability by moving the Data Access layer to a separate
+machine. Single or 2-tier configurations give the best performance, but they
+don&rsquo;t scale as well as a 3-tier configuration would&hellip;..</i></strong>&nbsp;</p>
+<p class="MsoNormal">----------------------&nbsp;</p>
+<p class="MsoNormal">My question is, how is moving from a 2 to a 3 tier CSLA architecture
+makes the smart client application more *scalable*?&nbsp;</p>
+<p class="MsoNormal">Assuming that the database server is infinitely fast, to me,
+a 2 tier configuration will always be more scalable than a 3 tier configuration
+for the simple fact that on a 2 tier configuration all that happens is that new
+client computers come on line and that is it, no scalability issues there
+whatsoever. 1 or 1000000 clients, each is responsible to do its own thing.&nbsp;</p>
+<p class="MsoNormal">On the other hand, on a 3 tier configuration I will have to
+constantly add new app servers to meet the demand of my constantly growing client
+base and for what? Taking the data access layer load out of the client into the
+server does not make my app more scalable does it? If anything it could make my
+app *perform* better but that is only assuming that there is a lot of number
+crunching happening on the data access layer and that I have a super fast
+server that can do the operation many times faster than the client can do. But then
+again, we are talking *performance* improvements here, not *scalability*.&nbsp;</p>
+<p class="MsoNormal">Isn&rsquo;t &ldquo;scalability&rdquo; more of a hardware domain that software domain?
+Consider web servers running on a web farm under the control of a load balancer
+server. My web app will be more scalable under this infrastructure, but that is
+totally transparent to me. Even if my web app was a *single* tier app so to speak, It will still be scalable, but that is thanks to the hardware
+infrastructure, not because of my software n-tier design.&nbsp;</p>
+<p class="MsoNormal">Keep in mind that the question revolves around the CLSA framework / Smart Client scenario and about moving the data access layer from the client to a server.&nbsp;</p>
+<p class="MsoNormal">Anyway, I am sure I am missing something obvious, I am
+probably not looking at the big picture.&nbsp;</p>
+<p class="MsoNormal">Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, January 28, 2011</h2><p>I&#39;ve never been in a position where I could assume the database was infinitely fast. In fact, as applications scale the database server is often the first major bottleneck.</p>
+<p>The point of that discussion is to suggest that a 3-tier physical model with a smart client is an excellent balance of workload. As much processing as possible is done on the client workstation - hardware dedicated to each user. </p>
+<p>The app server acts as a buffer between clients and database server. In many cases you can cut the number of database connections by a factor of 100 (give or take), so 5000 users might use 50 database connections. This offloads a lot of overhead from the database server. And of course the app server offers opportunities for caching, some processing, etc. It is easy to scale out with app servers, so even if they do some processing it is cheap and easy to add more of them.</p>
+<p>The database server is the hardest to scale. Scaling out means federating data and other complex techniques. Scaling up means getting ever larger and rapidly more expensive hardware - many-core servers, fiber backbones, SANs, etc. So the lower the overhead at this tier the better.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,94 @@
+<html><header><title>Creating Generic Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Creating Generic Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6753.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BuckeyeJeff posted on Tuesday, April 07, 2009</h2><P>I am wanting to create a reusable rule that will accept more than one property and run a rule on it.&nbsp; For example, we have several objects that need to check that one date is less than the other.&nbsp;&nbsp; But, the two dates are not the same property names.&nbsp; How can you make a general reusable rule that can accept two dates of any name and apply validation to them.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 07, 2009</h2>You'll need to create your own custom RuleArgs subclass to contain the second property name. The primary property name is already carried through automatically.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkD replied on Wednesday, April 15, 2009</h2>Here is one we wrote.<br>
+
+<br>
+
+<span>Functions:</span><br>
+
+<br>
+
+Public Function LessThan(Of T As IComparable)(ByVal target As Object, ByVal e As RuleArgs) As Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pRuleArgs As DecoratedRuleArgs = DirectCast(e, DecoratedRuleArgs)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pPropertyMain As PropertyInfo = target.GetType.GetProperty(e.PropertyName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Dim pPropertyToCompare As PropertyInfo =
+target.GetType.GetProperty(DirectCast(e, LessThanRuleArgs(Of
+T)).LessThanProperty)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pMainValue As T = CType(pPropertyMain.GetValue(target, Nothing), T)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pCompareValue As T = CType(pPropertyToCompare.GetValue(target, Nothing), T)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If pMainValue.CompareTo(pCompareValue) &lt; 0 Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+e.Description = String.Format("{0} must be less than {1}.",
+RuleArgs.GetPropertyName(e), DirectCast(e, LessThanRuleArgs(Of
+T)).LessThanFriendlyName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<br>
+
+End If<br>
+
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br>
+
+<br>
+
+<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Class LessThanRuleArgs(Of T)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits Csla.Validation.DecoratedRuleArgs<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Sub New(ByVal propertyName As String, ByVal
+friendlyName As String, ByVal severity As Csla.Validation.RuleSeverity,
+ByVal lessThanProperty As String, ByVal lessThanFriendlyName As String)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.New(propertyName, friendlyName, severity)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me("LessThanProperty") = lessThanProperty<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me("LessThanFriendlyName") = lessThanFriendlyName<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property LessThanProperty() As String<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DirectCast(Me("LessThanProperty"), String)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property LessThanFriendlyName() As String<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DirectCast(Me("LessThanFriendlyName"), String)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Class<br>
+<br>
+<br>
+<span>Usage:</span><br>
+<br>
+ValidationRules.AddRule(AddressOf LessThanOrEqual(Of
+Decimal), New LessThanRuleArgs(Of
+Decimal)("MeasureOrdered", "Ordered",
+Csla.Validation.RuleSeverity.Error, "Available", "Available"), 1)<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

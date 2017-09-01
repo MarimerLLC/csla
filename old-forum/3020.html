@@ -1,0 +1,244 @@
+<html><header><title>Object Design Question - Please help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design Question - Please help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3020.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 posted on Monday, June 11, 2007</h2><P>I am still using CSLA 1.6, since I did not upgrade yet to VS2005.</P>
+<P>I have a question about object design.</P>
+<P>I have a supertype table Person and a 2 sub type tables (customer, vendor). The Table Person has a auto generated field (PersonID), and the subtype tables PK refer to this field.<BR>Customer: CustomerID --&gt; PersonID<BR>Vendor: VendorID --&gt; PersonID</P>
+<P>When I look at my behaviours, I have the following requirements.</P>
+<P>Add a new customer</P>
+<P>Add a new vendor</P>
+<P>How do I setup the objects. I know I need a Customer object and a Vendor Object. However, where do I add the person data (address etc.) which is part of each object? Do I create a Person object and inherit from it? Or do I repeat it in the Customer and Vendor Objects? And how to I save the person data to it's table (same stored procedure)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2><P>Objects should be designed based on the responsibility and behaviors they need in order to do their job. Their job (responsibility) is defined by a use case. In other words, don't focus so much on the database structure when designing your objects.</P>
+<P>In a typical "add/edit a X" use case you have the following objects <EM>for that use case</EM>:</P>
+<UL>
+<LI>XList - read-only list of XInfo</LI>
+<LI>XInfo - read-only child</LI>
+<LI>XEdit - editable root</LI>
+<LI>Assorted name/value lists to populate comboboxes</LI></UL>
+<P>In your case, both CustomerEdit and VendorEdit would have some common properties, but that's OK. That is an artifact of the relational world, and really doesn't (shouldn't) impact your object design.</P>
+<P>It does mean that DataPortal_Insert() will have to do two inserts, but that's unavoidable no matter how you implement your system - it is a side-effect of data normalization.</P>
+<P>However, don't forget about <EM>normalization of behavior</EM> in your object model. It will almost certainly be the case that both CustomerEdit and VendorEdit need to insert (and update) data in the Person table. That code will almost certainly be the same. Thus you should normalize that behavior into a third object (probably implemented with static/Shared methods) to do that common work.</P>
+<P>So for "Add/edit a customer":</P>
+<UL>
+<LI>CustomerList - read-only list of CustomerInfo</LI>
+<LI>CustomerInfo&nbsp;- read-only child</LI>
+<LI>CustomerEdit - editable root</LI>
+<LI>Assorted name/value lists to populate comboboxes</LI>
+<LI>PersonEdit - internal/Friend class with static/Shared methods to insert/update/delete data, and to contain any common rule method implementations</LI></UL>
+<P>Notice that rule methods common to both CustomerEdit and VendorEdit are also normalized into PersonEdit. PersonEdit <EM>is not</EM> an editable root - it is almost certainly a static class or Module. It is only an "object" from a design perspective. From an implementation perspective it is merely a tightly cohesive set of methods.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, June 14, 2007</h2><P>Hi Rocky,</P>
+<P>Thanks for replying.</P>
+<P>I am confused how to setup the PersonEdit object. From which object should I inherit it in order to use CSLA data portal?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>PersonEdit is an editable root, so it inherits from
+BusinessBase&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> white911
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 14, 2007 1:31 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Object Design Question - Please help<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>Thanks for replying.<o:p></o:p></p>
+
+<p>I am confused how to setup the PersonEdit object. From which object should I
+inherit it in order to use CSLA data portal?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, June 14, 2007</h2><P>So why did you write in the previous post that Person Edit is not a editable root.</P>
+<P>Sorry for my confussion</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry &#8211; juggling too many things with too little sleep.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CustomerEdit is an editable root.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>PersonEdit is a static class or Module and has static/shared
+methods. As such, it inherits from nothing and is pure behavior.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Somewhat like the Assignment class in ProjectTracker.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> white911
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 14, 2007 2:51 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Object Design Question - Please help<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So why did you write in the previous post that Person Edit is not a editable
+root.<o:p></o:p></p>
+
+<p>Sorry for my confussion<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, June 14, 2007</h2><P>Would the same principle apply if the set up was</P>
+<P>Person (table)</P>
+<P>-&gt;&nbsp;Addresses&nbsp;(Sub Table)</P>
+<P>-&gt; Contacts (Sub Table)</P>
+<P>-&gt; Vendors (Sub Table)</P>
+<P>-&gt; Customer (Sub Table)</P>
+<P>Because a customer would have one link to the Person table which in tern could have multiple addresses and contacts</P>
+<P>Assistance would be appreciated</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 14, 2007</h2><P>It is impossible to say what objects are required based on a set of tables. Objects exist to fill roles within a use case. </P>
+<P>If more than one object has the same behavior (like a common business rule, algorithm, etc) then you need to normalize that behavior into another object, so the original objects can collaborate with this new object to get at the behavior. </P>
+<P>This is typically very easy to do within the context of a use case, because you are designing all the objects at the same time for any given use case. </P>
+<P>It is harder <EM>across</EM> use cases, because you may design them at different times, or in a team setting you may be unaware of other use cases being designed. This, in my view, is where cross-pollination, code reviews and refactoring come together. Cross-pollination and code reviews offer the opportunity for developers to see each other's designs and implementation, and refactoring provides a "blessed" approach to normalizing behavior after the fact (after the fact for at least one use case implementation anyway).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Thursday, June 14, 2007</h2><P>To clarify, I mean I have a use cases of CustomerEdit &amp; VendorEdit, in which you can</P>
+<P>Edit the customer, including their addresses and/or contacts.</P>
+<P>Edit the vendor, including their addresses and/or contacts.</P>
+<P>Would the common action of editing the&nbsp;addresses and/or contacts. be separated into a static class/module ?</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Before we go further, it is important to realize that a property
+is NOT a behavior!! Objects have properties because they are exposing
+information needed to fulfill their role in the use case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Behind a property you may have behaviors (like rule methods). If
+they are common across objects, then they should be normalized &#8211; like StringRequired,
+which is basically universal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or if you have a calculation or algorithm that is run when value
+X changes, and value X can change in more than one object, then the method
+implementing that calculation/algorithm should be normalized.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wal972
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 14, 2007 9:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Object Design Question - Please help<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>To clarify, I mean I have a use cases of CustomerEdit &amp; VendorEdit, in
+which you can<o:p></o:p></p>
+
+<p>Edit the customer, including their addresses and/or contacts.<o:p></o:p></p>
+
+<p>Edit the vendor, including their addresses and/or contacts.<o:p></o:p></p>
+
+<p>Would the common action of editing the&nbsp;addresses and/or contacts. be
+separated into a static class/module ?<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>Ellie<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

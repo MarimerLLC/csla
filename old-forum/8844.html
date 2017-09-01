@@ -1,0 +1,42 @@
+<html><header><title>CSLA WPF TCP Configuration Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA WPF TCP Configuration Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8844.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>itogroup posted on Tuesday, April 27, 2010</h2><p>We are trying to move from using .NET remoting to TCP. No one here has used WAS before and I think we may be running into a configuration issue. I&#39;ve tried stripping everything down to the simplest implementation (no binding configurations, etc.). With the settings below, I can open the service in a browser and I can use the wsHttpBinding endpoint just fine. If I try to use the TCP endpoint, I get the following EndpointNotFoundException at line 232 of DataPortal.cs (CSLA 3.8.1.0) as the Fetch method is called on the proxy:</p>
+<p>Could not connect to net.tcp://server:42753/Harld.Data/WcfPortal.svc. The connection attempt lasted for a time span of 00:00:21.1336000. TCP error code 10060: A connection attempt failed because the connected party did not properly respond after a period of time, or established connection failed because connected host has failed to respond</p>
+<p>Server&#39;s Web.config:</p>
+<pre>	&lt;system.serviceModel&gt;
+		&lt;serviceHostingEnvironment&gt;
+			&lt;baseAddressPrefixFilters&gt;
+				&lt;add prefix=&quot;net.tcp://server:42753&quot;/&gt;
+				&lt;add prefix=&quot;http://server&quot;/&gt;&lt;!-- See note 1 --&gt;
+			&lt;/baseAddressPrefixFilters&gt;
+		&lt;/serviceHostingEnvironment&gt;
+		&lt;services&gt;
+			&lt;service name=&quot;Csla.Server.Hosts.WcfPortal&quot;&gt;
+				&lt;endpoint contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; 
+					address=&quot;net.tcp://server:42753/Harld.Data/WcfPortal.svc&quot; <br />					binding=&quot;netTcpBinding&quot;/&gt;
+				&lt;endpoint contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; <br />					address=&quot;http://server/Harld.Data/WcfPortal.svc&quot; <br />					binding=&quot;wsHttpBinding&quot;/&gt;
+			&lt;/service&gt;
+		&lt;/services&gt;
+	&lt;/system.serviceModel&gt;</pre>
+<p>Client&#39;s App.config:</p>
+<pre>	&lt;system.serviceModel&gt;
+		&lt;client&gt;
+			&lt;endpoint	name=&quot;WcfDataPortal&quot;
+				address=&quot;net.tcp://server:42753/Harld.Data/WcfPortal.svc&quot;
+				binding=&quot;netTcpBinding&quot;
+				contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;&gt;
+			&lt;/endpoint&gt;
+		&lt;/client&gt;
+	&lt;/system.serviceModel&gt;<br /><br /></pre>
+<p>Note 1: If I take out the baseAddressPrefixFilters section and try to visit the endpoint in a browser, I get the error &quot;<i><i>This collection already contains an address with scheme 
+http. &nbsp;There can be at most one address per scheme in this collection.&quot;</i></i></p>
+<p>&nbsp;</p>
+<p>Anyone have any suggestions?<i><i><br /></i></i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, April 27, 2010</h2><p>Which version of IIS are u running?</p>
+<p>If it&#39;s 7.5 u might forgot the following</p>
+<p>- install non-http feature (so net.tcp:808.* comes available beside to http)<br />- add the net.tcp protocol to the virtual directory of your site so it looks like &nbsp;http,net.tcp &nbsp;(use comma and no spaces!)</p>
+<p>i also added netTcpBindingBehaviour, but it isn&#39;t needed in your case.<br />Maybe try the default port as well being 808</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itogroup replied on Wednesday, April 28, 2010</h2><p>I just had our sysadmin check the IIS config (we&#39;re using IIS 7) and his response was:</p>
+<p>The protocols on the virtual directory are set to &ldquo;http,net.tcp&rdquo;.<br />The net.tcp binding on the site is &ldquo;42753:server&rdquo;<br />The firewall is open.</p>
+<p>&nbsp;</p>
+<p>With the HTTP based protocols, you can just open a browser and see if its working and get the error if it&#39;s not. Is there anything similar for TCP? I tried using PuTTY to open a Raw protocol connection to the server on port 42753, which just gives me a blank window with a cursor and after about 20 seconds, an error box saying &quot;Network error: Connection timed out&quot; pops up. Can anyone try doing the same to a working server and see what happens?</p>
+<p>I think port 808 is already in use on that server, so that&#39;s out.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 28, 2010</h2><p>fiddler is the most common tool for troubleshooting network traffic.</p>
+<p>WCF itself has extensive instrumentation and logging capabilities as well, at least in .NET. I don&#39;t know about SL though. A good WCF book should provide you with a solid understanding of the trace/log features of WCF.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud replied on Tuesday, June 08, 2010</h2><p>We&#39;ve been running into the same problem for the past few days and we&#39;re currently looking for solutions.&nbsp; I found this on a MSDN forum:</p>
+<p><i>Since it is a NetTCPBinding the connection doesn&#39;t get closed automatically like with httpbindings.&nbsp; You must actually call close on the connection every time you are done with it otherwise it will have to wait to timeout.&nbsp; that is why after a few minutes it would start working again.</i></p>
+<p>Based on this, am I right in assuming that CSLA doesn&#39;t explicitely close connections?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 08, 2010</h2><p>WcfProxy does explicitly call Close() on the proxy object, yes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

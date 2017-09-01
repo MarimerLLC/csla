@@ -1,0 +1,63 @@
+<html><header><title>Windows Authentication </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Authentication </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4516.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren posted on Wednesday, March 19, 2008</h2><TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD class=ForumPostUserArea rowSpan=2>
+<DIV class=ForumPostUserContent></DIV></TD>
+<TD class=ForumPostContentArea>
+<DIV class=ForumPostTitleArea>
+<H4 class=ForumPostTitle><FONT color=#667766>&nbsp;</FONT></H4></DIV>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<DIV class=ForumPostBodyArea>
+<DIV class=ForumPostContentText id=ctl00_ctl01_bcr_Deletepost1___PostPreview___PostRepeater_ctl01_PostViewWrapper>
+<P>I am getting my feet wet with CSLA code for the first time. I have PTracker working with Winforms (PTWIN) local proxy only. Now I am trying to determine the best way to use the CSLA framework for my authentication model. </P>
+<P>I would like to use Windows authentication but want&nbsp;the users to be prompted&nbsp;again with their Windows login and password.&nbsp;&nbsp; I would also like to use my own application database roles for authorization, not Windows groups. </P>
+<P>Assuming this is this possible with CSLA, can someone please provide some advice on the cleanest way to get this done? </P>
+<P>As a start I know I will have to change the app.config CslaAuthentication setting: <FONT color=#0000ff size=2>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>CslaAuthentication</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"Windows</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;&nbsp;&nbsp;<FONT size=3><FONT color=#000000> which I have done but this disables the login screen. </FONT></P></FONT></FONT>
+<P>Thanks in advance. </P></DIV></DIV></TD></TR></TABLE></TD></TR></TABLE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 19, 2008</h2><P>You'll have to write a different login form to do what you want. You'll want to get the user's Windows credentials, and then you'll need to authenticate them with Windows itself - and there are APIs in .NET to do this (though I don't know them off the top of my head).</P>
+<P>You will still want CSLA to use Windows auth - you just need to change your UI to keep track of whether it has re-authenticated the user (because Windows already did the authentication, and so the principal object is already set and correct).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Saturday, May 24, 2008</h2><P>My authentication model is a&nbsp;hybrid. I want the users to login to my application with their Windows&nbsp;user&nbsp;credentials even though they are already authenticated but then use&nbsp;the internal roles in my SQL Server database. </P>
+<P>I have added the .Net routine which re-autheticates the user against an LDAP server into my login form which is cloned from the PTracker app. </P>
+<P>Now I need to determine a way to graft my database roles onto the Identity object since I will be using Windows authentication minus any Windows roles.&nbsp; My Winforms app can use the continue to use the SecurityDataset from Pttracker if I remove the userid.&nbsp;</P>
+<P>Any advice on how to best graft the roles is much appreciated. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Monday, May 26, 2008</h2><P>I'm still trying to figure out how to best graft the application level roles onto the Windows Identity object but in the meantime I thought I'd share the piece I used to to the LDAP authentication. In my login form I added the following: </P><FONT color=#0000ff size=2>
+<P>' Re-Authenticate this user with Active Directory</P>
+<P>Dim LDAPDomain As String = My.Settings.LDAPDomain<BR>If ValidateActiveDirectoryLogin(LDAPDomain, Me.txtUsername.Text, Me.txtPassword.Text) Then<BR>&nbsp;&nbsp; GetCurrentUser()<BR>&nbsp;&nbsp; Me.DialogResult = System.Windows.Forms.DialogResult.OK<BR>&nbsp;&nbsp; Me.Close()<BR>Else<BR>&nbsp;&nbsp; MessageBox.Show("The system cannot log you on. Make sure your username and password are correct.")<BR>End If<BR></P>
+<P>Private Function ValidateActiveDirectoryLogin(ByVal Domain As String, ByVal Username As String, ByVal Password As String) As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Success As Boolean = False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Entry As New System.DirectoryServices.DirectoryEntry("LDAP://" &amp; Domain, Username, Password)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Searcher As New System.DirectoryServices.DirectorySearcher(Entry)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Searcher.SearchScope = DirectoryServices.SearchScope.OneLevel<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Results As System.DirectoryServices.SearchResult = Searcher.FindOne<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Success = Not (Results Is Nothing)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Success = False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Success<BR>&nbsp;&nbsp; End Function<BR></P>
+<P>&nbsp;</P></FONT>
+<P><FONT size=2><FONT color=#0000ff></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT color=#0000ff></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;</P></FONT></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, May 15, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>You'll have to write a different login form to do what you want. You'll want to get the user's Windows credentials, and then you'll need to authenticate them with Windows itself - and there are APIs in .NET to do this (though I don't know them off the top of my head).</P>
+<P>You will still want CSLA to use Windows auth - you just need to change your UI to keep track of whether it has re-authenticated the user (because Windows already did the authentication, and so the principal object is already set and correct).</P>
+<P></div></BLOCKQUOTE></P>
+<P>That's waht I did in </P>
+<P><SPAN id=ctl00_ctl01_bcr_SinglePostView___ForumName><FONT face="Courier New" color=#800080 size=2>FAQ: How to use Windows authentication in PTracker (PTWin) (C#)</FONT></SPAN></P>
+<P><A HREF="/forums/post/28161.aspx"><FONT color=#99aa99>http://forums.lhotka.net/forums/post/28161.aspx</FONT></A></P>
+<P>I made some changes to PTracker authentication in order to have Windows Authentication. In fact you just need to change CslaAuthentication attribute. The nicest thing about it is that you can have both at the same time.</P>
+<P>If the users that is authenticated under Windows exists in the <FONT face="Courier New" color=#800080 size=2>users</FONT> table, it gets logged on with no further questions. Otherwise (the windows user name doesn't exist in the <FONT face="Courier New" color=#800080 size=2>users</FONT> table) the login window will ask for username/password. This is quite useful when you have an application on a client but your laptop is not in the client's domain. You can still use your laptop and login in the application using the application admin username.</P>
+<P>Cheers</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, May 15, 2009</h2><P>Hi all,</P>
+<P>Its really ammazing how many different ways we have found to implement different authentication methods.</P>
+<P>I think we can wirte a book on this !!</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Monday, May 26, 2008</h2><p>I have made some effort in that regard and enabled Mixed/Dual Authentication: Window and Forms.</p><br>Please check the details here:<br><p><a HREF="/forums/thread/22529.aspx">http://forums.lhotka.net/forums/thread/22529.aspx</a></p>I have the complete sample code. Please let me know if you want it. Once I am back in the office I can post it for you.<br><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Tuesday, June 03, 2008</h2><P>Thanks Tarek, </P>
+<P>I ended up using LDAP to authenticate the userid/password. Then I take this&nbsp;userid and build the CSLA principle and identity objects.&nbsp; I have a connection string containing a totally different userid and password which is granted execute access to stored procedures only. </P>
+<P>The last piece I need to build is to encrypt the connection string in the app.config file. This is a challenge because my app is&nbsp;clickonce forms which means that I need to use a non-machine dependent method of encrypting the app.config.&nbsp; I am looking at a solution like this one: </P>
+<P><A href="http://guy.dotnet-expertise.com/CommentView,guid,b3850894-3a8e-4b0a-aa52-5fa1d1216377.aspx">http://guy.dotnet-expertise.com/CommentView,guid,b3850894-3a8e-4b0a-aa52-5fa1d1216377.aspx</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, August 29, 2008</h2><p>Dear Warren</p><p>Thank you for the feedback about using LDAP.</p><p>Just to make sure I understand what you meant.</p><p>Did you implement Forms Authentication and to validated the username/password against LDAP (Windows Active Directory), i.e., the user will enter his username/password and you check the validity of this user using .NET Against Active Directory (LDAP) ?</p><p>If so, then could you please kindly post a sample code on how to do such authentication against LDAP ?</p><p>Thank you again.</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wendy replied on Friday, August 29, 2008</h2><P>Hi TareKahf.</P>
+<P>In the post of 05-26-2008, 6:30 PM, you said that you have a sample code that enabled Mixed/Dual Authentication. Could you please help me, I tried,&nbsp;but not it works.&nbsp; </P>
+<P>I'm sorry for my english it&nbsp;so bad.</P>
+<P>Wendy Mejías A.</P>
+<P><A href="mailto:wmejias@poder-judicial.go.cr">wmejias@poder-judicial.go.cr</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Saturday, August 30, 2008</h2><P>Dear Wendy,</P>
+<P>Please check this link for complete details about the required changes you asked for:</P>
+<P><A HREF="/forums/25866/ShowThread.aspx#25866">http://forums.lhotka.net/forums/25866/ShowThread.aspx#25866</A></P>
+<P>I hope this will be helpful to you.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

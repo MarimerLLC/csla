@@ -1,0 +1,23 @@
+<html><header><title>Problem compiling 3.05</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem compiling 3.05</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12819.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ljgomez posted on Wednesday, January 21, 2015</h2><p>Been using 2.0 framework for quite a few years (obviously). &nbsp;I am trying to move to to version 3.05 but I am unable to compile due to error. &nbsp;No modifications have been made to the code. &nbsp;The error preventing compilation is:</p>
+<p>Class: ObjectAdapter</p>
+<p>Sub: Fill</p>
+<p>Line: 25 className = <span style="text-decoration:underline;">TypeName </span>(source)</p>
+<p>Error: System.RunTime.Serialization.TypeName is not accessible in this context because it is Private.</p>
+<p>Anyone have any idea why this is happening?</p>
+<p>Appreciate anyone&#39;s help.</p>
+<p>Jim</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 23, 2015</h2><p>Hi,</p>
+<p>Are you sure this is the official 3.0.5 release source code you are compiling?&nbsp;</p>
+<p>I downloaded CSLA 3.0.5 source code (from&nbsp;<a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a>) and&nbsp;</p>
+<p>
+<ul>
+<li>opened in VS2013</li>
+<li>set NET20 as <span><i>conditional compilation symbols</i><br />See&nbsp;<a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356">http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356</a>&nbsp;</span></li>
+</ul>
+</p>
+<p>And the solution compiles with no errors.&nbsp;</p>
+<p>The method TypeName should reference a public method in the Microsoft.VisualBasic.Information class in .NET framework!&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ljgomez replied on Friday, January 23, 2015</h2><p>Thanks JonnyBee. &nbsp;</p>
+<p>The framework was downloaded directly from the CSLA site. &nbsp;I did follow Rocky&#39;s instructions for setting the compilation symbols.</p>
+<p>What ultimately helped, is that you gave me the complete reference to Microsoft.VisualBasic.Information. &nbsp;I added the complete reference and the error has disappeared. &nbsp;It appears that it was attempting to reference the TypeName in&nbsp;<span>System.RunTime.Serialization instead of the proper place.</span></p>
+<p><span>The problem has been fixed. &nbsp;I appreciate your help. &nbsp;Thanks.</span></p>
+<p><span><br /></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

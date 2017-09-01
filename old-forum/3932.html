@@ -1,0 +1,49 @@
+<html><header><title>GRASP Principles</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GRASP Principles</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3932.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 posted on Thursday, November 22, 2007</h2><P>Hi everyone,</P>
+<P>I have been studying a lot about the responsibility-driven design and have read almost all the posts on this forum as well.</P>
+<P>I read Craig Larman's book Applying UML and Patterns. This book explained the general principles to assign responsibilities to classes.</P>
+<P>The process explained in the book first creates a domain modal which objects having attributes and associations. Then during design phase responsibilities are assigned.</P>
+<P>The main principle is Information Expert which states that responsibility should be given to class that has the information to fulfill it.</P>
+<P>My question to everyone here and especially Rocky is that whether he agrees with this concept? To my thinking this is a data-centric thinking because we are allocating attributes to the classes first and then based on that we are distributing behavior/responsibilities.</P>
+<P>I would really appreciate feedback from everyone.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 23, 2007</h2><P>I think that principle is backward.</P>
+<P>An object gets responsibility because you have a responsibility that needs filling, so you define an object to do that work.</P>
+<P>THEN you decide what information each object requires to perform its responsibilty.</P>
+<P>If you assign responsiblities based on information, you'll end up with objects that have multiple responsibilities, and that violates the single-responsibility principle.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Friday, November 23, 2007</h2><P>Hi Rocky,</P>
+<P>Thanks for the reply.</P>
+<P>Sometimes I feel that RDD or BDD is procedural way of doing things. We are allocating procedures to different modules. I am for sure missing something!</P>
+<P>Last couple of projects on which I have worked, I created classes by taking inspiration from real world, as suggested by tons of books out there. I allocated attributes and THEN behavior based on those. The result was that my classes were difficult to maintain because they started doing a lot. Sometimes classes didn't do anything and there were few controller type classes that had all the behavior.</P>
+<P>Is that what you call data-driven approach? I can see now that how I can improve the design by seperating behavior rather than data. The trouble is that RDD is also being abused, everyone say that their approach is RDD. GRASP Princples are also RDD, according to the book. It is difficult to understand the true nature of what RDD means. What exactly is a responsibility? Is it GetCustomer() method or is it more abstract like 'Add/Edit valid Customer'. May be you can help me clarify these concepts.</P>
+<P>As a simple example, if I have a Customer object whose responsibility is to 'Add/Edit valid Customer' and it looks like CSLA.NET object. Now if I need to make a copy of this object then Information Expert principle would suggest to put it in Customer, something like</P>
+<P>Dim NewCustomer As Customer = OldCustomer.Copy()</P>
+<P>OR</P>
+<P>Do we create another class, something like CustomerCopier and that takes a Customer and gives us a copy of it? e.g.</P>
+<P>Dim NewCustomer As Customer = CustomerCopier.MakeCopy(OldCustomer)</P>
+<P>Is this Copy a responsibility or a behavior? Where would you put it? It is a new/seperate behavior so should it&nbsp;be in Customer or in CustomerCopier (i.e. outside Customer)? </P>
+<P>I would really appreciate and be very thankful if you can provide me with some thoughts about this.</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 26, 2007</h2><P>Words become overloaded. This is the nature of language, for better or worse (I find linguistics to be facinating by the way).</P>
+<P>So "responsibility" can, and does, mean different things to different people. For a very long time I resisted using any common labels (like RDD) for what I am talking about. Because as soon as I use one of those labels, I get all the baggage that comes along with them.</P>
+<P>Just like talking about Agile, or TDD, or the use of patterns. All those labels have accumulated a lot of baggage as they have moved from niche concepts into the mainstream. By the time they get into the mainstream, the labels are virtually meaningless, because they've accumulated so many meanings and so much baggage. Agile can mean almost anything you want it to mean as long as you don't create many (any?) documents. TDD is not about quality, even though "test" is in the label. Patterns are good, and if you use them (even inappropriately) you can be proud. The more the better, even if the results are bad.</P>
+<P>So I still try to avoid using labels for what I do. I do what works for me. And I try to describe what I do without resorting to labels.</P>
+<P>Are you a Republican? Democrat? Labor? Socialist? Progressive? Green? And if you pick any one of those, you automatically fall into a niche definition that you disagree with.</P>
+<P>So you can read all you want about RDD. And then it is up to <EM>you</EM> to take from that what works for you and leave what doesn't work for you.</P>
+<P>Someone (you?) said that sometimes responsibility-driven design (like I talk about it) seems more like procedural design. That's somewhat true. It is actually closer to modular design if you get right down to it. Procedures have no concept of encapsulation, while both modules and objects do have that concept. Therein lies the key difference between responsibility-driven OO design and procedural design.</P>
+<P>In procedural design each procedure has a responsibility. That is true. But procedures have almost no encapsulation. They can't maintain state over time. So their responsibiities must become <EM>very</EM> narrow. Narrow enough that they can fulfil the entire responsibilty within the context of a single procedure call.</P>
+<P>The same is true of services in SOA and of activities/tasks in workflow by the way.</P>
+<P>In OO design, each object has a responsibility. But objects can (and often do) encapsulate state. They can maintain this state over time. So their responsibilities can be broader, and can encompass a set of related behaviors that fulfil this broader responsibility.</P>
+<P>In the end, procedural design must equate responsiblity with behavior: responsibility=behavior=procedure.</P>
+<P>But objects can encapsulate higher order concepts. Higher order responsibilities. A number of behaviors required to implement the responsibility can be included in the object, along with the state necessary to make it all work.</P>
+<P>The real trick with objects is to allow the responsibility to become <EM>too broad</EM>. And the way you know this is that your object starts to have conditional logic so it works one way sometimes, and another way other times. One way when fulfilling one responsibility, another way when fulfilling a different responsibility. At this point you've broken your object, and it should have been two objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Tuesday, November 27, 2007</h2><P>Hi Rocky,</P>
+<P>Many thanks, that was helpful.</P>
+<P>I agree with you that at the end it is up to us to decide&nbsp;what works for us, as there is no RIGHT or WRONG I guess. It depends on the context.</P>
+<P>I think the problem I have (and a lot of other less experienced developers), is that we stop being creative and look for ALL the concrete answers. </P>
+<P>We are the designers so it is up to us create various objects and assign them responsibilities. As long as we keep our objects happy (i.e. by assigning them few cohesive set of tasks) it does not matter whether we are doing RDD or TDD or DDD or even OO.</P>
+<P>I would like to point out that your phrase "Normalise Behavior" has helped me a lot. It helps to create maintainable classes, although the number of classes increase but the system is clear to understand and thus maintain. </P>
+<P>Tahir</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 replied on Sunday, December 02, 2007</h2><P>Hi Rocky,</P>
+<P>Some time ago, before I started this thread, I emailed Craig Larman about the assignments of responsbilities using Information Expert principal. Also I referenced your work and advice that we need to Normalize behavior rather than data. He emailed me back today with</P>
+<P>"there are multiple guidelines for how one can assign responsibility.&nbsp;</P>
+<DIV>duplicating data violates the DRY principle (don't repeat yourself). Info Expert, as a guideline, supports low coupling and high cohesion, and DRY. if a person does not recommend Info Expert (also called by pete coad "put services with data" in his principles), then they have a rather non-standard advice, as low coupling, high cohesion, and DRY are all really practical pain-reducing guidelines well-accepted in design."</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Information Expert,&nbsp;we assign properties first and then behavior, which looks more like data-centric approach. Assigning services with data makes sense but I think that the criteria whether a set of behavior should go in class A or B depends on the responsibilities of these classes.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Tahir</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

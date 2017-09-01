@@ -1,0 +1,109 @@
+<html><header><title>Examples on setting up for WCF?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Examples on setting up for WCF?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1388.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpalexa posted on Wednesday, October 04, 2006</h2><P>My apologies if this is somewhere obvious; my meek searching of the forum did not reveal what I was hoping to find.</P>
+<P>Are there documented steps on how to implement the beta CSLA WCF channel and data portals?&nbsp; I assume (!) that adding the WcfChannel project into the main CSLA solution and rebuilding gets me hooked up from a CSLA.dll perspective.</P>
+<P>I was wondering if there was a Chapter 12-esque&nbsp;example of implementing the remote WCF data portal (creating an IIS virtual directory, creating a .svc file, proper set up of the config files on both the server and the client, etc.).</P>
+<P>Thanks in advance -- JP</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>Unfortunately I haven't had time to document the channel...</P>
+<P>You don't need to merge WcfChannel into CSLA at all - you can build it seperately into its own DLL, and then just reference that DLL from your UI project and WCF service project.</P>
+<P>Then on the client, just change the data portal configuration to point to the WcfChannel assembly and proxy class. Also, in the client config you need to configure WCF itself.</P>
+<P>On the server, as you note, create an svc file and configure WCF itself through web.config.</P>
+<P>At some point in the next few weeks I do plan to write the Chapter 12-esque documentation for using the channel, but I've been waiting until WCF is final, and until I have time to then finalize both the C# and VB versions of the channel.</P>
+<P>I also will merge it into CSLA itself - in CSLA .NET 2.2 (or 3.0?) - but that's a bigger task, because at that point I'll provide full support for WCF, including DataContract serialization.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>To expand on that quickly though.</P>
+<P>The UI project references the Csla.WcfChannel assembly and has a config file like this:</P>
+<P>&lt;?xml version="1.0" encoding="utf-8" ?&gt;<BR>&lt;configuration&gt;<BR>&nbsp; &lt;configSections&gt;<BR>&nbsp; &lt;/configSections&gt;<BR>&nbsp; &lt;appSettings&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla" /&gt;<BR><STRONG>&nbsp;&nbsp;&nbsp; &lt;add key="CslaDataPortalProxy" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="Csla.DataPortalClient.WcfProxy, Csla.WcfChannel"/&gt;<BR></STRONG>&nbsp; &lt;/appSettings&gt;<BR><STRONG>&nbsp; &lt;system.serviceModel&gt;</STRONG></P>
+<P><STRONG>&nbsp;&nbsp;&nbsp; &lt;client&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; address="</STRONG><A href="http://localhost:1107/WcfHost/WcfPortal.svc"><STRONG>http://localhost:1107/WcfHost/WcfPortal.svc</STRONG></A><STRONG>" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="wsHttpBinding" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; contract="Csla.Server.Hosts.IWcfPortal" /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/client&gt;</STRONG></P>
+<P><STRONG>&nbsp; &lt;/system.serviceModel&gt;<BR></STRONG>&nbsp; &lt;system.diagnostics&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;sources&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- This section defines the logging configuration for My.Application.Log --&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;source name="DefaultSource" switchName="DefaultSwitch"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;listeners&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name="FileLog"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- Uncomment the below section to write to the Application Event Log --&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--&lt;add name="EventLog"/&gt;--&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/listeners&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/source&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/sources&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;switches&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name="DefaultSwitch" value="Information" /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/switches&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;sharedListeners&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add name="FileLog"<BR>&nbsp;&nbsp;&nbsp;&nbsp; type="Microsoft.VisualBasic.Logging.FileLogTraceListener, Microsoft.VisualBasic, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL"<BR>&nbsp;&nbsp;&nbsp;&nbsp; initializeData="FileLogWriter"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!-- Uncomment the below section and replace APPLICATION_NAME with the name of your application to write to the Application Event Log --&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--&lt;add name="EventLog" type="System.Diagnostics.EventLogTraceListener" initializeData="APPLICATION_NAME"/&gt; --&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/sharedListeners&gt;<BR>&nbsp; &lt;/system.diagnostics&gt;<BR>&lt;/configuration&gt;<BR></P>
+<P>The Wcf server project is a virtual root in IIS and references the Csla.WcfChannel assembly (along with your business assembly typically - so the business assembly gets into the bin directory). The WcfChannel.svc file looks like this:</P>
+<P><STRONG>&lt;%@ ServiceHost Service="Csla.Server.Hosts.WcfPortal" %&gt;</STRONG></P>
+<P>The web.config file looks like this:</P>
+<P>&lt;?xml version="1.0"?&gt;<BR>&lt;configuration xmlns="<A href="http://schemas.microsoft.com/.NetConfiguration/v2.0">http://schemas.microsoft.com/.NetConfiguration/v2.0</A>"&gt;<BR>&nbsp; &lt;appSettings&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla" /&gt;<BR>&nbsp; &lt;/appSettings&gt;<BR>&nbsp; &lt;connectionStrings&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;add name="PTracker" <BR>&nbsp;&nbsp;&nbsp; connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=&amp;quot;C:\Visual Studio Projects\csla20\ProjectTracker20cs\PTracker.mdf&amp;quot;;Integrated Security=True;User Instance=True"<BR>&nbsp;&nbsp;&nbsp; providerName="System.Data.SqlClient" /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;add name="Security" <BR>&nbsp;&nbsp;&nbsp; connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=&amp;quot;C:\Visual Studio Projects\csla20\ProjectTracker20cs\Security.mdf&amp;quot;;Integrated Security=True;User Instance=True"<BR>&nbsp;&nbsp;&nbsp; providerName="System.Data.SqlClient" /&gt;<BR>&nbsp; &lt;/connectionStrings&gt;<BR><STRONG>&nbsp; &lt;system.serviceModel&gt;<BR>&nbsp;&nbsp;&lt;services&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;!-- Before deployment, you should remove the returnFaults behavior configuration to avoid disclosing information in exception messages --&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service name="Csla.Server.Hosts.WcfPortal" behaviorConfiguration="returnFaults"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint contract="Csla.Server.Hosts.IWcfPortal" binding="wsHttpBinding"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/services&gt;<BR>&nbsp;&nbsp;&lt;behaviors&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;serviceBehaviors&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&lt;behavior name="returnFaults"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceDebug includeExceptionDetailInFaults="true"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/behavior&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;/serviceBehaviors&gt;<BR>&nbsp;&nbsp;&lt;/behaviors&gt;<BR>&nbsp;&lt;/system.serviceModel&gt;<BR></STRONG>&nbsp;&lt;system.web&gt;<BR>&nbsp;&nbsp;&lt;compilation debug="true"&gt;<BR>&nbsp;&nbsp;&nbsp;&lt;assemblies&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add assembly="System.Windows.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add assembly="System.Runtime.Remoting, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add assembly="System.Design, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B03F5F7F11D50A3A"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add assembly="System.Transactions, Version=2.0.0.0, Culture=neutral, PublicKeyToken=B77A5C561934E089"/&gt;&lt;/assemblies&gt;&lt;/compilation&gt;<BR>&nbsp;&lt;/system.web&gt;<BR>&lt;/configuration&gt;<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpalexa replied on Wednesday, October 04, 2006</h2>Yes, that worked beautifully for me.&nbsp; Thanks a ton!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JamesColeman replied on Wednesday, January 17, 2007</h2>I got it working as well, thanks for the guidance.<br><br>I want to make sure some of my assumptions are correct.&nbsp; I am working with a client where we will have some CSLA business objects that are going to accept a credit application and return a credit decision (i.e. you are approved for 30k - There is more to it than that but keeping things simple).&nbsp; The extranet is under our control and so they are going to be using this CreditApplication business object directly but there will also be dealers external to the company that will be submitting a CreditApplication request and getting a CreditDecision response back.<br><br>Assumptions I am making:<br>- The extranet web application will be calling the business tier through Enterprise Services because it is the best peformance wise and we can open up the library to our web developers<br><br>- The dealer application will be calling our service layer that is going to expose some of the functionality in our business objects as services but they will not get the full CreditApplication business object, only the prop/methods we make available.&nbsp; I am assuming we will make some WCF web services with message level security (X.509).<br><br>- We wouldn't actually use the WCFChannel for the dealers because we don't want to open up the entire library to them<br><br>- The WCFChannel might be used in replace of Enterprise Services for the extranet because if we wanted to, we could keep things over TCP/IP and binary and WCF doesn't mean HTTP/Text - Right?<br><br>Let me know if any of the above sounds off.&nbsp; I think I just know enough to be dangerous.&nbsp; I guess I am not for certain when the WCFChannel would be used in the real world.&nbsp; Any guidance or oppionions (Rocky's or others) would be appreciated.<br><br>Thanks<br>~james<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 17, 2007</h2><P>Everything you are saying makes sense to me. </P>
+<P>The one thing I'd quibble with is the use of ES rather than WCF. Now that WCF is out, it is the replacement not only for Remoting and Web Services, but also for ES. If you are installing .NET 3.0, I'd go right ahead and use the WcfChannel for the extranet scenario.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Wednesday, February 06, 2008</h2><P>Rocky --</P>
+<P>I was sent this URL by a colleague. Upon reading it and seeing the date I have to ask if this thread is out of date or not?</P>
+<P>It appears to be almost up to date except that the CslaDataPortalProxy assembly value is Csla.WcfChannel whereas in the CSLA 3.0 release it is just Csla.</P>
+<P>In this thread you have: <STRONG>&lt;add key="CslaDataPortalProxy"&nbsp;value="Csla.DataPortalClient.WcfProxy, Csla.WcfChannel"/&gt;<BR></STRONG>whereas the released version has: <STRONG>&lt;add key="CslaDataPortalProxy" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="Csla.DataPortalClient.WcfProxy, Csla"/&gt;</STRONG></P>
+<P>Or, maybe this is some additonal functionality that I am not aware of?</P>
+<P>Best regards --<BR>David Lutz<BR>County of Marin</P>
+<P><BR></P>
+<P><STRONG></STRONG>&nbsp;</P>
+<P><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I released a beta WCF proxy for CSLA .NET 2.1, and that article
+refers to that standalone proxy. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When I put the proxy actually into CSLA itself the assembly name
+changed of course, because it is now in Csla.dll itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dlutz52
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 06, 2008 4:06 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Examples on setting up for WCF?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky --<o:p></o:p></p>
+
+<p>I was sent this URL by a colleague. Upon reading it and seeing the date I
+have to ask if this thread is out of date or not?<o:p></o:p></p>
+
+<p>It appears to be almost up to date except that the CslaDataPortalProxy
+assembly value is Csla.WcfChannel whereas in the CSLA 3.0 release it is just Csla.<o:p></o:p></p>
+
+<p>In this thread you have: <strong>&lt;add
+key=&quot;CslaDataPortalProxy&quot;&nbsp;value=&quot;Csla.DataPortalClient.WcfProxy,
+Csla.WcfChannel&quot;/&gt;</strong><b><br>
+</b>whereas the released version has: <strong>&lt;add
+key=&quot;CslaDataPortalProxy&quot; </strong><b><br>
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;/&gt;</strong></b><o:p></o:p></p>
+
+<p>Or, maybe this is some additonal functionality that I am not aware of?<o:p></o:p></p>
+
+<p>Best regards --<br>
+David Lutz<br>
+County of Marin<o:p></o:p></p>
+
+<p><o:p>&nbsp;</o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,7 @@
+<html><header><title>Managed read-only properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed read-only properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8646.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dx05 posted on Thursday, March 11, 2010</h2><p>Hi, can anyone tell me, how to to set the properties of a ReadOnlyBase child when using managed readonly properties without private backing fields? Since there is no field and no setter: how to initialize the child objects data&nbsp; from the parents dataportal? (CSLA 3.6.3)</p>
+<p>Thanks for any hint or example!</p>
+<p>- Harald</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, March 11, 2010</h2><p>When populating the object,&nbsp; you can use LoadProperty - i.e. LoadProperty(FirstNameProperty, &quot;chris&quot;)</p>
+<p>Is that what you&#39;re asking?</p>
+<p>If you&#39;re talking about populating a child from the parent&#39;s fetching of the data, you can </p>
+<p>LoadProperty(ChildObjectProperty, ChildObjectClass.GetChildObject(safeDataReader));</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, March 11, 2010</h2><p>Chapter 7, Page 244 onwards. &nbsp;<b>LoadProperty</b></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>Bug in SortedBindingList.IndexOf</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in SortedBindingList.IndexOf</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/918.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Baldu posted on Wednesday, August 16, 2006</h2>SortedBindingList.IndexOf always return zero if no sort has been applied.&nbsp; A simple example:<br><br><br>&nbsp; List&lt;string&gt; list = new List&lt;string&gt;();<br><br>&nbsp; string barney = "Barney";<br>&nbsp; string charlie = "Charlie";<br>&nbsp; string zeke = "Zeke";<br><br>&nbsp; list.AddRange(new string[] { barney, charlie, zeke });<br><br>&nbsp; SortedBindingList&lt;string&gt; sortedList = new SortedBindingList&lt;string&gt;(list);<br><br>&nbsp; Console.WriteLine("IndexOf(charlie) (should be 1): {0}", sortedList.IndexOf(charlie));<br>&nbsp; // writes 0<br><br>&nbsp; sortedList.ApplySort(string.Empty, System.ComponentModel.ListSortDirection.Ascending);<br>&nbsp; // the actual sort order has not changed, since the items were added "presorted"<br><br>&nbsp; Console.WriteLine("IndexOf(charlie) (should be 1): {0}", sortedList.IndexOf(charlie));<br>&nbsp; // writes 1<br><br><br>I couldn't find any mention of this being the expected behavior. &nbsp;<span></span>There's a simple workaround, of course (apply a sort immediately after creating the SortedBindingList), but I thought it was worth mentioning.<br><br><br>Charlie<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Baldu replied on Monday, August 21, 2006</h2>Just a little bump since I saw Rocky was hanging around today.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 21, 2006</h2>This is a known issue and is fixed in version 2.1. You can download a pre-release of 2.1 from <a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a> if you'd like to test to make sure I got it right <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />&nbsp; (which is really a plea on my part for testers - please DO download and try 2.1 - thanks!!)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Baldu replied on Monday, August 21, 2006</h2>Your plea worked and I've downloaded version 2.1.&nbsp; <br><br>However, the problem is still there.&nbsp; In fact, a subsequent a file diff on SortedBindingList with the version from 2.0.3 shows no changes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=921152022-21082006><FONT face=Arial color=#0000ff size=2>Thank you, I appreciate you taking the 
+time!</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921152022-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921152022-21082006><FONT face=Arial color=#0000ff size=2>I have now fixed the code in cvs (V2-1 branch) so it should 
+work properly in both sorted and unsorted modes. I also added a unit test (which 
+I should have done in the first place) to test this. The code will look familar, 
+as it is very close to the test you posted in this thread :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921152022-21082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=921152022-21082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=921152022-21082006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Baldu [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, August 21, 2006 4:52 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Bug in 
+  SortedBindingList.IndexOf<BR></FONT><BR></DIV>
+  <DIV></DIV>Your plea worked and I've downloaded version 2.1.&nbsp; 
+  <BR><BR>However, the problem is still there.&nbsp; In fact, a subsequent a 
+  file diff on SortedBindingList with the version from 2.0.3 shows no 
+  changes.<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Baldu replied on Wednesday, August 23, 2006</h2>Thanks, Rocky!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

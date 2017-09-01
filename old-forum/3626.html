@@ -1,0 +1,7 @@
+<html><header><title>Multi-user windows application using CSLA.NET</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multi-user windows application using CSLA.NET</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3626.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Spaz80 posted on Sunday, September 30, 2007</h2><P>&nbsp;Hello</P>
+<P>Im just wondering if there are any special precautions to be taken&nbsp;when creating a multi-user&nbsp;application using CSLA.NET... newbie question&nbsp;:)</P>
+<P>&nbsp;</P>
+<P>Cheers </P>
+<P>Spaz&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Sunday, September 30, 2007</h2><P>All I do is add the authorization rules, add the canWrite/Read/Edit functions,&nbsp; use timestamps in the database, and periodically refresh my singleton lists.</P>
+<P>Oh, and of course be sure to include the canWrite canRead functions in the properties. </P>
+<P>This is all I ever do.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,68 @@
+<html><header><title>&lt;Transactional(TransactionalTypes.TransactionScope)&gt;   Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&lt;Transactional(TransactionalTypes.TransactionScope)&gt;   Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4829.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, May 09, 2008</h2><DIV><FONT face=Verdana size=2>I have the following piece of code.</FONT></DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Verdana size=2></FONT>&nbsp;</DIV>
+<DIV>
+<P><FONT face=Verdana size=2>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</FONT></P>
+<P><FONT size=2><FONT face=Verdana><FONT color=#0000ff>Protected</FONT> <FONT color=#0000ff>Overrides</FONT> <FONT color=#0000ff>Sub</FONT></FONT><FONT face=Verdana> DataPortal_Insert()</FONT></FONT></P>
+<P><FONT face=Verdana><FONT size=2><FONT color=#0000ff>Using</FONT> DataLinq = ContextManager(<FONT color=#0000ff>Of</FONT> SystemDataLinqDataContext).GetManager(<FONT color=#a31515>"ConnectionString"</FONT></FONT></FONT><FONT face=Verdana><FONT size=2>)&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataLinq.DataContext.spAddFinishType( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Description, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Active, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_Id)<BR><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Using</P></FONT></FONT></FONT>
+<P><FONT face=Verdana><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff><FONT face=Verdana color=#000000 size=2>I heard using the &lt;Transactional(TransactionalTypes.TransactionScope)&gt; attribute is a performance hog if you are hitting a "single" database. Pretty much overkill.<BR></FONT></FONT><FONT color=#0000ff><FONT color=#000000><BR><FONT face=Verdana size=2>Is there a way I can create a manual transaction with the code above?<BR><BR>Or am I thinking this all wrong.</FONT></P>
+<P><FONT face=Verdana size=2>Thanks,<BR>Mark</FONT></FONT></P></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 10, 2008</h2><P>No, TransactionScope is <EM>designed</EM> for a single database. The challenge is that it is only fast if you only open <EM>exactly one database connection</EM> and reuse that connection.</P>
+<P>This is the purpose of Csla.Data.ContextManager - to make it very easy to reuse a single connection - thus making TransactionScope the right option.</P>
+<P>ContextManager opens a connection if it isn't open, or reuses a connection if it is already open. The trick is to nest all your Using blocks.</P>
+<P>In other words, the root object (where your DP_XYZ method is called by the data portal) should have a Using block for the context, and <EM>all related data access should be in that Using block</EM>.</P>
+<P>&lt;Transactional(TransactionScope)&gt; _<BR>Protected Overrides Sub DataPortal_Update()<BR>&nbsp; Using ctx = ContextManager(Of MyDbContext).GetManager("MyDbName")<BR>&nbsp;&nbsp;&nbsp; ' update this object<BR>&nbsp;&nbsp;&nbsp; ' update child objects<BR>&nbsp;&nbsp;&nbsp; ' interact with any other root or command objects<BR>&nbsp; End Using<BR>End Sub</P>
+<P>As long as everything happens within that Using block, all the Using blocks in <EM>those other objects</EM> will automatically reuse the same L2S data context object, and thus will reuse the same database connection.</P>
+<P>As long as every root object's DP_XYZ methods follow this pattern, you can freely invoke one root object from another one's DP_XYZ methods and they'll all automatically reuse the data context.</P>
+<P>The result is very clean and simple. No muss, no fuss <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Saturday, May 10, 2008</h2><DIV>THANKS A LOT ROCKY!!!!!!!!!<BR><BR>I was somewhat nervious in thinking that I would have to change my code.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks again, and it was great meeting you at DirectBuy.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Mark</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smiley riley replied on Monday, May 12, 2008</h2><P>If the set of data updates/inserts etc includes at any point retrieving data then use the flag to exclude these from the transaction otherwise you may lock records within these selects as they may&nbsp;become part of the transaction. I may be wrong but best be aware.</P>
+<P>&nbsp;</P>
+<P>Not that you should need to select in an update delete etc, but people do.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DCottle replied on Monday, February 16, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>smiley riley:</strong></div><div>
+<P>If the set of data updates/inserts etc includes at any point retrieving data then use the flag to exclude these from the transaction otherwise you may lock records within these selects as they may&nbsp;become part of the transaction. I may be wrong but best be aware.</P>
+<P>&nbsp;</P>
+<P>Not that you should need to select in an update delete etc, but people do.</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>what flag exactly are you talking about?&nbsp; we have some stored procedures that we are not in control of that do exactly that.&nbsp; 'Select' records as the last action of the 'Insert/Update'.&nbsp; Is there a flag we can include on TransactionScope that would prevent the select from getting included in the lock?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not that I&#8217;m aware of, no.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If the database connection is enlisted in a transaction when the
+stored procedure is invoked, all operations in that stored procedure are
+enlisted in the transaction.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have one stored procedure that does database updates and
+reads, I think you are stuck having them either in a transaction together, or
+not in a transaction at all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,45 @@
+<html><header><title>WPF data binding with ListBox</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF data binding with ListBox</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9336.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 posted on Friday, August 06, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>I have a collection, say XCollection, derived from businesslistbase</p>
+<p>I have successfully bound it ( and its items) to a listbox, and also handle the listchanged handler</p>
+<p>coll.ListChanged += coll_ListChanged;</p>
+<p>&nbsp;</p>
+<p>coll_ListChanged(...)</p>
+<p>{</p>
+<p>&nbsp;coll = coll.Save();</p>
+<p>coll.ListChanged += coll_ListChanged;</p>
+<p>}</p>
+<p>If I change a property in one of the items in the collection, the handler is called and the listbox is updated to reflect the change.</p>
+<p>On subsequent changes to the item property the handler is called but the listbox is not updated.</p>
+<p>The item in the collection is bound to another UI control, as well, for editing.</p>
+<p>My assumption is that when the collection is saved, the item is &#39;orphaned&#39; and the second UI control is pointing to this orphan.</p>
+<p>&nbsp;</p>
+<p>Thanks for any ideas</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, August 06, 2010</h2><p>Your guess is probably correct. You really need to update the DataContext with the result of Save(). The best way to do this is to use a helper control like ViewModel&lt;T&gt; or CslaDataProvider, which will do the work for you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Friday, August 06, 2010</h2><p>Thanks,&nbsp;</p>
+<p>I&#39;ve complicated things by using MVVMlite.</p>
+<p> The listBoxs DataContext points to a &nbsp;Property ( the actual collection) on a &nbsp;&#39;&#39;CollectionViewModel&quot;&nbsp;</p>
+<p>The Edit UI control DataContext points to &nbsp;a Property ( an item from the collection) on a &quot;CollectionItemViewModel&quot;&nbsp;</p>
+<p>...and there not connected.&nbsp;So the implication is that both ViewModels&#39; need to reference/update the collection?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 06, 2010</h2><p>Using a CollectionViewModel is fine - I use them all the time now since this is what VS10 generates when you drag an object onto a form to set up data binding in the designer.</p>
+<p>But you do need to &quot;cascade&quot; them if you use more than one. There should be a master-detail or parent-child hierarchy with your data context resources.</p>
+<p>So having a parent CVS is good, as long as any child CVS or other resources get their data relative to that parent CVS.</p>
+<p>Look the the CslaMvvmSl project in the CSLA 4 samples, or the <em>CSLA 4 MVVM video series</em> to see what I&#39;m talking about.</p>
+<p>I suspect those techhniques are not incompatible with MVVMlite - though I haven&#39;t looked at that framework, so perhaps they require doing something bad. If so, let me know, because I&#39;ve been mentioning that framework in a good light, but if it requires something that&#39;s incompatible with standard VS10 behaviors that would make me change my tune...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Saturday, August 07, 2010</h2><p>Thanks,</p>
+<p>I guess I&#39;ve misunderstood the consequences of &#39;&#39;xColl.Save()&quot; as well.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Saturday, August 07, 2010</h2><p>So,</p>
+<p>If I have</p>
+<p>XCollection xc = ....</p>
+<p>X obj = xc.AddNew();</p>
+<p>// Do stuff with obj</p>
+<p>xc.Save();</p>
+<p>How does one update obj?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 07, 2010</h2><p>You need to say xc = xc.Save() so you get the result of the save. Then you can find the <em>new child object</em> in the new xc and update your &#39;obj&#39; field to reference it.</p>
+<p>I normally avoid maintaining references to child objects, and therefore don&#39;t need to refresh such references on a save operation - I just maintain a reference to the root object and find other objects in the graph based on the root.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Saturday, August 07, 2010</h2><p>Thanks,&nbsp;</p>
+<p>My typo.</p>
+<p>So how would you find the child object again, in that all the editable properties of the child may have changed ( due to user changing them, and then the collection&nbsp;subsequently&nbsp;being saved)</p>
+<p>If my Child Editing UI control reference the collection what should it reference - index in the collection?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 07, 2010</h2><p>Honestly I don&#39;t know. I&#39;m a little confused about your UI design I guess, as I don&#39;t run into this issue - I let data binding do this for me.</p>
+<p>If your list is bound to a CVS, the CVS maintains the concept of currency - which item is current. Usually a child edit area of the UI is bound to that current item - thus bound to the appropriate current child. Data binding just makes it all work with no effort on your part.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gravity00 replied on Sunday, August 08, 2010</h2><p>Hi,</p>
+<p>I think this where I went wrong. </p>
+<p>Collection is bound to ListBox.</p>
+<p>When user selects Item,create new UIView/ ItemViewModel ( effectively a new window), passing actual Item from the collection, via ListBox.SelectedItem</p>
+<p>I think what I should do is pass the item ID and the collection</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

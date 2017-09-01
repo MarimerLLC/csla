@@ -1,0 +1,14 @@
+<html><header><title>Deleting an Item in an Editable List Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deleting an Item in an Editable List Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2203.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Wednesday, January 24, 2007</h2><H2><FONT size=2>Hello,</FONT></H2>
+<P>I am getting the below error and it is not making sense to me.I am following the Project Tracker example.I have an editable list bound to the grid.On click event of some buttons this Editable List&nbsp;Object&nbsp;&nbsp;must be filtered out and rebound to the grid.On a button click even I am trying to&nbsp;remove&nbsp;some of the items in the list based on&nbsp;a criteria.I was able to&nbsp;sucessfully use the ObjectListView (Thanks to Brian Criswell)&nbsp;to filter out&nbsp;a ReadOnly List.In this case no clue :-( whats happening.Any Information would be helpful.</P>
+<P>&nbsp;</P>
+<P>Thanks in Advance</P>
+<P>V</P>
+<P><I><FONT size=5>Invalid for root objects - use Delete instead</FONT></I> </P><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.NotSupportedException: Invalid for root objects - use Delete instead<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 43:                 if (eRepairInfo.RepairTypeID.Equals(repairTypeID))
+Line 44:                 {
+<FONT color=red>Line 45:                     Remove(eRepairInfo);
+</FONT>Line 46:                   break;
+Line 47:                 }</PRE></CODE></TD></TR></TABLE></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 24, 2007</h2>The object which is in the list must be marked as a child object.&nbsp; Did you call MarkAsChild in the instances constructor?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Thursday, January 25, 2007</h2><P>Oops got it.Thanks.I did not have the MarkAsChild().</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

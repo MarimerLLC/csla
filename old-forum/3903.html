@@ -1,0 +1,99 @@
+<html><header><title>Business Rule for Uniqueness of a column in Validation Rule implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule for Uniqueness of a column in Validation Rule implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3903.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jitendra posted on Friday, November 16, 2007</h2><P>Hi,</P>
+<P>We need to check uniqueness for a column by check the assigned values into the database. But when we add a custom rule by using ValidationRules.AddRule(UniquePartyNumber, <FONT color=#a31515>"PartyNumber"</FONT>) It takes the default value of the property not the newly assigned values. </P>
+<P>Here is our code look like: </P>
+<P>ValidationRules.AddRule(UniquePartyNumber, <FONT color=#a31515>"PartyNumber"</FONT>);</P><FONT color=#0000ff>
+<P>private</FONT> <FONT color=#0000ff>bool</FONT> UniquePartyNumber(<FONT color=#0000ff>object</FONT> target, <FONT color=#2b91af>RuleArgs</FONT> args)</P>
+<P>{ <FONT color=#0000ff>try</P></FONT>
+<P>{</P>
+<P><FONT color=#2b91af>Database</FONT> db = <FONT color=#2b91af>LinnetDatabaseFactory</FONT>.CreateDatabase();</P>
+<P><FONT color=#0000ff>string</FONT> sqlSelect;</P>
+<P>sqlSelect = <FONT color=#a31515>"SELECT COUNT(*) AS COUNT FROM PARTY WHERE PARTY_NUMBER = :PartyNumber AND PARTY_ID &lt;&gt; :PartyId"</FONT>;</P>
+<P><FONT color=#2b91af>DbCommand</FONT> dbCommand = db.GetSqlStringCommand(sqlSelect);</P>
+<P>db.AddInParameter(dbCommand, <FONT color=#a31515>":PartyNumber"</FONT>, <FONT color=#2b91af>DbType</FONT>.String, PartyNumber);</P>
+<P>db.AddInParameter(dbCommand, <FONT color=#a31515>":PartyId"</FONT>, <FONT color=#2b91af>DbType</FONT>.Int64, PartyId);</P>
+<P><FONT color=#0000ff>using</FONT> (<FONT color=#2b91af>SafeDataReader</FONT> sdrReader = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>SafeDataReader</FONT>(db.ExecuteReader(dbCommand)))</P>
+<P>{</P>
+<P><FONT color=#0000ff>if</FONT> (sdrReader.Read()){</P>
+<P><FONT color=#0000ff>long</FONT> count = sdrReader.GetInt64(<FONT color=#a31515>"COUNT"</FONT>);</P>
+<P><FONT color=#0000ff>if</FONT> (count &gt; 0){</P>
+<P><FONT color=#0000ff>throw</FONT> <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>PartyNumberNotUniqueException</FONT>();</P>
+<P><FONT color=#0000ff>return</FONT> <FONT color=#0000ff>false</FONT>;}</P>
+<P>}</P>
+<P><FONT color=#0000ff>else</P></FONT>
+<P>{</P>
+<P><FONT color=#0000ff>throw</FONT> <FONT color=#0000ff>new</FONT> Csla.<FONT color=#2b91af>DataPortalException</FONT>(<FONT color=#a31515>"Unable to perform unique Party Number check: No data returned."</FONT>, <FONT color=#0000ff>this</FONT>);</P>
+<P><FONT color=#0000ff>return</FONT> <FONT color=#0000ff>false</FONT>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P><FONT color=#0000ff>catch</FONT> (<FONT color=#2b91af>Exception</FONT> ex)</P>
+<P>{</P>
+<P>log.Error(<FONT color=#a31515>"Unable to perform unique Party Number check."</FONT>, ex);</P>
+<P><FONT color=#0000ff>throw</FONT>;</P>
+<P><FONT color=#0000ff>return</FONT> <FONT color=#0000ff>false</FONT>;</P>
+<P>}</P>
+<P><FONT color=#0000ff>return</FONT> <FONT color=#0000ff>true</FONT>;</P>
+<P>}</P>
+<P>Please let me know how to pass the newly assigned values into this method.</P>
+<P>Thanks,</P>
+<P>Jitendra</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 16, 2007</h2><P>I see 3 major problems with the code.</P>
+<P>1. The problem of how to get the current value.</P>
+<P>2. There is no setting for e.Description - instead you are throwing exceptions. Why?</P>
+<P>3. You are querying the database directly - this will break if the app is ever set up to use remoting. You need to use a BO to get the answer. Like a command object or other special object.</P>
+<P>Here is my central rule for record checking:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'Rule ensuring a value exists in the database.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'Optionally, you can specify to only run the rule on a New BO</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> RecordExists(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> RuleArgs) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> ruleArg </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> RecordExistsRuleArgs = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(e, RecordExistsRuleArgs)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = ruleArg.PropertyName</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> propertyDescription </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = ruleArg.PropertyDescr</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> tableName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = ruleArg.TableName</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> fieldValue </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = ruleArg.FieldValue</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> testWhenNew </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = ruleArg.TestWhenNew</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = CallByName(target, propertyName, CallType.Get).ToString</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> bizObject </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.BusinessBase = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(target, Csla.Core.BusinessBase)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> (testWhenNew = </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>AndAlso</FONT><FONT size=2> bizObject.IsNew) </FONT><FONT color=#0000ff size=2>OrElse</FONT><FONT size=2> (testWhenNew = </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> CheckValue.RecordExists(tableName, value, fieldValue) </FONT><FONT color=#0000ff size=2>Then&nbsp;&nbsp;<FONT color=#008000> ' &lt;---&nbsp; this is a command object</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>e.Description = GetDescription(target, propertyName, propertyDescription) &amp; </FONT><FONT color=#ff00ff size=2>" does not exist."</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>'testWhenNew = True AndAlso Not bizObject.IsNew</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2>===================================================================================</FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> RecordExistsRuleArgs</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> MyRuleArgs</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mTableName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mFieldValue </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> mTestWhenNew </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> TableName() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mTableName</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> FieldValue() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mFieldValue</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> TestWhenNew() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mTestWhenNew</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> tableName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>Optional</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> fieldValue </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2>""</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>Optional</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> testWhenNew </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>Optional</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> propertyDescription </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2>""</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.New(propertyName, propertyDescription)</P>
+<P>mTableName = tableName</P>
+<P>mFieldValue = fieldValue</P>
+<P>mTestWhenNew = testWhenNew</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> ToString() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.ToString &amp; </FONT><FONT color=#ff00ff size=2>"?tableName="</FONT><FONT size=2> &amp; mTableName &amp; </FONT><FONT color=#ff00ff size=2>"&amp;fieldValue="</FONT><FONT size=2> &amp; mFieldValue &amp; </FONT><FONT color=#ff00ff size=2>"&amp;testWhenNew="</FONT><FONT size=2> &amp; mTestWhenNew</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT></P><FONT color=#0000ff size=2>
+<P><FONT color=#0000ff size=2>===================================================================================</FONT></P>
+<P>&nbsp;</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

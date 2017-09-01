@@ -1,0 +1,367 @@
+<html><header><title>CSLA and the Entity Framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and the Entity Framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6475.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gPlans posted on Saturday, February 21, 2009</h2><P><SPAN>I have searched all over the internet for a single example of the two technologies (CSLA and EF) can work together but in vain. In theory, EF should provide CSLA with the&nbsp;DAL. In practice, no one seems to have attempted it yet. <o:p></o:p></SPAN></P>
+<P><SPAN>Can someone please point me to a good example? And can someone answer me a simple question: what is to be gained from using the two together since it's very obvious that the two can be used independently?<o:p></o:p></SPAN></P>
+<P><SPAN>I have looked at Rocky's&nbsp;Expert C# 2008 Business Objects but it dwells more on L2S and just a mention of EF. With rumors going around (and I suspect they are not just rumors) that MS is no longer interested in further development of L2S I would have thought anyone choosing between L2S and EF should have chosen EF. Or what I am I missing?<o:p></o:p></SPAN></P>
+<P><FONT face=HelveticaNeue-MediumCond size=7><FONT face=HelveticaNeue-MediumCond size=7>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, February 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Pretty much everything from L2S applies to EF.&nbsp; You would
+use EF in the same way with CSLA as you would L2S &#8211; as DAL.&nbsp; I have
+been working part-time on CSLA/SL/EF project, and I actually like the
+combination.&nbsp; We are not using stored procedures, just plain EF.&nbsp; The
+DAL code is very different if you are using L2S with stored procedures though.&nbsp;
+&nbsp;You still create a context though, retrieve the entity (for updates,
+inserts and deletes) and update it from BO, then call SaveChanges on
+context.&nbsp; Retrieve data code is pretty much identical to L2S.&nbsp; I think
+using EF results in less code than when you are using raw ADO, especially when
+it comes to parent/child/grandchild object trees.&nbsp; There is a learning
+curve (albeit not very steep) in learning how to satisfy relationships during
+update process.&nbsp; I think I will be talking at Atlanta Code Camp on CSLA
+for Silverlight, and I am planning to copy and re-work Rolodex project to use
+EF.&nbsp; The Code Camp is in three weeks.&nbsp; Whether my sessions gets
+approved or not, I will have the sample working and post all code in any case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gPlans
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, February 21, 2009 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA and the Entity Framework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have searched all over the internet for a single example of the two
+technologies (CSLA and EF) can work together but in vain. In theory, EF should
+provide CSLA with the&nbsp;DAL. In practice, no one seems to have attempted it
+yet. <o:p></o:p></p>
+
+<p>Can someone please point me to a good example? And can someone answer me a
+simple question: what is to be gained from using the two together since it's
+very obvious that the two can be used independently?<o:p></o:p></p>
+
+<p>I have looked at Rocky's&nbsp;Expert C# 2008 Business Objects but it dwells
+more on L2S and just a mention of EF. With rumors going around (and I suspect
+they are not just rumors) that MS is no longer interested in further
+development of L2S I would have thought anyone choosing between L2S and EF
+should have chosen EF. Or what I am I missing?<o:p></o:p></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gPlans replied on Saturday, February 21, 2009</h2><P class=MsoNormal><SPAN>Thanks both,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Sergeyb, I had actually tried to play around with EF/CSLA but your advice makes me feel like I am on the right track. Once you are done with your project, please post it somewhere we can access it. </SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>I am trying to take advantage of some of EF's features most notably Table per Type Inheritance. One of the problems I am running into is that most code generation tools can only generate the BO’s from the database schema. This means that although I have all the fields I want in entities, there is no way of generating BO’s from them. I have to create either Views or Stored Procedures with joins to generate my BO’s so that the fields correspond with those of the entities. The other option is writing the BO’s by hand. </SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Anyone has any ideas how one can go round this?<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, February 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not that I am aware of.&nbsp; Oddly enough, I do a fair amount
+of hand-coding on business objects, but I did write a small code generator myself.&nbsp;
+It does not create entire objects, just code blocks, such as properties, data
+access code and some validation rules.&nbsp;&nbsp; This tool allows me to pick
+fields from multiple tables, then I just copy/paste what I need into my
+business objects.&nbsp; I found that this approach is not much slower to me
+than full code gen, but it results in cleaner code IMHO because I only write
+methods that I need for each object,&nbsp; Just my 2 cents though, I know that
+majority of people cod-gen entire classes.&nbsp; I will surely post the project
+in about 3 weeks, give or take.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gPlans
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, February 21, 2009 12:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA and the Entity Framework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks
+both,<o:p></o:p></p>
+
+<p class=MsoNormal>Sergeyb,
+I had actually tried to play around with EF/CSLA but your advice makes me feel
+like I am on the right track. Once you are done with your project, please post
+it somewhere we can access it. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>I
+am trying to take advantage of some of EF's features most notably Table per
+Type Inheritance. One of the problems I am running into is that most code
+generation tools can only generate the BO???s from the database schema. This
+means that although I have all the fields I want in entities, there is no way
+of generating BO???s from them. I have to create either Views or Stored
+Procedures with joins to generate my BO???s so that the fields correspond with
+those of the entities. The other option is writing the BO???s by hand. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Anyone
+has any ideas how one can go round this?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, March 16, 2009</h2><P>I presented on CSLA for Silverlight at the Atlanta Code Camp on Saturday.&nbsp; I have posted the entire project on my blog (scroll down to SkyDrive / AtlantaCodeCamp to download).&nbsp; I wrote DAL using Entity Framework, but without re-fetching the data for updates.&nbsp; This is the most efficient, but far from <SPAN>straightforward </SPAN>way of doing it.&nbsp; If you are interested, here is the link.</P>
+<P><A href="http://sergeybarskiy.spaces.live.com/default.aspx">http://sergeybarskiy.spaces.live.com/default.aspx</A></P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>Sergey</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Tuesday, March 17, 2009</h2>Hi Sergey,<br><br>I'm still thinking of implementing a series of CodeSmith templates that would read an EF model, and generate the BO from it, with EF as the DAL.<br><br>All that I'm missing is a working sample of how to integrate EF with CSLA.<br><br>I'll look at your sample project, and it might become the base for my project <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Regards.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crussi replied on Wednesday, April 29, 2009</h2><P>Hi Sergey,</P>
+<P>What are some of the benefits of migrating from L2S to EF in regards to which is used for the DAL in a CSLA.NET project?&nbsp; Thank you so much for providing the EF sample BTW :-)&nbsp; I can't wait to dig into it!</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crussi replied on Thursday, April 30, 2009</h2><P>Hi Sergey,</P>
+<P>I was able to compile and run the EF sample (from your downloads) under CSLA 3.6.1.&nbsp; But, when I try to edit a record I get an XAML error on lines dealing with the csla datagrid validation control.&nbsp; I am running SL2.&nbsp; Any suggestions?&nbsp; I was running SL3, but I downgraded to SL2 because I thought that was it.&nbsp; I'm excited to work with the EF under CSLA and any help would be greatly appreciated.</P>
+<P>&nbsp;</P>
+<P>Best regards,</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crussi replied on Friday, May 01, 2009</h2><P>I'm just bumping this up ...</P>
+<P>Anyone have any ideas on the EF sample?</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+used 3.6.2 for this sample.&nbsp; Make sure you are referencing correct version
+of CSLA and Silverlight.&nbsp; I am not sure what else would cause the issue.&nbsp;
+Knowing exact error might help&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> crussi
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 01, 2009 5:25 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA and the Entity Framework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm just bumping this up ...<o:p></o:p></p>
+
+<p>Anyone have any ideas on the EF sample?<o:p></o:p></p>
+
+<p>Chris<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>crussi replied on Tuesday, May 05, 2009</h2><P>Hi Sergey,</P>
+<P>Thank you so much for your response.&nbsp; I apologize for not seeing your reply until now.&nbsp; I started with 3.6.2, but got a strange error "<FONT size=2>The call is ambiguous between the following methods or properties</FONT>"&nbsp;similar to the one described in this post: <A HREF="/forums/thread/32337.aspx">http://forums.lhotka.net/forums/thread/32337.aspx</A>&nbsp; So, I assumed I needed to use the earlier 3.6.1 version and that is when I got the XAML error on lines dealing with the csla datagrid validation control.&nbsp; So, I will upgrade again to using 3.6.2.</P>
+<P>So, I should have csla.net 3.6.2 framework and SL2.&nbsp; I'll try again.&nbsp; Can you please take a look at the error discussed here <A HREF="/forums/thread/32337.aspx">http://forums.lhotka.net/forums/thread/32337.aspx</A>?&nbsp; Any idea what was the cause of the original error "<FONT size=2>The call is ambiguous between the following methods or properties</FONT>".&nbsp; My gut feeling was that the client was using cslalight and the server was using csla.&nbsp; Since the object class is shared between the client and the server code base the compiler was confused about a particular property.</P>
+<P>I'm excited to migrate up to EF from LINQ to SQL and your sample app is the only model I know of to follow.&nbsp; So, I'm anxious to get it working.</P>
+<P>Best regards,</P>
+<P>Chris </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 05, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+am guessing that default value needs to be explicitly casted.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> crussi
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 05, 2009 3:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA and the Entity Framework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>Thank you so much for your response.&nbsp; I apologize for not seeing your
+reply until now.&nbsp; I started with 3.6.2, but got a strange error &quot;<span>The call is ambiguous between the following methods or
+properties</span>&quot;&nbsp;similar to the one described in this post: <a href="/forums/thread/32337.aspx">http://forums.lhotka.net/forums/thread/32337.aspx</a>&nbsp;
+So, I assumed I needed to use the earlier 3.6.1 version and that is when I got
+the XAML error on lines dealing with the csla datagrid validation
+control.&nbsp; So, I will upgrade again to using 3.6.2.<o:p></o:p></p>
+
+<p>So, I should have csla.net 3.6.2 framework and SL2.&nbsp; I'll try again.&nbsp;
+Can you please take a look at the error discussed here <a href="/forums/thread/32337.aspx">http://forums.lhotka.net/forums/thread/32337.aspx</a>?&nbsp;
+Any idea what was the cause of the original error &quot;<span>The call is ambiguous between the following methods or properties</span>&quot;.&nbsp;
+My gut feeling was that the client was using cslalight and the server was using
+csla.&nbsp; Since the object class is shared between the client and the server
+code base the compiler was confused about a particular property.<o:p></o:p></p>
+
+<p>I'm excited to migrate up to EF from LINQ to SQL and your sample app is the
+only model I know of to follow.&nbsp; So, I'm anxious to get it working.<o:p></o:p></p>
+
+<p>Best regards,<o:p></o:p></p>
+
+<p>Chris <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, February 21, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>gPlans:</strong></div><div>
+<P><SPAN>...</SPAN></P>
+<P><SPAN>&nbsp;And can someone answer me a simple question: what is to be gained from using the two together since it's very obvious that the two can be used independently?</SPAN></P>
+<P><SPAN>...</SPAN></P>
+<P><SPAN></div></BLOCKQUOTE></SPAN></P>
+<P><SPAN>I haven't specifically looked at EF yet, but I assume based on what I have read it provides similar functionality to ORMs. </SPAN></P>
+<P><SPAN>CSLA is giving you mobile objects and the ability to deploy your application in tiers, plus data bindability, validation rules, field-level authorization, and n-level undo. I think these are a plus independent of whatever data access method is chosen. Moreover, CSLA basically leaves fetching and persisting of objects completely up to you and hence can be used with almost whatever DAL you choose. </SPAN></P>
+<P><SPAN>I'll be very interested in a CSLA + EF sample when one becomes available. I'm not unhappy with the ORM I'm currently using, but I don't have LINQ capability to retrieve objects from the database and still have to generate SQL. </SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

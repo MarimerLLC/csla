@@ -1,0 +1,18 @@
+<html><header><title>Another one on Business Rules...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Another one on Business Rules...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4448.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch posted on Monday, March 03, 2008</h2><P>What is the best way to have one broken rule for the following...</P>
+<P>I have 3 properties and if one has a value then all tree are mandatory.&nbsp; It's either all or nothing and I need to display only ONE broken rules, not 3.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, March 03, 2008</h2><P>For rules like this I write them inside the class itself (as opposed to my Common Rules class).</P>
+<P>I assign the rule to a non-existant Property. This means it never gets called from the UI or from PropertyHasChanged("SomeRealProperty").</P>
+<P>Once the entire BO is unbound and all properties are set the UI can call IsValid.&nbsp; </P>
+<P>This is where I typically perform ValidationRules.CheckRules("FakePropertyName"). (No need to check all rules here - only the one(s) you assigned to fake properties.)</P>
+<P>And now the rule can check the current value of all three properties and the rule only runs one time.</P>
+<P>Then I call MyBase.IsValid and the correct results are returned.</P>
+<P>This is a common paradigm in a Web app - if you want more interactivity then you have to call the rule more often. Perhaps AddDependentProperty to each of the three real properties and assign the fake property as the dependent. This way it gets called three times and is immediately available after each property is changed in the UI.</P>
+<P>Just some ideas.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2><P>I don't know how you'd get one rule to span three properties? Which one do you mark as invalid?</P>
+<P>Ahh, well, you could do something. You could say </P>
+<P>if x is not empty AND y and z are empty<BR>&nbsp; then x is invalid because it has a value but the others don't<BR>OR if x and y are not empty AND z is empty<BR>&nbsp; then z is invalid because it doesn't have a value but the others do</P>
+<P>Kind of a "which of these things doesn't match the other ones" sort of algorithm.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, March 04, 2008</h2><P>We followed Joe's advice and it's working fine.&nbsp; No offence Rocky :)</P>
+<P>Much appreciated</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

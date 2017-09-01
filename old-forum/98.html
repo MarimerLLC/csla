@@ -1,0 +1,204 @@
+<html><header><title>NETRUN?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NETRUN?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/98.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe posted on Sunday, May 14, 2006</h2>I see NETRUN didn't make it over to CSLA 2.0. Has it been replaced with
+a better alternative or are people still using it? I like Click-Once,
+but if you use it, you have no control over the install folder on the
+client's machine. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Misled replied on Sunday, May 14, 2006</h2>Are you sure about the control? I studied the deployment object enough to figure out how to update the app every time it starts without requiring user intervention. As I recall, there are lots of things you can do with the deployment object. BUt I could be wrong....</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeWork replied on Monday, May 15, 2006</h2><P>I have used Click-Once and it appears so far to work very well. I have been frustated though by the lack of control of the installation folder but I'm not sure if thats just down to me not reading enough so far :)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Misled replied on Monday, May 15, 2006</h2>That's why we have this forum....I think.....There's not a chance in hades we'll ever know everything. It's too vast to read in one lifetime. :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Monday, May 15, 2006</h2>Per the Click-Once FAQ Site:<br>http://www.windowsforms.net/FAQs/default.aspx?PageID=1&amp;CategoryID=24&amp;tabindex=2<br><br>Q. I want my application to be installed to a specific hard drive location, how can I achieve this?<br>A. The
+install location of “ClickOnce” application cannot be managed by the
+application. This is an important part of making “ClickOnce”
+applications safe, reversible, and easy to administer. Note, the
+administrator can specify where the “ClickOnce” store should reside.<br><br>I have 10+ HUGE programs that are all interconnected. They all can launch each other and need to know each other's locations. There are more issues than that but that's a big one. It's much easier to work with interconnected programs if they all reside in the same folder.<br><br>I'm not even sure if NETRUN can handle our needs, I was going to start testing with it and noticed it wasn't carried over (or even mentioned it looks like) in CSLA 2.0.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, May 15, 2006</h2>MSI might be the best approach if your deployment needs are more complex than ClickOnce can handle.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 15, 2006</h2><P>I didn't carry netrun forward because I think ClickOnce is a generally better solution. NetRun should still work under .NET 2.0 though - it isn't a very complex bit of code, and the href exe deployment concept continues to work in .NET 2.0 just like it did in .NET 1.0.</P>
+<P>Odds are that you can simply recompile NetRun under VS 2005 and it will work (though I haven't tried that myself).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcerisano replied on Wednesday, August 30, 2006</h2><P>We are using NetRun and the CSLA.&nbsp; Since the conversion of our code to C# 2005 and .NET 2.0 we have noticed that NetRun does not work as expected.&nbsp; We have been using NetRun for deployment for the last year or more, with no problems.</P>
+<P>Now when we deploy a new version of the code to the web server, we have noticed that NetRun does not get the latest version of the deployed code.&nbsp; The previous version of our exectubable is being used and the loading of the application fails because all the dependent assemblies cannot be resolved.</P>
+<P>I have found some documentation around the fact that Assembly.LoadFrom no longer works as expected in .NET 2.0...here is the link: </P>
+<P><A href="http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx">http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx</A></P>
+<P>Has anyone else had this problem? and if so is there a reasonable work-around?&nbsp; If not, it looks like we will be using the Updater Block since Click-Once is too inflexible.</P>
+<P>Marty</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 30, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>From reading that link though, it sounds like the change 
+only affects you if you are using the GAC. It doesn't indicate that there'd be 
+any effect on purely dynamic loaded assemblies that aren't in the 
+GAC.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>I can say though, that I have never tested NetRun under 
+2.0, so it is possible that Microsoft did break href exe. I find that unlikely 
+however, because that would have a higher severity than the relatively obscure 
+issue described by that link.&nbsp;A lot of people use href exe - at least in 
+1.x - and I've seen other references to the effect that href exe continues to 
+work in 2.0.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> mcerisano [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, August 30, 2006 12:18 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] 
+  NETRUN?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>We are using NetRun and the CSLA.&nbsp; Since the conversion of our code to 
+  C# 2005 and .NET 2.0 we have noticed that NetRun does not work as 
+  expected.&nbsp; We have been using NetRun for deployment for the last year or 
+  more, with no problems.</P>
+  <P>Now when we deploy a new version of the code to the web server, we have 
+  noticed that NetRun does not get the latest version of the deployed 
+  code.&nbsp; The previous version of our exectubable is being used and the 
+  loading of the application fails because all the dependent assemblies cannot 
+  be resolved.</P>
+  <P>I have found some documentation around the fact that Assembly.LoadFrom no 
+  longer works as expected in .NET 2.0...here is the link: </P>
+  <P><A href="http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx">http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx</A></P>
+  <P>Has anyone else had this problem? and if so is there a reasonable 
+  work-around?&nbsp; If not, it looks like we will be using the Updater Block 
+  since Click-Once is too inflexible.</P>
+  <P>Marty</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcerisano replied on Wednesday, August 30, 2006</h2><P>Thanks for the feedback.</P>
+<P>We have been using NetRun and the Assembly.LoadFrom for many months with no issues.&nbsp; So I can vouch for the fact that this mechanism has worked pre-2.0.&nbsp; Post-2.0 is another story.</P>
+<P>Its troublesome that the Assembly.LoadFrom call now does not retrieve the latest version from the server.&nbsp; The only way to get the lastest version&nbsp;is to clear the temporary internet files.&nbsp; This is not a valid deployment requirement for our users.</P>
+<P>It would be great to know&nbsp;if anyone using .NET 2.0 has verified that NetRun (Assembly.LoadFrom) actually works...</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, August 30, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Skeeboe:</strong></div><div>Per the Click-Once FAQ Site:<BR>http://www.windowsforms.net/FAQs/default.aspx?PageID=1&amp;CategoryID=24&amp;tabindex=2<BR><BR>Q. I want my application to be installed to a specific hard drive location, how can I achieve this?<BR>A. The install location of “ClickOnce” application cannot be managed by the application. This is an important part of making “ClickOnce” applications safe, reversible, and easy to administer. Note, the administrator can specify where the “ClickOnce” store should reside.<BR><BR>I have 10+ HUGE programs that are all interconnected. They all can launch each other and need to know each other's locations. There are more issues than that but that's a big one. It's much easier to work with interconnected programs if they all reside in the same folder.<BR><BR>I'm not even sure if NETRUN can handle our needs, I was going to start testing with it and noticed it wasn't carried over (or even mentioned it looks like) in CSLA 2.0.<BR></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>an idea for you ....</P>
+<P>click-once was designed to isolate app dependancy so that for example 2 or more versions could be installed w/o stomping out each other.</P>
+<P>while the path is "hidden" it is still there, I think with a bit of care you can build code to "find" the apps. what about having links to the app's in a known location ?</P>
+<P>each app puts a link in say program files\complex app\links\</P>
+<P>and each app can build a list of links to other apps to run on the fly...</P>
+<P>each time a click-once app is updated it re-writes it's link so all the other apps can find it via the link.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcerisano replied on Thursday, September 07, 2006</h2>
+
+
+
+
+
+
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2>I 
+thought you might be interested in this article.</FONT></SPAN></DIV>
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2>It 
+seems that they purposely broke NTB so that we would be forced in the direction 
+of ClickOnce.&nbsp; Seems heavy handed.</FONT></SPAN></DIV>
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2><A href="http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=93820">http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=93820</A></FONT></SPAN></DIV>
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2>Marty</FONT></SPAN></DIV>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Tahoma size=2>-----Original Message-----<BR><B>From:</B> Rockford Lhotka 
+  [mailto:cslanet@lhotka.net]<BR><B>Sent:</B> Wednesday, August 30, 2006 1:50 
+  PM<BR><B>To:</B> Cerisano, Marty (JUS)<BR><B>Subject:</B> RE: [CSLA .NET] 
+  NETRUN?<BR><BR></FONT></DIV>
+  <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>From reading that link though, it sounds like the change 
+  only affects you if you are using the GAC. It doesn't indicate that there'd be 
+  any effect on purely dynamic loaded assemblies that aren't in the 
+  GAC.</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>I can say though, that I have never tested NetRun under 
+  2.0, so it is possible that Microsoft did break href exe. I find that unlikely 
+  however, because that would have a higher severity than the relatively obscure 
+  issue described by that link.&nbsp;A lot of people use href exe - at least in 
+  1.x - and I've seen other references to the effect that href exe continues to 
+  work in 2.0.</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+  <BLOCKQUOTE>
+    <DIV class=OutlookMessageHeader align=left>
+    <HR>
+    <FONT face=Tahoma size=2><B>From:</B> mcerisano [mailto:cslanet@lhotka.net] 
+    <BR><B>Sent:</B> Wednesday, August 30, 2006 12:18 PM<BR><B>To:</B> 
+    rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] 
+    NETRUN?<BR></FONT><BR></DIV>
+    <DIV></DIV>
+    <P>We are using NetRun and the CSLA.&nbsp; Since the conversion of our code 
+    to C# 2005 and .NET 2.0 we have noticed that NetRun does not work as 
+    expected.&nbsp; We have been using NetRun for deployment for the last year 
+    or more, with no problems.</P>
+    <P>Now when we deploy a new version of the code to the web server, we have 
+    noticed that NetRun does not get the latest version of the deployed 
+    code.&nbsp; The previous version of our exectubable is being used and the 
+    loading of the application fails because all the dependent assemblies cannot 
+    be resolved.</P>
+    <P>I have found some documentation around the fact that Assembly.LoadFrom no 
+    longer works as expected in .NET 2.0...here is the link: </P>
+    <P><A href="http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx">http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx</A></P>
+    <P>Has anyone else had this problem? and if so is there a reasonable 
+    work-around?&nbsp; If not, it looks like we will be using the Updater Block 
+    since Click-Once is too inflexible.</P>
+    <P>Marty</P><BR><BR><BR></BLOCKQUOTE><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=140235818-07092006><FONT face=Arial color=#0000ff size=2>Interesting.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140235818-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140235818-07092006><FONT face=Arial color=#0000ff size=2>Though that may or may not affect NetRun. It isn't clear 
+whether the change only affects IE as host, or all hosts. I suspect the former, 
+because I have at least one client who's using href exe (not netrun though) 
+under .NET 2.0 - over the internet. Though perhaps they specifically put the 
+deployment server into the Trusted zone or something - that I don't 
+know.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140235818-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140235818-07092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Cerisano, Marty (JUS) 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Thursday, September 07, 2006 
+  12:19 PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> RE: [CSLA .NET] 
+  NETRUN?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2>I 
+  thought you might be interested in this article.</FONT></SPAN></DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2>It 
+  seems that they purposely broke NTB so that we would be forced in the 
+  direction of ClickOnce.&nbsp; Seems heavy handed.</FONT></SPAN></DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2><A href="http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=93820">http://connect.microsoft.com/VisualStudio/feedback/ViewFeedback.aspx?FeedbackID=93820</A></FONT></SPAN></DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV><SPAN class=305321117-07092006><FONT face=Arial color=#0000ff size=2>Marty</FONT></SPAN></DIV>
+  <BLOCKQUOTE>
+    <DIV class=OutlookMessageHeader align=left><FONT face=Tahoma size=2>-----Original Message-----<BR><B>From:</B> Rockford Lhotka 
+    [mailto:cslanet@lhotka.net]<BR><B>Sent:</B> Wednesday, August 30, 2006 1:50 
+    PM<BR><B>To:</B> Cerisano, Marty (JUS)<BR><B>Subject:</B> RE: [CSLA .NET] 
+    NETRUN?<BR><BR></FONT></DIV>
+    <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>From reading that link though, it sounds like the 
+    change only affects you if you are using the GAC. It doesn't indicate that 
+    there'd be any effect on purely dynamic loaded assemblies that aren't in the 
+    GAC.</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>I can say though, that I have never tested NetRun under 
+    2.0, so it is possible that Microsoft did break href exe. I find that 
+    unlikely however, because that would have a higher severity than the 
+    relatively obscure issue described by that link.&nbsp;A lot of people use 
+    href exe - at least in 1.x - and I've seen other references to the effect 
+    that href exe continues to work in 2.0.</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=383473317-30082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+    <BLOCKQUOTE>
+      <DIV class=OutlookMessageHeader align=left>
+      <HR>
+      <FONT face=Tahoma size=2><B>From:</B> mcerisano 
+      [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Wednesday, August 30, 2006 
+      12:18 PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] 
+      NETRUN?<BR></FONT><BR></DIV>
+      <DIV></DIV>
+      <P>We are using NetRun and the CSLA.&nbsp; Since the conversion of our 
+      code to C# 2005 and .NET 2.0 we have noticed that NetRun does not work as 
+      expected.&nbsp; We have been using NetRun for deployment for the last year 
+      or more, with no problems.</P>
+      <P>Now when we deploy a new version of the code to the web server, we have 
+      noticed that NetRun does not get the latest version of the deployed 
+      code.&nbsp; The previous version of our exectubable is being used and the 
+      loading of the application fails because all the dependent assemblies 
+      cannot be resolved.</P>
+      <P>I have found some documentation around the fact that Assembly.LoadFrom 
+      no longer works as expected in .NET 2.0...here is the link: </P>
+      <P><A href="http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx">http://msdn.microsoft.com/netframework/programming/breakingchanges/runtime/fusion.aspx</A></P>
+      <P>Has anyone else had this problem? and if so is there a reasonable 
+      work-around?&nbsp; If not, it looks like we will be using the Updater 
+      Block since Click-Once is too inflexible.</P>
+      <P>Marty</P><BR><BR><BR></BLOCKQUOTE><BR><BR><BR></BLOCKQUOTE><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

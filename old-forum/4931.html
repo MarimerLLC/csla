@@ -1,0 +1,295 @@
+<html><header><title>AllowWrite et al.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AllowWrite et al.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4931.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, June 03, 2008</h2>Hi,<br><br>I know this has been discussed before, but I'm not sure what the current state is.<br><br>I don't want Csla, when checking privledges, to just to a .IsInRole on the principal.&nbsp; I'd like to specify my own function to call, because I have my own mapping of Windows AD Groups to application roles that I need to perform.<br><br>Is there anything in Csla right now that allows me to do this, or am I on my own?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a thought, but could you override SomePrincipal.IsInRole itself?&nbsp;
+&#8230;assuming you are using CSLA principal&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 03, 2008 4:43 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] AllowWrite et al.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I know this has been discussed before, but I'm not sure what the current state
+is.<br>
+<br>
+I don't want Csla, when checking privledges, to just to a .IsInRole on the
+principal.&nbsp; I'd like to specify my own function to call, because I have my
+own mapping of Windows AD Groups to application roles that I need to perform.<br>
+<br>
+Is there anything in Csla right now that allows me to do this, or am I on my
+own?<br>
+<br>
+Thanks<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 03, 2008</h2>I am using WindowsPrincipal.. was hoping to avoid building a CslaPrincipal, buf it that's the best way to go right now..<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 03, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Another thought is to have a class that will translate AD groups
+to custom roles, as in<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>AuthorizationRules.AllowRead(<span>&quot;SomePropName&quot;</span>, MyTranslatorClass.GetADRolesList(new
+string(){&#8220;CustomRole1&#8221;,&#8221;CustomRole2&#8221;}))</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 03, 2008 4:57 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: AllowWrite et al.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am using WindowsPrincipal.. was hoping to avoid building a
+CslaPrincipal, buf it that's the best way to go right now..<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 04, 2008</h2>I think I'll go with the first idea, to use Csla authentication as that will require the least amount of code changes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 04, 2008</h2>Here's my principal class:<br>&nbsp;&nbsp;&nbsp; [Serializable]<br>&nbsp;&nbsp;&nbsp; public sealed class MyPrincipal : BusinessPrincipalBase {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Fields<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private WindowsPrincipal principal;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region BusinessPrincipalBase overrides<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;summary&gt;Determines if the identity<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// is a member of the specified role.&lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;param name="role"&gt;The role to check.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;returns&gt;&lt;c&gt;true&lt;/c&gt; if the identity<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// is a member of &lt;paramref name="role"/&gt;.&lt;/returns&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;exception cref="ArgumentNullException"&gt;Thrown if<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;paramref name="role"/&gt; is &lt;see langword="null"/&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// or &lt;see cref="String.Empty"/&gt;.&lt;/exception&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public override bool IsInRole( string role ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bool result;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IList&lt;string&gt; groups;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ( string.IsNullOrEmpty( role ) ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; throw new ArgumentNullException( "role" );<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result = false;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; groups = RoleGroupMapper.Mapper[ role ];<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; foreach ( string group in groups ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ( principal.IsInRole( group ) ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result = true;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return result;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Constructor<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;summary&gt;Creates a new instance of the principal.&lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; internal MyPrincipal() : base( WindowsIdentity.GetCurrent() ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; principal = new WindowsPrincipal( (WindowsIdentity)Identity );<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion<br>&nbsp;&nbsp;&nbsp; }<br><br>So I now use CslaAuthentication = "Csla" and CslaAlwaysImpersonate (since I use Windows integrated auth on the remoting portal)?<br><br>Just want to make sure i'm getting this right.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, June 04, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Looks good to me.&nbsp; WindowsPrincipal is serializable, so it
+should not have a problem going to DataPortal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085 [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Wednesday, June 04, 2008 9:19 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: AllowWrite et al.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Here's my principal class:<br>
+&nbsp;&nbsp;&nbsp; [Serializable]<br>
+&nbsp;&nbsp;&nbsp; public sealed class MyPrincipal : BusinessPrincipalBase {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Fields<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private WindowsPrincipal principal;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region BusinessPrincipalBase overrides<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;summary&gt;Determines if the
+identity<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// is a member of the specified
+role.&lt;/summary&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;param
+name=&quot;role&quot;&gt;The role to check.&lt;/param&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ///
+&lt;returns&gt;&lt;c&gt;true&lt;/c&gt; if the identity<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// is a member of &lt;paramref
+name=&quot;role&quot;/&gt;.&lt;/returns&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;exception
+cref=&quot;ArgumentNullException&quot;&gt;Thrown if<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;paramref
+name=&quot;role&quot;/&gt; is &lt;see langword=&quot;null&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// or &lt;see
+cref=&quot;String.Empty&quot;/&gt;.&lt;/exception&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public override bool IsInRole( string
+role ) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; bool result;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IList&lt;string&gt;
+groups;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (
+string.IsNullOrEmpty( role ) ) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+throw new ArgumentNullException( &quot;role&quot; );<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result = false;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; groups = RoleGroupMapper.Mapper[
+role ];<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; foreach ( string group
+in groups ) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if
+( principal.IsInRole( group ) ) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; result = true;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; break;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return result;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Constructor<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; /// &lt;summary&gt;Creates a new instance
+of the principal.&lt;/summary&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; internal MyPrincipal() : base(
+WindowsIdentity.GetCurrent() ) {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; principal = new
+WindowsPrincipal( (WindowsIdentity)Identity );<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+So I now use CslaAuthentication = &quot;Csla&quot; and CslaAlwaysImpersonate
+(since I use Windows integrated auth on the remoting portal)?<br>
+<br>
+Just want to make sure i'm getting this right.<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 04, 2008</h2><P>Andy,</P>
+<P>In 3.5 Rocky added a Delegate that you can use for this. The default uses IsInRole but if you add a config file setting it will use whatever function you tell it to. I have a function HasPermission which is finer grained than IsInRole.</P>
+<P class=MsoNormal><B>Authorization (071030-VB/071127-C#)<o:p></o:p></B></P>
+<P class=MsoNormal>Change authorization so it calls a delegate to process <SPAN class=CodeInline><SPAN><FONT face="Courier New" color=#008000>IsInRole()</FONT></SPAN></SPAN>, rather than calling <SPAN class=CodeInline><SPAN><FONT face="Courier New" color=#008000>principal.IsInRole()</FONT></SPAN></SPAN> directly. The default delegate implementation will call <SPAN class=CodeInline><SPAN><FONT face="Courier New" color=#008000>principal.IsInRole()</FONT></SPAN></SPAN>, but now CSLA can be extended by implementing a provider for this delegate that can answer the <SPAN class=CodeInline><SPAN><FONT face="Courier New" color=#008000>IsInRole()</FONT></SPAN></SPAN> question in different ways if needed.</P>
+<P>====================================================================</P>
+<P>In your custom principal class add a method that conforms to the delegate:</P>
+<P>Private Shared Function HasPermissionProvider(ByVal principal As IPrincipal, ByVal permission As String) As Boolean<BR>&nbsp; Return CType(principal, MyPrincipal).HasPermission(permission)<BR>End Function</P>
+<P>====================================================================</P>
+<P>In your config file:</P>
+<P>&lt;appSettings&gt;<BR>&nbsp; &lt;add key=”CslaIsInRoleProvider” value=”MyCo.BO.MyPrincipal,MyCo.BO,HasPermissionProvider” /&gt;<BR>&lt;/appSettings&gt;</P>
+<P>====================================================================</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 04, 2008</h2>Ahh, so it did make it in there.&nbsp; Sadly, I'm not on 3.5 yet... soon I hope.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tim.offermann replied on Friday, April 24, 2009</h2><P>Hi!</P>
+<P>Perhaps one additional bit of information regarding the current (up to 3.6.2) implementation of the evaluation of the CslaIsInRoleProvider config setting. Neither the&nbsp;Csla (AuthorizationRulesManager.IsInRole) nor the CreateDelegate function&nbsp;"trims" the method name from whitespaces. I accidentially used ", " as a delimiter instead of ',' and was struggeling for hours with an ArgumentException.</P>
+<P>Best Regards, Tim</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

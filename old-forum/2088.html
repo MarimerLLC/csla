@@ -1,0 +1,17 @@
+<html><header><title>I really need the Validation Rules for the child BO to work. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I really need the Validation Rules for the child BO to work. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2088.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tseveryn posted on Saturday, January 06, 2007</h2><P class=MsoNormal>Hi,</P>
+<P class=MsoNormal>I need a little bit of help.</P>
+<P class=MsoNormal>I have a parent object that has collection of children, therefore we are talking about 3 BOs:</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN>- parent root BO</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- child collection BO</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>- child BO<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Child collection is bound to the DataGridView on the form for the parent root BO. There’s ‘AddChild’ button on the form, that opens dialog box for adding brand new child.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I have implemented several Validation Rules for the child BO, however for some reason they’re NOT being activated. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Please note that child BO is NOT switchable BO, and does not point to any other root BO.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I really need the Validation Rules for the child BO to work. <STRONG>What do I miss?</STRONG></P>
+<P class=MsoNormal><STRONG></STRONG>&nbsp;</P>
+<P class=MsoNormal>Thank you very much,</P>
+<P class=MsoNormal>TS</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Saturday, January 06, 2007</h2><P>When creating the new child, are you checking rules or anything to establish broken rules such as required fields, etc? To indicate that the child is not immediately valid? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Sunday, January 07, 2007</h2>It's very common to forget calling ValidationRules.CheckRules() inside the DataPortal_Create() method. See if that's the case.<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

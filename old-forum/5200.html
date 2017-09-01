@@ -1,0 +1,700 @@
+<html><header><title>OT: Database Version Check</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Database Version Check</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Wednesday, August 06, 2008</h2>Hello everyone,<br>Quick question... Currently, out database has a table in it called "DatabaseVersion".&nbsp; This table just holds a version number that we change as the database changes (I.E.- 1.0.0.2).<br><br>Basically, I need the software to check this value to make sure the version of the software they are running is compliant with the version of the database. (I know it sounds like this shouldn't happen, but it does in our situation)<br><br>If it were you, where in your code would you put a check like this?<br><br>Anyone do anything similar?&nbsp; Any tips or ideas would be greatly appreciated.<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I did exact same thing before, although not using CSLA.&nbsp; I
+put my check into a class that was called from Sub Main().&nbsp; If DB was too
+new, software would display a message and fold (Application.Exit(), Exit Sub).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 9:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello everyone,<br>
+Quick question... Currently, out database has a table in it called
+&quot;DatabaseVersion&quot;.&nbsp; This table just holds a version number that
+we change as the database changes (I.E.- 1.0.0.2).<br>
+<br>
+Basically, I need the software to check this value to make sure the version of
+the software they are running is compliant with the version of the database. (I
+know it sounds like this shouldn't happen, but it does in our situation)<br>
+<br>
+If it were you, where in your code would you put a check like this?<br>
+<br>
+Anyone do anything similar?&nbsp; Any tips or ideas would be greatly
+appreciated.<br>
+<br>
+Thanks!<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sergey,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I think that the question is more like, since all of the DB communication
+goes through&nbsp; Csla Business layer, what type of object would you use to
+get the database version.&nbsp; If that was truly the question, then my answer
+would be: use CommandObject, and place&nbsp; the Database version in a Result
+property of it:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Usage being:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>string dbVersion = &nbsp;DBVersionCommand.Execute();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>and obviously server side implementation &#8211; data access
+part goes to DBVersionCommand.DataPortalExecute()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 8:16 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> RE: [CSLA .NET] OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I did exact same thing before, although not using CSLA.&nbsp; I
+put my check into a class that was called from Sub Main().&nbsp; If DB was too
+new, software would display a message and fold (Application.Exit(), Exit Sub).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 9:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello everyone,<br>
+Quick question... Currently, out database has a table in it called
+&quot;DatabaseVersion&quot;.&nbsp; This table just holds a version number that
+we change as the database changes (I.E.- 1.0.0.2).<br>
+<br>
+Basically, I need the software to check this value to make sure the version of
+the software they are running is compliant with the version of the database. (I
+know it sounds like this shouldn't happen, but it does in our situation)<br>
+<br>
+If it were you, where in your code would you put a check like this?<br>
+<br>
+Anyone do anything similar?&nbsp; Any tips or ideas would be greatly
+appreciated.<br>
+<br>
+Thanks!<br>
+<br>
+<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, August 06, 2008</h2>Wow...thanks everyone for the replies... sounds like I'm on the right track.<br><br>Nermin, I was thinking command object would be the way to go.&nbsp; So basically I have an object that inherits from command object and it's sole responsibility is to get this value... does that seem right?<br><br>Thanks again for the responses :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes you have an object inheriting from CommandBase, implement
+DataPortal_Execute (db SP call that returns the ver. number), static Execute is
+your FactoryMethod that returns the version number, on the client side (and
+internally calls DataPortal.Execute&lt;DBVersionCommand&gt;(obj)), you will
+have to have a Result field property to serialize the value back from DataPortal_Execute
+to Execute(), and that is essentially it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 8:57 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Wow...thanks everyone for the replies... sounds like I'm on
+the right track.<br>
+<br>
+Nermin, I was thinking command object would be the way to go.&nbsp; So
+basically I have an object that inherits from command object and it's sole
+responsibility is to get this value... does that seem right?<br>
+<br>
+Thanks again for the responses :)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My bad.&nbsp; I totally agree.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Nermin Dibek
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 9:42 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Sergey,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I think that the question is more like, since all of the DB
+communication goes through&nbsp; Csla Business layer, what type of object would
+you use to get the database version.&nbsp; If that was truly the question, then
+my answer would be: use CommandObject, and place&nbsp; the Database version in
+a Result property of it:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Usage being:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>string dbVersion = &nbsp;DBVersionCommand.Execute();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>and obviously server side implementation &#8211; data access
+part goes to DBVersionCommand.DataPortalExecute()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Wednesday, August 06, 2008 8:16 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> RE: [CSLA .NET] OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I did exact same thing before, although not using CSLA.&nbsp; I
+put my check into a class that was called from Sub Main().&nbsp; If DB was too
+new, software would display a message and fold (Application.Exit(), Exit Sub).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 9:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello everyone,<br>
+Quick question... Currently, out database has a table in it called
+&quot;DatabaseVersion&quot;.&nbsp; This table just holds a version number that
+we change as the database changes (I.E.- 1.0.0.2).<br>
+<br>
+Basically, I need the software to check this value to make sure the version of
+the software they are running is compliant with the version of the database. (I
+know it sounds like this shouldn't happen, but it does in our situation)<br>
+<br>
+If it were you, where in your code would you put a check like this?<br>
+<br>
+Anyone do anything similar?&nbsp; Any tips or ideas would be greatly
+appreciated.<br>
+<br>
+Thanks!<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 06, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>nermin:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>...</SPAN><SPAN>what type of object would you use to get the database version.&nbsp; If that was truly the question, then my answer would be: use CommandObject, and place&nbsp; the Database version in a Result property of it:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...</SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>You might also&nbsp;find it handy as you do this to have more generalized commands that can&nbsp;invoke an arbitrary&nbsp;stored procedure and return the result, or fetch a specific scalar value given an arbitrary SQL statement.&nbsp; </P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>More generalized, meaning outside of csla, right?&nbsp; I would
+recommend against that approach.&nbsp; I find the CommandBase simple enough,
+and more importantly one has to think about the value of Csla where code can be
+easily ported to run on a separate physical servers.&nbsp; If you move your
+code to a &#8220;more generalized commands&#8221; you loose that flexibility,
+you can not port your code from running locally to a multi-layer solution
+without having to change it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Lets assume that your &#8220;generalized command&#8221; executes
+on a DAL, that runs on Application server &#8211; how do you pass it to the
+client, which lets say is a WinForm on another machine?&nbsp; Generalized solution
+then has to assume only a single layer app, or it has to &#8220;invent&#8221; a
+new object or a set of objects that communicate the result back to the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;Or perhaps I am missing something here?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 9:22 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>nermin:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>...what
+type of object would you use to get the database version.&nbsp; If that was
+truly the question, then my answer would be: use CommandObject, and place&nbsp;
+the Database version in a Result property of it:<o:p></o:p></p>
+
+<p class=MsoNormal>...<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal>You
+might also&nbsp;find it handy as you do this to have more generalized commands
+that can&nbsp;invoke an arbitrary&nbsp;stored procedure and return the result,
+or fetch a specific scalar value given an arbitrary SQL statement.&nbsp; <o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 06, 2008</h2>I agree.<br><br>What I did is come up with some business logic that needs to be enforced.. namely that before you can use the application, you have to establish a session.&nbsp;&nbsp; So I have some BOs built to manage an application session.&nbsp; When opening the session, I used to check the application version against a version stored in the db to ensure there was a minimum version requirement that was met.&nbsp; If it wasn't, I threw an exception.&nbsp; It works rather well.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, August 06, 2008</h2>Okay... I think I have it working.&nbsp; Does the following look correct.&nbsp; It's my first attempt at a commandbase type object.<br><br><br>&nbsp;&nbsp;&nbsp; &lt;Serializable()&gt; _<br>&nbsp;&nbsp;&nbsp; Public Class DatabaseVersionCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits Csla.CommandBase<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private _databaseVersion As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property DatabaseVersion() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _databaseVersion<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; Public Sub New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function Execute() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim cmd As New DatabaseVersionCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = Csla.DataPortal.Execute(Of DatabaseVersionCommand)(cmd)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return cmd.DatabaseVersion<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Execute()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(GetConnectionString)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.Text<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "SELECT DATABASE_VERSION FROM VERSION"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim version As String = TryCast(cm.ExecuteScalar, String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _databaseVersion = version<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp; End Class<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Looks good &#8211; only one thing:&nbsp; I would make constructor private.&nbsp;
+That way the Factory method is the only way to get to the instance of the
+Command object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 10:47 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Okay... I think I have it working.&nbsp; Does the following
+look correct.&nbsp; It's my first attempt at a commandbase type object.<br>
+<br>
+<span><br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; &amp;lt;Serializable()&amp;gt; _<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; Public Class DatabaseVersionCommand<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Inherits
+Csla.CommandBase<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Private
+_databaseVersion As String<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Public
+ReadOnly Property DatabaseVersion() As String<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Get<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Return _databaseVersion<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+End Get<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; End
+Property<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Public
+Sub New()<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; End Sub<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; Public
+Shared Function Execute() As String<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Dim cmd As New DatabaseVersionCommand<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+cmd = Csla.DataPortal.Execute(Of DatabaseVersionCommand)(cmd)<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Return cmd.DatabaseVersion<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; End
+Function<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Protected Overrides Sub DataPortal_Execute()<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Using cn As New SqlConnection(GetConnectionString)<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+cn.Open()<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Using cm As SqlCommand = cn.CreateCommand<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+cm.CommandType = CommandType.Text<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+cm.CommandText = &quot;SELECT DATABASE_VERSION FROM VERSION&quot;<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+Dim version As String = TryCast(cm.ExecuteScalar, String)<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+_databaseVersion = version<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+End Using<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;
+End Using<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp; End Sub<br>
+<br>
+&amp;nbsp;&amp;nbsp;&amp;nbsp; End Class<br>
+</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 06, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>nermin:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>More generalized, meaning outside of csla, right?&nbsp; I would recommend against that approach.&nbsp; I find the CommandBase simple enough, and more importantly one has to think about the value of Csla where code can be easily ported to run on a separate physical servers.&nbsp;</SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>No, it's still a CSLA CommandBase, just a more general one as opposed to one that just invokes a specific stored procedure. </P>
+<P>For example, (just to illustrate), you could write a single CommandBase class to execute any parameterless stored procedure. Then you could implement a static Execute method on the class that just takes the procedure name.&nbsp; You can even make this generic so that the type of the result can be specified (e.g. you might be getting back a date, int, string, etc.).&nbsp; If you want some encapsulation, then you can wrap the invocation in a method or class (e.g. bool&nbsp;VersionChecker.CheckVersion())</P>
+<P>I'm a big fan of leveraging CSLA to do as much as possible, so no I wasn't proposing a non-CSLA solution. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I actually do like that idea!&nbsp; Sorry for miss-interpreting your
+thoughts in my original reply.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 11:37 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: OT: Database Version Check<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>nermin:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>More
+generalized, meaning outside of csla, right?&nbsp; I would recommend against
+that approach.&nbsp; I find the CommandBase simple enough, and more importantly
+one has to think about the value of Csla where code can be easily ported to run
+on a separate physical servers.&nbsp;<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>No, it's still a CSLA CommandBase, just a more general one as opposed to one
+that just invokes a specific stored procedure. <o:p></o:p></p>
+
+<p>For example, (just to illustrate), you could write a single CommandBase
+class to execute any parameterless stored procedure. Then you could implement a
+static Execute method on the class that just takes the procedure name.&nbsp;
+You can even make this generic so that the type of the result can be specified
+(e.g. you might be getting back a date, int, string, etc.). <o:p></o:p></p>
+
+<p>I'm a big fan of leveraging CSLA to do as much as possible, so no I wasn't
+proposing a non-CSLA solution. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 06, 2008</h2><P>We do exactly this (and also provide upgrade capability if you have installed a handler to respond to the "database version wrong" event).</P>
+<P>I agree that the plumbing can be daunting (chicken versus the egg problem generally), but in a nutshell our version checker is called immediately after a connection is established to database. If the version is wrong and an upgrade engine is installed, then there is an opportunity to upgrade, otherwise the version checker throws an exception. </P>
+<P>We have CSLA bolted on an ORM (the Wilson ORMapper to be specific) so we do the check right after the ORM layer is initialized.&nbsp; The ORM might have mappings that aren't valid with the current database, though, so the version check and upgrade process have to be done with that in mind (e.g. you have to use either&nbsp;version-independent objects or direct SQL of some sort.)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Wednesday, August 06, 2008</h2><P>I am currently working on a system where the aim is to have a business object&nbsp;where the 'fetch'&nbsp;returns version information and 'update'&nbsp;updates this version number as well as running all the required data definition commands. It is up to the user interface&nbsp;layer to use this object at start up.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

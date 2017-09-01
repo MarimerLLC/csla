@@ -1,0 +1,77 @@
+<html><header><title>How to pass Parent ID to Child for saving to relational database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to pass Parent ID to Child for saving to relational database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11223.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann posted on Sunday, March 11, 2012</h2><p>I have a Parent Root object (PR) as a BusinessBase which will be in a DynamicBindingListBase to automatically save when changes are made in WinForms.&nbsp;</p>
+<p>The PR has a child collection implemented as a BusinessBindingListBase which will contain Child objects that require the PR id from the database in order to relate them correctly to the parent record. </p>
+<p>These Child records will also contain a collection of Child records of the same type basically being a recursive type to n-level....</p>
+<p>When the parent object is new, I don&#39;t want the child collection to AllowNew, so (false)... There is no specific event like IsNew property changed event, so I can only use the Saved event and check as often as that occurs to toggle the AllowNew property. </p>
+<p>Any ideas about a well tested method for passing the parent ID to the child objects after it has been saved... ???</p>
+<p>&nbsp;</p>
+<p>Thanks greatly for the tips!</p>
+<p>Chris</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, March 12, 2012</h2><p>Hi Chris,</p>
+<p><strong>Dynamic Root&nbsp;List/Dynamic Root</strong>&nbsp;is suited for editing data in a DataGridView. If you have children, I should use <strong>Editable Root </strong>stereotype and save all the object graph in one single operation&nbsp;. If you really need to save child collections as you go along and will have a master-&gt;detail-&gt;detail-&gt;...-&gt;detail scenario, then you should <strong>Dynamic Root&nbsp;List / Dynamic Root </strong>on each level: each DataGridView will open a detail DataGridView passing the parent ID as a fetch criteria. This is done by the UI layer - no CSLA magic here :)</p>
+<p>For a more conventional approach usign <strong>Editable Root / Editable Child List / Editable Child </strong>you can download and have a look at the <a href="http://cslagenfork.codeplex.com/releases/view/82675">DeepLoad sample</a> to see how it&#39;s done. This sample fetches a 6 level data structure in a single round trip to the database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Monday, March 12, 2012</h2><p>I regret the documentation on CslaGenFork --- DeepLoad sample is very lacking. There are several implementations in the test but they are is no document indicating the terminology and what events drive the saving of the data in which objects. Now I am pouring over the code to decipher it but I&#39;m not sure this is the most efficient way to learn it.&nbsp;</p>
+<p>http://cslagenfork.codeplex.com/documentation is mostly incomplete and has little information on active links. </p>
+<p>On DeepLoad, what is the significance of the ERCLevel and ERLevel? Why are some objects prefixed with A2-12 or B1-12, C2-12, D1-12... ( Is this because they stand for &quot;Editable Root Child&quot; and &quot;Editable Root&quot;? I notice the set with the A1 and C1 missing lack the collection as an object.</p>
+<p>So this example indicates how objects are loaded with a single query, but this does not indicate how child objects will save themselves. The child will need to know the Parent&#39;s ID unless the Parent is saving the child object. I&#39;m not so comfortable having other objects load and save the child. </p>
+<p>Are there any more examples available with more documentation?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Monday, March 12, 2012</h2><p>Mr. Leal, </p>
+<p>Just to be clear, I want to thank you for your response! I am not it does not help, I was very much hoping the sample project would have more documentation..</p>
+<p>In light of CslaGenFork, I am curious if you would like to see the pattern I&#39;ve developed for removing tons of code from the BOs for the Data Access Layer. I intend that each object will be smart and know how to insert, update, and delete, as well as load (for refresh when the TimeStamp is off). For performance, the collections will know how to load the child objects because they will be created with the parent having access to the Parent ID. (so they know which records to pass in a criteria object.)</p>
+<p>I intend that each object still loads itself from a DTO received from the collection&#39;s DAL request. (so no collection cares about the inner workings of a child, only knows what DAL method is required to get the data and then call the DataPortal.FetchChild&lt;childType&gt;(DTO) method... </p>
+<p>Perhaps since some collections will be children of other objects, they will have a reference to the Parent. I can get the ParentID from that reference and use it to create new with the AddNewCore() override method. I&#39;ll have to make a rule that a child cannot save (is Invalid) if the ParentID is not set.</p>
+<p>Geeze, it does seem like there is too much to do while getting my head around this framework... Forgive me for being a little frustrated... </p>
+<p>Thanks for your contributions though!!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 13, 2012</h2><p>Hi,</p>
+<p>Look at the ProjectTracker sample. </p>
+<p>Assuming that you are using DataPortal_XYZ/Child_XYZ methods you should use DataPortal.UpdateChild(ChildObjectOrList) or DataPortal.UpdateChildren() with parameters so that you may pass either the <strong>parent object</strong> or the <strong>ParentId</strong> to the children as a parameter. </p>
+<p>NOTE - this requires that ALL Child_XYZ methods in an object &nbsp;have the same signature. </p>
+<p>Parent: <br /><em>DataPortal.UpdateChild(ChildList, myId)</em></p>
+<p>Child: </p>
+<p>protected void Child_Insert(long myParentId) <br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // will always get the parent id as the parameter<br />}</p>
+<p>protected void Child_Update(long myParentId) <br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // will always get the parent id as the parameter<br />}<br /><br />protected void Child_DeleteSelf(long myParentId) <br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // will always get the parent id as the parameter<br />}</p>
+<p>You may specify zero, one or more parameters on DataPortal.UpdateChild or DataPortal.UpdateChildren. Just be aware that all Child_XYZ methods must match the signature of the parameters. This is typically done in the Insert/Update method of the parent&nbsp;object in the Data Acces to let the parent id&#39;s or object cascade down&nbsp;to child objects. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Tuesday, March 13, 2012</h2><p>Yes, I am using the DataPortal_XYZ and Child_XYZ methods. I am a little unclear why all the signatures need to be the same. Looking at the ChildDataPortal, it seems it does not use Generics the same way as the DataPortal_XYZ methods. Other than setting the objects as IsChild= true, was there any specific reason not to mirror the flexibility of child methods just like the DataPortal methods?</p>
+<p>&nbsp;</p>
+<p>The answer provided is a much closer to what I needed. Since I can pass parameters to the Child_XYZ methods that is the way it must be. </p>
+<p>What is the difference then if I use a factory method like&nbsp;</p>
+<p>ChildObject.GetChild(parent)</p>
+<p>------</p>
+<p>public ChildObject GetChild(ParentObject parent)</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; ChildObject o = DataPortal.Fetch&lt;ChildObject&gt;(parent);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; o.MarkAsChild();</p>
+<p>}</p>
+<p>---------</p>
+<p>after as MarkAsChild() is protected so it is available to the Child class inheriting from the Core.BusinessBase... Is there anything else I&#39;m missing that the Child_XYZ methods to that is </p>
+<p>&nbsp;</p>
+<p>So basically in ChildDataPortal they do one of two options:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // tell the business object to create its data<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (hasParameters)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.CallMethod(&quot;Child_Create&quot;, parameters);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.CallMethod(&quot;Child_Create&quot;);</p>
+<p>In Contrast! the DataPortal_XYZ methods will use reflection to find a more exact method for execution, for example in MethodCaller.cs....&nbsp;&nbsp;&nbsp; private static System.Reflection.MethodInfo GetMethod(Type objectType, string method, bool hasParameters, params object[] parameters)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Reflection.MethodInfo result = null;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object[] inParams = null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!hasParameters)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inParams = new object[] { };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (parameters == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inParams = new object[] { null };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; inParams = parameters;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // try to find a strongly typed match<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // first see if there&#39;s a matching method<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // where all params match types<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = FindMethod(objectType, method, GetParameterTypes(hasParameters, inParams));</p>
+<p>&nbsp;</p>
+<p>Anyway, I&#39;m curious why the pattern for child methods was not mirrored from the regular DataPortal methods...</p>
+<p>Well, I&#39;m still working on this and hope to understand more about the CSLA Framework and more of the why as well as the what... </p>
+<p>Thanks for your help!!!</p>
+<p>:-)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 13, 2012</h2><p>The main difference is that the &quot;root&quot; DataPortal will:</p>
+<ul>
+<li>check AuthorizationRules.</li>
+<li>send object to server for fetch (if configured for remote portal)</li>
+<li>may start new transaction (if transactional attribute on DataPortal_Fetch)&nbsp;</li>
+<li>and more</li>
+</ul>
+<p>The Child dataportal call will only </p>
+<ul>
+<li>no AuthorizationRules is checked.</li>
+<li>call Child_XYZ inline </li>
+</ul>
+<p>So the Root dataportal call is typically only used on a child that is LazyLoaded - ie: not loaded as a member of the root data access but has it&#39;s own DataPortal_Fetch to be called from the client after root object is typically active in databinding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Wednesday, March 14, 2012</h2><p>ok, the last part helps very much. </p>
+<p>Basically the Child_XYZ will be called within a process started by a DataPortal_XYZ method where some of the data originally fetched will be passed by DTO or anything to the Child_XYZ method where the child is created and returned... </p>
+<p>The Lazy Load properties will not call Child_XYZ methods because that is a new request from perhaps an already databound parent object. It seems then it does not matter if the property is a child by relation (containing the parent id) or if it is just a list of random other properties that do not have to maintain a relationship... Either way, the DataPortal methods are called for lazy load and real child objects then must still have MarkAsChild() method called... </p>
+<p>I am close to testing an implementation but I want to see if the requirement of the Child_XYZ methods having the same signature is true. It just seemed the methodCaller was using reflection to find the right method signature on all methods independent of previous calls and would look in cache for a shortcut (performance) first... </p>
+<p>Thanks!!!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Tuesday, March 13, 2012</h2><p>Please correct me if I&#39;m wrong, but it appears that both the Child_XYZ and DataPortal_XYZ methods are routed through the MethodCaller class where they cache the method signature and if not found, then they both call </p>
+<p>MethodCaller.CallMethod(this.Instance, method, parameters);</p>
+<p>which will again use reflection to find the right method. </p>
+<p>If this is correct, then I&#39;m not sure it is true that all the method signatures need to be the same and also each XYZ method can have multiple signatures and based on the parameters provided it should identify the correct method to execute... </p>
+<p>Thanks again to all the CSLA contributors!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, March 13, 2012</h2><p>Hi,</p>
+<p>MethodCaller will throw an exception if a matching method is not found.<br />So the method MUST have the correct number of parameters!!!</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

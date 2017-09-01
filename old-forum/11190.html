@@ -1,0 +1,16 @@
+<html><header><title>FilteredBindingList / ApplyFilter not working?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FilteredBindingList / ApplyFilter not working?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11190.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Thursday, February 23, 2012</h2><p>Has the implementation of FBL changed in CSLA4.</p>
+<p>My ApplyFilter method does not result in any matches to my fLIst - and there are definitely matches:</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub DisplayList(ByVal list As Library.CodeList)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using busy As New StatusBusy(&quot;Loading Codes...&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim fLIST As New Csla.FilteredBindingList(Of CodeInfo)(list)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Len(cbCodeTypes.Text) &gt; 0 Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fLIST.ApplyFilter(&quot;CODETYPE&quot;, cbCodeTypes.SelectedValue.ToString)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CodeListBindingSource.DataSource = fLIST</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mNUMBERRECORDS = fLIST.Count</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LabelName.Text = Me.ToString<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.Refresh()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &quot;Error loading Codes&quot;, MessageBoxButtons.OK, _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Information)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub&nbsp;</p>
+<p>&nbsp;Any ideas?</p>
+<p>Thanks,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Thursday, February 23, 2012</h2><p>Figured it out.</p>
+<p>The Property parameter is case-sensitive.</p>
+<p>Graham</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

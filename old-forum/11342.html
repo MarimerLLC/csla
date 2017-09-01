@@ -1,0 +1,34 @@
+<html><header><title>Problem with Dataportal loading the correct data access assemblies</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with Dataportal loading the correct data access assemblies</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11342.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may1 posted on Wednesday, May 02, 2012</h2><p>First of all i am a membr of this forum under the name &#39;simon_may&#39; but could not log in for some reason so I rejoined as &#39;simon_may1&#39; in order to post this question.</p>
+<p>The situation is this. We have a VB6 .exe that calls a .Net Com interop dll. This dll calls some CSLA business logic. A BusinessBase class which in turn calls a data access object using a object factory attribute. This all works fine in a .Net application but when called by the VB6 .exe it fails with the following exception  [DataPortal.fetch failed (Factory type or assembly could not be 
+loaded)] </p>
+<p>We have stepped through the code and find that in the method FactoryLoader contained in&nbsp; Csla.Server.FactoryDataPortal.cs that the _factoryLoader field is not null therefore it does not attempt to read the CslaObjectFactoryLoader configuration 
+setting.</p>
+<p>If the ObjectFactory attribute is set to the full assembly name the same error occurs </p>
+<p>I am hoping that someone might have an idea as to why we are not seeing the expected behaviour or ideas as to how we might attack this further.</p>
+<p>Regards</p>
+<p>Simon</p>
+<div id="content">
+<div class="chat">
+<div class="msg 1st"><span style="font-weight:bold;"></span><br /></div>
+</div>
+</div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 02, 2012</h2><p>The second .NET book I ever wrote was on COM interop, around 2002. Sadly I doubt you could find that book anymore, but it would have the answer :)</p>
+<p>Also sadly, I haven&#39;t given COM interop all that much though since 2002, so what I&#39;m about to say may be only partially correct.</p>
+<p>As I recall, when a .NET assembly is loaded by a VB6 program, the .NET assembly path is the folder that contains the VB6 EXE. As a result, your .NET assemblies need to be in the same folder as the EXE that is launching them.</p>
+<p>The rules are different if the VB6 code is running in COM+.</p>
+<p>And I seem to remember some complexities around COM registry file locations vs actual disk locations, but I think this is because COM only allows you to register a DLL one time, therefore in one location, but the actual runtime assembly path is always the location of the VB6 EXE.</p>
+<p>All that said, I also remember that around 2002 or 2003 the Windows OS added &quot;side by side&quot; COM registration, allowing a COM app to load other COM DLLs from a local folder without having those DLLs registered in the main OS registry. I didn&#39;t really care, and never looked into this - I only remember it, because the thought occurred to me at the time that if this feature had existed before .NET came along, then perhaps VB6 wouldn&#39;t have died, because this feature makes it as easy to deploy COM apps as it is to deploy .NET apps...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may1 replied on Thursday, May 03, 2012</h2><p>Hi Rocky thank you for looking at this.</p>
+<p>We have run this with all assemblies in the same folder as the VB6 .exe. The COM interop dll is registered correctly with reg.asm.&nbsp;</p>
+<p>We have built a .Net test app that executes with no errors or problems and is also in the same folder as the VB6 .exe, </p>
+<p>From the VB6 IDE we have debugged into the .Net CSLA code and have found the unexpected behaviour. </p>
+<p>We have stepped through the code and find that in the method 
+FactoryLoader contained in&nbsp; Csla.Server.FactoryDataPortal.cs that the 
+_factoryLoader field is not null therefore it does not attempt to read 
+the CslaObjectFactoryLoader configuration 
+setting.</p>
+<p>If the ObjectFactory attribute, in the business object is set to the full assembly name the same error occur. I.e the CSLA default FactoryKiader is also failing </p>
+<p>Does anybody know if this could be related to user permissions, windows UAC, etc. All ideas and work arounds are welcome, as we are in serious contractual/time trouble.</p>
+<p>Simon</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Karl McCambridge replied on Thursday, May 03, 2012</h2><p>&nbsp;</p>
+<p>Fixed<img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>If using a COM (Unmanaged executable) to call a .NET assembly then the configuration file must be renamed to the name of the Unmanaged executable (e.g. MyVB6App.exe.config).</p>
+<p>The simplest of mistakes can be the hardest to find.</p>
+<p>Karl</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 03, 2012</h2><p>That sounds familiar now that you say it. I am glad you figured it out!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

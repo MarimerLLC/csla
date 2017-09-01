@@ -1,0 +1,53 @@
+<html><header><title>Warnings and Messages in the CSLA App.Config file</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Warnings and Messages in the CSLA App.Config file</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/445.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>HarvDotNet posted on Thursday, June 22, 2006</h2><br>
+[assembly: AssemblyVersion("2.0.0.0")]<br>
+<br>
+When I compile the application, it says it builds successfully,<br>
+and there are no errors, warnings or messages.<br>
+However, if I open the App.Config file I get a number of warnings and messages as follows:<br>
+<br>
+<br>
+Warnings<br>
+The 'requirePermission' attribute is not declared.<br>
+<br>
+<br>
+Messages<br>
+Could not find schema information for the element 'applicationSettings'.<br>
+Could not find schema information for the element 'Csla.Properties.Settings'.<br>
+Could not find schema information for the element 'setting'.<br>
+Could not find schema information for the attribute 'name'.<br>
+Could not find schema information for the attribute 'serializeAs'.<br>
+Could not find schema information for the element 'value'.<br>
+<br>
+<br>
+<br>
+I was able to resolove the Warning by replacing the DotNetConfig.xsd file<br>
+located here "\Program Files\Microsoft Visual Studio 8\Xml\Schemas"<br>
+<br>
+This link explaing things<a><br>
+http://www.peterritchie.com/Hamlet/Downloads/74.aspx</a><br>
+<br>
+<br>
+I do not see how to fix the "Messages"<br>
+<br>
+<br>
+I have the same problem in the VB version of CSLA<br>
+There are several more "Messages" --- 18 in all<br>
+<br>
+<br>
+Any help resolving these two would be appreciated.<br>
+<br>
+Lastly, why do the warnings and messages only appear when I open the App.Config file?<br>
+It seems to me they should show up even when all VS - IDE windows are closed.<br>
+<br>
+TIA<br>
+Harvey Sather<br>
+Saskatoon, Canada<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 22, 2006</h2>The errors and warnings only show up because compiling does not check Xml files for valid syntax; however opening the app.config (which is just an xml file) the IDE parses it and lets you know about any errors.&nbsp; You can safely ignore those warnings.&nbsp; I think you'd have to create an xsd specially for the Csla stuff if you want to get rid of them.. this i'm not sure how to do.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 24, 2006</h2>Actually none of those items are from csla at all - they are from Visual Studio. I would think that the correct xsd would already exist within Visual Studio, but perhaps not...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, June 28, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>HarvDotNet:</strong></div><div><BR>Warnings<BR>The 'requirePermission' attribute is not declared.<BR></div></BLOCKQUOTE></P><FONT color=#0000ff size=2>
+<P>This is a comment from the DotNetNuke web.config file.</P>
+<P>&lt;!--</FONT><FONT color=#008000 size=2> the requirePermission attribute will cause a syntax warning - please ignore - it is required for Medium Trust support</FONT><FONT color=#0000ff size=2>--&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>Apparently the xsd that some?? versions of Visual Studio provide isn't up-to-date.</FONT></P>
+<P><FONT color=#0000ff size=2>I also get spurious warnings on html files when I turn on the accessibility checking, messages like:</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Unrecognized tag or prefix filter 'asp' .</FONT></P>
+<P><FONT color=#0000ff size=2>Give a loud raspberry to the&nbsp;programmer and QC staff that let this one slip thru!</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HarvDotNet replied on Wednesday, June 28, 2006</h2>Thanks, I was beginning to think I was the only one having this problem<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

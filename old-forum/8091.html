@@ -1,0 +1,98 @@
+<html><header><title>Object reference not set to an instance of an object (Server Error in '/PTWeb' Application) </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object reference not set to an instance of an object (Server Error in '/PTWeb' Application) </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8091.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 posted on Friday, December 04, 2009</h2><P><FONT face=Verdana size=2>Hi there, I'm new to csla and I'm struggling. Yeah, I really am! </FONT></P>
+<P><FONT face=Verdana size=2>My configuration is SQL2005, VS 2008&nbsp;and Windows XP. I tried to follow the instructions in&nbsp;<A href="http://www.lhotka.net/files/csla20/BuildCsla.pdf"><FONT color=#99aa99>http://www.lhotka.net/files/csla20/BuildCsla.pdf</FONT></A>&nbsp;but the PTWeb-project is giving me a hard time.&nbsp; The error message I get is down here. Can anyone give me a clou? I m using CSLA 3.0.0 and using IIS for the project and not the VS built in Web Server</FONT></P>
+<P><FONT face=Verdana size=2>thanks in advance, </FONT><FONT face=Verdana size=2>Bharat</FONT></P>
+<P><FONT face=Verdana size=2><SPAN>&nbsp;</P>
+<H1>Server Error in '/PTWEBCS' Application. 
+<HR>
+</H1>
+<H2><I>Object reference not set to an instance of an object.</I> </H2>
+<P></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B><FONT face=Verdana>Description: </FONT></B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B><FONT face=Verdana>Exception Details: </FONT></B>System.NullReferenceException: Object reference not set to an instance of an object.<BR><BR><B><FONT face=Verdana>Source Error:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[No relevant source lines]</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>c:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files\ptwebcs\8e89fd38\e9f076bd\App_Web_dhchu2oh.6.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>0 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[NullReferenceException: Object reference not set to an instance of an object.]
+   System.Web.Hosting.ISAPIWorkerRequestInProc.GetServerVariable(String name) +349
+   System.Web.Hosting.ISAPIWorkerRequest.ReadRequestHeaders() +95
+   System.Web.Hosting.ISAPIWorkerRequest.GetKnownRequestHeader(Int32 index) +55
+   System.Web.HttpRequest.get_UserAgent() +26
+   System.Web.Configuration.HttpCapabilitiesEvaluator.GetUserAgent(HttpRequest request) +32
+   System.Web.Configuration.HttpCapabilitiesEvaluator.Evaluate(HttpRequest request) +50
+   System.Web.Configuration.HttpCapabilitiesBase.GetBrowserCapabilities(HttpRequest request) +38
+   System.Web.HttpRequest.get_Browser() +178
+   System.Web.UI.Page.SetIntrinsics(HttpContext context, Boolean allowAsync) +189
+   System.Web.UI.Page.ProcessRequestWithNoAssert(HttpContext context) +14
+   System.Web.UI.Page.ProcessRequest(HttpContext context) +49
+   ASP.default_aspx.ProcessRequest(HttpContext context) in c:\WINDOWS\Microsoft.NET\Framework\v2.0.50727\Temporary ASP.NET Files\ptwebcs\8e89fd38\e9f076bd\App_Web_dhchu2oh.6.cs:0
+   System.Web.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +181
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +75
+</PRE></CODE></TD></TR></TABLE><BR></P>
+<HR>
+
+<P><B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.3603; ASP.NET Version:2.0.50727.3082 </FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2>Do you have other working web sites on that server? The exception stack trace makes it look like ASP.NET is failing long before it gets to your code or CSLA .NET code...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Monday, December 07, 2009</h2><P>thanks for the reply.</P>
+<P>yes you are right ...whenever i am trying to use IIS for my current project it is giving the same error but it is working fair enough under VS web Server.</P>
+<P>so i dont have any idea what to check for this as my current project is also using CSLA and it is working fine under &nbsp;VS web server but not not working under IIS and i am new developer assigned to this project so trying to hands on CSLA and configuring projecttracker but failed.</P>
+<P>please help...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Tuesday, December 08, 2009</h2><P>Thank you very much for your help and reply.</P>
+<P>i resolved that problem and now i can able to see the Login page of project but while logging i am getting below error..</P>
+<P>&nbsp;</P>
+<P>this error i guess is because of missing of below step..</P>
+<P><EM><FONT size=1><FONT color=#ff0000>7.<FONT face="Times New Roman">The </FONT><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">PTWeb </FONT></FONT></FONT><FONT face="Times New Roman">and </FONT><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">PTWebService </FONT></FONT></FONT><FONT face="Times New Roman">projects are configured to use the</P></FONT></FONT></FONT></EM><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">
+<P align=left><EM><FONT color=#ff0000 size=1>EnterpriseServicesProxy </FONT></EM></FONT></FONT></FONT><FONT face="Times New Roman"><EM><FONT color=#ff0000 size=1>within the data portal. Before you can run these</FONT></EM></P>
+<P align=left><EM><FONT color=#ff0000 size=1>projects you need to start aVisual Studio 2005 Command Prompt window and</FONT></EM></P>
+<P align=left><EM><FONT color=#ff0000 size=1>run </FONT></EM></FONT><EM><FONT size=1><FONT color=#ff0000><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">regsvcs.exe </FONT></FONT></FONT><FONT face="Times New Roman">to register the </FONT><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">EnterpriseServicesHostvb.dll </FONT></FONT></FONT><FONT face="Times New Roman">or</P></FONT></FONT></FONT></EM><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">
+<P align=left><EM><FONT color=#ff0000 size=1>EnterpriseServicesHostcs.dll </FONT></EM></FONT></FONT></FONT><EM><FONT size=1><FONT color=#ff0000><FONT face="Times New Roman">file. Alternately, you can change </FONT><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">PTWeb </FONT></FONT></FONT><FONT face="Times New Roman">and</P></FONT></FONT></FONT></EM><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New">
+<P align=left><EM><FONT color=#ff0000 size=1>PTWebService </FONT></EM></FONT></FONT></FONT><FONT face="Times New Roman"><EM><FONT color=#ff0000 size=1>to use either the Remoting or Web Services proxies instead.</FONT></EM></P>
+<P align=left><EM><FONT color=#ff0000 size=1>If you do use the </FONT></EM></FONT><FONT face="Courier New"><FONT face="Courier New"><FONT face="Courier New" color=#ff0000 size=1><EM>EnterpriseServicesProxy</EM></FONT></FONT></FONT><FONT face="Times New Roman"><EM><FONT color=#ff0000 size=1>, you must also open the COM+</FONT></EM></P>
+<P align=left><EM><FONT color=#ff0000 size=1>Applications properties window for the service and set the Application Root</FONT></EM></P>
+<P><EM><FONT color=#ff0000 size=1>Directory in the Activation tab. The path should point to the same</FONT></EM></P>
+<P>&nbsp;</P>
+<P><STRONG><EM>But i need to know is there some alternate to this option as i could not able to get the Component Service on my machine.</EM></STRONG></P>
+<P>please suggest.</P>
+<P>waiting for your reply.</P>
+<P>thanks in advance.</FONT><SPAN> </P>
+<H1>Server Error in '/PTWEBCS' Application. 
+<HR>
+</H1>
+<H2><I>Object reference not set to an instance of an object.</I> </H2>
+<P></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.NullReferenceException: Object reference not set to an instance of an object.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 218:          innerMessage = ex.InnerException.Message;
+Line 219:        }
+<FONT color=red>Line 220:        throw new DataPortalException(
+</FONT>Line 221:          String.Format("DataPortal.Fetch {0} ({1})", Resources.Failed, innerMessage), 
+Line 222:          ex.InnerException, result.ReturnObject);</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\P\CSLA\CSLA 3.0.0 C#\cslacs\cslacs\Csla\DataPortal\Client\DataPortal.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>220 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[NullReferenceException: Object reference not set to an instance of an object.]
+
+[CallMethodException: DataPortal_Fetch method call failed]
+
+[DataPortalException: DataPortal.Fetch failed (Object reference not set to an instance of an object.)]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\P\CSLA\CSLA 3.0.0 C#\cslacs\cslacs\Csla\DataPortal\Client\DataPortal.cs:220
+   Csla.DataPortal.Fetch(Object criteria) in C:\P\CSLA\CSLA 3.0.0 C#\cslacs\cslacs\Csla\DataPortal\Client\DataPortal.cs:156
+   ProjectTracker.Library.Security.PTIdentity.GetIdentity(String username, String password) in C:\P\CSLA\CSLA 3.0.0 C#\cslacs\ProjectTrackercs\ProjectTracker.Library\Security\PTIdentity.cs:57
+   ProjectTracker.Library.Security.PTPrincipal.Login(String username, String password) in C:\P\CSLA\CSLA 3.0.0 C#\cslacs\ProjectTrackercs\ProjectTracker.Library\Security\PTPrincipal.cs:15
+   PTMembershipProvider.ValidateUser(String username, String password) in c:\P\CSLA\CSLA 3.0.0 C#\cslacs\ProjectTrackercs\www\PTWeb\App_Code\PTMembershipProvider.cs:11
+   System.Web.UI.WebControls.Login.AuthenticateUsingMembershipProvider(AuthenticateEventArgs e) +60
+   System.Web.UI.WebControls.Login.OnAuthenticate(AuthenticateEventArgs e) +119
+   System.Web.UI.WebControls.Login.AttemptLogin() +115
+   System.Web.UI.WebControls.Login.OnBubbleEvent(Object source, EventArgs e) +101
+   System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args) +37
+   System.Web.UI.WebControls.Button.OnCommand(CommandEventArgs e) +118
+   System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument) +166
+   System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument) +10
+   System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument) +13
+   System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData) +36
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +1565
+</PRE></CODE></TD></TR></TABLE><BR></P>
+<HR>
+
+<P><B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.3603; ASP.NET Version:2.0.50727.3082 </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 08, 2009</h2><P>I'd change the configuration to use the local dataportal mode only; that is, remove the line specifying the kind of dataportal to use in the configuration file.&nbsp; </P>
+<P>Once you understand this setup, then move on to trying to get a remote dataportal setup to work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bharat0204 replied on Wednesday, December 09, 2009</h2><P>Thank you very much...its work..and i am able to see all the pages..</P>
+<P>once again thank you very much for all your support and help.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,43 @@
+<html><header><title>Visual Studio 2010, .NET 4.0 and CSLA .NET 4.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Visual Studio 2010, .NET 4.0 and CSLA .NET 4.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7818.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, October 19, 2009</h2><P>Microsoft has made <A href="http://msdn.microsoft.com/en-us/vstudio/dd582936.aspx"><STRONG>Visual Studio 2010 and .NET 4.0 Beta 2</STRONG></A> available for download to MSDN subscribers, with general availability soon. VS10 includes a lot of really nice features over VS2008, and I’m personally very excited to see the Beta 2 release.</P>
+<P>I’ve made a pre-alpha CSLA .NET “4.0” available for download as well. This is really just the version 3.8.0 code (somewhere between beta 1 and beta 2) that I’ve updated to build under Visual Studio 2010 with .NET 4.0.</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG>Download for Windows</STRONG></A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx"><STRONG>Download for Silverlight</STRONG></A> </LI></UL>
+<P>Over the next few months I’ll continue to release updates to version 4.0 that take advantage of the .NET 4.0 features, but I wanted to make sure there was a version online that builds with VS10 as soon as possible, so this is it – enjoy!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, October 19, 2009</h2><font face="Verdana">I don't know if you posted something already but what are some of the exciting things we can look forward to?<br><br>PLINQ?<br><br>Thanks<br><br>jack<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, October 20, 2009</h2><P>The parallel class and PLINQ using it&nbsp;is indeed one of the best improvements in .NET 4.0<BR>But that is just the language.&nbsp;I like the new features in VS2010 for architects, thru i wonder in how far it's possible to visualize code accessed by reflection etc.<BR><BR>Anyway nice to see csla is being prepared for VS2010, as we'll go over after awhile. And we'll go over to TFS2010 as well for gated checkins etc :)<BR><BR>WCF is also improved, perhaps some improvements for the wcf dataportal?<BR><BR>And:<BR>- Optional and named parameters;<BR>- Co- and contravariance in Generic Typing;<BR>- Dynamic typing. (java $h.t)<BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 20, 2009</h2><P>I think it will take some time using and working with .NET 4.0 to determine what impact it will have on CSLA .NET itself.</P>
+<P>There are many interesting changes to languages, both C# and VB. Most of which have little or no impact on CSLA that I'm aware of. For example, the dynamic features (on the surface) seem like they should help me simplify MethodCaller, but in talking to the C# compiler guys it sounds like these features aren't string-driven and so can't actually do what I'm doing.</P>
+<P>Other language concepts, like the enhancements around generics, don't appear to impact the CSLA functionality at all. They might simplify my code, or your code, but they don't appear to directly impact the design of any public API.</P>
+<P>The WCF enhancements may be meaningful, but I really don't think so. The data portal uses very few WCF features - it is a very high-level service interface in most regards. And that's intentional, since it means that the data portal is <EM>very</EM> configurable and automatically takes advantage of WCF features without needing to be altered. Remember that the data portal just exposes four (or five?) simple methods with clearly defined data contracts - there's really nothing to it.</P>
+<P>To put it anther way, I'll be surprised if I need to alter the data portal to enable the new WCF features. I expect that the new features will just work, and will be available immediately through configuration changes on the client and server.</P>
+<P>The TPL may be a bigger deal. I'm hoping Aaron has time to look at the impact of PLINQ, but there's the broader TPL feature set, including things like parallel.foreach() and so forth. Hopefully most of this "just works", because making business objects threadsafe is a virtual impossibility, at least not without major rework and/or perf impact due to locking.</P>
+<P>In any case, I look forward to discovering what there is to discover, and hearing from you about any issues you encounter and .NET 4.0 concepts you think I can exploit.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fsl replied on Wednesday, November 25, 2009</h2>What about using some of the new dynamic features that are being introduced, to implement 'Dynamic properties' as mentioned in http://forums.lhotka.net/forums/thread/34158.aspx ? <br /><br />Which combined with WPF 4's ability to bind to dynamic properties, would be a powerfull feature..<br /><br />(Just a thought.. I will be looking into this myself though, since I have a few scenarioes that could benefit from Dynamic properties)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 25, 2009</h2>I'll explore that as well, given time. The big question is whether all the<br />different data binding infrastructures will work with those classes, since<br />most of them reflect against target objects to get PropertyDescriptor or<br />PropertyInfo objects. In the case of PropertyDescriptor it is possible to<br />implement yet another interface to provide dynamic descriptions of<br />properties, but in the case of PropertyInfo you can't fake it out.<br /><br />To me the value of a dynamically shaped object is primarily to deal with<br />user-defined queries - when you want a read-only list but won't know until<br />runtime which properties the user wants to see. And that means the primary<br />benefit is lost if you can't then bind the object to the UI.<br /><br />This comes back to why I'm still in research mode - this is a cool feature,<br />but will it work in practice? And what are the perf implications? Dynamic<br />objects have overhead not present with normal objects.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Thursday, October 22, 2009</h2><P>I get two errors when trying to compile that build under VS2010 and .net 4.0 Beta 2.</P>
+<P>The type or namespace name 'Interactivity' does not exist in the namespace 'System.Windows' (are you missing an assembly reference?)&nbsp;.\cslacs-4.0.0-091019a\cslacs\Csla\Wpf\Execute.cs<BR></P>
+<P>The non-generic type 'System.Windows.TriggerAction' cannot be used with type arguments&nbsp;.\cslacs-4.0.0-091019a\cslacs\Csla\Wpf\Execute.cs<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;ll be true of 3.8 Beta 1 also. This is because I&#8217;ve taken a
+dependency on a DLL from the Blend 3 SDK.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In 3.8 Beta 2, and in the next 4.0 release, I&#8217;m putting the assembly
+into a Dependencies folder, so the framework will build even if you don&#8217;t have
+Blend 3 installed. The drawback is that we lose localization and some
+intellisense &#8211; for those you need the SDK regardless.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

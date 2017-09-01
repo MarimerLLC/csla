@@ -1,0 +1,207 @@
+<html><header><title>Techniques for working with large number of objects? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Techniques for working with large number of objects? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5517.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Thursday, October 02, 2008</h2><P>So, I'm implementing an object transformation that involves changing basically every object in a particular table. It can't be done with a single direct script, and stored procedures are out. The entire update must happen in a transaction. </P>
+<P>The naive implementation is just to load a BLB, apply the transformation to each object in the list, and then save the list. However, in the extreme case I could have 100,000 or so objects. </P>
+<P>When I populate a BLB, (or ERLB for that matter), I'm working with IDataReader driven object factory, so in theory I could basically duplicate this logic and just "scroll" through the objects once, updating each one as a go, rather than loading the entire list into memory first. This seems like a better approach. </P>
+<P>How have other folks handled similar situations?&nbsp; I know&nbsp;that you could also&nbsp;do this in a stored procedure, but one of back-end databases doesn't support these. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My first instinct it to create a query and fire it to back
+end.&nbsp; I think that any other solution will be many times slower.&nbsp;
+Usually, whatever you can do in stored procedures you can do in a dynamic
+script.&nbsp; I would be weary of fetching 100,000 rows just to send them right
+back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 02, 2008 2:08 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Techniques for working with large number of
+objects?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So, I'm implementing an object transformation that involves changing
+basically every object in a particular table. It can't be done with a single
+direct script, and stored procedures are out. The entire update must happen in
+a transaction. <o:p></o:p></p>
+
+<p>The naive implementation is just to load a BLB, apply the transformation to
+each object in the list, and then save the list. However, in the extreme case I
+could have 100,000 or so objects. <o:p></o:p></p>
+
+<p>When I populate a BLB, (or ERLB for that matter), I'm working with
+IDataReader driven object factory, so in theory I could basically duplicate
+this logic and just &quot;scroll&quot; through the objects once, updating each
+one as a go, rather than loading the entire list into memory first. This seems
+like a better approach. <o:p></o:p></p>
+
+<p>How have other folks handled similar situations?&nbsp; I know&nbsp;that you
+could also&nbsp;do this in a stored procedure, but one of back-end databases
+doesn't support these. <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, October 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>My first instinct it to create a query and fire it to back end.&nbsp; I think that any other solution will be many times slower.&nbsp; Usually, whatever you can do in stored procedures you can do in a dynamic script.&nbsp; I would be weary of fetching 100,000 rows just to send them right back.</SPAN><BR><o:p></o:p></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I don't disagree -- it's certainly not something I would do often.&nbsp;However,&nbsp;in this case, I'm changing the encryption method for the passwords for the entire user table, and the encryption algorithm cannot be easily implemented in the database. </P>
+<P>The legacy application we're porting does this via cursor, scrolling through the user records and updating each one.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see&#8230;&nbsp; I would be inclined then to chunk the work
+somehow so that you do not have to fetch all 100,000 rows.&nbsp; Depending on
+logging schema, how wide the table is, &nbsp;and transaction support this may
+take quite some time and a lot of resources.&nbsp; Maybe like &#8220;Select Top
+1000 * From users where IsPasswordConverted=0&#8221; and put that inside a
+loop.&nbsp; Just an idea&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 02, 2008 2:31 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Techniques for working with large number of
+objects?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>My
+first instinct it to create a query and fire it to back end.&nbsp; I think that
+any other solution will be many times slower.&nbsp; Usually, whatever you can
+do in stored procedures you can do in a dynamic script.&nbsp; I would be weary
+of fetching 100,000 rows just to send them right back.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>I don't disagree -- it's certainly not something I would do
+often.&nbsp;However,&nbsp;in this case, I'm changing the encryption method for
+the passwords for the entire user table, and the encryption algorithm cannot be
+easily implemented in the database. <o:p></o:p></p>
+
+<p>The legacy application we're porting does this via cursor, scrolling through
+the user records and updating each one.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, October 02, 2008</h2><P>Ouch! We all know what happens to the best laid plans...</P>
+<P>It turns out that (at least with SQL Server 2000), if you have started a transaction and open a DataReader on it, then you can't do any updates -- or really practically anything&nbsp;else in the transaction&nbsp;actually -- as long as the DataReader is open. </P>
+<P>At least this is what I appear to be seeing, at any rate. This would seem to rule out any sort of cursor-style approach to this. </P>
+<P>In theory, I could&nbsp;scroll through the objects in a separate database transaction, but that seems perilous. </P>
+<P>Your chunking idea is a good one, but I would need to add something to the schema. I'll look at doing that down the road. Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jemmer replied on Thursday, October 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>
+<P>It turns out that (at least with SQL Server 2000), if you have started a transaction and open a DataReader on it, then you can't do any updates -- or really practically anything&nbsp;else in the transaction&nbsp;actually -- as long as the DataReader is open. </P>
+<P></div></BLOCKQUOTE></P>
+<P>Not quite true, actually.&nbsp; You cannot do anything on the <EM>connection </EM>while the reader is open (and that has nothing to do with whether there is a transaction started or not), but there is nothing preventing you from opening another connection to do something else...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, October 02, 2008</h2>In the past I had to do a rather large data dump from a complex csla hierarchy to the database.&nbsp; What I ended up doing as using the .net bulk update functionality for sql server to write the data to a staging table with an app generated guid as the pk.&nbsp; I then invoked a server side proc (passing in the guid) to handle the transfering of the data from the staging table to the main database table(s) and do cleanup on the staging table.&nbsp;</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Thursday, October 02, 2008</h2>An extended stored proc (xp_...) should help you there. That was the
+only method to code other than sql before sql2k5, or if this is a one
+time only operation do this with a CLR in sql2k5 and move data back to sql2k.<br><br>Sinan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

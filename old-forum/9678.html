@@ -1,0 +1,73 @@
+<html><header><title>Need suggestion on binding a Child Object directly as a Model to a ViewModel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need suggestion on binding a Child Object directly as a Model to a ViewModel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9678.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Tuesday, October 26, 2010</h2><p>Hi All,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; I have a grid with data filled from csla businesslistbase now when the user selects a single row and clicks on the edit button a popup is suppose to be opened and the data of the row is suppose to be displayed in the popup window for editing.&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Now here is the problem, to do so i need to set the csla bussinessbase object of the selected row as model to the viewmodel of the popup. But as the businesbase class is actually the child of a businesslistbase class it cannot be directly set if&nbsp;ManageObjectLifetime is set to true. Again if we set it to false then i cannot get the option of cancel edit which is required in case the user decides to cancel his edits.&nbsp;</p>
+<p>&nbsp;&nbsp; Again just to mention I am using it in Silverlight 4 with CSLA 4.0.1. Awaiting your reply.</p>
+<p><span style="font-size:11.6667px;">Regards,</span></p>
+<p><span style="font-size:11.6667px;">Tiklu</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, October 26, 2010</h2><p>You can leave ManageObjectLifetime as true, as long as either CancelEdit or ApplyEdit have been called before the popup closes. Here&#39;s the high level sequence of events:</p>
+<ol>
+<li>User selects item on main form (child EL unchanged, let&#39;s call this value S)</li>
+<li>Popup viewmodel is created with child (child EL elevated to S+1)</li>
+<li>Popup is displayed and shows viewmodel/view, user does their thing</li>
+<li>User clicks Cancel (viewmodel calls CancelEdit/BeginEdit so EL goes to S, then S+1)</li>
+<li>User closes popup (you handle Closing event w/ TriggerAction so viewmodel calls ApplyEdit so EL goes to S)</li>
+<li>User continues interacting with main form</li>
+</ol>
+<p>The important thing is step 5 - you must ensure that either ApplyEdit or CancelEdit is invoked when the popup is closed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Wednesday, October 27, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Thanks for the quick reply, but in my case I am assigning the child object explicitly to the model property of viewmodel and I am getting the error. As the child object is marked as child and cannot directly go to beginedit. Can you please guide me what I am missing in here</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 27, 2010</h2><p>I am confused. Nothing stops calling BeginEdit on a child object. In fact it is entirely normal to call BeginEdit on a child object - most datagrid controls always do this.</p>
+<p>Exactly what exception are you getting?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Thursday, October 28, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp;Sorry my bad the problem is actually happening with BusinessListBase and not with BusinessBase. it is saying &quot;BeginEdit is not valid on a child object&quot;. Actually my problem is with the businesslistbase object and not with businessbase object. my businesslistbase object is a child to a businessbase object and this businesslistbase is getting added to a separate viewmodel. It is something like this...i have a form which holds the actual businessbase object and i have multiple links in the form that opens separate &quot;views&quot; now each of these views are having separate viewmodel which is being tied to separate&nbsp;children&nbsp;of the the actual model. Now when I am having a child of type BusinessListBase tied to the model of the form (the model is again tied to the viewmodel of the form), I am having trouble with this businesslistbase object. Also in future I have requirement to create one editable grid in the same way. </p>
+<p>&nbsp;&nbsp; Hope I was been able to be clear about my requirement here. Please do suggest&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Thursday, October 28, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;I am also getting one very peculear problem. As I said that the Order object is part of OrderList which is again comes as a child object to Customer. Now As I told you in my form for the OrderList View I am having a separate viewmodel (which is attached to a view with a grid in it showing the data) and assigning the OrderList (derived from BussinessListBase and which is a child of Customer BusinessBase Object) to the model. Now as we cannot edit BusinessListBase directly if the object is set as child, I am setting&nbsp;ManageObjectLifetime to false. </p>
+<p>&nbsp;&nbsp; &nbsp;Now as the Grid is also having another child form when I am opening it and saving the data it is working correctly. And the applyEdit is working fine for the Order objects and the object is getting properly added/edited in the Grid.</p>
+<p>&nbsp;&nbsp; But now when I am saving the main form I am getting one peculear edit level mismatch &nbsp;in the businesrules of the order object. Could this be because I am disabling&nbsp;<span style="font-size:10px;">ManageObjectLifetime &nbsp;in the list?</span></p>
+<p><span style="font-size:10px;">Hope I was been clear with my explanation. Thanks in advance for your reply.</span></p>
+<p><span style="font-size:10px;">Regards</span></p>
+<p><span style="font-size:10px;">Tiklu</span></p>
+<p><span style="font-size:small;"><br /></span></p>
+<p><span style="font-size:small;"><span><br /></span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Thursday, October 28, 2010</h2><p>Just to give some hint When this method is getting called from the main object&nbsp;</p>
+<p>BusinessBase.cs Line No 3303</p>
+<p>&nbsp;</p>
+<p>protected override void AcceptingChanges()</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;((IUndoableObject)FieldManager).AcceptChanges(this.EditLevel - 1, false);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;<b>((IUndoableObject)BusinessRules).AcceptChanges(this.EditLevel - 1, false);</b></p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;base.AcceptingChanges();</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>And inside the businessrules object the editlevel is coming as 0.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 28, 2010</h2><p>It is true that you can&#39;t directly call BeginEdit on a child collection. </p>
+<p>I don&#39;t honestly remember why, this behavior goes back a very long time - very possibly to version 1.x.</p>
+<p>The answer has always been to take a snapshot of the parent containing the collection and manage undo at that level.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Friday, October 29, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Any suggestion on what could be the best process to take the snapshot?</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, October 29, 2010</h2><p>Have you thought of changing the model type to the root object and only binding to the SelectedItem in the dialog?</p>
+<p>Kevin</p>
+<p>Correction: On second thoughts &nbsp;this wont work. &nbsp;I think you need to set the Model by passing the SelectedItem to it, maybe?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, October 29, 2010</h2><p>The simplest thing is probably to pass the parent object to the new viewmodel, since that viewmodel will be the one exposing the Cancel method too.</p>
+<p>In other words, the root viewmodel of your popup/dialog window has to work against the parent object, because that&#39;s the level where you can manage undo. You might then have a child viewmodel for the list - with ManageObjectLifetime set to false on that viewmodel.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Saturday, October 30, 2010</h2><p>I tried that...my form viewmodel is having the root businessbase class which contains the businesslistbase property. I tried assigning this businesslistbase property to the child viewmodel of the view containing the grid showing the&nbsp;<span style="font-size:10px;">businesslistbase objects with manageobjectlifetime as false. But I am getting editlevel missmatch...any idea why?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Saturday, October 30, 2010</h2><p>Hi Rocky,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;I found the problem is occuring for one of the code that I have written. This is what I have written</p>
+<p>&nbsp;</p>
+<p>public void AddChild(IPhoenixModelBase child)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;child.MarkAsChild(this);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.InsertItem(this.Count, (C)child); &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>Now this code is inside businesslistbase. and the child is a BusinessBase object. When I am createing a new record and saving the form the editlevel is working fine. But when I am doing some edits and adding a new record I am getting the edit level miss match error. Please suggest</p>
+<p><span style="font-size:11.6667px;">Thanks once more for your support</span></p>
+<p>Regards</p>
+<p>Tiklu</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Saturday, October 30, 2010</h2><p>Just On an added note please do remember that my requirement is to add a child object only after it is being created with the reference of parent object which i am sending through explicit DataPortal.BeginCreate() method and once the user clicks on save/done button this object (which is actually an independant object). must be set child and added to the list.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly replied on Saturday, October 30, 2010</h2><p>Also on an added note some of the child popups do have a grid in it..in that case also I am getting an editlevelmissmatch..please suggest</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tikluganguly replied on Monday, November 01, 2010</h2><p>I just figured out when i was doing add child after that i need to called one applyedit followed by a beginedit to adjust the editlevel of the added entity and then it starts working. Like the code given below</p>
+<p>&nbsp;</p>
+<p>
+<p>list.AddChild(model);</p>
+<p><span style="font-size:11.6667px;">model.ApplyEdit();</span></p>
+<p>model.BeginEdit();</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

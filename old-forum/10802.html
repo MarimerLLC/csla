@@ -1,0 +1,19 @@
+<html><header><title>Multiple Property Rules - CSLA 4.2</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Property Rules - CSLA 4.2</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10802.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber posted on Monday, October 24, 2011</h2><p>I have a rule that is applied to 2 properties - either 1 or the other is required, but not both.</p>
+<p>I understand that when one adds properties to the AffectedProperties of a rule, the rules for those affected properties will be fired after the rule executes.</p>
+<p>My problem is that I have a single rule, that needs to be checked if either property is changed, and the rule must only be broken once, but it breaks twice (once for each property).</p>
+<p>I add my rules as follows:</p>
+<p>&nbsp;</p>
+<p>BusinessRules.AddRule(New AtLeastOneValueSpecifiedRule(EntityIDProperty, IndividualIDProperty))</p>
+<p>BusinessRules.AddRule(New AtLeastOneValueSpecifiedRule(IndividualIDProperty, EntityIDProperty))</p>
+<p>The rule itself adds the 2nd property to its AffectedProperties. &nbsp;This works well (showing errors on the correct fields) and the rule is broken/unbroken correctly.</p>
+<p>The problem is my UI scans the object graph and displays an Error Tree based on the broken rules and because there are effectively 2 rules in place I get the following in my error tree when this rule is broken:</p>
+<p>&gt; Entity or Individual is required</p>
+<p>&gt; Individual or Entity is required</p>
+<p>Is there a way around this using CSLA or should I build a workaround into my UI error tree functionality?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 24, 2011</h2><p>So, you want the UI to display the error message on both fields but only have one entry in the ErrorTree? </p>
+<p>One option could be to set the severity of the second property to Warning - then you could filter out Warning/Information level from the ErrorTree. </p>
+<p>The second option is to only set the broken rule on one of the fields.</p>
+<p>If you want the error message to appear on both fields then by design - you must have 2 entries in broken rules collection.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Monday, October 24, 2011</h2><p>Thanks for the quick reply <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Yes, that&#39;s exactly what I want, I do not want to lose the errors on both fields. &nbsp;I already use the error tree for warnings and info. &nbsp;It would be awesome to be able to set multiple Primary properties to support the IDataErrorInfo per property with only a single rule added to the BrokenRulesCollection.</p>
+<p>I have modified my rule class to list the property names in alphabetical order when generating a default rule description and modified my error tree code to only add rules that have a unique description.</p>
+<p>This is working nicely ;)&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

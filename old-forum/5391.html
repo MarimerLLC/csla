@@ -1,0 +1,168 @@
+<html><header><title>SVN repository error using TortoiseSVN</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SVN repository error using TortoiseSVN</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5391.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile posted on Friday, September 12, 2008</h2><P>I get the following error when trying to access the repository (svn://svn.lhotka.net/csla/):<BR>Can't connect to host 'svn.lhotka.net': No connection could be made because the target machine actively refused it.</P>
+<P>I'm able to use the web interface to access, so it seems to be relevant&nbsp;for remote clients only.</P>
+<P>Does someone else experience the same problem?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Saturday, September 13, 2008</h2><P>I have just tried the address given using Tortoise SVN and have been allowed access with no problems. Maybe it is worth trying again?</P>
+<P>Regards,</P>
+<P>Patrick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile replied on Saturday, September 13, 2008</h2>I'm now able to connect to it from my home PC, will try to access it from work on Monday - it may be related to some corporate firewall settings.<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, June 23, 2009</h2><P>Hey guys.&nbsp;What was the&nbsp;resolution to this issue. I've just installed Tortoise SVN and am experiencing the exact same error.</P>
+<P>TIA,<BR>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 23, 2009</h2><P>The best thing to try to start is to try the 'repro browser' option and see if you can browse the repository.</P>
+<P>In your other post it appeared you might be trying the 'import' option - and since the repository is read-only for you, you can't import your folders into the repository.</P>
+<P>You need to use check out or export options to get data from the repository.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, June 23, 2009</h2><P>Nope, sorry, forgot to mention that I tried that also and got the same error.</P>
+<P>Thanks,<BR>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am able to access the repository<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are using this uri: svn://svn.lhotka.net/csla<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the repro-browser, and it fails to connect?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wjcomeaux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 23, 2009 10:50 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SVN repository error using TortoiseSVN<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Nope, sorry, forgot to mention that I tried that also and got the same
+error.<o:p></o:p></p>
+
+<p>Thanks,<br>
+Will<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, June 23, 2009</h2><P>And that did the trick. Wrong uri.</P>
+<P>Thanks Rocky.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I should also point out that I have frequently encountered
+organizations that have a firewall blocking the svn port. I don&#8217;t know
+why, but it does happen from time to time. You should make sure your local
+firewall, and your organization&#8217;s firewall aren&#8217;t interfering with
+the svn port.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Tuesday, June 23, 2009 11:12 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] SVN repository error using TortoiseSVN<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I am able to access the repository<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are using this uri: svn://svn.lhotka.net/csla<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the repro-browser, and it fails to connect?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wjcomeaux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 23, 2009 10:50 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SVN repository error using TortoiseSVN<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Nope, sorry, forgot to mention that I tried that also and got the same
+error.<o:p></o:p></p>
+
+<p>Thanks,<br>
+Will<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Monday, November 28, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<div class="Section1">
+<p class="MsoNormal"><span>I should also point out that I have frequently encountered organizations that have a firewall blocking the svn port. I don&rsquo;t know why, but it does happen from time to time. You should make sure your local firewall, and your organization&rsquo;s firewall aren&rsquo;t interfering with the svn port.</span></p>
+</div>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Port 3690 needs to be opened for SVN. I needed to open that up on the corporate internet&nbsp;router.</p>
+<p>Use cmd.exe netstat to review the communication from your PC.</p>
+<p>The TCP port from your PC might be from 0-65,534 to the 67.152.152.109:3690 port at the CSLA svn repository.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard replied on Tuesday, October 16, 2012</h2><p>Is there a way to get the source without svn?&nbsp; I can&#39;t get to the repository with TortoiseHG so I&#39;m guessing that the port is blocked in the corporate firewall and no way I&#39;m getting that changed.&nbsp; I can browse the repository with the web view link but that only gives me access to one file at a time.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 16, 2012</h2><p>You can download released source via the download page (<a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a>).</p>
+<p>The only way to get the current work-in-progress source is via svn, because the repository runs Subversion.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Sunday, October 21, 2012</h2><p>I&#39;ve been able to get TortoiseHG to connect to the CSLA SVN repository via the&nbsp;SVN firewall port.&nbsp; I did have some troubles with different HG plugins (see - <a href="https://bitbucket.org/durin42/hgsubversion/issue/365/subversionconnectionexception-on-public">https://bitbucket.org/durin42/hgsubversion/issue/365/subversionconnectionexception-on-public</a>) however it took me a few attempts to clone the svn repository with TortoiseHG to my desktop in Australia. It seemed to get stuck on some of the sql database files (*.mdf; * .trn)&nbsp;that were checked in, but it worked in the end.&nbsp; I did this prior to going on holiday, 2 weeks ago, so I haven&#39;t got back into the office to see how that history works within HG.&nbsp;</p>
+<p>From memory I loaded the latest build of hg and use the command line to complete the task.</p>
+<p>Now I&#39;ve got the core changes in to a local HG repository, I&#39;ll be just doing local copy, as part of the testing I&#39;m doing for a CI&nbsp;server (see <a href="http://www.finalbuilder.com/forums/ContinuaCI/">http://www.finalbuilder.com/forums/ContinuaCI/</a>).&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

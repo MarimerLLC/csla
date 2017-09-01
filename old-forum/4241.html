@@ -1,0 +1,7 @@
+<html><header><title>inheritance issue with &quot;MarkOld&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>inheritance issue with &quot;MarkOld&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4241.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ReadOnlyChild posted on Friday, January 25, 2008</h2>Hello ,<br>I have an issue with a BO that goes like this:<br>I've inherited an object from another BO that extends BusinessBase<br><br>(using 2.1.4 fx of CSLA)<br><br>Company : Customer<br>Customer : BusinessBase&lt;Customer&gt;<br><br>when I call <b>ApplyEdit </b>(for an update, previously fetched instance) on <b>Company</b>, it does all the dataportal stuff, on the <b>SimpleDataPortal</b>.<b>Update</b>, the <b>"MarkOld"</b> method is called by reflection on <b>Company</b>,<br>but in UI,right after the <b>ApplyEdit</b>() returns, the <b>IsDirty </b>flag is "true"<br><br>any ideas where I can look for the solution ?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, January 27, 2008</h2><P>Are you updating the BO variable in the UI?</P>
+<P>e.g. myBO = myBO.Save</P>
+<P>Or are you just calling </P>
+<P>myBO.save?</P>
+<P>The first style is correct.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,1032 @@
+<html><header><title>SortedBindingList bound to DataGridView ArgumentOutOfRangeException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList bound to DataGridView ArgumentOutOfRangeException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12158.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael posted on Monday, September 23, 2013</h2><p>We recently upgraded from CSLA 4.3 to 4.5.30.</p>
+<p>We use a lot of SortedBindingLists bound to DataGridViews. The business objects usually have a simple int SortOrder property. The collection inherits from BusinessBindingListBase&lt;T, C&gt;. New objects are added to the collection via bindingSource.AddNew(). Inside AddNewCore() when any biz object property is set, the following exception is thrown:</p>
+<p>System.ArgumentOutOfRangeException: Specified argument was out of the range of valid values.<br />Parameter name: rowIndex<br />&nbsp;&nbsp; at System.Windows.Forms.DataGridView.InvalidateCell(Int32 columnIndex, Int32 rowIndex)<br />&nbsp;&nbsp; at System.Windows.Forms.DataGridView.DataGridViewDataConnection.ProcessListChanged(ListChangedEventArgs e)<br />&nbsp;&nbsp; at System.Windows.Forms.DataGridView.DataGridViewDataConnection.currencyManager_ListChanged(Object sender, ListChangedEventArgs e)<br />&nbsp;&nbsp; at System.Windows.Forms.CurrencyManager.List_ListChanged(Object sender, ListChangedEventArgs e)<br />&nbsp;&nbsp; at System.Windows.Forms.BindingSource.InnerList_ListChanged(Object sender, ListChangedEventArgs e)<br />&nbsp;&nbsp; at Csla.SortedBindingList`1.SourceChanged(Object sender, ListChangedEventArgs e)<br />&nbsp;&nbsp; at System.ComponentModel.ListChangedEventHandler.Invoke(Object sender, ListChangedEventArgs e)<br />&nbsp;&nbsp; at System.ComponentModel.BindingList`1.Child_PropertyChanged(Object sender, PropertyChangedEventArgs e)<br />&nbsp;&nbsp; at System.ComponentModel.PropertyChangedEventHandler.Invoke(Object sender, PropertyChangedEventArgs e)<br />&nbsp;&nbsp; at Csla.Core.BindableBase.OnPropertyChanged(String propertyName)<br />&nbsp;&nbsp; at Csla.Core.BusinessBase.Csla.Rules.IHostRules.AllRulesComplete()</p>
+<p>...</p>
+<p><i>All</i> of our forms using SortedBindingList are now broken. I can&#39;t see any changes in SortedBindingList.cs from 4.3 to 4.5.30.</p>
+<p>Thanks in advance.</p>
+<p>&mdash;Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 23, 2013</h2><p>Hi,</p>
+<p>Could it be changes in the BusinessBase that affects your application. Like OnPropertyChanged happening at wrong timings?</p>
+<p>Have you set CslaPropertyChangedMode to &quot;Windows&quot; in your application? </p>
+<p>You now get PropertyChanged on the meta properties (IsDirty, IsValid etc) when CslaPropertyChangedMode is Xaml (the default value). </p>
+<p>Ex: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;MetaPropertyHasChanged(<span style="color:blue;">string</span>&nbsp;name)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.PropertyChangedMode&nbsp;!=&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2b91af;">PropertyChangedModes</span>.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>and </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CheckPropertyRules(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;propertyNames&nbsp;=&nbsp;BusinessRules.CheckRules(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.PropertyChangedMode&nbsp;==&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2b91af;">PropertyChangedModes</span>.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;name&nbsp;<span style="color:blue;">in</span>&nbsp;propertyNames)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, September 23, 2013</h2><p>Thanks for the reply, Jonny.</p>
+<p>I must have missed the memo about the PropertyChangedMode, but it hasn&#39;t fixed the problem, unfortunately.</p>
+<p>I have uploaded a sample solution showing the problem. I would really appreciate it if you could take a look.</p>
+<p>7 zip (2.6 MB): http://www.softbiz.com.au/temp/SortedBindingListSample.7z</p>
+<p>OR</p>
+<p>Zip (6.5 MB): http://www.softbiz.com.au/temp/SortedBindingListSample.zip</p>
+<p>Kind regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 24, 2013</h2><p>Hi,</p>
+<p>I have tried with several version back to CSLA 4.2.2 with the same result - Exception. </p>
+<p>Actually - it is in the way SortedBindingList is coded that suppress the ItemAdded event until AFTER AddNewCore has completed. When you set a property on the object after Add in AddNewCore the events come in wrong sequence to the UI control and it has been so for quite some time.&nbsp;</p>
+<p>From SortedBindingList:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">object</span>&nbsp;AddNew()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_initiatedLocally&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;_bindingList.AddNew();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_initiatedLocally&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemAdded,&nbsp;_bindingList.Count&nbsp;-&nbsp;1));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br /></pre>
+<p>So when your code call OnPropertyChanged inside AddNewCore - after the Add - it is out of sequence.</p>
+<p>I removed the _initiatedLocally and all if tests that suppress ListChanged event and removed the OnListChanged inside AddNew and your code runs just fine. I&#39;m not sure why this was added at some time. One easy way to test is to add SortedBindingList in your own code and modify / try out changes. This class is quite &quot;standalone&quot; and you can update your code to use YOUR version (and any help to make this work perfect with FilteredBindingList and BindingList is greatly appreciated).&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 24, 2013</h2><p>Try this version of SortedBindingList:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:green;">//-----------------------------------------------------------------------</span>
+<span style="color:green;">//&nbsp;&lt;copyright&nbsp;file=&quot;SortedBindingList.cs&quot;&nbsp;company=&quot;Marimer&nbsp;LLC&quot;&gt;</span>
+<span style="color:green;">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Copyright&nbsp;(c)&nbsp;Marimer&nbsp;LLC.&nbsp;All&nbsp;rights&nbsp;reserved.</span>
+<span style="color:green;">//&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Website:&nbsp;http://www.lhotka.net/cslanet/</span>
+<span style="color:green;">//&nbsp;&lt;/copyright&gt;</span>
+<span style="color:green;">//&nbsp;&lt;summary&gt;Provides&nbsp;a&nbsp;sorted&nbsp;view&nbsp;into&nbsp;an&nbsp;existing&nbsp;IList(Of&nbsp;T).&lt;/summary&gt;</span>
+<span style="color:green;">//-----------------------------------------------------------------------</span>
+ 
+<span style="color:blue;">using</span>&nbsp;System;
+<span style="color:blue;">using</span>&nbsp;System.Collections;
+<span style="color:blue;">using</span>&nbsp;System.Collections.Generic;
+<span style="color:blue;">using</span>&nbsp;System.ComponentModel;
+<span style="color:blue;">using</span>&nbsp;Csla.Properties;
+ 
+<span style="color:blue;">namespace</span>&nbsp;SortedBindingListSample
+{
+ 
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Provides&nbsp;a&nbsp;sorted&nbsp;view&nbsp;into&nbsp;an&nbsp;existing&nbsp;IList(Of&nbsp;T).</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;typeparam&nbsp;name=</span><span style="color:gray;">&quot;T&quot;</span><span style="color:gray;">&gt;</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Type&nbsp;of&nbsp;child&nbsp;object&nbsp;contained&nbsp;by</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;the&nbsp;original&nbsp;list&nbsp;or&nbsp;collection.</span>
+&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/typeparam&gt;</span>
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">SortedBindingList</span>&lt;T&gt;&nbsp;:
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IList</span>&lt;T&gt;,&nbsp;<span style="color:#2b91af;">IBindingList</span>,&nbsp;<span style="color:#2b91af;">IEnumerable</span>&lt;T&gt;,&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>
+&nbsp;&nbsp;{
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;ListItem&nbsp;class
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ListItem</span>&nbsp;:&nbsp;<span style="color:#2b91af;">IComparable</span>&lt;<span style="color:#2b91af;">ListItem</span>&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">object</span>&nbsp;_key;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;_baseIndex;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">object</span>&nbsp;Key
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_key;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;BaseIndex
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_baseIndex;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;_baseIndex&nbsp;=&nbsp;<span style="color:blue;">value</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;ListItem(<span style="color:blue;">object</span>&nbsp;key,&nbsp;<span style="color:blue;">int</span>&nbsp;baseIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_key&nbsp;=&nbsp;key;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_baseIndex&nbsp;=&nbsp;baseIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;CompareTo(<span style="color:#2b91af;">ListItem</span>&nbsp;other)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;target&nbsp;=&nbsp;other.Key;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(Key&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IComparable</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;((<span style="color:#2b91af;">IComparable</span>)Key).CompareTo(target);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(Key&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(target&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(Key.Equals(target))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;0;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(target&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;1;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Key.ToString().CompareTo(target.ToString());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">string</span>&nbsp;ToString()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Key.ToString();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Sorted&nbsp;enumerator
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">SortedEnumerator</span>&nbsp;:&nbsp;<span style="color:#2b91af;">IEnumerator</span>&lt;T&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">IList</span>&lt;T&gt;&nbsp;_list;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">ListItem</span>&gt;&nbsp;_sortIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;_sortOrder;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;_index;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;SortedEnumerator(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IList</span>&lt;T&gt;&nbsp;list,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">ListItem</span>&gt;&nbsp;sortIndex,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;direction)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list&nbsp;=&nbsp;list;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex&nbsp;=&nbsp;sortIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortOrder&nbsp;=&nbsp;direction;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reset();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;T&nbsp;Current
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_list[_sortIndex[_index].BaseIndex];&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Object</span>&nbsp;System.Collections.<span style="color:#2b91af;">IEnumerator</span>.Current
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_list[_sortIndex[_index].BaseIndex];&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;MoveNext()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortOrder&nbsp;==&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Ascending)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_index&nbsp;&lt;&nbsp;_sortIndex.Count&nbsp;-&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_index++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_index&nbsp;&gt;&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_index--;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Reset()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortOrder&nbsp;==&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Ascending)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_index&nbsp;=&nbsp;-1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_index&nbsp;=&nbsp;_sortIndex.Count;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;IDisposable&nbsp;Support
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;_disposedValue&nbsp;=&nbsp;<span style="color:blue;">false</span>;&nbsp;<span style="color:green;">//&nbsp;To&nbsp;detect&nbsp;redundant&nbsp;calls.</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;IDisposable</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Dispose(<span style="color:blue;">bool</span>&nbsp;disposing)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!_disposedValue)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(disposing)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;free&nbsp;unmanaged&nbsp;resources&nbsp;when&nbsp;explicitly&nbsp;called</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;free&nbsp;shared&nbsp;unmanaged&nbsp;resources</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_disposedValue&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;this&nbsp;code&nbsp;added&nbsp;to&nbsp;correctly&nbsp;implement&nbsp;the&nbsp;disposable&nbsp;pattern.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Dispose()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;Do&nbsp;not&nbsp;change&nbsp;this&nbsp;code.&nbsp;&nbsp;Put&nbsp;cleanup&nbsp;code&nbsp;in&nbsp;Dispose(bool&nbsp;disposing)&nbsp;above.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dispose(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">GC</span>.SuppressFinalize(<span style="color:blue;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Allows&nbsp;an&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;T:System.Object&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;to&nbsp;attempt&nbsp;to&nbsp;free&nbsp;resources&nbsp;and&nbsp;perform&nbsp;other&nbsp;cleanup&nbsp;operations&nbsp;before&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;T:System.Object&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;is&nbsp;reclaimed&nbsp;by&nbsp;garbage&nbsp;collection.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;~SortedEnumerator()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dispose(<span style="color:blue;">false</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Sort/Unsort
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DoSort()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;index&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Clear();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortBy&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(T&nbsp;obj&nbsp;<span style="color:blue;">in</span>&nbsp;_list)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListItem</span>(obj,&nbsp;index));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(T&nbsp;obj&nbsp;<span style="color:blue;">in</span>&nbsp;_list)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListItem</span>(_sortBy.GetValue(obj),&nbsp;index));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;index++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Sort();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sorted&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>(<span style="color:#2b91af;">ListChangedType</span>.Reset,&nbsp;0));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;UndoSort()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Clear();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortBy&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortOrder&nbsp;=&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Ascending;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sorted&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>(<span style="color:#2b91af;">ListChangedType</span>.Reset,&nbsp;0));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;IEnumerable&lt;T&gt;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Returns&nbsp;an&nbsp;enumerator&nbsp;for&nbsp;the&nbsp;list,&nbsp;honoring</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;any&nbsp;sort&nbsp;that&nbsp;is&nbsp;active&nbsp;at&nbsp;the&nbsp;time.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">IEnumerator</span>&lt;T&gt;&nbsp;GetEnumerator()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SortedEnumerator</span>(_list,&nbsp;_sortIndex,&nbsp;_sortOrder);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_list.GetEnumerator();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;IBindingList,&nbsp;IList&lt;T&gt;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;property&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Property&nbsp;on&nbsp;which</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;to&nbsp;build&nbsp;the&nbsp;index.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddIndex(<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingList.AddIndex(property);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">object</span>&nbsp;AddNew()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;_bindingList.AddNew();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;AllowEdit
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_bindingList.AllowEdit;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;AllowNew
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_bindingList.AllowNew;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;AllowRemove
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_bindingList.AllowRemove;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Applies&nbsp;a&nbsp;sort&nbsp;to&nbsp;the&nbsp;view.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;propertyName&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;text&nbsp;name&nbsp;of&nbsp;the&nbsp;property&nbsp;on&nbsp;which&nbsp;to&nbsp;sort.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;direction&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;direction&nbsp;to&nbsp;sort&nbsp;the&nbsp;data.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ApplySort(<span style="color:blue;">string</span>&nbsp;propertyName,&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;direction)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortBy&nbsp;=&nbsp;GetPropertyDescriptor(propertyName);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ApplySort(_sortBy,&nbsp;direction);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Applies&nbsp;a&nbsp;sort&nbsp;to&nbsp;the&nbsp;view.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;property&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">A&nbsp;PropertyDescriptor&nbsp;for&nbsp;the&nbsp;property&nbsp;on&nbsp;which&nbsp;to&nbsp;sort.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;direction&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;direction&nbsp;to&nbsp;sort&nbsp;the&nbsp;data.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ApplySort(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;property,&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;direction)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortBy&nbsp;=&nbsp;property;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortOrder&nbsp;=&nbsp;direction;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoSort();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Finds&nbsp;an&nbsp;item&nbsp;in&nbsp;the&nbsp;view</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;propertyName&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Name&nbsp;of&nbsp;the&nbsp;property&nbsp;to&nbsp;search</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;key&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Value&nbsp;to&nbsp;find</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Find(<span style="color:blue;">string</span>&nbsp;propertyName,&nbsp;<span style="color:blue;">object</span>&nbsp;key)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;findProperty&nbsp;=&nbsp;GetPropertyDescriptor(propertyName);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Find(findProperty,&nbsp;key);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;GetPropertyDescriptor(<span style="color:blue;">string</span>&nbsp;propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;property&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!<span style="color:#2b91af;">String</span>.IsNullOrEmpty(propertyName))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Type</span>&nbsp;itemType&nbsp;=&nbsp;<span style="color:blue;">typeof</span>(T);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;prop&nbsp;<span style="color:blue;">in</span>&nbsp;<span style="color:#2b91af;">TypeDescriptor</span>.GetProperties(itemType))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(prop.Name&nbsp;==&nbsp;propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;property&nbsp;=&nbsp;prop;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;throw&nbsp;exception&nbsp;if&nbsp;propertyDescriptor&nbsp;could&nbsp;not&nbsp;be&nbsp;found</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(property&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ArgumentException</span>(<span style="color:blue;">string</span>.Format(<span style="color:#2b91af;">Resources</span>.SortedBindingListPropertyNameNotFound,&nbsp;propertyName),&nbsp;propertyName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;property;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;key&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Key&nbsp;value&nbsp;for&nbsp;which&nbsp;to&nbsp;search.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;property&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Property&nbsp;to&nbsp;search&nbsp;for&nbsp;the&nbsp;key</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;value.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Find(<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;property,&nbsp;<span style="color:blue;">object</span>&nbsp;key)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;originalIndex&nbsp;=&nbsp;_bindingList.Find(property,&nbsp;key);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;originalIndex&nbsp;&gt;&nbsp;-1&nbsp;?&nbsp;SortedIndex(originalIndex)&nbsp;:&nbsp;-1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;-1;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;a&nbsp;value&nbsp;indicating&nbsp;whether&nbsp;the&nbsp;view&nbsp;is&nbsp;currently&nbsp;sorted.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;IsSorted
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_sorted;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Raised&nbsp;to&nbsp;indicate&nbsp;that&nbsp;the&nbsp;list&#39;s&nbsp;data&nbsp;has&nbsp;changed.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;This&nbsp;event&nbsp;is&nbsp;raised&nbsp;if&nbsp;the&nbsp;underling&nbsp;IList&nbsp;object&#39;s&nbsp;data&nbsp;changes</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;(assuming&nbsp;the&nbsp;underling&nbsp;IList&nbsp;also&nbsp;implements&nbsp;the&nbsp;IBindingList</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;interface).&nbsp;It&nbsp;is&nbsp;also&nbsp;raised&nbsp;if&nbsp;the&nbsp;sort&nbsp;property&nbsp;or&nbsp;direction</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;is&nbsp;changed&nbsp;to&nbsp;indicate&nbsp;that&nbsp;the&nbsp;view&#39;s&nbsp;data&nbsp;has&nbsp;changed.&nbsp;See</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Chapter&nbsp;5&nbsp;for&nbsp;details.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">event</span>&nbsp;<span style="color:#2b91af;">ListChangedEventHandler</span>&nbsp;ListChanged;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Raises&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;ListChanged&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;event.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;e&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Event&nbsp;arguments.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnListChanged(<span style="color:#2b91af;">ListChangedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ListChanged&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ListChanged(<span style="color:blue;">this</span>,&nbsp;e);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;property&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Property&nbsp;for&nbsp;which&nbsp;the</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;index&nbsp;should&nbsp;be&nbsp;removed.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;RemoveIndex(<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingList.RemoveIndex(property);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Removes&nbsp;any&nbsp;sort&nbsp;currently&nbsp;applied&nbsp;to&nbsp;the&nbsp;view.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;RemoveSort()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UndoSort();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Returns&nbsp;the&nbsp;direction&nbsp;of&nbsp;the&nbsp;current&nbsp;sort.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;SortDirection
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_sortOrder;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Returns&nbsp;the&nbsp;PropertyDescriptor&nbsp;of&nbsp;the&nbsp;current&nbsp;sort.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;SortProperty
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_sortBy;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Returns&nbsp;</span><span style="color:gray;">&lt;see&nbsp;langword=</span><span style="color:gray;">&quot;true&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;since&nbsp;this&nbsp;object&nbsp;does&nbsp;raise&nbsp;the</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;ListChanged&nbsp;event.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;SupportsChangeNotification
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;SupportsSearching
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_supportsBinding)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_bindingList.SupportsSearching;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Returns&nbsp;</span><span style="color:gray;">&lt;see&nbsp;langword=</span><span style="color:gray;">&quot;true&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">.&nbsp;Sorting&nbsp;is&nbsp;supported.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;SupportsSorting
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;array&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Array&nbsp;to&nbsp;receive&nbsp;the&nbsp;data.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;arrayIndex&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Starting&nbsp;array&nbsp;index.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CopyTo(T[]&nbsp;array,&nbsp;<span style="color:blue;">int</span>&nbsp;arrayIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;pos&nbsp;=&nbsp;arrayIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(T&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;<span style="color:blue;">this</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;array[pos]&nbsp;=&nbsp;child;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;pos++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;System.Collections.<span style="color:#2b91af;">ICollection</span>.CopyTo(System.<span style="color:#2b91af;">Array</span>&nbsp;array,&nbsp;<span style="color:blue;">int</span>&nbsp;index)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T[]&nbsp;tmp&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;T[array.Length];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CopyTo(tmp,&nbsp;index);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Array</span>.Copy(tmp,&nbsp;0,&nbsp;array,&nbsp;index,&nbsp;array.Length);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Count
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_list.Count;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">bool</span>&nbsp;System.Collections.<span style="color:#2b91af;">ICollection</span>.IsSynchronized
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;System.Collections.<span style="color:#2b91af;">ICollection</span>.SyncRoot
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_list;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IEnumerator</span>&nbsp;System.Collections.<span style="color:#2b91af;">IEnumerable</span>.GetEnumerator()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetEnumerator();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;item&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Item&nbsp;to&nbsp;add&nbsp;to&nbsp;the&nbsp;list.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Add(T&nbsp;item)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list.Add(item);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.Add(<span style="color:blue;">object</span>&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add((T)value);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;SortedIndex(_list.Count&nbsp;-&nbsp;1);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Clear()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list.Clear();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;item&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Item&nbsp;for&nbsp;which&nbsp;to&nbsp;search.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;Contains(T&nbsp;item)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_list.Contains(item);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">bool</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.Contains(<span style="color:blue;">object</span>&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;Contains((T)value);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;item&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Item&nbsp;for&nbsp;which&nbsp;to&nbsp;search.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;IndexOf(T&nbsp;item)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;SortedIndex(_list.IndexOf(item));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.IndexOf(<span style="color:blue;">object</span>&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;IndexOf((T)value);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;index&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Index&nbsp;at</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;which&nbsp;to&nbsp;insert&nbsp;the&nbsp;item.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;item&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Item&nbsp;to&nbsp;insert.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Insert(<span style="color:blue;">int</span>&nbsp;index,&nbsp;T&nbsp;item)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list.Insert(index,&nbsp;item);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.Insert(<span style="color:blue;">int</span>&nbsp;index,&nbsp;<span style="color:blue;">object</span>&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Insert(index,&nbsp;(T)value);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">bool</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.IsFixedSize
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;IsReadOnly
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_list.IsReadOnly;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.<span style="color:blue;">this</span>[<span style="color:blue;">int</span>&nbsp;index]
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">this</span>[index];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>[index]&nbsp;=&nbsp;(T)<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Implemented&nbsp;by&nbsp;IList&nbsp;source&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;item&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Item&nbsp;to&nbsp;be&nbsp;removed.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;Remove(T&nbsp;item)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_list.Remove(item);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;System.Collections.<span style="color:#2b91af;">IList</span>.Remove(<span style="color:blue;">object</span>&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Remove((T)value);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Removes&nbsp;the&nbsp;child&nbsp;object&nbsp;at&nbsp;the&nbsp;specified&nbsp;index</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;in&nbsp;the&nbsp;list,&nbsp;resorting&nbsp;the&nbsp;display&nbsp;as&nbsp;needed.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;index&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;index&nbsp;of&nbsp;the&nbsp;object&nbsp;to&nbsp;remove.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;See&nbsp;Chapter&nbsp;5&nbsp;for&nbsp;details&nbsp;on&nbsp;how&nbsp;and&nbsp;why&nbsp;the&nbsp;list&nbsp;is</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;altered&nbsp;during&nbsp;the&nbsp;remove&nbsp;process.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;RemoveAt(<span style="color:blue;">int</span>&nbsp;index)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;baseIndex&nbsp;=&nbsp;OriginalIndex(index);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;remove&nbsp;the&nbsp;item&nbsp;from&nbsp;the&nbsp;source&nbsp;list</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list.RemoveAt(baseIndex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list.RemoveAt(index);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;child&nbsp;item&nbsp;at&nbsp;the&nbsp;specified&nbsp;index&nbsp;in&nbsp;the&nbsp;list,</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;honoring&nbsp;the&nbsp;sort&nbsp;order&nbsp;of&nbsp;the&nbsp;items.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;index&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;index&nbsp;of&nbsp;the&nbsp;item&nbsp;in&nbsp;the&nbsp;sorted&nbsp;list.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;T&nbsp;<span style="color:blue;">this</span>[<span style="color:blue;">int</span>&nbsp;index]
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_list[OriginalIndex(index)];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_list[index];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list[OriginalIndex(index)]&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list[index]&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;SourceList
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;source&nbsp;list&nbsp;over&nbsp;which&nbsp;this</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;SortedBindingList&nbsp;is&nbsp;a&nbsp;view.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">EditorBrowsable</span>(<span style="color:#2b91af;">EditorBrowsableState</span>.Advanced)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">IList</span>&lt;T&gt;&nbsp;SourceList
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_list;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">IList</span>&lt;T&gt;&nbsp;_list;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;_supportsBinding;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">IBindingList</span>&nbsp;_bindingList;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;_sorted;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;_sortBy;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;_sortOrder&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Ascending;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">ListItem</span>&gt;&nbsp;_sortIndex&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">ListItem</span>&gt;();
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Creates&nbsp;a&nbsp;new&nbsp;view&nbsp;based&nbsp;on&nbsp;the&nbsp;provided&nbsp;IList&nbsp;object.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;list&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;IList&nbsp;(collection)&nbsp;containing&nbsp;the&nbsp;data.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;SortedBindingList(<span style="color:#2b91af;">IList</span>&lt;T&gt;&nbsp;list)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list&nbsp;=&nbsp;list;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_list&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IBindingList</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_supportsBinding&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingList&nbsp;=&nbsp;(<span style="color:#2b91af;">IBindingList</span>)_list;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingList.ListChanged&nbsp;+=&nbsp;SourceChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;SourceChanged(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">switch</span>&nbsp;(e.ListChangedType)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemAdded:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;newItem&nbsp;=&nbsp;_list[e.NewIndex];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.NewIndex&nbsp;==&nbsp;_list.Count&nbsp;-&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;newKey;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortBy&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newKey&nbsp;=&nbsp;_sortBy.GetValue(newItem);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newKey&nbsp;=&nbsp;newItem;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortOrder&nbsp;==&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Ascending)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Add(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListItem</span>(newKey,&nbsp;e.NewIndex));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.Insert(0,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListItem</span>(newKey,&nbsp;e.NewIndex));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemAdded,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SortedIndex(e.NewIndex)));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoSort();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemChanged:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;an&nbsp;item&nbsp;changed&nbsp;-&nbsp;just&nbsp;relay&nbsp;the&nbsp;event&nbsp;with</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;a&nbsp;translated&nbsp;index&nbsp;value</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemChanged,&nbsp;SortedIndex(e.NewIndex),&nbsp;e.PropertyDescriptor));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemDeleted:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;internalIndex&nbsp;=&nbsp;InternalIndex(e.NewIndex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;sortedIndex&nbsp;=&nbsp;internalIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;((_sorted)&nbsp;&amp;&amp;&nbsp;(_sortOrder&nbsp;==&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Descending))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sortedIndex&nbsp;=&nbsp;_sortIndex.Count&nbsp;-&nbsp;1&nbsp;-&nbsp;internalIndex;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;remove&nbsp;from&nbsp;internal&nbsp;list&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_sortIndex.RemoveAt(internalIndex);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;now&nbsp;fix&nbsp;up&nbsp;all&nbsp;index&nbsp;pointers&nbsp;in&nbsp;the&nbsp;sort&nbsp;index</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:#2b91af;">ListItem</span>&nbsp;item&nbsp;<span style="color:blue;">in</span>&nbsp;_sortIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(item.BaseIndex&nbsp;&gt;&nbsp;e.NewIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item.BaseIndex&nbsp;-=&nbsp;1;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ListChangedEventArgs</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ListChangedType</span>.ItemDeleted,&nbsp;sortedIndex,&nbsp;e.PropertyDescriptor));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">default</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;for&nbsp;anything&nbsp;other&nbsp;than&nbsp;add,&nbsp;delete&nbsp;or&nbsp;change</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;just&nbsp;re-sort&nbsp;the&nbsp;list</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DoSort();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;OriginalIndex(<span style="color:blue;">int</span>&nbsp;sortedIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(sortedIndex&nbsp;==&nbsp;-1)&nbsp;<span style="color:blue;">return</span>&nbsp;-1;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortOrder&nbsp;==&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Ascending)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_sortIndex[sortedIndex].BaseIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_sortIndex[_sortIndex.Count&nbsp;-&nbsp;1&nbsp;-&nbsp;sortedIndex].BaseIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;sortedIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;SortedIndex(<span style="color:blue;">int</span>&nbsp;originalIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(originalIndex&nbsp;==&nbsp;-1)&nbsp;<span style="color:blue;">return</span>&nbsp;-1;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;result&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">for</span>&nbsp;(<span style="color:blue;">int</span>&nbsp;index&nbsp;=&nbsp;0;&nbsp;index&nbsp;&lt;&nbsp;_sortIndex.Count;&nbsp;index++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortIndex[index].BaseIndex&nbsp;==&nbsp;originalIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;index;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortOrder&nbsp;==&nbsp;<span style="color:#2b91af;">ListSortDirection</span>.Descending)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;_sortIndex.Count&nbsp;-&nbsp;1&nbsp;-&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;originalIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;InternalIndex(<span style="color:blue;">int</span>&nbsp;originalIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;result&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sorted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">for</span>&nbsp;(<span style="color:blue;">int</span>&nbsp;index&nbsp;=&nbsp;0;&nbsp;index&nbsp;&lt;&nbsp;_sortIndex.Count;&nbsp;index++)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_sortIndex[index].BaseIndex&nbsp;==&nbsp;originalIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;index;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;originalIndex;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;ICancelAddNew&nbsp;Members
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>.CancelNew(<span style="color:blue;">int</span>&nbsp;itemIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(itemIndex&nbsp;&gt;&nbsp;-1)&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>&nbsp;can&nbsp;=&nbsp;_list&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(can&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can.CancelNew(OriginalIndex(itemIndex));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_list.RemoveAt(OriginalIndex(itemIndex));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>.EndNew(<span style="color:blue;">int</span>&nbsp;itemIndex)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>&nbsp;can&nbsp;=&nbsp;_list&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICancelAddNew</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(can&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;can.EndNew(OriginalIndex(itemIndex));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;ToArray
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Get&nbsp;an&nbsp;array&nbsp;containing&nbsp;all&nbsp;items&nbsp;in&nbsp;the&nbsp;list.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;T[]&nbsp;ToArray()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">List</span>&lt;T&gt;&nbsp;result&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;T&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(T&nbsp;item&nbsp;<span style="color:blue;">in</span>&nbsp;<span style="color:blue;">this</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.Add(item);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;result.ToArray();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+&nbsp;&nbsp;}
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, September 24, 2013</h2><p>Thank you so much, Jonny. I will try it out and get back to you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Wednesday, September 25, 2013</h2><p>The modified code seems to be working fine.</p>
+<p>I know the SortedBindingList and FilteredBindingList have supposedly been superseded by LINQ, but we have used them both to implement some very useful controls in WinForms.</p>
+<p>The main problem I have had with SortedBindingList was getting the dreaded EditLevelMismatchException when it was hooked up to an editable DataGridView. (I asked for help <a title="Binding DataGridView to SortedBindingList bug" href="http://forums.lhotka.net/forums/p/4991/27828.aspx#27828">here</a>.) My solution was to inherit from SortedBindingList, and expose a SortChanging event:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">event</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>&nbsp;SortChanging;
+ 
+<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnSortChanging()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(SortChanging&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SortChanging(<span style="color:blue;">this</span>,&nbsp;<span style="color:#2b91af;">EventArgs</span>.Empty);
+}</pre>
+<p>and raise the event in the ApplySort() and RemoveSort() methods:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ApplySort(<span style="color:#2b91af;">PropertyDescriptor</span>&nbsp;property,&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;direction)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;OnSortChanging();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.ApplySort(property,&nbsp;direction);
+}
+ 
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ApplySort(<span style="color:blue;">string</span>&nbsp;propertyName,&nbsp;<span style="color:#2b91af;">ListSortDirection</span>&nbsp;direction)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;OnSortChanging();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.ApplySort(propertyName,&nbsp;direction);
+}
+ 
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;RemoveSort()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;OnSortChanging();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.RemoveSort();
+}</pre>
+<p>In the UI, we handle the event and call EndEdit() on the relevant binding source(s) as used in the RootChildGrandchild example.</p>
+<p>I&#39;ve also got my own version of FilteredBindingList which exposes exactly the same SortChanging event, and also exposes FilterChanging and FilterChanged events:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">event</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>&nbsp;FilterChanging;
+ 
+<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnFilterChanging()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(FilterChanging&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FilterChanging(<span style="color:blue;">this</span>,&nbsp;<span style="color:#2b91af;">EventArgs</span>.Empty);
+}
+ 
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">event</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>&nbsp;FilterChanged;
+ 
+<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnFilterChanged()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(FilterChanged&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FilterChanged(<span style="color:blue;">this</span>,&nbsp;<span style="color:#2b91af;">EventArgs</span>.Empty);
+}</pre>
+<p>and raise the events in the ApplyFilter() and RemoveFilter() methods:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ApplyFilter(<span style="color:blue;">string</span>&nbsp;propertyName,&nbsp;<span style="color:blue;">object</span>&nbsp;filter)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;OnFilterChanging();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.ApplyFilter(propertyName,&nbsp;filter);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;OnFilterChanged();
+}
+ 
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;RemoveFilter()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;OnFilterChanging();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.RemoveFilter();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;OnFilterChanged();
+}</pre>
+<p>In the UI, the code to handle the FilterChanging event is identical to handling the SortChanging event, so I normally just make one event handler, e.g. OnFilterOrSortChanging.</p>
+<p>The methods above are not actually virtual in standard CSLA, but it would be helpful if they were. The FilterChanged event was not necessary to solve the bug. I needed it to implement an Excel-style auto-filter control, which uses a FilteredBindingList.</p>
+<p>If these changes were incorporated into CSLA, I&#39;m sure it would be helpful to others using SortedBindingList or FilteredBindingList.</p>
+<p>Thanks again for your help in solving this, Jonny.</p>
+<p>&mdash;Michael</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

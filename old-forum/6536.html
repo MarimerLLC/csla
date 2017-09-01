@@ -1,0 +1,12 @@
+<html><header><title>Events not firing when switching from local dataportal to WcfProxy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Events not firing when switching from local dataportal to WcfProxy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies posted on Sunday, March 01, 2009</h2><P>Hello weekenders! :)</P>
+<P>I have a BusinessBase class with a public event to which a ReadOnly list subscribes.</P>
+<P>When using local dataportal my event fires just fine but when&nbsp;switching from local dataportal to WcfProxy the event does not fire.</P>
+<P>Is there anything specific that needs to be configured in WCF to make custom&nbsp;events fire?</P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 01, 2009</h2><P>There are two things.</P>
+<P>First, events won't flow across WCF from server to client (or visa versa) by default. Only very specific WCF channels, and some extra coding to support callbacks, will enable that to occur. And even if you do that, you must realize the scalability impact of such an implementation.</P>
+<P>Second (and I suspect what you are asking), is that when an object graph passes through the data portal all event hookups are typically lost. WCF simply doesn't preserve event hookups, and that's that.</P>
+<P>To overcome this, you need to override OnDeserialized() in the parent object and rehook any events to the child object. Or in your case, the ROL needs to override OnDeserialized() to rehook&nbsp; the handler to the BB object.</P>
+<P>If your ROL isn't being serialized across the wire (because it is a cache or something like that), things get more complex. In this case there's typically one ROL in memory, and many BB objects come and go over time. So the ROL needs to somehow know when any of the BB objects have been saved.</P>
+<P>The Saved event on BB might be more helpful in this case, though you'll need to implement some sort of registration (and deregistration) process so each BB can tell the ROL to start and stop listening for the Saved event.</P>
+<P>This is a pub/sub model, and can be implemented using the Observer design pattern.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

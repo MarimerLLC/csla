@@ -1,0 +1,53 @@
+<html><header><title>AddBusinessRules override not called</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddBusinessRules override not called</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12053.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dogua posted on Tuesday, July 02, 2013</h2><p>Hi,</p>
+<p>I use CSLA.Net 4, and I&#39;ve a problem with a classe.</p>
+<p>In m&#39;y project, I&#39;ve a lot of classe that uses the BusinessRules system correctly. But in a new classe, the AddBusinessRules override was not called when the DataPortal creates a new child()...</p>
+<p>Here is my code :</p>
+<p>&nbsp;</p>
+<p><span>	</span>[Serializable]</p>
+<p>&nbsp; &nbsp; public class Application : BusinessBase&lt;Application&gt;<br />&nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; #region Fields<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; private static readonly PropertyInfo&lt;Guid&gt; m_IdProperty = RegisterProperty&lt;Guid&gt;(c =&gt; c.Id);<br />&nbsp; &nbsp; &nbsp; &nbsp; private static readonly PropertyInfo&lt;string&gt; m_NameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Name);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Constructor</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private Application()<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Private for Factory methods...<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Properties</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Guid Id<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(m_IdProperty); }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(m_IdProperty, value); }<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string Name<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(m_NameProperty); }<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(m_NameProperty, value); }<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Factory Methods</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Application NewApplicationChild()<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.CreateChild&lt;Application&gt;();<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static Application GetApplication(Guid id)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;Application&gt;(id);<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; internal static Application GetApplication(DAL.Application app)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.FetchChild&lt;Application&gt;(app);<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Child_Create()<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty(m_IdProperty, Guid.NewGuid());<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Validation Rules</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void AddBusinessRules()<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.AddBusinessRules();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new Required(m_NameProperty));<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void OnValidationComplete()<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.OnValidationComplete();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(@&quot;IsValid&quot;);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(@&quot;IsSelfValid&quot;);<br />&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, July 02, 2013</h2><p>Hi,</p>
+<p>In Csla 4 there is only Type rules - IE: The AddBusinessRules method is only called ONCE per BO type.</p>
+<p>This handled/done in the base class constructor. So is it likely that the reason is AddBusinessRules has already been called?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dogua replied on Tuesday, July 02, 2013</h2><p>Thanks for reply,</p>
+<p>But unfortunately, in this case, the AddBusinessRules isn&#39;t called in constructor...</p>
+<p>I placed a breakpoint on the method but it&#39;s never called and I don&#39;t understand why</p>
+<p>EDIT :&nbsp;</p>
+<p>
+<p>Ok, now I&#39;ve understand your answer. So, it&#39;s correct, Add Business Rules has been called ONCE.</p>
+<p>But why save() works whitout any ValidationException despite the empty Name property ?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 02, 2013</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Your code is responsible for calling BusinessRules.CheckRules when a new object is created.&nbsp;</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">the base class DataPortal:Create is like this:&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">RunLocal</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">So the most likely reason is that your code does not call base.Child_Create() in your Child_Create method.</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">The other key is that:</p>
+<ul>
+<li>rules is checked when a field value is changed (obviously not happened here) </li>
+<li>or when your code call BusinessRules.CheckRules()</li>
+</ul>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">&#39;Save method does NOT call CheckRules - rather asks for the state of the object and that is obviously not broken.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Thursday, September 26, 2013</h2><p>Is the AddBusinessRules override called before&nbsp;DataPortal_Create?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 26, 2013</h2><p>Yes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

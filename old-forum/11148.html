@@ -1,0 +1,14 @@
+<html><header><title>Xaml.ViewModelBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Xaml.ViewModelBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11148.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Sunday, February 12, 2012</h2><p>hi all,</p>
+<p>&nbsp;</p>
+<p>I have a confuse about :</p>
+<p>MyViewModel derived from Xaml.ViewModelBase</p>
+<p>has 2 difference actions :</p>
+<p>1. If I Load a Model from inside that MyViewModel class</p>
+<p>using BeginRefresh or Refresh, I can do a saving (&nbsp; DoSave or BeginSave )</p>
+<p>2. If I inject a Model on Constructor of MyViewModel from another ViewModel for example</p>
+<p>and then i set Model = model on my constructor, Why My DoSave and BeginSave&nbsp; not worked ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 13, 2012</h2><p>In what way does save not work? You get an exception?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, February 13, 2012</h2><p>Hi,</p>
+<p>I think your MyViewModel has ManageObjectLifetime set to false. </p>
+<p>The ViewModel will only do Save operations when ManageObjectLifetime is set to true.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

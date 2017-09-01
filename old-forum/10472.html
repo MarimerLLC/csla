@@ -1,0 +1,11 @@
+<html><header><title>CSLA Asp.net Mvc 2 CslaModelBinder Implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Asp.net Mvc 2 CslaModelBinder Implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mfmaher posted on Tuesday, June 28, 2011</h2><p>Was wondering if you have a sample of the CslaModelBinder Implementation for Asp.net Mvc 2. I downloaded the samples for both 3.8.3 and 4.0. I&#39;m looking for a way to implement the BrokenRules Valdation to the View? It was my understanding that the CslaModelBinder was going to handle the BrokenRules Valdation that is being held in the Current Object. But do I need to traverse through the BrokenRules collection like below?</p>
+<p>if (!customer.IsValid)<br />{&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p style="padding-left:30px;">&nbsp;foreach (Csla.Validation.BrokenRule brokenRule in customer.BrokenRulesCollection)&nbsp;&nbsp;&nbsp; <br />&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p style="padding-left:60px;">ModelState.AddModelError(brokenRule.Property, brokenRule.Description);&nbsp;</p>
+<p style="padding-left:30px;">&nbsp;}&nbsp;&nbsp;&nbsp; </p>
+<p style="padding-left:30px;">viewData.Titles = TitleInfoList.GetTitleInfoList();&nbsp;&nbsp;&nbsp; <br />viewData.CurrentCustomer = customer;&nbsp;&nbsp;&nbsp; <br />viewData.ValidationErrorFlag = true;&nbsp;&nbsp;&nbsp; <br />return View</p>
+<p>}</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mfmaher replied on Tuesday, June 28, 2011</h2><p>Please disregard this last request. I&nbsp;found the answer. I was omitting the TryUpdate&lt;T&gt;(obj) &amp;&amp; SaveObject&lt;T&gt;(obj, true)</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>&nbsp;Mike</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

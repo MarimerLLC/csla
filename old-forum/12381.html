@@ -1,0 +1,168 @@
+<html><header><title>Moving from 3.8 to 4.5 confused about best way to go with private backing fields</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Moving from 3.8 to 4.5 confused about best way to go with private backing fields</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12381.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Sunday, February 16, 2014</h2><p>I just got a contract to upgrade a pretty unique CSLA 3.8 business layer to 4.5. Because of the way they do property backing I am confused as to how to move forward.&nbsp; Oh and it is VB.NET :-(</p>
+<p>Several things that stand out:</p>
+<ol>
+<li>Root editable object receives and wraps a DTO which represents all the data (full object graph of root and all children).&nbsp; The DTO has the root and up to grandchildren within it.&nbsp; So the root editable object hydrates its own properties with the DTO and then hands the parts of the DTO to get child business objects created.&nbsp; This happens when the data portal is crossed.&nbsp; So the actual.</li>
+<li>The DTO within the business objects has its own change tracking...and the Data Access Layer is already coded to deal with the DTOs.</li>
+<li>They manually handled isChild, isDirty, isValid, and PropertyHasChanged</li>
+</ol>
+<p>So here is a quick example...i&#39;ll try to keep it brief and to the point</p>
+<p>Public Class RootPerson (inherits BusinessBase)</p>
+<p>&nbsp; private mPersonDTO</p>
+<p>&nbsp; &lt;nonserialized&gt;&lt;notundoable&gt; private mPhoneNumbers as PhoneNumberList</p>
+<p>&nbsp; Public Property LastName As String</p>
+<p>&nbsp;&nbsp;&nbsp; Get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mPersonDTO.LastName</p>
+<p>&nbsp;&nbsp;&nbsp; End Get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If mPersonDTO.LastName &lt;&gt; value Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mPersonDTO.LastName = value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged(&quot;LastName&quot;)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set</p>
+<p>&nbsp; End Property</p>
+<p>&nbsp; Public Property PhoneNumbers As PhoneNumbersList</p>
+<p>&nbsp;&nbsp;&nbsp; Get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mPhoneNumbers</p>
+<p>&nbsp;&nbsp;&nbsp; End Get</p>
+<p>&nbsp; End Property</p>
+<p>&nbsp; &lt;after returning from the Data Portal a method HydrateChildLists() is called (not included here for brevity)</p>
+<p>&nbsp; Private Sub HydrateChildLists()</p>
+<p>&nbsp;&nbsp;&nbsp; mPhoneNumberList = PhoneNumberList.NewFromDTO(mPersonDTO.PhoneNumbers)</p>
+<p>&nbsp; End Sub</p>
+<p>&nbsp; Public Overrides ReadOnly Property IsValid() As Boolean</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim blnValid As Boolean<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; blnValid = MyBase.IsValid _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AndAlso mPhoneNumberList.IsValid<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return blnValid<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;&nbsp;&nbsp; Protected Overrides Sub PropertyHasChanged(ByVal propertyName As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;overridden so we don&#39;t call mark dirty since the DTO takes care of that<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules(propertyName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(propertyName)<br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>End Class&nbsp;&nbsp;&nbsp; </p>
+<p>___________________________________</p>
+<p>I think you get the idea.&nbsp; It was the old way of manually doing the business objects with manual tracking and does not use propertyinfo helpers.&nbsp; </p>
+<p>I guess given the <span style="text-decoration:underline;">thousands</span> of lines of code that is already working...I am wondering if I should just stick with it or rip the guts out and redo using propertyinfo fields?</p>
+<p>The only problem I see with sticking with the way it is...is there is no longer an overrides for PropertyHasChanged(propertyName As String).&nbsp; I think that is the only thing I would need to deal with.</p>
+<p>I <span style="text-decoration:underline;">could</span> upgrade the bazillions on properties yes...but whats the payoff if the stuff is already written?&nbsp; I am a practical guy.</p>
+<p>but on that note...if I were to upgrade all the properties...would this be the best way?</p>
+<p>&nbsp;&nbsp;&nbsp; Public Shared LastNameProperty As PropertyInfo(Of String) = RegisterProperty(Of String)(Function(c) c.LastName, RelationshipTypes.PrivateField)<br />&nbsp;&nbsp;&nbsp; Public Property LastName() As String<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(LastNameProperty, mPersonDTO.LastName)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(LastNameProperty, mPersonDTO.LastName, value)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>Thanks guys &amp; gals</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, February 16, 2014</h2><p>Ugh, now I see you can no longer call BusinessRules.CheckRules(propertyName As String)...so if I get this right the business rules now require propertyInfo as the backbone.</p>
+<p>double ddddrats foiled again</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, February 16, 2014</h2><p>So now I am asking myself...I have already upgraded all the other frameworks and tooling except CSLA.&nbsp; </p>
+<p>It is all working...until I point the project reference to CSLA 4.5.&nbsp; So why upgrade from 3.8 and take the monstrous hit of upgrading ALL the properties/business rules/etc.&nbsp; I mean is 4.5 way faster or does it have such sweet low hanging fruit that I can&#39;t resist?</p>
+<p>Any thoughts greatly appreciated!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, February 16, 2014</h2><p>I&#39;ll just keep talking to myself :-)</p>
+<p>I really really like some of the 4.5 cleanup using Generics:</p>
+<ul>
+<li>AddNewCore is now strongly typed instead of Object</li>
+<li>CommandObjects are strongly typed</li>
+<li>Niceties such as SingleCriteria(Of T)</li>
+</ul>
+<p>I just have to suck it up and do it.&nbsp; One stinking property at a time.&nbsp; Ugh.&nbsp; I will feel better when it is done.</p>
+<p>While I am in there I can get rid of all the manual status tracking and future business layer developers will be happily ignorant at how simple it is to make a business object now.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 17, 2014</h2><p>Hi,</p>
+<p>Some things to remember:&nbsp;</p>
+<p>
+<ul>
+<li>in CSLA 3.8 <i>BusinessListBase </i>inherits from <i>BindingList </i>- &nbsp;in 4.5 it inherits from <i>ObservableCollection&lt;T&gt;&nbsp;</i>and the 3.8 equivalent is renamed to <i>BusinessBindingListBase &nbsp;</i>(hence the strong named AddNewCore and an AddNewCore that returns object).&nbsp;</li>
+<li>In CSLA 4.x - all rules requires a PropertyInfo object&nbsp;</li>
+<li>In CSLA 4.x - the rule engine is completely rewritten and rules is now classes.&nbsp;</li>
+<li>You may continue to use private backing fields but should then also override non-generic LoadProperty/ReadProperty to set/return private fields and make the PropertyInfo specify that these are PrivateFields (these overload will then be used by the rule engine to get/set property values)</li>
+</ul>
+</p>
+<p>You may however be able to use most of the old rules (3.8) provided that you follow these guidances:&nbsp;<a href="https://jonnybekkum.wordpress.com/2013/10/07/csla-validationthe-new-nuget-package-in-csla-net-4-5-40/">https://jonnybekkum.wordpress.com/2013/10/07/csla-validationthe-new-nuget-package-in-csla-net-4-5-40/ </a>&nbsp;</p>
+<p>If you use R# then look into the Structural Search And Replace function. I have found this to be very useful in upgrades (however I have only used it in C# projects - &nbsp;not sure if this is supported for VB projects).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, February 17, 2014</h2><p>Hi Jonny et al.,</p>
+<p>Well about 23 hours later I am done updating all the private backing properties in every editable object to use the propertyinfo(of T).&nbsp; Can I just say...O M G!!&nbsp; What a pain.&nbsp; I&#39;m still miserable so I am sure I will feel happy about it later.&nbsp; wow.</p>
+<p>Anyway would you mind saying more about your last point...about override/overload of non-generic LoadProperty thingy?&nbsp; Any examples?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, February 19, 2014</h2><p>The challenge is that the rule engine has absolutely no knowledge of your private fields. So in order to supply the value or update the field the rule engine will use the non-generic overloads. </p>
+<p>ex: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">int</span>&nbsp;_num1;
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;Num1Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Num1,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.PrivateField);
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Num1
+{
+&nbsp; <span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Num1Property,&nbsp;_num1);&nbsp;}
+&nbsp; <span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Num1Property,&nbsp;<span style="color:blue;">ref</span>&nbsp;_num1,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+}<br /><br /><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;LoadProperty(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;propertyInfo,&nbsp;<span style="color:blue;">object</span>&nbsp;newValue)
+{
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propertyInfo&nbsp;==&nbsp;Num1Property)
+&nbsp;&nbsp;&nbsp;&nbsp;_num1&nbsp;=&nbsp;(<span style="color:blue;">int</span>)newValue;
+&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.LoadProperty(propertyInfo,&nbsp;newValue);
+}
+ 
+<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">object</span>&nbsp;ReadProperty(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;propertyInfo)
+{
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propertyInfo&nbsp;==&nbsp;Num1Property)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_num1;
+&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.ReadProperty(propertyInfo);
+}<br /><br /></pre>
+<p>and you use a standard rule like: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MinValue</span>&lt;<span style="color:blue;">int</span>&gt;(Num1Property,&nbsp;1));<br />&nbsp;</pre>
+<p>then the rule engine will need to call the non-generic ReadProperty to get the actual field value. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, February 19, 2014</h2><p>That is scary...I am seeing a huge &quot;If&quot; statement for every propertyinfo with a private backing field in my class??? No way.&nbsp; I must not be understanding something.</p>
+<p>What are the implications if I don&#39;t have that override for LoadProperty and ReadProperty?</p>
+<p>Man thanks for the help Jonny</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, February 19, 2014</h2><p>If I am using private backing fields why would I use LoadProperty and ReadProperty anyway...if I want to skip the business rules I just set the value into the private backing field directly right?</p>
+<p>Instead of LoadProperty(namePropertyInfo, &quot;Doe&quot;)</p>
+<p>Wouldn&#39;t I just do privateNameBackingField = &quot;Doe&quot;</p>
+<p>Then in the property Set I would call the normal SetProperty(namePropertyInfo, privateNameBackingField, value)</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 20, 2014</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">The new rule engine has new functionality. You can declare:&nbsp;</p>
+<ul>
+<li>InputProperties &nbsp;- the rule engine will get the value from the object and supply in a dictionary, RuleContext.InputPropertyValues</li>
+<li>RuleContext.OutputProperties - is a dictionary or new values to set in the business object&nbsp;</li>
+</ul>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">AND - the key point is that the rules does not need to have any knowledge of the actual business object - and hence it is much easier to create unit tests for these new rules and also easier to create asyncronous rules. You can create a &quot;fake&quot; RuleContext and send in as parameter to the execute method.&nbsp;</p>
+<p>Take f.ex this ToUpper rule:&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">ToUpper</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">BusinessRule</span>
+{
+&nbsp; <span style="color:blue;">public</span>&nbsp;ToUpper(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;primaryProperty) :&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">IPropertyInfo</span>&gt;(){primaryProperty};
+&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(primaryProperty);
+&nbsp;&nbsp;}
+ 
+&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;{
+<span style="color:blue;">    var</span>&nbsp;value&nbsp;=&nbsp;context.GetInputValue&lt;<span style="color:blue;">string</span>&gt;(PrimaryProperty);
+&nbsp;&nbsp;&nbsp; context.AddOutValue(PrimaryProperty,&nbsp;value.ToUpper());
+&nbsp; }
+}<br /><br />This rule has NO knowledge of the business object (it does get the business object <br />as one of the properties on RuleContext). In order to work properly with private backing fields the rule engine <br />uses the non.generic ReadProperty / LoadProperty og get or set the private field value. <br /><br />My key issue is that there is a LOT you must make sure to NOT use, such as the standard rules, the CslaContrib rules <br />or the CslaGenFork rules. <br /><br />I am NOT saying that you should change the property declaration that you have. The are correct now as is. <br />BUT you need the non generic LoadProperty / ReadProperty overloads in order to use the new rules engine safely. <br /></pre>
+<p>Another example would be the builtin Required rule: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Required</span>&nbsp;:&nbsp;<span style="color:#2b91af;">CommonBusinessRule</span>
+{
+&nbsp; <span style="color:blue;">public</span>&nbsp;Required(Csla.Core.<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;primaryProperty) :&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(primaryProperty);
+&nbsp;&nbsp;}
+ 
+&nbsp; <span style="color:blue;">public</span>&nbsp;Required(Csla.Core.<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">string</span>&nbsp;message) :&nbsp;<span style="color:blue;">this</span>(primaryProperty)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;MessageText&nbsp;=&nbsp;message;
+&nbsp;&nbsp;}
+<br />&nbsp; <span style="color:blue;">public</span>&nbsp;Required(Csla.Core.<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2b91af;">Func</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;messageDelegate&nbsp;) :&nbsp;<span style="color:blue;">this</span>(primaryProperty)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;MessageDelegate&nbsp;=&nbsp;messageDelegate;
+&nbsp;&nbsp;}
+ 
+&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">string</span>&nbsp;GetMessage()
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;HasMessageDelegate&nbsp;?&nbsp;<span style="color:blue;">base</span>.MessageText&nbsp;:&nbsp;Csla.Properties.<span style="color:#2b91af;">Resources</span>.StringRequiredRule;
+&nbsp;&nbsp;}
+ 
+&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;value&nbsp;=&nbsp;context.InputPropertyValues[PrimaryProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(value&nbsp;==&nbsp;<span style="color:blue;">null</span>&nbsp;||&nbsp;<span style="color:blue;">string</span>.IsNullOrWhiteSpace(value.ToString()))
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;message&nbsp;=&nbsp;<span style="color:blue;">string</span>.Format(GetMessage(),&nbsp;PrimaryProperty.FriendlyName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.Results.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">RuleResult</span>(RuleName,&nbsp;PrimaryProperty,&nbsp;message)&nbsp;{&nbsp;Severity&nbsp;=&nbsp;Severity&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}<br /><br />Just as the ToUpper - this rule does not act directly with the business object. So for private backing fields <br />the Rule engine expects the business object to override ReadProperty in order to supply the actual value. </pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, February 20, 2014</h2><p>OK I get the &quot;why&quot; now...very helpful level of detail.&nbsp; You are saying the generic rules use ReadProperty and LoadProperty even if I choose not to in my code. &nbsp; So if I am understanding you correctly...</p>
+<p>If I have a business object with 35 properties with private backing fields...in my ReadProperty overload I would have 1 If and 34 ElseIf lines?&nbsp; </p>
+<p>I &#39;could&#39; do that but ugh.&nbsp; I remember Rocky saying at a conference, you probably have something designed improperly if you find a Select Statement or an If Statement like that in your code.</p>
+<p>Problem comes when another developer adds a property to the interface...adds the property code but forgets or didn&#39;t know to add a line in the Read &amp; Load overloads...then no one will know he made an error until runtime and gets very wierd symptoms.&nbsp; </p>
+<p>Yuck.</p>
+<p>It seems like the takeaway is &quot;Use CSLA&#39;s managed properties and all will be happy and sunshine...you can use your own private backing fields but you will suffer eventually&quot;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 21, 2014</h2><p>Yes,&nbsp;</p>
+<p>The recommended solution is to use managed properties and only use private backing fields for Intergraph-references. (<i><b>this is my preferences</b></i>). Intergraph references must be marked with NonSerialized and NotUndoable attributes and this is only possible on private backing fields.&nbsp;</p>
+<p>When you use private backing fields the values is not automatically serialized/deserialized or included in N-Level undo when you use the MobileFormatter as serializer . Which serializer to use is configurable by&nbsp;<span>CslaSerializationFormatter setting and the default value is BinaryFormatter.&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Saturday, February 22, 2014</h2><p>Along with having to bake in my own handling of N-level-undo, I just found another reason to stick with recommended (managed properties without private backing fields)</p>
+<p>Didn&#39;t notice this in Rocky&#39;s CSLA 4 book so I assume it came after that.</p>
+<p>FieldManager.UpdateChildren(this)</p>
+<p>That is a nice feature to automatically call all child dataportals and isNew,isDeleted,isDirty is handled.&nbsp; That makes it nice and easy to handle lazy load scenarios...whatever is there gets saved.</p>
+<p>Again, thanks for all the help Jonny</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Sunday, February 23, 2014</h2><p>Hey Johnny or whoever...do you put a start / end tag of some kind to get code in your post to look like source code with the color formatting etc.? &lt;code&gt; &lt;/code&gt; or something like that</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 24, 2014</h2><p>I use Firefox or IE (as Google Chrome removes the html tags on paste) and have Visual Studio 201x Productivity Power Tools installed. </p>
+<p>The PPT have an option for <i><b>HTML copy</b></i> that allows me to copy the code with color codes and formatting.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Tuesday, February 25, 2014</h2><p>Jonny et al,</p>
+<p>Can you point me to the place in the CommonRules source that uses LoadProperty and/or ReadProperty?&nbsp; I am not seeing it.</p>
+<p>Thanks,</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>swegele replied on Tuesday, February 25, 2014</h2><p>OK I found it at this post....</p>
+<p>http://forums.lhotka.net/forums/p/10037/47103.aspx#47103</p>
+<p>It comes in if I use OutValues</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, February 25, 2014</h2><p>Hi,</p>
+<p>Please post new questions as new threads rather than continuing on a post that is already marked as &quot;answered&quot;.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

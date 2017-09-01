@@ -1,0 +1,153 @@
+<html><header><title>KeyNotFoundException occurring in PositionMap&lt;T&gt; class.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>KeyNotFoundException occurring in PositionMap&lt;T&gt; class.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6802.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alva posted on Thursday, April 16, 2009</h2><P>I am writing an application that keeps a collection of business objects in a collection that inherits the BusinessListBase class.&nbsp; The name of this collection is ContactCollection.</P>
+<P>I am receiving a KeyNotFoundException in the PositionMap&lt;T&gt; class in the file named PositionMap.cs.&nbsp; This exception happens in the RemoveFromMap(T item) method of the class at the following instruction: '_map[_list[ i ]]--;'</P>
+<P>An inspection of the '_map' variable (declared as Dictionary&lt;T,int&gt; _map) and the _list variable (declared as _Ilist&lt;T&gt; _list) using a debugger reveal that the objects in _map do not map properly to the object index positions in _list at the time of the KeyNotFoundException.&nbsp; The exception seems to occur when an attempt is made to find the business object in _map that was just deleted from _map (and therefore in not in _map).</P>
+<P>The objects in _map map properly to the object index positions in _list when the ContactCollection is first populated with data residing on disk.&nbsp; After its initial population, the ContactCollection is bound to a control that is a derivative of the DataGridView control.&nbsp; A sort occurs through this control on a column that contains non-unique values before any deletions from the ContactCollection occur.&nbsp; It is my belief that _map and _list get out of sync when this sort occurs.</P>
+<P>My question is: How do I get _map to stay in sync with _list when performing a sort on the ContactCollection object (or any object that inherits BusinessListBase)?</P>
+<P>Any help on this issue is appreciated.</P>
+<P>Alva</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 16, 2009</h2>What version of CSLA? Several bugs were fixed in this area a while ago, so if you aren't running the current code, this might explain the issue.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alva replied on Wednesday, April 22, 2009</h2><P>I'm using version 3.6.2.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 23, 2009</h2>I've asked Aaron to take a look at this, hopefully he can find a resolution.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Thursday, April 23, 2009</h2>Hi there.<br /><br />I went ahead and tried to reproduce this in WinForms - and was unable to using the older means of creating a SortedBindingList from the BLB derived class.<br /><br />I must assume that you are then binding to a LinqBindingList of some type.  If that is the case, I will need something to go by here so I can get to your specific case.<br /><br />1.) In the best of all worlds, if you can provide us with a failing unit test that makes the exception happen - we can get to fixing the framework code pretty quickly (and as an added bonus, your test will go into the test suite).<br /><br />2.) If that is not possible - if you can give us some sample code you have in your derived classes - especially the derived list, we might be able to re-create this condition.<br /><br />Thanks!<br /><br />-Aaron</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alva replied on Tuesday, April 28, 2009</h2><P>&nbsp;&nbsp;&nbsp;&nbsp; I believe that I may have found the answer to my problem.&nbsp; I was not using a SortedBindingList or a LinqBindingList when binding my collection to the data grid view.&nbsp; My collection class inherited the BusinessListBase class and after creating it and loading it I would bind it directly to the data grid view without creating a SortedBindingList or a LinqBindingList class.&nbsp; I came across a section in "C# 2008 Business Objects" that states that the CSLA list base classes do not support sorting through the IBindingList interface (Page 73 last paragraph).</P>
+<P>&nbsp;&nbsp;&nbsp; When I created a SortedBindingList from my object, and bound that to&nbsp;my data grid view, the KeyNotFoundException that I had been receiving went away.</P>
+<P>&nbsp;&nbsp;&nbsp; Thank you for your help and your patience.</P>
+<P>-Alva</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tchimev replied on Friday, April 24, 2009</h2>I had the same problem.<br>The _map and _list collection get out of sync if you provide wrong implementation for GetHashCode() and Equals() in your business objects. So two business objects cannot compare correctly to each other.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh is <i>that</i> the problem?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Prior to version 3.0 CSLA supported (and almost required) the
+concept of <i>logical equality</i> where you&#8217;d override GetIdValue() and
+CSLA would override Equals() and GetHashCode() for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Starting with CSLA 3.0 that stopped. The reason is that WPF (and
+Silverlight) don&#8217;t support the concept of logical equality. I think this
+was a bad choice on Microsoft&#8217;s part, but it is their platform and we
+have to live with it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What this means, is that you can&#8217;t allow Equals() to say
+that two instances are the same &#8211; even if those two instances really are <i>logically</i>
+the same.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So starting with CSLA 3.0, support for logical equality has not
+been a design goal within CSLA either. If you use logical equality, you can
+never move to WPF or Silverlight. Since those are the UI technologies of the
+future, my view is that you should not use logical equality, as it will
+ultimately dead-end your app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now if you really need logical equality, I understand. It is a
+valuable concept. And you <i>can use it</i>, just not by overriding Equals().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Instead, if you need logical equality, you should define and implement
+a new interface such as ILogicalEquality<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public interface ILogicalEquality<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; bool LogicalEquals(object obj)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>These days, with extension methods, you can make this all pretty
+smooth, by adding extensions to any objects that implement this interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But the point is, you need to invent your own comparison
+subsystem <i>separate from the .NET one</i> because the .NET concepts of
+equality will not work with logical equality.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tchimev
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 24, 2009 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] KeyNotFoundException occurring in
+PositionMap&lt;T&gt; class.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I had the same problem.<br>
+The _map and _list collection get out of sync if you provide wrong
+implementation for GetHashCode() and Equals() in your business objects. So two
+business objects cannot compare correctly to each other.<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Monday, May 11, 2009</h2>Rocky,<br><br>I'm struggling with this exception as well and I'm not sure I understand how to implement what you've described.<br><br>I have a BusinessListBase-derived collection in which I've defined a Sort method that does a bubble sort like this:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For i As Integer = Me.Count - 1 To 0 Step -1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For j As Integer = 1 To i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '&nbsp;&nbsp; Use custom CompareTo for comparison.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me(j - 1).CompareTo(Me(j)) = 1 Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tempObj = Me(j - 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(j - 1) = Me(j)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(j) = tempObj<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next j<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next i <br><br>It implements IComparable with a custom CompareTo method. When it hits Me(j - 1) = Me(j), it fails inside the InsertIntoMap method in PositionMap. My BusinessBase class overriddes GetIdValue with the Id of the object. At first I thought it may be because the Id is an integer and I had the potential for several zeros in my dirty collection, so I initialized the Id with a random integer. This didn't help.<br><br>I'm not sure if I understand your previous comment about logical equality and what the solution is.<br><br>Thanks for your help,<br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 11, 2009</h2><P>If you have a small sample using 3.6.2 that illustrates the issue I'm sure Aaron would find that useful.</P>
+<P>In 3.6.2 overriding GetIdValue() really has no impact, because CSLA doesn't replace the default Equals() or GetHashCode() implementations. I think GetIdValue() just changes the default ToString() implementation and that's it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Tuesday, May 12, 2009</h2>Here's some code that may be useful in debugging the issue. This is obviously incomplete.<br>These classes are based on our own base classes, which in turn derive from BusinessBase and BusinessListBase. These also implement ITypedList. This code was originally written against CSLA 2.0, but we're now using 3.6.1.<br><br>&lt;Serializable()&gt; _<br>Public Class EmployeeEvents<br>&nbsp;&nbsp;&nbsp; Inherits KaizenBusinessListBase(Of EmployeeEvents, EmployeeEvent)<br>&nbsp;&nbsp;&nbsp; Protected Friend Sub Sort()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim tempEvent As EmployeeEvent = Nothing<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = False<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For i As Integer = Me.Count - 1 To 0 Step -1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For j As Integer = 1 To i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; '&nbsp;&nbsp; Use custom CompareTo for comparison.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me(j - 1).CompareTo(Me(j)) = 1 Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tempEvent = Me(j - 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(j - 1) = Me(j)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(j) = tempEvent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next j<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next i<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = True<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ResetBindings()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnCollectionSorted()<br>&nbsp;&nbsp;&nbsp; End Sub<br>'Standard DataPortal stuff here<br>End Class<br><br>&lt;Serializable(), _<br>TypeDescriptionProvider(GetType(EmployeeEventsDescriptionProvider))&gt; _<br>Public Class EmployeeEvent<br>&nbsp;&nbsp;&nbsp; Inherits KaizenBusinessBase(Of EmployeeEvent)<br>&nbsp;&nbsp;&nbsp; Implements IComparable(Of EmployeeEvent)<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; Protected _id As Integer<br>&nbsp;&nbsp;&nbsp; Protected _timeStart As DateTime = Nothing<br>&nbsp;&nbsp;&nbsp; Protected _timeEnd As DateTime = Nothing<br><br>&nbsp;&nbsp;&nbsp; &lt;System.ComponentModel.Browsable(False)&gt; _<br>&nbsp;&nbsp;&nbsp; &lt;System.ComponentModel.DataObjectField(True, True)&gt; _<br>&nbsp;&nbsp;&nbsp; &lt;Description("Id")&gt; _<br>&nbsp;&nbsp;&nbsp; Public Property Id() As Integer&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty("Id", True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As Integer)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If _id &lt;&gt; value Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty("Id", True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("Id")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp; End Property<br>&lt;Description("Start time")&gt; _<br>&nbsp;&nbsp;&nbsp; Public Property TimeStart() As DateTime<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty("TimeStart", True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _timeStart<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As DateTime)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not _timeStart.Equals(value) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty("TimeStart", True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _timeStart = value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Parent IsNot Nothing Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' In order to evaluate certain rules, the existing collection must first be sorted by TimeStart.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CType(Me.Parent, EmployeeEvents).Sort()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("TimeStart")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp; &lt;Description("End time")&gt; _<br>&nbsp;&nbsp;&nbsp; Public Property TimeEnd() As DateTime&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty("TimeEnd", True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _timeEnd<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As DateTime)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _timeEndNull = (_timeEnd = DateTime.MinValue)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not _timeEnd.Equals(value) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty("TimeEnd", True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _timeEnd = value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("TimeEnd")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If value &gt; DateTime.MinValue Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not CloseEvent(_timeEnd) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.CancelEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkClean()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp; Public Function CompareTo(ByVal other As EmployeeEvent) As Integer _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Implements System.IComparable(Of EmployeeEvent).CompareTo<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If other Is Nothing Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ElseIf _timeStart &lt; other.TimeStart Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return -1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ElseIf _timeStart &gt; other.TimeStart Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ElseIf _timeStart = other.TimeStart AndAlso _timeEnd &lt; other.TimeEnd Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return -1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ElseIf _timeStart = other.TimeStart AndAlso _timeEnd &gt; other.TimeEnd Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 1<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ElseIf other.TimeStart = _timeStart And other.TimeEnd = _timeEnd Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 0<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp; End Function<br><br>' Standard data_portal stuff, factory methods, validation rules, and type descriptors here<br>End Class<br><br>Thanks for any help you can offer.<br><br>Barry<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that we&#8217;ve tried to replicate this issue
+and can&#8217;t. So at this point we&#8217;re only debugging if someone
+provides us with a complete failure example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Thursday, May 14, 2009</h2>Aaron,<br><br>I've created a stripped down app and db that reproduces this issue. I've uploaded the stuff <a href="http://www.megaupload.com/?d=X1XNSR86">here</a>. Let me know when you want to look at this and I can tell you how to set this up and reproduce the error.<br><br>Barry<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

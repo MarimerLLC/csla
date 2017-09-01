@@ -1,0 +1,29 @@
+<html><header><title>Editable Root Lists, grids, and binding?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable Root Lists, grids, and binding?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5549.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, October 07, 2008</h2><P>I have use case that seems to break some CSLA "rules" on one hand, but on the other hand it seems to work in most but not all cases.</P>
+<P>I have a ERLB set as the data source for a grid, side by side with an optional editing form for the current row.</P>
+<P>&nbsp;The BindingSource.DataSource for the form is set to the Current property of BindingSource for the grid, and I handle cloning issues by being sure that I repeat this assignment anytime the form gets the focus (Enter event). </P>
+<P>The short story is that I'm never calling BeginEdit/ApplyEdit, etc., but the grid properly saves each object as you move from row to row. </P>
+<P>There is some strange magic going on here because (1) the grid&nbsp;will automatically call&nbsp;IEditableObject.ApplyEdit whenever you leave the current row or the grid&nbsp;loses focus, but (2) The bindings for the form for individual fields automatically call IEditableObject.BeginEdit as soon as you make any change to a bound control. </P>
+<P>So, it seems to work very well as long as I'm editing a field bound directly to a root object property. I get into trouble if I'm editing something that either doesn't have a direct binding or is a child object of the root, because IEditableObject.BeginEdit never gets called on the root.&nbsp;I can "force" it to work by calling IEditableObject.BeginEdit manually when the form gets the focus, but I'm not sure if this is a good idea. </P>
+<P>Any thoughts on the proper way to go about this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, October 07, 2008</h2>What type of grid are you using? I had some very strange issues with an Infragistics grid when I was editing a collection with grandchildren. The edit levels always got out of whack so I ended up having to disable IEditablObject on that object and its children so that I could manage it directly, at the appropriate times.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, October 07, 2008</h2><P>It's a DevExpress XtraGrid. </P>
+<P>The grid is currently only showing the root objects, but I have child collections and objects&nbsp;that do "manual"&nbsp;binding on&nbsp;the form (really a set of tab pages, but same idea). </P>
+<P>I've done the DisableIEditableObject route in some other use cases, but this one seems to work OK except with child objects and unbound fields. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Wednesday, October 08, 2008</h2><DIV><FONT face=Arial size=2>I have been doing a lot of work recently trying to get a standard approach to multi generation grid&nbsp;forms (i.e. parent grid&nbsp;- child grid&nbsp;- grandchild grid) and have arrived an approach. I am using CSLA 3.5 and the system.windows.forms.datagridview.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I still have a couple of problems such as:</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I cannot stop EndEdit being called when focus moves from the root grid to a child grid.</FONT></DIV>
+<DIV><FONT face=Arial size=2>I can stop the root grid moving to a new row when an error has occurred while&nbsp;attempting to&nbsp;save&nbsp;except by stopping the focus moving from the current grid row or current control while an error exists.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>The approach is therefore probably&nbsp;not suitable when:</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>1&nbsp;&nbsp;&nbsp; It is not&nbsp;acceptable to have a parent saved before the children have been edited.</FONT></DIV>
+<DIV><FONT face=Arial size=2>2&nbsp;&nbsp;&nbsp; The object profile has complex rules depending on more than one field or business&nbsp;class instance&nbsp;(i.e. business class instance with the current object profile).</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>But I think it is suitable for general database browsing and editing.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I</FONT><FONT face=Arial size=2>&nbsp;don't know if it is the 'proper way', but basically I let IEditableObject methods be called by the grid/grid binding infrastructure. I have overridden&nbsp;the root business class save method as I find I need to&nbsp;fiddle with&nbsp;the setting of Csla.Core.UndoableBase.BindingEdit on a root instance after calling base.Save, inorder to ensure BeginEdit is always called after a save and&nbsp;to get the edit level right.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Please let me know if you would like more details.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Regards,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Patrick</FONT></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

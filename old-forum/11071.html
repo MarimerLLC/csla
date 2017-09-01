@@ -1,0 +1,250 @@
+<html><header><title>Business Rule for Not Allowing Edit or Delete for a Specific Record</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule for Not Allowing Edit or Delete for a Specific Record</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11071.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>korzy1bj@gmail.com posted on Thursday, January 19, 2012</h2><p>
+<p class="MsoNormal">I have a business object and a corresponding database table
+called Role. In this table I am preloading two default records. The first is
+named &quot;Administrators&quot; and second is named &quot;Users&quot;. I want
+to allow people to add, edit, and delete roles, except for these default ones.
+I was wondering how I should go about this. What I was thinking was to create a business
+rule, but I&rsquo;m not sure how to add one to handle this particular situation. Any
+help / advice you can provide would be greatly appreciated.</p>
+<span>P.S. I have a business rule to not allow them to
+enter duplicate names, so I don&rsquo;t have to worry about them creating another &ldquo;Administrators&rdquo;
+role.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 19, 2012</h2><p>Hi,</p>
+<p>I&#39;d recommend to add a flag (bool) to the Roles table that defines IsSystem.</p>
+<p>You can then add an Authorization rule that can prevent delete/edit when a Role has IsSystem == true.</p>
+<p>To prevent edit of field you should probably just override CanWriteProperty like this:</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">bool</span>&gt;&nbsp;IsSystemProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">bool</span>&gt;(c&nbsp;=&gt;&nbsp;c.IsSystem);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;IsSystem
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(IsSystemProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(IsSystemProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanWriteProperty(Csla.Core.<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(IsSystem) <br />         <span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">base</span>.CanWriteProperty(property);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">or you could create an authz rule that checks the IsSystem flag and override CanWriteProperty:</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">    <span style="COLOR:blue;">public</span> <span style="COLOR:blue;">override</span> <span style="COLOR:blue;">bool</span> CanWriteProperty(<span style="COLOR:#2baaaf;">IPropertyInfo</span> propertyName)
+    {
+      <span style="COLOR:blue;">if</span> (!Csla.Rules.<span style="COLOR:#2b91af;">BusinessRules</span>.HasPermission(<span style="COLOR:#2baf9a;">AuthorizationActions</span>.EditObject, <span style="COLOR:blue;">this</span>))
+        <span style="COLOR:blue;">return</span> <span style="COLOR:blue;">false</span>;
+      <span style="COLOR:blue;">return</span> <span style="COLOR:blue;">base</span>.CanWriteProperty(property);
+    }
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>korzy1bj@gmail.com replied on Monday, January 23, 2012</h2><p>Thank you very much for your help and for your quick response. I will try this out today.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>korzy1bj@gmail.com replied on Wednesday, January 25, 2012</h2><p>Could you show me what the authorization rule would like like for preventing them from deleting and editing a role that has IsSystem == true?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, January 25, 2012</h2><p>Pretty muuch like this:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">IsSystem</span>&nbsp;:&nbsp;Csla.Rules.<span style="color:#2b91af;">AuthorizationRule</span>
+&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;SystemField&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;<span style="color:blue;">set</span>;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;IsSystem(<span style="color:#2baf9a;">AuthorizationActions</span>&nbsp;action,&nbsp;<span style="color:#2baaaf;">IMemberInfo</span>&nbsp;element,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;systemField)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(action,&nbsp;element)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SystemField&nbsp;=&nbsp;systemField;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CacheResult
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">AuthorizationContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(context.Target&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.HasPermission&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//var&nbsp;isSystem&nbsp;=&nbsp;(bool)MethodCaller.CallPropertyGetter(context.Target,&nbsp;SystemField.Name);</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;isSystem&nbsp;=&nbsp;(<span style="color:blue;">bool</span>)&nbsp;ReadProperty(context.Target,&nbsp;SystemField);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.HasPermission&nbsp;=&nbsp;!isSystem;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma replied on Wednesday, January 25, 2012</h2><p>My implementation usually intercepts the delete function.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">public</span>&nbsp;<span style="color:#003399;">override</span>&nbsp;<span style="color:#003399;">void</span>&nbsp;Delete()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">if</span>&nbsp;(<span style="color:#003399;">this</span>.IsSystem)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">throw</span>&nbsp;<span style="color:#003399;">new</span>&nbsp;<span style="color:#440088;">InvalidOperationException</span>(<span style="color:#440088;">Resources</span>.SystemDefinedObjectCannotBeDeletedMessage);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">base</span>.Delete();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">public</span>&nbsp;<span style="color:#003399;">static</span>&nbsp;<span style="color:#003399;">void</span>&nbsp;DeleteRoleEdit(<span style="color:#003399;">int</span>&nbsp;roleId)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">if</span>&nbsp;(<span style="color:#440088;">RoleIsSystemCommand</span>.RoleIsSystem(roleId))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">throw</span>&nbsp;<span style="color:#003399;">new</span>&nbsp;<span style="color:#440088;">InvalidOperationException</span>(<span style="color:#440088;">Resources</span>.SystemDefinedObjectCannotBeDeletedMessage);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#440088;">RoleEdit</span>.DeleteRoleEdit(<span style="color:#003399;">new</span>&nbsp;<span style="color:#440088;">RoleDataCriteria</span>&nbsp;{&nbsp;RoleId&nbsp;=&nbsp;roleId&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>Not sure if this is the better way to do it with CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma replied on Wednesday, January 25, 2012</h2><p>When wiring this rule up ... would the value passed for element be null? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Thursday, November 01, 2012</h2><p>Hi JonnyBee, I&#39;m trying to implement this authorization rule and it&#39;s giving me trouble. &nbsp;Apparently it&#39;s in the name of the rule or something.</p>
+<p> &nbsp;After the return from the constructor I consistently get an exception:</p>
+<p>System.ArgumentException with the only message being &quot;rule&quot;&nbsp;</p>
+<p>
+<p>&nbsp; &nbsp;at Csla.Rules.BusinessRules.EnsureUniqueRule(AuthorizationRuleManager mgr, IAuthorizationRule rule)</p>
+<p>&nbsp; &nbsp;at Csla.Rules.BusinessRules.AddRule(IAuthorizationRule rule)</p>
+<p>&nbsp; &nbsp;at MyApp.Library.PartWarehouse.AddBusinessRules() in C:\data\an\MyApp.Library\PartWarehouse.cs:line 262</p>
+<p>&nbsp; &nbsp;at Csla.Core.BusinessBase.InitializeBusinessRules()</p>
+</p>
+<p>&nbsp;</p>
+<p>It&#39;s called from here:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void AddObjectAuthorizationRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.GetObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.CreateObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.EditObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsAllowed(Csla.Rules.AuthorizationActions.DeleteObject, RootObjectTypes.PartWarehouse));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Rules.BusinessRules.AddRule(typeof(PartWarehouse), new Admin.IsSystemObjectRule(Csla.Rules.AuthorizationActions.DeleteObject, IsDefaultWarehouseProperty));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>Is it necessary to set a Rule URI or something manually?</p>
+</p>
+<p>&nbsp;</p>
+<p>Also here is the complete rule which is, I believe, identical to yours with minor exception:</p>
+<p>
+<p>using System;</p>
+<p>using Csla.Rules;</p>
+<p>using Csla.Core;</p>
+<p>namespace MyApp.Library.Admin</p>
+<p>{</p>
+<p>&nbsp; &nbsp; public class IsSystemObjectRule : Csla.Rules.AuthorizationRule</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private IPropertyInfo IsSystemObjectField { get; set; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public IsSystemObjectRule(AuthorizationActions action, IPropertyInfo isSystemObjectField) : base(action)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsSystemObjectField = isSystemObjectField;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public override bool CacheResult</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return false;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }&nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(AuthorizationContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(context.Target == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.HasPermission = true;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var isSystem = (bool)ReadProperty(context.Target, IsSystemObjectField);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.HasPermission = !isSystem; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }//eoc &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;</p>
+<p>}</p>
+</p>
+<p>Any help would be greatly appreciated</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, November 01, 2012</h2><p>This is a limitation in the rule engine. <br />There can only be one AuthzRule per static action or per action/property.</p>
+<p>IE: The RuleEngine do NOT support having a &quot;set&quot; of AuthzRules as is the case for BusinessRules.&nbsp;</p>
+<p>Your only option here is to add more properties to the same rule instance.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, November 02, 2012</h2><p>Ahh...thanks Jonny, that clears it up.</p>
+<p>Perhaps the error message: &quot;rule&quot; could be improved upon? :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, November 02, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Your only option here is to add more properties to the same rule instance.&nbsp;</div></p>
+<p>Hi Jonny, I&#39;ve been playing with it and I can&#39;t figure out how to do that.&nbsp; In fact I thought I *did* do that in my sample:</p>
+<p>BusinessRules.AddRule(new Admin.IsSystemObjectRule(Csla.Rules.AuthorizationActions.DeleteObject, <b>IsDefaultWarehouseProperty</b>));</p>
+<p>Could you please tell me what I&#39;m missing here?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, November 02, 2012</h2><p>Aha! Figured it out, sorry Jonny, I didn&#39;t dig enough.&nbsp; Thanks for your help.</p>
+<p>For any future people wondering you need to pass a property to the base constructor for the authorization rule, like this based on my code above (change in bold):</p>
+<p>public IsSystemObjectRule( AuthorizationActions action, IPropertyInfo isSystemObjectField)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(action<b>,isSystemObjectField</b>)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, November 02, 2012</h2><p>Well, I got the rule working in that it&#39;s constructor is called and it doesn&#39;t blow up with an exception.</p>
+<p>However the rules&#39; execute method is *never* called. &nbsp;Is this because I&#39;ve had to specify a property to make it unique and now it&#39;s not tied to the delete operation any more but only if that property get&#39;s modified?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, November 02, 2012</h2><p>As I stated in my previous post the rule engine only supports one - 1 rule per action for any check.</p>
+<p>While you may add more rules - there will only be executed one-1 rule for each Authz action.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Friday, November 02, 2012</h2><p>Oh, well that&#39;s a problem then. <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>I thought if the bogus property was added it became unique and in addition to no longer throwing the cryptic exception would execute.</p>
+<p>So what you&#39;re saying is that you can not write an authorization rule to do what the topic of this thread is and still have regular authorization rules for security?&nbsp; Or we&#39;d need some kind of really complex hybrid single authorization rule that handled not only the security role case but also the single instance state prevents deletion case.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, November 02, 2012</h2><p>Yes, but you could subclass existing Authz Rules like IsInRole rule and add custom checks in the execute method of the rule. </p>
+<p>You can however only have 1 rule per static action or per type action.</p>
+<p>This the actual code from BusinessRules.HasPermission (static method) </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result = true;<br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var rule =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRuleManager.GetRulesForType(objType, ruleSet).Rules.FirstOrDefault(c =&gt; c.Element == null &amp;&amp; c.Action == action);</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rule != null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var context = new AuthorizationContext { Rule = rule, Target = obj, TargetType = objType };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rule.Execute(context);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = context.HasPermission;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Based on the code - <b>you can also see that AutzRules for the static methods must have Element (IMemberInfo) = null.</b> <b>Which means that you may get the target object as parameter to the Execute method but cannot add PropertyInfo to the rule (by calling base(...)). </b><br />This applies to the AuthorizationActions CreateObject, DeleteObject, GetObject, EditObject.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Saturday, November 03, 2012</h2><p>Ok, then I guess it&#39;&#39;s not practical and a dead end for me.</p>
+<p>I don&#39;t see any support for this scenario in CSLA at all, it&#39;s kind of wierd, I thought this was a super common requirement: prevent delete based on business object state, but it seems like it was never planned for in the framework itself.&nbsp; I&#39;m sure that can&#39;t be right and I&#39;m just missing something but so far no luck.</p>
+<p>Perhaps I&#39;ll search again on the forum for all the people that asked how to do this and never really seemed to get it worked out and ask each of them what they ended up doing.</p>
+<p>Thanks again for your help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 04, 2012</h2><p>There is support for this - you just have to follow some basic guidelines. </p>
+<p><b>BusinessRules at Object level must have ProperyProperty = null.<br />AuthorizationRules for Static methods must have Member = null&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (CanGetObject, CanCreateObject, CanEditObject, CanDeleteObject)<br /></b></p>
+<p><b>BusinessRules for a Property must have PrimaryProperty != null<br />AuthorizationRules for property/method must have Member != null&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (CanWriteProperty, CanReadProperty, CanExecuteMethod)</b></p>
+<p><b>And for AuthorizationRules there can only be one - 1 rule per check! </b></p>
+<p><b>Since AuthzRules does not support the concept of InputProperties you must store the PropertyInfos in member field on the rule and use ReadProperty to get the values. <br /></b></p>
+<p>So there is nothing to stop you from having IPropertyInfo members in your AuthorizationRules - just follow the guidelines above.</p>
+<p>Take f.ex this rule to be used for static methods but will still check for property values when applicable (ie context.Target is not null):</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">MyVeryOwnObjectAuthzRule</span> : <span style="color:#2b91af;">AuthorizationRule</span></p>
+<p style="margin:0px;">&nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">private</span> <span style="color:blue;">readonly</span> <span style="color:#2b91af;">IPropertyInfo</span> _prop1;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">private</span> <span style="color:blue;">readonly</span> <span style="color:#2b91af;">IPropertyInfo</span> _prop2;</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">public</span> MyVeryOwnObjectAuthzRule(<span style="color:#2b91af;">AuthorizationActions</span> action, <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt; prop1, <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt; prop2)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; : <span style="color:blue;">base</span>(action)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; _prop1 = prop1;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; _prop2 = prop2;</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">protected</span> <span style="color:blue;">override</span> <span style="color:blue;">void</span> Execute(<span style="color:#2b91af;">AuthorizationContext</span> context)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">if</span> (context.Target != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> val1 = (<span style="color:blue;">string</span>)ReadProperty(context.Target, _prop1);</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> val2 = (<span style="color:blue;">string</span>)ReadProperty(context.Target, _prop2);</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:green;">// add my own if tests here </span></p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">or you can sublass an existing rule to add more tests:</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">MyObjectAuthzRule</span> : <span style="color:#2b91af;">IsInRole</span></p>
+<p style="margin:0px;">&nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">private</span> <span style="color:blue;">readonly</span> <span style="color:#2b91af;">IPropertyInfo</span> _prop1;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">private</span> <span style="color:blue;">readonly</span> <span style="color:#2b91af;">IPropertyInfo</span> _prop2;</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">public</span> MyObjectAuthzRule(<span style="color:#2b91af;">AuthorizationActions</span> action, <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt; prop1, <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt; prop2, <span style="color:blue;">params</span> <span style="color:blue;">string</span>[] roles)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; : <span style="color:blue;">base</span>(action, roles)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; _prop1 = prop1;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; _prop2 = prop2;</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">public</span> MyObjectAuthzRule(<span style="color:#2b91af;">AuthorizationActions</span> action, <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt; prop1, <span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt; prop2, <span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt; roles)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; : <span style="color:blue;">base</span>(action, roles)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; _prop1 = prop1;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; _prop2 = prop2;</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">protected</span> <span style="color:blue;">override</span> <span style="color:blue;">void</span> Execute(<span style="color:#2b91af;">AuthorizationContext</span> context)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:green;">// chect the base rule </span></p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">base</span>.Execute(context);</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">if</span> (!context.HasPermission) <span style="color:blue;">return</span>;</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">if</span> (context.Target != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> val1 = (<span style="color:blue;">string</span>) ReadProperty(context.Target, _prop1);</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> val2 = (<span style="color:blue;">string</span>) ReadProperty(context.Target, _prop2);</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:green;">// add my own if tests here </span></p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; }</p>
+</div>
+<p style="margin:0px;">&nbsp;</p>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, November 05, 2012</h2><p>Ah!&nbsp; I see what you&#39;re saying now.&nbsp; This should really be documented specifically in the Ebook.&nbsp; Thank you for taking the time to answer this so thoroughly.</p>
+<p>Cheers!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, November 05, 2012</h2><p>Works perfectly, thanks again Jonny!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Friday, November 09, 2012</h2><p>Hi Jonny. Is there any working options for the Csla 3.8.4 Business &amp; Auth Rules engine?</p>
+<p>Thanks,</p>
+<p>Troncho</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 10, 2012</h2><p>Csla 3.x authz rules only get the Type as parameter.</p>
+<p>So you can only configure AllowedRoles/DenyRoles to be checked and not inspect the actual values of the object.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Troncho replied on Saturday, November 10, 2012</h2><p>Ok, so for now, overriding the BO.Delete() will have to do.</p>
+<p>Thanks!</p>
+<p>Troncho</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

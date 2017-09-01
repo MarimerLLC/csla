@@ -1,0 +1,32 @@
+<html><header><title>PrincipalCache And Wcf</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PrincipalCache And Wcf</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10361.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi posted on Wednesday, May 11, 2011</h2><p>I am new to Wcf and have now created a new service using a similar security setup that is in the 2008 Business Objects book, where by a custom UserNamePasswordValidator is used along with a custom AuthorizationPolicy.</p>
+<p>The problem being that our security is two fold, first the user must be authenticated using the username and password, once that is done, the user can then chose a database that they can access, so as well as IsAuthenticated i have a property called IsAuthorized against my custom Identity object.</p>
+<p>To accomplish this i have setup 2 UserNamePasswordValidators, the first one to check the username and password, the second checks the username and password, as well as checking if the user has selected a database. &nbsp;If they havent selected a database, then it fails. &nbsp;All good so far.</p>
+<p>My problem arises in the AuthorizationPolicy file because if i make a call to the Wcf service the first time (with only username and password, no database selected) my code calls the LoginPolicy file which contains this code (like in the book).</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim lPrincipal As IPrincipal = Csla.Security.PrincipalCache.GetPrincipal(lUsername)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; If lPrincipal Is Nothing Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UserPrincipal.Logout()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; load prinicpal based on username authenticated in CredentialValidator</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UserPrincipal.LoadPrincipal(lUsername)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; add current principal to rolling cache<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Security.PrincipalCache.AddPrincipal(Csla.ApplicationContext.User)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lPrincipal = Csla.ApplicationContext.User</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>lPrincipal Is Nothing so the Identity is reloaded using as suggested in the book the LoadPrincipal code.</p>
+<p>Now my user calls the service again after selecting a database and my code calls the&nbsp;AuthorizationPolicy, which again contains exactly the same code as above (separated at the moment as had to figure out what was wrong). &nbsp;<br /><br />Now lPrincipal IS NOT NOTHING because it was added in the previous LoginPolicy file, but the Identity added there was not Athorized, so i cannot use that Identity.<br />If i comment out the If statement and load my principal, that works fine, but when the line<br /><br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; add current principal to rolling cache<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Security.PrincipalCache.AddPrincipal(Csla.ApplicationContext.User)</p>
+<p>Is called, my principal is re-added. &nbsp;Upon looking into the AddPrincipal code it runs this line before attempting to add the principal</p>
+<p>if (!_cache.Contains(principal))</p>
+<p>But my principal is different, as i have now set the IsAuthorized value. &nbsp;So this code adds another principal object and the GetPrincipal returns the incorrect principal because.....</p>
+<p>In the GetPrincipal code for PrincipalCache, it runs a much simplier</p>
+<p>if (item.Identity.Name == name)</p>
+<p>Therefore, would it not be correct to change the AddPrincipal to only check by name since a principal always contains a Name as implemented IPrincipal as this would cope with all custom principal objects??<br /><br />If not, i think i need some way to remove the principal by name or i can re-add it?<br /><br />If someone knows of a way in which i can get round my problem, instead of changing the Csla code, please let me know. &nbsp;As i said, i am VERY new to Wcf</p>
+<p>Thanks all in advance.&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 11, 2011</h2><p>How are you storing the user&#39;s database choice in between service calls? You can&#39;t rely on the principal for this purpose - the user load could overrun the cache and some principal objects might be lost (and then reloaded).</p>
+<p>The normal way to implement WCF authn is to hit the security database twice on each service call,, and to never maintain anything in memory. I created the PrincipalCache to <em>minimize</em> the extra burden on the security database, but the overall model is designed to continue working even if your user load is higher than the cache can support. And in a real app that is very likely to happen at times when you get a load spike.</p>
+<p>You should also consider the potential need to scale out with multiple servers. In that case the principal cache is useless, because it is in memory on one server, and so isn&#39;t available to all your servers. In a scale out scenario you have to assume nothing is ever maintained in memory on the server. Or if you really must keep something in memory, you&#39;d use somethink like the AppFabric cache so the cache is distributed across all your servers.</p>
+<p>I would suggest that the user&#39;s database choice be passed with every service call, or be stored in a table in your database, keyed on the username, and possibly with some expiration period.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, May 11, 2011</h2><p>Rocky,</p>
+<p>Thanks for quick reply.</p>
+<p>My users database choice is stored in a table in the database, but i was just following the PrincipalCache example as it was written in the book and i had problems with a previous try before seeing your example.</p>
+<p>I have now removed the PrincipalCache from the Validators and Policy files and it appears to work perfectly.&nbsp;</p>
+<p>I am not bothered about the extra calls to the security database, rather have extra calls and be more secure.</p>
+<p>Thanks for your help</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

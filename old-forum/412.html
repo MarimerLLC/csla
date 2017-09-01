@@ -1,0 +1,41 @@
+<html><header><title>Data Portal always returns an object...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Portal always returns an object...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/412.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog posted on Monday, June 19, 2006</h2><P>Shoot me if this has been covered in the book or on this forum. Or for that matter if I am missing something simple!</P>
+<P>With that out of the way. I have always wondered how to check for a object not existing in the database. Normally I would do it like this.</P>
+<P>if(obj != null){</P>
+<P>//use object</P>
+<P>}</P>
+<DIV><FONT face=Arial size=2>
+<P>An example would be a ReadOnlyObject with a Factory method that takes in an ID. </P>
+<P>If that id does not exist in the database the data portal will still create an instance of the object in its default state. </P>
+<P>How would one go about checking for this?</P>
+<P>&nbsp;How I have 'Solved' this in the past is to check a property to make sure it is not in its default state. </P>
+<P>However this does not seem very clean. It wood be pretty odd to someone who did not know the subtle things in this framework...</P></FONT></DIV>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>PD</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, June 19, 2006</h2>One method would be to have your data fetch code throw an exception if it couldn't find data with the given id.<br><br>Of course this assumes that you usually won't be passing ids which don't exist.<br><br>You could use a command object which returns a true or false if it finds that there is no such id in the database.<br><br>If you could give more details on exactly the problem you're trying to solve, that would help suggest a better answer for your situtation.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 19, 2006</h2><P>This is a common question. As I show in the book, exceptions are the most common way to know that data is not found. The DataPortal_Fetch() method simply doesn't catch exceptions, so they flow back to the client - to the UI typically. The reason is that the exception contains valuable information about WHY the object wasn't returned - because it could be missing data, but it could be that the database is down or an authorization violation or other reasons.</P>
+<P>If you still want to do the obj!=null check, you can catch the exception in your factory method and just return null:</P>
+<P>public static Customer GetCustomer(int id)<BR>{<BR>&nbsp; try&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;Customer&gt;(new Criteria(id));<BR>&nbsp; }<BR>&nbsp; catch {<BR>&nbsp;&nbsp;&nbsp; return null;<BR>&nbsp; }<BR>}</P>
+<P>Of course this approach means you lose the valuable exception detail, so it isn't an approach I typically use - but it works just fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Monday, June 19, 2006</h2><P>Hey Guys,</P>
+<P>Thanks for the reply. However I fear I was not clear about my use case. </P>
+<P>I have a user control that displays some product data from a ReadOnly object that represents the product.See Code below.</P>
+<P>int id = int.Parse(Request.QueryString["ProductId"]);</P>
+<P>Product product = Product.GetProductByProductId(id);</P>
+<P>if(product == null){</P>
+<P>&nbsp;&nbsp;&nbsp;throw new ArgumentException("Invaild ID Parameter");</P>
+<P>}</P>
+<P>else{</P>
+<P>&nbsp;&nbsp;&nbsp;//Bind data to controls</P>
+<P>}</P>
+<P>As you can see I want a to throw an exception if the a user puts an invalid product id into the query string.&nbsp; If I do not do this the attempt to bind the 'Empty' object will result in problems as the data bind happens.</P>
+<P>Hope this clears up the problem as simple as it is.</P>
+<P>PD</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=687104403-20062006><FONT face=Arial color=#0000ff size=2>Sure, but the exception should be thrown down in 
+DataPortal_Fetch(), or in ADO.NET, not in your UI layer. The UI layer should 
+catch the exception, not throw it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=687104403-20062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=687104403-20062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Wednesday, June 21, 2006</h2><P>Lightbulb</P>
+<P>Thanks,</P>
+<P>PD</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

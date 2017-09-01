@@ -1,0 +1,77 @@
+<html><header><title>Transfer big data in CSLA?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transfer big data in CSLA?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5761.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong posted on Friday, November 07, 2008</h2>I am developing a WindowForm app, clients comunicate with server by IIS. My app needs to transfer very big data (several GBs) between clients and server. I tried to use BOs to trabsfer data but not successful because the limits of IIS. Does anyone have experience in this scenario? Are there any solutions or tricks to pass the limits of IIS? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can bump up the limit in IIS.&nbsp; The size is in KB (100
+MB in the example below)<o:p></o:p></span></p>
+
+<p class=MsoNormal>&lt;system.web&gt;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;httpRuntime maxRequestLength=&quot;102400&quot;/&gt;<o:p></o:p></p>
+
+<p class=MsoNormal><span>However, you may still run into other issues with this size of
+transfer, such as timeout issues.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cuong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 07, 2008 8:10 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Transfer big data in CSLA?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am developing a WindowForm app, clients comunicate with
+server by IIS. My app need to transfer very big data (several GBs) between
+clients and server. I tried to use BOs to trabsfer data but not successful
+because the limits of IIS. Does anyone have experience in this scenario? Are
+there any solutions or tricks to pass the limits of IIS? <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, November 07, 2008</h2><P>The problem you are going to run into (that I've run into) transferring large amounts of data using BOs is more related to the type of serialization used as opposed to the use of BOs per se.&nbsp; Although, depending on the design, BOs do tend to get heavy as the number of non-static/non-shared methods and properties increase.&nbsp; I've found that loading a large amount of data into business objects contained&nbsp;in a business collection became unwieldy very fast and made the application inefficient.</P>
+<P>For transfer scenarios, I always use lightweight DTO's to hold the data - a class with nothing more than the bare minimum of properties, no attributes, etc. to consume memory space.&nbsp; This helps some.</P>
+<P>The other issue has to do with how you are serializing the objects and passing them across the wire.&nbsp; XML serialization can be expensive because it is text and you are adding all of the markup code, etc.&nbsp; Binary serialization is the most efficient way of transferring your data.&nbsp; Depending on the protocol you are using, such as SOAP, you may have to wrap the binary image in an XML wrapper but you can still accomplish the same goal.</P>
+<P>Hope that helps...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cuong replied on Friday, November 07, 2008</h2>@sergeyb: Increasing the maxRequestLength value is a good trick if data size is only about 100MB. If data size exceeds GBs the error still occurs.<br><br>@vdhant: Your given links are to resolve other problems, maybe for big list of BOs of some tens MBs. But my transfered data is very very big (about several GBs)&nbsp; and it is raw data.<br><br>@SonOfPirate: Thank for your suggestions, they are very heplful for me. Maybe I will write data into a temporary file and use CommandBase objects to transfer data piece by piece.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Saturday, November 08, 2008</h2>Bulk loads of data can mean that you need to bypass the business objects and use some alternative solution.&nbsp; We had same problem and creating some optimised objects specifically designed to validate and load helped performance, but then one day they wanted to import 20 million records (sales orders) and that didn't really work - SQL server bulk import had to be used.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Friday, November 07, 2008</h2>This issue tends to come up every now and then so have a quick search through the posts. But I think the general concusses is to find another way of solving the issue by breaking the data into smaller data sets or if you are displaying data, have a list that looks really big (as in the scroll bar suggests that lots of records are available) but then only load the next records as the user scrolls down (note that pattern has a name but i can't remember the name). <br><br>Here are some of the posts i fond just quickly looking:<br>http://forums.lhotka.net/forums/thread/4044.aspx - Performance of creating large collection <br>http://forums.lhotka.net/forums/thread/126.aspx - Handling large lists <br>http://forums.lhotka.net/forums/thread/23075.aspx - Caching large lists of data <br><br>Cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 08, 2008</h2>I don't think I'd try to use the data portal or business objects to transfer GBs of data. With that much data you probably want to exploit resume and other features that are part of native http or advanced ftp protocols, and so technologies like web services or WCF just aren't the right fit.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

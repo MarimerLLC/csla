@@ -1,0 +1,40 @@
+<html><header><title>UpdateChildren correction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>UpdateChildren correction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12727.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Codelines posted on Friday, August 22, 2014</h2><p>Please, correct me if I&#39;m wrong, but FieldDataManager.UpdateChildren shouldn&#39;t be like this:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public void UpdateChildren(params object[] parameters)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (_propertyList == null) return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var pi in _propertyList)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if ((pi.RelationshipType &amp; RelationshipTypes.Child) &gt; 0)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var item = _fieldData[pi.Index];</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (item != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; object obj = item.Value;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (obj is IEditableBusinessObject || obj is IEditableCollection)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.DataPortal.UpdateChild(obj, parameters);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>The way it is now, all objects referenced by the businessobject are being treated as children even when they aren&#39;t.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Saturday, August 23, 2014</h2><p>If i&#39;m not mistaken only the properties who are set to be Child will be saved</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;private static readonly PropertyInfo&lt;ChildObjectName&gt; ChildObjectNameProperty = RegisterProperty&lt;ChildObjectName&gt;(p =&gt; p.ChildObjectName&nbsp;<b>Csla.RelationshipTypes.Child);</b></p>
+<p>&nbsp;</p>
+<p>But what I do is when i include child object that should not be saved I use an Info object (ReadOnlyBase) So I don&#39;t get this problem.</p>
+<p>&nbsp;</p>
+<p>hope this helps</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Codelines replied on Saturday, August 23, 2014</h2><p>Jean,&nbsp;</p>
+<p>sometimes you will need to reference the same object twice in the object graph and only one reference must be treated as child. In other situations you could reference an object from another object graph and that object must&nbsp;not&nbsp;be treated as a child. In an earlier versions, the default for the RelationshipType property of the PropertyInfo class was Relationshiptypes.Child, but now I&#39;ve seen that is Relationshiptypes.None.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Saturday, August 23, 2014</h2><p>Ok so those it work with the relatioinshiptypes.none?</p>
+<p>If you can show some code maybe it will help us see what the problem is</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Codelines replied on Sunday, August 24, 2014</h2><p>In CSLA 4.3.14, UpdateChildren doesn&#39;t verify RelationshipChild and calls&nbsp;UpdateChild&nbsp;for any object referenced by the businessobject:</p>
+<p>&nbsp; &nbsp; public void UpdateChildren(params object[] parameters)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; foreach (var item in _fieldData)</p>
+<p>&nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; if (item != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; object obj = item.Value;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (obj is IEditableBusinessObject || obj is IEditableCollection)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.DataPortal.UpdateChild(obj, parameters);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>If RelationshipType was verified, we could use RelationshipTypes.None to avoid the UpdateChild for those objects that aren&#39;t children.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

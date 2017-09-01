@@ -1,0 +1,101 @@
+<html><header><title>Approving new or amended records</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Approving new or amended records</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1818.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis posted on Wednesday, November 22, 2006</h2><p class="MsoNormal">In many of the enterprise applications I am involved in developing,
+there is a common requirement to have new or edited records ‘approved’ by an application
+administrator before they become visible in the live system.</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">In the past I have used object serialization to achieve this
+and although it works quite well, and certainly simplifies many things, I have
+been bitten by the versioning issues when de-serialising older assembly versions
+enough that I am now looking into a more database-centric solution. I was
+wondering if anyone else has done this kind of thing before and whether or not there
+are any common implementation patterns.</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">The way I have done this up to now is to have a database
+design similar to this:</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">[Entity]<br>
+Id (PK)<br>
+Name<br>
+Description<br>
+…</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">[EntityRequest]<br>
+Id (PK)<br>
+EntityId (FK to Entity)<br>
+RequestTypeId ( FK to RequestType e.g. ‘Add Request’, ‘Amend Request’ etc)<br>
+RequestStatusId (FK to RequestStatus e .g. ‘Pending’,’Accepted’,’Refected’ etc)<br>
+RequestedBy<br>
+RequestDate<br>
+SerialisedObject (blob of the object byte stream)<br>
+ObjectLength (used when de-serialising in the business layer)<br>
+…</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">Along with [RequestStatus] and [RequestType] lookup tables</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">In my business layer, I have a standard Entity Editable Root
+and an EntityRequest Editable Root. Admins are able to create and save Entity
+ERs directly, but standard users have to do this through the an EntityRequest object
+which itself holds a reference to the Entity ER.</p><p class="MsoNormal"><br> </p>
+
+<p class="MsoNormal">When EntityRequest.Save() (and ultimately DataPortal_Update )
+is called, the Entity reference is serialised and saved to the EntityRequest
+table along with the other request fields. In the admin screens, a request is selected
+and retrieved from the database, the Entity reference is de-serialised and either
+Accept() or Reject() methods are called on the EntityRequest ER.</p><p class="MsoNormal"><br> </p>
+
+<p class="MsoNormal">If Approve() is called, this will in turn fire off some
+emails and call Save() on the original Entity ER. The beauty of this is if the
+Entity ER IsNew flag was true, then a new record is created and added to the
+database as normal, otherwise the original record is updated with the amended
+values .</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">I’d like to hold my hands up and admit that there are no
+real rights/security checking in the business layer or database; the UI presented
+is displayed differently depending on an AD role which is what limits normal users
+seeing the screens that allow objects to be directly inserted … and as a side
+note I wondered if I may be able to use the new security check methods in
+CSLA.NET 2.0 to help with this such as CanAdd or CanEdit etc - but I really do
+want users to be able to add and edit objects… just not persist them immediately
+in the database!</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">As I say, this technique has worked very well apart from the
+versioning, so I am not too keen to move away if the alternatives become much
+more complicated.</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">After discussing this internally with a colleague it was suggested
+to update the EntityRequest like this:</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">[Entity]<br>
+Id (PK)<br>
+Name<br>
+Description<br>
+RequestTypeId ( FK to RequestType e.g. ‘Add Request’, ‘Amend Request’ etc)<br>
+RequestStatusId (FK to RequestStatus e .g. ‘Pending’,’Accepted’,’Refected’ etc)<br>
+IsLocked</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">[EntityRequest]<br>
+Id (PK)<br>
+EntityId (FK to Entity)<br>
+RequestTypeId ( FK to RequestType e.g. ‘Add Request’, ‘Amend Request’ etc)<br>
+RequestStatusId (FK to RequestStatus e .g. ‘Pending’,’Accepted’,’Refected’ etc)<br>
+RequestedBy<br>
+RequestDate<br>
+ModifiedEntityId(FK) - only populated for amendment requests</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">In this case, new records are stored immediately in the
+database, although there status is set to pending, and type would be ‘add’.</p><p class="MsoNormal"><br> </p>
+
+<p class="MsoNormal">If an existing record is edited, another record is created in
+the Entity table with the new values, RequestType would be set to ‘Amend’ and
+IsLocked set to true to avoid any other requests overwriting these changes.</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">I think the RequestType/Status fields have been de-normalised
+so you don’t need to join on EntityRequest everytime you query the Entity table.</p><p class="MsoNormal"><br></p><p class="MsoNormal">What do you think would be the best way to model this in the business layer. Would it still require the EnityRequest object to handle the insert and add additional info to the RequestType/Status fields.</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">Finally, do either of these approaches seem sound, or is there a ‘third-way’
+which I may be missing?</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">Regards,</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">Dan.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, November 22, 2006</h2>Several thoughts:<br><br>-&nbsp; always start by keeping your relational model fully normalized. Experience has taught that denormalization <i>will </i>work against you sooner or later. Considering performance in your app design is good, but resort to denormalization only when your DB design has actually proven to be the bottleneck. Using outer joins you can easily merge your request data into the Entity table, and using inner joins you can merge Entity data into your request data. These are simple, straightforward joins, so you may expect your DB to do a reasonable job when optimizing the evaluation plan for these queries.<br><br>- storing the Entity's in your table with a Status field that indicates that approval is pending looks fine to me. Of course you would have to make sure all your SQL statements take this field into account, but that is something you have control over, so it would work just fine. I would recommend creating separate BOs for Entity's that are 'live' and those that are still pending. This way you avoid confusion with your fellow developers (and yourself perhaps ;-) ).<br><br>- the request BO may no longer be necessary. If your workflow is just about Approved and Unapproved entities, then having those 2 BOs I suggested should do the job. I you have a more elaborate workflow then your use cases would grow and correspondingly you would need more BOs that explicitly model the individual steps. In fact, you have described 2 use cases (Live Entities and ToBeApproved Entities) so having those 2 BOs exactly cover your needs right now.<br><br><br>Hope this helps.<br><br>Regards,<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis replied on Wednesday, November 22, 2006</h2>Thanks Bayu,<br><br>You've certainly given me plenty to think about... My initial thought was to just put the status request property directly in the Entity ER and have separate Read-only list collections for Pending and Regular/Approved which themselves would call different sprocs. This, I suppose, is the classic OO to RDBMS mindset. Even though I often repeat the mantra "objects are defined by behaviour not data", I didn't think about having separate BOs for different request cases. <br><br>My only question then is this: given that the field/data between approved and pending records is almost identical, do you think they should inherit from an abstract/mustinherit base class that defines the common behaviour?<br><br>Regards,<br><br>Dan.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, November 22, 2006</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>djjlewis:</strong></div><div>Thanks Bayu,<br><br>My only question then is this: given that the field/data between approved and pending records is almost identical, do you think they should inherit from an abstract/mustinherit base class that defines the common behaviour?<br><br></div></BLOCKQUOTE><br><br><br>Certainly. <br><br>That's applying good old fashioned inheritance. To create an abstract (mustinherit) base class that implements all shared stuff makes perfect (OO) sense.<br><br>'To model after behavior' is merely from a conceptual viewpoint, so the fact that you (conceptually) have distinct BOs that are each specifically designed to address a particular use case. On the implementation level you are indeed almost bound to observe shared functionality that can go into a base class.<br><br>Bayu<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, November 22, 2006</h2><DIV>One other option, look at db4o.&nbsp; It is an object oriented db and it handles schema changes rather well.&nbsp; It would keep the simplicity of your serialization solution as well.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Just a thought.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

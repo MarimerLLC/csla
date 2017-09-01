@@ -1,0 +1,49 @@
+<html><header><title>CSLA and EF DBCotnext</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and EF DBCotnext</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11376.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wassimmansour posted on Sunday, May 27, 2012</h2><p>Hi,</p>
+<p>I am pretty new to CSLA and I am trying to introduce a BL on top of the already built DL.</p>
+<p>The DL is build using EF4.3 and the DBContext. I am starting to face some challenges but I am not sure whether it&#39;s due to a bad implmementation or an inherent incompatibility between the tools I am using.</p>
+<p>In particular, I have this one case that is causing a lot of trouble. I have a Location BO that has a child&nbsp;State BO. These two BOs belong to different BLs. State class is defined in another dll and uses a separate DL to access a separate database.</p>
+<p>The problem happens when I try to populate the child State object. For some reason the dbcontext in the State DL stops being able to recognize the State class and I get the error message &quot;The entity type State is not part of the model for the current context.&quot;.</p>
+<p>This is how the Fetch operation for the Location class looks like:</p>
+<p>&nbsp;<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">private&nbsp;</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> DataPortal_Fetch(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">id)
+<p>{</p>
+</span></span>&nbsp;</p>
+<p>&nbsp;<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(BypassPropertyChecks) </span></span></p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">{</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">DTO.Location dto = DTO.Location.GetByID(id);</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.ID = dto.ID;<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p>&nbsp;</p>
+</p>
+</span></span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p>&nbsp;</p>
+</p>
+</span></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.Name = dto.Name;<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p>&nbsp;</p>
+</p>
+</span></span></span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>
+<p>&nbsp;</p>
+</p>
+</span></span></span></span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.State = State.GetByID(dto.StateID);</span></span></p>
+</p>
+<p>}</p>
+<p>}</p>
+<p>And this is where the exception happens (in the State DL when exexuting the query below):</p>
+<p>&nbsp;<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public&nbsp;</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> State GetByID(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">int</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> id) </span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span>{</p>
+<p>
+<p>&nbsp;{</p>
+</p>
+<p>&nbsp;<span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (GB2_Entities1 context = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> GB2_Entities1()) </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> context.States.SingleOrDefault(b =&gt; b.ID == id);</span></span></p>
+<p>}</p>
+<p>}</p>
+<p>(Sorry for the horrible code format, but I wan&#39;t able to format it properly)</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Sunday, June 03, 2012</h2><p>Csla is compatible with any ORM including EF CF (Code First). I&#39;ve gotten that error before from EF CF when trying to save an entity in a different context that was created. You can google for that error, doesn&#39;t really have anything to do w/ CSLA. However, I believe what you will end up having to do is implementing a way to manage the context similar to the built in manager for EF w/ ObjectContext. Others may be able to help, I haven&#39;t used CSLA in a while.</p>
+<p>One thing I am curious is why you are using EF CF w/ CSLA? It seems like a lot of work creating your EF CF Pocos by hand and then create the CSLA BO&#39;s as well. Part of the &quot;appeal&quot; of EF CF is to create your own POCO &quot;domain&quot; classes, but CSLA already gives you that...would make more sense if you were using CSLA w/ EF Database First / Model First rather than Code First.</p>
+<p>My $0.02...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>wassimmansour replied on Monday, June 04, 2012</h2><p>Hi,</p>
+<p>I found what was causing this issue just yesterday. My problem was that there were serveral EF models with the same name in various projects in the solution. Whenever two of these models are referenced in a project, a problem will happent because apparently this project will have a porblem looking up the correct model for each class.</p>
+<p>I solved the issue by giving all EF models in the solution different names.</p>
+<p>I am actually using CSLA with EF Database First.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

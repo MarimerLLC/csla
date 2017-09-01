@@ -1,0 +1,12 @@
+<html><header><title>Proper way to delete Parent and Child List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Proper way to delete Parent and Child List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9567.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic posted on Wednesday, September 22, 2010</h2><p>I have an Album (BusinessBase) that has a Photos property (BusinessListBase).&nbsp; These corrolate directly to an album table and a photo table. Where the photo table has an albumId field that is a FK to the id in the album table.<br /><br />I am unclear as to the proper way to delete the album and the associated photos.<br /><br />In code, I am looping through the list of photos and then for each photo, calling: <br />album.PhotoList.Remove(photo);<br /><br />Once the loop has finished, I then mark the album as deleted: <br />album.Delete();<br /><br />And finally commit my changes:<br />album = album.Save();<br /><br />When I do this, it first attempts to delete the Album record, which causes integrity problems since the photos still reference the album.<br /><br />Any suggestions?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, September 23, 2010</h2><p>Typically your DataPortal_DeleteSelf would do one of the following:</p>
+<ol>
+<li>Delele the album header row in the database, allowing the database to do a cascading delete</li>
+<li>Call a stored procedure to delete an album, and the stored procedure would delete related data</li>
+<li>Update all child objects, then delete the album header row</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic replied on Thursday, September 23, 2010</h2><p>I took the third approach.&nbsp; From within&nbsp;
+<pre style="font-family:consolas;">DataPortal_DeleteSelf()<br /></pre>
+I am calling UpdateChildren before I called the album&#39;s delete method in the DAL.<br /><br />
+
+<pre style="font-family:consolas;">FieldManager.UpdateChildren(<span style="color:blue;">this</span>);<br /><br /></pre>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

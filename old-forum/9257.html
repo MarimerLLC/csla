@@ -1,0 +1,36 @@
+<html><header><title>Testing Lazy Loading in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Testing Lazy Loading in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9257.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 posted on Thursday, July 22, 2010</h2><p>Hi,</p>
+<p>I am currently developing a system using CSLA 4 and Silverlight.&nbsp; I am also developing a suite of tests (arguably unit tests :).&nbsp; I am using the UnitDriven framework to help test the asynchronous pieces, and this works very well (Thanks Rocky!)</p>
+<p>Now I am looking at lazy loading my child objects in the manner described by Rocky&#39;s recent blog post.&nbsp; The problem I now have is how can I perform unit tests against objects whose properties are being lazy loaded asynchronously?&nbsp; It is easy to unit test the asynchronous factory methods because I can pass my own handler to those functions.&nbsp; With the properties, I can only call the getter...I can&#39;t pass a handler.</p>
+<p>Has anybody else encountered this issue?&nbsp; Is there a good way to test this?&nbsp; I can see one option would be for my calling thread to simply block and wait for the IsBusy property to become false again.&nbsp; The issue there is if I hit multiple lazy loaded children, how do I know when each one has finished?&nbsp; Do you&nbsp;this might work or is there a better way?</p>
+<p>P.S.&nbsp; I believe that this same issue needs to be solved for testing ViewModels as well, as the ViewModel can call a method such as BeginRefresh, but there isn&#39;t a way (that I can see) to pass a handler...it looks like the ViewModel handles the callback itself.</p>
+<p>Any advice would be greatly appreciated!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 22, 2010</h2><p>There are different async models in .NET in general - the old Begin/End method model, the event model and the callback model.</p>
+<p>Recently the callback model has become popular, but the event model is usually a parallel offering. The Begin/End model seems to have lost favor.</p>
+<p>In short, where a callback model isn&#39;t available, the event model is the way to go.</p>
+<p>You should be able to trigger off PropertyChanged though, not necessarily BusyChanged - PropertyChanged should be raised when the property is set (that&#39;s how data binding knows to refresh for example).</p>
+<p>The same is true for a ViewModel&lt;T&gt; - there&#39;s a PropertyChanged on the Model property that triggers data binding, and that should work for your test as well.</p>
+<p>In any realistic sense, your test should trigger off the same things the UI would trigger off - otherwise your test doesn&#39;t mirror real-world usage very well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 replied on Tuesday, August 03, 2010</h2><p>Hi Rocky,</p>
+<p>Sorry for the slow response, but I&#39;m just now getting down to implementing this.&nbsp; I can&#39;t seem to see any Model changes when I subscribe to the PropertyChanged event of the ViewModel&lt;T&gt;.&nbsp; I see things like IsBusy, CanSave, CanCancel firing this event, but nothing related to the Model.&nbsp; Did I miss something?</p>
+<p>I had a look in ViewModelBase, and I noticed that the setters of many of these properties (IsBusy, CanSave, CanCancel) call the OnPropertyChanged method.&nbsp; If I modify the Model&#39;s setter by adding the following line:&nbsp; OnPropertyChanged(&quot;Model&quot;);&nbsp; I get the functionality I need...I get notification when the Model changes.</p>
+<p>Should there in fact be a call to OnPropertyChanged in the Model&#39;s setter, or have I just misunderstood the technique I should be using to subscribe to model changing events?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 03, 2010</h2><p>The Model property is a dependency property, so PropertyChanged is (or should be) automatically raised when it is changed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 replied on Wednesday, August 04, 2010</h2><p>I&#39;m not seeing this functionality.&nbsp; Once my ViewModel has loaded it&#39;s Model I can then catch the PropertyChanged event to watch for any of the Model&#39;s children being lazy loaded asynchronously, but I can&#39;t catch the original &quot;Model is now loaded into the viewmodel&quot; event (without my modification mentioned above).</p>
+<p>Could you perhaps provide a code sample?&nbsp; I&#39;m thinking that if I were using WPF instead of Silverlight, I could use the DependencyPropertyDescriptor.AddValueChanged, but this doesn&#39;t exist in Silverlight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>artsd replied on Wednesday, December 01, 2010</h2><p>I am experiencing the same problem. Did you ever find a solution besides manually raising a property changed for &quot;Model&quot;?</p>
+<p>edit:</p>
+<p>In my View-Model base class (which derives from ViewModel&lt;T&gt;), I overrode OnModelChanged() and raised the property changed for &quot;Model&quot; there after calling base.OnModelChanged().</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 replied on Wednesday, December 01, 2010</h2><p>Well, sort of &nbsp;:)</p>
+<p>For a number of reasons I ended up needing to create my own ViewModel that inherits from ViewModel&lt;T&gt; and implements a few interfaces. &nbsp;In my implementation, I have added a few events. &nbsp;One of the events that I added was a &quot;Model Changed&quot; event. &nbsp;In my tests, I can now just wire up this &quot;Model Changed&quot; event and handle it quite easily. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

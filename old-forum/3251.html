@@ -1,0 +1,63 @@
+<html><header><title>Composition and Validation Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Composition and Validation Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3251.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff posted on Monday, July 23, 2007</h2>Hey All,<br><br>I have the following object structure:<br><br>Public Class A<br>&nbsp;&nbsp;&nbsp; Private B as ClassB<br>&nbsp;&nbsp;&nbsp; Private C as ClassC<br><br>&nbsp;&nbsp;&nbsp; Public Property SomeRequiredField as String<br>&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; return B.someRequiredField <br>&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp; Set<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  B.someRequiredField = value<br>&nbsp;&nbsp;&nbsp; End Set<br><br>Public ClassB<br>&nbsp;&nbsp;&nbsp; someRequiredField as String = ""<br><br>ClassB is a writeable object with validation rules.&nbsp; ClassC is read-only information.&nbsp; I have a valid case (I think) to use composition here: ClassB's behavior is used in multiple places in the app, but not necessarily in conjunction with ClassC.<br><br>If I bound a list of ClassB's to a DGV in a Windows Form and created a new B, my buddy Mr. ErrorProvider would point out that someRequiredField is required.&nbsp; <br><br>However, I want to bind a list of ClassA's to a DGV.<br><br>Question 1: As I understand it, the only way to get ClassA to bind to a DGV is to expose the properties of Class B and Class C through Class A.&nbsp; Is this correct, or is there a better way?<br><br>Question 2: How do I get ClassB's validation rules to work in a grid of ClassA's just like they would in a grid of ClassB's,?&nbsp; e.g. I create a new Class A, and Mr. ErrorProvider tells me that someRequiredField is required.&nbsp;  (I want to do this without duplicating code if possible.)<br><br>Thanks for any help you can provide.<br>JK<br><br>PS&nbsp; - My validation is more complex than string required, otherwise I'd just duplicate the few lines of validation for the sake of getting things done.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 23, 2007</h2><P>If RuleX() is needed by both ClassA and ClassB, then you need a ClassR that contains RuleX(), so both A and B can simply collaborate with R.</P>
+<P>That's at the design level, using a concept called normalization of behavior. You normalize RuleX() out of the place where it would have been duplicated into somewhere central.</P>
+<P>At <EM>implementation </EM>time things are a little different, because ClassR is probably a static class (C#) or Module (VB). So your instances of ClassA and ClassB actually "collaborate" with ClassR directly, rather than creating an instance of ClassR. But that's an implementation detail and does not impact the design concept.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Monday, July 23, 2007</h2>e.g.:<br><br>ClassR<br>&nbsp;&nbsp;&nbsp; Friend Function MyRule (sender as object, e as someArgs)<br><br>ClassA<br>&nbsp;&nbsp;&nbsp; Sub AddBusinessRules<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  ValidationRules.AddRule(addressof ClassR.MyRule, "MyProperty")<br><br>Is that the idea?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Exactly, though the MyRule() method should be Shared or in a
+Module.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> josh.kodroff
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 23, 2007 9:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Composition and Validation Rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>e.g.:<br>
+<br>
+ClassR<br>
+&nbsp;&nbsp;&nbsp; Friend Function MyRule (sender as object, e as someArgs)<br>
+<br>
+ClassA<br>
+&nbsp;&nbsp;&nbsp; Sub AddBusinessRules<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; ValidationRules.AddRule(addressof
+ClassR.MyRule, &quot;MyProperty&quot;)<br>
+<br>
+Is that the idea?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,130 @@
+<html><header><title>Editable Root Objects Sharing Transaction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable Root Objects Sharing Transaction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5372.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Tuesday, September 09, 2008</h2><P>A while back I wrote three unrelated "editable root" objects that were used separately.&nbsp; Now for a new project, I'm reusing those three objects together.&nbsp; And I just realized that this around I need them to save using the same transaction object.&nbsp; So if one editable root object's save fails, all three objects will roll back their data changes.&nbsp; What is the best way to accomplish this?</P>
+<P>Thanks,</P>
+<P>Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pawz replied on Tuesday, September 09, 2008</h2>Are they related somehow? Child/Parent etc? Or just 3 totally seperate ones.<br><br>The problem with wrapping 3 normally standalone business objects in a transaction is that if they try to initiate their own transaction within a transaction, you get the whole Microsoft distributed transaction error (if I'm remembering what it's called correctly. The design 'feature' that makes it ridiculously hard to run multiple nested transactions ;)).<br><br>I think the best way to do it is to start the transaction at the top of the stack of functions, open a connection to the database, and pass that connection along down the stack to whatever object needs to run any updates.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, September 09, 2008</h2><P>This isn't too hard&nbsp;if you manage your transactions manually. Your DataPortal_Update() method initiates a new transaction if none is in progress, otherwise it obtains the existing transaction. </P>
+<P>On the "server side" of&nbsp; the data portal, you can adopt a convention where all your objects implement a Save(TransactionContext transaction) type method for doing the actual work, and you can pass your transaction around as needed. We have done almost arbitrary compounding of object saving using this technique. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Wednesday, September 10, 2008</h2><P>Have a look at the following : How to handle transactions across root objects.</P><A HREF="/forums/thread/16605.aspx">http://forums.lhotka.net/forums/thread/16605.aspx</A>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 10, 2008</h2>Try using the ContextManager or ConnectionManager, for Linq or straight Ado.Net.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 10, 2008</h2><P>Here is some real code you can use:</P>
+<P><A HREF="/forums/thread/9066.aspx">http://forums.lhotka.net/forums/thread/9066.aspx</A></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Wednesday, September 10, 2008</h2><P><FONT face="Courier New" size=2>Would this a goofy or bad way to do it - or would it be better to do it a different way?<BR><BR>Add a second&nbsp;"Save" method like this...<BR><BR>--------------------------------------------------------------------</FONT></P>
+<P><FONT face="Courier New" color=#0000ff size=2>Private mobjSharedTransaction As System.Data.SqlClient.SqlTransaction<BR></FONT><FONT face="Courier New" color=#0000ff size=2><BR>Public Function SaveWithSharedTransaction(ByVal transaction As System.Data.SqlClient.SqlTransaction) As Order<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mobjSharedTransaction = transaction<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return MyBase.Save()<BR>End Function</FONT></P>
+<P><FONT face="Courier New" size=2>--------------------------------------------------------------------</FONT></P>
+<P><FONT face="Courier New" size=2>And then inside of DataPortal_Insert and DataPortal_Update do something like this...</FONT></P>
+<P><FONT face="Courier New" size=2>--------------------------------------------------------------------<BR><BR></FONT><FONT face="Courier New" color=#0000ff size=2>Dim blnUsingSharedTransaction as Boolean <BR><BR>'...other code...<BR><BR>If mobjSharedTransaction Is Nothing Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objTransaction = objConnection.BeginTransaction<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blnUsingSharedTransaction = False<BR>Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objTransaction = mobjSharedTransaction<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;blnUsingSharedTransaction = True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mobjTransaction = Nothing<BR>End If<BR><BR>'...other code...</FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT color=#0000ff>If blnUsingSharedTransaction =&nbsp;False Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objTransaction.Commit()<BR>End If<BR>&nbsp;<BR>Catch ex as Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If blnUsingSharedTransaction = False Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objTransaction.Rollback()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Throw<BR>End Try</FONT><BR></FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Wednesday, September 10, 2008</h2>Whoops...on second thought my code might not work.&nbsp; I'm thinking about the remote dataportal jump from client to server.&nbsp; I might lose my reference to the transaction object, which I'm thinking will get stored on the client.....and the DataPortal_Insert/Update will run on the server.&nbsp; Am I right?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 10, 2008</h2><P>Try reading the link I posted for some ideas.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 10, 2008</h2>Check out the ConnectionManager or ContextManager.&nbsp; This provides an easy way to share connections without having to worry about where the connection is stored.<br><br>It helps you in this case because your command object which is saving the root objects will be marked as transactional, and you can use ConnectionManager or ContextManager and do your BO saves within the using block for this.<br><br>Your root BOs will need an internal Save method, so that it doesn't try calling the dataportal at all.&nbsp; The internal save method should just do the data access part and not worry about transactions at all.&nbsp; Also, since they'll be using the Connection / ContextManager, they'll automatically use the connection your command object opens and hence the transaction you start on that connection.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, September 10, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>...<BR>Your root BOs will need an internal Save method, so that it doesn't try calling the dataportal at all.&nbsp; The internal save method should just do the data access part and not worry about transactions at all.&nbsp; Also, since they'll be using the Connection / ContextManager, they'll automatically use the connection your command object opens and hence the transaction you start on that connection.<BR></div></BLOCKQUOTE></P>
+<P>Yes, this is very important. Also remember that if you are doing any *reading* of data during your transactions, you need to use the transaction object to do the reading, otherwise you can deadlock on yourself. </P>
+<P>(This may come for "free" with some of the transaction types supported by CSLA, but if doing manual transactions you definitely have to be aware of this). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Wednesday, September 10, 2008</h2><P>Please forgive my ignorance....I've apparently discovered some gaps in my knowledge of CSLA.</P>
+<P>I found and am re-reading about "ApplicationContext.LocalContext" in the main book and the 2.1 e-book.</P>
+<P>However I don't see this "ConnectionManager" or "ContextManager" you guys mentioned -- is this a CSLA framework thing or a .NET Framework thing?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>These classes are part of Csla framework itself.&nbsp; They are
+in Csla.Data namespace.&nbsp; They were added as part of 3.0, if I remember
+correctly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xxxJasonxxx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 10, 2008 2:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Editable Root Objects Sharing Transaction<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Please forgive my ignorance....I've apparently discovered some gaps in my
+knowledge of CSLA.<o:p></o:p></p>
+
+<p>I found and am re-reading about &quot;ApplicationContext.LocalContext&quot;
+in the main book and the 2.1 e-book.<o:p></o:p></p>
+
+<p>However I don't see this &quot;ConnectionManager&quot; or
+&quot;ContextManager&quot; you guys mentioned -- is this a CSLA framework thing
+or a .NET Framework thing?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 10, 2008</h2>Yes, and they should be pretty easy to back port to version 2 of Csla.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Wednesday, September 10, 2008</h2><P>Actually it looks like the "ContextManager" and "ConnectionManager" were not added until version 3.5.&nbsp; So it's not covered in the original book or two e-books (2.1 &amp; 3.0) that I've been looking at.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 11, 2008</h2>Possibly.&nbsp; But download the 3.5 source then, and check out the code.&nbsp; I don't think there's anything that prevents you from backporting the code.&nbsp; I doubt you'd have to do anything at all except copy the file into your Csla assembly.&nbsp; May not even have to do that.. it might be able to live in one of your assemblies.<br><br>Using the manager is easy.<br><br>ContextManager&lt;MyDataContext&gt; mgr;<br><br>using( mgr = ContextManager&lt;MyDataContext&gt;.GetManager() {<br>&nbsp;&nbsp;&nbsp; // do data access<br>}<br><br>Use that everywhere you need to use a DataContxext (Or IDBConnection) and the manager handles opening or re-using the existing connection for you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, September 11, 2008</h2><P>Ok, I've downloaded 3.5 and I've been looking at the code inside the "ConnectionManager" class.&nbsp; I agree this looks like&nbsp;a really slick way to share a connection or transaction.</P>
+<P>However, I have one major&nbsp;concern...<BR>As the ConnectionManager shares the connection/transaction among multiple objects, how can each object determine whether it is the originator or owner of the shared connection/transaction?&nbsp; I think&nbsp;they will need to know that for deciding whether to call "Commit" or "Rollback".&nbsp; Am I thinking correctly?</P>
+<P>- - - - -<BR><BR>Related to that, if you look at&nbsp;the link Joe Fallon posted above...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<A href="/forums/thread/9066.aspx">http://forums.lhotka.net/forums/thread/9066.aspx</A><BR>... it looks like his code posted towards the bottom of the conversation&nbsp;is trying to address this problem of how to determine which object originated the connection/transaction when he does this.....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>If LocalContext.Item("StartedTrans") Is BO Then</FONT><BR>...but I'm honestly not following what is happening here (what is BO or Core.IBusinessObject and what is this actually comparing).&nbsp; <BR><BR>Can anyone offer any insight?<BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 11, 2008</h2><P>BO is the specific business object class that you are using.</P>
+<P>e.g. If you are doing Orders then you would an Order BO with a child collection of OrderLines each with an OrderLine.</P>
+<P>So the code above becomes:</P>
+<P>If LocalContext.Item("StartedTrans") Is Order Then</P>
+<P>===========================================</P>
+<P>Say you have 3 root BOs to save and each has the code I show in them.</P>
+<P>Then the first one to call BeginTransaction is the one that actually starts the transaction. The next two make the same call but since an active tr exists, they simply enlist in it. When the next two call EndTransaction, nothing happens because they are not the one that started it (their Types are different than the test If LocalContext.Item("StartedTrans") Is Order Then). Only when the first BO calls EndTransaction does it meet the test above and then the entire tr is committed.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, September 11, 2008</h2><P>Joe:</P>
+<P>Please bear with me a tiny bit longer.&nbsp; You've been a huge help and I've almost got it.....</P>
+<P>I think I understand the concept or intent, but I may be getting mixed up on the syntax.</P>
+<P>CONCEPT / INTENT.....<BR>I think you're saying that if my Order object was the originator of the connection/transaction, that IF statement in your&nbsp;code is asking every object that uses it......are you the Order object?&nbsp; Do I understand your concept/intent correctly?</P>
+<P>SYNTAX.....<BR><BR>I'm assuming you're NOT saying I would explicitly change the code from this.....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>If LocalContext.Item("StartedTrans") Is BO Then<BR></FONT>.....to this....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>If LocalContext.Item("StartedTrans") Is&nbsp;Order Then<BR></FONT>.....because that seems too specific rather than generic/resuable (I don't think that's your intent).<BR><BR>Are you saying that the "BO" variable would evaluate as an "Order" type or "Order" object?<BR><BR>This could be part of my confusion too -- I noticed you are passing "BO" in like this...<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Public Shared Function BeginTransaction(ByVal BO As Core.IBusinessObject) As IDbTransaction<BR></FONT><FONT color=#000000>.....which makes me wonder if every business object would evaluate as True for being a Core.IBusinessObject (I think that's an interface all business base objects inherit from).<BR><BR>And possibly a major point of confusion for me with "BO" could be.......is&nbsp;this storing and comparing a memory reference to a specific object or is it storing and comparing an object type?<BR><BR>I'm not sure I'm expressing my confusion clearly or asking the right questions......but hopefully you get the idea and can help.</FONT></P>
+<P><FONT color=#000000>Thanks,<BR><BR>Jason</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, September 11, 2008</h2><P>Sorry...I think my confusion is simply not understanding&nbsp;how the "IS" keyword&nbsp;works in your IF statement.</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If LocalContext.Item("StartedTrans") Is BO Then</FONT><BR><BR>I am going back to do research on this.....it's one of those things I haven't used much lately except for when evaluating whether a variable "Is Nothing".&nbsp; So I've just forgotten and need to refresh.</P>
+<P>Thank you for the help -- really appreciate it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Thursday, September 11, 2008</h2><P>In case anyone else's memory is as bad as mine...</P>
+<P>The <FONT color=#ff0000><STRONG>Is</STRONG></FONT> operator determines if two object references refer to the same object. However, it does not perform value comparisons. If object1 and object2 both refer to the exact same object instance, result is True; if they do not, result is False.<BR><BR>Dim myObject As New Object<BR>Dim otherObject As New Object<BR>Dim yourObject, thisObject, thatObject As Object<BR>Dim myCheck As Boolean<BR>yourObject = myObject<BR>thisObject = myObject<BR>thatObject = otherObject<BR>' The following statement sets myCheck to True.<BR>myCheck = yourObject Is thisObject<BR>' The following statement sets myCheck to False.<BR>myCheck = thatObject Is thisObject<BR>' The following statement sets myCheck to False.<BR>myCheck = myObject Is thatObject<BR>thatObject = myObject<BR>' The following statement sets myCheck to True.<BR>myCheck = thisObject Is thatObject<BR><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, September 11, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>xxxJasonxxx:</strong></div><div>
+<P>Sorry...I think my confusion is simply not understanding&nbsp;how the "IS" keyword&nbsp;works in your IF statement.</P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If LocalContext.Item("StartedTrans") Is BO Then</FONT><BR><BR>I am going back to do research on this.....it's one of those things I haven't used much lately except for when evaluating whether a variable "Is Nothing".&nbsp; So I've just forgotten and need to refresh.</P>
+<P>Thank you for the help -- really appreciate it.</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>The "is" operator in C# just tests whether the left hand side is the of the Type on the right side. So, the above code is just testing if the object is of type "BO".</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, September 12, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>xxxJasonxxx:</strong></div><div> 
+<P>CONCEPT / INTENT.....<BR>I think you're saying that if my Order object was the originator of the connection/transaction, that IF statement in your&nbsp;code is asking every object that uses it......are you the Order object?&nbsp; Do I understand your concept/intent correctly?</P>
+<P>SYNTAX.....<BR><BR>I'm assuming you're NOT saying I would explicitly change the code from this.....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>If LocalContext.Item("StartedTrans") Is BO Then<BR></FONT>.....to this....<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>If LocalContext.Item("StartedTrans") Is&nbsp;Order Then<BR></FONT>.....because that seems too specific rather than generic/resuable (I don't think that's your intent).<BR><BR>Are you saying that the "BO" variable would evaluate as an "Order" type or "Order" object?<BR><BR>This could be part of my confusion too -- I noticed you are passing "BO" in like this...<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Public Shared Function BeginTransaction(ByVal BO As Core.IBusinessObject) As IDbTransaction<BR></FONT><FONT color=#000000>.....which makes me wonder if every business object would evaluate as True for being a Core.IBusinessObject (I think that's an interface all business base objects inherit from).<BR><BR>And possibly a major point of confusion for me with "BO" could be.......is&nbsp;this storing and comparing a memory reference to a specific object or is it storing and comparing an object type?<BR><BR></FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>Concept intent: Yes. That is what is going on.</P>
+<P>So the call to EndTransaction has this code:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>If</FONT></FONT><FONT size=2> LocalContext.Item(</FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"StartedTrans"</FONT></FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> BO </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT>
+<P>Which says: get the item from the local context which I stored when I *started* the transaction and compare it to each BO which called End Transaction. So for the two later objects, they fail the test and nothing happens. But the last call is the Order object and it is the one that started the tr so the code evaluates to true and commits everything.</P>
+<P>Syntax: right again - no need to change the code at all since BO is a parameter which is passed in (as Me) to each method. Only the BO that starts the tr is stored in context with the string key: <FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"StartedTrans"</FONT></FONT></P>
+<P><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2><FONT color=#000000 size=3>The BO itself is stored in context when the tr is started and it is compared with each BO that calls EndTransaction to be sure that only the one that started it can end it.</FONT></FONT></FONT></P>
+<P><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2><FONT color=#000000 size=3>Joe</FONT></FONT></FONT></P>
+<P><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2><FONT color=#000000 size=3></FONT>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 11, 2008</h2>They don't really need to know.&nbsp; Your code would something like this:<br><br>public class MyCommand : CommandBase {<br>&nbsp;&nbsp;&nbsp; [Transactional( Transaction.TransactionScope )]<br>&nbsp;&nbsp;&nbsp; private void override DataPortal_Execute() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ConnectionManager mg;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using( mg = ConnectionManager.GetManager() ) {<br>&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myRoot1.SaveSelf();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; myRoot2.SaveSelf();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>public class MyRoot : BusinessBase {<br>&nbsp;&nbsp;&nbsp; [Transactional( Transaction.TransactionScope )]<br>
+&nbsp;&nbsp;&nbsp; private void override DataPortal_Insert() { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InsertSelf();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; internal void SaveSelf() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( IsNew ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InsertSelf();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateSelf();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; private void InsertSelf() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ConnectionManager mg;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using( mg = ConnectionManager.GetManager() ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // do update<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;
+}<br>}<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

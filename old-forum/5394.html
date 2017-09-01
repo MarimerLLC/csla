@@ -1,0 +1,47 @@
+<html><header><title>Using Validation Rules and Target Object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Validation Rules and Target Object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5394.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Friday, September 12, 2008</h2><p>From the book: CHAPTER 8  BUSINESS OBJECT IMPLEMENTATION, starting with page 438, I have questions about the following code for validating the "Role()" Property of the "ProjectResource" Object:<br>
+</p>
+<pre>Protected Overrides Sub AddBusinessRules()<br>    ValidationRules.AddRule(AddressOf Assignment.ValidRole, "Role")<br>End Sub<br>...<br>...<br>Public Function ValidRole(ByVal target As Object, ByVal e As RuleArgs) As Boolean<br>  Dim role As Integer = CType(target, IHoldRoles).Role<br>  If RoleList.GetList.ContainsKey(role) Then<br>    Return True<br>  Else<br>    e.Description = "Role must be in RoleList"<br>    Return False<br>  End If<br>End Function<br>...<br>...<br>Friend Interface IHoldRoles<br>  Property Role() As Integer<br>End Interface<br></pre>
+<p>As per my understanding, is that the "target" object is the ProjectResource. So, we could have converted the target object using CType to ProjectResource to access the Role() property, and hence to validate it.<br></p><p>What is confusing me here is we have defined IHoldRoles Interface to get the Role() property, and it is not clear to me how this is going to work, and why it is done that way.</p><p>Also, why it did not use DirectCast instead of CType ? DirectCasrt is much faster than CType !<br></p><p>Any one can explain to me this point I will appreciate it.</p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 12, 2008</h2><P>The reason for using IHoldRoles is because that code has to work against both ProjectResource and ResourceAssignment types (it is invoked from both), so the interface allows for polymorphism.</P>
+<P>Using CType() or DirectCast() is really not as big a deal as people make out - it is a commonly held myth that DirectCast() is radically faster, when in reality it is only faster in a few edge cases.</P>
+<P>I (sadly) helped spread that myth early on, but I've since been educated by people who are far more meticulous at testing performance than myself, so I don't worry about it so much anymore.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, September 12, 2008</h2><p>In other words, I can use the "Interface" declaration to put common properties in different classes, in case I need to access then easily in one place for the purpose of normalizing the behavior, correct ?</p><p>So, the other alternative, is to use "if typeof object is xyz then" to cast the object type to the appropriate target type to avoid run-time errors, correct ?<br></p><p>Tarek.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can use a number of techniques, including:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Reflection<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A common (non-generic) base class<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A common (non-generic) interface<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A set of if..type or a switch on type (my least favorite)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

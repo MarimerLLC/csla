@@ -1,0 +1,213 @@
+<html><header><title>Linq ordering smartdates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq ordering smartdates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7690.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis posted on Monday, September 28, 2009</h2>Rocky exposes smartdates in the books as follows, using managed fields<br><br>Private Shared FailedDateProperty As BSLPropertyInfo(Of SmartDate) =
+RegisterProperty(New BSLPropertyInfo(Of SmartDate)("FailedDate"))<br>Public ReadOnly Property FailedDate() As String<br>&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetPropertyConvert(Of SmartDate, String)(FailedDateProperty)<br>&nbsp;&nbsp;&nbsp; End Get<br>End Property<br><br>But if you do this, then linq seems to order the dates on a string basis, not a date basis.&nbsp; Has anyone else got this problem and if so how do you get around it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Monday, September 28, 2009</h2><P>In my Info type objects I just exposed them as SmartDates and the list object containing them binds and sorts fine.</P>
+<P>Could try just returning the Smrtdate property as a smartdate.</P>
+<P><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Public</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Property</FONT></FONT><FONT size=1> AccreditedDate() </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>As</FONT></FONT><FONT size=1> SmartDate<BR></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Return</FONT></FONT><FONT size=1> _accreditedDate<BR></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;End</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Get<BR></FONT></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;Friend</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Set</FONT></FONT><FONT size=1>(</FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>ByVal</FONT></FONT><FONT size=1> value </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>As</FONT></FONT><FONT size=1> SmartDate)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_accreditedDate = value<BR></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;End</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Set<BR></FONT></FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>End</FONT></FONT><FONT size=1> </FONT><FONT color=#0000ff size=1><FONT color=#0000ff size=1>Property</FONT></FONT></P>
+<P><FONT color=#0000ff size=1><FONT color=#0000ff size=1>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 28, 2009</h2>Hi, <br><br>Expose the SmartDate as both a string and DateTime property <br><br>You'll want the string property to use the flexibility of input and the DateTime property for sorting. <br><br>/jonnybee<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Monday, September 28, 2009</h2>this would mean having two properties called different things returning the same data,which doesnt really appeal to me, didnt know if i was missing something completely obvious.<br><br>What are other people returning in their business librarys, Strings or SmartDates?&nbsp; How do you cope with sorting?&nbsp; Please let me know<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 28, 2009</h2><P>The reason for exposing the value as a string is so you can bind it to a simple TextBox control. This allows for very flexible entry of values by the user. My goal was to enable date entry similar to what you find in Quicken or Microsoft Money - and this is my personal preference for date entry. I want to be able to type 't' and get today's date, or '10/3' to get Oct 3, 2009.</P>
+<P>And of course SmartDate lets the TextBox be empty - which corresponds to an empty date value.</P>
+<P>If your application requires that sort of flexible date entry then you should follow the pattern I show in the book. And you might also expose a SmartDate property for sorting.</P>
+<P>If your application doesn't work this way - perhaps you always use a datetime picker (which means you can't have empty dates) or some other UI control that binds to a DateTime. In that case I wouldn't use SmartDate at all, because you aren't using any of its features.</P>
+<P>Or you might use one of the datetime picker controls that understands SmartDate (and thus empty date values) - in which case you can expose the property as type SmartDate, not string.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Monday, September 28, 2009</h2>Rocky,&nbsp; Thanks for this.&nbsp; We currently use the method in the book and expose all our dates as strings, as we do need an emptydate value.&nbsp; We have wrote our own datepickers, that accept a string as well, so this all works perfectly.&nbsp; It is just the problem of sorting the data as at the moment, it sorts like it is a string.<br><br>I think that the easiest option is going to be, to expose it as a smartDate as change our components to accept the smartdate type, then we will have everything we need.<br><br>Thanks all<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 28, 2009</h2>Hi, <br><br>You should be aware of possible problems with validation rules.<br><br>Your databinding will be "DateProperty.Text" or "DateProperty.Value" - and that is the key the ErrorProvider/ErrorWarnInfoProvider uses to check for ValidationError on the property.&nbsp; Most likely your validation rules ar for "DateProperty".<br><br>So from my own experience I would not recommend to expose the SmartDate as the property. IOW - broken rules on your SmartDate property is likely to not be shown correctly in your UI.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Monday, September 28, 2009</h2>Prior to LINQ, a class implmentingthe IComparer interface was used to build a custom Compare. Then Sort would be provided the class implementing IComparer to use to perform a custom sort. <br /><br />Can LINQ use/specify an IComparer class for sorting? Or is there something similar in LINQ?<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Tuesday, September 29, 2009</h2>I must admit, once you start thinking of changing databound controls to read DateProperty.Text or DateProperty.Value and changing all validationRules etc, it makes me not want to change from a String property to a SmartDate.<br><br><b><i>"Prior to LINQ, a class implmentingthe IComparer interface was used to
+build a custom Compare. Then Sort would be provided the class
+implementing IComparer to use to perform a custom sort. "</i></b><br>
+<br>Can LINQ use/specify an IComparer class for sorting? Or is there something similar in LINQ?
+<br>That would be great if there is going to have to google it and see what i can find.&nbsp; Does anyone know if this is possible and have they used it.<br><br>Thanks for the tip<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, September 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In your LINQ statement you should be able to do whatever
+transformations you want and still return whatever result set you want.&nbsp; You
+should be able to return your smartDate but order on x=&gt;x.Smartdate.Date<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This returns a subset of child data where my keys match ordered
+by the date where ScheduledDate is a SmartDate<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>return</span><span>
+ParentScheduleExplorer.ScheduleDetailList.Where(x =&gt; x.ParentScheduleId ==
+ScheduleId).OrderBy(x =&gt;x.ScheduledDate.Date);</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Nemisis [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-29-09 6:06 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Linq ordering smartdates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I must admit, once you start thinking of changing databound
+controls to read DateProperty.Text or DateProperty.Value and changing all
+validationRules etc, it makes me not want to change from a String property to a
+SmartDate.<br>
+<br>
+<b><i>&quot;Prior to LINQ, a class implmentingthe IComparer interface was used
+to build a custom Compare. Then Sort would be provided the class implementing
+IComparer to use to perform a custom sort. &quot;</i></b><br>
+<br>
+Can LINQ use/specify an IComparer class for sorting? Or is there something
+similar in LINQ? <br>
+That would be great if there is going to have to google it and see what i can
+find.&nbsp; Does anyone know if this is possible and have they used it.<br>
+<br>
+Thanks for the tip<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Tuesday, September 29, 2009</h2>Yes this would work, but i am returning a string not a smartdate<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, September 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>then convert your string to date in the orderby clause.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>pseudo code<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OrderBy(x =&gt; Convert.DateTime(x.MyStringDate));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Nemisis [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-29-09 8:43 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Linq ordering smartdates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes this would work, but i am returning a string not a
+smartdate<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Tuesday, September 29, 2009</h2>Jack, i dont know much about linq, but this sounds good and possibly exactly what i need! Thanks<br><br>Not sure if this will make sense, but since you seem to know abit about linq etc, do you know if you can override the sort command using linq?<br><br>Basically i have a grid control within my web page that uses linq to order the data, i can override the sort command on the grid and get the field name, order etc that the grid is going to order the list in, but i didnt know if i could somehow make a sort override against my BO, so that instead of the grid attempting to sort my list by strings, i could use your code above?<br><br>Sorry if this doesnt make to much sense<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Tuesday, September 29, 2009</h2>Small but important detail, you are looking to override the comparer. Check Linq's OrderBy() to see if a comparer can be specified, similar to Sort().<br /><br />But you may not need that. Modify Jack's suggestion (using cond?true:false syntax) to check for IsNullOrEmpty on the date string, when true use DateTime.Min (or Max if empties are after other dates) else the date string. <br /><br />Hopefully that will get the desired result.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, September 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not sure that I really follow but generally what I do to get
+around any of these things where I can't do an override at runtime is just add pseudo
+properties to my BO so that I can use them whenever I want.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The code I provided just does an initial sort on the underlying
+collection.&nbsp; If you stick it in a grid and click on the column header then its
+going to use the column/property to sort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So if you add a:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public DateTime MyStringDateSort { get{return Convert.DateTime(MyStringDate);}}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>to you BO then you can always use that whenever you need to
+provide a field for sorting.&nbsp; You could then replace your MyStringDate in the override
+of the sort command with MyStringDateSort<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Nemisis [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-29-09 9:24 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Linq ordering smartdates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Jack, i dont know much about linq, but this sounds good and
+possibly exactly what i need! Thanks<br>
+<br>
+Not sure if this will make sense, but since you seem to know abit about linq
+etc, do you know if you can override the sort command using linq?<br>
+<br>
+Basically i have a grid control within my web page that uses linq to order the
+data, i can override the sort command on the grid and get the field name, order
+etc that the grid is going to order the list in, but i didnt know if i could
+somehow make a sort override against my BO, so that instead of the grid
+attempting to sort my list by strings, i could use your code above?<br>
+<br>
+Sorry if this doesnt make to much sense<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

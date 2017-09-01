@@ -1,0 +1,168 @@
+<html><header><title>fetching with linq</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>fetching with linq</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5100.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmeadowcroft posted on Tuesday, July 15, 2008</h2><P>I&nbsp;have a few months of working with .net, csla and c# but making great progress. looking for anyone to address some new code an tell me if there is any possible negatives to this approach.. thanks in advance..</P>
+<P>I replace the following code in my userlist class (businesslistbase)</P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IQueryable</FONT></FONT><FONT size=2>&lt;TimeAndIssues.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2>&gt; data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> d </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> ctx.DataContext.Users</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> d;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (TimeAndIssues.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2> d </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> data)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Add(User.<FONT color=#0000ff>GetUser(d.ID));</FONT></FONT><FONT size=2></P>
+<P>}</P>
+<P>with</P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IQueryable</FONT></FONT><FONT size=2>&lt;TimeAndIssues.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2>&gt; data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> d </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> ctx.DataContext.Users</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> d;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (TimeAndIssues.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2> d </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> data)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2>(d.ID, d.UserPassword, d.UserName, d.FirstName, d.LastName, d.Email, d.IsLocked, d.ModTS, d.ModUserID));</P>
+<P>}</P>
+<P>I added a new constructor to the User class (businessbase) &nbsp;to return a user object where&nbsp;I pass in all properties. </P>
+<P>compiles and fills the list... eliminates multiple fetches to the database..</P>
+<P>thoughts?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Would it be better to simply have </span><span>this</span><span>.Add(User.<span>GetUser(d)); ?</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dmeadowcroft
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 15, 2008 4:56 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] fetching with linq<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I&nbsp;have a few months of working with .net, csla and c# but making great
+progress. looking for anyone to address some new code an tell me if there is
+any possible negatives to this approach.. thanks in advance..<o:p></o:p></p>
+
+<p>I replace the following code in my userlist class (businesslistbase)<o:p></o:p></p>
+
+<p><span>IQueryable</span><span>&lt;TimeAndIssues.DalLinq.<span>User</span>&gt;
+data = <span>from</span> d <span>in</span>
+ctx.DataContext.Users<o:p></o:p></span></p>
+
+<p><span>select</span><span> d;<o:p></o:p></span></p>
+
+<p><span>foreach</span><span> (TimeAndIssues.DalLinq.<span>User</span>
+d <span>in</span> data)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>this</span><span>.Add(User.<span>GetUser(d.ID));</span><o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>with<o:p></o:p></span></p>
+
+<p><span>IQueryable</span><span>&lt;TimeAndIssues.DalLinq.<span>User</span>&gt;
+data = <span>from</span> d <span>in</span>
+ctx.DataContext.Users<o:p></o:p></span></p>
+
+<p><span>select</span><span> d;<o:p></o:p></span></p>
+
+<p><span>foreach</span><span> (TimeAndIssues.DalLinq.<span>User</span>
+d <span>in</span> data)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>this</span><span>.Add(<span>new</span> <span>User</span>(d.ID,
+d.UserPassword, d.UserName, d.FirstName, d.LastName, d.Email, d.IsLocked,
+d.ModTS, d.ModUserID));<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>I added a new constructor to the User class
+(businessbase) &nbsp;to return a user object where&nbsp;I pass in all
+properties. <o:p></o:p></span></p>
+
+<p><span>compiles and fills the list... eliminates
+multiple fetches to the database..<o:p></o:p></span></p>
+
+<p><span>thoughts?<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmeadowcroft replied on Wednesday, July 16, 2008</h2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>I rewrote my constructor as this. eliminates need to setup paramaters</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> User(.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2> d)</P>
+<P>{</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Guid</FONT></FONT><FONT size=2>&gt;(IDProperty, d.ID);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(UserNameProperty, d.UserName);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(UserPasswordProperty, d.UserPassword);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(FirstNameProperty, d.FirstName);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(LastNameProperty, d.LastName);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(EmailProperty, d.Email);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2>&gt;(IsLockedProperty, d.IsLocked);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Guid</FONT></FONT><FONT size=2>&gt;(ModUserIDProperty, d.ModUserID);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SmartDate</FONT></FONT><FONT size=2>&gt;(ModTSProperty, d.ModTS);</P>
+<P>}</P>
+<P>then&nbsp; I can call it as </P>
+<P>new user(d);</P>
+<P>this seems to work fine.</P>
+<P>doing a User.GetUser(d) as suggested above give compiler errors.</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2> GetUser(TimeAndIssues.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2> d)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2> u = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>User</FONT></FONT><FONT size=2>();</P>
+<P>u.ID = d.ID;</P>
+<P>u.UserName = d.UserName;</P>
+<P>u.UserPassword = d.UserPassword;</P>
+<P>u.FirstName = d.FirstName;</P>
+<P>u.LastName = d.LastName;</P>
+<P>u.Email = d.Email;</P>
+<P>u.IsLocked = d.IsLocked;</P>
+<P>u.ModUserID = d.ModUserID;</P>
+<P>u.ModTS = d.ModTS;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> u;</P>
+<P>}</P>
+<P></FONT></FONT></FONT>gives compiler errors in windows forms whre I am calling User.getUser(ID);</P>
+<P>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

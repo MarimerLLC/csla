@@ -1,0 +1,5 @@
+<html><header><title>SafeDataRowReader (Solution to load GrandChild)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SafeDataRowReader (Solution to load GrandChild)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2588.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL posted on Monday, March 26, 2007</h2><br><div id="result_box">Hello,
+<br><br>I think that there is an error in the SafeDataRowReader class<br><br>Line :
+778 <br><br>I have replaced: <br><br>int tableIndex = _table.DataSet.Tables.IndexOf
+(_table) + 1; <br><br>By <br><br>int tableIndex = _table.DataSet.Tables.IndexOf (_table) +
+1 + <b>_table.ChildRelations.Count;</b> </div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

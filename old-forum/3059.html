@@ -1,0 +1,50 @@
+<html><header><title>Issue in 3.0 snippet</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue in 3.0 snippet</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3059.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockoWPB posted on Wednesday, June 20, 2007</h2><P><FONT color=#000000>I am a new user to CSLA and on top of that reletively new to WPF(who isn't). In trying to get my first VB root BO up and running I ran into a problem I couldn't figure out for quite a while. The problem is in the "Define a CSLA property" snippet.</FONT></P><FONT size=2>
+<P></FONT>Private mDescription As String<BR>Public Property Description() As String<BR>......<BR>Set(ByVal value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanWriteProperty(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<STRONG><FONT color=#0000ff>If Not mDescription.Equals(value) Then</FONT><BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mDescription = value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End If<BR>End Set<BR>End Property</P>
+<P><FONT color=#0000ff><FONT color=#000000>The blue line is the problem. Since the field mDescription hasn't been initialized it is still equal to nothing. Because of this the Equals method doesn't run and the statements inside the if never run either. So the mDescription field never gets updated and PropertyHasChanged never gets called. </FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>I noticed in the book that the line reads like this "If mDescription &lt;&gt; value then" which&nbsp;works fine. I don't know if its a CSLA 3.0 or a VB issue or what, but it took me a few hours to figure it out. If the field is initialized it also works fine. But us VB programmers aren't used to initilizing a string field to "". </FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Hope this helps any newbies like me.</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>RockoWPB</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2><P>Thanks for pointing that out! I fixed ProjectTracker recently, but need to fix the snippet too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Wednesday, June 20, 2007</h2><P>Why not just give it an initial value in the declaration?&nbsp; My understanding is that this was a required technique for all BusinessBase objects.&nbsp; So just use:</P>
+<P>Private mDescription As String = ""</P>
+<P>or </P>
+<P>Private mDescription As String = String.Empty</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is a partial solution, unfortunately both ASP.NET and WPF
+can (and do sometimes) replace an empty string with null&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Normally in VB this is a non-issue, because if you use the VB
+runtime&#8217;s string functions they automatically treat null/Nothing like &#8220;&#8221;.
+However, the .Equals() method, and other .NET runtime methods, aren&#8217;t so
+understanding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Another solution is to avoid using .Equals() and instead use the
+&lt;&gt; operator &#8211; because then you are back to normal VB behavior and
+the null value is a non-issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

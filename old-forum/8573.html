@@ -1,0 +1,50 @@
+<html><header><title>WPF Validation not firing initially for new Enitity creation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF Validation not firing initially for new Enitity creation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8573.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Wednesday, February 24, 2010</h2><p>Hi,</p>
+<p>I have been looking a validation in general. I dont really want to add many PropertyStatus controls to my forms&nbsp;as this could take some time redesigning them/moving control around etc to get them to fit.</p>
+<p>Instead i have been using the ValidatesOnDataError=True property on the control bindings for a visual queue for invalid properties. These seem to work well hover i have hit a problem.</p>
+<p>I have a details form with a populated entity, also a new button.when i click the new&nbsp;button,&nbsp;the a function on the ViewModel&nbsp;is called&nbsp;which resets the Model&nbsp;(ie Model= EntityFactory.Create&lt;T&gt;() ). The new empty object is shown and the red boxes around the invalid textboxes/controls are shown, as I&#39;d expect.</p>
+<p>However, When I create a new&nbsp; instance of the form and call this same function to set the model to a new Entity, the validation is not fired, No red boxes around invalid controls. Has anyone else experienced this? </p>
+<p>Iv checked the broken rules collection for the Entity and this has been populated correclty. Its as if the UI needs to be forced to validate its controls initially.</p>
+<p>Any help would be greatly appreciated.</p>
+<p>Regards</p>
+<p>David</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Friday, February 26, 2010</h2><p>Hi,</p>
+<p>Just bumping this!!</p>
+<p>Does anyone have any thoughts on this, I would have thought this is pretty standard behaviour that I&#39;m trying to achieve.</p>
+<p>I have a workaround, which is pretty ugly. On the forms loaded event i call OnPropertyChanged(&quot;Model&quot;) within the view model.This displays the red&nbsp;validation adorner&nbsp;and doesnt seem to casue any other issues&nbsp;&nbsp;This seems to work but I would need to write this code for each form.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>David</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, February 26, 2010</h2><p>It could be an order-of-events thing.</p>
+<p>When are you establishing the DataContext and/or Model property value? In the view&#39;s constructor? That&#39;d be too early. It should be done in the Loaded event handler, after the window/usercontrol has been fully initialized.</p>
+<p>I don&#39;t know if that&#39;s the issue, but I know I&#39;ve encountered similar things when I&#39;ve accidentally used the ctor to do this sort of work.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Devman replied on Wednesday, March 03, 2010</h2><p>Sorry about the delayed reply, I didnt get a notification of your post.</p>
+<p>Anyway, order of events is certainly the issue here. I moved the setting of the DataContext into the Window/UserControl Loaded and I got the required validation adorners to appear.</p>
+<p>However,&nbsp;New Problem!!</p>
+<p>Since we populate our model asynchronously for existing entities, the validation adorners appear whilsts the form is populating, flickering on then off. This is not desirable behaviour.</p>
+<p>Is there anyway to perform the validation/Set the datacontext when we know the data has returned?</p>
+<p>Regards</p>
+<p>David</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, March 03, 2010</h2><p>Regarding the flickering, could you bind ValidatesOnDataError to NOT IsBusy?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Wednesday, March 03, 2010</h2><p>Andy,</p>
+<p>In theory this approach sounds ideal, but in practice how do you do this? I didnt think you could have a binding nested within a binding.</p>
+<p>&lt;TextBox Text=&quot;{Binding Model.Name, ValidatesOnDataErrors=True}&quot; /&gt;</p>
+<p>In this situation I can only hard code ValidatesOnDataErrors=True. </p>
+<p>Regards</p>
+<p>David</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 03, 2010</h2><p>You&#39;re right, I forgot it was part of the binding, not a seperate element.&nbsp; I&#39;m not sure what you would do then.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 03, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Devman<br></b></p>
+<p>Since we populate our model asynchronously for existing entities, the validation adorners appear whilsts the form is populating, flickering on then off. This is not desirable behaviour.</p>
+<p></div></p>
+<p>I typically don&#39;t set the DataContext to an actual value until I have the value.</p>
+<p>In other words, I leave it null until the data portal actually returns the object. The CslaDataProvider and ViewModel components both help you with this by not setting their Data or Model properties to anything but null until the object is actually there.</p>
+<p>This typically means the UI renders without any validation or data - just the basic controls. And when the async object arrives it is bound and that&#39;s the point at which both data and validation appear.</p>
+<p>That said, I don&#39;t use the built-in validation stuff, because it can&#39;t display multiple errors, or warning/information status messages, so I find it too limiting - all a matter of personal preference I guess <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Thursday, March 04, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>This typically means the UI renders without any validation or data - just the basic controls. And when the async object arrives it is bound and that&#39;s the point at which both data and validation appear.</div>&nbsp;</p>
+<p>Ooops! There was a bug on my part which was creating a new entity in the VM constructor Doh!!&nbsp; This was firing the validation, then the entity was replaced after the data portal fetch.Sorry about that.</p>
+<p>Thanks for your time and efforts.</p>
+<p>Cheers</p>
+<p>David</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 04, 2010</h2><p>Again, I don&#39;t generally use the validate on errors behavior. My <em>guess</em> is that it is validating on null ref errors in that first instance.</p>
+<p>If your Model property is null, the binding would run against nothing right? So all the binding attempts would generate null ref exceptions - a type of error that might be displayed by the validate on errors?</p>
+<p>Then when the Model is set to a real value, binding refreshes, and how has actual data, and an IDataErrorInfo interface, against which it can work, so no more null ref exceptions.</p>
+<p>But that&#39;s just a guess.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

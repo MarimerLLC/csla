@@ -1,0 +1,14 @@
+<html><header><title>this keyword in TimeStampExtension class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>this keyword in TimeStampExtension class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11880.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Thursday, March 14, 2013</h2><p>Hi Rocky..</p>
+<p>In the &quot; UsingCsla4-05-WPF-SL-v0.4 &quot; ebook, there is a static class <strong>TimeStampExtension</strong>&nbsp;on page no.68 as given below:</p>
+<p>public static class TimeSampExtension</p>
+<p>{</p>
+<p>public static bool Matches(this byte[] stamp1,byte[] stamp2)</p>
+<p>{</p>
+<p>//other code</p>
+<p>}</p>
+<p>}</p>
+<p>I dont understand:</p>
+<p>&nbsp;how does&nbsp;<strong>this</strong> keyword work?</p>
+<p>&nbsp;why&nbsp;is it&nbsp;used?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, March 14, 2013</h2><p>Hi,</p>
+<p>Look up ExtensionMethods and syntax in MSDN. <b>this </b>keyword means that the Matches method is an extension method to byte[] type.&nbsp;</p>
+<p>See:&nbsp;<a href="http://msdn.microsoft.com/en-us/library/vstudio/bb383977.aspx">http://msdn.microsoft.com/en-us/library/vstudio/bb383977.aspx&nbsp;</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Thursday, March 14, 2013</h2><p>Thanks Jonny..</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,148 @@
+<html><header><title>Is it possible to bind the DataContext to CslaDataProvider's ObjectInstance VIA xaml?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is it possible to bind the DataContext to CslaDataProvider's ObjectInstance VIA xaml?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer posted on Thursday, March 19, 2009</h2>I put a CslaDataProvider to a usercontrol,and try to do sth like:<br>&nbsp;&nbsp;&nbsp; &lt;UserControl.Resources&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;csla:CslaDataProvider x:Key="vmReturnBatch"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;ManageObjectLifetime="True"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;IsInitialLoadEnabled="False"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;ObjectType="XXX.Core.CslaBO.PackingSlipReturnBatch,XXX.Core"<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;ObjectInstance="<font color="#ff0000"><b>{Binding}</b></font>"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/UserControl.Resources&gt;<br><br>&nbsp;&nbsp;&nbsp; but it fails...<br><br>&nbsp;&nbsp;&nbsp; Since the static resources is part of the UserControl,is it possible to do binding <font color="#800080"><b>in</b></font> the static resources?<br>&nbsp;&nbsp;&nbsp; I'm a  lazy cat that i even don't want to write anything in the code-behind just like:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cslaDataProvider = this.Resources["vmReturnBatch"] as Csla.Silverlight.CslaDataProvider;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cslaDataProvider.ObjectInstance = this.DataContext;<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2><P>I'm guessing it won't work right now, but if it did, the syntax would be:</P>
+<P>ObjectIntsance="{StaticResource MyOtherProvider}"</P>
+<P>The problem is, MyOtherProvider would be a data provider, and what you really want is for it to bind to the Data property of that provider.</P>
+<P>Though I'm not entirely sure that this is what you are after?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Thursday, March 19, 2009</h2>Hi,my scence happens in a common kind of Master/Detail view design,<br><br>1,In the master view,it shows a list of business objects.<br>&nbsp; When you double click a record,the master view will popup a detail view for modification,and pass the selected BO to the detail view.(I just don't wanna do inline edit in the master view here.)<br><br>&nbsp; Something like:<br>&nbsp; var detailView=new XXDetailView();<br>&nbsp; detailView.DataContext=SelectedBO;<br><br>2,I then wanna use a CslaDataProvider in the detail view,it's objectinstance will be set to the detail view's DataContext..I need that CDP to manage the selected BO's state,such as CanSave,etc.<br><br>&nbsp; That's it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am somewhat skeptical that this can be done with a data
+provider, because a data provider has to be in a resource block, and is
+therefore global to the form.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What you want, and I agree that this is valuable, is a control
+that can exist in the visual tree within the scope of a region of the form &#8211;
+such as within a StackPanel bound to a child collection, or even to a line item
+within a DataTemplate.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you can&#8217;t put a data provider into those locations,
+because it is not a UIElement, so it wouldn&#8217;t be legal XAML.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve thought about this, and just haven&#8217;t had time
+to act on it, but I think the answer is to have an &#8220;object manager&#8221;
+control that is a UIElement, but which has no visual representation, so it
+could sit in the visual tree, and it could also act as a data source using
+relative binding. This would work in WPF anyway &#8211; but not Silverlight
+2.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Thursday, March 19, 2009</h2>Thank you very much!<br>And i like your Object manager idea,that's what i exactly need.<br>Suppose that we have a object manager with a name "omXXX",when passing a business object to my detail view,i just write sth like:<br><br>var detailView=new DetailViewXX();<br>detailView.onXXX.ObjectInstane=SelectedBO;<br><br>That would be fantastic!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2><P>I'd hope that the ObjectManager concept would mean you could write <EM>no code</EM>. Ideally you'd be able to use binding - something like this pseudocode:</P>
+<P>&lt;DataTemplate&gt;<BR>&nbsp; &lt;StackPanel&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;csla:ObjectManager Name="manager" /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;TextBox Text="{{Relative binding expression to manager}, Path=Name}" /&gt;<BR>&nbsp; &lt;/StackPanel&gt;<BR>&lt;/DataTemplate&gt;</P>
+<P>Or for a child collection in a subpanel of a form:</P>
+<P>&nbsp; &lt;StackPanel DataContext="{Path ChildList}"&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;csla:ObjectManager Name="manager" /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;TextBox Text="{{Relative binding expression to manager}, Path=Name}" /&gt;<BR>&nbsp; &lt;/StackPanel&gt;<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Friday, March 20, 2009</h2>Maybe i meet what you mean.<br>You have to load the BO from server through that ObjectManager(More like CslaDataProvider,but a UserControl),don't you?<br>But in my master/detail design,why just pass the selected BO to the ObjectManger without making a client/server round trip?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In my mind I don&#8217;t see ObjectManager replacing
+CslaDataProvider. So ObjectManager wouldn&#8217;t have a Save() method for
+example, because that&#8217;s something a CslaDataProvider should manage.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ObjectManager would have methods and behaviors to deal with
+child objects and child lists. So AddNew(), Cancel(), Remove() and so forth.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 25, 2009</h2><P>I have a possible solution for this issue&nbsp;- one that leverages the existing CslaDataProvider functionality.</P>
+<P>The challenge we face is getting the binding value into the CslaDataProvider. While you can define a CslaDataProvider as a resource inside a DataTemplate, I can find no way to get data binding to set any of its properties - it just doesn't appear that resources work that way inside a DataTemplate.</P>
+<P>The solution I've come up with for the <A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaLight/cs/InventoryDemo/">InventoryDemo app</A> is to create a BindingConnector object that sets the ObjectInstance property of the CslaDataProvider.</P>
+<P>So the DataTemplate looks like this:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;DataTemplate x:Key="EditProduct"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Grid.Resources&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:CslaDataProvider x:Key="Product"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectType="InvLib.ProductEdit,InvLib"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ManageObjectLifetime="True"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsInitialLoadEnabled="False"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Saved="Product_Saved"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Grid.Resources&gt;<BR><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;this:BindingConnector ObjectInstance="{Binding}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataProvider="{StaticResource Product}"/&gt;<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel Orientation="Horizontal" Margin="0 0 0 5"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="Id" Width="100" /&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBlock Text="{Binding Path=Id,Mode=OneWay}" /&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;</P>
+<P>The <A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaLight/cs/InventoryDemo/InventoryDemo/BindingConnector.cs?revision=3915">BindingConnector </A>bridges the gap between the data provider and the business object provided to the DataTemplate by data binding. All the BindingConnector does, is sets the data provider's ObjectInstance property to <EM>its</EM> ObjectInstance property, which is {Binding}.</P>
+<P>This means that the DataTemplate can contain Button controls that use MethodInvoker to interact with the data provider to do things like Cancel or Save. Look at the <A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/CslaLight/cs/InventoryDemo/InventoryDemo/ProductList.xaml?view=markup">ProductList form</A> to see how this works.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Wednesday, March 25, 2009</h2>Thanks so much! I will check it out later on.<br />And i will think on it whether we can make a better choice.:)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Wednesday, March 25, 2009</h2>If our SL control has a DataContextChanged event,we can hook the event in the CslaDataProvider. But no fortune,MS doesn't provide that event for SL... <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that event is very important. It is the reason some of the
+CSLA controls use a &#8220;Source&#8221; property, which is really not needed,
+except that it is the only way we can detect that the data source (DataContext)
+has changed. Very sad.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mamboer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 25, 2009 12:51 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Is it possible to bind the DataContext
+to CslaDataProvider's ObjectInstance VIA xaml?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>If our SL control has a DataContextChanged event,we can hook
+the event in the CslaDataProvider. But no fortune,MS doesn't provide that event
+for SL... <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

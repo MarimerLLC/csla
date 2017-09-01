@@ -1,0 +1,130 @@
+<html><header><title>Simple Databinding using the Forms Designer</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simple Databinding using the Forms Designer</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM posted on Thursday, June 22, 2006</h2><P>Hi everyone,</P>
+<P>Does anyone know how to do Simple Databinding using the Forms Designer in VS?&nbsp; For example, bind "IsDirty" of a BusinessBase or BusinessListBase BO to the "enabled" property of a button on the form?</P>
+<P>Thanks.</P>
+<P>BBM</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, June 22, 2006</h2>You cannot.&nbsp; The IsDirty property on BusinessBase is marked [Browseable(false)].&nbsp; For BusinessListBase, databinding will try to bind to IsDirty on one of the objects in the list instead of the list itself.&nbsp; You need to create a wrapper object that accepts a BusinessBase or BusinessList base and passes through the IsDirty value and Raises a PropertyChanged event whenever IsDirty changes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 22, 2006</h2><P>IsDirty is marked as Browsable(False), so it isn't directly eligible for data binding. This is true of IsValid and IsSavable as well. What I suggest as a solution is to create a UI helper class like the one below. In your form you create an instance of this object and use it as a binding source for your controls (buttons, etc).<o:p></o:p></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.ComponentModel<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> EventObserver<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Implements</SPAN> INotifyPropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Event</SPAN> PropertyChanged( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.ComponentModel.PropertyChangedEventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> System.ComponentModel.INotifyPropertyChanged.PropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> mObject <SPAN>As</SPAN> Csla.Core.IEditableBusinessObject<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>WithEvents</SPAN> mNotifyObject <SPAN>As</SPAN> INotifyPropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> mIsValid <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> mIsDirty <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> mIsSavable <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>(<SPAN>ByVal</SPAN> obj <SPAN>As</SPAN> Csla.Core.IEditableBusinessObject)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mObject = obj<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' init event handling<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mNotifyObject = <SPAN>CType</SPAN>(obj, INotifyPropertyChanged)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' init fields<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mIsValid = obj.IsValid<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mIsDirty = obj.IsDirty<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mIsSavable = obj.IsSavable<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> mNotifyObject_PropertyChanged( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.ComponentModel.PropertyChangedEventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Handles</SPAN> mNotifyObject.PropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> validChanged <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> dirtyChanged <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mIsValid &lt;&gt; mObject.IsValid <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mIsValid = mObject.IsValid<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> PropertyChanged( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>, <SPAN>New</SPAN> PropertyChangedEventArgs(<SPAN>"IsValid"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mIsDirty &lt;&gt; mObject.IsDirty <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mIsDirty = mObject.IsDirty<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> PropertyChanged( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>, <SPAN>New</SPAN> PropertyChangedEventArgs(<SPAN>"IsDirty"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> (validChanged <SPAN>OrElse</SPAN> dirtyChanged) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>AndAlso</SPAN> mIsSavable &lt;&gt; mObject.IsSavable <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mIsSavable = mObject.IsSavable<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> PropertyChanged( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>, <SPAN>New</SPAN> PropertyChangedEventArgs(<SPAN>"IsSavable"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> IsValid() <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mObject.IsValid<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> IsDirty() <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mObject.IsDirty<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> IsSavable() <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mObject.IsSavable<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Class</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dave.Erwin replied on Wednesday, July 19, 2006</h2><P>I've got this implemented but I'm confused about one thing. What sets validChanged and dirtyChanged in mNotifyObject_PropertyChanged?</P>
+<P>Thanks,</P>
+<P>Dave Erwin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, July 19, 2006</h2>There is only PropertyChanged.&nbsp; IsValid and IsDirty are computed when needed.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2><P>I just got off the phone with a friend of mine at Microsoft. We did some testing and determined for certain that binding doesn't work when browsable(false) is on the property. Yes, you all knew this, but he thinks it is actually a bug, so it might get fixed in the future at some point. Browsable(false) is only supposed to surpress the IDE, not the runtime, but it is doing both.</P>
+<P>So that doesn't help us really, because even if it got fixed, it wouldn't be for months or longer...</P>
+<P>The solution I have on my web site is certainly workable - handling the bindingsource control's CurrentItemChanged event.</P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c">http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c</A></P>
+<P>But we got to talking further. My friend thinks that I should take off the browsable(false) attributes on the IsXYZ methods (IsNew, IsDeleted, IsSavable, IsDirty, IsValid) so people can bind to them as desired. And I could do that. </P>
+<P>BUT, the reason I made them browsable(false) to start with is that usually you <EM>don't</EM> want to bind to them. And in that case you have to set the default control to none in the Data Sources window, which is a manual process and can be a serious PITA if you have a lot of business classes.</P>
+<P>My friend then pointed out that just getting a lot of business classes into the Data Sources window is a tedious, manual process in the first place. His idea, and I think it may be a good one, is to create a utility that would reflect against a business assembly and create .datasource files for each business class. Such a utility could use a custom attribute so it would know to pre-define which controls should be used for each property. The IsXYZ methods could have this custom attribute to tell the utility that "none" should be defaulted for them. Then they'd be bindable, but they wouldn't bind by default - at least through drag-and-drop.</P>
+<P>This utility would also need to modify the project file (presumably for the UI project) to add the references to the .datasource files. The end result is that the Data Sources window would be auto-populated with all your classes, and the IsXYZ properties would be auto-set to use no control.</P>
+<P>Taking this idea one step further, this new custom attribute could be abstract. Rather than using it to specify actual control types (Windows.Forms.TextBox, etc.), it could just say "TextBox" and a translation table could be used to translate that to the right control for Windows Forms, and a different control for WPF (when WPF gets equivalent designer support). The attribute would merely suggest the broad control type, and the translation would be used to get the specific control type.</P>
+<P>I don't have time to tackle this idea right now, but I did want to put it out here on the forum. That way the idea is available, and anyone wanting to build such a utility could certainly do so - and maybe put it on CSLAcontrib to share with others.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Thursday, June 22, 2006</h2><P>Hi Brian,</P>
+<P>Thanks for the tip.&nbsp; I was able to get your suggestion to work, but it seems overly complex to me to have to add an additional class for each BO type - just so I can bind to some boolean properties to enable / disable buttons.</P>
+<P>Generics may help me here (I guess potentially you could get by with just two wrapper classes, one for BusinessBase BO's and one for BusinessListBase), but&nbsp;I'll need to study some more to make&nbsp;this approach&nbsp;work.&nbsp; Two extra classes wouldn't be too bad, but it still rubs me the wrong way.</P>
+<P>Are there any other approaches to doing this?&nbsp;&nbsp;</P>
+<P>BTW, my "wrapper" class (to bind to a BusinessListBase derived class) follows for anybody interested.&nbsp; Comments / criticisms are welcomed.</P>
+<P>Thanks again.</P>
+<P>BBM</P><FONT color=#0000ff size=2>
+<P>Imports</FONT><FONT size=2> System.ComponentModel</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> BindableWrapper</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Inherits</FONT><FONT size=2> Csla.Core.BusinessBase</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Private</FONT><FONT size=2> mBO </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> DescriptorFamilyTypes, DescriptorFamilyType)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Private</FONT><FONT size=2> mBindableIsSavable </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> BindableIsSavable() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' Bind this property to "Save" and "Cancel" buttons on the UI</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return</FONT><FONT size=2> (mBO.IsDirty </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> mBO.IsValid)</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> value &lt;&gt; mBindableIsSavable </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mBindableIsSavable = value</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' Notify Databinding that the property has changed</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged()</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> wo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> DescriptorFamilyTypes, DescriptorFamilyType))</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mBO = wo</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' Listen for the ListChanged event</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddHandler</FONT><FONT size=2> mBO.ListChanged, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> ListChangedEventHandler(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> List_PropertyChanged)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> List_PropertyChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, _</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.ListChangedEventArgs)</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' If the underlying list has changed update the value of our "Bindable" IsSavable property</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BindableIsSavable = (mBO.IsDirty </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> mBO.IsValid)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,48 @@
+<html><header><title>Csla 4.1 - Help understanding dependencies</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4.1 - Help understanding dependencies</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10753.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Sunday, October 09, 2011</h2><p>I&#39;ve read the eBook, but I&#39;m not totally clear on when a property will be considered dependent. The way its worded makes it sound like if a rule calls AddOutResult then any propery it changes will be considered affected, but what about just using a property as an input?</p>
+<p>The scenario I have is this.&nbsp; Two properties, A and B.&nbsp; The validation rule is that both must be empty or both must contain a value.&nbsp; I&#39;ve created a rule which does this, but is the fact that both A and B are input properties enough to ensure that when B changes A is checked as well?&nbsp; Or do I need to explicitly setup the dependency?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 09, 2011</h2><p><b>Pre Csla 4.2 you must add explicit Dependency rules for InputProperties.</b> </p>
+<p>This is changed for Csla 4.2 to consider InputProperties as automatic Dependency so you will not need to add Dependency rules.</p>
+<p><b>And beware that&nbsp; the actual Dependency is the rule.AffectedProperties, ie: </b><b>the depencies is all the properties in AffectProperties list whether you call AddOutValue or not.</b> The property must however be in AffectedProperties or you will get an exception when calling AddOutValue. </p>
+<p>So if you want an error icon on both field you could create a rule like this:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;"><span style="color:blue;">using</span>&nbsp;System.Collections.Generic;
+<span style="color:blue;">using</span>&nbsp;Csla.Core;
+<span style="color:blue;">using</span>&nbsp;Csla.Rules;
+<span style="color:blue;">using</span>&nbsp;System.Linq;
+ 
+<span style="color:blue;">namespace</span>&nbsp;MyBusiness.Rules
+{
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span> <span style="color:#2b91af;">RequiredWhenAnyHasValue</span>&nbsp;:&nbsp;Csla.Rules.CommonRules.<span style="color:#2b91af;">Required</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span> RequiredWhenAnyHasValue(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>[]&nbsp;additionalRequired)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(InputProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.AddRange(additionalRequired);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;anyHasValue&nbsp;=&nbsp;context.InputPropertyValues.Any(p&nbsp;=&gt;&nbsp;!<span style="color:blue;">string</span>.IsNullOrEmpty(p.Value.ToString()));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(anyHasValue)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.Execute(context);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}
+</pre>
+<p>usage:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;call&nbsp;base&nbsp;class&nbsp;implementation&nbsp;to&nbsp;add&nbsp;data&nbsp;annotation&nbsp;rules&nbsp;to&nbsp;BusinessRules&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(<span style="color:blue;">new</span> <span style="color:#2b91af;">RequiredWhenAnyHasValue</span>(String1Property,&nbsp;String2Property));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span> <span style="color:#2b91af;">RequiredWhenAnyHasValue</span>(String2Property,&nbsp;String1Property));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(String1Property,&nbsp;String2Property));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Dependency</span>(String2Property,&nbsp;String1Property));
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 11, 2011</h2><p>Thanks, I ended up figuring this out on my own.&nbsp; So I&#39;m using the Using Csla 4 ebooks to guide me; which version of Csla are they talking about?&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

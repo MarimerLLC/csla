@@ -1,0 +1,68 @@
+<html><header><title>DataPortal.Create not initializing BO on subsequent object instantiation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Create not initializing BO on subsequent object instantiation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10720.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyuze posted on Tuesday, September 27, 2011</h2><p>
+<p>Hi.</p>
+<p>I have a win. form (Form2) that is bound to a BusinessBase type object. &nbsp;When Form2 is initially opened, it receives the correct values that I am sending it from another form, Form1. &nbsp;When I close Form2 (form2.close()), I return to Form1 to update some values in order to send them back to Form2. &nbsp;However, Form2 does not reflect the updated values. &nbsp;I stepped through the code and found that on the initial open, DataPortal.Create() runs through every property in the business object and sets them correctly; AddBusinessRules() is also called at this point. But on subsequent calls to&nbsp;&nbsp;DataPortal.Create() i.e.<b>&nbsp;</b><i><b>private MyBusinessObject _myBusObj = CrossDockSourceProduct.NewEditableRootParent();</b>&nbsp;</i>it skips all the getters and setters, as well as AddBusinessRules(). &nbsp;</p>
+<p>I am new to CSLA and probably missing something very basic. I would appreciate your help. &nbsp;Thanks.</p>
+<p>public partial class Form2 : Form</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private Product _product = Product.NewEditableRootParent();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Form1()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InitializeComponent();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.form1BindingSource.DataSource = this._product;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div></div>
+<div>BO</div>
+<div>
+<div>&nbsp; &nbsp; [Serializable]</div>
+<div>&nbsp; &nbsp; public class Product : BusinessBase&lt;Product&gt;</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #region Business Methods</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; public static readonly PropertyInfo&lt;Int32&gt; CustomerNumberProperty = RegisterProperty&lt;Int32&gt;(c =&gt; c.CustomerNumber, &quot;Customer Number&quot;,Defaults.CustomerNumber);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; public Int32 CustomerNumber</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(CustomerNumberProperty); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetProperty(CustomerNumberProperty, value); }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</div>
+<div>&nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #region Business Rules</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; protected override void AddBusinessRules()</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CustomerNumberProperty));</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;#endregion</div>
+</div>
+<div></div>
+<div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #region Factory Methods</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; public static Product NewEditableRootParent()</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Create&lt;Product&gt;();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;#endregion</div>
+<div>&nbsp;</div>
+</div>
+<div>}</div>
+<div></div>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 27, 2011</h2><p>I think the initialization you are seeing is of the static fields and business rules. That only occurs the first time an object of any given type is created, and the results are cached for use as the application runs.</p>
+<p>To initialize property values of an object instance you need to implement a DataPortal_Create method. The data portal will invoke this method after creating the object, allowing you to initialize the object instance as necessary.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyuze replied on Thursday, September 29, 2011</h2><p>Thanks for your response, Rocky.</p>
+<p>DataPortal.Create() is invoked when I call <b>private Product _product = Product.NewEditableRootParent();</b>. &nbsp;After this initialization, I open a UI form which displays the values in the object instantiated by DataPortal.Create(). &nbsp;The problem is that upon closing this UI form and reopening it (this time with updated values), the form is still displaying the old values that the original object&#39;s properties were initialized with. &nbsp;I would expect that that object would have been released and a new one instantiated with the statement,&nbsp;<b>private Product _product = Product.NewEditableRootParent();</b>&nbsp; What am I missing?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 29, 2011</h2><p>It sounds like the issue is with your UI code or behaviors then. Perhaps when you close the first UI form, the form is somehow being reused, so it doesn&#39;t get initialized again? Perhaps you need to make sure that a new instance of the form is created when you reopen it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyuze replied on Thursday, September 29, 2011</h2><p>That was my initial inclination, but then I stepped through the code and saw that it was stepping into:</p>
+<p><span></span></p>
+<p><i>public partial class Form2 : Form</i></p>
+<p><i>&nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; private Product _product = Product.NewEditableRootParent();</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; public Form1()</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; {</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InitializeComponent();</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.form1BindingSource.DataSource = this._product;</i></p>
+<p><i>&nbsp; &nbsp; &nbsp; &nbsp; }</i></p>
+<div>and actually invoking DataPortal.Create() by virtue of&nbsp;<b>private Product _product = Product.NewEditableRootParent();</b>&nbsp; When it invokes Data.Portal.Create() after the first time, it literally skips all my PropertyInfo type declarations (using RegisterProperty(...) as well as AddBusinessRules(). &nbsp;Make sense?</div>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyuze replied on Thursday, September 29, 2011</h2>p.s. I am sending default values to RegisterProperty(...)</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, September 29, 2011</h2>This is what I was saying originally.
+
+RegisterProperty runs exactly one time per AppDomain, and the results are cached.
+
+To initialize a new object, you need to override DataPortal_Create.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyuze replied on Thursday, September 29, 2011</h2><p>Thought so, wanted to be sure I understood. &nbsp;Thanks very much.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

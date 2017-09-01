@@ -1,0 +1,46 @@
+<html><header><title>Why can't authorization (Data Portal) rules be overridden?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why can't authorization (Data Portal) rules be overridden?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10601.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul posted on Tuesday, August 09, 2011</h2><p>Correct me if I&#39;m wrong but there is no way to stop authorization rules on data portals being fired once they are coded into an object? By this I mean create, update etc.</p>
+<p>This seems a bit restrictive on the developer. What about the scenario where an object needs to be loaded internally in another rule or object but the current user does not have permission to get that object. The object would never be exposed to the user but it is required for some other meaningful task.</p>
+<p>I&#39;m guessing there is a good reason for it? I&#39;m just finding them a bit restrictive.</p>
+<p>An example. I have a user object for manipulating a user. Permission are set to only Admin can create, edit etc. However the current logged in user also need to be able to update their own details. So it would have been nice just to create a simple method UpdateCurrentUser(args) where this method would load a User object for the current user and update the relevant properties and then save it. However this won&#39;t work due to authorization rules. I could I suppose create a new object from User and create a new set of rules however this seem overkill.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 09, 2011</h2><p>You may be able to use RuleSet to define separate rules (both business and authz)&nbsp; in a BO to fulfill your requirements. </p>
+<p>For rules ( and reading data behind the scenes) - I&#39;d prefer to use a command object (or  readonly object). </p>
+<p>A editable user object could define:</p>
+<p>a) both read and write property rules so that only the current user i allowed to see/edit the fields.</p>
+<p>b: An Authz rule for Save so that user is only allowed to save &quot;self&quot; user. </p>
+<p>c: Allow both Admin and User to Fetch User object.</p>
+<p><b>Another (completely) different approach is to use the UOW (unit-of-work) strategy. Authorization rules is only enforced automatically on the &quot;root&quot; object. With UOW you create separate &quot;root&quot; object for each use case to fetch/create children, lists for comboboxes etc and save its children. Each UOW object would have separate authorization rules. </b></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>geordiepaul replied on Tuesday, August 09, 2011</h2><p>A UOW patterm might work quite well. I already have a CurrentUser object for getting access to Idenity objects etc. So it would just be a simple case of converting that to a BusinessBase fetching the user as a Child (adding Child_Fetch methods) then updating the user as a child. I could expose only the relevant properties on the user. Enforcing the fetch to be the current UserID works quite nice too.</p>
+<p>Still seems like a modest amount of work, this is only one example where simple the ability to override authorization at the dataportal level would be a nice option.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 09, 2011</h2><p>Hi, </p>
+<p>Csla is designed to work on both client and web server apps. Authz rules for the static factory methods is registered per type (for all instances/root dataportal methods) and should NOT be changed, especially in a multi threaded Web application but also client applications are becoming more multi-threaded.</p>
+<p>Another option is to register method and add separate Authz rule for factory methods.This way you will be able to inspect the properties of the fetched object in your Authz rule. </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">MethodInfo</span>&nbsp;NewEditableRootMethod&nbsp;=&nbsp;RegisterMethod(<span style="color:blue;">typeof</span>&nbsp;(<span style="color:#2b91af;">Root</span>),&nbsp;<span style="color:#a31515;">&quot;NewEditableRoot&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Root</span>&nbsp;NewEditableRoot()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;obj&nbsp;=&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.Create&lt;<span style="color:#2b91af;">Root</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CanExecuteMethod(NewEditableRootMethod,&nbsp;<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;obj;
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 09, 2011</h2><p>It is important to remember that authorization rules (in CSLA 4) don&#39;t have to be role based. They are just a type of business rule, and they can use the state of the object, the state of the application, and the user prinicpal/identity information in any way they choose.</p>
+<p>So you can create a rule that says I can edit the object if I am in the Admin role, or if my identity .Name property matches the Username property of the object (or something like that).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Tuesday, March 12, 2013</h2><p>Hello Rocky:</p>
+<p>Any sample of this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, March 12, 2013</h2><p>Hi,</p>
+<p>CslaGenFork has a rules sample project that includes authorization rules like</p>
+<ul>
+<li>IsEmptyOrIsInRole</li>
+<li>IsNewOrIsInRole</li>
+<li>IsOwner</li>
+</ul>
+<p>&nbsp;Have a look at <a href="http://cslagenfork.codeplex.com/">http://cslagenfork.codeplex.com/</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 13, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Reservatrix<br></b>
+<p>Hello Rocky:</p>
+<p>Any sample of this?</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Custom authorization rules are discussed in the &#39;Using CSLA 4&#39; ebook series. I suspect they are also used in the rules tutorial sample, though I am traveling right now and can&#39;t confirm that.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, March 13, 2013</h2><p>Yes, there is some sample rules in the RuleTutorial sample.&nbsp;</p>
+<p>The main difference between business rules and authorization rules is that&nbsp;</p>
+<p>
+<ul>
+<li>an authorization rule only returns a bool (allowed/not allowed)</li>
+<li>there is only support for max 1 rule per action/method</li>
+<li>default is to cache result for instance methods (CanRead/CanWrite/CanExecute) so rule is only run once per intance.<br />This is assuming that the rule uses role checking and is only required to run once. &nbsp;</li>
+</ul>
+</p>
+<p>So while you may have many business rules executing in Priority order - there can only be 1 authorization rule.&nbsp;</p>
+<p>If/when this limit hits you - consider override of the CanReadProperty/CanWriteProperty or CanExecuteMethod in your &lt;bo&gt;.&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

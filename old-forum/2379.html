@@ -1,0 +1,181 @@
+<html><header><title>2.1.4 CslaDataSource TypeLoadException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>2.1.4 CslaDataSource TypeLoadException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2379.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa posted on Monday, February 19, 2007</h2>In CslaDataSource.cs I get the following error when trying to do an update:<br><br>Kan type MyEyes.SmartMarkets.Library.ProductList niet laden vanuit assembly Csla, Version=2.1.4.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30.<br><br>translated:<br><br>Could not load type  MyEyes.SmartMarkets.Library.ProductList from assembly Csla,<br>Version=2.1.4.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30.<br>
+<br>I tracked it down to this:<br><br>&nbsp;&nbsp;&nbsp; internal static Type GetType(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string assemblyName, string typeName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!string.IsNullOrEmpty(assemblyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assembly asm = Assembly.Load(assemblyName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return asm.GetType(typeName, true, true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Type.GetType(typeName, true, true);&nbsp; &lt;----<br>&nbsp;&nbsp;&nbsp; }<br><br>since TypeAssemblyName isn't used anymore, assemblyName is null and uses Type.GetType to return the type, but it seems Type.GetType won't return types from other assemblies?<br><br>Selecting data from the datasource Works!<br><br>Remco Ros<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Monday, February 19, 2007</h2>Ok, it seems GetType expects a AssemblyQualifiedName.<br><br>changed TypeName to 'MyEyes.SmartMarkets.Library.ProductList, MyEyes.SmartMarkets.Library' and it works now.<br><br>&nbsp;&nbsp;&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 19, 2007</h2>This is most certainly a bug <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" />&nbsp; I'll see about getting it fixed soon, sorry about that.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 19, 2007</h2><P>Well, let me be more specific. The GetType() method is not correct, because it still uses the now-defunct assemblyname parameter, and I'll clean that up.</P>
+<P>The bigger bug is in the CslaDataSourceConfiguration dialog, where it improperly builds the type name. Obviously it should be including the assembly name as part of the result.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Monday, February 19, 2007</h2>I didn't use the dialog, i use source-view only so i don't know about a possible bug in that dialog.<br><br>For those strugling with this issue too: change TypeName to something like this: "&lt;Some.NameSpace.BussinesObject&gt;, &lt;Assembly&gt;"<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, this whole thing is a problem I wish I&#8217;d caught (or
+a tester had caught) ealier&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One easy answer is to make the TypeAssemblyName property have meaning
+again. In fact that&#8217;s the only answer that won&#8217;t break existing
+aspx pages.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Another is to keep TypeAssemblyName obsolete/unused and force
+everyone to change their TypeName values to conform to the new scheme.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Grumble.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Skafa
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 19, 2007 12:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] 2.1.4 CslaDataSource TypeLoadException<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I didn't use the dialog, i use source-view only so i don't
+know about a possible bug in that dialog.<br>
+<br>
+For those strugling with this issue too: change TypeName to something like
+this: &quot;&lt;Some.NameSpace.BussinesObject&gt;, &lt;Assembly&gt;&quot;<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 19, 2007</h2><P>In light of this issue, I've backed 2.1.4 into test mode again. This needs fixing, and the more I think about it the bigger the fix must be. I can't break the compatibility with existing aspx pages, so I have to make TypeAssemblyName have meaning again.</P>
+<P>Yet I really don't want it to be required, it is simpler to combine everything into the TypeName property.</P>
+<P>So I am trying to make both work as smoothly as possible.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Monday, February 19, 2007</h2>This should do the trick:<br><br>up to you wether you like it or not:<br><br>&nbsp;&nbsp;&nbsp; &nbsp; private static System.Collections.Hashtable _typeCache = new System.Collections.Hashtable();<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Returns a &lt;see cref="Type"&gt;Type&lt;/see&gt; object based on the<br>&nbsp;&nbsp;&nbsp; /// assembly and type information provided.<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="assemblyName"&gt;(Optional) Assembly name containing the type.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="typeName"&gt;Full type name of the class.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp;&nbsp; internal static Type GetType(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string assemblyName, string typeName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!string.IsNullOrEmpty(assemblyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assembly asm = Assembly.Load(assemblyName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return asm.GetType(typeName, true, true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp; else if (!typeName.Contains(","))<br>&nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; if (_typeCache[typeName] != null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; return (Type)_typeCache[typeName];<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; Type type = asm.GetType(typeName, false, true);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; if (type != null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; _typeCache[typeName] = type;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; return type;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp; return Type.GetType(typeName, true, true);<br>&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Monday, February 19, 2007</h2>Or a little bit revised:<br><br>&nbsp;&nbsp;&nbsp; &nbsp; private static System.Collections.Hashtable _typeCache = new System.Collections.Hashtable();<br><br>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp; /// Returns a &lt;see cref="Type"&gt;Type&lt;/see&gt; object based on the<br>&nbsp;&nbsp;&nbsp; /// assembly and type information provided.<br>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="assemblyName"&gt;(Optional) Assembly name containing the type.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;param name="typeName"&gt;Full type name of the class.&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp; /// &lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp;&nbsp; internal static Type GetType(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string assemblyName, string typeName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!string.IsNullOrEmpty(assemblyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assembly asm = Assembly.Load(assemblyName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return asm.GetType(typeName, true, true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp; Type type = _typeCache[typeName] as Type;<br>&nbsp;&nbsp;&nbsp; &nbsp; if (type != null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; return type;<br><br>&nbsp;&nbsp;&nbsp; &nbsp; type = Type.GetType(typeName, false, true);<br>&nbsp;&nbsp;&nbsp; &nbsp; if (type != null)<br>&nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; _typeCache[typeName] = type;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; return type;<br>&nbsp;&nbsp;&nbsp; &nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp; foreach (Assembly asm in AppDomain.CurrentDomain.GetAssemblies())<br>&nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; type = asm.GetType(typeName, false, true);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; if (type != null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; _typeCache[typeName] = type;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; return type;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp; throw new TypeLoadException();<br>&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 20, 2007</h2><P>I appreciate the code suggestion, but I ended up going a slightly different direction.</P>
+<P>There's a new version of 2.1.4 available for download (070220), so if you could try that one and see if it works for you I would appreciate it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Wednesday, February 21, 2007</h2>This seems Ok if you use either the "type, assembly" syntax or specify TypeAssemblyName.<br><br>either way, you háve to specify the assembly.<br><br>what i was trying to accomplish (and i thought you wanted to accomplish) was that you ónly have to specify the typename (like in ObjectDataSource)<br><br>I think i have THE solution. I took a look in how ObjectDataSource solves this.<br><br>it seems it uses BuildManager.GetType() to resolve the Type from the TypeName string.<br><br>ObjectDataSourceView:<br><br><pre><font color="#1000a0">private</font> <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=1">Type</a> <b>GetType</b>(<a title="System.String" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2">string</a> typeName)<br>{<br>      <font color="#1000a0">if</font> (<font color="#1000a0">this</font>.<a title="string System.Web.UI.WebControls.ObjectDataSourceView.TypeName { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=3">TypeName</a>.<a title="int System.String.Length { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=4">Length</a> == <font color="#800000">0</font>)<br>      {<br>            <font color="#1000a0">throw</font> <font color="#1000a0">new</font> <a title="System.InvalidOperationException.InvalidOperationException(string);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=5">InvalidOperationException</a>(<a title="System.Web.SR" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=6">SR</a>.<a title="string System.Web.SR.GetString(string name, params object[] args);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=7">GetString</a>(<font color="#800000">"ObjectDataSourceView_TypeNotSpecified"</font>, <font color="#1000a0">new</font> <a title="System.Object" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=8">object</a>[] { <font color="#1000a0">this</font>.<a title="ObjectDataSource System.Web.UI.WebControls.ObjectDataSourceView._owner;" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=9">_owner</a>.<a title="string System.Web.UI.Control.ID { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=10">ID</a> }));<br>      }<br>      <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=11">Type</a> <b>type1</b> = <a title="System.Web.Compilation.BuildManager" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=12">BuildManager</a>.<a title="Type System.Web.Compilation.BuildManager.GetType(string typeName, bool throwOnError, bool ignoreCase);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=13">GetType</a>(<font color="#1000a0">this</font>.<a title="string System.Web.UI.WebControls.ObjectDataSourceView.TypeName { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=14">TypeName</a>, <font color="#800000">false</font>, <font color="#800000">true</font>);<br>      <font color="#1000a0">if</font> (<a title="Type type1 // Local Variable">type1</a> == <font color="#800000">null</font>)<br>      {<br>            <font color="#1000a0">throw</font> <font color="#1000a0">new</font> <a title="System.InvalidOperationException.InvalidOperationException(string);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=15">InvalidOperationException</a>(<a title="System.Web.SR" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=16">SR</a>.<a title="string System.Web.SR.GetString(string name, params object[] args);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=17">GetString</a>(<font color="#800000">"ObjectDataSourceView_TypeNotFound"</font>, <font color="#1000a0">new</font> <a title="System.Object" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=18">object</a>[] { <font color="#1000a0">this</font>.<a title="ObjectDataSource System.Web.UI.WebControls.ObjectDataSourceView._owner;" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=19">_owner</a>.<a title="string System.Web.UI.Control.ID { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=20">ID</a> }));<br>      }<br>      <font color="#1000a0">return</font> <a title="Type type1 // Local Variable">type1</a>;<br>}<br></pre><br><br>How about using that !?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem is that GetType() is used at runtime, potentially
+many times on each page request. I don&#8217;t want to have that method using
+reflection or other heavy-weight techniques to get this information, because
+this could be a performance-sensitive area. I&#8217;d rather require the assembly
+information one way or the other &#8211; or in this case, either way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Skafa
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 21, 2007 7:59 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: 2.1.4 CslaDataSource TypeLoadException<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This seems Ok if you use either
+the &quot;type, assembly&quot; syntax or specify TypeAssemblyName.<br>
+<br>
+either way, you hÃ¡ve to specify the assembly.<br>
+<br>
+what i was trying to accomplish (and i thought you wanted to accomplish) was
+that you Ã³nly have to specify the typename (like in ObjectDataSource)<br>
+<br>
+I think i have THE solution. I took a look in how ObjectDataSource solves this.<br>
+<br>
+it seems it uses BuildManager.GetType() to resolve the Type from the TypeName
+string.<br>
+<br>
+ObjectDataSourceView:<o:p></o:p></p>
+
+<pre><span>private</span> <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=1" title=System.Type>Type</a> <b>GetType</b>(<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2" title=System.String>string</a> typeName)<br>
+{<br>
+      <span>if</span> (<span>this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default.a%0d%0a%20spx?Object=3" title="string System.Web.UI.WebControls.ObjectDataSourceView.TypeName { ... }">TypeName</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=4" title="int System.String.Length { ... }">Length</a> == <span>0</span>)<br>
+      {<br>
+            <span>throw</span> <span>new</span> <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=5" title="System.InvalidOperationException.InvalidOperationException(string);">InvalidOperationException</a>(<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=6" title=System.Web.SR>SR</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=7" title="string System.Web.SR.GetString(string name, params object[] args);">GetString</a>(<span>&quot;ObjectDataSourceView_TypeNotSpecified&quot;</span>, <span>new</span> <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=8" title=System.Object>object</a>[] { <span>this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=9" title="ObjectDataSource System.Web.UI.WebCont&#13;&#10; rols.ObjectDataSourceView._owner;">_owner</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=10" title="string System.Web.UI.Control.ID { ... }">ID</a> }));<br>
+      }<br>
+      <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=11" title=System.Type>Type</a> <b>type1</b> = <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=12" title=System.Web.Compilation.BuildManager>BuildManager</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=13" title="Type System.Web.Compilation.BuildManager.GetType(string typeName, bool throwOnError, bool ignoreCase);">GetType</a>(<span>this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=14" title="string System.Web.UI.WebControls.ObjectDataSourceView.TypeName { ... }">TypeName</a>, <span>false</span>, <span>true</span>);<br>
+      <span>i<o:p></o:p></span></pre><pre><span> f</span> (type1 == <span>null</span>)<br>
+      {<br>
+            <span>throw</span> <span>new</span> <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=15" title="System.InvalidOperationException.InvalidOperationException(string);">InvalidOperationException</a>(<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=16" title=System.Web.SR>SR</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=17" title="string System.Web.SR.GetString(string name, params object[] args);">GetString</a>(<span>&quot;ObjectDataSourceView_TypeNotFound&quot;</span>, <span>new</span> <a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=18" title=System.Object>object</a>[] { <span>this</span>.<a href="http://www.aisto.com/roeder/dotnet/Default%0d%0a%20.aspx?Object=19" title="ObjectDataSource System.Web.UI.WebControls.ObjectDataSourceView._owner;">_owner</a>.<a href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=20" title="string System.Web.UI.Control.ID { ... }">ID</a> }));<br>
+      }<br>
+      <span>return</span> type1;<br>
+}<o:p></o:p></pre>
+
+<p class=MsoNormal><br>
+<br>
+How about using that !?<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Wednesday, February 21, 2007</h2>I doubt this is an issue as this method is used exactly the same by objectdatasource<br><br>you could implement a typeCache, as i did in my earlier example. This would also reduce calls to Type.GetType() (Or BuildManager.GetType())<br><br>ofcourse it's your decision, but why would you not look at how objectdatasource does this. After all it's for our convience.<br><br><br>btw: I use Lutz Roeder's .NET reflector (http://www.aisto.com/roeder/dotnet/) to disassemble microsoft's and 3rd party dll's, you can learn a lot about how .net does things by looking at those<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, February 22, 2007</h2>Look rocky, I inspected some more and what BuildManager.GetType( does is this:<br><br><table cellpadding="0" cellspacing="0">
+
+<tr>
+<td colspan="2"><pre><font color="#1000a0">public</font> <font color="#1000a0">static</font> <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=1">Type</a> <b>GetType</b>(<a title="System.String" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=2">string</a> typeName, <a title="System.Boolean" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=3">bool</a> throwOnError, <a title="System.Boolean" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=4">bool</a> ignoreCase)<br>{<br>      <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=5">Type</a> <b>type1</b> = <font color="#800000">null</font>;<br>      <font color="#1000a0">if</font> (<a title="System.Web.UI.Util" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=6">Util</a>.<a title="bool System.Web.UI.Util.TypeNameContainsAssembly(string typeName);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=7">TypeNameContainsAssembly</a>(<a title="string typeName; // Parameter">typeName</a>))<br>      {<br>            <a title="Type type1 // Local Variable">type1</a> = <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=8">Type</a>.<a title="Type System.Type.GetType(string, bool, bool);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=9">GetType</a>(<a title="string typeName; // Parameter">typeName</a>, <a title="bool throwOnError; // Parameter">throwOnError</a>, <a title="bool ignoreCase; // Parameter">ignoreCase</a>);<br>            <font color="#1000a0">if</font> (<a title="Type type1 // Local Variable">type1</a> != <font color="#800000">null</font>)<br>            {<br>                  <font color="#1000a0">return</font> <a title="Type type1 // Local Variable">type1</a>;<br>            }<br>      }<br>      <font color="#1000a0">if</font> (!<a title="System.Web.Compilation.BuildManager" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=10">BuildManager</a>.<a title="bool System.Web.Compilation.BuildManager.InitializeBuildManager();" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=11">InitializeBuildManager</a>())<br>      {<br>            <font color="#1000a0">return</font> <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=12">Type</a>.<a title="Type System.Type.GetType(string, bool, bool);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=13">GetType</a>(<a title="string typeName; // Parameter">typeName</a>, <a title="bool throwOnError; // Parameter">throwOnError</a>, <a title="bool ignoreCase; // Parameter">ignoreCase</a>);<br>      }<br>      <font color="#1000a0">try</font><br>      {<br>            <a title="Type type1 // Local Variable">type1</a> = <font color="#1000a0">typeof</font>(<a title="System.Web.Compilation.BuildManager" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=14">BuildManager</a>).<a title="Assembly System.Type.Assembly { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=15">Assembly</a>.<a title="Type System.Reflection.Assembly.GetType(string, bool, bool);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=16">GetType</a>(<a title="string typeName; // Parameter">typeName</a>, <font color="#800000">false</font>, <a title="bool ignoreCase; // Parameter">ignoreCase</a>);<br>      }<br>      <font color="#1000a0">catch</font> (<a title="System.ArgumentException" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=17">ArgumentException</a> <b>exception1</b>)<br>      {<br>            <font color="#1000a0">throw</font> <font color="#1000a0">new</font> <a title="System.Web.HttpException.HttpException(string message, Exception innerException);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=18">HttpException</a>(<a title="System.Web.SR" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=19">SR</a>.<a title="string System.Web.SR.GetString(string name, params object[] args);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=20">GetString</a>(<font color="#800000">"Invalid_type"</font>, <font color="#1000a0">new</font> <a title="System.Object" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=21">object</a>[] { <a title="string typeName; // Parameter">typeName</a> }), <a title="ArgumentException exception1 // Local Variable">exception1</a>);<br>      }<br>      <font color="#1000a0">if</font> (<a title="Type type1 // Local Variable">type1</a> == <font color="#800000">null</font>)<br>      {<br>            <a title="System.Web.Compilation.BuildManager" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=22">BuildManager</a>.<a title="BuildManager System.Web.Compilation.BuildManager._theBuildManager;" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=23">_theBuildManager</a>.<a title="void System.Web.Compilation.BuildManager.EnsureTopLevelFilesCompiled();" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=24">EnsureTopLevelFilesCompiled</a>();<br>            <a title="Type type1 // Local Variable">type1</a> = <a title="System.Web.UI.Util" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=25">Util</a>.<a title="Type System.Web.UI.Util.GetTypeFromAssemblies(ICollection assemblies, string typeName, bool ignoreCase);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=26">GetTypeFromAssemblies</a>(<a title="System.Web.Compilation.BuildManager" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=27">BuildManager</a>.<a title="BuildManager System.Web.Compilation.BuildManager.TheBuildManager { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=28">TheBuildManager</a>.<a title="List&lt;Assembly&gt; System.Web.Compilation.BuildManager.TopLevelReferencedAssemblies { ... }" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=29">TopLevelReferencedAssemblies</a>, <a title="string typeName; // Parameter">typeName</a>, <a title="bool ignoreCase; // Parameter">ignoreCase</a>);<br>            <font color="#1000a0">if</font> (<a title="Type type1 // Local Variable">type1</a> != <font color="#800000">null</font>)<br>            {<br>                  <font color="#1000a0">return</font> <a title="Type type1 // Local Variable">type1</a>;<br>            }<br>            <a title="System.Web.Configuration.AssemblyCollection" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=30">AssemblyCollection</a> <b>collection1</b> = <a title="System.Web.Compilation.CompilationUtil" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=31">CompilationUtil</a>.<a title="AssemblyCollection System.Web.Compilation.CompilationUtil.GetAssembliesForAppLevel();" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=32">GetAssembliesForAppLevel</a>();<br>            <font color="#1000a0">if</font> (<a title="AssemblyCollection collection1 // Local Variable">collection1</a> != <font color="#800000">null</font>)<br>            {<br>                  <a title="System.Type" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=33">Type</a> <b>type2</b> = <a title="System.Web.Compilation.CompilationUtil" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=34">CompilationUtil</a>.<a title="Type System.Web.Compilation.CompilationUtil.GetTypeFromAssemblies(AssemblyCollection assembliesCollection, string typeName, bool ignoreCase);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=35">GetTypeFromAssemblies</a>(<a title="AssemblyCollection collection1 // Local Variable">collection1</a>, <a title="string typeName; // Parameter">typeName</a>, <a title="bool ignoreCase; // Parameter">ignoreCase</a>);<br>                  <font color="#1000a0">if</font> (<a title="Type type2 // Local Variable">type2</a> != <font color="#800000">null</font>)<br>                  {<br>                        <font color="#1000a0">if</font> ((<a title="Type type1 // Local Variable">type1</a> != <font color="#800000">null</font>) &amp;&amp; (<a title="Type type2 // Local Variable">type2</a> != <a title="Type type1 // Local Variable">type1</a>))<br>                        {<br>                              <font color="#1000a0">throw</font> <font color="#1000a0">new</font> <a title="System.Web.HttpException.HttpException(string message);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=36">HttpException</a>(<a title="System.Web.SR" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=37">SR</a>.<a title="string System.Web.SR.GetString(string name, params object[] args);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=38">GetString</a>(<font color="#800000">"Ambiguous_type"</font>, <font color="#1000a0">new</font> <a title="System.Object" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=39">object</a>[] { <a title="string typeName; // Parameter">typeName</a>, <a title="System.Web.UI.Util" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=40">Util</a>.<a title="string System.Web.UI.Util.GetAssemblySafePathFromType(Type t);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=41">GetAssemblySafePathFromType</a>(<a title="Type type1 // Local Variable">type1</a>), <a title="System.Web.UI.Util" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=42">Util</a>.<a title="string System.Web.UI.Util.GetAssemblySafePathFromType(Type t);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=43">GetAssemblySafePathFromType</a>(<a title="Type type2 // Local Variable">type2</a>) }));<br>                        }<br>                        <a title="Type type1 // Local Variable">type1</a> = <a title="Type type2 // Local Variable">type2</a>;<br>                  }<br>            }<br>            <font color="#1000a0">if</font> ((<a title="Type type1 // Local Variable">type1</a> == <font color="#800000">null</font>) &amp;&amp; <a title="bool throwOnError; // Parameter">throwOnError</a>)<br>            {<br>                  <font color="#1000a0">throw</font> <font color="#1000a0">new</font> <a title="System.Web.HttpException.HttpException(string message);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=44">HttpException</a>(<a title="System.Web.SR" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=45">SR</a>.<a title="string System.Web.SR.GetString(string name, params object[] args);" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=46">GetString</a>(<font color="#800000">"Invalid_type"</font>, <font color="#1000a0">new</font> <a title="System.Object" href="http://www.aisto.com/roeder/dotnet/Default.aspx?Object=47">object</a>[] { <a title="string typeName; // Parameter">typeName</a> }));<br>            }<br>      }<br>      <font color="#1000a0">return</font> <a title="Type type1 // Local Variable">type1</a>;<br>}<br></pre></td></tr></table>it doesn't have a cache (you could implement it) but it let's you specify the assemblyname, in which case it just uses Type.GetType.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2><P>OK, you've convinced me to make the change - along the lines of your second approach, using the type cache.</P>
+<P>However, I'm leaving the configuration dialog alone, so it always sets TypeName to a fully qualified type name (including the assembly), because that should provide better performance overall.</P>
+<P>But the assembly name is now entirely optional. The changes are in svn now.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Thursday, February 22, 2007</h2>Great Rocky,<br><br>expect more to come ;-)<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

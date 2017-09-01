@@ -1,0 +1,21 @@
+<html><header><title>CSLA .NET 3.8 Beta 2 available for download</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8 Beta 2 available for download</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7873.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Sunday, October 25, 2009</h2><P>I have put CSLA .NET 3.8.0 Beta 2 online for download.</P>
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG>Windows version</STRONG></A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx"><STRONG>Silverlight version</STRONG></A></LI></UL>
+<P>This completes the work for version 3.8.0, and (barring anyone finding a show-stopping issue) I plan to release 3.8 in just a couple weeks.</P>
+<P>For Windows Forms and Web Forms users there are not any major new features, but some of the bug fixes may be valuable. Upgrading from 3.7 to 3.8 should be painless for these UI types (as well as XML services and workflow interfaces).</P>
+<P>If you use WPF or Silverlight, you will almost certainly want to take a look at the features in 3.8. The downside is that there are several breaking changes in the XAML controls, but the upside is that the new XAML control implementations are far superior to previous versions. Controls impacted include:</P>
+<UL>
+<LI>PropertyStatus&nbsp;– now supports a “pull model” so a UI control can bind to properties of PropertyStatus, rather than having PropertyStatus directly manipulate the UI control’s IsReadOnly and IsEnabled properties. Also in Silverlight, PropertyStatus now makes use of the Silverlight 3 binding capabilities. 
+<LI>InvokeMethod&nbsp;– can now be triggered by any UI event, and can invoke a couple different method signatures on the DataContext. Also, MethodParameter is now bindable. The end result is that InvokeMethod provides really good support for both the CslaDataProvider model and the MVVM design pattern. 
+<LI>Execute&nbsp;– a new control that is a <EM>trigger action</EM> that works in the Blend 3 Interactivity model. This is very similar to InvokeMethod, but works with the Blend 3 scheme. 
+<LI>ViewModelBase&lt;T&gt;&nbsp;– provides a base class to make it easy to build a viewmodel class when using the MVVM pattern. 
+<LI>ViewModel&lt;T&gt;&nbsp;– provides a base class to make it easy to build a viewmodel class that works with InvokeMethod/Execute when using the MVVM pattern. 
+<LI>CslaDataProvider&nbsp;– the ObjectInstance property is now bindable, so it is possible to create master-detail (parent-child) relationships in the UI between different data provider controls.</LI></UL>
+<P>See <A href="http://www.lhotka.net/weblog/CSLANET38Beta2MVVMSupport.aspx"><STRONG><FONT color=#0000ff>this blog post</FONT></STRONG></A> for more MVVM information.</P>
+<P>Other important or interesting features include:</P>
+<UL>
+<LI>Support for System.ComponentModel.DataAnnotations validation attributes. 
+<LI>Performance enhancements for MobileFormatter, including the use of binary XML. 
+<LI>Better support for altering the behavior of IsDirty when using managed backing fields.</LI></UL>
+<P>There are also numerous bug fixes, including (hopefully) a solution to the memory leak issue with BusyAnimation. See the change logs for more details about bug fixes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, October 27, 2009</h2>Rocky,<br><br>Great release - I wish I had it 6 months ago but I will start integrating the ViewModel all over.<br><br>Thanks<br><br>jack<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

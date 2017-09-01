@@ -1,0 +1,90 @@
+<html><header><title>BusinessListbase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListbase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh posted on Friday, September 26, 2008</h2><P>Hi,</P>
+<P>&nbsp;&nbsp; I am developing the busienss objects using CSLA framework. I have the customer object(with fields id, name)&nbsp;inheriting from BusienssBase base class. Now I want to create the Collection of customers like Collection&lt;Customer&gt;. In CSLA I am creating the collection of customers like the below:</P>
+<P>class Customers : BusinessListBase&lt;Customers, Customer&gt;. Am I creating the Customers business class in the correct way?</P>
+<P>Thanks in advance</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Looks good to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KJosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 11:16 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] BusinessListbase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>&nbsp;&nbsp; I am developing the busienss objects using CSLA framework. I
+have the customer object(with fields id, name)&nbsp;inheriting from
+BusienssBase base class. Now I want to create the Collection of customers like
+Collection&lt;Customer&gt;. In CSLA I am creating the collection of customers
+like the below:<o:p></o:p></p>
+
+<p>class Customers : BusinessListBase&lt;Customers, Customer&gt;. Am I creating
+the Customers business class in the correct way?<o:p></o:p></p>
+
+<p>Thanks in advance<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, September 27, 2008</h2><P>"class Customers : BusinessListBase&lt;Customers, Customer&gt;. </P>
+<P>Am I creating the Customers business class in the correct way?"</P>
+<P>============================================</P>
+<P>Technically, the answer is Yes.</P>
+<P>Practically speaking it is No. </P>
+<P>You are inheriting directly from Csla itself. What you are "missing" is a set of intermediate Base classes which you create for each type of Csla class. (Like MyBusinessBase.)&nbsp;</P>
+<P>These Base classes are the ones that inherit directly from Csla. Then all of your business objects inherit from your own base classes. You should do this even if you do not have anything to add to your own Base classes. Because later on - you will find something unique to your systems and develpment style that will cause you to want to add something to enhance your business objects and sticking that code in your own Base classes means all your existing BOs pick up the new functionality right away - without having to go back and edit them all.</P>
+<P>There have been many posts on this topic - do a search and you should find a thread with example empty Base classes. They can be a bit tricky to create if you are not experienced in Generics. It is easier to just copy a "correct one" and give it your own name.</P>
+<P>HTH</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Sunday, September 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>There have been many posts on this topic - do a search and you should find a thread with example empty Base classes. They can be a bit tricky to create if you are not experienced in Generics. It is easier to just copy a "correct one" and give it your own name.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Hi Joe,</P>
+<P>&nbsp;Could you give me the links which explaing the creation of my own business classes inheriting from CSLA. I am not able to find them.</P>
+<P>Thanks in advance</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

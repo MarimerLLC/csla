@@ -1,0 +1,139 @@
+<html><header><title>You should NOT return “this” from GetIdValue() …</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>You should NOT return “this” from GetIdValue() …</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1445.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ioannis posted on Wednesday, October 11, 2006</h2><P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>Sorry for the catchy subject, (</SPAN><SPAN>you can read the story behind this a bit later</SPAN><SPAN>), but there is a&nbsp;benefit out of the above statement by modifying BusinessBase::Equals and ReadOnlyBase::Equals accordingly to match the following.<o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;</FONT></FONT></SPAN><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>bool</SPAN> Equals(<SPAN>object</SPAN> obj)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>&nbsp; </SPAN>if</SPAN><SPAN> (Object.ReferenceEquals(obj, <SPAN>this</SPAN>))<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>true</SPAN>;<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;</SPAN><o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>if</SPAN> (obj <SPAN>is</SPAN> T)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>object</SPAN> id = GetIdValue();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (id == <SPAN>null</SPAN>)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>ArgumentException</SPAN>(Resources.GetIdValueCantBeNull);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> id.Equals(((T)obj).GetIdValue());<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN>return Object.ReferenceEquals(id,((T)obj).GetIdValue());<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>false</SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2><SPAN>The difference is the added “</SPAN><SPAN>ReferenceEquals” block.</SPAN><SPAN><o:p></o:p></SPAN></FONT></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>This might not seem to be a real benefit at first, but “Equals” is called quite often from the Data Binding mechanism, probably for checking the equality between a data-source object of a control and the parent object of a bound method. So, most of the time the “obj” parameter and the “this” pointer refer to the very same object (I have only checked in Windows Forms UI though).<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>It would also be nice to update the documentation of “GetIdValue” to inform users of the library not to return the “this” pointer for identifying an object!<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2><SPAN></SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>The bad thing in returning the “this” pointer for identifying an object is that the “GetIdValue” is called from the overridden “GetHashCode()” and “ToString()” methods.<SPAN>&nbsp; </SPAN>For these, I think it should be documented that they would be overridden in such implementation.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>On the other hand, the framework might forgive the lazy ones and resolve the recursive call internally. Here is a possible approach. Keep in mind that these methods are not called all the time.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>int</SPAN> GetHashCode()<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>object</SPAN> id = GetIdValue();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>if</SPAN> (id == <SPAN>null</SPAN>)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>ArgumentException</SPAN>(Resources.GetIdValueCantBeNull);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>&nbsp;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>if</SPAN> (!Object.ReferenceEquals(id, <SPAN>this</SPAN>))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> id.GetHashCode();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>base</SPAN>.GetHashCode();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>int</SPAN> ToString()<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>object</SPAN> id = GetIdValue();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>if</SPAN> (id == <SPAN>null</SPAN>)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>ArgumentException</SPAN>(Resources.GetIdValueCantBeNull);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>&nbsp;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>if</SPAN> (!Object.ReferenceEquals(id, <SPAN>this</SPAN>))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> id.ToString();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>base</SPAN>.ToString();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;</FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2></FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>Thank you for your patience </FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial size=2>Ioannis</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial size=2></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2></FONT></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2><o:p></o:p></FONT></FONT></SPAN>&nbsp;</P><SPAN><BR></SPAN>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>The Story starts here.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>We had a design where some business objects had to use some transient data for as long as they were active in memory. The user could modify these data during the active session. <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>It was the best candidate for an Undoable, NonSerialized and Editable child object. So, since there was no need for permanently storing this child object – I have a C++ background – I assumed that returning the “this” pointer would be the best identification value for the Object. (Unfortunately in .Net “this” is the object itself and not some memory address placeholder).<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>The code was like this. (I presume the similarity to C# is recognized)<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>[Serializable]<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>Public <SPAN>ref</SPAN> <SPAN>class</SPAN> TransientInfo : <SPAN>public</SPAN> Csla::BusinessBase&lt;TransientInfo&gt;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>//… code<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN>:<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>virtual</SPAN> Object^ GetIdValue() <SPAN>override<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>this</SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>//… code<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>};<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2><SPAN>&nbsp;</SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>A colleague designed a User Control to edit the properties of the object using data binding. Unfortunately, when we tested the solution, by the moment we tabbed out of any editable field the application crashed. Even in the debugger, the visual studio would exit debugging mode with no reason.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>After too many breakpoints, checking with several versions of Csla and countable hours, we found out that the last known point before the debugger crashed was BusinessBase::Equals().<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN> <SPAN>override</SPAN> <SPAN>bool</SPAN> Equals(<SPAN>object</SPAN> obj)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>&nbsp; </SPAN>if</SPAN><SPAN> (obj <SPAN>is</SPAN> T)<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>object</SPAN> id = GetIdValue();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (id == <SPAN>null</SPAN>)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>ArgumentException</SPAN>(Resources.GetIdValueCantBeNull);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> id.Equals(((T)obj).GetIdValue());<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>///</SPAN><SPAN>return Object.ReferenceEquals(id,((T)obj).GetIdValue());</SPAN><o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>false</SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>It turned out that the failing point was this line. <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> id.Equals(((T)obj).GetIdValue());<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>&nbsp;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>Since we returned (this) from our GetIdValue() we had caused an infinite, recursive loop at this point!!!<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>My first reaction was to return the result of GetHashCode() as the identifying value for our objects. This is also overridden in BusinessBase though, so, we got to the same result. The final test was to temporarily return the constant value (-1), which resolved our case. <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>The point is, even though we were returning a constant value, the “obj” parameter of (Equals) was still the SAME child object. (this object!!!).<SPAN>&nbsp; </SPAN>It was evident by that moment (a bit later actually) that Equals was called through the data binding mechanism. We got the same behavior when modifying the parameters of the parent Object. So the old C++ idiom for checking the address of the this pointer (&amp;this == &amp;objParam) would be a good candidate for this method.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>So we modified the BusinessBase::Equals and ReadOnlyBase::Equals methods and we added the missing “id” field in the object! Overriding the GetHashCode() and ToString() methods as described above would be too much for this. <o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>This was our final implementation.<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><FONT size=2>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>[Serializable]<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>Public <SPAN>ref</SPAN> <SPAN>class</SPAN> TransientInfo : <SPAN>public</SPAN> Csla::BusinessBase&lt;TransientInfo&gt;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>private</SPAN><SPAN>:<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>TransientInfo()<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_id = Object::GetHashCode(); <FONT color=#008000>//==(base.GetHashCode())<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>&nbsp;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>//… code<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>private</SPAN><SPAN>:<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>[NotUndoable()]<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>[NonSerialized()]<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>int</SPAN> _id;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>//… code<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>&nbsp;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN>:<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>virtual</SPAN> Object^ GetIdValue() <SPAN>override<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> _id;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>//… code<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2>};<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>&nbsp;<o:p></o:p></FONT></FONT></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

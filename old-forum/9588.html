@@ -1,0 +1,14 @@
+<html><header><title>DenyWrite to a property but need to prepopulate the object in the Fetch?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DenyWrite to a property but need to prepopulate the object in the Fetch?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9588.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jmfan1981 posted on Wednesday, September 29, 2010</h2><p>I&#39;m a bit confused on how the authorization rules work</p>
+<p>In my AddAuthorizationRules method, i have the following:</p>
+<p>AuthorizationRules.DenyWrite(StatusProperty, &quot;Guest&quot;);</p>
+<p>in the Page i have something like</p>
+<p>MyObject myObject = User.GetData(mycriteria);</p>
+<p>GetData called the Fetch which tries to set the Status and errors out because of the DenyWrite</p>
+<p>I need to be able to set that property on the GetData, I just wanted to deny write to the property if the user did something like</p>
+<p>myObject.Status = &quot;Active&quot;;</p>
+<p>Am i missing something basic here? :)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, September 29, 2010</h2><p>Use either </p>
+<ul>
+<li>LoadProperty to load managed properties</li>
+<li>or use BypassPropertyChecks like this:<br />using (obj.BypassPropertyChecks())<br />{<br />&nbsp;&nbsp; obj.Property1 = value1;<br />&nbsp;&nbsp; ....<br />}</li>
+</ul>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,10 @@
+<html><header><title>difference between upload and download size for WCF client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>difference between upload and download size for WCF client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11979.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t posted on Monday, May 13, 2013</h2><p>Hi I am using CSLA 4.3.10.0 in a multi tier application which uses WCF in IIS 6. The WCFconfig uses the standard &#39;wsHttpBinding&#39; binding with no compression.</p>
+<p>Recently whilst testing a new app I started seeing strange exceptions whenever the remote client attempted to save data to the app server. I traced the issue down to the default 8MB limit that IIS placec on transfers.</p>
+<p>The remote client was actually parsing some csv and xml files to create a list of dirty objects, so it was fairly easy to creat a large set of dirty objects. I was able to work around the problem by&nbsp; breaking up the upload into several smaller chunks, I noticed something that has raised my curiosity.</p>
+<p>I never saw issues when retreiving data from the app server, even though the retrieved data&nbsp; contained exactly the same objects that weretoo large to save (upload). Using Fidler I saw that the size of the uploaded data (dirty objects) was around 10x the size of the retrieved (downloaded) data (I undid the chunking for the tests).</p>
+<p>&nbsp;</p>
+<p>Is there a reason for this discrepancy in size?</p>
+<p>Is there any safe way to reduce the upload size?</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>Kosta</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

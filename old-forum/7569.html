@@ -1,0 +1,90 @@
+<html><header><title>SmartDate GetProperty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate GetProperty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7569.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng posted on Thursday, September 03, 2009</h2>Hi, there.<br /><br />I trying the most simple thing here, but I'm giving up.. What do I have to do to change the format of this SmartDate. I just want to do it for this property and not for the entire app. Lets say I just want to show the day :)<br /><br />Thanks in advance<br /><br />private static PropertyInfo FromDateProperty =<br />          RegisterProperty(c => c.FromDate);      <br />       <br />        public string FromDate<br />        {<br />            get<br />            {   <br />                return GetPropertyConvert(FromDateProperty);<br />              <br />            }<br />            set<br />            {<br />                SetPropertyConvert(FromDateProperty, value);<br />            }<br />        }</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 03, 2009</h2>Hi, <br><br>Write your getter like this:<br><br>private static PropertyInfo FromDateProperty =
+          RegisterProperty(c =&gt; c.FromDate);      
+<br>       
+        public string FromDate
+<br>        {
+<br>&nbsp;&nbsp;&nbsp;&nbsp;            get
+<br>&nbsp;&nbsp;&nbsp;            {   
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;                return GetProperty(FromDateProperty).ToString("dd");
+<br>&nbsp;&nbsp;&nbsp;              
+}<br>}<br><br>In your example it doesn't make sense to have a setter. If you wish - then use the value from the user&nbsp; to create a valid datestring (or a string that SmartDate can parse, like t=today, +=tomorrow, -=yesterday, etc) and use <br>SetPropertyConvert(FromDateProperty, myFormattedValue); <br><br>/jonnybee<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 03, 2009</h2><P>That is a good solution.</P>
+<P>Or in your RegisterProperty() call use an overload that let's you specify the default value of the property, which would be a SmartDate object. As you create the SmartDate object you can initialize it (to control whether min or max means empty, and to override the default format string for SmartDate).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Friday, September 04, 2009</h2>Thanks to both of you. The solution from jonnybee worked.<br /><br />Rocky.. How do I override the default format string. Do I need a private backing field? I think I'm a bit slow here :)<br /><br /><br />private static PropertyInfo FromDateProperty =<br />          RegisterProperty(c => c.FromDate, "FromDate", new SmartDate(DateTime.Now));<br /><br />        public string FromDate<br />        {<br />            get<br />            {<br />                return GetPropertyConvert(FromDateProperty);<br /><br />            }<br />            set<br />            {<br />                SetPropertyConvert(FromDateProperty, value);<br />            }<br />        }</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 04, 2009</h2>Hi, <br><br>Register property with this command: <br><br>private static PropertyInfo FromDateProperty =
+          RegisterProperty(c =&gt; c.FromDate, "FromDate", new SmartDate(DateTime.Now){FormatString = "dd.MM.yyyy"});
+<br><br>/jonnybee<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PederSvaleng replied on Sunday, September 06, 2009</h2>Smooth! Thanks again..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, November 12, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JonnyBee:</strong></div><div>Hi, <BR><BR>Register property with this command: <BR><BR>private static PropertyInfo FromDateProperty = RegisterProperty(c =&gt; c.FromDate, "FromDate", new SmartDate(DateTime.Now){FormatString = "dd.MM.yyyy"}); <BR><BR>/jonnybee<BR></div></BLOCKQUOTE></P>
+<P>Out of curiosity, how would you write the above in VB?</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> FromDateProperty </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> SmartDate) = RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> SmartDate)(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2>(x) x.FromDate)</P>
+<P>I got this far but how do you set the Format String?</P>
+<P>Joe</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 13, 2009</h2>I don't know VB.. but when I need to convert, sometimes I compile the C#, then use Reflector.Net to get the VB version of the code.&nbsp; The latest version does a really nice job of generating code you'd actually type.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 13, 2009</h2><P>Rocky,</P>
+<P>Can you please respond to my question?</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Fortunately Bing is your friend&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The concept being used in the code (regardless of language) is a
+type initializer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Private Shared StartedProperty As PropertyInfo(Of SmartDate)
+= _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty(Of SmartDate)(Function(c) c.Started,
+&quot;Started&quot;, _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New SmartDate(Now) With
+{.FormatString = &quot;yyyy&quot;})<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 13, 2009</h2><P>Bing only helps if you can remember the key words you are looking for. &lt;g&gt;</P>
+<P>LOL.</P>
+<P>Thanks! I see how to do it now.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares replied on Tuesday, December 15, 2009</h2>Just curious, will setting the formatstring in the default value of the register propery only work when working with a newly created date?  Because I used the Type Initializer technique, but when performing a fetch and loading the property via:<br /><br />LoadProperty(SampleDateProperty, dr.GetSmartDate("SampleDate"))<br /><br />the format reverted back to the short date string default.  Should the property be loaded differently at that point in order to keep the format string?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 15, 2009</h2>The only way to globally set the default format is to use the static default<br />format on the SmartDate type itself (make sure to do this on both client and<br />server).<br /><br />Otherwise the format value is per-instance of the type. SafeDataReader<br />creates a new SmartDate when you call GetSmartDate - it has no way of<br />knowing what other formats you might have set for other SmartDate values in<br />your app.<br /><br />If you allow type coercion to work you _might_ have success:<br /><br />using (BypassPropertyChecks)<br />{<br />  SampleDate = dr.GetDateTime("SampleDate");<br />}<br /><br />This is because CSLA will attempt to update the existing SampleDate property<br />value to match the newly supplied DateTime value, thus preserving existing<br />formatting of the existing value. But if you do this you may lose some of<br />the automatic empty value processing - I'm not really sure. Try it and see<br />if it works.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would if I knew the answer&#8230;</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

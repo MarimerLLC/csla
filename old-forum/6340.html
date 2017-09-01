@@ -1,0 +1,41 @@
+<html><header><title>serialization exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>serialization exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6340.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido posted on Thursday, February 05, 2009</h2><P>Using CSLALight</P>
+<P>Please correct me if I'm wrong;&nbsp; I added the following 2 methods and a class called DateRange</P>
+<P>I am getting a serialization exception.."Add any types not known statically to the list of known types..."</P>
+<P>Any help appreciated?</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetAdditionalExpenseListRange(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateRange</FONT></FONT><FONT size=2> dateRange, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyAdditionalExpenseList</FONT></FONT><FONT size=2>&gt;&gt; handler)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyAdditionalExpenseList</FONT></FONT><FONT size=2>&gt; dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyAdditionalExpenseList</FONT></FONT><FONT size=2>&gt;();</P>
+<P>dp.FetchCompleted += handler;</P>
+<P>dp.BeginFetch(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ReadOnlyAdditionalExpense</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateRange</FONT></FONT><FONT size=2>&gt;(dateRange));</P>
+<P>}</P>
+<P>AND</P><FONT color=#808080 size=2><FONT color=#808080 size=2>
+<P>private void DataPortal_Fetch(SingleCriteria&lt;ReadOnlyAdditionalExpenseList, DateRange&gt; dateRange)</P>
+<P>{</P>
+<P>RaiseListChangedEvents = false;</P>
+<P>....</P>
+<P>CLASS</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateRange</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> DateRange()</P>
+<P>{</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> DateRange(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2> StartDate, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2> EndDate)</P>
+<P>{</P>
+<P>_startDate = StartDate;</P>
+<P>_endDate = EndDate;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2> _startDate;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2> StartDate</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _startDate; }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { _startDate = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2> _endDate;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DateTime</FONT></FONT><FONT size=2> EndDate</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _endDate; }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { _endDate = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>; }</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Thursday, February 05, 2009</h2>I needed to derive from CriteriaBase pp204</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

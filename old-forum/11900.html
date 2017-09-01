@@ -1,0 +1,153 @@
+<html><header><title>Upgraded my Silverlight project to use CSLA 4.5.20 (from 4.5.10) and the DataPortal has stopped responding.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgraded my Silverlight project to use CSLA 4.5.20 (from 4.5.10) and the DataPortal has stopped responding.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11900.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Monday, March 25, 2013</h2><p>I upgraded all CSLA references this weekend from 4.5.10 to 4.5.20 including my Silverlight project and now calls to the DataPortal (from Silverlight) have stopped functioning. The BO is calling client-side methods in Silverlight but the server-side code is never being called. The callback in Silverlight is showing an exception.</p>
+<p>System.ServiceModel.CommunicationException: The remote server returned an error: NotFound.</p>
+<p>It seems the service endpoint isn&#39;t being located but this project has been working for months and I&#39;ve changed no code or configuration recently other than the nuget update to CSLA and it&#39;s dependent packages.</p>
+<p>Any ideas?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, March 26, 2013</h2><p>Just some further info here. This really smells like configuration to me but I&#39;ve gone over the plumbing several times and I&#39;m not seeing what it could be. I haven&#39;t changed anything in Silverlight project other than the update to the new version of CSLA across all projects but I&#39;ve clearly lost connectivity to the DataPortal. I tried to find &quot;breaking changes&quot; list for 4.5.20 but the change log link goes to github and, either there are no breaking changes or they aren&#39;t listed.</p>
+<p>My App.xaml contains the following that runs at startup:</p>
+<p>
+<p>Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;</p>
+<p>Csla.DataPortalClient.WcfProxy.DefaultEndPoint = &quot;BasicHttpBinding_IWcfPortal&quot;;</p>
+<p>My ServiceReferences.ClientConfig file in Silverlight contains the endpoint definition for &quot;BasicHttpBinding_IWcfPortal&quot; and if I supply the endpoint address to a new browser while the application is running I get to the service contract page for the DataPortal so I know the endpoint is correctly named and points to a valid service endpoint. The static Get method in my BO makes a call to dataPortal.BeginFetch(criteria) in Silverlight but the DataPortal_Fetch method is never being called in the BO on the .NET side.</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 27, 2013</h2><p>Check to make sure the nuget packages in your ASP.NET host project updated correctly.</p>
+<p>Most notably, the &quot;CSLA ASP.NET MVC&quot; package won&#39;t updated automatically, because we now have two separate packages - one for MVC 3 and another for MVC 4.</p>
+<p>The same is true for Entity Framework support - we now have two new packages to support EF 4 and EF 5 respectively.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, March 27, 2013</h2><p>They look correct. The ASP.NET hosting project for the Silverlight application has only 3 CSLA assemblies referenced, Csla, Csla.Web and Csla.XmlSerializers. I installed them through the package manager console using &quot;install-package CSLA-Core and CSLA-ASP.NET. All thee assemblies show version 4.5.20.0. I went ahead and uninstalled both packages to verify that the three references were removed (they were) and then re-installed them again but still no joy.</p>
+<p>In addition, after looking around more, I&#39;ve made sure my BasicHttpBinding settings in web.config had the max values, e.g. maxBytesPerRead, maxArrayLength, etc. set to the maximum possible value. I&#39;d seen a number of posts suggesting these values set too low can cause the &quot;Not found&quot; exception I&#39;m receiving. I also saw posts where you&#39;d suggested setting up data compression which I haven&#39;t done but I do not believe this is the issue. The app has been working for months without it and the first call to the DataPortal that is failing is the login which sends and receives very little data.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, March 27, 2013</h2><p>Adding serviceModel section from web.config and ServiceReferences.ClientConfig from the Silverlight app in the hopes that someone can spot an issue. I hadn&#39;t changed any of this since I first migrated to CLSA 4 a few months ago but I&#39;m wondering if 4.5.20.0 had breaking changes that made some setting here&nbsp;erroneous.</p>
+<p>From web.conf in ASP.NET Silverlight hosting project:</p>
+<pre class="csharpcode"><span class="kwrd">&lt;</span><span class="html">system.serviceModel</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;</span><span class="html">services</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;</span><span class="html">service</span> <span class="attr">behaviorConfiguration</span><span class="kwrd">=&quot;WcfPortalBehavior&quot;</span> 
+               <span class="attr">name</span><span class="kwrd">=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot;</span><span class="kwrd">&gt;</span>      
+        <span class="kwrd">&lt;</span><span class="html">endpoint</span> <span class="attr">address</span><span class="kwrd">=&quot;&quot;</span> 
+                  <span class="attr">binding</span><span class="kwrd">=&quot;basicHttpBinding&quot;</span> 
+                  <span class="attr">bindingConfiguration</span><span class="kwrd">=&quot;BasicHttpBinding_IWcfPortal&quot;</span> 
+                  <span class="attr">contract</span><span class="kwrd">=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot;</span><span class="kwrd">&gt;</span>
+          <span class="kwrd">&lt;</span><span class="html">identity</span><span class="kwrd">&gt;</span>
+            <span class="kwrd">&lt;</span><span class="html">dns</span> <span class="attr">value</span><span class="kwrd">=&quot;localhost&quot;</span> <span class="kwrd">/&gt;</span>
+          <span class="kwrd">&lt;/</span><span class="html">identity</span><span class="kwrd">&gt;</span>
+        <span class="kwrd">&lt;/</span><span class="html">endpoint</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;/</span><span class="html">service</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;/</span><span class="html">services</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;</span><span class="html">behaviors</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;</span><span class="html">serviceBehaviors</span><span class="kwrd">&gt;</span>
+        <span class="kwrd">&lt;</span><span class="html">behavior</span> <span class="attr">name</span><span class="kwrd">=&quot;WcfPortalBehavior&quot;</span><span class="kwrd">&gt;</span>
+          <span class="kwrd">&lt;</span><span class="html">serviceMetadata</span> <span class="attr">httpGetEnabled</span><span class="kwrd">=&quot;true&quot;</span> <span class="kwrd">/&gt;</span>
+          <span class="kwrd">&lt;</span><span class="html">serviceDebug</span> <span class="attr">includeExceptionDetailInFaults</span><span class="kwrd">=&quot;true&quot;</span> <span class="kwrd">/&gt;</span>
+        <span class="kwrd">&lt;/</span><span class="html">behavior</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;/</span><span class="html">serviceBehaviors</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;/</span><span class="html">behaviors</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;</span><span class="html">bindings</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;</span><span class="html">basicHttpBinding</span><span class="kwrd">&gt;</span>
+        <span class="kwrd">&lt;</span><span class="html">binding</span> <span class="attr">name</span><span class="kwrd">=&quot;BasicHttpBinding_IWcfPortal&quot;</span> 
+                 <span class="attr">maxBufferSize</span><span class="kwrd">=&quot;2147483647&quot;</span>
+                 <span class="attr">maxReceivedMessageSize</span><span class="kwrd">=&quot;2147483647&quot;</span> 
+                 <span class="attr">receiveTimeout</span><span class="kwrd">=&quot;00:10:00&quot;</span> 
+                 <span class="attr">sendTimeout</span><span class="kwrd">=&quot;00:10:00&quot;</span> 
+                 <span class="attr">openTimeout</span><span class="kwrd">=&quot;00:10:00&quot;</span> 
+                 <span class="attr">closeTimeout</span><span class="kwrd">=&quot;00:10:00&quot;</span><span class="kwrd">&gt;</span>
+          <span class="kwrd">&lt;</span><span class="html">readerQuotas</span> <span class="attr">maxBytesPerRead</span><span class="kwrd">=&quot;2147483647&quot;</span> 
+                        <span class="attr">maxArrayLength</span><span class="kwrd">=&quot;2147483647&quot;</span> 
+                        <span class="attr">maxStringContentLength</span><span class="kwrd">=&quot;2147483647&quot;</span> 
+                        <span class="attr">maxDepth</span><span class="kwrd">=&quot;1000&quot;</span> <span class="kwrd">/&gt;</span>
+        <span class="kwrd">&lt;/</span><span class="html">binding</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;/</span><span class="html">basicHttpBinding</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;/</span><span class="html">bindings</span><span class="kwrd">&gt;</span>
+<span class="kwrd">&lt;/</span><span class="html">system.serviceModel</span><span class="kwrd">&gt;</span>
+</pre>
+<p>
+From ServiceReferences.ClientConfig:</p>
+<pre class="csharpcode"><span class="kwrd">&lt;</span><span class="html">system.serviceModel</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;</span><span class="html">bindings</span><span class="kwrd">&gt;</span>
+        <span class="kwrd">&lt;</span><span class="html">basicHttpBinding</span><span class="kwrd">&gt;</span>
+            <span class="kwrd">&lt;</span><span class="html">binding</span> <span class="attr">name</span><span class="kwrd">=&quot;BasicHttpBinding_IWcfPortal&quot;</span> 
+                     <span class="attr">maxBufferSize</span><span class="kwrd">=&quot;2147483647&quot;</span>
+                     <span class="attr">maxReceivedMessageSize</span><span class="kwrd">=&quot;2147483647&quot;</span>
+                     <span class="attr">receiveTimeout</span><span class="kwrd">=&quot;00:10:00&quot;</span>
+                     <span class="attr">sendTimeout</span><span class="kwrd">=&quot;00:10:00&quot;</span><span class="kwrd">&gt;</span>
+            <span class="kwrd">&lt;/</span><span class="html">binding</span><span class="kwrd">&gt;</span>
+        <span class="kwrd">&lt;/</span><span class="html">basicHttpBinding</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;/</span><span class="html">bindings</span><span class="kwrd">&gt;</span>
+    <span class="kwrd">&lt;</span><span class="html">client</span><span class="kwrd">&gt;</span>
+      <span class="kwrd">&lt;</span><span class="html">endpoint</span> <span class="attr">address</span><span class="kwrd">=&quot;http://localhost:49999/WcfPortal.svc&quot;</span>                
+                  <span class="attr">binding</span><span class="kwrd">=&quot;basicHttpBinding&quot;</span> 
+                  <span class="attr">bindingConfiguration</span><span class="kwrd">=&quot;BasicHttpBinding_IWcfPortal&quot;</span>  
+                  <span class="attr">contract</span><span class="kwrd">=&quot;WcfPortal.IWcfPortal&quot;</span>
+                  <span class="attr">name</span><span class="kwrd">=&quot;BasicHttpBinding_IWcfPortal&quot;</span> <span class="kwrd">/&gt;</span>
+    <span class="kwrd">&lt;/</span><span class="html">client</span><span class="kwrd">&gt;</span>
+<span class="kwrd">&lt;/</span><span class="html">system.serviceModel</span><span class="kwrd">&gt;</span>
+</pre>
+<p>End</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, March 27, 2013</h2><p>Hi Dane,</p>
+<p>It looks like I had the same problem.</p>
+<p>My configurations on the ServiceReferences.ClientConfig file were useless. So I&nbsp;changed <strong>App.xaml.cs</strong> and added</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:darkcyan;">Application_Startup</span>(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:darkblue;">StartupEventArgs</span>&nbsp;e)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">DataPortal</span>.<span style="color:purple;">ProxyTypeName</span>&nbsp;=&nbsp;<span style="color:blue;">typeof</span>(<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">DataPortalClient</span>.<span style="color:darkblue;">WcfProxy</span>).<span style="color:purple;">AssemblyQualifiedName</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">DataPortalClient</span>.<span style="color:darkblue;">WcfProxy</span>.<span style="color:purple;">DefaultUrl</span>&nbsp;=&nbsp;<span style="color:#a31515;">&quot;http://localhost:&lt;PORT&gt;/SlPortal.svc&quot;</span>;
+}
+</pre>
+<p>Of course, on the server side I had to change everything that read Hosts.Silverlight.WcfPortal to Hosts.Mobile.WcfPortal.</p>
+<p>After all the corrections, Silverlight runs lightning fast as it did on 4.3.13</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, March 27, 2013</h2><p>Tiago:</p>
+<p>Thank you for the suggestion.&nbsp;Unfortunately that didn&#39;t change anything. I had already updated all the namespacing from &quot;Silverlight&quot; to &quot;Mobile&quot; when I updated to 4.5.10 a couple months ago. Everything had been working since then right up until I updated to 4.5.20 this last weekend. Very frustrating.</p>
+<p>Even though that didn&#39;t work for me I really appreciate your time in trying to help. Thanks again.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Thursday, March 28, 2013</h2><p>I uninstalled the nuget CSLA-Silverlight package and re-installed version 4.5.10 (the version I was using prior to this problem). It appears there is&nbsp;definitely&nbsp;some issue with version 4.5.20. The server-side code of my BO classes still do not run (never gets to DataPortal_Fetch) but the exception I get now is different.</p>
+<p>NullReferenceException</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)</p>
+<p>&nbsp; &nbsp;at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.&lt;BeginFetch&gt;d__1e.MoveNext()</p>
+<p>&nbsp;</p>
+<p>The difference now is that the Csla.DataPortal is clearly being called instead of the Not Found I was previously&nbsp;receiving&nbsp;which indicated the BO was unable to locate the WCF service endpoint. I suspect this new exception has to do with the fact that I only rolled the Silverlight application&#39;s version of CSLA back and did not roll back CSLA versions for server-side code but I&#39;d rather not have to roll everything back to confirm that. The fact that I was getting a service location failure with 4.5.20 and 4.5.10 at least gets to the DataPortal suggest there&#39;s an issue with the CSLA Silverlight package 4.5.20.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Saturday, March 30, 2013</h2><p>Tonight I uninstalled all CSLA packages in my solution. That was no easy chore. I found that I had both 4.5.10 and 4.5.20 packages installed through the solution and in attempting to remove these I was actually receiving errors stating CSLA 4.5.10 could not be removed because it was a dependency of CSLA 4.5.10. I suspect this had to due with the shared .NET/Silverlight code but it was still painful to find the proper order of removal. In the end, however, I did.</p>
+<p>After the CSLA &quot;scrape&quot; I re-installed all needed CSLA packages throughout my solution. When I re-ran my Silverlight project I still received the original &quot;Not Found&quot; error. My BO Silverlight code is simply not connecting to the WCF DataPortal correctly.</p>
+<p>A short time ago I began work an ASP.NET MVC UI for my application. In that project I&#39;m finding no corresponding issues. This appears to be an issue exclusive to&nbsp;Silverlight.</p>
+<p>During tonight&#39;s clean and re-install process I again had to accept installing an &quot;RC&quot; package. Afterwards I see both packages &quot;Async for .NET Framework 4, Silverlight 4 and 5...&quot; and BCL Portability Pack for .NET Framework 4, Silverlight 4 and 5...&quot; are installed as &quot;Prerelease&quot;.</p>
+<p>Since I&#39;m out of ideas for resolving my issue and this forum thread has borne no fruit I&#39;m going to move forward on the working assumption that my issue here is arising from some issue encompassed in that word &quot;Prerelease&quot; and that a fix will someday be forthcoming.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 30, 2013</h2><p>I just returned from traveling and am slowly catching up on emails and forum posts, etc.</p>
+<p>Is your solution a .NET 4 and SL4 solution, or a .NET 4.5 and SL5 solution? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Saturday, March 30, 2013</h2><p>.NET 4.5 / Silverlight 5</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 02, 2013</h2><p>I am not sure what to suggest at this point then.</p>
+<p>I have solutions with .NET 4.5 and SL5 and 4.5.20 working just fine, so I am pretty confident that this scenario operates as expected.</p>
+<p>Have you right-clicked on the _solution_ and managed the nuget packages from that level? That is an easy way to find any old versions of packages that might be attached to one of the projects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, April 02, 2013</h2><p>Yes. I&#39;d originally used the Package Manager Console to add/update all the packages but last weekend I used the Manage nuget Packages UI accessed from the solution, stripped out all packages and re-added everything from the ground up. No change. </p>
+<p>When the application is running I can provide the browser with the endpoint address specified in the ServiceReferences.ClientConfig and get to the WSDL presented by the WCF DataPortal so I know it&#39;s active but it appears the Silverlight application is not finding that endpoint.</p>
+<p>Is it possible that there&#39;s some client access policy or cross domain issue going on all of a sudden? I&#39;ve never had to include a clientaccesspolicy.xml or crossdomain.xml file for this project before but I&#39;ve seen this exact behavior occur under Silverlight in situations where they were needed but non-existent.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, April 02, 2013</h2><p>Also, can you point me towards the latest sample project that you referenced, i.e. .NET 4.5, Silverlight 5 and CSLA 4.5.20? Maybe I can find something by performing a comparison.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 02, 2013</h2><p>The SimpleNTier project is (to my knowledge) completely up to date on all versions.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Tuesday, April 02, 2013</h2><p>I found the SimpleNTier with 4.5.20 and have the Silverlight UI running. It appears to be pulling data so I&#39;ve started looking at differences.</p>
+<p>1. SimpleNTier has no ASP.NET host project. I set the SilverlightUI project as the start in project and it appears to be connecting to the WcfHost correctly.</p>
+<p>2. SilverlightUI App.xaml.cs sets Csla.ApplicationContext.DataPortalProxy and Csla.ApplicationContext.DataPortalUrlString and has an empty ServiceReferences.ClientConfig. My project was setting Csla.DataPortal.ProxyTypeName and using the config file for endpoint. I tried changing it to use the two ApplicationContext settings and emptying the config file as in the SilverlightUI project but still no change.</p>
+<p>3. The SimpleNTier application is using task based async. I haven&#39;t converted to that yet and am still using callbacks.</p>
+<p>4. The WcfHost project in SimpleNTier contains a clientaccesspolicy.xml file. I&#39;ve never needed one before but I went ahead and added it to my ASP.NET hosting project. No change.</p>
+<p>5. References to CSLA assemblies in the SimpleNTier application are relative path while mine were all done through nuget. I&#39;ve gone through all the references numerous times and everything is set to CSLA 4.5.20 assemblies and looks correct.</p>
+<p>6. SilverlightUI specifies SlPortal.svc as the endpoint and the WcfHost application has both SlPortal.svc and WcfPortal.svc. I have only a WcfPortal.svc though the service specified it the same as in the SlPortal.svc, i.e. Csla.Server.Hosts.Mobile.WcfPortal. It looks like the WcfHost&#39;s WcfPortal.svc is for one of the other .NET projects.</p>
+<p>7. SimpleNTier appears to be using Factory Invoke data access model while I use the Encapsulated Invoke method. The data access is, however, working as expected in my MVC project.</p>
+<p>None of these seem like likely candidates but I&#39;m unable at this point to find other differences. The fact that the SimpleNTier app is accessing the DataPortal and mine isn&#39;t tells me there is some difference but I&#39;m quickly running out of ideas as to what it could be. My next step may be to remove all nuget references and roll back to relative path. Having just recently migrated the entire project to nuget package&nbsp;management this thrills me not at all but I&#39;m not sure what else to try.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, April 03, 2013</h2><p>More:</p>
+<p>1. I updated the method I&#39;ve been using as a quick test to be Task based async. No change.</p>
+<p>2. I removed all CSLA nuget packages and used relative path references to assemblies (the same ones I found in SimpleNTier). No change.</p>
+<p>3. I changed the URL in the App.xaml file to something other than what the svc endpoint is actually being hosted on. The error changed to indicate the endpoint could not be found which tells me the Silverlight app is indeed contacting the host but the host is failing to process the request.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 03, 2013</h2><p>Try using fiddler to watch the network traffic and see if the request is getting to the server, and how the server is responding.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Dane replied on Wednesday, April 03, 2013</h2><p>I was just finishing using WCF trace logging when you sent the last reply. In the trace log I found and exception was being caught at the service level. Deep in the stack trace was this:</p>
+<p>
+<p>Csla.ApplicationContext..cctor()&lt;/StackTrace&gt;&lt;ExceptionString&gt;System.IO.FileLoadException: Could not load file or assembly &#39;Csla, Version=4.5.10.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040) File name: &#39;Csla, Version=4.5.10.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39;</p>
+<p>I went back and checked all reference again. All looked good at 4.5.20. I cleaned the solution (for about the 50th time) and re-ran. Same issue. I then did a findstr on the solution directory on the text &quot;4.5.10&quot; and low and behold there were two assemblies, Csla.Windows.dll and Csla.Xml.dll sitting in the bin sub-directory of the ASP.NET hosting project that &quot;Clean Solution&quot; was not deleting. I closed the solution, manually cleaned it by deleting all obj and bin folders, re-opened it and re-ran. BINGO! Working DataPortal!</p>
+<p>I knew it was working in 4.5.10. Previously referenced assemblies were not removed by deleting the reference and cleaning the solution and the hosting project was loading them as a matter of course which, since they were dependent on previous versions of CLSA were of course causing dependency issues.</p>
+<p>Thanks for the help. Maybe I&#39;ll sleep better tonight :-)</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Wednesday, April 03, 2013</h2><p>I am having the same problem. I think the problem is&nbsp;in Silverlight ApplicationContext.DataPortalProxy is null or empty and is being set to &quot;Local&quot;. I see this code changed from version 4.3.... I am currently trying to figure out what it should be set to.</p>
+<p>See code from version 4.5.20 below. ApplicationContext.cs</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">string</span>&nbsp;DataPortalProxy
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+<span style="color:blue;">#if</span>&nbsp;!SILVERLIGHT&nbsp;&amp;&amp;&nbsp;!NETFX_CORE
+<span style="color:gray;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(string.IsNullOrEmpty(_dataPortalProxy))</span>
+<span style="color:gray;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataPortalProxy&nbsp;=&nbsp;ConfigurationManager.AppSettings[&quot;CslaDataPortalProxy&quot;];</span>
+<span style="color:blue;">#endif</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">string</span>.IsNullOrEmpty(_dataPortalProxy))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataPortalProxy&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Local&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_dataPortalProxy;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataPortalProxy&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.ResetProxyType();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, April 03, 2013</h2><p>I think that&#39;s a different issue (and one I ran into previously as well here&nbsp;<a href="http://forums.lhotka.net/forums/p/11675/54141.aspx#54141">http://forums.lhotka.net/forums/p/11675/54141.aspx#54141</a>&nbsp;). The &quot;Local&quot; DataPortal concept isn&#39;t valid in CSLA 4.5 any longer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Wednesday, April 03, 2013</h2><p>I found that PagedLlist had the same problem as my own project. So&nbsp;I tried to fix the PagedList Project.</p>
+<p>After going through the steps of upgrading the project to 4.5 .Net ...</p>
+<p>I added </p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.DataPortalProxy&nbsp;=&nbsp;<span style="color:blue;">typeof</span>(Csla.DataPortalClient.<span style="color:#2b91af;">WcfProxy</span>).AssemblyQualifiedName;
+&nbsp;&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.DataPortalUrlString&nbsp;=&nbsp;<span style="color:#a31515;"><a href="http://localhost:29082/WcfPortal.svc">http://localhost:29082/WcfPortal.svc</a></span>;</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">To the Application_Startup method in the App.xaml.cs.</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"></pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">That fixed the PagedList demo project.</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csmith1 replied on Wednesday, April 03, 2013</h2><p>For me anyways hard coding the URL and DataPortalProxy made the problem go away. But I think there is problem with Silverlight <span style="font-size:x-small;">ServiceReferences.ClientConfig configurations. I have not spent much time on this yet.</span></p>
+<p><span style="font-size:x-small;"></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane replied on Wednesday, April 03, 2013</h2><p>A user above had the same issue but I&#39;m using ServiceReferences.ClientConfig to hold my service information and it&#39;s working good again now that I removed the old assemblies that Clean Solution didn&#39;t delete.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

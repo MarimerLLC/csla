@@ -1,0 +1,14 @@
+<html><header><title>Help with Self-referencing object hierarchy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with Self-referencing object hierarchy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11951.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mswanson posted on Tuesday, April 23, 2013</h2><p>Hi,</p>
+<p>I&#39;m brand new to CSLA and have been making my way through the e-books and the forum.</p>
+<p>I have a object hierarchy like the following: &nbsp;A Circle can reference any number of other Circles and a Circle can reference any number of Squares. &nbsp;It is not child-parent relationships as circles and squares can exists without each other. &nbsp;</p>
+<p>So far, I created</p>
+<p>public class Circle : BusinessBase&lt;Circle&gt;<br />{<br />&nbsp; &nbsp;public string Name {get; set;} <br />&nbsp; &nbsp;//public CircleList Circles {get;set;}<br />}</p>
+<p>public class CircleList : BusinessListBase&lt;CircleList, Circle&gt; <br />{<br />}</p>
+<p>which gave me a start. &nbsp;But as soon as i uncommented the Circles property in the Circle object, I changed my CircleList to DynamicListBase&lt;Circle&gt;.</p>
+<p>In a test, I create two Circles, and add one as a child of the parent. &nbsp;The DataPortal_Update method is never called, so my Dal is never called to persist the Circles relationship.</p>
+<p>Could anyone give me some help on this problem?</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, May 03, 2013</h2><p>Hi,</p>
+<p>In order to propagate the save to child objects you should call</p>
+<p style="padding-left:30px;">FieldManager.UpdateChildren </p>
+<p>in your &quot;root&quot; objects DataPortal_Insert / DataPortal_Update.&nbsp; <br />This will in turn call Child_Insert / Child_Delete methods in the child objects at the next level. </p>
+<p>This is described in the<b> Using Csla4 DataAccess</b> ebook. <a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4">http://download.lhotka.net/Default.aspx?t=UsingCsla4 </a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

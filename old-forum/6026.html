@@ -1,0 +1,183 @@
+<html><header><title>Stuck /w Inheritence and ObjectFactory issue (so close)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stuck /w Inheritence and ObjectFactory issue (so close)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6026.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Friday, December 19, 2008</h2>I've been scouring the forums for hours and tweaking and re-compiling and I'm going crazy.&nbsp; It feels like I've done everything right but I'm still having an issue creating my derived class /w most of the logic in a base class.&nbsp; I've gone in circles and have almost solved it but I thought I would put it in all in post incase some other poor sap ends up down the same path.<br><br>I'll be the first to admit generics are new to me but I'm trying to keep it simple.&nbsp; I have the sense the BBLists are a little more strict.<br><br>I have three main goals and 1 constraint:<br><br>1) one stay as true to the framework as possible for future maintenance<br>2) add two layers on top of the CSLA framework - one for company, one for app for future proofing and when I have a better understanding<br>3) put as much logic in the base classes (complemented by codeGen) and then have a derived class for the UI.&nbsp; I don't really see the need for another layer.<br><br>4) Constraint - this particular UseCase is the most complex and I need to retrieve all the data at once for several BO's and BOLists so I'm using a ObjectFactory<br><br>So far everything at the base class level is working in terms of the create/fetch, however when I try to create the derived UI class by casting from my base class I get a runtime InvalidCastException exception. &nbsp;<br><br>From all the reading and playing (I got it to work but I butchered many of the CSLA concepts) I realized the answer is something along the lines of 'You need to create the DataEntrySession from its own criteria etc etc)<br><br>I have done the following:<br><br><br>2) Generic classes for my company library and my app libraries.<br><br>&nbsp;&nbsp; &nbsp;public abstract class AgcBusinessBase&lt;T&gt; : BusinessBase&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where T : AgcBusinessBase&lt;T&gt;<br>&nbsp;&nbsp; &nbsp;public abstract class EpmBusinessBase&lt;T&gt; : AgcBusinessBase&lt;T&gt;&nbsp;&nbsp; where T : EpmBusinessBase&lt;T&gt;<br><br>&nbsp;&nbsp; &nbsp;public abstract class AgcBusinessBase&lt;T&gt; : BusinessBase&lt;T&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where T : AgcBusinessBase&lt;T&gt;<br>&nbsp;&nbsp; &nbsp;public abstract class EpmBusinessBase&lt;T&gt; : AgcBusinessBase&lt;T&gt;&nbsp;&nbsp; where T : EpmBusinessBase&lt;T&gt;<br><br>&nbsp;&nbsp; &nbsp;&amp; <br><br>&nbsp;&nbsp; &nbsp;public abstract class AgcBusinessListBase&lt;T, C&gt; : AgcBusinessListBase&lt;T, C&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;where T : AgcBusinessListBase&lt;T, C&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;where C : AgcBusinessBase&lt;C&gt;<br><br>&nbsp;&nbsp; &nbsp;public abstract class EpmBusinessListBase&lt;T, C&gt; : AgcBusinessListBase&lt;T, C&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;where T : EpmBusinessListBase&lt;T, C&gt;<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;where C : EpmBusinessBase&lt;C&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>3) New base class using an objectFactory<br><br>&nbsp;&nbsp; &nbsp;[Csla.Server.ObjectFactory("Epm.Library.DataEntry.DataEntryObjectFactory, Epm.Library")]<br>&nbsp;&nbsp; &nbsp;public class DataEntrySessionBase : EpmBusinessBase&lt;DataEntrySessionBase&gt;<br>&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp; &nbsp;protected static DataEntrySessionBase GetDataEntrySessionBase(int dataSessionId)<br>&nbsp;&nbsp; &nbsp;{<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;DataEntrySessionBase&gt;(new SingleCriteria&lt;DataEntrySessionBase, int&gt;(dataSessionId));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>4) New derived class (Concrete)<br><br>&nbsp;&nbsp; &nbsp;public class DataEntrySession : DataEntrySessionBase<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static DataEntrySession GetDataEntrySession(int dataSessionId)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // *** this is where my cast exception happens ***<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //return (DataEntrySession)DataEntrySessionBase.GetDataEntrySessionBase(dataSessionId);<br><br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // proper call <br>&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;DataEntrySession&gt;(new SingleCriteria&lt;DataEntrySession, int&gt;(dataSessionId));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp; &nbsp;<br>5) In my windows form I'm populating my local dataEntrySession object to do databinding:<br><br>&nbsp;&nbsp; &nbsp;dataEntrySession = DataEntrySession.GetDataEntrySession(12345);<br>&nbsp;&nbsp; &nbsp;<br>So I was able to make a few tweaks but I'm not really liking where I ended up - I changed the GetDataEntrySession in the derived class so that it calls the DataPortal_Fetch and I end up in my ObjectFactory_Fetch.<br><br>This still didn't help as it had been calling the base.NewBase().&nbsp; I removed that call and replaced it with something using reflection that I pulled out of the forums:<br><br>&nbsp;&nbsp;&nbsp;&nbsp; object dataEntrySession = Activator.CreateInstance(criteria.ObjectType, new object[] {criteria.Value});<br>&nbsp;&nbsp;&nbsp; &nbsp;<br>The problem with this is that it requires a non-private constructor as the ObjectFactory is its own class and that seems to violate the CSLA methodologies.<br><br><br>Long story short - I have some inklings why I can't cast to get someDerivedBO = (DerivedBO)BaseBO.GetBaseBO(12345) but I don't really understand why not.&nbsp; I thought maybe it was to do with generics but I'm not so sure now.<br><br>I guess what I need help with is how to actually properly create or get an instatiated DerivedBO into the ObjectFactory for the base class. &nbsp;<br><br>1) Maybe it is as simple as just deriving another objectFactory from the base class? &nbsp;<br>2) The ObjectFactory can create either a BaseClass or a DerivedClass based on the criteria object?&nbsp; That seems almost wrong though..<br>3) Some of way of once I'm in the ObjectFactory of getting back to the calling class to instiantiate?<br><br>Help, I'm so close :-)<br><br>Thanks <br><br>jack</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 19, 2008</h2>Your factory methods must be declared on your ultimate subclass.&nbsp; A DerivedBo is a BaseBo, but a BaseBo isn't necessarly a DerivedBo... it could be a Derived_2Bo, and there's no way BaseBo has enough information to instanciate Derived_2BO (or DerivedBo, for that matter).<br><br>Csla doesn't impose this restriction though, it's just how object oriented design works.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, December 19, 2008</h2>Yeah I got through that part - I was so concerned with generics and inheriting problem /w respect to the CSLA that I wasn't paying attention.<br><br>How would you recommend solving my final issue - how to actually instantiate the derivedBO from the ObjectFactory.&nbsp; For now I just quickly created a derived ObjectFactory and created a stub in both the base/descendant<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; object GetNewBO( ) which calls either NewBaseBO( ) or NewDerivedBO( )<br><br>It seems to work and be fairly clean but I don't want it to bite me in the ass down the road.<br><br>thx<br><br>Jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 19, 2008</h2>I've not looked at the ObjectFactory yet, so I don't know if I can help you specifically.&nbsp; I will say that at some point <b>something </b>needs to decide which factory method to call (Dervired or Base).&nbsp; So there will probably have to be code somewhere that makes the decision.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Friday, December 19, 2008</h2>Keep adding generic in your DataEntrySessionBase&lt;T&gt;, then<br>&nbsp;public class DataEntrySession : DataEntrySessionBase&lt;DataEntrySession&gt;<br><br>in csla, whenever you want to name a class as something base, you very likely need to pass inheritor's type back to this base to take advantage of base DP methods.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, December 19, 2008</h2>Frank,<br><br>thanks for you input - I thought I read some posts where Rockford recommending creating a concrete class as high as possible in the inheritance chain?&nbsp; <br><br>I don't really see any need (other than maybe something specific for a different UI ) that I would want to derive any further?<br><br>Or are you saying keep everything generic as long as possible?&nbsp; I'm not sure I really understand what the benefit for me is?<br><br>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, December 19, 2008</h2><P>someDerivedBO = (DerivedBO)BaseBO.GetBaseBO(12345) </P>
+<P>Your Base BO can have factory methods in it - but only if they use the final type! Not the Base type.</P>
+<P>I code generate all my Base classes and then inherit from&nbsp;them. The final types have very little code in them. Only stuff I need to override.</P>
+<P>So your code above should be:</P>
+<P>someDerivedBO = DerivedBO.GetDerivedBO(12345) </P>
+<P>even though it is located in your Base class.</P>
+<P>If you are bothered by the fact that it is inthe wrong level then you have to remove the factory methods from base and push them down into the derived class instead. ("Where they belong").</P>
+<P>The disadvantage to that is you are cluttering the empty final type with code that is easily generated - no need to hand craft it.</P>
+<P>Your call.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, December 19, 2008</h2>I'm not bothered just frustrated :-)<br><br>So are you saying the base class should not have factory methods?&nbsp; or that you codeGen it all and then override the factory method in the derived class? (which I've now done).&nbsp; I'm a touched confused by your (*where it should be*) comment.<br><br>I've done:<br><br>BaseBO -&gt; GetBaseBO -&gt; BaseFactoryObject -&gt; Fetch -&gt; GetNewBO -&gt; FetchData<br><br>DerivedBO -&gt; GetDerivedBO -&gt; DerivedFactoryObject -&gt; BaseFactoryFetch -&gt; DerivedGetNewBO -&gt; FetchData.<br><br>So I basically override the GetBaseBO and added a derivedFactoryObject with a overrideed GetNewBO so that the baseFactoryObject can fetch into a derivedBO.<br><br>Make sense?&nbsp; I don't mind it.&nbsp; I have to hand-code the Fetch anyways so I'm only adding have dozen lines to the derived classes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Friday, December 19, 2008</h2>Hmm... I use static factory methods in base classes all the time, and haven't had trouble using them. At the same time, I don't use ObjectFactory. Perhaps it has code that relies on a factory method implemented at the most-derived level, rather than walking the inheritance stack looking for a static method.<br /><br />So long as the factory on your base class returns T (T being defined as your ultimate sub-class), it should work from a language perspective...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, December 19, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoshL:</strong></div><div>Hmm... I use static factory methods in base classes all the time, and haven't had trouble using them. At the same time, I don't use ObjectFactory. Perhaps it has code that relies on a factory method implemented at the most-derived level, rather than walking the inheritance stack looking for a static method.
+
+So long as the factory on your base class returns T (T being defined as your ultimate sub-class), it should work from a language perspective...</div></BLOCKQUOTE><br><br>My baseClass factory method isn't returning T, it is returning baseClass.&nbsp; <br><br>I think I'm maybe trying to do too much in the base classes.&nbsp; Things are getting worse now as I start trying to expose BOLists to databinding.&nbsp; <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, December 21, 2008</h2><P>Both Josh and I have tried to tell you that your Base class factory mnethopds *must* return T - the ultimate final type - *not* the base type.</P>
+<P>My other comment about "where they belong" is due to the fact that if you read all the code in the base class it looks funny to see the final type as the return value of your factory methods. You might think " that code does not belong here - it belongs in the final type." When I code gen my classes I leave the factory methods with the final type in the generated level. That way I do not have to write them in the final type which is where my hand coded stuff goes. It makes it cleaner for me - though it could be slightly confusing - as this thread has demonstrated.</P>
+<P>Bottom line:</P>
+<P>Your code above should be:<BR>someDerivedBO = DerivedBO.GetDerivedBO(12345) <BR>*even though it is located in your Base class*.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, December 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Joe,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you for clarifying &#8211; It is indeed confusing and I
+just wanted to clarify that was exactly what you were saying.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I will take you suggestion under consideration &#8211; It does
+seem like a different approach and perhaps as I add more and more codegen steps
+I will see that is a technique that will work for me (it seems almost like
+cheating </span><span>J</span><span>).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, December 21, 2008 12:43 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Stuck /w Inheritence and ObjectFactory issue
+(so close)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Both Josh and I have tried to tell you that your Base class factory
+mnethopds *must* return T - the ultimate final type - *not* the base type.<o:p></o:p></p>
+
+<p>My other comment about &quot;where they belong&quot; is due to the fact that
+if you read all the code in the base class it looks funny to see the final type
+as the return value of your factory methods. You might think &quot; that code
+does not belong here - it belongs in the final type.&quot; When I code gen my
+classes I leave the factory methods with the final type in the generated level.
+That way I do not have to write them in the final type which is where my hand
+coded stuff goes. It makes it cleaner for me - though it could be slightly
+confusing - as this thread has demonstrated.<o:p></o:p></p>
+
+<p>Bottom line:<o:p></o:p></p>
+
+<p>Your code above should be:<br>
+someDerivedBO = DerivedBO.GetDerivedBO(12345) <br>
+*even though it is located in your Base class*.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, December 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>For the next struggling person coming along I did some more
+searching and this is really ultimately what I&#8217;m trying to achieve &#8211; my current
+2<sup>nd</sup> layer of inheritance soley for the UI is the problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://forums.lhotka.net/forums/thread/17974.aspx">http://forums.lhotka.net/forums/thread/17974.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, December 21, 2008 12:43 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Stuck /w Inheritence and ObjectFactory issue
+(so close)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Both Josh and I have tried to tell you that your Base class factory
+mnethopds *must* return T - the ultimate final type - *not* the base type.<o:p></o:p></p>
+
+<p>My other comment about &quot;where they belong&quot; is due to the fact that
+if you read all the code in the base class it looks funny to see the final type
+as the return value of your factory methods. You might think &quot; that code
+does not belong here - it belongs in the final type.&quot; When I code gen my
+classes I leave the factory methods with the final type in the generated level.
+That way I do not have to write them in the final type which is where my hand
+coded stuff goes. It makes it cleaner for me - though it could be slightly
+confusing - as this thread has demonstrated.<o:p></o:p></p>
+
+<p>Bottom line:<o:p></o:p></p>
+
+<p>Your code above should be:<br>
+someDerivedBO = DerivedBO.GetDerivedBO(12345) <br>
+*even though it is located in your Base class*.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,125 @@
+<html><header><title>Logging Changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Logging Changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10385.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Wednesday, May 18, 2011</h2><p>I&#39;ve brought up this topic several times in the past, and for that I beg your pardon.&nbsp;&nbsp; I&#39;m starting over in WPF and CSLA 4.0.1 and I&#39;m enjoying the journey but now the time has come to re-architect a couple of items that have proved problematic.&nbsp; One of these items is the horrible way I handled logs in the past.&nbsp; I&#39;d like to do the right thing moving forward.</p>
+<p>Generally in my applications a user opens a record.&nbsp; Each record will contain the name of a client and numerous charges.&nbsp; Each charge has a sub-collection of payments.&nbsp;&nbsp; Because multiple users can access each record it&#39;s important to log changes so that it&#39;s clear who did what to the record and when.&nbsp; I&#39;ve solved this in the past by creating a &quot;Logs&quot; collection.&nbsp; Each time something would change in the parent object or any of it&#39;s children a new Log item would be created and added to the collection.&nbsp; </p>
+<p>A log would generally look like this: 10/10/2011 9:45 AM User Tacobob changed the First Name value from &#39;Gates&#39; to &#39;Jobs&#39;.</p>
+<p>I&#39;ve tried so many different and ultimately brittle things.&nbsp; I&#39;ve bubbled changes to child objects all the way up to the parent who then created the log and deposited into the parent&#39;s log collection.&nbsp; I&#39;ve tried added log collections to each individual object and had each object manage it&#39;s own.&nbsp; I&#39;ve altered CSLA business objects to accomplish some of this - the stuff works but it is a nightmare.&nbsp;&nbsp; Much of this was accomplished inside each property so that the old and new value was available.&nbsp; Obviously, dependency properties are not where I want to be adding additional code.</p>
+<p>I&#39;m thinking about just creating the log notes in the stored procedures (New, Update, Delete) for each object type.&nbsp;&nbsp; That is, when a new record is created write a copy to the object&#39;s log table.&nbsp; When the record is updated, write a copy of the update to the object&#39;s log table...and so on.&nbsp; This way I don&#39;t have to touch the code and I could possibly show the entire history of the object is a nice pop-up window if the user requested it.&nbsp;&nbsp; The downside is I&#39;d be storing lots of extra data but then storage is cheap on the tiny systems I write anyways.</p>
+<p>Thoughts?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Wednesday, May 18, 2011</h2><p>Hi!</p>
+<p>Personnally I don&#39;t like to include lot&#39;s of logic in stored procedures.&nbsp; In fact, the only stored procedures we use are the ones requiring max performance.&nbsp; When it comes to handle the kind of scenarios you are talking about, I strongly advise you to stay in the &quot;world of CSLA and OOP&quot;.&nbsp; And moreover, use a unit testing approach and you won&#39;t be overwhelmed by classes too complex to maintain and use and you&#39;ll be sure of the result.</p>
+<p>That said, we faced the same challenge on our main project and developed some pretty helpful classes, one of which is called &quot;StampBase&quot;.&nbsp; I&#39;ll provide the main concepts so you&#39;ll see the idea behind.&nbsp; Here&#39;s StampBase&#39;s signature :</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">abstract</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">StampBase</span>&lt;TStampEntity,&nbsp;TParentEntity&gt;&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;TStampEntity&gt;,&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">             <span style="color:#2b91af;">IStamp</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">where</span>&nbsp;TStampEntity&nbsp;:&nbsp;<span style="color:#2b91af;">StampBase</span>&lt;TStampEntity,&nbsp;TParentEntity&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">where</span>&nbsp;TParentEntity&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;TParentEntity&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>StampBase has some properties like : User, StampDate, Description, LastChanged, StampType (an enum with Created, Modified, etc... values)&nbsp;and ParentEntityId</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;TEntityId&gt;&nbsp;ParentEntityIdProperty&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegisterProperty&lt;TEntityId&gt;(o&nbsp;=&gt;&nbsp;o.ParentEntityId,&nbsp;<span style="color:#2b91af;">StampResources</span>.ParentEntityId);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">abstract</span>&nbsp;TEntityId&nbsp;ParentEntityId&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;<span style="color:blue;">set</span>;&nbsp;}
+</pre>
+<p>sub classes may look like this</p>
+<p><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CustomerStamp</span>&nbsp;:&nbsp;<span style="color:#2b91af;">StampBase</span>&lt;<span style="color:#2b91af;"><span style="color:#2b91af;">CustomerStamp</span><span style="color:#000000;">&nbsp;</span></span>,&nbsp;<span style="color:#2b91af;">Customer</span>&gt;<br />{</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">Int32</span>&gt;&nbsp;CustomerIdProperty&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">Int32</span>&gt;(o&nbsp;=&gt;&nbsp;o.CustomerId);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">Int32</span>&nbsp;CustomerId
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(CustomerIdProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(CustomerIdProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;StampBase&nbsp;overrides
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:#2b91af;">Int32</span>&nbsp;ParentEntityId
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;CustomerId;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;CustomerId=&nbsp;<span style="color:blue;">value</span>;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+}</pre>
+<pre><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">So you will find a StampBase sub class for each object that is &quot;stampable&quot;, or if you prefer, all business object implementing IStampable.</span></pre>
+<pre><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">IStampable exposes the properties and methods required on the parent, including the StampList.</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">    public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">StampList</span>&lt;<span style="color:#2b91af;">CustomerStamp</span>,&nbsp;<span style="color:#2b91af;">Customer</span>&gt;&gt;&nbsp;StampListProperty&nbsp;=</pre>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">StampList</span>&lt;<span style="color:#2b91af;">CustomerStamp</span>,&nbsp;<span style="color:#2b91af;">Customer</span>&gt;&gt;(o&nbsp;=&gt;&nbsp;o.StampList,&nbsp;<span style="color:#2b91af;">CustomerResources</span>.StampList);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">StampList</span>&lt;<span style="color:#2b91af;">CustomerStamp</span>,&nbsp;<span style="color:#2b91af;">Customer</span>&gt;&nbsp;StampList
+	{
+			<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">EntityLoader</span>.LoadStampList&lt;<span style="color:#2b91af;">Customer</span>,&nbsp;<span style="color:#2b91af;">CustomerStamp</span>&gt;(<span style="color:blue;">this</span>,&nbsp;StampListProperty,&nbsp;(<span style="color:#2b91af;">Int32</span>)<span style="color:#2b91af;">StampParentEntity</span>.Customer);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(StampListProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+	}</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="font-size:small;"><span style="font-family:Calibri;"><p><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">Finally, we centralized in an ObjectFactory derived class the standard stamps persistance related management </span></p><p><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">using the business object&#39;s metastate.<span style="mso-spacerun:yes;">&nbsp; </span>For example, if the business object implements IStampable and IsNew == true,</span></p><p><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;"> then we can add a Stamp with StampType = Created.<span style="mso-spacerun:yes;">&nbsp; </span>The object&#39;s is serialized as an XML document in order to persist </span></p><p><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">an image of each properties values.<span style="mso-spacerun:yes;">&nbsp; </span>When it is modified, you can easily imagine what we&#39;re doing : serialize the object again.<span style="mso-spacerun:yes;">&nbsp; </span></span></p><p><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;"><span style="mso-spacerun:yes;"></span>Then you can have an object who can compare 2 images taken from the object&#39;s StampList and highlight the differences.</span></p><p><span style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:9pt;">Hope this helps!</span></p><font size="3"><font face="Calibri"><p class="MsoNormal" style="MARGIN:0cm 0cm 10pt;">&nbsp;</p></font></font></span><font size="3"><p class="MsoNormal" style="MARGIN:0cm 0cm 10pt;">&nbsp;</p></font></span><p class="MsoNormal" style="MARGIN:0cm 0cm 10pt;">&nbsp;</p></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Wednesday, May 18, 2011</h2><p>Interesting solution.&nbsp;&nbsp;&nbsp; I see several ideas in there that I really like.</p>
+<p>Couple Questions:</p>
+<p>1: When creating new Stamp objects I assume these are created when the parent object is saved to the database?&nbsp; That is, in the &#39;insert&#39; operation you&#39;d check to see if the object is stampable and if it is new (new gets checked before getting there, but whatever) and if so insert a stamp object into the database?&nbsp; I assume you do that with updates/deletes as well?</p>
+<p>2: Do all stamps get stored in the same table?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Wednesday, May 18, 2011</h2><p>1. You&#39;re right, we handle this in the direct ObjectFactory sub class.&nbsp; Then, if for a given scenario we need to log a specific event, (for example if an object is set to inactive), then the specific object factory is responsible of detecting the state and adding the stamp.&nbsp; Let&#39;s say we have some classes like :</p>
+<p>public abstract class ObjectFactoryBase&lt;TEntity&gt; : ObjectFactory</p>
+<p>&nbsp; where TEntity : BusinessBase&lt;TEntity&gt;</p>
+<p>{ </p>
+<p>public virtual TEntity Update(TEntity entity)</p>
+<p>{</p>
+<p>&nbsp; // handle standard stamps here</p>
+<p>&nbsp; // persist entity + it&#39;s children</p>
+<p>}</p>
+<p>}</p>
+<p>and </p>
+<p>public abstract class CustomerFactory : ObjectFactoryBase &lt;Customer&gt;</p>
+<p>{ </p>
+<p>public override Customer Update(Customer entity)</p>
+<p>{</p>
+<p>&nbsp; // handle specific stamps here</p>
+<p>&nbsp; return base.Update(entity);</p>
+<p>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>2.&nbsp; </p>
+<p>Yes we store them in only one table, with a FK per parent business object.&nbsp; With appropriate indexes it&#39;s not a big issue.&nbsp; We currently have over 4.5 million stamps in the production DB.&nbsp; But still, it&#39;s entirely a DAL based decision.&nbsp; You could store them in different tables if you prefer to.</p>
+<p>Enjoy!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Monday, May 23, 2011</h2><p>edore,</p>
+<p>I&#39;ve been thinking more about your solution and I&#39;m under the impression that it&#39;s a bit more complex than it needs to be.&nbsp;&nbsp; My problem is that I&#39;m not seeing the benefit to all the inheritence and generics that you use.&nbsp; I&#39;m not saying there isn&#39;t a benefit <em>- I likely don&#39;t have the experience to see it.</em></p>
+<p>For example, if I had a &quot;stamp&quot; object that was comprised of these properties:</p>
+<p>ParentId, LastUpdated, User, XML(XML representation of object)</p>
+<p>Why wouldn&#39;t I just created a lazy loading collection of these &quot;stamp&quot; objects on each object for which I desire a &quot;stamp&quot;?&nbsp;&nbsp; Every time a record is inserted/updated/deleted the appropriate stamp is created in the database.&nbsp; It seems to me that I could get the same effect without all the additional complexity.</p>
+<p>It seems to me with a simplier approach all of the benefits are realized in addition to keeping things much more readable.&nbsp;&nbsp;&nbsp; </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 18, 2011</h2><p>Hi,</p>
+<p>Which databases do you need to support?&nbsp; </p>
+<p>I have done this using&nbsp; insert/update triggers in SQL server many years ago using T-Sql - but not so trivial code.</p>
+<p>A couple of alternatives:</p>
+<ol>
+<li>SQL Server 2008 has the build in function &quot;Change Data Capture&quot;. No code needed in your app.&nbsp;</li>
+<li>You could use the CustomFieldData to keep Original/New value of a field and create a generic change logger to your own data table. </li>
+</ol>
+<p>The CustomFieldData approach will move the existing value to original value the first time a field is changed and will not generate a lot of overhead in memory. The drawback is that this will only work for &quot;managed properties&quot; and not for private properties (like NonSerializable properties or intergraph references). </p>
+<p>I would not recommend to create new/update/delete procedures for this - if you are going to do this in the database then use builtin functions or triggers.</p>
+<p>Jon Galloway posted a generic audit trigger in T-SQL: <br /><a href="http://weblogs.asp.net/jgalloway/archive/2008/01/27/adding-simple-trigger-based-auditing-to-your-sql-server-database.aspx%20">http://weblogs.asp.net/jgalloway/archive/2008/01/27/adding-simple-trigger-based-auditing-to-your-sql-server-database.aspx </a></p>
+<p>You could also write a trigger in C#/VB.NET to run in the SqlServer CLR:<br /><a href="http://www.sqlservercentral.com/articles/SS2K5+-+CLR+Integration/creatingagenericaudittriggerwithsql2005clr/2502/">http://www.sqlservercentral.com/articles/SS2K5+-+CLR+Integration/creatingagenericaudittriggerwithsql2005clr/2502/ </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Wednesday, May 25, 2011</h2><p>Hi MadGerbil,</p>
+<p>I second JonnyBee&#39;s approach of using DB-functionality for the job.<br />The main reason for that is answering the following question:</p>
+<p>Do you intend to log data changes at all or do you intend to log data changes only made by users via your business objects?</p>
+<p>By logging build on triggers you capture every(!) data change and not only those made through your application objects. In so far your description &quot;users open a record&quot; is only half of the truth, since they retrieve/fetch data for business objects which might represent, but not ARE your data!<br />So it&#39;s always possible for other apps (even if it&#39;s &#39;only&#39; SQL-Server Management console!)&nbsp;to access same data or SQL-Commands like UPDATE or DELETE...<br />Another aspect, altough it seems a little outdated, watching todays discussions,&nbsp;is to reduce traffic between layers and tiers. By relaying on DB-triggers no additional bit is transported over the wire, which at least to me (a little outdated as stated before ;-)) sounds good.</p>
+<p>Best wishes</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Wednesday, May 25, 2011</h2><p>vschaak,</p>
+<p>I think your point about capturing <em>all</em> data changes is superb.&nbsp;&nbsp; </p>
+<p>That said, I prefer the object approach for the simple reason that I&#39;d rather work with objects than with a long database script.&nbsp;&nbsp;That said, I don&#39;t want to use an object approach that complicates my objects by quite a bit.</p>
+<p>In short, you guys have managed to put some good stuff on the table and now I have to kick it around for a bit.&nbsp; :D</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 25, 2011</h2><p>If you look at the links in my previous reply you can run one SQL script that will add a generic trigger to all your tables. </p>
+<p>Jon Galloway posted a generic audit trigger in T-SQL: <br /><a href="http://weblogs.asp.net/jgalloway/archive/2008/01/27/adding-simple-trigger-based-auditing-to-your-sql-server-database.aspx%20">http://weblogs.asp.net/jgalloway/archive/2008/01/27/adding-simple-trigger-based-auditing-to-your-sql-server-database.aspx </a></p>
+<p>and this is in turn based on this article:<br /><a href="http://www.simple-talk.com/sql/database-administration/pop-rivetts-sql-server-faq-no.5-pop-on-the-audit-trail/">http://www.simple-talk.com/sql/database-administration/pop-rivetts-sql-server-faq-no.5-pop-on-the-audit-trail/</a>&nbsp; </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Wednesday, May 25, 2011</h2><p>I think both of the proposed solutions are actually solving slightly different problems.</p>
+<p>Problem #1: The need to record any changes to the data so that in the event of errors/fraud/etc. it is possible to determine who did what and when.</p>
+<p>Problem #2: Presenting the various versions of the data in a way that is useful to the&nbsp;end&nbsp;user (and not necessarily the DB guy).</p>
+<p>I&#39;ll refer to the two solutions as the &quot;Database Solution&quot; and the &quot;Object Solution&quot;.</p>
+<p>The Database Solution is obviously the superior choice when it comes to capturing any/all changes to database records.&nbsp;&nbsp;I think this is&nbsp;an IT favorite because of the ease of implementation and the completeness of the records kept.&nbsp; &nbsp;If that were the only requirement of the project there would be no contest.&nbsp; However, I think the Database Solution begins to fall apart when it comes to actually presenting the data to the users.&nbsp;&nbsp; From my perspective, a developer would still be stuck creating a multitude of objects to make an object history presentable to an end user (no time saved there).&nbsp;&nbsp; Consider the presentation of an enumeration value which would be stored in the database as an integer but would need to be presented in a history form (or grid) as a string - in short, it appears as if it would be necessary to create an entire object library just to handle the presentation portion so it doesn&#39;t really appear to save any time on that front.&nbsp;&nbsp; It also isn&#39;t clear to me how well non-string values would be handled.&nbsp; (Old/New values in the log table would have to handle a variety of types or be converted)</p>
+<p>The Object Solution I believe is the superior choice when it comes to presentation.&nbsp; Obviously, if the solution allowed for changes to the tables to be made without using the built in logging on an object it would be possible for non-logged changes to be made<em> - which is a significant disadvantage.</em></p>
+<p>So it appears to me the two solutions are emphasizing different aspects of the logging process.&nbsp;&nbsp; One focuses primarily on user presentation and the other focuses on capturing absolutely everything.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Thursday, May 26, 2011</h2><p>Hi MadGerbil,</p>
+<p>in a certain way, you&#39;re absolutely right. I come from a database background and thereby I judge data in another way than some OO guy&#39;s, that&#39;s right. An actual project of mine is to migrate data used by one app into data used by another app without loosing too much. There the old app is of no&nbsp; further worth for the customer, but data stored via the app definitly is!<br />And yes, capturing data-logs in a way users can <span style="text-decoration:underline;">really</span> work with, couldn&#39;t be achived with no cost, be it via the db approach or the OO approach.<br />Reflecting my background, you can imagine that I dislike the idea of having data only stored in enums in the app and not the DB. And as soon you&#39;ve got the data stored in the DB you&#39;ll be able to JOIN data from several tables together to get a user-readable result. This applies to the INSERTED and DELETED tables in a trigger, to.<br />Let&#39;s think of a typical &#39;link-relation&#39;, where a n:m relation is resolved. Those tables&nbsp;often consist of two ID-values and maybe some status-info. Presenting the user that the relation between Employee #3 and department #8 has been deleted is indeed a little challenging, to say at least. There you&#39;ll probably join to the user and the department-table and there you&#39;ll have the user-readable values, that can be presented!</p>
+<p>If needed I can go into that deeper and provide an example. Just tell me.</p>
+<p>Best wishes and good luck</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

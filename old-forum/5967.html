@@ -1,0 +1,74 @@
+<html><header><title>ChildDataPortal objectfactory</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildDataPortal objectfactory</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5967.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, December 10, 2008</h2><P>I see that only the DataPortal can make use of the Objectfactory.<BR><BR>The ChildDataPortal doesn't know about any Objectfactory?<BR>Methods are called on the business object self: Child_Create, Child_Fetch, Child_Insert, Child_Update, Child_DeleteSelf</P>
+<P>I tried to fetch child data and ran into this issue, maybe by design. But it means that an child can't get it's own data? Calling DataPortal.FetchChild won't work with the Objectfactory.</P>
+<P>Please more details :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 10, 2008</h2><P>ObjectFactory is discussed in the <EM>Expert C# 2008 Business Objects</EM> book that should be available any day now.</P>
+<P>I also provide some good discussion of ObjectFactory on my blog at <A href="http://www.lhotka.net/weblog">www.lhotka.net/weblog</A>.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 10, 2008</h2>Amazon is telling me my order should ship on 12/26, if that helps anyone...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Friday, December 12, 2008</h2>We got the e-book already, but still can't figure out how to update children in this new ObjectFactory of Root BO.<br><br>In the classic DataPortal way, we could call FieldManager.UpdateChildren(this) in RootBO.DataPortal_Update().<br><br>Now in this separated ObjectFactory, how can we update children in the similar way? The FieldManager is protected.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The object factory model TOTALLY DELEGATES ALL RESPONSIBILITY TO
+THE FACTORY OBJECT.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, you can load your child objects however you&#8217;d
+like &#8211; it isn&#8217;t CSLA&#8217;s responsibility any longer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ultimate goal of ObjectFactory is to allow an ORM
+(specifically some future version of ADO.NET EF) to totally create and populate
+your object graph from the database. In that case the ORM would create the
+child objects and load them with data. How will that work? That depends on what
+Microsoft ultimately does with EF &#8211; and the answer is unknown today.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ignoring EF, the short answer is that you need to devise your
+own interface or technique for how your factory object will interact with your
+business objects. I intentionally didn&#8217;t solve that problem, because
+there are numerous possible solutions &#8211; each with pros and cons &#8211;
+and until I know where EF is going I can&#8217;t effectively choose between
+them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In Chapter 18 I discuss a number of data access solutions and
+techniques &#8211; and that&#8217;s not even an exhaustive list, just the
+highlights. If I picked any one of them as the exclusive way to do persistence I&#8217;d
+piss off more people than I&#8217;d make happy. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I certainly don&#8217;t see ObjectFactory as the ultimate
+replacement for the normal data portal behavior. The normal data portal
+behavior is far simpler to code, and is probably preferable for most scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, like I said in another thread, as time goes on it may
+be that some specific pattern emerges that is clearly the &#8220;right way&#8221;
+to use the object factory, and if that happens I may make CSLA directly support
+that pattern &#8211; as long as it doesn&#8217;t interfere with the primary
+goal of supporting some future version of EF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Friday, December 12, 2008</h2>I exposed the FieldManager in my BaseBO, then problem fixed. <br>ObjectFactory is great!&nbsp; Please add more features like this in the future to make CSLA more open.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, December 17, 2008</h2>The ObjectFactory looks like the only way of seperating data access from the business. But still that the business object should be able to use "lazy loading" childeren when needed. Just by checking if the child property is loaded or not.<br /><br />Anyway, we're playing with CSLA to see if the pros are winning against the cons, my company is going to buy the book (they said 3 weeks ago) :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Wednesday, December 17, 2008</h2>Does this mean "don't use objectFactory to lazy-load child" until the "right way" appear?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Friday, December 19, 2008</h2>I have no idea, lazy loading works with just another objectfactory for the child. I rather didn't test it yet if it works the other way around, persisting it to a storage.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

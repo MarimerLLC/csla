@@ -1,0 +1,95 @@
+<html><header><title>Objects that are marked busy may not be saved - Async solution</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Objects that are marked busy may not be saved - Async solution</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11854.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Tuesday, February 26, 2013</h2><p>Hi,</p>
+<p>I&#39;m trying to save a business object which as async rules, which is not bound to a form/windows.</p>
+<p>I&#39;m creating the object, filling it, and immediatly trying to save it, in the UI thread.</p>
+<p>As a consequence, when saving, IsBusy is still true (my async business rules never completed), and save fails.</p>
+<p>I assumed that I need to release the UI thread, to let my async rules return and update my object.</p>
+<p>&nbsp;</p>
+<p>Therefire, I tried solving my provlem by overriding SaveAsync, as below.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Protected Overrides Async Function SaveAsync(forceUpdate As Boolean, userState As Object, isSync As Boolean) As Task(Of T)</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; For i As Integer = 0 To 40 &#39;loop to simulate delays, &nbsp;up to 4s (40 x 100ms)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If Not Me.IsBusy Then Exit For</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Await TaskEx.Delay(TimeSpan.FromMilliseconds(100)) &nbsp;&#39;this call blocks the UI thread and never return</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Next</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return Await MyBase.SaveAsync(forceUpdate, userState, isSync)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Function</p>
+</p>
+<p>&nbsp;</p>
+<p>I do not understand why the Await TaskEx.Delay is blocking my UI thread.</p>
+<p>Has anyone face such issue? Has better alternatives?</p>
+<p>I&#39;m using 4.5.11 with local dataportal on .NET 4 and AsyncTargetingPack (on VisualStudio 2012).</p>
+<p>Regards,</p>
+<p>Gilles</p>
+<p>Note there is a similar thread: http://forums.lhotka.net/forums/p/10156/47658.aspx on older version of CSLA / without AsyncTargettingPack</p>
+<div></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2013</h2><p>I don&#39;t know how they implemented Delay in TaskEx, perhaps it blocks the UI message pump and prevents dispatching back to the UI thread.</p>
+<p>It is generally better to avoid that type of a fake-sync block though. You might be happier using a TaskCompletionSource to wait for the validation completed event.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Wednesday, February 27, 2013</h2><p>Delay should be getting back on the captured context if one exists which is in this case probably DispatcherSynchronizationContext if it&#39;s WPF client.</p>
+<p>Therefore, if UI thread is not blocked the completition should be invoked i.e. the rest of code executed.</p>
+<p>You can try configuring awaiter not to capture context:</p>
+<p>Await TaskEx.Delay(TimeSpan.FromMilliseconds(100)).ConfigureAwait(false);</p>
+<p>So the completition is going to be invoked on worker thread.</p>
+<p>However, I remember reporting issue with ConfigureAwait in earlier versions of Bcl.Async, so you can try clearing current context prior to awaiting:</p>
+<p>SynchronizationContext.Current = null;</p>
+<p>That being said, it&#39;s really not good to sync BO persistence with this timing sensitive loop.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Wednesday, February 27, 2013</h2><p>Hi ngm,</p>
+<p>I&#39;m still using the old version of the AsyncTargettingPack (and not the latest Bcl.Async). I&#39;m in a Winform context.. in case this has side effects.</p>
+<p>I will try your proposal.</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ngm replied on Wednesday, February 27, 2013</h2><p>Gilles,</p>
+<p>Get far away from those old versions, they are very buggy and I can confirm there are a number of them related to the context capturing.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Saturday, March 02, 2013</h2><p>Hi ngm, </p>
+<p>Upgrading to the latest Bcl.Async prerelease (1.0.14) fixed the issue: the call is not blocking anymore.</p>
+<p>I&#39;m aware this is not the good solution, but I was pessimistic implemeting something clean if this was not working. </p>
+<p>I&#39;ll be in vacation for the next 2 weeks (in between as a workaround,&nbsp;we moved our async rules to be sync). I&nbsp;will update the thread&nbsp;when I get back with a &#39;go live&#39; solution.</p>
+<p>Thanks for your help.</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Wednesday, February 27, 2013</h2><p>Rocky,</p>
+<p>Do people complain a lot about this?</p>
+<p>What about async persistence method variant that awaits all async broken rules prior to invoking Data Portal? Or even dedicated broken rules method that when awaited will make sure all async rules are complete prior to completing itself. That Save might use this one internally.</p>
+<p>I know that async rules are not awaiting friendly but it wouldn&#39;t be too complicated wrapping it since there&#39;s already central point where BusinessRules handle completitions from async rules.</p>
+<p>Along that thinking, any plans to redesign rules engine to be fully async/await?</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 28, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>ngm<br></b>
+<p>Do people complain a lot about this?</p>
+</div></p>
+<p>The use of async/await is limited, as it is so new. As a result, this is (I think) the first thread where this has come up - at least since 2008 when Silverlight started rolling out - and of course the answer then is different from now.</p>
+<p>To make this easier (originally for unit testing, and then for a Magenic project last year) there&#39;s an event raised to indicate when rule processing is complete. That makes it relatively easy to wait for all rules to finish before moving on by using a TaskCompletionSource.</p>
+<p>If this becomes enough of a common issue I&#39;m sure BusinessBase could have a method that returned a Task on which you could wait - probably just implementing the use of a TCS in that method :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Friday, March 01, 2013</h2><p>You probably think on AllRulesComplete method that raises ValidtionComplete event?</p>
+<p>If so, that&#39;s probably okay to be used for helper or extension method that implements syncing Save which waits for async rules to complete. But I&#39;m not quite sure it&#39;s good idea for CSLA internal implementation.</p>
+<p>Having as critical method as Save synced by subscribing to external event where there&#39;s no guarantee of the invocation order can potentially lead to trouble.</p>
+<p>Anyway, rules engine is really impressive piece of CSLA. It would be nice seeing its async mechanism implemented as awaitables at some point.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Tuesday, October 08, 2013</h2><p>Hi Rocky,</p>
+<p>I hope you are recovering well.</p>
+<p>I&#39;m reopening the discussion, as my attempts to solve the problem were not successful yet.</p>
+<p>Following your advice, I&#39;m trying to override the SaveAsync using a TaskCompletionSource to block until being notified that all async rules completed.</p>
+<p>It is my first attempt to use TaskCompletionSource, so I might miss the obvious... I&#39;m still using CSLA 4.5.10 / .NET 4 client profile, with the latest Async targetting packs.</p>
+<p>I&#39;m sharing my code below, in case there is something obvious that I&#39;m missing.</p>
+<p>Regads,</p>
+<p>Gilles</p>
+<p>&nbsp;</p>
+<p>&nbsp;Protected Overrides Async Function SaveAsync(forceUpdate As Boolean, userState As Object, isSync As Boolean) As Task(Of T)</p>
+<p>&nbsp; &nbsp; &nbsp; If Me.IsBusy Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim busyTcs As New TaskCompletionSource(Of Boolean) &#39;Creates a blocking task until all async rules complete</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim saveTcs As New TaskCompletionSource(Of T)&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim bw As New Csla.Threading.BackgroundWorker() &#39;Ensure that I do not wait for the busyTcs on the UI thread.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; AddHandler bw.DoWork, Sub(s, o)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;busyTcs.Task.Wait(TimeSpan.FromSeconds(10)) &nbsp;&#39;This always block for 10s!</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;o.Result = MyBase.SaveAsync(forceUpdate, userState, isSync).Result</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; AddHandler bw.RunWorkerCompleted, Sub(s, o)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If o.Error Is Nothing Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;saveTcs.TrySetResult(CType(o.Result, T))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;saveTcs.TrySetException(o.Error)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; AddHandler ValidationComplete, Sub(sender, e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; busyTcs.TrySetResult(True)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; If Not Me.IsBusy Then busyTcs.TrySetResult(True)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; bw.RunWorkerAsync()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Return Await saveTcs.Task</p>
+<p>&nbsp; &nbsp; &nbsp; Else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Return Await MyBase.SaveAsync(forceUpdate, userState, isSync)</p>
+<p>&nbsp; &nbsp; &nbsp; End If</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

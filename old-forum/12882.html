@@ -1,0 +1,12 @@
+<html><header><title>Restricting access to individual record or records - like per-instance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Restricting access to individual record or records - like per-instance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12882.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb posted on Friday, May 15, 2015</h2><p>I have a use case where i need to restrict a user when they are in a certain role to only edit &quot;their own&quot; record(s).</p>
+<p>What&#39;s the best way of doing this?</p>
+<p>I obviously know the user making the request and have/can load their roles up and if in this role, then check if the record belongs to them. &nbsp;I&#39;m thinking I can write this code in the DataPortal_Fetch method for example and throw a SecurityException.</p>
+<p>Is that the best solution here?</p>
+<p>The authorization rules are per type, so no help here unless we can still do some sort of per-instance rule?</p>
+<p>Thanks.</p>
+<p>Richard.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, May 16, 2015</h2><p>Hi, </p>
+<p>It dependends on whether the user is allowed to view the data but not edit or not allowed to both view and edit.</p>
+<p>For the latter I would throw an Exception in DataPortal_Fetch.</p>
+<p>Fro the first I would block Save and also throw exception DataPortal_Update/DataPortal_Delete.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Monday, May 18, 2015</h2><p>Thanks Jonny.</p>
+<p>Yes they are NOT allowed to see the data so throwing an Exception in DataPortal_Fetch will work for me.</p>
+<p>And they cannot save it either, so I&#39;ll throw an exception in the Update/Delete too in case they try to by-pass the UI.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

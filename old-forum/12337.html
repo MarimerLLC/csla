@@ -1,0 +1,47 @@
+<html><header><title>Updating an editable list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating an editable list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12337.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, January 28, 2014</h2><p>Hello</p>
+<p>Silverlight, MVVM, csla 4.3.13</p>
+<p>Scenario.... two list boxes, buttons in the middle</p>
+<p>Left hand list box has names</p>
+<p>Right hand list box has &#39;selected names&#39;</p>
+<p>Buttons move &nbsp;name to selected name (and vice verca).</p>
+<p>Using EditableRootList as Model.</p>
+<p>Then &nbsp;linqobservable lists to populate listboxes (based on filter criteria).</p>
+<p><b>The code behind button does this (_SelectedItemsMove is ienumerable binded the SelectedItems of listbox)</b></p>
+<pre><span><br /></span></pre>
+<pre><span>private</span>&nbsp;<span>void</span>&nbsp;ExecuteMovePupils(<span>object</span>&nbsp;parameter)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(parameter.ToString()&nbsp;==&nbsp;<span>&quot;Move&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>foreach</span>&nbsp;(<span>var</span>&nbsp;moveClassInfo&nbsp;<span>in</span>&nbsp;_SelectedItemsMove)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;item&nbsp;=&nbsp;(<span>MoveClassInfo</span>)&nbsp;moveClassInfo; get item
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;item1&nbsp;=&nbsp;Model.Item(item.Seq); //get item from Model
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;item1.NextSubGroupID&nbsp;=&nbsp;13;  //update
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model.BeginSave(ModelSaved);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;ModelSaved(<span>object</span>&nbsp;sender,&nbsp;Csla.Core.<span>SavedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(e.Error&nbsp;==&nbsp;<span>null</span>&nbsp;&amp;&amp;&nbsp;e.NewObject&nbsp;!=&nbsp;<span>null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;=&nbsp;(<span>MoveClassList</span>)&nbsp;e.NewObject;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadMoved(12);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadNotMoved(13);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>MessageBoxServiceProvider</span>.ShowError(<span>string</span>.Format(<span>&quot;There&nbsp;was&nbsp;an&nbsp;error&nbsp;(details&nbsp;below)</span><span>{0}{1}</span><span>&quot;</span>,&nbsp;System.<span>Environment</span>.NewLine,&nbsp;e.Error.Message),&nbsp;<span>string</span>.Format(<span>&quot;Error:&nbsp;in&nbsp;</span><span>{0}</span><span>&nbsp;-&nbsp;</span><span>{1}</span><span>Completed&nbsp;&quot;</span>,&nbsp;<span>&quot;&quot;</span>,&nbsp;<span>&quot;TUCSaved&quot;</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p>
+<pre>Model.BeginSave(ModelSaved) does not appear to fire (do anything)</pre>
+<pre></pre>
+<pre>Am I missing something (or is there a better way to do this process)</pre>
+<pre></pre>
+<pre>Welcome your advice.  Thanks</pre>
+<pre>Richard</pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

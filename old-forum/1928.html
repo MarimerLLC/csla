@@ -1,0 +1,21 @@
+<html><header><title>about undoablebase class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>about undoablebase class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1928.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zlonly posted on Friday, December 08, 2006</h2><P>Hi,everyone</P>
+<P>&nbsp;&nbsp;&nbsp; I am working through CSLA,In CopyState() function of Csla.Core.UndoableBase class,why set currentType to currentType.BaseType.</P>
+<P>&nbsp;&nbsp; thks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 08, 2006</h2>If I remember correct, the undo code only works on the current type, not any subclasses.&nbsp; The reason is that the superclass could have a private property named XYZ, and the subclass may also have a private property named XYZ.&nbsp; So basically the code just worries about the properties at the subclass, then it processes superclass properties, and so on (if there's more in the inheritince chain).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zlonly replied on Sunday, December 10, 2006</h2><P>thanks,that's right.I see.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zlonly replied on Friday, January 26, 2007</h2>sorry,I look carefully in code found in page 131 of book,CopyState function set currentType to currentType.basetype.I can't understand,please.<br><br>I come from China,my English is limited,sorry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zlonly replied on Sunday, January 28, 2007</h2>Nobody see my problem?Take one example,if invoice class inherited from businessbase class,when we invoke BeginEdit function of invoice class,the function will get snapshot of itself and all base class up to undoablebase.Is this right?Why invoice should get snapshot of it's base class?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 28, 2007</h2><P>The process <EM>must</EM> get a snapshot of the base class. The base class may have fields that must be restored when CancelEdit() is called.</P>
+<P>For example, BusinessBase contains fields like IsNew, IsDeleted and others, that must be restored to their original values when CancelEdit() is called.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zlonly replied on Monday, January 29, 2007</h2>Thanks Rocky.After understanding why to get snapshot of baseclass,I&nbsp;faced with&nbsp;another question.Do all&nbsp;business object such as invoice,project will get the same snapshot of Csla.Core.BusinessBase upto&nbsp;Csla.Core.UndoableBase in the process of n-level undoing operation?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 29, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=084371015-29012007><FONT face=Arial color=#0000ff size=2>I suggest you review Chapter 3 carefully. That chapter 
+walks through the implementation of the n-level undo functionality in some 
+detail.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=084371015-29012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=084371015-29012007><FONT face=Arial color=#0000ff size=2>Each instance of a business object is responsible for its 
+own state - from top to bottom of the inheritance hierarchy. That is required to 
+avoid breaking encapsulation.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=084371015-29012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=084371015-29012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zlonly replied on Tuesday, January 30, 2007</h2><P>Ok,I'll review the chapter.</P>
+<P>thks</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>OT: Another Web Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Another Web Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1219.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Thursday, September 14, 2006</h2><P>Greetings:</P>
+<P>I've a collection that I like to display on a datagrid.&nbsp; There is no problem databinding it to a CSLA datasource and doing the update, deleted, insert.&nbsp;&nbsp; However, for the updates I'd like to go to a separate 'view' (like form view or multi-view) and view the editing item in more detail.</P>
+<P>Is there a databound way to do this?</P>
+<P>The example in the book has stuff bound to a datagrid with the edit view just making the labels into textboxes for editing - which works when you have only 3 columns - but what about cases where your object would have 20 columns and you want to display only 3 in the datagrid&nbsp;with the other 17 being editable in a different view (such as edit view)?</P>
+<P>I've tried formview with a nested gridview in the &lt;itemtemplate&gt; but I don't know how to get the selected item up in the &lt;edittemplate&gt; -- or if there is a better control for this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Thursday, September 14, 2006</h2><P>One possibility, and the one I'll likely go with is that with a multi-view I can still get to both a GridView and a DetailsView in code without messing around with FindControl.&nbsp; I can then change the view programatically and bind the controls to either the parent collection or the child object, respectively.</P>
+<P><EM>I think.</EM></P>
+<P>I'll let ya'll know.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Thursday, September 14, 2006</h2><P>No can do.</P>
+<P>Even though I can get the ID of the child object from the DataGrid collection there is no way for me to bind a DetailsView to a single child object and show it by switching to a different view in the MultiView.</P>
+<P>I'm missing something -&nbsp; a simple Master/Detail list in two separate views on the same page shouldn't be this difficult.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2>Wouldn't you use a ReadOnlyListBase-derived list for the grid in DisplayView, and bind that to a CslaDataSource? And then in EditView you'd have a different CslaDataSource to get at a BusinessBase-derived object for editing?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Friday, September 15, 2006</h2><P>Yeah, I suppose I could do that.</P>
+<P>I was hoping since I had the object in memory (in a collection) that I wouldn't have to fetch it from the database to&nbsp;edit a single object&nbsp;- I thought there might be a way to display the single object that I already have in the collection.&nbsp;&nbsp; That is how I'd handle in a windows form - so I might not have my mind in the web form world quite yet.</P>
+<P>So I could get the ID of the selected object, fetch teh object from teh database as part of a 2nd CslaDataSource, and display that -- is that what you are suggesting?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, September 15, 2006</h2><P>I'm somewhat of a newbie when it comes to asp.net, but wouldn't you need to persist the retrieved collection on the server anyway to accomplish that?&nbsp; I mean, you don't <EM>really</EM> have a collection of those fully hydrated objects back at the client do you?&nbsp; So, if I'm thinking correctly you're not really saving anything by trying to avoid the round trip and database read.</P>
+<P>If you want to implement that kind of interface as a rule then you might want to dig into the Atlas/Ajax or Web Parts capabilities, with the general idea being that you only need to go back to the server for the portion of the web form that will actually change.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Friday, September 15, 2006</h2><P>IT WORKS!</P>
+<P>IT WORKS!</P>
+<P>When I hit the 'edit' button on the datagrid I stick the ID of the single object into a variable on the webpage and then switch view.&nbsp; When I switch view the Select for the single object data source is fired, I then use the saved ID to grab the object out of the collection, assign it to the datasource, and display the view.&nbsp; This without an additional roundtrip.</P>
+<P>I've been look for an answer like this for 2 days - I just knew I was missing something.</P>
+<P>wOOt&nbsp; &lt;------ happy developer noise.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Friday, September 15, 2006</h2>Where are you caching your collection?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Friday, September 15, 2006</h2><P>I'm caching the collection in&nbsp;a session variable.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 15, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2>I am not saying you need to get the object from the 
+database - just that you need another CslaDataSource 
+control.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2>If you can write code in your page (probably in the 
+SelectObject event handler for the second control) to find the existing 
+in-memory object selected by the user, then that's a great 
+option!</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2>Or, if you need to, you can get the id of the selected 
+object and fetch that specific object - which ever one 
+works.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=609341513-15092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <P>So I could get the ID of the selected object, fetch teh object from teh 
+  database as part of a 2nd CslaDataSource, and display that -- is that what you 
+  are suggesting?</P></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

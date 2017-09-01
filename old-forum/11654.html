@@ -1,0 +1,17 @@
+<html><header><title>How to match part of a string? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to match part of a string? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtrtm posted on Monday, October 22, 2012</h2><p>Hi all,</p>
+<p>This seems like a very simple question, but searching for &#39;like&#39; isn&#39;t very helpful and searching wildcards for csla isn&#39;t coming up with any usable results.</p>
+<p>Basically, I would like to get business objects back that partially match a search term. For instance, if a user enters &#39;matt&#39; I want results to include &#39;matt&#39; and &#39;matthew&#39;. &nbsp;Is there an easy way to do this via criteria or any other easy trick to denote a &#39;like&#39; or &#39;wildcard&#39; match on a string field that I am overlooking?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, October 22, 2012</h2><p>MyProperty.Contains(&quot;mysearchstring&quot;)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtrtm replied on Monday, October 22, 2012</h2><p>Hi Curelom - sorry, I should have been a bit more explicit. &nbsp;Here is my code:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>PeopleCriteria fetchCriteria = new PeopleCriteria();</p>
+<p>fetchCriteria.Name = nameToSearchFor;</p>
+<p>&nbsp;</p>
+<p>DataPortal&lt;People&gt; dp = new DataPortal&lt;People&gt;();</p>
+<p>dp.FetchCompleted += UpdateSearchResults_FetchCompleted;</p>
+<p>dp.BeginFetch(fetchCriteria);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>You will notice the second line I am setting the name to whatever I want to search for. But using the criteria like that translates into equality. Is there any way in the criteria to specify that, instead of doing an equals, I want to do a like for that particular field? &nbsp;We need the ability to do either/or, so it&#39;s not like I can just switch to always doing a .Contains in the fetch method. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, October 22, 2012</h2><p>Could you show your DataPortal Fetch method?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, October 22, 2012</h2><p>Hi,</p>
+<p>Add more properties to your criteria object to instruct which type of search to perform i DataPortal_Fetch</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtrtm replied on Wednesday, October 24, 2012</h2><p>Hi Jonny,</p>
+<p>Thanks again for the answer - very simple and straightforward. I just added the property and the following line, and now in my fetch I can differentiate between equals and like.</p>
+<p>fetchCriteria.MatchPartialName = true;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

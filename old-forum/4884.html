@@ -1,0 +1,9 @@
+<html><header><title>Using CSLADataSource for Grid Inside Grid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLADataSource for Grid Inside Grid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4884.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler posted on Thursday, May 22, 2008</h2><P>Hi all,</P>
+<P>I have been using CSLA for a while on the Winforms side and love it. But now I'm forced to jump into the asp.net waggon and build a web site. </P>
+<P>I decided to use CSLA 3.5 for my business layer and am just learning how to do so on asp.net. The first issue I have is with boxing a grid view in another grid view (kind of master/child) using CSLADataSource.</P>
+<P>What I did is I defined both CSLADataSource controls on the web form binding the master DataSource to my topmost grid and this works fine.</P>
+<P>Then I placed my second grid inside the ItemTemplate of a TemplateField of the master grid. Now I use the RowDataBound Event of the master grid to keep track of it's key so I can filter the resulting data in the SelectObject Event of my child CSLADataSource. </P>
+<P>The problem now is that it seems that the SelectObject Event of the child data source is raised BEFORE the RowDataBound Event of the master grid. </P>
+<P>Am I using it the wrong way? Can I influence the order of events raised?</P>
+<P>Thanks for any answer</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

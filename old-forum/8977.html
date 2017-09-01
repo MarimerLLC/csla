@@ -1,0 +1,18 @@
+<html><header><title>Problem reading Timestamp columns again</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem reading Timestamp columns again</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8977.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Monday, May 24, 2010</h2><p>Few weeks ago I was having problems reading a timestamp value from the SafeDataReader.&nbsp; Luckily, I was able to figure it out soon enough.&nbsp; Now I am having a tough time getting the new timestamp value from an OUTPUT&nbsp;Command parameter.&nbsp; </p>
+<p>From the SafeDataReader I was able to do this:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; byte[] _lastmodif = new byte[ 8 ];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.GetBytes(&quot;lastmodif&quot;, 0, _lastmodif, 0, 8);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(lastmodifProperty, _lastmodif);</p>
+<p>The .GetBytes appears to do the trick.</p>
+<p>With the Command (OUTPUT) parameter I have tried this - among many other:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _lastmodif = (byte[])(cm.Parameters[&quot;@NewLastModif&quot;].Value);<br />But I keep getting runtime errors.</p>
+<p>In VB I was always able to do this:<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mlastmodif = CType(cm.Parameters(&quot;@NewLastModif&quot;).Value, Byte())</p>
+<p><br />Would appreciate a hint or two.&nbsp; Needless to say, I have gone through almost every Csla&nbsp;demo and the Videos and the Csla&nbsp;C# book, but cannot find an example that shows Command Output parameter.</p>
+<p>Jav</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RedShiftZ replied on Monday, May 24, 2010</h2><p>Jav,</p>
+<p>I do it this way...</p>
+<p>private byte[] _tStamp;</p>
+<p>SqlParameter parmTStamp = new SqlParameter(&quot;@NewTStamp&quot;, SqlDbType.Timestamp);<br />parmTStamp.Direction = ParameterDirection.Output;<br />cmd.Parameters.Add(parmTStamp);</p>
+<p>cmd.ExecuteNonQuery;</p>
+<p>_tStamp = (byte[])parmTStamp.Value;</p>
+<p>&nbsp;</p>
+<p>Jeff</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Monday, May 24, 2010</h2><p>Jeff,</p>
+<p>You are absolutely correct.&nbsp; I was not creating my OUTPUT parameter for the timestamp field correctly.&nbsp; Since my VB code in a previous App was working fine, I went back to see what the difference was.&nbsp; And there&nbsp;I was creating my OUTPUT parameter exactly as you have given. So everything is back on track now.&nbsp; Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

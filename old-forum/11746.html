@@ -1,0 +1,56 @@
+<html><header><title>'Csla.Rules.BusinessRuleManager' does not contain a definition for 'GetRulesForType'</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>'Csla.Rules.BusinessRuleManager' does not contain a definition for 'GetRulesForType'</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11746.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Thursday, December 13, 2012</h2><p>
+<p>hi</p>
+<p> i am updating <b>CSLA 4.1(Silverlight) &nbsp;to CSLA 4.2</b><b>(Silverlight)&nbsp;</b><b>&nbsp;i am getting compile time error,i am sending&nbsp;brief&nbsp;code below,</b></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<pre><b>&nbsp;<span>BusinessRuleManager</span>&nbsp;typeRules&nbsp;=&nbsp;<span>BusinessRuleManager</span>.GetRulesForType(<span>this</span>.GetType(),&nbsp;<span>this</span>.BusinessRules.RuleSet&nbsp;==&nbsp;<span>&quot;default&quot;</span>&nbsp;?&nbsp;<span>null</span>&nbsp;:&nbsp;BusinessRules.RuleSet);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//check&nbsp;if&nbsp;dev&nbsp;wants&nbsp;to&nbsp;manager&nbsp;priority&nbsp;himself,&nbsp;if&nbsp;he&nbsp;does&nbsp;thant&nbsp;he&nbsp;will&nbsp;be&nbsp;responsible&nbsp;for&nbsp;the&nbsp;call&nbsp;sequence.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>bool</span>&nbsp;IsNotPrioritized&nbsp;=&nbsp;(<span>from</span>&nbsp;r&nbsp;<span>in</span>&nbsp;typeRules.Rules
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>where</span>&nbsp;r.Priority&nbsp;&gt;&nbsp;0
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>select</span>&nbsp;r).Count()&nbsp;==&nbsp;0;</b></pre>
+</p>
+<p>Error<span>	</span>2<span>	</span>&#39;Csla.Rules.BusinessRuleManager&#39; does not contain a definition for &#39;GetRulesForType&#39;<span>	</span>D:\Devlopment\CslaUpdatesEdmos\Phoenix_V_1\Northwind\Phoenix.Model.Base\Phoenix.Model.Base.Server\PhoenixModelBase.cs<span>	</span>160<span>	</span>61<span>	</span>Phoenix.Model.Base.Server</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, December 14, 2012</h2><p><b>The it seems you/your company has made changes to CSLA yourself. <br />BusinessRuleManager.GetRulesForType is INTERNAL inside CSLA -&nbsp; not available for your code!! <br /></b></p>
+<p>This is the code from Csla 4.1 (from the download page)</p>
+<p>&nbsp;/// &lt;summary&gt;<br />&nbsp; /// Manages the list of rules for a business type.<br />&nbsp; /// &lt;/summary&gt;<br /><b>&nbsp; public class BusinessRuleManage</b>r<br />&nbsp; {<br />#if !SILVERLIGHT<br />&nbsp;&nbsp;&nbsp; private static Lazy&lt;System.Collections.Concurrent.ConcurrentDictionary&lt;RuleSetKey, BusinessRuleManager&gt;&gt; _perTypeRules =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Lazy&lt;System.Collections.Concurrent.ConcurrentDictionary&lt;RuleSetKey, BusinessRuleManager&gt;&gt;();<br /><br /><b>&nbsp;&nbsp;&nbsp; internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)</b><br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var key = new RuleSetKey { Type = type, RuleSet = ruleSet };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _perTypeRules.Value.GetOrAdd(key, (t) =&gt; { return new BusinessRuleManager(); });<br />&nbsp;&nbsp;&nbsp; }<br />#else<br />&nbsp;&nbsp;&nbsp; private static Dictionary&lt;RuleSetKey, BusinessRuleManager&gt; _perTypeRules = new Dictionary&lt;RuleSetKey, BusinessRuleManager&gt;();<br /><br /><b>&nbsp;&nbsp;&nbsp; internal static BusinessRuleManager GetRulesForType(Type type, string ruleSet)</b><br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ruleSet == ApplicationContext.DefaultRuleSet) ruleSet = null;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRuleManager result = null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var key = new RuleSetKey { Type = type, RuleSet = ruleSet };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_perTypeRules.TryGetValue(key, out result))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (_perTypeRules)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_perTypeRules.TryGetValue(key, out result))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = new BusinessRuleManager();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _perTypeRules.Add(key, result);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br />&nbsp;&nbsp;&nbsp; }<br /><br />#endif</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bootz replied on Wednesday, April 17, 2013</h2><p>On a related note here, I am wondering exactly how to get or &quot;extract&quot; the business rules from a business object. I was successful in calling&nbsp;Csla.Rules.BusinessRuleManager.GetRulesForType(...) in the VS &quot;Immediate&quot; window... but it doesn&#39;t work in code outside the assembly :(</p>
+<p>(FYI I&#39;m trying to extract business rules for a given businessRule object to pass back to a JavaScript App/Client via REST/WCF.)</p>
+<p>I did find a post you made on another forum:</p>
+<p>&nbsp;</p>
+<p class="MsoNormal"><span>&ldquo;This sort of thing is exactly why rules can be
+added programatically through AddBusinessRules and not just with attributes. I
+specifically allow programatic adding of rules with the intent that people
+could write code in AddBusinessRules to use a read-only object to get the rules
+for the object type.&rdquo;</span></p>
+<p class="MsoNormal"><span>&nbsp;</span><a href="http://forums.lhotka.net/forums/t/10056.aspx">http://forums.lhotka.net/forums/t/10056.aspx</a></p>
+<p class="MsoNormal">I guess my question is, can you point me in the right direction for a code sample or tutorial? Seems like it should be trivial, but I can&#39;t find it in &quot;Expert C# 2008:BO&quot; and I&#39;m just a n00b :)</p>
+<p class="MsoNormal"></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 17, 2013</h2><p>Hi,&nbsp;</p>
+<p>You should be able to call BusinessRules.GetRuleDescriptions within the &lt;businessobject&gt;. You may need to expose &nbsp;this a e a new method on the &lt;businessobject&gt;. The rule description should provide information required to parse into javascript rules.&nbsp;</p>
+<p>Sample content:</p>
+<p>
+<p>&quot;rule://csla.rules.commonrules.maxvalue-system.int32-/Num1?max=5000&quot;<br />&quot;rule://csla.rules.commonrules.maxlength/Name?max=10&quot;</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bootz replied on Thursday, April 18, 2013</h2><p>Thanks, that is helpful however I am returning custom rules which have descriptions like this:</p>
+<p>
+<p>BusinessRules.GetRuleDescriptions()</p>
+<p>{string[5]}</p>
+<p>&nbsp; &nbsp; [0]: &quot;rule://transplus.genesis.business.businessrules.required/80/ClaimedIdentifier&quot;</p>
+<p>&nbsp; &nbsp; [1]: &quot;rule://transplus.genesis.business.businessrules.required/81/EmailAddress&quot;</p>
+<p>&nbsp; &nbsp; [2]: &quot;rule://transplus.genesis.business.businessrules.regularexpressionmatch//82/EmailAddress&quot;</p>
+<p>&nbsp; &nbsp; [3]: &quot;rule://transplus.genesis.business.businessrules.required/84/UserId&quot;</p>
+<p>&nbsp; &nbsp; [4]: &quot;rule://transplus.genesis.business.businessrules.minimumlength/84/UserId&quot;</p>
+<p>Is there some way I can attach to them the relevant metadata (like regex or min val) as a query param, as you have shown?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bootz replied on Thursday, April 18, 2013</h2><p>Never mind, I think I found it:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public RegularExpressionMatch(IPropertyInfo primaryProperty, int id, string pattern) &nbsp;: base(primaryProperty, id)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Pattern = pattern;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.InputProperties = new List&lt;IPropertyInfo&gt; { primaryProperty };</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.RuleUri = new RuleUri(string.Concat(this.RuleUri.RuleTypeName, &quot;/&quot;, id), this.RuleUri.PropertyName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>this.RuleUri.AddQueryParameter(&quot;pattern&quot;, pattern);</b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>Also, would you recommend exposing the BusinessRules.getRuleDescriptions with a &quot;mixin&quot; method for all of my business objects? It seems like redundant, &quot;base&quot; functionality..</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

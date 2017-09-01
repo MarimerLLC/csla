@@ -1,0 +1,35 @@
+<html><header><title>Dynamic Root List - Editable Root's Editable Child List not saving via DataGridView </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Root List - Editable Root's Editable Child List not saving via DataGridView </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simpleman posted on Friday, February 28, 2014</h2><p class="MsoNormal">Hi,</p>
+<p class="MsoNormal">I&rsquo;m developing a Winforms app using .NET 4.5 and CSLA 4.5.</p>
+<p class="MsoNormal">I&rsquo;ve have a Dynamic Root List that has Editable Root objects
+with an Editable Child list.</p>
+<p class="MsoNormal">I&rsquo;ve have two DataGridViews bound to the same binding source
+with the second DataGridView&rsquo;s data member set to the child list.</p>
+<p class="MsoNormal">Selecting an Editable Root from Grid 1 displays the children
+as expected in Grid two.&nbsp; Inserting child
+records or updating existing child records in Grid 2 only seem to persist when
+I select a different Editable Root from Grid 1.</p>
+<p class="MsoNormal">If I refresh the Dynamic Root List before selecting a
+different Editable Root the amendments to the child records are lost.</p>
+<p class="MsoNormal">If I add a new Editable Root and Editable Children
+refreshing the Dynamic Root List will persist the Editable Root but not the
+children, they just disappear.</p>
+<p class="MsoNormal">Calling EndEdit on the grids before refreshing the Dynamic
+Root List doesn&rsquo;t change the result.&nbsp;
+Creating a separate binding source for Grid 2 and binding that to the
+first binding source made no difference either.</p>
+<p class="MsoNormal">If I call SaveItem from the Dynamic Root List it will save
+the children, however I was hoping not to have to manually do that.</p>
+<p class="MsoNormal">Do you have any suggestions as to why the Editable Child
+list is not saving when the Editable Root does?</p>
+<p class="MsoNormal">Your help is greatly appreciated.</p>
+<p class="MsoNormal">Kind regards</p>
+<p>&nbsp;</p>
+<p class="MsoNormal">Nathan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 27, 2014</h2><p>Hi Nathan,</p>
+<p>Dynamic Root List is a stereotype that intends to support the UI control DataGridView (Windows Forms) or DataGrid (WPF). While using an Editable Root, you must explicitly call Save on the object, usually when you click the UI SAVE button. When you use a Dynamic Root List, you don&#39;t have (or need) a SAVE button, as each object is saved when you move to another line of your DataGridView.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>simpleman<br></b>Selecting an Editable Root from Grid 1 displays the children
+as expected in Grid two.&nbsp; Inserting child
+records or updating existing child records in Grid 2 only seem to persist when
+I select a different Editable Root from Grid 1.</div></p>
+<p>You are using Dynamic Root List on a scenario that is more complex than it is supposed to be. DRL supports data editon on&nbsp;<b>one</b> DataGridView. You are using <b>two</b>&nbsp;DataGridView with a master/detail relation (kind of). Even so the behaviour you describe is what Dynamic Root List is supposed to do.&nbsp;</p>
+<p>To put it simple and clear, a Dynamic Root object shouldn&#39;t have children. If your Dynamic Root objects need to have children, then you must handle the object&#39;s Save when you edit the children.</p>
+<p>Then again, if you need to handle object&#39;s Save, why use a Dynamic Root List at all? An Editable Root List seems more suited to your scenario...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

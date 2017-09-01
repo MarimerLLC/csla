@@ -1,0 +1,318 @@
+<html><header><title>Design question... How to identify IsValid==false in a large tree of BOs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design question... How to identify IsValid==false in a large tree of BOs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4688.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman posted on Monday, April 14, 2008</h2><P><FONT size=2 face=Tahoma>Hi,</FONT></P>
+<P><FONT size=2 face=Tahoma>I have a quite large tree of business objects. Sometimes when&nbsp;I call Save() on the root object, I get the IsValid == false because some object in the tree&nbsp;is invalid or maybe more. I want to know if there is a pattern or guideline on how to quickly&nbsp;find the object that is invalid other than scrolling down the tree looking for the IsValid in the debug visualizer.</FONT></P>
+<P><FONT size=2 face=Tahoma>Thanks,</FONT></P>
+<P><FONT size=2 face=Tahoma>George B</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, April 14, 2008</h2><P>You know, I very much see where you're coming from with your post as I've had to really scour the object graph in debug to figure out exactly why something wasn't valid. I don't know of any inherent way to do so, but it would probably not be unreasonable to provide this sort of support in your company's business base if you find this scenario happening very often where you're spending lots of time hunting for invalid objects. </P>
+<P>I'm sure you could likely use reflection to hop through the object graph when the root's IsValid is false. </P>
+<P>Obviously multiple objects could potentially be invalid too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If anyone is interested, I wrote a helper class that can examine
+an object graph and output combine error message.&nbsp; Feel free to modify it
+and adapt it to your needs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Imports</span><span> System.ComponentModel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public</span><span> <span>Class</span>
+CSLABusinessObjectErrorTextExaminer<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>Private</span>
+<span>Sub</span> <span>New</span>()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>End</span>
+<span>Sub<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;summary&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' Get
+text for errors if object is invalid<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;/summary&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;returns&gt;</span><span>Error text
+for invalid object</span><span>&lt;/returns&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>Public</span>
+<span>Shared</span> <span>Function</span>
+GetErrorInformation(<span>ByVal</span> target <span>As</span> <span>Object</span>) <span>As</span> <span>String<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Dim</span> inspectedObjects <span>As</span>
+<span>New</span> Collections.Generic.List(<span>Of</span> <span>String</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Return</span> GetErrorInformation(target, inspectedObjects)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>End</span>
+<span>Function<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;summary&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' Get
+text for errors for one object based on IDataErrorInfo interface<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;/summary&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;param name=&quot;target&quot;&gt;</span><span>Object to get error text for</span><span>&lt;/param&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;param name=&quot;inspectedObjects&quot;&gt;</span><span>List of hash codes of objects that are inspected.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>'''
+This is necessary to avoid infinite recursion.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;/param&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;returns&gt;</span><span>Text for
+errors for one object based on IDataErrorInfo interface</span><span>&lt;/returns&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>''' </span><span>&lt;remarks&gt;&lt;/remarks&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>Private</span>
+<span>Shared</span> <span>Function</span>
+GetErrorInformation(<span>ByVal</span> target <span>As</span> <span>Object</span>, <span>ByVal</span> inspectedObjects <span>As</span>
+Collections.Generic.List(<span>Of</span> <span>String</span>)) <span>As</span> <span>String<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Dim</span> returnValue <span>As</span> <span>New</span> Text.StringBuilder()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Dim</span> targetID <span>As</span> <span>String</span> = <span>String</span>.Empty<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>If</span> target <span>IsNot</span> <span>Nothing</span> <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+targetID = target.GetType.ToString &amp; <span>&quot;:&quot;</span>
+&amp; target.GetHashCode().ToString<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>If</span> target <span>IsNot</span> <span>Nothing</span> <span>AndAlso</span> <span>Not</span> inspectedObjects.Contains(targetID) <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+inspectedObjects.Add(targetID)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> <span>TypeOf</span>
+target <span>Is</span> IBindingList <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' check error messages for each row in the list<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>For</span> oneItem <span>As</span> <span>Integer</span> = 0 <span>To</span> <span>CType</span>(target, IBindingList).Count - 1<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> <span>TypeOf</span> <span>CType</span>(target, IBindingList)(oneItem) <span>Is</span> Csla.Core.BusinessBase <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Dim</span> itemError <span>As</span>
+<span>String</span> = GetErrorInformation(<span>CType</span>(target, IBindingList)(oneItem), inspectedObjects)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' if we do not have this message already, add it<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> itemError.Length &gt; 0 <span>AndAlso</span> <span>Not</span>
+returnValue.ToString.Contains(itemError) <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+returnValue.Append(itemError)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returnValue.Append(Environment.NewLine)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Next<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Else<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> <span>TypeOf</span>
+target <span>Is</span> Csla.Core.BusinessBase <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' run through broken rules collection for this object<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>For</span> <span>Each</span>
+oneBrokenRule <span>As</span> Csla.Validation.BrokenRule <span>In</span> <span>CType</span>(target,
+Csla.Core.BusinessBase).BrokenRulesCollection<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' if we do not have this message already, add it<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> <span>Not</span>
+returnValue.ToString.Contains(oneBrokenRule.Description) <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+returnValue.Append(oneBrokenRule.Description)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+returnValue.Append(Environment.NewLine)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Next<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' get list of properties for this object<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Dim</span> properties() <span>As</span>
+System.Reflection.PropertyInfo = target.GetType.GetProperties()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>For</span> <span>Each</span>
+oneProperty <span>As</span> System.Reflection.PropertyInfo <span>In</span> properties<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' get object that sits on this property<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> <span>Not</span>
+oneProperty.PropertyType.IsPrimitive <span>AndAlso</span>
+oneProperty.GetIndexParameters().Length = 0 <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Dim</span>
+propTarget <span>As</span> <span>Object</span>
+= oneProperty.GetValue(target, <span>Nothing</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' call this procedure resursively to get error for
+property based object<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Dim</span> propErrorText <span>As</span>
+<span>String</span> = GetErrorInformation(propTarget,
+inspectedObjects)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>' if we do not have this message already, add it<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>If</span> propErrorText.Length &gt; 0 <span>AndAlso</span> <span>Not</span>
+returnValue.ToString.Contains(propErrorText) <span>Then<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;returnValue.Append(propErrorText)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+returnValue.Append(Environment.NewLine)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>Next<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>End</span> <span>If<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>' strip out duplicate carriage returns before returning the
+value.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Return</span>
+returnValue.ToString.Replace(Environment.NewLine &amp; Environment.NewLine,
+Environment.NewLine)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>End</span>
+<span>Function<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>End</span><span> <span>Class<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 14, 2008 8:56 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Design question... How to identify
+IsValid==false in a large tree of BOs<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>You know, I very much see where you're coming from with your post as I've
+had to really scour the object graph in debug to figure out exactly why
+something wasn't valid. I don't know of any inherent way to do so, but it would
+probably not be unreasonable to provide this sort of support in your company's
+business base if you find this scenario happening very often where you're
+spending lots of time hunting for invalid objects. <o:p></o:p></p>
+
+<p>I'm sure you could likely use reflection to hop through the object graph
+when the root's IsValid is false. <o:p></o:p></p>
+
+<p>Obviously multiple objects could potentially be invalid too.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Monday, April 14, 2008</h2><P><FONT size=2 face=Tahoma>Hi,</FONT></P>
+<P><FONT size=2 face=Tahoma>Thanks for&nbsp;your ideas... I'll check the solutions and I'll post my results... </FONT></P>
+<P><FONT size=2 face=Tahoma>Regards,</FONT></P>
+<P><FONT size=2 face=Tahoma>George B</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

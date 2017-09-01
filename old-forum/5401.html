@@ -1,0 +1,322 @@
+<html><header><title>ApplicationContext.User is lost in Main Window</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ApplicationContext.User is lost in Main Window</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5401.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM posted on Monday, September 15, 2008</h2><P>Hi,</P>
+<P>I'm hoping someone can educate me as to what's going on here.&nbsp; I'm using Csla 3.03 and WPF.</P>
+<P>I have a very simple menu form that is my main application form.&nbsp; Here's the class declaration, along with the constructor, the InitInvoke handler for the DataPortal, and the handler for one of the menu items.</P><FONT color=#0000ff size=2>
+<P>Partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> MyMenu</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>()</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;' This call is required by the Windows Form Designer.</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitializeComponent()</FONT></P>
+<P><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> Csla.DataPortal.DataPortalInitInvoke, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> InitInvokeHandler</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;' Detect whether a valid Security principal has been set. If not, call one of the Logins</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> Application.principal </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim</FONT><FONT size=2> frm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> AutoLogin = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> AutoLogin()</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P>
+<P>&nbsp;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> InitInvokeHandler(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> obj </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>' This routine makes sure that the current thread has a copy of the logged on Principal for security purposes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> ReferenceEquals(Application.principal, Csla.ApplicationContext.User) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.ApplicationContext.User = Application.principal</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ItemBtn_Click(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Object, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Windows.RoutedEventArgs)</P>
+<P>&nbsp;&nbsp;&nbsp;Cursor = Cursors.Wait</P>
+<P>&nbsp;&nbsp;&nbsp;Csla.ApplicationContext.User = Application.principal&nbsp; <FONT color=#008000>'Will not work without this</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Dim</FONT><FONT size=2> selection </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> EditFrm = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> EditFrm</P>
+<P>&nbsp;&nbsp;&nbsp;Cursor = Cursors.Arrow</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Me</FONT><FONT size=2>.Visibility = System.Windows.Visibility.Hidden</P>
+<P>&nbsp;&nbsp;&nbsp;selection.ShowDialog()</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Me</FONT><FONT size=2>.Visibility = System.Windows.Visibility.Visible</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Doesn't get any simpler than this.&nbsp; The AutoLogin form is a special version of my regular Login that automatically Logs in my test user.&nbsp; It sets both ApplicationContext.User and my global user "cache" as described in the Csla 3.0 e-book.&nbsp; I've located the global static cache variable in the WPF 'Application' object.&nbsp;AutoLogin also closes itself.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#000000>If I single step through the constructor above, after the call to instantiate AutoLogin in fact all the way&nbsp;through the End Sub for the Constructor,&nbsp; Application.principal (the User cache), and ApplicationContext.User are set correctly and agree with each other.</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#000000>But when I click one of the items on the displayed menu form&nbsp;and its handler is run, ApplicationContext.User has reverted to the "generic" user.&nbsp; Application.principal still contains the correct User object.&nbsp; Hence the call to reset ApplicationContext.User to Application.principal in the button handler.&nbsp; But why do I need to do this???</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#000000>In trying to de-bug this, I set a breakpoint in the ApplicationContext.User Property.Set accessor in Csla.&nbsp; It breaks when&nbsp;AutoLogin initially sets the value, and breaks again when explicitly set in the handler.&nbsp; But nothing else seems to be changing it.&nbsp; I guess it could be that the constructor for the&nbsp;main form &nbsp;is running in a different thread from the button handler?&nbsp; &nbsp; </FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#000000>One final observation / puzzlement.&nbsp; I'm running a "local" remote Dataportal, which means that I think I'm using IIS on my local computer to host the Server side Dataportal.&nbsp; But each time the ApplicationContext.User property runs, HttpContext.User is Nothing, and ApplicationContext.User gets set to the Thread.Current value.&nbsp; Is this correct?</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#000000>Thanks for your help.</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#000000>BBM</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 15, 2008</h2><P>The local data portal means the "server side" components run in the client process. There literally is no server, no cross-process communication, nothing. So there's no HttpContext, because your code is running in the WPF client process.</P>
+<P>The principal disappearing in WPF is a known issue (Msft calls it a feature) of WPF, where they clear the principal. Total pain in the @$$. I discuss a workaround in the <EM>Using CSLA .NET 3.0</EM> ebook. It isn't perfect, but it is the best I've come up with thus far...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Monday, September 15, 2008</h2><P>Hi Rocky.</P>
+<P>Thanks for your response.</P>
+<P>I'm still puzzled about the "server side" when using a remote DataPortal that is hosted on the development machine.&nbsp; So even though the DataPortal is hosted by IIS and I have to "attach" to the ASP worker process to de-bug it - &nbsp;it's running in the client process??</P>
+<P>Also, if I understand you correctly about the "lost" principal, the workaround in the 3.0 e-book just fixes&nbsp;DataPortal access.&nbsp;&nbsp;There are other places in WPF (like the&nbsp;one&nbsp;I stumbled over) where the principal can be lost?</P>
+<P>Thanks again.</P>
+<P>BBM</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Read chapters 2 and 4 to understand the data portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal runs in 1 of 2 modes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In local mode THERE IS NO SERVER. At all. It is not hosted in
+IIS. There is no server. The &#8220;server-side&#8221; components run in the
+client process.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In remote mode there is a server. It might be hosted in IIS, a
+custom Windows service, a remote EXE, Windows Activation Service or anywhere
+else you can host WCF, remoting, asmx or COM+. For testing we have a &#8220;server&#8221;
+that simply runs on a different thread in the same Windows process &#8211; but it
+is truly separate from the client, which is what counts.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are right, my ebook technique only fixes the data portal
+issue with the principal. There are other places in WPF you can get into
+trouble. I don&#8217;t have a good answer, and I think Microsoft really owes us
+a good answer, because their design in WPF seems really flawed to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 16, 2008</h2><P>I'm working on Chapter 19 now - the WPF UI chapter. So I took the time to run through this problem (the issue with a principal) in some more detail this morning.</P>
+<P>It is a hard problem. The solutions offered by Microsoft are not good ones - specifically they recommend setting the default principal for the AppDomain as the app starts up. Which is silly, because the user has to be able to log in and out while the app is running...</P>
+<P>Not only that, but when I tried their technique, it seemed to conflict with WCF - causing the client-side WCF proxy to lock up. I don't know why - hard to debug a total freeze...</P>
+<P>So, after spending hours on that, I tried a different approach. This approach appears to work quite well - for CSLA code. I don't know that it will totally fix .NET code (like CAS), but it absolutely makes CSLA code work, along with any other code that drives off Csla.ApplicationContext.User.</P>
+<P>Take the User region from this code<BR><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/ApplicationContext.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/ApplicationContext.cs?view=markup</A></P>
+<P>and replace your User region in ApplicationContext.</P>
+<P>This should allow you to skip the data portal InitInvoke event and everything - it just works. Notice how the User property now detects whether the code is running in WPF and manages the principal itself in that case. By using a static field, I'm making the value available across all threads.</P>
+<P>If you can try this and confirm that my change is correct, that'd be very helpful - thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Thursday, September 18, 2008</h2><P>Hi Rocky,</P>
+<P>No problem.&nbsp; I'll let you know how it works.</P>
+<P>I really like WPF and want to use it, but sometimes I think they should have named it WTF.</P>
+<P>BBM</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Thursday, September 18, 2008</h2><P>Hi Rocky,</P>
+<P>I compared the User region from your link to what I'm using.</P>
+<P>I'm using the VB version of Csla, so I had to translate the C# to VB.&nbsp; The only difference that I see from what I'm using (3.03) is that the User Property is declared static, but since ApplicationContext in the VB version is a module and not a class, User is already treated&nbsp;as static.&nbsp; The editor/compiler won't even allow&nbsp;me to&nbsp;make the User property shared.</P>
+<P>&nbsp;So I'm confused as to what is changed?</P>
+<P>BBM</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Private</span> _principal <span>As</span>
+IPrincipal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' &lt;summary&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' Get or set the current &lt;see
+cref=&quot;IPrincipal&quot; /&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' object representing the user's identity.</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' &lt;/summary&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' &lt;remarks&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' This is discussed in Chapter 5. When running</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' under IIS the HttpContext.Current.User value</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' is used, otherwise the current Thread.CurrentPrincipal</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' value is used.</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>''' &lt;/remarks&gt;</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Public</span> <span>Property</span>
+User() <span>As</span> IPrincipal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; <span>Get</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Dim</span> current <span>As</span>
+IPrincipal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>If</span> HttpContext.Current <span>IsNot</span>
+<span>Nothing</span> <span>Then</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+current = HttpContext.Current.User<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>ElseIf</span> System.Windows.Application.Current <span>IsNot</span> <span>Nothing</span> <span>Then</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+<span>If</span> _principal <span>Is</span>
+<span>Nothing</span> <span>Then</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>If</span> ApplicationContext.AuthenticationType &lt;&gt;
+&quot;Windows&quot; <span>Then</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+_principal = <span>New</span>
+Csla.Security.UnauthenticatedPrincipal()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Else</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+_principal = <span>New</span>
+WindowsPrincipal(WindowsIdentity.GetCurrent())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>End</span> <span>If</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+<span>End</span> <span>If</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+current = _principal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Else</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+current = Thread.CurrentPrincipal<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>End</span> <span>If</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Return</span> current<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; <span>End</span> <span>Get</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; <span>Set</span>(<span>ByVal</span> value <span>As</span> IPrincipal)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>If</span> HttpContext.Current <span>IsNot</span>
+<span>Nothing</span> <span>Then</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+HttpContext.Current.User = value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>ElseIf</span> System.Windows.Application.Current <span>IsNot</span> <span>Nothing</span> <span>Then</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+_principal = value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>End</span> <span>If</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Thread.CurrentPrincipal
+= value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; <span>End</span> <span>Set</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>End</span> <span>Property</span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Thursday, September 18, 2008</h2><P>Hi Rocky,</P>
+<P>This is working fine.&nbsp; I've got to run now, but I'll test it some more tonight and let you know if I run into anything.</P>
+<P>BBM</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good, I appreciate it!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been using the changed code for a couple days now,
+and it does seem to make everything much nicer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 26, 2008</h2>I'm hitting this bug..<br><br>In what version is the above fix included?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Certainly in 3.6, and I think I made the change to 3.5.2 as well
+(check the change log).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course &#8220;fix&#8221; is somewhat of a strong word. I
+fixed ApplicationContext.User, NOT all of .NET. So CSLA will work, and your
+code will work (if you use ApplicationContext.User), but things like CAS or
+other pure .NET features won&#8217;t work, because I&#8217;m not able to change
+how .NET manages the principal for itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 2:39 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: ApplicationContext.User is lost in
+Main Window<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm hitting this bug..<br>
+<br>
+In what version is the above fix included?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 29, 2008</h2>Well, whatever you call it, it's all I need at the moment.. since the problem is the data portal is getting a GenericPrincipal, not my principal.&nbsp; So it will be fine for my needs.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

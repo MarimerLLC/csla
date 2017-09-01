@@ -1,0 +1,45 @@
+<html><header><title>Utilizing BypassPropertyChecks in business processes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Utilizing BypassPropertyChecks in business processes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9549.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CBoland posted on Friday, September 17, 2010</h2><p>I&#39;m addressing a case where BypassPropertyChecks may be the solution, 
+but in more general terms. The case involves business processing and 
+authorizations that the user may not otherwise have. In this case, 
+SalesQuote objects are transformed by user action into SalesContract 
+objects. However, there are some properties on SalesContract that the 
+user cannot specifically edit, but whose values must be transferred from
+ SalesQuote. The simple solution is to add the appropriate 
+authorizations to CanWriteProperty to to allow the transformation to 
+complete, but many of my UI elements are enabled based on 
+CanWriteProperty (indeed, that&#39;s what the ReadWriteAuthorization control
+ does). Given all of this, it seems that we&#39;re actually asking two 
+different questions: <br />
+<br />1) Can the user write to the property at all?<br />2) Can the user edit the property directly?<br /><br />The difference seems to be business rules in two different contexts: <br /><br />1) core business<br />2) the UI<br /><br />At
+ first glance, I considered leveraging BypassPropertyChecks, but my fear
+ is that authorization rules cannot be accurately queried while it is 
+active. It&#39;s as if the business process would have to pre-authorize 
+before executing the process, in which case the process would have to 
+have intimate knowledge what internal rules to check first.<br />
+<br />I&#39;m building a WinForms app, but not using any presentation 
+patterns. Were I using such a pattern that had bindable controller 
+classes, I&#39;d consider allowing the property write in the business 
+object, but deny the property write in the UI controller. I&#39;ve seen 
+Rocky&#39;s training video on building with CSLA/MVVM and in it he chooses 
+to expose the business object(s) for the sake of binding (or at least to
+ avoid the tedium of writing a view model that delegates back and forth 
+with the business object), so I&#39;m unsure of what I&#39;d actually do.<br />
+<br />I believe in the CSLA principle of keeping the business rules close to the data, but this situation is quite a challenge.<br />
+<br />
+Any thoughts on implementing authorization in business process vs. the UI?<br /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 17, 2010</h2><p>In general terms BypassPropertyChecks is designed for use in DataPortal_XYZ or object factory methods.</p>
+<p>There&#39;s a protected SuppressRuleChecking property on BusinessRules (ValidationRules in older versions) that is intended for batch loading of property values without having rules run. In CSLA 4 there&#39;s also an interface on BusinessBase specifically to enable UI frameworks to suppress, resume and run all rules for an object.</p>
+<p>This interface was added to help support ASP.NET MVC, which does block mode loads of data on postback. It is also helpful for Web Forms or service implementations. I can&#39;t imagine it would be very useful for any smart client scenario, where interactivity is desirable.</p>
+<p>One thing to keep firmly in mind is that <i>authorization is business logic</i>. It is not security, it is logic. Sure, there&#39;s a little overlap with security, but people can be allowed/denied read and write authorization based on many factors, including security, state of the object, state of specific properties, state of the overall application, etc.</p>
+<p>CSLA 4 has much broader support for creating custom authz rules, specifically to help scenarios where property read/write capabilities need to be more sophisticated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CBoland replied on Friday, September 17, 2010</h2><p>Thanks for the reply, Rocky.<br />
+<br />
+Yes, the authorization I&#39;m referring to is indeed business logic (e.g. 
+&quot;Only Contract Managers can edit property SalesContract.PropX.&quot;). The 
+problem is that Sales Reps can transform SalesQuotes, which also have 
+property PropX, into SalesContracts, and it is the business rule above 
+that is blocking the transform. <br />
+<br />
+What I&#39;ve done is implement a BypassAuthorizationChecks mechanism in the
+ spirit of the BypassPropertyChecks pattern in 3.6. I&#39;m using v2.1.4 right 
+now, so I&#39;m unable to leverage any CSLA goodness created in the last few
+ years. :-(&nbsp; My workaround seems to rather hack-ish, but at least it was
+ created with the CSLA framework in mind.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 17, 2010</h2><p>I would suggest that there is another object you might need, which does the actual tranformation.&nbsp; In this object, Sales Reps could modify the property, whereas they just wouldn&#39;t be able to on the SalesQuote.&nbsp; Transformating a quote to Contract is probably a diffent use case than just editing a SaleQuote, correct?&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

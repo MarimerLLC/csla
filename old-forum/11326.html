@@ -1,0 +1,20 @@
+<html><header><title>EditableRootList Saving Object But Not Marking Them As Old</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootList Saving Object But Not Marking Them As Old</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11326.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma posted on Monday, April 23, 2012</h2><p>I am trying to creating an EditableRootList object a BusinessListBase&lt;EditableRootList, EditableChild&gt; ... Everything seems to work ... but when I call Save, new objects are still marked as new ... I have the following code in my EditableRootList for handling the updates ...</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:16px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Csla.<span style="color:#440088;">Transactional</span>(Csla.<span style="color:#440088;">TransactionalTypes</span>.TransactionScope)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">protected</span>&nbsp;<span style="color:#003399;">override</span>&nbsp;<span style="color:#003399;">void</span>&nbsp;DataPortal_Update()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#003399;">this</span>.Child_Update();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>When I run the following code ...</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:16px;"><span style="color:#003399;">var</span>&nbsp;apiTokenEditList&nbsp;=&nbsp;<span style="color:#440088;">ApiTokenEditList</span>.Fetch();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apiTokenEditList.Add(<span style="color:#440088;">DataHelper</span>.RandomString(<span style="color:blue;">20</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apiTokenEditList.Add(<span style="color:#440088;">DataHelper</span>.RandomString(<span style="color:blue;">20</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apiTokenEditList.Add(<span style="color:#440088;">DataHelper</span>.RandomString(<span style="color:blue;">20</span>));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;apiTokenEditList.Save();</pre>
+<p>&nbsp;</p>
+<p>I still have (3) new objects in apiTokenEditList ... even though the records were persisted to the database ... any idea why this is happening?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mattruma replied on Monday, April 23, 2012</h2><p>Just me being silly ... will leave this up in case someone else runs into this issue ... but the fix was simply ...</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:16px;">&nbsp;apiTokenEditList&nbsp;=&nbsp;apiTokenEditList.Save();
+</pre>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

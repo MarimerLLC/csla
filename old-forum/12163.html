@@ -1,0 +1,31 @@
+<html><header><title>EditLevel Mismatch with grandchild (winform)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel Mismatch with grandchild (winform)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12163.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Thursday, September 26, 2013</h2><p>Dear all,</p>
+<p>I might get too far from what I used to do with winform binding.</p>
+<p>I have a root object, with a child collection and grandchild collection, lets call it:</p>
+<p>Invoice [contains editable fields &amp; computed fields]</p>
+<p>+ InvoiceItemCategoryCollection [bound to my grid]</p>
+<p>++ InvoiceItemCategoryItem [contains computed fields only]</p>
+<p>+++ InvoiceItemCollection</p>
+<p>++++ InvoiceItemItem [really contains editable fields]</p>
+<p>&nbsp;</p>
+<p>I&#39;m binding the above graph, using 2 bindsources.</p>
+<p>bsInvoice: for the root object (Invoice), used to bind textBoxes &amp; co</p>
+<p>bsItemCategories: used to bind a grid with 2 levels of bands [it is an Infragistics grid, but I do not think this has an impact there]</p>
+<p>Before unbinding my controls, my objects graph looks like:</p>
+<p>Invoice [2]</p>
+<p>+ InvoiceItemCategoryCollection [1]</p>
+<p>++ InvoiceItemCategoryItem [2]</p>
+<p>+++ InvoiceItemCollection &nbsp;[1]</p>
+<p>++++ InvoiceItemItem &nbsp;[2] &nbsp; =&gt; Problem there, how do I apply / cancel edit at that leve?</p>
+<p>++++ InvoiceItemItem &nbsp;[1]</p>
+<p>++ InvoiceItemCategoryItem [1]</p>
+<p>+++ InvoiceItemCollection &nbsp;[1]</p>
+<p>++++ InvoiceItemItem &nbsp;[1]</p>
+<div>which seems correct. The first row of each band is &#39;selected&#39; and thus in edit model.</div>
+<p>Do you have any best practice for unbinding the grand child?</p>
+<p>&nbsp;</p>
+<p>I&#39;m currently facing EditLevel mismatch exception since I do not know how to manage this use case properly.</p>
+<p>I&#39;m not currently using CslaContrib_BindingSourceExtensions, but I read the books and applied the same spirit kind of extension, without facing this use case until our current improvement.</p>
+<p>Thanks for your help / feedback,</p>
+<p>Regards,</p>
+<p>Gilles</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

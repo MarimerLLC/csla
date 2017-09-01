@@ -1,0 +1,75 @@
+<html><header><title>Dependency Injection vs. Mobile Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dependency Injection vs. Mobile Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4663.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew posted on Thursday, April 10, 2008</h2><P><FONT face=Arial size=2>To preface, I would like to get some opinions from some of the regular contributors to this forum regarding this topic and potential workarounds you may be using to address the issue.</FONT></P>
+<P><FONT face=Arial size=2>Let me also state that we are die-hard CSLA developers in my shop.&nbsp; The advantages of the framework are tremendous and cannot be ignored.</FONT></P>
+<P><FONT face=Arial size=2>Earlier I posted regarding what appears to be an incompatibility between mobile objects (objects that inherit from Business*Base) and dependency injection techniques as outlined in inversion of control methodologies.</FONT></P>
+<P><FONT face=Arial size=2>We have determined that mobile objects can easily take advantage of a service locator, both for resolving the mobile objects themselves or dependencies inside of the mobile objects.&nbsp; However, the service locator technique itself has several limitations: </FONT><A href="http://ubik.com.au/article/named/service_locator_vs_dependency_injection"><FONT face=Arial size=2>http://ubik.com.au/article/named/service_locator_vs_dependency_injection</FONT></A></P>
+<P><FONT face=Arial size=2><STRONG>Now for the meat and potatoes:</STRONG></FONT></P>
+<P><FONT face=Arial size=2>The reasons CSLA-derived mobile/business objects cannot take advantage of dependency injection are twofold:</FONT></P>
+<OL>
+<LI><FONT face=Arial size=2>DataPortal.Create&lt;&gt; &amp; Fetch&lt;&gt; use the default, parameterless constructor of the object such that no injection can take place.&nbsp; This could potentially be solved using “setter” injection rather than constructor injection.</FONT></LI>
+<LI><FONT face=Arial size=2>Many of the dependencies that a mobile object has, such as a database connection, LINQ’s DataContext, or other related services cannot be serialized and therefore are unable to travel across the wire with the mobile object.</FONT></LI></OL>
+<P><FONT face=Arial size=2>Thus, when a mobile object has a dependency, the only way to get an instance of a service interface without direct instantiation is to call a global/static service locator.</FONT></P>
+<P><FONT face=Arial size=2>Or am I completely wrong?&nbsp; Have any of you guys been able to implement dependency injection into your CSLA-derived business objects?</FONT></P>
+<P><FONT face=Arial size=2>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Saturday, April 12, 2008</h2>
+
+<p class="MsoNormal">Bob,</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I believe we’ve already started this discussion in another
+posting here …</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">On the topic:</p>
+
+<p class="MsoNormal">I felt the same a month ago, and then I discovered StructureMap.</p>
+
+<p class="MsoNormal">I did a lot of prototyping and was really pleased with the
+results.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Csla + StructureMap can work, and StructureMap is not that
+hard to master either…</p>
+
+<p class="MsoNormal">I’d encourage you to try StructureMap (I’m using the latest
+2.5 version from svn)</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">You just have to be clear what is it exactly you want to do...</p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Some dependencies are good! </p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Some you have to break for the sake of Unit Tests, and </p>
+
+<p class="MsoNormal"><span>-<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Some you have to break to be able to introduce totally
+new behavior at runtime for example…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I really don’t have the time to post a complete CSLA example
+now, and I guess I’m not 100% what you want to do, but if you ask a specific
+question I’ll spend some time putting something together soon.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">BTW:</p>
+
+<p class="MsoNormal">Rhino + StructureMap really changes how you write Unit
+Tests, and they can really be Unit, because you can inject mocks of just about
+anything…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">This is the book that really helped me understand this:</p>
+
+<p class="MsoNormal">http://monkeys.codebetter.com/blogs/karlseguin/archive/2008/01/02/foundations-of-programming-pdf.aspx</p>
+
+<h4><span>(Concentrate on:
+Foundations of Programming - pt 4 – Dependency Injection)<o:p></o:p></span></h4>
+
+Cheers!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Boris replied on Saturday, April 12, 2008</h2>Here is the simplest example that will get you started with StructureMap:<br>http://frickinsweet.com/ryanlanciaux.com/post/Very-Quick-and-Simple-Dependency-Injection-with-StructureMap.aspx<br><br>Then just follow the examples around DI in the book from my previous post...<br><br>You may have to introduce interfaces around your BOs once you get to know StructureMap, in order to be able to configure the PlugginType &amp; PluggedType, but I hope that won't be a problem.<br><br>I also found that static methods are not a stopper either. Thanks nermin!!<br><br><br><br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

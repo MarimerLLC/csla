@@ -1,0 +1,21 @@
+<html><header><title>Can I write my own DB independent Data Access Layer?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can I write my own DB independent Data Access Layer?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10444.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanKhan posted on Thursday, June 16, 2011</h2><p>Dear,</p>
+<p>I was going through the CSLA 3.8.4 ProjectTrackerWithObjectFactory. One thing I found is that when I use ProjectTracker.DalAdoFactory it requires a lot of DB specific code to be written. Like opeing the&nbsp; SqlConnection, SqlTransaction and so on. Now if for some reason I need to change the DB from Sql Server to Oracle then I have to have make a lot of changes. (Actually my current DB is Oracle).</p>
+<p>What I am planing is to write a seperate Data Access Layer which will handle all the DB nitty gritty so if the DB change I just need to change there.</p>
+<p>My question is would it effect the core structure of CSLA like remote data portal and other stuffs? Would you please suggest how can I implement this without lossing a single advantage of CSLA?</p>
+<p>Sincerely.</p>
+<p>Sultan</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 16, 2011</h2><p>Look at the current ProjectTracker code in svn (core/trunk) <a href="http://www.lhotka.net/cslanet/Repository.aspx">http://www.lhotka.net/cslanet/Repository.aspx</a></p>
+<p>Or for more in-depth examples and discussion, get the <em>Using CSLA 4: Data Access</em> ebook from <a href="http://store.lhotka.net">http://store.lhotka.net</a> - I cover a couple ways to get clean separation between a pluggable DAL and the business classes.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanKhan replied on Saturday, June 18, 2011</h2><p>Dear Rocky, When I am trying to download the repository from <a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/ProjectTracker">http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/ProjectTracker</a>&nbsp;I am getting error saying access is forbidden. Is there anything else I am missing?</p>
+<p>I am using Tortoise SVN. </p>
+<p>Thank You.</p>
+<p>-- Sultan</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 19, 2011</h2>The correct URL starts with svn://
+
+http://www.lhotka.net/cslanet/Repository.aspx</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanKhan replied on Monday, June 20, 2011</h2><p>Thanks Rocky <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Friday, June 17, 2011</h2><p>Hi Sultan,</p>
+<p>although a little outdated&nbsp;by todays standards, which are dominated by EF and the like, a few years ago&nbsp;I wrapped our data access code into one DAL that handles all that basic ADO stuff, so that our BO&#39;s are not in charge to deal with all that stuff. Even handling different DB&#39;s is not the biggest deal, so no change in the BO&#39;s, when switching from Oracle to SQL or vice versa.</p>
+<p>In that case you&#39;ll have to deal with two (at least) core probs in your DAL:</p>
+<p>different parameter naming convention (and be aware, Oracle doesn&#39;t simply replace the @ with a : ;check out the difference of passing parameters to a sproc or writing an ad hoc statement!)</p>
+<p>SQL-Server nor DBProviderFactory know Oracles RefCursor. You&#39;ll have to make a workaround...</p>
+<p>In my opinion it&#39;s only worth the effort when you really like the feeling of having wide control over what happens and like the idea of not having to much players in the game. Otherwise the mentioned EF and all that maybe a better solution.</p>
+<p>Best wishes</p>
+<p>V</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanKhan replied on Monday, June 20, 2011</h2><p>Thank You </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

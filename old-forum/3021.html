@@ -1,0 +1,222 @@
+<html><header><title>Working with BrokenRules in a WCF environment</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Working with BrokenRules in a WCF environment</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3021.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanOfSuede posted on Monday, June 11, 2007</h2>I have to use an architecture in which all business validation is performed in a server side business layer run under WCF.&nbsp; Via the data portal methods, I can send and receive data contracts that are used to hydrate my CSLA business base classes.&nbsp; However, I run into a problem if I just count on the WCF layer to run validation by itself.&nbsp; I don't want to write duplicate validation code in the business base classes, I just want to take the response message of the service and use it to populate the broken rules collection.<br><br>So, for instance, I have a Dog object.&nbsp; I send the Dog to the WCF layer and the layer finds that the dog is named Fido.&nbsp; There is a rule that says no dog may be named Fido and generates an object message to this effect when it builds the response message.&nbsp; Back in the data portal method, I inspect the response and see the message, but I cannot add any BrokenRule item directly even though I know which property failed the validation.&nbsp;&nbsp; I know that if dog.Name == "Fido", then I need the object to update its collection to reflect this without me having to write an additional delegate on the client.&nbsp; As I understand, CSLA expects the ValidationRules collection and the RuleMethods to decide how and when BrokenRules get populated. &nbsp;&nbsp;  <br><br>Obviously, I'd rather go with a pure CSLA solution end to end, but my company is convinced that every application must be written to match their flawed conception of SOA.&nbsp; The idea of remoting an object and getting location transparency is beyond their technical level.&nbsp; I want to leverage CSLA for its rich client features, such as bindable collections, sorting, validation, undo, etc.&nbsp; Hence, I need to use server-side validation but keep it integrated with the error provisioning features of CSLA.&nbsp; <br><br>What am I missing?&nbsp; Has anyone else designed a server-side validation solution using CSLA?<br><br>Thx in advance,<br><br>Ian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 11, 2007</h2><P>So you are writing a client app that calls a set of WCF services. Those services implement all the business logic (including validation), and you want to create a set of "thin" business objects on the client. Did I get that right?</P>
+<P>In your objects, you'll still have DataPortal_XYZ methods, they'll just call the WCF services instead of talking to the database. That part is actually pretty easy, because (conceptually) you have "WCF Service==Stored Procedure" from an architectural perspective.</P>
+<P>But then the issue is that the service has validated your data and found it to be wrong. How do you get the "wrongness" into your object so it can in turn be expressed to the UI via data binding?</P>
+<P>First, your WCF service obviously must have some contract by which it can return a list of what's wrong. Without that list you are done at step one. That list must detail what is wrong on a per-data-field basis or it isn't useful to you either. It should be quite possible to come up with a general validation-error-result contract that can be used by all service implementations (perhaps via a fault).</P>
+<P>Second, your DataPortal_XYZ method must be prepared to accept this contract (in lieu of the normal success result). Upon accepting this validation-error-result from the service, you now have all the info you need to create a set of broken rules. </P>
+<P>Third, you need a rule method that understands how to pull a specific property's errors out of the validation-error-result message. This rule method must be attached to every property on your object.</P>
+<P>Fourth, your DataPortal_XYZ can call ValidationRules.CheckRules(), thus running the rules for each property, which of coruse means that each property will get the broken rules from the validation-error-result message.</P>
+<P>Of course I haven't TRIED any of this, so there may be (probably are) hidden bits of complexity. But at a high level this certainly seems like a good solution <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanOfSuede replied on Monday, June 11, 2007</h2><P>Yup, this was the path I've gone down.&nbsp; #3 is were I get a little hung up though.&nbsp; My response message has an array called ValidationResultExceptionInfo.&nbsp; These are very simple objects with properties like PropertyName, Description, Severity &amp; ResultCode.&nbsp; PropertyName and Description tell me which property flunked validation and why and they are of the most interest to me from a CSLA point of view.&nbsp; </P>
+<P>I need to figure out how to implement what you describe.&nbsp; It's a little fuzzy in my head but I'm certain it will work.&nbsp;</P>
+<P>Thanks for the response Rocky.&nbsp; Your&nbsp;suggestion has given me something to focus.&nbsp; I'll post whatever I&nbsp;come up with.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Igor replied on Monday, June 11, 2007</h2><P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; [<SPAN>ServiceContract</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>interface</SPAN> <SPAN>IService1<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>OperationContract</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>FaultContractAttribute</SPAN>(<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>typeof</SPAN>(<SPAN>GreetingFault</SPAN>),<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Action = <SPAN>"http://www.contoso.com/GreetingFault"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProtectionLevel = <SPAN>ProtectionLevel</SPAN>.None)]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>string</SPAN> MyMethod(<SPAN>string</SPAN> Name);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp; &nbsp;}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; #region</SPAN><SPAN> Validation<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; [<SPAN>DataContractAttribute</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>GreetingFault<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>string</SPAN> _msg;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>BrokenRules</SPAN> _brokenRulesList;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>DataMemberAttribute</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>BrokenRules</SPAN> BrokenRulesList<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>get</SPAN> { <SPAN>return</SPAN> _brokenRulesList; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>set</SPAN> { _brokenRulesList = <SPAN>value</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>DataMemberAttribute</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> Msg<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>get</SPAN> { <SPAN>return</SPAN> <SPAN>this</SPAN>._msg; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>set</SPAN> { <SPAN>this</SPAN>._msg = <SPAN>value</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> GreetingFault(<SPAN>string</SPAN> message)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>this</SPAN>._msg = message;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _brokenRulesList = <SPAN>new</SPAN> <SPAN>BrokenRules</SPAN>();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _brokenRulesList.Add(<SPAN>new</SPAN> <SPAN>BrokenRule</SPAN>(<SPAN>"Rule1"</SPAN>, <SPAN>"S1"</SPAN>, <SPAN>"Descr1"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _brokenRulesList.Add(<SPAN>new</SPAN> <SPAN>BrokenRule</SPAN>(<SPAN>"Rule2"</SPAN>, <SPAN>"S2"</SPAN>, <SPAN>"Descr2"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _brokenRulesList.Add(<SPAN>new</SPAN> <SPAN>BrokenRule</SPAN>(<SPAN>"Rule3"</SPAN>, <SPAN>"S3"</SPAN>, <SPAN>"Descr3"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; [<SPAN>DataContract</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>BrokenRule<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>string</SPAN> _ruleName;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>string</SPAN> _ruleSeverity;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>string</SPAN> _ruleDescription;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>DataMember</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> RuleName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>get</SPAN> { <SPAN>return</SPAN> _ruleName; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>set</SPAN> { _ruleName = <SPAN>value</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>DataMember</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> RuleSeverity<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>get</SPAN> { <SPAN>return</SPAN> _ruleSeverity; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>set</SPAN> { _ruleSeverity = <SPAN>value</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [<SPAN>DataMember</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> RuleDescription<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>get</SPAN> { <SPAN>return</SPAN> _ruleDescription; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>set</SPAN> { _ruleDescription = <SPAN>value</SPAN>; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> BrokenRule(<SPAN>string</SPAN> ruleName, <SPAN>string</SPAN> ruleSeverity, <SPAN>string</SPAN> ruleDescription)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ruleName = ruleName;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ruleSeverity = ruleSeverity;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ruleDescription = ruleDescription;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; [<SPAN>CollectionDataContract</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>BrokenRules</SPAN> : <SPAN>List</SPAN>&lt;<SPAN>BrokenRule</SPAN>&gt; { }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; #endregion<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>Service1</SPAN> : <SPAN>IService1<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> MyMethod (<SPAN>string</SPAN> Name)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>throw</SPAN> <SPAN>new</SPAN> <SPAN>FaultException</SPAN>&lt;<SPAN>GreetingFault</SPAN>&gt;(<SPAN>new</SPAN> <SPAN>GreetingFault</SPAN>(<SPAN>"A Greeting error occurred."</SPAN> ));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>static</SPAN> <SPAN>void</SPAN> Main(<SPAN>string</SPAN>[] args)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>Client code:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; localhost.Service1 ws = <SPAN>new</SPAN> localhost.Service1();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ws.MyMethod(“Name”));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>catch</SPAN> (System.Web.Services.Protocols.SoapException ex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(ex.Detail.InnerXml);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanOfSuede replied on Wednesday, June 13, 2007</h2><P>After playing with this some more, I think I've hit a limitation.</P>
+<P>Here's the scenario:</P>
+<P>A Dog : BusinessBase&nbsp;instance is saved.&nbsp; A WCF message is sent to the service and the service runs a validation process.&nbsp; A list of broken rules is returned to the DataPortal_XYZ method as&nbsp;part of a&nbsp;response message.&nbsp; These broken rules contain property/description sufficient to work within the CSLA validation design.</P>
+<P>In the DataPortal_XYZ method of the client Dog (a CSLA BusinessBase object), a ProcessBrokenRules method is run that takes the server-side generated list of broken rules and attaches each one to its respective property.&nbsp; So, to use my earlier example, no dog may be named Fido.&nbsp; The property name is "Name" and can be attached via the ValidationRules' AddRule() method AFTER the DataPortal_XYZ method is called.&nbsp; At this point, everything works.&nbsp; Errors are correctly populated and I can read the descriptions and use them with an error provider.</P>
+<P>The problem though is that the BrokenRules collection is pretty much untouchable.&nbsp; If the user makes corrections to the instance of Dog he's working with and wants to save again, he can't because from the busines object's perspective,&nbsp;it's still invalid.&nbsp; No new WCF message can be sent to the server through the data portal because a CSLA&nbsp;exception is thrown stating that the object is in an invalid condition.&nbsp; Even were this possible, there's no way to reset the broken rules in order to accommodate a new set of broken rules from the server.&nbsp; </P>
+<P>Neither the Remove() nor Clear() methods work on the BrokenRulesCollection work in the context of a business class.&nbsp; They are not designed to be used directly, otherwise I could call them just prior to sending my WCF message to the services (validation) layer.&nbsp; I think at this point, I would need to branch away from CSLA&nbsp;and come up with a different method of doing business validation.&nbsp; </P>
+<P>Here's some pseudo-code of what I'd like to be able to do:</P>
+<P>function&nbsp;DataPortal_Update()<BR>begin<BR>&nbsp;&nbsp;&nbsp;ResetBrokenRules()<BR>&nbsp;&nbsp;&nbsp;msg = CreateWCFMessage()<BR>&nbsp;&nbsp;&nbsp;SendMessage(msg)<BR>&nbsp;&nbsp;&nbsp;ProcessBrokenRules(msg.BrokenRules)<BR>end </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Igor replied on Wednesday, June 13, 2007</h2><P>"You have "WCF Service==Stored Procedure" from an architectural perspective", right?&nbsp;If the "Stored Procedure" fails the reasons are reported back to your DataPortal_XYZ method. You could analyse this response and set accordingly some private flags in your object, then check your business rules; the rules should take into account values of the flags.</P>
+<P>I might be wrong, but I suspect that you are trying to pass back in your WCF Service/Stored Procedure a "properly typed" collection of broken rules. I would think that either your communications support type fidelity or not. If yes (“a pure CSLA solution end to end”), there is no need to move the collection of broken rules back and forth because you move your BO itself. If no ("WCF Service==Stored Procedure"), you should not move either the broken rules collection or BO: you are moving&nbsp;just data. You might be able to make a hybrid work, but I do not think that it would be a good solution.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanOfSuede replied on Thursday, June 14, 2007</h2><blockquote>You might be able to make a hybrid work, but I do not think that it would be a good solution.</blockquote>
+
+Yup, I agree.  I'm constrained by certain decisions made by other people, but I've a real need to leverage binding, validation, sorting and filtering within a rich client application.  For these reasons, I was going for a thin client implementation of CSLA, but I don't want to have to hack the validation stuff because I prefer to stay on the primary branch.   </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 14, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>SultanOfSuede:</strong></div><div>Yup, I agree.  I'm constrained by certain decisions made by other people, but I've a real need to leverage binding, validation, sorting and filtering within a rich client application.  For these reasons, I was going for a thin client implementation of CSLA, but I don't want to have to hack the validation stuff because I prefer to stay on the primary branch.</div></BLOCKQUOTE><br><br>Unfortunately service oriented is the opposite of rich client in many respects.&nbsp; What exactly are the people making decisions trying to acomplish?&nbsp; To get the 'richness' you need, you'll end up in a similar situation as web development; you'll need to duplicate much of the logic to provide the rich experience, and there's a huge cost in that, and a huge chance for the logic to start to get out of sync.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SultanOfSuede replied on Thursday, June 14, 2007</h2><blockquote>
+What exactly are the people making decisions trying to acomplish?  
+</blockquote>
+
+As explained to me, my company wants every application to use a service for data retrieval so that if someone in another department needs data, there's less work to do.  Flick a switch and voila.  They can just get pointed to the app's service.  Unfortunately, this is not SOA, but once certain memes get started, they never go away.  As a result, enormous amounts of time and money are spent writing "SOA" apps when all available metrics indicate that there is little history of departments pinging each other for data.  
+
+Suppose I have an app with 500 public methods.  Of these, maybe 2% are used externally and over the course of the app's lifetime, maybe another 2% will be used by external consumers still within our company.  Why then do we spend so much time writing hundreds of methods as services when they really aren't? The assumption made by my company's architects is that the application data will have an interface that always matches what Bob in accounting needs.  It also presupposes that everyone is agreed on security, validation, error-handling, etc.  This of course is all hogwash, but hey, it's what I've to work with.  </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are trying to _<i>really</i>_ be SOA, then you must view
+this as two separate applications, each with their own reponsibilties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The result of that view, is that your client app is responsible
+for providing the user with the best possible experience &#8211; almost certainly
+including implementing its own validation logic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The fact that the same (or similar) validation logic will be in
+some of the services you call doesn&#8217;t matter &#8211; that&#8217;s their
+responsibility.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SOA is NOT A WAY TO REUSE CODE. Rather the reverse: it is a
+great way to duplicate code all over the place. Sad but true.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SultanOfSuede
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 14, 2007 9:35 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Working with BrokenRules in a WCF environment<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<p class=MsoNormal>You might be able to make a hybrid work, but I do not think
+that it would be a good solution.<o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal>Yup, I agree. I'm constrained by certain decisions made by
+other people, but I've a real need to leverage binding, validation, sorting and
+filtering within a rich client application. For these reasons, I was going for
+a thin client implementation of CSLA, but I don't want to have to hack the
+validation stuff because I prefer to stay on the primary branch.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

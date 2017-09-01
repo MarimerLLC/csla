@@ -1,0 +1,15 @@
+<html><header><title>Custom Smart Date Picker Control not building in Nant</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Smart Date Picker Control not building in Nant</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5589.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar posted on Tuesday, October 14, 2008</h2><P>I have a Smart Date Time Picker that is causing issues when my app is compiling with Nant, although it works fine in Visual Studio.&nbsp; This is the error I'm getting:</P>
+<P>[resgen] c:\Perforce_WS\NextGen\main\Development\DotNet\Configurator\CMS.G2.Configurator.Organizations\InsurerEditor.resx : error RG0000: Type&nbsp; could not be read from the data in line 149, position 5.&nbsp; The type's internal structure may have changed.&nbsp; Either implement ISerializable on the type or provide a type converter that can provide a more reliable conversion format, such as text or an array of bytes.&nbsp; The conversion exception was: Unable to find assembly 'Csla, Version=3.0.3.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30'.</P>
+<P>When I look at line 149, it is the end of the data element for the SmartDate Time value</P><PRE class=code><SPAN><SPAN>  &lt;</SPAN><SPAN>data </SPAN><SPAN>name</SPAN><SPAN>=</SPAN><SPAN>"</SPAN><SPAN>formationDateDateTimePicker.Value</SPAN><SPAN>" </SPAN><SPAN>mimetype</SPAN><SPAN>=</SPAN><SPAN>"</SPAN><SPAN>application/x-microsoft.net.object.binary.base64</SPAN><SPAN>"</SPAN><SPAN>&gt;
+    &lt;</SPAN><SPAN>value</SPAN><SPAN>&gt;
+        AAEAAAD/////AQAAAAAAAAAMAgAAAEdDc2xhLCBWZXJzaW9uPTMuMC4zLjAsIEN1bHR1cmU9bmV1dHJh
+        bCwgUHVibGljS2V5VG9rZW49OTNiZTVmZGMwOTNlNGMzMAUBAAAADkNzbGEuU21hcnREYXRlBAAAAAVf
+        ZGF0ZQxfaW5pdGlhbGl6ZWQLX2VtcHR5VmFsdWUHX2Zvcm1hdAAABAENARlDc2xhLlNtYXJ0RGF0ZStF
+        bXB0eVZhbHVlAgAAAAIAAAAAAAAAAAAAAAEF/f///xlDc2xhLlNtYXJ0RGF0ZStFbXB0eVZhbHVlAQAA
+        AAd2YWx1ZV9fAAgCAAAAAAAAAAoL
+</SPAN><SPAN>&lt;/</SPAN><SPAN>value</SPAN><SPAN>&gt;
+  &lt;/</SPAN><SPAN>data</SPAN><SPAN>&gt;}
+</SPAN></PRE>
+<P>If I explicitly exclude including the .resx files in my Nant build script, it builds fine, but doesn't work since it doesn't have any resource file information.</P>
+<P>Any ideas as to what to try to get this to build in Nant?&nbsp; </P>
+<P>&nbsp;</P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Wednesday, October 15, 2008</h2>I've discovered more information on this error.  Apparently NAnt is having issues converting the object.binary.base64.  I've been able to over come this by hiding my SmartDate from the winforms Designer and deleting the value.  Does anyone know how I can get this base type converted into an actual date format?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

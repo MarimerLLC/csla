@@ -1,0 +1,19 @@
+<html><header><title>Begin save method help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Begin save method help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11322.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Monday, April 23, 2012</h2><p>Hi</p>
+<p>can&#39;t find any sample code etc - In my viewmodel I am wanting to save my object (the BO in this case is not the Model)&nbsp;</p>
+<p>
+<pre>.......</pre>
+<pre>e.Object.BeginSave(SaveBOCompleted);
+</pre>
+<pre></pre>
+<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;SaveCompleted(<b><span style="text-decoration:underline;">not sure what goes here</span></b>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CloseCurrentWindow();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</pre>
+</p>
+<p>Thanks</p>
+<p>Richard</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, April 23, 2012</h2><p>I use R# and this is the result: </p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;SaveCompleted(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">SavedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Monday, April 23, 2012</h2><p>thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

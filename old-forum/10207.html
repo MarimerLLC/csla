@@ -1,0 +1,25 @@
+<html><header><title>CSLA Databinding with mono</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Databinding with mono</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10207.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TygreWolf posted on Saturday, March 26, 2011</h2><p>Hey guys,<br /><br />So I&#39;ve been working on a project using the latest CSLA from the SVN.&nbsp; I have it compiled and it seems to be working on Mono quite well except with one issue - databinding.&nbsp; Binding CSLA objects to comboboxes and datagridviews works just as it should in Windows Forms (using BusinessBindingListBase and the .NET Framework), but once run in Mono (Windows or Linux), databinding craps out.&nbsp; Datagridviews do not get populated with data, and comboboxes act extremely flaky.<br /><br />The general rule is that if it works in Windows and doesn&#39;t work in Mono, then it&#39;s a Mono bug.&nbsp; Fair enough.&nbsp; Is there another alternative for databinding the business objects to the form that might work relatively well in Mono (aside from just manually populating the controls with data) that I might be overlooking?<br /><br />Simply enough, I&#39;m just using a Windows BindingSource object, and setting its datasource to my business objects when the form loads (with the occassional BindingSource.ResetBindings(false) methodcall). The form controls are just bound to the BindingSource.<br /><br />Thanks for any advice.<br /><br />-Jason</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, March 26, 2011</h2><p>Hi Jason, </p>
+<p>I&#39;ve been working on csla.mono and had the same experience. </p>
+<p>BindingSource in Mono does not work properly with objects and I have no workaround to offer. <img src="http://forums.lhotka.net/emoticons/emotion-42.gif" alt="Confused" /></p>
+<p>One possibility might be to reimplement BindingSource or contribute updates to BindingSource in Mono but this is fairly complex code.&nbsp;</p>
+<p>BTW: Look out for Csla 4.2 - read more here <a href="http://www.lhotka.net/cslanet/Roadmap.aspx">http://www.lhotka.net/cslanet/Roadmap.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TygreWolf replied on Sunday, March 27, 2011</h2><p>Hey Jonny!<br /><br />First off, thanks for all the hard work in getting this ported over to Mono.&nbsp; Unfortunately for my current project I don&#39;t have the time to take on such a daunting task as rewriting BindingSource in Mono (thought it sounds like a cool side-project).&nbsp; Looks like spaghetti code is what I&#39;ll be using for this task.<br /><br />As far as CSLA is concerned, though, everything seems to be working great so far with the code I have.&nbsp; We&#39;ll just have to wait and see what the future of Mono holds as far as the support for System.Windows.Forms goes.&nbsp; I know that BindingSource isn&#39;t the only thing they&#39;re having difficulties with (SplitContainer currently crashes Mono, even).&nbsp; Too bad GTK# doesn&#39;t support databinding at all.&nbsp; That may have been a good approach, as well.<br /><br />Thanks again!<br /><br />-Jason</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kathlencal replied on Monday, March 28, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Hi Jason, </p>
+<p>I&#39;ve been working on csla.mono and had the same experience. </p>
+<p>BindingSource in Mono does not work properly with objects and I have no workaround to offer. <img src="http://forums.lhotka.net/emoticons/emotion-42.gif" alt="Confused" /></p>
+<p>One possibility might be to reimplement BindingSource or contribute updates to BindingSource in Mono but this is fairly complex code.&nbsp;</p>
+<p>BTW: Look out for Csla 4.2 - read more here <a href="http://www.lhotka.net/cslanet/Roadmap.aspx">http://www.lhotka.net/cslanet/Roadmap.aspx</a></p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Thanks a lot for that link. It helped me a lot. :)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<a href="http://acne.besthelptips.com/">how to get rid of blemishes</a><br />
+<a href="http://garlic-breath.besthelptips.com/">garlic breath tips</a>
+<a href="http://exzorders.com/store/">plr</a><br />
+<a href="http://exzorders.com/store/weightloss-wso5">private label rights</a>
+<a href="http://bloating.besthelptips.com" target="_blank">how to cure diarrhea</a><br />
+<a href="http://back-ache.besthelptips.com/" target="_blank">back ache</a> 
+<a href="http://bronchitis.besthelptips.com/" target="_blank">how to get rid of bronchitis<br />
+</a> <a href="http://carpet-cleaning.besthelptips.com/" target="_blank">do it yourself carpet cleaning</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

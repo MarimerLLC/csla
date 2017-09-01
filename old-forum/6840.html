@@ -1,0 +1,11 @@
+<html><header><title>Getting Started</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Getting Started</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6840.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer posted on Thursday, April 23, 2009</h2><P>I am quite new to using CSLA - and I am a little bit confused with how to choose which base classes to use and how related child collections are represented in the properties of business objects.</P>
+<P>For example, lets say I have the following business object candidates:</P>
+<P>RequestPackage - this object represents a request batch that is created by a user, fulfilled and managed as a aggregate work package.&nbsp; Sample properties would include:</P>
+<P>RequestPackageID<BR>UserID<BR>RequestPackageName<BR>Requests<BR>etc.&nbsp;</P>
+<P>Each RequestPackage consists of one or more Requests.&nbsp; A Request is a single fulfillment request (like a line item on an order).&nbsp; My question is: what is the appropriate class structure to implement the Requests collection property in the RequestPackage class?&nbsp; Is something like this correct:</P>
+<P>1.&nbsp; Implement RequestPackage as an editable root<BR>2.&nbsp; Implement RequestPackage.Requests as an editable child collection of Request<BR>2.&nbsp; Implement Request as an editable child</P>
+<P>&nbsp;</P>
+<P>thanks,</P>
+<P>Frazer</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 23, 2009</h2><P>That is probably correct. Just remember to model your objects around the use case (more or less around the UI) and not around the database structure and you'll have better results.</P>
+<P>Make sure to read at least the first 5 chapters of the <EM>Expert 2008 Business Objects</EM> book, as they'll answer a lot of this type of question.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

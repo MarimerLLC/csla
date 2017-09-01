@@ -1,0 +1,12 @@
+<html><header><title>.IsAuthenticated and languages</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>.IsAuthenticated and languages</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3858.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Wednesday, November 07, 2007</h2><P>Greetings,</P>
+<P>I usually do C#, trying to work with VB. I have a test project in both languages (Windows forms).</P>
+<P>In the startup forms' _Load event, the very first line of code I'm testing for .IsAuthenticated</P><FONT size=2>
+<P>VB - MessageBox.Show(Csla.ApplicationContext.User.Identity.IsAuthenticated.ToString())</P>
+<P>C# - <FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.IsAuthenticated.ToString());</FONT></P>
+<P><FONT size=2>I'm a little baffled as to why the VB version returns true and the C# version returns false. When I look at the .User, the .Name is my Windows login name in the VB version and is empty in the C# version.</FONT></P>
+<P><FONT size=2>Anyone know why the difference?</FONT></P>
+<P><FONT size=2>Thanks,</FONT></P>
+<P><FONT size=2>Mike</P></FONT>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 07, 2007</h2>Yes, VB has some functionality that helps manage the principal automatically. In the project's properties window you can specify whether the default is Windows or manual security, and I think the default is Windows. This is part of the My functionality (My.User) in VB.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, November 07, 2007</h2><P>Thanks Rocky, I appreciate the info. Interesting to look at the property pages and see what's different, I wouldn't have guessed that you have more/different option just because of the language. Looks like I'll be learning VB :)</P>
+<P>Thanks,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

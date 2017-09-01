@@ -1,0 +1,579 @@
+<html><header><title>Enabling / disabling save button</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Enabling / disabling save button</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5194.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, August 05, 2008</h2>Hi,<br><br>So the recent change in 3.5.1 RC0 has broken some code.&nbsp; Basically, because child events are not being "bubbled" anymore, my method of enabling / disabling the save button on a toolbar doesn't work.&nbsp; <br><br>In Windows Forms, what I was doing was listening to the CurrentItemChanged event of the BS which is bound to the root object, then calling a method to approriately enable / disable various toolbar buttons.<br><br>In the short term, I fixed this by hooking my event handler to the ChildChanged event off the root object.&nbsp; <br><br>What I would like to know is how this should be handled long term.&nbsp; I'm using Infragistics toolbars, so I don't think databinding is an option.&nbsp; So what is the recommended solution?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 05, 2008</h2><P>One thing leads to another doesn't it? :)</P>
+<P>Well, the bubbling of events caused problems that are effectively unsolvable, so the bubbling can't occur like it did. That probably means a change to a child won't cause a CurrentItemChanged - in fact I think that was ultimately the root of the problem solved by not bubbling the event.</P>
+<P>I can see two answers, though there are probably others.</P>
+<P>One is to do as you suggest - handle the ChildChanged event to trigger your UI logic.</P>
+<P>Another is to create an ObjectStatus control similar to the one in WPF, only for Windows Forms. Probably not a control though, since there's no control-to-control binding in Windows Forms - but perhaps just an object that elevates the Is___ properties to a bindable level in the UI.</P>
+<P>Of course now that you bring this up, I bet the ObjectStatus control is broken now too, because it relied on the same mechanism :-\</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 06, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>One thing leads to another doesn't it? :)</div></BLOCKQUOTE><br><br>Yes, change is wonderful.<br><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Well, the bubbling of events caused problems that are effectively unsolvable, so the bubbling can't occur like it did. That probably means a change to a child won't cause a CurrentItemChanged - in fact I think that was ultimately the root of the problem solved by not bubbling the event.</div></BLOCKQUOTE></p><p>What were the issues?&nbsp; Not that I'm advocating going back to the broken behavior, I think I just missed that discussion.&nbsp; My post was more along the lines of "what's best practice now?"<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I can see two answers, though there are probably others.</p>
+<p>One is to do as you suggest - handle the ChildChanged event to trigger your UI logic.</div></BLOCKQUOTE></p><p>Good, at least my solution made the list.. so I can't be too far off.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Another is to create an ObjectStatus control similar to the one in WPF, only for Windows Forms. Probably not a control though, since there's no control-to-control binding in Windows Forms - but perhaps just an object that elevates the Is___ properties to a bindable level in the UI.</div></BLOCKQUOTE></p>So this would likely be a component?&nbsp; I'm not sure I'll go this route, simply because I don't think there's a way to use data binding for Tools in an UltraToolBarManager, which is the only object that actually exists.&nbsp; But perhaps I could make a component similar to the BindingSourceRefresh that raises an event when anything in the object graph changes.&nbsp; I'll look into that.<br><br>Thanks!<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The issue with bubbling PropertyChanged is that when a new item
+was added to a grid it was instantly &#8220;committed&#8221; in memory.
+Pressing ESC wouldn&#8217;t get rid of it. It appears this is because the
+parent&#8217;s bindingsource did a quick currency change based on PropertyChanged
+being handled, thus effectively causing an EndEdit() on the child (which is not
+good).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, I would think the ObjectStatus concept would be a
+Component. I haven&#8217;t given it any serious thought in terms of design, but
+I expect it would be similar to the ObjectStatus concept in Csla.Wpf.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amselem replied on Wednesday, August 06, 2008</h2><P>This change also broke my code. My UI now handles both PropertyChanged and ChildChanged off the root object for activating the Save button.</P>
+<P>However, I have problems with grandchildren. I think the problem is that ChildChanged event itself won't bubble up the hierarchy, so I'm receiving events from root and child BO's but not from grandchildren.</P>
+<P>Rocky, couldn't the childevent bubble up like 3.5.0, but inside another childevent instead of a propertychanged event?&nbsp; I hope that makes sense.</P>
+<P>Regards</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is really unfortunate, I&#8217;m sorry for not catching
+this&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously some thought needs to go into this beyond the
+knee-jerk reactions I&#8217;ve done thus far.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Yes, I think you are right that the ChildChanged needs to bubble
+up. The question is how?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>A child object&#8217;s Propertychanged bubbles through a parent
+list as a ListChanged. If the list has a parent that cascades as a
+ChildChanged. If that parent is also a child of a list we&#8217;re now in
+trouble.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So it seems that BLB may need to raise ChildChanged as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, it seems like a total parallel eventing system is
+required along-side the PropertyChanged/ListChanged system.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And this can be done.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But then the question is how to best do this? Do lists and
+objects need different events? Should these events work like exceptions, so
+they have &#8220;inner events&#8221; all the way up the chain? That seems like
+it would be pretty cool &#8211; but useful?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Basically, if I&#8217;m going to do this (and I think I must), I&#8217;d
+rather do it in a well thought out manner.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> amselem
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 10:02 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Enabling / disabling save button<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This change also broke my code. My UI now handles both PropertyChanged and
+ChildChanged off the root object for activating the Save button.<o:p></o:p></p>
+
+<p>However, I have problems with grandchildren. I think the problem is that
+ChildChanged event itself won't bubble up the hierarchy, so I'm receiving
+events from root and child BO's but not from grandchildren.<o:p></o:p></p>
+
+<p>Rocky, couldn't the childevent bubble up like 3.5.0, but inside another
+childevent instead of a propertychanged event?&nbsp; I hope that makes sense.<o:p></o:p></p>
+
+<p>Regards<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, August 07, 2008</h2>This might be a silly suggestion but I wonder how easy it would be to inherit from BindingSource, detect when the problem event is about to happen and "fix" the BindingSource.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 07, 2008</h2>Well, ChildChanged is useful as it is for me.. sometimes I do need to know which property changed on a child BO not in a list.<br><br>Maybe the answer is to create another new event, StatusChanged.&nbsp; It could be raised whenever IsDirty, IsNew, etc. are raised.. since this is ultimately what amselem and I are after.&nbsp; A reliable way to find out when IsSavable has changed, to enable the buttons.&nbsp; <br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t think it works as-is for you though. Because it
+won&#8217;t cascade up if a grandchild changes. In that case the grandchild&#8217;s
+PC becomes a LC from its parent list, which becomes a CC from the child object.
+The child&#8217;s parent list does nothing, and so neither does the parent. So
+you get no notification that a grandchild changed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 7:23 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Enabling / disabling save button<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, ChildChanged is useful as it is for me.. sometimes I
+do need to know which property changed on a child BO not in a list.<br>
+<br>
+Maybe the answer is to create another new event, StatusChanged.&nbsp; It could
+be raised whenever IsDirty, IsNew, etc. are raised.. since this is ultimately
+what tetranz and I are after.&nbsp; A reliable way to find out when IsSavable
+has changed, to enable the buttons.&nbsp; <br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 07, 2008</h2>Well I didn't mean working in regards to enabling / disabling buttons.. the other use I have for ChildChanged is running rules when a certain property on the child BO changes.&nbsp; That is the part I think is fine.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It should be fine for that purpose right now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But to address the from-bottom-to-top event bubbling requirement
+I suspect I&#8217;ll have to do a ChildChanged event on BLB as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And I suspect having some sort of nested eventargs scheme would
+be good, but that requires more thought.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My idea there, though, is that each level that bubbles a ChildChanged
+would nest the original inside &#8211; so you could use some InnerArgs property
+to walk from the top level back through the stack of args to fine the original
+that was raised.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or I could follow the current model, where the originator is in
+the args, and the sender is whoever raised the event last, and you have no
+access to the intermediate objects between the originator and the final sender.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 12:10 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Enabling / disabling save button<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well I didn't mean working in regards to enabling /
+disabling buttons.. the other use I have for ChildChanged is running rules when
+a certain property on the child BO changes.&nbsp; That is the part I think is
+fine.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, August 07, 2008</h2><P><FONT face=Tahoma size=2>My vote would be to keep the entire context chain.&nbsp; It can make pinpointing your original object easier.</FONT></P>
+<P><FONT face=Tahoma size=2>Having said that, I know that is not a trivial implementation.&nbsp; I've written one before, and I've seen the code some commercial products that use it have implemented.&nbsp; The question is how much code you want to write around this "context chain".&nbsp; In one case, there are a number of methods implemented on the base classes that allow you to retrieve information from anywhere in the chain.&nbsp; Basically, the methods ask for a&nbsp;target type, and they automatically walk the chain until they encounter the type requested or the top/bottom of the hierarchy.&nbsp; I'm not suggesting you have to go to this level of work in your implementation, but it's certainly something to think about.</FONT></P>
+<P><FONT face=Tahoma size=2>The thing is that the biggest arguments I can see for keeping the context chain are (a) being able to insert yourself anywhere in the event-bubbling process, and (b) providing an easier way to find the original object.&nbsp; (a) can be useful, but probably in somewhat specialized situations - one that comes to mind now is the ability to provide more information to "tag along for the ride".&nbsp; It could also be useful if you want to stop the bubbling for some reason, but I'm not sure of the value of that either.&nbsp; (b) is probably only useful if you have a child object that can exist in more than one child list - not a completely uncommon situation, but probably not all that common either.</FONT></P>
+<P><FONT face=Tahoma size=2>Lastly, consider that whatever you do for your child events probably should be duplicated in the PropertyChanged stack as well.&nbsp; After all, why limit your flexibility to one set of events?</FONT></P>
+<P><FONT face=Tahoma size=2>So - do you want to write a lot of code for potentally not a lot of benefit?&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is good thinking, I appreciate the analysis.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One thing though &#8211; is that PropertyChanged is what it is.
+That event and its behavior is defined by the expectations of data binding. We&#8217;re
+having this discussion because I didn&#8217;t follow their strictures quite
+right &#8211; so the idea of doing more complex bubbling/enhancing of that
+model is right out :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 08, 2008</h2>I think the nesting is a good idea.&nbsp; Perhaps you could have a ChildChangedEvent args, which has an InnerEventArgs.&nbsp; That could be very powerful for those that need it.&nbsp; I think it also is pretty close to how WPF event bubbling works as well... of course I've only been dabbling in WPF so far, so I could be wrong.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, August 08, 2008</h2>We have n-level undo.&nbsp; With InnerEventArgs, it looks like we now have n-level change notification.&nbsp; I assume the args would contain the level that the change occurred on; how would that look, an int to signify the level or the actual object itself, or ...? (Just thinking out loud here...don't mind me)<br><br>Kelly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>We have to remember performance too. There are a lot of these
+events raised in a typical app, and so generating them can&#8217;t be expensive
+or none of us will be happy. The more stuff we cram into the eventargs the more
+time it will take to create the object &#8211; and that&#8217;ll happen at each
+object in the parent-childlist-child-grandchildlist-grandchild level, so the
+overhead will multiply.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But more importantly, it is easier to add things later than to
+take things away. So I tend to only put things in because they fulfill a specific
+scenario that is commonly useful.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not sure what the scenario would be for including the
+edit level of each object as the event bubbles up?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I can see the value in providing a reference to the originator
+of the event, and to the PropertyChanged or ListChanged event args of the
+underlying changed event on that object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m still struggling a little with the value of having
+references to the intermediate objects up the stack. It &#8220;feels&#8221;
+useful, but I honestly don&#8217;t see where I&#8217;m going to use that
+information.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, August 08, 2008</h2><P><FONT face=Tahoma size=2>I can think of one possible use for having the whole object tree available, and it relates to being able to "insert" yourself into the call chain.&nbsp; <FONT face=Tahoma size=2>Admittedly, this is a somewhat contrived example, but it's possible.</FONT></P></FONT>
+<P><FONT face=Tahoma size=2>(Mind you, "inserting yourself into the call chain" means that your events are triggered by overridable methods.&nbsp; Not sure whether that was clear...)</FONT></P>
+<P><FONT face=Tahoma size=2>Being able to manage the event chain means you can run validation rules pretty much anytime you want.&nbsp; If this ChildChanged event stack (which&nbsp;maybe should get a different name) bubbles through the whole hierarchy, you can pick an arbitrary level in the chain to explicitly call CheckRules() - say, if a change to one child object requires a change to another child object, along with a new check of the business rules.&nbsp; That kind of logic should probably reside in the parent collection.&nbsp; Some of this is currently available, and some of it isn't.&nbsp; You can even choose to run CheckRules() based on what object below&nbsp;the current level&nbsp;was changed.</FONT></P>
+<P><FONT face=Tahoma size=2>So why would the intermediate objects be useful?&nbsp; If you have validation rules on a collection, then presumably those rules are designed to work on the entire collection.&nbsp; It may be useful to ignore the object(s) that are part of the update&nbsp;chain for purposes of the validation routine.</FONT></P>
+<P><FONT face=Tahoma size=2>One other possible use goes back to stopping the bubbling.&nbsp; I honestly can't think of a good scenario for this, but I could see some value in being able to evaluate changes as they move up the stack, and possibly killing the bubble at some point.&nbsp; In killing the bubble, you&nbsp;may want to&nbsp;undo the changes currently moving through the stack.&nbsp; You would need the appropriate objects available to do that.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amselem replied on Tuesday, August 19, 2008</h2><P>Rocky any updates on this one?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 19, 2008</h2><P>I haven't had time to dig into the code, no.</P>
+<P>I can (and might) do the simplest of the implementations in relatively short order. The more sophisticated options are...well...more sophisticated and would take a lot more time - time I don't have.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amselem replied on Tuesday, August 19, 2008</h2><P>Thanks for your response Rocky, I understand that you're very busy with all the new stuff like the upcoming book and the&nbsp;Csla light fw.</P>
+<P>As for the implementation I agree that the simplest implementation would be enough, it's not clear (at least for me) that the more complex option would be very useful. </P>
+<P>Regards<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jon replied on Wednesday, February 04, 2009</h2>>> A child object’s Propertychanged bubbles through a parent list as a ListChanged. If the list has a parent, that cascades as a ChildChanged. - Rocky<br /><br /><br />I have found this to be true if you’re modifying an existing Child in the BLB. But if you add a new Child (or delete a Child), then the ChildChanged event doesn't propagate up to the Parent of the BLB ... not directly anyway. If you are setting default values in your new Child object, then those changes propagate up to the Parent of the BLB as ChildChanged.PropertyChangedArgs.<br /><br />As stated in other posts, this is easily overcome for now -> In a intermediary MyBLB class, override OnListChanged and if the change is ItemAdded or ItemDeleted then call OnChildChanged. This way the Parent of the BLB only has to worry about subscribing to the ChildChanged event to capture all changes.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Sunday, May 24, 2009</h2>Just to be sure, for those of us not yet using the CslaActionExtender, to enable/disable save buttons we need to ditch the BindingSource CurrentItemChanged event in favour of PropertyChanged and ChildChanged. And because these events don't fire until something changes, we need to call SetButtonsEnabled() or something similar in BindUI(). Is this the recommended approach?<br><br>Regards<br>Michael<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 25, 2009</h2>If you have a deep object hierarchy/graph then this is probably your only option.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, May 26, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Michael:</strong></div><div>Just to be sure, for those of us not yet using the CslaActionExtender, to enable/disable save buttons we need to ditch the BindingSource CurrentItemChanged event in favour of PropertyChanged and ChildChanged. And because these events don't fire until something changes, we need to call SetButtonsEnabled() or something similar in BindUI(). Is this the recommended approach</div></BLOCKQUOTE><br><br>I set my button state in the CurrentItemChanged event of both the parent and child (and grandchild) bindingSources. That seems to work fine. I have some general purpose code that works for all my forms because it assumes the names of the buttons. I don't know if this is worth the effort but I also have a boolean flag that lets me ignore the CurrentItemChanged events during binding and unbinding and any other operation that causes those events to happen an excessive number of times. For those I disable the automatic button updating, do the operation and then update the buttons once. It all works very smoothly.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 26, 2009</h2>That sounds very similar to what I've done, except I never made the code generic enough to work in any form.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, May 26, 2009</h2><font size="2" face="Tahoma">Thanks for your reply, Ross. Handling the CurrentItemChanged event for each binding source is by far the easiest solution. I can't believe I didn't think of it!<br><br>Michael</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Saturday, July 02, 2011</h2><p>This is a old post but i think i&#39;m facing the same problem what is mentioned here.</p>
+<p>I&#39;m using CSLA 3.8.3 with winforms. I have a generic code which enables / disables save button by subscribing to each bindingsource&#39;s C<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">urrentItemChanged.
+<p>The problem is that for first record it works fine but when user clicks on Add Record for the second record&nbsp;and enters new record info then currentitemchanged is never triggerred.</p>
+<p>This was previously working fine but seems like it has stopped working now.. Any ideas, any suggestionso n how to fix this.</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Sunday, July 03, 2011</h2>I have done some more testing and now all of my forms have stopped working properly..
+
+After the first record is added, once i add another record and start doing changes in any properties then currentitemchanged is never fired.. it is only working for the first record.. User has to close the form and open again for it to work..
+
+can anybody help me on this..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Sunday, July 03, 2011</h2><p>How are you adding the new record? Is it a child BusinessBase object in a BusinessListBase, or a standalone BusinessBase? Are you changing the BindingSource.DataSource or using the binding source to AddNew()?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, July 04, 2011</h2><p>this is happenning only in standalone businessbase.. this is the code which i&#39;m using in my add records.. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>_SrcBLInfo = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">SrcBLInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.NewSrcBLInfo(); </span></span><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">// Creates a new Object</span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>e.NewObject = _SrcBLInfo; </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">// setting new object to Newly created BO</span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>_SrcBLCtrl.srcBLInfoBindingSource.DataSource = _SrcBLInfo; </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">// Setting Binding source to the New Object </span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>SetBindingSources();</p>
+<p>The method SetBindingSource at the end reassings all the child binding sources.. this code is given in this method</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>TempBindingSource = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BindingSource</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">();<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">// Save the Existing BindingSource in a Temp Variable and Reassign it to Rebind UI</span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>TempBindingSource = (</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BindingSource</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)((</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BindingSource</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)ChildBindingSources[BindCount]).DataSource;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>((</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BindingSource</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)ChildBindingSources[BindCount]).DataSource = TempBindingSource;</span></span></p>
+</p>
+</p>
+<p>&nbsp;</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, July 04, 2011</h2><p>I don&#39;t think you should be creating a new BindingSource, you should just set the DataSource on the existing binding source. If you create a new BindingSource object, you need to subscribe to the CurrentItemChanged event again, because it&#39;s the old binding source <i>object</i> which was subscribed. This also means that old binding source object will still be hanging around and won&#39;t get cleaned up by the garbage collector.</p>
+<p>You might like to have another read through the CSLA samples to make sure you&#39;re following the correct way to bind and rebind your UI.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, July 04, 2011</h2><p>I just checked the project tracker sample but it is applying endedit etc. on the bo itself.. whereas i have read before that calling these methods can call problem..</p>
+<p>is it possible for you to share portion of your code specially the part where u unbind and rebind the datasources..</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, July 04, 2011</h2><p>i just tried one more thing.. i have temporairly disabled the child binding source code..</p>
+<p>&nbsp;</p>
+<p>even now it is not working.. i&#39;m just doing changes in the root object but currentitemchanged is not firing on 2nd record.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, July 04, 2011</h2><pre style="font-family:Bitstream Vera Sans Mono;font-size:12;color:silver;background:black;"><span style="color:green;">//&nbsp;Hope&nbsp;this&nbsp;helps.</span><br /><span style="color:#4080ff;"><br />protected</span>&nbsp;FormMxsProject()
+{
+&nbsp;&nbsp;&nbsp;&nbsp;InitializeComponent();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;In&nbsp;the&nbsp;constructor&nbsp;we&nbsp;hook&nbsp;up&nbsp;the&nbsp;CurrentItemChanged&nbsp;event</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;to&nbsp;the&nbsp;BO&#39;s&nbsp;child&nbsp;collections</span>
+&nbsp;&nbsp;&nbsp;&nbsp;bindServiceTypes.CurrentItemChanged&nbsp;+=&nbsp;bindObject_CurrentItemChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;bindTemplates&nbsp;&nbsp;&nbsp;.CurrentItemChanged&nbsp;+=&nbsp;bindObject_CurrentItemChanged;
+}<br /><br /><span style="color:#4080ff;">private</span>&nbsp;<span style="color:#4080ff;">void</span>&nbsp;BindUI()
+{
+<span style="color:green;">    //&nbsp;Sometimes&nbsp;we&nbsp;have&nbsp;binding&nbsp;sources&nbsp;for&nbsp;children&nbsp;which&nbsp;are&nbsp;bound</span><span style="color:green;"> to</span>
+<span style="color:green;">    //&nbsp;another&nbsp;DataSource&nbsp;using&nbsp;the&nbsp;DataMember&nbsp;property.&nbsp;For&nbsp;this&nbsp;form,</span>
+<span style="color:green;">    //&nbsp;that&nbsp;wasn&#39;t&nbsp;necessary,&nbsp;so&nbsp;we&nbsp;just&nbsp;explicitly&nbsp;set&nbsp;the&nbsp;DataSource</span>
+<span style="color:green;">    //&nbsp;to&nbsp;the&nbsp;child&nbsp;collection.<br /><br /></span>&nbsp;&nbsp;&nbsp; bindObject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.DataSource&nbsp;=&nbsp;BusinessObject&nbsp;=&nbsp;m_mxsProject;
+&nbsp;&nbsp;&nbsp;&nbsp;bindServiceTypes.DataSource&nbsp;=&nbsp;m_mxsProject.ServiceTypes;
+&nbsp;&nbsp;&nbsp;&nbsp;bindTemplates&nbsp;&nbsp;&nbsp;.DataSource&nbsp;=&nbsp;m_mxsProject.FlexTemplates;
+}
+ 
+<span style="color:#4080ff;">protected</span>&nbsp;<span style="color:#4080ff;">override</span>&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;RebindUI(<span style="color:#4080ff;">bool</span>&nbsp;saveObject,&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;rebind)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;completed&nbsp;=&nbsp;<span style="color:#4080ff;">false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;bindObject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:#4080ff;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;bindServiceTypes.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:#4080ff;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;bindTemplates&nbsp;&nbsp;&nbsp;.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:#4080ff;">false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnbindBindingSource(bindObject,&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;saveObject);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnbindBindingSource(bindServiceTypes,&nbsp;saveObject);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;UnbindBindingSource(bindServiceTypes,&nbsp;saveObject);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(saveObject)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;We&nbsp;call&nbsp;ApplyEdit()&nbsp;directly&nbsp;on&nbsp;the&nbsp;BO</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">//&nbsp;This&nbsp;is&nbsp;not&nbsp;the same&nbsp;as&nbsp;calling&nbsp;EndEdit()&nbsp;on&nbsp;a&nbsp;binding&nbsp;source</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;which&nbsp;you&nbsp;must&nbsp;do&nbsp;when&nbsp;working&nbsp;with&nbsp;grandchild&nbsp;binding&nbsp;sources</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_mxsProject.ApplyEdit();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_mxsProject&nbsp;=&nbsp;m_mxsProject.Save();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0080c0;">MxsProject</span>.MxsProjectSaved(m_mxsProject);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completed&nbsp;=&nbsp;<span style="color:#4080ff;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">catch</span>&nbsp;(<span style="color:#0080c0;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0080c0;">FormMessage</span>.ShowError(ex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(m_mxsProject&nbsp;!=&nbsp;<span style="color:#4080ff;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;m_mxsProject.CancelEdit();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;completed&nbsp;=&nbsp;<span style="color:#4080ff;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">finally</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(rebind&nbsp;&amp;&amp;&nbsp;completed)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BindUI();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bindObject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:#4080ff;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bindServiceTypes.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:#4080ff;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bindTemplates&nbsp;&nbsp;&nbsp;.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:#4080ff;">true</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(rebind&nbsp;&amp;&amp;&nbsp;completed)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bindObject&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.ResetBindings(<span style="color:#4080ff;">false</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bindServiceTypes.ResetBindings(<span style="color:#4080ff;">false</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;bindTemplates&nbsp;&nbsp;&nbsp;.ResetBindings(<span style="color:#4080ff;">false</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">return</span>&nbsp;completed;
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, July 04, 2011</h2><p>thanks for the reply.. kindly note the snapshot shows a call to method unbindbindingsource but code of that is not visible in the snapshot, pls advs..</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, July 04, 2011</h2><pre style="font-family:Bitstream Vera Sans Mono;font-size:12px;color:silver;background:none repeat scroll 0% 0% black;"><span style="color:#4080ff;">public</span>&nbsp;<span style="color:#4080ff;">static</span>&nbsp;<span style="color:#4080ff;">void</span>&nbsp;UnbindBindingSource(<span style="color:#0080c0;">BindingSource</span>&nbsp;source,&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;apply)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IEditableObject</span>&nbsp;current&nbsp;=&nbsp;source.Current&nbsp;<span style="color:#4080ff;">as</span>&nbsp;<span style="color:#2b91af;">IEditableObject</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(!(source.DataSource&nbsp;<span style="color:#4080ff;">is</span>&nbsp;<span style="color:#0080c0;">BindingSource</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;source.DataSource&nbsp;=&nbsp;<span style="color:#4080ff;">null</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(current&nbsp;!=&nbsp;<span style="color:#4080ff;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">if</span>&nbsp;(apply)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current.EndEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;current.CancelEdit();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Monday, July 04, 2011</h2><p>i tried your code as well as tried the cslaactionextender but none of that is working..</p>
+<p>this is the line, i&#39;m giving for using csla action extender (taken from the sample)..</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>_SrcBLCtrl.cslaActionExtender1.ResetActionBehaviors(_SrcBLInfo);</p>
+<p>&nbsp;</p>
+<p>there are two specific points for my forms which i also want to write here.</p>
+<p>a. these are user controls not forms.</p>
+<p>b. i&#39;m using bindingnavigator </p>
+<p>i don&#39;t know if this makes any difference.. i&#39;m now out of options.. pls help..</p>
+</span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, July 04, 2011</h2><p>We use a lot of user controls, too, so that shouldn&#39;t be a problem.</p>
+<p>Are you using the binding navigator to bind to a child collection inside your main BusinessBase business object?</p>
+<p>Perhaps you should create a new test class inheriting from BusinessBase, with just a couple of CSLA properties. You don&#39;t need to implement the data access. Then create a new form or user control and try to get the binding to work correctly, following the ProjectTracker sample. Once you&#39;ve got that working, you can add a collection of children and try to get the binding to work for that.</p>
+<p>It&#39;s not meant to be difficult, but you do need to follow the patterns. If you haven&#39;t bought the book, you should consider doing so. It&#39;s 800 pages&mdash;a wealth of information.</p>
+<p>Kind regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, July 05, 2011</h2><p>i have the book..</p>
+<p>i will test it out today to see where the problem lies n get&nbsp; back.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

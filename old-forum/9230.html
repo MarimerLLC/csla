@@ -1,0 +1,146 @@
+<html><header><title>Custom Business Rules working but Common Rules are not</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Business Rules working but Common Rules are not</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9230.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>LarzStarz posted on Tuesday, July 20, 2010</h2><p>I&#39;m working today with CSLA 4.0 RC1, and am struggling with getting BusinessRules on a basic object to work as I think they should. &nbsp;I define my properties using PropertyInfo objects and override AddBusinessRules to add basic validation like Required and MaxLength to my string type properties.</p>
+<p>The problem is that when I set the property values through unit tests, the rules from CommonRules are not validated. &nbsp;Specifically, a property with a Required rule is set to an empty string, but does not trigger an item in BrokenRulesCollection. &nbsp;If I create a derived BusinessRule to do the same check, it gets called as expected and the object is correctly marked as IsValid == false.</p>
+<p>I&#39;ll post some code here to see if it helps someone else spot my issue. &nbsp;Please let me know if you need additional code. &nbsp;Thanks in advance.</p>
+<p>Todd Larson</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static PropertyInfo&lt;int&gt; FileTypeIDProperty = RegisterProperty&lt;int&gt;(typeof(FileType), new PropertyInfo&lt;int&gt;(&quot;FileTypeID&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static PropertyInfo&lt;string&gt; FileTypeCodeProperty = RegisterProperty&lt;string&gt;(typeof(FileType), new PropertyInfo&lt;string&gt;(&quot;FileTypeCode&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static PropertyInfo&lt;string&gt; DescriptionProperty = RegisterProperty&lt;string&gt;(typeof(FileType), new PropertyInfo&lt;string&gt;(&quot;Description&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static PropertyInfo&lt;string&gt; ClassCodeProperty = RegisterProperty&lt;string&gt;(typeof(FileType), new PropertyInfo&lt;string&gt;(&quot;ClassCode&quot;));</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private int _fileTypeId = FileTypeIDProperty.DefaultValue;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private string _fileTypeCode = FileTypeCodeProperty.DefaultValue;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private string _description = DescriptionProperty.DefaultValue;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private string _classCode = ClassCodeProperty.DefaultValue;</p>
+<p>
+<p>public int FileTypeID</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty&lt;int&gt;(FileTypeIDProperty, _fileTypeId); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string FileTypeCode</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty&lt;string&gt;(FileTypeCodeProperty, _fileTypeCode); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty&lt;string&gt;(FileTypeCodeProperty, ref _fileTypeCode, value); base.BusinessRules.CheckRules(FileTypeCodeProperty); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string Description</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty&lt;string&gt;(DescriptionProperty, _description); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty&lt;string&gt;(DescriptionProperty, ref _description, &nbsp;value); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string ClassCode</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty&lt;string&gt;(ClassCodeProperty, _classCode); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty&lt;string&gt;(ClassCodeProperty, ref _classCode, value); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.AddBusinessRules();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new MyRequired() { PrimaryProperty = FileTypeCodeProperty } );</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(FileTypeCodeProperty, 50));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(DescriptionProperty, 50));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new Csla.Rules.CommonRules.MaxLength(ClassCodeProperty, 20));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;class MyRequired : Csla.Rules.BusinessRule</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void Execute(RuleContext context)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FileType target = (FileType)context.Target;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (target.FileTypeCode == string.Empty || target.FileTypeCode == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;context.AddErrorResult(&quot;File Type Code is required.&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 20, 2010</h2><p>This works:</p>
+<p>using System;<br />using System.Collections.Generic;<br />using System.Linq;<br />using System.Text;<br />using Csla;</p>
+<p>namespace ConsoleApplication1<br />{<br />&nbsp; class Program<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = Csla.DataPortal.Create&lt;Test&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.IsValid.ToString());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.BrokenRulesCollection[0].Description);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>&nbsp; [Serializable]<br />&nbsp; public class Test : BusinessBase&lt;Test&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Name);<br />&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(NameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(NameProperty, value); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; protected override void AddBusinessRules()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.AddBusinessRules();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LarzStarz replied on Wednesday, July 21, 2010</h2><p>I am able to demonstrate the issue I&#39;m having here. &nbsp;I used your example and it worked fine. &nbsp;However, when I try it using the way I was declaring my class property with private member field, it doesn&#39;t work. &nbsp;Try this and you&#39;ll see what I mean. &nbsp;The initial state of the object is correct, but when I set the Name property to a non empty string, the object of type Test2 is correctly marked as IsValid, but the object of type Test is not. &nbsp;Please give this a try and let me know what I might be doing wrong. &nbsp;Thanks.</p>
+<p>
+<p>using System;</p>
+<p>using System.Collections.Generic;</p>
+<p>using System.Linq;</p>
+<p>using System.Text;</p>
+<p>using Csla;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>namespace ConsoleApplication1</p>
+<p>{</p>
+<p>&nbsp;&nbsp; &nbsp;class Program</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;static void Main(string[] args)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(&quot;Test Class:&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Test obj = Csla.DataPortal.Create&lt;Test&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj.IsValid.ToString());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj.BrokenRulesCollection[0].Description);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;obj.Name = &quot;Name&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj.IsValid.ToString());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;obj.Name = &quot;&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj.IsValid.ToString());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj.BrokenRulesCollection[0].Description);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(&quot;Test2 Class:&quot;);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Test2 obj2 = Csla.DataPortal.Create&lt;Test2&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj2.IsValid.ToString());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj2.BrokenRulesCollection[0].Description);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;obj2.Name = &quot;Name&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj2.IsValid.ToString());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;obj2.Name = &quot;&quot;;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj2.IsValid.ToString());</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.WriteLine(obj2.BrokenRulesCollection[0].Description);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Console.ReadLine();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;[Serializable]</p>
+<p>&nbsp;&nbsp; &nbsp;public class Test : BusinessBase&lt;Test&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(typeof(Test), new PropertyInfo&lt;string&gt;(&quot;Name&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private string _name = NameProperty.DefaultValue;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string Name</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty(NameProperty, _name); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty(NameProperty, ref _name, value); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.AddBusinessRules();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;[Serializable]</p>
+<p>&nbsp;&nbsp; &nbsp;public class Test2 : BusinessBase&lt;Test2&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Name);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public string Name</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty(NameProperty); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty(NameProperty, value); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override void AddBusinessRules()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.AddBusinessRules();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(NameProperty));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>}</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, July 21, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>LarzStarz<br></b></p>
+<p>However, when I try it using the way I was declaring my class property with private member field, it doesn&#39;t work. &nbsp;</p>
+<p></div></p>
+<p>That is expected. I didn&#39;t notice you were using private backing fields. </p>
+<p>If you use private backing fields you need to add a relationship type to your RegisterProperty() call to mark the property as a PrivateField type. That tells CSLA to use a different technique to get the property value - specifically it will use reflection to invoke the property getter instead of using the field manager to get the value (because of course the field manager <i>doesn&#39;t have the value</i>).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LarzStarz replied on Wednesday, July 21, 2010</h2><p>Thanks, Rocky. &nbsp;Using the PrivateField relationship type worked fine. &nbsp;Thanks for the quick feedback.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

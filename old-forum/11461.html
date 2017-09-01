@@ -1,0 +1,11 @@
+<html><header><title>ReportViewer crash on parameter</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReportViewer crash on parameter</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11461.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Sunday, July 08, 2012</h2><p><b>Environment:</b></p>
+<p>Visual Studio 2012, .NET 4.5, CSLA 4.5</p>
+<p><b>Problem:</b></p>
+<p>A reportviewer works ok, but when passed in a parameter encounters an error.</p>
+<p><b>Exceptions:</b></p>
+<p>An error occurred during local report processing. Failed to load expression host assembly.Details: Attempt by method Csla.Core.FieldManager.FieldDataManager.ForceStatic.FieldInit(System.Type) to access field Csla.ReadOnlyBase Project.Library.Security.PTIdentity ... CachedAnonymousMethodDelegate2 failed.</p>
+<p>Digging into the errors, I found the following exception thrown:</p>
+<p>&quot;Request for the permission of type System.Security.Permisions.ReflectionPermission, mscorlib, version 4.0.0.0, ...... failed.&quot;</p>
+<p>&nbsp;</p>
+<p>Please help. Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Sunday, July 08, 2012</h2><p>I was able to google a solution from this <a target="_blank" href="http://awebthatworks.wordpress.com/2010/04/29/reportviewer-expressions-which-use-data-fields-show-as-error/#comment-426">link</a>.</p>
+<p>Do you have any other solution guys, like an application-wide setting? Or this is just ok?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, July 08, 2012</h2><p>Looks good to me!! Nice solution.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

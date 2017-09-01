@@ -1,0 +1,13 @@
+<html><header><title>ObjectFactory.LoadProperty() for CommandBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory.LoadProperty() for CommandBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9996.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Thursday, January 27, 2011</h2><p>Hi Rocky,</p>
+<p>&nbsp;</p>
+<p>Have you considered adding IManageProperties to CommandBase thus allowing the ObjectFactory to load a property with a private setter?</p>
+<p>It would be a &#39;nice to have&#39; allowing my results property to have a private setter.&nbsp;</p>
+<p>The implementation would be similar to ReadOnlyBase.</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, January 27, 2011</h2><p>That is a good idea, do you want to add an entry to the wish list for&nbsp;this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Friday, January 28, 2011</h2><p>Added an enhancement as issue 890.</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>agartee replied on Monday, October 17, 2011</h2><p>I see the suggestion still has &quot;no priority&quot;. &nbsp;Is there a work-around for this? &nbsp;How can I use an &quot;Exists&quot; command with the ObjectFactory if I can&#39;t populate the result property?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Monday, October 17, 2011</h2><p>Workarounds:</p>
+<p>a) Use ReadOnlyBase as base class (like unit-of-work)</p>
+<p>b) Use normal C# properties (of serializable content; public if using SL)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>agartee replied on Tuesday, October 18, 2011</h2><p>I really didn&#39;t like the idea of having the result property publicly settable. &nbsp;A ReadOnlyBase UoW-like implementation seems like a much better idea. &nbsp;I had&nbsp;apparently overlooked that sample in Rocky&#39;s book and was focused on the CommandBase UoW examples (and getting wrapped up with calling Execute() for all command-like behaviors).&nbsp; Thanks for the quick response!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

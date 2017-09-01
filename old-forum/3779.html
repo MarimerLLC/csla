@@ -1,0 +1,54 @@
+<html><header><title>PresentationCore x86 Reference...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PresentationCore x86 Reference...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3779.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew posted on Thursday, October 25, 2007</h2><P>Rocky,</P>
+<P>We have&nbsp;noticed that the reference to the PresentationCore in your CSLA 3.0.2 release&nbsp;is an explicit reference to the x86 library instead of the AnyCPU/MSIL library.&nbsp; We're developing on x64 boxes (in Vista) - any particular reason for the x86 reference?</P>
+<P>Thanks,</P>
+<P>Bob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 25, 2007</h2><P>VB or C#?</P>
+<P>The reference may have carried forward from the VS 2005 add-in for WPF, when that assembly wasn't in the GAC (or something). I may just need to re-reference it or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Matthew replied on Friday, October 26, 2007</h2>It was in the C# version.&nbsp; When we were experiencing trouble with the x86 PresentationCore being added to x64 bin folders, I opened the .csproj in notepad and saw that the reference was explicitly x86.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, I&#8217;ve added the issue to the wish list, so I&#8217;ll
+get to it at some point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Bob Matthew
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 26, 2007 2:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] PresentationCore x86 Reference...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>It was in the C# version.&nbsp; When we were experiencing
+trouble with the x86 PresentationCore being added to x64 bin folders, I opened
+the .csproj in notepad and saw that the reference was explicitly x86.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

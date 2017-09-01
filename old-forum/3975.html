@@ -1,0 +1,21 @@
+<html><header><title>CLSA 3.5 and Extensions Methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CLSA 3.5 and Extensions Methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3975.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent Dunham posted on Monday, December 03, 2007</h2><P>Hello All,</P>
+<P>I have been using a custom framework partially based on the great principles within Rocky's book for several years now. I'm currently looking into .Net 3.5 and have decided to base my 3.5 framework partially on CSLA again. That being said, I've been looking through SVN and have notice a few helper classes that I thought I would inquired about for the port of CSLA to 3.5. For Instance the MethodCaller static class seems to have a few different functionalties. I think I'm going to take the methods that are appropriate and remove this class and add extension&nbsp;methods&nbsp;to the appropriate interfaces to provide the functionality. I have decided which interfaces as of yet as currently I've been Extending (in general) the 1st parameter type. I believe when the 1st parameter type is Type, I can keep these. </P>
+<P>As an example:</P>
+<P>Simple DataPortal has code block as follows:</P>
+<P>// tell the business object to create its data<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo method = MethodCaller.GetCreateMethod(objectType, criteria);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (criteria is int)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodCaller.CallMethod(obj, method);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodCaller.CallMethod(obj, method, criteria);</P>
+<P>I've extended Type with a method GetCreateMethod(object) and also extended object with&nbsp;methods CallMethod, so a similar code block within what I called ObjectPortal is:</P>
+<P>&lt;code&gt;</P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>MethodInfo</FONT><FONT size=2> method = objectType.GetCreateMethod(criteria);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (criteria </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)</P>
+<P>obj.CallMethod(method);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>obj.CallMethod(method, criteria);</P></FONT>
+<P>&lt;/code&gt;</P>
+<P>&nbsp;</P>
+<P>Sorry for the formatting.</P>
+<P>Anyway, what I wanted to get some opinions on would be the appropriate types to extend. Type is an obvious one to me, but when it come to the actual CallMethod and CallMethodIfImplemented and GetObjectType, I've extended just object as that's what's being passed in but I'm not totally convinced this is great.Since I'm not strictly using CSLA, I can enforce using CriteriaBase and use only ICriteria for GetObjectType (heck, I may not event need it). Seems CallMethod methods&nbsp;could be added as an extension method to IBusinessObject. (I tend to program to interfaces).</P>
+<P>I'm hoping to get some input as I need to move pretty fast for some major 2008 initatives.</P>
+<P>thanks,</P>
+<P>Brent</P>
+<P>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

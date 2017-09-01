@@ -1,0 +1,100 @@
+<html><header><title>CSLA BOs and denormalized data store</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA BOs and denormalized data store</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4675.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 posted on Friday, April 11, 2008</h2><P>Hi all,</P>
+<P>I've trying to figure out a good stategy for dealing with denormalized tables (or badly designed data stored in general). How would the following scenario usually be handled using CSLA?</P>
+<P>Say you have a customer table that looks something like this:</P>
+<P>CustomerID,&nbsp;....., BillingName, BillingAddress, BillingZipCode,...., ShippingName, ShippingAddress, ShippingZipcode,..., CraditCardName1,&nbsp;&nbsp;CreditCardNo1, CreditCardName2, CreditCardNo2, etc...</P>
+<P>Get my point? </P>
+<P>Ofcourse I don't want my Customer BO to follow this design. If I design my Customer BO such that I have a main Customer object and&nbsp; BillingContact, ShippingContact child objects as well as a list of CreditCardOnFile (or whatever) objects can I still perform CRUD operations using a single SQL statement (e.i 1 for inserts 1 for updates, etc...) </P>
+<P>Would it be as simple as not implementing DataPortal methods on the childe objects and doing everything on the parent BO?</P>
+<P>In the current project I'm working on dealing with a horrible&nbsp;data model will be my gratest challenge .</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can normalize the data in the dataportal_fetch method and de-normalize
+it back in dataportal_update.&nbsp; You can populate data in the list of
+addresses or list of credit cards using single row in the datareader.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dctc42
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 7:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA BOs and denormalized data store<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi all,<o:p></o:p></p>
+
+<p>I've trying to figure out a good stategy for dealing with denormalized
+tables (or badly designed data stored in general). How would the following
+scenario usually be handled using CSLA?<o:p></o:p></p>
+
+<p>Say you have a customer table that looks something like this:<o:p></o:p></p>
+
+<p>CustomerID,&nbsp;....., BillingName, BillingAddress, BillingZipCode,....,
+ShippingName, ShippingAddress, ShippingZipcode,..., CraditCardName1,&nbsp;&nbsp;CreditCardNo1,
+CreditCardName2, CreditCardNo2, etc...<o:p></o:p></p>
+
+<p>Get my point? <o:p></o:p></p>
+
+<p>Ofcourse I don't want my Customer BO to follow this design. If I design my
+Customer BO such that I have a main Customer object and&nbsp; BillingContact,
+ShippingContact child objects as well as a list of CreditCardOnFile (or
+whatever) objects can I still perform CRUD operations using a single SQL
+statement (e.i 1 for inserts 1 for updates, etc...) <o:p></o:p></p>
+
+<p>Would it be as simple as not implementing DataPortal methods on the childe
+objects and doing everything on the parent BO?<o:p></o:p></p>
+
+<p>In the current project I'm working on dealing with a horrible&nbsp;data
+model will be my gratest challenge .<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

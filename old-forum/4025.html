@@ -1,0 +1,16 @@
+<html><header><title>SortedBindingList and TableStyles property of DataGrid not working</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList and TableStyles property of DataGrid not working</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4025.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo posted on Tuesday, December 11, 2007</h2><P>Hi,</P>
+<P>I am using a the SortedBindingList to sort a collection of business objects and I am using the SortedBindingList as the datasource for a DataGrid (compact framework).&nbsp; </P>
+<P>The problem is that I cannot get any TableStyles to take effect when I do this.&nbsp; If I bind the grid directly to my business object collection, it works fine.&nbsp; I believe it has to do with the MappingName property of the table style, but I have no idea what to set it to.&nbsp; The documentation says to specify the name of the table in the dataset, but that does not apply here.&nbsp; </P>
+<P>Any help on this would be greatly appreciated - I am really stumped on this one.</P>
+<P>Thanks,</P>
+<P>Jim</P>
+<P>Ps. While researching this, I came accross people who suggested to not use business objects but use DataSets or similar instead.&nbsp; If that is the only route, can somone point me to some good generic class to create a datatable or similar from a business object collection?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, December 12, 2007</h2><P>CSLA comes with a class called Object Adapter. The comment reads:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' An ObjectAdapter is used to convert data in an object&nbsp;</FONT><FONT color=#008000 size=2>or collection into a DataTable.</P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Wednesday, December 12, 2007</h2><P>Thanks for the reply - I'll have a look at that if there is no way to the the TableStyles to work right with the collection directly...</P>
+<P>Thanks,</P>
+<P>Jim</P>
+<P>P.s. I am not using the full CSLA in this project - so far I am only using the SortedBindingList.&nbsp; The app is a compact framework application (Pocket PC 2003), so I am not sure if the Object Adapter will compile (due to limitations in the compact framework). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Wednesday, December 12, 2007</h2><P>I found the solution: </P>
+<P>I used dataGrid.DataSource.GetType().Name and used that value as the MappingName.&nbsp; The value for the SortedBindingList is: "SortedBindingList`1"</P>
+<P>Jim</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

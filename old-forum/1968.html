@@ -1,0 +1,12 @@
+<html><header><title>Setting bindingList.DataSource increments EditLevel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting bindingList.DataSource increments EditLevel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1968.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pmaher posted on Wednesday, December 13, 2006</h2><FONT size=2>
+<P>If&nbsp; I execute the following code:</P>
+<P>&nbsp;&nbsp;&nbsp;_bsImportPlan = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BindingSource</FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;_importPlanList = </FONT><FONT color=#008080 size=2>ImportPlanEditableRootList</FONT><FONT size=2>.GetImportPlanEditableRootList();</P>
+<P>&nbsp;&nbsp;&nbsp;_bsImportPlan.DataSource = _importPlanList;</P>
+<P>prior to setting the DataSource, the edit level for _importPlanList is 0</P>
+<P>after setting the DataSource, the edit level has been increased to 1.</P>
+<P>The data acces routines of the children in the list have the attribute</P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)].</FONT></P>
+<P><FONT size=2>If I change this to be <FONT size=2>[</FONT><FONT color=#008080 size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>TransactionalTypes</FONT><FONT size=2>.Manual)] then the edit level does not get incremented when the DataSource is set.</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>I don't understand why the edit level is being incremented. Is this expected behavior? How do others deal with this?</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 13, 2006</h2>Well I would expect that the bindingsource calls begin edit.&nbsp; That's normal behavior.<br><br>The Transactional attribute is only used by the dataportal, and should not be affecting the edit level at all.&nbsp; It also shouldn't be defined on child objects either (BOs which call MarkAsChild).<br><br>Can you post more code?&nbsp; <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

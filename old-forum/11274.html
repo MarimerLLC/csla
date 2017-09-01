@@ -1,0 +1,7 @@
+<html><header><title>BO version management</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BO version management</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11274.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vkharitonov posted on Monday, April 02, 2012</h2><p>
+<p>I have WinForms client application and it uses BO Library version 1 and Wcf DataPortal.&nbsp;</p>
+<p>Now I need to deploy a new version of the application with BO Library version 2.</p>
+<p>Both BO Libraries are installed in the GAC on the server.</p>
+<p>Is it possible to make the same WcfAppServer to respond to the both versions of the application?</p>
+<p>Or may be the best way is to add new web application WcfAppServer2 for the application version 2?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 02, 2012</h2><p>You can only load one version into one AppDomain so the easiest way is to create a new version of the service.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vkharitonov replied on Monday, April 02, 2012</h2><p>Using remoting I could&nbsp;RegisterWellKnownServiceType from the different versions of the same assembly loading them from GAC. Is not it the same in WCF?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

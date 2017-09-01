@@ -1,0 +1,222 @@
+<html><header><title>My CslaDataSources Stopped Working after VS2005 SP1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>My CslaDataSources Stopped Working after VS2005 SP1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2128.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Thursday, January 11, 2007</h2><P>I use Csla 2.1.1</P>
+<P>Installed VS2005 SP1 this morning.&nbsp; Have spent the rest of the day trying to figure out why all CslaDataSources in my Web project have totally become dysfunctional in the Design mode.&nbsp; Interestingly, the program runs just fine.</P>
+<P>In the Design mode, everyone of my DetailsViews and FormViews - the Controls populated by CslaDataSource - fail to display in the normal form.&nbsp; Instead, I see an error message that a certain assembly of mine cannot be found.&nbsp; Sometimes the message is a little more elaborate and tells me the location where the file is not found: </P>
+<P>"C:\Documents and Settings\Javed\Local Settings\Application Data\Microsoft\VisualStudio\8.0\ProjectAssemblies\e0rm2dik01"</P>
+<P>Interestingly, when I take a peek inside that folder, I do not find the file that VS is looking for. Instead I find a different dll from my Solution (Each one of the folders in this location have a single dll.&nbsp; It looks like the VS is looking in the wrong folder (now go figure!!)&nbsp; I use many ObjectDataSources with my NameValueLists, and they are all working fine.&nbsp; When I place a new CslaDataSource,&nbsp;for the same NameValueList, and try to attach iy to a Control, I get loud beep and an error message of the kind above.</P>
+<P>Here is what I have done:&nbsp; I have gone through every one of my BusinessObject projects, carefully looking at all its References, removing all unused References.&nbsp; I have used the Clean Solution Command with no errors of any kind.&nbsp; I have built and re-built my Solution.&nbsp; I have cleaned out the Internet cache (or whatever it is called).&nbsp; None of them have helped.&nbsp; </P>
+<P>I will appreciate any suggestions.&nbsp; Thanks</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlarno replied on Friday, January 12, 2007</h2>Jav,<br><br>I'm using VS 2005 (Team Edition for Developers) SP1. But I am not seeing any issues with the CslaDataSources with DetailsViews.<br><br>I know this does not help directly, but maybe it is not related directly to the SP. If you have a sample project that repro's the issue, I'll be happy to try it out to.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 12, 2007</h2>Just to chime in to say that I'm not experiencing that problem either. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, January 12, 2007</h2><P>Thank you for the responses.&nbsp; Can you both do me a favor.&nbsp; Can you re-build your solutions and then take a look.</P>
+<P>I opened the ProjectTracker solution and indeed everything looked fine.&nbsp; But as soon as I re-built the solution all of the DetailsViews shrank into gray boxes, showing only an error message.</P>
+<P>I am not knowlegable about the mechanics of how things are handled in the following folder(you have to enable viewing of hidden files and folders in Folder Options dialog to see the Local Settings folder):</P>
+<P><FONT color=#a52a2a>C:\Documents and Settings\&lt;user name&gt;\Local Settings\Application Data\Microsoft\VisualStudio\8.0\ProjectAssemblies\</FONT></P>
+<P>My guess is that each time a solution is built, a folder in that location is allocated for <STRONG><FONT color=#0000ff>all</FONT></STRONG> (my guess) of the dlls in the solution. But now a given folder contains only one dll, thus distributing my 9 dlls into 9 folders.&nbsp; If CslaDataSource is somehow using this set of folders at design time to find the dlls, this may be causing the problem.&nbsp; <EM><STRONG>I can fix the problem momentarily by manually copying all of my dlls into each of those folders and then closing and reopening my .aspx file</STRONG></EM>.&nbsp; But when the solution is built again, the problem comes back.</P>
+<P>Any ideas?</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 12, 2007</h2><P>In your Web Site's property pages, how do you have your reference for CSLA configured? Are you having it look at an old version of the CSLA framework by any chance?</P>
+<P>I suspect that isn't the issue but I'm afraid that's all I would have to offer for you. I am able to rebuild without any problem...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 12, 2007</h2><P>Do you have the Csla project in your solution? If so, remove it - that will cause no end of pain and suffering. When using CslaDataSource you MUST build Csla.dll as a separate solution and reference only the DLL from your business/UI projects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 12, 2007</h2><P>That's an interesting comment, Rocky. I've had CSLA as a project in my solution for as long as I've been building my product - I did it as it allowed me to skip through CSLA in the debugger. I haven't encountered any problems yet with doing this... </P>
+<P>Maybe I'm missing something, or I've just been fortunate. </P>
+<P>(This may be a novice question but can one skip through CSLA in the debugger without having it as a project?)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, January 12, 2007</h2><P>Rocky,</P>
+<P>I have never included Csla as a project in my solution.&nbsp; When it comes to that, I am sort of a purist - always trying to do things by the book.&nbsp; </P>
+<P>I have 2 Solutions in my Projects folder, a Windoes Forms App solution and a WebForms App solution.&nbsp; Right now I am only working on the Web App. 10 of the projects are common to the 2 solutions. Everything is in a VSS database, I have simply checked those projects out into the Web App solution.&nbsp; I have had that arrangement for almost 8 months anf everything worked fine until yesterday when I applied the SP1.</P>
+<P>I don't know if you saw in my earlier note, I am seeing the same problem with the <STRONG>ProjectTracker</STRONG>.&nbsp; When I first opened it, everything looked fine.&nbsp; When I re-built the solution, the problem surfaced.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 12, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jav:</strong></div><div>
+<P>I don't know if you saw in my earlier note, I am seeing the same problem with the <STRONG>ProjectTracker</STRONG>.&nbsp; When I first opened it, everything looked fine.&nbsp; When I re-built the solution, the problem surfaced.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't know what to say. I have SP1 installed, and have had for a while now on both my desktop and laptop, and I haven't seen an increase in CslaDataSource issues.</P>
+<P>When I say "increase" it is because I have run into this issue (or similar ones). Almost always it is because I've rebuilt Csla.dll and VS got confused (see my previous post). The solution is:</P>
+<OL>
+<LI>Close all designer windows in your solutions</LI>
+<LI>Close all VS instances</LI>
+<LI>Open VS and your solution (no designers open)</LI>
+<LI>Rebuild all (not build - RE-build, especially in C#)</LI>
+<LI>Close VS</LI>
+<LI>Open your solution and your designer</LI></OL>
+<P>This has resolved, for me anyway, a confused VS on numerous occassions.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Saturday, January 13, 2007</h2><P>Rocky,</P>
+<P>I created a new Solution with only a single&nbsp;Class Library&nbsp;project (TestLib)&nbsp;with one object, Customer, based on Northwind Customer;&nbsp;and a Web Project with only the Default.aspx page.&nbsp; Once everything&nbsp;was building without errors, I&nbsp;followed your steps exactly. </P>
+<P>After the last step, I added a CslaDataSource, set the TypeAssemblyName and TypeName properties, dragged a DetailsView.&nbsp; When set the DataSource to CslaDataSource, I got the same type of error message that I have now seen innumerable times.</P>
+<P>It then occured to me that I am using Web Application Projects instead of the standard WebSite projects.&nbsp; (As you know, prior to SP1, Web Application Projects were an add on, with SP1, the capability has been built in.) </P>
+<P>Realizing that, I decided to add a standard WebSite project, and installed the same on the Default.aspx - and lo and behold - there is no error.&nbsp;&nbsp; I then went back to the WAP project, and this time even that has worked.&nbsp;</P>
+<P>I don't know if it will continue to work with my real projects - and I also do not know if the type of website had anything to do with this,&nbsp;but I thought I will share this bit of info.&nbsp; Right now I dare not close this Designer window (After 72 hours of turture, I am afraid to)</P>
+<P>Is there any way to walk through the debugger in the Design mode?</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Saturday, January 13, 2007</h2><P>Yes, there is a problem with WAP.&nbsp; I closed the Solution with my two Web Projects.&nbsp; When I opened it again, the WebSite default page looks fine, the Web Application Project Default page display the shrunken, miserable looking DetailsView that I have now seen a thousand times.</P>
+<P>With 80% of our time spent batttling the bigger and better woes Microsoft's newest technologies are unleashing on us, the productivity is spiralling downwards instead of improving.&nbsp; Are there any people actually doing productive work with what we have today, or is everybody just writing flowery stuff about what is to come in 2 years and beyond!!</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 13, 2007</h2>I knew this was a risk when I did what I did. As I have said many times, this ability to load type information on the fly is a hack because there is no supported solution. It sounds like I will need to revisit this once the ebook is out. <br /><br />Rocky <br /><br />-----Original Message-----<br />From: "Jav" <br />To: "rocky@lhotka.net" <br />Sent: 1/13/2007 11:24 AM<br />Subject: Re: [CSLA .NET] My CslaDataSources Stopped Working after VS2005 SP1<br /><br />Yes, there is a problem with WAP.  I closed the Solution with my two Web Projects.  When I opened it again, the WebSite default page looks fine, the Web Application Project Default page display the shrunken, miserable looking DetailsView that I have now seen a thousand times.<br /><br />With 80% of our time spent batttling the bigger and better woes Microsoft's newest technologies are unleashing on us, the productivity is spiralling downwards instead of improving.  Are there any people actually doing productive work with what we have today, or is everybody just writing flowery stuff about what is to come in 2 years and beyond!!<br /><br />Jav<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Sunday, January 14, 2007</h2><P>Thanks Rocky,</P>
+<P>For now I have just gone back to the original VS2005.&nbsp; Seeing my Forms open up again has been a sight for sore eyes. I don't think SP1 had offered anything else that I needed.&nbsp; I can wait for SP2 which out to be out by early 2008.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, January 26, 2007</h2>Can you confirm that removing sp1 "solves" it?<br>I'm having the same issue, csladatasource is complaining about not finding ActiveObjects here... :(<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Sunday, January 28, 2007</h2><P>Hi Andres,</P>
+<P>Yes, getting rid of SP1 did the trick- but I do not believe that you can remove or uninstall SP1.&nbsp; </P>
+<P>What I did was to completely remove VS 2005.&nbsp; Then I pulled out my "brand new" dvd - hot off the press and sent by Microsoft the previous week (as a reward for my renewal of subscription)&nbsp;- but containing exactly and absolutely the same version of VS2005 that they sent me a year earlier.&nbsp; I re-installed the VS followed by all the hot packs (4-5 of them) that I had installed before.&nbsp; I have had no problem working with Csla ever&nbsp;since.</P>
+<P>Since none of the hot packs caused a similar problem, I am inclined to think that this is some last minute change the folks at MS made before releasing SP1.</P>
+<P>As I stated in my last post, if your object library is a single assembly, you will probably not have any problem.&nbsp; The error, almost always, relates to the <STRONG>Assembly of the</STRONG> <STRONG>Parent</STRONG> of the class that you are using on you Web Form.&nbsp; That is the reason why ActiveObjects is the&nbsp;"commonly accused" entity.</P>
+<P>Good luck</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Sunday, January 28, 2007</h2>Yes, you can uninstall the sp. You need to check the "Show updates" checkbox in the add remove programs dialog and it will show up right under visual studio.<br><br>Anyway, I've been in touch with Rocky during the past couple of days and I've found a solution that might solve most of the gripes the csladatasource has been causing. It's already in his hands, so stay tuned for a followup on the csladatasource...<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Sorvaag replied on Tuesday, February 06, 2007</h2><P>Hi Guys,</P>
+<P>Has there been a fix released for the datasource issues? If so, where can I get it as the current one I have is making my life hell! (I downloaded the latest version of the framework, 2.1.3 running on Vista)</P>
+<P>Are there any interim tips on how to get around the "file not found" issues? I am using a WAP project with 1 class library referencing a release version of the CSLA DLL.</P>
+<P>Thanks,</P>
+<P>Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, February 06, 2007</h2>There's a sticky post at the top of the forum about a 2.1.4 pre release...<br>Get that one.<br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just last night I posted a test version of 2.1.4 that (I hope)
+addresses all these issues. Please give it a try and let me know how it works for
+you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you, Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Matthew Sorvaag
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 06, 2007 7:11 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] My CslaDataSources Stopped Working after VS2005
+SP1<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Guys,<o:p></o:p></p>
+
+<p>Has there been a fix released for the datasource issues? If so, where can I
+get it as the current one I have is making my life hell! (I downloaded the
+latest version of the framework, 2.1.3 running on Vista)<o:p></o:p></p>
+
+<p>Are there any interim tips on how to get around the &quot;file not
+found&quot; issues? I am using a WAP project with 1 class library referencing a
+release version of the CSLA DLL.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Matt<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Sorvaag replied on Wednesday, February 07, 2007</h2><P>Thanks Rocky.</P>
+<P>I think this is a great framework and have bought both your books!<BR>I will try out the new release this weekend.</P>
+<P>Thanks,</P>
+<P>Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Sorvaag replied on Sunday, February 11, 2007</h2><P>Hi Rocky,</P>
+<P>I have been using 2.1.4 and I can confirm that the asp.net datasource is working much better.</P>
+<P>Thanks,</P>
+<P>Matt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you Matt, I appreciate the feedback!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m about to do another test release of 2.1.4 (C# only)
+with another set of changes to try and fix the ability to create a new instance
+of the control via the DataView and GridView controls. At the moment though, I&#8217;ve
+run into a snag, which appears insurmountable. But we&#8217;ll see </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Matthew Sorvaag
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 11, 2007 1:35 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: My CslaDataSources Stopped Working after
+VS2005 SP1<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>I have been using 2.1.4 and I can confirm that the asp.net datasource is
+working much better.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Matt<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Saturday, January 13, 2007</h2><P>Rocky,</P>
+<P>I have now done some more tests with my tiny project. Each time&nbsp;I make a change, I close all designers, Re-build solution, Close VS, Restart VS, Open the Designer.</P>
+<P>1. Website projects a little easier to work with that WAP, but both show problems.</P>
+<P>2. With a single Library project, things work pretty well</P>
+<P>3. Then I added a second Library, and added to it a SubClass of Customer - SubCustomer as follows:</P>
+<P>&lt;Serializable()&gt; _<BR>&nbsp;&nbsp;&nbsp; Public Class SubCustomer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Inherits TestLib.Customer</P>
+<P><BR>&nbsp;&nbsp;&nbsp; Public Shared Function NewSubCustomer() As SubCustomer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return CType(TestLib.Customer.NewCustomer(), SubCustomer)<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>End Class<BR></P>
+<P>4. I added a new Page to the WebSite project, Added CslaDataSource using the SecondLib, SecondLib.SubCustomer, placed DetailsView on the Page to use this CslaDataSource.&nbsp; Immediately I got an error that <STRONG><FONT color=#ff0000>TestLib</FONT></STRONG> cannot be found.&nbsp; </P>
+<P>It seems that it is <EM><STRONG>always</STRONG></EM> the Library that contains the <STRONG><EM>Parent Cl</EM></STRONG>ass of the Object that I am trying to use in the CslaDataSource which "cannot be found"</P>
+<P><STRONG>Conclusion</STRONG>: Single Class Library Solutions seem to work fine.&nbsp; When there is more than one Class Library, things invariably fall apart.&nbsp; I will be happy to email you this little Project if you like.&nbsp; The error mesages are very consistent.&nbsp; (BTW, yesterday, I completely uninstalled my VS2005, and reinstalled it followed by SP1. It has made no difference)</P>
+<P>Jav</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, January 12, 2007</h2><P>I have gone over all of the references in all of my projects multiple times.&nbsp; In fact I removed those references and then added them very carefully.&nbsp; </P>
+<P>The error message shown in the DetailsView, or FormView, is always concerning one or the other of the 2 topmost Libraries in my solution.&nbsp; The message always says that it cannot locate a given dll.&nbsp; As I mentioned in my first post, my App runs just fine - so there is nothing wrong with the&nbsp;inner workings at all.&nbsp; </P>
+<P>During the pre-release phase of Csla 2.0, we had a similar problem with CslaDataSource at the Design time.&nbsp; Rocky fixed it (I don't know how) in a later version.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 12, 2007</h2><P>As long as you reference Csla.dll that is built for debug, and the associated pdb files are in the folder with Csla.dll then you can walk through the CSLA .NET code without having the project in your solution.</P>
+<P>The problem with having the Csla project in your solution is that any accidental rebuild of Csla.dll can seriously confuse VS. Remember that CslaDataSource comes from Csla.dll and is loaded by the IDE. Once loaded, an assembly can't be unloaded - so VS loads a version of Csla.dll and is stuck with that version until you close VS. </P>
+<P>If you subsequently rebuild Csla.dll, VS will still use the old one - but the CslaDataSource will accidentally use the <EM>newer one</EM> when it reflects against your business object. This will cause failure.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, January 12, 2007</h2><DIV>Check to see if you have any reference paths declared.&nbsp; You can add and remove the references all you want but if you have those paths designated it will always try and go to path designated.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>At least that is what happened to me once.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

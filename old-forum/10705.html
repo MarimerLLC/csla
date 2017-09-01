@@ -1,0 +1,82 @@
+<html><header><title>Problem with an autoincrement field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with an autoincrement field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10705.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kermitfrosch posted on Thursday, September 22, 2011</h2><p>Hallo users,</p>
+<p>i am a new user with csla.net and i have the following problem:</p>
+<p>&nbsp;</p>
+<p>---- console programm --</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">Dim</span>&nbsp;user&nbsp;=&nbsp;<span style="color:#2b91af;">UserEdit</span>.NewUserEdit
+user.FirstName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Max&quot;</span>
+user.Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Mustermann&quot;</span>
+user.Save()
+Out(user.UserId) &lt; -- the user.UserId = -1<br /><br />---- Data Access ----<br /><span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;Insert(<span style="color:blue;">ByRef</span>&nbsp;data&nbsp;<span style="color:blue;">As</span>&nbsp;DataTransferObjects.<span style="color:#2b91af;">UserDto</span>)&nbsp;<span style="color:blue;">Implements</span>&nbsp;Contracts.<span style="color:#2b91af;">IUserDal</span>.Insert
+  <span style="color:blue;">Using</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SqlConnection</span>).GetManager(<span style="color:#2b91af;">DataBaseConstants</span>.DataBaseConfigName)
+&nbsp;   <span style="color:blue;">Dim</span>&nbsp;cm&nbsp;=&nbsp;ctx.Connection.CreateCommand
+&nbsp;&nbsp;&nbsp; cm.CommandType&nbsp;=&nbsp;<span style="color:#2b91af;">CommandType</span>.Text
+&nbsp;&nbsp;&nbsp; cm.CommandText&nbsp;=&nbsp;<span style="color:#a31515;">&quot;INSERT&nbsp;INTO&nbsp;portaluser&nbsp;VALUES(@FIRSTNAME,&nbsp;@NAME)&quot;</span>
+&nbsp;&nbsp;&nbsp; cm.Parameters.Add(<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SqlParameter</span>(<span style="color:#a31515;">&quot;@FIRSTNAME&quot;</span>,&nbsp;data.firstname))
+&nbsp;&nbsp;&nbsp; cm.Parameters.Add(<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SqlParameter</span>(<span style="color:#a31515;">&quot;@NAME&quot;</span>,&nbsp;data.name))
+&nbsp;&nbsp;&nbsp; cm.ExecuteNonQuery()
+&nbsp;&nbsp;&nbsp; cm.Parameters.Clear()
+&nbsp;&nbsp;&nbsp; cm.CommandText&nbsp;=&nbsp;<span style="color:#a31515;">&quot;SELECT&nbsp;@@identity&quot;</span>
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">Dim</span>&nbsp;r&nbsp;=&nbsp;cm.ExecuteScalar
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">Dim</span>&nbsp;newId&nbsp;=&nbsp;<span style="color:blue;">Integer</span>.Parse(r.ToString)
+&nbsp;&nbsp;&nbsp; data.id&nbsp;=&nbsp;newId &lt; -- correct id
+&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span><br /><br /><br />---- business object --<br />&lt;<span style="color:#2b91af;">Transactional</span>(<span style="color:#2b91af;">TransactionalTypes</span>.TransactionScope)&gt;&nbsp;_
+<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;DataPortal_Insert()
+  <span style="color:blue;">Using</span>&nbsp;dalManager&nbsp;=&nbsp;DataAccess.<span style="color:#2b91af;">DalFactory</span>.GetManager()
+&nbsp;   <span style="color:blue;">Dim</span>&nbsp;dal&nbsp;=&nbsp;dalManager.GetProvider(<span style="color:blue;">Of</span>&nbsp;DataAccess.Contracts.<span style="color:#2b91af;">IUserDal</span>)()
+&nbsp;&nbsp;&nbsp;   <span style="color:blue;">Using</span>&nbsp;BypassPropertyChecks
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span style="color:blue;">Dim</span>&nbsp;data&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;AgPortal.DataAccess.DataTransferObjects.<span style="color:#2b91af;">UserDto</span>(UserId,&nbsp;FirstName,&nbsp;Name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dal.Insert(data)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">Me</span>.UserId&nbsp;=&nbsp;data.id &lt; -- the UserId is correct
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span><br /><br />Why does the id don&#39;t pass the buusiness object?<br /><br /></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, September 22, 2011</h2><pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;"><br />Try this code: <br /><br />Public</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;Insert(<span style="color:blue;">ByRef</span>&nbsp;data&nbsp;<span style="color:blue;">As</span>&nbsp;DataTransferObjects.<span style="color:#2b91af;">UserDto</span>)&nbsp;<span style="color:blue;">Implements</span>&nbsp;Contracts.<span style="color:#2b91af;">IUserDal</span>.Insert
+  <span style="color:blue;">Using</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SqlConnection</span>).GetManager(<span style="color:#2b91af;">DataBaseConstants</span>.DataBaseConfigName)
+&nbsp;   <span style="color:blue;">Dim</span>&nbsp;cm&nbsp;=&nbsp;ctx.Connection.CreateCommand
+&nbsp;&nbsp;&nbsp; cm.CommandType&nbsp;=&nbsp;<span style="color:#2b91af;">CommandType</span>.Text
+&nbsp;&nbsp;&nbsp; cm.CommandText&nbsp;=&nbsp;<span style="color:#a31515;">&quot;INSERT&nbsp;INTO&nbsp;portaluser&nbsp;VALUES(@FIRSTNAME,&nbsp;@NAME); SELECT SCOPE_IDENTITY()&quot;</span>
+&nbsp;&nbsp;&nbsp; cm.Parameters.Add(<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SqlParameter</span>(<span style="color:#a31515;">&quot;@FIRSTNAME&quot;</span>,&nbsp;data.firstname))
+&nbsp;&nbsp;&nbsp; cm.Parameters.Add(<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SqlParameter</span>(<span style="color:#a31515;">&quot;@NAME&quot;</span>,&nbsp;data.name))
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">Dim</span>&nbsp;r&nbsp;=&nbsp;cm.ExecuteScalar
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">Dim</span>&nbsp;newId&nbsp;=&nbsp;<span style="color:blue;">Integer</span>.Parse(r.ToString)
+&nbsp;&nbsp;&nbsp; data.id&nbsp;=&nbsp;newId &lt; -- correct id
+&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub<br /><br />NEVER USE @@IDENTITY FOR THIS PURPOSE. IT SHOULD BE CURSED....... <br /><br />SCOPE_IDENTITY() is the ONLY proper function to use.</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kermitfrosch replied on Thursday, September 22, 2011</h2><p>Hallo,</p>
+<p>i think, the problem is not in my dataaccess code.</p>
+<p>the dataaccess code gives me the correct value.</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;Insert(<span style="color:blue;">ByRef</span>&nbsp;data&nbsp;<span style="color:blue;">As</span>&nbsp;DataTransferObjects.<span style="color:#2b91af;">UserDto</span>)&nbsp;<span style="color:blue;">Implements</span>&nbsp;Contracts.<span style="color:#2b91af;">IUserDal</span>.Insert
+ <span style="color:blue;">Using</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">SqlConnection</span>).GetManager(<span style="color:#2b91af;">DataBaseConstants</span>.DataBaseConfigName)
+&nbsp;  <span style="color:blue;">Dim</span>&nbsp;cm&nbsp;=&nbsp;ctx.Connection.CreateCommand
+&nbsp;&nbsp; cm.CommandType&nbsp;=&nbsp;<span style="color:#2b91af;">CommandType</span>.Text
+&nbsp;&nbsp; cm.CommandText&nbsp;=&nbsp;<span style="color:#a31515;">&quot;INSERT&nbsp;INTO&nbsp;portaluser&nbsp;VALUES(@FIRSTNAME,&nbsp;@NAME);&nbsp;SELECT&nbsp;SCOPE_IDENTITY()&quot;</span>
+&nbsp;&nbsp; cm.Parameters.Add(<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SqlParameter</span>(<span style="color:#a31515;">&quot;@FIRSTNAME&quot;</span>,&nbsp;data.firstname))
+&nbsp;&nbsp; cm.Parameters.Add(<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SqlParameter</span>(<span style="color:#a31515;">&quot;@NAME&quot;</span>,&nbsp;data.name))
+&nbsp;&nbsp; cm.ExecuteNonQuery()
+&nbsp;&nbsp; <span style="color:blue;">Dim</span>&nbsp;r&nbsp;=&nbsp;cm.ExecuteScalar<br />   &#39; ################## This works correct ####################<br />&nbsp;&nbsp; <span style="color:blue;">Dim</span>&nbsp;newId&nbsp;=&nbsp;<span style="color:blue;">Integer</span>.Parse(r.ToString)<br />   &#39; ##########################################################<br />&nbsp;&nbsp; data.id&nbsp;=&nbsp;newId 
+ <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&lt;<span style="color:#2b91af;">Transactional</span>(<span style="color:#2b91af;">TransactionalTypes</span>.TransactionScope)&gt;&nbsp;_
+<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;DataPortal_Insert()<br />  <span style="color:blue;">Using</span>&nbsp;dalManager&nbsp;=&nbsp;DataAccess.<span style="color:#2b91af;">DalFactory</span>.GetManager()
+&nbsp;   <span style="color:blue;">Dim</span>&nbsp;dal&nbsp;=&nbsp;dalManager.GetProvider(<span style="color:blue;">Of</span>&nbsp;DataAccess.Contracts.<span style="color:#2b91af;">IUserDal</span>)()
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">Using</span>&nbsp;BypassPropertyChecks
+&nbsp;&nbsp;&nbsp;   <span style="color:blue;">Dim</span>&nbsp;data&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;AgPortal.DataAccess.DataTransferObjects.<span style="color:#2b91af;">UserDto</span>(UserId,&nbsp;FirstName,&nbsp;Name)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dal.Insert(data)<br />      &#39;################# This works correct #########<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">Me</span>.UserId&nbsp;=&nbsp;data.id<br />      &#39;#############################################<br />&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub<br /><br /></span><span style="color:blue;">Sub</span>&nbsp;Main()
+  <span style="color:blue;">Dim</span>&nbsp;user&nbsp;=&nbsp;<span style="color:#2b91af;">UserEdit</span>.NewUserEdit
+&nbsp; user.FirstName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Max&quot;</span>
+&nbsp; user.Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Mustermann&quot;</span>
+&nbsp; user.Save()
+  &#39; ################## here i get -1 ################<br />&nbsp; Out(user.UserId)<br />  &#39; #################################################</pre>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, September 22, 2011</h2><p>Save returns a new object: </p>
+<p>&nbsp; user = user.Save()</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kermitfrosch replied on Thursday, September 22, 2011</h2><p>Now it works.</p>
+<p>&nbsp;</p>
+<p>Thx</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

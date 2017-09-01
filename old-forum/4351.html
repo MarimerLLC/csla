@@ -1,0 +1,198 @@
+<html><header><title>Issue with DataMapper.Map() for enums</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue with DataMapper.Map() for enums</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4351.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rd_bigdog posted on Thursday, February 14, 2008</h2><P>Hi Group,</P>
+<P>Wondering if anyone came accross this?</P>
+<P>My BO exposes a series of properties as ENUM types. My DTO defines the same fields as integers. The datamapper works when going from BO-&gt;DTO. But when going from DTO-&gt;BO, it fails on the conversion.</P>
+<P>Going under the hood, I see that the CoerseValue does check for ENUM types, however, it also ensure that the type is a string:</P>
+<P>&nbsp;If desiredType.IsEnum AndAlso valueType.Equals(GetType(String)) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return System.Enum.Parse(desiredType, value.ToString())<BR>&nbsp;End If</P>
+<P>This didn't make sense to me as Enums cannot be declared as string that I am aware of. Then, if the type was a string, why would you need to call ToString() on it? </P>
+<P>I removed the check for string and recompiled the assembly and all is good. I just want to make sure that I am understanding the problem and not missing something more significant?</P>
+<P>Thanks,</P>
+<P>Rick.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 14, 2008</h2><P>The value parameter is of type object, which is why I did ToString().</P>
+<P>So you removed both the type check and the ToString() and it works with both integer and string input types?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rd_bigdog replied on Friday, February 15, 2008</h2><P>Hi Rocky,</P>
+<P>I did not test with String because I am unaware of how to create a an enum as a string,</P>
+<P>IE. Public enum as string</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; myenumone = "test"</P>
+<P>end enum</P>
+<P>I think for that second part of the condition to ever past you would have to be able to create an enum as a string. So I am not sure if the concept of string here is relevant? If it is an enum type, it will be some numeric type and not a string. So the valueType.Equals(GetType(String))&nbsp; check will always be FALSE and the mapping will always throw an exception when going from an integer to an enum.</P>
+<P>I left the ToString() in as it should be a numeric type and as you indicated it is Object, so it is cleaner to have the ToString(), I only took out the check in the if condition for String type.</P>
+<P>True?</P>
+<P>Also, I ever mentioned what version I am using, this is the latest beta version of the CSLA 3.5...not sure if this issue exists in&nbsp;previous versions.</P>
+<P>Rick.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The purpose of the code you are looking at is specifically to
+handle the case of mapping a string value into an enum. So if you have an enum
+that defines values like Red=0 and Blue=1 then you can pass in a string value
+like &#8220;Blue&#8221; and have it automatically end up as MyEnum.Blue, or 1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Many people use comboboxes or other string representations of
+enum values, and the point of this code is to make it easier to simply copy the
+string value from the UI (or data file or whatever) directly into an enum property
+of your business object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I hadn&#8217;t thought about trying to use this to auto-parse
+integer values into an enum, and I&#8217;m not sure it is necessary, because an
+integer value should be convertible to an enum without all the overhead of
+calling the parse method. This is why that particular path only occurs when the
+value is a&nbsp; string &#8211; that&#8217;s the only type of value you&#8217;d
+want to parse into an enum. Numeric types should directly convert.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or do they not convert? And if they don&#8217;t, what is the
+exception?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rd_bigdog
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 15, 2008 9:28 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Issue with DataMapper.Map() for enums<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>I did not test with String because I am unaware of how to create a an enum
+as a string,<o:p></o:p></p>
+
+<p>IE. Public enum as string<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp; myenumone = &quot;test&quot;<o:p></o:p></p>
+
+<p>end enum<o:p></o:p></p>
+
+<p>I think for that second part of the condition to ever past you would have to
+be able to create an enum as a string. So I am not sure if the concept of
+string here is relevant? If it is an enum type, it will be some numeric type
+and not a string. So the valueType.Equals(GetType(String))&nbsp; check will
+always be FALSE and the mapping will always throw an exception when going from
+an integer to an enum.<o:p></o:p></p>
+
+<p>True?<o:p></o:p></p>
+
+<p>Also, I ever mentioned what version I am using, this is the latest beta
+version of the CSLA 3.5...not sure if this issue exists in&nbsp;previous
+versions.<o:p></o:p></p>
+
+<p>Rick.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rd_bigdog replied on Friday, February 15, 2008</h2><P>Ok, thanks for the explanation. I knew that had to be more to it as you wouldn't have code in there that didn't ever server a purpose...I didn't see that angle.</P>
+<P>I agree 100%, I have never seen a problem directly converting an integer to an enum and vice versa, it should just work. </P>
+<P>This is the exception (I left in the pertinent parts)&nbsp;(and the code from a small sample is below that generated the exception)&nbsp;:</P>
+<P>System.ArgumentException was unhandled<BR>&nbsp; Message="Property copy failed (MyEnum)"<BR>&nbsp; Source="Csla"<BR>&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;.......<BR>&nbsp; InnerException: System.InvalidCastException<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message="Invalid cast from 'System.Int32' to 'enumTest.testENum'."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source="mscorlib"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Convert.DefaultToType(IConvertible value, Type targetType, IFormatProvider provider)&nbsp;&nbsp;&nbsp; at System.Int32.System.IConvertible.ToType(Type type, IFormatProvider provider)&nbsp;&nbsp;&nbsp; at System.Convert.ChangeType(Object value, Type conversionType, IFormatProvider provider)&nbsp;&nbsp;&nbsp; at System.Convert.ChangeType(Object value, Type conversionType)&nbsp;&nbsp;&nbsp; at Csla.Utilities.CoerceValue(Type desiredType, Type valueType, Object oldValue, Object value) in D:\Working\AMS\AMS Development\AMS Rearchitecture\AMSCSLA\AMSCSLA\Csla\Utilities.vb:line 143&nbsp;&nbsp;&nbsp; at Csla.Data.DataMapper.SetValue(Object target, MemberInfo memberInfo, Object value) in D:\Working\AMS\AMS Development\AMS Rearchitecture\AMSCSLA\AMSCSLA\Csla\Data\DataMapper.vb:line 321&nbsp;&nbsp;&nbsp; at Csla.Data.DataMapper.SetPropertyValue(Object target, String propertyName, Object value) in D:\Working\AMS\AMS Development\AMS Rearchitecture\AMSCSLA\AMSCSLA\Csla\Data\DataMapper.vb:line 285&nbsp;&nbsp;&nbsp; at Csla.Data.DataMapper.Map(Object source, Object target, Boolean suppressExceptions, String[] ignoreList) in D:\Working\AMS\AMS Development\AMS Rearchitecture\AMSCSLA\AMSCSLA\Csla\Data\DataMapper.vb:line 184<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: <BR></P>
+<P>&nbsp;</P>
+<P>This code will execute fine down to the last test where we are convertign the DTO to the business object (as defined by my application where my BO has teh Enum properties and my DTO has the integer properties), so inheritenly, the Integer to the Enum. Just copy into a winform with a button and click.</P>
+<P>&nbsp;</P>
+<P>Public Class Form1</P>
+<P>&nbsp;&nbsp;&nbsp; Private Sub Button1_Click(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles Button1.Click<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Test BO -&gt; DTO (Enum to Integer)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theBO As myBO = New myBO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theBO.MyEnum = testENum.four<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theDTO As myDTO = New myDTO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Data.DataMapper.Map(theBO, theDTO)</P>
+<P>'Raw&nbsp;implicit conversions without DataMapper.Map&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P>Dim theENum As testENum = testENum.three<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theInt As Integer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theInt = theENum<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theENum = theInt</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Test DTO -&gt; BO (Integer to the Enum)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theBO2 As myBO = New myBO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim theDTO2 As myDTO = New myDTO<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; theDTO2.MyEnum = 4<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Data.DataMapper.Map(theDTO2, theBO2)</P>
+<P>&nbsp;&nbsp;&nbsp; End Sub<BR>End Class</P>
+<P>Public Enum testENum<BR>&nbsp;&nbsp;&nbsp; one<BR>&nbsp;&nbsp;&nbsp; two<BR>&nbsp;&nbsp;&nbsp; three<BR>&nbsp;&nbsp;&nbsp; four<BR>End Enum</P>
+<P><BR>Public Class myDTO</P>
+<P>&nbsp;&nbsp;&nbsp; Private _testEnum As Integer</P>
+<P>&nbsp;&nbsp;&nbsp; Public Property MyEnum() As Integer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _testEnum<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As Integer)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _testEnum = value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property<BR>End Class</P>
+<P>Public Class myBO</P>
+<P>&nbsp;&nbsp;&nbsp; Private _testEnum As testENum</P>
+<P>&nbsp;&nbsp;&nbsp; Public Property MyEnum() As testENum<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _testEnum<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As testENum)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _testEnum = value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property<BR>End Class</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amselem replied on Saturday, February 16, 2008</h2><P>Try to declare the enum with the integers explicitly:</P>
+<P>Public Enum testENum<BR>&nbsp;&nbsp;&nbsp; one&nbsp; = 1<BR>&nbsp;&nbsp;&nbsp; two = 2<BR>&nbsp;&nbsp;&nbsp; three = 3<BR>&nbsp;&nbsp;&nbsp; four = 4<BR>End Enum</P>
+<P>If you don't write them explicitly,&nbsp;they get numerated automatically but starting from zero (so one = 0, two = 1, three = 2 and four = 3)</P>
+<P>Regards</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Interesting. I&#8217;ll add a unit test for this and see about
+fixing the issue. I would have expected that scenario to simply work though, so
+apparently the basic Convert call I&#8217;m making isn&#8217;t quite as good as
+a normal cast :(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I added code so it will now attempt to coerce both inbound
+string values, and values that match the underlying type of the enum (typically
+int), this is now in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you for your help in finding and researching this issue!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rd_bigdog replied on Saturday, February 16, 2008</h2><P>No problem, Thanks for the quick turnaround on it!</P>
+<P>That's great!</P>
+<P>Rick.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,81 @@
+<html><header><title>UltraWinGrid does not display UltraCombo or allow modifying row</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>UltraWinGrid does not display UltraCombo or allow modifying row</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2959.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>closl posted on Wednesday, May 30, 2007</h2><P>I'm new to UltraWinGrid (Infragistics).&nbsp; We're using CSLA v 1.5.&nbsp; I'm able to display data, but unable to modify it or&nbsp;display the UltraCombo in one of the columns.&nbsp; Any insight?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, May 30, 2007</h2>First, be sure to set the grid to allow edits, inserts and deletes.&nbsp; <br><br>Second, the combo is a bit of a pain.. you need to create a list to give it the values to display, but you can't do this via the designer.<br><br>Here's a snippit of my code that does what you will need to do..<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">ValueList </font>typeValues;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">/* Phone types */</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typeValues =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PhoneNumbersGridView.DisplayLayout.ValueLists.Add(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">Guid</font>.NewGuid().ToString()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">foreach </font>( <font color="#008000">PhoneTypeList</font>.<font color="#008000">NameValuePair </font>nv <font color="#0000ff">in </font><font color="#008000">PhoneTypeList</font>.List ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typeValues.ValueListItems.Add( nv.Value );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PhoneNumbersGridView.DisplayLayout.Bands[ 0 ].Columns[<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#ff0000">"PhoneType"</font> ].ValueList = typeValues;<br><br>PhoneTypeList is a Csla.NVL .&nbsp; The static List property is simply a cached list.&nbsp; <font color="#ff0000">"PhoneType"</font> is the name of the column which should have the dropdown.&nbsp; ValueList is a Infragistics class.<br><br>I call this code as the form is loading.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>closl replied on Wednesday, May 30, 2007</h2>Thanks for responding.&nbsp; I'm sorry to say that it's still not working.&nbsp; Below&nbsp;is the code I have.&nbsp; Maybe a new pair of eyes will see something.&nbsp; My grid is on a user control and it's contents are gathered when the Orders property is set.<FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>UC_OrderPayers</FONT><FONT size=2> : Starkey.ProHear.UI.PHNControls.</FONT><FONT color=#008080 size=2>PHNUniverseControl</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>OrderPayersCollection</FONT><FONT size=2> m_orderPayers = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>InsuranceClaimStatusReadOnlyCollection</FONT><FONT size=2> m_claimStatus = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Orders</FONT><FONT size=2> m_orders = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ValueList</FONT><FONT size=2> claimStatusValueList;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> UC_OrderPayers()</P>
+<P>{</P>
+<P>InitializeComponent();</P>
+<P>claimStatusValueList = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ValueList</FONT><FONT size=2>();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Properties</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Orders</FONT><FONT size=2> Orders</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> m_orders; }</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>m_orders = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (m_orders != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>GetPolicyList(m_orders.PatientKey);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</FONT><FONT size=2> </P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> GetPolicyList(</FONT><FONT color=#008080 size=2>Patient</FONT><FONT size=2>.</FONT><FONT color=#008080 size=2>Key</FONT><FONT size=2> patientKey)</P>
+<P>{</P>
+<P>m_orderPayers = </FONT><FONT color=#008080 size=2>OrderPayersCollection</FONT><FONT size=2>.RetrieveAll(Orders.Key.EmptyKey, m_orders.PatientKey);</P>
+<P>m_claimStatus = </FONT><FONT color=#008080 size=2>InsuranceClaimStatusReadOnlyCollection</FONT><FONT size=2>.RetrieveAll();</P>
+<P>grdPayers.DataSource = m_orderPayers;</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>InsuranceClaimStatus</FONT><FONT size=2> ics </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> m_claimStatus)</P>
+<P>{</P>
+<P>claimStatusValueList.ValueListItems.Add(ics);</P>
+<P>} </P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> grdPayers_InitializeLayout(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Infragistics.Win.UltraWinGrid.</FONT><FONT color=#008080 size=2>InitializeLayoutEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>.ReferenceEquals(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.grdPayers.DisplayLayout.Bands[0].Columns[0], </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>))</P>
+<P>{</P>
+<P>e.Layout.Bands[0].Override.AllowUpdate = </FONT><FONT color=#008080 size=2>DefaultableBoolean</FONT><FONT size=2>.True;</P>
+<P>e.Layout.Bands[0].Override.AllowDelete = </FONT><FONT color=#008080 size=2>DefaultableBoolean</FONT><FONT size=2>.True;</P>
+<P>e.Layout.Bands[0].Override.AllowAddNew = Infragistics.Win.UltraWinGrid.</FONT><FONT color=#008080 size=2>AllowAddNew</FONT><FONT size=2>.Yes;</P>
+<P>e.Layout.Bands[0].Columns[</FONT><FONT color=#800000 size=2>"InsuranceClaimStatusID"</FONT><FONT size=2>].Style = Infragistics.Win.UltraWinGrid.</FONT><FONT color=#008080 size=2>ColumnStyle</FONT><FONT size=2>.DropDown;</P>
+<P>e.Layout.Bands[0].Columns[</FONT><FONT color=#800000 size=2>"InsuranceClaimStatusID"</FONT><FONT size=2>].ValueList = claimStatusValueList;</P>
+<P>e.Layout.Bands[0].Columns[0].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[1].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[2].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[4].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[5].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns<img src="/emoticons/emotion-14.gif" alt="Devil [6]" />.Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[7].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns<img src="/emoticons/emotion-29.gif" alt="Music [8]" />.Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[10].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[11].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[12].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[13].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[14].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[15].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[16].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[18].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[19].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>e.Layout.Bands[0].Columns[20].Hidden = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 31, 2007</h2>Please note my original code, specifically this line:<br><br>typeValues =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PhoneNumbersGridView.DisplayLayout.ValueLists.Add(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">Guid</font>.NewGuid().ToString()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<br><br>Notice that i'm not creating an empty value list via its constructor, I'm using the ValueLists collection on DisplayLayout to create it.<br><br><br>I don't see anywhere that you add claimStatusValueList to grid.DisplayLayout.ValueLists.. this may be your problem.<font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><font size="2"><br></font></font></font></font></font></font></font></font></font></font></font></font></font></font></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>closl replied on Thursday, May 31, 2007</h2><P>At the risk of sounding like a total moron, I do not have the object "ValueLists" off of the DisplayLayout"&nbsp; I do find it off&nbsp;of the column and it&nbsp;is a singular noun vs. ValueList<FONT color=#ff0000>s, which is plural</FONT>.&nbsp; </P>
+<P>See my code is in InitializeLayout event:&nbsp; <FONT size=2></P>
+<P>e.Layout.Bands[0].Columns[</FONT><FONT color=#800000 size=2>"InsuranceClaimStatusID"</FONT><FONT size=2>].ValueList = claimStatusValueList;</FONT></P>
+<P><FONT size=2>your code:&nbsp; </P></FONT>
+<P>typeValues =&nbsp;PhoneNumbersGridView.DisplayLayout.ValueLists</P>
+<P>but still, it does not show.&nbsp; </P>
+<P>Are you using a different control by chance or a different version of Infragistics.&nbsp; We're using the latest.</P>
+<P>Thanks...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 31, 2007</h2><P>Well, I also set the ValueList off of the column, but that's in addition to adding to the DisplayLayout.ValueLists collection.</P>
+<P>I'm using NA 20071, although I think I first implemented this code in 20062.&nbsp; </P>
+<P>The control is Infragistics.Win.UltraWinGrid.UltraGrid.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kamanova replied on Thursday, May 31, 2007</h2><P>I just started working with CSLA and Infragistics two months ago, so I don't know if there is a better way to do this or not, but&nbsp;I have been using&nbsp;the EditorControl property.</P>
+<P>If you are using a NameValueList bo, add an UltraComboEditor control to the form your grid is on. Otherwise use an UltraCombo control instead. (The UltraCombo is basically a dropdown UltraWinGrid.)</P>
+<P>Set the visibility of any controls you added to false.</P>
+<P>Open the UltraWinGrid Designer and click on Band and Column Settings-&gt;Band[0]...-&gt;Columns.</P>
+<P>Select the column you want the combo on, look for the EditorControl property, and select the control you added above from the dropdown list.</P>
+<P>That is all there is to it. As long as the control is bound correctly and you set the binding source's datasource at runtime, it should work fine. This way you don't need to mess with the wingrid through code at all.</P>
+<P>Hope that helps!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 31, 2007</h2>So using your method, are you actually embedding another infragistics control into the column?&nbsp; I had simply used the style property of the column and set it to dropdown or something like that.&nbsp; Perhaps that's where the OP and I have been miscommunicating.. if he's embedding another control, I don't think my code applies.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

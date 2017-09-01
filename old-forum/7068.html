@@ -1,0 +1,49 @@
+<html><header><title>PropertyStatus DenyRead</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyStatus DenyRead</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7068.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net posted on Tuesday, June 09, 2009</h2>Quick question and bare with me as I am new to the PropertyStatus object. It seems however, that when&nbsp; the PropertyStatus object encounters a property that one does not have read access to, it assigns (in my case) the value of the text box bound to the property to string.empty. This is well and good but it results in the setter being called in my business object making the current instance dirty and to add insult to injury it breaks a rule triggering the the control to validate via IDataErrorInfo. <br><br>Has anyone found a solution to this?<br><br>Thanks,<br>B<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 10, 2009</h2><P>Is this WPF or Silverlight?</P>
+<P>I have not seen this behavior, can you provide a simple example illustrating the problem?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net replied on Thursday, June 11, 2009</h2><P>Sure.</P>
+<P>&nbsp;&lt;Label Grid.Row="0"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grid.Column="0"&gt;Customer Name&lt;/Label&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBox <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name="NameTextBox"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MinWidth="267" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MaxLength="40"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Text="{Binding Path=BusinessObject.Name, Mode=TwoWay, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/TextBox&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Controls:PropertyStatus Source="{Binding Path=BusinessObject}" Property="Name"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Target="{Binding ElementName=NameTextBox}" /&gt;</P>
+<P>&nbsp;</P>
+<P>Add a auth rule </P>
+<P>AllowRead(NameProperty, "Admin") and log in with a user who does not have the admin role.</P>
+<P>The PropertyStatus calls the set_Text method on the text box, this triggers databinding to update the source. In my opinion you should only be calling set_Content not set_Text. </P>
+<P>Let me know if you need any more info.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, I think I see.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It didn&#8217;t occur to me that someone would deny read to a
+user, but allow them to write to the property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you have a scenario where the user isn&#8217;t allowed to
+read, but is allowed to write?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net replied on Friday, June 12, 2009</h2><P>Rocky,</P>
+<P>You are correct in that it is not a valid scenario for us to have a field that can be written but not read. However our security model is configurable through a Admin tool we build. So it is possible through configuration to create this scenario,&nbsp;(though it would probally be a mistake). In any case I just changed your code so it fits what we need. </P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Brette</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

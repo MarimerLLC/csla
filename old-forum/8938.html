@@ -1,0 +1,38 @@
+<html><header><title>DataPortal timeout when running application OOB</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal timeout when running application OOB</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8938.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkOviedo posted on Sunday, May 16, 2010</h2><p>I&#39;m hoping that there might be an easy answer for this issue. My Silverlight application has a standard structure of a Web project which hosts the application and a Silverlight project that defines the application. </p>
+<p>When I run the Web project, the Silverlight application launches and it successfully communicates with the data portal. When I install the application out-of-browser, it will execute through the first data portal call, but that call will timeout. When I monitor the web requests via Fiddler, I observe that no call originates from the OOB application. Here are a few more details :</p>
+<p>1) To isolate this from being a potential Cassini issue, I have published the data portal web site to IIS on my local dev machine. I have placed the clientaccesspolicy.xml in the wwwroot folder to ensure this is not a cross-domain issue. When I run the Silverlight application from the web project, it works against the IIS-hosted data portal.</p>
+<p>2) To test OOB, I have configured the Silverlight project to debug the OOB application. When I trace into this project, I trace over the data portal call and then get the callback after the timeout elapses. I have peeked into the .xap that is being used in the debug scenario, and have validated that the ServiceReference.clientconfig is pointing to the correct data portal location.</p>
+<p>3) My dev machine is Windows 7, 64-bit. I am using CSLA 4 beta, VS 2010 and targeting .NET 4 framework for all components.</p>
+<p>Any ideas? I am quickly running out of troubleshooting avenues!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 16, 2010</h2><p>Take the data portal out of the equation. Try creating a simple WCF service - hello world or something - and invoking it from an OOB app. Assuming that works, compare its config to yours to see if there&#39;s a difference.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>MarkOviedo replied on Thursday, May 27, 2010</h2><p>Thanks for the advice! I did finally root cause this, and am happy to report it has nothing to do with CSLA. <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /> &nbsp;It does seem to be a Silverlight idiosyncracy between an application running in-browser and out-of-browser.</p>
+<p>To summarize, before I was doing something like this in the App.xaml.cs Application_Startup. I was initializing the RootVisual element in the asynchronous callback of a data portal call, since my ShellView required the back-end configuration information to be displayed. :</p>
+<div style="font-family:Courier New;font-size:10pt;color:black;background:white;">
+<p style="margin:0px;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;<span style="color:blue;">private</span> <span style="color:blue;">void</span> Application_Startup(<span style="color:blue;">object</span> sender, <span style="color:#2b91af;">StartupEventArgs</span> e)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">//[Data portal fetch to retrieve configuration information -&gt; </span></p>
+<p style="margin:0px;"><span style="color:green;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; callback to LoadConfigurationHandler when complete.]</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">// Invoked when asynchronous call to data portal completes.</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span> <span style="color:blue;">void</span> LoadConfigurationHandler(Request request, <span style="color:#2b91af;">Exception</span> exception)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RootVisual = <span style="color:blue;">new</span> <span style="color:#2b91af;">ShellView</span>();</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">//[Configure view using loaded configuration data.]</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div>
+<p>This works fine in an in-browser scenario, but will hang in an out of browser scenario. So the fix was to remove the configuration dependencies of the ShellView and initialize the RootVisual element in the Application_Startup. Then configure the view in the callback. This works in both in-browser and OOB scenarios.</p>
+<div style="font-family:Courier New;font-size:10pt;color:black;background:white;">
+<p style="margin:0px;"><span style="color:blue;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private</span> <span style="color:blue;">void</span> Application_Startup(<span style="color:blue;">object</span> sender, <span style="color:#2b91af;">StartupEventArgs</span> e)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; RootVisual = <span style="color:blue;">new</span> <span style="color:#2b91af;">ShellView</span>();</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">//[Data portal fetch to retrieve configuration information -&gt; </span></p>
+<p style="margin:0px;"><span style="color:green;">&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;callback to LoadConfigurationHandler when complete.]</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">// Invoked when asynchronous call to back-end completes.</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span> <span style="color:blue;">void</span> LoadConfigurationHandler(Request request, <span style="color:#2b91af;">Exception</span> exception)</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:green;">//[Configure view using loaded configuration data.]</span></p>
+<p style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,71 @@
+<html><header><title>Application Context Consistency: Web Client - Windows Client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Application Context Consistency: Web Client - Windows Client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4362.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Saturday, February 16, 2008</h2><P>Hi guys <BR>I am just wondering about the consistency in the ApplicationContext between web clients and windows clients.<BR><BR>I noticed that the web client items are stored in the HttpContext.Current.Items collection (i.e. if you do one postback and put a value in and then another postback and try to get the value out it is no longer there) and the windows client is stored on the thread (i.e. if you click a button and put a value in and then later click another button and go to get that value it will still be there)<BR><BR>Would it not be more consistent if in the web scenario that the values are stored in the session. That way either when you are using web clients or windows client the model for how the context is stored is consistent.<BR><BR>Now I relies that this is&nbsp;a fairly big change but I guess I am wondering about the use of HttpContext.Current.Items over the Session.<BR><BR>Thanks <BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, February 17, 2008</h2>Web is stateless by nature.&nbsp; Many ways are used to maintain state within (or between) page.&nbsp; I think it should be up to the developer to choose how to maintain this.&nbsp; <br><br>Information that user specific normally you'd store in session object, but&nbsp; I worked in web applications where we choose to not use session object.<br><br>For application specific information, normally either cache or configuration manager is used.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 17, 2008</h2><P>Additionally, Session isn't as available as HttpContext. The HttpContext is created very early in each page request cycle, while Session (if created at all) is created later.</P>
+<P>The use of HttpContext instead of thread local storage is discussed in the book, and is required due to some possible thread switching that ASP.NET might do early in the page request cycle - before Session, but possibly after you've authenticated/authorized the user.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Sunday, February 17, 2008</h2><P>Hi Rocky <o:p></o:p></P>
+<P>I was aware that it was being used because of the thread switching (from the book) but i was not aware that it was available earlier in the request lifecycle (i dont remember seeing that although i might be wroung). So thanks for the info.<BR><BR>If one did want to persist variables between requests and still have it available that early in the page lifecycle how would one go about doing that?<o:p></o:p></P>
+<P>Thanks again <BR>Anthony<o:p></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you want your values available before Session loads you are
+(to my knowledge) on your own.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is also important to realize that Csla.ApplicationContext
+very specifically <i>does not persist values between requests</i>. It is
+designed, on the server, to be stateless. The purpose of ApplicationContext is
+not to maintain per-user data over time on a statelsss server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>GlobalContext provides unified values between a smart client and
+a server, so the server and client share the same values through the data
+portal. On the server the intent is that GlobalContext is destroyed between
+requests, providing stateless behavior and a high degree of per-call isolation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ClientContext provides one-way availability of values from a
+smart client to the server, so the server has access to the client values
+through the data portal. On the server the intent is that ClientContext is
+destroyed between requests, providing stateless behavior and a high degree of
+per-call isolation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>LocalContext provides a location to store values on either the
+client or server, but these values are not shared through the data portal. On
+the server the intent is that LocalContext is destroyed between requests,
+providing stateless behavior and a high degree of per-call isolation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>User provides safe access to the current principal regardless of
+whether your code is running in ASP.NET or not. This is true whether you are
+using custom CSLA authentication or not, but if you are using custom CSLA
+authentication then the User value is impersonated from the client to the
+server (working much like ClientContext). Again, the intent is that the User
+value is destroyed between requests on the server, providing stateless behavior
+and a high degree of per-call isolation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, February 17, 2008</h2>You can implement the IRequiresSessionState to have access of session state at handlers/modules level.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 17, 2008</h2>Regardless, I surely don't want to make CSLA only work in scenarios where Session is enabled. My own web site has session disabled, and I want to continue to use CSLA <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 17, 2008</h2><P>One last point - the HttpContext strategy wasn't something I pulled out of thin air. This technique came from Scott Guthrie and Scott Hanselman as the outcome of an email thread I started way back in 2005 or so. </P>
+<P>The origin was a CSLA beta tester who'd run into some issues with storage of ApplicationContext data on the thread like I do for Windows. Pursuing this problem led me to ScottH, and eventually to ScottGu. Either he or one of the ASP.NET dev team (I don't recall for sure) said the only safe location to store the data I was storing was in HttpContext. I figure they know what they are talking about, and so here we are today.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, February 17, 2008</h2>Rocky, <br><br>I agree with you that you that the principal object should always be placed on HttpContext.&nbsp; If creating this principal is expensive then the object can be cached either on Session, Cache, or Cookie then put back onto HttpContext in either global.asax, httphandler or httpmodule.<br><br>Anthony,<br>If you choose to cache in Session and handle the assignment in httphandle or httpmodule; You need to implement the IRequiresSessionState interface.<br><br>HTH,<br>Ricky<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

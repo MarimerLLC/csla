@@ -1,0 +1,41 @@
+<html><header><title>dalManager.GetProvider() - System.NotImplementedException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>dalManager.GetProvider() - System.NotImplementedException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, February 17, 2012</h2><p>OK, so I&#39;ve made _some_ progress in my attempts to put together the necessary classes, etc in Vb.Net.</p>
+<p>I&#39;ve now recreated a simple EncapsulatedInvoke-type Windows FORMS application and all seemed to be going well.</p>
+<p>Until now.</p>
+<p>When I try to retrieve a personList, which is being executed in the Dataportal_Fetch method of my Library.Net.PersonList class.</p>
+<p>&nbsp;</p>
+<p>I get a <span style="font-family:Courier New;">
+<p>System.NotImplementedException</p>
+<p>My Fetch looks like this:</p>
+<p>&nbsp;&nbsp;&nbsp; Private Overloads Sub DataPortal_Fetch()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = False</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim rlce = RaiseListChangedEvents</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = False</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using dalManager = DataAccess.DalFactory.GetManager()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim dal = dalManager.GetProvider(Of DataAccess.IPersonDal)() &#39;----&lt; error is here!!</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using data = dal.Fetch()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; While data.Read()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim item = DataPortal.FetchChild(Of PersonInfo)(data)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(item)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End While<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = rlce<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = True</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>It definitely gets the correct dalManager and my IPersonDal looks like this:</p>
+<p>&nbsp;Imports System.Collections.Generic<br />Imports System.Linq<br />Imports System.Text<br />Imports System.Data</p>
+<p><br />Public Interface IPersonDal</p>
+<p>&nbsp;&nbsp;&nbsp; Function Fetch() As IDataReader<br />&nbsp;&nbsp;&nbsp; Function Fetch(id As Integer) As IDataReader<br />&nbsp;&nbsp;&nbsp; Function Insert(firstName As String, lastName As String) As Integer<br />&nbsp;&nbsp;&nbsp; Sub Update(id As Integer, firstName As String, lastName As String)<br />&nbsp;&nbsp;&nbsp; Sub Delete(id As Integer)</p>
+<p>End Interface</p>
+<span style="font-family:Courier New;">
+<p>&nbsp;</p>
+</span></span></p>
+<p>&nbsp;Any ideas?</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Friday, February 17, 2012</h2><p>Never mind.</p>
+<p>&nbsp;</p>
+<p>I&#39;m an Idiot.</p>
+<p>&nbsp;</p>
+<p>PersonDal did not exist in my Mock assembly.</p>
+<p>Duh....</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, February 17, 2012</h2><p>Well - presuming this code is using what you published in previous posts, my first thought is whether the &quot;NotImplementedException&quot; is coming from your GetProvider() method because it can&#39;t construct the type you&#39;re&nbsp;asking for.&nbsp;&nbsp;The code you posted throws this very exception in that event.</p>
+<p>HTH</p>
+<p>- Scott</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

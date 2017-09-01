@@ -1,0 +1,258 @@
+<html><header><title>Anybody using CslaLight and also use ReSharper?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Anybody using CslaLight and also use ReSharper?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6372.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Sunday, February 08, 2009</h2><P>Hey All</P>
+<P>Just getting back into some CSLA development using CslaLight. I use the Visual Studio ReSharper Plug-in (4.1) and it gets very confused with the linked business object classes in the .NET server class library and the Silverlight class library.</P>
+<P>Basically, I have my business object class (and I've used the #if SILVERLIGHT to separate the appropriate sections of the Silverlight and CSLA.NET code). If I start up Visual Studio and open the Business Object file from the Silverlight Class Library it all looks fine. ReSharper "grays out" the code that's not inside the Silverlight sections.</P>
+<P>But, when I then open the same file Business Object class from the .NET Class Library, ReSharper shows me a lots of "red squiggleys" indicating that there are errors in the code, which there aren't as it all compiles nicely.</P>
+<P>I'm wondering why this is the case. It seems that ReSharper is doing some caching of assemblies and is getting confused between the CSLA.NET and CslaLight versions. I know there's not anything actually wrong with the code, but it does make the experience a lot less productive if I can't distinguish "real" errors from bogus ones. This is on 3.6.1 of CSLA.</P>
+<P>Maybe I should be bringing the issue up with the JetBrains people (who make ReSharper) but I thought I'd see if anybody else has had similar experience, or whether something can be done to prevent the conflict.</P>
+<P>Cheers...</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 08, 2009</h2><P>Are you using VB or C#?</P>
+<P>C# both grays out and collapses the sections of code that don't match the compiler directive. Resharper may override this so the sections are visible?</P>
+<P>VB doesn't collapse the sections of code. I think it grays them out. It isn't nearly as nice though :(</P>
+<P>But standard Visual Studio doesn't attempt to parse or process the non-matching sections, so it is clearly something Resharper must be doing.</P>
+<P>You'll have to talk to them about it. It is something they'll probably want to address, since this technique of putting a file into two projects for Silverlight is not just a CSLA thing - the Prism people use it, as do pretty many any other people supporting shared code between Silverlight and .NET.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Sunday, February 08, 2009</h2><P>Hi Rocky</P>
+<P>Thanks for the reply. I'll clarify some points since I didn't make myself clear enough first time.</P>
+<P>I'm using C#, not VB.</P>
+<P>The sections that ReSharper is "complaining" about aren't the greyed out sections not applying to that project, but the active sections. </P>
+<P>Just some examples:</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>]</P></FONT>
+<UL>
+<LI>Ambiguous invocation: Csla.Serialization.SerializableAttribute,&nbsp; System.SerializableAttribute match</LI></UL><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddBusinessRules()</P>
+<P>{</P>
+<P>ValidationRules.AddRule(Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringRequired, SurnameProperty);</P>
+<P>ValidationRules.AddRule(Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringRequired, FirstNameProperty);</P>
+<P>}</P></FONT>
+<UL>
+<LI>Underlines void saying: Cannot change return type when overriding method 'void Csla.Core.BusinessBase.AddBusinessRules()'</LI></UL>
+<P>&nbsp;</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PatientEdit</FONT></FONT><FONT size=2> GetPatient(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Guid</FONT></FONT><FONT size=2> id)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PatientEdit</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PatientEdit</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Guid</FONT></FONT><FONT size=2>&gt;(id));</P>
+<P>}</P></BLOCKQUOTE></FONT>
+<UL>
+<LI>DataPortal.Fetch shows as "Cannot resolve symbol 'Fetch'"</LI></UL><FONT size=3>
+<P>&nbsp;</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Create()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (BypassPropertyChecks)</P>
+<P>Status = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Created "</FONT></FONT><FONT size=2> + </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.ExecutionLocation.ToString();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.DataPortal_Create();</P>
+<P>}</P></BLOCKQUOTE></FONT>
+<P>Has the errors:</P>
+<UL>
+<LI>No suitable method to override - on the override keyword</LI>
+<LI>Cannot implicitly convert type 'Csla.Core.BusinessBase.BypassPropertyChecksObject' to 'System.IDisposable' - on the using statement.</LI>
+<LI>Method 'DataPortal_Create' has 1 parameter(s) but is invoked with 0 argument(s)</LI></UL>
+<P>Yet, as I said, the whole thing compiles fine. So, ReSharper is seriously confused. Interestingly, if I delete its cache folders, open up the solution and open the server class it is all fine. Then I open the Silverlight class and it is also fine. Then I switch back to the server version of the class and the "errors" are back. </P>
+<P>Anyway, I will put together a demonstration project for the ReSharper guys to look at and they can hopefully figure it out.</P>
+<P>Craig</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Sunday, February 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am using Resharper with Csla for Silverlight and have had seen
+some of the issue that you mention.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The biggest problem is that in Clsa for Silverlight BO class
+file can generally be used/compiled in both Silverlight and .Net assemblies
+(client and server assemblies).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Seriazable issue is an interesting problem.&nbsp; Silverlight
+does not define SerializableAttribute, and CslaLight actually defines the
+attribute instead inside Csla namespace.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Therefore for .Net project you will have SerializableAttribute
+declared in one namespace (System I believe), and for Silverlight it will be
+inside Csla.Serialization.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you open your BO class file from .Net project &#8211; ReSharper
+will complain that the Csla.Serialization is unused namespace (and it is in
+that project).&nbsp; On the other hand if you open the same file in Silverlight
+project (we use concept of linked files), you will notice that ReSharper states
+that System namespace is not used.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Both of the assumptions are correct I one assumes that class is
+only declared and used in one of the runtimes.&nbsp; However that is not the
+case here.&nbsp; So to avoid this, I declare namespaces like following:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#if</span><span> !SILVERLIGHT<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>using</span><span> System;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>using Csla.Serialization;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>#endif</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This way ReShrper does not get confused as it does not use
+Silverlight namespaces in .Net and vice versa.&nbsp; Same is the case for some
+of the declarations you mention below &#8211; some of the signatures are only
+part of Csla Silverlight runtime and others are a part of Csla .Net
+runtime.&nbsp; Hence you might see these separated by #if SILVELIGHT compile
+directives.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cds
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 08, 2009 3:11 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Anybody using CslaLight and also use ReSharper?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky<o:p></o:p></p>
+
+<p>Thanks for the reply. I'll clarify some points since I didn't make myself
+clear enough first time.<o:p></o:p></p>
+
+<p>I'm using C#, not VB.<o:p></o:p></p>
+
+<p>The sections that ReSharper is &quot;complaining&quot; about aren't the
+greyed out sections not applying to that project, but the active sections. <o:p></o:p></p>
+
+<p>Just some examples:<o:p></o:p></p>
+
+<p><span>[<span>Serializable</span>]<o:p></o:p></span></p>
+
+<ul>
+ <li class=MsoNormal>Ambiguous invocation:
+     Csla.Serialization.SerializableAttribute,&nbsp;
+     System.SerializableAttribute match<o:p></o:p></li>
+</ul>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> AddBusinessRules()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>ValidationRules.AddRule(Csla.Validation.<span>CommonRules</span>.StringRequired, SurnameProperty);<o:p></o:p></span></p>
+
+<p><span>ValidationRules.AddRule(Csla.Validation.<span>CommonRules</span>.StringRequired, FirstNameProperty);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<ul>
+ <li class=MsoNormal>Underlines void saying: Cannot change return type
+     when overriding method 'void Csla.Core.BusinessBase.AddBusinessRules()'<o:p></o:p></li>
+</ul>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<blockquote>
+
+<p><span>public</span><span> <span>static</span> <span>PatientEdit</span> GetPatient(<span>Guid</span>
+id)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>return</span><span> <span>DataPortal</span>.Fetch&lt;<span>PatientEdit</span>&gt;(<span>new</span>
+<span>SingleCriteria</span>&lt;<span>PatientEdit</span>,
+<span>Guid</span>&gt;(id));<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<ul>
+ <li class=MsoNormal>DataPortal.Fetch shows as &quot;Cannot resolve
+     symbol 'Fetch'&quot;<o:p></o:p></li>
+</ul>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<blockquote>
+
+<p><span>protected</span><span> <span>override</span> <span>void</span> DataPortal_Create()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>using</span><span> (BypassPropertyChecks)<o:p></o:p></span></p>
+
+<p><span>Status = <span>&quot;Created
+&quot;</span> + <span>ApplicationContext</span>.ExecutionLocation.ToString();<o:p></o:p></span></p>
+
+<p><span>base</span><span>.DataPortal_Create();<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p>Has the errors:<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>No suitable method to override - on the override
+     keyword<o:p></o:p></li>
+ <li class=MsoNormal>Cannot implicitly convert type
+     'Csla.Core.BusinessBase.BypassPropertyChecksObject' to
+     'System.IDisposable' - on the using statement.<o:p></o:p></li>
+ <li class=MsoNormal>Method 'DataPortal_Create' has 1 parameter(s) but
+     is invoked with 0 argument(s)<o:p></o:p></li>
+</ul>
+
+<p>Yet, as I said, the whole thing compiles fine. So, ReSharper is seriously
+confused. Interestingly, if I delete its cache folders, open up the solution
+and open the server class it is all fine. Then I open the Silverlight class and
+it is also fine. Then I switch back to the server version of the class and the
+&quot;errors&quot; are back. <o:p></o:p></p>
+
+<p>Anyway, I will put together a demonstration project for the ReSharper guys
+to look at and they can hopefully figure it out.<o:p></o:p></p>
+
+<p>Craig<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Sunday, February 08, 2009</h2><P>Hi Nermin</P>
+<P>Thanks for the tip - that does indeed fix the Serializable issue, but the others remain in the server version of the class. But I shall take it up with the JetBrains people.</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PeteH replied on Monday, February 09, 2009</h2>I have this issue with ReSharper too, I went with partial classes in the end instead of the #if SILVERLIGHT defines which helped. I have to add the Csla and CslaLight projects to my business object DLLs too, or it gets in a muddle very quickly. This isn't a major problem, as you can change both projects to release and then untick them in the configuration manager - so that they don't build when you need to recompile the business objects - but this isn't a very neat solution.<br><br>Please let me know how you get on with JetBrains as I'd love to see a fix for this too.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Saturday, July 11, 2009</h2>Does anyone have some news on this? <br /><br />I'm also getting a very confused resharper with Silverlight and Csla.<br /><br />Regards,<br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2>After the NDC I did receive an email from a guy at ReSharper asking why<br />anyone would have an assembly on the Silverlight side that had the same<br />strong name as an assembly on the .NET side.<br /><br />I explained, but I never heard back after that.<br /><br />But apparently this is the problem - ReSharper isn't smart enough to handle<br />the scenario where the solution uses different assemblies that have the same<br />name.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, July 14, 2009</h2>I sent an email in a long time ago but never heard anything.&nbsp; If someone wants to properly notify them and get a ticket# or whatever they use I'm happy to attach my comments to it.<br><br>If enough people complain they might work on fixing it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, July 14, 2009</h2>I sent an email in a long time ago but never heard anything.&nbsp; If someone wants to properly notify them and get a ticket# or whatever they use I'm happy to attach my comments to it.<br><br>If enough people complain they might work on fixing it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Wednesday, August 05, 2009</h2>Hi All<br /><br />I took the time to create a mock Visual Studio solution with all the different projects (.NET and Silverlight) in order to simulate the issue with the simplest of CSLA implementation that I could come up with (given a short time frame).<br /><br />I also created small document describing the issue. I proceeded to email it all to JetBrains and opened a Resharper issue/bug with them (RSRP-116566).<br /><br />You can view the bug using the link below. I would suggest that multiple people register with them,log in and vote on the issue. <br /><br />http://www.jetbrains.net/jira/browse/RSRP-116566 <br /><br />Ps: For us the issue is important enough that it compells to create some noise about it in order to get them to act on it more seriously - hence this post request some "backup" from the community ;-) <br /><br />Regards,<br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, August 06, 2009</h2>Thank you for taking the time to do that.  I've voted and will add some<br />comments this week.<br /><br />-----Original Message-----<br />From: Jaans [mailto:cslanet@lhotka.net] <br />Sent: August-05-09 8:31 PM<br />To: jaddington@alexandergracie.com<br />Subject: Re: [CSLA .NET] RE: RE: Anybody using CslaLight and also use<br />ReSharper?<br /><br />Hi All<br /><br />I took the time to create a mock Visual Studio solution with all the<br />different projects (.NET and Silverlight) in order to simulate the issue<br />with the simplest of CSLA implementation that I could come up with (given a<br />short time frame).<br /><br />I also created small document describing the issue. I proceeded to email it<br />all to JetBrains and opened a Resharper issue/bug with them (RSRP-116566).<br /><br />You can view the bug using the link below. I would suggest that multiple<br />people register with them,log in and vote on the issue. <br /><br />http://www.jetbrains.net/jira/browse/RSRP-116566 <br /><br />Ps: For us the issue is important enough that it compells to create some<br />noise about it in order to get them to act on it more seriously - hence this<br />post request some "backup" from the community ;-) <br /><br />Regards,<br />Jaans<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>espenrl replied on Monday, June 28, 2010</h2><p>This issue is finally fixed in Resharper beta 5.1 - download at</p>
+<p>http://confluence.jetbrains.net/display/ReSharper/ReSharper+5.1+Nightly+Builds</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 28, 2010</h2><p>I am glad to hear they fixed it. I talked to them months ago while at PDC (so it was face to face) and explained the reasoning why CSLA works as it does. Of course the fact that SL4 assemblies can be used in .NET projects probably also helped convince them that they needed to make this possible.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, June 28, 2010</h2><p>To me that is excellent news indeed! Especially since I&#39;ve been doing so much CSLA + Silverlight work of late.</p>
+<p>Thanks for the face-to-face-good-word on this issue - I&#39;m sure it made a big difference. I feared that JetBrains did not consider it that important and kept bumping the fix&nbsp;for later, also not many users voted to complain (thanks to those who did though).</p>
+<p>Woo hoo!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Tuesday, July 20, 2010</h2><p>Excellent - I&#39;ve just downloaded 5.1 and tried it out and it is indeed fixed. This pleases me very much!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, October 18, 2010</h2><p>I&#39;ve noticed that with a later build this has crept back in .&nbsp; I&#39;m seeing the same issues again with the reference error.&nbsp; I&#39;m still in CSLA 3.8.x.&nbsp; Is anybody else seeing this or is it something I&#39;ve managed to do?</p>
+<p>I just had did an upgrade to 5.1.1754.4</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, October 18, 2010</h2><p>Haven&#39;t noticed the regression, but I&#39;m on 5.1.1753.3 still (and since your post might remain there). I do have a super annoying and possibly related issue with ReSharper messing up with Silverlight and the CSLA ViewModel (infact I derive from it first to add custom bits).</p>
+<p><a href="http://youtrack.jetbrains.net/issue/RSRP-192638">http://youtrack.jetbrains.net/issue/RSRP-192638</a></p>
+<p>To me it&#39;s as if ReSharper has added so much &quot;extra&quot; features over the years that it&#39;s now just not doing it&#39;s core functions well any more. I find it not as quick as it used to be and wish I could turn it off for Silverlight projects because it&#39;s just too interruptive!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

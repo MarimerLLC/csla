@@ -1,0 +1,20 @@
+<html><header><title>Guidance for Setting up Remote DataPortal Hosting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Guidance for Setting up Remote DataPortal Hosting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8588.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrazerS posted on Sunday, February 28, 2010</h2><p>Hi,</p>
+<p>I have used CSLA in a couple of projects now, but I have always run with a local data portal.&nbsp; In my current project, I will need to use a remote data portal (WCF).&nbsp; I have searched through the book (C# 2008 Business Objects) and while I can find information about how to configure the remote data portal and client, I can&#39;t seem to find any guidance on how to implement and host the WCF remote data portal service.&nbsp; Can someone point me to the right place or other resources that will get me started?</p>
+<p>Frazer</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, February 28, 2010</h2><p>Maybe I&#39;m missing the point of the question?</p>
+<p>There&#39;s really nothing to it. If you get it configured as described in the book it will just work. There&#39;s no implementation required. The whole point of the data portal is that it is implemented for you, so you don&#39;t have to spend a lot of time on n-tier plumbing issues.</p>
+<ol>
+<li>Create an ASP.NET web or service app</li>
+<li>Add the svc file</li>
+<li>Add the config file entries</li>
+<li>Make sure your business assemblies and Csla.dll are in the bin directory</li>
+<li>Configure the client to call your svc file</li>
+<li>Enjoy the n-tier deployment of your app</li>
+</ol>
+<p>Setting up and using a basic 3-tier deployment should take less than 5 minutes.</p>
+<p>That&#39;s hosting in IIS.</p>
+<p>There are, to be sure, more advanced hosting scenarios. Namely WAS or a custom Windows service.</p>
+<p>Setting up WAS is like IIS - but first you need to install/activate the WAS component of Windows (because it isn&#39;t installed by default). Otherwise it uses a svc file and config file, so the process is pretty comparable to IIS.</p>
+<p>Setting up a custom Windows service does require that you actually implement a Windows service. This isn&#39;t terribly hard in the simplest sense, and hosting a WCF service requires just a few lines of code. But making a production-worthy Windows service is really quite hard, at least if you want any sort of manageability, configurability and the other &quot;ilities&quot; most people want from a server component. I strongly recommend using IIS or WAS if at all possible, because they already provide those features.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrazerS replied on Sunday, February 28, 2010</h2><p>No, Rocky, it was me that was missing the point - stumbling around in the forest, looking for trees apparently.</p>
+<p>Thanks for the fast Sunday morning reply.</p>
+<p>~Frazer</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

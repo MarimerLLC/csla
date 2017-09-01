@@ -1,0 +1,90 @@
+<html><header><title>OnDeserializedInternal and SetParent</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnDeserializedInternal and SetParent</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5486.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>trives posted on Monday, September 29, 2008</h2><P>I see in BusinessListBase there is an OnDeserializedInternal method that takes care of reestablishing the Parent property for the collection's children (child.SetParent()).</P>
+<P>In BusinessBase, there is also an OnDeserializedInternal method, but I don't see where the Parent property is being reestablished for children of the business object.&nbsp; </P>
+<P>My understanding from Rocky's post here <A HREF="/forums/post/20371.aspx">http://forums.lhotka.net/forums/post/20371.aspx</A>&nbsp;is that deserialization should restore the Parent property for BO and BLB child objects.</P>
+<P>Did I misunderstand or am I just not seeing where this is happening?&nbsp; If the later, can someone point out where this is happening?</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is done for managed properties in FieldDataDeserialized()
+method called from OnDeserializedInternal().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> trives
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 29, 2008 10:54 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] OnDeserializedInternal and SetParent<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I see in BusinessListBase there is an OnDeserializedInternal method that
+takes care of reestablishing the Parent property for the collection's children
+(child.SetParent()).<o:p></o:p></p>
+
+<p>In BusinessBase, there is also an OnDeserializedInternal method, but I don't
+see where the Parent property is being reestablished for children of the
+business object.&nbsp; <o:p></o:p></p>
+
+<p>My understanding from Rocky's post here <a href="/forums/post/20371.aspx">http://forums.lhotka.net/forums/post/20371.aspx</a>&nbsp;is
+that deserialization should restore the Parent property for BO and BLB child
+objects.<o:p></o:p></p>
+
+<p>Did I misunderstand or am I just not seeing where this is happening?&nbsp;
+If the later, can someone point out where this is happening?<o:p></o:p></p>
+
+<p>Thanks.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>trives replied on Monday, September 29, 2008</h2><P>Thanks Sergey.&nbsp; </P>
+<P>For anyone interested, the version of BusinessBase from cslacs-3.6.0-080919.zip, which is what I was using, looks like this:</P>
+<P>&nbsp;&nbsp;&nbsp; private void FieldDataDeserialized()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (object item in FieldManager.GetChildren())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IBusinessObject business = item as IBusinessObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (business != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnAddEventHooksInternal(business);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR></P>
+<P>It doesn't contain any calls to SetParent().</P>
+<P>The most recent version of BusinessBase from cslacs-3.6.0-080926.zip looks like this:</P>
+<P>&nbsp;&nbsp;&nbsp; private void FieldDataDeserialized()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (object item in FieldManager.GetChildren())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IBusinessObject business = item as IBusinessObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (business != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnAddEventHooksInternal(business);</P>
+<P><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IEditableBusinessObject child = item as IEditableBusinessObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (child != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.SetParent(this);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IEditableCollection childCollection = item as IEditableCollection;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (childCollection != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; childCollection.SetParent(this);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR></P>
+<P>Now, this makes sense. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

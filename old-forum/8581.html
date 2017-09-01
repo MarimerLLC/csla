@@ -1,0 +1,28 @@
+<html><header><title>Read-only lists containing large numbers of items</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Read-only lists containing large numbers of items</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8581.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaleStan posted on Thursday, February 25, 2010</h2>I have a task that requires iterating through up to a million ReadOnlyBase objects, once.
+
+For smaller lists, I&#39;d put them all in ReadOnlyListBase object, and use DataPortal.Fetch. In this case, however, that&#39;s not particularly workable. Between the object contents and the various overheads involved, I&#39;m getting uncomfortably close to running out 32-bit address space. (Unsurprising, as 4GB divided by a million items gives me a max of 4KB per item.)
+
+My current solution is to write my own function that returns an IEnumerable. Its body, quite simplified, looks like this:
+<blockquote style="overflow-x: scroll;"><pre style="margin: 0px;">SqlCommand cm;
+//...
+SqlDataReader dr = cm.ExecuteReader();
+while (dr.Read())
+    yield return GetExportPiece(dr);</pre></blockquote>
+This reduces my peak memory usage from over 2 GB to a quite comfortable 150 MB.
+
+However, this breaks the &quot;use DataPortal and DataPortal_* to perform all database communication&quot; rule.
+
+Does CSLA contain anything that looks like this, or that otherwise supports processing quantities of data too large to fit in memory?</div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, February 25, 2010</h2><p>First, do you really need to bring all those rows back to the client? In a 3- or 4-tier deployment that&#39;d be amazingly slow! And even in a 2-tier environment it seems very iffy.</p>
+<p>Second, does the user actually see or interact with this? Or is this a non-interactive batch job? I can&#39;t imagine a user paging through a million rows - they&#39;d be there for days, or weeks or maybe months!</p>
+<p>If this is non-interactive, it is probably best encapsulated in a Command object&#39;s DataPortal_Execute() method, and just use ADO.NET - skip the objects (or use your IEnumerable approach).</p>
+<p>If this data really does need to come to the client, ouch! In that case I&#39;d suggest you use paging with a ReadOnlyBase command object, and a variation of your IEnumerable implementation.</p>
+<p>What you have now restricts you to a 2-tier deployment. There&#39;s no way that code can ever work in a 3- or 4-tier deployment scenario.</p>
+<p>Here&#39;s the basic idea:</p>
+<ol>
+<li>Create your IEnumerable list, much like you have</li>
+<li>Create a page loader ReadOnlyBase object that loads one page of data (maybe 1000 rows?)</li>
+<li>Where you do yield return, return data from the page you have loaded. If you run out of data in that page, execute your page loader object to get the next page</li>
+<li>If you want to be fancy, use the async data portal to pre-fetch the next page as you process the current page (don&#39;t forget to use a thread sync object to make sure the next page is back before trying to use it!) If you get your page sizes right, this could offer very good throughput - though the right page size will probably vary depending on n-tier deployment model, speed of the client and speed of the database - so if you want to be <i>really</i> fancy, you&#39;d make the page size variable and increase/decrease that size depending on whether you ever hit your locking condition <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></li>
+</ol>
+<p>So your actual list object will never go through the data portal - but this page loader (ReadOnlyBase) object will use the data portal to bring back a page of data at a time - giving you the same basic result you have now, but in a way that works with the data portal and 3- or 4-tier deployments.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaleStan replied on Thursday, February 25, 2010</h2><p>Yes, I do need to bring the rows back; the user may want to see the individual rows. Granted, this is much more likely on smaller result sets -- e.g. the items created on a certain day or in a certain week instead of all-time -- but I don&#39;t want to deal with multiple code paths.</p>
+<p>I think I understand what&#39;s supposed to happen here now. Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

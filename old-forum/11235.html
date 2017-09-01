@@ -1,0 +1,113 @@
+<html><header><title>System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException' was thrown.    at System.ServiceModel.Channels.BufferManager.GCBuffe</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; System.OutOfMemoryException: Exception of type 'System.OutOfMemoryException' was thrown.    at System.ServiceModel.Channels.BufferManager.GCBuffe</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11235.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Friday, March 16, 2012</h2><p>my application(SL4+EF4+Prisam+Unity+MVVM+CSLA+WCF)</p>
+<p>some time when the records &nbsp;are more i getting the error</p>
+<p>u can find more details of error with an attachment</p>
+<p>&nbsp;</p>
+<p>
+<p>System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation. ---&gt; System.OutOfMemoryException: Exception of type &#39;System.OutOfMemoryException&#39; was thrown.</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferManager.GCBufferManager.TakeBuffer(Int32 bufferSize)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedOutputStream.AllocNextChunk(Int32 minimumChunkSize)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedOutputStream.WriteCore(Byte[] buffer, Int32 offset, Int32 size)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedOutputStream.Write(Byte[] buffer, Int32 offset, Int32 size)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBinaryNodeWriter.FlushBuffer()</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlStreamNodeWriter.WriteBytes(Byte[] byteBuffer, Int32 byteOffset, Int32 byteCount)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBinaryNodeWriter.WriteBase64Text(Byte[] trailBytes, Int32 trailByteCount, Byte[] base64Buffer, Int32 base64Offset, Int32 base64Count)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBaseWriter.WriteBase64(Byte[] buffer, Int32 offset, Int32 count)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlWriterDelegator.WriteBase64(Byte[] bytes)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteBase64(XmlWriterDelegator xmlWriter, Byte[] value, XmlDictionaryString name, XmlDictionaryString ns)</p>
+<p>&nbsp; &nbsp;at WriteCriteriaRequestToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , ClassDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.ClassDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithoutXsiType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.DataContractSerializer.InternalWriteObjectContent(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.DataContractSerializer.InternalWriteObject(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializer.WriteObjectHandleExceptions(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializer.WriteObject(XmlDictionaryWriter writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.SerializeParameterPart(XmlDictionaryWriter writer, PartInfo part, Object graph)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.SerializeParameters(XmlDictionaryWriter writer, PartInfo[] parts, Object[] parameters)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.SerializeBody(XmlDictionaryWriter writer, MessageVersion version, String action, MessageDescription messageDescription, Object returnValue, Object[] parameters, Boolean isRequest)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.OperationFormatter.OperationFormatterMessage.OperationFormatterBodyWriter.OnWriteBodyContents(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BodyWriter.WriteBodyContents(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BodyWriterMessage.OnWriteBodyContents(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.Message.OnWriteMessage(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.Message.WriteMessage(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedMessageWriter.WriteMessage(Message message, BufferManager bufferManager, Int32 initialOffset, Int32 maxSizeQuota)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BinaryMessageEncoderFactory.BinaryMessageEncoder.WriteMessage(Message message, Int32 maxMessageSize, BufferManager bufferManager, Int32 messageOffset)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpOutput.SendAsyncResult.SendWithoutChannelBindingToken()</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpOutput.BeginSend(TimeSpan timeout, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.SendWebRequest()</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.BeginSendRequest(Message message, TimeSpan timeout)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.RequestChannel.BeginRequest(Message message, TimeSpan timeout, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.RequestChannelBinder.BeginRequest(Message message, TimeSpan timeout, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.StartSend(Boolean completedSynchronously)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.FinishEnsureOpen(IAsyncResult result, Boolean completedSynchronously)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.StartEnsureOpen(Boolean completedSynchronously)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.Begin()</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.ClientBase`1.ChannelBase`1.BeginInvoke(String methodName, Object[] args, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.WcfPortalClientChannel.BeginCreate(CriteriaRequest request, AsyncCallback callback, Object asyncState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.Csla.WcfPortal.IWcfPortal.BeginCreate(CriteriaRequest request, AsyncCallback callback, Object asyncState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.OnBeginCreate(Object[] inValues, AsyncCallback callback, Object asyncState)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.ClientBase`1.InvokeAsync(BeginOperationDelegate beginOperationDelegate, Object[] inValues, EndOperationDelegate endOperationDelegate, SendOrPostCallback operationCompletedCallback, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.CreateAsync(CriteriaRequest request, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.CreateAsync(CriteriaRequest request)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.BeginCreate(Object criteria, Object userState)</p>
+<p>&nbsp; &nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp;at System.RuntimeMethodHandle._InvokeMethodFast(IRuntimeMethodInfo method, Object target, Object[] arguments, SignatureStruct&amp; sig, MethodAttributes methodAttributes, RuntimeType typeOwner)</p>
+<p>&nbsp; &nbsp;at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture, Boolean skipVisibilityChecks)</p>
+<p>&nbsp; &nbsp;at System.Delegate.DynamicInvokeImpl(Object[] args)</p>
+<p>&nbsp; &nbsp;at System.Delegate.DynamicInvoke(Object[] args)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.SynchronizedWcfProxy`1.&lt;&gt;c__DisplayClassc.&lt;RunSynchronized&gt;b__b(Object o, RunWorkerCompletedEventArgs e)</p>
+<p>&nbsp; &nbsp;at System.ComponentModel.BackgroundWorker.OnRunWorkerCompleted(RunWorkerCompletedEventArgs e)</p>
+<p>&nbsp; &nbsp;at System.ComponentModel.BackgroundWorker.&lt;OnRun&gt;b__1(Object state) Inner Exception : System.OutOfMemoryException: Exception of type &#39;System.OutOfMemoryException&#39; was thrown.</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferManager.GCBufferManager.TakeBuffer(Int32 bufferSize)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedOutputStream.AllocNextChunk(Int32 minimumChunkSize)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedOutputStream.WriteCore(Byte[] buffer, Int32 offset, Int32 size)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedOutputStream.Write(Byte[] buffer, Int32 offset, Int32 size)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBinaryNodeWriter.FlushBuffer()</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlStreamNodeWriter.WriteBytes(Byte[] byteBuffer, Int32 byteOffset, Int32 byteCount)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBinaryNodeWriter.WriteBase64Text(Byte[] trailBytes, Int32 trailByteCount, Byte[] base64Buffer, Int32 base64Offset, Int32 base64Count)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBaseWriter.WriteBase64(Byte[] buffer, Int32 offset, Int32 count)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlWriterDelegator.WriteBase64(Byte[] bytes)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteBase64(XmlWriterDelegator xmlWriter, Byte[] value, XmlDictionaryString name, XmlDictionaryString ns)</p>
+<p>&nbsp; &nbsp;at WriteCriteriaRequestToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , ClassDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.ClassDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithoutXsiType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.DataContractSerializer.InternalWriteObjectContent(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.DataContractSerializer.InternalWriteObject(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializer.WriteObjectHandleExceptions(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializer.WriteObject(XmlDictionaryWriter writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.SerializeParameterPart(XmlDictionaryWriter writer, PartInfo part, Object graph)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.SerializeParameters(XmlDictionaryWriter writer, PartInfo[] parts, Object[] parameters)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.SerializeBody(XmlDictionaryWriter writer, MessageVersion version, String action, MessageDescription messageDescription, Object returnValue, Object[] parameters, Boolean isRequest)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.OperationFormatter.OperationFormatterMessage.OperationFormatterBodyWriter.OnWriteBodyContents(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BodyWriter.WriteBodyContents(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BodyWriterMessage.OnWriteBodyContents(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.Message.OnWriteMessage(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.Message.WriteMessage(XmlDictionaryWriter writer)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BufferedMessageWriter.WriteMessage(Message message, BufferManager bufferManager, Int32 initialOffset, Int32 maxSizeQuota)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.BinaryMessageEncoderFactory.BinaryMessageEncoder.WriteMessage(Message message, Int32 maxMessageSize, BufferManager bufferManager, Int32 messageOffset)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpOutput.SendAsyncResult.SendWithoutChannelBindingToken()</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpOutput.BeginSend(TimeSpan timeout, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.SendWebRequest()</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.HttpChannelFactory.HttpRequestChannel.HttpChannelAsyncRequest.BeginSendRequest(Message message, TimeSpan timeout)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.RequestChannel.BeginRequest(Message message, TimeSpan timeout, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Dispatcher.RequestChannelBinder.BeginRequest(Message message, TimeSpan timeout, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.StartSend(Boolean completedSynchronously)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.FinishEnsureOpen(IAsyncResult result, Boolean completedSynchronously)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.StartEnsureOpen(Boolean completedSynchronously)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.Channels.ServiceChannel.SendAsyncResult.Begin()</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.ClientBase`1.ChannelBase`1.BeginInvoke(String methodName, Object[] args, AsyncCallback callback, Object state)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.WcfPortalClientChannel.BeginCreate(CriteriaRequest request, AsyncCallback callback, Object asyncState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.Csla.WcfPortal.IWcfPortal.BeginCreate(CriteriaRequest request, AsyncCallback callback, Object asyncState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.OnBeginCreate(Object[] inValues, AsyncCallback callback, Object asyncState)</p>
+<p>&nbsp; &nbsp;at System.ServiceModel.ClientBase`1.InvokeAsync(BeginOperationDelegate beginOperationDelegate, Object[] inValues, EndOperationDelegate endOperationDelegate, SendOrPostCallback operationCompletedCallback, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.CreateAsync(CriteriaRequest request, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.WcfPortal.WcfPortalClient.CreateAsync(CriteriaRequest request)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.BeginCreate(Object criteria, Object userState)</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 16, 2012</h2><p>The two immediate possibilities that come to mind:</p>
+<ol>
+<li>Your object graph is massive, and serializing it literally does cause the DataContractSerializer to hit some memory limit</li>
+<li>Your object graph has a circular reference, and serializing it causes an infinite loop of serialization that results in consumption of all memory</li>
+</ol>
+<p>I&#39;m not entirely sure the second item is actually possible, because the MobileFormatter should be flattening the object graph into a list, and converting all object references into numeric position values before serialization begins.</p>
+<p>So you might want to upgrade to version 4.3 and see if the new binary reader/writer solves the problem. They result in much smaller serialization results, and therefore might avoid the issue.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

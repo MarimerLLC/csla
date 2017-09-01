@@ -1,0 +1,21 @@
+<html><header><title>Question about GetIdValue()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about GetIdValue()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/382.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>supercodepoet posted on Thursday, June 15, 2006</h2>We come from the camp that you have an identity primary key for your
+table that acts as an Id and then an unqiue constrant on your natural
+primary key of the data.&nbsp; When setting up your primary key fields for
+business objects using CLSA.NET, do you use the identity key, the
+nautral key or a combination of both? I can see having the Id field for
+the real primary key and the GetIdValue() method return a combination
+of the natural primary key for Equals() operations.&nbsp; In this case which
+fields do you mark with the System.ComponentModel.DataObjectField(true,
+true) attribute so data binding will work properly?<br><br>Thanks,<br>Travis</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LayeredDev replied on Thursday, June 15, 2006</h2><P>Hi Travis,</P>
+<P>I come from the same camp. I don't have much experience with .net CSLA though I have worked extensively on VB6 CSLA. And since no one has replied to your post, I will just try. </P>
+<P>From my experience the GetIdValue should just return the real primary key. i.e. the identity primary key. </P>
+<P>When a client application tries to add a record with a duplicate in the natural key, you can throw an exception which will be caught by the client application.</P>
+<P>Cosmic Ovungal</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 15, 2006</h2>This is what I am doing as well.&nbsp; The only cavet is for new objects, which don't yet have a primary key.&nbsp; <br><br>This will happen usually in a DataGridView; if all your new objects use -1 for the un-intialized primary key, asking the grid to remove a row will simply remove the first object it finds with that Id value, NOT the one you selected.<br><br>The work around is to have a static int in your BO class, which starts at -1.&nbsp; New objects get that value and subtract one, so the next new object will have -2.&nbsp; This allows the grid to work as expected.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, June 15, 2006</h2>Some even go as far as always returning a System.Guid.NewGuid() with
+the GetIsValue() and treat and primary keys and other unique keys as
+any other business properties inside the business object.&nbsp; <br>
+<br>
+However, I don't think it makes that much difference if you use the
+real PK or another UK, I'm using the real PK myself - the identity
+column in this case.&nbsp; It just need to be unique.<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

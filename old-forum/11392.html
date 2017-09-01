@@ -1,0 +1,130 @@
+<html><header><title>Who should execute Child Object Business Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Who should execute Child Object Business Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11392.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarcBoissonneault posted on Friday, June 01, 2012</h2><p>
+<p class="MsoNoSpacing">Hi,</p>
+<p class="MsoNoSpacing">I have an object &quot;Bar&quot; that is a root object.<br />I&#39;ve added a Business rule on this object (Property
+rule).<br />The rule is really CPU intensive and need to be run only
+when the user asks to validate the object so I&#39;ve implemented the property like
+this:</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">public DateTime Start<br />{<br />&nbsp; &nbsp; &nbsp; &nbsp;get { return
+GetProperty(StartProperty); }<br />&nbsp; &nbsp; &nbsp; &nbsp;set<br />&nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;((ICheckRules)this).SuppressRuleChecking();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;SetProperty(StartProperty, value.Date);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;((ICheckRules)this).ResumeRuleChecking();<br />&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;}<br />}&nbsp;</p>
+<p class="MsoNoSpacing">With this mechanism in place, the rule is not called
+every time the property changed.<br />So calling <i>BusinessRules.GetAllBrokenRules(this,
+true)</i> return an empty list of BrokenRules.</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">Now if I want to validate this object I need to manually
+call <i>((ICheckRules)this).CheckRules().<br /></i>That is fine!</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">My problem come when I want to use The &quot;Bar&quot;
+object as an item (Child) of a Collection that is a child of another object.<br />For example if I have a &quot;Foo&quot; object that
+contains a BusinessList of &quot;Bar&quot; objects.<br />Calling&nbsp; <i>BusinessRules.GetAllBrokenRules(fooObject,
+true)</i> with an invalid Bar item on a &quot;Foo&quot; object <b>BEFORE</b> running<i> ((ICheckRules)subBarObject).CheckRules()</i> on all BarObject creates
+an empty list of BrokenRules.</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">To correct this behavior I need to Call the
+&quot;CheckRules&quot; method on all children.<br />After these call are made, the call to <i>BusinessRules.GetAllBrokenRules(fooObject,
+true)</i> return the errors contained in the children objects.</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">My interrogation is that I&#39;m not sure if:<br />On my side I should override the <i>ICheckRules.CheckRule</i> method on all root objects to call &quot;CheckRules&quot;
+on the items of child list<br /><b>OR<br /></b>Csla.BusinessBase class should do it for me.<br />Especially if I have registered the BusinessList property
+as Child (RelationshipTypes.Child)?</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">To understand what&rsquo;s happening take a look at the
+attached project.<br />Start the app and follow the steps.</p>
+<p class="MsoNoSpacing"></p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">Thanks a lot</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, June 02, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>MarcBoissonneault<br></b>public DateTime Start<br />{<br />&nbsp; &nbsp; &nbsp; &nbsp;get { return
+GetProperty(StartProperty); }<br />&nbsp; &nbsp; &nbsp; &nbsp;set<br />&nbsp; &nbsp; &nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;((ICheckRules)this).SuppressRuleChecking();<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;SetProperty(StartProperty, value.Date);<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;((ICheckRules)this).ResumeRuleChecking();<br />&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;}<br />}</div></p>
+<p>This is the same as: </p>
+<p>public DateTime Start<br />{<br />&nbsp; &nbsp; &nbsp; &nbsp;get { return
+GetProperty(StartProperty); }<br />&nbsp; &nbsp; &nbsp; &nbsp;set { LoadProperty(StartProperty, value.Date); }<br />}</p>
+<p>My preference is to make &quot;expensive rule&quot; into async rules.</p>
+<p>The primary goal of Business Rules is to </p>
+<ul>
+<li>give user feedback on errors as soon as possible after edit</li>
+<li>only execute relevant rules for the edit made</li>
+</ul>
+<p>So the expensive rule should</p>
+<ul>
+<li>run asyncronously on the client (CanRunInCheckRules = false, CanRunAsAffectedProperty = false) </li>
+<li>if you do NOT trust the data in the database then run expensive rule synchronously in data access) </li>
+</ul>
+<p><b>Imagine a list of N Bar items and you execute all rules for each bar - no matter if the user has made an edit to one, two or all items? That would really slow down your app, wouldn&#39;t it?</b></p>
+<p>So I would consider to add an CPUIntensiveCommand with async dataportal call: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CPUIntensiveCommand</span>&nbsp;:&nbsp;<span style="color:#2b91af;">CommandBase</span>&lt;<span style="color:#2b91af;">CPUIntensiveCommand</span>&gt;
+&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;string&gt;&nbsp;Param1Property&nbsp;=&nbsp;RegisterProperty&lt;string&gt;(c&nbsp;=&gt;&nbsp;c.Param1);</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//public&nbsp;string&nbsp;Param1</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//{</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;&nbsp;get&nbsp;{&nbsp;return&nbsp;ReadProperty(Param1Property);&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;&nbsp;private&nbsp;set&nbsp;{&nbsp;LoadProperty(Param1Property,&nbsp;value);&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//}</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;ResultProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.Result);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Result
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;ReadProperty(ResultProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;LoadProperty(ResultProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Factory&nbsp;Methods
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;BeginExecute(<span style="color:blue;">string</span>&nbsp;param1,&nbsp;<span style="color:blue;">object</span>&nbsp;userState,&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">CPUIntensiveCommand</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;cmd&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CPUIntensiveCommand</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;cmd.Param&nbsp;=&nbsp;param1;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.BeginExecute&lt;<span style="color:#2b91af;">CPUIntensiveCommand</span>&gt;(cmd,&nbsp;callback,&nbsp;userState);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">CPUIntensiveCommand</span>&nbsp;Execute(<span style="color:blue;">string</span>&nbsp;param1)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">CPUIntensiveCommand</span>&nbsp;cmd&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CPUIntensiveCommand</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;cmd.Param&nbsp;=&nbsp;param1;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Execute&lt;<span style="color:#2b91af;">CPUIntensiveCommand</span>&gt;(cmd);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;CPUIntensiveCommand()
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;<span style="color:green;">/*&nbsp;require&nbsp;use&nbsp;of&nbsp;factory&nbsp;methods&nbsp;*/</span>&nbsp;}
+ 
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Server-side&nbsp;Code
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">int</span>&nbsp;count&nbsp;=&nbsp;0;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Execute()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Thread</span>.Sleep(2500);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;count++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Result&nbsp;=&nbsp;count;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+&nbsp;&nbsp;}<br /><br />and make the rule run asyncronously<br />&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CPUIntensiveRule</span>&nbsp;:&nbsp;<span style="color:#2b91af;">PropertyRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;CPUIntensiveRule(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">string</span>&nbsp;errorMessage)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MessageText&nbsp;=&nbsp;errorMessage;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsAsync&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">CPUIntensiveCommand</span>.BeginExecute(<span style="color:blue;">string</span>.Empty,&nbsp;context,&nbsp;Complete);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Complete(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">CPUIntensiveCommand</span>&gt;&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;context&nbsp;=&nbsp;(<span style="color:#2b91af;">RuleContext</span>)&nbsp;e.UserState;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.Object.Result&nbsp;%&nbsp;3&nbsp;==&nbsp;1)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(PrimaryProperty,&nbsp;GetMessage());<br />      context.Complete();<br />&nbsp;&nbsp;&nbsp;&nbsp; }
+&nbsp;&nbsp;}<br /><br />And you should also look at Csla.Xaml.ViewModelBase to show an indicator to the user that <br />the object is &quot;busy&quot; and get &quot;bindable&quot; meta properties (CanSave, IsDirty etc).</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>Adding Object Authorization Rules conditionally</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding Object Authorization Rules conditionally</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11423.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Friday, June 22, 2012</h2><p>Hi CSLAers:</p>
+<p>I have a doubt. Is there a way to add an object authorization rule depending a property value?</p>
+<p>I&#39;m working in CSLA 3.6.</p>
+<p>I&#39;m trying to do the following:</p>
+<p>Private Shared Sub AddObjectAuthorizationRules()<br /><br />&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowGet(GetType(MyBO), &quot;canget&quot;)<br /><br />&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(GetType(MyBO), &quot;canadd&quot;)</p>
+<p>&nbsp;&nbsp; If MyStatus=Valid then </p>
+<p>&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowEdit(GetType(MyBO), &quot;canupdate&quot;)</p>
+<p>&nbsp;&nbsp; else</p>
+<p>&nbsp;&nbsp;&nbsp; AuthorizationRules.DenyEdit(GetType(MyBO), &quot;canupdate&quot;)</p>
+<p>&nbsp;&nbsp; endif<br /><br />End Sub</p>
+<p>Obviously I&#39;m getting an error because I&#39;m trying to access a property inside a Shared method but I put it here trying to explain what I need.</p>
+<p>&nbsp;</p>
+<p>Is there a way to reach this behavior?</p>
+<p>&nbsp;</p>
+<p>Thanks a lot.</p>
+<p>&nbsp;</p>
+<p>Lazaro Santin</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, June 22, 2012</h2><p>Hi,</p>
+<p>This is not supported in 3.6. Your option is to add custom Authorization check in the Save method of your BO and the DataPortal_Update/Insert method. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Friday, June 22, 2012</h2><p>Thanks a lot!!!!!!!!</p>
+<p>I&#39;ve got it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,37 @@
+<html><header><title>silverlight and System.OutOfMemoryException 100MB????</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>silverlight and System.OutOfMemoryException 100MB????</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9840.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous posted on Tuesday, December 07, 2010</h2><p>hello, iam using CSLA.NET 4.0 with silverlight 4 </p>
+<p>and iam using compression CsharpZipLib , what i got here that the silverlight application </p>
+<p>giving me maximum size for memory is about 100MB and the object became up of it </p>
+<p>it will throw system.outofmemoryexception, i found this in the compression utility class </p>
+<p>which is used for compression when i big number of bytes it throws this error, idiscovered this with </p>
+<p>files while i was trying to upload file, but what is making me worry that my application may </p>
+<p>get 500,000 row in one request how ever the compression was working i will get </p>
+<p>big size of data , does any one has any suggestion about how to increase </p>
+<p>the used memory for silverlight application more that 100MB ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr X replied on Thursday, January 13, 2011</h2><p>I seem to remember Rocky talking about changing the buffer sizes in his Silverlight video series. I think you need to increase the buffer sizes in your&nbsp;web application&#39;s web.config and in the Silverlight&#39;s application&#39;s Servicereference.ServiceConfig files.&nbsp; </p>
+<p>Change from 10000000 to 2147483647.</p>
+<p>Hope this&nbsp;solve your problem.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, January 13, 2011</h2><p>I think the 100MB limit is a hard Silverlight limit, though I&#39;m not sure.</p>
+<p>I&#39;ll also mention that I can&#39;t imagine creating an effective UI to manage half a million rows of data.&nbsp; Surely there is some other way of dealing with that to&nbsp;reduce your payload?&nbsp; I know that people always say &quot;my users want all the data&quot;, but there is simply no way that a user is realistically working with that much data in one shot.&nbsp; You can&#39;t remember 500,000 separate things, and I just can&#39;t see how a user would even look at 500,000 records in one sitting...</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 13, 2011</h2><p>Wow! Even if the application really does need to go through 500k items, I&#39;d implement some sort of windowed paging model. But that is pretty ridiculous, and operations on data sets of that size should be performed in the database, or maybe on an application server, but not on the client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous replied on Monday, January 17, 2011</h2><p>hello, thank you for your response. rock you are right it&#39;s rediciolous to send 500 thousand row to the client</p>
+<p>but some times we need to send a file to the server like file upload and that file will not be saved in folder it will be sent to the database.</p>
+<p>i created base class which makes every readonly list pagable and i used it with all of my windows </p>
+<p>it worked preety enough. but what iwanted to solve about file uploading for the big file size to the database</p>
+<p>thank you and best regards</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Mr X replied on Monday, January 17, 2011</h2><p>This may be a setting in IIS.&nbsp; I needed to send XML (generated from the database)&nbsp;to a report formatter through IIS (v6 if I remember correctly)&nbsp;and it was not getting the whole file.&nbsp;&nbsp;this was done through an ASP page though, the settings may be different&nbsp;for you.&nbsp; Here is what I had to do:</p>
+<p>&nbsp;Note: before changing anything, make sure you find proper documentation and talk to your system admin.&nbsp;Hope this helps.</p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">To modify the buffer size:</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Open IIS and right click the server and select properties.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Check the box that says &ldquo;Allow changes to the MetaBase.xml&rdquo;.<span style="mso-spacerun:yes;">&nbsp; </span>If you don&rsquo;t, you will find the MetaBase.xml is locked.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Open with Notepad the MetaBase.xml.<span style="mso-spacerun:yes;">&nbsp; </span>Its location should be &ldquo;C:\Windows\system32\inetserv\&rdquo;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">To modify the uploading limit, find the variable &ldquo;ASPMaxRequestEntityAllowed&rdquo; (the default value should be 204800 (200K)) and change it to the desired size.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">To modify the downloading limit, find the variable &ldquo;ASPBufferingLimit&rdquo; (the default size should be around 4 Megs) and change it to the desired size.<span style="mso-spacerun:yes;">&nbsp; </span>By changing this variable, you are changing the max size of ASP response buffer.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">&nbsp;</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">By modifying the value of these variables, you can control the size of the upload and downloads allowed by IIS.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;">Better practices recommend going back and unchecking the box &ldquo;Allow changes to the MetaBase.xml&rdquo; in IIS.</span></p>
+<p style="margin:0in 0in 0pt;" class="MsoNormal"><span style="font-size:small;font-family:Times New Roman;"></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

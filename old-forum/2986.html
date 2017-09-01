@@ -1,0 +1,116 @@
+<html><header><title>EditableRootList in asp.net</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootList in asp.net</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2986.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm posted on Tuesday, June 05, 2007</h2><P>Does anyone have a quick example of using an EditableRootList with an updatable grid in asp.net code.</P>
+<P>I&nbsp;can't quite work out the code for the CSLADatSource_SelectObject, UpdateObject, InsertObject and DeleteObject.</P>
+<P>Thanks,</P>
+<P>Bill&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 06, 2007</h2><P>Hmm, it isn't really designed for the web - I created it to support a scenario for Windows Forms (and now WPF).</P>
+<P>However, it should work in the web as long as you keep it in session.</P>
+<P>The SelectObject would be like any other collection - no difference there.</P>
+<P>But the Update/Insert/Delete handlers would be different. You need to</P>
+<OL>
+<LI>Get the list from Session</LI>
+<LI>Locate the index of the item to be saved</LI>
+<LI>Update that object with values from data binding (or mark it as deleted)</LI>
+<LI>Call theList.SaveItem(index)</LI>
+<LI>Rebind the UI to the list (because step 4 may have changed that item)</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm replied on Thursday, June 07, 2007</h2><P>Rocky, thanks for the reply.</P>
+<P>I have just tried a simple test using Delete and the DataSource_Delete handler is not firing when I delete from the grid.</P>
+<P>I have debugged this and the CanDelete Property in CslaDataSourceView is returning False: </P>
+<P>&nbsp;&nbsp;&nbsp; Public Overrides ReadOnly Property CanDelete() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property<BR></P>
+<P>The code is the same for the CanInsert and CanUpdate.</P>
+<P>Do you have any idea of how I could work around this.</P>
+<P>Thanks,</P>
+<P>Bill</P>
+<P><FONT size=2>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 08, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm, that&#8217;s an interesting issue that I hadn&#8217;t
+thought about&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously ERLB isn&#8217;t undoable itself. I wonder, however,
+if the check shouldn&#8217;t be a little broader. I should be able to see if
+IBindingList is implemented, and if so I can get the true/false answer from
+that interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Something to add to the to-do list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Blarm
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 07, 2007 12:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] EditableRootList in asp.net<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky, thanks for the reply.<o:p></o:p></p>
+
+<p>I have just tried a simple test using Delete and the DataSource_Delete
+handler is not firing when I delete from the grid.<o:p></o:p></p>
+
+<p>I have debugged this and the CanDelete Property in CslaDataSourceView is
+returning False: <o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp; Public Overrides ReadOnly Property CanDelete() As Boolean<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+GetType(Csla.Core.IUndoableObject).IsAssignableFrom( _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CslaDataSource.GetType(mTypeAssemblyName, mTypeName)) Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp;&nbsp;&nbsp; End Property<o:p></o:p></p>
+
+<p>The code is the same for the CanInsert and CanUpdate.<o:p></o:p></p>
+
+<p>Do you have any idea of how I could work around this.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Bill<o:p></o:p></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

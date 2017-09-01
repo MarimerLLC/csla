@@ -1,0 +1,55 @@
+<html><header><title>Object properties aren't updated in portal method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object properties aren't updated in portal method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9341.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Doug Ramirez posted on Saturday, August 07, 2010</h2><p>I have a very simple BusinessBase object that has an Id property that is set after a stored procedure is called to insert a row into a database table with an identity column. &nbsp;The sproc returns the Id just fine, and when I step through the portal method I can see that the Id property is in fact being set. &nbsp;But when the scope returns back to the code that calls the .Save method (in this case a unit test) the Id property is not longer set.</p>
+<p>Here is the definition of the property:</p>
+<p>
+<code>
+</code></p>
+<p><code>
+</code></p>
+<p><code>
+<p><span>private</span> <span>static</span> <span>PropertyInfo</span>&lt;<span>int</span>&gt; IdProperty = RegisterProperty&lt;<span>int</span>&gt;(p =&gt; p.Id);</p>
+<p><span><span>		</span></span>public<span> </span>int<span> Id</span></p>
+<p><span>		</span>{</p>
+<p><span>			</span><span>get</span> { <span>return</span> GetProperty(IdProperty); }</p>
+<p><span>			</span><span>set</span> { SetProperty(IdProperty, <span>value</span>); }</p>
+<p><span>		</span>}</p>
+<div></div>
+<p><span style="font-family:Arial, Helvetica, sans-serif;"><span style="font-family:monospace;"><br /></span></span></p>
+</code></p>
+<p>Here is the code that updates the property in the portal method:</p>
+<p>
+<code>
+</code></p>
+<p><code>
+<p><span><span>		</span>[</span>Transactional<span>(</span>TransactionalTypes<span>.TransactionScope)]</span></p>
+<p><span>		</span><span>protected</span> <span>override</span> <span>void</span> DataPortal_Insert()</p>
+<p><span>		</span>{</p>
+<p><span>			</span><span>using</span> (<span>SqlConnection</span> connection = <span>Utilities</span>.CreateConnection())</p>
+<p><span>			</span>{</p>
+<p><span>				</span><span>using</span> (<span>SqlCommand</span> command = connection.CreateCommand())</p>
+<p><span>				</span>{</p>
+<p><span>					</span>connection.Open();</p>
+<p><span>					</span>command.CommandType = <span>CommandType</span>.StoredProcedure;</p>
+<p><span>					</span>command.CommandText = <span>&quot;InsertInvoice&quot;</span>;</p>
+<p><span>					</span>Id = <span>Convert</span>.ToInt32(command.ExecuteScalar());</p>
+<p><span>				</span>}</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<div></div>
+</code></p>
+<p>&nbsp;</p>
+<p>Can anyone think of why this isn&#39;t working? &nbsp;It must be something simple. &nbsp;Also, no exceptions are being thrown. &nbsp;Any help is greatly appreciated.</p>
+<p>&nbsp;</p>
+<p>Lastly, I&#39;m using CLSA 4.</p>
+<p>Doug</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Doug Ramirez replied on Saturday, August 07, 2010</h2><p>Problem solved! &nbsp;In short, my unit test had this:</p>
+<p>
+<p>invoice.Save();</p>
+<div>but needed to have this:</div>
+<div>
+<p>invoice = invoice.Save();</p>
+<div>In long, I&#39;ve been using CLSA since the VB business objects days and took 2 years off from programming (yes, 2 years). &nbsp;I just got back into it a month ago and my gawd have I forgotten a lot!</div>
+</div>
+<div></div>
+<div>Sorry for the noise in the forum.</div>
+<div></div>
+<div>Doug</div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

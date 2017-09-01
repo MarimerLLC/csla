@@ -1,0 +1,76 @@
+<html><header><title>EditableRootListBase does not throw db exception when adding two same unique key rows</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase does not throw db exception when adding two same unique key rows</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2421.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG posted on Friday, February 23, 2007</h2><P>I have a Win app that has&nbsp;EditableRootListBase&lt;EditableRootListBase,BusinessBase&gt; where if I am adding two rows(one after the other) with the same unique keys, one makes it ok but the second shows on the gui as being ok, does not make it into the db and throws no exception. If I add one first and then close and reload and then add another one with the same unique key, I am getting a unique db exception which is the right way. In summary, it seems that if EditableRootListBase has a list and then add another one with the same unique id, it&nbsp;does not throw an exception when moving to the next row in the win grid.&nbsp;Am I missing something?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>GeorgeG:</strong></div><div>I have a Win app that has&nbsp;EditableRootListBase&lt;EditableRootListBase,BusinessBase&gt; where if I am adding two rows(one after the other) with the same unique keys</div></BLOCKQUOTE><br><br>Well if the keys are the same in both objects, you can't really say they are unique can you? <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; Make the keys truely unique and I think your problem will go away.&nbsp; The grid is confused because it things both objects are really the same object.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Friday, February 23, 2007</h2><P>The table has a unique column based on values that the users are entering. It seems that we should change the schema to inlude some dummy id ie guid(ideal) or may be loop through all the list and see if its already there and throw an exception or something.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 26, 2007</h2>I'm of the school that user owned data should not serve as the primary key in a database.&nbsp; That would probably solve your problem partly.&nbsp; Once the list can uniquely identify each object in the list which it can't do right now, because the user can enter the key data, and you're probably using that as the GetUniqueId return value.<br><br>Once you have a truely unique value coming from GetUniqueId, you can then implement a rule either on the collection or on the item itself.&nbsp; The rule would fire whenever an item in the list changes, and scans the list to ensure that each user entered value is unique.&nbsp; Where you put the rule is up to you... I don't think there's a clear answer where it belongs.<br><br>Putting the rule on the list is a bit easier and makes sense because the rule applys to the list, not an individual item.&nbsp; The drawback is that the list needs to know more about the items it contains, but that is someone mitigated by the fact that the list knows it can only contain those items (and not other types).<br><br>Putting the rule on the individual item makes sense too; the list doesn't need to know about the internals of the item, and can display a validation error, but the item does now need to know about its parent.&nbsp; It already does though via the Parent property.&nbsp; <br><br>HTH<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2><P>Well this is an interesting issue though, because I am assuming there IS an exception on that second row. Assuming you aren't somehow suppressing it in your DP_Insert() method, I wonder where that exception is going?</P>
+<P>In other words, the db obviously throws a duplicate key exception. DP_Insert() probably does nothing, so it flows back through the data portal and on the client appears as a DataPortalException from the Save() method of your root object.</P>
+<P>ERLB doesn't catch that exception, so it would flow back to the UI - to data binding. So either data binding, or the grid control, must be catching and swallowing this exception.</P>
+<P>My guess is that the grid is the culprit here, though I don't know for sure. I think, however, that in your UI you can handle a DataError event from the grid (or something like that), and you can cause the grid to actually show the error - or you can pop up a dialog or something along that line.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Tuesday, February 27, 2007</h2><P>There is no error if you enter both rows one after the other which is what is happening here. When I enter the second row with the same user input ukey EndEdit goes up to GetObjectID and stops there and exists and row looks good on the grid. The row does not make in in the db and does not call the dp_insert method. There is code to handle the datagrid dataerror and show the error msg at the user but this is never being called.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 27, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see. You may need to alter either your GetIdValue()
+implementation or your Equals() implementation then.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One way or another, you need to ensure that each object can be
+uniquely identified.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that GetIdValue() is really only used by CSLA .NET
+itself. You can have it provide <i>any unique value</i> you choose, as long as
+it is unique. In many cases the simplest thing is to use a unique value in your
+object&#8217;s data &#8211; but that isn&#8217;t always possible. In cases
+where it isn&#8217;t possible, you may consider using an auto-incrementing int
+counter or a GUID value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only thing you would likely need to change to avoid public
+disclosure of your arbitrary value is ToString(), which returns the
+GetIdValue() as a string. But people often override this anyway, because they
+want to return something other than the primary key value to start with.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Alternately you could override Equals() and make it do some sort
+of deeper comparison to ensure you uniquely identify each object. But my guess
+is that the best approach is to change GetIdValue() to actually return a unique
+value &#8211; that is the requirement for that method, and the fact that it isn&#8217;t
+currently returning a unique value is the root of your problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>Rocky's UI examples (eg Project Tracker) favours the principle of
+keeping the grid dumb. It prefers the use of&nbsp; dialog forms to
+create new items. This way makes it easier to control the behaviour -
+although there is a little more work involved.<br>
+A common approach to setting an integer id in the ctor of the dialog
+item is to assign&nbsp; -ve temporary&nbsp; id's while the data is
+cached and obtain the final id's in the db insert and then refresh the
+grid after the final save. Avoid adding rows in the grid directly. that
+are sensitive to unique id generation. <br>
+<br>
+<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

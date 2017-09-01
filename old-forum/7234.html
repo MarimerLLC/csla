@@ -1,0 +1,117 @@
+<html><header><title>Is WPF ready for prime time?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is WPF ready for prime time?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7234.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Monday, July 06, 2009</h2>I'm thinking about doing my next project using WPF.  I'm not worried about the learning curve, I just want to make sure that WPF is going to support everything a Windows Form Application supports.<br /><br />I'm worried that if I adopt it early (this year) that I'll end up using a bunch of hacks to get it to work properly.  If I wait a year or two it will "mature" and more features will be supported.<br /><br />In short, is WPF ready for prime time or should a person wait for .NET 4.0?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 06, 2009</h2><P>In my view, if you are going to discount the learning curve (which you shouldn't do lightly) and the lack of a designer, then WPF is ready for primetime. The only caveat is that you must be open to using third party controls, but you really need that in Windows Forms too in my experience.</P>
+<P>The thing to remember is that WPF isn't Windows Forms. Your approach to building the UI will be different, and so your coding approach will be different. The <EM>thought model</EM> you need to use to succeed is different. This is why I say you shouldn't lightly discount the learning curve.</P>
+<P>On the upside, after you learn how to use WPF, and after you build some level of UI framework or structure (much like you do in Windows Forms I'm sure), you'll probably find WPF to be far more productive than Windows Forms.</P>
+<P>The data binding model is <EM>far</EM> superior. The overall layout and the way controls interact is far superior. The level of control you have is superior. But they are all different too, and everyone I've seen (including me) wastes a lot of time up front trying to use WinForms techniques only to discover that they solve a problem that is different from the <EM>actual</EM> problem you are facing...</P>
+<P>Other than one demo for a talk a couple months ago, I haven't done any Windows Forms for over 2 years. And I have really enjoyed my time with WPF and Silverlight. I wasn't missing WinForms at all :)</P>
+<P>But I must say that I'd totally forgotten how insanely productive you can be when you have a real designer tool. Building the Windows Forms demo from scratch was ridiculously simple, where it is never simple to build a WPF app from scratch.</P>
+<P>That's probably the big thing. After you've build a UI framework - which I think you need to do for Windows Forms or WPF - then WPF is much better. But if you just fire up Visual Studio and start building forms without any overarching framework/structure, then WPF totally sucks in comparison to Windows Forms.</P>
+<P>And that's where (hopefully) Visual Studio 2010 will help, by providing a real designer for WPF.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Tuesday, July 07, 2009</h2>I anxiously await your book entitled "WPF FRAMEWORK"  =P</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 07, 2009</h2>You'll be waiting for a long while - I have little interest in writing a UI<br />framework :)<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Tuesday, July 07, 2009</h2>Rocky,<br><br>You mention having to build a UI Framework in order to fully use WPF. Are you referring to something such as CAB/SCSF in the Winforms world ?<br><br>If not, could you provide some links ?<br><br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I mentioned &#8220;UI framework&#8221; as a requirement, and
+that has caused discussion &#8211; good!! :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve never thought you could build a real app (web,
+windows, etc) without putting some effort into designing and building a &#8220;UI
+framework&#8221; for the app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This might mean something as complex and powerful as CAB or
+Prism. Or it might mean defining 3-4 interfaces and a unified shell that
+interacts with user controls that implement those interfaces.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, I&#8217;m not saying you need &#8220;the
+framework to rule them all&#8221;, but you do need some structure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This was true for Windows Forms, and is true for WPF. It was
+true for Web Forms as well imo. I&#8217;m not so sure it is true for ASP.NET
+MVC, because MVC actually is such a framework. But it is true for Silverlight,
+and is arguably more important there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So sure, if you need the power of something like Prism, and can
+deal with the complexity, then you should look at that &#8211; though only if
+you actually want/need composite UI concepts.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or if you want a single-document concept with attachable notes
+and clear navigation, you should hire Billy Hollis to deliver his training,
+because that&#8217;s the kind of framework he built for his last client &#8211;
+and it is really smooth &#8211; but is not a &#8220;framework&#8221; in the
+sense of being independent from the app they built.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And I rather favor that latter approach. Instead of finding or creating
+the &#8220;framework to rule them all&#8221;, and dealing with the complexity
+that invariably comes with that sort of framework, I&#8217;d rather take a
+minimalist approach and create the bare minimum necessary to support the
+specific UI requirements of my app or organization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want an MDI style app, create the shell and interface
+support for MDI and be done with it. If you want an Outlook style app, create
+the shell and interface support for that and be done with it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This stuff isn&#8217;t usually that hard if your scope is
+limited to the needs of your app, or your organization. Where it gets hard and
+complex is when you want a general purpose framework that supports numerous UI
+styles. Or if you really do have complex UI requirements like a true composite
+layout, where Prism comes into play.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Look at Chapter 19 in <i>Expert 2008 Business Objects</i> for
+example. In that chapter (and in PTWpf) I create a mini-framework for WPF. Just
+a base class for user controls and a shell form that knows how to interact with
+those controls in a consistent manner. Probably not quite enough for a real
+application, but not that far off either. And I designed/created that
+functionality in less than a day&#8217;s work. Given some decent UI
+requirements (in the broad sense around navigation, etc) and a couple weeks you
+should be able to create nearly any UI framework you&#8217;d need (assume existing
+expertise in WPF).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To be clear though, I expect to spend that same time at the
+start of a Windows Forms project too &#8211; because I want the same kind of &#8220;framework&#8221;
+support to get consistent navigation and UI interaction across a WinForms
+application as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Tuesday, July 07, 2009</h2>I am currently using WPF CSLA 3.6 and the CAL(Composite Application Guidance) and so far so good 1 year in. <br /><br />In my opinion building a framework for your UI is essential. You need to manage commanding, databinding, styles, datatemplate and a host of other things. Without some form of framework you will be chasing your tail. I know because we tried it that way first. I learned very quickly that WPF != WinForms.<br /><br />The databinding in WPF is a major shift in how we do things. The commanding support as well as how routed events and commands work or in my opinion mind blowing. These complexities are why the MVVM/Presentation Model patterns have become so popular.<br /><br />I have found the Composite Application Guidance a very good starting point. Even if you don't use what they give you the ideas and go along way to point out the differences in WPF application dev and good ol WinForms.<br /><br />It is a steep learning curve but it is well worth it. I dont ever want to go back :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil replied on Tuesday, July 21, 2009</h2>I've spent the last week reading on and fiddlin' with WPF.   <br /><br />I love it already.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, July 07, 2009</h2><P>Rocky - you just scared the bejeesus out of me about moving to WPF. I can't afford that steep a learning curve without a resource from you like a book titled: "How to build WPF apps using my UI framework architecture".&nbsp; So when are you going to start writing it? &lt;g&gt;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag replied on Tuesday, July 07, 2009</h2><font face="Verdana" size="1">Literally, as I'm reading this, I'm installing Wpf third party controls (Syncfusion) to review for my first Wpf desktop app.&nbsp; <br><br>Last week, I wrote a "hello world" Wpf app (along with a combobox bound to a CSLA collection, and a theme), and I'm ready to roll.&nbsp; All I need is a grid, a docking UI (tabbed MDI is my current UI du jour), and some other misc controls.<br><br>I'm no designer - I'm not looking to custom create control "looks" from scratch.&nbsp; But I do create nice-looking, well-behaved user interfaces given a decent toolset.&nbsp; I want to continue doing this, but using Microsoft's latest technology.<br><br>Anyone with any links to resources about how to "not try and solve problems the Winforms way", as Rocky suggests, sound like they would be very helpful.<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, July 07, 2009</h2>I think the book a lot of people (like me) are looking for shoud be titled: "WPF for Business Developers" or something along these lines. <br />The problem is that a lot of books (I have looked at 3-4 in the past) do not focus on the real issues people in this forum are interested in. 1-2 introductory chapters and then on to 3D graphics etc. I am sure there are some decent books out there, its just finding them.<br />But because all CSLA users face similar sort of challenges there may be a small market for a book that addresses such more relevant issues such as databinding, best practices etc. Maybe not a whole book but a couple of chapters or even a video.<br />This could then serve as a starting point to look at more complex UI frameworks but would ease the learning curve.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, July 07, 2009</h2>In winforms we made a CRM project with SCSF formely known as CAB. We made the mistake of not making an own abstraction layer and started programming right away. I'm glad i got the time to write an "framework" using CSLA in the business and Prism in the frontend. Thru the frontend framework took the most of work and splitting up lots of functionality into an core framework and an application framework for each application we make, there are several. It's just adjusting the prism framework with abstraction layers and forcing the programmer into an direction and it only works against CSLA. Having a shell application with regions, modules, controllers, presenters and views with optional new regions. Loosely coupled is exactly what we need for our applications, we aren't using the viewmodel pattern but just having the "controller" as class around an business object. Each controller works with a business object. ReadOnlyController, BusinessController, ListController, etc<br /><br />but.. not using the CslaDataProvider<br /><br />And yes, WPF is far better as winforms (ready for prime time!). We first thought that performance would be an issue, but since WPF uses ActiveX on a grafics card it even is faster then Winforms on a desktop with onboard vga.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 07, 2009</h2>The book you want (and that I want!) is Billy Hollis's book. Unfortunately<br />he decided to hold off on publishing it until WPF 4.0, so we're all stuck<br />waiting for it in the meantime...<br /><br />Rocky<br /><br />-----Original Message-----<br />From: triplea [mailto:cslanet@lhotka.net] <br />Sent: Tuesday, July 07, 2009 2:38 PM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] Is WPF ready for prime time?<br /><br />I think the book a lot of people (like me) are looking for shoud be titled:<br />"WPF for Business Developers" or something along these lines. <br />The problem is that a lot of books (I have looked at 3-4 in the past) do not<br />focus on the real issues people in this forum are interested in. 1-2<br />introductory chapters and then on to 3D graphics etc. I am sure there are<br />some decent books out there, its just finding them.<br />But because all CSLA users face similar sort of challenges there may be a<br />small market for a book that addresses such more relevant issues such as<br />databinding, best practices etc. Maybe not a whole book but a couple of<br />chapters or even a video.<br />This could then serve as a starting point to look at more complex UI<br />frameworks but would ease the learning curve.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Tuesday, July 21, 2009</h2>Our company is in the process of creating its first WPF app.  Actually this app only uses a few CSLA classes but most of it is controlled by a set of state machines (because the logic is fairly complicated).  Here is my take.  You really need to read through a good WPF book first like the WPF Unleashed book.  Also grid and listview performance is pretty bad if you need them to hold thousands of items compared to the winforms versions.  The real value of WPF is being able to do crazy stuff that just is not feasible to do in winforms.  We think WPF will be a good fit because our application uses a touch screen.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

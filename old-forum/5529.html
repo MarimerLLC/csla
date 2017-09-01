@@ -1,0 +1,55 @@
+<html><header><title>Please Help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Please Help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5529.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jash posted on Friday, October 03, 2008</h2><P><FONT face=Arial size=2>Hi all,</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face=Arial size=2>I am new to CSLA.I am learning it to implement it in one of the project.</FONT><FONT face=Arial size=2>We have a functionality in UI screen where the user is allowed to check the checkboxes to show/hide grid columns.Here the UI is sending the grid configuration details&nbsp; as an XML data and UserID to the CSLA business objects . I m trying to perform batch&nbsp;updation&nbsp;to the db by invoking the business objects's DataPortal_Update method through save method in UI.But the save method is not invoking the Data_Portal method.</FONT></P><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Data Access - Update</FONT></P>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>DataAccess</FONT><FONT size=2>.Connection))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P>ExecuteUpdate(cn);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ExecuteUpdate(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> command = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"spUpdateGridConfig"</FONT><FONT size=2>, cn))</P>
+<P>{</P>
+<P>command.CommandType = </FONT><FONT color=#008080 size=2>CommandType</FONT><FONT size=2>.StoredProcedure;</P>
+<P>command.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@configGridXML"</FONT><FONT size=2>, configGridXML);</P>
+<P>command.Parameters.AddWithValue(</FONT><FONT color=#800000 size=2>"@UserID"</FONT><FONT size=2>, userID);</P>
+<P>command.ExecuteNonQuery();</P>
+<P>}</P>
+<P>}</P>
+<P></P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P><FONT color=#000000>I just want to know how to perform batch updation using business objects with XML data.The business objects is not set as IsDirty.</FONT></P>
+<P><FONT color=#000000></FONT>&nbsp;</P>
+<P><FONT color=#000000>Thanks</FONT></P>
+<P><FONT color=#000000>Jash</FONT></P>
+<P><FONT color=#000000></FONT>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Saturday, October 04, 2008</h2><P>You wrote :<BR>" .. <FONT face=Arial size=2>invoking the business objects's DataPortal_Update method through save method in UI."</FONT></P>
+<P>It is not possible. The BO <FONT face=Arial size=2>DataPortal_Update must be call by a factory method placed in the same business class in which DataPortal_Update&nbsp;is.</FONT></P>
+<P><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> Save() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Project<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.Save<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>Your UI call this factory method (Save).<BR>Then this factory method (Save) call <FONT face=Arial size=2>DataPortal_Update automagicaly with CSLA.</FONT></P>
+<P>Dominique</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jash replied on Saturday, October 04, 2008</h2>Thanks Dominique.I know that save method automatically calls the&nbsp; <FONT face=Arial size=2>DataPortal_Update with CSLA.but the problem for me is that the IsDirty is not set to true..so the DataPortal_Update is not getting called automatically.I m using it in BusinessListBase.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Saturday, October 04, 2008</h2>Property changes will make your objects dirty.&nbsp; In BusinessListBase, adds and removes of items should make you dirty, but if memory serves, the save should also cascade down to objects in the list so that they can each save themselves if they're dirty.&nbsp; It sounds like the change you're trying to save is actually a property change on one of the child objects - is that right?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jash replied on Sunday, October 05, 2008</h2>Thanks all for the help.I ve set the PropertyHasChanged to all the properties but the thing is i m trying to save the changes on the child objects.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Monday, October 06, 2008</h2><P>Hi,</P>
+<P>do this in the parent update method:</P>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Update()<BR>{<BR><FONT size=2>&nbsp;&nbsp; child_Update();<BR></FONT></FONT>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KJosh replied on Saturday, October 04, 2008</h2><P>Hi,</P>
+<P>In your Business objects: while defining the property: do like the below:</P>
+<P>Fields: string _name;</P>
+<P>Public string Name</P>
+<P>{</P>
+<P>set </P>
+<P>{</P>
+<P>if( _name != value)</P>
+<P>{</P>
+<P>_name = value;</P>
+<P>PropertyHasChanged() -&gt; This will make the object as dirty.</P>
+<P>} Yesterday, I got the same propblem. I defined the property like the above, it solved my problem.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, October 04, 2008</h2><FONT color=#0000ff size=2>
+<P><FONT color=#000000>The business objects is not set as IsDirty.</FONT></P>
+<P><FONT color=#000000>That means the data portal won't call Update it will call Insert.</FONT></P>
+<P><FONT color=#000000>So just do this if Inserrt means the same thing as Update to you:</FONT></P></FONT>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Insert()<BR>{<BR><FONT size=2>&nbsp;&nbsp; DataPortal_Update()<BR></FONT></FONT>}</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

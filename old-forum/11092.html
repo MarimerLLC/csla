@@ -1,0 +1,59 @@
+<html><header><title>CSLA.Net 4 - at a loss.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.Net 4 - at a loss.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11092.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, January 25, 2012</h2><p>Hi Rocky/gents,</p>
+<p>Having decided to move forward with new development using CSLA 4.x., I have to admit to being totally perplexed.</p>
+<p>Here&#39;s the context for moving my development forward:</p>
+<p><a href="http://forums.lhotka.net/forums/p/10985/51147.aspx#51147">http://forums.lhotka.net/forums/p/10985/51147.aspx#51147</a></p>
+<p>I purchased the eBook series for CSLA 4 and trudged through the overview, not wanting to rush things and to make sure I didn&#39;t overlook new functionality, etc.</p>
+<p>Having read that, I thought &quot;Great&quot; and looked forward to test driving my new VS.Net 2010&nbsp;by building the framework from the bottom up...</p>
+<p>But no....</p>
+<p>My expectation was that you were going to drive the reader through the creation of the framework a-la CSLA 1 &amp; 2, culminating in a demonstration of it&#39;s uses in a ProjectTracker-type project. But unless I&#39;m being extremely dense, scanning the subsquent e-Books merely gives a further overview of what the framework compromises and some very small code snippets of how it might be implemented.</p>
+<p>Am I missing something? Is there more somewhere that I&#39;ve overlooked? I&#39;m sure I saw reference to the ProjectTracker project while you were developing CSLA 4 - was I mistaken?</p>
+<p>I was tempted to just download the framework and open up the required solutions and compile. But which solutions relate to what? There must be 10 solutions in the zip file Source folder...</p>
+<p>Because I want to separate my CSLA 2.x from my CSLA 4, I will likely want to use &quot;CSLA4&quot; as my namespace for the new libraries, so just running the installer isn;t going to work.</p>
+<p>My initial development will still revolve around a .Net Windows Form client, but I&#39;m VERY interested in the Silverlight and WP7 versions of the framework, but there is a distinct lack of step-by-step &quot;how-to&quot; in the documentation I&#39;ve read to this point.</p>
+<p>What am I missing? </p>
+<p>&nbsp;</p>
+<p>Very frustrated,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, January 25, 2012</h2><p>In the <em>Expert Business Objects</em> books I spent over half the book talking about how the framework was created, and less time talking about how to use it.</p>
+<p>In the <em>Using CSLA 4</em> books I spend all the time talking about how to use the framework, and no time talking about how to create the framework.</p>
+<p>There were some threads about 18 months ago (give or take) where I shared some of my thinking and solicited input on how to best serve the CSLA community through a book project.</p>
+<p>Although there are people who find the &quot;how the framework is built&quot; content very valuable, that content comes at the cost of providing deep insight into the &quot;how to use the framework&quot; topics. I simply don&#39;t have the bandwidth to do both - I estimate that the resulting book would be 1500-2000 pages...</p>
+<p>I especially don&#39;t have time to do both while also trying to keep up with new versions of .NET, WPF, Silverlight, Windows Phone, and now WinRT - not to mention mono, monotouch, and mono for Android.</p>
+<p>From a pure commercial perspective, the reality is that there are more people willing to pay for &quot;how to use&quot; than for &quot;how it is built&quot;. </p>
+<p>This isn&#39;t surprising, given that far, far more people use CSLA to build apps than use it as a tool for learning techniques for creating frameworks or understanding deep concepts related to reflection, linq expressions, or serialization implementations.</p>
+<p>I fund the actual development of CSLA by selling the books and videos. So it is in all our best interest that I focus on products that sell well.</p>
+<p>Yes, it is a lot of fun to dive deeply into why and how things like MethodCaller are implemented, or the intricate details behind the field manager implementation and how it relates to MobileFormatter. I obviously totally geek out on that stuff, and I know a lot of other people do to.</p>
+<p>But at the end of the day, none of those topics are as useful day-to-day as understanding how to implement all the different kinds of business rule, or all the different ways you can configure the data portal for 1-, 2-, 3-, or 4-tier deployments. Those topics have immediate applicability to anyone trying to use the framework.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, January 25, 2012</h2><p>Rocky,</p>
+<p>I didn&#39;t mean to suggest that what you have done is not correct, and I realize that you need to make things commercially viable.</p>
+<p>Frankly, I&nbsp;DON&#39;T WANT&nbsp;TO KNOW the workings of the framework beyond the broad scope that is provided in the overview book. It&#39;s not a case of &quot;how to use&quot;&nbsp;vs. &quot;how it&#39;s built&quot; -&nbsp; But from what I can see there is no &quot;how to build the assemblies for CSLA4 for xxxx developers&quot; - in my case Windows Forms.&nbsp;This is a huge obstacle for me. Two of the books are devoted to WPF and Silverlight development, but nothing specific for the Windows Forms developer.</p>
+<p>My first implementation of CSLA was the Business Objects Book, which yes, showed me how to create the framework - which was great to get an understanding of how it works. But with subsequent versions of the book and framework I was was able to build the assemblies from the provided source.</p>
+<p>From what I can see so far, there is no clear &quot;how to&quot;&nbsp; when it comes to creating the CSLA4&nbsp;assemblies. The documentation lists all of the libraries included in CSLA4, but with no direction as to which VS2010 solution one needs to load from the Source folder to build the assemblies on the machine and for which development scenario. As previously stated, I cannot use the default namespace as to avoid clashes with my csla 2.x applications.</p>
+<p>I would like to thing that with my CSLA 2.x experience, that the creation of the Business Objects will be intuitive enough. But unless I know how to implement the CSLA assemblies, then I&#39;m a million miles away from that.</p>
+<p>Maybe I&#39;m just not familiar enough with VS2010, but I have to believe that as a new CSLA 4 developer, the expectation is not for me to work out for myself which of the VS solutions relates what.</p>
+<p>I appreciate your time is valuable. If anyone else has experience of building the CSLA assemblies, any suggestions/direction would be gratefully appreciated.</p>
+<p>Thanks,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 26, 2012</h2><p>Ahh, I see.</p>
+<p>You shouldn&#39;t have to build the assemblies. You can get the pre-built assemblies via NuGet or through the msi installer from <a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a></p>
+<p>One of the most repeated requests from the pre-3.7 days was for &quot;official&quot; assemblies. So for some years now I&#39;ve been supplying pre-built assemblies people can just reference and use.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, January 26, 2012</h2><p>Maybe if your previous implementations of CSLA hadn&#39;t been so efficient I would have lurked in the forums more frequently <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" /></p>
+<p>This is still going to cause a problem with my dual CSLA implementation though right? If I have CSLA 2 assemblies loaded on this machine with a CSLA namespace, won&#39;t the loading of the new ones through the installer blow those up?</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 26, 2012</h2><p>No, the installer simply puts the assemblies on your computer in a folder. It is up to you to reference and use them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, January 26, 2012</h2><p>Great! </p>
+<p>Thanks again Rocky.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 26, 2012</h2><p>Hi Gajit, </p>
+<p>If you wish to use both Csla 2.x and CSLA 4.x assemblies in your application&nbsp; - then yes - you must change the namespace of one of the CSLA assemblies, compile and reference the new assembly in your projects. </p>
+<p>I would however consider to move the Csla 2.x classes into a new namespace and aim for &quot;correct&quot; code when fully migrated to Csla 4.x. Ie, use the provided existing compiled assemblies for CSLA 4.x!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, January 26, 2012</h2><p>Thanks Jonny.</p>
+<p>I think that&#39;s where some of my confusion laid.</p>
+<p>They will be separate applications, the CSLA 2.x stuff will remain <em>buried</em> in my VS2005 .Net 2 solution.</p>
+<p>I&#39;ll build my new developments using CSLA 4 in VS2010. </p>
+<p>This is going to be fun....</p>
+<p>Graham</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

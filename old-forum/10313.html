@@ -1,0 +1,231 @@
+<html><header><title>CSLA  &amp; identity map</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA  &amp; identity map</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10313.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zillo posted on Thursday, April 28, 2011</h2><p>Hello,</p>
+<p>does CSLA include any kind of identity map? (http://martinfowler.com/eaaCatalog/identityMap.html).To me it seems, it doesn&#39;t. For what reason there&#39;s no use of an identity map?</p>
+<p>Thanks for CSLA and for new insights.</p>
+<p>&nbsp;</p>
+<p>Zillo</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 28, 2011</h2><p>CSLA is for creating&nbsp;BusinessObjects and implements&nbsp;several patterns including Mobile Objects. <strong>CSLA is NOT a Data Acess Layer. </strong></p>
+<p>IdentityMap is implemented&nbsp;in f.ex EntitiyFramwork and Linq2Sql.</p>
+<p><em>Quote from Martin Fowler:<br /></em><em>&quot;An Identity Map keeps a record of all objects that have been read from the database in a single business transaction. Whenever you want an object, you check the Identity Map first to see if you already have it.:&quot;</em></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, April 28, 2011</h2><p>No, CSLA does not include the concept of an identity map.&nbsp; While this was possible in older versions, for several versions now CSLA has not supported the concept of logical equality, which is key to making an identity&nbsp;map work (especially in n-tier environments).&nbsp; This is because Microsoft changed things with WPF, and as such no longer supports logical equality in XAML databinding scenarios.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zillo replied on Friday, April 29, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  DE
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal"><span lang="EN-US">Hello
+Jonny, hello Scott,</span></p>
+<p class="MsoNormal"><span lang="EN-US">I&rsquo;m quite
+new to this whole topic and now I&rsquo;m tryring to merge your answers in my mind.</span></p>
+<p class="MsoNormal"><span lang="EN-US">Both of you
+said CSLA itself does not include an identity map. Jonny said the function of
+an identity map is provided by f.ex EntitiyFramwork and Linq2Sql. In contrast
+Scott quoted an identity map is no longer included in CLSA since WPF doesn&rsquo;t
+support the concept of logical identity. It sounds like that there isn&rsquo;t any identity
+map at all, neither in business layer nor in data access layer. How do these answers
+fit together?</span></p>
+<p class="MsoNormal"><span lang="EN-US">After
+reading some chapters of Lhotkas C# Business Objects 2008, it seems to me, CSLA
+doesn&rsquo;t provide functions of an identity map. E.g. at p. 158 you can read: &ldquo;Note:
+It&rsquo;s important to understand that the updated root object returned to the UI is
+a new object. The UI must update its references to use this new object in lieu
+of the original root object.&rdquo;</span></p>
+<p class="MsoNormal"><span lang="EN-US">My <i>main
+concern</i> is to find out the <i>pros and cons of using an identity map</i>. So after
+reading your posts, I&rsquo;d like to know, how do Windows Forms support the concept
+of logical identity (in Jonnys post it sounds like that&rsquo;s a difference between
+Windows Forms and WPF, isn&rsquo;t it)? Why doesn&rsquo;t WPF support this concept?</span></p>
+<p class="MsoNormal"><span lang="EN-US">Do know any
+useful sources of information beside Fowlers Patterns of EEA, Evans Domain
+Driven Design and Lhotkas C# BO 2008?</span></p>
+<p class="MsoNormal"><span lang="EN-US">Thank you</span></p>
+<p class="MsoNormal"><span lang="EN-US">Zillo</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Friday, April 29, 2011</h2><p>I think you may have misunderstood what I was saying.&nbsp; I wasn&#39;t saying that CSLA used to include an identity map and now no longer does.&nbsp; What I was saying was that CSLA used to have support for <em>building</em> an identity map of CSLA business objects.&nbsp; However, with the way WPF (and I believe Silverlight) handles object equality, that concept won&#39;t really work anymore, and so the methods in CSLA that support the concept of logical equality (a necessary concept for an identity map to really work) have been deprecated.</p>
+<p>Whether it&#39;s a good idea to create identity maps for your business objects is a different question.&nbsp; Given the way CSLA works, identity maps don&#39;t really get you much, and ultimately would probably complicate things more than they help.&nbsp; Saving a CSLA object results in a new instance, so any identity map would have to be updated with that instance, as well as all your other instance references in your app.&nbsp; So the map isn&#39;t really going to save you all that much, even in a basic client/server scenario (and it would be even less useful in an n-tier scenario).</p>
+<p>Jonny is right that identity maps are more often found in data-access layers or ORM tools.&nbsp; CSLA is neither of those.</p>
+<p>As for why Microsoft changed the game when WPF came along, I don&#39;t know.&nbsp; It was something Rocky specifically brought up on this forum when working on upgrading CSLA to support WPF.&nbsp; I presume he saw some documentation stating that, and possibly the reasons why, but I if so I am not sure what it was or where it is.&nbsp; I&#39;m guessing that it had to do with how XAML databinding works vis-a-vis Windows Forms databinding.</p>
+<p>The books you listed would probably be the best sources I know of, though when you start talking about OOD you are going to get wildly varying opinions based on who you talk to.&nbsp; Rocky has made some suggestions over the years on the forum, and while the titles he mentioned don&#39;t come to mind, you should be able to search the forum posts and find them.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zillo replied on Tuesday, May 03, 2011</h2><p>Thank you for making things clearer.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

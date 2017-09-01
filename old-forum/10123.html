@@ -1,0 +1,12 @@
+<html><header><title>Problem with CSLA 3.8.2 CSLA.DataPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with CSLA 3.8.2 CSLA.DataPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10123.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, March 02, 2011</h2><p>I recently promoted a new build to my test server (Win2008 R2 x64) and suddenly I&#39;m having a runtime issue that I cannot replicate on my development box (Win7 x64).</p>
+<p>The only real difference I know of is that my Oracle driver is x64 on the server and x32 on my box.&nbsp; However most of the DataPortal calls are working until a certain part of the application.</p>
+<p>The error I am getting is a nullReferenceException at line 142 of </p>
+<p>CSLA.Server.ChildDataPortal.Fetch(Type objectType, params object[] parameters)</p>
+<p>The particular piece of logic has been in production for over a year.&nbsp; It is a large fetch of data in an ObjectFactory.&nbsp; The procedure returns several cursors and loops through each and creates all the child objects.&nbsp; There are a few empty cursors with no results of which this is one of however there were 3 prior empty ones before this line was processed.</p>
+<p>I&#39;m pretty baffled.&nbsp; My application is built against .net 4, my Oracle client is .net4 and my IIS application pool is set to not allow 32bit applications.</p>
+<p>My CSLA dll is dated 15-Dec-2009 and shows as version 3.8.2.&nbsp; I believe I built it from the source code via VS2008 and I&#39;m not in VS2010.</p>
+<p>Any help is appreciated...&nbsp; I&#39;m totally baffled.</p>
+<p>thanks</p>
+<p>jack</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Jack replied on Wednesday, March 02, 2011</h2><p>Of course typing out a long message always makes one think of what else it could be.&nbsp; Turns out an rarely used 3rd party control dll wasn&#39;t deployed.&nbsp; There was a reference to an object in that control in the child object that the DataPortal was trying to create.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

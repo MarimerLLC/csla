@@ -1,0 +1,20 @@
+<html><header><title>can i  maintain a state of Dictionary bag</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>can i  maintain a state of Dictionary bag</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10088.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Saturday, February 19, 2011</h2><p>&nbsp;</p>
+<p>&nbsp;private Dictionary&lt;string, object&gt; _inputProps;</p>
+<p>
+<p>&nbsp;public Dictionary&lt;string, object&gt; InputProperties</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return this._inputProps; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}&nbsp;</p>
+</p>
+<p>by using&nbsp;OnGetState,OnSetState</p>
+<p>_inputProps = info.GetValue&lt;Dictionary&lt;string, object&gt;&gt;(&quot;_inputProps&quot;);</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 19, 2011</h2><p>MobileFormatter requires all values in the object graph be primitive types or to implement IMobileObject.</p>
+<p>There is a MobileDictionary type in Csla.Core that implements IMobileObject. It has some limitations on the &lt;K,V&gt; types, but it generally is the same as Dictionary.</p>
+<p>Of course the &lt;K,V&gt; types must both be either primitive or must implement IMobileObject.</p>
+<p>You can avoid the requirement for&nbsp;a child value (contained value) to implement IMobileObject if you can have the containing object take over the serialization of the child. That&#39;s usually very hard to do because it means the child&#39;s state must be completely public.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 replied on Monday, February 21, 2011</h2><p>i used&nbsp;MobileDictionary&nbsp;&lt;K,V&gt;&nbsp;also k=string v=propertyinfo,</p>
+<p>i am sending multiple property from business for serer side&nbsp;validation it is on&nbsp;array&nbsp;of propertyinfo</p>
+<p>&nbsp;</p>
+<p>foreach(var obj in arrayofpropertyifo)</p>
+<p>{</p>
+<p>mobdic[obj.name,obj.value]</p>
+<p>}</p>
+<p>still giving error&nbsp;data-contract&nbsp;serialization</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 21, 2011</h2><p>The CSLA PropertyInfo&lt;T&gt; type is not serializable. Nor is the System.Reflection PropertyInfo type.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

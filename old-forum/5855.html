@@ -1,0 +1,310 @@
+<html><header><title>How to display a user friendly message for the user</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to display a user friendly message for the user</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5855.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Saturday, November 22, 2008</h2><P>Does somebody know how to display a user friendely message if SQL server encounters a duplicate key exception like the following :</P>
+<P>Type : Csla.DataPortalException, Csla, Version=3.5.2.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30<BR>Message : DataPortal.Update mislukt (System.Data.SqlClient.SqlException: Cannot insert duplicate key row in object 'dbo.Look' with unique index 'UNIQUE_LookValue_Per_LookTypeFID'.<BR>The statement has been terminated.<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlConnection.OnError(SqlException exception, Boolean breakConnection)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception, Boolean breakConnection)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject stateObj)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior, SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet bulkCopyHandler, TdsParserStateObject stateObj)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader ds, RunBehavior runBehavior, String resetOptionsString)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method, DbAsyncResult result)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(DbAsyncResult result, String methodName, Boolean sendToPipe)<BR>&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.ExecuteNonQuery()<BR>&nbsp;&nbsp; bij Shoesoft.Library.Hoofdafdeling.ExecuteInsert(SqlConnection cn) in D:\Projects\DOTNET\Shoesoft\Shoesoft.Library\Admin\Hoofdafdeling.Generated.cs:regel 203<BR>&nbsp;&nbsp; bij Shoesoft.Library.Hoofdafdeling.DataPortal_Insert() in D:\Projects\DOTNET\Shoesoft\Shoesoft.Library\Admin\Hoofdafdeling.Generated.cs:regel 186<BR>&nbsp;&nbsp; bij dm(Object , Object[] )<BR>&nbsp;&nbsp; bij Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in D:\Projects\DOTNET\csla\cslacs\Csla\Reflection\MethodCaller.cs:regel 221)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, November 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You have to wrap your Save inside try/catch in UI and examine
+the error text of the message, looking for specifics.&nbsp; If you find those,
+display a friendly message, otherwise just re-throw the exception.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, November 22, 2008 10:37 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] How to display a user friendly message for the user<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Does somebody know how to display a user friendely message if SQL server
+encounters a duplicate key exception like the following :<o:p></o:p></p>
+
+<p>Type : Csla.DataPortalException, Csla, Version=3.5.2.0, Culture=neutral,
+PublicKeyToken=93be5fdc093e4c30<br>
+Message : DataPortal.Update mislukt (System.Data.SqlClient.SqlException: Cannot
+insert duplicate key row in object 'dbo.Look' with unique index
+'UNIQUE_LookValue_Per_LookTypeFID'.<br>
+The statement has been terminated.<br>
+&nbsp;&nbsp; bij System.Data.SqlClient.SqlConnection.OnError(SqlException
+exception, Boolean breakConnection)<br>
+&nbsp;&nbsp; bij
+System.Data.SqlClient.SqlInternalConnection.OnError(SqlException exception,
+Boolean breakConnection)<br>
+&nbsp;&nbsp; bij
+System.Data.SqlClient.TdsParser.ThrowExceptionAndWarning(TdsParserStateObject
+stateObj)<br>
+&nbsp;&nbsp; bij System.Data.SqlClient.TdsParser.Run(RunBehavior runBehavior,
+SqlCommand cmdHandler, SqlDataReader dataStream, BulkCopySimpleResultSet
+bulkCopyHandler, TdsParserStateObject stateObj)<br>
+&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.FinishExecuteReader(SqlDataReader
+ds, RunBehavior runBehavior, String resetOptionsString)<br>
+&nbsp;&nbsp; bij
+System.Data.SqlClient.SqlCommand.RunExecuteReaderTds(CommandBehavior
+cmdBehavior, RunBehavior runBehavior, Boolean returnStream, Boolean async)<br>
+&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.RunExecuteReader(CommandBehavior
+cmdBehavior, RunBehavior runBehavior, Boolean returnStream, String method,
+DbAsyncResult result)<br>
+&nbsp;&nbsp; bij
+System.Data.SqlClient.SqlCommand.InternalExecuteNonQuery(DbAsyncResult result,
+String methodName, Boolean sendToPipe)<br>
+&nbsp;&nbsp; bij System.Data.SqlClient.SqlCommand.ExecuteNonQuery()<br>
+&nbsp;&nbsp; bij Shoesoft.Library.Hoofdafdeling.ExecuteInsert(SqlConnection cn)
+in
+D:\Projects\DOTNET\Shoesoft\Shoesoft.Library\Admin\Hoofdafdeling.Generated.cs:regel
+203<br>
+&nbsp;&nbsp; bij Shoesoft.Library.Hoofdafdeling.DataPortal_Insert() in
+D:\Projects\DOTNET\Shoesoft\Shoesoft.Library\Admin\Hoofdafdeling.Generated.cs:regel
+186<br>
+&nbsp;&nbsp; bij dm(Object , Object[] )<br>
+&nbsp;&nbsp; bij Csla.Reflection.MethodCaller.CallMethod(Object obj,
+DynamicMethodHandle methodHandle, Object[] parameters) in
+D:\Projects\DOTNET\csla\cslacs\Csla\Reflection\MethodCaller.cs:regel 221)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Sunday, November 23, 2008</h2><P><FONT face=Verdana size=2>I have a static method to handle&nbsp;exceptions. Looks something like this (I removed application specific code and calls to methods&nbsp;which log exceptions in the database for further investigation):</FONT></P>
+<P><FONT face="Courier New" size=2>try<BR>{<BR>&nbsp; // Do some BO work here<BR>}<BR>catch (Exception ex)<BR>{<BR>&nbsp;&nbsp;string Message = BusinessObjects.Common.ExceptionHandling.HandleException("Some custom message here regarding the context of where the error is happening", ex);<BR>&nbsp;&nbsp;MessageBox.Show(Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);<BR>}</FONT></P>
+<P><FONT face="Courier New" size=2>public static string HandleException(string userInformation, Exception ex)<BR>{<BR>&nbsp;// Check to see if the exception is from the DataPortal (to search for any SQL exceptions)<BR>&nbsp;if (ex.GetType() == typeof(DataPortalException))<BR>&nbsp;{<BR>&nbsp;&nbsp;DataPortalException LocalEx = (DataPortalException) ex;<BR>&nbsp;&nbsp;Exception LoopException = LocalEx;<BR>&nbsp;&nbsp;Exception SqlException = null;</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;// Loop all inner exceptions to see if we got a SqlClient exception<BR>&nbsp;&nbsp;while (LoopException != null)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;if (LoopException.Source == ".Net SqlClient Data Provider")<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;SqlException = LoopException;<BR>&nbsp;&nbsp;&nbsp;&nbsp;break;<BR>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;// Get next inner exception<BR>&nbsp;&nbsp;&nbsp;LoopException = LoopException.InnerException;<BR>&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;// If Sql server error message then only show the message from sql server<BR>&nbsp;&nbsp;if (SqlException != null)<BR>&nbsp;&nbsp;&nbsp;userInformation = string.Format("{0}", SqlException.Message);<BR>&nbsp;&nbsp;else<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;userInformation += Environment.NewLine + Environment.NewLine + ex.Message;<BR>&nbsp;&nbsp;}<BR>&nbsp;}<BR>&nbsp;else if (ex.GetType() == typeof(ValidationException)) {<BR>&nbsp;&nbsp;userInformation = "Validation error. Please check values.";<BR>&nbsp;}<BR>&nbsp;else<BR>&nbsp;{<BR>&nbsp;&nbsp;userInformation += Environment.NewLine + Environment.NewLine + ex.Message;<BR>&nbsp;}</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;return userInformation;<BR>}</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, November 24, 2008</h2>I created the following unfinished code, especially the code between the comments   <br>
+(// TODO : begin rework and <br>
+  // TODO : begin rework )<br>
+will need some better implementation.<br>
+But the code from DocJames gives me some idea about looping through all the inner exceptions to find a SqlClient exception.<br>
+But in the meantime I want to share already my code also.<br>
+<a></a><br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Add the event handler for handling UI thread exceptions to the event.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Application.ThreadException += new
+System.Threading.ThreadExceptionEventHandler(Application_ThreadException);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Application.EnableVisualStyles();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Application.SetCompatibleTextRenderingDefault(false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ......<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception exc)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProcessUnhandledException(exc);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; static void
+Application_ThreadException(object
+sender,System.Threading.ThreadExceptionEventArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProcessUnhandledException(e.Exception);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Process any unhandled exceptions that occur in the application.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// This code is called by all UI entry points in the application (e.g. button click events)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// when an unhandled exception occurs.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// You could also achieve this by handling the Application.ThreadException event, however<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// the VS2005 debugger will break before this event is called.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;param name="ex"&gt;The unhandled exception&lt;/param&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; static void ProcessUnhandledException(Exception exc)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // An unhandled exception occured somewhere in our application. Let<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // the 'UserInterfaceLayer' handler have a try at handling it.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.DataPortalException dpex = exc as Csla.DataPortalException;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (dpex != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (dpex.BusinessObject != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EnterpriseHelper.Log(((Csla.Core.ILogging)dpex.BusinessObject).ToXML(),
+"Exceptions");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // TODO : begin rework<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (exc.InnerException.InnerException is SqlException)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+SqlException ex = (SqlException)exc.InnerException.InnerException;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ex.Number == 547)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"Record cannot be deleted or changed as it is being used somewhere
+else.",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxButtons.OK,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (ex.Number == 2627)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"Record cannot be saved, as another record with this key already
+exists",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxButtons.OK,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (ex.Number == 2601)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString(),<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+"Record cannot be saved, as another record with this key already
+exists",<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxButtons.OK,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MessageBoxIcon.Exclamation);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TODO : end rework<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool rethrow = EnterpriseHelper.HandleException(exc);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rethrow)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Something has gone very wrong - exit the application.<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Application.Exit();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Something has
+gone wrong during HandleException (e.g. incorrect configuration of the
+block).<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Exit the application<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string errorMsg
+= "An unexpected exception occured while calling HandleException with
+policy 'UserInterfaceLayer'. ";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; errorMsg +=&nbsp; Environment.NewLine + Environment.NewLine;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; errorMsg += ex.Message;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+MessageBox.Show(errorMsg, "Application Error", MessageBoxButtons.OK,
+MessageBoxIcon.Stop);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Application.Exit();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dagware replied on Sunday, November 23, 2008</h2>The following isn't always possible, and I suppose there are even times when it's not worth the effort, but just in case you haven't thought about it (and please forgive me if I'm being patronizing):<br><br>Consider coding your business objects to detect this type of error before you do the save, typically when a new object is added to the list. This is often-times done with an "ExistsCommand" type of command object (ProjectTracker has these, but I don't know if it actually uses them or not).<br><br>Of course, even with due diligence you could still get the error, for instance if someone else added the item to the database between when you checked for its existence and when you actually saved the object.<br><br>I've often wished SQL Server returned errors in a documented way that would make it easy to parse the error into end-user-readable text. I guess I just like to dream.<br><br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, November 23, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You could actually do this in SQL server, although I am not sure
+if this is worth the effort either.&nbsp; You could wrap your SP in try/catch
+blocks, trap excepti9ons that can occur, and Raise a custom error.&nbsp; This is
+a lot of work though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dagware
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 23, 2008 12:56 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] How to display a user friendly message for the
+user<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The following isn't always possible, and I suppose there are
+even times when it's not worth the effort, but just in case you haven't thought
+about it (and please forgive me if I'm being patronizing):<br>
+<br>
+Consider coding your business objects to detect this type of error before you
+do the save, typically when a new object is added to the list. This is
+often-times done with an &quot;ExistsCommand&quot; type of command object
+(ProjectTracker has these, but I don't know if it actually uses them or not).<br>
+<br>
+Of course, even with due diligence you could still get the error, for instance
+if someone else added the item to the database between when you checked for its
+existence and when you actually saved the object.<br>
+<br>
+I've often wished SQL Server returned errors in a documented way that would
+make it easy to parse the error into end-user-readable text. I guess I just
+like to dream.<br>
+<br>
+Dan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

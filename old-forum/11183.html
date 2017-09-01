@@ -1,0 +1,47 @@
+<html><header><title>Conditional validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Conditional validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11183.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kiddo85 posted on Wednesday, February 22, 2012</h2><p>Hi,</p>
+<p>I have a hard time trying to implement conditional validation with CSLA for MVC.&nbsp;</p>
+<p>I have a class Customer that I want to validate. If the Customer is of type &#39;Person&#39; then First and Last names are required and if it&#39;s a Company then &#39;Company name&#39; is required. I have the following code:</p>
+<p>public class Customer : BusinessBase&lt;Customer&gt;,&nbsp;ISavable</p>
+<p>{</p>
+<p style="padding-left:30px;">public CustomerTypes Type...;</p>
+<p style="padding-left:30px;">public string FirstName...;</p>
+<p style="padding-left:30px;">public string LastName...;</p>
+<p style="padding-left:30px;">public string CompanyName...;</p>
+<p style="padding-left:30px;">
+<p>protected override void AddBusinessRules()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.AddBusinessRules();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = &quot;Person&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(FirstNameProperty));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(LastNameProperty));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = &quot;Company&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(CompanyNameProperty));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = &quot;default&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>
+<p>object ISavable.Save(bool forceUpdate)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = this.Type.ToString();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.CheckRules();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (this.IsValid)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //DO STH WHEN VALID</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRules.RuleSet = &quot;default&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return this;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>I have an MVC application where I enter new customer and when I enter invalid data validation is going ok, i.e. the object is invalid (at least debugging shows so) but nothing is shown on the MVC page, no validation text that tells me that for example Company Name is missing. How do I do that?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 22, 2012</h2><p>Use the Csla.Web.Mvc.CslaModelBinder. </p>
+<p>See samples download for how to use this class in you ASP.NET MVC Application.</p>
+<p>You can also create Gateway rules that act as &quot;if&quot; statements in the rule engine. Se the RuleTutorial sample. <br />Or even just subclass the Required rule and implement the if inside the Execute method.</p>
+<p>For objects with many rules I find this to be a better approach than Ruleset. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

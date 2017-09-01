@@ -1,0 +1,35 @@
+<html><header><title>Learning PATH on CSLA.NET 4 and MVVM</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Learning PATH on CSLA.NET 4 and MVVM</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10792.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, October 20, 2011</h2><p>Hi, everyone..</p>
+<p>I&#39;m a newbie in WPF 4 + Silverlight 4 and MVVM</p>
+<p>I already read several books for an intro about all above, so i can get a concept.</p>
+<p>And at first actually i have a plan to develop an app without a framework at all. ( because i want to learn a lot about how those are work together )</p>
+<p>but i have awared that it&#39;s a lot of works that i must to do.</p>
+<p>And now , i decide to use a framework CSLA.NET 4 as a business layer ( as roc has explained on his book ), currently I&#39;m reading CSLA.NET 4 series.</p>
+<p>And then I&#39;m thinking about a UI layer ?</p>
+<p>Am I must do all of this without a framework ? (&nbsp; because, at first i want to learn about MVVM concept and implemented ).</p>
+<p>or I have to choose or look for a framework for this layer ?</p>
+<p>Could anyone give me a suggestion about my decision path here ? ( thanks a lot before ).</p>
+<p>If i use a framework before i have ever tried to do a work without it, Am i can get an understanding about what is going on ?? like MVVM pattern, and another design pattern concept ??</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks a lot for your responses before</p>
+<p>&nbsp;</p>
+<p>stefanus</p>
+<p>God Bless You all</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, October 21, 2011</h2><p>There&#39;s huge value in learning frameworks like CSLA - it certainly makes you very productive and from a business viewpoint you can deliver solutions quickly.&nbsp; There&#39;s also value in doing things without frameworks if you want to understand the nuts and bolts of .Net and the value of using frameworks in the first place, although reading the CSLA ebook series should explain the many benefits that a framwork provides and save you the pain of discovering these things yourself.</p>
+<p>For MVVM you could try Rocky&#39;s Bxf framework at first - that way you can get up-to-speed on CSLA and your business layer and Data Portal options and create somthing using a very simple MVVM framework.</p>
+<p>Then maybe try another UI framework.&nbsp; There seem to be many MVVM frameworks knocking about.&nbsp; </p>
+<p>MVVM Light Toolkit is one.&nbsp; Caliburn is another.&nbsp; I&#39;ve no experience here, but MVVM Light Toolkit seems to be light enough that it might be quick to learn it and has enough functionality.</p>
+<p>StackOverflow has some postings with people asking the same question.</p>
+<p>http://stackoverflow.com/questions/1409553/what-framework-for-mvvm-should-i-use</p>
+<p>Good Luck.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Tuesday, October 25, 2011</h2><p>Thanks to <i>richardb </i>for your StacksOverflow link. </p>
+<p>Our project also achieved good succes, when we started to use (commercial) UI components. For a LOB application, a commercial toolkit has already solved many of the daily problems, we were facing at a low level with WPF from .NET plus the WPF toolkit. <br />(We have choosen DevExpress, but the key factor has been the reporting part of the vendor - and the choice depends on your needs) </p>
+<p>I believe, the remaining part - further functionality of the view model, common user controls or contol behaviour, application frame - depends a lot of a specific UI concept or philosophy. And that&#39;s why I doubt you can find something existing.&nbsp; </p>
+<p>In short: I strongly recommend using </p>
+<ul>
+<li>powerful UI controls (for your needs)</li>
+<li>good support on the MVVM layer </li>
+<li>CSLA with Generator/ORM for data access </li>
+<li>and of course good requirements, of business and UI concept (think today it&#39;s called experience ;-)</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, October 25, 2011</h2><p>Hi Stefanus</p>
+<p><a href="http://cslacontrib.codeplex.com/">CslaContrib</a>&nbsp;includes glue code that makes it easier to use Csla with Caliburn.Micro.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

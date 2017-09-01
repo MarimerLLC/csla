@@ -1,0 +1,594 @@
+<html><header><title>Silverlight Compression (which is better binary WCF or CslaLight example?)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Compression (which is better binary WCF or CslaLight example?)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7849.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, October 22, 2009</h2><P>With SL3 we get binary encoding of the WCF for silverlight.&nbsp; </P>
+<P><A href="http://www.silverlight.net/learn/videos/silverlight-videos/hdi-silverlight-3-binary-encoding/">http://www.silverlight.net/learn/videos/silverlight-videos/hdi-silverlight-3-binary-encoding/</A></P>
+<P>In the past I've used the WCF compression example provided in the CslaLight Samples.&nbsp; Now that we have binary encoding, does this make that model obsolete?? </P>
+<P>Has anyone got experience doing benchmarking on comparing the two?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 22, 2009</h2><P>Looks like&nbsp;this is already being discussed on another thread.&nbsp;My appologies for the duped post. I'll post any questions on this thread instead:</P>
+<P><A HREF="/forums/thread/34880.aspx">http://forums.lhotka.net/forums/thread/34880.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>Using binary XML in CSLA .NET is a multi-level proposition.</P>
+<P>CSLA .NET does some serialization internally, and CSLA .NET 3.8 now defaults to using binary XML.</P>
+<P>The MobileFormatter does its own serialization as well, and so in 3.8 that now defaults to using binary XML too - so you get that automatically.</P>
+<P>Those streams of data you compress (in the compression example) are the serialized data going to/from MobileFormatter - so in 3.8 you'll be compressing the binary XML.</P>
+<P>The other level where this matters is in the WCF data transfer itself. You control this based on how you configure your WCF endpoint and client. The thing is, the data portal service contract transfers byte arrays, not object graphs. So the WCF serialization is really only working with already-serialized and maybe already-compressed data.</P>
+<P>However, there's a lot of value in using binary XML at the WCF level, because with text XML those byte arrays (binary data) must be converted into text to be valid XML. That almost doubles the size of the byte stream! Using binary XML should avoid that binary-to-text conversion and therefore should avoid the doubling of the byte stream size.</P>
+<P>Yes, XML sometimes really sucks.</P>
+<P>So in CSLA 3.8 you already get binary XML. I suggest you continue to use compression, and that you also configure WCF to use binary XML. That gives you the smallest data at all threee levels available.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 23, 2009</h2><P>I see that on the server side the UseBinaryXml can be configured with an AppSetting key CslaUseBinaryXml. But how might I&nbsp;configure&nbsp;the UseBinaryXml property of the MobileFormatter&nbsp;in Silverlight?&nbsp; I was hoping to do some quick benchmarking. I see that the MobileFormatter class is sealed, and I can't access that static property.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In the code behind App.xaml, right where you&#8217;d configure the
+data portal to run locally, you can set a property on MobileFormatter (I think)
+to do the same thing. The 3.8 change log has info on this.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have trouble finding it let me know and I&#8217;ll help &#8211; I appreciate
+you taking the time to do some comparative testing!<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>&nbsp;<o:p></o:p></span></b></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 23, 2009</h2><P>Yes, but unfortunately the static UseBinaryXml property on the MobileFormatter is inaccessible because the class is sealed.&nbsp; For doing my benchmarking I'll just create a csla build where that class isn't sealed.&nbsp; Unless you can't think of any other way to change that value, but I don't seem to see one.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is a public static though. You should be able to just do this
+in app.xaml.cs:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Csla.Serialization.Mobile.MobileFormatter.UseBinaryXml = true;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>No need to alter CSLA at all.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 23, 2009</h2><P>sorry, you're right!&nbsp; The property wasn't showing up to me before because I had forgotten to&nbsp;update the csla reference from 3.7 to 3.8 at that time.&nbsp; I thought that was kind of odd...I started assuming it was because the SL runtime handled sealed accesibility differently&nbsp;or something lol. </P>
+<P>I'll be sure to post any results I come up with.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, October 26, 2009</h2><P>I made a few steps further to getting a benchmark app setup today.&nbsp; But I ran into a roadblock that I was needing help with.When switching UseBinaryXml to false, I get the following error when trying to deserialize.</P>
+<P>There was an error deserializing the object of type System.Collections.Generic.List`1[[Csla.Serialization.Mobile.SerializationInfo, Csla, Version=3.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30]]. The input source is not correctly formatted.</P><FONT size=1>
+<P>System.Runtime.Serialization.SerializationException: There was an error deserializing the object of type System.Collections.Generic.List`1[[Csla.Serialization.Mobile.SerializationInfo, Csla, Version=3.8.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30]]. The input source is not correctly formatted. ---&gt; System.Xml.XmlException: The input source is not correctly formatted.\r\n at System.Xml.XmlExceptionHelper.ThrowXmlException(XmlDictionaryReader reader, String res, String arg1, String arg2, String arg3)\r\n at System.Xml.XmlBufferReader.ReadValue(XmlBinaryNodeType nodeType, ValueHandle value)\r\n at System.Xml.XmlBinaryReader.ReadNode()\r\n at System.Xml.XmlBinaryReader.Read()\r\n at System.Xml.XmlBaseReader.IsStartElement()\r\n at System.Xml.XmlBaseReader.IsStartElement(XmlDictionaryString localName, XmlDictionaryString namespaceUri)\r\n at System.Runtime.Serialization.XmlReaderDelegator.IsStartElement(XmlDictionaryString localname, XmlDictionaryString ns)\r\n at System.Runtime.Serializa</P>
+<P>tion.XmlObjectSerializer.IsRootElement(XmlReaderDelegator reader, DataContract contract, XmlDictionaryString name, XmlDictionaryString ns)\r\n at System.Runtime.Serialization.DataContractSerializer.InternalIsStartObject(XmlReaderDelegator reader)\r\n at System.Runtime.Serialization.DataContractSerializer.InternalReadObject(XmlReaderDelegator xmlReader, Boolean verifyObjectName)\r\n at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName)\r\n --- End of inner exception stack trace ---\r\n at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName)\r\n at System.Runtime.Serialization.DataContractSerializer.ReadObject(XmlReader reader)\r\n at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader) in C:\\Projects\\Local\\csla3.8.0beta\\cslacs\\Csla\\Serialization\\Mobile\\MobileFormatter.cs:line 258\r\n at Csla.Serialization.Mobile.Mobil</P>
+<P>eFormatter.Deserialize(Stream serializationStream) in C:\\Projects\\Local\\csla3.8.0beta\\cslacs\\Csla\\Serialization\\Mobile\\MobileFormatter.cs:line 229\r\n at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data) in C:\\Projects\\Local\\csla3.8.0beta\\cslacs\\Csla\\Serialization\\Mobile\\MobileFormatter.cs:line 378\r\n at Csla.Server.Hosts.Silverlight.WcfPortal.GetCriteria(Byte[] criteriaData) in C:\\Projects\\Local\\csla3.8.0beta\\cslacs\\Csla\\Server\\Hosts\\Silverlight\\WcfPortal.cs:line 302\r\n at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request) in C:\\Projects\\Local\\csla3.8.0beta\\cslacs\\Csla\\Server\\Hosts\\Silverlight\\WcfPortal.cs:line 126"</P></FONT>
+<P>The error occurs inside the MobileFormatter where ReadObject is called on the DataContractSerializer.&nbsp; It seems that even thought I've turned off UseBinaryXml, the reader that is trying to be used is still of type System.Xml.XmlBinaryReader, which I suppose explains why an error gets thrown....</P>
+<P>Is this a bug with regards to this configurable? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This sounds like a bug &#8211; did you find specifically where the
+code is wrong?</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2><P>The bug isn't an obvious one. ReadObject() is called in Deserialize(), and that gets its reader from GetXmlReader(), which is the central method that returns either a normal or binary reader.</P>
+<P>Are you sure you have your server and client side configurations both set properly?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Tuesday, October 27, 2009</h2><P>Sorry for the alarm -- you're absolutely right in asking that.&nbsp; I had forgotten about the need to configure the server web.config.&nbsp; Adding the appkey on the server solves the problem.</P>
+<P>With this in mind, I suppose it's not easily possible to create an application with some objects using BinaryEncoding and some not?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The data portal uses a central configuration&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Wednesday, October 28, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The data portal uses a central configuration…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Yes I understand.&nbsp; The only reason I was asking was because I was trying to create a project to benchmark/test both configurations configurations quickly/easily.&nbsp; Naturally, the problem with that is changing it on the client doesn't change it on the server, and thus resulting in a deserialization error when the response comes back.</P>
+<P class=MsoNormal>I suppose I could have just extended the WcfPortal class on the host and overrided the ConvertResponse method and make the configuration change for&nbsp;relevant to that&nbsp;portal before the base.ConvertResponse call, but I ended up just changing the configuration on the server manually as needed, which was a lot simpler.</P>
+<P class=MsoNormal>I finally got around to recording some results comparing xmlbinary encoding and compression.&nbsp; I'll try to post them soon.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 29, 2009</h2>Rocky, I'd <I>love </I>to hear your thoughts and input on this.&nbsp; Here's my findings.<BR><BR>http://www.markballengerdesign.com/tmp/BinaryXmlComparison.zip<BR>---------------------------------------------------------------------------------------<BR>
+<TABLE cellSpacing=0 cellPadding=0>
+
+
+
+<TR>
+<TD class=xl23><FONT face=Arial size=2>A series of different sized test objects were passed through the dataportal and analyzed using Fiddler. The test object acted as the "control" for the experiment, while the dataportal configuration was the "variable". The four dataportal configurations tested were as follows:</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD class=xl22>
+<UL>
+<LI><FONT size=2><FONT face=Arial><STRONG>None</STRONG><FONT class=font0> - no compression, no binary encoding</FONT></FONT></FONT></LI></UL></TD></TR>
+<TR>
+<TD class=xl22>
+<UL>
+<LI><FONT size=2><FONT face=Arial><STRONG>Both</STRONG><FONT class=font0> - compression and binary encoding</FONT></FONT></FONT></LI></UL></TD></TR>
+<TR>
+<TD class=xl22>
+<UL>
+<LI><FONT size=2><FONT face=Arial><STRONG>CompressedOnly</STRONG><FONT class=font0> - only compression is used on the dataportal, no binary encoding</FONT></FONT></FONT></LI></UL></TD></TR>
+<TR>
+<TD class=xl22>
+<UL>
+<LI><FONT size=2><FONT face=Arial><STRONG>BinaryOnly</STRONG><FONT class=font0> - only binary encoding is used on the dataportal (no compression)</FONT></FONT></FONT></LI></UL></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial>Two series of tests were performed. The first tests series <FONT class=font6><STRONG><EM>(Sheet2)</EM></STRONG></FONT></FONT></FONT><FONT size=2><FONT face=Arial><FONT class=font0> used a Csla.ReadOnlyListBase with a child <BR>that contained only 1 property of type Byte.<SPAN>&nbsp; </SPAN>The second series of tests </FONT><FONT class=font6><STRONG><EM>(Sheet 3) </EM></STRONG></FONT><FONT class=font0>used a Csla.ReadOnlyListBase object aimed at reflecting real-life situations and contains a variety of properties.<SPAN>&nbsp;</SPAN></FONT></FONT></FONT></TD></TR>
+<TR>
+<TD>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></TD></TR>
+<TR>
+<TD class=xl24><FONT face=Arial size=2>The criteria used to construct a test is nothing more than an integer property called "PacketAmount" <BR>which defines how many child objects to append to the list before sending the response back</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P>&nbsp;</P></TD></TR>
+<TR>
+<TD class=xl25><EM><FONT size=2><FONT face=Arial>*** An important thing to note is that the "Overall elapsed" time is NOT necessarily intended to reflect a typical user's elapsed time. This is because for this study, It was the elapsed time hitting a server <FONT class=font6><STRONG>within </STRONG></FONT><FONT class=font5>the client's network. You will notice, that when comparing </FONT><FONT class=font6><STRONG>Both</STRONG></FONT><FONT class=font5> vs. </FONT><FONT class=font6><STRONG>BinaryOnly,</STRONG></FONT><FONT class=font5> this experiment's performance bottleneck is the processing of the compression and NOT the action of transfering the response, thus making compression seem less worthy. This might not be the case for users hitting a server that is not as close to them, however it is outside of the scope of this experiment and deserves further study. Below show more detailed information regarding this stipulation.</FONT></FONT></FONT></EM></TD></TR></TABLE>
+<P>&nbsp;</P>
+<P>
+<TABLE cellSpacing=0 cellPadding=0>
+
+
+
+<TR>
+<TD class=xl24><STRONG><FONT face=Arial size=2>The tracert to the host server from the client machine</FONT></STRONG></TD></TR>
+<TR>
+<TD><FONT size=2><FONT face=Arial><SPAN>&nbsp; </SPAN>1<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>&lt;1 ms<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>&lt;1 ms<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>&lt;1 ms<SPAN>&nbsp; </SPAN>xxx.xx.xx.254</FONT></FONT></TD></TR>
+<TR>
+<TD><FONT size=2><FONT face=Arial><SPAN>&nbsp; </SPAN>2<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1 ms<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1 ms<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1 ms<SPAN>&nbsp; </SPAN>xxx.xx.xx.205</FONT></FONT></TD></TR>
+<TR>
+<TD><FONT size=2><FONT face=Arial><SPAN>&nbsp; </SPAN>3<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1 ms<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>&lt;1 ms<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>&lt;1 ms<SPAN>&nbsp; </SPAN>thedestination.com [xxx.xx.xx.8]</FONT></FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD class=xl24><STRONG><FONT face=Arial size=2>Information about the host server used:</FONT></STRONG></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2>Intel® Xeon® CPU</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2>E7340 @ 2.40GHz</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2>2.40 Ghz, 2.00 GB of RAM</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2>Microsoft Windows Server 2003</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2>Enterprise Edition</FONT></TD></TR>
+<TR>
+<TD><FONT face=Arial size=2>Service Pack 2</FONT></TD></TR></TABLE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s nice work Mark!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It seems like just using binary XML is probably the best overall
+win. It doesn&#8217;t always offer the smallest byte size, but it offers what looks
+like substantially better performance than compression with larger data sizes.
+Which isn&#8217;t entirely surprising since compression is relatively CPU intensive,
+and binary XML should actually reduce the overall CPU requirements.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 29, 2009</h2><P>Happy to serve the Csla community!</P>
+<P>The only thing I wasn't sure about was if that finding would still hold true if the client was on a slower connection.&nbsp; I tried hooking Fiddler up while using some IE and Firefox throttle addons, but it didn't seem like Fiddler recognized the throttle, because it wasn't effecting the elasped time Fiddler was reporting...</P>
+<P>From your experience, do you think that a slower (or average)&nbsp;connection might make compression more worthy?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I wonder if you shouldn&#8217;t run the tests without the larger
+volume sizes. Notice how the graphs are essentially all flat (seemingly near 0)
+until they skyrocket? While the extreme size performance is interesting, it
+probably doesn&#8217;t reflect normal usage.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And I suspect all that &#8220;near 0&#8221; data isn&#8217;t really so uniform as
+it appears. In other words, the right end of the graph has altered the scale
+such that maybe we can&#8217;t see valuable differences in the more common data size
+ranges?</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 29, 2009</h2><P>Yes, I agree that makes it hard to see.&nbsp; You&nbsp;could always just change Source data on those existing charts to not include the higher volumes which makes it a little easier to compare the smaller sizes... (hehe, Even though throwing together charts in excel is super fast and easy, it's relatively a poor charting interface IMHO).</P>
+<P>If you think it would be useful to do another series I don't mind to.&nbsp; Is there any specific intervals you would like to have done?</P>
+<P>So you don't think that the connection speed is much of a factor then?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good point, you don&#8217;t need to re-run the tests, just change the
+range on the chart &#8211; doh! </span><span>J</span><span><o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, October 29, 2009</h2><P>Is it a fairly automated test?&nbsp; </P>
+<P>Would it be possible to isolate the timings into chunks?&nbsp; </P>
+<P>Post server data retrieval -&gt; serialize/compress</P>
+<P>Start of Send -&gt; Client received (Internet)</P>
+<P>Client Uncompress/deserialize</P>
+<P>That would really give a nice experiment and isolate which bits and pieces are in play and where.&nbsp; There have been comments on the forums that the Silverlight side is&nbsp;a potential bottleneck /w&nbsp;deserializing.</P>
+<P>I would really like to have something in place that I could swap out the free compression algorithms for something commerical and see if I can really measure the difference.</P>
+<P>It is hard to test anything locally as anything going through the internet either bounces straight back at my modem or at the next routing step.&nbsp; Other than 1 Mississippis over the phone while talking to people its hard to get a real sense.</P>
+<P>I would be happy to get some of my users at various locations to try doing a test if we wanted to try and get a better sense of bandwidth implications.&nbsp; </P>
+<P>I have two ISP connections ranging from 5/1 Mbs to 100/5 dl/ul so if you have a simple deployable app that I can have them just click a button on the client I'm happy to provide the results.</P>
+<P>I'm in western Canada and have clients at Yale/UCLA/Atlanta which is as close to the 4 corners&nbsp;of the US as&nbsp;I can get.&nbsp; I know my east coast clients have a worse experience just due to the data transfer times but I'm actually wondering how much the processing on their end makes a difference or not.&nbsp; There are a wide ranges of client PC's.</P>
+<P>Thanks</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 29, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P><SPAN>Good point, you don’t need to re-run the tests, just change the range on the chart – doh! </SPAN><SPAN>J</SPAN></P>
+<P><SPAN></div></BLOCKQUOTE></SPAN></P>
+<P><SPAN>Even still,&nbsp;when analyzing the smaller volumes, another series&nbsp;that refines the curve at these low volumes would probably be useful, it gets pretty hard to get clarity without a smaller interval there because of how haphazard the data gets there.</SPAN></P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div></P>
+<P>Is it a fairly automated test?&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>Unfotunately, not really. I just Reviewed the response object manually through fiddler.&nbsp; However, with talk of probing more tests, I might decide to figure out how to write some rules for fiddler that can log this for me... If you have any tips on doing that let me know</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div></P>
+<P>Would it be possible to isolate the timings into chunks?&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>Yeah, but mainly for simplicity I just wanted to see the big picture (BytesReceived and the OveralElapsedTime) so that I compare the DataPortal configurations. Below shows and example of the&nbsp;statistics Fiddler harvests, which would get you what you were looking for. I do have a test project, I'll try to post.&nbsp; But honestly the test project ain't all that fancy, the real automation for testing it would lie in those Fiddler rules I mentioned...</P>
+<P>Request Count: &nbsp;1<BR>Bytes Sent: &nbsp;196<BR>Bytes Received: 683,617</P>
+<P>ACTUAL PERFORMANCE<BR>--------------<BR>ClientConnected:&nbsp;14:51:05:4953<BR>ClientDoneRequest:&nbsp;14:51:05:5109<BR>Gateway Determination:&nbsp;0ms<BR>DNS Lookup: &nbsp;&nbsp;141ms<BR>TCP/IP Connect:&nbsp;&nbsp;78ms<BR>ServerGotRequest:&nbsp;14:51:05:7296<BR>ServerBeginResponse:&nbsp;14:51:05:7921<BR>ServerDoneResponse:&nbsp;14:51:08:5728<BR>ClientBeginResponse:&nbsp;14:51:08:5728<BR>ClientDoneResponse:&nbsp;14:51:08:5728</P>
+<P>&nbsp;Overall Elapsed:&nbsp;00:00:03.0775340</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div></P>
+<P><SPAN>There have been comments on the forums that the Silverlight side is&nbsp;a potential bottleneck /w&nbsp;deserializing.</SPAN></P>
+<P><SPAN></div></BLOCKQUOTE></SPAN></P>
+<P><SPAN>Yes, I believe I've brought this up a time or two as well.&nbsp; Unfortunately the cause for this is because of the restricted Silverlight CLR for reflection, which due to this left serialization in SL up to the MobileFormatter rather than the binary formatter used for windows versions.&nbsp; The only way to improve that is to improve the MobileFormatter or write a new one</SPAN></P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div></P>
+<P>I would be happy to get some of my users at various locations to try doing a test if we wanted to try and get a better sense of bandwidth implications.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>Awesome. Like I said earlier, I'll try to wrap up what I've been using for you and post it here soon. Maybe tomorrow if I get time...&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Thursday, October 29, 2009</h2>The best overall for us actually appears to be compression. We have clients in rural districts with very slow netwok connections, some as low as dialup. Then we have a very large metro user in which managment thinks a T1 is plenty of bandwidth. (They can't believe that could be the cause of slow performance.)<br /><br />Based on these results, the time gains from less network traffic should easily offset that extra CPU time. Compression looks like the clear winner for the situation here. <br /><br />Thanks for posting the results. <br /><br />mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 30, 2009</h2><BLOCKQUOTE><div><br>Based on these results, the time gains from less network traffic should
+easily offset that extra CPU time. Compression looks like the clear
+winner for the situation here.<br></div></BLOCKQUOTE><br><br>Youre saying that you experience better results using compression only without binary encoding? No binary encoding at all?&nbsp; I don't know that I could agree with that statement given the emprirical data in the tests, even with the network traffic included.&nbsp; If anything, I would think it would be a combination of the two. Do you have any hard evidence to back that up?&nbsp; (you do notice there were <i>four </i>configurations tested, not just <i>two </i>right?)<br><br>I found it's possible to throttle fiddler.&nbsp; I'll post some tests with various connection times as well; as soon as I figure out how to configure fiddler that way and get some free time.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I really think you should find that having WCF using binary xml
+should cut the bytes on the wire by nearly half. That didn&#8217;t seem to be the
+case, which is surprising, but here&#8217;s my (maybe faulty) reasoning.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The MobileFormatter serializes the data into XML or binary (in
+3.8 it is binary). And if you use compression you <i>absolutely</i> end up with
+binary. In every case, what is sent over the wire is a byte[].<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>WCF will get that byte array, and must convert it (by default)
+into XML &#8211; so it ends up in a CDATA block or something. But it is binary, and
+XML doesn&#8217;t allow binary, so they have to base64 encode it, which should nearly
+double its size.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I would <i>expect</i> that binary XML wouldn&#8217;t need to base64
+encode the byte array, thus saving all that base64 size overhead.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But from your data, maybe that is not correct&#8230;</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 30, 2009</h2><P><SPAN><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Rocky:</strong></div><div></SPAN></P>
+<P><SPAN>I really think you should find that having WCF using binary xml should cut the bytes on the wire by nearly half. That didn’t seem to be the case</SPAN></P>
+<P><SPAN></div></BLOCKQUOTE></SPAN></P>
+<P><SPAN>Really? Because comparing <STRONG>BinaryOnly</STRONG>&nbsp;to the "None" configuration the bytes are close to halved, as you expected.&nbsp; It's only when comparing CompressedOnly to Both that you don't quite see an improvement in the bytes received, but honestly that doesn't surprise me because it's already been binary encoded so the compression has less to gain... ne?</SPAN></P>
+<P><SPAN>Regardless, for my own selfish reasons, I'm mostly curious about the bottom line (the overall elapsed time for the average user). Which is why I'm running another test right now using some throtling features in Fiddler I just found out about (yay =P). </SPAN></P>
+<P><SPAN>The next time I post I'll zip up the little test app UI I'm using, with instructions on how to setup Fiddler to monitor it and capture the data in batches too, in case anyone else would like to use this stuff....</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 30, 2009</h2><P>&nbsp;I've tried to configure the "simulate modem&nbsp;speeds"&nbsp;rule in Fiddler to match the average user connection, but surprisingly it&nbsp;doesn't appear possible (long story short) because of the way the app is designed it uses an int for a configurable where I need a double and I can't supply .39 for the configurable.... I guess the feature was intended to simulate dial up speeds and didn't consider the need for faster connections....</P>
+<P>According to my calculations and research, the average downstream in the USA is 3.9mb/s and the average upstream is 314kb/s.&nbsp;The fastest I can make Fiddler go while throttling is .5mb/s down and .5mb/s up (tested using Speedtest.net)</P>
+<P>So I decided to use that setting anyway to see an "extremely slow" user's performance.&nbsp; And guess what? The <STRONG>Both</STRONG> dataportal configuration appears drastically more worthy, as suspected. We could imagine that the payoff for average speeds is much less than this test shows (because it's 1/8th the speed of the average user's down stream) However given&nbsp;in the&nbsp;results, Both appears to be&nbsp;in many cases 100 x faster than binary only and 1.5 x as fast as compression only!&nbsp;</P>
+<P>Again, I'll&nbsp;be posting the test projects along with these results in case anyone&nbsp;wants to investigate this further.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, October 30, 2009</h2>Okay here's the newer stuff...&nbsp; <br>http://markballengerdesign.com/tmp/BinaryXmlComparison2.zip<br><br>When I get time I'll upload this project to CodePlex so that others can contribute to the testing project if they want <br>http://cslalightdpbenchmark.codeplex.com/<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, November 02, 2009</h2><P>Has anybody had any deployment issues when switching to the binary WCF?&nbsp; I had no problems making the switch locally but deploying to my webserver is not working at all.&nbsp; I haven't changed anything else that I can see...</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, November 02, 2009</h2><P>Yeah, you have to change the Csla setting on the server web.config manually to <EM>re-enable </EM>it to use binary encoding.&nbsp; I discussed this with Rocky many posts ago on this thread.&nbsp; </P>
+<P>It would be&nbsp;possible to create an app that allows the user to change this from the UI, but it was going to end up in some extra work, and for me, it just made more sense to make this change manually when testing... </P>
+<P>Hope this helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, October 27, 2009</h2>Is there an example in any of the samples of using binary XML in WCF ?<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, October 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well it isn't hard.&nbsp; Here is an example for SL for anyone
+interested:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>1) Add a new customBinding to both the server/client<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>2) Change the endpoint to use the new binding name and
+configuration.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>3) The maxRecieved/buffer etc sizes are in different spots than
+in the basic HTTP bindings and are different on the Client than on the
+server.&nbsp;&nbsp; But it only took 5 mins which was less time than I spent looking for
+an example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In ServiceReferences.ClientConfig:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>configuration</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &lt;</span><span>system.serviceModel</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>bindings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>basicHttpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>binding</span><span> </span><span>name</span><span>=</span><span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;<span> </span><span>maxBufferSize</span><span>=</span>&quot;<span>80000000</span>&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>maxReceivedMessageSize</span><span>=</span><span>&quot;<span>80000000</span>&quot;<span> </span><span>receiveTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>sendTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>openTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>closeTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>binding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>basicHttpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>customBinding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>binding</span></b><b><span> </span></b><b><span>name</span></b><b><span>=</span></b><b><span>&quot;<span>BinaryBinding_IWcfPortal</span>&quot;<span>&gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>binaryMessageEncoding</span></b><b><span>/&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>httpTransport</span></b><b><span> </span></b><b><span>maxReceivedMessageSize</span></b><b><span>=</span></b><b><span>&quot;<span>2147483647</span>&quot;<span> </span><span>maxBufferSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span>/&gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></b><b><span>binding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></b><b><span>customBinding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &lt;/</span><span>bindings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>client</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--</span><span>&lt;endpoint address=&quot;http://localhost:2555/WcfPortal.svc&quot;
+binding=&quot;basicHttpBinding&quot;
+bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contract=&quot;Csla.WcfPortal.IWcfPortal&quot;
+name=&quot;BasicHttpBinding_IWcfPortal&quot; /&gt;</span><span>--&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>endpoint</span></b><b><span> </span></b><b><span>address</span></b><b><span>=</span></b><b><span>&quot;<span>http://localhost:2555/WcfPortal.svc</span>&quot;<span> </span><span>binding</span><span>=</span>&quot;<span>customBinding</span>&quot;<span> </span><span>bindingConfiguration</span><span>=</span>&quot;<span>BinaryBinding_IWcfPortal</span>&quot;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></b><b><span>contract</span></b><b><span>=</span></b><b><span>&quot;<span>Csla.WcfPortal.IWcfPortal</span>&quot;<span> </span><span>name</span><span>=</span>&quot;<span>BinaryBinding_IWcfPortal</span>&quot;<span> /&gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &lt;/</span><span>client</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &lt;/</span><span>system.serviceModel</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;/</span><span>configuration</span><span>&gt;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In web.config in WCF project:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>bindings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>basicHttpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>binding</span><span> </span><span>name</span><span>=</span><span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;<span> </span><span>maxBufferSize</span><span>=</span>&quot;<span>80000000</span>&quot;<span> </span><span>maxReceivedMessageSize</span><span>=</span>&quot;<span>80000000</span>&quot;<span> </span><span>receiveTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>sendTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>openTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>closeTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>readerQuotas</span><span> </span><span>maxBytesPerRead</span><span>=</span><span>&quot;<span>80000000</span>&quot;<span> </span><span>maxArrayLength</span><span>=</span>&quot;<span>80000000</span>&quot;<span> </span><span>maxStringContentLength</span><span>=</span>&quot;<span>80000000</span>&quot;<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>binding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>basicHttpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>customBinding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>binding</span></b><b><span> </span></b><b><span>name</span></b><b><span>=</span></b><b><span>&quot;<span>BinaryBinding_IWcfPortal</span>&quot;<span> </span><span>receiveTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>sendTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>openTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> </span><span>closeTimeout</span><span>=</span>&quot;<span>00:10:00</span>&quot;<span> &gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>binaryMessageEncoding</span></b><b><span> </span></b><b><span>maxReadPoolSize</span></b><b><span>=</span></b><b><span>&quot;<span>2147483647</span>&quot;<span> </span><span>maxSessionSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span> </span><span>maxWritePoolSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span>&gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>readerQuotas</span></b><b><span> </span></b><b><span>maxDepth</span></b><b><span>=</span></b><b><span>&quot;<span>32</span>&quot;<span> </span><span>maxStringContentLength</span><span>=</span>&quot;<span>5242880</span>&quot;<span> </span><span>maxArrayLength</span><span>=</span>&quot;<span>200000</span>&quot;<span> </span><span>maxBytesPerRead</span><span>=</span>&quot;<span>4096</span>&quot;<span> </span><span>maxNameTableCharCount</span><span>=</span>&quot;<span>16384</span>&quot;<span> /&gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></b><b><span>binaryMessageEncoding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span></b><b><span>httpTransport</span></b><b><span> </span></b><b><span>maxBufferPoolSize</span></b><b><span>=</span></b><b><span>&quot;<span>2147483647</span>&quot;<span> </span><span>maxBufferSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span> </span><span>maxReceivedMessageSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span>/&gt;<o:p></o:p></span></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></b><b><span>binding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span></b><b><span>customBinding</span></b><b><span>&gt;<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>bindings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>services</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--</span><span>&lt;service
+behaviorConfiguration=&quot;WcfPortalBehavior&quot;
+name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;&gt;</span><span>--&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>service</span><span> </span><span>behaviorConfiguration</span><span>=</span><span>&quot;<span>WcfPortalBehavior</span>&quot;<span> </span><span>name</span><span>=</span>&quot;<span>AlexanderGracie.Library.Compression.CompressedHost</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>endpoint</span><span> </span><span>address</span><span>=</span><span>&quot;&quot;<span> </span><span>binding</span><span>=</span>&quot;<span>customBinding</span>&quot;<span> </span><span>contract</span><span>=</span>&quot;<span>Csla.Server.Hosts.Silverlight.IWcfPortal</span>&quot;<span> </span><span>bindingConfiguration</span><span>=</span>&quot;<span>BinaryBinding_IWcfPortal</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;!--</span><span>&lt;endpoint
+address=&quot;&quot; binding=&quot;basicHttpBinding&quot;
+contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;
+bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;</span><span>--&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>identity</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>dns</span><span> </span><span>value</span><span>=</span><span>&quot;<span>localhost</span>&quot;<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/</span><span>identity</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>endpoint</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &lt;/</span><span>services</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>system.serviceModel</span><span>&gt;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-27-09 1:47 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight Compression (which is better binary
+WCF or CslaLight example?)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Is there an example in any of the samples of using binary
+XML in WCF ?<br>
+<br>
+Thanks<br>
+<br>
+jack<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

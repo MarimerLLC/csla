@@ -1,0 +1,119 @@
+<html><header><title>Stuck with MVC 3</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stuck with MVC 3</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10733.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Monday, October 03, 2011</h2><p>Hi,</p>
+<p>I&#39;m almost done with the bottom level layers, but not with the MVC3 using Razor syntax.</p>
+<p>I was always getting NullReferenceException running the project. I found that the Model is have null value while opening the view. I don&#39;t know where I&#39;ve went wrong. Any help would be appreciated.</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, October 03, 2011</h2>Are you following the approach shown in the Using CSLA 4: ASP.NET MVC ebook?
+
+Your controller needs to set the Model property to the object.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Monday, October 03, 2011</h2><p>Hi Rocky,</p>
+<p>I found that there is an error in the configuration. Let me explain the situation</p>
+<p>I&#39;ve five projects that are in a single solution.</p>
+<p>1. Dal</p>
+<p>2. DalMock</p>
+<p>3. DalEF</p>
+<p>4. Library</p>
+<p>5. WebUI(Mvc3)</p>
+<p>I&#39;m developing the project for a 2-tier web deployment with custom authentication. So I placed the below line in the Web.Config file under the app settings in the WebUI project</p>
+<p><strong>&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;</strong></p>
+<p>Since I&#39;m developing in a 2-tier environment, I&#39;ve also placed the DalManagerTypes in the same web.config file under app settings.</p>
+<p>&nbsp;</p>
+<p><strong>&lt;add key=&quot;DalManagerType&quot; value=&quot;LX.DalMock.DalManager,LX.DalMock&quot;/&gt;</strong></p>
+<p><strong>&lt;!--&lt;add key=&quot;DalManagerType&quot; value=&quot;LX.DalEf.DalManager,LX.DalEf&quot;/&gt;--&gt;</strong></p>
+<p>Since I&#39;m using two databases for my application, one for authentication and one for business data, I placed the database connection strings like below</p>
+<p>&nbsp;</p>
+<p><strong>&lt;connectionStrings&gt;</strong></p>
+<p><strong>&nbsp; &nbsp; &lt;add name=&quot;LXEntities&quot;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;connectionString=&quot;metadata=res://*/LXDB.csdl|res://*/LXDB.ssdl|res://*/LXDB.msl;provider=System.Data.SqlClient;provider connection string=&amp;quot;data source=TCS-TFSDB;initial catalog=LXDB;integrated security=True;multipleactiveresultsets=True;App=EntityFramework&amp;quot;&quot;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; providerName=&quot;System.Data.EntityClient&quot; /&gt;</strong></p>
+<p><strong>&lt;add name=&quot;LXSecurityDBEntities&quot;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;connectionString=&quot;metadata=res://*/LXApplicationServies.csdl|res://*/LXApplicationServies.ssdl|res://*/LXApplicationServies.msl;provider=System.Data.SqlClient;provider connection string=&amp;quot;data source=TCS-TFSDB;initial catalog=LXSecurityDB;integrated security=True;multipleactiveresultsets=True;App=EntityFramework&amp;quot;&quot;&nbsp;providerName=&quot;System.Data.EntityClient&quot; /&gt;</strong></p>
+<p><strong>&nbsp; &lt;/connectionStrings&gt;</strong></p>
+<p>That&#39;s it with the web.config file.</p>
+<p>&nbsp;</p>
+<p>Below is the error I&#39;m getting while running the project.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span><span></span></span></p>
+<h2><i>Type LX.DalMock.DalManager,LX.DalMock could not be found</i></h2>
+<p><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><strong>Description:&nbsp;</strong>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code.&nbsp;<br /><br /><strong>Exception Details:&nbsp;</strong>System.ArgumentException: Type LX.DalMock.DalManager,LX.DalMock could not be found<br /><br /><strong>Source Error:</strong>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>Line 18:                     throw new NullReferenceException(&quot;DalManagerType&quot;);
+Line 19:                 if (_dalType == null)
+<span style="color:red;">Line 20:                     throw new ArgumentException(string.Format(&quot;Type {0} could not be found&quot;, dalTypeName));
+</span>Line 21:             }
+Line 22:             return (IDalManager)Activator.CreateInstance(_dalType);</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p>
+<p>&nbsp;</p>
+<p><span><strong>Source File:&nbsp;</strong>D:\Projects\LX\ProjectSource\LX\LX.Dal\DalFactory.cs<strong>&nbsp;&nbsp;&nbsp; Line:&nbsp;</strong>20&nbsp;<br /><br /><strong>Stack Trace:</strong>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre></pre>
+<pre>[ArgumentException: Type LX.DalMock.DalManager,LX.DalMock could not be found]
+   LX.Dal.DalFactory.GetManager() in D:\Projects\LXI\ProjectSource\LX\LX.Dal\DalFactory.cs:20
+   LX.Library.AccountTypes.DataPortal_Fetch() in D:\Projects\LXI\ProjectSource\LX\LXLibrary\NameValueLists\AccountTypes.cs:108
+   lambda_method(Closure , Object , Object[] ) +62
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) +392
+
+[CallMethodException: DataPortal_Fetch method call failed]
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) +475
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) +44
+   Csla.Reflection.LateBoundObject.CallMethod(String method) +31
+   Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) +322
+
+[DataPortalException: DataPortal.Fetch failed (Type LX.DalMock.DalManager,LX.DalMock could not be found)]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) +643
+   Csla.DataPortal.Fetch() +62
+   LX.Library.AccountTypes.GetList() in D:\Projects\LXI\ProjectSource\LX\LXLibrary\NameValueLists\AccountTypes.cs:81
+   LX.WebUI.Models.HomeModel.get_ATypes() in D:\Projects\LXI\ProjectSource\LX\LX.WebUI\Models\HomeModels.cs:14
+   ASP._Page_Views_Home_Index_cshtml.&lt;Execute&gt;b__4() in d:\Projects\LXI\ProjectSource\LX\LX.WebUI\Views\Home\Index.cshtml:17
+   System.Web.WebPages.&lt;&gt;c__DisplayClassb.&lt;RenderSection&gt;b__9(TextWriter tw) +283
+   System.Web.WebPages.HelperResult.WriteTo(TextWriter writer) +12
+   System.Web.WebPages.WebPageBase.Write(HelperResult result) +67
+   ASP._Page_Views_Shared__LayoutCustom_cshtml.Execute() in d:\Projects\LXI\ProjectSource\LX\LX.WebUI\Views\Shared\_LayoutCustom.cshtml:101
+   System.Web.WebPages.WebPageBase.ExecutePageHierarchy() +207
+   System.Web.Mvc.WebViewPage.ExecutePageHierarchy() +81
+   System.Web.WebPages.WebPageBase.ExecutePageHierarchy(WebPageContext pageContext, TextWriter writer, WebPageRenderingBase startPage) +88
+   System.Web.WebPages.&lt;&gt;c__DisplayClass7.&lt;RenderPageCore&gt;b__6(TextWriter writer) +102
+   System.Web.WebPages.HelperResult.WriteTo(TextWriter writer) +12
+   System.Web.WebPages.WebPageBase.Write(HelperResult result) +67
+   System.Web.WebPages.WebPageBase.RenderSurrounding(String partialViewName, Action`1 body) +66
+   System.Web.WebPages.WebPageBase.PopContext() +262
+   System.Web.WebPages.WebPageBase.ExecutePageHierarchy(WebPageContext pageContext, TextWriter writer, WebPageRenderingBase startPage) +95
+   System.Web.Mvc.RazorView.RenderView(ViewContext viewContext, TextWriter writer, Object instance) +220
+   System.Web.Mvc.BuildManagerCompiledView.Render(ViewContext viewContext, TextWriter writer) +115
+   System.Web.Mvc.ViewResultBase.ExecuteResult(ControllerContext context) +303
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionResult(ControllerContext controllerContext, ActionResult actionResult) +13
+   System.Web.Mvc.&lt;&gt;c__DisplayClass1c.&lt;InvokeActionResultWithFilters&gt;b__19() +23
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionResultFilter(IResultFilter filter, ResultExecutingContext preContext, Func`1 continuation) +260
+   System.Web.Mvc.&lt;&gt;c__DisplayClass1e.&lt;InvokeActionResultWithFilters&gt;b__1b() +19
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionResultWithFilters(ControllerContext controllerContext, IList`1 filters, ActionResult actionResult) +177
+   System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName) +343
+   System.Web.Mvc.Controller.ExecuteCore() +116
+   System.Web.Mvc.ControllerBase.Execute(RequestContext requestContext) +97
+   System.Web.Mvc.ControllerBase.System.Web.Mvc.IController.Execute(RequestContext requestContext) +10
+   System.Web.Mvc.&lt;&gt;c__DisplayClassb.&lt;BeginProcessRequest&gt;b__5() +37
+   System.Web.Mvc.Async.&lt;&gt;c__DisplayClass1.&lt;MakeVoidDelegate&gt;b__0() +21
+   System.Web.Mvc.Async.&lt;&gt;c__DisplayClass8`1.&lt;BeginSynchronous&gt;b__7(IAsyncResult _) +12
+   System.Web.Mvc.Async.WrappedAsyncResult`1.End() +62
+   System.Web.Mvc.&lt;&gt;c__DisplayClasse.&lt;EndProcessRequest&gt;b__d() +50
+   System.Web.Mvc.SecurityUtil.&lt;GetCallInAppTrustThunk&gt;b__0(Action f) +7
+   System.Web.Mvc.SecurityUtil.ProcessInApplicationTrust(Action action) +22
+   System.Web.Mvc.MvcHandler.EndProcessRequest(IAsyncResult asyncResult) +60
+   System.Web.Mvc.MvcHandler.System.Web.IHttpAsyncHandler.EndProcessRequest(IAsyncResult result) +9
+   System.Web.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +8963149
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +184</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p>
+<p><span><br /></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, October 04, 2011</h2><p>The configuration all seems fine. Based on your exception, it sounds like your DAL assemblies are not in the web site&#39;s bin folder.</p>
+<p>If you are going to deploy in a 2-tier environment, then the DAL assemblies need to be installed on the web server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Tuesday, October 04, 2011</h2><p>Thanks Rocky,</p>
+<p>The bin folder contains the dal assemblies. My bin folder is having LX.Dal.dll but not the Mock db dll. I have added reference of Mock Db project to WebUI Project. Because we are using the 2-tier architecture I don&#39;t think that this&nbsp;violates&nbsp;the n-tier</p>
+<p>architecture goals.</p>
+<p>Suggest me if I&#39;m not correct.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, October 09, 2011</h2><p>As long as you&#39;re not using the Mock Db assembly from within your WebUI project. That is, the reference is there ONLY to make sure the mock assembly is copied to your bin folder automatically. I&#39;ve done this as otherwise you need post build events or to manually copy the dal assemblies to your bin, but you do need to make sure no one actually uses any types from the WebUI.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

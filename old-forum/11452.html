@@ -1,0 +1,15 @@
+<html><header><title>Async login not setting Csla.ApplicationContext.User?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async login not setting Csla.ApplicationContext.User?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11452.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tcampney posted on Wednesday, July 04, 2012</h2><p>I&#39;m a long time CSLA developer, but have been using CSLA 2.x for a LONG time. &nbsp;Just now trying to get up to speed with the latest versions (4.3.12). &nbsp;Was going to build a little sample app using asyc methods, but right away hit an issue when trying to use async login method with custom Principal/Identity.</p>
+<p>The attached is a super simple app which shows the problem. &nbsp;If you click the login button you&#39;ll see it properly sets authenticates and&nbsp;Csla.ApplicationContext.User is authenticated and has the proper custom principal, but after that, click the other button and it shows it is no longer set.</p>
+<p>Basically, I have code like below to detect when user changes. &nbsp;Within here the user is correct but everywhere else it is still the default principal and not authenticated.</p>
+<p>
+<p>FormPF.BL.Security.PTPrincipal.NewUser += () =&gt;</p>
+<p>{</p>
+<p>&nbsp; &nbsp; // here Csla.ApplicationContext.User is authenticated and&nbsp;</p>
+<p>&nbsp; &nbsp; // is the custom principal</p>
+<p>};</p>
+</p>
+<p>&nbsp;</p>
+<p>If I stop using BeginLogin (the async method) and just do regular Login, all works as expected. &nbsp;I&#39;m very new to async, any ideas what I&#39;m doing wrong?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 05, 2012</h2><p>.NET stores the user principal/identity at the thread level. So if you set the principal on a background thread it will have no impact on the main UI app thread.</p>
+<p>Also, WPF works very hard to prevent the principal from being changed, even on the main app thread, so if you are using WPF that will also complicate matters.</p>
+<p>CSLA tries to help overcome some of these issues. The data portal async callback will normally run on the main app thread (though not automatically in console apps or unit test scenarios because they don&#39;t set up .NET synchronization contexts). And if you reference Csla.Xaml.dll for WPF, then Csla.ApplicationContext.User will overcome WPF&#39;s resistence to setting the principal.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

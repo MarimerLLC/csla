@@ -1,0 +1,89 @@
+<html><header><title>_handler.Invoke  ???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>_handler.Invoke  ???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2790.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>csm101 posted on Thursday, April 26, 2007</h2><P>I'm not clear about something.&nbsp; In the RuleMethod class there is a method called Invoke:</P>
+<P>&nbsp;</P><FONT color=#0000ff size=1>
+<P>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>bool</FONT><FONT size=1> Invoke(T target)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=1> _handler.Invoke(target, _args);</P>
+<P>}</P>
+<P><FONT size=3>This supposedly calls an "Invoke" method on the _handler delegate, which is a RuleHandler delegate.&nbsp; My question is: what "Invoke" method is _handler.Invoke calling?&nbsp; Is this from reflection?&nbsp; Is this some other way of invoking a delegate?&nbsp;&nbsp; Not sure what's going on here.</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P><FONT size=3>Thanks.</FONT></P>
+<P><FONT size=3></FONT>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 27, 2007</h2>_handler is likely a reference to a MethodInfo object.&nbsp; Invoke actually invokes whatever method is represented by the object on the instance target with the given args.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csm101 replied on Friday, April 27, 2007</h2><P>But _handler is *not* a MethodInfo object.&nbsp; It's a delegate object.&nbsp; I know this code directly&nbsp;steps into&nbsp;the validation rule method defined in the target object because I've stepped through the code.&nbsp; I'm just not sure what .NET machenery is going on here.&nbsp; Where is this Invoke method from?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 27, 2007</h2><P>Originally in .NET, to invoke a delegate you had to call <EM>delegate</EM>.Invoke().</P>
+<P>Later Microsoft added some syntactic sugar in the compilers so you can do <EM>delegate</EM>() directly.</P>
+<P>Parts of CSLA are very old, and parts are newer. The rule handling stuff is pretty new. But my <EM>habits</EM> are also often somewhat old, and one of them is to explicitly call Invoke() <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Personally I <EM>like</EM> the explicit Invoke() syntax, because it makes it clear that I'm invoking a delegate. Not that I'm adverse to syntactic sugar - far from it - but there are places where I prefer more explicit syntax because I think it adds clarity of intent.</P>
+<P>Another is with interface implementations. I much prefer VB's more verbose/explicit syntax through the Implements clause, because you can look at a method and <EM>know</EM> whether it implements an interface method or not. C#'s syntax is more compact, but you don't know whether a method implements an interface method until you change it and all of a sudden your code can't compile...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csm101 replied on Friday, April 27, 2007</h2><P>Thanks Rockford!&nbsp; </P>
+<P>That clears things up.&nbsp; I was searching all over&nbsp;for <EM>delegate.</EM>Invoke() in .NET 2.0 and couldn't find any such method.&nbsp; I wonder why they didn't deprecate this syntax? &nbsp;I think this is the syntax in J#, though.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 27, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Remember, the compiler <i>always</i> uses this syntax. Calling a
+delegate directly is merely a compiler trick. So they really can&#8217;t get
+rid of the Invoke() syntax, because that&#8217;s the <i>real</i> syntax &#8211;
+everything else is just illusion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And if they did try to get rid of it in the compiler, they&#8217;d
+both break a lot of code, and they&#8217;d find people like me arguing that it
+should remain because it adds clarity to code </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> csm101
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 27, 2007 10:11 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] _handler.Invoke ???<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rockford!&nbsp; <o:p></o:p></p>
+
+<p>That clears things up.&nbsp; I was searching all over&nbsp;for <em>delegate.</em>Invoke()
+in .NET 2.0 and couldn't find any such method.&nbsp; I wonder why they didn't
+deprecate this syntax? &nbsp;I think this is the syntax in J#, though.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

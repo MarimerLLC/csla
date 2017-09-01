@@ -1,0 +1,60 @@
+<html><header><title>Can't load Csla in wpf designer?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't load Csla in wpf designer?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4071.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, December 20, 2007</h2>I'm trying to add a CslaDataProvider to my wpf control and the designer insists it can't find Csla.<br><br>Could not load file or assembly 'Csla, Version=2007.12.20.3, Culture=neutral, PublicKeyToken=74bfa51f58c67f0e' or one of its dependencies. The system cannot find the file specified.<br><br><br>Any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 20, 2007</h2><P>This is in VS08? I've done a lot of this with no problem. </P>
+<P>Well, no problem as long as I got the xmlns line right so the namespace was imported properly - that is easy to mis-type. That XML typo issue has been my single biggest problem with WPF programming because you get no intellisense on those xlmns lines.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 21, 2007</h2>Yes, 2008 Pro RTM.&nbsp; I've deleted and retyped the line... maybe I'll copy and paste it from PTracker, which seems to work.<br><br>Could there be a problem because my reference points to a mapped network drive?&nbsp; Copy Local is set to true though, and nothing else has a problem with the assembly refering to that location.<br><br>I'll try some things and see.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It could be the network drive. Remember that .NET treats network
+drives like they are part of the Intranet, and so files from those locations
+aren&#8217;t trusted.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 21, 2007 9:06 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Can't load Csla in wpf designer?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes, 2008 Pro RTM.&nbsp; I've deleted and retyped the
+line... maybe I'll copy and paste it from PTracker, which seems to work.<br>
+<br>
+Could there be a problem because my reference points to a mapped network drive?&nbsp;
+Copy Local is set to true though, and nothing else has a problem with the
+assembly refering to that location.<br>
+<br>
+I'll try some things and see.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 21, 2007</h2>I found the problem; I copied the Csla assembly to my desktop and referenced it in my project, and it works fine.&nbsp; Everything else works from the network location, so I'm a bit suprised the designer isn't.&nbsp; I guess my next step is to try to get .Net to trust that location via IE's trusted sites, or the .Net 2 control panel.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 21, 2007</h2>Here's the fix; just use the .Net 2.0 Configuration snap-in to specifically trust that assembly on the network drive.<br><br>I tried adding the drive to IE's trusted site, and having .Net trust fully all Trusted sites, but instead of file:///r:/* it would change it to file:////dev_server.&nbsp; Grr.&nbsp; <br><br>Fixed now though.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

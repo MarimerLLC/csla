@@ -1,0 +1,232 @@
+<html><header><title>CSLA 3.8 - how to generically reference ViewModel.IsBusy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8 - how to generically reference ViewModel.IsBusy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7968.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Tuesday, November 10, 2009</h2>Rocky,<br><br>I've got a toolbar/menu like BO that is databound for navigation.&nbsp; One particular underlying BO is very slow to load so I wanted to visually show that on the toolbar button either as a different icon or the spinning animated IsBusy or even disable the button.<br><br>Anyhow I have number of ViewModels associated with the buttons but they are defined as MyViewModel&lt;T&gt; so I'm having issues trying to generically referencing their IsBusy property.&nbsp; ie) Cast my specific VMs to a common base class.<br><br>I can link the VM as an object to the toolbarItemBO but I can't get any further than that other than just using reflection to see if their exists an IsBusy property and then I could check it.<br><br>I suppose I could also watch for propertyChanged but that seems like more effort.<br><br>Is that really the only option or is there a way to get around that?&nbsp; <br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, November 10, 2009</h2>Of course I suppose I could also do it the other way - and link the buttonBO to the MyViewModel&lt;T&gt; base class and then expose the button IsBusy to the viewModel.&nbsp; Then I can code a single OnPropertyChanged event...<br><br>Maybe that is a better approach?<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 10, 2009</h2><P>Why wouldn't you just bind the UX element(s) to the property?</P>
+<P>It sounds like you are trying to control the UX through code - but XAML is really designed to go the other way, to have the UX use binding to respond to properties <EM>without you writing code</EM>.</P>
+<P>Certainly that's what ViewModel is designed to support.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, November 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Because then my generic toolbar is linked to a specific VM that
+I have to maintain a reference to in XAML.&nbsp; Currently my toolbar is
+generated dynamically based on available child data and user permissions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My toolbar is a ItemsControl with itemsSource of my ParentVM.ToolbarItemsBOCollection.&nbsp;
+I don't have the link between ChildCslaVM and toolbarItem in the UI.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the parent VM constructs a toolbar based on which access the
+user has and then loads/fetches the child CslaVM&lt;T&gt; either on demand or
+upfront.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I already have a slew of ShowXyz and CanXyz for each of the
+buttons in the toolbar.&nbsp; I don't want to maintain another set of IsBusyXyz
+properties. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I wanted to do is in my loop where I build the available
+toolbar buttons I can link the toolbarItemVM to the CslaVM&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm now leaning more to the reverse solution where the
+toolbarButtonVM is also a child of the CslaVM.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> November-10-09 10:42 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA 3.8 - how to generically reference
+ViewModel.IsBusy<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Why wouldn't you just bind the UX element(s) to the property?<o:p></o:p></p>
+
+<p>It sounds like you are trying to control the UX through code - but XAML is
+really designed to go the other way, to have the UX use binding to respond to
+properties <em>without you writing code</em>.<o:p></o:p></p>
+
+<p>Certainly that's what ViewModel is designed to support.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 10, 2009</h2><P>This may be too esoteric, but I'll throw it out anyway.</P>
+<P>I think you may be violating the principles of the MVVM pattern. A viewmodel object should be relatively decoupled from the view - and generating aspects of the view is pretty tightly coupled.</P>
+<P>I'd suggest you consider that the UX generation concepts should be in some other actor than the viewmodel. The viewmodel actor is really responsible for supporting the UX in an abstract manner. Actually <EM>creating</EM> the UX is a different job/responsibility, and therefore should be handled by some other actor.</P>
+<P>I've started using presenter classes along with viewmodel classes. Use the presenters to handle more tightly-coupled UX concerns like navigation, thereby keeping the viewmodel classes much more decoupled and focused on business processing behind the form, rather than on the form itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, November 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I can see your point ...&nbsp; but am I really generating the
+UI?&nbsp; It is sort of a mix between exposed UserAccess and ChildBOExplorer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I could generate the same info from an array of childViewModelBO's
+which maybe is what I should do...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Each ChildBO is to be viewed in a separate view by clicking on a
+toolbar button.&nbsp; My toolbar is collection of BOs that represent what the
+childmodel type is (enum), if I should allow user access (IsEnabled/IsVisible)
++ IsBusy.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I struggled with where to put the logic to show/hide the views
+and that is really the only 'presenter' part I think.&nbsp; I'm not happy with
+these CanShowXyz properties in my ViewModel but it isn't that terrible.&nbsp; I
+think actually as I type this I can move those into the childModels and trigger
+of the databound IsChecked on my toolbar. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If it wasn't called ToolBarItem but ChildViewModel would it still
+feel so dirty ? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe I should ditch the toolBarItem BO and make it an interface
+in my childVMs.&nbsp; Then I introduce a ChildVM collection to my ViewModel to
+expose the interface properties?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I don't want to have is umpteen extra pieces just to
+'totally comply'.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I started with Prism, ripped it all out, and looks like I'm
+slowly moving back towards that again.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know something feels off as I had issues just trying to decide
+which assembly I should put another base class into and it was feeling
+&quot;wrong&quot;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ie) <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA.ViewModel&lt;T&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Agc.AgcViewModel&lt;T&gt;&nbsp; - my Corp Library (Abstract)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Epm.EpmViewModel&lt;T&gt; - my app library (Abstract)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Epm.SharedUI.EpmViewModelBase&lt;T&gt; - an overload to include
+my reference to a EpmToolBarItemVM <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I appreciate your feedback<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> November-10-09 1:22 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA 3.8 - how to generically reference
+ViewModel.IsBusy<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This may be too esoteric, but I'll throw it out anyway.<o:p></o:p></p>
+
+<p>I think you may be violating the principles of the MVVM pattern. A viewmodel
+object should be relatively decoupled from the view - and generating aspects of
+the view is pretty tightly coupled.<o:p></o:p></p>
+
+<p>I'd suggest you consider that the UX generation concepts should be in some
+other actor than the viewmodel. The viewmodel actor is really responsible for
+supporting the UX in an abstract manner. Actually <em>creating</em> the UX is a
+different job/responsibility, and therefore should be handled by some other
+actor.<o:p></o:p></p>
+
+<p>I've started using presenter classes along with viewmodel classes. Use the
+presenters to handle more tightly-coupled UX concerns like navigation, thereby
+keeping the viewmodel classes much more decoupled and focused on business
+processing behind the form, rather than on the form itself.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 10, 2009</h2><P>I don't think MVVM is the entire solution for a XAML UI framework. I think it is just one part of the puzzle.</P>
+<P>I suspect you could combine MVC and MVVM to get a good result. I started researching this, but got sidetracked by some other work.</P>
+<P>The thing about MVC is that the acronym is misleading. MVC actually consists of 4 parts, not 3:</P>
+<OL>
+<LI>Model</LI>
+<LI>View</LI>
+<LI>Controller</LI>
+<LI>Runtime</LI></OL>
+<P>Nobody seems to talk about the runtime, but <EM>something</EM> needs to actually invoke the Controller and render the View returned from the Controller. In ASP.NET MVC this is ASP.NET MVC itself - the MVC runtime.</P>
+<P>If you just open a WPF or Silverlight project, you have no runtime comparable to what the ASP.NET MVC runtime does for you. And you must have something in your app who's job it is to invoke the Controller and put the resulting View on the screen. And to take command messages (like postback calls in the web) and route them to the correct method on the correct controller.</P>
+<P>So this runtime really does two things: renders views, and routes messages to controllers. I rather suspect therefore, that the runtime consists of (at least) two actors to handle these responsibilities.</P>
+<P>As I say, I started exploring this, realized how much work would be involved in creating this runtime, and then got sidetracked by some other work regardless.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

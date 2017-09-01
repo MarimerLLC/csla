@@ -1,0 +1,90 @@
+<html><header><title>DataGridView - Parent Child rows</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView - Parent Child rows</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1210.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, September 13, 2006</h2><P>Hi guys,</P>
+<P>I've searched the forums and can't find any information on this, but I suspect its a common enough question.. (csla 2.x, vb.net 2005)</P>
+<P>I have a datagridview, in which I would like to display a view of parent-child data. In essence, customers and orders - I need some "drill-down" capability in this app. .. Now I know that you can do this using datatables/views etc, but I'm at a loss as to how I do this with csla-businessclass data. </P>
+<P>I have defined my business classes and I can happily display the parent rows, but there appears to be no inner-workings in the datagridview that recognize the childclasses of businessbase class.</P>
+<P>The views need only be readonly.</P>
+<P>Do I have to somehow create a dataview/table from my csla-objects and build relationships? If so, any pointers on how I do that?</P>
+<P>Thanks in advance.</P>
+<P>g.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2><P>If you set up your objects like:</P>
+<P>Parent<BR>&nbsp;-&gt; ChildList<BR>&nbsp; -&gt; Child<BR>&nbsp;&nbsp;&nbsp; -&gt; GrandChildList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&gt; GrandChild</P>
+<P>and then use data binding by putting two grids on your form (one for ChildList, one for GrandChildList), data binding should automatically handle the drill-down for you. In other words, as you select a Child in the first grid, the appropriate GrandChildList should be displayed in the second grid.</P>
+<P>The reason this works is that the bindingsource objects created by data binding automatically understand the parent-child relationships between the objects. To get this to work (at least easily) you should drag-and-drop the classes onto your form from the Data Sources window - Visual Studio will do all the hard work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, September 13, 2006</h2><P>Hi Rocky,</P>
+<P>Thanks for the reply.</P>
+<P>I probably wasn't too clear in my initial (rushed) post.</P>
+<P>What you describe I have achieved, but the behaviour I am trying to reproduce is within a single datagrid/datagridview. </P>
+<P>With datasets/views, et al, in VS.net came this cool ability to create relations between a parent dataset and a child dataset and have them handled within the single grid control. The grid automatically displays the 'expando' icon, which when clicked 'drills-down' and displays the child rows directly beneath the parent row.</P>
+<P>As the grid is probably geared toward those relations being in place (feel free to prove me wrong :) ) - is there a 'simple' way to build a generic dataview type from say a CSLA sortedbindinglist?</P>
+<P>Thanks again,</P>
+<P>Graham</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2>That was true in .NET 1.x with the old grid. The new 
+DataGridView is not hierarchical and can't do what you want.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2>You'll either have to use the old grid (yuck), or get a 3rd 
+party grid that supports the concept.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2>Either way, it should work with collections of objects - 
+they have implicit relationships that can be navigated.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=811450611-14092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> gajit [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, September 13, 2006 11:54 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] DataGridView - Parent 
+  Child rows<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Hi Rocky,</P>
+  <P>Thanks for the reply.</P>
+  <P>I probably wasn't too clear in my initial (rushed) post.</P>
+  <P>What you describe I have achieved, but the behaviour I am trying to 
+  reproduce is within a single datagrid/datagridview. </P>
+  <P>With datasets/views, et al, in VS.net came this cool ability to create 
+  relations between a parent dataset and a child dataset and have them handled 
+  within the single grid control. The grid automatically displays the 'expando' 
+  icon, which when clicked 'drills-down' and displays the child rows directly 
+  beneath the parent row.</P>
+  <P>As the grid is probably geared toward those relations being in place (feel 
+  free to prove me wrong :) ) - is there a 'simple' way to build a generic 
+  dataview type from say a CSLA sortedbindinglist?</P>
+  <P>Thanks again,</P>
+  <P>Graham</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, September 14, 2006</h2><P>Well, I learn something new everyday - I was unaware of this. There go my promises of a new fan-dangled-bells-and-whistles laden module... :)</P>
+<P>Thanks for your help Rocky.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, September 14, 2006</h2>I know this is not the answer you were hoping for but FWIW, the Janus grid does a very nice job with hierarchical data. Its about $300 for one developer. Royalty free distribution.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, September 14, 2006</h2><P>Hi Ross,</P>
+<P>&nbsp;</P>
+<P>Thanks.</P>
+<P>Have you successfuly used&nbsp;this with CSLA hierarchy?</P>
+<P>Graham</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, September 14, 2006</h2>Re the Janus grid<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>gajit:</strong></div><div><br>Have you successfuly used&nbsp;this with CSLA hierarchy?</div></BLOCKQUOTE><br>Yes and it works well. You only need one bindingSource. You bind the root collection to that and, if you ask it to, the grid will discover properties that are collections. The design time support is pretty good.<br><br>I was an early user of their version 3 grid and found a few minor problems that they fixed very quickly.<br><br>I think there is a time limited free trial at www.janusys.com<br><br>Ross<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

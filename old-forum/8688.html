@@ -1,0 +1,19 @@
+<html><header><title>Need a simple Silverlight ReadOnlyList example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need a simple Silverlight ReadOnlyList example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8688.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KevinKlasman posted on Thursday, March 18, 2010</h2><p>I&#39;m new to Csla (but have used it to some degree in the VB6 days) and Sliverlight. I have the Expert C# 2008 Business Objects book, which I&#39;ve read Chapters 1-5, 15, 17 and parts of the other chapters as seemed appropriate.</p>
+<p>I&#39;m using VS2010 Beta 2, SL4 beta, CSLA 3.8.2</p>
+<p>I&#39;m trying to write a simple SL4 app that binds a ReadOnlyListBase derives class to a datagrid. I want to use the simple WcfPortal.</p>
+<p>I&#39;ve looked at the Rolodex sample (which runs) and functionally does what I want (ReadOnlyCompanyList, but it uses SynchronizedWcfProxy which I don&#39;t want to use (mainly because I don&#39;t know why I would want to).</p>
+<p>Chapter 5&#39;s Read-Only Collection section shows a factory method that calls DataPortal.Fetch&lt;ReadOnlyList&gt;... but when I try to code that only DataPortal.FetchChild is supported.</p>
+<p>Chapter 5&#39;s code:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ReadOnlyList GetReadOnlyList(string filter)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;ReadOnlyList&gt;(new SingleCriteria&lt;ReadOnlyList, string&gt;(filter));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>What seems like the corresponding method in the Rolodex sample is:</p>
+<p>&nbsp;&nbsp;&nbsp; public static void GetCompanyList(EventHandler&lt;DataPortalResult&lt;ReadOnlyCompanyList&gt;&gt; handler)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal&lt;ReadOnlyCompanyList&gt; dp = new DataPortal&lt;ReadOnlyCompanyList&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.FetchCompleted += handler;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginFetch();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>I&#39;ve tried that but I wonder whether the rest of my app supports that approach the calling Fetch.</p>
+<p>I imagine the Rolodex sample uses a different GetXXXList signature because its SL and that the book&#39;s example won&#39;t work with SL. Am I right?</p>
+<p>So, as you can tell, I&#39;m throughly confused.</p>
+<p>So, does anyone have a sample SL4 app that does this that they&#39;d care to share with me? I would greatly appreciate it.</p>
+<p>Another thing...I don&#39;t like the conditional compilation in the current SL examples, so I&#39;ve tried splitting the business classes up into partial classes, with the SL stuff in one (in Library.Client assembly) and the non-SL stuff in another (In Library.Server assembly). The Rolodex examples has GetCompanyList(...) compiled into both, which surprises me. I think it only belongs in the SL side, but am I mistaken?</p>
+<p>Finally, would I be better off switching to VS2010 RC, SL4 RC, CSLA 4.x?</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Thursday, March 18, 2010</h2><p>Hi Kevin</p>
+<p>Yes, all of Silverlight requires asynchronous calls. So, you have to take the book as a guide only, which is a bit difficult for somebody starting out.</p>
+<p>I don&#39;t have a sample to share, unfortunately. I don have a gigantic CSLALight, SL3 app though :)</p>
+<p>Craig</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

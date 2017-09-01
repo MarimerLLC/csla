@@ -1,0 +1,42 @@
+<html><header><title>BusinessRule - How to get context.Target to have the current values</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRule - How to get context.Target to have the current values</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12662.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>joseph99 posted on Thursday, June 12, 2014</h2><p>I am trying to create a business rule that needs the current value of two other fields in the target object.&nbsp; The target object always has the previous values when the rule executes.&nbsp; Is there a working example of how to implement a business rule that interacts with the business object.</p>
+<p>Thanks.</p>
+<p>Joe</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 13, 2014</h2><p>Hi,</p>
+<p>The target object is always the &quot;current&quot; object and the current values but it may be that the rule is executed before values have been updated by another rule?</p>
+<p>Can you provide us with a small sample solution?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>joseph99 replied on Friday, June 13, 2014</h2><p>Thank you for getting back to me.&nbsp; I figured it out. I needed to set up the Dependencies so that all of the validations would fire.&nbsp; However, I do have another question.&nbsp; Does the <span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Dependency</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(ClientIsHomeLessProperty, StateIdProperty));<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Dependency</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(OutOfStateZipProperty, StateIdProperty));</span></span></p>
+</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">over ride the <span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>BusinessRules.ProcessThroughPriority = 2; ?</p>
+<p>My State Rule <span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">RuleStateIdValid</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(StateIdProperty) { Priority = 0 });</span></span></p>
+<p>When the State Id validation fails, Id does not exist.&nbsp; The <span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BusinessRules.AddRule(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">new</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">RuleOutOfStateZipValidStates</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(OutOfStateZipProperty) { Priority = 3 });</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">still executes.</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">Thanks.</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">Joe</span></span></p>
+</span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, June 13, 2014</h2><p>Hi,</p>
+<p>You probably have misunderstood how the Priority property is used.</p>
+<p>Rules is always executed on a Per-Property basis and Priority is only ever used to set the order of execution within the same PrimaryProperty.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>joseph99 replied on Friday, June 13, 2014</h2><p>Then I must have misread page 86 in the &quot;CSLA 4: Creating Business Objects&quot;.</p>
+<p>Short-Circuiting Rules</p>
+<p><span style="font-size:small;">
+<p>In this example I&rsquo;ve changed the value to 5, so in instances of this particular business class rules at priority 5 or less will always execute, and those at priority 6 and higher will only run if no validation rule has failed. </p>
+<p>Thanks.</p>
+<p>Joe</p>
+</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

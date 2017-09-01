@@ -1,0 +1,27 @@
+<html><header><title>DoSave Method not work</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DoSave Method not work</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11517.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, August 06, 2012</h2><p>Hi rocky..</p>
+<p>I got a strange problem</p>
+<p>i have to different view model</p>
+<p>which are one DoSave method work BUT another DoSave not work and it&#39;s not display an error, i tried to debug but can&#39;t found any error BUT MY Business Object is not SAVED.</p>
+<p>I tried to break on DataPortal_Insert , BUT it&#39;s never reach ?</p>
+<p>&nbsp;</p>
+<p>Do you have any suggesstion or something I&#39;m missing ?</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p>
+<p>&nbsp;</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 06, 2012</h2><p>Are you overriding the OnError method in your viewmodel? That is where you&#39;d see the error from the DoSave method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Monday, August 06, 2012</h2><p>Hi rocky ,</p>
+<p>&nbsp;</p>
+<p>thanks a lot :)</p>
+<p>yes, i forgot to catch the error, NOW the BO can be saved.</p>
+<p>But in this case, i have something that i understand,</p>
+<p>First, My First Error is : I forgot to mark Serializable on said it PaymentEdit BO, after i mark it it can be saved, i have check it on DB</p>
+<p>BUT</p>
+<p>The second problem arise : it still display an error that said MyDal have to be mark as Serializable too ( I don&#39;t know why this happen )</p>
+<p>as long as I know Dal is run on server side, not travel from client to server or vice versa, Am I right ?</p>
+<p>&nbsp;</p>
+<p>Am I missing something ? because my another BO is no ask about mark serializable on their DAL ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>Stefanus</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 07, 2012</h2><p>Basically - this means that a DAL object is part of the Object Graph of PaymentEditBO and thus is supposed to be serialized. </p>
+<p>If you need this as a property then remember to keep it as a private backing field marked with [NotUndoable] and [NonSerialized] attributes.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

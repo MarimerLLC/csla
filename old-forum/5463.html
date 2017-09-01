@@ -1,0 +1,308 @@
+<html><header><title>Validating Criteria Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validating Criteria Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5463.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, September 25, 2008</h2><P>I've been working with Csla for a few months now and am loving it.&nbsp; Though I had a quick question about criteria objects.&nbsp; I need to provide validation logic on the criteria properties to prevent unnecessary calls tp the database.&nbsp;&nbsp;If I understand correctly: since the criteria objects aren't actually part of the objects business validation, I don't get the rich features of Csla validation for these criteria objects...</P>
+<P>I assume this is pretty common, and I was hoping to hear&nbsp;what other&nbsp;people have done for this&nbsp;sort of task...&nbsp;&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 25, 2008</h2>Yes, that's true.<br><br>I just end up writing a method that checks the values, and adding an IsValid property which calls the rule checking method.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, September 25, 2008</h2>righton, I think it might be handy to write my own CriteriaBase class for this, any tips and suggestions for that would be great.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, September 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>One thing that comes to mind is to use business base for criteria
+object.&nbsp; Not that I have ever done that, but I think it should work.&nbsp;
+And this will allow you to bind it to UI and user error provider (if you are
+using win forms).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> decius
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 25, 2008 9:30 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Validating Criteria Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>righton, I think it might be handy to write my own
+CriteriaBase class for this, any tips and suggestions for that would be great.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, September 25, 2008</h2>Yes, I've considered this, but I came to the consideration that this might be too bulky for a criteria object since this object will need to be serialized and passed along through the wires....&nbsp; Perhaps a more stripped down base class would be more ideal?&nbsp; Or do you think that BusinessBase wouldn't be overkill after all?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, September 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is some overhead to BB for sure in comparison to criteria object.&nbsp;
+It will serialize state variables (dirty, etc..).&nbsp; I never actually
+compared the size of BB vs. size of Criteria class with the same properties.&nbsp;
+I suspect though that the difference is negligible.&nbsp; I guess, it is a
+matter of what is more important to you &#8211; ease of coding vs. slight performance
+hit.&nbsp; Then again, you can have two objects &#8211; BB to collect criteria
+data in UI, then convert BB to a custom criteria class with the same
+properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> decius
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, September 25, 2008 9:42 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Validating Criteria Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes, I've considered this, but I came to the consideration
+that this might be too bulky for a criteria object since this object will need
+to be serialized and passed along through the wires....&nbsp; Perhaps a more
+stripped down base class would be more ideal?&nbsp; Or do you think that
+BusinessBase wouldn't be overkill after all?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, September 25, 2008</h2><P>I had to do this once and the path I decided to follow was:</P>
+<P>1. Have a BO (deriving from BusinessBase) which defined the criteria (bound to my winform fields) and performed the validation.<BR>2. On my list I had a factory method GetList() which accepted the above BO as an argument.<BR>3. In the factory method I was mapping the values of my BO to the private criteria class which had the same fields defined.</P>
+<P>The issue here is that you need to maintain the fields in the BO and the private criteria class in sync. Just my thoughts...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 25, 2008</h2><P>I do steps 1 and 2 all the time. I omit 3 and just use the BO as the criteria itself. </P>
+<P>I usually do this for Search forms in my UI. They may have 5 different search terms (First Name, Last Name, Birthdate, State, etc.) Plus they have operators like "Starts With, Contains, etc."</P>
+<P>So the BO has a GetFilter property which produces a valid WHERE clause that I can then use in a SQL statement. It omits items that the user did not enter into the Search screen and checks itslef for IsValid before being used for searching the DB.</P>
+<P>In fact, Rocky recommends this technique explicitly.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 25, 2008</h2><P>Joe is right. In fact this is one reason for adding the ICriteria interface - to make it easy for you to use a BusinessBase&lt;T&gt; business object as a criteria, by simply implementing ICriteria (which is easy) as well.</P>
+<P>Then you get all the validation/authorization goodness to create your criteria input form, and can directly pass that object through as your criteria.</P>
+<P>It is true that there's some extra overhead, but I suggest you try this technique, because the overhead is probably a non-issue 99.9% of the time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Friday, November 07, 2008</h2>Interestingly, I applied the tips discussed in this post, but I want to add a concern.<br><br>In my criteria object each field is optional, but I want to add a rule
+requiring that at least one field has value, that is, I want a validation rule for the whole object and that is not dependent on a
+specific property. In addition, it should indicate visually to the user the breach of this rule.<br><br> How can I implement it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It takes a little creativity, but here&#8217;s how I&#8217;ve
+done it:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Define a property such as OneRequired (of any type, such as
+string)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Define a custom rule such as OnePropertyRequired()<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Attach OnePropertyRequired() to the OneRequired property<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Set OneRequired as a dependent property of all other properties<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Bind your UI to OneRequired so the error shows on the UI<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have only done this with WPF in CSLA 3.6, and so used the
+csla:PropertyStatus control to display an Information severity icon if there&#8217;s
+a problem. But you could get similar results in Windows Forms with an
+ErrorProvider and Error severity rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>static</span> <span>bool</span>
+OneFieldRequired&lt;T&gt;(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T target,
+Csla.Validation.<span>RuleArgs</span> e) <span>where</span> T : <span>Project<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (target.AllFieldsNull())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+e.Description = <span>&quot;At least one field must be
+filled in&quot;</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+e.Severity = Csla.Validation.<span>RuleSeverity</span>.Information;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>else<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> <span>true</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>bool</span> AllFieldsNull()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (!<span>string</span>.IsNullOrEmpty(Name))
+<span>return</span> <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (!<span>string</span>.IsNullOrEmpty(Started))
+<span>return</span> <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (!<span>string</span>.IsNullOrEmpty(Ended))
+<span>return</span> <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (!<span>string</span>.IsNullOrEmpty(Description))
+<span>return</span> <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> <span>true</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And in my AddBusinessRules() method:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ValidationRules.AddRule&lt;<span>Project</span>&gt;(OneFieldRequired,
+OneRequiredProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ValidationRules.AddDependentProperty(NameProperty, OneRequiredProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ValidationRules.AddDependentProperty(StartedProperty, OneRequiredProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ValidationRules.AddDependentProperty(EndedProperty, OneRequiredProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddDependentProperty(DescriptionProperty,
+OneRequiredProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t actually even bind the OneRequired property to the
+UI directly &#8211; I just use it as a target for a PropertyStatus control:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span> Source</span><span>=&quot;{</span><span>Binding</span><span>}&quot;</span><span> Property</span><span>=&quot;OneRequired&quot;
+/&gt;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 07, 2008</h2>I do something like this, except I tie the rule to each property.&nbsp; It works well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t think that&#8217;d work well in WPF though,
+because of the way WPF handles PropertyChanged. You&#8217;d have to make all
+properties inter-dependent on each other to get the warning to disappear
+properly wouldn&#8217;t you?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Friday, November 07, 2008</h2>Rocky thank you very much, I agree with you, in fact does not seem
+logical that all the properties have an error, because really are optional, the error belongs to the object or set of properties. <br><br>
+Therefore, the solution you propose me as ideal. urrently I am looking for a Windows controls for this situation, as described in this excellent web site of standards for IU.<br><br><a href="http://www.ssw.com.au/SSW/Standards/rules/RulesToBetterWindowsForms.aspx#StatusControl">http://www.ssw.com.au/SSW/Standards/rules/RulesToBetterWindowsForms.aspx#StatusControl</a><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 07, 2008</h2>Yes, I did, but I had to do that anyway to get IsValid to return true.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

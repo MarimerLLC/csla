@@ -1,0 +1,194 @@
+<html><header><title>CSLA Light intranet app authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light intranet app authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6097.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Afontan posted on Wednesday, January 07, 2009</h2><P>Hi</P>
+<P>I'm starting development of a Silverlight and CSLA Light app and don't know how to use Windows authentication. All samples have different authentication modes.</P>
+<P>Regards,</P>
+<P>Andres</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 07, 2009</h2>Usually you just use WindowsPrincipal and calling IsInRole... assuming of course you can get a WindowsPrincpal in Silverlight.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul DeFrees replied on Wednesday, January 07, 2009</h2>Silverlight does not have&nbsp;WindowsIdentity or WindowsPrincipal classes or any other implementations for that matter.&nbsp; This is why the Silverlight version of CSLA contains&nbsp;CslaIdentity and BusinessPrincipalBase classes along with UnauthenticatedIdentity and UnauthenticatedPrincipal.&nbsp; What I ended up doing was taking the security classes in the Rolodex example and modifiying them to autheticate the user using Directory Services.&nbsp; I also assigned roles based upon Windows groups as well as what was stored in a database.&nbsp; If you'd like to see what I've done, let me know.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here are the instructions I had from the time this feature was
+developed.&nbsp; You would need to inherit from Windows Identity when building
+Identity class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>How to setup CSLA for SL to use Windows Authentication<o:p></o:p></p>
+
+<p class=MsoListParagraphCxSpFirst><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Setup IIS to host WCF service for Data Portal and SL
+host web site.&nbsp; The process does not seem to work on development IIS
+server.<o:p></o:p></p>
+
+<p class=MsoListParagraphCxSpMiddle><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Setup virtual directory to use Integrated Windows
+authentication.&nbsp; Disable anonymous access.<o:p></o:p></p>
+
+<p class=MsoListParagraphCxSpMiddle><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Setup service model section in web.config for WCF
+hosted Data Portal in the following fashion in order to enable binding to send
+windows credentials:<o:p></o:p></p>
+
+<p class=MsoListParagraphCxSpMiddle><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>Important notes: you cannot use metadata exchange end
+point because mexHttpBinding does not support security settings<o:p></o:p></p>
+
+<p class=MsoListParagraphCxSpLast><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span>If you are part of the domain, you must be logged on to
+the domain, either directly or via VPN.<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>system.serviceModel</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>serviceHostingEnvironment</span><span> </span><span>aspNetCompatibilityEnabled</span><span>=</span><span>&quot;<span>true</span>&quot;<span> /&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>services</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>service</span><span> </span><span>behaviorConfiguration</span><span>=</span><span>&quot;<span>WcfPortalBehavior</span>&quot;<span> </span><span>name</span><span>=</span>&quot;<span>Csla.Server.Hosts.Silverlight.WcfPortal</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>endpoint</span><span> </span><span>address</span><span>=</span><span>&quot;&quot;<span> </span><span>binding</span><span>=</span>&quot;<span>basicHttpBinding</span>&quot;<span> </span><span>contract</span><span>=</span>&quot;<span>Csla.Server.Hosts.Silverlight.IWcfPortal</span>&quot;<span> </span><span>bindingConfiguration</span><span>=</span>&quot;<span>MyBinding</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>identity</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>dns</span><span> </span><span>value</span><span>=</span><span>&quot;<span>localhost</span>&quot;<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>identity</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>endpoint</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;!--</span><span>&lt;endpoint address=&quot;mex&quot;
+binding=&quot;mexHttpBinding&quot; contract=&quot;IMetadataExchange&quot;/&gt;</span><span>--&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>services</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; &nbsp;
+&lt;</span><span>bindings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>basicHttpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>binding</span><span> </span><span>name</span><span>=</span><span>&quot;<span>MyBinding</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>security</span><span> </span><span>mode</span><span>=</span><span>&quot;<span>TransportCredentialOnly</span>&quot;<span>&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;</span><span>transport</span><span> </span><span>clientCredentialType</span><span>=</span><span>&quot;<span>Windows</span>&quot;<span> /&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>security</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>binding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>basicHttpBinding</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp; &nbsp;
+&lt;/</span><span>bindings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>system.web</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>authentication</span><span> </span><span>mode</span><span>=</span><span>&quot;<span>Windows</span>&quot;<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>identity</span><span> </span><span>impersonate</span><span>=</span><span>&quot;<span>true</span>&quot;<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Afontan
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 07, 2009 9:34 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA Light intranet app authentication<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi<o:p></o:p></p>
+
+<p>I'm starting development of a Silverlight and CSLA Light app and don't know
+how to use Windows authentication. All samples have different authentication
+modes.<o:p></o:p></p>
+
+<p>Regards,<o:p></o:p></p>
+
+<p>Andres<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 07, 2009</h2><P>Look under this folder:</P>
+<P>..\Source\cslalighttest\SecurityTest\WindowsAuthentication</P>
+<P>Many of the authentication "sample code" is actually under the cslalighttest folder, because we had to write specific apps to test the various modes (due to IIS configuration, etc).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

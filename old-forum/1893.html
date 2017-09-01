@@ -1,0 +1,21 @@
+<html><header><title>Best OOP design move?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best OOP design move?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1893.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCannelos posted on Sunday, December 03, 2006</h2><P><FONT face=Verdana size=2>Guys,</FONT></P>
+<P><FONT face=Verdana size=2>Hopefully this is an easy one. Web app:</FONT></P>
+<P><FONT face=Verdana size=2>I have to keep track of a list of Consultants and their details:</FONT></P>
+<P><FONT face=Verdana size=2>Consultants --&gt; BusinessListBase&lt;Consultants, Consultant&gt;</FONT></P>
+<P><FONT face=Verdana size=2>I also need to keep track of Assets each Consultant has. I realize the whole assignment paradigm Rocky talks about, but I want to be able to do two things:</FONT></P>
+<P><FONT face=Verdana size=2>1. First, just show an editable list of Assets so they can be managed.</FONT></P>
+<P><FONT face=Verdana size=2>2. Next, show the same page, but only after someone asks to see a specific Consultant's Assets.</FONT></P>
+<P><FONT face=Verdana size=2>Right now, I have number 1 taken care of with this:</FONT></P>
+<P><FONT face=Verdana size=2>Assets --&gt; BusinessListBase&lt;Assets, Asset&gt;</FONT></P>
+<P><FONT face=Verdana size=2>But what is the best way to handle #2? Should I do another constuctor on Assets where I pass in the Consultant? I was planning on having each Consultant have its own Assets collection, but then Assets needs to become a switchable object and I've heard thats bad. Any thoughts?</FONT></P>
+<P><FONT face=Verdana size=2>Hmmmm.. the more I think about it, a Consultant would have AssetAssignments, rather than the Assets themselves, right?</FONT></P>
+<P><FONT face=Verdana size=2>Thanx a bunch!</FONT></P>
+<P><FONT face=Verdana size=2>J'son</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Sunday, December 03, 2006</h2>A consultant would have AssetAssignments because the use is different. Also it would keep it clean</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCannelos replied on Monday, December 04, 2006</h2><P><FONT face=Verdana size=2>Ok, thanx... another question related to Consultants:</FONT></P>
+<P><FONT face=Verdana size=2>By the time I am editing Asset Assignments for a Consultant, I am down to the Consultants --&gt; Consultant --&gt; AssetAssignment level, with both Consultant AND AssetAssignments marked as Child. So that means I'll need to pass the entire Consultants collection in Session and&nbsp;call Consultants.Save() (the topmost level), even when I feel like I should be able to call just Consultant.Save() to save Asset Assignment changes.</FONT></P>
+<P><FONT face=Verdana size=2>Since Asset Assignments happens on a different web page from where I list Consultants. I was thinking of doing having a ConsultantList with readonly ConsultantInfo objects. When the user wants to Edit a Consultant, at that point I load a non-Child Consultant object for editing. That would allow me to edit and save Asset Assignments from the Consultant object rather than from the higher Consultants object.</FONT></P>
+<P><FONT face=Verdana size=2>Is this a cleaner design or am I just nit picking at this point?</FONT></P>
+<P><FONT face=Verdana size=2>Thanx!</FONT></P>
+<P><FONT face=Verdana size=2>J'son</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Monday, December 04, 2006</h2><P>J'son, </P>
+<P>I think your intuition is correct and I would favor the second approach. Have a read-only list of consultants. When the user wants to view or edit the assets for one of those, load the editable consultant object for that consultant and allow them to edit the asset assignments.</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCannelos replied on Monday, December 04, 2006</h2><P><FONT face=Verdana size=2>Thanks guys! Thats the way I'm going..</FONT></P>
+<P><FONT face=Verdana size=2>J'son</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

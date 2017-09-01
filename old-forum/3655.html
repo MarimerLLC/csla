@@ -1,0 +1,17 @@
+<html><header><title>Web Page Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Web Page Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3655.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sparky posted on Friday, October 05, 2007</h2><P class=MsoNormal><FONT face=Calibri>I’m wondering how people are doing URL based role authorization in an ASP.NET 2.0 app when using Forms based authentication. I need to do checks as the page loads to verify that the user has rights to it.&nbsp;For instance, a user would need to be in role=’Admin’ to get access to ‘siteAdmin.aspx’ while a user would need to be in role=’User’ or role=’Admin’&nbsp;to get&nbsp;rights to default.aspx.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>Seems like there are a few options including:</FONT></P>
+<OL>
+<LI>
+<DIV class=MsoNormal><FONT face=Calibri>ASP.Net’s web.config file - seems like a nightmare to maintain page and folder names with roles. FIles and folder can easily get moved or renamed.</FONT></DIV></LI>
+<LI>
+<DIV class=MsoNormal><FONT face=Calibri>Put calls to User.IsInRole(“roleName1”) || User.IsInRole(“roleName2”) in&nbsp;each individual&nbsp;page load or init.</FONT></DIV></LI>
+<LI>
+<DIV class=MsoNormal><FONT face=Calibri>Have a property in a base class that all my pages would inherit from that would set the roles for the page and then have the base page handle the logic to redirect unauthorized users.</FONT></DIV></LI>
+<LI>
+<DIV class=MsoNormal><FONT face=Calibri>Call CanGetObject() on a CSLA business object. Which would mean I need to implement this on all business object when I probably wouldn’t need it for any other reasons.</FONT></DIV></LI></OL>
+<P class=MsoNormal><FONT face=Calibri>The final option seems the cleanest since I don’t have to have authorization rules in the pages and can rely on CSLA but that also means I need a CSLA business object to base each page on although I guess more than likely I would otherwise what would I need authorization for.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>Just wondering what other people are doing. Thanks for the help.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, October 06, 2007</h2><P>I use #2 above. I put it at the top of each page that requires authorization. Some do not require any so I just omit it. Pretty simple - but it works.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

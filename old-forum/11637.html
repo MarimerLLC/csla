@@ -1,0 +1,33 @@
+<html><header><title>CSLA 4.5.3 hangs in synchronous Save()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5.3 hangs in synchronous Save()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11637.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Tuesday, October 09, 2012</h2><p>I&#39;m using:</p>
+<ul>
+<li>CSLA 4.5.3 beta 2</li>
+<li>VS 2012</li>
+<li>Compiling everything for .NET 4 (XP compatibility)</li>
+<li>Using new ASync methods on business object and dataportal.&nbsp; </li>
+<li>Silverlight 5 in local mode works fine.</li>
+<li>I&#39;m making calls to backend WebAPI service in dataportal methods</li>
+</ul>
+<p>Now I&#39;m trying to get the code running in Winforms.&nbsp; The SaveAsync() works great from winforms.&nbsp; However, the Save() just hangs forever.&nbsp; Inside my Dataportal_Update I&#39;m using an HttpClient + webapi to save my object to an http rest service.&nbsp; I&#39;m not sure why but basically the call to the httpclient hangs in this mode. Is this a deadlock or something?&nbsp; Does it have something to do with having an await inside of the dataportal task method?</p>
+<p><span style="font-family:Consolas;background:white;color:blue;font-size:9.5pt;mso-highlight:white;">
+<p class="MsoNormal"><span style="font-family:Consolas;background:white;color:#2b91af;font-size:9.5pt;mso-highlight:white;">HttpClient</span><span style="font-family:Consolas;background:white;color:black;font-size:9.5pt;mso-highlight:white;"> client = </span><span style="font-family:Consolas;background:white;color:blue;font-size:9.5pt;mso-highlight:white;">new</span><span style="font-family:Consolas;background:white;color:black;font-size:9.5pt;mso-highlight:white;"> </span><span style="font-family:Consolas;background:white;color:#2b91af;font-size:9.5pt;mso-highlight:white;">HttpClient</span><span style="font-family:Consolas;background:white;color:black;font-size:9.5pt;mso-highlight:white;">();</span></p>
+<p class="MsoNormal"><span style="font-family:Consolas;background:white;color:blue;font-size:9.5pt;mso-highlight:white;">var</span><span style="font-family:Consolas;background:white;color:black;font-size:9.5pt;mso-highlight:white;"> response = </span><span style="font-family:Consolas;background:white;color:blue;font-size:9.5pt;mso-highlight:white;">await</span><span style="font-family:Consolas;background:white;color:black;font-size:9.5pt;mso-highlight:white;"> client.PutAsJsonAsync&lt;T&gt;(url.ToString(), item);</span></p>
+<p class="MsoNormal">&nbsp;</p>
+</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, October 09, 2012</h2><p>There are some different behaviors depending on whether the DataPortal_XYZ methods are running local or remote.</p>
+<p>It sounds like you are running local with an async DP_XYZ, but a sync &quot;client-side&quot; call. I just ran into this as a blocking issue today, and I am not convinced it is solvable. In other words it might be a scenario that can&#39;t be supported, but I&#39;m not sure yet.</p>
+<p>Most notably, if the client-side code does a sync call, that blocks the UI thread, and as a result the async callback from the background process can&#39;t be marshaled onto the UI thread, because the UI thread is blocked. There&#39;s nothing I can really do about that of course, because it is the await code itself that&#39;s trying to do this marshalling, and if you&#39;ve blocked the UI thread then it is blocked...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, October 10, 2012</h2><p>Rocky,</p>
+<p>I am using a local dataportal, because I&#39;m calling a webapi backend.&nbsp; I was worried it was a UI thread deadlock issue.&nbsp; I&#39;ve been running into that a lot with 4.5 when I do an async call inside an sync call.&nbsp; I agree with you that there is little you can probably do about it.</p>
+<p>Thanks,</p>
+<p>Jon</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 10, 2012</h2><p>I was thinking that perhaps I can detect that the following are true:</p>
+<ol>
+<li>Client made a sync call</li>
+<li>&quot;Server-side&quot; code is in ExecutionLocation.Client</li>
+<li>Target method (DP_XYZ or factory method) returns Task</li>
+</ol>
+<p>In that case, the data portal could explicitly spin up a background thread on which it could invoke the target method. The data portal would synchronously wait for that thread to complete, but on that background thread the code could use async/await without blocking, because the await would marshal to the explicit background thread, not to the UI thread.</p>
+<p>I don&#39;t want to try something that major/complex for the current release, because I don&#39;t have confidence I can get something like that tested and stable for an Oct release.</p>
+<p>Still, it might be worth exploring for a subsequent release.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Wednesday, October 10, 2012</h2><p>I agree.&nbsp; That will take a lot of time to test.&nbsp; I&#39;ve spent my fair share debugging (crying over)&nbsp;multi-thread/cross-thread issues over the years.&nbsp; </p>
+<p>My current solution is&nbsp;<strong>not</strong> to make Async calls from inside my dataportal methods.&nbsp; The WebAPI samples on the web all show&nbsp;use the&nbsp;HttpClient class with Async methods.&nbsp; This class doesn&#39;t have Synchronous versions.&nbsp; I&#39;ve switch to calling WebAPI code using the HttpWebRequest which does have sync methods in full .NET.&nbsp; This is&nbsp;was easy&nbsp;because&nbsp;I already had to figure out how to use&nbsp;HttpWebRequest in Silverlight (except we&nbsp;use its async methods there)&nbsp;because it doesn&#39;t have an&nbsp;equivalent HttpClient.&nbsp; This solves the problem totally for me.</p>
+<p>Thanks again for the help in understanding this!</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

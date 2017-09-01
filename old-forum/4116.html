@@ -1,0 +1,98 @@
+<html><header><title>EditLevel mismatch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel mismatch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4116.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit posted on Thursday, January 03, 2008</h2><P>I continue to get these EditLevel mismatches for a quite complex object I have. I am using the saving method from the 3.0 project. Do you have to do anything in the Save routing for readonly children? Currently I am not. Currently I have a parent and 7 children/grandchildren which I am unbinding (etc..) during the save operation. </P>
+<P>I am probably missing something simple here. </P>
+<P>Here is my Rebind/Save procedure:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> RebindUI(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Save </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Rebind </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> RSSoftware.ScriptAssist.ObjectEdit.RebindUI</P>
+<P></FONT><FONT color=#008000 size=2>' disable events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IngredientsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.OtherPayersBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RejectCodesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AmountsPaidBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DURCodesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DiagnosesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' unbind the UI</P></FONT><FONT size=2>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IngredientsBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.OtherPayersBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RejectCodesBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AmountsPaidBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DURCodesBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DiagnosesBindingSource, Save, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>ScriptAssist.Utilities.UnbindBindingSource(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource, Save, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IngredientsBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.OtherPayersBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RejectCodesBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AmountsPaidBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DURCodesBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DiagnosesBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource</P>
+<P></FONT><FONT color=#008000 size=2>' save or cancel changes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Save </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>CurrentRX.ApplyEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> temp </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ScriptAssist.Prescription = CurrentRX.Clone()</P>
+<P>CurrentRX = temp.Save()</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException </FONT><FONT color=#0000ff size=2>When</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>TypeOf</FONT><FONT size=2> ex.BusinessException </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> SqlClient.SqlException</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(ex.BusinessException, SqlClient.SqlException).Class = 16 </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'Most likely due to concurrency error - recommend closing drug and reopening</P></FONT><FONT size=2>
+<P>MessageBox.Show(</FONT><FONT color=#a31515 size=2>"This record has been changed in another window either on this machine or "</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"on another client machine while this record was open. Click OK, make a note"</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"of any changes you have made here you wish saved for this record, close this"</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"window, the reopen this record in a new window and make the desired changes "</FONT><FONT size=2> _</P>
+<P>&amp; Microsoft.VisualBasic.ControlChars.CrLf &amp; </FONT><FONT color=#a31515 size=2>"finally saving the record."</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"CONCURRENCY ERROR"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Stop)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>MessageBox.Show(ex.BusinessException.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.DataPortalException</P>
+<P>MessageBox.Show(ex.BusinessException.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Validation.ValidationException</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> sMsg </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Text.StringBuilder(</FONT><FONT color=#a31515 size=2>"One or more fields have failed validation. Refer to any errors"</FONT><FONT size=2>)</P>
+<P>sMsg.AppendLine(</FONT><FONT color=#a31515 size=2>" on this form and the following list: "</FONT><FONT size=2>)</P>
+<P>sMsg.AppendLine()</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> BrokenRule </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Validation.BrokenRule </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> CurrentRX.BrokenRulesCollection</P>
+<P>sMsg.AppendLine(</FONT><FONT color=#a31515 size=2>" "</FONT><FONT size=2> &amp; BrokenRule.Description)</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P>MessageBox.Show(sMsg.ToString, </FONT><FONT color=#a31515 size=2>"VALIDATION ERROR"</FONT><FONT size=2>, MessageBoxButtons.OK, MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P>MessageBox.Show(ex.ToString, _</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, MessageBoxButtons.OK, _</P>
+<P>MessageBoxIcon.Exclamation)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>CurrentRX.CancelEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' rebind UI if requested</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>BindUI()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' restore events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IngredientsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.OtherPayersBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RejectCodesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AmountsPaidBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DURCodesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DiagnosesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Rebind </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>' refresh the UI if rebinding</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.PrescriptionBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IngredientsBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.OtherPayersBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RejectCodesBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AmountsPaidBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DURCodesBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DiagnosesBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> CurrentRX.IsDirty = </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>And</FONT><FONT size=2> CurrentRX.IsValid = </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>Thanks,</P>
+<P>Rob</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,47 @@
+<html><header><title>Finding properties by Name</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Finding properties by Name</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6346.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle posted on Thursday, February 05, 2009</h2><P>I have a long list of properties in my Object.&nbsp; These properties coorespond to a Line Items on an Application, sorta like your tax return.&nbsp; Each line has a Chargeable, Non-Chargeable and Total property.</P>
+<P>I would like to use the property changed even to place a generic routine to update the total properties. All of the Properties are similearly name "line20c", "line20nc", "line20t"..and so on.</P>
+<P>I tried:</P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> strLine <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT> = Left(e.PropertyName, 6)<BR><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> LineTotal <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Decimal</FONT></FONT> = 0</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> ChargabelProperty <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> Csla.PropertyInfo(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> System.Decimal) = <FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.FieldManager.GetRegisteredProperties(strLine &amp; <FONT color=#a31515><FONT color=#a31515>"c"</FONT></FONT>)</FONT></FONT></P><FONT size=2><FONT face="Courier New">
+<P><BR><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> NonChargabelProperty <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> Csla.PropertyInfo(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> System.Decimal) = <FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.FieldManager.GetRegisteredProperties(strLine &amp; <FONT color=#a31515><FONT color=#a31515>"c"</FONT></FONT>)<BR><FONT color=#0000ff><FONT color=#0000ff></FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> TotalProperty <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> Csla.PropertyInfo(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> System.Decimal) = <FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.FieldManager.GetRegisteredProperties(strLine &amp; <FONT color=#a31515><FONT color=#a31515>"c"</FONT></FONT>)</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>LineTotal = LineTotal + GetProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> System.Decimal)(ChargabelProperty)<BR>LineTotal = LineTotal + GetProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> System.Decimal)(NonChargabelProperty)</FONT></P>
+<P><FONT face="Courier New" size=2>SetProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> System.Decimal)(TotalProperty, LineTotal)</FONT></P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P>
+<P><FONT face="Courier New" size=2>But GetRegisteredProperties expects the index number not name</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, February 05, 2009</h2><P>I have a similar requirement. I solved this by&nbsp;maintaining a lazy-loaded static dictionary type object in my own class for doing name-based lookup. The first time a lookup is done, the entire property info list is retreived and added by name. After that, you can just index them yourself anyway you prefer.</P>
+<P>This is C#, but here is my code for doing this...</P>
+<P>(OT: can someone please show me how to post code samples that look decent? )</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Dictionary</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IPropertyInfo</FONT></FONT><FONT size=2>&gt; _propertyTable;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Dictionary</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IPropertyInfo</FONT></FONT><FONT size=2>&gt; ManagedPropertyTable</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_propertyTable == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_propertyTable = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Dictionary</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IPropertyInfo</FONT></FONT><FONT size=2>&gt;();</P>
+<P>LoadManagedPropertyTable();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _propertyTable;</P>
+<P>}</P>
+<P>}</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> LoadManagedPropertyTable()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> properties = FieldManager.GetRegisteredProperties();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> properties)</P>
+<P>{</P>
+<P>_propertyTable.Add(item.Name, item);</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, February 05, 2009</h2><P>My suggestion would be to use LINQ on the list returned from GetRegisteredProperties().&nbsp; Something like:</P>
+<P><CODE>Dim chargableProperty = Me.FieldManager.GetRegisteredProperties().First(Function(p) p.Name =&nbsp;strLine &amp; "c")</CODE></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, February 05, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div>
+<P>My suggestion would be to use LINQ on the list returned from GetRegisteredProperties().&nbsp; Something like:</P>
+<P><CODE>Dim chargableProperty = Me.FieldManager.GetRegisteredProperties().First(Function(p) p.Name =&nbsp;strLine &amp; "c")</CODE></P>
+<P>&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>Is that an indexed search or is it going to scan the entire list? That would be my concern with using that approach (since the&nbsp;OP said there were many properties).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, February 05, 2009</h2><P>If the original list isn't indexed, which I don't believe it would be, then no.&nbsp; However, LINQ is supposed to (I said supposed to!) be more performant when executing these types of queries.&nbsp; Should be simple enough to benchmark.&nbsp; Let us know what you find out.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Friday, February 06, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div>
+<P>My suggestion would be to use LINQ on the list returned from GetRegisteredProperties().&nbsp; Something like:</P>
+<P><CODE>Dim chargableProperty = Me.FieldManager.GetRegisteredProperties().First(Function(p) p.Name =&nbsp;strLine &amp; "c")</CODE></P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>This worked very nicely and clean.&nbsp; I was doing a for counter loop and doing a name compare.&nbsp; but the code wasn't as clean looking as this...thats a bunch</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

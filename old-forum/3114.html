@@ -1,0 +1,90 @@
+<html><header><title>Hierachical model - case for switchable</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Hierachical model - case for switchable</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3114.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>electronjockey posted on Thursday, June 28, 2007</h2><P><FONT face=Verdana>Group,<BR>Up front I have to admit to being a novice when it comes to OOP design. <BR>I'm trying my best, but i'm having difficulty figuring out which classes to inheret, and thus a satisfactory object model&nbsp;for this hierarchial data i have.<BR><BR>Using a folder structure in a filesystem as an analog.&nbsp;I have one or more folders at the top which may contain one or more folders, which may each contain one or more folders,&nbsp;and so on.<BR>Do i have a case then where both Folders and Folder need to be switchable? </FONT></P>
+<P><FONT face=Verdana>I'll freely admit if i'm misuderstaning something, but it seems to me that the&nbsp;top level collection of folders is initially&nbsp;a Root and a Parent and is editable. A given folder within that collection is thus a child and is editable, but is also a parent for a Folders collection which then suggests that "Folders" be switchable, or that I at least have a SubFolders object that derives from Folders that's defined as a child.<BR>Any guidance would be appreciated.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 29, 2007</h2><P>The filesystem scenario is one of the few where switchable does make sense.</P>
+<P>But there are few business use cases that actually match a filesystem in reality. There are many <EM>data relationships</EM> that look similar, but very few <EM>usage scenarios</EM> that are similar. And your objects should be designed to match usage scenarios, not data relationships.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>electronjockey replied on Saturday, June 30, 2007</h2><P><FONT face=Verdana>Rocky,<BR>Thanks for the reply. As I say I'm still sort of finding my feet with regard to OO design. My background is in SQL so structuring the data and writing procedural code is my strength, and&nbsp;I have no formal training&nbsp;in&nbsp;C# despite the fact i've been&nbsp;"coding" for the past 4+ years.&nbsp;This is why I have a hard time clearly defining an object model. </FONT></P>
+<P><FONT face=Verdana>I realize this isn't CSLA specific, but I appreciate any comments. So this is what I perceive my usage scenario to be, at least as I understand the concept:</FONT></P>
+<P><FONT face=Verdana>This is an application for a military client. The client is responsible for tracking certain information about&nbsp;commands. Administrators must be able to add, update and delete a command (subject to certain business rules). Each command may be the parent command (their term) of any number of subordinate commands. </FONT></P>
+<P><FONT face=Verdana>The application must be flexible enough to allow administrators to reassign (read move) a command from under it's current parent to any other command, to include the top (root level). (This suggests a treeview in the UI)</FONT></P>
+<P><FONT face=Verdana>Users who will be responsible for entering data&nbsp;can be associated with one or more commands and will require visibility of all subordinate commands. Thus in the case of a commander who is associated with two commands there will be more than one top level command displayed in the interface.</FONT></P>
+<P><FONT face=Verdana>So for me it would seem that the&nbsp;Commands collection (editable)&nbsp;is a root&nbsp;collection&nbsp;which is a parent of one or more other child&nbsp;Command objects (editable)&nbsp;which are subsequently parent to a child Commands collection.<BR>Also, from a data handling efficiency perspective it would seem to&nbsp;make sense to me to query for all commands below any selected command, returning one set of data (in the case of the administrator the entire tree, and in the case of the user from his command(s) down). So i'd be passing the entire DataReader through the object hierarchy, and looping through it to build a subordinate Commands colleciton vice making repeated round trips to the db.</FONT></P>
+<P><FONT face=Verdana>Opinions? I'm looking for validation of my thought process, so if I'm way off base, I appreciate any education you can offer.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 30, 2007</h2><P>You are potentially describing 2-3 use cases.</P>
+<OL>
+<LI>Add a command</LI>
+<LI>Move a command</LI>
+<LI>View all commands</LI></OL>
+<P>You might consider using the tree UI metaphor, but binding it to a set of objects designed around use case #3. In other words, they might be "read-only" to a large degree. In fact, they might be less business objects than UI objects.</P>
+<P>When the user clicks the option to add a command, you'd use a CommandEdit object for that purpose. A different object from the display objects, because this is a different use case. Once the add is complete, the view objects could handle an event so they know there's the need to update the view accordingly.</P>
+<P>Similarly, when the user drags-and-drops a command beneath a different command, behind the scenes this may execute a CSLA Command object to do the move in the database. When that move operation is complete a similar event to the view object(s) would indicate to refresh the view.</P>
+<P>Refreshing the view doesn't necessarily mean reloading all the data. As long as enough information is passed via those events, the view should be able to update itself based on the events alone.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>electronjockey replied on Monday, July 02, 2007</h2><P><FONT face=Verdana>Rocky,<BR>Thank you so much for the education. You've given me some really good information and suggestions to digest. <BR>Since, as I mentioned, I'm pretty weak on OO design, do you have any recommendations for good reference materials?<BR>Regards,<BR>Todd Hicks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Some of my favorites:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>David West: Object Thinking<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Eric Evans: Domain-Driven Design<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>David Taylor: Object-Oriented Technology: A Manager&#8217;s
+Guide<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>GoF: Design Patterns<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Martin Fowler: Patterns of Enterprise Application Architecture<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Hohpe/Woolf: Enterprise Integration Patterns<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> electronjockey
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 02, 2007 8:05 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Hierachical model - case for switchable<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Rocky,<br>
+Thank you so much for the education. You've given me some really good
+information and suggestions to digest. <br>
+Since, as I mentioned, I'm pretty weak on OO design, do you have any
+recommendations for good reference materials?<br>
+Regards,<br>
+Todd Hicks</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

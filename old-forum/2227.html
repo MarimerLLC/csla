@@ -1,0 +1,90 @@
+<html><header><title>Mapping String Literals</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mapping String Literals</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2227.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Monday, January 29, 2007</h2>The wide spread reliance on string literals in .NET must be the biggest
+damn issue for run time exceptions and refactoring. I note that in the
+latest enhancements for validation rules etc ( refer 2.1 eBook)&nbsp; ,
+despite all the great aspects of generics and strong typing,&nbsp; that
+we still have to rely on string literals for connecting propert y
+names. <br>
+<br>
+Despite the due dilligence of programmers, the use of string literals
+in this way is rather risky from a quality control aspect. <br>
+<br>
+Is there not a systematic way of mapping that can ensure that for
+example property name changes can be comprehensively refactored to deal
+with this problem - or dispense with string literals altogether?<br>
+<br>
+Jimbo <br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, January 29, 2007</h2><P>I suspect Rocky aimed to solve this issue as much as possible within the framework. </P>
+<P>I recall, in a speech he made at the .Net developers group in Minneapolis, he mentioned the use of PropertyHasChanged, for instance, has a couple overloads - one being with the string literal of the property name and one without. The one without involves using reflection in PropertyHasChanged, looking at the stacktrace, to determine which property "has changed" -- it removes the need for string literals and well, it saves Rocky the extra typing. One can use the string literal to avoid the reflection call to get the property. I find, for example, the code generation I uses the string literal - obviously no real room for error in this case (code gen).</P>
+<P>I think what would be potentially useful (I guess I don't know if this is done currently or not) is that runtime exceptions get thrown if one adds a validation rule to a property or calls PropertyHasChanged for a property that doesn't exist. Perhaps what would be involved is a static cache of the available properties via reflection. At least in this case it would be an explicit error rather than some "hard-to-track" side effect of the validation rule not applied to the proper property or something to that effect. </P>
+<P>But then you end up compromising how some people might use PropertyHasChanged and validation rules. There's nothing stopping the developer from using these constructs, to my knowledge, against a "custom property bag" or something to that effect. In other words, I might actually want to use string literals that don't apply to a particular compile-time property on the object. </P>
+<P>Probably more rambling than anything... </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Monday, January 29, 2007</h2>The aspect i was using as an example was not with Validation rules
+PropertyHasChanged()&nbsp; etc., but with AddRules where the ENTRY
+point requires the property name to be entered as a string.&nbsp; But
+the issue itself is wider than just csla - take DataBindings as another
+example when you are doing it programatically. Code genertion applies
+the same risks with literals but i'm all about iterative development.<br>
+<br>
+Jimbo <br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, January 29, 2007</h2><P>Unfortunately you will not get away from having to be a programmer.&nbsp; You can automate many features, reflection and the stack trace method Rocky shows help this, but at some point you have to define the name for your property.&nbsp; Even with reflection, unless you are iterating the properties, you still have to identify the property you want.</P>
+<P>How else would you identify the specific property except by name?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, January 29, 2007</h2>
+
+<p class="MsoNormal">I share your concerns about using string literals.<span>&nbsp; </span>You could declare a constant variable for
+every property name in every class.<span>&nbsp; </span>I
+have tried this in a previous project and it worked out well.<span>&nbsp; </span>It is extra work, but if you are concerned
+about using string literals, it might be worth a try.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, January 29, 2007</h2><P>You can use a resource file as well but no matter what the approach, at some point you are going to have to map that "constant" to the string name of the property and make sure that it remains consistent with the actual name.&nbsp; Granted, having it as a constant or in a resource file centralizes any changes but in an application with 200+ classes (such as the one I am working on now)... Look at all the extra work you've added to the project.&nbsp; Just my opinion, but I don't see it being worth the trouble.&nbsp; Again, just my opinion.</P>
+<P>What I would like to see is a way to integrate Intellisense into reflection.&nbsp; Then, instead of this.GetType().GetProperty("PropertyName"), you could refer to the property as this.GetType().PropertyName - or something like that.&nbsp; IMO, by accessing the property through the Type object, you'd be telling the CLR that you are accessing the PropertyInfo (or Descriptor depending on how they did it) rather than the instance value of the property.&nbsp; It would kinda work like resources now.&nbsp; To me, that's the cleanest way to accomplish it.&nbsp; Then, if you change the name of the property or remove it, you'd get a compile time error rather than having to wait for it to crash at runtime.</P>
+<P>Just my thoughts...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, January 29, 2007</h2>You could take a page from Microsoft's book and attempt to add a code generation step into your build process.&nbsp; This step could look at a class and generate a partial class with a list of constants that corresponded to the property names.&nbsp; Just an idea...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 30, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>You could take a page from Microsoft's book and attempt to add a code generation step into your build process.&nbsp; This step could look at a class and generate a partial class with a list of constants that corresponded to the property names.&nbsp; Just an idea...<BR></div></BLOCKQUOTE></P>
+<P>I use enumerations for this purpose, and for database procedure names too.&nbsp;&nbsp;&nbsp; Just have to ToString() them.&nbsp; They also provide intellisense. ;)</P>
+<P>Hadn't thought of doing a generator to create the enumeration in a partial class.&nbsp;&nbsp; That's an interesting idea.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, January 31, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>You could take a page from Microsoft's book and attempt to add a code generation step into your build process.&nbsp; This step could look at a class and generate a partial class with a list of constants that corresponded to the property names.&nbsp; Just an idea...<BR></div></BLOCKQUOTE></P>
+<P>I use enumerations for this purpose, and for database procedure names too.&nbsp;&nbsp;&nbsp; Just have to ToString() them.&nbsp; They also provide intellisense. ;)</P>
+<P>Hadn't thought of doing a generator to create the enumeration in a partial class.&nbsp;&nbsp; That's an interesting idea.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>This is interesting.</P>
+<P>How do you create a form (using DataBinding), for example?&nbsp; The drag-and-drop in the designer assumes late bound string literals.</P>
+<P>One direction I've seen taken is to develop a sort of framework around avoiding string literals.&nbsp; The application runtime&nbsp;is based on metadata.&nbsp; There is a custom forms designer that stores binding metadata rather than using codedom to write string literal databinding.&nbsp; One of the coding steps associated with compiling is to run the utility that churns through the metadata and verifies with reflection that it's all valid.</P>
+<P>I've considered somewhat of a hybrid approach becuase I've discovered information that implies that (in theory at least) you can override the default serialization the forms designer uses such that instead of codedom generation it could save metadata.</P>
+<P>The other thing I've considered is that it doesn't seem like a terribly daunting task to write a checker that could run through the entire application and verify the touchpoints between the layers ... that all the UI code referencing properties by string literals actually match an existing property, that the database load code in the BOs actually match the database schema, etc.&nbsp; Not a small task, of course, but not terribly difficult it seems to me.&nbsp; It think it would be natural in a code generation environment to include this as part of the generation process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, February 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div> 
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>You could take a page from Microsoft's book and attempt to add a code generation step into your build process.&nbsp; This step could look at a class and generate a partial class with a list of constants that corresponded to the property names.&nbsp; Just an idea...<BR></div></BLOCKQUOTE></P>
+<P>I use enumerations for this purpose, and for database procedure names too.&nbsp;&nbsp;&nbsp; Just have to ToString() them.&nbsp; They also provide intellisense. ;)</P>
+<P>Hadn't thought of doing a generator to create the enumeration in a partial class.&nbsp;&nbsp; That's an interesting idea.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>This is interesting.</P>
+<P>How do you create a form (using DataBinding), for example?&nbsp; The drag-and-drop in the designer assumes late bound string literals.</P>
+<P></div></BLOCKQUOTE></P>
+<P>The properties are still named with strings.&nbsp; Didn't get around that!&nbsp; It's just that all places where I would type in a string literal to reference them (i.e., that the compiler wouldn't naturally catch), I use an enumeration.</P>
+<P>So, instead of :</P>
+<P>&nbsp;&nbsp;&nbsp;CallSomeRoutine("MyPropertyName");</P>
+<P>I have:</P>
+<P>&nbsp;&nbsp;&nbsp;CallSomeRoutine(MyProperties.MyPropertyName.ToString());</P>
+<P>I could still have a mis-match between the name in the enumeration and the name of the property, but that still reduces the problem to a much more manageable size.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div></P>
+<P>The other thing I've considered is that it doesn't seem like a terribly daunting task to write a checker that could run through the entire application and verify the touchpoints between the layers ... that all the UI code referencing properties by string literals actually match an existing property, that the database load code in the BOs actually match the database schema, etc.&nbsp; Not a small task, of course, but not terribly difficult it seems to me.&nbsp; It think it would be natural in a code generation environment to include this as part of the generation process.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yeah, I've wanted one of those too... Never had the time to sit down and write one.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Wednesday, February 28, 2007</h2>Thank you guys for some good ideas to think about.<br>
+Can't say which direction we might take at this time .. and i notice
+that there are several recent discussions regarding entity schema
+re-use that are also relevant to the problem.<br>
+We have an additional issue in that management policy requires the
+retention of Hungarian notation for variables and&nbsp; property
+names.&nbsp; For example StartDate may be called pdteStartDate while
+the column returned from a datarow will be StartDate. In the UI this
+will&nbsp; be labeled Start Date if using programmatic binding, but
+with auto binding it will of course display the prefix. Another example
+would be an&nbsp; ID for which the property name in the business object
+may be&nbsp; called piID.<br>
+This exacerbates the string literal problem in some ways, since the
+property name and the data column name are different, but on the
+otherhand the Intellisence name sorting is good.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2><P>Interestingly enough, this was an area of focus for VB 9, though the feature got deferred <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>But you were going to be able to do this:</P>
+<P>Dim x As String = _obj.("GetName")</P>
+<P>and this would have called the GetName method on _obj.</P>
+<P>Since "GetName" is a literal string, it could have been a variable</P>
+<P>Dim method As String = AppSettings("MethodToCall")<BR>Dim x As String = _obj.(method)</P>
+<P>That would've been so darn cool! Alas, it didn't make the cut. But perhaps VB 10 will have it, assuming Ruby/Python keep applying dynamic language pressures to the industry. VB already has a large percentage of the dynamic features, but it needs a couple more. And I don't know of any language that has quite this capability.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

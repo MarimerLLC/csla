@@ -1,0 +1,8 @@
+<html><header><title>Could someone please tell me if this is a vaild use of a child BLB object...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Could someone please tell me if this is a vaild use of a child BLB object...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8671.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AdamJones posted on Tuesday, March 16, 2010</h2><p>Is it valid to have a child BLB class that is used by a number of different parent classes?</p>
+<p>For example I have an Employee class that has a child BLB of Absences (EmployeeAbsences), I have then got an EmployeeAbsenceMonth class which has a child BLB of the same type for each day of the month. </p>
+<p>I&#39;m aware that this might seem slightly odd but I need to bring the data
+ into such a class in order to be able to bind a DataGridView to it.</p>
+<p>The child objects only ever exist in one list,&nbsp; separate copies are created for each parent.</p>
+<p>The reason i ask is that i get a stack overflow exception when i call the .Parent property of EmployeeAbsences.</p>
+<p>Thanks,</p>
+<p>Adam</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

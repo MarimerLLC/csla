@@ -1,0 +1,333 @@
+<html><header><title>Peer review of my DataPortal code required</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Peer review of my DataPortal code required</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6303.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sroberts posted on Saturday, January 31, 2009</h2><font size="2" face="Arial">Can someone help me?<br><br>I'm a pre-version 3.0 CSLA'er attempting to come to the brave new world of v3.6.1 with managed properties and lazy loading… <br><br>I would very much appreciate (I can beg if needed) a peer-review on a some excerpts from my DataPortal code using the traditional (Pre-LINQ) method of data access with SQL server;<br><br>The excerpts below are from a Quotation (BusinessBase) object that is parent to a QuotationItems (BusinessListBase) collection, I’ll just get the code listed first and then ask my questions at the end, please paraphrase through the code, it’s not 100% complete as I’ve chopped a lot of property loading/saving, the examples given should be enough for someone to tell me if I’m on the right track (or not…)<br><br><u><b>Child Property Definition/Accessor</b></u><br><br><font color="#0000ff" size="1" face="Courier New">&nbsp;&nbsp;&nbsp; Private Shared QuotationItemsProperty As PropertyInfo(Of QuotationItems) = _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty(Of QuotationItems)(New PropertyInfo(Of QuotationItems)("QuotationItems", "QuotationItems"))<br>&nbsp;&nbsp;&nbsp; Public ReadOnly Property QuotationItems() As QuotationItems<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(QuotationItemsProperty) Then _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of QuotationItems)(QuotationItemsProperty, QuotationItems.GetQuotationItems(Me.QuotationID))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of QuotationItems)(QuotationItemsProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br><br>&nbsp;&nbsp;&nbsp; End Property</font><br><br><u><b>DataPortal methods</b></u><br><br><font size="1" face="Courier New"><font color="#008000">&nbsp;&nbsp; &lt;RunLocal()&gt; _<br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Create()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'CREATE NEW OBJECT WITH DEFAULT VALUES<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(HighestRevisionProperty, 1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of CreatedUpdated)(CreatedUpdatedProperty, New CreatedUpdated)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(CustomerIDProperty, -1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(ContactIDProperty, -1)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of String)(CompanyNameProperty, "")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of String)(ContactNameProperty, "")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Decimal)(DiscountProperty, 0)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of DeliveryAgent)(DeliveryAgentProperty, New DeliveryAgent(-1))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Decimal)(DeliveryCostProperty, 0)<br><font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of QuotationItems)(QuotationItemsProperty, Nothing)</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules()<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Private Overloads Sub DataPortal_Fetch(ByVal dr As SafeDataReader)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'CREATE NEW OBJECT USING DATA PASSED IN<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With dr<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Read()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(HighestRevisionProperty, .GetInt32("HighestRevision"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of CreatedUpdated)(CreatedUpdatedProperty, New CreatedUpdated(dr))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Integer)(CustomerIDProperty, .GetInt32("CustomerID"))<br><font color="#000000" size="2" face="Arial"><br>etc, etc...</font><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With<br><font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of QuotationItems)(QuotationItemsProperty, Nothing)</font><br><br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Private Overloads Sub DataPortal_Fetch(ByVal criteria As Criteria)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(BSM.BLL.Common.Security.Login.ConnectionString)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "vsp_GetQuotation"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@QuotationID", Criteria.QuotationID)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using dr As New SafeDataReader(cm.ExecuteReader)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal_Fetch(dr)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Protected Overrides Sub DataPortal_Insert()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DoInsertUpdate()<br><br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Protected Overrides Sub DataPortal_Update()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DoInsertUpdate()<br><br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Private Sub DoInsertUpdate()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If MyBase.IsDirty AndAlso MyBase.IsSavable Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(BSM.BLL.Common.Security.Login.ConnectionString)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = cn.CreateCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "vsp_StoreQuotation"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With cm<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .CommandType = CommandType.StoredProcedure<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Parameters.AddWithValue("@QuotationID", ReadProperty(Of BSM_ID)(BSM_IDProperty).ThisID)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .Parameters.AddWithValue("@CustomerID", ReadProperty(Of Integer)(CustomerIDProperty))<br>etc, etc...<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'IF INSERTING A NEW RECORD THEN UPDATE THE PRIMARY RECORD ID TO BE THAT AS RETURNED BY THE STORED PROCEDURE</font><br><font color="#ffa500">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If ReadProperty(BSM_IDProperty).ThisID &lt; 0 Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pResult As SqlDataReader = .ExecuteReader<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If pResult.Read Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReadProperty(BSM_IDProperty).ThisID = CInt(pResult(0))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br></font><font color="#008000">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .ExecuteNonQuery()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Close()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</font><br><font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.UpdateChild(ReadProperty(Of QuotationItems)(QuotationItemsProperty), Me)</font><br><br><font color="#008000">&nbsp;&nbsp;&nbsp; End Sub</font></font><br><br>Questions<br><br>1) Am I initialising, loading and saving properties correctly in the Create/Fetch and InsertUpdate methods? (Ignore child object access, that’s Q2 below)<br><br>2) All of <font color="#0000ff">the lines in blue </font>deal with initialisation, loading and saving of the QuotationItemsProperty (my child object collection), given I want to use lazy loading, I wasn't sure if I should be setting it to Nothing or something else initially….<br><br>3) QuotationID is an identity column in the SQL databse and so in my Stored Proc I'm doing a SELECT @@SCOPE_IDENTITY to return the new QuotationID on an INSERT, <font color="#ffa500">the lines in orange </font>deal with getting this new identity value back into the object. Then when I call UpdateChild, I pass the Quotation object (me) to it as a parameter which in turn uses the new QuotationID for updating into the child object records as I save each; I assume this is the correct way to handle foreign key updates where the parent is a new entry in the database?<br><br>Finally, a plea to Rocky…It seems that in the latest 2008 C# book, the traditional data access technique (ADO.Net + SQL Server) have pretty much been put aside in favour of LINQ, which is fine but a couple of examples of retrieving and saving managed properties using the old (!) method would be nice, also if one of the child classes in the sample project tracker could be written to use the same it would be help us newbies upgrading to 3.6.1<br><br>As a side issue, I do now worry that I am perhaps in a minority of people using CSLA and ADO.Net with SQL Server and that I must learn LINQ as quickly as I can to stay in step with Rocky's progress or maybe I should be learning about the ADO.NET Entity Framework</font><font size="2" face="Arial">....</font><img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><font size="2" face="Arial"><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, January 31, 2009</h2><P>I do not think you are in the minority with ADO.Net.</P>
+<P>Look what happened to LINQ To SQL since the book came out - MS "killed" it already. Well they stopped working on it anyway. EF is just the next greatest technology from MS. </P>
+<P>I plan to stick with "raw" ADO.Net into the future as it should be the underpinnings of whatever MS comes up with next. Besides not every database is designed using relationships etc so some of these technologies can't be leveraged as much as you might want.</P>
+<P>I have not made the move to Managed properties yet so I won't try to respond to your other comments.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 31, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sroberts:</strong></div><div><FONT size=2 face=Arial><BR>As a side issue, I do now worry that I am perhaps in a minority of people using CSLA and ADO.Net with SQL Server and that I must learn LINQ as quickly as I can to stay in step with Rocky's progress or maybe I should be learning about the ADO.NET Entity Framework</FONT><FONT size=2 face=Arial>....</FONT><img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><FONT size=2 face=Arial><BR></FONT></div></BLOCKQUOTE></P>
+<P>I took a gamble on L2S with the book, and lost. But I really couldn't win. ADO.NET EF wasn't released yet, so I really couldn't use it (and I find version 1 to be iffy anyway). And I personally use raw ADO.NET as a general rule.</P>
+<P>But if the book didn't use "current" technology then some people would see the book (and/or CSLA) as irrelevant because it uses "old" technology.</P>
+<P>The reality is that the ADO.NET code in ProjectTracker 3.0 is the same for 3.6. The data portal hasn't changed that radically. The only difference is the new Child_XYZ methods. You had to write those before too - but you got to pick the method name. Now the data portal dictates the method name (and reduces the code you have to write), but the ADO.NET parts should be unchanged.</P>
+<P>(except that you probably want to use the ConnectionManager class now, as that makes things a lot easier)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, January 31, 2009</h2><P>I digress, but one of the main lessons I took from the 2005&nbsp; book is never to depend on Microsoft sticking with any particular data access technology. Our legacy app we are replacing first used ODBC, then DAO was the greatest thing since sliced bread (sorry, I'm dating myself ;), then we went back to ODBC for SQL Server and Oracle. Then Microsoft came out with .NET and essentially orphaned the entire C++ community and also moved to dissimilar data access technologies (e.g. ADO.NET, which really doesn't even have anything resembling a fully scrollable result set).</P>
+<P>This is exactly why I went with an ORM (which I'm really just using as ADO.NET SQL generator). It supports some 12 different back-end databases (of which we currently support 4 or so), and CSLA was easy to bolt on top of it. When we can't use it anymore, I can swap it out with something else without having laced the application with some technology that MS decides is now obsolete (although I suppose that can and will eventually happen with C#, etc.). </P>
+<P>I really liked that CSLA 2.x was more data layer agnostic, but it is certainly true that the new L2S features built in are a convenience that you can choose to use or not, and you can still use whatever data access method you want.&nbsp;You can (and should IMHO) design your app so that the DAL is swappable and you can replace it with something else down the road without a complete rewrite. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 31, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Do you really think v2.x was more data layer agnostic?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Certainly I&#8217;ve added some optional helpers to deal with
+ADO.NET, LINQ to SQL and ADO.NET EF, but I&#8217;ve also added ObjectFactory
+which opens up whole new avenues of being DAL agnostic. And all the 2.x
+concepts work as always.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, January 31, 2009 5:49 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Peer review of my DataPortal code required<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I digress, but one of the main lessons I took from the 2005&nbsp; book is
+never to depend on Microsoft sticking with any particular data access
+technology. Our legacy app we are replacing first used ODBC, then DAO was the
+greatest thing since sliced bread (sorry, I'm dating myself ;), then we went
+back to ODBC for SQL Server and Oracle. Then Microsoft came out with .NET and
+essentially orphaned the entire C++ community and also moved to dissimilar data
+access technologies (e.g. ADO.NET, which really doesn't even have anything
+resembling a fully scrollable result set).<o:p></o:p></p>
+
+<p>This is exactly why I went with an ORM (which I'm really just using as
+ADO.NET SQL generator). It supports some 12 different back-end databases (of
+which we currently support 4 or so), and CSLA was easy to bolt on top of it.
+When we can't use it anymore, I can swap it out with something else without
+having laced the application with some technology that MS decides is now
+obsolete (although I suppose that can and will eventually happen with C#,
+etc.). <o:p></o:p></p>
+
+<p>I really liked that CSLA 2.x was more data layer agnostic, but it is certainly
+true that the new L2S features built in are a convenience and you can (and
+should IMHO) design your app so that the DAL is still swappable and you can
+replace it with something else down the road without a complete rewrite. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sroberts replied on Sunday, February 01, 2009</h2>Thanks for the responses so far, I'm reassured that my ADO.NET to SQL skills are still relevant. Although I still can't find any explicit examples of using ADO.NET and SQL with the new managed properties way of doing things....(remember I'm coming from a CSLA v2 world)<br><br>If someone could answer my original 3 questions, even if it's just a
+simple; yes, yes, yes, that would be very much appreciated and I can
+move on to my next issues (data binding a child collection....a new
+post I think.)<br><br><b>Rocky, </b><br><br>Do you intend removing the LINQ code in the project tracker sample and perhaps put in ADO.NET SQL type data access with the managed properties<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are a couple ways to get/set the property values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One is to use ReadProperty() and LoadProperty():<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>LoadProperty(IdProperty, dr.GetInt32(&#8220;Id&#8221;));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>cm.Parameters.AddWithValue(&#8220;@id&#8221;,
+ReadProperty(IdProperty));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you&#8217;d like, you can replace the ReadProperty() values
+with the use of BypassPropertyChecks:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>using (BypassPropertyChecks)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; cm.Parameters.AddWithValue(&#8220;@id&#8221;, Id);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And if you always have a set block on your properties (use a
+private set block for read-only properties) then you can use
+BypassPropertyChecks for loading properties too:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>using (BypassPropertyChecks)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Id = dr.GetInt32(&#8220;Id&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The results are the same regardless, so it is really a matter of
+style and what you find simpler. I tend to use BypassPropertyChecks these days &#8211;
+though I still need to use LoadProperty()/ReadProperty() in some cases, because
+I don&#8217;t always have accessible property get/set blocks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, February 01, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Do you really think v2.x was more data layer agnostic?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Certainly I’ve added some optional helpers to deal with ADO.NET, LINQ to SQL and ADO.NET EF, but I’ve also added ObjectFactory which opens up whole new avenues of being DAL agnostic. And all the 2.x concepts work as always.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal>
+<P></div></BLOCKQUOTE></P></P></DIV>
+<P>Well, maybe this was a slight overstatement, but after our last discussion of transaction management and the CSLA ContextManager, my inital reaction was "Great, maybe I can use that instead of my home-grown solution". Then I went and looked at it, and it turned out (at least to my first read) that it's only useful if your using Linq. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are several manager classes:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ConnectionManager (for any ADO.NET model)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ContextManager (for L2S)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ObjectContextManager (for ADO.NET EF)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My guess is that you just looked at ContextManager, which is L2S
+only. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But ConnectionManager manages a normal ADO.NET connection
+object, so any DAL that uses a connection may be able to use it. Certainly if
+you create your own ADO.NET based DAL, you could use it within your DAL. Or if
+you are using a DAL based on some other technology, the only requirement is
+that you be able to pass the connection into the DAL rather than having the DAL
+open its own connection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For example, L2S will automatically open a connection to do a
+query. But you can, if you want, give it a pre-opened connection before doing
+the query, and it will use that pre-opened connection. Most Microsoft data access
+technologies work that way, because they want to leave the flexibility for you
+to open and manipulate the connection, and still use that connection for
+working with things like L2S or EF or a TableAdapter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sroberts replied on Monday, February 02, 2009</h2>Thank you for your replies so far Rocky.<br><br>With regard to <span>ConnectionManager, I must admit I've not read up
+on that helper as yet, currently as you can see I create a
+SqlConnection and command object on the fly in the DataPortal methods
+using a connection string held by my Authentication module (the user
+has to use a login screen to connect to the server/database, this
+builds the connection string and then makes it available to the whole
+engine). I'll look into ConnectionManager to see what benefits that offers.<br>
+ </span><br>I'm almost 100% happy that my property loading/unloading methods are correct now....however the final issue I would like resolving is concerning the initialisation/loading/updating of the child object collection, which are the lines in blue concerning QuotationItems.<br><br>Am I correct to CREATE and FETCH this property as Nothing ? (I did this because I didn't want an 'empty' list nor did I want to have to retrieve the data until it was actually called for via the property Get.<br><br><span><br> </span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 02, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sroberts:</strong></div><div>...With regard to <SPAN>ConnectionManager, I must admit I've not read up on that helper as yet, currently as you can see I create a SqlConnection and command object on the fly in the DataPortal methods using a connection string held by my Authentication module (the user has to use a login screen to connect to the server/database, this builds the connection string and then makes it available to the whole engine). ...</SPAN><BR><SPAN><BR></SPAN></div></BLOCKQUOTE></P>
+<P>I'm curious -- since the login screen is presented on the "client" side of the data portal, how are you getting this information to over to your module so that it is accessible on the "server" side, where the connection is actually made? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sroberts replied on Monday, February 02, 2009</h2>That's a good question and one that I suspect I haven't had to deal with as yet, everything runs on the client with not remote dataportal.<br><br>So I guess the scope of the application allows access to my authentication library instance and hence the connection string it maintains.<br><br>I do need to review my data connection methods to ensure this app is future proofed for a possible client/server setup.<br><br>Thanks for pointing that out.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So you want a lazy loaded child object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In that case you simply ignore that child field/property in the
+create/fetch process. And you include code in your property to get the child
+object on-demand:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public ChildType Child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; if (!FieldManager.FieldExists(ChildProperty))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; LoadProperty(ChildProperty,
+ChildType.GetChild(this.Id)); // pass params necessary to identify child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; return GetProperty(ChildProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then in your insert/update/delete methods, you need to use the
+FieldExists() method to determine if the child is there, and if so, then
+insert/update/delete its data. If you use FieldManager.UpdateChildren() to
+update your child objects it will do the FieldExists() check for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sroberts
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 02, 2009 4:22 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Peer review of my DataPortal code
+required<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thank you for your replies so far Rocky, I'm almost 100%
+happy that my property loading/unloading methods are correct now.<br>
+<br>
+However the final issue I would like resolving is concerning the
+initialisation/loading/updating of the child object collection, which are the
+lines in blue concerning QuotationItems.<br>
+<br>
+Am I correct to CREATE and FETCH this property as Nothing ? (I did this because
+I didn't want an 'empty' list nor did I want to have to retrieve the data until
+it was actually called for via the property Get.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, February 02, 2009</h2><P>Sorry, maybe offtipic but..</P>
+<P>That reminds me:</P>
+<P>Using the ObjectFactory i can't access the FieldManager.FieldExists() that easy.<BR>PS: Yes, i'm using lazy loading combined with the ObjectFactory, it works perfectly for fetching.<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

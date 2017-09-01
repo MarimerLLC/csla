@@ -1,0 +1,37 @@
+<html><header><title>Losing user roles</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Losing user roles</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10718.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic posted on Tuesday, September 27, 2011</h2><p>I have an MVC app with my own custom principal (inherit from CslaPrincipal) and custom identity (since I need to do some extra validation to see if member is allowed to log in). &nbsp;</p>
+<p>When the member logs in, I write the forms auth cookie, which is then read it on each request (Application_OnAuthenticateRequest in Global.asax)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected void Application_OnAuthenticateRequest(Object sender, EventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var authHttpCookie = Request.Cookies.Get(FormsAuthentication.FormsCookieName); &nbsp;// Grab the user&#39;s login information from FormsAuth</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (authHttpCookie == null) return; // If the cookie can&#39;t be found, then the ticket was not issued, so exit. No need to continue.</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var formAuthTicket = FormsAuthentication.Decrypt(authHttpCookie.Value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var userIdentity = new FormsIdentity(formAuthTicket); &nbsp;//Note: formAuthTicket.Name contains the Username; formAuthTicket.UserData contains the list of roles</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MediaNaranja.Library.DomainObjects.Security.MnPrincipal.Load(userIdentity.Name, formAuthTicket.UserData);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<div></div>
+<p>&nbsp;</p>
+<p>My load method in Principal creates the identity and parses the list of roles (they are saved as csv). It then sets the user to the newly created principal</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var principal = new GenericPrincipal(mnIdentity, rolesArray);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = principal;</p>
+<p>&nbsp;</p>
+<p>Right after I call the load method from Application_OnAuthenticateRequest the expression Csla.ApplicationContext.User.IsInRole(&quot;MEMBER&quot;) evaluates to true. &nbsp;On the same page request when I set a breakpoint in the home controller and check IsInRole(&quot;MEMBER&quot;) it evaluates to false.</p>
+<p>I am lost as to where the roles are being lost. Any suggestions?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic replied on Tuesday, September 27, 2011</h2><p>
+<p>According to this answer on <a href="http://stackoverflow.com/questions/3454474/not-seeing-roles-on-principal-in-asp-net-mvc-2-application/3455804#3455804">Stack Overflow</a> , I need to set the Thread.CurrentPrincipal and Context.User.</p>
+<p>&nbsp;</p>
+<p>I wanted to rely strickly on Csla.ApplicationContext.User. Doesn&#39;t Csla.ApplicationContext.User set both Principal and User?</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 27, 2011</h2><p>Do you reference Csla.Web.dll from your UI project? You must do this.</p>
+<p>The ApplicationContext.User property does the &quot;right thing&quot;, but the right thing is different in ASP.NET vs WPF vs SL vs pure .NET.</p>
+<p>We supply a &quot;User property provider&quot; for different environments. For example, Csla.Web.dll includes a provider that does the &quot;right thing&quot; in ASP.NET.</p>
+<p>But you need to have that assembly in your bin folder for CSLA to find the code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ballistic replied on Tuesday, September 27, 2011</h2><p>That was it!! Thank you Rocky.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 27, 2011</h2><p>Shameless plug: this is covered in the <em>Using CSLA 4: ASP.NET MVC</em> ebook :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tinchobolivar replied on Thursday, December 13, 2012</h2><p>Rocky, I have a similar issue with a WPF aplication in .NET 4. Actually a 3 TIER app, with DataPortal running on IIS with WFC.<br /><br />I&#39;am using CSLA V 4.1.0.0 and everything works fine. </p>
+<p>But after updating to CSLA 4.3.13 i have runtime errors because i &quot;lost&quot; the auntenthicated identity.<br />Is you said before, I tryed referencing &quot;Csla.Windows.dll&quot; to get the correct &quot;User property provider&quot; but i get the same error.<br /><br />Funny thing is that my code works perfectly with CSLA 4.1.0.0. </p>
+<p>Note: I&#39;ve tryed downloading last version CSLA 4.5 but installer fails on Windows 8. Dont know if is a problem with my pc... I&#39;ll continue testing.</p>
+<p>Any thoughts?</p>
+<p>Thanks a lot</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tinchobolivar replied on Thursday, December 13, 2012</h2><p>Rocky, referencing Csla.Xaml.dll did the trick!</p>
+<p>Thanks a lot anywhere...</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,32 @@
+<html><header><title>NameValueList classes - Telling the difference</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NameValueList classes - Telling the difference</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/48.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai posted on Tuesday, May 09, 2006</h2><P>Hi guys.</P>
+<P>Probably a stupid question, but not sure what the answer is.&nbsp; I have several NameValueList business objects that are being associated with the Tag property on a bunch of&nbsp;ListViewItems that represent them in the UI.</P>
+<P>This is&nbsp;achieved by doing something like this (hope the code is right as I'm not at work!)</P>
+<P>foreach (MyListClass.NameValuePair nvp in _myListClassInstance)<BR>{<BR>&nbsp;&nbsp;&nbsp;ListViewItem item = myListView.Items.Add(nvp.Value.ToString());<BR>&nbsp;&nbsp;&nbsp;item.Tag = nvp;<BR>}<BR><BR>Then I am trying to implement some fairly generic code that needs to be able to check what type the BO is that is associated with the Tag property of a given item.&nbsp; I thought I could do the folowing:-</P>
+<P>if (_myListViewItemInstance.Tag&nbsp;is MyListClass.NameValuePair)<BR>&nbsp;&nbsp;&nbsp;do something<BR>else if (_myListViewItemInstance.Tag&nbsp;is MySecondListClass.NameValuePair)<BR>&nbsp;&nbsp;&nbsp;do something else<BR>etc</P>
+<P>But it seems that no matter what class the item in the Tag field is they all go down the first branch of my if statement.&nbsp; I assume that this is because most of the NameValueList classes have int as their key and string as their value types.&nbsp; So how can I associate a Tag with a specific list item and know what type the NameValuePair came from?&nbsp; Can't think of a way at all, or am I missing something?</P>
+<P>John.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, May 09, 2006</h2><P>I am pretty sure I am not fully comprehending what you are trying to do.&nbsp; I use lots and lots of NameValueList type thingies.&nbsp; Most of my lists need to have 3 strings in each item.&nbsp; So I create my own base class patterned after Rocky's NameValueList, except that mine allows for 3 strings instead of 2.</P>
+<P>After that, every type of list I need,&nbsp;I create a class inherited from my base class.&nbsp; These classes have names like CustomerList, EmployerList etc.&nbsp; Each has one or more Factory methods, a Criteria class but only&nbsp; if needed, and a DataPortal_Fetch method.&nbsp; I use these lists everywhere in the UI without any problem.</P>
+<P>Jav</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Wednesday, May 10, 2006</h2><P>Jav.</P>
+<P>What I am trying to do is have ListViewItems represent individual items in a NameValueList.&nbsp; I have been associating the NameValuePair of each item with the Tag of a ListViewItem, but hit problems as described.&nbsp; Hope that is clearer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Tuesday, May 09, 2006</h2>Instead of using the tag what about inheriting from the listviewitem class and adding the nvp that way?<br>
+in vb something like:<br>
+<br>
+public class MyListViewITem<br>
+inherits ListViewItem<br>
+<br>
+private mNVP as namevaluepair<br>
+<br>
+public property NVP as namevaluepair<br>
+&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mNVP<br>
+&nbsp;&nbsp;&nbsp; end get<br>
+&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  mNVP = value<br>
+&nbsp;&nbsp;&nbsp; end set<br>
+end property<br>
+<br>
+end class<br>
+<br>
+Dean<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Wednesday, May 10, 2006</h2><P>Dean</P>
+<P>That is kind of the way I was thinking on the drive in to work this morning.&nbsp; I assume that you meant that my inherited class would also have a property to store a reference to the Type of NameValueList? Otherwise I would still have the same problem of not knowing which class the NameValuePair came from e.g. CustomerList or EmployeeList.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

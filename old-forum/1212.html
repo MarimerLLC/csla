@@ -1,0 +1,54 @@
+<html><header><title>Backwards Compatibility Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Backwards Compatibility Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1212.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes posted on Wednesday, September 13, 2006</h2><P>&nbsp;&nbsp;&nbsp;This question is for Rockford Lhotka.</P>
+<P>&nbsp;&nbsp;&nbsp;I was messaging with someone on this board who has worked with CSLA for several years.&nbsp; I had told them that I had taken the C# CSLA 2.0&nbsp;framework and just finished modifying&nbsp;it to do the things I needed.&nbsp; They suggested that instead of modifying the existing framework that I create my own base objects that inherit from CSLA.&nbsp; That way when their is an update released I can point my objects at the new release and&nbsp;take immediate advantage of it.&nbsp; This leads me to an obvious question.</P>
+<P>&nbsp;&nbsp;&nbsp;Is the backwards compatibility with previous versions of CSLA (within a language and major version) something I can expect?</P>
+<P>&nbsp;&nbsp;&nbsp;The reason I am asking is because&nbsp;if I have to go back and modify every object I created previously because the new code&nbsp;broke it, then I shouldn't plan on doing code upgrades.&nbsp; Especially if you consider that I already have a working solution.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2><P>Backward compatibility is an important goal for me, but not an absolute requirement.</P>
+<P>Each new release of the framework has changes (by definition) - bug fixes and/or enhancements.</P>
+<P>If a bug fix requires a breaking change I will do so without too much remorse. It is a bug fix after all, and so is typically not optional, and the original behavior was broken regardless.</P>
+<P>If an enhancement requires a breaking change, I will attempt to find alternative approaches that avoid the breaking change. Sometimes this means implementing some relatively nasty code inside the framework to get the enhancement, without breaking existing code.</P>
+<P>In other cases I have opted to not implement enhancements to avoid breaking changes.</P>
+<P>However, sometimes an enhancement is so compelling, and the breaking change (in my view) relatively minor, or easily overcome, and so I will implement a breaking change. I try to keep such events to major releases (2.0, 2.1, 3.0, etc).</P>
+<P>Consider 2.1, where there are some potential breaking changes around validation rules. To minimize the impact, there is some nasty code in ValidationRules, supporting the old model alongside the new model. Even so, some breaks may occur - but I felt it was worth it due to the tremendous performance benefits of the change. Benefits that are so immediately compelling that I expect 2.1 to be well worth the upgrade effort for most applications.</P>
+<P>In short, I take backward compatibility very seriously. But I can't promise never to break code, because there are sometimes good reasons (bugs or compelling enhancements) to break from compatibility.</P>
+<P>You have to decide whether you are using CSLA as a base, starting from a snapshot in time, from which you'll evolve and maintain your own variant. Or whether you'll get enough value from ongoing bug fixes and enhancements to the core framework that it is worth tagging along for the ride.</P>
+<P>I don't think there's any one-size-fits-all answer to that question.</P>
+<P>As I've said before, and will say again, my primary goal in all this is to help people learn about architecture, framework design and related issues. The framework itself is a beneficial side-effect, that many people find immediately useful, and others use more as a source of ideas. And that's all good.</P>
+<P>(at some point I need to blog about the fall of OpenVMS and DEC. part of the reason for the fall of the world's second largest computer maker to to the level of backwater-subsidiary-of-a-second-rate-PC-maker was due to their over-commitment to backward compatibility; to the point that they were so inflexible and slow-moving that the world simply passed them by...)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Thursday, September 14, 2006</h2>Thanks for responding so quickly.&nbsp; I am going to discuss it with my co-workers, but I think we are going to not go the upgrade route.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 14, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DeHaynes:</strong></div><div>Thanks for responding so quickly.&nbsp; I am going to discuss it with my co-workers, but I think we are going to not go the upgrade route.</div></BLOCKQUOTE></P>
+<P>The changes from 2.0 to 2.1 are very compelling.</P>
+<P>The work required to fix issues should be quite minimal.</P>
+<P>I have been using CSLA for a few years now and the jump from 1.x to 2.1 will be difficult but not impossible. I plan on running them side-by-side for a while. </P>
+<P>For 2.x I have implemented a layer of classes which inherit from each of Rocky's classes and then I override his methods or add my own. Then I derive all of my BOs from my layer. This makes upgrading a snap since I don't have to worry about propagating any hand changes I may have made to CSLA to the next version. Now the changes&nbsp;are isolated to my layer of code. Rocky has been *very* good about improving this extensibility area of CSLA. </P>
+<P>In short - I think you should add the layer and do the upgrades. It is worth it in the long run.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Thursday, September 14, 2006</h2>Thanks Joe, I am still contemplating it.&nbsp; I am in the middle of figuring out how to mix custom authentication with Active Directory authentication.&nbsp; But when I get it all done, I will make my final decision.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 14, 2006</h2><P>Just one additional chiming in in support of 2.1. (Obviously it's your call, whether makes sense for your organization).</P>
+<P>I'm pretty close to being done with my move to 2.1 - it's relatively painless. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2>Though this wasn't the intent of your thread - you may want 
+to pose it as a question to the forum at large to get other opinions and 
+insight. </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2>There are people on the forum that have been using versions 
+of CSLA since before .NET, and thus have suffered through the worst, and the 
+best, of the upgrades to the framework over that time.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2>I believe there are also a few people on the forum that do 
+have CSLA variants that they maintain themselves, and who hang around the forum 
+to keep tabs on the new ideas and directions that I, and others, are taking in 
+our work.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2>Just a thought,</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=936325919-14092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DeHaynes [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, September 14, 2006 10:00 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Backwards Compatibility 
+  Question<BR></FONT><BR></DIV>
+  <DIV></DIV>Thanks for responding so quickly.&nbsp; I am going to discuss it 
+  with my co-workers, but I think we are going to not go the upgrade 
+  route.<BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

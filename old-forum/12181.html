@@ -1,0 +1,60 @@
+<html><header><title>Csla-4.5.30, PagedList project generating excep. Dataportal_Fetch not implemented.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla-4.5.30, PagedList project generating excep. Dataportal_Fetch not implemented.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12181.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema posted on Friday, October 11, 2013</h2><p>Hi everyone,</p>
+<p>We been using Csla from v2.0 in Web/Windows application. Now we decided to move some of our Web_App use case to Silverlight. We downloaded current 4.5.30 framework version and trying to run PagedList application under silverlight/cs folder. Application got compiled ok, but it is generation exception on line 44 &nbsp;[DalaList.cs &nbsp;-&gt; DataPortal.BeginFetch&lt;DataList&gt;(new PagedCriteria(0, 10, true), callback);] , as folows</p>
+<p>Csla.DataPortalException: DataPortal.Fetch failed (DataList.DataPortal_Fetch not implemented) ---&gt; Csla.Reflection.CallMethodException: DataList.DataPortal_Fetch method call failed ---&gt; System.NotImplementedException: DataList.DataPortal_Fetch not implemented</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter`1.GetResult()</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.LateBoundObject.&lt;CallMethodTryAsync&gt;d__3.MoveNext()</p>
+<p>&nbsp; &nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.ConfiguredTaskAwaitable.ConfiguredTaskAwaiter.GetResult()</p>
+<p>&nbsp; &nbsp;at Csla.Server.SimpleDataPortal.&lt;Fetch&gt;d__7.MoveNext()</p>
+<p>&nbsp; &nbsp;--- End of inner exception stack trace ---</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)</p>
+<p>&nbsp; &nbsp;at Microsoft.Runtime.CompilerServices.TaskAwaiter`1.GetResult()</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.&lt;BeginFetch&gt;d__1e.MoveNext()</p>
+<p>The call is going to ObjectFactory class in PagedListDal.cs or if someone know how to debug the code when running async under background thread.&nbsp;</p>
+<p>We kind of stuck in between, if some one had got through this exception before or anyone had tested this application before. An early response would be appreciated.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Saturday, October 12, 2013</h2><p>Hi,</p>
+<p>I have not tried to run this specific sample but, from my understanding:</p>
+<p>- does page list contains a DataPortal_Fetch method with a PagedCriteria signature</p>
+<p>- is your client/server settings setup correctly: this method might not be present in the Silverlight code / only available in the server code, and the local portal might be configured.</p>
+<p>Regards,</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Saturday, October 12, 2013</h2><p>Thanks Gillies the response, DataList is configured to use ObjectFactory, DataListDal. Aslo App is configured to use WcfDataPortal and its setting are put in ServiceReferences.clientconfig file. So what i assume, when dp.Beginfetch call starts, it should run on bg thread, and on server side control should move in DataListDal.Fetch method. I also commented out the ObjectFactory attribute, and put my own DataPortal_Fetch method in DataList.server file, but result is the same exception.</p>
+<p>Regards.</p>
+<p>Asad Cheema.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Saturday, October 12, 2013</h2><p>Also when we debug into Csla code, (line 76-Csla.server.DataPortalSelector - &gt; context.FactoryInfo = ObjectFactoryAttribute.GetObjectFactoryAttribute(objectType);) returning null, even though ObjectFactory attribute is defined as follows in &nbsp;DataList.cs (in Library.Net)</p>
+<p>#if !SILVERLIGHT<br />&nbsp; [Csla.Server.ObjectFactory(&quot;DataAccess.DataListDal,DataAccess&quot;)]<br />#endif&nbsp;</p>
+<p>So it looks like ObjectFactory Attribute is not reading by the framework correctly, thats why it is looking &nbsp;local DataPortal_Fetch method.</p>
+<p>Any help to resolve this is appreciated. &nbsp;Thanks in advance.</p>
+<p>Asad.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Sunday, October 13, 2013</h2><p>And further debugging the sample app, looks like when&nbsp;bw.RunWorkerAsync(); statement executes, it is still looking DataPortal_XYZ in client&#39;s dll i.e. Library.Silverlight. Obviously ObjectFactoery is not defined there.</p>
+<p>Any this we missed in WcfDataPortal configuration to goto Remoteserver?</p>
+<p>Regards.</p>
+<p>Asad Cheema.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 15, 2013</h2><p>Hi,</p>
+<p>Unfortunately this sample hasn&#39;t been updated to run in CSLA 4.5.x</p>
+<p>The basic necessary steps to get it running is:</p>
+<p>&nbsp;&nbsp;&nbsp; DataList.cs:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;[<span style="color:#2b91af;">ObjectFactory</span>(<span style="color:#a31515;">&quot;DataAccess.DataListDal,&nbsp;DataAccess&quot;</span>)]
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">DataList</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessListBase</span>&lt;<span style="color:#2b91af;">DataList</span>,&nbsp;<span style="color:#2b91af;">DataItem</span>&gt;
+<br />App.Xaml<br /><br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Application_Startup(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">StartupEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.DataPortalProxy&nbsp;=&nbsp;<span style="color:blue;">typeof</span>(Csla.DataPortalClient.<span style="color:#2b91af;">WcfProxy</span>).AssemblyQualifiedName;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.DataPortalUrlString&nbsp;=&nbsp;<span style="color:#a31515;">&quot;http://localhost:29082/WcfPortal.svc&quot;</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.RootVisual&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MainPage</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+<br />WcfPortal.cs:<br /><span style="background:yellow;">&lt;%</span><span style="color:blue;">&nbsp;@</span><span style="color:maroon;">ServiceHost</span>&nbsp;<span style="color:red;">Service</span><span style="color:blue;">=</span><span style="color:blue;">&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot;</span>&nbsp;<span style="background:yellow;">%&gt;</span>
+<br />web.config<br /><span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="color:#a31515;">service</span><span style="color:blue;">&nbsp;</span><span style="color:red;">behaviorConfiguration</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">WcfPortalBehavior</span>&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">name</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">Csla.Server.Hosts.Mobile.WcfPortal</span>&quot;<span style="color:blue;">&gt;</span>
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span style="color:#a31515;">endpoint</span><span style="color:blue;">&nbsp;</span><span style="color:red;">address</span><span style="color:blue;">=</span>&quot;&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">binding</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">basicHttpBinding</span>&quot;<span style="color:blue;">&nbsp;</span><span style="color:red;">contract</span><span style="color:blue;">=</span>&quot;<span style="color:blue;">Csla.Server.Hosts.Mobile.IWcfPortal</span>&quot;<span style="color:blue;">&gt;</span><br /></pre>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>acheema replied on Thursday, October 17, 2013</h2><p>Thanks jonny, it worked. That App.Xml settings were not there, i was assuming Silverlight will be setting up using ServiceReferences.ClientConfig.&nbsp;</p>
+<p>Anyway thanks again. I assume same kind of changed will be required to execute other samples too.</p>
+<p>Regards.</p>
+<p>Asad Cheema.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

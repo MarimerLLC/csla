@@ -1,0 +1,39 @@
+<html><header><title>ReadOnlyRoot and CslaDataSource - Compatible ??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnlyRoot and CslaDataSource - Compatible ??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9035.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Friday, June 04, 2010</h2><p>Can&#39;t figure out why I am getting &quot;Error Rendering the Control&quot; &quot;DetailsView1did not have any properties or attributes from which to generate fields.&quot;&nbsp; Ensure that your data source has content.</p>
+<p>Using 3.8.3.0 for ASP.Net WebForm.</p>
+<p>Haven&#39;t tried it with any other BO types.</p>
+<p>Thx,</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 04, 2010</h2>Have you put a breakpoint in your SelectObject event handler in the code-behind the page to see if the data portal call is successful and to ensure you are properly setting e.BusinessObject?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Monday, June 07, 2010</h2><p>That event is not firing ....</p>
+<p>Is there something in the Read Only BO itself that the CSLADataSource control needs to fire the SelectObject event ???</p>
+<p>I don&#39;t see anything in the PageLoad example for ... for example RolesEdit that would cause the event to fire .. tho I have not set up the new ProjectTracker to step through the debugger myself.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 07, 2010</h2><p>The event is raised when data binding requests data. It sounds like your web page code or HTML is not set up correctly for data binding.</p>
+<p>A data source control only retrieves data when requested by data binding. Data binding only requests data when a UI control tries to bind to data. In many cases you need to actually call the bind method on the UI control in your page load event.</p>
+<p>I must confess that I haven&#39;t done any web forms coding for a couple years, so my memory is pretty rusty - but look at the page load events in ProjectTracker (or any other data bound web app on the planet) to get an idea how the binding is triggered.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Monday, June 07, 2010</h2><p>thanks Rocky ... </p>
+<p>But I can&#39;t use the wizard to provide metatadata to set control attributes because of the Design Time issue.</p>
+<p>&quot;Can&#39;t figure out why I am getting:</p>
+<p>&nbsp;&quot;Error Rendering the Control&quot; &quot;DetailsView1did not have any properties or attributes from which to generate fields.&quot;&nbsp; Ensure that your data source has content.</p>
+<p>Could the fact that I am using linq for entities to populate the BO&#39;s make a difference ??</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 07, 2010</h2><p>At least one data binding wizard in web forms doesn&#39;t work - due to an issue with VS that I&#39;ve never been able to resolve. That&#39;s a well-known issue with the CslaDataSource control, and the answer is to put the data source control on the page by dragging it from the toolbox, and to then drag your UI control (datagrid, detailview, etc), and then bind the UI control to the CslaDataSource control.</p>
+<p>An alternative is to use the wizard, but then to close and re-open the web forms designer. Reloading the designer fixes the VS issue and allows the controls to work as expected.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Monday, June 07, 2010</h2><p>I may not have full trust on the machine that I&#39;m using .... that could cause the problem, no ?</p>
+<p>I can instantiate the BO by &quot;new-ing it up&quot; ... but sure could use the binding support.</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Tuesday, June 08, 2010</h2><p>Sure enough ... A details view *does* consume the data source when I run the app in VS08 on my personal machine ... but this &quot;corporate developer machine&quot; won&#39;t do the trick.</p>
+<p>The Web.Config seems to indicate that I have full trust .. so what else might I look for or have the &quot;IT Governance&quot; police take a look at ????</p>
+<p>thanks,</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Tuesday, June 08, 2010</h2><p>Ok ... back on my &quot;dev box&quot; at client ...</p>
+<p>I guess this is what you meant, Rocky ....</p>
+<ul>
+<li>Drag the CSLA DataSource to the WebForm</li>
+<li>Drag a data control to the WebForm ( obviously it can&#39;t try and bind to the DataSource since the DataSource is not configured to point to Assembly / Type yet.</li>
+<li>THEN Configure the CSLA Data Source</li>
+<li>AND THEN ... Set the CSLADataSource as the DataSource for the DetailsControl</li>
+</ul>
+<p>That fixes the problem on the developer workstation ... ( a problem that does not occur on my personal machine )</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 08, 2010</h2><p>Yeah, that&#39;s what I was talking about.</p>
+<p>I spent many, many hours trying to resolve that issue, with no success. I even bent the ear of several Microsoft people who worked on the designer interactions to no avail. It is a&nbsp;tough issue - the wizard seems to load the controls into a separate appdomain&nbsp;or context from the rest of the page designer, which totally conflicts with retreiving metadata using reflection (which is what CslaDataSource does to get the shape of your business object).</p>
+<p>Since there&#39;s a workaround, I just documented it and moved on - hoping a subsequent version of VS would resolve the issue. But that hasn&#39;t happened...</p>
+<p>Fortunately ASP.NET MVC doesn&#39;t have this issue, so now I&#39;m sitting back waiting to see how much longer web forms remains relevant <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Wednesday, June 09, 2010</h2><p>OK ... I&#39;ll close this out now ... but this morning after monkeying around with the web form designer those nasty &quot;Error Creating Control&quot; messages showed up again .. but the app runs and compiles ...</p>
+<p>I&#39;ll see if I can get management to OK looking at going with MVC .....</p>
+<p>Thanks again RL ...</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

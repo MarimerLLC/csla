@@ -1,0 +1,81 @@
+<html><header><title>CSLA.Net with .NET Compact Framework 2.0 ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.Net with .NET Compact Framework 2.0 ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4207.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse posted on Tuesday, January 22, 2008</h2>Hello All,<br><br>I would like to know if the CLSA.Net framework can use be with the .NET Compact Framework 2.0<br><br>Thanks<br><br>Target :<br>The App Client would be running under Windows CE 6.0 &amp; .NET Compact Framework 2.0<br>The host would be running under Windows server 2003 &amp; .NET Framework 2.0<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 22, 2008</h2><P><FONT face=Tahoma size=2>Check this thread:</FONT></P>
+<P><A HREF="/forums/thread/10836.aspx"><FONT face=Tahoma size=2>http://forums.lhotka.net/forums/thread/10836.aspx</FONT></A></P>
+<P><FONT face=Tahoma size=2>It's old, but it should still apply.&nbsp; Basically, you can't use the DP because of the serialization restrictions in CF (which I assume still apply in .NET CF 2.0).&nbsp; That brings in some other issues, some of which are briefly discussed in that thread.&nbsp; There is also a link from someone who developed a CF-compatible version of CSLA.&nbsp; The only hitch is whether the author has kept up with CSLA versions - at the time of this thread, the author mentioned that the version of CSLA he converted was pre-CSLA 2.0.&nbsp; That's pretty old, and may be pre-VS 2005 as well.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse replied on Tuesday, January 22, 2008</h2>Thanks Scott,<br><br>My idea was to use the mobile object concept between the client app ( Win CE 6.0 &amp; CF Dot Net 2.0) and the host app ( Win Server 2003 &amp; Dot Net 2.0) so apparently it will be not possible because of the serialization  restriction under DotNet CF.<br><br>The client device app( embedded mini-PC) will be connected all the time to the local network .<br><br><br>Thanks<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Teebs replied on Tuesday, February 03, 2009</h2><P>I have done this using Compact Framework 2.0. I based my code on CSLA.NET 3.0. &amp; CSLA.CE.</P>
+<P>&nbsp;I have full undo edit and object serialisation betwean a Windows Mobile Client and a CSLA WebService. You can download a sample ProjectTracker for WM5 from 'http://unimetsolutions.com/links/business_applications.aspx'. The ProjectTracker sample is not a fully developed program but proves the concept of object serialisation betwean a WM5 Client and CSLA WebService</P>
+<P>If you want to take this further please&nbsp;contact me.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>Lawrence did contribute his implementation, and it is available from http://www.lhotka.net/cslace, and the code is in svn.<br /><br />I don't want to speak for him, but he may be interested in help maintaining and moving that code forward.<br /><br />That code is 3.0-based though, and so it is really quite far behind the current code. I expect the field manager and MobileFormatter in 3.6 would make a Compact Framework (CF) version substantially easier to work with now.<br /><br />In fact, I expect it would be possible to do what we did with the Silverlight version, and link a lot of the core .NET files directly into the CF project to improve maintainability.<br /><br />My _personal_ plan is to hold off for a few months to see how Microsoft's Silverlight for CE project pans out. If CSLA .NET for Silverlight can just work on mobile devices, that'd be my preference :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sumit0501 replied on Monday, June 29, 2009</h2>Hi Teebs,<br><br>I tried to open your link but failed.<br>Can you please send me your sample to my personal email id at sumit0501@gmail.com<br><br>If possible.<br><br>Thanks in advance.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Teebs replied on Friday, July 10, 2009</h2>I've just finished re-writing CslaWm for CSLA 3.6.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 10, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is this a more full-featured port than the cslace version?
+Clearly it is more recent, since that one is a 3.0 port.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are interested in donating it as the &#8220;official&#8221;
+release we can arrange that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Teebs
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 10, 2009 3:04 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA.Net with .NET Compact Framework 2.0 ?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I've just finished re-writing CslaWm for CSLA 3.6.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.welling replied on Sunday, February 07, 2010</h2><p>Hello Teebs,</p>
+<p>I&#39;m interested in this work.&nbsp; Would you be willing to make this source available?&nbsp; </p>
+<p>My company does a huge amount of mobile development, and this could be a significant time saver.</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lawrencek replied on Wednesday, January 23, 2008</h2><P>I have a C# version converted from build 3.0.2-070911 but I removed all the Data Portal and Serialization stuff.&nbsp; Basicly runs in local mode only.&nbsp; I also have an embeded pc in an industrial app using this setup.</P>
+<P>&nbsp;</P>
+<P>Let me know if you are interested</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse replied on Wednesday, January 23, 2008</h2>Thanks a lots for the proposition<br><br>How can&nbsp; I get it ?<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lawrencek replied on Wednesday, January 23, 2008</h2>Send me an e-mail using the contact feature and I'll email it to you.&nbsp; I tryed to send one to you but got an error message.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lawrencek replied on Friday, January 25, 2008</h2><P>Rocky, if I was interested in making the work done on CSLA CE a bit more available how would you recommend I do that.&nbsp; I know that there is a relatively small audience for it and I am not sure if you think it would be worth the effort.</P>
+<P>But since I am actively using it I will definitely be maintaining the C# version (can't say for sure about a VB port although I do need to learn VB better)</P>
+<P>For sure I need to make a Project Tracker CE.&nbsp; Some better documentation on the removed parts etc.<BR>Anyway just food for thought<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 25, 2008</h2><P>Send me an email directly and I'll have you sign a contributor agreement. Then I'll be happy to host the code directly on lhotka.net.</P>
+<P>Otherwise sharing of the code in a public venue would violate the license agreement, but we can take care of that easily enough.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sumit0501 replied on Monday, June 29, 2009</h2>Hi Rocky,<br>I am a big fan of CSLA framework. In my last project I tried to use csla framework and successfully this application is running in production.<br><br>This time I want to use cslace framework for one of the mobile app.<br>But there is no enough documentation and sample implementation.<br><br>I need your help in this regard. I want to recommend cslace framework to my organization.<br><br>Thanks in advance.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 29, 2009</h2><P>CSLA .NET CE was created by a member of the community, which was incredibly generous, but isn't a "supported" part of the CSLA .NET framework overall. Whatever documentation and samples are out there, well, that's all there is.</P>
+<P><A href="http://www.lhotka.net/cslanet/faq/CslaCeFaq.ashx">http://www.lhotka.net/cslanet/faq/CslaCeFaq.ashx</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, June 29, 2009</h2><P>FWIW,</P>
+<P>I built a "mobile app" using standard CSLA Business Objects. The "trick" I used was to make it a browser based app so that the mobile device used its built-in browser.</P>
+<P>Then it was virtually a standard ASP.Net app except the screens used mobile controls. But the BOs were server side and the rendered html is fine for the app.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>klroach replied on Friday, June 11, 2010</h2><p>Will CSLA CE work with CSLA 3.5?</p>
+<p>&nbsp;</p>
+<p>and do you have a sample project?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

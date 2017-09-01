@@ -1,0 +1,24 @@
+<html><header><title>Key Value list with &quot;&lt;New&gt;&quot; item</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Key Value list with &quot;&lt;New&gt;&quot; item</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4057.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo posted on Monday, December 17, 2007</h2><P>Hello,</P>
+<P>I often come across a need for displaying a list of BOs in a combobox or similar but with the need to also have an item in the list for "&lt;New&gt;" or similar, to let the user choose to create a new entity instead of selecting an existing one from the list.&nbsp;&nbsp;</P>
+<P>I can think of several ways to accomplish this, but none of them are very appealing (like for example to add a dummy BO to the list of BOs just for this purpose).&nbsp; Of course,&nbsp;I can always simply&nbsp;put a "New" button or similar next to the combobox, but is this the only non-kludgy approach to this?</P>
+<P>Suggestions / ideas?</P>
+<P>Thanks,</P>
+<P>Jim</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, December 17, 2007</h2><P>Hi Jim</P>
+<P>My solution to the "extra pseudo items at the top of a list" problem is something I call HeadedBindingList. I gave some sample code in an attachment here.</P>
+<P><A HREF="/forums/permalink/4808/4690/ShowThread.aspx#4690">http://forums.lhotka.net/forums/permalink/4808/4690/ShowThread.aspx#4690</A></P>
+<P>I still use that same code a lot to add typical things like "Choose an Item", "None", "All" etc.</P>
+<P>Cheers<BR>Ross</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Monday, December 17, 2007</h2><P>Thanks, Ross!&nbsp; That seems to be exactly what I was looking for.</P>
+<P>Jim</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Tuesday, December 18, 2007</h2><P><FONT face="Courier New">Jim,</FONT></P>
+<P><FONT face="Courier New">Here is another example you might find useful:</FONT></P>
+<P><A href="http://www.codeproject.com/KB/combobox/UnboundItemsComboBox.aspx">http://www.codeproject.com/KB/combobox/UnboundItemsComboBox.aspx</A></P>
+<P><FONT face="Courier New">One of the replies to this article suggests yet another means (under Another way...):</FONT></P>
+<P><FONT color=#0000ff>If you are using a DataTable as a source to your combo then you could always just add a new row before you attach it.<BR><BR>Example;<BR></FONT><BR><CODE><BR><FONT color=#a52a2a>DataTable tblCategory = CategoryDS.Tables["Category"];<BR>DataRow NewRow = tblCategory.NewRow();<BR>tblCategory.Rows.InsertAt(NewRow,0);<BR>NewRow[0] = "-- Click to select --";<BR><BR>cboCategory.DataSource = tblCategory;<BR>cboCategory.DisplayMember = "CategoryID";<BR>cboCategory.ValueMember = "Category";<BR>cboCategory.SelectedIndex = 0;<BR></FONT></CODE><CODE><FONT face="Times New Roman"></FONT></CODE></P>
+<P><CODE><FONT color=#000000>I've used a version of this technique before within&nbsp;the Get() / Fetch() method of my ReadOnlyListBase object by just "pre-loading" the entry I wanted before loading normally through the .Read() of the&nbsp;SafeDataReader.</FONT></CODE></P>
+<P><CODE><FONT color=#000000>Ken</FONT></P></CODE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

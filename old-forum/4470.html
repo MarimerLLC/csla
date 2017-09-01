@@ -1,0 +1,7 @@
+<html><header><title>Problem with assembly references and remote host vs. local host for Data Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with assembly references and remote host vs. local host for Data Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4470.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Thursday, March 06, 2008</h2><P>Basically:</P>
+<P>Project contains reference two 2 assemblies:</P>
+<OL>
+<LI>Assembly 1 must use remote host.</LI>
+<LI>Assembly 2 must us local host.</LI></OL>
+<P>In config file I make settings to use remote host because of calls to assembly 1, but of coarse when making calls to assembly 2, I get errors because assembly 2 is not remote hosted.</P>
+<P>How can I tell CSLA to use remote host for calls to assembly 1, but to use local host from assembly 2?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve981 replied on Friday, March 07, 2008</h2>How about using the RunLocal attribute in the classes of Assembly 2? This will force them to run in the localhost.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,271 @@
+<html><header><title>SmartDate error when using MaxDate or MaxValue as empty value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate error when using MaxDate or MaxValue as empty value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11742.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AvanLeeuwen posted on Monday, December 10, 2012</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+</p>
+<p>
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">An error was encountered in performing a simple unit test for the SmartDate constructor, SmartDate(EmptyValue emptyValue) with the emptyValue being MaxDate:</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">Test below:</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">// test for maxDateValue</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">SmartDate target = new
+SmartDate(SmartDate.EmptyValue.MaxDate);</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">DateTime expected = DateTime.MaxValue; </span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">DateTime actual = target.Date;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">Assert.AreEqual(expected, actual);</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">The test fails with <b>expected</b> having the value of
+DateTime.maxValue and <b>actual </b>having the value of DateTime.minValue. The origin
+of the problem is due to _initialized being set to false. Therefore when the
+Date property is used to get the value stored in the SmartDate variable it
+returns DateTime.minValue when the empty date was set to
+DateTime.maxValue.<span style="mso-spacerun:yes;">&nbsp; </span>The error comes from
+the code below:<span style="mso-spacerun:yes;">&nbsp; </span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">/// &lt;summary&gt;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;tab-stops:.25in .5in .75in 1.0in 1.25in 1.5in 1.75in 2.0in;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">/// Gets or sets the date value.</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">/// &lt;/summary&gt;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">public DateTime Date </span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">{</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>get</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>{</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>if (!_initialized)</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">{</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span><b>_date = DateTime.MinValue; </b></span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span><b>_initialized = true; </b></span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">}</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>return _date; </span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">} </span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">set </span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">{</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>_date = value;</span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:1.0in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>_initialized = true; </span></p>
+<p class="MsoNormal" style="margin-top:0in;margin-right:0in;margin-bottom:.0001pt;margin-left:.5in;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">} </span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:12.0pt;mso-bidi-font-size:11.0pt;mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">}<br style="mso-special-character:line-break;" />
+<br style="mso-special-character:line-break;" />
+</span></p>
+<p class="MsoNormal"><span style="mso-ascii-font-family:Calibri;mso-fareast-font-family:Calibri;mso-hansi-font-family:Calibri;mso-bidi-font-family:Calibri;">Recommended
+code change is as follows:</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;color:blue;">public</span><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"> <span style="color:#2b91af;">DateTime</span>
+Date</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">get</span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span>
+(!<span style="color:blue;">this</span>._initialized)</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:green;">//
+corrected 12/7/2012</span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;color:green;"><span style="mso-tab-count:2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// The
+empty value is already set in the constructor</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;color:green;"><span style="mso-tab-count:2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>//
+therefore the following code is more than likely not </span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;color:green;"><span style="mso-tab-count:2;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// needed.</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;color:green;"><span style="mso-tab-count:1;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">if</span>
+(<span style="color:blue;">this</span>._emptyValue == <span style="color:#2b91af;">SmartDate</span>.<span style="color:#2b91af;">EmptyValue</span>.MinDate)</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span>._date = <span style="color:#2b91af;">DateTime</span>.MinValue;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">else</span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span>._date = <span style="color:#2b91af;">DateTime</span>.MaxValue;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:green;">//
+_date = DateTime.MinValue;</span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:green;">//
+_initialized = true;</span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">return</span>
+<span style="color:blue;">this</span>._date;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;</span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;line-height:normal;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">set</span></span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;line-height:115%;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;line-height:115%;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span>._date
+= <span style="color:blue;">value</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;line-height:115%;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span>._initialized
+= <span style="color:blue;">true</span>;</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;line-height:115%;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;line-height:115%;font-family:Consolas;mso-fareast-font-family:Consolas;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</span></p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin-bottom:.0001pt;"><span style="font-size:9.5pt;mso-bidi-font-size:11.0pt;line-height:115%;font-family:Consolas;mso-fareast-font-family:Consolas;">In addition, I am not sure that the _initialized flag should be set to true when the empty value is used.&nbsp; Because once set, the SmartDate.Add and SmartDate.Subtract methods could be used to modify the empty value where it no longer would be equal to the MinValue or MaxValue.<br /></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 14, 2012</h2><p>I&#39;ll add this to the bug list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 24, 2013</h2><p>This test passes in current CSLA .NET code, so the bug must exist in some older version and it has been fixed since.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

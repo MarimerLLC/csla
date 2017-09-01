@@ -1,0 +1,78 @@
+<html><header><title>Interface query</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Interface query</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7262.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>John.sharma posted on Monday, July 13, 2009</h2><P>Hi,</P><B><FONT face=TheSansMonoCondensed-Bold size=1><FONT face=TheSansMonoCondensed-Bold size=1>
+<P align=left>i am sending this piece of code which is uable to understand </P>
+<P align=left>public interface IUndoableObject : IBusinessObject</P>
+<P align=left>{</P>
+<P align=left>void CopyState();</P>
+<P align=left>void UndoChanges();</P>
+<P align=left>void AcceptChanges();</P>
+<P align=left>}</P>
+<P align=left>here are the implmentation of interface method in this UndoableBase class</P><B><FONT face=TheSansMonoCondensed-Bold size=1><FONT face=TheSansMonoCondensed-Bold size=1>
+<P align=left>[Serializable()]</P>
+<P align=left>public abstract class UndoableBase : Csla.Core.BindableBase,</P>
+<P align=left>Csla.Core.IUndoableObject</P>
+<P align=left>{</P><B><FONT face=TheSansMonoCondensed-Bold size=1><FONT face=TheSansMonoCondensed-Bold size=1>
+<P align=left>&nbsp;</P>
+<P align=left>[EditorBrowsable(EditorBrowsableState.Never)]</P>
+<P align=left>protected internal void CopyState()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P align=left>// why did you write protected internal with copystate function while it is by defalt public in interface </P>
+<P align=left>can anyone explain it.</P>
+<P align=left>{</P>
+<P align=left>Type currentType = this.GetType();</P>
+<P align=left>HybridDictionary state = new HybridDictionary();</P>
+<P align=left>FieldInfo[] fields;</P>
+<P align=left>string fieldName;</P>
+<P align=left>do</P>
+<P align=left>{</P>
+<P align=left>// get the list of fields in this type</P>
+<P align=left>fields = currentType.GetFields(</P>
+<P align=left>BindingFlags.NonPublic |</P>
+<P align=left>BindingFlags.Instance |</P>
+<P align=left>BindingFlags.Public);</P>
+<P align=left>foreach (FieldInfo field in fields)</P>
+<P align=left>{</P>
+<P align=left>// make sure we process only our variables</P>
+<P align=left>if (field.DeclaringType == currentType)</P>
+<P align=left>{</P>
+<P align=left>// see if this field is marked as not undoable</P>
+<P align=left>if (!NotUndoableField(field))</P>
+<P align=left>{</P>
+<P align=left>// the field is undoable, so it needs to be processed.</P>
+<P align=left>object value = field.GetValue(this);</P>
+<P align=left>if (typeof(</P>
+<P align=left>Csla.Core.IUndoableObject).IsAssignableFrom(</P>
+<P align=left>field.FieldType))</P>
+<P align=left>{</P>
+<P align=left>// make sure the variable has a value</P>
+<P align=left>if (value != null)</P>
+<P align=left>{</P>
+<P align=left>// this is a child object, cascade the call</P>
+<P align=left>((Core.IEditableObject)value).CopyState();</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P align=left>else</P>
+<P align=left>{</P>
+<P align=left>// this is a normal field, simply trap the value</P>
+<P align=left>fieldName =</P>
+<P align=left>field.DeclaringType.Name + "!" + field.Name;</P>
+<P align=left>state.Add(fieldName, value);</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P align=left>}</P>
+<P align=left>currentType = currentType.BaseType;</P>
+<P align=left>} while (currentType != typeof(UndoableBase));</P>
+<P align=left>// serialize the state and stack it</P><B><FONT face=TheSansMonoCondensed-Bold size=1><FONT face=TheSansMonoCondensed-Bold size=1>
+<P align=left>using (MemoryStream buffer = new MemoryStream())</P>
+<P align=left>{</P>
+<P align=left></B></FONT></FONT><B><FONT face=TheSansMonoCondensed-Bold size=1><FONT face=TheSansMonoCondensed-Bold size=1>BinaryFormatter formatter = new BinaryFormatter();</P>
+<P align=left>formatter.Serialize(buffer, state);</P>
+<P align=left>_stateStack.Push(buffer.ToArray());</P>
+<P align=left>}</P>
+<P align=left>CopyStateComplete();</P>
+<P align=left>}</P></B></FONT></FONT></B></FONT></FONT>
+<P align=left>}</P></B></FONT></FONT>
+<P align=left>Issue :</P>
+<P align=left>&nbsp;why did you write protected internal with copystate function while it is by defalt public in interface </P>
+<P align=left>can anyone explain it.</P></B></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ayubu replied on Monday, July 13, 2009</h2><P>The use of public interface makes it visible for any class implementing the&nbsp;interface and it important</P>
+<P>The implementation of the the methods&nbsp;are made protected so that the might not be directly visible to the UI developer without casting to the interface. The methods are not designed to be called&nbsp;directly by&nbsp;UI code.&nbsp;</P>
+<P>Regards</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

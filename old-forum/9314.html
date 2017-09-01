@@ -1,0 +1,27 @@
+<html><header><title>Change state based on a property changing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Change state based on a property changing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9314.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH posted on Monday, August 02, 2010</h2><p>This is similar to what I wanted to achieve in an earlier post, but is a bit different, so I figured a new post was in order.</p>
+<p>I have a class whose internal state should change based on another property of the class being set.&nbsp;</p>
+<p>What is best practice way to do this in CSLA?</p>
+<p>I thought a rule was the way to go, but I do not want the rule class itself to be able to manipulate an object&#39;s internal state.</p>
+<p>The only thing I can think of now is putting the logic in a property setter, and setting my other properties via (BypassPropertyChecks) within the setter.&nbsp; Then on DataPortal_Fetch, call LoadProperty for the particular property in order to bypass this custom business logic in the setter.</p>
+<p>Any other thoughts on how I might leverage the CLSA to achieve this type of behavior?</p>
+<p>Thanks!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 02, 2010</h2><p>Hi, </p>
+<p>What do mean by changing the objects internal state?</p>
+<p>I&#39;d still recommend to make a custom BusinessRule for that logic and set the properties.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 02, 2010</h2><p>I would think &quot;object state&quot; means one or more property values - and this is exactly the kind of think a rule should be doing. This is what rules are for.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Tuesday, August 03, 2010</h2><p>Great!&nbsp; So how does a rule class change the internal state of a class without exposing it publicly?</p>
+<p>Perhaps I&#39;m not using the new Rules correctly, but on execute, it seems that I have to cast the RuleContext.Target to the appropriate type, and then access it&#39;s properties that way.&nbsp; But I can&#39;t get at it&#39;s internal state this way if it&#39;s not exposed publicly, which is what I want to avoid.</p>
+<p>Thoughts?</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, August 03, 2010</h2><p>CSLA 4 has input and output properties from rules. That technique allows for&nbsp;a couple things.</p>
+<ul>
+<li>It allows CSLA to read/load the property values without the properties needing to be public</li>
+<li>It provides a consistent programming model for sync and async rules - in both cases the rule is operating against a copy of the property values</li>
+</ul>
+<p>Prior to CSLA 4 you need to use one of these technqiues:</p>
+<ul>
+<li>Make the property public (not desirable - not just because of scope, but because of triggering rules, authz, etc)</li>
+<li>Use an interface to access the value (better - less obviously public, and your interface implementation can bypass rules on get/set)</li>
+<li>Make the rule a private rule within the business class (arguably best, because the rule can interact with the object&#39;s state directly - it is part of the object after all)</li>
+</ul>
+<p>Clearly I think the CSLA 4 model is better though, or I wouldn&#39;t have put so much work into the redesign <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Wednesday, August 04, 2010</h2><p>Thanks.</p>
+<p>I&#39;m using CSLA 4.&nbsp; So when the rule executes, do I invoke the AddOutValue() method to set the object&#39;s internal state?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, August 04, 2010</h2><p>That is correct, and also add that property to the affected properties list - that way the appropriate data binding events will be raised, etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Wednesday, August 04, 2010</h2><p>Perfect, thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

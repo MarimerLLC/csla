@@ -1,0 +1,9 @@
+<html><header><title>Should IsSavable include IsChild and EditLevel?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Should IsSavable include IsChild and EditLevel?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11813.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm posted on Saturday, February 02, 2013</h2><p>I noticed that IsSavable does not mirror checkes that Save / SaveAsync method performs. Those are IsChild and EditLevel property checks in particular.</p>
+<p>It seems that the object could report that it&#39;s savable even though&nbsp;invoking Save on it will fail.</p>
+<p>As far as IsChild goes, this can be pretty fine behavior if IsSavable&nbsp;indicates whether the object is savable directly or through its parent.</p>
+<p>I&#39;m not quite sure that I see any benefits by omitting EditLevel check from IsSavable.</p>
+<p>Either way, it would be nice to have centralized polimorphic property that indicates whether Save method can be invoked on the particular object.</p>
+<p>Any background on this topic?</p>
+<p>Thanks,</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

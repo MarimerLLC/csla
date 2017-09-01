@@ -1,0 +1,40 @@
+<html><header><title>One or more properties are not registered for this type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One or more properties are not registered for this type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11135.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gbetz posted on Tuesday, February 07, 2012</h2><p>Hi, this is my first time on this forum - i am using CSLA version 3.8.1.0.</p>
+<p>Intermittently i am getting this error:&nbsp;</p>
+<p>
+<p>System.InvalidOperationException: One or more properties are not registered for this type ---&gt; System.IndexOutOfRangeException: Index was outside the bounds of the array.</p>
+<p>&nbsp; &nbsp;at Csla.Core.FieldManager.FieldDataManager.FieldExists(IPropertyInfo propertyInfo)&nbsp;</p>
+<p>I cant really reproduce it in real life over the debugger - it happens every so often and is driving me crazy - as I can tell from looking in the database that the data is present and pretty confident there are even no NULLs anywhere. &nbsp;Anybody has any ideas on how to deal with this? Thanks a lot in advance.</p>
+</p>
+<p>Here is my property declaration:</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;MyList&gt; MyCollection = RegisterProperty&lt;
+MyList&nbsp;&gt;(p =&gt; p.SalesContacts);</p>
+<div></div>
+<div>here is where this error happens:</div>
+<div></div>
+<div>
+<div>&nbsp; &nbsp;public&nbsp;
+MyList&nbsp;&nbsp;SalesContacts</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(
+MyCollection&nbsp;))) -- the error happens on this line&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(
+MyCollection&nbsp;&nbsp;,&nbsp;
+MyList&nbsp;.GetContactList(_id));</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(
+MyCollection&nbsp;);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, February 07, 2012</h2><p>Do you use remote dataportal? </p>
+<p>You could try to add some extre debug info in your code, specifically:</p>
+<p>FieldManager.GetRegisteredProperties()<br />- the number of properties in this list seems to be lower than the MyCollection.Index property - hence you get an IndexOutOfRangeException.</p>
+<p>This may be cause by server code returning less fields than the client expects when using remote dataportal. (wrong version of DLL?)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gbetz replied on Wednesday, April 04, 2012</h2><p>thank you for your answer, yes i did use remote data portal and the problem did turn out to be due to wrong dll version.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

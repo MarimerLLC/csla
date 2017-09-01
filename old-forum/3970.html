@@ -1,0 +1,111 @@
+<html><header><title>Business Rules vs. Validation Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules vs. Validation Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3970.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Saturday, December 01, 2007</h2><P>After researching a couple of 3rd-party business rules engines, it has become apparent to me that there is a big difference between the way these tools view business rules and the way things are being done in CSLA where, despite having methods called "AddBusinessRules" and "AddInstanceBusinessRules", we are strictly dealing with Validation Rules.&nbsp; These being solely for the purpose of validating the values contained in our BO properties as opposed to implementing "if-then do this" type business rules as seems to be the way these tools are designed to behave.</P>
+<P>Has anyone attempted to use any of these business rule engines and, of so, what do you think?&nbsp; Do they play well with CSLA?&nbsp; Any recommendations on which one(s) I should take a look at?</P>
+<P>Thx</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 01, 2007</h2><P>I've discussed this before a couple times. The challenge with these external rule engines is that they assume "objects" are innocent, helpless containers for data. They assume they can do anything to the object, and the object won't object. No concept of encapsulation.</P>
+<P>But that's OK for batch processing or block mode UI's (like the web), because there's no need to have per-property interactivity in those environments. And in that case these external rule engines can be better than a CSLA approach, because they can often be smarter about how and when they apply various rules and how they alter the object data, etc.</P>
+<P>The approach used by CSLA is really geared toward interactivity.</P>
+<P>I've talked to the .NET WF team, and they live in a non-interactive world. It is really hard to get them to even understand the idea of validating <EM>a property</EM> and deciding if it is valid. Or calculating <EM>a property</EM> value. They think at the object level.</P>
+<P>I asked how they'd implement IDataErrorInfo - which drew blank looks. They are so removed from the UI that they didn't know what it was <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Which is fine - they are building a technology for one thing, and I'm very focused on a different thing.</P>
+<P>I imagine some rule engines might be more capable of CSLA-style interactivity, but I think that'd be the exception, not the rule.</P>
+<P>On the other hand, if you were building a web app <EM>only</EM> and never planned to support Windows, WPF or Silverlight, then I think a pretty good argument could be made that a rules engine might be&nbsp;a better overall solution than CSLA - at least in regards to this particular area of functionality.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, December 03, 2007</h2><P>So, in your eyes there is no difference between validation rules and business rules in the way things are implemented in CSLA?&nbsp; I guess I can see that and am struggling to find an example in all of my use cases where this isn't the case until I step into the workflow realm - as you touched on.&nbsp; After reading your response and looking back at a couple of the "rule engines," I would agree that these are nothing more than workflow engines.&nbsp; And you are absolutely right about the lack of encapsulation.</P>
+<P>I guess the one selling point that had grabbed my attention was the ability to manage the rules outside of code.&nbsp; I deal with a LOT of ambiguity, change and personalization issues so the idea that the app's behavior could be tweaked without recompilation and redistribution (or having to teach how to manage an app.config file!) was appealing.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do think it is important to recognize that some &#8220;business
+rules&#8221; are enforced/implemented by the very nature of your object
+relationships within the model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The fact that an order contains line items that contain detail
+items is a whole set of business rules. The act of creating an order<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Order order = Order.NewOrder(customer);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>has some business rules embedded in the very nature of the relationship.
+To create an order you must have a customer. The order creation process uses,
+and relies on, a valid customer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>These natural consequences of using a domain object model are
+things that a rules engine would need to explicitly implement in many cases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So yes, there are different types of rules &#8211; simple validation,
+calculation, etc. And rules that flow from the very relationships between
+objects. I honestly don&#8217;t think there is substantial difference between
+validation and business rules. Certainly they are both of critical importance,
+and they both must be implemented in the business layer, and you can&#8217;t
+have &#8220;business rules&#8221; without validation rules (or you have GIGO).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 03, 2007 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Business Rules vs. Validation Rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>So, in your eyes there is no difference between validation rules and
+business rules in the way things are implemented in CSLA?&nbsp; I guess I can
+see that and am struggling to find an example in all of my use cases where this
+isn't the case until I step into the workflow realm - as you touched on.&nbsp;
+After reading your response and looking back at a couple of the &quot;rule
+engines,&quot; I would agree that these are nothing more than workflow
+engines.&nbsp; And you are absolutely right about the lack of encapsulation.<o:p></o:p></p>
+
+<p>I guess the one selling point that had grabbed my attention was the ability
+to manage the rules outside of code.&nbsp; I deal with a LOT of ambiguity,
+change and personalization issues so the idea that the app's behavior could be
+tweaked without recompilation and redistribution (or having to teach how to
+manage an app.config file!) was appealing.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel replied on Monday, December 03, 2007</h2><P>A question about bussines / Validation&nbsp;rules.</P>
+<P>Is correct to call business rules the fact of, for example, to update stock or client balance, After updating an object like bill?</P>
+<P>Is correct to put this on object domain or is better delegate this to database rules?</P>
+<P>I'm puting this actions don Dataporta_XYZ methods using objects for this purpose.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

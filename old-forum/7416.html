@@ -1,0 +1,198 @@
+<html><header><title>Strategy for RO change notification - Silverlight Client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strategy for RO change notification - Silverlight Client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7416.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks posted on Friday, August 07, 2009</h2>Sorry if this seems a bit basic, but we have have been going around in circles and I can't decide which route is best practice:<br /><br />Our Scenario is:<br />Editable List of "Customers" with Parent and Child Items.<br />Plus a second editable list of "Invoices".<br /><br />The customer editor displays a Read only list of invoices for that customer.  The RO List issourced from a view.  Invoice edits are independent actions from customer edits.<br /><br />After updating an invoice (i.e. launching child page, editing invoice, closing child page) I need the RO List of invoices to be refreshed on the client.<br />I have tried one solution which cached all instances of my RO List, and when an Invoice BO is created, updated, or deleted it notified the cached instances of the RO List that they need to be refreshed.  I can get this to happen business-logic side and the data is re-read, but when I fire the “ListChanged” event the client does not update (presumably because it is a read-only list and hence not expected to change?).<br />I have read 2 posts on Notification  http://forums.lhotka.net/forums/thread/16447.aspx AND <br />http://forums.lhotka.net/forums/thread/34467.aspx but I need a bit more direction. <br />I think I have several options, I was wondering if anyone had done any of these successfully, or am I breaking the philosophy of the framework and doing something unwise?  I am looking for an elegant solution.  The options I can think of are:<br />1.	 Extend my RO List class to support INotifyPropertyChanged and raise the event instead of the ListChanged event?<br />2.	Change my ReadOnlyList to be editable to get the events I need (I don’t like this one!).<br />3.	Create a new base class ReadOnlyListNotifyingOnChange, based on ReadOnlyListBase genericise the problem using INotifyPropertyChanged<br />4.	Create my own event and event handler pair and invoke it in the UI somehow?<br /><br />Any advice?<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 07, 2009</h2><P>On the SL side of things it is the CollectionChanged event you need, not ListChanged.</P>
+<P>The ROLB class ultimately inherits from ObservableCollection&lt;T&gt;, just like BLB. This means your collection already supports change notification as expected by Silverlight.</P>
+<P>To trigger the event, call OnCollectionChanged(). Please note that one CSLA enhancement is that collections support RaiseListChangedEvents like in .NET, so make sure you don't have events turned off, otherwise OnCollectionChanged() don't do anything.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks replied on Friday, August 07, 2009</h2>I think I am missing something fundemental. <br />It seems to me that the OnCollectionChanged method is only available Silverlight side.<br /><br />What I have done is: Determine that the RO list needs to be re-read in the #if !Silverlight (business logic), by monitoring for "related" data changing by extending data_portal create update and delete.  The idea being that any part of the presentation layer that updates an invoice would cause all RO Lists showing that data to be re-read.  i.e. not dependant on coder remembering to add special re-fresh code in the UI.<br /><br />Have I done this all wrong? should I have  made all of my monitoring in #if SILVERLIGHT blocks?<br /><br />Sorry I am obviously doing something wrong here....</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 07, 2009</h2>I don't know what you are doing wrong :)<br /><br />It is true that OnCollectionChanged() is SL only, because the .NET classes<br />inherit from BindingList to provide support for Windows Forms. No need<br />for that on SL.<br /><br />The thing is, if you are detecting that an invoice was saved, and that<br />triggers reloading your ROL objects via the data portal, you will get back<br />NEW ROL LIST OBJECTS.<br /><br />So raising a changed event is immaterial, because it isn't even the same<br />list. The UI would still be referencing the old list, not the new one you<br />just got from the data portal. So saying "the list changed" isn't really<br />correct, because it didn't change - it was replaced.<br /><br />If that's the case (and I suspect it is), then you need some way to tell the<br />UI that the list itself is new. <br /><br />This is where a data provider or view model object (basically the same idea)<br />come into play.<br /><br />Such an object exposes the list as a property (like the Data property of a<br />CslaDataProvider). You can replace the list, and then raise PropertyChanged<br />on the data provider to tell the UI that the Data property changed, so it<br />refreshes its binding to that property and thus gets the new list. The<br />CslaDataProvider does this exact thing and it works fine.<br /><br />So the trick is to have some intermediary object (data provider or view<br />model) that the XAML binds to, and have that object raise PropertyChanged<br />when the ROL property changes.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, August 24, 2009</h2>Rocky,<br><br>I'm trying to do something similar... I have a ROL that I like to append to or merge in updates.&nbsp; Its a master list used by a number of objects.&nbsp; I'm turning off the RaiseListChangedEvents so I can do bulk changes but once its done I want to tell the world that the list has changed.<br><br>Is there anyway to have a generic notification from within the ROL?&nbsp; I've added this Merge as a method in the ROL.&nbsp; I can add the OnCollectionChanged but I have to wrap it in #IF Silverlight...<br><br><blockquote>public void Merge(IEnumerable&lt;ObjectInfo&gt; updatedList)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // identify all the duplicate records<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var existingList = (from currentData in this<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; join updatedData in updatedList<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; on currentData.ObjectId equals updatedData.ObjectId<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select currentData).ToObservableCollection();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // look through the list and remove any duplicates<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var updatedObject in existingList) Remove(updatedObject);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddRange(updatedList);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //OnPropertyChanged(new PropertyChangedEventArgs(String.Empty));<br><br>#if SILVERIGHT<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));<br>#endif<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></blockquote>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>On the Silverlight side it is OnCollectionChanged(), and on the
+.NET side it is OnListChanged().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OnListChanged() has a reset option &#8211; so you can indicate that
+databinding should reset its connection to the list. I don&#8217;t know if
+CollectionChanged has an equivalent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, August 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sorry - I was sort of suggesting maybe we could add something to
+the framework so I didn't have to add both to my call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Something along the lines of the way to SetProperties without
+trigger OnPropertyChanged is done (I can't remember the flag name off hand).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So
+instead of <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>RaiseListChangedEvents
+= false <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>...
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>RaiseListChangedEvents
+= true <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>if#Silverlight
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnCollectionChanged()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>end
+if<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>using (DontRaiseListChangedEvents(true))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>if true then in the dispose it will fire off the OnCollectionChanged
+a single time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> August-24-09 3:10 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Strategy for RO change notification -
+Silverlight Client<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>On the Silverlight side it is OnCollectionChanged(), and on the
+.NET side it is OnListChanged().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>OnListChanged() has a reset option &#8211; so you can indicate that
+databinding should reset its connection to the list. I don&#8217;t know if
+CollectionChanged has an equivalent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FraggleRocks replied on Tuesday, October 13, 2009</h2>It has taken me a while to find the time to look at this problem again.  Having read Rocky’s post above I tried the following:<br />Made my ReadOnlyList a child property of my Client Business Object:<br />  private static PropertyInfo ROInvoicesForClientProperty = RegisterProperty(new PropertyInfo("ROInvoicesForClient", "Read Only Invoices For Client"));<br />        public ROClientInvoiceList ROInvoicesForClient<br />        {<br />            get { return GetProperty(ROInvoicesForClientProperty); }<br />        }<br />Add a static event with id parameters (non silverlight side) that is called whenever a list member changes.  The Client BO listens for the event and if the ids match re-reads the child list data.  It then calls: <br />OnPropertyChanged("ROInvoicesForClient");<br />However the client never gets notified and the data displayed does not update.  I was trying to use existing CSLA classes whereever possible.<br />Can anybody offer some advice on what to try next?  I keep looking at this and can not see what is wrong.  Maybe it cannot be done with the CSLA classes and I need to get to grips with the new stuff in V3.8 beta?  I am using CSLA light V3.7 with silverlight.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 13, 2009</h2><P>You say that the static event is "non silverlight side", which sounds like the event is on your server.</P>
+<P>Events don't flow across network boundaries as a general rule. If you want events to flow across network boundaries you need to create a specialized WCF service configuration to flow and handle the event. Flowing events also limits the types of WCF bindings you can use because most bindings don't support this concept.</P>
+<P>On the client side, the UI won't refresh unless the client side business object raises a changed event.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 25, 2009</h2><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=538">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=538</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, August 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> August-25-09 7:40 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Strategy for RO change notification -
+Silverlight Client<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=538">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=538</a><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

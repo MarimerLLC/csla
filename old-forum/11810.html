@@ -1,0 +1,22 @@
+<html><header><title>Large Save Data </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Large Save Data </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11810.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw posted on Wednesday, January 30, 2013</h2><p>Hi All,</p>
+<p>I have a strange problem at the moment ,</p>
+<p>We are writing a toolkit to allow us to easily use nhibernate as the data layer for CSLA. and we have come across an issue when consuming that collection within Silverlight 5</p>
+<p>Where&nbsp; the size of a collection of objects&nbsp; grows massively if we try and save,</p>
+<p>for example the collection I am using contains 4000 items and approx 10 fields for each item when loading this object into silverlight&nbsp;fiddler reports the size of the data as 750,000 bytes, however when I then&nbsp;edit&nbsp; one property of one object from 5&nbsp; to 6 and save the data size passed back to the server is now of 3.5 Meg, </p>
+<p>I have tried a number of collections and they report the same thing , Now is this normal in silverlight and csla I have to admit never noticing it in a number of previous projects we have written.</p>
+<p>Also what is the best way to capture the data before it gets binary encrypted and zipped so I can try and see what the difference between the 2 collections are, </p>
+<p>If I override the <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">OnDeserialized call the objects look the same, It seems to be addeding extra fluff that is then stripped out again</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Any help would be appreciated</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><br />Cheers</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Daniel <font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>knute replied on Wednesday, January 30, 2013</h2><p>That doesn&#39;t sound normal and would probably require looking at your BO to determine the cause.</p>
+<p>Would the DynamicListBase&lt;T&gt; be a better options for handling edits for your large collection?&nbsp; Then your updates would be for just the items that changed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 31, 2013</h2><p>You should also consider: </p>
+<ul>
+<li>changing your app to use a read-only list and then do a single edit based on the selection or </li>
+<li>look at the DiffGram sample for a possible solution to send only modified objects to the server.</li>
+</ul>
+<p>Loading that many objets fr the purpose of a single or few edits in the list may not be an optimal solution as CSLA will send the entire list back to the server even when only one/a few items has been modified.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

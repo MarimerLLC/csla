@@ -1,0 +1,116 @@
+<html><header><title>Doubly linked business objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Doubly linked business objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4197.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Friday, January 18, 2008</h2><P>Hello again. Another day, another design need.</P>
+<P>I have a design issue that I am having trouble coming to grips with.</P>
+<P>I have a master object (let's call it Alpha) that handles an Editable list of Beta objects.</P>
+<P>Each Beta object handles an Editable list of Gamma objects.</P>
+<P>However, I have a use case that also dictates that Alpha has access to a list of all Gamma objects.</P>
+<P>My first thought was to expose a property on Alpha called GetAllGamma and let that property create and return a list formed from all the Beta-&gt;Gamma objects. However, since Gamma is a child of Beta (and it should be) I can't create the Gamma list in Beta.</P>
+<P>What's a good way to approach something like this? Basically I want a main form to list all Beta AND all Gamma objects. I want the Beta form to list all Gamma objects that correspond to the chosen Beta.</P>
+<P>&nbsp;</P>
+<P>TIA,</P>
+<P>Will</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, January 18, 2008</h2><P>I think the final decision depends on whatyou plan to do with the lists. Do they have to stay in sync or not?</P>
+<P>If they have to stay in sync I would probably use your initial approach and build the list in Alpha "on demand" using each Beta and its child collections of Gamm objects.</P>
+<P>If you just need a Read Only List that matches what you started with&nbsp; I think I might create a new ROC and then fill it when Alpha is filled. The SQL would return all Gammas in one shot. It would be very fast to load it up.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 20, 2008</h2><P>Since you seem to be talking about two different forms, are you possibly talking about two different use cases as well?</P>
+<P>Remember to design your objects <EM>on a per-use case basis</EM>. </P>
+<P>Don't try to reuse objects across use cases until after you've done the per-use case design. After you've designed (on paper/whiteboard/whatever) the objects for each use case independently, then you can think about reuse.</P>
+<P>Only reuse objects if their responsibility is an exact match between use cases. Or to put it another way, only reuse objects if you can reuse them without changing them. If you need to change a perfectly happy object from use case A so it fits into use case B then you've increased coupling and decreased maintainability - which is a net loss, since the only reason for reuse is to increase maintainability...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maqster replied on Monday, January 21, 2008</h2>Hi Rocky,<br><br>you are talking a lot about designing objects per-use case basis. Do you have any examples on how you get the use cases down on "paper"?<br><br>I'm a little confused about the way one should get all the use cases down on paper before starting to develop their objects, my thoughts were that a use case consists of the end result of a UI. So I was thinking of prototyping the UI and then go for the objects. What do you think?<br><br>I would really appreciate an example of one or two use cases.<br><br>Best regards<br>maqster<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, January 21, 2008</h2><P>I tend to think of the UI screen as a use case. So&nbsp;after I prototype the UI, I then build the BOs necessary to make it function. It works well for me.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maqster replied on Monday, January 21, 2008</h2>Thanks Joe, then I'm not totally of base. That's the way I see it too. <br><br>Is their anyone out there that has a different approach?<br><br>/maqster<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Like Joe, I tend to consider a UI form/page to be a use case &#8211;
+though that isn&#8217;t always totally true. Sometimes a series of pages is a
+use case (like a wizard, or x steps in a single process). But as a basic
+starting point it isn&#8217;t bad.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I always try to think about any use case from a &#8220;non-UI&#8221;
+perspective too. The single biggest cause of artificial complexity in my experience
+occurs when UI and business concepts get blurred. When business layer stuff leaks
+into the UI, or UI stuff leaks into the business layer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Data binding and CSLA&#8217;s model help keep business stuff out
+of the UI &#8211; that&#8217;s been one of my primary goals all this time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But keeping UI stuff out of the business layer is a little
+harder, because it is often more subtle.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One tool I use to help avoid this pitfall is to start with the
+UI-as-a-use-case, but then to think of the use case as a service API as well.
+What if there was &#8220;no UI&#8221;, but just some WCF service? Am I putting
+functionality into the business layer that is useless in the service setting?
+If so, that functionality probably belongs in the Windows/Web/WPF UI, not in
+the business layer itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do this as a mental exercise, even if I have no plans for a
+service interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Conversely, btw, I do the reverse if I&#8217;m building a
+service interface. I always try to envision what a real UI would do on top of
+the objects &#8211; trying to make sure I didn&#8217;t bastardize the object
+model so it only suits a service API.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Maqster
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 21, 2008 9:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Doubly linked business objects.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Joe, then I'm not totally of base. That's the way I
+see it too. <br>
+<br>
+Is their anyone out there that has a different approach?<br>
+<br>
+/maqster<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Maqster replied on Monday, January 21, 2008</h2>Thanks Rocky, that was a good summary and gives me a good idea on how to use case my objects.<br><br>Best regards<br>Maqster<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Monday, January 21, 2008</h2><P>Thanks guys: That does clear it up a bit. I actually was designing use-cases from a UI page point of view. I know what I need on window 1 (Alpha object and interactions with it).</P>
+<P>I think the load Gamma from Alpha when necessary approach works the best for me.</P>
+<P>Thanks again,<BR>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, January 21, 2008</h2>I think prototyping the UI first makes a lot of sense.&nbsp; In the past I would build business objects and then try to figure out how to bind them to the UI.&nbsp; This was a huge mistake causing me to rewrite many of the objects to fit with the UI.&nbsp; Design your business objects so that they fit with how you want to interact with them from the UI not based on how the database is layed out.&nbsp; Now with simple collections they may still be the same.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

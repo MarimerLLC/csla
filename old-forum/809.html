@@ -1,0 +1,13 @@
+<html><header><title>ListChanged Event</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ListChanged Event</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/809.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Thursday, August 03, 2006</h2><P>I am using a ListChanged event to detect changes to a childlist and to then iterate through it. </P>
+<P>I have discovered that the ListChanged event is raised when I <U>add</U> an item to the collection but not when simply edit one - is this the expected behaviour?</P>
+<P>I have a feeling the problem may lie in where I am hooking-up the event. Currently, I have the following:</P><FONT size=2>
+<P>_customerContactList.ListChanged += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>ListChangedEventHandler</FONT><FONT size=2>(ResetBillToShipTo);</FONT></P>
+<P>...in the constructor of the Parent Object (an EO). I think this maybe where the problem lies.</P>
+<P><FONT size=2><FONT size=3>Any suggestions please.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Thanks</FONT></FONT></P>
+<P><FONT size=2><FONT size=3></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT size=3>Bonio</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2>In version 1.53 or higher (including 2.0+), when the child object raises its IsDirtyChanged or PropertyChanged event, that should trigger the collection to raise ListChanged. Are you running one of these versions? If so, are you sure the child object is raising IsDirtyChanged (1.x) or PropertyChanged (2.x)?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Thursday, August 03, 2006</h2><P>Hi Rocky</P>
+<P>Thanks for the reply.</P>
+<P>I think the problem was due to when I was 'hooking-up' the event. I initially had it in the EO's constructor and this worked fine when the object was new but not when it was just changed. I have since moved the event 'hook-up' code to the Public property for the childlist and this is now working fine.</P>
+<P>Thanks</P>
+<P>Bonio</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

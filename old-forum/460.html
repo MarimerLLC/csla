@@ -1,0 +1,119 @@
+<html><header><title>Command objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Command objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/460.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Saturday, June 24, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>Hi,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Just a few questions about command 
+objects.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>If they throw an exception while on the application 
+server, what will be returned to the UI? Is it still 
+DataPortalException?</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Secondly, let's say a command object, as part of 
+its execution on the application server, needs to use a business object. Can it 
+call the business object just as the UI would, and will the business object know 
+it is already on the application server?</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>For instance:</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>The UI calls the command object's Execute method. 
+The command object goes over to the application server, let's say via .NET 
+remoting, and as part of its execution calls a business object's factory 
+method.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Will the business object know it doesn't need to be 
+transfered, because it is already on the application server?</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Thanks,</FONT></DIV>
+<DIV><FONT face=Arial size=2>Brandon</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 24, 2006</h2><P>Yes, exceptions from the data portal always come back as DataPortalException, with the original exception available through the BusinessException property.</P>
+<P>And yes, any code running on the application server can call normal object factory methods and it should work fine. Your config file on the server won't have configured the data portal to be remote, so it will run locally, within the already established context of your server-side code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Sunday, June 25, 2006</h2><P>hi,</P>
+<P>&nbsp;</P>
+<P>Thanks for the reply. One more question.</P>
+<P>&nbsp;</P>
+<P>Would using command objects be an appropriate implementation of trying to implement business processes? Also what if I need some transactional support, say for instance if the process is calling components that update or insert data, but possibly mixed with others that do not need such support, such as processing a credit card, for example.</P>
+<P>&nbsp;</P>
+<P>I figured I could just have the Execute method return whatever type of return I need, such as a boolean to see if it executed successfully, or even a business object of some kind.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2>As with any transaction scheme, you need to be careful 
+about when you start/stop the transaction.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2>If you decorate DataPortal_Execute() with the Transaction 
+attribute, everything inside will be transactionally protected as you specify. 
+If you want to mix transactional and non-transactional operations you need to 
+start/end the transaction at a lower level. Of course that's the least of your 
+worries, since you need to manually determine how to handle failure and 
+"rollback" of the non-transactional portion of your process - and that can be 
+really complex...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Sunday, June 25, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>hi,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>If I decorate DataPortal_Execute with 
+Transactional, would every method it refers to in any object have to be 
+decorated with the same?</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Thanks,</FONT></DIV>
+<DIV><FONT face=Arial size=2>Brandon</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <DIV>----- Original Message ----- </DIV>
+  <DIV><B>From:</B> 
+  <A title=cslanet@lhotka.net href="mailto:cslanet@lhotka.net">Rockford 
+  Lhotka</A> </DIV>
+  <DIV><B>To:</B> <A title=brandon@devbanana.com href="mailto:brandon@devbanana.com">brandon@devbanana.com</A> </DIV>
+  <DIV><B>Sent:</B> Sunday, June 25, 2006 4:23 PM</DIV>
+  <DIV><B>Subject:</B> RE: [CSLA .NET] Command 
+  objects</DIV>
+  <DIV><BR></DIV>
+  <DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2>As with any transaction scheme, you need to be careful 
+  about when you start/stop the transaction.</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2>If you decorate DataPortal_Execute() with the Transaction 
+  attribute, everything inside will be transactionally protected as you specify. 
+  If you want to mix transactional and non-transactional operations you need to 
+  start/end the transaction at a lower level. Of course that's the least of your 
+  worries, since you need to manually determine how to handle failure and 
+  "rollback" of the non-transactional portion of your process - and that can be 
+  really complex...</FONT></SPAN></DIV>
+  <DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+  <DIV align=left><SPAN class=046512020-25062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 25, 2006</h2>
+
+
+
+
+
+
+<DIV align=left><SPAN class=984201122-25062006><FONT face=Arial color=#0000ff size=2>No. Read chapter 4 to see how the transactional 
+capabilities are implemented in the data portal.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=984201122-25062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=984201122-25062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Brandon [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Sunday, June 25, 2006 4:38 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Command 
+  objects<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <DIV><FONT face=Arial size=2>hi,</FONT></DIV>
+  <DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=Arial size=2>If I decorate DataPortal_Execute with 
+  Transactional, would every method it refers to in any object have to be 
+  decorated with the same?</FONT></DIV>
+  <DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+  <DIV><FONT face=Arial size=2>Thanks,</FONT></DIV>
+  <DIV><FONT face=Arial size=2>Brandon</FONT></DIV></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

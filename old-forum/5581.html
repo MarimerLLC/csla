@@ -1,0 +1,111 @@
+<html><header><title>Rolodex Introduction?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex Introduction?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5581.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer posted on Tuesday, October 14, 2008</h2><P>Hi,</P>
+<P>Just managed to build the Rolodex, but when I look at all folders, I'm lost (Sorry I'm new to Silverlight and only build old version of CSLA). I appreciate if you can give a simple explanation to help me to understand this project struction&nbsp;for the following folders.</P>
+<P>Rolodex\<BR>&nbsp;Application<BR>&nbsp;Business<BR>&nbsp;Business\Client<BR>&nbsp;Business\Server<BR>&nbsp;CslaBin<BR>&nbsp;CslaBin\net<BR>&nbsp;CslaBin\silverlight<BR>&nbsp;WcfHostWeb<BR>&nbsp;Web</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 14, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p>Rolodex\<br>
+&nbsp;Application &#8211; main Silverlight application project<br>
+&nbsp;Business &#8211; just a folder that houses two business objects projects<br>
+&nbsp;Business\Client &#8211; Silverlight version of CSLA business
+classes.&nbsp; They are all linked to .NET business classes &#8211; there are
+no classes written just for Silverlight.&nbsp; The idea is that the code base
+is shared between Silverlight and .NET.<br>
+&nbsp;Business\Server - .NET version of business classes<br>
+&nbsp;CslaBin &#8211; just a folder<br>
+&nbsp;CslaBin\net &#8211; CSLA for .NET reference assembly (CSLA.DLL)<br>
+&nbsp;CslaBin\silverlight &#8211; CSLA for Silverlight reference assembly
+(CSLA.DLL)<br>
+&nbsp;WcfHostWeb &#8211; WCF service host web site<br>
+&nbsp;Web &#8211; web site that hosts Silverlight application<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CSLAer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 14, 2008 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex Introduction?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>Just managed to build the Rolodex, but when I look at all folders, I'm lost
+(Sorry I'm new to Silverlight and only build old version of CSLA). I appreciate
+if you can give a simple explanation to help me to understand this project
+struction&nbsp;for the following folders.<o:p></o:p></p>
+
+<p>Rolodex\<br>
+&nbsp;Application<br>
+&nbsp;Business<br>
+&nbsp;Business\Client<br>
+&nbsp;Business\Server<br>
+&nbsp;CslaBin<br>
+&nbsp;CslaBin\net<br>
+&nbsp;CslaBin\silverlight<br>
+&nbsp;WcfHostWeb<br>
+&nbsp;Web<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer replied on Wednesday, October 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Sure.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN>Rolodex\<BR>&nbsp;Application – main Silverlight application project<BR>&nbsp;Business – just a folder that houses two business objects projects<BR>&nbsp;Business\Client – Silverlight version of CSLA business classes.&nbsp; They are all linked to .NET business classes – there are no classes written just for Silverlight.&nbsp; The idea is that the code base is shared between Silverlight and .NET.<BR>&nbsp;Business\Server - .NET version of business classes<BR>&nbsp;CslaBin – just a folder<BR>&nbsp;CslaBin\net – CSLA for .NET reference assembly (CSLA.DLL)<BR>&nbsp;CslaBin\silverlight – CSLA for Silverlight reference assembly (CSLA.DLL)<BR>&nbsp;WcfHostWeb – WCF service host web site<BR>&nbsp;Web – web site that hosts Silverlight application<o:p></o:p></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><B><SPAN>Sergey Barskiy<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><B><I><SPAN>Principal Consultant<o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN>office: 678.405.0687 | mobile:&nbsp;404.388.1899<o:p></o:p></SPAN></P>
+<P class=MsoNormal><B><I><SPAN>Magenic</SPAN></I></B><SPAN> </SPAN><SPAN>®</SPAN><B><I><SPAN><o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><B><SPAN>Microsoft Worldwide Partner of the Year |</SPAN></B><SPAN> </SPAN><B><SPAN>Custom Development Solutions, Technical Innovation</SPAN></B><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Dear Sergey,</P>
+<P class=MsoNormal>I really appreciate your effort helping me to understand the Silverlight. However, I still have dummy questions to ask, hope you don't feel bored with my questions.</P>
+<P class=MsoNormal>1. Can I remove CslaBin folders if I already have the project refer to CSLA assemblies at other places?</P>
+<P class=MsoNormal>2. If I just want to build a Silverlight application using CSLA, can I remove the .NET version of business classes?</P>
+<P class=MsoNormal>3. How does all thoese components working collaboratively? When a user goes to website, it goes to "Web", the "Web" hosts "Application", "Application" talks to "Silverlight Business Class", "Silverlight Business Class" talks to ".NET Business Class", and then Wcf, database?</P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

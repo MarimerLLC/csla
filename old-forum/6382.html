@@ -1,0 +1,153 @@
+<html><header><title>CSLA Light : Serializing a Class to handle Composite Keys</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light : Serializing a Class to handle Composite Keys</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6382.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mjr0607 posted on Monday, February 09, 2009</h2><P>Hi all.&nbsp; Newbie with a question...</P>
+<P>I'm using CSLA Light to display a ReadOnlyList in a Silverlight DataGrid control -- works fine.&nbsp; My intention is to allow the user to select a record from the list and open an Edit form for that record.&nbsp; My ReadOnlyList should therefore contain keys.&nbsp; Here's the rub -- my db utilizes (and must continue to utilize)&nbsp;composite keys.</P>
+<P>So I created a class that creates the keys for me.&nbsp; But when I attempt to LoadProperty in my BO, I get an error:</P><FONT color=#008000><FONT size=1>
+<P></FONT><FONT color=#000000>LoadProperty&lt;</FONT><FONT color=#2b91af>OrderKey</FONT><FONT color=#000000>&gt;(KeyProperty,</FONT> <FONT color=#2b91af>OrderKey</FONT><FONT color=#000000>.Create().SetKeys(</FONT><FONT color=#0000ff>this</FONT><FONT color=#000000>));</FONT></P>
+<P><FONT color=#ff0000>Type 'Business.OrderKey' with data contract name 'OrderKey:http://schemas.datacontract.org/2004/07/Business' is not expected. Add any types not known statically to the list of known types - for example, by using the KnownTypeAttribute attribute or by adding them to the list of known types passed to DataContractSerializer.</FONT></P>
+<P><FONT color=#000000>I can avoid the problem by changing&nbsp;the key to&nbsp;a string (of delimitted field values)&nbsp;as follows:</FONT></P></FONT>
+<P>LoadProperty&lt;<FONT color=#0000ff>string</FONT>&gt;(KeyProperty, <FONT color=#2b91af>OrderKey</FONT>.Create().SetKeys(<FONT color=#0000ff>this</FONT>).ToString());</P>
+<P>But I'm not sure that's desirable.&nbsp; In the following link, Rocky&nbsp;suggests using strings for keys, but wouldn't that involve the subsequent&nbsp;parsing&nbsp;of those strings to extract the individual values -- values that could otherwise be referenced as properties of a key object?</P>
+<P><A HREF="/forums/1/457/ShowThread.aspx">http://forums.lhotka.net/forums/1/457/ShowThread.aspx</A></P>
+<P>So I have a couple questions:</P>
+<P>1. Does anyone have a suggested/preferred solution for making an unknown&nbsp;class known to the data contract serializer?&nbsp; I'm not sure whether CSLA has facilities to do this.</P>
+<P>2. Does anyone have direct experience and/or suggestions using CSLA with a composite key db?&nbsp; What are the pros/cons of using a key class vs. a string?</P>
+<P>Thanks in advance for any thoughts.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you convert your OrderKey to BB or ROB, the problem will go
+away.&nbsp; Then again, why cannot you just use composite keys in your class?&nbsp;
+This is the easiest route to go.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mjr0607
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 3:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA Light : Serializing a Class to handle
+Composite Keys<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi all.&nbsp; Newbie with a question...<o:p></o:p></p>
+
+<p>I'm using CSLA Light to display a ReadOnlyList in a Silverlight DataGrid
+control -- works fine.&nbsp; My intention is to allow the user to select a
+record from the list and open an Edit form for that record.&nbsp; My ReadOnlyList
+should therefore contain keys.&nbsp; Here's the rub -- my db utilizes (and must
+continue to utilize)&nbsp;composite keys.<o:p></o:p></p>
+
+<p>So I created a class that creates the keys for me.&nbsp; But when I attempt
+to LoadProperty in my BO, I get an error:<o:p></o:p></p>
+
+<p><span>LoadProperty&lt;</span><span>OrderKey</span><span>&gt;(KeyProperty,</span><span> </span><span>OrderKey</span><span>.Create().SetKeys(</span><span>this</span><span>));</span><span><o:p></o:p></span></p>
+
+<p><span>Type 'Business.OrderKey' with data contract name
+'OrderKey:http://schemas.datacontract.org/2004/07/Business' is not expected.
+Add any types not known statically to the list of known types - for example, by
+using the KnownTypeAttribute attribute or by adding them to the list of known
+types passed to DataContractSerializer.</span><span><o:p></o:p></span></p>
+
+<p><span>I can avoid the problem by changing&nbsp;the key
+to&nbsp;a string (of delimitted field values)&nbsp;as follows:</span><span><o:p></o:p></span></p>
+
+<p>LoadProperty&lt;<span>string</span>&gt;(KeyProperty, <span>OrderKey</span>.Create().SetKeys(<span>this</span>).ToString());<o:p></o:p></p>
+
+<p>But I'm not sure that's desirable.&nbsp; In the following link,
+Rocky&nbsp;suggests using strings for keys, but wouldn't that involve the
+subsequent&nbsp;parsing&nbsp;of those strings to extract the individual values
+-- values that could otherwise be referenced as properties of a key object?<o:p></o:p></p>
+
+<p><a href="/forums/1/457/ShowThread.aspx">http://forums.lhotka.net/forums/1/457/ShowThread.aspx</a><o:p></o:p></p>
+
+<p>So I have a couple questions:<o:p></o:p></p>
+
+<p>1. Does anyone have a suggested/preferred solution for making an
+unknown&nbsp;class known to the data contract serializer?&nbsp; I'm not sure
+whether CSLA has facilities to do this.<o:p></o:p></p>
+
+<p>2. Does anyone have direct experience and/or suggestions using CSLA with a
+composite key db?&nbsp; What are the pros/cons of using a key class vs. a
+string?<o:p></o:p></p>
+
+<p>Thanks in advance for any thoughts.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mjr0607 replied on Tuesday, March 10, 2009</h2><P>Sergey,</P>
+<P>Thanks for the response.&nbsp; Following a brief distraction, I'm&nbsp;finally back on this project.&nbsp; I tried your first suggestion of deriving&nbsp;the OrderKey class&nbsp;from BusinessBase.&nbsp; That&nbsp;worked fine, but as expected, there's a lot of overhead.&nbsp;Populating a grid with 10,000 orders takes 10 seconds without keys and 24 seconds with keys.</P>
+<P>I then tried creating a nested OrderKey class within my OrderInfo business class as follows:</P><FONT size=1>
+<P>[</FONT><FONT color=#2b91af size=1>Serializable</FONT><FONT size=1>]</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>partial</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>OrderKey</P></FONT><FONT size=1>
+<P>{</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> OrderClass { </FONT><FONT color=#0000ff size=1>get</FONT><FONT size=1>; </FONT><FONT color=#0000ff size=1>set</FONT><FONT size=1>; }</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> OrderNumber { </FONT><FONT color=#0000ff size=1>get</FONT><FONT size=1>; </FONT><FONT color=#0000ff size=1>set</FONT><FONT size=1>; }</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>static</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>OrderKey</FONT><FONT size=1> Create()</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>OrderKey</FONT><FONT size=1>();</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>OrderKey</FONT><FONT size=1> SetKeys(</FONT><FONT color=#2b91af size=1>OrderInfo</FONT><FONT size=1> theOrderInfo)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</P></FONT><FONT size=1>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.SetOrderClass(theOrderInfo.OrderClass)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.SetOrderNumber(theOrderInfo.OrderNumber)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;;</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>OrderKey</FONT><FONT size=1> SetOrderClass(</FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> theOrderClass)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT><FONT size=1>.OrderClass = theOrderClass;</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>OrderKey</FONT><FONT size=1> SetOrderNumber(</FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> theOrderNumber)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this</FONT><FONT size=1>.OrderNumber = theOrderNumber;</P>
+<P></FONT><FONT color=#0000ff size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P><FONT size=3>But that resulted in the same error described in my original post -- even if I derive OrderKey from CriteriaBase.&nbsp; It seems that only business classes (not Criterias)&nbsp;are properly ferried in CSLALight -- true??</FONT></P>
+<P><FONT size=3>You suggested that using composite keys in my class would be the easiest way to go.&nbsp; I'm not sure what you mean (newbie).&nbsp; Would you mind providing a brief explanation/example?</FONT></P>
+<P><FONT size=3>Thanks in advance for your time.</FONT></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

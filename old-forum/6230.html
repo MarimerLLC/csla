@@ -1,0 +1,72 @@
+<html><header><title>Help - How to I pass and get a reference to ReadOnlyBase(Of objectInfo)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help - How to I pass and get a reference to ReadOnlyBase(Of objectInfo)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6230.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Wednesday, January 21, 2009</h2><P>Hello,</P>
+<P>I'm trying to get a reference to objectInfo where objectInfo inherits from ReadOnlyBase. What I want to do is in my form, pass objectInfo to a method in another class that sets a filter. </P>
+<P>I can successfully do this for objectReadOnlyList, where I have a property of type Csla.Core.IReadOnlyCollection, but I can't seem to use a property of type Csla.Core.IReadOnlyObject because: <FONT size=2></P>
+<P><FONT color=#0000ff>FilteredBindingList(</FONT></FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2><FONT color=#0000ff> _objectInfo)(_objectReadOnlyList)</FONT> complains that _objectInfo "<FONT color=#ff0000>Type _objectInfo is not defined</FONT>"</P></FONT><FONT size=2>
+<P>Really would appreciate some help with this.</P>
+<P>Thanks,</P>
+<P>Andrew</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2>Well, is there really a type (class) named _objectInfo?&nbsp; It looks like an instance reference to me.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Thursday, January 22, 2009</h2><P>Sorry, code reference is mis-leading. The _objectInfo is a property of type (object class) in&nbsp;my form. What I am trying to do is abstract a common method for filtering in my baseform, from which my forms are derived. I am expecting the inherited form to be able to set the property in the baseform and then the baseform execute the filter method - for any form.</P>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2>Sorry.. is _objectInfo a propererty of a certain type, or is it's type actually System.Type.&nbsp; It needs to be a System.Type.&nbsp; And it can't be a variable, it must be resolvable at compile time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Thursday, January 22, 2009</h2><P><FONT size=2>Thanks! This is what I was attempting:</FONT></P>
+<P><FONT size=2>What I was trying to do was create&nbsp;a common&nbsp;method like this in my baseclass:</FONT></P>
+<P><FONT size=2>Me.BOBindingSource.DataSource = New SortedBindingList(Of _ReadOnlyInfo)(_ReadOnlyList). I was hoping in my baseclass to have two properties for _ReadOnlyInfo and _ReadOnlyList and then set these from the calling form. </FONT></P>
+<P><FONT size=2>Part of this works. This is what I have in my baseform:</FONT></P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>WithEvents</FONT><FONT color=#000000 size=2> _ReadOnlyList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> Core.IReadOnlyCollection</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ReadOnlyList() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyCollection</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _ReadOnlyList</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyCollection)</P>
+<P>_ReadOnlyList = value</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>WithEvents</FONT><FONT size=2> _ReadOnlyInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Core.IReadOnlyObject</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ReadOnlyInfo() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyObject</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _ReadOnlyInfo</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IReadOnlyObject)</P>
+<P>_ReadOnlyInfo = value</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT></FONT></FONT>
+<P><FONT color=#0000ff size=2><FONT color=#000000></FONT></FONT>&nbsp;</P>
+<P> </P>
+<P><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>WithEvents</FONT><FONT size=2> _BindingSource </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> BindingSource() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _BindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BindingSource)</P>
+<P>baseBindingNavigator.BindingSource = value</P>
+<P>_BindingSource = value</P>
+<P>...</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>and then in my form, I have:</FONT></FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>WithEvents</FONT><FONT size=2> _ChartFieldInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ChartFieldInfo</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ChartFieldInfo() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ChartFieldInfo</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _ChartFieldInfo</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>WithEvents</FONT><FONT size=2> _ChartFieldList </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ChartFieldList</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> ChartFieldList() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ChartFieldList</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _ChartFieldList</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P>_ChartFieldList = ChartFieldList.GetChartFieldList()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ChartFieldListBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SortedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> <FONT color=#0000ff>ChartFieldInfo</FONT>)(_ChartFieldList)</FONT></P>
+<P><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.BindingSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ChartFieldListBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.ReadOnlyList = _ChartFieldList</FONT></P>
+<P>MyBase.ReadOnlyInfo = ChartFieldInfo</P>
+<P><FONT color=#000000>In the&nbsp; common method in my baseclass, I'd like to do something lik:</FONT></P>
+<P><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.BindingSource.DataSource = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SortedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> <FONT color=#ff0000>_ReadOnlyInfo</FONT>)(_ReadOnlyList)</FONT></P>
+<P><FONT color=#000000 size=2>Note from above, (<FONT color=#ff0000>code in red</FONT>), I cannot pass _BOInfo (which I like to have as a reference to ChartFieldInfo)&nbsp;as a parm, as the object cannot be resolved.</FONT></P>
+<P><FONT color=#000000></FONT>&nbsp;</P>
+<P><FONT color=#000000>Is something like this possible?</FONT></P>
+<P><FONT color=#000000>Thanks,</FONT></P>
+<P><FONT color=#000000>Andrew</FONT></P>
+<P>&nbsp;</P></FONT>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2>I think what you want is possible, but you'll need to&nbsp; use reflection to create the generic SortedBindingList type appropriately.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Thursday, January 22, 2009</h2><P>Tried that - seems that the parm can't be a reference, of any type. VS complains that "Type 'xxx' is not defined."</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2>What's the reflection code you tried?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

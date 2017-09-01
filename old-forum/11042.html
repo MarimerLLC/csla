@@ -1,0 +1,210 @@
+<html><header><title>Multiple Properties, Business Rules, &amp; and Objects changing their valid state</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Properties, Business Rules, &amp; and Objects changing their valid state</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11042.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 posted on Monday, January 09, 2012</h2><p>I have a biz object that has a business rule that requires one of the two properties to be set, but not both has to be set. &nbsp;The rule works fine when one of the options is set and then saved. &nbsp;The problems arise when a user might want to reassign work from a user to a group(or vice versa). &nbsp;In code I set the old to null, and sets the other to the appropriate id. &nbsp;Below is an example:</p>
+<p>
+<h4>
+<div>
+<div>
+<div><span style="font-weight:normal;">[Serializable]</span></div>
+<div><span style="font-weight:normal;">public partial class Work : BusinessBase&lt;Work&gt;</span></div>
+<div><span style="font-weight:normal;">{</span></div>
+<div><span style="font-weight:normal;"><span>	</span>// Primary key in DB.</span></div>
+<div><span style="font-weight:normal;"><span>	</span>private static readonly PropertyInfo&lt;System.Int32&gt; IdProperty = RegisterProperty&lt;System.Int32&gt;(p =&gt; p.Id, &quot;Work Id&quot;);</span></div>
+<div><span style="font-weight:normal;"><span>	</span>public System.Int32 Id</span></div>
+<div><span style="font-weight:normal;"><span>	</span>{</span></div>
+<div><span style="font-weight:normal;"><span>		</span>get { return GetProperty(IdProperty); }</span></div>
+<div><span style="font-weight:normal;"><span>		</span>set { SetProperty(IdProperty, value); }</span></div>
+<div><span style="font-weight:normal;"><span>	</span>}</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>	</span>private static readonly PropertyInfo&lt;System.Int32?&gt; UserIdAssignToProperty = RegisterProperty&lt;System.Int32?&gt;(p =&gt; p.UserIdAssignTo, &quot;User Id Assign To&quot;);</span></div>
+<div><span style="font-weight:normal;"><span>	</span>public System.Int32? UserIdAssignTo</span></div>
+<div><span style="font-weight:normal;"><span>	</span>{</span></div>
+<div><span style="font-weight:normal;"><span>		</span>get { return GetProperty(UserIdAssignToProperty); }</span></div>
+<div><span style="font-weight:normal;"><span>		</span>set { SetProperty(UserIdAssignToProperty, value); }</span></div>
+<div><span style="font-weight:normal;"><span>	</span>}</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>	</span>private static readonly PropertyInfo&lt;Group&gt; GroupIdAssignToProperty = RegisterProperty&lt;Group&gt;(p =&gt; p.GroupIdAssignTo, &quot;Group Id Assign To&quot;);</span></div>
+<div><span style="font-weight:normal;"><span>	</span>public System.Int32? GroupIdAssignTo</span></div>
+<div><span style="font-weight:normal;"><span>	</span>{</span></div>
+<div><span style="font-weight:normal;"><span>		</span>get { return GetProperty(GroupIdAssignToProperty); }</span></div>
+<div><span style="font-weight:normal;"><span>		</span>set { SetProperty(GroupIdAssignToProperty, value); }</span></div>
+<div><span style="font-weight:normal;"><span>	</span>}</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>	</span>protected override void AddBusinessRules()</span></div>
+<div><span style="font-weight:normal;"><span>	</span>{</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>		</span>base.AddBusinessRules();</span></div>
+<div><span style="font-weight:normal;"><span>		</span>BusinessRules.AddRule(new AssignWork(UserIdAssignToProperty, GroupIdAssignToProperty));</span></div>
+<div><span style="font-weight:normal;"><span>		</span>BusinessRules.AddRule(new AssignWork(GroupIdAssignToProperty, UserIdAssignToProperty));</span></div>
+<div><span style="font-weight:normal;"><span>	</span>}</span></div>
+<div><span style="font-weight:normal;">	</span></div>
+<div><span style="font-weight:normal;"><span>	</span>// root factory methods</span></div>
+<div><span style="font-weight:normal;"><span>	</span>// root data portal</span></div>
+<div><span style="font-weight:normal;">}</span></div>
+<div><span style="font-weight:normal;">&nbsp;</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;">internal class AssignWork : BusinessRule</span></div>
+<div><span style="font-weight:normal;">{</span></div>
+<div><span style="font-weight:normal;"><span>	</span>public AssignWork(IPropertyInfo PrimaryProperty, IPropertyInfo SecondaryProperty)</span></div>
+<div><span style="font-weight:normal;">&nbsp; &nbsp; &nbsp; &nbsp; : base(PrimaryProperty)</span></div>
+<div><span style="font-weight:normal;"><span>	</span>{</span></div>
+<div><span style="font-weight:normal;"><span>		</span>if (InputProperties == null)</span></div>
+<div><span style="font-weight:normal;"><span>		</span>{</span></div>
+<div><span style="font-weight:normal;"><span>			</span>InputProperties = new List&lt;IPropertyInfo&gt;();</span></div>
+<div><span style="font-weight:normal;"><span>		</span>}</span></div>
+<div><span style="font-weight:normal;"><span>		</span>InputProperties.Add(PrimaryProperty);</span></div>
+<div><span style="font-weight:normal;"><span>		</span>InputProperties.Add(SecondaryProperty);</span></div>
+<div><span style="font-weight:normal;"><span>	</span>}</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>	</span>protected override void Execute(Csla.Rules.RuleContext context)</span></div>
+<div><span style="font-weight:normal;"><span>	</span>{</span></div>
+<div><span style="font-weight:normal;"><span>		</span>base.Execute(context);</span></div>
+<div><span style="font-weight:normal;">		</span></div>
+<div><span style="font-weight:normal;"><span>		</span>IPropertyInfo groupProp = InputProperties.Find(prop =&gt; prop.FriendlyName.Equals(&quot;Group Assign To&quot;));</span></div>
+<div><span style="font-weight:normal;"><span>		</span>IPropertyInfo userProp = InputProperties.Find(prop =&gt; prop.FriendlyName.Equals(&quot;User Id Assign To&quot;));</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>		</span>var userId = (dynamic)context.InputPropertyValues[userProp];</span></div>
+<div><span style="font-weight:normal;"><span>		</span>var groupId = (dynamic)context.InputPropertyValues[groupProp];</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><span>		</span>if (userId == null &amp;&amp; groupId == null))</span></div>
+<div><span style="font-weight:normal;"><span>		</span>{</span></div>
+<div><span style="font-weight:normal;"><span>			</span>context.AddErrorResult(String.Format(&quot;Either assign to {0} or {1}&quot;, userProp.FriendlyName, groupProp.FriendlyName));</span></div>
+<div><span style="font-weight:normal;"><span>		</span>}</span></div>
+<div><span style="font-weight:normal;">else&nbsp;<span>if (userId != null &amp;&amp; groupId != null))</span></span></div>
+<div><span style="font-weight:normal;"><span></span>{</span></div>
+<span style="font-weight:normal;"><span>context.AddErrorResult(String.Format(&quot;Can not assign both {0} and {1}&quot;, userProp.FriendlyName, groupProp.FriendlyName));</span>&nbsp;</span>
+<div><span style="font-weight:normal;"><span>	</span>}</span></div>
+<div><span style="font-weight:normal;">}</span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;">// Unit Test &nbsp;Case</span></div>
+<div><span style="font-weight:normal;">[Test]</span></div>
+<div><span style="font-weight:normal;">public void Test1()</span></div>
+<div><span style="font-weight:normal;">{</span></div>
+<div><span style="font-weight:normal;"><span>	</span>Work myWork = Work.NewWork();</span></div>
+<div><span style="font-weight:normal;"><span>	</span>myWork.UserIdAssignTo = 123;&nbsp;</span></div>
+<div><span style="font-weight:normal;"><span>	</span>myWork = myWork.Save(); // everything works ok so far.</span></div>
+<div><span style="font-weight:normal;"><span>	</span>int workId = myWork.Id</span></div>
+<div><span style="font-weight:normal;">	</span></div>
+<div><span style="font-weight:normal;"><span>	</span>// let&#39;s say a user wants to assign work from user to a group</span></div>
+<div><span style="font-weight:normal;"><span>	</span>Work reassignWork = Work.GetWork(workId); &nbsp;// at this point:&nbsp;</span><span style="font-weight:normal;">UserIdAssignTo = 123</span></div>
+<div><span style="font-weight:normal;"><span>	</span>reassignWork.UserIdAssignTo = null; // Object is in an invalid state here</span></div>
+<div><span style="font-weight:normal;"><span>	</span>reassignWork.GroupIdAssignTo = 456; // Object *should* no longer be in an invalid state, all rules satisfied</span></div>
+<div><span style="font-weight:normal;"><span>	</span>reassignWork = reassignWork.Save(); // getting an error here, says Object is not valid.</span></div>
+<div><span style="font-weight:normal;">}</span></div>
+</div>
+<div><span style="font-weight:normal;">[Test]</span></div>
+<div><span style="font-weight:normal;">public void Test2()</span></div>
+<div><span style="font-weight:normal;">{</span></div>
+<div><span style="font-weight:normal;"><span>	</span>Work myWork = Work.NewWork();</span></div>
+<div><span style="font-weight:normal;"><span>	</span>myWork.GroupIdAssignTo = 456;&nbsp;</span></div>
+<div><span style="font-weight:normal;"><span>	</span>myWork = myWork.Save(); // everything works ok so far.</span></div>
+<div><span style="font-weight:normal;"><span>	</span>int workId = myWork.Id</span></div>
+<div><span style="font-weight:normal;">	</span></div>
+<div><span style="font-weight:normal;"><span>	</span>// let&#39;s say a user wants to assign work from group to a user</span></div>
+<div><span style="font-weight:normal;"><span>	</span>Work reassignWork = Work.GetWork(workId); &nbsp;// at this point:&nbsp;</span><span style="font-weight:normal;">GroupIdAssignTo = 456</span></div>
+<div><span style="font-weight:normal;">reassignWork.GroupIdAssignTo = null;&nbsp;</span><span>//<span style="font-weight:normal;"> Object is in an invalid state here</span></span></div>
+<div><span style="font-weight:normal;">reassignWork.UserIdAssignTo = 123;</span><span>&nbsp;</span><span>// <span style="font-weight:normal;">Object *should* no longer be in an invalid state, all rules satisfied</span></span></div>
+<div><span style="font-weight:normal;"><span>	</span>reassignWork = reassignWork.Save(); // getting an error here, says Object is not valid.</span></div>
+<div><span style="font-weight:normal;">}</span></div>
+</div>
+<div><span style="font-weight:normal;"><br /></span></div>
+<div><span style="font-weight:normal;">The problem is in a sense the object enters an invalid state, when both GroupId &amp; UserId are both null, even though it is ultimately resolved. &nbsp;I&#39;m not sure of an elegant way of handling this without overriding the Save() method and doing a BuisnessRule.CheckRules() call.</span></div>
+</h4>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, January 09, 2012</h2><p>Which versjon of CSLA?</p>
+<p>Your existing code would run as expected with CSLA 4.2 as the Rule engine considers InputProperties as Dependency. </p>
+<p>In CSLA 4.1/4.0 only AffectedProperties is used for Dependency so your rule must add secondaryProperty to AffectedProperties. </p>
+<p>This code and tests runs&nbsp;OK &nbsp;for CSLA 4.1:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Work</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">Work</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;System.<span style="color:#2b91af;">Int32</span>&gt;&nbsp;IdProperty&nbsp;=&nbsp;RegisterProperty&lt;System.<span style="color:#2b91af;">Int32</span>&gt;(p&nbsp;=&gt;&nbsp;p.Id,&nbsp;<span style="color:#a31515;">&quot;Work&nbsp;Id&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;System.<span style="color:#2b91af;">Int32</span>&nbsp;Id
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(IdProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(IdProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;System.<span style="color:#2b91af;">Int32</span>?&gt;&nbsp;UserIdAssignToProperty&nbsp;=&nbsp;RegisterProperty&lt;System.<span style="color:#2b91af;">Int32</span>?&gt;(p&nbsp;=&gt;&nbsp;p.UserIdAssignTo,&nbsp;<span style="color:#a31515;">&quot;User&nbsp;Id&nbsp;Assign&nbsp;To&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;System.<span style="color:#2b91af;">Int32</span>?&nbsp;UserIdAssignTo
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(UserIdAssignToProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(UserIdAssignToProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;System.<span style="color:#2b91af;">Int32</span>?&gt;&nbsp;GroupIdAssignToProperty&nbsp;=&nbsp;RegisterProperty&lt;System.<span style="color:#2b91af;">Int32</span>?&gt;(p&nbsp;=&gt;&nbsp;p.GroupIdAssignTo,&nbsp;<span style="color:#a31515;">&quot;Group&nbsp;Id&nbsp;Assign&nbsp;To&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;System.<span style="color:#2b91af;">Int32</span>?&nbsp;GroupIdAssignTo
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(GroupIdAssignToProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(GroupIdAssignToProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AssignWork</span>(UserIdAssignToProperty,&nbsp;GroupIdAssignToProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AssignWork</span>(GroupIdAssignToProperty,&nbsp;UserIdAssignToProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;<span style="color:blue;">internal</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">AssignWork</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;SecondaryProperty&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;<span style="color:blue;">set</span>;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AssignWork(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;secondaryProperty)&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SecondaryProperty&nbsp;=&nbsp;secondaryProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(InputProperties&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2baaaf;">IPropertyInfo</span>&gt;();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(primaryProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties.Add(secondaryProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(secondaryProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(Csla.Rules.<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;value1&nbsp;=&nbsp;(<span style="color:blue;">dynamic</span>)&nbsp;context.InputPropertyValues[PrimaryProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;value2&nbsp;=&nbsp;(<span style="color:blue;">dynamic</span>)&nbsp;context.InputPropertyValues[SecondaryProperty];
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(value1&nbsp;==&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;value2&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:#2b91af;">String</span>.Format(<span style="color:#a31515;">&quot;Either&nbsp;assign&nbsp;to&nbsp;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&nbsp;or&nbsp;</span><span style="color:mediumseagreen;">{1}</span><span style="color:#a31515;">&quot;</span>,&nbsp;PrimaryProperty.FriendlyName,&nbsp;SecondaryProperty.FriendlyName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(value1&nbsp;!=&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;value2&nbsp;!=&nbsp;<span style="color:blue;">null</span>)&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:#2b91af;">String</span>.Format(<span style="color:#a31515;">&quot;Can&nbsp;not&nbsp;assign&nbsp;both&nbsp;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&nbsp;and&nbsp;</span><span style="color:mediumseagreen;">{1}</span><span style="color:#a31515;">&quot;</span>,&nbsp;PrimaryProperty.FriendlyName,&nbsp;SecondaryProperty.FriendlyName));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">TestClass</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">TestWork</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">TestMethod</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Test1()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Work</span>&nbsp;myWork&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Work</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myWork.UserIdAssignTo&nbsp;=&nbsp;123;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(myWork.IsValid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myWork.UserIdAssignTo&nbsp;=&nbsp;<span style="color:blue;">null</span>;&nbsp;<span style="color:green;">//&nbsp;Object&nbsp;is&nbsp;in&nbsp;an&nbsp;invalid&nbsp;state&nbsp;here</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsFalse(myWork.IsValid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myWork.GroupIdAssignTo&nbsp;=&nbsp;456;&nbsp;<span style="color:green;">//&nbsp;Object&nbsp;*should*&nbsp;no&nbsp;longer&nbsp;be&nbsp;in&nbsp;an&nbsp;invalid&nbsp;state,&nbsp;all&nbsp;rules&nbsp;satisfied</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(myWork.IsValid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(myWork.IsSavable);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">TestMethod</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Test2()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Work</span>&nbsp;myWork&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Work</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myWork.GroupIdAssignTo&nbsp;=&nbsp;456;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(myWork.IsValid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myWork.GroupIdAssignTo&nbsp;=&nbsp;<span style="color:blue;">null</span>;&nbsp;<span style="color:green;">//&nbsp;Object&nbsp;is&nbsp;in&nbsp;an&nbsp;invalid&nbsp;state&nbsp;here</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsFalse(myWork.IsValid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;myWork.UserIdAssignTo&nbsp;=&nbsp;123;&nbsp;<span style="color:green;">//&nbsp;Object&nbsp;*should*&nbsp;no&nbsp;longer&nbsp;be&nbsp;in&nbsp;an&nbsp;invalid&nbsp;state,&nbsp;all&nbsp;rules&nbsp;satisfied</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(myWork.IsValid);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(myWork.IsSavable);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Tuesday, January 10, 2012</h2><p>Thanks again JohnnyBee, I upgraded to 4.2.2 and it works.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

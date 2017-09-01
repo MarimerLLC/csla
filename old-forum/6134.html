@@ -1,0 +1,178 @@
+<html><header><title>foreign key enforce with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>foreign key enforce with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6134.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmr_halwagy posted on Tuesday, January 13, 2009</h2><P>Hello,</P>
+<P>In CSLA "Editable Root"&nbsp;business object properties use class variables that declared inside class and initialized with default values like integers will default to 0 and strings will default to ""</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>""</P></FONT></FONT><FONT size=2>
+<P><FONT color=#0000ff>Protected</FONT><FONT size=2> mDepartmentID </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Integer</FONT></FONT><FONT size=2> = 0</FONT></P></FONT>
+<P>say for a database table &nbsp;Customer Table tehre is "DepartmentID" as foreign key at at Departments table DepartmentID is an int identity field with seed as 1 and increment as 1 als.</P>
+<P>&nbsp;</P>
+<P>if DepartmentID is optional in business logic and in say ASP.NET GUI and we did not assign teh DepartmentID Customer object property a value</P>
+<P>DepartmentID database column it will be saved as 0 in database but 0 can not be a foreign key value if we will enforce foreign key constraint as 0 can not be DepartmentID value at Departmens lookup table (it can be only NULL or a DepartmentID values that exist at Departments table).</P>
+<P><FONT size=2>any ideas about how to enforce foreign key relationship</FONT></P>
+<P><FONT size=2>on database tables that are wrapped by CSLA editable root business objects</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Thanks </FONT></P>
+<P><FONT size=2>Tamer Halwagy</P>
+<P>&nbsp;</P>
+<P></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In your dataportal_insert/update you will need conditional code
+that will send DBNull.Value to the backend instead of zero if you have a loose
+relationship.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmr_halwagy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] foreign key enforce with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>In CSLA &quot;Editable Root&quot;&nbsp;business object properties use class
+variables that declared inside class and initialized with default values like
+integers will default to 0 and strings will default to &quot;&quot;<o:p></o:p></p>
+
+<p><span>Protected</span><span> mName <span>As</span> <span>String</span> = <span>&quot;&quot;<o:p></o:p></span></span></p>
+
+<p><span>Protected</span><span> mDepartmentID <span>As</span> <span>Integer</span> = 0<o:p></o:p></span></p>
+
+<p>say for a database table &nbsp;Customer Table tehre is
+&quot;DepartmentID&quot; as foreign key at at Departments table DepartmentID is
+an int identity field with seed as 1 and increment as 1 als.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>if DepartmentID is optional in business logic and in say ASP.NET GUI and we
+did not assign teh DepartmentID Customer object property a value<o:p></o:p></p>
+
+<p>DepartmentID database column it will be saved as 0 in database but 0 can not
+be a foreign key value if we will enforce foreign key constraint as 0 can not
+be DepartmentID value at Departmens lookup table (it can be only NULL or a
+DepartmentID values that exist at Departments table).<o:p></o:p></p>
+
+<p><span>any ideas about how to enforce foreign key
+relationship</span><o:p></o:p></p>
+
+<p><span>on database tables that are wrapped by CSLA
+editable root business objects</span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>Thanks </span><o:p></o:p></p>
+
+<p><span>Tamer Halwagy<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmr_halwagy replied on Tuesday, January 13, 2009</h2><P>Hello,</P>
+<P>What do you mean of loose relationship</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>1/0 to many<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmr_halwagy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 9:47 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] foreign key enforce with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>What do you mean of loose relationship<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

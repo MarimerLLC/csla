@@ -1,0 +1,87 @@
+<html><header><title>Business Rules / Calculated Fields Dependency</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules / Calculated Fields Dependency</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12168.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik posted on Monday, September 30, 2013</h2><p>Hi experts,</p>
+<p>I have <strong>BaseQty</strong> and <strong>Factor</strong> fields in the database. On user front end, I display <strong>Quantity</strong> field which is calculated as BaseQty * Factor. I know I can write a business rule <strong>CalcQuantity</strong> which will be fired on BaseQty and Factor field.</p>
+<p>But the problem is&nbsp;<span style="text-decoration:underline;">Quantity field is also updatable by the user on the front end</span>. User can enter a value in the Quantity field and in this case <strong>BaseQty</strong> is to be calculated as Quantity/Factor. If I write a CalcBaseQty rule, it will create a kind of cyclic dependency with CalcQuantity rule. BaseQty and Quantity are interdependent.</p>
+<p>How to implement this scenario?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, September 30, 2013</h2><p>One approach you could do is have a nullable field in your datastore for the user entered value.&nbsp; Your property would then display the calculation if the nullable field is null or 0 or whatever value you choose.&nbsp; The property would display the user entered value if it was populated.&nbsp; The &quot;setting&quot; of the property would populate the nullable back field.&nbsp; So the majority of the logic would be within the property instead of a rule.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, September 30, 2013</h2><p>One other thing, you may want to add another property such as IsBaseQtyPopulated to determine if the value is calced or user populated. You could use that property for any visual feeback you want to give to the user.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, September 30, 2013</h2><p>Hi, </p>
+<p>So in terms of business rules you need rules that only run when the user modifies a field. </p>
+<p>You can achieve this by setting these properties in your rules constructor:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsAsync&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;only&nbsp;run&nbsp;when&nbsp;this&nbsp;property&nbsp;is&nbsp;changed&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;when&nbsp;true&nbsp;will&nbsp;also&nbsp;run&nbsp;in&nbsp;CheckRules</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;when&nbsp;true&nbsp;will&nbsp;also&nbsp;run&nbsp;on&nbsp;logical&nbsp;serverside&nbsp;(Data&nbsp;Access)</span></pre>
+<p>When all 3 CanXYZ properties is false - the rule will only run when the user (or code) calls the property setter and change the value.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Tuesday, October 01, 2013</h2><p>Hi JonnyBee</p>
+<p>Thanks for the information&nbsp;on business rules. I am using csla.net 4.5.30. </p>
+<p>I wrote a <strong>CalcBaseQty</strong> business rule with setting all 3 CanXYZ to false. But the rule was not firing. I had to set <span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">CanRunAsAffectedProperty&nbsp;to </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">true&nbsp;</span></span></span>&nbsp; and rule started firing when user changed value through user interface.</p>
+<p>But the problem is that <strong>CalcQty</strong> rule fires before <strong>CalcBaseQty</strong>.&nbsp;I need to fire CalcBaseQty rule first so that user entered value is translated back to BaseQty field.&nbsp;&nbsp;I tried setting priority of CalcBaseQty to -1, but it made no difference.</p>
+<p>Finally, removed the CalcBaseQty rule, and in the Qty setter, I directly update the BaseQty. It works as expected but I don&#39;t know if it is ok to do this.</p>
+<p>Thanks</p>
+<p>Abbas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 01, 2013</h2><p>When all CanXYZ is false the rule will only fire when PrimaryProperty of the Rule is changed.&nbsp;</p>
+<p>IE: PrimaryProperty must be the property set by user.&nbsp;</p>
+<p>So:</p>
+<p>
+<ul>
+<li>CalcQty should have BaseQty as PrimaryProperty</li>
+<li>CalcBaseQty should have Qty as PrimaryProperty</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>AbbasMalik replied on Tuesday, October 01, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b> </p>
+<p>When all CanXYZ is false the rule will only fire when PrimaryProperty of the Rule is changed.&nbsp;</p>
+<p>IE: PrimaryProperty must be the property set by user.&nbsp;</p>
+<p>So:</p>
+<ul>
+<li>CalcQty should have BaseQty as PrimaryProperty </li>
+<li>CalcBaseQty should have Qty as PrimaryProperty </li>
+</ul>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>&nbsp;Ok. If I pass BaseQty as PrimaryProperty to CalcQty() then how will I update the Qty field from Execute method. Because I think <span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>context.AddOutValue(qty / factor)&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;is used to update only PrimaryProperty. Is there a way to update a field other than primary property?</p>
+<p>Thanks&nbsp;&nbsp; </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, October 01, 2013</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">There&#39;s overload to context.AddOutValue that accepts an IPropertyInfo as first parameter for the property to update.&nbsp;</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Note: The property to update must be added to AffectedProperties in the Rule constructor. </p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Example rule:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CalcBaseQty</span>&nbsp;:&nbsp;<span style="color:#2b91af;">PropertyRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">decimal</span>&gt;&nbsp;_qtyProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">decimal</span>&gt;&nbsp;_baseQtyProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;_factorProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;CalcBaseQty(<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">decimal</span>&gt;&nbsp;qtyProperty,&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">decimal</span>&gt;&nbsp;baseQtyProperty,&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">int</span>&gt;&nbsp;factorProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(qtyProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_qtyProperty&nbsp;=&nbsp;qtyProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_baseQtyProperty&nbsp;=&nbsp;baseQtyProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_factorProperty&nbsp;=&nbsp;factorProperty;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">IPropertyInfo</span>&gt;()&nbsp;{&nbsp;qtyProperty,&nbsp;factorProperty&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(baseQtyProperty);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunAsAffectedProperty&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunInCheckRules&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;qty&nbsp;=&nbsp;context.GetInputValue(_qtyProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;factor&nbsp;=&nbsp;context.GetInputValue(_factorProperty);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(_baseQtyProperty,&nbsp;qty&nbsp;/&nbsp;factor);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 01, 2013</h2><p>I will also highly recommend the Using CSLA 4 ebooks available in the CSLA Store.</p>
+<p>Especially the :</p>
+<p>
+<ul>
+<li><a href="http://download.lhotka.net/UsingCsla4-01/UsingCsla4-01-Overview.pdf">Using CSLA 4: CSLA .NET Overview</a></li>
+<li><a href="http://download.lhotka.net/UsingCsla4-01/UsingCsla4-01-Overview.pdf"></a><a href="http://download.lhotka.net/UsingCsla4-02/UsingCsla4-02-Objects.pdf">Using CSLA 4: Creating Business Objects</a>&nbsp;(includes Rule engine)</li>
+<li><a href="http://download.lhotka.net/UsingCsla4-03/UsingCsla4-03-DataAccess.pdf">Using CSLA 4: Data Access</a></li>
+</ul>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AbbasMalik replied on Tuesday, October 01, 2013</h2><p>Thanks Jonny for providing prompt response with complete example. I will also read the recommended books. </p>
+<p>Regards</p>
+<p>Abbas</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

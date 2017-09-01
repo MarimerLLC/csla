@@ -1,0 +1,56 @@
+<html><header><title>WinForms - ApplicationContext.User principal being lost</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinForms - ApplicationContext.User principal being lost</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12226.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 posted on Monday, November 18, 2013</h2><p>I&#39;ve recently taken on a legacy project which involves using CSLA with WinForms as a thick client (i.e. CSLA Client and Server within same application).</p>
+<p>It&#39;s currently running CSLA 4.0.1 - I have tried upgrading to 4.3.14, but my issue is still not resolved (I can&#39;t upgrade to 4.5.x yet as I will need to convert about 500 overrides of Save to SaveAsync!)</p>
+<p>The issue is regarding the custom Principal which is being lost. &nbsp;This is using custom authentication.</p>
+<p>During login, the custom principal is set using ApplicationContext.User. &nbsp;The custom principal derives from&nbsp;Csla.Security.CslaPrincipal. &nbsp;The identity on the custom principal derives from&nbsp;ReadOnlyBase&lt;T&gt;.</p>
+<p>Whilst everything &quot;works&quot;, I have noticed that at times that the ApplicationContext.User has reverted to a GenericPrincipal object. &nbsp;This is on the same thread that the login took place (in this case the UI thread). &nbsp;I cannot find any places where we are setting the Thread.CurrentPrincipal or ApplicationContext.User directly (except post-login).</p>
+<p>The previous developers seem to have been aware of this because they have &quot;solved&quot; the issue with this piece of code. &nbsp;But of course if you want to get the Principal without running a data operation you cannot trust it to be set.</p>
+<p>Csla.DataPortal.DataPortalInitInvoke += DataPortal_DataPortalInitInvoke;</p>
+<p>void DataPortal_DataPortalInitInvoke(object obj)</p>
+<p>{</p>
+<p><span></span>&nbsp; &nbsp;if (!ReferenceEquals(Csla.ApplicationContext.User, s_CurrentPrincipal))</p>
+<p><span></span>&nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = s_CurrentPrincipal;</p>
+<p>}</p>
+<p>Where s_CurrentPrincipal is a static field which I can confirm DOES keep the current principal. &nbsp;I have put a trace on this and found that this handler does not set the principal to the GenericPrincipal so I don&#39;t believe this is the problem (this is the &quot;solution&quot;!)</p>
+<p>The app.config I have ensure has the following:</p>
+<p>&nbsp; &nbsp;&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Custom&quot; /&gt;</p>
+<p>&nbsp;</p>
+<p>But the Principal is still being lost. &nbsp;</p>
+<p>Is there anything I am missing? &nbsp;Would there be any reason that the Thread.Principal is being lost after it has been set? &nbsp;This is pure WinForms, so HttpContext should not be involved.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 18, 2013</h2><p>Hi,&nbsp;</p>
+<p>Is Csla.Xaml.dll or Csla.Web.dll present in your applications bin folder? &nbsp;If so - make sure to remove these assemblies as they contain other specialized application contexts.</p>
+<p>Csla.ApplicationContext.User should give this implementation in WindowsForms:&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>void</span>&nbsp;SetUser(<span>IPrincipal</span>&nbsp;principal)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Thread</span>.CurrentPrincipal&nbsp;=&nbsp;principal;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre>And presumably - this should set the CurrentPrincipal on the UI thread of the Windows Forms application. </pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Monday, November 18, 2013</h2><p>Hello</p>
+<p>No, I just have the Csla.dll assembly in my output folder.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 18, 2013</h2><p>Another reason for losing the principal is that your code uses the builtin BackgroundWorker or otherwise starts new threads. </p>
+<p>There is a separate Csla.Threading.BackgroundWorker in CSLA that makes sure to move the &quot;CurrentPrincipal&quot; to a new thread. </p>
+<p>So - to investigate this further:</p>
+<p>1. Make sure that the Csla.ApplicationContext.User is set on the UI Thread. </p>
+<p>2. Make sure to use the Csla.Threading.BackgroundWorker (if you use BackgroundWorker) to get the User transferred to background thread. </p>
+<p>Does your code uses Task or Task Parallell Library? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 18, 2013</h2><p>And if it still fails - are you able to provide us a sample that recreates this behavior? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Monday, November 18, 2013</h2><p>Hi - thanks for your help.</p>
+<p>Yes, the principal is being set on the UI thread by setting the ApplicationContext.User. &nbsp;I can confirm that directly after setting this, the Thread.CurrentPrincipal is set with the correct Principal.</p>
+<p>No, there are no BackgroundWorkers being used. &nbsp;However, the first place that I can reproduce the lost principal is the firing of a Windows.Forms.Timer - is there a similar pattern that needs to be followed by these?</p>
+<p>Yes, I have begun to use the Task Parallel Library (as opposed to the Background Worker - i.e. using the TaskScheduler.FromCurrentSynchronizationContext) but these are new and I believe the issue was still there before this.</p>
+<p>I can have a go at isolating out the behaviour, but it may take me a little while....</p>
+<p>Thanks again.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 18, 2013</h2><p>That makes more sense though. It means that the Windows.Forms.Timer executes it&#39;s action on a new thread that has the default GenericIdentity.&nbsp;</p>
+<p>And even though you can check that the principal is set on the &quot;current thread&quot; is doesn&#39;t necessarily mean that the current thread is the <b>UI thread</b>!!&nbsp;</p>
+<p> Read this article: </p>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.appdomain.setthreadprincipal(v=vs.110).aspx">http://msdn.microsoft.com/en-us/library/system.appdomain.setthreadprincipal(v=vs.110).aspx</a></p>
+<p>And this question on StackOverflow:</p>
+<p><a href="http://stackoverflow.com/questions/4592692/set-currentprincipal-in-winforms-for-all-threads">http://stackoverflow.com/questions/4592692/set-currentprincipal-in-winforms-for-all-threads</a></p>
+<p>There is also a new Csla.Threading.CslaTaskScheduler that you can use with TaskFactory that ensures the user and application context is transferred to the background thread. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Tuesday, November 19, 2013</h2><p>Hmmm. I though that once you set the Thread.CurrentPrincipal, all subsequent threads took on that principal? &nbsp;I may need to read up some more :)</p>
+<p>The Timer executes its fired event on the UI thread - I can see the Thread.CurrentThread.ManagedThreadId is the same, so its not clear why that thread does not have the correct Principal.</p>
+<p>I will try using the AppDomain.SetThreadPrincipal at the point of login and see if it fixes my issue - but I think you can only call this once per app domain so it doesn&#39;t allow me to switch to a different user in the same process (unless I get into AppDomains).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 19, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>andrew123<br></b></p>
+<p>Hmmm. I though that once you set the Thread.CurrentPrincipal, all subsequent threads took on that principal? &nbsp;I may need to read up some more :)</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>That is certainly not true. You only set the principal on the current thread (or the threads ExecutionContext?).&nbsp;</p>
+<p>About login - remember also that you may have a number of threads running already under a certain users context.You can use reflection to change the default principal for new threads - but there is no guaranteed way of changing the CurrentPrincipal on ALL RUNNING threads.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>andrew123 replied on Wednesday, December 18, 2013</h2><p>This turned out to be an issue with <b>where</b>&nbsp;the initial principal was being set. &nbsp;The application was loading a Login Form from the <i style="font-weight:bold;">Shown</i>&nbsp;event of the main form. &nbsp;This Login Form then set the principal upon successfully logging in. &nbsp;</p>
+<p>However, I discovered that once the <i><b>Shown </b></i>event had completed, it was at this point that the principal was reverting back to the Generic Principal.&nbsp;</p>
+<p>Moving everything to the <b><i>Load </i></b>event , rather than the <i><b>Shown</b></i>, fixed my issue. &nbsp;</p>
+<p>I don&#39;t know <i>why </i>this was (they are DevEx Forms too if it is specific to this) though!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

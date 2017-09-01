@@ -1,0 +1,51 @@
+<html><header><title>Type is not resolved for member ... Having problems enabling debugging</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type is not resolved for member ... Having problems enabling debugging</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/894.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Monday, August 14, 2006</h2><P>I'm sure this is a no-brainer to some of you but I'm not exactly sure where to look and I'm just trying to get past this item quickly. </P>
+<P>When I fire up the project from within Visual Studio, the URL is:</P>
+<P><A href="http://localhost:4268/<myproduct>/Login.aspx">http://localhost:4268/&lt;myproduct&gt;/Login.aspx</A></P>
+<P>The error I get is:<SPAN> </P>
+<H1>Server Error in '/&lt;myproduct&gt;' Application. 
+<HR>
+</H1>
+<H2><I>Type is not resolved for member 'MyCompany.CoreSystem.Library.ProPrincipal,MyCompany.CoreSystem.Library, </I></H2>
+<P>&nbsp;</P>
+<P>Now, if I omit the :4268, I can run it just fine. But I can't seem to hit my breakpoints in the debugger, which is a real problem.</P>
+<P>Would anyone have a suggestion for me, please? </P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Misled replied on Monday, August 14, 2006</h2><P>&lt;Now, if I omit the :4268, I can run it just fine&gt;</P>
+<P>Your web server must be set up to listen on port 4268 instead of port 80.</P>
+<P>&lt; But I can't seem to hit my breakpoints in the debugger, which is a real problem&gt;</P>
+<P>You will not be able to debug server side code. Try testing locally first.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 14, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong><strong>Misled</strong>:</strong></div><div>You will not be able to debug server side code. Try testing locally first.</div></BLOCKQUOTE><br><br>Making sure things work locally (without dataportal remoting) is always a good idea, but if its a problem caused becaus of the remoting, you should know you can debug server side code.&nbsp; You have to set the server up (ideally the remoting IIS host would be on your local workstation) to allow remote debugging, but it can be done.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 14, 2006</h2><P>The thing is, I'm not doing remoting yet... that's why I'm a little confused about the serialization error. </P>
+<P>And thanks, Misled, though I'm not entirely sure where to configure this. I see in IIS admin there is a TCP port and HTTPS port 80 and 443 respectively... Could you give me a pointer as to where to look at this? </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 14, 2006</h2>That's exactly where you'd set the port.. change the http or https depending on how you setup remoting the url.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 14, 2006</h2><P>My stack trace is (if it helps):</P>
+<P>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[SerializationException: Type is not resolved for member 'MyCompany.CoreSystem.Library.ProPrincipal,MyCompany.CoreSystem.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.]
+   Microsoft.VisualStudio.WebHost.Connection.get_LocalIP() +0
+   Microsoft.VisualStudio.WebHost.Request.GetLocalAddress() +58
+   Microsoft.VisualStudio.WebHost.Request.GetServerName() +27
+   System.Web.HttpRequest.get_Url() +168
+   System.Web.UI.WebControls.Menu.OnPreRender(EventArgs e, Boolean registerScript) +1389
+   System.Web.UI.WebControls.Menu.OnPreRender(EventArgs e) +49
+   System.Web.UI.Control.PreRenderRecursiveInternal() +148
+   System.Web.UI.Control.PreRenderRecursiveInternal() +233
+   System.Web.UI.Control.PreRenderRecursiveInternal() +233
+   System.Web.UI.Control.PreRenderRecursiveInternal() +233
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +4436
+</PRE></CODE></TD></TR></TABLE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 14, 2006</h2>Hmm.. if you're not using remoting, not sure why it would be serializing (although doesn't n-level undo serialize as well?). <br><br>So the Microsoft.VisualStudio.WebHost..I haven't seen that before, as you using Casini or IIS?&nbsp; I think you can't use Csla with Casini..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 14, 2006</h2><P>Thanks for taking the time to answer, Andy. </P>
+<P>Rocky has a post on this in his blog...</P>
+<P><A href="http://www.lhotka.net/WeBlog/CommentView,guid,cfcaf6c4-63cf-4cf1-8361-ed3db07496a4.aspx">http://www.lhotka.net/WeBlog/CommentView,guid,cfcaf6c4-63cf-4cf1-8361-ed3db07496a4.aspx</A></P>
+<P>I tried to implement ISerializable on my custom Identity but that didn't alone do the trick. I'm going to try to implement it on my custom Principal (as it looks like one person needed to do this.) I sure hope it solves the problem - not having the debugger is a pain. </P>
+<P>So it sounds like it's not likely a matter of changing the listening port and it has to do with this Cassini crap. :) </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 14, 2006</h2><P>Thank goodness. OK, the solution posted in the blog works in terms of making both the custom identity and principal serializable (thus far, at least - I'm not sure what to instantiate in terms of GenericPrincipal as I don't know how to get a list of the roles for my custom principal, but I haven't built in really any authorization yet so I'll worry about that later). </P>
+<P>I was pretty excited to hit my breakpoint :). </P>
+<P>Thanks!</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 14, 2006</h2>So it was Cassinin that was causing seralization.<br><br>Glad you got it working... I am hopefully going to be doing asp.net 2 pages soon, and Cassini is likely what i'd be running under (that's how you test file based websites, right?).<br><br>Wonder what happens with Integreated security though... I guess it handles this in a special case?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, August 14, 2006</h2>Andy, you can choose what to use in the project's properties, so you can use a custom location for debugging. You just need to create the virtual folder in iis.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 14, 2006</h2>Ahh, that's a relief.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, August 14, 2006</h2><P>So I just read Xal's message, and changed the base url of the custom server to be the virtual folder in my IIS - disabled the ISerializable interface implementation (as suggested in a reply to Rocky's blog), and everything works swell.</P>
+<P>Thanks Xal. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Thursday, September 14, 2006</h2><P>For those of us who are still having this problem, could you say more about the solution?&nbsp; I don't know what you mean by "changed the base url of the custom server..." or disabling the ISerializable interface.&nbsp; Do you mean that you had made your custom principal inherit from ISerializable before and then removed that?&nbsp; </P>
+<P>Right now, my custom principal just has the [Serializable] attribute.&nbsp; I assume I should keep that . . . </P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 14, 2006</h2><P>Hiya - </P>
+<P>Yes, I was talking just about the ISerializable interface implementation - I found I didn't need to do that. My principal and identity are still marked as [Serializable()] though, of course. </P>
+<P>I'm not sure how much this is going to help you as I made a copy of my application so that I would freeze "what I had" for a demonstration, but I noticed I didn't need to do a thing in my new web application.</P>
+<P>On my old one, if i go into the properties of the web site (from VS 2005) and go to the start options, and look in the Server section, I am not using the default web server - I am instead selecting use custom server, and then on my base url I have: <A href="http://localhost/<myapp>/">http://localhost/&lt;myapp&gt;/</A>&nbsp;</P>
+<P>Let me know if you get that solution (or another to work). Thanks! </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

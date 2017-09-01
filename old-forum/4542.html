@@ -1,0 +1,140 @@
+<html><header><title>Type initializer threw an exception.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type initializer threw an exception.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4542.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly posted on Monday, March 24, 2008</h2><P><FONT face=Arial>New to CSLA, trying to digest it all.&nbsp; </FONT></P>
+<P><FONT face=Arial>Bought the first book, the second book and the online book; been reading them for years and finally got around to doing a project with CSLA.&nbsp; To bad they don't come with brain cells.&nbsp; So, sorry for asking this question.&nbsp; I just *know* this is a cockpit error, but I am stumped.</FONT></P>
+<P><FONT face=Arial>Any help would be *greatly* appreciated.&nbsp; TIA</FONT></P>
+<P><FONT face=Arial>I've created a BO called a NewsItem (that looks a lot like a CSLA Project).</FONT></P>
+<P dir=ltr><FONT face=Arial>I've followed the example code to the letter (as far as I can tell).&nbsp; The first time I try to create an instance of NewsItem, it chokes with this error:</FONT></P>
+<P dir=ltr><FONT face="Courier New">System.TypeInitializationException: {"The type initializer for 'OORG.Library.NewsItem' threw an exception."}</FONT></P>
+<P dir=ltr><FONT face="Courier New">{"String value can not be converted to a date"}</FONT></P>
+<P><FONT face=Arial><STRONG>Here's the code that calls it:</STRONG></FONT></P><FONT face=Arial><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> n </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> OORG.Library.NewsItem = OORG.Library.NewsItem.NewNewsItem</P>
+<P>n.Subject = </FONT><FONT color=#a31515 size=2>"subect text"</P></FONT><FONT size=2>
+<P>n.PostedBy = </FONT><FONT color=#a31515 size=2>"posted by willy"</P></FONT><FONT size=2>
+<P>n.StartDate = </FONT><FONT color=#0000ff size=2>CStr</FONT><FONT size=2>(Today)</P>
+<P>n.EndDate = </FONT><FONT color=#a31515 size=2>"12/31/2009"</P></FONT><FONT size=2>
+<P>n.Text = </FONT><FONT color=#a31515 size=2>"This is text for the message"</P></FONT></FONT>
+<P><FONT face=Arial><STRONG>Here's the property with the date:</STRONG></FONT></P><FONT face=Arial><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> StartDateProperty </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> SmartDate) = RegisterProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> SmartDate)(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(NewsItem), </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> SmartDate)(</FONT><FONT color=#a31515 size=2>"StartDate"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Start date"</FONT><FONT size=2>, SmartDate.EmptyValue.MinDate))</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> StartDate() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT></P>
+<P><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> GetProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> SmartDate)(StartDateProperty)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P>SetProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> SmartDate)(StartDateProperty, value)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT></FONT>
+<P><FONT face=Arial><STRONG>Here's the stack trace:</STRONG></FONT></P>
+<P><FONT face="Courier New" size=2>at Csla.SmartDate.StringToDate(String value, EmptyValue emptyValue) in C:\Documents and Settings\billn\My Documents\Downloaded Products\CSLA\CSLA 3.5 beta 2\cslavb\Csla\SmartDate.vb:line 622&nbsp;</FONT></P>
+<P><FONT face="Courier New" size=2>at Csla.SmartDate.set_Text(String value) in C:\Documents and Settings\billn\My Documents\Downloaded Products\CSLA\CSLA 3.5 beta 2\cslavb\Csla\SmartDate.vb:line 301&nbsp; <BR></FONT><FONT face="Courier New"></FONT></P>
+<P><FONT face="Courier New" size=2>at Csla.SmartDate..ctor(String value) in C:\Documents and Settings\billn\My Documents\Downloaded Products\CSLA\CSLA 3.5 beta 2\cslavb\Csla\SmartDate.vb:line 195&nbsp;</FONT></P>
+<P><FONT face="Courier New" size=2>at Csla.SmartDate.op_Explicit(String dateValue) in C:\Documents and Settings\billn\My Documents\Downloaded Products\CSLA\CSLA 3.5 beta 2\cslavb\Csla\SmartDate.vb:line 927&nbsp;&nbsp;&nbsp; <BR></FONT><FONT face="Courier New" size=2></FONT></P>
+<P><FONT face="Courier New" size=2>at OORG.Library.NewsItem..cctor() in C:\Documents and Settings\billn\My Documents\Visual Studio 2008\Projects\OORG2\OORG.Library\NewsItem.vb:line 55</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Monday, March 24, 2008</h2><P><FONT face=Arial size=2>OK, I pulled the Project class directly into my project, commented out the code that calls the database and other libraries and it seems to work fine.</FONT></P>
+<P><FONT face=Arial size=2>Curiouser and curiouser.</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Monday, March 24, 2008</h2><P>Please ignore this post.&nbsp; </P>
+<P>I am a total idiot.</P>
+<P>Things are working now...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, March 25, 2008</h2><P>LOL.</P>
+<P>Ok - so what was the *real* issue?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Tuesday, March 25, 2008</h2><P>Besides the room temperature IQ?</P>
+<P>Well, I've never really used multiple projects in the <EM>same</EM> solution, but I thought the way that Rocky structured it was pretty organized and I wanted to adopt it.</P>
+<P>That being the case, in the past, *all* modifications were always taken into account when I ran a debug session.&nbsp; </P>
+<P>Unfortunately, I didn't realize that modifications in other projects <EM>in the same solution</EM> don't automatically get rebuilt.&nbsp; By that I mean that I don't know squat about what I'm doing and should get back into management. <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /></P>
+<P>So, the DLL's from the BO Library fell out of sync with the corresponding changes in the application.&nbsp; It just kept complaining about my dates.</P>
+<P>Just like me in college.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, March 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well the first thing to check is if your application is
+referencing the BO library project and not the DLL itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Right click on References portion of your application project
+and see what you get.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Once you reference the BO library project, compiling the
+Application project will force compiling of the BO library.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Hope that helps.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nhwilly
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, March 25, 2008 4:22 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Type initializer threw an exception.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Besides the room temperature IQ?<o:p></o:p></p>
+
+<p>Well, I've never really used multiple projects in the <em>same</em>
+solution, but I thought the way that Rocky structured it was pretty organized
+and I wanted to adopt it.<o:p></o:p></p>
+
+<p>That being the case, in the past, *all* modifications were always taken into
+account when I ran a debug session.&nbsp; <o:p></o:p></p>
+
+<p>Unfortunately, I didn't realize that modifications in other projects <em>in
+the same solution</em> don't automatically get rebuilt.&nbsp; By that I mean that
+I don't know squat about what I'm doing and should get back into management. <img id="_x0000_i1025" src="/emoticons/emotion-10.gif" alt="Embarrassed <img src=" />"><o:p></o:p></p>
+
+<p>So, the DLL's from the BO Library fell out of sync with the corresponding
+changes in the application.&nbsp; It just kept complaining about my dates.<o:p></o:p></p>
+
+<p>Just like me in college.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Tuesday, March 25, 2008</h2><P>Well...</P>
+<P>I selected Show All Files, then expanded the tree for the References branch, then right clicked over the library name and I can't find any references to a DLL.</P>
+<P>I went to the project property page and selected the references tab on the left, then went to Add reference..., then made sure to select the "Project" tab, then selected the Library Project and it said there was already a reference to it and it couldn't be added again.</P>
+<P>I probably did add a direct reference to the DLL when I did this, thinking I had to.&nbsp; I'll bet I have to remove the reference to the Library DLL and re-add it, but do it as a Project and not a DLL.</P>
+<P>BTW, thanks a lot, that will really help me avoid this dumb*ss error in the future.</P>
+<P>p.s. Just tested my first BO to SQL storage and it worked great.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Tuesday, March 25, 2008</h2>You mean a Reference Path to the project?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Monday, June 21, 2010</h2><p>I&#39;m also getting this error.&nbsp; When I run the debugger in studio, no issues.&nbsp; However, when I deploy the app (regardless of Debug or Release mode), the callback handler event args ( DataPortalResult&lt;T&gt;.Error ) contains the Type Initializer exception.</p>
+<p>I&#39;m using CSLA 4.0 for SL, and this only happens with ReadOnly objects.&nbsp; Here is one of the classes that is failing:</p>
+<pre style="FONT-FAMILY:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="COLOR:#2b91af;">Serializable</span>]<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">CompanyInfo</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ReadOnlyBase</span>&lt;<span style="COLOR:#2b91af;">CompanyInfo</span>&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br /><span style="COLOR:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Properties<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:blue;">int</span>&gt;&nbsp;CompanyIDProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="COLOR:blue;">int</span>&gt;(c&nbsp;=&gt;&nbsp;c.CompanyID);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">int</span>&nbsp;CompanyID<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(CompanyIDProperty);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;LoadProperty(CompanyIDProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:blue;">string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="COLOR:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">string</span>&nbsp;Name<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(NameProperty);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;LoadProperty(NameProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br /><span style="COLOR:blue;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span><br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="FONT-FAMILY:consolas;">&nbsp;</pre>
+<pre style="FONT-FAMILY:consolas;">Any thoughts?</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 21, 2010</h2><p>Make your PropertyInfo&lt;T&gt; fields public and see if that helps.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Tuesday, June 22, 2010</h2><p>That worked.&nbsp; Strange, I only remember the scope declarations being an issue in an inheritance scenario, when creating an abstract class based off of BusinessBase&lt;T&gt;, and creating a concrete class based off the abstract.</p>
+<p>In any case, I still find it strange that when debugging in VS10, the issue does not exist.&nbsp; I&#39;m assuming that this is a bug in CSLA 4.0?</p>
+<p>If you have any thoughts about this, I&#39;d love to hear them.&nbsp; I&#39;m not a huge fan of exposing private implementation.</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 22, 2010</h2><p>It appears to be something Microsoft changed with the way static fields are initialized in Silverlight 4.</p>
+<p>You might be able to use the _forceInit trick (which is discussed in the book and on this forum) to address the problem - but not in release mode, because the compiler is now smart enough to optimize away the, essentially unused, _forceInit code...</p>
+<p>My recommendation starting with CSLA 4 is to make the PropertyInfo&lt;T&gt; fields public. This matches Microsoft&#39;s recommendations around dependency properties, and so provides some consistency. CSLA 4 has been changed so the important fields of PropertyInfo&lt;T&gt; aren&#39;t easily changed (or seen) by a UI developer or other consumer, specifically to make this a good practice.</p>
+<p>CSLA includes code to force initialization of the static fields. But due to SL reflection limitations the fields must be public in SL for this to work.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Tuesday, June 22, 2010</h2><p>Interesting.&nbsp; Ok, good to know, thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>Lazy Load is too lazy!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy Load is too lazy!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3069.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jordan posted on Thursday, June 21, 2007</h2><P>We have a NameValueList that implements a lazy load in the Shared GetList Method.&nbsp; </P>
+<P>Class NameValueList</P>
+<P>private mlist as NameValueList</P>
+<P>public shared getlist as NameValueList</P>
+<P>if mList is nothing</P>
+<P>&nbsp; return dataportal fetch.....</P>
+<P>else</P>
+<P>return mlist</P>
+<P>end.</P>
+<P>This worked the first time and went to the Dataportal.&nbsp; The next time it used the mList.&nbsp; </P>
+<P>After stopping and starting the web project several times, I have noticed that mList is always loaded even for the first use during this run, and&nbsp;it has not hit the dataportal again.</P>
+<P>I am not using any caching and the project is being restarted, so how and were is this data being persisted at?</P>
+<P>I have read a couple things about caching and remember you guys making exceptions for shared methods, but did not see how this may be linked.</P>
+<P>Thanks in advance!</P>
+<P>Jordan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 21, 2007</h2>Shared fields exist for the lifetime of the AppDomain. When you say "stopped the web project" what do you mean? If you don't stop the ASP.NET worker process it probably doesn't drop the AppDomain...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Monday, June 25, 2007</h2>You also may not be using the NameValueList for its intended purpose:&nbsp; It's for things like lookup tables which change very rarely.&nbsp; If you're querying a table whose contents change semi-regularly, you don't want to use the implementation as-is.<br><br>What you could do is add a member to store when the list was retrieved and put a timeout in your configuration file if it's a list that changes, say, every week.<br><br>If the list is changing all the time, then you're probably using the wrong class implementation as the caching may not be appropriate.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

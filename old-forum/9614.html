@@ -1,0 +1,91 @@
+<html><header><title>Sorting &amp; Filtering - SortedBindingList? LINQ to CSLA? v4?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sorting &amp; Filtering - SortedBindingList? LINQ to CSLA? v4?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9614.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 posted on Thursday, October 07, 2010</h2><p>In the following old post, Rocky suggests using LINQ to CSLA as a replacement for the old way of filtering/sorting collections: <a href="http://forums.lhotka.net/forums/p/199/1189.aspx">http://forums.lhotka.net/forums/p/199/1189.aspx</a></p>
+<p>Apparently LINQ to CSLA has been done away with in v4. Is the CSLA 4 LinqObservableCollection only for Silverlight? Did we loose the ability to index properties? Is there an example of how to use this new functionality?</p>
+<p>I am still using v3.8.3 but I want to use the best method of filtering/sorting possible. My resulting filtered/sorted collection does need to subscribe to an observer channel if at all possible. I am currently using Petar Kozul&#39;s old ActiveObjects&nbsp;for the observer stuff. If moving to v4 would help, I may be willing to do that.</p>
+<p>All the changes to the framework have become confusing to me. What is the recommended approach?</p>
+<p>Rocky, The framework has changed enough that I think it is time for another book. I know that takes time but I will be first in line to buy it. <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>Mike</p>
+<p><span style="text-decoration:underline;"><span style="color:#800080;"></span></span><a href="http://www.lhotka.net/weblog/CSLA4Highlights.aspx"></a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 07, 2010</h2><p>The general rule is quite simple:</p>
+<p>WinForms - SortedBindingList/FilteredBindingList due to requirement for IBindingList support<br />WPF, SL, ASP.NET - use Linq2Objects or standalone projects like I4O to create indexes over collections of object. (IObservableCollection/IEnumerable)</p>
+<p>New in Csla4 is the extension method ToSyncList() that can be applied to Linq queries that return a LinqObservableCollection wrapper over the original list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BigPines2 replied on Thursday, October 07, 2010</h2><p>Thanks for the reply.</p>
+<p>Since this current project happens to be a WinForms CSLA v3.8.3 app, I will continue to use SortedBindingList/FilteredBindingList then. Does CSLA v4 continue to have these object types as well?</p>
+<p>My next projext will be ASP.NET so I guess I will have to look into I4o for that or move to CSLA v4 to use LinqObservableCollection.</p>
+<p>Do I have it correct?</p>
+<p>Mike</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 07, 2010</h2><p>CSLA 4 continues to have SortedBindingList/FilteredBindingList, because it continues to support Windows Forms.</p>
+<p>You can use those with ASP.NET too, that&#39;s no problem. Or you can use LINQ queries.</p>
+<p>i4o offers indexing of collections. You should be aware that this is only useful if you are going to do numerous queries over the same instance of the collection, otherwise you&#39;ll never offset the cost of creating the index. In other words, if you index a list and then do one query and then discard the list, you&#39;ll lose performance because creating the index is more costly than a single query without an index.</p>
+<p>Since most web applications have a stateless server, it would never make sense to index a collection. Only if you store a collection in Session and do multiple queries over time could it pay off - and even then it probably only pays off if Session is running in-proc - because if it is out-of-proc Session gets serialized, which means your index would get serialized, and that&#39;s not cheap either.</p>
+<p>Fun stuff :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Wednesday, October 27, 2010</h2><p>I&#39;m still having major issues with the SortedBindingList and FilteredBindingList for editable collections. They work great for read-only lists, but for live BLB&#39;s they cause EditLevelMismatch exceptions. I first reported it two years ago here: http://forums.lhotka.net/forums/p/4991/28360.aspx#28360</p>
+<p>Does <i>anyone </i>use them for editable lists? I just tried wrapping the children in the latest RootChildGrandchildWinFormTest, run it up, sort on a column header, click Apply and it crashes straight away.</p>
+<p>We&#39;re using 3.8.3 and this issue has come up again because I have a new screen which desperately needs sort and search functionality.</p>
+<p>Could someone <i>please</i> try this?</p>
+<p>Kind regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 28, 2010</h2><p>Hi Michael,</p>
+<p>We are using FilteredBindingList and SortedBindingList on editable lists in our applications and they are not causing problems for us.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 28, 2010</h2><p>I don&#39;t see the issue. I took the sample you mention, and altered Root.cs as follows:</p>
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">SortedBindingList</span>&lt;<span style="color:#2b91af;">Child</span>&gt;&nbsp;Children<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">SortedBindingList</span>&lt;<span style="color:#2b91af;">Child</span>&gt;(RealChildren);&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">ChildList</span>&gt;&nbsp;RealChildrenProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">ChildList</span>&gt;(p&nbsp;=&gt;&nbsp;p.RealChildren,&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.LazyLoad);<br />&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">ChildList</span>&nbsp;RealChildren<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!FieldManager.FieldExists(RealChildrenProperty))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty&lt;<span style="color:#2b91af;">ChildList</span>&gt;(RealChildrenProperty,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ChildList</span>());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty&lt;<span style="color:#2b91af;">ChildList</span>&gt;(RealChildrenProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br /></pre>
+<p>I just renamed Children to RealChildren, and created a new Children property that returns a SortedBindingList (yes, this is in 4.1, but these classes haven&#39;t changed since 3.8).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, November 01, 2010</h2><p>Thanks&nbsp; for the replies.</p>
+<p>I copied and pasted the above code into Root.cs, and updated the Form1_Load to child = root.RealChildren.AddNew(); as appropriate.</p>
+<p>When I run it up, I click the childrenDataGridView Id column header twice, so that the data is sorted 4, 3, 2, 1, and click Apply. This throws an UndoException on line 294 of UndoableBase.cs.</p>
+<p>Am I doing something wrong?</p>
+<p>Kind regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 01, 2010</h2><p>I assume you are :)&nbsp; But I don&#39;t know what - clearly there&#39;s something different between what you and I are doing.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, November 01, 2010</h2><p>OK, I&#39;ve started from scratch. I can&#39;t see how I could be doing anything much different. This only takes a few minutes to set up:</p>
+<ol>
+<li>Download and extract RootChildGrandchildWinFormTest from netsamples <span id="ctl00_ContentPlaceHolder1_BodyLabel">3.8.3</span></li>
+<li>Download and extract CSLA <span id="ctl00_ContentPlaceHolder1_BodyLabel">3.8.3</span></li>
+<li><span id="ctl00_ContentPlaceHolder1_BodyLabel">Include Csla.csproj in </span>RootChildGrandchildWinFormTes.sln, reattach reference</li>
+<li>Build</li>
+<li>Edit Root.cs, replace Children property with RealChildren</li>
+<li>Add new SortedBindingList&lt;Child&gt; Children property</li>
+<li>Update DumpEditLevels() to var childList = ReadProperty&lt;ChildList&gt;(RealChildrenProperty);</li>
+<li>Update Form1.cs Form1_Load to child = root.RealChildren.AddNew(); in four places.</li>
+<li>Build</li>
+<li>Run</li>
+<li>Click childrenDataGridView Id column header (nothing happens, already sorted ascending. At this point, clicking Apply does not throw.)</li>
+<li>Click childrenDataGridView Id column header(sorts descending)</li>
+<li>Click Apply, UndoException thrown</li>
+</ol>
+<p>I&#39;m using Win 7 x64, but it fails on Win XP Pro x86 virtual machine also. I also tried 4.0.1 on Win 7 x64 and a Win 7 x86 virtual machine and exactly the same thing happened. Any clues?</p>
+<p>Thanks for your help.<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, November 04, 2010</h2><p>Is anyone able to reproduce this or point me in the right direction?</p>
+<p>I&#39;m not new to CSLA, and as I said earlier, I first asked for help on this issue in November, 2008, then gave up when I couldn&#39;t find an answer.</p>
+<p>I can upload the entire VS solution somewhere if that will help.</p>
+<p>Kind regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 04, 2010</h2><p>Sorry Michael, I&#39;m really slammed at the moment and I don&#39;t have VS08 on my laptop. When I can catch my breath for a bit and have access to my desktop I&#39;ll try to reproduce the issue.</p>
+<p>Or you can try and figure out what is different between the CSLA 3.8.3 and CSLA 4 SortedBindingList. The only possible thing I see is at revision 7511 where Jonny made a change to 4, and it isn&#39;t clear that was made (or needed to be made) in 3.8.</p>
+<p>Since I can&#39;t replace the issue in CSLA 4 and .NET 4 there are really two options (I think)</p>
+<ol>
+<li>.NET 4 fixed a Windows Forms bug/issue</li>
+<li>CSLA 4 has something different in SBL (or BBLB)</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, November 04, 2010</h2><p>Thanks for the reply, Rocky. I&#39;m not in a mad rush at this stage; I can just tell the client I&#39;m still looking for answers. I want the right answer, so I&#39;m happy enough to wait, as long as I know someone can look at it at some stage.</p>
+<p>The problem is, I can&#39;t get it to work with 4.0.1 either; the same UndoException is thrown, as per my post a few days ago.</p>
+<p>Thanks<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 04, 2010</h2><p>I can try 4 quick enough, got nothing else to do while sitting on the plane :)</p>
+<p>So here&#39;s what I did:</p>
+<ol>
+<li>Open RootChildGrandchildWinFormTest (4.1)</li>
+<li>Refactor-rename Root.Children to RealChildren</li>
+<li>Add new Children property as shown below</li>
+<li>Run app, interact with data, sort child grid, etc</li>
+<li>Click Cancel - all is good</li>
+<li>Click Apply - all is good</li>
+</ol>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;SortedBindingList&lt;Child&gt;&gt; ChildrenProperty = RegisterProperty&lt;SortedBindingList&lt;Child&gt;&gt;(c =&gt; c.Children);<br />&nbsp;&nbsp;&nbsp; public SortedBindingList&lt;Child&gt; Children<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return new SortedBindingList&lt;Child&gt;(RealChildren); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>Obviously you and I are doing something different...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, November 04, 2010</h2><p>Internet access on the plane, cool...</p>
+<p>OK, I&#39;ve just downloaded 4.1 and the samples and followed your steps.</p>
+<p>Run it up, click childrenDataGridView Name column header once, and the data is sorted 3, 4, 1, 2. Click Cancel, the edit level report message box is shown, click OK and then the UndoException is thrown.</p>
+<p>Restart and do the same thing, but this time click Apply, and the UndoException is thrown straight away (no edit level report shown).</p>
+<p>It happens for me under Win 7 x64, Win 7 x86, and Win XP x86, with the debug and release bin files.</p>
+<p>If I had more hair, I&#39;d pull it out right now <img src="http://forums.lhotka.net/emoticons/emotion-7.gif" alt="Tongue Tied" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 04, 2010</h2><p>That turns out to be a good clue.</p>
+<p>I was always entering at least 1-2 values before clicking apply or cancel. If you do that it works fine. It fails only if no values are edited.</p>
+<p>This still doesn&#39;t give the full answer, but it is at least a start point. What&#39;s interesting is that the failure is in UndoableBase in the Child type, so it is in the child object, not the root or collection. This leads me to think that the current child isn&#39;t being properly unbound or something like that.</p>
+<p>Have I mentioned recently how deeply and completely I hate Windows Forms data binding? And how amazingly happy XAML makes me, every time I use it (especially Silverlight)?</p>
+<p>This is the sort of issue that can take many, many hours of meticulous debugging to solve. I can&#39;t promise when I&#39;ll next have that many hours to spend on this to be honest.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, November 04, 2010</h2><p>I actually can&#39;t make it <i>not </i>fall over after a sort, no matter how many fields I edit. I&#39;m glad I&#39;m not taking crazy pills, though.</p>
+<p>I share your hatred of Windows Forms data binding (perhaps not to the same degree), but I&#39;m stuck with it just at the moment.</p>
+<p>If you do get a chance to debug it, I&#39;d be very grateful. Just keep me posted, if possible.</p>
+<p>Thanks<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Friday, November 12, 2010</h2><p>Hi Rocky</p>
+<p>I&#39;ve looked a bit further into this issue, and what I&#39;ve found is that the binding source&#39;s current item before an ApplySort() or ApplyFilter() does not have its EditLevel decremented appropriately, so when the unbind happens there&#39;s a mismatch. This looks pretty similar to the grandchild problem where we need to explicitly call EndEdit() on the grandchild when the children binding source&#39;s current item is changed.</p>
+<p>I inherited FilteredBindingList and overrode (new) the ApplySort, RemoveSort, ApplyFilter and RemoveFilter methods and fired an OnSortChanging or OnFilterChanging event. In the screen I subscribe to this event and simply call EndEdit() on the binding source. This seems to be working.</p>
+<p>Is there a better way or does this give you any clues?</p>
+<p>Kind regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>menzel2911 replied on Friday, November 26, 2010</h2><p>Hi Michael,</p>
+<p>I run into a similar issue using Win Forms and 2 grids (master list, detail list) and I did the following (surprisingly it does work):</p>
+<p>- whenever&nbsp; the child item in the detail bindingsource does change, trigger an event and keep current child item from detail list in a local variable for later reference</p>
+<p>- when current item in master list does change, call EndEdit on the memorized child item, so master list and child list stay in sync even with win form grids</p>
+<p>I hope this does help</p>
+<p>&nbsp;</p>
+<p>Sascha</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

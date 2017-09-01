@@ -1,0 +1,12 @@
+<html><header><title>Inheritance and binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheritance and binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4592.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cafefx posted on Monday, March 31, 2008</h2><P><FONT color=#000000>I have the parent object Group : BusinessBase&lt;Group&gt; and a child object Asset : Group.</FONT></P>
+<P><FONT color=#000000>When binding to a BindingSource in a vertical grid,&nbsp;i can only see the parent's fields and none of Asset's fileds will bind.</FONT></P>
+<P><FONT color=#000000>I know they are there since the debugger shows me the correct object, but, it looks like the grid is binding itself to the base and will not read all of the fields.</FONT></P>
+<P><FONT color=#000000>Is there a way i can bind to both parent and child? In short: i need all the public fields of the child object.</FONT></P>
+<P><FONT color=#000000>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 31, 2008</h2>That's going to be difficult.&nbsp; What if your list contains an instance of the subtype?&nbsp; Or a different subtype besides Asset?&nbsp; What should the grid display in those cases?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cafefx replied on Monday, March 31, 2008</h2><P>I have tried binding the grid to a single item and casted it directly as Asset:</P>
+<P>groupsGrid.DataSource = (Asset)Model.GroupList.SelectedGroup;</P>
+<P>So in the vertical grid, it will show just a single item, yet, it wont show the Asset properties that are there.</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cafefx replied on Wednesday, April 02, 2008</h2><P>Just wanted to let everyone know my problem was solved.</P>
+<P>The&nbsp;grid actualy did bind correctly.</P>
+<P>Using Grid.Rows.Clear() between binds did the trick.</P>
+<P>The new properties show up and save&nbsp;correctly.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

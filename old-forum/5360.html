@@ -1,0 +1,26 @@
+<html><header><title>deserialization error while using remoting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>deserialization error while using remoting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5360.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mary posted on Monday, September 08, 2008</h2><P>Hi,</P>
+<P>I am quite new to Csla and .Net remoting concepts.&nbsp;I am trying to create a windows application similar to ProjectTracker. But I am getting serialization errors, which i cant find out why or how :(</P>
+<P>I have a Businessbase class(Order) with two CommandBase classes(Command1 and Command2) inside it.The code looks like this</P>
+<P>[serializable()]</P>
+<P>Public class Order : Businessbase&lt;Order&gt;</P>
+<P>{</P>
+<P>public static int GetCommand1()</P>
+<P>{</P><FONT size=2>
+<P></FONT><FONT size=2><FONT size=2>Command1&nbsp;</FONT></FONT><FONT size=2> result;</FONT></P>
+<P><FONT size=2>result = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.Execute&lt;</FONT><FONT size=2><FONT size=2>Command1 </FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new </FONT></FONT><FONT size=2>&nbsp;</FONT><FONT size=2><FONT size=2>Command1 </FONT></FONT><FONT size=2>(any int value));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> result.GetCount;</P></FONT>
+<P>}</P>
+<P>[serializable()]</P>
+<P>private class Command1 : Commandbase</P>
+<P>{</P>
+<P>public Command1 (int a){//Do something}</P>
+<P>protected override void DataPortal_Execute(){//Fetch count from Database}</P>
+<P>public int GetCount(){//return count}</P>
+<P>}</P>
+<P>[serializable()]</P>
+<P>private class Command2 : Commandbase{}</P>
+<P>}</P>
+<P>When runing the code without remoting everything works fine. But when remoting is enabled , Order.GetCommand1() function call&nbsp;is giving an exception "Unable to load type Order+Command1 for deserialization" from Csla.dataPortalClient.RemotingProxy class.</P>
+<P>1.&nbsp;Can anybody help me to figure out why i am getting this exception even after setting [serializable()] attribute in the begining of class definition?</P>
+<P>2. When i am trying to debugg this part of code, break points in server side code is not hit. I&nbsp;was wondering how to enable debugging in server side code. I am very new to all this, So it will be very helpfull if somebody could tell me the basics :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Wednesday, October 15, 2008</h2>Any chance that your compiled server code isn't marked as serializable?   That would cause an error like this.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

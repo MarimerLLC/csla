@@ -1,0 +1,30 @@
+<html><header><title>Using private property setters with the MVC CSLA Model Binder</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using private property setters with the MVC CSLA Model Binder</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11571.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nickh posted on Tuesday, September 11, 2012</h2><p>Hi all,</p>
+<p>&nbsp;</p>
+<p>I&#39;ve read through Rocky&#39;s &quot;Using CSLA 4 with ASP.NET MVC&quot; ebook and have implemented the methodologies suggested by him, including the use of the CSLA Model Binder, but this has lead me to an interesting problem...</p>
+<p>Some class properties within my business layer have private setters (adopting a LoadProperty approach).&nbsp; This results in the empty property values coming through into my controller, when the CSLA Model Binder tries to construct the object.</p>
+<p>I presume that this is a known issue?&nbsp; How should I go about resolving it?</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 11, 2012</h2><p>The modelbinder will use the property setter so if you want these to be updated by the modelbinder you must make them public. </p>
+<p>Or - you can create your own ModelBinder class that inherits from CslaModelBinder in your app and add override CreateModel to add special handling for these properties.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nickh replied on Tuesday, September 11, 2012</h2><p>Hi Jonny,</p>
+<p>Thanks for your reply.</p>
+<p>I do not want to expose the properties via a public setter.&nbsp; I already have a CreateModel method in my controller (to avoid a private constructor issue), so exactly how do I go about extending this method to add &quot;special handling&quot; for certain properties?</p>
+<p>&nbsp;</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 11, 2012</h2><ol>
+<li>Make the PropertyInfos public in scope</li>
+<li>If you use private backing fields you must override the non-generic LoadProperty in your BO<br />Only BO should know about the private member variables.</li>
+<li>Create an &quot;accessor&quot; class that inherits from ObjectFactory and exposes LoadProperty</li>
+<li>Call accessor.LoadProperty(obj, PropertyInfo, value) to load properties into backing fields. </li>
+</ol>
+<p>Sample ModelAccessor class: </p>
+<p>&nbsp;</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">ModelAccessor</span> : Csla.Server.<span style="color:#2b91af;">ObjectFactory</span></p>
+<p style="margin:0px;">&nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">public</span> <span style="color:blue;">new</span> <span style="color:blue;">void</span> LoadProperty(<span style="color:blue;">object</span> obj, <span style="color:#2b91af;">IPropertyInfo</span> propertyInfo, <span style="color:blue;">object</span> newValue)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; <span style="color:blue;">base</span>.LoadProperty(obj, propertyInfo, newValue);</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; }</p>
+</div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,141 @@
+<html><header><title>wcf - callbacks</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>wcf - callbacks</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2895.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom posted on Thursday, May 17, 2007</h2><P>I have setup a remote Business Object that uses wcf to iis to update.&nbsp; I also have a separate service to iis under the same domain that is setup for a callback.&nbsp; The callback fires fine, but when I try doing a refresh of the business object, I get the following error.&nbsp; I'm not sure what it means. Any ideas?</P>
+<P>There was an error while trying to serialize parameter <A href="http://ws.lhotka.net/WcfDataPortal:FetchResult">http://ws.lhotka.net/WcfDataPortal:FetchResult</A>. The InnerException message was 'Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute.'.&nbsp; Please see InnerException for more details.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2><P>What are you trying to pass through your callback? A CSLA business object? Or FetchResult, which would contain a business object?</P>
+<P>You can't do that without digging relatively deep into WCF. The WCF data portal channel may not look overly complex, but it does use a couple deep extensibility features of WCF to ensure that the correct serialization engine is used. If you don't do that, the default engine is used (DataContractSerializer) and it simply can't handle the kinds of object graphs used in a typical business model.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, May 22, 2007</h2><P>I'm passing a simple string in the callback.&nbsp; I noticed another thread having a similar problem.</P>
+<P><A HREF="/forums/thread/14905.aspx">http://forums.lhotka.net/forums/thread/14905.aspx</A></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Tuesday, May 22, 2007</h2><P>A little more info, here is the interface of my callback</P><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Company.Helpdesk.Library.Wcf {</P>
+<P></FONT><FONT color=#008000 size=2>//The interface the serice exposes</P></FONT><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>ServiceContract</FONT><FONT size=2>(Name = </FONT><FONT color=#a31515 size=2>"WcfTicketService"</FONT><FONT size=2>,</P>
+<P>Namespace = </FONT><FONT color=#a31515 size=2>"http://localhost/HelpDesk/services/WcfTicketService/"</FONT><FONT size=2>, </P>
+<P>SessionMode = </FONT><FONT color=#2b91af size=2>SessionMode</FONT><FONT size=2>.Required,</P>
+<P>CallbackContract = </FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>ITicketChangedCallback</FONT><FONT size=2>))]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>interface</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ITicketChangedPub</FONT><FONT size=2> {</P>
+<P>[</FONT><FONT color=#2b91af size=2>OperationContract</FONT><FONT size=2>(IsInitiating = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Subscribe(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id);</P>
+<P>[</FONT><FONT color=#2b91af size=2>OperationContract</FONT><FONT size=2>(IsTerminating = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Unsubscribe(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id);</P>
+<P>[</FONT><FONT color=#2b91af size=2>OperationContract</FONT><FONT size=2>(IsOneWay=</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> Count();</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Company.Helpdesk.Library.Wcf {</P>
+<P></FONT><FONT color=#008000 size=2>//The interface that clients must implement</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>interface</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ITicketChangedCallback</FONT><FONT size=2> {</P>
+<P>[</FONT><FONT color=#2b91af size=2>OperationContract</FONT><FONT size=2>(IsOneWay = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>)] </P>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> TicketChanged(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> id);</P>
+<P>}</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 22, 2007</h2><P>I haven't done any callbacks, so I'm not going to be much help troubleshooting the specifics.</P>
+<P>However, can you confirm that your DataPortal_XYZ code is running on the server before the failure? In other words, can you find out if the exception is occurring on the way to the server, or after execution is already there?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, May 23, 2007</h2><P>I should have given these details up front.</P>
+<P>I have a BusinessList object with a static method called GetUserActiveTicketList.</P>
+<P>This businesslist object also implements the WcfTicketServiceCallback interface from the above post.</P>
+<P>In the GetUserActiveTicketList&nbsp;method I fill a criteria object and call the dataportal fetch method.&nbsp; Once the dataportal fetch has completed, I then hookup the callback to the other wcf service.&nbsp; Right now, for testing purposes, &nbsp;this callback webservice has a timer that fires the callback after 1 minute.&nbsp; When the callback fires, I have the businesslist close the callback client, and fire an event.&nbsp; The client application then calls the GetUserActiveTicketList again.&nbsp; This is where it errors out.&nbsp; If I call the GetUserActiveTicketList again, before the callback fires, it works fine.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 23, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is important to realize that the data portal is not designed
+with callbacks in mind. I would be VERY suspicious of anything that calls back
+to the client-side instance of a business object, because that object should be
+considered obsolete as soon as the data portal has been called.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that the data portal clones the object across the wire,
+and then the server-side object is cloned back to the client and that new
+instance MUST replace the old instance on the client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you do a callback, you&#8217;d be calling back to the
+effectively dead and obsolete original object, which seems pointless, as that
+object should have been, or should be, discarded.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Curelom
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 23, 2007 9:52 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] wcf - callbacks<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I should have given these details up front.<o:p></o:p></p>
+
+<p>I have a BusinessList object with a static method called
+GetUserActiveTicketList.<o:p></o:p></p>
+
+<p>This businesslist object also implements the WcfTicketServiceCallback
+interface from the above post.<o:p></o:p></p>
+
+<p>In the GetUserActiveTicketList&nbsp;method I fill a criteria object and call
+the dataportal fetch method.&nbsp; Once the dataportal fetch has completed, I
+then hookup the callback to the other wcf service.&nbsp; Right now, for testing
+purposes, &nbsp;this callback webservice has a timer that fires the callback
+after 1 minute.&nbsp; When the callback fires, I have the businesslist close
+the callback client, and fire an event.&nbsp; The client application then calls
+the GetUserActiveTicketList again.&nbsp; This is where it errors out.&nbsp; If
+I call the GetUserActiveTicketList again, before the callback fires, it works
+fine.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Wednesday, May 23, 2007</h2><P>Here is the code I am calling.&nbsp; I am not putting the callback on the old list, but the newly created one.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TicketList</FONT><FONT size=2> GetUserActiveTicketList(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> user) {</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!CanGetObject())</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#2b91af size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"User not authorized to view a TicketList"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2>TicketCriteria</FONT><FONT size=2> crit = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TicketCriteria</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TicketQueryType</FONT><FONT size=2>.AssignedToStatus, </FONT><FONT color=#a31515 size=2>"Open"</FONT><FONT size=2>, user);</P>
+<P></P>
+<P></FONT><FONT color=#2b91af size=2>TicketList</FONT><FONT size=2> tl = </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2>TicketList</FONT><FONT size=2>&gt;(crit); </P>
+<P>tl.hookupProxy();</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> tl;</P>
+<P>}</P><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>NonSerialized</FONT><FONT size=2>()]</P>
+<P>[</FONT><FONT color=#2b91af size=2>NotUndoable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>WcfTicketServiceClient</FONT><FONT size=2> wcfClient; </P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> hookupProxy() {</P>
+<P></FONT><FONT color=#2b91af size=2>InstanceContext</FONT><FONT size=2> callback; </FONT></P>
+<P><FONT size=2>callback = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>InstanceContext</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>wcfClient = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>WcfTicketServiceClient</FONT><FONT size=2>(callback);</FONT></P><FONT size=2><FONT size=2>
+<P>wcfClient.Subscribe(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._dependencyId);</P></FONT>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, May 31, 2007</h2>I've figured out my problem.&nbsp; I had to change the CslaDataPortalProxy over to web services before I was able to debug.&nbsp; I was trying to access some resources that were not on the web server giving me null argument errors.&nbsp; Once I cleaned this up, I was able to switch back to wcf and everthing seems to be working fine.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Curelom:</strong></div><div>
+<P>There was an error while trying to serialize parameter <A href="http://ws.lhotka.net/WcfDataPortal:FetchResult">http://ws.lhotka.net/WcfDataPortal:FetchResult</A>. The InnerException message was 'Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute.'.&nbsp; Please see InnerException for more details.</P>
+<P></div></BLOCKQUOTE></P>
+<P>OK, I have isolated this issue. It appears to be a bug in the NetDataContractSerializer (the WCF replacement for the BinaryFormatter). As such, it is not at all clear to me that there's a fix or workaround short of Microsoft addressing the problem.</P>
+<P><A href="http://www.lhotka.net/weblog/WCFNetDataContractSerializerAndSecurityException.aspx">http://www.lhotka.net/weblog/WCFNetDataContractSerializerAndSecurityException.aspx</A></P>
+<P>I haven't quite given up on a workaround yet, but it is hard to see any good solution I can provide...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

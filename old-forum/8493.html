@@ -1,0 +1,346 @@
+<html><header><title>MVVM - How do I add a property to a child object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVVM - How do I add a property to a child object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8493.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Monday, February 08, 2010</h2><p>Hi All you MVVM&#39;ers</p>
+<p>Currently my BO is structured as follows: Item (Root), ItemsLinked (ROList) contains (ROItem) contains ItemsLinked (ROList)&nbsp; which is an n-level hierarchy of items lazy-loaded.</p>
+<p>I&#39;m using MVVM to display the hierarchy in WPF using a HierarchicalDataTemplate and all is working ok and it is displaying correctly.</p>
+<p>The problem I have is that using HierarchicalDataTemplate or any DataTemplate for that matter requires the Type to be set, in my case ROItem is the type that is in the hierarchy which is also the BO type.&nbsp; This was ok for just displaying but now I need to decorate the type with another property EditMode so I can toggle edit state in the hierarchy, and show edit controls etc.&nbsp; I shouldn&#39;t add EditMode to my BO (which would be a lot easier!)</p>
+<p>Using the CSLA MVVM classes, how do I now do this?&nbsp; My data template should point to ROItemVM which will have the EditMode property, but now what happens to my ROList it needs to contain a list of ROItemVM not ROItem.</p>
+<p>I should end up with ItemVM contains ROListVM contains ROItemVM containg ROListVM and so on...</p>
+<p>Has anyone done something similar as I&#39;m stuck</p>
+<p>TIA</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, February 08, 2010</h2><p>The key here is to understand that the VM is tied to the V, not the M.</p>
+<p>Creating a VM for every M type is wrong - at least if you have a rich model.</p>
+<p>Many/most MVVM examples assume what&#39;s called an anemic Model - a Model composed of dumb data container objects.</p>
+<p>But CSLA objects are not anemic. Your business objects fully support data binding, encapsulate behavior (business, validation, authorization rules) and so forth.</p>
+<p>Therefore it is just plain silly (and really hard) to wrap every business object type with a VM.</p>
+<p>Instead, you should think about the VM as managing sections or regions of the screen. In fact, you should only have a VM if you need to add commands to the model for a region of the screen.</p>
+<p>Pretty much every screen has the need for a top-level VM to provide top-level commands for the overall form. Only sometimes do you need to provide commands in sub-regions of the form, and in that case you&#39;d need other VM objects - very likely chained off the Model of the top-level VM.</p>
+<p>It is somewhat rare <i></i>to need a VM for a list. Usually you need a VM for each item in the list, because you have some navigation or other command operations in the UI in each row of the grid - and those commands need to bind to a VM. That&#39;s easily done using a DataTemplate - just put the VM resource into the DataTemplate and away you go.</p>
+<p>If you do need a VM for a list, that&#39;s fine too - look at the MVVMexample sample apps - I do this in the sample by chaining the list&#39;s VM off the Model from the top-level VM.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Monday, February 08, 2010</h2><p>Thanks for the reply.</p>
+<p>So.. For my requirement I need a view model for each item in the hierarchy, i.e. a view model for each child object in the list.</p>
+<p>I have this HierarchicalDataTemplate but it isn&#39;t&nbsp; bound correctly, I also noticed only 1 instance of the Viewmodel was being created not one for each item in the list.</p>
+<p>&lt;HierarchicalDataTemplate x:Key=&quot;ChildLinks&quot;&nbsp; ItemsSource=&quot;{Binding ChildLinks}&quot; &gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;HierarchicalDataTemplate.Resources&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;ViewModels:ItemInHierarchyViewModel x:Key=&quot;ViewModel&quot; Model=&quot;{Binding /}&quot;&nbsp; /&gt;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/HierarchicalDataTemplate.Resources&gt;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Border DataContext=&quot;{Binding Source={StaticResource ViewModel}}&quot; ...Content of template.../&gt;</p>
+<p>&lt;/HierarchicalDataTemplate&gt;</p>
+<p>My treeview is being populated with items&nbsp; but the display is not bound correctly to the ViewModel</p>
+<p>Are there any examples out there for this.</p>
+<p>TIA</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, February 11, 2010</h2><p>Follow Up.</p>
+<p>&nbsp;</p>
+<p>Using the ViewModel&lt;T&gt; for child objects works fine when behaviour only is involved.</p>
+<p>The ViewModel as a static resource can be used to receive calls using csla:InvokeMethod as expected.</p>
+<p>&nbsp;</p>
+<p><b>State</b> on the other hand cannot be achieved from what I can see.</p>
+<p>If you want to have in-place editing where the UI switches from a read only view to an edit view then you need to add the state property to the child object.</p>
+<p>What I wanted was to wrap every child object so the EditMode state variable was kept out of my BO.</p>
+<p>I cannot do this with CSLA ,from what I can gather.</p>
+<p>&nbsp;</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 11, 2010</h2><p>I&#39;m not sure I follow? </p>
+<p>CSLA isn&#39;t a UI framework, so whether you can or can&#39;t do something at the UI level is really outside the scope of CSLA. The View and ViewModel components are part of the UI layer.</p>
+<p>It is true that I&#39;ve done with XAML what I&#39;ve done with other UI technologies, which is to include the barest possible set of UI helper functionality necessary to make app development possible. But I surely don&#39;t plan to extend CSLA into being a broader UI framework for XAML (or any other UI technology).</p>
+<p>If you are unable to maintain state in a ViewModel&lt;T&gt; can you describe how you&#39;d maintain state in another viewmodel implementation? And if you can do so, then you should almost certainly utilize that other approach.</p>
+<p>Typically however, a UI region (whatever that means to your UI) can bind to a viewmodel that wraps a model. And by binding to the viewmodel, UI elements in that region can interact with methods and properties on the viewmodel - and by extension the Model property of the viewmodel.</p>
+<p>Which is why I&#39;m not sure I follow. If you are able to bind to methods on the viewmodel, why can&#39;t you bind to properties on the viewmodel?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, February 12, 2010</h2><p>Hi Rocky</p>
+<p>Thanks for the reply.</p>
+<p>The only way I can maintain UI state is by adding the state boolean to the CSLA child BO, which works as its bindable, but means I&#39;ve got UI stuff inside my BO.</p>
+<p>The thing is ViewModel&lt;T&gt; can wrap a root object with UI properties no bother, when it comes to using the same ViewModel&lt;T&gt; for child objects however the problem appears.&nbsp; This is because the collection holding the child is a collection of ChildBO not ChildBOViewModel.</p>
+<p>Other MVVM approaches use the anemic model and therefore the whole UI is bound to VMs containing other VM&#39;s and so on (for data as well as behaviour ) so they can easily decorate models with new UI properties.</p>
+<p>The UI needs to bind to ViewModel&#39;s for data and behaviour, so the object graph of the BO should have an equivalent graph for the ViewModel;&nbsp; Root &gt; ChildCollection &gt; Child should map to the UI as RootVM &gt; ChildVMCollection - ChildVM</p>
+<p>This is my first real screen trying to use MVVM &amp; Csla.&nbsp; It is a root object with a treeview for children (n levels deep),&nbsp; its the treeview items that toggle edit state.</p>
+<p>Thanks for your time</p>
+<p>Kevin</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Friday, February 12, 2010</h2><p>This kind of thing came up on WinForms too.&nbsp; Usually the advice was to create a wrapper BO in your UI library which tracked the extra state, since the state wasn&#39;t really part of the BO.&nbsp; Then the child list is bound using the wrapper list / wrapper BO.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 12, 2010</h2><p>Andy is correct.</p>
+<p>Here&#39;s the thing. I created the ViewModel&lt;T&gt; concept to simplify the common case of binding objects to a form. It is usually a good answer and makes life much easier (reducing coding/testing effort, etc).</p>
+<p>But if it doesn&#39;t help your UI scenario <i>then don&#39;t use it in that scenario</i>. It isn&#39;t like you can&#39;t build a more complex viewmodel class if needed to support some specific UI scenario. The techniques and complexity will be pretty much the same as when working with an anemic model, so it isn&#39;t like you lose anything over what non-CSLA people have to put up with every day <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>On the other hand, I wouldn&#39;t use those anemic techniques in every form, because they are a lot more work. Use them when necessary, and stick with the simpler ViewModel&lt;T&gt; approach for most forms.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Kevin Fairclough replied on Friday, February 12, 2010</h2><p>Fair enough,&nbsp; I guess I thought it would naturally work that way.</p>
+<p>From my brief time with MVVM and CSLA&nbsp; I cannot see why this approach (wrapping the CSLA graph) is not common place.&nbsp; WPF is all about the binding and if your binding to a ViewModel in the first place for the root then you lose control over how the view affects the root models graph, you are relying on automatic behaviour of controls to change state.</p>
+<p>My original &quot;fix&quot; for the edit flag (in the child BO) also doesn&#39;t work because it fires an edit on the actually BO (Obviously&nbsp;<img src="http://forums.lhotka.net/emoticons/emotion-7.gif" alt="Tongue Tied" /> ).</p>
+<p>All this pain for a togglebutton controlling row edit mode&nbsp;<img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /></p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, February 12, 2010</h2><p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"><span style="font-size:small;">I think you can probably just add CurrentSelectedItem And CurrentSelectedItemEditMode properties to your VM and binding your visuals to VM. CurrentSelectedItemEditMode.&nbsp; Then you should be able to add a SelectItemCommand to your VM.&nbsp; You will need to extend the Tree view control and add a ItemSelectedCommand property to it that will be invoked from within SelectionCHanged event.&nbsp; This way when SelectionCHanged event fires on your tree view, your </span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"><span style="font-size:small;">SelectItemCommand in VM is invoked, where you can have a dictionary&lt; Item, EditMode&gt; that you will maintain and use from CurrentSelectedItemEditMode property.&nbsp; In any case, you can always inherit base view model in CSLA and extend it to fit your specific needs on certain forms.</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"><span style="font-size:small;">&nbsp;</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#1f497d;"><span style="font-size:small;">I hope this helps.</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, February 16, 2010</h2><p>Yes this sounds like an alternative solution to having to wrap the object graph, will look at this, although it still feels like a lot of work.</p>
+<p>I made my boolean EditMode a non managed property in my ChildBO, and manually fired OnPropertyChanged for it, which is a hack @ the moment for my prototype, but works.</p>
+<p>&nbsp;</p>
+<p>Thanks for your time</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 16, 2010</h2><p>I&#39;ve been working a bit with the VS10 designer over the past week, trying to figure out a couple things, including a solution to this question.</p>
+<p>One thing to consider is the separation of concerns expressly implied by the MVVM pattern.</p>
+<p>You can consider that you have the <i>view technologies</i>, which includes all XAML types and all view types (like your forms and user controls). The view can be aware of viewmodel and model types.</p>
+<p>Then you have the <i>viewmodel technologies</i>, which includes all viewmodel types (your viewmodels). The viewmodel can be aware of model types, <i>but can not be aware of view types</i>.</p>
+<p>Then you have the <i>model technologies</i>, which includes the model types (your business classes), ADO.NET, WCF, WF and whatever else you are using to construct your model and related plumbing. The model is <i>not aware of view or viewmodel types</i>.</p>
+<p>So far, so good.</p>
+<p>In your case you want the view to bind to a root viewmodel, which is easy. And then you want a list/datagrid/??? to bind to a list of viewmodel objects, each of which wraps a specific child, because each child needs verbs or extra properties.</p>
+<p>The thing is, this is really a &quot;child viewmodel&quot;, which means it must come from the parent viewmodel. It can&#39;t come out of thin air.</p>
+<p>What I&#39;ve been trying, and I don&#39;t know if it solves your specific issue, is exactly that. Have the parent viewmodel create the child viewmodel list. In my case this list doesn&#39;t need to be a viewmodel itself, it is just a list of child viewmodel objects.</p>
+<p>So in my root viewmodel I have verbs related to the overall form. And a property to expose the child viewmodel list.</p>
+<p style="padding-left:30px;">public List&lt;ChildViewModel&gt; Children<br />{<br />&nbsp; get<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; return new List&lt;ChildViewModel&gt;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model.Children.Select(r =&gt; new ChildViewModel(r)));<br />&nbsp; }<br />}</p>
+<p>With this property in the root viewmodel class, I can now bind a UI element (listbox/datagrid/etc) to this Children property. The UI is thereby bound to a list of child viewmodel objects that extend individual child business objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, February 16, 2010</h2><p>On the face of it that is exactly what I was looking for, not being a Linq user currently I hadn&#39;t even thought about it that way.&nbsp; I knew that&#39;s what I wanted but achieving it was put on hold <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>The question is does Linq cascade changes through to the underlying collection, if so, we&#39;re in business. </p>
+<p>You&#39;re a <img src="http://forums.lhotka.net/emoticons/emotion-30.gif" alt="Star" /> Rocky!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 16, 2010</h2><p>What do you mean by &quot;cascade changes&quot;?</p>
+<p>If you are looking for add/delete operations on the list of viewmodel objects to affect the business objects you are out of luck unless you write that yourself. Remember that the UI is bound to a list <i>of viewmodel objects</i>, not to a list of business objects.</p>
+<p>But if you are looking for changes to the child viewmodel Model property to affect the business object, you&#39;ll get that - because the Model property of each child viewmodel object <i>is the actual business object</i>. As with other ViewModel&lt;T&gt; scenarios, the viewmodel isn&#39;t really a &quot;wrapper&quot; as much as an &quot;extension&quot; of the underlying business object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, February 16, 2010</h2><p>Ah! ok, we&#39;re still not quite there then (for what I want)&nbsp; </p>
+<p>The View (for an editable screen) will be using the ChildListViewModel to add/delete/modify the contents of the internal CSLA childcollection.&nbsp; What you are suggesting won&#39;t get me that.&nbsp; I will still need a full wrapper.</p>
+<p>For me it will be complicated further by the fact it&#39;s a hierarchical object.</p>
+<p>Thanks</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 16, 2010</h2><p>You should be able to use the same technique I&#39;m talking about - you just need to return a viewmodel that is a collection, rather than a simple List&lt;whatever&gt;.</p>
+<p>The only hard part about doing that is that you&#39;ll need to create this list-oriented viewmodel object, and echo any add/remove actions down to the underlying business list. You&#39;ll almost certainly want to make your list derive from ObservableCollection&lt;T&gt;, which does have notification mechanisms (CollectionChanged event for example) so you can easily determine that an item was added/removed from the viewmodel and so echo that action to the underlying business list.</p>
+<p>This only gets truly complex if you allow direct manipulation of the business list while it is bound, because then you&#39;d need to do bi-directional echoing of events and so forth - and that does get pretty tricky. But if this is always one-way - where only the UI is manipulating the list or elements in the list, then it isn&#39;t too bad.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Monday, August 29, 2011</h2><p><span></span></p>
+<div>
+<p>I encounter on the same problem. &nbsp;according to Rocky&#39;s &nbsp;solution I set up a childviewmodel to wrap the added property. code as below:</p>
+<p><b>Root ViewModel:</b></p>
+<p>
+<p>&nbsp;public class MaterialCategorysViewModel:ViewModel&lt;MaterialCategorys&gt;</p>
+<p>&nbsp; &nbsp; {&nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ObservableCollection&lt;MaterialCategoryViewModel&gt; RootMaterialCategorys</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; { &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var result = new ObservableCollection&lt;MaterialCategoryViewModel&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (Model != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var item in Model)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; result.Add(new MaterialCategoryViewModel(item));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return result;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region Constructor</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [ImportingConstructor]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public MaterialCategorysViewModel(IRegionManager regionManager, IEventAggregator eventAggregator)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InitData();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void InitData()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BeginRefresh(&quot;GetMaterialCategorys&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private &nbsp;void AddRootNode()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var SelectedItem= Model.AddRootNode();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private &nbsp;void AddChildNode(MaterialCategory item)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var newItem= Model.AddChildNode(item);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;protected override void OnModelChanged(MaterialCategorys oldValue, MaterialCategorys &nbsp;newValue)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.OnModelChanged(oldValue, newValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (oldValue != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; newValue.CollectionChanged -= new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Model_CollectionChanged);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (newValue != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; newValue.CollectionChanged +=new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Model_CollectionChanged);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(&quot;RootMaterialCategorys&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Model_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(&quot;RootMaterialCategorys&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;}</p>
+</p>
+<p><b>ChildViewModel:</b></p>
+<p>
+<p>&nbsp;public class MaterialCategoryViewModel:DependencyObject,INotifyPropertyChanged</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; bool _isExpanded;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; bool _isSelected;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static readonly DependencyProperty ModelProperty =</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; DependencyProperty.Register(&quot;Model&quot;, typeof(MaterialCategory), typeof(MaterialCategoryViewModel), null);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public MaterialCategory Model</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return (MaterialCategory)GetValue(ModelProperty); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set { SetValue(ModelProperty, value); }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public MaterialCategoryViewModel(MaterialCategory model)&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Model = model;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (model.ChildMaterialCategorys != null)&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.ChildMaterialCategorys.CollectionChanged += new System.Collections.Specialized.NotifyCollectionChangedEventHandler(Model_CollectionChanged);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; model.PropertyChanged +=new PropertyChangedEventHandler(model_PropertyChanged);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// model.ChildMaterialCategorys.</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void model_PropertyChanged(object sender, PropertyChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.PropertyName == &quot;ChildMaterialCategorys&quot;)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (Model.ChildMaterialCategorys != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(&quot;Children&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private ObservableCollection&lt;MaterialCategoryViewModel&gt; _children;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ObservableCollection&lt;MaterialCategoryViewModel&gt; Children</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var result = new ObservableCollection&lt;MaterialCategoryViewModel&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if(Model.ChildMaterialCategorys !=null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (MaterialCategory c in Model.ChildMaterialCategorys)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result.Add(new MaterialCategoryViewModel(c));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return result;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private void Model_CollectionChanged(object sender, System.Collections.Specialized.NotifyCollectionChangedEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(&quot;Children&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region IsExpanded</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Gets/sets whether the TreeViewItem&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// associated with this object is expanded.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion // IsExpanded</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region IsSelected</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public bool IsSelected</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return _isSelected; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (value != _isSelected)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _isSelected = value;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.OnPropertyChanged(&quot;IsSelected&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion // IsSelected</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #region INotifyPropertyChanged Members</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public event PropertyChangedEventHandler PropertyChanged;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected virtual void OnPropertyChanged(string propertyName)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (this.PropertyChanged != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; #endregion // INotifyPropertyChanged Members</p>
+<p>&nbsp; &nbsp; }</p>
+<p><b>View:</b></p>
+<p>
+<p>&lt;TreeView Name=&quot;CategoryTreeView&quot; ItemsSource=&quot;{Binding Path=RootMaterialCategorys}&quot; &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ItemTemplate =&quot;{StaticResource NavigationTemplate }&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TreeView.ItemContainerStyle&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;!-- This Style binds a TreeViewItem to a PersonViewModel. &nbsp;--&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Style TargetType=&quot;{x:Type TreeViewItem}&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;IsExpanded&quot; Value=&quot;{Binding IsExpanded, Mode=TwoWay}&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;IsSelected&quot; Value=&quot;{Binding IsSelected, Mode=TwoWay}&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;FontWeight&quot; Value=&quot;Normal&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Style.Triggers&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Trigger Property=&quot;IsSelected&quot; Value=&quot;True&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Setter Property=&quot;FontWeight&quot; Value=&quot;Bold&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Trigger&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Style.Triggers&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Style&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TreeView.ItemContainerStyle&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/TreeView&gt;</p>
+</p>
+</p>
+<p>
+<p>&nbsp;&lt;HierarchicalDataTemplate x:Key=&quot;NavigationTemplate&quot;&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ItemsSource=&quot;{Binding Path=Children}&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;StackPanel Orientation=&quot;Horizontal&quot; Margin=&quot;0&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Border Width=&quot;100&quot; BorderBrush=&quot;LightBlue&quot; BorderThickness=&quot;1&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBlock &nbsp;Text=&quot;{Binding Model.Id}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Border&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Border Width=&quot;100&quot; BorderBrush=&quot;LightBlue&quot; BorderThickness=&quot;1&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBlock &nbsp;Text=&quot;{Binding Model. Name}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Border&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;Border Width=&quot;100&quot; BorderBrush=&quot;LightBlue&quot; BorderThickness=&quot;1&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;TextBlock Text=&quot;{Binding Model.Description}&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/Border&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/StackPanel&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/HierarchicalDataTemplate&gt;</p>
+<p><b>Model:</b></p>
+<p>
+<p>&nbsp; public static readonly PropertyInfo&lt;MaterialCategorys&gt; ChildMaterialCategorysProperty = RegisterProperty&lt;MaterialCategorys&gt;(c =&gt; c.ChildMaterialCategorys, RelationshipTypes.Child | RelationshipTypes.LazyLoad);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public MaterialCategorys ChildMaterialCategorys</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!FieldManager.FieldExists(ChildMaterialCategorysProperty))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataPortal.BeginFetch&lt;MaterialCategorysCreator&gt;(Id, (o, e) =&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw e.Error;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ChildMaterialCategorys = e.Object.Result;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return null;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p><strong>&nbsp; &nbsp; &nbsp; &nbsp; </strong>&nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(ChildMaterialCategorysProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(ChildMaterialCategorysProperty, value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(ChildMaterialCategorysProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="font-weight:bold;">&nbsp;</p>
+<p><b>Problem:</b></p>
+<p>1、 I &nbsp;found model&nbsp;ChildMaterialCategorys &nbsp;access the same Id &nbsp;twice at the top &nbsp;and second level. &nbsp;</p>
+<p>2、when add top-level item into the Materialcategorys( &nbsp;BusinessListBase&lt;MaterialCategorys, MaterialCategory&gt;), the view will rebinding all child.</p>
+<p>is there a better approach to treat treeview databinding?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+</p>
+</div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

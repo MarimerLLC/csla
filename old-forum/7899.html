@@ -1,0 +1,182 @@
+<html><header><title>HOWTO code this for cslalight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>HOWTO code this for cslalight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7899.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Wednesday, October 28, 2009</h2>I have a method on my Identity class called ImpersonateUser that takes a GUID of a different user.&nbsp; This in turn calls a command object that checks the security to see if this impersonation is OK.&nbsp; If all is well then it loads some properties.&nbsp; I have this working fine syncronous.<br><br><font face="Arial">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void ImpersonateUser(Guid UserID)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImpersonateUserCommand cmd = ImpersonateUserCommand.ImpersonateUser(UserID);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonatingProperty, true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonateUserTypeProperty, cmd.ImpersonateUserType);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonateUserIDProperty, UserID);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonateUserNameProperty, cmd.ImpersonateUserName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></font><br>But with async I do not know how to code the method on Identity to accept a handler and then call another async method on ImpersonateUserCommand.&nbsp; <br><br>Hope this makes sense?<br><br>Sean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is
+this what you are looking for?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+public void ImpersonateUser(Guid UserID)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ImpersonateUserCommand.BeginImpersonateUser(UserID,
+(o,e)=&gt;{<br>
+<br>
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ImpersonateUserCommand
+cmd = e.Object as ImpersonateUserCommand;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonatingProperty, true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonateUserTypeProperty, cmd.ImpersonateUserType);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonateUserIDProperty, UserID);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonateUserNameProperty, cmd.ImpersonateUserName);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>});<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> swegele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 28, 2009 5:21 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] HOWTO code this for cslalight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I have a method on my Identity class called ImpersonateUser
+that takes a GUID of a different user.&nbsp; This in turn calls a command
+object that checks the security to see if this impersonation is OK.&nbsp; If
+all is well then it loads some properties.&nbsp; I have this working fine
+syncronous.<br>
+<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+public void ImpersonateUser(Guid UserID)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ImpersonateUserCommand cmd = ImpersonateUserCommand.ImpersonateUser(UserID);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonatingProperty, true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonateUserTypeProperty, cmd.ImpersonateUserType);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonateUserIDProperty, UserID);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty(ImpersonateUserNameProperty, cmd.ImpersonateUserName);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+</span><br>
+But with async I do not know how to code the method on Identity to accept a
+handler and then call another async method on ImpersonateUserCommand.&nbsp; <br>
+<br>
+Hope this makes sense?<br>
+<br>
+Sean<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, October 28, 2009</h2>Thanks Sergey...would this block the UI because the call to Identity.ImpersonateUser has no callback passed in?<br><br>Forgive me as I am still new to silverlight.<br><br>Sean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nope,
+the UI is not blocked.&nbsp; So, you should disable the UI somehow to keep the
+user from messing with it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> swegele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 28, 2009 5:33 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: HOWTO code this for cslalight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Sergey...would this block the UI because the call to
+Identity.ImpersonateUser has no callback passed in?<br>
+<br>
+Forgive me as I am still new to silverlight.<br>
+<br>
+Sean<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, October 28, 2009</h2>OK so this sets up some sort of dynamic method that is hanging around waiting for BeginImpersonateUser to finish...even though the original call to Identity.ImpersonateUser finishes immediately?<br><br>Is there any way to pass in a call back which gets triggered when BeginImpersonateUser is done...so that the UI developer knows this method might take awhile and knows when it is finished?<br><br>Also what would the basic signature of the BeginImpersonateUser look like?<br><br>Thanks a million Sergey.&nbsp; I have been putting off making matching async methods on my business objects because I couldn't figure this out :-)<br><br>Sean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 28, 2009</h2>Sean,<br />The code I posted already has a call back,it is just implemented as lamda expression.<br />Sergey<br />________________________________<br />From: swegele [cslanet@lhotka.net]<br />Sent: Wednesday, October 28, 2009 5:45 PM<br />To: Sergey Barskiy<br />Subject: Re: [CSLA .NET] RE: RE: HOWTO code this for cslalight<br /><br />OK so this sets up some sort of dynamic method that is hanging around waiting for BeginImpersonateUser to finish...even though the original call to Identity.ImpersonateUser finishes immediately?<br /><br />Is there any way to pass in a call back which gets triggered when BeginImpersonateUser is done...so that the UI developer knows this method might take awhile and knows when it is finished?<br /><br />Also what would the basic signature of the BeginImpersonateUser look like?<br /><br />Thanks a million Sergey.  I have been putting off making matching async methods on my business objects because I couldn't figure this out :-)<br /><br />Sean<br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, October 28, 2009</h2>I am also wondering what happens to any errors that are raised during the execution of the command object?<br><br>Sorry for being so noob on this silverlight stuff.<br><br>Sean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 28, 2009</h2>You can test e.Error in teh code I posted.<br /><br />Sergey.<br />________________________________<br />From: swegele [cslanet@lhotka.net]<br />Sent: Wednesday, October 28, 2009 6:16 PM<br />To: Sergey Barskiy<br />Subject: Re: [CSLA .NET] RE: RE: HOWTO code this for cslalight<br /><br />I am also wondering what happens to any errors that are raised during the execution of the command object?<br /><br />Sorry for being so noob on this silverlight stuff.<br /><br />Sean<br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, October 28, 2009</h2>My example differs from yours in 2 ways:<br>- The method on Identity requires the UI developer to explicitly pass in a delegate<br>- The method on Identity calls Invoke on the passed in handler when finished to let the UI know it is done<br><br>The first example you and I were trying out didn't give any way for the UI to know when things were finished or whether there were errors...unless I am missing something??<br><br>Sean<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, October 28, 2009</h2>I suppose all the trouble comes from having the method like so<br><br>Identity.Impersonate --&gt; CommandObject<br><br>Since it is the dataportal on the CommandObject that is called, that is where the handler naturally fits in.&nbsp; I am having to tweek things to get the handler to pass back through the Identity.Impersonate method call.<br><br>Perhaps it would be better design to just do the call to the CommandObject and have the CommandObject manipulate the Identity if it succeeds.<br><br>Sean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, October 28, 2009</h2>How does this look?&nbsp; I am trying to communicate to the UI developer that calling this method requires a busy state to be set.&nbsp; It handles errors internally as well as returning the error to the UI if it is needed there.<br><br><br><font face="Arial">&nbsp;&nbsp;&nbsp; public partial class IRBIdentity : MembershipIdentity<br>&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void BeginImpersonateUser(Guid UserID, EventHandler&lt;DataPortalResult&lt;ImpersonateUserCommand&gt;&gt; handler)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ImpersonateUserCommand cmd = ImpersonateUserCommand.BeginImpersonateUser(UserID, (o, e) =&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.Error == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonatingProperty, true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonateUserTypeProperty, e.Object.ImpersonateUserType);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonateUserIDProperty, UserID);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ImpersonateUserNameProperty, e.Object.ImpersonateUserName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; handler.Invoke(o, e);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></font>}<br><br>Sean<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

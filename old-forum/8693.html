@@ -1,0 +1,13 @@
+<html><header><title>A couple questions regarding property usage.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A couple questions regarding property usage.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8693.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Friday, March 19, 2010</h2><p>1.&nbsp; When using an ObjectFactory you can load a property without incurring the overhead of checking rules by using either LoadProperty or BypassPropertyChecks.&nbsp; Is there an advantage to using one over the other?</p>
+<p>2. From within a business object class do you need to use ReadProperty and LoadProperty to avoid rules checking, e.g. inside a business object class method if I do this will it check validation rules?</p>
+<p>int i = this.FooIntegerProperty;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, March 19, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Dane<br></b></p>
+<p>1.&nbsp; When using an ObjectFactory you can load a property without incurring the overhead of checking rules by using either LoadProperty or BypassPropertyChecks.&nbsp; Is there an advantage to using one over the other?</p>
+<p></div></p>
+<p>There&#39;s no direct advantage to one over the other - they both do the same thing. But if your property is read-only (has a non-public setter) then only LoadProperty() will work because the factory object can&#39;t set the property otherwise.</p>
+<p>I tend to use BypassPropertyChecks by default, because I like the readability of just setting the properties, but for read-only properties the only answer is LoadProperty().</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Dane<br></b></p>
+<p>2. From within a business object class do you need to use ReadProperty and LoadProperty to avoid rules checking, e.g. inside a business object class method if I do this will it check validation rules?</p>
+<p>int i = this.FooIntegerProperty;</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Inside the object you can use ReadProperty()/LoadProperty(), or BypassPropertyChecks - either option works here as well. And inside your object you typically don&#39;t have to worry about read-only properties, because you can have a private or protected setter. At least that&#39;s my typical approach.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

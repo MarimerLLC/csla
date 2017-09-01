@@ -1,0 +1,215 @@
+<html><header><title>Use relation between CSLA Business Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use relation between CSLA Business Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4859.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>juancho559 posted on Sunday, May 18, 2008</h2><P>Hi,</P>
+<P>I would like to know how is the best way to model an use&nbsp;relation between business objects in CSLA?</P>
+<P>For example: I have a business object called Payment. This object has many properties like PaymentId, OrderId,&nbsp;BillingInfo, ShippingInfo.</P>
+<P>BillingInfo and ShippingInfo are two businness objects storing all the information about the billing and shipping.</P>
+<P>When I retrieve the information about billing and Shipping I store this information in the payment object, for example:&nbsp;</P>
+<P>Payment.BillingInfo = Billing.GetBillingById(idBilling);<BR>Payment.ShippingInfo = Shipping.GetShippingById(IdShipping);</P>
+<P>When I try to update the payment object, I receive this exception: "Edit level mismatch in AcceptChanges". </P>
+<P>So, How is the best way to model this scenario or how can I solve this problem?</P>
+<P>I appreciate your help!!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, May 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This all looks OK.&nbsp; This code should not cause edit level
+mismatch.&nbsp; Are you calling BeginEdit immediately after loading the object before
+UI has a chance to interact with it?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> juancho559
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, May 18, 2008 12:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Use relationship in CSLA Business Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>I would like to know how is the best way to model an use relationship
+between business objects in CSLA?<o:p></o:p></p>
+
+<p>For example: I have a business object called Payment. This object has many
+properties like PaymentId, OrderId,&nbsp;BillingInfo, ShippingInfo.<o:p></o:p></p>
+
+<p>BillingInfo and ShippingInfo are two businness objects storing all the
+information about the billing and the shipping. <o:p></o:p></p>
+
+<p>I just want to avoid the &quot;Edit level mismatch in AcceptChanges&quot; exception
+when I&nbsp;reference this objects. I get this exception when I do this and try
+to update the payment object:<o:p></o:p></p>
+
+<p>Payment.BillingInfo = Billing.GetBillingById(idBilling);<br>
+Payment.ShippingInfo = Shipping.GetShippingById(IdShipping);<o:p></o:p></p>
+
+<p>So, How is the best way to model this scenario?<o:p></o:p></p>
+
+<p>I appreciate your help!!<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juancho559 replied on Sunday, May 18, 2008</h2><P>Yes, the code is&nbsp;equal to Project Tracker Sample.</P>
+<P>When I load the form, I bind the UI and call the BeginEdit method.</P><FONT size=2>
+<P>AddWinPart(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>ProjectEdit</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Project</FONT><FONT size=2>.GetProject(projectId)));</P>
+<P>&nbsp;&nbsp;&nbsp; public ProjectEdit(Project project)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // store object reference<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = project;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // set up binding<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.roleListBindingSource.DataSource = RoleList.GetList();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // check authorization<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules();<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>regards...</P>
+<P></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 19, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, I see&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I think this is because you are loading child objects through public
+properties, dirtying the parent object.&nbsp; Load them through private members
+instead:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Payment._billingInfo =
+Billing.GetBillingById(idBilling);<br>
+Payment._shippingInfo = Shipping.GetShippingById(IdShipping);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> juancho559
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, May 18, 2008 11:44 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Use relationship in CSLA Business Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, the code is&nbsp;equal to Project Tracker Sample.<o:p></o:p></p>
+
+<p>When I load the form, I bind the UI and call the BeginEdit method.<o:p></o:p></p>
+
+<p><span>AddWinPart(<span>new</span>
+<span>ProjectEdit</span>(<span>Project</span>.GetProject(projectId)));<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp; public ProjectEdit(Project
+project)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // store
+object reference<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = project;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // set up
+binding<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.roleListBindingSource.DataSource =
+RoleList.GetList();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // check
+authorization<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules();<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>regards...<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juancho559 replied on Sunday, May 25, 2008</h2><P>Hi, Thanks for your response.</P>
+<P>I made the test and I still have the same error. I just change the access modifier to the variables that I want to get.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2>&nbsp;</FONT><FONT color=#2b91af size=2>BillingInfo</FONT><FONT size=2> _billingInfo = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2>&nbsp;</FONT><FONT color=#2b91af size=2>ShippingInfo</FONT><FONT size=2> _shippingInfo = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2><FONT size=3>Then, I load the objects from other form.</FONT></FONT></P>
+<P><FONT size=2><SPAN>Payment._billingInfo = Billing.GetBillingById(idBilling);<BR>Payment._shippingInfo = Shipping.GetShippingById(IdShipping);</SPAN></FONT></P>
+<P><FONT size=2><SPAN><FONT size=3>Regards...</FONT></SPAN></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Monday, May 26, 2008</h2>Hi!<br><br>You say<font size="2"><font size="3"> "Then, I load the objects from other form."<br>But the code you then quote does a standard call to the factory methods...<br><br>If you really get your data from another form, then make sure the data is properly unbound from any controls (most likely a bindingsource control) on that form, leaving&nbsp; it on edit level 0.<br><br>Stefan<br><br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>juancho559 replied on Monday, May 26, 2008</h2><P>Hi Stefan,</P>
+<P>I think that I already know what is the problem. I was retrieving the object to edit from&nbsp;the binding source, and I&nbsp;didn't call the EndEdit in the current object. I just change my code like this:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//Retrieve current object from the binding source<BR></FONT><FONT size=2>System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2> current = <BR>paymentBindingSource.Current </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#2b91af size=2>IEditableObject</FONT><FONT size=2>;<BR></FONT><FONT color=#008000 size=2><BR>//Call EndEdit()<BR></FONT><FONT size=2>current.EndEdit();<BR></FONT><FONT size=2><BR>_payment = (</FONT><FONT color=#2b91af size=2>Payment</FONT><FONT size=2>) current;</FONT></P>
+<P>
+<P><FONT size=2></P></FONT>Thanks...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

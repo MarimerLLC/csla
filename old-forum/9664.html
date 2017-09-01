@@ -1,0 +1,43 @@
+<html><header><title>CSLA 4 version 4.1 beta release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.1 beta release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9664.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, October 22, 2010</h2><div>
+<p>I am pleased to announce the first beta release of CSLA 4 version 4.1 with 
+support for Windows Phone 7, and continuing support for .NET 4 and Silverlight 
+4.</p>
+<p><a href="http://www.lhotka.net/cslanet/download.aspx">Download CSLA 4 version 
+4.1.0 here</a></p>
+<p>With this release, it is now possible to write a single business layer 
+composed of business domain objects that run unchanged on a WP7 device, in 
+Silverlight, on a Windows client, on Windows Server and on Windows Azure.</p>
+<p>The samples download includes Samples\Net\cs\SimpleNTier, which does 
+implement the following interfaces over one common business layer:</p>
+<ul>
+<li>Windows Phone</li>
+<li>WPF</li>
+<li>Silverlight</li>
+<li>ASP.NET MVC</li>
+</ul>
+<p>Of course this is just the first beta release, so there&rsquo;s more work to be 
+done. At the same time, we have completed the vast majority of the effort, and 
+it is quite possible to build WP7 applications using this beta.</p>
+<p>As with all CSLA releases, this one does include some bug fixes and 
+enhancements to other parts of the framework. Please see the <a href="http://www.lhotka.net/Article.aspx?id=9aad2f99-86eb-453b-a760-6303c3b27552">change 
+log</a> for a list of all changes. Enhancement highlights include:</p>
+<ul>
+<li>Add ability to get a consolidated list of broken rules for an object 
+graph</li>
+<li>New BackgroundWorker component that automatically initializes background 
+threads with the current principal and culture from the UI thread</li>
+<li>TriggerAction provides better debugging information, following the lead of 
+many Microsoft XAML controls</li>
+<li>and much more&hellip;</li>
+</ul>
+<p>In related news, <a href="http://unitdriven.codeplex.com/">UnitDriven</a> has 
+also been updated to support WP7, and provides a pretty comprehensive unit test 
+runner and framework for WP7 code. CSLA uses UnitDriven for its automated 
+testing, but UnitDriven can be used for any application on .NET, Silverlight or 
+WP7.</p>
+<p>Similarly, <a href="http://bxf.codeplex.com/">Bxf</a> (Basic XAML Framework) 
+has been updated to support WP7, thereby providing a common MVVM framework for 
+WPF, Silverlight and WP7 UI development efforts. Some CSLA sample apps use Bxf, 
+but Bxf can be used for any application, including those that don&rsquo;t involve CSLA 
+at all.</p>
+</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

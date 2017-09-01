@@ -1,0 +1,28 @@
+<html><header><title>DataPortal.Create(xyz) in CSLA.NET 4.0 Not Invoked in the Remote Host</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Create(xyz) in CSLA.NET 4.0 Not Invoked in the Remote Host</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9594.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Yang posted on Friday, October 01, 2010</h2><p>I just started using CSLA 4. For my BO, I have 2 projects, one for the server and another for the client. The Server code contains all the DataPortal_XXX methods plus the shared business methods. The client code only has the static Factory methods plus the shared business methods. My target deployment is via WCF communication with Windows Auth. So far everything is ok until I get to implement DataPortal_Create methods.</p>
+<p>What I noticed is that the DataPortal_Create (with or without parameters) is only invoked using the LocalProxy. It defaults to invoking DataPortal_Create(). I have played around with the code but for me to invoke the DataPortal_Create(param) in the remote host, I have to add the DataPortal_Create(param) in the client BO with empty code body. I do not have to do this with the DataPortal_Fetch methods. &nbsp;I am still using the synchronous method invocation.</p>
+<p>Am I doing anything out of the ordinary?&nbsp;</p>
+<p>Client Code :</p>
+<p>
+<p>&nbsp;public partial class FiscalYearBudget</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#region Factory Methods</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public static FiscalYearBudget CreateBudget(int FiscalYear)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CreateFYBudget criteria = new CreateFYBudget();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;criteria.FiscalYear = FiscalYear;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return DataPortal.Create&lt;FiscalYearBudget&gt;(criteria);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#endregion</p>
+<p><b>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;// if I uncommented this method, this gets invoked in the Remote Host.</b></p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;//private void DataPortal_Create(CreateFYBudget criteria)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;//{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;//}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;//{</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 02, 2010</h2><p>When you say two projects, this makes me think you are using Silverlight? If you are using .NET you&#39;d have one business class library that is deployed to both client and server.</p>
+<p>Either way, you need to configure the client&#39;s data portal to invoke the server. The configuration is a little different between Silverlight and .NET, but basically involves setting the CslaDataPortalProxy to something like WcfProxy and providing the URL of the app server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Yang replied on Saturday, October 02, 2010</h2><p>Thanks for responding Rocky. Today is Saturday and should be a no work day <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>Sorry I was not clear on this. I thought the synchronous call and the DataPortal.Create invoke in the code made it clear that we are doing Win/WPF projects. We like the separation of the server side and client side code in the projects so we lay it out that way so we do not deploy db code on the client. this worked fine even on CSLA.NET 3.04 and if we have to go the silverlight way we are already set. &nbsp;It also helped us in clickonce deployment since ODP.NET seems to want to be installed in the client machine which we can not do at the moment. The separation of the client and server code made our clients not depend on Oracle. Anyway, it works on the DataPortal.Fetch and DataPortal.Update calls and it will not be a problem having the DataPortal.Create methods in the client code. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

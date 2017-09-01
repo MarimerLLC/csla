@@ -1,0 +1,72 @@
+<html><header><title>ID or Object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ID or Object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/579.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Monday, July 10, 2006</h2><P class=MsoNormal><SPAN>I have a class: Employee. I have two case to design this class<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>First:<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>Class Employee :</SPAN><SPAN> Csla.<SPAN>BusinessBase</SPAN>&lt;<SPAN>Employee</SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>private Guid _Id;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>priavte string _Name;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>private Guid _ManagerId;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>Second:</SPAN></B><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Class Employee : Csla.<SPAN>BusinessBase</SPAN>&lt;<SPAN>Employee</SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private Guid _Id;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>priavte string _Name;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>private Employee _Manager;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How to do? Which is best?<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Monday, July 10, 2006</h2><P>I think the answer is - "It depends ..."</P>
+<P>If you need the behaviour implemented in your Emplyee_Manager class then sure load it when you load an employee and perhaps expose it as property of Employee.</P>
+<P>If you may need to load the manager object later then just retrieve the id (as in your first example).&nbsp; You can then have a GetManager function that&nbsp;retrieves the manager later when required.&nbsp; </P>
+<P>If you just want to know who the employees manager is then just retrive the name</P>
+<P>If you might want to change the employees manager then perhaps have a NameValueList of manager names and ids.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom Cooley replied on Monday, July 10, 2006</h2>As msk wrote, it does depend. But let me suggest that if you do go with the second option, take a look at the Composite design pattern to see if this is what you need. Unless you need to provide a hierarchy of managers and their people, you probably don't need this, but I thought I'd point it out in case that is the sort of functionality you desire.<br><br>Tom<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vargasbo replied on Tuesday, July 11, 2006</h2>Yes, the behavior you're looking for will guide your object design... I personally like the object. Something you'll also want to consider is UI criteria, I always like to expose items I uses in UI as properties in my object, makes life really easy for me.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2><P>It depends indeed <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>You are describing two entirely different things as options - each of which has its purpose.</P>
+<P>Option 1 - where you maintain the Id values for other objects, enables a form of "using" relationship. Given that key information you have the ability to access or navigate to another object - but those would almost certainly be other ROOT objects.</P>
+<P>Option 2 - where you maintain an instance-level&nbsp;reference to another object, is a parent-child relationship - at least by default. Unless you take pains to prevent it, those object reference will (and in fact must) point to child objects - and the root object then assumes responsibiilty for their lifetimes and persistence.</P>
+<P>Option 2a - where you maintain instance-level references to another object BUT MARK that instance field as NonSerializable and NotUndoable, is a variation on option 1. Personally I try to avoid this 2a option like the plague, because it is far too easy to get it wrong and far too hard to get it right. To REALLY do this well, you have to ONLY use the instance field from within a property, and that property should include code to do null checks on the field, and to instantiate the object on demand. It is akin to lazy loading, but worse, because you are typically "lazy loading" root objects and then caching the reference.</P>
+<P>The complexity comes in that the referenced object is a root. Which means someone might edit/save it without your knowledge. Which means you could be left holding an old (invalid) object reference. Which means that you need to implement an observer pattern to ensure that all these old object references get updated. Ugh! Avoid it!</P>
+<P>Option 2b - where you implement lazy loading of child objects. Again, this requires extra work and discipline - because that instance field should ONLY be accessed by a single property, and that property should include null checking code to trigger the lazy loading of the child object. But this does REQUIRE that the referenced object be a child object, and that the root assume responsibiilty for its lifetime and persistence.</P>
+<P>This table might help:</P>
+<TABLE>
+
+<TR>
+<TD><B>Target obj</B></TD>
+<TD><B>Ref type</B></TD>
+<TD><B>Outcome</B></TD></TR>
+
+<TR>
+<TD>Root</TD>
+<TD>Id</TD>
+<TD>Using relationship</TD></TR>
+<TR>
+<TD>Root</TD>
+<TD>Reference</TD>
+<TD>AVOID! (requires observer pattern to do correctly)</TD></TR>
+<TR>
+<TD>Non-CSLA</TD>
+<TD>Id</TD>
+<TD>Using relationship</TD></TR>
+<TR>
+<TD>Non-CSLA</TD>
+<TD>Reference</TD>
+<TD>Containment/aggregation</TD></TR>
+<TR>
+<TD>Child</TD>
+<TD>Id</TD>
+<TD>AVOID! (you can't manage a child through its Id)</TD></TR>
+<TR>
+<TD>Child</TD>
+<TD>Id-&gt;Reference</TD>
+<TD>Enables lazy loading (use Id to get Reference, then own reference)</TD></TR>
+<TR>
+<TD>Child</TD>
+<TD>Reference</TD>
+<TD>Normal parent-child containment relationship</TD></TR>
+<TR>
+<TD>Read-only</TD>
+<TD>Id</TD>
+<TD>Using relationship (no caching)</TD></TR>
+<TR>
+<TD>Read-only</TD>
+<TD>Reference</TD>
+<TD>Using relationship (with caching)</TD></TR></TABLE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cardasim replied on Wednesday, July 11, 2007</h2>Thank you, Rocky!<br>You've just served me a good OOP lesson and the answer <br>to a concrete question in one of my current projects.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

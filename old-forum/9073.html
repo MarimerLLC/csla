@@ -1,0 +1,28 @@
+<html><header><title>Read-Only Root Collection with Read-Only Child Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Read-Only Root Collection with Read-Only Child Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9073.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Saturday, June 12, 2010</h2><p>Is it possible to have a Read-Only Root Collection with Read-Only Child Collection?</p>
+<p>&nbsp;</p>
+<p>I want to provide a UI search facility where the user can search for account names using wild cards (i.e. those with &#39;Santos&#39; as Last Name).</p>
+<p>&nbsp;</p>
+<p>The UI will show a DataRepeater with the matching Customer Names (Read-Only Root Collection). Each Customer Name will have their own DataGridView showing the Purchases (Read-Only Child Collection) of the respective customer.</p>
+<p>&nbsp;</p>
+<p>If this is possible, can you please help me with a simple example? Thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Saturday, June 12, 2010</h2><p>I don&#39;t understand why you want this object to be a root object, why cannot this just be a standard ROL? <br />If saving is important, then what would be wrong with a BLB with a BB that contains only read-only properties?</p>
+<p>Can the user ever save the collection, based on what I&nbsp;interpret it appears to be only for viewing. You could either have a factory that passes in the search criteria or if you have already fetched the objects could be filtered using either LINQ / FilteredBindingList depending on your preference in the UI.</p>
+<p>Please correct me if I am missing something?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Saturday, June 12, 2010</h2><p>Yes, I want a Read-Only List/Collection, so saving is unnecessary.</p>
+<p>&nbsp;</p>
+<p>I want to display a list of Read-Only Parent List, each with a Read-Only Child List. In a DataRepeater control, the parent will be displayed in textboxes, while the children will be displayed in a datagridview.</p>
+<p>&nbsp;</p>
+<p>Please help me with some samples. Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, June 15, 2010</h2><p>Is this what you want?</p>
+<p>public sealed class CustomerList : ReadOnlyListBase&lt;CustomerList, CustomerInfo&gt;&nbsp;{&nbsp; public static CustomerList GetCustomers(object criteria ); }</p>
+<p>public sealed class CustomerInfo : ReadOnlyBase&lt;CustomerInfo&gt;&nbsp;{&nbsp;&nbsp;internal static CustomerInfo GetCustomer(object custData); }</p>
+<p>public sealed class PurchasesList : ReadOnlyListBase&lt;PurchasesList, PurchaseInfo&gt;&nbsp;{ }</p>
+<p>public sealed class PurchaseInfo : ReadOnlyBase&lt;PurchaseInfo&gt; { }</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Tuesday, June 15, 2010</h2><p>Andy,</p>
+<p>&nbsp;</p>
+<p>yes, i want the business objects.</p>
+<p>i want to implement the customerlist as the parent list, with each of the customer having a child collection of purchases list.</p>
+<p>&nbsp;</p>
+<p>can you please help me some samples?</p>
+<p>&nbsp;</p>
+<p>thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, June 13, 2010</h2><p>Hi,</p>
+<p>You have a <strong>Summary of Csla 3.5 stereotypes</strong> with the possible relations here&nbsp;<a href="http://forums.lhotka.net/forums/p/7631/36450.aspx#36450">http://forums.lhotka.net/forums/p/7631/36450.aspx#36450</a></p>
+<p>You have a series of articles and a sample project <strong>Make a Master/Detail DGV using CSLA DynamicRootList</strong> here <a href="http://www.codeproject.com/KB/cs/CslaERLB1.aspx">http://www.codeproject.com/KB/cs/CslaERLB1.aspx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

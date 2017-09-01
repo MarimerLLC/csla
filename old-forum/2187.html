@@ -1,0 +1,150 @@
+<html><header><title>Server-side LocalContext: problem calling objects from different threads...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Server-side LocalContext: problem calling objects from different threads...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2187.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Izhido posted on Monday, January 22, 2007</h2>Hi everybody!<br><br>I got this problem while working on 2.1.1.<br>Recently, my business objects were changed to take advantage of the Csla.ApplicationContext.LocalContext() data store, mainly on the server side; there, I put many ADO.NET-related objects that give the business layer access to the underlying database, among other things. So far, so good.<br><br>Recently, one developer on my company created an application that uses these business objects. At one point, he wanted to invoke a "process" (a Csla.CommandBase-based object I built into the business layer), but did it in a separate thread from the UI main thread. He told me that his app was actually crashing at the invocation of the process. A NullReferenceException was being thrown from inside the DataPortal_Execute() class. When I checked it, I saw that the LocalContext() data store was actually &gt;&gt;empty&lt;&lt;, thus, basically, there's no way my business object could get any database-related info, and it should fail (understandably). <br><br>Now, that wouldn't surprise me if the server was mounted as an IIS process (as far as I know, unless you're very careful configuring your web app, you may lose your server cache frequently)... the thing is, there's no IIS involved, the server is actually &gt;&gt;local&lt;&lt; to the client!<br><br>And, of course, I can guarantee the process being invoked works correctly (tested a million times :D ); seems the only difference with my tests &amp; the new application is that the process was being invoked from a different thread than the main UI thread (where the Login() method was invoked).<br><br>Any idea what can I do here? It appears that being able to call the process on a separate thread is fundamental for the developer of this app. Suggestions will be highly appreciated!<br><br>- Izhido<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 22, 2007</h2>Well, the problem sounds like the LocalContext is using a ThreadContext for its variable storage, whcih is unique to each thread.&nbsp; One of the Csla contexts takes this into consideration and doesn't use the thread local storage.. but I don't recall at the moment which one that is..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 22, 2007</h2><P>No, all of the Csla.ApplicationContext context collections are per-thread.</P>
+<P>This is a complex issue. You can use static/Shared fields to store things per-AppDomain, which in any web setting makes the values global to all users of that web site. Or you can use per-thread techniques, which makes the values available to one specific user, but also just to that one thread.</P>
+<P>Making values available to the various threads that might be created and/or used by a specific user would require that CSLA .NET provide its own thread allocation mechanism. And of course that would not co-exist well with the .NET threadpool, ASP.NET's threading mechanism, etc.</P>
+<P>You'll notice that even Microsoft doesn't solve this issue in any realistic sense. System.Thread.Threading.CurrentPrincipal is per-thread too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Izhido replied on Monday, January 22, 2007</h2>Thanks, ajj, Rocky!<br>
+<br>
+Hm.. I think you got me a little confused here. Right now I'm debugging
+the app, and it stepped just into the process invocation (in the
+separate thread):<br>
+<blockquote><font face="Courier New" size="2">pru = RemoverAsignacionRuta.RunRemoverAsignacionRuta(ssn, False, DirectCast(RouteInfoCell.RouteLinkLabel.Tag, Long))<br>
+  </font></blockquote>
+(Spanglish, sorry :D )<br>
+<br>
+If I ask the IDE at this point the current value of System.Threading.Thread.CurrentPrincipal, it returns:<br>
+<font face="Courier New" size="2"><br>
+Threading.Thread.CurrentPrincipal: {SuiGeneris.eXigo.Negocios.eXigoPrincipal}<br>
+|<br>
+--- Identity: {SuiGeneris.eXigo.Negocios.eXigoIdentity}<br>
+</font><br>
+These two are my principal &amp; identity business objects.<br><br>
+So, it seems, CurrentPrincipal (and CurrentPrincipal.Identity) are
+actually crossing the thread barrier.<br><br>Am I missing something here?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 22, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=595542723-22012007><FONT face=Arial color=#0000ff size=2>There are cases where the currentprincipal moves across 
+threads. You can set that as a policy, and ASP.NET does some magic to make it 
+happen too (remember that they own the threading within their 
+environment).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=595542723-22012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=595542723-22012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=595542723-22012007></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Izhido [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, January 22, 2007 4:49 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Server-side LocalContext: 
+  problem calling objects from different threads...<BR></FONT><BR></DIV>
+  <DIV></DIV>Thanks, ajj, Rocky!<BR><BR>Hm.. I think you got me a little 
+  confused here. Right now I'm debugging the app, and it stepped just into the 
+  process invocation (in the separate thread):<BR>
+  <BLOCKQUOTE><FONT face="Courier New" size=2>pru = 
+    RemoverAsignacionRuta.RunRemoverAsignacionRuta(ssn, False, 
+    DirectCast(RouteInfoCell.RouteLinkLabel.Tag, 
+  Long))<BR></FONT></BLOCKQUOTE>(Spanglish, sorry :D )<BR><BR>If I ask the IDE 
+  at this point the current value of System.Threading.Thread.CurrentPrincipal, 
+  it returns:<BR><FONT face="Courier New" size=2><BR>Threading.Thread.CurrentPrincipal: 
+  {SuiGeneris.eXigo.Negocios.eXigoPrincipal}<BR>|<BR>--- Identity: 
+  {SuiGeneris.eXigo.Negocios.eXigoIdentity}<BR></FONT><BR>These two are my 
+  principal &amp; identity business objects.<BR><BR>So, it seems, 
+  CurrentPrincipal (and CurrentPrincipal.Identity) are actually crossing the 
+  thread barrier.<BR><BR>Am I missing something here?<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>No, all of the Csla.ApplicationContext context collections are per-thread.</div></BLOCKQUOTE><br><br>Oh, I thought this had changed a while ago because of a thread here.&nbsp; I'll try to locate the thread.. I must be mistaken.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 23, 2007</h2>I found <a HREF="/forums/permalink/472/922/ShowThread.aspx#922">this thread</a>, which is what I was remembering.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 23, 2007</h2><P>Oh yeah, I'd forgotten about that!</P>
+<P>So yes, on a smart client the ClientContext is available to all threads in the AppDomain. </P>
+<P>But not in ASP.NET or any server environment, because they are all running multiple users on different threads in the same AppDomain.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 23, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Oh yeah, I'd forgotten about that!</div></BLOCKQUOTE><br><br>Whew, I thought I was totally offbase there.<br>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>So yes, on a smart client the ClientContext is available to all threads in the AppDomain. </p>
+<p>But not in ASP.NET or any server environment, because they are all running multiple users on different threads in the same AppDomain.</div></BLOCKQUOTE></p>I'm not sure I follow; if all the threads are in the same AppDomain, shouldn't ClientContext be available to all threads just as it is in a smart client?&nbsp; Or am I missing something?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 23, 2007</h2><P>The change I made only applies to code where you are NOT running in ASP.NET and where you ARE on the client workstation.</P>
+<P>If you are running in ASP.NET, then your appdomain is shared across mutliple users, pretty much by definition, so I can't store ClientContext in the appdomain in that environment.</P>
+<P>Also, if you are running on the server in any server hosting environment that is supported (ASP.NET, Remoting custom host or COM+) then your appdomain is shared across multiple users too. Again, I can't store ClientContext in the appdomain in those environments either.</P>
+<P>If someone did come up with a custom host of some sort, where they created an appdomain per-client-request, then the value could be stored at the appdomain level. Such a hypothetical developer would first need to overcome the non-trivial performance implications of what I'm suggesting. Then they'd need to alter the code in Csla.ApplicationContext to be aware of their host so it could store ClientContext in the appdomain within that enviornment as well.</P>
+<P>Today however, there are no such hosts provided by Microsoft.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 24, 2007</h2>Ahh, ok.&nbsp; I didn't realize the changes were only for local smart clients.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Tuesday, November 06, 2007</h2><P>O.k.... having some CurrentPrincipal issues and this previous post is similar.</P>
+<P>I have a WinForms application that runs completely local (with a local database) and we set the CSLA.ApplicationContext.User to the currenly logged in IPrincipal object.&nbsp; </P>
+<P>When we spin up a background thread (an second thread other than that on the current UI Thread) the user property is already set to the UI User property on the main thread?&nbsp; How is this possible?&nbsp; Don't I have to set the background threads CSLA.ApplicationContext.User property when it is started up?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you directly create a background thread I believe it defaults
+to &#8220;inheriting&#8221; the principal of the creating thread. This isn&#8217;t
+necessarily the case when using the thread pool, which is the better way to
+create background threads than direct creation. I don&#8217;t know if it is
+true when using the BackgroundWorker component, which is also better than
+manual creation of a thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When I say &#8220;better&#8221;, I mean more reliable, with more
+services. My preference is to use BackgroundWorker, because if you don&#8217;t
+then you&#8217;ll need to write the functionality it provides for you, but by
+hand. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you are going to create background threads directly, you
+are typically better off using the thread pool instead of &#8220;x = new Thread()&#8221;,
+because the thread pool provides some nice features (thread reuse, maximum
+number of threads, etc).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ward0093
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 06, 2007 2:52 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Server-side LocalContext: problem calling
+objects from different threads...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>O.k.... having some CurrentPrincipal issues and this previous post is
+similar.<o:p></o:p></p>
+
+<p>I have a WinForms application that runs completely local (with a local
+database) and we set the CSLA.ApplicationContext.User to the currenly logged in
+IPrincipal object.&nbsp; <o:p></o:p></p>
+
+<p>When we spin up a background thread (an second thread other than that on the
+current UI Thread) the user property is already set to the UI User property on
+the main thread?&nbsp; How is this possible?&nbsp; Don't I have to set the
+background threads CSLA.ApplicationContext.User property when it is started up?<o:p></o:p></p>
+
+<p>ward0093<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 07, 2007</h2>I've been using the BackgroundWorker componet quite extensively, and I haven't had to do anything to set the princpal properlly.&nbsp; I had to set the princpal manually though when creating my own threads though.&nbsp; Haven't used the ThreadPool.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, November 07, 2007</h2><P>O.K... I use strictly the BackgroundWorker and yes... it seems to inherit the creating thread properties....</P>
+<P>However... I just ran a bunch of tests and something really strange is going on...</P>
+<P>When the app is started (no one is logged in yet) we spin up the background thread... so both the UI thread and the background thread have no logged in principal.&nbsp; Now when we log in on the UI thread, CSLA.ApplicationContext.User.IsAuth. = True... UNTIL the chain of calls is completed and then it resets the principal to nothing. </P>
+<P>Is our background thread doing something that is affecting this?&nbsp; It is very strange and i can only test inside my Dev. Environment.</P>
+<P>ward0093</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

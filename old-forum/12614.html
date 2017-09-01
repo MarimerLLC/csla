@@ -1,0 +1,17 @@
+<html><header><title>Upgrading CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12614.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chris.murphy posted on Thursday, May 08, 2014</h2><p>I am currently going through and attempting to upgrade an application with CSLA 3.6.3 and .net framework 3.5 to the .net framework 4.0 and csla 4.5. I am attempting to do this in a phased approach and trying to include both version of CSLA in the same solution.</p>
+<p>I have gotten CSLA 3.6.3 renamed and changed all of its namespaces so that it will appear to co-exist with csla 4.5. But now I am getting an error that I just can&#39;t figure out.</p>
+<p>When I add a new class that references the new csla and simply inherit from one of the csla base classes I get the following error.</p>
+<p>&quot;Unable to load one or more of the requested types. Retrieve the LoaderExceptions property for more information&quot;</p>
+<p>I have done a lot of research and found that if go into the assemlyInfo.vb file and comment out the following code I get a little better error.</p>
+<p>[assembly: System.Security.AllowPartiallyTrustedCallers]</p>
+<p>The new error is:</p>
+<p>Description:<br />&quot;There was an error reflecting type &#39;class name&#39;.</p>
+<p>File:<br />SGEN</p>
+<p>I believe the problem is related to the Security transparency change that occurred between .net framework 3.5 and .net framework 4.5. Any suggestions on how to solve this issue would be greatly appreciated.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, May 08, 2014</h2><p>Have you tried to add a Assemblyresolver?</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.appdomain.assemblyresolve(v=vs.110).aspx">http://msdn.microsoft.com/en-us/library/system.appdomain.assemblyresolve(v=vs.110).aspx</a>&nbsp;</p>
+<p>This might reveal some more info about which class and from which assembly/class that is trying to load the new type.</p>
+<p>I suspect that there is an issue between the 2 versions of CSLA.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chris.murphy replied on Thursday, May 08, 2014</h2><p>JonnyBee, I am not really sure how adding an event handler will help in this case. I can not run the app right now because of the error that I get. I agree with you about the 2 versions of CSLA though just trying to figure out if there is a way to have both versions at the same time.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, May 08, 2014</h2><p>Ypu should be able to hook up this event ASAP in your startup and get the event from the runtime.&nbsp;</p>
+<p>I tried to use 2 versions of CSLA when converting a fairly big app - but ended up in just moving to the new version ASAP and then get the team working on rules and other improvements and testing. I didn&#39;t get the exceptions that you get but I found it confusing when we started to mix the versions in object strucures.&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

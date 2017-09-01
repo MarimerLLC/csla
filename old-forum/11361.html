@@ -1,0 +1,44 @@
+<html><header><title>Add Business Rules for Business List Base child property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Add Business Rules for Business List Base child property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11361.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>patelravij@gmail.com posted on Wednesday, May 16, 2012</h2><p>Hi,</p>
+<p>I Have&nbsp;object graphs with parent-child relationship. There are more than two children objects.</p>
+<p>Parent object is BusinessBase object where other child objects are BusinessListBase objects.</p>
+<p>Now I want to add validation for child objects that if not a single child objects is not added, Then parent objects should not allow to save.</p>
+<p>Can anyone suggest how to add validation on BusinessListBaseProperty so it display error&nbsp;notification and CanSave property is &nbsp;false?</p>
+<p>Thanks in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 16, 2012</h2><p>How do you want to show the error to the user? </p>
+<p>What type of UI do you use? </p>
+<p>In general terms you need to decide on where to attach the broken rule:</p>
+<ul>
+<li>on the &quot;root&quot; object at object level (Csla have no UI helpers for object level)</li>
+<li>on the list property in &quot;root&quot; (- in WindowsForms will be shown next to a list/datagridview) </li>
+<li>on another property in &quot;root&quot; to be placed next to this property in UI </li>
+</ul>
+<p>In any case you should trigger the rule in the parent based on ChildChanged event like this</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">override</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">OnChildChanged</span>(ChildChangedEventArgs e)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">base</span>.<span style="color:#191970;font-weight:bold;">OnChildChanged</span>(e);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// If attached to a property</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">PropertyHasChanged</span>(PropertyInfo);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// or if attached at object level (this was introduced in Csla 4.2.0)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#191970;font-weight:bold;">CheckObjectRules</span>();</p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>patelravij@gmail.com replied on Wednesday, May 16, 2012</h2><p>
+<p><span>Thanks
+for your suggestions.</span></p>
+<p><span>I am using Silverlight 5 MVVM
+with CSLA 4.2&nbsp;and Error message should be shown in PropertyStatus.</span></p>
+<p><span>I understand your first suggestion
+using attached a property and how to shown in property status on UI next or
+before to Datagridview. But it fires every time if any property in child object
+is changed not only when any object is added or removed from list.</span></p>
+<p><span>regarding to &quot;</span><span>on the list property in &quot;root&quot; (- in WindowsForms will be shown next to a list/datagridview)&quot;, Does CSLA allow add rules directly on BusinessListBase and validate it when property changed?</span></p>
+<p><span>But&nbsp;<span>&nbsp;if
+attached at object level, How should it display propertystatus? Does it update
+UI ? As per my understanding,&nbsp;</span><span>&nbsp;</span><span>CheckObjectRules</span><span>() does not update UI(PropertyStatus). Please&nbsp;correct&nbsp;me if i
+am wrong.&nbsp;</span></span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 16, 2012</h2><p>Hi, </p>
+<p>Well, you can inspect more details i ChildChangedEventArgs to restrict when the validation is triggered. </p>
+<p>Yes, PropertyStatus does not (at current) support broken rules on object level. </p>
+<p>Yes, you can add rules to ANY IPropertyInfo - but for child objects the validation rules are not automatically rechecked based on the ListChanged event.</p>
+<p>Rules are normally triggered from PropertyHasChanged when the user edits a field (changes the value of the property and implicily called by SetProperty) or from BusinessRules.CheckRules().</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

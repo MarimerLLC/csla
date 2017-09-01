@@ -1,0 +1,20 @@
+<html><header><title>ViewModel using an Interface does not allow binding to PropertyStatus</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModel using an Interface does not allow binding to PropertyStatus</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9557.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hayrob posted on Tuesday, September 21, 2010</h2><p>I&#39;m very new to Csla4.0 and struggling.</p>
+<p>When I create a ViewModel:</p>
+<p>public class CustomerViewModel : ViewModel&lt;ICustomer&gt;</p>
+<p>{</p>
+<p>}</p>
+<p>I can not bind ICustomer Properties (eg Name) to the Property property of PropertyStatus.&nbsp;</p>
+<p>When I change to:</p>
+<p>
+<p>public class CustomerViewModel : ViewModel&lt;Customer&gt;</p>
+<p>{</p>
+<p>}</p>
+<p>everything works fine.</p>
+<p>ICustomer is defined:</p>
+<p>pubic interface ICustomer : IEditableBusinessObject, ITrackStatus, ISavable, INotifyPropertyChanged</p>
+<p>{</p>
+<p>string Name{get;set;}</p>
+<p>}</p>
+<p>Am I missing something? Why does it not work?</p>
+<p>Thanks</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 21, 2010</h2><p>PropertyStatus isn&#39;t designed to work against an interface. Data binding doesn&#39;t work against interfaces, and PropertyStatus follows the same pattern as data binding.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

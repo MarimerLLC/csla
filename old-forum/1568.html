@@ -1,0 +1,24 @@
+<html><header><title>Parent-Child-GrandChild BO's using CodeSmith 2.6 and C# templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent-Child-GrandChild BO's using CodeSmith 2.6 and C# templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1568.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Monday, October 23, 2006</h2><P>Hi!</P>
+<P>I am new to CSLA 2.1 and trying to build my first WinForm Application so please be patient with me as some of the things I mention/ask maybe trivial to many of you here.</P>
+<P>I would really appreciate if someone can help/guide me with my problem as I am not sure what the right/preferred way is to approach this issue.</P>
+<P>I have WinForm with a Parent-Child-GrandChild relationship all use a DataGridView to Add/Edit/Delete rows.</P>
+<P>e.g.</P>
+<P>Customer (Parent) </P>
+<P>Orders (Child)</P>
+<P>OrderDetail (GrandChild)</P>
+<P>To handle the Customer (Parent) in a DataGridView I have created two BO's</P>
+<P>Customer from the EditableChild Template with the following Properties</P>
+<P>ObjectName:Customer</P>
+<P>ParentName:-</P>
+<P>ChildCollectionNames:-</P>
+<P>ChildPropertyNames:-</P>
+<P>CustomerList from the EditableRootList Template with the following Properties</P>
+<P>ChildName:Customer</P>
+<P>ObjectName:CustomerList</P>
+<P>The CustomerDataGridView.DataSource = CustomerBindingSource and the CustomerBindingSource.DataSource = CustomerList</P>
+<P>The above seems to be ok and I can Add/Edit/Delete rows in the Grid. </P>
+<P>How do I proceed in creating the Child/GrandChild Bo's </P>
+<P>Should the Order and OrderList BO's be setup like the Customer and CustomerList and how should I relate the Customer to the Order or OrderList what about the OrderDetail and the OrderDetailList and how should I relate these as well. And finally how to tie up all these BO's in the WinForm.</P>
+<P>I know this is a really long post but If someone can help me out I will really be greatful.</P>
+<P>Thanks.</P>
+<P>Sarosh</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

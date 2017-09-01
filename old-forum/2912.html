@@ -1,0 +1,16 @@
+<html><header><title>Whether TransactionalTypes.TransactionScope can be used for two Parent?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Whether TransactionalTypes.TransactionScope can be used for two Parent?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2912.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jarvis posted on Sunday, May 20, 2007</h2><P>I have two parents like as AddressInfo and ContactInfo. when I do update, I need they can change same. If there are some errors, they all can rollback. like</P>
+<P>---------------------------------------------------------</P>
+<P>[Transactional(TransactionalTypes.TransactionScope)]</P>
+<P>protected override void DataPortal_Update()</P>
+<P>{</P>
+<P>updateAddress();</P>
+<P>updateContact();</P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 20, 2007</h2><P>There's a difference between parent and root. A parent is any object that contains child objects, but a parent can also be a child. A root object has no parent.</P>
+<P>I'll assume you want to save two root objects within a single transaction.</P>
+<P>To do this, you need to create a third object - often a CommandBase-derived object - that performs the save of both root objects. Your UI code might look like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT face="Courier New">ContactUpdater upd = new ContactUpdater();<BR>upd.Contact = _contact;<BR>upd.Address = _address;<BR>upd = upd.Execute();<BR>_contact&nbsp;= upd.Contact;<BR>_address = upd.Address;</FONT></P></BLOCKQUOTE>
+<P>The ContactUpdater class is a CommandBase-derived object that implements a static/Shared Update() factory method that loads the command object with the two business object references, then calls DataPortal.Execute() to execute the command. The command runs on the server, and your code looks like this:</P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT face="Courier New">[Transactional(TransactionTypes.TransactionScope)]<BR>protected override void DataPortal_Execute()<BR>{<BR>&nbsp; _contact = _contact.Save();<BR>&nbsp; _address = _address.Save();<BR>}</FONT></P></BLOCKQUOTE>
+<P>The command object is merely being used as a way to ferry the objects to the server, invoke their Save() methods within a transaction, and ferry the resulting objects back to the client.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

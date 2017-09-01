@@ -1,0 +1,10 @@
+<html><header><title>Click Once technology Issues</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Click Once technology Issues</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1927.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Misled posted on Thursday, December 07, 2006</h2><P>I'm getting this from some of my clients. But only some of them (like 5 out of a 100):</P>
+<P>Could Not Load file or assembly System.enterpriseservices Version 2.0.0.0. </P>
+<P>I'm using click once to install the app. The app downloads and installs fine. The app starts fine. The app starts at a log in screen. When I click "OK" on the log on screen, I get this exception. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, December 08, 2006</h2>I'm not using the enterprise services dataportal in my applications so I may be wrong about this.&nbsp; But, does your client application need a reference to the csla.enterpriseservices to run? For some reason I'm thinking just the core assembly project needs the reference.&nbsp; Am I wrong?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, December 08, 2006</h2><DIV>We had a problem simular to this. A particular assembly/class could not load.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>We solved it by uninstalling both .net 1.1 and .net 2 then re-installing both after making sure sp2 was installed.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Never really knew what the problem was but in a couple of cases .net 2 was installed before 1.1.&nbsp;And it might have to do with the service packs being installed also.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

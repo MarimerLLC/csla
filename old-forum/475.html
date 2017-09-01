@@ -1,0 +1,40 @@
+<html><header><title>Strongly Typed Resource Files</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strongly Typed Resource Files</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/475.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd posted on Tuesday, June 27, 2006</h2>
+
+<p class="MsoNormal">Hi All,<br>
+<br>
+Within our application we are using the CSLA Framework and we are also using Strongly
+Type resources files, the only problem I seem to be having at the moment is
+that when the resource file is created it is not being created as <span>Serializable</span> () thus failing when trying use it within the CSLA
+Framework. I can manually go and append this attribute, but was hoping that
+someone might know a workaround to set this permanently??<br>
+<br>
+Thanks, Tim.<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 27, 2006</h2><P>Why would you want the resource file to be serialized across the network? It exists as part of your compiled code/assemblies and so is available on both sides of the data portal by definition. Or so I would expect?</P>
+<P>Or are you using a resource file that is not referenced by your actual application, and thus may not be deployed everywhere? In that case you need to think carefully about how to work with it, because it then effectively becomes a database of sorts, and you need to worry about network IO as you make "data calls" to get the resource data. In such a case I would recommend copying the resource data into business objects (probably ReadOnlyBase-derived) and caching those objects on the client so you aren't constantly re-retrieving the data.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Wednesday, June 28, 2006</h2>The reason i added the serialized Attribute to the class was because the CSLA Framework gave an error saying that because i was accessing the resource file via a class i need to be serialized, I use the strongly typed classes to handle the resource file in my business objects.<br><br>Is this right??<br><br>Thanks, Tim.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 28, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=406450614-28062006><FONT face=Arial color=#0000ff size=2>I see, in that case what you have is a case where you are 
+holding an instance reference to an object where you should not. You should not 
+hold an instance-level reference to the resource object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=406450614-28062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=406450614-28062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Wednesday, June 28, 2006</h2>HI Rocky<br><br>I'm a little lost on this one. The reason i have used strongly type resource files is so that we can handle different languages for the Authorisation Rules I.e<br><br>Dim objRuleArgs As RuleArgs<br><br>objRuleArgs = New RuleArgs("ID")<br>objRuleArgs.Description = String.Format(<b>My.Resources.Validation.ValIDRequired</b>, Me.ToString)<br><br>.AddRule(AddressOf ValIDRequired, objRuleArgs)<br><br>How else could we store the resource files, i would prefer not to store them in the database?<br><br>Thanks, Tim.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 28, 2006</h2><P>I must be misunderstanding your problem. If you look at CSLA, I use My.Resources all over the place, but I didn't have to alter the VS-generated code to make the Resources class serializable. That is because I never maintain a reference to the Resources class - I always just use it through the My namespace. (and the rough equivalent in the C# code&nbsp;- which works basically the same way)</P>
+<P>If you are getting a serialization error on a resource object, you must be holding an instance-level reference to that object from within one of your objects. You shouldn't do that, nor should you need to do that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Thursday, June 29, 2006</h2>
+
+<p class="MsoNormal">Must have missed something, have just checked the
+designer.vb file for the resource files and there is no serialization attribute
+so it must be working. Would I be correct in saying that an object that would
+be fully populated with data for the properties before being serialized or
+would the other references to the object be serialized as well and used to the remoting
+topology?<o:p></o:p></p>
+
+Thanks, Tim.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 29, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=213591815-29062006><FONT face=Arial color=#0000ff size=2>You should read the data portal chapter (chapter 4 in the 
+new book) to see how it all works. The seriailzation process serializes the 
+object and any objects it references.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=213591815-29062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=213591815-29062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,46 @@
+<html><header><title>What to do when going from &quot;CSLA for WPF&quot; to &quot;CSLA for Silverlight&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What to do when going from &quot;CSLA for WPF&quot; to &quot;CSLA for Silverlight&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7044.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Thursday, June 04, 2009</h2><P>We are one of many who starts with an WPF application and then want to support Silverlight as well. As i did read on Rocky's blog, it's better to start building for Silverlight, but we did it the other way around.<BR><BR>Today i had some discussions about making a turn to silverlight.<BR><BR>Currently we are using the CSLA framework (with object factory etc) and an own abstraction layer on top of it, in the frontend we have the Composite Application Guidance framework which already has a tool called "ProjectLinker", which links the&nbsp;modules, controllers,&nbsp;presenters&nbsp;and commands etc.. but we still need to write 2 views, an xaml for wpf and a silverlight counterpart.<BR><BR>CSLA and CSLA Light are nearly the same? Is it thru that only LINQ to CSLA isn't supported? Missing the C5 stuff (and warnings lol)<BR><BR>Is there something more to think about related to CSLA when going to CSLA for Silverlight?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2><A href="http://www.lhotka.net/cslanet/faq/WindowsVsSilverlight.ashx">http://www.lhotka.net/cslanet/faq/WindowsVsSilverlight.ashx</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Friday, June 05, 2009</h2><P>Thanks, until now i didn't know about an CSLA Faq Screwwiki :)</P>
+<UL>
+<LI>Serialization is different, and so <B>you really want to use managed backing fields </B>- otherwise you'll have to do a lot of work to manually serialize/deserialize all your private fields. If you have any private fields in your classes, you have work to do. </LI></UL>
+<P>As far as i know&nbsp;i believe we are only using managed backing fields, no problem then ;)</P>
+<UL>
+<LI>Serialization is different, and so if you have any <B>Serializable objects that don't inherit from a CSLA base class </B>you'll have to make them inherit from one of the Csla.Core serializable base classes (like MobileObject) or manually implement IMobileObject (which is a pain). </LI></UL>
+<P>Perhaps we'll have some serializable objects, we'll see soon enough when.</P>
+<UL>
+<LI><B>LINQ to CSLA is not implemented in Silverlight</B>, so if you rely on the LinqBindingList behaviors you'll need to work around that in the Silverlight side. I can't say when L2C will exist in Silverlight. </LI></UL>
+<P>Not using LINQ to CSLA.</P>
+<UL>
+<LI><B>All data access (data portal usage) is async</B>. This will impact all your factory methods, but not your data access methods. </LI></UL>
+<P>How does this work with the dataportal using an ObjectFactory?</P>
+<UL>
+<LI>All server interacts are async. This will impact any <B>business or validation rules that talk to the server </B>(via a Command object, etc). These rule methods need to be rewritten to be async rule methods for Silverlight - which is not usually a huge change, but does take some work. </LI></UL>
+<P>Not doing anything special other then reading properties within a business class, which already have been loaded by the objectfactory.</P>
+<UL>
+<LI><B>Authentication is different</B>, though we tried to mirror most of the .NET concepts. The good news is that <B>authorization is the same</B>. </LI></UL>
+<P>What is differend about the Authentication?&nbsp;<BR>Are the BusinessPrincipalBase &amp; CslaIdentity gone or are they differend?</P>
+<UL>
+<LI><B>In 3.6 the XAML UI components are unique to Silverlight</B>. In 3.7 I expect they'll be a lot more like the WPF components because Silverlight 3 has element binding.</LI></UL>
+<P>Only using the UI Component PropertyStatus, i guess it won't be that differend.</P>
+
+    
+    </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 05, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rfcdejong:</strong></div><div>
+<UL>
+<LI><B>All data access (data portal usage) is async</B>. This will impact all your factory methods, but not your data access methods. </LI></UL>
+<P>How does this work with the dataportal using an ObjectFactory?</P>
+<P></div></BLOCKQUOTE></P>
+<P>It works fine with the ObjectFactory or DataPortal_XYZ&nbsp;models.&nbsp;</P>
+<P>The static factory methods are different in two ways. First, they must include a callback parameter so the UI can provide a callback method that the factory can invoke when the async operation completes - otherwise the UI would have no way of knowing when the operation is done.</P>
+<P>Second, the factory must use DataPortal&lt;T&gt;, instead of DataPortal. So instead of one line of code in the factory, you typically have three.</P>
+<P>But ultimately the data portal invokes the <EM>same code on the server</EM> that it would in any other setting.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rfcdejong:</strong></div><div></P>
+<UL>
+<LI><B>Authentication is different</B>, though we tried to mirror most of the .NET concepts. The good news is that <B>authorization is the same</B>. </LI></UL>
+<P>What is differend about the Authentication?&nbsp;<BR>Are the BusinessPrincipalBase &amp; CslaIdentity gone or are they differend?</P>
+<P>
+
+    
+    
+</div></BLOCKQUOTE></P>
+<P>Those types still exist and are useful for custom authn. Though of course you have to load them in an async manner, which has some impact.</P>
+<P>But SL has no authentication model of its own. So we created WindowsIdentity, MembershipIdentity and some other principal/identity types to create our own model that echos the server model.</P>
+<P>As an example: remember that SL might be running on a Mac, so there's no automatic Windows identity like there is for all .NET apps. So we enable a scenario where the client can ask the server for the user's Windows identity, allowing the SL code to get a "simulated" Windows principal/identity.</P>
+<P>I'm just wrapping up video segment 7, which covers the basics of Windows, Membership and custom authentication in Silverlight, along with an overview of the authorization model - though that is consistent with the .NET side (per-type and per-property authz works the same).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

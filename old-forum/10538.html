@@ -1,0 +1,117 @@
+<html><header><title>BusinessRules.GetAllBrokenRules problem with warnings</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRules.GetAllBrokenRules problem with warnings</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10538.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 posted on Tuesday, July 19, 2011</h2><p>
+<div id="idOWAReplyText36224" dir="ltr">
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;">Hi,</span></div>
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;">We are having a problem using 
+the BusinessRules.GetAllBrokenRules(obj) Method when our object graph only 
+contains warnings in the BrokenRules collections.</span></div>
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;"><br /></span></div>
+<div dir="ltr"><span style="font-family:Arial;font-size:x-small;"></span> </div>
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;">This is because the 
+AddNodeToBrukenRules recursive function checks IsValid on each BusinessBase or 
+IEditableCollection.  Only errors will propagate IsValid=false property up to an 
+object&#39;s parents.  However, the BrokenRules collection contains Errors, Warnings 
+and Info messages.  This means that we will retrieve warnings and info messages 
+only if there are associated error messages.  If there aren&#39;t any error 
+messages, then we don&#39;t get anything at all.</span></div>
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;"><br /></span></div>
+<div dir="ltr"> </div>
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;">What are our options to 
+retrieve all of the warnings in an entire object graph if there are no errors?  
+We tried to write our own implementation of GetAllBrokenRules, but we are unable 
+to do so as the IManageProperties interface is not accessible to us (it&#39;s marked 
+as internal), and we need IManageProperties to access GetChildren().  Is there 
+another way to access the list of children from a BusinessBase 
+object?</span></div>
+<div dir="ltr"><span style="font-family:Arial;color:#000000;font-size:x-small;"></span> </div>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 20, 2011</h2><p>Hi,</p>
+<p>The first GetAllBroken rules would check if object was valid or not. Unfortunately this would miss objects with only warning or info.</p>
+<p>I have a never version at work that will also accept a bool parameter to include all error levels. I can post the updated code later today.<br />It is not in CSLA Trunk (yet).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, July 20, 2011</h2><p>Hi,</p>
+<p>Try this code, when used with errorLevelOnly set to false you will get all objects with broken rules on any level. :</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Get&nbsp;All&nbsp;Broken&nbsp;Rules&nbsp;(tree)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;all&nbsp;broken&nbsp;rules&nbsp;with&nbsp;Error&nbsp;level&nbsp;in&nbsp;object&nbsp;graph.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;root&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;root.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;</span><span style="color:green;">BrukenRulesTree&nbsp;list</span><span style="color:gray;">&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">BrokenRulesTree</span>&nbsp;GetAllBrokenRules(<span style="color:blue;">object</span>&nbsp;root)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;GetAllBrokenRules(root,&nbsp;<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;all&nbsp;broken&nbsp;rules.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;root&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;root.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;returns&gt;&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">BrokenRulesTree</span>&nbsp;GetAllBrokenRules(<span style="color:blue;">object</span>&nbsp;root,&nbsp;<span style="color:blue;">bool</span>&nbsp;errorsOnly)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;list&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">BrokenRulesTree</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">long</span>&nbsp;counter&nbsp;=&nbsp;1;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">long</span>&nbsp;childBrokenRuleCount&nbsp;=&nbsp;0;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddNodeToBrukenRules(<span style="color:blue;">ref</span>&nbsp;list,&nbsp;<span style="color:blue;">ref</span>&nbsp;counter,&nbsp;<span style="color:blue;">null</span>,&nbsp;root,&nbsp;errorsOnly,&nbsp;<span style="color:blue;">ref</span>&nbsp;childBrokenRuleCount);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;list;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddNodeToBrukenRules(<span style="color:blue;">ref</span>&nbsp;<span style="color:#2b91af;">BrokenRulesTree</span>&nbsp;list,&nbsp;<span style="color:blue;">ref</span>&nbsp;<span style="color:blue;">long</span>&nbsp;counter,&nbsp;<span style="color:blue;">object</span>&nbsp;parentKey,&nbsp;<span style="color:blue;">object</span>&nbsp;obj,&nbsp;<span style="color:blue;">bool</span>&nbsp;errorsOnly,&nbsp;<span style="color:blue;">ref</span>&nbsp;<span style="color:blue;">long</span>&nbsp;childBrokenRuleCount)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;is&nbsp;this&nbsp;a&nbsp;single&nbsp;editable&nbsp;object&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(obj&nbsp;<span style="color:blue;">is</span>&nbsp;Csla.Core.<span style="color:#2b91af;">BusinessBase</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;nodeKey&nbsp;=&nbsp;counter++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;bo&nbsp;=&nbsp;(Csla.Core.<span style="color:#2b91af;">BusinessBase</span>)obj;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">long</span>&nbsp;myChildBrokenRuleCount&nbsp;=&nbsp;bo.BrokenRulesCollection.Count;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;node&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">BrokenRulesNode</span>()&nbsp;{&nbsp;Parent&nbsp;=&nbsp;parentKey,&nbsp;Node&nbsp;=&nbsp;nodeKey,&nbsp;BrokenRules&nbsp;=&nbsp;bo.BrokenRulesCollection,&nbsp;Object&nbsp;=&nbsp;obj&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Add(node);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;get&nbsp;managed&nbsp;child&nbsp;properties&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;((<span style="color:#2baaaf;">IManageProperties</span>)bo).GetChildren())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddNodeToBrukenRules(<span style="color:blue;">ref</span>&nbsp;list,&nbsp;<span style="color:blue;">ref</span>&nbsp;counter,&nbsp;nodeKey,&nbsp;child,&nbsp;errorsOnly,&nbsp;<span style="color:blue;">ref</span>&nbsp;myChildBrokenRuleCount);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;remove&nbsp;node&nbsp;if&nbsp;it&nbsp;has&nbsp;no&nbsp;child&nbsp;with&nbsp;broken&nbsp;rules.&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!errorsOnly&nbsp;&amp;&amp;&nbsp;myChildBrokenRuleCount&nbsp;==&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Remove(node);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(errorsOnly&nbsp;&amp;&amp;&nbsp;bo.IsValid)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Remove(node);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;childBrokenRuleCount&nbsp;+=&nbsp;myChildBrokenRuleCount;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;or&nbsp;a&nbsp;list&nbsp;of&nbsp;EditableObject&nbsp;(both&nbsp;BindingList&nbsp;and&nbsp;ObservableCollection)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(obj&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2baaaf;">IEditableCollection</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;nodeKey&nbsp;=&nbsp;counter++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;isValid&nbsp;=&nbsp;((<span style="color:#2baaaf;">ITrackStatus</span>)obj).IsValid;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;node&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">BrokenRulesNode</span>()&nbsp;{&nbsp;Parent&nbsp;=&nbsp;parentKey,&nbsp;Node&nbsp;=&nbsp;nodeKey,&nbsp;Object&nbsp;=&nbsp;obj&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">long</span>&nbsp;myChildBrokenRuleCount&nbsp;=&nbsp;0;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Add(node);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;(<span style="color:#2baaaf;">IEnumerable</span>)obj)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddNodeToBrukenRules(<span style="color:blue;">ref</span>&nbsp;list,&nbsp;<span style="color:blue;">ref</span>&nbsp;counter,&nbsp;nodeKey,&nbsp;child,&nbsp;errorsOnly,&nbsp;<span style="color:blue;">ref</span>&nbsp;myChildBrokenRuleCount);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;remove&nbsp;node&nbsp;if&nbsp;it&nbsp;has&nbsp;no&nbsp;child&nbsp;with&nbsp;broken&nbsp;rules.&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!errorsOnly&nbsp;&amp;&amp;&nbsp;myChildBrokenRuleCount&nbsp;==&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Remove(node);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(errorsOnly&nbsp;&amp;&amp;&nbsp;isValid)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;list.Remove(node);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;childBrokenRuleCount&nbsp;+=&nbsp;myChildBrokenRuleCount;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:#000085;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smith866 replied on Wednesday, July 20, 2011</h2><p>Works great, thanks!</p>
+<p>Hope to see this in a future version of CSLA.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

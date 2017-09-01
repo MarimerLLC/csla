@@ -1,0 +1,44 @@
+<html><header><title>per-type validation and authorization rules in version 2.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>per-type validation and authorization rules in version 2.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1400.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dileepagarwal posted on Thursday, October 05, 2006</h2><P><SPAN><FONT face="Courier New" size=2>Hi Rocky,</FONT></SPAN></P>
+<P><SPAN><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; In one of your post related to CSLA performance for large collection you mentioned that:</FONT></SPAN></P>
+<P><SPAN><FONT face="Courier New" size=2>"<SPAN>One thing I'll point out, is that in CSLA .NET 2.0 each object (row) loads its own validation rules, and that will add up to a lot of overhead with 1000+ rows. <SPAN>Version 2.1 will help address this with per-type validation and authorization rules</SPAN>. For your testing, I would suggest starting with no validation or authorization rules in the objects for now.<o:p></o:p></SPAN></FONT></SPAN><SPAN><FONT face="Courier New" size=2>"</FONT></SPAN></P>
+<P><SPAN><FONT face="Courier New" size=2>Is new version address <FONT>per-type validation and authorization rules </FONT>? Right now I am using version 2.0 and want to make use of version 2.1.</FONT></SPAN></P>
+<P><SPAN><FONT face="Courier New" size=2>Thanks,</FONT></SPAN></P>
+<P><SPAN></SPAN><SPAN><FONT face="Courier New" size=2>Dileep Agarwal</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2>Yes, the biggest change (among many) in version 2.1 is support for per-type validation and authorization rules. I'm working on an ebook to fully explain the changes, which should be out in November - in the meantime you'll have to make do with the change log from the download page (<a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a>).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Thursday, October 05, 2006</h2><P class=MsoNormal>Dileep</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>Making the change from 2.0 to 2.1 isn’t that hard as long as you&nbsp;appreciate the&nbsp;options Rocky has provided in the new version.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If you have validation rules in your classes in 2.0, these can easily rewritten using the generic AddRule method. The example below is an extract from one of my classes that represents a child in an institution. The validation rule shown, validates that the child’s name has been set. Note that the validationrule is static and is therefore&nbsp;a per-type rule.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Sub</SPAN> AddBusinessRules()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>MyBase</SPAN><SPAN>.AddBusinessRules()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>With</SPAN> ValidationRules<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddRule(<SPAN>Of</SPAN> Child)(<SPAN>AddressOf</SPAN> ValidateName, <SPAN>"Name"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>.AddDependantProperty(<SPAN>"FirstName"</SPAN>, <SPAN>"Name"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>.AddDependantProperty(<SPAN>"MiddleName"</SPAN>, <SPAN>"Name"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>.AddDependantProperty(<SPAN>"LastName"</SPAN>, <SPAN>"Name"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>With<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' Validates that either firstname, middlename or lastname has been set.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> ValidateName(<SPAN>ByVal</SPAN> target <SPAN>As</SPAN> Child, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> RuleArgs) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> target._requireName <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> name <SPAN>As</SPAN> <SPAN>String</SPAN> <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Name = <SPAN>String</SPAN>.Concat(target.FirstName &amp; target.MiddleName &amp; target.LastName).Trim<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> name.Length &lt;= 0 <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>e.Description = <SPAN>"Child name is required!"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Since the rule is added as a generic rule of Child and the target in the validation method is declared as type Child, you’ll be able to get to the fields of the instance being validated through this target.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>Also note the AddDependantProperty lines I've added. These instruct the rules manager to validate the rules for property Name, whenever&nbsp;PropertyChanged has been called in either the FirstName, MiddleName&nbsp;and LastName property.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Hope this can get you started.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Cheers<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>/Henrik<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

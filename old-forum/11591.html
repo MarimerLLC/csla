@@ -1,0 +1,24 @@
+<html><header><title>Winform CheckBox databinding  issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Winform CheckBox databinding  issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11591.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bala345 posted on Saturday, September 22, 2012</h2><p>When a bool property in my BO is bound to a CheckBox in a form, while &nbsp;after clicking the checkbox I have to change the focus by clicking somewhere else. Only then the BO gets updated.&nbsp;</p>
+<p>To overcome this I have used the following remedy which may not be a better solution but it solves it. If anybody know a better one please suggest me.&nbsp;</p>
+<p>Private Sub DiscountCheckBox_CheckedChanged(ByVal sender As Object, ByVal e As System.EventArgs) Handles DiscountCheckBox.CheckedChanged</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; If DiscountCheckBox.Focused Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim localBO As BO = CType(BOBindingSource.Current, &nbsp;BO)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If localBO IsNot Nothing Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; localBO.DiscountAllowed &nbsp;= &nbsp; DiscountCheckBox.Checked</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DiscountCheckBox.Invalidate()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;
+DiscountCheckBox&nbsp;.Update()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; End Sub</p>
+</p>
+<p>&nbsp;</p>
+<p>Bala</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 22, 2012</h2><p>Simplest solution is to change the DataBinding UpdateMode to OnPropertyChanged.&nbsp;</p>
+<p>The default mode is OnValidation, ie: when another control that has CausesValidation = true gets focus.</p>
+<p>I also recommend the <a href="http://www.windowsclient.net/Samples/Go%20To%20Market/Data%20Binding/DataBinding%20FAQ.doc">DataBinding FAQ</a> to learn more about Windows Forms DataBinding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bala345 replied on Monday, September 24, 2012</h2><p>Thanks a million -&nbsp;</p>
+<p>As per your post I inserted this in the load event of the Usercontrol &nbsp;-</p>
+<p>&quot; MyCheckBox.DataBindings(&quot;Checked&quot;).DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged &quot;</p>
+<p>It worked perfectly. &nbsp;</p>
+<p>Thank you once again.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

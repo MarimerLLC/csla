@@ -1,0 +1,15 @@
+<html><header><title>Logic in Stored Proc or Business Object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Logic in Stored Proc or Business Object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11580.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF posted on Saturday, September 15, 2012</h2><p>I&#39;d like advice on a specific situation.&nbsp; My application needs to update a record.&nbsp; But when that record is updated, I need to modify other records that are linked, in a sense.&nbsp;&nbsp;For example,&nbsp;a record/object with a value of &quot;1&quot; in a certain field gets updated to &quot;2.&quot;&nbsp; That means the record that already had a value of &quot;2&quot; now needs to be increased to &quot;3,&quot; and so on for a few iterations.</p>
+<p>One option is for an editable root object to update itself, and also query and update each of the other objects that need to be updated in turn due to the first update.&nbsp; All the logic would be contained in the BO, and only basic CRUD procs would be needed.&nbsp; <em>But this seems expensive</em>, because there would be so many calls and lots of data going across the wire.</p>
+<p>The other option (which I&#39;m planning on at this point) is to move this logic into a proc, so the proc could do all the updates required - on the database and without any extra data going across the wire.</p>
+<p>Or am I not thinking about the design correctly?&nbsp; Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Saturday, September 15, 2012</h2><p>fwiw, I would likely&nbsp;do this kind of logic in the sproc myself.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, September 16, 2012</h2><p>I&#39;d do it by either a </p>
+<ul>
+<li>StoredProcedure </li>
+<li>or a CommadObject (called from the BO DataPortal_XYZ metods)</li>
+</ul>
+<p>I would NOT put that logic into the BusinessObject itself. </p>
+<p>The choice might vary depending on </p>
+<ul>
+<li>how many database types must your application support</li>
+<li>the skills of your developers </li>
+<li>how critical is performance (or how may this affect performance)</li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

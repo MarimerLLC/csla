@@ -1,0 +1,203 @@
+<html><header><title>CSLA for Silverlight - No such factory method error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for Silverlight - No such factory method error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fel posted on Wednesday, January 28, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+I have page with grid and few fields that allow modify data in the grid. I’m utilizing two CslaDataProvider’s, one for populating the grid, second to populate detail fields. I’m able to populate the grid, select row and display details in the fields. When I select different row in the grid, I’m getting error message that “No such factory method:XXX”.<br><br>Any suggestion?<br><br>Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fel replied on Tuesday, February 10, 2009</h2>I was missing FactoryParameters.Clear() statement when I called CslaDataProvider<br><br><p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>CslaDataProvider</span> provider = <span>this</span>.Resources[<span>"xxx"</span>]
+<span>as</span> <span>CslaDataProvider</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><b><i><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp; provider.FactoryParameters.Clear()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></i></b></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+provider.FactoryParameters.Add(SelectedCCId);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+provider.FactoryMethod = <span>"YYY"</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+provider.Refresh();</span><span><o:p></o:p></span></p>
+
+<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

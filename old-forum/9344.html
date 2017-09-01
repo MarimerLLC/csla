@@ -1,0 +1,30 @@
+<html><header><title>listobject delete is not deleting the child object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>listobject delete is not deleting the child object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9344.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kam_csla posted on Monday, August 09, 2010</h2><p>i already posted earlier regarding this. here is the conversation..</p>
+<p class="ForumPostTitleInner" style="clear:both;"><span style="font-size:xx-small;"><span style="font-size:x-small;">[</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Serializable</span></span><span style="font-size:x-small;">()] </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">class</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">AList</span></span><span style="font-size:x-small;"> : </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessListBase</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">AList</span></span><span style="font-size:x-small;">, </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">A&gt;</span></span></span></p>
+<p class="ForumPostTitleInner" style="clear:both;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"></span></span>&nbsp;<span style="color:#2b91af;">{</span></p>
+<p><span style="color:#2b91af;"></span><span style="font-size:xx-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public </span></span><span style="font-size:x-small;">AList()</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:xx-small;">{</span></span></p>
+<p>MarkAsChild();</p>
+<p><span style="font-size:x-small;"><span style="font-size:xx-small;">}</span></span></p>
+<p><span style="color:#2b91af;">}</span></p>
+<p><span style="font-size:xx-small;"><span style="font-size:x-small;">[</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Serializable</span></span><span style="font-size:x-small;">()] </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">class</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">A</span></span><span style="font-size:x-small;"> :&nbsp;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessBase</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">A</span></span><span style="font-size:x-small;">&gt; </span></span></span></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;"><span style="font-size:x-small;"></span></span></span><span style="color:#2b91af;">{</span></p>
+<p>&nbsp;<span style="color:#2b91af;">}</span></p>
+<p><span style="color:#2b91af;"><span style="text-decoration:underline;">aspx.cs</span></span></p>
+<p>&nbsp;<span style="font-size:x-small;"><span style="font-size:xx-small;">objectAInstantiatedList[index].Delete();</span></span></p>
+<p>GrdTest.DataSource = objectAInstantiatedList;</p>
+<p>GrdTest.DataBind();</p>
+<p>The objectAInstantiatedList has 3 records and once i delete the item.. the objectAInstantiatedList is not updating the count to&nbsp;2 and the grid still showing 3 records. Please suggest where am going wrong..</p>
+<p>reply1</p>
+<p>To delete a child object in a list, you call Remove on the list, not delete on the child.</p>
+<div style="clear:both;"></div>
+<div class="ForumPostSignature">
+<p>Rocky</p>
+<p>my reply</p>
+<p>Thanks for reply Lhotka.. But if i use remove then it throws error saying &quot;use delete instead&quot; and thats the reason i used delete.</p>
+<p><span style="font-size:x-small;"></span>
+<p>sorry for posting again.. am really not sure of what am missing in the abov code..</p>
+</p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">objectAInstantiatedList.RemoveAt(index);</span></span></p>
+<p><span style="font-size:x-small;"></span>GrdTest.DataSource = objectAInstantiatedList;</p>
+<p>GrdTest.DataBind();</p>
+</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

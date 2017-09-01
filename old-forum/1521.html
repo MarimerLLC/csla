@@ -1,0 +1,38 @@
+<html><header><title>Security</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Security</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1521.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink posted on Tuesday, October 17, 2006</h2><P>I am implementing security to my classes.This is what i do within the static method</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> XYZ </FONT><FONT size=2>New(){</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#008080 size=2>Thread</FONT><FONT size=2>.CurrentPrincipal.IsInRole(</FONT><FONT color=#800000 size=2>"Test"</FONT><FONT size=2>))</FONT><FONT color=#008000 size=2>//Identity.IsAuthenticated)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"User not authorized"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>XYZ</FONT><FONT size=2>)</FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Create(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty));</P>
+<P></P>
+<P>}</P>
+<P>When i Run i am an autheticated user but it throws an exception.</P>
+<P>But when i do this</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>XYZ</FONT><FONT size=2> New(){</FONT></P>
+<P><FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>XYZ</FONT><FONT size=2>)</FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Create(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty));</FONT></P>
+<P><FONT size=2>}</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2> Save()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (IsDeleted)</P>
+<P>{</P>
+<P>System.Security.Principal.</FONT><FONT color=#008080 size=2>IIdentity</FONT><FONT size=2> user = </FONT><FONT color=#008080 size=2>Thread</FONT><FONT size=2>.CurrentPrincipal.Identity;</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> b = user.IsAuthenticated;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#008080 size=2>Thread</FONT><FONT size=2>.CurrentPrincipal.Identity.IsAuthenticated)</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Exception</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"User not authorized to remove the user"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#008080 size=2>Thread</FONT><FONT size=2>.CurrentPrincipal.Identity.IsAuthenticated)</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Exception</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"User not authorized to add or update the user"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.Save();}</FONT></P>
+<P><FONT size=2>The Businessbase Save() here checks for the the authetication and works perfect.</FONT></P>
+<P><FONT size=2>My question is cant we check for authetication when the new object is created???</FONT><FONT size=2></P></FONT>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Tuesday, October 17, 2006</h2><P>Are you getting a Security Exception or are you getting an exception because you are passing two parameters to the Criteria constructor?&nbsp; I did not know if that was a type-o or not.</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Wednesday, October 18, 2006</h2>I have a security exception.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, October 18, 2006</h2><P>I would suggest looking at what the Thread.CurrentPrincipal actually is and the type of authentication you are using.&nbsp; The difference between the two code samples you gave is that you are only checking IsAuthenticated in the one that works but you are looking for the "Test" role in the one that fails.&nbsp; That tells me that whatever the CurrentPrincipal actually is, it is authenticated but NOT in the "Test" role.</P>
+<P>It is possible that you are not setting the CurrentPrincipal to the user that you expect or that the roles aren't being set right, etc.&nbsp; Set a breakpoint in your code and evaluate what is being returned by CurrentPrincipal (WindowsPrincipal, GenericPrincipal, your custom principal, etc.) and see if this is the case.&nbsp; If so, you will need to work backwards to find where the CurrentPrincipal should be getting set and make your correction there.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Wednesday, October 18, 2006</h2><P>Hey,</P>
+<P>Instead of Checking IsRoles thought its an IsAuthenticated it turns out to throw exception.</P>
+<P>When i put the break point and look at CurrentPrincipal.IsAutheticated</P>
+<P>it show IsAuthentication is set to false.and throws an exception.</P>
+<P>But how does it work fine in the second case which i listed above.How does &nbsp;IsAuthenticated&nbsp;check for right User with right roles.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Wednesday, October 18, 2006</h2>could anyone please help me&nbsp;know about how the security has to be set based on the user role for the classes.So that&nbsp;a class should work based on authetication.If the user is authenticated&nbsp;it has to work else throw an exception saying not&nbsp;Authenticated.&nbsp;&nbsp;</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

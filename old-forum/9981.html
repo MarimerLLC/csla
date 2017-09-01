@@ -1,0 +1,207 @@
+<html><header><title>CslaProvider being lost with session on a load test</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaProvider being lost with session on a load test</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9981.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwright posted on Tuesday, January 25, 2011</h2><p>We have an ASP.NET MVC 2 CSLA 3.6.2 &nbsp;application. We are using a custom identity and principal objects and modified the Global.asax appropriately to rehydrate Csla.ApplicationContext.User with the custom principal from session. I have attached the code snippets below.</p>
+<p>The issue is that when we run a load test against our application (with just 40 concurrent users), some users are getting logged off randomly all the time. We have found that the issue is because the custom principal cannot be rehydrated from session for whatever reason. It may be because session is not available at that time but I do not know the defense mechanisms to put in place and every code sample I have seen does what we have in place below.</p>
+<p>Any ideas?</p>
+<p>Custom Identity object:</p>
+<p>
+
+
+
+
+
+
+<p class="p1">&nbsp;&nbsp; &nbsp;[Serializable()]</p>
+<p class="p1">&nbsp; &nbsp; public class Identity : CslaIdentity</p>
+<p class="p1">&nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(typeof(Identity), new PropertyInfo&lt;int&gt;(&quot;Id&quot;));</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; FirstNameProperty = RegisterProperty&lt;string&gt;(typeof(Identity), new PropertyInfo&lt;string&gt;(&quot;FirstName&quot;, Properties.Resources.FirstNamePropertyFriendlyName));</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; LastNameProperty = RegisterProperty&lt;string&gt;(typeof(Identity), new PropertyInfo&lt;string&gt;(&quot;LastName&quot;, Properties.Resources.LastNamePropertyFriendlyName));</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;string&gt; MiddleNameProperty = RegisterProperty&lt;string&gt;(typeof(Identity), new PropertyInfo&lt;string&gt;(&quot;MiddleName&quot;, Properties.Resources.MiddleNamePropertyFriendlyName));</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; // TODO: Add is active???</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public int Id</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;int&gt;(IdProperty); }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public string FirstName</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(FirstNameProperty); }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public string LastName</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(LastNameProperty); }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public string MiddleName</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty&lt;string&gt;(MiddleNameProperty); }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public string FullName</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return string.Format(System.Globalization.CultureInfo.InvariantCulture, &quot;{0}{1}{2}&quot;,</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FirstName,</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; !string.IsNullOrEmpty(MiddleName) ? &quot; &quot; + MiddleName : string.Empty,</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; !string.IsNullOrEmpty(LastName) ? &quot; &quot; + LastName : string.Empty);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private Identity() { /* Require the client to use Factory methods */ }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; #region Factory Methods</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; internal static Identity GetIdentity(string username, string password)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return DataPortal.Fetch&lt;Identity&gt;(new UsernameCriteria(username, password));</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; #region Data Access Methods</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private void DataPortal_Fetch(UsernameCriteria criteria)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IUserDataService ds = DataServiceContext.Current.UserDataService;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ds.BeginTransaction();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ISecurityIdentityDTO user = ds.GetIdentity(criteria.Username);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IsAuthenticated = user != null &amp;&amp;&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; !string.IsNullOrEmpty(user.Password) &amp;&amp;&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; !string.IsNullOrEmpty(user.Password) &amp;&amp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; user.Password.Decrypt() == criteria.Password;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (IsAuthenticated)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Populate(user);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ds.EndTransaction();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private void Populate(ISecurityIdentityDTO user)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;int&gt;(IdProperty, user.Id);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;string&gt;(FirstNameProperty, user.FirstName);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;string&gt;(MiddleNameProperty, user.MiddleName);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty&lt;string&gt;(LastNameProperty, user.LastName);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Name = FullName;</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Load roles</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var roleList = new Csla.Core.MobileList&lt;string&gt;();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (IRoleDTO role in user.Roles)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; roleList.Add(role.Name);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Roles = roleList;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; #endregion</p>
+<p class="p1">&nbsp; &nbsp; }</p>
+<p class="p1">}</p>
+</p>
+<p class="p1">&nbsp;</p>
+<p class="p1">Custom principal object:</p>
+<p class="p1">&nbsp;</p>
+<p class="p1">
+
+
+
+
+
+
+<p class="p1">[Serializable()]</p>
+<p class="p1">&nbsp; &nbsp; public class AdministrationPrincipal : BusinessPrincipalBase</p>
+<p class="p1">&nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private AdministrationPrincipal(IIdentity identity) : base(identity) { /* Require the client to use login Factory methods */ }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public static bool Login(string username, string password)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool authenticated = SetPrincipal(Security.Identity.GetIdentity(username, password));</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (authenticated)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Security.Identity identity = Csla.ApplicationContext.User.Identity as Security.Identity;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; User.RegisterLogin(identity.Id, new Csla.SmartDate(DateTime.Now));</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return authenticated;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private static bool SetPrincipal(Security.Identity identity)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bool authenticated = identity.IsAuthenticated &amp;&amp; ((ICheckRoles)identity).IsInRole(Role.User);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (authenticated)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AdministrationPrincipal principal = new AdministrationPrincipal(identity);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = principal;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetUnauthenticatedPrincipal();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return authenticated;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; private static void SetUnauthenticatedPrincipal()</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = new UnauthenticatedPrincipal();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; public static void Logout()</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetUnauthenticatedPrincipal();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; }</p>
+</p>
+<p class="p1">&nbsp;</p>
+<p class="p1">Global.asax:</p>
+<p class="p1">&nbsp;</p>
+<p class="p1">
+
+
+
+
+
+
+<p class="p1">protected void Application_AcquireRequestState(object sender, EventArgs e)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (HttpContext.Current.Handler is IRequiresSessionState)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ApplicationContext.AuthenticationType == &quot;Windows&quot;)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return;</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; IPrincipal principal;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; principal = (System.Security.Principal.IPrincipal)HttpContext.Current.Session[&quot;CslaPrincipal&quot;];</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; principal = null;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (principal == null)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (User.Identity.IsAuthenticated &amp;&amp;&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; User.Identity is FormsIdentity)</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // no principal in session, but ASP.NET token</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // still valid - so sign out ASP.NET</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FormsAuthentication.SignOut();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Response.Redirect(Request.Url.PathAndQuery);</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // didn&#39;t get a principal from Session, so</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // set it to an unauthenticted PTPrincipal</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Model.Security.AdministrationPrincipal.Logout();</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // use the principal from Session</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ApplicationContext.User = principal;</p>
+<p class="p2">&nbsp;</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p class="p1">&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma replied on Tuesday, January 25, 2011</h2><p>What version of IIS is this running on? We&nbsp;had isses where the AppPool was timing out before the Session which was making all kinds of weird stuff happen ... I&#39;m in the process of looking at my custom principal/identity objects to see where things might differ ... </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwright replied on Tuesday, January 25, 2011</h2><p>We are using IIS 7 on Server 2008 R2. Was the app pool issue specific to a version of IIS?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mattruma replied on Tuesday, January 25, 2011</h2><p>I&#39;ll have to check with one of my team members, but it was my understanding it was ... we also tweak our global.asax a little differently ...</p>
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Application_AcquireRequestState(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">EventArgs</span>&nbsp;e)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">HttpContext</span>.Current.Handler&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">IRequiresSessionState</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(Csla.<span style="color:#2b91af;">ApplicationContext</span>.AuthenticationType&nbsp;==&nbsp;<span style="color:#a31515;">&quot;Windows&quot;</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IPrincipal</span>&nbsp;principal&nbsp;=&nbsp;<span style="color:blue;">null</span>;<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal&nbsp;=&nbsp;(<span style="color:#2b91af;">IPrincipal</span>)<span style="color:#2b91af;">HttpContext</span>.Current.Session[<span style="color:#a31515;">&quot;EPIWORXUSER&quot;</span>];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;principal&nbsp;=&nbsp;<span style="color:blue;">null</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(principal&nbsp;==&nbsp;<span style="color:blue;">null</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.User.Identity.IsAuthenticated<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;&amp;&nbsp;<span style="color:blue;">this</span>.User.Identity&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">FormsIdentity</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">BusinessPrincipal</span>.LoadPrincipal(<span style="color:blue;">this</span>.User.Identity.Name);<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">HttpContext</span>.Current.Session[<span style="color:#a31515;">&quot;EPIWORXUSER&quot;</span>]&nbsp;=&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.User;<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.Response.Redirect(<span style="color:blue;">this</span>.Request.Url.PathAndQuery);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><pre style="font-family:consolas;"><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">FormsAuthentication</span>.SignOut(); </pre>
+<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">BusinessPrincipal</span>.Logout();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.<span style="color:#2b91af;">ApplicationContext</span>.User&nbsp;=&nbsp;principal;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Not sure if that helps or not ... I&#39;ll be honest, we&#39;ve never load tested our application, but have yet to run into this problem ... is this something new and/or isolated?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwright replied on Tuesday, January 25, 2011</h2><p>Actually, this code may work for our situation. I will change this and test.</p>
+<p>I have the same exact code on other MVC projects but I have not load tested those.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma replied on Tuesday, January 25, 2011</h2><p>Have you tried load testing it on a different server? Wonder if it&#39;s the application and/or a setting with IIS?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwright replied on Tuesday, January 25, 2011</h2><p>We have load tested it on 4 different servers :( They are all set up the same way though.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 27, 2011</h2><p>AquireSessionState isn&#39;t the supported place to handle this.&nbsp; It should be done in AuthenticateRequest.&nbsp; At that point you won&#39;t have access to Session, which should be ok.&nbsp; Storing the principal in session opens users to session hijacking attempts.</p>
+<p>I recently had to rework this same code, and I moved the principal from Session into Cache.&nbsp; This might not work for you under load though, but you&#39;d need to figure out some durable place to store the principal.&nbsp; </p>
+<p>Also know that under some conditions (I&#39;m not sure why) the Request isn&#39;t authenticated and I found I had to store something in the formsauthcookie to use to lookup the principal and put it back into ApplicationContext.User.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

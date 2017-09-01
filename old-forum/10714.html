@@ -1,0 +1,23 @@
+<html><header><title>Factory method Command</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Factory method Command</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10714.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kermitfrosch posted on Monday, September 26, 2011</h2><p>Hallo ng,</p>
+<p>can anyone help me to translate this c# code to vb?</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Exists(int<span style="color:#2b91af;"></span> id,&nbsp;<span style="color:#2b91af;">Action</span>&lt;<span style="color:blue;">bool</span>&gt;&nbsp;result)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;cmd&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ExistsCommand</span>(id);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.BeginExecute&lt;<span style="color:#2b91af;">ExistsCommand</span>&gt;(cmd,&nbsp;(o,&nbsp;e)&nbsp;=&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.Error&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;e.Error;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result(e.Object.Exists);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 26, 2011</h2><p>Use this online converter:<a href="http://www.developerfusion.com/tools/convert/csharp-to-vb/">
+</a></p>
+<p><a href="http://www.developerfusion.com/tools/convert/csharp-to-vb/">http://www.developerfusion.com/tools/convert/csharp-to-vb/</a></p>
+<p><b>Result:</b></p>
+<p>Public Shared Sub Exists(id As Integer, result As Action(Of Boolean))<br />&nbsp;&nbsp;&nbsp; Dim cmd = New ExistsCommand(id)<br />&nbsp;&nbsp;&nbsp; DataPortal.BeginExecute(Of ExistsCommand)(cmd, Function(o, e) <br />&nbsp;&nbsp;&nbsp; If e.[Error] IsNot Nothing Then<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Throw e.[Error]<br />&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; result(e.[Object].Exists)<br />&nbsp;&nbsp;&nbsp; End If<br /><br />End Function)<br />End Sub<br /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kermitfrosch replied on Tuesday, September 27, 2011</h2><p>Thanks,</p>
+<p>&nbsp;</p>
+<p>i found this one:</p>
+<p>http://converter.telerik.com/</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,824 @@
+<html><header><title>OT: Design Advice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Design Advice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6108.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, January 08, 2009</h2>I've got a number of data values across BO's that are set based on doing calculations on the values in other BO's.&nbsp; In order to the calculations I use a CalcBO with a mathParser and a set of related CalcVarBO where there is a one - many relationship.<br><br>I've done it previously (without CSLA BO) where all the objects where linked together via dictionaries and references to/from each other.&nbsp; So if a data value changed and that was part of a calculation it was pre-linked to the variable.&nbsp; A big spiderweb of linked objects.&nbsp; When a calculated value actually changed it fired and event which ultimately updated the final data.<br><br>I'm thinking that it would be a much cleaner interface to have my BO's subscribe to PropertyChanged events and just listen for changes from the list of BOs.&nbsp; Any object involved in a calculation would listen for updates and if the update was relevant then take action.&nbsp; No linking, no references, but any updates would trigger lots and lots of events that would just fire a one line IsRelevantToMe logic and quit.<br><br>So:<br><br>DataValueBO:<br>&nbsp; if in a calc: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - subscribe to DataCalcListBO.ResultUpdated event and check for matching calcIDs<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - if dataValue changes then call OnDataValueChanged method<br>&nbsp; <br>DataCalcBOs<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - subscribe to DataCalcVariableListBO.CalcVariableValueUpdate event and check for matching CalcIDs<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - if result changes then call DataCalcListBo.OnResultUpdated method<br><br>DataCalcVariableBO<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - subscribe to DataValueListBO.DataValueUpdate event and check for matching DataIDs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - if result changes then call DataCalcVariableListBo.OnCalcVariableValueUpdate  method<br>
+<br>I could have a few hundred DataValueBO's involved in calcs, a matching number of variables, and generally far fewer DataCalcs.&nbsp; So a single dataValue change could trigger a few hundred DataCalcVariable events.<br><br>Any thoughts?&nbsp; I can lessen the overhead of firing so many events by subscribing to individual DataValueBO's in lieu of the whole list which only involves a single loop of all variables to do the subscribing.<br><br>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 09, 2009</h2><P>If you are using CSLA 3.6 you might look at the ChildChanged event. This would be raised by the list (parent) object when a child changes, and it gives you a reference to the changed child. Actually the ListChanged event would give you the index to the child as well.</P>
+<P>In other words, you might be better off listening at the list level, rather than the individual object level, because then you'll know which particular object changed, and may be able to optimize your recalc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rockford,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks for your reply &#8211; I had started with ChildChanged, the
+only issue with listening to ChildChanged is that it will fire for all changes
+to any property of any child no?&nbsp; I am only interested in one property on
+a select number of children (those that have an IsInACalc flag set from the database
+to True).&nbsp; That is my first filter to lessen the number of times the event
+fires.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I had contemplated trying to use LINQ to CSLA to create a bunch
+of subLists that I could listen to in lieu.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I believe I can optimize the process I outlined in the first
+bost by using the CalcObjBO as the middleman between DataObjBO and CalcVarObjBO
+which means less events need to fire.&nbsp; The CalcObjBO has the keys to join
+to both objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My biggest question back to you is if you can recommend the subscribing
+to an event and checking if a dependant object cares is a better plan than
+pre-linking and connecting all the objects?&nbsp; It feels cleaner as an
+interface but I&#8217;m pondering the performance implications.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 09, 2009 6:46 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Design Advice<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If you are using CSLA 3.6 you might look at the ChildChanged event. This
+would be raised by the list (parent) object when a child changes, and it gives
+you a reference to the changed child. Actually the ListChanged event would give
+you the index to the child as well.<o:p></o:p></p>
+
+<p>In other words, you might be better off listening at the list level, rather
+than the individual object level, because then you'll know which particular
+object changed, and may be able to optimize your recalc.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 09, 2009</h2><P>Well, obviously events are an easy way to communicate between objects but remember that they <STRONG>are</STRONG> references.&nbsp; So you will still end-up with the spiderweb you described.&nbsp; Implement IDisposable and clean-up after yourself to prevent memory issues.</P>
+<P>I'm wondering, though,&nbsp;if you are forcing BOs into your model just for the sake of doing so and possibly complicating things.&nbsp; Remember that the purpose of a business object is to carry-out some behavior.&nbsp; What behavior do your data values have?&nbsp; Do you perform validation or authorization on the data values?&nbsp; Just because you are implementing CSLA doesn't mean that everything has to be a BO.</P>
+<P>I ran into a similar problem awhile back putting together a simulation application that had some pretty complex equations with a lot of dependancies.&nbsp; I had to deal with default values as well as min and max limits for each, so I thought it was a good fit.&nbsp; But, it quickly became a nightmare and I went a different route.</P>
+<P>When reassessing my use cases, it became clear that the default, min and max&nbsp;values where there to support the UI and provide validation for the data entry screen.&nbsp; In addition, I realized that making my variables all properties would allow me to cascade the calls and all of the dependancies would resolve.</P>
+<P>In our case, we used a set of specifications to drive a slew of equations.&nbsp; The first step was to wrap each of the specs into objects.&nbsp; These were business objects because we applied validation, based on the same min and max values, and wanted to raise PropertyChanged events whenever&nbsp;a value was changed.&nbsp; These spec objects were then bound to the UI forms used for data entry.</P>
+<P>In addition to the editable properties, our spec objects exposed calculated values based on its values.&nbsp; For example, say we had a RectangleSpec object.&nbsp; We would have Height and Width properties that would be bound to the UI and a read-only&nbsp;Area property that returned the result of the calculation based on the entered values for the other two properties.&nbsp; The PropertyChanged event could be used to notify of a change to any of the values.&nbsp; We also sometimes applied validation to the calculated properties so, for instance, if the Area was constrained, we could indicate to the user that one or both of the Height and Width properties had to be changed because the resulting Area was invalid.</P>
+<P>The entire process was managed by a Calculator class which held references to each of the spec objects (via Dependancy Injection).&nbsp; The Calculator class exposed the final results as properties.&nbsp; Some of these were just delegates to the same property/calculated value on one of the spec classes or, more often, were a higher level calculation that used the raw and calculated values from the spec classes.</P>
+<P>When they user navigated to the results screen, it was bound to the properties of the Calculator class which caused each calculation to be evaluated.&nbsp; Any dependancies were handled because the property would be requesting values from another property either in the Calculator class or one of the spec classes.</P>
+<P>That's kind of a simple view of it, but maybe it will help you think about the model you are using.&nbsp; The key is to model behavior, not data.&nbsp; And not everything has to be a BO.&nbsp; Make sure there is a reason for making a type a BO and don't just do it because you can.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>SOP,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks for the nice lengthly response &#8211; my DataValueBO is
+really my core BO.&nbsp; This portions of my application is essentially a generic
+data capture module for test or interview results.&nbsp; Each DataValue BO
+represents a single question/answer and would match your SpecObjects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It manages all the metadata about the value to be captured (some
+of which you mention below).&nbsp; It contains all the validation logic, all
+the input criteria, all the logic around managing missing data and tracking
+audits.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I support a min of 5 types of Calcs for each BO (IsEnabled, IsVisible,
+IsRequired, AllowNA, DataValue).&nbsp; This supports things like if A = 5 then
+hide questions B, C, disable question D, allow Question E to be N/A and calculate
+the datavalue for question H to be &nbsp;((A+F) *3)-G.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This means I have a IsVisableCalcB &amp; C, IsEnabledCalcD,
+IsNACalcE and DoMathH that all listen to the value of DataValueA.Data via the
+DataVariableA.Data.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every time a dataValue changes I need to refresh the related
+Variables, redo the Math, and push the values back out.&nbsp; My prior implementation
+was all push with a single watch on the final update.&nbsp; I&#8217;m trying to
+optimize it and make it cleaner and eliminate as much pre-processing to link
+things together.&nbsp; My original implementation also had a CalcManager
+class.&nbsp; I used hashtables and dictionaries to link everything together and
+it worked fairly well.&nbsp; I&#8217;m hoping that a far more generic pull type
+implementation will make it cleaner so long as I can limit the number of unnecessary
+checks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My biggest constraint is that everything is metadata driven via
+the database so my test questions and calculations are all managed by the
+users.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not sure why I still have the spiderweb with the event
+driven model?&nbsp; In a simple case where my DataCalc object watches for a
+DataChanged event, the event fires, I get the reference to the DataValue
+object, I check the CalcID, it &nbsp;matches I copy the value and I&#8217;m
+done.&nbsp; I can see that I would gave SpiderWeb if I pre-linked each DataCalcBO,
+DataCalcVarBO, and DataValueBO to listen specifically to the events of their
+related BO&#8217;s.&nbsp; I was thinking more along the lines of listening to a
+single event on the parent lists.&nbsp; Once I had that in place I would try to
+optimize where I had the same DataValue used in multiple places.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What am I missing?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you kindly again.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 09, 2009 8:23 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Design Advice<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Well, obviously events are an easy way to communicate between objects but
+remember that they <strong>are</strong> references.&nbsp; So you will still
+end-up with the spiderweb you described.&nbsp; Implement IDisposable and
+clean-up after yourself to prevent memory issues.<o:p></o:p></p>
+
+<p>I'm wondering, though,&nbsp;if you are forcing BOs into your model just for
+the sake of doing so and possibly complicating things.&nbsp; Remember that the
+purpose of a business object is to carry-out some behavior.&nbsp; What behavior
+do your data values have?&nbsp; Do you perform validation or authorization on
+the data values?&nbsp; Just because you are implementing CSLA doesn't mean that
+everything has to be a BO.<o:p></o:p></p>
+
+<p>I ran into a similar problem awhile back putting together a simulation
+application that had some pretty complex equations with a lot of
+dependancies.&nbsp; I had to deal with default values as well as min and max
+limits for each, so I thought it was a good fit.&nbsp; But, it quickly became a
+nightmare and I went a different route.<o:p></o:p></p>
+
+<p>When reassessing my use cases, it became clear that the default, min and
+max&nbsp;values where there to support the UI and provide validation for the
+data entry screen.&nbsp; In addition, I realized that making my variables all
+properties would allow me to cascade the calls and all of the dependancies
+would resolve.<o:p></o:p></p>
+
+<p>In our case, we used a set of specifications to drive a slew of
+equations.&nbsp; The first step was to wrap each of the specs into
+objects.&nbsp; These were business objects because we applied validation, based
+on the same min and max values, and wanted to raise PropertyChanged events
+whenever&nbsp;a value was changed.&nbsp; These spec objects were then bound to
+the UI forms used for data entry.<o:p></o:p></p>
+
+<p>In addition to the editable properties, our spec objects exposed calculated
+values based on its values.&nbsp; For example, say we had a RectangleSpec
+object.&nbsp; We would have Height and Width properties that would be bound to
+the UI and a read-only&nbsp;Area property that returned the result of the
+calculation based on the entered values for the other two properties.&nbsp; The
+PropertyChanged event could be used to notify of a change to any of the
+values.&nbsp; We also sometimes applied validation to the calculated properties
+so, for instance, if the Area was constrained, we could indicate to the user
+that one or both of the Height and Width properties had to be changed because
+the resulting Area was invalid.<o:p></o:p></p>
+
+<p>The entire process was managed by a Calculator class which held references
+to each of the spec objects (via Dependancy Injection).&nbsp; The Calculator
+class exposed the final results as properties.&nbsp; Some of these were just
+delegates to the same property/calculated value on one of the spec classes or,
+more often, were a higher level calculation that used the raw and calculated
+values from the spec classes.<o:p></o:p></p>
+
+<p>When they user navigated to the results screen, it was bound to the
+properties of the Calculator class which caused each calculation to be
+evaluated.&nbsp; Any dependancies were handled because the property would be
+requesting values from another property either in the Calculator class or one
+of the spec classes.<o:p></o:p></p>
+
+<p>That's kind of a simple view of it, but maybe it will help you think about
+the model you are using.&nbsp; The key is to model behavior, not data.&nbsp;
+And not everything has to be a BO.&nbsp; Make sure there is a reason for making
+a type a BO and don't just do it because you can.<o:p></o:p></p>
+
+<p>Hope that helps.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think what SOP is trying to say is that you&#8217;ll have the spider
+web even if you don&#8217;t see it yourself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>An event is simply an object reference that is set up by the
+compiler instead of by you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you declare an event, you create the potential for an
+object reference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you hook an event (set up a listener/handler) you create a
+reference from the event source to the event handler. You probably don&#8217;t
+think of this as an object reference, you think of it as &#8220;handling an event&#8221;.
+But behind the scenes, the compiler just spit out some code that set up an
+object reference, so the event handler is in a collection of handlers managed
+by the object where the event was declared.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words events are just syntactic sugar on top of a relatively
+simple design pattern based around object references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;d asked earlier whether this event approach was better
+or not. I think SOP reveals the answer, in that behind the scenes it is the
+same.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now you might find that coding using events is simpler to
+write/maintain &#8211; in which case using events is a win. Or you may find
+that manually managing the references is simpler to write/maintain &#8211; in which
+case events would be a loss.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One thing that complicates all this, is that you must unhook events
+too. So if a child object is removed from the list, you must make sure to
+unhook its events. So while events may seem simple on the surface, they can
+become quite complex if you allow objects to be added/removed from your lists &#8211;
+because then you need to do a bunch of plumbing to properly hook/unhook the
+events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course this is pretty comparable to the plumbing you&#8217;d
+have to do to reference/dereference the objects if you weren&#8217;t using
+events. And you probably see why they are similar, given that events are just
+wrappers over references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Great response &#8211; thank you for the clarification.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I rarely do any adding/deleting of children so I think perhaps
+the event driven model is cleaner, especially if I hook into parent list
+events.&nbsp; I hope to be able to support some more advanced calculations
+based on loading additional data in the background on the fly so that makes it
+easier.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So much to learn </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 09, 2009 9:17 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] OT: Design Advice<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I think what SOP is trying to say is that you&#8217;ll have the
+spider web even if you don&#8217;t see it yourself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>An event is simply an object reference that is set up by the
+compiler instead of by you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you declare an event, you create the potential for an
+object reference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you hook an event (set up a listener/handler) you create a
+reference from the event source to the event handler. You probably don&#8217;t
+think of this as an object reference, you think of it as &#8220;handling an
+event&#8221;. But behind the scenes, the compiler just spit out some code that
+set up an object reference, so the event handler is in a collection of handlers
+managed by the object where the event was declared.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words events are just syntactic sugar on top of a
+relatively simple design pattern based around object references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;d asked earlier whether this event approach was better
+or not. I think SOP reveals the answer, in that behind the scenes it is the
+same.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Now you might find that coding using events is simpler to
+write/maintain &#8211; in which case using events is a win. Or you may find
+that manually managing the references is simpler to write/maintain &#8211; in
+which case events would be a loss.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One thing that complicates all this, is that you must unhook
+events too. So if a child object is removed from the list, you must make sure
+to unhook its events. So while events may seem simple on the surface, they can
+become quite complex if you allow objects to be added/removed from your lists
+&#8211; because then you need to do a bunch of plumbing to properly hook/unhook
+the events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course this is pretty comparable to the plumbing you&#8217;d
+have to do to reference/dereference the objects if you weren&#8217;t using
+events. And you probably see why they are similar, given that events are just
+wrappers over references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 09, 2009</h2><P>Sounds like you have a workflow element that manages the flow of the questions and a calculation piece that generates the final results.&nbsp; If you pulled the responsibility for managing the workflow rules out of the DataValue objects, then they can be made more generic and perhaps your calculation "manager" could be more generic as a result (just a sum of all questions, for instance).</P>
+<P>I've worked on several projects that boil down to the same type of flowchart/workflow process where step 2 is predicated on the results of step 1 and so on.&nbsp; And, I think each one was implemented a different way!</P>
+<P>I like the flexibility WF gives but I don't know if that would help in your case.&nbsp; A lot of it depends on where the workflow logic is defined.&nbsp; What's nice about WF is that you could wrap each question as an Activity then manage the flow like a regular workflow or flowchart with if-else's, etc.</P>
+<P>How do your users indicate that questions B &amp; C are to be skipped when A = 5?&nbsp; That's probably the key to figuring out how you may be able to simplify your model more.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My data entry screen is dynamic and generic.&nbsp; It is built
+at runtime as a transposed version of a regular table.&nbsp; The data isn&#8217;t
+stored in columns, its in rows of numbers, strings, or dates.&nbsp; So I read
+in all the dataFields and present them in a giant filtered list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There isn&#8217;t so much of a workflow as there are simple UI
+property tweaks.&nbsp; The UI interface is fairly straightforward &#8211; it s just
+one row per DataValue object.&nbsp; There are no jumping around the screen in
+the way you would do with a normal data input screen based on a table.&nbsp; If
+a datavalue is to be disabled I just disable the row.&nbsp; Or hide the
+row.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There isn&#8217;t really a codeable workflow that is known in
+advance.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every DataValue object (really a DataFieldBO) has a
+corresponding FieldBO which contains all the metadata (name, type of value,
+constrataints, etc).&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>These are basically the columns in a standard table.&nbsp; The
+users are able to modify the metadata which includes enabled, visible, required,
+N/A, and CalculatedValue.&nbsp; The first four are Yes/No &amp; Calculated
+options &#8211; and this is how they show up in the dynamic data entry
+window.&nbsp; If they select the Calculated option then they need to enter in a
+formula that matches to the FieldShortName.&nbsp; So for formula for Enabled
+for B is: <img src="/emoticons/emotion-13.gif" alt="Angel [A]" />&lt;&gt; 5.&nbsp; In the database this is stored as a
+field_calc(calcID, calcTypeEnabled, formula) and in the field_calc_var table
+(calcID, FieldID=FieldAID).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It gets more complicated when I get to the actual data entry as
+the field metadata can be derived from a templateField and the same
+fieldDefinition can appear more than once so I have to make sure I create instances
+of the variables that correspond to the data/time/subject being entered.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I also support the ability to use variables from different time
+periods (previous visit).&nbsp; I use the database to recode the variable names
+and formulas to match the data being entered so the front-end becomes simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Formula &#8216;<img src="/emoticons/emotion-13.gif" alt="Angel [A]" /> &lt;&gt; 5&#8217; becomes &#8216;[A_324242]
+&lt;&gt; 5&#8217;&nbsp; where 324242 equals the key to the DataField/DataValue
+object.&nbsp; Makes it nice and neat to do the math based on variable name
+lookups (and why I used a hashtable to link stuff before).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In terms of the GUI &#8211; I have the enabled/visible
+properties of the dataValue tied to (Field.Enabled &amp;&amp;
+FieldCalc.Enabled).&nbsp; One checks the default enabled metadata flag and the
+other checks the calculated value.&nbsp; If no calculation exists then the
+calculated value is defaulted to true.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Works quite well in the windows form especially since the UI
+component is terrible.&nbsp; Everything fires when I leave/tab out of the
+field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Make any sense?&nbsp; The key feature is that once the
+application is deployed IT is not required to intervene to make changes to what
+data is to be input.&nbsp; If the users want 10 new questions with new data
+values they just add 10 new fields, set the metadata, link the fields to the questionnaire
+and the next time they do data entry the questions are there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks for your time,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 09, 2009 10:16 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OT: Design Advice<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sounds like you have a workflow element that manages the flow of the
+questions and a calculation piece that generates the final results.&nbsp; If
+you pulled the responsibility for managing the workflow rules out of the
+DataValue objects, then they can be made more generic and perhaps your
+calculation &quot;manager&quot; could be more generic as a result (just a sum
+of all questions, for instance).<o:p></o:p></p>
+
+<p>I've worked on several projects that boil down to the same type of
+flowchart/workflow process where step 2 is predicated on the results of step 1
+and so on.&nbsp; And, I think each one was implemented a different way!<o:p></o:p></p>
+
+<p>I like the flexibility WF gives but I don't know if that would help in your
+case.&nbsp; A lot of it depends on where the workflow logic is defined.&nbsp;
+What's nice about WF is that you could wrap each question as an Activity then
+manage the flow like a regular workflow or flowchart with if-else's, etc.<o:p></o:p></p>
+
+<p>How do your users indicate that questions B &amp; C are to be skipped when A
+= 5?&nbsp; That's probably the key to figuring out how you may be able to
+simplify your model more.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I&#8217;m going to ignore references/event and just go
+with a push model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>DataValueChanges -&gt; use LINQ to update all DataCalcVar.DataValue
+in DataCalcVarList where keys match.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>DataVarChanges -&gt; use LINQ to update all DataCalc in
+DataCalcList where calcID key matches<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>DataCalcResultChanges -&gt; use LINQ on Indexed key DataValue in
+DataValueList where keys match<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Makes it simple, generic, and so long as the right objects exist
+in the lists I can add/remove data on the fly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 09, 2009 10:47 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: OT: Design Advice<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>My data entry screen is dynamic and generic.&nbsp; It is built
+at runtime as a transposed version of a regular table.&nbsp; The data
+isn&#8217;t stored in columns, its in rows of numbers, strings, or dates.&nbsp;
+So I read in all the dataFields and present them in a giant filtered list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There isn&#8217;t so much of a workflow as there are simple UI
+property tweaks.&nbsp; The UI interface is fairly straightforward &#8211; it s
+just one row per DataValue object.&nbsp; There are no jumping around the screen
+in the way you would do with a normal data input screen based on a table.&nbsp;
+If a datavalue is to be disabled I just disable the row.&nbsp; Or hide the
+row.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There isn&#8217;t really a codeable workflow that is known in
+advance.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every DataValue object (really a DataFieldBO) has a
+corresponding FieldBO which contains all the metadata (name, type of value,
+constrataints, etc).&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>These are basically the columns in a standard table.&nbsp; The
+users are able to modify the metadata which includes enabled, visible,
+required, N/A, and CalculatedValue.&nbsp; The first four are Yes/No &amp;
+Calculated options &#8211; and this is how they show up in the dynamic data
+entry window.&nbsp; If they select the Calculated option then they need to enter
+in a formula that matches to the FieldShortName.&nbsp; So for formula for
+Enabled for B is: <img src="/emoticons/emotion-13.gif" alt="Angel [A]" />&lt;&gt; 5.&nbsp; In the database this is stored as a
+field_calc(calcID, calcTypeEnabled, formula) and in the field_calc_var table
+(calcID, FieldID=FieldAID).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It gets more complicated when I get to the actual data entry as
+the field metadata can be derived from a templateField and the same
+fieldDefinition can appear more than once so I have to make sure I create
+instances of the variables that correspond to the data/time/subject being
+entered.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I also support the ability to use variables from different time
+periods (previous visit).&nbsp; I use the database to recode the variable names
+and formulas to match the data being entered so the front-end becomes simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Formula &#8216;<img src="/emoticons/emotion-13.gif" alt="Angel [A]" /> &lt;&gt; 5&#8217; becomes &#8216;[A_324242]
+&lt;&gt; 5&#8217;&nbsp; where 324242 equals the key to the DataField/DataValue
+object.&nbsp; Makes it nice and neat to do the math based on variable name
+lookups (and why I used a hashtable to link stuff before).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In terms of the GUI &#8211; I have the enabled/visible
+properties of the dataValue tied to (Field.Enabled &amp;&amp;
+FieldCalc.Enabled).&nbsp; One checks the default enabled metadata flag and the
+other checks the calculated value.&nbsp; If no calculation exists then the
+calculated value is defaulted to true.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Works quite well in the windows form especially since the UI
+component is terrible.&nbsp; Everything fires when I leave/tab out of the
+field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Make any sense?&nbsp; The key feature is that once the
+application is deployed IT is not required to intervene to make changes to what
+data is to be input.&nbsp; If the users want 10 new questions with new data
+values they just add 10 new fields, set the metadata, link the fields to the
+questionnaire and the next time they do data entry the questions are there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks for your time,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Friday, January 09, 2009 10:16 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OT: Design Advice<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sounds like you have a workflow element that manages the flow of the
+questions and a calculation piece that generates the final results.&nbsp; If
+you pulled the responsibility for managing the workflow rules out of the
+DataValue objects, then they can be made more generic and perhaps your
+calculation &quot;manager&quot; could be more generic as a result (just a sum
+of all questions, for instance).<o:p></o:p></p>
+
+<p>I've worked on several projects that boil down to the same type of
+flowchart/workflow process where step 2 is predicated on the results of step 1
+and so on.&nbsp; And, I think each one was implemented a different way!<o:p></o:p></p>
+
+<p>I like the flexibility WF gives but I don't know if that would help in your
+case.&nbsp; A lot of it depends on where the workflow logic is defined.&nbsp;
+What's nice about WF is that you could wrap each question as an Activity then
+manage the flow like a regular workflow or flowchart with if-else's, etc.<o:p></o:p></p>
+
+<p>How do your users indicate that questions B &amp; C are to be skipped when A
+= 5?&nbsp; That's probably the key to figuring out how you may be able to
+simplify your model more.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

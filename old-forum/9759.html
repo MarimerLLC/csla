@@ -1,0 +1,21 @@
+<html><header><title>Login process</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Login process</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9759.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Sunday, November 14, 2010</h2><p>Hi all,</p>
+<p>My identity class has a property that is not readonly, &iquest;Is that allowed?</p>
+<p>During login process the UI will set that property because it means the office where the user is logging in.</p>
+<p>I can easily work with that not readonly property in the identity class but the problem is when I try to update the identity property in the principal class because the identity property of the principal class is readonly.</p>
+<p>How can I set/update the office property in the Csla.ApplicationContext.User?</p>
+<p>Thanks in advance,</p>
+<p>&nbsp;</p>
+<p>Lazaro Manuel</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, November 14, 2010</h2><p>I would do this by sending the office as part of the criteria for the login process. So when the identity is created as part of the authentication process, you can set the office property and it can still be read-only.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Tuesday, November 16, 2010</h2><p>Thanks Rocky for your response.</p>
+<p>I can not do it that way because the login process has two steps:</p>
+<p>-giving username and password fr validate them</p>
+<p>-once the usr is validated then select the office</p>
+<p>So I think the officeId can not be part of the criteria. I thougt in writing an update public method for the principal class.</p>
+<p> I will pass an identiy parameter to that method. So I can take the identity and modify the officeId and then pass it to my own update method of the principal.</p>
+<p>That method will just call the setprincipal method with that updated identity.</p>
+<p>What do you think about that?</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p>
+<p>&nbsp;</p>
+<p>Lazaro Manuel</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

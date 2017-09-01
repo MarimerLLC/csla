@@ -1,0 +1,41 @@
+<html><header><title>Interface UI &amp; BO problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Interface UI &amp; BO problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2165.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSerrate posted on Thursday, January 18, 2007</h2><P class=MsoNormal><SPAN>Hello,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’m working in a windows main form (simple at the moment, a grid and two buttons) from which I will inherit all the other forms using my own class subclassing BusinessListBase.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In this base main form I want to obtain the collection and save it too. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’ve tried a generic form but there’s the problem with the designer. I can also use reflection but it’s a very ugly solution.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Searching at forums I found the idea of using the CSLA interfaces but I’m a little lost about it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For example, if I use that:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> Csla.Core.<SPAN>IEditableCollection</SPAN> m_editableCollection;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How I obtain the items in the form of:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>m_editableCollection = m_editableCollection.GetAll();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>And about Save, how I can do: </SPAN><SPAN>m_editableCollection.Save();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>As you can see I need some light in my dark journey </SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance guys.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSerrate replied on Thursday, January 18, 2007</h2><P class=MsoNormal><SPAN>I think that I’ve solved the save problem with interface inheritance, but with the method GetAll()&nbsp;I haven’t the same luck as it is static.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How&nbsp;can I&nbsp;manage this? Must I use reflection?</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Thursday, January 18, 2007</h2><P>You should be able&nbsp;to create your&nbsp;own interface that inherits from IEditableCollection and has your custom&nbsp;Save() and GetAll() methods on it.&nbsp; Then in your Editable Collection classes you can inherit from your custom interface and implement the Save() and GetAll() methods.&nbsp; One problem I see with this approach is that most likely your GetAll() method would need to&nbsp;have different parameters based on which of your Editable Collections you are using.&nbsp; This will not be a&nbsp;problem if none of the fetch methods in&nbsp;your Editable Collection classes have parameters, but this is&nbsp;highly unlikely.&nbsp; The only other option i could think of would be to pass an array or collection of parameters to the GetAll() method, but that could get kinda messy.</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSerrate replied on Thursday, January 18, 2007</h2><P class=MsoNormal><SPAN>The problem is in the GetAll() method because is a static-shared method and interfaces doesn’t allow these methods.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Although I don’t like it, I think that the solution is the use of reflection<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 18, 2007</h2>In version 2.1 there's the ISavable interface, specifically added to support the idea of a UI framework that can save any business object (editable root, collection or not).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSerrate replied on Friday, January 19, 2007</h2><P class=MsoNormal><SPAN>Thank you both for your inputs. As I mentioned the “save” problem is solved but not the other one yet. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My base class “ExampleBusinessListBase” (subclassing Csla.BusinessListBase) have a <B>static</B> GetAll() method,&nbsp;and others like CanAddObject() and so on (also <STRONG>static</STRONG>). <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I want to use these methods in my base UI form “ExampleBusinessListWindow”… but I cannot use an interface like the “save” method because&nbsp;are static methods!!!<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is there any good solution to manage that???<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 19, 2007</h2><P>Remember that in OOP terms, "interface" is not strictly an entity declared as an <CODE>interface</CODE> (<CODE>Interface</CODE> in VB) - an abstract base class also falls into this realm.</P>
+<P>As such, my suggestion is (and the way I've handled this) is to create your own base (abstract) collection class that exposes the static GetAll method.&nbsp; Then, use this class for your form's variable rather than the IEditableCollection interface.</P>
+<P>To implement GetAll, use your criteria object to define the action in your DataPortal_Fetch method which is overriden in the actual class.&nbsp; This will allow you to handle the variations that may be necessary as mentioned previously.</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 19, 2007</h2>Your best bet is probably to create a static factory which returns only the subclass collection.<br><br>You may also want a security checker class.. but I have to say that it seems unlikely that the subclasses would all have the same specific access methods.&nbsp; If they do, perhaps the static factory can have those CanAddObject methods.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 19, 2007</h2><P>Also remember that there are different ways to implement the factory pattern.</P>
+<P>I chose, in the book and most of my work, to use static methods as factories.</P>
+<P>However, it is equally valid to create a separate factory class, where you instantiate the factory in order to invoke the factory method:</P>
+<P>CustomerFactory fact = new CustomerFactory();<BR>CustomerList customers = fact.GetAll();</P>
+<P>Because the factory is now an instantiated object, you can create a factory interface or factory base class to get commonality across all your factories.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

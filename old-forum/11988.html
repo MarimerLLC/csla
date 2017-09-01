@@ -1,0 +1,153 @@
+<html><header><title>Async Execution - ThreadPools, BackgroundWorker??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async Execution - ThreadPools, BackgroundWorker??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11988.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi posted on Monday, May 20, 2013</h2><p>Guys, hope eveyone is well, but need some advice.</p>
+<p>I have a class, and that class has children. &nbsp;Each child is going to connect to a database, calculate some values and return. &nbsp;At the moment this run in sync, so i loop through each child, connect to database, get result and move on to the next one.</p>
+<p>This works fine, but i think running the code in async mode would benefit performance.</p>
+<p>I seen this on microsoft site&nbsp;<a href="http://msdn.microsoft.com/en-us/library/3dasc8as(v=vs.80).aspx">http://msdn.microsoft.com/en-us/library/3dasc8as(v=vs.80).aspx</a>&nbsp;describing how to use a ThreadPool to execute async tasks, and the code waits until all the tasks are finished. &nbsp;This sounds exactly like what i want to do, but i understand the Prinical objects etc are not copied over into other threads? I am using asp.net 4.0.</p>
+<p>I havent done much async processing, and none where i need to carry the current prinical object.</p>
+<p>I have seen that Csla has a backgroundWorker which does pass on the prinicipal values etc. &nbsp;Is there a limit on the number of BackgroundWorkers i can create? &nbsp;How would i wait for all backgroundworkers to complete?</p>
+<p>Sorry i this is basic, but thought i would ask here as maybe someone else has had this problem as well</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, May 20, 2013</h2><p>Hi,</p>
+<p>I have created a CslaTaskFactory for internal usage (my company) that allows me to setup Tasks / chain Tasks and WaitAll. These tasks will automatically get the principal, UICulture, Culture, ApplicationContext.ClientContext and ApplicationContext.GlobalContext transferred to the background thread.&nbsp;</p>
+<p>This has to go into the CSLA assembly itself as the api to set the values is not publicly available.&nbsp;</p>
+<p>I will email Rocky to check if this may go into the Csla repository or you can send me a private message and I will share this class with you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 20, 2013</h2><p>Hi all,&nbsp;</p>
+<p>The CslaTaskFactory class will be added to Csla.Threading namespace.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Tuesday, May 21, 2013</h2><p>Do you know when this will be added and when it will be released?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, May 21, 2013</h2><p>Will be added to repository this week.</p>
+<p>Not sure when next release is planned (or if we even have a date yet).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Thursday, May 23, 2013</h2><p>Caliburn has an action called a Coroutine.&nbsp; You may be able to use this in the mean time:</p>
+<p><a href="http://caliburnmicro.codeplex.com/wikipage?title=IResult%20and%20Coroutines&amp;referringTitle=Documentation">http://caliburnmicro.codeplex.com/wikipage?title=IResult%20and%20Coroutines&amp;referringTitle=Documentation</a></p>
+<p>Todd</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, May 26, 2013</h2><p>Changes is checked in and ready to be merged into CSLA Trunk.&nbsp;</p>
+<p>You can look at the changes here:<br /><a href="https://github.com/MarimerLLC/csla/pull/143">https://github.com/MarimerLLC/csla/pull/143</a> &nbsp;</p>
+<p>and at the unit tests for usage sample.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 31, 2013</h2><p>I plan to do a beta release of this new code (along with support for Android with all 4.5 features) this weekend or early next week.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Tuesday, June 04, 2013</h2><p>Can someone please send me the link to download the installer for the latest version as i havent got Visual Studio 2012, and really need this code please.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 04, 2013</h2><p>Hi,</p>
+<p>You can use NuGet in VS2010 too - just remember to check PreRelease in your search.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, June 05, 2013</h2><p>Right i have downloaded NuGet in VS2010, got the Csla dll&#39;s etc that i need. &nbsp;perfect.</p>
+<p>But this code does not pass my userPrincipal. &nbsp;Instead it has a generic principal populated, and a FormsIdentity in Csla.ApplicationContext.User.Identity, which is not right and causing me errors?</p>
+<p>Is this code right to use Tasks? &nbsp;I have never used them before</p>
+<p>----------------------------------</p>
+<p>Dim lReportId As Integer<br />Dim lTasks(lData.Count - 1) As System.Threading.Tasks.Task<br />Dim lTaskScheduler As New Csla.Threading.CslaTaskScheduler<br />Dim lTaskFactory As New System.Threading.Tasks.TaskFactory(lTaskScheduler)</p>
+<p>lIndex = 0</p>
+<p>&#39; loop through and do work<br />While lIndex &lt; lData.Count<br />&nbsp; &nbsp; lReportId = lData.Keys(lIndex)</p>
+<p>&nbsp; &nbsp; &#39; add item to lDoneEvents<br />&nbsp; &nbsp; lTasks(lIndex) = New System.Threading.Tasks.Task(Function(pReportId As Integer)<br />&nbsp; &nbsp; &nbsp; &nbsp; Dim lReport As IBaseReport = Report.GetReportByID(pReportId)<br />&nbsp; &nbsp; &nbsp; &nbsp; lData(pReportId) = lReport</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Return True<br />&nbsp; &nbsp; End Function, lReportId)<br /><br />&nbsp; &nbsp; lTasks(lIndex).Start(lTaskScheduler)<br /><br />&nbsp; &nbsp; lIndex += 1</p>
+<p>End While<br /><br />System.Threading.Tasks.Task.WaitAll(lTasks, New TimeSpan(0, 0, 30).TotalMilliseconds)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, June 05, 2013</h2><p>Guys, i believe the code i wrote above is right. &nbsp;I dont know what the problem is but it seems to be linked to vs 2010 / .NET 4.0?</p>
+<p>I have managed to get a copy of VS 2012, and if i create a basic website with the code above, it works (using .NET 4.5 and .NET 4.0). &nbsp;The prinicipal is passed to within the task.</p>
+<p>If i create a basic website in vs 2010, same code, &nbsp;the principal is not passed and you get a genericprinicipal/formsidentity in the task code.</p>
+<p>Would love some more help with this please, maybe its a bug? &nbsp;Or maybe i need to do something particular because i am using vs2010 / .net 4.0.</p>
+<p>Any help would be much much much appreicated</p>
+<p>&nbsp;</p>
+<p>Here is the test code i created and put on the default page</p>
+<p>Public Class _Default</p>
+<p>&nbsp; &nbsp; Inherits System.Web.UI.Page</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; Protected Sub Page_Load(ByVal sender As Object, ByVal e As System.EventArgs) Handles Me.Load</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = Nothing</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = New myPrincipal</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim lIndex As Integer = 0</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim lTasks(0) As System.Threading.Tasks.Task</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim lTaskScheduler As New Csla.Threading.CslaTaskScheduler</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim lTaskFactory As New System.Threading.Tasks.TaskFactory(lTaskScheduler)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &#39; loop through and do work</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; While lIndex &lt; 1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &#39; add item to lDoneEvents</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lTasks(lIndex) = New System.Threading.Tasks.Task(Function(pReportId As Integer)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim a As String = pReportId.ToString</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim b As myPrincipal = TryCast(Csla.ApplicationContext.User, myPrincipal)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return True</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Function, 123)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lTasks(lIndex).Start(lTaskScheduler)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; lIndex += 1</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End While</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; System.Threading.Tasks.Task.WaitAll(lTasks, New TimeSpan(0, 0, 30).TotalMilliseconds)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Csla.ApplicationContext.User = Nothing</p>
+<p>&nbsp; &nbsp; End Sub</p>
+<p>End Class</p>
+<p>Public Class myPrincipal</p>
+<p>&nbsp; &nbsp; Implements System.Security.Principal.IPrincipal</p>
+<p>&nbsp; &nbsp; Public ReadOnly Property Identity As System.Security.Principal.IIdentity Implements System.Security.Principal.IPrincipal.Identity</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return New myIdentity</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Get</p>
+<p>&nbsp; &nbsp; End Property</p>
+<p>&nbsp; &nbsp;Public Function IsInRole(role As String) As Boolean Implements System.Security.Principal.IPrincipal.IsInRole</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Return True</p>
+<p>&nbsp; &nbsp; End Function</p>
+<p>End Class</p>
+<p>Public Class myIdentity</p>
+<p>&nbsp; &nbsp; Implements System.Security.Principal.IIdentity</p>
+<p>&nbsp; &nbsp; Public ReadOnly Property AuthenticationType As String Implements System.Security.Principal.IIdentity.AuthenticationType</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return &quot;MINE&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Get</p>
+<p>&nbsp; &nbsp; End Property</p>
+<p>&nbsp; &nbsp; Public ReadOnly Property IsAuthenticated As Boolean Implements System.Security.Principal.IIdentity.IsAuthenticated</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return True</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Get</p>
+<p>&nbsp; &nbsp; End Property</p>
+<p>&nbsp; &nbsp; Public ReadOnly Property Name As String Implements System.Security.Principal.IIdentity.Name</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return &quot;MY NAME IS HERE&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Get</p>
+<p>&nbsp; &nbsp; End Property</p>
+<p>End Class</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 05, 2013</h2><p>Hi,</p>
+<p>In your VS2010 solution - do you have both Csla.Web.dll and Csla.Web.Mvc,dll in your bin.folder?</p>
+<p>You must have Csla.Web.dll in your bin folder for ApplicationContext to use the Csla.Web.ApplcationContextManager that stores/retrieves the Principal object from HttpContext.Current.User&nbsp;</p>
+<p>When you move on to the background thread the HttpContext.Current will be null and Csla.ApplicationContext will revert to use the &quot;default&quot; Csla.ApplicationContext.ApplicationContextManager that stores/retrieves the Principal object from Thread.CurrentPrincipal&nbsp;</p>
+<p>I do not have VS2010 installed on my dev computer so unfortunately I am unable to dig more into it right now if it is a VS2010 issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, June 05, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Hi,</p>
+<p>In your VS2010 solution - do you have both Csla.Web.dll and Csla.Web.Mvc,dll in your bin.folder?</p>
+<p>You must have Csla.Web.dll in your bin folder for ApplicationContext to use the Csla.Web.ApplcationContextManager that stores/retrieves the Principal object from HttpContext.Current.User&nbsp;</p>
+<p>When you move on to the background thread the HttpContext.Current will be null and Csla.ApplicationContext will revert to use the &quot;default&quot; Csla.ApplicationContext.ApplicationContextManager that stores/retrieves the Principal object from Thread.CurrentPrincipal&nbsp;</p>
+<p>I do not have VS2010 installed on my dev computer so unfortunately I am unable to dig more into it right now if it is a VS2010 issue.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>In my VS2010 project I have Csla.dll and Csla.Web.dll referenced in my web project. &nbsp;I do not have Csla.Web.Mvc.dll referenced.</p>
+<p>I have just added a new web application using VS2012, and added Csla.dll only. &nbsp;This works.</p>
+<p>I have then added a new web application using VS 2010 and added Csla.dll only, and this seems to work.</p>
+<p>So....i then create a new web application in VS 2010 AND VS 2012 and add Csla.ASP.NET, which includes Csla.dll and Csla.Web.dll, then it doesnt work.</p>
+<p>It appears that Csla.Web.dll seems to be the problem....??</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 05, 2013</h2><p>Hi,</p>
+<p>Then it seems that HttpContext.Current is part of the problem here.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Wednesday, June 05, 2013</h2><p>Any chance this can be looked at, and let me know the bug. &nbsp;Love the new feature, just need csla.web too :)</p>
+<p>&nbsp;</p>
+<p>Thanks for the help so far</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Thursday, June 06, 2013</h2><p>I can confirm that System.Web.HttpContext.Current.User is nothing upon entering the task. &nbsp;I am guessing that this should contain the custom identity?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 06, 2013</h2><p>Yes, </p>
+<p>assuming that you have a web application - you should store the &quot;userprincipal&quot; in HttpContext.Current.User </p>
+<p>This is the containter that&nbsp;Csla.Web.ApplicationContextManager stores userprincipal and when you create the CslaTaskFactory object it makes a &quot;snapshot&quot; of the variables to pass on to the tasks for context values,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Thursday, June 06, 2013</h2><p>In our web app, we store the user in Csla.ApplicationContext.User and also hold it in Session.</p>
+<p>Then in the global.asax file we assign Csla.ApplicationContext.User equal to the Session variable.</p>
+<p>I presume that setting Csla.ApplicationContext.User in a web app, sets HttpContext.Current.user automatically?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, June 06, 2013</h2><p>Please make sure you are not hit with this in ASP.NET MVC 4&nbsp;</p>
+<p>See this post:&nbsp;<a href="http://forums.lhotka.net/forums/p/11830/55521.aspx#55521">http://forums.lhotka.net/forums/p/11830/55521.aspx#55521</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Monday, June 10, 2013</h2><p>I have tried this and still get the same error...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Saturday, August 03, 2013</h2><p>Any news on when the CslaFactory is going to be avilable for download via the website? &nbsp;Have all the issues been solved yet?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 03, 2013</h2><p>
+<p><span>Code is available here:</span></p>
+<p><a href="https://github.com/MarimerLLC/csla/tree/master/Source/Csla/Threading"><span style="color:#000000;">https://github.com/MarimerLLC/csla/tree/master/Source/Csla/Threading</span></a></p>
+<p><span>As for issues with VS2010 my problem is that I no longer have a dev-computer with VS2010 and .NET 4.0.</span></p>
+<p><span>So any help to identify/resolve issues is appreciated.</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 05, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b><span>Code is available here:</span>
+<p><a href="https://github.com/MarimerLLC/csla/tree/master/Source/Csla/Threading"><span style="COLOR:#000000;">https://github.com/MarimerLLC/csla/tree/master/Source/Csla/Threading</span></a></p>
+<p><span>As for issues with VS2010 my problem is that I no longer have a dev-computer with VS2010 and .NET 4.0.</span></p>
+<p><span>So any help to identify/resolve issues is appreciated.</span></div></p>
+<p>Hey Jonny, I think that since the new background thread doesn&#39;t get an HttpContext the normal thread rules apply.&nbsp; The CslaTaskFactory should probably set the newly created thread&#39;s principal before starting to run it.&nbsp; That should allow the impersonation to work correctly.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Friday, September 06, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b></p>
+<p>Hey Jonny, I think that since the new background thread doesn&#39;t get an HttpContext the normal thread rules apply.&nbsp; The CslaTaskFactory should probably set the newly created thread&#39;s principal before starting to run it.&nbsp; That should allow the impersonation to work correctly.</p>
+<p></div></p>
+<p>Yes that is probably why my web version doesnt work, but it works via windows forms...</p>
+<p>Any know the code to recreate/copy the principal to the newly created thread? &nbsp;I am happy to write the code into my version of csla and test it</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 07, 2013</h2><p>@Andy: That&#39;s exactly what the CslaTaskFactory tries to do.&nbsp;</p>
+<p>When CslaTaskFactory is created it stores a &quot;snapshot&quot; of:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Csla.ApplicationContext.User</li>
+<li>Csla.ApplicationContext.ClientContext</li>
+<li>Csla.ApplicationContext.GlobalContext&nbsp;</li>
+<li>Thread.CurrentThread.CurrentUICulture</li>
+<li>Thread.CurrentThread.CurrentCulture</li>
+</ul>
+<p>&nbsp;</p>
+<p>And sets these values values on the new thread before calling the actual task.&nbsp;</p>
+<p>So all the logic of HttpContext or not is handled by Csla.ApplicationContext (and there is 3 stereotypes of ApplicationContext in CSLA).&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NemisisJedi replied on Sunday, September 08, 2013</h2><p><span>(and there is 3 stereotypes of ApplicationContext in CSLA).</span></p>
+<p>&nbsp;</p>
+<p><span>And what does this mean? For me while using this via webpage current.httpcontext.user is nothing</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 08, 2013</h2><p>It means that CSLA has 3 implementations of Csla.Core.IContextManager: a default ApplicationContextManager and 2 specialiced:</p>
+<p>Default: <i>Csla.ApplicationContext.ApplicationContextManager</i></p>
+<p>Xaml:<i> Csla.Xaml.ApplicationContextManager - specialized for Xaml applications with knowledge and use of&nbsp;System.Windows.<span>Application</span>.Current</i></p>
+<p>Web: <i>Csla.Web.ApplicationContextManager - specialized for Web applications with knowledge and use of System.Web.HttpContext.Current</i></p>
+<p>The key issue for your code (I believe) is to find out why HttpContext.Current.User is null before you enter the async code. It should have a value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 08, 2013</h2><p>The right word isn&#39;t &#39;stereotype&#39;, it is &#39;provider. Csla.ApplicationContext uses a provider model to load a different implementation depending on your application.</p>
+<p>There are three standard providers (and you can create your own).</p>
+<p>Also, things like HttpContext and System.Threading.Thread are owned by Microsoft, and we don&#39;t manage those values except in very limited circumstances. As a result, when writing code within a CSLA app you are best off using Csla.ApplicationContext instead of things like HttpContext, because HttpContext follows its own set of rules, and ApplicationContext provides some extra behaviors that are often useful. Not least of these is that ApplicationContext works in ASP.NET and _outside_ of ASP.NET (including on background threads).</p>
+<p>The default provider stores its data in something called thread local storage, and so makes the values available to all code running on a thread. This is appropriate when not in ASP.NET or WPF.</p>
+<p>The ASP.NET web provider stores its data in HttpContext, so as long as Microsoft flows HttpContext the values are available. We don&#39;t change how HttpContext works, we just use it for data storage.</p>
+<p>The WPF provider (also used in SL and WinRT) stores its data in static fields. This isn&#39;t entirely ideal, but does make the values available even as WPF tries really hard to blank them, and also because SL/WinRT don&#39;t have the concept of thread local storage or HttpContext...</p>
+<p>In a typical ASP.NET Web Forms or MVC app you&#39;ll be using the ASP.NET provider, which (on the primary thread) stores its values in HttpContext. But ASP.NET doesn&#39;t flow HttpContext onto background threads, and we don&#39;t alter that behavior because Microsoft owns HttpContext and it would be pretty dumb to try and alter their implementation. What Jonny has done is to provide some helpers in Csla.Threading that allow you to create or call background threads/tasks such that ApplicationContext flows the values from the primary thread onto the background thread.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,77 @@
+<html><header><title>child collection update with interface</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>child collection update with interface</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1525.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean posted on Wednesday, October 18, 2006</h2>I have a collection of different types of children, each child implementing an interface iDetail. During the update process the collection interates thru the members and wants to call child.DeleteSelf, child.update, and child.insert. But I don't want these methods to be public so I can't put them in the iDetail interface. I don't see how to create a protected friend interface. What am I missing here?<br><br>Dean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 18, 2006</h2><P>There was a good thread on this as I was bumping into this myself. I ended up using reflection as there were some code generation issues for me. </P>
+<P>An option is to do a separate internal interface for IDetailInternal and while looping through your collection of children, just cast them to IDetailInternal and invoke the internal methods. </P>
+<P>I'll find that thread and edit my post w/ a link. </P>
+<P><A HREF="/forums/thread/6832.aspx">http://forums.lhotka.net/forums/thread/6832.aspx</A></P>
+<P>And from another post:</P>
+<P><FONT size=2>So, what I found worked for me was to cast the object to the internal interface for the purpose of doing the Update/DeleteSelf/Insert. </FONT></P>
+<P><FONT size=2>((<FONT color=#008080>IProfileMemberInternal</FONT>)profileMember).DeleteSelf();</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Wednesday, October 18, 2006</h2>Thanks for the pointer and I get the drift but I'm a vb guy and that thread is pretty much c# and my translation skills are failing me.<br><br>what i tried is declaring a friend protected interface in my child. I then referenced that interface from my collection in my cast statement. is that correct?<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2>Ahh...<br><br>Declare your interface as Friend only.<br><br>Friend Interface IDetailInternal Implements IDetail<br><br>Function MyInternalFunction( arg As String ) As String<br><br>End Interface<br><br>Public Class MyBo Inherits BusinessBase(Of MyBo) Implements IDetailInternal<br><br>&nbsp;&nbsp;&nbsp;&nbsp; Private Function MyInternalFunction( arg As String ) As String Implements IDetailInternal.MyInteralFunction<br><br>&nbsp;&nbsp;&nbsp;&nbsp; Public Property DetailProp As String <br>&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>End Class<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, October 18, 2006</h2>
+
+<p class="MsoNormal">
+
+</p>
+<p class="MsoNormal">Yes, that is the way to do it in VB.Net.<span>&nbsp; </span>To create an explicit interface in VB.NET you
+set the properties or methods to something other than public in the class that
+implements the interface.<span>&nbsp; </span>It is easier
+to create explicit interfaces in VB.Net than in C#.</p>
+
+<p class="MsoNormal"></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>malloc1024:</strong></div><div>It is easier
+to create explicit interfaces in VB.Net than in C#.</div></BLOCKQUOTE><br><br>Ok, have to call you out on that..&nbsp; To implement explicitly, you just do something like this:<br><br><font color="#0000ff">string </font><font color="#008000">IInterface</font>.MyExplicitProperty {<br>&nbsp; // code here<br>}<br><br>What's tough about that?&nbsp; It seems the VB.net way is more confusing since you're marking the explicitally defined member as private even though its not really private.. I guess private in that case mean's private to the interface?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, October 18, 2006</h2>
+
+<p class="MsoNormal">I didn’t mean to say that it was tough to create an explicit
+interface in C#, just slightly more work to remember how to create one.<span>&nbsp; </span>I find it easier to create explicit
+interfaces in VB.Net.<span>&nbsp; </span>But you are
+correct that it really isn’t more difficult.<span>&nbsp;
+</span>I do use VB.Net more and that may have something to do with my opinion.</p>
+
+
+<br>
+
+
+<p class="MsoNormal">I like the fact the interfaces are more explicit in VB.NET.<span>&nbsp; </span>I also find the way VB.NET handles explicit
+interfaces less confusing.<span>&nbsp; </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>malloc1024:</strong></div><div>I didn’t mean to say that it was tough to create an explicit
+interface in C#, just slightly more work to remember how to create one.<span>&nbsp; </span>I find it easier to create explicit
+interfaces in VB.Net.<span>&nbsp; </span>But you are
+correct that it really isn’t more difficult.<span>&nbsp;
+</span>I do use VB.Net more and that may have something to do with my opinion.
+
+
+</div></BLOCKQUOTE><br><br>That just depends on the language you're most proficient in.<br>
+
+
+<p class="MsoNormal"><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>malloc1024:</strong></div><div>I like the fact the interfaces are more explicit in VB.NET.<span>&nbsp; </span>I also find the way VB.NET handles explicit
+interfaces less confusing.<span> </span></div></BLOCKQUOTE></p><p class="MsoNormal">I'll agree that defining implicit interfaces is more explicit in VB than in C#.&nbsp; In C#, you don't need to do anything at all, the compiler just matches the signatures up and will say 'yup, I found something matching that interfaces signature, so the interface is implemented.'&nbsp; <br></p>Again, how explicit interfaces are handled depends on your background.. I did alot of VB work until .Net came along.&nbsp; I also had a strong C++ background from my college days, which is probably why C# makes more 'sense' to me than VB (didn't do much vb before college).<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, October 18, 2006</h2>
+
+<p class="MsoNormal"><span>You can use
+EXPLICT interfaces to hide members of an interface.<span>&nbsp; </span>The only way to access the private or
+protected members of an interface is to cast to the interface.<span>&nbsp; </span>If you place the interface in another
+assembly, the presentation layer could not cast to it if it doesn’t have a
+reference to it.<span>&nbsp; </span>One of the benefits of
+using explicit interfaces is that it allows you to hide members of an interface.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 18, 2006</h2><P>Malloc, that's definitely correct. (Talked about a little bit in that first thread).</P>
+<P>I would have taken that very route myself if it weren't for the fact that my child objects are generating insert/update/deleteself in partial classes and I didn't feel like manipulating the templates for generation yet. A generated internal method without an explicit implementation declaration throws a compile error. </P>
+<P>Here's some sample code from one of my collections where I'm using reflection.</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>internal</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> Update(</FONT><FONT color=#008080 size=1>SqlConnection</FONT><FONT size=1> cn, </FONT><FONT color=#008080 size=1>IProfile</FONT><FONT size=1> parent)</P>
+<P>{</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#008000 size=1>// loop through each deleted child object and use the internal interface</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// to call DeleteSelf for deleted objects</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>foreach</FONT><FONT size=1> (</FONT><FONT color=#008080 size=1>IProfileRole</FONT><FONT size=1> deletedChild </FONT><FONT color=#0000ff size=1>in</FONT><FONT size=1> DeletedList)</P>
+<P>deletedChild.GetType().InvokeMember(</FONT><FONT color=#800000 size=1>"DeleteSelf"</FONT><FONT size=1>, </FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.Instance | </FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.NonPublic |</P>
+<P></FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.InvokeMethod, System.</FONT><FONT color=#008080 size=1>Type</FONT><FONT size=1>.DefaultBinder, deletedChild, </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1>[] { cn });</P>
+<P>DeletedList.Clear();</P>
+<P></FONT><FONT color=#008000 size=1>// loop through each non-deleted child object and use the internal interface </P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// to call the appropriate method. </P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>foreach</FONT><FONT size=1> (</FONT><FONT color=#008080 size=1>IProfileRole</FONT><FONT size=1> child </FONT><FONT color=#0000ff size=1>in</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (child.IsNew)</P>
+<P>child.GetType().InvokeMember(</FONT><FONT color=#800000 size=1>"Insert"</FONT><FONT size=1>, </FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.Instance | </FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.NonPublic |</P>
+<P></FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.InvokeMethod, System.</FONT><FONT color=#008080 size=1>Type</FONT><FONT size=1>.DefaultBinder, child, </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1>[] { cn, parent });</P>
+<P></FONT><FONT color=#0000ff size=1>else</P></FONT><FONT size=1>
+<P>child.GetType().InvokeMember(</FONT><FONT color=#800000 size=1>"Update"</FONT><FONT size=1>, </FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.Instance | </FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.NonPublic |</P>
+<P></FONT><FONT color=#008080 size=1>BindingFlags</FONT><FONT size=1>.InvokeMethod, System.</FONT><FONT color=#008080 size=1>Type</FONT><FONT size=1>.DefaultBinder, child, </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>object</FONT><FONT size=1>[] { cn, parent });</P>
+<P>}</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P>}</P></FONT><FONT color=#0000ff size=1>
+<P>#endregion</FONT><FONT size=1> </FONT><FONT color=#008000 size=1>//Data Access</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2>Probably the best way is what malloc said, use explict interfaces.&nbsp; I did this recently as well..<br><br>I defined an interface as:<br><br><font color="#0000ff">internal interface</font> <font color="#008000">IDetailInternal </font>: <font color="#008000">IDetail </font>{<br><font color="#006400">// Internal methods only here</font><br>}<br><br>Then in my implementation, I implemented IDetail members implicitly and IDetailInternal members explicitly.&nbsp; You don't even need to specify IDetail on your BO, the compiler will create an expanded list for you.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

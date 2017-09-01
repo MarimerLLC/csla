@@ -1,0 +1,29 @@
+<html><header><title>Multiple fetches at same time are not async</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple fetches at same time are not async</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12021.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman posted on Wednesday, June 12, 2013</h2><p>I have come across a problem I am trying to load up multiple business objects to display in the UI.&nbsp;&nbsp;The first call is performed&nbsp;on a background thread but the other calls are on the UI thread.&nbsp; Once this occurs all subsequent calls are on the UI thread.&nbsp; e.g.&nbsp;to keep this simple I am fetching the same BO twice but in reality they are difference BO&#39;s.</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span></span></span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Settings.BeginGetSettings((o, e) =&gt; { });</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Threading.Thread.Sleep(1000);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Settings.BeginGetSettings((o, e) =&gt; { });</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; [Serializable]</p>
+<p>&nbsp;&nbsp;&nbsp; public class Settings : BusinessBase&lt;Settings&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly Csla.PropertyInfo&lt;string&gt; WebServiceUrlProperty = RegisterProperty&lt;string&gt;(c =&gt; c.WebServiceUrl);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string WebServiceUrl</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(WebServiceUrlProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(WebServiceUrlProperty, value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void BeginGetSettings(EventHandler&lt;Csla.DataPortalResult&lt;Settings&gt;&gt; callback)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Csla.DataPortal.BeginFetch&lt;Settings&gt;(callback);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Threading.Thread.Sleep(5000);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; }</p>
+<p>If you put a breakpoint in&nbsp;DataPortal_Fetch() you will see the first time it is on a background thread and the second time it is on the main/UI thread.</p>
+<p>This issue is caused by setting ApplicationContext.LogicalExecutionLocation to Server in Csla.Server.DataPortal.&nbsp; The second call now reads it as Server in Csla.DataPortalClient.LocalProxy&nbsp;resulting in a synchronous call.&nbsp; To make things worst&nbsp;the second call records _oldLocation as Server in Csla.Server.DataPortal&nbsp;since the first call has changed it.&nbsp; Therefore when the second call completes it sets ApplicationContext.LogicalExecutionLocation to Server and now all calls will be synchronous.</p>
+<p>I do not know the ins and outs of LocalProxy, DataPortal and how ApplicationContext.LogicalExecutionLocation is meant to work and hence I am cautious of making changes.&nbsp; I suspect Server is important when using remoting which I am not.&nbsp; I can also see that Server is used&nbsp;if a BO makes a call to another BO in the DataPortal_XYZ methods then it would be synchronous which is a good thing.</p>
+<p>Any ideas on how to fix this issue?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

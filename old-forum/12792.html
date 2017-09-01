@@ -1,0 +1,21 @@
+<html><header><title>Issue Cloning Child List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue Cloning Child List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12792.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG posted on Tuesday, November 04, 2014</h2><p>Hello, I&#39;m trying to make a copy of a BO using the method that Rocky talked about in another post. My object graft looks something like this. I&#39;m using CSLA 4.3.</p>
+<p>parent</p>
+<p>&nbsp; &nbsp; &nbsp; single child</p>
+<p>&nbsp; &nbsp; &nbsp; single child</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; child list</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; child list</p>
+<p>&nbsp; &nbsp; &nbsp; single child</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;child list</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;child list</p>
+<p>I have a static method on the parent object that accepts the &quot;copy from&quot; Id.&nbsp;</p>
+<p>Object from = GetObject(id);</p>
+<p>Object newObject = from.Clone();</p>
+<p>newObject.MarkNew()</p>
+<p>newObject.Id = Guid.NewGuid();</p>
+<p>newObject.Child.FixUpAfterCopy();</p>
+<p>...</p>
+<p>So the single child objects are cloning correctly but the child list objects of the single child objects are not cloning all the time. If I but a break point in the &quot;FixUpAfterCopy()&quot; of the child then it copies. Could it be the lazy loading of the child list? Any other suggestions?</p>
+<p>Thanks,</p>
+<p>J&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, November 04, 2014</h2><p>If you are lazy loading lists I&#39;d say yes that could be why some of them aren&#39;t cloning; cloning I don&#39;t believe causes lazy loaded lists to load if they are not already loaded, rather you get a copy of the graph exactly as it is when you call Clone.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

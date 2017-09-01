@@ -1,0 +1,216 @@
+<html><header><title>Using a local and remote data portal (e.g. 2 data portals) at the same time?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using a local and remote data portal (e.g. 2 data portals) at the same time?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5779.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, November 11, 2008</h2><P>I have a potential application that will run on a device that may be disconnected for long periods of time, so it will always need a local data store. For times when it is connected, it will also communicate with an application server.&nbsp;</P>
+<P>There&nbsp;will also be times when it needs to read data from the application server for caching in the local data store, so it's possible for both to be active at the same time. </P>
+<P>I'd like to use CSLA objects for both the local and remote data, but don't see how to do this. I did search and found some references to multiple portals, but it seems these were controlled with a global switch of some sort.</P>
+<P>In my case, the BO itself will determine which portal is be used, not some other sort of switch. Some BO's will always be local, others will always be managed by the application server.</P>
+<P>Is this feasible?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, November 11, 2008</h2><P>To simplify, if I could control which data portal is used at an assembly level instead of the . EXE, that would be fine also. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Proper solution would be to write your own data portal.&nbsp; In
+this case your business objects could somehow register themselves with portal,
+including object type and what type of proxy they want.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the other hand, if you can assure that one object calls data
+portal at a time (no asynchronous or overlapping calls at all), you can use a
+cheap hack and call the following prior to all data portal calls, including
+Update (that is called from Save()):&nbsp; </span><span>ConfigurationManager</span><span>.AppSettings[<span>&quot;CslaDataPortalProxy&quot;</span>] = &#8220;Local&#8221;
+// or WCF or whatever</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 11, 2008 8:52 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Using a local and remote data portal (e.g. 2
+data portals) at the same time?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>To simplify, if I could control which data portal is used at an assembly
+level instead of the . EXE, that would be fine also. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, November 11, 2008</h2><P>Did you mean write my own data portal <EM>proxy</EM>? </P>
+<P>I'm looking at it (and have searched some more since my original post), but there would seem to be an issue in that DataPortalContext is constructed before the proxy is aware of what type it would be working with, so IsServerRemote might not have the right value. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nope, I actually was thinking Data Portal itself.&nbsp; I think
+you do not need to override proxy as you will be using either Local or
+WCF(Remoting, etc&#8230;) proxy, and those would be as they are in CSLA.&nbsp;
+In your case the part that would change would be GetDataPortalProxy that would
+need to account for object type probably as well as RunLocal attribute (if you
+are using it).&nbsp; This maybe more that what you are bargaining for though&#8230;&nbsp;
+In this case I would go back to suggested hack&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 11, 2008 10:06 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using a local and remote data portal (e.g.
+2 data portals) at the same time?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Did you mean write my own data portal <em>proxy</em>? <o:p></o:p></p>
+
+<p>I'm looking at it (and have searched some more since my original post), but
+there would seem to be an issue in that DataPortalContext is constructed before
+the proxy is aware of what type it would be working with, so IsServerRemote
+might not have the right value. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, November 11, 2008</h2>Hmmm. I don't see how CSLA supports replacing the entire data portal itself (especially if I don't have the luxury of modifying one of the business object assemblies). </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>True.&nbsp; I was thinking of you actually modifying the CSLA
+DataPortal class.&nbsp; Not that I would myself encourage that or anything </span><span>J</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 11, 2008 11:02 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Using a local and remote data portal
+(e.g. 2 data portals) at the same time?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hmmm. I don't see how CSLA supports replacing the entire
+data portal itself (especially if I don't have the luxury of modifying one of
+the business object assemblies).<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, November 12, 2008</h2><P>I've looked at the code some more. There are only 4 calls to GetDataPortalProxy() in the entire code base (Csla 3.5.1). </P>
+<P>Perhaps if Rocky could add a simple mechanism here to (1) allow substitution of an alternative proxy provider, and (2) pass in the type of the object when calling the GetDataPortalProxy() and make this available to the provider, then I'd think an almost arbitrary proxy configuration could be implemented. </P>
+<P>I'm not sure what the best or preferred way to implement a substitute provider&nbsp;would be. You could have a static method that takes a delegate, or perhaps a static event like OnGetDatatPortalProxy that could be subscribed to. The subscriber could return the desired proxy in the event args. If no alternative provider has been specified, the behavior could default to the current mechanism. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, November 12, 2008</h2>Hey mate<br>I think i might have a solution which would help you out.<br>http://forums.lhotka.net/forums/thread/28218.aspx<br>Cheers<br>Anthony <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

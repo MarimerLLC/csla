@@ -1,0 +1,110 @@
+<html><header><title>Need help sorting within a GridView / WebForm </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need help sorting within a GridView / WebForm </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/132.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bedford_hopms posted on Wednesday, May 17, 2006</h2><P class=MsoNormal>WinForms has the SortedBindingList.vb for sorting.<SPAN>&nbsp; </SPAN>But it appears sorting is not supported at this time in WebForms.<SPAN>&nbsp; </SPAN>The only thing I see that comes close is the “CanSort” method on CSLADataSourceView, which hardcoded to "False".</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Am I missing something?<SPAN>&nbsp; </SPAN>Has anybody solved this issue in a way that doesn’t require a round trip with each new sort?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P><SPAN>Thanks in advance.</SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vivus replied on Wednesday, May 17, 2006</h2><font face="Verdana" size="2">You would use the SortedBindingList for the web as well.&nbsp; I really don't know of any way that you could currently do a total solution of declaritive programming with CSLA on the web, maybe one day.&nbsp; But for now you will need to a combination of both declaritive &amp; non declartive programming.</font><br><br><font face="Courier New" size="2"><br>&lt;csla:csladatasource id="cslaTransactionsWebView" TypeName="TransactionWebViewList" assemblyName="App_Code" runat="server"&gt;<br>&lt;/csla:csladatasource&gt;</font><br><br><font face="Verdana" size="1">(note, don't use code in your App_Code folder/dll as i'm using a modified version of tne c# version of CSLA 2.0 )</font><br><br><br><font face="Verdana" size="2">ok set up your CLSA sorting object, similar to how it shows in the book, but instead, use a SortedBindingList</font><br><br><br><font face="Courier New" size="2">public SortedBindingList&lt;TransactionWebView&gt; GetTransactionWebViewList() {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; object businessObject1 =<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; HttpContext.Current.Session["transactions"];<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (businessObject1 == null ||<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; !(businessObject1 is SortedBindingList&lt;TransactionWebView&gt;)) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; businessObject1 = new SortedBindingList&lt;TransactionWebView&gt;(<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; TransactionWebViewList.GetTransactionWebViewList(this.User.ContactID, false));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UpdateTransactionWebViewList((SortedBindingList&lt;TransactionWebView&gt;)businessObject1);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return (SortedBindingList&lt;TransactionWebView&gt;)businessObject1;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void UpdateTransactionWebViewList(SortedBindingList&lt;TransactionWebView&gt; obj) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; HttpContext.Current.Session["transactions"] = obj;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br></font><br><br><font face="Verdana" size="2">now here is something that isn't really documented, but after the grid sorts when using a declaritive datasource, it executes the select method from the declaritive datasource<br>so don't forget the following. ....<br><br><font face="Courier New">void cslaTaskCategoryWebView_SelectObject(object sender, SelectObjectArgs e) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; e.BusinessObject = GetTaskCategoryWebViewList();<br>&nbsp;&nbsp;&nbsp; }</font><br><br><br>now for overriding the sorting method of the grid. <br><br><font face="Courier New">void gdvTransactions_Sorting(object sender, GridViewSortEventArgs e) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ListSortDirection direction = ListSortDirection.Descending;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (e.SortDirection == SortDirection.Ascending)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; direction = ListSortDirection.Ascending;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; SortedBindingList&lt;TransactionWebView&gt; obj1 = GetTransactionWebViewList();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; obj1.ApplySort(e.SortExpression, direction);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UpdateTransactionWebViewList(obj1);<br>&nbsp;&nbsp;&nbsp; }<br><br>now it should sort....<br><br>however i have been having issues with the gridview sorting while using a declaritive datasource and having the sorting and paging using callbacks....but this could also be because i'm doing alot of testing with csla and atlas and yadda yadda yadda. so atlas could be throwing it off, the sorting event doesn't fire on callback, but the paging works fine.&nbsp; however the sorting event will fire on postback.&nbsp; <br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, July 27, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>vivus:</strong></div><div><BR><FONT face="Courier New" size=2>public SortedBindingList&lt;TransactionWebView&gt; GetTransactionWebViewList() {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; object businessObject1 =<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; HttpContext.Current.Session["transactions"];<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (businessObject1 == null ||<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; !(businessObject1 is SortedBindingList&lt;TransactionWebView&gt;)) {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; businessObject1 = new SortedBindingList&lt;TransactionWebView&gt;(<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; TransactionWebViewList.GetTransactionWebViewList(this.User.ContactID, false));<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UpdateTransactionWebViewList((SortedBindingList&lt;TransactionWebView&gt;)businessObject1);<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return (SortedBindingList&lt;TransactionWebView&gt;)businessObject1;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<BR><BR>&nbsp;&nbsp;&nbsp; public void UpdateTransactionWebViewList(SortedBindingList&lt;TransactionWebView&gt; obj) {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; HttpContext.Current.Session["transactions"] = obj;<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<BR></FONT></div></BLOCKQUOTE></P>
+<P>Had a dickens of a time to get this to compile.&nbsp; Finally realized there are two BO library objects being used, not one.&nbsp; TransactionWebView and TransactionWebViewList, representing the item object and the collection object respectively.</P>
+<P>Thought I would point it out for others like me who are&nbsp;suffering from a "slow brain day". :)</P>
+<P><FONT face=Verdana size=2><FONT face="Times New Roman" size=3><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>vivus:</strong></div><div></FONT><BR>... now for overriding the sorting method of the grid...</FONT><BR></div></BLOCKQUOTE></P>
+<P>ListDirection requires a "using System.ComponentModel;" directive.<BR></P>
+<P>After that, it worked like a charm!</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Wednesday, May 17, 2006</h2><P>I don't know if this will be the approriate solution or its efficient. In my case I use ReadOnlyList but surely it will worked with BusinessBaseList. First, I wrapped my ReadOnlyList with SortedBindingList. Please see code below. </P><PRE>Public Class SortedYourReadOnlyList
+    Inherits SortedBindingList(Of YourReadOnlyBase)
+
+    Private Sub New(ByVal l As YourReadOnlyList)
+        MyBase.New(l)
+    End Sub
+
+    Public Shared Function NewSortedYourReadOnlyList(ByVal l As ReadOnlyList) As SortedYourReadOnlyList
+        Return New SortedTimesheetList(l)
+
+    End Function
+
+End Class
+</PRE>
+<P>As you can noticed, it wont worked in ASP.NET 2.0 when you clicked the sorted columns compared to winforms. So I decided to trigger the sorting programatically. I used the GridView_Sorting() event to get the column to be sorted and what direction. I store the Gridview sorting event handler in a session then. Please see code below: </P><PRE>Protected Sub GridView1_Sorting(ByVal sender As Object, ByVal e As System.Web.UI.WebControls.GridViewSortEventArgs) Handles grdTimesheet.Sorting
+   Session("willSort") = e
+End Sub
+
+
+Protected Sub XXX_SelectObject(ByVal sender As Object, ByVal e As Csla.Web.SelectObjectArgs) Handles XXX.SelectObject
+
+   If Session("YourSortedReadOnlyList") Is Nothing Then
+     Session("YourSortedReadOnlyList") = YourSortedReadOnlyList.NewYourSortedReadOnyList( _
+      YourReadOnlyList.GetList(New Criteria(Your Criteria)))
+   End If
+
+
+   If Session("willSort") IsNot Nothing Then
+
+        Dim _sort As GridViewSortEventArgs = Session("willSort")
+       
+        Dim _slist As YourSortedReadOnlyList = CType(Session("YourSortedReadOnlyList"), YourSortedReadOnlyList)
+            _slist.ApplySort(_sort.SortExpression, _sort.SortDirection)
+            Session("YourSortedReadOnlyList") = _slist
+            Session("willSort") = Nothing
+ 
+   EndIf
+
+   e.BusinessObject = Session("YourSortedReadOnlyList")
+
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Wednesday, May 17, 2006</h2><P>Virus, its so funny&nbsp;your posting in C# and I'm posting in VB.NET. At least the other readers could have an option then. But more or less, I think we do have same solution. V</P>
+<P>Cheers,</P>
+<P>Glenn</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fabiousa7 replied on Friday, December 01, 2006</h2><P>I am having this same&nbsp;problem for a while now, but i was wondering if anyone was able to figure out the actual reason of this problem, and maybe something that is more like a fix than a work-around?</P>
+<P>thanks,</P>
+<P>Fabio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, March 25, 2007</h2><P>This is just the design of CSLA, but I found a pretty clean way to implement in code behind rather than carrying things around in session - just do the sort when selecting:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> CslaDataSource1_SelectObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#008080 size=2>SelectObjectArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>SortedYourList</FONT><FONT size=2> list = </FONT><FONT color=#008080 size=2>SortedYourList</FONT><FONT size=2>.NewSortedYourList(YourList</FONT><FONT size=2>.FactoryMethod());</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (GridView1.SortExpression != </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (GridView1.SortDirection)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SortDirection</FONT><FONT size=2>.Ascending:</P>
+<P>list.ApplySort(GridView1.SortExpression, </FONT><FONT color=#008080 size=2>ListSortDirection</FONT><FONT size=2>.Ascending);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SortDirection</FONT><FONT size=2>.Descending:</P>
+<P>list.ApplySort(GridView1.SortExpression, </FONT><FONT color=#008080 size=2>ListSortDirection</FONT><FONT size=2>.Descending);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>e.BusinessObject = list;</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>miloy001 replied on Sunday, July 29, 2007</h2><P>BOO:</P>
+<P>My EditableObject list does not have ApplySort() but you have list.ApplySort(). Do you added your own ApplySort or something else?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dantruj replied on Monday, July 30, 2007</h2><P>I am having a problem with the gridview and filteredbindinglist in how best to databind the filtered list.</P>
+<P>The cslaDataSource_SelectObject fires when a user wishes to sort a column, the list is obtained, sorted then set back to the grid like e.businessobject = sortedList.&nbsp; That works great, but how can I do this for a filteredBindingList?&nbsp; I want to be able to let the user entered a filtered value into a text box and have the filter begin by pressing a button on the web form.&nbsp; The button event fires, the list is filtered but I do not know how to set the datagrids binding to show this filtered list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MTmace replied on Tuesday, April 07, 2009</h2><P>I know this is a really old post but perhaps I have something to add.<BR><BR>Sorting should happen in the UI, not the business object. So if you are using .net 2.0, CSLA 2.0 you should be using the sortedBindingList as described on page 247 (C# 2005). <BR>Get the normal collection then create a sortedBindingList, then execute the "ApplySort" method.<BR>Then bind the sorted list to the grid.<BR><BR><FONT size=2>NormalCollection&nbsp;nc = </FONT><FONT size=2>getCollection();<BR><BR>Csla.</FONT><FONT color=#2b91af size=2>SortedBindingList</FONT><FONT size=2>&lt;NormalCollection&nbsp;</FONT><FONT size=2>&gt; sortedList = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.</FONT><FONT color=#2b91af size=2>SortedBindingList</FONT><FONT size=2>&lt;NormalCollection&nbsp;</FONT><FONT size=2>&gt;(nc);<BR>sortedList.ApplySort(</FONT><FONT color=#a31515 size=2>"Property"</FONT><FONT size=2>, System.ComponentModel.</FONT><FONT color=#2b91af size=2>ListSortDirection</FONT><FONT size=2>.Descending);</P>
+<P>this.gv.DataSource = sortedList;<BR>this.gv.DataBind();</P></FONT>
+<P>In .net 3.5 LINQ should be used.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham replied on Tuesday, June 30, 2009</h2><P>Here's what I found after almost a day of searching.&nbsp; I feel this is quick and easy and reusable!</P>
+<P>&nbsp;</P>
+<P>Using statements needed:</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Collections.Generic;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Linq.Expressions;</P></FONT>
+<P>&nbsp;</P>
+<P>Create a static class:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>MyExtensions</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IEnumerable</FONT><FONT size=2>&lt;T&gt; Sort&lt;T&gt;(</FONT><FONT color=#2b91af size=2>IEnumerable</FONT><FONT size=2>&lt;T&gt; source, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> sortExpression, </FONT><FONT color=#2b91af size=2>SortDirection</FONT><FONT size=2> sortDirection)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;var</FONT><FONT size=2> _param = </FONT><FONT color=#2b91af size=2>Expression</FONT><FONT size=2>.Parameter(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(T), </FONT><FONT color=#a31515 size=2>"item"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;var</FONT><FONT size=2> _sortExpression = </FONT><FONT color=#2b91af size=2>Expression</FONT><FONT size=2>.Lambda&lt;</FONT><FONT color=#2b91af size=2>Func</FONT><FONT size=2>&lt;T, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>&gt;&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;(</FONT><FONT color=#2b91af size=2>Expression</FONT><FONT size=2>.Convert(</FONT><FONT color=#2b91af size=2>Expression</FONT><FONT size=2>.Property(_param, sortExpression), </FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>)), _param);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (sortDirection == </FONT><FONT color=#2b91af size=2>SortDirection</FONT><FONT size=2>.Descending)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> source.AsQueryable&lt;T&gt;().OrderByDescending&lt;T, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>&gt;(_sortExpression);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> source.AsQueryable&lt;T&gt;().OrderBy&lt;T, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>&gt;(_sortExpression);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P>Call it using the following:</P>
+<P><FONT size=2><FONT color=#2b91af>IEnumerable</FONT>&lt;PromotionPlanning.Utilities.Classes.<FONT color=#2b91af>EventInfo</FONT>&gt; eventList;</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>void</FONT> EventListDataSource_SelectObject(<FONT color=#0000ff>object</FONT> sender, Csla.Web.<FONT color=#2b91af>SelectObjectArgs</FONT> e)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;eventList =</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;from</FONT> f <FONT color=#0000ff>in</FONT> GetProdEventList()</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;select</FONT> f;</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;if</FONT> (gvEventList.SortExpression.Length &gt; 0)</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eventList = <FONT color=#2b91af>MyExtensions</FONT>.Sort&lt;<FONT color=#2b91af>EventInfo</FONT>&gt;(eventList, gvEventList.SortExpression, gvEventList.SortDirection);</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;e.BusinessObject = eventList; </FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P>Enjoy!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

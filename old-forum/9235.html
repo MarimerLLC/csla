@@ -1,0 +1,56 @@
+<html><header><title>Project structure and 4.0 RC (0 and 1)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Project structure and 4.0 RC (0 and 1)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9235.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Tuesday, July 20, 2010</h2><p>I&#39;m a little confused - I&#39;ve downloaded and installed RC0 and now RC1.</p>
+<p>I&#39;m trying to set up a new CSLA Silverlight project from scratch. I have the following structure:</p>
+<p>Solution</p>
+<ul>
+<li>SLClient (the Silverlight project)</li>
+<li>SLWeb (the Web Application hosting the Silverlight client)</li>
+<li>Library.Client (my Business Object classes as source links to the server classes)</li>
+<li>Library.Server (the actual Business Object classes)</li>
+</ul>
+<p>As I understand it, I should have the following references:</p>
+<ul>
+<li>SLClient --&gt; Silverlight\Csla.dll and Silverlight\CslaXaml.dll</li>
+<li>SLWeb --&gt; Library.Server project, Server\Csla.dll</li>
+<li>Library.Client --&gt; Silverlight\Csla.dll</li>
+<li>Library.Server --&gt; Server\Csla.dll</li>
+</ul>
+<p>However, in the installed version of RC0 and RC1 there is no Binn\Debug\Server\Csla.dll - only the following:</p>
+<ul>
+<li>Csla.Web.dll</li>
+<li>Csla.Web.Mvc.dll</li>
+<li>Csla.Workflow.dll</li>
+</ul>
+<p>Where do I find Csla.dll for the server?</p>
+<p>OK, in researching this post,&nbsp;I think I&#39;ve answered my own question!</p>
+<p>It turns out that the server&#39;s Csla.dll is the same as the Csla.dll in the Client folder. At least it works for me. Though it is confusing.</p>
+<p>Why is this? Is it an MSI packaging issue?</p>
+<p>Hopefully this will help somebody else setting up a project from scratch.</p>
+<p>Cheers,</p>
+<p>Craig</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>MichaelBBonner replied on Tuesday, July 20, 2010</h2><p>The Client folder corresponds to the files that can run under the .NET 4.0 &quot;Client&quot; profile, which is a subset of the full .NET 4.0 redistributable that includes the most common assemblies required by client type applications.&nbsp; The Server folder corresponds to the CSLA components that require the full .NET 4.0 redistributable assemblied to run.&nbsp; These will usually be services/web-apps running on in a full server environment.</p>
+<p>From the changelog:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><b style="mso-bidi-font-weight:normal;">Solution structure (091105, 091203) </b><span style="background:yellow;mso-highlight:yellow;">Breaking change (build)</span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><a href="http://forums.lhotka.net/cslabugs/edit_bug.aspx?id=629"><span style="color:#0000ff;">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=629</span></a></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><a href="http://forums.lhotka.net/cslabugs/edit_bug.aspx?id=661"><span style="color:#0000ff;">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=661</span></a></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Rearrange the solution structure and svn repository structure as follows:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Bin\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Samples\CslaNet\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Samples\CslaLight\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.client\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.core\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.Silverlight\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.Silverlight.test\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.test\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.Web\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.Web.Mvc\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.Windows\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Csla.Xaml\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="color:#008000;"><span style="font-family:Courier New;">\Source\Dependencies\...</span></span></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">This puts the server/core (full .NET), client (.NET client profile) and Silverlight projects as top-level elements in the source folder, and arranges the samples folder as a peer. It also puts the UX technologies in their own assemblies per-technology.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">There&rsquo;s also a top-level <span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="font-family:Courier New;color:#008000;">csla.all.sln</span></span></span> file that opens all three source projects so it is easy to open and build all three flavors of CSLA .NET. </p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">And a <span class="CodeInline"><span style="font-size:10pt;mso-bidi-font-family:&#39;Times New Roman&#39;;"><span style="font-family:Courier New;color:#008000;">csla.test.sln</span></span></span> file that opens the CSLA .NET for Windows projects with the corresponding unit test projects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Tuesday, July 20, 2010</h2><p>OK, so you&#39;re saying that because Csla.dll can run in the .NET 4.0 client profile that&#39;s the reason it&#39;s in that folder.</p>
+<p>I understand the reasoning now, though it is a little confusing.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 20, 2010</h2><p>To be clear, there are two Csla.dll files: Silverlight and Client. The fact that it also ends up in Server is just because of the Visual Studio build process and the reality that Csla.Web.dll and Csla.Web.Mvc.dll have a dependency on Csla.dll.</p>
+<p>But there are exactly two Csla.dll files: Silverlight and Client.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

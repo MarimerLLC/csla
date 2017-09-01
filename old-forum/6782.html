@@ -1,0 +1,137 @@
+<html><header><title>Does Csla.Reflection.MethodCaller.CallMethod support ref params?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Does Csla.Reflection.MethodCaller.CallMethod support ref params?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6782.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer posted on Monday, April 13, 2009</h2>Hello,<br><br>It seems that it doesn't...<br><br>Here is my test fixture,note that the Can_call_method_having_ref_param() method throw an ArrayTypeMismatchException.<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [TestFixture]<br>&nbsp;&nbsp;&nbsp; public class MethodCallerTests<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Can_call_method_having_ref_param() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //arrange &amp; act<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = new TestClass1 { Name="Levin"};<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string xx="";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodCaller.CallMethod(item, "DoSomething",xx);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //assert<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreSame(xx, item.Name);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Test]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Can_call_method_having_normal_param() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //arrange &amp; act<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = new TestClass1 { Name = "Levin" };<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string xx = "";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodCaller.CallMethod(item, "DoSomething1", xx);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //assert<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual("",xx);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class TestClass1 {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name { get; set; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void DoSomething(ref string xx) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xx = Name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void DoSomething1(string xx) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xx = Name;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2><P>I don't recall any implementation or design around ref params, no.</P>
+<P>Please remember, my goal with any use of reflection or dynamic method invocation is <EM>absolutely not to be comprehensive</EM>. The design and implementation provides the least features necessary to meet the needs of CSLA .NET itself.</P>
+<P>If you want a real dynamic invocation library, look at VB, or the Microsoft DLR, or C# 4.0 when it comes out. I surely don't have time to create/maintain a complete dynamic invocation library :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I should say this too &#8211; if you would like to enhance the
+functionality of Csla.Reflection to include features <i>you want</i>, but that
+aren&#8217;t necessarily required by CSLA .NET, please let me know.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am not against having the functionality be broader &#8211; I just
+don&#8217;t personally have time to create or maintain that extended
+functionality. But if you have time to create and maintain that functionality we
+can talk about adding you to the dev team.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 13, 2009 9:00 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Does Csla.Reflection.MethodCaller.CallMethod
+support ref params?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I don't recall any implementation or design around ref params, no.<o:p></o:p></p>
+
+<p>Please remember, my goal with any use of reflection or dynamic method
+invocation is <em>absolutely not to be comprehensive</em>. The design and
+implementation provides the least features necessary to meet the needs of CSLA
+.NET itself.<o:p></o:p></p>
+
+<p>If you want a real dynamic invocation library, look at VB, or the Microsoft
+DLR, or C# 4.0 when it comes out. I surely don't have time to create/maintain a
+complete dynamic invocation library :)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Monday, April 13, 2009</h2>Wow,I just had a bathe and came back:)<br>It will absolutely be my honor to join in the Csla.NET dev team and do some contributions.However,my .NET skill may be not good enough(I began to learn c# two years ago)...,which you may care.<br><br>Yes,i made this post because i did need that feature,i currently added a overload of CallMethod method to support ref params. I can send you that tiny patch along with my unit tests.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you for being willing to contribute.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Please email me directly, as I need you to sign a contributor
+agreement and then we can move forward.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mamboer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 13, 2009 11:25 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Does
+Csla.Reflection.MethodCaller.CallMethod support ref params?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Wow,I just had a bathe and came back:)<br>
+It will absolutely be my honor to join in the Csla.NET dev team and do some
+contributions.However,my .NET skill may be not good enough(I began to learn c#
+two years ago)...,which you may care.<br>
+<br>
+Yes,i made this post because i did need that feature,i currently added a
+overload of CallMethod method to support ref params. I can send you that tiny
+patch along with my unit tests.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Monday, April 13, 2009</h2>Ok,i will do that tomorrow morning.It's midnight in China and i'm sleepy.<br>Have a good day!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

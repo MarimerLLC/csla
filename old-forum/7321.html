@@ -1,0 +1,64 @@
+<html><header><title>Problem with SmartDate</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with SmartDate</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7321.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer posted on Wednesday, July 22, 2009</h2><P>We have an application which includes a SmartDate property (<FONT size=2>VehicleEarliestNextVisitDate) </FONT>and, as suggested, uses a string property for setting:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> VehicleEarliestNextVisitDateString() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> GetPropertyConvert(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> SmartDate, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)(VehicleEarliestNextVisitDateProperty)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Set</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></P></FONT></FONT><FONT size=2>
+<P>SetPropertyConvert(VehicleEarliestNextVisitDateProperty, value)</P>
+<P></FONT>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2></P></FONT></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Set
+<P></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT></P>
+<P>When we test this in our development environment, it works just fine.&nbsp;We can see that our code is providing values in the form "mm/dd/yyyy" eg&gt;&nbsp; "06/20/2009"</P>
+<P>When we deploy the application to another machine, the date value is being provided in the same format (mm/dd/yyyy) but we get a S<SPAN><FONT face="Times New Roman"><FONT size=3>ystem.ArgumentException: String value can not be converted to a date.</FONT></FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3>We suspect there is some kind of default date format issue at the heart of this, but we are quite baffled.&nbsp; Is there some interaction between SmartDate and system configuration which might result in this behaviour?&nbsp; Can anyone suggest another possible cause?</FONT></SPAN></P>
+<P><SPAN><FONT face="Times New Roman" size=3></FONT></SPAN>&nbsp;</P>
+<P>&nbsp;</P><FONT size=2>
+<P>&nbsp;</P></FONT><FONT size=2></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 22, 2009</h2>Is the other machine using the same culture settings?  For example, is it set to format dates in UK style format instead of US?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer replied on Wednesday, July 22, 2009</h2><P><FONT face=Arial size=2>I am assuming since our business object assemblies are being use in a web app, that the culture settings for the web app would apply.</FONT></P>
+<P><FONT face="Segoe UI"><FONT size=2><FONT face=Arial>The culture is set to </FONT><FONT face="Segoe UI"><FONT face="Segoe UI"><FONT face=Arial>Invariant Language (Invariant Country)&nbsp; in both instances.</FONT>&nbsp;<EM>&nbsp;</EM></FONT></FONT></FONT></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 23, 2009</h2>I'm not sure, but I think asp.net might try to get the culture from the browser and set its context accordingly.  This has nothing to do with the culture set for your assembly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer replied on Thursday, July 23, 2009</h2><P>This may well be the case.</P>
+<P>In any event, I have worked around the issue by using Date.TryParse to parse the date string into a date and then setting the value directly,using SetProperty instead of SetPropertyConvert.&nbsp; Since TryParse will return Date.MinValue when the value is not a valid date, this works for our requirements.</P>
+<P>I still would like to understand why SetPropertyConvert has an issue with this (be it a culture mismatch or otherwise).</P>
+<P>Frazer</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2><P>You could step through the code in the debugger to see which coercion technique is failing.</P>
+<P>SetPropertyConvert() calls CoerceValue(), which tries every technique I'm aware of in .NET for coercing a value from one type to another, one after another. Once of the techniques must be trying to do the conversion and flat out failing (actually two of them, because all the easy technqiues are wrapped in a try..catch block, so the really expensive final resort technique only occurs as a final resort.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer replied on Thursday, July 23, 2009</h2><P>In fact, I have been trying to do this.&nbsp; Our problem is that I cannot seem to replicate the root cause in our development environment and&nbsp;I am&nbsp;not able to step-debug on the production machine.&nbsp;&nbsp;</P>
+<P>Our&nbsp;exception logging shows that the StringToDate method,&nbsp;called from the&nbsp;Text property setter in SmartDate, is throwing.<FONT size=2></P>
+<P></FONT>In the development environment,&nbsp;I&nbsp;can emulate the exception, by modifying the date string value (i.e. switching the order of month and day), just before the coercion.</P>
+<P><FONT size=2><FONT size=3>I deployed a patched version of our code to&nbsp;our production machine to get some info into the log.&nbsp; In the logged message, I captured the value of "value" and it is a date string in the format mm/dd/yyyy&nbsp; (eg: 02/27/2009).</FONT></P>
+<P><FONT size=3>This is exactly the same format we see in our development environment - but some setting that is different between the two systems causes StringToDate to fail on on, and not the other.</FONT></P>
+<P><FONT size=3>It is also curious that the workaround with Date.TryParse works - although this is a less than desirable solution.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If I recall correctly, SmartDate uses TryParse() to convert the
+date &#8211; or maybe it uses Parse().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But CoerceValue() will use System.Convert in some cases, so
+maybe that&#8217;s what happens?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Without unit test illustrating the problem there&#8217;s little I
+can do to help change the framework to address it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 24, 2009</h2>Are you logging the thread's CurrentCulture and CurrentUICulture values?<br /><br />I keep supsecting this because of documentation on DateTime:  http://msdn.microsoft.com/en-us/library/ch92fbc1.aspx<br /><br />Notice this paragraph "Because the DateTime..::.TryParse(String, DateTime%) method tries to parse the string representation of a date and time <b>using the formatting rules of the current culture, trying to parse a particular string across different cultures can either fail</b> or return different results. If a specific date and time format will be parsed across different locales, use the DateTime..::.TryParse(String, IFormatProvider, DateTimeStyles, DateTime%) method or one of the overloads of the TryParseExact method and provide a format specifier."</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

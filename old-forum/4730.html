@@ -1,0 +1,176 @@
+<html><header><title>DecoratedRuleArgs bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DecoratedRuleArgs bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4730.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gkurtz posted on Tuesday, April 22, 2008</h2><P><FONT face=Arial size=2>I think line 468 of DecoratedRuleArgs.cs should be</FONT></P><FONT color=#3a3a3a size=2>
+<P><FONT face="Courier New">sb</FONT></FONT><B><FONT color=#408080 size=2><FONT face="Courier New">.</FONT></B></FONT><FONT face="Courier New"><FONT color=#3a3a3a size=2>AppendFormat</FONT><FONT size=2>( </FONT><FONT color=#ae0000 size=2>"{0}={1}"</FONT><FONT size=2>, </FONT><FONT color=#3a3a3a size=2>System</FONT><B><FONT color=#408080 size=2>.</FONT><FONT color=#2b91af size=2>Uri</FONT><FONT color=#408080 size=2>.</B></FONT></FONT><FONT face="Courier New"><FONT color=#3a3a3a size=2>EscapeDataString</FONT><FONT size=2>(</FONT><FONT color=#3a3a3a size=2>item</FONT><B><FONT color=#408080 size=2>.</B></FONT></FONT><FONT face="Courier New"><FONT color=#3a3a3a size=2>Key</FONT><FONT size=2>), </FONT><FONT color=#3a3a3a size=2>System</FONT><B><FONT color=#408080 size=2>.</FONT><FONT color=#2b91af size=2>Uri</FONT><FONT color=#408080 size=2>.</B></FONT></FONT><FONT face="Courier New"><FONT color=#3a3a3a size=2>EscapeDataString</FONT><FONT size=2>(</FONT><FONT color=#3a3a3a size=2>item</FONT><B><FONT color=#408080 size=2>.</B></FONT></FONT><FONT face="Courier New"><FONT color=#3a3a3a size=2>Value</FONT><B><FONT color=#408080 size=2>.</B></FONT></FONT><FONT face="Courier New"><FONT color=#3a3a3a size=2>ToString</FONT><FONT size=2>()) );</FONT></FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT face=Arial>because sometimes the value can be a regular expression string&nbsp;containing ? and &amp; signs.<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT face=Arial>Please correct me if I'm wrong.</FONT></FONT></FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT face=Arial>Regards,<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT size=2><FONT face=Arial>Rob</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 22, 2008</h2><P>I think you are right, that sounds like a potential issue. I'll add it to the list of things to work on. Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nelis replied on Thursday, June 26, 2008</h2>Something else to consider: null values ?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good point &#8211; thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve now changed the code to address these issues in
+3.5.1.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nelis
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 7:36 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DecoratedRuleArgs bug?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Something else to consider: null values ?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nelis replied on Thursday, July 03, 2008</h2><P><FONT face=Arial>Just downloaded 3.5.1</FONT></P>
+<P><FONT face=Arial>DecoratedRuleArgs.ToString() still contains:</FONT></P><FONT size=2>
+<P><FONT face="Courier New">sb.AppendFormat(</FONT></FONT><FONT face="Courier New"><FONT color=#a31515 size=2>"{0}={1}"</FONT><FONT size=2>, item.Key, item.Value.ToString());</FONT></FONT></P>
+<P><FONT face="Courier New"><FONT size=2><FONT face=Arial size=3>without checking item.Value for a null value</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I must have made that change after I did the beta release. It is
+in svn<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/Validation/DecoratedRuleArgs.cs">http://www.lhotka.net/cslacvs/viewvc.cgi/trunk/cslacs/Csla/Validation/DecoratedRuleArgs.cs</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> nelis
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 03, 2008 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: DecoratedRuleArgs bug?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Just downloaded 3.5.1</span><o:p></o:p></p>
+
+<p><span>DecoratedRuleArgs.ToString()
+still contains:</span><o:p></o:p></p>
+
+<p><span>sb.AppendFormat(<span>&quot;{0}={1}&quot;</span>, item.Key,
+item.Value.ToString());</span><o:p></o:p></p>
+
+<p><span>without checking item.Value
+for a null value</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Thursday, July 03, 2008</h2>Does this apply to version 3.0.4 as well?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I&#8217;ve created a 3.0.5 in subversion (the
+branches\v3-0-x folder) that contains the fix, so when I do a 3.0.5 maintenance
+release it&#8217;ll be in there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> William
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 03, 2008 6:54 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: DecoratedRuleArgs bug?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Does this apply to version 3.0.4 as well?<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

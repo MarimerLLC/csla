@@ -1,0 +1,34 @@
+<html><header><title>Proper design when using CSLA objects for unattended processes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Proper design when using CSLA objects for unattended processes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11840.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF posted on Friday, February 15, 2013</h2><p>I&#39;m preparing to take&nbsp;my company&#39;s&nbsp;existing Order process currently used in a VB6 app and move all of the business rules &amp; validation into&nbsp;.NET (CSLA). The objects I intend to create are meant to be used by a web service method that receives the order info from another system. The web service, however, does not need to provide any feedback to the caller. So it is essentially unattended at that point. The order info needs to be validated and then sent to our backend systems.</p>
+<ul>
+<li>Should the design of CSLA objects be different for this kind of process vs when there is user interaction? </li>
+<li>Should I still use the typical classes like a Root (for order header) and ChildList (for order line items)? And then populate them with the data so that rules could run against them?</li>
+<li>Since there will be no interaction with a user in this process, should the objects be readonly instead of editable?</li>
+</ul>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, February 16, 2013</h2><p>In general terms:</p>
+<p>
+<ul>
+<li>design separate contract objects for the WCF service (DTO Objects)
+<ul>
+<li>You may use DataAnnotation rules on the DTO objects by installing&nbsp;<a href="http://wcfdataannotations.codeplex.com/">http://wcfdataannotations.codeplex.com/</a>&nbsp;</li>
+</ul>
+</li>
+<li>map these DTO objects into a CSLA Business Object structure</li>
+<li>if you wish to use BusinessRules to validate fields you must use EditableClasse as ReadOnly classes only support authorization rules.&nbsp;</li>
+</ul>
+</p>
+<p>If you decide to use CSLA classes and validate these you must have a well defined error handling.&nbsp;</p>
+<p>If you only have simple validation rules like MaxLength, Range and Required I would use WCFDataAnnotations to get the validation on the contract objects.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Saturday, February 16, 2013</h2><p>Thanks, Jonny.&nbsp;You mentioned &quot;<span style="text-decoration:underline;">If</span> you decide to use CSLA classes...&quot; That makes it somewhat sound like perhaps I shouldn&#39;t use CSLA objects for this particular scenario? Did I read that correctly?&nbsp;Or does that statement only relate to what you said regarding having only simple validation rules? (There are lots of business rules in addition to validation rules that need to be applied, and while many are simply, many are not.)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 16, 2013</h2><p>Like any framework, CSLA provides a set of valuable behaviors/features. If you need them that&#39;s good, and if you don&#39;t need them then you might not need the framework.</p>
+<p>The primary value of CSLA tends to be just a few things:</p>
+<ul>
+<li>Data binding support for all UX technologies</li>
+<li>Mobile objects (location transparency, switch between 1-, 2-, 3-, 4-tier without changing code)</li>
+<li>Clean separation of concerns between interface, business, and data layers</li>
+<li>Consistent coding patterns, leading to reduced maintenance costs</li>
+<li>Metastate tracking for objects (isdirty, isnew, etc.)</li>
+<li>Business rule engine (validation, authorization, business rules)</li>
+</ul>
+<p>In a pure backend batch processing scenario some of these become relatively useless. In fact you could argue (depending on the specifics of the scenario) that only the clean separation of concerns and consistent coding pattern really matters - and you can impose that discipline without CSLA as long as you clearly define how to implement your code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Saturday, February 16, 2013</h2><p>Thanks for the reminders and clarification. A consistent coding pattern has definitely been part of the reasoning. My company hasn&#39;t had one in the past ten years, unfortunately, and the recent introduction of CSLA to other projects has been super in this respect (as well as in other ways). But the other part of what you state is why I&#39;m questioning to begin with.</p>
+<p>There&#39;s one big factor we&#39;re considering - one that is generally frowned upon based on previous arguments I&#39;ve read from you: reusability. I know reuse isn&#39;t the intention of CSLA and that, instead,&nbsp;the <em>use-case</em> should always drive object design. I totally buy that - it makes sense. But in this case, I&#39;m not sure an Order object&nbsp;for a backend process can&#39;t also be used by a UI interface down the road...in either case, an order needs to have business and validation rules applied to it consistently. And that consistent processing is what we&#39;re trying to create now. Hopefully I&#39;m not being na&iuml;ve about this. Any further thoughts are welcomed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 16, 2013</h2><p>An Order object for a backend process will almost certainly be entirely unlike an Order object to support an interactive user scenario. Those are extremely different scenarios and trying to support both with one object model will result in a poor UI and/or poor backend performance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TSF replied on Monday, February 18, 2013</h2><p>Good to consider...I have not gone far into requirements so I&#39;ll be able to bring this concern up with my team.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, February 17, 2013</h2><p>H,</p>
+<p>I often find that in web services I use more of a format validation and not so much business validation as I do in a client scenario.&nbsp;</p>
+<p>So I agree with the points that Rocky lists plus you can use DataAnnotation rules in both CSLA and Contract objects.<br />And if you need a richer validation then I would look at CSLA business objects but they would certainly be different than in a rich-client, f.ex no async rules.&nbsp;</p>
+<p>I&#39;m not saying that you shouldn&#39;t use CSLA. But it is a good reminder to go through what and why you use the framework.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

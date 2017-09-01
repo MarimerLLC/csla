@@ -1,0 +1,71 @@
+<html><header><title>Mark newly created object as InValid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mark newly created object as InValid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4816.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay posted on Wednesday, May 07, 2008</h2><P>Hello,</P>
+<P>What is the best way of marking&nbsp;newly created object, with blank values, as InValid. Is calling ValidationRules.CheckRules() is the only way or do we have something like Object.MarkInvalid.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, May 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You typically always call ValidationRules.CHeckRules in
+DataPortal_Create or private constructor.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vijay
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 07, 2008 8:23 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Mark newly created object as InValid<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>What is the best way of marking&nbsp;newly created object, with blank
+values, as InValid. Is calling ValidationRules.CheckRules() is the only way or
+do we have something like Object.MarkInvalid.<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, May 08, 2008</h2>Hi,<br><br>An object is InValid when <i>ValidationRules.BrokenRulesCollection.count &gt; 0 </i>so yes - you must call ValidationRules.CheckRules()<br><br>/jonny <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay replied on Thursday, May 08, 2008</h2><P>OK, if that is the only way then it is fine.</P>
+<P>Thanks for replies.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

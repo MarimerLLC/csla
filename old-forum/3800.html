@@ -1,0 +1,68 @@
+<html><header><title>Which CSLA FrameworK to use..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Which CSLA FrameworK to use..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3800.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>haripriya_kumar posted on Monday, October 29, 2007</h2><P>Currently we have a windows .net product under development. We use CSLA version 2.1.3 and we use the windows methods but currently the product is tested in client-server model and the application runs very slow. Is there a way to speed up the application if we adapt a different CLSA framework.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 29, 2007</h2><P>It is unlikely that a different version of CSLA (such as 3.0) will help change the performance characteristics of your application. Most performance issues occur due to an object model being designed to pull back too much data, or other object design issues of that nature.</P>
+<P>CSLA is just a tool, and getting good performance or other benefits from the tool requires proper object design and understanding of the impact of various object design choices.</P>
+<P>In any architecture, the fewer physical tiers you have, the better performance you will tend to get. This is why CSLA defaults to running in a 2-tier model (local data portal). You should only move to a 3- or n-tier model if forced to do so by scalability or security requirements.</P>
+<P>While the data portal makes it nearly transparent to move from 2- to 3-tier, you must realize that the amount of data you retrieve in your objects will impact performance. And that impact is worse if you have more tiers, because the data must be transferred across more network links, etc. These costs have nothing to do with CSLA - they are a side-effect of being n-tier.</P>
+<P>If you must be n-tier, and you are seeing performance issues, then you should do some profiling work to determine the primary cause of the issues. It may be database design or contention - in which case a good DBA may be able to help. It may be moving objects across the network from app server to client - in which case your object model is flawed and must be reworked to retrieve less data (through lazy loading, or paging, or better analysis of your use cases and matching your objects to the use case using responsibility-driven design). It may be at the UI layer - in which case you may need to analyze how the data is getting to/from the objects and controls in your UI.</P>
+<P>If this is a web app, you must consider how you are managing Session (or if you are using it at all). There are&nbsp;a whole set of performance trade-offs that come with building web apps, most of which have more to do with the stateless nature of the web than with CSLA or the use of objects in general.</P>
+<P>If this is a Windows app, things are usually simpler. But still, proper use of caching for static data, and propery object design to minimize data transfer across the network is critical to success.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>haripriya_kumar replied on Wednesday, October 31, 2007</h2><P>Yes, we did profiling and found that in some cases we load a huge object but we use only very few properties of it.</P>
+<P>Since the setup is a client-server model we need to cache the objects, how do we go about caching the objects.</P>
+<P>Thanks for your support. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In a client/server (Windows Forms) model, you can typically use
+the static/Shared field caching technique I discuss in Chapter 9. You can see
+examples of using it in PTWin if you look at the Roles class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> haripriya_kumar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 31, 2007 9:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Which CSLA FrameworK to use..<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, we did profiling and found that in some cases we load a huge object but
+we use only very few properties of it.<o:p></o:p></p>
+
+<p>Since the setup is a client-server model we need to cache the objects, how
+do we go about caching the objects.<o:p></o:p></p>
+
+<p>Thanks for your support. <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

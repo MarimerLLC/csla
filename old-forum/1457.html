@@ -1,0 +1,41 @@
+<html><header><title>SSN RegEx in CommonRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SSN RegEx in CommonRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1457.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson posted on Wednesday, October 11, 2006</h2><P>Anyone having an issue with the SSN RegEx in CommonRules?&nbsp; When I use it on a field that is not a required field, it throws a broken rule.&nbsp; I manually edited the CSLA.CommonRules class and added </P>
+<P>|^[/S/s]{0,0}$</P>
+<P>to the end of the expression which seems to work; but I do not want to keep track of any modifications to the framework when new releases come out.&nbsp; Any suggestions?</P>
+<P>Thanks,</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Wednesday, October 11, 2006</h2><P>We must be on the same wavelength. See <A HREF="/forums/thread/7522.aspx">http://forums.lhotka.net/forums/thread/7522.aspx</A></P>
+<P>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley">http://devauthority.com/blogs/jwooley</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 11, 2006</h2>fwiw, the regex rule allows you to pass in the regex expression - so you could just do that instead of using the pre-supplied SSN expression.<br><br>Of all the things I did in 2.0, I think I regret putting <i>any </i>regex expressions into the framework itself the most. What a PITA they turn out to be...<br><br>Regarding the idea of returning true for all empty strings - I am skeptical about that being a good idea. At least not unless it is controlled by a flag in the ruleargs parameter so it is your choice as to whether that should happen or not.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Wednesday, October 11, 2006</h2><P>Please don't get me wrong and think that I'm bashing the framework, because I think CSLA is awesome.&nbsp; Just was not sure how the regex rules worked (if they were designed for required fields or what) that's all.</P>
+<P>Thanks Rocky.</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Wednesday, October 11, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>I would agree with the arg option and considered it 
+for simplicity. My problem with the regex as it currently sits is that it 
+appears to be doing two things (breaking pure oop): checking for required and 
+checking for syntax. That's why I recommended isolating the regex check for this 
+rule and using the required rule separately as necessary. Also, it was just 
+easier to do this rather than implementing the a custom RuleArgs class. I'm open 
+to either option.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Jim Wooley</FONT></DIV>
+<DIV><FONT face=Arial size=2>http://devauthority.com/blogs/jwooley</FONT></DIV>
+<BLOCKQUOTE>
+  <DIV>----- Original Message ----- </DIV>
+  <DIV><B>From:</B> 
+  <A title=cslanet@lhotka.net href="mailto:cslanet@lhotka.net">RockfordLhotka</A> </DIV>
+  <DIV><B>To:</B> <A title=jimwooley@hotmail.com href="mailto:jimwooley@hotmail.com">jimwooley@hotmail.com</A> </DIV>
+  <DIV><B>Sent:</B> Wednesday, October 11, 2006 5:35 
+  PM</DIV>
+  <DIV><B>Subject:</B> Re: [CSLA .NET] SSN RegEx in 
+  CommonRules</DIV>
+  <DIV><BR></DIV>fwiw, the regex rule allows you to pass in the regex expression 
+  - so you could just do that instead of using the pre-supplied SSN 
+  expression.<BR><BR>Of all the things I did in 2.0, I think I regret putting 
+  <I>any </I>regex expressions into the framework itself the most. What a PITA 
+  they turn out to be...<BR><BR>Regarding the idea of returning true for all 
+  empty strings - I am skeptical about that being a good idea. At least not 
+  unless it is controlled by a flag in the ruleargs parameter so it is your 
+  choice as to whether that should happen or not.<BR><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

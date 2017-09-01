@@ -1,0 +1,202 @@
+<html><header><title>Managed properties for BusinessBase objects only?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed properties for BusinessBase objects only?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5138.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, July 23, 2008</h2>Hi,<br><br>It seems like the answer is obvious, but are managed properties pretty much geared only toward use in BusinessBase classes?&nbsp; The only reason I'd see to use managed properties in ReadOnlyBase objects is to get the automatic CanReadProperty check done.&nbsp;&nbsp; Or should they not be used at all in ROBs?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, July 23, 2008</h2><P>Hi Andy, </P>
+<P>We're using managed properties in our read-only classes. </P>
+<P>Doing a quick look at the Csla's ReadOnlyBase shows a FieldManager there. </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 23, 2008</h2>Chris,<br><br>Ya, I did see you could.&nbsp; I guess I was just wondering what best practices would be.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 24, 2008</h2><P>I suggest always using RegisterProperty() and the GetProperty(), etc. helpers.</P>
+<P>Whether you use a private backing field or managed backing field is a different question. Private backing fields are faster, but require a tiny bit more code. Managed backing fields require less code, but are slower.</P>
+<P>Managed backing fields work automatically with CSLA Light. Private backing fields require that you write OnGetState() and OnSetState() methods to serialize/deserialize the values of those fields (just like in VB6) because reflection isn't workable in Silverlight (or medium trust in general).</P>
+<P>Personally, I default to using managed backing fields for all objects, and only switch to private backing fields if I find performance to be an issue (which honestly hasn't happened yet in any real work).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 24, 2008</h2>I guess I'm missing something; I thought you had to use managed fields to use RegisterProperty and GetProperty.&nbsp; <br><br>So will (has) the PTracker sample have it's read only BOs changed to use RegisterProperty and GetProperty?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It will ultimately use a mix of private backing fields and
+managed backing fields &#8211; so I can demonstrate both.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 24, 2008 7:36 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Managed properties for BusinessBase objects
+only?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I guess I'm missing something; I thought you had to use
+managed fields to use RegisterProperty and GetProperty.&nbsp; <br>
+<br>
+So will (has) the PTracker sample have it's read only BOs changed to use
+RegisterProperty and GetProperty?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 24, 2008</h2><P>Hey Rocky, quick question. </P>
+<P>You've said that managed fields are slightly slower when not using private backing. </P>
+<P>How much slower? Have you run benchmarks or is it more of a "it's slower just by nature of design" but not exactly quantified at this point? </P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It depends on the situation (how many fields, are you in tight
+loops, etc), but it can be about 15-20% slower or so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It has been a while since I did the testing &#8211; I was doing
+mass loading of objects with random data. If I recall correctly, it was loading
+around 10,000 objects per second with managed fields, and 12,000 with private
+backing fields &#8211; but this is totally from memory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it is slower by nature of design. Managed backing fields are
+stored in a data structure (array) rather than a private field, so there&#8217;s
+an array lookup to get/set the value rather than directly manipulating a single
+field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 24, 2008 8:56 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Managed properties for BusinessBase objects
+only?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hey Rocky, quick question. <o:p></o:p></p>
+
+<p>You've said that managed fields are slightly slower when not using private
+backing. <o:p></o:p></p>
+
+<p>How much slower? Have you run benchmarks or is it more of a &quot;it's
+slower just by nature of design&quot; but not exactly quantified at this point?
+<o:p></o:p></p>
+
+<p>Thanks!<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sixeyes replied on Saturday, August 02, 2008</h2>I'm new to CSLA. I'm using CSLA 3.5 and have been working with classes derived from ReadOnlyBase.<br><br>I've probably missed something but I found there was no LoadProperty in ReadOnlyBase and so as far as I could see the only way to use RegisterProperty etc in ROB was to use a private backing field.<br><br>Is there any way to use managed fields in ROB classes?<br><br>Iain<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ReadOnlyBase should provide GetProperty(), ReadProperty() and
+LoadProperty() methods &#8211; the only one it doesn&#8217;t implement is
+SetProperty().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sixeyes
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, August 02, 2008 6:55 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Managed properties for BusinessBase objects
+only?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm new to CSLA. I'm using CSLA 3.5 and have been working
+with classes derived from ReadOnlyBase.<br>
+<br>
+I've probably missed something but I found there was no LoadProperty in
+ReadOnlyBase and so as far as I could see the only way to use RegisterProperty
+etc in ROB was to use a private backing field.<br>
+<br>
+Is there any way to use managed fields in ROB classes?<br>
+<br>
+Iain<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sixeyes replied on Saturday, August 02, 2008</h2>Ah!<br>When I started I didn't know about LoadProperty(), only SetProperty() / GetProperty () and was confused when I couldn't use SetProperty() in ROB.<br>As the ROB classes in Project Tracker don't use RegisterProperty() I assumed they didn't work there.<br><br>Much later I discovered LoadProperty() but for some reason assumed it wasn't in ROB.<br><br>Thanks for the clarification.<br><br>Iain<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

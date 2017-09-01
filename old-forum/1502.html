@@ -1,0 +1,13 @@
+<html><header><title>BO selection Matrix</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BO selection Matrix</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1502.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh posted on Monday, October 16, 2006</h2><P>Hi!</P>
+<P>Is there some sort of a&nbsp;standard or a guideline/matrix&nbsp;in&nbsp;selecting the best BO to use in a given setup?</P>
+<P>e.g.</P>
+<P>If&nbsp; the UI&nbsp;is&nbsp;grid based (Editable DatagridView) then which is the best BO(s) to use (BusinessBase and BusinessListBase)</P>
+<P>If used in a dropdowncombo (NameValueList) etc.</P>
+<P>Sarosh</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 16, 2006</h2>Yes, your use cases, which should not mention the UI at all.<br><br>The use cases describe how the system should function.&nbsp; The system should function the same way regardless of the UI that's using the objects.<br><br>Typically though you end up using a grid when working with a BusinessListBase, and dropdown boxes usually use something deriving from NameValueList.&nbsp; Notice the wording though; the type of BO helps decide which UI component to use, not the other way around.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Monday, October 16, 2006</h2><P>Hi!</P>
+<P>Yes I agree with that a 100% but like you mentioned&nbsp; "the type of&nbsp; BO helps decide which UI component to use" and that's what I am looking for.</P>
+<P>e.g.</P>
+<P>&nbsp;BusinessListBase&nbsp;and BusinessBase&nbsp;-&gt; DataGridView (BusinessListBase for the collection and BusinessBase for each row)</P>
+<P>NameValueList -&gt; Dropdown combo boxes</P>
+<P>&nbsp;</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 16, 2006</h2>Yes, that'd be right.&nbsp; Usually BLBs are displayed in grids, NVL usually end up in dropdowns..<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

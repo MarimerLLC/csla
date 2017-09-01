@@ -1,0 +1,14 @@
+<html><header><title>How to bind to ViewModel's CanAddNew property?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to bind to ViewModel's CanAddNew property?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11030.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xc_lw posted on Wednesday, January 04, 2012</h2><p>I&#39;m using MVVM+CSLA4+BXF for SilverLight.</p>
+<p>In the xaml file I create a CollectionViewSource</p>
+<p>&lt;CollectionViewSource x:Key=&quot;viewSourceEntry&quot; d:DesignSource=&quot;{d:DesignInstance client:EapUserListViewModel, CreateList=True}&quot; /&gt;</p>
+<p>And I use the follow statement to show a view:</p>
+<p>Bxf.Shell.Instance.ShowView(viewName, bindingResourceKey, model,null)</p>
+<p>the model is an instance of ViewModel&lt;T&gt;&#39;s derived class--&gt;EapUserListViewModel,&nbsp;and I bind main Grid like this:</p>
+<p>&lt;Grid x:Name=&quot;Layout&quot; DataContext=&quot;{StaticResource viewSourceEntry}&quot;&gt;&lt;/Grid&gt;</p>
+<p>In the Grid I have some buttons, and I bind these buttons&#39; IsEnabled property to CanXXX property. But the CanAddNew property is not effictived.</p>
+<p>When I diagnose the code I found that the Grid&#39;s DataContext&#39;s&nbsp;type isn&#39;t an&nbsp;EapUserListViewModel instance, but a System.Windows.Data.ListCollectionView</p>
+<p>&nbsp;</p>
+<p>In EapUserListViewModel I override the CanAddNew,CanCancel,CanDelete,CanSave property and set breakpoint in each get method. I found when the view showing, all breakpoint can be hit except the CanAddNew&#39;s get method. </p>
+<p>So the btnAddNew always enabled. How to resolve the problem?</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

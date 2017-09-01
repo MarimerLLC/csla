@@ -1,0 +1,53 @@
+<html><header><title>How to implement a BrokenRule &quot;fixer&quot;? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to implement a BrokenRule &quot;fixer&quot;? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5172.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, July 29, 2008</h2><P>I'd like to implement the capability to implement an BusinessBase object "repair" type method that knows how to fix a specific broken rule, with the most common case being that&nbsp;additional information is required before the object can be saved.&nbsp; (Yes, you could bind the data directly, but this might be a seldom used feature and you don't want to take up screen real-estate for it, or it might be scrolled off the screen in a grid). </P>
+<P>The problem seems to be that the ValidationRules classes are so protected that it seems impractical, given a broken rule, to really know "which" rule it was programmatically. </P>
+<P>The best I can come up with is to see what name CSLA generates for it, and possibly do a string comparison.</P>
+<P>The idea I'm toying with is that the UI could inspect an object before saving it, and if it isn't valid, enumerate through the BrokenRulesCollection to see if there is anything that could be resolved by specifically prompting the user (versus just displaying an error provider or error message). </P>
+<P>Has anyone ever tried anything like this?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 30, 2008</h2><P>I am not following you. You want to artificially remove the broken rule (even though it is still broken) so you can succesfully call Save()?</P>
+<P>You can do that now, either by using the Warning severity instead of Error for the rule, or by overriding Save() and making it either not enforce the IsValid check, or having it ignore specific rules.</P>
+<P>At least so I think?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, July 31, 2008</h2><P>No, I don't want to tinker with the rules, I really want to fix the object by eliminating the "cause" of the rule violation.&nbsp; I just wanted to reliably know "which" rule is broken, so the appropriate transformation can be attempted on the object (by setting properties) to cause the rule to be unbroken. </P>
+<P>I just didn't see a way to reliably identify the original rule method from the BrokenRulesCollection -- maybe the rule name is good enough -- it seems to be something like rule://methodname/propertyname, but I didn't know how dependable this was. </P>
+<P>After I originally posted this, I came up with another way to do what I wanted -- the rule methods can just set properties in the object that the consumer can use for interrogating why the object is broken. However, this requires that the object implementation itself be modified versus a completely external test.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 31, 2008</h2>What exactly are you trying to accomplish?&nbsp; Is this for unit testing?&nbsp; If it is, your test should know which rules are supposed to be broken at any given time.. seems to be the whole point of the unit test.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, July 31, 2008</h2><P>The short and most general answer is that for any object, I would like to be able to determine programmatically "why" it is broken -- e.g. make logical decisions in the application itself&nbsp;based which broken rules are in the collection.&nbsp;&nbsp; The error message itself tells a user why it's broken, but certainly isn't&nbsp;much help to the application itself. </P>
+<P>The only way I currently see to identify a specific rule is by the RuleName property, which seems tenuous at best (e.g. your code would break if you renamed the rule method or the name generation algorithm changed later), but if this is very unlikely to change in CSLA then I could make do with that.</P>
+<P>If&nbsp; the consensus is&nbsp;that it's a&nbsp;bad idea to try to make logical decisions based on broken rules, then I can deal with that also and just go with a different approach. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The rule:// URI is reliable, at least during the time your app
+is running. It is discussed in the two ebooks, and CSLA 3.0 includes the
+RuleDescription class to help you easily parse the URI into its parts.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The whole point of the URI is to give the UI developer rich
+information about the rules, so I do suggest using it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, July 31, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The rule:// URI is reliable, at least during the time your app is running. </SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>OK, thanks -- this is helpful and I think answers my question. Is the only reason it might change between application invocations is that the rule arguments might be different (e.g. can I depend on everything else not changing?)</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 31, 2008</h2><P>I recommend using the RuleDescription class to parse it. In 3.6 the format will change slightly compared to 3.5, because in 3.5 there's an edge case where a duplicate rule name could occur. In 3.6 I'm including the name of the type that contains the rule method in the URI to avoid that issue. </P>
+<P>Anyone using RuleDescription won't notice a difference, but if you manually parse the URI you'll have to update your parse code.</P>
+<P>But the only reason the methodName and propertyName parts of the URI would change is if you rename your rule method or rename your property.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

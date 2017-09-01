@@ -1,0 +1,52 @@
+<html><header><title>CSLA .NET 2.1.1 available for download</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 2.1.1 available for download</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1781.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, November 16, 2006</h2>CSLA .NET 2.1.1 is now available for download from the <a href="http://www.lhotka.net/cslanet/download.aspx">download page</a>. This is a bug fix release, which addresses some issues in version 2.1. See the <a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=013e6222-e931-4539-a4ca-b2715c3f4f45">change log</a> for details.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Sunday, November 19, 2006</h2><P>I downloaded version 2.1.1 for my project. When I use AddDependantProperty()&nbsp;in AddBusinessRules(), suddenly all my business rules get&nbsp;ignored and IsValid always returns True for a newly created business object. All my business rules work ok&nbsp;after I removed all AddDependentProperty&nbsp;calls and&nbsp;use PropertyHasChanged method in the respective property setters.</P>
+<P>Is there any steps&nbsp;I need to do in order to use AddDependentProperty()?</P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2>Was your code working in 2.1 and is now failing in 2.1.1, 
+or is this new code in 2.1.1?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2>I ask, because I have existing code upgraded from 2.1 to 
+2.1.1 that is working fine, and I'm trying to narrow down whether you've 
+successfully used dependant properties up to this point?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2>Also, are we talking VB or C#?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=359495115-19112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> William [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Sunday, November 19, 2006 8:29 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 2.1.1 available 
+  for download<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I downloaded version 2.1.1 for my project. When I use 
+  AddDependantProperty()&nbsp;in AddBusinessRules(), suddenly all my business 
+  rules get&nbsp;ignored and IsValid always returns True for a newly created 
+  business object. All my business rules work ok&nbsp;after I removed all 
+  AddDependentProperty&nbsp;calls and&nbsp;use PropertyHasChanged method in the 
+  respective property setters.</P>
+  <P>Is there any steps&nbsp;I need to do in order to use 
+  AddDependentProperty()?</P>
+  <P>Regards,<BR>William</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Sunday, November 19, 2006</h2><DIV>Hi Rocky,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I attempted AddDependentProperty back in 2.1, it failed and I didn't use it. I found a post in this forum that this feature has some issues which is going to be fixed in the next release.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Later, I attempted the AddDependentProperty with the latest 2.1.1 and it failed too for the behavior I described.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am using the C# version.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks.</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Sunday, November 19, 2006</h2><DIV>Additional information.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>When I was attempting AddDependentProperty (which failed), I have both per-type and per-instance rules in my business object. Then, I converted all my rules to per-type and it didn't work either.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 21, 2006</h2><P>Still it should work. The mechanism is very simple - you make one property dependant on another, and so when the primary properties rules are checked (through PropertyHasChanged() or ValidationRules.CheckRules("prop")) the dependant property is checked too.</P>
+<P>Can you post your AddBusinessRules() code?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

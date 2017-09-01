@@ -1,0 +1,110 @@
+<html><header><title>Building Business Objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Building Business Objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7038.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB posted on Tuesday, June 02, 2009</h2><P>The whole point behind CSLA is to build a "behavior-center" model for use cases. This concept is difficult for me to comprehend. When designing my objects I always find myself wanting to add functionality for an existing object to suit a use case. How do you handle objects that fall into several use case scenarios?</P>
+<P>1) Use inheritance? </P>
+<P>2) Create an entirely new object.</P>
+<P>3) Create a single master "serve all" object?</P>
+<P>&nbsp;</P>
+<P>Mike B</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 02, 2009</h2><P>2 - create an entirely new object</P>
+<P>1 and 3 cause coupling. Coupling is (more or less) the root of all evil in software.</P>
+<P>Reuse can't exist without coupling. While reuse is often positive, it is not an end in and of itself. And more often than not, any benefit of reuse is outweighed by the cost of the coupling that comes with for the ride.</P>
+<P>Just remember - the real goal is to build software that is cheaper and easier to build and maintain. </P>
+<P>Reuse is merely a means toward that goal, but so is decoupling. So reuse is only good when coupling is minimized.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeB replied on Wednesday, June 03, 2009</h2><P>I was afraid of this answer although deep down I knew it was what you were going to say. How do you manage the object class names then if the object appears in several use cases and you create an entirely new object for each use case. Let's face it, there are only so many ways you can say "theCompany".</P>
+<P>&nbsp;</P>
+<P>Do you use namespaces for each use case? Maybe even a different .dll altogether?</P>
+<P>&nbsp;</P>
+<P>Mike B</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Wednesday, June 03, 2009</h2><P><FONT face=Arial size=2>Well I'm of the opinion that you add Business Methods (from different use cases)&nbsp;to a single class (say SalesOrder), as opposed to creating&nbsp;different SalesOrder&nbsp;classes in different Namespaces to implement the different business methods.&nbsp; Having similar classes in different namespaces will just add confusion about when to use which class.&nbsp; Rather have one (SalesOrder) class that contains all the methods that all the use cases require of a SalesOrder.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I use a combination of namespaces, and descriptive names.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Customers.CustomerEdit<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Customers.CustomerList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Customers.CustomerInfo<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Invoices.CustomerList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>MyApp.Invoices.CustomerInfo<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As an example. Though that is an unlikely scenario, because I
+find you can almost always reuse CustomerList/CustomerInfo (the read-only list)
+throughout an app.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I also find that few apps allow editing of most customer data
+outside the <i>edit a customer</i> use case, so it is a rare thing to have another
+&#8216;Customer&#8217; class anywhere in the model either.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>An InvoiceEdit object, for example, almost certainly has some
+properties that are &#8220;customer&#8221; values, but they are really part of
+the invoice in that use case, and so there&#8217;s still no CustomerEdit object
+in the <i>enter an invoice</i> use case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Friday, June 05, 2009</h2><P class=MsoNormal><SPAN>Hi folks,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I'm surprised there haven't been more opinions/responses to this question because I feel it is one of the more important topics. Maybe it’s because you gave such a <I>definite</I> response, Rocky, and people respect you too much to engage you on the topic. However, I really do believe that many, many dedicated CSLAers are breaking the rules you believe in. And, some, I feel with good reason.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Here’s my take for what its worth….<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I work in an environment where many applications are created to address different problems in the same domain space. Fundamental to understand that we are not a software house and, in terms of our status within the company, we are seen as resources more than business drivers. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Now, not a single application exists in this place that doesn’t share some commonality with others – example might be that Customer or Bank Account or Currency, etc. A key to us producing cheap software systems quickly is that we can look into our toolbox and pull out items that are already available:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>.data access components might be 5% of the new app<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>.all the good stuff in csla might be another 5%<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>.all of our own utilities to interact with queues, ftp, etc. another 7%<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>.code generation from our own templates 10%<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>.elements from our UI framework 20/30%<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>.etc.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You get the point. But also key is that we can look into our common business layer and pick out those real tangible business objects that can be used as they are or can be extended (inherited) to encapsulate some new behaviour. That Bank Account: well it represents something very real and tangible and consistent in our domain. It will always behave in some expected way yet something like a Concentration Account, which <I>is</I> a bank account, has added attributes and behaviours. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Our Bank Account behaves in many use-case scenarios but because its behaviour is consistent it can be reused and extended in a million different ways. If we find ourselves wanting to add behaviour to Bank Account to serve the need of a Concentration Account we know we have taken a wrong direction.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Anyway, maybe you folks will find a million holes in my approach but I really feel this mantra of <I>inheritance bad </I>is pretty destructive to the ideals of encapsulation and reuse. People believe it when authorative figures say it. The results I have seen are massive code bases (copy paste with no regard for encapsulation) that quickly become very costly to maintain as the business moves and adapts to new environments.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Back to that software house comment of earlier – I mentioned that because there is nobody here managing the code with an iron fist (our profits and future is not seen as dependent on a group of developers). I have found that if we create a new flavour of a business object for every possible use-case (even the read-only / child / parent / editable approach of CSLA) we quickly get to the stage where our flexibility and speed of keeping pace with a changing environment is dead. A simple example might be adding a new rule to that Bank Account class (and the recent activities of the banking sector will not doubt result in many new rules!) – if it clearly belongs there then it will propagate to all places where it used be they via inheritance, containment, etc. If we change it in only one of the many classes dipping in an out of the bank account space we are vulnerable.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Finally, Rocky, whatever happened to the <I>switchable</I> object – one that could behave <I>a little</I> differently in different circumstances? Rightly or wrongly all of our objects can be instantiated with some simple behaviour flags – readonly / real-time / child / cacheable / etc. I didn’t make this decision lightly but because we are not publishing/selling our business objects then it is an acceptable compromise for the UI/other client to determine what general behaviour the object should exhibit in a given circumstance – in a web environment the bank account might a real-time publisher but it’d be pointless having it be a subscriber. This can be done directly via the factory or via configuration. <SPAN>&nbsp;</SPAN>The reduction in <I>versions</I> of Bank Account in our business layer is worth the compromise.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Incidentally(as I’m telling you about my rule breaking), a little off topic but I have also guided that we always create consistent factory methods to all of our objects: Load(ICriteria) / Load(ISafeDataPackage). I mention this because it requires that I expose the Criteria objects as public. I found that code was littered with factories for different parameter combinations. This invariably causes an equal littering of constructors on the Criteria objects. But, the troubling part was that you could never really accommodate all the combinations of <I>optional</I> parameters. Exposing the Criteria means that a client(UI) can create one of those, populated it at leisure, and send something fully constructed to the business object requiring it to have limited (or no) code outside of the DataPortal method.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I wonder have others done similar?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, June 05, 2009</h2><P><FONT face=Tahoma size=2>Inheritance in and of itself is not bad.&nbsp; However, there seems to be quite a bit of mis-use on the topic.&nbsp; I'm not going to suggest that the situation you outline is a mis-use of inheritance - in fact, it seems you're using it appropriately.&nbsp; But OO programmers - especially new ones - tend to jump to inheritance too early in the game, and end up programming themselves into a corner.</FONT></P>
+<P><FONT face=Tahoma size=2>As a reference, none other than the Gang of Four suggest that you favor composition over inheritance.&nbsp; There are specific reasons for that.&nbsp; Rocky has outlined them in several other posts, as have many other web pages floating about.</FONT></P>
+<P><FONT face=Tahoma size=2>Yes - steering people away from inheritance is going to potentially retard the re-use of classes.&nbsp; But re-use is only one of the goals of software engineering.&nbsp; Maintainability is another.&nbsp; I'm not going to argue the merits of either, because asking 100 different people is going to get you 100 different answers.&nbsp; If you've seen "massive code bases (copy paste with no regard for encapsulation)", then you've seen bad programming.&nbsp; Yes, that makes the system less maintainable.&nbsp; But who's to say that you wouldn't have a different set of headaches if a poor inheritance hierarchy had been built?</FONT></P>
+<P><FONT face=Tahoma size=2>To comment on your "BankAccount" example, I don't see a problem with what you've done on its face.&nbsp; However, I'd also&nbsp;say that your "BankAccount" object doesn't sound like it does very much.&nbsp; Which is fine - bank accounts don't do much.&nbsp; They are a relatively simple concept that has been extended "a million different ways" by the financial system, but at the end of the day it's still a place where money goes in and out.</FONT></P>
+<P><FONT face=Tahoma size=2>"Customers", however, tend to do quite a bit, in quite a few different ways, depending on the situation.&nbsp; Sometimes they aren't even people.&nbsp; So while you could certainly build a "Contact" object to serve as the base for all your customer types, it's not going to be much more than a DTO to store some basic information.&nbsp; And since the type of information you keep for a person versus a business doesn't have a lot of overlap, that&nbsp;"Contact" can get really small really quick, and&nbsp;you begin to wonder why you have it at all.</FONT></P>
+<P><FONT face=Tahoma size=2>OO programming is, IMHO,&nbsp;largely about factoring behaviors into pieces of code - a class.&nbsp; This is the kind of software process that Rocky, and many others, put forth.&nbsp; I happen to agree with that philosophy, but I did before I really got into CSLA.&nbsp; It's the interactions of those classes that make the software go.&nbsp; Inheriting from a class means you are locked into the behaviors of your base class.&nbsp; That's not a bad thing - but you better be sure you need all of them, or that all of them apply.</FONT></P>
+<P><FONT face=Tahoma size=2>If you have common behaviors in all your systems, then by all means, go ahead and build your inheritance hierarchies and re-use your objects.&nbsp; But if you go back and really look at Rocky's posts, what he's saying is that inheritance and re-use&nbsp;should not be your overarching goal.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>How to use ExectuteMethod authorization rule?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use ExectuteMethod authorization rule?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9829.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>krasimir posted on Friday, December 03, 2010</h2><p>I have successfully set authorization rules for both type and property levels. However, I cannot enforce a method level authorization rule - how am I supposed to pass to the rule the desired method?</p>
+<p>I&#39;ve tried like this, but without success:</p>
+<p>Csla.Rules.BusinessRules.AddRule(typeof(Priority),</p>
+<p>new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod,&nbsp; &quot;NameOfMethod&quot; , &quot;Role&quot;));</p>
+<p>I also tried to pass the method like this:</p>
+<p>Csla.Rules.BusinessRules.AddRule(typeof(Priority), </p>
+<p>new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, new MethodInfo(&quot;NameOfMethod()&quot;) , &quot;Role&quot;));</p>
+<p>but also without success.</p>
+<p>I think I don&#39;t pass the name of the method correctly, but I cannot find anywhere info on this rule - there is vast ammount of information on type and property level authorization rules, but noting about ExecuteMethod.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 03, 2010</h2><p>Use RegisterMethod to register the method, much like you use RegisterProperty to register a property. Then use the resulting static metadata token to represent the method when adding and checking rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>krasimir replied on Friday, December 03, 2010</h2><p>I&#39;ve tried like this:</p>
+<p>&nbsp;&nbsp;&nbsp; [Serializable]<br />&nbsp;&nbsp;&nbsp; public class Priority : RootBase&lt;Priority, PriorityDto&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static MethodInfo AuthorizationTestMethod = RegisterMethod(typeof(Priority), &quot;AuthorizationTest&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public bool AuthorizationTest()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected static void AddObjectAuthorizationRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Rules.BusinessRules.AddRule(typeof(Priority), </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Csla.Rules.CommonRules.IsNotInRole(Csla.Rules.AuthorizationActions.ExecuteMethod, AuthorizationTestMethod, &quot;Role 1&quot;));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>And it still executes. In AddObjectAuthorizationRules() there are similar rules for properties, and work fine.</p>
+<p>Can you post a snippet how exactly I should call RegisterMethod?</p>
+<p>&nbsp;</p>
+<p>P.S. What exactly is considered &quot;editing&quot; regarding to AuthorizationActions.EditObject? If my class has two string properties, changing the text of one them is not considered &quot;editing&quot;, correct?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 03, 2010</h2><p>You do need to call CanExecuteMethod() at the top of the method.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

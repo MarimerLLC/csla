@@ -1,0 +1,34 @@
+<html><header><title>Building CSLA .NET 4.5.20</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Building CSLA .NET 4.5.20</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11910.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>flying_monkey posted on Thursday, March 28, 2013</h2><p>I can&#39;t seem to find any requirements to build CSLA .NET 4.5.20. I know there are pre-compiled binaries available but I would also like to compile them myself.</p>
+<p>From what I can tell Visual Studio 2012 is required, with .NET 4.5 or .NET 40 along with the async/await package that is available for VS 2012. Am I missing anything?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, March 30, 2013</h2><p>At a minimum you&#39;ll need:</p>
+<ul>
+<li>Windows 8</li>
+<li>Visual Studio 2012 with Update 1</li>
+<li>Latest nuget extension for VS12</li>
+<li>Windows Phone SDK</li>
+<li>Silverlight 5 SDK (I think this comes with VS12?)</li>
+<li>ASP.NET MVC 3</li>
+<li>ASP.NET MVC 4</li>
+<li>Entity Framework 4</li>
+<li>Entity Framework 5</li>
+</ul>
+<p>Some of those (like EF) should be automatic via nuget. Certainly the async targeting pack comes via nuget.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, November 10, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>At a minimum you&#39;ll need:</p>
+<ul>
+<li>Windows 8</li>
+<li>Visual Studio 2012 with Update 1</li>
+<li>Latest nuget extension for VS12</li>
+<li>Windows Phone SDK</li>
+<li>Silverlight 5 SDK (I think this comes with VS12?)</li>
+<li>ASP.NET MVC 3</li>
+<li>ASP.NET MVC 4</li>
+<li>Entity Framework 4</li>
+<li>Entity Framework 5</li>
+</ul>
+<p>Some of those (like EF) should be automatic via nuget. Certainly the async targeting pack comes via nuget.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>This means that if I have Windows 7 I will not be able to use CSLA .NET 4.5.X?</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, November 10, 2013</h2><p>Hi,</p>
+<p>You only need Windows 8 to build CSLA .NET for Windows Store.&nbsp;</p>
+<p>All other version of CSLA .NET can be build on Windows 7.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

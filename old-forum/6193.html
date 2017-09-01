@@ -1,0 +1,55 @@
+<html><header><title>type is not resolved for member</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>type is not resolved for member</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6193.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>oneinone posted on Monday, January 19, 2009</h2>hi all,<br>im getting error like this.<br><br><h2><i>Type is not resolved for member 
+'ProjectTracker.Library.Security.PTPrincipal,ClassLibrary1.Library, 
+Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.</i> </h2><br><br>How can i solve this?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 19, 2009</h2><P>This is a common question, and one you'll find covered in numerous threads on the forum.</P>
+<P>The short answer is this: the ASP.NET Development web server (Cassini) has some limitations around using custom principal objects - they just don't work.</P>
+<P>So you need to run PTWeb, PTWebService and&nbsp;PTWcfService in IIS, not Cassini. The install PDF from the download page tells you how to do this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oneinone replied on Monday, January 19, 2009</h2>im using the framework 3.5 ..how can i install the same in IIS<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/files/csla36/cslabuild.pdf">http://www.lhotka.net/files/csla36/cslabuild.pdf</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> oneinone
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 19, 2009 10:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] type is not resolved for member<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>im using the framework 3.5 ..how can i install the same in
+IIS<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oneinone replied on Tuesday, January 20, 2009</h2>thanks a lot..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oneinone replied on Tuesday, January 20, 2009</h2>sorry..dat link is not opening.<br>give me some alternative solution for the same<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oneinone replied on Tuesday, January 20, 2009</h2>i got the solution for this.<br>Now im facing diff pbm.<br><br><i>Could not find endpoint element with name 'WcfDataPortal' and contract 
+'Csla.Server.Hosts.IWcfPortal' in the ServiceModel client configuration section. 
+This might be because no configuration file was found for your application, or 
+because no endpoint element matching this name could be found in the client 
+element.</i> <br><br>How can i solve this?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

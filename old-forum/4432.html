@@ -1,0 +1,125 @@
+<html><header><title>MarkDirty called before CheckRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MarkDirty called before CheckRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4432.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben posted on Thursday, February 28, 2008</h2><P class=MsoNormal><SPAN>I would like to do a small suggestion to improve validations performance.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>Problem description<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The IsDirty can’t be used in validation rules because its value is not updated until the validation rules are checked. So if the first property that is edited on a business object is involved in a validation rule then that validation can’t check the IsDirty property because of it will get a wrong value (IsDirty = False).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Validations that need executing commands against the database are very expensive. When an object is clean we can avoid checks against the database assuming that all properties are valid in the database (the database constraints get it). Performance can be improved so much.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>Solution<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If method BusinessBase.PropertyHasChanged calls MarksDirty before calling CheckRules then the property IsDirty will have the right value when validations are performed.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Do the following change to BusinessBase:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> BusinessBase<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Inherits</SPAN> UndoableBase<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" IsNew, IsDeleted, IsDirty "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Overridable</SPAN> <SPAN>Sub</SPAN> PropertyHasChanged(<SPAN>ByVal</SPAN> propertyName <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>MarkDirty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ValidationRules.CheckRules(propertyName)</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN>OnPropertyChanged(propertyName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>...<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 28, 2008</h2>Not a bad idea, but I'm interested to hear if anyone can think of scenarios where this would break their code?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 28, 2008</h2>NT<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, February 28, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Not a bad idea, but I'm interested to hear if anyone can think of scenarios where this would break their code?</div></BLOCKQUOTE></P>
+<P>I have a lot of BOs and rules and none of them check IsDirty as part of their Validation rules. So this small change would not break my code.</P>
+<P>Just to verify, this change really only affects the first Property thatis modified on a BO because after that the BO is dirty. I can't see where this would hurt anything.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Friday, February 29, 2008</h2><P class=MsoNormal><SPAN>When a business object is edited, after the first property is changed, the object is dirty by definition. If we find that IsDirty property is useful on any validation rule then the IsDirty property should have the right value at the time of performing the validation. I see it as a consistency issue.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Setting the IsDirty property to True before calling CheckRules only may affect validations doe to the business object does not raise any notification (event) when MarkDirty is called from PropertyHasChanged.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I can’t imagine a situation where it may be problematic this small change, and I am also curious about how could be a use case which would be conflictive with.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks every body for your attention.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, I&#8217;ve slipped this changed into 3.5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Monday, March 03, 2008</h2><P>I am just looking to get a better understanding of CSLA with this question. How can we get into a validation routine without the object being dirty?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can call ValidationRules.CheckRules() pretty much any time
+you want &#8211; even before the object has been &#8220;changed&#8221;. For
+example, if you don&#8217;t trust the data from the database (or web service,
+or wherever you are getting your data) then you might call this method at the
+end of your DataPortal_Fetch(). The object isn&#8217;t dirty at that point, but
+it might be invalid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stanc
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 03, 2008 7:51 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: MarkDirty called before CheckRules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am just looking to get a better understanding of CSLA with this question.
+How can we get into a validation routine without the object being dirty?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 29, 2008</h2>Will not brake any of our code as none of our rules check for IsDirty.<br><br>/Jonny&nbsp; <br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

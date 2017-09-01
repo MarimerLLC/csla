@@ -1,0 +1,9 @@
+<html><header><title>CSLA 4.2 on mono testing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.2 on mono testing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>porcupine posted on Tuesday, August 23, 2011</h2><p>I&#39;m having trouble building CSLA 4.2 on mono.</p>
+<p>I&#39;ve just downloaded the source code and opened up csla.mono.sln in MonoDevelop. When I try to build it, it gives me the following error:</p>
+<p><br />Building: csla.mono (Debug)<br />Building Solution csla.mono<br />Building: Csla (Debug)<br />Performing main compilation...<br />Generating satellite assembly for &#39;ca-ES&#39; culture with al<br />Error while trying to invoke &#39;al&#39; to generate satellite assembly for &#39;ca-ES&#39; culture:<br />&nbsp;The system cannot find the file specified<br />Build complete -- 1 error, 0 warnings</p>
+<p>&nbsp;</p>
+<p>I&#39;m sure it must be something very simple, but I&#39;m stuck! Any help appreciated</p>
+<p>George</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, August 23, 2011</h2><p>Hi,</p>
+<p>Unfortunately - MonoDevelop does not build satellite assemblies for resource files properly on Windows OS. </p>
+<p>You can build CSLA 4.2 with Visual Studio and use the compiled assemblies in Mono and MonoDevelop<br />or remove the translated resource files to make it build in MonoDevelop.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>porcupine replied on Wednesday, August 24, 2011</h2><p>Hello,</p>
+<p>thank you!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

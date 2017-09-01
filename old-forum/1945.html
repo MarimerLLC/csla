@@ -1,0 +1,31 @@
+<html><header><title>Offtopic: Infragistics Child Collection Binding After Undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Offtopic: Infragistics Child Collection Binding After Undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1945.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena posted on Monday, December 11, 2006</h2><P>Good morning,</P>
+<P>I am facing what appears to be a binding issue with the Infragistics UltraWinGrid (Windows Forms). I have the grid bound to a RoleCollection, an Editable Root List. In the list are Role objects, Editable Child objects. Each Role object has&nbsp;an Editable Child&nbsp;list containing RoleRight objects. The&nbsp;list is lazy-loaded&nbsp;when the Role is expanded. </P>
+<P>The error occurs when I delete a RoleRight and then undo the changes, i.e. CancelEdit on the entire RoleCollection. When the changes are cancelled, the object is restored, but the grid contains one less row than it should, though the binding is correct in that the deleted RoleRight object is shown if it wasn't the last item in the list.</P>
+<P>So if I have 3 RoleRight objects in the list and delete the middle one, I now have 2 rows in the&nbsp;band showing the first and third RoleRight objects. If I undo, I have 3 RoleRight objects, but I only see two rows in the band showing the <EM>first and second</EM> RoleRight objects.</P>
+<P>I am hoping someone has seen this type of error before as I cannot see any reason why the grid is not displaying the correct number of rows.</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Monday, December 11, 2006</h2><P>After some investigation,&nbsp;I have some more clues but no answers.</P>
+<P>Suppose I have the following RoleRights:</P>
+<OL>
+<LI>CanReadNote</LI>
+<LI>CanWriteNote</LI>
+<LI>CanDeleteNote</LI></OL>
+<P>If I delete CanWriteNote (2), then the grid displays, as expected:</P>
+<OL>
+<LI>CanReadNote</LI>
+<LI>CanDeleteNote</LI></OL>
+<P>If I undo, then the grid displays, incorrectly:</P>
+<OL>
+<LI>CanReadNote</LI>
+<LI>CanWriteNote</LI></OL>
+<P>The third item, CanDeleteNote is in the collection, but it is not displayed in the grid.</P>
+<P>The other behavior that I observed is that if I add a new item to the collection and then undo it, <EM>and then</EM> delete the 2nd item and undo, I get the correct results. Why does adding a new item and undoing it cause the list to bind to the grid correctly? </P>
+<P>Any thoughts or ideas are highly appreciated.</P>
+<P>Christian</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Monday, December 11, 2006</h2><P>Problem solved.</P>
+<P>I had a "BindingSource.EndEdit()" in the Delete button handler. Once it was removed, the form functioned as expected.</P>
+<P>The next question: Why does EndEdit prevent the undo in the UltraWinGrid?</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 12, 2006</h2>That I can help with.&nbsp; EndEdit will cause your BOs to accept changes.&nbsp; This basically throws out the state for the last undo operation.&nbsp; Having the EndEdit in there was throwing off the undo stack somehow.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Tuesday, December 12, 2006</h2><P>I see. </P>
+<P>The only thing that bothers me is that the deleted item was returned to the collection, so&nbsp;in that sense,&nbsp;the undo was correct. Only 2 of the 3 items were displayed, so it seems to point to a problem in some part of the binding process. </P>
+<P>I will come back to it when time permits. Thanks for the response.</P>
+<P>Christian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 12, 2006</h2>Well you can have more than one state of undo.&nbsp; The problem is likely that the objects were not at the same EditLevel, so things got wacky quickly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Tuesday, December 12, 2006</h2><P>Thanks again. That sounds like the issue. I'll post here when I get to the bottom of it. Hopefully it will save others the trouble.</P>
+<P>Christian</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

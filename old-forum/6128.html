@@ -1,0 +1,18 @@
+<html><header><title>Performance Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6128.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Monday, January 12, 2009</h2><DIV>I am using LINQ to SQL&nbsp;to make "Stored Procedure" calls to the database.</DIV>
+<DIV>I am populating my BO's with the results that my stored procedure returns back to me.<BR><BR>Here is the question.</DIV>
+<DIV><BR>I am binding my BO's to a asp.net GridView control.<BR>I have "AutoPaging" on.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>It works with no problems.</DIV>
+<DIV><BR>What I am concerned with, is that my stored procedure might return back 10,000 + records at some point.</DIV>
+<DIV><BR>Do I need to do manual paging, such as passing a page size and page index to my stored procedure and let it page on the server.</DIV>
+<DIV><BR>Or will the GridView control handle this for me?<BR><BR>Thanks</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 12, 2009</h2><P>You can do paging in different places:</P>
+<OL>
+<LI>In the grid control (worst performance, easiest to implement)</LI>
+<LI>In the business list object (worst performance, harder to implement)</LI>
+<LI>In the DataPortal_Fetch() method (good performance, fairly easy to implement)</LI>
+<LI>In the database or SQL statement (best performance, potentially hard to implement)</LI></OL>
+<P>All these are supported by CSLA. If you are getting 10k items, I'd look at option 4.</P>
+<P>The <EM>CSLA .NET Version 2.1 Handbook</EM> has a section directly addressing these options.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, January 12, 2009</h2><P>I would agree with Rocky.&nbsp; If you are dealing with large recordsets, then implement paging as close the data as possible to eliminate as much excess data being transfered as possible.&nbsp; Even if you are dealing with a single-tier deployment where the UI, business logic and database exist on the same system there is a performance hit communicating with the database.&nbsp; Split these across a network and the impact is more severe.&nbsp; The more you can do to reduce the amount of data you transfer to only the data you actually need, the better.&nbsp; In my case, I'll pass in pageIndex and pageSize parameters to&nbsp;the sprocs where I implement paging and let SQL do the work.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Tuesday, January 13, 2009</h2><DIV>Thanks Rocky for your advice.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am going to page at the database level.</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

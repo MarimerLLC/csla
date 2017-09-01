@@ -1,0 +1,39 @@
+<html><header><title>Optional regex validation rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Optional regex validation rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1456.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley posted on Wednesday, October 11, 2006</h2><P>In an old thread (<A HREF="/forums/permalink/1596/1596/ShowThread.aspx#1596)the">http://forums.lhotka.net/forums/permalink/1596/1596/ShowThread.aspx#1596) the</A> question was asked how would you validate a regular expression that was optional. By default the&nbsp; RegExPatterns strings require the regex value. The response in that thread was to add the following to the regex string: |^[/S/s]{0,0}$.</P>
+<P>I would like to propose an alternate&nbsp;change to the RegExMatch method itself. In my mind, evaluation of a required field should not be part of the RegEx evaluator. If you have a required field (string), check it with the StringRequired rule. Thus, I recommend changing RegExMatch as follows:</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> RegExMatch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, _<BR>&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> RuleArgs) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp; Dim</FONT> CompareValue <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT> = _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>CallByName(target, e.PropertyName, CallType.Get).ToString<BR>&nbsp;&nbsp; </FONT><FONT size=2><FONT color=#0000ff>If</FONT> CompareValue = <FONT color=#0000ff>String</FONT>.Empty <FONT color=#0000ff>Then</FONT> <FONT color=#0000ff>Return</FONT> <FONT color=#0000ff>True<BR>&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp; </FONT></FONT><FONT size=2><FONT color=#0000ff>Dim</FONT> rx <FONT color=#0000ff>As</FONT> Regex = <FONT color=#0000ff>DirectCast</FONT>(e, RegExRuleArgs).RegEx<BR>&nbsp;&nbsp; </FONT><FONT size=2><FONT color=#0000ff>If</FONT> <FONT color=#0000ff>Not</FONT> rx.IsMatch(CompareValue) <FONT color=#0000ff>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2>e.Description = _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2><FONT color=#0000ff>String</FONT>.Format(<FONT color=#0000ff>My</FONT>.Resources.RegExMatchRule, e.PropertyName)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2><FONT color=#0000ff>Return</FONT> <FONT color=#0000ff>False<BR>&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff><FONT size=2>Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2><FONT color=#0000ff>Return</FONT> <FONT color=#0000ff>True<BR>&nbsp;&nbsp; </FONT></FONT><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Function</FONT></FONT></P>
+<P>With this implementation, we do not take the hit of regex evaluation if the value is an empty string.<BR>What say ye?</P>
+<P>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley">http://devauthority.com/blogs/jwooley</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Wednesday, October 11, 2006</h2><P>Hey Jim,</P>
+<P>Yeah, you must have been posting as I was typing.&nbsp; I have three fields that are not required, but if information is entered, it must match the format of the expression.&nbsp; However, when I add the Regex Common Rule check for the fields, I get broken rules.</P>
+<P>Has this always been the case, or is this something new?</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Wednesday, October 11, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>I am just starting to implement rules on a new CSLA 
+2.0 project so I can't say for sure, but I suspect that it has always been the 
+case since it has to do with the RegEx.IsMatch method which doesn't know about 
+optional values.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Jim Wooley<BR><A href="http://devauthority.com/blogs/jwooley">http://devauthority.com/blogs/jwooley</A></FONT></DIV>
+<BLOCKQUOTE>
+  <DIV>----- Original Message ----- </DIV>
+  <DIV><B>From:</B> 
+  <A title=cslanet@lhotka.net href="mailto:cslanet@lhotka.net">jkellywilkerson</A> </DIV>
+  <DIV><B>To:</B> <A title=jimwooley@hotmail.com href="mailto:jimwooley@hotmail.com">jimwooley@hotmail.com</A> </DIV>
+  <DIV><B>Sent:</B> Wednesday, October 11, 2006 4:34 
+  PM</DIV>
+  <DIV><B>Subject:</B> Re: [CSLA .NET] Optional regex 
+  validation rule</DIV>
+  <DIV><BR></DIV>
+  <P>Hey Jim,</P>
+  <P>Yeah, you must have been posting as I was typing.&nbsp; I have three fields 
+  that are not required, but if information is entered, it must match the format 
+  of the expression.&nbsp; However, when I add the Regex Common Rule check for 
+  the fields, I get broken rules.</P>
+  <P>Has this always been the case, or is this something new?</P>
+  <P>Kelly.</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

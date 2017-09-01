@@ -1,0 +1,205 @@
+<html><header><title>CSLA 3.8 question: getting this.Parent from a static business rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8 question: getting this.Parent from a static business rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10155.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lord02 posted on Thursday, March 10, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  21
+  
+  
+  false
+  false
+  false
+  
+  IS
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">*** update ***<br />ahhhh, of course ... I forgot the target.Parent :-)<br />************************************************************</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">In
+CSLA 3.8:</p>
+<p class="MsoNormal">Could
+you please tell me how I can reference this.Parent from a Business Rule ( as I
+understand it &hellip; all business rules must be <b>static</b> )</p>
+<p class="MsoNormal">I
+can also NOT use this.Parent ( of course! ) inside the static rule itself &hellip; how
+would you implement this ?</p>
+<p>&nbsp;</p>
+<p>private LogoutProcessManager GetParent()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IParent parent = <b>this</b>.Parent;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (LogoutProcessManager) parent;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private <b>static </b>bool RealmRule&lt;T&gt;(T target, RuleArgs e) where T : WebClientInformation<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LogoutProcessManager parent = GetParent();<b> // this will not work, because because the GetParent uses this.XXXXX but the business rule is static</b><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LogoutProcessState logoutProcessState = parent.CurrentState;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (string.IsNullOrEmpty(target.Realm) &amp;&amp; logoutProcessState != LogoutProcessState.Initialized)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = BusinessResources.RealmMissing;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Severity = RuleSeverity.Error;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Thanx in advance,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, March 10, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Lord02<br></b>*** update ***<br />ahhhh, of course ... I forgot the target.Parent :-)</div></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 10, 2011</h2><p>Quoted your text in the question to</p>
+<p>1) Highlight that this is the answer, as I just about finished my post before I noticed you didn&#39;t need an answer</p>
+<p>and</p>
+<p>2) not leave the question unanswered</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

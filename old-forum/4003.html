@@ -1,0 +1,293 @@
+<html><header><title>There is allways a Public Add method in BusinessListBase?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>There is allways a Public Add method in BusinessListBase?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4003.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Friday, December 07, 2007</h2>Hi everybody, I'm sorry to insist in this, but is something that worries me:<br><br>BusninessListBase inherits at some point from Collection(of T) and therefore has a Public Sub Add(item As T). What if I want a collection of child objects with its Add method Friend in scope?<br><br>This case is present when the parent object have two (or more) collections of child objects and the insert and remove operation of all of them are related (for example a remove operation for collection #1 triggers an insert operation for collection #2) and I want to control that behavior from the parent object.<br><br>Greetings from sunny Cancun!! and, as allways, forgive my mistakes in english.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 08, 2007</h2>I usually make my child objects have Private constructors and Friend factory methods. This way the UI can't create an instance of a child object, and so they are unlikely to add a child object to a collection.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Saturday, December 08, 2007</h2>Ok, that's the way I'm doing it too (following your instructions in the
+book, of course <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />). But in this case in particular I still have a
+problem, like I said before, the Add/Remove operations in my child collections (in this case) are related, so I have this:<br><br>Public Class Parent<br><br>#Region " Business Methods "<br>&nbsp; Private grantedRoles As RolesCol = ...<br>&nbsp; Private restOfRoles As RolesCol = ...<br><br>&nbsp; Public Sub AddRole(RoleId As...)<br>&nbsp;&nbsp;&nbsp; Dim item As Role = restOfRoles(RoleId)<br>&nbsp;&nbsp;&nbsp; grantedRoles.Add(item)<br>&nbsp;&nbsp;&nbsp; restOfRoles.Remove(item)<br>&nbsp; End Sub<br><br>&nbsp; Public Sub Remove Role(RoleId As ...)<br>&nbsp;&nbsp;&nbsp; Dim item As Role = grantedRoles(RoleId)<br>
+&nbsp;&nbsp;&nbsp; restOfRoles.Add(item)<br>
+&nbsp;&nbsp;&nbsp; grantedRoles.Remove(item)<br>
+&nbsp; End Sub<br>#End Region<br><br>#Region " Data Access "<br>&nbsp; Protected Sub Dataportal_Update<br><br>&nbsp;&nbsp;&nbsp;&nbsp; ...update Parent Data...<br><br>&nbsp;&nbsp;&nbsp;&nbsp; 'Update grantedRoles<br>&nbsp;&nbsp;&nbsp;&nbsp; grantedRoles.Update<br><br>&nbsp;&nbsp;&nbsp; 'Don't update restOfRoles<br>&nbsp;&nbsp;&nbsp; 'restOf Roles is just a helper collection, so its data is not in the database<br><br>&nbsp; End Sub<br>#End Region<br> <br>End Class<br><br>The problem: If the Add method in RolesCol is Public, the UI can take an item from restOfRoles collection and insert it into grantedRoles collection directly (without use AddRole method in Parent class)<br><br>Anyway that is the way I do this in CSLA 1.x. I guess now I'm going to forget about the AddRole and RemoveRole in the Parent class, and figure something out, maybe overriding the InsertItem method from Collection(of T) to tell the Parent object that a role is changing places.<br><br>Thank you very much Rocky for you reply, and have a good weekend. Let me say too that I'm a big fan of your work. Every body here at work use CSLA with wonderful results.<br><br>Saludos desde Cancun! And to the beach tomorrow!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, December 10, 2007</h2><P>I am also curious about how to hide that Add(item As T) method from the public view...preferrably I would like to do it in my base class where I hide other things too.</P><FONT size=2><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> JTBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> JTBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C), C </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IEditableBusinessObject)</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C)</P></FONT></FONT><FONT size=2>
+<P>One other thing I do is to Shadow the AllowEdit property to be&nbsp;ReadOnly...and added a protected sub SetAllowEdit.&nbsp; It gets rid of all the public stuff that our users would get confused with anyway.</FONT></P>
+<P>CSLA pattern is so nice in that I only expose the bare minimum at the public level.&nbsp; </P>
+<P>I have tried several ways to hide Add() in the base class but I can't figure it out.&nbsp; Would I have to do something in each collection class?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t recommend this, but&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can always shadow Add as a private member. In VB this is
+done with the Shadows keyword, and in C# with the new keyword.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is a bad idea, because it breaks polymorphism (you are
+literally removing a method that <i>should</i> be exposed via the base class),
+but it does work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private Shadows Sub Add(item As T)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> swegele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 10, 2007 9:38 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] There is allways a Public Add method in
+BusinessListBase?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am also curious about how to hide that Add(item As T) method from the
+public view...preferrably I would like to do it in my base class where I hide
+other things too.<o:p></o:p></p>
+
+<p><span>&lt;Serializable()&gt; _<o:p></o:p></span></p>
+
+<p><span>Public</span><span> <span>MustInherit</span> <span>Class</span> JTBusinessListBase(<span>Of</span>
+T <span>As</span> JTBusinessListBase(<span>Of</span> T, C), C <span>As</span>
+Csla.Core.IEditableBusinessObject)<o:p></o:p></span></p>
+
+<p><span>Inherits</span><span> BusinessListBase(<span>Of</span>
+T, C)<o:p></o:p></span></p>
+
+<p><span>One other thing I do is to Shadow the
+AllowEdit property to be&nbsp;ReadOnly...and added a protected sub SetAllowEdit.&nbsp;
+It gets rid of all the public stuff that our users would get confused with
+anyway.</span><o:p></o:p></p>
+
+<p>CSLA pattern is so nice in that I only expose the bare minimum at the public
+level.&nbsp; <o:p></o:p></p>
+
+<p>I have tried several ways to hide Add() in the base class but I can't figure
+it out.&nbsp; Would I have to do something in each collection class?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, December 10, 2007</h2><P class=MsoNormal><SPAN><O:P>Tried your method and it doesn't work if I do it on the base class...only if I do it on the actual business list class itself.&nbsp; It still shows up publically as an overload of Add(item as T).</O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P>It is strange on 2 accounts:</O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P>1.&nbsp; Because literraly item As T is showing up to the user...I would think intellisense would show the correct type instead of T</O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P>2.&nbsp; Still shows up publically even though I shadow it in the base class as private or friend</O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Shadowing is limited, and works in an almost opposite way from
+virtual methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Shadowing works based on the type of the VARIABLE you are using,
+not the type of the OBJECT you are using.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, shadowing only works if the variable is the same
+as the type of the class that does the shadowing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Dim x As CustomerList<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>x.Add(&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Add() will be unavailable only if CustomerList is the type that
+shadowed the method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But shadowing is the only option I&#8217;m aware of for this
+issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> swegele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 10, 2007 9:57 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: There is allways a Public Add method in
+BusinessListBase?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Tried
+your method and it doesn't work if I do it on the base class...only if I do it
+on the actual business list class itself.&nbsp; It still shows up publically as
+an overload of Add(item as T).<o:p></o:p></p>
+
+<p class=MsoNormal>It
+is strange on 2 accounts:<o:p></o:p></p>
+
+<p class=MsoNormal>1.&nbsp;
+Because literraly item As T is showing up to the user...I would think
+intellisense would show the correct type instead of T<o:p></o:p></p>
+
+<p class=MsoNormal>2.&nbsp;
+Still shows up publically even though I shadow it in the base class as private
+or friend<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, December 10, 2007</h2><P>OK that makes sense why it only works when I shadow it on the class and not just the base class.</P>
+<P>But if I don't do anything...(meaning no shadowing or funky stuff)...why does the method Add(item As T) show up to a consumer of my business objects?&nbsp; </P>
+<P>I would think it would show the actual type like Add(item as Customer) or whatever?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, December 10, 2007</h2>I mean intellisense for a consumer of the business list literally see's "T" and not "Customer" or whatever the class actually is.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 11, 2007</h2>Probably your best bet is to override Add and have it always throw a NotSupportedException.&nbsp; That way you're not breaking encapsulation, and Add won't function from the public API. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Tuesday, December 11, 2007</h2><P>Thanks ajj3085,</P>
+<P>2nd&nbsp;issue is I don't understand why intellisense would show a "T" instead of the actual type.&nbsp; If I use generics to make a list of type Customer, isn't the Add supposed to look like this in intellisense Add(item as Customer).&nbsp; Mine doesn't.&nbsp;&nbsp;Mine&nbsp;looks like this&nbsp;Add(item as T).</P>
+<P>Is this because I have my own base class JTBusinessListBase that inherits from Rocky's?&nbsp; Any body else seen this problem?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 11, 2007</h2>What does your collection class declaration look like?&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Tuesday, December 11, 2007</h2><P><STRONG>The base class that inherits from Rocky's is </STRONG></P><FONT size=2>
+<P>&lt;Serializable()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> JTBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> JTBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C), C </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Csla.Core.IEditableBusinessObject)</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C)</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><STRONG>The actual class (akin to customer) that I use is this</STRONG></P><FONT size=2><FONT size=2>
+<P>&lt;Serializable()&gt; _</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> JTCaseRequestList</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> JTBaseObjects.JTBusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> JTCaseRequestList, JTCaseRequest)</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Saturday, November 22, 2008</h2><P>I needed to bring this topic/thread back up because of something i am noticing here with my Developers.</P>
+<P>a lot of places they are using the Add/Insert/Remove methods... instead of AddItem/InsertItem/RemoveItem.</P>
+<P>I want to physically hide the first set of options so it does not even come up in the list of methods?&nbsp; I want to do this so the Devs here will be forced to use AddItem, etc.&nbsp; I saw the previous posts on encapsulation... but does anyong have a better idea to hide these methods?</P>
+<P>Also, what are the consequences with using the &lt;Obsolete&gt; Attribute instead?&nbsp; Is there some overhead with this attribute?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, November 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is no overhead, it is only used by compiler, not run time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ward0093
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, November 22, 2008 11:35 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: There is allways a Public Add method in
+BusinessListBase?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I needed to bring this topic/thread back up because of something i am
+noticing here with my Developers.<o:p></o:p></p>
+
+<p>a lot of places they are using the Add/Insert/Remove methods... instead of
+AddItem/InsertItem/RemoveItem.<o:p></o:p></p>
+
+<p>I want to physically hide the first set of options so it does not even come
+up in the list of methods?&nbsp; I want to do this so the Devs here will be
+forced to use AddItem, etc.&nbsp; I saw the previous posts on encapsulation...
+but does anyong have a better idea to hide these methods?<o:p></o:p></p>
+
+<p>Also, what are the consequences with using the &lt;Obsolete&gt; Attribute
+instead?&nbsp; Is there some overhead with this attribute?<o:p></o:p></p>
+
+<p>ward0093<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

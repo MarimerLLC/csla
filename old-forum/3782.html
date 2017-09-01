@@ -1,0 +1,135 @@
+<html><header><title>CanWriteProperty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CanWriteProperty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3782.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit posted on Thursday, October 25, 2007</h2><P>I am using the Overrides of the CanWriteProperty function to cause the interface to disallow editing of properties I wish to be readonly. My editable business objects also often have several readonly child collections for wish I want every property in that child collection to be readonly. Some of these child collections have many properties; is there a way I can make all the properties of a readonly child collection unwritable so that the interface marks the text boxes as readonly as above? I have tried returning false in the CanWriteProperty function on the collection name but it appears only the property name gets passed to this function.</P>
+<P><FONT size=2>Thank you in advance,</FONT></P>
+<P><FONT size=2>Rob</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 26, 2007</h2>Rob,<br><br>If the properties are always readonly, you might be better off just removing the property setter, or making it private.&nbsp; Then set your textboxes to readonly.&nbsp; <br><br>If they CAN be writable by those with permissions, then you should go the CanWriteProperty route.&nbsp; Override just as you would expect.&nbsp; The part you're missing may be using the ReadWriteAuthorization component, which you can use to automatically set textboxes to readonly, and other controls disabled.&nbsp; You can control that behavior on a control by control basis as well.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Friday, October 26, 2007</h2><P>Andy,</P>
+<P>Thanks for the response. I am using the ReadWriteAuthorization and it works great, in fact, I am wanting to find a way to make it mark all the text boxes containing fields from readonly child collections as readonly. It works great for a few fields in the Editable Business Object itself to use the CanWriteProperty such as:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> CanWriteProperty(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> propertyName = </FONT><FONT color=#a31515 size=2>"ID"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>False</FONT></P>
+<P><FONT color=#0000ff size=2>End If</FONT></P>
+<P><FONT color=#0000ff size=2>End Function</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>But when trying to make all the properties of a child collection (50 to 100 properties) readonly thru this method seems impractical. However, I definitely want to prevent the UI designer from having to manually make all the TextBoxes containing these child columns ReadOnly. I want to control as much as possible from the Business Objects. </FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Maybe there is a way through reflection or some other means&nbsp;to determine if the property being checked by the parent object thru the CanWriteProperty routine is actually a property of a child collection. </FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>If propertyName is ChildOf(ReadOnlyCollectionName) Then</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Return False</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>End if</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Possibly something like this. Any thoughts.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Rob</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 26, 2007</h2>I'm a little confused now; does the collection itself have a bunch of properties?&nbsp; Or the child objects in the collection?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Friday, October 26, 2007</h2><P>Yes, here is the declaration and property for the collection in the parent (BusinessBase) object:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> _drugInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ScriptAssist.DrugInfo</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> DrugInfo() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ScriptAssist.DrugInfo</P>
+<P>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Get</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty(</FONT><FONT color=#a31515 size=2>"DrugInfo"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return</FONT><FONT size=2> _drugInfo</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>As you might expect the DrugInfo object has many properties. It is of type ReadOnlyBase and has about 50 properties each of which need to be unwritable in the user interface. I wish there was a way in the CanWriteProperty routine of the BusinessBase class to get the class for the which the property is a member of, in this case the property is a member of the DrugInfo class.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Rob</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000><FONT size=2>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 26, 2007</h2>Ok, I'm a bit more confused now..<br><br>DrugInfo is a ReadOnlyBase... so there is no CanWriteProperty... so where does CanWriteProperty come in?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Friday, October 26, 2007</h2><P>DrugInfo is a child collection of the parent BusinessBase, PatientRecord. The CanWriteProperty routine of the parent object, PatientRecord, is called when I call:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ReadWriteAuthorization1.ResetControlAuthorization()</FONT></P>
+<P><FONT size=2>For each property exposed on the form from the child collection. Because there are so many properties in this child collection as well as others I do not wish to create hundreds of lines of code in the CanWriteProperty routine of the parent BusinessBase.&nbsp; These children are all ReadOnly therefore it seems like there would be a way to always return a false in the CanWriteProperty of the parent when accessing properties on these ReadOnly children.</FONT></P>
+<P><FONT size=2>Does this make more sense?</FONT></P>
+<P><FONT size=2>Thank You,</FONT></P>
+<P><FONT size=2>Rob</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2><P>This is all perfectly valid. The whole reason ReadOnlyBase has CanReadProperty() is to allow authorization-based rules to refuse to let the UI read some values based on the user's roles.</P>
+<P>However, some UI data binding technologies (Windows and WPF in particular) try to read the value no matter what you do (even if you otherwise prevent the value from being displayed), and of course that causes an exception and that can make the app go boom.</P>
+<P>As I discuss in <EM>Using CSLA .NET 3.0</EM>, a solution to this is to use a different overload of the method:</P>
+<P>Public ReadOnly Property Boo() As String<BR>&nbsp; Get<BR>&nbsp;&nbsp;&nbsp; If CanReadProperty(False) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _boo<BR>&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return "n/a"<BR>&nbsp;&nbsp;&nbsp; End If<BR>&nbsp; End Get<BR>End Property</P>
+<P>Rather than throwing an exception, return a dummy value. Then your UI code (using Csla.Windows.ReadWriteAuthorizer or Csla.Wpf.Authorizer) can prevent the dummy value from appearing to the user, even though data binding insisted on getting it from the object...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>culprit:</strong></div><div><FONT size=2>
+<P>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;Get</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanReadProperty(</FONT><FONT color=#a31515 size=2>"DrugInfo"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>)</P>
+<P></FONT></div></BLOCKQUOTE></P>
+<P>By the way, if you are going to pass the string literal name of the property to CanReadProperty(), then you shouldn't use the NoInlining attribute. All it does in that case is cost you a little performance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Saturday, October 27, 2007</h2><P>Rocky,</P>
+<P>Thank you for your replies. However, I am trying to prevent the writing of the property via the ReadWriteAuthorization control (Would result in TextBoxes being readonly). Do you have a tip on how to do this for all properties in a ReadOnlyBase child&nbsp;class of a BusinessBase object?</P>
+<P>Many Thanks,<BR>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 27, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ReadOnlyBase is designed to support objects with read-only
+properties. If you want read-write properties, then use BusinessBase.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> culprit
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, October 27, 2007 1:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CanWriteProperty<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Thank you for your replies. However, I am trying to prevent the writing of
+the property via the ReadWriteAuthorization control (Would result in TextBoxes
+being readonly). Do you have a tip on how to do this for all properties in a
+ReadOnlyBase child collection of a BusinessBase object?<o:p></o:p></p>
+
+<p>Many Thanks,<br>
+Rob<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Sunday, October 28, 2007</h2><P>Rocky,</P>
+<P>Yes, but here is my issue. I have a BusinessBase, Patient, which contains a child class ReadOnlyBase class, RecordInfo. What I was looking for was a way to make all the properties of the child ReadOnlyBase class, RecordInfo, ReadOnly with regards to the ReadWriteAuthorization control. For the BusinessBase properties I wish to make ReadOnly for the ReadWriteAuthorixation control I use the CanWriteProperty function and return False, but because there are so many properties in my ReadOnlyBase child classes I was hoping there was a way to return False in the CanWriteProperty function for all properties of the child ReadOnlyBase classes I might have. It just seems that thru reflection or some other means I could return False for all properties of these ReadOnlyBase child classes. Could you help in this situation?</P>
+<P>Thank You,<BR>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Monday, October 29, 2007</h2><P>Rocky,</P>
+<P>I have also noticed that if I have a property in the ReadOnlyBase child class that is the same name as a property in a parent BusinessBase class the propertyName comes thru as the same name in the CanWriteProperty routine in the parent class. With this in mind do you have a suggestion on how to tell that the property being analyzed in the CanWriteProperty originates from the child ReadOnlyBase class? Possibly some reflection method or other way could be used.</P>
+<P>Thanks,</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 29, 2007</h2><P>I'm afraid you are on your own here - this is outside the intended scope of ReadWriteAuthorizer, because having read-write properties on a ReadOnlyBase object is outside the scope of the ROB concept.</P>
+<P>It has been a long time since I've looked at the RWA control's code, so I don't remember what information is available from the binding objects. I believe, though, that you can get access to the underlying business object's type and property name. From there, you can probably get a System.ComponentModel.PropertyInfo object for the business object's property, and that would tell you if the property is a read-only property (having nothing to do with authorization - just the fact that the property is read-only). That would probably be a better solution than trying to graft a CanWriteProperty() into read-only properties.</P>
+<P>That'd be in the ApplyAuthorizationRules() method, where you'd need to change the code to accomodate this other concept.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Tuesday, October 30, 2007</h2><P>Rocky,</P>
+<P>Thank you very much. I will do this and post the resulting solution in case others need this functionality.</P>
+<P>Rob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>culprit replied on Wednesday, October 31, 2007</h2><P>I know modifying the ReadWriteAuthorization component is probably the correct path but I am having difficulty with the case of ROCs (ReadOnlyChildren [ReadOnlyBase objects]). </P>
+<P>I am modifying the ApplyAuthorizationRules to try and determine if a property of an object is set to ReadOnly. This works except when the property is a property of a child class. I cannot seem to get to the child class even though it appears to be coming across in the BindingMemberInfo. Here is a little of what I have tried:</P><FONT color=#008000 size=2>
+<P>' get the object property name</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = binding.BindingMemberInfo.BindingField</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> bindingPath </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = binding.BindingMemberInfo.BindingPath</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> bindInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> BindingMemberInfo(binding.BindingMemberInfo.BindingMember)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> t </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Type = bs.Current.GetType </FONT></P>
+<P><FONT size=2></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> pInfo </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyInfo</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> bindingPath.Length &gt; 0 </FONT><FONT color=#0000ff size=2>Then</FONT></P>
+<P><FONT color=#0000ff size=2>'This is not working to get to the child class datasource</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> newsource </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BindingSource = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> BindingSource(bs.Current, bindingPath)</P>
+<P>pInfo = bs.Current.GetType().GetProperty(binding.BindingMemberInfo.BindingMember)</P>
+<P>pInfo = newsource.Current.GetType().GetProperty(binding.BindingMemberInfo.BindingMember)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>pInfo = bs.Current.GetType().GetProperty(binding.BindingMemberInfo.BindingMember)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> pInfo.CanWrite = </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>ApplyWriteRules(control, binding, _</P>
+<P>ds.CanWriteProperty(propertyName))</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P>ApplyReadRules(control, binding, _</P>
+<P>ds.CanReadProperty(propertyName))</P>
+<P>The BindingMemberInfo is returning the Property name alone in the BindingField property (ie - "Cost"), the child class property of the parent in the BindingPath property ("DrugInfo") and the complete qualified name in the BindingMember property ("DrugInfo.Cost"). </P>
+<P>However, I am not able to get to the child class thru the BindingSource. </P>
+<P>Could someone please give me a suggestion of how to go from here?</P>
+<P>Thanks,</P>
+<P>Rob</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

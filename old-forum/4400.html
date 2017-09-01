@@ -1,0 +1,308 @@
+<html><header><title>Bug in Undo: Edit level mismatch in CopyState in version cslacs-3.0.4-080222</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in Undo: Edit level mismatch in CopyState in version cslacs-3.0.4-080222</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4400.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Saturday, February 23, 2008</h2><P>I've the following situation</P>
+<P>Model : Editable Root Parent (e.g. Shoe123)</P>
+<P>ModelColors : EditableChildList (e.g. we have two items black, gold)</P>
+<P>ModelColor : EditableChild</P>
+<P>Articles : EditableChildList (e.g. </P>
+<P>Article : EditableChild</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Barcode: 2000000001029 ,Size: 36 &nbsp;Price: 88 EUR, Color: black</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Barcode: 2000000001036 ,Size: 37&nbsp;&nbsp;Price: 88 EUR, Color: black</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Barcode: 2000000001043 ,Size: 36 &nbsp;Price: 99EUR, Color: gold</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Barcode: 2000000001050 ,Size: 37&nbsp;&nbsp;Price:&nbsp;99 EUR, Color: gold</P>
+<P>&nbsp;</P>
+<P>In the following case I receive the error : Edit level mismatch in CopyState</P>
+<P>Edit e.g. the first record for the first color (Barcode: 2000000001029 ,Size: 36 &nbsp;Price: 88 EUR, Color: black)</P>
+<P>Click Cancel. Until now everything goes fine.</P>
+<P>Edit e.g. the first record for the second color (&nbsp;Barcode: 2000000001043 ,Size: 36 &nbsp;Price: 99EUR, Color: gold)</P>
+<P>Click Cancel. Now I receive the error.</P>
+<P>I've implemented the code as in the project tracker example.</P>
+<P>I've tested it first with version : 3.0.2 and there I have also the same problem.</P>
+<P>I've tested it also with version cslacs-3.0.4-080222 and I have the same problem.</P>
+<P>&nbsp;</P>
+<P>Below you can find the code for the method RebindUI:</P>
+<P>Until one level I don't have any problems, but now I have two levels:</P>
+<P>Parent, ChildCollection, GrandChildCollection</P>
+<P>and since then I'm having problems.</P>
+<P>I now you have to be carefull in the order you unbind. So that's the reason I've included the code.</P>
+<P>Can you have a look at it?</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RebindUI(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> saveObject, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> rebind)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// disable events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelColorsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.articlesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// unbind the UI</P></FONT><FONT size=2>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.articlesBindingSource, saveObject, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelColorsBindingSource, saveObject, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>UnbindBindingSource(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelBindingSource, saveObject, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelColorsBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelBindingSource;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.articlesBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelColorsBindingSource;</P>
+<P></FONT><FONT color=#008000 size=2>// save or cancel changes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (saveObject)</P>
+<P>{</P>
+<P>_model.ApplyEdit();</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Model</FONT><FONT size=2> temp = _model.Clone();</P>
+<P>_model = temp.Save();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.BusinessException.ToString(),</P>
+<P></FONT><FONT color=#a31515 size=2>"Error saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK,</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBox</FONT><FONT size=2>.Show(ex.ToString(),</P>
+<P></FONT><FONT color=#a31515 size=2>"Error Saving"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MessageBoxButtons</FONT><FONT size=2>.OK,</P>
+<P></FONT><FONT color=#2b91af size=2>MessageBoxIcon</FONT><FONT size=2>.Exclamation);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>_model.CancelEdit();</P>
+<P></FONT><FONT color=#008000 size=2>// rebind UI if requested</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebind)</P>
+<P>BindUI();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// restore events</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelColorsBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.articlesBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (rebind)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// refresh the UI if rebinding</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.modelColorsBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.articlesBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2008</h2><P>Look at the code from this sample:</P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/</A></P>
+<P>This sample is a little test project I put together around data binding to grandchild objects, and it might be helpful to you. You can also pull the code completely <A href="http://www.lhotka.net/cslanet/Repository.aspx">from the repository </A>if you'd like.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, February 26, 2008</h2><P>I've looked at your example. Great, I didn't know that you have created a new example. I knew only about the deepdata example.</P>
+<P>I've studied your example and I found the magic line of code which solves the problem:</P><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> childrenBindingSource_CurrentChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.grandchildrenBindingSource.EndEdit();</P>
+<P>}</P></BLOCKQUOTE>
+<P dir=ltr><FONT size=3>In your ProjectTracker example you don't have this.</FONT></P>
+<P dir=ltr><FONT size=3>Rocky. Can you explain a bit more the reason of this? Is it not possible to put this in the framework?</FONT></P>
+<P dir=ltr><FONT size=3>As workaround I had&nbsp;found the following solution:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Grandchild()</P>
+<P>{</P>
+<P>DisableIEditableObject = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>...</FONT><FONT size=2></P>
+<P>}</P></FONT>
+<P dir=ltr><FONT size=3>With this the GUI doesn't have to do anything. But maybe you know some disadvantages for this implementation?</FONT></P>
+<P dir=ltr><FONT size=3>Some remarks:</FONT></P>
+<P dir=ltr><FONT size=3>1) I had to initialize the variable _name to string.Empty otherwise the example is not working</FONT></P><FONT color=#0000ff size=2>
+<P>string</FONT><FONT size=2> _name = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</FONT></P>
+<P><FONT size=3>2)</FONT></P>
+<P dir=ltr><FONT size=3>Creating a new root doesn't work. You can click on the + on the navigator, but saving and cancelling doesn't work.</FONT></P>
+<P dir=ltr>&nbsp;</P>
+<P dir=ltr>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is the responsibility of the UI (data binding really) to call
+the IEditableObject interface appropriately. Unfortunately data binding doesn&#8217;t
+seem to handle grandchild objects particularly well, because it doesn&#8217;t
+cascade the EndEdit calls down like you&#8217;d expect.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In fact, data binding doesn&#8217;t provide any indication that
+currency has changed at the grandchild level (it does at the child level oddly)
+and so <i>something</i> needs to handle that. Since the business layer isn&#8217;t
+even notified of such a currency change, I don&#8217;t know of a way to
+automate this within CSLA itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What you are doing with DisableIEditableObject works because you
+are blocking data binding from doing its BeginEdit. That is probably fine as
+long as your users don&#8217;t expect to be able to use in-place editing in a
+grid for those grandchild objects. Some things won&#8217;t work with this
+setting - most obviously having the user press ESC to undo changes in a row,
+but there could be others &#8211; I&#8217;m not sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 26, 2008 9:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bug in Undo: Edit level mismatch in CopyState
+in version cslacs-3.0.4-080222<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've looked at your example. Great, I didn't know that you have created a
+new example. I knew only about the deepdata example.<o:p></o:p></p>
+
+<p>I've studied your example and I found the magic line of code which solves
+the problem:<o:p></o:p></p>
+
+<blockquote>
+
+<p><span>void</span><span> childrenBindingSource_CurrentChanged(<span>object</span>
+sender, <span>EventArgs</span> e)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>this</span><span>.grandchildrenBindingSource.EndEdit();<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+</blockquote>
+
+<p>In your ProjectTracker example you don't have this.<span><o:p></o:p></span></p>
+
+<p>Rocky. Can you explain a bit more the reason of this? Is it not possible to
+put this in the framework?<span><o:p></o:p></span></p>
+
+<p>As workaround I had&nbsp;found the following solution:<span><o:p></o:p></span></p>
+
+<p><span>public</span><span> Grandchild()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>DisableIEditableObject = <span>true</span>;<o:p></o:p></span></p>
+
+<p><span>...<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p>With this the GUI doesn't have to do anything. But maybe you know some
+disadvantages for this implementation?<span><o:p></o:p></span></p>
+
+<p>Some remarks:<span><o:p></o:p></span></p>
+
+<p>1) I had to initialize the variable _name to string.Empty otherwise the
+example is not working<span><o:p></o:p></span></p>
+
+<p><span>string</span><span> _name = <span>string</span>.Empty;<o:p></o:p></span></p>
+
+<p>2)<span><o:p></o:p></span></p>
+
+<p>Creating a new root doesn't work. You can click on the + on the navigator,
+but saving and cancelling doesn't work.<span><o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, March 03, 2008</h2><P>Thanks for the explanation.</P>
+<P>In the VB world I tried to avoid the binding as much as possible. I thought in .NET everything is solved, but apparently not. Oh the binding stays a tough issue.</P>
+<P>In the following case I still have a problem with the example (besides the problems I explained in the previous mail):</P>
+<P>delete a child object</P>
+<P>click on cancel</P>
+<P>You'll receive the error "Edit level mismatch in CopyState".</P>
+<P>Rocky, do you now the magic line of code to solve this?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2><P>Data binding has its quirks&nbsp;- no doubt about it. But there is a such a huge code savings by using data binding compared to doing it yourself (and I don't know that you can replacate in-place grid editing without data binding in any case), that it is worth figuring out.</P>
+<P>Your edit level mismatch exception is due to some asymmetry. Every BeginEdit call must have a corresponding CancelEdit/EndEdit. You are just missing one somewhere.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, March 03, 2008</h2><P>I detected that your example was still using version 3.0.2.</P>
+<P>I've upgraded it to cslacs-3.0.4-080222 and then&nbsp;I don't have this problem anymore.</P>
+<P>Great.</P>
+<P>You changed something to solve this, because I didn't changed anything in your example code?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Probably. I know there were a couple data binding fixes in 3.0.3
+and 3.0.4 (see the change logs) and it is quite likely that one of them
+addressed this issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 03, 2008 9:05 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Bug in Undo: Edit level mismatch in
+CopyState in version cslacs-3.0.4-080222<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I detected that your example was still using version 3.0.2.<o:p></o:p></p>
+
+<p>I've upgraded it to cslacs-3.0.4-080222 and then&nbsp;I don't have this
+problem anymore.<o:p></o:p></p>
+
+<p>Great.<o:p></o:p></p>
+
+<p>You changed something to solve this, because I didn't changed anything in
+your example code?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

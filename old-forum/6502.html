@@ -1,0 +1,59 @@
+<html><header><title>error in the WSDLusing  remoring portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>error in the WSDLusing  remoring portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6502.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcotonix posted on Tuesday, February 24, 2009</h2><p class="MsoNormal"><span>Hi <o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>We have a
+remoting portal web <span>&nbsp;</span>application using a
+web service with CLSA 3.0.4 and everything is working ok, so we sent our
+product to Microsoft certification but they found an error when they run the
+WSDL<span>&nbsp; </span>tool <span>“Error: Unable to import
+binding 'RemotingPortalBinding' from namespace 'http://s</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>chemas.microsoft.com/clr/nsassem/Csla.Server.Hosts/Csla%2C%20Version%3D3.0.4.0%2<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>C%20Culture%3Dneutral%2C%20PublicKeyToken%3D93be5fdc093e4c30'.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>- Unable to import operation 'Create'.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; - The datatype
+'http://schemas.microsoft.com/clr/ns/System:Type' is missing.” </span><span>&nbsp;</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>I checked
+the wsdl file and all the namespaces are ok the problems are in all the data
+type definitions <span>&nbsp;</span>that have relation with
+the namespace <span>&nbsp;</span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>"<span>http://schemas.microsoft.com/clr/ns/System</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>“http://schemas.microsoft.com/clr/nsassem/System.Collections.Specialized/System%2C%20Version%3D2.0.0.0%2C%20Culture%3Dneutral%2C%20PublicKeyToken%3Db77a5c561934e089”<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>All these
+data type are used it in the CLSA <span>&nbsp;</span>so I
+am wondering if you have some idea what could<span>&nbsp;
+</span>be the reason about these error, I have been looking for the internet
+for a solution that resolves this problem but nothing yet, I appreciate any
+idea that you have about this issue.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>I attached
+my wsdl and webconfig. <o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 24, 2009</h2><P>There's a known issue that you can't request the wsdl for the RemotingHost for the data portal. This doesn't affect the operation of the data portal, because it never requests the wsdl. Additionally, since the data portal is a closed technology, no one should ever get the wsdl, much less try to use it. Only the data portal client can successfully invoke the data portal host.</P>
+<P>In other words, this is technically a bug, but I've viewed it as a super low priority bug. First, because it doesn't affect the use of the data portal. Second, because it actually blocks people from doing something bad (getting and trying to use the wsdl), so the bug is "beneficial". And third, because Remoting is depreciated, and I recommend that people move to WCF.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcotonix replied on Wednesday, February 25, 2009</h2>Thanks for the reply, I agree with your because the application is working very well, so I will try to convince the guys so we can continue with the certification and in the future version we are goping to move to WCF.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcotonix replied on Thursday, February 26, 2009</h2>
+
+<p class="MsoNormal"><span>To avoid
+problems with the certification, I did changes in the configuration files to
+use WCF but I have an error so I ran the project tracker application to see
+how works but I receieve the same error<span>&nbsp;
+</span><br></span></p><p class="MsoNormal"><b><span>Message="Could not load type 'Csla.DataPortalClient.WcfProxy' from
+assembly 'Csla, Version=3.0.4.0, Culture=neutral,
+PublicKeyToken=93be5fdc093e4c30'."<o:p></o:p></span></b></p>
+
+<p class="MsoNormal"><b><span><span>&nbsp;</span>Source="mscorlib"<o:p></o:p></span></b></p>
+
+<p class="MsoNormal"><span><b><span>&nbsp;</span>TypeName="Csla.DataPortalClient.WcfProxy"</b><o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>I modified
+in different way the configuration file but nothing works, any idea what am I
+doing wrong?<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcotonix replied on Friday, February 27, 2009</h2>I found the problem for some reason the Clsa DLL was wrong so I just download the source code and re-build and every thing is working ok now.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

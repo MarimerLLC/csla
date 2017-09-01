@@ -1,0 +1,13 @@
+<html><header><title>DoRefresh behavior if DataPortalException thrown</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DoRefresh behavior if DataPortalException thrown</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8865.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky posted on Saturday, May 01, 2010</h2><p>Hi all,</p>
+<p>Playing with CSLA 4 preview. Just a small WPF test application.</p>
+<p>Right now the behavior of DoRefresh is to catch any DataPortal exception and set the Error property on the ViewModel.</p>
+<p>In many (if not all) scenarios, I want to &quot;blank out&quot; all bound controls in such situation, so I&#39;d set Model = null. I wonder if that shouldn&#39;t be DoRefresh&#39;s default behavior ? I&#39;d like to hear the pros and cons of the actual vs. proposed behavior.</p>
+<p>My POV is that if a call to DoRefresh fails, I certainly&nbsp;don&#39;t want to leave the controls displaying the old object&#39;s data. For example, if I call DoRefresh(&quot;GetCustomer&quot;, ID); and the ID is not a valid one, then of course no object will be returned from the DataPortal.</p>
+<p>Thanks for sharing your ideas.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, May 03, 2010</h2><p>*nudge*</p>
+<p>I was seeing it going near the bottom ;-)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 03, 2010</h2><p>OnError() is a virtual method, so you can override OnError() and set Model to null.</p>
+<p>This is one of those things where I could make the behavior work either way to make some subset of users happy. But if I set Model to null, it is harder for someone to block that behavior than if I leave Model alone - because it is easy to override OnError() and make it null.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, May 03, 2010</h2><p>Thanks Rocky,</p>
+<p>I think you&#39;re right on this. That&#39;s why I wanted to &quot;test the water&quot;.</p>
+<p>Overriding OnError sounds like a good way to handle this situation.</p>
+<p>Maybe my question has a broader scope than what I suspect ? I mean, how a &quot;no data&quot; situation should be handled is certainly different from app to app. In my case, as I said, I blank out the controls (through databinding). Others might have different techniques ?</p>
+<p>Regards</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

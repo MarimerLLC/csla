@@ -1,0 +1,80 @@
+<html><header><title>Asynchronous operations outside of Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Asynchronous operations outside of Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5701.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Wednesday, October 29, 2008</h2>I am assuming the answer is yes, but I just wanted to confirm.<br><br>Is there anything stopping you from making asynchronous calls through the data portal outside of silverlight. For instance, if I have a normal WPF application and want to make an asynchronous request on a Business Object, can i use the asynchronous operations plumbing? If so, is this advisable or am I best to handle the asynchronous operations manually. As i said i think the answer is yes, but i just wanted to check.<br><br>Also just wanted to check if the MobileObject infrastructure was put in place just for silverlight? <br><br>Cheers<br>Anthony <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure, you can.&nbsp; Asynchronous data portal can be used anywhere
+now, in WPF, WInForm or WebForms.&nbsp; The question really is do you have a
+scenario where you have an advantage of doing so?&nbsp; Typically, your forms
+would load faster, but the user cannot use them until the data is fully loaded.&nbsp;
+You can Save calls asynchronously as well, but you need to have a real good
+strategy of handling errors from those calls, because the user can close the
+form before save is actually completed, and then you have a problem&#8230;&nbsp;
+Where they are extremely useful is in enabling you to provide animation for
+long running fetch or save operations because your UI thread is free to do
+whatever since portal calls are executing on background thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 29, 2008 11:54 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Asynchronous operations outside of Silverlight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am assuming the answer is yes, but I just wanted to
+confirm.<br>
+<br>
+Is there anything stopping you from making asynchronous calls through the data
+portal outside of silverlight. For instance, if I have a normal WPF application
+and want to make an asynchronous request on a Business Object, can i use the
+asynchronous operations plumbing? If so, is this advisable or am I best to
+handle the asynchronous operations manually.<br>
+<br>
+As i said i think the answer is yes, but i just wanted to check.<br>
+Cheers<br>
+Anthony <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 30, 2008</h2>I think the answer is, "yes, there are a few good reasons."<br><br>The forms loading faster provide a better user experience, making over-all time seem to be shorter.<br><br>As for saving, it's easy to stop the form from closing while an async operation is running; I always do my saves in the background.&nbsp; It allows you to disable the controls, and actually have the user see it's disabled, and Windows doesn't think your program has become unresponsive.&nbsp; <br><br>In Windows forms this is fairly easy; use a Background worker.&nbsp; Unbind your UI as normal, disable the controls, and start the background worker.&nbsp; Your DoWork handler just does the save.&nbsp; In ProcessCompleted, check for error and handle appropriately, and rebind the UI.&nbsp; Then, just override OnClosing and set e.Cancel = saveWorker.IsRunning.&nbsp; The user won't be able to close the window.&nbsp; You could also display a message explaining to the user why they can't close the window.<br><br>I really recommend it.&nbsp; <br><br>It's harder to do this in Wpf though; impossible actually if you're using CslaDataProvider, because Saving doesn't honor the IsAsync setting.&nbsp; I have modified it actually to do so, but I haven't tested it enough yet, but it appears to work.<br><br>Well, enough of my ranting. <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, October 30, 2008</h2>Cheers and thanks for the replies.<br>Anthony<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,251 @@
+<html><header><title>Is this to do with csla?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is this to do with csla?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8054.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis posted on Friday, November 27, 2009</h2>Hi all, i am getting this error in my application when people try to edit a business object.&nbsp; I am using version 3.6.1 with .net 3.5.&nbsp; The stacktrace would suggest that the problem would lye within CanReadProperty, but when i look up this error online, people say that mscor.lib is something to do with user code not csla?&nbsp; We have many business objects, some of which have the same property names, which shouldnt be a problem.&nbsp; We are using managed fields as well.<br><br>Anyone got any clues?<br><br>
+<strong><span>Message : </span></strong><span>An item with the same key has already been added.<br>
+<strong><span>StackTrace : </span></strong>at
+System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)<br>
+at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value,
+Boolean add)<br>
+at System.Collections.Generic.Dictionary`2.Add(TKey key, TValue value)<br>
+at Csla.Core.BusinessBase.CanReadProperty(String propertyName)<br>
+at Csla.Core.BusinessBase.CanReadProperty(String propertyName, Boolean
+throwOnFalse)<br>
+at Csla.Core.BusinessBase.GetProperty[P](PropertyInfo`1 propertyInfo,
+NoAccessBehavior noAccess)<br>
+at Csla.Core.BusinessBase.GetProperty[P](PropertyInfo`1 propertyInfo)<br>
+at BSL.Library.Configuration.Module.Module.get_ClassName()<br>
+at BSL.Library.Configuration.Module.ModuleList.get_GetModule(String pName)<br>
+at BSL.Library.Core.CompanyItem.CanGetObject()<br>
+at BSL.Web.eContrack.Page_Load(Object sender, EventArgs e)<br>
+at System.Web.UI.Control.OnLoad(EventArgs e)<br>
+at System.Web.UI.Control.LoadRecursive()<br>
+at System.Web.UI.Control.LoadRecursive()<br>
+at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint,
+Boolean includeStagesAfterAsyncPoint)</span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 30, 2009</h2>If you're registerpropety calls are not setup correctly, this may happen.&nbsp; Are you using the overloads which take a System.Type as the first parameter?&nbsp; If you are, don't.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Thursday, December 17, 2009</h2>Hi,<br><br>No i am not using that overload, i do not pass the System.Type<br><br>Here is an example of one of my properties<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Name() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(NameProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(NameProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>The stacktrace seems to imply that the error is being caused within the CanReadProperty? The code for the CanReadProperty(propertyName) method.&nbsp; If i load this in BusinessBase (which is what my object inherits from) you will see<br><br>&nbsp;&nbsp;&nbsp; public virtual bool CanReadProperty(string propertyName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result = true;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VerifyAuthorizationCache();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_readResultCache.TryGetValue(propertyName, out result))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (AuthorizationRules.HasReadAllowedRoles(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // some users are explicitly granted read access<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // in which case all other users are denied<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!AuthorizationRules.IsReadAllowed(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (AuthorizationRules.HasReadDeniedRoles(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // some users are explicitly denied read access<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (AuthorizationRules.IsReadDenied(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // store value in cache<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _readResultCache.Add(propertyName, result);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br>&nbsp;&nbsp;&nbsp; }<br><br>I have searched to posts about this on the forum and found this http://forums.lhotka.net/forums/post/19091.aspx<br><br>The forum is to do with another method called "SharedAuthorisationRules.GetManager()" but i wonder if the problem is happening here.&nbsp; Our servers are multi-core and if two cores try to execute<br><br> if (!_readResultCache.TryGetValue(propertyName, out result))<br><br>and they are both false, then both will execute<br><br> _readResultCache.Add(propertyName, result);<br><br>which i believe is where the error is.&nbsp; Shouldnt this all be wrapped in a lock? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 17, 2009</h2>Is your class subclassing another class which has its own property info objects?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Thursday, December 17, 2009</h2>no not this one<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 17, 2009</h2><P>Hmm... I'm at a loss.&nbsp; Can you post all of the classes' code?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Friday, December 18, 2009</h2>Its all very simple, i am using a lasy load as one property, which is below, but i guess there is nothing wrong with this is there?<br><br>The stacktrace suggests that there maybe a problem<br>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-GB
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;
+	mso-bidi-font-family:"Times New Roman";
+	mso-bidi-theme-font:minor-bidi;}
+
+<strong><span>Message : </span></strong><span>An item with the same key has already been added.<br>
+<strong><span>StackTrace : </span></strong>at
+System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)<br>
+at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value,
+Boolean add)<br>
+at Csla.Core.BusinessBase.CanReadProperty(String propertyName)<br>
+at Csla.Core.BusinessBase.CanReadProperty(String propertyName, Boolean
+throwOnFalse)<br>
+at Csla.Core.BusinessBase.GetProperty[P](PropertyInfo`1 propertyInfo,
+NoAccessBehavior noAccess)<br>
+at Csla.Core.BusinessBase.GetProperty[P](PropertyInfo`1 propertyInfo)<br>
+<b>at BSL.Library.Configuration.Database.get_ModuleList()</b><br>
+at BSL.Library.Scoring.ScorecardItem.CanGetObject()<br>
+at BSL.Web.ScoringDataEntry.ScoringWizard.Page_Load(Object sender, EventArgs e)<br>
+at System.Web.UI.Control.OnLoad(EventArgs e)<br>
+at System.Web.UI.Control.LoadRecursive()<br>
+at System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint,
+Boolean includeStagesAfterAsyncPoint)</span><br><br>Namespace Configuration<br>&nbsp;&nbsp;&nbsp; &lt;Serializable()&gt; _<br>&nbsp;&nbsp;&nbsp; Public Class Database<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits BusinessBase(Of Database)<br><br>#Region " Business Methods "<br><br>#Region " Basic "<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared SamProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Sam"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property Sam() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(SamProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared NameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Name"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Name() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(NameProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(NameProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared ShortNameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("ShortName"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property ShortName() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(ShortNameProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(ShortNameProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared ImageProperty As PropertyInfo(Of Byte()) = RegisterProperty(New PropertyInfo(Of Byte())("Image"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Image() As Byte()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(ImageProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As Byte())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(ImageProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared ConfigurationProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Configuration"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Configuration() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(ConfigurationProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(ConfigurationProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared ThemeProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Theme"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Theme() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(ThemeProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(ThemeProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared LocaleProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)("Locale"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Locale() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(LocaleProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty(LocaleProperty, value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared ModuleListProperty As PropertyInfo(Of ModuleList) = RegisterProperty(New PropertyInfo(Of ModuleList)("ModuleList"))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public ReadOnly Property ModuleList() As ModuleList<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(ModuleListProperty) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ModuleListProperty, ModuleList.GetModuleList(ReadProperty(SamProperty)))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(ModuleListProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>#End Region<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' Used this function to find a name.&nbsp; You must pass in the fullname, module and property name separated by a full stop.&nbsp; e.g. CompanyItem.Name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' This function must be used to return a property within a module!<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' &lt;param name="pName"&gt;&lt;/param&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' &lt;returns&gt;&lt;/returns&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ''' &lt;remarks&gt;&lt;/remarks&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Function GetName(ByVal pName As String) As Name.Name<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each lModule As [Module].Module In ModuleList<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If pName.Contains(".") AndAlso lModule.ClassName = pName.Substring(0, pName.IndexOf(".")) Then<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return lModule.NameGroupList.GetName(pName.Substring(pName.IndexOf(".") + 1))<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New ArgumentException(pName &amp; " does not match or contain the name of any module within this database.")<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>#End Region<br><br>#Region " Factory Methods "<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function NewDatabase() As Database<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of Database)()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function GetDatabase(ByVal pName As String) As Database<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch(Of Database)(New SingleCriteria(Of Database, String)(pName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Sub New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Require use of factory methods<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>#End Region<br><br>#Region " Data Access "<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;RunLocal()&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Create()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.DataPortal_Create()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Overloads Sub DataPortal_Fetch(ByVal criteria As SingleCriteria(Of Database, String))<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using ctx = ConnectionManager(Of SqlClient.SqlConnection).GetManager(BSL.Library.Configuration.Current.Security)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm = ctx.Connection.CreateCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ..............<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Transactional(TransactionalTypes.TransactionScope)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Insert()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' insert values<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Transactional(TransactionalTypes.TransactionScope)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Update()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using ctx = ConnectionManager(Of SqlConnection).GetManager(BSL.Library.Configuration.Current.Data)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If IsSelfDirty Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cm = ctx.Connection.CreateCommand<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ..............<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(Me)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Transactional(TransactionalTypes.TransactionScope)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_DeleteSelf()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br><br>#End Region<br><br>&nbsp;&nbsp;&nbsp; End Class<br><br>End Namespace<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, December 18, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Nemisis:</strong></div><div>Our servers are multi-core and if two cores try to execute<br><br> if (!_readResultCache.TryGetValue(propertyName, out result))<br><br>and they are both false, then both will execute<br><br> _readResultCache.Add(propertyName, result);<br><br>which i believe is where the error is.&nbsp; Shouldnt this all be wrapped in a lock? <br></div></BLOCKQUOTE><br><br>Agree, this is more likely a race condition issue. I ran into this issue when using csla object with multi-threaded process on windows service.&nbsp; At that time took a shortcut and just remove the CanReadProperty since not really applicable in windows service.<br><br>This can be wrapped with lock, but locking will pay performance penalty.&nbsp;&nbsp; I think the better fix is to just let it override the value when propName already exist since the overriding value will be the same anyway.&nbsp; So the dictionary add should just look like:<br><br>_readResultCache[propertyName] = result;<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 18, 2009</h2><P>Ricky is correct... either add locking or just always overwrite the value.</P>
+<P>Csla isn't threadsafe by default, just like most of the .Net framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Friday, December 18, 2009</h2>That is a much better suggestion thenthe lock, i didnt even think of that too be honest.&nbsp; Cheers guys!<br><br>Rocky, is there any chance this could be done, in future versions as i dont want to update our copy and then get the same error in a future version?<br><br>It appears that this change has been done in the CanWriteProperty<br><br>&nbsp;&nbsp;&nbsp; public virtual bool CanWriteProperty(string propertyName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result = true;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VerifyAuthorizationCache();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_writeResultCache.TryGetValue(propertyName, out result))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.AuthorizationRules.HasWriteAllowedRoles(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // some users are explicitly granted write access<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // in which case all other users are denied<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!AuthorizationRules.IsWriteAllowed(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (AuthorizationRules.HasWriteDeniedRoles(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // some users are explicitly denied write access<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (AuthorizationRules.IsWriteDenied(propertyName))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b> _writeResultCache[propertyName] = result;</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br>&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>admin replied on Friday, December 18, 2009</h2><P>Yes, I'd say that the CanReadProperty() behavior is a bug, and it should match CanWriteProperty(). I'll add this to the bug list.</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=670">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=670</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

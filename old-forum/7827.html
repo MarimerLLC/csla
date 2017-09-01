@@ -1,0 +1,144 @@
+<html><header><title>Silverlight CSLA works but I can't debug it on server - Help!!!!!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight CSLA works but I can't debug it on server - Help!!!!!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7827.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele posted on Tuesday, October 20, 2009</h2>Hi!!<br>I have implemented Silverlight project. Until last week, I was able to debug it on server by "attaching to process". Something happen, I can't do it any longer. What is more strange, when I remove reference to Business Server object&nbsp; in WCF project, I still can run it without error that I'm missing reference. Its like I'm running different WCF/BusinessServer dll/project. <br>So far I:<br>- deleted all dll in my solution<br>- close all my ASP.Net Developer Servers<br>- remove reference from WCF project and add it again<br><br>Any new ideas?<br>Fele<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 20, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are
+you attaching to the server web server that hosts wcf service?&nbsp; You will
+need a reference to your BO dll and make sure it is compiled with debug symbols
+(you have pdb files in the bin folder).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 20, 2009 1:34 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight CSLA works but I can't debug it on
+server.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi!!<br>
+I have implemented Silverlight project. Until last week, I was able to debug it
+on server by &quot;attaching to process&quot;. Something happen, I can't do it
+any longer. What is more strange, when I remove reference to Business Server
+object&nbsp; in WCF project, I still can run it without error that I'm missing
+reference. Its like I'm running different WCF/BusinessServer dll/project. <br>
+So far I:<br>
+- deleted all dll in my solution<br>
+- close all my ASP.Net Developer Servers<br>
+- remove reference from WCF project and add it again<br>
+<br>
+Any new ideas?<br>
+Fele<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Wednesday, October 21, 2009</h2>Sergey, thanks for your response.<br>Yes. I'm attaching to project hosting WCF service.&nbsp; BO Server dll is generated with pdb file. Reference to this dll is added to references in WCF host project.<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;d
+do clean and rebuild &#8211; maybe there is stale file somewhere.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 21, 2009 9:34 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight CSLA works but I can't debug it
+onserver.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Sergey, thanks for your response.<br>
+Yes. I'm attaching to project hosting WCF service.&nbsp; BO Server dll is
+generated with pdb file. Reference to this dll is added to references in WCF
+host project.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Wednesday, October 21, 2009</h2>I figured it out. Somebody change endpoint on client. Therefore, it was "running" BO in different location. <br>Thanks for your help.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

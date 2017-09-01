@@ -1,0 +1,13 @@
+<html><header><title>Child DataPortal method calling a Dataportal method with TransactionScope attribute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child DataPortal method calling a Dataportal method with TransactionScope attribute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12642.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid posted on Friday, May 23, 2014</h2><p>I have some business objects that can be either root or child objects depending on the context. </p>
+<p>Usually I simply call DataPortal_XXX from Child_XXX to avoid duplicate code. Is there any danger of this causing nested transactions due to the transaction scope attribute on the root dataportal function in the calling class?</p>
+<p>I could put the &quot;update stuff&quot; into a private function to be safe, but I I am curious whether I need to or not.</p>
+<p>Code:</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>protected override void DataPortal_Update()</p>
+<p>&nbsp;{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; // do update stuff</p>
+<p>}</p>
+<p>private void Child_Update()</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dataportal_Update();</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, May 23, 2014</h2><p>The transactions won&#39;t nest because that&#39;s not how TransactionScope works. The outermost &quot;using TransactionScope&quot; creates the transaction and all other using blocks within that outer using block just reuse the existing transaction. That transaction is committed or rolled back at that top level as the code leaves that outermost using block.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

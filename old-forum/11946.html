@@ -1,0 +1,87 @@
+<html><header><title>Upgrading to CSLA Version 4.5.20</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading to CSLA Version 4.5.20</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11946.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius posted on Saturday, April 20, 2013</h2><p>I tried to upgrade to CSLA version 4.5.20 but i am getting the error &quot;<span>&nbsp;</span><span>Could not load file or assembly &#39;System.Threading.Tasks</span>&quot;. Seems that this error is related to some kind of&nbsp;incompatibility&nbsp;between VS2010 and&nbsp;Microsoft.Bcl.Async packages.&nbsp;</p>
+<p>The main reason for this upgrade is because i want to define the transaction isolation level in the transactionscope attribute or change the isolation level from the default of serializible to read commited for the whole windows application, &nbsp;and seems that only this latest version of CSLA supports that.</p>
+<p>Can anyone please help me to solve my problem ?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 21, 2013</h2><p>Are you installing&nbsp;from NuGet? If not, remove all CSLA references by hand and install from NuGet.</p>
+<p>If installing from NuGet, remove all CSLA packages and also:</p>
+<ul>
+<li>Microsoft.Bcl.Build</li>
+<li>Microsoft.Bcl</li>
+<li>Microsoft.Bcl.Async</li>
+</ul>
+<p>Now install from NuGet.</p>
+<p>Note you should remove everything that is to be removed. After that, NuGet will&nbsp;delete the install packages and then you can start installing CSLA .NET 4.5.20. By the way, if you select <strong>Include Prerelease </strong>instead of <strong>Stable Only </strong>you will install <strong>4.5.23-Beta </strong>that is more stable than <strong>4.5.20</strong>.</p>
+<p>EDIT</p>
+<p>BTW This is valid for VS2012 and VS2010.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Sunday, April 21, 2013</h2><p>Tiago, CSLA 4.5.23 is installed correctly in my system. After that i go to my VS2010 solution and remove all the references to the old CSLA.dll and add the references that point to the new CSLA.dll. My solution is build successfully, but whenever it tries to access the database (execute a fetch operation from the data layer) i get the following message &quot;<span> </span><span>Could not load file or assembly &#39;System.Threading.Tasks</span>.....&quot;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, April 21, 2013</h2><p>CSLA 4.5 requires the new compilers that come with VS1012, so you can not use VS2010.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Sunday, April 21, 2013</h2><p>I have a team of developers working with VS 2010, in a huge project. I needed that transaction isolation attribute, that&#39;s the main reason for me to upgrade to CSLA 4.5.23. So Rocky are you telling me that the only solution is to upgrade to VS 2012&nbsp; ?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, April 21, 2013</h2><p>Or you can back-port that feature change to version 4.3.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 21, 2013</h2><p>The change detail is available here:</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=364">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=364</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Sunday, April 21, 2013</h2><p>It is the first time for me to try and compile CSLA with replaced files, anyway thanks for your help. Don&#39;t you think that upgrading to vs2012 in order to use the latest CSLA can be very troublesome to some of us, specially if we are not using any of the features of that&nbsp; Microsoft.Bcl.Async package?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 21, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>CSLA 4.5 requires the new compilers that come with VS1012, so you can not use VS2010.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I build projetcs using CSLA .NET 4.5.x targeting NET 4.0 with no problems. On those projects I don&#39;t use async/await nor do I use the DataPortal_XYZAsync (like DataPortal.FetchAsync).</p>
+<p>If you take your pristine 4.3.x code and reference CSLA .NET 4.5.x, it will build on VS2010.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Monday, April 22, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b></p>
+<p>[quote user=&quot;RockfordLhotka&quot;]
+</p>
+<p>CSLA 4.5 requires the new compilers that come with VS1012, so you can not use VS2010.</p>
+<div style="CLEAR:both;"></div>
+<p>
+</div></p>
+<p>&nbsp;</p>
+<p>I build projetcs using CSLA .NET 4.5.x targeting NET 4.0 with no problems. On those projects I don&#39;t use async/await nor do I use the DataPortal_XYZAsync (like DataPortal.FetchAsync).</p>
+<p>If you take your pristine 4.3.x code and reference CSLA .NET 4.5.x, it will build on VS2010.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Tiago, i am doing the same thing, referencing CSLA 4.5.x in my projects and the solution build successfully with no modification.&nbsp; I am not using any DataPortal_XYZAsync methods (may be they are implemented in data layer but not used in the other layers). Despite this i continue to get the error.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, April 22, 2013</h2><p>At some projects I got duplicated lines on the csproj file</p>
+<p>&lt;Import Project=&quot;..\..\..\Dependencies\packages\Microsoft.Bcl.Build (...)</p>
+<p>that were referencing the pre-release package. I had to remove the duplicates by hand.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Monday, April 22, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b></p>
+<p>At some projects I got duplicated lines on the csproj file</p>
+<p>&lt;Import Project=&quot;..\..\..\Dependencies\packages\Microsoft.Bcl.Build (...)</p>
+<p>that were referencing the pre-release package. I had to remove the duplicates by hand.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Tiago, thanks for your time and effort but i have no&nbsp;<span>..\..\..\Dependencies\packages\Microsoft.Bcl.Build in my project. I remove all the csla.dll references from my project, and then i try for the first time to install with NuGet&nbsp;</span></p>
+<p><span>PM&gt; Install-Package CSLA-Core -Pre</span></p>
+<p><span>Still the error persist.</span></p>
+<p><span><br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius replied on Monday, April 22, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b></p>
+<p>At some projects I got duplicated lines on the csproj file</p>
+<p>&lt;Import Project=&quot;..\..\..\Dependencies\packages\Microsoft.Bcl.Build (...)</p>
+<p>that were referencing the pre-release package. I had to remove the duplicates by hand.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Below is the stack trace for the error</p>
+<p>
+<p>System.IO.FileNotFoundException was caught</p>
+<p>&nbsp; FileName=System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</p>
+<p>&nbsp; FusionLog==== Pre-bind state information ===</p>
+<p>LOG: User = .........</p>
+<p>LOG: DisplayName = System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</p>
+<p>&nbsp;(Fully-specified)</p>
+<p>LOG: Appbase = file:///C:/Projekte/CSLA/MHS.Desktop/bin/Debug/</p>
+<p>LOG: Initial PrivatePath = NULL</p>
+<p>Calling assembly : Csla, Version=4.5.20.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30.</p>
+<p>===</p>
+<p>LOG: This bind starts in default load context.</p>
+<p>LOG: Using application configuration file: C:\Projekte\CSLA\MHS.Desktop\bin\Debug\MHS.Desktop.exe.config</p>
+<p>LOG: Using host configuration file:&nbsp;</p>
+<p>LOG: Using machine configuration file from C:\Windows\Microsoft.NET\Framework\v4.0.30319\config\machine.config.</p>
+<p>LOG: Post-policy reference: System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</p>
+<p>LOG: The same bind was seen before, and was failed with hr = 0x80070002.</p>
+<p>&nbsp;</p>
+<p>&nbsp; Message=Could not load file or assembly &#39;System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<p>&nbsp; Source=Csla</p>
+<p>&nbsp; StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.DataPortal`1.DoFetchAsync(Type objectType, Object criteria, Boolean isSync)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.DataPortal`1.Fetch(Type objectType, Object criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.DataPortal`1.Fetch(Object criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at Csla.DataPortal.Fetch[T](Object criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at MHS.Business.ApSysuserList.GetByCriteria(ApSysuserCriteria criteria) in C:\Projekte\CSLA\MHS.Business\Collections\ApSysuserList.Generated.vb:line 79</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at MHS.Desktop.frmApLogin.UsernameTextBox_LostFocus(Object sender, EventArgs e) in C:\Projekte\CSLA\MHS.Desktop\frmApLogin.vb:line 24</p>
+<p>&nbsp; InnerException:&nbsp;</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, April 23, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Helius<br></b>
+<p>&nbsp; Message=Could not load file or assembly &#39;System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>If&nbsp;we put things in perspective, it seems the <strong>System.Threading.Tasks.dll</strong> isn&#39;t there. As far as I can see this happens client side, when you try to call the DaataPortal code.</p>
+<p>If you close VS2010 and run your EXE, you&#39;ll get the same error, right? So &quot;there&quot; means the folder where the build process puts the client files. Is the DLL there? What version is it? 2.5.16.0 or 2.5.19.0?</p>
+<p>Does your app.config file include a block like this?</p>
+<p>&nbsp; &lt;runtime&gt;<br />&nbsp;&nbsp;&nbsp; &lt;assemblyBinding xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot;&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependentAssembly&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;assemblyIdentity name=&quot;System.Runtime&quot; publicKeyToken=&quot;b03f5f7f11d50a3a&quot; culture=&quot;neutral&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;bindingRedirect oldVersion=&quot;0.0.0.0-2.5.19.0&quot; newVersion=&quot;2.5.19.0&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependentAssembly&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dependentAssembly&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;assemblyIdentity name=&quot;System.Threading.Tasks&quot; publicKeyToken=&quot;b03f5f7f11d50a3a&quot; culture=&quot;neutral&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;bindingRedirect oldVersion=&quot;0.0.0.0-2.5.19.0&quot; newVersion=&quot;2.5.19.0&quot; /&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/dependentAssembly&gt;<br />&nbsp; &lt;/runtime&gt;</p>
+<p>If you are using the prerelease version, it shouldn&#39;t, otherwise it must be there.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

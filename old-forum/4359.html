@@ -1,0 +1,161 @@
+<html><header><title>Request: Convenience Method GetCurrentContext on ContextManager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Request: Convenience Method GetCurrentContext on ContextManager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4359.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit posted on Saturday, February 16, 2008</h2>Rocky,<br><br>I propose to add a static method to get current data context.&nbsp; This method will allow child object(s) to participate in current data context without having to know the connection string of working context.&nbsp; perhaps the signature could be like:<br>&nbsp;&nbsp;&nbsp; public static C GetCurrentContext() {}<br><br>Thanks,<br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, February 17, 2008</h2>Just to add with real example; The following code: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_DeleteSelf(System.Data.Linq.EntitySet&lt;PTracker.Linq2Sql.Assignment&gt; dataSet)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = dataSet.Single(r =&gt; r.ProjectId == ReadProperty&lt;Guid&gt;(ProjectIdProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; r.ResourceId == ReadProperty&lt;int&gt;(ResourceIdProperty));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var mgr = Csla.Data.ContextManager&lt;PTracker.Linq2Sql.PTrackerDataContext&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .GetManager(Database.PTrackerConnection))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.LastChanged = _lastChanged;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mgr.DataContext.Assignments.DeleteOnSubmit(data);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Could be simplified to just:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_DeleteSelf(System.Data.Linq.EntitySet&lt;PTracker.Linq2Sql.Assignment&gt; dataSet)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = dataSet.Single(r =&gt; r.ProjectId == ReadProperty&lt;Guid&gt;(ProjectIdProperty)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; r.ResourceId == ReadProperty&lt;int&gt;(ResourceIdProperty));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var db = Csla.Data.ContextManager&lt;PTracker.Linq2Sql.PTrackerDataContext&gt;.GetCurrentContext();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data.LastChanged = _lastChanged;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; db.Assignments.DeleteOnSubmit(data);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, February 21, 2008</h2>Rocky, any issue or comment regarding this proposed method?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 21, 2008</h2><P>The problem is that there could be multiple "current" contexts. The ContextManager (and ConnectionManager) store a list of objects, keyed on the connection string. So there's only one for a given connection string, but there could be many at once.</P>
+<P>I did just add an overload (requested by someone on the forum) to accept a database <EM>name</EM> instead of connection string</P>
+<P>GetManager("PTracker", true)</P>
+<P>This does translation of PTracker to the connection string by pulling the value from the config file.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, February 21, 2008</h2>Rocky, <br>I see the problem... Perhaps by making the list keyed by its type name will work.&nbsp; Something like using key typeof(C).FullName to return ContextManager for context C<br><br>I think I will still prefer to call the new overload with Database.PTracker.&nbsp;&nbsp; I got burned so many times by passing a hand typing string.&nbsp; I much prefered help by intellisense ;) D&lt;tab&gt;.P&lt;tab&gt; is much quicker to get:<br>GetManager(Database.PTracker, true) , <br><br>Thanks.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 21, 2008</h2><P>I don't think the type name is reliably different - you could use the same db schema against multiple databases, or with multiple security credentials and have two instances of the same type of context (or connection).</P>
+<P>You could still avoid the string literal by declaring a constant with the database name and using that - perhaps as a public element of a Database class? Especially if that Database class moved to the DAL project, so even that bit of knowledge (the name of the database) would be kept out of the business assembly and thus (potentially) off the client.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, February 21, 2008</h2>Rocky,<br>Although is theoretically possible an application can call multiple databases of the same schema or calling same db with different different security credential within a local context (or HttpContext.Current) and within a parent "using" scope;&nbsp; I think the scenario is very unlikely.<br><br>I have to admit not having to have access to the current db context directly within an object tree/graph is realy not a big issue or something that will make/break.&nbsp; I was just find the steps could be more straight forward and not so awkward especially when implement delay/pend child execution to parent object. ex:<br><br>DataPortal_Update() {<br>&nbsp;&nbsp; using(var mgr = ContextManager&lt;PTDataContext&gt;.GetManager(connString) {<br>&nbsp;&nbsp;&nbsp;&nbsp; //update members here....<br>&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp; &nbsp;&nbsp; DataPortal.UpdateChild(ReadProperty..., this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mgr.DataContext.SubmitChanges();<br>&nbsp; }<br>}<br><br>Child_Update() {<br>&nbsp;&nbsp; using(var mgr = ContextManager&lt;PTDataContext&gt;.GetManager(connString) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = new ChildEntity() { .... };<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mgr.DataContext.ChildEntitySet.Attach(data);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //update members here....<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //pending submit, let parent submit the changes.<br>&nbsp; }<br>}<br><br>The Child_Update could be much simpler if we can access the current data context directly.&nbsp; The awkwardness is because the "using" statement give <b>brief</b> impression that the changes have been finalized within this scope.<br><br>It will be great if you can find a way to allow access to current DataContext directly, but if not then I would not be a big of a deal.<br><br>Thanks for your time,<br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I understand, and appreciate the discussion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The other thing to consider though, is transparency. One
+beneficial side-effect of the current approach is that all data access code
+works the same. So if you call a root object from another object the already-open
+connection is reused, even in the second root object as long as the connection
+string is the same. That&#8217;s really powerful if you start having objects
+interact with each other a lot on the app server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Having some &#8220;Current&#8221; idea wouldn&#8217;t negate
+that benefit, but it introduces a hard-to-explain inconsistency. I say this,
+because the result is that the current syntax and the use of some &#8220;Current&#8221;
+concept would be identical in behavior &#8211; but would look different. And
+people would probably tend to assume the current behavior doesn&#8217;t give
+the current context, but creates a new one, which it does not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I suppose we could do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private void Child_Update()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; var ctx = ContextManager&lt;PTDataContext&gt;.GetCurrentManager(connString).DataContext;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; var q = from x in ctx.Project &#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This would do the same as GetManager() but without incrementing
+the reference count, thus avoiding the need for a using block. Of course accidentally
+using a using block would be deadly in this case, and I could see some ugly
+support issues coming out around the inconsistency here.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, February 22, 2008</h2>Rocky,<br><br>Yes, I see the problem you described when people try to use it like this:<br>using (var mgr = ContextManger&lt;PTDataContext&gt;.GetCurrentManager(connString)) { }<br><br>I think ContextManager&lt;PTDataContex&gt;.GetCurrentDataContext(connString) might work.&nbsp; It would prevent the multiple database issue although it may not really address the consistency issue you've described when doing data access where data context be accessed after getting ContextManager.&nbsp; <br><br>However the pattern that is introduced here that ALL root objects would use GetManager in which would rip the benefit of ContextManager when multiple (root) objects working together (interact) when calling within data access layer. GetCurrentDataContext could be used in child objects which would only return the current DataContext or thown an error when no current context exist.&nbsp; <br><br>There might be an issue with using a using block on DataContext, but this would be the same issue when user use a using block after getting the ContextManger from GetManager in child DP.<br><br>Ricky.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 22, 2008</h2><P>I've added a GetCurrentManager() concept to the C# code as an experiement. Take a look and let me know if you think this is good - I'm still a bit skeptical honestly.</P>
+<P>The usage is for child objects only and is:</P>
+<P>var ctx&nbsp;= <BR>&nbsp; ContextManager&lt;PTDataContext&gt;.GetCurrentManager(Database.PTracker).DataContext;<BR>var q = from x in ctx ...</P>
+<P>I still think the consistency of my original approach is preferable.</P>
+<P>The only way I could see really liking this is if we somehow pushed the creation of the context up into the data portal so it is entirely outside all business objects (including the root level). That would allow all objects to simply tap into the current manager(s).</P>
+<P>I'm not entirely sure how to do that though. Perhaps using an attribute on the DP_XYZ methods? You could apply an attribute specifying the type and database name or connection string.</P>
+<P>[DataContext(typeof(PTDataContext), "PTracker")]<BR>protected override void DataPortal_Insert()</P>
+<P>This would tell SimpleDataPortal to wrap this call in an appropriate using block before your code is called, thus allowing consistent use of GetCurrentManager() in all data portal code.</P>
+<P>This actually seems like a really interesting idea - perhaps for 3.5.1.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Tuesday, February 26, 2008</h2>Rocky, sorry for slow getting back to you on this.<br><br>I tested the addition you made, and as expected they work.&nbsp; The object collaboration scenario is also work correctly.<br><br>However, this method will only work when it's <b>not</b> wrap with using block.&nbsp; When it accidentally wraps with using block the ContextManager will get disposed prematurely and the upstream using block will generate ObjectDisposedException when trying to dispose the disposed object.&nbsp; <br><br>Having play with this method a little bit, I think it user may easily get tripped with this.&nbsp; The intellisense does not help either as this method is the first to select before GetMethod.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, this is what I was trying to say earlier in the thread. I think
+this is a serious support/training issue, and I think the method is potentially
+a step in the wrong direction. But it was easy to implement and I wanted to
+give the concept a fair try.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you agree that it is likely to cause a lot of trouble (which
+is what I think), then I&#8217;ll remove the method and we&#8217;ll stick with
+the original scheme.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rasupit
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 26, 2008 7:38 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Request: Convenience Method
+GetCurrentContext on ContextManager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky, sorry for slow getting back to you on this.<br>
+<br>
+I tested the addition you made, and as expected they work.&nbsp; The object
+collaboration scenario is also work correctly.<br>
+<br>
+However, this method will only work when it's <b>not</b> wrap with using
+block.&nbsp; When it accidentally wraps with using block the ContextManager
+will get disposed prematurely and the upstream using block will generate
+ObjectDisposedException when trying to dispose the disposed object.&nbsp; <br>
+<br>
+Having play with this method a little bit, I think it user may easily get
+tripped with this.&nbsp; The intellisense does not help either as this method
+is the first to select before GetMethod.<br>
+<br>
+Ricky<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, February 27, 2008</h2>Rocky, I agree that we should remove this method as I think it may
+cause more harm than good.&nbsp; While I wish the usage on child objects
+could be more straight forward,&nbsp; this merely just an inconvenience.<br><br>On
+the other side, not using the using block on the GetMethod will cause
+the ref counting get out of whack.&nbsp; Violating the pattern on this is
+not that harmful because the context will only live the life of a user
+requests (in web) and eventually will get recreated on next user
+request.&nbsp; <br><span id="q_1185ae81a7ed4830_1" class="WQ9l9c"></span></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

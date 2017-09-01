@@ -1,0 +1,90 @@
+<html><header><title>Lazy Loading and the Async Data Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy Loading and the Async Data Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7093.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry posted on Friday, June 12, 2009</h2><P>Hello,</P>
+<P>I wonder if anyone has done a Silverlight / Async data portal implementation with lazy loaded properties.&nbsp; The lazy loaded technique seems to be to call DataPortal.Fetch on the child if it doesn't exist, however the async data portal needs a call back handler.&nbsp; The handler could be cached from the call to the parent factory method I suppose.&nbsp; Dunno if that would work.&nbsp; Other than that, I'm wondering if there's a technique that's anyone's used successfully.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, June 12, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here
+is a thread on the subject.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://forums.lhotka.net/forums/thread/32438.aspx">http://forums.lhotka.net/forums/thread/32438.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esaulsberry
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 12, 2009 1:58 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Lazy Loading and the Async Data Portal<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>I wonder if anyone has done a Silverlight / Async data portal implementation
+with lazy loaded properties.&nbsp; The lazy loaded technique seems to be to
+call DataPortal.Fetch on the child if it doesn't exist, however the async data
+portal needs a call back handler.&nbsp; The handler could be cached from the
+call to the parent factory method I suppose.&nbsp; Dunno if that would
+work.&nbsp; Other than that, I'm wondering if there's a technique that's
+anyone's used successfully.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, June 12, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1><SPAN>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>bool</SPAN> _loadingScore = <SPAN>false</SPAN>;<BR></SPAN><SPAN><SPAN>private</SPAN> <SPAN>static</SPAN> <SPAN>PropertyInfo</SPAN>&lt;<SPAN>Score</SPAN>&gt; ScoreInfoProperty = RegisterProperty(<SPAN>new</SPAN> <SPAN>PropertyInfo</SPAN>&lt;<SPAN>Score</SPAN>&gt;(<SPAN>"ScoreInfo"</SPAN>, <SPAN>"ScoreInfo"</SPAN>));<BR></SPAN><SPAN><SPAN>public</SPAN> <SPAN>Score</SPAN> ScoreInfo</SPAN><SPAN> {<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN>get</SPAN></SPAN><SPAN>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN><SPAN>if</SPAN> (!_loadingScore &amp;&amp; (!FieldManager.FieldExists(ScoreInfoProperty) || ReadProperty(ScoreInfoProperty) == <SPAN>null</SPAN>))</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; {<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>#if</SPAN><SPAN> SILVERLIGHT<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _loadingScore = true;<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Score.GetScore(ReadProperty(ProfileIDProperty), ReadProperty(PersonNameProperty), ReadProperty(NicknameProperty), ReadProperty(TeamIDProperty),((TeamMemberInfoList)this.Parent).ParentTeam.Name, (o, e) =&gt;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ScoreInfoProperty, e.Object);<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(ScoreInfoProperty.Name);<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _loadingScore = false;<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; );<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>#else<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ScoreInfoProperty, <SPAN>Score</SPAN>.GetScore(ReadProperty(ProfileIDProperty), ReadProperty(PersonNameProperty), ReadProperty(NicknameProperty), ReadProperty(TeamIDProperty), ((<SPAN>TeamMemberInfoList</SPAN>)<SPAN>this</SPAN>.Parent).ParentTeam.Name));<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>#endif<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> GetProperty(ScoreInfoProperty);<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</SPAN><SPAN><O:P></O:P></SPAN></P></SPAN></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>OK, If I grock this, you're providing a different silverlight and non-silverlight lazy loaders in the get, which call different factory methods in the child - the silverlight one takes a handler and the regular one doesn't.&nbsp; In this case you're providing the handler as a lamba, but it could be silverlight only code elsewhere in the object that accomplished the same thing.&nbsp; The _loading boolean keeps you from starting the process again before the first one finishes.&nbsp; The return will run before the data comes back so at first the value of the property is null,&nbsp;a property changed event happens when the data comes back so the UI can update itself.&nbsp; An enigma, wrapped in a mystery... but elegant.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 12, 2009</h2><P>It is also possible that the LoadPropertyAsync() method can help you in this case.</P>
+<P>In any case, technically you don't need a different implementation for SL from Windows - but SL can only have the async implementation, and most .NET developers won't expect the async behavior.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

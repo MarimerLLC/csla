@@ -1,0 +1,16 @@
+<html><header><title>checking _bypassPropertyChecks in property set?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>checking _bypassPropertyChecks in property set?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9939.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mudbugz posted on Thursday, January 13, 2011</h2><p>If I use BypassPropertyChecks in my DataPortal_Fetch() to set properties from the database, how to I stop logic in the setting of the property from running?&nbsp; _bypassPropertyChecks is private inside of BusinessBase.&nbsp;&nbsp; Sample Code:</p>
+<p>//Inside of Dataportal_Fetch()<br />using (BypassPropertyChecks)<br />{<br />&nbsp;Name = db.Name;<br />&nbsp;...<br />}</p>
+<p>private static PropertyInfo&lt;string&gt; propName = RegisterProperty&lt;string&gt;(p =&gt; p.Name);<br />[Required]<br />[StringLength(50)]<br />public string Name<br />{<br />&nbsp;get { return GetProperty(propName); }<br />&nbsp;set <br />&nbsp;{ <br />&nbsp;&nbsp;SetProperty(propName, value); </p>
+<p>&nbsp;<strong>&nbsp;if (!InsideOfBypassPropertyChecksBlock)<br /></strong>&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;// logic such as<br />&nbsp;&nbsp;&nbsp;SomeOtherProperty = value;<br />&nbsp;&nbsp;}<br />&nbsp;}<br />}&nbsp;</p>
+<p>Should I just use LoadProperty() inside of DataPortal_Fetch instead?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, January 13, 2011</h2><p>CSLA is designed with the intent that the only line of code in a setter is the call to SetProperty. All other logic should be encapsulated in business rules, which are automatically invoked and suppressed when following the CSLA coding patterns.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 14, 2011</h2><p>Hi, </p>
+<p>Your properties should only be Get/Set with no other code. Remember, properties are not code.</p>
+<p>Depending on which CSLA version you are using, you should: </p>
+<p><b>Csla 3.8.x and older versions</b></p>
+<ul>
+<li>Override OnPropertyChanged and add code here that should be run whenever a property has been updated.&nbsp; Code here will not be called when inside a BypassPropertyChecks. </li>
+</ul>
+<p><b>Csla 4.x and newer</b></p>
+<ul>
+<li>Create BusinessRules to act whenever a property has changed. </li>
+<li>Overrides on OnPropertyChanged will still work (for legacy code) but BusinessRules is the preferred way.</li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

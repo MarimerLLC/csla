@@ -1,0 +1,51 @@
+<html><header><title>Using an Object Factory for Mobile Data Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using an Object Factory for Mobile Data Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11751.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn posted on Friday, December 14, 2012</h2><p>Hi,</p>
+<p>I am converting a Silverlight app to use the Mobile Data Portal.&nbsp; The configuration settings:</p>
+<p></p>
+<p>&nbsp;<span style="font-size:xx-small;">&lt;appSettings&gt; <br /></span><span style="font-size:xx-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key=&quot;ObjectFactoryAssembly&quot; value=&quot;DataAccess.Mock&quot;/&gt; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaObjectFactoryLoader&quot; value=&quot;DataAccess.FactoryLoader,DataAccess&quot;/&gt; <br />&lt;/appSettings&gt; </span></p>
+<p>Are not beight pulled in.&nbsp; I cannot&nbsp;call methods in the DAL assembly.&nbsp;&nbsp;&nbsp;How do I change this to use the Mobile Data Portal?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 14, 2012</h2><p>Silverlight doesn&#39;t use configuration files, so if you are putting that XML in a client-side file then it will surely be ignored. You need to set Silverlight configuration values through code as shown in the &#39;Using CSLA 4&#39; ebook.</p>
+<p>If that is server-side configuration in your web.config then it won&#39;t matter what data portal channel you are using (mobile, wcf, etc) because any code using that configuration will run long after the data portal is in its standard server-side processing pipeline - and that is totally independent of the network channel being used.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Friday, December 14, 2012</h2><p>It is server side for a Silverlight Application.&nbsp; When I use the 4.3 csla.dll it works, but when I use the 4.5 csla dll it doesn&#39;t.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 14, 2012</h2><p>Have you read through and adapted to the following?</p>
+<p><a href="http://www.lhotka.net/weblog/CSLADataPortalChangesInVersion45.aspx">http://www.lhotka.net/weblog/CSLADataPortalChangesInVersion45.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Saturday, December 15, 2012</h2><p>Yes,</p>
+<p>That&#39;s one of the posts I used as my guide. &nbsp;Being I am using a server-side data portal, it appeared to me that the only change that I needed to make initially is changing the wcfDataPortal to use the Mobile instead of the Silverlight one from:</p>
+<p>&lt;% @ServiceHost Service=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot; %&gt;</p>
+<p>To:</p>
+<p>&nbsp;</p>
+<p>&lt;% @ServiceHost Service=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot; %&gt;</p>
+<div>And the web.config from:</div>
+<div></div>
+<div>
+<div>&nbsp; &nbsp; &nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Silverlight.WcfPortal&quot;&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;</div>
+</div>
+<div></div>
+<div>To:</div>
+<div>
+<div>&nbsp; &nbsp; &nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot;&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;</div>
+</div>
+<div></div>
+<div>I left the call the same in the business object:</div>
+<div></div>
+<div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #region Factory Methods</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; public static void GetLoginRoot(EventHandler&lt;DataPortalResult&lt;LoginRoot&gt;&gt; callback)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DataPortal.BeginFetch&lt;LoginRoot&gt;(callback);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; #endregion</div>
+<div></div>
+<div>Which is invoked in the view model:</div>
+</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; BeginRefresh(&quot;GetLoginRoot&quot;);</div>
+<div></div>
+<div>I thought I could leave it like that to begin with and then try to figure out how to change it to an async call.</div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<div></div>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

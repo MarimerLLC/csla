@@ -1,0 +1,56 @@
+<html><header><title>.NET 4.5.1 WCF Serialization exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>.NET 4.5.1 WCF Serialization exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12195.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Thursday, October 24, 2013</h2><p>Starting the client of our application on Windows 8.1 which talks to 2008 server (on 4.5). With the WcfDataPortal</p>
+<p>The formatter threw an exception while trying to deserialize the message: There was an error while trying to deserialize parameter <a href="http://ws.lhotka.net/WcfDataPortal:FetchResult">http://ws.lhotka.net/WcfDataPortal:FetchResult</a>. The InnerException message was &#39;Error in line 1 position 11619. &#39;Element&#39; &#39;m_serializationArray&#39; from namespace &#39;http://schemas.microsoft.com/2003/10/Serialization/Arrays&#39; is not expected. Expecting element &#39;m_keyRehashCount&#39;.&#39;.&nbsp; Please see InnerException for more details.</p>
+<p>The most inner exception is</p>
+<p>Error in line 1 position 11619. &#39;Element&#39; &#39;m_serializationArray&#39; from namespace &#39;http://schemas.microsoft.com/2003/10/Serialization/Arrays&#39; is not expected. Expecting element &#39;m_keyRehashCount&#39;.<br /><br />Is this a know issue, must the server be upgraded to 4.5.1 somehow or must the client be forced to run on 4.5 only?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Saturday, October 26, 2013</h2><p>Is there someone with a working project configured in the same configuration?</p>
+<p>- Server side <strong>without</strong> .NET 4.5.1. (only 4.5 installed)<br />- Client side with .NET 4.5.1&nbsp;</p>
+<p>&nbsp;</p>
+<p><a class="comment-user" title="833 reputation" href="http://stackoverflow.com/users/1621178/praburaj">Praburaj</a>&nbsp;from the .NET compatibility team is willing to investigate if .NET is the issuer (and not CLSA or our software)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 26, 2013</h2><p>Do you have the stack trace? I am curious as to what is throwing the exception. Is it from MobileFormatter, or WCF?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, October 28, 2013</h2><p>It seems to be a compatibility issue between .NET 4.5 and .NET 4.5.1. when using a ConcurrentDictionary&lt;string, int&gt;</p>
+<p>See the modified SimpleNTier attachment.<br /><br />Running both client and server local it works<br />Running the client on 4.5 and the server on 4.5 it works<br />Running the client on 4.5.1 and the server on 4.5 it throws the exception</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, October 30, 2013</h2><p class="MsoNormal">Rocky,</p>
+<p class="MsoNormal"><span style="font-size:12px;">Is it possible to use the DataContractSerializer in CSLA instead of NetDataContractSerializer ?<br />Or will we loose information while serializing?<br /><br />Greetings,<br />Raymond<br /><br />See the quick response i got from the .NetFx 4.5 Compatibility team<br /></span><span style="font-size:12px;">&nbsp;</span></p>
+<p class="MsoNormal"><b><span lang="EN-US">From:</span></b><span lang="EN-US"> &lt;hidden by rfcdejong&gt;<br />
+<b>Sent:</b> Tuesday, October 29, 2013 12:24 PM<br />
+<b>To:</b> &#39;Raymond de Jong&#39;; NetFx 4.5 Compat<br />
+<b>Subject:</b> RE: .NET 4.5.1 compatibility issue when using a
+ConcurrentDictionary&lt;int, string&gt;</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">Hi Raymond, </span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">Thanks for reporting this issue. I can reproduce this issue from my end.
+I am forwarding this issue for investigation. I would like to give a few facts
+to see if this would help you in the meantime. </span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">NetDataContractSerializer (<a href="http://msdn.microsoft.com/en-us/library/system.runtime.serialization.netdatacontractserializer.aspx">http://msdn.microsoft.com/en-us/library/system.runtime.serialization.netdatacontractserializer.aspx</a>)
+is more restrictive than a DataContractSerializer as per the documentation. </span></p>
+<p class="MsoNormal"><span lang="EN">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN">&gt;&gt;&nbsp;</span></p>
+<p class="MsoNormal"><b><i><span lang="EN">The <span class="selflink">NetDataContractSerializer</span> differs from the <a href="http://msdn.microsoft.com/en-us/library/system.runtime.serialization.datacontractserializer.aspx">DataContractSerializer</a>
+in one important way: the <span class="selflink">NetDataContractSerializer</span>
+includes CLR type information in the serialized XML, whereas the <a href="http://msdn.microsoft.com/en-us/library/system.runtime.serialization.datacontractserializer.aspx">DataContractSerializer</a>
+does not. <span>Therefore, the <span class="selflink">NetDataContractSerializer</span> can be used only if both the
+serializing and deserializing ends share the same CLR types.</span></span></i></b></p>
+<p class="MsoNormal"><b><i><span lang="EN-US">&nbsp;</span></i></b></p>
+<p class="MsoNormal"><span lang="EN-US">I believe the type ConcurrentDictionary in 4.5.1 has added a property or
+member variable named m_keyRehashCount which is not found in the 4.5 version of
+the ConcurrentDictionary. While trying to de-serialize this object on a 4.5.1
+machine &ndash; the serializer expects this missing property resulting in this
+exception. </span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><b><span lang="EN-US">&nbsp; &lt;m_keyRehashCount&gt;0&lt;/m_keyRehashCount&gt;</span></b></p>
+<p class="MsoNormal"><b><span lang="EN-US">&nbsp;</span></b></p>
+<p class="MsoNormal"><span lang="EN-US">Will you be able to use DataContractSerializer instead of
+NetDataContractSerializer which supports compatibility between different
+versions of CLR objects? </span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">Thanks,</span></p>
+<p>&nbsp;</p>
+<p class="MsoNormal"><span lang="EN-US">&lt;hidden&gt;</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, October 30, 2013</h2><p>I believe the answer is no. </p>
+<p>You need a &quot;binary&quot; serializer and from the built-in ones in .NET there is the BinaryFormatter and NetDataContractSerializer (ie serializers that support the [Serializable] attribute - and DataContractSerializer does NOT). </p>
+<p>DataContractSerializer:<br /><i>Apply the <span><a href="http://msdn.microsoft.com/en-us/library/system.runtime.serialization.datacontractattribute.aspx">DataContractAttribute</a></span> attribute to classes, and the <span><a href="http://msdn.microsoft.com/en-us/library/system.runtime.serialization.datamemberattribute.aspx">DataMemberAttribute</a></span> attribute to class members to specify properties and fields that are serialized. </i></p>
+<p>The types and properties (internally in CSLA and business classes/properties) are NOT marked with these attributes.<i><br /></i></p>
+<p>Another alternative may be to use the new CSLA mobile binary formatters and confire the CslaReaderWriterFactory to use one of the following sets:</p>
+<ul>
+<li>CslaBinaryWriter/CslaBinaryReader</li>
+<li>CslaXmlWriter/CslaXmlReader</li>
+<li>CslaXmlBinaryWriter/CslaXmlBinaryReader</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, October 30, 2013</h2><p>Exactly what i thought, but wanted to be sure.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 01, 2013</h2><p>If Microsoft did change the internal structure of one of their types then that could easily break the BinaryFormatter and NetDataContractSerializer. That&#39;s pretty nasty, and isn&#39;t something that has occurred (to my knowledge) since the .NET 1.1 to 2.0 transition.</p>
+<p>As Jonny suggests, the MobileFormatter is more &quot;controllable&quot; in this regard. But you&#39;ll probably need to create your data type for your collection similar to the MobileXYZ types in Csla.Core to serialize your particular type.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

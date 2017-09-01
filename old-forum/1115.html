@@ -1,0 +1,21 @@
+<html><header><title>Newbie Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1115.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>coss74 posted on Monday, September 04, 2006</h2><P>Hi,</P>
+<P>I am using the codesmith program to try and generate a project. </P>
+<P>I have a client table and&nbsp;I wish to generate the classes to allow for Insert/Update/Delete with the client table. To achieve this i use the EditableRoot.cst. Then wanting to be able to list the clients in a datagrid i create a clients class based upon the EditableRootList.cst.</P>
+<P>My problem is that when i past the code into vs2005 and try an compile the program i get the error stating there is no DeleteSelf, Insert, Update or Csla.Data.SafeDataReader dr converstion to int.</P>
+<P>My Question is: Am i using the right templates? If so does anyone know wht i am doing wrong?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis replied on Tuesday, September 05, 2006</h2>First of all I would double-check you have added a refereence to the CSLA dll in your library/BO project. Also some of the templates do not generate import statements, so you may need to add something like this at the top of your classes:<br><br>Imports System.Data.SqlClient ' if using SQL Server<br>Imports Csla<br>Imports Csla.Data<br><br>or for C#<br><br>using System.Data.SqlClient; // if using SQL Server<br>using Csla;<br>using Csla.Data;<br><br>You can also add these imports via the 'My Project' screens in vb.net, but I prefer to explicity add them as part of the class declaration.<br><br>Regards,<br><br>Dan.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Tuesday, September 05, 2006</h2><P>You should&nbsp;be using editableswitchable for your root object.&nbsp;&nbsp;</P>
+<P>After you create the new object &nbsp;Just change your editablelist to pass dr.getint32(0) and it should&nbsp;compile.</P>
+<P>You could also create your own get that accepts a reader.</P>
+<P>Good luck,&nbsp; It took me a week of playing around with the templates to figure all the nuances out.</P>
+<P>&nbsp;</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan replied on Tuesday, September 05, 2006</h2>
+
+<p class="MsoNormal"><font face="Georgia" size="2"><span>A week wow, maybe we should see about setting up a how to
+use these page. I wonder if Lhotka would give us a page on his site to write up
+a how to.&nbsp; I would love to make this easier as these templates save me
+weeks on new projects and could do the same for more people.<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font face="Georgia" size="2"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class="MsoNormal"><font face="Georgia" size="2"><span>JT</span></font></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs replied on Wednesday, September 06, 2006</h2><P>Alot of that time was my ignorance.&nbsp;It took sometime to figure out which templates I needed.&nbsp; I started with CSLA and the templates&nbsp; at the same time.</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

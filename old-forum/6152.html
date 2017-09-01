@@ -1,0 +1,79 @@
+<html><header><title>Confused: WCF vs MSMQ with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Confused: WCF vs MSMQ with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6152.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gidzone posted on Wednesday, January 14, 2009</h2>Hello,<br><br>In order for external users to register to use our application they need to be approved by an internal resource.&nbsp; Submitting the registration and approving the registration are performed in two seperate applications.<br><br>I want to use windows workflow to manage this registration process.&nbsp; I wanted to create a service on top of our registration workflow to abstract from it both applications.&nbsp; My idea was to create a command object which would place an object on MSMQ.&nbsp; On the other end have a windows service read the queue and perform the function associated.&nbsp; I got this concept from this post: http://forums.lhotka.net/forums/post/15944.aspx<br><br>I am not sure whether I should drop a message on an MSMQ directly or have a WCF service perform this function as well as all other functions a part of this process?&nbsp; I have never used WCF before and I am confused how it can fit in our application architecture (if at all).<br><br>thanks!<br><br>-sanjay<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 14, 2009</h2><P>Using queued messaging to enable async processing for parts of an application can be very useful.</P>
+<P>Also, if you have 2+ applications that work together to provide some overall solution, the concepts of SOA can be very useful, especially the idea of message-based communication.</P>
+<P>Finally, if you want to use workflow to build a service, Microsoft will like you a lot :)&nbsp; Microsoft is putting a lot of energy into making WCF and WF work well together, with the idea that the preferred way to build a WCF service is by using WF. You can see their effort in VS 2008 with the increased integration between WCF and WF, and in some of the things they've been discussing around VS 2010 and .NET 4.0 in that regard.</P>
+<P>So while you can use MSMQ directly through the System.Messaging namespace, your life will probably be easier (in the long run at least) if you take the time to learn how to build a WCF service using WF, because Microsoft will do more of the plumbing work for you in that case.</P>
+<P>I'd recommend reading Juval Lowy's WCF book, and Michelle Bustamante's WCF book to get started.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gidzone replied on Wednesday, January 14, 2009</h2>Thanks Rocky.&nbsp; I'll start down the WCF+WF path and keep you guys updated of my progress.<br><br>-sanjay<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gidzone replied on Friday, January 16, 2009</h2>I ended up creating a state machine workflow exposed as a WCF service.&nbsp; If you know windows workflow, it was pretty easy to do once you get the basics of WCF down.<br><br>Whats the best practice to call the WCF service that interacts with the workflow?&nbsp; Should I create a wrapper class around the svcutil generated class or call the generated class directly?<br><br>thanks!<br><br>-sanjay<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 16, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In my view, calling a service is no different from calling a
+stored procedure. In other words, services should be called from within
+DataPortal_XYZ methods of business objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In some cases a service isn&#8217;t really a CRUD operation, but
+that&#8217;s what the CommandBase is for &#8211; creating objects that
+represent the concept of performing an action.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s the real key I think &#8211; is to remember that
+your presentation/UI layers should always and only interact with an abstract
+set of business object that represent the concept required by your application.
+Any sort of complex behaviors should be abstracted behind those objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gidzone
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 16, 2009 10:41 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Confused: WCF vs MSMQ with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I ended up creating a state machine workflow exposed as a
+WCF service.&nbsp; If you know windows workflow, it was pretty easy to do once
+you get the basics of WCF down.<br>
+<br>
+Whats the best practice to call the WCF service that interacts with the
+workflow?&nbsp; Should I create a wrapper class around the svcutil generated
+class or call the generated class directly?<br>
+<br>
+thanks!<br>
+<br>
+-sanjay<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gidzone replied on Friday, January 16, 2009</h2>Thanks Rocky!<br><br>After I posted my question I realized thats why CommandBase exists.<br><br>If anyone needs help with creating WFs exposed as a WCF service, I'd be more than happy to help.<br><br>-sanjay<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

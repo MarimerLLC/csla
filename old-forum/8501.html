@@ -1,0 +1,42 @@
+<html><header><title>Generics and Inheritance Redux</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generics and Inheritance Redux</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8501.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert posted on Tuesday, February 09, 2010</h2><p>Sorry if my questions have been answered before. I&#39;ve pored over the forums for a couple of days and still cannot get my head around this stuff.</p>
+<p>I have a WinForms app that is currently written with one client in mind. I&#39;m now working on extending it for my second client. 80-90% of the functionality will be the same between the two clients, but several UI and business layer elements will need to be different.</p>
+<p>To illustrate my confusion, in the business layer, I currently have these classes defined:</p>
+<p>
+<p style="padding-left:30px;">&lt;Serializable(), _</p>
+<p style="padding-left:30px;">TypeDescriptionProvider(GetType(ProdOrderDescriptionProvider))&gt; _</p>
+<p style="padding-left:30px;">Public Class ProductionOrder:&nbsp;Inherits KzBusinessBase(Of ProductionOrder)</p>
+<p>and</p>
+<p>
+<p style="padding-left:30px;">&lt;Serializable()&gt; _</p>
+<p style="padding-left:30px;">Public Class ProductionOrders :Inherits KzBusinessListBase(Of ProductionOrders, ProductionOrder)</p>
+</p>
+<p>You can see that I have two base classes that inherit from CSLA BusinessBase(Of T) and BusinessListBase(Of T,C). Also, I&#39;m using ITypedList to expose &quot;virtual&quot; properties to the UI.</p>
+<p>Now I need a ProductionOrderClient2 class to extend the functionality (methods, properties, rules, etc.). I don&#39;t really need polymorphism because the UI will likely have client-specific forms that will only need to use a single slice of these objects. So, I assume I can use a client-specific collection class. I&#39;d change ProductionOrder to a generic like this:</p>
+<p>
+<p style="padding-left:30px;">Public MustInherit Class ProductionOrder(Of T As ProductionOrder(of T) :&nbsp;Inherits KzBusinessBase(Of T)</p>
+<p>and the collection class to this:</p>
+<p>
+<p style="padding-left:30px;">Public Class ProductionOrdersClient2:&nbsp;&nbsp;Inherits KaizenBusinessListBase(Of ProductionOrdersClient2, ProductionOrderClient2)</p>
+<p>and not attempting to inherit from a ProductionOrders abstract class. I think I need to make ProductionOrder generic to allow it to be contained in ProductionOrdersClient2.</p>
+</p>
+<p>I have a shared factory method that, based on a ClientContext object, returns the specific sub-type.</p>
+</p>
+<p>My goals here are to leverage as much existing code as possible/practical and to make it easier to add Client 3 down the road.</p>
+<p>I have several concerns at this point.</p>
+<p>1-How do I deal with all the code throughout my business layer that contains ProductionOrder objects. If ProductionOrder is declared as abstract, don&#39;t I need to somehow know which subclass type is being used in every declaration? I&#39;ve seen comments in the forum that suggest that one should use concrete classes as high up in the hierarchy as possible. However, I cannot figure out how to use inheritance to inherit from ProductionOrder/ProductionOrders. If I use a common collection class, then ProductionOrder needs to also be generic, right? If I use new, standalone collection classes that are strongly-typed to use the new derived classes, then I&#39;m... uh...lost. Head spinning...walking in circles.... mumbling incoherently.... Coworkers say &quot;He must be working on OO design stuff again&quot;.</p>
+</p>
+<p>Would it be best to not use inheritance, but to create an IProductionOrder interface? If so, I&#39;ll end up having a ton of duplicated code. I could, conceivably, move some of this code (maybe rule methods) into another class. But, like I said, I&#39;m not concerned about polymorphism because I&#39;ll never have a mix of subclass objects within the same app instance.</p>
+<p>I&#39;m really open to any help you can offer and would be willing to look at design patterns that might help. I really don&#39;t want to take the easy path and regret it for years to come.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Barry</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, February 12, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>bgilbert<br></b></p>
+<p>Would it be best to not use inheritance, but to create an IProductionOrder interface? If so, I&#39;ll end up having a ton of duplicated code. I could, conceivably, move some of this code (maybe rule methods) into another class. But, like I said, I&#39;m not concerned about polymorphism because I&#39;ll never have a mix of subclass objects within the same app instance.</p>
+<p></div></p>
+<p>Generally yes, you should favor composition (and normalization of behavior) over inheritance. That&#39;s an often repeated phrase in OO books, training, etc. In short it means that inheritance is rarely the right answer because it incurs tight coupling and reduces maintainability.</p>
+<p>The code that gets duplicated in most cases are property declarations - those 4-5 lines of code created using a snippet or code generator. I don&#39;t count those as &quot;code&quot;, and instead view them as the definition of the shape of my object.</p>
+<p>Real code, like business rules, should exist in rule methods. Those can be externalized and normalized so they aren&#39;t repeated. Sure, you attach the rule to different objects, but the rule implementation (the part that really matters for maintainability) exists only once.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Friday, February 12, 2010</h2><p>So if I understand your advice, I would create an IProductionOrder interface that defines my common properties and any other methods that need different behaviors for each implementation. Then the classes that implement the interface would call common shared methods in a helper class (things that I might have originally put in my base class). I&#39;d also have to duplicate things like data portal methods and factory methods. Or would I create an object factory class that creates different objects based on my client context configuration? Also, these classes would inherit directly from my BusinessBase classes, right?</p>
+<p>&nbsp;</p>
+<p>This sounds much more manageable than trying to use inheritance, where I could see months of hair pulling trying to figure out data binding voodoo.</p>
+<p>&nbsp;</p>
+<p>Thanks for your help.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, February 12, 2010</h2><p>You&#39;d only create an interface if you need polymorphic behavior (like creating a heterogeneous list or something). Remember that no data binding technologies use interfaces, so they are really quite useless unless you personally need them in your code.</p>
+<p>If these types are similar enough in terms of the data they contain, then having some common DAL code is probably good. If they are quite different, then you may not be able to have common DAL code. There are four primary DAL models supported by CSLA - you can get info on them in Chapter 18 and/or in the Core 3.8 video series.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Friday, February 12, 2010</h2><p>I don&#39;t need polymorphic collections here, but I do need to contain these two types of objects in other classes. For example, I have ProductionOrderClient1 and ProductionOrderClient2. In another class, let&#39;s call it SalesOrder, I currently store either individual or collections of one of these two types. Instead of creating SalesOrderClient1 and SalesOrderClient2 to deal just with the ProductionOrder differences, I can have a single SalesOrder class that contains instances of IProductionOrder. Is this right? Is this an example of the value of an interface if I don&#39;t need polymorphism?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

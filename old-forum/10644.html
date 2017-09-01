@@ -1,0 +1,21 @@
+<html><header><title>Can I make a custom attribute for csla property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can I make a custom attribute for csla property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10644.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kingmoon posted on Saturday, August 27, 2011</h2><p>
+<p>public static readonly PropertyInfo&lt;int&gt; TestIntProperty = RegisterProperty&lt;int&gt;(c =&gt; c.TestInt);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;[MyAttribute]</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public int TestInt</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get { return GetProperty(TestIntProperty); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set { SetProperty(TestIntProperty, value); }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>Just like this , Can I ?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, August 27, 2011</h2><p>Yes, you can.</p>
+<p>Just inherit from System.Attribute. You can also look at the </p>
+<ul>
+<li>Csla.NotUndoableAttribute</li>
+<li>Csla.Server.ObjectFactoryAttribute</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kingmoon replied on Saturday, August 27, 2011</h2><p>Thank you for your answer.</p>
+<p>Its usage just like a normal class. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kingmoon replied on Saturday, August 27, 2011</h2><p>&nbsp;</p>
+<p>Thank you for your answer.</p>
+<p>Its usage just like a normal class. &nbsp;</p>
+<p><img src="http://forums.lhotka.net/emoticons/emotion-9.gif" alt="Crying" />Also Must Use The System.Refection.&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

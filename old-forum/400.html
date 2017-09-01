@@ -1,0 +1,16 @@
+<html><header><title>BindingSourceRefresh  and DateTimePicker  control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingSourceRefresh  and DateTimePicker  control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/400.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift posted on Sunday, June 18, 2006</h2>In reading the book I see that the BindingSourceRefresh control needs
+to be on the form for some quirky databinding scenarios.&nbsp; I have done
+this, and I have set the ReadValuesOnChange even to true in teh binding
+sources.&nbsp; <br>
+<br>
+However....&nbsp;&nbsp;&nbsp; this still doesn't work with the datetime picker -&nbsp; The
+date loads up ok, but the datetimepicker control, when I select a new
+date, won't update the datasource.<br>
+<br>
+I've tried to find out what my problem is using the book but I still
+can't find it.. Anyone have any ideas?&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Monday, June 19, 2006</h2>Anyone? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JWoods replied on Monday, June 19, 2006</h2><P>I also tried BindingSourceRefresh on a form with a datagridview where the last row that I updated was not being refreshed.&nbsp; This did not solve the problem&nbsp; The problem was solved by a call to BindingSource.ResetBindings(false).</P>
+<P>&nbsp;</P>
+<P>JWoods</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brettswift replied on Monday, June 19, 2006</h2>I'll try that, not sure where you put that code though? <br><br>Also, my DateTimePicker isn't even being saved! ! !&nbsp;&nbsp;&nbsp; The databinding is setting the value, but its not even coming out of the datetimepicker control! <br><br>Do I have to use a textbox? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JWoods replied on Monday, June 19, 2006</h2><P>Maybe we have different problems.&nbsp; My scenario is that I have a block of code that loops the&nbsp;rows in a DataSource that is bound to a DataGridView through a BindingSource.&nbsp; After doing the updates, I see that the last row updated does not reflect its changes in the Grid control.&nbsp; My fix was to call Me.MyBindingSource.ResetBindings(false) where the variable MyBindingSource is defined on my form and assigned as the datasource to the grid view.</P>
+<P>Perhaps I misunderstood your problem, which is the opposite, where you are changing the data through the control but your datasource is not updated.</P>
+<P>&nbsp;</P>
+<P>JWoods</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Monday, June 19, 2006</h2>Brett - I know that back in .net 1.0 I could never get databinding and datatimepicker to work. I resorted to using the ValueChanged datetimepicker event to update my object manually.<br><br>Dean.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

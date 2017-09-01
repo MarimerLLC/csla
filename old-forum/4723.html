@@ -1,0 +1,119 @@
+<html><header><title>Caching large lists of data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Caching large lists of data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4723.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako posted on Monday, April 21, 2008</h2><P>I am trying to figure out the best way to handle large lists of data (in a readOnlyBase - readOnlyList setup). I have a setup in my app for selecting records that I like from a functional perspective. I have a comboBox on the entry/edit form that contains a list of, say, customers. The user can switch the display value in the list between the customer Id&nbsp;and the customer name (since both values are in the CustomerInfo object, I just programmatically change the "DisplayValue" property on the comboBox based on a radioButton selection). I have also set up the auto-complete feature on the comboBox. So it all works very nicely. The problem is my customer list could potentially be pretty large - we have clients with upwards of 10,000 customer records. And it gets worse with inventory (I'd like to use the same setup with my Inventory Items entry/edit form) - we have clients with 50,000 or even 100,000 inventory items.</P>
+<P>My question is, are these lists too long to reasonably cache? In&nbsp; the old app that I'm rewriting, we utilize an archaic search function. If these lists are too&nbsp;big to cache (or read in full in the form's OnLoad) then I can create a search dialog. I just like what I've done so far from a functional perspective and hate to have to abandon it. And I don't have the time to enter thousands of records of test data (we will eventually have a data conversion process in place but I probably won't have that piece for quite some time) to test the performance. I was interested to know if there was anyone else out there that was handling very large lists of data and if so:</P>
+<P>a) Does it look like I'll be able to keep my current model</P>
+<P>b) If not, what have you done that's been successful?</P>
+<P>Thanks alot,</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have tried this before as an experiment.&nbsp; I tried to load
+a list of 20,000 items into memory.&nbsp; It would take about 6-7 seconds to
+load the list, although it was wider than yours.&nbsp; UI would also take a hit
+to paint.&nbsp; Because of that I abandoned that route and when with search
+function similar to the one you describe.&nbsp; This changes was actually welcomed
+by the users because none of them intended to look at thousands of items,
+usually at one or two.&nbsp; Search function was pretty much instant even on
+20,000 items even without full-text search capabilities on back end.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 3:53 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Caching large lists of data<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am trying to figure out the best way to handle large lists of data (in a
+readOnlyBase - readOnlyList setup). I have a setup in my app for selecting
+records that I like from a functional perspective. I have a comboBox on the
+entry/edit form that contains a list of, say, customers. The user can switch
+the display value in the list between the customer Id&nbsp;and the customer
+name (since both values are in the CustomerInfo object, I just programmatically
+change the &quot;DisplayValue&quot; property on the comboBox based on a
+radioButton selection). I have also set up the auto-complete feature on the comboBox.
+So it all works very nicely. The problem is my customer list could potentially
+be pretty large - we have clients with upwards of 10,000 customer records. And
+it gets worse with inventory (I'd like to use the same setup with my Inventory
+Items entry/edit form) - we have clients with 50,000 or even 100,000 inventory
+items.<o:p></o:p></p>
+
+<p>My question is, are these lists too long to reasonably cache? In&nbsp; the
+old app that I'm rewriting, we utilize an archaic search function. If these
+lists are too&nbsp;big to cache (or read in full in the form's OnLoad) then I
+can create a search dialog. I just like what I've done so far from a functional
+perspective and hate to have to abandon it. And I don't have the time to enter
+thousands of records of test data (we will eventually have a data conversion
+process in place but I probably won't have that piece for quite some time) to
+test the performance. I was interested to know if there was anyone else out
+there that was handling very large lists of data and if so:<o:p></o:p></p>
+
+<p>a) Does it look like I'll be able to keep my current model<o:p></o:p></p>
+
+<p>b) If not, what have you done that's been successful?<o:p></o:p></p>
+
+<p>Thanks alot,<o:p></o:p></p>
+
+<p>Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Tuesday, April 22, 2008</h2><P>A nice addition to Sergey's suggestion is the ability to persist the search criteria.&nbsp; The users then can have access to their list of favorite search queries, and can execute them quickly and easily.&nbsp; Most of the time they are going to be running the same handful of searches time and again.</P>
+<P>-- Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 22, 2008</h2><P>I agree. I do keep the search criteria around for the session.</P>
+<P>For Report search criteria I save it to the DB and let them retrieve the named criteria that they saved and re-use it. Very useful feature.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Wednesday, April 23, 2008</h2><P>Thanks for all the replies everyone. It looks like&nbsp;a search function is probably the way to go. That will actually match the functionality of the old app (although the new search function will be much better). I liked what I had from a functional and design perspective. It would have been a big imporvement over the old functionality.&nbsp;But from a performance perspective it probably wouldn't have worked - at least for some of our clients.</P>
+<P>Thanks for all your help and if anyone has any advice on implementation details for creating a generic search dialog that can be used for any ReadOnlyList, I'd be happy to hear it.</P>
+<P>Thanks, Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, April 23, 2008</h2><P>If your using MSSQL Server then why not use TOP, as in "select TOP 100 * from Customers where Name like @NameCriteria% order by Name", we use this pattern for most of our searches and results in sub second response&nbsp;in combo boxes backed by tables with 3million+ rows.</P>
+<P>Justin&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisghardwick replied on Monday, April 21, 2008</h2><P>Dennis,</P>
+<P>I've been through this a few times. It depends a ton of a few factors, and typically comes down what preforms better in your enviroment. </P>
+<P>In most cases I've opted to use a hybrid approach when I need cached data using the Patterns and Practices Enterprise Library caching. </P>
+<P>I&nbsp;created a custom ReadOnlyListBaseCache object that inherited from ReadOnlyListBase, which would cache collections using the EnterpriseLibrary Caching functionality.</P>
+<P>On a new search, I would load the information from the database, and keep the result in memory (for 15 minutes or the&nbsp;life of the form)&nbsp;for the user in case they wanted to revisit the same list information again.</P>
+<P>Hope this helps.</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 22, 2008</h2><P>In my Web app I try to keep lists around for the life of the page (including postbacks). When the user makes a selection and navigates off the list page, I purge the list from the cache.</P>
+<P>I also have a system option which allows the client to set the max number of records in the list. If the number of rows exceeds that value then the list is not returned and they have to perform a search instead.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Saturday, April 26, 2008</h2>You should look and see if the indexing features of 3.5 would work, at least on the search side.<br><br>Cache it once, index the searches you are likely to do, and suddenly list size itself is pretty much just a memory consideration.<br><br>To do it, put [Indexable(IndexMode.Always)] on the field you are expecting to search by, and then use Linq to Objects to do the search.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

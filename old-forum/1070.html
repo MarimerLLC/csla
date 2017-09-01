@@ -1,0 +1,28 @@
+<html><header><title>&quot;Define a Csla Property&quot; VB snippet</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Define a Csla Property&quot; VB snippet</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1070.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lnk posted on Wednesday, August 30, 2006</h2><P><FONT face=Tahoma size=2>Hi all...</FONT></P>
+<P><FONT face=Tahoma size=2>We have an exception ocurred in our project due to the use of "Define a Csla Property" snippet:</FONT></P>
+<P><FONT face=Tahoma size=2>&nbsp;&nbsp;&nbsp; Set(ByVal value As $PropertyType$)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT>If Not $PrivateVariable$.Equals(value) Then</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; $PrivateVariable$ = value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Set<BR></FONT></P>
+<P><FONT face=Tahoma><FONT size=2>When editing a string property in a grid. If you delete the cell content the $PrivateVariable$ value will be Nothing. The equals function causes an exception when setting a correct value&nbsp;because <FONT>$PrivateVariable$ is Nothing.</FONT></FONT></FONT></P>
+<P><FONT face=Tahoma size=2>We propose to change the line, as in Project Tracker, for using the &lt;&gt; operator. </FONT></P>
+<P><FONT face=Tahoma size=2>The only side effect is that all our property types must implement the &lt;&gt; operator. But this can be noticed when coding. The we could choose to use Equals with Nothing check or implement the &lt;&gt; operator.</FONT></P>
+<P><FONT face=Tahoma size=2>What do you think about?</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks.</FONT></P>
+<P><FONT face=Tahoma size=2>Emilio.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Wednesday, August 30, 2006</h2>
+
+<p class="MsoNormal">I think I understand what you are trying to say, I had an
+issue with this before.<br>
+<br>
+I found that the declaration was causing the issue, if you have a string value
+you will need to set it to string.empty in the declaration.<br>
+<br>
+Dim _Value as String = String.Empty and then you can evaluate the value when
+setting the property.<o:p></o:p></p>
+
+
+
+<p class="MsoNormal"><o:p></o:p>If you don't i believe it throws and error because the
+variable hasn't been initiated.<br>
+<br>
+Tim.<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lnk replied on Thursday, August 31, 2006</h2><P><FONT face=Tahoma size=2>Tim, is not a question of variable inizialization.</FONT></P>
+<P><FONT face=Tahoma size=2>The thing is that the Datagridview is sending Nothing to my property when&nbsp;I delete&nbsp;the cell contents (in this case the property is a string). Then when I write a correct value on the cell the equals fuction fails becasuse the member variable is nothing.</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks anyway...</FONT></P>
+<P><FONT face=Tahoma size=2>Emilio.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

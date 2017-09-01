@@ -1,0 +1,1242 @@
+<html><header><title>SmartInt class - v2.0, soon v2.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartInt class - v2.0, soon v2.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1460.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Wednesday, October 11, 2006</h2><P>I did up a v2.0 SmartInt class awhile back (think SmartDate for an Int) and it seems to be holding up pretty well in practice.</P>
+<P>I'm in the process of changing its name to SmartInt32 (so I can later do a SmartInt16, etc.), plus verifying that it works with v2.1.</P>
+<P>I have two questions:</P>
+<P>1) The SmartDate class used resource files to store error message strings.&nbsp; I can muddle my way thru the English resource files, and maybe even the French, but after that I'm well beyond my level of language competency.&nbsp; How do people handle that?&nbsp; Just put English in the other language resource files until someone replaces it with the correct language text?&nbsp; Don't touch the other language files and it all works ok somehow?&nbsp;&nbsp; (I really don't have any interest in learning all about this feature right now, I have enough on my plate!)&nbsp; I just need to know enough to get going.</P>
+<P>2) To make the SmartInt class really useful, I had to make a number of extensions to the SafeDateReader class.&nbsp; What would be the best way to handle that when it comes to submitting code?</P>
+<P>I don't want to get into the problem of having two versions of SafeDataReader to keep track of, mine and Rocky's!&nbsp; I would prefer to just give mine to Rocky! :)</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 18, 2006</h2><P>I've been doing some thinking about how I handled the changes to SafeDataReader.</P>
+<P>I'm thinking I should subclass SafeDataReader (SmarterSafeDataReader?? :) instead of changing it to support SmartInt16, SmartInt32, SmartBool, etc.</P>
+<P>Comments?&nbsp; Suggestions?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai replied on Wednesday, October 18, 2006</h2><P>Hi David</P>
+<P>I'm a tad confused by the whole Csla Contrib thing.&nbsp; I have just been looking for the SmartInt stuff you said you uploaded but I can't see it anywhere on the contrib website.&nbsp; I am curious to take a look.&nbsp; Can you explain where I can download it from?</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 18, 2006</h2><DIV class=ForumPostBodyArea>
+<DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl05_PostViewWrapper><FONT color=#0000ff size=2>
+<P>this is the SmartInt class.</P>
+<P>Given some free time, I would refactor it into SmartInt32...</P>
+<P>========================================================</P>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> Csla.Properties;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Csla</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Provides an integer data type that understands the concept</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> of an empty value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> See Chapter 5 for a full discussion of the need for a similar </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> data type and the design choices behind it. Basically, we are </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> using the same approach to handle integers instead of ints.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>struct</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>IComparable</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> _int;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _initialized;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _emptyIsMax;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _format;</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Constructors</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartInt object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="emptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty int is the min or max int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartInt(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P>_emptyIsMax = !emptyIsMin;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// provide a dummy value to allow real initialization</P></FONT><FONT size=2>
+<P>_int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_emptyIsMax)</P>
+<P>Int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>Int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MaxValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartInt object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The SmartInt created will use the min possible</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> int to represent an empty int.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartInt(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P>_emptyIsMax = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P>Int = value;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartInt object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty int is the min or max int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartInt(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P>_emptyIsMax = !emptyIsMin;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P>Int = value;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartInt object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The SmartInt created will use the min possible</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> int to represent an empty int.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object (as text).</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartInt(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P>_emptyIsMax = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>_int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Text = value;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartInt object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object (as text).</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty int is the min or max int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartInt(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P>_emptyIsMax = !emptyIsMin;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>_int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Text = value;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Text Support</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets or sets the format string used to format a int</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value when it is returned as text.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The format string should follow the requirements for the</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> .NET </FONT><FONT color=#808080 size=2>&lt;see cref="System.String.Format"/&gt;</FONT><FONT color=#008000 size=2> statement.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;value&gt;</FONT><FONT color=#008000 size=2>A format string.</FONT><FONT color=#808080 size=2>&lt;/value&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> FormatString</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_format == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_format = </FONT><FONT color=#800000 size=2>"d"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _format;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets or sets the int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This property can be used to set the int value by passing a</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> text representation of the int. Any text int representation</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> that can be parsed by the .NET runtime is valid.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> When the int value is retrieved via this property, the text</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> is formatted by using the format specified by the </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;see cref="FormatString" /&gt;</FONT><FONT color=#008000 size=2> property. The default is the</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> short int format (d).</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Text</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> IntToString(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int, FormatString, !_emptyIsMax); }</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int = StringToInt(</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>, !_emptyIsMax); }</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Int Support</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets or sets the int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> Int</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_initialized)</P>
+<P>{</P>
+<P>_int = </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _int;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_int = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> System.Object overrides</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a text representation of the int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> ToString()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Text;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares this object to another </FONT><FONT color=#808080 size=2>&lt;see cref="SmartInt"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> for equality.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Equals(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> obj)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> tmp = (</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>)obj;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsEmpty &amp;&amp; tmp.IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.Equals(tmp.Int);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.Equals((</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)obj);</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.CompareTo(obj.ToString()) == 0);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a hash code for this object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> GetHashCode()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.GetHashCode();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> DBValue</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a database-friendly version of the int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> If the SmartInt contains an empty int, this returns </FONT><FONT color=#808080 size=2>&lt;see cref="DBNull"/&gt;</FONT><FONT color=#008000 size=2>.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Otherwise the actual int value is returned as type Int.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This property is very useful when setting parameter values for</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> a Command object, since it automatically stores null values into</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the database for empty int values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> When you also use the SafeDataReader and its GetSmartInt method,</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> you can easily read a null value from the database back into a</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> SmartInt object so it remains considered as an empty int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> DBValue</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DBNull</FONT><FONT size=2>.Value;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Empty Ints</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a value indicating whether this object contains an empty int.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsEmpty</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_emptyIsMax)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.Equals(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.Equals(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MaxValue);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a value indicating whether an empty int is the </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> min or max possible int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Whether an empty int is considered to be the smallest or largest possible</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> int is only important for comparison operations. This allows you to</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> compare an empty int with a real int and get a meaningful result.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> EmptyIsMin</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !_emptyIsMax; }</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Conversion Functions</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a string value into a SmartInt.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="value"&gt;</FONT><FONT color=#008000 size=2>String containing the int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A new SmartInt containing the int value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> EmptyIsMin will default to </FONT><FONT color=#808080 size=2>&lt;see langword="true"/&gt;</FONT><FONT color=#008000 size=2>.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> Parse(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>(value);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a string value into a SmartInt.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="value"&gt;</FONT><FONT color=#008000 size=2>String containing the int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="emptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty int is the min or max int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A new SmartInt containing the int value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> Parse(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>(value, emptyIsMin);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a text int representation into a Int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> An empty string is assumed to represent an empty int. An empty int</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> is returned as the MinValue of the Int datatype.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The text representation of the int.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A Int value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> StringToInt(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> StringToInt(value, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a text int representation into a Int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> An empty string is assumed to represent an empty int. An empty int</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> is returned as the MinValue or MaxValue of the Int datatype depending</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> on the EmptyIsMin parameter.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The text representation of the int.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty int is the min or max int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A Int value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> StringToInt(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> tmp;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>String</FONT><FONT size=2>.IsNullOrEmpty(value))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (emptyIsMin)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MaxValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.TryParse(value, </FONT><FONT color=#0000ff size=2>out</FONT><FONT size=2> tmp))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> tmp; </P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> lint = value.Trim().ToLower();</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Invalid integer value."</FONT><FONT size=2>); </FONT><FONT color=#008000 size=2>// TODO: Resources.StringToIntException);</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a int value into a text representation.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The int is considered empty if it matches the min value for</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the Int datatype. If the int is empty, this</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> method returns an empty string. Otherwise it returns the int</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value formatted based on the FormatString parameter.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The int value to convert.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="FormatString"&gt;</FONT><FONT color=#008000 size=2>The format string used to format the int into text.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>Text representation of the int value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> IntToString(</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> formatString)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> IntToString(value, formatString, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a int value into a text representation.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Whether the int value is considered empty is determined by</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the EmptyIsMin parameter value. If the int is empty, this</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> method returns an empty string. Otherwise it returns the int</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value formatted based on the FormatString parameter.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The int value to convert.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="FormatString"&gt;</FONT><FONT color=#008000 size=2>The format string used to format the int into text.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty int is the min or max int value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>Text representation of the int value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> IntToString(</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> formatString, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (emptyIsMin &amp;&amp; value == </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MinValue)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!emptyIsMin &amp;&amp; value == </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>.MaxValue)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(</FONT><FONT color=#800000 size=2>"{0:"</FONT><FONT size=2> + formatString + </FONT><FONT color=#800000 size=2>"}"</FONT><FONT size=2>, value);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Manipulation Functions</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares one SmartInt to another.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This method works the same as the </FONT><FONT color=#808080 size=2>&lt;see cref="int.CompareTo"/&gt;</FONT><FONT color=#008000 size=2> method</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> on the Int inttype, with the exception that it</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> understands the concept of empty int values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The int to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison int is less than, equal to or greater than this int.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsEmpty &amp;&amp; value.IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _int.CompareTo(value.Int);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares one SmartInt to another.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This method works the same as the </FONT><FONT color=#808080 size=2>&lt;see cref="int.CompareTo"/&gt;</FONT><FONT color=#008000 size=2> method</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> on the Int inttype, with the exception that it</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> understands the concept of empty int values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="obj"&gt;</FONT><FONT color=#008000 size=2>The int to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison int is less than, equal to or greater than this int.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IComparable</FONT><FONT size=2>.CompareTo(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (value </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> CompareTo((</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>)value);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"Not a SmartInt to compare to."</FONT><FONT size=2>); </FONT><FONT color=#008000 size=2>//TODO: Resources.ValueNotSmartIntException);</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares a SmartInt to a text int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The int to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison int is less than, equal to or greater than this int.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.CompareTo(StringToInt(value, !_emptyIsMax));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares a SmartInt to a int value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The int to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison int is less than, equal to or greater than this int.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int.CompareTo(value);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Adds an integer value onto the object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> Add(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int + value;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Subtracts an integer value from the object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> Subtract(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Int - value;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Operators</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> ==(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> !=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> ==(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> !=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> ==(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> !=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> +(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> start, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> span)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>(start.Add(span), start.EmptyIsMin);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> -(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> start, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> span)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>(start.Subtract(span), start.EmptyIsMin);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> -(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> start, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> finish)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> start.Subtract(finish.Int);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;=(</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt;= 0;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 18, 2006</h2><P>this is the updated SafeDataReader so it also knows about SmartInt.</P>
+<P>this was from v2.0.3 (ditto for SmartInt).</P>
+<P>haven't tested against 2.1 yet.</P>
+<P>basically, I did a search on SmartDate and mirrored the code for SmartInt.</P>
+<P>I think this would be better done as a subclass of SafeDataReader.&nbsp; I'm going to experiment on that next week.</P>
+<P>==============================================</P>
+<P>using<FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System.Data;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Csla.Data</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This is a DataReader that 'fixes' any null values before</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> they are returned to our business code.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>IDataReader</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IDataReader</FONT><FONT size=2> _dataReader;</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Get a reference to the underlying data reader</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> object that actually contains the data from</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the data source.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IDataReader</FONT><FONT size=2> DataReader</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader; }</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Initializes the SafeDataReader object to use data from</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the provided DataReader object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="DataReader"&gt;</FONT><FONT color=#008000 size=2>The source DataReader object containing the data.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SafeDataReader(</FONT><FONT color=#008080 size=2>IDataReader</FONT><FONT size=2> dataReader)</P>
+<P>{</P>
+<P>_dataReader = dataReader;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a string value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns empty string for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> GetString(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetString(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a string value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns empty string for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> GetString(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetString(i);</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a value of type </FONT><FONT color=#808080 size=2>&lt;see cref="System.Object" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetValue(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetValue(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a value of type </FONT><FONT color=#808080 size=2>&lt;see cref="System.Object" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetValue(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetValue(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets an integer from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> GetInt32(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetInt32(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets an integer from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> GetInt32(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetInt32(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a double from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>double</FONT><FONT size=2> GetDouble(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetDouble(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a double from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>double</FONT><FONT size=2> GetDouble(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetDouble(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a </FONT><FONT color=#808080 size=2>&lt;see cref="SmartDate" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A null is converted into min possible date</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> See Chapter 5 for more details on the SmartDate class.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartDate</FONT><FONT size=2> GetSmartDate(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetSmartDate(_dataReader.GetOrdinal(name), </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a </FONT><FONT color=#808080 size=2>&lt;see cref="SmartInt" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A null is converted into min possible int.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> See Chapter 5 for more details on the SmartDate class, and transpose the concepts to SmartInt32.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> GetSmartInt(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetSmartInt(_dataReader.GetOrdinal(name), </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a </FONT><FONT color=#808080 size=2>&lt;see cref="SmartDate" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A null is converted into the min possible date</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> See Chapter 5 for more details on the SmartDate class.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartDate</FONT><FONT size=2> GetSmartDate(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetSmartDate(i, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a </FONT><FONT color=#808080 size=2>&lt;see cref="SmartDate" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A null is converted into either the min or max possible date</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> depending on the MinIsEmpty parameter. See Chapter 5 for more</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> details on the SmartDate class.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="minIsEmpty"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A flag indicating whether the min or max </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value of a data means an empty date.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartDate</FONT><FONT size=2> GetSmartDate(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> minIsEmpty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetSmartDate(_dataReader.GetOrdinal(name), minIsEmpty);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a </FONT><FONT color=#808080 size=2>&lt;see cref="SmartInt" /&gt;</FONT><FONT color=#008000 size=2> from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A null is converted into either the min or max possible int</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> depending on the MinIsEmpty parameter. See Chapter 5 for more</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> details on the SmartDate class, and transpose concepts to SmartInt.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="minIsEmpty"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> A flag indicating whether the min or max </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value of a data means an empty int.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> GetSmartInt(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> minIsEmpty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetSmartInt(_dataReader.GetOrdinal(name), minIsEmpty);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartDate</FONT><FONT size=2> GetSmartDate(</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> minIsEmpty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartDate</FONT><FONT size=2>(minIsEmpty);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartDate</FONT><FONT size=2>(</P>
+<P>_dataReader.GetDateTime(i), minIsEmpty);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2> GetSmartInt(</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> minIsEmpty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>(minIsEmpty);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.</FONT><FONT color=#008080 size=2>SmartInt</FONT><FONT size=2>(</P>
+<P>_dataReader.GetInt32(i), minIsEmpty);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Guid value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns Guid.Empty for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> System.</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> GetGuid(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetGuid(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Guid value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns Guid.Empty for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> System.</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> GetGuid(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetGuid(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Reads the next row of data from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Read()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.Read();</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Moves to the next result set in the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> NextResult()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.NextResult();</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Closes the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Close()</P>
+<P>{</P>
+<P>_dataReader.Close();</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns the depth property value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> Depth</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.Depth;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns the FieldCount property from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> FieldCount</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.FieldCount;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a boolean value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns </FONT><FONT color=#808080 size=2>&lt;see langword="false" /&gt;</FONT><FONT color=#008000 size=2> for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> GetBoolean(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetBoolean(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a boolean value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns </FONT><FONT color=#808080 size=2>&lt;see langword="false" /&gt;</FONT><FONT color=#008000 size=2> for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> GetBoolean(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetBoolean(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a byte value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2> GetByte(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetByte(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a byte value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2> GetByte(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetByte(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetBytes method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> GetBytes(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name, </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> fieldOffset,</P>
+<P></FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[] buffer, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> bufferoffset, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> length)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetBytes(_dataReader.GetOrdinal(name), fieldOffset, buffer, bufferoffset, length);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetBytes method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> GetBytes(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i, </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> fieldOffset,</P>
+<P></FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[] buffer, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> bufferoffset, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> length)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetBytes(i, fieldOffset, buffer, bufferoffset, length);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a char value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns Char.MinValue for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2> GetChar(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetChar(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a char value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns Char.MinValue for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2> GetChar(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2>[] myChar = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2>[1];</P>
+<P>_dataReader.GetChars(i, 0, myChar, 0, 1);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> myChar[0];</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetChars method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> GetChars(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name, </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> fieldoffset,</P>
+<P></FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2>[] buffer, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> bufferoffset, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> length)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetChars(_dataReader.GetOrdinal(name), fieldoffset, buffer, bufferoffset, length);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetChars method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> GetChars(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i, </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> fieldoffset,</P>
+<P></FONT><FONT color=#0000ff size=2>char</FONT><FONT size=2>[] buffer, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> bufferoffset, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> length)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetChars(i, fieldoffset, buffer, bufferoffset, length);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetData method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IDataReader</FONT><FONT size=2> GetData(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetData(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetData method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IDataReader</FONT><FONT size=2> GetData(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetData(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetDataTypeName method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> GetDataTypeName(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetDataTypeName(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetDataTypeName method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> GetDataTypeName(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetDataTypeName(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a date value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns DateTime.MinValue for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2> GetDateTime(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetDateTime(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a date value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns DateTime.MinValue for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2> GetDateTime(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetDateTime(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a decimal value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>decimal</FONT><FONT size=2> GetDecimal(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetDecimal(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a decimal value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>decimal</FONT><FONT size=2> GetDecimal(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetDecimal(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetFieldType method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2> GetFieldType(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetFieldType(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetFieldType method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2> GetFieldType(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetFieldType(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Single value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>float</FONT><FONT size=2> GetFloat(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetFloat(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Single value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>float</FONT><FONT size=2> GetFloat(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetFloat(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Short value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>short</FONT><FONT size=2> GetInt16(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetInt16(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Short value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>short</FONT><FONT size=2> GetInt16(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetInt16(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Long value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> GetInt64(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetInt64(_dataReader.GetOrdinal(name));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a Long value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns 0 for null.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Int64</FONT><FONT size=2> GetInt64(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetInt64(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetName method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> GetName(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetName(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets an ordinal value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> GetOrdinal(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetOrdinal(name);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetSchemaTable method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataTable</FONT><FONT size=2> GetSchemaTable()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetSchemaTable();</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the GetValues method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> GetValues(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>[] values)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.GetValues(values);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns the IsClosed property value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</FONT></P><FONT color=#808080 size=2>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsClosed</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.IsClosed;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Invokes the IsDBNull method of the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsDBNull(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.IsDBNull(i);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="name"&gt;</FONT><FONT color=#008000 size=2>Name of the column containing the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> name]</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> val = _dataReader[name];</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>DBNull</FONT><FONT size=2>.Value.Equals(val))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> val;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a value from the datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="i"&gt;</FONT><FONT color=#008000 size=2>Ordinal column position of the value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i]</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_dataReader.IsDBNull(i))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader<IMG alt="Idea <img src=" />" src="/emoticons/emotion-55.gif">;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns the RecordsAffected property value from the underlying datareader.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> RecordsAffected</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _dataReader.RecordsAffected;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2><FONT color=#000000> IDisposable Support</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _disposedValue; </FONT><FONT color=#008000 size=2>// To detect redundant calls</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// IDisposable</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Dispose(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> disposing)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_disposedValue)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (disposing)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// free unmanaged resources when explicitly called</P></FONT><FONT size=2>
+<P>_dataReader.Dispose();</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// free shared unmanaged resources</P></FONT><FONT size=2>
+<P>}</P>
+<P>_disposedValue = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// This code added by Visual Basic to correctly implement the disposable pattern.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Dispose()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Do not change this code. Put cleanup code in Dispose(bool disposing) above.</P></FONT><FONT size=2>
+<P>Dispose(</FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008080 size=2>GC</FONT><FONT size=2>.SuppressFinalize(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

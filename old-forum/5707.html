@@ -1,0 +1,9 @@
+<html><header><title>Another Silverlight navigation request</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Another Silverlight navigation request</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5707.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dnwheeler posted on Thursday, October 30, 2008</h2><P>I have a need to do some cleanup (unhooking events, etc.) in&nbsp;my child page control&nbsp;when navigating to another page. Could the Navigator.CreateAndShowControl() method be modified to call Dispose on the old content before assigning the new? Like this:</P>
+<P>Old:</P><PRE>ContentPlaceholder.Content = newControl;</PRE>
+<P>New:</P><PRE>if (ContentPlaceholder.Content is IDisposable)
+  (ContentPlaceholder.Content as IDisposable).Dispose();
+ContentPlaceholder.Content = newControl;</PRE>
+<P>This should be a non-breaking change.</P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 30, 2008</h2><P>In concept I think this is a good idea.</P>
+<P>Specifically I don't like that particular approach, because it would prevent someone from maintaining a dictionary of "already open" items. In other words, blindly destroying view objects may help you, but may totally block other valuable UI models.</P>
+<P>So what we probably need is a way for Navigator to notify you that a view is about to be "closed" so you can call dispose, or put it into your open-items list or whatever.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

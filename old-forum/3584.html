@@ -1,0 +1,14 @@
+<html><header><title>getting started</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>getting started</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3584.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rb157 posted on Monday, September 24, 2007</h2><P>I've downloaded the c# code built the CSLA code, changed the connection string to the directory which the code was downloaded to and run the Project tracker application. login as pm, pm. </P>
+<P>I then receive a DataPortal&nbsp;exception: </P>
+<P>"An attempt to attach an auto-named database for file C:\\Documents and Settings\\Richard Box\\My Documents\\Visual Studio Projects\\csla20\\ProjectTracker20cs\\Security.mdf failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share."</P>
+<P>I am using PTWin as my startup project as the easiest option to begin, and have I believe followed Rocky's instructions to the letter, only making changes for the PTWin project.</P>
+<P>Any help in resolving this and therefore getting on with using the framework, greatly appreciated.</P>
+<P>Many Thanks, </P>
+<P>Richard</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 24, 2007</h2>Those double \\ seem suspicious don't they?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rb157 replied on Monday, September 24, 2007</h2><P>Thanks Rocky, yes they do seem strange, as they are single in the connection string:</P>
+<P>&lt;connectionStrings&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;add name="PTracker" <BR>&nbsp;&nbsp;&nbsp; connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=C:\Documents and Settings\Richard Box\My Documents\Visual Studio Projects\csla20\ProjectTracker20cs\PTracker.mdf;Integrated Security=True;User Instance=True"<BR>&nbsp;&nbsp;&nbsp; providerName="System.Data.SqlClient" /&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;add name="Security" <BR>&nbsp;&nbsp;&nbsp; connectionString="Data Source=.\SQLEXPRESS;AttachDbFilename=C:\Documents and Settings\Richard Box\My Documents\Visual Studio Projects\csla20\ProjectTracker20cs\Security.mdf;Integrated Security=True;User Instance=True"<BR>&nbsp;&nbsp;&nbsp; providerName="System.Data.SqlClient" /&gt;<BR>&nbsp; &lt;/connectionStrings&gt;</P>
+<P>However, I have done some further investigation and found that I could not attach in Sql Server&nbsp;Management Studio to the directory where the dbs reside. </P>
+<P>I have now moved the databases to the SQL Server data directory, amended the connection string and all is well. </P>
+<P>Many Thanks, </P>
+<P>Richard</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

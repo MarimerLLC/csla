@@ -1,0 +1,193 @@
+<html><header><title>New async validation rules - Possible Problem???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New async validation rules - Possible Problem???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5872.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Monday, November 24, 2008</h2>I have been playing around a little with the async validation rules and have noticed a little bit of a problem.<br><br>If "void CheckRules(List&lt;IRuleMethod&gt; list)" throws an exception, in the catch statement it calls "rule.RuleArgs.PropertyName". Before the async validation rules came along this would have been fine. But in the case where async validation rule throws an exception, AsyncRuleMethod throws an exception when RuleArgs is called. <br><br>&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Throw a more detailed exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ValidationException(string.Format(Resources.ValidationRulesException, rule.<b>RuleArgs</b>.PropertyName, rule.RuleName), ex);<br>&nbsp;&nbsp;&nbsp; }<br><br>internal class AsyncRuleMethod ... {<br>....<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RuleArgs IRuleMethod.<b>RuleArgs</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { <b>throw new NotSupportedException();</b> }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+....<br>}<br><br>cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 24, 2008</h2><P>I don't believe this is a bug. This is by design. </P>
+<P>An async rule method can <EM>never</EM> allow an unhandled exception to occur. Ever.</P>
+<P>Async rule methods must always catch all exceptions and must return them through the parameter provided in the callback.</P>
+<P>This is because an async rule method is running on a background thread (or may be) and so an unhandled exception would then flow up to the .NET runtime as an unhandled exception - and that's a problem.</P>
+<P>So we have a scheme by which an exception in the async rule method can be safely returned to CSLA, which can then take care of it on the primary thread. But never in the CheckRules() method - because that merely <EM>starts</EM> the async rule and never handles any result.</P>
+<P>Of course you may fully understand this already - in which case I'm misunderstanding you, and I need more clarification.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, November 25, 2008</h2>Hi
+Rocky thanks for the reply...<br>
+I wasn't pointing out the need to catch the exception and then re-throw it, i
+totally get that.<br>
+<br>
+I was trying to point out the face that the "rule.RuleArgs.PropertyName" part in the catch
+statement causes a <b>NotSupportedException </b>to occur when using a rule that
+caused the error is of type AsyncRuleMethod (which is the case when dealing
+with Async rules).<br>
+<br>
+In other words given the catch statements in CheckRules, I would expect that
+this catch statement be run if an error occurs whilst processing the validation
+rule. Next I would expect that the catch statement would throw a new exception
+of type ValidationException which contains whatever the original exception was.
+In the case where the rule that fails is of type RuleMethod, this works
+fine....<br>
+<br>
+But In the case where rule of type AsyncRuleMethod when following code is
+executed "throw new
+ValidationException(string.Format(Resources.ValidationRulesException, <b>rule.RuleArgs.PropertyName</b>,
+rule.RuleName), ex);" the bolded part thow a <b>NotSupportedException </b>excecption
+which contains no information about the original exception. The reason why this
+occurs is because AsyncRuleMethod exsplicity implements the <b>RuleArgs </b>property<b>
+</b>and throws a <b>NotSupportedException </b>exception if it is ever called.
+When this occurs the application gets back a <b>NotSupportedException </b>exception
+which has nothing to do with the error that occurred in the first place and not
+what of finding out how the original exception occurred.<br>
+<br>
+I hope that makes a bit more sense. <br>
+Cheers<br>
+Anthony </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am still not sure there&#8217;s an issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CheckRules() doesn&#8217;t execute async rules. It merely <i>starts</i>
+the rule. The rule method can&#8217;t fail &#8211; async rule methods must <i>never</i>
+throw an exception &#8211; so that catch block should never be hit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, November 25, 2008</h2>Hi Rocky <br>You have just said that the CheckRules method doesn't execute async rules and that it only states/finds the async rules... I'm sorry but I may be way off the mark but I thought that the following section of code was executing any found async rules within the CheckRules method (note the bolded invoke)...<br><br>&nbsp;&nbsp;&nbsp; private void CheckRules(List&lt;IRuleMethod&gt; list)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; ....<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IAsyncRuleMethod[] asyncRules = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (SyncRoot)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; asyncRules = ValidatingRules.ToArray();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // They must all be added to the ValidatingRules list before you can invoke them.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Otherwise you have a race condition, where if a rule completes before the next one is invoked<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // then you may have the ValidationComplete event fire multiple times invalidly.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (IAsyncRuleMethod rule in asyncRules)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>rule.Invoke(_target, asyncRule_Complete);</b><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // throw a more detailed exception<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ValidationException(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Format(Properties.Resources.ValidationRulesException, <u><i><b>rule.RuleArgs.PropertyName</b></i></u>,<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; rule.RuleName), ex);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>Also please note that the problem that I have been trying to raise is about the catch statement that surrounds this invoke, the other catch statement within CheckRules should be fine as you have pointed out, but I can't see how this one can be ok.<br><br>If any errors occur within method that is invoked (and doesn't happen on a different thread... i.e. the rule that has been executed hasn't spun up a new thread yet), the problem that I have described will occur. <br><br>Hope this helps and for the record I may have total missed something that is going on here so just let me know if I’m off the mark and I will leave it, but at the moment I can't how the second catch statement can't be an issue, because it exists only to catch exception generated by the invoke of the rules that are of type async. <br><br>Cheers<br>Anthony <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is a bit confusing when you look at the code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>But the rule is very strict: an async rule method may <i>never
+throw an exception</i>. <o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So yes, CheckRules() “runs” the async method. But really the
+idea is that the async method does its work on a background thread. It shouldn’t
+do anything on the calling thread, so there really shouldn’t be anything to
+actually fail back into CheckRules(). Any failure should occur in the rule
+processing on the background thread, and that exception should be returned
+through the callback.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you somehow do create an async method that does work on the
+calling thread that could fail, there are two things to consider. First, it isn’t
+async yet, so this is synchronous code. Second, it should <i>still</i> never
+allow an unhandled exception (see the rule), and so any failure should cause
+the exception to be returned via the callback.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The whole async rule infrastructure is based on the rule that an
+async method may never throw an exception. That any exception, in any part of
+the rule, is returned via the callback. That every rule has a callback, whether
+it failed or not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This affects exception handling, but also the IsBusy property
+and related processing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, November 26, 2008</h2>Cool thanks for that... I only have one question then, why have the try catch block around the async code, if 1) its never going to be used and 2) if it does get called somehow, the catch block fails because of the problem that I have described? I would think that if you are going to have a try/catch block the last thing you would want is the catch to throw a new exception as its throwing exception, regardless of whether it "should" be called. My problem is not whether the try/catch should or shouldn't be there but the fact that if it is going to be there, but the fact that the catch is not going to work as intended if it happened to run.<br>Cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are right in that in that regard it is a bug &#8211;
+and I&#8217;ll put it on the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 26, 2008 1:57 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: New async validation rules - Possible
+Problem???<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Cool thanks for that... I only have one question then, why
+have the try catch block around the async code, if 1) its never going to be
+used and 2) if it does get called somehow, the catch block fails because of the
+problem that I have described? I would think that if you are going to have a
+try/catch block the last thing you would want is the catch to throw a new
+exception as its throwing exception, regardless of whether it
+&quot;should&quot; be called. My problem is not whether the try/catch should or
+shouldn't be there but the fact that if it is going to be there, but the fact
+that the catch is not going to work as intended if it happened to run.<br>
+Cheers<br>
+Anthony<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, November 26, 2008</h2>No problem, just glad i could help<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2><P>My proposed solution to this problem is to have AsyncRuleMethod.RuleArgs return a valid value</P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RuleArgs</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IRuleMethod</FONT></FONT><FONT size=2>.RuleArgs<BR>{<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RuleArgs</FONT></FONT><FONT size=2>(_args.Properties[0].Name); }<BR>}</P></FONT>
+<P>This shouldn't really happen (as discussed earlier in this thread), but if someone does mess up and allow an unhandled exception to flow out of an async rule method, at least the result is predictable.</P>
+<P>Does that seem reasonable to you?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

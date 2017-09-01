@@ -1,0 +1,16 @@
+<html><header><title>BinaryFormatter Version incompatibility</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BinaryFormatter Version incompatibility</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/355.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O posted on Tuesday, June 13, 2006</h2><P>If posting here about CSLA 1.0 is not cool, please forward me to another forum.</P>
+<P>OTW - can I get some help in how to debug a remoting call?</P>
+<P>I have downloaded TCPTrace and tried to monitor this, but I think the path is too complicated. I have something like "server:port/directory/DataPortal.REM" and TCPTrace just allows me to enter server and port numbers.</P>
+<P>The servers here have a core set of CSLA assemblies in the GAC along with Microsoft Enterprise Library stuff, and tons of verions of all of this with many versions of the "BusinessBase" assemblies in there. My code is working well without the remote invocation.&nbsp;The "DataPortal_Fetch" routine works well when all is local. I have checked the assembly version on the server to verify there is a match with my local compile.</P>
+<P>TIA -Brian</P>
+<P><A href="mailto:brian.f.oneil@gmail.com">brian.f.oneil@gmail.com</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 13, 2006</h2>Is the business assembly supposed to be loaded out of the GAC?&nbsp; If it is, are you sure there isn't an older copy in the remoting web's bin directory?&nbsp; It defaintly sounds like there's a version mismatch somewhere.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O replied on Tuesday, June 13, 2006</h2><P>Thanks for the speedy reply. I don't understand why it would matter what is in the Remoting Web's bin folder, since all applications look in the GAC first? OR am I wrong about this?</P>
+<P>I am trying to match on the client-side with the highest version in the GAC of each assembly used by the remote server.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 13, 2006</h2>Yes you are right, it should look in the GAC first... of course just to be safe, I'd double check the bin folder anyway.<br>
+<br>
+However, I did see some articles that imply that Asp.Net will cache an assembly once its loaded.&nbsp; So that may be a possiblity.<br>
+<br>
+The second is that you may not have updated the web.config to tell
+Asp.Net to use the new version of the file.&nbsp; I'd double check those.&nbsp; <br><br>Let us know what you find.<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

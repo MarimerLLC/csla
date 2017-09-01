@@ -1,0 +1,15 @@
+<html><header><title>Parent Child object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent Child object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12747.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Saturday, September 13, 2014</h2><p>Can I have multiple child properties for a single BusinessBase object?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, September 13, 2014</h2><p>Yes, you can!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Saturday, September 13, 2014</h2><p>I have a following case
+</p>
+<p>&bull;	A Person may have zero, one or more addresses
+</p>
+<p>&bull;	Each Address may have one or more tags such as Home Address, Office Address, School Address, Year-around address, seasonal address, etc. </p>
+<p>
+&bull;	An address may be shared by more than one person, for example husband and wife may have one home address or they may have same office. 
+</p>
+<p>&bull;	A Person may have zero, one or more Phone numbers
+</p>
+<p>&bull;	Each phone may have one or more tags such as Home Phone, Office Phone, School Phone, Year-around Phone, seasonal Phone, etc.
+</p>
+<p>&bull;	A phone may be shared by more than one person, for example husband and wife may have one home phone.
+</p>
+<p>For above case I have developed a Person BusinessObject root object. And I am trying to have two child business object list. First is PersonAddressList and second is PersonPhoneList. And try to persist these list through Child_XYZ method. This works fine in SilverLight 5.0 with CSLA 4.5.20. But in case of WPF list is properly fetched through database but insert, update, delete is not working. What could be possible error? Or Is there any example which illustrates usage of multiple child object for multiple technologies?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

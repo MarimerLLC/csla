@@ -1,0 +1,11 @@
+<html><header><title>Custom roles for Windows Authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom roles for Windows Authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10132.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kirby posted on Friday, March 04, 2011</h2><p>Hi,</p>
+<p>how can I provide custom roles when using Windows Authentication?</p>
+<p>Let&#39;s assume I need to grant rights to all users of group &quot;MyGroup&quot; in ActiveDirectory and the user &quot;Alice&quot; to several objects. I want to create a role &quot;Contributor&quot; (somewhere in my program, because I&#39;m not allowed to maintain the Active directory)&nbsp;with the members &quot;MyGroup&quot; and &quot;Alice&quot; and grant rights to the objects for the role &quot;Contributor&quot; rather than to &quot;MyGroup&quot; and &quot;Alice&quot; explicitly. </p>
+<p>I think this approach would be much easier to maintain. Can I do that? If yes, how can I do it? Do I need to create a custom principal?</p>
+<p>Regards</p>
+<p>Kirby</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, March 05, 2011</h2><p>Been there and done that. </p>
+<p>You must create your own custom principal and identity. Load the windows roles (transform SIDs into role/group names for Windows/AD roles) and add additional roles from wherever they are stored.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Saturday, March 05, 2011</h2><p>These blog posts should get you started:</p>
+<p><a href="http://www.lhotka.net/weblog/CSLA4AuthorizationRules.aspx">http://www.lhotka.net/weblog/CSLA4AuthorizationRules.aspx</a></p>
+<p><a href="http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx">http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

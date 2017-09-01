@@ -1,0 +1,8 @@
+<html><header><title>CSLA for silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9803.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vinco83 posted on Wednesday, November 24, 2010</h2><p>I&#39;m trying to implement CSLA in an MVVM Silverlight application...</p>
+<p>The app is more or less simple CRUD operations...and for the most part, I&#39;ve got it down.</p>
+<p>However, a few things confuse me:</p>
+<p>I&#39;m inheriting from ViewModel&lt;T&gt; in my viewmodels.&nbsp; When I call this.Save(), everything works fine. However, when I call this.Delete()...nothing happens. I got delete to work by creating a Delete factory method in my BO and calling the dp.BeginDelete method. Is this the correct way to do this?</p>
+<p>Also, in order to delete i&#39;m calling &quot;BeginRefresh(&quot;DeleteFactoryMethod&quot;, params)&quot; from my viewmodel...and in the factory method&#39;s dp.BeginDelete, i&#39;m using a SingleCriteria object. How can I pass in more than 1 parameter to the DataPortal_Delete method? </p>
+<p>On the non silverlight side, I just create a custom criteria object...but on the Silverlight side this won&#39;t seem to work...it appears as though I have to use &quot;SingleCriteria&quot;? </p>
+<p>Thanks in advance!</p>
+<p>V</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

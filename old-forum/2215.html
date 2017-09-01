@@ -1,0 +1,37 @@
+<html><header><title>Large project strategy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Large project strategy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2215.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Saturday, January 27, 2007</h2><P>Hey Guys,</P>
+<P>I'm just finishing up my largest project to-date.&nbsp; 150 business objects, 70 datbase tables, 360+ stored procedures, VB.net 2.0 Winforms App deployed with clickonce using the CSLA 1.5x, over 150,000 lines of code in the business objects + winforms client code.&nbsp; This project is huge (at least to me) and while I'm glad it is nearly over I can't help thinking about how I would do things different in version 2.&nbsp; (Odds are that's a couple of years away).&nbsp; One of the biggest changes I'm thinking about is breaking the entire system into modules (this program is business+accounting+inventory+workorder system by the way).&nbsp; I'm thinking if I were to build a general set of infrastructure up first with module support that I could then build and test a module one at a time.&nbsp; I'm also thinking that&nbsp;I&nbsp;could write custom versions for specific customers by just writing new modules or replacing existing modules with custom versions.&nbsp; Anyway, in my mind a module should contain the following:</P>
+<UL>
+<LI>1 assembly that contains all of the business objects</LI>
+<LI>1 assembly that contains all of the winforms forms and admin dialogs</LI>
+<LI>1 assembly that contains all of the webforms forms and admin dialogs</LI>
+<LI>MetaData that describes security information and permissions options for this module</LI>
+<LI>MetaData that describes dependencies on other modules and versions</LI>
+<LI>MetaData that contains module specific features that can be enabled or disabled depending on your needs</LI>
+<LI>All of the reporting services report definitions (.rdl)&nbsp;that are associated with this module</LI>
+<LI>All of the unit tests for this module</LI>
+<LI>The .SQL files that make up the tables, functions, and stored procedures that the business objects in this module use.</LI>
+<LI>Some sort of test component that can verify the database schema and some sort of basic data-integrity (sanity check) for the data for these modules that runs when the winforms client loads.</LI></UL>
+<P>Okay, so here is my question, does this make sense??&nbsp; Is there a better way?&nbsp; What does everyone else to on bigger projects?&nbsp; The only downside I see is that this will create a&nbsp;3 assemblies for each&nbsp;module and&nbsp;that I'll have to keep track of all them and make copies of them to my dataportal.</P>
+<P>Jon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Saturday, January 27, 2007</h2><P>I would choose to separate the system into modules by functional areas, accounting, inventory, workorder, etc. Each module can be implemented as a set of DLLs, which consists Win/Web UI, Business Objects, Services, etc. Then, the hosting application (WinForms EXE, or ASP.NET)&nbsp;integrates these DLL modules to form the entire system. Also, each module has its own databases, which can be integrated through distributed transactions.</P>
+<P>Regards,<BR>William</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, January 29, 2007</h2><P>William,</P>
+<P>I think we see eye to eye on just about everything.&nbsp; I'm not sure about breaking modules into seperate databases.&nbsp;&nbsp; Do you see any advantages to breaking the databases apart?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, January 29, 2007</h2><DIV>I am just thinking in general sense. In many cases, I found these systems (or modules, e.g. inventory, order, accounting, etc.) have separate databases and thus my suggestions.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Besides, if separating the databases do not create much performance issues for your application, it might help you to better organizes the large number of database objects (e.g. tables, views, stored procedures, etc.) you may have for the whole project.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, January 29, 2007</h2><DIV>Did you look at Microsoft Composite UI Application Block (CAB)? I would recommend you to have a look.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Although personally I think CAB is a steep learning curve, I think it can give you some insights in modularizing your application (even you are not adopting it).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, January 29, 2007</h2>I've heard of it, but never lookit at it.&nbsp; I will research it, thanks.&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Tuesday, January 30, 2007</h2>No need to break into separate modules at this time, but if you're
+working with SQL 2005, consider separate 'schemas' that is what I did
+with mine. That way a person working on a particular domain area can
+find all the tables, store procedures, etc, all grouped together.<br>
+<br>
+Cheer,<br>
+<br>
+Des Nolan<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

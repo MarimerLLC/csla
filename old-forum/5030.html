@@ -1,0 +1,254 @@
+<html><header><title>CSLA 3.5 Bug - Child Collection Objects Not Updating Correctly After Save.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.5 Bug - Child Collection Objects Not Updating Correctly After Save.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5030.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tabaguley posted on Saturday, June 28, 2008</h2><P>I have come across what I believe to be a bug with managed collection properties in child/grand-child collection objects.&nbsp; I am using CLSA 3.5.0, however, I have updated most of the code for the FieldManager/n-level undo stuff to the latest (3.5.1) posting on SVN.</P>
+<P>Here is the basic structure I'm working with:</P>
+<P>HardwareDevices (Editable Root List)</P>
+<P>&nbsp;&nbsp;&nbsp;-&gt; HardwareDevice (Editable Child Object)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; DeviceProperties (Editable Child Collection)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; DeviceProperty (Editable Child Object)</P>
+<P>Here is the problem:</P>
+<P>When a new DeviceProperty is added to the DeviceProperties collection of a HardwareDevice, everything works normally until HardwareDevices is saved.&nbsp; After saving, any DeviceProperty objects added in will show up in the DeviceProperties collection; however, when Save is again called on HardwareDevices, none of the HardwareDevice objects report back as being Dirty (and hence, none of the DeviceProperty objects added after the first Save get saved).</P>
+<P>I have tried using the CSLA 3.5 Managed Property setup with and without a state variable for DeviceProperties, and even tried the pre-3.5 method of using just a state variable and overriding IsDirty and IsValid.&nbsp; Each manner of doing things yielded the same results.&nbsp; </P>
+<P>From what I can tell, the internal FieldManager isn't tracking reference-types correctly.&nbsp; I noticed that SmartDate was changed from a Class(reference-type)&nbsp;to a Structure (value-type).&nbsp; When upgrading several of my custom validation objects, I also had to convert them to Structures in order to get them to work correctly with the Managed Properties feature of CSLA 3.5.&nbsp; I don't know if this could be part of the problem or not, but I thought it worth mentioning.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 01, 2008</h2><P>Are you in a Windows Forms environment? If so, are you unbinding and rebinding the objects to the UI correctly?</P>
+<P>It sounds like your UI may still be bound to the old object instance, not the new one returned by the Save() method.</P>
+<P>It isn't an object vs struct thing - SmartDate has been a struct for a few years now.</P>
+<P>But if you recently switched from 3.0 to 3.5, and you are using a local data portal, you may have missed the fact that the local data portal now acts like a remote data portal in terms of returning an updated object instance, rather than altering your instance in-place. This is discussed in the change log and can be reverted to the old (bad) behavior using the AutoCloneOnUpdate config setting.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tabaguley replied on Monday, July 07, 2008</h2><P>I am actually upgrading from CSLA 1.1 to 3.5 (finally!), and am finding I have a lot to learn about the new framework.&nbsp; Yes, I am working in a Windows Forms environment.&nbsp; With that said, I believe I've figured out the problem.&nbsp; </P>
+<P>It appears that CSLA objects are designed to work (best) with a BindingSource object, which I do not use.&nbsp; I have played around with the BindingSource object, and find it problematic - it seems to be just an extra ("middle-man") object that isn't necessary the way I do things.&nbsp; Because I do not use a BindingSource, I believe that child collections contained within a given object do not get initialized properly.&nbsp;</P>
+<P>I do understand how the local data portal works, and I do everything correctly as far as binding, unbinding, and updating references.&nbsp; However, even though I update the references, the child collection objects end up as Nothing after a Save operation.&nbsp;</P>
+<P>But I have come up with a fix: prior to save, I simply call ToString on each Child Collection in each object (I also override ToString on each Child Collection to simply return the Name &amp; Count of the collection).<SPAN>&nbsp; </SPAN>This appears to initialize the collection within the FieldManager (which I believe is what te BindingSource object would be doing if I used one), and then everything works fine after the Save. Here's an example:</P>
+<P>Public Overrides Function Save() As ParentCollection<BR>&nbsp;&nbsp;&nbsp; 'See if Save is allowed...<BR>&nbsp;&nbsp;&nbsp; If Not CanEditObject() Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New Exception("User not authorized to save Parent Collection.")<BR>&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp; 'Ensure&nbsp;Child Collections&nbsp;Are&nbsp;Initialized...<BR>&nbsp;&nbsp;&nbsp; For Each child As ChildObject In Me<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.GrandChildCollection.ToString()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each grandChild As GrandChildObject In child.GrandChildCollection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; grandChild.GreatGrandChildCollection.ToString()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<BR>&nbsp;&nbsp;&nbsp; Next</P>
+<P>&nbsp;&nbsp;&nbsp; Return MyBase.Save()<BR>End Function</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true that starting with .NET 2.0 I only support the use of
+a BindingSource for data binding. Microsoft used the BindingSource to fix a
+bunch of bugs and issues around data binding, and I didn&#8217;t want to suffer
+with those 1.x issues myself </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you&#8217;ve already got good workarounds for all the .NET
+1.x binding issues (and it sounds like you do) that&#8217;s good &#8211; but it
+doesn&#8217;t surprise me that you would have to do some work in or around CSLA
+to accommodate the older binding scheme.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>van replied on Friday, November 07, 2008</h2><P>I have a problem with saving collection which associated to object.</P>
+<P>If I add new item to collection, collection is dirty but object is not, and DP_Update never invoked.</P>
+<P>Before save I must do folowing:</P><FONT size=2>
+<P>Sednica.DokumentList = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2>Sednica.DokumentList = documentList;</FONT></P><FONT size=2>
+<P>Sednica = Sednica.Save();</P></FONT>
+<P><FONT size=2>documentList&nbsp;</FONT><FONT size=3>is same object as a </FONT><FONT size=2>Sednica.DokumentList</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If the object isn&#8217;t dirty it won&#8217;t be saved. You need
+to ensure that the newly added object is dirty.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> van
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 07, 2008 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA 3.5 Bug - Child Collection Objects Not
+Updating Correctly After Save.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a problem with saving collection which associated to object.<o:p></o:p></p>
+
+<p>If I add new item to collection, collection is dirty but object is not, and
+DP_Update never invoked.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>van replied on Thursday, November 13, 2008</h2><P>I think you didn't understand me. I have class Sednica, inherited from BaseObject&lt;T&gt; which inherited from BusinessBase&lt;T&gt;. In Sednica I have PrisutnostList. When I load data from database PrisutnostList is not dirty and Sednica is not dirty. That is OK.&nbsp;If I add new item in the PrisutnostList or change some item\items, list is&nbsp;dirty and that is OK. But Sednica is not dirty, and I can't&nbsp;save changed list because I save list in DP_Insert or DP_Update in the Sednica object under transaction. PrisutnostList is not child object. I try with child object and same problem appear.</P>
+<P>I try&nbsp;subscribe to event&nbsp;ListChanged and you can see that code under comment. But this is not work because ListChanged event fires several times and I get StackOverflowException.</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BaseObject</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt; PrisutnostListProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"PrisutnostList"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"PrisutnostList"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;private</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2> _prisutnostList;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2> PrisutnostList</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;get</P></FONT></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT size=2> (_prisutnostList == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_prisutnostList = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>.GetPrisutnostBy(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//if (_prisutnostList != null)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//{</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// _prisutnostList.ListChanged += _prisutnostList_ListChanged;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//}</P></FONT></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(PrisutnostListProperty, _prisutnostList);</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;set</FONT></FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(PrisutnostListProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> _prisutnostList, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//_prisutnostList.ListChanged += _prisutnostList_ListChanged;</P></FONT></FONT><FONT size=2>
+<P></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;}</P><FONT color=#008000 size=2><FONT color=#008000 size=2>
+<P>&nbsp;&nbsp;&nbsp;//void _prisutnostList_ListChanged(object sender, System.ComponentModel.ListChangedEventArgs e)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;//{</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;MarkDirty();</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;//}</P></FONT></FONT></FONT>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 13, 2008</h2><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">&nbsp;</font></font></font>Hmm... you're using private backing fields.&nbsp; I don't think that will allow your root class to automatically update IsDirty / IsValid.&nbsp; I suspect you'll need to override like this:<br><br><font color="#0000ff">public override bool</font> IsDirty {<br>&nbsp;&nbsp; <font color="#0000ff">get </font>{ <font color="#0000ff">return </font>IsSelfDirty || _prisutnostList.IsDirty; }<br>}<br><br>
+<font color="#0000ff">public override bool</font> IsValid {<br>
+&nbsp;&nbsp; <font color="#0000ff">get</font> { <font color="#0000ff">return </font>base.IsValid &amp;&amp; _prisutnostList.IsValid; }<br>
+}<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, if you use private backing fields for your child objects
+you MUST use the old style of coding, because CSLA can&#8217;t do the work for
+you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I strongly recommend using managed backing fields for child
+objects, even if you use private backing fields for primitive types, because
+this allows CSLA to automatically do all the little, easy-to-forget things you
+have to do to make a child object work properly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, November 13, 2008</h2><P>I think I've run into the same issue, but I'm not satisfied with the work-around (it's terribly kludgey).</P>
+<P>Please try running the following&nbsp;code in PTracker.&nbsp; Note that I have made no changes to any of the 3.5.2 PTracker classes.</P>Project p&nbsp;= Project.NewProject();<BR>p.Name = "Aarons project";<BR>p.Started = DateTime.Now.ToString();<BR>p.Ended = DateTime.Now.AddYears(2).ToString();<BR>//System.Diagnostics.Debug.WriteLine("Resources = null? : " + (p.Resources == null).ToString());<BR>p = p.Save();<BR>p.Resources.Assign(2);<BR>p.Save();<BR>
+<P>It should throw an exception stating that Resources is null. If you uncomment the Debug.WriteLine statement and run again, it works fine.&nbsp; I'm confused.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 13, 2008</h2>Sorry, I don't follow.&nbsp; Prior to managed fields, you HAD to override IsDirty / IsValid for Csla to work.&nbsp; Using managed fields allows you to not have to implement that code.&nbsp; Neither are kludgy though.. that's how you use Csla.<br><br>I checked out the 3.6 code, and don't see where it would thrown an exception.&nbsp; On what line is the exception thrown?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, November 13, 2008</h2><P>Please run the code and you'll see what I'm talking about.&nbsp; When you hit the line that attempts to assign a resource to the project, the resources collection is NULL.&nbsp; If you uncomment the Debug statement, the resources collection will NOT be NULL when it comes time to assigning the resource to the project.&nbsp;&nbsp;Does that make sense?&nbsp; Again, running the code will make everything clear.</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 13, 2008</h2>Ok, I ran the code.&nbsp; My confusion lies in that the bug you're encountering has nothing to do with the solution to the other poster's problem.<br><br>I would upgrade to 3.6, because if you run your same code using Csla 3.6, it functions fine.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Thursday, November 13, 2008</h2><P>Yeah, I should have been more clear as to which post I was referencing.&nbsp; Here is the quote that I was referring to:</P>
+<P>-----------------------------</P>
+<P>tabaguley </P>
+<P>I do understand how the local data portal works, and I do everything correctly as far as binding, unbinding, and updating references.&nbsp; However, even though I update the references, the child collection objects end up as Nothing after a Save operation. </P>
+<P>But I have come up with a fix: prior to save, I simply call ToString on each Child Collection in each object (I also override ToString on each Child Collection to simply return the Name &amp; Count of the collection).&nbsp; This appears to initialize the collection within the FieldManager (which I believe is what te BindingSource object would be doing if I used one), and then everything works fine after the Save. Here's an example:<BR>&nbsp;<BR>------------------------------</P>
+<P>Now, no offense to the original author, but if that's not a kludgey workaround, I don't know what is ;)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>van replied on Friday, November 14, 2008</h2>Thank you Rocky. Problem is solved using managed field.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>van replied on Thursday, November 20, 2008</h2><P>Now I have new problem with stackoverflow.<FONT size=3> </FONT></P>
+<P><FONT size=3>When I loaded Sednica object from database&nbsp;and want get PrisutnostList collection from property I use lazyload. PrisutnostList collection populated with Prisutnost child&nbsp;objects.</FONT></P>
+<P><FONT size=3>The stackoverflow appear in <FONT color=#2b91af>Prisutnost </FONT><FONT color=#000000>in&nbsp;</FONT>Child_Fetch(<FONT color=#2b91af size=2><FONT color=#2b91af size=2>CriteriaReaderSednica</FONT></FONT><FONT size=2> criteria) </FONT></FONT><FONT size=3>when call LoadProperty&lt;<FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(SednicaProperty, criteria.Sednica) </FONT></FONT><FONT size=3>method. I&nbsp;suppose that problem is child-parent relation in Sednica and Prisutnost class. In Sednica class, PrisutnostList is not child and in Prisutnost class, Sednica is not child. What I need to do to avoid this problem? The snippet of code is below:</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BaseObject</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&nbsp;&nbsp;&nbsp; private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt; PrisutnostListProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt; (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>&nbsp;(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"PrisutnostList"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"PrisutnostList"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2> PrisutnostList</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; get</P></FONT></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT></FONT><FONT size=2> (!(FieldManager.FieldExists(PrisutnostListProperty)))</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(PrisutnostListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>.GetPrisutnostBy(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>));</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp; return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(PrisutnostListProperty);</P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; set</P></FONT></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PrisutnostList</FONT></FONT><FONT size=2>&gt;(PrisutnostListProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P></FONT>
+<P>}</P>
+<P>// Prisutnost class</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Prisutnost</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BaseObject</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Prisutnost</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff size=2><FONT color=#0000ff size=2></P>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt; SednicaProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Prisutnost</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Sednica"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Sednica"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2> Sednica</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> sednica = GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(SednicaProperty);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (sednica != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2> &amp;&amp; sednica.IsLightWeight)</P>
+<P>{</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(SednicaProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>.GetSednicaBy(sednica.Uid));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(SednicaProperty);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(SednicaProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Fetch(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CriteriaReaderSednica</FONT></FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>try</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>LoadData(criteria.Reader);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (criteria.Sednica != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2> &amp;&amp; !criteria.Sednica.IsLightWeight)</P>
+<P>{</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Sednica</FONT></FONT><FONT size=2>&gt;(SednicaProperty, criteria.Sednica);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>catch</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Exception</FONT></FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ExceptionPolicy</FONT></FONT><FONT size=2>.HandleException(ex, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"DataAccess Policy"</FONT></FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT></FONT>
+<P>}</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

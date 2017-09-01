@@ -1,0 +1,8 @@
+<html><header><title>Edit Level Mismatch when child property is also contained within different child collection.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Level Mismatch when child property is also contained within different child collection.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10368.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Friday, May 13, 2011</h2><p>Hi,</p>
+<p>There is an issue&nbsp;with the following scenario which is common within our application;</p>
+<p>A BusinessBase has a child&nbsp;Images collection. The BB also has a PrimaryImage property which references an Image object within the child images collection.&nbsp;</p>
+<p>When it comes to saving and more specifically when ApplyEdit is called after changing the PrimaryImage property an Edit Level Mismatch exception is thrown.</p>
+<p>How do we solve this issue?</p>
+<p>Regards</p>
+<p>David</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, May 13, 2011</h2><p>The PrimaryImage property must be implemented using a private backing field, and that field must be marked with the NotUndoable attribute.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Friday, May 13, 2011</h2><p>Thats it, many thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

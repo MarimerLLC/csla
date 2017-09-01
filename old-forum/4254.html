@@ -1,0 +1,52 @@
+<html><header><title>Problem with WCF and NameValueListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with WCF and NameValueListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4254.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skuckreja posted on Tuesday, January 29, 2008</h2><FONT face=Verdana color=#000000 size=2>
+<P>&lt;Serializable()&gt; _</P></FONT><FONT size=2>
+<P><FONT face=Verdana color=#000000>Public</FONT></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2> </FONT><FONT size=2>Class</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> CSSUserTypeList</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Inherits</FONT><FONT size=2> NameValueListBase(</FONT><FONT size=2>Of</FONT><FONT size=2> </FONT><FONT size=2>Integer</FONT><FONT size=2>, </FONT><FONT size=2>String</FONT><FONT size=2>)</P></FONT></FONT></FONT><FONT size=2>
+<P><FONT face=Verdana color=#000000>#Region</FONT></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2> </FONT><FONT size=2>" Business Methods "</P></FONT></FONT></FONT><FONT size=2>
+<P><FONT face=Verdana color=#000000>#End</FONT></FONT><FONT face=Verdana color=#000000 size=2> </FONT><FONT size=2><FONT face=Verdana color=#000000>Region</FONT></P>
+<P><FONT face=Verdana color=#000000>#Region</FONT></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2> </FONT><FONT size=2>" Factory Methods "</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Private</FONT><FONT size=2> </FONT><FONT size=2>Shared</FONT><FONT size=2> mList </FONT><FONT size=2>As</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> CSSUserTypeList</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Public</FONT><FONT size=2> </FONT><FONT size=2>Shared</FONT><FONT size=2> </FONT><FONT size=2>Function</FONT><FONT size=2> GetList() </FONT><FONT size=2>As</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> CSSUserTypeList</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>If</FONT><FONT size=2> mList </FONT><FONT size=2>Is</FONT><FONT size=2> </FONT><FONT size=2>Nothing</FONT><FONT size=2> </FONT><FONT size=2>Then</FONT><FONT size=2> mList = DataPortal.Fetch(</FONT><FONT size=2>Of</FONT><FONT size=2> CSSUserTypeList)(</FONT><FONT size=2>New</FONT><FONT size=2> Criteria(</FONT><FONT size=2>GetType</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>(CSSUserTypeList)))</FONT></P>
+<P></FONT><FONT size=2><FONT face=Verdana color=#000000>'If mList Is Nothing Then</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT size=2><FONT face=Verdana color=#000000>' mList = DataPortal.Fetch(Of CSSUserTypeList)()</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT size=2><FONT face=Verdana color=#000000>'End If</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana color=#000000 size=2>Return</FONT><FONT size=2><FONT face=Verdana color=#000000> mList</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>Function</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Public</FONT><FONT size=2> </FONT><FONT size=2>Shared</FONT><FONT size=2> </FONT><FONT size=2>Sub</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> InvalidateCache()</FONT></P>
+<P><FONT face=Verdana color=#000000>mList = </FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>Nothing</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>Sub</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Private</FONT><FONT size=2> </FONT><FONT size=2>Sub</FONT><FONT size=2> </FONT><FONT size=2>New</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>()</FONT></P>
+<P></FONT><FONT size=2><FONT face=Verdana color=#000000>'required</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>Sub</FONT></P>
+<P><FONT face=Verdana color=#000000>#End</FONT></FONT><FONT face=Verdana color=#000000 size=2> </FONT><FONT size=2><FONT face=Verdana color=#000000>Region</FONT></P>
+<P><FONT face=Verdana color=#000000>#Region</FONT></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2> </FONT><FONT size=2>" Data Access "</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Private</FONT><FONT size=2> </FONT><FONT size=2>Overloads</FONT><FONT size=2> </FONT><FONT size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT size=2>As</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> Criteria)</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Me</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT size=2>False</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Using</FONT><FONT size=2> cn </FONT><FONT size=2>As</FONT><FONT size=2> </FONT><FONT size=2>New</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> SqlConnection(HSAConnectionString)</FONT></P>
+<P><FONT face=Verdana color=#000000>cn.Open()</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Using</FONT><FONT size=2> cm </FONT><FONT size=2>As</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> SqlCommand = cn.CreateCommand</FONT></P>
+<P><FONT face=Verdana color=#000000>cm.CommandType = CommandType.StoredProcedure</FONT></P>
+<P><FONT face=Verdana color=#000000>cm.CommandText = </FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>"_NameValueList_Get"</FONT></P></FONT><FONT size=2>
+<P><FONT face=Verdana color=#000000>cm.Parameters.AddWithValue(</FONT></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>"@TableName"</FONT><FONT size=2>, </FONT><FONT size=2>"CSSUserType"</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>)</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Using</FONT><FONT size=2> dr </FONT><FONT size=2>As</FONT><FONT size=2> </FONT><FONT size=2>New</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000> SafeDataReader(cm.ExecuteReader)</FONT></P>
+<P><FONT face=Verdana color=#000000>IsReadOnly = </FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>False</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana color=#000000 size=2>With</FONT><FONT size=2><FONT face=Verdana color=#000000> dr</FONT></P>
+<P></FONT><FONT face=Verdana color=#000000 size=2>While</FONT><FONT size=2><FONT face=Verdana color=#000000> .Read()</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Me</FONT><FONT size=2>.Add(</FONT><FONT size=2>New</FONT><FONT size=2> NameValuePair(.GetInt32(</FONT><FONT size=2>"CSSUserTypeID"</FONT><FONT size=2>), .GetString(</FONT><FONT size=2>"CSSUserTypeDesc"</FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>)))</FONT></P>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>While</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>With</P></FONT></FONT></FONT><FONT size=2>
+<P><FONT face=Verdana color=#000000>IsReadOnly = </FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>True</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>Using</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>Using</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT><FONT size=2>Using</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>Me</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT size=2>True</P></FONT></FONT></FONT><FONT size=2>
+<P></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2>End</FONT><FONT size=2> </FONT></FONT></FONT><FONT size=2><FONT face=Verdana color=#000000>Sub</FONT></P>
+<P><FONT face=Verdana color=#000000>#End</FONT></FONT><FONT face=Verdana color=#000000 size=2> </FONT><FONT size=2><FONT face=Verdana color=#000000>Region</FONT></P>
+<P><FONT face=Verdana color=#000000>End</FONT></FONT><FONT face=Verdana><FONT color=#000000><FONT size=2> </FONT><FONT size=2>Class</FONT></FONT></FONT></P>
+<P><FONT face=Verdana color=#000000 size=2>I get the error <FONT>The underlying connection was closed: The connection was closed</FONT> unexpectedly at the DataPortal.Fetch</FONT></P>
+<P><FONT face=Verdana color=#000000 size=2>I added some tracing and I get the following </FONT></P><FONT color=#0000ff size=2><FONT face=Verdana color=#000000 size=2>
+<P><FONT>Type 'CSSV2.Library.CSSUserTypeList' cannot be serialized. Consider marking it with the DataContractAttribute attribute, and marking all of its members you want serialized with the DataMemberAttribute attribute</FONT>.</P>
+<P>&nbsp;</P>
+<P>Any help would be appreciated.</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 30, 2008</h2><P>I don't see any obvious issue around serialization...</P>
+<P>I'd try running the code with a local data portal, or with remote web debugging enabled, so you can put a breakpoint in DP_Fetch() and see if that code works properly.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

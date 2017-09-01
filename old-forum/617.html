@@ -1,0 +1,22 @@
+<html><header><title>SelectObject event and null BusinessObject?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SelectObject event and null BusinessObject?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/617.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Thursday, July 13, 2006</h2>I am doing some evaluation of the csladatasource (acknowledging its advantages over objectdatasource) and have a simple page with a csladatasource associated with a gridview, set up in design view etc all as normal. Being new to CSLA I may be missing something, but, if, in <br><br>CslaDataSource1_SelectObject <br><br>I call a method like <br><br>MyThings.GetAll <br><br>and it returns data, then all is fine.<br>BUT, if GetAll throws an exception (e.g. because CanGetObject is false) I do catch the exception but it is then (is it?) too late to prevent the resultant page error:<br><br><i>Value cannot be null.<br>Parameter name: container</i> <br><br>which is presumably due to the absence of a datasource for the grid<br>.<br>What to do? Maybe I should not be in this page if I am not privileged to read the data, but the test (CanGetObject) is in the GetAll call and thus the exception is a possible outcome of the call. <br>I would like to gracefully display to the user the actual text of the exception ("User not authorized...") rather than diverting to some generic error page, but I can't see how.<br><br>TIA,<br><br>James.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 13, 2006</h2><P>But you know you are going to call GetAll() right? So in your page Load event, can't you call CanGetObject() and maybe set the grid control to Visible=false? If you do that it shouldn't bind.</P>
+<P>Then, assuming your grid control is in a div along with a normally invisible label, you can turn that label to Visible=true and set some text to tell the user why the grid is missing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs replied on Friday, July 14, 2006</h2>Thanks for your quick reply to my late-night problem (brain defrag
+overdue) - your suggestion certainly works; another idea which I tried
+is, in the catch block, to create a default MyThing (singular)
+object&nbsp; then set the CslaDataSource.TypeName to the MyThing type -
+and set e.BusinessObject to this object. Not particularly elegant, and
+also the catch block is not the place for page-presentation
+logic.&nbsp; The big advantage is that the code survives any other
+unpredicted exception arising in GetAll without branching off to a
+generic error page.<br>
+<br>
+However, I do have an aversion to setting the binding in the aspx file,
+and I might prefer to set TypeName and DataSourceID in code - I notice
+that the SelectObject event does not fire unless the data consumer
+(gridview) needs it (e.g. when you make the gridview visible), so you
+can make sure that when it does, data is supplyable.<br>
+<br>
+Thanks for your willingness to help!<br>
+<br>
+James.<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

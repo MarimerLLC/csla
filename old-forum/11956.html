@@ -1,0 +1,52 @@
+<html><header><title>DataPortal.Fetch failed (Invalid operation - fetch not allowed)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Fetch failed (Invalid operation - fetch not allowed)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11956.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Friday, April 26, 2013</h2><p>I have created Dal, DalMock, Library,Library.Sl, Library.WinRt, DalEF, WcfAppServer projects using CSLA. I have also developed WinRTUI &amp; SilverlightUI&nbsp;projects. In WinRTUI project,I wrote the following code in the&nbsp;MainPage.xaml.cs.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>public</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">sealed</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">partial</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">class</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">MainPage</span></span><span style="font-size:x-small;"> : </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">Page</span></span></p>
+<span style="font-size:x-small;">
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">public</span></span><span style="font-size:x-small;"> MainPage()
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">this</span></span><span style="font-size:x-small;">.InitializeComponent();
+<p>GetList();</p>
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">private</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">async</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">void</span></span><span style="font-size:x-small;"> GetList()
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">this</span></span><span style="font-size:x-small;">.grid1.ItemsSource = </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">await</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">CompanyList</span></span><span style="font-size:x-small;">.GetCompanyListAsync();
+<p>}</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">protected</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">override</span></span><span style="font-size:x-small;"> </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">void</span></span><span style="font-size:x-small;"> OnNavigatedTo(</span><span style="font-size:x-small;color:#2b91af;"><span style="font-size:x-small;color:#2b91af;">NavigationEventArgs</span></span><span style="font-size:x-small;"> e)</span></p>
+<p>{</p>
+<p>}</p>
+<p>}</p>
+</p>
+<p>But I am getting an error as <strong>DataPortal.Fetch failed (Invalid operation - fetch not allowed) in </strong>GetList().</p>
+<p>
+<p>Any suggestions?</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

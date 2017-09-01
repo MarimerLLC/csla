@@ -1,0 +1,155 @@
+<html><header><title>Index was outside the bounds of array - Problem only After Build deployed, not in local env </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Index was outside the bounds of array - Problem only After Build deployed, not in local env </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11917.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Tuesday, April 02, 2013</h2><p>Hi,</p>
+<p>Our project was built based on concept &quot;Encapsulate Invocation&quot;, which has UI, Business Layer and Data Access Layer. </p>
+<p>And, in one of the forms&nbsp;a method call ends up showing the error &quot;Index was outside the bounds of Array&quot;. I believe this happens when Business layer tries to commuicate with Data Access Layer. This occurs only when the build is deployed, but could not be reproduced in local environment. I got no clue, as I could not even debug. </p>
+<p>Could you please suggest what could be missing ? </p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 02, 2013</h2><p>Do you have a more complete stack trace? If not, I suggest adding some more detailed logging to your solution to get the stack trace.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Wednesday, April 03, 2013</h2><p>Hi Rocky,</p>
+<p>I am sorry, I could not get you the stack trace, as I cannot see the error in the dev environment. I dont have the access to the environment that gives the error. Hopefully, will get the stacktract information in couple of days. But, in mean time, Do you suggest to verify something else ? </p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 03, 2013</h2><p>With so little information I can provide no real insight.</p>
+<p>All I can suggest is that you look at your DAL code for the business object that is failing and try to determine if the real data in production could be different from your test data and therefore would cause such an issue.</p>
+<p>And again, adding more comprehensive runtime diagnostic log/trace monitoring will help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Thursday, April 04, 2013</h2><p>Hi,</p>
+<p>I verified the data, the test data is same in development environment and the environment where the build is deployed. So&nbsp;what i am left with is to add the&nbsp;log and move on accordingly.</p>
+<p>Thanks for the suggestions. </p>
+<p>Arjun.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Friday, April 05, 2013</h2><p>Hi Rockey,</p>
+<p>Here is the Stack trace.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">DataPortal.Update failed (System.InvalidOperationException: One or more properties are not registered for this type ---&gt; System.IndexOutOfRangeException: <strong>Index was outside the bounds of the array.</strong></span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.FieldManager.FieldDataManager.GetFieldData(IPropertyInfo propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; --- End of inner exception stack trace ---</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.FieldManager.FieldDataManager.GetFieldData(IPropertyInfo propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.ManagedObjectBase.ReadProperty[P](PropertyInfo`1 propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at CPD.ObjectLibrary.CreateFirstRequestLetterWizard.CreateFirstRequestLetterCommand.DataPortal_Execute() in E:\Provider Systems\CPD.NET\REL13xx\Development\Library\Wizard Classes\CreateFirstRequestLetterWizard.vb:line 518</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at lambda_method(Closure , Object , Object[] )</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters))</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Csla</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.FieldManager.FieldDataManager.GetFieldData(IPropertyInfo propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.ManagedObjectBase.ReadProperty[P](PropertyInfo`1 propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at CPD.ObjectLibrary.CreateFirstRequestLetterWizard.CreateFirstRequestLetterCommand.DataPortal_Execute() in E:\Provider Systems\CPD.NET\REL13xx\Development\Library\Wizard Classes\CreateFirstRequestLetterWizard.vb:line 518</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at lambda_method(Closure , Object , Object[] )</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext context)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.DataPortal.Update[T](T obj)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at CPD.ObjectLibrary.CreateFirstRequestLetterWizard.CreateFirstRequestLetter() in E:\Provider Systems\CPD.NET\REL13xx\Development\Library\Wizard Classes\CreateFirstRequestLetterWizard.vb:line 54End of Main message</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-family:Calibri;font-size:small;">&nbsp;</span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">DataPortal_Execute method call failed</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">Csla</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.FieldManager.FieldDataManager.GetFieldData(IPropertyInfo propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Core.ManagedObjectBase.ReadProperty[P](PropertyInfo`1 propertyInfo)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at CPD.ObjectLibrary.CreateFirstRequestLetterWizard.CreateFirstRequestLetterCommand.DataPortal_Execute() in E:\Provider Systems\CPD.NET\REL13xx\Development\Library\Wizard Classes\CreateFirstRequestLetterWizard.vb:line 518</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at lambda_method(Closure , Object , Object[] )</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method)</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;">&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext context)</span></span></p>
+<p>
+<p>&nbsp;</p>
+<p>I am glad we are able to solve this issue. The root cause is wrong use of property. </p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Public</span></span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Shared</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">ReadOnly</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;NameProperty </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">As</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Of</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Long</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">) = RegisterProperty(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Of</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Long</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)(</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Function</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(c) c.Id,&quot;Id</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)</span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">ReadOnly</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Property</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Id() </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">As</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Long</span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Get</span></span></span></p>
+</p>
+<p>
+<p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Return</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> ReadProperty(IdProperty)</span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">End</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Get</span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">End</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">Property</span></span></span></p>
+<p>Here you can observe, the registered property is Name, but used Id property. This has caused the defect in server.&nbsp;But I really dont understand why this has not caused&nbsp;issue in Local environment.The above mentioned property is in commandbase class, the Id property is also avaliable in parent class of this command base class. I assume, It read the IdProperty from its parent as it could not find it in the command base class. </p>
+</p>
+</p>
+<p>
+<p>Anyway, Thank you very much for your directions.</p>
+<p>&nbsp;</p>
+<p>Arjun</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 05, 2013</h2><p>You have to be extremely careful about using inheritance with properties - I generally recommend avoiding it because it can cause bugs like this one.</p>
+<p>You can&#39;t register a property of the same name twice in the same type, because that&#39;ll confuse the field manager. The name of the static variable has no meaning, it is the name of the property that can&#39;t be duplicated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, April 05, 2013</h2><p>From my experience, inheritance with properties has been relatively safe **as long as the base class is abstract** (which typically these type of base classes are).</p>
+<p>My understanding is that there is a bit of compiler wizardry happening under the hood with statics and inheritance, but we have a few base classes that leverage properties that end up getting leveraged in concrete implementations for certain base class functionality we&#39;ve built out.&nbsp; It works well for us.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Monday, April 08, 2013</h2><p>Yes, you are right.</p>
+<p>But, it is a command base class which, I assume, cannot be&nbsp;written outside a business&nbsp;base. We are calling the command base class from the public method of the business base. To pass the values, we have two sets of parameters one in Business base&nbsp;and other in Command base. The values are taken&nbsp;first to business base properties so that public method will be called without any parameters. And in the public method, we pass the values to&nbsp;the second set in command base. </p>
+<p>If the class structure is like this,&nbsp;</p>
+<p>Public Class Employee</p>
+<p>&lt;Properties&gt; ID, Name</p>
+<p>public sub MarkAsExcellent()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = ExcellentCommand(Me.ID, Me.Name)</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>Private class ExcellentCommand</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; inherits CommandBase(Of ExcellentCommand)</p>
+<p>&lt;Properties&gt;ID,Name</p>
+<p>- DataPortal_Execute() -</p>
+<p>End Class</p>
+<p>&nbsp;</p>
+<p>End Class</p>
+<p>&nbsp;</p>
+<p>From the UI, code is like this.</p>
+<p>_Employee = &nbsp;Employee.NewItem(10,&quot;Arjun&quot;)</p>
+<p>_Employee.MarkAsExcellent()</p>
+<p>&nbsp;</p>
+<p>Taking this as the scenario, I had no choice using the same names in both the places as these are the best suited names. And about inheritance, Is there any other way to use Command base class ?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 08, 2013</h2><p>What you are showing here is not an inheritance hierarchy, it is just nested classes. So you don&#39;t have ID defined in a base class - you have ID defined in two separate classes, one of which happens to be nested inside the other (which is really just a namespace thing, nothing more).</p>
+<p>So then the question is whether you are properly using managed property declarations in your command class?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Tuesday, April 09, 2013</h2><p>Hi Ricky,</p>
+<p>The question is, Why is it not throwing any exception in local environment, even when the property is not registered properly. Is it because of the property ,with the same name, in outer class ? </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 09, 2013</h2><p>Is you local environment configured the same as production?</p>
+<p>In other words, is the local environment using a remote data portal? Configured the same? Running Release mode code, not Debug code?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Wednesday, April 10, 2013</h2><p>The only thing i can tell you is, it is not running in Release mode rather it is running in Debug mode. would you mind telling me what remote data portal is?</p>
+<p>And for deployment, we use two servers. UI is deployed in one server and BO, Data access DLLs are deplpoyed in other server. Web service is the one that makes the two servers communicate. So, do you think this configuration makes the difference ?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 08, 2013</h2><p>Hi,</p>
+<p>You can write ComandBase derived classes as own class files - absolutely no problem. There is NO must to have it within a BusinessBase class.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>_u152 replied on Tuesday, May 07, 2013</h2><p>
+<p>
+<p>I had a similar issue while implementing the paste clipboard operation using the CSLA 3.5 Business Object (BO), although we have a customized version of the framework.</p>
+<p>&nbsp;</p>
+<p>Scenario to reproduce my issue:</p>
+<p>1. Copy the BO to the clipboard (clone BO, but change relevant BO ids to generate unique root and child objects).</p>
+<p>2. Restart the application</p>
+<p>3. Paste the Business Object from the clipboard (eventually calls BusinessBase&lt;T&gt;.Save() and tries to save properties)</p>
+<p>Expected result: Business Object is pasted/saved and it&#39;s representation shows in the UI.</p>
+<p>Actual result:</p>
+<p>DataPortalException: ChildDataPortal.Update failed on the server ---&gt; CustomFramework.Reflection.CallMethodException: Child_Insert method call failed ---&gt; System.InvalidOperationException: One or more properties are not registered for this type ---&gt; System.IndexOutOfRangeException: Index was outside the bounds of the array.</p>
+<p>&nbsp;</p>
+<p>The solution:</p>
+<p>Before saving, to register the static properties, create a dummy instance of the type for which the static properties are not registered.</p>
+<p>e.g. To ensure IdProperty is registered, call MyProblemClass.RegisterProperties()</p>
+<p>public class MyProblemClass: BusinessBase&lt;MyProblemClass&gt;</p>
+<p>{</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static PropertyInfo&lt;Guid&gt; IdProperty = RegisterProperty&lt;Guid&gt;(new PropertyInfo&lt;Guid&gt;(&quot;Id&quot;, &quot;FriendlyId&quot;));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public Guid Id</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty&lt;Guid&gt;(IdProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty&lt;Guid&gt;(IdProperty, value);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static void RegisterProperties()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // No need to keep a reference,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // we only want to register the static properties.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MyProblemClass.NewDummy();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// Typical method to create a new instance</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public static MyProblemClass NewDummy()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp;MyProblemClass model = DataPortal.CreateChild&lt;MyProblemClass&gt;(new CriteriaCreate() { ... );</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return model;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>}</p>
+</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,156 @@
+<html><header><title>Infragistics Wingrid ICancelAddNew - unused new row not cancelling</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Infragistics Wingrid ICancelAddNew - unused new row not cancelling</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6860.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W posted on Tuesday, April 28, 2009</h2>Hi All,<br><br>first poster I'm afraid!&nbsp; I have spent the last month or so going up the CSLA curve, and I'm loving the framework, it is an awesome achievement <img src="/emoticons/emotion-11.gif" alt="Cool [H]" />.<br><br>I've been working up a simple winforms test app of the standard contact/order header/order line ilk and have hit a problem with the infragistics wingrid, which I'm hoping someone may be able to help with.&nbsp; The scenario is as follows:<br><br><ul><li>I have an order header edit form which is bound to a Root OrderHeader class via a BindingSource.</li><li>The OrderHeader class has an editable child collection called OrderLines, which unsuprisingly contains OrderLine objects.</li><li>Initially I dragged the OrderLines collection property from the OrderHeader class (DataSource) onto the form, which gave me a DataGridView showing an editable table of the OrderLine objects for this OrderHeader (and a corresponding OrderLinesBindingsource).</li><li>In the OrderLines collection class I overrode AddNewCore and added a line to say AllowNew = True, which now means I can happily add new OrderLines into the blank row at the bottom of the DataGridView</li><li>If I click into a new row then click out of it or press Esc then the new row is cancelled (i.e. ICancelAddNew works as expected).</li></ul><br>The above all saves/updates/deletes correctly and is generally great.&nbsp; <br><br><br>However, when I switch to using an Infragistics WinGrid instead of the Windows DataGridView, the new row adding no longer works as expected:<br><br><ul><li>If I click into a new row on the WinGrid the row is added and the default values from an OrderLine are populated as expected.</li><li>But if I then press Escape or simply click out of the row  (without having modified any data manually) the new row is not cancelled/deleted in the same way that it is with the Windows DataGridView</li></ul><br>I have had this same problem with Infragistics grids on a framework we wrote and never found a solution, so I'm guessing this maybe an Infragistics issue, but, what I'm hoping is that someone here could tell me:<br><br><ol><li>Has anyone else experienced this?</li><li>Is this expected behaviour for infragistics wingrids?</li><li>Is there a workaround?</li></ol><br>Many thanks in advance<br><br>Tom<br><br><br>Versions:<br>- OS: Windows XP<br>- .NET: 3.5 SP1<br>- VS: 2008<br>- CSLA: 3.6.2<br>- Infragistics: V8.2<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 28, 2009</h2>You might try a small sample of your scenario using the standard Microsoft DataGrid control to help establish whether it is Infragistics, data binding, your object or CSLA that is causing the problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Tuesday, April 28, 2009</h2>Hi Rocky<br><br>Thanks for your thoughts, I started with the vanilla Windows DataGridView and it worked absolutely fine (details of how I added it etc are in the original post).&nbsp; No doubt it is either my crappy code or the Infragistics control - I've had this problem with custom business object binding before with these controls and never solved it.<br><br>What would be great is to know if anyone has made the Infragistics WinGrid cancel newly added rows successfully and if so what they did to make it play nicely?&nbsp; <br><br>Cheers,<br><br>Tom<br>&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Wednesday, April 29, 2009</h2>Hi Rocky<br><br>I posted a version of my original question on the Infragistics forums too.&nbsp; Mike Saltzman raised the following thoughts (<a href="http://news.infragistics.com/forums/t/24944.aspx">http://news.infragistics.com/forums/t/24944.aspx</a>):<br><br><blockquote><p><i>ICancelAddNew is a relatively new interface. Before this interface
+existed, the proper way to cancel an AddNewRow was to use the
+IEditableObject interface. </i></p><p><i>In order to maintain backward compatbility, the grid checks for the
+IEditableObject interface first and if this interface is implemented,
+then it calls the CancelEdit method on it. The grid then has to assume
+that the CancelEdit method did what it is supposed to do and cancelled
+the addnew row. It therefore cannot go ahead and also call into the
+ICancelAddNew interface, also.</i></p><p><i>I have no experience with the CSLA object, but my guess (and this is
+only a guess) is that the CSLA objects in this case are implementing
+IEditableObject, but not handling the CancelEdit method properly.</i></p><div class="ForumPostSignature"><p><i><b>Mike Saltzman
+</b></i></p>
+<p><i>R&amp;D Engineer
+</i></p>
+<p><i>Infragistics, Inc.</i></p></div></blockquote>
+
+
+            
+            I've just reread the part of Expert VB 2008 BOs that deals with IEditableObject (p279) and it seems like this whole area has been given a heck of a lot of thought and attention in CSLA, so I'm at a bit of a loss.&nbsp; Does any of what Mike's saying here sound like it could be the cause in your opinion?<br><br>Thanks<br><br>Tom<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I suppose it is possible that there&#8217;s a bug in the IEO
+implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m a little surprised that they give preference to the
+old style, not the new style.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Back in .NET 1.x the way this worked was that IEO.CancelEdit was
+responsible for removing the item from the parent list. That code is still in
+CSLA, but I bet it has been untested and unused for the past several years &#8211;
+so maybe it is broken. It worked in 2001-2004, but past that I can&#8217;t say.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The thing is, any well behaved child object will implement IEO,
+even when contained in a modern list (like BindingList&lt;T&gt;) that
+implements ICancelAddNew &#8211; that came in with .NET 2.0. I would think most
+IEO implementations these days probably don&#8217;t do the cancel thing, since
+it hasn&#8217;t been relevant since 2005.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regardless, if this is what they do, then it is what they do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can look at Csla.Core.BusinessBase to see how the
+CancelEdit() implementation checks the <i>edit level added</i> value to determine
+whether to call into the parent collection to tell it to remove the child. You
+can put a breakpoint there to see if that code is reached or if there&#8217;s a
+problem. That might help figure out what&#8217;s going on.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Wednesday, April 29, 2009</h2>Thanks Rocky.&nbsp; <br><br>I don't really understand quite what Mike is saying.&nbsp; If I have it right then ICancelAddNew works at the collection level so it only supercedes the part of IEO's functionality that relates to cancelling unused new rows?&nbsp; IEO would still be responsible for Begin/Cancel/End Edit for an object when it is not being considered as part of a collection?&nbsp; <br><br>If I have that right then any custom BO is going to be implementing IEO so by Mike's logic of "if it has IEO then we never use ICancelAddNew " the ICancelAddNew methods would never be run.. that doesn't sound right to me <img src="/emoticons/emotion-42.gif" alt="Confused [*-)]" /><br><br><br>I took your advice of debugging through BusinessBase and found where the problem lies (I'm using the RolesEdit.vb form with the DGV swapped for an Infragistics WinGrid).&nbsp; Recreating my steps:<br><br><br>1) Opening the form causes:<br>IEditableObject.BeginEdit to fire three times, which in turn causes BindingBase.BeginEdit to fire once. <br>EditLevel raised from 0 to 1 (presumably the first row in the list getting focus?)<br><br>2) Clicking on a different <i>existing</i> row (without editing the first row) causes:<br>IEO.EndEdit to fire once and BB.ApplyEdit to fire once (presumably the first row losing focus)<br>Then IEO.BeginEdit is called twice, first time causes BB.BeginEdit to fire.<br><br>3) Editing the text in that row and then pressing tab causes:<br>IEO.BeginEdit to fire twice, but BB.BeginEdit is not fired (as expected as the if statement is guarding for these superfluous BeginEdit calls from the UI?)<br><br>4) Clicking back to the first row again causes:<br>IEO.EndEdit to fire twice, first time calling BB.Applyedit<br>Then IEO.BeginEdit is called twice, first time causes BB.BeginEdit to fire.<br><br>5) Now, clicking on a <i>new</i> row causes:<br>IEO.EndEdit to fire twice, first time calling BB.Applyedit<br>Then IEO.BeginEdit is called twice, first time causes BB.BeginEdit to fire.<br><br>6) Typing some text in the field then immediately hitting Escape causes:<br>IEO.CancelEdit to fire, then BB.CancelEdit to fire and then BINGO, the cause of the problem:<br><br>The next line of code is:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (IsNew &amp;&amp; _neverCommitted &amp;&amp; EditLevel &lt;= EditLevelAdded)<br><br>IsNew is True, _neverCommitted is true, but EditLevel = 1 where as EditLevelAdded = 0, meaning the last check fails and so the next line of code...<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Parent != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parent.RemoveChild(this);<br><br>... never fires, which is what causes the row to not get deleted.&nbsp; If I force execution onto that line then the new row is deleted as per standard DGV behaviour.<br><br>I think EditLevelAdded relates to the n-undo, rather than being a part of one of the Windows binding interfaces?&nbsp; I'm not sure how the EditLevelAdded value gets raised, but it doesn't seem to be getting raised when BB.EditLevel&nbsp; is raised?&nbsp; Should it be?<br><br>I have a bit of an understanding of the binding interfaces having implemented myself on a little framework we did in house, but I'm a bit lost now EditlevelAdded is in the mix.&nbsp; Could you point me in the right direction?<br><br>Many Thanks<br><br>Tom<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2><P>EditLevelAdded is the edit level of the collection at the time the child was added to the list.</P>
+<P>It acts as the base level - when the edit level reaches that point in a cancel, it means you've canceled the child back to the point where it started, and so if the child is new then it can be removed - because it has been canceled back to the point where it didn't exist to start with.</P>
+<P>Since you never called BeginEdit() on the collection, the collection's edit level should be 0, and so it sounds like EditLevelAdded is actually correct. What is odd is that EditLevel should be at 1, and the cancel should be lowering it to 0.</P>
+<P>It is quite possible that changes over the past couple years have rearranged the order of events so the EditLevel value isn't decremented until after the check you are seeing - which is a long-winded way of saying there's probably a bug.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2>Thanks Rocky, that sounds logical.&nbsp; I've stepped through it all line by line and can confirm that there doesn't appear to be any code that reduces the EditLevel when the CancelEdit occurs.&nbsp; <br><br>The order of events when I clicked off the automatically added newly created row without having made any changes was:<br><br><ol><li>IEO.CancelEdit was called, then BB.CancelEdit called</li><li>BB.CancelEdit calls Undo Changes (EditLevel is 1 at this point)</li><li>In UndoableBase.UndoChanges calls UndoingChanges (which just calls protected virtual void UndoingChanges(){})</li><li>Then the code checks this.EditLevel - 1 != parentEditLevel, which it is (EditLevel = 1,&nbsp; parentEditLevel = 0).&nbsp; It checks the editlevel, but doesn't change it.<br></li><li>The code then restores all the values back from the stack</li><li>UndoChangesComplete() is called which starts to re-setup the validation and business rules and then hits the OnUnknownPropertyChanged() method call. This calls the OnPropertyChanged code which then causes IEO BeginEdit to fire again - this in turn causes BusinessListBase.Child_PropertyChanged to be called.</li><li>BLB.UndoChangesComplete() then calls base.UndoChangesComplete and exits and then UndoableBase.UndoChanges completes and exits</li><li>BusinessBase.CancelEdit then completes and execution returns to IEO.CancelEdit</li></ol><br>So, it would appear that although the cancel edit occurs and the object's data is wound back, the EditLevel for that object is never reduced.&nbsp; Should that occur as part of the above chain of events, maybe when the values are restored back from the stack (stage 5 in the above list)?&nbsp; <br><br>If it did, then the EditLevel &lt;= EditLevelAdded condition in the next line of code would return true (0&lt;=0) and the child would be removed.<br><br>So, all of the above is aimed at hopefully identifying where the issue occurs.. any idea what I need to do to fix it?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Tom_W:</strong></div><div>Thanks Rocky.&#160; <br><br>I don't really understand quite what Mike is saying.&#160; If I have it right then ICancelAddNew works at the collection level so it only supercedes the part of IEO's functionality that relates to cancelling unused new rows?&#160; IEO would still be responsible for Begin/Cancel/End Edit for an object when it is not being considered as part of a collection?&#160; <br><br>If I have that right then any custom BO is going to be implementing IEO so by Mike's logic of "if it has IEO then we never use ICancelAddNew " the ICancelAddNew methods would never be run.. that doesn't sound right to me <img src="/emoticons/emotion-42.gif" alt="Confused [*-)]" /></div></BLOCKQUOTE><br /><br />That doesn't sound right to me either.. and given that the MS grid seems to work fine, maybe you can point that out and say "your implementation is out of skew with the MS equivolent implementation" to get them to acknowledge they need to fix their grid.  Good luck though.. they seem to believe that THEIR 3rd party controls are just fine, but anyone elses that are involved in the mix.. oh well it must be that other third party not working right.<br /><br />Seem if you can't come up with a demo that illustrates the problem without Csla in the mix.. where their grid fails and the MS one works.  That will almost certainly get them to fix their grid. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2>Thanks Andy.&nbsp; To be fair to Infragistics the specific issue does seem to be a CSLA issue, but this whole if IEO exists dont use ICAN thing is a bit confusing to say the least (well to me anyway!).<br><br>I've posted a response on the Infragistics forum based on what I've learnt so far and asking for some clarification from them on exactly how it all works.&nbsp; There is a link further up to that thread, so for anyone who has an interest now or in the future that's a good reference too.<br><br>It's weird, the number of CSLA users out there and the number of Infragistics users out there I would have thought this would have come up sooner!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 30, 2009</h2>Tom, I hear what you're saying, and there could be a bug in Csla too (and it sounds like there is).  But it also sounds like the bug shouldn't matter, if ICAN is the interface to use if present.  Again, I would defer to what the MS Grid does.  If the MS Grid + Csla behave as expected, then Infragistics should use similar behavior.<br /><br />I think this actually does affect me, but I've never looked into why. Instead I've told users to highlight the "new" row and hit delete.. but it only happesn on certain grids. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2>Yep, I agree completely, my expectation would be for WinGrid to effectively behave exactly like the standard MS DataGridView as the default.&nbsp; Once I get a bit of clarification from Infragistics on how the control works I will be pressing for an explanation if it isn't the same as the DGV.&nbsp; <br><br>Yep, your symptoms sound exactly the same as mine and I've had to tell our users the same thing (in this case for a non CSLA app. using a framework I built).&nbsp; It is hardly an ideal solution considering users already understand the concept of automatically cancelling new rows from MS Access and so on.&nbsp; I've found the Infragistics grids work perfectly with DataSets but are flakier with custom collections.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 30, 2009</h2>Hmm... so this was the issue all along.  Well, good thing for me my users were using another program, not Access, so they didn't expect the Access-like behavior to begin with.  I found this in the documentation for ICancelAddNew.. I'm not sure I'm reading it correctly, but it sounds like you should use the "newer" method if it's there.. but unfortunatly isn't really all that clear.  What do you think?<br /><br />.NET Framework Class Library  <br />ICancelAddNew Interface  <br /><br />"There are two models that allow transactional addition of an item to a data-bound collection:<br /><br />The older model relies directly on a collection that implements the IBindingList interface and is data-bound directly using the System.Windows.Forms..::.CurrencyManager class. The AddNew, EndCurrentEdit, and CancelCurrentEdit methods of the System.Windows.Forms..::.CurrencyManager class are responsible for transactional support for adding new items. However, this functionality depends upon the items supporting transactional behavior through the IEditableObject interface. If the items do not support this interface, the item will always be added to the list, regardless of subsequent calls to CancelCurrentEdit.<br /><br />The newer model supports a more robust data-binding scenario through the generic BindingList)>) class, which implements the IBindingList and ICancelAddNew interfaces. In this case, the transactional support is managed by the BindingList)>) collection directly. <br />"</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Hmm... so this was the issue all along.  Well, good thing for me my users were using another program, not Access, so they didn't expect the Access-like behavior to begin with.  I found this in the documentation for ICancelAddNew.. I'm not sure I'm reading it correctly, but it sounds like you should use the "newer" method if it's there.. but unfortunatly isn't really all that clear.  What do you think?
+
+.NET Framework Class Library  
+ICancelAddNew Interface  
+
+"There are two models that allow transactional addition of an item to a data-bound collection:
+
+The older model relies directly on a collection that implements the IBindingList interface and is data-bound directly using the System.Windows.Forms..::.CurrencyManager class. The AddNew, EndCurrentEdit, and CancelCurrentEdit methods of the System.Windows.Forms..::.CurrencyManager class are responsible for transactional support for adding new items. However, this functionality depends upon the items supporting transactional behavior through the IEditableObject interface. If the items do not support this interface, the item will always be added to the list, regardless of subsequent calls to CancelCurrentEdit.
+
+The newer model supports a more robust data-binding scenario through the generic BindingList&lt;(Of &lt;(T&gt;)&gt;) class, which implements the IBindingList and ICancelAddNew interfaces. In this case, the transactional support is managed by the BindingList&lt;(Of &lt;(T&gt;)&gt;) collection directly. 
+"</div></BLOCKQUOTE><br><br>Hi Andy, that's great and I agree it sounds like the bits of IEO in question are effectively deprecated.&nbsp; <br><br>The demo suggestion is a good one, once they fill me in on exactly what the WinGrid is up to then I will try and put a non CSLA semo together that demonstrates the ICAN not being called.&nbsp; However, this still needs Infragistics to view that as being an issue of course, they may just take the view that as they are implementing IEO then there isn't a problem.<br><br>Thanks<br><br>Tom<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2>I agree Andy, it seems like they should honor ICAN first, and fall back to<br />IEO if necessary. That appears to be the behavior of the standard Microsoft<br />data grid control, against which I measure CSLA's overall requirements.<br /><br />But it does appear that there's a bug in CSLA that would make it not work<br />with the old .NET 1.x data grid. And honestly I can't say I'd care, except<br />it sounds like a more widely used grid control is unfortunately following<br />the old 1.x model.<br /><br />I've added an item in bug tracker for this, but I don't know when I'll have<br />time to dig into it. The trick is that I'll have to either get a failure<br />case on the 1.x data grid (is that even still around?) or work with<br />Infragistics to get a license for their stuff (which I'm sure I can do, but<br />not in the next couple weeks).<br /><br /><br />The EditLevel DOES get decremented by the way - but it happens later in the<br />process, and in UndoableBase (if I remember correctly). That whole area<br />underwent a lot of change a couple years ago as we (this community) helped<br />me fight through all the data binding issues that are covered in the 'Using<br />CSLA .NET 3.0' ebook. To get the WinForms 2.0 data binding to really work,<br />the code dealing with EditLevel changed a lot - and it seems very likely<br />that I accidentally broke the old 1.x behavior.<br /><br />And that isn't entirely surprising - I didn't test the 1.x behaviors,<br />because I kind of thought they were so far in the past no one would care :)<br /><br />Rocky<br /><br />-----Original Message-----<br />From: ajj3085 [mailto:cslanet@lhotka.net] <br />Sent: Thursday, April 30, 2009 9:30 AM<br />To: rocky@lhotka.net<br />Subject: Re: [CSLA .NET] RE: Infragistics Wingrid ICancelAddNew - unused new<br />row not cancelling<br /><br />Tom, I hear what you're saying, and there could be a bug in Csla too (and it<br />sounds like there is).  But it also sounds like the bug shouldn't matter, if<br />ICAN is the interface to use if present.  Again, I would defer to what the<br />MS Grid does.  If the MS Grid + Csla behave as expected, then Infragistics<br />should use similar behavior.<br /><br />I think this actually does affect me, but I've never looked into why.<br />Instead I've told users to highlight the "new" row and hit delete.. but it<br />only happesn on certain grids.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 30, 2009</h2>Yup.. I agree.  <br /><br />My suggestion to prod them I think is the ideal way to go.  Build a demo without Csla in the mix, file a bug report with them, and I'm reasonably sure they will agree it's a bug they need to fix.  If more than one person is reporting the same issue that might help as well.<br /><br />That's been my experience anyway.. the initial hurdle is in getting them a demo that clearly illustrates the problem, but after that they are pretty good about fixing it, even if they are a bit slow at it.  That's the only gotcha, is that you may be able to address Csla faster than they get their fix.  :-)<br /><br />I have some downtime, so I think I may work on my own demo as well, because it sounds like it does affect me.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2>Thanks again Rocky, that all makes complete sense.<br><br>I guess Infragistics are stuck in the situation where they need to support the legacy code out there so it may be difficult for them to recode the control.&nbsp; I do have the source code license so if I get a moment I will have a dig and try and work out what it's all doing.<br><br>The simplest solution would seem to be for Infragistics to give the developer the choice about whether the control uses ICAN or IEO to control the new list items, but that is probably a lot easier said than done!<br><br>I'm stil waiting for Infragistics to clarify exactly how they handle the overlap between ICAN and IEO, the devil is probably in the detail...<br><br>Cheers,&nbsp; Tom<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, April 30, 2009</h2>One more quick question, just to check my understanding:<br><br>Am I correct in saying that:<ul><li>IEO is still the current interface for providing binding for a single instance of a business object</li><li>that ICAN is only concerned with dumping unused items from the collection.</li><li>ICAN only overlaps IEO with regards to removing new items from the collection, with ICAN being the newer and recommended approach.</li><li>I.e. in short, any well behaved BO would always implement IEO?</li></ul><br>Apologies, I know this isn't .NET databinding class 101....!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That sounds about right to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Tom_W
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 30, 2009 2:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Infragistics Wingrid ICancelAddNew -
+unused new row not cancelling<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>One more quick question, just to check my understanding:<br>
+<br>
+Am I correct in saying that:<o:p></o:p></p>
+
+<ul>
+ <li class=MsoNormal>IEO is still the current interface for providing
+     binding for a single instance of a business object<o:p></o:p></li>
+ <li class=MsoNormal>that ICAN is only concerned with dumping unused
+     items from the collection.<o:p></o:p></li>
+ <li class=MsoNormal>ICAN only overlaps IEO with regards to removing
+     new items from the collection, with ICAN being the newer and recommended
+     approach.<o:p></o:p></li>
+ <li class=MsoNormal>I.e. in short, any well behaved BO would always
+     implement IEO?<o:p></o:p></li>
+</ul>
+
+<p class=MsoNormal><br>
+Apologies, I know this isn't .NET databinding class 101....!<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Tuesday, May 05, 2009</h2>Update on all of this:<br><br>I've discussed all of the above with Infragistics <a href="http://news.infragistics.com/forums/p/24944/92456.aspx#92456">http://news.infragistics.com/forums/p/24944/92456.aspx#92456</a> and the upshot is that they concur that their needs to be an option to allow ICAN to fire first ahead of IEO. <br><br>They are going to look at either getting this into the next 9.1 Service Release or into Version 9.2 of the controls <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /><br><br>Hopefully that will happen and will work as expected, it certainly seems like a better solution for the WinGrid to implement ICAN too, rather than just IEO.<br><br><br>Thanks to everyone for your thoughts and inputs/explanations.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Friday, May 29, 2009</h2>Further update on this; Infragistics have now confirmed that the developer will be given the option to use ICAN or IEO as of Release 2009 v2 (i.e. the next version).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 29, 2009</h2>That's good news. Those guys at Infragistics are pretty responsive on the whole I think.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Tuesday, September 15, 2009</h2>Just to let anyone else who is interested know; Infragistics Winforms 9.2 is now out and fixes the ICAN/IEO issue described in this thread.&nbsp; Escaping a new row clears it correctly and moving focus from a new (but unedited) row causes it to be deleted.<br><br>Details of the new feature are <a href="http://help.infragistics.com/Help/NetAdvantage/WinForms/2009.2/CLR2.0/html/Infragistics2.Win.UltraWinGrid.v9.2%7EInfragistics.Win.UltraWinGrid.UltraGridOverride%7EAddRowEditNotificationInterface.html">here</a><br><br>The code to add to the constructor of the form is:<br><blockquote>UltraGrid1.DisplayLayout.Override.AddRowEditNotificationInterface = AddRowEditNotificationInterface.ICancelAddNewAndIEditableObject<br></blockquote><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

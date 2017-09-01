@@ -1,0 +1,23 @@
+<html><header><title>CodeSmith Template- Database Property Name</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CodeSmith Template- Database Property Name</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1817.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>WyattRidesAgain posted on Wednesday, November 22, 2006</h2><P>When I generate code I'm getting output like the following:</P>
+<P>&nbsp;&nbsp;protected override void DataPortal_Insert()<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;using (SqlConnection cn = new SqlConnection(Database.C:\_APPS\PROJECTTRACKER20CS\DATA\PTRACKER.MDFConnection))<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;.....<BR></P>
+<P>... in which the db connection string is appended to "Database."&nbsp; Instead of the db connection string, should this actually be the name of the property&nbsp;in the static class Database that holds the connection string?&nbsp; In other words, should the generated output&nbsp;instead be something like:</P>
+<P>&nbsp;&nbsp;protected override void DataPortal_Insert()<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;using (SqlConnection cn = new SqlConnection(Database<FONT size=2>.PTrackerConnection</FONT>)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;.....</P>
+<P>I'm probably missing something or doing something wrong, so any help would be appreciated.</P>
+<P>Thx,</P>
+<P>Wyatt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 22, 2006</h2><P>Yes.</P>
+<P>You should only read the connection string in one place in your project. Then all of your code can refer to it as you described. Then if you edit your config file the rest of your code works as expected without having to do a massive search and replace and re-compile.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WyattRidesAgain replied on Wednesday, November 22, 2006</h2><P>Sorry for my poorly worded question;&nbsp; let me clarify.&nbsp; In using the CodeSmith templates the output they generate includes the actual connection string, whereas I want to output the name of the property in the Database class containing the pointer to the web.config or app.config file containing the connection string.</P>
+<P>Am I using the CodeSmith templates incorrectly or could there be a bug?</P>
+<P>Wyatt</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, November 22, 2006</h2><P>Hey Wyatt,</P>
+<P>I don't think it's either. I haven't really dug deep into it, but as far as I know, it's the way that CodeSmith itself pulls the database name from the connection string.</P>
+<P>Search/replace might be the easiest thing.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 22, 2006</h2><P>The Codesmith templates are very good but not perfect.</P>
+<P>You should simply edit them to meet your needs.</P>
+<P>My own templates are very specific to the rest of my framework. e.g. I have a Data Access Layer code library which is used in my BOs so my templates use my DAL to Fetch/Insert/Update/Delete data.</P>
+<P>Or contact the developers (Ricky Supit among others) and suggest modifications.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WyattRidesAgain replied on Monday, November 27, 2006</h2><P>Joe and Mike,</P>
+<P>Thanks for good input.&nbsp; I've been hoping not to have to dig into the Codesmith templates but maybe I'll need to.&nbsp; Also, I'll contact Ricky, just in case there's&nbsp;a bug.</P>
+<P>Wyatt</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

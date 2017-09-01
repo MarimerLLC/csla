@@ -1,0 +1,519 @@
+<html><header><title>CSLA SilverLight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA SilverLight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7699.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Tuesday, September 29, 2009</h2><DIV>
+<DIV>A few questions here.</DIV>
+<DIV>&nbsp;</DIV>
+<OL>
+<LI>If I am using the CSLA:InvokeMethod to save my data using the dataprovide inside my XAML. What if I want a popup message box to display "After" the save has been completed.<BR>I am not sure how do I go about doing this using the data provider.</LI>
+<LI>I have a Telerik Combobox on the page, for some reason it's not databinding at all using the dataprovide. But when I manually do it in the code behind it works no problem.</LI>
+<LI>What is the best way to save data on my SilverLight Application "if" I have a "hybrid" data form with SilverLight textbox fields as will as standard asp.net textbox fields?</LI>
+<LI>I don't care for CSLA automatically disabling the buttons for me. If requires the user to change the data first, which I have no problem with. BUT, the user will then have to click on the "Tab" button in order for the button to become enabled. <BR><BR>Me personally, I don't use the keyboard that much, I use the mouse button.<BR>So the current way it works, if I make a change to my form, then I try to use my mouse button to save my new changes. The button will not become enabled until I press the tab key.<BR>There are situations where I might just change "one" field, then directly attempt to save the data using my mouse instead.<BR><BR>I have tried doing the ManualControl for the button inside my XAML, and it still disables the control. Any thoughts????</LI></OL>
+<DIV>Any code examples someone can share.</DIV>
+<DIV><BR>Thanks</DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 29, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SouthSpawn:</strong></div><div>
+<P>If I am using the CSLA:InvokeMethod to save my data using the dataprovide inside my XAML. What if I want a popup message box to display "After" the save has been completed.<BR>I am not sure how do I go about doing this using the data provider. </P>
+<P></div></BLOCKQUOTE></P>
+<P>The data provider is designed to support a simple CRUD screen and is modeled closely after the WPF data provider model. If you want more control over the process, you'll need to use code-behind or the MVVM pattern.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SouthSpawn:</strong></div><div></P>
+<P>I have tried doing the ManualControl for the button inside my XAML, and it still disables the control. Any thoughts????</P>
+<P></div></BLOCKQUOTE></P>
+<P>That sounds like a bug. If you tell InvokeMethod to allow manual control over the UI visual state it shouldn't alter that control's state.</P>
+<P>Can you (or anyone else) confirm that this bug exists?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Tuesday, September 29, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>Now when i complile I am getting.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>csla:InvokeMethod.ManualEnableControl="true"</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Error&nbsp;5&nbsp;The property 'ManualEnableControl' does not exist on the type 'Button' in the XML </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Here is my button code.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&lt;Button<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; x:Name="UpdateCompanyButton" <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Content="Update Company"&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.ManualEnableControl="true"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="Click"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Resource="{StaticResource CompanyData}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="Save" &gt;&lt;/Button&gt;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know &#8211; that code looks right to me. Does ManualEnableControl
+appear in intellisense?</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Tuesday, September 29, 2009</h2><P>I just tried setting ManualEnableControl in xaml and got the same error. It shows up in intellisense, just doesn't compile. It looks like a bug, though I can't find the source of the bug in the CSLA code.</P>
+<P>As a work around, you can set this flag programmatically in the meantime (which does compile):</P>
+<P>Csla.Silverlight.InvokeMethod.SetManualEnableControl(buttonControl, true);</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 29, 2009</h2><P>What version of CSLA .NET are you using?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Tuesday, September 29, 2009</h2>I'm using 3.7.1.0</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 29, 2009</h2><P>Try replacing the ManualEnableControl property declaration code (static field and two methods) with the following code (from version 3.8):</P>
+<P>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// Value indicating whether the UI control should be<BR>&nbsp;&nbsp;&nbsp; /// manually enabled/disabled.<BR>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; public static readonly DependencyProperty ManualEnableControlProperty =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DependencyProperty.RegisterAttached("ManualEnableControl",<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typeof(bool),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; typeof(InvokeMethod),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new PropertyMetadata((o, e) =&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var ctrl = o as UIElement;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ctrl != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new InvokeMethod(ctrl);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }));</P>
+<P>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// Sets the value indicating whether the UI control should be<BR>&nbsp;&nbsp;&nbsp; /// manually enabled/disabled.<BR>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// &lt;param name="ctrl"&gt;Attached control&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp; /// &lt;param name="value"&gt;New value&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp; public static void SetManualEnableControl(UIElement ctrl, bool value)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ctrl.SetValue(ManualEnableControlProperty, value);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// Gets the value indicating whether the UI control should be<BR>&nbsp;&nbsp;&nbsp; /// manually enabled/disabled.<BR>&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp; /// &lt;param name="ctrl"&gt;Attached control&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp; public static bool GetManualEnableControl(UIElement ctrl)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (bool)ctrl.GetValue(ManualEnableControlProperty);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>I don't remember exactly why, but when I was rebuilding this control for 3.8 I know I reworked the way the attached properties are declared, and this one did give me some trouble. It works in 3.8 though, so I suspect swapping out this code may solve the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Wednesday, September 30, 2009</h2><DIV>Rocky,</DIV>
+<DIV><BR>Any suggestions on how I can do a "MessageBox.Show("Company has been updated successfully!!!")</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>After the DataProvider is finished with the update?<BR>I don't see an event anywhere.</DIV>
+<DIV><BR>What am I overlooking?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Also What is the best way to save data on my SilverLight Application "if" I have a "hybrid" data form with SilverLight textbox fields as will as standard asp.net textbox fields? <BR><BR>Should I just get the DataProvider object from the resources collection and manually call the save there?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Provider
+in SL has Saved event you can use.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 30, 2009 11:10 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA SilverLight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>Rocky,<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+Any suggestions on how I can do a &quot;MessageBox.Show(&quot;Company has been
+updated successfully!!!&quot;)<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>After the DataProvider is finished with the update?<br>
+I don't see an event anywhere.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+What am I overlooking?<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Also What is the best way to save data on my SilverLight
+Application &quot;if&quot; I have a &quot;hybrid&quot; data form with
+SilverLight textbox fields as will as standard asp.net textbox fields? <br>
+<br>
+Should I just get the DataProvider object from the resources collection and
+manually call the save there?<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Wednesday, September 30, 2009</h2><DIV>Sergeyb,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks for the response.<BR><BR>My last question is, how to I manually save data to the dataprovider?<BR><BR>In my situation, I need to use&nbsp;a "ScriptableMember" method to grab some data from one of the "Html" controls on the page.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am trying to do something alone the lines of. (This is just an example)</DIV>
+<DIV>&nbsp;</DIV>private string _s; 
+<DIV>&nbsp;</DIV>
+<DIV>private void UpdateCompany_Button_Click(object sender, RoutedEventArgs e)</DIV>
+<DIV>{<BR>&nbsp;&nbsp;&nbsp;p = (Csla.Silverlight.CslaDataProvider)this.Resources["CompanyDataProvider"];</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;SetSummaryFromDOM();</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;Company c = (Company)p.Data;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp; c.Description = _s;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp; //I am lost on what to do next.<BR>&nbsp;&nbsp;//Since p.Data is readonly, I&nbsp;cannot update the object manually&nbsp;by just doing a</DIV>
+<DIV>&nbsp;&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;//p.Data = c;</DIV>
+<DIV>&nbsp;&nbsp;//p.Save();<BR>&nbsp;<BR>}</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>private void SetSummaryFromDOM()<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScriptObject so = (ScriptObject)HtmlPage.Window.GetProperty("GetDescriptionContent")</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //This will call a javascript function, that will grab the content out of an html control.</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Then it will call the SilverLight's "Summary" method to pass that data back to the SL App.</DIV>
+<DIV>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;so.InvokeSelf();<BR>}</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>[ScriptableMember]</DIV>
+<DIV>public void Summary(string s)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_s = s<BR>}</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This
+should work<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>private void UpdateCompany_Button_Click(object sender,
+RoutedEventArgs e)<o:p></o:p></p>
+
+<p class=MsoNormal>{<br>
+&nbsp;&nbsp;&nbsp;p =
+(Csla.Silverlight.CslaDataProvider)this.Resources[&quot;CompanyDataProvider&quot;];<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;SetSummaryFromDOM();<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;Company c = (Company)p.Data;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;&nbsp; c.Description = _s;<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Additional
+code: - <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>p.Saved+=(o,
+e)=&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+(e.Error == Null)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(&#8220;Success&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Messagebo.show
+(&#8220;Error: &#8220; + e.Error.Message);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>// hide busy animation unless bound to provider<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>};<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>//
+Show some busy animation unless bound to provider<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>p.Save();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You
+would need to plug in your own error handler, messageboxes are there as an
+example what to listen to.<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Wednesday, September 30, 2009 11:53 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA SilverLight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>Sergeyb,<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Thanks for the response.<br>
+<br>
+My last question is, how to I manually save data to the dataprovider?<br>
+<br>
+In my situation, I need to use&nbsp;a &quot;ScriptableMember&quot; method to
+grab some data from one of the &quot;Html&quot; controls on the page.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I am trying to do something alone the lines of. (This is
+just an example)<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal>private string _s; <o:p></o:p></p>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>private void UpdateCompany_Button_Click(object sender,
+RoutedEventArgs e)<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>{<br>
+&nbsp;&nbsp;&nbsp;p =
+(Csla.Silverlight.CslaDataProvider)this.Resources[&quot;CompanyDataProvider&quot;];<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;SetSummaryFromDOM();<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;Company c = (Company)p.Data;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp; c.Description = _s;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp; //I am lost on what to do next.<br>
+&nbsp;&nbsp;//Since p.Data is readonly, I&nbsp;cannot update the object
+manually&nbsp;by just doing a<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;//p.Data = c;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;//p.Save();<br>
+&nbsp;<br>
+}<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>private void SetSummaryFromDOM()<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ScriptObject so =
+(ScriptObject)HtmlPage.Window.GetProperty(&quot;GetDescriptionContent&quot;)<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //This will call a javascript
+function, that will grab the content out of an html control.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Then it will call the
+SilverLight's &quot;Summary&quot; method to pass that data back to the SL App.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;so.InvokeSelf();<br>
+}<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>[ScriptableMember]<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>public void Summary(string s)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_s = s<br>
+}<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Wednesday, September 30, 2009</h2><DIV>This is great.</DIV>
+<DIV><BR>Thanks ALOT!!!</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

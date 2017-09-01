@@ -1,0 +1,24 @@
+<html><header><title>Per type rule example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Per type rule example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11977.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Saturday, May 11, 2013</h2><p>Hello,</p>
+<p>I have a business object for which I need to make some validations that involve several properties of the object and more data that I will need to read from the database. I&#39;m using this object in an MVC application and I though that will be better to run this validation once, after all the related properties are set. In other objects with regular rules I usually suppress the rule checks, set all the properties and then call&nbsp;CheckRules before saving.</p>
+<p>Should I use a Per-Type rule? I was looking the ebook &quot;Creating business objects&quot; and couldn&#39;t find any example or to much detail about per-type rules.</p>
+<p>I would like somebody to point me in the right direction.</p>
+<p>Thanks in advance.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, May 11, 2013</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">Hi,</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">Chapter 4 is all about Business Rules and CSLA 4 only has Per-Type rules. Are you referring to object level rules?</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">Object level rules is just as any other business rule - only that PrimaryProperty is null (not set).</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;">Look at the ICheckRules interface:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">namespace</span>&nbsp;Csla.Core
+{
+&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">interface</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">void</span>&nbsp;SuppressRuleChecking();
+ &nbsp;&nbsp; <span style="color:blue;">void</span>&nbsp;ResumeRuleChecking();
+ &nbsp;&nbsp; <span style="color:blue;">void</span>&nbsp;CheckRules();
+ &nbsp;&nbsp; <span style="color:#2b91af;">BrokenRulesCollection</span>&nbsp;GetBrokenRules();
+&nbsp;&nbsp;}
+}<br /><br />Depending on WHEN you want the rule to execute you could <br /></pre>
+<ul>
+<li>define an object level rule (PrimaryProperty = null) or </li>
+<li>as a regular property rule that has a PrimaryProperty and may be executed multiple times</li>
+</ul>
+<p>When you call CheckRules the object level rules is executed first - then the property level rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Saturday, May 11, 2013</h2><p>Ohh, I see. Yes, I was talking about object level rules and I was missing the fact that they are like a regular rule with the primary property null. </p>
+<p>Thanks Jonny.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

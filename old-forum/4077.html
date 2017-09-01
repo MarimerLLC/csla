@@ -1,0 +1,111 @@
+<html><header><title>Broken Rules - Client / Server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Broken Rules - Client / Server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4077.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Friday, December 21, 2007</h2>Hi,<br><br>is it possible to define rules which only run on the server side?<br>E.g. sometimes a rule might need to "talk" to the database and do quite a few queries to verify that it (the rule) is valid. Naturally I would only want to run this rule just before persisting the entity and not on every IsValid request on the client. <br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, December 21, 2007</h2><P>Yes. I do this all the time. The rule uses a BO (like a command object) to return a result.When the rule is added I set the priority to 1 - the default priority is zero for all "simple rules". This means that the rule that hits the DB does not run unless all the simple rules are passed first.</P>
+<P>But that may not be what you are asking...</P>
+<P>Hmm. I would consider adding a flag to the BO which tells it if it is just a "standard" IsValid call or the "special" call that precedes a Save. By setting the flag to false initially, the rule can check it and skip over the DB rule and always return True. Then when you are ready to do a real save, your Save button code sets the flag to true and now when you check IsValid the DB rule will actually run for the first time. (And only time if everything is really valid.) You might also consider skipping over the framework call to IsValid so it doesn't&nbsp;run a 2nd time during the .Save method. I forget if there is an overload in the framework that does this or whether I added it to my base class.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Friday, December 21, 2007</h2><div><span class="112502723-21122007">Thank you. This gave me an idea of what 
+would even be nicer</span>? A bit flag...<br><br>If there was a bit value for 
+when the rule should run you could do all kinds of scenarios:<br>[Flags]enum 
+Location {None, Server, Client, All}<br>[Flags]enum 
+Situation{ Load = 0x01, Update = 0x02, Delete = 0x04, All 
+= 0x08} <br><br>The business object knows whether it is on the server or on the 
+client and the IsValid could have an overload to let it know from where it was 
+called e.g. IsValid(Situation.Delete) or IsVaild(Situation.All)<br><br>So when 
+you add a business rule you could 
+say:<br>ValidationRules.AddRule(CommonRules.StringRequired, "GroupName");<br>or 
+<br>ValidationRules.AddRule(ProductPriceRangeComparison, "ProductPrice", 
+Location.Server, 
+Situation.Update);<br>or<br>ValidationRules.AddRule(ProductNameSoundComparions, 
+"ProductName", Location.Server | Location.Client, Situation.Update | 
+Situation.Delete);<br><br>Thanks,<br>Patrick<br><br></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Tuesday, October 07, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Patrick:</strong></div><div><br>is it possible to define rules which only run on the server side?<br>E.g. sometimes a rule might need to "talk" to the database and do quite a few queries to verify that it (the rule) is valid. Naturally I would only want to run this rule just before persisting the entity and not on every IsValid request on the client. <br></div></BLOCKQUOTE><br><br>Just a follow-up to ask if this is possible with CSLA.NET 3.6 at the moment.<br><br>Thanks,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do not think this is possible in 3.6.&nbsp; I could offer a
+hack thought :- )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>You can use ApplicationContext.LocalContext.Contans(SomeSpecialKey)
+and set the key say as part of user login on the client (or some other place
+during startup).&nbsp; The same value will never be set on the server, so you
+have a stable check for execution location.&nbsp; Not as nice of a solution as
+you propose, but is should work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Patrick
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 5:14 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Broken Rules - Client / Server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong>Patrick:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+is it possible to define rules which only run on the server side?<br>
+E.g. sometimes a rule might need to &quot;talk&quot; to the database and do
+quite a few queries to verify that it (the rule) is valid. Naturally I would
+only want to run this rule just before persisting the entity and not on every
+IsValid request on the client. <o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+Just a follow-up to ask if this is possible with CSLA.NET 3.6 at the moment.<br>
+<br>
+Thanks,<br>
+Patrick<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 08, 2008</h2>I'd like to add a feature request.&nbsp; Currently, Csla.ApplicationContext.ExecutionLocation returns where the code is executing... but it seems to be the physical execution location... so if you're using the local data portal, the value will never be Server.<br><br>Perhaps a LogicalExecutionLocation can be added... which "Server" meaning the code is running in the dataportal, regardless of whether or not the code is actually running on the client or the server. <br><br>Seems like this would address many of these issues more cleanly than the hack posted.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 08, 2008</h2>There's already an item in the wish list for a "logical execution location" property.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 08, 2008</h2>Oh, guess I should have checked it first. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,9 @@
+<html><header><title>Dynamically configuring the WCF address in Silverlight app</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamically configuring the WCF address in Silverlight app</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7979.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo posted on Wednesday, November 11, 2009</h2>I searched and saw some posts about dynamically configuring the client
+endpoint address but they were quite old and didn't seem to quite
+answer my question.<br><br>What I want to do is in the
+Application_Startup method of a Browser hosted Silverlight app; configure the
+endpoint address to match that of the hosting server's hostname.&nbsp; I was
+wondering if this was directly possible through some properties in
+CSLA?&nbsp; Creating a new proxy class seems like overkill for something
+that has to be really common.&nbsp; I would think that most SL apps would
+want to communicate back to the same server they are hosted on.<br><br>Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DancesWithBamboo replied on Wednesday, November 11, 2009</h2>Oh bother.&nbsp; I didn't realize that subclassing WCFProxy and setting DataPortalUrl in it would take all of 2 minutes.<br><br>Nevermind.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

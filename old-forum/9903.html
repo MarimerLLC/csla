@@ -1,0 +1,26 @@
+<html><header><title>Multiple Parameters for Filtered in the Business List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple Parameters for Filtered in the Business List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9903.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono posted on Wednesday, December 29, 2010</h2><p>Hi Experts,</p>
+<p>i&#39;m a newbie on CSLA.Net Framework.</p>
+<p>Currently i&#39;m working on a project using CSLA.Net Framework, and for data access i&#39;m using LinQ to SQL.</p>
+<p>for example i have a Business List for Student. (CourseList)</p>
+<p>my question is :</p>
+<p>1. From this object, how do i add several parameters?<br />2. Multiple set of criteria e.g. search by FirstName and DOB /&nbsp; Just search by ID</p>
+<p>cause when i&#39;m adding 2 parameters on DataPortal.Fetch (Factory Method) it showed error </p>
+<p>&quot;<b>No Overload for method &#39;Fetch&#39; takes &#39;2&#39; arguments</b>&quot;</p>
+<p>&nbsp;</p>
+<p>So do i need to create a complex criteria if i&#39;d like to filter several parameters in this BusinessList ?</p>
+<p>can somebody provide me the code....?</p>
+<p>&nbsp;</p>
+<p>Thx</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 29, 2010</h2><p>1. You should create a complex object that inherits from CriteriaBase and use managed properties. Example</p>
+<p>&nbsp;&nbsp;&nbsp; [Serializable]<br />&nbsp;&nbsp;&nbsp; public class CreateCriteria : CriteriaBase<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;Guid&gt; ProjectIdProperty = RegisterProperty&lt;CreateCriteria, Guid&gt;(p =&gt; p.ProjectId);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Guid ProjectId<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(ProjectIdProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { LoadProperty(ProjectIdProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;int&gt; RoleProperty = RegisterProperty&lt;CreateCriteria, int&gt;(p =&gt; p.Role);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Role<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(RoleProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { LoadProperty(RoleProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>2. Multiple sets of criterias can be cumbersome. Out-of-the-box - you will have to create separate sets of LINQ queries. Or download and use LinqKit from Joe and Ben albahari, <a href="http://www.albahari.com/nutshell/linqkit.aspx">http://www.albahari.com/nutshell/linqkit.aspx</a> , and use the PredicateBuilder to build dynamic where statements in LINQ. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono replied on Wednesday, December 29, 2010</h2><p>Hi JonnyBee,</p>
+<p>thanks for your quick reply...</p>
+<p>do mean that i have to use combining expressions on LINQKit, by calling invoke and expand methods?</p>
+<p>or maybe i rather should ask that what is your best recommended for my problem?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 29, 2010</h2><p>Hi, </p>
+<p>1. In order to send multiple parameters to the fetch method you should create a CriteriaObject. </p>
+<p>2. LINQKit&#39;s PredicateBuilder will help you create dynamic where statements in your data access. Read this article:<br />&nbsp;&nbsp;&nbsp; <a href="http://www.albahari.com/nutshell/predicatebuilder.aspx">http://www.albahari.com/nutshell/predicatebuilder.aspx </a></p>
+<p>I&#39;d also recommend <a href="http://www.linqpad.net/">LinqPad </a>for testing your queries. You can add a reference to your EF or L2S objects assembly - add LinqKit (or other assemblies) and write dynamic queries on your own data access assembly. You can also watch the video tutorials here: <a href="http://oreilly.com/pub/e/1295%20">http://oreilly.com/pub/e/1295 </a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono replied on Sunday, January 02, 2011</h2><p>Hi JonnyBee..</p>
+<p>thx for your reply... its a wonderful source for me <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>thx a lot.. i&#39;ve tried and it works... thumb up for you &nbsp;<img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>&nbsp;</p>
+<p>once again thanks...,</p>
+<p>Stone</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

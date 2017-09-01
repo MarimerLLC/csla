@@ -1,0 +1,47 @@
+<html><header><title>CodeSmith CS Templates - Enhancements to Xml DataSource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CodeSmith CS Templates - Enhancements to Xml DataSource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1510.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit posted on Monday, October 16, 2006</h2>I've been working on a few enhancements to support xml datasource.&nbsp; I have added an xml schema to help validate when creating xml input.&nbsp; All generation options can be defined in xml file.&nbsp; There are other improvements that you just need to find out for your self. You can download the code at <a href="http://www.codeplex.com/Release/ProjectReleases.aspx?ProjectName=CSLAcontrib&amp;ReleaseId=797">http://www.codeplex.com/Release/ProjectReleases.aspx?ProjectName=CSLAcontrib&amp;ReleaseId=797</a><br><br>To create xml data source, add CslaProject.xsd in your file as follow:<br><font size="2">&lt;?xml version="1.0" encoding="UTF-8"?&gt;<br></font><font color="#ff0000" size="2">&lt;CslaProject xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="C:\Projects\CslaProject.xsd"&gt;</font><font size="2"><br>&lt;!-- define csla objects here --&gt;<br></font><font color="#ff0000"><font size="2">&lt;/CslaProject&gt;<br></font><br><font color="#000000">Use editor such as VisualStudio or Xml Spy to get intellisense when editing the file.<br><br>Enjoy,<br>Ricky Supit<br></font></font><br>NB: I've included a sample file MySample.xml; This file is not intended to be a working project but it is intended to be a showcase of features that currently available.&nbsp; So please do not ask me why it does not generate code like PTracker.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, October 18, 2006</h2><br>
+Hi Ricky, nice job.<br>
+<br>But a little mistake :<br>
+<br>
+replace : <br>
+<br>
+case CommonRuleHandler.GenericsMaxValue:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return string.Format("new CommonRules.MaxValueRuleArgs&lt;{<b>1</b>}&gt;(\"{<b>0</b>}\", {<b>1</b>})", _targetType, _targetName, argValue);<br>
+<br>
+by : <br>
+<br>
+case CommonRuleHandler.GenericsMaxValue:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return string.Format("new CommonRules.MaxValueRuleArgs&lt;{<b>0</b>}&gt;(\"{<b>1</b>}\", {<b>2</b>})", _targetType, _targetName, argValue);<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Wednesday, October 18, 2006</h2>an another mistake : <br>
+<br>
+<br>
+PropertyInfo : <br>
+<br>
+Replace<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+case "<b>allowDbNull</b>":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_allowDbNull = bool.Parse(xtr.Value);<br>
+<br>
+by<br>
+&nbsp;&nbsp;&nbsp; case "<b>allowdbnull</b>":<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, October 18, 2006</h2>JoOfMetL,<br>Thanks for the report, I have fixed this and package a new build (8718)<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Thursday, October 19, 2006</h2>Hi, a little mistake<br>
+<br>
+replace :<br>
+<br>
+public string Inherits<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .....<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+case ObjectType.NameValueList:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return string.Format(" : {0}&lt;{<b>2</b>}, {2}&gt;", _baseClass, ((PropertyInfo)_uniqueProperties[0]).Type, ((PropertyInfo)_properties[1]).Type);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return string.Empty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+by : <br>
+<br>
+ return string.Format(" : {0}&lt;{<b>1</b>}, {2}&gt;", _baseClass,<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

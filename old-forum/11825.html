@@ -1,0 +1,13 @@
+<html><header><title>private PropertyInfo and Silverlight 5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>private PropertyInfo and Silverlight 5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11825.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Saturday, February 09, 2013</h2><p>On a Csla 4.3.13 project&nbsp;that targets Silverlight 5&nbsp;I&nbsp;replaced all</p>
+<p style="padding-left:30px;"><strong>public</strong> static readonly PropertyInfo</p>
+<p>by</p>
+<p style="padding-left:30px;"><strong>private</strong> static readonly PropertyInfo</p>
+<p>and guess what? It works as it did before.</p>
+<p>I know&nbsp;this shouldn&#39;t work under Silverlight 3 and 4. Am I correct to conclude that this is due to the reflection changes in Silverlight 5?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 09, 2013</h2><p>Yes, Silverlight 5 added the ability to use private reflection. As a result, a ton of the work we did to support SL2/3/4 would no longer be necessary today :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, February 10, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b> </p>
+<p>Yes, Silverlight 5 added the ability to use private reflection. As a result, a ton of the work we did to support SL2/3/4 would no longer be necessary today :)</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>&lt;SarcasticMode on&gt;</p>
+<p>That&#39;s what I like about Microsoft: stability and persistent ideas..</p>
+<p>&lt;SarcasticMode off&gt;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

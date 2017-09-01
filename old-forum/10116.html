@@ -1,0 +1,55 @@
+<html><header><title>Detail Viewmodel for  BusinessListBase&lt;OrderList, Order&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Detail Viewmodel for  BusinessListBase&lt;OrderList, Order&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10116.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker posted on Monday, February 28, 2011</h2><p>I read Rockys blog entry</p>
+<p><strong><a title="CSLA .NET 3.8 Beta 2 MVVM support" href="http://www.lhotka.net/weblog/CSLANET38Beta2MVVMSupport.aspx" rel="bookmark">CSLA .NET 3.8 Beta 2 MVVM support</a>&nbsp;at least a dozen times. &nbsp;Good stuff,</strong></p>
+<p><strong> and I managed to get the basics working.</strong></p>
+<p>&nbsp;</p>
+<p>this is my first try with basic MVVM using the CLSA Viewmodel and TriggerAction.</p>
+<p>&nbsp;</p>
+<p>I have a root object Orders, that is a list of children, Orders.</p>
+<p>
+<pre>&nbsp;<span>BusinessListBase</span>&lt;<span>OrderList</span>,&nbsp;<span>Order</span>&gt;
+</pre>
+</p>
+<p>I managed to create a Viewmodel for the OrderList, and a Viewmodel for the single Order, which I&#39;d like</p>
+<p>to use as viewmodel for the detailregion to edit/delete the single order.</p>
+<p>&nbsp;</p>
+<p>The OrderListViewmodel works great and I can use Save and AddNew without any code behind,</p>
+<p>to save the list, and add new orders to it. Clean Code!</p>
+<p>But I have problems whith the detail region of the order, I createt an OrderViewModel, after the</p>
+<p>example of the LineItemsViewModel.</p>
+<p>Rocky gave this as example:</p>
+<p>&lt;Grid Name=&rdquo;ChildRegionContainer&rdquo;&gt;&nbsp;<br />&nbsp; &lt;Grid.Resources&gt;&nbsp;<br />&nbsp;&nbsp;&nbsp; &lt;this:LineItemsViewModel x:Key=&rdquo;LineItemsViewModel&rdquo;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model=&rdquo;{Binding Path=Model.LineItems}&rdquo;/&gt;&nbsp;<br />&nbsp; &lt;/Grid.Resources&gt;&nbsp;<br />&nbsp; &lt;Grid Name=&rdquo;ChildRegion&rdquo; DataContext=&rdquo;{Binding Source={StaticResource LineItemsViewModel}}&rdquo;&gt;</p>
+<p>&nbsp;</p>
+<p>as my orderlist has no LineItems Property, I bound the child model directly to Model.</p>
+<p>&nbsp; &nbsp; &lt;this:OrderViewModel x:Key=&rdquo;OrderViewModel&rdquo;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model=&rdquo;{Binding Path=Model}&rdquo;/&gt;&nbsp;</p>
+<p>when I check the Model of Orderlist viewmodel ist a collection of order children. But the detail region shows no Orderdetail.</p>
+<p>I think when I want&nbsp;to delete a specific order I need the detail viewmodel for the specific children order?</p>
+<p>Or what is the easyes way to tell the viewmodel what order to edit in the detailregion, or what</p>
+<p>order to delete from the orderlist?</p>
+<p>MVVM is great, but the real use can be pretty strange the first time around.</p>
+<p>&nbsp;</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span><br /></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Imker replied on Monday, February 28, 2011</h2><p>I think i learned some new things by studing the MvvmExperiment Sample.</p>
+<p>I modified the OrderListViewModel so it contains a SelectedOrder-Property, set via</p>
+<p>TriggerAction. then I bindthe OrderViewModel on the OrderlistViewModel, Path=SelectedOrder.</p>
+<p>&nbsp;</p>
+<p>Is this the correct way, or is Rockys way as written in the blog completely different?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, March 01, 2011</h2><p>I agree, it can take some effort to get into the right mindset to make MVVM really work.</p>
+<p>One thing I always keep in mind is that the &quot;viewmodel layer&quot; can interact with itself freely. In other words, viewmodel objects can create and interact with each other as necessary.</p>
+<p>And a viewmodel can create and interact with model objects, though for the purposes of binding a viewmodel usually has one model object.</p>
+<p>Model objects (business objects) can interact with each other all they want, but they can&#39;t directly reference or interact with a viewmodel. Any interaction with a viewmodel should be done through standard events (INotifyPropertyChanged, etc).</p>
+<p>In a simple case a viewmodel might contain a BLB, and expose it as a Model property.</p>
+<p>But if you need to add verbs to each item in the BLB, then you need to wrap each item in its own viewmodel.</p>
+<p>In that case the &quot;root&quot; viewmodel will create or get the BLB, and it will expose a collection of viewmodel objects, where each of these viewmodels wraps one item in the BLB. The view binds to this list of viewmodels.</p>
+<p>I show this in the <a href="http://store.lhotka.net">CSLA 4 MVVM video series</a>.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Tuesday, March 01, 2011</h2><p>Rocky, thanks a lot.</p>
+<p>I learn most from simple and concise samples addressing one issue at a time. MVVMexperiment is a good learning place.</p>
+<p>
+<p>Then I learned to set&nbsp;</p>
+<p>ManageObjectLifetime = false for children ViewModels to avoid the EditLevel problem.</p>
+<p>Is there a place to download the CSLA 4 MVVM Video SOURCE samples? That would ease things for me a lot.</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 01, 2011</h2>The sample code for the videos is available from the download page for the videos.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Imker replied on Wednesday, March 02, 2011</h2><p>Why are the samples only available if you pay for the videos?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 02, 2011</h2><p>The videos and their related samples are a single product.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

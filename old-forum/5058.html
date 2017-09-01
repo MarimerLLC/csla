@@ -1,0 +1,295 @@
+<html><header><title>Command Object Implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Command Object Implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5058.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren posted on Thursday, July 03, 2008</h2>&nbsp;My application has a use case which is a server side work flow that I have chosen to implement with a Command object. <br><br>The steps in this workflow are: &nbsp;<br><br>Get Balances<br>Verify Balances<br>Report Balances<br>Load Balances<br><br>If any of the steps fail, the subsequent steps are not run and the process is terminated with an error condition.&nbsp; The user can opt to cancel&nbsp; "Load Balances" based on the output produced in "Report Balances".<br><br>I'm not sure if my question is a simple .Net question or CSLA?<br><br>I am coding the Command object based on the design Rocky demonstrates&nbsp; in Chapter 7 except I have 4 stored procedure calls to make, 1 for each step in the workflow. I intend to create 4 factory methods, 1 for each step but am unsure of how to code the DataPortal_Execute() override for the 4 different calls - how would they be distinguished from each other.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br><br>Should I be implementing 4 Command objects to do this?&nbsp; Any help is appreciated.<br><br>So far my code looks like this: <br><br><br><font face="Courier New" size="2">&lt;Serializable()&gt; _<br>Public Class ImportBalanceCmd<br>&nbsp;&nbsp; Inherits CommandBase<br><br>#Region " Authorization "<br><br>&nbsp;&nbsp; ' See if user is allowed to load Balances<br>&nbsp;&nbsp; Public Shared Function CanExecuteObject() As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.IsInRole("Administrator")<br>&nbsp;&nbsp; End Function<br><br>#End Region<br><br>#Region " Client Side Code "<br><br>&nbsp;&nbsp; Private mResult As Boolean<br>&nbsp;&nbsp; Private mReturnCode As Integer = 0<br>&nbsp;&nbsp; Private mReturnMessage As String = String.Empty<br>&nbsp; &nbsp;<br><br>&nbsp;&nbsp; Public ReadOnly Property Result() As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mResult<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp; Public ReadOnly Property ReturnCode() As Integer<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mReturnCode<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp; Public ReadOnly Property ReturnMessage() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mReturnMessage<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp; End Property<br><br><br>&nbsp;&nbsp; Public Sub BeforeServer()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' implement code to run on client before server code is called <br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Public Sub AfterServer()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' implement code to run on client after server code is called <br>&nbsp;&nbsp; End Sub<br><br>#End Region<br><br><br>#Region " Factory Methods "<br><br>&nbsp;&nbsp; Public Shared Function GetBalances() As Boolean<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim cmd As New ImportBalanceCmd<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.BeforeServer()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(Of ImportBalanceCmd)(cmd)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.AfterServer()<br><br>&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp; Public Sub New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'require use of Factory Methods<br>&nbsp;&nbsp; End Sub<br><br><br>&nbsp;&nbsp; Public Sub VerifyBalances()<br><br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Public Sub ReportVerification()<br><br>&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp; Public Sub LoadBalances()<br><br>&nbsp;&nbsp; End Sub<br><br>#End Region<br><br><br>#Region " Server-Side Code "<br><br>&nbsp;&nbsp; Protected Overrides Sub DataPortal_Execute()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cn As New SqlConnection(Database.DBConnection)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using cmd As New SqlCommand("usp_GetBalances", cn)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalContext("dpConnection") = cn<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalContext("dpCommand") = cmd<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.CommandType = CommandType.StoredProcedure<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.Parameters.AddWithValue("@ReturnCode", mReturnCode).Direction = ParameterDirection.Output<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.Parameters.AddWithValue("@ReturnMessage", mReturnMessage).Direction = ParameterDirection.Output<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd.ExecuteNonQuery()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mResult = True<br><br>&nbsp;&nbsp; End Sub<br><br><br><br>#End Region</font><br><br><font face="Courier New" size="2">End Class<br></font><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 07, 2008</h2><P>A single command object with 4 factory methods seems OK to me.</P>
+<P>Just add a new private variable like mMethodName As String and set it in your constructor call from each factory method.</P>
+<P>Then you can branch inside DP_Execute based on the method name.</P>
+<P>e.g. </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetSomething(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> someParam </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> MyCommandBO<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> DataPortal.Execute(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> MyCommandBO(</FONT><FONT color=#ff00ff size=2>"GetSomething"</FONT><FONT size=2>, someParam&nbsp;))<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> methodName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> someParam </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)<BR>&nbsp; mMethodName= methodName<BR>&nbsp; mSomeParam = someParam <BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#000000 size=2>Joe</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Tuesday, July 08, 2008</h2>sorry, I'm using c#.<br><br>enum WorkflowTypes<br>{<br>&nbsp;&nbsp; GetBalances,<br>&nbsp;&nbsp; VerifyBalances,<br>&nbsp;&nbsp; ReportBalances,<br>&nbsp;&nbsp; LoadBalances<br>}<br><br>private WorkflowTypes workflowType;<br><br>// Constructor<br>private&nbsp; ImportBalanceCmd(WorkflowTypes workflowType)<br>{<br>&nbsp; this.workflowType = workflowType;<br>}<br><br>// Factory method<br>public static bool GetBalance()<br>{<br>&nbsp; ImportBalanceCmd command = new ImprotBalanceCmd(WorkflowTypes.GetBalances);<br>&nbsp; ......<br>}<br><br>public static bool VerifyBalance()<br>{<br>&nbsp; ImportBalanceCmd command = new ImprotBalanceCmd(WorkflowTypes.VerifyBlances);<br>&nbsp; ........<br>}<br>&nbsp; ........<br>// DataAccess<br>protectd override void DataPortal_Execute()<br>{<br>&nbsp;&nbsp; switch(workflowType)<br>&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case WorkflowTypes.GetBalances:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .....<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case .....<br><br><br>&nbsp;&nbsp; }<br>}<br><br><font size="2" face="Courier New"></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Wednesday, July 09, 2008</h2><P>Thanks for the help Dawn and Joe, </P>
+<P>I have been testing out the first process with a Wizard style&nbsp;form which leads the user through each of the 4 processes. Your input comes at a perfect time, I'll carry on implementing the last 3 processes with the single command object.</P>
+<P>Cheers</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Wednesday, July 09, 2008</h2><P>My command object client side code&nbsp;now looks like this: </P><FONT color=#0000ff size=2>
+<P>&nbsp;&nbsp; Enum WorkflowTypes<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetBalances<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; VerifyBalances<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ReportBalances<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadBalances<BR>&nbsp;&nbsp; End Enum</P>
+<P>&nbsp;&nbsp; Private mWorkflowType As WorkflowTypes<BR>&nbsp;&nbsp; Private mReturnCode As Integer<BR>&nbsp;&nbsp; Private mReturnMessage As String</P>
+<P>&nbsp;&nbsp; Public ReadOnly Property ReturnCode() As Integer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mReturnCode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp; Public ReadOnly Property ReturnMessage() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mReturnMessage<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp; End Property</P>
+<P>&nbsp;&nbsp; ' Constructor<BR>&nbsp;&nbsp; Private Sub New(ByVal workflowType As WorkflowTypes)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.mWorkflowType = workflowType<BR>&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp; Public Shared Function GetBalances() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim cmd As ImportBalanceCmd = New ImportBalanceCmd(WorkflowTypes.GetBalances)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(Of ImportBalanceCmd)(cmd)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return cmd.mReturnCode = 0<BR>&nbsp;&nbsp; End Function</P>
+<P><FONT color=#000000 size=3>The Data_Portal call to the stored procedure&nbsp;has this code:&nbsp;</FONT></P>
+<P><FONT color=#0000ff>cmd.Parameters.Add("@ReturnCode", SqlDbType.Int).Direction = ParameterDirection.Output<BR>cmd.Parameters.Add("@ReturnMessage", SqlDbType.VarChar, 255).Direction = ParameterDirection.Output<BR></FONT>&nbsp;cmd.ExecuteNonQuery()<BR>&nbsp;mReturnCode = DirectCast(cmd.Parameters("@ReturnCode").Value, Integer)<BR>&nbsp;mReturnMessage = DirectCast(cmd.Parameters("@ReturnMessage").Value, String)&nbsp;</P>
+<P><FONT color=#000000>How can I retrieve the&nbsp;value in mReturnMessage if my call to the command object looks like this:</FONT> </P>
+<P><FONT color=#0000ff>If</FONT> ImportBalanceCmd.GetBalances <FONT color=#0000ff>Then</FONT></P>
+<P><FONT color=#0000ff>Else</FONT></P>
+<P><FONT color=#0000ff>&nbsp;'.Need the return message....</P></FONT>
+<P><FONT color=#000000 size=3>Thanks in advance. </FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Thursday, July 10, 2008</h2>You can't get return message like that. <br><br>if the mReturn message is the only thing you want from the server, may be you can code you factory method like this:<br>public static bool GetBalances(out string message)<br>{<br>&nbsp; ImportBalanceCmd cmd = new ImportBalanceCmd(WorkflowTypes.GetBalances)<br>&nbsp; cmd = DataPortal.Exectue(cmd);<br>&nbsp; message = cmd.ReturnMessage;<br>&nbsp; return cmd.ReturnCode == 0;<br>}<br>then,<br>string returnMessage;<br>if (ImportBalanceCmd.GetBalances(out returnMessage)<br>{<br>}<br>else<br>{<br>&nbsp;&nbsp; //now you get returnMessage <br>}<br><br>but, if you nees other stuff from server, my suggestion is encapsulate them in a class like the command object, then you get every thing.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 10, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Warren:</strong></div><div></P>
+<P>Should I be implementing 4 Command objects to do this?&nbsp; Any help is appreciated.<BR></div></BLOCKQUOTE></P>
+<P>Yes, I think so. You have 4 different commands that occur at 4 different times, with user interaction in between them.</P>
+<P>I think I'd consider having a fifth object that orchestrates the workflow - because that's really what you are describing. Each time the user re-enters the workflow, this fifth object is the one that would be loaded, and it would invoke the 4 command objects as appropriate.</P>
+<P>An even better solution <EM>might</EM> be to use the Windows Workflow Foundation - hard to say.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Tuesday, July 15, 2008</h2><P>Hi Rocky, </P>
+<P>Due to time constraints, I will not review WWF. I have managed to learn VB.NET, CSLA,&nbsp; CSLAGen, OOP concepts, Microsoft Enterprise Application Blocks for<BR>Exception Handling and Logging in this one project which I feel good about. I found a VB.Net open source Wizard control which provides a UI centric approach for orchestrating the workflow and allows the user to choose a course of action after each step. For others who may be interested the Wizard can be found at <A href="http://www.codeproject.com/KB/vb/GNWizard.aspx">http://www.codeproject.com/KB/vb/GNWizard.aspx</A>.</P>
+<P>I think a "purer" OOP design would use 4 seperate command objects, each with a single behavior. On the otherhand, the behaviors are related and there is no use case for using anything but all four 'commands' together.</P>
+<P>My lack of expertise in .NET coding and concepts brings up another question: </P>
+<P>In order to retrieve both the return code and message from the sproc which is invoked by the command object factory method, I made the message field shared inside the Command Object like this:</P>
+<P><STRONG><FONT size=2>Private Shared mReturnMessage As String</FONT></STRONG><BR>&nbsp;&nbsp; <BR>I get the return code like this: </P>
+<P><STRONG><FONT size=2>Public Shared Function GetBalances() As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim cmd As ImportBalanceCmd = New ImportBalanceCmd(WorkflowTypes.GetBalances)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(Of ImportBalanceCmd)(cmd)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return cmd.mReturnCode = 0<BR>End Function</FONT></STRONG></P>
+<P><BR>Is it considered bad form to use a public shared field which persists the message returned from the sproc last time it was called? This works but I have a feeling there is a better way to do things.</P>
+<P>Thanks.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I must be missing something.&nbsp; I am not sure why you need a
+shared member to get two values back from SP.&nbsp; You should be able to declare
+two output parameters and retrieve both values in DP_Exec and expose both as
+public properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Warren
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 15, 2008 5:21 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Command Object Implementation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky, <o:p></o:p></p>
+
+<p>Due to time constraints, I will not review WWF. I have managed to learn
+VB.NET, CSLA,&nbsp; CSLAGen, OOP concepts, Microsoft Enterprise Application
+Blocks for<br>
+Exception Handling and Logging in this one project which I feel good about. I
+found a VB.Net open source Wizard control which provides a UI centric approach
+for orchestrating the workflow and allows the user to choose a course of action
+after each step. For others who may be interested the Wizard can be found at <a href="http://www.codeproject.com/KB/vb/GNWizard.aspx">http://www.codeproject.com/KB/vb/GNWizard.aspx</a>.<o:p></o:p></p>
+
+<p>I think a &quot;purer&quot; OOP design would use 4 seperate command objects,
+each with a single behavior. On the otherhand, the behaviors are related and
+there is no use case for using anything but all four 'commands' together.<o:p></o:p></p>
+
+<p>My lack of expertise in .NET coding and concepts brings up another question:
+<o:p></o:p></p>
+
+<p>In order to retrieve both the return code and message from the sproc which
+is invoked by the command object factory method, I made the message field
+shared inside the Command Object like this:<o:p></o:p></p>
+
+<p><strong><span>Private Shared mReturnMessage As
+String</span></strong><br>
+&nbsp;&nbsp; <br>
+I get the return code like this: <o:p></o:p></p>
+
+<p><strong><span>Public Shared Function GetBalances()
+As Boolean</span></strong><b><span><br>
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim cmd As ImportBalanceCmd = New
+ImportBalanceCmd(WorkflowTypes.GetBalances)</strong><br>
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cmd = DataPortal.Execute(Of
+ImportBalanceCmd)(cmd)</strong><br>
+<strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return cmd.mReturnCode = 0</strong><br>
+<strong>End Function</strong></span></b><o:p></o:p></p>
+
+<p><br>
+Is it considered bad form to use a public shared field which persists the
+message returned from the sproc last time it was called? This works but I have
+a feeling there is a better way to do things.<o:p></o:p></p>
+
+<p>Thanks.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Using a Shared field is problematic on a couple levels.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>First, Shared fields aren&#8217;t serialized, so it won&#8217;t
+flow to/from an app server in a 3-tier scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Second, Shared fields are not only shared across all object
+instances, but across the entire appdomain. So again, in a 3-tier scenario
+where you have a multi-threaded server you&#8217;ll get all sorts of odd
+results because different threads will all be overwriting the same field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Wednesday, July 16, 2008</h2><P>Thanks for the advice regarding the use of shared fields and serialization.&nbsp;&nbsp;I had a feeling it was a bad idea.&nbsp; I changed the factory method to accept a parameter passed by reference.</P>
+<P><STRONG><FONT size=2>Public Shared Function GetBalances(ByRef RetMsg As String) As Boolean<BR>&nbsp;&nbsp; Dim cmd As ImportBalanceCmd = New ImportBalanceCmd(WorkflowTypes.GetBalances)<BR>&nbsp;&nbsp; cmd = DataPortal.Execute(Of ImportBalanceCmd)(cmd)<BR>&nbsp;&nbsp; RetMsg = cmd.mReturnMessage<BR>&nbsp;&nbsp; Return cmd.mReturnCode = 0<BR>End Function<BR></FONT></STRONG>&nbsp;</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Looks good to me. If you want to get rid of byref parameter, you
+can always wrap return value in a structure:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Struct BalanceValue<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Message as String<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Value a Boolean<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><strong><span>Public Shared
+Function GetBalances() As </span></strong><span>BalanceValue<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&#8230;&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Warren
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 16, 2008 11:52 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Command Object Implementation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the advice regarding the use of shared fields and
+serialization.&nbsp;&nbsp;I had a feeling it was a bad idea.&nbsp; I changed
+the factory method to accept a parameter passed by reference.<o:p></o:p></p>
+
+<p><strong><span>Public Shared Function
+GetBalances(ByRef RetMsg As String) As Boolean</span></strong><b><span><br>
+<strong>&nbsp;&nbsp; Dim cmd As ImportBalanceCmd = New
+ImportBalanceCmd(WorkflowTypes.GetBalances)</strong><br>
+<strong>&nbsp;&nbsp; cmd = DataPortal.Execute(Of ImportBalanceCmd)(cmd)</strong><br>
+<strong>&nbsp;&nbsp; RetMsg = cmd.mReturnMessage</strong><br>
+<strong>&nbsp;&nbsp; Return cmd.mReturnCode = 0</strong><br>
+<strong>End Function</strong><br>
+</span></b>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Friday, July 18, 2008</h2><P>Thanks for the idea re use of a structure Sergey, </P>
+<P>I would appreciate any advice regarding the use of transaction processing in sprocs vs using &nbsp;&lt;Transactional(TransactionalTypes.TransactionScope)&gt;&nbsp; in my command object. So far I have chosen to use TP in the SQL Server sproc. It works nicely in my TRY/CATCH Block where I can issue a rollback if need be and pass back the error code back to the command object. The UI can then decide what to do with the error.</P>
+<P><STRONG>Are there drawbacks having to having TP in the stored procedure rather than the Command Object&nbsp;I&nbsp;should&nbsp;be aware of?</STRONG></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 21, 2008</h2><P><STRONG>Are there drawbacks having to having TP in the stored procedure rather than the Command Object&nbsp;I&nbsp;should&nbsp;be aware of?</STRONG></P>
+<P>Not really. As long as the command object is the only thing you are trying to do at that time.</P>
+<P>When you have multiple BOs and you want them all to save to the DB as part of a transaction then the DB transaction model is a poor choice. In this case it is far better to start the tr in the BO layer and pass it around for all BOs to use.</P>
+<P>So for consistency sake alone, I would remove the DB tr code - so you do not get confused about when to use which model in the future.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Monday, July 21, 2008</h2><P>Thanks Joe. </P>
+<P>This wizard function required command objects only. For consistency and since I need another wizard function that will use both command objects and regular business objects I should do&nbsp;TP in code instead of the sproc.&nbsp; </P>
+<P>The code method is much more "black boxed" however.&nbsp; <STRONG>Can I assume that any SQL Errors that occur in the sproc will rollback the transaction allowing me to continue to return the cause of the error via my sproc so I can handle it in my UI?</STRONG></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, July 22, 2008</h2><STRONG>Can I assume that any SQL Errors that occur in the sproc will rollback the transaction allowing me to continue to return the cause of the error via my sproc so I can handle it in my UI?</STRONG>
+<P>When the tr is in the BO layer and you make a call in ADO.Net to the database, if there is a problem with the query then you will get an exception. You can trap this exception and then evaluate it and re-throw it if necessary. </P>
+<P>For example, I get back "ambiguous column name" errors if a query has a JOIN and the same column name is in both tables but I fail to prefix it with the table name. Similarly, if a trigger fires and fails, I get back the error message in the trigger code that I wrote. So I am pretty sure you would get back whatever error you raised in your SP (but not 100% positive.) </P>
+<P>Let us know after you try it &lt;g&gt;.</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

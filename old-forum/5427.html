@@ -1,0 +1,47 @@
+<html><header><title>PropertyHasChanged calls MarkDirty() *after* checking rules??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyHasChanged calls MarkDirty() *after* checking rules??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5427.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Thursday, September 18, 2008</h2><P>I was wondering if there was a specific reason for implementing this like this in BusinessBase? I was trying to use the IsDirty&nbsp;value in a rule implementation, and object was still "clean" even though the property value had changed at the time the rule was executed. </P>
+<P><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#000000 size=2>&nbsp;&nbsp;&nbsp; protected virtual void PropertyHasChanged(string propertyName)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules(propertyName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkDirty(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(propertyName);<BR>&nbsp;&nbsp;&nbsp; }</FONT></FONT><FONT color=#0000ff size=2><FONT color=#000000 size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 18, 2008</h2>Hmm.. I would think it should be the other way around.. especially since that's the reason MarkOld was called prior to calling DP_F.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2008</h2><P>This would be a (subtle) breaking change from long-established behavior.</P>
+<P>Is there a broad concencus that this should change?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2008</h2><P>Actually, now that I look at current code, MarkDirty() is called first in 3.6. Probably in 3.5 as well, though I haven't checked there.</P>
+<P>But this code changed quite a bit when I introduced the field manager, and added support for the WPF requirements around the PropertyChanged event.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, September 19, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Actually, now that I look at current code, MarkDirty() is called first in 3.6. Probably in 3.5 as well, though I haven't checked there.</P>
+<P>But this code changed quite a bit when I introduced the field manager, and added support for the WPF requirements around the PropertyChanged event.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Correct. 3.5 uses the "new" style.</P>
+<P>3.0 did it the "old" way:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> PropertyHasChanged(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)<BR>&nbsp; ValidationRules.CheckRules(propertyName)<BR>&nbsp; MarkDirty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</FONT></FONT><FONT size=2>)<BR>&nbsp; OnPropertyChanged(propertyName)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, September 19, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>This would be a (subtle) breaking change from long-established behavior.</P>
+<P>Is there a broad concencus that this should change?</P>
+<P></div></BLOCKQUOTE></P>
+<P>I was just wondering why it was done this way -- I could certainly override the method in the derived class in CSLA 3.0.x and do it the other way, but I didn't want to cause any unintended side effects. </P>
+<P>Even leaving it as is, I can work around it -- it just tripped me up briefly and I thought it seemed backwards, so I thought it was worth asking about. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I can&#8217;t say why it is that way &#8211; obviously I thought
+it was backwards too when I did the 3.5+ code :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, September 19, 2008</h2><P>It indeed is a subtle change, but I think the issue he brought up does seem entirely valid and I'd rather deal with the ramifications of the change (I can't imagine this really affects me) and have it work "properly". </P>
+<P>My 2 cents</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 19, 2008</h2>Ya.. and given that no one has hit an issue with the order of the call before, I would guess that for most people the change won't matter.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

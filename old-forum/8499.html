@@ -1,0 +1,18 @@
+<html><header><title>MVVM Details Form - New functionality</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVVM Details Form - New functionality</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8499.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman posted on Tuesday, February 09, 2010</h2><p>Hi,</p>
+<p>I have a details form which i use for editing/saving entities which current works a treat.&nbsp; I want to add a &quot;New&quot; button which will allow me to create a new entity using the same form.</p>
+<p>So, I hook up a button to a method in the relating viewmodel which contains the something like the following;</p>
+<p>Model = new&nbsp;Factory.Create&lt;Entity&gt;();&nbsp; </p>
+<p>The model is set to a new Entitiy instance and this clears down the&nbsp;form as expected, but when i try to poplute the Entity using the form Im not able to save the entity.</p>
+<p>The Save button is disabled&nbsp; (IsEnabled is bound to CanSave). If I remove the IsEnabled binding and click save i get an error &quot;Object is not valid and cannot be saved&quot;.&nbsp;</p>
+<p>Any ideas?</p>
+<p>Best Regards</p>
+<p>David</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>triplea replied on Tuesday, February 09, 2010</h2><p>Are you using the latest version (3.8.2)? I think you are hitting issue 091205 described here:</p>
+<p><a href="http://www.lhotka.net/Article.aspx?id=5fdcd957-bff6-449c-89d8-2c8b37079eff">http://www.lhotka.net/Article.aspx?id=5fdcd957-bff6-449c-89d8-2c8b37079eff</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Devman replied on Tuesday, February 09, 2010</h2><p>We&#39;re using 3.8.0 so that&nbsp;explains the the CanSave not getting refreshed. I had noticed Model.IsDirty was true.</p>
+<p>The other error is a validation error so that will be caused at my end.</p>
+<p>Cheers triplea</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;font-size:12pt;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-ansi-language:EN-GB;mso-fareast-language:EN-GB;mso-bidi-language:AR-SA;"></span>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

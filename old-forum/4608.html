@@ -1,0 +1,16 @@
+<html><header><title>An item with the same key has already been added.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>An item with the same key has already been added.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4608.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JTWebMan posted on Wednesday, April 02, 2008</h2>We are running version 2.1.0 and get this error intermittently last time we deployed. Has anyone else seen this error before in the CSLA object. The stack trace stops at Csla.Security.SharedAuthorizationRules.GetManager. I am sure its not a CSLA error I just want to know what I implemented wrong.<br><br>Thanks<br><br>Found the a answer on this post: http://forums.lhotka.net/forums/post/19091.aspx<br><br>Here is the stack trace:<br><font color="#a9a9a9">System.ArgumentException: An item with the same key has already been added.
+   at System.ThrowHelper.ThrowArgumentException(ExceptionResource resource)
+   at System.Collections.Generic.Dictionary`2.Insert(TKey key, TValue value, Boolean add)
+   at Csla.Security.SharedAuthorizationRules.GetManager(Type objectType, Boolean create)
+   at Csla.Security.AuthorizationRules.get_TypeRules()
+   at Csla.Security.AuthorizationRules.HasReadAllowedRoles(String propertyName)
+   at Csla.ReadOnlyBase`1.CanReadProperty(String propertyName)
+   at Csla.ReadOnlyBase`1.CanReadProperty(String propertyName, Boolean throwOnFalse)
+   at ASH2.Data.HRMS.HRMSRoleProvider.GetRolesForUser(String username) in C:\Projects\Namespaces\ASH2.Data.HRMS\HRMSRoleProvider.vb:line 43
+   at System.Web.Security.RolePrincipal.IsInRole(String role)
+   at System.Web.Configuration.AuthorizationRule.IsTheUserInAnyRole(StringCollection roles, IPrincipal principal)
+   at System.Web.Configuration.AuthorizationRule.IsUserAllowed(IPrincipal user, String verb)
+   at System.Web.Configuration.AuthorizationRuleCollection.IsUserAllowed(IPrincipal user, String verb)
+   at System.Web.Security.UrlAuthorizationModule.OnEnter(Object source, EventArgs eventArgs)
+   at System.Web.HttpApplication.SyncEventExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute()
+   at System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously)</font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

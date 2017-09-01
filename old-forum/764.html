@@ -1,0 +1,54 @@
+<html><header><title>BusinessListBase and Inheritance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase and Inheritance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/764.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Howard posted on Monday, July 31, 2006</h2><P>I have 2 classes inheriting from BusinessBase and one inherits from the other:</P><FONT color=#0000ff>
+<P>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#008080>OrgNodeProduct</FONT>&lt;T&gt; : YoungLight.Business.<FONT color=#008080>BusinessBase</FONT>&lt;T&gt;</P>
+<P><FONT color=#0000ff>where</FONT> T : <FONT color=#008080>OrgNodeProduct</FONT>&lt;T&gt;</P>
+<P>AND</P><FONT color=#0000ff>
+<P>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#008080>IpcNodeProduct</FONT> : <FONT color=#008080>OrgNodeProduct</FONT>&lt;<FONT color=#008080>IpcNodeProduct</FONT>&gt;</P>
+<P>I now need a collection class that will handle holding both IpcNodeProduct and OrgNodeProduct, but I can't even get past defining the class!</P><FONT color=#0000ff>
+<P>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#008080>OrgNodeProducts</FONT> : <FONT color=#008080>BusinessListBase</FONT>&lt;<FONT color=#008080>OrgNodeProducts</FONT>, ???&gt;</P>
+<P>Any help much appreciated, I'm a bit new to both CSLA and generics so apologies in advance for any idiocy on my part.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 31, 2006</h2><P>I went down this road myself and really started to run into some problems. </P>
+<P>The answer might be to place an interface on OrgNodeProduct&lt;T&gt;, so that both IpcNodeProduct and OrgNodeProduct share a common interface.</P>
+<P>Taking that further, OrgNodeProducts : BusinessListBase&lt;OrgNodeProducts, IOrgNodeProduct&gt;.</P>
+<P>But then in the update of the collection it'll look to "Update()" and "Insert()" based on these children. The problem is that your interface will likely need to include some minimum set of properties you may want to expose as public, except that your Update() and Insert() for your child members you wouldn't want to expose as public. </P>
+<P>Seeing that you can't have interface members with differing scopes, it's a little tricky. I looked at the idea of implementing an interface such as IOrgNodeProductInternal, which Update() and Insert() would be there for and thus then callable - you then have to, in the collection's update - cast the IOrgNodeProduct to IOrgNodeProductInternal, from which there you can update/insert using the internal interface. </P>
+<P>Overall, the idea of using polymorphism with generics really gets a little difficult, and you may want to pursue the idea of having OrgNodeProduct not be generic and inherit from Core.BusinessBase rather than BusinessBase&lt;T&gt;, and you may find that things become a little simpler. (I haven't explicitly went down that route myself, I decided in favor of avoiding this whole area for a little while).</P>
+<P>Whatever you do I'm definitely interested in what you end up with. Good luck. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a">http://www.lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, July 31, 2006</h2><P>I've certainly seen this article before myself (and is useful in understanding the beginning point) but what is the best solution to the update of the collection when Update() and Insert() must occur on the child objects? </P>
+<P>The interface of the child collection is public (IEditableBusinessObject is public)&nbsp;and while Update() and Insert() could be added as public methods to the inherited interface, that's not ideal for encapsulation. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>The set of techniques to achieve polymorphic behavior is 
+finite:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<OL>
+  <LI>
+  <DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>Derive from a non-generic abstract base class</FONT></SPAN></DIV></LI>
+  <LI>
+  <DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>Implement a common interface</FONT></SPAN></DIV></LI>
+  <LI>
+  <DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>Late binding (direct support in VB, reflection in 
+  C#)</FONT></SPAN></DIV></LI>
+  <LI>
+  <DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>Select Case or switch statement with 
+casting</FONT></SPAN></DIV></LI></OL>
+<DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>There are trade-offs to each approach, but (unless I missed 
+one) these are your options.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=562442217-31072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> skagen00 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, July 31, 2006 11:50 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] BusinessListBase and 
+  Inheritance<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I've certainly seen this article before myself (and is useful in 
+  understanding the beginning point) but what is the best solution to the update 
+  of the collection when Update() and Insert() must occur on the child objects? 
+  </P>
+  <P>The interface of the child collection is public (IEditableBusinessObject is 
+  public)&nbsp;and while Update() and Insert() could be added as public methods 
+  to the inherited interface, that's not ideal for encapsulation. 
+  </P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Howard replied on Tuesday, August 01, 2006</h2>Thankyou.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

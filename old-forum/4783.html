@@ -1,0 +1,183 @@
+<html><header><title>Authorization and roles</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization and roles</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4783.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Carl posted on Thursday, May 01, 2008</h2><P>Hi.</P>
+<P>I am beginning a project using CSLA 3.5.</P>
+<P>I know that the default mode for object authorization rules is to allow all permissions. But what if you want the opposite behaviour? For example, only an Admin can delete an object. I have to specifically call DenyDelete for every role other than Admin, and what if a new role gets added later? I would rather have no one with delete access unless I specifically grant it.</P>
+<P>&nbsp;</P>
+<P>Also, what about the case of mulitple roles? Most of our users have more than one role. They might be a User and a Programmer and a Manager. If I DenyCreate the User role, will that prevent a Manager who is also a User from being able to create an object?</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Carl</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 01, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I believe that &#8220;allow all&#8221; behavior only works if
+you do not have any authorization rules in place for an action or
+property.&nbsp; Once you specify at least one authorization rule, all users
+that do not fall into that role will be denied access.&nbsp; So if you want an
+object that none can delete, specify a non-existing role for delete rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Carl
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 01, 2008 12:57 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Authorization and roles<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi.<o:p></o:p></p>
+
+<p>I am beginning a project using CSLA 3.5.<o:p></o:p></p>
+
+<p>I know that the default mode for object authorization rules is to allow all
+permissions. But what if you want the opposite behaviour? For example, only an
+Admin can delete an object. I have to specifically call DenyDelete for every
+role other than Admin, and what if a new role gets added later? I would rather
+have no one with delete access unless I specifically grant it.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Also, what about the case of mulitple roles? Most of our users have more
+than one role. They might be a User and a Programmer and a Manager. If I
+DenyCreate the User role, will that prevent a Manager who is also a User from
+being able to create an object?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Carl<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Carl replied on Thursday, May 01, 2008</h2><P>Thanks for the quick reply, Sergey!</P>
+<P>Okay, so then from what you are saying, by virtue of me specifying AllowDelete for Admin, that automatically denies it for any other role? And what if my Admin is also a SomeOtherRole?</P>
+<P>&nbsp;</P>
+<P>Thanks again!</P>
+<P>Carl</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p>Okay, so then from what you are saying, by virtue of me specifying
+AllowDelete for Admin, that automatically denies it for any other role? <o:p></o:p></p>
+
+<p>-- Yes<o:p></o:p></p>
+
+<p>And what if my Admin is also a SomeOtherRole?<o:p></o:p></p>
+
+<p>-- Does not matter.&nbsp; What matters is that logged in user belongs to
+Admin role.<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Carl
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 01, 2008 1:11 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Authorization and roles<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the quick reply, Sergey!<o:p></o:p></p>
+
+<p>Okay, so then from what you are saying, by virtue of me specifying
+AllowDelete for Admin, that automatically denies it for any other role? And
+what if my Admin is also a SomeOtherRole?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks again!<o:p></o:p></p>
+
+<p>Carl<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Carl replied on Thursday, May 01, 2008</h2><P>great..thanks!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

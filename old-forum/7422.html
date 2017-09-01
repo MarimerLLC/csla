@@ -1,0 +1,243 @@
+<html><header><title>Getting &quot;The remote server returned an unexpected response: (400) Bad Request&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Getting &quot;The remote server returned an unexpected response: (400) Bad Request&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7422.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mkadlec posted on Friday, August 07, 2009</h2>Hi,<br><br>&nbsp; I am running a WPF app with a remote server setup but get the error listed.<br><br>This is definitely a request size issue since I tried reducing the data
+size being sent and the call worked fine.&nbsp; From my configuration it
+looks like I have 2 Gigs set up, but it behaves like only the default
+limit (something like 65000 bytes) is being used.&nbsp; I am thinking there
+is something wrong with my configuration.<br>
+<br>
+Any help would be appreciated!<br>
+<br>
+Mark.<br><br>&nbsp; I have a remote Server set up using WCF web.config:<br><br>&nbsp; &lt;system.serviceModel&gt;<br>&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name="wsHttpBindingSettings" closeTimeout="00:10:00" openTimeout="00:10:00" sendTimeout="00:10:00" maxReceivedMessageSize="2147483647" maxBufferPoolSize="2147483647" messageEncoding="Text"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxDepth="2147483647" maxStringContentLength="2147483647" maxArrayLength="2147483647" maxBytesPerRead="2147483647" maxNameTableCharCount="2147483647" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br>&nbsp;&nbsp;&nbsp; &lt;services&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service name="Csla.Server.Hosts.WcfPortal"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint contract="Csla.Server.Hosts.IWcfPortal" binding="wsHttpBinding"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/services&gt;<br>&nbsp; &lt;/system.serviceModel&gt;<br><br>And my app.config on the client is:<br><br>&nbsp; &lt;system.serviceModel&gt;<br>&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name="wsHttpBindingSettings" closeTimeout="00:10:00" openTimeout="00:10:00" sendTimeout="00:10:00" maxReceivedMessageSize="2147483647" maxBufferPoolSize="2147483647" messageEncoding="Text"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxDepth="2147483647" maxStringContentLength="2147483647" maxArrayLength="2147483647" maxBytesPerRead="2147483647" maxNameTableCharCount="2147483647" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br>&nbsp;&nbsp;&nbsp; &lt;client&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal" address="http://alcatraz.dev/AlcatrazHost/WcfPortal.svc" binding="wsHttpBinding" contract="Csla.Server.Hosts.IWcfPortal" bindingConfiguration="wsHttpBindingSettings" /&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/client&gt;<br>&nbsp; &lt;/system.serviceModel&gt;<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+am guessing you are missing this in web.confg<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;system.web&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;httpRuntime maxRequestLength=&quot;102400&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mkadlec
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 07, 2009 5:42 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Getting &quot;The remote server returned an
+unexpected response: (400) Bad Request&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+&nbsp; I am running a WPF app with a remote server setup but get the error
+listed.<br>
+<br>
+This is definitely a request size issue since I tried reducing the data size
+being sent and the call worked fine.&nbsp; From my configuration it looks like
+I have 2 Gigs set up, but it behaves like only the default limit (something
+like 65000 bytes) is being used.&nbsp; I am thinking there is something wrong
+with my configuration.<br>
+<br>
+Any help would be appreciated!<br>
+<br>
+Mark.<br>
+<br>
+&nbsp; I have a remote Server set up using WCF web.config:<br>
+<br>
+&nbsp; &lt;system.serviceModel&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding
+name=&quot;wsHttpBindingSettings&quot; closeTimeout=&quot;00:10:00&quot;
+openTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot; maxReceivedMessageSize=&quot;2147483647&quot;
+maxBufferPoolSize=&quot;2147483647&quot; messageEncoding=&quot;Text&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxDepth=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot;
+maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot;
+maxNameTableCharCount=&quot;2147483647&quot; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;services&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service
+name=&quot;Csla.Server.Hosts.WcfPortal&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint
+contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;
+binding=&quot;wsHttpBinding&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/services&gt;<br>
+&nbsp; &lt;/system.serviceModel&gt;<br>
+<br>
+And my app.config on the client is:<br>
+<br>
+&nbsp; &lt;system.serviceModel&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding
+name=&quot;wsHttpBindingSettings&quot; closeTimeout=&quot;00:10:00&quot;
+openTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot;
+maxReceivedMessageSize=&quot;2147483647&quot;
+maxBufferPoolSize=&quot;2147483647&quot; messageEncoding=&quot;Text&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxDepth=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot;
+maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot;
+maxNameTableCharCount=&quot;2147483647&quot; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/bindin gs&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;client&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name=&quot;WcfDataPortal&quot;
+address=&quot;http://alcatraz.dev/AlcatrazHost/WcfPortal.svc&quot;
+binding=&quot;wsHttpBinding&quot;
+contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; bindingConfiguration=&quot;wsHttpBindingSettings&quot;
+/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/client&gt;<br>
+&nbsp; &lt;/system.serviceModel&gt;<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mkadlec replied on Friday, August 07, 2009</h2>Thanks Sergey, but it looks like it is set high, I have it at:<br><br>&nbsp;&nbsp;&nbsp; &lt;system.web&gt;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;httpRuntime maxRequestLength="2097151" /&gt;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, August 07, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+just noticed that you do not specify binding configuration in your end point, so
+none of your limits are actually used.&nbsp; You have to add
+bindingConfiguration node to your end point definition to point to your </span>wsHttpBindingSettings
+configuration.,<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>&lt;system.serviceModel&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;bindings&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;wsHttpBinding&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding
+name=&quot;wsHttpBindingSettings&quot; closeTimeout=&quot;00:10:00&quot;
+openTimeout=&quot;00:10:00&quot; sendTimeout=&quot;00:10:00&quot;
+maxReceivedMessageSize=&quot;2147483647&quot; maxBufferPoolSize=&quot;2147483647&quot;
+messageEncoding=&quot;Text&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxDepth=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot;
+maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot;
+maxNameTableCharCount=&quot;2147483647&quot; /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/wsHttpBinding&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;services&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service
+name=&quot;Csla.Server.Hosts.WcfPortal&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint
+contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;
+binding=&quot;wsHttpBinding&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/services&gt;<br>
+&nbsp; &lt;/system.serviceModel&gt;<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mkadlec
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 07, 2009 5:59 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Getting &quot;The remote server returned an
+unexpected response: (400) Bad Request&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Sergey, but it looks like it is set high, I have it
+at:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &lt;system.web&gt;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;httpRuntime
+maxRequestLength=&quot;2097151&quot; /&gt;<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

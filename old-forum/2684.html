@@ -1,0 +1,28 @@
+<html><header><title>Something I did not understand with DataPortal_Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Something I did not understand with DataPortal_Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2684.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS posted on Thursday, April 12, 2007</h2><P>Hi</P>
+<P>I have a class:</P>
+<P><FONT color=#0000ff>public abstract class ER_US : BusinessBase&lt;ER_US&gt;, IUS</FONT></P>
+<P>and another:</P>
+<P><FONT color=#0000ff>public class USComposite : US, IUSComposite</FONT></P>
+<P>When I try a <EM>DataPortal_Fetch</EM> with the <EM>USComposite</EM> class, all is working, except for its field&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <EM>private List&lt;US&gt; _usCollection</EM>. </P>
+<P>I get an exception because <EM>_ usCollection</EM> is null. But in the the <EM>DataPortal_Create</EM> method of the class, I create the object:</P>
+<P>&nbsp;&nbsp;&nbsp;<FONT color=#0000ff> protected override void DataPortal_Create()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.DataPortal_Create();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _typeUS = 4;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _usCollection = new List&lt;ER_US&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkNew();<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><BR>In fact it works well when I create the object, I can add US objects in the <EM>_usCollection</EM> field, and the <EM>DataPortal_Insert</EM> seems to work fine. It is juste when I try a fetch that I get this error. But I was thinking that when we fetch an object, its <EM>DataPortal_Create</EM> method was called. It is not the case.</P>
+<P>So, what I misunderstand?</P>
+<P>Thanks for any help!</P>
+<P><BR>Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, April 12, 2007</h2>Maybe you're under the assumption that DataPortal_Create fires when DataPortal_Fetch does. It does not. You'll need to instantiate your collection (one place would be on the variable declaration rather than the DataPortal_Create, and you'll get the blank collection instantiated either way).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, April 13, 2007</h2><P class=MsoNormal><SPAN>Well, I misunderstood. When I read, page 366 of the C# book, that «&nbsp;the result is that the data portal creates a new instance of the business object&nbsp;», I thought it used Data_Poral. Ok, it does not.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But where is the best place to instantiate some objects that would be in the create procedure, normally?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I can have objects with private fields who need instantiations, and it seems very strange to do that outside the object, after the variable declaration. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Looking in the example application, I decided to do the same thing that in the ResourceAssignment class, I instantiate private fields in the private constructor. So far, it seems to work. Is that a good idea?<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, April 13, 2007</h2><P>Hi Richard,</P>
+<P>DataPortal_Create is used traditionally by the factory method such as NewIndividual() to allow you to assign initial values or perhaps things passed through the "New" factory method. </P>
+<P>DataPortal_Fetch is used traditionally by the factory method such as GetIndividual() and is used traditionally to call a stored procedure or the like and to receive a set of results - namely for the main individual information and then also its child objects. </P>
+<P>But GetIndividual() will not end up flowing through DataPortal_Create and NewIndividual() wil not end up flowing through DataPortal_Fetch. </P>
+<P>You can certainly do what you wanted to do in the private constructor, yes - or you could, at the declaration of your variable, just do it there. (i.e. private ItemCollection _myList = ItemCollection.NewItemCollection();)</P>
+<P>I think the most advocated way is with the private constructor, as in the fetch you might be reassigning it anyways - (i.e. _myList = ItemCollection.GetItemCollection(dr), where dr is the datareader). </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, April 13, 2007</h2>Ok, thanks for the explanations :)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

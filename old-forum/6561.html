@@ -1,0 +1,17 @@
+<html><header><title>Funny ContextManager / ConfigurationManager behavior</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Funny ContextManager / ConfigurationManager behavior</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6561.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mousty posted on Thursday, March 05, 2009</h2><FONT color=#008000 size=2><FONT color=#008000 size=2>
+<P><FONT color=#000000>Hi I was wondering if someone could explain to me why the original commented line included in the 3.6 framework would work with the Unit Tests when the namespace name is kept to CSLA but doesn't work when the namsepace&nbsp;changed.</FONT></P>
+<P><FONT color=#000000>I need to make a loop through every name and verify that they are the same.&nbsp; Otherwise the connection value (original piece of code)&nbsp;from the commented string returns me null.</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT color=#000000 size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT color=#000000 size=2>&lt;C&gt; GetManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT color=#000000 size=2> database, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2><FONT color=#000000> isDatabaseName)</FONT></FONT></P>
+<P><FONT color=#000000>(This is the method where the code is found, under the Data folder)</FONT></P>
+<P><FONT size=2><FONT color=#000000>Could someone explain this to me? Thanks!</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT color=#000000></FONT>&nbsp;</P></FONT>
+<P>//var connection = ConfigurationManager.ConnectionStrings["database"];</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConnectionStringSettings</FONT></FONT><FONT size=2> connection = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>for</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> i = 0; i &lt; </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings.Count; i++)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Name.Equals(database))</P>
+<P>{</P>
+<P>connection = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ConfigurationManager</FONT></FONT><FONT size=2>.ConnectionStrings<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />;</P>
+<P>}</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

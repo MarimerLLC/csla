@@ -1,0 +1,362 @@
+<html><header><title>WCF Compression</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Compression</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6632.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw posted on Thursday, March 19, 2009</h2><P>I have plugged in compression as per the example remoteportal with compressed proxy. and the compression is brilliant. However when doing dataportal creates we are getting a header checksum illigal error. I have tested the remoteportalwithcompressedproxy example and it also gives this error. </P>
+<P>Does anybody have any idea why this might be happening</P>
+<P>Cheers</P>
+<P>Daniel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2><P>What is throwing the exception? WCF, the compression library, or some other code?</P>
+<P>I'm using the same technique in the InventoryDemo sample, and I know a few people are using it for actual app development (not samples), so I don't believe this is a general issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Thursday, March 19, 2009</h2><FONT size=2>
+<P>We have a form with several objects on it. The first objects only get data via the dataportal, the last object (the one that's throwing the error) issues a dataportal create. I've debugged the code and it seems that the create command doesn't go through the ConvertRequest method on the client in CompressedProxy.cs but at the server end in CompressedHost.cs the request is then caught in <FONT size=2>ConvertRequest which tries to decompress the data (which hasn't been compressed) </FONT></P>
+<P><FONT size=2>The response method then throws the exception</FONT></P>
+<P><FONT size=2>Have you got a copy of the InventoryDemo sample so we can compare?</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, March 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+vaguely remember fixing something like this a while ago.&nbsp;&nbsp; Are you
+running the latest code?&nbsp; If not, could you try to download the latest
+from SVN and give that a try?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> danielw
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, March 19, 2009 8:49 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] WCF Compression<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>We have a form with several objects on it.
+The first objects only get data via the dataportal, the last object (the one
+that's throwing the error) issues a dataportal create. I've debugged the code
+and it seems that the create command doesn't go through the ConvertRequest
+method on the client in CompressedProxy.cs but at the server end in
+CompressedHost.cs the request is then caught in ConvertRequest which tries to
+decompress the data (which hasn't been compressed) <o:p></o:p></span></p>
+
+<p><span>The response method then throws the exception<o:p></o:p></span></p>
+
+<p><span>Have you got a copy of the InventoryDemo
+sample so we can compare?<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Thursday, March 19, 2009</h2>
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+<DIV><FONT FACE="Arial" SIZE="2">
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks to you both.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Download 6.5.1 and it works fine that will teach me for getting
+behind with my versions bring on v6.5.2<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Cheers<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Daniel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+</FONT></DIV>
+<DIV><FONT FACE="Arial" SIZE="1">&nbsp;</FONT></DIV>
+<DIV><FONT COLOR="crimson" FACE="Verdana" SIZE="1"><STRONG>Daniel Wood | </STRONG></FONT><FONT COLOR="gray" FACE="Verdana" SIZE="1"><FONT COLOR="crimson">Developer</FONT><FONT COLOR="#808080"> </FONT><FONT COLOR="navy">| JMC IT, Riverside, Agecroft Road, Manchester, M27 8SJ&nbsp;| Tel:&nbsp;0161 925 7777&nbsp;|&nbsp;Fax: 0161 925 7700 | Email: Daniel.Wood@jmc.it | Web: </FONT><FONT COLOR="navy"><a href="http://www.jmc.it">www.jmc.it</a><A></A><A></A></FONT></FONT></DIV>
+<DIV><FONT COLOR="#808080" FACE="Verdana" SIZE="1"></FONT>&nbsp;</DIV>
+<DIV><FONT COLOR="silver" FACE="Tahoma" SIZE="1"><EM><FONT COLOR="gray">This e-mail and any files transmitted with it are confidential and are intended solely for the use of the intended recipient(s). If you are not the intended recipient, you must not copy, distribute or take any action based on this communication. If you have received this communication in error please contact &nbsp;Daniel.Wood@jmc.it &nbsp;and delete this communication and any copies of it. Any views or opinions presented are solely those of the author and do not necessarily represent those of JMC IT. JMC IT monitors e-mails to ensure its systems operate effectively and to minimise the risk of viruses.</FONT> </EM></FONT></DIV>
+<DIV><EM><FONT COLOR="#c0c0c0" FACE="Tahoma" SIZE="1"></FONT></EM>&nbsp;</DIV>
+<DIV><FONT COLOR="navy" FACE="Tahoma" SIZE="1"><FONT COLOR="red">JM Computing Limited</FONT> | Registered in Cardiff No. 1131358 | Registered office as above</FONT></DIV>
+<BLOCKQUOTE DIR="ltr">
+<DIV><FONT FACE="Arial" SIZE="2"><BR>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> 19 March 2009 12:51<br>
+<b>To:</b> Daniel Wood<br>
+<b>Subject:</b> RE: [CSLA .NET] WCF Compression<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I vaguely remember fixing something like this a while
+ago.&nbsp;&nbsp; Are you running the latest code?&nbsp; If not, could you try
+to download the latest from SVN and give that a try?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office:
+678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img alt="cid:_2_0648EA840648E85C001BBCB886257279" height=26 id="Picture_x0020_1" width=119><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom Development Solutions, Technical
+Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> danielw [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, March 19, 2009 8:49 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] WCF Compression<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p><span>We have a form with several
+objects on it. The first objects only get data via the dataportal, the last
+object (the one that's throwing the error) issues a dataportal create. I've
+debugged the code and it seems that the create command doesn't go through the
+ConvertRequest method on the client in CompressedProxy.cs but at the server end
+in CompressedHost.cs the request is then caught in ConvertRequest which tries to
+decompress the data (which hasn't been compressed) <o:p></o:p></span></p>
+
+<p><span>The response method then throws
+the exception<o:p></o:p></span></p>
+
+<p><span>Have you got a copy of the
+InventoryDemo sample so we can compare?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</FONT></DIV></BLOCKQUOTE>
+<P><FONT COLOR="silver"></FONT></P>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Thursday, March 19, 2009</h2><P>I think Dan means 3.6.1 unless he's found Rocky's secret code repository!</P>
+<P>He's had a difficult few days, I think the stress levels are very high ;)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Friday, March 20, 2009</h2>I folowed the lastest InventoryDemo,but always failed with that exception:<br><br>Header checksum illegal<br><br>in the line "int read = stream.Read(buffer, 0, buffer.Length);"<br><br>Can you explain how to fix that more clearly?<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Friday, March 20, 2009</h2>
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+<DIV><FONT FACE="Arial" SIZE="2">
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The problem we had was that the Dataportal_Create was not
+calling the compress call from Silverlight. But the server side was trying to
+decompress it and as it was not compressed it was giving an error.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>This bug was fixed in v 3.5.1 so downloading and using this one
+fixed the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Cheers<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Daniel<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</FONT></DIV>
+<DIV><FONT FACE="Arial" SIZE="1">&nbsp;</FONT></DIV>
+<DIV><FONT COLOR="crimson" FACE="Verdana" SIZE="1"><STRONG>Daniel Wood | </STRONG></FONT><FONT COLOR="gray" FACE="Verdana" SIZE="1"><FONT COLOR="crimson">Developer</FONT><FONT COLOR="#808080"> </FONT><FONT COLOR="navy">| JMC IT, Riverside, Agecroft Road, Manchester, M27 8SJ&nbsp;| Tel:&nbsp;0161 925 7777&nbsp;|&nbsp;Fax: 0161 925 7700 | Email: Daniel.Wood@jmc.it | Web: </FONT><FONT COLOR="navy"><a href="http://www.jmc.it">www.jmc.it</a><A></A><A></A></FONT></FONT></DIV>
+<DIV><FONT COLOR="#808080" FACE="Verdana" SIZE="1"></FONT>&nbsp;</DIV>
+<DIV><FONT COLOR="silver" FACE="Tahoma" SIZE="1"><EM><FONT COLOR="gray">This e-mail and any files transmitted with it are confidential and are intended solely for the use of the intended recipient(s). If you are not the intended recipient, you must not copy, distribute or take any action based on this communication. If you have received this communication in error please contact &nbsp;Daniel.Wood@jmc.it &nbsp;and delete this communication and any copies of it. Any views or opinions presented are solely those of the author and do not necessarily represent those of JMC IT. JMC IT monitors e-mails to ensure its systems operate effectively and to minimise the risk of viruses.</FONT> </EM></FONT></DIV>
+<DIV><EM><FONT COLOR="#c0c0c0" FACE="Tahoma" SIZE="1"></FONT></EM>&nbsp;</DIV>
+<DIV><FONT COLOR="navy" FACE="Tahoma" SIZE="1"><FONT COLOR="red">JM Computing Limited</FONT> | Registered in Cardiff No. 1131358 | Registered office as above</FONT></DIV>
+<BLOCKQUOTE DIR="ltr">
+<DIV><FONT FACE="Arial" SIZE="2"><BR>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mamboer [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> 20 March 2009 05:06<br>
+<b>To:</b> Daniel Wood<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WCF Compression<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I folowed the lastest InventoryDemo,but always failed with
+that exception:<br>
+<br>
+Header checksum illegal<br>
+<br>
+in the line &quot;int read = stream.Read(buffer, 0, buffer.Length);&quot;<br>
+<br>
+Can you explain how to fix that more clearly?<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</FONT></DIV></BLOCKQUOTE>
+<P><FONT COLOR="silver"></FONT></P>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Friday, March 20, 2009</h2>Hi,<br>I'm using the latest Csla.net 3.6.2~<br>Since this issue had been fixed in 3.5.1,why still accurs in 3.6.x?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>danielw replied on Friday, March 20, 2009</h2>
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+<DIV><FONT FACE="Arial" SIZE="2">
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No idea ,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>It must be for a different reason<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Sorry mate<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</FONT></DIV>
+<DIV><FONT FACE="Arial" SIZE="1">&nbsp;</FONT></DIV>
+<DIV><FONT COLOR="crimson" FACE="Verdana" SIZE="1"><STRONG>Daniel Wood | </STRONG></FONT><FONT COLOR="gray" FACE="Verdana" SIZE="1"><FONT COLOR="crimson">Developer</FONT><FONT COLOR="#808080"> </FONT><FONT COLOR="navy">| JMC IT, Riverside, Agecroft Road, Manchester, M27 8SJ&nbsp;| Tel:&nbsp;0161 925 7777&nbsp;|&nbsp;Fax: 0161 925 7700 | Email: Daniel.Wood@jmc.it | Web: </FONT><FONT COLOR="navy"><a href="http://www.jmc.it">www.jmc.it</a><A></A><A></A></FONT></FONT></DIV>
+<DIV><FONT COLOR="#808080" FACE="Verdana" SIZE="1"></FONT>&nbsp;</DIV>
+<DIV><FONT COLOR="silver" FACE="Tahoma" SIZE="1"><EM><FONT COLOR="gray">This e-mail and any files transmitted with it are confidential and are intended solely for the use of the intended recipient(s). If you are not the intended recipient, you must not copy, distribute or take any action based on this communication. If you have received this communication in error please contact &nbsp;Daniel.Wood@jmc.it &nbsp;and delete this communication and any copies of it. Any views or opinions presented are solely those of the author and do not necessarily represent those of JMC IT. JMC IT monitors e-mails to ensure its systems operate effectively and to minimise the risk of viruses.</FONT> </EM></FONT></DIV>
+<DIV><EM><FONT COLOR="#c0c0c0" FACE="Tahoma" SIZE="1"></FONT></EM>&nbsp;</DIV>
+<DIV><FONT COLOR="navy" FACE="Tahoma" SIZE="1"><FONT COLOR="red">JM Computing Limited</FONT> | Registered in Cardiff No. 1131358 | Registered office as above</FONT></DIV>
+<BLOCKQUOTE DIR="ltr">
+<DIV><FONT FACE="Arial" SIZE="2"><BR>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mamboer [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> 20 March 2009 12:37<br>
+<b>To:</b> Daniel Wood<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: WCF Compression<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+I'm using the latest Csla.net 3.6.2~<br>
+Since this issue had been fixed in 3.5.1,why still accurs in 3.6.x?<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</FONT></DIV></BLOCKQUOTE>
+<P><FONT COLOR="silver"></FONT></P>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Friday, March 20, 2009</h2>Ease,mate:)<br>Hope that some can give me some ideas on this problem...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 20, 2009</h2><P>I don't have a suggestion at this point.</P>
+<P>The InventoryDemo project is built against 3.6.2, and if you change the NewProductEdit() factory method so it creates the object on the server (thus going through the data portal, which is using compression)&nbsp;it works fine:</P>
+<P>&nbsp;&nbsp;&nbsp; public static void NewProductEdit(EventHandler&lt;DataPortalResult&lt;ProductEdit&gt;&gt; callback)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dp = new DataPortal&lt;ProductEdit&gt;(); // (DataPortal.ProxyModes.LocalOnly);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.CreateCompleted += callback;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginCreate();<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>Does InventoryDemo fail on your machine?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Friday, March 20, 2009</h2>@Rocky,<br>&nbsp; The InventoryDemo runs well on my pc.<br>&nbsp; <br>&nbsp; I found the reason for my demo,but the case still seems somewhat strange.<br><br>&nbsp; In the App.xaml.cs,if i put the "Csla.DataPortal.ProxyTypeName=XXX;" <font color="#000080"><b><font color="#a52a2a">after</font> </b></font>the line "this.RootVisual = new Page();",those client requests will bypass the custom compressed wcf proxy,which causes the "<font face="Arial" size="2">Header checksum illegal</font>" exception in the server side.<font color="#ff0000"><b>Because uncompressed data can't be decompressed!</b></font><br>&nbsp; While i set the Csla.DataPortal.ProxyTypeName <font color="#a52a2a">before</font> "this.RootVisual = new Page();"(like InventoryDemo do),things go well.<br><br>&nbsp; What's strange is that the fact above is not true to the InventoryDemo.<br><br>&nbsp; My demo uses a CslaDataProvider with "IsInitialLoadEnabled=true" to load a list of bo while InventoryDemo uses a button to trigger the data loading.<br><br>&nbsp;&nbsp; &nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 21, 2009</h2><P>The InventoryDemo app sets the ProxyTypeName before loading the first page. That is required, because when the 'new Page()' code runs it triggers creation of any data provider controls, which will invoke the data portal, which would use the default data portal proxy, not the one you actually want it to use.</P>
+<P>So it is absolutely true that ProxyTypeName must be set before any data portal calls occur - which usually means in App.xaml.cs before&nbsp; the RootVisual is set.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mamboer replied on Saturday, March 21, 2009</h2>Thank you for revealing the fact behind the scenes .<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, July 06, 2009</h2><P>I also am getting the header checksum illegal error from the ICSharp libraries when attempting to decompress and read the stream and I am using Csla 3.6.2.</P>
+<P>I used the same code in another project and it worked fine.&nbsp; I've read everything above and am still stuck pretty hard here.&nbsp; I've been trying to avoid debugging the source code of these ICSharp libraries, but that very well might be my next stop.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Make sure both the client and server are using your compression.
+The most common cause for this particular problem is that either the client or
+the server aren&#8217;t configured to use your new proxy/host classes, so one
+end or the other isn&#8217;t actually using compression.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, July 06, 2009</h2><P>Thnx Rocky.&nbsp; Yep, my problem was simple.</P>
+<P>As stated above, in the App.xaml.cs ApplicationStatup you have to set the ProxyTypeName before RootVisual is assigned.&nbsp; I had set it, but I was setting it to the usual </P><FONT size=2>
+<P>Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.ProxyTypeName = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Csla.DataPortalClient.WcfProxy, Csla"</FONT></FONT><FONT size=2>;</P></FONT>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2><FONT color=#000000 size=3>instead of my <EM>compressed </EM>proxy typename </FONT></FONT></FONT></P><FONT color=#008000 size=2><FONT color=#008000 size=2><FONT color=#000000 size=3><FONT size=2>
+<P>Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.ProxyTypeName = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(Library.Compression.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CompressedProxy</FONT></FONT><FONT size=2>&lt;&gt;).AssemblyQualifiedName;</FONT></P>
+<P>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, July 06, 2009</h2><P>*duped post, sry*</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

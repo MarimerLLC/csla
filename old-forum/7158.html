@@ -1,0 +1,530 @@
+<html><header><title>Creating Dependant Objects Best Practice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Creating Dependant Objects Best Practice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7158.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam posted on Wednesday, June 24, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin-top:0in;
+	mso-para-margin-right:0in;
+	mso-para-margin-bottom:10.0pt;
+	mso-para-margin-left:0in;
+	line-height:115%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoNormal">Hi there</p>
+
+<p class="MsoNormal">I have a database that has been optimized for storage and I
+am having great difficulty adding Business Logic to create dependant objects.
+For example of Business Objects please see attached class diagram.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I have the following business rules;</p>
+
+<p class="MsoListParagraphCxSpFirst"><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>A client has one or more Client Histories. A Client
+History row is to be created when I create a Client.</p>
+
+<p class="MsoListParagraphCxSpMiddle"><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Client History must have an associated Client
+Core Details row.</p>
+
+<p class="MsoListParagraphCxSpLast"><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Client Core Details are optimized such that a
+Client Core Detail row can be associated with many Client Histories as Client
+Core Details data changes rarely.</p>
+
+<p class="MsoNormal">So on creating a new client I need to create a new (with
+defaults) Client History row and Client Core Details row and glue them
+together.</p>
+
+<p class="MsoNormal">Currently I have tried the following code;</p>
+
+<p class="MsoNormal"><span>partial</span><span> <span>void</span> OnCreated()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>var</span><span> CCD = <span>ClientCoreDetail</span>.NewClientCoreDetail();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>var</span> CCH = <span>ClientHistory</span>.NewClientHistory();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>CCH.ClientId = <span>this</span>.Id;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>CCD.ClientHistories.Add(CCH);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>this</span>.ClientHistories.Add(CCH);<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Which is called from ;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>protected</span><span> <span>override</span> <span>void</span>
+DataPortal_Create()<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>{<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>bool</span> cancel
+= <span>false</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>OnCreating(<span>ref</span>
+cancel);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>if</span> (cancel) <span>return</span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span><span>//Create Child
+Properties<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>LoadProperty(ClientHistoriesProperty, <span>ClientHistoryList</span>.NewClientHistoryList());<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>LoadProperty(EquipmentsProperty, <span>EquipmentList</span>.NewEquipmentList());<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>LoadProperty(InvoicesProperty, <span>InvoiceList</span>.NewInvoiceList());<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>ValidationRules.CheckRules();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp; </span>OnCreated();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>This code doesn’t work and
+presumably is not best practice.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>I believe possible options
+are;<o:p></o:p></span></p>
+
+<p class="MsoListParagraphCxSpFirst"><span><span>a)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Change the database structure so that Client
+Core Details is consumed within Client History which would waste valuable storage
+space, which we would rather not do!</p>
+
+<p class="MsoListParagraphCxSpMiddle"><span><span>b)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Somehow instantiate dependant objects.</p>
+
+<p class="MsoListParagraphCxSpLast"><span><span>c)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span>Somehow make parent/root behave like a child.</p>
+
+<p class="MsoNormal">Please help!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Wednesday, June 24, 2009</h2><P>You are probably struggling because your use case focuses on the requirements of your database rather than the business logic behind it. The way I see it, a possible object structure would be:</P>
+<P>Client (Root - contains fields from your Client table)<BR>|<BR>|----&gt; ClientHistories (BusinessListBase&lt;ClientHistories, ClientHistory&gt; list of history records)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|----&gt;ClientHistory (Editable Child - contains fields from your Code table plus - if needed - the history table)</P>
+<P>The mapping would occur in your dataportals.</P>
+<P>HTH</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Monday, June 29, 2009</h2>thanks triplea I will give that a go :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Wednesday, July 01, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin-top:0in;
+	mso-para-margin-right:0in;
+	mso-para-margin-bottom:10.0pt;
+	mso-para-margin-left:0in;
+	line-height:115%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoNormal"><span>Hi triplea<br>
+<br>
+I have had a look at what you have suggested only to realise that what you have
+suggested is what I have already done using CodeSmith. The part that I am
+struggling with is the link between ClientHistory and ClientCoreDetails. <br>
+<br>
+Any help appreciated.</span></p>
+
+<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

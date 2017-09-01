@@ -1,0 +1,52 @@
+<html><header><title>ProjectResources Assign Method vs. ProjectResource Assignment Module</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectResources Assign Method vs. ProjectResource Assignment Module</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7302.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly posted on Sunday, July 19, 2009</h2><P>When I look at the functionality provided by the Assignment Module to assign a Resource to a Project, the purpose seems very similar to the Assign method in the ProjectResources collection.</P>
+<P>I am sure I'm missing something, and I know how each one works (basically), but I don't know why ProjectResources wouldn't just use the Assignment module via the ProjectResource to add one to the list.</P>
+<P>What am I missing about this?&nbsp; </P>
+<P>Was this just a variation for the purposes of demonstrating in the sample?</P>
+<P>I feel like I'm missing something.</P>
+<P>Thanks in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 19, 2009</h2><P>It is a somewhat contrived example. But at the same time, the overall idea is to illustrate how to implement a many:many relationship between objects.</P>
+<P>The classic example is doctor:patient. A doctor has many patients, and a patient may have many doctors.</P>
+<P>In a database this is a M:M relationship, usually implemented with three tables: Doctors, Patients and DoctorPatient.</P>
+<P>But in an object model that simplistic data-centric view is insufficient. Objects are designed around behavior, and the data model doesn't really reflect behavior, just static relationships.</P>
+<P>In an object model, a doctor has a list of relationships to patients. A doctor doesn't own patients - slavery is illegal in most of the world. And a patient doesn't own a doctor for the same reason.</P>
+<P>So a doctor object would have a collection of PatientRelationship objects or PatientVisit objects or something that reflects the user scenario the objects are serving.</P>
+<P>Similarly, a patient object would have a collection of DoctorVisit objects or something like that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Sunday, July 19, 2009</h2>Thanks for the quick reply, Rocky.<br /><br />I guess I worded my question ambiguously.  (Actually I used to write medical software, so your example made me laugh.)<br /><br /><br />What I was really asking is that the behavior of creating a ProjectResource from a Project and a Resource by using the Assignment module makes great sense (I've been reading Larman).<br /><br /><br />But it looks to me like the exact same behavior is being duplicated in the Assign method of a ProjectResources collection.<br /><br /><br />Don't they both add a resource to a project?  If so, why have both?  Or am I totally missing something?  <br /><br /><br />BTW, I have one whole monitor in landscape mode dedicated to a two-up display of your book's PDF.  Works great!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>At the database level they do both add a resource to a project,
+yes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But at an object level the relationships are different, and the
+data surrounding those relationships could be different. In most cases the data
+surrounding the relationships would probably be different, because the usage
+scenarios would be different.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If they really are the same, and the available data is the same,
+then the data access code could be consolidated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Monday, July 20, 2009</h2><P>As usual, you have cleared things up.</P>
+<P>&nbsp;</P>
+<P>I will say that I am still trying to shake the relational overtones to my thinking.&nbsp; I did Smalltalk in the late 80's and we were much more concerned with <STRONG>inheritance </STRONG>of attributes and behavior than with <STRONG>reusable </STRONG>behavior.&nbsp; Of course, "Hello, wolrd!" was 5mb when computers were lucky to 32mb to work with.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

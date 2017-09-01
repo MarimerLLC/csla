@@ -1,0 +1,44 @@
+<html><header><title>Is MVC a good idea for a real world, complex, line of business application?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is MVC a good idea for a real world, complex, line of business application?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10913.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Wednesday, November 23, 2011</h2><p>I just started reading the CSLA 4 and MVC ebook and looked at the sample project and it&#39;s making me think MVC is not the way to go for anything non trivial with complex forms and business objects with many fields and child collections.</p>
+<p>Right now my gut feeling is that webforms, as flawed as it is, is still the better technology for complex business applications but I want to double check as I&#39;ve yet to find any evidence anyone is using it for anything large and complex.</p>
+<p>Is anyone actually using MVC with a complex business application with a lot of objects and fields?&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>olawal replied on Wednesday, November 23, 2011</h2><p>OMG yes , once you really start using MVC you will actually HATE webforms , I have build lots of mvc applications with really large and complex databases such s dating websites as well as social networks and the MVC pattern and the absolute separation of concerns really simplifies your life as a developer. </p>
+<p>Just the fact you are not tied to the archaic page lifecyle really makes things far more conistant and though it might seem you do write a bit more code, when it comes down to it you will be able to to manage the code far better than user controls and page events in Asp.net.</p>
+<p>now the caveat to this is I would NOT use CSLA.net personally as somone being new to MVC due to the learning curve of just CSLA and MVC combined.&nbsp; I would use EntityFramework 4.1 and POCO objects for my business layer and DB as well as use the build in validation you get on models with MVC.&nbsp; Honestly I really don&#39;t think you need CSLA with MVC&nbsp; for example to apply custom buisness rules add&nbsp; you can use dataanotations&nbsp; i.e [Require] , or [IsNumeric] to decorate your model objects and the repository does not have to know anything about how you validate.</p>
+<p>Here is an excellent link from microsoft on how do do alot of things in MVC natively rather than using frameworks like CSLA</p>
+<p><a href="http://www.asp.net/mvc/tutorials/validation-with-the-data-annotation-validators-cs">http://www.asp.net/mvc/tutorials/validation-with-the-data-annotation-validators-cs</a></p>
+<p>** CSLA is excellent but in your case due to the learning curve of MCV combined with CSLA at the same time I would start with MVC and get that design pattern down and then use CSLA to extent it **</p>
+<p>just my 2 cents</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, November 23, 2011</h2><p>Whups, I worded that wrong, I&#39;m *very* familiar with CSLA 4 at this point and have used an older version for years and there&#39;s no doubt I&#39;m using CSLA 4.&nbsp; I&#39;m porting a winform / asp.net webform projects to WPF / (potentially) MVC 3 (4).</p>
+<p>My only issue is with MVC which I&#39;m hazy on.&nbsp; After looking at Rocky&#39;s ebook and the example project tracker the pages rendered looked *extremely* simplistic to me.&nbsp; I started looking around for any other MVC samples and they *all* are very simplistic.&nbsp; Basically going to one page, editing one business object with very few properties etc.</p>
+<p>By contrast my old asp.net webform app I&#39;m porting has in part, one very complex form that includes multiple business objects, contains dozens of fields and has several child collections.&nbsp; Nothing I see as an example in MVC is remotely as complex looking, in fact they are almost always examples of online stores or some other mainly read only type site.</p>
+<p>In Rocky&#39;s sample project tracker there are 5 separate view .cshtml files for each type of business object.&nbsp; (Create, Delete, Edit, Details, Index) In Project tracker this is only about 5 objects, in my app it&#39;s more like 50 objects.&nbsp; </p>
+<p>On the face of it this seems like I&#39;ll need 250 different views at minimum.&nbsp; In my current version of the asp.net app with the same objects I have only one page for each object and it handles all the edit, update and what have you.&nbsp; I don&#39;t know if this is just Rocky&#39;s style he&#39;s using and I can do something more efficient or I&#39;m looking at this wrong or...?</p>
+<p>This scares me off.&nbsp; From what I can determine MVC almost seems to expect that a page will only be used for editing a single, simple object, not a complex collection of objects as is often the case in a business application.&nbsp; Also that it really expects one simple way of doing everything and doesn&#39;t support many different pages that are completely different from each other (i.e. a complex business task, a schedule form, etc etc).</p>
+<p>I&#39;m worried that mvc is only for very simplistic mostly read only scenarios and that you don&#39;t get a lot of control over the page design.</p>
+<p>Maybe there&#39;s a book or website or something that can show what can be done with MVC but I&quot;m not seeing it yet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>olawal replied on Wednesday, November 23, 2011</h2><p>ohhh i got you, actually where MCV shines is with large complex objects like you are talking about </p>
+<p>MVC supports partial views so you can use a single view with multiple partial child views to handle&nbsp; different operations.</p>
+<p>or you can do it exactly how you do it in ASP&nbsp; but I find it cleaner to use a partial view for different operations and the partial views are very simple to implement.</p>
+<p>In regard to complex objecs , you can create what I term (propaly wongly) viewmodel</p>
+<p>bascially a complex object that can conists on as many objects as you want to safeley serialize if you are creating an N tier app.</p>
+<p>&nbsp;ie you could have a profiledata viewmodel</p>
+<p>[Seralizable]</p>
+<p>public profileDataviewmodel</p>
+<p>{</p>
+<p>public UserRole</p>
+<p>public list&lt;photos&gt; &nbsp;MyPhotos {get;set;}</p>
+<p>public&nbsp; list&lt;Accounts&gt;&nbsp;&nbsp;MyAccounts {get;set;}</p>
+<p>public list&lt;friends&gt; &nbsp;photos MyFriends {get;set;}</p>
+<p>etc etc as compex as you see fit</p>
+<p>}</p>
+<p>your perant view then would inherit that ProfileDataViewmodel</p>
+<p>and your can do stuff like this in your view</p>
+<p>&lt;% for each ProfiledataViewModel.MyPhotos %&gt;</p>
+<p>{</p>
+<p>some operattiosn here , or maybe iteratate or list the complex objects or format them as a datagrid or photos or something</p>
+<p>}</p>
+<p>say you want to do an operation on just the Accounts you can pass as much or as little of the viewmodel you want to the partial view . i.e If I had an editaccoutns partial page I could have it inherit the Accoutunts Object maybe and pass just that to that view which could be a modal popup or whatever I want etc etc.</p>
+<p>complex objects are what makes MVC the most fun , the reason he is using multiple pages for different operations is becase it is far more testtable and easier to isolate error with pages or in page code than one huge page that does everything but using a viewmodel you can have you complex objects available to any page or pages you want.</p>
+<p>hope that helps, </p>
+<p>p.s i just randomly typed in the code so ignore my syntax sorry</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, November 23, 2011</h2><p>Ahhh!&nbsp; That *does* help.&nbsp; Rocky covered that in the book but I glossed over it when skimming through it, now it makes a lot more sense and the partial views sounds like what I&#39;m missing.</p>
+<p>Very helpful, thank you, I appreciate it!</p>
+<p>Cheers!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>olawal replied on Wednesday, November 23, 2011</h2><p>sure thing I love MVC and every programmer I know either beginner or expert loves the pattern its just makes &quot;sense&quot; is what they all say</p>
+<p>glad i was able to help</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

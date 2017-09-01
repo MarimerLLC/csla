@@ -1,0 +1,23 @@
+<html><header><title>Business Rule Instance </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule Instance </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12091.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, July 25, 2013</h2><p>Hi all.. </p>
+<p>I read on ebook that said :</p>
+<p style="padding-left:30px;"> one rule instance is shared across all instances of business type.</p>
+<p>I want to know a foundation / reason to said that ?</p>
+<p>&nbsp;</p>
+<p>this is my current understanding, I hope Rocky or someone else could explain to me&nbsp; to update my understanding :</p>
+<p>&nbsp;</p>
+<p>we insert code to add a rule in</p>
+<p>protected override void AddBusinessRules()</p>
+<p>{</p>
+<p style="padding-left:30px;">BusinessRules.AddRule(new MyRule( ..... ));</p>
+<p>}</p>
+<p>and then when each my business type instances is created this method is called, Is it not mean that I add a new MyRule for each my business instance ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>CSLA 4 has type rules only. Which means that CSLA keeps a list of type and registered rules internally.&nbsp;</p>
+<p>The AddBusinessRules method will only be called when there is no entry in the list for the given type (typically once) in your application and each Rule instance should be viewed as a Singelton - shared instance - for all instances of youe business object. Each time you create a BusinessObject there is code in the constructor to check if rules has been registered - and if not call AddBusinessRules.&nbsp;</p>
+<p>This is to simplify the serialization size (BusinessRules is NOT serialized, only BrokenRules) and reduce the memory footprint.</p>
+<p>So you do not add a new MyRule to your instance - you register the MyRule rule for this Type.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

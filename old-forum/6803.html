@@ -1,0 +1,139 @@
+<html><header><title>Error in CommonRules - Utilities Class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error in CommonRules - Utilities Class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6803.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn posted on Thursday, April 16, 2009</h2><P><FONT face=Arial size=4>The business rules are not being enforced in my business object.&nbsp; Here is an example of the property declaration:</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>private</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>static</FONT></FONT> <FONT color=#2b91af><FONT color=#2b91af>PropertyInfo</FONT></FONT>&lt;<FONT color=#0000ff><FONT color=#0000ff>string</FONT></FONT>&gt; ShortNameProperty = RegisterProperty(<FONT color=#0000ff><FONT color=#0000ff>new</FONT></FONT> <FONT color=#2b91af><FONT color=#2b91af>PropertyInfo</FONT></FONT>&lt;<FONT color=#0000ff><FONT color=#0000ff>string</FONT></FONT>&gt;(<FONT color=#a31515><FONT color=#a31515>"relLoc"</FONT></FONT>));</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>public</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>string</FONT></FONT> ShortName</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;get</FONT></FONT> { <FONT color=#0000ff><FONT color=#0000ff>return</FONT></FONT> GetProperty&lt;<FONT color=#0000ff><FONT color=#0000ff>string</FONT></FONT>&gt;(ShortNameProperty); }</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;set</FONT></FONT> { SetProperty&lt;<FONT color=#0000ff><FONT color=#0000ff>string</FONT></FONT>&gt;(ShortNameProperty, <FONT color=#0000ff><FONT color=#0000ff>value</FONT></FONT>); }</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=4>And here is the rule declaration:</FONT></P><FONT size=2>
+<P>ValidationRules.AddRule(Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringRequired, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RuleArgs</FONT></FONT><FONT size=2>(ShortNameProperty));</P>
+<P>ValidationRules.AddRule(Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringMaxLength, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Csla.Validation.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MaxLengthRuleArgs</FONT></FONT><FONT size=2>(ShortNameProperty, 4));</P></FONT>
+<P><FONT size=2><FONT face=Arial size=4>When CommonRules tries to evaluate this rule it calls a Utility class called CallByName which executes this code which results in null:</FONT></P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2> p = target.GetType().GetProperty(methodName);</P></FONT>
+<P><FONT face=Arial>where target is my business object and methodName = "relLoc".</FONT></P>
+<P><FONT face=Arial size=4>The next line creates a null exception and exits the the whole process:</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> p.GetValue(target, args);</P></FONT>
+<P><FONT face=Arial size=4>The rest of the processing does't happen and the object remains valid and allows Save to be called.</FONT></P>
+<P><FONT face=Arial size=4>Any idea of what I did wrong?</FONT></P>
+<P><FONT face=Arial size=4>Todd</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 16, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your
+property is not declared properly.&nbsp; Parameter for new ProeprtyInfo should
+be actual property name as in<o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>static</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;
+ShortNameProperty = RegisterProperty(<span>new</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;(<span>&quot;ShortName&quot;</span>));<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>string</span> ShortName<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>get</span><span> { <span>return</span> GetProperty&lt;<span>string</span>&gt;(ShortNameProperty); }<o:p></o:p></span></p>
+
+<p><span>set</span><span> { SetProperty&lt;<span>string</span>&gt;(ShortNameProperty,
+<span>value</span>); }<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> thaehn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 16, 2009 1:47 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Error in CommonRules - Utilities Class<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The business rules are not being enforced in my business object.&nbsp; Here
+is an example of the property declaration:<o:p></o:p></p>
+
+<p><span>private</span><span> <span>static</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;
+ShortNameProperty = RegisterProperty(<span>new</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;(<span>&quot;relLoc&quot;</span>));<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>string</span> ShortName<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>get</span><span> { <span>return</span> GetProperty&lt;<span>string</span>&gt;(ShortNameProperty); }<o:p></o:p></span></p>
+
+<p><span>set</span><span> { SetProperty&lt;<span>string</span>&gt;(ShortNameProperty,
+<span>value</span>); }<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p>And here is the rule declaration:<o:p></o:p></p>
+
+<p><span>ValidationRules.AddRule(Csla.Validation.<span>CommonRules</span>.StringRequired, <span>new</span> Csla.Validation.<span>RuleArgs</span>(ShortNameProperty));<o:p></o:p></span></p>
+
+<p><span>ValidationRules.AddRule(Csla.Validation.<span>CommonRules</span>.StringMaxLength, <span>new</span> Csla.Validation.<span>CommonRules</span>.<span>MaxLengthRuleArgs</span>(ShortNameProperty, 4));<o:p></o:p></span></p>
+
+<p>When CommonRules tries to evaluate this rule it calls a Utility class called
+CallByName which executes this code which results in null:<span><o:p></o:p></span></p>
+
+<p><span>PropertyInfo</span><span> p = target.GetType().GetProperty(methodName);<o:p></o:p></span></p>
+
+<p>where target is my business object and methodName = &quot;relLoc&quot;.<o:p></o:p></p>
+
+<p>The next line creates a null exception and exits the the whole process:<o:p></o:p></p>
+
+<p><span>return</span><span> p.GetValue(target, args);<o:p></o:p></span></p>
+
+<p>The rest of the processing does't happen and the object remains valid and
+allows Save to be called.<o:p></o:p></p>
+
+<p>Any idea of what I did wrong?<o:p></o:p></p>
+
+<p><span>Todd<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, April 16, 2009</h2>Or (in case that you are on 3.6.2+) you could use lambda expression like<br /><br />private static PropertyInfo ShortNameProperty = RegisterProperty(p->p.ShortName);<br /><br />and that lambda expression gets the correct property name into registration.<br /><br /><br /><br />________________________________<br /><br />From: Sergey Barskiy [mailto:cslanet@lhotka.net]<br />Sent: Thu 4/16/2009 2:14 PM<br />To: Nermin Dibek<br />Subject: RE: [CSLA .NET] Error in CommonRules - Utilities Class<br /><br /><br /><br />Your property is not declared properly.  Parameter for new ProeprtyInfo should be actual property name as in<br /><br />private static PropertyInfo ShortNameProperty = RegisterProperty(new PropertyInfo("ShortName"));<br /><br />public string ShortName<br /><br />{<br /><br />get { return GetProperty(ShortNameProperty); }<br /><br />set { SetProperty(ShortNameProperty, value); }<br /><br />}<br /><br /> <br /><br /> <br /><br /> <br /><br />Sergey Barskiy<br /><br />Principal Consultant<br /><br />office: 678.405.0687 | mobile: 404.388.1899<br /><br /> cid:_2_0648EA840648E85C001BBCB886257279 <br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br /> <br /><br />From: thaehn [mailto:cslanet@lhotka.net] <br />Sent: Thursday, April 16, 2009 1:47 PM<br />To: Sergey Barskiy<br />Subject: [CSLA .NET] Error in CommonRules - Utilities Class<br /><br /> <br /><br />The business rules are not being enforced in my business object.  Here is an example of the property declaration:<br /><br />private static PropertyInfo ShortNameProperty = RegisterProperty(new PropertyInfo("relLoc"));<br /><br />public string ShortName<br /><br />{<br /><br />get { return GetProperty(ShortNameProperty); }<br /><br />set { SetProperty(ShortNameProperty, value); }<br /><br />}<br /><br />And here is the rule declaration:<br /><br />ValidationRules.AddRule(Csla.Validation.CommonRules.StringRequired, new Csla.Validation.RuleArgs(ShortNameProperty));<br /><br />ValidationRules.AddRule(Csla.Validation.CommonRules.StringMaxLength, new Csla.Validation.CommonRules.MaxLengthRuleArgs(ShortNameProperty, 4));<br /><br />When CommonRules tries to evaluate this rule it calls a Utility class called CallByName which executes this code which results in null:<br /><br />PropertyInfo p = target.GetType().GetProperty(methodName);<br /><br />where target is my business object and methodName = "relLoc".<br /><br />The next line creates a null exception and exits the the whole process:<br /><br />return p.GetValue(target, args);<br /><br />The rest of the processing does't happen and the object remains valid and allows Save to be called.<br /><br />Any idea of what I did wrong?<br /><br />Todd<br /><br /><br /><br /><br /><br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Thursday, April 16, 2009</h2><P>Sergey,</P>
+<P>The name of the column in the database is "relLoc", but the property name is "ShortName".&nbsp; Do they have to be the same?&nbsp; Do I need to change "ShortName" to "relLoc"?</P>
+<P>Todd</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 17, 2009</h2>What you name your properties on your class has nothing to do with your database. You take care of that mapping in the DataPortal_XyZ methods when you load and save data.<br /><br />Name the property by what your users will reconize.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 16, 2009</h2>I don't think it's a bug; I think it's a requirement that the string name you pass to RegisterProperty matches the actual name of the property on your class.  So change the literal to ShortName and it will work.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

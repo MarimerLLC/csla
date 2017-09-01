@@ -1,0 +1,55 @@
+<html><header><title>Using objectfactory on the client side dataportal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using objectfactory on the client side dataportal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10415.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Saman posted on Monday, June 06, 2011</h2><p>Hello every body</p>
+<p>with special thanks to dear rocky for his amazing framework</p>
+<p>as im new to CSLA Frame work i created the training project to learn how to apply the pattern of this frame work.</p>
+<p>first at all i created the library as a project tracker library with some different business objects</p>
+<p>then i decide to using objectfactory to separate the business and data layer with more clarity</p>
+<p>for example i have &quot;Personnel&quot; object that has some property and i used the factory attribute to declare the personnelfactory object.</p>
+<p>in the factoryobject class i have implement the fetch method by using some criteria from my data access layer</p>
+<p>the problem is here that i get confusing when i want dataportal factory object runs locally</p>
+<p>in the other word what configuration i have to set in the config file.</p>
+<p>am i should implementing the wcf or other remoting services to use my data access layer?</p>
+<p>with the best regard</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 06, 2011</h2><p>What type of client are you using?</p>
+<p>I&#39;ll assume WPF or WindowsForms here:</p>
+<p>If you have a ObjectFactory where you want:</p>
+<ul>
+<li>Create to run on the client</li>
+<li>Fetch/Update/Delete to run on the server </li>
+</ul>
+<p>You should use the [RunLocal] attribute on the ObjectFactory.Create method (just like DataPortal_Create method). </p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#006400;">[</span>RunLocal<span style="color:#006400;">]</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">object</span>&nbsp;<span style="color:#191970;font-weight:bold;">Create</span><span style="color:#006400;">()</span>&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">return</span>&nbsp;<span style="color:#006400;">...;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span></p>
+<p>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">object</span>&nbsp;<span style="color:#191970;font-weight:bold;">Fetch</span><span style="color:#006400;">(</span><span style="color:#ff0000;">string</span>&nbsp;criteria<span style="color:#006400;">)<br />&nbsp;&nbsp;&nbsp; {</span><span style="color:#006400;"><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // create instance and fetch data <br />&nbsp;&nbsp;&nbsp; }</span></p>
+<p>Your DataPortal (assuming you are using N-Tier configuration by DataPortal) should point to the server and use [RunLocal] on those methods that should run locallly. </p>
+<p>You could even create a separate &quot;object factory assembly&quot; and ship with the client that ONLY contains the methods with [RunLocal] attribute. </p>
+<p>In Silverlight you should handle this in your code. You must use the DataPortalProxyMode to specify local.</p>
+<p>Example:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;BeginNewCustomer(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.<span style="color:#2baf9a;">ProxyModes</span>&nbsp;proxyMode,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">CustomerEdit</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;dp&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>&lt;<span style="color:#2b91af;">CustomerEdit</span>&gt;(<span style="color:#2b91af;">DataPortal</span>.<span style="color:#2baf9a;">ProxyModes</span>.LocalOnly);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.CreateCompleted&nbsp;+=&nbsp;callback;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginCreate();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;BeginGetCustomer(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.<span style="color:#2baf9a;">ProxyModes</span>&nbsp;proxyMode,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">EventHandler</span>&lt;<span style="color:#2b91af;">DataPortalResult</span>&lt;<span style="color:#2b91af;">CustomerEdit</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;dp&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>&lt;<span style="color:#2b91af;">CustomerEdit</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.FetchCompleted&nbsp;+=&nbsp;callback;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginFetch();
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 06, 2011</h2><p>This is also covered in detail in the <em>Using CSLA 4: Data Access</em> ebook from <a href="http://store.lhotka.net">http://store.lhotka.net</a>. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Saman replied on Monday, June 06, 2011</h2><p>Dear Rocky </p>
+<p>thanks a lot</p>
+<p>as i am from Iran unfortunately  i have no access to any payment way there for i can&#39;t buy your great book</p>
+<p>can you suggest me what can i do please ?</p>
+<p>i can buy a hosting service for you<img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" /></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Saman replied on Monday, June 06, 2011</h2><p>thanks a lot <strong></strong><strong><a>Jonny</a> </strong></p>
+<p><strong>i was wrong with object factory attribute define in my business object .</strong></p>
+<p><strong>it was too hard for me as dataportal was&#39;nt throw any exception during this wrong !! </strong></p>
+<p><strong>the fetch message was not routed from bo to my objectfactory and thus there was nothing happened after calling fetch method</strong></p>
+<p><strong>thank you again<br /></strong></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

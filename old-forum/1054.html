@@ -1,0 +1,24 @@
+<html><header><title>an Idea -- current user and BO Edit / Create logic</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>an Idea -- current user and BO Edit / Create logic</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1054.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Monday, August 28, 2006</h2><P>I am working on a my first CSLA app and in using some of my logic I think there might be a way for CSLA.Net to use a version of it....</P>
+<P>my current user (IIdentity/IPrincipal) class as an extra feild "ID" this is the key in my "Employees" table; an Int.</P>
+<P>other tables all have WhoCreated and WhoChanged that are Int and related to Employees.</P>
+<P>see where this is going?&nbsp; if the data save/update/create logic could pick up that ID on-the-fly and pass it back to the database then records would automaticaly get updated on who editied them.</P>
+<P>I am sure I can make this work for me by coding it one time for my app but I am thinking there might be some way to specify to the BO framework that it should add that ID w/o the manual code.</P>
+<P>for a general solution I guess it would need to work with other data types like string, guid etc...</P>
+<P>also my logic puts the sql servers date-time into the record so later we can see:</P>
+<P>Who Created and CreationTimeStamp - who and when the row was inserted, Read Only after that.</P>
+<P>WhoChanged, LastChanged - who last updated the row, and when.</P>
+<P>this helps track edits and gives a base for creating a full audit trail if needed.</P>
+<P>I do that in SQL with triggers if and when needed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 28, 2006</h2><P>Hi,</P>
+<P>These are all good ideas. I have implemented most of them in CSLA. My custom Principal class had ID plus more information for each user. I use the ID constantly in the app. For the Inserts and Updates the ID is used for just the reasons you state. I do not have a generalized solution. I codegen my Base classes and this is a standard part of my templates.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Monday, August 28, 2006</h2><P>Yeah I am using CodeSmith and finding out what and where I need to make adjustments to stuff.</P>
+<P>and I do have a few other things in my user-info I am taking it a step at a time as I do not want to de-stablilize rocky's framework with random crap changes :-)</P>
+<P>also I have my "employees" table with the login and first thing I saw in the sample app was the plain-text password; not in my production system!!!</P>
+<P>so I have a salt and hashed-password in my db and I have things arranged so that the plain-text password should never leave the local pc.&nbsp; I have a sql proc GetSalt that takes the username and gives back the ID and the Salt, username is uniqe in the table.</P>
+<P>then I can hash the password and call a Login proc with the ID and the hash.</P>
+<P>that way username travels 1 time and hash travels 1 time. never both ways.</P>
+<P>and when the password is updated it gets new Salt so even if more than one user has the same plain-text password I should never see two hashed passwords with the same hash.</P>
+<P>also I do not delete a row, I mark it as not-active</P>
+<P>then later I can delete it if there are no reasons to keep it.</P>
+<P>that also helps with the basis of an audit trail.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

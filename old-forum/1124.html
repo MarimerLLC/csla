@@ -1,0 +1,44 @@
+<html><header><title>Object Creation - Any Ideas?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Creation - Any Ideas?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1124.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson posted on Tuesday, September 05, 2006</h2><P>Greetings:</P>
+<P>I have a use case that requires&nbsp;that an object be created using the&nbsp;ID of another object.&nbsp; On the surface it appears to be a child object, but a child collection is not required.&nbsp; For instance, I have an NVL object, CarrierNVL,&nbsp;for populating a combobox.&nbsp; Once a selection is made, including the defaults, general information is displayed from a RO object, CarrierRO.&nbsp; Based on the selection, the user wants to click "Add New Product..." to add a new product; however, the ID of the&nbsp;Carrier needs to be a field of the Product object.&nbsp; Does that make the Product object a child?&nbsp; Does the Carrier ID become the criteria passed to the NewProduct() factory method?</P>
+<P>Not sure how the factory method and data portal method should look;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2>&nbsp;</FONT><FONT color=#008080 size=2>Product</FONT><FONT size=2> NewProduct()</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!CanAddObject())</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"User not authorized to add a product"</FONT><FONT size=2>);</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Create&lt;</FONT><FONT color=#008080 size=2>Product</FONT><FONT size=2>&gt;();</P></BLOCKQUOTE>
+<P>}</P>
+<P>or</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2>&nbsp;</FONT><FONT color=#008080 size=2>Product</FONT><FONT size=2> NewProduct(Guid carrierID)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!CanAddObject())</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#008080 size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"User not authorized to add a product"</FONT><FONT size=2>);</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Create&lt;</FONT><FONT color=#008080 size=2>Product</FONT><FONT size=2>&gt;(carrierID);</P></BLOCKQUOTE>
+<P>}</P>
+<P>and</P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>RunLocal</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P>_ProductID = <FONT color=#008080>Guid</FONT><FONT size=2>.NewGuid();</FONT></P>
+<P>_CarrierID&nbsp; = criteria.ID</FONT><FONT size=2>; //?????</P>
+<P>_EnteredBy = Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name;</P>
+<P>_EntryDate.Date = </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2>.Today;</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</P>
+<P>or</P>
+<P> </P>
+<P>[<FONT color=#008080 size=2>RunLocal</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2> carrierID)</P>
+<P>{</P>
+<P>_ProductID = <FONT color=#008080>Guid</FONT><FONT size=2>.NewGuid();</FONT></P>
+<P>_CarrierID&nbsp; = carrierID</FONT><FONT size=2>; //?????</P>
+<P>_EnteredBy = Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.User.Identity.Name;</P>
+<P>_EntryDate.Date = </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2>.Today;</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</P></FONT></FONT>
+<P><FONT size=3>Any input is greatly appreciated.</FONT></P>
+<P><FONT size=3>Kelly.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 05, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jkellywilkerson:</strong></div><div><p>Does that make the Product object a child?&nbsp; Does the Carrier ID become the criteria passed to the NewProduct() factory method?</p></div></BLOCKQUOTE><br><br>No, it doesn't make it a child. I would suggest that Carrier ID is a parameter to NewProduct(). Or for better abstraction yet, CarrierRO could be the parameter, so NewProduct() can get whatever fields it needs from that object - it minimizes the amount of knowledge/code required in the UI.<br><br>In this model, your call to DataPortal.Create() needs to pass a criteria object to the data portal. That criteria object would contain the Carrier ID value so as to make the value available within DataPortal_Create(). This is exactly the same as calling Fetch(), though you might have a different criteria class for your create operation.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Tuesday, September 05, 2006</h2><P>Thanks Rocky - I'll give that a try.</P>
+<P>Kelly.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

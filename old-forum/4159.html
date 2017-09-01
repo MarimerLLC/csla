@@ -1,0 +1,212 @@
+<html><header><title>DataPortalInvokeComplete Event Not Raised After Exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortalInvokeComplete Event Not Raised After Exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4159.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wally417 posted on Friday, January 11, 2008</h2><P>I've noticed that the client-side DataPortalInvokeComplete event is not raised if a server-side DataPortalException is caught. The host application can know that a data portal operation is in progress but in the current situation cannot reliably know when the data portal operation is complete. I suggest putting the OnDataPortalInvokeComplete method calls in a finally block to&nbsp;ensure (as best as possible)&nbsp;that DataPortalInvoke/DataPortalInvokeComplete events always come in pairs.</P>
+<P>Thanks for your consideration,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 11, 2008</h2>I'm not sure I follow... you can use OnDataPortalException to find out if the operation "completed" in failure.&nbsp; I think complete here means completed successfully.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wally417 replied on Friday, January 11, 2008</h2><P>I understand the OnDataPortalException method to be a server-side method. I'm looking at the client side. Here's a code excerpt from DataPortal.Fetch:</P>
+<P><FONT size=2>OnDataPortalInvoke(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortalEventArgs</FONT><FONT size=2>(dpContext));</P>
+<P></FONT><FONT color=#0000ff size=2>try</FONT></P>
+<P><FONT size=2>{</P>
+<P>&nbsp;&nbsp;&nbsp; result = proxy.Fetch(objectType, criteria, dpContext);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Server.</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; result = ex.Result;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (proxy.IsServerRemote)</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplicationContext</FONT><FONT size=2>.SetGlobalContext(result.GlobalContext);</FONT></P>
+<P><FONT size=2>// some code cut here for brevity</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2>"DataPortal.Fetch {0} ({1})"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>Resources</FONT><FONT size=2>.Failed, innerMessage), </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ex.InnerException, result.ReturnObject);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (proxy.IsServerRemote)</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp; ApplicationContext</FONT><FONT size=2>.SetGlobalContext(result.GlobalContext);</P>
+<P>OnDataPortalInvokeComplete(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortalEventArgs</FONT><FONT size=2>(dpContext));</FONT></P>
+<P><FONT size=2>Notice that on the client side no OnDataPortalInvokeComplete method is called if a DataPortalException occurs. I suggest the following code has the same semantics except a DataPortalInvokeComplete event is raised on the client side&nbsp;regardless of whether or not there was an exception on the server side:</FONT></P><FONT size=2><FONT size=2></FONT><FONT size=2><FONT size=2>
+<P>OnDataPortalInvoke(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortalEventArgs</FONT><FONT size=2>(dpContext));</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; result = proxy.Fetch(objectType, criteria, dpContext);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Server.</FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; result = ex.Result;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortalException</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2>"DataPortal.Fetch {0} ({1})",</FONT><FONT color=#2b91af size=2>&nbsp; Resources</FONT><FONT size=2>.Failed,&nbsp;&nbsp;&nbsp;ex.InnerException.InnerException),</P>
+<P>&nbsp;&nbsp;&nbsp; ex.InnerException, result.ReturnObject);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (proxy.IsServerRemote)</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplicationContext</FONT><FONT size=2>.SetGlobalContext(result.GlobalContext);</P>
+<P>&nbsp;&nbsp;&nbsp; OnDataPortalInvokeComplete(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataPortalEventArgs</FONT><FONT size=2>(dpContext));</P>
+<P>}</P>
+<P>Can the same net result be obtained some other way on the client side? Is there a downside to this change other than the behavior changing?</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Mike</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 11, 2008</h2><P>Yes, that's an interesting point.</P>
+<P>I wonder if there shouldn't be a client-side exception event for parity with the server-side behavior?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wally417 replied on Friday, January 11, 2008</h2><P>I suppose you could raise an event on the client side, but we already get a DataPortalException thrown. That is certainly sufficient for my needs. Others may ahve a use for it.</P>
+<P>I do suggest changing the client DataPortal code as above or in a way that provides the same effect: a DataPortalInvokeComplete event is raised whether a server-side exception was encountered or not.</P>
+<P>Thank you!</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The reason I don&#8217;t raise the Complete event is because the
+operation didn&#8217;t complete due to an exception. I&#8217;m not sure it
+makes logical sense to raise a Complete event for something that didn&#8217;t
+complete.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What is the specific thing you are trying to accomplish?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wally417
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 11, 2008 9:21 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DataPortalInvokeComplete Event Not Raised After
+Exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I suppose you could raise an event on the client side, but we already get a
+DataPortalException thrown. That is certainly sufficient for my needs. Others
+may ahve a use for it.<o:p></o:p></p>
+
+<p>I do suggest changing the client DataPortal code as above or in a way that
+provides the same effect: a DataPortalInvokeComplete event is raised whether a
+server-side exception was encountered or not.<o:p></o:p></p>
+
+<p>Thank you!<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wally417 replied on Saturday, January 12, 2008</h2><P>Right now I'd like to do some simple UI animation while a DataPortal event is taking place. I can easily imagine other ways in which I might want to use those events, including instrumentation (as in your post here <A HREF="/forums/post/2409.aspx">http://forums.lhotka.net/forums/post/2409.aspx</A>) or DataPortal metering. The DataPortalInvoke/DataPortalInvokeComplete events seem&nbsp;to me&nbsp;the natural hooks for this kind of functionality. The alternative that jumps into my mind is to sprinkle DataPortalInvoke/Complete analogs in the business class DataPortal_xxx methods, which I think is not a particularly palatble solution.</P>
+<P>You could add a boolean Success flag to DataPortalEventArgs to indicate whether the operation completed successfully or with an exception.</P>
+<P>I suppose you may consider making my suggested modifications a breaking change since the behavior of the framework would indeed be different. I suspect this would be a very mild severity breaking change, though. A&nbsp;scan of the forum posts for DataPortalInvoke/Complete/DataPortalEventArgs leads me to think users of these events assume that if a DataPortalInvoke event is raised, a DataPortalInvokeComplete event will follow.</P>
+<P>If I use the current framework code and&nbsp;instrument an application to gather DataPortal method timings using the Invoke/Complete events as you suggest in the post noted above, how would I handle the timer in the case of an exception? Would I need to add code to&nbsp;each DataPortalException catch block to signal completion of the method call?&nbsp;</P>
+<P>Thanks again!</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If I added a DataPortalException event it would be a
+static/Shared event just like the current events, so I imagine you&#8217;d call
+your timer-end code from both the Complete and Exception events &#8211; but there&#8217;d
+be just two locations, not n locations.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, your idea of passing a status field (and the exception
+itself perhaps) to the Completed event seems quite reasonable as well. I don&#8217;t
+remember if those events receive any args parameter at the moment, but they&#8217;d
+need to start doing so to follow this train of thought. That&#8217;d be a
+breaking change if such a parameter needs to be added (at least in C# - VB 9
+now has relaxed delegate invocation that would allow any existing event handler
+to work).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wally417
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, January 12, 2008 4:45 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: DataPortalInvokeComplete Event Not Raised
+After Exception<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Right now I'd like to do some simple UI animation while a DataPortal event
+is taking place. I can easily imagine other ways in which I might want to use
+those events, including instrumentation (as in your post here <a href="/forums/post/2409.aspx">http://forums.lhotka.net/forums/post/2409.aspx</a>)
+or DataPortal metering. The DataPortalInvoke/DataPortalInvokeComplete events
+seem&nbsp;to me&nbsp;the natural hooks for this kind of functionality. The
+alternative that jumps into my mind is to sprinkle DataPortalInvoke/Complete
+analogs in the business class DataPortal_xxx methods, which I think is not a
+particularly palatble solution.<o:p></o:p></p>
+
+<p>You could add a boolean Success flag to DataPortalEventArgs to indicate
+whether the operation completed successfully or with an exception.<o:p></o:p></p>
+
+<p>I suppose you may consider making my suggested modifications a breaking
+change since the behavior of the framework would indeed be different. I suspect
+this would be a very mild severity breaking change, though. A&nbsp;scan of the
+forum posts for DataPortalInvoke/Complete/DataPortalEventArgs leads me to think
+users of these events assume that if a DataPortalInvoke event is raised, a
+DataPortalInvokeComplete event will follow.<o:p></o:p></p>
+
+<p>If I use the current framework code and&nbsp;instrument an application to
+gather DataPortal method timings using the Invoke/Complete events as you
+suggest in the post noted above, how would I handle the timer in the case of an
+exception? Would I need to add code to&nbsp;each DataPortalException catch
+block to signal completion of the method call?&nbsp;<o:p></o:p></p>
+
+<p>Thanks again!<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wally417 replied on Saturday, January 12, 2008</h2><P>OnDataPortalInvokeComplete takes a DataPortalEventArgs parameter, so it sounds like a deal!<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp;</P>
+<P>(OK, I understand it takes more thought than that. There may be very good reason to leave the behavior just as it is.)</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,5 @@
+<html><header><title>Isolation Level in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Isolation Level in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11944.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Helius posted on Friday, April 19, 2013</h2><p>Hello, </p>
+<p>I want to change the default isolation level of the transactions in CSLA from serializable to ReadCommited. I tried to change the app.config file </p>
+<p>&lt;add key=&quot;CslaTransactionIsolationLevel&quot; value=&quot;ReadCommitted&quot; /&gt;</p>
+<p>But it seems to have no effect. Should i consider something else?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Turntwo replied on Tuesday, April 23, 2013</h2><p>&lt;add key=&quot;CslaDefaultTransactionIsolationLevel&quot; value=&quot;ReadCommitted&quot;/&gt;</p>
+<p>You are missing &quot;Default&quot; in your key. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

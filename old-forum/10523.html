@@ -1,0 +1,19 @@
+<html><header><title>Csla 4 service authentication problem.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4 service authentication problem.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10523.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GoGO posted on Wednesday, July 13, 2011</h2><p>
+<p class="MsoNormal"><span lang="EN-US">I work with Authentication Windows code example which comes with
+UsingCsla4-04-DataPortal book from <a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4"><span>CSLA 4 ebook
+series</span></a>. It works fine on the local machine. But when I deploy the
+service at remote IIS and run WPF client, the code raises following exception:</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">&ldquo;The HTTP request is unauthorized
+with client authentication scheme &#39;Anonymous&#39;. The authentication header
+received from the server was &#39;Negotiate,NTLM&#39;.&rdquo;.</span></p>
+<p class="MsoNormal"><span lang="EN-US">If Anonymous authentication is allowed on IIS application, exception is
+not raised. But anonymous authentication is against the security policy. </span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">Is there any way to run this service without Anonymous authentication?</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, July 18, 2011</h2><p>Yes, but it becomes rapidly complicated.</p>
+<p>First, you need to decide what non-anonymous authentication scheme you will use. Then you need to configure the client and server to pass the credentials based on that scheme.</p>
+<p>Obviously part of your decision must include whether you&#39;ll prompt the user for the credentials, use thier client-side Windows credentials, or hard-code some application credentials. If you go for application credentials, they can be username/password, but it is probably better to use a certificate. But in that case you need a CA, and a way to deploy the client certs.</p>
+<p>This stuff gets rapidly very complex :)</p>
+<p>In the ebook I reference the WCF security guidance book published by Microsoft on codeplex. You really need to read through that book to understand all the possible ways of authenticating a WCF service. Then go back to your app and figure out how to make that authentication model work with the data portal.</p>
+<p>Worst case, you will need to create custom proxy and/or host classes as shown in the ebook. In those custom classes you can set up any type of autthentication required by your security policy.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

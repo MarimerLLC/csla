@@ -1,0 +1,15 @@
+<html><header><title>Is a good idea to use self-referencing hierarchy in CSLA.NET?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is a good idea to use self-referencing hierarchy in CSLA.NET?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11273.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TF Zheng posted on Sunday, April 01, 2012</h2><p>In CSLA.NET, Is a good idea, or proper approach, to use self-referencing hierarchy&nbsp;from one &nbsp;data-table to build object graph (Parent-Child)?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 01, 2012</h2><p>Hi TF Zheng,</p>
+<p>CSLA.NET offers no direct support for hierarchical data.</p>
+<p>One of the approaches is to use a ReadOnly (root) collection where the ReadOnly child objects have a ParentID property. The hierarchy concept is moved out of business objects to UI. That might not be the best approach since the hierarchy is indeed a business concept.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TF Zheng replied on Sunday, April 01, 2012</h2><p>Friend,</p>
+<p>Each level of my hierarchical data is an editable list of business object with many properties. At least we have four levels in hierarchy. There are two approaches:</p>
+<p>One approach is: Each level of business object maps to a data-table. Then, use &quot;Has relation/Forieign-Key&quot; to establish hierarchical object graph/view.</p>
+<p>The another approach is: use self-referenceing table of hierarchy.</p>
+<p>My question is: which approach is the best if we we use CSLA.NET together with Entity Framework?</p>
+<p>Thanks for any suggestions...</p>
+<p>TF Zheng</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TF Zheng replied on Friday, April 06, 2012</h2><p>Friend,</p>
+<p>Each level of my hierarchical data is an editable list of business object with many properties. At least we have four levels in hierarchy. There are two approaches:</p>
+<p>One approach is: Each level of business object maps to a data-table. Then, use &quot;Has relation/Forieign-Key&quot; to establish hierarchical object graph/view.</p>
+<p>The another approach is: use self-referenceing table of hierarchy.</p>
+<p>My question is: which approach is the best if we we use CSLA.NET together with Entity Framework?</p>
+<p>Thanks for any suggestions...</p>
+<p>TF Zheng</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

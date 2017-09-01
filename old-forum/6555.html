@@ -1,0 +1,11 @@
+<html><header><title>New parent object with children - persistance of child object's parent Id</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New parent object with children - persistance of child object's parent Id</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6555.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmclernon posted on Wednesday, March 04, 2009</h2><P>Hi all,</P>
+<P>I am having a problem whereby the ParentId in a Child Object of a New Parent object is not being refreshed properly when the parent is saved.&nbsp; The Parent.Id is an INT Identity column.</P>
+<P>I am using CSLAContrib templates and&nbsp;initially the Child_Insert method is created as follows:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P><EM>private</EM></FONT></FONT><EM><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Insert(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ParentObject</FONT></FONT><FONT size=2> parent)</FONT></EM></P>
+<P><FONT size=2><EM>...</EM></FONT></P><FONT size=2><FONT size=2>
+<P><EM>data.ParentObjectID = ReadProperty&lt;</EM></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><EM>int</EM></FONT></FONT><FONT size=2><EM>&gt;(ParentObjectIDProperty);</EM></P>
+<P><FONT size=3>This results in the child&nbsp;record being saved with a ParentObjectID of 0.&nbsp; When I&nbsp;changed this to the following, the child record is saved correctly with the proper ParentObjectID:</FONT></P>
+<P><EM>data.ParentObject= parent.Id;</EM></P>
+<P><FONT size=3>Is what I'm doing so far correct?&nbsp; If not, please advise, but if so, do I manually need to update the ParentObjectIDProperty with the correct value after the DataContext.SubmitChanges() method is called as the ParentObject does not contain children with the proper ParentObjectID?</FONT></P>
+<P><FONT size=3>Thanks,</FONT></P>
+<P><FONT size=3>Colm</FONT></P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

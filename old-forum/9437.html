@@ -1,0 +1,40 @@
+<html><header><title>CriteriaBase as Generic Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CriteriaBase as Generic Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9437.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_b posted on Thursday, August 26, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>I have just updated my CSLA version from 4.0.0.-100201 to 4.0.0.-100723 and have developed quite a few errors from this.</p>
+<p>My first error is around the changing of CriteriaBase to a generic.</p>
+<p>Previously my class was:</p>
+<p>pubic class UserListCriteria&lt;T&gt; : CriteriaBase<br />{</p>
+<p style="padding-left:30px;">public UserListCriteria() : base 
+(typeof(T))<br />{ }</p>
+<p style="padding-left:30px;">public UserListCriteria(int id) : base (typeof(T))<br />{</p>
+<p style="padding-left:60px;">Id = id;</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">public UserListCriteria(string username) : base 
+(typeof(T))<br />
+{</p>
+<p style="padding-left:60px;">UserName = username;</p>
+<p style="padding-left:30px;">}</p>
+<p style="padding-left:30px;">public int Id {get; set;}<br />public string UserName {get; set;}</p>
+<p>}</p>
+<p>Where the Criteria is referenced by:<br />Csla.DataPortal.Fetch&lt;User&gt;(new UserListCriteria&lt;User&gt;( int | string ));</p>
+<p>This gives &quot;Using the generic type &#39;Csla.CriteriaBase&lt;T&gt; requires 1 type arguments&quot;</p>
+<p>Should I change my Class definition to </p>
+<p>pubic class UserListCriteria : 
+CriteriaBase&lt;UserListCriteria&gt;&nbsp; [seems the obvious one to me, but...]</p>
+<p>or</p>
+<p>pubic class UserListCriteria : 
+CriteriaBase&lt;User&gt;</p>
+<p>or</p>
+<p>pubic class UserListCriteria&lt;T&gt; : CriteriaBase&lt;UserListCriteria&lt;T&gt;&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Regardless of these changes, I get</p>
+<p>Csla.CriteraBase&lt;object&gt; does not contain a constructor that takes one argument.</p>
+<p>I realise that this is from the call to &#39; base(typeof(T))&#39;. I assume this is no longer relevant since CriteriaBase is now a generic. Should I keep the&nbsp; &#39; base()&#39; call, or is that now redundant.</p>
+<p>&nbsp;</p>
+<p>Sorry if this has been covered before, but I couldn&#39;t find any mentions around this.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, August 26, 2010</h2><p>You shouldn&#39;t be surprised by lots of changes from February to July - you were using essentially a preview/prototype version that evolved quite a lot over those months...</p>
+<p>CriteriaBase (and some other base classes) now work like BusinessBase or ReadOnlyBase. They do this so you can use managed properties like in ReadOnlyBase, which makes these types much, much easier to use in Silverlight or WP7.</p>
+<p>So:</p>
+<p>public class CustomCriteria : CriteriaBase&lt;CustomCriteria&gt;</p>
+<p>But you should also know that for single serializable values you don&#39;t need a formal criteria class at all anymore. So you only need a criteria class if your criteria consists of multiple values. And technically even then you don&#39;t need to use CriteriaBase (though that&#39;s easiest probably), as long as your type is serializable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lee_b replied on Thursday, August 26, 2010</h2><p>Thank you again <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Tuesday, November 30, 2010</h2><p>thank you guys<img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

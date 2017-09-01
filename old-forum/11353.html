@@ -1,0 +1,70 @@
+<html><header><title>LINQ to CSLA (ver 3.8.4): having a little issue with a Indexable Nullable&lt;Guid&gt; property on a ReadOnlyListBase&lt;,&gt; collection when indexing, caused by null values</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LINQ to CSLA (ver 3.8.4): having a little issue with a Indexable Nullable&lt;Guid&gt; property on a ReadOnlyListBase&lt;,&gt; collection when indexing, caused by null values</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11353.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho posted on Thursday, May 10, 2012</h2><p>Hi everybody. I&#39;m working on a tree structure that builds around an in memory ReadOnlyListBase, which contains information about basic tree structures.</p>
+<p>I get the inicial collection info to build the final trees and put the data in this ReadOnlyListBase collection</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">TreeListBase</span>&lt;TList,&nbsp;TNode&gt;&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ReadOnlyListBase</span>&lt;TList,&nbsp;TNode&gt;
+	<span style="COLOR:blue;">where</span>&nbsp;TList&nbsp;:&nbsp;<span style="COLOR:#2b91af;">TreeListBase</span>&lt;TList,&nbsp;TNode&gt;
+	<span style="COLOR:blue;">where</span>&nbsp;TNode&nbsp;:&nbsp;<span style="COLOR:#2b91af;">TreeNodeInfoBase</span>&lt;TNode,&nbsp;<span style="COLOR:#2b91af;">Guid</span>,&nbsp;<span style="COLOR:blue;">string</span>&gt;</pre>
+<p>which contains items of TreeNodeInfoBase:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">TreeNodeInfoBase</span>&lt;T,&nbsp;TId,&nbsp;TInfo&gt;&nbsp;:&nbsp;<span style="COLOR:#2b91af;">ReadOnlyBase</span>&lt;T&gt;,&nbsp;<span style="COLOR:#2b91af;">ITreeNode</span>&lt;TId,&nbsp;TInfo&gt;
+	<span style="COLOR:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="COLOR:#2b91af;">TreeNodeInfoBase</span>&lt;T,&nbsp;TId,&nbsp;TInfo&gt;
+	<span style="COLOR:blue;">where</span>&nbsp;TId&nbsp;:&nbsp;<span style="COLOR:blue;">struct</span></pre>
+<p>TreeNodeInfoBase has these properties:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;TId&gt;&nbsp;IdProperty&nbsp;=&nbsp;RegisterProperty&lt;TId&gt;(c&nbsp;=&gt;&nbsp;c.Id);
+<span style="COLOR:blue;">public</span>&nbsp;TId&nbsp;Id
+{
+	<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(IdProperty);&nbsp;}
+	<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;LoadProperty(IdProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}
+}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;"></span>&nbsp;</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;TId?&gt;&nbsp;ParentIdProperty&nbsp;=&nbsp;RegisterProperty&lt;TId?&gt;(c&nbsp;=&gt;&nbsp;c.ParentId);
+[<span style="COLOR:#2b91af;">Indexable</span>]
+<span style="COLOR:blue;">public</span>&nbsp;TId?&nbsp;ParentId
+{
+	<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(ParentIdProperty);&nbsp;}
+	<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;LoadProperty(ParentIdProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}
+}
+</pre>
+<p>&nbsp;as you can see, ParentId is <strong>nullable</strong> and marked as <strong>Indexable</strong>.</p>
+<p>&nbsp;Later, when I build actual trees from this base classes, I use something like this.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">var</span>&nbsp;children&nbsp;=&nbsp;<span style="color:blue;">from</span>&nbsp;data&nbsp;<span style="color:blue;">in</span>&nbsp;selectList
+&nbsp;<span style="color:blue;">where</span>&nbsp;data.ParentId&nbsp;==&nbsp;parentId
+&nbsp;<span style="color:blue;">orderby</span>&nbsp;data.Orden
+&nbsp;<span style="color:blue;">select</span>&nbsp;data;</pre>
+<p>selectList is any constructed type derived from TreeListBase&lt;&gt;, so this query executes the special Where(..) extension CSLA has on ReadOnlyListBase collections.</p>
+<p>The Where(..) builds the index corresponding to &quot;ParentId&quot;, and in the process, it leaves out of the index all the &quot;null&quot; references of ParentId. I&#39;m following the code on Csla.Linq.Index&lt;T&gt;.DoAdd(..)</p>
+<p>...</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DoAdd(T&nbsp;item)
+&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_theProp&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">object</span>&nbsp;value&nbsp;=&nbsp;_theProp.GetValue(item,&nbsp;<span style="color:blue;">null</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(value&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">int</span>&nbsp;hashCode&nbsp;=&nbsp;value.GetHashCode();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_index.ContainsKey(hashCode))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_index[hashCode].Add(item);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">List</span>&lt;T&gt;&nbsp;newList&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;T&gt;(1);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;newList.Add(item);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_index.Add(hashCode,&nbsp;newList);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_countCache++;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;}</pre>
+<p>...</p>
+<p>It asks &quot;<span style="color:blue;">if</span> (value != <span style="color:blue;">null</span>)&quot;. If it is, it adds the calculated hashcode to the index structure. If not, it does nothing.</p>
+<p>The issue I&#39;m having comes when I&nbsp;try to build the tree using an [Indexable] ParentId property. My first step is to get all the root nodes&nbsp;on my tree. All these root nodes are expilcitly identified by having a Nullable&lt;Guid&gt; ParentId&nbsp;== null.</p>
+<p>So, if I leave the [Indexable] attribute on, the index doesn&#39;t find any hit&nbsp;and the tree building fails. If I get rid of the [Indexable] attribute, everything works fine.</p>
+<p>Its wonderful to have the ability to&nbsp;index on Csla&nbsp;collections and to accelerate processes like tree building. I have a couple of large&nbsp;tree collections that need to be rebuild upon different filters once and again. This indexing capability&nbsp;is&nbsp;very useful&nbsp;here.</p>
+<p>Should I use the indexing structure in any other way, so nulls are included on the index lists? </p>
+<p>Is there any way I can get the framework to include nulls on&nbsp;Linq to Csla indexes?</p>
+<p>As I&#39;m writing, I&#39;m thinking about&nbsp;using some dummy value for my null values when I construct the Csla collection. This&nbsp;should do the trick. I&#39;m looking for a more elegant solution here <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Thanks&nbsp;in advance,</p>
+<p>Troncho<br />&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 10, 2012</h2><p>Fwiw, we completely dropped this indexing functionality in CSLA 4. It is more reliable to use external indexing libraries than to try and maintain the functionality directly inside CSLA.</p>
+<p>I don&#39;t think we supported the concept of null values in an indexed property, no.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>alex.enjoy replied on Friday, May 11, 2012</h2><p>This sounds very interesting to me.<br />Can you provide more information about indexing libraries, maybe an working example together with CSLA ?</p>
+<p>thanks, alex.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, May 11, 2012</h2><p>Http://i4o.codeplex.com and probably others a well.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Friday, May 11, 2012</h2><p>Jonny, once again, thanks a lot for your advice on every subject I present on this forum. I&#39;ll check the indexing library you are suggesting and come back with the results <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Friday, May 11, 2012</h2><p>Ok, thanks for your quick answer Rocky. I&#39;m trying to advance as quickly as possible with my first solution around CSLA 3.8</p>
+<p>I&#39;m really looking forward to finish this first project&nbsp;developed on CSLA 3.8 / WinForms</p>
+<p>Next one will be on CSLA 4 (I will have to learn all the new stuff you suggest) and MVC.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

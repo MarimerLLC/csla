@@ -1,0 +1,143 @@
+<html><header><title>Adding my own objects to Rolodex</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding my own objects to Rolodex</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6133.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas posted on Tuesday, January 13, 2009</h2>I've read Expert C# 2008 Business Objects - good read! - and am now trying to learn by doing. I've taken the Rolodex example for Silverlight and am modifying code here and there to see how it works.<br><br>I've added some tables of my own to the database and some objects to accompany them to the BusinessClasses in Rolodex.Business.Server. BUT they don't seem to have 'joined' the project / solution properly (e.g. they don't appear in the list of shortcuts in the Rolodex.Business.Client project) and don't have debugging information created for them. What am I missing out?<br><br>When I try to use them, my code fails in CslaDataProvider.cs in Refresh() as this line doesn't manage to return a type:<br><br>Type objectType = Type.GetType(_objectType);<br><br>I don't think I can be far off getting this right, though am far enough away at the moment to be stuck! Thanks for any help, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should add the classes to the .Server project, then link
+them to client using Add Existing Item context menu, and selecting add as link.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Adding my own objects to Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I've read Expert C# 2008 Business Objects - good read! - and
+am now trying to learn by doing. I've taken the Rolodex example for Silverlight
+and am modifying code here and there to see how it works.<br>
+<br>
+I've added some tables of my own to the database and some objects to accompany
+them to the BusinessClasses in Rolodex.Business.Server. BUT they don't seem to
+have 'joined' the project / solution properly (e.g. they don't appear in the
+list of shortcuts in the Rolodex.Business.Client project) and don't have
+debugging information created for them. What am I missing out?<br>
+<br>
+When I try to use them, my code fails in CslaDataProvider.cs in Refresh() as
+this line doesn't manage to return a type:<br>
+<br>
+Type objectType = Type.GetType(_objectType);<br>
+<br>
+I don't think I can be far off getting this right, though am far enough away at
+the moment to be stuck! Thanks for any help, James.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Tuesday, January 13, 2009</h2>Thanks! That's got me to the next stage...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Tuesday, January 13, 2009</h2>Ok... the next stage. I can create my objects and have them read data from my database - I have a working application.<br><br>One thing that's making development really difficult is that I can't debug the server objects. I can step through the silverlight code - the visual and the business objects running on the client - but I just get 'The breakpoint will not currently be hit' for the server code. I'm sure there's an easy solution. How do I debug the business objects running on the server?<br><br>Thanks for your help, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Tuesday, January 13, 2009</h2>Ok, I've solved this one myself. Attach to process does the trick. What are good development practices then? Is there a way of hitting run and debugging client and server at once, or do you do one or the other? (Or have two instances of VS running?)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can simplify the process by merging WCF host and SL Web host
+into a single web site.&nbsp; Once both are running in the same process, you
+can debug both sides.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 5:43 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Adding my own objects to Rolodex<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok, I've solved this one myself. Attach to process does the
+trick. What are good development practices then? Is there a way of hitting run
+and debugging client and server at once, or do you do one or the other? (Or
+have two instances of VS running?)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Wednesday, January 14, 2009</h2>Thanks for your help Sergey - debugging all in one instance of VS now.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

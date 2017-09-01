@@ -1,0 +1,28 @@
+<html><header><title>Using same business objects to store data to two different server locations</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using same business objects to store data to two different server locations</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8659.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkunnen posted on Monday, March 15, 2010</h2><p>Hi All,</p>
+<p>we want to save data from the same business objects (same types) into two locations.</p>
+<p>We have read all kind of things on changing the Proxy and data portals, but we don&#39;t feel we have found a concrete solution to our problem.</p>
+<p>Is there a way to dynamically set the WCF endpoint to save a business object into one server and afterwards to another server by changing the endpoint.</p>
+<p>If we look a the proxy you can only switch on the type of object. This means we have to start inheritance of all our objects.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p>
+<p>Jim</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, March 16, 2010</h2><p>There are two general solutions in a 3-tier deployment.</p>
+<p>You can create a custom client-side proxy that uses some mechanism to determine which app server to invoke.</p>
+<p>Or you can always invoke one app server, and have that app server update the appropriate database - switching database connections based on some mechanism that is purely server-side.</p>
+<p>The second approach is often simpler, but obviously is only useful if there&#39;s one data center with multiple databases. If you need to communicate with different data centers then the first approach is probably the way to go.</p>
+<p>When you create your custom client-side proxy, you can have it decide to invoke different app servers using whatever technique you&#39;d like. This could be inheritance, attributes, ClientContext, LocalContext, the current user principal object or some app-wide static property. The options are endless. All that is required is that you can write some logic in your proxy that determines which app server to invoke.</p>
+<p>The most common scenario I&#39;m aware of is to select the app server based on some value stored (usually) in ClientContext. Often this is a value indicating the user&#39;s department or division or something like that - a value that is determined once the user has logged into the system.</p>
+<p>Creating this custom proxy is not hard if you are using WCF - just subclass the existing WcfProxy class and change the server URL based on your decision logic.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkunnen replied on Tuesday, March 16, 2010</h2><p>Rocky,</p>
+<p>we need the custom client-side proxy solution.</p>
+<p>We have only one big question with your proposed solution.</p>
+<p>If we set a global var to identify the endpoint we want to use for th save / delete / create or fetch operation, we can have thread safety problems.</p>
+<p>Especially with silverlight asynchronous calls.</p>
+<p>If we start a save for one object of a type to one datastore and another save of the same type to another datastore, the global identfier can be changed before the first save reaches the proxy.</p>
+<p>We were thinking about a solution to pass the endpoint information in our save / update /delete and fetch routines in our business objects.</p>
+<p>The disadvantage of this approach is that we need to change some DataPortal classes of CSLA and all the interfaces of our Business objects.</p>
+<p>Or do you have a thread safe solution above which doesn&#39;t imply so much changes in the core CSLA code.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance,</p>
+<p>Jim</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, March 16, 2010</h2><p>If your selection criteria is per object instance, then it is per object instance.</p>
+<p>I&#39;ve said this so many times I can&#39;t count - it is always a good practice to create a set of custom base classes that sit between the CSLA base classes and your business classes. This is the primary extensibility model for several aspects of CSLA, including things like business rules, validation rules, authorization and the data portal.</p>
+<p>Making such a change is really quite trivial. Create 6 base classes, then change your business classes to inherit from your base classes.</p>
+<p>Then enhance/extend functionality as necessary by adding code to the base classes. In your case you will need to define and implement some non-generic interface that your data portal proxy can use to determine the context of the object for the purpose of switching to the right app server URL.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

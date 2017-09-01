@@ -1,0 +1,139 @@
+<html><header><title>Csla Light Async Validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Light Async Validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7877.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele posted on Monday, October 26, 2009</h2>I need to validate entered info again data in database; Therefore, I set up async validation rule. <br>It works fine. However, its call server each time I make change in entry control.. I would like to validate only on  lost focus. Is it possible to set up PropertyStatus to behave this way?<br><br>Also, I noticed that PropertyStatus change to BusyAnimation when async call is executing. Is BO expose property which is indicating that async call taking place?<br><br><br>Thanks<br>Fele<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Asynch
+rule is tied to a property and should only fire when this specific property is
+changed, unless you setup dependant properties.&nbsp; BO raises an event based
+on interface INotifyBusy when an synch rule is starting and when it is finishes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 26, 2009 11:43 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Csla Light Async Validation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I need to validate entered info again data in database;
+Therefore, I set up async validation rule. <br>
+It works fine. However, its call server each time I make change in entry
+control.. I would like to validate only on lost focus. Is it possible to set up
+PropertyStatus to behave this way?<br>
+<br>
+Also, I noticed that PropertyStatus change to BusyAnimation when async call is
+executing. Is BO expose property which is indicating that async call taking
+place?<br>
+<br>
+<br>
+Thanks<br>
+Fele<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fele replied on Monday, October 26, 2009</h2>Can you provide examples?<br><br>Thanks<br>Fele<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You
+can look at Rolodex project.&nbsp; Even if the project does not build, you can
+still look at the code for Company object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fele
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 26, 2009 2:24 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Csla Light Async Validation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Can you provide examples?<br>
+<br>
+Thanks<br>
+Fele<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

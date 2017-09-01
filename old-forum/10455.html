@@ -1,0 +1,50 @@
+<html><header><title>Problem chaining rules with CSLA Common Required rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem chaining rules with CSLA Common Required rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10455.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Eben posted on Monday, June 20, 2011</h2><p>I am having some trouble trying to chain two rules using the Csla.Rules.CommonRules.Required rule as the inner rule.&nbsp; Basically, I want the Width2 property to be required if the Shape property is not equal to &quot;Circular&quot;.&nbsp; Here is my code:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">ShapeGate</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">BusinessRule</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;ShapeGate(Csla.Core.<span style="COLOR:#2b91af;">IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="COLOR:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:#2b91af;">IBusinessRule</span>&nbsp;_innerRule&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(<span style="COLOR:#2b91af;">IBusinessRule</span>)&nbsp;<span style="COLOR:blue;">new</span>&nbsp;Csla.Rules.CommonRules.<span style="COLOR:#2b91af;">Required</span>(Width2Property);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">override</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;Execute(<span style="COLOR:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:#2b91af;">StormPipe</span>&nbsp;pipe&nbsp;=&nbsp;(<span style="COLOR:#2b91af;">StormPipe</span>)context.Target;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;shapeProp&nbsp;=&nbsp;pipe.ReadProperty(ShapeProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(!shapeProp.Equals(<span style="COLOR:#a31515;">&quot;Circular&quot;</span>,&nbsp;<span style="COLOR:#2b91af;">StringComparison</span>.InvariantCultureIgnoreCase))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_innerRule.Execute(context.GetChainedContext(_innerRule));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">The problem I have is that when I run the app and put in a value other than circular for the shape property, I get this error message on the Shape property:</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span class="field-validation-error">rule://myApp.business.stormpipe-shapegate/Shape:Object reference not set to an instance of an object.</span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"><span class="field-validation-error"></span></pre>
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">It works fine if I replace this line:</pre>
+<pre style="padding-left:30px;font-family:Consolas;background:white;color:black;font-size:13px;">(<span style="COLOR:#2b91af;">IBusinessRule</span>)&nbsp;<span style="COLOR:blue;">new</span>&nbsp;Csla.Rules.CommonRules.<span style="COLOR:#2b91af;">Required</span>(Width2Property);</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">With this:</pre>
+<pre style="PADDING-LEFT:30px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">(<span style="COLOR:#2b91af;">IBusinessRule</span>) <span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">Required</span>&lt;<span style="COLOR:blue;">double</span>?&gt;(Width2Property);</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Where <span style="COLOR:#2b91af;">Required</span>&lt;<span style="COLOR:blue;">T</span>&gt; is my own custom made required rule.  In that case, it behaves the way I would expect (ie: when I put in a shape that is not circular, I get a nice error message on the Width2 property stating that Width2 is required)</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Don&#39;t get hung up too much on the logic of the rule, as this is just practice at this point, but what I want to know is why a custom business rule works fine as an inner rule in this scenario, but Csla.Rules.CommonRules.Required does not seem to work.</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;"></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Thanks,</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:13px;">Eben</pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Monday, June 20, 2011</h2><p>Hi Eban,</p>
+<p>Your inner rule requires the value of Width2Property, therefore you need to add&nbsp;Width2Property as&nbsp;an input property on your gate rule. e.g.</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;ShapeGate(Csla.Core.<span>IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span>base</span>(primaryProperty)
+{&nbsp;</pre>
+<pre>            this.InputProperties.Add(Width2Property);</pre>
+<pre>}
+</pre>
+<div></div>
+<div></div>
+<div>Regards</div>
+<div></div>
+<div>Peran</div>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Eben replied on Monday, June 20, 2011</h2><p>That was perfect!&nbsp; My custom required rule obviously did not use the InputProperties collection, it only used the PrimaryProperty.&nbsp; Therefore, I was not able to reproduce the error in my custom method.&nbsp; Adding the desired field to the InputProperties collection in the gate rule was exactly what I needed.</p>
+<p>Thanks Peran!</p>
+<p>-Eben</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

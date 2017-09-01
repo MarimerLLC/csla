@@ -1,0 +1,156 @@
+<html><header><title>Problem with Logger_LoginSuccessful</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with Logger_LoginSuccessful</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6195.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Monday, January 19, 2009</h2><P>I am working on a prototype Silverlight application that is based on the Rolodex example and am getting the following warning: "Event handler 'Logger_LoginSuccessful' not found on class 'BAS.Page'"&nbsp; Now, it is there as I have the following line in my Page.xaml file:</P>
+<P>xmlns:local="clr-namespace:BAS"<BR>&lt;local:LoginControl x:Name="Logger" LoginSuccessfull="Logger_LoginSuccessful" Grid.Column="0" Grid.Row="0"/&gt;</P>
+<P>The appropriate code is also in the LoginControl.xaml.cs.&nbsp; Now, when I run the app. I get an AG_E_PARSER_BAD_PROPERY_VALUE [Line: 20 Position: 60] which corresponds to the &lt;local:LoginControl .../&gt; line above.&nbsp; I have checked and double checked my namespaces, references, etc. and am puzzeled by what is wrong.&nbsp; Any help/suggestions in solving this would be most appreciated.</P>
+<P>Thank you in advance,</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, January 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Right click on Logger_LoginSuccessful&#8221; and select Go To
+Definition.&nbsp; I suspect you do not have handler in code behind<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 19, 2009 10:40 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Problem with Logger_LoginSuccessful<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am working on a prototype Silverlight application that is based on the
+Rolodex example and am getting the following warning: &quot;Event handler
+'Logger_LoginSuccessful' not found on class 'BAS.Page'&quot;&nbsp; Now, it is
+there as I have the following line in my Page.xaml file:<o:p></o:p></p>
+
+<p>xmlns:local=&quot;clr-namespace:BAS&quot;<br>
+&lt;local:LoginControl x:Name=&quot;Logger&quot;
+LoginSuccessfull=&quot;Logger_LoginSuccessful&quot; Grid.Column=&quot;0&quot;
+Grid.Row=&quot;0&quot;/&gt;<o:p></o:p></p>
+
+<p>The appropriate code is also in the LoginControl.xaml.cs.&nbsp; Now, when I
+run the app. I get an AG_E_PARSER_BAD_PROPERY_VALUE [Line: 20 Position: 60]
+which corresponds to the &lt;local:LoginControl .../&gt; line above.&nbsp; I
+have checked and double checked my namespaces, references, etc. and am puzzeled
+by what is wrong.&nbsp; Any help/suggestions in solving this would be most
+appreciated.<o:p></o:p></p>
+
+<p>Thank you in advance,<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Monday, January 19, 2009</h2><P>Yep, a major ah duh on my part!&nbsp; Hey Sergey, is there a way for the password textgox to have "*" as people are typing in the password.&nbsp; I haven't seen a Password property on the textbox control for Silverlight yet.</P>
+<P>Thanks for pointing out my mistake.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, January 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You have to use a different control that did not exist when
+Rolodex was written (beta 2).&nbsp; It is called PasswordBox. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 19, 2009 10:59 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Problem with Logger_LoginSuccessful<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yep, a major ah duh on my part!&nbsp; Hey Sergey, is there a way for the
+password textgox to have &quot;*&quot; as people are typing in the
+password.&nbsp; I haven't seen a Password property on the textbox control for
+Silverlight yet.<o:p></o:p></p>
+
+<p>Thanks for pointing out my mistake.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Monday, January 19, 2009</h2>Awesome, thanks Sergey.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

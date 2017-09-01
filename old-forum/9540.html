@@ -1,0 +1,374 @@
+<html><header><title>Readonly fields in business objects trigger a linq exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Readonly fields in business objects trigger a linq exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9540.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Wednesday, September 15, 2010</h2><p>Hi,</p>
+<p>I have a business object that contains this field:</p>
+<p>private readonly bool _settingTheNumberOfDays;</p>
+<p>Now when I try to edit an object I get a linq exception thrown &quot;Expression must be writeable Parameter name: left&quot;.</p>
+<p>I think this is a bug. I took me a wile to figure out the above field was causing me the issue.</p>
+<p>&nbsp;</p>
+<p>Regards,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 15, 2010</h2><p>Can you provide the ToString() of the exception object? Otherwise we don&#39;t know the source of the exception.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Friday, September 17, 2010</h2><p>
+<pre> at System.Linq.Expressions.Expression.RequiresCanWrite(Expression 
+expression, String paramName)
+   at System.Linq.Expressions.Expression.Assign(Expression left, 
+Expression right)
+   at 
+Csla.Reflection.DynamicMethodHandlerFactory.CreateFieldSetter(FieldInfo 
+field)
+   at Csla.Reflection.DynamicMemberHandle..ctor(FieldInfo info)
+   at Csla.Core.UndoableHandler.BuildHandlers(Type type)
+   at Csla.Core.UndoableHandler.GetCachedFieldHandlers(Type type)
+   at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)
+   at Csla.Core.BusinessBase.BeginEdit()
+   at 
+Csla.Core.BusinessBase.System.ComponentModel.IEditableObject.BeginEdit()
+   at 
+Telerik.Windows.Data.QueryableCollectionView.&lt;BeginEditItem&gt;b__0(IEditableObject 
+i)
+   at Telerik.Windows.Data.QueryableCollectionView.ExecuteAs[T](Object 
+item, Action`1 action)
+   at Telerik.Windows.Data.QueryableCollectionView.BeginEditItem(Object 
+item)
+   at Telerik.Windows.Data.QueryableCollectionView.EditItem(Object item)
+   at Telerik.Windows.Data.DataItemCollection.EditItem(Object item)
+   at 
+Telerik.Windows.Controls.GridView.GridViewDataControl.set_RowInEditMode(GridViewRow 
+value)
+   at 
+Telerik.Windows.Controls.GridView.GridViewRow.IsInEditModeChanged(DependencyObject 
+dependencyObject, DependencyPropertyChangedEventArgs e)
+   at 
+System.Windows.DependencyObject.OnPropertyChanged(DependencyPropertyChangedEventArgs 
+e)
+   at 
+System.Windows.FrameworkElement.OnPropertyChanged(DependencyPropertyChangedEventArgs 
+e)
+   at 
+System.Windows.DependencyObject.NotifyPropertyChange(DependencyPropertyChangedEventArgs 
+args)
+   at System.Windows.DependencyObject.UpdateEffectiveValue(EntryIndex 
+entryIndex, DependencyProperty dp, PropertyMetadata metadata, 
+EffectiveValueEntry oldEntry, EffectiveValueEntry&amp; newEntry, Boolean 
+coerceWithDeferredReference, Boolean coerceWithCurrentValue, 
+OperationType operationType)
+   at System.Windows.DependencyObject.SetValueCommon(DependencyProperty 
+dp, Object value, PropertyMetadata metadata, Boolean 
+coerceWithDeferredReference, Boolean coerceWithCurrentValue, 
+OperationType operationType, Boolean isInternal)
+   at System.Windows.DependencyObject.SetValue(DependencyProperty dp, 
+Object value)
+   at 
+Telerik.Windows.Controls.GridView.GridViewRow.set_IsInEditMode(Boolean 
+value)
+   at 
+Telerik.Windows.Controls.GridView.GridViewDataControl.OnCellEditModeChanged(GridViewCell 
+cell, Boolean newIsInEditMode)
+   at 
+Telerik.Windows.Controls.GridView.GridViewCell.IsInEditModeChanged(DependencyObject 
+target, DependencyPropertyChangedEventArgs e)
+   at 
+System.Windows.DependencyObject.OnPropertyChanged(DependencyPropertyChangedEventArgs 
+e)
+   at 
+System.Windows.FrameworkElement.OnPropertyChanged(DependencyPropertyChangedEventArgs 
+e)
+   at 
+System.Windows.DependencyObject.NotifyPropertyChange(DependencyPropertyChangedEventArgs 
+args)
+   at System.Windows.DependencyObject.UpdateEffectiveValue(EntryIndex 
+entryIndex, DependencyProperty dp, PropertyMetadata metadata, 
+EffectiveValueEntry oldEntry, EffectiveValueEntry&amp; newEntry, Boolean 
+coerceWithDeferredReference, Boolean coerceWithCurrentValue, 
+OperationType operationType)
+   at System.Windows.DependencyObject.SetValueCommon(DependencyProperty 
+dp, Object value, PropertyMetadata metadata, Boolean 
+coerceWithDeferredReference, Boolean coerceWithCurrentValue, 
+OperationType operationType, Boolean isInternal)
+   at System.Windows.DependencyObject.SetValue(DependencyProperty dp, 
+Object value)
+   at 
+Telerik.Windows.Controls.GridView.GridViewCell.set_IsInEditMode(Boolean 
+value)
+   at 
+Telerik.Windows.Controls.GridView.GridViewDataControl.SwitchCellToEditMode(GridViewCell 
+cell)
+   at 
+Telerik.Windows.Controls.GridView.GridViewDataControl.BeginEdit(GridViewCell 
+gridViewCell, RoutedEventArgs editingEventArgs)
+   at 
+Telerik.Windows.Controls.GridView.GridViewDataControl.BeginEdit(GridViewCell 
+gridViewCell)
+   at 
+Telerik.Windows.Controls.GridView.GridViewDataControl.OnCellMouseDown(GridViewCell 
+cell)
+   at 
+Telerik.Windows.Controls.GridView.GridViewCell.OnMouseLeftButtonDown(MouseButtonEventArgs 
+e)
+   at System.Windows.UIElement.OnMouseLeftButtonDownThunk(Object 
+sender, MouseButtonEventArgs e)
+   at 
+System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate 
+genericHandler, Object genericTarget)
+   at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, 
+Object target)
+   at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object 
+target, RoutedEventArgs routedEventArgs)
+   at System.Windows.RouteItem.InvokeHandler(RoutedEventArgs 
+routedEventArgs)
+   at System.Windows.EventRoute.InvokeHandlersImpl(Object source, 
+RoutedEventArgs args, Boolean reRaised)
+   at System.Windows.EventRoute.ReInvokeHandlers(Object source, 
+RoutedEventArgs args)
+   at System.Windows.UIElement.ReRaiseEventAs(DependencyObject sender, 
+RoutedEventArgs args, RoutedEvent newEvent)
+   at 
+System.Windows.UIElement.CrackMouseButtonEventAndReRaiseEvent(DependencyObject 
+sender, MouseButtonEventArgs e)
+   at System.Windows.UIElement.OnMouseDownThunk(Object sender, 
+MouseButtonEventArgs e)
+   at 
+System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate 
+genericHandler, Object genericTarget)
+   at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, 
+Object target)
+   at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object 
+target, RoutedEventArgs routedEventArgs)
+   at System.Windows.RouteItem.InvokeHandler(RoutedEventArgs 
+routedEventArgs)
+   at System.Windows.EventRoute.InvokeHandlersImpl(Object source, 
+RoutedEventArgs args, Boolean reRaised)
+   at System.Windows.EventRoute.InvokeHandlers(Object source, 
+RoutedEventArgs args)
+   at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, 
+RoutedEventArgs args)
+   at System.Windows.UIElement.RaiseTrustedEvent(RoutedEventArgs args)
+   at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean 
+trusted)
+   at System.Windows.Input.InputManager.ProcessStagingArea()
+   at System.Windows.Input.InputManager.ProcessInput(InputEventArgs input)
+   at System.Windows.Input.InputProviderSite.ReportInput(InputReport 
+inputReport)
+   at System.Windows.Interop.HwndMouseInputProvider.ReportInput(IntPtr 
+hwnd, InputMode mode, Int32 timestamp, RawMouseActions actions, Int32 x, 
+Int32 y, Int32 wheel)
+   at 
+System.Windows.Interop.HwndMouseInputProvider.FilterMessage(IntPtr hwnd, 
+WindowMessage msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)
+   at System.Windows.Interop.HwndSource.InputFilterMessage(IntPtr hwnd, 
+Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp; handled)
+   at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr 
+wParam, IntPtr lParam, Boolean&amp; handled)
+   at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)
+   at 
+System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate 
+callback, Object args, Int32 numArgs)
+   at MS.Internal.Threading.ExceptionFilterHelper.TryCatchWhen(Object 
+source, Delegate method, Object args, Int32 numArgs, Delegate catchHandler)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object 
+source, Delegate callback, Object args, Int32 numArgs, Delegate 
+catchHandler)
+   at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate 
+callback, Object args, Int32 numArgs, Delegate catchHandler)
+   at System.Windows.Threading.Dispatcher.WrappedInvoke(Delegate 
+callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority 
+priority, TimeSpan timeout, Delegate method, Object args, Int32 numArgs)
+   at System.Windows.Threading.Dispatcher.Invoke(DispatcherPriority 
+priority, Delegate method, Object arg)
+   at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, 
+IntPtr wParam, IntPtr lParam)
+   at MS.Win32.UnsafeNativeMethods.DispatchMessage(MSG&amp; msg)
+   at 
+System.Windows.Threading.Dispatcher.TranslateAndDispatchMessage(MSG&amp; msg)
+   at System.Windows.Threading.Dispatcher.PushFrameImpl(DispatcherFrame 
+frame)
+   at System.Windows.Threading.Dispatcher.PushFrame(DispatcherFrame frame)
+   at System.Windows.Threading.Dispatcher.Run()
+   at System.Windows.Application.RunDispatcher(Object ignore)
+   at System.Windows.Application.RunInternal(Window window)
+   at System.Windows.Application.Run(Window window)
+   at System.Windows.Application.Run()
+   at Oncare.Shell.App.Main() in 
+D:\Work\calin_oncare\Source\Oncare.Shell\obj\Debug\App.g.cs:line 0
+   at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, 
+String[] args)
+   at 
+System.Runtime.Hosting.ApplicationActivator.CreateInstance(ActivationContext 
+activationContext, String[] activationCustomData)
+   at 
+Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssemblyDebugInZone()
+   at System.Threading.ExecutionContext.Run(ExecutionContext 
+executionContext, ContextCallback callback, Object state, Boolean 
+ignoreSyncCtx)
+   at System.Threading.ExecutionContext.Run(ExecutionContext 
+executionContext, ContextCallback callback, Object state)
+   at System.Threading.ThreadHelper.ThreadStart()
+</pre>
+<pre></pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 17, 2010</h2><p>It does appear that LINQ is trying to set some field and CSLA is unable to provide a setter for it.</p>
+<p>If you are running CSLA 3.x, try doing a ToList() on your collection in the LINQ query - thus avoiding the use of the custom CSLA query provider.</p>
+<p>If you are in CSLA 4 then this is purely something to do with LINQ, since CSLA 4 has no custom query provider.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Friday, October 01, 2010</h2><p>
+<p>Hello,</p>
+<p>I just found an issue with CSLA 4 (might be in CSLA 3.8). We have a DynamicListBase and EditableRoot&#39;s bound to a wpf grid. When you double click on a line item you get the following error:</p>
+<p>
+<p>A first chance exception of type &#39;System.ArgumentException&#39; occurred in System.Core.dll</p>
+<p>System.Transactions Critical: 0 : &lt;TraceRecord xmlns=&quot;http://schemas.microsoft.com/2004/10/E2ETraceEvent/TraceRecord&quot; Severity=&quot;Critical&quot;&gt;&lt;TraceIdentifier&gt;http://msdn.microsoft.com/TraceCodes/System/ActivityTracing/2004/07/Reliability/Exception/Unhandled&lt;/TraceIdentifier&gt;&lt;Description&gt;Unhandled exception&lt;/Description&gt;&lt;AppDomain&gt;WpfApplication1.vshost.exe&lt;/AppDomain&gt;&lt;Exception&gt;&lt;ExceptionType&gt;System.ArgumentException, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&lt;/ExceptionType&gt;&lt;Message&gt;Expression must be writeable</p>
+<p>Parameter name: left&lt;/Message&gt;&lt;StackTrace&gt; &nbsp; at System.Linq.Expressions.Expression.RequiresCanWrite(Expression expression, String paramName)</p>
+<p>&nbsp;&nbsp; at System.Linq.Expressions.Expression.Assign(Expression left, Expression right)</p>
+<p>&nbsp;&nbsp; at Csla.Reflection.DynamicMethodHandlerFactory.CreateFieldSetter(FieldInfo field)</p>
+<p>&nbsp;&nbsp; at Csla.Reflection.DynamicMemberHandle..ctor(FieldInfo info)</p>
+<p>&nbsp;&nbsp; at Csla.Core.UndoableHandler.BuildHandlers(Type type)</p>
+<p>&nbsp;&nbsp; at Csla.Core.UndoableHandler.GetCachedFieldHandlers(Type type)</p>
+<p>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)</p>
+<p>&nbsp;&nbsp; at Csla.Core.BusinessBase.BeginEdit()</p>
+<p>&nbsp;&nbsp; at Csla.Core.BusinessBase.System.ComponentModel.IEditableObject.BeginEdit()</p>
+<p>&nbsp;&nbsp; at System.Windows.Data.ListCollectionView.EditItem(Object item)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.ItemCollection.System.ComponentModel.IEditableCollectionView.EditItem(Object item)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.EditRowItem(Object rowItem)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.OnExecutedBeginEdit(ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.OnExecutedBeginEdit(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandBinding.OnExecuted(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.ExecuteCommandBinding(Object sender, ExecutedRoutedEventArgs e, CommandBinding commandBinding)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.FindCommandBinding(CommandBindingCollection commandBindings, Object sender, RoutedEventArgs e, ICommand command, Boolean execute)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.FindCommandBinding(Object sender, RoutedEventArgs e, ICommand command, Boolean execute)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.OnExecuted(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.OnExecutedThunk(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.ExecutedRoutedEventArgs.InvokeEventHandler(Delegate genericHandler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean trusted)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.RoutedCommand.ExecuteImpl(Object parameter, IInputElement target, Boolean userInitiated)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.RoutedCommand.Execute(Object parameter, IInputElement target)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.BeginEdit(RoutedEventArgs editingEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGridCell.OnAnyMouseLeftButtonDown(MouseButtonEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGridCell.OnAnyMouseLeftButtonDownThunk(Object sender, MouseButtonEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate genericHandler, Object genericTarget)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.ReRaiseEventAs(DependencyObject sender, RoutedEventArgs args, RoutedEvent newEvent)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.OnMouseDownThunk(Object sender, MouseButtonEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate genericHandler, Object genericTarget)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseTrustedEvent(RoutedEventArgs args)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean trusted)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.InputManager.ProcessStagingArea()</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.InputManager.ProcessInput(InputEventArgs input)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.InputProviderSite.ReportInput(InputReport inputReport)</p>
+<p>&nbsp;&nbsp; at System.Windows.Interop.HwndMouseInputProvider.ReportInput(IntPtr hwnd, InputMode mode, Int32 timestamp, RawMouseActions actions, Int32 x, Int32 y, Int32 wheel)</p>
+<p>&nbsp;&nbsp; at System.Windows.Interop.HwndMouseInputProvider.FilterMessage(IntPtr hwnd, WindowMessage msg, IntPtr wParam, IntPtr lParam, Boolean&amp;amp;amp; handled)</p>
+<p>&nbsp;&nbsp; at System.Windows.Interop.HwndSource.InputFilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp;amp;amp; handled)</p>
+<p>&nbsp;&nbsp; at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp;amp;amp; handled)</p>
+<p>&nbsp;&nbsp; at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)</p>
+<p>&nbsp;&nbsp; at MS.Internal.Threading.ExceptionFilterHelper.TryCatchWhen(Object source, Delegate method, Object args, Int32 numArgs, Delegate catchHandler)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority priority, TimeSpan timeout, Delegate method, Object args, Int32 numArgs)</p>
+<p>&nbsp;&nbsp; at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam)</p>
+<p>&nbsp;&nbsp; at MS.Win32.UnsafeNativeMethods.DispatchMessage(MSG&amp;amp;amp; msg)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.PushFrameImpl(DispatcherFrame frame)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.PushFrame(DispatcherFrame frame)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.Run()</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.RunDispatcher(Object ignore)</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.RunInternal(Window window)</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.Run(Window window)</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.Run()</p>
+<p>&nbsp;&nbsp; at WpfApplication1.App.Main() in D:\Downloads\PetShop\PetShop\WpfApplication1\obj\x86\Debug\App.g.cs:line 0</p>
+<p>&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)</p>
+<p>&nbsp;&nbsp; at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)</p>
+<p>&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()</p>
+<p>&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)</p>
+<p>&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean ignoreSyncCtx)</p>
+<p>&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)</p>
+<p>&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()&lt;/StackTrace&gt;&lt;ExceptionString&gt;System.ArgumentException: Expression must be writeable</p>
+<p>Parameter name: left</p>
+<p>&nbsp;&nbsp; at System.Linq.Expressions.Expression.RequiresCanWrite(Expression expression, String paramName)</p>
+<p>&nbsp;&nbsp; at System.Linq.Expressions.Expression.Assign(Expression left, Expression right)</p>
+<p>&nbsp;&nbsp; at Csla.Reflection.DynamicMethodHandlerFactory.CreateFieldSetter(FieldInfo field)</p>
+<p>&nbsp;&nbsp; at Csla.Reflection.DynamicMemberHandle..ctor(FieldInfo info)</p>
+<p>&nbsp;&nbsp; at Csla.Core.UndoableHandler.BuildHandlers(Type type)</p>
+<p>&nbsp;&nbsp; at Csla.Core.UndoableHandler.GetCachedFieldHandlers(Type type)</p>
+<p>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)</p>
+<p>&nbsp;&nbsp; at Csla.Core.BusinessBase.BeginEdit()</p>
+<p>&nbsp;&nbsp; at Csla.Core.BusinessBase.System.ComponentModel.IEditableObject.BeginEdit()</p>
+<p>&nbsp;&nbsp; at System.Windows.Data.ListCollectionView.EditItem(Object item)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.ItemCollection.System.ComponentModel.IEditableCollectionView.EditItem(Object item)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.EditRowItem(Object rowItem)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.OnExecutedBeginEdit(ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.OnExecutedBeginEdit(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandBinding.OnExecuted(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.ExecuteCommandBinding(Object sender, ExecutedRoutedEventArgs e, CommandBinding commandBinding)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.FindCommandBinding(CommandBindingCollection commandBindings, Object sender, RoutedEventArgs e, ICommand command, Boolean execute)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.FindCommandBinding(Object sender, RoutedEventArgs e, ICommand command, Boolean execute)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.CommandManager.OnExecuted(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.OnExecutedThunk(Object sender, ExecutedRoutedEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.ExecutedRoutedEventArgs.InvokeEventHandler(Delegate genericHandler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean trusted)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.RoutedCommand.ExecuteImpl(Object parameter, IInputElement target, Boolean userInitiated)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.RoutedCommand.Execute(Object parameter, IInputElement target)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGrid.BeginEdit(RoutedEventArgs editingEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGridCell.OnAnyMouseLeftButtonDown(MouseButtonEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Controls.DataGridCell.OnAnyMouseLeftButtonDownThunk(Object sender, MouseButtonEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate genericHandler, Object genericTarget)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.ReRaiseEventAs(DependencyObject sender, RoutedEventArgs args, RoutedEvent newEvent)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.OnMouseDownThunk(Object sender, MouseButtonEventArgs e)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.MouseButtonEventArgs.InvokeEventHandler(Delegate genericHandler, Object genericTarget)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventArgs.InvokeHandler(Delegate handler, Object target)</p>
+<p>&nbsp;&nbsp; at System.Windows.RoutedEventHandlerInfo.InvokeHandler(Object target, RoutedEventArgs routedEventArgs)</p>
+<p>&nbsp;&nbsp; at System.Windows.EventRoute.InvokeHandlersImpl(Object source, RoutedEventArgs args, Boolean reRaised)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEventImpl(DependencyObject sender, RoutedEventArgs args)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseTrustedEvent(RoutedEventArgs args)</p>
+<p>&nbsp;&nbsp; at System.Windows.UIElement.RaiseEvent(RoutedEventArgs args, Boolean trusted)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.InputManager.ProcessStagingArea()</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.InputManager.ProcessInput(InputEventArgs input)</p>
+<p>&nbsp;&nbsp; at System.Windows.Input.InputProviderSite.ReportInput(InputReport inputReport)</p>
+<p>&nbsp;&nbsp; at System.Windows.Interop.HwndMouseInputProvider.ReportInput(IntPtr hwnd, InputMode mode, Int32 timestamp, RawMouseActions actions, Int32 x, Int32 y, Int32 wheel)</p>
+<p>&nbsp;&nbsp; at System.Windows.Interop.HwndMouseInputProvider.FilterMessage(IntPtr hwnd, WindowMessage msg, IntPtr wParam, IntPtr lParam, Boolean&amp;amp;amp; handled)</p>
+<p>&nbsp;&nbsp; at System.Windows.Interop.HwndSource.InputFilterMessage(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp;amp;amp; handled)</p>
+<p>&nbsp;&nbsp; at MS.Win32.HwndWrapper.WndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam, Boolean&amp;amp;amp; handled)</p>
+<p>&nbsp;&nbsp; at MS.Win32.HwndSubclass.DispatcherCallbackOperation(Object o)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)</p>
+<p>&nbsp;&nbsp; at MS.Internal.Threading.ExceptionFilterHelper.TryCatchWhen(Object source, Delegate method, Object args, Int32 numArgs, Delegate catchHandler)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.InvokeImpl(DispatcherPriority priority, TimeSpan timeout, Delegate method, Object args, Int32 numArgs)</p>
+<p>&nbsp;&nbsp; at MS.Win32.HwndSubclass.SubclassWndProc(IntPtr hwnd, Int32 msg, IntPtr wParam, IntPtr lParam)</p>
+<p>&nbsp;&nbsp; at MS.Win32.UnsafeNativeMethods.DispatchMessage(MSG&amp;amp;amp; msg)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.PushFrameImpl(DispatcherFrame frame)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.PushFrame(DispatcherFrame frame)</p>
+<p>&nbsp;&nbsp; at System.Windows.Threading.Dispatcher.Run()</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.RunDispatcher(Object ignore)</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.RunInternal(Window window)</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.Run(Window window)</p>
+<p>&nbsp;&nbsp; at System.Windows.Application.Run()</p>
+<p>&nbsp;&nbsp; at WpfApplication1.App.Main() in D:\Downloads\PetShop\PetShop\WpfApplication1\obj\x86\Debug\App.g.cs:line 0</p>
+<p>&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)</p>
+<p>&nbsp;&nbsp; at System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence assemblySecurity, String[] args)</p>
+<p>&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()</p>
+<p>&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart_Context(Object state)</p>
+<p>&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean ignoreSyncCtx)</p>
+<p>&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)</p>
+<p>&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()&lt;/ExceptionString&gt;&lt;DataItems&gt;&lt;Data&gt;&lt;/Data&gt;&lt;/DataItems&gt;&lt;/Exception&gt;&lt;/TraceRecord&gt;</p>
+</p>
+<p>&nbsp;</p>
+<p>I have narrowed it down to this method which was implemented for composite key support:</p>
+<p>
+<pre><br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Protected&nbsp;Overriden&nbsp;Method(s)<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;</span><span>NOTE:&nbsp;This&nbsp;is&nbsp;needed&nbsp;for&nbsp;Composite&nbsp;Keys.</span><span>&nbsp;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>readonly</span>&nbsp;<span>Guid</span>&nbsp;_guidID&nbsp;=&nbsp;<span>Guid</span>.NewGuid();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>object</span>&nbsp;GetIdValue()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;_guidID;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br /><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span></pre>
+<pre><span>If one comments it out then everything works. Can you add this to the CSLA 4.1 bug list or should I?</span></pre>
+</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Munish Sehgal replied on Saturday, October 30, 2010</h2><p>Thanks,</p>
+<p>your post really helped me to solve my problem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, November 05, 2010</h2><p>
+<p>Hello,</p>
+<p>Has this been fixed in CSLA 4.1?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 05, 2010</h2><p>I don&#39;t know - can you test and let me know?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

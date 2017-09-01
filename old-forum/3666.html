@@ -1,0 +1,51 @@
+<html><header><title>Conceptual question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Conceptual question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3666.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel posted on Monday, October 08, 2007</h2><P>I'm new in OOP and still I have datacentric thought.</P>
+<P>I have a question about update methods on CSLA</P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN>If the update of a business object has responsibility of update or create other objects (like a stock movement, or accounting references. Is correct to manage objects in Dataportal_XYZ methods or Dataportal methos are only for data access:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Is Normal do things like<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Partial Class Bill<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>(…)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Sub DataPortal_Update()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>(...)</SPAN><o:p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Dim vM as StockMovement<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>vM = StockMovement.CreateStockMovement<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>(….)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>vM= vM.Save<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>(…)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>Using the same transaction scope or sharing conection and transaction?</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>Or this should be done at store procedure that updates the bill object?</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;What pattern do you use to solve things like this?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 08, 2007</h2><P>I think it is OK to handle other activities within the DataPortal. Especially if they require the same transaction scope. Rcoky has recommended the creation of a special command object to control all of the other objects and set up a single transaction. I use the same idea with a normal root BO which is a Use Case Controller. This allows me to also have high level rules within the controller BO. This object also controls the entire Save activity.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel replied on Monday, October 08, 2007</h2><P>The idea is to share transaction connection between diferent objects, perhaps with LocalContext or other own way.</P>
+<P>I will generate objects that will be called inside dataportal methods (or not).</P>
+<P>What problems could find using this technique?</P>
+<P>DataPortal_update()</P>
+<P>&nbsp;&nbsp;&nbsp;GetActiveTransaction</P>
+<P>&nbsp;&nbsp;&nbsp;BeginTransaction...</P>
+<P>&nbsp;&nbsp;&nbsp;Try</P>
+<P>&nbsp;&nbsp;&nbsp;Some new objects ussage with Save and delete methods (dataportal Calls)</P>
+<P>&nbsp;&nbsp;&nbsp;That will use the same transaction</P>
+<P>&nbsp;&nbsp;catch</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Rollback</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;throw exception</P>
+<P>&nbsp;&nbsp;&nbsp;end</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;commit</P>
+<P>&nbsp;&nbsp;End</P>
+<P>I will use manual transactions because I have to work with SQL 7.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 08, 2007</h2><P>Thta is almost exactly the same technique I use.</P>
+<P>If you search this forum you may find all the support code I shared about a year ago.</P>
+<P>I added some code to BusinessBase so that it would be easier to share the transaction.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel replied on Tuesday, October 09, 2007</h2><P>Thanks for your support</P>
+<P>Can you give me some keys to find these posts, I'm very interested.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 09, 2007</h2><P>I searched on BeginTransaction and found this:</P>
+<P><A HREF="/forums/thread/9066.aspx">http://forums.lhotka.net/forums/thread/9066.aspx</A></P>
+<P>Be sure to search for Rocky's CommandBase solution so you can look at it in a different way too.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

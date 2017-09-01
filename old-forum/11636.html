@@ -1,0 +1,58 @@
+<html><header><title>Business rule not working - Jonny Bee's  sample</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business rule not working - Jonny Bee's  sample</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11636.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, October 09, 2012</h2><p>I&#39;ve just started getting into business rules. I have a rule &#39;ToUpper&#39; that is executed but does not update the UI.</p>
+<p>The &nbsp;UI does get updated if I update another field though (that also has a business rule). &nbsp;Is there something I have to do the get the UI to update immediately after the field/property is updated.</p>
+<p>I am using Jonny Bee&#39;s business rules sample (Csla 4.2.12) &nbsp;and added this rule</p>
+<p>
+<pre>BusinessRules.AddRule(<span>new</span>&nbsp;<span>ToUpper</span>(NameProperty));
+</pre>
+</p>
+<p>
+<pre><span>public</span>&nbsp;<span>class</span>&nbsp;<span>ToUpper</span>&nbsp;:&nbsp;<span>PropertyRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;ToUpper(<span>IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span>base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span>new</span>&nbsp;<span>List</span>&lt;<span>IPropertyInfo</span>&gt;&nbsp;{&nbsp;primaryProperty&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AffectedProperties.Add(primaryProperty);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CanRunOnServer&nbsp;=&nbsp;<span>false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>override</span>&nbsp;<span>void</span>&nbsp;Execute(<span>RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;value&nbsp;=&nbsp;(<span>string</span>)context.InputPropertyValues[PrimaryProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddOutValue(PrimaryProperty,&nbsp;value.ToUpper());
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>The rule fires but does not update the Name field until I have updated another field in teh sample.</pre>
+<pre>Can someone please explain/help.</pre>
+<pre>Thanks</pre>
+<pre></pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 09, 2012</h2><p>Which UI platform are you using? WindowsForms og Xaml or another? </p>
+<p>1. You should check the setting of CslaPropertyChangedMode in your app.config/web.config. </p>
+<p>For CSLA 3.x the default setting is <b>Windows<br /></b>For CSLA 4.x the default setting is<b> Xaml</b></p>
+<p>This setting determines how the OnPropertyChanged is raised for &quot;AffectedProperties&quot; back to the UI. </p>
+<p>2. If it is WindowsForms and the PropertyChangedMode is correct you should add the Csla.Windows.BindingSourceRefresh component and set it to do refresh on that BindingSource as WindowsForms will reread all properties EXCEPT the one that was modified (ie: got OnPropertyChanged). The BindingSourceRefresh will make sure that the value is reread also for the property in OnPropertyChanged. </p>
+<p>From what you explain - THE RULE IS WORKING AND DOES UPDATE THE PROPERTY IN THE BO AS IT SHOULD but the UI does not update properly until you change another property (ie: get OnPropertyChanged on another property).&nbsp; This is a known problem in WindowsForm and is is the reason that CSLA provides the BindingSourceRefresh control.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, October 09, 2012</h2><p>Thanks for quick reply.</p>
+<p>I am using SL but don&#39;t have&nbsp;<span>CslaPropertyChangedMode</span><span>&nbsp; set anywhere - what is the full statement and what section does it go under?</span></p>
+<p><span>Having said that, I am testing the issue in your BusinessRulesDemo - your CalcSum business rules works fine (i.e. the sum is calculated and updated after </span></p>
+<p><span>num1 or num2 updates) - this does not have an APP.config and&nbsp;</span><span>CslaPropertyChangedMode</span><span>&nbsp;is not set - so why does ToUpper not work and CalcSum does?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 09, 2012</h2><p>The default PropertyChangedMode of Xaml should be fine in SL. </p>
+<p>This is the interesting code in Csla.Core.BusinessBase: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PropertyHasChanged(Csla.Core.<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkDirty(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;propertyNames&nbsp;=&nbsp;BusinessRules.CheckRules(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.PropertyChangedMode&nbsp;==&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2baf9a;">PropertyChangedModes</span>.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;name&nbsp;<span style="color:blue;">in</span>&nbsp;propertyNames)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>that call the rule engine and reises OnPropertyChanged to notify UI. </p>
+<p>ApplicationContext.PropertyChangedMode may be defined in app.config/web.config or set in code. </p>
+<p>I would set a breakpoint on the if statement to verify correct PropertyChangedMode and then check which properties gets a OnPropertyChanged. </p>
+<p>When &quot;Name&quot; gets OnPropertyChanged the UI should reread the field value in SL.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

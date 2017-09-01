@@ -1,0 +1,85 @@
+<html><header><title>Unable to build cslalightcs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to build cslalightcs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5735.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cliffordru posted on Wednesday, November 05, 2008</h2><P><FONT face=Arial>I downloaded cslalightcs-3.6.0-081102 but when I open the solution, many of the files are marked as "cannot be found".&nbsp; The files are on disk and if I remove the file in Visual Studio, then add it back in (add existing item), all is good, but since this is happening for 62 files, it is not practical to go thought this for each file.</FONT></P>
+<P><FONT face=Arial>example files: cslacs\Csla\Core\ManagedObjectBase.cs, cslacs\Csla\Server\ObjectFactoryAttribute.cs, cslacs\Csla\Validation\CommonRules.cs</FONT></P>
+<P><FONT face=Arial>I am running&nbsp; VS2008, .NET 3.5 SP1, Silverlight 2.0, and the latest VS2008 tools for silverlight </FONT><A href="http://www.microsoft.com/downloads/thankyou.aspx?familyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displayLang=en"><FONT face=Arial>http://www.microsoft.com/downloads/thankyou.aspx?familyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displayLang=en</FONT></A><FONT face=Arial>#</FONT></P>
+<P><FONT face=Arial>Has anyone encountered this issue or have suggestions on how to fix?</FONT></P>
+<P><FONT face=Arial>Thanks!</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, November 05, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to download Csla for .NET as well and put it in
+parallel with Csla for SL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cliffordru
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 05, 2008 12:41 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Unable to build cslalightcs<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I downloaded
+cslalightcs-3.6.0-081102 but when I open the solution, many of the files are
+marked as &quot;cannot be found&quot;.&nbsp; The files are on disk and if I
+remove the file in Visual Studio, then add it back in (add existing item), all
+is good, but since this is happening for 62 files, it is not practical to go
+thought this for each file.</span><o:p></o:p></p>
+
+<p><span>example files:
+cslacs\Csla\Core\ManagedObjectBase.cs,
+cslacs\Csla\Server\ObjectFactoryAttribute.cs,
+cslacs\Csla\Validation\CommonRules.cs</span><o:p></o:p></p>
+
+<p><span>I am running&nbsp; VS2008,
+.NET 3.5 SP1, Silverlight 2.0, and the latest VS2008 tools for silverlight </span><a href="http://www.microsoft.com/downloads/thankyou.aspx?familyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displayLang=en"><span>http://www.microsoft.com/downloads/thankyou.aspx?familyId=c22d6a7b-546f-4407-8ef6-d60c8ee221ed&amp;displayLang=en</span></a><span>#</span><o:p></o:p></p>
+
+<p><span>Has anyone encountered this
+issue or have suggestions on how to fix?</span><o:p></o:p></p>
+
+<p><span>Thanks!</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 05, 2008</h2>The zip file should include cslacs. If you unzip the archive and keep the folder structure intact it should just pick up the files automatically.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cliffordru replied on Wednesday, November 05, 2008</h2>Thanks for the quick replies...placing all of the folders in parallel did the trick...I should have read that part of the download section more closely...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, November 06, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>The zip file should include cslacs. If you unzip the archive and keep the folder structure intact it should just pick up the files automatically.</div></BLOCKQUOTE></P>
+<P>Not sure if you're saying that the CSLALight download is supposed to include cslacs, but it doesn't (as of yesterday anyway). Not that it's a big deal to download, just thought I'd point that out.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 06, 2008</h2>OK, that's a bug in my build script then, so I'll have to fix that. Thanks for pointing out the oversight!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

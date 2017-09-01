@@ -1,0 +1,16 @@
+<html><header><title>Design help: complex business object structure</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design help: complex business object structure</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9832.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Friday, December 03, 2010</h2><p>I could use a little help wrapping my head around the approach I should use to model a specific requirement&nbsp;a set of recurring activities that are used by my application.&nbsp; Think of it as a Preventative Maintenance schedule.</p>
+<p>Each item in my system is assigned one of a set of PM schedules.&nbsp; Each schedule defines how often the PM must occur and how much time the tech has to complete the work.</p>
+<p>Essentially, I have one database table that lists the various&nbsp;schedules along with their recurrence pattern and how long the&nbsp;tech has to complete the work&nbsp;once is is started.&nbsp; Another table&nbsp;contains a record for the specific occurance along with additional information that is entered and editted once the activity has been started.&nbsp; For purposes of this discussion, let&#39;s assume the tables are in different databases (cuz they are!)</p>
+<p>When the user opens the application, I need to present them with a list of &quot;current&quot; activities.&nbsp; Current means that they have either already been started and remain open or have not been started but&nbsp;are due.</p>
+<p>My initial impression is that I will need to follow these steps:</p>
+<ol>
+<li>Query the metadata table for the list of schedules and rules.</li>
+<li>Lookup any items that has PM due.&nbsp; This means applying the recurrence rules to&nbsp;the item&#39;s last PM date to see if the PM was due on or before today and is still editable.</li>
+<li>For each item in need of PM, I look to see if there is already a record in the instance table.<ol>
+<li>If so, then I display the activity in the Open state (meaning the user can edit the existing record)</li>
+<li>Otherwise, I display the activity in the Not Started state (meaning that a new record will be created)</li>
+</ol></li>
+</ol>
+<p>There is a separate use case for an exception report that managers will use to view all PM instances that remain open after the edit window has passed.&nbsp; In this case, I am filtering those records out so that the tech can only edit/create instances for items that are due and still editable.</p>
+<p>My problem is that I can make it work but if feels very hack-ish.&nbsp; I&#39;m wondering how you would approach setting up the business objects and managing the interaction required to present the data to the user.</p>
+<p>Thanks in advance.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

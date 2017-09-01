@@ -1,0 +1,18 @@
+<html><header><title>DataPortal.Create Error </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Create Error </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4356.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, February 15, 2008</h2><DIV><FONT face=Verdana size=2>When ever I try to do the "<FONT color=#0000ff size=2>
+<P>Return</FONT><FONT size=2> DataPortal.Create(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> Company)(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Criteria(0, TypeID))"</FONT></FONT></P></DIV>
+<DIV><FONT face=Verdana size=2>I am getting the following "Server.DataPortalException" error message.</FONT></DIV>
+<DIV><FONT size=1>
+<P><FONT face=Verdana size=2>?ex.Message</FONT></P>
+<P><FONT face=Verdana size=2>"DataPortal.Create failed on the server"</FONT></P>
+<P><FONT face=Verdana size=2>?ex.InnerException</FONT></P>
+<P><FONT face=Verdana size=2>{"Object reference not set to an instance of an object."}</FONT></P>
+<P><FONT face=Verdana size=2>System.NullReferenceException: {"Object reference not set to an instance of an object."}</FONT></P>
+<P><FONT face=Verdana size=2>Data: {System.Collections.ListDictionaryInternal}</FONT></P>
+<P><FONT face=Verdana size=2>HelpLink: Nothing</FONT></P>
+<P><FONT face=Verdana size=2>InnerException: Nothing</FONT></P>
+<P><FONT face=Verdana size=2>Message: "Object reference not set to an instance of an object."</FONT></P>
+<P><FONT face=Verdana size=2>Source: "Csla"</FONT></P>
+<P><FONT face=Verdana size=2>StackTrace: " at Csla.Server.CallMethodException..ctor(String message, Exception ex) in D:\Components\CSLA\cslavb\Csla\DataPortal\Server\CallMethodException.vb:line 45</FONT></P>
+<P><FONT face=Verdana size=2>at Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, Object[] parameters) in D:\Components\CSLA\cslavb\Csla\DataPortal\MethodCaller.vb:line 123</FONT></P>
+<P><FONT face=Verdana size=2>at Csla.Server.SimpleDataPortal.Create(Type objectType, Object criteria, DataPortalContext context) in D:\Components\CSLA\cslavb\Csla\DataPortal\Server\SimpleDataPortal.vb:line 52"</FONT></P>
+<P><FONT face=Verdana size=2>TargetSite: {System.Reflection.RuntimeConstructorInfo}</FONT></P></FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Friday, February 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SouthSpawn:</strong></div><div><font face="Verdana" size="2"><font color="#0000ff" size="2">Return</font><font size="2"> DataPortal.Create(</font><font color="#0000ff" size="2">Of</font><font size="2"> Company)(</font><font color="#0000ff" size="2">New</font><font size="2"> Criteria(0, TypeID))</font></font></div></BLOCKQUOTE><br>The Return statement above is correct. You just need to change the declaration of your DataPortal_Create.<br><br>From:<br>Protected Overrides Sub DataPortal_Create()<br>End Sub<br><br>To:<br>Protected Overloads Sub DataPortal_Create(ByVal criteria As Object)<br>End Sub<br><br>Also remove the &lt;Csla.RunLocal()&gt; attribute if you're hitting the database.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

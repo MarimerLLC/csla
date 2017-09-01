@@ -1,0 +1,61 @@
+<html><header><title>FieldManager.IsFieldDirty behaviour on a field that is a child object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldManager.IsFieldDirty behaviour on a field that is a child object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8800.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot posted on Thursday, April 15, 2010</h2><p>Hello,</p>
+<p>I was trying to use the FieldManager.IsFieldDirty(...) method with managed backing fields. Everything seems alright if I use it on simple fields like int, strings, datetimes, etc...But if I use it on a field that is a child object (BusinessBase object type) , then if I change the reference, the IsFieldDirty() method still returns false (like &quot;unchanged&quot;). I was expecting to get &quot;true&quot; (like &quot;changed&quot;).</p>
+<p>Is this normal? Did I miss something?</p>
+<p>On the other hand it seems to work with a ReadOnlyBase type child object.</p>
+<p>(I&#39;m using this in cslaslight 8.3.2, on SL3)</p>
+<p>Thank you,</p>
+<p>Christophe</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, April 15, 2010</h2><p>Are you maintaining your own private backing field or letting CSLA hold the reference inside the FieldManager? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot replied on Thursday, April 15, 2010</h2><p>No, I&#39;m not using private backing fields, but (csla) managed backing fields. (In the book, there&#39;s a strong recommandation about using it like that&nbsp; when concerning children objects.)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, April 15, 2010</h2><p>In that case, whether or not the property is considered dirty is delegated to the actual child object itself being stored in the FieldManager. </p>
+<p>So, replacing the property value from one &quot;clean&quot; child to a another clean child won&#39;t cause the property itself to be considered dirty.&nbsp; </p>
+<p>You can see this in the implementation of FieldData.IsDirty</p>
+<pre>    /// 
+    /// Gets a value indicating whether the field
+    /// has been changed.
+    /// 
+    public virtual bool IsDirty
+    {
+      get
+      {
+        ITrackStatus child = _data as ITrackStatus;
+        if (child != null)
+        {
+          return child.IsDirty;
+
+        }
+        else
+        {
+          return _isDirty;
+        }
+      }
+    }
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot replied on Friday, April 16, 2010</h2><p>Ok, thank you, now I understand why. Basically, because a BusinessBase object implements the ITrackStatus interface, and the ReadOnlyBase doesn&#39;t. (Sorry I&#39;m quite new to CSLA).</p>
+<p>I still have a question. I have a relation between a parent object and a single child object. Does CSLA provide a way to both change the relation property on the parent&nbsp; (in short, changing the parent&#39;s assigned child) and also to modify the new selected child&#39;s properties (in the same trip?). How should I proceed if this is possible ? Should I use my own private backing field ? Is there an sample somewhere I could rely on?</p>
+<p>Thank you</p>
+<p>Christophe</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, April 16, 2010</h2><p>I would think that if the new child object you are assigning is also dirty, then the parent object would now consider both itself and the child to be dirty and then a Save() operation would allow you to persist the changes to the database.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot replied on Friday, April 16, 2010</h2><p>This makes sense. But in that case, I still have my original problem. How can I know that we changed the reference to the child? I&#39;m not sure to explain it properly. My problem is not to detect the changes in the child, it is mostly on the parent to detect that the child is no more the same instance (not that the child&#39;s data has been changed). And additionnaly there is still the case where only the reference to the child has been changed and not the child&#39;s data itself.</p>
+<p>Do I have to process this with my own private backing field ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 16, 2010</h2><p>This is an interesting situation.</p>
+<p>So what you really want, I think, is to have a combination of the primitive field and child object behaviors. In other words, IsDirty is:</p>
+<ul>
+<li><strong>false</strong> if the reference hasn&#39;t changed and the child isn&#39;t dirty</li>
+<li><strong>true</strong> if the reference has changed and the child isn&#39;t dirty</li>
+<li><strong>true</strong> if the reference hasn&#39;t changed and the child is dirty</li>
+<li><strong>true</strong> if the reference has changed and the child is dirty</li>
+</ul>
+<p>Is this what you need?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot replied on Friday, April 16, 2010</h2><p>Yes exactly !</p>
+<p> This is my current case in a parent to single child relation. But I imagine that this case could also apply to a parent to collection children? Am I right? Or will the child collection manage it for you in that case ? I&#39;ll try one of these days.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 16, 2010</h2><p>Collections are easier, because the collection tracks add/remove operations of its child objects.</p>
+<p>Here&#39;s a workaround for you now - put a &quot;ChildManager&quot; in between the root and child. I&#39;ll add this to the wish list - I agree that the behavior should work as described in my previous post - probably something that&#39;ll end up in 4.1 at this point.</p>
+<p>using System;<br />using System.Collections.Generic;<br />using System.Linq;<br />using System.Text;<br />using Csla;<br />using System.Diagnostics;</p>
+<p>namespace ConsoleApplication1<br />{<br />&nbsp; class Program<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var root = new Root();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Assert(root.Child != null, &quot;Child should not be null&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Assert(!root.IsNew, &quot;Root should not be new&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Assert(!root.IsDirty, &quot;Root should not be dirty&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root.Child.Child = new Child();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Assert(!root.IsNew, &quot;Root should not be new&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Debug.Assert(root.IsDirty, &quot;Root should be dirty&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(&quot;All is well&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>&nbsp; [Serializable]<br />&nbsp; public class Root : BusinessBase&lt;Root&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public Root()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child = new ChildManager();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child.LoadChild(new Child());<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(c =&gt; c.Id);<br />&nbsp;&nbsp;&nbsp; public int Id<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(IdProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(IdProperty, value); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;ChildManager&gt; ChildProperty = RegisterProperty&lt;ChildManager&gt;(c =&gt; c.Child);<br />&nbsp;&nbsp;&nbsp; public ChildManager Child<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(ChildProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { LoadProperty(ChildProperty, value); }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>&nbsp; [Serializable]<br />&nbsp; public class Child : BusinessBase&lt;Child&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public Child()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld();<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }</p>
+<p>&nbsp; [Serializable]<br />&nbsp; public class ChildManager : BusinessBase&lt;ChildManager&gt;<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public ChildManager()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public override bool IsSelfDirty<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ChildReferenceChanged || base.IsSelfDirty;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;bool&gt; ChildReferenceChangedProperty = RegisterProperty&lt;bool&gt;(c =&gt; c.ChildReferenceChanged);<br />&nbsp;&nbsp;&nbsp; private bool ChildReferenceChanged<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(ChildReferenceChangedProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { LoadProperty(ChildReferenceChangedProperty, value); }<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; public void LoadChild(Child child)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ChildProperty, child);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;Child&gt; ChildProperty = RegisterProperty&lt;Child&gt;(c =&gt; c.Child);<br />&nbsp;&nbsp;&nbsp; public Child Child<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(ChildProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(ChildProperty, value); <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChildReferenceChanged = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(&quot;Child&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp; }<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrisdot replied on Monday, April 19, 2010</h2><p>Thank you Rocky &amp; rsbaker0 for your answers. I&#39;ll try your solutions. I&#39;m looking forward for v4.1 of CSLA then... ;-)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, April 16, 2010</h2><p>As an alternative in the meantime, I believe OnPropertyChanged() still gets called even when replacing a reference to a child object (except for the odd case I reported a couple of days ago when you have overridden the Equals() implementation and the new child object has the same &quot;value&quot;), so you could override that in your base class and use it to set an additional private flag that you could use to indicate the child had been replaced.&nbsp;&nbsp; You could also override IsDirty() so that it also looks at the flag indicating a new child had been replaced. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,33 @@
+<html><header><title>csla.ApplicationContext.User set on the server side gets lost on reaching the client side.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla.ApplicationContext.User set on the server side gets lost on reaching the client side.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10399.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>eldospk posted on Monday, May 30, 2011</h2><p>Dear Rocky,</p>
+<p>We are seeing a rather strange behavior and wanted to double check with you.</p>
+<p>While running csla&nbsp;in 3-tier mode, a value set for csla.ApplicationContext.USer after authentication gets lost on reaching the client. When we debug, we see this value correctly inside the server code. On the client it changes to &quot;Un-authenticated user&quot;.</p>
+<p>So, as a work around, we are passing the IPrincipal value to the client and then manually setting it there again. But, this doesn&#39;t sound right.</p>
+<p>Everything works great in 2-tier mode.</p>
+<p>Shouldn&#39;t the csla.ApplicationContext.User value be the same on both client and server in 3-tier mode as well?</p>
+<p>&nbsp;</p>
+<p>Really appreciate your help.</p>
+<p>&nbsp;</p>
+<p>Eldos Kuriakose</p>
+<p>Cambridgesoft Team</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 30, 2011</h2><p>Hi, </p>
+<p>Actually, it is the other way. In a 3-tier mode you must set Csla.ApplicationContext.User on the client side.<br />And when authentication mode is not &quot;Windows&quot; that principal object must serializable and will be sent in the<br />DataPortalRequest to the server and set as ApplicationContext.User on the server side. </p>
+<p>The principal object is NOT returned from the server to the client.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>eldospk replied on Monday, May 30, 2011</h2><p>Thanks Jonny for the quick reply.</p>
+<p>Let me clarify this, are you saying that csla.ApplicationContext.User flows only from the client to the server?</p>
+<p>Since the authentication would involve code running inside our business layer/middle tier(security classes), this part naturally fell</p>
+<p>on the server side for us, especially since it involves DB interaction. Now once authenticated on the server, there are other aspects that get set on the client side where in&nbsp;we need this User value. Are you suggesting that the authentication must happen on the client side?</p>
+<p>&nbsp;</p>
+<p>Really appreciate your input.</p>
+<p>&nbsp;</p>
+<p>Eldos.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, May 30, 2011</h2><p>Yes, ApplicationContext.User flows from client to server only when authentication mode is anything BUT &quot;windows&quot;. </p>
+<p>The authentication may well run code in the serverside. In Csla4 your principal object should inherit from Csla.Security.CslaPrincipal.</p>
+<p>And you must set ApplicationContext.User on the &quot;client&quot; side in a 3 tier mode.</p>
+<p>You could also look at the updated code for ProjectTracker:<br /><a href="http://lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/ProjectTracker/ProjectTracker.Library/Security/PTPrincipal.cs?view=markup">http://lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/ProjectTracker/ProjectTracker.Library/Security/PTPrincipal.cs?view=markup </a></p>
+<p><a href="http://lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/ProjectTracker/ProjectTracker.Library/Security/PTIdentity.cs?view=markup">http://lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/ProjectTracker/ProjectTracker.Library/Security/PTIdentity.cs?view=markup</a></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, May 31, 2011</h2><p>All the authentication behaviors are discussed in the&nbsp;<em>Using CSLA 4: Data Portal Configuration</em> ebook.</p>
+<p>The issue you see is due to state management.</p>
+<p>The assumption is that the server is stateless - remembering nothing between client-initiated data portal requests. Therefore, the only place you can have long-term state is on the client. </p>
+<p>Additionally, the client always needs the principal, because it will be continually checking authorization rules (in a smart client scenario anyway).</p>
+<p>So it is reasonable to think that the client, always having the principal, would send it to the server with each data portal request, because the server never has the principal unless it is set on each client data portal call.</p>
+<p>There are some variations on these themes - for Windows domain authentication, for web applications, or to minimize bandwidth for each data portal call over the network. These are discussed in the ebook.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>eldospk replied on Tuesday, May 31, 2011</h2><p>Thanks both of you for clarifying this concept for us. I will make sure to double check the e-book. </p>
+<p>&nbsp;</p>
+<p>Eldos</p>
+<p>Cambridgesoft Team</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

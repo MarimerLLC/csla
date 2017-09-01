@@ -1,0 +1,22 @@
+<html><header><title>Invoking an Abstract DAL from within the Business Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Invoking an Abstract DAL from within the Business Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10669.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Thursday, September 08, 2011</h2><p>Hello,</p>
+<p>To paraphrase Rocky from the 3rd Csla 3.8 video, <b>while discussing a demo project which invokes an abstracted DAL from within the BO</b> (starting at about 1:10:48)</p>
+<p>In a 3 tier model you don&#39;t even deploy your concrete data access components to the client. You simply deploy an abstract DAL router assembly. This is interesting for a couple of reasons: it simplifies client installation, completely abstracts the DAL layer making it configurable, and improves security b/c the actual code which accesses the database store is on the application server only.</p>
+<p>Unfortunately, while&nbsp; the business assembly only has a reference to the abstract DAL router, the UI assembly appears to require a reference to the both the abstract DAL router and the actual DAL implementation assembly. In the demo project distributed with the video, the WPF UI project has references to the two concrete DAL implementations (ADO and Mock) and once removed, the system can no longer construct a DalManager, throwing an ArgumentNullException.</p>
+<p>Here is to hoping that i am just missing something, as this was one of the features that I was really excited about.</p>
+<p>Having typed this, the thought just came to me that perhaps i need to run in a true 3 tier (the demo project i believe is 2 tier). I will explore this possibility.</p>
+<p>Any other suggestions would be greatly appreciated.</p>
+<p>Thanks,</p>
+<p>Matthew</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Friday, September 09, 2011</h2><p>Hi</p>
+<p>On the main project on the tier, which accesses the DB, you have to provide the conrecte implemetations of your DAL. <br />In a 2-tier configuration, this is where the client UI exe is, in a 3-tier configuration this is where a &quot;server.exe&quot; is. </p>
+<p>In one of these project you have to:</p>
+<ol>
+<li>add references to the DAL projects or assemblies (copy local)</li>
+<li>define a post build event, that copies the assemblies to the output directory</li>
+<li>do the copy task in an installer project (not suitable while developing)</li>
+</ol>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Friday, September 09, 2011</h2><p>Thanks Stefan,</p>
+<p>I started thinking towards the end of my post that the demo project wasn&#39;t a true 3 tier config, thus the app.config key DalManagerType defining the DAL implementation was in the UI app.config. You confirmed my suspicions, and a true 3 tier build fixed the issue.</p>
+<p>Much Appreciated,</p>
+<p>Matthew</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,46 @@
+<html><header><title>Design pattern to sync two objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design pattern to sync two objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2597.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bryanvick posted on Tuesday, March 27, 2007</h2>I'm looking for a design pattern that will keep two in-memory objects
+that are based on the same data in a DB in-sync with each other during
+DB updates.&nbsp; I have a full featured 'Person' object with the typical
+fields and methods, and a light weight 'smallPerson' object that only
+contains ID, FirstName and LastName fields.&nbsp; I use the smallPerson
+object for listboxes and such where I don't need to pull all the
+person's info from the DB.&nbsp; I use the full featured Person object when
+the user wants to edit all of a person's info.<br>Lets say I have a listbox showing
+a bunch of smallPerson objects and the user clicks on one of the items
+to edit the person.&nbsp; A form pops up which is bound to the full featured
+Person object.&nbsp; The user edits this Person object's first name and then
+saves it to the DB.&nbsp; Now the Person object is in sync with the DB, but
+the smallPerson object is not.&nbsp; It will still show the old first name
+until I make another round trip to the DB to refresh the objects data.<br>Any patterns to keep two objects based on the same data in sync?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, March 28, 2007</h2>Hi,<br><br>If you want to save yourself a round-trip to the DB to refresh the out-dated version of the smallPerson, you could introduce another class: PersonData.<br><br>PersonData will then hold all the data from the DB for a particular person and your FullPerson and SmallPerson simply wrap this PersonData. You could see this as if the SmallPerson and FullPerson are views on PersonData. <br><br>All you need then is a event mechanism (or observer pattern) that enables your PersonData to notify its 'views' of any changes.<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Wednesday, March 28, 2007</h2>Search for software patterns using: Event Notification, or Event Messaging, or Publish and Subscribe. <br>
+<br>
+There is also an add-on for CSLA done by Petar called Active Objects to do something similar, look on the contributors links.<br>
+<br>
+You basically want a Message Manager that allows objects register for
+particular messages, then have the necessary objects gnerating those
+messages publish those events to that manager object, and let it
+forward the messages to the objects who have registered delegates to
+receive them. <br>
+<br>
+Messages (objects themselves) can be published with a simple signature of
+MessageType, MessageObject. Classes can decide how to cast
+MessageObject based on the MessageType. You could also descend all your
+Messages from a common class, that contains a field that identifies the
+message type, so you can handle them all generically at some basic
+level. <br>
+<br>In regards to your specifc need, your PersonInfo message would descend from MessageType and
+have the additional fields of PersonID, FirstName, and LastName. You
+amay also want to include UserAction if you want to handle Inserts and
+Deletes. Your main person form would send such a message to the Manager
+when necessary, and the Manager woud them invoke the delegates of the
+subscriber objects registered for the message type and forward those
+messages to the them.<br>
+<br>
+Hope this serves as an introduction. There's tons of free stuff on
+the web explaining such patterns in all varieties of language.<br>
+<br>
+Cheers,<br>
+<br>
+Desmond Nolan<br>
+Enterprise Developer<br>
+Norwalk, CT<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

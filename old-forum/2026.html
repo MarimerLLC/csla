@@ -1,0 +1,25 @@
+<html><header><title>Inheritance and Generics</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheritance and Generics</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2026.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dml posted on Monday, December 25, 2006</h2><P>I am looking at an inheritance structure using generics, the following seems to be ok.<BR>public abstract class ChemicalBase:Csla.BusinessBase&lt;ChemicalBase&gt;<BR>public class Herbicide:ChemicalBase </P>
+<P>I would like to try something like this:<BR>public abstract class ChemicalBase&lt;T&gt;:Csla.BusinessBase&lt;T&gt;<BR>public class Herbicide:ChemicalBase&lt;Herbicide&gt;</P>
+<P>and get the following error when building the code:<BR>The type 'T' must be convertible to 'Csla.BusinessBase&lt;T&gt;' in order to use it as parameter 'T' <BR>in the generic type or method 'Csla.BusinessBase&lt;T&gt;'</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, December 25, 2006</h2><P>Be careful with Generics. They are not polymorphic. I suggest you implement your top level&nbsp;Base classes as generics (see other threads for samples of this) but then derive concrete classes from them as in your first example. By inserting a layer between CSLA and your BOs (the top level Base classes I referrred to) you can tweak how you want Csla to work and yet not worry about updating the framework each time it is revised. Plus you can add functionality to your base classes and all your BOs will pick them up instantly.</P>
+<P>You may want to implement an Interface if you want polymorphic behavior.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dml replied on Monday, December 25, 2006</h2>Thank you for that advice, will be a great help for how I carry on with this design. Any other opinions will be greatly appreciated</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Tuesday, December 26, 2006</h2><DIV>Define your base class as:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>
+<DIV><FONT face="Courier New" size=2>public abstract class ChemicalBase&lt;T&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>: Csla.BusinessBase&lt;T&gt; where T : ChemicalBase&lt;T&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{ ... }</FONT></DIV></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Then, you should be able to do:</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>public class Herbicide : ChemicalBase&lt;Herbicide&gt;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2>{ ... }</FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sashidhar replied on Tuesday, January 09, 2007</h2><P>How do I implement an interface for the above example?</P>
+<P>&nbsp;</P>
+<P>Thanks in advance,</P>
+<P>Sashidhar Kokku</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, January 09, 2007</h2><div>
+<div><font face="Courier New" size="2">public abstract class ChemicalBase&lt;T&gt;, IChemical<br></font></div>
+<div><font face="Courier New" size="2">: Csla.BusinessBase&lt;T&gt; where T : ChemicalBase&lt;T&gt;</font></div>
+<div><font face="Courier New" size="2">{ ... }</font></div></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

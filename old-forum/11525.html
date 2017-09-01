@@ -1,0 +1,8 @@
+<html><header><title>Priority and Rule Chaining</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Priority and Rule Chaining</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11525.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares posted on Friday, August 10, 2012</h2><p>If you are chaining multiple rules together, and want to set the priority to a value higher than the default, do you need to set the priority on each individual rule in the chain, or only on the outer rule? &nbsp;I&#39;m thinking just the outer rule, but want to make sure.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Mike</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 10, 2012</h2><p>All rules have a default priority of 0. </p>
+<p>So you only need to set the priority on the rule(s) that you want to have at another priority.</p>
+<p>Within the same priority you should regard the sequence as random and insignificant. <br />IE Rules is ONLY sorted by Priority to determine the sequence.</p>
+<p>If you have rule chaining as in inner rules in a BusinessRule -&nbsp; the rule engine only have knowledge of the outermost Rule (registered rule)&nbsp; and only looks&nbsp; for this rules Priority.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

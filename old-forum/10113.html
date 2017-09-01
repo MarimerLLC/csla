@@ -1,0 +1,44 @@
+<html><header><title>Business rules and AffectedProperties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business rules and AffectedProperties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10113.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Sunday, February 27, 2011</h2><p>Hi Rocky</p>
+<p>I ran into an interesting problem in 4.1&nbsp;that I think needs your input. I have the following scenario:</p>
+<p>2 properties: string CustomerName, and int? CustomerId</p>
+<p>On my CustomerName property I have a business rule set up to set the CustomerId to null the CustomerName is set to an empty string.</p>
+<p>On my CustomerId property I have a business rule set up to load some other proeprties when the CustomerId is set - and this is an asynch rule which makes a server call.</p>
+<p>The problem is that my CustomerName rule lists CustomerId as an affected property (as it has to to be able to set it). But when the rule executes, even if it doesn&#39;t call context.AddOutValue for the CustomerId property, the&nbsp;rule associated with CustomerId&nbsp;gets fired anyway (and this is a problem because it causes the server call unnecessarily).</p>
+<p>It would be really nice if there was some way of indicating that only affected properties that are actually set cause their rules to execute. </p>
+<p>I did try using context.AddSuccessResult(true) to stop processing but this has no effect - and I can see in the code that it&#39;s already added all the AffectedProperties to a list of properties to execute the rules for.</p>
+<p>On a side note, I did think that maybe a way to achieve this would be to not have the CustomerId property set in the AffectedProperties list. But then I get an exception when I try to call context.AddOutValue(CustomerIdProperty, null) as the AddOutValue method checks whether the property having a value set is an affected property.</p>
+<p>One other possibility is to setup the AffectedProeprties collection in the Execute method - i.e. at the start of the method clear the AffectedProperties collection and then only add the properties that are actually affected. </p>
+<p>Anyway I would be interested in your comments.</p>
+<p>&nbsp;</p>
+<p>Craig</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 28, 2011</h2><p>Hi Craig,</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>cds<br></b></p>
+<p>It would be really nice if there was some way of indicating that only affected properties that are actually set cause their rules to execute. </p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>No, I don&#39;t think we should break the meaning of AffectedProperties. Rules should always run for AffectedProperties. </p>
+<p>But, the case here may rather be: I&#39;d like to call AddOutValue for properties that are not part of AffectedProperties (and thus - the rules will not be run). </p>
+<p>You should however be aware that I have made some changes in BusinessRules since Csla 4.1 was release so that: </p>
+<ul>
+<li>Rules for aggregated AffectedProperties in <i>Sync rules only</i> are now run immediately after rules are initiated. (before: would run rules for all AffectedProperties without testing for sync/async). </li>
+<li>After an AsyncRule is completed -&nbsp; Rules for AffectedProperties in this rule only will be rerun.&nbsp; (this did not happen previously).</li>
+</ul>
+<p>This may affect how your rules are executing and dependencies.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, February 28, 2011</h2><p>Hi Jonny</p>
+<p>I&#39;m not sure I understand your description of the changes you&#39;ve made, but I certainly agree that it should be possible to add an output value from a rule&nbsp;for a property without having to make it an affected proeprty. That would certainly solve my problem, I think.</p>
+<p>In the interim, I&#39;ve had some success with not defining the AffectedProperties in the ctor of the rule, but setting them in the execution of the rule. I&#39;m pretty sure there shouldn&#39;t be issues with this (but please advise if you think there are!!! <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" />)</p>
+<p>Cheers...</p>
+<p>Craig</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 28, 2011</h2><p>Hi Craig, </p>
+<p>You must remember that the instance of the Rule is registered (similar to a singelton) for ALL instances of the BO type.</p>
+<p>So - your code must be thread safe and ALL properties should be immutable (not changed for each execution).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Monday, February 28, 2011</h2><p>If you are inheriting from Csla.Rules.BusinessRule, you can call LoadProperty to change a property value without the property being an AffectedProperty.</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, February 28, 2011</h2><p>Hi Jonny</p>
+<p>Thanks for the advice. I did know that rules were shared amongst business objects - so yes, what I&#39;m doing is technically wrong, though in my particular circumstance it doesn&#39;t matter as there&#39;s only ever a single instance (at a time) of the business object being validated.</p>
+<p>It is a bit of a worry though that, without reading the documentation and warnings, that one can easily assume that there is a rule instance per business object instance.</p>
+<p>I wonder if maybe it would be better to, in some way, prevent invalid modification to the state of the shared BusinessRule instance after construction. E.g. throw exceptions if used incorrectly.</p>
+<p>Craig</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 28, 2011</h2><p>I think even if you only have one BO at a time being validated you could run into problems.&nbsp;&nbsp; The first run could cause the second run for the new BO to return an incorrect result.</p>
+<p>Unfortunately there&#39;s nothing you can do to signify that a class should be immutable.&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

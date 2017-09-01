@@ -1,0 +1,52 @@
+<html><header><title>How to:Mix Active Directory and Custom Authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to:Mix Active Directory and Custom Authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1230.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes posted on Friday, September 15, 2006</h2><H2><EM><FONT face=Arial>Requirements</FONT></EM></H2>
+<P>In my company I am dealing with three situations&nbsp;when it comes to Business Objects (BOs).<o:p></o:p></P>
+<P><SPAN>1.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>I want to authenticate to Active Directory (AD) when inside my company Wide&nbsp;Area Network (WAN).&nbsp;&nbsp;<o:p></o:p></P>
+<P><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>I&nbsp;have 700 - 7000 users who also need access to the same BOs via the Internet.&nbsp; I do not want to&nbsp;the headache of maintaining&nbsp;those users in Active Directory, so I need to use Custom Authentication on the Intranet.<o:p></o:p></P>
+<P><SPAN>3.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Finally I know my user base will ask, "Why can't we access the data via the Internet?"&nbsp; So I need to have Active Directory Authentication via the Internet as well.<o:p></o:p></P>
+<P>&nbsp;<o:p></o:p></P>
+<P>The final result is that I need my BOs to be able to authenticate via Custom and Active Directory Authentication on the fly.</P>
+<P><o:p>&nbsp;</o:p></P>
+<H2><EM><FONT face=Arial>CHOICES</FONT></EM></H2>
+<P class=MsoNormal><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Following the framework outline, I needed to create my own Identity and Principal objects which inherit from <SPAN>ReadOnlyBase</SPAN>, and implement the<SPAN> <SPAN>IIdentity </SPAN></SPAN>interface.<SPAN>&nbsp; </SPAN>I planned to follow the blueprint that Rockford used in his book.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When looking at how Rockford implemented his objects, I deduced that there are two distinct things happening, Authentication and Group Membership.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<H3><FONT face=Arial>Authentication</FONT></H3>
+<P class=MsoNormal>I only found one way to authenticate someone directly.<SPAN>&nbsp; </SPAN>It required Interopt Services and importing functions from some windows DLLs.<SPAN>&nbsp; </SPAN>I felt that this method was rather messy.</P>
+<P class=MsoNormal>Another way I found to authenticate was to do a query against AD using the <SPAN>DirectorySearcher</SPAN> and providing it with the user’s credentials.<SPAN>&nbsp; </SPAN>If the domain, username or password weren’t correct, it would throw an exception.<SPAN>&nbsp; </SPAN></P>
+<H3><FONT face=Arial>Group Membership</FONT></H3>
+<P class=MsoNormal>During my research into how to authenticate with AD, I found <SPAN>WindowsIdentity</SPAN><SPAN> and <SPAN>WindowsPrincipal</SPAN></SPAN> in the <B><SPAN>System.DirectoryServices</SPAN></B> namespace.<SPAN>&nbsp; </SPAN>I saw that there is a <SPAN>WindowsPrincipal</SPAN><SPAN>().IsInRole(<SPAN>""</SPAN>)</SPAN> method.<SPAN>&nbsp; </SPAN>This could tell me if an AD user was in an AD group.<SPAN>&nbsp; </SPAN>I also saw that there was a <SPAN>WindowsIdentity</SPAN>.<SPAN>Groups </SPAN>property that returned an <SPAN>IdentityReferenceCollection</SPAN>.<SPAN>&nbsp; </SPAN>So I could use these to implement in the CanRead(), CanWrite(), etc functions in my BOs.<SPAN>&nbsp; </SPAN>I did have one concern though.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal>Rockford, in his example, loads all the groups for a particular user into the Identity class.<SPAN>&nbsp; </SPAN>I didn’t know if the <SPAN>WindowsIdentity</SPAN> did the same thing.<SPAN>&nbsp; </SPAN>I am under somewhat of a time crunch, so I decided to just follow the same process and load the AD groups into my custom Identity.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>In addition, I found another method to get the groups a user belongs to and that was by doing a query against AD with the <SPAN>DirectorySearcher</SPAN>.<SPAN>&nbsp; </SPAN>Since I already was going to use this to authenticate a user, I might as well use it to get the groups.</P>
+<H3><FONT face=Arial color=#000000 size=5><EM>Implementation</EM></FONT></H3>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>I needed to create the custom Identity and Principal objects to implement my authentication system.<SPAN>&nbsp; </SPAN>My Principal object is exactly like the one in the book.<SPAN>&nbsp; </SPAN>I changed very little of it except where it is required to work with my system.<SPAN>&nbsp; </SPAN>All the real implementation was in the Identity object.</P>
+<P class=MsoNormal>As far as the Identity object, the first thing I did was add a new field to the <SPAN>Criteria</SPAN> class inside my custom <SPAN>ANBOIdentity</SPAN>.<SPAN>&nbsp; </SPAN>I also added some code to parse a Username or Domain passed in the form of &lt;Username&gt;\&lt;Domain&gt; or &lt;Username&gt;/&lt;Domain&gt;.<SPAN>&nbsp; </SPAN>I also allow the user to supply a domain in the LDAP format.</P>
+<P class=MsoNormal>Next I modified the <SPAN>DataPortal_Fetch(<SPAN>Criteria</SPAN> criteria)</SPAN> method of the Identity class.<SPAN> </SPAN>This method works two different ways.<SPAN>&nbsp; </SPAN>If the domain field is an empty string, then it assumes that they want to use Custom Authentication.<SPAN>&nbsp; </SPAN>If the domain field contains a value it assumes they want to use AD authentication.<SPAN>&nbsp; </SPAN>So based on that, it goes to the appropriate system (SQL or AD), validates the user and loads the groups they are a member of into the Identity.</P>
+<P class=MsoNormal>The code for the Custom Authentication part of DataPortal<SPAN>_Fetch</SPAN> is exactly the same as Rockford’s example except modified to work with my setup.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal>The code for AD Authentication begins with the assumption that authentication fails.<SPAN>&nbsp; </SPAN>It then proceeds through the following steps.<SPAN>&nbsp; </SPAN></P>
+<P><SPAN>1.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN></SPAN>It creates the DirectorySearcher which requires the help of two private functions to make the parameters.<SPAN>&nbsp; </SPAN>The parameters are the DLAPEntry, username which it puts in the format &lt;domain&gt;\&lt;username&gt; and the password.<SPAN>&nbsp; </SPAN><SPAN>&nbsp;</SPAN></P>
+<P><SPAN>2.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Sets the search filter to look for our user.</P>
+<P><SPAN>3.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Specifies that we are only looking for the “memberOf” property</P>
+<P><SPAN>4.<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN>Then executes a search</P>
+<P class=MsoNormal>If the search fails, it will most likely cause an exception.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal>In all my testing, I never saw a situation where result was null that didn’t cause an exception.<SPAN>&nbsp; </SPAN>The reason I am keeping the null test is because that is how kit was in the example I looked at.</P>
+<P class=MsoNormal>You can see that the class catches three exceptions.<SPAN>&nbsp; </SPAN>The “Logon Failure” ones happen if a username or password is not valid.<SPAN>&nbsp; </SPAN>The “A referral was returned” occurs if the domain is not valid.<SPAN>&nbsp; </SPAN>The last exception occurs if a user is valid but belongs to no groups.<SPAN>&nbsp; </SPAN></P>
+<P class=MsoNormal>Once a user is validated, the method loops through the “memberOf” properties and adds them to the _roles list.</P>
+<P class=MsoNormal>At this point you use the unmodified framework authentication system.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<H3><FONT face=Arial>Conclusion</FONT></H3>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>I attached a copy of my ANBOPrincipal and ANBOIdentity classes to this post in a zipped file.<SPAN>&nbsp; </SPAN>Well, I hope this helps somebody.<SPAN>&nbsp; </SPAN>It was fun to figure out.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, September 16, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DeHaynes:</strong></div><div></P>
+<P><FONT size=3>I attached a copy of my ANBOPrincipal and ANBOIdentity classes to this post in a zipped file.<SPAN>&nbsp; </SPAN>Well, I hope this helps somebody.<SPAN>&nbsp; </SPAN>It was fun to figure out.</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>You helped me :)</P>
+<P>If an application is exposed both internally and on the Web we need AD and custom authentication.</P>
+<P>I couldn't find the attachement though.</P>
+<P>Cheers</P>
+<P>Tiago</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeHaynes replied on Saturday, September 16, 2006</h2>Sorry about that, I am a noob at this board.&nbsp; I edited my original message and put it back.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, September 16, 2006</h2>Tks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Monday, September 18, 2006</h2><P>Thanks for sharing this.&nbsp; I won't need this functionality for another six months or so, but I've added this to my favorites to look at then as a starting point.</P>
+<P>IMO this is a feature that will just be taken for granted by the users and must be there for a combination smart client + asp.net environment.&nbsp; At the same time&nbsp;is way cool for us that know what's going on behind the scenes.&nbsp; :)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

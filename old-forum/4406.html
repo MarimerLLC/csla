@@ -1,0 +1,52 @@
+<html><header><title>Validation rules don't &quot;see&quot; properties from ICustomTypeDescriptor? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rules don't &quot;see&quot; properties from ICustomTypeDescriptor? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4406.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Monday, February 25, 2008</h2><P>I have a new wrinkle in something I thought was working previously, but now it seems to be not be working. </P>
+<P>I have some properties that are being added dynamically to my objects at runtime via ICustomTypeDescriptor. Just recently, it seems, these have started throwing exceptions in the rule handling because no PropertyInfo is being returned for the property. </P>
+<P>I dug a little deeper, and sure enough my ICustomTypeDescriptor methods aren't even being called when the property is being interrogated, however they get called when a collection of the objects is bound to a grid control. </P>
+<P>Are custom properties provided via&nbsp;ICustomTypeDescriptor supported in CSLA? Maybe I just inadvertently broke something. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2008</h2><P>The exception is coming from the rules in CommonRules? That could be, because the code in those rules get the property value using reflection off the Type, not the TypeDescriptor. My guess is that only the TypeDescriptor honors ICustomTypeDescriptor (guessing based on the name similarlity ;) ).</P>
+<P>If this is true (and I suspect it is), it might be a candidate for a future enhancement to CommonRules - to switch to using a TypeDescriptor to get the value rather than the Type.</P>
+<P>Is this C# or VB? I ask because the VB code uses a VB runtime function to get the value, while in C# I had to replicate the VB function myself. If it were to work in VB and not C# (and it could easily work in VB), that'd indicate that I didn't totally replicate their behavior.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, February 25, 2008</h2><P>This is in C#, and the exception actually occurs in CallByName in Utilities when you are trying to retrieve the property value:</P>
+<P><FONT face="Courier New">case CallType.Get:</FONT></P>
+<P><FONT face="Courier New">{</FONT></P>
+<P><FONT face="Courier New">PropertyInfo p = target.GetType().GetProperty(methodName);</FONT></P>
+<P><FONT face="Courier New">return p.GetValue(target, args);</FONT></P>
+<P><FONT face="Courier New">}</FONT></P>
+<P>(p above is returned as null)</P>
+<P>I don't see how I could have missed that calls using the Type don't honor ICustomTypeDescriptor, but I must have. Otherwise... (cue Rod Serling Twilight Zone music here) </P>
+<P>It makes sense, since you don't have an instance when you use the Type, but I thought the framework was pulling a rabbit out of the hat to make it work. We just switched from VS 2005 to 2008 in the last month, which makes me wonder if something undocumented changed between them. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know what would have changed from 2005 to 2008,
+but you never know.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Certainly I&#8217;d expect you&#8217;d need to use
+TypeDescriptor instead of Type to get at your dynamic properties.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll add this to the wish list for a future enhancement
+(3.5.1 or something).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

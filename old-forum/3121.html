@@ -1,0 +1,16 @@
+<html><header><title>Subclassing Editable Root objects with child collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Subclassing Editable Root objects with child collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3121.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>entara posted on Friday, June 29, 2007</h2><P>I'm trying to build a core library of CSLA business objects that will be used as a basis ( through inheritance ) for a series of customer-specific application libraries and I am having trouble seeing how to subclass&nbsp;( or inherit ) an editable root object that has a child collection attached to it.&nbsp;&nbsp; The child collection would also contain subclassed objects.&nbsp; The intent is to build the core and then extend it through the application specific library for each customer site.&nbsp; </P>
+<P>The issue I'm having is how to specify the subclassed child collection.&nbsp; If I leave it defined in the core or base class, it then references the core library's child collection ( and related child objects ).&nbsp; If I define the collection in the subclassed object it references the correct child collection and related child objects, but I believe that I will then have to move the DataPortal code from the base class to the subclass so that updates are operating on the proper collection.&nbsp;&nbsp; </P>
+<P>Ideally, I would like to leave the definition of the child collection in the base class and then override it somehow... Not sure if this is possible... </P>
+<P>Anyway, would anyone have an example of how to inherit an editable root &amp; editable child collection?</P>
+<P>Thanks!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, June 30, 2007</h2><P>I have been having this exact problem for years.</P>
+<P>I have never found an adequate solution. </P>
+<P>Please let me know if anyone comes up with some new ideas.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielVW replied on Monday, July 02, 2007</h2><P>How about something like this:</P>
+<P>Create an interface (eg IChild) that contains an IChildUpdate method (and possibly each DP Method)</P>
+<P>In your base class:&nbsp; When you define the child collection in the base class, define&nbsp;it&nbsp;as a collection containing&nbsp;IChild elements.&nbsp; In the DataPortal code in the base class call the IChildUpdate method for each child.</P>
+<P>The inheriting child class must impliment this IChild interface, and in the IChildUpdate method specify the DataPortal code.</P>
+<P>Keep in mind that specifying a child collection in the base class means that you would have to cast the type of the child each time you want to use it.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

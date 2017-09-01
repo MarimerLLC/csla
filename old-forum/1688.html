@@ -1,0 +1,111 @@
+<html><header><title>Decorator pattern and concrete types</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Decorator pattern and concrete types</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1688.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Sunday, November 05, 2006</h2><P>Hi,</P>
+<P>I don't really have a use case or anything, just a general question. Let's say you're using the decorator pattern, wrapping a bunch of behavior on your object. For example, you have a Car, which is wrapped with a Radio, which is wrapped with a SunRoof.</P>
+<P>Say you've got code that needs to know one of the concrete types. For example, you'd like to know if a particular car has a radio, and if it does, turn it on.</P>
+<P>I understand that the decorator pattern doesn't allow this to happen, but it seems like it could be useful. Are there any ways to get around this?</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, November 06, 2006</h2>Hey Mike,<br><br>You are right in stating that the decorator wraps behavior, it's a behavioral pattern. You sample however of Car - Radio - SunRoof is not about behavior. Your sample rather deals with composition, so you would have a look at structural patterns (e.g. Composite). <br><br>An excellent example of wrapped behavior can be found in the System.IO namespace of the dotnet framework. Most of the classes that inherit System.IO.Stream (perhaps even all of them) have constructors that allow you to pass another instance of Stream. The newly instantiated one will then wrap the provided one. This <i>is </i>about behavior as all the wrappers basically augment the 'byte&nbsp; sequence processing'.<br><br>Another popular use of decorators in dotnet is when you apply Attributes (System.ComponentModel) to your member declarations. For example Rhocky's &lt;RunLocal&gt; attribute is in fact a decoration that 'wraps' the dp_fetch method. The beauty of using attributes is that you don't have to do the usual plumbing/overwriting/enhancing that comes with implementing wrapper subclasses, they are very lean and mean instead. ;-)<br><br>Just my 2 cents ...<br><br>Regards,<br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, November 06, 2006</h2><P>That makes a lot of sense, thanks Bayu. I've seen the "car" example a few times discussing the decorator, but it never really made sense to me. Just plain seems wrong to say that a Radio is a Car.</P>
+<P>I don't know if you've ever seen the book Head First Design Patterns, but in their decorator example, they use a Beverage base class -&nbsp;so you might have an Espresso wrapped with a Mocha wrapped with a WhippedCream. The only behavior the decorator objects add is cost. I don't know if that's a good example or not. Any thoughts? That too seemed a little wrong to me - I mean a condiment is a condiment and not a beverage.</P>
+<P>The System.IO thing makes perfect sense.</P>
+<P>Thanks,</P>
+<P>Mike&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, November 06, 2006</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div><p>I don't know if you've ever seen the book Head First Design Patterns, but in their decorator example, they use a Beverage base class -&nbsp;so you might have an Espresso wrapped with a Mocha wrapped with a WhippedCream. The only behavior the decorator objects add is cost. I don't know if that's a good example or not. Any thoughts? That too seemed a little wrong to me - I mean a condiment is a condiment and not a beverage.</p></div></BLOCKQUOTE><br><br>I don't know that particular book. I read the famous <a href="http://www.amazon.com/Design-Patterns-Object-Oriented-Addison-Wesley-Professional/dp/0201633612/sr=8-1/qid=1162834139/ref=pd_bbs_sr_1/104-4512334-0325553?ie=UTF8&amp;s=books">Design Patterns book by the Gang of Four</a>. <br><br>It's a bit of an odd example indeed. Personally, I don't think I would ever use a decorator pattern to compute the price of a 'complex' product. The key example that clarified decorators to me was the Java windowing toolkit. It's been a while ago, so I may not use the correct naming, but they use a decorator pattern in their Panels. I believe you had a ScrollBarPanel which could decorate an arbitrary other panel and then it would simply augment that other panel with a scrollbar. <br><br>In a way perhaps the WhippedCream and Mocha 'augment' your Espresso. But like you said ... it looks like a far-fetched sample ......... .like using a drill to peel an egg .... ;-)<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, November 06, 2006</h2>I just ordered that book, thanks for the link. The ScrollBarPanel makes sense to me too - just like the System.IO.Stream does.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, November 06, 2006</h2><p class="MsoNormal">A common use of using the decorator is to change the price
+of items.<span>&nbsp; </span>A DiscountedItem object would
+decorate a LineItem object to apply a discount.<span>&nbsp;
+</span><br>
+</p>
+<p class="MsoNormal"><br>
+The decorator pattern is about adding additional responsibility to
+an object.<span>&nbsp; </span>Adding options to a car like
+a sunroof and radio is an acceptable way to use the decorator pattern.<span>&nbsp; </span>For example, when you purchase a car, you could decorate the car with additional options (sunroof, radio etc.) to change the
+price of a car.</p>
+<p class="MsoNormal"><br>
+The Head First book is an excellent book.<span>&nbsp; </span>The examples in that book are ridiculous on
+purpose.<span>&nbsp; </span>It helps you remember the
+pattern.<span>&nbsp;&nbsp; </span>People who often complain about the examples in the book don’t
+<span>realize </span>this. </p>
+
+
+<p class="MsoNormal">
+
+</p>
+
+
+<p class="MsoNormal"><br>
+<span>&nbsp; </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Monday, November 06, 2006</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>malloc1024:</strong></div><div><p class="MsoNormal">A common use of using the decorator is to change the price
+of items.<span>&nbsp; </span>A DiscountedItem object would
+decorate a LineItem object to apply a discount.<span>&nbsp;
+</span><br>
+</p>
+<p class="MsoNormal">The decorator pattern is about adding additional responsibility to
+an object.<span>&nbsp; </span>Adding options to a car like
+a sunroof and radio is an acceptable way to use the decorator pattern.<span>&nbsp; </span>For example, when you purchase a car, you could decorate the car with additional options (sunroof, radio etc.) to change the
+price of a car.</p>
+<p class="MsoNormal">The Head First book is an excellent book.<span>&nbsp; </span>The examples in that book are ridiculous on
+purpose.<span>&nbsp; </span>It helps you remember the
+pattern.<span>&nbsp;&nbsp; </span>People who often complain about the examples in the book don’t
+<span>realize </span>this. </p>
+
+
+<p class="MsoNormal">
+
+</p>
+
+
+</div></BLOCKQUOTE><br><br>Fair enough. <br><br>I never intended to say it was an 'unacceptable' use case for decorators. It may very well be a shortage of understanding/experience that causes me to see it as applying a drill to an egg. ;-)<br><br>Bayu<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, November 06, 2006</h2><P>To further defend the Head First book, their example also needs a bit of context to understand.&nbsp; They are not referring to WhippedCream as a condiment in as much as they were making light of the way in which coffee is ordered these days - where simply saying WhippedCream translates into the whole order.&nbsp; They use the Alice and Mel's Diner example for this paradigm also.</P>
+<P>To draw on malloc's example, think of this like walking into a car dealership and asking for the Ford Mustang GT versus the Shelby or (in my youth, at least) the Saline.&nbsp; Beneath the surface, they are both Mustangs, but by specifying the "package", you've identified a set of options, extras, etc. that "decorate" the underlying object - the Mustang - and make it a Shelby or GT.</P>
+<P>Back to the original post, though.&nbsp; You are right, there is a difference between is-a and has-a and it is my understanding that the decorator pattern would be most suited for the is-a category - where a Shelby IS-A Mustang.&nbsp; Thinking of Whipped Cream as a condiment does make the Head First example a bit more confusing.</P>
+<P>Given this, in your example of a car with a radio, the radio would be part of the Options collection (or something) and maybe the base car class would have a HasRadio property or something.&nbsp; But, as pointed out earlier, this is a composition thing (has-a) and not a good candidate for the decorator pattern.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, November 06, 2006</h2><P>I hope I didn't infer that I thought the Head First examples were bad, that was not my intent&nbsp;- I was just pointing out something I don't quite get. I think it's a great, fun book, and have recommended it several times.</P>
+<P>The whole is-a has-a thing is what gets me confused. A radio is not a car,&nbsp;but apparently it's an acceptable usage. While I'm not in a position to disagree, it doesn't make sense to me. It does makes sense when&nbsp;you talk about a radio affecting the price, but that's about it. But there are other ways to affect the price too. Not like we have OrderItems inherit from OrderHeaders, nor wrap an AppleOrderItem with an OrangeOrderItem with a MilkOrderItem. They too affect the price.</P>
+<P>The examples of ScrollablePanel, Streams, and a Shelby Mustang (I've always loved Shelbys) make perfect sense to me, and are quite clear. A radio being a car and whipped cream being a beverage make no sense to me at all. I'm starting to think that just because something affects the price does not count as adding behaviour.</P>
+<P>I appreciate people pointing out the composition thing. That, to me, makes more sense for the car/beverage examples. Especially when I think about my original question - if you have a car decorated by a radio decorated by a sunroof, how can a routine be passed a car, determine if it has a radio, and if it does,&nbsp;turn&nbsp;the radio&nbsp;on? Makes me think that if you need to write code against those concrete types, maybe the decorator pattern is not for you. Exactly what the Head First book says &lt;g&gt;</P>
+<P>Many Regards,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, November 07, 2006</h2><P>The way you would apply the decorator pattern to your example (imo), is&nbsp;to start with&nbsp;a basic car class which is your car with all of the standard features.&nbsp; We'll call the class Mustang just to continue with my previous analogy.&nbsp; Of course, this class would inherit from a base Car class.&nbsp; And, you could break that down even farther into Sportscars, SUVs, Trucks, etc. but that's outside the scope of this discussion - all we care about are the Car and mustang classes.</P>
+<P>Traditionally, we think of options and add-ons as singular things, and I think this is where you are getting confused when looking at the Head First book, etc.&nbsp; Imagine a situation where you couldn't just add-on a sunroof by itself.&nbsp; The only way to get a sunroof was to "upgrade" the Car to a package that includes a sunroof - say the "Sport" package.&nbsp; In that case you would have another class called MustangSport which was based on the Mustang class but declared additional properties/attributes for the add-on features that are included in that package - a sunroof being one of them.&nbsp; Likewise, you'd have a MustangGT class and a MustangShelby class.</P>
+<P>What the decorator pattern is trying to accomplish is that your Order object (let's say) would accept a Car object and be able to generate the invoice, receipt and other docs necessary to complete the transaction simply using the base object.&nbsp; How?&nbsp; Because the actual instance&nbsp;we are working with&nbsp;is a MustangSport object which possesses all of the knowledge through inheritance to reconstruct itself for the Order object.&nbsp; What I mean is, the Car class could expose a MSRP property and a ListPrice property.&nbsp; Each of these changes depending on the "options" you add on.&nbsp; So, the MustangSport will replace the base Mustang class' implementation of these properties (which already do so to its base Car class) so that the return values reflect the Mustang Sport package.&nbsp; So, the Order object only needs to call car.ListPrice to get the actual price used for the actual vehicle being sold.</P>
+<P>In the same manner, the Car class could expose a Features collection which is added to by the Mustang class and again by the MustangSport class.&nbsp; This is where the Sunroof would be defined.&nbsp; So, when the Order object lists what features are included in the purchased vehicle, all it has to do is iterate through the Car object's Features collection.&nbsp; It doesn't care that items were added by Mustang and MustangSport.</P>
+<P>The beauty of this pattern is that your Order object is loosely coupled to your Mustang, MustangSport, MustangGT, etc. classes.&nbsp; All the Order cares about is the Car class.&nbsp; So, you can add new models at anytime as long as they are derived from Car.&nbsp; So, for Ford, when they released the Fusion, your application would simply define a new Fusion class derived from Car and the rest of the code will continue working as before even with the new class.</P>
+<P>Where this breaks down in some regards is when you want to have ala cart style add-ons.&nbsp; Like adding a sunroof to a standard Mustang.&nbsp; However, with a little creativity, you can accomplish both!!!</P>
+<P>Rework the above object model so that each of the add-ons/options is an object of its own.&nbsp; So, Radio and Sunroof now become objects much in the same way as we did with Mustang, etc.&nbsp; This allows you to have StandardRadio, PremiumRadio, 5CDRadio, StandardSunroof, PowerSunroof, etc. as objects each representing a different option.&nbsp; (Of course, you'd want to build in some validation to make sure you didn't add a StandardSunroof AND PowerSunroof to the same vehicle!)</P>
+<P>Each of these objects would be derived from a base (abstract) Feature class.&nbsp; The Feature class exposes Name, Description, MSRP and ListPrice properties that are set by the derived class.</P>
+<P>Now, when the Car object calculates and returns the value of the MSRP property, instead of returning a flat value, it iterates the Features collection and totals the MSRP for each feature plus the base MSRP of the Car itself.&nbsp; Same for ListPrice.</P>
+<P>So, when you declare the MustangSport as the purchased item, it adds PowerSunroof and PremiumRadio to the base Car class' Features collection.&nbsp; Maybe MustangGT adds the 5CD Radio and 5.4L V8 Engine instead of the 4.8L V6 that comes in the base vehicle.&nbsp; And so on.</P>
+<P>This is not necessarily a true implementation of the decorator pattern, I don't believe, because we aren't necessarily using "wrappers" in our design.</P>
+<P>Take the example of a coffee order "Dark Roast with Mocha and Whip" - as used in the Head First book.&nbsp; Dark Roast derives from the base Beverage class.&nbsp; Mocha and Whip derive from the base Condiment class which in turn inherits Beverage.&nbsp; In the case of the latter two, they accept a Beverage object in their constructor so that they can serve as wrappers.&nbsp; So, in the end, even though you are passing a Whip object to your Order, it sees it as a Beverage.&nbsp; And, because the Whip object wraps a Mocha object which wraps a Dark Roast object, the proper cost can be calculated by walking the chain of wrapped objects.</P>
+<P>To follow this same approach using wrappers for our car&nbsp;scenario,&nbsp;you would have a Sport object that would be applied to any Car object - not necessarily realistic.&nbsp; Likewise, you would have your Radio object derive from Feature (or Option) which in turn inherits Car, accept a Car in its constructor and serve as a wrapper as well.&nbsp; But remember, that the Radio class does not represent a "radio", it represents a "car with a radio" in this case.&nbsp; To add a sunroof, you would declare a new Sunroof and pass in the Radio object so that you would have a "car with a radio and sunroof".</P>
+<P>I could go on, but hopefully that did the trick.&nbsp; Good luck.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, November 07, 2006</h2>
+
+<p class="MsoNormal">No, you did not infer that the examples in the Head First
+book were bad.<span>&nbsp; </span>However, one of the
+biggest complaints I hear about the book is about the examples.<span>&nbsp; </span>I think the examples in that book are there
+to help you learn and remember the patterns.<span>&nbsp;
+</span>I don’t think they are necessarily there for best practices.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">The decorator pattern does have its limitations but it can
+useful in some situations.<span>&nbsp; </span>The decorator
+works fine if you want to change the price of a car by adding options.<span>&nbsp; </span>However, outside of that use-case, adding
+options as decorators to a car class doesn’t work as well.<span>&nbsp; </span>To be able to code against the concrete car
+class, you would need to keep a reference of the original car object before you
+decorated it or every decorator would have to implement the whole car class
+interface.<span>&nbsp; </span>Both options are less than
+ideal.<span>&nbsp; </span>If you are adding options to a
+car in a use-case that does not involve calculating the purchase price of a car,
+I would probably just use a CarOptions collection that accepts ICarOption objects.
+<span>&nbsp;</span>It would really depend on the situation
+though.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">I had the very same questions you had after reading that
+chapter.<span>&nbsp; </span>The example in the book can be a
+little confusing.<span>&nbsp; </span>IO streams and scrollable
+panels are better uses of the decorator pattern. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 07, 2006</h2><P>Just want to say thanks to all who spent the time helping me understand this. I really appreciate the explainations. Understanding when to use which pattern is a slow learning curve for me, but it is a lot of fun.</P>
+<P>Regards,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

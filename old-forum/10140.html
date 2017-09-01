@@ -1,0 +1,8 @@
+<html><header><title>Authorization issue with BusinessBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization issue with BusinessBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10140.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chaz4Code posted on Tuesday, March 08, 2011</h2><p>I was under the impression that if a user did not have edit access to a business object that clsa would not return an instance of the business base object if requested.&nbsp; I&#39;m seeing this behavior&nbsp; for create but not edit.&nbsp; The businessbase object is returning the data to the user however after they attempt to save it then the SecurityException is thrown.&nbsp; If this same users attempts to create the security exception is thrown before the instance is returned.</p>
+<p>What is the expected behavior?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, March 08, 2011</h2><ul>
+<li>Create controls creation of a new object (data portal create)</li>
+<li>Get controls retrieval of an existing object (data portal fetch)</li>
+<li>Edit controls saving of an object (data portal update)</li>
+<li>Delete controls deleting of an object (data portal delete)</li>
+<li>Execute controls execution of a command object (data portal execute)</li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

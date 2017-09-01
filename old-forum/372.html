@@ -1,0 +1,74 @@
+<html><header><title>Overriding generic methods in generated abstract base class.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Overriding generic methods in generated abstract base class.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/372.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram posted on Wednesday, June 14, 2006</h2><P>Hi!<BR>I have used this templates to generate a editable child object-split baseclass.Then I have a parent(rootobject) which has a ID and i want use it when i unsert a new child object</P>
+<P>Client parent - Root object</P>
+<P>&nbsp;BankAccount child object</P>
+<P>-first a little code:</P>
+<P>[Serializable()] <BR>public abstract class BankAccountBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt; where T :BankAccountBase&lt;T&gt;<BR>{<BR>#region Data Access - Insert<BR>internal void Insert&lt;P&gt;(SqlConnection cn, P parent) where P : ClientBase&lt;P&gt;<BR>{<BR>if (!IsDirty) return;</P>
+<P>ExecuteInsert(cn, parent);<BR>MarkOld();</P>
+<P>//update child object(s)<BR>UpdateChildren(cn);<BR>}</P>
+<P><FONT>protected virtual void ExecuteInsert&lt;P&gt;(SqlConnection cn, P parent) where P : ClientBase&lt;P&gt;</FONT></P>
+<P><FONT>{<BR><BR>}<BR>protected virtual void AddInsertParameters&lt;P&gt;(SqlCommand cm, P parent) where P : ClientBase&lt;P&gt;<BR>{<BR>}<BR></FONT>#endregion //Data Access - Insert</P>
+<P>}</P>
+<P>--------------------------------------<BR>Now in user class which is<BR>[Serializable()] <BR>public class BankAccount : BankAccountBase&lt;BankAccount&gt;<BR>&nbsp;{<BR>}</P>
+<P>I want to override base methods like this</P>
+<P>&nbsp;#region Data Access - Insert</P>
+<P>&nbsp;<FONT>protected override void ExecuteInsert&lt;Client&gt;(SqlConnection cn, Client parent)//Client is the parent class<BR>{<BR>}<BR></FONT>It doesn,t work .<BR>So how you guys do when you eant override methods in generated abstract base classes and use a specific type like Client ?<BR>Regards</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, June 14, 2006</h2><P><FONT color=#0000ff size=+0>in base class:</FONT></P>
+<P><FONT size=+0>protected virtual void ExecuteInsert&lt;P&gt;(SqlConnection cn, P parent) where P : ClientBase&lt;P&gt;</FONT></P>
+<P><FONT color=#0000ff>in user class: </FONT></P>
+<P>protected override void ExecuteInsert&lt;Client&gt;(SqlConnection cn, Client parent)//Client is the parent class<BR></P>
+<P><FONT color=#000000 size=+0>What error message did you get?</FONT></P>
+<P>Notice the constraint in base class, so make sure your Client object is inherited from ClientBase, or you can stay with P.</P>
+<P>Ricky</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Thursday, June 15, 2006</h2><P>&nbsp;This is my Client class:</P><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> InvoiceServices.Library</P>
+<P>{ </P>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()] </P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Client</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>ClientBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>Client</FONT><FONT size=2>&gt;</P>
+<P>{}</P>
+<P>============================================================</P>
+<P><FONT color=#0000ff size=+0>in base class:</FONT></P>
+<P><FONT size=+0>protected virtual void ExecuteInsert&lt;P&gt;(SqlConnection cn, P parent) where P : ClientBase&lt;P&gt;</FONT></P>
+<P>now if i do like this:<BR></P>
+<P><FONT color=#0000ff>in user class: </FONT></P>
+<P>protected override void ExecuteInsert&lt;Client&gt;(SqlConnection cn, Client parent)//Client is the parent class</P>
+<P><FONT size=3>The result is that "Client" become a generic identifer not InvoiceServices.Library.Client</FONT></P>
+<P>========================================================</P>
+<P>&nbsp;if i do like this:</P>
+<P><FONT color=#0000ff>in user class: </FONT></P>
+<P>protected override void ExecuteInsert&lt;Client&gt;(SqlConnection cn, InvoiceServices.Library.Client parent)//Client is the parent class</P>
+<P>I get error:</P></FONT>
+<P>no suitable method found to override&nbsp;</P>
+<P>====================================</P>
+<P>&nbsp;<FONT size=2>if i do like this:</FONT></P>
+<P><FONT color=#0000ff size=2>in user class: </FONT></P>
+<P><FONT size=2>protected override void ExecuteInsert&lt;InvoiceServices.Library.Client&gt;(SqlConnection cn, InvoiceServices.Library.Client parent)//Client is the parent class</FONT></P>
+<P><FONT size=2>I get error:</FONT></P>
+<P>&nbsp;Type parameter declaration must be an identifier not a type&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Thursday, June 15, 2006</h2><P>The issue is if you can not override this virtal generic methods so why using virtual </P>
+<P>and why anyway using generic and all this .. I mean Code generator knows the type of parent class so it wouldn't be better for code generator to use ´ClientBase type directly.</P>
+<P>The thing is i want use something like parent.ClientID and i can do this in base class</P>
+<P>but in overrided method i can't! </P>
+<P>Baseclass:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddInsertParameters&lt;P&gt;(</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm, P parent) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> P : </FONT><FONT color=#008080 size=2>ClientBase</FONT><FONT size=2>&lt;P&gt;</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2>parent.ClientID //intellisense Works </FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2>in Child class:</FONT></P><FONT size=2>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> override</FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddInsertParameters&lt;P&gt;(</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm, P parent) // I can not define constraint here it it usese constraint in baseclass </FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2>parent.ClientID //intellisense doesn't work no ClintId property</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P></P></FONT>
+<P>Regards</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Thursday, June 15, 2006</h2><P><FONT size=2><FONT color=#0000ff>protected</FONT> override<FONT color=#0000ff>void</FONT> AddInsertParameters&lt;P&gt;(<FONT color=#008080>SqlCommand</FONT> cm, P parent) // I can not define constraint here it it usese constraint in baseclass&nbsp; <FONT color=#0000ff>//Yes, because it always inherited from your base class</FONT></FONT><FONT color=#0000ff size=2>&nbsp;</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<P><FONT size=2>parent.ClientID //intellisense doesn't work no ClintId property&nbsp; <FONT color=#0000ff>//Yes, however it will compile and it will work</FONT></FONT></P>
+<P><FONT color=#0000ff size=2>//or you can create a local method with constraint (of course) and pass the parent, from there you'll get intellisense</FONT></P>
+<P><FONT color=#0000ff size=2>LocalMethod(parent);</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT color=#0000ff><FONT size=2>private void LocalMethod&lt;P&gt;(P parent) where P : ClientBase&lt;P&gt; { //intellisense here </FONT><FONT size=2>}</FONT></FONT></P>
+<P></P>
+<P>Your argument about using generic on virtual method is well taken however.&nbsp; Initially, I have used non generic method&nbsp;like this:</P>
+<P>protected override void AddInsertParameter(SqlCommand cm, Client parent) {}</P>
+<P>I did change however to generic, thinking that all code in base class should stays on base class land.&nbsp; This gives flexibility not to enforce contract with any concrete class.&nbsp; </P>
+<P>But when I think of it again, this not really an issue.&nbsp; Our base class really a _different type_ of base class.&nbsp; It is intended to be used by one concrete class only.</P>
+<P>Any Generics Guru wants to chime in? I would like to hear from anybody, if there is a better way of&nbsp;implementing this.</P>
+<P>Ricky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shahram replied on Friday, June 16, 2006</h2>Thanx it compiles!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

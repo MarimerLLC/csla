@@ -1,0 +1,109 @@
+<html><header><title>CSLA DataPortal and MEF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA DataPortal and MEF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9867.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>omel posted on Tuesday, December 14, 2010</h2><p>Im using MEF to instantiate the my DataAccess (CategoryDataAccess), but the DataPortal always re-instantiate the class clearing all catalogs/information in MEF container. L</p>
+<p>Here is the BusinessObject code</p>
+<p>&nbsp;</p>
+<p>using&nbsp;System.ComponentModel.Composition;<br />using&nbsp;Csla;<br />using&nbsp;CslaMvvm.DataAccess;<br />&nbsp;<br />namespace&nbsp;CslaMvvm.BusinessObjects<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;[Export]<br />&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;partial&nbsp;class&nbsp;CategoryList<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//[ImportingConstructor]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//public&nbsp;CategoryList(ICategoryDataAccess&nbsp;categoryDataAccess)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//&nbsp;&nbsp;&nbsp;&nbsp;CategoryDataAccess&nbsp;=&nbsp;categoryDataAccess;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//}<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import(typeof(ICategoryDataAccess))]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;ICategoryDataAccess&nbsp;CategoryDataAccess&nbsp;{&nbsp;get;&nbsp;set;&nbsp;}<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#region&nbsp;Data&nbsp;Access<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;void&nbsp;DataPortal_Fetch()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;categories&nbsp;=&nbsp;CategoryDataAccess.GetAll();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach&nbsp;(var&nbsp;category&nbsp;in&nbsp;categories)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add(Category.GetCategory(category));<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;#endregion<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;CategoryList&nbsp;GetCategoryList()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;DataPortal.Fetch&lt;CategoryList&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;}<br />}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>But everytime I use this class, the DataPortal_Fetch() method reinstatiate the&nbsp; CategoryList class. Here is my unit test code.</p>
+<p>&nbsp;</p>
+<pre>using&nbsp;System;<br />
+using&nbsp;System.ComponentModel.Composition;<br />
+using&nbsp;System.ComponentModel.Composition.Hosting;<br />
+using&nbsp;System.Text;<br />
+using&nbsp;System.Collections.Generic;<br />
+using&nbsp;System.Linq;<br />
+using&nbsp;Microsoft.VisualStudio.TestTools.UnitTesting;<br />
+&nbsp;<br />
+namespace&nbsp;CslaMvvm.BusinessObjects.UnitTest<br />
+{<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;[TestClass]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;class&nbsp;CategoryUnitTest<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;readonly&nbsp;CompositionContainer&nbsp;_container;<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;CategoryUnitTest()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;catalog&nbsp;=&nbsp;new&nbsp;AggregateCatalog();<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catalog.Catalogs.Add(new&nbsp;DirectoryCatalog(&quot;.&quot;));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;catalog.Catalogs.Add(new&nbsp;AssemblyCatalog(System.Reflection.Assembly.GetExecutingAssembly()));<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_container&nbsp;=&nbsp;new&nbsp;CompositionContainer(catalog);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_container.ComposeParts(this);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[Import]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;CategoryList&nbsp;CategoryList&nbsp;{&nbsp;get;&nbsp;set;&nbsp;}<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[TestInitialize]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;void&nbsp;Initilialize()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[TestMethod]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;void&nbsp;ShouldGetAllCategory()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var&nbsp;items&nbsp;=&nbsp;CategoryList.GetCategoryList();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Assert.IsTrue(items.ToList().Count()&nbsp;&gt;&nbsp;1);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+}</pre>
+<p>&nbsp;</p>
+<p>Does CSLA supports DI specially for MEF</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, December 14, 2010</h2><p>The server-side data portal is designed to be stateless. But a lot depends on how you host the server-side components as to whether that&#39;s really true.</p>
+<p>Normally you host the server-side data portal in IIS, running ASP.NET, which hosts WCF. So really your server-side code is subject to the rules of ASP.NET more than anything else.</p>
+<p>As each client request to the server comes in, ASP.NET/WCF assign it a thread and go through a sequence of processing, then the data portal is called, and finally the data portal calls your code.</p>
+<p>I don&#39;t know where MEF stores its catalog, but to use any DI or IoC container on the server, you need your container/catalog to be maintained across multiple client requests. This is just normal web server state management and has nothing to do with the data portal really. Basically you need to get the catalog stored at the AppDomain level if you want it to stick around for any length of time. You can do this by putting it in a static singleton, or in the ASP.NET Application object (as examples).</p>
+<p>Unit test frameworks are also typically designed to isolate each test. In your test you create the catalog in the test class ctor. It is quite possible that your unit testing framework is creating a new instance of your test class to run each test - and of course that would mean your catalog would be lost in between each test because it is in an instance field.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omel replied on Tuesday, December 14, 2010</h2><p>Correct me if I&#39;m wrong but i believe it did not travel from the thread of IIS. I just reference the BusinessObjectAssembly directly in the unit test. I compose the catalog in the UnitTest constructor and only 1 unit test to be executed. (by the way i also put it on the TestInitialize but no success it&#39;s the same).&nbsp;</p>
+<p>Here is my observation during debugging,&nbsp;</p>
+<p><ol>
+<li>The class are being composed for&nbsp;CategoryList,&nbsp;ICategoryDataAccess during the call of &quot;<b>var&nbsp;items&nbsp;=&nbsp;CategoryList.GetCategoryList();</b>&quot; from&nbsp;<b>ShouldGetAllCategory </b>test method. <b><a href="https://tsdeoa.bay.livefilestore.com/y1pa3Iv00q7mMKfgXfq7nnZC5jcqn9Xn_Z7pe-3Oi1PDlL6scJXjTrooL1XOG-0d0b1631NKHSbUe7bvMq52OoHGxBq501ohj6L/TestInitialization.png?psid=1">see the image</a></b></li>
+<li>If I enable the businessobjects constructor&nbsp;<b>public&nbsp;CategoryList(ICategoryDataAccess&nbsp;categoryDataAccess) </b>with&nbsp;<b>ImportingConstructor </b>attribute the unit test goes on this constructor and import the dataaccess successfully.</li>
+<li>Then it executes the factory method&nbsp;<b>GetCategoryList </b>from the BusinessObject, it call&#39;s the DataPortal.Fetch, after a few moment (maybe because it uses csla.reflection) it will try to call the&nbsp;<b>&nbsp;DataPortal_Fetch, </b>but before calling that code it complains about the missing constructorless ctor. And because i don&#39;t have that, it throws exception. <b><a href="https://tsdeoa.bay.livefilestore.com/y1pQbzzjgk0xUAyQiOV4cmZl9GwnHKp9qBEzMM8CYEqPwJt4I8mnl2dGvCz53XOka3bhS7lvaL5V6O0N3CSHd90vPUF2rR_aCJ6/BeforeCallingTheDataPortalFetch.png?psid=1">see the image</a></b></li>
+<li>And from the observation, i figure out that&#39;s the reason why the catalogs are now empty. MAYBE the csla.reflection re-instantiates the business object not in MEF way.&nbsp;<b><a href="https://tsdeoa.bay.livefilestore.com/y1pfSYYBTB2xJYZKUzwlhr3lgjZ9ccLtnqhhdEZ4RCk89E2Nyq8znLJV1yHbj81iG5TrcHtzEPiltlc0MeIaAH3kMsx2smMpr2r/AfterCallingTheDataPortalFetch.png?psid=1">see the image</a></b></li>
+</ol></p>
+<p>&nbsp;</p>
+<p>They are my observation hope you have an idea how it can be solved..</p>
+<p>&nbsp;</p>
+<p>:(</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, December 15, 2010</h2><p>Sorry, I thought you were talking about an actual runtime scenario.</p>
+<p>If you are only talking about a unit test scenario, then the key lies in how the unit test framework manages setup for each test method, and what state is preserved between test method calls.</p>
+<p>The data portal, when running in local mode, does serialize/deserialize the business object to ensure isolation of the &quot;server-side&quot; state. Typically this is done by the BinaryFormatter, which certainly does use a special way of creating objects - something very deep in the .NET framework actually (and very cool from a geeky perspective).</p>
+<p>You should never put anything into a DataPortal_XYZ method that can&#39;t be stateless. The whole point of the data portal is to support stateless server models, where each data portal call is isolated from any other data portal calls.</p>
+<p>Again, if you want shared state of some sort that exists across data portal calls, that&#39;s your responsibility within your hosting environment. So if you want your catalog to have a lifetime independent of an individual data portal call, you need to figure out how to keep the catalog in memory within your specific hosting scenario.</p>
+<p>In your case the hosting scenario is the test runner, and various test runners work differently - and not all of them have any way to maintain state between test methods - because they too are trying to achieve isolation so tests don&#39;t collide with each other.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omel replied on Wednesday, December 15, 2010</h2><p>Holy shet....</p>
+<p>&nbsp;</p>
+<p>In that case, can you give a simple solution how can Inject the DataAcccess easily from the Business Object. Or the ObjectFactory is the only solution. I want to harness the power of DataPortal_XYZ implementation for managing the state of the BusinessObject.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 15, 2010</h2><p>Hi, </p>
+<p>Start with reading Rockys post and understand his points and what/where you should hook in. </p>
+<p>I&#39;d suggest then to do the following: </p>
+<p>1. Create&nbsp;a static class to hold your CompositionContainer. This will enable you to keep the CompositionContainer over&nbsp;DataPortal calls and remember, the DataPortal might be a&nbsp;WCFService and a separate intance from your application.</p>
+<p>2. Create InjectableBase classes for Csla objects. These should override DataPortal_OnDataPortalInvoke, Child_OnDataPortalInvoke and maybe even OnDeserialized to inject dependencies into your BOs.&nbsp;</p>
+<p>3. Make sure injected properties are private backing fields and marked with both NotUndoable and NonSerialized. </p>
+<p>4. Using intermediate base classes to hide the overrides makes a very clean implementation -&nbsp; you just declare the Imports in your BOs.</p>
+<p>See attached sample - just one single WinForm solution that uses MEF and introduces a intermediate class for BusinessBase (InjectableBusinessBase) and you can create the other classes youself.&nbsp;&nbsp;<strong>You may&nbsp;share these on CslaContrib !!&nbsp;</strong></p>
+<p>My sample /post assumes that you are using a repository pattern - if you choose to use ObjectFactory then implement your own ObjectFactoryLoader that uses MEF to get the actual ObjectFactory class. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omel replied on Wednesday, December 15, 2010</h2><p>This is great idea.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 15, 2010</h2><p>The thing is that the DataPortal_XYZ models involve the data portal creating the business object instance, so MEF won&#39;t be able to do this. If you need MEF to create the business object instance then you must use the object factory models.</p>
+<p>But (having used MEF for a few things) I don&#39;t think you need or want MEF creating the business object instances. That way (in my experience) leads to madness. You just want MEF to create instances of the DAL objects, and so you just need to use some static singleton to contain the MEF catalog so its lifetime is at the AppDomain level, not at the business object lifetime level (since on an app server, business objects have a lifetime usually measured in fractions of a second).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 15, 2010</h2><p>Hi,</p>
+<p>And if you look at the sample attached to my previous post you will see that Export is not required on your BO in order to compose the repository data access. </p>
+<p>The sample shows how to inject data access that will work with both SimpleDataPortal (local mode) and remote data Portals. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 15, 2010</h2><p>Also, looking at your code it appears that you might be trying to use MEF to load business types? I very much doubt that&#39;ll work, because I doubt MEF will work across serialization boundaries (though I&#39;ve never tested such a thing).</p>
+<p>I thought you were using MEF to load your DAL types, which you&#39;d then use to load your business objects with data.</p>
+<p>Actually I&#39;m just generally confused. You don&#39;t appear to have anything that is a subclass of a CSLA base class - so you have no business types at all (at least not CSLA ones)?</p>
+<p>Let me take a different approach.</p>
+<p>I think you should read Chapters 17 and 18 of the <em>Expert 2008 Business Objects</em> book to get a good understanding of what the data portal is doing. And probably Chapter 15 too.</p>
+<p>The data portal supports 4 data access models.</p>
+<p>If you are using DataPortal_XYZ methods (2 of the models) then the data portal creates an instance of your type and tells that instance to load itself with data. If you really are trying to get MEF to create instances of your business type, then these models won&#39;t work for you.</p>
+<p>But there&#39;s the ObjectFactory technique (2 of the models) where the data portal creates an instance of a factory object that you create. Your factory object is responsible for creating the business object instance. I suspect you could use MEF in this case, because the factory object could just ask MEF for the instance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omel replied on Wednesday, December 15, 2010</h2><p><i><span style="text-decoration:underline;">Also, looking at your code it appears that you might be trying to use MEF to load business types? I very much doubt that&#39;ll work, because I doubt MEF will work across serialization boundaries (though I&#39;ve never tested such a thing).</span></i></p>
+<p>I need to do this&nbsp;(CategoryList,&nbsp;needs to be attributed as Export)&nbsp;so that i can recompose the ICategoryDataAccess under the business object, and as you can see from the image from my previous post. Everything was composed on the first try. But after calling the DataPortal_XYZ, it was lost.</p>
+<p>&nbsp;</p>
+<p><span style="font-size:14.4px;"><i><span style="text-decoration:underline;">Actually I&#39;m just generally confused. You don&#39;t appear to have anything that is a subclass of a CSLA base class - so you have no business types at all (at least not CSLA ones)?</span></i></span></p>
+<p>Hahaha.. Sorry for that if I did not include that in the post. Actually it is located in ANOTHER PARTIAL CLASS, and it seems to be working by that design.</p>
+<p>&nbsp;</p>
+<p><i><span style="text-decoration:underline;">I thought you were using MEF to load your DAL types, which you&#39;d then use to load your business objects with data.</span></i></p>
+<p>Yes your correct with it. I need to load the DataAccess so i can easily mock this also.</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration:underline;"><i>I think you should read Chapters 17 and 18 of the&nbsp;<span>Expert 2008 Business Objects</span>&nbsp;book to get a good understanding of what the data portal is doing. And probably Chapter 15 too.</i></span></p>
+<p>Yes i check this book, but i&#39;ll get another try to read it.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

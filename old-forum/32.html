@@ -1,0 +1,26 @@
+<html><header><title>Lazy loading?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy loading?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/32.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrnail23 posted on Tuesday, May 09, 2006</h2>I've seen where Rocky has used "lazy loading" in the past (specifically in the VB6 business objects book) to reduce unnecessary overhead from populating contained objects... is there anything like this in the .NET versions of CSLA, or perhaps a better way to implement this?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Tuesday, May 09, 2006</h2><P>There was an errata in Rocky's site in version 1.x <A href="http://www.lhotka.net/Articles.aspx?id=3a47a231-1254-410c-babd-d9fc711ca58c">http://www.lhotka.net/Articles.aspx?id=3a47a231-1254-410c-babd-d9fc711ca58c</A>&nbsp;you might what to check it. </P>
+<P>In your property that holds the child list, I implemented this way, </P><PRE>If Me.IsNew() Then
+  Return ChildList.NewChildList('')
+Else
+  mChildList = ChildList.GetChildList(Me.ID)
+  'or mChildList = ChildList.GetChildList(Me)
+  Return mChildList
+End If
+
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 09, 2006</h2>Gleen,<br>
+<br>
+From your code it looks like everytime you get the child collection for
+a new object you'll get an empty one; what happens when you try to add
+new children to a new object?&nbsp; Looks like you wouldn't be able to.<br>
+<br>
+Same thing with the get; you'd reload the collection every access (losing any new children).<br><br>Perhaps thats correct for your app, but a better idea would probably be:<br><br>public ChildrenCol Children {<br>&nbsp;&nbsp;&nbsp; get { <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( childCol == null ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( IsNew ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; childCol = ChildrenCol.New();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; childCol = ChildrenCol.Get( this );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return childCol;<br>&nbsp;&nbsp;&nbsp;&nbsp; }<br>}<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Tuesday, May 09, 2006</h2><P>Hi ajj30385,</P>
+<P>Thanks for the correction.. I didn't noticed that one. ;-)</P>
+<P>I hope jrnail23 can do the lazy loading now</P>
+<P>Cheers, </P>
+<P>Glenn</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, May 09, 2006</h2><P>I tried lazy-loading in Csla (It's the same whether .Net 1.0 or 2.0), and found it frustrating in the very situations where you are most likely to&nbsp;use it, i.e., large hierarchies.&nbsp; <BR>I do use it but selectively, being very deterministic about it. In other words, I try to be fully aware of what branch of a hierarchy can be loaded optionally and then program everything with that awareness, instead of just depending on If Not Null Then Load ... </P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Tuesday, May 09, 2006</h2><P>If your doing in winforms, what I did in the CSLA 1.1 and VS.NET 2003 is to use BindingContext() to make it simplier to traverse from parent to child objects - grandchild objects.</P>
+<P>I'm quite not sure if I got it right in the syntax its like this</P>
+<P>Dim custContacts = Ctype(me.bindingcontext(mCustomers).Current, Customers).Contacts</P>
+<P>The above line directs me to the current customer and gain access to Contacts (its child object)</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

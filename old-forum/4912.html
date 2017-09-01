@@ -1,0 +1,405 @@
+<html><header><title>Lazy Load not working in 3.5?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lazy Load not working in 3.5?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4912.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ifergus posted on Thursday, May 29, 2008</h2><P class=MsoBodyText><FONT face=Arial>I've got a very large business object with numerous children. <SPAN>&nbsp;</SPAN>I’m attempting to use lazy loading so that I only need to load the children when necessary. <SPAN>&nbsp;</SPAN>However, I’m finding that the children are always loaded, even when the parent has no code in its DataPortal_Fetch method to populate them.</FONT></P>
+<P class=MsoBodyText><FONT face=Arial>Is there something that I need to do to suppress this behavior? <SPAN>&nbsp;</SPAN>I’m using the note from your March 10<SUP>th</SUP> posting as a guideline.</FONT></P>
+<P class=MsoBodyText><SPAN><A href="http://www.lhotka.net/weblog/CSLANET35CodeReductionWithChildObjects.aspx">http://www.lhotka.net/weblog/CSLANET35CodeReductionWithChildObjects.aspx</A><o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 29, 2008</h2><P>Keep in mind that any attempt to read the specified property will trigger the lazy loading. If that property is data bound to any UI element (or a bindingsource) then data binding will read the property as the form is rendered, thus triggering the lazy loading to load immediately.</P>
+<P>Or any other code that reads the property, in your object or elsewhere, will trigger the load.</P>
+<P>The point being that the technique is great, but only if you are very careful to only read the property if you actually use the data in the property.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ifergus replied on Thursday, May 29, 2008</h2><P>Thanks Rocky, but I'm not binding it to anything.&nbsp; In fact, I created a very simple test application and I put a breakpoint on the getter.&nbsp; The getter was never triggered.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 29, 2008</h2><P>Let's take this one step at a time then.</P>
+<OL>
+<LI>You have NO CODE in the root DP_Fetch() to load the child object?</LI>
+<LI>The only place in your app where you call LoadProperty() or SetProperty() to set the child field is in the property get block of the root object?</LI>
+<LI>You do not have a private backing field for the child property (you are allowing FieldManager to take care of the value)?</LI>
+<LI>You have a DP_Fetch() in the child object to load the child, and an internal/Friend factory on the child class that calls DataPortal.Fetch()?</LI>
+<LI>The only place in all your code that calls that child factory method is the LoadProperty() call in the root object's property get?</LI></OL>
+<P>If this is all true, then the only way for the child property to end up with a valid value is in that one line of code in the property get. That's the only place the factory is called, which is the only place that can cause the child to load with data.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ifergus replied on Thursday, May 29, 2008</h2><P><STRONG>I believe so, but here is the source.&nbsp; It's pretty simple:</STRONG></P>
+<P><FONT face="Courier New" size=2>using System;<BR>using System.Collections.Generic;<BR>using Csla;</FONT></P>
+<P><FONT face="Courier New" size=2>using System.Configuration;<BR>using Microsoft.Practices.EnterpriseLibrary.Data;<BR>using Microsoft.Practices.EnterpriseLibrary.Data.Sql;<BR>using System.Data.Common;<BR>using System.Data;</FONT></P>
+<P><FONT face="Courier New" size=2>namespace ParentChild<BR>{<BR>&nbsp;&nbsp;&nbsp; public class Parent : BusinessBase&lt;Parent&gt;<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;int&gt; IdProperty =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;int&gt;(new PropertyInfo&lt;int&gt;("Id"));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Id<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;int&gt;(IdProperty); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;int&gt;(IdProperty, value); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;string&gt; NameProperty =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(new PropertyInfo&lt;string&gt;("Name"));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;string&gt;(NameProperty); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;string&gt;(NameProperty, value); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;Child&gt; ChildItemProperty =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;Child&gt;(new PropertyInfo&lt;Child&gt;("ChildItem"));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Child ChildItem<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(ChildItemProperty))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;Child&gt;(ChildItemProperty, Child.Get(Id));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty&lt;Child&gt;(ChildItemProperty);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;Child&gt;(ChildItemProperty, value); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static Parent Get(int Id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;Parent&gt;(new ById(Id));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(ById criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SqlDatabase db = new SqlDatabase(ConfigurationManager.ConnectionStrings["Local"].ConnectionString);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DbCommand cmd = db.GetStoredProcCommand("GetParentById");</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; db.AddInParameter(cmd, "id", System.Data.DbType.Int32, criteria.Id);</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (IDataReader reader = db.ExecuteReader(cmd))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reader.Read();</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;int&gt;(IdProperty, Convert.ToInt32(reader["Id"]));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;string&gt;(NameProperty, reader["Name"].ToString());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private class ById<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private int _id;</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Id<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _id;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ById(int id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = id;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}</FONT></P>
+<P><FONT face="Courier New" size=2>using System;<BR>using System.Collections.Generic;<BR>using System.Linq;<BR>using System.Text;<BR>using Csla;<BR>using Microsoft.Practices.EnterpriseLibrary.Data.Sql;<BR>using System.Data.Common;<BR>using System.Data;<BR>using System.Configuration;</FONT></P>
+<P><FONT face="Courier New" size=2>namespace ParentChild<BR>{<BR>&nbsp;&nbsp;&nbsp; public class Child : BusinessBase&lt;Child&gt;<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;int&gt; IdProperty =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;int&gt;(new PropertyInfo&lt;int&gt;("Id"));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Id<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;int&gt;(IdProperty); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;int&gt;(IdProperty, value); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static PropertyInfo&lt;string&gt; NameProperty =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(new PropertyInfo&lt;string&gt;("Name"));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;string&gt;(NameProperty); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;string&gt;(NameProperty, value); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static Child Get(int id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;Child&gt;(new ById(id));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(ById criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SqlDatabase db = new SqlDatabase(ConfigurationManager.ConnectionStrings["Local"].ConnectionString);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DbCommand cmd = db.GetStoredProcCommand("GetChildById");</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; db.AddInParameter(cmd, "id", System.Data.DbType.Int32, criteria.Id);</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (IDataReader reader = db.ExecuteReader(cmd))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; reader.Read();</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;int&gt;(IdProperty, Convert.ToInt32(reader["Id"]));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;string&gt;(NameProperty, reader["Name"].ToString());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private class ById<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private int _id;</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Id<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _id;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ById(int id)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = id;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}<BR></FONT></P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 29, 2008</h2><P>One thing - a child property should never have a set block, only a get block. But I don't see how that would be your problem.</P>
+<P>So what I'd do is put a breakpoint in your child object's Get() method and look at the stack trace to see how you got there. Very clearly SOME code is calling that method when you don't expect it :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ifergus replied on Friday, May 30, 2008</h2><P><FONT face="Courier New" size=2>Rocky,&nbsp;I don't think that Lazy Load works.</FONT></P>
+<P><FONT face="Courier New" size=2>Calling a simple Get on the Parent results in the child being loaded.&nbsp; I could not get the applicaation to break when calling the Child's Get method.&nbsp; I do know that immediately after excuting the line:</FONT></P>
+<P><FONT face="Courier New" size=2>result = methodHandle.DynamicMethod(obj, inParams); </FONT></P>
+<P><FONT face="Courier New" size=2>in MehtodCaller.cs, </FONT><FONT face="Courier New" size=2>both parent and child were set.</FONT></P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P><FONT face="Courier New" size=2><FONT size=2>
+<P>Csla.dll!Csla.Reflection.MethodCaller.CallMethod(object obj = {ParentChild.Parent}, Csla.Reflection.DynamicMethodHandle methodHandle = {Csla.Reflection.DynamicMethodHandle}, object[] parameters = {object[1]}) Line 221 + 0x1c bytes C#</P>
+<P>Csla.dll!Csla.Reflection.MethodCaller.CallMethod(object obj = {ParentChild.Parent}, string method = "DataPortal_Fetch", object[] parameters = {object[1]}) Line 149 + 0xe bytes C#</P>
+<P>Csla.dll!Csla.Reflection.LateBoundObject.CallMethod(string method = "DataPortal_Fetch", object[] parameters = {object[1]}) Line 86 + 0x17 bytes C#</P>
+<P>Csla.dll!Csla.Server.SimpleDataPortal.Fetch(System.Type objectType = {Name = "Parent" FullName = "ParentChild.Parent"}, object criteria = {ParentChild.Parent.ById}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 126 + 0x33 bytes C#</P>
+<P>Csla.dll!Csla.Server.DataPortal.Fetch(System.Type objectType = {Name = "Parent" FullName = "ParentChild.Parent"}, object criteria = {ParentChild.Parent.ById}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 120 + 0x12 bytes C#</P>
+<P>Csla.dll!Csla.DataPortalClient.LocalProxy.Fetch(System.Type objectType = {Name = "Parent" FullName = "ParentChild.Parent"}, object criteria = {ParentChild.Parent.ById}, Csla.Server.DataPortalContext context = {Csla.Server.DataPortalContext}) Line 42 + 0x15 bytes C#</P>
+<P>Csla.dll!Csla.DataPortal.Fetch(System.Type objectType = {Name = "Parent" FullName = "ParentChild.Parent"}, object criteria = {ParentChild.Parent.ById}) Line 219 + 0x12 bytes C#</P>
+<P>Csla.dll!Csla.DataPortal.Fetch&lt;ParentChild.Parent&gt;(object criteria = {ParentChild.Parent.ById}) Line 165 + 0x34 bytes C#</P>
+<P>ParentChild.dll!ParentChild.Parent.Get(int Id = 1) Line 50 + 0x23 bytes C#</P>
+<P>ParentChildTest.dll!ParentChildTest.UnitTest1.TestMethod2() Line 27 + 0xb bytes C#</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I just created a test (though I already have other tests too) to
+firmly establish that a child isn&#8217;t created unless some code calls the
+child&#8217;s factory method. That statement is a truism of course </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Seriously though, lazy loading works fine. You absolutely have
+some code that is calling the child&#8217;s factory method when you don&#8217;t
+expect it. The easiest way to find the issue is to put a breakpoint in the
+child factory and then look at the stack trace to see who called it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here&#8217;s my test code:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>var</span> p = <span>AParent</span>.GetParent();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>string</span>.Format(<span>&quot;{0}:
+{1}&quot;</span>, <span>&quot;parent data&quot;</span>,
+p.Data));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>Environment</span>.NewLine);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>string</span>.Format(<span>&quot;{0}:
+{1}&quot;</span>, <span>&quot;child exists&quot;</span>,
+p.ChildExists()));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>Environment</span>.NewLine);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>var</span> c = p.GetChild();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (c != <span>null</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display.AppendText(<span>string</span>.Format(<span>&quot;{0}: {1}&quot;</span>, <span>&quot;child
+data&quot;</span>, c.Data));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>else<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display.AppendText(<span>string</span>.Format(<span>&quot;{0}: {1}&quot;</span>, <span>&quot;child
+value&quot;</span>, <span>&quot;null&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>Environment</span>.NewLine);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c = p.Child;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>string</span>.Format(<span>&quot;{0}:
+{1}&quot;</span>, <span>&quot;child exists&quot;</span>,
+p.ChildExists()));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>Environment</span>.NewLine);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (c != <span>null</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display.AppendText(<span>string</span>.Format(<span>&quot;{0}: {1}&quot;</span>, <span>&quot;child
+data&quot;</span>, c.Data));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>else<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Display.AppendText(<span>string</span>.Format(<span>&quot;{0}: {1}&quot;</span>, <span>&quot;child
+value&quot;</span>, <span>&quot;null&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Display.AppendText(<span>Environment</span>.NewLine);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Here&#8217;s the resulting output:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>parent
+data: xyz<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>child
+exists: False<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>child
+value: null<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>child
+exists: True<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>child
+data: abc<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And here are the AParent and AChild classes:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; [<span>Serializable</span>]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>public</span> <span>class</span> <span>AParent</span> : <span>BusinessBase</span>&lt;<span>AParent</span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>static</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt; DataProperty = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;<span>string</span>&gt;(<span>typeof</span>(<span>AParent</span>), <span>new</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;(<span>&quot;Data&quot;</span>, <span>&quot;Data&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>public</span>
+<span>string</span> Data<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>get</span> { <span>return</span>
+GetProperty&lt;<span>string</span>&gt;(DataProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>set</span> { SetProperty&lt;<span>string</span>&gt;(DataProperty,
+<span>value</span>); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>static</span> <span>PropertyInfo</span>&lt;<span>AChild</span>&gt; ChildProperty = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;<span>AChild</span>&gt;(<span>typeof</span>(<span>AParent</span>), <span>new</span> <span>PropertyInfo</span>&lt;<span>AChild</span>&gt;(<span>&quot;Child&quot;</span>, <span>&quot;Child&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>public</span>
+<span>AChild</span> Child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>get</span> <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>if</span> (!FieldManager.FieldExists(ChildProperty) ||
+ReadProperty&lt;<span>AChild</span>&gt;(ChildProperty) ==
+<span>null</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>AChild</span>&gt;(ChildProperty, <span>AChild</span>.GetChild());<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> GetProperty&lt;<span>AChild</span>&gt;(ChildProperty);
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>public</span>
+<span>bool</span> ChildExists()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> FieldManager.FieldExists(ChildProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>public</span>
+<span>AChild</span> GetChild()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> GetProperty&lt;<span>AChild</span>&gt;(ChildProperty);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+AParent()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; { }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>public</span>
+<span>static</span> <span>AParent</span>
+GetParent()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> <span>DataPortal</span>.Fetch&lt;<span>AParent</span>&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>void</span> DataPortal_Fetch()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;<span>string</span>&gt;(DataProperty, <span>&quot;xyz&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; [<span>Serializable</span>]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>public</span> <span>class</span> <span>AChild</span> : <span>BusinessBase</span>&lt;<span>AChild</span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>static</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt; DataProperty = <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;<span>string</span>&gt;(<span>typeof</span>(<span>AChild</span>), <span>new</span> <span>PropertyInfo</span>&lt;<span>string</span>&gt;(<span>&quot;Data&quot;</span>, <span>&quot;Data&quot;</span>));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>public</span>
+<span>string</span> Data<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>get</span> { <span>return</span>
+GetProperty&lt;<span>string</span>&gt;(DataProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>set</span> { SetProperty&lt;<span>string</span>&gt;(DataProperty,
+<span>value</span>); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+AChild()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; { }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>internal</span>
+<span>static</span> <span>AChild</span>
+GetChild()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>return</span> <span>DataPortal</span>.FetchChild&lt;<span>AChild</span>&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>void</span> Child_Fetch()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;<span>string</span>&gt;(DataProperty, <span>&quot;abc&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tshah replied on Friday, May 30, 2008</h2><P><FONT face="Courier New" size=2>Rocky, Lazy Load did not work. I took both the samples from this thread. In both the cases </FONT><FONT face="Courier New" size=2>Calling a simple Get on the Parent results in the child being loaded.&nbsp;Application didn't break&nbsp;when calling the Child's Get method.</FONT></P>
+<P><FONT face="Courier New" size=2>I am currently running CSLA .NET 3.5 and wondering if this has something to do with the version.</FONT></P>
+<P><FONT face="Courier New" size=2>What version of CSLA are you running?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have suggested this twice now. The only way to resolve this is
+for you to put a breakpoint in the child&#8217;s factory method and look at the
+stack trace to see what called that method. Perhaps you can do that and post
+the stack trace result so I can see what is invoking the factory?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ifergus replied on Friday, May 30, 2008</h2><P>Rocky,</P>
+<P>Lazy Load is working fine.&nbsp; It turns out that the child was being called by the debugger -- in retrospect --&nbsp;a very silly mistake on my part</P>
+<P>Thanks for all your help and your quick responses.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am glad you figured out what was going on.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It wouldn&#8217;t be real obvious that the debugger was
+triggering the property get though &#8211; how&#8217;d you figure that out?</span><b><span><o:p></o:p></span></b></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, June 04, 2008</h2><P>I (to my shame) had the same issue once...I finally realized that QuickWatch window was hitting the property obviously through reflection.&nbsp; UGH</P>
+<P>&nbsp;</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zinovate replied on Wednesday, June 04, 2008</h2>The QuickWatch totally makes sence. At first I was wondering how that was called.... </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, August 11, 2008</h2><P>I have a similar situation and wanted to get some input on how to handle it.&nbsp; I have a parent object call AcceptedData and children called RawData.&nbsp; I only have one record for the AcceptedData but could have multiple RawData records for each month.&nbsp; I want to have 2 grids to handle this situation.&nbsp; The main grid contains all the AcceptedData.&nbsp; The 2nd grid would show the RawData records for the selected AcceptedData record.&nbsp; When I set up the objects like Rocky suggested for Lazy Loading my Infragistics grid automatically recognizes the child objects and adds them to the main AcceptedData grid.&nbsp; Can I do what I described using the normal parent-child relationship or should I just make these independent objects and handle loading the 2nd grid in the UI events?&nbsp; Thanks.</P>
+<P>Jonathan</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 11, 2008</h2>I recently had this come up as well.&nbsp; The solution is specific to the Infragistics grid:<br><br><a href="http://forums.infragistics.com/forums/t/11251.aspx">http://forums.infragistics.com/forums/t/11251.aspx</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, August 11, 2008</h2><P>That fixed my grid from showing the child records but the new grid is not being populated when I click on a record in the AcceptedData grid.&nbsp; How did you handle this?&nbsp; Do I need an event in the UI or a method in my AcceptedData object?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 11, 2008</h2>Hi,<br><br>I actually don't have a child grid to display the children; I just wanted them not to display at all.&nbsp; But you should be able to handle an event from the grid to set the child grid to the appropriate data source.&nbsp; I think it's something like AfterRowSelect or something like that.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

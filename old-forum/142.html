@@ -1,0 +1,30 @@
+<html><header><title>Advanced Searching... Seperate Search class or function in my Object Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advanced Searching... Seperate Search class or function in my Object Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/142.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ltgrady posted on Thursday, May 18, 2006</h2><P>We have a Product object.&nbsp; This object has about 360 properties.&nbsp; I know that's a lot, but it is what it is.&nbsp; our database stores a lot of information about each product.&nbsp; Not every customer uses every property, but at least someone uses each property in our db.&nbsp; We have talked about trying to create lazy loaded objects or subclassing, but that's a different discussion for a different day.&nbsp; For now just know that it's a very large object.&nbsp; It's switchable.&nbsp; Sometimes we have a Products Collection and sometimes we work with just a Product Object.</P>
+<P>Right now we retrieve Products by only two criteria.&nbsp; Either it's Brand_ID or the Product_ID.&nbsp; (eg.&nbsp; a 2GB Nano (Product) would be in the (Products) collection retrieve when we pass in the Apple (Brand) ).&nbsp; That Product holds all the technical specs, shipping specs, dimensions, prices, etc., etc., etc..</P>
+<P>We have finished the Data Entry portion of our system but now we're moving on to searching and reporting.&nbsp; We need to be able to search through a customers products by a wide range of Criteria.&nbsp; Not just Product_ID and Brand_ID, but perhaps by Weight, Price Ranges, Manufacturing Country, Product Category, and on and on.</P>
+<P>We are creating a WEb Service so that our customers who want to power their websites product search using our database can just consume it instead of what we used to do, hosting their search results page.&nbsp; So we don't want to pass these gigantic objects back and forth to the users.</P>
+<P>SO, finally, my question.&nbsp; I don't think the proper way to go about this would be to blow out the Criteria section of my Product object and try putting all the possible search fields into in and having dozens of overriden GetProducts methods.</P>
+<P>We're thinking of some kind of Search class where each criteria is actually a property.&nbsp; Then the property builds a WHERE clause that's passed in as the CSLA Criteria.&nbsp; Then returning an object.&nbsp; WE're not sure what to pass back.&nbsp; Sometimes our clietns will only want the basic Model, Brand, price, Image URL.&nbsp; Other times they'll want a very detailed Export for their systems.&nbsp; We actually have a Field Group class and system for data entry where the user selects the "Field Grouping" they want and then we dynamically build a GridView in memory and show juse the fields they want.&nbsp; But that's bound to teh big fat Product object with all fields.&nbsp; A little kludgy.&nbsp; WE don't want to pass that back.&nbsp; Maybe I could dynamically generate a class based on the field group.&nbsp; I don't know.</P>
+<P>&nbsp;</P>
+<P>I was wondering if anyone had any suggestions or has done anything like this in the past and could lend some insight.&nbsp; At the very least it's an intersting object discussion.&nbsp; Thanks, lg.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichaelBosch replied on Thursday, May 18, 2006</h2>There's a few ways to accomplish this type of functionality.&nbsp; Alot
+of this can take place in the database as well.&nbsp; Perhaps you could
+create an object ProductCatalog that has a Search method that accepts a
+simple string.&nbsp; This will send search for the product looking for
+a match in any of the fields of the product.&nbsp; Or perhaps you want
+an overload of that Search method that accepts a key-value object where
+you have matched a Property Name of PropertyDescriptor object, with the
+value you want for it.&nbsp; Something like:<br>
+<br>
+ProductName|"ipod"<br>
+ProductPrice|20.00<br>
+ProductSKU| "IPO3330"<br>
+<br>
+Then you can build a dynamic query from that.&nbsp; If the property
+name is repeated, this could signal an "OR" statement in the
+query.&nbsp; This search method will probably return a ProductMatches
+collection, each item would have a GetProduct method to get the
+"actual" business object.&nbsp; <br>
+<br>
+If you need more flexibility, I would definitely download the Amazon
+Web Services API documentation just to get a better idea of a well
+designed, highly customizable search engine API.<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

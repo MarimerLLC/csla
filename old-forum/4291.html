@@ -1,0 +1,172 @@
+<html><header><title>List of Business Rules not static</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>List of Business Rules not static</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4291.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Monday, February 04, 2008</h2><P>Darn. :(</P>
+<P>I've been using some extensions to CSLA that make the list of business rules public.&nbsp; (Not just the broken rules, but the rules themselves).</P>
+<P>I've got a nice little button on the UI that opens up a panel that displays the business rules for an object.&nbsp; Works sweet! :)</P>
+<P>I don't use instance rules, just type rules, as I believe instance rules are just poorly specified type rules, so in theory my list of rules could be static.&nbsp; Regardless, the list of type rules per class could be static.</P>
+<P>Here comes the rub.&nbsp; If I go to a maintenance screen for the object, and there are no objects yet, the list that contains those objects is empty.&nbsp;&nbsp;&nbsp;My publically available&nbsp;list of type rules IS NOT static because II depend upon the built-in framework components to get my list of rules, and they are not static.&nbsp;&nbsp;This means that I cannot tell someone what the rules are until after they create an object! Needless to say, that's not how I like to conduct&nbsp;business!&nbsp; (Example: I'll just start&nbsp;building this house for you,&nbsp;THEN tell you what the rules are for paying for one.)</P>
+<P>In tracking down the problem, it appears that the list of Type rules is initialized in the constructor for the object.&nbsp; I think it should be made available as a public static property.&nbsp; Whoever asks first - the constructor or the property -&nbsp;should cause the static list of type rules to be instantiated.</P>
+<P>In effect, ValidationRules.GetRuleDescriptions would be copied and modified to become ValidationRules.GetTypeRuleDescriptions, which would be a public static method that returns a string[].<FONT size=2></P></FONT><FONT size=2>
+<P></FONT>Comments?</P>
+<P>As a work around, I have the UI check to see if the list is empty.&nbsp; If so, it creates a throw-away list, adds a&nbsp;new object to the list, asks for the rules, and then disposes of the list.&nbsp; Dorky, but it works.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, February 04, 2008</h2><P class=MsoNormal>What you are describing sounds very similar to the changes that Rock made to the Auth engine for 3.5. In the Auth engine now there are several static methods that you can call to find out various bits and pieces. This intern looks to see if the rules for this type have been loaded. Now this is where you would normal run into trouble with having to create an instance of the object first. But the new system to get around this looks for a static method on the type in question which loads up the auth rules for this type. The result here means that you don’t&nbsp;need to create the object to find out the auth rules.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>It makes sense that a similar thing be done for the validation engine to help in situations like yours. <BR><BR></P>
+<P class=MsoNormal>The only disadvantage with the system is that because .net doesn’t have the concept of interfaces that declare static methods, the system uses reflection to see if the static method exists. Hence it is by convention that one has to implement this static method in order of the system to pickup the rules before the a type instance is created. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This may be a question that Rocky may have to answer, but I am not sure how this pattern handles inherited business classes (like lets say I have employees which has a sub type of Manager and another of Pleb) in regards to the static methods and the fact that within each sub class one may want to define rules that need to be applied???</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Hope that helps<BR>Anthony</P><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 04, 2008</h2><P>Putting values into static fields has turned out to be a much harder thing than I'd ever imagined. The reason is due to the rules governing when static fields are initialized, and the cost of putting a static constructor in a class.</P>
+<P>Trusting people like Brad Abrams and others who should really know, I am accepting their contention that a static ctor should be avoided thanks to all the extra code the compiler must inject all over the place for it to work properly. So static ctors are out.</P>
+<P>But static fields are only initialized when a static field <EM>in the specific type</EM> is accessed.</P>
+<P>So if you have inheritance in the mix, the intermediate types in the inheritance hierarchy aren't necessarily initialized when you think they would be. This problem was discovered with the new RegisterProperty() technique, and the solution is rather a hack - and still only works if an instance of the object is actually created.</P>
+<P>I didn't encounter this problem with the object level auth rules, because I directly use reflection to invoke the AddObjectAuthorizationRules() method. I did <EM>that</EM> because there was no way to force static code to run in the business class. Even a static ctor doesn't help with this problem, because of the rules governing when a static ctor runs. They only run when a static field is accessed or an instance of the object is created. Since I can't guarantee that you'll access (or even declare) a static field, the only way to force the cctor to run would have been to create an instance of the object - and the whole point of using the static fields was to avoid that in the first place...</P>
+<P>Problems that seem simple on the surface have been turning out to be really complex right under that veneer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, February 04, 2008</h2><P class=MsoNormal>"I didn't encounter this problem with the object level auth rules, because I directly use reflection to invoke the AddObjectAuthorizationRules() method."<BR><BR>I realise that the static initialisation mightn't be a problem with the above but what i am referring to is that inheritance is going to be an issue. Using the example i had before, if i want to before auth rules in Employee i would need to create a static method AddObjectAuthorizationRules. If in manager i want to have these rules plus more how do i get on. See below: </P>
+<P>&nbsp;&nbsp;&nbsp; public class Employee<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void AddObjectAuthorizationRules()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Rules that all Employees should have (should be total 2 rules is only 2)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowDelete(typeof(Employee), "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowDelete(typeof(Employee), "Administrator");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public class Manager : Employee<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void AddObjectAuthorizationRules()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Rules that all Managers should have (should be total 4 rules but only 2) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(typeof(Manager), "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowEdit(typeof(Manager), "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P><BR></P>
+<P class=MsoNormal>If i was reading through the part where you are using reflection to invoke AddObjectAuthorizationRules correctly, to get around this problem something like the following should be possible (where the type is passed in by the code conducing the reflection): </P>
+<P>&nbsp;&nbsp;&nbsp; public class Employee<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void AddObjectAuthorizationRules(Type currentType)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowDelete(currentType, "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowDelete(currentType, "Administrator");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public class Manager : Employee<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void AddObjectAuthorizationRules(Type currentType)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Employee.AddObjectAuthorizationRules(currentType);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(currentType, "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowEdit(currentType, "ProjectManager");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR><BR>Also getting back to the original question that this post was about, would it not make sense to allow this same sort of static processing for the validation rules as we are doing here with the auth rules? <BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, February 05, 2008</h2><P>Getting the "type" at runtime in a static method was not easy.&nbsp; That's because most methods that return the type supply a type for an object, and in a static method, you haven't got an object, you've got a class.</P>
+<P>I said "most" because I didn't find a method that worked with a class in a static method and I'm hoping:</P>
+<OL>
+<LI>there is such a method, and</LI>
+<LI>someone will tell me what it is!</LI></OL>
+<P>I got around the problem by placing constants in&nbsp;my generated&nbsp;classes that supplied the values I needed.&nbsp; I think that's a stupid thing to have to do, but it was the best solution I could find that worked.&nbsp; :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, February 07, 2008</h2><P>Based upon more testing, I've ditched the static CanAdd methods (etc.) and replaced them with non-static methods for my list classes.</P>
+<P>My base list class has virtual methods that return true and I override them as necessary.</P>
+<P>Basically, the idea (as I understood it) behind having the static methods was to make it easy for the UI programmer to ask whether a given functionality was ok to activate.&nbsp; </P>
+<P>I realized that it wasn't that big a deal to instantiate the list object (empty if need be) and then have the UI call those methods.&nbsp; </P>
+<P>That's a small price to pay (at least as I've experienced it so far!) for the coding simplicity and run-time efficiency of not having to do reflection in my genericized UI page objects.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 05, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Note that I&#8217;m not doing anything different for
+per-property auth rules than in the past. So validation and authorization
+continue to work as always. I just added per-object auth rules so you don&#8217;t
+have to write (by convention) the static GetXYZ methods. I don&#8217;t think I&#8217;ve
+removed any capability you had before, just formalized something most people
+were doing by convention. In other words, you are correct that inheritance isn&#8217;t
+really supported &#8211; but it wasn&#8217;t before either. Nor is there a
+clear solution to the issue, because you can&#8217;t override static methods,
+and if we really want this to work at the static level then options are very
+limited.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 04, 2008 9:34 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] List of Business Rules not static<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>&quot;I
+didn't encounter this problem with the object level auth rules, because I
+directly use reflection to invoke the AddObjectAuthorizationRules()
+method.&quot;<br>
+<br>
+I realise that the static initialisation mightn't be a problem with the above
+but what i am referring to is that inheritance is going to be an issue. Using
+the example i had before, if i want to before auth rules in Employee i would
+need to create a static method AddObjectAuthorizationRules. If in manager i
+want to have these rules plus more how do i get on. See below: <o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp; public class Employee<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void
+AddObjectAuthorizationRules()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Rules that
+all Employees should have (should be total 2 rules is only 2)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowDelete(typeof(Employee), &quot;ProjectManager&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowDelete(typeof(Employee), &quot;Administrator&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp; public class Manager : Employee<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void
+AddObjectAuthorizationRules()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Rules that
+all Managers should have (should be total 4 rules but only 2) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowCreate(typeof(Manager), &quot;ProjectManager&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowEdit(typeof(Manager), &quot;ProjectManager&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></p>
+
+<p><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>If
+i was reading through the part where you are using reflection to invoke
+AddObjectAuthorizationRules correctly, to get around this problem something
+like the following should be possible (where the type is passed in by the code
+conducing the reflection): <o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp; public class Employee<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void
+AddObjectAuthorizationRules(Type currentType)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowDelete(currentType, &quot;ProjectManager&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowDelete(currentType, &quot;Administrator&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp; public class Manager : Employee<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void
+AddObjectAuthorizationRules(Type currentType)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Employee.AddObjectAuthorizationRules(currentType);<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowCreate(currentType, &quot;ProjectManager&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AuthorizationRules.AllowEdit(currentType, &quot;ProjectManager&quot;);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Also getting back to the original question that this post was about, would it
+not make sense to allow this same sort of static processing for the validation
+rules as we are doing here with the auth rules? <br>
+Anthony<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

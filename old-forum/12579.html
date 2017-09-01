@@ -1,0 +1,438 @@
+<html><header><title>Property Setter running AFTER PropertyHasChanged</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property Setter running AFTER PropertyHasChanged</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12579.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Wednesday, April 09, 2014</h2><p>When my private backing field SetProperty is called...even though it is ByRef, the value in mDTO.EvidNum does not change until AFTER the PropertyHasChanged runs.</p>
+<p>This means that a simple rule like StringRequired runs and sees an empty string and the rule stays broken. &nbsp;But the next step after rules running is that the mDTO.EvidNum property setter is called. &nbsp;So you look at the business object and the rule is broken but there is a value there.</p>
+<p>Any ideas? &nbsp;I assume the CSLA code assumes a private backing field is just a string not a Class.StringProperty.</p>
+<p>&nbsp;</p>
+<p>I have the following code:</p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>Private</span><span> </span><span>Shared</span><span> EvidNumPropertyInfo </span><span>As</span><span> </span><span>PropertyInfo</span><span>(</span><span>Of</span><span> </span><span>String</span><span>) = RegisterProperty(</span><span>Of</span><span> </span><span>String</span><span>)(</span><span>Function</span><span>(c) c.EvidNum, </span><span>RelationshipTypes</span><span>.PrivateField)</span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>Public</span><span> </span><span>Property</span><span> EvidNum() </span><span>As</span><span> </span><span>String</span><span></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Get</span><span></span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Return</span><span> GetProperty(EvidNumPropertyInfo, mDTO.EvidNum)</span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>End</span><span>
+</span><span>Get</span><span></span></p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; Set(ByVal value As String)</p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>SetProperty(EvidNumPropertyInfo,
+mDTO.EvidNum, value)</span></p>
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>End</span><span>
+</span><span>Set</span><span></span></p>
+<p>
+
+
+
+
+ 
+  
+ 
+
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  JA
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</p>
+<p class="MsoNormal"><span><span>&nbsp; &nbsp;&nbsp;</span></span><span>End</span><span>
+</span><span>Property</span><span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 09, 2014</h2><p>Hi,&nbsp;</p>
+<p>Which version of CSLA do you use?&nbsp;</p>
+<p>I wouldn&#39;t be surprised if this has to do with the &quot;mDTO.EvidNum&quot; property. </p>
+<p>What is sent in as a ref value to the SetProperty method when the wrapped object expose a property or a field.?<br />When it is a &nbsp;property I suspect that what is sent in as ref parameter is not the property method but the &quot;backing field value&quot; of the property.&nbsp;</p>
+<p>Does it work correct if you change mDTO.EvidNum to a private member field in the business object class?&nbsp;<br />Does it work correct if you change mDTO.EvidNum to a string Field rather than a property?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Wednesday, April 09, 2014</h2><p>Using the latest Beta version 4.5.8</p>
+<p>I just did a test and it works as expected if it is a plain string private member backing field &nbsp;in my business object. &nbsp;ex. mTesting as string</p>
+<p>Here is the property in my DTO</p>
+<p style="padding-left:30px;"><span><span>		</span></span>Public<span> </span>Overridable<span> </span>Property<span> [EvidNum]() </span>As<span> System.</span><span>String</span></p>
+<p style="padding-left:60px;"><span>			</span><span>Get</span></p>
+<p style="padding-left:90px;"><span>				</span><span>Return</span> <span>CType</span>(GetValue(<span>CInt</span>(<span>EvidenceFieldIndex</span>.EvidNum), <span>True</span>), System.<span>String</span>)</p>
+<p style="padding-left:60px;"><span><span>			</span></span>End<span> </span>Get</p>
+<p style="padding-left:60px;"><span>			</span><span>Set</span></p>
+<p style="padding-left:90px;"><span>				</span>SetValue(<span>CInt</span>(<span>EvidenceFieldIndex</span>.EvidNum), value)</p>
+<p style="padding-left:60px;"><span><span>			</span></span>End<span> </span>Set</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span><span>		</span></span>End<span> </span>Property</p>
+<div>This could be nasty...All my DTOs are auto generated and this pattern is ubiquitous in my BOs. &nbsp;Ugh.</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 09, 2014</h2><p>Hi, </p>
+<p>The challenge about properties is that they are actually compiled into 2 methods in the object&nbsp;</p>
+<p>get_EvidNum and&nbsp;set_EvidNum &nbsp;- it is not represented as a single field/value.&nbsp;</p>
+<p>See also&nbsp;<a href="https://msmvps.com/blogs/luisabreu/archive/2007/09/17/properties-on-c.aspx">https://msmvps.com/blogs/luisabreu/archive/2007/09/17/properties-on-c.aspx</a> &nbsp;</p>
+<p>I&#39;m sure there is a good reason why this is not supported out of the box as a private backing field in CSLA - tho&#39; I haven&#39;t spent any time digging into it.&nbsp;</p>
+<p>You _might_ get away with creating your own intermediate base class and create your own SetProperty2 method without a ref parameter and use f.ex MethodCaller.CallPropertyGetter / MethodCaller.CallPropertySetter to get/set the property values of the DTO. (Or use plain reflection in .NET or look at <a href="http://fasterflect.codeplex.com">FasterFlect</a>)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 10, 2014</h2><p>Hi,&nbsp;</p>
+<p>Remember, the compiler creates 2 methods in compiled IL code when you create a property in your code: get_&lt;propertyname&gt; and set_&lt;propertyname&gt;</p>
+<p>So when you _try_ to pass a property as ref parameter you actually pass the returned value.&nbsp;</p>
+<p>You might want to try and create your own implementation of SetProperty in your own intermediate base class that accepts a property and use reflection to get/set the property value (or Csla.Reflection.MethodCaller or FasterFlect). &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>I&#39;m sorry Jonny, I don&#39;t understand what you are saying about my own implementation in a base class.</p>
+<p>Your saying by passing in a property, it is being passed ByVal and not ByRef...so it ends up getting Set after the rules run. &nbsp;You are saying somehow I can use reflection to overcome that?</p>
+<p>By the way here is a description of what is going on from a different forum:</p>
+<p style="padding-left:60px;">When you execute Method(Object.PropertyValue), and PropertyValue is passed ByRef, the method first executes the PropertyValue GET statement to populate the variable which will be used in the method.&nbsp; If you do not update the object pointer, but only change a member of the&nbsp;parameter variable&nbsp;inside the method, the change to that member&#39;s value would be immediately apparent outside the executing method. &nbsp;But if the variable is reassigned to another pointer, the pointer internal to the original property will not be updated until the SET statement is executed, so you won&#39;t see the object change immediately.<br /><br />Maybe some example code would help:</p>
+<pre style="padding-left:60px;" lang="x-vbnet">Public Class Form1
+    Dim f As New Fiddle
+
+    Private Sub Form1_Load(ByVal sender As System.Object, ByVal e As System.EventArgs) Handles MyBase.Load
+        Foo(f.Faddle, f.Button)
+    End Sub
+
+    Private Sub Foo(ByRef obj As String, ByRef btn As Button)
+        obj &amp;= &quot; Changed&quot;
+        &#39;btn = New Button
+        btn.Text &amp;= &quot; Changed&quot;
+    End Sub
+End Class
+
+Public Class Fiddle
+    Public Sub New()
+        mButton = New Button
+        mButton.Text = &quot;First&quot;
+    End Sub
+
+    Private mFaddle As String = &quot;Fiddle Faddle&quot;
+    Public Property Faddle() As String
+        Get
+            Return mFaddle
+        End Get
+        Set(ByVal value As String)
+            mFaddle = value
+        End Set
+    End Property
+
+    Private mButton As New Button
+    Public Property Button() As Button
+        Get
+            Return mButton
+        End Get
+        Set(ByVal value As Button)
+            mButton = value
+        End Set
+    End Property
+End Class</pre>
+<p style="padding-left:60px;">Place a breakpoint on Sub Foo() then run the form.&nbsp; First, note the values of Faddle and Button as listed on the &#39;f&#39; variable declaration.&nbsp; Now step through sub Foo() and stop at &#39;End Sub&#39;.&nbsp; Notice that &#39;f.Button.Text&#39; has changed, however &#39;f.Faddle&#39; has not yet changed.&nbsp; Continue to step through the code.&nbsp; Note how execution returns to the executing method, then to each property SET statement, then back to the method.&nbsp; Immediately after the Faddle SET statement and execution returns to the method, you can check the value of f.Faddle and see that it has changed.</p>
+<p style="padding-left:60px;">Now uncomment the line of code in Foo().&nbsp; Repeat the exercise, but this time note that the Button.Text does not change on &#39;f&#39; until the SET statement executes for &#39;Button&#39;.&nbsp; Since we change the variable pointer for the button parameter inside of Foo, the changes we make to that button are not part of &#39;f&#39; until the SET statement updates the property&#39;s internal variable.</p>
+<p>It is foggy but I kind of get why it is happening. &nbsp;Are you saying I should change the implementation of the property set in the DTO or the BO?</p>
+<p>Sean</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 10, 2014</h2><p>From what I can figure out you have 2 options: </p>
+<ol>
+<li>Change the underlying DTO object to expose fields and not properties</li>
+<li>Change the behavior in the BO to support wrapped DTO with properties</li>
+</ol>
+<p>In case of 2)</p>
+<p>I always recommend that you have your own intermediate base class so that you can alter/add behavior in the base classes. </p>
+<p>Ex inheritance hierarchy:&nbsp; </p>
+<p>Csla.BusinessBase&lt;T&gt;</p>
+<p>&nbsp;&nbsp; - YourApp.MyBusinessBase&lt;T&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; YourBusinessObject : YourApp.MyBusinessBase&lt;YourBusinessObject&gt;</p>
+<p>This structure allows you to add new bhavior or overrides in YourApp.MyBusinessBase class. </p>
+<p>What you need to get - is the System.Reflection.MethodInfo of the underlying property as this will allow you to call the property get/set methods on the given object. I would first try to use another name - ex SetProperty2 - and work out how the code and parameters must be. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>OK I already have an intermediate base class MyBusinessBase, so I can try both your suggestions. &nbsp;I will try both. &nbsp;#1 would be editing the code generator for the DTOs.</p>
+<p>Re #2, I feel like an idiot but I can&#39;t picture what you are saying in my mind. &nbsp;Do you have a simple example to help me see what you are saying. &nbsp;Just a simple string property example of some kind?</p>
+<p>Thanks a million!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 10, 2014</h2><p>Explanation of properties: https://msmvps.com/blogs/luisabreu/archive/2007/09/17/properties-on-c.aspx&nbsp; </p>
+<p>For the other part google PropertyInfo or look at Csla.Reflection.MethodCaller or search and look at FasterFlect.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>The part I am not getting is how would the set line change? &nbsp;I just need a hint to get me going. &nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span>Set</span>(<span>ByVal</span> value <span>As</span> <span>String</span>)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty(EvidNumPropertyInfo, mDALObject.EvidNum, value)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <span>End</span> <span>Set</span></p>
+<div><span><br /></span></div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, April 10, 2014</h2><p>Semantically - in C#: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">MyBO</span>
+{
+&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">MyDTO</span>&nbsp;_myDto&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MyDTO</span>();
+ 
+&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&nbsp;StringVal1Property;
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;StringVal1
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;_myDto.S1;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty2(StringVal1Property,&nbsp;<span style="color:blue;">value</span>,&nbsp;_myDto,&nbsp;<span style="color:#a31515;">&quot;S1&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;<span style="color:blue;">void</span>&nbsp;SetProperty2&lt;T&gt;(<span style="color:#2b91af;">PropertyInfo</span>&nbsp;property,&nbsp;T&nbsp;newValue,&nbsp;<span style="color:blue;">object</span>&nbsp;obj,&nbsp;<span style="color:blue;">string</span>&nbsp;propertyName)&nbsp;<span style="color:blue;">where</span>&nbsp;T:<span style="color:#2b91af;">IComparable</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;method&nbsp;=&nbsp;obj.GetType().GetProperties().First(p&nbsp;=&gt;&nbsp;p.Name&nbsp;==&nbsp;propertyName);
+&nbsp;&nbsp;&nbsp;&nbsp;T&nbsp;orgValue&nbsp;=&nbsp;(T)method.GetValue(obj);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(orgValue.CompareTo(newValue)&nbsp;!=&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method.SetValue(obj,&nbsp;newValue);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged(property);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PropertyHasChanged(<span style="color:#2b91af;">PropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;}
+}
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>AHA! &nbsp;OK I see what you are saying now. &nbsp;And I see where you would put that in the intermediate base class.</p>
+<p>Am I correct that I would also have to add the bits that do this in the framework since I am bypassing SetProperty:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<span>if</span> (_bypassPropertyChecks || CanWriteProperty(propertyInfo, noAccess == Security.<span>NoAccessBehavior</span>.ThrowException))</p>
+<div>?</div>
+<div></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 10, 2014</h2><p>Yes.&nbsp;</p>
+<p>You know about the Csla.Data.DataMapper class - right? </p>
+<p>This class can be used to map (copy) values between 2 objects and creates a default map provided the properties have the same name in both objects!</p>
+<p>I believe what you are experiencing is specific to VB.NET and &quot;Copy Back ByRef&quot; functionality<br />See: <a href="http://blogs.msdn.com/b/vbteam/archive/2010/01/26/the-many-cases-of-byref.aspx">http://blogs.msdn.com/b/vbteam/archive/2010/01/26/the-many-cases-of-byref.aspx</a> &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>You are right...C# would have thrown a compiler error trying to pass in a property ByRef. &nbsp;VB.NET allows it and I see why that is kind of a problem. &nbsp;How would it know the property is not ReadOnly etc. &nbsp;</p>
+<p>So, thanks a gazillion to you, I know I can do one of the following:</p>
+<p>
+<ul>
+<li>Call SetProperty2 in my intermediate base class and replicate what CSLA does in SetProperty</li>
+<li>Drop the PrivateBackingField enum and just update the DTO AFTER the CSLA SetProperty is finished which ensures I get all the nice validation and business rule checking + DTO in sync.</li>
+</ul>
+</p>
+<p>Re DataMapper...it is a little too all or nothing for me. &nbsp;I do use it here and there...but there are downsides I struggle with:</p>
+<p>
+<ul>
+<li>I either map everything and ignore errors because otherwise I introduce run-time errors and also I don&#39;t always know I want &quot;everything&quot; to transfer just because there are two property names that are the same.</li>
+<li>Or I implement specific mappings which is the same as just writing the DTOToBO code in the first place which introduces a place where other developers can forget to write the code to there AND the property definitions. &nbsp;Another developer can come along and add a property definition and wonders why it isn&#39;t persisting to the DB because they forgot to add a line in the Copy In and Copy Out method.</li>
+</ul>
+</p>
+<p>My way, if the DTO gets updated in the Property Setter then everything is taken care of and values will get persisted. &nbsp;And as a bonus all the relevant logic for setting code is in the setter...rather than both in the Setter and the TransferTo/FromDB methods.</p>
+<p>Thanks again Jonny!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>What if I change it to a tandem approach...I could change from this:</p>
+<p>&nbsp; &nbsp;&nbsp;<span>Private</span> <span>Shared</span> EvidNumPropertyInfo <span>As</span> <span>PropertyInfo</span>(<span>Of</span> <span>String</span>) = RegisterProperty(<span>Of</span> <span>String</span>)(<span>Function</span>(c) c.EvidNum<i>, <span>RelationshipTypes</span>.PrivateField</i>)</p>
+<p><span>&nbsp; &nbsp; </span>Public<span> </span>Property<span> EvidNum() </span>As<span> </span>String</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <span>Get</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span>Return</span> GetProperty(EvidNumPropertyInfo, mDTO.EvidNum)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <span>End</span> <span>Get</span></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Set(ByVal value As String)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SetProperty(EvidNumPropertyInfo, mDTO.EvidNum, value)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <span>End</span> <span>Set</span></p>
+<p>&nbsp;</p>
+<p><span>&nbsp; &nbsp; </span>End<span> </span>Property</p>
+<div></div>
+<p>To This:</p>
+<p>&nbsp; &nbsp;&nbsp;Private&nbsp;Shared&nbsp;EvidNumPropertyInfo&nbsp;As&nbsp;PropertyInfo(Of&nbsp;String) = RegisterProperty(Of&nbsp;String)(Function(c) c.EvidNum)</p>
+<p>&nbsp; &nbsp;&nbsp;Public&nbsp;Property&nbsp;EvidNum()&nbsp;As&nbsp;String</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;Return&nbsp;GetProperty(EvidNumPropertyInfo, mDTO.EvidNum)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;End&nbsp;Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Set(ByVal&nbsp;value&nbsp;As&nbsp;String)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;SetProperty(EvidNumPropertyInfo, value)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If mDTO.EvidNum &lt;&gt; GetProperty(EvidNumPropertyInfo) Then mDTO.EvidNum = value</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;End&nbsp;Set</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp;&nbsp;End&nbsp;Property</p>
+<div></div>
+<div>My overall goal is to keep the DTO in sync as the BO changes. &nbsp;This enables me to:</div>
+<div><ol>
+<li>avoid a separate LoadBOFromDTO and LoadDTOFromBO in the in/out from SQL data access</li>
+<li>have ability to transfer guts from a ReadOnly BO to an Editable BO internally by passing a DTO</li>
+</ol></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Thursday, April 10, 2014</h2><p>OK this is starting to make sense. &nbsp;I think I get the problem.</p>
+<p style="padding-left:30px;">Others have explained that you can&#39;t do this in C#. In VB.NET, you&nbsp;<em>can</em>&nbsp;do this, even with option strict/explicit on:</p>
+<pre style="padding-left:30px;" class="lang-cs prettyprint prettyprinted"><code><span class="typ">Option</span><span class="pln"> </span><span class="typ">Strict</span><span class="pln"> </span><span class="typ">On</span><span class="pln">
+</span><span class="typ">Option</span><span class="pln"> </span><span class="typ">Explicit</span><span class="pln"> </span><span class="typ">On</span><span class="pln">
+</span><span class="typ">Imports</span><span class="pln"> </span><span class="typ">System</span><span class="pun">.</span><span class="typ">Text</span><span class="pln">
+
+</span><span class="typ">Module</span><span class="pln"> </span><span class="typ">Test</span><span class="pln">
+
+   </span><span class="typ">Sub</span><span class="pln"> </span><span class="typ">Main</span><span class="pun">()</span><span class="pln">
+       </span><span class="typ">Dim</span><span class="pln"> sb </span><span class="kwd">as</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">StringBuilder</span><span class="pln">
+       </span><span class="typ">Foo</span><span class="pln"> </span><span class="pun">(</span><span class="pln">sb</span><span class="pun">.</span><span class="typ">Length</span><span class="pun">)</span><span class="pln">
+   </span><span class="typ">End</span><span class="pln"> </span><span class="typ">Sub</span><span class="pln">
+
+   </span><span class="typ">Sub</span><span class="pln"> </span><span class="typ">Foo</span><span class="pun">(</span><span class="typ">ByRef</span><span class="pln"> x </span><span class="kwd">as</span><span class="pln"> </span><span class="typ">Integer</span><span class="pun">)</span><span class="pln">
+   </span><span class="typ">End</span><span class="pln"> </span><span class="typ">Sub</span><span class="pln">
+
+</span><span class="typ">End</span><span class="pln"> </span><span class="typ">Module</span></code></pre>
+<p style="padding-left:30px;">The above code is equivalent to this C# code:</p>
+<pre style="padding-left:30px;" class="lang-cs prettyprint prettyprinted"><code><span class="pln">using </span><span class="typ">System</span><span class="pun">.</span><span class="typ">Text</span><span class="pun">;</span><span class="pln">
+
+</span><span class="kwd">class</span><span class="pln"> </span><span class="typ">Test</span><span class="pln">
+</span><span class="pun">{</span><span class="pln">
+     </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> </span><span class="typ">Main</span><span class="pun">()</span><span class="pln">
+     </span><span class="pun">{</span><span class="pln">
+         </span><span class="typ">StringBuilder</span><span class="pln"> sb </span><span class="pun">=</span><span class="pln"> </span><span class="kwd">new</span><span class="pln"> </span><span class="typ">StringBuilder</span><span class="pun">();</span><span class="pln">
+         </span><span class="typ">int</span><span class="pln"> tmp </span><span class="pun">=</span><span class="pln"> sb</span><span class="pun">.</span><span class="typ">Length</span><span class="pun">;</span><span class="pln">
+         </span><span class="typ">Foo</span><span class="pun">(</span><span class="kwd">ref</span><span class="pln"> tmp</span><span class="pun">);</span><span class="pln">
+         sb</span><span class="pun">.</span><span class="typ">Length</span><span class="pln"> </span><span class="pun">=</span><span class="pln"> tmp</span><span class="pun">;</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+
+     </span><span class="kwd">static</span><span class="pln"> </span><span class="kwd">void</span><span class="pln"> </span><span class="typ">Foo</span><span class="pun">(</span><span class="kwd">ref</span><span class="pln"> </span><span class="typ">int</span><span class="pln"> x</span><span class="pun">)</span><span class="pln">
+     </span><span class="pun">{</span><span class="pln">
+     </span><span class="pun">}</span><span class="pln">
+</span><span class="pun">}</span></code></pre>
+<p style="padding-left:30px;">Personally I&#39;m glad that C# doesn&#39;t have this - it&#39;s muddying the waters quite a lot, particularly in terms of the value of the property if the parameter is set within the method but then an exception is thrown.</p>
+<p>But Jonny, I still do not understand your suggesting for using reflection in an intermediate base class.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

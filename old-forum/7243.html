@@ -1,0 +1,308 @@
+<html><header><title>Bug in Csla.Reflection.Methodcaller method FindMethodUsingFuzzyMatching(..)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in Csla.Reflection.Methodcaller method FindMethodUsingFuzzyMatching(..)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7243.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, July 08, 2009</h2><P><U><STRONG>Situation:</STRONG><BR></U>On of our developers is making a small program using only CSLA without our framework, he ran into an situation and asked me for my help.&nbsp;Together we&nbsp;looked at his code and it all seems fine, so i went debugging.<BR><BR>He is using LinqToSql and has one big query in the root business object data access, and passing arrays of the queryresult in FetchChild. The problem resides in an overloaded factory method with two fetch_child methods in the data access, they look alot the same.</P>
+<P>Factory methods</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MnuItems</FONT></FONT><FONT size=2> GetMnuMenuItems(DIT.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MNU_GROEP_ITEM</FONT></FONT><FONT size=2>[] data)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MnuItems</FONT></FONT><FONT size=2>&gt;(data);<BR>}<BR><BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MnuItems</FONT></FONT><FONT size=2> GetMnuSubMenuItems(DIT.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MNU_ITEM</FONT></FONT><FONT size=2>[] data)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MnuItems</FONT></FONT><FONT size=2>&gt;(data);<BR>}</FONT></P>
+<P>Data Access<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2><BR>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Fetch(DIT.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MNU_GROEP_ITEM</FONT></FONT><FONT size=2>[] data)<BR>{<BR>...<BR></FONT><FONT size=2>}<BR><BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Fetch(DIT.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MNU_ITEM</FONT></FONT><FONT size=2>[] data)<BR>{<BR>...<BR></FONT><FONT size=2>}<BR><BR><BR><FONT size=3><U><STRONG>Problem:<BR></STRONG></U>The methodcaller has problems finding the correct Child_Fetch method and ends up into returning the first one. <BR>First FindMethod returns null<BR>Second FindMethod returns null<BR>The AmbiguousMatchException is handled and FindMethodUsingFuzzyMatching is called.<BR>But FindMethodUsingFuzzyMatching returns the first one having the same parameter count but wrong array type.<BR><BR><STRONG><U>Solution:</U></STRONG><BR>On line 423 we added a condition comparing the type of the parameter with the reflected method parameter.<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2><BR>if</FONT></FONT><FONT size=2> (parameters.GetType().FullName == infoParams[0].ParameterType.FullName)<BR><BR></FONT></FONT></FONT><FONT size=2><FONT size=3><FONT size=2><FONT size=3>This solved our problem and i don't see a reason that it can go wrong with finding other methods.</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+believe what is confusing the MethodCaller is the fact that your parameter is
+an array, and it is trying to do matching based on array of parameters.&nbsp; I
+think if you change your signatures to List&lt;MNU_ITEM&gt; and List&lt;MNU_GROUP_ITEM&gt;
+or pass root L2S object instead of array of items, and let your class iterate through
+children of the root L2S object, that would solve the problem without having to
+modify the CSLA.&nbsp; FuzzyMatching is only used if strongly typed match
+fails, which is really what you would like to rely on.&nbsp; Although your fix
+might also be OK, but that is up to Rocky to decide.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rfcdejong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 08, 2009 8:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Bug in Csla.Reflection.Methodcaller method
+FindMethodUsingFuzzyMatching(..)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><strong><u>Situation:</u></strong><u><br>
+</u>On of our developers is making a small program using only CSLA without our
+framework, he ran into an situation and asked me for my help.&nbsp;Together
+we&nbsp;looked at his code and it all seems fine, so i went debugging.<br>
+<br>
+He is using LinqToSql and has one big query in the root business object data
+access, and passing arrays of the queryresult in FetchChild. The problem
+resides in an overloaded factory method with two fetch_child methods in the
+data access, they look alot the same.<o:p></o:p></p>
+
+<p>Factory methods<o:p></o:p></p>
+
+<p><span>internal</span><span> <span>static</span> <span>MnuItems</span> GetMnuMenuItems(DIT.Data.<span>MNU_GROEP_ITEM</span>[] data)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span> <span>DataPortal</span>.FetchChild&lt;<span>MnuItems</span>&gt;(data);<br>
+}<br>
+<br>
+<span>internal</span> <span>static</span>
+<span>MnuItems</span> GetMnuSubMenuItems(DIT.Data.<span>MNU_ITEM</span>[] data)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span> <span>DataPortal</span>.FetchChild&lt;<span>MnuItems</span>&gt;(data);<br>
+}</span><o:p></o:p></p>
+
+<p>Data Access<br>
+<span><br>
+private</span><span> <span>void</span>
+Child_Fetch(DIT.Data.<span>MNU_GROEP_ITEM</span>[] data)<br>
+{<br>
+...<br>
+}<br>
+<br>
+<span>private</span> <span>void</span>
+Child_Fetch(DIT.Data.<span>MNU_ITEM</span>[] data)<br>
+{<br>
+...<br>
+}<br>
+<br>
+<br>
+</span><strong><u>Problem:</u></strong><b><u><br>
+</u></b>The methodcaller has problems finding the correct Child_Fetch method
+and ends up into returning the first one. <br>
+First FindMethod returns null<br>
+Second FindMethod returns null<br>
+The AmbiguousMatchException is handled and FindMethodUsingFuzzyMatching is
+called.<br>
+But FindMethodUsingFuzzyMatching returns the first one having the same parameter
+count but wrong array type.<br>
+<br>
+<strong><u>Solution:</u></strong><br>
+On line 423 we added a condition comparing the type of the parameter with the
+reflected method parameter.<br>
+<span><br>
+if</span><span> (parameters.GetType().FullName ==
+infoParams[0].ParameterType.FullName)<br>
+<br>
+</span>This solved our problem and i don't see a reason that it can go wrong
+with finding other methods.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Another
+approach would be to have single DataPortal_Fetch that takes an object
+parameter, and have that method test the type and do some branching logic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1026" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 08, 2009 9:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] Bug in Csla.Reflection.Methodcaller method
+FindMethodUsingFuzzyMatching(..)<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I
+believe what is confusing the MethodCaller is the fact that your parameter is
+an array, and it is trying to do matching based on array of parameters.&nbsp; I
+think if you change your signatures to List&lt;MNU_ITEM&gt; and
+List&lt;MNU_GROUP_ITEM&gt; or pass root L2S object instead of array of items,
+and let your class iterate through children of the root L2S object, that would
+solve the problem without having to modify the CSLA.&nbsp; FuzzyMatching is
+only used if strongly typed match fails, which is really what you would like to
+rely on.&nbsp; Although your fix might also be OK, but that is up to Rocky to
+decide.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rfcdejong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 08, 2009 8:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Bug in Csla.Reflection.Methodcaller method
+FindMethodUsingFuzzyMatching(..)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><strong><u>Situation:</u></strong><u><br>
+</u>On of our developers is making a small program using only CSLA without our
+framework, he ran into an situation and asked me for my help.&nbsp;Together
+we&nbsp;looked at his code and it all seems fine, so i went debugging.<br>
+<br>
+He is using LinqToSql and has one big query in the root business object data
+access, and passing arrays of the queryresult in FetchChild. The problem
+resides in an overloaded factory method with two fetch_child methods in the
+data access, they look alot the same.<o:p></o:p></p>
+
+<p>Factory methods<o:p></o:p></p>
+
+<p><span>internal</span><span> <span>static</span> <span>MnuItems</span> GetMnuMenuItems(DIT.Data.<span>MNU_GROEP_ITEM</span>[] data)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span> <span>DataPortal</span>.FetchChild&lt;<span>MnuItems</span>&gt;(data);<br>
+}<br>
+<br>
+<span>internal</span> <span>static</span>
+<span>MnuItems</span> GetMnuSubMenuItems(DIT.Data.<span>MNU_ITEM</span>[] data)<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span> <span>DataPortal</span>.FetchChild&lt;<span>MnuItems</span>&gt;(data);<br>
+}</span><o:p></o:p></p>
+
+<p>Data Access<br>
+<span><br>
+private</span><span> <span>void</span>
+Child_Fetch(DIT.Data.<span>MNU_GROEP_ITEM</span>[] data)<br>
+{<br>
+...<br>
+}<br>
+<br>
+<span>private</span> <span>void</span>
+Child_Fetch(DIT.Data.<span>MNU_ITEM</span>[] data)<br>
+{<br>
+...<br>
+}<br>
+<br>
+<br>
+</span><strong><u>Problem:</u></strong><b><u><br>
+</u></b>The methodcaller has problems finding the correct Child_Fetch method
+and ends up into returning the first one. <br>
+First FindMethod returns null<br>
+Second FindMethod returns null<br>
+The AmbiguousMatchException is handled and FindMethodUsingFuzzyMatching is
+called.<br>
+But FindMethodUsingFuzzyMatching returns the first one having the same
+parameter count but wrong array type.<br>
+<br>
+<strong><u>Solution:</u></strong><br>
+On line 423 we added a condition comparing the type of the parameter with the
+reflected method parameter.<br>
+<span><br>
+if</span><span> (parameters.GetType().FullName ==
+infoParams[0].ParameterType.FullName)<br>
+<br>
+</span>This solved our problem and i don't see a reason that it can go wrong
+with finding other methods.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, July 09, 2009</h2><P>Thanks for your feedback. Maybe the problem resides in working with L2S arrays in the examples, that's why the developer went with L2S arrays. Overloading it for the recursive call.</P>
+<P>I'll leave the line in the CSLA code and hope we never need to update CSLA for that program. If we we ever update it i think we'll soon enough see it doesn't work anymore.<BR><BR>Anyway i would like to see the fuzzy match works with an overloaded method working with L2S arrays ;)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2>I'll add this to the bug list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2><P>The whole problem, btw, is that C# doesn't have an equivalent to the VB call by name function. The VB team wrote everything necessary to call methods by name, properly handling overloads and the whole bit. But I can't use that well-engineered and highly tested function, because it would require a reference to the VB runtime DLL - and you know a lot of C# bigots would throw a sh*t fit if I did that...</P>
+<P>So instead, I've been forced into creating my own equivalent. Which is kind of fun in a super-geeky sort of way, but turns out to be very complex, especially when trying to support arrays and param arrays (because they look the same, but are actually different).</P>
+<P>It did earn me a lot of respect with the C# compiler team though :)&nbsp; Last year I had a meeting with the sub-team responsible for adding the dynamic keyword (late binding) to C# 4, and when they realized what I was doing they were noticably impressed. Sadly, their work doesn't overlap my work, and it doesn't appear that the dynamic keyword will help me get rid of MethodCaller :(</P>
+<P>I do think I'm getting terribly close to having it all right at this point. In fact I thought I had it all right, but obviously not quite.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, July 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I'll add this to the bug list.</div></BLOCKQUOTE><br /><br />Thanks<br /><br /><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>In fact I thought I had it all right, but obviously not quite.</P></div></BLOCKQUOTE><br /><br />Sorry ;)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 17, 2009</h2><P>I thought I'd look at this for 3.7, as it seemed simple enough. But it turns out that a complete fix is much more complex, which means the risk is higher, so it will have to wait for 3.7.1 or something.</P>
+<P>The reason the fix is more complex, is that there are numerous variations that must be handled, including:</P>
+<P>void MyMethod(params int[] x)</P>
+<P>void MyMethod(params string[] x)</P>
+<P>void MyMethod(int a, params int[] x)</P>
+<P>void MyMethod(int a, params string[] x)</P>
+<P>Your code would resolve the first two, but not the last two. And resolving the last two is turning out to be very challenging.</P>
+<P>And Sergey is right, this really should be handled by CallMethod(), not by the fuzzy matching routine.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

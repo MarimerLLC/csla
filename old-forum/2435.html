@@ -1,0 +1,51 @@
+<html><header><title>CSLA and Expression Blend problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and Expression Blend problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2435.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Moh_Abed posted on Tuesday, February 27, 2007</h2><P>Hi all,</P>
+<P>I'm currently porting my CSLA application to WPF, so I am considering separating the design of UI from UI development, so I intend to use MS Expression blend for designing the UI, what is the best technique to bing CSLA object to UI ?, should binding be implemented in xaml or code behind ?</P>
+<P>the regular binding in xaml which is supported in the designer (Expression Blend) does not work simply because if expects a default public constructor which is not the case in CSLA, the other way is to use Object Data Provider:</P>
+<P><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>Window.Resources</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>ObjectDataProvider</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>MethodName</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>GetBranchesList</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>x:Key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>BranchCollection</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </P>
+<P></FONT><FONT color=#ff0000 size=2>ObjectType</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>{x:Type ReadOnlyCollections:BranchesList}</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>Window.Resources</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>...</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#800000 size=2>Window.DataContext</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>Binding</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>Mode</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>OneWay</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>Source</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>{StaticResource BranchCollection}</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>/&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>Window.DataContext</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#0000ff size=2>...</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#800000 size=2>ListBox</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>ItemsSource</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>{Binding Mode=OneWay}</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>IsSynchronizedWithCurrentItem</FONT><FONT color=#0000ff size=2>=</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2>True</FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</FONT></P>
+<P><FONT color=#000000>This code uses ObjectDataProvider as the binding source, MethodName defines the name of the static method used to fetsh the data from CSLA without writing a single line of code in code behind.</FONT></P>
+<P><FONT color=#000000>the problem that I faced is, when using Expression Blend, the designer refuse to show the design throwing exception because it try to call the method (</FONT><FONT color=#0000ff>GetBranchesList</FONT><FONT color=#000000>), does anybody face this problem ? i guess the cause of the problem is that the designer try to actually fetch the data to present it in the designer or so.</FONT></P>
+<P><FONT color=#000000>did anybody found a solution to this problem? what are the other ways of handling WPF binding in the context of CSLA</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 27, 2007</h2><P>Right now you can use XAML binding to bind the fields, but you must write one line of code to actually create the object and make it be the current data context.</P>
+<P>In other words, you can't use the ObjectDataProvider, because it has many of the same limitations as the ObjectDataSource control in ASP.NET, and it simply won't work with objects that are created using a factory design pattern. Sad but true...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 01, 2007</h2><P>I have been spending a lot of time on WPF, and if you are willing to live on the bleeding edge, you can now try the new Csla.Wpf.CslaDataProvider control. <A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=0c94aa82-b975-455b-a0c5-f4f7196a2408">Click here</A> for details.</P>
+<P>In my limited testing it seems to work quite nicely, allowing you to specify the object's type, factory method and factory parameters in XAML.</P>
+<P>Right now the only way to get the code is to pull it directly from the <A href="http://www.lhotka.net/Article.aspx?id=5987a664-4b44-45a7-bc1d-695610964718">svn repository</A>.</P>
+<BLOCKQUOTE dir=ltr>
+<P>svn://svn.lhotka.net/csla/trunk/cslacs</P></BLOCKQUOTE>
+<P>Also, right now some of these features are only in C#. Once I'm more confident that they're stable, I'll port them to VB.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Moh_Abed replied on Sunday, March 04, 2007</h2><P>Thanx very much,</P>
+<P>I am on my way testing it :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Moh_Abed replied on Monday, March 05, 2007</h2><P>Small bug, failed to execute factory method when there are more than overload of the factory method, say we have 2 factory method, GetBranches() and , GetBranches(filterText), the reflection code in DoQuery should consider Factory parameters to get the required factory method, i did this modification and it worked:</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DoQuery(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> state)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#008080 size=2>...</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#008000 size=2>// get factory method info</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>MethodInfo</FONT><FONT size=2> factory = request.ObjectType.GetMethod(</P>
+<P>request.FactoryMethod,</P>
+<P></FONT><FONT color=#008080 size=2>BindingFlags</FONT><FONT size=2>.Static | </FONT><FONT color=#008080 size=2>BindingFlags</FONT><FONT size=2>.Public | </FONT><FONT color=#008080 size=2>BindingFlags</FONT><FONT size=2>.FlattenHierarchy,</P>
+<P></FONT><STRONG><EM><FONT color=#0000ff size=2>null</FONT><FONT size=2>, GetFactoryParameterTypes(request.FactoryParameters), </FONT><FONT color=#0000ff size=2>null</FONT></EM></STRONG><FONT size=2>);</FONT></P>
+<P><FONT size=2>...</FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<P dir=ltr><FONT size=2>}</FONT></P>
+<P dir=ltr><FONT size=2>...</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P><STRONG><EM>private</EM></STRONG></FONT><STRONG><EM><FONT size=2> </FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2>[] GetFactoryParameterTypes(</FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>object</FONT></EM></STRONG><FONT size=2><STRONG><EM>&gt; list)</EM></STRONG></P>
+<P><STRONG><EM>{</EM></STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><STRONG><EM><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2>&gt; typeList = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>Type</FONT></EM></STRONG><FONT size=2><STRONG><EM>&gt;();</EM></STRONG></P>
+<P></FONT><STRONG><EM><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> obj </FONT><FONT color=#0000ff size=2>in</FONT></EM></STRONG><FONT size=2><STRONG><EM> list)</EM></STRONG></P>
+<P><STRONG><EM>{</EM></STRONG></P>
+<BLOCKQUOTE dir=ltr>
+<P><STRONG><EM>typeList.Add(obj.GetType());</EM></STRONG></P></BLOCKQUOTE>
+<P><STRONG><EM>}</EM></STRONG></P>
+<P></FONT><FONT color=#0000ff size=2><STRONG><EM>return</EM></STRONG></FONT><FONT size=2><STRONG><EM> typeList.ToArray();</EM></STRONG></P></BLOCKQUOTE>
+<P><STRONG><EM>}</EM></STRONG></P>
+<P>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 05, 2007</h2><P>Good point, I hadn't thought about overloads of the factory. I'm traveling today through Wednesday, but I'll work a fix into the code sometime this week.</P>
+<P>Thanks!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

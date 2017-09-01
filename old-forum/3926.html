@@ -1,0 +1,36 @@
+<html><header><title>currentprincipalchanged does not update all winparts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>currentprincipalchanged does not update all winparts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3926.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ton Smeets posted on Wednesday, November 21, 2007</h2><P>Hello,</P>
+<P>I worked on this one for a while but I can't find what causes the problem. </P>
+<P>Like Project Tracker I am using the winparts to update on principal change. This works fine, but not always. There is a particular situation when I open several winparts, and the last one is RolesEdit. In this case the last winpart I open is a winpart that should close when the user logs out. The winpart closes, and all underlaying winparts update to readonly, except the one that is pushed to the front. this one still remains in write mode.</P>
+<P>So, first login and&nbsp;create a new Project, then open in the main menu an existing resource (in a new winpart) and then open admin(roles edit, a new winpart). LogOut and roles edit goes away. You will see that the resource is not read only. Close this one and the project left is read only.</P>
+<P>My programm has this problems, and multiple versions of ProjectTracker show the same result. This happens only when the last opened winpart&nbsp;is one that should close on a principal change (LogOut).</P>
+<P>Does anyone found a solution for this one?</P>
+<P>Thank You.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ton Smeets replied on Thursday, November 22, 2007</h2><P><FONT face=Tahoma size=2>Well,&nbsp;I think I found the problem. Inside the next lines it all happens:</FONT></P>
+<P><FONT color=#008000><FONT face=Tahoma size=2>//notify all documents</FONT></P></FONT>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>foreach</FONT> (<FONT color=#2b91af>Control</FONT> ctl <FONT color=#0000ff>in</FONT> Panel1.Controls)</FONT></FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>if</FONT> (ctl <FONT color=#0000ff>is</FONT> <FONT color=#2b91af>WinPart</FONT>)</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>((<FONT color=#2b91af>WinPart</FONT>)ctl).OnCurrentPrincipalChanged(<FONT color=#0000ff>this</FONT>, <FONT color=#2b91af>EventArgs</FONT>.Empty);</FONT></P>
+<P><FONT face=Tahoma size=2>When a form (WinPart) should be closed, due to authorization restrictions, it will happen inside that foreach loop. This causes an exception, so I read. What I have done next is create a new enumerator with WinPart controls. And enumerate through this list and do the OnCurrentPrincipalChanged code.</FONT></P>
+<P><FONT face=Tahoma size=2>I changed the code above in the next lines:</FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>foreach</FONT> (<FONT color=#2b91af>Control</FONT> ctrl <FONT color=#0000ff>in</FONT> <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>EnumeratorWrapper</FONT>&lt;<FONT color=#2b91af>WinPart</FONT>&gt;(Panel1.Controls))</FONT></FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>if</FONT>(ctrl <FONT color=#0000ff>is</FONT> <FONT color=#2b91af>WinPart</FONT>)</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>((<FONT color=#2b91af>WinPart</FONT>)ctrl).OnCurrentPrincipalChanged(<FONT color=#0000ff>this</FONT>, <FONT color=#2b91af>EventArgs</FONT>.Empty);</FONT></P>
+<P><FONT face=Tahoma size=2></FONT>&nbsp;</P>
+<P><FONT face=Tahoma size=2>And added a new Class I found on the internet. See below:</FONT></P><FONT color=#0000ff><FONT color=#0000ff>
+<P><FONT face=Tahoma size=2></FONT></FONT><FONT color=#0000ff></FONT>&nbsp;</P>
+<P><FONT face=Tahoma size=2></FONT></P></FONT>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>EnumeratorWrapper</FONT>&lt;T&gt; : <FONT color=#2b91af>IEnumerable</P></FONT></FONT></FONT>
+<P><FONT face=Tahoma size=2>{</FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>protected</FONT> <FONT color=#2b91af>List</FONT>&lt;T&gt; items;</FONT></FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>public</FONT> EnumeratorWrapper(<FONT color=#2b91af>IEnumerable</FONT> enumerable)</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>{</FONT></P>
+<P><FONT face=Tahoma size=2>items = <FONT color=#0000ff>new</FONT> <FONT color=#2b91af>List</FONT>&lt;T&gt;();</FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>foreach</FONT> (T item <FONT color=#0000ff>in</FONT> enumerable)</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>items.Add(item);</FONT></P>
+<P><FONT face=Tahoma size=2>}</FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>public</FONT> <FONT color=#2b91af>IEnumerator</FONT> GetEnumerator()</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>{</FONT></P>
+<P><FONT face=Tahoma><FONT size=2><FONT color=#0000ff>return</FONT> items.GetEnumerator();</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>}</FONT></P>
+<P><FONT face=Tahoma size=2>} </FONT></P>
+<P><FONT face=Tahoma size=2>Now all winparts are changed correctly during the update in currentPrincipalChanged code.</FONT></P>
+<P><FONT face=Tahoma size=2>Please feel free and comment on this one. I am not yet a professional software developer, but I will be some day.<img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /></FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

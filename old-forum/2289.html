@@ -1,0 +1,76 @@
+<html><header><title>Is this the right way to allow sorting on any datagridview column and save the bus root object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is this the right way to allow sorting on any datagridview column and save the bus root object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2289.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG posted on Tuesday, February 06, 2007</h2><P>The users need to be able to sort on any datagridview column.<BR>This is the code that I am using.</P>
+<P>The fetch win button has this code</P>
+<P>sodCustomers = SODCustomers.GetSODCustomers(criteria);<BR>.SortedBindingList&lt;SODCustomer&gt; sortedList =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new SortedBindingList&lt;SODCustomer&gt;( sodCustomers );<BR>sortedList.ApplySort( "Moniker", ListSortDirection.Ascending );<BR>this.sodCustomersBindingSource.DataSource = sortedList;</P>
+<P>In the Save button have this to save the current selected row<BR>SODCustomer currentCustomer = (SODCustomer)&nbsp;&nbsp;&nbsp;sodCustomersBindingSource.Current;<BR>sodCustomers.SaveItem( currentCustomer );</P>
+<P>Anybody sees anything wrong with the above?<BR></P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 06, 2007</h2><P>I'm not sure you have to manually save the current item. When the user leaves that row, data binding will call ApplyEdit() for you, which will trigger the item to save itself.</P>
+<P>Your binding code looks right though. Remember that the grid control will automatically allow the user to sort by any column when bound to a SortedBindingList, so while you start sorting by Moniker, the user can change the sort dynamically.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Tuesday, February 06, 2007</h2><P>Each row is indepentent from the rest of the rows.&nbsp; It is usual for a user&nbsp;to save something without&nbsp;leaving the&nbsp;row and then exit. It does save automatically when moving. Thanks for verifing the code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, got it. In that case though, you need to manually call
+EndEdit() on the bindingsource before trying to save your object. I think
+(haven&#8217;t tested) that calling EndEdit() on the bindingsource will trigger
+the save operation on the current row all by itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In any case, you need the EndEdit() to get the edit level back
+to zero.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GeorgeG
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 06, 2007 4:30 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Is this the right way to allow sorting on any
+datagridview column and save the bus root object<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Each row is indepentent from the rest of the rows.&nbsp; It is usual for a
+user&nbsp;to save something without&nbsp;leaving the&nbsp;row and then exit. It
+does save automatically when moving. Thanks for verifing the code.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

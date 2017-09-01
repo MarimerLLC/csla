@@ -1,0 +1,13 @@
+<html><header><title>Suggestion “IManageProperties.GetChildren()”</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Suggestion “IManageProperties.GetChildren()”</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11038.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Saturday, January 07, 2012</h2><p>&nbsp;</p>
+<p>Every once in a while I need to create a method that requires information about the managed properties of the object.</p>
+<p>For example, I may have a method called &ldquo;ChangeRuleSet(string newRuleSet)&rdquo; that is supposed to change the ruleset value of itself plus cascade the new ruleset &nbsp;value to the children, the children&rsquo;s children etc.</p>
+<p>In cases like this, I wish I could have access to the &ldquo;IManageProperties.GetChildren()&rdquo; method so I could get a list of all the properties of the object. This way, I could easily identify what properties are csla collection and do a recursive call on them. Basically, something similar to what the &nbsp;&quot;BusinessRules.GetAllBrokenRules()&quot; method does.</p>
+<p>Any chance the method that implements the &ldquo;IManageProperties.GetChildren()&rdquo; contract method could be made public or protected? Or is there any other way to achieve similar functionality without having to reflect on the object?</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, January 08, 2012</h2><p>Within a business object you can use </p>
+<p>FieldManager.GetRegisteredProperties();&nbsp;&nbsp;&nbsp;&nbsp; to get the registered properties.</p>
+<p>FieldManager.GetChildren();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; to get the child properties.</p>
+<p>The hard part when inspecting an object tree is to avoid triggering of LzyLoaded properties and possible exceptions when trying to read the field value of a lazy loaded field. </p>
+<p>The actual implementation of IManageProperties.GetChildren is this in BusinessBase.cs:</p>
+<p>&nbsp;&nbsp;&nbsp; List&lt;object&gt; IManageProperties.GetChildren()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return FieldManager.GetChildren();<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>You may also add public methods to your &quot;sandwich&quot; classes if you need to expose these values to the outside world.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

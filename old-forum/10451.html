@@ -1,0 +1,16 @@
+<html><header><title>Object level validation rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object level validation rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10451.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazaro posted on Friday, June 17, 2011</h2><p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">Hello,</span></span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">I am using CSLA 4 and I created some object level validation rules but they do not seem to be invoked automatically by the CSLA base classes. </span></span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">What is the recommended way for this to happen?&nbsp; </span></span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">Is this taken care of automatically by the CSLA or do the inheriting classes need to explicitly call CheckRules before Save so we can show to the user all the broken rules if there are any?</span></span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks,</span></span></p>
+<p style="margin:0in 0in 10pt;" class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">Lazaro</span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 17, 2011</h2><p>You need to explicitly trigger object-level rules to run by calling CheckRules() or CheckObjectRules().</p>
+<p>There is no data binding convention by which these rules can be automatically triggered, so it is left to you to determine when they should run.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 19, 2011</h2><p>You should be aware that calling </p>
+<ul>
+<li>BusinessRules.CheckRules and </li>
+<li>BusinessRules.CheckObjectRules </li>
+</ul>
+<p>will NOT raise OnPropertyChanged to update the UI if you use AddOutValue to set fields in your BO. </p>
+<p>So, I have added &lt;bo&gt;.CheckObjectRules() to BusinessBase for the next release that will notify UI of updated properties. </p>
+<p>If you wish to call CheckObjectRules when a property has been changed you should either add that code to the property set method or override PropertyHasChanged (and NOT OnPropertyChanged) in you BO.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

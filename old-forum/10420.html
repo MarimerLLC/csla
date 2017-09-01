@@ -1,0 +1,17 @@
+<html><header><title>SL Async callback called twice...but only in Release mode</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SL Async callback called twice...but only in Release mode</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10420.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort posted on Tuesday, June 07, 2011</h2><p>I have a Silverlight callback that is being called twice but this only occurs when running in Release mode.&nbsp; When running in Debug mode, things work as expected.&nbsp; My code is as follows:</p>
+<p>private void Login()<br />{<br />&nbsp; StaffLogin.LoginAsync(UserName, Password, LoginCompleted);<br />}</p>
+<p>private void LoginCompleted(object sender, DataPortalResult&lt;StaffLogin&gt; e)<br />{</p>
+<p>&nbsp;&nbsp; .......&nbsp;</p>
+<p>}&nbsp;</p>
+<p>CSLA Object Code (StaffLogin.cs):</p>
+<p>public static void LoginAsync(System.String userName, System.String password, EventHandler&lt;DataPortalResult&lt;StaffLogin&gt;&gt; handler)<br />{<br />&nbsp; var criteria = new StaffCriteria { StaffLogin = userName, StaffPassword = password };</p>
+<p>&nbsp; var dp = new DataPortal&lt;StaffLogin&gt;();<br />&nbsp; dp.FetchCompleted += handler;<br />&nbsp; dp.BeginFetch(criteria);<br />}</p>
+<p>My DataPortal_Fetch method is very simple in that is just calls a stored proc and returns an object with a few properties.&nbsp; </p>
+<p>I have littered my code with&nbsp;MessageBox alerts to see what is being called and the async call is only occurring once, but the callback is being called twice.&nbsp; Again, this ONLY occurs when running in Release mode.</p>
+<p>Any ideas?</p>
+<p>Tks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 07, 2011</h2><p>The only thing that comes to mind is if the dp.FethCompleted += get set twice - that would cause the callback to be called twice. </p>
+<p>Do you use any compile directives as to what code is called in Debug vs Release mode? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Tuesday, June 07, 2011</h2><p>No compile directives in the code related to anything regarding this area.</p>
+<p>The FetchCompleted is only being set once, here is that code:</p>
+<p>public static void LoginAsync(System.String userName, System.String password, EventHandler&lt;DataPortalResult&lt;StaffLogin&gt;&gt; handler)<br />{<br />&nbsp;&nbsp;&nbsp; var encoding = new UTF8Encoding();<br />&nbsp;&nbsp;&nbsp; var criteria = new StaffCriteria { StaffLogin = userName, StaffPassword = encoding.GetBytes(password) };</p>
+<p>&nbsp;&nbsp;&nbsp; var dp = new DataPortal&lt;StaffLogin&gt;();<br />&nbsp;&nbsp;&nbsp; dp.FetchCompleted += handler;<br />&nbsp;&nbsp;&nbsp; dp.BeginFetch(criteria);<br />}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 07, 2011</h2><p>Could you add code to write the callstack to a tracefile or Trace output in the FetchCompleted handler. </p>
+<p>This should hopefully reveal where the call originates from.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Tuesday, June 07, 2011</h2><p>I compared the stack trace at the time the callback handler is called and the trace is the same for both.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

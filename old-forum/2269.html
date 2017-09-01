@@ -1,0 +1,159 @@
+<html><header><title>DataPortal_Insert() Return value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Insert() Return value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2269.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>smark posted on Friday, February 02, 2007</h2>&nbsp;&nbsp;&nbsp; What would be some of the ways you could get return values from an insert database operation in the DataPortal_Insert() method and bubble it up to the calling UI. Basically, i need to grab a couple of output parameters after the insert operation. Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, February 02, 2007</h2><P>There's an example in the book in chapter 8. You can search for ParameterDirection.Output.</P>
+<P>You mark your parameters as output params, e.g.:</P>
+<P><FONT size=2>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@AddressPK"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>._pk);<BR></FONT><FONT size=2><FONT size=2>cm.Parameters[</FONT><FONT color=#a31515 size=2>"@AddressPK"</FONT><FONT size=2>].Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</FONT></FONT></P>
+<P><FONT size=2>Then after the insert, grab the new value, e.g.:</FONT></P><FONT size=2>
+<P>_pk = (</FONT><FONT color=#2b91af size=2>Guid</FONT><FONT size=2>)cm.Parameters[</FONT><FONT color=#a31515 size=2>"@AddressPK"</FONT><FONT size=2>].Value;</FONT></P>
+<P><FONT size=2>Of course your sproc need to specify that it's an output:</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>ALTER</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>PROCEDURE</FONT><FONT size=2> [dbo]</FONT><FONT color=#808080 size=2>.</FONT><FONT size=2>[InsertAddress]</P>
+<P>@AddressLine1 </FONT><FONT color=#0000ff size=2>varchar</FONT><FONT color=#808080 size=2>(</FONT><FONT size=2>200</FONT><FONT color=#808080 size=2>),</FONT></P>
+<P><FONT color=#808080>...<FONT size=2></P></FONT></FONT><FONT size=2>
+<P>@AddressPK </FONT><FONT color=#0000ff size=2>uniqueidentifier</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>OUTPUT</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Hope that's what you're looking for.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smark replied on Friday, February 02, 2007</h2>Thanks Michael,<br><br>I am actually looking to get an output parameter that is not part of an object's state - at least not directly. Okay, I have at least three object properties other than the ID pk, which the SP checks to see if these properties already exsit in the database. For example, if a username already exists in the database, the sproc returns this information as a result of the insert operation without inserting any data. I would like to bubble up this information to the UI. Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 02, 2007</h2><P>Here are two ideas.</P>
+<P>First, in reality any data flowing to and from the database as part of your use case should fit naturally into your object model. If it doesn't, then your object model is suspect. That's what you are facing here, and the <EM>right answer</EM> is to alter your object model to better match your use case requirements.</P>
+<P>Second, there's a workaround. If you want to keep your object model as-is, but still technically resolve the issue, you can use a Command object. Don't insert your object directly, but rather wrap it in a Command object, which can orchestrate the work. This Command object can return the "out-of-band" data. This may feel clumsy, and I think it is, because the first answer is the right one <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />, but it can work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smark replied on Friday, February 02, 2007</h2>&nbsp;&nbsp;&nbsp; I knew the object model question would invariably show up! Oh the joys of learning! Somebody from Magenic mentioned "Dumb UI" in CSLA context a while ago; I think "Dumb Database" would be more appropriate in this context. <br>The business logic is that there are three properties that are unique to this object: (1) the combination of First &amp; Last Name; (2) UserName/LoginID (string); and (3) Email. The fourth is of course the object's ID (GUID). <br><br>It has been so easy to put&nbsp; this logic in the&nbsp; insert&nbsp; sproc and let the RDBMS (MySQL in this particular case) figure out if those values already exists in a ten thousand row table. How would you code this logic in the business object? May be I could wrap this in the EXISTS' method as in the project tracker sample? Does that make it too chatty -- first talking to the database to see if the properties exists and then another call to insert the data? <br>Thanks Rocky.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Friday, February 02, 2007</h2><P>Certainly would agree with Rocky's point about altering your&nbsp;BO to match the behavior you want...sounds like you need a wrapper object that has the user object as one of it's members.</P>
+<P>Another ugly workaround would be to stick your sproc output variables into ApplicationContext and check it on the return side of the portal...yuck...but it might work and I take&nbsp;no pride in even thinking of it as a possibility&nbsp;;-)</P>
+<P>Sean&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smark replied on Saturday, February 03, 2007</h2>Sean, please elaborate a bit if you can about the wrapper object part. <br><br>I think what is happening here is something that needs to be addressed as part of the validation mechanism of the object. My object is invalid if three of the properties I mentioned are already in the database. And there is no way of knowing this without making a call to the database: that this is properly done in the CheckValidationRules would be more appeasing to the OOP deity than making a call through the command object to get the return value of the insert sproc. <br><br>I still thinks this makes chatty network callls and I have no solution for this within the CSLA framework.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The question I have, is what is the use case? Is the an &#8220;add
+a user&#8221; use case? Or a &#8220;authenticate a user&#8221;? Or something
+else?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smark replied on Saturday, February 03, 2007</h2>Rocky, this is an "Add User" use case.<br><br>On a side note, I am re-reading the Validation namespace in the 2005 C# book; I bought the new supplemental e-book yesterday and boom - it starts off with ValidationRules!<br><br>I think I am beginning to see this as part of the User object's state and what has really helped - just in the last couple of hours - is to see this as a validation issue: the User object is invalid if three of its properties are already in the database. I guess I will need to add a method in the CommonRules class and make a database call from that method to check duplicate values.<br><br>Thanks Rocky, <br><br>Shailesh.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I wouldn&#8217;t put the code in CommonRules &#8211; you&#8217;ll
+probably want to put it in your business class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you also don&#8217;t want to create a chatty interaction
+with the database. In most cases, ValidationRules is used for rules that don&#8217;t
+require database information, and your DataPortal_XYZ methods handle cases
+where the database data is in conflict.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In that case, your DataPortal_XYZ method typically throws an
+exception to indicate that there was a problem. This can be a custom exception
+that contains extra detail about the problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In your case you may want to have a UserEdit object that does
+basic validation on the client, and which has code in DataPortal_Insert() to
+throw a custom exception in the case of failure. This custom exception can
+indicate which value(s) are in error, so that can be displayed back to the
+user. This way you&#8217;d only go to the server once, where either the user
+would be added, or an exception would indicate a reason for failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smark replied on Saturday, February 03, 2007</h2>Thanks,<br><br>I was going to put it in the CommonRules class because I will require this functionality in a few other use cases -- for most other root objects in fact, about 30. That way I could get some code reuse. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 03, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That makes sense then, though I would create <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MyCompany.MyApplication.CommonRules<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rather than modifying the Csla.Validation.CommonRules class.
+Though you can, and people do, modify the CSLA .NET code, the result is that it
+is harder to upgrade to newer versions of CSLA .NET as they come out.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> smark
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, February 03, 2007 12:54 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: DataPortal_Insert() Return value<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks,<br>
+<br>
+I was going to put it in the CommonRules class because I will require this
+functionality in a few other use cases -- for most other root objects in fact,
+about 30. That way I could get some code reuse. <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

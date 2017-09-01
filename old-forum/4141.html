@@ -1,0 +1,87 @@
+<html><header><title>Switching Child Data Between Two Sets of Tables</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Switching Child Data Between Two Sets of Tables</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4141.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 posted on Wednesday, January 09, 2008</h2><P>I am currently in the process of trying to upgrade my eCommerce website to CSLA.&nbsp; A couple of years ago, I built a CSLA framework for the site, but I ended up putting it into a Windows application instead for use with phone orders.</P>
+<P>One of the requirements for this application is to allow the phone rep to view the products that the customer has in their shopping cart (on the website)&nbsp;and complete the order for the customer over the phone.</P>
+<P>My high level data structure is as follows. For the shopping cart I have a ShoppingCart table, ShoppingCartItem table, and ShoppingCartItemAttribute table (attributes are for size, color, etc). I have a similar structure for the orders - an Order table, an OrderItem table, and an OrderItemAttribute table.</P>
+<P>Back when I made my business objects, I decided to use 2 different parent objects with the same set (of nested) collection objects.&nbsp; In other words, it went like:</P>
+<P>ShoppingCart</P>
+<P>&nbsp;&nbsp;&nbsp; ItemCollection</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Item</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AttributeCollection</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Attribute</P>
+<P>And:</P>
+<P>Order</P>
+<P>&nbsp;&nbsp;&nbsp; ItemCollection</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Item</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AttributeCollection</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Attribute</P>
+<P>So the design was to use the same objects and have conditional logic where the data would be saved depending on the data&nbsp;type of the parent (which was passed in the Update method to the collections).</P>
+<P>Anyway, I just wanted to do a sanity check whether this sounded like a good approach, as now it seems like&nbsp;I would be better off making a collection of Items and a collection of Attributes for each parent and using a method to populate the items when the data is switched from&nbsp;the ShoppingCart&nbsp;to the Order.</P>
+<P>If someone has already encountered this seemingly common situation (switching collections of editable data from one persisted&nbsp;location to another), I would appreciate if you could share your thoughts as to how you approached it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 10, 2008</h2>I would be very careful here.&nbsp; Are the behaviors you need from items and attributes when they are in the cart the exact same as those in the order?&nbsp; If they are changing behavior based on what type owns them, that could be a sign that they are not the same and should be seperate classes.<br><br>The ultimate answer depends on your use case though.&nbsp; If you haven't build the classes yet, I would build them seperate, then later go back and re-evaluate if they are really different or not.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Thursday, January 10, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I would be very careful here.&nbsp; Are the behaviors you need from items and attributes when they are in the cart the exact same as those in the order?&nbsp; If they are changing behavior based on what type owns them, that could be a sign that they are not the same and should be seperate classes.</div></BLOCKQUOTE></P>
+<P>Yea, I was thinking this through a little more and I can see where this is going to lead to a lot of unnecessary complexity.&nbsp; In particular, the concept of "New" and "Old" would have to be handled manually instead of automatically by CSLA.</P>
+<P>These classes have already been built, however only the "order" side has ever been used because the windows application didn't need access to the shopping cart to function - it would just build an order in memory.&nbsp; I ended up redesigning the shopping cart tables from what were originally in the website because they were tied to a "customer", which is going to need to be modified in the future to accommodate an anonymous cart. So neither the tables or the classes on the shopping cart side have ever been used - in fact, I think I would have run into a lot of problems had I started using them.</P>
+<P>It seems like I could get all of the reuse I need out of the properties and shared business rules by inheriting both "item" objects from a base class and both "attribute" objects from a base class. I remember considering this option before, but back then I didn't have any idea how to implement this in CSLA (the data access part was a little confusing then).&nbsp; I now have a few inherited classes that I have modeled after those in the ProjectTracker so I am comfortable with the idea of doing this.</P>
+<P>The only real trick is being able to transfer the items and their attributes from the cart to an order.&nbsp; I guess this could be handled by passing an instance of the "shopping cart" to the NewOrder method and having the Order create and populate its children accordingly, including the read-only fields. This would elmiminate the need to handle "New" and "Old" behaviors manually. Of course, there would be other constructors to handle creating an order in different ways in the Windows application.</P>
+<P>&nbsp;</P>
+<P>I also had previously seperated the concept of "item" from "product". This was a little confusing at first, but when you consider that a "product" is something that will need to be edited by an administrator to change the values and selections&nbsp;that the end user sees on the screen, and an "item" is a read only copy of those values + the values the user selects as attributes, you can see that these are indeed different behaviors to account for. Not only will I get better performance out of using read-only data for the end user, but there are also completely different business rules in each scenario. The "item" object makes use of the DataPortal_Create method to pull the "default" read-only product data from the database. The DataPortal_Fetch method is used to pull the product data AND the data associated with an item in the Shopping Cart - this enables the ability to both create a new item (add to cart) and edit an existing item (edit cart item) while retrieving the read-only copy of the product data with only one round trip to the database in each case.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, January 11, 2008</h2><P>&lt;quote&gt;<BR>I guess this could be handled by passing an instance of the "shopping cart" to the NewOrder method and having the Order create and populate its children accordingly, including the read-only fields.&nbsp; <BR>&lt;/quote&gt;</P>
+<P>I do this in a few places in my app for many of the same reasons. You want to avoid the whole IsNew or Old issue. By fetching a cart the BO is Old. By creating a New order the BO is new but populated with cart values. </P>
+<P>I think I use DataPortal_Create to get an empty New instance of the "Order" BO and then have a method which takes a "Cart" BO and "fills out the order". This method has a lot of code like <BR>Order.field1 = Cart.field1<BR>but that is quick and easy to write. The advantage of doing it this way is that you get to overlook certain values if you want to, or set defaults differently or...</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Wednesday, April 16, 2008</h2><P>I am starting to wonder if I have gone down the wrong path now.</P>
+<P>I have many different types of items and it seems like inheritance will solve my issues. Some of my items will just be the sum of their parts, and others will need more complex calculations based on square foot price. In addition, the rules for what consist of a valid entry change from one item type to the next.</P>
+<P>So the logical step here would be to create a base class and use inheritance to solve this issue - override the calculation and business rules and we're all set, right?</P>
+<P>Well, not exactly. Now we have to create duplicate overridden classes from the shopping cart to the order. To make matters worse, there are plans in the future to add a quote system and wish list. The items should be able to freely move from cart to quote and back and from cart to wishlist and back.</P>
+<P>This means that if I go down this road I will have to create 4 different item objects with the same rules and calculation methods for each type of item - not to mention all of the code to translate the data from one type to the next. The only way I can think of to avoid this is to put conditional logic in my base class instead of creating a nice clean subclass of my item to do the calculations and control the validation.</P>
+<P>The bottom line is, I want my items to act exactly the same wherever they are in my application - they should always enforce the same rules, and they should always calculate the same way, the only difference is where they are persisted. It seems more like instead of creating seperate item collection classes, for shopping cart, order, quote, and wish list that I should just have some sort of adapter class to pass the item collection to in order to tell it where to save the data. Any suggestions would be welcomed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 16, 2008</h2>Well, what path did you go down? <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Anyway, you may have four classes, but that doesn't mean you have four copies of the rules.&nbsp; You can pull them to a fifth class, and your base class could then control which rules or added.&nbsp; It may be that your base class should contain the rules.. <br><br>If the only difference is in how the objects persit themselves, it sounds like a base class that contains all the shared behavior is the way to go.&nbsp; Then each subclass implement's it's own DataPortal_XYZ methods.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Wednesday, April 16, 2008</h2><P>After giving it some more thought, a way to solve this might be to externalize my calculation and business rules into a "floating" class. I am not sure what design pattern (if any) this conforms to, and this approach seriously breaks encapsulation, but what I am trying to accomplish is to not duplicate my business rules and calculations over and over just because I want to persist my data in more than one database table.</P>
+<P>Keep in mind my rules and calculations all depend on the entire item object graph. And many will even need to be aware of what&nbsp;type (not datatype)&nbsp;an attribute is before deciding how to use it.</P>
+<P>So, if we create this "floating" class to encapsulate the rules and allow the rules to float from one persisted location to another, I think it would work. Here is some pseudo code so you can see what I am talking about:</P>
+<P>Friend Class Floater</P>
+<P>&nbsp;&nbsp;&nbsp;Inherits FloaterBase</P>
+<P>Public Sub Calculate(Item as ItemBase)</P>
+<P>'Do caluclation here (and set the result to a friend method of Item)</P>
+<P>End Sub</P>
+<P>Public Sub ApplyBusinessRules(Item as ItemBase)</P>
+<P>'Apply rules here (and populate them in the Item)</P>
+<P>End Sub</P>
+<P>End Class</P>
+<P>&nbsp;</P>
+<P>Public Class ShoppingCartItem</P>
+<P>Private mFloater As FloaterBase</P>
+<P>Public Sub Calculate()</P>
+<P>mFloater.Calculate(Me)</P>
+<P>End Sub</P>
+<P>Public Sub CheckRules()</P>
+<P>mFloater.ApplyBusinessRules(Me)</P>
+<P>End Sub</P>
+<P>Private Sub Fetch()</P>
+<P>If&nbsp;mItemType = 1 Then&nbsp;&nbsp;</P>
+<P>&nbsp;mFloater = Floater</P>
+<P>ElseIf mItemType = 2 Then</P>
+<P>mFloater = Floater2</P>
+<P>End If</P>
+<P>'More Data Access Code....</P>
+<P>End Sub</P>
+<P>End Class</P>
+<P>&nbsp;</P>
+<P>Public Class OrderItem</P>
+<P>Private mFloater As FloaterBase</P>
+<P>Public Sub Calculate()</P>
+<P>mFloater.Calculate(Me)</P>
+<P>End Sub</P>
+<P>Public Sub CheckRules()</P>
+<P>mFloater.ApplyBusinessRules(Me)</P>
+<P>End Sub</P>
+<P>Private Sub Fetch()</P>
+<P>If&nbsp;mItemType = 1 Then&nbsp;&nbsp;</P>
+<P>&nbsp;mFloater = Floater</P>
+<P>ElseIf mItemType = 2 Then</P>
+<P>mFloater = Floater2</P>
+<P>End If</P>
+<P>'More Data Access Code....</P>
+<P>End Sub</P>
+<P>End Class</P>
+<P>&nbsp;</P>
+<P>So basically, I will have a series of Floater classes (for lack of a better term) that will provide my inheritance of business rules and caluculations. Then there would only need to be one item class per persisted (database)&nbsp;location. The Floater class would be used by all Item classes regardless of where they are persisted and will be&nbsp;set conditionally depending on which type of item I have.&nbsp;The net effect is that I have a tradeoff that will allow me to inherit a complex hierarchy of objects to manage my rules and caluclations with (all inherited from FloaterBase), while managing the rules for any specific&nbsp;item type&nbsp;in one location within the application.</P>
+<P>What do you think of this approach?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, April 17, 2008</h2><P><A href="http://en.wikipedia.org/wiki/Strategy_pattern">Strategy</A> Pattern?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Thursday, April 17, 2008</h2><P>Yes, I think you are right - it sounds like the strategy pattern. I will definitely need an interface to implement it.</P>
+<P>I have been testing this design against my use cases and it seems like it will work, I am just trying to work out the details of implementation. Basically, my strategy class will need to know the interface of my item class and its children in order to determine what the end result of the calculation is and to enforce the business rules. </P>
+<P>I was thinking about making a friend functions to handle the updates, but I think it would be better to have the strategy class return the calculated total and the buiness rules collection and then my item class can update itself with the information. Maybe I don't have to break encapsulation to do this after all.</P>
+<P>It is strage how thinking out loud in this forum really helps resolve these issues <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

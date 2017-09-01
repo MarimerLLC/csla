@@ -1,0 +1,52 @@
+<html><header><title>DataAnnotations bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataAnnotations bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7819.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am posted on Monday, October 19, 2009</h2><P>So I ran into this problem today.&nbsp; We have a validation attribute [Required] adorning a property who's value is an object type.&nbsp; This property has a default value of null.&nbsp; When CSLA's validation engine executes&nbsp;CommonRules.DataAnnotation for this property on the client (silverlight) it blows up at line 1417:</P>
+<P>var ctx = new System.ComponentModel.DataAnnotations.ValidationContext(pValue, null, null);</P>
+<P>because pValue can not be null.</P>
+<P><FONT color=#acb16d size=4><FONT color=#acb16d size=4>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 19, 2009</h2><P>Is the exception coming from the RequiredAttribute or from the DataAnnotation rule method?</P>
+<P>If it is coming from the RequiredAttribute (and I suspect it is) then that's Microsoft's code. It may easily be that Required is only valid on string properties - which kind of makes sense.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Tuesday, October 20, 2009</h2><P>The exception is being thrown from within the DataAnnotation rule method.</P>
+<P>The problem appears to be with the use of System.ComponentModel.DataAnnotations.ValidationContext.&nbsp; It's ctor does not like having a null value for the first paramater (I think the param name is Instance?).&nbsp; I agree that this appears to be a flawed Microsoft implementation...&nbsp;If I understand&nbsp;correctly the&nbsp;RequiredAttribute does not require ValidationContext...but I haven't spent too much time investigating.&nbsp; </P>
+<P>Looking at the silverlight SDK the RequiredAttribute class has the following code for IsValid:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Override of &lt;see cref="ValidationAttribute.IsValid(object)"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;param name="value"&gt;The value to test&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;returns&gt;&lt;c&gt;false&lt;/c&gt; if the &lt;paramref name="value"/&gt; is null or an empty string&lt;/returns&gt;<BR>#if !SILVERLIGHT<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public<BR>#else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal<BR>#endif<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; override bool IsValid(object value) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value == null) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var stringValue = value as string;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (stringValue != null) {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return stringValue.Trim().Length != 0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } else {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>However I don't see any other way to get the IsValid method to run&nbsp;in silverlight (since it is internal for silverlight) other then what you are doing by creating a validation context and calling Attribute.GetValidationResults uing the property value and the created validation context..</P>
+<P>I believe we are going to use the AddBusinessRules override in any event as the attributes do not suport err\warn\info.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks for digging deeper.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m also in communication with the Microsoft PM who owns this
+feature, and he&#8217;s helping me sort through some of the details. It turns out
+that their API is somewhat inconsistent, not only between SL and .NET, but also
+between different methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For example, IsValid() accepts an object &#8211; this is the value to
+be validated. But the context object&#8217;s constructor accepts an object &#8211; this is
+the object containing the value to be validated. How would you know? Apparently
+by talking to the PM that owns the feature :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I think in Beta 2 you&#8217;ll find that the behaviors work as
+expected &#8211; I surely hope so&#8230; Though I&#8217;m still not sure that there&#8217;ll be parity
+between .NET and SL, because they don&#8217;t work the same way :(<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,33 @@
+<html><header><title>Best options for BusinessRules on readonly properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best options for BusinessRules on readonly properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11656.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Tuesday, October 23, 2012</h2><p>Hi all,</p>
+<p>I would need to define some readonly properties on my object, eg. a boolean <br />HasPaid, which is based on another managed property, let say a DateTime? PayDate</p>
+<p>Public bool HasPaid {</p>
+<p>&nbsp;&nbsp; get { return PayDate.HasValue(); } //PayDate is a CSLA managed property</p>
+<p>}</p>
+<p>or </p>
+<p>Public bool Amount {</p>
+<p>&nbsp;get { return SubAmountA + SubAmountB; }//Both SubAmountA and SubAmountB&nbsp;are CSLA managed properties</p>
+<p>}</p>
+<p>Can I then define BusinessRules that include this HasPaid readonly property (with getter only) as my InputProperties?</p>
+<p>I do not know how to proceed, as creating/registring a static property does not seem useful (no data to store) on this particular field? </p>
+<p>Most of the business rule architecture is based on registered properties with the:</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>context.InputPropertyValues(InputProperties(0)) </p>
+</span></span></p>
+<p>Any feedback?</p>
+<p>Regards,</p>
+<p>Gilles</p>
+<p>Note: I never used the <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">context.Target pattern in my rule implementation</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 23, 2012</h2><p>You have 2 options:</p>
+<p>1. Create a PropertyInfo object  (required for the RuleEngine and InputProperties), mark it with RelationshipTypes.PrivateField and override the Non-Generic ReadProperty metod to supply the value to the rule engine. </p>
+<p>2. Use Context.Target to read the property value.</p>
+<p>IE: For PrivateFields -.&nbsp; the developer must override the non-generic ReadProperty/LoadProperty meth toods get or update the property value. This will also allow you to declare the readonly properties as AffectedProperties and automatically get OnPropertyChanged on the fields by the RuleEngine as well as InputProperties.</p>
+<p>Yes - that will leave an empty slot in the FieldManager but the value will always be null (not initialized) and I do not consider that to be an issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Wednesday, October 24, 2012</h2><p>Hi Jonny,</p>
+<p>Good. I will go with option 1, as it allows Rule re-use.</p>
+<p>Digging in the code, I saw, that the CSLA <br />BusinessBase.ReadProperty methods (l. 1&#39;912) handles private backing fields, by calling the MethodCaller.CallPropertyGetter<br />but this method only supports public getter (there is an explicit error message).</p>
+<p>Is there any reason CSLA does not support private/protected properties getters ?</p>
+<p>This is not a problem on my case anyway.</p>
+<p>&nbsp;</p>
+<p>From your feedback, I understand that you were recommending to override the BusinessBase.ReadProperty instead. Am I correct?</p>
+<p>Thanks already,</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, October 24, 2012</h2><p>&nbsp;</p>
+<p>The recommended solution is to override the non-generic ReadProperty/LoadProperty.</p>
+<p>Csla implements a &quot;falllback&quot; to the only known solution we have - which is to call the actual property getter. <br />It is only your code that will know the name of the actual backing field variable - hence you should implement this in your own overloads.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

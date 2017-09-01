@@ -1,0 +1,38 @@
+<html><header><title>Feature Request: MaxUndoCount</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Feature Request: MaxUndoCount</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7118.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Wednesday, June 17, 2009</h2>Hi,<br />In some complex UI scenarios I need to call BeginEdit() on a BBL on each ListChangedEvent (which is called when the user changes properties of a item in the list). The event is usually fired from the UI.  Depending on how the user acts on the form this can cause hundreds of BeginEdit which needs significant memory resources and causes performance decreases (and probably crashes). For these scenarios I would like to be able to limit the number of undoable object states CSLA maintains for Undo, let’s say MaxUndoCount=50. The result would be that only the last 50 edits/changes can be undone (if needed) through CanelEdit(). Would this make sence?<br />Andreas<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 17, 2009</h2><P>Wow!</P>
+<P>That is definately outside the design goals for n-level undo, and I'm not surprised you have memory issues doing that.</P>
+<P>You should feel free to alter your code to do as you suggest, but it isn't something I plan to do in the core framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Thursday, June 18, 2009</h2><P>Rocky, no problem. I&nbsp;was able to&nbsp;implement the required behaivior outside the framework. But why do you think that&nbsp;my use case "is outside the design goals of <EM><STRONG>n</STRONG>-<STRONG>level</STRONG></EM> Undo? I would apreciate your comment.</P>
+<P>Andreas</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 18, 2009</h2>N-level undo exists to support Cancel buttons and data binding. It is not designed with the idea that you'd have more than a very few levels of undo&nbsp;- probably 3&nbsp;to 5 levels, maybe as many as 10 for an incredibly complex object model and UI (though I've never come close to 10).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Thursday, June 18, 2009</h2>[sound of penny dropping]<br><br>Oh... I think I finally understand... so the 'n-level' in 'n-level undo' effectively refers to the 'n' depth of the object graph (e.g. for OrderHeader-&gt;OrderLinesCollection-&gt;OrderLine-&gt;LineDetails 'n' is effectively 4) and the need to reverse out all the changes in one go if a Cancel button is pressed?<br><br>I'd always read n-level undo as meaning 'n' number of historical states that an unsaved object (or object-graph) could be restored back through.&nbsp; E.g. Visual Studio's undo function in the text editor where you have potentially hundreds of previous versions of the code file that you can undo through.&nbsp; Am I right in saying this isn't what CSLA n-level undo is for?<br><br>(you maybe able to tell I'm not using undo successfully in my code yet...!)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The &#8216;n&#8217; in n-level is the number of complete object
+snapshots that are taken. Usually for a root object n will be 1 or 2, and for a
+child 1-3 and for a grandchild 1-4, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want detail-level undo like Word, you&#8217;ll need to
+implement that yourself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

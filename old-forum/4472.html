@@ -1,0 +1,261 @@
+<html><header><title>Using 2 dataportals</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using 2 dataportals</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve981 posted on Friday, March 07, 2008</h2>
+
+<p class="MsoNormal"><span>Hi, I have the
+following exeption:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><i><span>"Soap Serializer does not support
+serializing Generic Types : BusinessList `2+Criteria[BusinessList, BusinessEntity]."<o:p></o:p></span></i></p>
+
+<p class="MsoNormal"><span><o:p><br></o:p></span></p>
+
+<p class="MsoNormal"><span>It is an application, which is using a
+business object through a Data Portal using remoting. The Data Access layer of
+the business object calls another business object, which uses another
+Data Portal using remoting. The second business object is the one that raises the exception.<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>Right now both dataportals are in my localhost, but the idea is to put them in different physical machines to access different servers.</o:p></span></p><p class="MsoNormal"><span>How can </span><span>the second
+invocation to the business object </span><span>be supported? <span><span>&nbsp;</span>I appreciate you help.&nbsp; All suggestions
+are welcome.&nbsp; Note that everything is done on WinXP PC (both the application
+and the data portals; which are using IIS/HTTP).</span></span></p>
+
+
+<p class="MsoNormal"><span>The
+web.config<span>&nbsp; </span>of the application is:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>appSettings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaAuthentication</span>"<span> </span><span>value</span><span>=</span>"<span>Windows</span>"<span> /&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaDataPortalProxy</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>value</span><span>=</span><span>"<span>Csla.DataPortalClient.RemotingProxy,
+Csla</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaDataPortalUrl</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>value</span><span>=</span><span>"<span><a href="http://localhost/WebSiteDataPortal/RemotingPortal.rem">http://localhost/WebSiteDataPortal/RemotingPortal.rem</a></span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span></span><span>&lt;/</span><span>appSettings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal"><span>The
+web.config<span>&nbsp; </span>of the first <span>&nbsp;</span>Data Portal is:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>appSettings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaAuthentication</span>"<span> </span><span>value</span><span>=</span>"<span>Windows</span>"<span> /&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaDataPortalProxy</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>value</span><span>=</span><span>"<span>Csla.DataPortalClient.RemotingProxy,
+Csla</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaDataPortalUrl</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span></span><span>value</span><span>=</span><span>"<span><a href="http://localhost/DataPortalServer/RemotingPortalServer.rem">http://localhost/DataPortalServer/RemotingPortalServer.rem</a></span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;/</span><span>appSettings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>connectionStrings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>name</span><span>=</span><span>"</span><span><span>ConnString</span></span><span>"<span> </span><span>connectionString</span><span>=</span>"<span>Data
+Source=MyServer;Initial <span>&nbsp;</span>Catalog=Database;uid=test;pwd=test;</span>"<span> </span><span>providerName</span><span>=</span>"<span>System.Data.SqlClient</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;/</span><span>connectionStrings</span><span>&gt;<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>system.runtime.remoting</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>application</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>wellknown</span><span> </span><span>mode</span><span>=</span><span>"<span>SingleCall</span>"<span> </span><span>objectUri</span><span>=</span>"<span>RemotingPortal.rem</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>type</span><span>=</span><span>"<span>Csla.Server.Hosts.RemotingPortal,
+Csla</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>channels</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>channel</span><span> </span><span>ref</span><span>=</span><span>"<span>http</span>"<span>&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>serverProviders</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>provider</span><span> </span><span>ref</span><span>=</span><span>"<span>wsdl</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>formatter</span><span> </span><span>ref</span><span>=</span><span>"<span>soap</span>"<span> </span><span>typeFilterLevel</span><span>=</span>"<span>Full</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>formatter</span><span> </span><span>ref</span><span>=</span><span>"<span>binary</span>"<span> </span><span>typeFilterLevel</span><span>=</span>"<span>Full</span>"<span>/&gt;…<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>The web.config <span>&nbsp;</span>of the second<span>&nbsp;
+</span>Data Portal is:<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>appSettings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>"<span>CslaAuthentication</span>"<span> </span><span>value</span><span>=</span>"<span>Windows</span>"<span> /&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;/</span><span>appSettings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>connectionStrings</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>add</span><span> </span><span>name</span><span>=</span><span>"<span></span></span><span></span><span><span>ConnString</span></span><span><span></span>"<span> </span><span>connectionString</span><span>=</span>"<span>Data
+Source=SecondServer;Initial Catalog=Database;uid=test;pwd=test;</span>"<span> </span><span>providerName</span><span>=</span>"<span>System.Data.SqlClient</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;/</span><span>connectionStrings</span><span>&gt;<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>&nbsp; </span>&lt;</span><span>system.runtime.remoting</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>application</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>wellknown</span><span> </span><span>mode</span><span>=</span><span>"<span>SingleCall</span>"<span> </span><span>objectUri</span><span>=</span>"<span>RemotingPortalServer.rem</span>"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>type</span><span>=</span><span>"<span>Csla.Server.Hosts.RemotingPortal,
+Csla</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>channels</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>channel</span><span> </span><span>ref</span><span>=</span><span>"<span>http</span>"<span>&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>serverProviders</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>provider</span><span> </span><span>ref</span><span>=</span><span>"<span>wsdl</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>formatter</span><span> </span><span>ref</span><span>=</span><span>"<span>soap</span>"<span> </span><span>typeFilterLevel</span><span>=</span>"<span>Full</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>formatter</span><span> </span><span>ref</span><span>=</span><span>"<span>binary</span>"<span> </span><span>typeFilterLevel</span><span>=</span>"<span>Full</span>"<span>/&gt;…<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><o:p><br></o:p></span></p><p class="MsoNormal"><span><o:p></o:p></span>Regards, <br></p>Steven Walker<br><p class="MsoNormal"></p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, March 07, 2008</h2><P><FONT face=Tahoma size=2>From the error you're getting, I don't think this is a CSLA issue - this is a .NET issue.</FONT></P>
+<P><FONT face=Tahoma size=2>What it looks like you've done is create a generic Criteria class - something like this (in C# form):</FONT></P>
+<P><FONT face="Courier New" size=2>private class Criteria&lt;C, T&gt;</FONT></P>
+<P><FONT face=Tahoma size=2>Unfortunately, if you intend to send something like this "over the wire", it won't work.&nbsp; The XML serializers don't know how to handle open generic types, which is what your criteria class is.&nbsp; I think the issue is that the serializer doesn't know how to properly represent the generic parameters in what would essentially be a run-time situation.&nbsp; But that's purely a guess.</FONT></P>
+<P><FONT face=Tahoma size=2>In order to serialize this via XML, you have to create a subclass of your generic type - something like this:</FONT></P>
+<P><FONT face="Courier New" size=2>private class Criteria2 : Criteria&lt;BusinessList, BusinessEntity&gt;</FONT></P>
+<P><FONT face=Tahoma size=2>This creates a closed generic type, which the XML serializers can handle.&nbsp; I know it doesn't look any different than creating the type in your routine call, but it is.</FONT></P>
+<P><FONT face=Tahoma size=2>I realize that probably creates an issue for you, since the whole point of creating the generic criteria class was for re-use.&nbsp; But it's the only way I know of to get the types to seralize.</FONT></P>
+<P><FONT face=Tahoma size=2>Another option would be to investigate using WCF, which uses a newer set of serialization classes.&nbsp; But I can't&nbsp;guarantee that this issue is resolved there, so you might end up right back here.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve981 replied on Friday, March 07, 2008</h2>Thanks a lot for your quick reply, but I'm not using a generic Criteria class. The following is my Criteria implementation:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected class Criteria<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string CriteriaInfo;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Code;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ArrayList Parameters = new ArrayList();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>However, I'm using generic business objects to allow inheritance as shown in <a HREF="/forums/thread/1181.aspx">http://forums.lhotka.net/forums/thread/1181.aspx</a> <br><br>&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; public abstract class BusinessList&lt;T, C&gt; : BusinessListBase&lt;T, C&gt; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where T : BusinessList&lt;T, C&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where C : BusinessEntity&lt;C&gt; <br>&nbsp;&nbsp;&nbsp; {...}<br><br><br>Could this be the problem?<br><br>The tricky part of this is that is goes just fine through  the first dataportal, is the second one that raises the exception.<br><br>Regards,<br>Steven Walker <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Friday, March 07, 2008</h2><P>I have a similiar problem, and you get the error because at location of the first data portal I assume there isn't the object that is in the second data portal.</P>
+<P>I've been waiting to see if anyone will respond to my post about need assembly A on remote portal on machine A and assembly B on remote portal on machine B but application X uses both assembly A and B; but I haven't had a response yet.</P>
+<P>I'll be watching this thread too though - I think it will really just take some customization of the CSLA core framework though because I don't think Rocky's intention was to support multiple remote data portals...I don't think it would be hard to do, but I can see why Rocky would've left that out of the main features - it's a rabbit hole.</P>
+<P>My basic thought would be that the appSettings would have to be replaced by an actual configuration file, and part of that configuration file would be for it to have a default portal and a 'usePortalForAssembly' section where it had an assembly, and portal settings...that way the DataPortal object would say, this 'object' is part of X assembly - no overrides, so use default Portal, this 'object' is part of Y assembly, 'usePortalForAssembly' entry present, use 'that' Portal.</P>
+<P>But I'm sure it's not that simple.&nbsp; And unfortunately for us, we can't just arbritrarily make a change to CSLA and implement it in production overnight.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, March 07, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>boo:</strong></div><div></FONT><FONT face=Tahoma size=2>I have a similiar problem, and you get the error because at location of the first data portal I assume there isn't the object that is in the second data portal.</div></BLOCKQUOTE></FONT>
+<P><FONT face=Tahoma size=2>That seems like an odd condition to create the SOAP error.&nbsp;&nbsp;The error message doesn't say it can't find&nbsp;a type - it says it can't serialize an open generic type.</FONT></P>
+<P><FONT face=Tahoma size=2>The criteria class is not an open generic type, but it's containing type is, which may be what's causing the problems.&nbsp; Again, I realize that this will likely cause headaches, but given the error,&nbsp;I might try moving the criteria class out of&nbsp;the base class.&nbsp; I'm not saying it's a solution, but it's something to try to see whether that resolves the error.</FONT></P>
+<P><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>boo:</strong></div><div></FONT><FONT face=Tahoma size=2>I've been waiting to see if anyone will respond to my post about need assembly A on remote portal on machine A and assembly B on remote portal on machine B but application X uses both assembly A and B; but I haven't had a response yet.</div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Based on the way remoting works, I would expect that the answer to your question is that assemblies A and B have to exist on both machines that host your data portal.</FONT></P>
+<P><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>boo:</strong></div><div>I'll be watching this thread too though - I think it will really just take some customization of the CSLA core framework though because I don't think Rocky's intention was to support multiple remote data portals...I don't think it would be hard to do, but I can see why Rocky would've left that out of the main features - it's a rabbit hole.</FONT></P>
+<P><FONT face=Tahoma size=2>My basic thought would be that the appSettings would have to be replaced by an actual configuration file, and part of that configuration file would be for it to have a default portal and a 'usePortalForAssembly' section where it had an assembly, and portal settings...that way the DataPortal object would say, this 'object' is part of X assembly - no overrides, so use default Portal, this 'object' is part of Y assembly, 'usePortalForAssembly' entry present, use 'that' Portal.</FONT><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Chaining data portals is not necessarily a difficult situation to contend with, and I wouldn't expect there to be much need for changes in CSLA to accommodate that.&nbsp; But maybe I'm not following what you're after, since I don't see a whole lot of benefit to matching data portals to assemblies.&nbsp; Unless you want to route to a different data portal based on the type of object being sent... is that what you're talking about?&nbsp; Because I think you could probably get that by implementing your own data portal proxy.</FONT></P>
+<P><FONT face=Tahoma size=2>Presuming that's what you're after - which I think is different than what Steven is contending with - that, in theory, could change my answer about where assemblies need to be located.&nbsp; I would probably still put both assemblies on both data portal boxes, just in case.&nbsp; But it may not be an absolute requirement.&nbsp; It depends on assembly references and such.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 09, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div></P>
+<P><FONT face=Tahoma size=2>Chaining data portals is not necessarily a difficult situation to contend with, and I wouldn't expect there to be much need for changes in CSLA to accommodate that.&nbsp; But maybe I'm not following what you're after, since I don't see a whole lot of benefit to matching data portals to assemblies.&nbsp; Unless you want to route to a different data portal based on the type of object being sent... is that what you're talking about?&nbsp; Because I think you could probably get that by implementing your own data portal proxy.</FONT></P>
+<P>
+<P><FONT face=Tahoma size=2></FONT></P></div></BLOCKQUOTE></P>
+<P>I think what boo is trying to do is chain data portals without having the business assembly on each tier (client, dataportal A, dataportal B). That won't work though, because .NET deserializes the message on each tier, and that means the assemblies must be present. This isn't really CSLA, as much as the way Remoting or WCF work.</P>
+<P>I think you might be able to do a fancy solution in WCF. It might be possible to create a custom data portal channel where you write message-level code (instead of service-level code) in WCF to get the inbound message before it is deserialized in dataportal A. Then you'd have to be able to figure out how to route the message without deserializing the data, so any routing info would have to be in the SOAP header, not the payload.</P>
+<P>You couldn't do that with Remoting unless you wrote your own Remoting channel, because Remoting doesn't have (to my knowledge) an extensibility point to let you get the raw message byte stream prior to deserialization - so this is a low-level WCF thing only.</P>
+<P>Certainly it isn't anything I plan to do in core CSLA.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 09, 2008</h2><P>Back to Steve's original post - that is an odd exception.</P>
+<P>Is your criteria class nested in your business class?</P>
+<P>I know people do some other things, but there are only two supported models for criteria: it must be a nested class, or it must subclass CriteriaBase. Any other technique could fail, and is not supported.</P>
+<P>If you follow those rules, there's no problem even using a generic criteria class. CSLA .NET 3.5 actually includes a new generic criteria class that eliminates the need to create the majority of custom criteria classes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, March 09, 2008</h2>This is what I'm trying to do - I was getting this similiar error because I had a reference to one assembly that used a remote portal, but I also had a reference to another assembly that didn't use the remote portal - when I made calls to that assembly it was trying to find it on the remote machine where it didn't exist (because of the settings to use&nbsp; a remote machine for the other referenced assembly) and thus I got the errror.&nbsp; I didn't get this exact error - I got a 'Type not found' serialization exception; but the situation seemed similiar to what I was trying to do.<br><br>http://forums.lhotka.net/forums/thread/21910.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marcos replied on Saturday, March 08, 2008</h2><P>I Changed CreateBusinessObject in SimpleDataPortal like this to support Generics</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' get the type of the actual business object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' based on the nested class scheme in the book<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; businessType = criteria.GetType.DeclaringType<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Code Added To Support Generics<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If businessType.IsGenericTypeDefinition Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim l As New List(Of Type)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each arg As Type In criteria.GetType.GetGenericArguments<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; l.Add(arg)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Activator.CreateInstance(businessType.MakeGenericType(l.ToArray), True)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Activator.CreateInstance(businessType, True)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;</P>
+<P>Hoop this helps.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 09, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>steve981:</strong></div><div>
+<P class=MsoNormal><SPAN>Hi, I have the following exeption:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><I><SPAN>"Soap Serializer does not support serializing Generic Types : BusinessList `2+Criteria[BusinessList, BusinessEntity]."</SPAN></I><BR></div></BLOCKQUOTE></P>
+<P class=MsoNormal>I guess what I find most odd about this is that it appears you are somehow using the deprecated SoapFormatter. The data portal uses the BinaryFormatter. Are you possibly using a custom data portal channel, or has someone changed the core CSLA code?</P>
+<P class=MsoNormal>Since the SoapFormatter is deprecated, I suppose it is quite possible that it doesn't support generics. I can't say, as I haven't tried using it for many years.</P>
+<P class=MsoNormal>The BinaryFormatter can have some issues with generic types if they are the top-level object being serialized. However, the data portal never passes your types directly - they are always wrapped in some container (data portal context object, data portal result object, etc). </P>
+<P class=MsoNormal>One think you can do is try to use Clone() to clone your object. Just to see if the BinaryFormatter can serialize/deserialize your object - without the data portal involved. Create an instance of your object (probably with some children in the list) and clone it. It is quite possible that you've got some code in your class that blocks serialization and is somehow causing this exception.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve981 replied on Monday, March 10, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br><br>Is your criteria class nested in your business class?<br></div></BLOCKQUOTE><br><br>Yes, actually it is.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br><br>I guess what I find most odd about this is that it appears you are somehow using the deprecated SoapFormatter. The data portal uses the BinaryFormatter. Are you possibly using a custom data portal channel, or has someone changed the core CSLA code?<br></div></BLOCKQUOTE><br><br>The CSLA core remains the same, and I have no idea why it is using the SoapFormatter.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br><br>It is quite possible that you've got some code in your class that blocks serialization and is somehow causing this exception.<br></div></BLOCKQUOTE><br><br>I don't think so, since it successfully passes through the first dataportal, it is the second one that raises the exception.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 10, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>steve981:</strong></div><div></P>
+<P>I don't think so, since it successfully passes through the first dataportal, it is the second one that raises the exception.<BR></div></BLOCKQUOTE></P>
+<P>OK, I want to be clear, because I'm now confused.</P>
+<P>boo wants to just use two different data portals - one for one set of objects and another for a different set of objects. That's something that can be accomplished with a custom client-side data portal proxy and is a matter for a different thread.</P>
+<P>Am I right that you are trying to chain data portals, so the client calls a data portal, and that just calls another data portal?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>steve981 replied on Monday, March 10, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>Am I right that you are trying to chain data portals, so the client calls a data portal, and that just calls another data portal?</p></div></BLOCKQUOTE><br><br>Exactly... The object goes through the first dataportal, while on the server it calls itself (or other business object) and try to go to another dataportal, but here it fails.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Monday, March 10, 2008</h2><P>I tried to do something similiar to have a local cache server. I was going to have the call go to the local server first and if the object was available in the cache return it, otherwise make another dataportal call to get the information. I never could get this to work because of security issue. Basically the second call would fail because it never had permissions to remote to the other server, because it could not pass along that it was me. I believe Rocky was the one who pointed this out, and basically there was no way around it.</P>
+<P>Maybe like Rocky said, you may be able to figure something out using WCF.</P>
+<P>Good luck and please update the post if you find a resonable solution.</P>
+<P>-stan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, well certainly if you are using Windows authentication and
+impersonation you are done before you get started. That is a limitation of
+Windows impersonation that is very well documented on MSDN and elsewhere &#8211;
+impersonation can only go one hop across the network.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I somehow though we were talking about custom authentication
+here, and I don&#8217;t know of a reason why that wouldn&#8217;t work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stanc
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 10, 2008 9:32 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using 2 dataportals<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I tried to do something similiar to have a local cache server. I was going
+to have the call go to the local server first and if the object was available
+in the cache return it, otherwise make another dataportal call to get the
+information. I never could get this to work because of security issue.
+Basically the second call would fail because it never had permissions to remote
+to the other server, because it could not pass along that it was me. I believe
+Rocky was the one who pointed this out, and basically there was no way around
+it.<o:p></o:p></p>
+
+<p>Maybe like Rocky said, you may be able to figure something out using WCF.<o:p></o:p></p>
+
+<p>Good luck and please update the post if you find a resonable solution.<o:p></o:p></p>
+
+<p>-stan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

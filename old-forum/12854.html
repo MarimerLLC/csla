@@ -1,0 +1,26 @@
+<html><header><title>BusinessBase or CommandBase...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessBase or CommandBase...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12854.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JeffreyYoung posted on Thursday, March 26, 2015</h2><p>I have a situation have not encountered in 7 years of CSLA development. I&#39;m not sure why it&#39;s not come up until now but I have a need for a Calculation Object that Executes remotely and returns the data back.</p>
+<p>Basically I have what amounts to a BB that I need to call Execute on. It is a large calculator for loans that has dozens of fields. Once filled in, we need to call Execute or Process or Whatever and have it go out to a Web Service and compute a result set and fill in the results on the BB. the CRUD operation of BB.Save() does not seem to fit.</p>
+<p>But the Execute of Command does not seem to be rich enough... Unless I&#39;m doing it wrong.</p>
+<p>What I&#39;d like is this...</p>
+<p>MyBBOrCommandObj obj = MyBBOrCommandObj.Create();</p>
+<p>obj.Properties = ...</p>
+<p>obj = obj.Execute();</p>
+<p>What would be the correct way of doing this? Can I do what I&#39;m proposing now?</p>
+<p>P.S. This is all in 4.5.601.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 26, 2015</h2><p>If your BB also has rules that must be enforced before doing the calc BB is just fine for this.&nbsp; You could create an Execute method that just calls Save if the verb is bothering you, but there&#39;s nothing wrong with using BB for this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, March 27, 2015</h2><p>Hi,</p>
+<p>If you want to separate the logic you could also create a CommandObject that just holds the BusinessObject (maybe a Clone) and call Execute on the CommandObject. Upon return you must then map the results to the original BB object.</p>
+<p>This CO would easily also contain text messages back to the user.</p>
+<p>Or just call DataPortal.Execute on the BB object and add code in DataPortal_Execute.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JeffreyYoung replied on Friday, March 27, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>Or just call DataPortal.Execute on the BB object and add code in DataPortal_Execute.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Is this possible? I didn&#39;t think a BB had .Execute(). I thought all it had was .Save().&nbsp;</p>
+<p>We were trying to avoid the interim objects and mapping the data twice.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, March 27, 2015</h2><p><div style='padding-left: 50px;background-color:silver'><b>Jeffrey Young<br></b>Is this possible? I didn&#39;t think a BB had .Execute(). I thought all it had was .Save().&nbsp;
+<p>We were trying to avoid the interim objects and mapping the data twice.</div></p>
+<p>BB doesn&#39;t have Execute, but you could add an Execute method yourself like this:</p>
+<p>public void Execute() { DataPortal.Execute(this); }</p>
+<p>And then implement DataPortal_Execute in your BB.&nbsp;I believe Johnny is suggesting this will work, since Csla at the end of the day doesn&#39;t care about what the type is it will just try to call the expected DataPortal_XYZ method via reflection.</p>
+<p>The nice thing about Johnnys approach is that you don&#39;t need to have both DataPortal_Insert and _Update (or always going back to Old or New status).</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

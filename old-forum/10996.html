@@ -1,0 +1,56 @@
+<html><header><title>about SharedValidationRulesManager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>about SharedValidationRulesManager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10996.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xc_lw posted on Monday, December 19, 2011</h2><p>How to use ValidationRulesManager?</p>
+<p>How to use SharedValidationRulesManager?</p>
+<p>Are there some samples?</p>
+<p>BusinessRules.AddRule(new Csla.Rules.CommonRules.Required(UserNameProperty, &quot;User Name can not be empty&quot;));</p>
+<p>Is this rule a shared rule?</p>
+<p>How to add an object levle rule and how to add a type level rule?</p>
+<p>And another question:I just want to check rules before save an object. I see there is only one method called CheckObjectRules for the object instance. Is it equals&nbsp;to BusinessRules.CheckRules() or BusinessRules.CheckObjectRules? What&#39;s the difference between these&nbsp;three methods?</p>
+<p>instance.CheckObjectRules</p>
+<p>instance.BusinessRules.CheckRules()&nbsp; --Only can be called inner the class</p>
+<p>instance.BusinessRules.CheckObjectRules() --Only can be called inner the class</p>
+<p>I&#39;m confused totally!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, December 19, 2011</h2><p>CSLA 4.2 does not have ValidationRulesManager nor SharedValidationRules. These were part of the validation rules in Csla 3.8.x.</p>
+<p><b>CSLA 4.2 have a new rule engine with only per-type rules. (No more per-instance rules). So when compared to the old rule engine all rules in CSLA 4.2 is &quot;shared&quot; rules for all instances of a given type. </b></p>
+<p>Object level rule: PrimaryProperty = null<br />Property rule:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PrimaryProperty = an instance of IPropertyInfo (a registered property).</p>
+<p>Both instance level authorization rules, object level rules and property rules are added by BusinessRule.AddRule in AddBusinessRules. </p>
+<p>For an object instance that are active in databinding (typically rich UI) there is only 2 methods that will notify UI of changes:</p>
+<p>&lt;bo&gt;.CheckObjectRules <br />&lt;bo&gt;.PropertyHasChanged</p>
+<p>For objects that are NOT active in databinding you can call </p>
+<p>&lt;bo&gt;.BusinessRules.CheckRules () &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; - check all object rules and property rules<br />&lt;bo&gt;.BusinessRules.CheckRules(propertyInfo)&nbsp;&nbsp; - check rules for a given property<br />&lt;bo&gt;.BusinessRules.CheckObjectRules&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -&nbsp; check all object level rules </p>
+<p>If you are creating a web application (and typically only want to check rules on postback) the look at&nbsp; </p>
+<p>Csla.Web.Mvc.CslaModelBinder&nbsp; and the Csla.Core.ICheckRules. </p>
+<p>In a web app you will typically suppress rules when updating fields in the postback and the run all rules afterwards. The ICheckRules interface provides this for your code. </p>
+<p>In the samples download you can also look at <i>Samples\NET\cs\RuleTutorial</i>&nbsp; and <i>Samples\NET\cs\BusinessRuleDemo</i></p>
+<p>I also suggest that you purchase the Using CSLA 4 Ebook series from Rocky, especially &quot;<i>Creating Business Objects</i>&quot; available from <a href="http://download.lhotka.net/Default.aspx?t=UsingCsla4%20">http://download.lhotka.net/Default.aspx?t=UsingCsla4 </a>and <a href="http://store.lhotka.net/Default.aspx?tabid=1560&amp;List=1&amp;CategoryID=4&amp;Level=1&amp;SortField=DateCreated%20DESC,ProductName">http://store.lhotka.net/Default.aspx?tabid=1560&amp;List=1&amp;CategoryID=4&amp;Level=1&amp;SortField=DateCreated%20DESC,ProductName</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xc_lw replied on Monday, December 19, 2011</h2><p>I want to check the validation of a &lt;BO&gt;.&nbsp; The &lt;BO&gt; is created by DataPortal.BeginCreate() and bind to a form. When the user not modify any property in the UI. The BrokenRuleCollection is empty.</p>
+<p>So I must check the validation before the user push the [Save] button.</p>
+<p>I have a MyBusinessBase class which drived from BusinessObject, and I write a public CheckObjectRules object in which call base.CheckObjectRules . Like bellow:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void CheckObjectRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.CheckObjectRules();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>but the base.CheckObjectRules() method only check these rules :</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where r.PrimaryProperty == null<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; CanRunRule(r, executionContext)</p>
+<p>when I track to this statement, all the rules&#39; PrimaryProperty is not null,so no rules be checked, It seems that all rules I set are property level. So I call</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;((ICheckRules)&lt;BO&gt;).CheckRules();</p>
+<p>It&#39;s worked now, the &lt;BO&gt;.IsValid is false, but in the UI Ican not see any &quot;Red&quot; error&nbsp;information.</p>
+<p>If the mouse enter the control which the invalid property binding to and there will be a &quot;Red&quot; error information, If I just create a new &lt;BO&gt; and then press the &quot;Save&quot; button, although I called the CheckRules(), there will be not a &quot;Red&quot; infomation.</p>
+<p>What&#39;s the right method to achive my requirement?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 19, 2011</h2><p>CSLA - default behavior - is to call:</p>
+<ol>
+<li>BusinessRules.CheckRules in DataPortal_Create or &lt;objectfactory&gt;.Create so that the BO will show broken rules in the UI at first. </li>
+<li>BusinessRules are run for each time the user edits a property</li>
+<li>This allows the UI to keep track of object status in the viewModel (IsDirty, IsValid etc)</li>
+</ol>
+<p>Which explains why there are only 2 methods in the BO that notifies the UI of changes as I described in the first post. </p>
+<p>You can however implement this yourself like this in your BO:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CheckAllRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;list&nbsp;=&nbsp;<span style="color:blue;">this</span>.BusinessRules.CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:#2b91af;">ApplicationContext</span>.PropertyChangedMode&nbsp;==&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.<span style="color:#2baf9a;">PropertyChangedModes</span>.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.OnUnknownPropertyChanged();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">string</span>&nbsp;propertyName&nbsp;<span style="color:blue;">in</span>&nbsp;list)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.OnPropertyChanged(propertyName);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">in order to run all rules and notify the UI. </pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,74 @@
+<html><header><title>CSLA Rewrite</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Rewrite</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3062.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld posted on Thursday, June 21, 2007</h2>I have rewritten the DataPortal classes to
+decrease the amount of objects needed for Data Access.&nbsp; I've been using
+this for about 8 months now with no issues.&nbsp; I'm pretty sure it will
+plug-in nicely with everything else in CSLA, but at this point, I have
+gone so far beyond CSLA that it might take some tweaking.<br>
+
+<br>
+
+I got kind of tired of the Client vs. Server objects needed for
+DataPortals.&nbsp; It's not really necessary.&nbsp; Also, the DataAccess code had
+to be duplicated is all business objects and all business objects had
+to absolutely know what type of database was behind the scenes (Sql,
+Oracle, Access, etc.).&nbsp; I have rewritten all base business classes and
+data access.&nbsp; The DataPortal acts as a portal of communication as well
+a Data Access surrogate.&nbsp; There is absolutely know data access code
+written in any business objects.<br>
+
+<br>
+
+Here's the breakdown...<br>
+
+<br>
+
+<b>DataPortalFactory </b>- handles initializing the correct type of
+DataPortal needed for the Application.&nbsp; Simply add an
+&lt;appSettings&gt; element:&nbsp; &lt;add key="DataPortal" value="..."
+/&gt;.<br>
+
+<blockquote>Possible DataPortal types to put into the value are:<br>
+  <ul><li>Local, localhost, etc.</li><li>Remoting Channel Url to the remotely hosted DataPortal: tcp://localhost:8080/DataPortal.rem</li><li>WebService Url to the remote DataPortal:&nbsp; http://localhost:4027/DataPortal.asmx</li><li>WCF:&nbsp; whatever the connection looks like for it - still in development</li></ul>
+</blockquote>
+
+The classes needed to create DataPortals are greatly simplified.&nbsp;
+Simply derive a class from IDataPortal.&nbsp; There are two classes
+currently: 1.) DataPortal (which is used for both local and Remoting),
+and 2.) WebDataPortal which can be run as a WebService.&nbsp; There is
+absolutely NO CODE required for the WebService!&nbsp; Just create a new
+WebService project, add a Reference to the Dll, delete all code-behind
+files and replace the "Inherits" attribute of the WebService to point
+to the class in the Dll.<br>
+
+<ul><li><b>IDataPortal</b> - provides an interface which all DataPortals must implement</li><li><b>DataPortal </b>- Inherits from MarshalByRefObject and provides Local and Remoting Channel objects</li><li><b>WebDataPortal </b>- Inherits from a WebService and implements IDataPortal.</li><li><b>WebDataPortalProxy </b>- this is the only Proxy class needed and is only used for the WebDataPortal.&nbsp; This may be able to become more generic to support multiple remote "Proxies", for example, WebService and WCF proxies may be able to be combined into one.</li><li><b>WCFDataPortal </b>- in progress...<br></li><li><b>DataPortalContext </b>- rewritten to support specifying which "connection" and data provider (System.Data.SqlClient vs. System.Data.OleDbProvider).<br>
+  </li></ul>
+
+Here are some of the advantages:<br>
+
+<ol><li>There is no need for complicated config file settings.</li><li>Multiple Databases are supported through "context switching",
+meaning you can have multiple &lt;connectionString&gt; sections and the
+business objects can set the DataPortalContext before data access code
+is called.<br>
+  </li><li>DataPortals are not passed into business objects, rather,
+Business Objects are passed into DataPortals.&nbsp; All Business Objects
+derive from IUpdateableObject.</li><li>There's no need for RunLocalAttributes or anything.&nbsp; The DataPortal does not need to be location aware.<br></li></ol>Disadvantages:<br><ol><li>I still need to ensure that the DataPortal will function correctly with ServiceComponents and Transactions.</li></ol>
+
+There are many other advantages to my library, it's almost a complete
+rewrite of CSLA but more simplified.&nbsp; It includes DataMapping / ORM
+Mapping, Validation Rules, Strongly-Typed Business DataSet objects,
+simplified DataPortals, and Cryptography support (including an <span>EncytableAttribute</span>
+class which can be applied to any Property that needs encryption - and
+you can specify different ways to encrypt different properties).<br>
+
+<br>
+
+I like using Strongly-typed DataTable, DataRows, and DataSets for
+business objects as well as sometimes using Business Object Classes
+themselves.&nbsp; So, I have provided easy to use base classes for <span>BusinessDataTable</span>, <span>BusinessDataRow</span>, and <span>BusinessDataSet</span>.&nbsp;
+These classes use Generics to simplify all the code so that derived
+classes only need to implement what DataColumns are needed.<br>
+
+<br>
+
+Once I cleanup the code a bit more, I'll submit it if anyone is interested.&nbsp; I am currently making it Framework 3.0 compatible.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gdk9am replied on Thursday, June 21, 2007</h2><P>Hi</P>
+<P>Yes I would be interested in seeing your code especially with regard to datasets, datatables, and datarow</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Friday, June 22, 2007</h2>Let me clean up some code and add a sample Project to get you started and then I'll upload it.&nbsp; Look for it in about a week (as I have other stuff to do during the day <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" />)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockoWPB replied on Wednesday, June 27, 2007</h2>Would really like to see it especially with the 3.0 support for WPF and the dataset stuff sounds really interesting too.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

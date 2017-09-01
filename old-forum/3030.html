@@ -1,0 +1,14 @@
+<html><header><title>How to make writing Inser and Update functions easier?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to make writing Inser and Update functions easier?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3030.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff posted on Tuesday, June 12, 2007</h2>
+
+<p class="MsoNormal"><span>Am I the
+only one who is finding writing (debugging) the Insert and Update functions a major PITA?<span>&nbsp; </span>I keep messing up the sql
+parameters, and it occurred to me that this is manual labor we probably don’t
+need to be doing.<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>Anyone got
+any ideas?<span>&nbsp; </span>Use a VS snippet?<span>&nbsp; </span>Does Enterprise Library fix this?<span>&nbsp; </span>Make the classes Partial and use a code
+generator to write those two functions?&nbsp;&nbsp; Even if we can't autodiscover the parameters, just having a grid to fill out and have the code generated from there would save oodles of time.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, June 12, 2007</h2>How about using NHibernate?&nbsp; Maybe couple it with the data access object pattern?&nbsp; NHibernate is demonstrated in an example project in CSLAcontrib, and I have made a post regarding the data access object pattern in the forums.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 12, 2007</h2><P>The DAAB in EntLib does help. nHibernate can help, as can pretty much any ORM tool. </P>
+<P>LINQ for SQL and ADO.NET EF will help when they come out, and I'll be moving ProjectTracker to use LINQ at some point in here.</P>
+<P>Code generation can also help, as a lot of the code-gen templates create the DP_XYZ methods for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Monday, June 25, 2007</h2>Brian,<br><br>Could you drop a quick link to that post?<br><br>Thanks.<br>JK<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, June 25, 2007</h2><a HREF="/forums/post/15193.aspx">http://forums.lhotka.net/forums/post/15193.aspx</a></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

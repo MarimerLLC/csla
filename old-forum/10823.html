@@ -1,0 +1,44 @@
+<html><header><title>CSLA 4 Any conceivable reason to support silverlight in my biz object library?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 Any conceivable reason to support silverlight in my biz object library?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10823.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Friday, October 28, 2011</h2><p>I&#39;ve come to the conclusion that I&#39;ll have a WPF and HTML 5 UI&#39;s for my next project and not a silverlight one. </p>
+<p>I do however forsee a possible Windows 8 Metro UI down the road.</p>
+<p>I&#39;m not sure on the path to Metro and WinRT from CSLA 4.2 but does it require keeping the&nbsp;</p>
+<p>#if !SILVERLIGHT&nbsp;</p>
+<p>directives and coding?</p>
+<p>I&#39;d rather not write one line of code I don&#39;t need to.</p>
+<p>I started my business object library with a few sample objects for testing purposes and dutifully inserted the code for Silverlight but now that I&#39;m ready to get stuck in I can&#39;t tell if it&#39;s safe to completely disregard silverlight entirely considering Metro and anything else I&#39;m not aware of that you guys might be.</p>
+<p>Ditch the Silverlight support or keep it for some unanticipated reason?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Friday, October 28, 2011</h2><p>I&#39;ve wondered at similar subjects. I&#39;ll stick on WPF but shall my BOs provide async DataPortal behaviour? </p>
+<p>Moreover, I don&#39;t think SL will support our business any better, easier than WPF (as we have some peripheral devices, easy printing of form requirements). On the mobile device market, our customer have an Mac or Android device, bat rarely a Microsoft. And today a mobile device doesn&#39;t support our customer without a mobile printer at hand ;-) </p>
+<p>Therefore, my conclusion is keep going the WPF trail without overhead of possible SL / WinRT features. <br />But really important is a layered architecture and proper design, including the MVVM. </p>
+<p>For the future I&#39;m very interested in the on going development of CSLA, and following the new concepts. <br />I&#39;ll spend time and money if there&#39;s a concrete oppurtunity for our product in any technology. But now I want to keep it simple and clean.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, October 29, 2011</h2><p>You may want to readt through the blog posts I&#39;ve been writing on Win8/WinRT (Metro) and how it appears to relate to .NET and SL.</p>
+<p><a href="http://www.lhotka.net/weblog/CategoryView,category,WinRT.aspx">http://www.lhotka.net/weblog/CategoryView,category,WinRT.aspx</a></p>
+<p>In summary: the closest thing to WinRT today is Silverlight. This is primarily because:</p>
+<ol>
+<li>The WinRT subset of .NET is comparable to the SL subset</li>
+<li>WinRT requires async server access like SL</li>
+</ol>
+<p>WinRT is not the same as SL, but it is closer to SL than to .NET or WPF.</p>
+<p>The CSLA 4.2 code in svn builds on WinRT. This was done by starting with the SL codebase, so the SILVERLIGHT compiler directive is defined. I did this, because otherwise I&#39;d have had to re-apply all the SL code changes, and that would have been a waste of time.</p>
+<p>I also define a WINRT compiler directive, because there are (quite a few) specific bits of framework code for WINRT. But at least simple business classes build for SL just work in WinRT right now, so that&#39;s quite exciting! :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, October 31, 2011</h2><p>Good to know and I was afraid of that! &lt;grin&gt;&nbsp; I think I&#39;m going to apply the YAGNI principle here and skip all the silverlight stuff and add it later for Metro if required.</p>
+<p>&nbsp;</p>
+<p>Cheers!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, October 31, 2011</h2><p>The big thing is the async server access. CSLA shields you from almost everything else, but there&#39;s such a deep difference between sync and async data portal (and therefore some business rules) that it just can&#39;t be abstracted.</p>
+<p>fwiw, we&#39;re clearly looking at a future where many/most things are async. Learn and use it now, or learn and use it in the future, but the async&nbsp;issues look unavoidable.</p>
+<p>Also fwiw, I build all my WPF apps using the async data portal anyway, because I don&#39;t want the UI to lock up every time the app talks to the server. So my personal recommendation is to use the async data portal, even if you don&#39;t bother with any #if SILVERLIGHT directives.</p>
+<p>In fact, if you only support the async data portal, and use a pluggable DAL, your code will almost work on SL without any directives.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, October 31, 2011</h2><p>Thank you!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, October 31, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b> </p>
+<p>In fact, if you only support the async data portal, and use a pluggable DAL, your code will almost work on SL without any directives.</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>I felt puzzled. On second thoughts...</p>
+<p>If I don&#39;t use any SQL stuff, the code will build as a Silverlight project. WIth a&nbsp; plugable DAL that uses DTOs, I don&#39;t need to reference&nbsp;both System.Data and System.Data.SqlClient..</p>
+<p>Although the DAL plugs an assembly that references both those namespaces, it does happen on the server side. And the server isn&#39;t running Silverlight.</p>
+<p>Nice catch and a strong argument in favour of using DTOs on the DAL.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Tuesday, November 01, 2011</h2><p>OK, if using the async approach shall be the easiest regarding future changes, which kind of mechanism would you recommend? </p>
+<p>If I remember correctly one of the Rocky&#39;s blog entry, he has stated that CSLA needs the support / work with different meachanims. Know I wonder which would be the best regarding an &quot;uncertain&quot; future (and currently using WPF)? </p>
+<ul>
+<li>waiting for .NET async keyword</li>
+<li>CSLA / .NET background worker</li>
+<li>Asyn DataProtal methods</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 01, 2011</h2><p>My suggestion is simple: use the async data portal.</p>
+<p>Today the async data portal uses a callback technique to indicate completion.</p>
+<p>In .NET 4.5 it will support the new async/await keywords too. My plan is that CSLA 4.5 will have new async data portal methods that allow you to use async/await.</p>
+<p>The challenge, of course, is that nothing prior to .NET 4.5 officially supports this new model. And for a period of months or years, Silverlight and WP7 won&#39;t support it, even while .NET 4.5 is available. So CSLA will maintain the callback scheme too, so it remains possible to write one set of business classes that work across these different platforms.</p>
+<p>If you want to wait for async/await, that&#39;s fine, but that functionality won&#39;t be available until sometime next year when .NET 4.5 comes out.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

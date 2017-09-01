@@ -1,0 +1,79 @@
+<html><header><title>About Transaction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>About Transaction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6839.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ayubu posted on Thursday, April 23, 2009</h2>Am totally new to transactions so bear with me.<br>In a transaction if i call Commit then Server records a transaction , what if the exception is thrown before transaction ends hence before the commit call and i do not call Rollback will the server abort transaction.<br>What is the effect(Side) if i dont call commit<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As
+long as your transaction is wrapped inside using {} statement, there are not
+side effects.&nbsp; Dispose will take care of clean up and will actually call Rollback
+for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ayubu
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 23, 2009 7:32 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] About Transaction<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Am totally new to transactions so bear with me.<br>
+In a transaction if i call Commit then Server records a transaction , what if
+the exception is thrown before transaction ends hence before the commit call
+and i do not call Rollback will the server abort transaction.<br>
+What is the effect(Side) if i dont call commit<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, July 28, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>sergeyb<br></b> </p>
+<div class="Section1">
+<p class="MsoNormal"><span>(...) Dispose will take care of clean up and will actually call Rollback for you.</span></p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"><b><span></span></b><span></span></p>
+<p class="MsoNormal"><span></span></p>
+<div style="CLEAR:both;"></div>
+</div>
+<p>&nbsp;</p>
+<p class="MsoNormal">Hi Sergey,</p>
+<p class="MsoNormal">I was looking just for this small piece of information. I&#39;m using CSLA.NET 4 and ADO transactions. I remember reading something about full documentation of CSLA.NET code but at least&nbsp;3.8.3&nbsp;and 4.0.0 are missing documentation on Commit() method and documentation on Dispose() method just says &quot;Dispose object, dereferencing or disposing the connection it is managing.&quot; but not a word about Rollback.</p>
+</div>
+<p>In a word: thanks Sergey (oops 2 words)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

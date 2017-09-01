@@ -1,0 +1,171 @@
+<html><header><title>Is it possible to have CSLA purge the per-type validation rules cache?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is it possible to have CSLA purge the per-type validation rules cache?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5196.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, August 05, 2008</h2><P>The subject pretty much says it all. </P>
+<P>Some of the "per type" validation rules we have been creating are derived from configuration type functions (some of which might even change the database schema). So, when the user performs one of these operations, I'd like to have CSLA clear it's rules caches so that AddBusinessRules() gets called again for each object. </P>
+<P>Granted, this is only happens when major configuration changes are made and I could force the user to exit and restart the application, but that doesn't seem especially friendly. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 05, 2008</h2>It may not be friendly, but its probably the easiest and most reliable way to handle this situation.&nbsp; FWIW, this is exactly why Windows doesn't "see" group membership changes to your domain logon without logging off then on again, because trying to "figure out" the changes and how to apply them is simply too difficult.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, August 05, 2008</h2><P>Well, for example,&nbsp;our application supports changing the database connection. Are you suggesting that I should have to exit and restart the application just to connect to a different database? </P>
+<P>It will be a hard pill for our existing application users to swallow -- they "upgrade" to the new version of our application and are now asked to exit and restart for changes that didn't require a restart previously. </P>
+<P>This particular case didn't seem that difficult, it's just the CSLA has the classes marked as internal and doesn't allow access or clearing of the static validation rules cache. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 05, 2008</h2>Well your question was about clearing business rules, not changing connection strings.&nbsp; <br><br>If you want to go down that path, you could probably do so.. but I have a feeling it will lead to many headaches later.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, August 05, 2008</h2><P>Yes, but our per-type rules can be&nbsp;data dependent -- they are static for a particular database, but if I change the database I'm connecting to, I need to reset the rules also (this was just an example of a configuration change -- sorry if I confused this issue). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 05, 2008</h2>Oh I see.. <br><br>Well that should be doable, but the data upon which the rules depend should probably be cached somewhere, and when the rule runs it can evaluate the case.&nbsp; It "reset" you could clear this cache of data, and have it lazy loaded so that the next time a rule runs the rule data gets reloaded as well. <br><br>If the rule should be completely ignore, that could be handled in a similar way with a flag that indicates if the rule should really run.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, August 05, 2008</h2><P>In theory, you are correct. </P>
+<P>However, in practice, it's not quite so easy. For example (ugh), some of the referential integrity constraints in our application are dynamic (a customer can say&nbsp;a certain piece of data in the application must come from table X). </P>
+<P>So, our BB subclass implements a generalized referential integrity business rule, one rule per active referential integrity constraint. </P>
+<P>So, when I switch from one database to another, a previous rule in the list may no longer be valid, or I might need to add rules that weren't there before. </P>
+<P>(It's actually worse than this -- the customer can add their own custom fields to our schema that have similar constraints, but this illustrates the problem).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 05, 2008</h2><P>I don't think clearing the cache would be that big a deal - a static method on ValidationRules to invoke one on SharedValidationRulesManager that locks, then clears the dictionary.</P>
+<P>There are two possible complications I can see.</P>
+<P>First, if you have objects accessing any rules at that time there could be odd race conditions. Fixing them would require more locking, and that'd have an overall negative perf impact. So a pre-condition of you calling this "clear" method would probably involve YOU making sure no code anywhere, on any thread, is calling any validation rules.</P>
+<P>Second, if you have object instances with broken rules, and you change the rules out from under them, you'd never be able to unbreak those rules. Those instances would be permanently invalid. So a pre-condition of you calling this "clear" method would involve YOU making sure you have no object instances, on any thread, that is currently invalid.</P>
+<P>On a smart client I could see that maybe working. But on a server this would be virtually impossible.</P>
+<P>So my worry is that if I add this capability, you'll enjoy it, and I'll have a permanent support problem as people's objects get confused on their app servers.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 06, 2008</h2><P>I agree it's a potential can of worms, but I did envision using this mainly in a "smart client" environment, and I certainly don't see letting clients change the database connection associated with an application server -- that would be limited to some sort of server side configuration or setup procedure.</P>
+<P>In the&nbsp;application we are porting from, when we change the database connection, we destroy any open objects and make the user log in again. Doing this in our CSLA application has proved somewhat daunting. What I have done so far is to invent an class-level attribute that specifies the name of a static "database reset"&nbsp;method (and optional priority) to be invoked when the database connection is changed. To reset the database, I collect all the resetters by enumerating types that have the attribute, sort them by priority and invoke their reset procedure. (For efficiency, the assembly must be be tagged with a variant of same attribute so I don't look through non-applicable assemblies)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 06, 2008</h2><P>Horrors!&nbsp; :) </P>
+<P>I did this just as an exercise -- certainly not advisable... </P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void ResetValidationRulesCache()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Reflect on CSLA to clear the validation rules cache...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AssemblyName name = assembly.GetName();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (name.Name.Equals("CSLA", StringComparison.OrdinalIgnoreCase))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Type type = assembly.GetType("Csla.Validation.SharedValidationRules");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (type != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldInfo f = type.GetField("_managers", BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Public);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (f != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object o = f.GetValue(null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (o != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodCaller.CallMethodIfImplemented(o,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Clear");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 06, 2008</h2>So... does it work? <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think your best bet might really be to create a method that
+uses reflection to call Clear() on the _managers static field in
+SharedValidationRules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The consequences of me creating a public method that could be
+called without someone understanding all the nasty ramifications is just too
+much I think.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 7:09 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Is it possible to have CSLA purge the per-type
+validation rules cache?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I agree it's a potential can of worms, but I did envision using this mainly
+in a &quot;smart client&quot; environment, and I certainly don't see letting
+clients change the database connection associated with an application server --
+that would be limited to some sort of server side configuration or setup
+procedure.<o:p></o:p></p>
+
+<p>In the&nbsp;application we are porting from, when we change the database
+connection, we destroy any open objects and make the user log in again. Doing
+this in our CSLA application has proved somewhat daunting. What I have done so
+far is to invent an class-level attribute that specifies the name of a static
+&quot;database reset&quot;&nbsp;method (and optional priority) to be invoked
+when the database connection is changed. To reset the database, I collect all
+the resetters by enumerating types that have the attribute, sort them by
+priority and invoke their reset procedure. (For efficiency, the assembly must
+be be tagged with a variant of same attribute so I don't look through
+non-applicable assemblies)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, August 06, 2008</h2><P>^^^^^^^^</P>
+<P>That was exactly what I did in my previous post, mainly just to see if I could.&nbsp; :)</P>
+<P>However, it's not just a can of worms, it's a 55 gallon drum, or maybe even an oil tanker's worth. </P>
+<P>My reflecting method that clears the rule cache&nbsp;indeed works, but then I discovered all my classes were holding their own internal static reference to their list of referential integrity rules. Oops, something else to have to worry about clearing, etc. </P>
+<P>It turns that that it may be fairly easy to have a client restart itself, so I'm going to investigate that route. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 06, 2008</h2>Not sure how you're deploying, but if you're using ClickOnce, there is functionality built in to do that.. but I don't know if it only works after an update or not.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, good point. I&#8217;d forgotten about that. Lots and lots of
+caching to minimize perf costs&#8230;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 1:41 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Is it possible to have CSLA purge the
+per-type validation rules cache?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>^^^^^^^^<o:p></o:p></p>
+
+<p>That was exactly what I did in my previous post, mainly just to see if I
+could.&nbsp; :)<o:p></o:p></p>
+
+<p>However, it's not just a can of worms, it's a 55 gallon drum, or maybe even
+oil tanker's worth. <o:p></o:p></p>
+
+<p>My reflecting method that clears the rule cache&nbsp;indeed works, but then
+I discovered all my classes were holding their own internal static reference to
+their list of referential integrity rules. Oops, something else to have to
+worry about clearing, etc. It turns that that it may be fairly easy to have a
+client restart itself, so I'm going to investigate that route. <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Friday, August 08, 2008</h2>I see this need to purge lists at the type level being relevant for all components where the data is stored statically. Particularly for those loading data from a dynamic source. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, August 08, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>vdhant:</strong></div><div>I see this need to purge lists at the type level being relevant for all components where the data is stored statically. Particularly for those loading data from a dynamic source.</div></BLOCKQUOTE></P>
+<P>I had a&nbsp;system in place for handling this. I invented an attribute that I could tag a class that stored static data that should be purged in the event of a "reset", with the attribute data providing the name of the reset method to be called. </P>
+<P>When doing the reset, I simply interrogated all the classes tagged with the attribute and called their reset method. It worked fine. </P>
+<P>It's not without risk, though. It's easy to overlook something, and I had to introduce the concept of a priority because some of the classes referenced each other and it was important that some data be cleared (or reloaded) before others. </P>
+<P>Anyway, it's viable only in a 2-tier situation anyway. As soon as you introduce an application server, both restarting and purging seem problematic.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, August 08, 2008</h2><P>I vote for a client re-start over trying to purge all the caches.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 08, 2008</h2>Again, I agree.&nbsp; It's quite a bit of effort to do this correctly, and I would think it'd be an on-going source of problems down the road if not done very carefully.&nbsp; That's why I pointed out that MS forces you to logoff to before any security settings are seen by Windows when your AD account changes.&nbsp; <br><br>The benefits to the user (not needing to restart) need to be weighed against the cost of initial coding to handle this, ongoing maintenance, and user unhappiness caused by bugs when it's not done correctly.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

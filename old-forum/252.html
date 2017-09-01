@@ -1,0 +1,7 @@
+<html><header><title>CommandBase DataPortal_OnDataPortalException is declared incorrectly - Errata</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CommandBase DataPortal_OnDataPortalException is declared incorrectly - Errata</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/252.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>razorkai posted on Friday, June 02, 2006</h2><P>Hi all</P>
+<P>In CommandBase.cs we have</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_OnDataPortalException(</FONT><FONT color=#008080 size=2>DataPortalEventArgs</FONT><FONT size=2>)</FONT></P>
+<P><FONT size=2>which should be </FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_OnDataPortalException(</FONT><FONT color=#008080 size=2>DataPortalEventArgs</FONT><FONT size=2> e, </FONT><FONT color=#008080 size=2>Exception</FONT><FONT size=2> ex)</FONT></P>
+<P><FONT size=2><FONT size=3>in line with all the other base classes.</FONT></FONT></P>
+<P><FONT size=3>John.</FONT><FONT size=2></P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

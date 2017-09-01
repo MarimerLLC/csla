@@ -1,0 +1,31 @@
+<html><header><title>readonlybase objects fetch or new?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>readonlybase objects fetch or new?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10164.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Monday, March 14, 2011</h2><p>Hi:</p>
+<p>I&#39;m moving my solution from CSLA 3.8 to 4.0. I&#39;ve noticed that readonly classes like ProjectInfo had a friend New in previous versions but now in CSLA 4.0 those classes have a Fetch method?</p>
+<p>Is there a paticular reason for that change?</p>
+<p>Can I keep using the old way for the &quot;Info&quot; classes?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>LMSantin</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 14, 2011</h2><p>I suspect you can continue to use the old way, as long as you properly set the metastate.</p>
+<p>If you use the data portal&#39;s FetchChild like I discuss in the <em>Data Access</em> ebook (and in <em>Expert 2008 Business Objects</em>), then the data portal will handle the metastate for you. This isn&#39;t a new feature - it was introduced in 3.6 (I think).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Monday, March 14, 2011</h2><p>Sorry Rocky for my incomplete answer.</p>
+<p>I was working in CSLA 3.6 and now I am moving to CSLA 4.0.</p>
+<p>You&#39;re right (of course), in the &quot;<i>Expert 2008 Business Objects&quot; </i>book you treated the readonly objects (root and child)&nbsp; with a Fetch.</p>
+<p>My missundertanding was that I thought the ResourceInfo object was a kind of readonlyroot or child object.</p>
+<p>Please, tell me if my conclusion is wrong or right.</p>
+<p> I read again <i>Expert 2008 Business Objects </i>and I noticed you treated the ResourceInfo object like special readonly object because in that object is not useful or needful handling the metastate.</p>
+<p>Your words in the text:</p>
+<p><i>&quot;Each ResourceInfo object provides read-only access to a subset of data from the Resources table.&quot;</i></p>
+<p><i>&quot;I&rsquo;m not using the field manager for this object, and I often don&rsquo;t use it for simple read-only<br />objects. Although ReadOnlyBase supports the field manager, if your read-only object has no authorization<br />rules, then the field manager will provide no real value, and you can write code similar to that<br />shown here.&quot;</i></p>
+<p>Also, in the sample code I download for that book, I saw that objects with private backing field and with friendly new method and no data access methods.</p>
+<p>I&#39;m not intended to use SilverLight, so, Can I defined my XInfo objects like ResourceInfo en ProjectTracker for CSLA 3.6?</p>
+<p>Thanks again Rocky</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 14, 2011</h2><p>I see. Yes, I used to sometimes create read-only objects as simple Serializable classes that didn&#39;t inherit from a CSLA base class.</p>
+<p>In today&#39;s world with Silverlight and WP7 that doesn&#39;t work, so I no longer do that.</p>
+<p>fwiw, at some point I would like to make core CSLA work in medium/partial trust on a web server - at which point ASP.NET and possible app server code will be subject to those same limitations. To achieve the partial trust goal we have to stop using BinaryFormatter/NDCS - which means using MobileFormatter - and that&#39;s where these serialization limitations come into play.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Monday, March 14, 2011</h2><p>Thanks Rocky.</p>
+<p>What I can understand is that in the case of InfoObjects(members of a ReadOnlyList), in order to be &quot;technologically up-to-date&quot; it will be better:</p>
+<p>-Creating a class inheriting from ReadOnlyRoot</p>
+<p>-All properties being managed backing fields.</p>
+<p>-Loading the object with a no-database- acces Fetch Method and passing it the properies values through a object type parameter.</p>
+<p>&nbsp;</p>
+<p>Is that ok?</p>
+<p>&nbsp;</p>
+<p>LMSantin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 14, 2011</h2><p>That is what I do, yes.</p>
+<p>I generally assume that all my classes might, at some point in the future, end up running in Silverlight, WP7, MonoTouch, MonoDroid, or some other environment where the Silverlight limits are in place.</p>
+<p>You don&#39;t have to follow that recommendation, and many of the older techniques do continue to work as long as you never leave full .NET.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

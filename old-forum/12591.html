@@ -1,0 +1,15 @@
+<html><header><title>AuthorizationActions.EditObject seems doesn't work on child object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AuthorizationActions.EditObject seems doesn't work on child object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12591.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Monday, April 21, 2014</h2><p>How to prevent user to edit child object?</p>
+<p>I have class with f.ex &quot;orders&quot; property. This is &quot;BusinessBindingListBase&quot; which contains &quot;Order&quot; objects.</p>
+<p>I thought I can add &quot;authorization rule&quot; (AuthorizationActions.EditObject) that implements some logic. But it never executes. I can edit this child object and even save it. It looks wierd. How to prevent child object editing?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, April 21, 2014</h2><p>I think you need per property auth rules, I believe the type level ones only apply to the root object, not the children.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, April 21, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>Andy<br></b></p>
+<p>I think you need per property auth rules,</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>And this is the only way?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 21, 2014</h2><p>The default behavior implemented in CSLA is to check AuthorizationAction.EditObject in DataPortal.Update method on an object that has IsNew = false and this method is only ever called for &quot;root&quot; objects.&nbsp;</p>
+<p>If you want to block the user from making any changes to the object you should either:</p>
+<ol>
+<li>Add AuthorizationRule on each property (AuthorizationAction.WriteProperty) or </li>
+<li>Override CanWriteProperty(propertyInfo) to return false.&nbsp;</li>
+</ol>
+<p>It is the base.CanWriteProperty that checks for AuthorixzationAction.WriteProperty but you can override and add your own custom logic.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Tuesday, April 22, 2014</h2><p>Thanks JonnyBee.
+I&#39;ve found your post about this: <a href="http://forums.lhotka.net/forums/p/10611/49658.aspx">http://forums.lhotka.net/forums/p/10611/49658.aspx</a></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>How to handle fetching a non-existant object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to handle fetching a non-existant object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6458.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Wednesday, February 18, 2009</h2><P>I have a Root object that I try to fetch using some criteria, but it's not in the database. </P>
+<P>At the moment, it returns an empty object, but how do I distinguish the empty object, from a valid object with empty fields. Is there a standard way of indicating this?</P>
+<P>Thanks,</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 18, 2009</h2><P>There's a rather lengthy thread on this topic in the forum archive.</P>
+<P>As a general rule I recommend throwing an exception when data doesn't exist for an object.</P>
+<P>Other people return a null.</P>
+<P>Other people return an empty object - and come up with a way to identify what is "empty".</P>
+<P>I'd say that this third option is the least common, because it is nebulous and there's no global concept of "empty objects" other than null.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, February 19, 2009</h2><P>To support both operations, in our base Criteria class, we've added a SuppressException property that is used to determine if an exception if thrown (when false) or if null is returned (when true).&nbsp; This allows you to decide which implementation is appropriate for your needs on a class-by-class basis (or even a use-by-use basis).</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, February 19, 2009</h2><P>This has been discussed many times.</P>
+<P>I return a New object if an Existing one is not found. </P>
+<P>But if I could start my project from scratch I would throw the exception and catch it in my UI and tell the user that the data they are looking for does not exist and ask them to change their search criteria to something else.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Thursday, February 19, 2009</h2><P>Thanks for the advice guys. </P>
+<P>In the end I went for throwing an exception and catching it at the UI end.</P>
+<P>Craig</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

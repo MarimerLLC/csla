@@ -1,0 +1,176 @@
+<html><header><title>Broken Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Broken Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1277.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Reactance posted on Wednesday, September 20, 2006</h2><P>Hi, </P>
+<P>Ive implmented a simple rule in my BO when i attempted to save my BO it says that my object is invaild in the catch handler i understand the reason why its doing this, but how do i know which field in the BO is invaild ?? </P>
+<P>try</P>
+<P>{<BR>&nbsp;&nbsp; //Save Bo here....</P>
+<P>}</P>
+<P>Catch(Exception e)</P>
+<P>{</P>
+<P>// BO is invaild display which field is invaild </P>
+<P>}</P>
+<P>How did u guys implmented it ??? </P>
+<P>Thank you in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, September 20, 2006</h2><P>Hi Reactance,</P>
+<P>I recently subclassed BusinessBase. In there I made a public property that's a string of all the broken rules:</P><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets the broken rules for this object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> BrokenRulesMessage</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> BuildBrokenRulesMessage();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Builds the broken rules message string.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> BuildBrokenRulesMessage()</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>StringBuilder</FONT><FONT size=2> sb = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>StringBuilder</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>BrokenRule</FONT><FONT size=2> rule </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.BrokenRulesCollection)</P>
+<P>{</P>
+<P>sb.Append(rule.Description);</P>
+<P>sb.Append(</FONT><FONT color=#008080 size=2>Environment</FONT><FONT size=2>.NewLine);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> sb.ToString();</P>
+<P>}</P>
+<P>Then when I try to save, you can do something like</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Csla.Validation.</FONT><FONT color=#008080 size=2>ValidationException</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> message = temp.BrokenRulesMessage;</P>
+<P></FONT><FONT color=#008080 size=2>MessageBox</FONT><FONT size=2>.Show(message);</P>
+<P>}</P>
+<P>I'm not that well versed with CSLA, just thought I'd throw out what I did.</P>
+<P>Mike</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Reactance replied on Wednesday, September 20, 2006</h2><P>Thank you for the speedy reply i`ll look in it tonight when i get home !</P>
+<P>Is there anyone else with another way of doing this ? </P>
+<P>:-)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Wednesday, September 20, 2006</h2><P>This is already implemented in CSLA by using the following:</P><FONT size=2>
+<P>BO.BrokenRulesCollection.ToString</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, September 20, 2006</h2>Well... duh! Whoops.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, October 17, 2006</h2><P>Michael,</P>
+<P>I'm interested in what you had to do in order to subclass BusinessBase.</P>
+<P>Did you subclass the other major classes also?&nbsp; BusinessListBase, ReadOnlyBase, etc.?</P>
+<P>I'm trying to do that in order to add the broken rules collection as a public property plus the full rule list as a public property.</P>
+<P>I started with BusinessBase and BusinessListBase subclasses.</P>
+<P>All I wanted to do was the minimum necessary, so I defined the abstract classes and added one public BrokenRules property.</P>
+<P>Then I went into ProjectTracker.Library and modified the Role and Roles classes to subclass my classes instead.&nbsp; </P>
+<P>It's complaining that the Save method needs to return my subclass instead of Roles.&nbsp; I sure don't want to have to override every darn method in each one of the classes!&nbsp; Is there a simpler way?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, October 18, 2006</h2><P>David,</P>
+<P>There was a thread 2 or 3 weeks ago where a bunch of code was posted showing examples of subclassing all the base classes - 6 in 2.0.3, and 7 in 2.1.</P>
+<P>Anyway, here's an example of BusinessBase. I added in those two methods, take them out if you want the bare minimum.</P><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Buoy.BusinessObjects20</P>
+<P>{</P>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt; :</P>
+<P></FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BuoyBusinessBase</FONT><FONT size=2>&lt;T&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Marks the object as clean. Should be used when creating a new</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> object and you don't want it saved unless the user actually</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> changes something.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> MarkAsClean()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.MarkClean();</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets the broken rules for this object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> BrokenRulesMessage</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.BrokenRulesCollection.ToString();</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>Not sure what's happening with that save business.</P>
+<P>Regards,</P>
+<P>Mike</P>
+<P>Edit: Yes, I subclassed all of those classes. That way you're set up to make your modifications, if need be. It's the recommended approach.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 18, 2006</h2>Just wanted to point out that the subclass needn't make any change to the API at all; mine are simply this:<br><br>[<font color="#0000ff">Serializable</font>]<br><font color="#0000ff">public abstract class </font><font color="#008000">MyBusinessBase</font>&lt;T&gt; : <br>&nbsp;&nbsp;&nbsp; Csla.<font color="#008000">BusinessBase</font>&lt;T&gt; <font color="#0000ff">where </font>T : <font color="#008000">MyBusinessBase</font>&lt;T&gt; { }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 18, 2006</h2><P>BusinessBase seemed to work ok for me.</P>
+<P>But BusinessListBase is where I had the problem.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, October 18, 2006</h2><P>Here's my BusinessListBase</P><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> Buoy.BusinessObjects20</P>
+<P>{</P>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>BuoyBusinessListBase</FONT><FONT size=2>&lt;T, C&gt; :</P>
+<P></FONT><FONT color=#008080 size=2>BusinessListBase</FONT><FONT size=2>&lt;T, C&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>BuoyBusinessListBase</FONT><FONT size=2>&lt;T, C&gt;</P>
+<P></FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> C : Csla.Core.</FONT><FONT color=#008080 size=2>IEditableBusinessObject</P></FONT><FONT size=2>
+<P>{</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, October 18, 2006</h2><P>Found the other thread on subclassing...</P>
+<P>&nbsp;</P>
+<P><A HREF="/forums/2/6596/ShowThread.aspx">http://forums.lhotka.net/forums/2/6596/ShowThread.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, October 26, 2006</h2><P>Ok, I've had a partial success on subclassing the main csla classes and publically exposing the broken rules collection.&nbsp; </P>
+<P>I'm using Role, Roles, and EditRoles from PTWeb for my test case, in order to determine what changes to the "standard" way of coding things need to be done.</P>
+<P>With the concept that a rule can be in a warning state, it's possible for an object that has just been loaded will have broken rules.&nbsp; (Ditto if we just changed the rules in the object but didn't update the data in the database, but that's another topic. :)</P>
+<P>So, I added ValidationRules.CheckRules() to the end of the private constructor in Role so that the object would check its rule status upon being created.&nbsp;&nbsp; I also added a max string length of 10 rule&nbsp;to the Name property so some of the existing Roles would be considered broken.</P>
+<P>It blew up.&nbsp; (Details of error at end of message.)</P>
+<P>I changed it to ValidationRules.CheckRules("Name") and it worked perfectly.</P>
+<P>Turns out the problem is being caused by the NoDuplicates instance rule on the Id property.</P>
+<P>Ok, so maybe it's in a state of flux being halfway thru the constructor of a just added (or about to be added) Role.&nbsp; Option 2 was to loop thru each Role in the Roles collection and ask it to check its rules.&nbsp; Not ideal, but hey.&nbsp; Can't do it though, the ValidationRules.CheckRules() is private.</P>
+<P>I may be able to override the CheckRules and make it accessible to its parent, or just fake it with another method to do just that, but frankly, it seems that the real problem is with CheckRules() or the implementation of the NoDuplicates rule.&nbsp; It should just work. :(</P>
+<P>If you have ideas, feel free to pass them on.&nbsp; I'll keep working on it.</P>
+<P>Here's the error I get:</P>
+<H2><I>Object reference not set to an instance of an object.</I> </H2>
+<P><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code. <BR><BR><B>Exception Details: </B>System.NullReferenceException: Object reference not set to an instance of an object.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 99:     {
+Line 100:      Roles parent = (Roles)this.Parent;
+<FONT color=red>Line 101:      foreach (Role item in parent)
+</FONT>Line 102:        if (item.Id == _id &amp;&amp; !ReferenceEquals(item, this))
+Line 103:        {</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>101 <BR><BR><B><FONT face=Verdana>Stack Trace:</FONT></B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>[NullReferenceException: Object reference not set to an instance of an object.]
+   ProjectTracker.Library.Admin.Role.NoDuplicates(Object target, RuleArgs e) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs:101
+   Csla.Validation.RuleMethod.Invoke(Object target) in C:\Visual Studio Projects\Csla20cs\Csla\Validation\RuleMethod.cs:96
+   Csla.Validation.ValidationRules.CheckRules(List`1 list) in C:\Visual Studio Projects\Csla20cs\Csla\Validation\ValidationRules.cs:658
+   Csla.Validation.ValidationRules.CheckRules() in C:\Visual Studio Projects\Csla20cs\Csla\Validation\ValidationRules.cs:630
+   ProjectTracker.Library.Admin.Role..ctor(SafeDataReader dr) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs:154
+   ProjectTracker.Library.Admin.Role.GetRole(SafeDataReader dr) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs:134
+   ProjectTracker.Library.Admin.Roles.DataPortal_Fetch(Criteria criteria) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Roles.cs:144
+
+[CallMethodException: DataPortal_Fetch method call failed]
+   Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, Object[] parameters) in C:\Visual Studio Projects\Csla20cs\Csla\DataPortal\MethodCaller.cs:118
+   Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\Visual Studio Projects\Csla20cs\Csla\DataPortal\Server\SimpleDataPortal.cs:109
+
+[DataPortalException: DataPortal.Fetch failed (System.NullReferenceException: Object reference not set to an instance of an object.
+   at ProjectTracker.Library.Admin.Role.NoDuplicates(Object target, RuleArgs e) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs:line 101
+   at Csla.Validation.RuleMethod.Invoke(Object target) in C:\Visual Studio Projects\Csla20cs\Csla\Validation\RuleMethod.cs:line 96
+   at Csla.Validation.ValidationRules.CheckRules(List`1 list) in C:\Visual Studio Projects\Csla20cs\Csla\Validation\ValidationRules.cs:line 658
+   at Csla.Validation.ValidationRules.CheckRules() in C:\Visual Studio Projects\Csla20cs\Csla\Validation\ValidationRules.cs:line 630
+   at ProjectTracker.Library.Admin.Role..ctor(SafeDataReader dr) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs:line 154
+   at ProjectTracker.Library.Admin.Role.GetRole(SafeDataReader dr) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Role.cs:line 134
+   at ProjectTracker.Library.Admin.Roles.DataPortal_Fetch(Criteria criteria) in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Roles.cs:line 144)]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\Visual Studio Projects\Csla20cs\Csla\DataPortal\Client\DataPortal.cs:192
+   Csla.DataPortal.Fetch(Object criteria) in C:\Visual Studio Projects\Csla20cs\Csla\DataPortal\Client\DataPortal.cs:140
+   ProjectTracker.Library.Admin.Roles.GetRoles() in C:\Visual Studio Projects\ProjectTracker20cs\ProjectTracker.Library\Admin\Roles.cs:86
+   RolesEdit.GetRoles() in c:\Visual Studio Projects\ProjectTracker20cs\www\PTWeb\RolesEdit.aspx.cs:68
+   RolesEdit.RolesDataSource_SelectObject(Object sender, SelectObjectArgs e) in c:\Visual Studio Projects\ProjectTracker20cs\www\PTWeb\RolesEdit.aspx.cs:126
+   Csla.Web.CslaDataSource.OnSelectObject(SelectObjectArgs e) in C:\Visual Studio Projects\Csla20cs\Csla\Web\CslaDataSource.cs:150
+   Csla.Web.CslaDataSourceView.ExecuteSelect(DataSourceSelectArguments arguments) in C:\Visual Studio Projects\Csla20cs\Csla\Web\CslaDataSourceView.cs:94
+   System.Web.UI.DataSourceView.Select(DataSourceSelectArguments arguments, DataSourceViewSelectCallback callback) +17
+   System.Web.UI.WebControls.DataBoundControl.PerformSelect() +149
+   System.Web.UI.WebControls.BaseDataBoundControl.DataBind() +70
+   System.Web.UI.WebControls.GridView.DataBind() +4
+   System.Web.UI.WebControls.BaseDataBoundControl.EnsureDataBound() +82
+   System.Web.UI.WebControls.CompositeDataBoundControl.CreateChildControls() +69
+   System.Web.UI.Control.EnsureChildControls() +87
+   System.Web.UI.Control.PreRenderRecursiveInternal() +41
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Control.PreRenderRecursiveInternal() +161
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +1360
+</PRE></CODE></TD></TR></TABLE><BR></FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, October 26, 2006</h2><P>I re-wrote the NoDuplicates rule as follows:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> NoDuplicates(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, Csla.Validation.</FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e)<BR>{<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT color=#008080 size=2>Roles</FONT><FONT size=2> parent = (</FONT><FONT color=#008080 size=2>Roles</FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Parent;<BR></FONT><FONT color=#0000ff size=2>&nbsp; if</FONT><FONT size=2> (parent != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)<BR>&nbsp; {<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp; foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Role</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> parent)<BR>&nbsp;&nbsp;&nbsp; { <BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;if</FONT><FONT size=2> (item.Id == _id &amp;&amp; !ReferenceEquals(item, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; e.Description = </FONT><FONT color=#800000 size=2>"Role Id must be unique"</FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; &nbsp;}<BR>&nbsp; }<BR></FONT><FONT color=#0000ff size=2>&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;<BR>}</FONT></P>
+<P><FONT size=2>Basically, the original rule assumed that this.Parent would return something.&nbsp; I added a check to make sure that it did before I tried to verify that there were no duplicates.</FONT><FONT size=2></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

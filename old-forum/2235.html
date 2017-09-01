@@ -1,0 +1,10 @@
+<html><header><title>CslaDataSource Bug in 2.1.2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataSource Bug in 2.1.2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2235.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>LEEG posted on Monday, January 29, 2007</h2><FONT color=#0000ff size=2>
+<P><FONT color=#000000> The <FONT size=2>SelectObjectArgs method in CslaDataSource appears to have a bug in it.&nbsp; Line 316 is as follows:</P></FONT></FONT>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if<FONT size=2> (mSortExpression.Substring(mSortExpression.Length - 5) == </FONT><FONT size=2>" DESC"</FONT><FONT size=2>)</FONT></FONT></P>
+<P><FONT color=#000000>This works fine as long as&nbsp;mSortExpression is at least 5 characters in length, but if it is something shorter it will cause an exception.</FONT></P>
+<P><FONT color=#000000>The following change seems to fix the problem in the C# version.</FONT></P>
+<P><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT></FONT><FONT color=#000000><FONT size=2> (mSortExpression.Length &gt;= 5 &amp;&amp; mSortExpression.Substring(mSortExpression.Length - 5) == </FONT><FONT size=2>" DESC"</FONT><FONT size=2>)</FONT></FONT></P>
+<P><FONT size=2>Lee</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 29, 2007</h2><P>Good point... I'll fix that soon.</P>
+<P>A colleague of mine (Chuck at Magenic is converting my cvs repositories over to svn format, and I&nbsp;hope to have my repository alive again tomorrow.</P>
+<P>This cvs-&gt;svn conversion isn't as easy as you'd think, because I started using cvs with a very old version of cvsnt, which apparently didn't use exactly the same format as expected by the cvs2svn tools... </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,175 @@
+<html><header><title>Using SaveObject() in Mvc controller</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using SaveObject() in Mvc controller</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12810.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen posted on Thursday, January 08, 2015</h2><p>Hi,</p>
+<p>I am working on a Mvc4-project and I am wondering why&nbsp;I&nbsp;rather should&nbsp;use the method SaveObject() instead of myObject = myObject.Save() when inserting or updating the db? </p>
+<p>The beginning of my code in my controller looks like the following:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">class</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">HomeController</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> : Csla.Web.Mvc.</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Controller</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">, </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">IModelCreator</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp; public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">object</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> CreateModel(</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Type</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> modelType)
+<p>&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp;&nbsp;&nbsp; if</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> (modelType.Equals(</span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">typeof</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">CustomerEdit</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)))<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">CustomerEdit</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">.NewCustomer();<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp;&nbsp;&nbsp; else</span></span></span></p>
+<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">Activator</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">.CreateInstance(modelType);
+<p>&nbsp; }</p>
+<p>&nbsp;</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp; public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">ViewResult</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Index()
+<p>&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp;&nbsp;&nbsp; return</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> View();
+<p>&nbsp; }</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp; [</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">HttpPost</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">]<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp; public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">ViewResult</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> Index(</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">CustomerEdit</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> model)
+<p>&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">&nbsp;&nbsp;&nbsp; if </span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">(ModelState.IsValid)
+<p>&nbsp;&nbsp;&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SaveObject(model, </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">false</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">);</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&nbsp;&nbsp;&nbsp; .</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&nbsp;&nbsp;&nbsp; .</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&nbsp;&nbsp;&nbsp; .</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&nbsp;&nbsp;&nbsp; .</span></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">and so on.</span></span></p>
+</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">So again, my question in this example&nbsp;is why&nbsp;it is&nbsp;better&nbsp;to use&nbsp;
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SaveObject(model, <span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">false</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">);</span></span></p>
+<p>instead of simply doing as usual</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; model = model.Save();</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Peter</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 09, 2015</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Hi,&nbsp;</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Have you tried to do look at the actual code i Save?&nbsp;</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">ViewModelBase.cs:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;Save(<span style="color:#2b91af;">ModelStateDictionary</span>&nbsp;modelState,&nbsp;<span style="color:blue;">bool</span>&nbsp;forceUpdate)
+{
+&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;savable&nbsp;=&nbsp;ModelObject&nbsp;<span style="color:blue;">as</span>&nbsp;Csla.Core.<span style="color:#2b91af;">ISavable</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(savable&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">InvalidOperationException</span>(<span style="color:#a31515;">&quot;Save&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;ModelObject&nbsp;=&nbsp;(T)savable.Save(forceUpdate);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(Csla.<span style="color:#2b91af;">DataPortalException</span>&nbsp;ex)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ex.BusinessException&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;ex.BusinessException.Message);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;modelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;ex.Message);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;modelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;ex.Message);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;}
+}<br /><br />MvcController.cs: <br /><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;SaveObject&lt;T&gt;(T&nbsp;item,&nbsp;<span style="color:#2b91af;">Action</span>&lt;T&gt;&nbsp;updateModel,&nbsp;<span style="color:blue;">bool</span>&nbsp;forceUpdate)&nbsp;<span style="color:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:blue;">class</span>,&nbsp;Csla.Core.<span style="color:#2b91af;">ISavable</span>
+{
+&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;ViewData.Model&nbsp;=&nbsp;item;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(updateModel&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;updateModel(item);
+&nbsp;&nbsp;&nbsp;&nbsp;ViewData.Model&nbsp;=&nbsp;item.Save(forceUpdate);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(Csla.<span style="color:#2b91af;">DataPortalException</span>&nbsp;ex)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ex.BusinessException&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ModelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;ex.BusinessException.Message);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ModelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;ex.Message);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;ModelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;ex.Message);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;}
+}</pre>
+<p>Basically - this method add some error handling to add errors to modelState and present the error message a little nicer. If it doesn&#39;t fit your needs then don&#39;t use it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Friday, January 09, 2015</h2><p>Hi Jonny,</p>
+<p>Thanks for your reply. I just wanted to clarify and understand what the difference is since I realized that both methods work. </p>
+<p>/Peter</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

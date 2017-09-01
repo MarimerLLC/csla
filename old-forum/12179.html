@@ -1,0 +1,13 @@
+<html><header><title>WCF Client Closing HTTP Connection?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF Client Closing HTTP Connection?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12179.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Thursday, October 10, 2013</h2><p>Hi,</p>
+<p>Platform: Csla 3.8.4, Winforms Smart Client, WCF DataPortal</p>
+<p>We have an business object that contains the binary data for a file as one of its properties. It is implemented as a byte array.</p>
+<p>Larger files &gt; 2MB are having issues saving. We receive a 404 error. After tracking the issue, IIS has nothing in its error logs, but HTTP.sys logs show POST Connection_Dropped entries.</p>
+<p>After googling a bit, it appears that these entries are typically the result of a client closing the HTTP connection prior to the servers response.</p>
+<p>Has anyone else experienced the same issue?</p>
+<p>If I want to see if the client is actually closing the connection, where in CSLA code would be a good place to start?</p>
+<p>I know Microsoft suggests using streaming for larger files (sadly they don&#39;t define the term larger, or at least I can&#39;t find it). CSLA does not support streaming, so it is not an option for us. In addition, the actual file traffic will be minimal, and we have very powerful server hardware.</p>
+<p>Thanks!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Tuesday, October 22, 2013</h2><p>Hi!</p>
+<p>First, try enabling Tracing in web.config on the WcfHost. The resulting log file should include more information on any exceptions that cause the connection to be closed.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

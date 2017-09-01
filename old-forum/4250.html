@@ -1,0 +1,297 @@
+<html><header><title>Problem with MinValue&lt;T&gt; and MaxValue&lt;T&gt;!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with MinValue&lt;T&gt; and MaxValue&lt;T&gt;!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4250.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Tuesday, January 29, 2008</h2><P>Some while ago, I followed Rocky's advice and exposed my SmartDate (SmartInt16, SmartInt32, etc) variables as strings instead of SmartDates (and so on).</P>
+<P>However, I just got bit while using the MinValue&lt;T&gt; rule.</P><FONT color=#800000 size=2><FONT size=2>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> MinValue&lt;T&gt;(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, </FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT></FONT><FONT face="Courier New" color=#008080 size=2>IComparable<BR></FONT><FONT face="Courier New"><FONT size=2>{<BR>&nbsp;&nbsp;</FONT><FONT color=#008080 size=2>DecoratedRuleArgs</FONT><FONT size=2> args = (</FONT><FONT color=#008080 size=2>DecoratedRuleArgs</FONT></FONT><FONT face="Courier New"><FONT size=2>)e;<BR></FONT><FONT color=#008080 size=2>&nbsp;&nbsp;PropertyInfo</FONT></FONT><FONT size=2><FONT face="Courier New"> pi = target.GetType().GetProperty(e.PropertyName);</FONT></P>
+<P><FONT face="Courier New">&nbsp; // Code barfs&nbsp;on the next line!<BR>&nbsp;&nbsp;T value = (T)pi.GetValue(target, </FONT></FONT><FONT face="Courier New" color=#0000ff size=2>null</FONT><FONT size=2><FONT face="Courier New">);</FONT></P>
+<P><FONT face="Courier New">&nbsp; T min = (T)args[</FONT></FONT><FONT face="Courier New" color=#800000 size=2>"MinValue"</FONT><FONT size=2><FONT face="Courier New">];</FONT></P>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp; int</FONT><FONT size=2> result = value.CompareTo(min);</P>
+<P></FONT></FONT></FONT><FONT size=2>Here's the problem.&nbsp; When T gets passed in, it gets passed in as, let's say, an Int32.</FONT></P>
+<P><FONT size=2>However, the property isn't an Int32, it's a String!&nbsp; So, the cast to T into the value variable fails.</FONT></P>
+<P><FONT size=2>Anyone else hit this snag, and what was your solution?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Tuesday, January 29, 2008</h2><P>I was looking at the whole issue of SmartXXX's for the future. I have one question: why is it necessary when we now have nullables (accepted that if you are on .Net 1.1 it is the only way)</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>simon_may:</strong></div><div>
+<P>I was looking at the whole issue of SmartXXX's for the future. I have one question: why is it necessary when we now have nullables (accepted that if you are on .Net 1.1 it is the only way)</P>
+<P>Simon</P>
+<P></div></BLOCKQUOTE></P>
+<P>I dunno.&nbsp; I haven't tried incorporating them.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 29, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>simon_may:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>I was looking at the whole issue of SmartXXX's for the future. I have one question: why is it necessary when we now have nullables (accepted that if you are on .Net 1.1 it is the only way)</FONT><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>There are a couple of issues with nullable types:</FONT></P>
+<P><FONT face=Tahoma size=2>1. Many UI controls do not deal well (or at all) with the concept of a null value.&nbsp; SmartDate (and the other smart controls) convert nulls to empty strings, or other suitable representations, for UI controls.&nbsp; Yes, many of the third-party libraries have nullable support built in, but many of the built-in controls still don't.</FONT></P>
+<P><FONT face=Tahoma size=2>(And don't ask why, because I don't know why, and it sure seems like an obvious thing that MS overlooked... <img src="/emoticons/emotion-12.gif" alt="Angry [:@]" />)</FONT></P>
+<P><FONT face=Tahoma size=2>2. Nullable types do not translate null values to a DBNull value for databases (and there is a difference).&nbsp; SmartDate has that functionality built in.&nbsp; Also something that seems rather obvious, since it would seem that the main impetus for nullable types is to work well with databases...</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Tuesday, January 29, 2008</h2><P>Thanks TMG. You have saved me a lot of heartache. Typical of M$ provide a really good feature with a dirty great flaw in it. As I do a lot of code gen I can get around the probs.</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 29, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>simon_may:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>Thanks TMG. You have saved me a lot of heartache. Typical of M$ provide a really good feature with a dirty great flaw in it. As I do a lot of code gen I can get around the probs.</FONT></P>
+<P><FONT face=Tahoma size=2>Simon</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>I will say that I have done little research to date on .NET 3.5, so it's possible that they've addressed this.&nbsp; And I would hope that WPF - something else I haven't looked at much - deals with nullable binding better than WinForms.&nbsp; I'd also be curious to know how LINQ manages this.</FONT></P>
+<P><FONT face=Tahoma size=2>I can understand MS's "90% approach" to their UI controls - that's the one area where they really flex their IP muscle, and why give away all the really cool stuff?&nbsp; But the missing functionality in the nullable types seems rather egregious to me.&nbsp; MSDN says the best use for nullable types is to "represent things that exist or do not exist depending on the circumstance" - and then goes on to talk about "a nullable column of a database table [that] might exist in one row of the table but not another."&nbsp; Honestly, that statement makes no sense to me, though it seems to shed a little light on why nullable types work the way they do (and further shows that MS wasn't thinking too much about the problem they were trying to solve.)&nbsp; Lastly, while the "ToString()" implementation of nullable types returns an empty string if the variable has no value, that's not very helpful in most circumstances.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Tuesday, January 29, 2008</h2><P>TMG, Thanks for the info. Seems that the guy form M$ has never written a business app otherwise he might talk some sense rather a party line that makes no sense in the real world.</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 29, 2008</h2>3.&nbsp; It allows you to sort all "null" values as minimums or maximums, depending on the EmptyIsMax value.&nbsp; So maybe in one case your empty SmartDate should appear first in ascending order, but in another case, it should appear at the end of the list.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>SmartDate is not intended to solve the null problem. It is
+intended to solve the empty problem. There&#8217;s a difference.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A null value indicates a value not yet supplied.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A non-null value indicates a value that has been supplied &#8211;
+which might be an actual value or an empty value.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>&middot;<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>An empty value is a supplied value, that is empty. It could be
+infinitely small or large relative to other values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Null and Empty are not the same thing &#8211; we just often use
+the &#8220;null&#8221; concept to represent Empty because there is no Empty
+concept available.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Look at SQL &#8211; no way to indicate an Empty date value other
+than either using null or picking some arbitrary real date to be the empty
+placeholder. Yet the idea of an empty date is central to a lot of applications.
+Fortunately, very few applications actually need the null concept at all, so it
+is fine to use null as a placeholder for Empty.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you are writing one of those few apps where null actually
+matters, then you are in a spot&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This null thing is one of my pet peeves though. People misuse it
+all the time. Null exists to support the idea that a user hasn&#8217;t supplied
+a value &#8211; so null &lt;&gt; &#8220;&#8221; and null &lt;&gt; 0 and null
+&lt;&gt; false. The &#8220;&#8221;, 0 and false values are actual values, which
+implies they were supplied by the user. Null is used to indicate something not
+supplied (yet anyway).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(I&#8217;m ignoring the foreign key use of null in a database,
+because that&#8217;s a concept unto itself and is separate from the use of null
+in value columns/properties)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Very few apps actually have this business requirement. Those apps
+that do have this requirement must, by definition, have some UI representation
+so the user knows whether a value has been supplied or not. With numerics this
+is relatively easy &#8211; 0 is visibly different from &#8220;&#8221;, so you
+can use &#8220;&#8221; to represent null. But for strings it is hard, because there&#8217;s
+no clear way to represent a null in a textbox. So you probably need an
+associated checkbox control, or a specialized textbox that can show text like &#8220;&lt;null&gt;&#8221;
+in italics or something to denote a non-supplied value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The same is true for a date if you want the user to type it in
+as freeform text. Again, the &#8220;&#8221; can be Empty, but then it can&#8217;t
+be null. So you have the same problem as with regular text.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Boolean isn&#8217;t too bad if you have a tri-state checkbox.
+That way you can show true/false/unknown and have unknown be proxy for null.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 29, 2008 1:38 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Problem with MinValue&lt;T&gt; and
+MaxValue&lt;T&gt;!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>3.&nbsp; It allows you to sort all &quot;null&quot; values
+as minimums or maximums, depending on the EmptyIsMax value.&nbsp; So maybe in
+one case your empty SmartDate should appear first in ascending order, but in
+another case, it should appear at the end of the list.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 29, 2008</h2><P>Yo!&nbsp; Everybody!&nbsp; <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P>Y'all can start all the threads you want, but could we keep this one on track?</P>
+<P>I'm not able to switch to v3.5 just yet.&nbsp;&nbsp; <img src="/emoticons/emotion-9.gif" alt="Crying [:'(]" /></P>
+<P>So I'm looking for a v2 solution to the immediate problem I posed...</P>
+<P>&nbsp;</P>
+<P>Thanks!!!!!!!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 29, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The CoerceValue() code should back-port, that&#8217;s why I
+brought it up.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> david.wendelken
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 29, 2008 2:14 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Problem with MinValue&lt;T&gt; and
+MaxValue&lt;T&gt;!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yo!&nbsp; Everybody!&nbsp; <img id="_x0000_i1025" src="/emoticons/emotion-2.gif" alt="Big Smile <img src=" />"><o:p></o:p></p>
+
+<p>Y'all can start all the threads you want, but could we keep this one on
+track?<o:p></o:p></p>
+
+<p>I'm not able to switch to v3.5 just yet.&nbsp;&nbsp; <img id="_x0000_i1026" src="/emoticons/emotion-9.gif" alt="Crying <img src=" />"><o:p></o:p></p>
+
+<p>So I'm looking for a v2 solution to the immediate problem I posed...<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks!!!!!!!<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, January 29, 2008</h2><P>David,</P>
+<P>I think since you control both ends of this that you just have to line them up correctly.</P>
+<P>You said T gets "passed in" as an Integer.</P>
+<P>That means your declaration is something like this:</P><FONT size=2>
+<P></FONT><FONT color=#008000><FONT color=#000000>ValidationRules.AddRule(AddressOf MinValue(Of Integer), New MinValueRuleArgs(Of Integer)("Price", 0))</FONT></FONT></P>
+<P><FONT color=#008000><FONT color=#000000>Why not change it to:</FONT></FONT></P><FONT color=#008000><FONT color=#000000>
+<P><FONT color=#008000><FONT color=#000000>ValidationRules.AddRule(AddressOf MinValue(Of String), New MinValueRuleArgs(Of String)("Price", 0))</FONT></FONT></P>
+<P>Joe</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>David,</P>
+<P>I think since you control both ends of this that you just have to line them up correctly.</P>
+<P>You said T gets "passed in" as an Integer.</P>
+<P>That means your declaration is something like this:</P><FONT size=2>
+<P></FONT><FONT color=#008000><FONT color=#000000>ValidationRules.AddRule(AddressOf MinValue(Of Integer), New MinValueRuleArgs(Of Integer)("Price", 0))</FONT></FONT></P>
+<P><FONT color=#008000><FONT color=#000000>Why not change it to:</FONT></FONT></P><FONT color=#008000><FONT color=#000000>
+<P><FONT color=#008000><FONT color=#000000>ValidationRules.AddRule(AddressOf MinValue(Of String), New MinValueRuleArgs(Of String)("Price", 0))</FONT></FONT></P>
+<P>Joe</P>
+<P></FONT></FONT></div></BLOCKQUOTE></P>
+<P>Because if I evaluate it as a string, 11 is less than 2. :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 29, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>Some while ago, I followed Rocky's advice and exposed my SmartDate (SmartInt16, SmartInt32, etc) variables as strings instead of SmartDates (and so on).</FONT></P>
+<P><FONT face=Tahoma size=2>However, I just got bit while using the MinValue&lt;T&gt; rule.</FONT></P><FONT color=#800000>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#0000ff>bool</FONT> MinValue&lt;T&gt;(<FONT color=#0000ff>object</FONT> target, <FONT color=#008080>RuleArgs</FONT> e) <FONT color=#0000ff>where</FONT> T : </FONT></FONT><FONT face="Courier New" color=#008080 size=2>IComparable<BR></FONT><FONT size=2><FONT face="Courier New">{<BR>&nbsp;&nbsp;<FONT color=#008080>DecoratedRuleArgs</FONT> args = (<FONT color=#008080>DecoratedRuleArgs</FONT></FONT></FONT><FONT face="Courier New" size=2>)e;<BR><FONT color=#008080>&nbsp;&nbsp;PropertyInfo</FONT> pi = target.GetType().GetProperty(e.PropertyName);</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp; // Code barfs&nbsp;on the next line!<BR>&nbsp;&nbsp;T value = (T)pi.GetValue(target, <FONT color=#0000ff>null</FONT>);</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp; T min = (T)args[<FONT color=#800000>"MinValue"</FONT>];</FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>&nbsp; int</FONT> result = value.CompareTo(min);</FONT></FONT></P>
+<P></FONT><FONT face=Tahoma size=2>Here's the problem.&nbsp; When T gets passed in, it gets passed in as, let's say, an Int32.</FONT></P>
+<P><FONT face=Tahoma size=2>However, the property isn't an Int32, it's a String!&nbsp; So, the cast to T into the value variable fails.</FONT></P>
+<P><FONT face=Tahoma size=2>Anyone else hit this snag, and what was your solution?</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>What about using Convert.ChangeType()?&nbsp; It returns an Object, but it should be&nbsp;a castable object at that point...</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div>
+<P><FONT face=Tahoma size=2>What about using Convert.ChangeType()?&nbsp; It returns an Object, but it should be&nbsp;a castable object at that point...</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>That's an incredibly good idea!</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// dataType is a new parameter I introduced so I could know type T is.&nbsp; I would love to not use it!</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2> t = </FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2>.GetType(dataType);</P></FONT><FONT size=2>
+<P>T value = (T)</FONT><FONT color=#008080 size=2>Convert</FONT><FONT size=2>.ChangeType(pi.GetValue(target, </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>), t);</P></FONT><FONT size=2>
+<P>T min = (T)</FONT><FONT color=#008080 size=2>Convert</FONT><FONT size=2>.ChangeType(args[</FONT><FONT color=#800000 size=2>"minValue"</FONT><FONT size=2>],t);</FONT></P>
+<P><FONT size=2>The above code works, provided I supply the dataType parameter with the correct class name.</FONT></P>
+<P><FONT size=2>I would prefer to have it smart enough to just use T, but I haven't figured out the syntax...</FONT></P>
+<P><FONT size=2>Can't figure out the syntax to ask a static method what T is, either, which would be another way to do this without an extra dataType parameter.</FONT></P>
+<P><FONT size=2>Ideas?</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 29, 2008</h2><P>I wasn't really following this thread, so I don't know the exact issue. But if you are trying to coerce a value to a different type, that's tricky due to the various edge cases. </P>
+<P>I spent a lot of time for CSLA 3.5 addressing this issue, culminating in the CoerceValue() methods in the Csla.Utilities class. I don't know that it solves every case, but it solves all the test cases I threw at it, and the ones that were provided by people struggling with coercion in DataMapper.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>I wasn't really following this thread, so I don't know the exact issue. But if you are trying to coerce a value to a different type, that's tricky due to the various edge cases. </P>
+<P>I spent a lot of time for CSLA 3.5 addressing this issue, culminating in the CoerceValue() methods in the Csla.Utilities class. I don't know that it solves every case, but it solves all the test cases I threw at it, and the ones that were provided by people struggling with coercion in DataMapper.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I should also point out that SmartDate in 3.5 now has a whole lot of type coercion functionality of its own - including a set of cast operators and a TypeConverter implementation. CoerceValue() relies on your type implementing some/all of that infrastructure to work, so if you are using your own custom SmartXYZ types, they will probably need to have similar operators and a TypeConverter (at least for conversion to/from string).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 29, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div> </FONT>
+<P><FONT face=Tahoma size=2>What about using Convert.ChangeType()?&nbsp; It returns an Object, but it should be&nbsp;a castable object at that point...</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>That's an incredibly good idea!</FONT></P>
+<P><FONT color=#008000><FONT face=Tahoma size=2>// dataType is a new parameter I introduced so I could know type T is.&nbsp; I would love to not use it!</FONT></P></FONT>
+<P><FONT size=2><FONT face=Tahoma><FONT color=#008080>Type</FONT> t = <FONT color=#008080>Type</FONT>.GetType(dataType);</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>T value = (T)<FONT color=#008080>Convert</FONT>.ChangeType(pi.GetValue(target, <FONT color=#0000ff>null</FONT>), t);</FONT></P>
+<P><FONT face=Tahoma size=2>T min = (T)<FONT color=#008080>Convert</FONT>.ChangeType(args[<FONT color=#800000>"minValue"</FONT>],t);</FONT></P>
+<P><FONT face=Tahoma size=2>The above code works, provided I supply the dataType parameter with the correct class name.</FONT></P>
+<P><FONT face=Tahoma size=2>I would prefer to have it smart enough to just use T, but I haven't figured out the syntax...</FONT></P>
+<P><FONT face=Tahoma size=2>Can't figure out the syntax to ask a static method what T is, either, which would be another way to do this without an extra dataType parameter.</FONT></P>
+<P><FONT face=Tahoma size=2>Ideas?</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>I will say one other thing - the Convert class expects that the value in question implements IConvertible.&nbsp; So you might want to make a modified version of MinValue&lt;T&gt; to include the IConvertible requirement, in addition to IComparable.&nbsp; That will help you catch problems at compile-time.</FONT></P>
+<P><FONT face=Tahoma size=2>As for your other question - can you just use "T.GetType()"?&nbsp; Given no other hints, generic placeholders always equate to an Object.&nbsp; Or you could try "typeof(T)" as well.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, January 29, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div>
+<P><FONT face=Tahoma size=2>I will say one other thing - the Convert class expects that the value in question implements IConvertible.&nbsp; So you might want to make a modified version of MinValue&lt;T&gt; to include the IConvertible requirement, in addition to IComparable.&nbsp; That will help you catch problems at compile-time.</FONT></P>
+<P><FONT face=Tahoma size=2><FONT face="Times New Roman" size=3></div></BLOCKQUOTE></FONT></FONT></P>
+<P><FONT face=Tahoma size=2><FONT face="Times New Roman" size=3>Thanks!&nbsp; I'll look into it.</FONT></FONT></P>
+<P><FONT face=Tahoma size=2><FONT face="Times New Roman" size=3><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tmg4340:</strong></div><div></FONT></FONT></P>
+<P><FONT face=Tahoma size=2>As for your other question - can you just use "T.GetType()"?&nbsp; Given no other hints, generic placeholders always equate to an Object.&nbsp; Or you could try "typeof(T)" as well.</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>I feel like SUCH a goober.&nbsp; I REALLY thought I had tried typeof(T) and it wouldn't compile.&nbsp; But it works great.&nbsp; Need vacation.&nbsp; Bad.</P>
+<P>I'm pretty sure T.GetType() won't work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 29, 2008</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>I feel like SUCH a goober.&nbsp; I REALLY thought I had tried typeof(T) and it wouldn't compile.&nbsp; But it works great.&nbsp; Need vacation.&nbsp; Bad.</FONT>
+<P><FONT face=Tahoma size=2>I'm pretty sure T.GetType() won't work.</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>I know how you feel - I haven't had a "real" vacation in a couple of years.</FONT></P>
+<P><FONT face=Tahoma size=2>(It's funny - that's about how old my son is... <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />)</FONT></P>
+<P><FONT face=Tahoma size=2>I started my .NET life as a VB.NET programmer, and even after more than a year of C# programming, I still can't get it straight in my head when to use "typeof" and when to use "GetType" in these instances...</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

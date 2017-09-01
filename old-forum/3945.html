@@ -1,0 +1,81 @@
+<html><header><title>Csla.ApplicationContext.User with Custom UserNamePasswordValidator</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.ApplicationContext.User with Custom UserNamePasswordValidator</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3945.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmazzotta posted on Tuesday, November 27, 2007</h2><P><SPAN>Hi everyone.<o:p></o:p></SPAN></P>
+<P><SPAN>We had implemented a custom authorization method based on the PTWcfServiceAuth example. Everything works fine, except for one big thing. At the end of the process, in a WCF service implementation, we reference the Csla.ApplicationContext.User but it returns an empty object.<o:p></o:p></SPAN></P>
+<P><SPAN>We had traced the process and verified that the identity is created and&nbsp;copied&nbsp;into the CSLA.ApplicationContext, (Same as example code of PTWcfServiceAuth.Evaluate method), but it returns an empty object.<o:p></o:p></SPAN></P>
+<P><SPAN>Possible causes?<o:p></o:p></SPAN></P>
+<P><SPAN>Help would be much appreciated.<o:p></o:p></SPAN></P>
+<P><SPAN>Thank You </SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 27, 2007</h2><P>Remember that WCF treats this as a two-step process: authentication and then authorization. At the end of the authentication process WCF sets the current principal to a WCF-created value, not your value. </P>
+<P>Read the <EM>Using CSLA .NET 3.0</EM> chapter on how this works for a full discussion, but it is critical that you reset the principal value in the authorization step by providing the principal and identity objects back to WCF's context so WCF can set the thread's principal when it is ready.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gmazzotta replied on Wednesday, November 28, 2007</h2><SPAN></SPAN><SPAN>
+<P class=MsoNormal><SPAN>Hi Rocky, thanks for you answer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We followed your advice, but still with no apparent results.<SPAN>&nbsp; </SPAN>I think our problem is at the end of the process call (according to your book, at the service invocation step.) We cannot manage to get the <STRONG>Csla.ApplicationContext.User</STRONG> filled with the resulting principal.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We get the principal name with the </SPAN><SPAN><STRONG>ServiceSecurityContext</STRONG></SPAN><SPAN><STRONG>.Current.PrimaryIdentity.Name</STRONG> </SPAN><SPAN>property. This, make us think that the custom <B>PrincipalPolicy.Evaluate</B> method was succesfully executed, and that at the end of the proccess, it was stored back to WCF context as it should be.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>What is not clear (for us) is if it is necessary to c<SPAN>all the</SPAN></SPAN><SPAN> <STRONG>GetPrincipal(username)</STRONG> </SPAN><SPAN>method at the beginning of the service implementation to fill the</SPAN><SPAN> <STRONG>Csla.ApplicationContext.User</STRONG> </SPAN><SPAN>object again. This question raises by the fact that when the process enters the service implementation,</SPAN><SPAN> <STRONG>Csla.ApplicationContext.User</STRONG> </SPAN><SPAN>object is empty again.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Or may be that WCF is executing the call in another trhead?</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Thank You in advance.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm, then I don&#8217;t know.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>WCF may, in fact, run some of that service-call-startup code on
+another thread. The thread is not guaranteed to be consistent, only the
+AppDomain is consistent (which is why PrincipalCache stores its values in the
+AppDomain).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The whole point of setting up the custom authenticator and
+authorizer components and registering them with WCF is to avoid having to call
+a GetPrincipal(username) method at the start of every service. I am sure you
+could successfully make such a call, but it is not an ideal solution in my
+view.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is my understanding that, during the authorization phase, you
+need to pass the new principal and identity objects back to WCF through its
+context. Then it sets the thread principal on the correct thread before invoking
+your actual service implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that Csla.ApplicationContext.User is merely a wrapper
+for Thread.CurrentPrincipal (or HttpContext.Current.User), so the underlying
+problem is that you aren&#8217;t convincing WCF to set the current principal
+object at the thread/HttpContext level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can use remote web server debugging to walk through the
+code. If you are running the service on your dev box you should be able to put
+breakpoints in the Evaluate() method to make sure it runs and completes as
+expected.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

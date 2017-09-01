@@ -1,0 +1,72 @@
+<html><header><title>Can't login</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't login</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2450.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>csm101 posted on Wednesday, February 28, 2007</h2><P>I'm running the PTWin project.&nbsp; After clicking "OK" on the login box I get:</P>
+<P>&nbsp;</P>
+<P>{"DataPortal.Fetch failed (System.Data.SqlClient.SqlException: The user instance login flag is not supported on this version of SQL Server. The connection will be closed.</P>
+<P>&nbsp;</P>
+<P>I'm using the full SQL Server 2005 database engine.&nbsp; I've attached the database files and tried changing the connection strings in App.config but it still doesn't work.&nbsp; </P>
+<P>Does anyone know what's going on?</P>
+<P>&nbsp;</P>
+<P>Thanks.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 28, 2007</h2>It sounds like you didn't successfully change the config settings, because that message means the conn string still says to use SQL Express...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>csm101 replied on Thursday, March 01, 2007</h2><P>Turns out I have to supply the userID and Password ("pm") right in the connection strings like this:</P><FONT color=#0000ff size=1>
+<P>&lt;</FONT><FONT color=#a31515 size=1>connectionStrings</FONT><FONT color=#0000ff size=1>&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&lt;</FONT><FONT color=#a31515 size=1>add</FONT><FONT color=#0000ff size=1> </FONT><FONT color=#ff0000 size=1>name</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>PTracker</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1> </FONT></P>
+<P><FONT color=#ff0000 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionString</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>Data Source=.\SQLSERVER2005;Initial Catalog = CSLA_PTRACKER;Integrated Security=False;UID=</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT color=#0000ff size=1>pm</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT color=#0000ff size=1>;PWD=</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT color=#0000ff size=1>pm</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT size=1>"</FONT><FONT color=#ff0000 size=1>providerName</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>System.Data.SqlClient</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1> /&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&lt;</FONT><FONT color=#a31515 size=1>add</FONT><FONT color=#0000ff size=1> </FONT><FONT color=#ff0000 size=1>name</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>Security</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1> </P>
+<P></FONT><FONT color=#ff0000 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;connectionString</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>Data Source=.\SQLSERVER2005;Initial Catalog = CSLA_SECURITY;Integrated Security=False;UID=</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT color=#0000ff size=1>pm</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT color=#0000ff size=1>;PWD=</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT color=#0000ff size=1>pm</FONT><FONT color=#ff0000 size=1>&amp;quot;</FONT><FONT size=1>"</FONT><FONT color=#ff0000 size=1>providerName</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>System.Data.SqlClient</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1> /&gt;</P>
+<P>&lt;/</FONT><FONT color=#a31515 size=1>connectionStrings</FONT><FONT color=#0000ff size=1>&gt;</P></FONT>
+<P>But this is not very secure as the password is now in plain text in the App.config file.&nbsp; Is there any way around this?</P>
+<P>&nbsp;</P>
+<P>Thanks.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>It sounds like you didn't successfully change the config settings, because that message means the conn string still says to use SQL Express...</div></BLOCKQUOTE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, you can either connect to SQL Server using integrated
+security or SQL security. In your case you&#8217;ve set up the db to use SQL
+security, so it requires that you provide a SQL username and password. If you
+switch to integrated security it will use the Windows security token of the
+process that&#8217;s contacting the database.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are many, many issues around both of these security
+models. Each has strengths and weaknesses, and the right answer varies
+depending on your environment, security needs, and so forth. You should do some
+research on database connection security &#8211; probably on MSDN, but I&#8217;m
+sure many books on programming apps using databases cover the options as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Microsoft recommends integrated security, but it does have its
+drawbacks, so educate yourself first.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, it is possible (at least with web.config) to encrypt the
+&lt;connectionStrings&gt; region of the config file. I don&#8217;t know for
+sure if that can be done for Windows apps. But that may be an option for you as
+well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

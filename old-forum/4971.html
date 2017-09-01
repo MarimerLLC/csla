@@ -1,0 +1,82 @@
+<html><header><title>Should we trust the database?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Should we trust the database?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4971.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nelis posted on Friday, June 13, 2008</h2><P><FONT face=Arial>Somewhere - I think it was in the book - I read that we should not trust the data in the database to represent valid object. That's because it can be updated by other tools than your application.</FONT></P>
+<P><FONT face=Arial>If you adopt to that philosophy, I would expect ValidationRules.CheckRules being called in the various Fetch_Xxx routines. I do not find such a thing in the ProjectTracker example. Am I wrong or is the PT application simply trusting the database?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 13, 2008</h2>Well, there's really no hard and fast rule.&nbsp; The PTracker does trust the database, or it would call checkrules.&nbsp; Of course, it's also a sample, so not everything is demonstrated.<br><br>In my environment, I am the one in charge of the database... so I decide who can access it and how.&nbsp; As it stands, the only way into my database is through my application.. so my application trusts the data.&nbsp; Your situtation may be different though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, June 13, 2008</h2><P>I do not trust the database and therefore call ValidationRules.CheckRules as the final block of code in both DataPortal Create and Fetch.</P>
+<P>YMMV</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, June 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I agree that validation rules should be called on create.&nbsp;
+Fetch to me required other considerations.&nbsp; If data that comes from DB is
+invalid, you end up with non-dirty object that is invalid.&nbsp; So, if the
+user does not change something, he/she is not forced to correct the problem
+anyway.&nbsp; So, I personally do not call validation rules after fetch.&nbsp;
+If data got into DB and was valid at that point, it should be valid when you
+fetch it as well.&nbsp; If rule changed since the data was saved last, there
+should have been script run on DB to bring old data into compliance with new
+rules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Just my thoughts on the subject&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, June 13, 2008 10:52 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Should we trust the database?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I do not trust the database and therefore call ValidationRules.CheckRules as
+the final block of code in both DataPortal Create and Fetch.<o:p></o:p></p>
+
+<p>YMMV<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Tuesday, June 17, 2008</h2><P>If other applications are directly changing your underlying database then validation on load makes sense.&nbsp; The problem I've seen with this is that you will take a significant performance hit especially if you have custom validation rules.&nbsp; Its not a big deal to run a validation rule on a single object when it changes.&nbsp; It can be a big deal to run every validation rule on every object depending on the size of your collection.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

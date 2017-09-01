@@ -1,0 +1,57 @@
+<html><header><title>Wait for object to no longer be busy?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wait for object to no longer be busy?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12148.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, September 10, 2013</h2><p>I feel like I&#39;m missing something simple.&nbsp; If you have a BO with Async business rules, how do you wait for the object to no longer be busy before carrying on with something else, such as asking the object to save itself?&nbsp; I would have thought there&#39;d be some method to await the non-busy state, but I can&#39;t find anything.&nbsp; A simple </p>
+<p>
+<p><span style="font-size:small;color:#dcdcdc;"><span style="font-size:small;color:#dcdcdc;"><span style="font-size:small;color:#dcdcdc;"><font size="3" color="#dcdcdc"><font size="3" color="#dcdcdc"><font size="3" color="#dcdcdc">
+<p><span style="background-color:#ffffff;"><span style="color:#0000ff;"></span></span></p>
+</font></font></font></span><font size="3" color="#dcdcdc"><font size="3" color="#dcdcdc">
+<p>&nbsp;</p>
+</font></font></span><font size="3" color="#dcdcdc">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="background-color:#ffffff;"><span style="font-size:small;color:#569cd6;"><span style="font-size:small;color:#569cd6;"><span style="color:#0000ff;">while</span></span></span><span style="font-size:small;color:#dcdcdc;"><span style="font-size:small;color:#dcdcdc;"><span style="font-size:small;color:#dcdcdc;"> <span style="color:#808080;">(</span></span></span></span><span style="font-size:small;color:#ff3333;"><span style="color:#000000;">bo</span></span><span style="font-size:small;color:#b4b4b4;"><span style="font-size:small;color:#b4b4b4;"><span style="font-size:small;color:#b4b4b4;">.</span></span></span><span style="font-size:small;color:#ffffff;"><span style="font-size:small;color:#ffffff;"><span style="color:#000000;">IsBusy</span></span></span><span style="font-size:small;color:#dcdcdc;"><span style="font-size:small;color:#dcdcdc;"><span style="color:#808080;">) { }</span></span></span></span></p>
+</p>
+<p>doesn&#39;t seem to work either (and will burn CPU as well).</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, September 10, 2013</h2><p>Hi,</p>
+<p>You have events like BusyChanged or ValidationCompleted that your code can wait for with a EventWaitHandle.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, November 19, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>You have events like BusyChanged or ValidationCompleted that your code can wait for with a EventWaitHandle.</div></p>
+<p>Sorry, I guess I&#39;m not clear on what to do.&nbsp; In an MVC controller if you have an async business rule its possible its still running by the time you get to the action method.&nbsp; I want to make sure that the controller waits for the object to no longer be busy before checking IsValid or calling Save.&nbsp; Can you give an example?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Tuesday, November 19, 2013</h2><p>Hi Andy,</p>
+<p>I m stuck with this problem as well.</p>
+<p>Cf.http://forums.lhotka.net/forums/p/11854/54973.aspx#54973 for another thread on that topic. I did not find a correct implementation yet.</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, November 20, 2013</h2><p>Should be as simple as to add this method to your business object:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">async</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CheckAllRulesAndWaitForAllRulesToComplete()
+{
+&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;tcs&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">TaskCompletionSource</span>&lt;<span style="color:blue;">bool</span>&gt;();
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;declare&nbsp;event&nbsp;handler</span>
+&nbsp;&nbsp;<span style="color:#2b91af;">EventHandler</span>&nbsp;eh&nbsp;=&nbsp;(sender,&nbsp;e)&nbsp;=&gt;&nbsp;tcs.SetResult(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;attach&nbsp;to&nbsp;validation&nbsp;complete&nbsp;event</span>
+&nbsp;&nbsp;ValidationComplete&nbsp;+=&nbsp;eh;
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;call&nbsp;check&nbsp;rules&nbsp;</span>
+&nbsp;&nbsp;BusinessRules.CheckRules();
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;wait&nbsp;for&nbsp;tcs&nbsp;to&nbsp;set&nbsp;result&nbsp;(ValidationComplete)</span>
+&nbsp;&nbsp;<span style="color:blue;">await</span>&nbsp;tcs.Task;
+&nbsp;&nbsp;<span style="color:green;">//&nbsp;unsubscripbe&nbsp;from&nbsp;event</span>
+&nbsp;&nbsp;ValidationComplete&nbsp;-=&nbsp;eh;
+}<br /><br />and call it like this: <br /><br />root.CheckAllRulesAndWaitForAllRulesToComplete();
+<span style="color:blue;">if</span>&nbsp;(!root.IsValid)
+{
+&nbsp;&nbsp;<span style="color:#2b91af;">MessageBox</span>.Show(<span style="color:#a31515;">&quot;Object&nbsp;has&nbsp;broken&nbsp;rules&nbsp;and&nbsp;can&nbsp;not&nbsp;be&nbsp;saved&quot;</span>);
+&nbsp;&nbsp;<span style="color:blue;">return</span>;
+}
+<span style="color:blue;">await</span>&nbsp;root.SaveAsync();<br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 20, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Should be as simple as to add this method to your business object:</p>
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">async</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;CheckAllRulesAndWaitForAllRulesToComplete() { &nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;tcs&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:#2b91af;">TaskCompletionSource</span>&lt;<span style="COLOR:blue;">bool</span>&gt;(); &nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;declare&nbsp;event&nbsp;handler</span> &nbsp;&nbsp;<span style="COLOR:#2b91af;">EventHandler</span>&nbsp;eh&nbsp;=&nbsp;(sender,&nbsp;e)&nbsp;=&gt;&nbsp;tcs.SetResult(<span style="COLOR:blue;">true</span>); &nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;attach&nbsp;to&nbsp;validation&nbsp;complete&nbsp;event</span> &nbsp;&nbsp;ValidationComplete&nbsp;+=&nbsp;eh; &nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;call&nbsp;check&nbsp;rules&nbsp;</span> &nbsp;&nbsp;BusinessRules.CheckRules(); &nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;wait&nbsp;for&nbsp;tcs&nbsp;to&nbsp;set&nbsp;result&nbsp;(ValidationComplete)</span> &nbsp;&nbsp;<span style="COLOR:blue;">await</span>&nbsp;tcs.Task; &nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;unsubscripbe&nbsp;from&nbsp;event</span> &nbsp;&nbsp;ValidationComplete&nbsp;-=&nbsp;eh; }<br /><br />and call it like this: <br /><br />root.CheckAllRulesAndWaitForAllRulesToComplete(); <span style="COLOR:blue;">if</span>&nbsp;(!root.IsValid) { &nbsp;&nbsp;<span style="COLOR:#2b91af;">MessageBox</span>.Show(<span style="COLOR:#a31515;">&quot;Object&nbsp;has&nbsp;broken&nbsp;rules&nbsp;and&nbsp;can&nbsp;not&nbsp;be&nbsp;saved&quot;</span>); &nbsp;&nbsp;<span style="COLOR:blue;">return</span>; } <span style="COLOR:blue;">await</span>&nbsp;root.SaveAsync();<br />
+<pre></pre>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>This is Asp.Net MVC; the rules are run on property set as normal, however since some are async its possible for the BO get to the action method while rules are still running.&nbsp; If there&#39;s a way to do this without having the new method call BusinessRules.CheckRules that would work for me.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 20, 2013</h2><p>The most efficient way is to use (or create your own version) of CslaModelBinder.&nbsp;</p>
+<p>This use BypassPropertyChecks to load all field values (rather than calling SetProperty and execute rules on a per-property basis) and then call BusinessRules.CheckRules.&nbsp;</p>
+<p>You should be able to us the code sample I supplied and just extend it a little with a check for BusinessRules.IsRunningRules or BusinessRules.IsRunningAsyncRules and if so call TaskCompletionSource.SetResult and remove the call to BusinessRules.CheckRules. .&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Friday, November 22, 2013</h2><p>Hi Jonny,</p>
+<p>I do not think that the problem is MVC specific.</p>
+<p>In my case, we are using a 2 tier - Winform - application. We are doing a mass import.</p>
+<p>The import is affecting the firstname &amp; lastname.</p>
+<p>I&#39;m updating my business object, by setting the firstname &amp; lastname properties (mordern way, with managed backend field).</p>
+<p>As a result, this triggers the async rules.</p>
+<p>Thus, when&nbsp;CheckAllRulesAndWaitForAllRulesToComplete() is called, my object is already busy... and is (sometimes) still busy when leaving.</p>
+<p>Do you recommend using LoadProperty ? From my point of view, this would break business object encapsulation...</p>
+<p>Regards,</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 24, 2013</h2><p>Hi,&nbsp;</p>
+<p>I&#39;d rather look at how the ICheckRules interface is implemented and used in Csla.Web.Mvc.CslaModelBinder. &nbsp;What you need in addition is an overridable method in ICheckRules.CheckRules method and you would be good to go.&nbsp;</p>
+<p>You _could_ implement this in your own base classes. I will check with Rocky if we can refactor ICheckRules.CheckRules to call an overridable method.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

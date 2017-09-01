@@ -1,0 +1,247 @@
+<html><header><title>PTWin\ProjectEdit.cs: .ApplyEdit() and .Save() should appear as one transaction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PTWin\ProjectEdit.cs: .ApplyEdit() and .Save() should appear as one transaction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4127.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>so24wo posted on Sunday, January 06, 2008</h2><P>This issue is addressed at least to:<BR>PTWin\RolesEdis.cs, up to rev.1900 (current)<BR>PTWin\WinPart.cs, up to rev.1697 (current)<BR>.Net 2.0</P>
+<P><BR>Let's view the code from ProjectEdit.cs (rev.1900):</P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; private void RebindUI(bool saveObject, bool rebind)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// disable events<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// unbind the UI<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UnbindBindingSource(this.resourcesBindingSource, saveObject, false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UnbindBindingSource(this.projectBindingSource, saveObject, true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.DataSource = this.projectBindingSource;</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// save or cancel changes</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (saveObject)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project.ApplyEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = _project.Save();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException ex)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.BusinessException.ToString(),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Error saving", MessageBoxButtons.OK,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString(),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Error Saving", MessageBoxButtons.OK,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project.CancelEdit();</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// rebind UI if requested<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rebind)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI();</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// restore events<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.RaiseListChangedEvents = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.RaiseListChangedEvents = true;</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rebind)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// refresh the UI if rebinding</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.ResetBindings(false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.ResetBindings(false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P>There is one trouble with this code.</P>
+<P>Suppose a user changes a _project object with UI and clicks the Save button.<BR>What happens if the .Save() method will throw an exception?<BR>After an exception messagebox will be closed a user will not be able to undo changes<BR>because before call to .Save() we've called the .ApplyEdit() method on our object.</P>
+<P>So these two calls - .ApplyEdit() and .Save() - should be done as one transaction.<BR>If .Save() throws an exception then the object should revert to its undoable state <BR>as if .ApplyEdit() was not called also.</P>
+<P>The one solution can be an implementation of .ApplyAndSave() method. <BR>Rocky can do it for all of us if he will find it usefull.</P>
+<P><BR>The my solution is to clone an object, apply changes on it and try to save it:<BR><STRONG><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project temp = _project.Clone();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.ApplyEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = temp.Save(); <FONT color=#008000>// .Save() throws an exception on errors</FONT></FONT><BR></STRONG>See the full code below.</P>
+<P><BR>One another trouble in ProjectEdit.cs is in OKButton_Click() event handler:</P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; private void OKButton_Click(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (StatusBusy busy = new StatusBusy("Saving..."))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RebindUI(true, false);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Close();<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P>If the .Save() method will throw an exception in RebindUI() then the ProjectEdit<BR>control will be closed immediately after closing an exception messagebox. And a user<BR>will not be able to undo changes again.</P>
+<P>The solution is to catch all exception inside the RebindUI() method and then return<BR>boolean true if saving was successful or false otherwise.</P>
+<P>For the Close button it isn't significant but I wrote this line of code also ;)</P>
+<P>So here are changes in ProjectEdit.cs:</P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; private void OKButton_Click(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (StatusBusy busy = new StatusBusy("Saving..."))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( RebindUI( true, false ) )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Close();<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; private void ApplyButton_Click(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (StatusBusy busy = new StatusBusy("Saving..."))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RebindUI(true, true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; private void Cancel_Button_Click(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RebindUI(false, true);<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; private void CloseButton_Click(object sender, EventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( RebindUI( false, false ) ) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Close();<BR></STRONG>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; <FONT color=#008000>// RebindUI() returns true if the requested operation (saving or canceling <BR>&nbsp;&nbsp;&nbsp; // an object) was completed successfully. And false if any exceptions<BR>&nbsp;&nbsp;&nbsp; // were thrown.<BR></FONT>&nbsp;&nbsp;&nbsp; private <STRONG>bool</STRONG> RebindUI( bool saveObject, bool rebind )<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>bool operationCompleted = false;</STRONG></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// disable events<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.RaiseListChangedEvents = false;</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// save or cancel changes<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>string exceptionMsgTitle = saveObject ? "Error saving":"Error canceling";<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// commit edits in memory<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>FlushBindingSource( this.resourcesBindingSource, saveObject );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FlushBindingSource( this.projectBindingSource, saveObject );</STRONG></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( saveObject )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>Project temp = _project.Clone();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.ApplyEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = temp.Save();</STRONG> <FONT color=#008000>// .Save() throws an exception on errors</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>operationCompleted = true;<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project.CancelEdit(); <FONT color=#008000>// can it throw an exception? <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // maybe a "not enough memory" one only.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // (look into UndoableBase.UndoChanges())<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>operationCompleted = true;<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch ( Csla.DataPortalException ex )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show( ex.BusinessException.ToString(),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exceptionMsgTitle, MessageBoxButtons.OK,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch ( Exception ex )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show( ex.ToString(),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; exceptionMsgTitle, MessageBoxButtons.OK,<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBoxIcon.Exclamation );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><FONT color=#008000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // rebind UI if requested and .Save() ( or Cancel() ) were successful.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // The second check (operationCompleted==true) is required because<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // if the .Save() was not successful, then _project must stay in its<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // edit state so a user can undo this object to the previous state <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // just pressing the Cancel button once.</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( rebind <STRONG>&amp;&amp; operationCompleted</STRONG>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI(); <FONT color=#008000>// calls BusinessBase.BeginEdit()</FONT></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#008000> // restore events</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.RaiseListChangedEvents = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.RaiseListChangedEvents = true;</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( rebind <STRONG>|| !operationCompleted</STRONG> )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// refresh the UI if BindUI() was called <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // or if the .Save() was not successful <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // (if an exception is thrown after Save button was pressed)</FONT></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.ResetBindings( false );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.ResetBindings( false );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>return operationCompleted;</STRONG><BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P>The RebindUI() method calls WinPart.FlushBindingSource() <BR>(which was introduced in <A HREF="/forums/thread/20189.aspx">http://forums.lhotka.net/forums/thread/20189.aspx</A> )</P>
+<P>WinPart.cs:</P>
+<P><FONT face="Courier New" color=#000080 size=2><STRONG>&nbsp;&nbsp;&nbsp; protected void FlushBindingSource( BindingSource source, bool apply )<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( apply )<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; source.EndEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; source.CancelEdit();<BR>&nbsp;&nbsp;&nbsp; }</STRONG></FONT></P>
+<P>Also we should move binding code from the ProjectEdit constructor to the load event handler<BR>(as noticed in <A HREF="/forums/thread/20151.aspx">http://forums.lhotka.net/forums/thread/20151.aspx</A> ):</P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; public ProjectEdit(Project project)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// store object reference</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = project;</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2><STRONG>&nbsp;&nbsp;&nbsp; private void ProjectEdit_Load( object sender, EventArgs e )<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// set up binding<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.roleListBindingSource.DataSource = RoleList.GetList();</STRONG></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI();</STRONG></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// check authorization</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules();<BR>&nbsp;&nbsp;&nbsp; }</STRONG></FONT></P>
+<P><BR>That's all. Nearly the same should be done with ResourceEdit.cs.</P>
+<P>I think with these patches the ProjectTracker will be stable enough for its purpose <BR>to be the face of .CSLA framework.</P>
+<P><BR>---<BR>Regards,<BR>Oleg</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 07, 2008</h2>The problem you seem to have is if the user changes the object, clicks save, and save throws an exception.<br><br>This is explained in the book; you should, after ApplyEdit, clone the object and then save the clone, not the original.&nbsp; In the latest version of Csla, this cloning is done in the dataportal should a flag in your configuration file be set.&nbsp; <br><br>If an exception is thrown, the idea is to throw away the cloned object, and leave the UI intact.&nbsp; If the save is successful, you can rebind it to the UI if you aren't closing the form.&nbsp; <br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 07, 2008</h2><P>Exactly! And in 3.5 the data portal will <EM>default to cloning the object</EM> unless you use a config switch to set it to the pre-3.0 behavior (when you should have been manually cloning the object).</P>
+<P>(which has a beneficial side-effect because it catches most remote data portal issues even with a local data portal - making moving from 2-tier to 3-tier simpler)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>so24wo replied on Monday, January 07, 2008</h2><P><STRONG>2 Andy:</STRONG></P>
+<P>&nbsp;What is the use if we clone the object after .ApplyEdit()? There will be two objects with two empty undo stacks and it will not be possible to undo&nbsp;any changes.</P>
+<P>I'm talking that we should to clone the object BEFORE&nbsp;.ApplyEdit().</P>
+<P><STRONG>2 Rocky:</STRONG></P>
+<P>Currently I'm using CSLA 3.0.3 with <FONT face="Courier New" color=#000080 size=2>CslaAutoCloneOnUpdate</FONT> set to true. So the framework clones my objects automatically on every .Save(). But there is no code which clones the object in the beginning&nbsp;of ApplyEdit() in this version of CSLA.</P>
+<P>What about CSLA 3.5? I'll check it also as soon as the svn becomes accessible. Is looks as it is shutdowned today :(</P>
+<P><STRONG>2 myself:</STRONG></P>
+<P>Anyway there is the bug in the finally block.</P>
+<P>If we didn't change the projectBindingSource.DataSource then there are no needs to reset our binding sources.<BR>The correct code is here:</P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ( rebind &amp;&amp; operationCompleted)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI();</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.RaiseListChangedEvents = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.RaiseListChangedEvents = true;</FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>if ( rebind &amp;&amp; operationCompleted)<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#008000>// refresh the UI if BindUI() was called </FONT></FONT></P>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.ResetBindings( false );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.ResetBindings( false );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P>---<BR>Regards,<BR>Oleg<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 07, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>so24wo:</strong></div><div><strong></strong> What is the use if we clone the object after .ApplyEdit()? There will be two objects with two empty undo stacks and it will not be possible to undo&nbsp;any changes.
+<p>I'm talking that we should to clone the object BEFORE&nbsp;.ApplyEdit().</div></BLOCKQUOTE></p><p>I see what you're getting at; the user loses the ability to undo changes.&nbsp; That only matters if for some reason your exception is correctable via user action, so as picking a new unique document number.&nbsp; If you have a need for this, I suppose you can turn off auto-cloning done in the data portal and do the clone first.&nbsp; I'm not sure if databinding would like it though if you re-bound the old object when the save fails.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>so24wo replied on Monday, January 07, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I see what you're getting at; the user loses the ability to undo changes.&nbsp; That only matters if for some reason your exception is correctable via user action, so as picking a new unique document number.&nbsp;</div></BLOCKQUOTE></P>
+<P>Yes. One possibility when&nbsp;this happens is if the user&nbsp;saves an invalid object&nbsp;then ApplyEdit() doesn't throw an exception but Save() does. Of cource the user knows that the object is invalid already because the UI should shows it with the ErrorProvider control.</P>
+<P>One another possibility is when there are new validation rules added on the server but the client application was not updated. In this case&nbsp;the DataPortal_Update() must check validation rules and if they are violated it must throw an exception. So Save() throws it on the client side. (Well, I wish to write one another&nbsp;message about&nbsp;the validation in the&nbsp;ProjectTracker's DataPortal methods.)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>If you have a need for this, I suppose you can turn off auto-cloning done in the data portal and do the clone first.</div></BLOCKQUOTE></P>
+<P>Why? I like it :)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I'm not sure if databinding would like it though if you re-bound the old object when the save fails.</div></BLOCKQUOTE></P>
+<P>Currently I'm sure there is no any troubles with it. Of cource, if the object's DataPortal_Update() uses transactions.</P>
+<P>---<BR>Regards,<BR>Oleg</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 07, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>so24wo:</strong></div><div>Yes. One possibility when&nbsp;this happens is if the user&nbsp;saves an invalid object&nbsp;then ApplyEdit() doesn't throw an exception but Save() does. Of cource the user knows that the object is invalid already because the UI should shows it with the ErrorProvider control.</div></BLOCKQUOTE><br><br>Indeed.&nbsp; Also, the client shouldn't even allow an attempt to save in such an invalid state.<br>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>so24wo:</strong></div><div>One another possibility is when there are new validation rules added on the server but the client application was not updated. In this case&nbsp;the DataPortal_Update() must check validation rules and if they are violated it must throw an exception. So Save() throws it on the client side. (Well, I wish to write one another&nbsp;message about&nbsp;the validation in the&nbsp;ProjectTracker's DataPortal methods.)</div></BLOCKQUOTE></p><p>That shouldn't happen, and won't work unless you take extra steps.&nbsp; The normal scenario for this is remoting, and with remoting versions much match exactly for just this reason; the type may have changed between versions.&nbsp; I would guess that such a setup isn't a supported scenario, unless you are using Csla to build two applications because you're crossing a trust boundry.&nbsp; <br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>so24wo:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>If you have a need for this, I suppose you can turn off auto-cloning done in the data portal and do the clone first.</div></BLOCKQUOTE></p>
+<p>Why? I like it :)</div></BLOCKQUOTE></p><p>Well because you're doing the clone twice, needlessly.&nbsp; If you're going to clone prior to ApplyEdit, there isn't a real need to clone again, and you're just incuring more overhead for no benefit.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>so24wo:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I'm not sure if databinding would like it though if you re-bound the old object when the save fails.</div></BLOCKQUOTE></p>
+<p>Currently I'm sure there is no any troubles with it. Of cource, if the object's DataPortal_Update() uses transactions.</div></BLOCKQUOTE></p>Well, the transactions protect the database from invalid state.&nbsp; I wasn't sure how databinding would react, although I suppose that if you get an exception, there's no need to rebind the UI anyway, so I'd think it would be fine.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>so24wo replied on Tuesday, January 08, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div> 
+<P>Well because you're doing the clone twice, needlessly.&nbsp; If you're going to clone prior to ApplyEdit, there isn't a real need to clone again, and you're just incuring more overhead for no benefit.<BR></P>
+<P></div></BLOCKQUOTE></P>
+<P>But we also use&nbsp;this autocloning&nbsp;in RolesEdit.cs.</P>
+<P>So for ProjectEdit our code should look something like:<FONT face="Courier New" color=#000080 size=2></P></FONT>
+<P><FONT face="Courier New" color=#000080 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project temp = _project.Clone();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; temp.ApplyEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>AutoCloneOnUpdate = false;<BR></STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = temp.Save();<FONT color=#008000> // .Save() throws an exception on errors<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; operationCompleted = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catches (...) { ... }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <STRONG>AutoCloneOnUpdate = true;<BR></STRONG>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></FONT><FONT face="Courier New" color=#000080 size=2></P></FONT>
+<P>Of cource this is only idea. As <STRONG><FONT face="Courier New" color=#000080 size=2>AutoCloneOnUpdate </FONT></STRONG>is a readonly property and it works for the <EM>LocalProxy</EM> only.</P>
+<P>---<BR>Regards,<BR>Oleg<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 08, 2008</h2>Well the CloneOnUpdate (or whatever its called) is an all or nothing prospect, and&nbsp; your decision on what value to use will drive how you architect your application.&nbsp; I don't see why that property couldn't be read / write at run-time, except for consistncy.&nbsp; I can see people posting here because the object isn't being cloned by the dataportal because another form turned that feature off and they forgot to turn it back on. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That switch can&#8217;t really be dynamic, as it controls the
+entire data portal. And people&#8217;s UI code must be written differently when
+it is on or off.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Honestly, the data portal should have done this auto clone from
+day 1, it just didn&#8217;t occur to me back then. So versions 3.0 and 3.5 are
+a way of transitioning from the old (bad) way to the new way. CSLA 4.0 will
+probably eliminate the setting and always do the auto clone.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Again, the point here is that the remote data portal behavior is
+what it is. I&#8217;m just making the local data portal have the same semantic
+behavior (as much as possible).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The alternative is what we&#8217;ve had to date &#8211; the poor
+UI developer must manually clone the object graph and jump through silly hoops.
+And they must know whether the data portal is running in local or remote mode. That
+is all wrong &#8211; the UI developer shouldn&#8217;t need to know if the data
+portal is in local or remote mode &#8211; or that there is a data portal at all
+&#8211; this is just not a UI concern.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to trap the object&#8217;s state before the final
+ApplyEdit(), then that <i>is the UI developer&#8217;s concern</i>. This is not
+a business layer or mobile object or data access layer concern. You are
+imposing a requirement due to a UI constraint, and so it is a UI issue. And
+that&#8217;s fine &#8211; but it is something that needs to be addressed at the
+UI layer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 08, 2008 7:43 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] PTWin\ProjectEdit.cs: .ApplyEdit() and .Save()
+should appear as one transaction<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well the CloneOnUpdate (or whatever its called) is an all or
+nothing prospect, and&nbsp; your decision on what value to use will drive how
+you architect your application.&nbsp; I don't see why that property couldn't be
+read / write at run-time, except for consistncy.&nbsp; I can see people posting
+here because the object isn't being cloned by the dataportal because another
+form turned that feature off and they forgot to turn it back on. <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>AutoCloneOnUpdate only works on a local data portal proxy,
+because remote data portal proxies clone the object automatically &#8211; the object
+is cloned across the network, which is unavoidable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is why the auto clone works the way it does &#8211; my goal
+is to make the use of a local proxy have the same behavior as the use of a
+remote proxy. The way a remote proxy works obviously can&#8217;t be changed
+because the network is there, and so I&#8217;ve made the local proxy work in as
+similar a manner as possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true, there&#8217;s no Clone before ApplyEdit, and I don&#8217;t
+plan to put one in. If you want to be able to restore the object to the user
+such that they can click Cancel then you&#8217;ll need to do the cloning
+yourself like you did prior to 3.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The point you bring up about the finally block is, I think, more
+of an optimization than a bug. The existing code works, your approach is
+probably more efficient. I&#8217;m not sure it is terribly important though,
+because this is the exceptional case, not the normal case. In the normal case
+the Save() worked and a refresh really is required.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The svn server isn&#8217;t actually down, but my DSL connection
+is basically broken. I&#8217;ve filed a repair order, so hopefully they can
+find and fix the problem. As it is, my Internet connection stays up for maybe
+10 minutes at a time if I&#8217;m lucky&#8230; Miserable situation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,153 @@
+<html><header><title>SortedBindingList Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6711.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Woggly posted on Wednesday, April 01, 2009</h2><P>Hi!</P>
+<P>I am a newbie to Csla, but I think at work I have gotten a good impression on how everything is working togeteher. Now I am trying to sort a WPF DataGrid with the SortedBindingList. I achieved a Custom sorting with it and I am quite happy with the solution but I have got a question.</P>
+<P>In my Application I have a column with dates. Some of these dates maybe the same dates (e.g. 23.3.2008 for 3 times). When I apply the sort with this property it seems that the list is taking another property to decide in which order these dates should be shown. Is the list really taking another property into sorting? Or is it just luck that this is sorted the right way?</P>
+<P>Can I somehow take influence in the sorting when dates are the same? Like saying if dates are the same, take the property ID as second sorting-parameter?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If
+you follow the pattern and expose the date as string, you are sorting on string
+value of a date, so 1/1/2009 will come after 9/9/2008.&nbsp; For date sorting I
+usually add a read only property that returns the date, and sort on that
+property instead of date.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Woggly
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 01, 2009 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SortedBindingList Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi!<o:p></o:p></p>
+
+<p>I am a newbie to Csla, but I think at work I have gotten a good impression
+on how everything is working togeteher. Now I am trying to sort a WPF DataGrid
+with the SortedBindingList. I achieved a Custom sorting with it and I am quite
+happy with the solution but I have got a question.<o:p></o:p></p>
+
+<p>In my Application I have a column with dates. Some of these dates maybe the
+same dates (e.g. 23.3.2008 for 3 times). When I apply the sort with this
+property it seems that the list is taking another property to decide in which order
+these dates should be shown. Is the list really taking another property into
+sorting? Or is it just luck that this is sorted the right way?<o:p></o:p></p>
+
+<p>Can I somehow take influence in the sorting when dates are the same? Like
+saying if dates are the same, take the property ID as second sorting-parameter?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Woggly replied on Wednesday, April 01, 2009</h2><P>That is not what I mean. The sorting does work. But I would like to&nbsp;know if the list&nbsp;is taking a second property if the first one is doubled to sort. </P>
+<P>Can I somehow take influence in the sorting when dates are the same? Like saying if dates are the same, take the property ID as second sorting-parameter?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, April 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+think the book describes how to add a custom delegate to the sorted binding
+list.&nbsp; On the other hand, it is much easier to use Linq to CSLA instead of
+sorted binding list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Woggly
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, April 01, 2009 10:00 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: SortedBindingList Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>That is not what I mean. The sorting does work. But I would like
+to&nbsp;know if the list&nbsp;is taking a second property if the first one is
+doubled to sort. <o:p></o:p></p>
+
+<p>Can I somehow take influence in the sorting when dates are the same? Like
+saying if dates are the same, take the property ID as second sorting-parameter?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, April 01, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Woggly:</strong></div><div><P>That is not what I mean. The sorting does work. But I would like to&#160;know if the list&#160;is taking a second property if the first one is doubled to sort. </P><br /><P>Can I somehow take influence in the sorting when dates are the same? Like saying if dates are the same, take the property ID as second sorting-parameter?</P></div></BLOCKQUOTE><br /><br />I think SortedBindingList was limited to a single column sort. You should just use LINQ in 3.6. If you know at design time which column(s) you want to use then standard LINQ is fine.<br /><br />But if you need to vary the column(s) at run time then you need the Microsoft Dynamic Query Extensions for LINQ. You can Google to get them. They allow you to pass in string values for sortColumn and sortDirection.<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Woggly replied on Thursday, April 02, 2009</h2><P>I tried it with Linq first, but the list was not sorted correctly. It only took the first two characters of the date and sorted them, something like this was the result:</P>
+<P>23.08.2008<BR>23.04.2008<BR>23.01.2009<BR>23.05.2008</P>
+<P>But I will have another look at it, perhaps I did something wrong.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

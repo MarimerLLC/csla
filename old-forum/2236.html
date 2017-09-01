@@ -1,0 +1,37 @@
+<html><header><title>N-Level Undo always leaves 1 row in the wrong state</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>N-Level Undo always leaves 1 row in the wrong state</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2236.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG posted on Monday, January 29, 2007</h2><P>I have a&nbsp; parent root <FONT color=#2b91af size=2>BusinessListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SODCustomers</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SODCustomer</FONT><FONT size=2>&gt; where&nbsp; <FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SODCustomer</FONT><FONT size=2>&gt; . </FONT></FONT>I am using windows DataGridView. In the search/fetch I have the following code</P>
+<P><FONT size=2><FONT size=2>&nbsp;&nbsp;&nbsp;sODCustomers=SODCustomers.GetSODCustomers(string parmeter)<BR>&nbsp;&nbsp;&nbsp;sODCustomers.BeginEdit()<BR><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>sODCustomersBindingSource.DataSource = sODCustomers;</FONT></FONT></FONT></P>
+<P><FONT size=2>In the cancel button I have this code<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sODCustomers.CancelEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sODCustomersBindingSource.CancelEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sODCustomers.BeginEdit();</FONT></P>
+<P><FONT size=2>The current edit level is&nbsp;1 for all rows except for the selected cell which is 2.</FONT></P>
+<P><FONT size=2>If I change&nbsp;row 1 and row 2 and then click Cancel everything is ok. However, if change something in row1 and then row 2 and then change more data in row 1 and row 2, one row does not have the right data, it has the data&nbsp;from the second last changed. Have tried all combinations of bindingsource and object cancel edit and begin edit with no success. </FONT></P>
+<P><FONT size=2>What I am misssing?</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 29, 2007</h2><P>This is a known issue that has come up on the forums a few times before.</P>
+<P>The key to success when using a BindingSource in Windows Forms data binding is to avoid directly calling the BeginEdit(), CancelEdit() and ApplyEdit() methods on your objects. Instead, always call the corresponding methods on the <EM>BindingSource object</EM>.</P>
+<P>Also, when using any parent-child model, make sure you call the child's BindingSource before calling the parent to keep everything in proper order.</P>
+<P>The one exception to all this, is if you have an editable root list. In that case you may want to call BeginEdit() manually <EM>before binding the object</EM>. Data binding will call BeginEdit() on each row as you edit it, and you need to do CancelEdit()/EndEdit() calls on the BindingSource to counter that. But having called BeginEdit() manually means you can manually call CancelEdit() to roll back all changes to the collection if needed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Tuesday, January 30, 2007</h2><P>I did read&nbsp;the&nbsp;threads in this forum before posting but have not seen anything. I use editable root list. The problem is assume row1=Test1 and row2=Test2 and then update row1=Test1More and row2=Test2More and then go to row1=Test1MoreAddedMore and then&nbsp;hit cancel everything ids fine except that&nbsp;&nbsp;row1=Test1More&nbsp; instead of row1=Test1 .&nbsp; Has anybody&nbsp;seen this behavior and what I am missing?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, January 31, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>GeorgeG:</strong></div><div> 
+<P>I did read&nbsp;the&nbsp;threads in this forum before posting but have not seen anything. I use editable root list. The problem is assume row1=Test1 and row2=Test2 and then update row1=Test1More and row2=Test2More and then go to row1=Test1MoreAddedMore and then&nbsp;hit cancel everything ids fine except that&nbsp;&nbsp;row1=Test1More&nbsp; instead of row1=Test1 .&nbsp; Has anybody&nbsp;seen this behavior and what I am missing?</P>
+<P>Thanks</P>
+<P></div></BLOCKQUOTE></P>
+<P>I'm presuming you're talking about editing the list in a grid.</P>
+<P>This was precisely the behavior I experienced.&nbsp; Did you find my thread among your search?&nbsp; At the end of it I think you'll find I will have your solution.</P>
+<P>Rocky has stated before that these issues end up being confusion about the way databinding works, and I'm a believer after many <EM>many</EM> hours of beating my head against the wall.&nbsp; And I don't mean that to question your ability, it is not easy to understand.&nbsp; :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Yuriy Posidelov replied on Monday, March 26, 2007</h2><P>Yeah, I have this issue too.</P>
+<P>And I also beating my head against the wall :)</P>
+<P>After all I make disicion: </P>
+<P>If I have BusinessBase I use BeginEdit, CancelEdit of business object and&nbsp;it works fine.</P>
+<P>In case when&nbsp;I have BusinessBaseList I will use BeginEdit() for BusinessObject.</P>
+<P>But for canceling some like this:<BR><FONT size=2></FONT></P>
+<P><FONT size=2>supplierListBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P></FONT><FONT size=2>
+<P>supplierListBindingSource.CancelEdit();</P>
+<P></P>
+<P>supplierListBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</FONT></P><FONT size=2><FONT size=2>
+<P>supplierListBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</FONT></P>
+<P><FONT size=2>And EndEdit(), CancelEdit() for Binding Source.</FONT></P>
+<P>It was written before by Rocky.</P>
+<P>Also&nbsp;bef<FONT size=2>ore&nbsp;save changes&nbsp;we&nbsp;have to use EndEdit() for BindingSource.</FONT></P></FONT><FONT size=2>
+<P>And after saving we have to explicitly rebind datasource by:</P><FONT size=2>
+<P>supplierListBindingSource.DataSource = objShop.SupplierListChildren;</P>
+<P>dgvSupplier.DataSource = supplierListBindingSource;</P>
+<P>Also&nbsp;rebind data&nbsp;everywhere&nbsp;you add data (ResetBindings(false))</P>
+<P>May be it all! (Probably I help someone don't waste more time)</P></FONT>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GeorgeG replied on Monday, March 26, 2007</h2><P>I think the problem was that I never called MarkAsChild() in the BusinessListBase although I never went back to verify it for sure.</P>
+<P>I have switched to EditableRootListBase since it was more applicable. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

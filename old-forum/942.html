@@ -1,0 +1,45 @@
+<html><header><title>Hide propety</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Hide propety</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/942.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy posted on Friday, August 18, 2006</h2><P>Using a DataGrid with AutoGenerate columns is there an attribute I can put on a property to hide it so it isn't displayed?</P>
+<P>I want to hide the IsValid properties, and stuff like that from the BusinessBase class.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 18, 2006</h2>Hmm, Browsable( false ) should be doing that already, I think.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy replied on Friday, August 18, 2006</h2><P>Thanks.&nbsp; I tried this and it wasn't hidden in the DataGrid.&nbsp; </P><FONT size=2>
+<P><FONT face="Courier New">[Browsable(</FONT></FONT><FONT face="Courier New" color=#0000ff size=2>true</FONT><FONT size=2><FONT face="Courier New">)]<BR></FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2><FONT face="Courier New"> IsValid<BR></FONT><FONT face="Courier New">{<BR>&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT color=#0000ff size=2><FONT face="Courier New">get<BR></FONT></FONT><FONT size=2><FONT face="Courier New">&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2><FONT face="Courier New">.IsValid;<BR>&nbsp;&nbsp;&nbsp;</FONT><FONT face="Courier New">}<BR></FONT><FONT face="Courier New">}</FONT></P></FONT>
+<P>This atribute is for the UI Design Mode as far as I have seen.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy replied on Friday, August 18, 2006</h2><P>Seems it actually does work.&nbsp; Might help if I set the flag to false. <img src="/emoticons/emotion-15.gif" alt="Geeked [8-|]" /></P>
+<P>Here is what I ended up doing.</P><FONT size=2>
+<P>[Browsable(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsValid<BR></FONT><FONT size=2>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsValid;</P>
+<P>}</P>
+<P>}</P>
+<P>[Browsable(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsNew</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsNew;</P>
+<P>}</P>
+<P>}</P>
+<P>[Browsable(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsDeleted</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsDeleted;</P>
+<P>}</P>
+<P>}</P>
+<P>[Browsable(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsChild</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsChild;</P>
+<P>}</P>
+<P>}</P>
+<P>[Browsable(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsSavable</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsSavable;</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,51 @@
+<html><header><title>RunRules generate &quot;Collection was modified; enumeration operation may not execute.&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RunRules generate &quot;Collection was modified; enumeration operation may not execute.&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11761.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosgath posted on Thursday, December 20, 2012</h2><p>
+<p>I have a Silverlight 4.0 Client calling a method that executes a command object. &nbsp;The DataPortal_Execute of the Command object on the server calls a class that takes a formatted text file and parses it into multiple lines (business objects) that include 1 material business object each and then returns the set of lines. &nbsp;This works great for a single request. &nbsp;However, occasionally when multiple clients call this command on the server during the same time, individual material objects will have a rule result indicating an exception in the running the rules or the method parsing the file will generate a similar message. &nbsp;After the material is set and all options (children of material) are loaded from the file for that material, I revalidate the model number on materials (see code below) so the selected options can be included with the validation. &nbsp;During this, I get one of two errors below. &nbsp;In production, I am using CSLA 4.2, but I have tried upgrading to CSLA 4.3.13 locally. &nbsp;The issue still exists. &nbsp; </p>
+<p>Is there a way from me to invoke the RunRules on the Server and be thread-safe? &nbsp;</p>
+<p>//Summary of File Helper called by Command</p>
+<p><span>	</span>while(!FileEndOfStream)</p>
+<p><span>	</span>{</p>
+<p>&nbsp; &nbsp;_newLine = Line.New(order);</p>
+<p>&nbsp; &nbsp;_newLine.Material.ModelNumber = _value;</p>
+<p>&nbsp; &nbsp;//populate other line fields</p>
+<p>&nbsp; //populate options</p>
+<p>&nbsp; _newLine.Material.CheckRules(Model.Material.ModelNumberProperty);</p>
+<p>}</p>
+<p>//From Material Model Object</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; internal void CheckRules(Csla.Core.IPropertyInfo prop)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (Csla.ApplicationContext.LocalContext.Contains(&quot;Loading Order&quot;)) return;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var _propertyNames = this.BusinessRules.CheckRules(prop);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; foreach (var _property in _propertyNames)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OnPropertyChanged(_property);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>Errors:</p>
+<p>Property load or set failed for property ModelNumber (Collection was modified; enumeration operation may not execute.)</p>
+<p><span>	</span>at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue, NoAccessBehavior noAccess) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Model.Material.set_ModelNumber(String value) in ..\Data Models\Model.Server\Material.generated.cs:</p>
+<p><span>	</span>at Model.Helpers.FileHelper.UploadFile(Byte[] contents, Order&amp; order, Int32 lineNumber) in ..\Data Models\Model.Server\Helpers\FileHelper.cs:</p>
+<p><span>	</span>at Model.Commands.Command.DataPortal_Execute() in ..\Data Models\Model.Server\Commands\Server.Command.cs:</p>
+<p>&nbsp;</p>
+<p>Collection was modified; enumeration operation may not execute.</p>
+<p>&nbsp; &nbsp;<span>	</span>at System.ThrowHelper.ThrowInvalidOperationException(ExceptionResource resource) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at System.Collections.Generic.List`1.Enumerator.MoveNextRare() &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at System.Collections.Generic.List`1.Enumerator.MoveNext() &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Rules.BusinessRules.&lt;&gt;c__DisplayClass2f.&lt;RunRules&gt;b__24(RuleContext r) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Rules.RuleContext.Complete() &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Rules.BusinessRules.RunRules(IEnumerable`1 rules, Boolean cascade, RuleContextModes executionContext) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Rules.BusinessRules.CheckRulesForProperty(IPropertyInfo property, Boolean cascade, RuleContextModes executionContext) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Rules.BusinessRules.CheckRules(IPropertyInfo property, RuleContextModes executionContext) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Csla.Rules.BusinessRules.CheckRules(IPropertyInfo property) &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Model.Material.CheckRules(IPropertyInfo prop) in ..\Data Models\Model.Server\Material.cs &nbsp; &nbsp;&nbsp;</p>
+<p><span>	</span>at Model.Helpers.FileHelper.UploadFile(Byte[] contents, Order&amp; order, Int32 lineNumber) in ..\Data Models\Model.Server\Helpers\FileHelper.cs:</p>
+<p><span>	</span>at Model.Commands.Command.DataPortal_Execute() in ..\Data Models\Model.Server\Commands\Server.Command.cs:</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 21, 2012</h2><p>Do these exceptions occur after the ApplicationPool has been recycled? </p>
+<p>We have fixed a thread race condition on initialization of BusinessRules (calling AddBusinessRules) but still have a known thread race issue for initialization of static AuthorizationRules (calling<span style="color:green;">AddObjectAuthorizationRules</span>) for both Csla 4.3 and 4.5 . </p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1107">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1107</a>&nbsp; <br /><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1078">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1078</a></p>
+<p>These fixes is in Trunk but not yet released in Csla 4.3 (AFAIK) so you might download the Csla 4.3 source and rebuild yourself and check/verify if this solved your issue. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosgath replied on Friday, December 21, 2012</h2><p>Unfortunately, that doesn&#39;t appear to fix the issue. &nbsp;I still get the same messages. &nbsp;I redesigned how this worked. &nbsp;The Rule on Material was calling a command to retrieving data from our ERP system, applying updates to the data including a validation message code field, and setting a validation message for the rule. &nbsp;I removed this rule and setup a new one to only trigger from a validation code field. &nbsp;The file parser now calls the command to retrieve the data the rule was used for. &nbsp;The new rule triggers when the command is setting the values. &nbsp;This new rule has a simple case statement to translate the code into our validation message. &nbsp;Now I just have to change the other places in the application to do this explicitly instead of relying on the rule. &nbsp;It actually sets me up for some other future performance tuning we were considering.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,51 @@
+<html><header><title>Adding objects to a ListBox in a loop</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding objects to a ListBox in a loop</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/996.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Wednesday, August 23, 2006</h2><P>This may not be CSLA specific - thinking it's a databinding thing, just thought I'd throw it out there.</P>
+<P>I have a ListBox that is whose DataSource is a BindingSource, the BindingSource's DataSource is an Editable Root List.</P>
+<P>If I add a single item to the ListBox, via the bo's .AddNew() method, set my properties, the new item shows up just fine.</P>
+<P>If I attempt add items in a loop (foreach or for...), the very last item added does not show it's text. The item is there, just with empty text. I can verify this by iterating through the items and printing out the text value.</P>
+<P>Why would the last item to be added not show it's text?</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>Just speculating here, but perhaps you are adding the item to the collection and then setting the text? If you set the text via the private field, rather than setting it via the public property, then the PropertyChanged event wouldn't fire.<br><br>Data binding drives off events from the list. When you add an item to the list, a ListChanged(added) is raised. Then, if you change the object via its properties, a ListChanged(changed) should be raised. But if you change the object without calling PropertyHasChanged() then this event wouldn't be raised and the list would never be notified that your object has a new value.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, August 23, 2006</h2><P>Thanks for the reply.</P>
+<P>Yes, I am adding the item to the collection and then setting the text. More specifically, I'm setting the public property of the new object. That property does call PropertyHasChanged - stepped through the code to be sure. This is the same property that the ListBox's DisplayMember is set to (RoleName in this example).</P>
+<P>Looking a little more carefully at this, it's not related to the looping thing. If I add an item one by one, sometimes the text appears, and sometimes it doesn't. Strange.</P>
+<P>Here's the code if it makes a difference. I'm starting to think I'm just doing something wrong.</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Get the selected item.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>ListViewItem</FONT><FONT size=2> item = lvRoleList.SelectedItems[0];</P>
+<P></FONT><FONT color=#008000 size=2>// Add new role to the assigned list.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>EmployeeEditableChild</FONT><FONT size=2> employee = (</FONT><FONT color=#008080 size=2>EmployeeEditableChild</FONT><FONT size=2>)employeeEditableRootListBindingSource.Current;</P>
+<P></FONT><FONT color=#008080 size=2>EmployeeRoleEditableChild</FONT><FONT size=2> employeeRole = employee.EmployeeRoles.AddNew();</P>
+<P>employeeRole.RoleFK = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Guid</FONT><FONT size=2>(item.Name);</P>
+<P>employeeRole.EmployeeFK = employee.PK;</P>
+<P>employeeRole.RoleName = item.Text;</P>
+<P></FONT><FONT color=#008000 size=2>// Remove from all roles list.</P></FONT><FONT size=2>
+<P>item.Remove();</P>
+<P>Regards,</P>
+<P>Mike</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, August 24, 2006</h2>I have run into similar behaviour on this.&nbsp; In our case we were able to reset the DataSource property.&nbsp; Try seeing if you can force a binding refresh.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, August 24, 2006</h2><P>Cool, thanks Brian, that did the trick.</P>
+<P>I set the ListBox's .DataSource to null, then back to the BindingSource - also had to reset the .DisplayMember so my wanted property is displayed.</P>
+<P>Thanks!</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 24, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=765182520-24082006><FONT face=Arial color=#0000ff size=2>You can probably just tell the bindingsource to 
+resetbindings - there's a method for that.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=765182520-24082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=765182520-24082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Michael Hildner 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Thursday, August 24, 2006 3:12 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Adding 
+  objects to a ListBox in a loop<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Cool, thanks Brian, that did the trick.</P>
+  <P>I set the ListBox's .DataSource to null, then back to the BindingSource - 
+  also had to reset the .DisplayMember so my wanted property is displayed.</P>
+  <P>Thanks!</P>
+  <P>Mike</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, August 24, 2006</h2><P>Thanks, that works as well - a couple less lines of code.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

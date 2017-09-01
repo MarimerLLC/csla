@@ -1,0 +1,28 @@
+<html><header><title>Csla.NameValueListBase - Insert is an invalid operation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.NameValueListBase - Insert is an invalid operation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6593.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Wednesday, March 11, 2009</h2><P>On a NameValueListBase class I've made, I'm throwing the "Insert is an invalid operation" in the DataPortal_Fetch.&nbsp; I've set RaiseChangedEvents to false before calling the Add operation.&nbsp; I'm starting to wonder if it has something to do with the Generic I'm also using in my class.&nbsp; I'm sort of trying something a little different here...&nbsp; Can this work? I don't see why it wouldn't...</P><FONT size=2>
+<P></FONT><FONT size=1>[<FONT color=#2b91af>Serializable</FONT>()]</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>class</FONT> <FONT color=#2b91af>NewStatusCountsInfo</FONT>&lt;T&gt; : Csla.<FONT color=#2b91af>NameValueListBase</FONT>&lt;T, <FONT color=#0000ff>int</FONT>&gt;</FONT></P>
+<P><FONT size=1>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=1><FONT color=#0000ff>private</FONT> NewStatusCountsInfo()</FONT></P>
+<P><FONT size=1>{ <FONT color=#008000>/* require use of factory method */</FONT>}</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>internal</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#2b91af>NewStatusCountsInfo</FONT>&lt;T&gt; GetNewStatusCountsInfo(<FONT color=#2b91af>SafeDataReader</FONT> dr)</FONT></P>
+<P><FONT size=1>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=1><FONT color=#0000ff>return</FONT> <FONT color=#2b91af>DataPortal</FONT>.Fetch&lt;<FONT color=#2b91af>NewStatusCountsInfo</FONT>&lt;T&gt;&gt;(dr);</FONT></P></BLOCKQUOTE>
+<P><FONT size=1>}</FONT></P>
+<P><FONT size=1>[<FONT color=#2b91af>RunLocal</FONT>()]</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> DataPortal_Fetch(<FONT color=#2b91af>SafeDataReader</FONT> dr)</FONT></P>
+<P><FONT size=1>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=1><FONT color=#0000ff>this</FONT>.RaiseListChangedEvents = <FONT color=#0000ff>false</FONT>;</FONT></P>
+<P><FONT size=1>Fetch(dr);</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>this</FONT>.RaiseListChangedEvents = <FONT color=#0000ff>true</FONT>;</FONT></P></BLOCKQUOTE>
+<P><FONT size=1>}</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> Fetch(<FONT color=#2b91af>SafeDataReader</FONT> dr)</FONT></P>
+<P><FONT size=1>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=1><FONT color=#0000ff>while</FONT> (dr.Read())</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=1><FONT color=#0000ff>this</FONT>.Add(<FONT color=#0000ff>new</FONT> <FONT color=#2b91af>NameValuePair</FONT>((T)(dr[<FONT color=#a31515>"Status"</FONT>]), dr.GetInt32(<FONT color=#a31515>"Total"</FONT>)));</FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<P><FONT size=1>}</FONT></P></BLOCKQUOTE>
+<P><FONT size=2><FONT size=1>}</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Wednesday, March 11, 2009</h2>PS. Originally I didn't bother with even using the DataPortal at all, but I assumed that maybe by not using it I was somehow still getting the RaiseChangedEvents to occur... So I tried a RunLocal() and got the same results.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, March 11, 2009</h2>You need to set IsReadOnly before add items, and set it back to false before your DataPortal_Fetch returns.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Wednesday, March 11, 2009</h2>DOH!&nbsp; thanks so much, I guess I didn't anticipate NameValueListBase behaving like a ReadOnlyBase.&nbsp; Thanks again!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

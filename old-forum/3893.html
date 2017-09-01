@@ -1,0 +1,358 @@
+<html><header><title>Possible CSLA .NET 3.5 change (Equals())</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Possible CSLA .NET 3.5 change (Equals())</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3893.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, November 13, 2007</h2><P>Due to the <A href="http://www.lhotka.net/weblog/DataRefreshInWPF.aspx">ugly issue </A>with the way WPF handles equality between objects (which I believe is fundamentally broken, but unfortunately isn't likely to change), I am considering making a breaking change to CSLA .NET in version 3.5.</P>
+<P>The CSLA base classes currently override System.Object.Equals() to provide the concept of logical equality, so two objects that return the same GetIdValue() value are considered to be equal. </P>
+<P>WPF treats Equals() like ReferencesEquals() however (even though they aren't the same thing) and so it gets confused when any two object instances claim to be equal to each other. This confusion expresses itself as a flaw in data binding, where the UI doesn't rebind to a new object if it is "equal" to the one already bound to the UI.</P>
+<P>So I am considering removing the Equals() override in the CSLA base classes. This would effectively make Equals() be like ReferenceEquals(), because that's the default behavior of Equals(). Each object would be equal only to itself.</P>
+<P>If your application relies on logical equality, it would break. Now the reality is that <EM>most applications would be unaffected</EM>, because most people don't actually care a lot about equality. Basic operations using lists and data binding don't really care about logical equality, as long as objects can be uniquely identified.</P>
+<P>You would likely be affected only if you explicitly compare for equality between objects in your business code, and do desire two object instances with the same key value from GetIdValue() to be considered as equal.</P>
+<P>So I am starting this thread to get a sense for how many people would be affected, and thus to determine whether a more complex solution/workaround is required.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Tuesday, November 13, 2007</h2>In my opinion, the code "<font face="Courier New" size="2">if (obj1.ID == obj2.ID)</font>" is more clearer then "<font face="Courier New" size="2">if (obj1.Equals(obj2))</font>". Thus, I think it is ok this make this breaking change although it's no longer follow .NET semantics (as what WPF did).<br><br>However, object equality may have its use if its semantics can be properly spelled out. Just a suggestion here. What if CSLA has its own ICslaComparer, for example:<br><br><font face="Courier New" size="2">public interface ICslaComparer&lt;T&gt;<br>{<br>&nbsp;&nbsp;&nbsp; bool ValueEquals(T obj);<br>}</font><br><br>Then, <font face="Courier New" size="2">BusinessBase&lt;T&gt;</font> actually implements <font face="Courier New" size="2">ICslaComparer&lt;T&gt;</font>. At the end, instead of using <font face="Courier New" size="2">Equals()</font>, which I think <font face="Courier New" size="2">ValueEquals()</font> tells what it does directly from its name.<br><br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, November 13, 2007</h2>Rocky, would this break the use of the IndexOf&nbsp; method of a collection?<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div>Rocky, would this break the use of the IndexOf&nbsp; method of a collection?<BR></div></BLOCKQUOTE></P>
+<P>No, because the object would still be equal to itself, so IndexOf() would continue to work</P>
+<BLOCKQUOTE dir=ltr>
+<P>x = new Customer();<BR>list.Add(x);<BR>int pos = list.IndexOf(x);</P></BLOCKQUOTE>
+<P>That works fine either way, because x==x using all forms of equality.</P>
+<P>What would NOT work is this:</P>
+<BLOCKQUOTE dir=ltr>
+<P>x = new Customer();<BR>list.Add(x);<BR>y = x.Clone();<BR>int pos = list.IndexOf(y);</P></BLOCKQUOTE>
+<P>Even though logically you can argue that y==x, using System.Object.Equals() they are not equal. This exemplifies the type of break you'd get in your code - and I <EM>think</EM> this is relatively rare?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel replied on Wednesday, November 14, 2007</h2><P>But this will affect windows forms in things like combos.</P>
+<P>Imagine a combo with a ReadOnlyList that binds a class with a property of combo's readonlylist item type. I Think that the combo syncronizes his items comparing with equals function.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 14, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Angel:</strong></div><div>
+<P>But this will affect windows forms in things like combos.</P>
+<P>Imagine a combo with a ReadOnlyList that binds a class with a property of combo's readonlylist item type. I Think that the combo syncronizes his items comparing with equals function.</P>
+<P></div></BLOCKQUOTE></P>
+<P>No, it should have no impact. A ComboBox bound to a NVL or other list has two parts: the key and the value. The value is displayed to the user, the key is used to index back into the list to find the item. At no point is Equals() used to locate the item in the list - the key value is used to do that.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Thursday, July 24, 2008</h2><P><FONT face=Arial>We just implemented 3.5 (3.5.1 actually), and the combobox problem has occurred for us.&nbsp; We have standard windows forms ComboBox&nbsp;classes that are not bound, but we add items to them from a ReadOnlyListBase.&nbsp; Later in the code, we try:</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT face=Arial color=#0000ff>comboBox123.SelectedItem = MyReadOnlyListBase.GetListItem(1);</FONT></P></BLOCKQUOTE>
+<P><FONT face=Arial>&nbsp;and this no longer works.&nbsp; The SelectedItem property is not set to the item returned by GetListItem because it no longer thinks they are equal.</FONT></P>
+<P><FONT face=Arial>I am investigating overriding Equals in our custom classes derived from the CSLA classes - but this is not as simple as I first thought it would be.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Thursday, July 24, 2008</h2><P><FONT face=Arial>The light bulb always turns on for me right after I post.</FONT></P>
+<P><FONT face=Arial>I was attempting to override the Equals in the collection classes, not the object classes.&nbsp; Once I overrode Equals and GetHashCode in our object class (using the Equals and GetHashCode from CSLA 3.0 with slight modifications), our problems appear to be resolved.&nbsp; Thanks for this thread!</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That Equals() thing is just a mess &#8211; darn the WPF guys for
+changing the definition of the function&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You should be able to implement Equals() like it was in CSLA 3.0
+in your custom base classes. The GetIdValue() method still exists, it is just
+not <i>required</i> anymore. But if your classes implement GetIdValue() as a
+matter of practice, then that Equals() override should function as it did
+before.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RobKraft
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 24, 2008 3:30 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Possible CSLA .NET 3.5 change (Equals())<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>We just implemented 3.5
+(3.5.1 actually), and the combobox problem has occurred for us.&nbsp; We have
+standard windows forms ComboBox&nbsp;classes that are not bound, but we add
+items to them from a ReadOnlyListBase.&nbsp; Later in the code, we try:</span><o:p></o:p></p>
+
+<blockquote>
+
+<p><span>comboBox123.SelectedItem
+= MyReadOnlyListBase.GetListItem(1);</span><o:p></o:p></p>
+
+</blockquote>
+
+<p><span>&nbsp;and this no longer
+works.&nbsp; The SelectedItem property is not set to the item returned by
+GetListItem because it no longer thinks they are equal.</span><o:p></o:p></p>
+
+<p><span>I am investigating overriding
+Equals in our custom classes derived from the CSLA classes - but this is not as
+simple as I first thought it would be.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Thursday, July 24, 2008</h2>I assume Silverlight - being a nephew of WPF - has the same Equals implementation as WPF?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I haven&#8217;t tested that, but that seems like a good assumption.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 24, 2008 5:51 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Possible CSLA .NET 3.5 change (Equals())<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I assume Silverlight - being a nephew of WPF - has the same
+Equals implementation as WPF?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 14, 2007</h2>I suppose that if people needed the old behavior, they could just put the Equals override back into their own subclass of BB or ROB.<br><br>OTOH, how many Csla-ers will be using only WPF?&nbsp; Probably not many compared to Forms / Asp.Net, at least not for a while.<br><br>I'll have to check my code to see if this ever came up.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 14, 2007</h2><P>If I pass a parameter named "key" to a method:&nbsp;&nbsp; &nbsp;key As Object</P>
+<P>Where key is a numeric value(Int16, 32,64) or a String,</P>
+<P>And then use this code:</P>
+<P>If someBO.GetIdValue.Equals(key) Then</P><FONT size=2>
+<P></FONT>Will there be an issue?</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 14, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div>
+<P>If I pass a parameter named "key" to a method:&nbsp;&nbsp; &nbsp;key As Object</P>
+<P>Where key is a numeric value(Int16, 32,64) or a String,</P>
+<P>And then use this code:</P>
+<P>If someBO.GetIdValue.Equals(key) Then</P><FONT size=2>
+<P></FONT>Will there be an issue?</P>
+<P>Joe</P>
+<P></div></BLOCKQUOTE></P>
+<P>There shouldn't be any issue. I'm not proposing getting rid of GetIdValue(). I am just proposing that it wouldn't be used for the Equals() (and related GetHashCode()) overrides. To turn that around, it would only be used for the default ToString() override, and in any code like you describe where you do call GetIdValue() directly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, November 14, 2007</h2>This would break some of my code and necessitate some recoding but not a big deal if its for the greater good.<br><br>I have an observer pattern thing where my "readonly" lists of info objects (mostly for grids) get updated when some events occur. I usually know the id but need the index so I tend to create an throwaway info object with everything blank except the id and use that with IndexOf.<br><br>Since I have my own base objects between CSLA and my app I think a quick fix will be to create my own IndexOf in my ReadOnlyList base to hide the underlying IndexOf. I'm only doing Windows Forms for now.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that sounds like it would be broken.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>A quicker fix (if you don&#8217;t plan to use WPF) would be to
+override Equals() in your base classes just like CSLA does today &#8211; then you&#8217;d
+continue to get exactly the same behavior as you already have.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tetranz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 14, 2007 3:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Possible CSLA .NET 3.5 change (Equals())<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This would break some of my code and necessitate some
+recoding but not a big deal if its for the greater good.<br>
+<br>
+I have an observer pattern thing where my &quot;readonly&quot; lists of info
+objects (mostly for grids) get updated when some events occur. I usually know
+the id but need the index so I tend to create an throwaway info object with
+everything blank except the id and use that with IndexOf.<br>
+<br>
+Since I have my own base objects between CSLA and my app I think a quick fix
+will be to create my own IndexOf in my ReadOnlyList base to hide the underlying
+IndexOf. I'm only doing Windows Forms for now.<br>
+<br>
+Ross<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, November 16, 2007</h2><P>FWIW, I don't think that would be a problem for us.&nbsp; And we'd be willing to accept such a small breaking change anyway if we were to upgrade.</P>
+<P>Who would have thought that equality was such a tricky subject?&nbsp; We had a problem recently due to the fact that we had used the equality operator (i.e. ==) instead of the Equals() method.&nbsp; The "expected" results you get for value types and reference types are different!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fernandoacorreia replied on Saturday, November 17, 2007</h2>It seems to me a good thing to modify the current Equals() implementation.<br><br>We could use Equals() to mean that two objects contain the same state. The default implementation would only work if the two objects were in fact the same instance. But the developer could override it to test for full value equality.<br><br>For instance, object A with Id=1, Name="One" would be equal to object B with Id=1, Name="One" but different from object C with Id=1, Name="Two".<br><br>The benefit of this would be that Equals() could be used to verify whether the state of an object that is being assigned is different from the state of a previous copy. If the state of the two objects is the same (e.g. the objects are "equal"), the method in question could avoid some costly operation.<br><br>The concept that two objects refer to the same database row, even though they may have in fact different state, seems to me like a business concern that could be addressed by a specialized business method.<br><br>To this method, comparing objects A and C from the example above would result "true", even though they're not equal.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Sunday, November 18, 2007</h2><P>Doesn't seem like big trouble to me. But it would&nbsp;be&nbsp;nice if you could&nbsp;make it configurable (using some global setting or a #define or whatever... so we could get the old behavior&nbsp;without messing with&nbsp;CSLA code or introducing intermediary base classes&nbsp;?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I could do that sort of configuration, but I&#8217;m really not
+sure it is worth it. So far it sounds like I will only break one person, and I&#8217;m
+pretty sure they are doing what I recommend by having custom base classes </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> robert_m
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 18, 2007 7:40 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Possible CSLA .NET 3.5 change (Equals())<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Doesn't seem like big trouble to me. But it would&nbsp;be&nbsp;nice if you
+could&nbsp;make it configurable (using some global setting or a #define or
+whatever... so we could get the old behavior&nbsp;without messing
+with&nbsp;CSLA code or introducing intermediary base classes&nbsp;?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 10, 2008</h2><P>Well, I just upgraded to CSLA 3.5 and this blew me right out of the water... </P>
+<P>:(</P>
+<P>Is there any harm in me implementing the override myself in my common BusinessBase&lt;T&gt; derived class? </P>
+<P>&nbsp;</P>
+<P>#if VALUEEQUALITY<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Implement equality based on primary key<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;param name="obj"&gt;&lt;/param&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;returns&gt;&lt;/returns&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public override bool Equals(object obj)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj is T)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Object.Equals(GetIdValue(), ((T)obj).GetIdValue());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>#endif<BR></P>
+<P>Among other things, I do things like updating objects in lists on the screen in place after a transaction versus refetching the list, and since a saved or refetched individual object will no longer be "equal" to the stale list value you're trying to replace, it no longer finds the objects in the list?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 10, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The reason I made this change was because the two strategic UI
+technologies offered by Microsoft aren&#8217;t compatible with logical equality.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only issue you&#8217;ll encounter is that you won&#8217;t be
+able to use WPF or Silverlight, because they won&#8217;t like your Equals()
+override. So you&#8217;ll be stuck in Windows Forms and/or ASP.NET.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, October 10, 2008</h2><P>If the problem areas in WPF and Silverlight are depending on reference equality, why don't they explicitly test for it using ReferenceEquals instead of using Equals?</P>
+<P>I think the impact of this change is more insidious than may appear at first glance. Any code that was previously storing any BusinessBase object in a collection could previously determine if an object was already in the collection using built-in methods without worry about reference equality. Now every place where these methods would previously return true, and index, etc, they will indicate the object is not present. </P>
+<P>Object caches, for example, may not work any more. Every Save() of an object renders a prior reference invalid, so what was previously a cache hit will now potentially be a miss, etc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I can&#8217;t explain why WPF didn&#8217;t use ReferenceEquals()
+like I would have expected&#8230; All I can do is live in the world they
+create, for better or worse.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, October 11, 2008</h2><P>^^^^</P>
+<P>Perhaps you could use your vast influence to help them see the error of their ways... :) </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,112 @@
+<html><header><title>Csla object vs moving a light entity? Am I missing the obvious?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla object vs moving a light entity? Am I missing the obvious?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5059.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>brix posted on Saturday, July 05, 2008</h2><P>Guys,<BR>I have always been intrigued by CSLA.<BR>The book and the framework has been to me a great eye opener.</P>
+<P>I might miss the obvious but how can a CSLA object be good if when you serialize it you move a heavy object about?</P>
+<P>Am I totally missing something?</P>
+<P>I have learnt in these years that when moving stuff around "keep it light"So the approach I am taking is to have a light Object (entity) moving around and a full blown object (bizObject) in the business layer.</P>
+<P>This is the approach I have taken<BR>Let's take my typical object "Customer"</P>
+<P>I have 2 Assemblies.<BR>MyCompany.Customer (Full Blown business Object here I usual have all the business logic related to customer)</P>
+<P>MyCompany.Customer.Entities <BR>&nbsp;CustomerInfo (this is a light version with only getters and setters) travels around the Layers/Tiers.</P>
+<P>We all know that validation should occur in all layers.You cannot leave your UI without having validated your "form".But you dont want to do a "to and fro" to your business Server,you will kill the app in a distributed scenario.<BR>&nbsp; <BR>I want to keep my CustomerInfo very light with not validation whatsoever,but I want to have all the validation in the CustomerBiz Object.</P>
+<P>How do you achieve this in CSLA?</P>
+<P>Most frameworks out there they all seems to have both An Entities assembly and BizObject assembly.Whilst CSLA combines this in one.</P>
+<P>Confused? yes I am .</P>
+<P>can you help?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Saturday, July 05, 2008</h2>Serialized CSLA objects are not that heavy as it may seem. When you serialize an object, you only serialize it's data, <b>not the code</b> (when you deploy a CSLA app in a distributed manner, you have to deploy your business logic assembly (and any other assemblies it depends on) on both the server and the client - so making the code available on both ends). So the size of serialized CSLA object is similar to the size of any "ligtht" object containing same data fields...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brix replied on Sunday, July 06, 2008</h2><P>Thanks for your reply.</P>
+<P><EM>"When you serialize an object, you only serialize it's data, <B>not the code"</B></EM></P>
+<P>Not sure I see this.Any example anywhere?Are marking it "notSerializeable" or...?Sorry for dumb question how do you do it?</P>
+<P><EM>"when you deploy a CSLA app in a distributed manner, you have to deploy your business logic assembly (and any other assemblies it depends on) on both the server and the client</EM> "</P>
+<P>Are you saying that in a distribuited enviroment you deploy everything to both client and server?In that case you are actually never remoting(good thing) .</P>
+<P>Is this what you meant?So your big heavy object is never remoting and therefore is light.So the secret is deployment really.Is this correct?</P>
+<P>Unfortunately CSLA is becoming more and more complex as it supports so many technologies,and the learning curve to do it properly is HIGH.</P>
+<P><STRONG><EM>thanks again</EM></STRONG></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Sunday, July 06, 2008</h2>Well, yes. The code never moves around, just the data. The code is available on both ends because you deploy it on both ends. DataPortal takes object's data, serializes it, moves the serialized data from client to server (or from server to client) using one of the available channels (wcf, ws, remoting...), then creates a new instance of the same type on the destination, deserializes the data and loads this new instance with it. So the number and size of methods in the class don't affect the size of the data you have to move over the wire.<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 06, 2008</h2><P>Look at it this way. Here's a DTO (light data transfer object):</P>
+<P>public class MyStuff<BR>{<BR>&nbsp; public int Id { get; set; }<BR>&nbsp; public string Name { get; set; }<BR>}</P>
+<P>That object has only one behavior: store strongly typed data. All your business logic must be elsewere.</P>
+<P>And here's a CSLA .NET object:</P>
+<P>public class MyStuff : BusinessBase&lt;MyStuff&gt;<BR>{<BR>&nbsp; private int _id;<BR>&nbsp; // property decl here</P>
+<P>&nbsp; private string _name;<BR>&nbsp; // property decl here</P>
+<P>&nbsp; // other code here<BR>}</P>
+<P>I've only put in the parts that matter for this discussion - but obviously this object supports data binding, probably includes validation and business rules and authorization and has a standardized persistence mechanism.</P>
+<P>If you serialize either object, all you are serializing are the object's data elements. Typically when serializing a DTO you use a serializer that copies public read-write property values, and when you serialize a business domain object you copy the object's fields. But notice that either way you are serializing an int and a string.</P>
+<P>Now it is true that CSLA also serializes some other stuff, like the meta-state of the object (is it new, dirty, marked for deletion, etc). Obviously that is important data, and if your framework doesn't do that for you, you'll probably have to add it to the DTO:</P>
+<P>public class MyStuff<BR>{<BR>&nbsp; public int Id { get; set; }<BR>&nbsp; public string Name { get; set; }<BR>&nbsp; public bool IsNew { get; set; }<BR>&nbsp; public bool IsDirty { get; set; }<BR>&nbsp; public bool IsDeleted { get; set; }<BR>}</P>
+<P>Which gets you pretty close to what CSLA serializes.</P>
+<P>The key thing to remember is that when you serialize an object all that happens is that the object's data is pulled out of the object and put into a byte stream. Whether the object has a lot of behaviors is not <EM>doesn't matter at all</EM> - only the data (properties or fields) matter.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brix replied on Monday, July 07, 2008</h2><P>Thanks for your time in replying .What you are saying makes a lot of sense!.</P>
+<P>Just for the avoidance of doubt (being thick here)sorry.</P>
+<P>If you dont want to serialize something you mark "NotSerialized"Correct?All the rest gets serialized No?</P>
+<P>Or do you have a special method that gets only the Fields and serializes only those.</P>
+<P>&nbsp;</P>
+<P>Thanks again</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That depends on which serializer you are using.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA .NET uses either the BinaryFormatter (by default) or the
+NetDataContractSerializer (NDCS) (by configuration). I recommend using the
+BinaryFormatter, which behaves as you describe, and it is the default.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The NDCS also behaves that way for Serializable objects, but has
+a different behavior for DataContract objects. See the <i>Using CSLA .NET 3.0</i>
+ebook for a discussion about the two serializers and how they work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> brix
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 07, 2008 1:29 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Csla object vs moving a light entity? Am I
+missing the obvious?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for your time in replying .What you are saying makes a lot of sense!.<o:p></o:p></p>
+
+<p>Just for the avoidance of doubt (being thick here)sorry.<o:p></o:p></p>
+
+<p>If you dont want to serialize something you mark
+&quot;NotSerialized&quot;Correct?All the rest gets serialized No?<o:p></o:p></p>
+
+<p>Or do you have a special method that gets only the Fields and serializes
+only those.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks again<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

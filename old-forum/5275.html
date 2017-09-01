@@ -1,0 +1,52 @@
+<html><header><title>Open discussion...data persistence frameworks/test frameworks.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Open discussion...data persistence frameworks/test frameworks.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5275.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Wednesday, August 20, 2008</h2>Everybody will obviously not come to a conclusion becasue we all have different experiences.&nbsp; I know many of you out there use NHibernate, Spring.NET, or possibly StructureMap for the data persistence of your CSLA objects.&nbsp; I know a lot off DDD/ORM people stand behind NHibernate because of how well it can generate mocks for Rhino Mocks, etc.<br><br>My goal is to find the best solution for my team and to lesson the friction that is caused by testing (right now we're pure ADO.NET).&nbsp;&nbsp; We use MSTest for everything (and there no way I'd every go back - not looking for testing framework like that - but more like NMock vs. Rhino Mocks/etc).&nbsp; My experience in all everything I've mentioned (both ORM tool wise and test framework wise) is limited but I can handle doing all three - my concern is for the rest of my team and making the best decision.&nbsp; What are some of the challenges you've faced with each of these?&nbsp; Which required your junior members the least learning curve (I've got to put Spring.NET as the worst for that)?&nbsp;&nbsp; Which required you to not have to write 'clever' code to use?&nbsp; Which made it easier to break CSLA prinicipals (thus being on the bottom of my list).<br><br>Thanks for your suggestions, advice, etc.&nbsp; Please, I don't want to start a war on which is best - I just want to find out which works best for you in conjunction with CSLA and the reasons behind it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 20, 2008</h2><P>I'm not going to answer your question directly (sorry), but I want to offer what I believe to be some important insight about CSLA.</P>
+<P>In version 3.6 I've introduced the ability to have the data portal invoke an external object factory rather than the business object. You can read about it here<BR><A href="http://www.lhotka.net/weblog/CSLANETObjectFactoryAttribute.aspx">http://www.lhotka.net/weblog/CSLANETObjectFactoryAttribute.aspx</A></P>
+<P>The primary purpose behind this change is to enable some potential scenarios around ORM tools, and other object&lt;-&gt;data mapping schemes. In particular, I'm hopeful that future versions of the Entity Framework may be able to leverage this capability in interesting ways.</P>
+<P>A secondary benefit is to open more avenues for testing by providing formalized separation between the business and data access layers.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, August 21, 2008</h2>Interesting.&nbsp;&nbsp; But if it's invoking external objects, how can I be sure that the code (and usually it's just case logic on Fetch for different criteria types) in my DataPortal_XYZ methods are working correctly and loading the child object correctly and that I've remembered to call any 'CheckRules' when required?<br><br>I'm looking more for my DataPortal_XYZ methods to call external ORM tools, and really, only to make testing easier so that my XYZ methods instead of using ADO.NET use the object created by ORM that can easily be mocked by some testing framework.&nbsp;&nbsp; I know there are people who do that now, I'm just trying to figure out which tools people have had the best luck with.<br><br>Maybe there's something I 'just don't get'?&nbsp;&nbsp; Certainly wouldn't be the first time.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m just saying that this is an option. The factory object
+would be responsible for creating an instance of your business object(s) and
+loading the data using whatever scheme you want to use (reflection, internal
+interfaces, etc). If you really dig into that area you&#8217;ll find that it is
+a challenging scenario, but it can be done.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want better layer separation with the DataPortal_XYZ
+approach, you should look at the DeepData example. The best approaches (imo)
+are to create a DAL that returns a datareader (the object doesn&#8217;t know
+from where), or a DTO.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, August 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>...</P>
+<P>In version 3.6 I've introduced the ability to have the data portal invoke an external object factory rather than the business object. You can read about it here<BR><A href="http://www.lhotka.net/weblog/CSLANETObjectFactoryAttribute.aspx">http://www.lhotka.net/weblog/CSLANETObjectFactoryAttribute.aspx</A></P>
+<P>The primary purpose behind this change is to enable some potential scenarios around ORM tools, and other object&lt;-&gt;data mapping schemes. In particular, I'm hopeful that future versions of the Entity Framework may be able to leverage this capability in interesting ways.</P>
+<P>...</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>I ran into this very issue with CSLA 2.1 using the Wilson ORMapper. I was trying to implement DataPortal_Fetch, but the problem was that CSLA handed me the object to populate, and I wanted to create the object myself. (I was translating from the NHibernate sample, and evidently NHiberate will let you do this directly, but the Wilson ORM won't)</P>
+<P>My solution at the time, which I found distasteful but works, was to let the ORM fetch a *different* copy of the object directly, and then copy the fields from this fetched object to the one CSLA was asking me to populate. The object generated for this particular mapper&nbsp;support an&nbsp;interface that will let you do this fairly efficiently without reflection, but I can see how this would be a problem if the interface weren't available. </P>
+<P>I'm glad to see&nbsp;direct support for this is coming, but depending on your framework, it may be&nbsp;possible to use CSLA as is and work around lack of custom factory support. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Thursday, August 21, 2008</h2><P>StructureMap&nbsp;is not an orm, it is a dependency injection framework. So you would not use it to do persistance, but use it to remove dependencies between objects.&nbsp; As far as testing goes, it really depends on what your development style is going to be.&nbsp; If you are doing TDD, it is going to be kind of painful with CSLA (there are just to many things going on in each object), but you can look at this link to see how it could work: <A href="http://www.nermins.net/post/2007/05/TDDUsing-Mock-objects-with-CSLANet-(Round-II).aspx">http://www.nermins.net/post/2007/05/TDDUsing-Mock-objects-with-CSLANet-(Round-II).aspx</A>.&nbsp; </P>
+<P>If you are just doing unit testing (testing after your code is written) then you could populate your database in a known state and write your test from there.&nbsp; This does become difficult since you have to keep up with the data in your database and rollback the data into a know state after each test (mbUnit has a rollback attribute which makes this real easy) and in between each test run.&nbsp; If you are testing like this you really don't have much of a need for something like RhinoMocks unless you want to start testing interactions between object/components.&nbsp; </P>
+<P>In the end you need to find what works best for you.&nbsp; This maybe doing TDD without CSLA or it might be just using CSLA.&nbsp;&nbsp;&nbsp; If I was you I would spike out a small prototype using CSLA and then try it using TDD.&nbsp; In the end it really boils down to what works for you.&nbsp; Hope this helps.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, August 21, 2008</h2><P>If you are looking for a mocking tool then I would look closely at typemock.&nbsp; I am currently using the free version in my tests, to mock the dal calls to the database.&nbsp; Since I use ADO in my business objects, I can now easily use a dataset or datatable to return&nbsp;the IDataReader my business objects are expecting.&nbsp; I ran in to a couple of minor issues in getting things set up correctly, but it now works like a charm.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, August 21, 2008</h2>This post was the most helpful so far:<br><br>http://www.nermins.net/post/2007/04/TDDUsing-Mock-objects-with-CSLANet.aspx<br><br>I like the use of AOP for this and I've been working with PostSharp (an excellect AOP tool IMO) to something simliar in another world.<br><br>Thanks for you input folks!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

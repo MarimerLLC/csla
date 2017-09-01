@@ -1,0 +1,74 @@
+<html><header><title>Design Question - static method or separate class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question - static method or separate class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5157.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Friday, July 25, 2008</h2><P>I have a situation where I need to implement a basic search method for a business object.&nbsp; In essence, the user needs to be able to lookup an item in the database and get a summary description of that item.&nbsp; There will always be one and only one result returned from the search - at least at this point.</P>
+<P>By default, my (root) business objects all have a factory method, such as GetProduct(productID), that accepts the&nbsp;guid id&nbsp;of the object to retrieve and returns a single instance of the object.&nbsp; The object has a child collection of Accessories that are included with the product.&nbsp; That list is populated with the root object.</P>
+<P>What I need to accomplish for my service is a simple lookup by product number.&nbsp; So, I could very easily create an overloaded GetProduct() method accepting the product number (as a string) and returning the same object.&nbsp; However, my service method returns a ProductData object which is a stripped down version of the business object for sending the data over the network.</P>
+<P>Thinking from an SOA perspective, perhaps the lookup feature should be a class of its own and maybe even return the ProductData object directly so that my service doesn't have to map the objects.&nbsp; On the other hand, if I start going down this path, wouldn't I end up with separate business objects for each of my service methods because each one has its own behavior/purpose?</P>
+<P>Furthermore, doesn't this parallel the Exists() method Rocky describes in the books?&nbsp; If so, he puts that right on the original business object.&nbsp; But, it only returns a boolean, not an instance of the class.&nbsp; Does that/should that matter?</P>
+<P>Finally, I also have it in the back of my head that there could be a case where the user may want to search based on more than one criteria.&nbsp; So perhaps we ask for product number or the product's sku (not necessarily the same).&nbsp; I'd want to set myself up to easily expand into this arrangement as well.</P>
+<P>I'm open to suggestions about my approach before I get too far down any path.</P>
+<P>Thanks in advance!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 25, 2008</h2><P>Design your objects for each use case. And only reuse them if they are <EM>identical</EM> across use cases.</P>
+<P>You have a Product object, which sounds like an editable root. And presumably is for an 'edit product data' use case.</P>
+<P>Now you have a different use case were the user wants&nbsp;to 'display summary product data'. It should have its own object(s) - probably a read-only root from the sound of it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, July 25, 2008</h2><P>"But, it only returns a boolean, not an instance of the class."</P>
+<P>That isn't quite right. The Command class is sent over the wire to the DP and is returned fully populated. SO the whole class is available, as are *any* of its properties. Rocky only happened to have 1 property (Exists) in the class - nothing stopping you from having more though.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Sunday, July 27, 2008</h2><P>Ok, a couple quick follow-ups then...</P>
+<P>If I create a ProductLookup class that assumes the responsibility of locating products based on whatever criteria (in this case, the product number),&nbsp;I am assuming that it makes sense to have&nbsp;the LookupProduct(product#) method return the non-BO ProductData class (as opposed to my full-blown Product business class), correct?</P>
+<P>Does the ProductLookup class also assume the responsibility for authorization?&nbsp; In other words, I need to make sure the user is allowed to perform a product lookup, so it makes sense to call ProductLookup.CanLookupProducts rather than Product.CanLookup, right?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Seems reasonable to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, July 27, 2008 3:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Design Question - static method or separate
+class<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok, quick follow-up then...<o:p></o:p></p>
+
+<p>If I create a ProductLookup class that assumes the responsibility of
+locating products based on whatever criteria (in this case, the product
+number),&nbsp;I am assuming that it makes sense to have&nbsp;the
+LookupProduct(product#) method return the non-BO ProductData class (as opposed
+to my full-blown Product business class), correct?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

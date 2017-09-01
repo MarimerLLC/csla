@@ -1,0 +1,133 @@
+<html><header><title>Binding an Interface</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding an Interface</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3629.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel posted on Monday, October 01, 2007</h2><P>This is a .net framework general question.</P>
+<P>Is posilbe to bind an interface instead a object?</P>
+<P>If I have this definition:</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> PruebaObjeto</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> IPruebaInterface</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Nombre() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"Prueba Objeto"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> IPruebaInterface_Nombre() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> IPruebaInterface.Nombre</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"Prueba Interface"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Interface</FONT><FONT size=2> IPruebaInterface</P>
+<P></FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Nombre() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Interface</P></FONT>
+<P>&nbsp;</P>
+<P>I Want to do this</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> x </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IPruebaInterface</P>
+<P>x = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> PruebaObjeto</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.NombreTextEdit.DataBindings.Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Windows.Forms.Binding(</FONT><FONT color=#a31515 size=2>"EditValue"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IPruebaInterfaceBindingSource, </FONT><FONT color=#a31515 size=2>"Nombre"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>))</P></FONT>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.IPruebaInterfaceBindingSource.DataSource = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(x, IPruebaInterface)</P></FONT>
+<P>&nbsp;</P>
+<P>I want to bind the property from the interface but I always got the object definition.</P>
+<P>There is a way to bind an interface?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 01, 2007</h2>Not that I'm aware of. All three UI technologies bind to the "native interface" of an object, not any secondary interfaces implemented by that object.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Angel replied on Tuesday, October 02, 2007</h2><P>Bad news...</P>
+<P>Any pattern to work arround this issue?</P>
+<P>I have 3 objects that implements an interface, and are interface properties that&nbsp;I want to manage</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 02, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nothing easy. This is just the way .NET works&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only real workaround I know of, is to create another class
+(in the UI layer) that looks like the interface, but doesn&#8217;t implement
+it. Does that make sense? This class would have all the properties you want to
+bind, and it is THIS object you bind to the UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This object accepts an IWhatever in its ctor, and all its
+properties delegate to the IWhatever properties of the _<i>real</i>_ object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Class Customer<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Private _iCustomer As ICustomer<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Public Property Name() As String<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;Return _iCustomer.Name<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;End Get<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;Set(ByVal value As String)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;_iCustomer.Name = value<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;End Set<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Property<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &#8216; &#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Public Sub New(ByVal iCust As ICustomer)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; _iCustomer = iCust<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Class<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This &#8220;de-interfaces&#8221; the interface, allowing your
+business layer to be interface-based, and the UI to bind to something with the
+right shape.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to be fancy, you could make this UI class implement
+ICustomTypeDescriptor and use reflection to do this indirection against the
+interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know, the instinct is to shudder and cringe at the mention of reflection.
+But remember that all the data binding technologies use reflection to do what
+THEY do, so if you use data binding you are already hip deep in reflection
+anyway, so a little more can&#8217;t really hurt all that much can it? ;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Tuesday, October 02, 2007</h2><P>I have done something a bit different... I have something like a CustomerBase&nbsp;object (builder class) and some concrete sub classes e.g. VipCustomer, RepeatCustomer etc (out of context note: I know that inheritance is not encouraged but in this case I had shared behaviour and think it was a good call). CustomerBase implements an interface lets call it IMyInterface.</P>
+<P>I have some customer specific user controls (e.g. TextBox, ComboBox etc) and in there (in my case in OnPaint) I do the following (I ommit a lot of checks which you can implement):</P><FONT size=2>
+<P>Library.</FONT><FONT color=#2b91af size=2>IMyInterface</FONT><FONT size=2> boundObj = ((</FONT><FONT color=#2b91af size=2>BindingSource</FONT><FONT size=2>)</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.DataBindings[0].DataSource).DataSource </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> Library.</FONT><FONT color=#2b91af size=2>IMyInterface</FONT><FONT size=2>;</FONT></P>
+<P><FONT size=2><FONT size=3>Thats the closes example I have and am not sure if its a good practice but it works. I had some trouble with the designer but after I fixed that all went smooth.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Hope this helps.</FONT></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

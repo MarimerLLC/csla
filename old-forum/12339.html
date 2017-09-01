@@ -1,0 +1,253 @@
+<html><header><title>How T Save() will work ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How T Save() will work ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12339.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoncsla posted on Thursday, January 30, 2014</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+<p class="MsoNormal">I am trying to learn CSLA framework, I&#39;m not able to save<span style="mso-spacerun:yes;">&nbsp; </span>some table data. Please let me guide about
+step-by-step on how to create CSLA ASP.NET website.</p>
+<p class="MsoNormal">I am trying to build a simple CSLA ASP.NET website with simple
+save , update and delete .</p>
+<p class="MsoNormal">I am having book also of Rockford Lhotka . I would start
+with a simple template and expand it. </p>
+<p class="MsoNormal">How can I save with given example : If Iam having Employee
+table with Employee class</p>
+<p class="MsoNormal">Employee newEmployee = Employee.NewEmployee(); </p>
+<p class="MsoNormal">Then set the properties and call the save method....</p>
+<p class="MsoNormal">newEmployee.FirstName = &quot; jhon&quot;;</p>
+<p class="MsoNormal">newEmployee.Save();</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">I found<span style="font-size:9.5pt;line-height:115%;font-family:Consolas;color:black;background:white;mso-highlight:white;"><span style="mso-spacerun:yes;">&nbsp; </span></span><span style="font-size:9.5pt;line-height:115%;font-family:Consolas;color:blue;background:white;mso-highlight:white;">public</span><span style="font-size:9.5pt;line-height:115%;font-family:Consolas;color:black;background:white;mso-highlight:white;"> T Save();</span><span style="font-size:9.5pt;line-height:115%;font-family:Consolas;color:black;">this <span style="mso-spacerun:yes;">&nbsp;</span>in BusinessBase&lt;T&gt; from metadata</span></p>
+<p class="MsoNormal">How it will work ? Any Sample application or reference site
+that<span style="mso-spacerun:yes;">&nbsp; </span>you can provide ?</p>
+<p>&nbsp;</p>
+<p>Thanks &amp; Regards:</p>
+<p>Jhon
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Chris62 replied on Thursday, January 30, 2014</h2><p>I created a simple example below.</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; // You&#39;ll need to add a reference to the CSLA dll in your project(if you haven&#39;t done that already)</p>
+<p>&nbsp; &nbsp; [Serializable]</p>
+<p>&nbsp; &nbsp;public partial class Employee : Business&lt;Employee&gt;</p>
+<p>&nbsp; &nbsp;{</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; // This property would normally map to your P/K in the database</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; private static readonly PropertyInfo&lt;Int32&gt; EmployeeIDProperty = RegisterProperty&lt;Int32&gt;(p =&gt; p.ContactId, String.Empty);</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; public Int32 EmployeeId</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(EmployeeIDProperty); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; internal set { SetProperty(EmployeeIDProperty, value); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; }</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; private static readonly PropertyInfo&lt;String&gt; FirstNameProperty = RegisterProperty&lt;String&gt;(p =&gt; p.FirstName, String.Empty, String.Empty);</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; public String FirstName</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get { return GetProperty(FirstNameProperty); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected set { SetProperty(FirstNameProperty, value); }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; }</p>
+<p style="padding-left:30px;">&nbsp; &nbsp;// Dataportal region</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; [RunLocal]</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; protected override void DataPortal_Create()</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; { &nbsp;}</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; private void DataPortal_Fetch(int EmployeeID)</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; {</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// You would put your data access here to retrieve the appropriate record from the db</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// CSLA works with different DA technologies, ORM, Inline SQL(w/parameters), Data Readers/Sets etc...</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp;}</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp;protected override void DataPortal_Insert()</p>
+<p style="padding-left:30px;">&nbsp; &nbsp;{</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; &nbsp;// You would put your data here to insert a new row/record into the database here</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; // Again, you can use a variety of data access technologies</p>
+<p style="padding-left:30px;"><span></span>&nbsp; }</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span></span>&nbsp; protected override void DataPortal_Update()</p>
+<p style="padding-left:30px;"><span></span>&nbsp; {</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; // You would put your data here to update an existing row/record in the database here</p>
+<p style="padding-left:30px;"><span></span>&nbsp; &nbsp; // Again, you can use a variety of data access technologies</p>
+<p style="padding-left:30px;"><span></span>&nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>I forget what chapter in the CSLA book the Dataportal is covered, but that&#39;s where you can start. &nbsp;If you have a good understanding of inheritance/polymorphism you can infer what&#39;s going on when you go through the WCF Dataportal when you save.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoncsla replied on Tuesday, February 11, 2014</h2><p>Thanks Chris!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, January 30, 2014</h2><p>Just want to add that there is several sample applications that you can look at, too.&nbsp;</p>
+<p>
+<ul>
+<li>SimpleNTier</li>
+<li>ProjectTracker</li>
+</ul>
+</p>
+<p>My preferred way is to fork the CSLA project on GitHub or use the CSLA installer at&nbsp;<a href="http://www.cslanet.com/Download.html">http://www.cslanet.com/Download.html</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoncsla replied on Tuesday, February 11, 2014</h2><p>Thanks JonnyBee... installer&nbsp; is a good example ....</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

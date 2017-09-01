@@ -1,0 +1,152 @@
+<html><header><title>Dependecy injection on Factories</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dependecy injection on Factories</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Tuesday, October 19, 2010</h2><p>Hi,</p>
+<p>I was wondering if there is a way I can do dependency injection on factories.</p>
+<p>The way I think this will work is the same as in MVC, there is a way to have your own&nbsp;dependency&nbsp;injection framework create your controllers.</p>
+<p>So where do I start if I want to have my DI framework create the factories ?</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, October 19, 2010</h2><p>Exactly what do you want to do? Where are you trying to add abstraction?</p>
+<p>When you say &quot;factories&quot;, there are at least two types of factory in CSLA.</p>
+<p>There are the static factory methods used to create objects from the interface control layer (like from an MVC controller). And there are the factory objects that run server-side if you use the ObjectFactory attribute with the data portal.</p>
+<p>The server-side factory objects are created by a factory loader, which you can replace. In that case you assume responsibility for translating the factory name from the ObjectFactory attribute into an instance of a factory object. How you do that is up to you, and you could certainly use an IoC container there if you&#39;d like.</p>
+<p>The client-side factory methods are static by convention, not by necessity. The various CSLA UI helpers (CslaDataSource, ViewModelBase, CslaDataProvider, etc) are all designed to work against static factory methods, so if you don&#39;t use static factory methods you can&#39;t use those UI helpers. But if you are using ASP.NET MVC that doesn&#39;t matter a lot, since there is no UI helper like that for MVC (no need for it).</p>
+<p>BUT, there&#39;s no requirement that the client-side factory methods actually be static. You can create separate factory objects that contain instance methods that call the data portal in the same way. For example:</p>
+<p>public class CustomerFactory<br />{<br />&nbsp; public CustomerEdit GetCustomer(int id)<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;CustomerEdit&gt;(id);<br />&nbsp; }<br />}</p>
+<p>This is the same code you&#39;d write in a static factory, but now it is in an instance method of a factory object. So now you can use DI to create this factory, so you can call the GetCustomer method.</p>
+<p>Of course the next question is whether this gained you anything? In general the answer is no. The data portal is already a multi-layer series of indirections for creating or retrieving business objects. It is virtually impossible to properly create a CSLA business object without using the data portal. So creating an alternative factory that doesn&#39;t use the data portal is somewhat problematic.</p>
+<p>Then again, for ASP.NET MVC maybe it isn&#39;t so terribly bad. Because you could have a whole set of mock business objects that don&#39;t really emulate the CSLA objects, and you could have a factory that creates them. That&#39;s true.</p>
+<p>The thing is, <i>really</i> emulating a CSLA object means implementing the myriad interfaces implemented by BusinessBase (for example). And since most UI code does interact with IDataErrorInfo, INotifyPropertyChanged, ITrackStatus, ISuppressRuleChecking and so forth, your mock object would need to implement all those interfaces too.</p>
+<p>In short, you can absolutely use IoC/DI along with separate factory objects to eliminate data portal calls. Just be warned that creating the mock business objects will almost certainly be extremely non-trivial.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Tuesday, October 19, 2010</h2><p>Hi Rocky,</p>
+<p>Thank you very much for your answer.&nbsp;</p>
+<p><span style="font-size:8.33333px;">The server-side factory objects are created by a factory loader, which you can replace. In that case you assume responsibility for translating the factory name from the ObjectFactory attribute into an instance of a factory object. How you do that is up to you, and you could certainly use an IoC container there if you&#39;d like</span></p>
+<p>The above is what I am really trying to&nbsp;achieve. So my factory will can look something like this:</p>
+<p>public class MyFacyFactory : ObjectFactory</p>
+<p>{</p>
+<p>public MyFacyFactory(ISomeRepository repository, IUser loggedUser)</p>
+<p>{</p>
+<p>&nbsp;_repository = repository;</p>
+<p>_loggedUser = loggedUser</p>
+<p>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>ISomeRepository and IUser will be injected by Ninject let&#39;s say. This will make my live a lot easier when testing the factories and will keep factories more DRY. Now if you could only detail a little about the FactoryLoader and how/where I replace it. </p>
+<p>&nbsp;</p>
+<p>Thank you,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 19, 2010</h2><p>I think the factory loader is discussed in Chapter 18 of <i>Expert 2008 Business Objects</i>. And I know we have unit tests that test the factory loader concept. It isn&#39;t something I do daily (usually 0 or 1 time per project) so I can&#39;t provide code off the top of my head.</p>
+<p>Look at Csla.Server.IObjectFactoryLoader (that&#39;s what you implement) and the CslaObjectFactoryLoader config value is what you set to the full type name in your web.config file. CSLA will load that type and use it instead of the default factory loader.</p>
+<p>One thing - in terms of current user, remember that the data portal (or Windows) typically impersonates the client user, and Csla.ApplicationContext.User contains that user information. Business objects always use Csla.ApplicationContext.User to apply authz rules, so that value is important. Any testing environment that interacts with business objects must make sure that User property is set.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin replied on Tuesday, October 19, 2010</h2><p>Hi,</p>
+<p>&nbsp;</p>
+<p>Thanks for the tip, I will take a look at that chapter. I will also have to figure out how to bootstrap the dataaccess assembly, I will need to register the classes in the DI container somehow.</p>
+<p>&nbsp;</p>
+<p>Have a nice day,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 19, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>Of course the next question is whether this gained you anything? In general the answer is no. The data portal is already a multi-layer series of indirections for creating or retrieving business objects. It is virtually impossible to properly create a CSLA business object without using the data portal. So creating an alternative factory that doesn&#39;t use the data portal is somewhat problematic.
+<p>Then again, for ASP.NET MVC maybe it isn&#39;t so terribly bad. Because you could have a whole set of mock business objects that don&#39;t really emulate the CSLA objects, and you could have a factory that creates them. That&#39;s true.</p>
+<p>The thing is, <i>really</i> emulating a CSLA object means implementing the myriad interfaces implemented by BusinessBase (for example). And since most UI code does interact with IDataErrorInfo, INotifyPropertyChanged, ITrackStatus, ISuppressRuleChecking and so forth, your mock object would need to implement all those interfaces too.</div></p>
+<p>So this kind of confuses me a bit, since I thought the major benefit to things like MVC and MVVM is you can unit test much of your UI code.&nbsp; At my current employer, we&#39;re using Asp.Net MVC but not using Csla (although I&#39;m trying to get there), and we do have unit tests that interact with mock BOs.&nbsp; We use Moq and verify that Save or Gets are called as appropriate, or that methods on the BOs are called.&nbsp; </p>
+<p>The other alternative (if we had Csla in the mix) would require us to spin up a mock repository for the actual BOs to use in place of the real database, but it seems that the unit tests would be losing some focus as it would feel&nbsp; more like an integration test than a unit test.&nbsp; </p>
+<p>What are your thoughts around this?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 20, 2010</h2><p>My question is this: what are you testing?</p>
+<p>If you are using CSLA, the odds of having a controller method that does anything remotely interesting is very small. Or to put it another way, if you have a controller method that does anything interesting, you are probably violating the architecture by putting business logic into the presentation layer.</p>
+<p>This isn&#39;t to say you shouldn&#39;t test the controller methods, it is to say that those tests had better be testing trivial code.</p>
+<p>The most complex controller method tends to be the Edit() postback method. That typically has 4 lines of code, using the CslaModelBinder to populate the model from the postback data, then the Csla.Web.Mvc.Controller base class to save the object. So even this &quot;most complex&quot; controller method doesn&#39;t actually do anything interesting.</p>
+<p>Again, not to say you shouldn&#39;t test it - just that the test is mind-numbingly trivial and virtually incidental.</p>
+<p>However, to actually invoke this method, you&#39;d need a mock business object that implements the interfaces required by CslaModelBinder and the base class helper methods - which means you&#39;ll need to mock the metastate management and broken rules features of CSLA.</p>
+<p>And you can surely do that. But my question is whether it is worth it to go to such effort to test a controller method that is so trivial?</p>
+<p>In fact, if the model binder doesn&#39;t really bind to a real model, and the save helper doesn&#39;t really save a real model, then the controller method doesn&#39;t actually do anything anymore - well, almost.</p>
+<p>I suppose you can determine 2 things: if your mock refuses to save did the Edit method generate the right view (this is the hard scenario, because I assume you&#39;d want to establish that it echoed all the right broken rules into the view through the MVC validation mechanisms), or if the mock allowed the save did the Edit method generate the right view.</p>
+<p>The same type of issue exists with a viewmodel. Most viewmodels are mind-numbingly trivial, because all the interesting work is in ViewModelBase, which isn&#39;t your code (so you shouldn&#39;t be testing it). Yet it is worth testing viewmodel methods, primarily to determine that success/failure causes the viewmodel to navigate to the right place as a result.</p>
+<p>But that&#39;s about all you can test, because that&#39;s all a controller/viewmodel should be doing.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 21, 2010</h2><p>Hmm, maybe I&#39;m being colored too much by the aritcheture we have at work, or by my web forms application, but there are things like &quot;if x, y and z is true, then send user to this page, otherwise if just z then this page.&quot;&nbsp; Or &quot;make sure method X is called on the BO.&quot;&nbsp; Things that do seem to come up (and come back after being fixed once), especially if one BO managing some kind of workflow.</p>
+<p>It&#39;s not every exciting, but these things do come up and sometimes the flow from one view to another can be somewhat complex.&nbsp; I wouldn&#39;t want to check that the controller saw broken rule 1 2 and 3, just that it actually&nbsp; did ask for the broken rules list. or that it did (or didn&#39;t) try to do the save.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 21, 2010</h2><p>Fair enough, though that is the kind of logic I&#39;d expect - pure navigation stuff, not really business logic in any meaningful sense.</p>
+<p>The question I&#39;m trying to pose is this: just how much time/money are you willing to pay to get a &quot;pure&quot; unit test for that logic? At what point does the cost become so high that you decide it might be OK to create an &quot;impure&quot; test that relies on the actual model, just loaded with known mock data? Because that&#39;s radically cheaper than trying to mock enough of BusinessBase to actually get a working test.</p>
+<p>This isn&#39;t unique to CSLA by the way. Try unit testing a xaml control. To do this, you either need to actually host it in a real visual container (at which point you are doing integration testing) or you need to mock a non-trivial subset of WPF and/or Silverlight. So the same question applies - just how much time/money are we willing to commit to get a pure unit test? For my part, I&#39;m not willing to replicate huge chunks of three XAML runtimes to test my control, so I compromise.</p>
+<p>Testing is not an end or goal in and of itself. Just like reuse, it is terribly easy to forget the real goal and focus overmuch on the intermediate tools.</p>
+<p>Reuse and testing are a means to an end - and the end is software that is cheaper to build and maintain over its lifetime, while meeting the domain requirements.</p>
+<p>In other words, it always, always, always comes down to a financial business decision - cost vs benefit.</p>
+<p>Some people might value testing to such a high degree that they choose what I would consider to be inferior overall architectures. While the end result might be highly tested, it might involve a lot more code and complexity - so is that a net win? Perhaps not.</p>
+<p>In the end it is a balance. Prioritize code based on what <i>really</i> needs to be tested and test the hell out of that, with less rigorous testing for areas that are less risky. Evaluate whether the cost of writing and maintaining the test can ever be offset by the increased quality.</p>
+<p>Yes, I know, I&#39;m a heretic - or would be if I subscribed to this particular religion. Fortunately I don&#39;t, so I guess I&#39;m just an infidel :)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Calin replied on Friday, October 22, 2010</h2><p>Hi,</p>
+<p>Thanks for your advice, I&#39;ve ended up with this implementation that suits all my needs (for now)</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;public class ObjectFactoryLoader : IObjectFactoryLoader</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static IKernel _kernel;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public static IKernel Kernel</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (_kernel == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_kernel = new StandardKernel();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// scan repositories</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_kernel.Scan(x =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.FromAssemblyContaining&lt;IDeviceRepository&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.Where(type =&gt; type.Name.EndsWith(&quot;Repository&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.BindWithDefaultConventions();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.InSingletonScope();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// scan factories</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_kernel.Scan(x =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.FromAssemblyContaining&lt;IDeviceFactory&gt;();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.Where(type =&gt; type.Name.EndsWith(&quot;Factory&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; x.BindWithDefaultConventions();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return _kernel;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public Type GetFactoryType(string factoryName)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return Type.GetType(factoryName);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public object GetFactory(string factoryName)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var factoryType = Type.GetType(factoryName);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (factoryType == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw new InvalidOperationException(string.Format(&quot;Factory type or assembly could not be loaded ({0})&quot;, factoryName));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;object factory = Kernel.Get(factoryType);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return factory;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<div>So I can have factories as beautiful as this one:</div>
+<div></div>
+<div>
+<div>&nbsp;&nbsp; &nbsp;public class DeviceListFactory : ObjectFactory, IDeviceListFactory</div>
+<div>&nbsp;&nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;[Inject]</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public IDeviceRepository Repository { get; set; }</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;[Inject]</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public IDeviceFactory DeviceFactory { get; set; }</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public DeviceList Fetch()</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;using (UnitOfWork.Start())</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DeviceList result = (DeviceList)Activator.CreateInstance(typeof(DeviceList), null);</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IList&lt;DeviceEntity&gt; deviceEntities = Repository.Find();</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (var deviceEntity in deviceEntities)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Device device = DeviceFactory.CreateLight(deviceEntity);</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MarkAsChild(device);</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result.Add(device);</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return result;</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</div>
+<div>&nbsp;&nbsp; &nbsp;};</div>
+</div>
+<div></div>
+<div>I welcome&nbsp;everybody&#39;s&nbsp;feedback.</div>
+<div></div>
+<div>Regards,</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 22, 2010</h2><p>The type name you provide to the ObjectFactory attribute is the interface type?</p>
+<p>This seems very nice, and is exactly the kind of thing we had in mind when designing the factory loader concept. Thank you for sharing your implementation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, October 24, 2010</h2><p>Thanks Rocky, that does make sense.&nbsp; Hopefully if someone complains about not being as testable as before, I&#39;ll be able to eloquently repeat what you said. :-)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

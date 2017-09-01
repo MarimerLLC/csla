@@ -1,0 +1,184 @@
+<html><header><title>Business Rule Context Information</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rule Context Information</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12590.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Friday, April 18, 2014</h2><p>Hello</p>
+<p>We have a class that contains property X with some expensive rules associated to it. We want <strong><span style="text-decoration:underline;">all</span></strong> rules to fire if the value of property X gets changed, but we would like to suppress <strong><span style="text-decoration:underline;">some</span></strong> of its rule if the rules are being fired due to an explicit call to &lsquo;CheckRules(X)&rsquo; or due to property X having dependencies with other properties.</p>
+<p><br />In other words, we need context to know why are the businesses rules being fired so we can determine whether to run them or not.</p>
+<p><br />I took a quick look at the business rule runtime information and couldn&rsquo;t find anything that could give me that context. Am I missing something or is it not possible to do what we want to do.</p>
+<p><br />By the way, we already have a work around that solves our issue but I was wondering if I am missing something and there is a formal way of doing what we are doing the proper way.</p>
+<p><br />We are currently using CSLA 4.2.2.0</p>
+<p><br />Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, April 19, 2014</h2><p>I think the normal way to handle this would be to make the expensive rules async, and / or setting their priorities.&nbsp; If a rule fails, rules at a higher priority aren&#39;t run as long as the priority is greater than 1.</p>
+<p>You may also only choose to run certain rules on the server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 20, 2014</h2><p>Hi,</p>
+<p>From my blogpost: <a href="http://jonnybekkum.wordpress.com/2011/08/29/csla-4-2-rules-update/">http://jonnybekkum.wordpress.com/2011/08/29/csla-4-2-rules-update/ </a></p>
+<p><strong>4. Rules can now specify conditions for when the rule is not allowed to run.</strong></p>
+<p>Typical usage is for any rule that you will only allow to run when 
+the user edits a value and f.ex do an async lookup to a database.<br />
+By default and to not brake any existing code, rules will run without restrictions.</p>
+<table cellpadding="2" cellspacing="0" border="1" width="400">
+<tbody>
+<tr>
+<td valign="top" width="133">Flag</td>
+<td valign="top" width="133">Property rule</td>
+<td valign="top" width="133">Object rule</td>
+</tr>
+<tr>
+<td valign="top" width="133">CanRunInCheckRules</td>
+<td valign="top" width="133">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yes</td>
+<td valign="top" width="133">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yes</td>
+</tr>
+<tr>
+<td valign="top" width="133">CanRunAsAffectedProperty</td>
+<td valign="top" width="133">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yes</td>
+<td valign="top" width="133">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; No</td>
+</tr>
+<tr>
+<td valign="top" width="133">CanRunOnServer</td>
+<td valign="top" width="133">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yes</td>
+<td valign="top" width="133">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; No</td>
+</tr>
+</tbody>
+</table>
+<p>Object level rules is executed when either &lt;bo&gt;.CheckObjectRules() or &lt;bo&gt;.CheckRules() is called.</p>
+<p>PropertyRules is executed when either &lt;bo&gt;.PropertyHasChanged(property) or &lt;bo&gt;.CheckRules() is called.<br />
+And PropertyHasChanged is implicitly called when SetProperty changes a 
+value so most developers will never call PropertyHasChanged.</p>
+<p><em>CanRunInCheckRules</em> when false<em> </em>means that the rule will not be executed when &lt;bo&gt;.CheckRules() is called.</p>
+<p><em>CanRunAsAffectedProperty </em>when false means that this property rule will not run when this property is an affected property on another property rule.</p>
+<p><em>CanRunOnServer</em> when false means that this property rule will
+ not run on the &ldquo;logical&rdquo; server side, by all practical means in Data 
+Access Layer.<br />
+So when CheckRules is called from Data Access do not execute this rule when set to false.</p>
+<p>So to rephrase the answer:</p>
+<p><b>Your rules can declaratively tell the rule engine to NOT run the rule under certain conditions.<br />Your implementation does NOT have to add extra checks. </b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, April 20, 2014</h2><p>Thanks guys.</p>
+<p>&nbsp;</p>
+<p>Jonny: </p>
+<p>I did look into the &#39;RunMode&#39; flag but that did&#39;t &nbsp;help us. The problem is that we are doing a &#39;CheckRules(PropertyX)&#39; call, we are not doing a &#39;CheckRules()&#39; call.</p>
+<p>What we need is to be able to distinguish between a call to &#39;CheckRules(PropertyX)&#39; done by the CSLA as a consequence of the actual property value being changed and a call to &#39;CheckRules(PropertyX)&#39; that was <b><span style="text-decoration:underline;">not </span></b>a consequence of the actual property value being changed. With this information at hand, we could determine whether to execute the rule or not.</p>
+<p>The reason such feature would be nice is because there are times when there is absolutely no need to run some rules if the property value was not changed. Take the &#39;Required&#39; rule as an example, this rule clearly needs to execute every time the property value changes but it makes no sense to execute the rule if the value of the property was not changed. Of course, the &#39;Required&#39; rule is a trivial rule, but imagine a rule that takes a while to execute.&nbsp;</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, April 20, 2014</h2><p>Hey Rene, I believe by default Csla tracks if they property value actually does change and won&#39;t run rules if it didn&#39;t.&nbsp; so if the value is empty string and you set the property to empty string Csla knows its not different and so won&#39;t run any rules.&nbsp;&nbsp; What are you doing that you are calling CheckRules yourself?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 20, 2014</h2><p>Well, thats exactly the same as Csla.Core.BusinessBase base class calls:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PropertyHasChanged(Csla.Core.IPropertyInfo&nbsp;property)
+{
+&nbsp;&nbsp;MarkDirty(<span style="color:blue;">true</span>);
+&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;propertyNames&nbsp;=&nbsp;BusinessRules.CheckRules(property);
+&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(ApplicationContext.PropertyChangedMode&nbsp;==&nbsp;ApplicationContext.PropertyChangedModes.Windows)
+&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(property);
+&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;name&nbsp;<span style="color:blue;">in</span>&nbsp;propertyNames)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(name);
+}</pre>
+<p>So - the primary responsibility if CheckRules(property) is to rerun all rules when this property has been changed by a user in the UI.</p>
+<p>The big challenge is how the rule engine updates the broken rules collection!!</p>
+<ol>
+<li>When rules is completed for a property</li>
+<li>Clear all broken rules that originate from this property</li>
+<li>Then add broken rules from the last run. </li>
+</ol>
+<p>So if you omit rules from running the second/third/fourth time when the rule is is called as a &quot;affected&quot; property - then the broken rule information is LOST!</p>
+<p>So - if I assume that your code does not manually call CheckRules(property) - the <b>PropertyRule </b>and <b>CommonBusinessRule </b>base class offers the 3 flags from my blog post and allows you to instruct the rule engine to not run a certain rule when called as &quot;affected property&quot;.</p>
+<p>So the CSLA goal is that your code should not need to call CheckRules(property)!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, April 21, 2014</h2><p>&nbsp;</p>
+<p>Guys, thank you very much for your help.</p>
+<p>Ok, I guess it is time for the obligatory example that illustrate the issue we are running into <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Imagine you have a <b>Recipe </b>class with a collection of recipe <b>Ingredients </b>(your typical parent child relationship). Imagine also that the Recipe class has a property called <b>IsHealthy</b>, when the IsHealthy property is set to true it is expected that all recipe Ingredients are considered to be healthy ingredients.</p>
+<p>So you create a recipe named Snackaroo and add Broccoli, Carrots and Bacon as the ingredients. So far, the Recipe is valid but then you decide to set Recipe IsHealthy flag to true. At that point, you would need to iterate through all the recipe Ingredients and trigger their appropriate rules on their appropriate properties. Once the rules on the children have been executed, I would expect the Ingredient representing Bacon to trigger a broken rules saying something like &quot;<i>Bacon is not a healthy ingredient</i>&quot; causing the Recipe to be invalid.</p>
+<p>Now, I may be wrong about this, but the way I know to go about checking rules on child objects after a change is originated on a parent object is to trap the change on the parent and iterate through all the child objects calling their &lsquo;CheckRules(SomeProperty)&rsquo; method so that the rules on that property can execute. This is necessary because there are no built in dependencies between parent and child properties in the CSLA (as far as I know).</p>
+<p>Am I missing the obvious?</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 21, 2014</h2><p>I think that rule actually belongs on the parent, not the ingredients.&nbsp; The ingredient itself is not invalid, its the fact that its included on a healthy recipe which is the problem.&nbsp; The same ingredient would be fine on a recipe which is not marked as healthy, right?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, April 21, 2014</h2><p>&nbsp;</p>
+<p>Andy,</p>
+<p>Maybe you are correct, but if you ask around, 50% of the people will tell you that you are right and 50% will tell you you are wrong and the debate would go on for an eternity. To me, both approaches are valid, it really depends on your paradigm I guess.</p>
+<p>At the end of the day, it really does not matter where you add the rule because you will still run into the same issue. For example, if you implement the rule on the parent Recipe, every-time you add new Ingredient or change and existing one the Recipe class will needs to intercept the change and then do a CheckRules(IsHealthyProperty) to update the rules on the IsHealthy property so we are back to square one. This is because the CSLA does not support dependencies on properties from different classes.</p>
+<p>Is that no the case?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 21, 2014</h2><p>My initial answer is the same as Andy - this is the reponsibility of the Recipe object.&nbsp;</p>
+<p>You could however also consider to add this rule on the child objects as an &quot;object level&quot; rule. </p>
+<p>Object level rules are only executed from BusinessRules.CheckRules and BusinessRules.CheckObjectRules and you can even mark an object rule with CanRunInCheckRules= false so that the rule will only ever be called from your code calling BusinessRules.CheckObjectRules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, April 21, 2014</h2><p>Jonny,</p>
+<p>Lets suppose that we change the rule so that it now resides on the Recipe object. We will still have the exact same issue right? Every time a new Ingredient is added or an existing one is changed the Recipe class will need to intercept the change on the child objects and then do a &nbsp;&#39;<b>CheckRules(IsHealthyProperty)</b>&#39; on itself to update the rules on its IsHealthy property right? So we still have the exact same problem of running unnecessary rules.</p>
+<p>If you ask me, as mentioned before, the real solution is for the CSLA BusinessRule to be able to differentiate between a call to &#39;CheckRules(SomeProperty)&#39; due to the property value actually changing or due to an explicit call to &#39;CheckRules(SomeProperty)&#39; that was not due to the property value changing. For example, the&nbsp;BusinessRule class could expose a &#39;<b>PropertyValueHasChanged</b>&#39; flag that would help us tell if the rule is being executed because the property value was changed or not. The BusinessRule could also cache the previous rule result and expose a &#39;<b>PreviousRuleResult</b>&#39; property that we could use to recreate the rule in a very efficient manner.</p>
+<p>So the code could look something like this:</p>
+<p>&nbsp;</p>
+<p>protected override void Execute(RuleContext context)</p>
+<p>{</p>
+<p>&nbsp; &nbsp;if ( context.PropertyValueHasChanged )</p>
+<p>&nbsp; &nbsp; &nbsp; // Property value was changed so run full logic.</p>
+<p>&nbsp; &nbsp;else</p>
+<p>&nbsp; &nbsp; &nbsp; // Property value did not change, no need to run full rule logic, used the previous cached rule result because we know the rule result will be the same anyway.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;context.AddResult(context.PreviousRuleResult);</p>
+<p>}</p>
+<p>This could all be done by the CSLA automatically via a setting such as &#39;<b>ReusePreviousRuleResultIfPropertyDidNotChanged</b>&#39; (or whatever). If the value of that flag is true then the CSLA could automatically use the cached result to recreate the rules in milliseconds.</p>
+<p>Maybe the suggestion is totally flawed but I am just throwing it out there.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, April 22, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>Rene Elizondo<br></b>
+<p>hanging. For example, the&nbsp;BusinessRule class could expose a &#39;<b>PropertyValueHasChanged</b>&#39; flag that would help us tell if the rule is being executed because the property value was changed or not. The BusinessRule could also cache the previous rule result and expose a &#39;<b>PreviousRuleResult</b>&#39; property that we could use to recreate the rule in a very efficient manner.</p>
+<p></div></p>
+<p>NOOOOO -- CSLA only supports TYPE-rules.&nbsp;</p>
+<p>&nbsp;IE: The single instance of the rule is used for ALL instances of the given type. You should NOT - NOT -&nbsp; cache instance results in a business rule!!!!<br />I always view any business rule as a &quot;static instance&quot; - and it can NOT cache results. </p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, April 22, 2014</h2><p>&nbsp;</p>
+<p>Yes, but&nbsp;the&nbsp;<span>&#39;</span><b>PropertyValueHasChanged</b><span>&#39; and&nbsp;</span><span>&#39;</span><b>PreviousRuleResult</b><span>&#39; values </span>come as part of the rule context and not the rule itself. Although these properties can be exposed by the rule class itself, behind the scenes, they get their value from the rule context.</p>
+<p>If you don&#39;t want to dirty up the&nbsp;BusinessRule class like that, then exposing these values just on the rule context will work just as well but then the CSLA would not be able to handle things automatically.</p>
+<p>Without giving this too much tough, I don&#39;t see an immediate problem with an optimization feature like this but I am obviously not a master of the CSLA so i may be way off base here.</p>
+<p>Just a suggestion.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, April 22, 2014</h2><p>One key issue is that RuleContext object does NOT survive between runs and there is no safe place to get the &quot;PreviousRuleResult&quot;.&nbsp;</p>
+<p>F.ex &nbsp;if you have 3 rules defined for a single property - then each rule will get a separate RuleContext (and may specify separate InputProperties/AffectedProperties/OutputProperties). You may even have a rule in the middle that shortcircuit execution and the last rule will not be called at all. How do you handle &quot;PreviousRuleResult&quot; in these circumstances?&nbsp;</p>
+<p>Another issue is that the Rule instance is a shared instance for ALL objects of this type. Csla 4.x has NO instance rules like you had in Csla 3.x</p>
+<p>So to summarize:</p>
+<ul>
+<li>Rule (instance) is shared - one single instance - that is used for ALL business objects of that type.</li>
+<li>The Execute method of a rule instance may be called by many objects on many threads AT THE SAME TIME</li>
+<li>The Rule Engine will ALWAYS create a new RuleContext object for each time the Execute method is called.</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, April 29, 2014</h2><p>Jonny,&nbsp;</p>
+<p>Thank you very much for taking the time to respond to my question. Sorry for taking so long to reply, something came up and I temporarily lost track of this post.</p>
+<p>Well, I am afraid that I am in over my head here, without a good understanding of the CSLA inner workings I feel I may be wasting your time but if you feel this post has some merit then here is my reply to the issues you brought up above.</p>
+<p>I think the difference between the way you are approaching this and the way I am approaching this is that you are focusing on the <b>BusinessRule </b>and I am focusing on the <b>BusinessObject</b>. The way I see it, every rule context has a business object attached to it that is accessible through the <b>Target </b>property. So if the rule needs to get previously rule information it can use the Target business object to achieve this.</p>
+<p>Here is how I see the sequence of events playing out.</p>
+<p><ol>
+<li>PropertyX rules are executed due to a &#39;<b>CheckRules(PropertyX)&#39;</b>&nbsp;method call.</li>
+<li>Rule engine makes a copy of the current PropertyX rule results <b><span style="text-decoration:underline;">FROM the business object instance TO&nbsp;the business object instance</span></b>. The key here is that the copy of the rule results is stored in the business object itself and not the actual static rule or rule context.</li>
+<li>Rule engine clears the current PropertyX rule results so it can create new rule results. This is not big deal since we already made a copy of the previous rule results.</li>
+<li>Rule engine begins calling the PropertyX rules.</li>
+<li>Rule engine detects that a certain rule has the &quot;<b>DontRunUnlessPropertyValueActuallyChanges</b>&quot; flag set to true.</li>
+<li>Rule engine realizes that the rule is being executed due to a&nbsp;&#39;<b>CheckRules(PropertyX)&#39;</b>&nbsp;method call which means the property value did <b><span style="text-decoration:underline;">not </span></b>change.&nbsp; The rule engine also realizes that because the&nbsp;&quot;<b>DontRunUnlessPropertyValueActuallyChanges</b>&quot; flag set to true,&nbsp;the rule result would be identical if the rule was executed again so instead of re-executing the rule, it reaches out to the target business object vie the rule context Target property and extracts the previous rule result from the rule results that were copied before the rules started executing.</li>
+<li>Rule engine recreates the rule result without actually executing the rule (nice optimization enhancement).</li>
+<li>Rule engine is done running rules so it clears the copied rule results.</li>
+</ol></p>
+<p>So as far as I can see, accessing previous rule results to recreate rule results is totally doable.</p>
+<p> Is this not the case?</p>
+<p>Thank you.</p>
+<div></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 30, 2014</h2><p>No, this is not the case. It would be a total bloat of the BO to add all this information that would only be used by a few rules.</p>
+<p>Other problems include </p>
+<ol>
+<li>All rules may not be executed in a run (and you would end up with a &quot;non-consistent&quot; last result).<br />Look at f.ex&nbsp; &quot;ShortCircuiting&quot; rules, &quot;StopProcessing&quot; flag on context.AddXYZResult and the&nbsp; &quot;ProcessThroughPriority&quot; setting on BusinessRules</li>
+<li>Async rules by default do NOT get the Target object (this property is default null) </li>
+<li>How should the BO behave after a CancelEdit (N-Level undo) - which previous result should be made available?&nbsp;</li>
+<li>Should previous result also be passed between Tiers (from Server to Client)?&nbsp;</li>
+<li>The result of your rule may also have other &quot;InputProperties&quot; that affects the outcome. <br />Only looking at the primary property could lead to unexpected results.</li>
+</ol>
+<p>Your BusinessObject could implement a &quot;previous&quot; ruleset and the BusinessRule _could_ read values from it - <b>but use at your own risk</b>. <br /><b>I will NOT propose to add this behavior to CSLA&nbsp; framework and RuleEngine </b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, April 30, 2014</h2><p>&nbsp;</p>
+<p>Honestly, I still don&#39;t see the issue here. As far as I can see, all the concerns you listed above are either not applicable or easily addressed. </p>
+<p>Nevertheless, I trust your judgment because your understanding of the CSLA goes far beyond mine and there is a big chance I may be missing the obvious.</p>
+<p>That said, I appreciate you taking the time entertaining my proposal. I have a good day!</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 20, 2014</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">My general recommendation is:</p>
+<ol>
+<li>All rules that perform validation (and sets Error/Warn/Info message) must ALWAYS run to keep consistency in validation messages (or else validation messages that are not set when called as a &quot;affected&quot; property will simply be removed and no longer shown to the user!!).</li>
+<li>Async rules should run after all validation rules with a higher priority to prevent them from running if field does not pass validation (Error)</li>
+<li>Avoid having more than one async rule on a field (you&#39;ll never know which one is finished first).</li>
+</ol>
+<p style="line-height:1.5em;margin:0px 0px 15px;padding:0px;color:#2a2a2a;font-family:Verdana, Tahoma, Arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;orphans:auto;text-align:left;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:#fafcff;">By default BusinessRules is run as follows when a property is edited by a user:</p>
+<ol style="color:#2a2a2a;font-family:Verdana, Tahoma, Arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:left;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:#fafcff;">
+<li>Call<span class="Apple-converted-space">&nbsp;</span><i>CheckRulesForProperty</i>method with parameters Property and Cascade=true<ol>
+<li>Clear all BrukenRules from the Property</li>
+</ol><ol>
+<li>Get list of BusinessRules for Property</li>
+<li>Call<span class="Apple-converted-space">&nbsp;</span><i>RunRules</i>with parameters RulesForProperty and Cascade=true to run rules for this property.<ol>
+<li>ForEach rule in RulesForProperty<ol>
+<li>Call Rule.Execute method</li>
+</ol></li>
+<li>Update property values from context.OuputProperties collection<ol>
+<li>if value was changed add Property to DirtyProperties</li>
+</ol></li>
+<li>Return RuleResult -&nbsp; a list of AffectedProperties and lst of DirtyProperties</li>
+</ol></li>
+<li>If&nbsp; (cascade)</li>
+</ol><ol>
+<li>&nbsp;<ol>
+<li>For the aggreate of (context.AffectedProperties from the rules checked) and<br />(properties that have BusinessRules with PrimaryProperty as InputProperty)<br />take distinct PropertyInfo<ol>
+<li>call<span class="Apple-converted-space">&nbsp;</span><i>CheckRulesForProperty</i><span class="Apple-converted-space">&nbsp;</span>with parameters Property and Cascade=false.</li>
+</ol></li>
+</ol></li>
+</ol></li>
+</ol>
+<p style="line-height:1.5em;margin:0px 0px 15px;padding:0px;color:#2a2a2a;font-family:Verdana, Tahoma, Arial, sans-serif;font-size:11px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;orphans:auto;text-align:left;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;background-color:#fafcff;">But then the rule engine stops is rechecking. So the rule engine will<span class="Apple-converted-space">&nbsp;</span><b>only</b><span class="Apple-converted-space">&nbsp;</span>cascade down to the next level and then stop rechecking rules.<br />(This is default behavior for CSLA 4.x)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

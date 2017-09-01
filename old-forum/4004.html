@@ -1,0 +1,318 @@
+<html><header><title>DataGridView Error on Delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView Error on Delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4004.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>strick9 posted on Friday, December 07, 2007</h2>
+
+<p class="MsoNormal">Howdy All,</p>
+
+
+
+<p class="MsoNormal">I have exhausted my search for my issue and while finding
+plenty of discussion, I have not seen the applicable solution.<span>&nbsp; </span>Time for the direct approach…</p><p class="MsoNormal"><br></p>
+
+
+
+<p class="MsoNormal">I am trying to mimic the RoleEdit/Roles/Role scenario in the
+Project Tracker demo as closely as possible in a simple business object list
+testing application.<span>&nbsp; </span>The goal is to be
+able to switch the BO bound to a BindingSource and then test the CRUD functions
+in a DataGridView control.<span>&nbsp; </span>I have “CRU”
+working but when I hit the Delete key on a row, I get the following error…</p><p class="MsoNormal"><br></p>
+
+
+
+<p class="MsoNormal">&nbsp; The following
+exception occurred in the DataGridView:<o:p></o:p></p>
+
+
+
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp; System.IndexOutOfRangeException:
+Index 3 does not have a value.</p>
+
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+System.Windows.Forms.CurrencyManager.get_Item(Int32 index)<o:p></o:p></p>
+
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+System.Windows.Forms.DataGridViewDataConnection.GetError(Int32 rowIndex)<o:p></o:p></p>
+
+
+
+<p class="MsoNormal">&nbsp;&nbsp;&nbsp; To replace
+this default dialog please handle the DataError event.</p><p class="MsoNormal"><br></p>
+
+
+
+<p class="MsoNormal">I placed stops in the form and list object code, but the
+error occurs as soon as I hit the key, so I feel this is something to do with
+my object or form setup. <span>&nbsp;</span>When I do this
+in the Project Tracker demo, the row drops from the grid/gets deleted when the
+save routine is run.<span> <br></span></p><p class="MsoNormal"><span><br> </span></p>
+
+
+
+<p class="MsoNormal">I am using a VB WinForm project with CSLA 3.x.<span>&nbsp; </span>Any pointers to the right place to diagnose
+this would be appreciated.<span>&nbsp; </span>Let me know
+if there are any other specifics I can provide.</p><p class="MsoNormal"><br></p>
+
+
+
+<p class="MsoNormal">Thanks</p>
+
+<p class="MsoNormal">Brian<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>praevsky replied on Saturday, December 08, 2007</h2>Did you delete the last record?<br>I would guess that if go into SQL Server Management Studio, and add a record by hand, you'll be surprised by the value of the primary key.<br>Class Role has an Id property whose get method looks fishy to me under those circumstances.<br><br>&nbsp;&nbsp;&nbsp; public int Id<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_idSet)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // generate a default id value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _idSet = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Roles parent = (Roles)this.Parent;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int max = 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Role item in parent)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.Id &gt; max)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; max = item.Id;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = max + 1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _id;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_id.Equals(value))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _idSet = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _id = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>praevsky replied on Saturday, December 08, 2007</h2>Oops.&nbsp; To be fair, the ID field in the Roles is not an auto-increment (Identity Specification) field.&nbsp; I would guess that the ID field in your table is.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>strick9 replied on Monday, December 10, 2007</h2>
+
+<p class="MsoNormal">Thanks for your reply.&nbsp; I would have gotten back to you
+sooner, but I had a group of Scouts in the mountains over the weekend.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">On the autonumber, I do not have one in my application.<span>&nbsp; </span>The “row id” is entered by the user.<span>&nbsp; </span>My data store is also not SQL Server, but a
+DB2 UDB running on an iSeries machine.</p>
+
+<p class="MsoNormal"><br>
+It is interesting that you brought up the last record, as that is what I am testing
+to delete (the specific error above), however, I get another error entirely
+when deleting the next to last record…</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">The following exception occurred in the DataGridView:</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">System.NotSupportedException: Invalid for root objects – use
+Delete instead</p>
+
+<p class="MsoNormal">At Csla.Core.BusinessBase.DeleteChild()</p>
+
+<p class="MsoNormal">At Csla.BusinessListBase ‘2.DeleteChild(C child)</p>
+
+<p class="MsoNormal">At Csla.BusinessListBase ‘2.CopyToDeletedList(C child)</p>
+
+<p class="MsoNormal">At Csla.BusinessListBase ‘2.RemoveItem(Int32 index)</p>
+
+<p class="MsoNormal">At System.Collections.ObjectModel.Collection ‘1.RemoveAt(Int32
+index)</p>
+
+<p class="MsoNormal">At System.Windows.Forms.BindingSource.RemoveAt(Int32 index)</p>
+
+<p class="MsoNormal">At System.Windows.Forms.CurrencyManager.RemoveAt(Int32
+index)</p>
+
+<p class="MsoNormal">At System.Windows.Forms.DataGridView.DataGridViewDataConnection.Delete.Row(Int32
+rowIndex)</p>
+
+<p class="MsoNormal">At System.Windows.Forms.DataGridView.ProcessDeleteKey(Keys
+keyData)</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">To replace this default dialog please handle the DataError
+event.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">When I “OK” this dialog box, another pops up (over and over
+again) …</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">The following exception occurred in the DataGridView:</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">System.IndexOutOfRangeException: Index 4 does not have a
+value.</p>
+
+<p class="MsoNormal">At System.Windows.Forms.CurrencyManager.RemoveAt(Int32 index)</p>
+
+<p class="MsoNormal">At System.Windows.Forms.DataGridViewDataConnection.GetError(Int32
+boundColumnIndex, Int32 columnIndex, Int32 rowIndex)</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">To replace this default dialog please handle the DataError
+event.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">All of that may not be relivant, as I just found one difference that I have in my setup.&nbsp; The constructor
+on my BusinessBase object does not use the MarkAsChild.<span>&nbsp; </span>When I do, I get the following handled exception
+upon the click of the update button (the row is removed from the grid, hoorah) …</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Csla.DataPortalException was unhandled<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;
+</span>Message="DataPortal.Update failed (System.NotSupportedException:
+Invalid operation - delete not allowed<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>at Csla.Core.BusinessBase.DataPortal_DeleteSelf()<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>at
+Qds.Types.GL.Company.FullEdit.DeleteSelf() in C:\QDSProjects\bill test business
+objects\bill test business objects\Qds.Types.GL.Company\FullEdit.vb:line 390<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp; </span>at
+Qds.Types.GL.Company.FullEditList.DataPortal_Update() in C:\QDSProjects\bill
+test business objects\bill test business
+objects\Qds.Types.GL.Company\FullEditList.vb:line 105)"<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;
+</span>Source="Csla"<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp; </span>StackTrace:<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.Core.BusinessBase.DataPortal_DeleteSelf()<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Qds.Types.GL.Company.FullEdit.DeleteSelf() in C:\QDSProjects\bill test business
+objects\bill test business objects\Qds.Types.GL.Company\FullEdit.vb:line 390<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Qds.Types.GL.Company.FullEditList.DataPortal_Update() in C:\QDSProjects\bill
+test business objects\bill test business objects\Qds.Types.GL.Company\FullEditList.vb:line
+105<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, Object[] parameters)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.MethodCaller.CallMethod(Object obj, String method, Object[] parameters)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.Server.SimpleDataPortal.Update(Object obj, DataPortalContext context)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.DataPortal.Update(Object obj)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.DataPortal.Update[T](T obj)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Csla.BusinessListBase`2.Save()<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Qds.Types.GL.Company.FullEditList.Save() in C:\QDSProjects\bill test business
+objects\bill test business objects\Qds.Types.GL.Company\FullEditList.vb:line 96<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+BOGridTestr01.Form1.UpdateButton_Click(Object sender, EventArgs e) in
+C:\QDSProjects\BizObjTestr\BOGridTestr01\Form1.vb:line 16<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at System.Windows.Forms.Control.OnClick(EventArgs
+e)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Button.OnClick(EventArgs e)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button,
+Int32 clicks)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.ButtonBase.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Button.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg,
+IntPtr wparam, IntPtr lparam)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp; msg)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(Int32
+dwComponentID, Int32 reason, Int32 pvLoopData)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32
+reason, ApplicationContext context)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason,
+ApplicationContext context)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Windows.Forms.Application.Run(ApplicationContext context)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.OnRun()<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.DoApplicationModel()<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Microsoft.VisualBasic.ApplicationServices.WindowsFormsApplicationBase.Run(String[]
+commandLine)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+BOGridTestr01.My.MyApplication.Main(String[] Args) in
+17d14f5c-a337-4978-8281-53493378c1071.vb:line 81<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.AppDomain.nExecuteAssembly(Assembly assembly, String[] args)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.AppDomain.ExecuteAssembly(String assemblyFile, Evidence
+assemblySecurity, String[] args)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Threading.ThreadHelper.ThreadStart_Context(Object state)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Threading.ExecutionContext.Run(ExecutionContext executionContext,
+ContextCallback callback, Object state)<o:p></o:p></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>at
+System.Threading.ThreadHelper.ThreadStart()</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">I’m looking into resolving this issue now that I see the
+missing child setting.</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Thanks,</p>
+
+<p class="MsoNormal">Brian</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>strick9 replied on Monday, December 10, 2007</h2>It appears that my troubles did indeed stem from not marking the BusinessBase as a child.&nbsp; That was a conceptual missunderstanding on my part.&nbsp; <br><br>I am now chasing down some other errors, however, I'll concider this issue closed as they appear to be related to my DataPortal code in the delete and will be though them shortly.<br><br>Thanks all,<br>Brian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ayubu replied on Monday, December 10, 2007</h2>"
+<P class=MsoNormal><STRONG>All of that may not be relivant, as I just found one difference that I have in my setup.&nbsp; The constructor on my BusinessBase object does not use the MarkAsChild.<SPAN>&nbsp; </SPAN>When I do, I get the following handled exception upon the click of the update button (the row is removed from the grid, hoorah) …</STRONG></P>
+<P class=MsoNormal><O:P><STRONG>&nbsp;</STRONG></O:P></P>
+<P class=MsoNormal><STRONG>Csla.DataPortalException was unhandled<O:P></O:P></STRONG></P>
+<P class=MsoNormal><STRONG><SPAN>&nbsp; </SPAN>Message="DataPortal.Update failed (System.NotSupportedException: Invalid operation - delete not allowed<O:P></O:P></STRONG></P>
+<P class=MsoNormal><STRONG><SPAN>&nbsp;&nbsp; </SPAN>at Csla.Core.BusinessBase.DataPortal_DeleteSelf()</STRONG></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>"</P>
+<P class=MsoNormal>My words</P>
+<P class=MsoNormal>You have done correctly but the issue here is that when you mark a object with "MarkAsChild" it can not be deleted by the DataPortal_DeleteSelf(This is called by the Dataportal for the parent object"</P>
+<P class=MsoNormal>Then you need to implement the delete code for the child in a child collection and let those code be executed by calling then in the DataPortal_DeleteSelf of the object to this child belong</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex@alexw.co.uk replied on Wednesday, August 24, 2011</h2><p>I would like to reply to this in case I forget the answer in the future and need this as a reference. Nowhere else on the net seems to have it.</p>
+<p>I got this error when I forgot to change the RaiseListChangeEvents back to True after I&#39;d disabled it (CSLA 3.8+). Correct code highlighted below:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Protected Overloads Sub DataPortal_Fetch()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>RaiseListChangedEvents = False</b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Using ctx = Csla.Data.ContextManager(Of LinqDAL.Call2FieldDataContext).GetManager(My.Settings.ConnectionStringName)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim data = (From o In ctx.DataContext.DBUserProfiles Select o).ToArray()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; For Each element As LinqDAL.DBUserProfile In data</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Me.Add(UserProfileListItem.GetUserProfileListItem(element))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Next</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Using</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b> RaiseListChangedEvents = True</b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

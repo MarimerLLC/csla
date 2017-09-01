@@ -1,0 +1,46 @@
+<html><header><title>CancelEdit on child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit on child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1588.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SealedClassSingleton posted on Wednesday, October 25, 2006</h2><P><FONT face=Arial color=#000000>Hi,</FONT></P>
+<P><FONT face=Arial><FONT color=#000000>I'm having a strange problem when cancelling changes on a BO with child objects. Whenever I call CancelEdit on the BO, all newly added childs are removed from the child collection (inherits from BusinessListBase), but the modifications to the existing child objects aren't gone.</FONT></FONT></P>
+<P><FONT face=Arial color=#000000>Any suggestions would be helpfull.</FONT></P>
+<P><FONT face=Arial color=#000000>Thx</FONT></P>
+<P><FONT color=#008080><FONT face=Arial color=#000000>&nbsp;Bart.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 25, 2006</h2><P>Check out the FAQ and then doa search for more info.</P>
+<P>Basically I think your ID values are not unique.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SealedClassSingleton replied on Thursday, October 26, 2006</h2><P>Hi,</P>
+<P>Thx for your answer. I already checked the FAQ but doesn't find any info regarding this problem. In fact I don't think it has something to do with the ID value since I'm using Guid's that are generated when the child objects are created. </P>
+<P>The problem is that the undo functionality does only half of the job: all newly added child to the BO are rollbacked correctly (in fact deleted), but the problem is that the changes to the already existing child objects aren't rollbacked to the original values...</P>
+<P>Am I missing something and do I have to use the CancelEdit in another way or is something wrong with the FWor my BO's ?</P>
+<P>Bart.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, October 26, 2006</h2>Stupid question, but I have to ask, so don't be offended.&nbsp; Are you calling BeginEdit first, before the changes are made?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSerrate replied on Friday, October 27, 2006</h2><P><FONT face=Arial size=2>I guess you’re working with the DataGridView for your child objects, in this case, try the next line before the call to CancelEdit() in your cancel event:<BR>childBindingSource.EndEdit()</FONT></P>
+<P><FONT face=Arial size=2>I had a similar problem before, and had something to do with the Undo from the data grid (the ESC action) as it is calling to BeginEdit() too.<BR></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeffreyice1 replied on Thursday, June 07, 2007</h2><P>Ok, to make this as clear as I can. I have a child object that has two buttons (one to cancel changes and another to take the changes)&nbsp; This is a single child object is to remain around (Not close) even though it is hidin. (.Visable = false) Calling the Close without keeping changes button is the following code</P>
+<P>&nbsp;</P><FONT size=2>
+<P>mCustomer.CancelEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Visible = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CustomerBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2>)</P>
+<P>&nbsp;</P>
+<P>Now If I am keeping the changes I call the following code</P>
+<P><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Visible = </FONT><FONT color=#0000ff size=2>False</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>The Show win part redisplays the information as it was even though I used canceledit() function. And called the cancel edit function prior.The object seems to be still intact with the changes (And I have not destroyed the object) Just calling it up again with the Following:</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT color=#000000 size=2> EditCustomerButton_Click(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> System.Object, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2><FONT color=#000000> EditCustomerButton.Click</FONT></P>
+<P></FONT><FONT color=#008000 size=2>' see if this project is already loaded</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> ctl </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Control </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> ContractEntryEditPanel1.Controls</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>TypeOf</FONT><FONT size=2> ctl </FONT><FONT color=#0000ff size=2>Is</FONT><FONT size=2> CustomerEntry </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Dim</FONT><FONT size=2> part </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CustomerEntry = </FONT><FONT color=#0000ff size=2>CType</FONT><FONT size=2>(ctl, CustomerEntry)</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ShowWinPart(part)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></P>
+<P><FONT color=#0000ff size=2>Next</FONT></P>
+<P><FONT color=#0000ff size=2>This should use the exiting object instead of loading it from the database.</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Question is How does the object react without being destoryed and reloaded with the canceledit function? </P></FONT><FONT size=2>
+<P>CancelEdit only seems to work with closeing of the object and does not concider that the object can be cancel changes on the fly and keeped in memory for future referance.</P>
+<P>Im thinking that I have to add inital values on the load from database and on initalization, then on canceledit restore these values in the project.libarary if the object is to hang around. Is this the way to go?</P>
+<P>I Hope that I explained this right.</P>
+<P>&nbsp;</P>
+<P>Iceman</FONT><FONT color=#0000ff size=2></P></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 08, 2007</h2>You need to call cancel edit on your BindingSource, NOT the object itself.&nbsp; If that was not in the faq, let me know and I will add it.<br><br>Also, there is a bug where depending on what you clicked, the grid does not behave properly.&nbsp; You can search this forum for that thread.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeffreyice1 replied on Saturday, June 09, 2007</h2><P>Thanks, In addtion to that fixing the cancel button how do I tell the object without saving to keep the changes, Because I might bring the object back up then make additional changes that would need to be canceled back to the last keep changes click.</P>
+<P>&nbsp;</P>
+<P>For example text field has "Customer Name"</P>
+<P>The user changes this to "Customers Real Name" and then clicks keep changes (We do not save we just hide the entry screen.</P>
+<P>Then the user wants to make another change and we redisplay the entryscreen an the user changes the filed to "Customers Real" but then desides not to keep the changes. </P>
+<P>Instead of going back to "Customers Real Name" it Goes all the way back to "Customer Name".</P>
+<P>Thanks</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

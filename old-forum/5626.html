@@ -1,0 +1,132 @@
+<html><header><title>Interactions between Validation and Security Systems</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Interactions between Validation and Security Systems</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5626.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben posted on Monday, October 20, 2008</h2><P class=MsoNormal><SPAN>Does any body have interactions between the validation system and the security system?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When a property is secured with authorization rules and the current user does not have an authorized role, then that property can’t be validated, so if its object has a validation rule for that property the application can’t do its validations and it crash.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How do you solve this issue?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 20, 2008</h2>Usually the validation rules run the check directly against the value in the field, or if you're using managed fields in 3.5 or higher, by using ReadProperty instead of GetProperty.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 20, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just another thought on the subject.&nbsp; Even if you use
+backing fields for validation, you still have a problem.&nbsp; For example, if
+the field is required, but the user has not rights to fill it in, then that
+user cannot save the object.&nbsp; So, you probably want to define a custom
+rule for this situation that can pay attention to user rights or re-think your
+design and maybe make entire object read-only for users who have no rights to
+satisfy all the rules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 20, 2008 8:27 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Interactions between Validation and Security
+Systems<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Usually the validation rules run the check directly against
+the value in the field, or if you're using managed fields in 3.5 or higher, by
+using ReadProperty instead of GetProperty.<br>
+<br>
+HTH<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Monday, October 20, 2008</h2><P>Thanks to both.</P>
+<P>I must study CSLA 3.5. </P>
+<P>In our current version, 3.0.2, Validation rules read the value of the object's properties throug Reflection so the security checks are enabled. Our custom validations works the same way so we have this problem.</P>
+<P>Reading fields directly is not a solution for us because some properties are calculated at runtime so they have no field associated. </P>
+<P>Migrate to version 3.5 in short time is not possible for us because of we need to also change the NET framework (we use version 2). So we need a workaround to solve it until we can migrate everything.</P>
+<P>Thanks again.</P>
+<P>Benjamin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 20, 2008</h2>Not sure why you're using reflection when you don't seem to have a need for that.. <br><br>Anyway, you could create a private property, MyPropertyCore which calcualtes the value and MyProperty could do your security check and return the value from MyPropertyCore.&nbsp; Your validation rules could check the value from MyPropertyCore and not cause problems, while your public MyProperty will still return the proper "can't read" value.&nbsp; (Throwing exceptions in&nbsp; your getter is no longer considered best practice.. you should return an empty or null value if possible).<br><br>HTH<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Tuesday, October 21, 2008</h2><P class=MsoNormal><SPAN>We use reflection for common validation rules. We have implemented one friend function for each property accessor following this pattern:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Overridable</SPAN> <SPAN>Property</SPAN> CustomerID() <SPAN>As</SPAN> System.String<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanReadProperty(<SPAN>"CustomerID"</SPAN>, <SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> get__CustomerID()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> Value <SPAN>As</SPAN> System.String)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanWriteProperty(<SPAN>"CustomerID"</SPAN>, <SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>set__CustomerID(Value)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Friend</SPAN><SPAN> <SPAN>Overridable</SPAN> <SPAN>Function</SPAN> get__CustomerID() <SPAN>As</SPAN> System.String<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mCustomerID<SPAN> Is</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>""<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> obj<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Friend</SPAN><SPAN> <SPAN>Overridable</SPAN> <SPAN>Sub</SPAN> set__CustomerID(<SPAN>ByVal</SPAN> Value <SPAN>As</SPAN> System.String)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mCustomerID &lt;&gt; Value <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mCustomerID = Value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropertyHasChanged(<SPAN>"CustomerID"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In our common validation rules we get the property value by this way:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> method <SPAN>As</SPAN> MethodInfo<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>method = target.GetType().GetMethod(<SPAN>"get__"</SPAN> &amp; e.PropertyName, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>BindingFlags.Instance _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Or</SPAN> BindingFlags.NonPublic _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Or</SPAN> BindingFlags.FlattenHierarchy)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If</SPAN><SPAN> method <SPAN>IsNot</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>value = <SPAN>CStr</SPAN>(method.Invoke(target, <SPAN>Nothing</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Else<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>value = <SPAN>CStr</SPAN>(CallByName(target, e.PropertyName, CallType.Get))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Notice that our common rules are located in a different package than the business logic, so we need to access friend functions through Reflection.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your tip about throwing exceptions in our getter accessors. I didn’t know it. We’ll change it as soon as possible. We currently are using the old approach.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Many thanks for your help. This forum is great thanks to all of you (including Rocky, of course).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P><SPAN>Benjamin.</SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 20, 2008</h2>Hi Ben, <br><br>Or you could rip out the Linq, WCF and WPF bits from CSLA 3.5 and add LinqBridge from Albahari. It would require .Net 2.0 SP1 Runtime on your clients and give you all the new syntax features of CSLA 3.5 (f.ex managed properties/propertyinfo) and all the new C# 3.0 syntax (such as LinqToObjects, Lambda expressions, automatic properties, partial methods etc) in VS 2008 even when your target framework is .Net 2.0 !!!<br><br>You would also get a much cleaner upgrade path to CSLA 3.5 and allows you to use the same templates and code snippets as CSLA 3.5.<br><br>/jonnybee<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Tuesday, October 21, 2008</h2><P>We are currently working with VS2005. We are goging to change to VS2008 as soon as we can. I supose it is what you mean we need. Isn't it?</P>
+<P>Thanks Jonny</P>
+<P>Benjamin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,68 @@
+<html><header><title>problems with ClientContext being cleared</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>problems with ClientContext being cleared</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10856.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp posted on Wednesday, November 09, 2011</h2><p>
+<p>Hi,</p>
+<p>I am having a problem with the ClientContext.</p>
+<p>I am using CSLA 4.1.0 for Silverlight.</p>
+<p>I&#39;ve had this problem before and I thought I fixed it but it keeps coming back.</p>
+<p>It is a problem with the async DataPortal.</p>
+<p>I believe the problem occurs when there is more than one simultaneous call to the DataPortal - for example when multiple Silverlight ViewModels refresh at the same time.</p>
+<p>When my app starts up and the user logs in, on the Silverlight side I store several values in the ClientContext.</p>
+<p>For example the current language id, timezone id, stuff like that.</p>
+<p>This stuff gets written to the ClientContext very early on.</p>
+<p>The values are definitely in there, and they are put there from the Silverlight side.</p>
+<p>These values are then read on the server side in many places in the code.</p>
+<p>Now the app will work perfectly 90% of the time, but if you thrash it, it ends up crashing with the fault that the desired key is not found in the ClientContext dictionary.</p>
+<p>The problem always happens in the server side code.</p>
+<p>When the problem occurs, the number of items in the ClientContext is 0 i.e. it has been cleared.</p>
+<p>I am sure it is a threading issue, I think somehow one thread returns and clears out its ClientContext and this affects the other thread (somehow).</p>
+<p>The first time this problem occured I think it was because I was missing a reference to Clsa.Web.dll in my server project.</p>
+<p>This is not the case this time.</p>
+<p>Has anyone any idea of what might be wrong?</p>
+<p>I am hoping I am missing some simple configuration setting or something.</p>
+<p>Bear in mind the code works 90% of the time, and the point where it loses the ClientContext is random.</p>
+<p><b>I am really in need of help, I have a demo due on Friday and my app keeps crashing on me!</b></p>
+<p><b>Any help greatly appreciated!</b></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 10, 2011</h2><p>My assumption is that the problem is caused by client side code.</p>
+<p>1. Please check that your code does not use the <b><i>System.ComponentModel.BackgroundWorker</i></b>.&nbsp; We created our own <b><i>Csla.Threading.BackgroundWorke</i></b>r to in order to transfer:</p>
+<ul>
+<li>ClientContext</li>
+<li>GlobalContext</li>
+<li>User</li>
+<li>CurrentCulture/CurrentUICulture</li>
+</ul>
+<p>to the background thread. The the <b><i>System.ComponentModel.BackgroundWorker</i></b> will not transfer these and such it will appear that the ClientContext has been cleared. The DataPortal async methods has its own implementation to transfer these parameters.</p>
+<p>2. If your servercode uses a System.ComponentModel.BackgroundWorker (in f.ex Async rules) the rule may experiance that the context is cleared if the result is returned before the rule is completed. </p>
+<p>The Csla.Server.Hosts.Silverlight.SilverlightRequestProcessor&nbsp; will set the context before calling any method on the BO and clear the context in the finally pert of method. Any running async rules on the server will then have a &quot;cleared&quot; context. </p>
+<p>3. In order to debug&nbsp; - add the Csla code to you project and write to the debug / trace window when ApplicationContext.Clear is called to determine if this is called on &quot;bad&quot; place or if it is a BackgroundWorker thatis causing the problem.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp replied on Sunday, November 13, 2011</h2><p>
+<p>Hi Jonny,</p>
+<p>I am using Csla.Threading.BackgroundWorker, not System.ComponentModel.BackgroundWorker.</p>
+<p>After some more investigation I found that the ApplicationContextManager is starting out as a Csla.Web.ApplicationContextManager, but it is later switching to a Csla.ApplicationContextManager. This happens because the HttpContext.Current becomes null.</p>
+<p>If I remove the BackgroundWorker code, the switch of ContextManager does not happen.</p>
+<p>So I assume the Csla.Threading.BackgroundWorker is causing the HttpContext.Current to become null?</p>
+<p>Can you confirm that the switching of the ContextManager should not normally happen?</p>
+<p>From looking at the code it looks like that once it switches it is never going to switch back.</p>
+<p>&nbsp;</p>
+<p>I am accessing the ClientContext from the BackgroundWorker code. Perhaps it is not possible to do this for a Silverlight app?</p>
+<p>&nbsp;</p>
+<p>Please note I was perfoming these tests using Cassini.</p>
+<p>Looking at an old post, (http://forums.lhotka.net/forums/p/2811/14404.aspx), Rocky seems to indicate the Cassini may be broken in this regard??</p>
+<p>&nbsp;</p>
+<p>I will do some further testing tomorrow on IIS rather than Cassini.</p>
+<p>&nbsp;</p>
+<p>Thanks for your help.</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 13, 2011</h2><p>Hi Richard,</p>
+<p>That means that you are using the background worker on the serverside. </p>
+<p>Yes, there was a bug in Csla concerning context switcing for BackgroundWorkers and HttpContext.<br />Look at the changes ApplicationContext.cs in Csla 4.2. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp replied on Monday, November 14, 2011</h2><p>Hi Jonny,</p>
+<p>Yes we are using the CSLA background worker on the server side.</p>
+<p>I had a look at the ApplicationContext code in CSLA 4.2 as you suggested.</p>
+<p>I switched my app over to CSLA 4.2 and the problem went away when running under Cassini.</p>
+<p>However when I deployed my app to IIS the problem was still present.</p>
+<p>I am investigating further and will let you know what I find.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, November 15, 2011</h2><p>Hi Richard, </p>
+<p>Make sure Csla.Web is present in&nbsp;the&nbsp;bin folder on your IIS application. </p>
+<p>You may also consider to upgrade to IIS 7.5 Express on your dev-macine (you can switch back and forth from Cassini to IIS Express) and can even install the IIS Express on both Win7, Vista and Win XP. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp replied on Tuesday, November 15, 2011</h2><p>Hi Jonny,</p>
+<p>I tested again on my dev machine with CSLA 4.2 on both IIS and IIS Express and was unable to reproduce the problem.</p>
+<p>However the test was still failing on our build machine. I then installed the latest build of CSLA 4.2 on the build machine and the problem went away.</p>
+<p>The only possibility I can think of is that maybe the build machine had an earlier beta version of CSLA 4.2 installed!</p>
+<p>Problem solved touch wood!</p>
+<p>Thanks for your help.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

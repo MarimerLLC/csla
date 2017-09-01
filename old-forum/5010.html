@@ -1,0 +1,1474 @@
+<html><header><title>Import Via Excel / Name Value Lists type scenarios</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Import Via Excel / Name Value Lists type scenarios</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5010.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies posted on Monday, June 23, 2008</h2><P>A couple of weeks into implementing a new system with CSLA and it works a treat with data entry on winforms!</P>
+<P>Busy writing an import where some fields on the file are plain text fields and need some help./advice on what is the best way to handle the following scenario,</P>
+<P><U>Excel Sheet<BR></U>FirstName<BR>MiddleName<BR>LastName<BR>CostCentre * [Cost Centre Name]</P>
+<P><U>Participant Table<BR></U>FirstName<BR>MiddleName<BR>LastName<BR>CostCentreID *</P>
+<P><U>CostCentre Table<BR></U>CostCentreID<BR>Name<BR><BR>*The CostCentre captured on the excel file will be actual name of the cost centre as this has a true meaning to the user. The underlying value of CostCentre should actually be the CostCentreID as the import will obviously fail as the&nbsp;database expects an integer.<BR><BR>The user should not have to know or worry about the Cost Centre ID but just be informed that the Cost Centre Name entered is either valid or not [Name is unique in the database]. I am tempted to start putting this in the Validation Rules section using perhaps a commandbase but somehow this does not seem to be the right way as I will have to set the CostCentreID to the underlying database foreign key to make the object valid.</P>
+<P>Any advice or pointers much appreciated.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, June 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just my 2 cents.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>When I had to do this in the past, I would preload Name / value
+collection (of cost centers in your case) when I created list of items to
+import (ParticipantsBusinessList in your case) and hit Ctype(sender.Parent, ParticipantsBusinessList).CostCentersNameValueList.Exists(costCenterName)
+in the validation rule.&nbsp; This way you do not have to bombard DB with
+checks for valid center.&nbsp; A little more efficient this way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Monday, June 23, 2008 4:55 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Import Via Excel / Name Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>A couple of weeks into implementing a new system with CSLA and it works a
+treat with data entry on winforms!<o:p></o:p></p>
+
+<p>Busy writing an import where some fields on the file are plain text fields
+and need some help./advice on what is the best way to handle the following
+scenario,<o:p></o:p></p>
+
+<p><u>Excel Sheet<br>
+</u>FirstName<br>
+MiddleName<br>
+LastName<br>
+CostCentre * [Cost Centre Name]<o:p></o:p></p>
+
+<p><u>Participant Table<br>
+</u>FirstName<br>
+MiddleName<br>
+LastName<br>
+CostCentreID *<o:p></o:p></p>
+
+<p><u>CostCentre Table<br>
+</u>CostCentreID<br>
+Name<br>
+<br>
+*The CostCentre captured on the excel file will be actual name of the cost
+centre as this has a true meaning to the user. The underlying value of
+CostCentre should actually be the CostCentreID as the import will obviously
+fail as database expects an integer.<br>
+<br>
+The user should not have to know or worry about the Cost Centre ID but just be
+informed that the Cost Centre Name entered is either valid or not. I am tempted
+to start putting this in the Validation Rules section using perhaps a
+commandbase but somehow this does not seem to be the right way as I will have
+to set the CostCentreID to the underlying database foreign key to make the
+object valid.<o:p></o:p></p>
+
+<p>Any advice or pointer much appreciated.<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, June 24, 2008</h2><P>I like Sergey's idea a lot.</P>
+<P>I think that I use command objects now to validate the Name and fetch the ID. But as he says - this bombards the DB with unnecessary hits versus a single hit to get the NVL and then use it as your source for validation and ID retrieval.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>Thanks for the advice on checking in a more effecient way and preventing hitting the database too many times. How would i actually retrieve the CostCentreID from the namevalue list from the parent as per your suggestion?</P>
+<P>I am trying the following with some difficulty;</P>
+<P>The Parent Class [ParticipantImport] has the CostCentreNameValueList property defined which I populate when the parent is instantiated.</P>
+<P>The child class[ParticipantImportItem] has the following validation rule wich is called whenever a child is created;</P>
+<P><FONT color=#0000ff>Private Shared Function CheckCostCentreExists(Of T As ParticipantImportItem)( _<BR>ByVal target As T, _ByVal e As Validation.RuleArgs) As Boolean</FONT></P>
+<P><FONT color=#0000ff>If CType(target.Parent, ParticipantImport).CostCentreNameValueList.Contains(target.GetProperty(Of String)(CostCentreProperty)) = False Then</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "Invalid Cost Centre"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False</FONT></P>
+<P><FONT color=#0000ff>Else</FONT></P>
+<P><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True</FONT></P>
+<P><FONT color=#0000ff>End If</FONT></P>
+<P><FONT color=#0000ff>End Function</FONT></P>
+<P>I get a ChildDataPortal.Create failed on server&nbsp;whenever this validation method is called. not sure what I am missing here</P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I follow what you are asking&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You need to add a function to your CostCenterNameValueList (I
+did not actually compile it, so you may need to fix NameValuePair thing):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Friend Function IsValidCenter(costCenter as string) as Boolean<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim
+returnValue as Boolean = False<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For
+each onePair as NameValuePair In Me<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+onePair.Value = costCenter Then<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; returnValue
+= true<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit
+For<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End
+If&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return
+returnValue<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Function <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is this what you are looking for?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 11:58 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Import Via Excel / Name Value Lists type
+scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the advice on checking in a more effecient way and preventing
+hitting the database too many times. How would i actually retrieve the
+CostCentreID from the namevalue list from the parent as per your suggestion?<o:p></o:p></p>
+
+<p>I am trying the following with some difficulty;<o:p></o:p></p>
+
+<p>The Parent Class [<strong>ParticipantImport</strong>]&nbsp;has the <strong>CostCentreNameValueList</strong>
+property defined which I populate when the parent is instantiated.<o:p></o:p></p>
+
+<p>The child class[<strong>ParticipantImportItem</strong>] has the following
+validation rule wich is called whenever a child is created;<o:p></o:p></p>
+
+<p><span>Private</span> <span>Shared</span>
+<span>Function</span> CheckCostCentreExists(<span>Of</span> T <span>As</span>
+ParticipantImportItem)( _<br>
+<span>ByVal</span> target <span>As</span>
+T, _<span>ByVal</span> e <span>As</span>
+Validation.RuleArgs) <span>As</span> <span>Boolean<o:p></o:p></span></p>
+
+<p><span>If</span> <span>CType</span>(target.Parent,
+ParticipantImport).CostCentreNameValueList.Contains(target.GetProperty(<span>Of</span> <span>String</span>)(CostCentreProperty))
+= <span>False</span> <span>Then<o:p></o:p></span></p>
+
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = <span>&quot;Invalid Cost Centre&quot;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>Return</span> <span>False<o:p></o:p></span></p>
+
+<p><span>Else<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return</span>
+<span>True<o:p></o:p></span></p>
+
+<p><span>End</span> <span>If<o:p></o:p></span></p>
+
+<p><span>End</span> <span>Function<o:p></o:p></span></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>mmm i have something along those lines in place already unless my CostCentreList class explicitly needs to inherit from NameValueListBase ?</P>
+<P>I have the following functtion defined in my CostCentreList classs (<FONT color=#0000ff><FONT color=#0000ff>Inherits</FONT></FONT> ReadOnlyListBase(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> CostCentreList, CostCentreInfo))</P><FONT color=#0000ff><FONT color=#0000ff>
+<P>Public</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Overloads</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Function</FONT></FONT> Contains( _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> name <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>) <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Boolean</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>For</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Each</FONT></FONT> res <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> CostCentreInfo <FONT color=#0000ff><FONT color=#0000ff>In</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Me</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If</FONT></FONT> res.Name = name <FONT color=#0000ff><FONT color=#0000ff>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>Return</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>If</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>Next<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff><FONT color=#0000ff>Return</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>False</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Function</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, what you have looks perfect.&nbsp; I just assumed that cost
+center is NV List not Read Only List.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 12:23 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Import Via Excel / Name Value Lists type
+scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>mmm i have something along those lines in place already unless my
+CostCentreList class explicitly needs to inherit from NameValueListBase ?<o:p></o:p></p>
+
+<p>I have the following functtion defined in my CostCentreList classs (<span>Inherits</span> ReadOnlyListBase(<span>Of</span>
+CostCentreList, CostCentreInfo))<o:p></o:p></p>
+
+<p><span>Public</span> <span>Overloads</span>
+<span>Function</span> Contains( _<br>
+<span>ByVal</span> name <span>As</span> <span>String</span>) <span>As</span> <span>Boolean<o:p></o:p></span></p>
+
+<p><span>For</span> <span>Each</span> res
+<span>As</span> CostCentreInfo <span>In</span>
+<span>Me<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If</span>
+res.Name = name <span>Then<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Return</span> <span>True<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End</span> <span>If<o:p></o:p></span></p>
+
+<p><span>Next<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return</span> <span>False<o:p></o:p></span></p>
+
+<p><span>End</span> <span>Function<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>mmm thanks for the help. glad to hear it looks good but it is failing on the validation rule on this line...</P><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>If</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>CType</FONT></FONT><FONT size=3>(target.Parent, ParticipantImport).CostCentreNameValueList.<STRONG>Contains</STRONG>(target.GetProperty(</FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Of</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>String</FONT></FONT><FONT size=3>)(CostCentreProperty)) = </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>False</FONT></FONT><FONT size=3> </FONT><FONT color=#0000ff size=3><FONT color=#0000ff size=3>Then</FONT></FONT></P>
+<P><FONT color=#0000ff size=3><FONT color=#0000ff size=3><FONT color=#000000>the containts&nbsp;function on the CostCentreList is never hit so I am stumped at the moment.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It looks OK to me.&nbsp; Are you getting an exception?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 12:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Import Via Excel / Name Value Lists
+type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>mmm thanks for the help. glad to hear it looks good but it is failing on the
+validation rule on this line...<o:p></o:p></p>
+
+<p><span>If</span> <span>CType</span>(target.Parent,
+ParticipantImport).CostCentreNameValueList.<strong>Contains</strong>(target.GetProperty(<span>Of</span> <span>String</span>)(CostCentreProperty))
+= <span>False</span> <span>Then</span><o:p></o:p></p>
+
+<p><span>the containts&nbsp;function on the CostCentreList
+is never hit so I am stumped at the moment.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>Yes, I am getting an exception on the rule, let me check....<BR><BR>1. I Load the property like so....</P>
+<P>LoadProperty(<FONT color=#0000ff>Of</FONT> <FONT color=#0000ff>String</FONT>)(CostCentreProperty, costCentre)</P>
+<P>2. Then the Validation rule is called as a result and then the error...</P>
+<P>{"ChildDataPortal.Create failed on the server"}</P>
+<P>{"Validation rule rule://CheckCostCentreExists/CostCentre failed in property CostCentre"}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmmm&#8230;&nbsp; Not sure what exception is thrown&#8230;&nbsp;
+Did you look at the inner exception?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 4:09 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Import Via Excel / Name Value Lists
+type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, I am getting an exception on the rule, let me check....<br>
+<br>
+1. I Load the property like so....<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(CostCentreProperty,
+costCentre)<o:p></o:p></p>
+
+<p>2. Then the Validation rule is called as a result and then the error...<o:p></o:p></p>
+
+<p>{&quot;ChildDataPortal.Create failed on the server&quot;}<o:p></o:p></p>
+
+<p>{&quot;Validation rule rule://CheckCostCentreExists/CostCentre failed in
+property CostCentre&quot;}<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>{"Object reference not set to an instance of an object."}</P>
+<P>I am wondering now if the namevalue list property on the parent is actually loaded at all...</P>
+<P>I load the property on the parent class [ParticipantImport] like so;</P>
+<P>LoadProperty(<FONT color=#0000ff>Of</FONT> CostCentreList)(CostCentreNameValueListProperty, CostCentreList.GetCostCentreList(CompanyID))</P>
+<P>stumped..</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are correct and read-only list is not loaded.&nbsp;
+Make sure you call the load that in your factory method for Import.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 4:56 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: Import Via Excel / Name Value
+Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>{&quot;Object reference not set to an instance of an object.&quot;}<o:p></o:p></p>
+
+<p>I am wondering now if the namevalue list property on the parent is actually
+loaded at all...<o:p></o:p></p>
+
+<p>I load the property on the parent class [ParticipantImport] like so;<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> CostCentreList)(CostCentreNameValueListProperty,
+CostCentreList.GetCostCentreList(CompanyID))<o:p></o:p></p>
+
+<p>stumped..<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>thanks for your help once again..</P>
+<P>This is how I load it currently..</P>
+<P>&lt;RunLocal()&gt; _<BR><FONT color=#0000ff>Protected</FONT> <FONT color=#0000ff>Overloads</FONT> <FONT color=#0000ff>Sub</FONT> DataPortal_Create(<FONT color=#0000ff>ByVal</FONT> criteria <FONT color=#0000ff>As</FONT> SingleCriteria(<FONT color=#0000ff>Of</FONT> ParticipantImport, <FONT color=#0000ff>Integer</FONT>))</P>
+<P>ValidationRules.CheckRules()</P>
+<P>LoadProperty(<FONT color=#0000ff>Of</FONT> <FONT color=#0000ff>Integer</FONT>)(CompanyIDProperty, criteria.Value)</P>
+<P>LoadProperty(<FONT color=#0000ff>Of</FONT> <FONT color=#0000ff>String</FONT>)(ModifiedByProperty, user.Identity.Name.ToString)</P>
+<P>LoadProperty(<FONT color=#0000ff>Of</FONT> ParticipantImportItems)(ItemsProperty, ParticipantImportItems.NewParticipantImportItems)</P>
+<P>LoadProperty(<FONT color=#0000ff>Of</FONT> CostCentreList)(CostCentreNameValueListProperty, CostCentreList.GetCostCentreList(CompanyID))</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try to load read-only list before line items.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p>&lt;RunLocal()&gt; _<br>
+<span>Protected</span> <span>Overloads</span>
+<span>Sub</span> DataPortal_Create(<span>ByVal</span>
+criteria <span>As</span> SingleCriteria(<span>Of</span> ParticipantImport, <span>Integer</span>))<o:p></o:p></p>
+
+<p>ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>Integer</span>)(CompanyIDProperty,
+criteria.Value)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> CostCentreList)(CostCentreNameValueListProperty,
+CostCentreList.GetCostCentreList(CompanyID))<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span>
+ParticipantImportItems)(ItemsProperty,
+ParticipantImportItems.NewParticipantImportItems)<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 5:03 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: Import Via Excel / Name
+Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>thanks for your help once again..<o:p></o:p></p>
+
+<p>This is how I load it currently..<o:p></o:p></p>
+
+<p>&lt;RunLocal()&gt; _<br>
+<span>Protected</span> <span>Overloads</span>
+<span>Sub</span> DataPortal_Create(<span>ByVal</span>
+criteria <span>As</span> SingleCriteria(<span>Of</span> ParticipantImport, <span>Integer</span>))<o:p></o:p></p>
+
+<p>ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>Integer</span>)(CompanyIDProperty,
+criteria.Value)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span>
+ParticipantImportItems)(ItemsProperty,
+ParticipantImportItems.NewParticipantImportItems)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> CostCentreList)(CostCentreNameValueListProperty,
+CostCentreList.GetCostCentreList(CompanyID))<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Never mind.&nbsp; I think the parent is probably not set for new
+line item.&nbsp; Try to add check for Parent IsNot Nothing to validation rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1026" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 5:06 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: RE: RE: RE: RE: Import Via Excel / Name
+Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Try to load read-only list before line items.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p>&lt;RunLocal()&gt; _<br>
+<span>Protected</span> <span>Overloads</span>
+<span>Sub</span> DataPortal_Create(<span>ByVal</span>
+criteria <span>As</span> SingleCriteria(<span>Of</span> ParticipantImport, <span>Integer</span>))<o:p></o:p></p>
+
+<p>ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>Integer</span>)(CompanyIDProperty,
+criteria.Value)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span>
+CostCentreList)(CostCentreNameValueListProperty, CostCentreList.GetCostCentreList(CompanyID))<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span>
+ParticipantImportItems)(ItemsProperty,
+ParticipantImportItems.NewParticipantImportItems)<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 5:03 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: Import Via Excel / Name
+Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>thanks for your help once again..<o:p></o:p></p>
+
+<p>This is how I load it currently..<o:p></o:p></p>
+
+<p>&lt;RunLocal()&gt; _<br>
+<span>Protected</span> <span>Overloads</span>
+<span>Sub</span> DataPortal_Create(<span>ByVal</span>
+criteria <span>As</span> SingleCriteria(<span>Of</span> ParticipantImport, <span>Integer</span>))<o:p></o:p></p>
+
+<p>ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>Integer</span>)(CompanyIDProperty,
+criteria.Value)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span>
+ParticipantImportItems)(ItemsProperty, ParticipantImportItems.NewParticipantImportItems)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span>
+CostCentreList)(CostCentreNameValueListProperty,
+CostCentreList.GetCostCentreList(CompanyID))<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2><P>ok initially the list did not load but now it is and funny enough i still get the same error..</P>
+<P>{"Object reference not set to an instance of an object."}</P>
+<P>i did change the code as suggested</P><FONT size=2>
+<P>&lt;RunLocal()&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SingleCriteria(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ParticipantImport, </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>))</P>
+<P>ValidationRules.CheckRules()</P>
+<P>LoadProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2>)(CompanyIDProperty, criteria.Value)</P>
+<P>LoadProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)(ModifiedByProperty, user.Identity.Name.ToString)</P>
+<P>LoadProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> CostCentreList)(CostCentreNameValueListProperty, CostCentreList.GetCostCentreList(criteria.Value))</P>
+<P>LoadProperty(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> ParticipantImportItems)(ItemsProperty, ParticipantImportItems.NewParticipantImportItems)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try changing the rule and add If Parent IsNot Nothing check to
+it&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 5:52 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: RE: Import Via Excel / Name
+Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>ok initially the list did not load but now it is and funny enough i still
+get the same error..<o:p></o:p></p>
+
+<p>{&quot;Object reference not set to an instance of an object.&quot;}<o:p></o:p></p>
+
+<p>i did change the code as suggested<o:p></o:p></p>
+
+<p><span>&lt;RunLocal()&gt; _<o:p></o:p></span></p>
+
+<p><span>Protected</span><span> <span>Overloads</span> <span>Sub</span> DataPortal_Create(<span>ByVal</span>
+criteria <span>As</span> SingleCriteria(<span>Of</span> ParticipantImport, <span>Integer</span>))<o:p></o:p></span></p>
+
+<p><span>ValidationRules.CheckRules()<o:p></o:p></span></p>
+
+<p><span>LoadProperty(<span>Of</span>
+<span>Integer</span>)(CompanyIDProperty, criteria.Value)<o:p></o:p></span></p>
+
+<p><span>LoadProperty(<span>Of</span>
+<span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<o:p></o:p></span></p>
+
+<p><span>LoadProperty(<span>Of</span>
+CostCentreList)(CostCentreNameValueListProperty,
+CostCentreList.GetCostCentreList(criteria.Value))<o:p></o:p></span></p>
+
+<p><span>LoadProperty(<span>Of</span>
+ParticipantImportItems)(ItemsProperty,
+ParticipantImportItems.NewParticipantImportItems)<o:p></o:p></span></p>
+
+<p><span>End</span><span> <span>Sub<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Tuesday, June 24, 2008</h2>yep you were right parent is nothing, what do i need to set then?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Parent is set when you add an item to the list.&nbsp; As a
+workaround you can add an item to the list, then call validation rules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 24, 2008 6:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: RE: RE: Import Via Excel /
+Name Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>yep you were right parent is nothing, what do i need to set
+then?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Wednesday, June 25, 2008</h2><P>i am calling the validation rules after all the fields for the child is specifiied and the <FONT color=#0000ff><FONT color=#0000ff>Private</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Overloads</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> Child_Create(...) method is called where properties are loaded like so..</P><FONT color=#0000ff><FONT color=#0000ff>
+<P>Private</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Overloads</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> Child_Create......<BR><BR>........</P>
+<P>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(JobTitleProperty, jobTitle)</P>
+<P>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(JobGradeProperty, jobGrade)</P>
+<P>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(CostCentreProperty, costCentre)</P>
+<P>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(StatusProperty, status)</P>
+<P>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(ModifiedByProperty, user.Identity.Name.ToString)</P>
+<P>ValidationRules.CheckRules()</P>
+<P>mmm Parent is still nothing...I think there might be something wrong with the way I have created the objects. I will try and walk through the steps i have teken quickly. I have the parent object [ParticipantImport] which I create like so</P>
+<P>&lt;RunLocal()&gt; _</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Protected</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Overloads</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> DataPortal_Create(<FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> criteria <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> SingleCriteria(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> ParticipantImport, <FONT color=#0000ff><FONT color=#0000ff>Integer</FONT></FONT>))</P>
+<P>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Integer</FONT></FONT>)(CompanyIDProperty, criteria.Value)<BR>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(ModifiedByProperty, user.Identity.Name.ToString)<BR>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> CostCentreList)(CostCentreNameValueListProperty, CostCentreList.GetCostCentreList(criteria.Value))<BR>LoadProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> ParticipantImportItems)(ItemsProperty, ParticipantImportItems.NewParticipantImportItems)</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</P></FONT></FONT>
+<P>Line Items are not added immediately, but only once the the excel file is selected and then an <STRONG>Assign</STRONG> method on the <STRONG>ParticipantImportITems</STRONG> class is called which inturn creates a ParticipantImportItem.</P>
+<P>------<BR><STRONG>Windows form code</STRONG></P>
+<P>_participantImport.Items.Assign(_participantImport.CompanyID, row.Item(0).ToString, row.Item(1).ToString, row.Item(2).ToString, row.Item(3).ToString, _<BR>row.Item(4).ToString, row.Item(5).ToString, row.Item(6).ToString, row.Item(7).ToString, row.Item(8).ToString, row.Item(9).ToString, row.Item(10).ToString, _<BR>row.Item(11).ToString, row.Item(12).ToString, row.Item(13).ToString, row.Item(14).ToString, row.Item(15).ToString, _<BR>row.Item(16).ToString, row.Item(17).ToString, row.Item(18).ToString, row.Item(19).ToString, _ row.Item(20).ToString, row.Item(21).ToString, row.Item(22).ToString, row.Item(23).ToString, _ row.Item(24).ToString, row.Item(25).ToString, row.Item(26).ToString, _ <BR>row.Item(27).ToString, row.Item(28).ToString, row.Item(29).ToString, row.Item(30).ToString, row.Item(31).ToString, row.Item(32).ToString, _<BR>row.Item(33).ToString, row.Item(34).ToString, row.Item(35).ToString, row.Item(36).ToString)</P>
+<P>------</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Public</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> Assign(<FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> companyID <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Integer</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> referenceNumber <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> nationalIdentifier <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> payrollNumber <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> enterpriseID <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> socialSecurityNumber <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> title <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> firstName <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> middleName <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> lastName <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> Suffix <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> preferredName <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> gender <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> maritalStatus <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> email <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> salary <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Double</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> taxRate <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Double</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> startDate <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> endDate <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> dateOfBirth <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> street <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> city <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> province <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> postalCode <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> country <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> telephone <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> mobile <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> nationalityID <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> greenCard <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Boolean</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> director <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Boolean</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> insider <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Boolean</FONT></FONT>, _<FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> division <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> department <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> payroll <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> jobTitle <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> jobGrade <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, _<BR><FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> costCentre <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>, <FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> status <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Integer</FONT></FONT>)</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>If</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Not</FONT></FONT> Contains(referenceNumber) <FONT color=#0000ff><FONT color=#0000ff>Then</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> resource <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> ParticipantImportItem = _</P>
+<P>ParticipantImportItem.NewParticipantImportItem(companyID, referenceNumber, nationalIdentifier, payrollNumber, enterpriseID, socialSecurityNumber, title, firstName, middleName, lastName, _</P>
+<P>Suffix, preferredName, gender, maritalStatus, email, salary, taxRate, startDate, endDate, dateOfBirth, street, city, province, postalCode, country, _<BR>telephone, mobile, nationalityID, greenCard, director, insider, division, department, payroll, jobTitle, jobGrade, costCentre, status)</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.Add(resource)</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Else</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>Throw</FONT></FONT> _</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>New</FONT></FONT> InvalidOperationException(<FONT color=#a31515><FONT color=#a31515>"Duplicate Participant specified in list: "</FONT></FONT> &amp; referenceNumber)</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>If</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</P></FONT></FONT>I am not sure where the Parent exactly is set.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, June 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The parent is set by CSLA when an item is added to the
+list.&nbsp; So, if you call validation rules in Create, by that time the parent
+is not set yet, so the rule is technically invalid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>There are a couple of ways you can address this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>You can create Friend Sub Validate on child object that calls validation
+rules.&nbsp; In this case, your import items list code would be:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Dim newItem as ImportItem = ImportItem.NewImportItem()\<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Add(importItem)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>importItem.Validate()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 25, 2008 8:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: RE: RE: RE: Import Via
+Excel / Name Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>i am calling the validation rules after all the fields for the child is
+specifiied and the <span>Private</span> <span>Overloads</span> <span>Sub</span>
+Child_Create(...) method is called where properties are loaded like so..<o:p></o:p></p>
+
+<p><span>Private</span> <span>Overloads</span>
+<span>Sub</span> Child_Create......<br>
+<br>
+.......<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(JobTitleProperty,
+jobTitle)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(JobGradeProperty,
+jobGrade)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(CostCentreProperty,
+costCentre)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(StatusProperty,
+status)<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<o:p></o:p></p>
+
+<p>ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p>mmm Parent is still nothing...I think there might be something wrong with
+the way I have created the objects. I will try and walk through the steps i
+have teken quickly. I have the parent object [ParticipantImport] which I create
+like so<o:p></o:p></p>
+
+<p>&lt;RunLocal()&gt; _<o:p></o:p></p>
+
+<p><span>Protected</span> <span>Overloads</span>
+<span>Sub</span> DataPortal_Create(<span>ByVal</span>
+criteria <span>As</span> SingleCriteria(<span>Of</span> ParticipantImport, <span>Integer</span>))<o:p></o:p></p>
+
+<p>LoadProperty(<span>Of</span> <span>Integer</span>)(CompanyIDProperty,
+criteria.Value)<br>
+LoadProperty(<span>Of</span> <span>String</span>)(ModifiedByProperty,
+user.Identity.Name.ToString)<br>
+LoadProperty(<span>Of</span>
+CostCentreList)(CostCentreNameValueListProperty,
+CostCentreList.GetCostCentreList(criteria.Value))<br>
+LoadProperty(<span>Of</span>
+ParticipantImportItems)(ItemsProperty,
+ParticipantImportItems.NewParticipantImportItems)<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub<o:p></o:p></span></p>
+
+<p>Line Items are not added immediately, but only once the the excel file is
+selected and then an <strong>Assign</strong> method on the <strong>ParticipantImportITems</strong>
+class is called which inturn creates a ParticipantImportItem.<o:p></o:p></p>
+
+<p><span>Public</span> <span>Sub</span>
+Assign(<span>ByVal</span> companyID <span>As</span>
+<span>Integer</span>, <span>ByVal</span>
+referenceNumber <span>As</span> <span>String</span>,
+<span>ByVal</span> nationalIdentifier <span>As</span> <span>String</span>, _<br>
+<span>ByVal</span> payrollNumber <span>As</span>
+<span>String</span>, <span>ByVal</span>
+enterpriseID <span>As</span> <span>String</span>,
+<span>ByVal</span> socialSecurityNumber <span>As</span> <span>String</span>, <span>ByVal</span> title <span>As</span> <span>String</span>, _<br>
+<span>ByVal</span> firstName <span>As</span>
+<span>String</span>, <span>ByVal</span>
+middleName <span>As</span> <span>String</span>,
+<span>ByVal</span> lastName <span>As</span>
+<span>String</span>, <span>ByVal</span>
+Suffix <span>As</span> <span>String</span>,
+<span>ByVal</span> preferredName <span>As</span>
+<span>String</span>, <span>ByVal</span>
+gender <span>As</span> <span>String</span>,
+_<br>
+<span>ByVal</span> maritalStatus <span>As</span>
+<span>String</span>, <span>ByVal</span>
+email <span>As</span> <span>String</span>,
+<span>ByVal</span> salary <span>As</span>
+<span>Double</span>, <span>ByVal</span>
+taxRate <span>As</span> <span>Double</span>,
+<span>ByVal</span> startDate <span>As</span>
+<span>String</span>, <span>ByVal</span>
+endDate <span>As</span> <span>String</span>,
+_<br>
+<span>ByVal</span> dateOfBirth <span>As</span>
+<span>String</span>, <span>ByVal</span>
+street <span>As</span> <span>String</span>,
+<span>ByVal</span> city <span>As</span> <span>String</span>, <span>ByVal</span>
+province <span>As</span> <span>String</span>,
+<span>ByVal</span> postalCode <span>As</span>
+<span>String</span>, <span>ByVal</span>
+country <span>As</span> <span>String</span>,
+_<br>
+<span>ByVal</span> telephone <span>As</span>
+<span>String</span>, <span>ByVal</span>
+mobile <span>As</span> <span>String</span>,
+<span>ByVal</span> nationalityID <span>As</span>
+<span>String</span>, <span>ByVal</span>
+greenCard <span>As</span> <span>Boolean</span>,
+<span>ByVal</span> director <span>As</span>
+<span>Boolean</span>, <span>ByVal</span>
+insider <span>As</span> <span>Boolean</span>,
+_<span>ByVal</span> division <span>As</span>
+<span>String</span>, <span>ByVal</span>
+department <span>As</span> <span>String</span>,
+<span>ByVal</span> payroll <span>As</span>
+<span>String</span>, <span>ByVal</span>
+jobTitle <span>As</span> <span>String</span>,
+<span>ByVal</span> jobGrade <span>As</span>
+<span>String</span>, _<br>
+<span>ByVal</span> costCentre <span>As</span>
+<span>String</span>, <span>ByVal</span>
+status <span>As</span> <span>Integer</span>)<o:p></o:p></p>
+
+<p><span>If</span> <span>Not</span> Contains(referenceNumber)
+<span>Then<o:p></o:p></span></p>
+
+<p><span>Dim</span> resource <span>As</span>
+ParticipantImportItem = _<o:p></o:p></p>
+
+<p>ParticipantImportItem.NewParticipantImportItem(companyID, referenceNumber,
+nationalIdentifier, payrollNumber, enterpriseID, socialSecurityNumber, title,
+firstName, middleName, lastName, _<o:p></o:p></p>
+
+<p>Suffix, preferredName, gender, maritalStatus, email, salary, taxRate,
+startDate, endDate, dateOfBirth, street, city, province, postalCode, country, _<br>
+telephone, mobile, nationalityID, greenCard, director, insider, division,
+department, payroll, jobTitle, jobGrade, costCentre, status)<o:p></o:p></p>
+
+<p><span>Me</span>.Add(resource)<o:p></o:p></p>
+
+<p><span>Else<o:p></o:p></span></p>
+
+<p><span>Throw</span> _<o:p></o:p></p>
+
+<p><span>New</span> InvalidOperationException(<span>&quot;Duplicate Participant specified in list: &quot;</span>
+&amp; referenceNumber)<o:p></o:p></p>
+
+<p><span>End</span> <span>If<o:p></o:p></span></p>
+
+<p><span>End</span> <span>Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal>I am not sure where the Parent exactly is set.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Wednesday, June 25, 2008</h2><P><FONT size=2>Thanks again for your input..</FONT></P>
+<P><FONT size=2>I implemented the following within the Validation Section within the child object [ParticipantImportItem]</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Friend</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> Validate()</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.Validate()</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff><FONT color=#0000ff><FONT color=#000000 size=2>Withing my collection class [ParticipantImportItems] i now call the validate only after adding the Item.</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Dim</FONT></FONT> resource <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> ParticipantImportItem = _ParticipantImportItem.NewParticipantImportItem(companyID, referenceNumber, nationalIdentifier, payrollNumber, enterpriseID, SocialSecurityNumber, title, firstName, middleName, lastName, _<BR>Suffix, preferredName, gender, maritalStatus, email, salary, taxRate, startDate, endDate, dateOfBirth, street, city, province, postalCode, country, _<BR>telephone, mobile, nationalityID, greenCard, director, insider, division, department, payroll, jobTitle, jobGrade, costCentre, status)</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.Add(resource)</FONT></P>
+<P><FONT size=2>resource.Validate()</FONT></P>
+<P><FONT size=2>but now I am getting a System.StackOverflow exception {Property evaluation failed}</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P><FONT color=#0000ff><FONT color=#0000ff></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, June 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p>Should be (in ParticipantImportItem)<o:p></o:p></p>
+
+<p><span>Friend</span> <span>Sub</span>
+Validate()<o:p></o:p></p>
+
+<p><span>Me</span>.ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub</span><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 25, 2008 11:15 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: RE: RE: RE: RE: Import Via
+Excel / Name Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks again for your input..<o:p></o:p></p>
+
+<p>I implemented the following within the Validation Section within the child
+object [ParticipantImportItem]<o:p></o:p></p>
+
+<p><span>Friend</span> <span>Sub</span>
+Validate()<o:p></o:p></p>
+
+<p><span>Me</span>.Validate()<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub</span><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>Withing my collection class
+[ParticipantImportItems] i now call the validate only after adding the Item.</span><o:p></o:p></p>
+
+<p><span>Dim</span> resource <span>As</span>
+ParticipantImportItem =
+_ParticipantImportItem.NewParticipantImportItem(companyID, referenceNumber,
+nationalIdentifier, payrollNumber, enterpriseID, SocialSecurityNumber, title,
+firstName, middleName, lastName, _<br>
+Suffix, preferredName, gender, maritalStatus, email, salary, taxRate,
+startDate, endDate, dateOfBirth, street, city, province, postalCode, country, _<br>
+telephone, mobile, nationalityID, greenCard, director, insider, division,
+department, payroll, jobTitle, jobGrade, costCentre, status)<o:p></o:p></p>
+
+<p><span>Me</span>.Add(resource)<o:p></o:p></p>
+
+<p>resource.Validate()<o:p></o:p></p>
+
+<p>but now I am getting a System.StackOverflow exception {Property evaluation
+failed}<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Wednesday, June 25, 2008</h2><P>thanks again, by chaning it to </P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Friend</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT> Validate()</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.ValidationRules.CheckRules()</P>
+<P><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Sub</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#0000ff><FONT color=#000000>did work but it now&nbsp;my CheckCostCentreExists validation rule is wrong. An error occurs.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#0000ff>{"Unable to cast object of type 'Centive.Library.ParticipantImportItems' to type 'Centive.Library.ParticipantImport'."}</FONT></FONT></P>
+<P><FONT color=#000000>If i am correct the error states that the parent object is the collection object [ParticipantImportItems] and not the ParticipantImport as expected on which i want to access the namevaluelist property to check against.</FONT></P>
+<P><EM>Validation rule snippet.</EM></P><FONT color=#0000ff><FONT color=#0000ff>
+<P><FONT color=#0000ff><FONT color=#0000ff>If</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>CType</FONT></FONT>(target.Parent, ParticipantImport).CostCentreNameValueList.Contains(target.GetProperty(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>)(CostCentreProperty)) = <FONT color=#0000ff><FONT color=#0000ff>False</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Then</FONT></FONT><FONT color=#0000ff><FONT color=#0000ff></P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, June 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p><span>Yes,
+it should be <o:p></o:p></span></p>
+
+<p><span>If CType(target.Parent, ParticipantImportItems).CostCentreNameValueList.Contains(target.GetProperty(Of
+String)(CostCentreProperty)) = False Then<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>And your cost center name collection should be attached to that
+list.&nbsp; Or you can keep it attached to the Import class, but then you have
+to have it accessible from import line items list by linking them together.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 25, 2008 11:46 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: RE: RE: RE: RE: RE: RE: Import
+Via Excel / Name Value Lists type scenarios<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>thanks again, by chaning it to <o:p></o:p></p>
+
+<p><span>Friend</span> <span>Sub</span>
+Validate()<o:p></o:p></p>
+
+<p><span>Me</span>.ValidationRules.CheckRules()<o:p></o:p></p>
+
+<p><span>End</span> <span>Sub</span><o:p></o:p></p>
+
+<p><span>did work but it now&nbsp;my CheckCostCentreExists
+validation rule is wrong. An error occurs.</span><o:p></o:p></p>
+
+<p><span>{&quot;Unable to cast object of type
+'Centive.Library.ParticipantImportItems' to type
+'Centive.Library.ParticipantImport'.&quot;}</span><o:p></o:p></p>
+
+<p><span>If i am correct the error states that the parent
+object is the collection object [ParticipantImportItems] and not the
+ParticipantImport as expected on which i want to access the namevaluelist
+property to check against.</span><o:p></o:p></p>
+
+<p><em>Validation rule snippet.</em><o:p></o:p></p>
+
+<p><span>If CType(target.Parent,
+ParticipantImport).CostCentreNameValueList.Contains(target.GetProperty(Of
+String)(CostCentreProperty)) = False Then<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

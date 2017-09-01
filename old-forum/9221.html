@@ -1,0 +1,14 @@
+<html><header><title>Retrieving dependents in a business object.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Retrieving dependents in a business object.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9221.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GreatBarrier86 posted on Friday, July 16, 2010</h2><p>Hello,</p>
+<p>I&#39;m using the ValidationRules.AddDependentProperty() function to do the following:&nbsp;<span style="font-size:x-small;">
+<p><strong>ValidationRules.AddDependentProperty(_addr1Property, _cityProperty);</strong></p>
+<p>Then, i use ValidationRules.AddRule() to do the following</p>
+<p><span style="font-size:x-small;">
+<p><strong>ValidationRules.AddRule(ValidateAddressFieldIfAddr1IsFilled, _cityProperty);</strong></p>
+</span></p>
+</span></p>
+<p>&nbsp;Would it be possible to retrieve the dependency information when the <strong>ValidateAddressFieldIfAddr1IsFilled</strong> executes? Is there a way to tell if _addr1 has _city as a dependent, or vice versa?</p>
+<p>Thanks, any help would be appreciated</p>
+<p>Jason</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, July 17, 2010</h2><p>I don&#39;t think there&#39;s any way to get at the lists of dependent properties, no.</p>
+<p>What is the scenario where that information is important?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>fussion_am replied on Tuesday, July 20, 2010</h2><p>Doesn&#39;t CheckRules(string propertyName) return a string array of all properties that had their rules checked?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GreatBarrier86 replied on Wednesday, July 21, 2010</h2><p>I have a function that clears the values of 2 properties if a certain other property is unchecked. Therefore, the 2 properties to be cleared are set as dependants of the checked/unchecked property. The problem is that this has to occur 2 times with two different sets of properties.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fussion_am replied on Wednesday, July 21, 2010</h2><p>Ah, yeah that would be a problem.&nbsp; I actually had the same need for a side project I had been playing around with.&nbsp; I was thinking about having a &#39;RulesBuilder&#39; that would attach rules to a BO.&nbsp; Some of the &#39;RulesBuilder&#39; methods needed to know whether or not a dependency was already created between various properties so it could (or not) create the dependency.</p>
+<p>&nbsp;</p>
+<p>+1 for a method by which we can query what properties are dependent on what properties (not sure if this sentance is the best description of the request)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

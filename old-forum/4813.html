@@ -1,0 +1,34 @@
+<html><header><title>Error &quot;Failed to start monitoring changes to...&quot; !</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error &quot;Failed to start monitoring changes to...&quot; !</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4813.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Tuesday, May 06, 2008</h2><p>I need&nbsp; H E L P please !!! <br></p>EDIT:<br>When I got the above error initially, I thought this is related to CSLA.NET, because when it occurs, I cannot use any objects from CSLA even though they are added to the project references. But, later, I realized that this is not related to CSLA. But, I hope that I can get help from here if possible.<br><br>The complete problem details:<br><p>I have been working with different
+web sites/projects/solutions using VS2005 on local Windows XP machine.
+I usually move such solutions/project to Windows Server 2003
+development machine (before final Go Live) and I open them from my
+local machine over a file share on the server and continue development using this method (over file share). I always turn on
+impersonation using a DOMAIN Account because all web sites need to
+access resources (such CONNX Data Dictionary and license Files) located
+on other remote machines.</p><p>I have been following this method for
+more than a year until now. I mean that I setup the permission needed
+for the asp_wp.exe ( or w3wp.exe) user account and did all other
+required settings. I put the ASP.NET Impersonated Account in the Local
+Administrators Group of the Server Machine and did the same on my local
+machine. Not only that, I also put "NETWORK SERVICE" and the Anonymous
+IUSR_MACHINE in the Local Admins Group on both machines too. So far, no
+problem, every thing is so cool !<br></p><p>Just yesterday, I am
+getting the following error soon after I open any Project/Solution
+from my machine, where the project/solution is located on a file share
+on the remote server (both machines are part of the DOMAIN), and I get
+the error even before I compile/run the web site.<br></p>
+<p>"Failed to start monitoring changes to '\\devmachine\websites\...\global.asax' because access is denied."</p><p>Sometimes the problem file is '\\devmachine\websites\...\default.aspx' or '...\web.config'.</p><p>I reviewed the security settings on my machine and the server machine and every thing seems to be in place.&nbsp;</p>
+<p>If I open the solution locally from the server machine, then no error. The Site will compile and run.</p><p>If
+I turn off impersonation, the error is cleared/resolved even from my machine. If I turn on
+impersonation and put an incorrect password, the error is cleared too, but I get the error when try to use the required resources from the other remote servers.</p><p>I deleted the related folders from "Temporary ASP.NET" folder, but this did not help at all.&nbsp;</p><p>The
+only thing I remember which I did recently is that I used "NGEN.EXE" on
+my local machine to generate native code for one of the class library
+projects with DEBUG Symbols to try to use remote debugging with Native
+Code only (but it did not work!). I noticed that this command not only
+worked on the specified Library file, it also included many other
+libraries not related to me. Not sure why ?</p><p>Also, I applied a recent Service Pack for .NET 2.0 on the server, but I did not apply it on&nbsp; my machine.</p><p>This error really driving me crazy !!!!</p><p>Please help.</p><p>Tarek. <br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Tuesday, May 06, 2008</h2>Did you try this:&nbsp;&nbsp; <a href="http://support.microsoft.com/kb/317955">http://support.microsoft.com/kb/317955</a> ?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, May 07, 2008</h2><P>Thanks a lot !</P>
+<P>Did you know how many times I came across this KB Article in Microsoft. But since I was sure the permission are correct, I was saying to myself that no need to check it !!.</P>
+<P>But, after your post, I decided to re-check. Then I figured out that I am opening the Solution over the share, but the Share Permission (not NT File Permission) does not have the ASP .NET Impersonated Account. So, I said "Let me added it !" and after I added the account on the share permission with Read/Write Access,&nbsp;all the errors were resolved.</P>
+<P>So, I said "Why it was working fine in the past ?", and I think the answer is that, in the past I was using the Admin Share such as <A>\\devmachine\e$\...\solution..</A>, not a regular share. Just recently I started using a regular file share and I thought that no need to add the ASP Account on the share permission since it is already under the Admins Group. But no, I still have to add this account on the share permission, and I think this is another Microsoft Bug.</P>
+<P>Can you imagine that I found many resolutions which are mostly related to permission, but non of them suggested to check the permission on the share itself. Also, very little cases I found where developers are opening projects over a file share. Is this method bad or what ?</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

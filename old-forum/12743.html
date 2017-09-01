@@ -1,0 +1,14 @@
+<html><header><title>Authorization rule &amp; object state</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization rule &amp; object state</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12743.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, September 09, 2014</h2><p>I often find that there&#39;s a need to do authorization not just based on the user&#39;s roles (permissions), but also based on some state in the object itself.&nbsp; A common scenario is only the creator of a particular object can edit it (but they can be viewed by all).&nbsp; Or a property value should only be allowed to be changed if the Status property is a certain value.&nbsp; </p>
+<p>The Target property of the AuthorizationContext would seem to allow access to any object state, but I want to verify if that is the proper way to access the state or not.</p>
+<p>I found a thread from a while back that discussed sending input property values into authorization rules, and also allowing the rule to specify if its result may be cached, but nothing seems to have come of those.</p>
+<p>Any suggestions (which ideally don&#39;t involve overriding CanWriteProperty)?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, September 09, 2014</h2><p>Hi Andy,</p>
+<p>CslaGenFork has published a rule library that includes some authorization rules like:</p>
+<ul>
+<li>IsEmptyOrIsInRole (object state + given role)</li>
+<li>IsNewOrIsInRole&nbsp;(object state + given role)</li>
+<li>IsOwner (ownership)</li>
+<li>IsOwnerOrIsInRole (ownership + given role)</li>
+<li>RestrictByStatusOrIsInRole (object status property&nbsp;+ given role)</li>
+</ul>
+<p>Ideas for new rules are welcome <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, September 09, 2014</h2><p>I didn&#39;t see it at first, but I did find the property to allow caching of the result of the auth rule to be disabled in the latest version.&nbsp; If I can assume that the Target object is ok to use to get the other values of the state of the object, I think I&#39;m all set.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

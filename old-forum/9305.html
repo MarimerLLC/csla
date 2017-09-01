@@ -1,0 +1,30 @@
+<html><header><title>Save Childobject get UndoException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Save Childobject get UndoException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9305.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl posted on Saturday, July 31, 2010</h2><p>Hi.</p>
+<p>I have the fallowing situation of Root-Object and Child-Object:<br />The root-Object Contact contains a ChildList-Property called CommunicationList and a Child-Property called DefaultCommunication. The Object assigned to DefaultCommunication also exist in the CommunicationList.</p>
+<p>Contact (root)<br />- CommunicationList (child-list)<br />- DefaultCommunication (child-object)</p>
+<p>Now, when I create a new Child-Entry in CommunicationList like this:</p>
+<p>var child = this.CommunicationList.AddNew()</p>
+<p>And then assign it also to the Property DefaultCommunication, and change a Property of the Object, which is asignd to DefaultCommunication - when I now save the root-Object Contact, it will run in the fallowing exception:</p>
+<p>UndoException(string.Format(Resources.EditLevelMismatchException, &quot;AcceptChanges&quot;))</p>
+<p>Can anyone give me a hint, what I am doing wrong - or what I have to do to solve this problem?</p>
+<p>I use CSLA.NET 4</p>
+<p>Thanks for your help.</p>
+<p>Best Regards, Thomas</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, July 31, 2010</h2><p>What UI technology are you using?</p>
+<p>Something to do with your UI and data binding is leaving the edit level of one of your objects at a value higher than 1.</p>
+<p>If you are using Windows Forms, this is pretty common, and the cause is a failure to properly unbind the object(s) from the bindingsource controls.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>t.kehl replied on Saturday, July 31, 2010</h2><p>Hi Rocky</p>
+<p>I am using WPF.</p>
+<p>I think it has to do, that the Communication-Object is saved, when 
+the CommunicationList will be saved and after that one more time when 
+the Property DefaultCommunication will be saved. The same object like 
+the Property DefaultMail has is in the Child-CommunicationList.</p>
+<p>Thomas</p>
+<p>Thomas</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 31, 2010</h2><p>WPF by itself doesn&#39;t use n-level undo at all. That&#39;s good news usually, as it is much simpler than Windows Forms. Things that use undo in WPF include:</p>
+<ul>
+<li>some datagrid controls (they&#39;ll call IEditableObject.BeginEdit() when you edit a row)</li>
+<li>CslaDataProvider if ManageObjectLifetime is true (the default)</li>
+<li>ViewModelBase/ViewModel if ManageObjectLifetime is true (the default)</li>
+</ul>
+<p>If you are using any of these controls, you need to understand how and when the controls call BeginEdit, CancelEdit and ApplyEdit, and you need to make sure every BeginEdit has a matching CancelEdit or ApplyEdit.</p>
+<p>I usually only allow my top-level root CslaDataProvider or ViewModel&lt;T&gt; object to have ManageObjectLifetime=true. For child objects I usually either use a different manager, or set ManageObjectLifetime=false before the container gets the child object.</p>
+<p>If your problem is datagrid related then I suggest you start with some meditation to calm your mind. Then go to the barber and have them shave your head (so you don&#39;t pull out your hair - that&#39;s painful). Then block off some quality time to fight with the datagrid and dive into the chaos.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

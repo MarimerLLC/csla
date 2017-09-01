@@ -1,0 +1,324 @@
+<html><header><title>Rolodex Comany Edit - Rank not showing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex Comany Edit - Rank not showing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6381.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Monday, February 09, 2009</h2><P>Hi All</P>
+<P>Just trying out the Rolodex sample for Silverlight and trying to edit an existing company (T-Mobile) that has some existing contacts.</P>
+<P>When I choose to edit the company displays correctly except in the Contacts grid the Rank isn't shown. If I change the company and save then when it refreshes the rank is shown correctly.</P>
+<P>I suspect the problem is that the company is being loaded before the Ranks combobox has populated and so it can't display the correct rank using the RankID. I have proved this by adding a Reload button to the control that runs the GetCompany code again. When the control refreshes this time the Rank is displayed.</P>
+<P>So, what's the solution to this? I'm thinking in the system I'm building I'm going to have lots of comboboxes - these will all need to be populated before the main root object is displayed.</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, February 09, 2009</h2><P>Well, I've figured out the reason for this, and it's as I suspected. </P>
+<P>The problem is that the CslaDataProvider - RanksData - doesn't finish loading the combobox before the CompanyData loading fires. So the data arrives too late.</P>
+<P>I can get this to work by rejigging the code to run the RanksData load and only when that is complete do I load the Company. Clearly there needs to be a simple implementation of a pattern here - all of the CslaDataLoader objects need to finish loading their data before the main edit object loads its data.</P>
+<P>Comments?</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should not see a significant delay if any in loading ranks.&nbsp;
+Once those are in, your UI should rebind.&nbsp; I am actually surprised that
+this is not working for you.&nbsp; But yes, if you have a lot of combo boxes
+with large lists, and you think your users will be confused by a possible
+slight delay in binding, you would need to do something to postpone main data
+load until all supported data has been loaded.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cds
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 5:19 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Rolodex Comany Edit - Rank not showing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Well, I've figured out the reason for this, and it's as I suspected. <o:p></o:p></p>
+
+<p>The problem is that the CslaDataProvider - RanksData - doesn't finish
+loading the combobox before the CompanyData loading fires. So the data arrives
+too late.<o:p></o:p></p>
+
+<p>I can get this to work by rejigging the code to run the RanksData load and
+only when that is complete do I load the Company. Clearly there needs to be a
+simple implementation of a pattern here - all of the CslaDataLoader objects
+need to finish loading their data before the main edit object loads its data.<o:p></o:p></p>
+
+<p>Comments?<o:p></o:p></p>
+
+<p>Craig<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Monday, February 09, 2009</h2>Hi Sergey,<br>I've run to exactly the same problem this evening - I hadn't seen it before. What happens is that sometimes (when the data load is quick) the combo box is set to the correct selected item, otherwise it isn't. When it hasn't loaded quickly enough, the UI doesn't rebind - it just leaves the combo unselected. When I click on it, the list is there, ready to go. It's bizarre - you can open and close the form - and sometimes the combos will be set correctly, and sometimes they will be blank. What's a good way to preload the necessary CslaDataProviders?<br>Thanks, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, February 09, 2009</h2><P>I agree James - I'm sure this is a timing issue. </P>
+<P>Sergey - are you saying that I can essentially bind in any order? I don't think this is the case. There's a IValueConverter in the equation - the RanksConverter that looks at the Data property of the RankData CslaDataProvider - if that's empty then it won't be able to set the select item on the combobox.</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Tuesday, February 10, 2009</h2><P>i came across similar and have been doing this:</P>
+<P>LoadData is called from outside of the UserControl</P>
+<P>CslaDataProviderDataChanged is called by each provider and updates a module level bool and then call OnDataLoaded();</P>
+<P>OnDataLoaded checks all providers have loaded and then fires an event to the "calling" page to allow it to be shown.</P>
+<P>I'm not sure if this is absolutely required but it has gotten over the types of probelms you describe.</P>
+<P>Good to hear Sergey's opinion?</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> LoadData(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> parameter)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> expenseProvider = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ExpenseData"</FONT></FONT><FONT size=2>] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> categorysProvider = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CategorysData"</FONT></FONT><FONT size=2>] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> callReasonsProvider = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CallReasonsData"</FONT></FONT><FONT size=2>] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> callOutcomesProvider = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CallOutcomesData"</FONT></FONT><FONT size=2>] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> competitorsProvider = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CompetitorsData"</FONT></FONT><FONT size=2>] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> mileageReasonProvider = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Resources[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"MileageReasonsData"</FONT></FONT><FONT size=2>] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (categorysProvider != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) { categorysProvider.Refresh(); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (callReasonsProvider != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) { callReasonsProvider.Refresh(); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (callOutcomesProvider != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) { callOutcomesProvider.Refresh(); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (competitorsProvider != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) { competitorsProvider.Refresh(); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (mileageReasonProvider != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>) { mileageReasonProvider.Refresh(); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (parameter == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2> &amp;&amp; expenseProvider != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>expenseProvider.FactoryMethod = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CreateExpense"</FONT></FONT><FONT size=2>;</P>
+<P>expenseProvider.Refresh();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> expenseId;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>.TryParse(parameter.ToString(), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>out</FONT></FONT><FONT size=2> expenseId) == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>expenseProvider.FactoryParameters.Add(expenseId);</P>
+<P>expenseProvider.FactoryMethod = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetExpense"</FONT></FONT><FONT size=2>;</P>
+<P>expenseProvider.Refresh();</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataProvider_DataChanged(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2> provider = sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//System.Diagnostics.Debug.WriteLine(</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// "Entering DataProvider_DataChanged: " + DateTime.Now.ToString() + " / " + provider.FactoryMethod);</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (provider.Error != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Globals</FONT></FONT><FONT size=2>.DisplayErrorMessage(THIS_PAGE, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"DataProvider_DataChanged"</FONT></FONT><FONT size=2>, provider);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>switch</FONT></FONT><FONT size=2> (provider.FactoryMethod)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"CreateExpense"</FONT></FONT><FONT size=2>:</P>
+<P>_isExpenseDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetExpense"</FONT></FONT><FONT size=2>:</P>
+<P>_isExpenseDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetCategorys"</FONT></FONT><FONT size=2>:</P>
+<P>_isCategorysDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetCallReasons"</FONT></FONT><FONT size=2>:</P>
+<P>_isCallReasonsDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetCallOutcomes"</FONT></FONT><FONT size=2>:</P>
+<P>_isCallOutcomesDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetCompetitors"</FONT></FONT><FONT size=2>:</P>
+<P>_isCompetitorsDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GetMileageReasons"</FONT></FONT><FONT size=2>:</P>
+<P>_isMileageReasonsDataLoaded = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>default</FONT></FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>OnDataLoaded();</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnDataLoaded()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_isExpenseDataLoaded &amp;&amp;</P>
+<P>_isCategorysDataLoaded &amp;&amp;</P>
+<P>_isCallReasonsDataLoaded &amp;&amp;</P>
+<P>_isCallOutcomesDataLoaded &amp;&amp;</P>
+<P>_isCompetitorsDataLoaded &amp;&amp;</P>
+<P>_isMileageReasonsDataLoaded &amp;&amp;</P>
+<P>DataLoaded != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>DataLoaded.Invoke(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2>.Empty);</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, essentially you should bind in any order.&nbsp; Combobox is
+an unfortunate example though.&nbsp; It is really underdeveloped because it is
+missing binding to SelectedValue property which is what is used pretty much all
+the time.&nbsp; My recommendation is not to use SL Combobox as it stands right
+now because you will be forced to write converters for each combobox, which is
+kind of ridiculous.&nbsp; My suggestion is to follow one of the two routes:
+extend combobox to provide SelectedValue or some other way to be able to bind
+to a selected value or buy a third party controls kit that includes real
+combobox<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cds
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 7:33 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Rolodex Company Edit - Rank not showing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I agree James - I'm sure this is a timing issue. <o:p></o:p></p>
+
+<p>Sergey - are you saying that I can essentially bind in any order? I don't
+think this is the case. There's a IValueConverter in the equation - the
+RanksConverter that looks at the Data property of the RankData CslaDataProvider
+- if that's empty then it won't be able to set the select item on the combobox.<o:p></o:p></p>
+
+<p>Craig<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Thursday, February 12, 2009</h2>This has been a useful discussion - it's something that is going to crop up regularly on the forum I expect (as more people get to know CSLA silverlight through the rolodex example). The way I've got around it is similar to davido - I chain the loading of my dataproviders and only load the main provider once the others are loaded. Not ideal though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The only way now is to use SynchonizedProxy and arrange your
+providers in XAML in correct order.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 6:19 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Rolodex Company Edit - Rank not showing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Sergey,<br>
+I've run to exactly the same problem this evening - I hadn't seen it before.
+What happens is that sometimes (when the data load is quick) the combo box is
+set to the correct selected item, otherwise it isn't. When it hasn't loaded
+quickly enough, the UI doesn't rebind - it just leaves the combo unselected.
+When I click on it, the list is there, ready to go. It's bizarre - you can open
+and close the form - and sometimes the combos will be set correctly, and
+sometimes they will be blank. What's a good way to preload the necessary
+CslaDataProviders?<br>
+Thanks, James.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

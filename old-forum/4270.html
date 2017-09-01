@@ -1,0 +1,40 @@
+<html><header><title>Code examples and versions of the framework.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Code examples and versions of the framework.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4270.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Thursday, January 31, 2008</h2><P>G'day all,</P>
+<P>I'm implementing CSLA with VB and it would seem some of the codegeneration templates are a little out of date or broken from the codeplex web site, so I'm looking for a simple set of examples for each of the different framework implementations.&nbsp;I'm currently using v2.2 of the framework</P>
+<P>Lets take and example of&nbsp;&nbsp;"Inherits CommandBase"</P>
+<P>In Rocks book "Expert VB2005 Business Objects" and the ProjectTracker20vb solution there is </P><FONT size=2>
+<P><FONT face="Courier New" size=1>&lt;Serializable()&gt; _</FONT></P>
+<P></FONT><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Private</FONT> <FONT color=#0000ff>Class</FONT></FONT><FONT face="Courier New"> ExistsCommand</FONT></FONT></P>
+<P><FONT size=1><FONT face="Courier New" color=#0000ff>Inherits</FONT><FONT face="Courier New"> CommandBase</FONT></FONT></P>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Private</FONT> mId <FONT color=#0000ff>As</FONT></FONT><FONT face="Courier New"> Guid</FONT></FONT></P>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>Private</FONT> mExists <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Boolean</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>ReadOnly</FONT> <FONT color=#0000ff>Property</FONT> Exists() <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Boolean</P></FONT></FONT></FONT>
+<P><FONT color=#0000ff><FONT face="Courier New" size=1>Get</FONT></P></FONT>
+<P><FONT size=1><FONT face="Courier New" color=#0000ff>Return</FONT><FONT face="Courier New"> mExists</FONT></FONT></P>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Get</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Property</P></FONT></FONT></FONT>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Sub</FONT> <FONT color=#0000ff>New</FONT>(<FONT color=#0000ff>ByVal</FONT> id <FONT color=#0000ff>As</FONT></FONT><FONT face="Courier New"> Guid)</FONT></FONT></P>
+<P><FONT face="Courier New" size=1>mId = id</FONT></P>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</P></FONT></FONT></FONT>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Protected</FONT> <FONT color=#0000ff>Overrides</FONT> <FONT color=#0000ff>Sub</FONT></FONT><FONT face="Courier New"> DataPortal_Execute()</FONT></FONT></P>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Using</FONT> cn <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>New</FONT></FONT><FONT face="Courier New"> SqlConnection(Database.PTrackerConnection)</FONT></FONT></P>
+<P><FONT face="Courier New" size=1>cn.Open()</FONT></P>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Using</FONT> cm <FONT color=#0000ff>As</FONT></FONT><FONT face="Courier New"> SqlCommand = cn.CreateCommand</FONT></FONT></P>
+<P><FONT face="Courier New" size=1>cm.CommandType = CommandType.Text</FONT></P>
+<P><FONT size=1><FONT face="Courier New">cm.CommandText = </FONT><FONT color=#a31515><FONT face="Courier New">"SELECT Id FROM Projects WHERE Id=@id"</FONT></P></FONT></FONT>
+<P><FONT size=1><FONT face="Courier New">cm.Parameters.AddWithValue(</FONT><FONT face="Courier New" color=#a31515>"@id"</FONT><FONT face="Courier New">, mId)</FONT></FONT></P>
+<P><FONT size=1><FONT face="Courier New"><FONT color=#0000ff>Dim</FONT> count <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Integer</FONT> = <FONT color=#0000ff>CInt</FONT></FONT><FONT face="Courier New">(cm.ExecuteScalar)</FONT></FONT></P>
+<P><FONT face="Courier New" size=1>mExists = (count &gt; 0)</FONT></P>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Using</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Using</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</P></FONT></FONT></FONT>
+<P><FONT face="Courier New"><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Class</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2></P></FONT>
+<P>However the codegeneration for VB command.cst (codesmith) failes to generate and includes BeforeServer and AfterServer methods and what looks like a completely different approach to building commandBase inherited objects.</P>
+<P>Is there a place where you can get empty code examples for all the different components of the CSLA we can build/modify codegeneration templates or snippits to implement that structure?&nbsp; I realise this is a moving target, but it might make it easier to get the codegeneration templates uptodate in the VB area.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, February 01, 2008</h2><P>Jamie,</P>
+<P>There is no such place (that I am aware of.) </P>
+<P>I have been using CSLA for 4 years now and have built my own templates to match my architecture. Whenever I have a question about something I re-read the book and look at the samples and see if my ideas are basically in line with that.</P>
+<P>For example my architecure reduces all the ADO.Net code above to 1 line. But the rest of the structure of a Command Object is pretty much the same. </P>
+<P>If you build a few BOs and work with them for a while then you can figure out the best way to make templates of them to match your architecture and coding style. I tried to do everything all at once and while it eventually worked, it was a bit overwhelming. If you can focus on 1 BO type and then develop the template for that one fully, you will be better off. The template development time pays off big time down the road when you need to build new BOs. I can code-gen many BOs in just a few seconds now.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

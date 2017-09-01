@@ -1,0 +1,437 @@
+<html><header><title>is there a PropertyFriendlyName example?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>is there a PropertyFriendlyName example?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3222.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg posted on Wednesday, July 18, 2007</h2>I tried to use it in a ProjectTracker 3.0 code and run into some problem to implement it.<br>Could you help me with this ?<br>Thanks,<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2><P>To use a friendly name do this:</P><FONT size=2>
+<P>ValidationRules.AddRule(<BR>&nbsp; Csla.Validation.</FONT><FONT color=#2b91af size=2>CommonRules</FONT><FONT size=2>.StringRequired, </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"Name"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"Project name"</FONT><FONT size=2>));</P></FONT>
+<P>You can find an example of using a friendly name in a custom rule method by looking at any of the rule methods in CommonRules. Note the use of the Shared/static helper method to resolve the property name value.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Wednesday, July 18, 2007</h2><p>To use a friendly name do this:</p><font size="2">
+</font><p><font size="2">ValidationRules.AddRule(<br>&nbsp; Csla.Validation.</font><font color="#2b91af" size="2">CommonRules</font><font size="2">.StringRequired, </font><font color="#0000ff" size="2">new</font><font size="2"> Csla.Validation.</font><font color="#2b91af" size="2">RuleArgs</font><font size="2">(</font><font color="#a31515" size="2">"Name"</font><font size="2">, </font><font color="#a31515" size="2">"Project name"</font><font size="2">));</font></p><p><font size="2">******************************<br></font></p><font size="3">For this part:<br>- </font><font size="3">Csla.Validation.</font><font color="#2b91af" size="3">CommonRules</font><font size="3">.StringRequired <br><br>I received an error message:<br><br>Argument not specified for parameter 'e' of 'Public Function
+StringRequired(target As Object, e As Csla.Validation.RuleArgs) As
+Boolean'. <br><br>?<br><br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In VB the code in AddBusinessRules() looks like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; ValidationRules.AddRule( _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>AddressOf</span> Validation.CommonRules.StringRequired, _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>New</span> Csla.Validation.RuleArgs(<span>&quot;Name&quot;</span>,
+<span>&quot;Project name&quot;</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> un7lg
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 18, 2007 10:01 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] is there a PropertyFriendlyName example?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>To use a friendly name do this:<o:p></o:p></p>
+
+<p><span>ValidationRules.AddRule(<br>
+&nbsp; Csla.Validation.<span>CommonRules</span>.StringRequired,
+<span>new</span> Csla.Validation.<span>RuleArgs</span>(<span>&quot;Name&quot;</span>, <span>&quot;Project
+name&quot;</span>));</span><o:p></o:p></p>
+
+<p><span>******************************</span><o:p></o:p></p>
+
+<p class=MsoNormal>For this part:<br>
+- Csla.Validation.<span>CommonRules</span>.StringRequired
+<br>
+<br>
+I received an error message:<br>
+<br>
+Argument not specified for parameter 'e' of 'Public Function
+StringRequired(target As Object, e As Csla.Validation.RuleArgs) As Boolean'. <br>
+<br>
+?<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Wednesday, July 18, 2007</h2><p>To use a friendly name do this:</p><font size="2">
+</font><font size="2">ValidationRules.AddRule(<br>&nbsp; Csla.Validation.</font><font color="#2b91af" size="2">CommonRules</font><font size="2">.StringRequired, </font><font color="#0000ff" size="2">new</font><font size="2"> Csla.Validation.</font><font color="#2b91af" size="2">RuleArgs</font><font size="2">(</font><font color="#a31515" size="2">"Name"</font><font size="2">, </font><font color="#a31515" size="2">"Project name"</font><font size="2">))<br>*******************<br><br></font><p>I add AddressOf and it worked for me:<br></p><font size="2">
+</font><font size="2">ValidationRules.AddRule(<br>&nbsp; AddressOf Csla.Validation.</font><font color="#2b91af" size="2">CommonRules</font><font size="2">.StringRequired, </font><font color="#0000ff" size="2">new</font><font size="2"> Csla.Validation.</font><font color="#2b91af" size="2">RuleArgs</font><font size="2">(</font><font color="#a31515" size="2">"Name"</font><font size="2">, </font><font color="#a31515" size="2">"Project name"</font><font size="2">))</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Wednesday, July 18, 2007</h2>Thanks Rocky,<br><br>I can't wait your next book regarding 3.0 new features added.<br>I really need it to make my life easier.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am working on it right now </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> un7lg
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 18, 2007 10:13 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] is there a PropertyFriendlyName example?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Rocky,<br>
+<br>
+I can't wait your next book regarding 3.0 new features added.<br>
+I really need it to make my life easier.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Wednesday, July 18, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>I am working on it right now </span><span>J</span><span><o:p></o:p></span></p>
+
+
+
+</div>
+
+</div></BLOCKQUOTE><br><br>It sounds great !<br>I look forward to reading it !<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Wednesday, July 18, 2007</h2>I do not want to be annoying, but how apply FriendlyName to this rule? <br><br>ValidationRules.AddRule( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf Validation.CommonRules.StringMaxLength, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New Validation.CommonRules.MaxLengthRuleArgs("Name", 50))</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Intellisense should be showing you the options for parameters of
+the MaxLengthRuleArgs constructor:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>ValidationRules.AddRule( _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf
+Validation.CommonRules.StringMaxLength, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New Validation.CommonRules.MaxLengthRuleArgs(&quot;Name&quot;,
+<b>&#8220;Project name&#8221;,</b> 50))<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> un7lg
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 18, 2007 10:21 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] is there a PropertyFriendlyName example?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I do not want to be annoying, but how apply FriendlyName to
+this rule? <br>
+<br>
+ValidationRules.AddRule( _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf
+Validation.CommonRules.StringMaxLength, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New Validation.CommonRules.MaxLengthRuleArgs(&quot;Name&quot;,
+50))<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Wednesday, July 18, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>Intellisense should be showing you the options for parameters of
+the MaxLengthRuleArgs constructor:<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal">ValidationRules.AddRule( _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf
+Validation.CommonRules.StringMaxLength, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New Validation.CommonRules.MaxLengthRuleArgs("Name",
+<b>“Project name”,</b> 50))<o:p></o:p></p>
+
+</div>
+
+</div></BLOCKQUOTE><br>yes, of course it did<br><br>In this part<br>Validation.CommonRules.MaxLengthRuleArgs("Name",
+<b>“Project name”,</b> 50))<br><br>intellisense is not give me an option for FrienflyName, that is why I asked.<br><br>It tried to convert the 2nd arg to Integer and the 3rd one to String to be a maxLenght and a Format args.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don’t know – there are several overloads for the constructor,
+and the code I provided works. You do have to make sure Intellisense is showing
+the correct overload for the parameters you want to pass or it can get
+confusing. However, it will <i>compile</i> regardless.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> un7lg
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 18, 2007 11:00 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: is there a PropertyFriendlyName example?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>Intellisense
+should be showing you the options for parameters of the MaxLengthRuleArgs
+constructor:<o:p></o:p></p>
+
+<p class=MsoNormal>ValidationRules.AddRule(
+_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf
+Validation.CommonRules.StringMaxLength, _<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New
+Validation.CommonRules.MaxLengthRuleArgs(&quot;Name&quot;, <b>â€œProject nameâ€,</b>
+50))<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+yes, of course it did<br>
+<br>
+In this part<br>
+Validation.CommonRules.MaxLengthRuleArgs(&quot;Name&quot;, <b>â€œProject nameâ€,</b>
+50))<br>
+<br>
+intellisense is not give me an option for FrienflyName, that is why I asked.<br>
+<br>
+It tried to convert the 2nd arg to Integer and the 3rd one to String to be a
+maxLenght and a Format args.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, July 18, 2007</h2><P>Rocky,</P>
+<P>Just wondering if any thought was given to implementing friendly name as a attribute of the property and if so why not?</P>
+<P>It's just we implemented the equivalent in v2 along with common rules based on attributes with very little code. For example heres a typical string property on one of our objects:</P>
+<P>[Attributes.TextField(Description="Brief Description", MaxLength=50, Required=true)]</P>
+<P>public string BriefDescription<BR></P>
+<P>Description is our friendly name and it being an attribute is available to other systems besides the rules engine (UI generator etc.), also no need to addrule for common rules like required, this is done automatically based on the Required attribute.</P>
+<P>Justin</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, July 19, 2007</h2><P>I'd like to hear the thoughts on this too.&nbsp;&nbsp;After all the numerous hours I've spent pondering and experimenting with this solution over the last few years, it seemed to always end up that, all things considered,&nbsp;it was just hard to beat the attributes approach like Justin described.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Justin:</strong></div><div></P>
+<P>Rocky,</P>
+<P>Just wondering if any thought was given to implementing friendly name as a attribute of the property and if so why not?</P>
+<P>It's just we implemented the equivalent in v2 along with common rules based on attributes with very little code. For example heres a typical string property on one of our objects:</P>
+<P>[Attributes.TextField(Description="Brief Description", MaxLength=50, Required=true)]</P>
+<P>public string BriefDescription<BR></P>
+<P>Description is our friendly name and it being an attribute is available to other systems besides the rules engine (UI generator etc.), also no need to addrule for common rules like required, this is done automatically based on the Required attribute.</P>
+<P>Justin</P>
+<P>&nbsp;</P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2007</h2><P>Not to put too fine a point on it, but where were you guys during the beta? I love this kind of lobbying for changes. But input like this would be much more useful coming during the pre-release and beta 1 cycle when I can incorporate the ideas into the framework. </P>
+<P>I'll add the idea to the wish list and see if I get time to work in this area for 3.5 - though my focus on 3.5 is mostly on data access and not on validation so much.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div></P>
+<P>I'd like to hear the thoughts on this too.&nbsp;&nbsp;After all the numerous hours I've spent pondering and experimenting with this solution over the last few years, it seemed to always end up that, all things considered,&nbsp;it was just hard to beat the attributes approach like Justin described.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Justin:</strong></div><div></P>
+<P>Rocky,</P>
+<P>Just wondering if any thought was given to implementing friendly name as a attribute of the property and if so why not?</P>
+<P>It's just we implemented the equivalent in v2 along with common rules based on attributes with very little code. For example heres a typical string property on one of our objects:</P>
+<P>[Attributes.TextField(Description="Brief Description", MaxLength=50, Required=true)]</P>
+<P>public string BriefDescription<BR></P>
+<P>Description is our friendly name and it being an attribute is available to other systems besides the rules engine (UI generator etc.), also no need to addrule for common rules like required, this is done automatically based on the Required attribute.</P></div></BLOCKQUOTE></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, July 19, 2007</h2><P>Yeah sorry about that, think I was too busy sorting through Silverlight, SOA, Web 2.0, Sharepoint, Biztalk, Infopath, and figuring out which&nbsp;SKU of VS&nbsp;I needed to get during that time ;).</P>
+<P>Seriously though I have mentioned it in the past (<A HREF="/forums/thread/13607.aspx">http://forums.lhotka.net/forums/thread/13607.aspx</A>), but there was some definite hesitation here&nbsp;that some of it started fusing the UI into the BO, but when I saw friendly name added to the rules engine the first thing I thought of is how many times will that string be defined in code? Once for rules and at least one more time for the UI label, this is exactly why we made it an attribute. A bonus is of course the AddRule signature didn't have to change it just relfects internally to pick up the friendly name.</P>
+<P>Justin</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>Not to put too fine a point on it, but where were you guys during the beta? I love this kind of lobbying for changes. But input like this would be much more useful coming during the pre-release and beta 1 cycle when I can incorporate the ideas into the framework. </P>
+<P>I'll add the idea to the wish list and see if I get time to work in this area for 3.5 - though my focus on 3.5 is mostly on data access and not on validation so much.</P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Thursday, July 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Justin:</strong></div><div><p>Once for rules and at least one more time for the UI label, this is exactly why we made it an attribute. A bonus is of course the AddRule signature didn't have to change it just relfects internally to pick up the friendly name.</p>
+<p>Justin</p></div></BLOCKQUOTE><br><br>What about a dynamic changes during runtime of attribute if it needed?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, July 19, 2007</h2><P>Yes we did run into this but it has not proved to be much of an issue. That is, why would an attribute change? Perhaps "required" can flip flop based on some other change? Doesn't that get into the realm of making two objects since thier behaivors are different?</P>
+<P>We actually implemented a way to change attributes at runtime to experiment with. Basically the way we did it was our base objects implemented a GetPropertyAttributes method that does what Attirbute.GetCustomeAttributes does but caches the attibute objects within the instance. Then you can modify the returned attributes and the next time you GetPropertyAttributes it gives you the cached instance instead of constructing a new as Attirbute.GetCustomeAttributes would and&nbsp;therefore retains state from any changes made previously&nbsp;on that instance. This actually worked quite well but all code depending on attributes had to use the instance method instead of the static reflection method.</P>
+<P>Justin</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>un7lg:</strong></div><div><BR>What about a dynamic changes during runtime of attribute if it needed?<BR></div></BLOCKQUOTE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Thursday, July 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Justin:</strong></div><div><p>&nbsp;That is, why would an attribute change? <br></p><p>Justin</p>
+<p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>un7lg:</strong></div><div><br>What about a dynamic changes during runtime of attribute if it needed?<br></div></BLOCKQUOTE></p></div></BLOCKQUOTE><br><br>Lets assume that I have a properties(columns in my DB as well) of different types (such as string,boolean etc) and users of my app can use those fields if they want to provide some extra info about object.<br>So they define the FriendlyName to a U_String1 property, some validation rule and some criteria to it.<br><br>Is it possible to do such a things with an attribute to the property U_String1?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, July 19, 2007</h2><P>Ah yes user defined&nbsp;changes to business objects. Well&nbsp;our approach to that problem&nbsp;is still work in progress and lends itself to the attribute model, I will explain shortly.</P>
+<P>It's really a matter of perspective. I wouldn't call the situation you described necessarily a "runtime" change exactly. That is someone other than a developer can change the business object but this is done infrequently compared the actualy usage of the object.</P>
+<P>So we are actually using the built in codedom and dynamic code compiling and assembly load to let our users modify a business object through inheritance of the base objects we provide. That is there is a place in the app to submit source code which will be stored in the db, then read compiled and loaded dynamically by our app overlaying the base busnisses object with thier extensions to it. Also a simple designer to write the source code, so if they want to do something simple like add an extra property to a base object they need not know how to write c# (Think winforms designer and the code it generates).</P>
+<P>So you see our solution nothing needs to change, the attributes still function without needing to change at runtime, however source code iteself can be modified and it is the one and only definition of the object. In your model you would have some design in .net code and yet another metalanguage to overlay U_String1 with the same attributes. This metalanguage is what in your solution, xml, sql tables, sql extended attributes? </P>
+<P>Not exactly the easiest solution I know, I am not going to say we have a working solution yet, but .Net is really the first langauge I have developed in that this would even be&nbsp;possible without writing my own compiler.</P>
+<P>Probably not the answer you where looking for, but in your case attributes in source code don't make sense as they are defined elsewhere already and you want to read them from this other source and applying them.</P>
+<P>Justin</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>un7lg:</strong></div><div><BR>Lets assume that I have a properties(columns in my DB as well) of different types (such as string,boolean etc) and users of my app can use those fields if they want to provide some extra info about object.<BR>So they define the FriendlyName to a U_String1 property, some validation rule and some criteria to it.<BR><BR>Is it possible to do such a things with an attribute to the property U_String1?<BR></div></BLOCKQUOTE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, July 19, 2007</h2><P>I would say at that point you've gone down a different path - or you have a different enough problem that you're looking for a different solution in the first place.</P>
+<P>I've also&nbsp;given more consideration to the&nbsp;models where metadata is read at runtime lately.&nbsp; It has its advantages, for sure, and probably isn't all that hard to implement since you need a good designer for entering metadata in the code-generation paradigm anyway.</P>
+<P>It does make me a little nervous though.&nbsp; A few years ago my employer failed miserably at an ERP solution (JD Edwards) implementation.&nbsp; One of the big root problems was the fragility of the incredible complexity required to support extensive end-user runtime capabilities like it had.&nbsp; It didn't perform very well either.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, July 19, 2007</h2><P>I understand where your coming from for sure. I can see these mistakes have been in other systems, where they are so user customizable that the the overhead of this whole new user runtime on top of the developer runtime destroys performance. Look at Microsoft CRM, it has two databases one for data the other for the metatdata of the data and you can pretty much design your own tables and relationships between them etc along with workflow and forms!</P>
+<P>Bottom line though as we sell our products commercially is that while most of our customers work almost the same way, there are differences that must be accounted for to give them a working solution. custom reports, data import mappers, and customized data elements/screens are things we need to satisfy the market. Each of these has some dialect stored somewhere in the users data that they can modify. </P>
+<P>We are treading lightly in this area, and will not release a solution that would let the user do anything too detremental to the application. At the same time we would rather not make yet another domain specific language that they use, instead they use the same one we do albiet with some control layered on top of it.</P>
+<P>Justin</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div></P>
+<P>I would say at that point you've gone down a different path - or you have a different enough problem that you're looking for a different solution in the first place.</P>
+<P>I've also&nbsp;given more consideration to the&nbsp;models where metadata is read at runtime lately.&nbsp; It has its advantages, for sure, and probably isn't all that hard to implement since you need a good designer for entering metadata in the code-generation paradigm anyway.</P>
+<P>It does make me a little nervous though.&nbsp; A few years ago my employer failed miserably at an ERP solution (JD Edwards) implementation.&nbsp; One of the big root problems was the fragility of the incredible complexity required to support extensive end-user runtime capabilities like it had.&nbsp; It didn't perform very well either.</P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2007</h2><P>Early on I was hesitant to use attributes, because on a per-instance level the reflection could have become problematic. One of (if not <EM>the</EM>) slowest reflection operations is the retrieval of custom attribute values.</P>
+<P>Now, with per-type rules, the cost of this reflection should be incidental, because it would only trigger once per type per appdomain.</P>
+<P>However, my focus was on the existing approach. I'd seen some older posts on the attribute idea, but they didn't really come to mind as I was doing the 3.0 work and so I never considered using them.</P>
+<P>It is also the case that it would be <EM>ideal</EM> for an attribute approach to accomodate any rule. That's a separate issue from the friendly name attribute concept - at least in my mind.</P>
+<P>And I worry that UI developers would start to rely on those attributes as well, when they really should get the rule list as a set of rule:// URI values.</P>
+<P>It is true that an attribute-based approach can be complimentary to what I've done so far. I can envision a new method, like:</P>
+<P>ValidationRules.AddRulesFromPropertyAttributes()</P>
+<P>(or something with a slightly shorter name &lt;g&gt;)</P>
+<P>But the friendly name thing is now less fun, because I incorporated the concept into the RuleArgs constructor as a string. RuleArgs does not have enough information to reflect on the target object - remember that <EM>target</EM> is a separate parameter to the rule from the RuleArgs.</P>
+<P>Also, you don't want to reflect to get the friendly name when the rule method is invoked, because that would result in way too much reflection. Instead, you really do want to get the friendly name when AddRule() is called.</P>
+<P>So I could see this:</P>
+<P>ValidationRules.AddRule(StringRequired, new RuleArgs("Name", ValidationRules.GetFriendlyName("Name")))</P>
+<P>But that's kind of ugly too. Unfortunately, since RuleArgs doesn't know the target object type, it can't just do this automatically... I suppose it could be:</P>
+<P>ValidationRules.AddRule(StringRequired, new RuleArgs(this.GetType(), "Name"))</P>
+<P>Because that would give RuleArgs access to the right type information.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2007</h2><P>Sorry about being a bit snippy regarding the beta.</P>
+<P>I have observed, over the past few years of doing this, that I get a lot of "beta" feedback <EM>after release</EM>. </P>
+<P>This is not to diminish the wonderful feedback I <EM>do</EM> get during the beta process!! In 3.0 the WPF features wouldn't be <EM>nearly</EM> what they are without the help of several motivated individuals, and there'd be at least one really ugly WCF bug in there that I simply never saw myself, but resolved thanks to beta testing help!</P>
+<P>But the reality is that I get <EM>more</EM> feedback after release, and that is sometimes a little frustrating.</P>
+<P>I apologize for taking it out on you and this thread.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>un7lg:</strong></div><div></P>
+<P>What about a dynamic changes during runtime of attribute if it needed?<BR><BR></div></BLOCKQUOTE></P>
+<P>In my view, dynamic changes should be handled by a custom rule. In other words, the rule method <EM>itself</EM> shouldn't change (you shouldn't be adding or removing rules at runtime), but rather the rule method should implement logic that handles the changing requirement.</P>
+<P>Typically "dynamic changes" means things like property A must be less than property B. That's a custom rule.</P>
+<P>Property A is required only if property B has some specific value. That's a custom rule.</P>
+<P>The validation rule infrastructure is designed to follow this viewpoint.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>un7lg replied on Thursday, July 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>un7lg:</strong></div><div></p>
+<p>What about a dynamic changes during runtime of attribute if it needed?<br><br></div></BLOCKQUOTE></p>
+<p>In my view, dynamic changes should be handled by a custom rule. In other words, the rule method <em>itself</em> shouldn't change (you shouldn't be adding or removing rules at runtime), but rather the rule method should implement logic that handles the changing requirement.</p>
+<p>Typically "dynamic changes" means things like property A must be less than property B. That's a custom rule.</p>
+<p>Property A is required only if property B has some specific value. That's a custom rule.</p>
+<p>The validation rule infrastructure is designed to follow this viewpoint.</p></div></BLOCKQUOTE><br><br>Thanks Rocky,<br><br>I intend to create all required rule methods&nbsp; in advance for all custom properties, so from UI point of view, admin of the app just pick up a property name, assign an available rule method and then define a criteria,&nbsp; for example, maxLenght for that property.<br>Admin also would define a PropertyFriendlyName&nbsp; to replace ugly U_String1 name.<br>All&nbsp; these virables would be saved in a database table.<br><br>This is what I do not like:<br>Everytime my object created, it has to go to this table to read defined virables to apply validation rules.<br>I don't know if there is any other way to handle this.<br>Any advices appriciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Friday, July 20, 2007</h2><P>This is one reason we are taking the code generation approach, it's hard to beat the .net runtime for speed. Look at the System.Xml.Xsl.Runtime.XslCompiledTransform class, Turning the XSLT language into .Net code and compiling is faster than interpreting XSLT directly. This is what your doing, loading up a domain specific language and interpreting it when the object loads.</P>
+<P>Of course sticking to your approach you could optimize out the DB access by caching the table based attributes in say a static property on your business class, so that the first time a BO is instanced in the app domain it reads from the DB after that it comes from the cache. But you must handle a Admin changing the attributes and cached versions still out there without those changes.</P>
+<P>Then again perhaps the extra DB access is minor in the overall performance picture of your application.</P>
+<P>Justin</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>un7lg:</strong></div><div><BR>This is what I do not like:<BR>Everytime my object created, it has to go to this table to read defined virables to apply validation rules.<BR>I don't know if there is any other way to handle this.<BR>Any advices appriciated.<BR></div></BLOCKQUOTE></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, July 19, 2007</h2><P>Well, first off, I apologize.&nbsp; Unfortunately I haven't had the time in the last year to be as involved as I used to be.</P>
+<P>I didn't really mean it to sound like "lobbying for change" post-release.&nbsp; I don't think anything you've done prohibits continuing to implement or use&nbsp;the attributes functionality.</P>
+<P>The question&nbsp;was more just out of curiousity as to the thoughts behind avoiding the attribute approach, if it was even a real decision in that sense.&nbsp;&nbsp;There have been&nbsp;several quite lengthy and thorough discussions of this attrribute approach over the last few years (mostly on the old forum, no doubt), so it's not like we're springing a new idea here.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, July 19, 2007</h2><P>I just wanted to second this sentiment as well. My inquiry was not really a lobby for change it was curiosity and perhaps&nbsp;hear some&nbsp;opinions on attribute based programming and if there are downsides to this approach that perhaps I am not seeing.</P>
+<P>Justin</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div></P>
+<P>Well, first off, I apologize.&nbsp; Unfortunately I haven't had the time in the last year to be as involved as I used to be.</P>
+<P>I didn't really mean it to sound like "lobbying for change" post-release.&nbsp; I don't think anything you've done prohibits continuing to implement or use&nbsp;the attributes functionality.</P>
+<P>The question&nbsp;was more just out of curiousity as to the thoughts behind avoiding the attribute approach, if it was even a real decision in that sense.&nbsp;&nbsp;There have been&nbsp;several quite lengthy and thorough discussions of this attrribute approach over the last few years (mostly on the old forum, no doubt), so it's not like we're springing a new idea here.</P></div></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

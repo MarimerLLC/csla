@@ -1,0 +1,85 @@
+<html><header><title>Disposal of TransactionScope with async data access</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Disposal of TransactionScope with async data access</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11868.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm posted on Wednesday, March 06, 2013</h2><p>Having async data portal method doing pretty straightforward ADO.NET data access marked as transactional seemed to be anti-pattern for TransactionalDataPortal and TransactionScope in particular.</p>
+<p>Since TransactionScope has thread&nbsp;affinity, it has to be disposed on the very same thread it was created on. Therefore the moment data access continuation is invoked and when TransactionScope gets disposed the following exception occurs:</p>
+<p>&nbsp;&quot;A TransactionScope must be disposed on the same thread that it was created.&quot;</p>
+<p>My fallback was to at least obtain TransactionManager and get onto local transaction, but it didn&#39;t play well with async data access too. The reason being that TransactionManager uses TLS to store the created instance. Since there&#39;s no guarantee that disposal of TransactionManager will be done on the same thread where it was created, it usually never gets removed from TLS. If the next request reuses the uncleaned thread&#39;s TLS, it gets old TransactionManager and its transaction which is either already committed or rolled back.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 06, 2013</h2><p>I wonder how (or if) CSLA can help with this scenario.</p>
+<p>The only thing that comes to mind would be to create a synchronization context along with the TransactionScope object, and then change the await calls so they use the sync context (right now they ignore any sync context on the server).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 06, 2013</h2><p>Or I could do the easy thing, which is to through a NotSupportedException if you use transactionscope _and_ have an async root data portal method :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Wednesday, March 06, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>Or I could do the easy thing, which is to through a NotSupportedException if you use transactionscope _and_ have an async root data portal method :)</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hehe, that&#39;s what TransactionScope does, we can do better in CSLA.</p>
+<p>With regards to ConnectionManager and TransactionManager, I like the concepts so much that I would hate to see it unusable with async methods.</p>
+<p>I&#39;ve just tried quick and dirty replacement of all calls from&nbsp;ApplicationContext.LocalContext to&nbsp;CallContext:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>mgr = (ConnectionManager&lt;C&gt;)CallContext.LogicalGetData(ctxName);</p>
+<p>if (mgr == null)</p>
+<p>{</p>
+<p><span>	</span>mgr = new ConnectionManager&lt;C&gt;(database, label);</p>
+<p><span>	</span>CallContext.LogicalSetData(ctxName, mgr);</p>
+<p>}</p>
+<p>and disposal:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>_connection.Dispose();</p>
+<p>CallContext.FreeNamedDataSlot(GetContextName(_connectionString, _label));</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>It seems like it&#39;s working pretty well when threads are switching within using block. However, I didn&#39;t test some advanced scenarios such as nesting.</p>
+<p>&nbsp;</p>
+<p>I think that CSLA should get rid of TLS dependencies everywhere it can. It would be nice to harden CSLA for async world what doesn&#39;t seem like too far away.</p>
+<p>&nbsp;</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 06, 2013</h2><p>I should point out a couple things.</p>
+<p>First, in 4.5.20 all the server-side await statements are now free-threaded (ignoring any sync context)</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/30">https://github.com/MarimerLLC/csla/issues/30</a></p>
+<p>Second, in a future release I do intend on switching the default ApplicationContext context manager away from TLS and HttpContext.</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/29">https://github.com/MarimerLLC/csla/issues/29</a></p>
+<p>The complexity of this is with WinRT, where it sounds like ExecutionContext either doesn&#39;t exist, or the API isn&#39;t public. So WinRT will either need to continue to use the existing context manager (I think it uses a static cache), or I&#39;ll need to develop my own threadsafe cache. I was meeting with the Microsoft guys responsible for the TPL and async/await a couple weeks ago and it is clear that ExecutionContext would probably be ideal, but the custom cache might be the smartest option to be consistent across all platforms.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Wednesday, March 06, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I should point out a couple things.</p>
+<p>First, in 4.5.20 all the server-side await statements are now free-threaded (ignoring any sync context)</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/30">https://github.com/MarimerLLC/csla/issues/30</a></p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>I see.</p>
+<p>Regarding proposed solution above for TransactionScope&#39;s thread affinity, still it&#39;s critical to clear the context prior to cascading the call. Even though TransactionalPortal doesn&#39;t capture context, calls within data access might be capturing it and thus deadlocking. This will probably occur in the simple ASP.NET setup where AspNetSynchronizationContext will be captured by anything trivial like await sqlConnection.OpenAsync().</p>
+<p>I don&#39;t know for you guys at Magenic, but for us inability to have async data access wrapped in global transaction is huge issue</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>Second, in a future release I do intend on switching the default ApplicationContext context manager away from TLS and HttpContext.</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/29">https://github.com/MarimerLLC/csla/issues/29</a></p>
+<p>The complexity of this is with WinRT, where it sounds like ExecutionContext either doesn&#39;t exist, or the API isn&#39;t public. So WinRT will either need to continue to use the existing context manager (I think it uses a static cache), or I&#39;ll need to develop my own threadsafe cache. I was meeting with the Microsoft guys responsible for the TPL and async/await a couple weeks ago and it is clear that ExecutionContext would probably be ideal, but the custom cache might be the smartest option to be consistent across all platforms.</p>
+<div style="clear:both;"></div>
+<p></div>.</p>
+<p>Yeah, WinRT breaks the chain, but that might be good thing since it&#39;s probably going to prioritize replacement of this very old infrastructure which now becomes pretty vital.</p>
+<p>Consolidating it by building one from scratch might be a good thing for CSLA.&nbsp;</p>
+<p>Still WinRT is not server technology and it seems that server-side interaction in CSLA is most affected (client and global context along with culture not flowing). It seems to me that smart use of logical call context might temporary solve the issues on the server-side Data Portal. When saying smart, I mean it&#39;s easy to have call context &quot;overflowing&quot; such as&nbsp;across&nbsp;app domains or to wrong threads but on the other hand it doesn&#39;t lock you as TLS does. Also, it&#39;s pretty heavy object to be used for everything.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Wednesday, March 06, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I wonder how (or if) CSLA can help with this scenario.</p>
+<p>The only thing that comes to mind would be to create a synchronization context along with the TransactionScope object, and then change the await calls so they use the sync context (right now they ignore any sync context on the server).</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Sure it can help, CSLA can always help ;)</p>
+<p>Well, I don&#39;t think that awaits on Data Portal ignore synchronization context, quite contrary. The only question is what synchronization context is there in place, but they capture it, if there&#39;s one set.</p>
+<p>Back to the issue, TransactionScope seems like it came from CSLA kitchen ;) i.e. it relies on TLS. That&#39;s the reason it throws exception when disposed on different thread.</p>
+<p>What CSLA can do is to make sure that TransactionalDataPortal disposes TransactionScope only on the thread serving the request - the one that created TransactionScope.</p>
+<p>It can be achieved by creating your own Synchronization Context that would allow getting back to request thread but I think it&#39;s overkill for this particular scenario, unless it turns out that we need to rescue some other execution paths as well.</p>
+<p>What I would do first, is to have TransactionalDataPortal block on cascaded call for result, so instead of:</p>
+<p>&nbsp;</p>
+<p>result = await portal.Update(obj, context, isSync);</p>
+<p>it would invoke:</p>
+<p>result = portal.Update(obj, context, isSync).Result;</p>
+<p>&nbsp;</p>
+<p>The most important part here is to clear current Synchronization Context so that async&nbsp;completions&nbsp;lower in the stack do not try to get back on the context and thus end up deadlocking with this invocation above:</p>
+<p>&nbsp;</p>
+<p>var currentCtx = SynchronizationContext.Current;</p>
+<p>&nbsp;</p>
+<p>SynchronizationContext.SetSynchronizationContext(null);</p>
+<p>result = portal.Update(obj, context, isSync).Result;</p>
+<p>SynchronizationContext.SetSynchronizationContext(currentCtx);</p>
+<p>&nbsp;</p>
+<p>The drawback to this approach is that the Synchronization Context won&#39;t be available lower in the stack, but data access or service interaction here would rarely need it anyway.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>cslalight dependency on System.Windows.Controls.Data.dll</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>cslalight dependency on System.Windows.Controls.Data.dll</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6041.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>solheim posted on Tuesday, December 23, 2008</h2><P>Hi,</P>
+<P>Since Microsoft just released an updated silverlight datagrid.</P>
+<P><A href="http://blogs.msdn.com/scmorris/archive/2008/12/19/silverlight-2-datagrid-december-2008-release.aspx">blogs.msdn.com/scmorris/archive/2008/12/19/silverlight-2-datagrid-december-2008-release</A></P>
+<P>I found that cslalight has a dependency on&nbsp;System.Windows.Controls.dll from MS.</P>
+<P>I compiled cslalight first (against old datagrid) and then upgraded to the new datagrid.</P>
+<P>When I tried&nbsp;to add silverlight items to the visual studio toolbox from csla.dll, there was an error that the system.windows.controls.dll could not be found.</P>
+<P>Recompiling the cslalightcs project solved the issue.</P>
+<P>If you already have upgraded the datagrid before downloading and compiling cslalightcs then you will have no problems.</P>
+<P>Regards,<BR>Paul Solheim </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 23, 2008</h2><P>That is a good tip, thanks!</P>
+<P>That dependency is unavoidable, because CSLA includes a couple custom column types for the grid, and so needs access to the DLL containing the grid control.</P>
+<P>I don't view this as a problem though, because I find it hard to imagine creating any real app without using the controls in that extra assembly.</P>
+<P>And too, at runtime, if you don't use the CSLA types that interact with those custom controls then you don't actually need to deploy the controls DLL. So if you do go with an entirely third-party control set, you aren't forced to deploy the Microsoft assembly - as long as you don't use the custom column types defined in Csla.dll.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

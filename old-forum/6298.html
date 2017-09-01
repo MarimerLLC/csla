@@ -1,0 +1,142 @@
+<html><header><title>Rolodex silverlight example New Rank/Delete Rank</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolodex silverlight example New Rank/Delete Rank</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6298.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml posted on Friday, January 30, 2009</h2><P>Hi,</P>
+<P>When editing a rank do the new/delete buttons&nbsp;work?</P>
+<P>I tried a breakpoint at <FONT color=#2b91af size=2><FONT color=#2b91af size=2></P>
+<P>EditableRootListBase.RemoveItem </P>
+<P><FONT color=#000000>but it never gets there?</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>They should.&nbsp; If I recall, delete is supposed to work by
+selecting a row and hitting Delete key, but I am not 100% sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido_xml
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 30, 2009 9:07 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Rolodex silverlight example New Rank/Delete Rank<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>When editing a rank do the new/delete buttons&nbsp;work?<o:p></o:p></p>
+
+<p>I tried a breakpoint at <span><o:p></o:p></span></p>
+
+<p><span>EditableRootListBase.RemoveItem
+<o:p></o:p></span></p>
+
+<p><span>but it never gets there?</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml replied on Friday, January 30, 2009</h2>Thanks, do you have any advice on how I can debug&nbsp; - maybe a good place to start?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Probably setup a break point in SL and follow it through.&nbsp;
+One thing I just remembered.&nbsp; MS fixed some painting problems in the Grid&#8217;s
+December release.&nbsp; One of them had to do with rows not going away when
+underlying collection was modified.&nbsp; We reported it a long time ago, and
+looks like it was finally fixed.&nbsp; So, before you go through too much more
+trouble, get and install that release of data grid.&nbsp; Make sure to follow
+download instructions because you have to manually copy the DLLs all over the
+place </span><span>L</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido_xml
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 30, 2009 11:39 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Rolodex silverlight example New Rank/Delete
+Rank<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks, do you have any advice on how I can debug&nbsp; -
+maybe a good place to start?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

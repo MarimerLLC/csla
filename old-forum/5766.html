@@ -1,0 +1,352 @@
+<html><header><title>Extending FieldManager to prevent unnecessary server updates?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Extending FieldManager to prevent unnecessary server updates?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5766.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Saturday, November 08, 2008</h2><P class=MsoNormal><SPAN><FONT face=Calibri>Hi,</FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>working with CLSA.NET the way before v3.5 (without using the managed fields) OnPropertyChanged should be called every time a property setter changes a member field instance value. This marks the object instance as dirty and leads to the expected behavior. But when the UI (or user) sets the value back to its "old value" (without using CSLA.NET's undo) it causes unnecessary server updates by calling DataPortal_Update when the UI calls BusinessBase.Save(). This is because the object instance is still marked as "dirty" although the values are again equal or unchanged compared to the database. This is critical especially if the business object's properties binds to complex UI controls. </SPAN><SPAN>Unfortunately "managed fields" don't seem to address this problem (but it would be easy to extend them in that way). </SPAN><SPAN>To reduce unnecessary sever updates I implemented my own "managed fields" approach: </SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>1. I defined a business data transfer object (BDTO) which maintains two hash tables. One for "old values" and one for the "new values" (Hashtable _oldValues, _newValues;). </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>2. _oldValues where set in any DataPortal_Update/_Insert/_Fetch/_Create members and stores the current database values (CSLA.NET definition used for calling BusinessBase.MarkOld()). </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>3. Every time when a property setter is called, my BusinessBase derived class checks again the old values. If the "new value" differs compared to the "old value" I inserted the "new value" into _newHashTable and <SPAN>&nbsp;</SPAN>raise the OnPropertyChanged event. If the "new value" is equal to the "old value" I removed the value from the _newValues and call OnPropertyChanged as well. </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>3. Finally I also check if _newValuesHashtable.Count==0. If so, I call BusinessBase.MarkClean() and BuseinessBase.MarkOld(). This prevents unnecessary server update requests when the UI calls BusinessBase.Save(). </FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>I was hoping that FieldManager does implement a similar approach. Unfortunately all protected Load/Set/GetProperty members are not declared virtual, so no elegant way seems to exist to extend FieldManagers behavior in that way. I really would like to use CSLA.NET managed fields for that, which makes the code look less complex and automates a lot. Do you have any idea how?</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;Andreas</FONT></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 08, 2008</h2><P>You should be able to create your own IFieldData&lt;T&gt; implementation that stores both the original and current values, and implements IsDirty to take those values into account. </P>
+<P>You'll also need to create a subclass of PropertyInfo&lt;T&gt;, because that is where the FieldData instances are created. In other words, subclass PropertyInfo&lt;T&gt; and override NewFieldData() to return instances of your new IFieldData&lt;T&gt; implementation.</P>
+<P>Finally, you'll need to create instances of <EM>your</EM> PropertyInfo&lt;T&gt; subclass when calling RegisterProperty() in all your business objects. That way the property manager will contain your custom objects, which will return your custom field data objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Sunday, November 09, 2008</h2><P>That was helpfull, Thanks Rocky!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, November 10, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>You should be able to create your own IFieldData&lt;T&gt; implementation that stores both the original and current values, and implements IsDirty to take those values into account. </P>
+<P>You'll also need to create a subclass of PropertyInfo&lt;T&gt;, because that is where the FieldData instances are created. In other words, subclass PropertyInfo&lt;T&gt; and override NewFieldData() to return instances of your new IFieldData&lt;T&gt; implementation.</P>
+<P>Finally, you'll need to create instances of <EM>your</EM> PropertyInfo&lt;T&gt; subclass when calling RegisterProperty() in all your business objects. That way the property manager will contain your custom objects, which will return your custom field data objects.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Rocky,</P>
+<P>Is this something you might think about including in a future version in the base classes?&nbsp; Perhaps with a config option defaulted to disabled?&nbsp; </P>
+<P>It should be as&nbsp;straightforward as adding a pre-dirty value placeholder and a boolean check when the value is set that if newValue = preDirtyValue at anytime then IsDirty is false again.</P>
+<P>The way I see it is the only real overhead is the extra preDirty value.</P>
+<P>This is something I could definately see myself using.</P>
+<P>Thanks</P>
+<P>Jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe, but not in the real near future.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick is that this doubles the size of the object on the
+network in n-tier scenarios, so it isn&#8217;t something to be done lightly&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If I do it, it wouldn&#8217;t be a config option, as much as
+perhaps alternate PropertyInfo&lt;T&gt; and FieldInfo classes that you could
+use in your object code. In other words, you&#8217;d &#8220;opt in&#8221; by
+using a different PI/FI when registering your properties &#8211; just like I&#8217;m
+describing in this thread.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, November 11, 2008</h2><P>Just another thought - if CSLA is tracking n-level undo changes then isn't the data already there if you call a beginEdit( )?&nbsp; </P>
+<P>I had a quick look at the n-level undo section in the original book and since I haven't had enough caffeine this am I didn't try to hard but basically if the final value at ApplyEdit is the same as the value saved in the snapshot at BeginEdit then it hasn't truely changed.</P>
+<P>If that is true, then is enough of the interface exposed that you can get at those original states to do a pre-IsDirty check to implement a IsReallyDirtyCheck?</P>
+<P>Just throwing out an idea... sorry if I've brutally mispoken by not doing enough research - I should really be working :-)</P>
+<P>thanks</P>
+<P>jack</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, November 11, 2008</h2><P>Opting in would be ideal. Because it would only double the size of the object if you registered *all* of your properties that way. I have specific fields where I need to know the original value. So I have a separate field for them in my BO anyway. In the future I could opt in and let CSLA manage them for me if I wanted to. And I could leave the other fields alone - opt out by registering them the original way.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, November 11, 2008</h2>By config option I mean't opt-in by Property, not a global switch.&nbsp; Whether another&nbsp;subclass or an extra parameter in the Register process.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Sunday, January 18, 2009</h2><P><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P><SPAN>deriving from FieldData&lt;T&gt; is not sufficient, unfortunately. At least the&nbsp;Silverlight implementation of CSLA has to&nbsp;make sure that the&nbsp;additional "OriginalValue" member of the custom FieldData&lt;T&gt; class gets be serialized by the MobileFormatter (it usually gets initialized on the server side). This&nbsp;again can&nbsp;be&nbsp;reached by deriving from FieldDataManager and overriding OnGetState() and OnSetState(). But then I&nbsp;run in to the problem&nbsp;that the FieldDataManager property of&nbsp; BusinessBase&nbsp;is not declared&nbsp;virtual. So&nbsp;there is no way to set&nbsp;it to a custom FieldDataManager instance in a derived BB class. Can you make it virtual? It would be great if you could add this&nbsp;to the feature wish&nbsp;list.&nbsp;<o:p></o:p></SPAN></P>
+<P>Regards,<BR>Andreas&nbsp; </P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Really?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;d expect each FieldData&lt;T&gt; to be serialized
+individually. Otherwise how can arbitrary numbers of new values be added to the
+FIeldData object? It can&#8217;t be the collection&#8217;s responsibility to
+understand all the goo that might be in each child object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I didn&#8217;t write that code, so I&#8217;m speaking only from &#8220;what
+should be&#8221;, not &#8220;what is&#8221; &#8211; but that&#8217;s what I&#8217;d
+expect. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I just went and looked at the code, and unfortunately it doesn&#8217;t
+do &#8220;what should be&#8221;. I think the current implementation was chosen
+because of the performance implications of serializing more complex FieldData
+objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Following this train of thought though &#8211; it is STILL not
+the collection&#8217;s responsibility to serialize complex child objects. So I
+think the answer is for FIeldDataManager&#8217;s serialization methods to
+detect if the IFieldData object implements IMobileObject. If not (like now), it
+will serialize Value. If the IFieldData object does implement IMobileObject,
+then it will use normal child object serialization to serialize the IFieldData
+object, allowing that object to be arbitrarily complex.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll add this to bugtracker.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 18, 2009 2:25 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Extending FieldManager to prevent
+unnecessary server updates?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>deriving from FieldData&lt;T&gt; is not sufficient, unfortunately. At least
+the&nbsp;Silverlight implementation of CSLA has to&nbsp;make sure that
+the&nbsp;additional &quot;OriginalValue&quot; member of the custom
+FieldData&lt;T&gt; class gets be serialized by the MobileFormatter (it usually
+gets initialized on the server side). This&nbsp;again can&nbsp;be&nbsp;reached
+by deriving from FieldDataManager and overriding OnGetState() and OnSetState().
+But then I&nbsp;run in to the problem&nbsp;that the FieldDataManager property
+of&nbsp; BusinessBase&nbsp;is not declared&nbsp;virtual. So&nbsp;there is no
+way to set&nbsp;it to a custom FieldDataManager instance in a derived BB class.
+Can you make it virtual? It would be great if you could add this&nbsp;to the
+feature wish&nbsp;list.&nbsp;<o:p></o:p></p>
+
+<p>Regards,<br>
+Andreas&nbsp; <o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Sunday, January 18, 2009</h2><P><SPAN>Yes, I completely agree with you. The solution you described is much more elegant an extensible than the one I suggested. But FieldData&lt;T&gt; should implement IMobileObject by default. Otherwise FieldDataManager has to do an additional type check on each individual data field, which could probably result in significant performance penalties when transferring bigger chunks of data.</SPAN></P>
+<P><SPAN>Andreas<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p><FONT face=Calibri></FONT></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is important to remember that the cost of transferring data
+over the wire is nearly always substantially higher than the cost of CPU
+processing. Doing one quick type check to see if an object implements an
+interface is not expensive, and avoiding the overhead of full serialization of
+child objects in the simple case (where each child object is a simple wrapper
+over a single value) is a powerful benefit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 18, 2009 4:27 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Extending FieldManager to prevent
+unnecessary server updates?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, I completely agree with you. The solution you described is much more
+elegant an extensible than the one I suggested. But FieldData&lt;T&gt; should
+implement IMobileObject by default. Otherwise FieldDataManager has to do an
+additional type check on each individual data field, which could probably
+result in significant performance penalties when transferring bigger chunks of
+data.<o:p></o:p></p>
+
+<p>Andreas<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Monday, November 10, 2008</h2><SPAN><FONT face=Verdana size=2>Sorry Rocky, but I still have one problem with your suggestion: FieldData and PropertyInfo don’t have access to their owning BusinessBase instance. PropertyInfo instance are static class properties and exist only once per AppDomain. FieldData instances are being created by a call to PropertyInfo.NewFieldData() inside of FieldDataManager.GetOrCreateFieldDat(). To implement the previous described “old/new value management” I have to store these values in a container on per BusinessBase instance basis.</FONT></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, November 10, 2008</h2><P>I have not implemented this code - but I was playing around with it for a short time over the summer to see how you could track original values and modify IsDirty so that if you restore the original value the object is no longer dirty.</P>
+<P>Feel free to use it if it helps.</P>
+<P>=================================================================</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Imports</FONT></FONT><FONT size=2> Csla.Core<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Imports</FONT></FONT><FONT size=2> Csla.Core.FieldManager</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Namespace</FONT></FONT><FONT size=2> BO</P>
+<P>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Class</FONT></FONT><FONT size=2> MyPropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> T)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Inherits</FONT></FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> T)<BR><BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> _origValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> _defaultValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR><BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>#Region</FONT></FONT><FONT size=2> </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>" Constructors "</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.New(name)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> friendlyName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.New(name, friendlyName)<BR>&nbsp; _defaultValue = GetDefaultValue()<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> friendlyName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> defaultValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.New(name, friendlyName, defaultValue)<BR>&nbsp; _defaultValue = defaultValue<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> GetDefaultValue() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> result </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(T).Equals(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2>result = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>DirectCast</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>DirectCast</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>.Empty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>), T)<BR>&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ElseIf</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(T).Equals(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Integer</FONT></FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OrElse _</FONT></FONT><FONT size=2>&nbsp;<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(T).Equals(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Long</FONT></FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OrElse _</FONT></FONT><FONT size=2>&nbsp;<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(T).Equals(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Decimal</FONT></FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OrElse _</FONT></FONT><FONT size=2>&nbsp;<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(T).Equals(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Short</FONT></FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OrElse _</FONT></FONT><FONT size=2>&nbsp;<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(T).Equals(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Byte</FONT></FONT><FONT size=2>)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P>&nbsp; &nbsp; result = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>DirectCast</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>DirectCast</FONT></FONT><FONT size=2>(0, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>), T)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Else<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2>result = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> result<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</P>
+<P>#End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Region</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> OrigValue() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; Get<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> _origValue<BR></FONT><FONT size=2>&nbsp; <FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Get<BR>&nbsp; </FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Set</FONT></FONT>(<FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> value <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> T)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>_origValue = value<BR>&nbsp; </FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Set<BR></FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Property</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Public</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Overrides</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>ReadOnly</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Property</FONT></FONT> DefaultValue() <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> T<BR>&nbsp; </FONT><FONT color=#0000ff><FONT color=#0000ff><FONT size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Return</FONT></FONT> _defaultValue<BR>&nbsp; </FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Get<BR></FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Property</P></FONT></FONT></FONT>
+<P><FONT color=#008000><FONT color=#008000><FONT size=2>'My only real worry here, is that a subclass will need to detect that it contains a child object and handle that correctly - </FONT></FONT></FONT><FONT color=#008000><FONT color=#008000><FONT size=2>'so it still isn't necessarily trivial to write a subclass.</FONT></FONT></FONT><FONT color=#008000><FONT color=#008000><FONT size=2>'But then again, your PropertyInfo subclass could make that determination and return a standard FieldData rather than </FONT></FONT></FONT><FONT color=#008000><FONT color=#008000><FONT size=2>a custom FieldData for child objects.</FONT></P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Protected</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Overrides</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Function</FONT></FONT> NewFieldData(<FONT color=#0000ff><FONT color=#0000ff>ByVal</FONT></FONT> name <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>String</FONT></FONT>) <FONT color=#0000ff><FONT color=#0000ff>As</FONT></FONT> Core.FieldManager.IFieldData<BR>&nbsp; </FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>If</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>GetType</FONT></FONT>(IEditableBusinessObject).IsAssignableFrom(<FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.Type) <FONT color=#0000ff><FONT color=#0000ff>OrElse _</FONT></FONT>&nbsp;<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff><FONT color=#0000ff>GetType</FONT></FONT>(IEditableCollection).IsAssignableFrom(<FONT color=#0000ff><FONT color=#0000ff>Me</FONT></FONT>.Type) <FONT color=#0000ff><FONT color=#0000ff>Then</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; Return</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>New</FONT></FONT> FieldData(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> T)(name)<BR>&nbsp; </FONT><FONT color=#0000ff><FONT color=#0000ff><FONT size=2>Else<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>Return</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>New</FONT></FONT> MyFieldData(<FONT color=#0000ff><FONT color=#0000ff>Of</FONT></FONT> T)(name, _origValue)<BR>&nbsp; </FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>If<BR></FONT></FONT></FONT><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> <FONT color=#0000ff><FONT color=#0000ff>Function</P></FONT></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>End</FONT></FONT> </FONT><FONT color=#0000ff><FONT color=#0000ff><FONT size=2>Class<BR><BR></FONT><FONT size=2>End</FONT></FONT></FONT><FONT size=2> <FONT color=#0000ff><FONT color=#0000ff>Namespace</P></FONT></FONT></FONT>
+<P>=================================================================</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Imports</FONT></FONT><FONT size=2> Csla.Core<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Imports</FONT></FONT><FONT size=2> Csla.Core.FieldManager</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Namespace</FONT></FONT><FONT size=2> BO</P>
+<P>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Class</FONT></FONT><FONT size=2> MyFieldData(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> T)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Inherits</FONT></FONT><FONT size=2> FieldData(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> T)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Implements</FONT></FONT><FONT size=2> IFieldData(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> T)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; Private</FONT></FONT><FONT size=2> _origValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> name </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> origValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.New(name)<BR>&nbsp; _origValue = origValue<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> OrigValue() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> _origValue<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> Value() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.Value<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Set</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> T)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.Value = value </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'sets IsDirty = True<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> _origValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>IsNot</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>AndAlso</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.Value.Equals(_origValue) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2>MarkClean() </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'sets IsDirty to False<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Set<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overrides</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> IsDirty() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Boolean<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> _origValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>IsNot</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>AndAlso</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.Value.Equals(_origValue) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>MyBase</FONT></FONT><FONT size=2>.IsDirty<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Class</P>
+<P>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Namespace</P></FONT></FONT>
+<P>===================================================================</P>
+<P>Then in BO you could use code like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> AcctdescProperty </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> MyPropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>) = _&nbsp;<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)( _ <BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> MyPropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)(</FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"Acctdesc"</FONT></FONT><FONT size=2>, </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"Account description"</FONT></FONT><FONT size=2>)), MyPropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> Acctdesc() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> GetProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)(AcctdescProperty)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Set</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)<BR>&nbsp;&nbsp;&nbsp; SetProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)(AcctdescProperty, value)<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Set<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</P></FONT></FONT>
+<P>And in DataPortal_Fetch:</P>
+<P>...</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>With</FONT></FONT><FONT size=2> dr<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> .Read() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2>AcctdescProperty.OrigValue = Trim(.GetString(</FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"acctdesc"</FONT></FONT><FONT size=2>))<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.LoadProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)(AcctdescProperty, Trim(.GetString(</FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"acctdesc"</FONT></FONT><FONT size=2>)))<BR></FONT></P>
+<P><FONT size=2>...</P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should not have to store these objects at all. CSLA should automatically
+store your custom object types just fine, as long as they implement the right
+interfaces or inherit from the existing classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, your custom PropertyInfo&lt;T&gt; subclass will
+be stored once per appdomain, just like the PropertyInfo&lt;T&gt; objects are
+now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And your custom PropertyInfo&lt;T&gt; will return an instance of
+your custom FieldInfo&lt;T&gt;. The FieldInfo&lt;T&gt; objects will be stored
+automatically on a per-business object basis just like the FieldInfo&lt;T&gt;
+objects are now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There is no way for you to change the way CSLA stores the
+PropertyInfo&lt;T&gt; and FieldInfo&lt;T&gt; objects – that is not something
+you should have to worry about.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, November 10, 2008 10:50 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Extending FieldManager to prevent unnecessary
+server updates?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Sorry
+Rocky, but I still have one problem with your suggestion: FieldData and
+PropertyInfo donâ€™t have access to their owning BusinessBase instance.
+PropertyInfo instance are static class properties and exist only once per
+AppDomain. FieldData instances are being created by a call to
+PropertyInfo.NewFieldData() inside of FieldDataManager.GetOrCreateFieldDat().
+To implement the previous described â€œold/new value managementâ€</span><span> I have to store
+these values in a container on per BusinessBase instance basis.</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

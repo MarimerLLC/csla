@@ -1,0 +1,86 @@
+<html><header><title>Main CSLA.NET web site down ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Main CSLA.NET web site down ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5797.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky posted on Thursday, November 13, 2008</h2><P>Hi,</P>
+<P>Maybe it's just me, but it's been almost a week that I can't connect to <A href="http://www.lhotka.net">http://www.lhotka.net</A>.</P>
+<P>?????</P>
+<P>Luc</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, November 13, 2008</h2>
+
+
+
+
+<DIV align=left><SPAN class=520482713-13112008><FONT face=Tahoma color=#000080>Your link worked fine for me.</FONT></SPAN></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> lukky [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Thursday, November 13, 2008 7:08 AM<BR><B>To:</B> 
+QJohnson@TeamNFP.com<BR><B>Subject:</B> [CSLA .NET] Main CSLA.NET web site down 
+?<BR></FONT><BR></DIV>
+<DIV></DIV>
+<P>Hi,</P>
+<P>Maybe it's just me, but it's been almost a week that I can't connect to <A href="http://www.lhotka.net">http://www.lhotka.net</A>.</P>
+<P>?????</P>
+<P>Luc</P><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoshL replied on Thursday, November 13, 2008</h2>Works fine for me too - I've been on it a fair bit this past week, so this must be an issue with your connectivity or DNS.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 13, 2008</h2><P>The site has been down a few times over the past 10 days or so, but only for short intervals - due to:</P>
+<UL>
+<LI>a power outage in my region</LI>
+<LI>an unknown&nbsp;Virtual Server issue</LI>
+<LI>basic server hardware maintenance</LI></UL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, November 13, 2008</h2>In the UK, the main site often goes down (or is down) in the morning (UK time between 9am &amp; ??12 maybe.)&nbsp; The forum is up nearly all the time.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s true &#8211; the site goes down automatically every
+night for a server backup. Of course &#8220;night&#8221; is relative &#8211;
+and I have it go down in MY night :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 13, 2008 10:31 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Main CSLA.NET web site down ?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In the UK, the main site often goes down (or is down) in the
+morning (UK time between 9am &amp; ??12 maybe.)&nbsp; The forum is up nearly
+all the time.<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, December 10, 2008</h2>This is happening quite frequently but not every day and is very annoying.&nbsp; In UK it is down now 10.17am.&nbsp; When the forum is down it is even more annoying.<br><br>Why does the site have to go down to make a backup?&nbsp; Can you not host it somewhere else?<br><br>It gives a bad impression of the framework when the host site is down nearly every day. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, December 10, 2008</h2><P>a server backup.. and the site goes down?<BR>communityserver cms&nbsp;doesn't require to go down for an backup, and ofcourse sqlserver doesn't have to go down.</P>
+<P>So it must be something by the current hosting machine, Magenic?<BR>Maybe it's an idea just to host the site on another machine or location which doesn't need to go down?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 10, 2008</h2><P>The server is down due to a software failure with virtual server, and I'm working to resolve the issue.</P>
+<P><A href="http://www.lhotka.net">www.lhotka.net</A> is currently hosted on my personal server. I've been burned in the past by hardware failures, where I've had to waste days reinstalling the OS, reinstalling and reconfiguring all the various software running on the server - blogs, wikis, source control, etc.</P>
+<P>forums.lhotka.net is hosted on a server at Magenic, because I don't have the bandwidth to handle it.</P>
+<P>So some time ago I settled on a solution that (thus far) has been proof against catastrophe. My server is a virtual machine. Every night (my time) the VM is shut down and the vhd's are copied to another directory, then the VM restarts. Then the vhd's are copied to an external HD. Every couple weeks a copy is also made to an external HD that is effectively offsite. Oh, and the physical server's HD is mirrored.</P>
+<P>The backup scheme used by Magenic is similar, and is motivated by a similar desire to avoid hard failure scenarios.</P>
+<P>Is this ideal? Probably not. But I am not an IT pro guy. Nor do I make money off the framework, the forum, my blog, etc. Sure, I have some ads, and they just barely pay for the DSL service - they dont' generate enough revenue to pay for hosting a virtual machine somewhere - not even close.</P>
+<P>To be blunt, I am sorry if it makes the framework feel "unprofessional". For me this is a labor of love. I put ridiculous amounts of time and money into this framework so I can give it to you for free. But I can't justify spending thousands of dollars on hosting services unless I can come up with a way to pay for those services. That money would come directly out of my family budget otherwise, and you can probably see where that makes no sense.</P>
+<P>In fact, I'm switching my hosting to Magenic's servers entirely in the near future, because I don't find enough value hosting in my home any longer. For years it has been fun - a learning experience about aspects of Windows I don't normally deal with (security, configuration, backups, etc). But as time goes on, I find the value decreasing and the PITA factor increasing, so I'm going to move my virtual machine to their servers. That'll save me DSL bandwidth, and a few hundred dollars a year in electricity.</P>
+<P>But Magenic's virtual machine backup scheme is essentially the same as mine - a nightly copy of the vhd's to an external location - so I'm afraid the daily downtime won't change in any meaningful way...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, December 12, 2008</h2>Delegate it to Magenic, seems like the ideal solution, or move it all to Google?&nbsp; Seems mad to have to host it yourself, if you are not charging for the framework.<br><br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, December 23, 2008</h2>I take that back about Magenic, the forums were down most of my day on Monday.&nbsp; This is becoming quite a problem especially when I'm relying on them so much to learn.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

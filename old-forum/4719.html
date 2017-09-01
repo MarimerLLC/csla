@@ -1,0 +1,75 @@
+<html><header><title>&lt;Transactional(TransactionalTypes.TransactionScope)&gt;  in all update/insert/delete function?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&lt;Transactional(TransactionalTypes.TransactionScope)&gt;  in all update/insert/delete function?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4719.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw posted on Sunday, April 20, 2008</h2><P>Hi, I am new to CSLA.Net. I a currently play around with CSLA 3.5.<BR>I have a question, do I need to put the "&lt;Transactional(TransactionalTypes.TransactionScope)&gt;" on all the update/insert/delete function? Fyi, I would like to have full transactional function in all my BOs.<BR>Thanks in advance.</P>
+<P>Jason Law</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You probably should.&nbsp; However, you should investigate the
+implications of using, as your objects may delegate transactional support to
+MSDTC in some cases.&nbsp; You might want to opt to use explicit DB transactions
+instead.&nbsp; If you search the forums, you will find threads where Rocky
+explains the whole process.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jasonlaw
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 12:47 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET]
+&lt;Transactional(TransactionalTypes.TransactionScope)&gt; in all
+update/insert/delete function?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi, I am new to CSLA.Net. I a currently play around with CSLA 3.5.<br>
+I have a question, do I need to put the
+&quot;&lt;Transactional(TransactionalTypes.TransactionScope)&gt;&quot; on all
+the update/insert/delete function? Fyi, I would like to full transactional
+function in all my BOs.<br>
+Thanks in advance.<o:p></o:p></p>
+
+<p>Jason Law<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

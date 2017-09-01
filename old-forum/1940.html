@@ -1,0 +1,268 @@
+<html><header><title>Use CSLA with CAB+GAX+SCSF (tutorial)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Use CSLA with CAB+GAX+SCSF (tutorial)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1940.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Monday, December 11, 2006</h2><P><FONT face=Arial>CAB (Composite UI Application Block) and SCSF (Smart Client software Factory) seem to be interesting technologies. But "steep learning curve" it's a recurring expression when someone talks about these technologies. Besides there is a lack of proper documentation: there are no books on the market and Microsoft has a lot of "how good it is" but&nbsp; very few "how to use it" ones.</FONT></P>
+<P><FONT face=Arial><STRONG>1 - What is CAB? How does it relate to SCSF? What part plays Guidance Automation Extensions (GAX)?</STRONG></FONT></P>
+<P><FONT face=Arial>All 3 technologies are .NET Framework 2.0 only.</FONT></P>
+<P><FONT face=Arial>CAB is a framework to make the user interface of applications. As it happens with every framework, you have to learn how to use it.</FONT></P>
+<P><FONT face=Arial>CAB is not easy to use. You have to follow rules and it requires some repetitive coding tasks.</FONT></P>
+<P><FONT face=Arial>GAX is a code generator engine.</FONT></P>
+<P><FONT face=Arial>SCSF is the GAX solution for CAB. Instead of hand coding all those CAB classes and methods, you can use SCSF and just fill in the blanks.</FONT></P>
+<P><BR><FONT face=Arial><STRONG>2 - How do I setup my computer to use SCSF?<BR></STRONG>a) Install Enterprise Library January 2006 (choose to compile it at install time)<BR>b) Install CAB (cs or vb)<BR>c) Compile the CAB<BR>d) Install GAX (Guidance Automation Extensions, CTP, June 2006 at the time of writing)<BR>Note - You DON'T need to install the Guidance Automation Toolkit.<BR>e) Install SCSF (Smart Client Software Factory, June 2006 at the time of writing)</FONT></P>
+<P><BR><FONT face=Arial><STRONG>3 - How do I use SCSF in Visual Studio 2005?</STRONG><BR>a) Go to File -&gt; New -&gt; Project...<BR>b) Unfold Guidance Packages<BR>c) Click on Smart Client Development<BR>d) Double click on Smart Client Application and wait until the GAX finishes creating your project<BR>e) Now go to View -&gt; Other Windows -&gt; Guidance Navigator Window</FONT></P>
+<P><BR><FONT face=Arial><STRONG>4 - OK. But now how do I use for doing something useful, like writing the UI part of my CSLA application?</STRONG></FONT></P>
+<P><FONT face=Arial>Ham... Look, I have to go and by smokes. I'll answer that in another post. </FONT><FONT face=Arial>While I write it, go to "gotdotnet" at <BR></FONT><A href="http://www.gotdotnet.com/codegallery/releases/viewuploads.aspx?id=22f72167-af95-44ce-a6ca-f2eafbf2653c"><FONT face=Arial>http://www.gotdotnet.com/codegallery/releases/viewuploads.aspx?id=22f72167-af95-44ce-a6ca-f2eafbf2653c</FONT></A></P>
+<P><FONT face=Arial>At the very bottom of the page you will find the<BR>eugeniop&nbsp;&nbsp;&nbsp;&nbsp; CAB Documentation (CABCHM.zip, 866k, xxxx downloads)</FONT></P>
+<P><FONT face=Arial>This is a very good starting point for understanding the key elements of the CAB architecture:<BR>- Component<BR>- Module<BR>- WorkItem<BR>- SmartPart<BR>- Workspace<BR>- UIExtensionSite<BR></FONT><FONT face=Arial>- Command<BR>- Event<BR>- Service<BR></FONT></P>
+<P><FONT face=Arial>and some important concepts of CAB's internals:<BR>- Dependency Injection (ObjectBuilder)<BR>- Service Locator (ObjectBuilder)</FONT></P>
+<P><FONT face=Arial>Cheers<BR>Tiago Freitas Leal<BR></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>[16 Dec 2006]</FONT><BR>Found some interesting pages:<BR>Developer Roadmap For Building Smart Client Applications at <A href="http://www.c-sharpcorner.com/UploadFile/tjayram/DeveloperRoadmapForBuildingSmartClientApplications08062006192216PM/DeveloperRoadmapForBuildingSmartClientApplications.aspx">http://www.c-sharpcorner.com/UploadFile/tjayram/DeveloperRoadmapForBuildingSmartClientApplications08062006192216PM/DeveloperRoadmapForBuildingSmartClientApplications.aspx</A><BR>Designing Applications using CAB &amp; the Smart Client Software Factory at <A href="http://www.microsoft.com/downloads/details.aspx?FamilyID=5f9a8435-1651-4be2-956d-0446a89a7358&amp;DisplayLang=en">http://www.microsoft.com/downloads/details.aspx?FamilyID=5f9a8435-1651-4be2-956d-0446a89a7358&amp;DisplayLang=en</A></FONT></P>
+<P><FONT face=Arial><FONT color=#0000ff size=2>[18 Dec 2006]</FONT><BR>There are two main difficulties when learning CAB+SCSF:<BR>- the key concepts<BR>- how to do it<BR>This is a "under construction" tutorial that will cover boths problems. Post contents are subject to change without notice (like prices, you know?).</FONT></P>
+<P><FONT face=Arial>This series of posts are based on the documentation referred on this post, but not exclusively. So don't blaim them for mistakes I might make or for the "I admit" parts.</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P><FONT face=Arial><STRONG>General structure<BR></STRONG>A CAB application is made of <STRONG>Modules</STRONG> (read DLLs). Each Module can use <STRONG>Components</STRONG> (visual and non-visual elements). <STRONG>WorkItem</STRONG> is a component that exists to group other components, namely visual components; let's say it's the "mother of all" visual-components. The visual elements of a WorkItem are displayed in <STRONG>WorkSpaces</STRONG> and <STRONG>UIExtensionSites</STRONG>.</P>
+<P><FONT face=Arial>Confused? Let's put up a rather simplistic example:<BR>1.&nbsp;create <FONT color=#0000ff>WorkItem</FONT><BR>2.&nbsp;create <FONT color=#ff0000>Workspace</FONT> in <FONT color=#0000ff>WorkItem</FONT><BR>3.&nbsp;create visual element in <FONT color=#0000ff>WorkItem</FONT><BR>4.&nbsp;show visual element in <FONT color=#ff0000>Workspace</FONT></FONT></P>
+<P><FONT face=Arial>You find there are too many steps for doing a simple task like showing a visual element? Wait until you get the full picture before jumping to conclusions.</FONT></P>
+<P>&nbsp;</P></FONT>
+<P><FONT face=Arial><STRONG>Component</STRONG><BR>The elementary unit of a CAB application is the Component. There are different kinds of Components: those you can see, those that support the first kind and the ones that aren't related to visual display.</FONT></P>
+<P><FONT face=Arial color=#0000ff>Visual elements</FONT></P>
+<UL>
+<LI><FONT face=Arial>SmartParts</FONT> 
+<LI><FONT face=Arial>Items (views and controls)</FONT></LI></UL>
+<P><FONT face=Arial color=#0000ff>Support for visual elements</FONT></P>
+<UL>
+<LI><FONT face=Arial>WorkItems</FONT> 
+<LI><FONT face=Arial>Workspaces</FONT> 
+<LI><FONT face=Arial>UIExtensionSites</FONT></LI></UL>
+<P><FONT face=Arial color=#0000ff>Non-visual elements</FONT></P>
+<UL>
+<LI><FONT face=Arial>Commands</FONT> 
+<LI><FONT face=Arial>EventTopics</FONT> 
+<LI><FONT face=Arial>Services</FONT></LI></UL>
+<P><FONT face=Arial></FONT>&nbsp;</P><FONT face=Arial>
+<P class=MsoNormal><SPAN><STRONG>Module</STRONG></SPAN></P>
+<P class=MsoNormal><SPAN>A CAB application is made of Modules. Modules are distinct deployment units (read DLLs) of a CAB application. Typically, they include some combination of services, WorkItems, SmartParts, controllers, presenters, and business entities.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The CAB provides a service to load modules when the application starts. By default, it uses an XML catalog file to determine the modules to load. The default name for this file is <B>ProfileCatalog.xml</B>.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When the CAB loads a module, it uses reflection to determine whether the module includes a class that implements the <FONT face="Courier New">IModule</FONT> i</SPAN><SPAN>nterface. You implement this interface (typically by deriving from <FONT face="Courier New">ModuleInit</FONT>)</SPAN><SPAN>&nbsp;to initialize and run the module's WorkItems. <SPAN>Modules can also load and unload components in the root WorkItem.</SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>The Smart Client Software Factory automates the creation of two different types of modules:</o:p></SPAN></P>
+<UL>
+<LI>
+<DIV class=MsoNormal><SPAN><STRONG>Foundational modules </STRONG>- either provide services to the Shell and other modules, provide a layout, or both. They do not implement a use case or contain a <SPAN>WorkItem</SPAN>.<o:p></o:p></SPAN></DIV>
+<LI>
+<DIV class=MsoNormal><SPAN><STRONG>Business modules </STRONG>- distinct deployment units of a Composite UI Application Block application that contain business logic elements. You can separate areas of your application into different business modules to be able to deploy them to different users or applications. A business module contains components, business logic, and configuration information. They contain WorkItems.</SPAN></DIV></LI></UL>
+<P></FONT><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>So an apps is made of modules and modules have WorkItems. That's nice to know. </FONT><FONT face=Arial>What's this reflection business again? We have slightly changed the subject and now we are talking about <STRONG>Dependency Injection</STRONG>. ObjectBuilder is the CAB (and Enterprise Library) part that takes care of <STRONG>DI</STRONG>. You can read a very good article about DI by Martin Fowler at <A href="http://www.martinfowler.com/articles/injection.html">http://www.martinfowler.com/articles/injection.html</A></FONT></P>
+<P><FONT face=Arial>The Spring framework is the&nbsp;most popular DI framework. It was made in Java and later ported to&nbsp;.NET.</FONT></P>
+<P><FONT face=Arial>The documentation referred on the first post&nbsp;includes some details about ObjectBuilder as a DI pattern. Anyway, we shall come back on that subject later on.</FONT></P><FONT face=Arial>Cheers<BR>Tiago Freitas Leal</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><FONT face=Arial>
+<P class=MsoNormal><SPAN>A WorkItem is a run-time container (read set of collections) for components. The components can be both visual and non-visual parts of the application, such as SmartParts, Controls, and Services. Components of a given WorkItem are created and disposed of together. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P><SPAN>WorkItems&nbsp;have one collection for each component type:<BR></SPAN><SPAN>- SmartParts<o:p></o:p></SPAN> 
+<P class=MsoNormal><SPAN>- Items (views and controls)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- EventTopics<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- Services<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- Commands</SPAN></P><SPAN>
+<P class=MsoNormal><SPAN>- UIExtensionSites</SPAN></P>
+<P class=MsoNormal>- Workspaces</SPAN></P>
+<P class=MsoNormal><SPAN>- </SPAN><SPAN>WorkItems (child WorkItems)</SPAN></P><SPAN>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Every CAB application has a single root WorkItem. The root WorkItem contains components shared accross the application (eg. MenuStrip, StatusStrip). The CAB creates the root WorkItem when the application starts. As an application executes, it creates additional WorkItems to implement application use cases. The application adds these additional WorkItems to a parent WorkItem (for example, to the root WorkItem) .You can think of a CAB smart client application as a WorkItem hierarchy, with the root of the hierarchy being the root WorkItem. WorkItems can be activated and deactivated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P></SPAN>
+<P></FONT><FONT face=Arial><SPAN><STRONG>Hierarchy of WorkItems</STRONG></SPAN></FONT></P>
+<P><FONT face=Arial><SPAN><SPAN><SPAN>Every CAB application has a single root WorkItem. </SPAN></SPAN>Other WorkItems descend from the root WorkItem: they can be child, grand child, grand-grand child (etc) of the root WorkItem. </SPAN></FONT><FONT face=Arial><SPAN><SPAN>You can think of a CAB application as a WorkItem hierarchy, with the root of the hierarchy being the root WorkItem.</SPAN></SPAN></FONT></P><FONT face=Arial><SPAN><SPAN>
+<P class=MsoNormal><SPAN>Components can access</SPAN><SPAN><FONT face="Times New Roman"> </FONT></SPAN><SPAN>any other component of their own or ascending WorkItems. Each component can access components of:</SPAN></P>
+<P class=MsoNormal><SPAN>- the same WorkItem<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- the parent WorkItem<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- the grand parent WorkItem (etc).</SPAN></P><SPAN>
+<P class=MsoNormal><BR></SPAN><SPAN>Of course all components (eg. executing code) can access components of the root WorkItem. </SPAN>That's why t</SPAN></SPAN></FONT><FONT face=Arial><SPAN><SPAN>he root WorkItem contains components that are shared accross the application (eg. MenuStrip, StatusStrip).</SPAN></SPAN></FONT></P><FONT face=Arial><SPAN><SPAN>
+<P class=MsoNormal><BR></SPAN></SPAN></FONT><FONT face=Arial><SPAN><SPAN>WorkItems can be activated and deactivated. At all times there is at least one active WorkItem.</SPAN></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>Note - I admit I'm not sure if there can be more than one active WorkItem at a time.</SPAN></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN></SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN><STRONG>Hierarchy like rootWorkItem.childWorkItem.grandChildWorkItem?</STRONG></SPAN></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN></SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>Well, yes... I mean no! There is no object hierarchy. </SPAN></SPAN></FONT><FONT face=Arial><SPAN><SPAN>Every WorkItem is an object of type <FONT face="Courier New">WorkItem</FONT> that lives in the namespace <FONT face="Courier New">Microsoft.Practices.CompositeUI</FONT>. Hierarchy is kept on each WorkItem's fields:</SPAN></SPAN></FONT></P><FONT face=Arial><SPAN><SPAN>
+<P class=MsoNormal><BR><FONT face="Courier New">private WorkItem parent;</FONT></P>
+<P class=MsoNormal><FONT face="Courier New">...<BR>public WorkItem Parent<BR>{<BR>&nbsp; get { return parent; }<BR>&nbsp; ...<BR>}</FONT></P>
+<P class=MsoNormal><FONT face="Courier New">// now the child workitems</FONT></P>
+<P class=MsoNormal><FONT face="Courier New">private ManagedObjectCollection&lt;WorkItem&gt; workItemCollection;</FONT></P>
+<P class=MsoNormal><FONT face="Courier New">...<BR>public ManagedObjectCollection&lt;WorkItem&gt; WorkItems<BR>{<BR>&nbsp; get { return workItemCollection; }<BR>}</FONT></P>
+<P class=MsoNormal><FONT face="Courier New"><FONT face=Arial><BR></FONT></FONT></SPAN></SPAN></FONT><FONT face=Arial><SPAN><SPAN><STRONG>Patterns</STRONG></SPAN></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN></SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>The WorkItem concept supports both the Model-View-Controller (MVC)&nbsp;and the Model-View-Presenter (MVP)&nbsp;patterns. Though SCSF automates only the use of MVP.</SPAN></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN></SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN><SPAN>Cheers<BR>Tiago Freitas Leal</SPAN></SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P><FONT face=Arial>SmartParts are the visual components of a CAB application. You can create SmartParts by customizing a standard user control.</FONT></P>
+<P><FONT face=Arial>How do I tell the CAB that my customized user control is a SmartPart? </FONT><FONT face=Arial>You must identify the SmartPart by decorating the user control class with a SmartPart attribute.</FONT></P>
+<P><FONT face=Arial>Say you build a control <FONT face="Courier New">CustomerDetailView</FONT>. The code behind your control should look like this:</FONT></P>
+<P><FONT face="Courier New">[SmartPart]<BR>public sealed partial class CustomerDetailView : UserControl<BR>{<BR>&nbsp;&nbsp;&nbsp;/* methods go here */<BR>}</FONT></P>
+<P><FONT face=Arial>You can display SmartParts in a SmartPartPlaceHolder or in a Workspace.</FONT></P>
+<P><FONT face=Arial>To be continued</FONT></P>
+<P><FONT face=Arial>Cheers<BR>Tiago Freitas Leal</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P><SPAN><o:p><SPAN>Workspaces are components that encapsulate a particular visual way of displaying controls and SmartParts.<SPAN><SPAN>&nbsp;</SPAN>Let's translate this OOPish dialect to plain english. Workspaces are intended to organize the display of visual elements. To give you an example, SCSF splits the main form area in order to create two extra Workspaces: LeftWorkspace and RightWorkspace. Just like I do with my socks drawer: white socks on the left and black socks on the right. Of course there are other ways to organize your display: tiled, tabbed, MDI, etc.</SPAN></SPAN></o:p></SPAN></P>
+<P><SPAN><o:p><SPAN>The CAB includes the following types of workspaces:<o:p></o:p></SPAN></P>
+<UL>
+<LI class=MsoNormal><B><SPAN>WindowWorkspace</SPAN></B><SPAN> - This workspace enables you to show and hide controls framed in a window. Supports a modal window.<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>MdiWorkspace</SPAN></B><SPAN> - This workspace enables you to show and hide controls and SmartParts in MDI child forms.<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>TabWorkspace</SPAN></B><SPAN> - This workspace enables you to show and hide controls and SmartParts inside a tabbed page.<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>DeckWorkspace</SPAN></B><SPAN> - This workspace enables you to show and hide controls and SmartParts in an overlapped manner with no visible frame (a bit like WindowWorkspace but without frames).<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>ZoneWorkspace</SPAN></B><SPAN> - This workspace enables you to create a tiled workspace layout.</SPAN></LI></UL><SPAN>
+<P class=MsoNormal><SPAN><SPAN><o:p><SPAN><SPAN></SPAN></SPAN><SPAN>Each Workspace is identified by a <STRONG><FONT color=#0000ff>unique string value</FONT></STRONG>. </SPAN></o:p></SPAN>In order to use <FONT face="Courier New">MyWorkspace</FONT> of </SPAN><SPAN>type DeckWorkspace, you have to create it, set its name and a few other things:</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">this.MyWorkspace = new Microsoft.Practices.CompositeUI.WinForms.DeckWorkspace();<BR>this.MyWorkspace.Dock = System.Windows.Forms.DockStyle.Fill;<BR>this.MyWorkspace.Location = new System.Drawing.Point(0, 0);<BR>this.MyWorkspace.Name = "MyWorkspace"; // this is the unique string value<BR>this.MyWorkspace.Size = new System.Drawing.Size(698, 516);<BR>this.MyWorkspace.TabIndex = 1;<BR>this.MyWorkspace.Text = "MyWorkspace";<BR>this.Controls.Add(this.MyWorkspace);</FONT></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>R</SPAN><SPAN>emember two details:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- Workspaces serve the purpose of displaying SmartParts<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- the WorkItem keeps a Workspaces list<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Supose you have a SmartPart (class) <FONT face="Courier New">CustomerDetailView</FONT> a</SPAN><SPAN>nd you want to display it on <FONT face="Courier New">MyWorkspace</FONT>:</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">CustomerDetailView customerDetailView = WorkItem.SmartParts.AddNew&lt;CustomerDetailView&gt;();<BR>WorkItem.Workspaces["MyWorkspace"].Show(customerDetailView);</FONT></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>We</SPAN><SPAN>&nbsp;will see later on that SCSF doesn't use strings to identify the Workspace: it uses constants instead.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal</SPAN></SPAN></P></o:p></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><FONT face=Arial>
+<P class=MsoNormal><SPAN>Named user interface elements that can support child elements. Each UIExtensionSite is identified by a <STRONG><FONT color=#0000ff>unique string value</FONT></STRONG>. This string is used to identify elements when interacting with and adding child elements to that site, such as when adding a menu item to a menu bar. Examples:<o:p></o:p></SPAN></P>
+<UL>
+<LI class=MsoNormal><SPAN>MenuStrip<o:p></o:p></SPAN> 
+<LI class=MsoNormal><SPAN>StatusStrip<o:p></o:p></SPAN> 
+<LI class=MsoNormal><SPAN>ToolStrip</SPAN></LI></UL>
+<P class=MsoNormal><SPAN>To be continued</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal<o:p></o:p></SPAN></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><FONT face=Arial>
+<P class=MsoNormal><SPAN>Commands enables you to assign the same executable code to multiple UIElements. This can be useful when you have a toolbar button and menu item that execute the same code and when you have multiple menu bars that contain similar items applicable to different SmartParts.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>You declare Commands by adding the <STRONG><FONT color=#0000ff>CommandHandler</FONT></STRONG> attribute to the declaration specifying a command name.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>To associate a Command with a UIElement you call the <FONT face="Courier New">AddInvoker</FONT> method of the specific command handler to wire up the Click event, passing in a reference to the menu item and the event name:</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>To be continued</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal<o:p></o:p></SPAN></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P class=MsoNormal><SPAN>Components can use events to publish or receive notifications. The CAB contains an <B>event broker</B> system that enables you to implement a multicast event scheme (that is, a scheme where zero or more event publications work with zero or more event subscriptions).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The WorkItem.EventTopics collection holds a collection of EventTopic instances, each of which defines the topic between an event source (every class marked with <STRONG><FONT color=#0000ff>EventPublication</FONT></STRONG> attribute) and its subscribers (every class marked with <STRONG><FONT color=#0000ff>EventSubscription</FONT></STRONG> attribute).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>1. Publish an Event</SPAN></B></P>
+<P class=MsoNormal><B><SPAN><o:p></o:p></SPAN></B>&nbsp;</P>
+<P class=MsoNormal><B><SPAN>1.1. </SPAN></B><SPAN>You publish an event by adding&nbsp;the <STRONG><FONT color=#0000ff>EventPublication</FONT></STRONG> attribute&nbsp;to an event declaration, This attribute uses two parameters: the event name and the event scope. The event name is a string that identifies the event. The publishing scope can be:</SPAN></P><SPAN>
+<UL>
+<LI class=MsoNormal><B><SPAN>PublicationScope.WorkItem</SPAN></B><SPAN> - local, available only to this WorkItem<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>PublicationScope.Descendants</SPAN></B><SPAN> - available on this WorkItem and also on its descendents<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>PublicationScope.Global</SPAN></B><SPAN> – global, available on all WorkItems<o:p></o:p></SPAN></LI></UL>
+<P class=MsoNormal></SPAN><SPAN>To publish a global event:</SPAN></P><SPAN>
+<P class=MsoNormal><BR><FONT face="Courier New">[EventPublication("event://UpdatesAvailable/New", PublicationScope.Global)]<BR>public event SomeEventHandler UpdatesAvailable;</FONT></P>
+<P class=MsoNormal><FONT face="Courier New">&nbsp;</P></FONT></SPAN>
+<P class=MsoNormal><SPAN><STRONG>1.2. </STRONG>You</SPAN><SPAN>&nbsp;can also publish an event programatically: You write code to get an instance of the EventTopic you want to publish via the EventTopics collection of a WorkItem instance, and then call its methods to register and unregister publishers.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>2. Subscribe to an Event</SPAN></B></P>
+<P class=MsoNormal><B><SPAN><o:p></o:p></SPAN></B>&nbsp;</P>
+<P class=MsoNormal><B><SPAN>2.1.</SPAN></B><SPAN> Methods can subscribe to events using&nbsp;the <STRONG><FONT color=#0000ff>EventSubscription</FONT></STRONG> attribute&nbsp;on a method declaration, as long as the method is within the publication scope. More than one method can subscribe to the same event, and you can specify the thread that the event subscription runs on. However, you cannot control which method will execute first because the Publisher-Subscriber pattern decouples publishers from subscribers.<o:p></o:p></SPAN></P>
+<UL>
+<LI class=MsoNormal><B><SPAN>ThreadOption.Background</SPAN></B><SPAN> - This option indicates that the handler should be called on a separate background thread.<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>ThreadOption.Publisher</SPAN></B><SPAN> - This option is the default, and indicates that the handler should be called synchronously on the publisher’s thread.<o:p></o:p></SPAN> 
+<LI class=MsoNormal><B><SPAN>ThreadOption.UserInterface</SPAN></B><SPAN> - This option indicates that the handler should be called on the user interface thread, so it is safe for it to modify user interface elements.<o:p></o:p></SPAN></LI></UL>
+<P class=MsoNormal><SPAN>To subscribe to the above event and run it on the same thread as the user&nbsp;</SPAN><SPAN> interface:</SPAN></P><SPAN>
+<P class=MsoNormal><BR><FONT face="Courier New">[EventSubscription("event://UpdatesAvailable/New", Thread=ThreadOption.UserInterface)]<BR>public void NewUpdates(object sender, SomeEventArgs numUpdates)<BR>{<BR>&nbsp;MessageBox.Show(numUpdates.ToString(), "Updates available");<BR>}</FONT></P>
+<P class=MsoNormal></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><STRONG>2.2. </STRONG>You can also subscribe to an event programatically: You write code to get an instance of the EventTopic you want to subscribe via the EventTopics collection of a WorkItem instance, and then call its methods to register and unregister subscribers.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><FONT face=Arial>
+<P class=MsoNormal><SPAN>A Service is a supporting class that provides functionality to other components in a loosely coupled way. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In the CAB, the term service describes a component that implements some infrastructure-related functionality that other components in the application may need to use; for example, services providing authorization, logging, or hardware communication functionality. It does not mean a Web service.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Remember Services are components of WorkItems. A WorkItem exposes a <B><SPAN>Services</SPAN> </B>property that you can use to add a service to the WorkItem.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The CAB includes a set of basic services that you can use in your applications (eg. ModuleLoaderService). The </SPAN><SPAN>ModuleLoaderService</SPAN><SPAN> uses the information returned from the service implementation of </SPAN><SPAN>IModuleEnumerator</SPAN><SPAN> to determine which modules should be loaded at run time.<SPAN>&nbsp; </SPAN>You can also build your own services that provide infrastructure capabilities specific to your applications.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>To be continued</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal</SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><FONT face=Arial>
+<P class=MsoNormal><SPAN>You can use ObjectBuilder by using decorated attributes like <B>InjectionConstructor</B>, <B>CreateNew</B>, <B>Service</B> and <B>ServiceDependency</B>. You can also programmatically (without using attributes) use the ObjectBuilder factory to create instances. Instead of directly constructing an object instance, you use the <B>AddNew</B> method of CAB container classes.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>To be continued</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal<o:p></o:p></SPAN></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><SPAN><SPAN><o:p>&nbsp; 
+<P class=MsoNormal><STRONG><SPAN>1. Publish a Service</SPAN></STRONG><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>1.1.</SPAN></B><SPAN> You can use the<SPAN> <B><FONT color=#0000ff>Service</FONT></B> </SPAN>attribute on a public class to declare that class to be registered as a service in the root WorkItem. The CAB infrastructure creates an instance of this class and registers it as a service during application startup. The constructor parameter tells the CAB the interface key to use for the registration of the service, for location purposes. To register class <FONT face="Courier New">MyService</FONT> as </SPAN><FONT face=Arial><SPAN>a service in the root WorkItem:</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">[Service]</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">public class MyService</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">{</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">}</FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT><B><SPAN>1.2.</SPAN></B><SPAN> You can add a service by specifying it in the shell application configuration file.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>1.3.</SPAN></B><SPAN> You can also programmatically add services to WorkItems. To do this, call the <FONT face="Courier New">Add</FONT> or <FONT face="Courier New">AddNew</FONT> methods </SPAN><FONT face=Arial><SPAN>of the <B><SPAN><FONT color=#0000ff>Services</FONT></SPAN></B> collection of the WorkItem within which you want to use the service. This can be the root WorkItem or another WorkItem that you create. To add a new service to <FONT face="Courier New">rootWorkItem</FONT>:</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">rootWorkItem.Services.AddNew&lt;CustomerService&gt;();</FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN>To </SPAN></FONT><SPAN>use an existing service instance you have already created, use the <FONT face="Courier New">Add</FONT> method</SPAN><FONT face=Arial><SPAN>. </SPAN><SPAN><SPAN>&nbsp;</SPAN></SPAN><SPAN>To add a service to <FONT face="Courier New">myWorkItem</FONT>:</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">myWorkItem.Services.Add&lt;CustomerService&gt;(myServiceInstance);</FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Arial><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial><SPAN>This </SPAN></FONT><SPAN>means you can have one service instance on different WorkItems.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><STRONG><SPAN>2. Subscribe to a Service</SPAN></STRONG><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>2.1.</SPAN></B><SPAN> To obtain a reference to a service declaratively, add the <B><SPAN><FONT color=#0000ff>ServiceDependency</FONT></SPAN></B> attribute to a property in your class that is of the type of service or interface you require:</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">private IMyService service;</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New"></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">[ServiceDependency]</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">public IMyService service</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">{</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">&nbsp; set { service = value; }</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">}</FONT></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>When </SPAN><SPAN>this attribute</SPAN><SPAN> is present, ObjectBuilder locates an instance of the service and passes back a reference to it. To locate the service, ObjectBuilder first looks in the current WorkItem. If the service is not found, ObjectBuilder then looks at the services in the parent WorkItem. This process continues until the service is located or ObjectBuilder reaches the root WorkItem. If the service is not found, ObjectBuilder throws an exception.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Frequently, the ServiceDependency attribute is used for the arguments in a constructor. This means that ObjectBuilder will instantiate the required services when it creates the dependent object.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>2.2. </SPAN></B><SPAN>To obtain a reference to a service programmatically, call the <FONT face="Courier New">Get</FONT> method of the <FONT color=#0000ff><STRONG>Services</STRONG></FONT> collection of the WorkItem, passing in the type of service:</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">IMyService myServ = (IMyService)myWorkItem.Services.Get(typeof(IMyService));</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">// or using generics</FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face="Courier New">IMyService myServ = myWorkItem.Services.Get&lt;&gt;(IMyService);</FONT></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal></o:p></SPAN></SPAN><SPAN>You can read a very good article about Dependency Injection versus Service Locator patterns by Martin Fowler at <A href="http://www.martinfowler.com/articles/injection.html">http://www.martinfowler.com/articles/injection.html</A></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Cheers<BR>Tiago Freitas Leal<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P><FONT face=Arial>Nice to know something about the&nbsp;CAB&nbsp;elements. But how do we glue it together? There are some sample implementations for us to study. That's where the learning curve gets steep.</FONT></P>
+<P><FONT face=Arial>This is a place holder as I intend to give some examples (without code) that should be usefull enough.</FONT></P>
+<P><FONT face=Arial><FONT color=#ff0000 size=2>[18 Dec 2006]<BR></FONT>Sorry no can do. The examples must have some code or you won't be able to do anything at all. This means this post is under heavy construction.</FONT></P>
+<P><FONT face=Arial>As to the coding part, once you understand CAB, SCSF can do much of the work.</FONT></P>
+<P><FONT face=Arial>To be continued</FONT></P>
+<P><FONT face=Arial>Cheers<BR>Tiago Freitas Leal</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P><FONT face=Arial>How does CSLA fit in the MVP pattern?</FONT></P>
+<P><FONT face=Arial>Read about Model-View-Presenter pattern: The Humble Dialog Box&nbsp; at <SPAN class=a><FONT color=#000000><A href="http://www.objectmentor.com/resources/articles/TheHumbleDialogBox.pdf">http://www.objectmentor.com/resources/articles/TheHumbleDialogBox.pdf</A></FONT></SPAN></FONT></P>
+<P><FONT face=Arial>To be continued</FONT></P>
+<P><FONT face=Arial>Cheers<BR>Tiago Freitas Leal</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, December 11, 2006</h2><P><FONT face=Arial>DI can be used for several ends.</FONT></P>
+<P><FONT face=Arial>Imagine you have this application that must support different SQL server engines like:<BR>- SQL Server<BR>- Oracle<BR>- MySQL<BR>- PostgreSQL<BR>- Sybase<BR>- SQLite<BR>- DB2</FONT></P>
+<P><FONT face=Arial>This not just a problem a connection strings and stored procedures. For example, SQLite has no stored procedures and your CRUD methods need to be different.</FONT></P>
+<P><FONT face=Arial>What you need is your application to load a different module for every (or only for some) SQL engine. ObjectBuilder can take care of that.</FONT></P>
+<P><FONT face=Arial>The problem is how the CSLA data portal will handle it. </FONT></P>
+<P><FONT face=Arial>To be continued</FONT></P>
+<P><FONT face=Arial>Cheers<BR>Tiago Freitas Leal<BR></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, December 13, 2006</h2><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>tiago:</strong></div><div><p><font face="Arial">DI can be used for several ends.</font></p>
+<p><font face="Arial">Imagine you have this application that must support different SQL server engines like:<br>- SQL Server<br>- Oracle<br>- MySQL<br>- PostgreSQL<br>- Sybase<br>- SQLite<br>- DB2</font></p>
+<p><font face="Arial">This not just a problem a connection strings and stored procedures. For example, SQLite has no stored procedures and your CRUD methods need to be different.</font></p>
+<p><font face="Arial">What you need is your application to load a different module for every (or only for some) SQL engine. ObjectBuilder can take care of that.</font></p>
+<p><font face="Arial">The problem is how the CSLA data portal will handle it. </font></p>
+<p><font face="Arial">To be continued<br></font></p></div></BLOCKQUOTE><br><br>Hey,<br><br>I like your review of CAB and friends, it will serve as a good reference for future use. ;-)<br><br>Regarding multi-database support: NHibernate supports almost all those DB vendors you enumerated. The nice thing with NHibernate is that you will only need 1 implementation for your dataportal methods and all DB-specific variations are dealt with by NHibernate.<br><br>So, to answer you question ...<br><br><BLOCKQUOTE><div><img src="/Themes/alternate1/images/icon-quote.gif"> <strong>tiago:</strong></div><div><p><font face="Arial">The problem is how the CSLA data portal will handle it. </font></p></div></BLOCKQUOTE><br><br>NHibernate could handle it for you. ;-)<br><br><a href="http://www.hibernate.org/361.html">Here you can verify that NHibernate currently supports most of the features present in</a>:<br><br><ul><li>MS SQL Server 2000</li><li>Oracle</li><li>MS Access</li><li>Firebird</li><li>PostgreSQL</li><li>IBM DB2 UDB</li><li>MySQL</li><li>SQLite<br></li></ul><br><br>Keep up the good work in this thread!<br><br>Regards,<br>Bayu<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, July 16, 2008</h2><P>Sorry to dig up an old message but I have some questions for you guys. We have just recently been looking at SCSF and CAB, more specifically CAB and are evaluating it for us in several of our enterprise applications. So I have some questions that hopefully you can help me with:</P>
+<P>1. How do you specifically hook up your business objects from your CSLA library project into your UI( in the control, controller, or work item)? </P>
+<P>2. What do you do about databinding?</P>
+<P>3. Bayu, I know you have said before that you use common "list" controls to display a number of different BO lists, how does that work?</P>
+<P>Thanks, hopefully my questions are not to "n00bish"</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, July 17, 2008</h2><P>Hi Ryan</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rkelley:</strong></div><div></P>
+<P>1. How do you specifically hook up your business objects from your CSLA library project into your UI( in the control, controller, or work item)? </P>
+<P></div></BLOCKQUOTE></P>
+<P>If you haven't done so already, take a look here: <A href="http://www.codeproject.com/KB/smart/SCSF_CSLA_ProjectTracker.aspx">http://www.codeproject.com/KB/smart/SCSF_CSLA_ProjectTracker.aspx</A><BR>It should answer a couple of questions regarding where to fetch the data from (usually services) and how to bind them on your UI.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rkelley:</strong></div><div></P>
+<P>2. What do you do about databinding?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Well not sure what you mean :-) Just follow the rules in PT on how to bind/unbind your forms properly and you should be just fine. You could write some further helper methods like UnbindBindingSource to help you complete repetitive tasks.</P>
+<P>Finally if you are starting off just now, it might be worth taking a look at the WPF "equivalent" of CAB here: <A href="http://www.codeplex.com/CompositeWPF">http://www.codeplex.com/CompositeWPF</A></P>
+<P>Hope this helps</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Thursday, July 17, 2008</h2><P>I guess my real question on databinding is how do you databind one object across multiple controls? Say for example an order has a billing and shipping customer as child objects, those are perfect candidates to be a common control, so would you bind them just as you would with standard windows forms?</P>
+<P>&nbsp;</P>
+<P>Also, thanks for pointing out the WPF "equivalent" but I don't think we are totally ready for WPF as a company just yet. We are just trying to make some decisions on the direction of where our enterprise software development is headed and trying to make our lives a little better for the future in the process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, July 17, 2008</h2><P>Well there are different ways to go about this I guess... What I do in such cases I make these controls have an Initialise(YourBO bo) and an Unbind(bool save, bool rebind) method. So in the scenario above you would have something like:</P>
+<UL>
+<LI>OrderView</LI>
+<LI>BillingView</LI>
+<LI>ShippingCustomerView</LI></UL>
+<P>To load the view you would call the .Initialise(Order order). Assuming you load the other views from within your presenter, after they are loaded you would call myBillingView.Initialise(order.Billing) and my shippingCustomerView(order.ShippingCustomer). That should take care of databinding.</P>
+<P>More tricky is the unbinding of these controls when you save. On your save method on OrderView, when unbinding your datasources and applying/cancelling your edit levels, you need to do so via the Unbind(bool, bool) methods that BillingView and ShippingCustomerView provide. Its a manual task and I guess it couples your views but then again you are (or should be) working on use cases so you know what views lie within your context.</P>
+<P>But again CAB/SCSF is quite extensible so this might not be the ideal solution. It has worked for me though :-)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

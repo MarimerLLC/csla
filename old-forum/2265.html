@@ -1,0 +1,225 @@
+<html><header><title>How smart is SmartDate?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How smart is SmartDate?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2265.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert posted on Friday, February 02, 2007</h2>I have a date field that need to be represented in a UI as time only. In the Property Get, I use the SmartDate's FormatString to do the translation. This works great. <br><br>In the Property Set I do _myTime.Text=Value. Because the value parameter is a string, it sets _myTime.Date to just a time value. I was hoping it would append the time value to a min date. If I'm using a native Date type, it will do this. Am I missing something here?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 02, 2007</h2>Can you illustrate what you mean in a couple lines of code? I'm not sure what you are saying exactly, but if SmartDate is inconsistent with DateTime I'd like to correct it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Monday, February 05, 2007</h2>Rocky,<br><br>This is how I've defined a time-only property:<br><br>&nbsp;&nbsp;&nbsp; Public Property TimeStart() As String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return SmartDate.DateToString(_timeStart.Date, "h:mm tt")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get &lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(True)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not _timeStart.Equals(value) Then&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _timeStart.Text = value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp; End Property<br><br>After setting a new value to _timeStart, it is stored in SmartDate as the time value only. I've also tried using the FormatString property of SmartDate, but with the same result. <br><br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>How do you know that it is stored only as a time value?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Try this code:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>Dim</span>
+sdate <span>As</span> Csla.SmartDate<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; sdate.Text = <span>&quot;1:00&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.ToString(<span>&quot;d&quot;</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.ToString(<span>&quot;h:mm tt&quot;</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.Date)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;ll find that the console output is:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>1/1/0001<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>1:00 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>1/1/0001 1:00:00 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which clearly shows that the SmartDate value contains both date
+and time parts, and that the date part is 1/1/0001.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you try the same thing with a DateTime:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>Dim</span>
+dtime <span>As</span> DateTime<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; dtime = <span>CDate</span>(<span>&quot;1:00&quot;</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(dtime)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You&#8217;ll get the same result as SmartDate, so there is
+parity.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bgilbert
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 05, 2007 8:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] How smart is SmartDate?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+This is how I've defined a time-only property:<br>
+<br>
+&nbsp;&nbsp;&nbsp; Public Property TimeStart() As
+String&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CanReadProperty(True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return
+SmartDate.DateToString(_timeStart.Date, &quot;h:mm tt&quot;)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get
+&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt;
+_<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As String)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CanWriteProperty(True)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not
+_timeStart.Equals(value) Then&nbsp;&nbsp;
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_timeStart.Text = value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PropertyHasChanged()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>
+&nbsp;&nbsp;&nbsp; End Property<br>
+<br>
+After setting a new value to _timeStart, it is stored in SmartDate as the time
+value only. I've also tried using the FormatString property of SmartDate, but
+with the same result. <br>
+<br>
+Barry<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Monday, February 05, 2007</h2>The difference in my code is that my property set receives the tt portion of the string from the UI. When I set "01:00 AM", the Date property and the DBValue property both return #01:00:00#. SQL Server cannot handle this value in a Date column. When you do the same with a native Date variable, it appends a date and returns "01/01/0001 01:00:00 AM", which SQL Server likes.<br><br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 05, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am afraid I still don&#8217;t understand.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Put this code in a console app:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>Dim</span>
+sdate <span>As</span> Csla.SmartDate<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; sdate.Text = <span>&quot;01:00 AM&quot;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.ToString(<span>&quot;d&quot;</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.ToString(<span>&quot;hh:mm tt&quot;</span>))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.Date)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.WriteLine(sdate.DBValue)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; Console.Read()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then you get this output:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>1/1/0001<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>01:00 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>1/1/0001 1:00:00 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>1/1/0001 1:00:00 AM<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously the Date and DBValue properties are returning exactly
+what you&#8217;d expect. And exactly what you&#8217;d get back if you did this
+same thing with a normal Date or DateTime field.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Monday, February 05, 2007</h2>Well, now I'm confused. Your code works for me. However, in my code (see above), the Date and DBValue properties still only return the time portion. Here are the results I get:<br><br>_timeStart.Date returns #01:00:00 AM#<br>_timeStart.DBValue returns #01:00:00 AM#<br>_timeStart.Date.ToString returns "1/1/0001 01:00:00 AM"<br>_timeStart.DBValue.ToString returns "1/1/0001 01:00:00 AM"<br>_timeStart.ToString returns "1/1/0001"<br><br>If I try to pass DBValue to a parameter in my Update, it throws an overflow exception.<br><br>I don't see what can be going wrong, but I'll keep poking at it.<br><br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Monday, February 05, 2007</h2>More information:<br><br>When I evaluate the property values using Console.WriteLine, it returns the expected value. However, when I check the same values in the immediate window, I get the wrong values. I've never seen a difference between Console.WriteLine and Immediate window calls. The botton line is that using DBValue as a parameter makes SQL Sever choke (SqlDateTime Overflow exception).<br><br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 05, 2007</h2><P>Can you confirm that DateTime works?</P>
+<P>Dim x As DateTime = CDate("01:00 AM")<BR>cm.Parameters.Add("@thedate", x)</P>
+<P>or whatever is comparable to what you are doing?</P>
+<P>I think the issue may be that 1/1/0001 isn't a valid date for SQL Server. In other words, the minimum value for a .NET date may be smaller than the minimum date for SQL Server. (though I could be wrong)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Monday, February 05, 2007</h2>You're right. This fails the same way with CDate("01:00 AM").<br><br>In SQL Server, the date range for DateTime is January 1, 1753, through December 31, 9999<br>For SmallDateTime, it's January 1, 1900, through June 6, 2079.<br><br>1/1/0001 won't work in either case. <br><br>I'll add the minimum date to my time value in the property set.<br><br>Sorry to take up your time.<br><br>Thanks for the help,<br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, February 05, 2007</h2><P>I use the DateRequired validation rule to ensure that the range of the date fits SQL Server.<BR>It is part of my module of common rules, so it is Shared.</P>
+<P>'==================================================================</P>
+<P>&nbsp;'Rule ensuring a Date value is present and within the smalldatetime range allowed by SQL Server.<BR>&nbsp;&nbsp;&nbsp; 'Blank values are not allowed.<BR>&nbsp;&nbsp;&nbsp; Public Function DateRequired(ByVal target As Object, ByVal e As RuleArgs) As Boolean<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim ruleArg As MyRuleArgs = DirectCast(e, MyRuleArgs)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim propertyName As String = ruleArg.PropertyName<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim propertyDescription As String = ruleArg.PropertyDescr</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'The property Get is called on a field like MyDate and then a String value is returned. <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'It could be Empty so do not simply cast to CDate. Test if it IsDate first.<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim value As Object = CallByName(target, propertyName, CallType.Get)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If IsDate(value) Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If value &lt; #1/1/1900# OrElse value &gt; #6/6/2079 11:59:00 PM# Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = GetDescription(target, propertyName, propertyDescription) &amp; " is out of the allowed range. Must be between 1/1/1900 and 6/6/2079."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = GetDescription(target, propertyName, propertyDescription) &amp; " is not a date value."<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>'==================================================================</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

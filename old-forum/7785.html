@@ -1,0 +1,45 @@
+<html><header><title>Problem with ContextManager and multiple DataContexts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with ContextManager and multiple DataContexts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7785.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk posted on Wednesday, October 14, 2009</h2><P>So I want to have more than one DataContext connected to same the database and using the same transaction.&nbsp; </P>
+<P>I&nbsp;am using the&nbsp;CSLA ContextManager so it should manage the connection and transactionscope stuff for me.&nbsp; The sudo-code below should effectively demonstrate things: </P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&lt;Transactional</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalTypes</FONT></FONT><FONT size=2>.TransactionScope)&gt; _</P></FONT></FONT>
+<P><FONT size=2>Protected Sub DataPortal_Insert()</P></FONT>
+<P>Using</FONT></FONT><FONT size=2> mgr1 = ContextManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> LinqContext1) .GetManager("DBSettingName")</FONT></P><FONT size=2><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Using<FONT color=#000000 size=2> mgr2 = ContextManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT color=#000000 size=2> LinqContext2) .GetManager("DBSettingName")</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Using</P></BLOCKQUOTE>
+<P></FONT></FONT></FONT>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Using</P></FONT></FONT></FONT>
+<P>This actually fails horribly throwing a cast exception:&nbsp;&nbsp;&nbsp; </P>
+<P>In the first call to the factory method ContextManager.GetManager() all is well.&nbsp; It creates an instance of LinqContext1, wraps it in a new ContextManager&nbsp;and stores it in thread level storage for future use, then returns it for our use.&nbsp; </P>
+<P>In&nbsp;the second call, ContextManager.GetManager() spots that it already has a ContextManager object stored for the connection string "DBSettingName" (the connection string really) and returns that object.&nbsp; Of course the stored ContextManager contains an instance of LinqContext1 not the LinqContext2 that we expect so this throws a cast exception.&nbsp; </P>
+<P>I then spotted that ContextManager rather helpfully accepts a label argument.&nbsp; </P>
+<P>When I used the label I expose a new problem.&nbsp; This time my separate DataContexts are wrapped in ContextManager objects and returned to me.&nbsp; All looks well for my app but in fact the DataContexts are now using completely seperate underlying connections.&nbsp; Consquently the TransactionScope trickery steps in and attempts to start a DTC transaction.&nbsp; Of course I don't use DTC and again it fails horribly.&nbsp; </P>
+<P>As I don't want the DTC overhead, my solution has been to modify ContextManager so that it also stores the DataContext type as part of it's key in the LocalContext store: </P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>var</FONT></FONT><FONT size=2> contextLabel = GetContextName(database, label, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(C).AssemblyQualifiedName)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> GetContextName(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> connectionString, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> label, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> typeName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"__ctx:"</FONT></FONT><FONT size=2> + label + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"-"</FONT></FONT><FONT size=2> + connectionString + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"-"</FONT></FONT><FONT size=2> + typeName;</P>
+<P>}</P>
+<P></FONT>and then the part that checks for ContextManagers with the same underlying connection: </P>
+<P>...</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Check to see if a DataContext with matching database name/connection string already exists</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataContextConnection</FONT></FONT><FONT size=2> match = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2> key </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext.Keys)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (key.StartsWith(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"__ctx:"</FONT></FONT><FONT size=2> + label + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"-"</FONT></FONT><FONT size=2> + database + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"-"</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P>match = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataContextConnection</FONT></FONT><FONT size=2>) </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.LocalContext[key];</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (match != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>mgr = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;C&gt;(database, label, match.Connection);</FONT></P>
+<P><FONT size=2>... (full source attached)</FONT></P>
+<P><FONT size=2>I'm not entirely happy with the matching code (.StartsWith...) but that will only run where a label, database, or DataContext is used that is different to&nbsp;the 'ambient' ContextManager.&nbsp; So there&nbsp;should be little impact for other usage scenarios.&nbsp; </FONT></P>
+<P>I did consider the possibility adding an overload to ContextManager.GetManager that allows a DBConnection to be passed in but it has pretty much the same problems, would require more developer code&nbsp;and wouldn't work for my scenario where it's not easily passed to the second GetManager call.&nbsp; </P>
+<P>OK so why do I want two different DataContexts connecting to the same database?&nbsp; My particular application is modular and extended at runtime with add on modules.&nbsp; Those modules can extend the database schema and need to persists data as part of the same transaction as the core or other add on modules.&nbsp; </P>
+<P>I've only had a brief look but am thinking that this same problem will also apply to the ObjectContextManager class.&nbsp; </P>
+<P>Can this please be added to the wish list for CSLA v.next?</P>
+<P>Martin. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 14, 2009</h2><P>Added to wish list.</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=600">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=600</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

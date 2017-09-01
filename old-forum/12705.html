@@ -1,0 +1,87 @@
+<html><header><title>Slow first usage per-type with Client DataPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Slow first usage per-type with Client DataPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12705.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 posted on Monday, July 28, 2014</h2><p>I&#39;m finding that when I first start up my application the first client dataportal usage PER TYPE, is very slow.</p>
+<p>So, for example, the first Fetch of MyObject takes around 800ms, whereas every subsequent MyObject takes around 250ms (the server is in a different location). &nbsp;If I then Fetch MyOtherObject (without restarting the application), this first usage is slow, but subsequent usages are fine.</p>
+<p>The server is running at all times using a SelfHosted server (not IIS) so should be fully up and running and with no startup delays, so I don&#39;t believe that the server-side is affecting things.</p>
+<p>I&#39;ve had a look around at the usual suspects for first WCF usage being slow, but neither seems to make a difference:</p>
+<p>- proxy detection (I don&#39;t have a proxy and have tried setting the relevant config file things to disable)</p>
+<p>- serialization (I have tried forcing serialization of MyObject manually before first using the DataPortal)</p>
+<p>&nbsp;</p>
+<p>I am not specifying a serializer, so I think this means that it will be using BinaryFormatter. &nbsp;I have my DataPortal configured to use NetTcp with transport level security.</p>
+<p>The thing is, if this was slow for the first usage for ALL objects (i.e. the first usage of the first type is slow, but aftewards everything is fine), I would assume this is a WCF thing, but because the first usage of every type is slow, it makes me think this has something to do with CSLA and the way it does things.</p>
+<p>This is also the same in a Release build after ngen-ing the binaries.</p>
+<p>Does anyone have any other ideas for what could be causing this? &nbsp;Does anyone else see the same issue?</p>
+<p>Could it be to do with the fact that the WCF service is based upon reflection (dynamic typing) and how the serialization handles this?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 28, 2014</h2><p>How about the initialization of rules.&nbsp;</p>
+<p>AddObjectAuthorizationRules and AddBusinessRules methods is called only the first time you touch an object of that type. Do you do any database access or other possible time consuming operations in one of these methods?&nbsp;</p>
+<p>It could also be caused by initialization of KeyValuePair lists used by rules when they fetch the initial list from the database (and cache them internally so you do not get the cost on next access).&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Monday, July 28, 2014</h2><p>Thanks for the reply Jonny.</p>
+<p>I&#39;ve checked and we are using per-type Auth and Business rules, but none of these fetch data from the DB.</p>
+<p>The BusinessRules are all using CSLA simple rules such as MaxLength etc. with hardcoded values.</p>
+<p>The Auth Rules use some AuthorizationRule derived classes, but their data is all pre-loaded into a client cache on app startup (and besides the call to access this data is within Execute on the rule only).</p>
+<p>I have put traces into the client DataPortalInvoke and DataPortalInvokeComplete as well as some tracing on the server-side in the DataPortal_OnDataPortalInvoke and DataPortal_OnDataPortalInvokeComplete. &nbsp;It appears that the major delay comes between the&nbsp;DataPortal_OnDataPortalInvokeComplete on the server&nbsp;and the DataPortalInvokeComplete on the client side.&nbsp;</p>
+<p>Any ideas what could be causing this?</p>
+<p>Side note: These are Sync requests, not Async.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 28, 2014</h2><p>Hi, </p>
+<p>I would suggest that you run a Profiler - Performance Session to determine where the CPU time is consumed.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Tuesday, July 29, 2014</h2><p>This is exactly what I did yesterday.</p>
+<p>There are two places that are significantly slower the first usage than the second:</p>
+<p>System.Net.Socket.Receive -&nbsp;</p>
+<p>and</p>
+<p>System.Runtime.Serialization.ClassDataContract.ReadXmlValue</p>
+<p>Both are during the client read (Csla.DataPortalClient.WcfProxy+&lt;Fetch&gt;d__a.MoveNext())</p>
+<p>I have tested on other networks so don&#39;t think it is a transmission issue. &nbsp;It looks like it is the NDCS being slow deserializing.</p>
+<p>I&#39;ve checked and CSLA is definitely using the BinaryFormatter, so I guess the NDCS seems to be slow deserializing the WcfResponse object?</p>
+<p>I am going to have a play with pre-serializing some of the objects to see if this speeds things up.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Tuesday, July 29, 2014</h2><p>I&#39;ve switched to basicHttpBinding to rule out any net.tcp weirdness, but am still getting the same delay.</p>
+<p>One thing I have noticed is that now I can view the raw http data in Fiddler, the Object data appears to be Xml encoded.</p>
+<p>However, when I put a breakpoint on my csla Server, the ApplicationContext.SerializationFormatter is set to BinaryFormatter.</p>
+<p>I was expecting therefore in the raw Http request/response in Fiddler to see Xml versions of the CSLA Request/Criteria/WcfResponse classes, but with raw binary data for the object data field. &nbsp;Should I?</p>
+<p>I wonder if something is misconfigured to cause the BinaryFormatter not to be used?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Wednesday, July 30, 2014</h2><p>Following on from my previous reply, could someone clarify something around the serialization. &nbsp;The &quot;Using CSLA 4 - Data Portal&quot; e-book says:</p>
+<p>&quot;The WCF data portal channel uses the NDCS, because that is how&nbsp;</p>
+<p>WCF serializes data for transfer over the network. Even when the WCF data portal channel is used,&nbsp;</p>
+<p>CSLA .NET defaults to using the BinaryFormatter for all serialization operations outside the data&nbsp;</p>
+<p>portal.&quot;</p>
+<p>&nbsp;</p>
+<p>Does this mean that when WCF is used as the transport NDCS is used for serialization of the objects no matter what CSLA is configured to use?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 30, 2014</h2><p>Hi,&nbsp;</p>
+<p>Data is serialized in 2 steps:</p>
+<p><ol>
+<li>CSLA serializes the object structure to a byte array in memory (default BinaryFormatter)</li>
+<li>The serialized object structure is sent in a DataPortal envelope (including f.ex. ApplicationContext, User etc) using the serializer for that channel. If you use WCF channel the default is NDCS.</li>
+</ol></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Wednesday, July 30, 2014</h2><p>Hi Jonny</p>
+<p>This is strange...because I don&#39;t think I am seeing this.</p>
+<p>When I set the basicHttpBinding for the WCF service and ran Fiddler over the communications, I could see the objects were serialized in XML - I could read all of the property names and values etc.</p>
+<p>I was expecting, and judging by your reply what I should see, to see an Xml response object within which is a property which contains a blob of raw data of the object.</p>
+<p>At runtime, CSLA is definitely stating that the ApplicationContext.SerializationFormatter is BinaryFormatter though.</p>
+<p>Any ideas?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 30, 2014</h2><p>There are a number of data portal channel implementations, so it depends on which you are using (and which version of CSLA).</p>
+<p>The _mobile_ WcfProxy does this:</p>
+<ol>
+<li>&quot;serialize&quot; the object graph into a flat object data structure</li>
+<li>Serialize the flat object data structure into a byte array (typically XML)</li>
+<li>Transfer the byte array via WCF - and of course WCF serializes the payload too, probably using DataContractSerializer</li>
+</ol>
+<p>The _non-mobile_ WcfProxy does this:</p>
+<ol>
+<li>Serialize the object graph via WCF, forcing WCF to use the NDCS</li>
+<li>WCF transfers the serialized data over the wire because it managed the serialization</li>
+</ol>
+<p>The HttpProxy does this:</p>
+<ol>
+<li>Serialize the object graph to a byte array using the formatter configured for use (typically MobileFormatter, so like the _mobile_ WcfProxy)</li>
+<li>Transfer the byte array via an HTTP request with the byte array as the payload - iirc it is Base64 encoded, but I&#39;d have to look at the code to be sure</li>
+</ol>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Monday, August 04, 2014</h2><p>Thanks Rocky.</p>
+<p>I guess that explains why I am seeing XML serialization as we are using the non-mobile WcfProxy.</p>
+<p>I&#39;ve managed to speed up first usage by forcing types through the NCDS at startup, but it&#39;s not ideal. &nbsp;I guess I can&#39;t use the svcutil to generate the XmlSerialisers.dll because the WcfProxy DataContract properties are &quot;object&quot; and don&#39;t know about my types!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 04, 2014</h2><p>Jonny is right though, if you haven&#39;t run a profiler you could be wasting your time on the serialization issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Tuesday, August 05, 2014</h2><p>Agreed - and this is what I first did. &nbsp;See earlier reply</p>
+<pre><code>There are two places that are significantly slower the first usage than the second:
+System.Net.Socket.Receive -
+and
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue
+Both are during the client read (Csla.DataPortalClient.WcfProxy+&lt;Fetch&gt;d__a.MoveNext())
+</code></pre>
+<p>I&#39;ve now got something running on app startup to find all serializable types in my assemblies and to run them through the NetDataContractSerializer.  The speed of the first usage of the DataPortal for each type in the same ball park as subsequent uses.</p>
+<p>But it does take about 30-45 seconds to run through all of my types at startup, so its not ideal.  I know that first usage of Xml Serialization is known to be slow, and you can pre-generate the serialization data for them (see <a target="_blank" title="http://msdn.microsoft.com/en-us/library/aa751883.aspx" href="http://msdn.microsoft.com/en-us/library/aa751883.aspx">http://msdn.microsoft.com/en-us/library/aa751883.aspx</a>) but unfortunately because the CSLA DataContract is simply &quot;object&quot;, if I run the svcutil over it, it isn&#39;t going to know about my types at that point!</p>
+<p>Is there any way to get the non-mobile proxy to use the same mechanism as the mobile one re: binary formatting the objects first before adding to the request/response?  I am using binaryMessageEncoding (and net.tcp) in WCF, but I feel I am losing the benefit when the entire objects are first being serialized into XML by the NCDS.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 05, 2014</h2><p>If you are using CSLA 4 I&#39;d recommend just switching to the &quot;mobile&quot; data portal. In version 4.5 I think the mobile implementation is generally better than the previous implementation, and works universally across all the supported platforms (well, to be fair, HttpProxy works _everywhere_, but the mobile WcfProxy works most places).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Wednesday, August 06, 2014</h2><p>I&#39;d like to try it, but at first attempt I have serialization errors (I fixed the first one around Generic Principal, but swiftly moved on to another) &quot;Serialization of type object is not supported.&quot;</p>
+<p>The application I have inherited has approximately 1300 objects based up CSLA base classes (which I suppose *should* just work as the bases implement IMobileObject). &nbsp;There are also ton of other criteria objects that are just POCOs though, so I would need to convert these to CriteriaBase. &nbsp;I feel I might be pulling at a thread with this...!</p>
+<p>I take it that I can&#39;t use the Mobile DataPortal with BinaryFormatter!?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 06, 2014</h2><p>You could write your own data portal channel :)</p>
+<p>Seriously though, you really could. Look at the HttpProxy and host implementation for instance. In this case the proxy and host code directly serialize/deserialize the data, and the network is simply passing a binary byte array over the wire.</p>
+<p>You could use a very similar implementation but use WCF as the network transport instead of a direct HTTP call.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

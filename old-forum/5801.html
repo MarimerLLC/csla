@@ -1,0 +1,15 @@
+<html><header><title>OT: Help discovering actual type of generic parameter from nested type?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Help discovering actual type of generic parameter from nested type?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5801.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Thursday, November 13, 2008</h2><P>I've having trouble discovering the actual type of a generic parameter from an instance (or the type of an instance) of a nested class. Here is short example:</P>
+<P>&nbsp;&nbsp;&nbsp; class G&lt;T&gt;<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class NestedC { }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public enum NestedEnum { A, B }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; class Derived : G&lt;Derived&gt;<BR>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void Test()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NestedC X = new NestedC();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Type c = X.GetType();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Diagnostics.Debug.WriteLine("Type is " + c.FullName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></P>
+<P>Calling Derived.Test() produces this output:</P><FONT size=3>
+<P>Type is G`1+NestedC[[<STRONG>Derived</STRONG>, TestAssembly, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]</P></FONT>
+<P>Clearly, the actual type of T is known since it shows up in the name here. However, I really can't see how to get the type "Derived" programmatically. If I using DeclaringType, then I get:</P>
+<P>FullName = "G`1"</P>
+<P>And then trying to get the generic arguments gives me "T", not the actual type. </P>
+<P>Can anyone help me resolving the actual type here? </P><FONT size=1></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FatPigeon replied on Friday, November 14, 2008</h2><P>How about:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Diagnostics.Debug.WriteLine("Result: " + c.GetGenericArguments()[0].Name);</P>
+<P>Regards,</P>
+<P>&nbsp;</P>
+<P>Patrick<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, November 14, 2008</h2><P>That works. Thanks!</P>
+<P>(I saw that method, but was confused because ContainsGenericParameters was false. Evidently that is used for something else)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

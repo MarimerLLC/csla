@@ -1,0 +1,113 @@
+<html><header><title>CSLA 2.1.4 (C#): Custom Security</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.1.4 (C#): Custom Security</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3168.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Wednesday, July 11, 2007</h2><P><FONT face=Tahoma size=2>Hi,</FONT></P>
+<P><FONT face=Tahoma size=2>Instead of logging into the application as described in the book, I've changed my application to have the user log in before the application starts. I'm running everything on a pc as stand-alone like in the book.</FONT></P>
+<P><FONT face=Tahoma size=2>Everything seems to be working&nbsp;and the user logging in is correctly authenticated, etc.</FONT></P>
+<P><FONT face=Tahoma size=2>However, I would like to display user info as does the book, but the line:</FONT></P>
+<P><FONT face=Tahoma size=2>System.Security.Principal.IPrincipal user = CSLA.ApplicationContext.User;</FONT></P>
+<P><FONT face=Tahoma size=2>does not return the current logged in user info that was successfully authenticated, but returns null for Name and False for IsAuthenticated and no value for AuthenticationType.</FONT></P>
+<P><FONT face=Tahoma size=2>If I understand correctly, running everything local, means I run outside ASP.NET, therefor I will not use HTTPContext. I've debugged and found this to be true when going through the User property in CSLA.ApplicationContext.<FONT color=#0000ff size=2></P>
+<P>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>HttpContext</FONT><FONT size=2>.Current == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</FONT></P>
+<P><FONT size=2>yields true and therefor Thread.CurrentPrincipal is returned. When I have a look at the Name, IsAuthenticated and AuthenticationType properties during debugging, there are no values and IsAuthenticated is false. This means that at this point the Thread.CurrentPrincipal has not been initialized or lost it's data.</FONT></P>
+<P><FONT size=2>How can this happen ?</FONT></P>
+<P><FONT size=2>Regards,</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 11, 2007</h2>The .NET principal object is per-thread. So if you log in the user "before the application starts" then, by definition, you've set the principal on some other thread (in another process no less).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Thursday, July 12, 2007</h2><P><FONT face=Tahoma size=2>Hi Rocky,</FONT></P>
+<P><FONT face=Tahoma size=2>My Main() looks like this:</FONT></P>
+<P><FONT face=Tahoma size=2>static void Main()<BR>{<BR>&nbsp; Application.EnableVisualStyles();<BR>&nbsp; Application.SetCompatibleTextRenderingDefault(false);<BR>&nbsp; LoginForm login = new LoginForm();<BR>&nbsp;&nbsp;if (login.ShowDialog() == DialogResult.OK)<BR>&nbsp;{<BR>&nbsp;&nbsp; Application.Run(new MainForm());<BR>&nbsp;}<BR>&nbsp;else<BR>&nbsp;{<BR>&nbsp;&nbsp; Application.Exit();<BR>&nbsp;}<BR>}</FONT></P>
+<P><FONT face=Tahoma size=2>surely, the LoginForm is part of the&nbsp;application and should be running on the same thread.</FONT></P>
+<P><FONT face=Tahoma size=2>I assume then that ApplyAuthorizationRules() would also not work because I would not be able to access the current user id from CSLA.ApplicationContext.User.</FONT></P>
+<P><FONT face=Tahoma size=2>Regards,</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm, then I don&#8217;t know the answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There should be no thread switch involved, so that shouldn&#8217;t
+be the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Perhaps Application.Run() clears the principal object before
+launching the app?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know in VB, the application object has settings that control
+whether you are using a Windows or custom principal. I didn&#8217;t think C#
+had that feature, but perhaps it does?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cjherasmus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 12, 2007 12:49 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA 2.1.4 (C#): Custom Security<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hi Rocky,</span><o:p></o:p></p>
+
+<p><span>My Main()
+looks like this:</span><o:p></o:p></p>
+
+<p><span>static void
+Main()<br>
+{<br>
+&nbsp; Application.EnableVisualStyles();<br>
+&nbsp; Application.SetCompatibleTextRenderingDefault(false);<br>
+&nbsp; LoginForm login = new LoginForm();<br>
+&nbsp;&nbsp;if (login.ShowDialog() == DialogResult.OK)<br>
+&nbsp;{<br>
+&nbsp;&nbsp; Application.Run(new MainForm());<br>
+&nbsp;}<br>
+&nbsp;else<br>
+&nbsp;{<br>
+&nbsp;&nbsp; Application.Exit();<br>
+&nbsp;}<br>
+}</span><o:p></o:p></p>
+
+<p><span>surely, the
+LoginForm is part of the&nbsp;application and should be running on the same
+thread.</span><o:p></o:p></p>
+
+<p><span>I assume
+then that ApplyAuthorizationRules() would also not work because I would not be
+able to access the current user id from CSLA.ApplicationContext.User.</span><o:p></o:p></p>
+
+<p><span>Regards,</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Friday, July 13, 2007</h2><P><FONT face=Tahoma size=2>Rocky,</FONT></P>
+<P><FONT face=Tahoma size=2>Not to worry. I found the problem. I made a stupid mistake when I re-indented&nbsp;the CSLA.ApplicationContext class to fit our coding standards and guidelines. It is working now.</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks for your time, I appreciated it.</FONT></P>
+<P><FONT face=Tahoma size=2>Regards,</FONT></P>
+<P><FONT face=Tahoma size=2>PS: Maybe, one day I'll send you a slide-show of how I'm using CSLA in a scientific environment. It's quite hectic coding.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,40 @@
+<html><header><title>DataPortal_Update and DataPortal_Insert are slow, DataPortal_Fetch is not</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Update and DataPortal_Insert are slow, DataPortal_Fetch is not</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10909.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft posted on Tuesday, November 22, 2011</h2><p>We have web application running at about 50 clients.&nbsp; At only one client, the DataPortal_Update and DataPortal_Insert methods are slow.&nbsp; The response time is acceptable after IIS is restarted, but as the day goes along the response time becomes to slow.</p>
+<p>More specifically, we adding logging to the Save method in our business objects, which invokes the Csla Save method.&nbsp; At the start of the day the time between the very last line of code priort to .Save; and the very first line of code within DataPortal_Update is less than 1 second.&nbsp; But by the end of the data that has changed to taking more than 60 seconds.</p>
+<p>This problem only affects the calls from .Save to either DataPortal_Update or DataPortal_Insert.&nbsp; DataPortal_Fetch is never slow.</p>
+<p>This problem only affects one of our clients.&nbsp; This client, like many others clients, is running our 32bit app on W2008 with IIS 7.5.</p>
+<p>By adding logging lines at every single line of code we have definitely determined that the slow down occurs after &quot;our&quot; code hands control over to the Csla.save method and before &quot;our&quot; code resumes execution in DataPortal_Update.&nbsp; All the code runs on the same box; there is no .Net remoting.</p>
+<p>Any suggestions about tracking this down are greatly appreciated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Tuesday, November 22, 2011</h2><p>Forgot to mention that this is Csla 3.8.3.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 22, 2011</h2><p>The only thing that comes to mind, is that perhaps the serialization consumes a lot of memory, and if this is an older 32 bit machine, maybe it has limited RAM, so the serialization is forcing a bunch of paging at the OS level?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 22, 2011</h2><p>Have you tried to set CslaAutoCloneOnUpdate to false in Web.Config? <br />That would eliminate the extra serialization that occurs within CSLA before the DataPortal_Update/Insert.</p>
+<p>Are there other differences in patching/ServicePacks or hardware? </p>
+<p>Do you use a separate app server for data access or is everything inline (SimpleDataPortal)?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Wednesday, November 23, 2011</h2><p>Thanks for the replies.&nbsp; I love this community!</p>
+<p>We set the CslaAutoCloneOnUpdate to false today as JonnyBee suggested and the performance problems went away.&nbsp; I don&#39;t consider this to be our &quot;fix&quot; yet though.&nbsp; I need to determine if we truly want to live without the features that the serialization brings as Rocky mentions in this thread: <a href="http://forums.lhotka.net/forums/p/7169/47302.aspx#47302">http://forums.lhotka.net/forums/p/7169/47302.aspx#47302</a></p>
+<p>I also still need to figure out why this is slow at one client.&nbsp; I suspect that:</p>
+<p>a) we are serializing some object or collection that we do not need, and it is a collection that is cached and grows in size during the day</p>
+<p>b) this particular client has much more of that data than most, or is adding to it more quickly for some reason than our other clients.</p>
+<p>Thanks for your help.&nbsp; I will post what I find.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 24, 2011</h2><p>Hi Rob, </p>
+<p>I&#39;d recommend to use a&nbsp;memory profiler and invstigate what happens in memory in your app. </p>
+<p>Most typically - objects remain in memory because of some event or other object still has a reference to it. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RobKraft replied on Monday, December 05, 2011</h2><p>I&#39;d like to share the cause of our problem and resolution.&nbsp; One of our base classes had an event in it.&nbsp; This event caused objects that were 20k to swell to 2MB.&nbsp; Specifically we have this event:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">event</span>&nbsp;System.ComponentModel.<span style="color:#2b91af;">PropertyChangedEventHandler</span>&nbsp;PropertyChanged;
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">We fixed this problem by adding this attribute to the event definition:</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;">[<span style="color:blue;">field</span>:&nbsp;<span style="color:#2b91af;">NonSerialized</span>]
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">We also wrote a unit test to keep an eye on our object sizes:</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><pre style="font-family:Consolas;background:white;color:black;font-size:13px;">		[<span style="color:#2b91af;">Test</span>]
+		<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;TheSizeOfOneModuleShouldNotExceed25000bytes()
+		{
+			<span style="color:blue;">var</span>&nbsp;module&nbsp;=&nbsp;<span style="color:#2b91af;">ModuleList</span>.GetByModuleID(3);
+ 
+			<span style="color:blue;">long</span>&nbsp;lBuffer&nbsp;=&nbsp;0;
+			<span style="color:blue;">using</span>&nbsp;(<span style="color:#2b91af;">MemoryStream</span>&nbsp;buffer&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MemoryStream</span>())
+			{
+				<span style="color:#2b91af;">BinaryFormatter</span>&nbsp;formatter&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">BinaryFormatter</span>();
+				formatter.Serialize(buffer,&nbsp;module);
+				lBuffer&nbsp;+=&nbsp;buffer.Length;
+			}
+ 
+			<span style="color:#2b91af;">Assert</span>.That(lBuffer,&nbsp;<span style="color:#2b91af;">Is</span>.LessThan(25000));
+		}</pre>
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"></pre>
+</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

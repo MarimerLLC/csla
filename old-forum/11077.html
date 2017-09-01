@@ -1,0 +1,23 @@
+<html><header><title>ArgumentException while beginFetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ArgumentException while beginFetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11077.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Monday, January 23, 2012</h2><p>Hi,</p>
+<p>I&#39;m running out of ideas<img src="http://forums.lhotka.net/emoticons/emotion-7.gif" alt="Tongue Tied" /></p>
+<p>I created the following code, used to start the fetch of my own Identity-objects. Unfortunatly it results in an ArgumentException &quot;An item with the same key has already been added&quot;. I have to use my own criteria object, because my login process needs an appname, since those security classes are used by several apps/modules and the login process is logged...</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Shared</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;GetmyOwnIdentity(mUsername&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>,&nbsp;mPassword&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>,</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">&nbsp;mApplicationname&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>,&nbsp;mCallback&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>(<span style="color:blue;">Of</span>&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:#2b91af;">DataPortalResult</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">myOwnIdentity</span>)))
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;myCriteria&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">VerifyCredentialsCriteria</span>&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:#2b91af;">VerifyCredentialsCriteria</span>(mUsername,&nbsp;mPassword,&nbsp;mApplicationname)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.BeginFetch(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">myOwnIdentity</span>)(myCriteria,&nbsp;mCallback)
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><span style="color:#000000;">I use CSLA 4.1 and please indulge me for not using {}; <img src="http://forums.lhotka.net/emoticons/emotion-5.gif" alt="Wink" /></span></span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><span style="color:#000000;">TIA</span></span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;"><span style="color:blue;"><span style="color:#000000;">Volker</span></span></pre></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, January 23, 2012</h2><p>Hmm,</p>
+<p>That sounds like you are using a Dictionary in your code and call Add method with an existing &quot;key&quot;. </p>
+<p>Do you have a stack trace for where the error occurs? </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>vschaak replied on Monday, January 23, 2012</h2><p>Hi Jonny,</p>
+<p>I found the reason myself (and started banging my head against the wall):</p>
+<p>My ClientConfig-file contains two endpoint settings, one for development purpose and the other one for production. While one has to be &#39;active&#39; the other one has to be commented out (for ease of deployment). In this case I must have forgotten to comment out the other one<img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p>
+<p>The fooling thing is, that this exception would have happen on any server-access, but this time it was the login with it&#39;s custom criteria object, which in fact was the first one...</p>
+<p>Thanks and have a good time!</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

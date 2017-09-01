@@ -1,0 +1,313 @@
+<html><header><title>logout reset after event finishes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>logout reset after event finishes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3505.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>odie posted on Monday, September 10, 2007</h2><P>I am working on an application that monitors when a memory card is inserted or removed from a card reader. using the following code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> StartDriveChange()<BR>mMediaConnectWatcher = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Management.ManagementEventWatcher(</FONT><FONT color=#a31515 size=2>"root\cimv2"</FONT><FONT size=2>, _<BR></FONT><FONT color=#a31515 size=2>"Select * From __InstanceOperationEvent Within 1 Where "</FONT><FONT size=2> _<BR>&amp; </FONT><FONT color=#a31515 size=2>"TargetInstance isa 'Win32_LogicalDisk' and TargetInstance.DriveType = 2"</FONT><FONT size=2>)</P>
+<P>mMediaConnectWatcher.Start()</P>
+<P></FONT><FONT color=#0000ff size=2>AddHandler</FONT><FONT size=2> mMediaConnectWatcher.EventArrived, </FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> mCardReader.CardInsertRemoveEvent<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>When the CarInsertRemovedEvent fires I run the logout method on my PHPrincipal class which does log the user out, but when CardInsertRemoveEvent finishes csal.ApplicationContext.User is restored to what it was before I logged out.</P>
+<P>The logout method is:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Logout()</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.InvokeRequired </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Invoke(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> MethodInvoker(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> Logout))</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>Common.Security.PHPrincipal.Logout()</P><FONT size=2>
+<P>mLogout = </FONT><FONT color=#0000ff size=2>True</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>Any ideas how to keep the users logged outwhen the event finishes? I currently use the mLogout = true and check it later on to see if the logout function has been run but this is just a hack to get around the problem.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2><P>You may want to use the threads window in the debugger to make sure you really are running the logout code on the UI thread.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>odie replied on Monday, September 10, 2007</h2><P>Doesn't the me.InvokeRequired take care of that in the logout method?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2>You would think so, yes. But it is easy enough to put a breakpoint in the code and then use the threads window to make sure you are on the thread you think you should be using.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>odie replied on Monday, September 10, 2007</h2><P>All login/logout calls are taking place on the same thread ID. I even checked which thread the whole application is starting under when the form first&nbsp;loads and it is the same.</P>
+<P>For some reason csla.applicationcontext.user it is being reset to before the logout is called when the cardInsertRemovedEvent method finishes running.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2><P>Interesting.</P>
+<P>Csla.ApplicationContext.User (when not running in ASP.NET) gets/sets the principal value at System.Threading.Thread.CurrentPrincipal.</P>
+<P>That value is owned by .NET, and there are some things that can affect it. Both WPF and VB will alter this value based on some policy settings, and you can specify that it default to a WindowsPrincipal in any environment by calling a method on the AppDomain.</P>
+<P>However, to my knowledge, only WPF alters the value during runtime - meaning after application startup. The AppDomain setting only affects startup, and that's true for the VB policy as well (they rely on the core AppDomain value and then add some extra functionality - but it all happens at startup).</P>
+<P>I assume you aren't using WPF?</P>
+<P>So that should eliminate all the automatic principal changing that I'm aware of - leaving only your code as a culprit <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>So what I'd recommend at this point, is putting a breakpoint in your login and logout methods. You should see the logout occur - which should set the value. Then something must be setting the System.Threading.Thread.CurrentPrincipal value back, which you'd think would be the login method?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>odie replied on Monday, September 10, 2007</h2><P>When I check the value right after the logout csla.applicationcontext.user is logged out as expected. Even checking this value with a break point on the End Sub of the CardInsertRemovedEvent shows it logged out. as soon as you step past the End Sub the value is reset back to what it was before I logged out, no other code of mine gets run until the user presses a button on the form.</P>
+<P>What you suggest I have already done many times and the login is not getting called. And I am not using WPF.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Then I have no idea, sorry.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are on the correct thread, and you&#8217;ve set the
+value, then <i>something</i> is setting the value back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are in WPF I&#8217;ve seen the runtime change the value
+back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are in VB it can change the value, but I think that only
+happens on app startup.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Beyond that, I just don&#8217;t have any idea.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> odie
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 10, 2007 3:04 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] logout reset after event finishes<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>When I check the value right after the logout csla.applicationcontext.user
+is logged out as expected. Even checking this value with a break point on the
+End Sub of the CardInsertRemovedEvent shows it logged out. as soon as you step
+past the End Sub the value is reset back to what it was before I logged out, no
+other code of mine gets run until the user presses a button on the form.<o:p></o:p></p>
+
+<p>What you suggest I have already done many times and the login is not getting
+called.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>odie replied on Monday, September 10, 2007</h2><P>I'll put together a small project with the approprate code that reproduced the problem for you to have a look at when you have time and see if you can find out what I am missing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, October 10, 2007</h2><P>Hi Odie... did you ever figure this out???&nbsp; I just ran into it on my dev machine (in debug mode).&nbsp; Tried all your tests and something is setting the user object back to it's original value after the function finishes up.&nbsp; Really Weird!</P>
+<P>and nothing is calling the Login Method at all...</P>
+<P>I have not tested in production yet (or not with this latest release) but something is happening (the currentIdentity is getting set back)&nbsp;and I can not track it down.</P>
+<P>Any Thoughts?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I had a discussion with Kathleen Dollard, as she ran into
+something similar.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In her case the assemblies were VB assemblies, and she&#8217;d
+referenced one EXE from another EXE (using the first one more like a DLL).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>VB&#8217;s My namespace includes some functionality to simplify
+the use of principal objects in an EXE. Interestingly enough, it turns out that
+calling one EXE from another EXE (like you would a DLL) also triggers this
+functionality and resets the principal based on the security policy set in that
+referenced EXE project.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe a clue?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As I&#8217;ve said in previous posts &#8211; WPF will do this to
+you as well, in VB or C#. And WCF will do it under specific circumstances as I
+discuss in <i>Using CSLA .NET 3.0</i>.<u><o:p></o:p></u></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ward0093
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 10, 2007 2:07 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: logout reset after event finishes<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Odie... did you ever figure this out???&nbsp; I just ran into it on my
+dev machine (in debug mode).&nbsp; Tried all your tests and something is
+setting the user object back to it's original value after the function finishes
+up.&nbsp; Really Weird!<o:p></o:p></p>
+
+<p>and nothing is calling the Login Method at all...<o:p></o:p></p>
+
+<p>I have not tested in production yet (or not with this latest release) but
+something is happening (the currentIdentity is getting set back)&nbsp;and I can
+not track it down.<o:p></o:p></p>
+
+<p>Any Thoughts?<o:p></o:p></p>
+
+<p>ward0093<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, October 10, 2007</h2><P>Well... I am not calling external EXE but i do use multiple threads frequently.&nbsp; Could that be causing it?</P>
+<P>Is there a way to fix it?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>.NET keeps the principal object attached to a thread. So if you
+switch threads, you are responsible for ensuring that each of those threads has
+the right principal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you set the principal (using Csla.ApplicationContext.User,
+HttpContext.Current.User, System.Threading.Thread.CurrentPrincipal or My.User)
+the principal is only set for the current thread. That&#8217;s how .NET works.
+Everything else (with multiple threads) is entirely up to you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, October 10, 2007</h2>Is there a chance that the main thread (the thread I am logged out of recently) is getting set back by another, background thread?&nbsp; I am logging out inside a FormShown event too!&nbsp; That could be it as well do you think?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>odie replied on Wednesday, October 10, 2007</h2><P>I sort of used a hack. I set a variable inside the thread event indicating that the user should be logged out and then force a log out the next time a user performs any other&nbsp;action, outside any threads. This is not a big deal in my application as there are only 4 things a user can actually do.</P>
+<P>Not the nicest solution but it does work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I&#8217;m doing something similar in PTWpf :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Because WPF resets the principal (when it shouldn&#8217;t imo),
+I store the current principal in a Shared/static field (thus making it
+available at the AppDomain level). The data portal now has a new (to version
+3.0) init event that I then handle in the same code module where that
+Shared/static field is declared (the app&#8217;s main form in my case). In that
+event handler I see if the current principal is the same as my _principal field
+(using ReferenceEquals()) and if they are not the same, I set the thread&#8217;s
+principal to _principal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The _principal field is changed only in my LoginOut() method, so
+it reflects the correct value according to my application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This technique not only addresses the WPF need, but would
+resolve most multi-threading scenarios as well &#8211; at least from the data
+portal perspective.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> odie
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 10, 2007 2:32 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: logout reset after event finishes<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I sort of used a hack. I set a variable inside the thread event indicating
+that the user should be logged out and then force a log out the next time a
+user performs any other&nbsp;action, outside any threads. This is not a big
+deal in my application as there are only 4 things a user can actually do.<o:p></o:p></p>
+
+<p>Not the nicest solution but it does work.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, November 07, 2007</h2><P>Hey rocky,</P>
+<P>I was using this thread just now: <A HREF="/forums/thread/11358.aspx">http://forums.lhotka.net/forums/thread/11358.aspx</A></P>
+<P>but realized we discussed this already... above you mention transferring the principal to the server but i am still trying to figure out why the principal object gets reset on the Main UI thread after a successful login?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, November 07, 2007</h2><P>Something is really strange with the Multi-Threading and the current principal object.</P>
+<P>I write out to the EventLog the user credentials (UserID, IsAuth., etc) both inside the "DoWork" event and in the "ProgressChanged" event (part of the Background Worker object).&nbsp; The ProgressChanged method is on the UI thread and confirmed it with the ProcessID... but shows that the User is not set even after we successfully log on.</P>
+<P>However, when we check the User Credentials in other places in the program on the UI thread, the user shows up and everything is fine?!?!?!</P>
+<P>this there some sort of Refresh issue going on with the "ProgressChanged" Method that we fire from within the background worker component background thread?</P>
+<P>very strange that is does not pull the current User from the CSLA.ApplicationContext module for the main UI thread that the "ProgressChanged" method is running on?</P>
+<P>ward0093</P>
+<P>P.S.&nbsp; I am still on CSLA V2.1.2</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 07, 2007</h2><P>I don't know. It sure sounds like the BackgroundWorker may be "helping" you to manage the principal somehow...</P>
+<P>Not to be too flippant, but I look forward to hearing what you find as you research this <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Is this something you can isolate into a very small demo that illustrates the problem? That might help debug the issue. Just the process of creating such an isolated demo might help reveal the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, November 08, 2007</h2><P>Hey Rocky... I will see what I can do to create a small app and duplicate it... but one thing is for sure... in my dev environment, in debug mode... the "ProgressChanged" method on the UI Thread is not updating the User Object (the Principal object) and that has to be a bug! (or I am missing something)</P>
+<P>I will keep you posted when I get the app done... also I am going to leave my EventLog writeouts in the app and release it to production and see if that happens in a compiled format.</P>
+<P>ward0093</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

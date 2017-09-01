@@ -1,0 +1,83 @@
+<html><header><title>Silverlight Save button is not disabled after delete save</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Save button is not disabled after delete save</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6359.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa posted on Friday, February 06, 2009</h2><P>I have this code from Rolodex example &nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button x:Name="saveBtn" Content="Save" Width="50" Margin="0,2"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="Save"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Resource="{StaticResource LicensorData}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="Click"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsEnabled="{Binding Path=CanSave, Mode=OneWay}" /&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button x:Name="cancelBtn" Content="Cancel" Width="50" Margin="0,2"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="Cancel"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Resource="{StaticResource LicensorData}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="Click"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsEnabled="{Binding Path=CanCancel, Mode=OneWay}" /&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button x:Name="deleteBtn" Content="Delete" Width="50" Margin="0,2"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="Delete"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Resource="{StaticResource LicensorData}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="Click"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsEnabled="{Binding Path=CanDelete, Mode=OneWay}" /&gt;</P>
+<P>The problem is that after I clicked Delete button and then click Save, the CSLA dataprovider is not setting the Save button to disabled(the CanSave property&nbsp;dose not set&nbsp;to false after you click Delete and Save). So Then user is confused and they can click the Save button&nbsp;again, then the save button get disabled. However, what happen to the real data is that the recode first get deleted from the Database and then it gets added as a new recode. </P>
+<P>This behavior is also in the Rolodex example. I may be a bug in the CLSA, Any ideas? </P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 06, 2009</h2>I get the same thing if my buttons are on a toolbar.&nbsp; I haven't been able to find a solution.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Friday, February 06, 2009</h2>I'm also having the same problem, in a toolbar.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here is a question, just to clarify.&nbsp; Once the user deleted
+and saved the deletion, should the screen really display something other than
+the deleted record?&nbsp; Maybe it should close to allow the user to select
+something else from a list of items?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 3:11 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight Save button is not disabled after
+delete save<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm also having the same problem, in a toolbar.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa replied on Friday, February 06, 2009</h2><P>Well. I have a Close button for users to close out at any moment&nbsp;they want to. </P>
+<P>You suggestion to me is more like a good work around.&nbsp;Anyway, for now if&nbsp;there is no way to solve this problme I may&nbsp;just have to&nbsp;make&nbsp;a&nbsp;work around for it as you suggested. </P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 09, 2009</h2>Well, this happens too even if you're just saving the object and not deleting it.&nbsp; I don't allow anything to be deleted.&nbsp; I'd really like to know how to fix this because it's going to confuse my users.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa replied on Monday, February 09, 2009</h2><P>Well, if just for saving, It works great. I don't see any problem with it. You might need to revisit your code then. </P>
+<P>I really hope they can fix the Deletion on the next release. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, February 09, 2009</h2>Ahh... I guess I should point out that this is with Wpf, not Silverlight.&nbsp; I thought you were getting the same thing, since both are Xaml.. but I guess not.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

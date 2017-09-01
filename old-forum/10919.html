@@ -1,0 +1,18 @@
+<html><header><title> [From China] How to use &quot;List object&quot; alone and &quot;N-level Undo&quot;? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1> [From China] How to use &quot;List object&quot; alone and &quot;N-level Undo&quot;? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10919.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>harveyhu posted on Saturday, November 26, 2011</h2><p>Sorry, I do not understand English. Translated from GOOGLE<br />----------------------------------------------------------<br />Userd alone &quot;List object&quot;.</p>
+<p>When I Call method :: BeginEdit()</p>
+<p>exception message like this :&quot;Edit level mismatch in CopyState&quot;.</p>
+<p>why? can you help me?</p>
+<p><br />How to use &quot;List object&quot; alone and &quot;N-level Undo&quot;?</p>
+<p><br />----------------------------------------------------------</p>
+<p><br />Chinese--&gt;</p>
+<p>不好意思，我不懂英文，所以用Google翻译来表达意思</p>
+<p>当我单独使用List对象时，我想使用它的N层撤销机制，但当我直接使用List.BeginEdit()时出现下面异常.</p>
+<p>&quot;Edit level mismatch in CopyState&quot;,调试CSLA代码时发现如下:</p>
+<p>&nbsp;protected internal void CopyState(int parentEditLevel)<br />&nbsp;{<br />&nbsp;&nbsp;&nbsp; ...</p>
+<p>&nbsp;&nbsp;&nbsp; if (this.EditLevel + 1 &gt; parentEditLevel)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new UndoException(string.Format(Resources.EditLevelMismatchException, &quot;CopyState&quot;));<br />&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp; ...<br />&nbsp;}</p>
+<p>请问如何单独使用List对象，并且能够启用N层撤销机制？</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 27, 2011</h2><p>You should only call BeginEdit/ApplyEdit/CancelEdit on objects that are not active in databinding. </p>
+<p>When you get that error message it is likely that BeginEdit has already been called on one or more of the child/grandchild objects. </p>
+<p>When you call BeginEdit a snapshot of your object structure is pushed to the stack and if any child/grandchild object has en Editlevel that is NOT a match to the parent level you will get this error. </p>
+<p>The solution: You must call BeginEdit before you call BeginEdit on any child objec or connect the object to the UI by using DataBinding.&nbsp; </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

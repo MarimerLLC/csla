@@ -1,0 +1,47 @@
+<html><header><title>Help on root objects vs root collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help on root objects vs root collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/901.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Monday, August 14, 2006</h2>You'd think that I'd have this figured out by now but I am having trouble deciding which set of objects to select to implement my requirement.<br><br>What I want is a form with 2 grids. Each row in the upper grid is a "master" row. When I click it, I want the "detail" rows related to that master row to appear in the lower grid. Both grids need to be editable.<br><br>I have tried using a combination of EditableRootList and Editable Child for the upper grid, but:<br>1 - Editable Root contains methods to add a new child but it is not set up to act as a child because it cannot accept the data reader from editable root list.<br>2 - The root list object does not implement a method to add an item to the list <br><br>If I could get the upper grid wirling, I could duplicate the structure for the lower grid, although, in this case it would be cleaner (since there a small number of records) if I could just read all the masters and all of the details, establish a relationship between the 2 sets and filter what showed in the lower grid based on which row was selected in the upper. This, however, does not seem to be possilbe.<br><br>At this point I'm hopelessly confused about which classes to select and how to wire them up to get what I need. If someone could shed some light on this for me it would be a big help.<br><br>tia,<br>Dan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SteveChadbourne replied on Monday, August 14, 2006</h2><P>I do this although in a read-only fashion. </P>
+<P>I use a ReadOnlyListBase/ReadOnlyBase for the top grid. I have a separate ReadOnlyListBase/ReadOnlyBase for the bottom grid. I don't make the bottom grid objects children of the top grid objects for performance reasons. </P>
+<P>OnSelect on the top grid calls DataBind on the bottom grid. The CslaDataSource for the bottom grid calls OnSelectObject which looks like:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> BottomGridDataSource_SelectObject(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, Csla.Web.</FONT><FONT color=#008080 size=2>SelectObjectArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;e.BusinessObject = GetBottomList();</P>
+<P>}</P>
+<P>GetBottomList() calls the factory method on your bottom grid list object and passes in TopGrid.SelectedValue;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, August 23, 2006</h2>
+
+
+  
+  
+
+
+<font size="+1">I guess that I'm going to be drowning in classes.
+I'm going to have listClass/itemClass for the upper grid and
+listClass/itemClass for the lower grid. Do I also need editable root
+classes to support adding new rows to each grid or can I use the child
+objects in isolation somehow to call the insert methods?<br>
+<br>
+</font><font size="+1">Thanks,<br>
+Dan<br>
+</font><br>
+SteveChadbourne wrote:
+<blockquote>
+  <p>I do this although in a read-only fashion. </p>
+  <p>I use a ReadOnlyListBase/ReadOnlyBase for the top grid. I have a
+separate ReadOnlyListBase/ReadOnlyBase for the bottom grid. I don't
+make the bottom grid objects children of the top grid objects for
+performance reasons. </p>
+  <p>OnSelect on the top grid calls DataBind on the bottom grid. The
+CslaDataSource for the bottom grid calls OnSelectObject which looks
+like:</p>
+  <font size="2"></font>
+  <p><font color="#0000ff" size="2">protected</font><font size="2"> </font><font color="#0000ff" size="2">void</font><font size="2">
+BottomGridDataSource_SelectObject(</font><font color="#0000ff" size="2">object</font><font size="2"> sender, Csla.Web.</font><font color="#008080" size="2">SelectObjectArgs</font><font size="2"> e)</font></p>
+  <p><font size="2">{</font></p>
+  <p><font size="2">&nbsp;&nbsp;&nbsp;e.BusinessObject = GetBottomList();</font></p>
+  <p><font size="2">}</font></p>
+  <p><font size="2">GetBottomList() calls the factory method on your
+bottom grid list object and passes in TopGrid.SelectedValue;</font></p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DanEssin:</strong></div><div><br>I have tried using a combination of EditableRootList and Editable Child for the upper grid, but:<br>1 - Editable Root contains methods to add a new child but it is not set up to act as a child because it cannot accept the data reader from editable root list.<br>2 - The root list object does not implement a method to add an item to the list <br></div></BLOCKQUOTE><br><br>I assume your issue is with a set of code-gen templates? Because if you are coding this by hand it is a non-issue. In both CSLA 1.x and 2.x you can implement code in the collection to allow the grid to add new child objects, and obviously you can implement factory methods in your child class like I show in the books to accept the data reader from a parent.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

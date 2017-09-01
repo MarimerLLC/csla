@@ -1,0 +1,40 @@
+<html><header><title>Silverlight 4 Dataportal BeginFetch crashes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight 4 Dataportal BeginFetch crashes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11160.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Tuesday, February 14, 2012</h2><p>
+<p>Can someone please tell me why I get an error of&nbsp;</p>
+<p>System.Windows.Markup.XamlParseException occurred</p>
+<p>&nbsp; LineNumber=8</p>
+<p>&nbsp; LinePosition=35</p>
+<p>&nbsp; Message=The invocation of the constructor on type &#39;Designer.ViewModel.MainPresenter&#39; that matches the specified binding constraints threw an exception. [Line: 8 Position: 35]</p>
+<p>&nbsp; StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;at System.Windows.Application.LoadComponent(Object component, Uri resourceLocator)</p>
+<p>&nbsp; InnerException: System.InvalidCastException</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Message=Unable to cast object of type &#39;System.InvalidOperationException&#39; to type &#39;Csla.DataPortalException&#39;.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;StackTrace:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; at Designer.ViewModel.ViewModel`1.OnError(Exception err)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; at Csla.Xaml.ViewModelBase`1.set_Error(Exception value)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; at Csla.Xaml.ViewModelBase`1.BeginRefresh(Action`1 factoryMethod)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; at Designer.ViewModel.ProductCategoryList_ViewModel..ctor()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; at Designer.ViewModel.MainPresenter..ctor()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;InnerException:&nbsp;</p>
+<div>Is this the proper way to setup your DataPortal methods for WCFProxy?&nbsp;</div>
+<p>Public Shared Sub BeginGetList(cb As EventHandler(Of DataPortalResult(Of T)))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; <span style="text-decoration:underline;">DataPortal.BeginFetch(Of T)(cb)</span></p>
+<p>&nbsp; &nbsp; End Sub</p>
+</p>
+<p>
+<p>&lt;EditorBrowsable(EditorBrowsableState.Never)&gt; _</p>
+<p>&nbsp; &nbsp; Public Sub DataPortal_Fetch(handler As LocalProxy(Of T))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim bw As New BackgroundWorker</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; AddHandler bw.DoWork, Sub(o, e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RaiseListChangedEvents = False</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; With New WcfProxy(Of T)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; .BeginFetch()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End With</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RaiseListChangedEvents = True</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End Sub</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; bw.RunWorkerAsync()</p>
+<p>&nbsp; &nbsp; End Sub</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, February 14, 2012</h2><p>Hi,</p>
+<p>You cannot use the BackgroundWorker in your DataPortal_Fetch. </p>
+<p>DataPortal.BeginFetch wil start asyncronousl (ie: your code in DataPortal_Fetch is already running asyncronously) and you must supply the WcfProxy&lt;T&gt;.BeginFetch with the callback handler that you get as parameter to the method.&nbsp; </p>
+<p>Search the Samples download for WcfProxy - cant remember which but there should be some sample on this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Tuesday, February 14, 2012</h2><p>Yea that makes sense. I hate it when my brain takes a coding dump.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

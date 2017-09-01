@@ -1,0 +1,123 @@
+<html><header><title>How do you audit your business objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do you audit your business objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6116.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 posted on Friday, January 09, 2009</h2>I am having a tough time trying to figure out how to implement a business object to audit other business objects.&nbsp; We want to track changes to our business objects.&nbsp; We have individual audit tables for each business object we want to track.<br><br>I have been reading all of the forum posts on auditing and I am very confused.&nbsp; I know we can't add the calls to the Insert statements for auditing through the data portal in a business base class.&nbsp; I also know that we need a read only business class for the auditing so that I can read from the DB.&nbsp;&nbsp; From what I have gathered it would be better if we did not have auditing code in the business object we are auditing. <br><br>What I don't know is&nbsp; what is the best way implement an object that does the audit record inserting.&nbsp; I have read various methods such as inserting or calling the auditing stored procedure in any INSERT, UPDATE, or DELETE procedures that relate to the business object.&nbsp; I have also read about using the Observer pattern and creating your own interface, which is confusing.&nbsp; <br><br><b>How are you implementing an object(s) to track your business object auditing? </b><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 09, 2009</h2><P>You do have many options and, you are right, it can be confusing which direction to take.</P>
+<P>It sounds like you are already on the right track understanding that your auditor should be a separate entity from your other business objects.&nbsp; The question then becomes how to communicate audit information between your business objects and your auditor.</P>
+<P>If you are dealing with a pretty fixed application, you could code calls to the auditor in your business objects just as you would include Trace statements.&nbsp; This becomes tedious if the project is pretty active and you have many developers working on it - trying to make sure everyone puts the necessary instrumentation in the code is always difficult.&nbsp; There are ways through base classes and delegation that much of this can be abstracted, however.&nbsp; In any event, going this route will require you to put calls into your business objects whenever you want an audit record created.</P>
+<P>The Observer pattern frees you from having to do anything within your business objects to support auditing.&nbsp; You would instead have to code your auditor so that it "listens to" or "observes" your business objects and writes audit information as appropriate.&nbsp; You do this by wiring up event handlers in your auditor that responds to events from your business objects.&nbsp; So, for instance, if you want to write an audit record when your BO is saved, the auditor should wire-up to the Saved event on the BO.&nbsp; This works great but can be cumbersome if your object model is dynamic.&nbsp; You'll have to be very diligent about wiring and unwiring objects every time one is created or removed.</P>
+<P>Aspect-Oriented Programming (AOP) is another route.&nbsp; There are some existing AOP logging-type solutions out there that use an attribute and configuration-based approach to extending your business objects with auditing capabilities.&nbsp; I'm not a huge fan of AOP in .NET, but that's just my opinion and I've seen plenty of instances where it has been used successfully on projects.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, January 09, 2009</h2>We do auditing at the database table level.&nbsp; Each table has an equiv. &lt;table&gt;_audit.&nbsp; We then use triggers to capture the change (insert, update, delete), who made the change, what the original data was, and what it was changed to.&nbsp; No business objects involved.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Friday, January 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Fintanv:</strong></div><div>We do auditing at the database table level.&nbsp; Each table has an equiv. &lt;table&gt;_audit.&nbsp; We then use triggers to capture the change (insert, update, delete), who made the change, what the original data was, and what it was changed to.&nbsp; No business objects involved.<br></div></BLOCKQUOTE><br><br>How do you determine who made the change from SQL?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>We just have &#8220;last changed by&#8221; column in table you
+need to audit.&nbsp; As you are setting this column, you can use its value in
+auditing table.&nbsp; Alternatively you can pass in user into to each SP.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bpb2221
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 09, 2009 2:44 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] How do you audit your business objects?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>Fintanv:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>We do auditing at the database table level.&nbsp; Each table
+has an equiv. &lt;table&gt;_audit.&nbsp; We then use triggers to capture the
+change (insert, update, delete), who made the change, what the original data
+was, and what it was changed to.&nbsp; No business objects involved.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+How do you determine who made the change from SQL?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Friday, January 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>We just have “last changed by” column in table you
+need to audit.&nbsp; As you are setting this column, you can use its value in
+auditing table.&nbsp; Alternatively you can pass in user into to each SP.<o:p></o:p></span></p>
+
+</div>
+
+</div></BLOCKQUOTE><br><br>I just slapped my forehead.&nbsp; I have the same setup, but I needed someone to point the way.&nbsp;&nbsp; Thanks. <br><br><br>@<a>ajj3085</a><br><br>How are you doing your auditing? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 09, 2009</h2>I have an _Audit table, which matches the original table + a new key column.<br><br>calls to apInsertInvoice will automatically call apInsertInvoiceAudit... so basically I'm doing it at the stored procedure level, but I thought you couldn't go that route so I didn't mention it.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Saturday, January 10, 2009</h2>I am interested to understand why it is not advisable to have the business object responxible for its own audit records. Perhaps, it&nbsp;they&nbsp;can spare the time, &nbsp;someone might summarise for me. Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Saturday, January 10, 2009</h2><P><FONT face=Tahoma size=2>The short answer is that auditing is not usually part of the use case that created the need for the business object.&nbsp; Auditing is usually a system-level concern.&nbsp; Thus, you could argue that adding the auditing functionality to the BO breaks the Single Responsibility Principle.</FONT></P>
+<P><FONT face=Tahoma size=2>Stepping away from OO theory, separating the auditing function from your BO's makes the BO's easier to maintain.&nbsp; It also allows the auditing functionality to be centralized, making it easier to manage as well.&nbsp; Lastly, it allows the auditing system to more easily change over time.&nbsp; It's not uncommon for systems that use BO's to audit to later switch to a database-based system, or vice-versa.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Saturday, January 10, 2009</h2><P>Keep in mind though, that not all databases or data access technologies support the same features.&nbsp; Triggers are a good example.&nbsp; If you know for a certainty that you will only ever be developing for a single database, then absolutely make the most of what that platform offers.&nbsp; For some of us, we have to support multiple platforms (not to mention&nbsp;the never ending argument about how much logic should be in sprocs) so we have to design for data-agnosticity and have to develop to the lowest common feature set.&nbsp; This is where AOP and other approaches have given us great solutions with complete flexibility at the back-end.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Sunday, January 11, 2009</h2><P>Scott, SOP. </P>
+<P>Thanks for that, particularly as you answered on a Saturday. </P>
+<P>I haven't myself implemented auditing todate. But it seems to me that it is the required functionality of the auditing that will determine how it will be implemented in a CSLA environment. </P>
+<P>As I getnerate my BOs from an Applicaion definition I will gernerate support for the BOs to be audited, Then providing an Audit service that&nbsp;can be configured on a per implementatation basis to suit the customers' specific audit requirements should provide the most flexible and portable approach.</P>
+<P>You guys have been most helpful, thanks again.</P>
+<P>Regards </P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 12, 2009</h2>Well, I did it in the data layer because there's no reason (for me) to keep that extra state around and this is mostly a data operation... so let the database do what it does best.. insert rows.&nbsp; This keeps my business code simpler, and the audit happens at the same time my insert or update happens.&nbsp; The only audit related BOs I have are read only, so users can view the audit history.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bpb2221 replied on Monday, January 12, 2009</h2>@ajj3085:<br>If you are auditing in your data layer, could you please take a look at this post:<br>http://forums.lhotka.net/forums/thread/29703.aspx<br><br>You may be able to help.&nbsp; Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 12, 2009</h2>I looked at your post.&nbsp; There's no code in my UI or business layer, because my stored procedure calls another stored procedure to create the audit record.&nbsp;&nbsp; So I don't have any code C# or VB code that does auditing.&nbsp; For example, apProductInsert (the top level record for my Product BO) calls apProductAuditInsert.&nbsp; The BO and even Linq are oblivious to this happening though.<br><br>If you want to have a separate BO for auditing, you'd build it just like you would any other Csla BO I would think.&nbsp; It would likely be a child of the main editable object and it would be saved when the main BO is saved.&nbsp; You shouldn't be using anything from you DAL in&nbsp; your UI code, and that rule applies to everything, not just a discussion on auditing.<br><br>Others here would be better suited if you want to have a BO handle your auditing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 09, 2009</h2>I do something similar, but without triggers.&nbsp; I have an employee table, which contains the domain id (domain\username).&nbsp; I use suser_username() in sql server to look up the employee record by domain id, and get the EmployeeId number.&nbsp; Of course, that's all predicated on teh fact that you're using Integrated Authentication.<br><br>I have done non-integrated authentication, and it worked similar but every stored procedure call required the id of the user making the change.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Monday, January 12, 2009</h2>We are using Oracle with the Oracle provided ODP.net.&nbsp; This way we can have a single login/password for the app, but pass the user name in as part of the client id property supported by ODP (I <i>think </i>this is a 10g and higher functionality).<br><br>In the trigger the following will get the username for entry into the audit table:<br>nvl(upper(SYS_CONTEXT('USERENV','CLIENT_IDENTIFIER')), upper(SYS_CONTEXT('USERENV','OS_USER')))<br><br>In the past I have done something similar with SQL Server (not using integrated security) and the connection string property Workstation ID.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

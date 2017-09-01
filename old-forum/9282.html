@@ -1,0 +1,14 @@
+<html><header><title>CSLA.NET 3.8.3 Windows Forms Authorization Rules </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET 3.8.3 Windows Forms Authorization Rules </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9282.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shanthimai posted on Monday, July 26, 2010</h2><p>Hi, </p>
+<p>Whether the below authroization rules allow save but not delete is applicable for CSLA.NET 3.8.3 WINDOWS FORMS ?</p>
+<p><a href="http://www.lhotka.net/weblog/CSLA4AuthorizationRules.aspx">http://www.lhotka.net/weblog/CSLA4AuthorizationRules.aspx</a></p>
+<p>any suggestions?</p>
+<p>Thx ,</p>
+<p>shanthi</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 27, 2010</h2><p>The new rules concept is part of CSLA 4, so it is not available in 3.8.</p>
+<p>But if you move your Windows Forms application to .NET 4, then you can use CSLA 4, and yes, the new rules concept will work with Windows Forms.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shanthimai replied on Wednesday, July 28, 2010</h2><p>Hi,</p>
+<p>I&nbsp;would like to confirm whether we&nbsp;can achieve this in CSLA 3.8 Framework version by the method.&quot;.IsInRole()&quot; checks inside the appropriate shared methods (GetObject(), Save(), and Delete()).</p>
+<p>&nbsp;</p>
+<p>Any thoughts?</p>
+<p>Thx,</p>
+<p>shanthi</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, July 28, 2010</h2><p>CSLA 3.8 has the same authorization model as described in <em>Expert 2008 Business Objects</em>. This includes per-type authorization rules that are registered on the Csla.Security.AuthorizationRules type. Those rules are automatically enforced by the data portal, much in the way the CSLA 4 rules are enforced. Usually you don&#39;t need to implement the authorization checks yourself, just associate the appropriate roles with each possible action (create/get/edit/delete).</p>
+<p>The big difference between 3.8 and 4, is that 3.8 is only role based, while 4 allows you to create rules that do things other than just check roles.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,9 @@
+<html><header><title>Consequences for not using a login control in a custom Login Page</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Consequences for not using a login control in a custom Login Page</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Wednesday, November 03, 2010</h2><p>Hi People:</p>
+<p><i>I am going to design my Login page and I won&#39;t use the Login control because of some logic I need to take into account.</i></p>
+<p>My questions are:</p>
+<p>-Must I keep on using the MembershipProvider model?</p>
+<p>-Can I go direct through the Custom Principal and Identity passing over the MembershipProvider class?</p>
+<p>-Is the MembershipProvider useful <b><i>only</i></b> when a asp:login control is used? Thinking that the asp:login control ask for the default MembershipProvider.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, November 05, 2010</h2><p>CSLA doesn&#39;t really care, as long as you end up with a valid principal, and as long as you can restore that principal on every page request through global.asax. Nothing in CSLA is tied to any specific authentication model, MembershipProvider or otherwise.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,220 @@
+<html><header><title>How to use WCF Across Domains</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use WCF Across Domains</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4907.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar posted on Wednesday, May 28, 2008</h2><P>I have a thick client application that has users that are in a different windows domain than my data portal server.&nbsp; Whenever they try to connect to the server from a different domain, I get this error:</P>
+<P>System.ServiceModel.Security.SecurityNegotiationException: The caller was not authenticated by the service. ---&gt; System.ServiceModel.FaultException: The request for security token could not be satisfied because authentication failed.<BR>&nbsp;&nbsp; at System.ServiceModel.Security.SecurityUtils.ThrowIfNegotiationFault(Message message, EndpointAddress target)<BR>&nbsp;&nbsp; at System.ServiceModel.Security.SspiNegotiationTokenProvider.GetNextOutgoingMessageBody(Message incomingMessage, SspiNegotiationTokenProviderState sspiState)<BR>&nbsp;&nbsp; --- End of inner exception stack trace ---</P>
+<P>&nbsp;</P>
+<P>How do I allow users in other domains to access the dataportal?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 28, 2008</h2><P>Do you have WCF configured to use Windows authentication and/or do you have ASP.NET set up to use Windows authentication/impersonation and/or do you have the IIS virtual root set up to deny anonymous users?</P>
+<P>One of those configuration items is set to require that the client provide valid Windows (AD) credentials to access the service - and of course the clients outside your domain can't provide those credentials.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Thursday, May 29, 2008</h2>Oh how I love WCF, AD authentication and impersonation. I have spent many moon pulling my hair out with the unlimitless WCF configuration possibilities. If you can give us your authentiation scenario I might be able to help you along a bit. For example are you gathering username and password at application start or are you expecting the default user context to flow automatically from your app across the data portal into the other domain? The more details the better we can help.<br><br>-Paul<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Thursday, May 29, 2008</h2><P>I'm exteremly new to WCF and do not have much knowledge in AD authentication and impersonation.</P>
+<P>I was&nbsp;orignally using wsHttpBinding for WCF.&nbsp; This worked fine when I was in the same domain, but my company has an office in India that is in a different domain.&nbsp; I had to switch to basicHttpBinding for them to be able to connect, but (correct me if I'm wrong) the messages are no longer encoded and anyone on the network could capture a message and edit it along the way.</P>
+<P>When starting the app they are prompted with a customer Id, user Id, and Password that is used to authenticate against an LDAP server.&nbsp; (Because the user&nbsp;needs to be able to login to different customers, I was having issues&nbsp;configuring the service to use username creditionals because the UserNamePasswordValidator Validate function only allows a username and password)&nbsp; So I'm using custom Authentication once I get to the Data Portal, but I'm unable to get there using wsHttpBinding.</P>
+<P>From Reading the CSLA 3.0 PDF, I was thinking that I was going to have to create an X.509 certificate and place it on the server and use that in my behavior configuration but I had a few concerns.</P>
+<P>1. This is a 100% internal app.&nbsp; Do I need to get this through VeriSign?</P>
+<P>2. If I can create one, can I create it on any computer and transfer it up to the server and set it up to be trusted on the server?</P>
+<P>3.&nbsp;Is there anything that is required on the thick client side of things besides updating the configuration file's behavior service credentials?&nbsp;</P>
+<P>4.&nbsp;Will using a certificate resolve my issue with being in different domains?</P>
+<P>&nbsp;</P>
+<P>Any help you can give will be much appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Thursday, May 29, 2008</h2>Another quick question: Are the user Id and Password creditentials Active Directory accounts? You say you authenticate against a LDAP server, does the LDAP server authenticate against Active Directory or its own private user database?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Thursday, May 29, 2008</h2>The User Id and password are not Active Directory account.&nbsp; Its actually an ORACLE ldap server that has its own private user database.&nbsp; It was created to be users online so it is in no way tied to Active Firectory accounts.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Thursday, May 29, 2008</h2><span>What network resources do you need to access after the data portal jump? Do you need to authenticate against database server? If so, where do the credentials come from? This might be easily solved if you can set up a trust between the two domains or the India branch hitting your network thru a VPN.<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Thursday, May 29, 2008</h2><P>After the Data Portal, the user credentials are authenticated against an Oracle LDAP server.&nbsp; The credentials used to access the LDAP server are stored on the Data Portal Server.</P>
+<P>&nbsp;</P>
+<P>I don't know what the network configuration that allows them to access the server, but I do know they can ping the server just fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, it sounds to me like you are using custom authentication
+within CSLA itself. And you are merely using WCF as a network transport between
+client and server &#8211; not for integrated authentication within WCF itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you have two issues.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You need to authenticate the user &#8211; which you already do
+via LDAP and your custom Identity object, and it sounds like that works fine &#8211;
+so I think this is a non-issue.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You need WCF to establish a connection between client and
+server, and it sounds like you want that connection secure/encrypted &#8211;
+this is a separate issue from authentication.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To address the second issue, you need to dig into WCF security configuration
+options. You DON&#8217;T need WCF to authenticate for you, but you do need it
+to be secure in a cross-domain scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am not enough of an expert on WCF security to directly help you&#8230;
+I know the Patterns and Practices group at Microsoft is working on something in
+this area, and I thought they were releasing a beta on CodePlex earlier this
+week if you can find it.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ultimately you&#8217;ll need to decide on transport or message
+security. Either way you need an x509 certificate on the server, trusted by the
+client (typically through a chain of trust to a trusted root cert). In the
+transport case the cert is usually part of an overall SSL/https channel. In the
+message case it is a cert you supply in your config settings (look at <i>Using
+CSLA .NET 3.0</i> for an example of this one).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do NOT think your data was encrypted just because you used the
+wsHttpChannel. It is true that it defaults to message security, but without an
+x509 key it can&#8217;t encrypt the data. Though I could be wrong, and perhaps
+it somehow gets the key from some mystical place in the AD configuration? This
+is the point at which my knowledge runs out&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Thursday, May 29, 2008</h2><P>Yes Rocky, you've perfectly described my situation.&nbsp; </P>
+<P>So it sounds like I have 2 options, tranport security (which is transporting on a secure channgel) or message security (which is encrypting the message and sending it on an unsecure channel).&nbsp; I was planning on using your example in CSLA .net 3.0 to create a x509 cert and try to use message security, I just wanted to make sure that there was no manual steps that would be required for users in a different domain to connect to the data portal.</P>
+<P>It sounds like as long as I setup a chain of trust to a trusted root cert, this shouldn't be a problem.&nbsp; Does anyone else have any more information?&nbsp; If I go through the steps required, I'd like to make sure it will work across domains.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 29, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The trusted root cert thing will be your challenge &#8211; you need
+to buy a cert from Verisign or RapidSSL or someone &#8211; or set up a certificate
+authority server, issue yourself a root cert and get everyone to install it as
+a trusted root cert.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For TESTING you can use the makecert.exe utility I use in the
+ebook, but for production you need a real cert.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Friday, May 30, 2008</h2>Rocky pretty much nailed the available options for you. Once you get your trusted cert you can Google for a bunch of examples showing how to configure WCF and x509. I would try to keep you WCF configuration in the config file and not hard code any binding/endpoints so you switch down the road (if needed) and not have to recompile.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Friday, May 30, 2008</h2><P>Thanks for all your help and suggestions Paul and Rocky.&nbsp; </P>
+<P>I appreciate it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Comtron replied on Wednesday, September 10, 2014</h2><p class="MsoNormal"><span>I know this thread is little
+outdated, but it seems I am having similar problem with a WCF service called by
+.NET application from another domain. &nbsp;As
+long as the client is in the same domain the WCF service is there are no
+exceptions during login, otherwise I receive this error:</span></p>
+<p class="MsoNormal"><span>&ldquo;The caller was not
+autheticated by the service&rdquo;.</span></p>
+<p class="MsoNormal"><span>The tracelog from the WCF
+service returns this values :</span></p>
+<p>&nbsp;</p>
+<p class="MsoNormal">&nbsp;&quot;The Security Support Provider Interface (SSPI) negotiation failed.&quot;</p>
+<p class="MsoNormal">Here is the app.config (client side):</p>
+<p class="MsoNormal">&lt;appSettings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;CslaDataPortalUrl&quot; value=&quot;http://SERVER_IP/WCFService/WcfPortal.svc&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;!--&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Windows&quot;/&gt;--&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;ClientSettingsProvider.ServiceUri&quot; value=&quot;&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;Culture&quot; value=&quot;sl-SI&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/appSettings&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &lt;startup&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;supportedRuntime version=&quot;v4.0&quot; sku=&quot;.NETFramework,Version=v4.0&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/startup&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &lt;system.serviceModel&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;wsHttpBinding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;wsHttpBinding_IWcfPortal&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxReceivedMessageSize=&quot;2147483647&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxBytesPerRead=&quot;2147483647&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxArrayLength=&quot;2147483647&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxStringContentLength=&quot;2147483647&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxNameTableCharCount=&quot;2147483647&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxDepth=&quot;2147483647&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/wsHttpBinding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;client&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;endpoint</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; address=&quot;http://SERVER_IP/WCFService/WcfPortal.svc&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding=&quot;wsHttpBinding&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; bindingConfiguration=&quot;wsHttpBinding_IWcfPortal&quot;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/client&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/system.serviceModel&gt;</p>
+<p class="MsoNormal">Here is the web.config (server side):</p>
+<p class="MsoNormal">&lt;configuration&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp;&lt;appSettings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;!--&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Windows&quot; /&gt;--&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;CslaWriter&quot; value=&quot;Csla.Serialization.Mobile.CslaBinaryWriter, Csla&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;CslaReader&quot; value=&quot;Csla.Serialization.Mobile.CslaBinaryReader, Csla&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;add key=&quot;Culture&quot; value=&quot;sl-SI&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/appSettings&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &lt;system.serviceModel&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;services&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;service name=&quot;Csla.Server.Hosts.WcfPortal&quot; behaviorConfiguration=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; binding=&quot;wsHttpBinding&quot; bindingConfiguration=&quot;wsHttpBinding_IWcfPortal&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/services&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;wsHttpBinding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;wsHttpBinding_IWcfPortal&quot; maxReceivedMessageSize=&quot;2147483647&quot; maxBufferPoolSize=&quot;2147483647&quot; receiveTimeout=&quot;00:25:00&quot; sendTimeout=&quot;00:25:00&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxBytesPerRead=&quot;2147483647&quot; maxArrayLength=&quot;2147483647&quot; maxStringContentLength=&quot;2147483647&quot; maxNameTableCharCount=&quot;2147483647&quot; maxDepth=&quot;2147483647&quot;/&gt;</p>
+<p class="MsoNormal"><span>	</span>&lt;/binding&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/wsHttpBinding&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceMetadata httpGetEnabled=&quot;true&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot;/&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;/behaviors&gt;</p>
+<p class="MsoNormal">&nbsp; &lt;/system.serviceModel&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &lt;system.web&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;httpRuntime maxRequestLength=&quot;2147483647&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;compilation targetFramework=&quot;4.0&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;pages controlRenderingCompatibilityVersion=&quot;4.0&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp; &nbsp; &lt;trust level=&quot;Full&quot; /&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">&nbsp; &lt;/system.web&gt;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">My IIS is configured the way you have suggested.</p>
+<p class="MsoNormal">Is there any chance I can use this service without having to apply certification authentication on the server and client side?</p>
+<p class="MsoNormal">&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

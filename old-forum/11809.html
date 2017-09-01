@@ -1,0 +1,19 @@
+<html><header><title>InventoryDemo needs to be upgraded to CSLA 4.5 &amp; SL 5.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>InventoryDemo needs to be upgraded to CSLA 4.5 &amp; SL 5.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11809.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NET-H24 posted on Wednesday, January 30, 2013</h2><p>The InventoryDemo needs an upgrade to be compatible to </p>
+<p>CSLA 4.5</p>
+<p>SL 5.0</p>
+<p>Please do let us know if we have any plan for updated Sample Code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NET-H24 replied on Thursday, January 31, 2013</h2><p>&nbsp;I have started updating the Project myself but seems am missing something silly here.</p>
+<p>Updates in the code base are as follows</p>
+<p>public class CompressedHost : Csla.Server.Hosts.Silverlight.WcfPortal</p>
+<p>to </p>
+<p>public class CompressedHost : Csla.Server.Hosts.Mobile.WcfPortal</p>
+<p>&nbsp;</p>
+<p>The Config File is updated as</p>
+<p>&lt;services&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;InvLib.Compression.CompressedHost&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/service&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/services&gt;</p>
+<p>Also tried </p>
+<p>&lt;services&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;InvLib.Compression.CompressedHost&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;</p>
+<p>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/service&gt;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </p>
+<p>&lt;/services&gt;</p>
+<p>&nbsp;</p>
+<p>The Page displays but none of the methods are invoked on the Server side, it flashes following error</p>
+<p>System.InvalidOperationException: Could not find endpoint element with name &#39;WcfDataPortal&#39; and contract &#39;WcfPortal.IWcfPortal&#39; in the ServiceModel client configuration section. This might be because no configuration file was found for your application, or because no endpoint element matching this name could be found in the client element.<br /><br />&nbsp;&nbsp; at System.Runtime.CompilerServices.TaskAwaiter.ThrowForNonSuccess(Task task)<br /><br />&nbsp;&nbsp; at System.Runtime.CompilerServices.TaskAwaiter.HandleNonSuccess(Task task)<br /><br />&nbsp;&nbsp; at System.Runtime.CompilerServices.TaskAwaiter.ValidateEnd(Task task)<br /><br />&nbsp;&nbsp; at System.Runtime.CompilerServices.TaskAwaiter`1.GetResult()<br /><br />&nbsp;&nbsp; at Csla.DataPortal`1.&lt;BeginFetch&gt;d__1e.MoveNext()</p>
+<p>Please advise</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 replied on Tuesday, June 25, 2013</h2><p>i am also facing same problem if got the solution please update me,recently i am change to csla 4.5 and sl5</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

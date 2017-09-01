@@ -1,0 +1,100 @@
+<html><header><title>ObjectAdapter enhancements</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectAdapter enhancements</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/644.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmiser posted on Monday, July 17, 2006</h2><P>I split my data access out into a separate assembly. By doing this, not only am I ensuring that only the DAL assembly has references to DB-specific assemblies. Pplus, we all know how MS loves to throw new data access technologies out there, so this gives an easy way to only modify that area of the code. In general, I like how this approach has worked.<BR></P>
+<P>Here's the problem, though. If I want to pass (e.g.) my Customer business object&nbsp;to my DAL for insert, I need to pass all of the properties from the BO to the DAL. My thought was to use DataSet to do this, and since Rocky was kind enough to write ObjectAdapter, it seemed to make sense to use this to generate the DataSet. However, the ObjectAdapter only appears to do a shallow copy of the object.</P>
+<P>What I think I need from the ObjectAdapter is:</P>
+<P>* (Optionally) perform a deep copy of the Customer object so I get collection and object properties in related DataTables in the DataSet.</P>
+<P>* Create a DataSetAdapter object that will take a DataSet and reconstitute an object so that I can use this obejct on the other side (i.e. on the DAL)</P>
+<P>Am I missing something here, or does this seem reasonable? Any chance this is being considered for the next version of CSLA? Any other classes out there that do something similar?</P>
+<P>Thanks much.</P>
+<P>Dan Miser</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 17, 2006</h2><P>Hi Dan,</P>
+<P>I created ObjectAdapter for the very specific purpose of converting objects into a DataSet to do reporting. I never envisioned it being used as you describe, but that's a very interesting idea.</P>
+<P>ObjectAdapter is loosely modeled on the ADO adapter provided by Microsoft - where you can use it to load a DataSet based on an ADO Recordset. That was my mental model for building ObjectAdapter.</P>
+<P>DataMapper is somewhat related, and may be part of your answer in the long run.</P>
+<P>I don't honestly plan to enhance ObjectAdapter over time - it does what it was intended for.</P>
+<P>But I do plan to enhance DataMapper over time, because it is (in my view) just the first run at tackling the broader issue of reshaping objects into other objects in various ways. Being a believer in organic development, I built DataMapper to solve a couple immediate problems around Web Forms and Web Services, but with an eye toward other issues such as data access, etc.</P>
+<P>That said, I don't have a timeframe for when I'll get back to DataMapper. I have a lot of irons in the fire at the moment as it is...</P>
+<P>Always remember though, my goal in writing the books has never been to create the be-all-and-end-all of frameworks, but rather to illustrate the thought process using CSLA .NET as a concrete example. Where CSLA .NET comes up short, you should take the ideas and extend them to solve your problems.</P>
+<P>In this case, you may want to create a version of ObjectAdapter that operates against fields instead of properties. And perhaps a version of DataMapper that can map from a DataRow into an object.</P>
+<P>I always recommend creating these things external to Csla.dll itself - as modifying core CSLA .NET code just gets you in trouble as changes are made over time. But copying ObjectAdapter and DataMapper into your own project and modifying from there is safer. And that is fine from a license perspective, as long as you put a comment at the top of those code files indicating that they came from the Expert VB/C# 2005 Business Objects books by Rockford Lhotka.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick.Roeper replied on Monday, November 05, 2007</h2><font face="Verdana" size="2">Just curious to know if anyone has done any extensions to the ObjectAdapter class (such as the deep-data addition that Dan mentioned).</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>anna replied on Thursday, November 15, 2007</h2><P>Rocky,</P>
+<P>One feature I'm really missing is that the DataColumns do not carry the type of the property/field. For the present, I have created another class with basically&nbsp;your code but in addition, data columns that include type information. </P>
+<P>My concern is that I have not extended your code through object oriented design. What is your recommendation? Also, you mention in your post from 2006 that you have no plans to enhance the ObjectAdapter. Does that still hold?</P>
+<P>Thanks,</P>
+<P>-Anna</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true that I don&#8217;t plan to do much, or anything, with
+ObjectAdapter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One solution may be for me to drop it from CSLA and contribute
+it to CSLAcontrib, thus allowing those people, such as yourself, who use it and
+need to enhance it to take it where you need in terms of features and
+functionality.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I wrote it originally to fill a very specific purpose:
+converting objects into DataSets to bind to Crystal Reports. These days all the
+major report engines can bind directly to objects, and so that purpose is no
+longer valid, and so a good argument can be made that it should be removed from
+CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> anna
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 15, 2007 8:43 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ObjectAdapter enhancements<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>One feature I'm really missing is that the DataColumns do not carry the type
+of the property/field. For the present, I have created another class with
+basically&nbsp;your code but in addition, data columns that include type
+information. <o:p></o:p></p>
+
+<p>My concern is that I have not extended your code through object oriented
+design. What is your recommendation? Also, you mention in your post from 2006
+that you have no plans to enhance the ObjectAdapter. Does that still hold?<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>-Anna<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

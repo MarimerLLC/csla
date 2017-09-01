@@ -1,0 +1,83 @@
+<html><header><title>DirtyChanged event?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DirtyChanged event?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3695.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stacy.odell posted on Thursday, October 11, 2007</h2><P>Has anyone implemented the equivalent of a DirtyChanged event for BusinessBase-based classes?&nbsp; </P>
+<P>I have a user interface where one of the requirements is to indicate in the UI when the object being edited on the screen is dirty (put a * in the app's titlebar).&nbsp; I'd love to do this with an event handler to minimize the code needed in the UI.</P>
+<P>Or, perhaps one exists and I just haven't looked hard enough.&nbsp; :)&nbsp; I'm using version 2.1.</P>
+<P>&nbsp;</P>
+<P>-- Stacy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 11, 2007</h2>Just handle the standard PropertyChanged event. If you get one, then you know the object is dirty, because <EM>something</EM> just changed.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stacy.odell replied on Friday, October 12, 2007</h2><P>Rocky,</P>
+<P>Oh, well -- <EM>duh</EM>.&nbsp; Thanks.&nbsp; I never thought of that!&nbsp; I knew it could be something simple.</P>
+<P>I really love what I've seen of CSLA so far.&nbsp; Unfortunately I picked a really big project&nbsp;to do as my first&nbsp;-- I'm replacing the entire middle tier of a large application that was&nbsp;originally built using the Web Service Software Factory (not my decision).&nbsp; </P>
+<P>The learning curve&nbsp;been <EM>challenging</EM> so far -- even with the books.&nbsp; But after all the internal struggle surrounding how to build my object library, the payoff is when I get to gut loads of unnecessary code in the winforms UI and use databinding instead.&nbsp; :)</P>
+<P>I really appreciate the help!&nbsp; Maybe I'll bump into you @ DevConnections if you're there...</P>
+<P>-- Stacy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 12, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sounds like you have your hands full &#8211; good luck!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll be at DevConn Thursday, so hopefully I&#8217;ll see
+you there.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stacy.odell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 12, 2007 12:28 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] DirtyChanged event?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Oh, well -- <em>duh</em>.&nbsp; Thanks.&nbsp; I never thought of that!&nbsp;
+I knew it could be something simple.<o:p></o:p></p>
+
+<p>I really love what I've seen of CSLA so far.&nbsp; Unfortunately I picked a
+really big project&nbsp;to do as my first&nbsp;-- I'm replacing the entire
+middle tier of a large application that was&nbsp;originally built using the Web
+Service Software Factory (not my decision).&nbsp; <o:p></o:p></p>
+
+<p>The learning curve&nbsp;been <em>challenging</em> so far -- even with the
+books.&nbsp; But after all the internal struggle surrounding how to build my
+object library, the payoff is when I get to gut loads of unnecessary code in
+the winforms UI and use databinding instead.&nbsp; :)<o:p></o:p></p>
+
+<p>I really appreciate the help!&nbsp; Maybe I'll bump into you @
+DevConnections if you're there...<o:p></o:p></p>
+
+<p>-- Stacy<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,48 @@
+<html><header><title>CSLA 4 complexity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 complexity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pegesaka posted on Monday, July 02, 2012</h2>
+ 
+  Normal
+  0
+  
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+
+
+<p class="MsoNormal">A while ago I created a couple of CSLA 2 apps with WinForms
+and was very impressed with CSLA. It was just what I was looking for regarding
+business objects and a development framework.</p>
+<p class="MsoNormal">&nbsp;A new application is arriving and we all want to move
+forward to WPF. (I know, we are a fair way behind the times but the other apps
+were in VS2008 and I wasnt impressed with WPF in that version, or the forum
+conversations regarding it at the time, so stuck with Winforms)</p>
+<p class="MsoNormal">&nbsp;So thought we should move to CSLA 4 as well, but have been a
+bit overwhelmed by the seemingly massive increase in complexity, particularly
+regarding the new property metadata model. This appears to be required because
+SilverLight doesnt allow reflection, which also requires extra complexity to accommodate
+a new serialisation formatter. I then read that WPF doesnt work well with
+BindingLists so things have now moved to ObservableCollections, which now
+commits development with CSLA 4 to take advantage of WPF. I&#39;m not sure if I
+have this completely correct, but it seems to be the case from what I have been
+reading.</p>
+<p class="MsoNormal">&nbsp;We do not need to develop to accommodate SilverLight (and I
+have heard rumors that it may not have a long life with MS?). Is it possible to
+use CSLA 4, without implementing the new property metadata model, and relying
+on the BinaryFormatter (just to reduce the amount of coding and complexity in
+the business objects)? I read on one of the forum&#39;s posts that CSLA 4 was
+designed to accommodate all versions of MS platforms, with one code base, but
+that this now seemed to be not possible. What is the future direction for CSLA
+in this regard?</p>
+<p class="MsoNormal">&nbsp;Cheers</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, July 02, 2012</h2><p>Hi,</p>
+<p>The default lists are now based on ObservableCollection but the &quot;old&quot; BindingLists are still available and renamed to XYZBindingList base classes (and with numerous bugfixes and simplified from 3.x versions).&nbsp;</p>
+<p>The new PropertyMeta model is required - as rules require an IPropertyInfo. I do however believe that the new rule sytem is much more powerful and more easily testable using the new property model. You can still use private backing fields in your BO (and the binary serializer too) and the propertyinfo makes sure that you have a lot less string constants (and possible bugs after refactoring). You can still use any of the binary serializers with the new PropertyInfo model so long as it is supported on the platforms (ie .NET only on both Client and Server).</p>
+<p>It&#39;s not just Silverlight but also WinRT has a very limited serializer. IE: No BinarySerializer or NetDataContractSerializer is available in either Silverlight or WinRT. And you should care about WinRT in Windows 8 slates/phones/computers.</p>
+<p>The property declaration code is typically reduced from 11 lines in CSLA 2 to 5 lines in CSLA 4. I consider this a nice improvement.</p>
+<p>CSLA will still continue to support Windows Forms, WPF, SL, ASP.NET, ASP.NET MVC, WinPhone, &nbsp;Mono, MonoTouch, MonoDroid as well as WinRT from version 4.5.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, July 02, 2012</h2><p>fwiw, the new WinRT model is very similar to Silverlight, so the managed backing field concept we implemented for Silverlight turns out to be useful for the platform on which Microsoft is betting its future.</p>
+<p>I&#39;m sure WPF will be used for many years, as will Silverlight. But it is pretty clear that WinRT is where we&#39;ll all end up eventually.</p>
+<p>What I&#39;m saying is that, although we might have added some complexity, it is extremely consistent (so once you learn it you know it), and that complexity turns out to be of strategic benefit as we all shift into the new &quot;modern&quot; platform of WinRT.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pegesaka replied on Monday, July 02, 2012</h2><p>Thanks for the prompt response Rocky and Jonny. I appreciate your insight as to the direction of Windows and CSLA, and your reasoning for the design changes to CSLA.</p>
+<p>Cheers</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

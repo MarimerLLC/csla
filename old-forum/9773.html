@@ -1,0 +1,13 @@
+<html><header><title>Csla 4:  How to restrict command execution to a particular role</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 4:  How to restrict command execution to a particular role</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>David Potter posted on Tuesday, November 16, 2010</h2><p>What is the proper way to restrict execution of a command.&nbsp; I have tried using the AddObjectAuthorizationRules with the IsInRole rule but none of the authorization actions seems to restrict it from executing.</p>
+<p>Code that I&#39;m trying to use:</p>
+<p><br />#Region &quot;Authorization Rules&quot;<br />&nbsp;&nbsp;&nbsp; Private Shared Sub AddObjectAuthorizationRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Rules.BusinessRules.AddRule(GetType(SomeCommand), New Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.CreateObject, &quot;Some AD Group&quot;))<br />&nbsp;&nbsp;&nbsp; End Sub<br />#End Region</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David Potter replied on Tuesday, November 16, 2010</h2><p>I&#39;ll answer my own question.&nbsp; It wasn&#39;t working as I was using String.Empty instead of an actual group.&nbsp; As soon as I used a real group it works.</p>
+<p>As follows:</p>
+<p>#Region &quot;Authorization Rules&quot;<br />&nbsp;&nbsp;&nbsp; Private Shared Sub 
+AddObjectAuthorizationRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+Csla.Rules.BusinessRules.AddRule(GetType(SomeCommand), New 
+Csla.Rules.CommonRules.IsInRole(Rules.AuthorizationActions.EditObject,
+ &quot;Some AD Group&quot;))<br />&nbsp;&nbsp;&nbsp; End Sub<br />#End Region</p>
+<p>----------</p>
+<p>After further testing I discovered that the policy wasn&#39;t set to WindowsPrincipal.&nbsp; When it was String.Empty results in IsInRole returning false.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

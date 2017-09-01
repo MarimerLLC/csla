@@ -1,0 +1,64 @@
+<html><header><title>Managed Properties plus inheritance = Frequent errors</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed Properties plus inheritance = Frequent errors</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5019.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DamReev posted on Thursday, June 26, 2008</h2>I am using CSLA 3.5 with the managed properties feature; however, I find that I run into problems when I use this along with generic inheritance. When I try and set a property that was defined and registered with a base class in a sub class CSLA bombs out in the FieldDataManager class with a IndexOutOfRangeException. It then tells me that the field is not registered on the class. I know its not registered on the class but it is registered on the subclass. Please help. I am considering the fact that FieldManager may not be fully ready for PrimeTime.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, June 26, 2008</h2><P><FONT face=Arial size=2>There was a lot of discussion about this early on and a few articles available that I'm too short on time to find and then link to.</FONT></P>
+<P><FONT face=Arial size=2>However, do the following:</FONT></P>
+<P><FONT face=Arial size=2>In your parent classes that you descend from, include the following code in your constructor:</FONT></P>
+<P><FONT size=2><FONT face=Arial color=#0000ff>protected</FONT><FONT face=Arial> Profile()</FONT></FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;_dummy = 1;</FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>_dummy is just a static integer, also in the parent class. </FONT>
+<P></P><FONT face=Arial><FONT size=2><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#0000ff>int</FONT> _dummy;</FONT></P></FONT><FONT color=#0000ff>
+<P></FONT><FONT face=Arial size=2>Your problems will likely magically go away. </FONT></P>
+<P><FONT face=Arial size=2>Chris</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DamReev replied on Thursday, June 26, 2008</h2>Wow! I walked away from my desk for a couple of minutes, and came back and there was a solution to a possible huge problem for me. Thanks! Needless to say this worked. I have to think a bit about the reason why. I thought static field initiators in base classes would get executed before the subclass constructor, but apparently not.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>No, static fields initialize in a seemingly odd way - potentially long after you've made calls to instance methods and properties... Very confusing and problematic.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DamReev replied on Thursday, June 26, 2008</h2>It seems that just putting a static constructor on my base object takes care of this as well. Just an FYI.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, June 26, 2008</h2><P>This is yes, the other option that was discovered! The option using the instance constructor is slightly more performant. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are negative performance implications to doing this. If
+they don&#8217;t cause you trouble, then it isn&#8217;t a problem, but you
+should be aware that classes with a cctor are slower to access than ones
+without &#8211; on every method/property call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DamReev
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 26, 2008 5:07 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Managed Properties plus inheritance = Frequent
+errors<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>It seems that just putting a static constructor on my base
+object takes care of this as well. Just an FYI.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Saturday, June 28, 2008</h2>Hi Rocky,<br><br>Why classes with a cctor are slower? Especially it makes all instance method/property calls slower? Why?<br><br>Please help to advise.<br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Saturday, June 28, 2008</h2>I think I found the reason.<br><br>http://msdn.microsoft.com/en-au/magazine/cc163857.aspx<br><br>Thanks.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

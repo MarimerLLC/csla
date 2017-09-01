@@ -1,0 +1,43 @@
+<html><header><title>Improved efficiency?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Improved efficiency?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/758.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Sunday, July 30, 2006</h2>This routine&nbsp; from&nbsp; BusinessBase gets called alot (especially if you are binding.&nbsp; It seems to me that it would be slightly more efficient to&nbsp; not&nbsp; keep allocating a variable just to return "" so I'm suggesting the following change for comment. <br><br>&nbsp;&nbsp;&nbsp; string IDataErrorInfo.this[string columnName]<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //string result = string.Empty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!IsValid)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Validation.BrokenRule rule = <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.GetBrokenRules().GetFirstBrokenRule(columnName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rule != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return rule.Description;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return string.Empty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return string.Empty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 30, 2006</h2><P>Though I'll be the first to admit that I'm very inconsistent on this point, I do try to follow the best practice of having a single point of exit from each method.</P>
+<P>Yes, you can find lots of places where I don't do this - but that's my bad in terms of consistency...</P>
+<P>The real challenge here is that you can't tell whether there's any gain at all from what you propose. Even if you look at the IL and find that it didn't already optimize the code, the JIT compiler may very well optimize that code.</P>
+<P>I still remember this program I wrote in VAX FORTRAN many, many years ago, which was <EM>entirely </EM>optimized away by the compiler. It managed to detect that I wasn't using the output of the app (which was true&nbsp;- it was a timing test for performance) and so it decided that none of the code in the app was needed and it generated just a single line of assembly output: .END</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Sunday, July 30, 2006</h2>
+
+
+  
+  
+
+
+Fortunately the Fortran compiler on the PDP-11 wasn't that "smart". We
+never did manage to get expenditure authority for a VAX. Instead we
+eventually go a Pick system running on a 68000 which we eventually
+ported to Advanced Pick over SCO Unix at a P90 Compaq. It's still in
+production supporting 30 users in 64K of memory. I guess all
+optimization is relative :)<br>
+<br>
+Given that, a single exit point may be a more useful goal than trying
+to save one allocation that you can't even be sure is occurring.<br>
+<br>
+RockfordLhotka wrote:
+<blockquote>
+  <p>Though I'll be the first to admit that I'm very inconsistent on
+this point, I do try to follow the best practice of having a single
+point of exit from each method.</p>
+  <p>Yes, you can find lots of places where I don't do this - but
+that's my bad in terms of consistency...</p>
+  <p>The real challenge here is that you can't tell whether there's any
+gain at all from what you propose. Even if you look at the IL and find
+that it didn't already optimize the code, the JIT compiler may very
+well optimize that code.</p>
+  <p>I still remember this program I wrote in VAX FORTRAN many, many
+years ago, which was <em>entirely </em>optimized away by the
+compiler. It managed to detect that I wasn't using the output of the
+app (which was true&nbsp;- it was a timing test for performance) and so it
+decided that none of the code in the app was needed and it generated
+just a single line of assembly output: .END</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

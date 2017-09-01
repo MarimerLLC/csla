@@ -1,0 +1,19 @@
+<html><header><title>ReadOnlyBase - Misunderstanding or Errata</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ReadOnlyBase - Misunderstanding or Errata</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/860.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena posted on Wednesday, August 09, 2006</h2><P><FONT face=Verdana size=1><FONT face=Arial size=2>Good afternoon,</FONT></FONT></P>
+<P><FONT face=Arial size=2>I am admittedly a CSLA beginner, but I am learning it for work now. I was attempting to create a ReadOnlyBase object as per page 399 of the VB 2005 version of the book. On that page, the factory function definition is as follows for retrieving a read only root object:</FONT></P>
+<P><FONT face="Courier New" size=2>Public Shared Function GetReadOnlyRoot(ByVal id as Integer) as ReadOnlyRoot</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of ReadOnlyRoot)(New Criteria(id))</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>End Function</FONT></P>
+<P dir=ltr><FONT face=Arial size=2>The following DataPortal_ function is defined on page 400:</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>Private Overloads Sub DataPortal_Fetch(ByVal criteria as Criteria)</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; ' load values</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>End Sub</FONT></P>
+<P dir=ltr><FONT face=Arial size=2>From my understanding and from the fact that my code, when modelled after this, would throw an exception, I am wondering if it should be:</FONT></P><FONT face=Arial size=2>
+<P><FONT face="Courier New" size=2>Public Shared Function GetReadOnlyRoot(ByVal id as Integer) as ReadOnlyRoot</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch(Of ReadOnlyRoot)(New Criteria(id))</FONT></P>
+<P dir=ltr><FONT face="Courier New" size=2>End Function</FONT></P>
+<P dir=ltr>The following exception is thrown when DataPortal.Create is used:</P>
+<P dir=ltr>Unhandled Exception: Csla.DataPortalException: DataPortal.Create failed ---&gt; Csla.Server.CallMethodException: DataPortal_Create method call failed ---&gt; System.NotSupportedException: Invalid operation - create not allowed</P>
+<P dir=ltr>It works as expected when DataPortal.Fetch is used.</P>
+<P dir=ltr>Thanks in advance,</P>
+<P dir=ltr>Christian</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>That is certainly an error. I've noted it in the errata<br><br><a href="http://www.lhotka.net/Vb2005Errata.aspx?id=57e2aedf-c36e-4076-8679-159a74bcc527">http://www.lhotka.net/Vb2005Errata.aspx?id=57e2aedf-c36e-4076-8679-159a74bcc527</a><br><br><br>Thanks!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ChristianPena replied on Wednesday, August 09, 2006</h2><P><FONT face=Arial size=2>Thanks Rocky.</FONT></P>
+<P><FONT face=Arial size=2>BTW, Mike and Yogi from CES say Hi. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

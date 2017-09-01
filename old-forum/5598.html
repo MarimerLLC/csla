@@ -1,0 +1,155 @@
+<html><header><title>Wcf authentication error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wcf authentication error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5598.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert posted on Wednesday, October 15, 2008</h2>I'm in the process of setting up a Wcf host using 3.5.2. I'm using custom authentication and I get this error: "Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal"<br><br>I've confirmed that the CslaAuthentication key in both config files match. Here's the app.config section of my client:<br><br>&nbsp; &lt;appSettings&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla" /&gt;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaDataPortalProxy" value="Csla.DataPortalClient.WcfProxy, Csla"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="ClientSettingsProvider.ServiceUri" value="" /&gt;<br>&nbsp; &lt;/appSettings&gt;<br><br>and the web.config in the server:<br><br>&nbsp;&nbsp;&nbsp; &lt;appSettings&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/appSettings&gt;<br><br>So why do I get this exception? Any help would be appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Do you establish principal on the client side via some sort of
+Login method?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bgilbert
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 15, 2008 12:32 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Wcf authentication error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm in the process of setting up a Wcf host using 3.5.2. I'm
+using custom authentication and I get this error: &quot;Principal must be of
+type BusinessPrincipal, not System.Security.Principal.GenericPrincipal&quot;<br>
+<br>
+I've confirmed that the CslaAuthentication key in both config files match.
+Here's the app.config section of my client:<br>
+<br>
+&nbsp; &lt;appSettings&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaAuthentication&quot;
+value=&quot;Csla&quot; /&gt;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaDataPortalProxy&quot;
+value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;add key=&quot;ClientSettingsProvider.ServiceUri&quot;
+value=&quot;&quot; /&gt;<br>
+&nbsp; &lt;/appSettings&gt;<br>
+<br>
+and the web.config in the server:<br>
+<br>
+&nbsp;&nbsp;&nbsp; &lt;appSettings&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaAuthentication&quot;
+value=&quot;Csla&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/appSettings&gt;<br>
+<br>
+So why do I get this exception? Any help would be appreciated.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Wednesday, October 15, 2008</h2>I think I see now. Does the login routine and subsequent creation of a principal need to be entirely client-side? Clearly I don't know enough about Wcf here. Is a principal required to be able to talk across the wire?<br><br>Thanks,<br>Barry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This error is coming from CSLA really, not WCF.&nbsp; CSLA
+expects to find a valid principal on the server, but you have not set one on
+the client.&nbsp; Login does not need to be client based.&nbsp; Just look at
+PTracker.&nbsp; Call logout first to put unauthenticated principal on the thread/ApplicaitonContext,
+then fetch your real principal/identity, and put it on the thread/ApplicaitonContext.&nbsp;
+You can look at PTracker 3.0 for an example.&nbsp; In 3.6 incidentally you do
+not need to call logout first, CSLA does it for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bgilbert
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 15, 2008 1:31 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Wcf authentication error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think I see now. Does the login routine and subsequent
+creation of a principal need to be entirely client-side? Clearly I don't know
+enough about Wcf here. Is a principal required to be able to talk across the
+wire?<br>
+<br>
+Thanks,<br>
+Barry<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bgilbert replied on Wednesday, October 15, 2008</h2>Great! Adding that Logout routine did the trick.<br><br>Thanks a bunch.<br><br>Barry<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,14 @@
+<html><header><title>FilteredBindingList and Serialization errors with CLSA 2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FilteredBindingList and Serialization errors with CLSA 2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4500.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Friday, March 14, 2008</h2><P>Hello all:</P>
+<P>I have added a FilteredBindingList to on of my business objects. When I try to run my code I am now getting serialization errors because of the FilteredBindingList. School_ER and Student_EC are serializable. I've added the NonSerialized attribute to the private FilteredBindingList member to see if it&nbsp;would correct the issue but I still get the error.</P>
+<P>The&nbsp;filtered list&nbsp;shouldn't be serialized, just the main list of students so the NonSerialized attribute seemed logical&nbsp;.</P>
+<P>Basically I need a school object that manages ALL students. However, my user interface needs to see different lists of students (filtered by class). So I am creating a filtered binding list inside of school for which I can change the filter property as necessary and any controls it's bound to will show the proper subset of students.</P>
+<P>At any time I only want a student object in memory once so I can't just instantiate a new list using a different filter.</P>
+<P>Here is the actual error</P>
+<P>"Type 'Csla.FilteredBindingList`1[[Business.Student_EC, Business, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]' in Assembly 'Csla, Version=3.0.3.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30' is not marked as serializable."</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 15, 2008</h2><P>If you contain a FBL inside a business object you would need to mark it as NonSerialized and NotUndoable.</P>
+<P>Fwiw, FBL is really designed to be created/used by the UI developer more than the business object developer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Monday, March 17, 2008</h2><P>Thanks Rocky:</P>
+<P>Yes, I realize that is the intention of the FBL, however having it inside my BO for this particular scenario actually makes sense.</P>
+<P>Thanks again,</P>
+<P>Will</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

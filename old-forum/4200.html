@@ -1,0 +1,123 @@
+<html><header><title>Non-ReadOnlyBase in ReadOnlyListBase - Any drawbacks?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Non-ReadOnlyBase in ReadOnlyListBase - Any drawbacks?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary posted on Monday, January 21, 2008</h2><P>We are working on an client (WPF, WCF) app that contains a significant amount of data, and performance is of utmost concern. In an effort to optimize the performance of some screens, I decided to experiment with flattening the object model a bit, and designed some classes where an outermost&nbsp;ReadOnlyListBase is the only CSLA-derived entity in the hierarchy. I did this for the benefits of having it consistent with all of our other objects, in terms of instantiation and keeping the configuration for it the same.</P>
+<P>But, I wanted to know if there was any significant reason why this would be a bad idea. I scanned the forums and the books, and didn't see anything clearly that would suggest it is not good. </P>
+<P>Here is an example of the design:</P>
+<P>DailyScheduleList : ReadOnlyListBase(DailyScheduleList, DailyScheduleInfo)</P>
+<P>DailyScheduleInfo : List&lt;SlotInfo&gt;</P>
+<P>SlotInfo : List&lt;SliceInfo&gt;</P>
+<P>SliceInfo</P>
+<P>The data for the app is retrieved by a date range, typically a month, and the data may vary significantly by day, and each day contains "lists" of slots which each contain lists of slices. It does appear that this method is faster than the way I initially designed it, which was having the lists contain an object that derived from ReadOnlyBase which in turn had a property of type ReadOnlyListBase to contain the next list, though I haven't benchmarked it.</P>
+<P>Any thoughts would be appreciated. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 21, 2008</h2>Well one drawback is you lose per-property access checks, but that may not be important.<br><br>I would suggest though that you're falling into a common anti-pattern; <a href="http://en.wikipedia.org/wiki/Anti-pattern#Methodological_anti-patterns">premature optimization</a>, which some call the "root of all evil."<br><br>I'd tend to agree.&nbsp; Build out your application following normal design methodigy (which in your case is Csla based), then go back and rework only if needed.&nbsp; The fact that you have concerns yet haven't benchmarked is pretty alarming.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Monday, January 21, 2008</h2><P>Thank you for the feedback. In this case,&nbsp;you are correct that per-propety access checks are unnecessary. </P>
+<P>I went ahead and decided to write a test to see if I was indeed making "evil" optimizations. I wrote a test using pure-CSLA and my bastardized CSLA optimization. I already described the bastardized classes, so here are the pure-CSLA:</P>
+<P>CslaDailyScheduleList : ReadOnlyListBase&lt;CslaDailyScheduleList, CslaDailyScheduleInfo&gt;</P>
+<P>CslaDailyScheduleInfo : ReadOnlyBase&lt;CslaDailyScheduleInfo&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;(This class has a Slots property of the following type)</P>
+<P>CslaSlotList : ReadOnlyListBase&lt;CslaSlotList, CslaSlotInfo&gt;</P>
+<P>CslaSlotInfo : ReadOnlyBase&lt;CslaSlotInfo&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;(This class has a Slices property of the following type)</P>
+<P>CslaSliceList : ReadOnlyListBase&lt;CslaSliceList, CslaSliceInfo&gt;</P>
+<P>CslaSliceInfo : ReadOnlyBase&lt;CslaSliceInfo&gt;</P>
+<P>To mimic our general data in this particular view, which is a calendar view, I wrote a loop that loaded both sets identically, with 31 objects in the outer list, and each one of those having 10 slots, with 3 slices.</P>
+<P>I ran tests using both a local and remote DataPortal. What I found seems to indicate that in this case my optimization were indeed about 10X faster. The test itself is below.</P>
+<P>Local data portal:</P>
+<P>&nbsp;&nbsp;&nbsp;Pure/Bastardized: 130 ms/14 ms</P>
+<P>Remote data portal:</P>
+<P>&nbsp;&nbsp;&nbsp;Pure/Bastardized:&nbsp;&nbsp;&nbsp;4972 ms/594 ms</P>
+<P>So, clearly, there is a dramatic speed differential. Our app is dealing with inventory and schedules, and many screens are dealing with groups of read-only data by day (that itself may have nested collections),&nbsp;so I'm leaning towards starting to use this more across the board. If anyone else has any thoughts on this, I'd love to hear how you handled situations where you had large quantities of read-only data and wanted to optimize performance in a CSLA-centric design. I love CSLA, don't get me wrong. We are using it throughout the app. But one screen in particular was quite sluggish, and this change sped it up noticeably.</P><FONT size=1>
+<P>[</FONT><FONT color=#2b91af size=1>TestMethod</FONT><FONT size=1>]</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> CompareCslaVsNonCslaCollections()</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>GC</FONT><FONT size=1>.Collect();</P>
+<P></FONT><FONT color=#2b91af size=1>GC</FONT><FONT size=1>.WaitForPendingFinalizers();</P>
+<P></FONT><FONT color=#2b91af size=1>GC</FONT><FONT size=1>.Collect();</P>
+<P></FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> start;</P>
+<P></FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> stop;</P>
+<P>start = </FONT><FONT color=#2b91af size=1>Environment</FONT><FONT size=1>.TickCount;</P>
+<P></FONT><FONT color=#2b91af size=1>CslaDailyList</FONT><FONT size=1> list = </FONT><FONT color=#2b91af size=1>CslaDailyList</FONT><FONT size=1>.GetList();</P>
+<P>stop = </FONT><FONT color=#2b91af size=1>Environment</FONT><FONT size=1>.TickCount;</P>
+<P></FONT><FONT color=#2b91af size=1>Trace</FONT><FONT size=1>.WriteLine(</FONT><FONT color=#a31515 size=1>"Elapsed time with CSLA: "</FONT><FONT size=1> + (stop - start).ToString());</P>
+<P></FONT><FONT color=#2b91af size=1>GC</FONT><FONT size=1>.Collect();</P>
+<P></FONT><FONT color=#2b91af size=1>GC</FONT><FONT size=1>.WaitForPendingFinalizers();</P>
+<P></FONT><FONT color=#2b91af size=1>GC</FONT><FONT size=1>.Collect();</P>
+<P>start = </FONT><FONT color=#2b91af size=1>Environment</FONT><FONT size=1>.TickCount;</P>
+<P></FONT><FONT color=#2b91af size=1>NonCslaDailyList</FONT><FONT size=1> nonlist = </FONT><FONT color=#2b91af size=1>NonCslaDailyList</FONT><FONT size=1>.GetList();</P>
+<P>stop = </FONT><FONT color=#2b91af size=1>Environment</FONT><FONT size=1>.TickCount;</P>
+<P></FONT><FONT color=#2b91af size=1>Trace</FONT><FONT size=1>.WriteLine(</FONT><FONT color=#a31515 size=1>"Elapsed time with non-CSLA: "</FONT><FONT size=1> + (stop - start).ToString());</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 21, 2008</h2>Well, the key is that your screen was too sluggish.&nbsp; <br><br>Now, regarding your timings; they seem odd to me.&nbsp; I don't know why Csla would be eating up more resources.&nbsp; Reflection should be out of the picture after the dataportal call.. what do your internal factory methods look like?<br><br>ReadOnlyListBase isn't adding a whole lot of anything; some event handlers and databinding support, but that shouldn't be firing (and if it is, no one should be listening at this point yet).<br><br>Something certainly seems fishy.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Monday, January 21, 2008</h2><P>The internal factory methods are vanilla. No DB access at all, and the only code for loading the objects is in the DP_Fetch of the outermost list. Here they are:</P>
+<P>Csla: (The EnableLoading method is a method I added to set IsReadOnly and RaiseListChangedEvents accordingly...since I was loading external to the entity). </P><FONT color=#0000ff size=1>
+<P>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> DataPortal_Fetch()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.IsReadOnly = </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#2b91af size=1>DateTime</FONT><FONT size=1> tmpDate = </FONT><FONT color=#2b91af size=1>DateTime</FONT><FONT size=1>.Today;</P>
+<P></FONT><FONT color=#0000ff size=1>for</FONT><FONT size=1> (</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> i = 1; i &lt;= 31; i++)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>CslaDailyInfo</FONT><FONT size=1> dailyInfo = </FONT><FONT color=#2b91af size=1>CslaDailyInfo</FONT><FONT size=1>.Get();</P>
+<P>dailyInfo.Date = tmpDate;</P>
+<P>dailyInfo.Id = i;</P>
+<P>dailyInfo.Slots.EnableLoading(</FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>);</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Add(dailyInfo);</P>
+<P></FONT><FONT color=#008000 size=1>// Add 10 slots a day.</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>for</FONT><FONT size=1> (</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> j = 1; j &lt;= 10; j++)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>CslaSlotInfo</FONT><FONT size=1> slot = </FONT><FONT color=#2b91af size=1>CslaSlotInfo</FONT><FONT size=1>.Get();</P>
+<P>slot.ScheduleId = i;</P>
+<P>slot.Ordinal = j;</P>
+<P>slot.Slices.EnableLoading(</FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>);</P>
+<P>dailyInfo.Slots.Add(slot);</P>
+<P></FONT><FONT color=#008000 size=1>// Add 3 slices a day.</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>for</FONT><FONT size=1> (</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> k = 0; k &lt; 3; k++)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>CslaSliceInfo</FONT><FONT size=1> slice = </FONT><FONT color=#2b91af size=1>CslaSliceInfo</FONT><FONT size=1>.Get();</P>
+<P>slice.Id = k;</P>
+<P>slice.AdvertiserId = 100 + k;</P>
+<P>slice.AdvertiserName = </FONT><FONT color=#a31515 size=1>"Advertiser "</FONT><FONT size=1> + k.ToString();</P>
+<P>slice.BookingId = k;</P>
+<P>slice.BookingName = </FONT><FONT color=#a31515 size=1>"Booking "</FONT><FONT size=1> + k.ToString();</P>
+<P>slot.Slices.Add(slice);</P>
+<P>}</P>
+<P>slot.Slices.EnableLoading(</FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>);</P>
+<P>}</P>
+<P>dailyInfo.Slots.EnableLoading(</FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>);</P>
+<P>tmpDate = tmpDate.AddDays(1);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.IsReadOnly = </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P>}</P>
+<P><FONT size=3>Non-CSLA: </FONT></P><FONT color=#0000ff size=1>
+<P>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> DataPortal_Fetch()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.IsReadOnly = </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=1>false</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#2b91af size=1>DateTime</FONT><FONT size=1> tmpDate = </FONT><FONT color=#2b91af size=1>DateTime</FONT><FONT size=1>.Today;</P>
+<P></FONT><FONT color=#0000ff size=1>for</FONT><FONT size=1> (</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> i = 1; i &lt;= 31; i++)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>NonCslaDailyInfo</FONT><FONT size=1> dailyInfo = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>NonCslaDailyInfo</FONT><FONT size=1>();</P>
+<P>dailyInfo.Date = tmpDate;</P>
+<P>dailyInfo.Id = i;</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.Add(dailyInfo);</P>
+<P></FONT><FONT color=#008000 size=1>// Add 10 slots a day.</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>for</FONT><FONT size=1> (</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> j = 1; j &lt;= 10; j++)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>SlotInfo</FONT><FONT size=1> slot = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SlotInfo</FONT><FONT size=1>();</P>
+<P>slot.ScheduleId = i;</P>
+<P>slot.Ordinal = j;</P>
+<P>dailyInfo.Add(slot);</P>
+<P></FONT><FONT color=#008000 size=1>// Add 3 slices a day.</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>for</FONT><FONT size=1> (</FONT><FONT color=#0000ff size=1>int</FONT><FONT size=1> k = 0; k &lt; 3; k++)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=1>SliceInfo</FONT><FONT size=1> slice = </FONT><FONT color=#0000ff size=1>new</FONT><FONT size=1> </FONT><FONT color=#2b91af size=1>SliceInfo</FONT><FONT size=1>();</P>
+<P>slice.Id = k;</P>
+<P>slice.AdvertiserId = 100 + k;</P>
+<P>slice.AdvertiserName = </FONT><FONT color=#a31515 size=1>"Advertiser "</FONT><FONT size=1> + k.ToString();</P>
+<P>slice.BookingId = k;</P>
+<P>slice.BookingName = </FONT><FONT color=#a31515 size=1>"Booking "</FONT><FONT size=1> + k.ToString();</P>
+<P>slot.Add(slice);</P>
+<P>}</P>
+<P>}</P>
+<P>tmpDate = tmpDate.AddDays(1);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.IsReadOnly = </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>this</FONT><FONT size=1>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=1>true</FONT><FONT size=1>;</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 21, 2008</h2>Hmm... it looks like you're doing one db call for each load.&nbsp; Perhaps you could optimize by getting sets of data at a time?&nbsp; Search for DeepData example on this site; it shows how to load children and grandchildren in one database call.&nbsp; That will probably help more than moving away from Csla design.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Monday, January 21, 2008</h2><P>I am quite familiar with loading all objects in a CSLA hierarchy with one call. We do that exclusively. As I said, this call used for the test does not hit the database. In this project we have objects that contain up to 5 levels deep of nesting that are populated via a single call to the DB, and the resultsets from the data reader is passed to the objects that need it.</P>
+<P>My suspicion is that the (in this case, unnecessary) overhead comes from all of the additional work CSLA does when it is dealing with its classes. I see code being called in the ReadOnlyBase&nbsp; constructors, and assume more work is also being done when serialization occurs. Bypassing this by using lightweight DTO objects wrapped in an outer CSLA entity seems to be significantly faster for&nbsp;this case. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 21, 2008</h2>Ok... I couldn't tell exactly what was going on from the code posted.<br><br>I wonder if this is related to another post where if rules never get added for a type, it keeps checking and trying to add rules..<br><br>Well if your solution works for you and you won't need any of the Csla features then tht's the one I'd pick.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wleary replied on Monday, January 21, 2008</h2><P>Hmmm...I just went looking for that thread but couldn't find it. I did see it though as addressed in the change log of 3.5. </P>
+<P>We do not have any rules for any of the types in this read-only hierarcy, so that may indeed be it. Thanks again for your feedback.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

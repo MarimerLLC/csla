@@ -1,0 +1,29 @@
+<html><header><title>CSLA and EnterpriseLibrary.Security.Cryptography</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and EnterpriseLibrary.Security.Cryptography</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4961.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Tuesday, June 10, 2008</h2><P>I am just wondering if anyone has attempted utilizing Microsoft Enterprise library and the Cryptography application block.&nbsp; I have two ideas (one more efficient than the other) but am having trouble decrypting the RijundaelManaged in SQL Server.&nbsp; The two options are as follows:</P>
+<P>Option 1:</P>
+<P>Use the Login in PTPrincipal to retrieve the encrypted password and decrypted it within the BO.&nbsp; If it's a match then retreive/populate the PTIdentity class.&nbsp; The problem with this is that it requires two calls to the database.</P>
+<P>Option 2:</P>
+<P>Use the Login in PTPrincipal as per normal operation and decrypt the password directly within SQL Server.&nbsp; </P>
+<P>Any direction would help.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Wednesday, June 11, 2008</h2><P>I needed to retrieve the user data to get the password hash and the password salt. So I created custom Pricipal and Identity BO's&nbsp; and check the retrieved password (hash) in the Fetch for the Identity. I then set _isAuthenticated and Roles appropriately.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 11, 2008</h2><P>Option 3</P>
+<P>Hash the DB password so it can never be decrypted. Store the hashed pwd.</P>
+<P>When a user logs in, they input the clear text pwd - hash that using the same algorithm and then compare the 2 hashes. If they match, then they used the right password.</P>
+<P>This keeps the pwd more secure in the DB. You should also then implement a password re-set procedure - since no one can recover a forgotten password.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Thursday, June 12, 2008</h2><P>In the end I did utilize option 3 (for now).&nbsp; We have scenarios in which we must reproduce a particular error the user is encountering.&nbsp; In order to facilitate this, we usually log in as the user and follow the exact steps they've mentioned to recreate the error.&nbsp; I guess with Option #3, we now have 2 choices.</P>
+<P>Ask the user for their password </P>
+<P>or </P>
+<P>Reset the password so that we may log in.</P>
+<P>Thanks,</P>
+<P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JoeFallon1:</strong></div><div></P>
+<P>Option 3</P>
+<P>Hash the DB password so it can never be decrypted. Store the hashed pwd.</P>
+<P>When a user logs in, they input the clear text pwd - hash that using the same algorithm and then compare the 2 hashes. If they match, then they used the right password.</P>
+<P>This keeps the pwd more secure in the DB. You should also then implement a password re-set procedure - since no one can recover a forgotten password.</P>
+<P>Joe</P>
+<P>&nbsp;</P></P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, June 12, 2008</h2>The way I handle this sometimes is to save the user's hashed password somewhere and then change it to something else. After I'm done pretending to be them I copy their hash value back. I don't know what a security expert would think of all that but it's workable and probably better than the alternatives.<br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Phlar:</strong></div><div><p>In the end I did utilize option 3 (for now).&nbsp; We have scenarios in which we must reproduce a particular error the user is encountering.&nbsp; In order to facilitate this, we usually log in as the user and follow the exact steps they've mentioned to recreate the error.&nbsp; I guess with Option #3, we now have 2 choices.</p>
+<p>Ask the user for their password </p>
+<p>or </p>
+<p>Reset the password so that we may log in.</div></BLOCKQUOTE></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Thursday, June 12, 2008</h2>I use a different pattern...I impersonate the users profile rather than changing anything on their account.&nbsp; After logging in as the administrator I have a function that requires the account to be in the Admin role which swaps out my identity with theirs...this of course is a one way trip.&nbsp; About the only thing I can't test this way is the actual logging in process.&nbsp; When I need to do that I do what tetranz does, copy the password to another field and then copy it back.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,46 @@
+<html><header><title>Distributed Observer Pattern use CSLA ???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Distributed Observer Pattern use CSLA ???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10876.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, November 14, 2011</h2><p>Hi all,</p>
+<p>I don&#39;t know is it correct to post this questions here, because i still in the learning of CSLA.NET 4</p>
+<p>I have scenarios :</p>
+<p>1. Distributed application , said 4 physical client.</p>
+<p>2. What is the best architecture or design for this goal ??</p>
+<p>&nbsp;&nbsp;&nbsp; I want client A can does a certain transaction and the result of this transaction is needed to be refresh on client B screen immediately as soon as client A submit their jobs into app.</p>
+<p>3. And what about is the situation is complicated with different location on internet for example. Is there any good solution for this scenarion</p>
+<p>&nbsp;</p>
+<p>My imagination currently that it&#39;s look like observer pattern on the same machine / active screen which is an action will be notify another active screen for the result. But i don&#39;t have an idea if they separated on several machine ??</p>
+<p>&nbsp;</p>
+<p>Note : I&#39;ll develop on CSLA.NET</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 15, 2011</h2><p>This topic comes up a couple times&nbsp;a year.</p>
+<p>This is very difficult to solve, and there is no pre-existing solution that I&#39;m aware of.</p>
+<p>You need a publish/subscribe mechanism by which every client can subscribe to a server so that server can pass messages to the client(s). This requires the client to implement some type of polling, or use raw TCP sockets (almost all solutions use polling - or one of the dual http WCF bindings, and they use polling).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Tuesday, November 15, 2011</h2><p>Hi all thanks for quick response,</p>
+<p>I&#39;m sorry for my less experience before, but I still can&#39;t understand about </p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>This is very difficult to solve, and there is no pre-existing solution</p>
+<p></div></p>
+<p>although I haven&#39;t known how to solve this problem.</p>
+<p>here http://forums.lhotka.net/forums/t/10875.aspx&nbsp; jonny give me a suggestion about using WCF ( WSDualBinding ).</p>
+<p>I haven&#39;t create SOA or WCF before ( I&#39;ll try it soon ) but i have a mind that :</p>
+<p>If I can create a server with WCF interface like Roc said on  http://forums.lhotka.net/forums/t/10875.aspx which communicate with client use Message contract based.</p>
+<p>For example :</p>
+<p>I have A, B, C distributed app, said A as a server , B as Head Office, C as Branch Office.</p>
+<p>and then user on B do an action to change some data, and immediatelly send a message ( include changed data ) into A ( server app ).</p>
+<p>and then A can notify C that some thing changed so C can refresh it self without user intervention ( screen on C app refresh automatically ).</p>
+<p>&nbsp;</p>
+<p>Above is scenario that i can imagine currently, Could you ( all&nbsp; ) tell to me that Is my plan here is possible or not ?</p>
+<p>Or if it very difficult could you tell me where are the difficult points ? so I can know before I pass a long with this flow ??</p>
+<p>&nbsp;</p>
+<p>Thanks a lot</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Wednesday, November 16, 2011</h2><p>Solving a &quot;Distributed Observer Pattern&quot; in general is very difficult. </p>
+<p>However, if you can state requirements, which hold for your system, then a solution of the general problem might become easier. <br />It then just fits your needs. This is not bad at all. It&#39;s a tailored solution. </p>
+<p>The mentioned products / frameworks can help. From your requirements you&#39;re able to tell, how well they fit.</p>
+<p>I found ATAM a very useful approach not only to verify if a choosen architecture is adequate, but also to write (mostly non-functional) requirements for an architecture or part of it. The key elements to me of the approach is a) define &quot;empty words&quot; (i.e. scalable, distributed) through concrete scenarios, and to priorize the statements (include also what is not needed). </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Tuesday, November 15, 2011</h2><p>I totally agree with Rocky</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b> This is very difficult to solve, and there is no pre-existing solution that I&#39;m aware of.</div></p>
+<p>Back in the 90s, we wanted to build this, too. And we thought being lucky, because our DB engine supports that kind of notification as a feature. However, when using it, it turned out to be too slow (only 5 user in a LAN, ok in the 90s).&nbsp;&nbsp;Therefore, we changed to the lousy behaviour of windows file explorer (go with possible outdated data until you got an exception, the refresh). </p>
+<p>Lesson learned: make life not too hard; the easy solution often is sufficient. </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>xAvailx replied on Tuesday, November 15, 2011</h2><p>NServiceBus</p>
+<p><a href="http://www.nservicebus.com/">http://www.nservicebus.com/</a></p>
+<p>and/or</p>
+<p>
+<p>SignalR</p>
+<p><a href="https://github.com/SignalR/SignalR">https://github.com/SignalR/SignalR</a></p>
+</p>
+<p>May be worth looking into...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

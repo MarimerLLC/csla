@@ -1,0 +1,95 @@
+<html><header><title>Handling Property Changes Within The UI</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Handling Property Changes Within The UI</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9312.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor posted on Monday, August 02, 2010</h2><p>Hi,</p>
+<p>I wonder if anyone could offer me some advice on this please:-</p>
+<p>I have an issue in relation to Windows Forms data binding and some of my business object properties. Following Rocky&#39;s expert advice in the past&nbsp;I use a binding source and bound fields to communicate between the UI and my business object. All changes go through the bindingsource and everything works just&nbsp;fine.</p>
+<p>However I&#39;m finding a number of scenarios which require the business object to make changes to&nbsp;a number of properties when a specific property value changes.&nbsp;So when property &quot;A&quot; changes, I need to dome some business logic stuff in the BO, and then update property &quot;B&quot;, &quot;C&quot;, and &quot;D&quot; accordingly. What I am not clear about is how I update the&nbsp;bindingsource properly to reflect the changes that the BO has made to properties &quot;B&quot;, &quot;C&quot;, and &quot;D&quot; ?</p>
+<p>In some cases the BO&#39;s have public methods which can be called from the UI and which&nbsp;perform complex business logic&nbsp;actions on the BO resulting in multiple changes to the BO&#39;s properties.</p>
+<p>It seems the bindingsource is not fully aware of the changes and&nbsp;if the user then tries to undo the editing session,&nbsp;the BO remains dirty and&nbsp;does not revert the changes to properties &quot;B&quot;, &quot;C&quot;, and &quot;D&quot;.</p>
+<p>I&#39;m not sure of the correct protocol for handling this type of scenario ?</p>
+<p>With many thanks,</p>
+<p>Nick</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 02, 2010</h2><p>Hi, </p>
+<p>Are you using the BindingSourceRefresh component in CSLA in your Form? </p>
+<p>I prefer to create a custom BusinessRule that does the complex logic and updated the properties.<br />So long as the properties raise the PropertyHasChanged event in the BO the UI will be updated accordingly. IE: you should not need to write any code for the bindingsource. </p>
+<p>How do you handle undo?&nbsp; Is it the default undo in a WindowsForms control or do you call UndoChanges manually? </p>
+<p>If you call UndoChanges manually you must first disconnect BindingSource and BO, call CancelChanges+BeginEdit and then rebind and everything should be fine.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Monday, August 02, 2010</h2><p>Hi...</p>
+<p>The first answer is &quot;no&quot;. I presume I should be using this right !?</p>
+<p>Would you be kind enough to expand slightly on&nbsp;your use&nbsp;of business rules please? I&nbsp;use validation rules for ensuring that user input is valid, but I am not sure how you are implementing a business rule in this type of scenario? I currently have a bunch of public methods on the BO that I can be called from the UI to instigate whatever business logic operation I am trying to perform. Does this approach seem logical to you?</p>
+<p>I had a number of exchanges with Rocky regarding handling undo, and managing the UI properly. At present I just call the CancelEdit() method on the binding source. This works fine in a simple&nbsp;form where all&nbsp;changing properties are bound to&nbsp;textboxes on the UI, but in this case its not right.&nbsp;I hope the use of CancelEdit()&nbsp;is right, but please feel free to point me in the right direction if its not!</p>
+<p>The other&nbsp;approach was just to reinstantiate the business object and then rebind the bindingsource, but I felt this wasn&#39;t quite the right procedure.</p>
+<p>Thanks,</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 02, 2010</h2><p>Hi,</p>
+<p>You should NOT call CancelEdit on the BindingSource !!!! </p>
+<p>If you really want to use N-level undo you should:</p>
+<ol>
+<li>Call root.BeginEdit() first.</li>
+<li>Bind business objects to UI (bindingsource)<ol>
+<li>NameValueLists first</li>
+<li>Root object</li>
+<li>Child object</li>
+<li>GrandChild objects</li>
+</ol></li>
+</ol>
+<p>When you want to undo changes your BO should not be connected to the UI so:</p>
+<ol>
+<li>Unbind in <b>reverse </b>order from above</li>
+<li>Call root.CancelEdit()</li>
+<li>Call root.BeginEdit()</li>
+<li>Bind business objects to UI (bindingsources)</li>
+</ol>
+<p>The sequence of bindingsources in Bind/Unbind is critical !! </p>
+<p>I usually have 2 methods in all my Forms:</p>
+<p><b>BundUI()</b> (BeginEdit and connects BO to bindingsources)<br /><b>UnbindUI(bool cancel)&nbsp; </b>(disconnect BO and bindingsorces and call ApplyEdit or CancelEdit based on parameter cancel).</p>
+<p>When you call CancelEdit on the bindingsource you only try to cancel the last change in a control (the active databinding on a control). Usually this will do nothing as a Button will typically have &quot;CausesValidation=true&quot;&nbsp; which in turn triggers databinding to update the value in the previous control - so there is nothing to cancel when the call is made. </p>
+<p>I highly recommend that you read the DataBinding FAQ and DataGridView FAQ on<a title="WindowsClient.net" href="http://windowsclient.net/downloads/folders/applications/default.aspx"> WindowsClient.net</a></p>
+<p>ValidationRules/BusinessRules can do calculations and set properties the BusinessObject (and you may even add tests so that the rule only does calculations when they are executed on the logical clientside) and when PropertyHasChanged event is raised the UI will auomatically be updated by DataBinding. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Monday, August 02, 2010</h2><p>Ah, I see, thanks Jonny...</p>
+<p>I&#39;ll have a play around with the code, and also read the two articles suggested.</p>
+<p>Many thanks for your response and your help...</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Monday, August 02, 2010</h2><p>Jonny,</p>
+<p>I quick implementation of your suggestion has cured the problem. Thank you.</p>
+<p>The key was obviously&nbsp;in the disconnection and reconnection of the BO and the process of using CancelEdit() and BeginEdit().</p>
+<p>Thanks again for your input.</p>
+<p>Nick</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, August 02, 2010</h2><p>Hi Nick,</p>
+<p>Windows Forms Data Binding relies on thje INotifyPropertyChanged interface to update bound controls, and CSLA BOs implement this interface. </p>
+<p>Your UI should update automagically when you update a property on your BO, but only if you fire the PropertyChanged event, which is done for you if you use CSLA PropertyInfo as the backing store for your property.</p>
+<p>There is one exception (and workaround), it&#39;s when your code modifies the property that&#39;s currently being edited. There&#39;s a glitch in Windows Forms binding that prevent refreshing the edited value. For example, if you&#39;re editing property A, and in your property setter you have logic that modifies A, then the UI will not see it. You need to use the&nbsp;BindingSourceRefresh component on your form.</p>
+<p>Have fun :-)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Monday, August 02, 2010</h2><p>Hi Luc,</p>
+<p>I am doing something wrong somewhere, so I need to work through my code again. Typically my BO properties are defined as follows:-</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">// PartNumber</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span><span style="font-size:x-small;">&gt; PartNumberProperty =<font size="2">
+<p>RegisterProperty(</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">new</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyInfo</span></span><span style="font-size:x-small;">&lt;</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span><span style="font-size:x-small;">&gt;(</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;PartNumber&quot;</span></span><span style="font-size:x-small;">, </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;PartNumber&quot;</span></span><span style="font-size:x-small;">));<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">public</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span></p>
+<p><span style="font-size:x-small;"> PartNumber
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">get</span></span><span style="font-size:x-small;"> { </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">return</span></span><span style="font-size:x-small;"> GetProperty(PartNumberProperty); }<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">set</span></span><span style="font-size:x-small;"> { SetProperty(PartNumberProperty, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">value</span></span><span style="font-size:x-small;">); }</span></p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>So these should fire the property changed event right?</p>
+<p>Nick</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

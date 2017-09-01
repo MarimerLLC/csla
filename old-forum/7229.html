@@ -1,0 +1,8 @@
+<html><header><title>CSLALight - Can criteria inherit from MobileObject??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLALight - Can criteria inherit from MobileObject??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7229.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele posted on Sunday, July 05, 2009</h2><P>I see posts saying I can do these three options for&nbsp;criteria objects used for silverlight:</P>
+<P>1. Inherit from CriteriaBase</P>
+<P>2.&nbsp;Inherit from BusinessBase</P>
+<P>3.&nbsp;Implement IMobileObject</P>
+<P>But I was wondering if I could just inherit from MobileObject.</P>
+<P>Thanks</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 05, 2009</h2><P>Yes, I think you can inherit from MobileObject, as long as you implement ICriteria.</P>
+<P>CriteriaBase implements ICriteria and provides managed backing field support. If you want to override the get/set state methods and use private backing fields, I would think you could inherit from MobileObject.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

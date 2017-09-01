@@ -1,0 +1,84 @@
+<html><header><title>How to best change the database connection via the ContextManager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to best change the database connection via the ContextManager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5903.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh posted on Sunday, November 30, 2008</h2>We are currently making the switch to LinqToSql for our Dal layer.&nbsp; Currently we assigned the application connection string to a modified BusinessPrincipal object, so that we can change our database connection on the fly.&nbsp; For example, we have one user interface, and the user can select whether to work in the production or test environment.&nbsp; Works great!<br><br>The problem is that the ContextManager seems to work off of the DataContext name.&nbsp; So this is really limiting our flexibility, as we can't set the database connection string through the ContextManager as it assumes the Dbml file and the connection string have the same name.<br><br>Any ideas how to get around this?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, November 30, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think there is an overload in ContextManager that allows you
+to tell it to use specified value as connection string, not the connection
+string&#8217;s name.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 | mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> raz0rf1sh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 30, 2008 8:22 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] How to best change the database connection via the
+ContextManager<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>We are currently making the switch to LinqToSql for our Dal
+layer.&nbsp; Currently we assigned the application connection string to a
+modified BusinessPrincipal object, so that we can change our database
+connection on the fly.&nbsp; For example, we have one user interface, and the
+user can select whether to work in the production or test environment.&nbsp;
+Works great!<br>
+<br>
+The problem is that the ContextManager seems to work off of the DataContext
+name.&nbsp; So this is really limiting our flexibility, as we can't set the
+database connection string through the ContextManager as it assumes the Dbml
+file and the connection string have the same name.<br>
+<br>
+Any ideas how to get around this?<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>raz0rf1sh replied on Sunday, November 30, 2008</h2>I took another look and there is an overloads that let's me pass in whether it's a database name or a connection string.<br /><br />So I just do the following:<br /><br />            using (var mgr = ContextManager<br />                        .GetManager(Database.ApplicationConnection, false))<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, December 01, 2008</h2>I found that overload as well.&nbsp; I would think the default should be toward a connection string and the overload should be for database name.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Curelom:</strong></div><div>I found that overload as well.&nbsp; I would think the default should be toward a connection string and the overload should be for database name.</div></BLOCKQUOTE></P>
+<P>Maybe - but the best practice for .NET is to put the connection strings in the config file, and so the default overload is to enable that best practice.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, December 01, 2008</h2><P>Ok, I'm feeling a little foolish now.&nbsp; I've been using it like this</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = Csla.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;HD.Library.Data.DBDataContext&gt;</P>
+<P>.GetManager(ConfigurationManager.ConnectionStrings[</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"HDConnectionString"</FONT></FONT><FONT size=2>], </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>))</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>but we can use it like this</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;</FONT></P>
+<P>using<FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = Csla.Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;HD.Library.Data.DBDataContext&gt;</P>
+<P>.GetManager(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"HDConnectionString"</FONT></FONT><FONT size=2>))</FONT></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

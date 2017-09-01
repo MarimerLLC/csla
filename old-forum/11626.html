@@ -1,0 +1,25 @@
+<html><header><title>CSLA 4 version 4.5.3 beta 2 release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 version 4.5.3 beta 2 release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11626.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, October 04, 2012</h2><p>I have put CSLA 4 version 4.5 beta 2 online as we continue toward the planned final release of version 4.5 on or before Oct 26.</p>
+<p>Version 4.5.3 is available via nuget and from the <a href="http://www.lhotka.net/cslanet/Download.aspx">CSLA download page</a>.</p>
+<p>The <a href="http://www.lhotka.net/Article.aspx?id=76e23c41-1f45-4c2e-9891-0f1e244dc679">change log</a> contains a list of all changes. Highlights include:</p>
+<ol>
+<li>Substantial changes to CslaActionExtender for Windows Forms</li>
+<li>Substantial (and some breaking) changes to pre- and post-processing methods around the data portal</li>
+<li>Added the ability to global implement pre- and post-processing handler to server-side data portal to enable logging/tracing and IoC scenarios</li>
+</ol>
+<p>At this point we are feature complete, so any releases between now and final release will be bug fixes or stabilization. </p>
+<p>Version 4.5 supports the following platforms: </p>
+<ul>
+<li>.NET 4 (with async targeting pack)</li>
+<li>Silverlight 5 (with async targeting pack)</li>
+<li>.NET 4.5</li>
+<li>WinRT</li>
+</ul>
+<p>If you are using any of these platforms, please download and test this new release. Here are some notes regarding <a href="http://forums.lhotka.net/forums/t/11624.aspx">upgrading from version 4 to 4.5</a>.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Tuesday, October 09, 2012</h2><p>I downloaded beta 2 and ran the installer.&nbsp; I&#39;m trying to use this in VS 2012 + .NET 4 + Async targeting pack.&nbsp; It won&#39;t build be cause the .NET assemblies are&nbsp;compiled against&nbsp;4.5 (not 4.0).&nbsp; Is there a 4.0 version?&nbsp; I&#39;m going to try to recompile the source for this beta for 4.0.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Tuesday, October 09, 2012</h2><p>Nevermind.&nbsp; Just doing a straight build of the source gives me a separate &nbsp;.NET4 folder in bin.&nbsp; That&#39;s exactly what I needed!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 09, 2012</h2><p>&nbsp;The installer does give you rebuilt assemblies in its \bin folder, so you really don&#39;t need to build the code yourself, except for fun.</p>
+<p>Also, if you get the assemblies via nuget, the source is now on a source server so you can walk through the CSLA source in the debugger of necessary.</p>
+<p>Personally I&#39;ve switched to nuget for nearly all work because it offers such a great experience for adding and updating references.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, October 09, 2012</h2><p>Hi Rocky,</p>
+<p>JonM is making a point: there are no NET4 binaries on the MSI.</p>
+<p>When using VS2012 and targeting Framework .NET 4, NuGet shows the correct packges / assemblies. So using NuGet is the only way to use Csla 4.5.3 and target Framework .NET 4.0</p>
+<p>Using VS2010 NuGet doesn&#39;t show Csla 4.5.3 even when &quot;Include prerelease&quot; is selected. So for VS2010 people there is no way to use Csla 4.5.3</p>
+<p>&lt;edit&gt;</p>
+<p>Oops... when &quot;Include prerelease&quot; is selected, Csla 4.5.3 does show under VS2010</p>
+<p>&lt;/edit&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 09, 2012</h2><p>Ahh, well that&#39;s a bug in my setup program. I&#39;ll fix that!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, October 10, 2012</h2><p>FWIW we moved up to 4.5.3 beta 2 and all 10K+ tests still pass, things look fine for us.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 10, 2012</h2><p>That&#39;s great news, thank you!!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

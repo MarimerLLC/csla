@@ -1,0 +1,10 @@
+<html><header><title>Retry  DataPortal_Fetch SQL Server mirroring (failover) configuration</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Retry  DataPortal_Fetch SQL Server mirroring (failover) configuration</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10055.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joentje posted on Thursday, February 10, 2011</h2><p>Hello,</p>
+<p>We are thinking about mirroring our SQL Server. In that case a retry mechanism for our database commands (retry to the failover server) is needed, when an action on the primary database server fails. </p>
+<p>Do we have to change our code of all DataPortal_Fetch methods, to try/catch/retry the database actions ourselves, or is there already built-in CSLA functionality to accomplish this?</p>
+<p>Thank you very much in advance for your help!</p>
+<p>Kind greetings,</p>
+<p>Jeroen</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, February 10, 2011</h2><p>There is nothing built into the data portal or Csla.Data to do this.</p>
+<p>I would recommend implementing a formal data access layer that your DataPortal_XYZ methods can invoke. That DAL can then abstract concepts like retry so the invocation code in the DP_XYZ methods remain focused on interacting with the state of the business object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joentje replied on Thursday, February 10, 2011</h2><p>Rocky,</p>
+<p>Thank you very much for your quick and clear answer!</p>
+<p>Kind greetings,</p>
+<p>Jeroen</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

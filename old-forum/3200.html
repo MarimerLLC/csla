@@ -1,0 +1,11 @@
+<html><header><title>Populating Child ReadOnlyLists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Populating Child ReadOnlyLists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Monday, July 16, 2007</h2><P>Hello,</P>
+<P>&nbsp;</P>
+<P>I have a ThreadList class that executes a stored procedure, GetThreads. It then passes the datareader to each child thread (ThreadInfo), which works just fine so far.</P>
+<P>&nbsp;</P>
+<P>But then the ThreadInfo needs to populate a child ThreadUserInfo and ThreadTypeInfo. The top list is only a read only list, but still certain information is required when listing threads, and the user information is one of them.</P>
+<P>&nbsp;</P>
+<P>Would you recommend:</P>
+<OL>
+<LI>have each ThreadInfo execute two more stored procedures, GetUser and GetType. This is my least favorite because it calls then for two queries per thread which is a bit much for a read only list.</LI>
+<LI>Select all the information in the GetThreads stored procedure (probably renaming it GetThreadInfo then because of the differing requirements), and populate the child objects simply by passing the datareader to them.</LI>
+<LI>Same as above, but simply put all the information&nbsp;I need such as type name and user name into the ThreadInfo class, so there are no child objects. This is OK, but if I ever want more information from the user table I'd need to update the query and the business object.</LI></OL></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

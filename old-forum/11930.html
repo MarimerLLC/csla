@@ -1,0 +1,47 @@
+<html><header><title>Suppressing AutoCloneOnUpdate when executing on LogicalExecutionLocations.Server?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Suppressing AutoCloneOnUpdate when executing on LogicalExecutionLocations.Server?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11930.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda posted on Wednesday, April 10, 2013</h2><p>
+<p>I&#39;m playing with an idea that when executing something server-side (from logical point of view) I generally do not want and do not need to have csla to clone the objects.&nbsp;</p>
+<p>For example, you can have command doing some updates on a large set of business objects.</p>
+<p>I have two main reasons for that:</p>
+<p><ol>
+<li>performance reasons</li>
+<li>NHibernate.NonUniqueObjectException - when using nhibernate as your database persistence layer. This happens when you get the business object and save the business object during the same nhibernate session. Most of nhibernate users should know what I&#39;m talking about.</li>
+</ol></p>
+<p>So, what do you think about this idea? Can I suppress the AutoCloneOnUpdate behavior when executing at server-side (logical location) by default.</p>
+<p>It seems to me it should be always safe because the main reason for autoclone is to have separated object on the server from the client, because the server could change (and in most situations it does) the object while saving to DB (for example change timestamps, set id when inserting object) and when the transaction during that save fails it should leave the object at client intact.</p>
+<p>I assume that server-side executions are always about doing some stuff that never wants to recover from &quot;broken&quot; object. Mostly you want to recover from that by rethrowing the exception that happend and having the client deal with that exception and reexecuting the server operation again.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 10, 2013</h2><p>Hi,</p>
+<p>Are you using a N-Tier deployment with a remote DataPortal? </p>
+<p>The AutoCloneOnUpdate is to make that you get the same behavior when running in-process (local dataportal) as you do when using a remote portal. <br />A remote portal will always return a new object from the server - but when your code runs in-process and AutoCloneOnUpdate is false - then your object structure would be as it was when the exception occured (= broken) and you can NOT call Save again on that object. </p>
+<p>That is assuming that your save uses a transaction and rolled back in the database - but your object is NOT rolled back to it&#39;s initial state!! </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Thursday, April 11, 2013</h2><p>Hi,</p>
+<p>I&#39;m using diffrent deployments in different solutions.</p>
+<p>You have slightly missed what I really want to achieve. I&#39;m aware of N-tier deployment and how the dataportal in that situation work. So I have proposed the idea if it is right or if I&#39;m not wrong with that idea.</p>
+<p>When you are logically on server and you are calling your business object to perform Save you don&#39;t need to do clones (AutoCloneOnUpdate = true), because you are already on server and you already have the clone on the server. And when you are on the server then calling dataportal on the server calls in most situations local dataportal (or if you have another remote portal then you get the clone but this is not the case you have to worry about).</p>
+<p>So what do you think? Is it clearer now for you?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Friday, April 12, 2013</h2><p>I&#39;m providing code snippet from what I&#39;ve done in Csla source code to realize and test the idea:</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Gets&nbsp;a&nbsp;value&nbsp;indicating&nbsp;whether&nbsp;objects&nbsp;should&nbsp;be</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;automatically&nbsp;cloned&nbsp;by&nbsp;the&nbsp;data&nbsp;portal&nbsp;Update()</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;method&nbsp;when&nbsp;using&nbsp;a&nbsp;local&nbsp;data&nbsp;portal&nbsp;configuration.</span>
+	<span>///</span><span>&nbsp;Defaults&nbsp;to&nbsp;</span><span>&lt;c&gt;</span><span>true</span><span>&lt;/c&gt;</span><span>.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>bool</span>&nbsp;AutoCloneOnUpdate
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>bool</span>&nbsp;result&nbsp;=&nbsp;<span>true</span>;
+<span>#if</span>&nbsp;!SILVERLIGHT&nbsp;&amp;&amp;&nbsp;!NETFX_CORE
+		<span>//&nbsp;Miroslav&nbsp;Galajda&nbsp;10.04.2013&nbsp;-&nbsp;when executing on server-side (from logical point of view) then clone is redundant</span>
+		<span>if</span>&nbsp;(LogicalExecutionLocation&nbsp;==&nbsp;<span>LogicalExecutionLocations</span>.Server&nbsp;&amp;&amp;&nbsp;AutoCloneOnUpdateClientOnly)
+			<span>return</span>&nbsp;<span>false</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>string</span>&nbsp;setting&nbsp;=&nbsp;<span>ConfigurationManager</span>.AppSettings[<span>&quot;CslaAutoCloneOnUpdate&quot;</span>];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(!<span>string</span>.IsNullOrEmpty(setting))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;<span>bool</span>.Parse(setting);
+<span>#endif</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;result;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<p>Where as you can see there is also way to have turn this behavior off through the AutoCloneOnUpdateClientOnly property (appSettings variable).</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Tuesday, April 23, 2013</h2><p>Does anyone has something against it or is there any pitfall?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

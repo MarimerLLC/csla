@@ -1,0 +1,141 @@
+<html><header><title>Using local database in WP7</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using local database in WP7</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11196.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh posted on Saturday, February 25, 2012</h2><p>
+<div></div>
+<div><b>Can someone please help me with this example? I cant find any example on accessing local database in SL/WP7 and CSLA.</b></div>
+<div></div>
+<div>&nbsp; &nbsp; public static void GetExistingProject(int projectId, EventHandler&lt;DataPortalResult&lt;ProjectGetter&gt;&gt; callback)</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; DataPortal.BeginFetch&lt;ProjectGetter&gt;(new Criteria { ProjectId = projectId, GetRoles = !RoleList.IsCached }, (o, e) =&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw e.Error;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; if (!RoleList.IsCached)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RoleList.SetCache(e.Object.RoleList);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; callback(o, e);</div>
+<div>&nbsp; &nbsp; &nbsp; });</div>
+<div>&nbsp; &nbsp; }</div>
+<div></div>
+<div>#if !SILVERLIGHT</div>
+<div>&nbsp; &nbsp; private void DataPortal_Fetch(Criteria criteria)</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; if (criteria.ProjectId == -1)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; Project = ProjectEdit.NewProject();</div>
+<div>&nbsp; &nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; Project = ProjectEdit.GetProject(criteria.ProjectId);</div>
+<div>&nbsp; &nbsp; &nbsp; if (criteria.GetRoles)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; RoleList = RoleList.GetList();</div>
+<div>&nbsp; &nbsp; }</div>
+<div>#endif</div>
+<div></div>
+<div><b>1) How can I write DataPortal_Fetch method for Windows Phone? This is a bad solution, right? This way &nbsp;I am blocking main thread?</b></div>
+<div></div>
+<div>#if WINDOWS_PHONE</div>
+<div>&nbsp; &nbsp; [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]</div>
+<div>&nbsp; &nbsp; public void DataPortal_Fetch(Criteria criteria, Csla.DataPortalClient.LocalProxy&lt;ProjectGetter&gt;.CompletedHandler handler)</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; try</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var sync = new AutoResetEvent(false);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (criteria.ProjectId == -1)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Project = ProjectEdit.NewProject();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Project = ProjectEdit.GetProject(criteria.ProjectId, (o, e) =&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw e.Error;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Project = e.Object;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sync.Set();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sync.WaitOne();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (criteria.GetRoles)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RoleList = RoleList.GetList((o, e) =&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw e.Error;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RoleList = e.Object;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sync.Set();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; sync.WaitOne();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; handler(this, null);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; handler(null, ex);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; }</div>
+<div>#endif</div>
+<div></div>
+<div></div>
+<div><b>2) Is this any better solution?</b></div>
+<div></div>
+<div>&nbsp; &nbsp; private bool ProjectLoaded = false;</div>
+<div>&nbsp; &nbsp; private bool RoleListLoaded = false;</div>
+<div></div>
+<div>#if WINDOWS_PHONE</div>
+<div>&nbsp; &nbsp; [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]</div>
+<div>&nbsp; &nbsp; public void DataPortal_Fetch(Criteria criteria, Csla.DataPortalClient.LocalProxy&lt;ProjectGetter&gt;.CompletedHandler handler)</div>
+<div>&nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; try</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (criteria.ProjectId == -1)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Project = ProjectEdit.NewProject();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ProjectLoaded = true;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Project = ProjectEdit.GetProject(criteria.ProjectId, (o, e) =&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw e.Error;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Project = e.Object;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ProjectLoaded = true;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (RoleListLoaded || !criteria.GetRoles) handler(this, null);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (criteria.GetRoles)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RoleList = RoleList.GetList((o, e) =&gt;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (e.Error != null)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw e.Error;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RoleList = e.Object;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RoleListLoaded = true;</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ProjectLoaded) handler(this, null);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; });</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div></div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ProjectLoaded &amp;&amp; (RoleListLoaded || !criteria.GetRoles)) handler(this, null);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; {</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; handler(null, ex);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; }</div>
+<div>&nbsp; &nbsp; }</div>
+<div>#endif</div>
+<div>&nbsp;</div>
+<div><b>3) what is the best way to invoke CompletedHandler AFTER all async calls are finished?</b></div>
+<div><b>4) Is it ok to call async DataPortal methods in ProjectEdit.GetProject and RoleList.GetListon ( on &quot;logical server side&quot; )?</b></div>
+<div><b>5) Same &quot;problem&quot; would be if I try multiple async calls to a web service ( SOA ) and then invoking CompletedHandler after all calls are finished.</b></div>
+<div><b>6) Another solution for this example would be calling DAL directly and using Child_Fetch() to load data?</b></div>
+<div></div>
+<div>Thanks,</div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 25, 2012</h2><p>I don&#39;t have time to write the code for you right now.</p>
+<p>But here&#39;s the thing you really need to understand: the &quot;asynchronous&quot; data portal isn&#39;t actually asynchronous at all. It is <em>async-enabled</em>. If YOU don&#39;t make any async calls in your DataPortal_Fetch method, nothing is async.</p>
+<p>As I said in the other thread, this means that you can directly interact with the local database in your DataPortal_Fetch method as long as you call the handler when you are done. Nothing will be async in that case.</p>
+<p>My recommendation is to use the same UOW pattern I show in the <em>Using CSLA 4: Windows Phone</em> book and make the unit of work object&#39;s DataPortal_Fetch use a BackgroundWorker from Csla.Threading so you don&#39;t block the user (because that would be bad). This is where you introduce actual async behavior.</p>
+<p>In the DoWork event handler for the BackgroundWorker is where you will fetch the two root objects you need. THOSE objects will have DataPortal_Fetch methods that DO NOT do any async work at all. They&#39;ll directly interact with the local database, calling handler when they are done.</p>
+<p>The code in the UOW class&#39;s DoWork event handler for the BackgroundWorker will call the &quot;async&quot; factory methods for the two root objects. But those methods won&#39;t really be async, so the callbacks will occur synchronously, allowing the DoWork code to be very simple - no worries about thread blocking or anything, because the thread <em>will be blocked</em>.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

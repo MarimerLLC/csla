@@ -1,0 +1,10 @@
+<html><header><title>Canceling child add with BindingSourceHelper</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Canceling child add with BindingSourceHelper</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8622.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AdamJones posted on Friday, March 05, 2010</h2><p>Winforms &amp; Csla: 3.81 </p>
+<p>I have switched some of my code to use the BindingSourceHelper, I now have an issue with DataGridViews bound to child BLB properties.</p>
+<p>I&#39;ve implemented AddNewCore so new rows can be added to the grid, previously when I hit escape on a new grid row the row would be removed, after moving to using&nbsp; BindingSourceHelper the row remains after i cancel the edit. Cancelling edits to existing rows works fine.</p>
+<p>This only seems to be a problem with child properties, I&#39;ve tired the same thing with a root BLB object and the added rows are removed as expected.</p>
+<p>Is this a bug or have I missed something?</p>
+<p>All help gratefully received,</p>
+<p>Adam</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AdamJones replied on Friday, March 05, 2010</h2><p>Also I don&#39;t know if this is connected but I get the same problem when I bind a DataGridView to a child property of type LinqBindingList.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

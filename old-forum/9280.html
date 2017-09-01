@@ -1,0 +1,54 @@
+<html><header><title>Disappearing PropertyStatus Controls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Disappearing PropertyStatus Controls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9280.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs posted on Monday, July 26, 2010</h2><p>Using the latest release of CSLA 4.0.</p>
+<p>I&#39;ve got a Silverlight Usercontrol bound to a CSLA ViewModel that allows a new user to register - basic stuff.</p>
+<p>&nbsp;The UserControl has two grids - one containing controls for data entry to register the new user (originally visible)&nbsp;and another grid that displays once the user has been registered successfully (originally hidden). The data entry grid is hidden once a user registers successfully&nbsp;and the confirmation grid is then shown - all through binding and VisibilityConverters.&nbsp;&nbsp;Works great.</p>
+<p>Once the user has registered successfully the second (confirmation) grid displays a button to allow another user to register. All that button does is call BeginRefresh(&quot;NewMember&quot;) on the ViewModel to create a new Member. As expected, once again the original grid is displayed since it&#39;s bound to the IsNew property on the Model and the confirmation grid is hidden.</p>
+<p>With one problem - none of the PropertyStatus controls are now visible. All of the textboxes have the red border indicating that rules are broken (FirstNameRequired, etc) and the Silverlight tooltips on those controls display the appropriate broken rules.</p>
+<p>But no PropertyStatus controls are visible.</p>
+<p>Any ideas?</p>
+<p>Cheers!</p>
+<p>- Greg</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Jav replied on Tuesday, July 27, 2010</h2><p>Greg,</p>
+<p>You might want to look up Rocky&#39;s following&nbsp;blog - It may (or may not) be applicable to your issue. <a href="http://www.lhotka.net/weblog/default,month,2010-06.aspx">http://www.lhotka.net/weblog/default,month,2010-06.aspx</a></p>
+<p>Jav</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Wednesday, July 28, 2010</h2><p>Thanks for the reference, Jav.</p>
+<p>I don&#39;t think that&#39;s the problem - I can&#39;t find a Valid property anywhere on my BO or its properties.</p>
+<p>Very strange ...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 28, 2010</h2><p>&quot;Valid&quot; isn&#39;t a property - it is the name of a visual state. PropertyStatus (before CSLA 4) had a visual state called &#39;Valid&quot; - but Silverlight 4 now treats that as a kind of reserved state name and that&#39;s the problem.</p>
+<p>So any control in SL4 that has a state named &quot;Valid&quot; will fail. That includes older PropertyStatus implementations from CSLA 3.x, since they target SL2 or SL3 where that&#39;s not a reserved state name.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Thursday, July 29, 2010</h2><p>Hi, Rocky.</p>
+<p>I am using the latest version of the &nbsp;CSLA 4 release - so, this problem should have been resolved, and not rearing its ugly head, right?</p>
+<p>Otherwise - perhaps something got lost in a regression test ...?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Friday, July 30, 2010</h2><p>Hi Rocky,</p>
+<p>I too am using the lastest CSLA 4.0 and am encountering intermittant PropertyStatus visibility issues. Sometimes it is visible when it shouldn&#39;t be and sometimes it is invisible when it shouldn&#39;t be. Also, my project is a WPF application.</p>
+<p>When the&nbsp;PropertyStatus is visible and it shouldn&#39;t be the object is Savable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 30, 2010</h2><p>I don&#39;t have a repro of the issue on the SL side. I have SL apps that are working fine, but none that are failing, which makes debugging a challenge.</p>
+<p>I haven&#39;t tried to repro this on the WPF side, but the code is the same on both platforms.</p>
+<p>So I suspect there&#39;s some logic issue where the control gets confused. Something I&#39;m not encountering in my scenarios.</p>
+<p>Can either of you create a small, isolated repro - including the manual steps required by the user to cause failure?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Saturday, July 31, 2010</h2><p>Hi Rocky.</p>
+<p>I have created a small SL application that reproduces the issue.</p>
+<p>How can I get the source to you?</p>
+<p>Cheers!</p>
+<p>- Greg</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 31, 2010</h2><p>Either attach it to a post, or email it to me at rocky at lhotka dot net.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Saturday, July 31, 2010</h2><p>Due to the attachment size I&#39;ve sent it to you via YouSendIt.com.</p>
+<p>Cheers!</p>
+<p>- Greg</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 04, 2010</h2><p>I believe the problem is solved with the code I&#39;ve now checked into svn.</p>
+<p><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Source/Csla.Xaml/PropertyStatus.cs?view=markup">http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Source/Csla.Xaml/PropertyStatus.cs?view=markup</a></p>
+<p>Can you give this a try and confirm?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Wednesday, August 04, 2010</h2><p>Hi Rocky.</p>
+<p>I replaced the PropertyStatus.cs file with the file checked into svn and rebuilt CSLA then re-ran my test project.</p>
+<p>Unfortunately the problem still manifests - same as before.</p>
+<p>Back to the drawing board! :-(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 04, 2010</h2><p>OK, I see the difference - you are referencing via Path=Model.Property and my test (that I thought duplicated yours) does Path=Property.</p>
+<p>So my fix fixed roughly half the problem.</p>
+<p>Try the now-current code please - I think I got the whole problem solved now.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GregDobbs replied on Wednesday, August 04, 2010</h2><p>This one&#39;s turning into an ogre ... still seeing the same problem in my test solution with revision 4955.</p>
+<p>I&#39;ll try poking around - my C#&#39;s not so good though.</p>
+<p>Cheers!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 05, 2010</h2><p>It would be easy to fix if I abandoned some of the optimization code I added a while back - but I really don&#39;t want to do that except as a last resort.</p>
+<p>I&#39;m really surprised that this latest change didn&#39;t fix the issue - I replicated your scenario (I think) exactly and was able to get a repro and then fix it.</p>
+<p>Your sample app requires more setup that I have had time for - it requires some hookup into IIS that I don&#39;t know how to do off the top of my head. So I&#39;ve been reading your XAML and creating the same basic scenario in my test app.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, August 05, 2010</h2><p>Greg,</p>
+<p>Are you refreshing your Csla.xaml references by selecting the dll from Csla\bin again?</p>
+<p>Jav</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 05, 2010</h2><p>Greg,</p>
+<p>If you can, try setting&nbsp; a breakpoint in the SetSource() method of PropertyStatus. That&#39;s the method I&#39;ve been focusing on, because the problem is that the control wasn&#39;t detecting when the data source changed in a couple scenarios.</p>
+<p>Specifically, it was able to see the data source changing if the binding changed - but that wasn&#39;t enough.</p>
+<p>So I made it also detect that the DataContext changed - which solved one scenario (the Path=<em>property</em> scenario).</p>
+<p>But your XAML was Path=Model.<em>property</em> so neither the binding or DataContext change - it is the lower-level Model property that is changing. So my latest change was to implement logic like this:</p>
+<p>Rebind to the source if:</p>
+<ol>
+<li>The binding is different</li>
+<li>The DataContext is different</li>
+<li>The SetSource() method was called and the bound property value didn&#39;t change (which means <em>something else</em> changed - almost certainly the source object)</li>
+</ol>
+<p>In my test apps (SL and WPF) this latest change works with the Path=<em>property</em> and Path=Model.<em>property</em> scenarios.</p>
+<p>Somehow there must be some subtle difference in your code that isn&#39;t obvious from the XAML.</p>
+<p>If you can put a breakpoint in SetSource() you can step through the first 4 lines or so - up to the if statement that checks the conditions I just listed - then you can maybe see why it isn&#39;t rebinding to the source in your particular case.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

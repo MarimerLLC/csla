@@ -1,0 +1,15 @@
+<html><header><title>private specifier for primery key's setter property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>private specifier for primery key's setter property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11877.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Tuesday, March 12, 2013</h2><p>I have created a CSLA application containing&nbsp;a BusinessBase class as DesignationEdit.It has only 2 properties:Id(Pk),Description.Application runs successfully.It displays a list of Designation &amp; adds a new Designation.</p>
+<p>When&nbsp;editing an existing designation,i am getting an error as <strong>&quot; Designation Id:Attempt by method System.Windows.CLRPropertyListener.set_Value(System.Object) to access method ProjectManagement.Library.DesignationEdit.set_Id(int 32) failed. &quot;</strong></p>
+<p>The property declaration of Designation Id is:</p>
+<p>public static readonly PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(c=&gt;c.Id);</p>
+<p>public int Id</p>
+<p>{</p>
+<p>get { return GetProperty(IdProperty);}</p>
+<p><strong>private</strong> set {LoadProperty(IdProperty,value);}</p>
+<p>}</p>
+<p>When i remove the <strong>private</strong> specifier from property setter,the error disappers.But i dont&nbsp;want to remove it. Then How to handle this error?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 12, 2013</h2><p>Hi,</p>
+<p>A: if using Xaml - then make sure to make a one-way data binding or </p>
+<p>B: Add Authz rule / override CanWriteProperty to return false for this property when object is &quot;not New&quot;<br />&nbsp;&nbsp;&nbsp; and make the property setter public. This will make the SetProperty throw an Exception that you are not allowed to Edit field. <br />&nbsp;&nbsp;&nbsp; You can then enhance UI further by using PropertyInfo and bind&nbsp;&quot;Disabled&quot; or &quot;ReadOnly&quot; to the PropertyInfo (when CanWriteProperty returns false). </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Tuesday, March 12, 2013</h2><p>Hi Jonny...</p>
+<p>I made <strong>Mode=one way</strong> in the xaml for Id proeprty &amp; it worked for me..</p>
+<p>Thanks for your help..</p>
+<p>Have a great time..</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

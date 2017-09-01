@@ -1,0 +1,70 @@
+<html><header><title>Suggestions needed on design</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Suggestions needed on design</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2788.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, April 26, 2007</h2>Hi,<br><br>I have a program which right now is just a contact management system.&nbsp; I'm adding quoting, ordering and invoicing functionality to the progrm as well, so that my users can use one program to do everything.<br><br>As part of the use case for editing documents, users must fill out sold to, bill to, and ship to information.&nbsp; They can enter data free form, or they can select a contact or department.&nbsp;&nbsp;&nbsp; So far, so good.<br><br>I designed assemblies so that the contacts portion is seperate from the quoting portion.&nbsp; In the few instances the layers need to communicate, I have defined interfaces to allow them the communicate indirectly.&nbsp; <br><br>Here's the part I'm having trouble with.&nbsp; As part of the use case, the users would like to be able to save changes made in the document screen back to the contact.&nbsp; The document doesn't require any particular fields, such as first name and last name, but the contact module does require those fields.&nbsp; Also, there should be a button to pull the current contact information from the system (as the document keeps its own copy of this data, because its sometimes changed for only this particular order, and later to maintain history).&nbsp; <br><br>My problem is, how do I give this functionality to the users?&nbsp; The quoting assembly doesn't know the rules for editing a contact, but they still need to be enforced if the user elects to save changes back to the main contact record.&nbsp; <br><br>I could merge the assemblies, but I'd like that as a last resort.&nbsp; The reason is that other applications may share some of the same use cases, and ideally they would not need to reference an assembly only to use 10% of its functionality. <br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Friday, April 27, 2007</h2>Hi,<br><br>If multiple apps (or separate modules of 1 app) need the same business logic then I guess it is perfectly valid to make each them have (direct) access to this logic. That's the whole point of reuse, right?<br><br>So I think putting interfaces in-between is just making simple things overly hard. in this particular case Although I do agree that interfaces are good for decoupling modules, in this case both modules simply require direct access to the logic imo.<br><br>If you say only 10% of your contacts module is actually candidate for reuse, then why not make an additional module to put all the shared BOs in? This 'shared' (or 'common') library would then contain this 10% that you wish to be reused, the other 90% can stay in a 'dedicated' contacts module and your quoting/financing/etc. module can reuse the 10%.<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 27, 2007</h2><P>Another way to look at this, if you really want to keep strict separation, is to use service-oriented concepts to interact between your assemblies.</P>
+<P>In other words, your Contact assembly could expose a "service-oriented" interface (not web services or anything - just message-based) where a caller can call the service to request a change to the Contact data. Then the change would occur inside the contact assembly, where the rules could be enforced.</P>
+<P>To do this, your Contact assembly would expose a DTO (message or data contract) and an interface with an UpdateContact() method that accepts that DTO. The caller would put the data into the DTO and call the method (service), and the work would occur in the Contact assembly.</P>
+<P>If you want to be even cleaner, you could create a ContactService assembly that would be, technically, a UI layer. This is where you'd put the DTO, interface and service implementation.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 11, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>If you want to be even cleaner, you could create a ContactService assembly that would be, technically, a UI layer. This is where you'd put the DTO, interface and service implementation.</div></BLOCKQUOTE><br><br>This is the method I'm going to pursue.&nbsp; It sounds like a nice clean way to acomplish the seperation I'm shooting for.&nbsp; I have one last question regarding this topic though:&nbsp; how to I communicate the broken rules back to the UI?&nbsp; I'll need a way to tell the user why the update will not work.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, you have hit on the major drawback to this SOA-style
+approach&#8230; The thin client is dumber than a rock &#8211; much like a
+typical web browser.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you have the same options the web world has, which means that
+you can <o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Duplicate some/all of the logic in the client application (remember,
+it is a separate app from the service app &#8211; so don&#8217;t share code or
+you&#8217;ll get into a versioning nightmare)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use a &#8220;block mode&#8221; approach where the user enters
+data, sends it all to the server and gets a laundry list of issues back<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Send data to the service field-by-field for validation (NOT
+RECOMMENDED, AND NOT SERVICE-ORIENTED)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Even if you do #1, btw, you still have to do #2, because the
+service itself must obviously be self-sufficient.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This means that your contract definition must include both
+client-&gt;server requests, server-&gt;client response, where &#8220;response&#8221;
+includes details about success or failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, May 16, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Use a “block mode” approach where the user enters
+data, sends it all to the server and gets a laundry list of issues back</div></BLOCKQUOTE><br><br>This is the approach I will take.&nbsp; The 'services' layer will be mearly a thin wrapper around the contacts assembly.&nbsp; So the method will function much like a TryParse, returning true or false to indicate success and the second parameter is an 'out' of BrokenRulesCollection.<br><br>Thanks for the feedback!<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, April 30, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Hi,<BR><BR>Here's the part I'm having trouble with.&nbsp; As part of the use case, the users would like to be able to save changes made in the document screen back to the contact.&nbsp; The document doesn't require any particular fields, such as first name and last name, but the contact module does require those fields.&nbsp; </div></BLOCKQUOTE></P>
+<P>Um...&nbsp; Why not have them fill in the correct fields (first name, last name,&nbsp;etc.)&nbsp;as part of the document?&nbsp; Then it would be simple.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 30, 2007</h2><P>The answer is just as simple; that's not the requirement for the contact information on a document.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, April 30, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>
+<P>The answer is just as simple; that's not the requirement for the contact information on a document.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Should it be? :)</P>
+<P>Even if it isn't, with a bit of ingenuity I bet you could set up the document&nbsp;UI so that users could free-form things or fill in the data into mapped fields, as they chose.&nbsp; You could even use the same fields.</P>
+<P>Just a thought.&nbsp; Use or ignore as you please!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

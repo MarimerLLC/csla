@@ -1,0 +1,149 @@
+<html><header><title>DataPortal.Delete&lt;T&gt;(object criteria) Why not? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Delete&lt;T&gt;(object criteria) Why not? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3283.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Saturday, July 28, 2007</h2><P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>I implemented an Editable Root, it has DataPortal_Delete method<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>private void DataPortal_Delete(int Id)<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>{<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>}<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>And<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>public&nbsp;static void Delete(int Id)<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>{<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Delete(Id);<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>}<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><O:P>&nbsp;</O:P></SPAN></FONT><FONT face=Arial color=navy size=2><SPAN>It don’t work because “DataPortal.Delete” find method by </SPAN></FONT><FONT face="Courier New" size=2><SPAN>GetObjectType(<FONT color=blue><SPAN>object</SPAN></FONT> criteria), while criteria’s type is int.<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Courier New" size=2><SPAN><O:P>&nbsp;</O:P></SPAN></FONT><FONT face="Courier New" size=2><SPAN>I think Csla should be implemented DataPortal.Delete&lt;T&gt;(object criteria) method<O:P></O:P></SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Courier New" size=2><SPAN><O:P>&nbsp;</O:P></SPAN></FONT><FONT face="Courier New" size=2><SPAN>Thanks.</SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 28, 2007</h2><P>Criteria must always be transported to the DataPortal_XYZ methods in a criteria object of your design. You can never pass simple types directly.</P>
+<P>The reason is that the criteria <EM>always</EM> includes at least <EM>two</EM> pieces of information:</P>
+<OL>
+<LI>The type of the business object</LI>
+<LI>The criteria data you provide</LI></OL>
+<P>Even in the case of Create() or Fetch(), both those pieces of information are carried, and you can not pass a simple type to those methods either. You can pass <EM>no parameter at all</EM>, or you can pass a criteria object of your design.</P>
+<P>In the case of delete, it is hard to see where it could ever make sense to pass <EM>no parameter</EM>, because you wouldn't know what to delete, and so the only option is to pass a criteria object of your design.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Sunday, July 29, 2007</h2>
+
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>Currently, Csla has DataPortal.Fetch&lt;T&gt;(object criteria) with T provides </SPAN></FONT><B><SPAN>The type of the business object</SPAN></B> and criteria provides <B><SPAN>The criteria data you provide.<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=3><SPAN>I always call DataPortal.Fetch&lt;T&gt;(int id) with simple type int, it’s OK!<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=3><SPAN>I think DataPortal.Delete&lt;T&gt; the same way.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face="Times New Roman" size=3><SPAN>Thanks Rock and Csla.</SPAN></FONT></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 29, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If that works you are lucky. It is not designed to work, and
+doing that is not supported.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In fact, the type int is a &#8220;magic type&#8221; if you look
+at how the data portal operates. No other primitive type will work like that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I _<i>strongly</i>_ recommend you only pass criteria objects as parameters.
+You are just asking for your code to break in some future release of CSLA if
+you pass anything else.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Pham Huu Le Quoc
+Phuc [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, July 29, 2007 10:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] DataPortal.Delete(object criteria) Why not?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Currently,
+Csla has DataPortal.Fetch&lt;T&gt;(object criteria) with T provides </span><b>The
+type of the business object</b> and criteria provides <b>The criteria data you
+provide.<o:p></o:p></b></p>
+
+<p class=MsoNormal>I always call DataPortal.Fetch&lt;T&gt;(int id) with simple
+type int, it&#8217;s OK!<o:p></o:p></p>
+
+<p class=MsoNormal>I think DataPortal.Delete&lt;T&gt; the same way.<o:p></o:p></p>
+
+<p class=MsoNormal>Thanks Rock and Csla.<o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;<o:p></o:p></span></p>
+
+<div>
+
+<div class=MsoNormal align=center>
+
+<hr align=center>
+
+</div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, July 28, 2007 10:03 PM<br>
+<b>To:</b> phucphlq@dsp.com.vn<br>
+<b>Subject:</b> Re: [CSLA .NET] DataPortal.Delete&lt;T&gt;(object criteria) Why
+not?</span><o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Criteria must always be transported to the DataPortal_XYZ methods in a
+criteria object of your design. You can never pass simple types directly.<o:p></o:p></p>
+
+<p>The reason is that the criteria <em>always</em> includes at least <em>two</em>
+pieces of information:<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>The type of the business object<o:p></o:p></li>
+ <li class=MsoNormal>The criteria data you provide<o:p></o:p></li>
+</ol>
+
+<p>Even in the case of Create() or Fetch(), both those pieces of information
+are carried, and you can not pass a simple type to those methods either. You
+can pass <em>no parameter at all</em>, or you can pass a criteria object of
+your design.<o:p></o:p></p>
+
+<p>In the case of delete, it is hard to see where it could ever make sense to
+pass <em>no parameter</em>, because you wouldn't know what to delete, and so
+the only option is to pass a criteria object of your design.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

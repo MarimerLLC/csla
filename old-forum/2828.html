@@ -1,0 +1,68 @@
+<html><header><title>CSLA .NET 3.0 test release #4 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.0 test release #4 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2828.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Saturday, May 05, 2007</h2><P>I have put a test version of CSLA .NET version 3.0 up for download from the <A href="http://www.lhotka.net/weblog/ct.ashx?id=7604335f-aea1-4056-a319-5520c4263676&amp;url=http%3a%2f%2fwww.lhotka.net%2fcslanet%2fdownload.aspx"><STRONG>download page</STRONG></A>.</P>
+<P>This release includes both VB and C# versions of CSLA .NET 3.0, though the WPF support in the VB version has undergone relatively little testing.</P>
+<P>The C# ProjectTracker sample is relatively complete, though I'm still chasing down some WPF navigation issues, and may change it over to a Windows-based approach.</P>
+<P>The VB ProjectTracker sample isn't as complete, but I've included it in the download nonetheless.</P>
+<P>I expect that this is the last pre-release of the CSLA .NET 3.0 framework itself - the next release will be a beta release, and it is my hope to be done with 3.0 by the end of June. If you have the time and inclination, please download the framework and give it a try.</P>
+<P>You should be aware that CSLA .NET 3.0 should work just fine on machines with only .NET 2.0, or with .NET 2.0 and 3.0 installed. It also works fine on Orcas Beta 1 (with .NET 2.0, 3.0 and 3.5 installed), though you'll have to upgrade the solution if you try to open it in VS Orcas. </P>
+<P>Obviously if you only have .NET 2.0 installed, you can't use WCF or WPF. Attempting to use those features in CSLA .NET will result in compile or runtime errors. However, there are numerous bug fixes and enhancements to other areas of CSLA .NET that may benefit .NET 2.0 users. If you find that CSLA .NET 3.0 doesn't work for you under .NET 2.0 (without .NET 3.0 installed) please let me know so I can address any issues.</P>
+<P>I am not aware of any breaking changes from CSLA .NET 2.1, so switching an existing project to use CSLA .NET 3.0 should be straightforward. If it is not, please let me know so I can either address or document any issues.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ioannis replied on Monday, May 07, 2007</h2><P>Hi Rocky, </P>
+<P>I've just noticed a slight "typo" in CommonRules.IntegerMaxValue. </P>
+<P>"max.ToString()" is still used instead of the "outValue" <BR>when formating the Description property of the RuleArgs object.</P>
+<P>Regards <BR>Ioannis</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 07, 2007</h2><P>Awesome! Thanks for finding that and letting me know. </P>
+<P>This is exactly why I do the test releases, and I really appreciate the help finding any issues!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, May 07, 2007</h2>So is CSLA.net 3.0 intended to coincide with the Visual Studio Orcas?&nbsp; or will it just be done when its done?&nbsp; Also, will there be a new book?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA .NET 3.0 will be done when it is done. It won&#8217;t
+require Visual Studio Orcas, but it will work with Orcas.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There may be a new book. I&#8217;m talking with Apress about it.
+Any new book would cover .NET 3.0+3.5 and C# 3.0 and VB 9.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The challenge is whether I just add all this new content to the
+current book (expanding its size and cost), or somehow create a new book that
+ignores the older stuff (Windows Forms, ASP.NET, etc). The coverage of CSLA has
+grown to the point that the book becomes challenging (to say the least), and
+yet it remains an important part of the overall environment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I could also do another ebook covering the changes from 2.1 to
+3.0. Or a &#8220;real&#8221; book through Apress covering 2.1 to 3.0.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Many options &#8211; the trick is figuring out which makes sense
+to the community, to me and to Apress.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+<div>
+
+<p><o:p>&nbsp;</o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

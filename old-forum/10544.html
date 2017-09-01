@@ -1,0 +1,114 @@
+<html><header><title>ViewModelBase &amp; Per-Instance Edit/Delete Authorization Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModelBase &amp; Per-Instance Edit/Delete Authorization Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10544.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Thursday, July 21, 2011</h2><p>I have added some instance authorization rules that allow Edit &amp; Delete based on the state of a BusinessBase object. A shorthand example:</p>
+<p>&nbsp;</p>
+<p>protected override void AddBusinessRules()<br />{<br />&nbsp; &nbsp; this.BusinessRules.AddRule(new MyEditRule(AuthorizationActions.EditObject));<br />&nbsp; &nbsp; this.BusinessRules.AddRule(new MyDeleteRule(AuthorizationActions.DeleteObject));<br />}</p>
+<p>private class MyEditRule : Csla.Rules.AuthorizationRule<br />{<br />&nbsp; &nbsp; &nbsp; &nbsp; public MyEditRule()&nbsp; : base(AuthorizationActions.EditObject)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp; &nbsp; protected override void Execute(AuthorizationContext context)<br />&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; var target = (MyEditObject)context.Target;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; if (target != null)<br />&nbsp; &nbsp; &nbsp; &nbsp; {<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.HasPermission = target.Status != ObjectStatus.Locked;<br />&nbsp; &nbsp; &nbsp; &nbsp; }<br />&nbsp; &nbsp; }<br />}</p>
+<p>&nbsp;</p>
+<p>I found that ViewModelBase.SetProperties() only took account of the Per-Type rules and my Save &amp; Delete buttons were still enabled when the state of the object dictated that they should have been disabled. This would be a suggested changed to SetProperties()</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Does Model instance implement ITrackStatus&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (targetObject != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var canEditInstance = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.EditObject, targetObject);</strong></p>
+<p><strong>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var canDeleteInstance = Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, targetObject);</strong></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanSave = CanEditObject &amp;&amp; targetObject.IsSavable &amp;&amp; !isObjectBusy <strong>&amp;&amp; canEditInstance</strong>;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanCancel = CanEditObject &amp;&amp; targetObject.IsDirty &amp;&amp; !isObjectBusy;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanCreate = CanCreateObject &amp;&amp; !targetObject.IsDirty &amp;&amp; !isObjectBusy;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanDelete = CanDeleteObject &amp;&amp; !isObjectBusy <strong>&amp;&amp; canDeleteInstance</strong>;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanFetch = CanGetObject &amp;&amp; !targetObject.IsDirty &amp;&amp; !isObjectBusy;</p>
+<div></div>
+<div></div>
+<div>I also found I needed a new property ViewModelBase.CanEdit, that could be bound to my control IsEnabled property, so that all the UI text boxes could be disabled in one hit. &nbsp;ViewModelBase.CanSave can not be used because it is False when a fetched object that is not dirty (but editable) is displayed, therefore disabling the UI text boxes. &nbsp;This would also be updated in&nbsp;ViewModelBase.SetProperties()</div>
+<div></div>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanEdit = CanEditObject &amp;&amp; !isObjectBusy &amp;&amp; canEditInstance;</p>
+<div></div>
+<div>On another note I did notice is that&nbsp;MyEditRule.Execute() is called multiple times regardless of the value of MyEditRule.CacheResult.</div>
+<div></div>
+<div>
+<p>Would this be a sensible change?</p>
+<div></div>
+</div>
+<div></div>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 21, 2011</h2><p>Hmmmmmm....</p>
+<p>Could this have something to do with events that ViewModelBase hook into (or missing an event) or that you should also add Authz rules for CreateObject? . </p>
+<p>At first glance ViewModelBase only checks the Per-Type Authz rules but IsSavable checks the Per-Instance rules.<br />Please note -&nbsp; as implemented in Csla you should probably add the MyEditRule for both CreateObject and EditObject actions. </p>
+<p>CanDelete is (IMO) coded to map in the same way as DataPortal.Delete (immediate deletion) which does not know the actual object.<br />Deferred deletion occurs in Save and IsSavable will test for authorization. </p>
+<p>Delete in BusinessBase does not check for type authz rules. I don&#39;t know why - maybe Rocky will provide his thougts?</p>
+<p>Your per-instance Authz rules must also set CanCache to false (in order to refresh) </p>
+<pre style="font-family:Consolas;font-size:13px;color:white;background:none repeat scroll 0% 0% #39322d;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">override</span>&nbsp;<span style="color:#d29d60;">bool</span>&nbsp;<span style="color:#e8e8e8;">CacheResult</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">return</span>&nbsp;<span style="color:#d29d60;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And this should enforce the per-type authz rules in Csla.Core.BusinessBase.cs:</p>
+<pre style="font-family:Consolas;font-size:13px;color:white;background:none repeat scroll 0% 0% #39322d;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">public</span>&nbsp;<span style="color:#d29d60;">virtual</span>&nbsp;<span style="color:#d29d60;">bool</span>&nbsp;<span style="color:#e8e8e8;">IsSavable</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">get</span>&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">bool</span>&nbsp;<span style="color:#e8e8e8;">auth</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">IsDeleted</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">auth</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">Csla</span>.<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">BusinessRules</span>.<span style="color:#e8e8e8;">HasPermission</span>(<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">AuthorizationActions</span>.<span style="color:#e8e8e8;">DeleteObject</span>,&nbsp;<span style="color:#d29d60;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">else</span>&nbsp;<span style="color:#d29d60;">if</span>&nbsp;(<span style="color:#e8e8e8;">IsNew</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">auth</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">Csla</span>.<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">BusinessRules</span>.<span style="color:#e8e8e8;">HasPermission</span>(<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">AuthorizationActions</span>.<span style="color:#e8e8e8;">CreateObject</span>,&nbsp;<span style="color:#d29d60;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">auth</span>&nbsp;=&nbsp;<span style="color:#e8e8e8;">Csla</span>.<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">BusinessRules</span>.<span style="color:#e8e8e8;">HasPermission</span>(<span style="color:#e8e8e8;">Rules</span>.<span style="color:#85bbcc;">AuthorizationActions</span>.<span style="color:#e8e8e8;">EditObject</span>,&nbsp;<span style="color:#d29d60;">this</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#d29d60;">return</span>&nbsp;(<span style="color:#e8e8e8;">auth</span>&nbsp;&amp;&amp;&nbsp;<span style="color:#e8e8e8;">IsDirty</span>&nbsp;&amp;&amp;&nbsp;<span style="color:#e8e8e8;">IsValid</span>&nbsp;&amp;&amp;&nbsp;!<span style="color:#e8e8e8;">IsBusy</span>);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, July 21, 2011</h2><p>Hi Jonny,</p>
+<p>&nbsp;</p>
+<p>Thanks for your quick reply.</p>
+<p>&nbsp;</p>
+<p>You are correct with CanSave, my additional check is not necessary as it is already called within IsSavable(). &nbsp;I was going by the ITrackStatus.IsSavable comment and did not think to check the implementation!</p>
+<p><span>I think there is confusion (I get confused anyway!) because ViewModel.Delete/ViewModelBase.DoDelete call the (deferred deletion) Delete() method on an *instance*, whereas CanDelete is set on a (immediate deletion) *type* basis. &nbsp;I think as&nbsp;</span>ViewModel.Delete/ViewModelBase.DoDelete work on an instance,&nbsp;<span>CanDelete should also be set based on that instance. &nbsp;</span></p>
+<p>ViewModel.cs:</p>
+<p>&nbsp; &nbsp; /// &lt;summary&gt;<br />&nbsp; &nbsp; /// Marks the Model for deletion (if it is an<br />&nbsp; &nbsp; /// editable root object).<br />&nbsp; &nbsp; /// &lt;/summary&gt;<br />&nbsp; &nbsp; public virtual void Delete(object sender, ExecuteEventArgs e)&nbsp; &nbsp; {&nbsp; &nbsp; &nbsp; DoDelete();&nbsp; &nbsp; }</p>
+<p>ViewModelBase.cs:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;summary&gt;<br />&nbsp; &nbsp; &nbsp; &nbsp; /// Marks the Model for deletion (if it is an<br />&nbsp; &nbsp; &nbsp; &nbsp; /// editable root object).<br />&nbsp; &nbsp; &nbsp; &nbsp; /// &lt;/summary&gt;<br />&nbsp; &nbsp; &nbsp; &nbsp; protected virtual void DoDelete()&nbsp; &nbsp; &nbsp; &nbsp; {&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ((Csla.Core.IEditableBusinessObject)Model).Delete();&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>I will pull out your latest version of ViewModelBase from svn and that will allow me to override CanDelete as I think appropriate.</p>
+<p>&nbsp;</p>
+<p>With regard to CacheResult, I left this as the default True value in my auth rule (the rule is based on a state that does not change after it has been pulled from the database). &nbsp;I did notice that&nbsp;AuthorizationRule.Execute was being called each time ViewModelBase.SetProperties (and therefore&nbsp;&nbsp;ITrackStatus.IsSavable) was called even though CacheResult was true. &nbsp;I&#39;m not sure if this is by design, but I was not expecting it, so I though it was worth mentioning.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 21, 2011</h2><p>http://www.lhotka.net/cslabugs/edit_bug.aspx?id=940Yes, I had to look more deeply into it here too. </p>
+<p>The Authorization caching is actually builtin to the </p>
+<ul>
+<li>CanReadProperty</li>
+<li>CanwriteProperty</li>
+<li>CanExecuteMethod</li>
+</ul>
+<p>so each time you call BusinessRules.HasPermission the rules are always executed (no matter what CacheResult says). </p>
+<p>I agree - It&#39;s easy to get confused about the immediate/deferred deletion handling. <br /><b>Maybe it would be appropriate to have separate CanDeleteXYZ flags for each type of Delete or follow your code when Model is set? </b></p>
+<p><b>Anyway - you can now easily override this yourself , so at least there is a workaround/extension point available. <br /></b></p>
+<p>I do agree that Csla should test for instance rules on CanDelete in ViewModelBase.</p>
+<p>Added to Issue tracker: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=940">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=940</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, July 21, 2011</h2><p>Thanks.</p>
+<p>&nbsp;</p>
+<p>By the way:</p>
+<p>I have download the latest version of ViewModelBase from svn. &nbsp;Line 796 is calling SetProperties() when I think it should be calling *On*SetProperties()</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, July 21, 2011</h2><p>Hi Jonny,</p>
+<p>2 more things...</p>
+<p>&nbsp;</p>
+<p>The setters for the virtualized CanXXX properties should be changed from private to protected so the value can be updated from a derived class.</p>
+<p>&nbsp;</p>
+<p>(Cheeky one :-) ) Now that I have you thinking CanDelete should be set based on the instance, you may like to reconsider also taking instance.IsNew into account, as you can&#39;t really delete an object that IsNew.</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanDelete = CanDeleteObject &amp;&amp; !isObjectBusy &amp;&amp; !targetObject.IsNew<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &amp;&amp; Csla.Rules.BusinessRules.HasPermission(Csla.Rules.AuthorizationActions.DeleteObject, targetObject);</p>
+<div></div>
+<div>Cheers</div>
+<div></div>
+<div>Peran</div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

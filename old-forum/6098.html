@@ -1,0 +1,147 @@
+<html><header><title>FieldManager.FieldExists method always returns true after Save</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldManager.FieldExists method always returns true after Save</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6098.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile posted on Wednesday, January 07, 2009</h2><P>We use a FieldManager.FieldExists check within our business classes to lazy-load some child properties, but after upgrading to CSLA 3.6 we noticed that&nbsp;the method always returns true after&nbsp;the root&nbsp;object has been saved.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 07, 2009</h2><P>To be sure I understand:</P>
+<OL>
+<LI>You have a parent object, with a lazy loaded child property.</LI>
+<LI>This property is never retrieved or set and so doesn't "exist"</LI>
+<LI>Your data access code doesn't access the property</LI>
+<LI>After the save operation the property "exists"</LI></OL>
+<P>How are you saving your child objects? Using the field manager helper method?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile replied on Wednesday, January 07, 2009</h2><P>1. Correct, we have a root object and a lazy-loaded collection of child objects property<BR>2. Correct<BR>3. We use DataPortal.UpdateChild(ReadProperty&lt;ChildCollection&gt;(Children), this, cn) method call to update the child collection - this may be where the issue is...<BR>4. Correct, the FieldManager.FieldExists method returns true, but the property value is null since it was never loaded</P>
+<P>Seems like our problem is related to DataPortal.UpdateChild call for the lazy-loaded property. I'll verify and post an update.</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile replied on Wednesday, January 07, 2009</h2><P>Yes! Wrapping the DataPortal.UpdateChild call for the lazy-loaded child&nbsp;property inside of a if(FieldManager.FieldExists(ChildCollectionProperty)){...} block fixed the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ok, I&#8217;ll add a bug to the tracker so this gets fixed &#8211;
+thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> basile
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 07, 2009 3:39 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] FieldManager.FieldExists method always returns
+true after Save<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes! Wrapping the DataPortal.UpdateChild call for the lazy-loaded
+child&nbsp;property inside of a
+if(FieldManager.FieldExists(ChildCollectionProperty)){...} block fixed the
+issue.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s my guess as well, and if you can confirm it that&#8217;d
+be great! Thank you!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 08, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>basile:</strong></div><div><p>3. We use DataPortal.UpdateChild(ReadProperty&lt;ChildCollection&gt;(Children), this, cn) method call to update the child collection - this may be where the issue is...</div></BLOCKQUOTE></p><p>What if you did:</p><p>FieldManager.UpdateChildren( this, cn );</p><p>Does that have the same effect?&nbsp; Just curious.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile replied on Thursday, January 08, 2009</h2><P>@ajj3085: I just tried&nbsp;using FieldManager.UpdateChildren(this, cn) and it is working properly for lazy-loaded properties and is not causing the mentioned issue. Unfortunately, we aren't able to use this method since DataPortal method signatures are not the same for all&nbsp;of the child properties :(</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 08, 2009</h2>Ahh, I see.&nbsp; Thanks for that info, I was curious how it would work myself.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, in that case this isn&#8217;t a bug with CSLA &#8211; it is
+a bug with your code. I didn&#8217;t immediately follow what you were doing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you manually call the DataPortal method, you are accessing
+the field in your code &#8211; which triggers the creation of the field. So you
+do need to wrap that code with an exists check to avoid the issue. There&#8217;s
+really nothing CSLA can do for you in that case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> basile
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 08, 2009 7:56 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] FieldManager.FieldExists method always returns
+true after Save<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>@ajj3085: I just tried&nbsp;using FieldManager.UpdateChildren(this, cn) and
+it is working properly for lazy-loaded properties and is not causing the
+mentioned issue. Unfortunately, we aren't able to use this method since
+DataPortal method signatures are not the same for all&nbsp;of the child properties
+:(<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>basile replied on Thursday, January 08, 2009</h2>OK, thanks for the information, we are already started wrapping all lazy-loaded property UpdateChild calls inside of FieldManager.FieldExists blocks</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>&quot;Smart&quot; Inline SQL or Stored Procedures?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Smart&quot; Inline SQL or Stored Procedures?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2931.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Tuesday, May 22, 2007</h2><P>There's an interesting debate in our office and I wanted to see how you all felt. This is for a Web application.</P>
+<P>One option for committing changes is to:</P>
+<UL>
+<LI>Clone the object up-front</LI>
+<LI>Make comparisons to see what has changed in the object (there will be an internal data class that replaces to some respect the private fields)</LI>
+<LI>Attempt to create a "smart" inline SQL that only reflects updated columns. </LI>
+<LI>Update via the inline SQL. </LI></UL>
+<P>The other option is to:</P>
+<UL>
+<LI>Not clone the object up front -just add all parameters to the stored procedure.</LI>
+<LI>(some of these parameters may be unchanged memo fields.. up to 500/1000 characters, etc).</LI>
+<LI>Update via stored procedure. </LI></UL>
+<P>I find in my tests that without memo fields, SPs are actually a little faster. With a test considering some memo fields (10% of fields being 1500 chars), then inline outperforms SPs handily.</P>
+<P>But I really suspect that the clone can tend to get somewhat expensive with larger objects. Not to mention the comparision of all the properties to construct the "smart" sql. I suspect SPs are in the end - faster. </P>
+<P>I don't want to invoke a large scale war... just a small scale one :). Anyone have any thoughts on this subject??</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 22, 2007</h2><P>You could encapsulate the 'expensive' fields into a helper BO.&nbsp; That would require two database hits, but if its uncommon for those memo fields to change, it could be worth it.</P>
+<P>Your tests showing SPs to be faster are likely misleading you; Sql Server doesn't handle dynamic sql vs.a proc any differently.&nbsp; The fact that you're creating a different ad-hoc query each time will hurt performance, because an execution plan will need to be created for each different statement.&nbsp; Using inline sql that is the SAME (that is, # fields, ordering, same from / where clause, etc) each time should result in performance the same as a proc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, May 22, 2007</h2><P>I think the reason why the SPs are a little faster for updates (w/o large fields) is because of the fact that the constructed updates differ and perhaps don't have an execution plan (compared to an update sproc) - perhaps as various permutations occur (in a 20 field BO, a lot of permutations of field changes can occur) then various execution plans perhaps build up?</P>
+<P>Anyways, thanks for the answer. </P>
+<P>&nbsp;</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

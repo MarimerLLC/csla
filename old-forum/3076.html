@@ -1,0 +1,12 @@
+<html><header><title>Naming of namespace - specifically the extension of Csla</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Naming of namespace - specifically the extension of Csla</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3076.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Friday, June 22, 2007</h2><P>Obviously we have:</P>
+<P>Csla, Csla.Validation, Csla.Core, etc. --&gt; from Csla.dll</P>
+<P>Initially the extension project&nbsp;to Csla was named: CompanyName.Csla. </P>
+<P>So, there is CompanyName.Csla, CompanyName.Csla.Validation, etc. </P>
+<P>This causes an issue when Csla.dll and CompanyName.Csla.dll are included. Intellisense becomes really messed up. Anything beginning with Csla (including references to Csla.Core, Csla.Validation, etc) fail because it's looking for them in the CompanyName.Csla... namespace.</P>
+<P>One alternative to this is to alias the namespace - such as using CSLA = Csla, and then using CSLA whenever using Csla.dll classes - which I am not entirely fond of. What is the best practice for this? Is it just being careful with the naming of the extension project and naming it something like CompanyName.Framework or is the best solution something else?</P>
+<P>Thanks!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, June 23, 2007</h2><P>I use the ObjectListView from CSALContrib and Brian simply used the same namespace: Csla.</P>
+<P>I was running 1.x and 2.x in parallel for a while so it did not matter.</P>
+<P>But I just converted completely to 2.x and removed all references to Csla. I use Csla2 for my namespace. So I had to change Brian's namespace to Csla2 and all is well.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

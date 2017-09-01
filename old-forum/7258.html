@@ -1,0 +1,236 @@
+<html><header><title>Silverlight 3 and Binary XML vs. CompressedProxy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight 3 and Binary XML vs. CompressedProxy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7258.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Friday, July 10, 2009</h2>We are using the CompressionProxy to reduce the WCF Payload for CSLA Business Objects and its very impressive to see how much can be compressed.<br /><br />It is my understanding that Compression is "applied" to the WCF XML itself. With Silverlight 3 now supporting Binary XML, I'm wondering how much of an improvement might be possible using Binary XML and whether the Binary XML offers a beneficial compression ratio.<br /><br />We have a project that is very sensitive to the size of the data sent over the links (remote links to mining sites so no ADSL) and would consider any improvement over the current compressed XML as very valuable.<br /><br />Has anyone tried this?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, July 10, 2009</h2>I would be curios as well.  My gut feeling is that native binary protocol is not going to do anything with the message size because CSLA object data in message contract is already byte[].<br /><br />Sergey Barskiy<br />Principal Consultant<br />office: 678.405.0687 | mobile:&#160;404.388.1899<br /><br />Microsoft Worldwide Partner of the Year | Custom Development Solutions, Technical Innovation<br /><br />-----Original Message-----<br />From: Jaans [mailto:cslanet@lhotka.net] <br />Sent: Friday, July 10, 2009 4:59 PM<br />To: Sergey Barskiy<br />Subject: [CSLA .NET] Silverlight 3 and Binary XML vs. CompressedProxy<br /><br />We are using the CompressionProxy to reduce the WCF Payload for CSLA Business Objects and its very impressive to see how much can be compressed.<br /><br />It is my understanding that Compression is "applied" to the WCF XML itself. With Silverlight 3 now supporting Binary XML, I'm wondering how much of an improvement might be possible using Binary XML and whether the Binary XML offers a beneficial compression ratio.<br /><br />We have a project that is very sensitive to the size of the data sent over the links (remote links to mining sites so no ADSL) and would consider any improvement over the current compressed XML as very valuable.<br /><br />Has anyone tried this?<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 10, 2009</h2><P>It is <EM>possible </EM>you could see a 50% improvement (give or take). I say this, because in SL2 WCF uses XML on the wire, and a byte array would be Base64 encoded so it becomes text - and that effectively doubles the size of the data.</P>
+<P>So in SL3 you <EM>might</EM> see that the binary xml support in WCF is able to actually move the byte array without encoding it into text - and that would save nearly half the byte size, and a bunch of wasted processing to encode/decode the array into text on either side of the wire.</P>
+<P>What I haven't had time to explore, is whether the DataContractSerializer has a simple switch to make it use binary XML, because if it does, then I can change MobileFormatter to use the DCS in that mode and that'd shrink the <EM>original</EM> data size pretty substantially as well - pre-compression.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, July 16, 2009</h2>Some more info... its related to the beta though.<br><br>http://www.biztalkgurus.com/blogs/biztalksyn/archive/2009/06/07/improving-the-performance-of-web-services-in-silverlight-3-beta.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Friday, July 17, 2009</h2>Also remember most binary xml representations do not store the tag name in both the beginning and end tag construct, in fact most normalize unique tag names to a string list and reference by id in the tag structure. Also they do things like under stand data types so that a int only takes up 32bits not however many utf8 characters are needed. Same with date/times and of course binary is not base64 encoded.<br /><br />I believe the BXML format MS uses does these things, so for documents with lots of tags with larger tag names and smaller amounts of data in the tags you can see good reductions in size.<br /><br />The W3C draft binary format even supports gzip compression of the data in the tags, so that you can get all the processing speed improvements while still getting the ability to compress the content vs the silly situation we are in now which is to serialize data to text then run it through a compressor back to binary then back to text then de-serialize back to binary on the other end.<br /><br />IMO Some form of standard binary XML is the future if all parties involved can just agree on which one, which seems to have stalled at this point, JSON contributing to the stall.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoPlainText><span>Sadly,
+I don't see a way to fully leverage binary XML.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>The
+MobileFormatter is a CSLA .NET construct that takes the data from the business
+object graph and puts it into another object graph. This other object graph is
+basically a DTO graph that contains the data from the business object graph,
+but in a form where it can be serialized by the DataContractSerializer. The DTO
+graph contains information about the original object types, field values and
+references - information necessary to rehydrate a clone of the original
+business object graph, and information the DCS doesn't grab by itself.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span><a href="http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx">http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>And
+that&#8217;s all good in my view, because it (within limits) replicates the
+behavior of the BinaryFormatter and NetDataContractSerializer from .NET.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>I
+spent some time looking for the &#8220;binary DataContractSerializer&#8221;,
+but haven&#8217;t found it yet. Nor have I found a switch where I can tell the
+DCS to use binary XML. I&#8217;m a bit puzzled about exactly where/how the
+binary XML serialization is occurring &#8211; I&#8217;d have expected there to
+be a &#8220;binary XML serializer&#8221; or switch on the DCS for this purpose&#8230;<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Anyway,
+the data portal calls MobileFormatter and gets a byte array as a result. That byte
+array contains the XML created by the DCS. That&#8217;s what is sent over the
+wire. So WCF is passing a byte array, not XML (even though the byte array
+contains XML). And this means using the binary XML option in WCF simply means
+it uses binary to pass the byte array, not XML.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>It
+is possible (but not guaranteed) that this will save a lot of bytes on the
+wire. It is very likely that the byte array is base 64 encoded to ensure it is
+valid XML. Base 64 encoding nearly doubles the size of data. So if the binary
+XML serialization doesn&#8217;t base 64 encode the byte array, it would have a
+pretty big impact (perhaps almost 50% less) on the size of the data on the
+wire.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>But
+it won&#8217;t actually serialize the object data into binary XML, because that
+happens before WCF gets the data&#8230;<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>If
+anyone is aware of, or runs across, the serializer or serializer option that is
+used for binary XML please let me know.<o:p></o:p></span></p>
+
+<p class=MsoPlainText><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoPlainText><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Friday, July 24, 2009</h2><P>Not sure if this helps but,</P>
+<P>The WCF binary xml serializer is created by&nbsp;System.Xml.XmlDictionaryWriter.CreateBinaryWriter:&nbsp;<A href="http://msdn.microsoft.com/en-us/library/system.xml.xmldictionarywriter.createbinarywriter.aspx">http://msdn.microsoft.com/en-us/library/system.xml.xmldictionarywriter.createbinarywriter.aspx</A></P>
+<P>It conform the the MS Proprietary MC-NBFX stadard: <A href="http://msdn.microsoft.com/en-us/library/cc219210(PROT.10).aspx">http://msdn.microsoft.com/en-us/library/cc219210(PROT.10).aspx</A></P>
+<P>Blog showing examples of using the MS binary serializer: <A href="http://www.wintellect.com/CS/blogs/jsmith/archive/2006/03/28/wcf-xmldictionaries.aspx">http://www.wintellect.com/CS/blogs/jsmith/archive/2006/03/28/wcf-xmldictionaries.aspx</A></P>
+<P>Agile Delta's EFX format that the wc3 is currently supporting for the standard that has a WCF SDK(not free): <A href="http://www.agiledelta.com/product_efx.html">http://www.agiledelta.com/product_efx.html</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 27, 2009</h2>Thanks, I'll take a look at those.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, August 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>some more info:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>http://msdn.microsoft.com/en-us/magazine/ee294456.aspx<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> July-27-09 10:28 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Silverlight 3 and Binary XML vs.
+CompressedProxy<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks, I'll take a look at those.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 31, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Btw, this was very useful information as I changed the code in
+3.8 to enable (by default) the use of binary XML. Thanks!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Justin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 24, 2009 10:26 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Silverlight 3 and Binary XML vs.
+CompressedProxy<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Not sure if this helps but,<o:p></o:p></p>
+
+<p>The WCF binary xml serializer is created
+by&nbsp;System.Xml.XmlDictionaryWriter.CreateBinaryWriter:&nbsp;<a href="http://msdn.microsoft.com/en-us/library/system.xml.xmldictionarywriter.createbinarywriter.aspx">http://msdn.microsoft.com/en-us/library/system.xml.xmldictionarywriter.createbinarywriter.aspx</a><o:p></o:p></p>
+
+<p>It conform the the MS Proprietary MC-NBFX stadard: <a href="http://msdn.microsoft.com/en-us/library/cc219210(PROT.10).aspx">http://msdn.microsoft.com/en-us/library/cc219210(PROT.10).aspx</a><o:p></o:p></p>
+
+<p>Blog showing examples of using the MS binary serializer: <a href="http://www.wintellect.com/CS/blogs/jsmith/archive/2006/03/28/wcf-xmldictionaries.aspx">http://www.wintellect.com/CS/blogs/jsmith/archive/2006/03/28/wcf-xmldictionaries.aspx</a><o:p></o:p></p>
+
+<p>Agile Delta's EFX format that the wc3 is currently supporting for the
+standard that has a WCF SDK(not free): <a href="http://www.agiledelta.com/product_efx.html">http://www.agiledelta.com/product_efx.html</a><o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, October 22, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Btw, this was very useful information as I changed the code in 3.8 to enable (by default) the use of binary XML. Thanks!</SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Awesome! Do you have any estimations or benchmarks&nbsp;of what this new feature will save over the wire? Do you still recommend using compression alongside this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>See this thread for more info:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://forums.lhotka.net/forums/thread/37377.aspx">http://forums.lhotka.net/forums/thread/37377.aspx</a><o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,89 @@
+<html><header><title>Extract Parent for a ChildList from database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Extract Parent for a ChildList from database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1719.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Wednesday, November 08, 2006</h2><P>When generating an EditableChildList I am forced to provide a parent object as well as a child object. How could this be derived from the database?</P>
+<P>In the MySample.xml, the ProjectResources collection lists the Parent relationship as "Project" and the&nbsp;Child as type "Resource" which works in this case.</P>
+<P>However, what about a list of Departments where a Company object can expose a Departments property and also a User object can expose a Departments property. Who then would be the parent of the Departments ChildCollection? Or do I have to create separate collections called CompanyDepartments and UserDepartments. This seems like a big redundancy in functionality.</P>
+<P>Thanks,</P>
+<P>Will</P>
+<P>&lt;EDIT&gt; I actually think this is an issue with the EditableChildList not recognizing that I am doing SplitBase instead of SplitPartial. The parent is required in the SplitPartial but shouldn't be in SplitBase. The ReadOnlyChildList, EditableChild and ReadOnlyChild objects all generate fine without a Parent relationship.&lt;/EDIT&gt;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 08, 2006</h2>Remember to design your objects based on responsibility/behavior, not data.<br><br>In your example, it is unlikely that company.Departments has the same semantic meaning as user.Departments.<br><br>A company <i>consists of</i> departments, while a user <i>belongs to</i> departments.<br><br>Your collection classes technically represent those relationships, not the data. Since these are two different types of relationship, my first instinct is to assume they are different objects. <br><br>The same for the child objects those collections contain. It is unlikely that company.Departments contains objects of type Department. Odds are that maintenance of the list of departments is a different use case from maintaining the company's master data. Though if that is just one use case, then company.Departments really might be an editable list of Department objects.<br><br>However, user.Departments certainly is not where you'd expect to maintain department data. Rather, user.Departments is a collection of the departments to which a user belongs. You don't edit the department data here - rather you edit the relationship between a user and pre-existing departments.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Thursday, November 09, 2006</h2><P>So</P>
+<P>company.Departments would likey be an EditableList of Editable&nbsp;Departments whereas</P>
+<P>user.Departments would likely be a ReadOnlyList of ReadOnly Departments</P>
+<P>I get this, I'm just trying to get it from the database</P>
+<P>Basically, what I am running into are the problems where I either will have to manage a hand crafted XML file with all objects, columns, relations, etc or figure out a complex way to use extended properties in SQL Server to accomplish this goal. Either case is not really desirable.</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=421363715-09112006><FONT face=Arial color=#0000ff size=2>The core problem you are facing is that databases contain 
+data definitions, and objects reflect use case definitions. They are not the 
+same thing. This is why ORM tools are so poor at actually creating real business 
+layers. They are good at creating data entities, but not domain 
+objects...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=421363715-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=421363715-09112006><FONT face=Arial color=#0000ff size=2>I know that doesn't help solve your problem, but at least 
+it puts into perspective: everyone fights this issue...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=421363715-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=421363715-09112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Thursday, November 09, 2006</h2><P>Just makes me wonder why the entire section of Dollard's book on metadata extraction. I guess basically she is just saying "Hey, you can gather all of this info from your database but without extensive ORM files you won't really be able to generate anythin guseful from it". Maybe I'm missing something in her theories.</P>
+<P>As I've stated before we really don't want to get into maintaining an extensive XML schema of our database where we'll have to go an hand edit the types on a field just because we changed a database column from int to float or something trivial, or even if we add a new column. We would like the ability to simply change the database, run an application to gather XML from the new database and then regenerate the business objects from the new set of XML.</P>
+<P>Right now, the only way I see of accomplishing this is through very extensive use of extended properties which will likely get just as difficult to manage as an XML file.</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>Let's face it, the ORM world, including Kathleen's content 
+in her book, moved the state of the industry forward rather substantially. But 
+as is almost always the case, all they did was reveal another layer of 
+complexity beneath the problem they solved.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>In other words, ORM solves an important problem: projecting 
+data into entity objects in an efficient and productive 
+manner.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>I look at that and cheer. But I also look at that and see 
+that they didn't solve the problem of mapping data into domain 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>The reason, I think, is that there's a fundamental 
+misunderstanding about the end goal. The ORM world feels that the goal is merely 
+to get data into objects. To that end they create objects based on the data, and 
+then figure out how to attach logic to those entity objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>But I believe that there should be domain objects designed 
+around the use cases, AND there are data entities, and the end goal is to map 
+data from those entities into and out of the domain objects. This is a MUCH 
+harder problem, because it requires two designers (domain and data) and a mapper 
+between the two.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>My view is that we need an DEM (domain-entity mapping) 
+tool. So you can use ORMs, including ADO.NET 3.0, to create your entities, and 
+you should be able to use a use case tool (that doesn't exist to my knowledge) 
+to design/build your domain objects, and then map data from the entity objects 
+into/out of the domain objects using this DEM tool.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296302716-09112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Thursday, November 09, 2006</h2><P>Thanks Rocky:</P>
+<P>It certainly clairfies things but it makes them no easier. I guess right now we can use the generator on a case by case basis and simply forego the ability of mapping from a database to metadata&nbsp;to our business objects in a single fell swoop. Not the best solution ATM but at least a solution.</P>
+<P>Unless I can come up with a consistent and easy to manage method of using extended procedures to handle this mapping for the most cases and then hand code the more complicated relationships.</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Thursday, November 09, 2006</h2><P>Something still confuses me though about the templates.</P>
+<P>When generating split base classes, why is it that only the EditableChildList requires a parent object? Is it because the ReadOnlyChildList object never gets updated so this information doesn't need to be passed down from the parent?</P>
+<P>Seems like the same issue would be required in the EditableChild since the parent object would update the child but for that template you are not required to supply a parent object.</P>
+<P>Which gets back to my original post issue of is this intentional or a bug in the template since I can definitely see the need of having an EditableChildList of type Users (myUserList) included as a private member of multiple business objects (myDepartmentUsers, myApplicationUsers, myDivisionUsers) where in all of these cases it's a simple thing of wanting a collection of users with the ability to add and remove users from the collection from the parent object. I don't see a need to generate three different objects to handle these cases when a simple EditableChildList Users object would suffice in all cases. However, the code generator won't allow this unless I am missing something.</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=265153017-09112006><FONT face=Arial color=#0000ff size=2>CSLA doesn't track the parent for read-only 
+objects/collections, because there's no eventing going on from child to parent. 
+My guess is that the templates don't require a parent, because CSLA doesn't 
+require it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=265153017-09112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=265153017-09112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Thursday, November 09, 2006</h2><P>On more reflection I guess I can see the need for individual objects here since myDepartment would need a list of users (select * from users where departmentID = myDepartmentID) so the criteria object here would be different than that in myDivisionUsers. These cases assume a user can oly be assigned to a single department, division, application.</P>
+<P>I guess&nbsp;in reality I would go ahead and create a DepartmentUsers collection, DivisionUsers collection, etc. This would actually simplify the metadata extraction at the expense of generating a lot more business objects. I guess I can live with that.</P>
+<P>Off to explore more options.</P>
+<P>Will</P>
+<P>BTW, you guys wil be more than welcome to a full description of whatever methods I end up using here (the templates as well).</P>
+<P>Thanks for the patience here, I know most of the issues are from my lack of understanding.</P>
+<P>Will</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,22 @@
+<html><header><title>Mixing CSLA for Windows and CSLA for Silverlight in a web app</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mixing CSLA for Windows and CSLA for Silverlight in a web app</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8889.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>agamboa posted on Thursday, May 06, 2010</h2><p>I currently have a web&nbsp;application the uses CSLA for Windows, and&nbsp;its UI&nbsp;relies heavily&nbsp;Telerik&#39;s ASP.NET AJAX Controls.</p>
+<p>I want to extend my application with controls that are&nbsp;only available in&nbsp;Telerik&#39;s&nbsp;Silverlight Controls.</p>
+<p>I am in the process of ordering the training videos for CSLA Silverlight to help me with an implemention path; however, any insight on this would be greatly appreciated.</p>
+<p>NOTE: without any practical knowledge in CSLA for Silverlight, I am thinking that&nbsp; a &quot;WCF layer&quot; could be created that &quot;talks&quot; to my current CSLA for Windows&nbsp;business objects and just not use CSLA for Silverlight.</p>
+<p>Thanks.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 06, 2010</h2><p>You can use the data portal (which does use WCF) to communicate between the SL client and your web server. The same business objects used on the web server can be used in the SL client.</p>
+<p>There are some requirements for this to work though:</p>
+<ol>
+<li>Your properties must use managed backing fields</li>
+<li>Any non-SL code in your objects (like data access) must be server-side only (you can use partial classes or #if SILVERLIGHT compiler directives)</li>
+<li>Your synchronous factory methods need to be server-only</li>
+<li>You need async factory methods on the SL side</li>
+<li>Any business rules that interact with the server or database need to become async rules</li>
+</ol>
+<p>If you are already using managed backing fields, you are most of the way there. Wrapping the existing factory methods and DataPortal_XYZ methods with #if !SILVERLIGHT directives gets you most of the rest of the way.</p>
+<p>Then you just need to create async factory methods and for most objects you are all done.</p>
+<p>The hardest part is if you have business rules that interact with the server/database - because you&#39;ll need to make them into async rules, on the SL side at least. Async rules are somewhat hard to use in ASP.NET because the app model is different on the web server.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>agamboa replied on Thursday, May 06, 2010</h2><p>Rocky,</p>
+<p>Thanks for the prompt reply.&nbsp; I am currently waiting for the link to download the CSLA Silverlight video series.&nbsp; In the interim, I&#39;ve downloaded and compiled CSLA for Silverlight 3.8.3 to get an idea what DLL&#39;s are involved.</p>
+<p>Do you have any details on where and which(windows/silverlight) Csla.dll will exist in my web application?</p>
+<p>Thanks again.</p>
+<p>-Alan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 06, 2010</h2><p>I see a purchase was processed earlier this morning - if you don&#39;t have the link yet check your spam folders, as the email is probably there.</p>
+<p>The web server will use the Windows/.NET version of Csla.dll.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

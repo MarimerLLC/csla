@@ -1,0 +1,22 @@
+<html><header><title>AuthorizationRules DBDriven</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AuthorizationRules DBDriven</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1189.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Tuesday, September 12, 2006</h2>hey everybody,<br>
+
+here's a good article I found on the board. <br>
+http://groups.msn.com/CSLANET/general.msnw?action=get_message&mview=0&ID_Message=13839<br><br>
+
+Our business requirments do not require that a user be checked if they can Add/Edit a single field of the <br>object. We only really need to say something like this.<br><br>
+
+Does this user have rights to Add/Edit This customers Contact information?  <br><br>
+
+What is the feelings about not using the AddAuthorizationRules methods and just using the <br><br>CanAddObject,CanEditObject etc methods? <br><br>
+
+We have "Rights" for specific areas in our application like AddEditContactInfo, AddEditBillingAddress. <br>
+These rights would be confirmed in CanAdd,CanEdit methods before allowing the user to do anything with the <br>object.<br><br>
+
+Basically, we can apply a permission to an entire object not a single property. So I'm thinking I can avoid the <br>overhead of Authorization Rules and just call the previously metioned methods. <br>
+<br><br>
+What ya think?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 12, 2006</h2><P>You absolutely can do that - this is one primary reason for CanReadProperty() and CanWriteProperty() being virtual/Overridable.</P>
+<P>Just remember that those methods get invoked <EM>a lot</EM> and so the code you write behind them needs to be quite efficient, and can't be going off and hitting expensive resources like a database or something on every call.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Tuesday, September 12, 2006</h2>Thanks Rocky!
+
+I'm doing something like this CanAddEditContactInfo() which contains a simple loop thru a static list of permission that won't be crazy large and returns true if it finds the permission in the users role.
+
+:)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,76 @@
+<html><header><title>Bug in CslaActionExtender - AutoCloneOnUpdate</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in CslaActionExtender - AutoCloneOnUpdate</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5535.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus posted on Sunday, October 05, 2008</h2>In OnClick method, down below the lines are:<br><br>if (Csla.ApplicationContext.AutoCloneOnUpdate == false)<br>&nbsp; objectToSave = ((ICloneable)savableObject).Clone() as Csla.Core.ISavable;<br><br>Seems if clause should test the property with "true" not "false"<br><br>Sinan<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I believe you are correct.&nbsp; We will add this to the list of
+things to address.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Thank you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> detritus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, October 05, 2008 1:24 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Bug in CslaActionExtender - AutoCloneOnUpdate<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>In OnClick method, down below the lines are:<br>
+<br>
+if (Csla.ApplicationContext.AutoCloneOnUpdate == false)<br>
+&nbsp; objectToSave = ((ICloneable)savableObject).Clone() as
+Csla.Core.ISavable;<br>
+<br>
+Seems if clause should test the property with &quot;true&quot; not
+&quot;false&quot;<br>
+<br>
+Sinan<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, September 09, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>detritus<br></b>In OnClick method, down below the lines are:<br /><br />if (Csla.ApplicationContext.AutoCloneOnUpdate == false)<br />&nbsp; objectToSave = ((ICloneable)savableObject).Clone() as Csla.Core.ISavable;<br /><br />Seems if clause should test the property with &quot;true&quot; not &quot;false&quot;<br /><br />Sinan<br /><br />
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>In fact that was correct. I was having some trouble to understand why to hand-clone the object when CSLA takes care of this for us. When</p>
+<p>Csla.ApplicationContext.AutoCloneOnUpdate == false</p>
+<p>CSLA doesn&#39;t take care of it and thus we must do it ourselves.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,9 @@
+<html><header><title>AddNew on a bound LinqBindingList resulting from a sort query</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddNew on a bound LinqBindingList resulting from a sort query</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7283.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>OlgaLu posted on Wednesday, July 15, 2009</h2><P>I have a datagrid bound to a LinqBindingList resulting from a query on a BLB:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>from</FONT></FONT><FONT size=2> point </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> Points</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>orderby</FONT></FONT><FONT size=2> point.SequenceNumber</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> point</P></FONT>
+<P>When a try to add a new point to the grid AddNewCore() method&nbsp;of the original&nbsp;the BLB is called and the new point is created with a sequence number that would place it at the end of the sorted list. However the LBL filters it out. Is there anything I need to do so that the new item gets included in the correct order in the LBL?</P>
+<P>&nbsp;</P>
+<P>Thanks!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

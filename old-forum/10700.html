@@ -1,0 +1,68 @@
+<html><header><title>The framework is confusing and no proper documentation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The framework is confusing and no proper documentation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10700.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumarsamy posted on Wednesday, September 21, 2011</h2><p>Hi,</p>
+<p>I tried to do a demo application using the framework. All are working. It looked promising and hopeful.</p>
+<p>I&#39;m using VS2010 and Silverlight 4. Trying to build a solution with Silverlight and WPF clients, with SQL database.</p>
+<p>I downloaded the sources and samples and built and tried using. Its really tiersome.</p>
+<p>Its really not clear cut what base libraries, additional set libraries for WPF, SL, .NET, MVC</p>
+<p>Even though i&nbsp;got the book Effective Business Objects and read, but the current version and book versions are different.</p>
+<p>Then got your current series books online and read through. Its a series of broken concepts and codes and solutions. Basically the solutions are not explained and no readme on solutions, different stereo types and models but not explained. Hope the earlier book was organized, but this one really mis leading.</p>
+<p>Now in the mid of give up the idea to use.</p>
+<p>Looking forward some one throw some lights what and how i can get benefitted from this framework.</p>
+<p>thanks</p>
+<p>kumar</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, September 21, 2011</h2><p>Hi, </p>
+<p>Is it the <b>CSLA 4 Ebook Series</b> you are referring to? </p>
+<p>I find these books to be very valuable. </p>
+<p>The WPF and Silverlight book is in early draft but the </p>
+<ul>
+<li>Overview</li>
+<li>Creating Business Objects</li>
+<li>Data Access </li>
+<li>Data Portal Configuration </li>
+</ul>
+<p>are all relevant for your application. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumarsamy replied on Wednesday, September 21, 2011</h2><p>Hi Jonny,</p>
+<p>I thought it would be valuable to me too. And that is why i got and tried to go through, but i&#39;m not sure what i&#39;m missing. Any help from you will be greatly appriciated.</p>
+<p>Which solution and which dll&#39;s to which tiers, and the links or upgrade between the solutions explanation and where to start or step-by-step process may help me indeed.</p>
+<p>thanks for your kind reply.</p>
+<p>regards</p>
+<p>kumar</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, September 21, 2011</h2><p>Hi,</p>
+<p>Start with Silverlight\cs\SimpleApp</p>
+<ul>
+<li>SimpleApp.Web is the web page that starts/hosts the Silverlight client (xbap file)</li>
+<li>SimpleApp is the Silverlight client (references Csla.dll and Csla.Xaml for Silverlight)</li>
+<li>Library.Client is the Silverlight business objects&nbsp;&nbsp; (references Csla.dll for Silverlight)</li>
+<li>Library.Server is .NET 4.0 (references Csla.dll for .NET)</li>
+</ul>
+<p>Most Csla SL samples uses the DataPortal and serialized objects to do DataAccess on the server in .NET. </p>
+<p>I think part of the puzzle here is to understand the DataPortal and how call go from Silverlight Client to the .NET code on the server. This is often referred to as N-Tier application with Csla but&nbsp; is NOT the only way to use Csla in Silverlight. </p>
+<p>You can also use Csla as an &quot;edge&quot; application and ony to async webservice calls from SL. That is - your solution will ten typically only reference Csla assemblies in Silverlight and call .NET or Java webservices as external applications.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumarsamy replied on Wednesday, September 21, 2011</h2><p>Thanks Jonny for your eye opening,</p>
+<p>Yeah your sample works very fine. But still it a black box.</p>
+<p>I&#39;m looking some thing that clearly define how the model object, view model object, view model binding and the data access steps to any database. Back and forth.</p>
+<p>May be you may consider how silly i&#39;m but i&#39;m really trying and looking out for some thing really helpful for me.</p>
+<p>thanks</p>
+<p>kumar</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Wednesday, September 21, 2011</h2><p>Kumar,</p>
+<p>I have been using Csla since version 1.0, and have production apps in 1.1 and 2.0.&nbsp; When going to 4.0, it still took me a few weeks to get acquainted with the new stuff.&nbsp; Be patient.&nbsp; For me the the easiest way to learn was the series of 8 videos that Rocky made in early 2010 (I believe).&nbsp;&nbsp; </p>
+<p>Now I am a professional person, and I have attended lectures from professors&nbsp;in two continents.&nbsp; I can tell you that no one explains and illustrates his material the way Rocky does in these videos. It is simply superb.&nbsp; If you are serious about learning Csla, that would be the way to go.&nbsp; True, it is 3.8 stuff, but what you need to learn first is the philosophy of Csla.&nbsp; After that, the rest is - well, instinctive and automatic.</p>
+<p>Javed</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumarsamy replied on Wednesday, September 21, 2011</h2><p>Thanks Javed,</p>
+<p>It looked promising that is why i explored, and still haven&#39;t given up. I took the books with patience and went through the series of books, tried to load the samples and to get the feel, but every sample has its own but things different from basic samples. It&#39;s not blaming, because the work done by Rocky, Jonny, and other contributors is not&nbsp;taken granted, i very much value it.&nbsp;</p>
+<p>If the books or API docs are clear then there is no need of videos i hope. In Open Source every thing not explained well i understand too. Now i need to buy this video too. Ok will do and try.</p>
+<p>thanks</p>
+<p>kumar</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shivam.ms replied on Monday, January 23, 2012</h2><p>Hi Kumaraswamy,</p>
+<p>I really surprised to see your post. Because the things and problems I wanted to post here are the same that you have posted in exactly same words i was thinking of to use.&nbsp; </p>
+<p>It would have been very helpful if a comprehensive API documentation with examples.</p>
+<p>Please let me know if you get forward in your demo building.&nbsp; I am facing a issue of calling dataacces methods from SilverLight UI client. It does not throw any error but nothing is happening...</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Monday, January 23, 2012</h2><p>Hi Shivam, hi Kumarasamy,</p>
+<p>I second the recommendation of&nbsp;Rocky&#39;s vids. Also some vids&nbsp;can be found on the internet&nbsp;(at dntrv, for example) that provide some good entry points.&nbsp;And if new to a business-object framework I suggest to start with some simple, let&#39;s say Winforms apps.<br />Starting with a SL-application adds&nbsp;much more stuff (WCF, asynchronous data access,&nbsp;XAML, MVVM...)&nbsp;to the technology stack, that may be confusing. But remember, this is not because of CSLA, but because of SL itself!&nbsp;I&#39;m happy to have learned the usage of CSLA (and I still do) with winforms and took the SL step afterwards.</p>
+<p>(And by the way: this forum itself is a great source of information and all of the guys here are kind and patient)</p>
+<p>Good luck!</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, January 23, 2012</h2><p>I am a little confused, or concerned.</p>
+<p>The <em>Using CSLA 4</em> ebook series is over 900 pages of documentation on how to use the framework. I really doubt very many commercial frameworks have documentation that is nearly so extensive.</p>
+<p>The ebook series covers (I think) all the major areas people need to understand to use the framework, and it is entirely focused on how to use the framework (unlike the <em>Expert Business Objects</em> books, where more than half the content was on the framework design, not on how to use it).</p>
+<p>Jonny&#39;s comment from earlier in this thread is correct. Start with the SimpleApp sample, and with the focused examples available from the <em>Using CSLA 4: Data Access</em> and <em>Using CSLA 4: Data Portal Configuration</em> ebooks. Those are all simple, straightforward, and about as clear as is possible when demonstrating how to create and configuring n-tier applications. (n-tier deployment/configuration is complex, and there&#39;s no way around that)</p>
+<p>Then use the ProjectTracker sample to get more advanced and in-depth with ASP.NET MVC, WPF, Silverlight, or WP7 along with the <em>Using CSLA 4</em> books that focus on those UI technologies.</p>
+<p>The videos are very useful too, especially for people who learn better through audio/video than through reading. But it is hard to beat 900-1000 pages of documentation like you find in the <em>Using CSLA 4</em> books.</p>
+<p>This is why I am concerned. </p>
+<p>If you want comprehensive documentation I&#39;m not sure what else to offer. </p>
+<p>If you want <em>simpler</em> documentation I could understand that. I&#39;ve thought about creating a simple walk-through of <em>one simple scenario</em> - like the SimpleApp sample. I think I could do that in around 120 pages. That would be a &quot;quick start&quot;. Not comprehensive, and not really documentation. But it might be useful for the extremely most basic getting started scenario.</p>
+<p>Even then, I am sure you&#39;d still need the <em>Using CSLA 4</em> books&nbsp;and/or the videos&nbsp;to really use all the features of the framework.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

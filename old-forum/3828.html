@@ -1,0 +1,61 @@
+<html><header><title>Edit Functionality</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Functionality</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3828.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ravimaran posted on Thursday, November 01, 2007</h2>Hi,&nbsp; I have built this windows form application and ran into this issue which I am not able to figure out. Here is my forms <br>FormA - Contatins a list of Customers<br>FormB - Details of a single customer ( Opens up when a customer is clicked from FormA List)<br>FormC - Adds customer interest and the percentage( using C1TrueDbGrid so customer can be modified from the list)<br>FormC is called from FormB when user click the button "Customer Interests"&nbsp; and FormC has Save button.<br>After Save button clicked.&nbsp; <br>Private sub btnInterest_Clicked ..... <br>&nbsp; custermerInterestList.ApplyEdit()<br>&nbsp; FormC.Close()<br>end sub<br>The list is being saved in memory then it writes to the database when user click "Save Changes" button from FormB.<br>This works fine when I go from FormA to FormB then FormC.&nbsp; Coming back to FormB and Save.<br><br>Then when I decided to keep the FormB open and again click "Customer Interests" I am able to edit or add new interest but when I close the FormC and Save it from FormB it does not save it to the database.&nbsp; When I tried to debug it, I saw that the IsDirty Property become "True" right after I made changes but it changes back to "False" right after the form is closed! Actually its keeping the list before modified.&nbsp; I am so confused why this happening.&nbsp; Please help me to over come this issue.&nbsp; Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2><P>You are finding that data binding is altering your object's state "for you".</P>
+<P>If you update to CSLA 3.0.2 you will most likely get exceptions during this process, because CSLA 3.0 now throws an exception when the edit levels get out of sync. The reason for that exception is to help you debug situations like this one.</P>
+<P>Data binding will call BeginEdit, CancelEdit and ApplyEdit automatically. You are probably seeing a case where data binding is calling CancelEdit behind the scenes, causing your object's state to be rolled back to a previous point.</P>
+<P>The PTWin code in 3.0.2, along with some changes to CSLA, make this work reliably and help you detect edit level sync problems, and so I recommend you consider moving to that version to figure this out.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ravimaran replied on Thursday, November 01, 2007</h2>Hi Rocky, Thanks for the reply.&nbsp; Unfortunately I am not able to use CSLA.NET 3.0.2.&nbsp; What really confuses me is It works the first time but for the second time it doesn't really save it.&nbsp; IsDirty property is set back to false and EditLevel is not 0.&nbsp; <br>When form loads I call BeginEdit()<br>When changes and before closing I call ApplyEdit()<br>When closing (if is not cancel) I call CancelEdit()<br>Please give me some advise on&nbsp; how these Edit things works.&nbsp; Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There&#8217;s another thread with a lot of good detail and
+discussion around how data binding interacts with edit levels &#8211; it was active
+within the past 2 weeks or so &#8211; I recommend reading through that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ravimaran
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 01, 2007 5:09 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Edit Functionality<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky, Thanks for the reply.&nbsp; Unfortunately I am not
+able to use CSLA.NET 3.0.2.&nbsp; What really confuses me is It works the first
+time but for the second time it doesn't really save it.&nbsp; IsDirty property
+is set back to false and EditLevel is not 0.&nbsp; <br>
+When form loads I call BeginEdit()<br>
+When changes and before closing I call ApplyEdit()<br>
+When closing (if is not cancel) I call CancelEdit()<br>
+Please give me some advise on&nbsp; how these Edit things works.&nbsp; Thank
+you.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

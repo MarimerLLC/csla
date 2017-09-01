@@ -1,0 +1,7 @@
+<html><header><title>Re: CSLA 2.1 Validation Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: CSLA 2.1 Validation Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/967.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Monday, August 21, 2006</h2><P>I don't actually see it calling the procected method to add business rules...</P><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddBusinessRules()</P>
+<P></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> CommonRules.StringRequired, </FONT><FONT color=#800000 size=2>"Name"</FONT><FONT size=2>)</P>
+<P></FONT>
+<P><FONT color=#008000 size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P><FONT size=2>That's really all there is to adding them, correct?</FONT></P>
+<P><FONT size=2>Jeff</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

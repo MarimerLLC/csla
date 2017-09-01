@@ -1,0 +1,34 @@
+<html><header><title>Obfuscation problem.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Obfuscation problem.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12054.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Tuesday, July 02, 2013</h2><p>CSLA.NET 4.5.30</p>
+<p>&nbsp;</p>
+<p>After obfuscation my application doesn&#39;t work:</p>
+<p><em>System.Reflection.AmbiguousMatchException: Ambiguous match found.<br />&nbsp;  &nbsp; at System.RuntimeType.GetPropertyImpl(String name, BindingFlags bindingAttr, Binder binder, Type returnType, Type[] types, ParameterModifier[] modifiers)<br />&nbsp;  &nbsp; at System.Type.GetProperty(String name)<br />&nbsp;  &nbsp; at Csla.Core.FieldManager.DefaultPropertyInfoFactory.GetFriendlyNameFromAttributes(Type type, String name)<br />&nbsp;  &nbsp; at Csla.Core.FieldManager.DefaultPropertyInfoFactory.Create[T](Type containingType, String name)<br />&nbsp;  &nbsp; at Csla.BusinessBase`1.RegisterProperty[P](Expression`1 propertyLambdaExpression)<br />&nbsp;  &nbsp; at ...cctor()</em></p>
+<p>&nbsp;</p>
+<p>That&#39;s because obfuscator renaming &nbsp;properties using the same name.</p>
+<p>So, I propose &nbsp;to add few methods to &quot;IPropertyInfoFactory&quot;:</p>
+<p>&nbsp; &nbsp;Csla.PropertyInfo&lt;T&gt; Create&lt;T&gt;(Type containingType, PropertyInfo propertyInfo);</p>
+<p>&nbsp; &nbsp;... etc.</p>
+<p>&nbsp;</p>
+<p>And methods to &quot;DefaultPropertyInfoFactory&quot;:</p>
+<p>&nbsp; &nbsp;private static string GetFriendlyNameFromAttributes(PropertyInfo propertyInfo )</p>
+<p>&nbsp; &nbsp;... etc.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 03, 2013</h2><p>Hi,</p>
+<p>So obfuscating your business objects makes all the properties have the same name? <br />Which Obfuscator do you use? <br />This would likely break all your databinding or what - if the properties have the same name? </p>
+<p>And is your suggestion to add System.Reflection.PropertyInfo as parameter to these method? </p>
+<p>So my recommendation is to either:</p>
+<p>1. NOT use PropertyInfoFactory and use other methods in the business object base classes to register PropertyInfo::</p>
+<p>&nbsp;<span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">static</span>&nbsp;PropertyInfo&lt;P&gt;&nbsp;RegisterProperty&lt;P&gt;(Type objectType,&nbsp;PropertyInfo&lt;P&gt;&nbsp;info)</p>
+<p>This will register a PropertyInfo that YOUR code has create itself. </p>
+<p>2. Create your own PropertyInfoFactory.</p>
+<p>The other solution is that you create your own PropertyInfoFactory as this is an extension point in CSLA where you can configure CSLA to use your OWN PropertyInfoFactory and do whatever is necessary for your application to work as you expect. You could even create your own new version of RegisterPropertNew and call other methods in YOUR PropertyInfoFactory that accepts a PropertyInfo as parameter.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 03, 2013</h2><p>Most obfuscation programs have a way to mark certain properties/methods so they aren&#39;t renamed. There&#39;s no value in obfuscating the standard DataPortal_XYZ method names, so it is probably best to just prevent the tool from renaming those methods.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Wednesday, July 03, 2013</h2><p>Thanks for reply.</p>
+<p>I am new to CSLA. I&#39;m learning CSLA and trying convert my existence project. </p>
+<p>I always use obfuscation and love full obfuscation (cross-obfuscation) of private, protected and even public methods and properties. For now my obfuscation tool is &quot;Spices.Net Obfuscator&quot; (presented <img src="http://forums.lhotka.net/emoticons/emotion-51.gif" alt="Gift" /> by the developer for assistance improved their product <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />).</p>
+<p>&nbsp;<em>&quot;This would likely break all your databinding&quot;</em> &nbsp;- I forgot about this<img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" />.
+&nbsp;I didn&#39;t have the problems with databinding because of using DataTable. I should think about it.</p>
+<p>&nbsp;</p>
+<p>Thanks!</p>
+<p>&nbsp;</p>
+<p>By the way, &nbsp;&quot;Spices.Net Obfuscator&quot;
+&nbsp;has option &quot;Use unique name&quot; but unfortunately it works only on single class. Derived class properties could be renamed with the same names as in base class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Wednesday, July 03, 2013</h2><p>I&#39;ve just found an interesting project - &quot;Truss&quot; (<a href="http://truss.codeplex.com/">http://truss.codeplex.com/</a>)</p>
+<p>It seems it&#39;s custom realization of databinding which supports any UI technology and It&#39;s working with &quot;Expression&quot;, not only with strings. So I could bind properties with same name <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />. But it has one disadvantage: no designer support. Any way, if you&#39;re obfuscating code you should do manual binding.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,7 @@
+<html><header><title>Template Typo/Bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Template Typo/Bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/341.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmay posted on Sunday, June 11, 2006</h2><P>I think I found a problem with the EditableRoot template.</P>
+<P>Forgive me if this has already been reported.&nbsp; I tried searching for it and came up empty.</P>
+<P>&nbsp;</P>
+<P>&nbsp;Public Shared Function NewEditableRoot() As EditableRoot<BR>&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of EditableRoot)()<BR>&nbsp; End Function</P>
+<P>&nbsp; Public Shared Function GetEditableRoot(ByVal id As Integer) As EditableRoot<BR>&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of EditableRoot)(New Criteria(id))<BR>&nbsp; End Function</P>
+<P>&nbsp;</P>
+<P>If I'm not mistaken, shouldn't the GetEditableRoot be calling DataPortal.Fetch?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Sunday, July 30, 2006</h2>You are correct. I reported it to Rocky a week or so ago.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

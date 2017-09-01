@@ -1,0 +1,126 @@
+<html><header><title>IsSavable Showing False after Marking IsNew on Dataporal_Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsSavable Showing False after Marking IsNew on Dataporal_Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2694.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower posted on Friday, April 13, 2007</h2><P>Hi everyone.&nbsp; This is my first post.&nbsp; Thank you Rocky for the excellent framework.&nbsp; I have read the VB2003 and part of the VB2005 BO books</P>
+<P>I'm working with CSLA 2.1.4 in VS2005.</P>
+<P>Background: I have is doing a Dataportal Fetch, where the object searches two databases for data.&nbsp; If it doesn't find its data in the new database store, it searches the prior database store.</P>
+<P>Issue: If the object gets its data from the old data store, I try the Me.MarkNew within the Dataportal_Fetch method, so I can simply get the object, and do a save, and have it persist itself to the new data store.</P>
+<P>Within the Dataportal_Fetch method, IsSavable method shows true after I call Me.MarkNew, but back in the UI, the IsSavable property on my object is now false.</P>
+<P>Any ideas?</P>
+<P>Perhaps others will consider this an interesting issue.&nbsp; It&nbsp;might be addressed in Rocky's book, which I will consult and post on the forum if I resolve this issue myself prior to anyone's replies.</P>
+<P>Nickalis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower replied on Friday, April 13, 2007</h2><P>Update:</P>
+<P>This is also related to IsNew, because my 'workaround' of changing a property after fetching the object still doesn't help, because the IsNew is showing false.</P>
+<P>So the bottom line is I have to have the MarkNew method work within the DataPortal_Fetch.</P>
+<P>Nickalis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 13, 2007</h2>Hi and welcome,<br><br>I think this is yoru best bet; I know it will give you some more classes, but it should work out nicely.<br><br>You could have a static factory, which returns an instance of MyObjectBase, which is an abstract class.&nbsp; You have a subclass (possibly internal) for each database you are going to search, and each subclass knows which is the appropriate database to get.<br><br>The factory knows to try to fetch from on subclass, and if nothing is returned attempts to fetch from the second subclass.&nbsp; If nothing is again returned, call create on the first subclass.<br><br>This way, if the schema in either database changes, you need only change on class.&nbsp; Also, you're working within the intent of the framework.&nbsp; This topic has come up before, and the idea is that fetching should return a existing object only, not a new one.&nbsp; You can probably come up with workarounds, but you'll be fighting the framework, which in the end will cause you some pain.&nbsp; <br><br>There's a pretty <a HREF="/forums/thread/7672.aspx">comprehensive discussion</a> of this topic.&nbsp; Be sure to read all the way to the end; Rocky explains why he probably won't remove any automatic calling of MarkOld / MarkNew.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower replied on Friday, April 13, 2007</h2><P>My Solution:</P>
+<P>In order to permit MarkNew to work in the Fetch method it seems I have to comment the following line from SimpleDataPortal.vb</P>
+<P>&nbsp; Fetch function, line 120 : MethodCaller.CallMethodIfImplemented(obj, "MarkOld")<BR></P>
+<P>This creates more work because (like in CSLA 1.x ), I'll have to call MarkOld after each Fetch from the new data store.</P>
+<P>Nickalis</P>
+<P>P.S. any comments I'd love to hear them!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower replied on Friday, April 13, 2007</h2><P>Thanks <A HREF="/members/ajj3085.aspx">ajj3085</A>&nbsp;, I just posted and saw that you had posted a few minutes ago.</P>
+<P>In answer to your post, I'm not actually returning a literal new object from the Fetch method, I'm returning an existing 'object' using data from a (soon to be) obsolete data store, when it doesn't exist yet in the new data store.</P>
+<P>Nickalis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, April 13, 2007</h2>Nick,<br><br>Yes, I see that now re-reading your post.&nbsp; However your situation is still very similar; the object represents data that is 'new' to your system, which is by definition a new object.<br><br>What that means in Csla land is that you need to have IsNew set to true, so that your DataPortal_Insert runs.<br><br>I would still recommend the path I mentioned before, but instead of having two subclasses, you have on class.&nbsp; The factory, if it doesn't find an existing object, calls DataPortal.Create on your BB class, and passes the criteria used to load from the obsolete data source.&nbsp; Your DP_C will load from the old criteria.<br><br>You can go the route you suggest, but you're affecting every Csla based class in your system.&nbsp; That seems to be a pretty dramatic change to the framework to make to accomadate one class.&nbsp; Also, you'll have to keep your change in mind if your application is around long enough that you want to upgrade the version of Csla&nbsp; you're using and the old data source is still around.<br><br>Think carefully on how to proceed; the factory method can be this simple:<br><br><font color="#0000ff">public static </font><font color="#008000">MyObject </font>GetObject( <font color="#0000ff">object </font>criteria ) {<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">MyObject </font>result;<br>&nbsp;&nbsp;&nbsp;&nbsp; result = <font color="#008000">DataPortal</font>.Fetch&lt;<font color="#008000">MyObject</font>&gt;( <font color="#0000ff">new </font><font color="#008000">FetchCriteria</font>( criteria ) );<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">if </font>( result == <font color="#0000ff">null </font>) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  result = <font color="#008000">DataPortal</font>.Create&lt;<font color="#008000">MyObject</font>&gt;( <font color="#0000ff">new </font><font color="#008000">FetchOldDataCriteria</font>( criteria ) );<br>&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">return </font>result;<br>}<br><br>Seems simplier and won't affect how you use the framework and your other classes built on top of the framework.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower replied on Friday, April 13, 2007</h2><P>Thanks for the replies Andy.&nbsp; I'll keep that in mind.&nbsp; One of the issues in our system is that the criterion changes depending on which system I'm drawing data from, so the Factory Method of yours, using a single criteria parameter, wouldn't work in this case.</P>
+<P>For future posterity of the CSLA community, I'll summarize my problem and solution.</P>
+<P>Problem:&nbsp; All data must be migrated from an old db system to a new database system.</P>
+<P>Solution:&nbsp; What I call "On-Demand, Non-Destructive Migration" of data:</P>
+<P>That means the initial fetch for all object data will be from the old system, and <STRONG>each object is&nbsp; considered new to the new db, which means each object's first Save()</STRONG> must perform a Dataporal_Insert against the new database (not a Dataportal_update to the old system), since they don't yet exist in the new system.</P>
+<P>After the each object has saved itself to the new db, the 2nd and subsequent Fetch calls must&nbsp; retrieve it from the new system.</P>
+<P>Using the CSLA 2.1.4 framework, this is an example Dataportal_Fetch I made, which follows Rocky's ProjectTracker Fetch call methodology, <U>with one exception</U>:&nbsp; When the object Fetches data from the old system, it&nbsp;calls&nbsp;&nbsp;Me.MarkNew, and when the object Fetches data from the new system,&nbsp;it calls Me.MarkOld.&nbsp; This requires a change to the SimpleDataPortal class as mentioned previously in this thread.</P>
+<P>BEGIN CODE ------------------------------------------------------------------------------</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria)</P><FONT size=2>
+<P>Debug.Print(</FONT><FONT color=#a31515 size=2>"=== Supplier.DataPortal_Fetch"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> criteria.Id.Equals(Guid.Empty) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'JM.NET Fetch</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Database.MasterListsConnection)</P>
+<P>cn.Open()</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlCommand = cn.CreateCommand</P>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> cm</P>
+<P>.CommandType = CommandType.StoredProcedure</P>
+<P>.CommandText = </FONT><FONT color=#a31515 size=2>"getSupplier"</P></FONT><FONT size=2>
+<P>.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@ID"</FONT><FONT size=2>, criteria.Id)</P>
+<P></FONT><FONT color=#008000 size=2>'SP returns the Supplier object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SafeDataReader(.ExecuteReader)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> dr.Read() </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>Debug.Print(</FONT><FONT color=#a31515 size=2>"Against "</FONT><FONT size=2> &amp; Database.MasterListsConnection)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> ThisSupplier </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Supplier = Deserialize(dr.GetValue(</FONT><FONT color=#a31515 size=2>"Object"</FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> ThisSupplier</P>
+<P>mId = .Id</P>
+<P>mFriendlyName = .FriendlyName</P>
+<P>mCompanyName = .CompanyName</P>
+<P>mAddress = .Address</P>
+<P>mCity = .City</P>
+<P>mStateProvince = .StateProvince</P>
+<P>mPostalCode = .PostalCode</P>
+<P>mCountry = .Country</P>
+<P>mContact1 = .Contact1</P>
+<P>mContact2 = .Contact2</P>
+<P>mPhone = .Phone</P>
+<P>mFax = .Fax</P>
+<P>mNotes = .Notes</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT><FONT size=2>
+<P>dr.GetBytes(</FONT><FONT color=#a31515 size=2>"LastUpdated"</FONT><FONT size=2>, 0, mTimestamp, 0, 8)</P>
+<P></FONT><FONT color=#008000 size=2>'After Fetching the object, Mark it as old</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MarkOld()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'Try JM97 Fetch</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> criteria.Name.Trim.Equals(</FONT><FONT color=#a31515 size=2>""</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> ArgumentNullException(</FONT><FONT color=#a31515 size=2>"Blank Criteria"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> OleDb.OleDbConnection(</FONT><FONT color=#0000ff size=2>My</FONT><FONT size=2>.Settings.PURCHConnectionString)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> cmd </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> OleDb.OleDbCommand(</FONT><FONT color=#a31515 size=2>"Select * From Suppliers Where Supplier = '"</FONT><FONT size=2> &amp; criteria.Name.Trim &amp; </FONT><FONT color=#a31515 size=2>"'"</FONT><FONT size=2>, cn)</P>
+<P>cn.Open()</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SafeDataReader(cmd.ExecuteReader())</P>
+<P></FONT><FONT color=#0000ff size=2>While</FONT><FONT size=2> dr.Read</P>
+<P>mId = Guid.NewGuid</P>
+<P>mFriendlyName = dr.GetString(1)</P>
+<P>mCompanyName = mFriendlyName</P>
+<P>mAddress = dr.GetString(2)</P>
+<P>mCity = dr.GetString(3)</P>
+<P>mStateProvince = dr.GetString(4)</P>
+<P>mPostalCode = dr.GetString(5)</P>
+<P>mCountry = dr.GetString(6)</P>
+<P>mContact1 = dr.GetString(7)</P>
+<P>mContact2 = dr.GetString(8)</P>
+<P>mPhone = dr.GetString(9)</P>
+<P>mFax = dr.GetString(10)</P>
+<P>mNotes = dr.GetString(11)</P>
+<P></FONT><FONT color=#0000ff size=2>Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P>dr.Close()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'DEVNOTE: For all JM97 FETCH, YOU MUST MARK THE OBJECT AS NEW, SO IT WILL BE SAVABLE INTO JM.NET</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MarkNew()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P>
+<P></FONT></FONT>
+<P><FONT color=#0000ff size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P><FONT color=#0000ff size=2>
+<P>END CODE ------------------------------------------------------------------------------</P>
+<P>I love this framework !!! Nickalis</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Monday, April 16, 2007</h2><P>Nick,</P>
+<P>MarkOld() is called by the DataPortal. You could opt to call MarkNew() in the factory method, just after the call to DataPortal.Fetch().</P>
+<P>You could have a private field/property MustMarkNew (or something like that)&nbsp;which would be set in the DataPortal_Create(). If the data came from the old datastore, you should set this property to true. Then, in the factory method, you can call MarkNew() on the object before it is returned to the client.</P>
+<P>Using this solution, you don't have to change the CSLA framework.</P>
+<P>Cheers,</P>
+<P>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTower replied on Monday, April 16, 2007</h2><P>Herman,</P>
+<P>You had me excited for a moment.</P>
+<P>That's excellent... except the factory method is a shared method, and from it I couldn't&nbsp;access an&nbsp;instance field&nbsp;(mMarkNew) accessible to Dataportal_Fetch.</P>
+<P>Or did I miss something?</P>
+<P>Nick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 16, 2007</h2>Nick,<br><br>You can call instance methods from a static member.<br><br>Just store the DP_F result into a variable, and call MarkNew on that variable.<br><br>public static MyObject Get( string id ) {<br>&nbsp;&nbsp;&nbsp;&nbsp; MyObject result;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = DataPortal.Fetch&lt;MyObject&gt;( new IdCriteria( id ) );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result.MarkNew();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br>}<br><br>That's the basic code to acomplish what you need.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Monday, April 16, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div></P>
+<P>public static MyObject Get( string id ) {<BR>&nbsp;&nbsp;&nbsp;&nbsp; MyObject result;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = DataPortal.Fetch&lt;MyObject&gt;( new IdCriteria( id ) );<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result.MarkNew();<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>}<BR></div></BLOCKQUOTE></P>
+<P>This is exactly what I meant.</P>
+<P>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 16, 2007</h2>Yes I know; I provided the code sample to illistrate how the OP would call an instance method from a static method, as it seemed like he wasn't sure how to go about that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, April 16, 2007</h2><P>Nick,</P>
+<P>For what it is worth - I also commented out that line of code in the framework.</P>
+<P>It was a major change in behavior from CSLA 1.x. There was a long discussion about it in an old thread and I was out voted. In the original code the developer was resposnible for calling (just like they are still responsible for calling it for child objects.)</P>
+<P>In my fetch method I do some testing and if the data is not in the DB I decided to return a New object instead of throwing an exception. This was debated earlier on in CSLA 1.x and seemed like a legitimate choice. So my templates and BOs have used this logic for 3-4 years now. The call to MarkOld in the framework code broke this. So I commented it out and simply call it inside my templates when needed.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 16, 2007</h2>Joe,<br><br>Do you plan to changing the 'fetch or create' method?&nbsp; Shortly after that thread and mostly as a result of it, I changed how I was doing some things, such as I no longer use properties to set state on load.<br><br>It seems easier for me to keep up to date with the latest Csla changes that way (I'm the lone developer here); was just curious if you thought about changing or if the cost of upgrading Csla is still fairly low for you.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, April 16, 2007</h2><P>Andy,</P>
+<P>I am not planning on changing fetch at this time.</P>
+<P>I have about 63 Root BOs and 5 other developers working on a large application with a few hundred web pages. Making the change and then re-coding and re-testing each page to ensure that the Exception is caught would be a large effort with little payback.</P>
+<P>I am hoping to upgrade all the BOs from 1.x to 2.x as soon as we put the current version to bed. That is also another large exercise that we never seem to find time for. New features and functions always come faster than maintenance and upgrade of framework code.</P>
+<P>I have added Base classes bewteen CSLA 2 and my BOs so that many of my previous changes are now part of my Base classes and I do not have to comment out or modify too many things in the framework. I like that Rocky has allowed us to Override many methods now. </P>
+<P>For example he shortcircuits the IsValid call on child objects whenever he finds the first broken rule. But I need all objects checked for validity so that prior rules get unbroken and I can build a complete list of broken rules. So my BusinessListBase class has this code:</P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> IsValid() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>&nbsp;</FONT><FONT size=2><BR>&nbsp; </FONT><FONT color=#0000ff size=2>Get<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> result </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2>True<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> child </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> C </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> child.IsValid </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>result = </FONT><FONT color=#0000ff size=2>False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Next<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> result<BR>&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

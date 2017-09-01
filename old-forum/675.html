@@ -1,0 +1,13 @@
+<html><header><title>safedatareader</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>safedatareader</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/675.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink posted on Wednesday, July 19, 2006</h2><P>hey guys,</P>
+<P>How do i call a safe datareader which is in my collection class directly from my webform.Is it Possible???</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, July 19, 2006</h2><P>Hi yh_ink,</P>
+<P>I don't think you'd want to do that. If you try to read data directly from the database from your form, you'd be missing out on the whole seperation of layers business. Your form should use your business objects, and let the business objects handle reading the data.</P>
+<P>Why do you want to use the reader directly in your form? Maybe if you give a scenerio, you could get some options.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Wednesday, July 19, 2006</h2><P>hi mike</P>
+<P>If i have a get method&nbsp;with datareader in my collection.how can i use that from my form.because it has to be passed with dr.What should be passed in that case.</P>
+<P>please let me know</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, July 19, 2006</h2><P>yh_ink,</P>
+<P>I want to make sure I'm clear. You have a public get method in your business object that takes a datareader as a parameter?</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, July 19, 2006</h2><p class="MsoNormal">You do not want to pass datareaders around.<span>&nbsp; </span>If you want to pass data to your UI use a <span>collection, custom collection, array of structs
+or a datatable.&nbsp; </span>Whatever you do, do not pass datareaders to the presentation
+layer.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yh_ink replied on Wednesday, July 19, 2006</h2>Thanks a lot guys....i just want to know how to do that.just curious to know&nbsp;about it....please put some code if there is a way...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 20, 2006</h2>Your UI shouldn't ever see ANY Ado.Net objects; if you do so, it defeats the purpose of using Csla at all.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

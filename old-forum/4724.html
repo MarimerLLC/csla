@@ -1,0 +1,85 @@
+<html><header><title>partial Updates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>partial Updates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4724.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali posted on Monday, April 21, 2008</h2><P>Hi,</P>
+<P>Has anyone done partial updates with CSLA, say, If I have a class Customer, the update method in Dataportal_update will update everything in Customer, but there are cases where I need to update say just the lastname of customer. What will be the best approach? should I inherit from the Customer class creating a new class, Should I use commandBase object?</P>
+<P>Thanks</P>
+<P>Ash</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Technically, you should create a totally separate class in this
+case because most of your properties would be read-only, only last name is
+writable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ashraf Ali [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Monday, April 21, 2008 4:28 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] partial Updates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>Has anyone done partial updates with CSLA, say, If I have a class Customer,
+the update method in Dataportal_update will update everything in Customer, but
+there are cases where I need to update say just the lastname of customer. What
+will be the best approach? should I inherit from the Customer class creating a
+new class, Should I use commandBase object?<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>Ash<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 22, 2008</h2><P>Ash,</P>
+<P>I think a lot of it depends on the case in hand. You don't give us enough information to make a good recommendation. </P>
+<P>If you are on a screen where you already have a complete Customer BO in hand, then I would add a new factory method to the customer class (like SaveNameOnly) and then branch on that method name in the DataPortal code so that you only save the 1 field.</P>
+<P>If you do NOT already have a Customer BO handy, then I would use&nbsp;a Command Object inside of the main BO for the current screen.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Tuesday, April 22, 2008</h2>Joe,<br>I am on a screen where I dont have any Customer object, I need to loop through all the customer objects and update their last name only, Now I do have full Customer collection objects (not in the screen but in the project), but I thought I should use something different just for updating the name.<br><br>Thanks<br>Ash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Tuesday, April 22, 2008</h2>Ashraf,<br><br>Check the Project class in the ProjectTracker application. Especially the ExistsCommand inner class.<br>Basically you need to create a new class CustomerNameUpdater that inherits from CommandBase. In the DataPortal_Execute you do the real update. <br><br>The purpose of CommandBase is to allow you to do quick things, like updating order status or customer name in your case, in the database without loading any business object.<br><br>Hope this helps,<br>Cosmin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ashraf Ali replied on Tuesday, April 22, 2008</h2>Cosmin,<br>Thats exactly I am doing, I had to create 8 different classes this morning :) ( and the customer object I was using it as an example). I still wonder if there might be an easy solution then writing so many classes.<br>Thanks for your reply,<br>Ash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Wednesday, April 23, 2008</h2><P>We are looking at a way to do this also, it not so much that there is a usecase for say just updating lastname, it's that a user may pull up a customer object which they might update anything but they only modify lastname and this is all we want to update in the database for performance but more importantly auditing purposes.</P>
+<P>Bottom line it seems you will have to implement an internal mechanism for tracking isdirty on a field by field basis, probably by hooking into PropertyHasChanged, then when Dataportal_Update is called examining which fields are dirty and creating a dynamic SQL&nbsp;statement(if your saving to a SQL server) to update only the changed ones. We are also looking a overriding our XML serializer so only changed&nbsp; fields are sent through the web service transport as well.</P>
+<P>Justin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,33 @@
+<html><header><title>Custom Authentiaction with ASP..NET MVC</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Authentiaction with ASP..NET MVC</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12052.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>smeets116 posted on Monday, July 01, 2013</h2><p>Hello,</p>
+<p>After reading Rocky&#39;s books, I ran into a wall when programming the security of my website. The custom Principal and Identity parts works fine. Then I read book 6 AspMvc. </p>
+<p>The sample project uses membership authentication. Then I went back to the samples and looked into dataportal/authentication/ custom. Here i found a lot of code in the Accountmodel about implementing a custom membershipservice and formsauthenticationservice. </p>
+<p>I want to use my own security database, like the older projecttracker samples. So I build a custom principal and identity.</p>
+<p>Do I need to programm the custom membershipservice and formsauthenticationservice, because the default logon procedure stops when starting a&nbsp;&#39;validateuser&#39; method. which i dont have programmed&nbsp;atthis moment.</p>
+<p>To check if my code works I programmed a shortcut,&nbsp;of which I don&#39;t know if it is a good idea.</p>
+<p>[HttpPost]</p>
+<p>public ActionResult LogOn(LogOnModel model, string returnUrl) </p>
+<p>{</p>
+<p>if (ModelState.IsValid)</p>
+<p>{</p>
+<p>if (<span style="color:#ff0000;">BusinessLayer.Security.VsPrincipal.Login(model.UserName, model.Password)</span>)</p>
+<p>{</p>
+<p>FormsAuthentication.SetAuthCookie(model.UserName, model.RememberMe);</p>
+<p>if (Url.IsLocalUrl(returnUrl) &amp;&amp; returnUrl.Length &gt; 1 &amp;&amp; returnUrl.StartsWith(&quot;/&quot;</p>
+<p>)</p>
+<p>
+<p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"></span></span></p>
+<span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">Any help would be very appreciated. Thanks</span></span></p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 01, 2013</h2><p>There are several different technologies working together in these examples.</p>
+<p>First, there&#39;s the CSLA custom principal/identity types. You use these for almost all scenarios, especially when you are using your own user/role tables.</p>
+<p>Second, there&#39;s the ASP.NET and IIS authentication model, which can be configured many different ways.</p>
+<p>Third, there is the ASP.NET provider model that is used by the various ASP.NET controls and templates. This is where things like the membershipservice come into play.</p>
+<p>Fourth, there is the CSLA data portal configuration.</p>
+<p>To your specific question, you need to use a custom principal/identity when using your own user/role tables. And you need to configure ASP.NET/IIS to not use Windows authentication, but to use Forms authentication. And (if you want the ASP.NET controls/templates to work right) you need to implement authentication and membership providers that point to your custom principal/identity. And you need to not configure the data portal to use Windows authentication.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smeets116 replied on Monday, July 01, 2013</h2><p>Hello, </p>
+<p>And thank you for your answer.</p>
+<p>I thought that&#39;s were I was going to mix 2 different roads with custom authentication and ASP.Net membership.</p>
+<p>Can i follow the example, starting with custom authentication (using my own databases) as explained in the book DataPortal. And go from there using the same approach as in the Asp-Mvc book (still using my own user- database).</p>
+<p>Thank You.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 01, 2013</h2><p>Yes, you should be able to follow the example, but use your own database instead of the membership database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smeets116 replied on Monday, July 01, 2013</h2><p>Thanks again,</p>
+<p>I still have a lot&nbsp;reading&nbsp;to do. a lot has changed since Csla 3.0. Last time I build a smart client application. Building websites is very new to me, and different. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

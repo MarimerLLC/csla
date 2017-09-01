@@ -1,0 +1,43 @@
+<html><header><title>Help! Another business base inheritance issue.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help! Another business base inheritance issue.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5431.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 posted on Thursday, September 18, 2008</h2><P>Property metadata is not registered properly if I do the following:</P>
+<P>class A : BusinessBase&lt;A&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Property1;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>class B : A</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;Property2;</P>
+<P>}</P>
+<P>If I instatiate B Property2 is registered under type A in the property info manager. RegisterProperty uses typeof(T) to register the property and of course typeof(T) is A when creating an instance of B.</P>
+<P>GetPropertyList(typeof(B)) is not returning what I need and is causing all sorts of hell to break loose. </P>
+<P>How do I solve this?</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 replied on Thursday, September 18, 2008</h2><P>There's an override that lets me pass in the type!</P>
+<P>What a freakout over nothing&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>See you all later. I have a lot searching and replacing to do...</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 18, 2008</h2><P>Be sure to remember the _dummy flag in your "A" class, otherwise you'll have a common problem reported quite frequently here. If you don't know what I'm talking about, just ask. </P>
+<P>I kinda figured initially when I read your post it had to do with that, but it looks like you may have found something else. Whenever I see inheritance and property info together in the same point that's what I assume you're running into. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 replied on Friday, September 19, 2008</h2><P>I'm afraid I don't know about the dummy flag. What is it for?</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, September 19, 2008</h2><P><FONT color=#000000 size=2>Managed properties of base classes that you inherit from _will not work reliably_ if you do not utilize one of two options. </FONT></P>
+<P><FONT color=#000000 size=2>The option I use and the one noted as the preferable one to use is this:</FONT></P>
+<P><FONT color=#000000 size=2>First, you need to declare a static variable in your base class. (The pragma is to avoid FxCop messages, you don't need that).</FONT></P>
+<P><FONT color=#000000><FONT size=2>#pragma</FONT><FONT size=2> warning disable</FONT></FONT></P>
+<P><FONT color=#000000 size=2>private static int _dummy;</FONT></P>
+<P><FONT color=#000000><FONT size=2>#pragma</FONT><FONT size=2> warning restore</FONT></FONT></P>
+<P><FONT color=#000000 size=2>Then, in the constructor of your base class, you need to "touch" this variable. </FONT></P>
+<P><FONT color=#000000 size=2>protected MyBaseClass()</FONT></P>
+<P><FONT color=#000000 size=2>{</FONT></P>
+<P><FONT color=#000000 size=2>&nbsp;&nbsp;&nbsp;_dummy = -1;</FONT></P>
+<P><FONT color=#000000 size=2>}</FONT></P>
+<P><FONT color=#000000 size=2>You will also need to touch it in the OnDeserialized override.</FONT></P>
+<P><FONT color=#000000 size=2>protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)</FONT></P>
+<P><FONT color=#000000 size=2>{</FONT></P>
+<P><FONT size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;_dummy = 1; // Required for static properties. </FONT></P></FONT>
+<P><FONT color=#000000 size=2>}</FONT></P>
+<P><FONT color=#000000 size=2>It's obviously kind of a pain to have to do this, but unfortunately no other options have been discovered. This is only required when you're using inheritence in your BOs and you have managed properties in a base class. </FONT></P>
+<P><FONT size=2>If you're not already doing this, then I wager that your problem you're experiencing is exactly this. </FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 replied on Friday, September 19, 2008</h2><P>The problem I was having was related to property metadata fields. When I called PropertyInfoManager.GetPropertyList the list it was incomplete (it did not include property metadata for base classes). </P>
+<P>It's good to know about the _dummy hack but I'm not using managed properties so I think it doesn't apply to me at this time.</P>
+<P>Thanks for the info. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw replied on Thursday, September 18, 2008</h2>Hi dctc42,<br />May I know how you resolve the issue? <br />Thank you.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 replied on Friday, September 19, 2008</h2><P>JasonLaw,</P>
+<P>I had to&nbsp;use the override of RegisterProperty that takes an explicit type parameter for all business objects that don't directly inherit from BusinessBase&lt;T&gt;.</P>
+<P>I can't confirm this fixed everything, I had to change 364 property definitions (macros rule!). I'm in the process of writing unit tests to confirm all is well. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

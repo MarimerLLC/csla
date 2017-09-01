@@ -1,0 +1,116 @@
+<html><header><title>Question about root and child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about root and child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7019.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>coffeemkr0 posted on Thursday, May 28, 2009</h2><P>Hi all,</P>
+<P>I have just started looking into Csla, and have a question about how I should handle this scenario.</P>
+<P>Let's say I have a root class called Job.</P>
+<P>Then let's say that the Job class will have a collection of another class called Rule.</P>
+<P>The Rules on the Job need to be editable.</P>
+<P>The Rules also need to persist independently of Jobs so that a user can add existing Rule objects to their Job.</P>
+<P>So, my question then becomes, is the Rule class a child object, or a root object, or do I need to make two different Rule classes or something completly different?</P>
+<P>Does anyone have an example of a scenario like this?</P>
+<P>Thanks for any help :)</P>
+<P>P.S I have the 2005 C# book sitting in front of me too, so if anyone knows where this is covered in the book, that would be great too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, May 28, 2009</h2>I believe that what is recommended is that you make your object model match the intended use case.<br /><br />So, how are you editing your Jobs? If you have a screen for editing a single job, with list of applicable rules somewhere on the same form or screen, then you can still have Job as the root and the Rule list as a child of the Job. <br /><br />With a proper implementation, CSLA can persist an arbitrarily deep object graph by just calling Save() on the root object. By "properly implemented", I just mean that any object always saves its child objects as part of its save operation.<br /><br />So in this case you would still call Save() on the Job.   The Job itself may not have been changed, but as part of it's save operation it will save any changed Rule objects in its RuleList. <br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2><P>This is a common (perhaps the most common) type of OO design question.</P>
+<P>The thing to remember is that objects are defined by behavior, not by data. Moreover, they should be defined by their role - a single responsibility - within a specific use case.</P>
+<P>So you are describing two different use cases. One use case has the user adding/editng a Job and associating Rules with that Job. Another use case has the user adding/editing Rules.</P>
+<P>Notice how the two "Rules" concepts are <EM>not the same</EM>. In the first case the concept is an association, while in the second case the concept is data editing.</P>
+<P>In that first use case, what you <EM>really</EM> have is a JobEdit object with an AssociatedRules collection of AssociatedRule objects. In the second use case you have a RuleEdit object (and almost certainly a RuleList read-only list and RuleInfo read-only object).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coffeemkr0 replied on Thursday, May 28, 2009</h2><P>Thank you so much for the replies.&nbsp; I am sitting here looking over your project tracker example, and was about to dive deeper into it.</P>
+<P>I was just noticing in the conclusion of Chatper 6 that you described the project as having a requirement of maintaining a list of projects, a list of resources, and then assigning resources to the project (assuming the resources themselves are editable also).</P>
+<P>This sounds exactly like what I want to do, except in my case it is a list of jobs, and a list of rules that can be assigned to jobs.</P>
+<P>My next question would simply be, should I look at the project tracker code now to get more answers on how to do it, other than your response that helped me also :)</P>
+<P>Or, is rsbaker's reply(thanks rsbaker) the way I would need to implement it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2><P>The question is all about the intended use case, or user story, or user experience - whatever you'd like to call it.</P>
+<P>If the user edits Job and Rule information on one screen, as part of one task, then you'd probably have a JobEdit with Rules with RuleEdit.</P>
+<P>If the user edits Job information and associates existing Rule information (which is what you indicated), then my previous post is probably more accurate.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coffeemkr0 replied on Thursday, May 28, 2009</h2><P>I'm sorry if it is a little hard for me to explain, I just started a redesign of this project, and at the same time started reading your book.&nbsp; And of course it all has to be done in two weeks heh :)</P>
+<P>What I would like, would be to have a tree view with the job as a root node, and associated rules as child nodes.</P>
+<P>I would then like for the user to be able to drag existing rules from a panel to the job and have that assign those rules to the job.</P>
+<P>I would then also&nbsp;like for the user to be able to select a rule node in the tree and edit the rule irself in a workspace panel.&nbsp;</P>
+<P>When the user edits the rule in that fasion, it should update that rule for all jobs if they so choose, or create a new rule with the changes.</P>
+<P>I guess a similar example, related to your project tracker, would be if your projects were shown in a tree, and had associated resources shown as child nodes.</P>
+<P>Then you would also be able to edit resources just by selecting the resource in the tree&nbsp;and showing a resource editor, and then having the changes update the resource for all projects.</P>
+<P>To me, this seems like the rules/resources would be editable root objects, and the jobs/projects would also be editable root objects, but at the same time the rules/resources are childs of the job/project.</P>
+<P>I think your first response, and me thinking it out, sounds like I do indeed need separate classes, but this being my first time to design business objects the right way, I would love to get it right :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coffeemkr0 replied on Thursday, May 28, 2009</h2><P>Or maybe instead of different classes, I just need a propety on the job object that is a collection of assigned rule IDs?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, there&#8217;s a thread about something like this from
+perhaps 1-2 months back.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The best overall solution for a treeview scheme is to use a set
+of read-only lists and objects to populate the treeview control.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then as the user selects operations on nodes from the treeview,
+load editable objects for use in the work region of the form. The treeview isn&#8217;t
+your use case, it is the menu into the use cases &#8211; and the use cases
+exist in the work region (for the most part).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When the editable objects save themselves, they can notify the
+read-only root object, which can bubble the notification down through the tree
+so it can be handled by the appropriate read-only object &#8211; which then
+updates itself (so it isn&#8217;t completely &#8220;read-only&#8221;, but isn&#8217;t
+editable by the user).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coffeemkr0 replied on Thursday, May 28, 2009</h2><P>Awesome!</P>
+<P>One last question and I will leave you alone.&nbsp; Is a scenario like this, or something close to it covered in the book?&nbsp; I will search in the meantime for the thread you mentioned.</P>
+<P>&nbsp;</P>
+<P>On a side note...</P>
+<P>Thanks a ton Rocky.&nbsp; I would just like to say that your framework, and the logic you used to build it, is some of the most ingenious thinking I have ever seen.&nbsp; I just have to wonder how much work experience you had to go through to figure out how to design projects so well :)</P>
+<P>If I had only been taught this stuff in college, or even had a meantor with this kind of experience...</P>
+<P>And on top of that, my first day to the forums and I get help from the author himself.&nbsp; Could not have had a better experience.</P>
+<P>Thanks!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coffeemkr0 replied on Thursday, May 28, 2009</h2><P>Is this perhaps the thread you mentioned?&nbsp; Just posting it to help anyone that comes across the same subject in a search :)</P>
+<P><A HREF="/forums/thread/15785.aspx">http://forums.lhotka.net/forums/thread/15785.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I appreciate the kind words, thank you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately this scenario is not covered in the book, and I don&#8217;t
+have a demo that shows it (though it is a good idea for a demo :) )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

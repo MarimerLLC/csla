@@ -1,0 +1,31 @@
+<html><header><title>Architecture</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Architecture</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Monday, November 14, 2011</h2><p>Hi all,</p>
+<p>I&#39;m in the middle of learn and apply CSLA.NET 4 for my project. First I&#39;m sorry if my english is not too good.</p>
+<p>I haven&#39;t known about SOA and implementation in microsoft technology.</p>
+<p>Currently i have a situation :</p>
+<p>There is a medium company that separate on several location, </p>
+<p>1 Head office and several branch office, and then there is a requirement that a branch office can does a &quot;posting activity&quot; ( their term ) which is save sale transaction into head office ( after that branch office can&#39;t edit that transaction until head office do next act on that transaction ). Next, head office can does a similar action on sale transaction so that those transaction will be synchronize into branch office again.</p>
+<p>My Questions :</p>
+<p>1. Is SOA is suitable  for this scenario ?</p>
+<p>2. I interested with Roc explanation on book 1 overview, but I don&#39;t have clear knowledge about develop CSLA.NET + SOA for this scenario if applicable ?</p>
+<p>3. This is my personal requirement : If i want to make a synchornization from Head Office to Branch Office or otherwise, but i don&#39;t want user to reload reload and again to know if there is already changing from remote office, instead I want on the Branch office screen the changing on Head office will arise as soon as the head office user does that changing WITHOUT RELOAD on branch office screen ??</p>
+<p>&nbsp;</p>
+<p>Thanks a lot all</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 15, 2011</h2><p>In order to achieve #3 you will need an architecture where you:</p>
+<p>1. Use WCF Services with WsDualBinding so that you can send notifications to clients on changing data. </p>
+<p>2. This limits your use of CSLA 4 to be an Edge application, ie: you will most likely only use CSLA for the client application. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Tuesday, November 15, 2011</h2><p>Hi jonny thanks for your quick response</p>
+<p>I will try to research and learn about WCF.</p>
+<p>But could you explain more about point number 2, like a suggestion architecture for collaboration CSLA.NET as an edge app and WCF as a webservice ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 15, 2011</h2><p>What Jonny is saying, is that in a service-oriented system, you have 2 or more applications that interact with each other via loosely coupled, contractual messages.</p>
+<p>To say that another way: if you don&#39;t have 2 or more applications interacting via messages, you aren&#39;t doing SOA.</p>
+<p>You might be using service-based technologies (like WCF or REST), but just using a service-based technology doesn&#39;t mean you are following any specific architecture.</p>
+<p>So if you wanted to build your solution using SOA, you&#39;d be created&nbsp;a service-oriented system composed of 2 or more applications, and those applications would interact via loosely coupled messages. In your case, that would imply that you have a server application with a service interface, and a separate client application that interacts with the user through a GUI. These two, completely separate, applications would interact with each other via contractual messages.</p>
+<p>The client applications in a service-oriented system are often referred to as &quot;edge applications&quot; because they sit on the edge of the system, and allow users to interact with the system in useful ways.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Tuesday, November 15, 2011</h2><p>Hi roc thanks for your response</p>
+<p>and I&#39;m sorry for my PM to you about MVVM video series before.</p>
+<p>&nbsp;What you said above is it same like your overview ebook ??</p>
+<p>My mean : 2 or more app i build with CSLA where each app server or edge, i use 5 logical layer with </p>
+<p>server has interface a server / WCF contract message and client has a UI to communicate with WCF contract message ( server ) ??</p>
+<p>where each app ( 5 layer ) use CSLA as a business logic layer ??</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

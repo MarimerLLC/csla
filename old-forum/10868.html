@@ -1,0 +1,59 @@
+<html><header><title>How would you create an authorization rule for a property based on another field?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How would you create an authorization rule for a property based on another field?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10868.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma posted on Friday, November 11, 2011</h2><p>I have two properties on my business object, Name and IsSystemDefined. </p>
+<p>IsSystemDefined is already set in the database ... no way for the business object to change it, but it needs to know about it. </p>
+<p>If the business object has IsSystemDefined = true, I want to add an authorization rule to prevent the user from editing the Name.</p>
+<p>How would I do this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Friday, November 11, 2011</h2><p>You can create a rule, that takes a Predicate to decide. </p>
+<p>I added two conditional wrappers for Authoritzation rule like &nbsp;IsInRole, one&nbsp;requiring some role if a condition&nbsp;/ unless a condition is true&nbsp;</p>
+<ul>
+<li><span style="font-size:small;"><span style="font-family:courier new,courier;">RequireIf&lt;T&gt;( Predicate&lt;T&gt; cond, <span style="font-size:x-small;"><span style="font-size:x-small;">AuthorizationRule rule)</span></span></span></span></li>
+<span style="font-family:Consolas;font-size:x-small;">
+<li><span style="font-size:small;"><span style="font-family:courier new,courier;">RequireUnless&lt;T&gt;( Predicate&lt;T&gt; cond, <span style="font-size:x-small;"><span style="font-size:x-small;">AuthorizationRule rule)</span></span></span></span></li>
+<p><span style="font-size:small;"><span style="font-family:arial,helvetica,sans-serif;">The&nbsp;RequireIf </span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-size:small;"><span style="font-family:arial,helvetica,sans-serif;">basically </span></span></span><span style="font-size:small;"><span style="font-family:arial,helvetica,sans-serif;">contains:</span></span></p>
+</span><span style="font-family:Consolas;font-size:x-small;"></span>
+</ul>
+<p><span style="font-size:small;"><span style="font-family:courier new,courier;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+</span></span></span><span style="font-family:Consolas;font-size:x-small;">
+</span></span>
+<p><span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">&nbsp;&nbsp;&nbsp; public</span></span></span> RequireIf(<span style="color:#2b91af;"><span style="color:#2b91af;"><span style="color:#2b91af;">Predicate</span></span></span>&lt;T&gt; cond, <span style="color:#2b91af;"><span style="color:#2b91af;"><span style="color:#2b91af;">IAuthorizationRule</span></span></span> rule) : <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">base</span></span></span>(rule.Action, rule.Element)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _cond_ cond;</p>
+</span></span></p>
+<p><span style="font-size:small;"><span style="font-family:courier new,courier;">
+<p>&nbsp;&nbsp;&nbsp; &nbsp; _rule = rule;</p>
+</span></span></p>
+<p><span style="font-size:small;"><span style="font-family:courier new,courier;">
+<p>&nbsp;&nbsp;&nbsp; }</p>
+</span></span></p>
+<ul>
+<span style="font-family:Consolas;font-size:x-small;">
+<p><span style="font-family:courier new,courier;"><span style="font-size:small;">
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">public</span></span></span> <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">override</span></span></span> <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">bool</span></span></span> <b>CacheResult</b>&nbsp;{ <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">get </span></span></span>{ <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">return</span></span></span> <b><span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">false</span></span></span></b>; } }</p>
+<p>protected <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">override</span></span></span> <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">void</span></span></span> Execute(<span style="color:#2b91af;"><span style="color:#2b91af;"><span style="color:#2b91af;">AuthorizationContext</span></span></span> context)<br />{<br />&nbsp;&nbsp; <b>if (_cond.Invoke</b>(target))<br />&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _rule.Execute(context);<br />&nbsp;&nbsp;&nbsp; } <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">else </span></span></span>{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>context.HasPermission</b> = <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">true</span></span></span>;<br />&nbsp;&nbsp;&nbsp; }<br />}</p>
+</span></span></p>
+</span>
+<p>&nbsp;</p>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Friday, November 11, 2011</h2><p>holy crap, this formatting (IE is really bad, Firefox is better). Sorry about it.</p>
+<p>And here&#39;s hwo I use the rule: </p>
+<p><span style="font-family:courier new,courier;"><span style="font-size:small;"><span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">protected</span></span></span> <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">override</span></span></span> <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">void</span></span></span> AddBusinessRules()<br />{<br />&nbsp;&nbsp; BusinessRules.AddRule(<span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">new&nbsp;</span></span></span>RequireUnless&lt;MyBusinessObject&gt;(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IfNewOrPropertySet, <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new IsInRole(AuthorizationActions.WriteProperty, &quot;PermissionRole&quot;) );<br />}</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+</span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+</span></span></span><span style="color:#0000ff;font-size:x-small;">
+</span></span>
+<p><span style="font-family:courier new,courier;"><span style="font-size:small;"><span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">private static</span></span></span> <span style="color:#0000ff;"><span style="color:#0000ff;"><span style="color:#0000ff;">bool</span></span></span> IfNewOrPropertySet(MyBusinessObject obj)<br />{<br />&nbsp;&nbsp; return obj != null &amp;&amp; (obj.IsNew || !obj.IsSystemDefined);<br />}</span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 13, 2011</h2><p>For Csla 4.2 - the stright forward way to understand authorization rules is:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">AuthIsSystemDefinedProp</span>&nbsp;:&nbsp;<span style="color:#2b91af;">AuthorizationRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;IsSystemProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;AuthIsSystemDefinedProp(<span style="color:#2baf9a;">AuthorizationActions</span>&nbsp;action,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;method,&nbsp;<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;isSystemProperty)&nbsp;:&nbsp;<span style="color:blue;">base</span>(action,&nbsp;method)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsSystemProperty&nbsp;=&nbsp;isSystemProperty;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />      public bool CacheResult<br />      {<br />     	get { return false; }<br />      }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">AuthorizationContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.HasPermission&nbsp;=&nbsp;!(<span style="color:blue;">bool</span>)ReadProperty(context.Target,&nbsp;IsSystemProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>Usage:</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">AuthIsSystemDefinedProp</span>(<span style="color:#2baf9a;">AuthorizationActions</span>.WriteProperty,&nbsp;NameProperty,&nbsp;IsSystemDefinedProperty))
+ </pre>
+<p>Lambda rules is a nice way of making simple authorization rules - just posted this the most basic AuthorizationRule for your case.</p>
+<p>Edited: Added CacheResult to return false as this rule can not be cached.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mattruma replied on Tuesday, November 15, 2011</h2><p>Looks easy! Do you know when 4.2 will come out of beta and be available in Nuget? Maybe that&#39;s a question for Rocky?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 15, 2011</h2><p>If no serious bugs pops up, 4.2 will be released next week.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>Fastest way to insert object graph on to sql azure?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Fastest way to insert object graph on to sql azure?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10992.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler posted on Saturday, December 17, 2011</h2><p>Hi, I&#39;m currently developing an application that centers around dynamic questionnaires.</p>
+<p>The object graph looks like this Questionnaire &gt; Sections &gt; Questions. &nbsp;Questions has a relationship with its self so many questions can have many questions of their own which can go however deep it needs to go.</p>
+<p>What is the fastest possible way i could have the questionnaire inserted into SQL Azure? I have went down the route of passing a Stringbuilder down through the object graph to build up a query. Each parent generates a unique SQL parameter &quot;@Parent1, @Parent2&quot; etc then stores the Scope_Identity() to this sql variable and passes it down to the FieldManager.UpdateChildren().</p>
+<p>Using this way it takes a good 5-10 seconds to save a questionnaire which, i feel, is too long a delay for the user.</p>
+<p>It runs nice and fast on the local machine but deployed to azure it has this delay because the Database server is held in a different location from the hosting machine.</p>
+<p>Is there some sort of other batch query that could be written that doesnt require so many SQL variables?</p>
+<p>Hope i&#39;ve explained well enough!</p>
+<p>&nbsp;</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 17, 2011</h2><p>I would think one answer is to use a Web Role in Azure to host the data portal, so the SQL Azure interactions are &quot;local&quot; within the Azure cloud.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Saturday, December 17, 2011</h2><p>Thanks Rocky,</p>
+<p>We do have the ASP web project thats hosting the Silverlight app within a web role, but im guessing its slow because, although SQL Azure and The web role are both on the cloud, i imagine they could be a distance from one another, making it slow.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 17, 2011</h2><p>Ahh, good point.</p>
+<p>Have you tried using EF? Maybe they are able to do some optimizations you aren&#39;t doing?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanielFowler replied on Monday, December 19, 2011</h2><p>Nope we havn&#39;t tried using Entity Framework.</p>
+<p>&nbsp;</p>
+<p>But I found a solution, thought i&#39;d share incase anyone is having the same problem. I decided to use the new SQL Server datatype called HeirarchyId to represent a relationship between Form&gt;Sections&gt;Questions this meant i didnt have to work about ForeignKeys atall so I could build up a heirarchyid without touching the server (well once, to get a unique root id).</p>
+<p>Then instead of building a query i built up two data table, one for sections, one for questions.</p>
+<p>&nbsp;</p>
+<p>I then used SqlBulkCopy to send it to the server.</p>
+<p>&nbsp;</p>
+<p>All of this has cut the time down to save an application from 16 seconds to 3.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

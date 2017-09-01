@@ -1,0 +1,10 @@
+<html><header><title>OT: Nhibernate delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Nhibernate delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9084.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, June 14, 2010</h2><p>Hi,</p>
+<p>Using Nhibernate as an ORM, and haven&#39;t had much luck.&nbsp; Basically I&#39;m trying to do the equivolent of a disconnected delete with Linq to Sql.&nbsp; Basically the NHibernate version of this:</p>
+<p>using( ctx = new MyDataContext()) {</p>
+<p>&nbsp;&nbsp;&nbsp; var myTableObj = new MyTableObj();</p>
+<p>&nbsp;&nbsp;&nbsp; myTableObj.Id = 5;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; ctx.Attach( myTableObj );</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; ctx.DeleteOnSubmit( myTableObj );</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; ctx.SubmitChanges();</p>
+<p>}</p>
+<p>Any ideas?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, June 15, 2010</h2><p>Doing this is pretty much what you&#39;d expect; I had another problem in my own code which was tripping things up. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

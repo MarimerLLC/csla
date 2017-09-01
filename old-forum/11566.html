@@ -1,0 +1,12 @@
+<html><header><title>BusinessListBase with multiple LinqObservableCollections </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessListBase with multiple LinqObservableCollections </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11566.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dazzford posted on Wednesday, September 05, 2012</h2><p>Hi Folks,</p>
+<p>I&#39;ve got a BusinessListBase with multiple LinqObservableCollections (LOC) pointed at it. I&#39;ve noticed a few things.</p>
+<p>1) when a new object is added to the&nbsp;BusinessListBase, that object appears in all filtered lists, without conforming to the filter (understandably so since the LINQ query returns an enumeration).&nbsp;</p>
+<p>2) when an object is deleted from the original list the LOCs which do not have that object in their list, throw an InvalidOperationException stating &quot;Cannot find removed item.&quot;&nbsp;When the LOCs are not databound, the exception is not thrown.&nbsp;</p>
+<p>The first is minor, the second is a little bigger of an issue.</p>
+<p>Since the LOC is a filtered view, in the lamda expression which handles the _baseCollection.CollectionChanged event (line 54 of LinqObservableCollection) we check the returned indexes to see if they are &gt; -1.</p>
+<p>case NotifyCollectionChangedAction.Remove:</p>
+<p>item = (T)e.OldItems[0];<br />index = _filteredCollection.IndexOf(item);<br />if(index &gt; -1)<br />{<br />_filteredCollection.Remove(item);<br />newE = new NotifyCollectionChangedEventArgs(e.Action, item, index);<br />}<br />break;</p>
+<p>I apologize if I have not formatted things correctly, I&#39;m not sure if there are any code tags on this forum.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 06, 2012</h2><p>Thank you, I&#39;ll file this as a bug.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2013</h2><p>Interestingly enough, I have been unable to create a failing unit test for this issue.</p>
+<p>Still, the code change you propose makes sense, so I&#39;ve made this change to 4.5.13.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

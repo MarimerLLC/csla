@@ -1,0 +1,87 @@
+<html><header><title>Async dataportal failing with caliburn micro and mef</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async dataportal failing with caliburn micro and mef</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11668.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy posted on Tuesday, October 30, 2012</h2><p>I can&#39;t seem to get an async fetch method to run asnyc within a caliburn micro confguration.&nbsp; The dp fetches the data properly, but it locks up the UI while it does so.</p>
+<p>Are there any known issues with async dp used within CM and/or MEF?&nbsp; I don&#39;t think it&#39;s my data or business layers, but more likely something between csla and caliburn.</p>
+<p>Again, the code below works, excpet that it locks up the UI.&nbsp;&nbsp;</p>
+<p>EmployeeInfoList is readonly.&nbsp; Here is the method and dp:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">#Region</span>&nbsp;<span style="color:#a31515;">&quot;Async&nbsp;Factory&nbsp;Methods&quot;</span>
+ &nbsp;&nbsp;&nbsp; <span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Shared</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;BeginFetch(<span style="color:blue;">ByVal</span>&nbsp;callback&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:#2b91af;">EventHandler</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">DataPortalResult</span>(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">EmployeeInfoList</span>)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.BeginFetch(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">EmployeeInfoList</span>)(callback)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span>
+<span style="color:blue;">#End</span>&nbsp;<span style="color:blue;">Region</span>
+ 
+<span style="color:blue;">#Region</span>&nbsp;<span style="color:#a31515;">&quot;&nbsp;Data&nbsp;Access&nbsp;&quot;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Private</span>&nbsp;<span style="color:blue;">Overloads</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;DataPortal_Fetch()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Using</span>&nbsp;dalManager&nbsp;=&nbsp;HCM.Dal.<span style="color:#2b91af;">DalFactory</span>.GetManager
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;dal&nbsp;=&nbsp;dalManager.GetProvider(<span style="color:blue;">Of</span>&nbsp;Dal.<span style="color:#2b91af;">IEmployeeDal</span>)()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;data&nbsp;=&nbsp;dal.FetchList
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly&nbsp;=&nbsp;<span style="color:blue;">False</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;rlce&nbsp;=&nbsp;RaiseListChangedEvents
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">False</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">For</span>&nbsp;<span style="color:blue;">Each</span>&nbsp;item&nbsp;<span style="color:blue;">As</span>&nbsp;Dal.Dto.<span style="color:#2b91af;">EmployeeDto</span>&nbsp;<span style="color:blue;">In</span>&nbsp;data
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add(<span style="color:#2b91af;">DataPortal</span>.FetchChild(<span style="color:blue;">Of</span>&nbsp;<span style="color:#2b91af;">EmployeeInfo</span>)(item))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Next</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents&nbsp;=&nbsp;rlce
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly&nbsp;=&nbsp;<span style="color:blue;">True</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span>
+<span style="color:blue;">#End</span>&nbsp;<span style="color:blue;">Region<br /></span><br /></pre>
+<p>My dal fetch function:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp; <span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Function</span>&nbsp;FetchList()&nbsp;<span style="color:blue;">As</span>&nbsp;System.Collections.Generic.<span style="color:#2b91af;">List</span>(<span style="color:blue;">Of</span>&nbsp;Dto.<span style="color:#2b91af;">EmployeeDto</span>)&nbsp;<span style="color:blue;">Implements</span>&nbsp;<span style="color:#2b91af;">IEmployeeDal</span>.FetchList
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;result&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">List</span>(<span style="color:blue;">Of</span>&nbsp;Dto.<span style="color:#2b91af;">EmployeeDto</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Using</span>&nbsp;dal&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">DalManager</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Using</span>&nbsp;cn&nbsp;=&nbsp;dal.dbConnection
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">Using</span>&nbsp;cm&nbsp;=&nbsp;cn.Connection.CreateCommand
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cm.CommandType&nbsp;=&nbsp;<span style="color:#2b91af;">CommandType</span>.Text
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cm.CommandText&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Select&nbsp;*&nbsp;From&nbsp;EMPLOYEE&quot;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Using</span>&nbsp;dr&nbsp;=&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">SafeDataReader</span>(cm.ExecuteReader)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">While</span>&nbsp;dr.Read
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result.Add(GetDto(dr))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">While</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">For</span>&nbsp;x&nbsp;=&nbsp;1&nbsp;<span style="color:blue;">To</span>&nbsp;9999
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Console</span>.WriteLine(x)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Next</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <span style="color:green;">&#39;&nbsp;Threading.Thread.Sleep(10000)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">Return</span>&nbsp;result
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Function</span><br /><br /><br /></pre>
+<p>My view model:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:blue;">Imports</span>&nbsp;System.ComponentModel.Composition
+<span style="color:blue;">Imports</span>&nbsp;Caliburn.Micro
+<span style="color:blue;">Imports</span>&nbsp;HCM.Framework
+<span style="color:blue;">Imports</span>&nbsp;CslaContrib.Caliburn.Micro
+ 
+&lt;<span style="color:#2b91af;">Export</span>(<span style="color:#a31515;">&quot;List&quot;</span>,&nbsp;<span style="color:blue;">GetType</span>(<span style="color:#2b91af;">IEmployeeScreen</span>))&gt;
+<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Class</span>&nbsp;<span style="color:#2b91af;">EmployeeListViewModel</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Inherits</span>&nbsp;<span style="color:#2b91af;">ScreenWithModel</span>(<span style="color:blue;">Of</span>&nbsp;Library.<span style="color:#2b91af;">EmployeeInfoList</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Implements</span>&nbsp;<span style="color:#2b91af;">IEmployeeScreen</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;OnActivate()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ManageObjectLifetime&nbsp;=&nbsp;<span style="color:blue;">True</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">MyBase</span>.OnActivate()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;<span style="color:blue;">Me</span>.Model&nbsp;<span style="color:blue;">Is</span>&nbsp;<span style="color:blue;">Nothing</span>&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Me</span>.IsBusy&nbsp;=&nbsp;<span style="color:blue;">True</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BeginRefresh(<span style="color:#a31515;">&quot;BeginFetch&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span>
+ 
+<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Class</span></pre>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 30, 2012</h2><p>Which version of CSLA do you use? </p>
+<p>We have used Caliburn Micro and CSLA 4.3.x with great success - but I haven&#39;t done any work yet on Csla 4.5.x and CM.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Tuesday, October 30, 2012</h2><p>Initially, csla 4.5 via nuget.&nbsp; I then tried 4.3, but with the same results. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Tuesday, October 30, 2012</h2><p>Ok, scratch that.&nbsp; The issue seems to be with csla 4.5.&nbsp; Async methods work properly with csla 4.3.13.</p>
+<p>My initial problem with 4.3 was that I ignored the multiple binding conflict warning because things compiled, but just failed to async my dataportal fetch.&nbsp; But once I addressed the conflicts, the asnync fetches worked.&nbsp; To resolve the conflict I had to compile the cslacontrib.caliburn.micro.wpf source to use the same csla references.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, October 30, 2012</h2><p>CslaContrib.Caliburn.Micro is in the process of updating to Csla 4.5. A couple of days ago I published here a pre-release of&nbsp;full version of&nbsp;Caliburn.Micro with the Csla module matching the code on Csla 4.3.13 and the latest source of Caliburn.Micro.</p>
+<p>Updating it to Csla 4.5 is the next step.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, October 31, 2012</h2><p>Hi,</p>
+<p>As CslaContrib is not updated to support async/await I would expect the code to work fine with Csla 4.5 for NET 4, as this version still has the &quot;old&quot; DataPortal implementation without async/await. </p>
+<p>Did you try to reference Csla 4.5 for NET 4 in your app?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Wednesday, October 31, 2012</h2><p>When I referenced csla 4.5 and net 4, the UI locked up during the dp fetch.&nbsp; When I changed my references to 4.3, the UI worked as expected.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, October 31, 2012</h2><p>Please try the following actions:</p>
+<p>1) Use Visual Studio 2010</p>
+<p>2) Set the target to Framework .NET 4.0</p>
+<p>3) Remove all Csla references</p>
+<p>4)&nbsp;Use NuGet to reference Csla 4.5.10</p>
+<p>The NuGet packages are supposed to install all dependencies according to the target framework. This means the AsyncTargetingPack will show up on your project references&nbsp;if youir target is&nbsp;Framework .NET 4.0</p>
+<p>I&nbsp;know this works all right for other kind of Csla projects.</p>
+<p>Of course you must use a CslaContrib version retargeted to Csla 4.5.10. Use the port from <a href="https://docs.google.com/folder/d/0B0hxPXhUZfjIT1NxcnA2YmNoY1U/edit">https://docs.google.com/folder/d/0B0hxPXhUZfjIT1NxcnA2YmNoY1U/edit</a>&nbsp;(this uses the commited CslaContrib code)</p>
+<p>Please report back the result of these actions.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Thursday, November 01, 2012</h2><p>Tiago, thanks for your efforts, but that did not resolve the issue.&nbsp; Since the same configuration works with Csla 4.3,&nbsp; I am left with the feeling that something about 4.5 has changed which causes the UI to lock up.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, November 02, 2012</h2><p>The internal implementation of the old-style callback model async data portal methods did change between 4.3 and 4.5. The new implementation delegates to the new async/await implementations.</p>
+<p>This is not problematic in any of the &#39;mainstream&#39; scenarios, because the regression tests and sample apps (and some production apps that have been upgraded) work unchanged from 4.3 to 4.5.</p>
+<p>My guess is that there&#39;s something going on with your code, and/or with MEF, that acts differently when running within a Task (now) as opposed to running in&nbsp; the previous callback model.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Friday, November 02, 2012</h2><p>Thanks for the feedback and confirmation, Rocky, that something changed.&nbsp; The view and view model are imported into the shell via MEF from a separate assembly and I&#39;m wondering if that has some compatibility issues with the new implementations.</p>
+<p>When I have some time I&#39;ll try and put them in the same assembly and see if that makes a difference.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Friday, March 22, 2013</h2><p>Upgrading to 4.5.2 fixes the problem.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

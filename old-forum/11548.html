@@ -1,0 +1,37 @@
+<html><header><title>Changing App Server Endpoint at Runtime</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Changing App Server Endpoint at Runtime</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11548.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlhiggin posted on Wednesday, August 22, 2012</h2><p>Hey folks,</p>
+<p>I am working on a &quot;check out&quot; concept in our application currently. For this concept I need the ability to change the app server that our client is pointing to at run time. Right now I have implemented this context switch by isolating my wcf client configuration into a separate config file that is referenced by setting the configSource attribute for the system.serviceModel/client section in the main config file. When I change context I simply point the configSource attribute at a file that contains either the remote endpoint or the local endpoint, save the main config file, and then call System.Configuration.ConfigurationManager.RefreshSection(&quot;<span>system.serviceModel/client&quot;) to update the configuration cache. My testing is showing that the configuration change is working successfully, however the data portal does not seem to be able to pick up this change even after telling it to reset the proxy and channel factory.</span></p>
+<p>Is the data portal supposed to be able to pick up this change automatically or will I need to implement something custom to tell it to not to cache its proxy and always pull it from configuration. If I need to implement something custom, what would be the best approach for trying to set this up?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, August 23, 2012</h2><p>No, CSLA will not catch that change in web.config. </p>
+<p>You may however change the </p>
+<ul>
+<li>ApplicationContext.DataPortalUrlString</li>
+<li>ApplicationContext.DataPortalProxy</li>
+<li>ApplicationContext.DataPortalProxyFactory </li>
+</ul>
+<p>setttings in your code. </p>
+<p>Here&#39;s the code from ApplicationContext.DataPortalUrlString:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">string</span>&nbsp;DataPortalUrlString
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(_dataPortalUrl&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataPortalUrl&nbsp;=&nbsp;<span style="color:#2b91af;">ConfigurationManager</span>.AppSettings[<span style="color:#a31515;">&quot;CslaDataPortalUrl&quot;</span>];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;_dataPortalUrl;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataPortalUrl&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rlhiggin replied on Wednesday, August 29, 2012</h2><p>JonnyBee,</p>
+<p>Thank you for the reply. I tried messing with the 
+ApplicationContext to see if I could get the DataPortal to recognize the
+ changes I was making to my configuration file. Nothing I tried would 
+work. After looking into it further, the real issue seems to be how the 
+default WCF ChannelFactory handles reading endpoint data from configuration.</p>
+<p>My goal was to have the client app talk to its server database via a NetTcpBinding connection to the remote app server when connectivity is available and to talk to its local database via a NetNamedPipeBinding connection to a local app server when it needs to &quot;check out&quot; some subset of data that will be synced back later.</p>
+<p>I wanted to try to keep as much of the configuration info as possible in the config file and not in my code. In order to use the ApplicationContext.DataPortalProxy or ApplicationContext.DataPortalProxyFactory settings it looks like I would need to make a custom proxy or custom proxy factory that would be hard coded to talk to each different endpoint. Another option here would be to have the client app talk directly to its local database after a &quot;check out&quot;. This is something that we had considered doing, but we want to keep access to the database as protected as possible so having a client application with full read/write access to the database running under the context of whatever user is currently logged into Windows would not be ideal.</p>
+<p>As far as I can tell, ApplicationContext.DataPortalUrlString is only used when the DataPortal defaults to using the WsHttpBinding. Since we&#39;re not using WsHttpBinding at all, that rules this option out.</p>
+<p>What I ended up doing to get the behavior I was looking for was create a custom ChannelFactory. I had some code from a previous based on the example here: <a target="_blank" href="http://weblogs.asp.net/cibrax/archive/2007/10/19/loading-the-wcf-configuration-from-different-files-on-the-client-side.aspx">http://weblogs.asp.net/cibrax/archive/2007/10/19/loading-the-wcf-configuration-from-different-files-on-the-client-side.aspx</a> that I modified to keep its own configuration cache.</p>
+<p>I also added an event to my class that is responsible for writing the changes to the config file and had my custom ChannelFactory listen for that even so it would know when to update it&#39;s configuration cache then had the CreateDescription() override always read from that configuration cache.</p>
+<p>I then made a custom proxy that inherits from the CSLA WcfProxy class. The only modification to this custom proxy was an override of GetChannelFactory() to return an instance of my custom ChannelFactory.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,22 @@
+<html><header><title>WPF and theMVVM pattern</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF and theMVVM pattern</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10659.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Thursday, September 01, 2011</h2><p>Hi folks,</p>
+<p>Software: CSLA 4.1 &ndash; VS2010</p>
+<p>After I have read the CSLA Expert C# 2008 Business Objects, watched CSLA 4 MVVM Video Series and practiced some CSLA with WinForm, I &lsquo;m testing myself to create a small WPF demo in order to understand the basics (MVVM pattern) before starting the serious project.</p>
+<p>I have chosen to develop in WPF, because the future application will need to interact with a client-side peripheral and you use a client-side database.</p>
+<p>Here my issue: I have tried to design a small demo by inspiration of the the SLDemo but without success so far. I have spent almost 2 day to found out what I&rsquo;m doing wrong. Its looks like that the XAML form is not bind with the ViewModel. So, I have got no presentation data and the triggerActions dont call any methods (Save, Cancel).</p>
+<p>I&rsquo;m wondering is someone could have a look at the code attached below to teach me what I&rsquo;m missing, or send me a small app sample (WPF/MVVP) to learn how to make it right.</p>
+<p>[View:http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.01.26.90/WpfDemo.zip]</p>
+<p>Thanks a lot in advance for your help,</p>
+<p>Best regards,</p>
+<p>Cedric</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>emathias replied on Tuesday, September 06, 2011</h2><p>Cedric,</p>
+<p>Take a closer look at the way Rocky sets the DataContext in the SIDemo project.&nbsp; I think that will get you on your way.&nbsp; Sorry about the brevity but I&#39;m at work.</p>
+<p>Ed</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>csmith1 replied on Tuesday, September 06, 2011</h2><p>I looked at your project. I think you should look at few of the CSLA samples out there.</p>
+<p>It looks like you are missing some key components MVVM. I think that CSLA MVVMexperiment sample maybe helpful to you.</p>
+<p>Also the projecttracker is a very good sample. </p>
+<p>Good Luck</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>csmith1 replied on Wednesday, September 07, 2011</h2><p>I can&#39;t over&nbsp;emphasize&nbsp;how much a code&nbsp;generator will help you. I use CodeSmith.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, September 12, 2011</h2><p>Thanks for your answers. Actually, the big problem was from my poor understanding of xaml binding.</p>
+<p>Best regards,</p>
+<p>C&eacute;dric</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

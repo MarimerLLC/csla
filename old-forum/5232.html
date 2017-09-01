@@ -1,0 +1,38 @@
+<html><header><title>Serialization and duplicate references to same object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialization and duplicate references to same object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5232.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, August 12, 2008</h2><P>Let's say I have an object that happens to contain two references to the same contained object&nbsp;(e.g. object.ReferenceEquals(obj1, obj2) will return true). </P>
+<P>Now I serialize this object across the data portal and it is deserialized on the application server. </P>
+<P>Do I get two copies of the contained object, or is the framework actually smart enough to reproduce the original situation with two references to one copy of the object?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, August 12, 2008</h2><P>I'm not 100% sure about the answer but I'm going to guess it's smart enough to give you two references to the one copy. </P>
+<P>That's an interesting question though.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 12, 2008</h2><P>The BinaryFormatter and NetDataContractSerializer both preserve the shape of the object graph. So they are smart enough to handle this.</P>
+<P>Be aware that n-level undo is not that smart though, so you could end up with some really odd edit level scenarios if you aren't careful.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Wednesday, August 13, 2008</h2>Well,<br>I still had in mind that in such a situation we had to mark each redundant reference as &lt;NonSerialized()&gt;, <br>and reset the reference in an OnDeserialized override to avoid trouble...<br><br>I know that with the current version of Csla, we no longer need to rehook events in the OnDeserialized override. Now is this also true for resetting reference duplicates?<br><br>Rocky, could you please state what version of Csla came with that changed behaviour? <br>The original post was version unspecific...<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA 3.5 introduced the field manager, which is what allows CSLA
+to automatically manage child events.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Marking the duplicate child reference as NonSerialized is not a
+bad idea, because it probably reduces the size of the serialized byte stream.
+But you will need to reestablish the child reference yourself in
+OnDeserialized.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,52 @@
+<html><header><title>Exception handling - Pluggable DAL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception handling - Pluggable DAL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11672.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun posted on Friday, November 02, 2012</h2><p>Hi,</p>
+<p>I have a project with pluggable DAL. I want to implement exception handling&nbsp;in the project. </p>
+<p>I did not write any custom exception class, instead, i tried just &quot;Throw ex&quot; where ever the exception was caught, thinking that it will reach the interface control layer. </p>
+<p>The NullReferenceException raised in Data Access Layer was returned to DataPortal_Fetch() in Business Layer. When i throw the caught exception in this method, it was neither thrown to DataPortal.Fetch() nor to the interface control layer.</p>
+<p>Please check my code below(psuedo code)</p>
+<p>-------------------------------------------------------</p>
+<p>&#39;Interface control layer</p>
+<p>--------------------------------------------------------</p>
+<p>public sub CreateItem()</p>
+<p>&nbsp;Try</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; GetItem()</p>
+<p>&nbsp;Catch ex As Exception&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong>&#39; Exception thrown in Dataportal_Fetch() was not caught here</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.Message)&nbsp; </p>
+<p>&nbsp;End Try</p>
+<p>End Sub</p>
+<p>----------------------------------------------------------------------</p>
+<p>Business Layer code</p>
+<p>------------------------------------------------------------------------</p>
+<p>Public shared Sub GetItem()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Try</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception&nbsp;&nbsp;&nbsp;&nbsp;<strong> &#39; Exception&nbsp;thrown in DataPortal_Fetch() was not caught here</strong></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw ex</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>Private Overloads Sub DataPortal_Fetch()</p>
+<p>Try</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;Call&nbsp;a method in &nbsp;Data Access layer&nbsp;where nullreference exception was thrown</p>
+<p>Catch ex as Exception</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw ex&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <strong>&#39; Where do this ex will be thrown to ?</strong></p>
+<p>End Try</p>
+<p>End Sub</p>
+<p>--------------------------------------------------------------------------------------------------</p>
+<p>&nbsp;</p>
+<p>Please let me know how can I implement Exception Handling in Pluggable DAL project. (The &quot;Csla - Data Access&quot; book&nbsp;has only one page information on Exception handling in Pluggable DAL. )</p>
+<p>An Example would help a lot. :)</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, November 02, 2012</h2><p>Which type of exception handling are you looking for? </p>
+<p>For logging on the server side?</p>
+<p>For logging and change the actual exception returned to the client? </p>
+<p>Which version of CSLA? </p>
+<p>Do you use DataPortal_XYC methods (and repository pattern) or ObjectFactory classes?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Arjun replied on Sunday, November 04, 2012</h2><p>Hi Jonny,</p>
+<p>I am looking for something like, when an exception was thrown in data layer, regardless of the database (SQL or Oracle or Mock database) same exception message should be shown to the user. </p>
+<p>For now, not looking at logging the exception in server. </p>
+<p>The CSLA framework I i use is 4.0.</p>
+<p>Yes I do use DataPortal_XYC methods, but&nbsp;in Data Access layer (not in BO layer) as my project architecture has a seperate layer for Data Access methods.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Arjun</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 04, 2012</h2><p>A. You can display a generic message (&quot;Something went wrong&quot;) but inadvertently SqlServer and Oracle database driver will give different errors, reason codes and messages. So to give the same message would not be my recommended solution. </p>
+<p>The simplest solution is to build an ExceptionHandler on the client to inspect the error and message. On the &quot;server&quot; side - and assuming you are using CSLA for N-tier deployment - I would simply log the Exception thrown to have the actual Exception logged serverside.</p>
+<p><b>Can you post a complete sample app as attachment to a post here?&nbsp; </b><br />I suspect something is wrong with your code. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

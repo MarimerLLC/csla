@@ -1,0 +1,11 @@
+<html><header><title>Databinding GrandChildren</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Databinding GrandChildren</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10509.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasonG posted on Saturday, July 09, 2011</h2><p>Hello, I&#39;ve been struggling with this problem for a few days, searching the internet and these forums for answers, but I couldn&#39;t find anything specific to my problem. At first&nbsp;I&nbsp;thought my problem was&nbsp;with saving grandchild objects, but&nbsp;I think&nbsp;the problem lies&nbsp;in&nbsp;correctly databinding&nbsp;grandchild objects.&nbsp;Here is the scenario..</p>
+<p>Parent(&nbsp;BB)</p>
+<p>---&gt; ChildList(BLB) &gt; Child(BB)</p>
+<p>--&gt; --&gt; GrandChildList(BLB) &gt; Grandchild</p>
+<p>My parent winpart control accepts a Parent object and databinds to controls. The child object databinds to a datarepeater control. when the index of the child datarepeater changes I get the current child and bind the child.grandchildList to a second datarepeater. This all works well</p>
+<p>I seemed to add and remove grandchild objects correctly, as they were added and removed from the datarepeated, but when i saved the parent the grandchild objects didn&#39;t save. Upon futher debuging i found that the newly added grandchild was not in the parent.child.grandchildlist. and the parent.childlist.indexOf() always returns a -1. </p>
+<p>So in this scenario what is the correct way to interact with the grandchild objects?</p>
+<p>thanks.</p>
+<p>PS. I&#39;m using CLSA 3.8.x and i&#39;ve followed the ProjectTracker winpart control extactly. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

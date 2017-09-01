@@ -1,0 +1,8 @@
+<html><header><title>Refresh Page Adds More Child Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Refresh Page Adds More Child Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2036.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MadGerbil posted on Wednesday, December 27, 2006</h2><P>Hi:</P>
+<P>Just wondering if anyone had a good solution for the tendency of the system to add duplicate objects to my collections upon page refresh.&nbsp;&nbsp; This happens if an 'Add' button is used to create a child object that is placed into a collection.&nbsp; If the 'Refresh' button is hit the entire 'Add' routine fires again.</P>
+<P>I can come up with a couple of haxxor ways around it, just wondering if there is something elegant out there.</P>
+<P>For example, under no circumstances should any of my objects be identical so I could create a 'compare' based on all the properties - seems kind of haxxor to me though.&nbsp;&nbsp; Someone got something better?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 28, 2006</h2><P>I use the RefreshTrapper HttpModule from Dino Esposito.</P>
+<P>He wrote an article on it a while back. I am sure Google can find it.</P>
+<P>The basic idea is to detect when a Refresh occurs and treat it differently than a postback.</P>
+<P>Should solve the problem you are seeing.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

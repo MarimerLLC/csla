@@ -1,0 +1,9 @@
+<html><header><title>Re: Validate on save?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Validate on save?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3046.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Sunday, June 17, 2007</h2><P>Hi </P>
+<P>I have one form in my app that is setup&nbsp;for dataentry, and the operator get quite annoyed by field by field validation. So I want to implement validation on save with a dialog of the errors.</P>
+<P>So I'm wonder how I would go about this with csla?</P>
+<P>Also how do I disable the Save button until some data is changed?</P>
+<P>Any help would be greatly appreciated.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 17, 2007</h2><P>This article shows how to bind to IsDirty/IsValid/etc.</P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c">http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c</A></P>
+<P>To do your validation at save time instead of per-field, just don't put an ErrorProvider control on your form (that eliminates per-field notification) and add a bit of code behind your save button click handler to see if the object is valid. If not, use the broken rules collection to build your error dialog.</P>
+<P>I do exactly this in the PTWeb code - look at the ProjectEdit page for example.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Monday, June 18, 2007</h2>Thank you Rock, I appreciate your time.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

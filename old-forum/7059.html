@@ -1,0 +1,17 @@
+<html><header><title>readononly list add and remove items</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>readononly list add and remove items</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7059.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Monday, June 08, 2009</h2>Hi<br />I have a grid (dev express) and bind to a readonly list.<br />I then select rows in the grid and want to create a new list (or edit existing) containing only the selected rows which will then be bind to a second grid - can anyone please advise on how I can achieve this?<br /><br />Thanks<br /><br />Richard</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Tuesday, June 09, 2009</h2>You may wish to consider using an editable list rather than a readonly list.&nbsp; The children would also be derived from the editable base class (rather than the readonly), but may expose read-only properties.&nbsp; This should give you the needed functionality to add and remove items from the list and accomplish the functionality you are after.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, June 09, 2009</h2>Hi<br />thanks for the reply - okay I will take your advice - I'm very surprised though that this functionality is not available - a standard say two list box scenario with listbox1 providing available list items and listbox2 showing selected items (via 'select' and 'de-select' buttons sandwiched between the two listboxes) - I can't believe this can't be done with read only objects.<br /><br />Richard</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net replied on Tuesday, June 09, 2009</h2>I have the very same scenario. What I did was add two methods in my ReadOnlyListBase&lt;T&gt; class AddItem(T item) and RemoveItem(T item) in those methods you unlock the list, add/remove the item and then lock the list. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Thursday, June 11, 2009</h2>thanks, did the following
+
+    Public Overloads Sub AddItem(ByVal info As JobLinesNotInvoicedInfo)
+        Me.RaiseListChangedEvents = False
+        IsReadOnly = False
+        Add(info)
+        IsReadOnly = True
+        Me.RaiseListChangedEvents = True
+    End Sub
+
+    Public Overloads Sub RemoveItem(ByVal info As JobLinesNotInvoicedInfo)
+        Me.RaiseListChangedEvents = False
+        IsReadOnly = False
+        Remove(info)
+        IsReadOnly = True
+        Me.RaiseListChangedEvents = True
+    End Sub</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

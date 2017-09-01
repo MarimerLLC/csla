@@ -1,0 +1,84 @@
+<html><header><title>missing exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>missing exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6686.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido posted on Friday, March 27, 2009</h2><P>I have an exception occuring on my server side but I don't know how to get the exception on the client side. The code on the client side looks like that shown below:</P><FONT color=#2b91af size=2><FONT color=#2b91af size=2>
+<P>FieldSalesActivityPrincipal</FONT></FONT><FONT size=2>.Login(domain, logon, (o1, e1) =&gt;</P>
+<P>{</P>
+<P>animation.IsRunning = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.IsAuthenticated)</P>
+<P>{</P>
+<P>Status.Text = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Login Successfull."</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (LoginSuccessfull != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>LoginSuccessfull.Invoke(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2>.Empty);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.IsNullOrEmpty(Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.Name))</P>
+<P>{</P>
+<P>Status.Text = </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"null or em"</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>Status.Text = Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.User.Identity.Name; </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//"Not an application user.";</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P></P>
+<P>}</P>
+<P>}</P>
+<P>);</P></FONT>
+<P>&nbsp;</P>
+<P><FONT size=2>Csla.<FONT color=#2b91af><FONT color=#2b91af>ApplicationContext</FONT></FONT>.User.Identity.Name is coming back as null or empty. I can see from the W3C log files that I get an HTTP 200 when an attempt is made to access the WcfPortal.svc</FONT></P>
+<P><FONT size=2>Any help appreciated.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 27, 2009</h2><P>In your callback handler (inside the lambda) you need to check e1.Error to see if it is not null:</P>
+<P>&nbsp; if (e1.Error != null)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // process server-side exception<BR>&nbsp; }<BR>&nbsp; else<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // process&nbsp;e1.Object result, probably&nbsp;making it the current principal<BR>&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.User = e1.Object;<BR>&nbsp; }</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido replied on Friday, March 27, 2009</h2><P>Thanks for reply. e1 does not have a .Error property as the previous code calls the code shown below (I should have shown this earlier):</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#if</FONT></FONT><FONT size=2> SILVERLIGHT</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Login(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> domain, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> logon, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2>&gt; completed)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FieldSalesActivityIdentity</FONT></FONT><FONT size=2>.GetIdentity(domain, logon, (o, e) =&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.Object == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>SetPrincipal(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FieldSalesActivityIdentity</FONT></FONT><FONT size=2>.UnauthenticatedIdentity());</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>SetPrincipal(e.Object);</P>
+<P>}</P>
+<P>completed(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2>.Empty);</P>
+<P>});</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#else</P>
+<P>Which returns with </P>
+<P>completed(<FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2>.Empty);</FONT></P>
+<P>Should&nbsp;I derive from System.EventArgs or is there a Csla EventArgs class I can use?</P>
+<P>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Still, all this means is that your GetIdentity() method&#8217;s
+callback handler needs to check e.Error.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The principal is the same &#8211; at some point you call the
+data portal, and the data portal will return the server-side error (if any)
+through the e.Error value. You <i>must</i> check that value before attempting
+to use e.Object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

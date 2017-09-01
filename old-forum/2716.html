@@ -1,0 +1,19 @@
+<html><header><title>I'm back on csla afther a year , still need some starters advice.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I'm back on csla afther a year , still need some starters advice.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2716.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>redgoblin83 posted on Tuesday, April 17, 2007</h2><P>So, here is my first question for 2007:</P>
+<P>&nbsp;</P>
+<P>I have a table with all kind of types sorted with a group id and an index, like:</P>
+<P>1 20 Status 1 Open<BR>2 20 Status 2 Closed<BR>3 30 Strengt 1&nbsp;&nbsp;&nbsp;Strong<BR>4 30 Stringt 2 Weak</P>
+<P>and so on</P>
+<P>Whats the best way to have only the group items 20 in a combo box using csla objects. I thougt using the NameValueList, And have a stored procedure that has a group parameter. I tried with the codesmith templates and the NameValueList template but I got errors with the RootCommand. </P>
+<P>So if i'm right afther some test it seems that an NameValueList object is made to operate with a table that has two items. So I could split up my table or ...</P>
+<P>And thats where you folks can help me out. I re orded the book, had to leave the one I bought for shool.</P>
+<P>Kind Regards,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 28, 2007</h2><P>NameValueListBase is designed specifically to support things like a combobox, where you need a key value and a display value, so it is probably appropriate here.</P>
+<P>There are some 3rd party combobox controls that can display multiple values in the dropdown (as columns) and then you need to use a ReadOnlyListBsae collection of ReadOnlyBase objects that expose the properties to be displayed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, April 30, 2007</h2><P>If you make one&nbsp;NameValueList class per group, you would have a public factory method like this for group 20:</P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>MyGroup20NVList</FONT><FONT size=2> GetList()</FONT></P>
+<P><FONT size=2>and another method in the group 30 class:</FONT></P><FONT size=2>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>MyGroup30NVList</FONT><FONT size=2> GetList()</FONT></P></FONT>
+<P><FONT size=2>If you wanted to make one NameValueList class that would work for any group, you would have a a factory method like this:</FONT></P><FONT size=2>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>MyGroupNVList</FONT><FONT size=2> GetList(int groupId).</FONT></P>
+<P>In the first two cases, the method would pass in a hidden, fixed group id to your database procedure (20 and 30, respectively).&nbsp; In the third case, it would pass back the value in the groupId parameter.</P>
+<P>As for NameValueList only working for two column tables, that isn't so.&nbsp; Creative use of concatenation can allow you to show multiple column values in the "Name" portion of the NameValueList.&nbsp; Consider right-padding the fields to their maximum length if that would improve readability.</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

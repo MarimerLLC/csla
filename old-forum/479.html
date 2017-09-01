@@ -1,0 +1,124 @@
+<html><header><title>CSLA vs Datasets</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA vs Datasets</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tazzmann posted on Tuesday, June 27, 2006</h2><P>Not sure if this goes here or a question to Rocky, but we have a programmer here that thinks with the new VS2005 and .NET 2.0 there is no longer a need to use CSLA and that regular business objects with datasets will do the same function using the .NET framework and technology such as Windows Workflow with a lot less coding. Can anyone list out the disadvantages to going off of CSLA? I think Rocky has done a wonderful job and I think that we should continue to use CSLA, but it seems that every argument I bring up he is able to shoot down with existing or soon to come&nbsp;technologies. We have a staff of about 5 programmers that are just learning .NET and three of us that already are very well versed in .NET. One of our .NET programmers think it will be too much to bring them up to speed so that they can compose business objects on the CSLA framework.</P>
+<P>&nbsp;</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, June 27, 2006</h2><P>Take a look at this <A href="http://www.lhotka.net/Articles.aspx?id=60e99288-0998-4c4b-a950-4e19bd6c0bbd">http://www.lhotka.net/Articles.aspx?id=60e99288-0998-4c4b-a950-4e19bd6c0bbd</A></P>
+<P>The classic case it simple.&nbsp; If you go dataset then your end result will be a data centric application where one table will ususally mean one or more forms in your UI.&nbsp; If you go business object (like CSLA) then your use cases drive your business objects as they should be, including all business rules and access points.&nbsp; A dataset is nothing but a data container with very little room for business validation.</P>
+<P>Did your developer read the book?&nbsp; If not, then how can he make such a strong assessment?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Tuesday, June 27, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>"Composing business object on the CSLA framework" should 
+really be an automated task at this point.&nbsp; Perhaps getting one of those 
+guys up to speed with a code generation tool (like CodeSmith or MyGeneration - 
+my own favorite) would be worthwhile.&nbsp; I'm pretty sure that with that 
+many&nbsp;programmers, having one doing code gen work will reduce the coding 
+effort of the others two by <STRONG>far more than enough</STRONG> to offset the 
+fact that the&nbsp;one isn't spending full time "coding."&nbsp; 
+</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=980502516-27062006><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>Any one else care 
+to comment on this estimate or have metrics to back it 
+up?</FONT></SPAN></SPAN></DIV>
+<DIV align=left><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>[Sidebar: Frankly, I'm a bit jealous.&nbsp; I code by 
+myself or with a two or three man team at most. I think a staff of your size 
+could actually devote a full time person to implementation and maintanence of 
+&nbsp;the harness that Kathleen Dollard developed for us all in her book "Code 
+Generation in Microsoft .NET"&nbsp; I frankly feel it is too much work for a 
+shop of one or two folks building modest applications.&nbsp; I think the 
+products mentioned above can provide somewhat less functionality but with a LOT 
+less effort and are a better fit for smaller shops.&nbsp; But with eight folks, 
+you can afford to go for the gold!!&nbsp; Other opinions are welcome here, of 
+course.]</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>Regarding the choice of CSLA vs. Datasets, read chapter 
+one.&nbsp; If you can afford to ship much larger software objects over your wire 
+and give up the convenience of SmartDates and SafeDataReader, then maybe 
+Datasets are acceptable (though with code gen I think you really get these 
+benefits for free).&nbsp;&nbsp;</FONT></SPAN></DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>Maybe 
+you should&nbsp;give some thought to the human nature issues at this point 
+instead of the technical ones and come up with a way for this guy to save face 
+and let HIM discover why datasets are a poorer choice.&nbsp; He sounds like 
+somebody who really hates to be wrong.</FONT></SPAN></DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>Perhaps if it can look like <STRONG>his</STRONG> idea, you can all move 
+on with getting work done in the most efficient manner.&nbsp; With some folks 
+you could do this&nbsp;by making some stupid claims like, "yeah datasets are 
+better because there's a lot less overhead in their object model so there's less 
+to marshall&nbsp;and serialize and&nbsp;put on the wire, right George?"&nbsp; 
+Then George is in the position of&nbsp;being able to look it up and look smarter 
+than you by saying something like "Actually that isn't true.&nbsp; I think there 
+may some benefits to datasets, but that isn't one of them.&nbsp; CSLA is 
+actually a much leaner object".&nbsp; Then you make another dumb one and he 
+defends CSLA again.&nbsp; Pretty soon, he's the genius saying that&nbsp;you 
+stick with CSLA.</FONT></SPAN></DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>This 
+could backfile, of course, if he isn't willing to pick up the book.&nbsp; So be 
+sure&nbsp;of&nbsp;your strategy before you pick it.&nbsp; Maybe something else 
+will work better, like just recommending that he read chapter one (or at least 
+page 23 - of the VB book at least).</FONT></SPAN></DIV>
+<DIV><SPAN class=980502516-27062006></SPAN><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>Or 
+maybe you can "agree with him" by saying&nbsp;"yeah, CSLA is really only for 
+applications that have real complexity; it isn't needed here."&nbsp; This will 
+irk a lot of people who will feel as if you are trivializing their development 
+projects.&nbsp; Pretty soon he could be&nbsp;pointing out all 
+the&nbsp;complexities of his app that make&nbsp;CSLA such a great fit.&nbsp; 
+Again - pick the approach you think will be most likely to be successful, but be 
+careful how you "agree" with him.</FONT></SPAN><BR><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></DIV>
+<DIV><SPAN class=980502516-27062006><FONT face=Arial color=#0000ff size=2>[My 
+apologies to all our forum members named George 
+&lt;g&gt;]</FONT>&nbsp;</SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, June 28, 2006</h2><P>&gt;&gt; <FONT face=Arial color=#0000ff size=2>code generation tool (like CodeSmith or MyGeneration - my own favorite)</FONT></P>
+<P><FONT face=Arial color=#0000ff size=2>Are there any good templates available for MyGeneration and CSLA? I searched, but the ones I found were kinda old.</FONT></P>
+<P><FONT face=Arial color=#0000ff size=2>Thanks,</FONT></P>
+<P><FONT face=Arial color=#0000ff size=2>Mike</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Wednesday, June 28, 2006</h2><P>The&nbsp;MyGeneration templates&nbsp;I've got (for ERO, ECC, ECO, and ROL only) are all for CSLA 1.x.&nbsp; I only recently received the VB version of the&nbsp;CSLA 2.0&nbsp;book and haven't begun 2.0 development yet.&nbsp; I probably won't get to that for another six weeks at least.</P>
+<P>If you'd be interested in seeing those, I could pass them along.&nbsp; I could use some more feedback on them anyway.&nbsp; </P>
+<P>Please keep in mind that they implement my own decisions regarding naming and commenting conventions and the like.&nbsp; You may not have the same appreciation for the goals of these templates.&nbsp; (For example, I pass the parent's key field value, not the whoe parent, to child collection's Update method.)&nbsp; But they generate compilable CSLA business objects of the types described.&nbsp; They use the older&nbsp;validation technique (calling CheckRules in your Property Set, etc.)&nbsp; I implemented those&nbsp;in such a manner that you could generate Rules for max string length automatically and can get StringRequired and Max and Min values for numeric types just by adding a meta data value for the source field (e.g. MaxValue = 255).</P>
+<P>Interested?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, June 28, 2006</h2><P>MyGeneration is also my favorite.&nbsp; If you look closely at MyGeneration, you'll notice that the Zeus API and the MyMeta API are compiled in ASP.NET 1.1.&nbsp; So you can even do without the MyGeneration UI and reference those API in your own VS solution for code generation.&nbsp; By what does that all mean to you.&nbsp; Well, you'll get code complete while writting your template.</P>
+<P>Glad to see your still enjoying MyGeneration Q.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, June 28, 2006</h2><P>Yes, I'm interested. I'll send a PM with my email.</P>
+<P>I'd like to take a look at what you're doing different than what the book's templates do. the CodeSmith templates do things a little differently too. I'd like to study and see why the discrepencies.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, June 28, 2006</h2><P>Man, I love your post Q.&nbsp; I've also had fantasies of being able to develop a Dollardish generation system that would be business layer centric, but it's hard to justify that when there's only a couple of us.</P>
+<P>One of the hurdles to get over I find is the assumption that CSLA is just another geek's pet hobby project rather than the result of years of evolution and experience in both Rocky and Magenic's use of it.&nbsp; And let's not forget all of us.</P>
+<P>There are some advantages to the dataset based approach.&nbsp; You can discover a lot of metadata directly from the database, for example.&nbsp; It's not difficult to make a very powerful (and potentially dangerous of course) querying system based on that discoverable metadata.</P>
+<P>But I would never ever EVER in a million years base an enterprise application on the current flavor of Microsoft's data access technology.&nbsp; When ado.net gets replaced (remember RDO and then ADO?) with whatever comes next your CSLA-based application keeps humming along after a few isolated changes confined to a few methods.&nbsp;&nbsp;Meanwhile your colleague's application using the datasets all the way to the UI is 100% broken and has to be fundamentally redesigned, let alone recoded.&nbsp; </P>
+<P>To get around that potential nightmare you need to do what?&nbsp; Well, wrap that data with an object that will provide more longevity, of course.&nbsp; Something like...uh... well, how about CSLA-based business objects?&nbsp; It's kind of a no-brainer if you ask me.</P>
+<P>Many of the powerful new features of Visual Studio 2005 / .NET 2.0 apply directly to CSLA-based objects.&nbsp; If you like out-of-the-box Microsoft stuff, creating windows forms bound to CSLA business objects is a snap (well, outside of the quirks and&nbsp;instability of the VS forms designer).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Wednesday, June 28, 2006</h2><P>&gt;&gt;Man, I love your post Q.&nbsp;&lt;&lt;</P>
+<P><FONT color=#0000ff>Many thanks.&nbsp; I thought some of the ideas for getting&nbsp;"George" to let go of his ownership of the dataset view was the good part.&nbsp; Maybe not eh?&nbsp; &lt;g&gt;&nbsp; Seriously, though.&nbsp; I'm so swamped this month I haven't had time to offer much here.&nbsp; But I thought I could offer something useful in response to that post and the fact that <STRONG>you</STRONG> found it worthwhile makes me all the happier that I took the time.&nbsp; Everyone's opinion is important, of course.&nbsp; But there are a few of you here who have really earned the respect of the rest of us by your comments and other contributions over the long haul to the community.</FONT></P>
+<P>&gt;&gt;&nbsp;I've also had fantasies of being able to develop a Dollardish generation system that would be business layer centric, but it's hard to justify that when there's only a couple of us. &lt;&lt;</P>
+<P><FONT color=#0000ff>Yeah, for me the killer is the work I'd have to do getting up to speed on the XSLT techniques.&nbsp; Even if I climbed that learning curve, I'd be starting over if I only returned to it rather infrequently (only at start of new projects and major enhancements).&nbsp; Her web site used to say that she had a couple of book projects in mind, one of which was a book focused on <STRONG>using</STRONG> her generation harness rather than building it.&nbsp; That might change my mind.&nbsp; But I'm afraid it may not come to pass.&nbsp; She changed her site a great deal last month and it looks to me as if her only book project right now is on generics (not an altogether bad idea, of course).&nbsp; I'm going to e-mail her and ask her about the other one.</FONT></P>
+<P>&gt;&gt; (remember RDO and then ADO?) with whatever comes next your CSLA-based application keeps humming along after a few isolated changes confined to a few methods.&nbsp;&nbsp;Meanwhile your colleague's application using the datasets all the way to the UI is 100% broken and has to be fundamentally redesigned, let alone recoded.&nbsp; </P>
+<P>To get around that potential nightmare you need to do what?&nbsp; &lt;&lt;</P>
+<P><FONT color=#0000ff>This is the real benefit of using CSLA and code generation.&nbsp; You can leave the CSLA business logic stuff alone completely and just change your templates for the persistence methods.&nbsp; Properly maintained template-source file sets could be completely regenerated for LOTS of applications in an hour or two after the day or so it takes to come up with the new template work.&nbsp; How many weeks or months will those MS-Data-driven folks spend doing the same thing?</FONT></P>
+<P>&gt;&gt; If you like out-of-the-box Microsoft stuff, creating windows forms bound to CSLA business objects is a snap (well, outside of the quirks and&nbsp;instability of the VS forms designer). &lt;&lt;</P>
+<P><FONT color=#0000ff>This (along with&nbsp;my current workload) is a big incentive for me to hold off on that 2.0 development.&nbsp; I think I can wait for some of you pioneers to let your arrow-holes heal before I ramp up to it. &lt;g&gt;</FONT></P>
+<P><FONT color=#0000ff>Good to hear from you over hear in the New World.</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RanceDowner1234 replied on Tuesday, June 27, 2006</h2>Sounds like more of a OOP versus SpaghettiCode (although "DataCentric" is a more PC term LOL!) argument.&nbsp; Sounds like he's just trying to dress up DataCentric programming in an OOP envelope.&nbsp; For years I used to argue against OOP myself.&nbsp; I think it's because it can be so <i>abstract</i>.&nbsp; Rocky's done a great job of simplying the abstract for mere mortals.&nbsp; <br><br>Finally... after switching to vb.net from Visual Basic 6.x I decided it was time to learn OOP and to do it using best practices.&nbsp; Personally, I think CSLA was a great way for me to get up to speed on OOP best practices.... or atleast introductory practices (practices I could&nbsp; understand as a newbie). <br><br>As for CSLA itself... I considered Strongly-Typed datasets, and even started down that road
+for a while, but I soon found out that I needed certain functionality
+like n-Level Undo and Serialization. <br><br>As for Serializaton/Cloning ...<br><br>For instance I was writing an accounting application that voided certain records.&nbsp; It would do so by creating an exact duplicate of the record and then chaning the entry Amount to a negative number.&nbsp; Using my onw "business objects" I ran into the pickle of having to copy each and every field.&nbsp; By using CSLA, with built in serialization, I simply "cloned" the object and then changed the ForeignKey &amp; entryAmount.&nbsp; Three lines of code. <br><br>As for Undo...<br><br>Every once it is nice to actually undo changes made to a record instead of reloading it from the database.&nbsp; Doing this, manually, or field by field, can be annyoing.<br><br>But OOP/CSLA is not for everybody.&nbsp; Heck .net isn't for everybody.&nbsp; There are actually developer's out there signing petitions to stay in vb6.&nbsp; But I know I was sometimes stubborn in the past... so don't come down too hard on the guy... there might be hope for him! :0)&nbsp; The best thing might just be to try coding a small project using strongly-typed datasets and then one using CSLA and let him prove to himself the value of OOP.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, June 27, 2006</h2><P>Before I found CSLA a few weeks back, I had been trying to extend Datasets to incorporate a business rules/ authorizations rules approach.&nbsp; </P>
+<P>This was with ASP.Net v1 in VS 2003, haven't tried to replicate my experiment with VS2005 and ASP.Net v2.</P>
+<P>Basically, I used the strongly typed DataSet generator to build a DataSet to wrap a table.</P>
+<P>(I'm a data guy, so of course I started from there.&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /> You OO guys, go ahead and laugh. I'm learning!)</P>
+<P>I created a subclass of the strongly typed DataSet.&nbsp; It's constructor wired up the row changing and column changing events of the strongly typed DataSet to a CheckRules procedure.</P>
+<P>The row-changing wire-up worked great in my windows test screen..&nbsp;&nbsp; Changing data on the screen, then navigating to a new row caused to row-changing event to fire the CheckRules procedure.&nbsp;I forced a rule to fail, which then threw an exception with a user-friendly error message in it.&nbsp; The field value in the on-screen DataGrid reverted to its pre-change value and the screen automagically popped up a message showing the exception text.&nbsp; Sweet!</P>
+<P>Then I tried testing a column level rule.&nbsp; The rule was fired, it threw an exception, and the field value displayed in the data grid was reverted to the pre-change value.&nbsp; But the exception was consumed by the DataSet, which meant that there was no pop-up message box showing the exception.&nbsp; So, from the user's perspective, they entered a field value which was blanked out and replaced by the original value with no explanation whatsoever.&nbsp; </P>
+<P>That was one killer "feature".</P>
+<P>Now, I went to all that work because I **know** the value of a business rules-based analysis of an object.&nbsp; I've had **very** successful results using that approach in non-object-oriented technologies.&nbsp; I understand the **full** project and application life-cycle costs of not having the business rules fully integrated into the usage of the object, so clearly defined and so cleanly separated from one another in their coding implementation.&nbsp; I know that I'll come out ahead on all but the most trivial of projects - not only over the life time of the application, but on the inital build as well.</P>
+<P>I would wager that your colleague's objections are rooted in the fact that they do **NOT** understand the full cost of not developing this way.&nbsp; They see that they can get the first screen iteration up and running faster without all this "extra" coding.&nbsp; &nbsp;What they don't see is that they still have do do all the coding, they just don't concentrate all that work in one pass while building the business object.&nbsp; They do a bit to get the screen up and running, then do a bit more to add some validation, then a bit more, then a bit more, then a few fixes or twenty, then a few more, all interspersed between work on other programs.&nbsp; Psychologically, they don't make the connection between all those "trivial" amounts of work, so they don't count in their tally of relative costs.&nbsp;&nbsp; As Senator Proxmire once said, "A billion here, a billion there, pretty soon it adds up to real money."</P>
+<P>You can try the mind games suggested in a previous post (a truly great book for learning how to deal with problem colleagues is "Dealing with People you Can't Stand: How to Bring Out the Best in People at Their Worst").&nbsp; </P>
+<P>Or you can try to help you colleague see the full cost of&nbsp;your two approaches.&nbsp; Good luck, because getting people to see the obvious is not an easy task. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; </P>
+<P>You may have to rub their noses in how many times someone has to go back and fiddle with a screen after it's "done".&nbsp; If you go that route, remember to include all collateral damage in the nose-rubbing.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 27, 2006</h2>VS2005 and .Net 2.0 don't change the fact that Ado.Net is for manipulating data, but the point of OOD is to model behavior.&nbsp; <br><br>The simple fact is that as soon as you change the database tables at all, your entire application is now broken.&nbsp; Using Csla, you only need modify code in the DataPortal_xxx methods; your UI is safe from the changes to the database.&nbsp; This is a HUGE advantage.<br><br>Also, where do you put your business rules?&nbsp; You have a rule that you can only have one discount, or only one item of a certain type in a collection.&nbsp; Where do you put the code to enforce that?&nbsp; Usually it ends up in the UI.&nbsp; Want to create a web UI for your application?&nbsp; Get ready to rewrite much of the code, and retest ALL the business logic again.&nbsp; When Vista becomes more popular, and you need to move to Windows Presentation Foundating in .Net 3.0, get ready to throw away your UI and business rules yet again.&nbsp; With Csla, you keep the business rules (which perhaps the most complicated part of the application) and you can easily recreate the UI in WPF.&nbsp; <br><br>Learning Csla isn't too terriblly difficult; at worse, you can say RTFB.&nbsp; At best, you can train them yourself on how to build Csla based business objects.<br><br>The reasons to keep on Csla are outlined in Chapter 1, so there's not really any reason for me to continue to rehash the arguments.&nbsp; What 'solutions' to the problems with data centric programming does he present?<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, June 28, 2006</h2><p class="MsoNormal">
+
+</p>
+<p class="MsoNormal">Datasets aren't all bad.&nbsp; When Microsoft changes
+ADO.NET you will have to re-write all projects that use datasets. &nbsp; Further, you
+will also spend more time on maintenance using datasets.<u1:p></u1:p> Job
+security baby!<o:p></o:p></p>
+
+<p class="MsoNormal"><o:p></o:p>
+</p>
+<p class="MsoNormal"><o:p></o:p></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

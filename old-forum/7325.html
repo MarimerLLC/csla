@@ -1,0 +1,108 @@
+<html><header><title>ASP.NET MVC Redux</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.NET MVC Redux</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7325.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Wednesday, July 22, 2009</h2><P>After reading several previous threads discussing use of CSLA business objects with ASP.NET MVC, I noticed that these topics were all at least 10 months old.&nbsp; I'm wondering if there are lessons learned during that time that can help those of us making an entry into this platform a bit easier.</P>
+<P>In particular, I am wondering if anyone has found the stateless solution to be problematic?&nbsp; I guess my biggest apprehension about ASP.NET MVC is that we are incurring the overhead of instantiating our business objects each time the page is posted back to the server.&nbsp; At a minimum this means when the page is first loaded then again when the form is posted back.&nbsp; In the (standard) ASP.NET sample Project Tracker app, and others, we store the business object in session between calls to eliminate this overhead.&nbsp; Now that the community has had more exposure to the ASP.NET MVC approach, I'm wondering if the overhead is worth it.</P>
+<P>Any insight is appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2><P>I think you can use Session in ASP.NET MVC. I would expect the controller would manage what objects come and go from Session, but I think it is available as part of the plumbing.</P>
+<P>There's no doubt that you need to alter (I often use the phrase 'bastardize') your object model to efficiently fit into a stateless server model. But if you need the scalability provided by a stateless server, then this is the price you pay.</P>
+<P>In a stateless model, all you have is root objects. No child objects except in read-only scenarios where you are populating a page with a list of data. But each postback that does a put (insert/update) requires a single root object that handles that postback.</P>
+<P>So your SalesOrder object is a root. And your LineItemEdit is a root. Because there's no natural relationship between these objects (they are independent), you must manually code more business rules into your classes - again, this is the price you pay for scalability.</P>
+<P>Some of the fastest code in the world is the code used for the perf benchmarks for databases. It is also code you'd never want to maintain. They sacrifice everything for performance - readability, maintainability, reuse, etc.</P>
+<P>The same is true for super-scaling. You compromise. You do manual optimizations that reduce maintainability. But it is a price you pay for super-scaling.</P>
+<P>Fortunately the vast, vast majority of apps don't need super-scaling. Most apps can use some Session (though often via a centralized state server for fault tolerance) and work just fine. That's a much cheaper, easier approach overall, because you can do things like let the object model naturally enforce some rules through the relationships of the objects themselves.</P>
+<P>This isn't an MVC thing - it is a broader web thing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Thursday, July 23, 2009</h2>Very interesting discussion.  I've been playing with Azure a bit (nominally the current killer platform for scalability), and quite a few of the demos I've seen are also using MVC.<br /><br />Personally, one of the problems I've got with these demos is that the "Model" is typically reduced to something like empty entity shells (or maybe an EF model in a traditional MVC app).  Clearly, this runs counter to the concept of intelligent objects (which is one of the big reasons we're all here, right?).<br /><br />So, I'm taking a shot at stuffing some CSLA objects into the Model of an Azure-MVC app.  I suspect I'm going to run into some of these same issues, but I think the alternative is pretty chaotic with respect to business logic - I'd rather not just leave the model to be filled in as an afterthought.<br /><br />I hope to understand some of the gotcha's in this model a little better once I've got an app working.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2>Be careful with Azure and Session. Azure's pricing model includes charges<br />for "transactions" for internal services like talking to a database or<br />talking to a worker role. Any out-of-proc Session (which you'd have to use,<br />because Azure will require a minimum of 2 instances) will cause 1-2<br />transactions per page hit (one to get the Session, one to save Session).<br /><br />Also, use of Membership (auth, roles, profile) will cause transactions.<br /><br />You can imagine that a web site with moderate load could trigger hundreds of<br />thousands of "transactions" very rapidly, which might increase your daily<br />cost for using Azure by quite a bit.<br /><br /><br />But from a pure Model perspective, I think you need to weigh the pros and<br />cons of an anemic model carefully.<br /><br />A rich model (like a CSLA model) is really nice for interactivity and<br />encapsulation, but you do lose some of the power when all your objects must<br />stand alone as root objects.<br /><br />An anemic model (like service proxy objects, EF entities, etc) are often<br />created by tools, and so are simple to create. The model pre-supposes some<br />external business logic location, like a function library, rules engine or<br />something like that. So there's separation of data and logic - which breaks<br />encapsulation, but provides a different type of separation that some people<br />really like (though to me it feels a lot like FORTRAN). Business rules are<br />usually invoked as a batch in this world.<br /><br />In a smart client or any interactive user scenario the anemic model approach<br />is not a good match, because it is hard to get interactivity with a batch<br />mode business logic approach. The rich domain model approach is far better,<br />because logic is triggered at a very granular level.<br /><br />But in a web world things are already done in what's called block mode (a<br />term from the mainframe), where a block of data is posted to the server at a<br />time (a page postback). So triggering business logic as a batch is fine,<br />because that matches the model imposed by the broader technology.<br /><br />All that said, the web is rapidly switching toward a model where chatty<br />communication between a "rich client" running Javascript and the server is<br />commonplace. So the web is undergoing its own revolution - one that rather<br />turns much accepted wisdom and best practices on its ear.<br /><br />What IS the best practice for a stateless web server that needs to validate<br />the user's entries field-by-field? Is that even cost-effective if your data<br />center isn't built on a power dam? If you are paying per "transaction" like<br />in Azure, can you actually afford to even allow this type of model?<br /><br />I think there are a lot of unknowns as the web switches from a batch mode to<br />chatty interactive mode - like whether that is even realistic, and if so,<br />how much will it cost, and if affordable, how nasty must your code become to<br />make it work?<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlambert replied on Thursday, July 23, 2009</h2>Thanks for the point on transaction costs -- that's certainly a consideration.  I don't know that we can really consider Azure's introductory pricing to be definitive for the class of "cloud computing", yet, though.  Other cloud services, if I'm not mistaken, don't include a transaction component at all in their pricing, and Microsoft is also preparing to release Azure-derived bits so you can run a private cloud in your own data center, which throws another question-mark into pricing.<br /><br />The "worker role" concept in Azure maps to your batch-mode comment.  In tech introductions I've seen, "workers" are supposed to handle longer-running processes, so that the "web role" processes can operate quickly.  The part of this that bugs me is that you end up with a really fragmented object model -- the blind man and the elephant looks like an absolute savant in comparison.<br /><br />RE: block-mode vs. interactive, you're right -- we've seen massive swings in the interactivity of our interfaces since the green-screen mainframe days.  Windows giveth, the web taketh away, and so on.  Clearly, our web interfaces started getting more interactive with the introduction of AJAX.  Maybe the better stack to prototype here would be Azure / CSLA / Silverlight.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2>Personally I'm sold on Silverlight. I guess we'll see if the industry agrees<br />:)<br /><br />Silverlight provides web deployment characteristics (transparent to the<br />user) with a real smart client technology, so all the cool architectural<br />capabilities of Windows Forms or comparable technologies are available to<br />you as a "web" developer.<br /><br />To me it is the sweet spot, where you get all the smart client goodness, and<br />all the stateless web server goodness. Best of both worlds.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, July 23, 2009</h2><P>Amazing how these discussions transition!&nbsp; I am actually looking at diving into my first Silverlight UI as a possible alternative to the ASP.NET MVC approach.&nbsp; Where are you, Rocky, with documentation for CslaLight?</P>
+<P>What has driven me towards the ASP.NET MVC framework is the fact that I've worked a lot with the UI Automation approach that Microsoft uses for a lot of its applications.&nbsp; I was recently a part of a large-scale web solution that used an automation model to drive the UI.&nbsp; Unfortunately we had the same debate over performance and state because there is a lot of overhead reconstructing the UI model each time a page posts back.&nbsp; On the other hand, we lose scalability when we save the "Application" object in session.&nbsp; And, truth be told, with the web apps, we still have overhead each postback because we have to rewire and unwire event handlers from the pages each time.&nbsp; Ultimately, we decided to save the UI model in memory in the hopes that this would be more performant.</P>
+<P>So, I was looking at the MVC or MVP pattern for some insight how we might improve upon this design.&nbsp; I think both patterns work nicely with Csla for our business objects but get stuck right back at the question of state.&nbsp; The vast majority of examples apply these pattern to Windows Form applications where maintaining references to objects isn't an issue.&nbsp; But, looking at ASP.NET MVC, it appears that the framework is designed to create a new instance of the controller each time the page is requested or posted back.&nbsp; When we start working with data-driven objects, this can be a lot of overhead.</P>
+<P>Take for example a simple form used to edit an existing Customer record.&nbsp; When the page is first requested, we create an instance of the Controller/Presenter which creates our Csla business object which goes through the layers and tiers to a database to retrieve the object's property values.&nbsp; We then initialize the UI and return the page to the browser.&nbsp; When the user makes changes to the form and posts the page back, we have to repeat all of this before we can update the object then persist it back to the database.&nbsp; This requires that our Controller/Presenter, BO and supporting classes be instantiated twice and THREE trips to the database (unless we implement caching).&nbsp; Wow!&nbsp; This is what makes me apprehensive.</P>
+<P>Then, if we do save our business object in session state, are we really following the patterns when we have to pass the object back to the Controller/Presenter for persistance?&nbsp; I know the MVP pattern is supposed to decouple the View from the Model, so only the Presenter knows about the model so it would seem that we have to save the Presenter in session state or the whole pattern breaks down.</P>
+<P>I know that Silverlight has a different mechanism for working with underlying code but don't know enough about it to know if it addresses any of this or is simply another pretty face on the same ol' problem.</P>
+<P>Any pearls of wisdom?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Thursday, July 23, 2009</h2><P>In regard to the Silverlight solution - I think Rocky said it all. Silverlight does address the stateless persistence problems, because it's all stored in memory, on the client. It really does blow ASP.NET out of the water if you're talking about LOB apps (or any other types of non-trivial apps for that matter). There is a big learning curve, but well worth it IMO.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not actively working on an ebook for CSLA .NET for
+Silverlight. I released the video series, and am now working on a video series
+for CSLA .NET for Windows (and using much of my vacation while the summer
+weather is here in Minnesota &#8211; that&#8217;s important!!).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regarding all the MVC/MVP/MVVP/M-O-U-S-E patterns out there, it
+is absolutely critical &#8211; CRITICAL &#8211; to remember that patterns have consequences.
+Good and bad. Every pattern has different consequences.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Patterns are identified as a repeating technique or approach
+that solves a specific problem &#8211; so one consequence is always that the
+pattern solves a problem. All patterns have negative consequences too, which
+people often forget to consider as they get excited about the fact that there&#8217;s
+a solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s no accident that MVC and MVP exist as separate
+patterns (each with at least 2-3 sub-patterns &#8211; for a total of around 6
+actual patterns). MVC might work well for me, and MVP might work better for
+you. Why? Because the consequences of each are different, and you and I have
+different apps, with different requirements.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I know this is very theoretical &#8211; but it is such an
+important thing to internalize! Using a pattern because it is trendy, or
+because it is the first you found (among many others) that solves your problem,
+is very dangerous.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You must do what you are doing &#8211; which is to evaluate the
+consequences of each pattern in the context of your particular requirements,
+and decide if the pattern really does make your life better. Picking the wrong
+pattern, or variation of a pattern, can make your life a living hell.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been focusing much more on MVVM lately, because that&#8217;s
+the <i>really</i> trendy pattern at the moment. It could become &nbsp;the POTY
+(pattern of the year), displacing DI/IoC.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>POTY is (in my view) an anti-pattern, where people get so
+excited about the hype around a pattern that they use it blindly, not really
+knowing if it is good, bad or otherwise. Every year seems to have a POTY, and
+it really makes me sad to watch that much waste accumulate each time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>MVP was the POTY a few years ago.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What is really sad, is that some of these patterns emerge from
+all the crap and are permanently stained. People are disappointed, and so the
+pattern gets a bad rap. People assume it stinks. But every pattern has value
+when used in the right context, and for the right reason.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

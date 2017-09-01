@@ -1,0 +1,23 @@
+<html><header><title>3.8.2 Internal changes throws fetch failed on server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.8.2 Internal changes throws fetch failed on server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8526.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Sunday, February 14, 2010</h2><p>i just moved from 3.6.3&nbsp;to 3.8.2 and noticed that&nbsp;some Internal changes now&nbsp;throws error fetch failed on server..</p>
+<p>This is occuring in child collections where there are no records..</p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>private&nbsp;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> Child_Fetch(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataRow </span></span><span style="font-size:x-small;">[] rows)</span></p>
+</p>
+</p>
+<p>Previously this was being called I think with blank collection but now if there are no records then it is called with null value which throws the error..</p>
+<p>can anybody cfm this change in csla...</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, February 15, 2010</h2><p>
+<p>Hello,</p>
+<p>I didn&#39;t notice this change, the default behavior of the fetch is to throw an exception if no records exist. This will return a DataPortalException and the inner exception will contain the actual exception message. Do you have a unit test that works in 3.6.3 but fails in 3.8.2? Also could you provide a stack trace \ snippet of the child fetch.</p>
+<p>What does the definition of your child property look like?</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, February 15, 2010</h2><p>Is this the behavior you&#39;re seeing?&nbsp; <a href="http://forums.lhotka.net/forums/t/8410.aspx">http://forums.lhotka.net/forums/t/8410.aspx</a></p>
+<p>If it is, to work around it I would wrap the DataRow array in a SingleCriteria&lt;T, D&gt; class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, February 16, 2010</h2><p>yes, this is exactly what is coming.. in the post you have refered the final answer is not given bcos before calling the dataportal fetch passed param is not null but array with 0 values.. but when it is called then auto this array is changed to null.. Will this remain as it is in future csla versions also ?</p>
+<p>For the time being, i&#39;m doing a null checking in fetch to avoid errors..</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

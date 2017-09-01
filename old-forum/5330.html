@@ -1,0 +1,47 @@
+<html><header><title>mobile formatter - deserialize method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>mobile formatter - deserialize method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5330.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 posted on Friday, August 29, 2008</h2><P>Hello Everyone!</P>
+<P>I have a situation whereby&nbsp;I have a parent object that has a set of child objects. These child objects in turn refer back to the parent object via a reference field. Currently the parent object manually serializes/deserialzes the child collection&nbsp;via OnGetChildren/OnSetChildren respectively.&nbsp;In OnSetChildren I was hoping to&nbsp;loop through the child collection and update each child's parent circular reference. However, I noticed that at this time the collection was empty. In order to get around this I modified the Deserialize method such that it calls OnSetChildren in reverse order. It works but I was wondering if I am causing some bad side effect here. Does anyone know? I really try to avoid modifying the framework. Thanks</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> Deserialize(</FONT><FONT color=#2b91af size=2>XmlReader</FONT><FONT size=2> reader)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>DataContractSerializer</FONT><FONT size=2> dc = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataContractSerializer</FONT><FONT size=2>(</P>
+<P></FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SerializationInfo</FONT><FONT size=2>&gt;),</P>
+<P></FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>[] { </FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>&gt;), </FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>byte</FONT><FONT size=2>[]) });</P>
+<P></FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SerializationInfo</FONT><FONT size=2>&gt; deserialized = dc.ReadObject(reader) </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>List</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>SerializationInfo</FONT><FONT size=2>&gt;;</P>
+<P>_deserializationReferences = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>IMobileObject</FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SerializationInfo</FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> deserialized)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> type = </FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>.GetType(info.TypeName);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2>(type == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SerializationException</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(</P>
+<P></FONT><FONT color=#a31515 size=2>"The Type '{0}' was unable to be deserialized, double check that the assembly containing this class has the same name on the Client and Server and that it is referenced by your server application"</FONT><FONT size=2>,</P>
+<P>info.TypeName));</P></FONT><FONT color=#0000ff size=2>
+<P>#if</FONT><FONT size=2> SILVERLIGHT</P></FONT><FONT color=#808080 size=2>
+<P>IMobileObject mobile = (IMobileObject)Activator.CreateInstance(type);</P></FONT><FONT color=#0000ff size=2>
+<P>#else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>IMobileObject</FONT><FONT size=2> mobile = (</FONT><FONT color=#2b91af size=2>IMobileObject</FONT><FONT size=2>)</FONT><FONT color=#2b91af size=2>Activator</FONT><FONT size=2>.CreateInstance(type, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P></FONT><FONT color=#0000ff size=2>
+<P>#endif</P></FONT><FONT size=2>
+<P>_deserializationReferences.Add(info.ReferenceId, mobile);</P>
+<P>mobile.SetState(info);</P>
+<P>}</P>
+<P></FONT><STRONG><FONT color=#ff0000 size=4>//GA: set children in reverse order</FONT></STRONG></P>
+<P><STRONG><FONT color=#ff0000 size=4>//so that by the time&nbsp;the parent is encountered</FONT></STRONG></P>
+<P><STRONG><FONT color=#ff0000 size=4>//all children will be available</FONT></STRONG></P>
+<P><FONT size=4><STRONG><FONT color=#ff0000>for (int</FONT></STRONG><STRONG><FONT color=#ff0000> i = deserialized.Count - 1; i &gt;= 0; i--) </FONT></STRONG></FONT></P>
+<P><STRONG><FONT color=#ff0000 size=4>{</FONT></STRONG></P>
+<P><FONT size=4><FONT color=#ff0000><STRONG>SerializationInfo</STRONG></FONT><STRONG><FONT color=#ff0000> info = deserialized<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />;</FONT></STRONG></FONT></P>
+<P><FONT size=4><FONT color=#ff0000><STRONG>IMobileObject</STRONG></FONT><STRONG><FONT color=#ff0000> mobile = _deserializationReferences[info.ReferenceId];</FONT></STRONG></FONT></P>
+<P><FONT size=4><STRONG><FONT color=#ff0000>mobile.SetChildren(info, </FONT></STRONG><FONT color=#ff0000><STRONG>this</STRONG></FONT><STRONG><FONT color=#ff0000>);</FONT></STRONG></FONT></P>
+<P><FONT size=4><STRONG><FONT color=#ff0000>ISerializationNotification notifiable = mobile as ISerializationNotification</FONT></STRONG><STRONG><FONT color=#ff0000>;</FONT></STRONG></FONT></P>
+<P><FONT size=4><STRONG><FONT color=#ff0000>if (notifiable != null</FONT></STRONG><STRONG><FONT color=#ff0000>)</FONT></STRONG></FONT></P>
+<P><STRONG><FONT color=#ff0000 size=4>notifiable.Deserialized();</FONT></STRONG></P>
+<P><STRONG><FONT color=#ff0000 size=4>}</FONT></STRONG></P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//foreach (SerializationInfo info in deserialized)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// IMobileObject mobile = _deserializationReferences[info.ReferenceId];</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// mobile.SetChildren(info, this);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// ISerializationNotification notifiable = mobile as ISerializationNotification;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// if (notifiable != null)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// notifiable.Deserialized();</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//}</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _deserializationReferences[1];</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 31, 2008</h2><P>The order of deserialization is not guaranteed by any formatter (not ours or Microsoft's).</P>
+<P>If you want to rehook events or reset object references you should override OnDeserialized(). This method is invoked for all three formatters and is the place for this sort of thing.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

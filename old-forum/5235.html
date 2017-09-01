@@ -1,0 +1,32 @@
+<html><header><title>Entity Framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Entity Framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5235.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Tuesday, August 12, 2008</h2><DIV>I downloaded the 3.5 SP1.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>When I try to add a new item to my project, I don't see the Entity Framework Model as a choice.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Has anyone ran into this and solve it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have read a few articles on this, but haven't found a direct answer.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks Guys and Gals,</DIV>
+<DIV>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcsean replied on Wednesday, August 13, 2008</h2><P>Entity Framework is not a VS project type but an item type (like a&nbsp;class). you need to setup a Class Library&nbsp;Project first (or any other Project type), then use the "Add" -&gt;&nbsp;"New&nbsp;Item"&nbsp; option on the class library you created to add the entity framework model</P>
+<P>hope this help.. </P>
+<P>cheers</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Wednesday, August 13, 2008</h2><DIV>Hello McSean,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have already tried this, and I still don't see the option :(<BR><BR>Bummer.</DIV>
+<DIV><BR>Thanks,</DIV>
+<DIV>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcsean replied on Thursday, August 14, 2008</h2><P>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD class=ForumPostUserArea rowSpan=2></TD>
+<TD class=ForumPostContentArea>
+<DIV class=ForumPostTitleArea>&nbsp;</DIV>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<DIV class=ForumPostBodyArea>
+<DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl05_PostViewWrapper>
+<P>In this case, you might have to check if the Ado.net Entity Framework is installed. EF is&nbsp;still in its beta version, and it doesn't come with VS 2008. </P>
+<P>It is a bit tricky when I first install it.&nbsp;To install&nbsp;the EF 1.0 pre-release version, the latest version at this point. you have to make sure you don't have other version of EF in your&nbsp;PC and you can't install VS 2008 SP1 beta nor .net framework 3.5 SP1 beta prior to the EF, or you have to remove them before installing EF.</P>
+<P>cheers</P></DIV></DIV></TD></TR></TABLE></TD></TR></TABLE></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

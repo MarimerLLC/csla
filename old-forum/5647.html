@@ -1,0 +1,317 @@
+<html><header><title>Can an object be too large for the DataPortal to handle?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can an object be too large for the DataPortal to handle?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5647.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames posted on Wednesday, October 22, 2008</h2><P>I have a business object containing several other business object which are saved together as part of the same transaction.</P>
+<P>When the objects contains several thousand rows of data I get the dreaded "The input stream is not a valid binary format" error message from the DataPortal.</P>
+<P>I have tried to remove all code in the "DataPortal_Insert" method and I still get the error.</P>
+<P>If the object only contains&nbsp;little data everything works fine.</P>
+<P>The questions are:<BR>&nbsp;&nbsp;&nbsp;Can an object be too large for the DataPortal to handle?<BR>&nbsp;&nbsp;&nbsp;Is there any way to see the exact error message from the DataPortal.</P>
+<P>Thanks,<BR>Jimmy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What type of portal are you using?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DocJames
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 9:23 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Can an object be too large for the DataPortal to
+handle?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have a business object containing several other business object which are
+saved together as part of the same transaction.<o:p></o:p></p>
+
+<p>When the objects contains several thousand rows of data I get the dreaded
+&quot;The input stream is not a valid binary format&quot; error message from
+the DataPortal.<o:p></o:p></p>
+
+<p>I have tried to remove all code in the &quot;DataPortal_Insert&quot; method
+and I still get the error.<o:p></o:p></p>
+
+<p>If the object only contains&nbsp;little data everything works fine.<o:p></o:p></p>
+
+<p>The questions are:<br>
+&nbsp;&nbsp;&nbsp;Can an object be too large for the DataPortal to handle?<br>
+&nbsp;&nbsp;&nbsp;Is there any way to see the exact error message from the
+DataPortal.<o:p></o:p></p>
+
+<p>Thanks,<br>
+Jimmy<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Wednesday, October 22, 2008</h2><P>I'm using the remoting portal</P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>CslaDataPortalProxy</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Csla.DataPortalClient.RemotingProxy, Csla</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</P></FONT>
+<P>Should I change that to WCF instead or is there some workaround?</P>
+<P>Thanks,<BR>Jimmy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK.&nbsp; I see.&nbsp; Where are you hosting the remoting
+service? IIS?&nbsp; And yes, WCF is a good option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DocJames
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 10:26 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Can an object be too large for the
+DataPortal to handle?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm using the remoting portal<o:p></o:p></p>
+
+<p><span>&lt;</span><span>add</span><span> </span><span>key</span><span>=</span><span>&quot;<span>CslaDataPortalProxy</span>&quot;<span> </span><span>value</span><span>=</span>&quot;<span>Csla.DataPortalClient.RemotingProxy, Csla</span>&quot;<span> /&gt;<o:p></o:p></span></span></p>
+
+<p>Should I change that to WCF instead or is there some workaround?<o:p></o:p></p>
+
+<p>Thanks,<br>
+Jimmy<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Wednesday, October 22, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>OK.&nbsp; I see.&nbsp; Where are you hosting the remoting service? IIS?&nbsp; And yes, WCF is a good option.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>Sergey Barskiy<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><B><I><SPAN>Principal Consultant<o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN>office: 678.405.0687 | mobile:&nbsp;404.388.1899</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><IMG id=Picture_x0020_1 height=26 alt=cid:_2_0648EA840648E85C001BBCB886257279 width=119><BR></SPAN><B><SPAN>Microsoft Worldwide Partner of the Year |</SPAN></B><SPAN> </SPAN><B><SPAN>Custom Development Solutions, Technical Innovation</SPAN></B><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Yes, I'm using IIS to host the remoting service.</P>
+<P class=MsoNormal>Is there some workaround? The application is live ...</P>
+<P class=MsoNormal>Jimmy</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is just a guess &#8211; could you be running into IIS limit.&nbsp;
+Try to add this to your web.config (size is in KB)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>system.web</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>httpRuntime</span><span> </span><span>maxRequestLength</span><span>=</span><span>&quot;<span>102400</span>&quot;<span>/&gt;</span></span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DocJames
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 10:37 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Can an object be too large for the
+DataPortal to handle?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>OK.&nbsp;
+I see.&nbsp; Where are you hosting the remoting service? IIS?&nbsp; And yes,
+WCF is a good option.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><b>Sergey
+Barskiy</b><o:p></o:p></p>
+
+<p class=MsoNormal><b><i>Principal
+Consultant</i></b><o:p></o:p></p>
+
+<p class=MsoNormal>office:
+678.405.0687 | mobile:&nbsp;404.388.1899<o:p></o:p></p>
+
+<p class=MsoNormal><b>Error!
+Filename not specified.</b><br>
+<b>Microsoft Worldwide Partner of the Year |</b> <b>Custom Development
+Solutions, Technical Innovation</b><o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal>Yes,
+I'm using IIS to host the remoting service.<o:p></o:p></p>
+
+<p class=MsoNormal>Is
+there some workaround? The application is live ...<o:p></o:p></p>
+
+<p class=MsoNormal>Jimmy<o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Wednesday, October 22, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>This is just a guess – could you be running into IIS limit.&nbsp; Try to add this to your web.config (size is in KB)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;</SPAN><SPAN>system.web</SPAN><SPAN>&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</SPAN><SPAN>httpRuntime</SPAN><SPAN> </SPAN><SPAN>maxRequestLength</SPAN><SPAN>=</SPAN><SPAN>"<SPAN>102400</SPAN>"<SPAN>/&gt;</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Wheeeee - that worked, thanks a lot <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P>
+<P class=MsoNormal>I just looked at the WCF implementation in the Csla 3.0 PDF. It looks just as easy as using Remoting - so I will change my application to use WCF in near future.</P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal>Jimmy</P>
+<P class=MsoNormal>&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 22, 2008</h2>If you do switch to WCF, remember that both IIS and WCF have size limits - you'll need to up both.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tdrake replied on Thursday, October 23, 2008</h2><P>..&nbsp;if it's behind the firewall, you can use netTCP with WCF which is a hell of a lot faster then IIS as you use a binary rather then xml object stream.</P>
+<P>I found this issue (size and performance) and&nbsp;switched the WCF with netTcp and the&nbsp;performance difference was amazing.</P>
+<P>Tony&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Thursday, October 23, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>If you do switch to WCF, remember that both IIS and WCF have size limits - you'll need to up both.</div></BLOCKQUOTE></P>
+<P>Thanks for the info. I will try and look it up :)</P>
+<P>I saw you will be attending TechEd emea in Barcelona. I hope you are doing more than one session on CSLA...</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tdrake:</strong></div><div>..&nbsp;if it's behind the firewall, you can use netTCP with WCF which is a hell of a lot faster then IIS as you use a binary rather then xml object stream.</P>
+<P>I found this issue (size and performance) and&nbsp;switched the WCF with netTcp and the&nbsp;performance difference was amazing.</P>
+<P>Tony&nbsp;</div></BLOCKQUOTE></P>
+<P>Thanks for the tip. Unfortunately it's a ClickOnce application on the Internet. I will look at netTCP if I get to do an internal application.</P>
+<P>Thanks,</P>
+<P>Jimmy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Utopius replied on Friday, October 31, 2008</h2><P>Rockford,</P>
+<P>We have been using your CSLA framework for several years now.&nbsp; However, we are now pulling datasets large enough to exceed the framework limitations.&nbsp; We have modified the configuration files to overcome most of these issues, but we are strongly considering moving from a WCF BUFFERED apporach to a WCF&nbsp;STREAM approach.</P>
+<P>Q1:&nbsp; Is WCF streaming compatible with CSLA?</P>
+<P>Q2:&nbsp; Has this ever been attempted?&nbsp; If so, were there any issues?</P>
+<P>NOTE:&nbsp;&nbsp; We are considering moving ALL of our remoting calls into a streaming mode in order to eliminate issues surrounding message size limitations.</P>
+<P>&nbsp;</P>
+<P>______________</P>
+<P>Jeff (Utopius)</P>
+<P>&nbsp;</P>
+<P>...</P>
+<P>Windows Communication Foundation (WCF) transports support two modes of transferring messages in each direction: </P>
+<UL>
+<LI>
+<P>Buffered transfers hold the entire message in a memory buffer until the transfer is complete. </P>
+<LI>
+<P>Streamed transfers only buffer the message headers and expose the message body as a stream, from which smaller portions can be read at a time. </P></LI></UL>
+<P>Setting the transfer mode to <SPAN><SPAN class=selflink><STRONG>Streamed</STRONG></SPAN></SPAN> enables streaming communication in both directions. </P>
+<P>(more info at <A href="http://msdn.microsoft.com/en-us/library/system.servicemodel.transfermode.aspx">http://msdn.microsoft.com/en-us/library/system.servicemodel.transfermode.aspx</A>&nbsp;)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 31, 2008</h2>Csla doesn't have any limits. The underlying remoting technology might though.&nbsp; <br><br>Csla does support WCF, as of version 3.0.&nbsp; You might want to buy the <a href="http://store.lhotka.net/">eBook </a>to read up on it.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

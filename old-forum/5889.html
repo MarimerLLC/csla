@@ -1,0 +1,58 @@
+<html><header><title>How to debug serialization problem??? Radial expansion of the byte stream...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to debug serialization problem??? Radial expansion of the byte stream...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5889.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Wednesday, November 26, 2008</h2>Hey guys <br>I am having a couple of small issues. I have created some base classes which i use to implement core functionality that I need on top of CSLA and have run into a slight problem.<br><br>I was doing some testing of some edge cases and found that if I have a list of say 100,000 items the test fails with an OutOfMememoryException. Now looking at when the problem occurs it happens in the test case when I clone the object, which will force a serialization/unserialization cycle. <br><br>Now i think this problem is not due to the size of the list (as Rocky has a similar test case and it runs fine) but due to radial expansion of the byte stream. <br><br>I have no idea how to go about finding the this problem as the base class is rather complex. So i was wondering if there is a tool/method that one can use to try and find the reference that is causing the issue. I must have a reference of the base back to itself or something similar that is not marked as NonSerialized but I can't seem to find it.<br><br>Any help would be great.<br>Cheers<br>Anthony <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 01, 2008</h2>Hmm... I think I would first check and see if you have any fields in your BO that reference other BOs.&nbsp; If you're maintaining your own link from a child BO to a parent one, for example.&nbsp; If you find those, you should mark them as NonSerializable and NotUndoable.&nbsp; It sounds like there may be a circular reference somewhere.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, December 01, 2008</h2>Humm unfortunately its not quite that simple...<br>Because of the additional functionality that I have added, its not as simple as finding a single field. On the other hand maybe it is, but i have looked through all of the fields and can't find where the issue is.<br><br>Hence why i was wondering if anyone know how to debug this problem. Maybe there is a way to output the object graph to a file so i can inspect graph and see where it is going wrong???<br><br>Does anyone know of anything like this or any other ideas???<br><br>Cheers <br>Anthony<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, December 03, 2008</h2>Any ideas??<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2><P>It is easy enough to output the serialized data to a file or something. Just look at the ObjectCloner code in CSLA - you'll see how it serializes the object into a MemoryStream, and then back out to create the clone.</P>
+<P>You could create a similar method that serialized the object into a FileStream. Or that takes the contents of the MemoryStream and writes that to a file.</P>
+<P>The challenge you'll have with the default BinaryFormatter is that the data is binary. You'll have to use a hex editor or something to try and make some sense out of it.</P>
+<P>Another alternative is to try and use the NetDataContractSerializer. It may or may not have the same issue, and so it may or may not help you. But at least it produces XML and so you might have an easier time analyzing the serialized data to identify the problem.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, December 03, 2008</h2>Humm... sounds like fun... Thanks for the help hopefully I will get something out of the file...<br><br>If I do go down the XML route, does it capture the object graph correctly??? As in there is an impedance mismatch between OO and XML, will I still be able to see what I need from it? <br><br>Cheers<br>Anthony <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, December 03, 2008</h2>Hi guys <br>I have just been able to dump out the object graph as XML. Just from quickly looking at it, there doesn't seem to be anything that jumps out at me. Is there an attribute or a node that I should be looking for that would point to a circular reference?<br>Cheers<br>Anthony <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is a sort of impedance mismatch &#8211; though it has
+nothing to do with XML exactly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you serialize an object graph, with the intent of
+deserializing it to get an exact clone, you need to flatten all the references
+between objects in the graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, you want each object&#8217;s state to exist in
+the byte stream exactly once. But at the same time, if that object is
+referenced from n other objects, you need to somehow retain those references so
+you can reestablish them on deserialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the byte stream contains each object&#8217;s state once, but
+some form of encoding is used to demark references. In the case of NDCS this is
+done by assigning an arbitrary numeric value to each object in the graph, and
+then the references appear as a numeric placeholder.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Hopefully that makes sense? I think you&#8217;ll find the XML
+relatively easy to read for a simple object graph, but it gets more complex as
+you have more references between your objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

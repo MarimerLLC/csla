@@ -1,0 +1,449 @@
+<html><header><title>Silverlight Fetch works, but update fails</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Fetch works, but update fails</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6952.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry posted on Friday, May 15, 2009</h2><P><FONT face=Arial size=2>I'm having difficulty with a CSLA / Silverlight app. I'm using the Silverlight CSLA DataProvider control with business objects on the client and server. I've constructed a business object (editible root) with various properties, a child collection, with editble child objects. The business object is being fetched properly and is binding to the WPF controls in the Silverlight client. I can set breakpoints and watch the progression of the fetch:</FONT></P>
+<P><FONT face="Courier New" size=2>In Csla.DataPortalClient.WcfProxy<BR></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>void</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> BeginFetch(</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> criteria)<BR></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>void</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> BeginFetch(</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> criteria, </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> userState)</P>
+<P>In Clsa.WcfPortal.WcfPortalClient.WcfPortalClientChannel<BR></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> System.</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2>IAsyncResult</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> BeginFetch(Csla.WcfPortal.CriteriaRequest request, System.</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2>AsyncCallback</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> callback, </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> asyncState) {</P>
+<P>In Csla.Server.Hosts.Silverlight.WcfPortal<BR></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> WcfResponse Fetch(CriteriaRequest request)</P>
+<P>In Csla.Server.DataPortal<BR></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> DataPortalResult Fetch(</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2>Type</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> objectType, </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> criteria, DataPortalContext context)</P>
+<P>(the fetch in the business object happens)</P>
+<P>In Csla.DataPortalClient.WcfProxy&lt;T&gt;<BR></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>private</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>void</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> proxy_FetchCompleted(</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> sender, Csla.WcfPortal.FetchCompletedEventArgs e)</P>
+<P>The data shows up bound to the form. Backslapping and beers all around.</P>
+<P>The save&nbsp;button uses the attached InvokeMethod property</P></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>
+<P>&lt;</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2>Button</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> Height</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="50"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> x</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>:</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>Name</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="BtnUserProfileSave"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> Width</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="96"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> Content</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="OK"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>csla</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>:</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>InvokeMethod.MethodName</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="Save"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>csla</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>:</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>InvokeMethod.Resource</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="{</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2>StaticResource</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> MyData</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>}"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>csla</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>:</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>InvokeMethod.TriggerEvent</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="Click"</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2>IsEnabled</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>="{</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2>Binding</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> Source</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>={</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2><FONT face="Bitstream Vera Sans Mono" color=#a31515 size=2>StaticResource</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> MyData</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>},</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> Path</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>=CanSave,</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2><FONT face="Bitstream Vera Sans Mono" color=#ff0000 size=2> Mode</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>=OneWay}"/&gt;</P></FONT></FONT></FONT><FONT face="Courier New" size=2>
+<P><FONT face=Arial>Now, if I change some of the data on the form and click the&nbsp;save button and set breakpoints in the expected path, it starts hitting them like it did in the fetch....</FONT></P>
+<P>Csla.DataPortalClient.WcfProxy<BR></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>void</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> BeginUpdate(</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> obj, </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> userState)</P>
+<P>In Clsa.WcfPortal.WcfPortalClient.WcfPortalClientChannel<BR></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> System.</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2>IAsyncResult</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> BeginUpdate(Csla.WcfPortal.UpdateRequest request, System.</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2>AsyncCallback</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> callback, </FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>object</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono"><FONT face="Bitstream Vera Sans Mono"><FONT size=2> asyncState) {</FONT></P>
+<P><FONT color=#ff0000 size=2>Breaks in the update code path corresponding to the fetch&nbsp;code path&nbsp;aren't hit</FONT></P>
+<P><FONT face="Courier New" size=2>In Csla.Server.Hosts.Silverlight.WcfPortal<BR></FONT></FONT></FONT><FONT size=2><FONT><FONT color=#0000ff><FONT color=#0000ff><FONT face="Courier New" color=#0000ff>public</FONT></FONT></FONT><FONT face="Courier New"> WcfResponse Update(UpdateRequest request) <FONT color=#ff0000>(not hit)</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT><FONT face="Courier New">In Csla.Server.DataPortal<BR></FONT><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff><FONT color=#0000ff>public</FONT></FONT></FONT> DataPortalResult Update(<FONT color=#0000ff><FONT color=#0000ff><FONT color=#0000ff>object</FONT></FONT></FONT></FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono"><FONT face="Bitstream Vera Sans Mono"><FONT face="Courier New" size=2> obj, DataPortalContext context) <FONT color=#ff0000>(not hit)</FONT></FONT></P>
+<P><FONT size=2>The debugger then breaks on <BR></FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2></FONT></FONT></FONT></P>
+<P><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2><FONT face="Bitstream Vera Sans Mono" color=#0000ff size=2>public</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> Csla.WcfPortal.WcfResponse EndUpdate(System.</FONT></FONT><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2><FONT face="Bitstream Vera Sans Mono" color=#2b91af size=2>IAsyncResult</FONT></FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2> result) {</P>
+<P>with a "The remote server returned an error: NotFound" message.</P></FONT></FONT><FONT size=2>
+<P><FONT face=Arial>It's as if the WCF channel on the server can't find the Update function in the </FONT></FONT><FONT face="Bitstream Vera Sans Mono" size=2><FONT face="Bitstream Vera Sans Mono" size=2>Csla.Server.Hosts.Silverlight.WcfPortal <FONT face=Arial>part of the framework.&nbsp; The WCF channels seem to be set up correctly though as the fetch is working fine.</FONT></P>
+<P><FONT face=Arial>I'm now a bit stimied. Can anyone suggest a course of action to resolve this? Thanks.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Do
+you have break on thrown exceptions turned on in Debug-&gt;Exceptions and have
+your solution setup so that you can debug client and server code simultaneously
+(WCF is hosted in the same web site as SL app)?&nbsp; Those would be my first
+steps in figuring this out.&nbsp; If you are sure that WCF is configured
+properly, then there is an exception thrown somewhere that is interpreted as
+404 (which is really most exceptions in WCF/Silverlight combination), and you
+are just not seeing it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esaulsberry
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 15, 2009 10:24 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight Fetch works, but update fails<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>I'm having
+difficulty with a CSLA / Silverlight app. I'm using the Silverlight CSLA
+DataProvider control with business objects on the client and server. I've
+constructed a business object (editible root) with various properties, a child
+collection, with editble child objects. The business object is being fetched
+properly and is binding to the WPF controls in the Silverlight client. I can
+set breakpoints and watch the progression of the fetch:</span><o:p></o:p></p>
+
+<p><span>In
+Csla.DataPortalClient.WcfProxy<br>
+</span><span>public</span><span>
+<span>void</span> BeginFetch(<span>object</span>
+criteria)<br>
+<span>public</span> <span>void</span>
+BeginFetch(<span>object</span> criteria, <span>object</span> userState)<o:p></o:p></span></p>
+
+<p><span>In
+Clsa.WcfPortal.WcfPortalClient.WcfPortalClientChannel<br>
+<span>public</span> System.<span>IAsyncResult</span>
+BeginFetch(Csla.WcfPortal.CriteriaRequest request, System.<span>AsyncCallback</span> callback, <span>object</span>
+asyncState) {<o:p></o:p></span></p>
+
+<p><span>In
+Csla.Server.Hosts.Silverlight.WcfPortal<br>
+<span>public</span> WcfResponse Fetch(CriteriaRequest
+request)<o:p></o:p></span></p>
+
+<p><span>In
+Csla.Server.DataPortal<br>
+<span>public</span> DataPortalResult Fetch(<span>Type</span> objectType, <span>object</span>
+criteria, DataPortalContext context)<o:p></o:p></span></p>
+
+<p><span>(the
+fetch in the business object happens)<o:p></o:p></span></p>
+
+<p><span>In
+Csla.DataPortalClient.WcfProxy&lt;T&gt;<br>
+<span>private</span> <span>void</span>
+proxy_FetchCompleted(<span>object</span> sender,
+Csla.WcfPortal.FetchCompletedEventArgs e)<o:p></o:p></span></p>
+
+<p><span>The
+data shows up bound to the form. Backslapping and beers all around.<o:p></o:p></span></p>
+
+<p><span>The
+save&nbsp;button uses the attached InvokeMethod property<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>Button</span><span> Height</span><span>=&quot;50&quot;</span><span> x</span><span>:</span><span>Name</span><span>=&quot;BtnUserProfileSave&quot;</span><span> Width</span><span>=&quot;96&quot;</span><span> Content</span><span>=&quot;OK&quot;</span><span> <span>csla</span><span>:</span><span>InvokeMethod.MethodName</span><span>=&quot;Save&quot;</span> <span>csla</span><span>:</span><span>InvokeMethod.Resource</span><span>=&quot;{</span><span>StaticResource</span><span> MyData</span><span>}&quot;</span> <span>csla</span><span>:</span><span>InvokeMethod.TriggerEvent</span><span>=&quot;Click&quot;</span>
+<span>IsEnabled</span><span>=&quot;{</span><span>Binding</span><span> Source</span><span>={</span><span>StaticResource</span><span> MyData</span><span>},</span><span> Path</span><span>=CanSave,</span><span> Mode</span><span>=OneWay}&quot;/&gt;<o:p></o:p></span></span></p>
+
+<p><span>Now, if I
+change some of the data on the form and click the&nbsp;save button and set
+breakpoints in the expected path, it starts hitting them like it did in the
+fetch....</span><span><o:p></o:p></span></p>
+
+<p><span>Csla.DataPortalClient.WcfProxy<br>
+</span><span>public</span><span>
+<span>void</span> BeginUpdate(<span>object</span>
+obj, <span>object</span> userState)<o:p></o:p></span></p>
+
+<p><span>In
+Clsa.WcfPortal.WcfPortalClient.WcfPortalClientChannel<br>
+<span>public</span> System.<span>IAsyncResult</span>
+BeginUpdate(Csla.WcfPortal.UpdateRequest request, System.<span>AsyncCallback</span> callback, <span>object</span>
+asyncState) {</span><span><o:p></o:p></span></p>
+
+<p><span>Breaks in the update code path corresponding to the fetch&nbsp;code
+path&nbsp;aren't hit</span><span><o:p></o:p></span></p>
+
+<p><span>In
+Csla.Server.Hosts.Silverlight.WcfPortal<br>
+<span>public</span> WcfResponse Update(UpdateRequest
+request) <span>(not hit)</span></span><o:p></o:p></p>
+
+<p><span>In
+Csla.Server.DataPortal<br>
+<span>public</span> DataPortalResult Update(<span>object</span> obj, DataPortalContext context) <span>(not hit)</span></span><span><o:p></o:p></span></p>
+
+<p><span>The
+debugger then breaks on </span><o:p></o:p></p>
+
+<p><span>public</span><span>
+Csla.WcfPortal.WcfResponse EndUpdate(System.<span>IAsyncResult</span>
+result) {<o:p></o:p></span></p>
+
+<p><span>with
+a &quot;The remote server returned an error: NotFound&quot; message.<o:p></o:p></span></p>
+
+<p><span>It's as if
+the WCF channel on the server can't find the Update function in the </span><span>Csla.Server.Hosts.Silverlight.WcfPortal
+</span><span>part of the
+framework.&nbsp; The WCF channels seem to be set up correctly though as the
+fetch is working fine.</span><span><o:p></o:p></span></p>
+
+<p><span>I'm now a
+bit stimied. Can anyone suggest a course of action to resolve this? Thanks.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, May 15, 2009</h2><P>Hi Sergey, thanks for responding.</P>
+<P>I do have the WCF service in the same web site as the silverlight app is hosted from.&nbsp; I can set break points all along the process and hit them on both the server and client side for the fetch.&nbsp; On the update call it doesn't hit any of the break points on the server.</P>
+<P>I've turned on thrown exceptions for everything in the debugger but the behavior is the same.</P>
+<P>The only WCF function in play here is they CSLA WCF Portal.&nbsp;&nbsp; I'm puzzeled by it being able to call through this&nbsp;to do the fetch but not the update.&nbsp;Here's the configuration:</P>
+<P>Client</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>http://esaulsberry.horizon-boss.com/OSMobileStock/AgService/WcfPortal.svc</FONT></FONT><FONT size=2>"</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>basicHttpBinding</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>bindingConfiguration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>basicBindingConfig</FONT></FONT><FONT size=2>"</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.WcfPortal.IWcfPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CslaWcfPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> /&gt;</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>basicBindingConfig</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>maxBufferSize</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>2147483647</FONT></FONT><FONT size=2><FONT color=#000000>"</FONT></P></FONT><FONT size=2><FONT size=2>
+<P></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>maxReceivedMessageSize</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>2147483647</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>security</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>mode</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>None</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</FONT></FONT></P>
+<P><FONT color=#000000 size=3>Server</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>service</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>behaviorConfiguration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OSMUnSecure</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.Server.Hosts.Silverlight.WcfPortal</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>""</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>basicHttpBinding</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>bindingConfiguration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>BasicBinding</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.Server.Hosts.Silverlight.IWcfPortal</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>identity</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>dns</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>value</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>localhost</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>identity</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>mex</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>mexHttpBinding</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>IMetadataExchange</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>service</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>BasicBinding</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>security</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>mode</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>None</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>message</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>clientCredentialType</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>UserName</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>/&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>security</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>behavior</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OSMUnSecure</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>serviceMetadata</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>httpGetEnabled</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>/&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>serviceDebug</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>includeExceptionDetailInFaults</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT color=#000000 size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>/&gt;</P>
+<P>&lt;/</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>behavior</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&gt;</P></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+think I know what the problem is.&nbsp; I think you are dealing with reader quotas
+issue.&nbsp; If you are sending more than default (which is 64K I think), you
+will get that error.&nbsp; That is why fetch is working.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Server:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;basicHttpBinding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;binding name=&quot;basicHttpBinding_IWcfPortal&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxReceivedMessageSize=&quot;2147483647&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;readerQuotas<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxBytesPerRead=&quot;2147483647&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxArrayLength=&quot;2147483647&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxStringContentLength=&quot;2147483647&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxDepth=&quot;1024&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/binding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/basicHttpBinding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Client:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&lt;basicHttpBinding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;binding&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; name=&quot;basicHttpBinding_IWcfPortal&quot;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxBufferSize=&quot;2147483647&quot;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; maxReceivedMessageSize=&quot;2147483647&#8221;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/binding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esaulsberry
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 15, 2009 2:39 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight Fetch works, but update fails<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey, thanks for responding.<o:p></o:p></p>
+
+<p>I do have the WCF service in the same web site as the silverlight app is
+hosted from.&nbsp; I can set break points all along the process and hit them on
+both the server and client side for the fetch.&nbsp; On the update call it
+doesn't hit any of the break points on the server.<o:p></o:p></p>
+
+<p>I've turned on thrown exceptions for everything in the debugger but the
+behavior is the same.<o:p></o:p></p>
+
+<p>The only WCF function in play here is they CSLA WCF Portal.&nbsp;&nbsp; I'm
+puzzeled by it being able to call through this&nbsp;to do the fetch but not the
+update.&nbsp;Here's the configuration:<o:p></o:p></p>
+
+<p>Client<o:p></o:p></p>
+
+<p><span>&lt;</span><span>endpoint</span><span>
+</span><span>address</span><span>=</span><span>&quot;<span>http://esaulsberry.horizon-boss.com/OSMobileStock/AgService/WcfPortal.svc</span>&quot;<o:p></o:p></span></p>
+
+<p><span>binding</span><span>=</span><span>&quot;<span>basicHttpBinding</span>&quot;<span> </span><span>bindingConfiguration</span><span>=</span>&quot;<span>basicBindingConfig</span>&quot;<o:p></o:p></span></p>
+
+<p><span>contract</span><span>=</span><span>&quot;<span>Csla.WcfPortal.IWcfPortal</span>&quot;<span> </span><span>name</span><span>=</span>&quot;<span>CslaWcfPortal</span>&quot;<span> /&gt;</span></span><o:p></o:p></p>
+
+<p><span>&lt;</span><span>binding</span><span> </span><span>name</span><span>=</span><span>&quot;</span><span>basicBindingConfig</span><span>&quot;</span><span> </span><span>maxBufferSize</span><span>=</span><span>&quot;</span><span>2147483647</span><span>&quot;</span><span><o:p></o:p></span></p>
+
+<p><span>maxReceivedMessageSize</span><span>=</span><span>&quot;</span><span>2147483647</span><span>&quot;</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>security</span><span>
+</span><span>mode</span><span>=</span><span>&quot;</span><span>None</span><span>&quot;</span><span> /&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>binding</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>Server</span><span><o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>service</span><span> </span><span>behaviorConfiguration</span><span>=</span><span>&quot;</span><span>OSMUnSecure</span><span>&quot;</span><span> </span><span>name</span><span>=</span><span>&quot;</span><span>Csla.Server.Hosts.Silverlight.WcfPortal</span><span>&quot;</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>endpoint</span><span>
+</span><span>address</span><span>=</span><span>&quot;&quot;</span><span> </span><span>binding</span><span>=</span><span>&quot;</span><span>basicHttpBinding</span><span>&quot;</span><span> </span><span>bindingConfiguration</span><span>=</span><span>&quot;</span><span>BasicBinding</span><span>&quot;</span><span> </span><span>contract</span><span>=</span><span>&quot;</span><span>Csla.Server.Hosts.Silverlight.IWcfPortal</span><span>&quot;</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>identity</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>dns</span><span> </span><span>value</span><span>=</span><span>&quot;</span><span>localhost</span><span>&quot;</span><span>
+/&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>identity</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>endpoint</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>endpoint</span><span>
+</span><span>address</span><span>=</span><span>&quot;</span><span>mex</span><span>&quot;</span><span> </span><span>binding</span><span>=</span><span>&quot;</span><span>mexHttpBinding</span><span>&quot;</span><span> </span><span>contract</span><span>=</span><span>&quot;</span><span>IMetadataExchange</span><span>&quot;</span><span> /&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>binding</span><span> </span><span>name</span><span>=</span><span>&quot;</span><span>BasicBinding</span><span>&quot;</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>security</span><span>
+</span><span>mode</span><span>=</span><span>&quot;</span><span>None</span><span>&quot;</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>message</span><span> </span><span>clientCredentialType</span><span>=</span><span>&quot;</span><span>UserName</span><span>&quot;</span><span>/&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>security</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>binding</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>behavior</span><span>
+</span><span>name</span><span>=</span><span>&quot;</span><span>OSMUnSecure</span><span>&quot;</span><span>&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>serviceMetadata</span><span> </span><span>httpGetEnabled</span><span>=</span><span>&quot;</span><span>true</span><span>&quot;</span><span>/&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;</span><span>serviceDebug</span><span> </span><span>includeExceptionDetailInFaults</span><span>=</span><span>&quot;</span><span>true</span><span>&quot;</span><span>/&gt;<o:p></o:p></span></p>
+
+<p><span>&lt;/</span><span>behavior</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, May 15, 2009</h2>Wow.&nbsp; That gets me a lot further.&nbsp; It looks like I've got a garden variety bug in the child update but that should be easy to fix.&nbsp; It hits the breaks on the server side now.&nbsp; Thanks for the help.&nbsp; I wouldn't have thought of that.&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 15, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sure<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esaulsberry
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 15, 2009 3:08 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Silverlight Fetch works, but update fails<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Wow.&nbsp; That gets me a lot further.&nbsp; It looks like
+I've got a garden variety bug in the child update but that should be easy to
+fix.&nbsp; It hits the breaks on the server side now.&nbsp; Thanks for the
+help.&nbsp; I wouldn't have thought of that.&nbsp;<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Monday, November 09, 2009</h2>Sergey,<br /><br />I'm having the same issue using a WinForm app with WCF.  I just recently upgraded from CSLA 3.5 to 3.7.1.  Any ideas?  <br /><br />Thanks,<br />Jonathan</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

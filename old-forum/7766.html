@@ -1,0 +1,33 @@
+<html><header><title>Switchable :-(  ??? -- Flawed Object Model ???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Switchable :-(  ??? -- Flawed Object Model ???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7766.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mondoh posted on Sunday, October 11, 2009</h2><P>As I recall it's not a good thing to use Switchable objects .. but here is my use case:</P>
+<P>Root Object is Location .... </P>
+<BLOCKQUOTE dir=ltr>
+<P>Location has child collection of Venues and Venues are unique to Location</P>
+<BLOCKQUOTE dir=ltr>
+<P>Venues have child collection of Items which have a 1 to 1 relatioship w/Venue (an item only belongs to one Venue)</P>
+<BLOCKQUOTE dir=ltr>
+<P>Items have child collection of ItemIngredients ... and 1 ingredient can be associated with many Items</P></BLOCKQUOTE></BLOCKQUOTE></BLOCKQUOTE>
+<P>I want to be able to show:</P>
+<UL>
+<LI>Location and all of it's Venues<BR></LI>
+<LI>Venue and all of it's Items<BR></LI>
+<LI>Item and all it's ingredients</LI></UL>
+<P>I'm stuck now with my initial design ... where Location is EditableRoot and has a list of EditableChild ... Venue Objects as children .... Now I'm trying to figure out how to add the Items to a Venue which is forcing me to look at making Venue switchable -- both EditableRoot and EditableChild</P>
+<P>Is the best practice to have Location and Venue both as Editable Roots ... and create LocationVenueAssignment as the editable child of&nbsp;Location even tho a Venue can only belong to one Location ?? --- </P>
+<P>Obviously .. unlike ProjectTracker .... there does not need to be an associative table in the DB for LocationVenueAssignment, since the Location is a property of the Venue</P>
+<P>Or should I re-think the Parent-Child&nbsp;relationship between Venue and Location and just make LocationID a property of a Venue Editable&nbsp;Root&nbsp;and use another approach to implement&nbsp;the "show all venues in a location" use case ??</P>
+<P>... Clearly there is a containment relationship between Location and Venue and I've always believed that with containment the pattern is to make the contained object an Editable Child.&nbsp; But in this case the Editable Child (Venue) &nbsp;is also the Root of the Venue's Items ...&nbsp;and -- like Location and Venue --&nbsp;an item can only belong to one Venue.</P>
+<P>Strange that it has taken me this long to stumble upon this design issue ..... it can't be so uncommon ... please share your solutions with me for handling this scenario.</P>
+<P>Thanks,</P>
+<P>Steve</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mondoh replied on Sunday, October 11, 2009</h2><FONT size=1 face=HelveticaNeue-Condensed><FONT size=1 face=HelveticaNeue-Condensed>
+<P align=left>From page 394 of C# 2005 book ....</P>
+<BLOCKQUOTE dir=ltr>
+<P align=left>Note that the parent object here might be a root object, or it might be a child itself—child objects can be</P>
+<P align=left>nested, if that’s what the business object model requires. In other words, this concept supports not only root-child,</P>
+<P>but also child-grandchild and grandchild-to-great-grandchild relationships.</P></BLOCKQUOTE>
+<P dir=ltr>An EditableChild can have it's own collection of Editable Children ???</P>
+<P dir=ltr>Is that all I need to know ??</P>
+<P dir=ltr>Thx,</P>
+<P dir=ltr>Steve</P>
+<P dir=ltr>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 12, 2009</h2>Yes, an EditableChild can contain a child BusinessListBase. Your object model of Location-contains-Venues-contains-Items is just a parent-child-grandchild scenario, which is very common.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

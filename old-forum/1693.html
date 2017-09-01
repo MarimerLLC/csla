@@ -1,0 +1,15 @@
+<html><header><title>BindingRefresh Not updating Check Box Value</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BindingRefresh Not updating Check Box Value</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1693.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Monday, November 06, 2006</h2><P>I have a check box called Multiple Unit Price and a 2 tab pages, if a order is having single unit price then first page is shown and if it is having multiple unit price then 2nd page is shown. </P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P></FONT><FONT size=2>TabCtrlUPrc.SelectedIndexChanged &amp;&nbsp;</FONT><FONT size=2>IsMultipleUPrcCheckBox.CheckedChanged both are routing to a handler which is having following code </FONT></P>
+<P><FONT color=#0000ff size=2>If</FONT><FONT size=2> IsMultipleUPrcCheckBox.Checked </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>TabCtrlUPrc.SelectedTab = TabPgMultiUPrc</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P>TabCtrlUPrc.SelectedTab = TabPgSingleUPrc</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></P>
+<P><FONT color=#0000ff size=2>Problem is that if a record is having checked box checked and when i uncheck it and start updating the first field in the single page and press tab, it automatically jumps to the second page.</FONT></P>
+<P><FONT color=#0000ff size=2>After tracing code in debugger, it was found that on the first call even if the check box is not checked, it is showing it as checked i.e. value is not getting refreshed on first call.</FONT></P>
+<P>later on it is ok, i'm also having BindingRefresh and my both bindingsource ReadValues is set to true but this problem is happenning..</P>
+<P>&nbsp;</P>
+<P>can anybody help in this..</P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, November 08, 2006</h2><P>Still stuck with this problem. </P>
+<P>Has anybody else faced same problem with Refresh...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

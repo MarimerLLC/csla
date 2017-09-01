@@ -1,0 +1,28 @@
+<html><header><title>Business Rules - Determining Async for Clients, Sync for ASP.NET ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules - Determining Async for Clients, Sync for ASP.NET ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10764.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SMILEMan posted on Wednesday, October 12, 2011</h2><p>On page 105 of Rocky&#39;s Using CSLA 4: Creating Business Objects, a code sample is&nbsp;given to&nbsp;set IsAsync based on&nbsp;whether the code is on the Client or ASP.NET (ie want async server access in business rules&nbsp;on smart clients (Silverlight, WPF, Metro, etc but not code on &nbsp;ASP.NET servers): </p>
+<p>#if SILVERLIGHT<br />&nbsp; &nbsp; IsAysnce = true;<br />#else<br />&nbsp; &nbsp; if (HttpContext.Current != null)<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsAsync = false;<br />&nbsp; &nbsp; else<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsAsync = true;<br />#endif</p>
+<p>Is there a way without using HttpContext which is in the System.Web.dll and is not available in the .NET 4.0 Client Profile.&nbsp;&nbsp; Would prefer not to deploy the full .NET Framework to all users just for this one feature.</p>
+<p>Ray.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, October 12, 2011</h2><p>A couple of ways that I use (and I mainly do rich client development):</p>
+<ol>
+<li>ApplicationContext.ExecutionLocation&nbsp;&nbsp;</li>
+<li>ApplicationContext.WebContextManager&nbsp;</li>
+<li>ApplicationContext.ContextManager.GetType()</li>
+<li>Custom </li>
+</ol>
+<p><b>1. ApplicationContext.ExecutionLocation</b> ==&nbsp; </p>
+<ul>
+<li>EcxecutionLocations.Client when on the client side of DataPortal (including the &quot;logical serverside&quot;) when using LocalPortal.</li>
+<li>EcxecutionLocations.Server when on the Server side of the DataPortal.</li>
+</ul>
+<p><b>2. ApplicationContext.WebContextManager&nbsp;</b> (new in Csla 4.2) </p>
+<ul>
+<li>If ApplicationContext.WebContextManager is not null then you have Csla.Web in your binaries folder (and supposedly in a WebApp). <br />This was added in 4.2 to support background threads and switching back to use HttpContext when worker has completed.&nbsp;</li>
+</ul>
+<p><b>3. ApplicationContext.ContextManager.GetType().FullName ==</b><span><b> &quot;Csla.Web.ApplicationContextManager&quot;</b></span></p>
+<ul>
+<li><span>When running in a web application. NOTE: This test will fail if your app uses background threads on the web application. (see above)</span></li>
+</ul>
+<p><b>4. Custom</b></p>
+<p>Add code in your bootstrapper/startup of app to set your own context variable indication whether on server or client.</p>
+<p><span><i>var type = Type.GetType(&quot;Csla.Web.CslaDataSource, Csla.Web&quot;);<br />if (type == null) <br />{<br />&nbsp;&nbsp;&nbsp; // we are running&nbsp; on a client<br />}<br />else <br />{<br />&nbsp;&nbsp;&nbsp; // we now have Csla.Web in the binaries folder and are running a web app<br />}</i><b><br /></b></span></p>
+<p>I&#39;d probable create my own Context like this: </p>
+<p><i>&nbsp; public static class MyContext<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; static MyContext()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Type serverType = null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; serverType = Type.GetType(&quot;Csla.Web.CslaDataSource, Csla.Web&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception) { }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ((ApplicationContext.ExecutionLocation == ApplicationContext.ExecutionLocations.Server) ||<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (serverType != null))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsServer = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }<br /><br /><br />&nbsp;&nbsp;&nbsp; public static bool IsServer { get; private set; }<br />&nbsp; }</i></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

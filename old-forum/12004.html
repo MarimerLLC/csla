@@ -1,0 +1,15 @@
+<html><header><title>GlobalContext value from Silverlight client to DAL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GlobalContext value from Silverlight client to DAL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12004.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Wednesday, June 05, 2013</h2><p>Hi, In our application we would like to allow the user to choose a database via a dropdown box when he/she logs in. </p>
+<p>The application is a Silverlight application. Because the architecture of Silverlight is client/server we need to get the database name from the client with each request to query or manipulate the right database in the DAL.</p>
+<p>I can do this by changing my factory methods like below and pass the database right through to the DAL:</p>
+<p>public static void getCustomers(string <b>Database</b>, ...</p>
+<p>But we have a lot of factory methods and will take us forever to change each one of them and passing the database to the DAL.</p>
+<p>I thought that maybe I can use the Csla.ApplicationContext.GlobalContext to store the database value at client side (Silverlight) and then access the GlobalContext in my DAL. </p>
+<p>I have done this on my local machine and it actually works. I have tested it with multiple clients (browser instances) on my local PC and with each request it shows the database selected at client in the DAL.</p>
+<p>But when I deployed it to a remote server and tried to access it from my PC I got the error &quot;Object not set to an instance....&quot;</p>
+<p>What will be the best solution be to implement the multiple database function?</p>
+<p>Remember that I need to get the database name also with Inserts, Updates and Deletes.</p>
+<p>&nbsp;</p>
+<p>P.S. I found <a target="_blank" title="GlobalContext" href="http://forums.lhotka.net/forums/t/10576.aspx">this </a>question, but it explains how to send a value via GlobalContext from Server to Silverlight.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 05, 2013</h2><p>Hi,</p>
+<p>My general recommendation would be to use the ApplicationContext.ClientContext rather than the GlobalContext as the GlobalContext is also included in the response.&nbsp;</p>
+<p>The big question is why you get the exception. Do you have the stack trace?&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

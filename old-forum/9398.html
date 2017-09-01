@@ -1,0 +1,12 @@
+<html><header><title>outofmemoryexception, BusyChangedEventHandler</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>outofmemoryexception, BusyChangedEventHandler</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9398.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fsl posted on Wednesday, August 18, 2010</h2><p>Hi there</p>
+<p>I have a problem where a BusyChangedEventHandler is referencing my BOs and keeping them in memory. This is causing outofmemoryexception&#39;s when the number of fetch BOs gets high. I have no references to&nbsp;BusyChangedEventHandler in my own code.&nbsp;</p>
+<p>It seems to be related to this post:</p>
+<p><a href="http://forums.lhotka.net/forums/p/7133/34109.aspx#34109">http://forums.lhotka.net/forums/p/7133/34109.aspx#34109</a></p>
+<p>, since i have a readonlybase derived object inside a businessbase, in a managed backing field. The readonlybased objects exists during the lifetime of the program.</p>
+<p>I&#39;m using csla 3.8.3</p>
+<p>&nbsp;</p>
+<p>Any suggestions?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, August 18, 2010</h2><p>If I understand you correctly, you have a ROB object that is cached - kept in memory using a static field.</p>
+<p>And you have one or more BB objects that are treating this ROB as a child (because that&#39;s what it means when you store an object reference in a managed field).</p>
+<p>That violates the single parent rule. A CSLA object can have <em>exactly one parent</em>. In this case the ROB is its own parent (due to the static cache) and you&#39;ve made it a child of every instance of the BB object that has it in a managed field.</p>
+<p>Yes, that&#39;d be disaster.</p>
+<p>The solution is to recognize that <em>this object isn&#39;t a child of any BB</em>, and therefore can&#39;t be stored in a managed field - because BB managed fields <em>are only for child object references</em>.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

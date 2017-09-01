@@ -1,0 +1,16 @@
+<html><header><title>Async Business Rule to Check Unique Attribute Using CSLA 4.2 + SL 4.0 + N Tire + Object Factory with SQL specific DataAccess.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async Business Rule to Check Unique Attribute Using CSLA 4.2 + SL 4.0 + N Tire + Object Factory with SQL specific DataAccess.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11019.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NET-H24 posted on Tuesday, December 27, 2011</h2><p>I have tried to create a business Rule using Following structure</p>
+<p>1) ProjectClient</p>
+<p style="padding-left:30px;">Business Rule is Shared as Link in this project</p>
+<p>2) ProjectServer</p>
+<p style="padding-left:30px;">Business Rule Is defined in this project</p>
+<p style="padding-left:30px;">How to invoke the methods written on under ProjectDataAccessSQL ?</p>
+<p>3) ProjectDataAccess</p>
+<p>4) ProjectDataAccessSQL</p>
+<p>5) ProjectWeb</p>
+<p>&nbsp;</p>
+<p>The Sample Example does not have Async Business rules with the above mentioned Structure. It has everything in a single Project Structure.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, December 27, 2011</h2><p>Hi,</p>
+<p>An async business rule will typically use a CommandObject or a ReadOnlyObject with async factory method to do data access in the execute method. </p>
+<p>The data access methods will then be called the usual way from those objects - not by the rule directly.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

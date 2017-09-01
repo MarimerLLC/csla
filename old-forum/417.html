@@ -1,0 +1,20 @@
+<html><header><title>Help with n-tier design. Client piece and server piece? Distributed objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with n-tier design. Client piece and server piece? Distributed objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/417.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>budbjames posted on Tuesday, June 20, 2006</h2><DIV>Hello all,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I work for a company that has a rather hodge podge of a VB 6.0 application.&nbsp; Each fat client uses the database directly to retrieve data.&nbsp; The database design is horrible and the data access code isn't any better (adhoc queries).&nbsp; This prevents our application from running fast from remote sites (It could even be faster directly on a LAN too).&nbsp; We are starting a rewrite and Expert VB 2005 business objects came highly recommended (it's new too..).&nbsp; I'm getting into the book now but I have a basic enterprise design level question that may help me understand the book better.&nbsp; Is it better to develop our smart client, web client, and an actual TCP/IP server that uses sockets to retrieve requests from the clients, process the requests with the database, and return responses to the clients or to develop clean UI/Business/DataAccess assemblies and have the clients communicate with the database directly through the framework?&nbsp;&nbsp;Will the book address&nbsp;things such&nbsp;as this?&nbsp;&nbsp;I'm&nbsp;a bit nervous about the server service idea because it will need to be up all the time, it's a single point of failure, and all clients are limited by the speed limitations of the server.&nbsp; Any other ideas or insight would be very appreciated?&nbsp; Thanks.</DIV>
+<DIV>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 20, 2006</h2>Hi,<br>
+
+<br>
+
+If you're just on a lan, you can have the business objects communicate
+with ADO.Net directly (but ONLY in the DataPortal_XXX methods) OR in
+those same methods, you can use a data access layer of your own making
+or something like NHibernate.<br>
+
+<br>
+Csla buys you a lot of flexibility as far as having a server goes.&nbsp; You
+can have the data access run on the client as well (you set Csla to use
+the local data portal) or you can setup Csla to use remoting and have
+the remoting server running on IIS.&nbsp; Your data access code would run on
+this server then.&nbsp; <br>
+<br>
+You best bet is to have seperate UI / Business and data access layers (which again may be ADO.Net directly or a DAL of your choosing).&nbsp; The book certainly discusses n-tier, its much of the 'point' of the framework.&nbsp; Building off of Csla will help you keep your layers distinct and seperate, and the book is an excellent way to help you understand how to properly build n-tier applications.&nbsp; It addresses everything you are asking about.<br><br>HTH<br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

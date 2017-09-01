@@ -1,0 +1,36 @@
+<html><header><title>DataPortal_Create Method Failed - newbie help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Create Method Failed - newbie help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1139.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>coss74 posted on Wednesday, September 06, 2006</h2><P>Hi,</P>
+<P>I have created a client class that has an integer as it's primary key that is named id. The class therefore is suppose to check the last id and add one onto this number for a new client. Therefore i created a clientlist class and a clientinfo class ( based upon the ProjectList and ProjectInfo class from the book). However i get a error when trying to create the new client object. </P>
+<P>Here is the DataPortal_Create Method from the Client class:</P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>RunLocal</FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>//----------------------------------</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Insert the Lookup Code Here</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//----------------------------------</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>ClientList</FONT><FONT size=2> parent = </FONT><FONT color=#008080 size=2>ClientList</FONT><FONT size=2>.GetClientList();</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> max = 0;</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>ClientInfo</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> parent)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (item.Id &gt; max)</P>
+<P>max = item.Id;</P>
+<P>}</P>
+<P>_id = max + 1;</P>
+<P>_idSet = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>//----------------------------------</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//ValidationRules.CheckRules();</P></FONT><FONT size=2>
+<P></P>
+<P>}</P>
+<P>Can anyone help???</P>
+<P>NOTE: i hae attached the full class if you need to see the whole thing..</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DeanG replied on Wednesday, September 06, 2006</h2><P>I don't agree w/ your method of calculating the id. What if there are several instances of your list class... you risk assigning identical values to different instances.</P>
+<P>At any rate, you did not specify the error you are getting.</P>
+<P>Dean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Wednesday, September 06, 2006</h2><P>As previously mentioned, this may not be the right place to increment your ID - have&nbsp;you looked at doing this via a stored procedure instead? As for the problem with the DataPortal_Create, I often have issues with it for one reason or another. I don't know particularly what error you are receiving, but you may want to try overriding it such as:</P>
+<P>protected override DataPortal_Create(object Criteria)</P>
+<P>Don't know whether this will help, but give it a try (notice that the 'criteria' parameter is now an object)</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>coss74 replied on Wednesday, September 06, 2006</h2><P>thanks for your responses.</P>
+<P>bonio: the protected override changed worked, tnaks.</P>
+<P>As to the technique of assigning the key. This method was used in the book for the role.id. Can you explain the reasonns why this is not good especialy if the stored procedure handles the duplicate key problem?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Wednesday, September 06, 2006</h2><P>Well, for one thing you are iterating through a list.&nbsp; </P>
+<P>1. First you load the entire list, which will take a whole lot of unecessary resources (memory, cpu cycles, etc) for nothing.&nbsp; </P>
+<P>2. Second, if there is a lot of objects is your list it will take some time to load and to iterate through it.&nbsp; </P>
+<P>3. Third, this is not thread safe.</P>
+<P>If your using SQL Server as your database then you should look into having an auto increment integer as your primary key.&nbsp; This way the database will take care of it all.&nbsp; The drawback of doing this is that you will not know what the pk value is until you save the object the first time.&nbsp; If this is an issue, the you might want to look into GUID as a pk.</P>
+<P>Cheers</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

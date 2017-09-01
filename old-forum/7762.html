@@ -1,0 +1,451 @@
+<html><header><title>DataDynamics Report/Analysis Suite</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataDynamics Report/Analysis Suite</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7762.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Saturday, October 10, 2009</h2>Has anybody used CSLA with the DataDynamic's products?&nbsp; If so how was the experience?&nbsp; Any tips?&nbsp; Any recommendations or pitfalls.<br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 12, 2009</h2><P>In my web app I use DataDynamics Active Reports with CSLA.</P>
+<P>It works great! I designed a framework for my reports where a ReadOnly BO is always fetched for header data and a ROC is used for the detail data. Then I can set the report datasource to this BO and have it run until the collection has reached its last record. </P>
+<P>As I recall the main issue was that the BO had to already be in sorted order. The report designer/engine would not sort it for you. </P>
+<P>Each report then had to fetch its own BO and since they had a common interface, the reports all ran with very little additional code outside the base classes of my framework.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, October 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So you put all the parameter, title, desc, etc. logic in the ROB
+and then it has a basically lazy loaded ROC property with the data?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Do you have anything that is easy to share or pm me?&nbsp; Only if it
+is simple for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1 [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-12-09 10:15 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] DataDynamics Report/Analysis Suite<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>In my web app I use DataDynamics Active Reports with CSLA.<o:p></o:p></p>
+
+<p>It works great! I designed a framework for my reports where a ReadOnly BO is
+always fetched for header data and a ROC is used for the detail data. Then I
+can set the report datasource to this BO and have it run until the collection
+has reached its last record. <o:p></o:p></p>
+
+<p>As I recall the main issue was that the BO had to already be in sorted
+order. The report designer/engine would not sort it for you. <o:p></o:p></p>
+
+<p>Each report then had to fetch its own BO and since they had a common
+interface, the reports all ran with very little additional code outside the
+base classes of my framework.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 14, 2009</h2><P>You have the basic idea. I have a base class that does most of the work for each report. </P>
+<P>Some base class&nbsp;variables are:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mIndex </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Integer<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mReadOnlyBO </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> IPNIReadOnlyObject<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mROC </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> IReadOnlyList<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> flags </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> BindingFlags = BindingFlags.Public </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Or</FONT></FONT><FONT size=2> BindingFlags.IgnoreCase </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Or</FONT></FONT><FONT size=2> BindingFlags.Instance<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mProps </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> PropertyInfo)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mRptTitle </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>""<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mRptCode </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>""<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mFromTo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>""<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mDateStart </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>""<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> mDateEnd </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>""</P></FONT></FONT>
+<P>Some methods include:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> GetReadOnlyBO() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> IMyReadOnlyObject<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; Dim</FONT></FONT><FONT size=2> mReportHdrRO </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> ReportHdrRO<BR>&nbsp; mReportHdrRO = ReportHdrRO.NewReportHdrRO<BR>&nbsp; mReportHdrRO.RptCode = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.RptCode<BR>&nbsp; mReportHdrRO.RptTitle = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.RptTitle<BR>&nbsp; mReportHdrRO.FromTo = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.FromTo<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; Return</FONT></FONT><FONT size=2> mReportHdrRO<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> GetROC() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> IReadOnlyList<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> GetSQLStatement() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>""<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</P></FONT></FONT>
+<P>Each report then overrides GetROC and GetSQLStatement to gather up the data for that report.</P>
+<P>I use reflection to match the text box names to the BO property values with the assumption that txtPropertyName is how each text box is named.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> GetDetailFieldList() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> result </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> txtBoxName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> BOPropName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> currentTextBox </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> DataDynamics.ActiveReports.TextBox<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> rptProp </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo</FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>'Only find the TextBox members in the Report. Assumes they all start with "txt".<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> rptMembers </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> MemberInfo() = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.GetType.FindMembers(MemberTypes.Property, flags </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Or</FONT></FONT><FONT size=2> BindingFlags.NonPublic, Type.FilterNameIgnoreCase, </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"txt*"</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> MemberInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> rptMembers<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Since we know that we found only MemberTypes.Property we can safely cast the MemberInfo to a PropertyInfo.<BR></FONT></FONT><FONT size=2>rptProp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(info, PropertyInfo)<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'verify that we are in fact dealing with a TextBox and not a mis-named control.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> rptProp.PropertyType.Name = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"TextBox"</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR>&nbsp; </FONT></FONT><FONT size=2>currentTextBox = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(rptProp.GetValue(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>), DataDynamics.ActiveReports.TextBox)<BR>&nbsp; </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'find all text boxes that are NOT in the page header or page footer.<BR>&nbsp; </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Not</FONT></FONT><FONT size=2> (currentTextBox.Parent.GetType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(DataDynamics.ActiveReports.PageHeader) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OrElse</FONT></FONT><FONT size=2> currentTextBox.Parent.GetType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(DataDynamics.ActiveReports.PageFooter)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR>&nbsp; </FONT></FONT><FONT size=2>txtBoxName = rptProp.Name<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'assumes all TextBox controls have a 3 letter prefix of txt and that the rest of the Name is the same as the BO Property. Case sensitive!<BR>&nbsp; </FONT></FONT><FONT size=2>BOPropName = txtBoxName.Substring(3)<BR>&nbsp; result.Add(BOPropName)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> result<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT></FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT color=#000000 size=2> Props() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT color=#000000 size=2> List(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2><FONT color=#000000> PropertyInfo)<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR></FONT></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> mProps </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT size=2>mProps = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> PropertyInfo)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> infoType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Type = mROC.GetType().GetProperty(</FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"Item"</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> Type() {</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Integer</FONT></FONT><FONT size=2>)}).PropertyType<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'get an array of all Properties of the ROC (could be 50 or more)<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> tempProps() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo = infoType.GetProperties(flags)<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'get the list of fields in the specific report detail section. (typically, can be less than 10)<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> detailFields </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> List(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>) = GetDetailFieldList()<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> detailFields </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'if the developer does not provide a list of fields then add all Properties to mProps.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> prop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> tempProps<BR>mProps.Add(prop)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Else<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> prop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> tempProps<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'This is case sensitive. So the BO Property names must be spelled the same way in the GetDetailFieldList method.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> detailFields.Contains(prop.Name) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT size=2>mProps.Add(prop)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> mProps<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT></P>
+<P></FONT></FONT>Then write code for each of the Active Report methods:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#Region</FONT></FONT><FONT size=2> </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>" Active Reports Methods "</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> rpt_ReportStart(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Handles</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.ReportStart<BR>mIndex = 0<BR>mHoldString = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>.Empty<BR>mFirstLine = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'passes criteria values from speciality ReportBaseFrame to ReportHeaderRO <BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'for data binding to Page Header/Footer bands<BR></FONT></FONT><FONT size=2>mReadOnlyBO = GetReadOnlyBO()<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'to populate ROC using SQL Statement<BR></FONT></FONT><FONT size=2>mROC = GetROC()<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'set txtTextBox.Value for all sections except the Detail section which is set in rpt_FetchData.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> rpt_DataInitialize(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Handles</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.DataInitialize<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> txtBoxName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> BOPropName </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> BOType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Type = mReadOnlyBO.GetType<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> currentTextBox </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> DataDynamics.ActiveReports.TextBox<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> rptProp </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Only find the TextBox members in the Report. Assumes they all start with "txt". <BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> rptMembers </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> MemberInfo() = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.GetType.FindMembers(MemberTypes.Property, flags </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Or</FONT></FONT><FONT size=2> BindingFlags.NonPublic, Type.FilterNameIgnoreCase, </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"txt*"</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> MemberInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> rptMembers<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Since we know that we found only MemberTypes.Property we can safely cast the MemberInfo to a PropertyInfo.<BR></FONT></FONT><FONT size=2>rptProp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(info, PropertyInfo)<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'verify that we are in fact dealing with a TextBox and not a mis-named control.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> rptProp.PropertyType.Name = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"TextBox"</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT size=2>currentTextBox = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(rptProp.GetValue(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>), DataDynamics.ActiveReports.TextBox)<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'set currentTextBox.Value for PageHeader and PageFooter only.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'If currentTextBox.Parent.GetType IsNot GetType(DataDynamics.ActiveReports.Detail) Then<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> (currentTextBox.Parent.GetType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(DataDynamics.ActiveReports.PageHeader) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>OrElse</FONT></FONT><FONT size=2> currentTextBox.Parent.GetType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(DataDynamics.ActiveReports.PageFooter)) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT size=2>txtBoxName = rptProp.Name<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'assumes all TextBox controls have a 3 letter prefix of txt and that the rest of the Name is the same as the BO Property.<BR></FONT></FONT><FONT size=2>BOPropName = txtBoxName.Substring(3)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> BOprop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo = BOType.GetProperty(BOPropName, flags)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> BOprop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>IsNot</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'the BO and the TextBox w/o the prefix are the same name so set TextBox.Value = BO.Property.<BR></FONT></FONT><FONT size=2>currentTextBox.Value = BOprop.GetValue(mReadOnlyBO, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'see if there is a Picture in the report Header. If there is, set the Image property to the BO.Logo value <BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'which is a System.Drawing.Image created from an array of Bytes.<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Assumes the name of the control has a prefix of "img".<BR></FONT></FONT><FONT size=2>rptMembers = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.GetType.FindMembers(MemberTypes.Property, flags </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Or</FONT></FONT><FONT size=2> BindingFlags.NonPublic, Type.FilterNameIgnoreCase, </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"img*"</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> MemberInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> rptMembers<BR>rptProp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(info, PropertyInfo)<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'verify that we are in fact dealing with a Picture and not a mis-named control.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> rptProp.PropertyType.Name = </FONT><FONT color=#ff00ff size=2><FONT color=#ff00ff size=2>"Picture"</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> currentControl </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> DataDynamics.ActiveReports.Picture = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(rptProp.GetValue(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>), DataDynamics.ActiveReports.Picture)</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'set currentControl.Image for all sections except the Detail section which is set in rpt_FetchData.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> currentControl.Parent.GetType </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>IsNot</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>GetType</FONT></FONT><FONT size=2>(DataDynamics.ActiveReports.Detail) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT size=2>txtBoxName = rptProp.Name<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'assumes all Picture controls have a 3 letter prefix of img and that the rest of the Name is the same as the BO Property.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'In this case the name is imgLogo.<BR></FONT></FONT><FONT size=2>BOPropName = txtBoxName.Substring(3)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> BOprop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo = BOType.GetProperty(BOPropName, flags)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> BOprop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>IsNot</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'the BO and the Picture control w/o the prefix are the same name so set Control.Image = BO.Property.<BR></FONT></FONT><FONT size=2>currentControl.Image = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(BOprop.GetValue(mReadOnlyBO, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>), Drawing.Image)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>'define Detail fields collection<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> prop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> Props<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp; Me</FONT></FONT><FONT size=2>.Fields.Add(prop.Name)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'Add data to the Fields in the Detail section using 1 row at a time from the ROC.<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'mIndex is incremented each time FetchData runs. <BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'This will fetch the next row from the ROC.<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'It will run until we set eArgs.EOF = True.<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> rpt_FetchData(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> eArgs </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> DataDynamics.ActiveReports.ActiveReport3.FetchEventArgs) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Handles</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.FetchData</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Csla.Core.IReadOnlyObject<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> holdValue </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2> = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>String</FONT></FONT><FONT size=2>.Empty<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</FONT></FONT><FONT size=2> mIndex = mROC.Count </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then<BR></FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'stops firing this event<BR></FONT></FONT><FONT size=2>eArgs.EOF = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Else<BR></FONT></FONT><FONT size=2>target = mROC.Item(mIndex, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>For</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Each</FONT></FONT><FONT size=2> prop </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> Props<BR>&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Fields(prop.Name).Value = prop.GetValue(target, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Next</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'increment the index for the ROC.<BR></FONT></FONT><FONT size=2>mIndex += 1<BR></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'continue to fire rpt_FetchData event<BR></FONT></FONT><FONT size=2>eArgs.EOF = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If<BR></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub<BR>#End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Region</P></FONT></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, October 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Joe<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you very much.&nbsp; One additional question ... was that a
+pain for testing the formatting / outline of the report? &nbsp;Without a direct
+database connection how would you preview the report while design it?&nbsp; I could
+see with a simple grid report it wouldn't be a big deal but if you had a large
+report with grouping and nested reports etc. it would be cumbersome to
+deploy/run/test over and over???<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1 [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> October-14-09 8:03 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: DataDynamics Report/Analysis Suite<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>You have the basic idea. I have a base class that does most of the work for
+each report. <o:p></o:p></p>
+
+<p>Some base class&nbsp;variables are:<o:p></o:p></p>
+
+<p><span>Protected</span><span> mIndex <span>As</span> <span>Integer<br>
+Protected</span> mReadOnlyBO <span>As</span>
+IPNIReadOnlyObject<br>
+<span>Protected</span> mROC <span>As</span>
+IReadOnlyList<br>
+<span>Protected</span> flags <span>As</span>
+BindingFlags = BindingFlags.Public <span>Or</span>
+BindingFlags.IgnoreCase <span>Or</span>
+BindingFlags.Instance<br>
+<span>Protected</span> mProps <span>As</span>
+List(<span>Of</span> PropertyInfo)<br>
+<span>Protected</span> mRptTitle <span>As</span>
+<span>String</span> = <span>&quot;&quot;<br>
+</span><span>Protected</span> mRptCode <span>As</span> <span>String</span> = <span>&quot;&quot;<br>
+</span><span>Protected</span> mFromTo <span>As</span> <span>String</span> = <span>&quot;&quot;<br>
+</span><span>Protected</span> mDateStart <span>As</span> <span>String</span> = <span>&quot;&quot;<br>
+</span><span>Protected</span> mDateEnd <span>As</span> <span>String</span> = <span>&quot;&quot;<o:p></o:p></span></span></p>
+
+<p>Some methods include:<o:p></o:p></p>
+
+<p><span>Public</span><span> <span>Overridable</span> <span>Function</span> GetReadOnlyBO() <span>As</span>
+IMyReadOnlyObject<br>
+<span>&nbsp; Dim</span> mReportHdrRO <span>As</span> ReportHdrRO<br>
+&nbsp; mReportHdrRO = ReportHdrRO.NewReportHdrRO<br>
+&nbsp; mReportHdrRO.RptCode = <span>Me</span>.RptCode<br>
+&nbsp; mReportHdrRO.RptTitle = <span>Me</span>.RptTitle<br>
+&nbsp; mReportHdrRO.FromTo = <span>Me</span>.FromTo<br>
+<span>&nbsp; Return</span> mReportHdrRO<br>
+<span>End</span> <span>Function<o:p></o:p></span></span></p>
+
+<p><span>Public</span><span> <span>Overridable</span> <span>Function</span> GetROC() <span>As</span>
+IReadOnlyList<br>
+<span>&nbsp; Return</span> <span>Nothing<br>
+End</span> <span>Function<o:p></o:p></span></span></p>
+
+<p><span>Protected</span><span> <span>Overridable</span> <span>Function</span> GetSQLStatement() <span>As</span>
+<span>String<br>
+&nbsp; Return</span> <span>&quot;&quot;<br>
+</span><span>End</span> <span>Function<o:p></o:p></span></span></p>
+
+<p>Each report then overrides GetROC and GetSQLStatement to gather up the data
+for that report.<o:p></o:p></p>
+
+<p>I use reflection to match the text box names to the BO property values with
+the assumption that txtPropertyName is how each text box is named.<o:p></o:p></p>
+
+<p><span>Public</span><span> <span>Overridable</span> <span>Function</span> GetDetailFieldList() <span>As</span> List(<span>Of</span> <span>String</span>)<br>
+<span>Dim</span> result <span>As</span> <span>New</span> List(<span>Of</span> <span>String</span>)<br>
+<span>Dim</span> txtBoxName <span>As</span>
+<span>String<br>
+Dim</span> BOPropName <span>As</span> <span>String<br>
+Dim</span> currentTextBox <span>As</span>
+DataDynamics.ActiveReports.TextBox<br>
+<span>Dim</span> rptProp <span>As</span>
+PropertyInfo</span><o:p></o:p></p>
+
+<p><span>'Only find the TextBox members in
+the Report. Assumes they all start with &quot;txt&quot;.<br>
+</span><span>Dim</span><span> rptMembers <span>As</span>
+MemberInfo() = <span>Me</span>.GetType.FindMembers(MemberTypes.Property,
+flags <span>Or</span> BindingFlags.NonPublic,
+Type.FilterNameIgnoreCase, <span>&quot;txt*&quot;</span>)<o:p></o:p></span></p>
+
+<p><span>For</span><span> <span>Each</span> info <span>As</span>
+MemberInfo <span>In</span> rptMembers<br>
+<span>'Since we know that we found only
+MemberTypes.Property we can safely cast the MemberInfo to a PropertyInfo.<br>
+</span>rptProp = <span>CType</span>(info, PropertyInfo)<br>
+<span>'verify that we are in fact dealing with a TextBox
+and not a mis-named control.<br>
+</span><span>If</span> rptProp.PropertyType.Name = <span>&quot;TextBox&quot;</span> <span>Then<br>
+&nbsp; </span>currentTextBox = <span>CType</span>(rptProp.GetValue(<span>Me</span>, <span>Nothing</span>),
+DataDynamics.ActiveReports.TextBox)<br>
+&nbsp; <span>'find all text boxes that are NOT in the page
+header or page footer.<br>
+&nbsp; </span><span>If</span> <span>Not</span>
+(currentTextBox.Parent.GetType <span>Is</span> <span>&lt; FONT color=#0000ff size=2&gt;GetType</span>(DataDynamics.ActiveReports.PageHeader)
+<span>OrElse</span> currentTextBox.Parent.GetType <span>Is</span> <span>GetType</span>(DataDynamics.ActiveReports.PageFooter))
+<span>Then<br>
+&nbsp; </span>txtBoxName = rptProp.Name<br>
+<span>'assumes all TextBox controls have a 3 letter prefix
+of txt and that the rest of the Name is the same as the BO Property. Case
+sensitive!<br>
+&nbsp; </span>BOPropName = txtBoxName.Substring(3)<br>
+&nbsp; result.Add(BOPropName)<br>
+<span>End</span> <span>If<br>
+End</span> <span>If<br>
+Next<br>
+Return</span> result<br>
+<span>End</span> <span>Function</span></span><o:p></o:p></p>
+
+<p><span>Private</span><span> </span><span>ReadOnly</span><span> </span><span>Property</span><span> Props() </span><span>As</span><span> List(</span><span>Of</span><span> PropertyInfo)<br>
+</span><span>Get<br>
+If mProps Is Nothing Then<br>
+mProps = New List(Of PropertyInfo)<br>
+Dim infoType As Type = mROC.GetType().GetProperty(</span><span>&quot;Item&quot;</span><span>, New Type()
+{GetType(Integer)}).PropertyType<br>
+</span><span>'get an array of all Properties
+of the ROC (could be 50 or more)<br>
+</span><span>D im tempProps() As
+PropertyInfo = infoType.GetProperties(flags)<br>
+</span><span>'get the list of fields in
+the specific report detail section. (typically, can be less than 10)<br>
+</span><span>Dim detailFields As List(Of
+String) = GetDetailFieldList()<br>
+If detailFields Is Nothing Then<br>
+</span><span>'if the developer does not
+provide a list of fields then add all Properties to mProps.<br>
+</span><span>For Each prop As PropertyInfo
+In tempProps<br>
+mProps.Add(prop)<br>
+Next<br>
+Else<br>
+For Each prop As PropertyInfo In tempProps<br>
+</span><span>'This is case sensitive. So
+the BO Property names must be spelled the same way in the GetDetailFieldList
+method.<br>
+</span><span>If
+detailFields.Contains(prop.Name) Then<br>
+mProps.Add(prop)<br>
+End If<br>
+Next<br>
+End If<br>
+End If<br>
+Return mProps<br>
+End Get<br>
+End Property<o:p></o:p></span></p>
+
+<p>Then write code for each of the Active Report methods:<o:p></o:p></p>
+
+<p><span>#Region</span><span> <span>&quot; Active Reports
+Methods &quot;<o:p></o:p></span></span></p>
+
+<p><span>Protected</span><span> <span>Sub</span> rpt_ReportStart(<span>ByVal</span> sender <span>As</span> <span>Object</span>, <span>ByVal</span> e <span>As</span> System.EventArgs) <span>Handles</span>
+<span>Me</span>.ReportStart<br>
+mIndex = 0<br>
+mHoldString = <span>String</span>.Empty<br>
+mFirstLine = <span>True<br>
+</span><span>'passes criteria values from speciality
+ReportBaseFrame to ReportHeaderRO <br>
+'for data binding to Page Header/Footer bands<br>
+</span>mReadOnlyBO = GetReadOnlyBO()<br>
+<span>'to populate ROC using SQL Statement<br>
+</span>mROC = GetROC()<br>
+<span>End</span> <span>Sub<o:p></o:p></span></span></p>
+
+<p><span>'set txtTextBox.Value for all
+sections except the Detail section which is set in rpt_FetchData.<br>
+</span><span>Protected</span><span> <span>Sub</span>
+rpt_DataInitialize(<span>ByVal</span> sender <span>As</span> <span>Object</span>, <span>ByVal</span> e <span>As</span>
+System.EventArgs) <span>Handles</span> <span>Me</span>.DataInitialize<br>
+<span>Dim</span> txtBoxName <span>As</span>
+<span>String<br>
+Dim</span> BOPropName <span>As</span> <span>String<br>
+Dim</span> BOType <span>As</span> Type = mReadOnlyBO.GetType<br>
+<span>Dim</span> currentTextBox <span>As</span>
+DataDynam ics.ActiveReports.TextBox<br>
+<span>Dim</span> rptProp <span>As</span>
+PropertyInfo<br>
+<span>'Only find the TextBox members in the Report. Assumes
+they all start with &quot;txt&quot;. <br>
+</span><span>Dim</span> rptMembers <span>As</span>
+MemberInfo() = <span>Me</span>.GetType.FindMembers(MemberTypes.Property,
+flags <span>Or</span> BindingFlags.NonPublic, Type.FilterNameIgnoreCase,
+<span>&quot;txt*&quot;</span>)<o:p></o:p></span></p>
+
+<p><span>For</span><span> <span>Each</span> info <span>As</span>
+MemberInfo <span>In</span> rptMembers<br>
+<span>'Since we know that we found only
+MemberTypes.Property we can safely cast the MemberInfo to a PropertyInfo.<br>
+</span>rptProp = <span>CType</span>(info, PropertyInfo)<br>
+<span>'verify that we are in fact dealing with a TextBox
+and not a mis-named control.<br>
+</span><span>If</span> rptProp.PropertyType.Name = <span>&quot;TextBox&quot;</span> <span>Then<br>
+</span>currentTextBox = <span>CType</span>(rptProp.GetValue(<span>Me</span>, <span>Nothing</span>),
+DataDynamics.ActiveReports.TextBox)<br>
+<span>'set currentTextBox.Value for PageHeader and
+PageFooter only.<o:p></o:p></span></span></p>
+
+<p><span>'If currentTextBox.Parent.GetType
+IsNot GetType(DataDynamics.ActiveReports.Detail) Then<br>
+</span><span>If</span><span> (currentTextBox.Parent.GetType <span>Is</span> <span>GetType</span>(DataDynamics.ActiveReports.PageHeader)
+<span>OrElse</span> currentTextBox.Parent.GetType <span>Is</span> <span>GetType</span>(DataDynamics.ActiveReports.PageFooter))
+<span>Then<br>
+</span>txtBoxName = rptProp.Name<br>
+<span>'assumes all TextBox controls have a 3 letter prefix
+of txt and that the rest of the Name is the same as the BO Property.<br>
+</span>BOPropName = txtBoxName.Substring(3)<br>
+<span>Dim</span> BOprop <span>As</span>
+PropertyInfo = BOType.GetProperty(BOPropName, flags)<br>
+<span>If</span> BOprop <span>IsNot</span>
+<span>Nothing</span> <span>Then<br>
+</span><span>'the BO and the TextBox w/o the prefix are the
+same name so set TextBox.Value = BO.Property.<br>
+</span>currentTextBox .Value = BOprop.GetValue(mReadOnlyBO, <span>Nothing</span>)<br>
+<span>End</span> <span>If<br>
+End</span> <span>If<br>
+End</span> <span>If<br>
+Next<br>
+</span><span>'see if there is a Picture in the report
+Header. If there is, set the Image property to the BO.Logo value <br>
+'which is a System.Drawing.Image created from an array of Bytes.<br>
+'Assumes the name of the control has a prefix of &quot;img&quot;.<br>
+</span>rptMembers = <span>Me</span>.GetType.FindMembers(MemberTypes.Property,
+flags <span>Or</span> BindingFlags.NonPublic,
+Type.FilterNameIgnoreCase, <span>&quot;img*&quot;</span>)<o:p></o:p></span></p>
+
+<p><span>For</span><span> <span>Each</span> info <span>As</span>
+MemberInfo <span>In</span> rptMembers<br>
+rptProp = <span>CType</span>(info, PropertyInfo)<br>
+<span>'verify that we are in fact dealing with a Picture
+and not a mis-named control.<br>
+</span><span>If</span> rptProp.PropertyType.Name = <span>&quot;Picture&quot;</span> <span>Then<br>
+Dim</span> currentControl <span>As</span>
+DataDynamics.ActiveReports.Picture = <span>CType</span>(rptProp.GetValue(<span>Me</span>, <span>Nothing</span>),
+DataDynamics.ActiveReports.Picture)<o:p></o:p></span></p>
+
+<p><span>'set currentControl.Image for all
+sections except the Detail section which is set in rpt_FetchData.<br>
+</span><span>If</span><span> currentControl.Parent.GetType <span>IsNot</span> <span>GetType</span>(DataDynamics.ActiveReports.Detail)
+<span>Then<br>
+</span>txtBoxName = rptProp.Name<br>
+<span>'assumes all Picture controls have a 3 letter prefix
+of img and that the rest of the Name is the same as the BO Property.<o:p></o:p></span></span></p>
+
+<p><span>'In this case the name is
+imgLogo.<br>
+</span><span>BOPropName = txtBoxName.Substring(3)<br>
+<span>Dim</span> BOprop <span>As</span>
+PropertyInfo = BOType.GetProperty(BOPropName, flags)<br>
+<span>If</span> BOprop <span>IsNot</span>
+<span>Nothing</span> <span>Then<br>
+</span><span>'the BO and the Picture control w/o the prefix
+are the same name so set Control.Image = BO.Property.<br>
+</span>currentControl.Image = <span>CType</span>(BOprop.GetValue(mReadOnlyBO,
+<span>Nothing</span>), Drawing.Image)<br>
+<span>End</span> <span>If<br>
+End</span> <span>If<br>
+End</span> <span>If<br>
+Next</span></span><o:p></o:p></p>
+
+<p><span>'define Detail fields collection<br>
+</span><span>For</span><span> <span>Each</span> prop <span>As</span> PropertyInfo <span>In</span>
+Props<br>
+<span>&nbsp; Me</span>.Fields.Add(prop.Name)<br>
+<span>Next<br>
+End</span> <span>Sub<o:p></o:p></span></span></p>
+
+<p><span>'Add data to the Fields in the
+Detail section using 1 row at a time from the ROC.<br>
+'mIndex is incremented each time FetchData runs. <br>
+'This will fetch the next row from the ROC.<br>
+'It will run until we set eArgs.EOF = True.<br>
+</span><span>Protected</span><span> <span>Sub</span> rpt_FetchData(<span>ByVal</span> sender <span>As</span> <span>Object</span>, <span>ByVal</span> eArgs <span>As</span>
+DataDynamics.ActiveReports.ActiveReport3.FetchEventArgs) <span>Handles</span> <span>Me</span>.FetchData<o:p></o:p></span></p>
+
+<p><span>Dim</span><span> target <span>As</span> Csla.Core.IReadOnlyObject<br>
+<span>Dim</span> holdValue <span>As</span>
+<span>String</span> = <span>String</span>.Empty<br>
+<span>If</span> mIndex = mROC.Count <span>Then<br>
+</span><span>'stops firing this event<br>
+</span>eArgs.EOF = <span>True<br>
+Else<br>
+</span>target = mROC.Item(mIndex, <span>True</span>)<br>
+<span>For</span> <span>Each</span> prop <span>As</span> PropertyInfo <span>In</span>
+Props<br>
+&nbsp; <span>Me</span>.Fields(prop.Name).Value =
+prop.GetValue(target, <span>Nothing</span>)<br>
+<span>Next<o:p></o:p></span></span></p>
+
+<p><span>'increment the index for the ROC.<br>
+</span><span>mIndex += 1<br>
+<span>'continue to fire rpt_FetchData event<br>
+</span>eArgs.EOF = <span>False<br>
+End</span> <span>If<br>
+End</span> <span>Sub<br>
+#End</span> <span>Region<o:p></o:p></span></span></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 16, 2009</h2><P>I built the framework and turned it over to someone else to build all the reports. A lot of them were written in another language so they had to be translated. But the layouts were all pretty simple - a few columns and some subtotals. Some reports were more complex but they all ended up working this way. </P>
+<P>BTW - the code I shared is alot of the Base class but not all of it. There are other things that need to be done too. But that should get you started diwn the right path of using CSLA and Active Reports together in a general way.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

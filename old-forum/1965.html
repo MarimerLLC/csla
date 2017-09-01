@@ -1,0 +1,66 @@
+<html><header><title>Note: Upgrading large projects from 2.0.0 to 2.1.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Note: Upgrading large projects from 2.0.0 to 2.1.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1965.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent posted on Wednesday, December 13, 2006</h2>
+
+<p class="MsoNormal">Just thought I would put this
+in the system so it is searchable by anyone running into any problems while
+moving to 2.1.1.<br>
+<br>
+We have large projects with a lot of shared assemblies many of which reference
+Csla.&nbsp; While attempting to test with 2.1.1 we ran into the issue of dependent
+assembly manifests not matching versions.&nbsp; We were able to avoid this by
+adding the following to our project config files:<o:p></o:p></p>
+
+
+<p class="MsoNormal"><span>&lt;?</span><span>xml</span><span> </span><span>version</span><span>=</span><span>"<span>1.0</span>"<span> </span><span>encoding</span><span>=</span>"<span>utf-8</span>"<span> ?&gt;<o:p></o:p></span></span></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span>&lt;</span><span>configuration</span><span>&gt;<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>runtime</span><span>&gt;<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>assemblyBinding</span><span>
+</span><span>xmlns</span><span>=</span><span>"<span>urn:schemas-microsoft-com:asm.v1</span>"<span>&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>dependentAssembly</span><span>&gt;<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;</span><span>assemblyIdentity</span><span> </span><span>name</span><span>=</span><span>"<span>Csla</span>"<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&nbsp; </span></span><span>publicKeyToken</span><span>=</span><span>"<span>93be5fdc093e4c30</span>"<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&nbsp; </span></span><span>culture</span><span>=</span><span>"<span>neutral</span>"<span> /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;</span><span>bindingRedirect</span><span> </span><span>oldVersion</span><span>=</span><span>"<span>2.0.0.0</span>"<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&nbsp;</span></span><span>newVersion</span><span>=</span><span>"<span>2.1.1.0</span>"<span>/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>dependentAssembly</span><span>&gt;<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>assemblyBinding</span><span>&gt;<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>runtime</span><span>&gt;<br>
+&lt;/</span><span>configuration</span><span>&gt;</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

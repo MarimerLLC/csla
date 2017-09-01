@@ -1,0 +1,33 @@
+<html><header><title>Feature request/proposal: &quot;SemiSerializable&quot; properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Feature request/proposal: &quot;SemiSerializable&quot; properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9873.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Thursday, December 16, 2010</h2><p>Hi @all!</p>
+<p>Background:</p>
+<p>I often have properties in my business objects that exist merely as a concession to the UI. Just to make the data more readable. You can also think of lookup-data, that is not touched by any logic.</p>
+<p>Proposal:</p>
+<p>I thought of, besides the original BO, having a new readonly object that would provide the UoW/UI with supplemental data related to the actual use case. This object, when implemented as a child property of the &quot;real&quot; BO or the UoW object, would always only have to travel from server-side to client-side, providing the UI with updated additional data each time. Even use-case specific lookup-lists could be updated this way.</p>
+<p>What is important to notice here, is that there are properties that will always travel the DataPortal one-way.</p>
+<p>I know that we can already implement such a feature by hand, overriding certain methods called in the process of any DataPotal operation, and setting the desired property values to null before serialization starts.</p>
+<p>Having the framework provide that feature would be much nicer!&nbsp; :-)</p>
+<p>I imagine it could be implemented very easily around the usage of the existing NonSerializableAttribute.</p>
+<p>What do others think about that.</p>
+<p>&nbsp;</p>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, December 16, 2010</h2><p>Hi Stefan, </p>
+<p>What type of UI/Clients are you using?</p>
+<p>Have you look at the UOW approach? </p>
+<p>* using a ReadOnly object that fetch the Root BO and additional data required for the UI? </p>
+<p>This way you only need 1 async or sync operation to get all the data needed for the UI (UseCase)&nbsp; and it will be one-way for additional data as they are not part of the Root BO.</p>
+<p>A better explanation here from Joe Fallon:<br /><a href="http://forums.lhotka.net/forums/p/6646/32377.aspx#32377">http://forums.lhotka.net/forums/p/6646/32377.aspx#32377</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Thursday, December 16, 2010</h2><p>Hi Jonny,</p>
+<p>Yes, I must agree that the UoW approach works (as always). </p>
+<p>But I think a &quot;SemiSerializableAttribute&quot; would gain us some flexibility to model scenarios where a UoW object is overkill.</p>
+<p>I Initially was inspired by this parallel thread <a href="http://forums.lhotka.net/forums/p/9822/46100.aspx#46100">Handling Read-Only Info Properties in Business Objects </a></p>
+<p>What I had in mind was lots of readonly properties of a root editable object like a &quot;CustomerTypeDescription&quot; or all kind of status information likely to change while a user is editing the object for a certain amount of time (perhaps multiple updates). </p>
+<ul>
+<li>My proposed approach would enable us to refresh such data without any additional trips to the server.</li>
+<li>In addition, databinding would be restricted to one object. (=old style)</li>
+<li>The amount of data transferred over the wire when having lots of such read-only string properties is reduced significantly</li>
+<li>We could implement a lookup-list (NVL) that has to be kept up-to-date, as a property of the root object, without having to care about unnecessary network load. Just use the proposed attribute on the NVL-property.</li>
+</ul>
+<p>I see that this is an edge case (updating readonly property values + long time editing an object with multiple updates).</p>
+<p><b>I just realized that the NonSerialized feature is unavailable when using managed properties...</b> <img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p>
+<p>So the only way to achieve what I had in mind is to reset the involved properties just before serialization on the (logical) client-side...</p>
+<p>Arrrrgh.... or more adequate: <b>D&#39;oh!</b></p>
+<p>&nbsp;</p>
+<p>Stefan</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, December 16, 2010</h2><p>Given the increasing use of async server communication, and the rise in popularity of the MVVM design pattern, I do think a UoM object to retrieve other objects, combined with a viewmodel that exposes these read-only or UI-specific derived properties may be the better combination overall.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

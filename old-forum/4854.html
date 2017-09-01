@@ -1,0 +1,197 @@
+<html><header><title>Roles.. any ideas?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Roles.. any ideas?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4854.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, May 15, 2008</h2>Hi,<br><br>I currently have my application setup and built on Csla, and using WindowsAuthentication.&nbsp; For security checks, I simply do an IsInRole call on the Identity.&nbsp; The role permissions are hard-coded, something like this:<br><br><font color="#0000ff">private static string</font>[] allowedReadRoles = <font color="#0000ff">new string</font>[] { <font color="#ff0000">"Sales"</font>, <font color="#ff0000">"Ordering"</font> };<br><br>I now need to brand my application, and while the roles will remain the same, the problem is that IsInRole is functioning via group membership.&nbsp; The branding will be for other companies, which are owned by the same owners, and use the same office buildings, network and computers are the main company (the other companies have less than 10 people). <br><br>So, adding the users for Company B to existing groups isn't really an option... they'd have access to the application for Company A.&nbsp; I guess one option is to switch to Csla authentication, but I'm currently using Integrated Authentication for the remoting portal as well as database connections, so I'm not sure that will work since I think I need the WindowsPrincipal on the current thread for IA to work properly (or am I mistaken?).<br><br>Any other ideas?&nbsp; Has anyone used Authentication Manager, which allows you to define real roles, not AD Groups?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just a thought.&nbsp; My current app is using integrated windows
+authentication for SQL server and remoting portal, while using CSLA custom principal
+as user in application context. &nbsp;So, you should be able to do the same.&nbsp;
+On the other hand, you could create new AD groups to replace the old ones that
+will contain users from companies A and B, while users of company A will retain
+membership in old groups as well.&nbsp; That way, you can stay with Windows authentication
+and just replace group names.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 15, 2008 1:28 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Roles.. any ideas?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I currently have my application setup and built on Csla, and using
+WindowsAuthentication.&nbsp; For security checks, I simply do an IsInRole call
+on the Identity.&nbsp; The role permissions are hard-coded, something like
+this:<br>
+<br>
+<span>private string</span>[] allowedReadRoles = <span>new string</span>[] { <span>&quot;Sales&quot;</span>,
+<span>&quot;Ordering&quot;</span> };<br>
+<br>
+I now need to brand my application, and while the roles will remain the same,
+the problem is that IsInRole is functioning via group membership.&nbsp; The
+branding will be for other companies, which are owned by the same owners, and
+use the same office buildings, network and computers are the main company (the
+other companies have less than 10 people). <br>
+<br>
+So, adding the users for Company B to existing groups isn't really an option...
+they'd have access to the application for Company A.&nbsp; I guess one option
+is to switch to Csla authentication, but I'm currently using Integrated
+Authentication for the remoting portal as well as database connections, so I'm
+not sure that will work since I think I need the WindowsPrincipal on the
+current thread for IA to work properly (or am I mistaken?).<br>
+<br>
+Any other ideas?&nbsp; Has anyone used Authentication Manager, which allows you
+to define real roles, not AD Groups?<br>
+<br>
+Thanks<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 15, 2008</h2>Ahh... well that will make things simpler then, if I can use CslaAuth and still have the Windows auth.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 15, 2008</h2>Hmm... I started looking into this, and the downside is that I need to manage role membership in two places, since I use the Windows Groups to map into database roles to control access to views / stored procedures.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, May 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yep.&nbsp; You can just create new groups specifically for your
+CSLA app, and just change all the existing roles to new groups.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 15, 2008 4:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Roles.. any ideas?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hmm... I started looking into this, and the downside is that
+I need to manage role membership in two places, since I use the Windows Groups
+to map into database roles to control access to views / stored procedures.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smiley riley replied on Friday, May 16, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Hi,<BR><BR>I currently have my application setup and built on Csla, and using WindowsAuthentication.&nbsp; For security checks, I simply do an IsInRole call on the Identity.&nbsp; The role permissions are hard-coded, something like this:<BR><BR><FONT color=#0000ff>private static string</FONT>[] allowedReadRoles = <FONT color=#0000ff>new string</FONT>[] { <FONT color=#ff0000>"Sales"</FONT>, <FONT color=#ff0000>"Ordering"</FONT> };<BR><BR>I now need to brand my application, and while the roles will remain the same, the problem is that IsInRole is functioning via group membership.&nbsp; The branding will be for other companies, which are owned by the same owners, and use the same office buildings, network and computers are the main company (the other companies have less than 10 people). <BR><BR>So, adding the users for Company B to existing groups isn't really an option... they'd have access to the application for Company A.&nbsp; I guess one option is to switch to Csla authentication, but I'm currently using Integrated Authentication for the remoting portal as well as database connections, so I'm not sure that will work since I think I need the WindowsPrincipal on the current thread for IA to work properly (or am I mistaken?).<BR><BR>Any other ideas?&nbsp; Has anyone used Authentication Manager, which allows you to define real roles, not AD Groups?<BR><BR>Thanks<BR>Andy<BR></div></BLOCKQUOTE></P>
+<P>The correct way for you to approach is is by adding another layer on top of your roles!!!</P>
+<P>However a quick way around this problem for you is rather than using a static array of strings to hold your allowed roles create a Flags Enum of permissions and add Company A and Company B as options. You will then be able to assign company A / B as AD groups&nbsp;along with&nbsp;permissions. Then using bitwise operations&nbsp;you should be able to do what you are trying to do.</P>
+<P>So when you load the roles, you add each to an enum using the following. You must ovveride the default is inrole along these lines</P><FONT color=#0000ff size=2>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsInRole(</FONT><FONT color=#2b91af size=2>PermissionsEnum </FONT><FONT size=2>role)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> ((roles &amp; role) == role)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P></FONT>
+<P>PermissionsEnum permissions = PermissionsEnum.CompanyA | PerissionsEnum.Sales</P>
+<P>Then to determine&nbsp; roles</P>
+<P>if( identity.isinrole( PermissionEnum.sales)</P>
+<P>{</P>
+<P>//do general sales stuff</P>
+<P>if( identity.isinrole( PermissionEnum.CompanyA)</P>
+<P>{</P>
+<P>Do specific company A sales stuff</P>
+<P>}</P>
+<P>}</P>
+<P>Don't know if this helps you at all.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SeVa replied on Friday, May 16, 2008</h2>NetSqlAzMan:
+
+It's .NET 2.0. 
+It's equipped by a MMC 3.0 (.NET) console. 
+Its storage is a Sql Server database(2000/MSDE/2005/Express). 
+It's Item-based. 
+Structure based on Roles -> Tasks -> Operations. (all hierarchical ones). 
+Authorizations can be added to Roles, Task and Operations. 
+It supports static/dynamic applicative groups, members/not-members. 
+LDAP query testing directly from console. 
+It's time-dependant. 
+It's delegate-compliant. 
+It triggers events (ENS). 
+It supports 4 authorization types: 
+Allow with delegation (authorized and authorized to delegate). 
+Allow (authorized). 
+Deny (not authorized). 
+Neutral (neutral permission, it depends on higher level Item permission).
+Hierarchical authorizations. 
+It supports Scripting / Biz rules (compiled in .NET - C# - VB - and not interpreted) 
+It supports Active Directory users/groups and custom users defined in SQL Server Database. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 16, 2008</h2>I'm still trying to wrap my head around AzMan too...&nbsp; I was hoping I wouldn't have to change much of my code.. so that IsInRole still worked on the IPrincipal just as it does now, just that Azman would be thrown in there and put actual Roles in, not just Windows Groups.<br><br>The trick is that this application really is just being branded.&nbsp; I deploy it to a different location for installation and so the config file settings are different (we are using seperate but identitally structured databases).&nbsp; So that's another sticking point... I'm not seeing how I can differentiate between a Company A instance vs. a Company B one.. since things like the Title bar get a different string so it says Company A Sales vs. Company B Sales... and has a way to reskin the application..&nbsp; but otherwise there's no branching logic between one company or another.&nbsp; It's just cosmetic / configuration setting differences, and the code to accomdate those.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 16, 2008</h2>I think this is what I'm going to do.. any comments appriciated.<br><br>I have a helper class already, Permissions which takes the roles array and loops calling IsInRole for each string.&nbsp; Nothing fancy.&nbsp; <br><br>My thinking is to add an object which stores role mappings (which will be the strings hardcoded already, and which map directly to group names) to groups... so that a role doesn't necessarly map one to one to any group, or need to be the same name.<br><br>I still have the downside that whenever I create a new role, I'll have to add it to tables in several databases.. but I think this will require the least amount of code changes, and is thus the safest route to go.<br><br>Anyone see any problems?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

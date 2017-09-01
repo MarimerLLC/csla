@@ -1,0 +1,124 @@
+<html><header><title>Wcf and Rolodex example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Wcf and Rolodex example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6204.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Monday, January 19, 2009</h2><P>I am getting further in my Silverlight prototype and I think my problem now lies in understanding Wcf within the Rolodex example.&nbsp; I noticed that WcfHostWeb project on the Web properties page has a specific port of 2430.&nbsp; My understanding is that this is the port to which communication with the business objects in the Rolodex.Business.Server is accomplished.&nbsp; </P>
+<P>I noticed that the Rolodex application project has the file ServiceReferences.ClientConfig file and it references the port of 2430.&nbsp; I noticed there was not a ServiceReferences reference added to the project.</P>
+<P>My question is, was the ServiceReferences.ClientConfig file created by hand and the stuff was entered because the port was mentioned specifically on the Web properties page of the WcfHostWeb project?</P>
+<P>Also, I noticed that the WcfHostWeb properties has a Settings.settings file under it and I do not.&nbsp; I have the items in the Web.config file so I thought when the project was built, the Settings.settings would be created, but they are not.&nbsp; Could someone shed some light on this for me.</P>
+<P>Also, what are the files clientaccesspolicy.xml and crossdomain.xml for?&nbsp; I included those, but I am not sure what they are for.&nbsp; I figured they must be important so I included them.</P>
+<P>Any help with the above questions would be most appreciated and I am making amazing progress in my understanding of Silverlight and Wcf.&nbsp; Read a lot of Michele Leroux Bustamante's book and Matthew MacDonald's book on Silverlight 2 and felt good about the material.&nbsp; But got tired of reading and just wanted to "dig in" and beat my head against the wall to figure things out.&nbsp; After I get more things figured out, it will be time to get back to the books.</P>
+<P>Thanks for all your help so far Rocky, Sergey and all others who have helped me.&nbsp; I hope to help some other folks when I get things figured out!</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 20, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>.ClientConfig has to be created by hand for CSLA SL application s
+because the reference to the server is handled by CSLA and you do not need to
+add your own reference.&nbsp; As a result, your .CLientConfig file will never be
+created by the VS IDE, hence you have to do it by hand.&nbsp; Then again I
+always start by copying one from another project and changing port number<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Both XML configuration files are to support cross domain access,
+since WCF host is running on a different port then the SL web
+application.&nbsp; Without those file you will get security exceptions.&nbsp; Those
+files are needed by IIS to support cross domain WCF calls made by SL application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, January 19, 2009 9:45 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Wcf and Rolodex example<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am getting further in my Silverlight prototype and I think my problem now
+lies in understanding Wcf within the Rolodex example.&nbsp; I noticed that
+WcfHostWeb project on the Web properties page has a specific port of
+2430.&nbsp; My understanding is that this is the port to which communication
+with the business objects in the Rolodex.Business.Server is accomplished.&nbsp;
+<o:p></o:p></p>
+
+<p>I noticed that the Rolodex application project has the file
+ServiceReferences.ClientConfig file and it references the port of 2430.&nbsp; I
+noticed there was not a ServiceReferences reference added to the project.<o:p></o:p></p>
+
+<p>My question is, was the ServiceReferences.ClientConfig file created by hand
+and the stuff was entered because the port was mentioned specifically on the
+Web properties page of the WcfHostWeb project?<o:p></o:p></p>
+
+<p>Also, I noticed that the WcfHostWeb properties has a Settings.settings file
+under it and I do not.&nbsp; I have the items in the Web.config file so I
+thought when the project was built, the Settings.settings would be created, but
+they are not.&nbsp; Could someone shed some light on this for me.<o:p></o:p></p>
+
+<p>Also, what are the files clientaccesspolicy.xml and crossdomain.xml
+for?&nbsp; I included those, but I am not sure what they are for.&nbsp; I
+figured they must be important so I included them.<o:p></o:p></p>
+
+<p>Any help with the above questions would be most appreciated and I am making
+amazing progress in my understanding of Silverlight and Wcf.&nbsp; Read a lot
+of Michele Leroux Bustamante's book and Matthew MacDonald's book on Silverlight
+2 and felt good about the material.&nbsp; But got tired of reading and just
+wanted to &quot;dig in&quot; and beat my head against the wall to figure things
+out.&nbsp; After I get more things figured out, it will be time to get back to
+the books.<o:p></o:p></p>
+
+<p>Thanks for all your help so far Rocky, Sergey and all others who have helped
+me.&nbsp; I hope to help some other folks when I get things figured out!<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

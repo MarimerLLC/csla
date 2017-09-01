@@ -1,0 +1,13 @@
+<html><header><title>wishlist canEditProperty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>wishlist canEditProperty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3543.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Saturday, September 15, 2007</h2><P>My wishlist for csla.</P>
+<P>&nbsp;</P>
+<P>I come across the situation where users are allowed to enter in information, but not edit it once the object has been saved. Since the big Enron meltdown, this is becoming standard practice here in the oilfield offices. It would be nice to have a canEditProperty that works like the canWrite and CanReady properties so it would allow us the granularity of the methods, without having to deny a user from editing any of the object when only some fields would need to be authorized for editing.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Saturday, September 15, 2007</h2>You can override CanWriteProperty and check for IsNew right there.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw replied on Sunday, September 16, 2007</h2><P>Will this allow for:</P>
+<P>Some users can only write to it while new, but not edit it.</P>
+<P>Other users can both write to it while new, and edit it.</P>
+<P>I have to be able to allow for these 2 different types of write access.</P>
+<P>I'm not saying that the property can never be edited, but that only some people can edit it.</P>
+<P>&nbsp;</P>
+<P>Heath</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Sunday, September 16, 2007</h2>Well that would be a combination of checking the state of your object plus some custom security check. Both can be done in your override of CanWriteProperty. Along with any other check you wish to add...<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

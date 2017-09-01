@@ -1,0 +1,164 @@
+<html><header><title> Problem with serialization of objects that raise events  handled by a non-serializable object (like a Windows Form)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1> Problem with serialization of objects that raise events  handled by a non-serializable object (like a Windows Form)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5193.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PStanev posted on Monday, August 04, 2008</h2><TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD class=ForumPostUserArea rowSpan=2><FONT face=Arial color=#000000 size=4><STRONG></STRONG></FONT></TD>
+<TD class=ForumPostContentArea>
+<DIV class=ForumPostTitleArea>
+<H4 class=ForumPostTitle><FONT color=#000000><FONT face=Arial size=4>Problem with&nbsp;serialization of objects that raise events&nbsp; handled by a non-serializable object (like a Windows Form)</FONT></FONT></H4></DIV>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<DIV class=ForumPostBodyArea>
+<DIV class=ForumPostContentText id=ctl00_ctl01_bcr_ctl00___PostRepeater_ctl03_PostViewWrapper>
+<P>I have&nbsp; problem: (<FONT color=#003300 size=2>serializing objects that raise events when those events are handled by a non-serializable object (like a Windows Form). </FONT>)The only diffence in my code is thet I dont use the standard EventHandler Because I have input parameteres. Here is my code: </P>
+<P>&lt;NonSerialized()&gt; _</P>
+<P><FONT color=#0000ff>Private</FONT> mNonSerializableSM <FONT color=#0000ff>As</FONT> SMHandler</P>
+<P><FONT color=#0000ff>Private</FONT> mSerializableSM <FONT color=#0000ff>As</FONT> SMHandler</P>
+<P><FONT color=#0000ff>Delegate</FONT> <FONT color=#0000ff>Sub</FONT> SMHandler(<FONT color=#0000ff>ByVal</FONT> Message <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>, <FONT color=#0000ff>ByVal</FONT> MessageType <FONT color=#0000ff>As</FONT> MsgBoxStyle)</P>
+<P><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Custom</FONT> <FONT color=#0000ff>Event</FONT> SimpleMessageEvent <FONT color=#0000ff>As</FONT> SMHandler</P>
+<P><FONT color=#0000ff>AddHandler</FONT>(<FONT color=#0000ff>ByVal</FONT> value <FONT color=#0000ff>As</FONT> SMHandler)</P>
+<P><FONT color=#0000ff>If</FONT> value.Target.GetType.IsSerializable <FONT color=#0000ff>Then</P></FONT>
+<P>mSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Combine(mSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>Else</P></FONT>
+<P>mNonSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Combine(mNonSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>AddHandler</P></FONT>
+<P><FONT color=#0000ff>RemoveHandler</FONT>(<FONT color=#0000ff>ByVal</FONT> value <FONT color=#0000ff>As</FONT> SMHandler)</P>
+<P><FONT color=#0000ff>If</FONT> value.Target.GetType.IsSerializable <FONT color=#0000ff>Then</P></FONT>
+<P>mSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Remove(mSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>Else</P></FONT>
+<P>mNonSerializableSM = <FONT color=#0000ff>CType</FONT>([Delegate].Remove(mNonSerializableSM, value), SMHandler)</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>RemoveHandler</P></FONT>
+<P><FONT color=#0000ff>RaiseEvent</FONT>(<FONT color=#0000ff>ByVal</FONT> Message <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>, <FONT color=#0000ff>ByVal</FONT> MessageType <FONT color=#0000ff>As</FONT> MsgBoxStyle)</P>
+<P><FONT color=#0000ff>If</FONT> mNonSerializableSM <FONT color=#0000ff>IsNot</FONT> <FONT color=#0000ff>Nothing</FONT> <FONT color=#0000ff>Then</FONT> mNonSerializableSM(Message, MessageType)</P>
+<P><FONT color=#0000ff>If</FONT> mSerializableSM <FONT color=#0000ff>IsNot</FONT> <FONT color=#0000ff>Nothing</FONT> <FONT color=#0000ff>Then</FONT> mSerializableSM(Message, MessageType)</P>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>RaiseEvent</P></FONT>
+<P><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Event</FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Everithing look right , but I still get the runtime error.</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Please Help.</FONT></FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000>Thank You.</FONT></P></FONT></DIV></DIV></TD></TR></TABLE></TD></TR></TABLE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, August 04, 2008</h2>I don't know why your code is not working but, just as a suggestion, the way I usually do this sort of thing is to use databinding, i.e, use the PropertyChanged event. It is already written and well debugged in CSLA. Databinding is the "official" way of communicating between an object and a form.<br><br>If you need to pass more information than just the fact that a property has changed then you can read other properties of your object in the event handler.<br><br>Ross</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Tuesday, August 05, 2008</h2>Hi,<br><br>I once solved this problem by implementing my own NonSerialized event inside my BO the following&nbsp; way (sorry, C# <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />):<br><br><font color="#000000" face="Arial" size="1">#region OnCriteriaEndEdit<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // A custom event to notify UI controls when EndEdit (=&gt;AcceptChangesComplete) is called!<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [NonSerialized, NotUndoable]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private EventHandler _onCriteriaEndEdit;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public event EventHandler OnCriteriaEndEdit<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; add<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _onCriteriaEndEdit = (EventHandler)Delegate.Combine(_onCriteriaEndEdit, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Runtime.CompilerServices.MethodImplOptions.Synchronized)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remove<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _onCriteriaEndEdit = (EventHandler)Delegate.Remove(_onCriteriaEndEdit, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void AcceptChangesComplete()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.AcceptChangesComplete();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_onCriteriaEndEdit != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _onCriteriaEndEdit (this, EventArgs.Empty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>#endregion // OnCriteriaEndEdit<br></font><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Sunday, October 12, 2008</h2><P class=MsoNormal><SPAN>Hi Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have the same problem in vb.net.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I found this post in your blog : <SPAN>&nbsp;</SPAN><A href="http://www.lhotka.net/weblog/BetterVersionOfTheNET20EventserializationSolution.aspx"><FONT color=#800080>http://www.lhotka.net/weblog/BetterVersionOfTheNET20EventserializationSolution.aspx</FONT></A> <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I code as you (or I think I do). In fact, I took the same code as event code in CSLA 3.5 (PropertyChanged / PropertyChanging / Saved ..).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Here my code in ucCustomer (user control in UI) and in Customer (in BLL).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-) in ucCustomer<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> myevent(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> EVZoneEventArgs) <SPAN>Handles</SPAN> mCustomer.ErreurValideZone<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>MessageBox.Show(e.StrErreur)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-) in Customer<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>&lt;NonSerialized()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> _nonSerializableEVZHandlers <SPAN>As</SPAN> EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> _SerializableEVZHandlers <SPAN>As</SPAN> EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Custom</SPAN> <SPAN>Event</SPAN> ErreurValideZone <SPAN>As</SPAN> EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>AddHandler</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> value.Method.IsPublic <SPAN>AndAlso</SPAN> (value.Method.DeclaringType.IsSerializable <SPAN>OrElse</SPAN> value.Method.IsStatic) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_SerializableEVZHandlers = <SPAN>CType</SPAN>([Delegate].Combine(_SerializableEVZHandlers, value), EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_nonSerializableEVZHandlers = <SPAN>CType</SPAN>([Delegate].Combine(_nonSerializableEVZHandlers, value), EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>AddHandler<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RemoveHandler</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> value.Method.IsPublic <SPAN>AndAlso</SPAN> (value.Method.DeclaringType.IsSerializable <SPAN>OrElse</SPAN> value.Method.IsStatic) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_SerializableEVZHandlers = <SPAN>CType</SPAN>([Delegate].Remove(_SerializableEVZHandlers, value), EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_nonSerializableEVZHandlers = <SPAN>CType</SPAN>([Delegate].Remove(_nonSerializableEVZHandlers, value), EventHandler(<SPAN>Of</SPAN> EVZoneEventArgs))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>RemoveHandler<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN>(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> System.Object, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> EVZoneEventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> _SerializableEVZHandlers <SPAN>Is</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>_SerializableEVZHandlers(sender, e) <SPAN>'.Invoke(sender, e)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> _nonSerializableEVZHandlers <SPAN>Is</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_nonSerializableEVZHandlers(sender, e) <SPAN>'.Invoke(sender, e)<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>RaiseEvent<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Event<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> EVZoneEventArgs : <SPAN>Inherits</SPAN> EventArgs<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> mNumErreur <SPAN>As</SPAN> <SPAN>Integer<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN></SPAN><SPAN>Private</SPAN><SPAN> mStrErreur <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>(<SPAN>ByVal</SPAN> numErreur <SPAN>As</SPAN> <SPAN>Integer</SPAN>, <SPAN>ByVal</SPAN> strErreur <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mNumErreur = numErreur<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mStrErreur = strErreur<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN></SPAN><SPAN>Public</SPAN><SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> NumErreur() <SPAN>As</SPAN> <SPAN>Integer<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mNumErreur<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> StrErreur() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mStrErreur<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The issue during the run time appends in CSLA in <SPAN>BinaryFormatterWrapper</SPAN>.vb :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Sub</SPAN> Serialize(<SPAN>ByVal</SPAN> serializationStream <SPAN>As</SPAN> System.IO.Stream, <SPAN>ByVal</SPAN> graph <SPAN>As</SPAN> <SPAN>Object</SPAN>) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> ISerializationFormatter.Serialize<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_formatter.Serialize(serializationStream, graph)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>To test, I put breakpoints and I go step by step.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I saw that <SPAN>&nbsp;</SPAN>_nonSerializableEVZHandlers is used.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I put a comment before _formatter.Serialize(serializationStream, graph) then the UI consume the event but .. it is not good because I change CSLA and there is no serialization.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I put a comment in the event code in the UI and <SPAN>&nbsp;</SPAN>no comment before _formatter.Serialize, I have no runtime error <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I don't understand where is my mistake.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your help.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>PS: to Ross (tetranz) : I think that databinding is "a" way of communicating between an object and a form. But it is not the only way, sometimes it is useful to use an event.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>To Stefan : I am sorry but I don't use C#&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Tuesday, December 09, 2008</h2><P class=MsoNormal>*bump*</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I reactivate this thread because I didn't have an answer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>During this time, I put a comment before _formatter.Serialize(serializationStream, graph) in Csla (BinaryFormaterHelper.vb) but it is not a solution. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I use now Csla vb 3.52 and I have always the same problem.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I use in a BO class, the same code there is in Bindable.vb.</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I can see (with breakpoints and step by step) that_nonSerializableEVZHandlers is used for the AddHandler to define the event.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The problem is in <SPAN>&nbsp;</SPAN>_formatter.Serialize(serializationStream, graph)<O:P></O:P> if graph include _nonSerializableEVZHandlers. It want serialize the user control.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>I test without _nonSerializableEVZHandlers and it is good.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for help.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Tuesday, December 09, 2008</h2><P class=MsoNormal><SPAN>I think that I found the solution :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I add<SPAN>&nbsp; </SPAN>in my code : &nbsp;<SPAN><SPAN>&nbsp;&nbsp;</SPAN>&lt;NotUndoable()&gt; _<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>it is OK :<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; &lt;NonSerialized()&gt; _<O:P></O:P><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>&lt;NotUndoable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; Public _nonSerializableEVZHandlers As EventHandler(Of EVZoneEventArgs)<O:P></O:P><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>&lt;NotUndoable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp; Public _SerializableEVZHandlers As EventHandler(Of EVZoneEventArgs)<O:P></O:P><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky, you use this code in 4 places in Csla.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Two with<SPAN>&nbsp; </SPAN>&lt;NotUndoable()&gt; _<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>:<SPAN>&nbsp; </SPAN></SPAN><SPAN><SPAN>&nbsp;</SPAN>BusinessBase.vb and BusinessListBase<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Two <SPAN>without<SPAN>&nbsp; </SPAN>&lt;NotUndoable()&gt; _<SPAN>&nbsp;&nbsp;&nbsp; </SPAN>:<SPAN>&nbsp; </SPAN></SPAN>Bindable.vb and <SPAN>ExtendedBindingList.vb <o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is it&nbsp;normal ? </SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

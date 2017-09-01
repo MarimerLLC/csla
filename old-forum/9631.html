@@ -1,0 +1,26 @@
+<html><header><title>Authorization rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9631.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 posted on Wednesday, October 13, 2010</h2><p>Hi,</p>
+<p>I have a problem concerning the Authorization rules rules.</p>
+<p>&nbsp;</p>
+<p>My setup is CSLA 4.01/Silverlight/MVVM</p>
+<p>&nbsp;</p>
+<p>I followed the general way to handle this as per the demo&#39;s provided with the videos around Silverlight and MVVM. Basically, i set up the binding and make it do its job via a propertstatus object.</p>
+<p>&nbsp;</p>
+<p>I have a use case where i have an object with an IsSystem property which states that if it is set, then the object can only be edited by a &quot;Developer&quot; profile. </p>
+<p>So the way to go, i thought, was to make an override of CanWriteProperty as follows:</p>
+<p>&nbsp;</p>
+<p>public override bool CanWriteProperty(Csla.Core.IPropertyInfo property)</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; if(ReadProperty(IsSystemProperty) == 1 &amp;&amp; !Csla.ApplicationContext.User.IsInrole(&quot;Developer&quot;)) return false;</p>
+<p>&nbsp;&nbsp;&nbsp; return base.CanWriteProperty(property);</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>This works, but only for the first time its used. I tracked this down to the fact that the authorization rules are cached. So, obviously, i&#39;m not going the right direction.</p>
+<p>&nbsp;</p>
+<p>Can anybody point in the correct way to resolve this?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, October 13, 2010</h2><p>You must override CanWriteProperty like this: </p>
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">public</span>&nbsp;<span style="color:#cc7832;">override</span>&nbsp;<span style="color:#cc7832;">bool</span>&nbsp;CanWriteProperty(Csla.Core.<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;property)<br />&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp; if(ReadProperty(IsSystemProperty) == 1 &amp;&amp; !Csla.ApplicationContext.User.IsInrole(&quot;Developer&quot;)) return false;<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#004000;">//&nbsp;must&nbsp;override&nbsp;so&nbsp;that&nbsp;authorization&nbsp;rules&nbsp;are&nbsp;not&nbsp;cached</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#cc7832;">return</span>&nbsp;<span style="color:#ffc66d;">BusinessRules</span>.HasPermission(<span style="color:#ffc66d;">AuthorizationActions</span>.WriteProperty,&nbsp;property);<br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>base.CanWriteProperty(..) - is the method that does the caching. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adalton4 replied on Wednesday, October 13, 2010</h2><p>Yes indeed, it now returns the correct response, but it doenst alter my UI, it must be something related to my other post</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><a href="http://forums.lhotka.net/forums/t/9632.aspx">http://forums.lhotka.net/forums/t/9632.aspx</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

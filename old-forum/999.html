@@ -1,0 +1,278 @@
+<html><header><title>Help!! Object design for a CMS</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help!! Object design for a CMS</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/999.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yipchunyu posted on Wednesday, August 23, 2006</h2>I am in the very beginning stage of a CMS.&nbsp; However, I get confused in
+the object model design and hope to receive some advice.<br>
+Some requirements:<br>
+1. The document a user posted to the system can be display in different function area(s)/web site(s)<br>
+2. Each document may related to certain product lines/product(s).&nbsp; Users should be able to group the posts by product<br>
+3. Each document may contains a list or attachment(s)<br>
+4. Different type of users (as in different web site) may allow to acces certain type of info.<br>
+<br>
+I drafted the following list (my first time and so may contains lots errors)<br>
+How can I simplify the model?&nbsp; any other advice is welcomed. Thx<br>
+
+
+<p class="MsoNormal">List of Objects and Their Responsibilities</p>
+
+
+
+
+<table cellpadding="0" cellspacing="0">
+
+ <tr>
+  <td>
+  <p class="MsoNormal">Potential Class</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Responsibility</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Collaborators</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">DocumentList</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Gets a read-only list of projects</p>
+  </td>
+  <td>
+  <p class="MsoNormal">DocumentInfo</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">DocumentInfo</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Provides a read-only information for a document</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Document</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Document</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Adds and edits a valid document</p>
+  </td>
+  <td>
+  <p class="MsoNormal">&nbsp;<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Assignment</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Manages association of a document, function area and an
+  attachment</p>
+  </td>
+  <td>
+  <p class="MsoNormal">RoleList</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">ProductList<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Get a read-only list of product<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">ProductInfo<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">ProductInfo<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Provides a read-only information for a product<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Product<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Product<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Adds and edits a valid product<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">ProductAssignments, CommonRules<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">ProductAssignments<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Maintains a list of products to which a document is
+  assigned<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">ProductAssignment<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">ProductAssignment<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Manages a document to which a product is assigned<o:p></o:p></p>
+  </td>
+  <td>
+  <p class="MsoNormal">Assignment, CommonRules, Document<o:p></o:p></p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">FunctionAreasList</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Get a read-only list of function area</p>
+  </td>
+  <td>
+  <p class="MsoNormal">FunctionArea</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">FunctionAreaInfo</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Provides a read-only information for a function area</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Function</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Function</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Adds and edits a valid function</p>
+  </td>
+  <td>
+  <p class="MsoNormal">FunctionAreaAssignments, CommonRules</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">FunctionAreaAssignements</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Maintains a list of function areas to which a document is
+  assigned</p>
+  </td>
+  <td>
+  <p class="MsoNormal">FunctionAreaAssignement</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">FunctionAreaAssignement</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Manages a document to which a function area is assigned</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Assignment, CommonRules, Document</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">AttachmentList</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Gets a read-only list of attachments</p>
+  </td>
+  <td>
+  <p class="MsoNormal">AttachmentInfo</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">AttachmentInfo</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Provides a read-only information for an attachment</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Attachment</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Attachment</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Adds and edits a valid attachment</p>
+  </td>
+  <td>
+  <p class="MsoNormal">AttachmentAssignments, CommonRules</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">AttachmentAssignments</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Maintains a list of attachments to which a document is
+  assigned</p>
+  </td>
+  <td>
+  <p class="MsoNormal">AttachmentAssignment</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">AttachmentAssignment</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Manages a document to which an attachment is assigned</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Assignment, CommonRules, Document</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">RoleList</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Gets a read-only list of roles</p>
+  </td>
+  <td>
+  <p class="MsoNormal">None</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Roles</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Maintains a list of roles in the system</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Role, RoleList</p>
+  </td>
+ </tr>
+ <tr>
+  <td>
+  <p class="MsoNormal">Role</p>
+  </td>
+  <td>
+  <p class="MsoNormal">Adds and edits a valid role</p>
+  </td>
+  <td>
+  <p class="MsoNormal">None</p>
+  </td>
+ </tr>
+
+</table></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yipchunyu replied on Monday, August 28, 2006</h2>sorry, any advice?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

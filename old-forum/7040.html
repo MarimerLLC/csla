@@ -1,0 +1,165 @@
+<html><header><title>Trying to Implement the Book's example of Asynchronous Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trying to Implement the Book's example of Asynchronous Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7040.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet posted on Wednesday, June 03, 2009</h2><P><FONT face=Arial>I'm trying to implement Asynchronous Fetching in my business object library.&nbsp; U</FONT><FONT face=Arial>sing the following example Rocky provides in his Expert VB 2008 Business Objects book (p417)</FONT></P><FONT face=Arial><FONT face=TheSansMonoConSemiLight size=1><FONT face=TheSansMonoConSemiLight size=1>
+<P align=left>Public Shared Sub BeginGetCustomerEdit(ByVal callback _</P>
+<P align=left>As EventHandler(Of DataPortalResult(Of CustomerEdit)))</P>
+<P align=left>Dim dp = New DataPortal(Of CustomerEdit)</P>
+<P align=left>AddHandler dp.FetchCompleted, AddressOf FetchComplete</P>
+<P align=left>dp.BeginFetch(New SingleCriteria(Of CustomerEdit, Integer) _</P>
+<P align=left>(123, callback))</P>
+<P>End Sub</P></FONT></FONT></FONT>
+<P><FONT face=Arial>(Replace "CustomerEdit" with my business object type)</FONT></P>
+<P><FONT face=Arial>Visual Studio gives me the squigly line under CustomerEdit, with the error saying:</FONT></P>
+<P><FONT face=Arial>'Csla.Server.DataPortalResult' has no type parameters and so cannot have type arguments.</FONT></P>
+<P><FONT face=Arial>Can anybody please advise as to how they have done this; what am I missing? (I'm using CSLA v3.6.2.0)</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Wednesday, June 03, 2009</h2>Just want to bump this up...Rocky I see you're in the Forums right now...any idea on what the problem might be here?&nbsp; I've taken the code right out of your book and tried to use it, but to no avail.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 03, 2009</h2><P>&nbsp; Public Shared Sub GetCustomer(ByVal id As Integer, ByVal handler As EventHandler(Of DataPortalResult(Of CustomerEdit)))<BR><BR>&nbsp;&nbsp;&nbsp; Dim dp = New DataPortal(Of CustomerEdit)<BR>&nbsp;&nbsp;&nbsp; AddHandler dp.FetchCompleted, AddressOf FetchCompleted<BR>&nbsp;&nbsp;&nbsp; dp.BeginFetch(New SingleCriteria(Of CustomerEdit, Integer)(id), handler)<BR><BR>&nbsp; End Sub</P>
+<P>&nbsp; Private Shared Sub FetchCompleted(ByVal o As Object, ByVal e As DataPortalResult(Of CustomerEdit))<BR><BR>&nbsp;&nbsp;&nbsp; Dim handler = DirectCast(e.UserState, EventHandler(Of DataPortalResult(Of CustomerEdit)))<BR>&nbsp;&nbsp;&nbsp; handler.Invoke(o, e)<BR><BR>&nbsp; End Sub<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 03, 2009</h2><P>Oh, I see, sorry.</P>
+<P>If you read the error text carefully, it says you are trying to use Csla.Server.DataPortalResult.</P>
+<P>You need to be using Csla.DataPortalResult.</P>
+<P>You probably have the wrong Imports at the file or project level, so it is using the wrong namespace.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Wednesday, June 03, 2009</h2>Ok I'm officially feeling sheepish!!!!&nbsp; Wrong Imports!!!! Thanks Rocky.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Wednesday, June 03, 2009</h2><P>Awesome I got this to work perfectly now.&nbsp; That it, until I tested for how it handles a problem on the database (in this case, I miss-spelled the ConnectionString key).&nbsp; The problem is in the FetchCompleted method:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> FetchCompleted(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> o </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Object</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ByVal</FONT></FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> DataPortalResult(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> ArCustomerCollection))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> handler = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>DirectCast</FONT></FONT><FONT size=2>(e.UserState, EventHandler(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> DataPortalResult(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> ArCustomerCollection)))</P>
+<P>handler.Invoke(o, e)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</P></FONT></FONT>
+<P>The problem is that when there is an error getting the data out of the database, then e.UserState in this method is null; resulting in handler being null;&nbsp;&nbsp;resulting in an Object Reference Not Set error on the "handler.Invoke(o,e)" call.&nbsp; I've tried putting in a check like:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>If</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Not</FONT></FONT><FONT size=2> e.Error </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Throw</FONT></FONT><FONT size=2> e.Error</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>If</P></FONT></FONT>
+<P>But the problem is that this FetchCompleted method does find an appropriate Try..Catch..block on the UI thread, resulting in the "An unhandled exception has occurred in your application" message popping up.&nbsp; Of course if I use the Application_UnhandledException event to catch the exception I can display an appropriate&nbsp;messagebox to the user.&nbsp; But the core problem here is that the callback method in the gui (the one that is supposed to be called by "handler.invoke(o,e)") never gets invoked, and that method contains the code that is meant to reset the state of the GUI after the async call.</P>
+<P>So my question is...Is it right that in the FetchCompleted method above the e.UserState is null when e.Error is NOT null?&nbsp; Surely e.UserState should still contain the callback method so that it can be invoked and handle any exception that is in e.error?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This sounds like it could be a bug. Yes, UserState should be
+consistent regardless of whether there was an exception on the server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> shawndewet
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 03, 2009 2:59 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Trying to Implement the Book's example of
+Asynchronous Fetch<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Awesome I got this to work perfectly now.&nbsp; That it, until I tested for
+how it handles a problem on the database (in this case, I miss-spelled the
+ConnectionString key).&nbsp; The problem is in the FetchCompleted method:<o:p></o:p></p>
+
+<p><span>Private</span><span> <span>Shared</span> <span>Sub</span> FetchCompleted(<span>ByVal</span>
+o <span>As</span> <span>Object</span>, <span>ByVal</span> e <span>As</span>
+DataPortalResult(<span>Of</span> ArCustomerCollection))<o:p></o:p></span></p>
+
+<p><span>Dim</span><span> handler = <span>DirectCast</span>(e.UserState,
+EventHandler(<span>Of</span> DataPortalResult(<span>Of</span> ArCustomerCollection)))<o:p></o:p></span></p>
+
+<p><span>handler.Invoke(o, e)<o:p></o:p></span></p>
+
+<p><span>End</span><span> <span>Sub<o:p></o:p></span></span></p>
+
+<p>The problem is that when there is an error getting the data out of the
+database, then e.UserState in this method is null; resulting in handler being
+null;&nbsp;&nbsp;resulting in an Object Reference Not Set error on the
+&quot;handler.Invoke(o,e)&quot; call.&nbsp; I've tried putting in a check like:<o:p></o:p></p>
+
+<p><span>If</span><span> <span>Not</span> e.Error <span>Is</span>
+<span>Nothing</span> <span>Then<o:p></o:p></span></span></p>
+
+<p><span>Throw</span><span> e.Error<o:p></o:p></span></p>
+
+<p><span>End</span><span> <span>If<o:p></o:p></span></span></p>
+
+<p>But the problem is that this FetchCompleted method does find an appropriate
+Try..Catch..block on the UI thread, resulting in the &quot;An unhandled
+exception has occurred in your application&quot; message popping up.&nbsp; Of
+course if I use the Application_UnhandledException event to catch the exception
+I can display an appropriate&nbsp;messagebox to the user.&nbsp; But the core
+problem here is that the callback method in the gui (the one that is supposed
+to be called by &quot;handler.invoke(o,e)&quot;) never gets invoked, and that
+method contains the code that is meant to reset the state of the GUI after the
+async call.<o:p></o:p></p>
+
+<p>So my question is...Is it right that in the FetchCompleted method above the
+e.UserState is null when e.Error is NOT null?&nbsp; Surely e.UserState should
+still contain the callback method so that it can be invoked and handle any
+exception that is in e.error?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Thursday, June 04, 2009</h2>Any chance of it being resolved in v3.6.3?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 04, 2009</h2>I would bet against it.<br /><br />After all the userstate code is specific to VB and Rocky does not support VB anymore!<br /><br />When VB 10 comes out this will all go away anyway as it will support multi-line lambdas.<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2>That's not entirely true Joe.<br /><br />The idea of allowing UserState to flow through an async operation is a core<br />part of the async pattern in .NET. While lambdas do help reduce the need for<br />the concept, I don't know that they entirely eliminate the value.<br /><br />After looking at the code though, a 100% solution is probably impossible due<br />to the way the BackgroundWorker component is designed. Interestingly enough,<br />it doesn't support the UserState concept - which seems wrong to me - but we<br />live in the world that is, not the world we'd like.<br /><br />But I can implement a solution that'll work maybe 99.9% of the time. In<br />fact, it will only not work when something aborts the background thread or<br />something on the background thread throws an uncatchable exception - and<br />those are pretty rare scenarios that probably indicate your entire app (or<br />even OS) is crashing.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I hope so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> shawndewet
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 04, 2009 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Trying to Implement the Book's example of
+Asynchronous Fetch<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Any chance of it being resolved in v3.6.3?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>shawndewet:</strong></div><div>Any chance of it being resolved in v3.6.3?</div></BLOCKQUOTE></P>
+<P>Yes, absolutely, the fix is in svn now.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

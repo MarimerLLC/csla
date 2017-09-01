@@ -1,0 +1,28 @@
+<html><header><title>Object Authorization Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Authorization Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12125.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>collins.sumpa posted on Friday, August 23, 2013</h2><p class="MsoNormal"><span lang="EN-US">I would
+like to implement object authorization rules on my employee object. However the
+complication arises from the fact employees are grouped in payroll groups such
+as Confidential payroll, Middle Management payroll and Unionized payroll and
+the employee group property determines which payroll group they belong to. For
+example employees with the group value of &ldquo;EXCO&rdquo; (Executive Committee) belong
+to the confidential payroll, whilst employees with group property values of
+SMG1 (Senior Manager Group Level 1), SMG2 (Senior Manager Group Level 2) and
+SMG3 (Senior Manager Group Level 3) below to the middle management payroll etc,
+Employees in the confidential payroll can only be viewed and updated by the
+users in the Human Resources Director and Finance Director roles. Employees in
+middle management payroll and unionized payroll can be updated and viewed by
+users in the Human Resources Director, Finance Director, Human Resources
+Manager and Accountant roles. My understanding of the object authorization
+rules is that they apply at <i>object type
+level</i> and not at <i>instance level</i>.
+How do I go about implementing object authorization rules for the employee
+object?</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, August 23, 2013</h2><p>Hi,</p>
+<p>First off - we are not talking plain role based authorization - this is some type of &quot;post-fetch&quot; authorization where you look at the data being loaded.</p>
+<p>There is several alterntive solution here:</p>
+<p>You may create custom AuthorizationRules that can handle target == null and not (when your code supply the target for Fetch/Create or just add direct checks in your code. Then&nbsp;</p>
+<p><ol>
+<li>Add checks in DataPortal_Fetch and throw SecurityException directly from the DAL code</li>
+<li>Add checks in &nbsp;<span>DataPortal_OnDataPortalInvokeComplete to check for authorization.&nbsp;</span></li>
+</ol></p>
+<p>CSLA will cal the Create/Fetch rules with &quot;target&quot; = null - &nbsp;but you may add additional code to check the Authorization _and_ supply the target object. There is static BusinessRules.HasPermission methods that accept the actual target object so you can check for permission.</p>
+<p>Just make sure your rule will run OK whether target object is specified or null.</p>
+<p>Also - &nbsp;remember that there can only be one authorization registered for each AuthorizationAction, RuleSet and MethodInfo. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,290 @@
+<html><header><title>CSLA .NET 3.6.2 beta release</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6.2 beta release</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6543.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, March 02, 2009</h2><P>I have put a new 3.6.2 release online for <A href="http://www.lhotka.net/cslanet/download.aspx">Windows</A> and <A href="http://www.lhotka.net/cslalight/download.aspx">Silverlight</A>. I am considering this a beta release, and am now moving toward final release of 3.6.2.</P>
+<P>Version 3.6.2 contains important bug fixes, and several enhancements to existing features based on feedback from people working with 3.6.1 so far. Highlights of the enhancements include:</P>
+<UL>
+<LI>For both Windows and Silverlight 
+<UL>
+<LI>New methods on the ObjectFactory base class to better enable creation of a DAL object 
+<LI>Better support for lazy loaded fields, where an exception is thrown if the field is mis-used accidentally (thus reducing bugs) 
+<LI>ErrorDialog control for WPF and Silverlight to enable XAML-only handling of exceptions from CslaDataProvider 
+<LI>CslaDataProvider now has a Saved event to simplify some UI scenarios 
+<LI>RegisterProperty() now accepts a lambda expression to identify the property name, allowing the compiler to check the name, and avoiding the use of the string literal 
+<LI>MobileDictionary type, so you can create a dictionary that serializes between Silverlight and .NET</LI></UL>
+<LI>For Silverlight only 
+<UL>
+<LI>Better type name resolution, so you can now specify a type by "Namespace.Class, Assembly" without supplying the generic "Version=..." text 
+<LI>New InventoryDemo sample project (C# only right now - it is a work in progress) 
+<LI>Code snippets for async factory and data access methods</LI></UL></LI></UL>
+<P>At this point 3.6.2 is feature-complete and is in test mode. Only bug fixes will be added at this point, with the plan being to release in the next couple weeks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sroberts replied on Monday, March 02, 2009</h2>Thanks Rocky, excellent news, I'm going to download this and run with it.<br><br>Please could you offer a hint on how I'd now declare a VB.Net lambda based managed property, I'm not really sure how this works.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think (but don&#8217;t know for sure) that it is like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private Shared NameProperty As PropertyInfo(Of String) = _<br>
+&nbsp; RegisterProperty(Of String)(Function(c) c.Name)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sroberts
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 02, 2009 5:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.6.2 beta release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Rocky, excellent news, I'm going to download this and
+run with it.<br>
+<br>
+Please could you offer a hint on how I'd now declare a VB.Net lambda based
+managed property, I'm not really sure how this works.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sroberts replied on Monday, March 02, 2009</h2>
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+<DIV align=left><SPAN class=457183600-03032009><FONT face=Arial color=#0000ff size=2>lol, that's exactly what I got when I converted your C# to 
+Vb, but I don't know what c represents...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=457183600-03032009><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=457183600-03032009>
+<DIV align=left>
+<P class=MsoNormal><SPAN>Regards,</SPAN><o:p></o:p></P>
+<P class=MsoNormal>&nbsp;<o:p></o:p></P>
+<P class=MsoNormal><SPAN>Steve.</SPAN><o:p></o:p></P>
+<P class=MsoNormal><STRONG><SPAN>Business Driven 
+Solutions Limited</SPAN></STRONG><SPAN> 
+</SPAN><o:p></o:p></P>
+<P class=MsoNormal><U><SPAN><A title="blocked::blocked::blocked::mailto:sr@businessdrivensolutions.co.uk&#10;blocked::blocked::mailto:sr@businessdrivensolutions.co.uk&#10;mailto:sr@businessdrivensolutions.co.uk">sr@businessdrivensolutions.co.uk</A></SPAN></U><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><A title="blocked::blocked::blocked::blocked::http://www.businessdrivensolutions.co.uk/&#10;blocked::blocked::blocked::http://www.businessdrivensolutions.co.uk/&#10;blocked::http://www.businessdrivensolutions.co.uk/&#10;http://www.businessdrivensolutions.co.uk/"></A></SPAN><U><SPAN><A title="blocked::blocked::blocked::http://www.businessdrivensolutions.co..ukr/&#10;blocked::blocked::http://www.businessdrivensolutions.co.ukr/&#10;blocked::blocked::blocked::http://www.businessdrivensolutions.co.uk/&#10;http://www.businessdrivensolutions.co.ukr/&#10;blocked::http://www.businessdrivensolutions.co.uk/"></A></SPAN></U><U><SPAN><A title=blocked::blocked::blocked::http://www.businessdrivensolutions.co.ukreqwertyuiop986775654234534bvvnbmn,hj,yhty%^^$%$>http://www.businessdrivensolutions.co.uk</A></SPAN></U><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Office 0118 9016366 
+Mobile 0798 9575282</SPAN><o:p></o:p></P>
+<P class=MsoNormal><BR><SPAN>Business Driven Solutions Limited is 
+registered in England and 
+Wales. Registration number 4405981. 
+Registered office 30 Middlefields, Ruscombe, READING RG10 9DG. 
+Privileged/confidential information may be contained in this message. If you are 
+not the addressee indicated in this message (or responsible for delivery of the 
+message to such person), you may not view the information, nor copy or deliver 
+this message to anyone else. In such case, you should destroy this message and 
+kindly notify the sender by reply e-mail. Any opinions, conclusion and other 
+information expressed in this message that do not relate to the official 
+business of Business Driven Solutions Limited shall be understood as neither 
+given nor endorsed by it.</SPAN></P></DIV></SPAN></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Rockford Lhotka 
+[mailto:cslanet@lhotka.net] <BR><B>Sent:</B> 03 March 2009 00:12<BR><B>To:</B> 
+sr@businessdrivensolutions.co.uk<BR><B>Subject:</B> RE: [CSLA .NET] CSLA .NET 
+3.6.2 beta release<BR></FONT><BR></DIV>
+<DIV></DIV>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I 
+think (but don&#8217;t know for sure) that it is like this:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Private 
+Shared NameProperty As PropertyInfo(Of String) = _<BR>&nbsp; RegisterProperty(Of 
+String)(Function(c) c.Name)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<DIV>
+<P class=MsoNormal><B><SPAN>From:</SPAN></B><SPAN> sroberts 
+[mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Monday, March 02, 2009 5:56 
+PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 
+3.6.2 beta release<o:p></o:p></SPAN></P></DIV>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks Rocky, excellent news, I'm going to download this and 
+run with it.<BR><BR>Please could you offer a hint on how I'd now declare a 
+VB.Net lambda based managed property, I'm not really sure how this 
+works.<BR><BR><BR><o:p></o:p></P></DIV><BR><BR><BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>c is the business object instance &#8211; or would be if this
+were called on an instance. It is kind of complex the way this works &#8211; c is
+a placeholder of a specific type (the type of the business object), and that
+code is never actually executed &#8211; just reflected against.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This only works because this overload of RegisterProperty() actually
+knows the business object type because it comes from BusinessBase&lt;T&gt; - so
+it knows T and can infer the type of c.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Steve Roberts
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 02, 2009 6:38 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] CSLA .NET 3.6.2 beta release<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>lol, that's exactly what I got when I converted your C# to Vb, but
+I don't know what c represents...</span><o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><span>Regards,</span><o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><span>Steve.</span><o:p></o:p></p>
+
+<p class=MsoNormal><strong><span>Business Driven Solutions Limited</span></strong><span> </span><o:p></o:p></p>
+
+<p class=MsoNormal><u><span><a title="blocked::blocked::blocked::mailto:sr@businessdrivensolutions.co.uk&#10;blocked::blocked::mailto:sr@businessdrivensolutions.co.uk&#10;mailto:sr@businessdrivensolutions.co.uk">sr@businessdrivensolutions.co.uk</a></span></u><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><u><span><a title="blocked::blocked::blocked::http://www.businessdrivensolutions.co.ukreqwertyuiop986775654234534bvvnbmn,hj,yhty%^^$%$">http://www.businessdrivensolutions.co.uk</a></span></u><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Office 0118 9016366 Mobile 0798 9575282</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<span>Business Driven
+Solutions Limited is registered in England and Wales. Registration number
+4405981. Registered office 30 Middlefields, Ruscombe, READING RG10 9DG.
+Privileged/confidential information may be contained in this message. If you
+are not the addressee indicated in this message (or responsible for delivery of
+the message to such person), you may not view the information, nor copy or
+deliver this message to anyone else. In such case, you should destroy this
+message and kindly notify the sender by reply e-mail. Any opinions, conclusion
+and other information expressed in this message that do not relate to the
+official business of Business Driven Solutions Limited shall be understood as
+neither given nor endorsed by it.</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div class=MsoNormal align=center>
+
+<hr align=center>
+
+</div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> 03 March 2009 00:12<br>
+<b>To:</b> sr@businessdrivensolutions.co.uk<br>
+<b>Subject:</b> RE: [CSLA .NET] CSLA .NET 3.6.2 beta release</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>I think (but don&#8217;t know for sure) that it is like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private Shared NameProperty As PropertyInfo(Of String) = _<br>
+&nbsp; RegisterProperty(Of String)(Function(c) c.Name)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sroberts
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 02, 2009 5:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.6.2 beta release<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Rocky, excellent news,
+I'm going to download this and run with it.<br>
+<br>
+Please could you offer a hint on how I'd now declare a VB.Net lambda based
+managed property, I'm not really sure how this works.<br>
+<br>
+<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

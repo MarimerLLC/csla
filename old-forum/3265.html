@@ -1,0 +1,52 @@
+<html><header><title>Problem with SafeDataReader - getting object reference not set</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with SafeDataReader - getting object reference not set</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3265.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB posted on Wednesday, July 25, 2007</h2><P>I have the object not set to a reference problem (null exception) problem with SafeDataREader</P>
+<P>Its concept wise contradicting. The very purpose of using SafeDataReader is to avoid excess code checking for null exceptions. its the problem with Module.ParentId in datafetch method. This could be null in the DB..</P>
+<P>I think I know what the problem is, is it because we are initializing new objects in getList, but this is the way, I have it working in all my other BO objects and list...</P>
+<P>Any help appreciated..</P>
+<P>Thanks,<BR>RSB</P>
+<P>&nbsp;</P>
+<P>In ModuleList.cs</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Fetch(</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr)</P>
+<P>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;while</FONT><FONT size=2> (dr.Read()){<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Add(</FONT><FONT color=#2b91af size=2>BOModules</FONT><FONT size=2>.GetAllModules(dr));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>}</P></FONT>
+<P>In Module.cs</P><FONT color=#0000ff size=2>
+<P>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BOModules</FONT><FONT size=2> GetAllModules(</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr)</P>
+<P>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>BOModules</FONT><FONT size=2>(dr);<BR></FONT><FONT size=2>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> BOModules(</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr)<BR>{</FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkAsChild();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal_Fetch(dr);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr){</P>
+<P></P>
+<P>BModuleID = dr.GetValue(</FONT><FONT color=#a31515 size=2>"MODULEID"</FONT><FONT size=2>).ToString();</P>
+<P>BModuleName = dr.GetString(</FONT><FONT color=#a31515 size=2>"MODULENAME"</FONT><FONT size=2>);</P>
+<P>BModuleDesc = dr.GetString(</FONT><FONT color=#a31515 size=2>"MODULEDESC"</FONT><FONT size=2>);</P>
+<P>BModuleDisplay = dr.GetValue(</FONT><FONT color=#a31515 size=2>"MODULEDISPLAY"</FONT><FONT size=2>).ToString();</P>
+<P></FONT><FONT color=#008000 size=2>//if (dr.GetValue("MODULEPARENTID") != null)</P></FONT><FONT size=2>
+<P>BModuleParentID = dr.GetValue(</FONT><FONT color=#a31515 size=2>"MODULEPARENTID"</FONT><FONT size=2>).ToString();</P>
+<P></FONT><FONT color=#008000 size=2>//else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>//BModuleParentID = String.Empty;</P></FONT><FONT size=2>
+<P>MarkOld();</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, July 26, 2007</h2>Just out of curiosity, where do you create your SafeDataReader object? Could you post that code as well?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Thursday, July 26, 2007</h2><P>I have a custom data access class which retrieves the list of modules from DB. The code is as follows</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> GetGroupModules(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> pGroupID)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>DataAccessLayer</FONT><FONT size=2> dl = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DataAccessLayer</FONT><FONT size=2>();</P></FONT><FONT size=2>
+<P>dl.DbCommand = "GETGROUPMODULES";</P>
+<P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P>dl.AddParameter(</FONT><FONT color=#a31515 size=2>"poReturn_code"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DbTypes</FONT><FONT size=2>.INT);</P>
+<P>dl.AddParameter(</FONT><FONT color=#a31515 size=2>"cur_OUT"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>DbTypes</FONT><FONT size=2>.REFCURSOR);</P>
+<P>dl.AddParameter(</FONT><FONT color=#a31515 size=2>"pGROUPID"</FONT><FONT size=2>, pGroupID);</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2> dr = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SafeDataReader</FONT><FONT size=2>(dl.ExecuteReader()))</P>
+<P>{</P>
+<P>Fetch(dr);</P>
+<P>}</P>
+<P>dl.Close();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (System.</FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Security.</FONT><FONT color=#2b91af size=2>SecurityException</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"Error in BOModulesList.GetGroupModules(string pGroupID): "</FONT><FONT size=2> + ex);</P>
+<P>}</P>
+<P>Thanks,<BR>RSB</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 02, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RSB:</strong></div><div>
+<P>I have the object not set to a reference problem (null exception) problem with SafeDataREader</P>
+<P></div></BLOCKQUOTE></P>
+<P>What object is null?</P>
+<P>Are you saying that GetValue() is sometimes returning null? That is the intended behavior of GetValue() in the case that the database value is DBNull. It has to be this way, because GetValue() returns type object, and the "default" value of object is null.</P>
+<P>If you want to avoid getting a null, call GetInt32() or one of the other strongly typed methods.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Thursday, August 02, 2007</h2><P>Thank you!!&nbsp; This worked!!</P>
+<P>RSB</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

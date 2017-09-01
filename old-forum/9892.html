@@ -1,0 +1,260 @@
+<html><header><title>Type Initializer for &quot;MyClass&quot; threw an exception.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type Initializer for &quot;MyClass&quot; threw an exception.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9892.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Monday, December 20, 2010</h2><p><span style="font-size:8.33333px;">So I&#39;ve been working on this idea of consolidating my code a bit more and tightening the inheritance. What I&#39;ve done is taken my &quot;Factory Methods&quot; &nbsp;and moved them up in the hierarchy so all my objects can use them. This way I don&#39;t have to have so much&nbsp;redundant&nbsp;code. &nbsp;The RuleBusinessListBase is working fine until after it grabs the database records and then crashes on populating the RuleBusinessBase object. It throws an error of &quot;The type initializer for &quot;CK.Library.Albumtrack&quot; threw an exception&quot;. I&#39;m just using AlbumTrack as an example of the object. This is now happening on all objects and I&#39;m wondering what could be the problem. I&#39;ve googled already possibilities and came up with the constructor is missing. But unfortunately I have a constructor in all of my objects. I also found it a bit weird that I have to comply with CLSCompiant(False) with the ID and Name encapsulating properties as well in the RuleBusinessBase class. Let me know if you come across any ideas.</span></p>
+<div><span style="font-size:8.33333px;">&lt;Serializable()&gt; _</span></div>
+<div>
+<div>&nbsp;&nbsp; &nbsp;Public MustInherit Class RuleBusinessListBase(Of T As RuleBusinessListBase(Of T, C), C As {RuleBusinessBase(Of C), IEditableBusinessObject})</div>
+<div>&nbsp;&nbsp; &nbsp;Inherits Csla.BusinessListBase(Of T, C)</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;summary&gt;</div>
+<div>&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; Provides a public method to tell whether any of the items in the collection has any broken validation rules.</div>
+<div>&nbsp;&nbsp; &nbsp;&#39;&#39;&#39; &lt;/summary&gt;</div>
+<div>&nbsp;&nbsp; &nbsp;Public ReadOnly Property IsBroken() As Boolean</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim foundBroken As Boolean = False</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim i As Integer = 0</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Do While i &lt; Me.Count</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim item As RuleBusinessBase(Of C) = Items(i)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If item.BrokenRules.Count &gt; 0 Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foundBroken = True</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;i += 1</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Loop</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return foundBroken</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>&nbsp;&nbsp; &nbsp;End Property</div>
+<div>#Region &quot;Factory Methods&quot;</div>
+<div>&nbsp;&nbsp; &nbsp;Public Sub New()</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function NewList() As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of T)()</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function NewList(ByVal ID As Nullable(Of Guid)) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of T)(New SingleCriteria(Of T, Nullable(Of Guid))(ID))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetList() As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)()</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetList(ByVal id As Nullable(Of Guid)) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, Nullable(Of Guid))(id))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetList(ByVal name As String) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, String)(name))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetList(ByVal _date As DateTime) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, DateTime)(_date))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetList(ByVal args As Object()) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, Object())(args))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>End Class</div>
+<div></div>
+<div></div>
+<div>&lt;Serializable()&gt; _</div>
+<div>Public MustInherit Class RuleBusinessBase(Of T As {RuleBusinessBase(Of T), Csla.Core.IEditableBusinessObject})</div>
+<div>&nbsp;&nbsp; &nbsp;Inherits BusinessBase(Of T)</div>
+<div>#Region &quot;Constructor&quot;</div>
+<div>&nbsp;&nbsp; &nbsp;Public Sub New()</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>&nbsp;&nbsp; &nbsp;Public Sub New(ByVal ID As Guid)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of Nullable(Of Guid))(_ID, ID)</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>&nbsp;&nbsp; &nbsp;Public Sub New(ByVal ID As Guid, ByVal Name As String)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of Nullable(Of Guid))(_ID, ID)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of String)(_Name, Name)</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>#End Region</div>
+<div>#Region &quot;Properties&quot;</div>
+<div>&nbsp;&nbsp; &nbsp;&lt;CLSCompliant(False)&gt; _</div>
+<div>&nbsp;&nbsp; &nbsp;Protected Friend Shared _ID As PropertyInfo(Of Nullable(Of Guid)) = RegisterProperty(Of Nullable(Of Guid))(GetType(T), New PropertyInfo(Of Nullable(Of Guid))(&quot;ID&quot;, &quot;ID&quot;, Guid.NewGuid))</div>
+<div>&nbsp;&nbsp; &nbsp;</div>
+<div>&lt;CLSCompliant(False)&gt; _</div>
+<div>&nbsp;&nbsp; &nbsp;Protected Friend Shared _Name As PropertyInfo(Of String) = RegisterProperty(Of String)(GetType(T), New PropertyInfo(Of String)(&quot;Name&quot;, &quot;Name&quot;, String.Empty))</div>
+<div>&nbsp;&nbsp; &nbsp;&lt;System.ComponentModel.DataObjectField(True, True)&gt; _</div>
+<div>&nbsp;&nbsp;&nbsp;</div>
+<div>&nbsp;Public ReadOnly Property ID() As Nullable(Of Guid)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(Of Nullable(Of Guid))(_ID)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>&nbsp;&nbsp; &nbsp;End Property</div>
+<div>&nbsp;&nbsp;&nbsp;</div>
+<div>&nbsp;Public Property Name() As String</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(Of String)(_Name)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As String)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of String)(_Name, value)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</div>
+<div>&nbsp;&nbsp; &nbsp;End Property</div>
+<div>#End Region</div>
+<div></div>
+<div>#Region &quot;Factory Methods&quot;</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function NewItem() As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of T)()</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function NewItem(ByVal ID As Nullable(Of Guid)) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of T)(New SingleCriteria(Of T, Nullable(Of Guid))(ID))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function NewItem(ByVal Name As String) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of T)(New SingleCriteria(Of T, String)(Name))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function NewItem(ByVal ID As Integer) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Create(Of T)(New SingleCriteria(Of T, Integer)(ID))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetItem() As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)()</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetItem(ByVal ID As Nullable(Of Guid)) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, Nullable(Of Guid))(ID))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetItem(ByVal ID As Integer) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, Integer)(ID))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;Public Shared Function GetItem(ByVal ID As String) As T</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.Fetch(Of T)(New SingleCriteria(Of T, String)(ID))</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp; &nbsp;</div>
+<div>End Class</div>
+<div></div>
+<div></div>
+<div>Example Class</div>
+<div>
+<div>&lt;Serializable()&gt; _</div>
+<div>Public Class AlbumTrackList</div>
+<div>&nbsp;&nbsp; &nbsp;Inherits RuleBusinessListBase(Of AlbumTrackList, AlbumTrack)</div>
+<div></div>
+<div>#Region &quot;Factory Methods&quot;</div>
+<div>&nbsp;&nbsp; &nbsp;Friend Overloads Shared Function GetList(ByVal data As CK.Linq.AlbumTrack()) As AlbumTrackList</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.FetchChild(Of AlbumTrackList)(data)</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+<div>&nbsp;&nbsp;&nbsp; Public Sub New()</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+<div>#End Region</div>
+<div>#Region &quot;Data Access&quot;</div>
+<div>#Region &quot;Fetch&quot;</div>
+<div>&nbsp;&nbsp; &nbsp;&lt;Transactional(TransactionalTypes.Manual)&gt; _</div>
+<div>&nbsp;&nbsp; &nbsp;Protected Overloads Sub DataPortal_Fetch()</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Using ctx = ContextManager(Of CKDBDataContext).GetManager(Database.CreativeKnightConnection)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;For Each value In (From p In ctx.DataContext.AlbumTracks Order By p.Title Ascending)</div>
+</div>
+</div>
+<blockquote>
+<blockquote>
+<div>
+<div>
+<div><span style="color:#ff0000;">The next line crashes here with an error of &quot;The type initializer for &quot;AlbumTrack&quot; threw an exception&quot;.</span></div>
+</div>
+</div>
+</blockquote>
+</blockquote>
+<div>
+<div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Add(AlbumTrack.GetItem(value))</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Next</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Using</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+</div>
+<div>
+<div>#End Region &#39; Data Access</div>
+<div>End Class</div>
+<div></div>
+</div>
+<div>Example Class</div>
+<div>
+<div>&lt;Serializable()&gt; _</div>
+<div>Public Class AlbumTrack</div>
+<div>&nbsp;&nbsp; &nbsp;Inherits RuleBusinessBase(Of AlbumTrack)</div>
+</div>
+<div></div>
+<div>
+<div>&nbsp;Friend Overloads Shared Function GetItem(ByVal data As CK.Linq.AlbumTrack) As AlbumTrack</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Return DataPortal.FetchChild(Of AlbumTrack)(data)</div>
+<div>&nbsp;&nbsp; &nbsp;End Function</div>
+</div>
+<div></div>
+<div>
+<div>&nbsp;&nbsp; Private Sub Child_Fetch(ByVal data As CK.Linq.AlbumTrack)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;With data</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Nullable(Of Guid))(_ID, .ID)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Nullable(Of Guid))(_ProductID, .ProductID)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadPropertyConvert(Of SmartInt32, Integer)(_RunningOrder, .RunningOrder)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_Title, .Title)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_Duration, .Duration)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadPropertyConvert(Of SmartInt32, Integer)(_Rating, .Rating)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_attachmentFileName, .FileName)</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End With</div>
+<div>&nbsp;&nbsp; &nbsp;End Sub</div>
+</div>
+<div></div>
+<div>End Class</div>
+</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mspaourh replied on Monday, December 20, 2010</h2><p>Can you post more information about the exception (stacktrace, innerException, etc?)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Monday, December 20, 2010</h2><p>I hope this helps.</p>
+<p><span style="font-size:8.33333px;"><b>Exception Details:&nbsp;</b>System.NotSupportedException: Invalid operation - create not allowed</span></p>
+<p><span style="font-size:8.33333px;"><b>Stack Trace:</b>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>[NotSupportedException: Invalid operation - create not allowed]
+   Csla.BusinessListBase`2.DataPortal_Create() in D:\cslavb 3.6.3\Csla\BusinessListBase.vb:1161
+   dm(Object , Object[] ) +55
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:272
+
+[CallMethodException: DataPortal_Create method call failed]
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:274
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:201
+   Csla.Reflection.LateBoundObject.CallMethod(String method) in D:\cslavb 3.6.3\Csla\Reflection\LateBoundObject.vb:75
+   Csla.Server.SimpleDataPortal.Create(Type objectType, Object criteria, DataPortalContext context) in D:\cslavb 3.6.3\Csla\Server\SimpleDataPortal.vb:47
+
+[DataPortalException: DataPortal.Create failed (System.NotSupportedException: Invalid operation - create not allowed
+   at Csla.BusinessListBase`2.DataPortal_Create() in D:\cslavb 3.6.3\Csla\BusinessListBase.vb:line 1161
+   at dm(Object , Object[] )
+   at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:line 272)]
+   Csla.DataPortal.Create(Type objectType, Object criteria) in D:\cslavb 3.6.3\Csla\DataPortal.vb:145
+   Csla.DataPortal.Create() in D:\cslavb 3.6.3\Csla\DataPortal.vb:78
+   Csla.RuleBusinessListBase`2.NewList() in D:\cslavb 3.6.3\Csla\Core\RuleBusinessListBase.vb:102
+   CK.Library.JobCategory..cctor() in D:\CreativeKnights\CK.Library\User\Job.vb:121
+
+[TypeInitializationException: The type initializer for &#39;CK.Library.JobCategory&#39; threw an exception.]
+   CK.Library.JobCategory.GetChildItem(JobCategory data) in D:\CreativeKnights\CK.Library\User\Job.vb:270
+   CK.Library.JobCategoryList.DataPortal_Fetch() in D:\CreativeKnights\CK.Library\User\Job.vb:68
+   dm(Object , Object[] ) +54
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:272
+
+[CallMethodException: DataPortal_Fetch method call failed]
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:274
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in D:\cslavb 3.6.3\Csla\Reflection\MethodCaller.vb:201
+   Csla.Reflection.LateBoundObject.CallMethod(String method) in D:\cslavb 3.6.3\Csla\Reflection\LateBoundObject.vb:75
+   Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in D:\cslavb 3.6.3\Csla\Server\SimpleDataPortal.vb:109
+
+[DataPortalException: DataPortal.Fetch failed (The type initializer for &#39;CK.Library.JobCategory&#39; threw an exception.)]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) in D:\cslavb 3.6.3\Csla\DataPortal.vb:255
+   Csla.DataPortal.Fetch() in D:\cslavb 3.6.3\Csla\DataPortal.vb:179
+   Csla.RuleBusinessListBase`2.GetList() in D:\cslavb 3.6.3\Csla\Core\RuleBusinessListBase.vb:108
+   Page_Commerce_Types_Events.BindCategory() in D:\CreativeKnights\Web\Page\Commerce\Types\Events.aspx.vb:18
+   Page_Commerce_Types_Events.Page_Load(Object sender, EventArgs e) in D:\CreativeKnights\Web\Page\Commerce\Types\Events.aspx.vb:9
+   System.EventHandler.Invoke(Object sender, EventArgs e) +0
+   System.Web.UI.Control.OnLoad(EventArgs e) +132
+   System.Web.UI.Control.LoadRecursive() +11032399
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +2428</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Monday, December 20, 2010</h2><p>I fixed it.. Apparently I was missing 3 methods in the RuleBusinessListBase and RuleBusinessbase. It was ...</p>
+<p>which meant overloading all over the other methods</p>
+<p>&nbsp;</p>
+<p>
+<p>#Region &quot;Data Access Create&quot;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;RunLocal()&gt; _</p>
+<p>&nbsp;&nbsp; &nbsp;Protected Friend Overloads Sub DataPortal_Create()</p>
+<p><span style="font-size:8.33333px;">&nbsp;&nbsp; &nbsp;End Sub</span></p>
+<p>&nbsp;&nbsp; &nbsp;&lt;RunLocal()&gt; _</p>
+<p>&nbsp;&nbsp; &nbsp;Protected Friend Overloads Sub DataPortal_Create(ByVal criteria As SingleCriteria(Of C, Nullable(Of Guid)))</p>
+<p><span style="font-size:8.33333px;">&nbsp;&nbsp; &nbsp;End Sub</span></p>
+<p>#End Region</p>
+<p>#Region &quot;Child Data Access&quot;</p>
+<p>&nbsp;&nbsp; &nbsp;Protected Friend Sub Child_Fetch()</p>
+<p><span style="font-size:8.33333px;">&nbsp;&nbsp; End Sub</span></p>
+<p>#End Region</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, December 20, 2010</h2><p>The exception seems reasonably clear - you are trying to call DataPortal.Create, and it in turn is calling DataPortal_Create, which isn&#39;t implemented.</p>
+<p>In 3.6 the default DataPortal_Create implementation throws this exception. In CSLA 4 this no longer throws, it &quot;just works&quot; - which still might or might not be what you want :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

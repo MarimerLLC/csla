@@ -1,0 +1,13 @@
+<html><header><title>StackOverflow when saving</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>StackOverflow when saving</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9142.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mcalhoun posted on Monday, June 28, 2010</h2><p>
+<p>I am using CSLA 4, Beta 3.</p>
+<p>My scenario is this...A tenant (root object) has many customers and many deals. Each customer has many deals. Each deal has one Tenant and one Customer.</p>
+<p>Tenant : BusinessBase<br />-Id (Guid)<br />-Customers (CustomerList : BusinessListBase)<br />-Deals (DealList : BusinessListBase)</p>
+<p>TenantScopedBusinessBase : BusinessBase<br />-Id (Guid)<br />-Name (String)<br />-Tenant (Tenant)</p>
+<p>Deal : TenantScopedBusinessBase<br />-Id (Guid) - Inherited from TenantScopedBusinessBase&nbsp;<br />-Tenant (Tenant) - Inherited from TenantScopedBusinessBase<br />-Customer (Customer : BusinessBase)</p>
+<p>Customer : TenantScopedBusinessBase<br />-Id (Guid) - Inherited from TenantScopedBusinessBase&nbsp;<br />-Tenant (Tenant) - Inherited from TenantScopedBusinessBase&nbsp;<br />-Deals (DealList : BusinessListBase)</p>
+<p>If I attempt to Save the Tenant object, I get a System.StackOverflowException on RaiseChildChanged(e.ChildObject, e.PropertyChangedArgs, e.CollectionChangedArgs) of the Child_Changed method in ObservableBindingList.</p>
+<p>If I remove the &quot;Deals&quot; property from the customer object, the same code works just fine. I&#39;m confused...is there some circular reference that I&#39;m missing?</p>
+<p>Thanks,<br />Matt</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 28, 2010</h2><p>A given object can have exactly one parent. Your object model doesn&#39;t indicate whether you are &quot;re-parenting&quot; objects or not, but it certainly seems like such a thing could happen - either trying to have a dual parent or switching parents.</p>
+<p>Dual parenting is just not supported, and there&#39;s no way to make it work.</p>
+<p>Switching parents is possible, but is tricky because BusinessListBase doesn&#39;t normally allow you to remove an object without it being marked for deletion and moved to the deletedList.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

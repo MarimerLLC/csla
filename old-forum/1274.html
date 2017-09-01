@@ -1,0 +1,12 @@
+<html><header><title>Property name AND System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Property name AND System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1274.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch posted on Tuesday, September 19, 2006</h2><P>I followed some code in BusinessBase and stumbled on the following command inside the CanReadProperty(bool) method.</P>
+<P><FONT color=#0000ff><STRONG>string propertyName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);<BR></STRONG></FONT><BR>Now, at first glance it seams that it gets the property name from which this method was called.&nbsp; If this is true then can I use the same thing when invoking the CheckRules() method.</P>
+<P>FROM&nbsp;&nbsp;&nbsp;</P>
+<P><FONT color=#0000ff>this.ValidationRules.CheckRules("SomeProperyName");</FONT></P>
+<P>TO&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</P>
+<P><FONT color=#0000ff>this.ValidationRules.CheckRules(new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4));</FONT></P>
+<P>If yes, then do you know if this will have a performance impact.&nbsp; For example, does it use reflection under the cover?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 20, 2006</h2><P>I recall reading a post statung that it has a very large performance impact.</P>
+<P>In fact the recommendation was to use a code generator and always include the String of the PropertyName as one of the parameters to avoid using this technique.</P>
+<P>Rocky is trying to lower the maintenance cost by avoiding Strings but even says if you code-gen them then the risk of typos goes to zero so it is fine. </P>
+<P>This is just another example of the trade-offs you have to make in building software.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

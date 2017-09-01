@@ -1,0 +1,44 @@
+<html><header><title>Setting FriendlyName for Managed Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Setting FriendlyName for Managed Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5251.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>John posted on Friday, August 15, 2008</h2>I'm just starting to use Managed Properties in CSLA 3.5 and have a question.&nbsp; Can I set the PropertyInfo.FriendlyName in the DataPortal_Create method?&nbsp; I want to load the FriendlyName with a database value I retrieve during DataPortal_Create, but&nbsp;it is readonly.&nbsp; I've read in other posts about subclassing PropertyInfo, but was wondering if I was missing something simpiler.&nbsp; My goal is to have&nbsp;my Business Object&nbsp;fetch all of it's own data during a single trip&nbsp;across the DataPortal.&nbsp; Thanks for your help.&nbsp;&nbsp;</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>John replied on Sunday, August 17, 2008</h2><P>Let me ask this in a different way.&nbsp; Is there any way to set the value of the PropertyInfo.FriendlyName other than in the PropertyInfo constructor?&nbsp; At the point in time my BO is instantiated (on the web server), I do not have the value that I wish to load into the FriendlyName.&nbsp; I need my BO to travel across the DataPortal to obtain this value.&nbsp;&nbsp;</P>
+<P>I tried moving the call to RegisterProperty from the PropertyInfo field declaration into DataPortal_Create,&nbsp;but that resulted in an Exception (DataPortal.Create failed on the server).&nbsp; I then tried adding a 2nd call to RegisterProperty - I left the original call in the field declaration and added the 2nd call in DataPortal_Create.&nbsp; I was hoping this 2nd call would in effect "Re-register" the property with&nbsp;the new FriendlyName data that I obtaind from the DB.&nbsp; The 2nd call seemed to succeed, but the&nbsp;underlying items in the FiledManager._propertyList did not change.&nbsp; </P>
+<P>Forgive me if this seems simplistic.&nbsp; I know I must be missing something very basic.&nbsp;&nbsp;How can change the value in FriendlyName after the property has been registered?&nbsp; Thanks.</P>
+<P>&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 17, 2008</h2><P>It is an advanced scenario, but it is possible to register the propertyinfo objects outside your business object. If done right, they could be registered before the creation of your first business object instance.</P>
+<P>This would need to be done on both client and app server.</P>
+<P>Notice that RegisterProperty() allows you to specify the type of business object that contains the specified property. You could create a <EM>totally different class</EM> that makes the RegisterProperty() calls, and not make them <EM>at all</EM> in the actual business class.</P>
+<P>As long as you ensure that this other "definition class" was used before any business objects are created, you'd be able to use metadata in your RegisterProperty() calls.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 18, 2008</h2>Hm... sounds like a pattern.&nbsp; Strategy?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cine replied on Tuesday, August 26, 2008</h2>Is there a scenario for FriendlyName in anything but a single-language application?<br>I could understand if there was a overload that was a Func&lt;string&gt; so that it was possible to use localized strings for the name.<br>e.g. () =&gt; Resources.MyObjectsFriendlyName<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 27, 2008</h2>Why wouldn't that work right now?&nbsp; One of the constructors takes a friendly name string, and Resources.MyObjectsFriendlyName is a string.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cine replied on Wednesday, August 27, 2008</h2>It would work fine... Except ALL users would get the language of the initial requestor :P<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 28, 2008</h2>Are you sure?&nbsp; I would think that since RegisterProperty is called on the client as well, the client copy would have the correct translation.&nbsp; But I think that if the server tries to use FriendlyName, you're right that it would end up using the language of the first requester. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In 3.5 and higher the friendly name is provided when the
+property is registered:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Private Shared NameProperty As PropertyInfo(Of String) = _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; RegisterProperty(New PropertyInfo(Of String)(&#8220;Name&#8221;,
+My.Resources.NamePropertyText))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

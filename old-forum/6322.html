@@ -1,0 +1,31 @@
+<html><header><title>LINQ to Objects Change from 3.0 to 3.5?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LINQ to Objects Change from 3.0 to 3.5?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6322.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar posted on Tuesday, February 03, 2009</h2><P>I found a&nbsp;LINQ to objects&nbsp;statement that now has changed after I've upgraded to Csla 3.5.2</P>
+<P>For Some Reason this</P><PRE class=code><SPAN><SPAN>var </SPAN><SPAN>actionsForServiceWithDscr</SPAN><SPAN> = (</SPAN><SPAN>from ServiceActionReference </SPAN><SPAN>serviceAction </SPAN><SPAN>in </SPAN><SPAN>_serviceActions</SPAN><SPAN>.</SPAN><SPAN>Where</SPAN><SPAN>(</SPAN><SPAN>c</SPAN><SPAN> =&gt; </SPAN><SPAN>c</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd</SPAN><SPAN> == </SPAN><SPAN>serviceInfo</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd</SPAN><SPAN>)
+                           </SPAN><SPAN>from CodeDomainSystemValue </SPAN><SPAN>action </SPAN><SPAN>in </SPAN><SPAN>_actions
+                           </SPAN><SPAN>where </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>ActnTypeCd</SPAN><SPAN> == </SPAN><SPAN>action</SPAN><SPAN>.</SPAN><SPAN>CdValCd
+                           </SPAN><SPAN>select new</SPAN><SPAN> { </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>ActnTypeCd</SPAN><SPAN>, </SPAN><SPAN>action</SPAN><SPAN>.</SPAN><SPAN>LongDscr</SPAN><SPAN>});
+
+</SPAN></SPAN></PRE>
+<P>&nbsp;</P>
+<P>after the upgrade, started acting like it was missing the where Lambda expresion like below:</P><PRE class=code><SPAN><SPAN>var </SPAN><SPAN>actionsForServiceWithDscr</SPAN><SPAN> = (</SPAN><SPAN>from ServiceActionReference </SPAN><SPAN>serviceAction </SPAN><SPAN>in </SPAN><SPAN>_serviceActions</SPAN><SPAN>
+                           </SPAN><SPAN>from CodeDomainSystemValue </SPAN><SPAN>action </SPAN><SPAN>in </SPAN><SPAN>_actions
+                           </SPAN><SPAN>where </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>ActnTypeCd</SPAN><SPAN> == </SPAN><SPAN>action</SPAN><SPAN>.</SPAN><SPAN>CdValCd
+                           </SPAN><SPAN>select new</SPAN><SPAN> { </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>ActnTypeCd</SPAN><SPAN>, </SPAN><SPAN>action</SPAN><SPAN>.</SPAN><SPAN>LongDscr</SPAN><SPAN>});
+
+</SPAN></SPAN></PRE>
+<P>&nbsp;</P>
+<P>The change was simple enough</P><PRE class=code><SPAN><SPAN>var </SPAN><SPAN>actionsForServiceWithDscr</SPAN><SPAN> = </SPAN><SPAN>from ServiceActionReference </SPAN><SPAN>serviceAction </SPAN><SPAN>in </SPAN><SPAN>_serviceActions
+                                </SPAN><SPAN>from CodeDomainSystemValue </SPAN><SPAN>action </SPAN><SPAN>in </SPAN><SPAN>_actions
+                                </SPAN><SPAN>where </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>ActnTypeCd</SPAN><SPAN> == </SPAN><SPAN>action</SPAN><SPAN>.</SPAN><SPAN>CdValCd</SPAN><SPAN> &amp;&amp; </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd</SPAN><SPAN> == </SPAN><SPAN>serviceInfo</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd
+                                </SPAN><SPAN>select new</SPAN><SPAN> { </SPAN><SPAN>serviceAction</SPAN><SPAN>.</SPAN><SPAN>ActnTypeCd</SPAN><SPAN>, </SPAN><SPAN>action</SPAN><SPAN>.</SPAN><SPAN>LongDscr</SPAN><SPAN>};
+
+</SPAN></SPAN></PRE>
+<P>&nbsp;</P>
+<P>but I was wondering if anyone knew why?&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, February 03, 2009</h2><P>CSLA 3.6 has its own LINQ to CSLA implementation for filtering so it "overrides" the default implementation from Microsoft. It may have been added in 3.5 and thus you see the new behavior.</P>
+<P>If it is incorrect then you should note it as a possible bug.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Tuesday, February 03, 2009</h2><P>Can you tell me what exception the former was giving you?</P>
+<P>In either case, those are not cases we do any special handling on, other than passing control.&nbsp; I suppose one case might end up translating to something we don't handle well once it is desugared, which would lead me to being very interested in what exception is generated.&nbsp; But beyond that, given you are selecting something of a different type than what you are starting with, the standard L2O implementation should apply.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Tuesday, February 03, 2009</h2><P>There is no exception generated.&nbsp; What is happening is that my lambda expression "<SPAN>_serviceActions</SPAN><SPAN>.</SPAN><SPAN>Where</SPAN><SPAN>(</SPAN><SPAN>c</SPAN><SPAN> =&gt; </SPAN><SPAN>c</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd</SPAN><SPAN> == </SPAN><SPAN>serviceInfo</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd</SPAN><SPAN>)" </SPAN>is not being applied in the filter.&nbsp; I only want to join _serviceActions that had the same <SPAN>SrvcTypeCd</SPAN> as the <SPAN>serviceInfo</SPAN><SPAN>.</SPAN><SPAN>SrvcTypeCd.&nbsp; Instead I was getting all the _serviceActions.</SPAN></P>
+<P><SPAN>So <SPAN>actionsForServiceWithDscr.Count()&nbsp;was always 500, rather than 0-20 depending on the SrvcTypeCd.&nbsp; Make sense?</SPAN></SPAN><SPAN></P></SPAN>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

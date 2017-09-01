@@ -1,0 +1,14 @@
+<html><header><title>OT: varchar Vs nVarchar datatypes?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: varchar Vs nVarchar datatypes?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8743.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Tuesday, March 30, 2010</h2><p>Three (OT - sorry) questions:</p>
+<p>1. If the database will be used to store only English (US or otherwise), is there any point in using nvarchar and nchar datatypes instead of varchar and char?</p>
+<p>2. Using nvarchar and nchar datatypes will use double the storage space as compared to varchar and char. Correct?</p>
+<p>3. Would the server collation setting have an impact on storage size if using nvarchar and nchar - in other words, would it revert to using one byte per character if collation indicates use of English only?</p>
+<p>Thanks</p>
+<p>Jav</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Tuesday, March 30, 2010</h2><p>The way I understand it (assuming you&#39;re talking about SQL Server):</p>
+<p>1. No.</p>
+<p>2. Yes.</p>
+<p>3. No.</p>
+<p>Mind you, this is SQL Server 2005 understanding - I don&#39;t know if things have changed in 2008.&nbsp; I don&#39;t think they have, but I haven&#39;t had the time (or need) to look into it.</p>
+<p>If these are Oracle questions, then you can probably disregard this - my Oracle experience is pretty limited.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Tuesday, March 30, 2010</h2><p>Thank you Scott.&nbsp; That&#39;s what my guess was.&nbsp; And yes, the question was about SqlServer.&nbsp; I don&#39;t know much about Oracle either.</p>
+<p>Jav</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

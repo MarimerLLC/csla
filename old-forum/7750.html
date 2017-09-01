@@ -1,0 +1,45 @@
+<html><header><title>Linq queries on CSLA very slow..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq queries on CSLA very slow..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7750.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly posted on Thursday, October 08, 2009</h2>I'm using very simple query on csla, something like this..<br /><br />from O in TempEmpOther.OTRelInfoList<br />                    where O.InfoType == IdVal<br />                    select O.InfoValue).FirstOrDefault();<br /><br /><br />from J in TempEmpMain.JoinInfoList<br />                    where J.JoinFlag == IdVal<br />                    select J.InfoDate).FirstOrDefault();<br /><br />after very slow performance i added index also on properties InfoType and JoinFlag but still the performance is very slow.. It is currently taking 60 seconds..<br /><br />These queries are called from a for loop around 10 times on a bo.. total loop is for 2000 counters so 2000 X 10 times..<br /><br /><br />Bo itself is not having more then 20 records.. (most of the time it is under 10) but still performance is very slow..<br /><br />can anybody help in this..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 08, 2009</h2><P>I don't know why you are seeing this type of performance. I did a test with 2000 loops over a query on a list with 30 items and it took 5 seconds. Which still seems high to me, but is a long way from 60 seconds.</P>
+<P>I'm sure much of the perf cost is in creating the LinqBindingList, which has to add event handling to the items.</P>
+<P>One thing you can do in a query like yours (where you don't want or need the LBL result) is to convert the original collection to an array:</P>
+<P>var q = (from r in mylist.ToArray() where r.Id == 123 select r).FirstOrDefault();</P>
+<P>In my test this has a major positive impact on performance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Thursday, October 08, 2009</h2>There are a couple issues I see here.<br><br>I worked up the following scenario, which isolates Linq to CSLA from other factors:<br><br>&nbsp; class SomeChild: BusinessBase&lt;SomeChild&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; public int SomeInt { get; set; }<br>&nbsp; }<br><br>&nbsp; class SomeList : BusinessListBase&lt;SomeList, SomeChild&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; <br>&nbsp; }<br><br>&nbsp; [TestClass]<br>&nbsp; public class CslaQueryProviderTests<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; [TestMethod]<br>&nbsp;&nbsp;&nbsp; public void performance_test_non_indexed_queries()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var normalList = new List&lt;SomeChild&gt;();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; normalList.AddRange(Enumerable.Range(0, 10000).Select(x =&gt; new SomeChild{ SomeInt = x }));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cslaList = new SomeList();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cslaList.AddRange(Enumerable.Range(0, 10000).Select(x =&gt; new SomeChild {SomeInt = x}));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var startNormal = DateTime.Now;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var normalListResult = (from x in normalList where x.SomeInt == 8000 select x).First();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var endNormal = DateTime.Now;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var startCsla = DateTime.Now;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cslaListResult = (from x in cslaList where x.SomeInt == 8000 select x).First();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var endCsla = DateTime.Now;<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var cslaTime = (endCsla - startCsla);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var normalTime = (endNormal - startNormal);<br><br>In this test, I get the cslaTime coming to 0.5 seconds, the normal one coming to 0.1.&nbsp; I also ran a variant where we use First with a predicate rather than using it after the where, and the same results occur.<br><br>There *is* a difference with CSLA where, like with any custom linq provider, each query has to be interpreted at run time, which causes some reflection overhead when the query is analyzed for whether we are going to use an index or not.&nbsp; As well, when you do a select query, it actually has to generate a LinqBindingList in the interim, in case the user of the query wants to synchronize the list.<br><br>Not sure why you are getting such a perf hit - I suspect something else is going on - perf can change depending on a number of things that have to do with LinqBindingLists that we clearly can't reproduce.<br><br>That said, there is always a very clear way to not use the CSLA linq provider if that is getting in your way, and that would be to use the Enumerable static methods directly (i.e. Enumerable.First, Enumerable.Where, and so forth).&nbsp; Otherwise, at this time, using a custom query provider is always going to involve some overhead because any custom provider has to use reflection to interpret the query.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My test is somewhat similar to yours, but uses the longer
+syntax:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var q = (from r in mylist where r.Id == 1234 select
+r).FirstOrDefault();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My object and list are comparable to yours, though the object
+uses managed properties. That&#8217;s not the issue though, because I use the same
+child object in my BLB and List&lt;T&gt; tests, so the reading-the-property-value
+performance is identical in both cases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Saturday, October 10, 2009</h2>Pls accept my apologies.. I rechecked this after your posts and found that problem is due to some other operation.. Linq to csla is performing properly..</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

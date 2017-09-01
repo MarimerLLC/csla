@@ -1,0 +1,81 @@
+<html><header><title>InitializeBusinessRules/AuthorizationRules potential for deadlocks in Web Service portal?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>InitializeBusinessRules/AuthorizationRules potential for deadlocks in Web Service portal?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8988.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Tuesday, May 25, 2010</h2><p>For the last week or two, I have been troubleshooting CSLA web service data portals that seem to be hanging intermittently.&nbsp;(Regularly at first, but after some obvious threading problem corrections on my part, it&#39;s better)</p>
+<p>It turns out that the hanging appears to always occur at the exact moment the application pool recycles, and hence during the initialization of the BO assemblies or shortly thereafter.&nbsp;&nbsp;Note that at the time the pool recycles, the server could be servicing many requests per second, and there is no predicting what objects will be materializing inside the application pool or in what order.</p>
+<p>After much logging of activity over several weeks, I believe I have traced it down to one of these two calls:</p>
+<pre>      InitializeBusinessRules();
+      InitializeAuthorizationRules();
+</pre>
+<p>The problem&nbsp;seems to be&nbsp;that&nbsp;both of these calls do a lock() on&nbsp;the object type while the&nbsp;rules are being added. If these functions load information from the database to dynamically generate validation or authorization rules, the rule registration can take a signficant amount of time from the perspective of a typical lock duration. </p>
+<p>It seems like there is the potential for a deadlock if your BusinessBase derived classes have dependencies on each other that come into play when registering the rules.&nbsp; Consider this admittedly contrived scenario:</p>
+<p>1. Type A uses B in it&#39;s rule initialization, and vice versa. </p>
+<p>2. A comes through the portal, and locks type A in InitializeBusinessRules()</p>
+<p>(thread switch)</p>
+<p>3. Meanwhile, type B comes through the portal on another request, and locks type B in InitializeBusinessRules()</p>
+<p>(thread switch)</p>
+<p>4. While initializing its own rules, A attempts to create a B. It can&#39;t, because the B constructor will call InitializeBusinessRules() which will block on the lock.&nbsp; So now A is blocked waiting for B. </p>
+<p>5. B&nbsp;can still run and&nbsp;now tries to instantiate an A. It can&#39;t, since A locked its own type in #2. </p>
+<p>Both threads are now deadlocked on each other. Since the types are locked, the deadlock will extend to subsequent threads servicing requests on the application pool. (I&#39;ve witnessed something very similar this in the logging -- I log both the entry and exit of each call to the data portal, and when the deadlock occurs, no exits&nbsp;are logged. I see a series of incoming requests without a matching exit and eventually all the threads are consumed and the pool is dead until the next time it recycles. </p>
+<p>Would it be reasonable to change these from an outright lock() to a Monitor.TryEnter() and throw an exception if the lock cannot be acquired in a reasonable&nbsp;amount of time.&nbsp; (The exception isn&#39;t a perfect solution, but at least the application pool would recover from this.). Certainly lock() calls that only span a short duration while an object is created and assigned to a member aren&#39;t usually going to be a problem but InitializeBusinessRules (and InitializeAuthorizationRules) are intended to be overridden and the time duration of the lock can be long. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 25, 2010</h2><p>You should try your suggestion and see if it addresses the problem. Since you have a scenario where the issue is visible, you are in a relatively unique position to try this out.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, May 25, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>You should try your suggestion and see if it addresses the problem. Since you have a scenario where the issue is visible, you are in a relatively unique position to try this out.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I&#39;ve confirmed with additional logging that the deadlocks are indeed occurring in the AddBusinessRules() override. </p>
+<p>However, in looking at this more closely, my original idea has serious flaw in that InitializeBusinessRules() appears to leave the ValidationRules for the type in an indeterminate state if an exception is thrown during AddBusinessRules().&nbsp; There is no&nbsp;provision for removing the&nbsp;partially filled ValidationRulesManager associated with that type -- &nbsp;It looks to me like you&#39;d have a partial set of rules consisting only of those rules added prior to throwing the exception.&nbsp; Future use of the object type server side would operate using an incomplete set of rules. Ugh. </p>
+<p>It might just be the case that&nbsp;BusinessBase derived objects should not be instantiated in either AddBusinessRules() or AddAuthorizationRules() without risking deadlocks in a multi-threaded environment. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, May 25, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>rsbaker0<br></b>
+<p>It might just be the case that&nbsp;BusinessBase derived objects should not be instantiated in either AddBusinessRules() or AddAuthorizationRules() without risking deadlocks in a multi-threaded environment. </p>
+</div></p>
+<p>I would say that is a scenario outside the boundaries of the design. You should be able to get ReadOnlyBase objects in those methods - because that&#39;s how you&#39;d retrieve the metadata to drive your rules. But it is hard to imagine how those metadata objects would have any interaction with the actual business model objects - they are really two separate models - a model and a metamodel.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, May 26, 2010</h2><p>OK, I can probably refactor to do this (although&nbsp; I think I&#39;ve seen some discussion about ReadOnlyBase objects also having rules, maybe in 4.0)</p>
+<p>Here is the &quot;real&quot; problem -- if you can help me solve this one the above problem will go away. </p>
+<p>What I really need to do is to run some initialization either just before (e.g. when my BO assembly&nbsp;is loaded) or on the very first call to the server side&nbsp; of the data portal (logical or actual). Other data portal requests should wait until this is finished.&nbsp; (Something like the equivalent of DLLMain in the pre-C# days was what I first looked for). </p>
+<p>If I can complete my own initialization before any more incoming requests start to process, this issue will go away.&nbsp; Do you have any suggestions on how I might do this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 26, 2010</h2><p>I see. This isn&#39;t easy.</p>
+<p>You can use an IAuthorizeDataPortal implementation to get early access to every logical server-side data portal call. From there you could call some code that does your server-side initialization.</p>
+<p>Obviously this could occur many times simultaneously on different server threads. So your initialization code would need to do some locking to ensure that only one thread does the init work, and other threads are blocked.</p>
+<p>Also, this would prevent the use of the data portal in the init code, because you&#39;ll have blocked all subsequent data portal invocations until the initialization is complete.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, May 26, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>I see. This isn&#39;t easy. </p>
+<p>You can use an IAuthorizeDataPortal implementation to get early access to every logical server-side data portal call. From there you could call some code that does your server-side initialization.</p>
+<p></div></p>
+<p>&nbsp;</p>
+<p>I thought about this, but&nbsp;it&#39;s already too late. The problem is that at that point the incoming request has been deserialized, and if the request is an Update for a BO, then the OnDeserializedHandler() handler has already been called.&nbsp; The deadlock I describe above could occur before Authorize() is ever called.</p>
+<p>I came up with this solution for the time being, which actually involved changing the WebServicePortal host itself.&nbsp;Pardon the analogy, but it seemed to me&nbsp;that WebServicePortal.Deserialize() is, pardon the analogy, the &quot;transporter pad&quot; for all incoming objects. </p>
+<p>So, I took page from your playbook and implemented the concept of a putting a &quot;CslaDataPortalInitHandler&quot; key into the config file. This provides for specifying a class and static method to call a single time before any incoming objects are even deserialized.&nbsp; Right now I&#39;m calling this code in Deserialize(), but perhaps the WebServicePortal constructor would also work -- I was trying to allow for the possibility that the initialization could fail in a transient fashion (e.g. SQL Server is down) and subsequent requests would retry until it succeeded. This puts the lock() in a single central location and forces all other requests to wait until the initialization is complete until they can even be deserialized.&nbsp;&nbsp;</p>
+<pre>      static void CheckInit()
+      {
+          if (_initDone == 0)
+          {
+              lock (_syncLock)
+              {
+                  if (_initDone == 0)
+                  {
+                      var provider = DataPortalInitHandler;
+
+                      if (!string.IsNullOrEmpty(provider))
+                      {
+                          string[] items = provider.Split(&#39;,&#39;);
+                          Type containingType = Type.GetType(items[0] + &quot;,&quot; + items[1]);
+                          var methodInfo = Csla.Reflection.MethodCaller.FindMethod(containingType, items[2], System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public);
+                          if (methodInfo != null)
+                          {
+                              try
+                              {
+                                  ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Server);
+                                  methodInfo.Invoke(null, null);
+                              }
+                              finally
+                              {
+                                  ApplicationContext.SetLogicalExecutionLocation(ApplicationContext.LogicalExecutionLocations.Client);
+                              }
+                          }
+                      }
+                      _initDone = 1;
+                  }
+              }
+          }
+      }
+</pre>
+<p>(I may need to tweek the execution location code above, but I needed the logical location set to execute some my server side code that I explicitly&nbsp;block from being allowed on the client and the above seemed safe enough.)</p>
+<p>Maybe this idea would be a worthwhile addition to CSLA as surely I&#39;m not the only user who would like to be able to do some internal initialization before any data portal requests are processed on the server side.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 26, 2010</h2><p>While that may work for now, it isn&#39;t a good general solution. All the other data portal channels rely on .NET to do the deserialization, and so that always runs before your code. With WCF you can probably overcome it by creating a custom message handler or something very low-level, but in general it isn&#39;t possible to get ahead of the deserialization within the data portal itself - because that&#39;s too late...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, May 26, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>All the other data portal channels rely on .NET to do the deserialization, and so that always runs before your code....</div></p>
+<p>Indeed, I noticed this when looking at the other portals -- the request is already deserialized by the time they are called.</p>
+<p>Might it be possible to implement a constructor for the other portals and do the initialization there? </p>
+<p>Alternatively, I can see moving the CheckInit() into BusinessBase.OnDeserializedHandler() as the first call as I think this would have the same effect (although would be slightly more overhead). </p>
+<p>Thanks for your input on this...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 26, 2010</h2><p>It all depends on the underlying networking technology. WCF, Remoting and Enterprise Services will have deserialized the message before any of your or my code is invoked. To my knowledge the only way to get in there ahead of the deserialization is to use whatever extensibility API exists for the specific technology. WCF and Remoting both have enough extensibility to get in ahead of time, though neither of them make it easy.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

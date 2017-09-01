@@ -1,0 +1,23 @@
+<html><header><title>How to fetch a file image from SQL using CSLA safedatareader</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to fetch a file image from SQL using CSLA safedatareader</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4018.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi posted on Monday, December 10, 2007</h2><P>I have a file stored in a SQL table as type Image (= ByteArray).&nbsp; </P>
+<P>My DataPortal_Fetch looks like this:</P>
+<P><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> crit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> GetFileCriteria)</FONT></P>
+<P><FONT size=2><FONT color=#008000>'call stored procedure </FONT></P></FONT><FONT size=2>
+<P>dr.Read()</P>
+<P>FetchImage(dr)</P>
+<P>dr.Close()</P>
+<P>dr.Dispose()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>My SafeDataReader&nbsp; procedure:</FONT></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> FetchImage(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SafeDataReader)</P>
+<P></FONT><FONT color=#008000 size=2>' Value properties</P></FONT><FONT size=2>
+<P>m_FileImage = dr.GetBytes(</FONT><FONT color=#a31515 size=2>"FileImage"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>m_FileImage is declare as byte()</P>
+<P>I can't get the SafeDataReader's GetBytes&nbsp;to work.&nbsp;Is it the&nbsp;right command to&nbsp;call&nbsp;to get an image data type from the database?</P>
+<P>Thanks in advance.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, December 10, 2007</h2><P>I use code like this:</P>
+<P>&nbsp;Protected mImagefile As Byte() = Nothing</P>
+<P>&nbsp;Public Overridable Property Imagefile() As Byte()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mImagefile<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As Byte())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mImagefile = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp; End Property<BR></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;With dr<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If .Read&nbsp;Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mImagefile = CType(.Item("imagefile"), Byte())<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Monday, December 10, 2007</h2>Thanks for your code Joe, it works!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

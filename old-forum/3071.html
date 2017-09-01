@@ -1,0 +1,184 @@
+<html><header><title>Same business object, but using two different data sources (different data access methods)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Same business object, but using two different data sources (different data access methods)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3071.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g18c posted on Friday, June 22, 2007</h2><P class=MsoNormal><SPAN><FONT face=Calibri>Hi, I will be using the same business object, but I have two data sources (local database and remote database). As I don’t want to replicate code, what is the best way of achieving this?<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>Would I create an intermediate class which implements the core business object functionality, and then derive specific classes which implement the data portal XYZ methods for each database (i.e. SessionListLocalDB, SessionListRemoteDB which derive from SessionList which itself derives from EditableRootListBase)?</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>The local database will run locally, and the remote database business objects&nbsp;will (I guess) need transaction support. The local database is&nbsp;SQL Mobile/Compact and the remote database is SQL 2005.</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>The local database only contains the local users details (this database gets synched to the remote database with all the other users), the remote database business objects will retrieve records for all users but essentially the data remains the same.</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Thanks in advance,<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Chris<o:p></o:p></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 22, 2007</h2><P>The <A href="http://www.lhotka.net/Article.aspx?area=11&amp;id=65c98c98-f0e0-477d-b45b-7a1e7d5768ee">DeepData sample </A>may be helpful.</P>
+<P>If you can get both data sources to generate a datareader of the same shape you can use another (pluggable) class to open the database connection, run the command and create the datareader. Then the business object's DataPortal_Fetch() can use that datareader to load itself - from either source. DeepData shows how to externalize the database connection/command logic.</P>
+<P>If you can't get both data sources to generate a datareader of the same shape then you'll need to do some intermediate mapping, and the DTO (data transfer object) approach shown in DeepData can help show how that's done.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g18c replied on Friday, June 22, 2007</h2><P><SPAN>Thanks for the reply, i have been using auto generated strongly typed datasets in Visual Studio so i guess in my case i will have to create an intermidiate data transfer object with a common interface with which the business object can load itself from?<o:p></o:p></SPAN></P>
+<P><SPAN>I've just had a quick look over the project and could you kindly confirm my understanding of the readme, in that the data source is set by the OrderData setting being either </SPAN><SPAN>DeepData.DAL.Direct or DeepData.DAL.DTO or DeepData.DAL.WebService. Depending on the value of this setting, OrderList.vb&nbsp;will select which source to use in its DataPortal_Fetch method?</SPAN></P>
+<P><SPAN>In leymans terms, i can use exactly the same business object for both data sources, i just need a way of telling the business object list to use a specific data transfer object to use to load and update itself? The data returned from the fetch method would then be used to load the data into each business object. I would also need to look into a comon interface for saving and updating.</SPAN></P>
+<P><SPAN>I'm not entirely sure, but i dont think compact SQL has all the features of standard SQL (data readers, standard ado interfaces etc). Having said that, i do like the auto generated strongly typed dataset as for a mere mortal i find them easier to use! The disadvantage is i will have to do a small amount of work and create a common interface between the different types of dataset.</SPAN></P>
+<P><SPAN>Thanks for your time.<o:p></o:p></SPAN></P>
+<P><SPAN>Chris</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 22, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>g18c:</strong></div><div>
+<P><SPAN>In leymans terms, i can use exactly the same business object for both data sources, i just need a way of telling the business object list to use a specific data transfer object to use to load and update itself? The data returned from the fetch method would then be used to load the data into each business object. I would also need to look into a comon interface for saving and updating.</SPAN></P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, that is correct. The DataPortal_XYZ methods are always the start point for persistence. What you do from there is entirely up to you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g18c replied on Friday, June 22, 2007</h2><P><FONT face=Arial size=2>One final issue, if the list uses different transaction architectures then using a common list may not work. Due to limitations of the underlying data access layer (i.e. System.Transactions are not supported) for one of the database sources, and the desire for ease of use to use the built in transactions for the other sql database source, i cannot have a common class and therefore a common DataPortal_Fetch method.</FONT></P>
+<P><FONT face=Arial size=2>In this case it seems my only option is to base as much common functionality in the base class, and derive seperate classes&nbsp;which implement the DataPortal methods, and decorating the DataPortal_Fetch with the TransactionalTypes.TransactionScope attribute as needed (for the limited data access layer class i would manualy implement&nbsp;transactions). I am still getting to grips with this so i am&nbsp;very cautious in assuming it is as simple as this?</FONT></P>
+<P><FONT face=Arial size=2>Thanks</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If the transaction architectures vary you have to push that
+concern down a layer: into your DAL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA supports this through the Manual option for transactions.
+Your DP_XYZ methods don&#8217;t run in a transaction then, and it is up to you or
+your DAL to manage the transaction details.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you take the DTO approach this should be pretty easy. Your
+DP_XYZ method will work with a DTO that contains all data for the object graph,
+so each DAL call is just one method &#8211; passing the DTO to/from the DAL.
+That architecture is nice, because then the <i>DAL itself</i> has a single
+entry point, which is where you know you can start/commit/rollback the
+transaction.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g18c replied on Sunday, June 24, 2007</h2><P>Hi Rocky, i started implementing the data transfer objects and something hit me. When i talk of two different datasources, i wish to connect to one on the local machine, and one on a remote server. One of the many reasons i am using CSLA is for its remoting capabilities, my remote data fetches will be smaller in size compared to Sql datasets which is a massive advantage in my situation.</P>
+<P>Now, for the 'remote database' i wish the business objects to run on the remoting host fetching data from an sql database (which will be located if not on the same machine, nearby in the datacenter).</P>
+<P>And for the 'local database' i wish the business objects to run on the local machine.</P>
+<P>Furthermore, although my business object(s) will read from two different datasources&nbsp;they are&nbsp;structuarly identical.</P>
+<P>However i need to pay attention to where the object is being ran, for certain databases/datasources access layers i need DP_XYZ to run local, and for others i want the DP_XYZ methods to be ran on the remoting server. The reason being if i RunLocal for an sql connected database i will end up connecting from the local machine to the remote database transferring the entire dataset over the wire. Also i feel this is not as secure, either way&nbsp;way operating like this defeats the purpose of CSLA&nbsp;and your hard work! </P>
+<P>Is it possible, rather than by attributes RunLocal, to set at runtime inside an instance of a&nbsp;business object wether the business object instance should run local or remote? That way in my BusinessListBase object's static method to get lists of objects i can pass in the data access layer interface (with the common interface as discussed earlier in the thread) which would also have a property used&nbsp;for the business object to decide&nbsp;wether&nbsp;it should&nbsp;RunLocal or remote?</P>
+<P>The only other way i can think of is to have two identical business objects, one decorated with RunLocal attrtibute, and the other without. How does this sound?</P>
+<P>Thanks,</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This local/remote toggle issue has been discussed a few times
+before. The answer is to write a custom data portal proxy (and if you search
+the forum for that phrase you&#8217;ll probably find the previous threads).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You must have some criteria by which you know to run local or
+remote. All you need to do is create a simple DP proxy (which isn&#8217;t hard)
+that makes this determination and then either delegates to the LocalProxy or
+some remote proxy (WcfProxy, RemotingProxy, whatever).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(Note that RunLocal will override any such proxy &#8211; the data
+portal routes to LocalProxy <i>before</i> your custom proxy would get a chance
+to run. Due to this, RunLocal is probably only useful for cases where no
+database access is required at all.)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can then use ApplicationContext.ExecutionLocation in your
+DP_XYZ methods to determine if you are actually local or remote and call the
+DAL accordingly. Or make your DAL factory method use ApplicationContext.ExecutionLocation
+and branch there (that&#8217;s probably cleaner).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> g18c
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, June 24, 2007 9:26 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Same business object, but using two
+different data sources (different data access methods)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky, i started implementing the data transfer objects and something hit
+me. When i talk of two different datasources, i wish to connect to one on the
+local machine, and one on a remote server. One of the many reasons i am using
+CSLA is for its remoting capabilities, my remote data fetches will be smaller in
+size compared to Sql datasets which is a massive advantage in my situation.<o:p></o:p></p>
+
+<p>Now, for the 'remote database' i wish the business objects to run on the
+remoting host fetching data from an sql database (which will be located if not
+on the same machine, nearby in the datacenter).<o:p></o:p></p>
+
+<p>And for the 'local database' i wish the business objects to run on the local
+machine.<o:p></o:p></p>
+
+<p>Furthermore, although my business object(s) will read from two different
+datasources&nbsp;they are&nbsp;structuarly identical.<o:p></o:p></p>
+
+<p>However i need to pay attention to where the object is being ran, for
+certain databases/datasources access layers i need DP_XYZ to run local, and for
+others i want the DP_XYZ methods to be ran on the remoting server. The reason
+being if i RunLocal for an sql connected database i will end up connecting from
+the local machine to the remote database transferring the entire dataset over
+the wire. Also i feel this is not as secure, either way&nbsp;way operating like
+this defeats the purpose of CSLA&nbsp;and your hard work! <o:p></o:p></p>
+
+<p>Is it possible, rather than by attributes RunLocal, to set at runtime inside
+an instance of a&nbsp;business object wether the business object instance
+should run local or remote? That way in my BusinessListBase object's static
+method to get lists of objects i can pass in the data access layer interface
+(with the common interface as discussed earlier in the thread) which would also
+have a property used&nbsp;for the business object to decide&nbsp;wether&nbsp;it
+should&nbsp;RunLocal or remote?<o:p></o:p></p>
+
+<p>The only other way i can think of is to have two identical business objects,
+one decorated with RunLocal attrtibute, and the other without. How does this
+sound?<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Chris<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

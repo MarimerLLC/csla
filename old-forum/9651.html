@@ -1,0 +1,91 @@
+<html><header><title>Conditional Rule CSLA 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Conditional Rule CSLA 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9651.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx posted on Monday, October 18, 2010</h2><p>CSLA 4</p>
+<p>I am trying to create a condtional rule and having trouble trying to replicate behavior from previous Csla versions.</p>
+<p>So say I have some properties that are only required based on the state / flag in an object and I would like to reuse the existing RequiredRule.</p>
+<p>In previous versions of Csla I would do something like this (sorry, old vb code that I could find..):</p>
+<p>Private Shared Function DetailDataRequiredRule(Of T As MyObject)(ByVal target As T, ByVal e As Validation.RuleArgs) As Boolean<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Dim isRuleValid = True<br /><br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; If (target.RequireDetailProductData) Then<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; isRuleValid = CommonRules.StringRequired(target, e)<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; End If<br /><br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Return isRuleValid<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; End Function</p>
+<p>And then I can add ValidationRules.AddRule with my custom rule for only the properties that need to be validated when the condition is met.</p>
+<p>So...if you are still with me. My problem is trying to execute the existing ValidationRule.</p>
+<p>Thanks for pointers.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>emadalsous replied on Monday, October 18, 2010</h2><p>Hello, if i get what you say , i think that you have to Define new Class for every custom rule&nbsp; inherit BusinessRule in </p>
+<p>CSLA 4 so in your case this is what i can help in C# : </p>
+<p>&nbsp;private class SomeRule: Csla.Rules.BusinessRule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Execute(Csla.Rules.RuleContext context)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var target = (TheClassIncludeTheProperites)context.Target;<br />&nbsp; If (target.RequireDetailProductData)</p>
+<p>{&nbsp;</p>
+<p>if(string.IsNullOrEmpty(PrimaryProperty);</p>
+<p>context.AddErrorResult(&quot;Required Field&quot;);</p>
+<p>}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</p>
+<p>&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>and you add it to the rules in this way </p>
+<p>&nbsp;BusinessRules.AddRule(new SomeRule{ PrimaryProperty = PropertyToValidate, AffectedProperties = { PropertyToBeAffected&nbsp;} });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, October 18, 2010</h2><p>I haven&#39;t tried this, but I would probably subclass the StringRequired rule, and the in the override of Execute selectively call the base implementation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Tuesday, October 19, 2010</h2><p>Perfect! That did the trick. Here is my code for reference:</p>
+<p>private class AdditionalDataRequired : Csla.Rules.CommonRules.Required {<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public AdditionalDataRequired(IPropertyInfo primaryProperty) : base(primaryProperty) { }<br /><br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; protected override void Execute(Csla.Rules.RuleContext context) {<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; var target = (MyObject)context.Target;<br /><br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (target.IsAdditionalDataRequired) {<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; base.Execute(context);<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>BusinessRules.AddRule(new AdditionalDataRequired (MyProperty1));<br />BusinessRules.AddRule(new AdditionalDataRequired (MyProperty2));</p>
+<p>BusinessRules.AddRule(new Dependency(PropertyThatDeterminesIfAddtionalDataIsRequired, MyProperty1));<br />BusinessRules.AddRule(new Dependency(PropertyThatDeterminesIfAddtionalDataIsRequired, MyProperty2));</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, October 19, 2010</h2><p>There is 2 different approaches to this: </p>
+<p>1. Chained Rule:<br />&nbsp;&nbsp;&nbsp;&nbsp; Your rule has a StringRequired inner rule and you test for whether the inner rule should run or not. </p>
+<p>2. Use Priority to control sequence and create a &quot;flow control rule&quot; that will ShortCircuit the rule if condition is not met to run first. </p>
+<p>I like the concept of FlowControlRules whenever applicable because they can be combined with any other rul and it is easy to get into trouble with RuleChaining if you do not fully understand the underlying rules in terms of Async/Sync capabilities, InputProperties and does the underlying rule require the Target object. </p>
+<p>Jonny</p>
+<p><b>Code samples: </b></p>
+<p><b>1. Chained Rule<br /></b></p>
+<pre id="code-result" class="brush:vbnet">&#39;&#39;&#39; &lt;summary&gt;
+&#39;&#39;&#39; This class demonstrates how to utilize inner rules inside a business rule. 
+&#39;&#39;&#39; 
+&#39;&#39;&#39; This rule calls inner rule StringRequired on PrimaryProperty if countryCode is US
+&#39;&#39;&#39; &lt;/summary&gt;
+Public Class StringRequiredIfUS
+	Inherits Csla.Rules.BusinessRule
+	Private _countryProperty As IPropertyInfo
+	Private _innerRule As IBusinessRule
+	&#39; TODO: Add additional parameters to your rule to the constructor
+	Public Sub New(primaryProperty As IPropertyInfo, countryProperty As IPropertyInfo)
+&nbsp;		MyBase.New(primaryProperty)
+		_countryProperty = countryProperty
+		_innerRule = DirectCast(New Csla.Rules.CommonRules.Required(primaryProperty), IBusinessRule)
+		InputProperties = New List(Of IPropertyInfo)()
+
+		&#39; this rule needs the Country property
+		InputProperties.Add(countryProperty)
+
+		&#39; add input properties required by inner rules
+		Dim inputProps = _innerRule.InputProperties.Where(Function(inputProp) Not InputProperties.Contains(inputProp))
+		If inputProps.Count() &gt; 0 Then
+			InputProperties.AddRange(inputProps)
+		End If
+	End Sub
+
+	Protected Overrides Sub Execute(context As RuleContext)
+		&#39; TODO: Add actual rule code here. 
+		Dim country = DirectCast(context.InputPropertyValues(_countryProperty), String)
+		If country = CountryNVL.UnitedStates Then
+			_innerRule.Execute(context.GetChainedContext(_innerRule))
+		End If
+	End Sub
+End Class<br /><br /><b>2. &quot;Flow control rule&quot; </b><br />(this rule checks if user is allowed to edit a field)<br /><br />Public Class StopIfNotCanWrite<br />	Inherits BusinessRule
+	Public Sub New([property] As IPropertyInfo)
+		MyBase.New([property])
+	End Sub
+
+	&#39;&#39;&#39; &lt;summary&gt;
+	&#39;&#39;&#39; Rule indicating whether the user is authorized
+	&#39;&#39;&#39; to read the property value.
+	&#39;&#39;&#39; Will always be silent and never set rule to broken.
+	&#39;&#39;&#39; &lt;/summary&gt;
+	&#39;&#39;&#39; &lt;param name=&quot;context&quot;&gt;Rule context object.&lt;/param&gt;
+	&#39;&#39;&#39; &lt;remarks&gt;
+	&#39;&#39;&#39; Combine this Rule with short-circuiting to
+	&#39;&#39;&#39; prevent evaluation of other rules in the case
+	&#39;&#39;&#39; that the user isn&#39;t allowed to read the value.
+	&#39;&#39;&#39; &lt;/remarks&gt;
+	Protected Overrides Sub Execute(context As RuleContext)
+		Dim isAuthorized = True
+		Dim business = TryCast(context.Target, BusinessBase)
+		If business IsNot Nothing Then
+			isAuthorized = business.CanWriteProperty(context.Rule.PrimaryProperty)
+		End If
+
+		If Not isAuthorized Then &nbsp;&nbsp; &#39; ShortCircuit rule&nbsp; &nbsp;			<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddInformationResult([String].Empty, True)
+		End If
+	End Sub
+End Class
+</pre>
+<p>And in AddBusinessRules method</p>
+<pre id="code-result" class="brush:vbnet"><p>&nbsp; &nbsp; &nbsp; &#39; Rules with Priority=-1 will always be executed before default Priority 0<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new StopIfNotCanWrite(OtherAddress1Property) { Priority = -1 });&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRules.AddRule(new Required(OtherAddress1Property));</p></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Tuesday, October 19, 2010</h2><p>Thanks for the detail reply Jonny. See my reply to Andy for how I ended up handling this scenario.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

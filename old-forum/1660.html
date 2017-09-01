@@ -1,0 +1,28 @@
+<html><header><title>upgrade recipe available?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>upgrade recipe available?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1660.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtagliaf posted on Wednesday, November 01, 2006</h2><font face="Verdana" size="1">Does anyone have a list of stuff that needs to be done to upgrade a CSLA 1.x class to CSLA 2.&lt;latest&gt;?<br><br>I have a CSLA 1.52 project that I wasn't planning on ever upgrading, but a customer just asked about something that could be solved with 2.x (business rules that trigger warnings but still allow the object to be saved).<br><br>I'm wondering if there's a "recipe" to follow when converting a class over.<br><br>thanks,<br>matt tag<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, November 01, 2006</h2>There is no ready-for-use recipe. Just this changelog: <a href="http://www.lhotka.net/Article.aspx?id=1b043659-c5e2-4832-ae48-048ca281c038">http://www.lhotka.net/Article.aspx?id=1b043659-c5e2-4832-ae48-048ca281c038</a><br><br>I hope that following this document you will be able to derive your own recipe ...<br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phowatt replied on Wednesday, November 01, 2006</h2><P>Matt,</P>
+<P>I have converted from the earlier CSLA version to the latest 2.1 and the biggest difference I found was in the validation stuff.&nbsp; Once you understand it the conversion is not too bad.&nbsp; I can give you a couple code snippets of validation stuff if you like as a reference.&nbsp; But I suppose it could be different for you depending on how you have written your business classes.&nbsp; My validation code is pretty straight forward.&nbsp; I am not using any of the warning features.&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, November 01, 2006</h2><P>Many months ago a Word document was published by a CSLA user who did a conversion from 1.x to 2.0 and included a set of issues that may need to be resolved and some suggestions on how to do it. If you want it then let me have an email address and I will forward it.</P>
+<P>Joe</P>
+<P>One tip:</P>
+<P>Add a reference to a new .dll named System.Configuration.dll before trying to change a warning about ConfigurationManager. MS deprecated the namespace in System.dll related to Configuration and created a new .dll but never told anyone to reference it first.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtagliaf replied on Wednesday, November 01, 2006</h2>thanks, I'll take it. You can send to mtagliaf -at- cleindians -dot- com<br><br>matt tag<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>eslater replied on Monday, April 02, 2007</h2><P>Joe,</P>
+<P>I am about to do the upgrade myself and was wondering if you still had the word doc kicking around.&nbsp; If so I would appreciate it if you could fire it off to eslater *at* mmhouse -dot- com</P>
+<P>Thanks,<BR>Elliot</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>askywalker replied on Monday, April 02, 2007</h2><P>You might give this .Net Rocks&nbsp;episode a listen:</P>
+<P><A href="http://www.dotnetrocks.com/default.aspx?showNum=169">http://www.dotnetrocks.com/default.aspx?showNum=169</A></P>
+<P>"<SPAN id=ctl00_ContentPlaceHolder1_lblShowDescription>Rocky Lhotka discusses his CSLA.NET application framework version 2.0. New features, changes, and migration tips."</SPAN></P>
+<P><SPAN>and...</SPAN></P>
+<P><A href="http://www.dotnetrocks.com/default.aspx?showID=127">http://www.dotnetrocks.com/default.aspx?showID=127</A></P>
+<P>"In this episode, Rocky talks about CSLA.NET and the changes for VS2005. He drills down into the details of some aspects of CSLA, and talks about his opinions on Service Oriented Architechture and Objects, and plenty more."</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 03, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>eslater:</strong></div><div> 
+<P>Joe,</P>
+<P>I am about to do the upgrade myself and was wondering if you still had the word doc kicking around.&nbsp; If so I would appreciate it if you could fire it off to eslater *at* mmhouse -dot- com</P>
+<P>Thanks,<BR>Elliot</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Done.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Tuesday, April 03, 2007</h2><P>Any chance you could post the doc to this thread as an attachment?</P>
+<P>Thanks<BR>-- Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, April 04, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Fintanv:</strong></div><div>
+<P>Any chance you could post the doc to this thread as an attachment?</P>
+<P>Thanks<BR>-- Fintan</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Done.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,62 @@
+<html><header><title>Csla 3.0.5 objects with wpf</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 3.0.5 objects with wpf</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5951.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Monday, December 08, 2008</h2><P>I'm hoping that I'll be able to use my old 3.0.5 objects with the new Csla.Wpf components.&nbsp; Will these objects inevitably need to&nbsp;be brought up to Csla 3.5&nbsp; before Wpf can implement them?</P>
+<P>I tried a test app and ran into the following error:</P>
+<P>Could not load file or assembly 'Csla, Version=3.0.5.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)&nbsp; Error at object 'ReferralSubmission' in markup file 'WpfTest;component/wpftestwindow.xaml' Line 8 Position 25.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2><P>.NET can only load one instance of an assembly into memory at a time. So you can't load two different versions of x.dll into the same application at the same time. This is true for all assemblies, including Csla.dll.</P>
+<P>If you want to use two different versions of Csla.dll in the same program, you'll need to rename one of them to be Csla-other.dll (or something) and change its root namespace to something else (not Csla) to avoid naming collisions.</P>
+<P>You are probably better off bringing your code up to the latest version of CSLA .NET.</P>
+<P>Btw, the really cool WPF controls are in 3.6, not 3.5 (PropertyStatus, ObjectStatus, etc).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, December 08, 2008</h2><P>Thanks Rcoky, </P>
+<P>sorry for the 3.6 newb question.&nbsp; We're only considering implementing Wpf right now and I haven't even started reading the newer Csla book yet.&nbsp; Thanks again for the help, very useful.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>WPF is a lot more fun in 3.6 with the new controls &#8211;
+especially PropertyStatus, but also with the new per-type authorization and
+related support in ObjectStatus.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> decius
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 08, 2008 12:08 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Csla 3.0.5 objects with wpf<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rcoky, <o:p></o:p></p>
+
+<p>sorry for the 3.6 newb question.&nbsp; We're only considering implementing
+Wpf right now and I haven't even started reading the newer Csla book yet.&nbsp;
+Thanks again for the help, very useful.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

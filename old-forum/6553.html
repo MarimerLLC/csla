@@ -1,0 +1,453 @@
+<html><header><title>Calculate SubTotal for InvoiceDetail and Total for Invoice</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Calculate SubTotal for InvoiceDetail and Total for Invoice</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6553.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Wednesday, March 04, 2009</h2>I have a classis example.<br>
+An invoice with invoicedetails.<br>
+<br>
+An InvoiceDetail has the following properties:<br>
+Quantity<br>
+UnitPrice<br>
+SubTotal<br>
+<br>
+An invoice has the property Total<br>
+<br>
+<br>
+On the UI the user can add and change InvoiceDetails via a grid.<br>
+When a user is changing the Quantity or UnitPrice, the property
+SubTotal must be calculated automatically. Also the Total of the
+Invoice must be calculated automatically. &nbsp; <br>
+Below you can find the way I implemented it, but I was wondering it is the good way?<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; public partial class InvoiceDetail : Csla.BusinessBase&lt;InvoiceDetail&gt;<br>
+&nbsp;&nbsp;&nbsp; {<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Business Properties and Methods<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; //register properties<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private static
+PropertyInfo&lt;decimal&gt; QuantityProperty =
+RegisterProperty&lt;decimal&gt;(typeof(InvoiceDetail), new
+PropertyInfo&lt;decimal&gt;("Quantity"));<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private static
+PropertyInfo&lt;decimal&gt; UnitPriceProperty =
+RegisterProperty&lt;decimal&gt;(typeof(InvoiceDetail), new
+PropertyInfo&lt;decimal&gt;("UnitPrice"));<br>
+<br>
+&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;decimal&gt;
+SubTotalProperty =
+RegisterProperty&lt;decimal&gt;(typeof(InvoiceDetail), new
+PropertyInfo&lt;decimal&gt;("SubTotal"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public decimal Quantity<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return GetProperty&lt;decimal&gt;(QuantityProperty); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;decimal&gt;(QuantityProperty, value); RecalcSubTotal(); }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public decimal UnitPrice<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get { return GetProperty&lt;decimal&gt;(UnitPriceProperty); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty&lt;decimal&gt;(UnitPriceProperty, value); RecalcSubTotal(); }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; public decimal SubTotal<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;decimal&gt;(SubTotalProperty); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal set {
+SetProperty&lt;decimal&gt;(SubTotalProperty, value);
+OnSubTotalChanged("SubTotal"); }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; private void RecalcSubTotal()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SubTotal=&nbsp; Quantity * UnitPrice;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; #endregion<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; #region " SubTotal Changed event "<br>
+&nbsp;&nbsp;&nbsp; [NonSerialized()]<br>
+&nbsp;&nbsp;&nbsp; private EventHandler&lt;System.ComponentModel.PropertyChangedEventArgs&gt; mNonSerializableHandlers;<br>
+&nbsp;&nbsp;&nbsp; private EventHandler&lt;System.ComponentModel.PropertyChangedEventArgs&gt; mSerializableHandlers;<br>
+&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>
+&nbsp;&nbsp;&nbsp; /// Implements a serialization-safe RemovingItem event.<br>
+&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>
+&nbsp;&nbsp;&nbsp; public event EventHandler&lt;PropertyChangedEventArgs&gt; SubTotalChanged <br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; add <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(value.Method.IsPublic &amp;&amp;
+(value.Method.DeclaringType.IsSerializable || value.Method.IsStatic)) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mSerializableHandlers =
+(EventHandler&lt;PropertyChangedEventArgs&gt;)System.Delegate.Combine(mSerializableHandlers,
+value);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mNonSerializableHandlers =
+(EventHandler&lt;PropertyChangedEventArgs&gt;)System.Delegate.Combine(mNonSerializableHandlers,
+value);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; remove <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(value.Method.IsPublic &amp;&amp;
+(value.Method.DeclaringType.IsSerializable || value.Method.IsStatic)) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mSerializableHandlers =
+(EventHandler&lt;PropertyChangedEventArgs&gt;)System.Delegate.Remove(mSerializableHandlers,
+value);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+mNonSerializableHandlers =
+(EventHandler&lt;PropertyChangedEventArgs&gt;)System.Delegate.Remove(mNonSerializableHandlers,
+value);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; [EditorBrowsable(EditorBrowsableState.Advanced)]<br>
+&nbsp;&nbsp;&nbsp; protected virtual void OnSubTotalChanged(string propertyName)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mNonSerializableHandlers != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mNonSerializableHandlers.Invoke(this,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new PropertyChangedEventArgs(propertyName));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mSerializableHandlers != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mSerializableHandlers.Invoke(this,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new PropertyChangedEventArgs(propertyName));<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; #endregion<br>
+&nbsp;&nbsp;&nbsp; }<br>
+----------------------------------------------------------------<br>
+<br>
+&nbsp;&nbsp;&nbsp; public partial class InvoiceDetails : Csla.BusinessListBase&lt;InvoiceDetails, InvoiceDetail&gt;<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; <br>
+<br>
+&nbsp;&nbsp;&nbsp; protected override void OnListChanged(System.ComponentModel.ListChangedEventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.ListChangedType == ListChangedType.ItemAdded) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this[e.NewIndex].SubTotalChanged += new
+EventHandler&lt;PropertyChangedEventArgs&gt;(InvoiceDetails_SubTotalChanged);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (e.ListChangedType == ListChangedType.ItemDeleted) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+InvoiceDetails_TotalChanged(this, new
+System.ComponentModel.PropertyChangedEventArgs("InvoiceDetails-ListChanged"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnListChanged(e);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; void InvoiceDetails_SubTotalChanged(object sender, PropertyChangedEventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; decimal total = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (InvoiceDetail tmp in this)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; total += tmp.SubTotal;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((Invoice)this.Parent).Total =&nbsp; total;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+----------------------------------------------------------------<br>
+&nbsp;&nbsp;&nbsp; [Serializable()] <br>
+&nbsp;&nbsp;&nbsp; public partial class Invoice : Csla.BusinessBase&lt;Invoice&gt;<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region Business Properties and Methods<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; //register properties<br>
+&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;decimal&gt;
+TotalProperty = RegisterProperty&lt;decimal&gt;(typeof(Invoice), new
+PropertyInfo&lt;decimal&gt;("Total"));<br>
+&nbsp;&nbsp;&nbsp;  <br>
+&nbsp;&nbsp;&nbsp; public decimal Total<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;decimal&gt;(TotalProperty); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal set { SetProperty&lt;decimal&gt;(TotalProperty, value); }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 04, 2009</h2>You can probably use the ChildChanged property (3.5 or later) to simplify the code so you don't need to declare/raise your own events.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, March 06, 2009</h2><span>Thanks for your reply.<br>
+The
+only issue with listening to ChildChanged is that it will fire for all changes
+to any property of any child no?&nbsp; I am only interested in the property SubTotal.</span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval replied on Friday, March 06, 2009</h2>Why dont use e.PropertyChangedArgs.PropertyName in the event ChildChanged, so you can raise your SubtotalChanged only when the propertyName correspond to the interested.<br><br>swith (e.PropertyChangedArgs.PropertyName){<br>&nbsp;case "Quantity":<br>&nbsp;case "UnitPrice":<br>&nbsp;&nbsp;&nbsp;&nbsp; ((InvoiceDetail)e.ChildObject).RecalcSubtotal();<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Saturday, March 07, 2009</h2><FONT size=2>
+<P>I've tried your idea but apparently OnChildChanged gets only called when a new InvoiceDetail is added.</P>
+<P>Afterwards when we change properties of InvoiceDetail, OnChildChanged is not called anymore on the Invoice object.</P>
+<P>I'm using the latest version of CSLA (cslacs-3.6.2-090302). Could this be a bug?</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Invoice</FONT><FONT size=2> : Csla.</FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>Invoice</FONT><FONT size=2>&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnChildChanged(Csla.Core.</FONT><FONT color=#2b91af size=2>ChildChangedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (e.PropertyChangedArgs != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (e.PropertyChangedArgs.PropertyName)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"Quantity"</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;case</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"UnitPrice"</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;decimal</FONT><FONT size=2> total = 0;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>InvoiceDetail</FONT><FONT size=2> tmp </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.InvoiceDetails)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;total += tmp.SubTotal;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Total = total; </P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;break</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.OnChildChanged(e);</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Saturday, March 07, 2009</h2><FONT size=2>
+<P>It is my fault.</FONT><FONT color=#0000ff size=2></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>In the class InvoiceDetails I had the following code (an empty OnChildChanged method, without calling <FONT color=#0000ff size=2></P>
+<P>base</FONT><FONT size=2>.OnChildChanged(e);) ==&gt; this is the reason why the root object Invoice didn't receive the methoad call OnChildChanged.</FONT></FONT></P></FONT><FONT color=#0000ff size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>InvoiceDetails</FONT><FONT size=2> : Csla.</FONT><FONT color=#2b91af size=2>BusinessListBase</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>InvoiceDetails</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>InvoiceDetail</FONT><FONT size=2>&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnChildChanged(Csla.Core.</FONT><FONT color=#2b91af size=2>ChildChangedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>}</P>
+<P>....</P>
+<P>}</P>
+<P></FONT></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Below follows the code which also takes into account a newly added InvoiceDetail and a deleted InvoiceDetail.</FONT></P>
+<P><FONT size=2>In these cases e.PropertyChangedArgs is null and we need to call RecalcTotal also.</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>partial</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Invoice</FONT><FONT size=2> : Csla.</FONT><FONT color=#2b91af size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2>Invoice</FONT><FONT size=2>&gt;</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnChildChanged(Csla.Core.</FONT><FONT color=#2b91af size=2>ChildChangedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (e.PropertyChangedArgs == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>RecalcTotal();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (e.PropertyChangedArgs.PropertyName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> </FONT><FONT color=#a31515 size=2>"SubTotal"</FONT><FONT size=2>:</P>
+<P>RecalcTotal();</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.OnChildChanged(e);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RecalcTotal()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>decimal</FONT><FONT size=2> total = 0;</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>InvoiceDetail</FONT><FONT size=2> tmp </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.InvoiceDetails)</P>
+<P>{</P>
+<P>total += tmp.SubTotal;</P><FONT size=2>
+<P>}</P>
+<P>Total = total; </P>
+<P>}</P></FONT></FONT><FONT size=2></FONT>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>But when implementing this <STRONG>the binding of the grid behaves very strange</STRONG>. When adding a new line (InvoiceDetail)&nbsp;to the grid, the focus of the grid goes always to the first row. When putting the code "Total = total; " in the method RecalcTotal in comment the binding behaves correctly. What can be the reason?</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval replied on Saturday, March 07, 2009</h2>I'm having a similar&nbsp; problem, it seems to be a bug, because when I call OnPropertyChanged inside a ListChanged Event the new pending row is automatically commited into the binding list (in your case I dont know if PropertyChanged is called into set_Total, I has been fighting with this all the week, but I have does not found a solution =(.<br><br>I'm doing the same that you but in a little different way, I was testing in Csla 3.6.1, this example is a mix hehe, because I have started with Csla 3.6.1 in this week:<br><br>
+public class Invoice {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;decimal&gt; TotalProperty =
+RegisterProperty&lt;decimal&gt;(typeof(inventory), new
+PropertyInfo&lt;decimal&gt;("Total"));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private InvoiceDetailList _invoiceDetailList= InvoiceDetailList.NewInvoiceDetailList();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public decimal Total<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;decimal&gt;(TotalProperty); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal set { SetProperty&lt;decimal&gt;(TotalProperty, value); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; private Invoice()<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _invoiceID= NewID();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _invoiceDetailList.ChildChanged += new
+EventHandler&lt;Csla.Core.ChildChangedEventArgs&gt;(invoiceDetailList_ChildChanged);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void _invoiceDetailList_ChildChanged(object sender, Csla.Core.ChildChangedEventArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; decimal localTotal=0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch(e.PropertyChangedArgs.PropertyName){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case "Quantity":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case "UnitCost":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case "Discount":<br>
+<blockquote>
+  <blockquote>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach(InvoiceDetail tmp in _invoiceDetailList){<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; localTotal += tmp.Subtotal;<br>
+  </blockquote>
+</blockquote>
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; decimal beforeTotal=Total;<br>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(beforeTotal!= localTotal) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total = localTotal;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; OnTotalChanged(this, new TotalChangedEventArgs(beforeTotal,localTotal)); //Only for use in the UI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+<br>
+public class InvoiceDetail {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public decimal Subtotal {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Quantity * UnitCost *(1-Discount/100);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; }<br>
+}<br><br>Something like this I tested in the morning and appear to works. <br><br>EDIT 1: dont forget, hehe I have seen this in another post!<br><span>protected override void
+OnDeserialized(System.Runtime.Serialization.StreamingContext context)<o:p></o:p></span>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _invoiceDetailList.ChildChanged += </span><span>_invoiceDetailList.ChildChanged(....);</span><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; }</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, March 10, 2009</h2><P>When calculating the Total property, PropertyChanged will be called automatically by the CSLA framework. The SetProperty will call this PropertyChanged.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>decimal</FONT><FONT size=2> Total</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#0000ff size=2>decimal</FONT><FONT size=2>&gt;(TotalProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { SetProperty&lt;</FONT><FONT color=#0000ff size=2>decimal</FONT><FONT size=2>&gt;(TotalProperty, </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>); }</P>
+<P>}</P>
+<P><FONT size=3>I have the same behavior :&nbsp; <STRONG>new pending row is automatically commited</STRONG>.</FONT></P>
+<P><FONT size=3>So when I'm adding a new row on the InvoiceDetail grid, and I'm filling in the Quantity or UnitPrice property, when I leave the cell the row is automatically comitted (even worse the newly added row loses&nbsp;its focus and&nbsp;the first line in the grid gets the focus).</FONT></P>
+<P><FONT size=3>OnChildChanged will be called on the invoice level when adding a new InvoiceDetail and because of the calculating of the property Total on the Invoice object, also SetProperty will be called which calls also propertychanged, apparently the InvoiceDetail gets committed and loses the focus.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval replied on Tuesday, March 10, 2009</h2>This is the same problem that I have :-(, rocky answered to my post saying that this is a bug that was fixed in 3.0.3, but I'm not sure that is the same bug that he means. <br>I think that it happens because the list is bound to a Datamember of the parent, so ApplyEdit is called automatically by the parent when a property change in the root, and maybe this is not a bug of CSLA, if not that is the way on wich data binding work (I'm suposing, I dont know <img src="/emoticons/emotion-42.gif" alt="Confused [*-)]" /> somebody help me please!).<br>Maybe if instead of use SetProperty:<br><br>private decimal _Total=0;<br>public decimal Total {<br>&nbsp;get{<br>&nbsp;&nbsp; return _Total;<br>&nbsp;}<br>&nbsp;set{<br>&nbsp;&nbsp; if(_Total!=value){<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Total=value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("Total");<br>&nbsp;&nbsp; }<br>&nbsp;}<br>}<br><br>if(_Total!=total){<br>&nbsp;MarkDirty(false);<br>&nbsp;_Total = total;<br>&nbsp;ValidationRules.CheckRules();<br>}<br><br>On this way you avoid to raise PropertyChanged.<br><br>Best Regards.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, March 13, 2009</h2>The call should be MarkDirty(true); in place of MarkDirty(false)<br>
+Only in this way you avoid the raise of the event PropertyChanged.<br>
+But when doing this the UI doesn't get notified that it has to refresh the Total label.<br>
+<br>
+I've found the following interesting forum :http://forums.lhotka.net/forums/thread/24830.aspx<br>
+<br>
+Especially the following said by Lhotka is the problem we have:<br>
+<p class="MsoNormal"><span>People constantly implement event cascading – where a
+change in a child object (or list) results in a changed event at the parent
+level.</span></p>
+
+
+
+
+<span>That turns out to be bad. Very bad. <b>Having the parent raise a
+PropertyChanged event when its child list changes causes Windows Forms data
+binding to react badly.</b> From what I can see, it causes the currency to “flicker”
+– change just long enough to force a commit of the current row in the
+grid.<br>
+<br>
+The solution of Lhotka : </span><span>So this is unfortunate. It means that BusinessBase can’t
+bubble a child list’s ListChanged event up as a PropertyChanged event.<br>
+</span><span>I’m thinking that what I’ll do as an alternative, is
+have a virtual OnChildChanged() method in BusinessBase that gets called when a
+child’s ListChanged or PropertyChanged event comes in. That will allow
+notification to the parent that its child has changed. But I <i>won’t</i>
+continue to raise a PropertyChanged event because that’s obviously bad.<br>
+<br>
+This explanation is really interesting. So indeed Lhotka solved this by
+not raising anymore the PropertyChanged event. So we have to override
+the </span><span>OnChildChanged() method and that is what I'm doing in the Invoice object.<br>
+<br>
+&nbsp;&nbsp;&nbsp; public partial class Invoice : Csla.BusinessBase&lt;Invoice&gt;<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.PropertyChangedArgs == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RecalcTotal();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch (e.PropertyChangedArgs.PropertyName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case "SubTotal":<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RecalcTotal();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnChildChanged(e);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; private void RecalcTotal()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; decimal total = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (InvoiceDetail tmp in this.InvoiceDetails)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; total += tmp.SubTotal;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Total = total; <br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; public decimal Total<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;decimal&gt;(TotalProperty); }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal set { SetProperty&lt;decimal&gt;(TotalProperty, value); }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; }<br>
+</span><span><br>
+</span><span><br>
+But finally when setting the Total property, the CSLA framework will
+call anyway the PropertyChanged event and gives us again the problem
+with the binding.<br>
+<br>
+Lhotka: do you have an idea how to solve this?<br>
+</span><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, March 17, 2009</h2><P>I've opened a case with devexpress <A href="http://www.devexpress.com/Support/Center/p/B134492.aspx">http://www.devexpress.com/Support/Center/p/B134492.aspx</A></P>
+<P>You can find there also an example I've created.</P>
+<P>They answered the following:</P>
+<P>Your approach would work, if changing a property fired a single PropertyChanged notification. But OnChildChanged() / RecalcTotal() also raises a ListChanged event with the ListChangedType.Reset parameter. "Reset" stands for major changes made to the list, and the grid is completely refreshed. The XtraGrid's behavior is qualified as by design.</P>
+<P>&nbsp;</P>
+<P><STRONG>Is there a way to avoid raising a ListChanged event with the ListChangedType.Reset parameter?</STRONG></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, March 17, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>alef:</strong></div><div><strong>Is there a way to avoid raising a ListChanged event with the ListChangedType.Reset parameter?</strong></div></BLOCKQUOTE><br>I think not. Any property change on the root object will cause a ListChanged Reset on the child list. That's unfortunately how WinForms binding works. It doesn't make much sense but changing one property causes all properties to refresh. For a property which is a list, "refresh" means to send a ListChanged reset.&nbsp; That means that even if you change one unrelated checkbox on the root, all lists refresh. <br><br>Maybe the way to go is to make your subtotal property just a regular property, not a CSLA property. Then it won't fire PropertyChanged. Then you'll need something to make refresh the UI. You can probably do that from the bindingSource CurrentItemChanged event.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, March 20, 2009</h2><P>In the meantime the discussion is going also further on the forum of DevExpress:</P><A href="http://www.devexpress.com/Support/Center/p/B134492.aspx">http://www.devexpress.com/Support/Center/p/B134492.aspx</A>
+<P>Does somebody has some new ideas how to solve this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, March 23, 2009</h2><P>I've discovered something new.</P>
+<P>So in the example I've made&nbsp;(in the link&nbsp;<A href="http://www.devexpress.com/Support/Center/p/B134492.aspx">http://www.devexpress.com/Support/Center/p/B134492.aspx</A>&nbsp;you'll find the attachment ProblemPropertyChanged.zip) you'll find two BindingSource controls.</P>
+<P>invoiceBindingSource with the following properties</P>
+<P>&nbsp;&nbsp;&nbsp;DataSource: InvoiceLibrary.Invoice</P>
+<P>invoiceDetailsBindingSource with the following properties</P>
+<P>&nbsp;&nbsp;&nbsp;<STRONG>DataSource: invoiceBindingSource</STRONG></P>
+<P>&nbsp;&nbsp;&nbsp;DataMember: InvoiceDetails</P>
+<P>In this case the grid doesn't behave correctly. The problem is that when adding a new line and filling in Quantity and afterwards UnitPrice&nbsp;in the XtraGrid, the new item row loses its focus. So the user doesn't have anymore the capability to undo his changes.</P>
+<P>When I put the following properties on invoiceDetailsBindingSource</P>
+<P>&nbsp;&nbsp;&nbsp;<STRONG>DataSource: InvoiceLibrary.Invoice</STRONG></P>
+<P>&nbsp;&nbsp;&nbsp;DataMember: InvoiceDetails</P>
+<P>the grid behaves correctly.</P>
+<P><STRONG>So when&nbsp;using one BindingSource as the data source for another BindingSource, the grid doesn't behave well.</STRONG></P>
+<P>But in the example ProjectTracker, that is the way Lhotka is using it. Is there some explanation for this?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I created the ProjectTracker UI by using drag-and-drop data
+binding from the Data Sources window in Visual Studio. My goal was (and is) to
+use the built-in data binding and designer capabilities provided by VS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Some third party controls may not work perfectly well with the
+VS designer&#8217;s approach to doing data binding. In that case, you may need
+to do some manual work to set the binding properties on your controls, instead
+of using the drag-and-drop capabilities of VS.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

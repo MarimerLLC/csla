@@ -1,0 +1,44 @@
+<html><header><title>BusinessRules hanging around with unit tests</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessRules hanging around with unit tests</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12140.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pearljam posted on Tuesday, September 03, 2013</h2><p>I have a set of unit tests testing the properties and rules of my business object. My business object has a string property called Frequency, and I attach a rule to that property that checks the string against a regular expression. That regular expression is pulled out of a config file based on a value that gets passed into my objects constructor. In the test setup portion of my unit tests (MSTest), I create two instances of my business object. The only difference between the two is that the regular expression used in the frequency rule is different for each of the two objects. Now for each row of the test I set a value to the Frequency property of these two objects. What I am seeing is that when I set a value to either of the business objects, BOTH of the instances of the rule attached to the Frequency properties are run, and not just the one specific to each business object. I was thinking that this has something to do with the fact that they are both attached to the same property, even though there are two distinct business objects. The second thing I noticed is that every time a row is run for my test method, I recreate the the two business objects and the BusinessRules collection still maintains the rules from the previous test run. I have 8 rows for this test, so the list of rules gets quite large. By the time I get to the 8th row and my test sets a value to the frequency property those regular expression rules are running 8 times each! I must be doing something wrong??</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, September 03, 2013</h2><p>CSLA 4.x has type rules only. </p>
+<p>Rules should be defined in<br /><i>protected override AddBusinessRules()<br /></i>and this method will only be called ONCE for each Type.&nbsp;</p>
+<p>IE each rule instance should be regarded as a singelton shared instance for ALL instances of the business object type.&nbsp;</p>
+<p>So you must rework your logic and may set the regular expression or key in a property of the BO and make the rule pull the regex based on this property. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pearljam replied on Wednesday, September 04, 2013</h2><p>Thanks Jonny, that does clear up some things, I don&#39;t think I quite understood the scope of the rules.</p>
+<p>As another question, is there a way to remove or clear rules after they are added? Or check if a given rule exists before adding it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, September 04, 2013</h2><p>No, this does&#39;t fit with type rules that goes for all instances. You cannot remove or clear rules after they have been registered.&nbsp;</p>
+<p>You may however create several complete rulesets.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Friday, September 06, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>pearljam<br></b> </p>
+<p>As another question, is there a way to remove or clear rules after they are added? Or check if a given rule exists before adding it?</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>As Jonny said, under CSLA 4.x &quot;each rule instance should be regarded as a singelton shared instance for ALL instances of the business object type&quot; and it can&#39;t be removed, or added twice. So once a rule is set, it is set for good.</p>
+<p>This is a major change to the way Csla 2.x and 3.x used to handle rules&nbsp;as they allowed instance rules. Instance rules could slow down your application a lot. Of course the flexibility of instance rules is lost, unless you find a way to make the rule behave differently according to some settings.</p>
+<p>Say you have a MyBusinessObject&nbsp; and on its AddBusinessRules() method adds a&nbsp;MyBusinessRule class. Now you want the MyBusinessRule class to do&nbsp;different&nbsp;things according to some settings.</p>
+<p>&nbsp;</p>
+<p>1) You should create a MyBusinessRuleSettings class that holds a few properties like</p>
+<p>public class MyBusinessRuleSettings : MobileObject</p>
+<p>{</p>
+<p style="PADDING-LEFT:30px;">bool ShouldSneeze { get; set; }</p>
+<p style="PADDING-LEFT:30px;">bool ShouldCough { get; set; }</p>
+<p style="PADDING-LEFT:30px;">bool ShouldShout { get; set; }</p>
+<p style="PADDING-LEFT:30px;">MobileList&lt;string&gt; ShoutExpressionCollection { get; set; } /* note the use of MobileList&lt;&gt; instead of List&lt;&gt; */</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>2) On the MyBusinessObject&nbsp; add a property to keep your settings at hand</p>
+<p>private static readonly PropertyInfo&lt;BusinessRuleSettings&gt; RuleSettingsProperty = RegisterProperty&lt;BusinessRuleSettings&gt;(p =&gt; p.RuleSettingsProperty);</p>
+<p>public BusinessRuleSettings RuleSettings</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp; get { return ReadProperty(RuleSettingsProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp; set { LoadProperty(RuleSettingsProperty, value); }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>3) On the Execute(RuleContext context) method of the MyBusinessRule class get your settings values like this</p>
+<p>_businessObject = (MyBusinessObject) context.Target;</p>
+<p>_ruleSettings = _businessObject.RuleSettings;</p>
+<p>&nbsp;</p>
+<p>4) All you need is to decide the best place to populate your rule settings. If the rules depend on the specific object, they should be loaded from database at the same time you load your object values (DataPortal_Fetch). For new objects, you should get your default rule settings from the database on&nbsp;the DataPortal_Create method.</p>
+<p>&lt;edit&gt;</p>
+<p>Forgot to say that in your&nbsp;MyBusinessRule class you must tell Csla not to cache the rule result, so it re-evaluates it every time. Like this:</p>
+<p>public new bool CacheResult</p>
+<p>{</p>
+<p style="padding-left:30px;">get { return false; }</p>
+<p>}</p>
+<p>&lt;/edit&gt;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

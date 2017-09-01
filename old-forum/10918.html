@@ -1,0 +1,54 @@
+<html><header><title>Csla PropertyStatus and AddInformationResult IsValid Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla PropertyStatus and AddInformationResult IsValid Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10918.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett posted on Friday, November 25, 2011</h2><p>Hello,</p>
+<p>I&#39;ve got a business rule that checks if a value already exists in my database. This rules works fine and will add the correct information:</p>
+<p>
+if (e.Object.Exists)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddInformationResult(&quot;Already exists&quot;);<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }<br />
+context.Complete();
+</p>
+<p>In my BO it looks like this:</p>
+<p>BusinessRules.AddRule(new CustomRules.ArztNummerExists(ArztNummerProperty, FilialeUidProperty, UIDProperty));</p>
+<p>In my View (XAML Code) I&#39;ve a CSLA PropertyStatus that&#39;s binded to my &quot;ArztNummerProperty&quot;. Works fine. </p>
+<p>If my rule doesn&#39;t add a information result to the context, the PropertyStatus is valid, but if my rule adds the information result to the context, my PropertyStaus is not valid.</p>
+<p>How can I say to my PropertyStatus that the IsValid Property should be true in this case? The information is visible on my GUI - works fine.</p>
+<p>Or is there something I&#39;m missunterstand?</p>
+<p>Hopefully you guys understand everything :-)</p>
+<p>Kind regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 27, 2011</h2><p>Hi Kevin,</p>
+<p>PropertyStatus is build so that it will show Error/Warning/Info message and the IsValid property on the Propertystatus control is set to <i>false </i>if there is any broken rule on the field.</p>
+<p>I don&#39;t know if that s a bug or intentional.<br /><b>I hope Rocky can assist with an answer to that. </b></p>
+<p>Theproperty is set in UpdateState method of PropertyStatus:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsValid = BrokenRules.Count ==&nbsp;<span style="color:#00008b;">0</span>;</p>
+<p>If following the traditional rules for IsValid on a business object that code line should be:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsValid = BrokenRules.<span style="color:#191970;font-weight:bold;">Any</span>(p =&gt;&nbsp;p.Severity == RuleSeverity.Error);</p>
+<p>Unfortunately the IsValid property setter is private so you can&#39;t set it even if you override the UpdateState method. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Monday, November 28, 2011</h2><p>Thank you JonnyBee.&nbsp;<span class="hps">That explains</span>&nbsp;<span class="hps">everything</span><span>. </span></p>
+<p><span>I also think, the IsValid Property should be IsValid = TRUE if there is an information or warning severity.</span></p>
+<p><span>@Rocky: Yes, it would be really nice If you can assist with an answer to that.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 28, 2011</h2><p>Hi Kevin, </p>
+<p>Issuecreated in BugTracker:&nbsp; <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=992">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=992</a>&nbsp;</p>
+<p>We will consider changing how IsValid is updated in Csla 4.3. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton replied on Thursday, February 16, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Unfortunately the IsValid property setter is private so you can&#39;t set it even if you override the UpdateState method. </div></p>
+<p>In VB.net I&#39;ve been Overriding the IsValid property in my Business Objects to overcome the definition of BrokenRule including all RuleSeverity options. I use the following convention </p>
+<ol>
+<li>RuleSeverity=Error to define something that blocks the user from saving data (data IsValid to save).&nbsp;</li>
+<li>RuleSeverity=Warning to define an edge case that might just be a typo by the user. E.g. Date not close enough to today&#39;s date.</li>
+<li>RuleSeverity=Info - Never used.</li>
+</ol>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Public</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">ReadOnly</span>&nbsp;<span style="color:blue;">Property</span>&nbsp;IsValid()&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">Boolean</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Get</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;Linq&nbsp;Edition</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Return</span>&nbsp;(<span style="color:blue;">From</span>&nbsp;item&nbsp;<span style="color:blue;">In</span>&nbsp;BrokenRulesCollection&nbsp;<span style="color:blue;">Where</span>&nbsp;item.Severity&nbsp;=&nbsp;<span style="color:#2b91af;">RuleSeverity</span>.Error).Count&nbsp;=&nbsp;0
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;TODO:&nbsp;Lambda&nbsp;edition&nbsp;??&nbsp;VB.&nbsp;Determine&nbsp;the&nbsp;lambda&nbsp;version&nbsp;of&nbsp;the&nbsp;loop&nbsp;below</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Return&nbsp;BrokenRulesCollection.Any(&nbsp;p&nbsp;&gt;=&nbsp;p.Severity&nbsp;=&nbsp;RuleSeverity.Error)</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;GOLE:&nbsp;Good&nbsp;old&nbsp;Loop&nbsp;edition</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Dim&nbsp;result&nbsp;As&nbsp;Boolean&nbsp;=&nbsp;True</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;For&nbsp;Each&nbsp;item&nbsp;As&nbsp;BrokenRule&nbsp;In&nbsp;BrokenRulesCollection</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;If&nbsp;item.Severity&nbsp;=&nbsp;RuleSeverity.Error&nbsp;Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result&nbsp;=&nbsp;False</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;&nbsp;&nbsp;&nbsp;End&nbsp;If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Next</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Return&nbsp;False</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Property<br /></span></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

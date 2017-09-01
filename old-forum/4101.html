@@ -1,0 +1,305 @@
+<html><header><title>MethodCaller: Possible Big Performance Boost??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MethodCaller: Possible Big Performance Boost??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Sunday, December 30, 2007</h2><P>Hi guys <BR><BR>Of late i have been getting right down into CLSA and looking at exactly what makes it up and how it works. As a result of this it is quite evident that MethodCaller get quite a work out and if this process could be refined a little further maybe it might help a fair bit. Hence I came up with the following. PLEASE NOTE: you will notice that the structure has changed a little to allow for the caching and an extra try catch statement has been added to prevent a posible AmbiguousMatchException that could occur but in essence the rest is the same. Also just for testing purposes I have not included some of the Resources calls and some of the other methods. Also this has NOT been fully tested, due to my current commitments I only got it compiling for the moment, but i wanted to see what others thought.<BR>Thanks <BR>Anthony</P>
+<P>public static class MethodHelper<BR>{<BR>&nbsp;&nbsp;&nbsp; #region Private Fields<BR>&nbsp;&nbsp;&nbsp; private static readonly Dictionary&lt;string, MethodInfo&gt; _GlobalMethodInfoCount = new Dictionary&lt;string, MethodInfo&gt;();<BR>&nbsp;&nbsp;&nbsp; private static readonly Dictionary&lt;string, Dictionary&lt;Type[], MethodInfo&gt;&gt; _GlobalMethodInfoType = new Dictionary&lt;string, Dictionary&lt;Type[], MethodInfo&gt;&gt;();<BR>&nbsp;&nbsp;&nbsp; private static readonly Dictionary&lt;string, MethodInfo&gt; _GlobalMethodInfoTest = new Dictionary&lt;string, MethodInfo&gt;();</P>
+<P>&nbsp;&nbsp;&nbsp; private const BindingFlags _AllLevelFlags = BindingFlags.FlattenHierarchy | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;<BR>&nbsp;&nbsp;&nbsp; private const BindingFlags _OneLevelFlags = BindingFlags.DeclaredOnly | BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic;<BR>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Private Methods</P>
+<P>&nbsp;&nbsp;&nbsp; #region General<BR>&nbsp;&nbsp;&nbsp; private static Type GetObjectType(object criteria)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return criteria.GetType().DeclaringType;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Derive Method By<BR>&nbsp;&nbsp;&nbsp; private static MethodInfo DeriveMethodByLoopCount(MethodInfo[] methods, string methodName, int currentParamLength)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (MethodInfo method in methods)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (method.Name == methodName &amp;&amp; method.GetParameters().Length == currentParamLength)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = method;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private static MethodInfo DeriveMethodByTest(Type objectType, string methodName, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //It is posible for more than one result to be found<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = objectType.GetMethod(methodName, MethodHelper._AllLevelFlags);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (AmbiguousMatchException)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = MethodHelper.DeriveMethodByLoopCount(objectType.GetMethods(), methodName, parameters.Length);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private static MethodInfo DeriveMethodByType(Type currentObjectType, string methodName, Type[] paramTypes)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Finds the relevent method<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Find for a strongly typed match<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = currentObjectType.GetMethod(methodName, MethodHelper._OneLevelFlags, null, paramTypes, null);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;&nbsp; //Match found</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; currentObjectType = currentObjectType.BaseType;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } while (currentObjectType != null);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private static MethodInfo DeriveMethodByCount(Type currentObjectType, string methodName, int parameterCount)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Walk up the inheritance hierarchy looking for a method with the right number of parameters<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Type currentType = currentObjectType;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; do<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //It is posible for more than one result to be found<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = currentType.GetMethod(methodName, MethodHelper._OneLevelFlags);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result != null &amp;&amp; result.GetParameters().Length == parameterCount)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;&nbsp; //Match found<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (AmbiguousMatchException)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = MethodHelper.DeriveMethodByLoopCount(currentObjectType.GetMethods(MethodHelper._OneLevelFlags), methodName, parameterCount);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; currentType = currentType.BaseType;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } while (currentType != null);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Retreive Cached Method By<BR>&nbsp;&nbsp;&nbsp; private static MethodInfo RetreiveCachedMethodByType(Type currentObjectType, string methodName, Type[] paramTypes)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string fullMethodName = currentObjectType.GetType().FullName + "." + methodName + "();";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool containsMethodKey = false;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Brings back the correct methodName for the type if it exists<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (MethodHelper._GlobalMethodInfoType.ContainsKey(fullMethodName))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (MethodHelper._GlobalMethodInfoType[fullMethodName].ContainsKey(paramTypes))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MethodHelper._GlobalMethodInfoType[fullMethodName][paramTypes];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; containsMethodKey = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Pulls out the dictionary for the current method if it exists<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dictionary&lt;Type[], MethodInfo&gt; methodDictionary;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (containsMethodKey)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methodDictionary = MethodHelper._GlobalMethodInfoType[fullMethodName];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methodDictionary = new Dictionary&lt;Type[], MethodInfo&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodHelper._GlobalMethodInfoType.Add(fullMethodName, methodDictionary);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Gets method out if it can be found<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = MethodHelper.DeriveMethodByType(currentObjectType, methodName, paramTypes);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Adds in the methodName info into the dictionary caching it<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methodDictionary.Add(paramTypes, result);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private static MethodInfo RetreiveCachedMethodByCount(Type currentObjectType, string methodName, int parameterCount)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string fullMethodName = currentObjectType.GetType().FullName + "." + methodName + "()_" + parameterCount + ";";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (MethodHelper._GlobalMethodInfoCount.ContainsKey(fullMethodName))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MethodHelper._GlobalMethodInfoCount[fullMethodName];</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Gets method out if it can be found<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = MethodHelper.DeriveMethodByCount(currentObjectType, methodName, parameterCount);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Adds in the methodName info into the dictionary caching it<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodHelper._GlobalMethodInfoCount.Add(fullMethodName, result);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; private static MethodInfo RetreiveCachedMethodByTest(Type currentObjectType, string methodName, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string fullMethodName = currentObjectType.GetType().FullName + "." + methodName + "();";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (MethodHelper._GlobalMethodInfoTest.ContainsKey(fullMethodName))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MethodHelper._GlobalMethodInfoTest[fullMethodName];</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Gets method out if it can be found<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = MethodHelper.DeriveMethodByTest(currentObjectType, methodName, parameters);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Adds in the methodName info into the dictionary caching it<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodHelper._GlobalMethodInfoTest.Add(fullMethodName, result);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #endregion</P>
+<P>&nbsp;&nbsp;&nbsp; #region Public Methods<BR>&nbsp;&nbsp;&nbsp; public static object CallMethodIfImplemented(object currentObject, string methodName, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo info = GetMethod(currentObject.GetType(), methodName, parameters);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (info != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return CallMethod(currentObject, info, parameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public static object CallMethod(object currentObject, string methodName, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo info = GetMethod(currentObject.GetType(), methodName, parameters);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (info == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NotImplementedException(methodName + " Method Not Implemented");</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return CallMethod(currentObject, info, parameters);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public static object CallMethod(object currentObject, MethodInfo info, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Call a private methodName on the object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object result;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = info.Invoke(currentObject, parameters);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new CallMethodException(info.Name + " Method Call Failed", ex.InnerException);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public static MethodInfo GetMethod(Type objectType, string methodName, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo result = null;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Try to find a strongly typed match <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = MethodHelper.FindMethodByType(objectType, methodName, TypeHelper.GetParameterTypes(parameters));</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //With the right number of parameters<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = MethodHelper.FindMethodByCount(objectType, methodName, parameters.Length);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //No strongly typed match found, get default<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = MethodHelper.FindMethodByTest(objectType, methodName, parameters.Length);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public static MethodInfo FindMethodByType(Type currentObjectType, string methodName, Type[] paramTypes)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MethodHelper.RetreiveCachedMethodByType(currentObjectType, methodName, paramTypes);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public static MethodInfo FindMethodByCount(Type currentObjectType, string methodName, int parameterCount)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MethodHelper.RetreiveCachedMethodByCount(currentObjectType, methodName, parameterCount);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public static MethodInfo FindMethodByTest(Type currentObjectType, string methodName, params object[] parameters)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return MethodHelper.RetreiveCachedMethodByTest(currentObjectType, methodName, parameters);<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; #endregion<BR>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Sunday, December 30, 2007</h2>Anthony,<br>I agree in essence with your approach that the method info's need to be cached to improve performance.<br><br>I actually had the pleasure figuring out a bug in MethodCaller.GetMethod method and while looking at the code and found the way it resolve an ambiguous match by caching for AmbiguousMatchException could be improved.&nbsp; However at that time, I did not have any idea how to improve it therefore I did not make any suggestion.<br><br>Recently, I have been looking at LinFu Framework (there are several articles on CodeProject posted by the author Philip Laureano, here is the first article <a href="http://www.codeproject.com/KB/cs/LinFuPart1.aspx">http://www.codeproject.com/KB/cs/LinFuPart1.aspx</a>) and found his <a href="http://linfu.googlecode.com/svn/trunk/LinFu.Reflection/LinFu.Reflection/MethodFinder.cs">MethodFinder</a> class is very elegant. His method is to use <a href="http://linfu.googlecode.com/svn/trunk/LinFu.Common/">FussyFinder</a> to find the matching method and applying weight to match types (method name, return type, parameters, etc) through <a href="http://linfu.googlecode.com/svn/trunk/LinFu.Reflection/LinFu.Reflection/PredicateBuilder.cs">PredicateBuilder</a>.<br><br>Ricky Supit.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, December 31, 2007</h2><P>Hi Ricky <BR>The LinFu framework sounds interesting enough and I particularly like the idea of the FussyFinder to help find the best match, but I guess it is a fairly big deviartion from what the methodcaller currently does. Hence I was trying to fix that bug I mentioned and implement the caching. <BR><BR>The&nbsp;only thing I did find after using it a little is that the after using it and doing a little bit more testing the Dictionary&lt;string, Dictionary&lt;Type[], MethodInfo&gt;&gt; doesn't quite work the wway I had hoped and hence it probably needs to change to something like this.<BR><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>readonly</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MethodInfo</FONT><FONT size=2>&gt;&gt; _GlobalMethodInfoType = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MethodInfo</FONT><FONT size=2>&gt;&gt;();<BR></FONT><BR><FONT size=2><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> ConvertToString(</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>[] types)<BR>{<BR></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp; StringBuilder</FONT><FONT size=2> format = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>StringBuilder</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>";"</FONT><FONT size=2>);<BR></FONT><FONT color=#0000ff size=2><FONT color=#2b91af>&nbsp;&nbsp;&nbsp; </FONT>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> type </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> types)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; format.Append(type.FullName + </FONT><FONT color=#a31515 size=2>";"</FONT><FONT size=2>);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> format.ToString();<BR>}<BR><BR></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>MethodInfo</FONT><FONT size=2> RetreiveCachedMethodByType(</FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2> currentObjectType, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> methodName, </FONT><FONT color=#2b91af size=2>Type</FONT><FONT size=2>[] paramTypes)<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; string</FONT><FONT size=2> fullMethodName = currentObjectType.GetType().FullName + </FONT><FONT color=#a31515 size=2>"."</FONT><FONT size=2> + methodName + </FONT><FONT color=#a31515 size=2>"();"</FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; bool</FONT><FONT size=2> containsMethodKey = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; string</FONT><FONT size=2> paramTypesString = </FONT><FONT color=#2b91af size=2>MethodHelper</FONT><FONT size=2>.ConvertToString(paramTypes);<BR></FONT></FONT><FONT size=2><FONT size=2><BR></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp; //Brings back the correct methodName for the type if it exists<BR></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>MethodHelper</FONT><FONT size=2>._GlobalMethodInfoType.ContainsKey(fullMethodName))<BR>&nbsp;&nbsp;&nbsp; {<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>MethodHelper</FONT><FONT size=2>._GlobalMethodInfoType[fullMethodName].ContainsKey(paramTypesString))<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>MethodHelper</FONT><FONT size=2>._GlobalMethodInfoType[fullMethodName][paramTypesString];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; containsMethodKey = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp; }<BR></FONT></FONT><FONT size=2><FONT size=2><BR></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp; //Pulls out the dictionary for the current method if it exists<BR></FONT><FONT size=2></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp; Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MethodInfo</FONT><FONT size=2>&gt; methodDictionary;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (containsMethodKey)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methodDictionary = </FONT><FONT color=#2b91af size=2>MethodHelper</FONT><FONT size=2>._GlobalMethodInfoType[fullMethodName];<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; else<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; methodDictionary = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Dictionary</FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>MethodInfo</FONT><FONT size=2>&gt;();<BR></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodHelper</FONT><FONT size=2>._GlobalMethodInfoType.Add(fullMethodName, methodDictionary);<BR>&nbsp;&nbsp;&nbsp; }<BR><BR></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp; //Gets method out if it can be found<BR></FONT><FONT size=2></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp; MethodInfo</FONT><FONT size=2> result = </FONT><FONT color=#2b91af size=2>MethodHelper</FONT><FONT size=2>.DeriveMethodByType(currentObjectType, methodName, paramTypes);<BR></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp; //Adds in the methodName info into the dictionary caching it<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp; methodDictionary.Add(paramTypesString, result);<BR><BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> result;<BR>}<BR></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 07, 2008</h2><P>Have you done comparative performance tests using both the old and new code?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 08, 2008</h2>There's another possiblity for speeding up reflection base method calls.&nbsp; I actually implemented it in my DAL when I had to add some more MethodInfo calls.&nbsp; The technique can be <a href="http://www.codeproject.com/KB/cs/dynamicmethoddelegates.aspx">found here</a>.&nbsp; What you do is basically do the reflection once, then compile the delegate and store it in a static field.&nbsp; <br><br>I haven't done any testing, but after I added the feature that required the MethodInfo call, my unit tests ran noticibly slower.&nbsp; I'm talking from a few seconds to about a minute and a half to run all the tests.&nbsp; Implementing the method in the link above brought performance back to the few second range.&nbsp; <br><br>If you like, I can try this in Csla.&nbsp; Just tell me how you would like things timed.&nbsp; I can't promise I'll get to it soon though.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2><P>Thanks Andy, that is an interesting article.</P>
+<P>After spending yesterday (and last night) messing with MethodCaller to get it to support ParamArray/params parameters on target methods, I am left wondering if the technique in the article will work in the general case.</P>
+<P>I now fully appreciate just how cool the VB runtime's late binding support really is. I knew it was cool, but given all the nasty edge cases (which I don't solve btw), they obviously have some impressive code there...</P>
+<P>I had thought about doing something like this for 3.5, but now I don't know. I don't know that I have another 16-20 hours of time to sink into that one class... I appreciate your offer of help, and (if you'll sign the contributor agreement) will accept it gladly! My deadline for 3.5 to be feature complete is Jan 25 though, so time is somewhat short I'm afraid.</P>
+<P>&nbsp;</P>
+<P>Someone in the thread mentioned that they'd fixed a bug in MethodCaller? Can you be specific? In particular, what does the target method signature look like and what is passed from the caller?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, January 08, 2008</h2><P>Hi Rocky, <BR>That was me who said that i think i have found a potential bug. <BR><BR>In the <SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>MethodInfo</SPAN> FindMethod(<SPAN>Type</SPAN> objType, <SPAN>string</SPAN> method, <SPAN>int</SPAN> parameterCount) </SPAN>method, it does a loop looking for methods that have a set number of paramerters. Within the loop it uses this <SPAN>MethodInfo</SPAN><SPAN> info = currentType.GetMethod(method, oneLevelFlags);</SPAN>&nbsp;line which&nbsp;calls the GetMethod method. As far as i can see anywhere the GetMethod is used it has the ability to throw an <SPAN>AmbiguousMatchException </SPAN>exectipion. Now when you are doing calling this <SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>MethodInfo</SPAN> FindMethod(<SPAN>Type</SPAN> objType, <SPAN>string</SPAN> method, <SPAN>Type</SPAN>[] types) </SPAN>method, you should never get this because you can't compile with two methods of the same signature, but with the count version there is the possibility that it could. Hence why i thought that this is a bug and should have a try catch around it. You will see in code that i provided that it checks for this case and it the exception occurs runs the pretty much the same code that you have in the only <SPAN>AmbiguousMatchException </SPAN>expectation check at the moment. It probably has not arisen as a bug in many cases thus far because i imagine that the first findmethod would pick up most cases.<BR><BR>As far as a performance testing goes, I don’t really have the setup to be able to give you figures on that one, but what i do know is that there is a lot of looping that occurs to find the correct method and this looping logic, given a type, method name and a set of params is always going to produce the same result. Hence is there need to conduct that looping and reflection every time. Hence why i was trying to cache the results. I guess you now have a dictionary lookup and a lock to deal with if the method isn't found in that type but for the vast majority of cases i would imagine that there would have to be some tangible performance improvement.<BR><BR>Anthony <BR><BR></P>
+<P class=MsoNormal><FONT face=Calibri><FONT face="Times New Roman">Note, the version of the code that i provided doesn't contain locks where it probably should. So if you want a version with locks if you are interested just contact me.</FONT> </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, January 08, 2008</h2><P class=MsoNormal>On another note, i took a look at the article that was mentioned and had a bit of a play around with it. Firstly it was evident was that where it gets most of its performance gain from (in terms of the figures it shows) is the fact that the delegate is being stored in a static variable. <A HREF="/members/ajj3085.aspx">ajj3085</A> i am sure that you did&nbsp;receive a performance boost but i am guessing that you where storing the delegate in a static variable. If you had of done this same thing exact stored the methodinfo in the static variable i wonder if you would have noticed as bigger difference (which on the side is what I am proposing with the new methodcaller). <BR><BR>In any case it would seem that there is a performance to be had with the quoted method but when the methodinfo is cached the difference is a lot less pronounced. But that said, there is no reason why the new improved methodcaller couldn't cache both the methodinfo and the delegate if is perceived that including the delegate creation and storage provides a large enough performance boost&nbsp;to be included. If this is the case i thing it would be a relatively simple process to include this into the new methodcaller that i put forward. Although i don’t think i would be able to give you the final say on the performance difference, as most of the testing i have done performance wise has been hard to judge because it seems that within a cretin time period on a given thread .net does some caching on its own, so a test case would probably be have to be thought out.<BR><BR>Thanks <BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 08, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don’t disagree that there <i>should</i> be a performance
+benefit – that’s the hypothesis. But the proof is always in the pudding, and
+time grows terribly short for anything new to change in 3.5 and I may or may
+not have time to do something like this before the cutoff. Time will tell.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 08, 2008 6:37 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] MethodCaller: Possible Big Performance Boost??<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>On
+another note, i took a look at the article that was mentioned and had a bit of
+a play around with it. Firstly it was evident was that where it gets most of
+its performance gain from (in terms of the figures it shows) is the fact that
+the delegate is being stored in a static variable. <a href="/members/ajj3085.aspx">ajj3085</a> i am sure that you did&nbsp;receive a
+performance boost but i am guessing that you where storing the delegate in a
+static variable. If you had of done this same thing exact stored the methodinfo
+in the static variable i wonder if you would have noticed as bigger difference
+(which on the side is what I am proposing with the new methodcaller). <br>
+<br>
+In any case it would seem that there is a performance to be had with the quoted
+method but when the methodinfo is cached the difference is a lot less
+pronounced. But that said, there is no reason why the new improved methodcaller
+couldn't cache both the methodinfo and the delegate if is perceived that
+including the delegate creation and storage provides a large enough performance
+boost&nbsp;to be included. If this is the case i thing it would be a relatively
+simple process to include this into the new methodcaller that i put forward.
+Although i donâ€™t think i would be able to give you the final say on the
+performance difference, as most of the testing i have done performance wise has
+been hard to judge because it seems that within a cretin time period on a given
+thread .net does some caching on its own, so a test case would probably be have
+to be thought out.<br>
+<br>
+Thanks <br>
+Anthony<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, January 08, 2008</h2><P>That’s fine. As i said off the top of my head I cannot think of practical test that would be able to isolate the difference. Because if you simply run the two through a 10000 rep loop the cached version comes out slower because of the dictionary lookups and the fact that .net caches the results on the thread as I said before. So I don’t think that a simple loop like this is a very good test. In a real situation where it is happening across multiple threads and multiple user over a period of time this is where i see the difference. But that is a lot harder to test...<BR><BR>In any case i just thought i would share and see what people thought.<BR>Anthony</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, January 09, 2008</h2><P>FWIW, here's my 2 cents.</P>
+<P>Although I can see where you are going with this one, I'm always wary of someone claiming a "big performance boost" in this way.&nbsp; I don't doubt the hypothesis, because it makes sense.&nbsp; What I doubt is the investment required in coding, testing and proving the hypothesis in terms of the man-hours of development time needed.&nbsp; Is it really going to give me a real "bang-for-my-buck" performance increase?&nbsp; Will it reduce minutes of processing time down to just seconds?&nbsp; Or are we talking about fractions of seconds being shaved off an already low number of seconds?</P>
+<P>As performance is such a subjective subject, only a fully benchmarked solution makes any meaningful sense.&nbsp; And I agree that it is not easy to see how you can benchmark this kind of stuff.&nbsp; There are so many other factors that could come into play.</P>
+<P>And are we talking theorhetical performance here, as opposed to real-life performance when the application is deployed in an operational environment and runs like a dog?</P>
+<P>With the cost of hardware (CPUs&nbsp;/ RAM / hard drives) being dirt cheap compared to the cost of development, the best solution to "perceived performance issues" can quite often be a hardware one, not a software one.</P>
+<P>Don't get me wrong, if you're trying to make the best possible framework that was ever developed, then go for it and look for performance improvements everywhere.</P>
+<P>But always remember that your customer (the business) will be more concerned that the application actually works, not how "quick" it is.&nbsp; An application with no bugs that's runs "slow" and can be used in a production environment to do the job is better than an application with bugs that runs "quick" but can't be deployed.</P>
+<P>Well that's usually true as far as business people are concerned!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 09, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>DavidDilworth:</strong></div><div>And are we talking theorhetical performance here, as opposed to real-life performance when the application is deployed in an operational environment and runs like a dog?</div></BLOCKQUOTE><br><br>Well, I can't say for certain it would boost performance in Csla.&nbsp; I would try to come up with a way to time things now (the DP_xxx methods would do nothing, for example), and then test.<br><br>In my particular case though, I have a DAL which uses reflection pretty heavily.&nbsp; I discovered a bug in my dal that had to do with threading and using objects which talk to different databases (two different Sql Server 2005 databases).&nbsp; So I fixed the bug.&nbsp; In my DAL I have an EntityReflector class, which does reflection on DAL objects and caches the results (PropertyInfo and MethodInfos).&nbsp; <br><br>The fix in question required me to store the MethodInfo used everytime an entity is created.&nbsp; So I cached it in a static field, as I've done with everything else, and ran my tests.&nbsp; They passed but were noticeably slower.&nbsp; So I searched out a solution.&nbsp; Instead of caching the MethodInfo object, I cached the DynamicMethodDelegate object.&nbsp; Ran the tests again, and things ran quickly again.&nbsp; So in this case, it worked rather well.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, January 09, 2008</h2>Yes, that's point of the optimization.&nbsp; You compile the DynamicDelegate (or something like that) and store it for later use.&nbsp; Doing the compile each time would reduce the benefit.&nbsp; Read the article again though; calling the method via its DynamicDelegate is significantly faster than using MethodInfo.Execute.&nbsp; <br><br>Originally I was simply caching the MethodInfo object once I found it as well.&nbsp; When I saw how slow it was, I went looking for a solution.&nbsp; The solution was the DynamicDelegate.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 09, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I’d like to see a test case that causes failure before solving a
+theoretical problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, if there’s some combination of declared methods
+that can make the failure occur I’ll put it into my MethodCallerTest app as a
+test and that way we can establish that the solution directly solves the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 08, 2008 5:27 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] MethodCaller: Possible Big Performance Boost??<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky, <br>
+That was me who said that i think i have found a potential bug. <br>
+<br>
+In the public static MethodInfo FindMethod(Type objType, string method, int
+parameterCount) method, it does a loop looking for methods that have a set
+number of paramerters. Within the loop it uses this MethodInfo info =
+currentType.GetMethod(method, oneLevelFlags);&nbsp;line which&nbsp;calls the
+GetMethod method. As far as i can see anywhere the GetMethod is used it has the
+ability to throw an AmbiguousMatchException exectipion. Now when you are doing
+calling this public static MethodInfo FindMethod(Type objType, string method,
+Type[] types) method, you should never get this because you can't compile with
+two methods of the same signature, but with the count version ther e is the
+possibility that it could. Hence why i thought that this is a bug and should have
+a try catch around it. You will see in code that i provided that it checks for
+this case and it the exception occurs runs the pretty much the same code that
+you have in the only AmbiguousMatchException expectation check at the moment.
+It probably has not arisen as a bug in many cases thus far because i imagine
+that the first findmethod would pick up most cases.<br>
+<br>
+As far as a performance testing goes, I donâ€™t really have the setup to be
+able to give you figures on that one, but what i do know is that there is a lot
+of looping that occurs to find the correct method and this looping logic, given
+a type, method name and a set of params is always going to produce the same
+result. Hence is there need to conduct that looping and reflection every time.
+Hence why i was trying to cache the results. I guess you now have a dictionary
+lookup and a lock to deal with if the method isn't found in that type but for
+the vast majority of cases i would imagine that there would have to be some
+tangible performance improvement.<br>
+<br>
+Anthony <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 20, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ricky Supit and I have been working on this for the past 10 days
+or so. Ricky did a lot of research work and put together some very nice dynamic
+method code that was able to do everything MethodCaller requires. I
+subsequently merged that into CSLA itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The result looks pretty decent, though we&#8217;re still
+tweaking a bit. You can see what it looks like in svn in the C# trunk &#8211; check
+out Csla.Reflection (the new home for all this stuff).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This became a high priority once I started doing some serious
+perf testing on 3.5. The child object support in the data portal (which is a
+really big deal in terms of reducing code and making it consistent) would have
+been a perf killer without these dynamic method enhancements. With these
+enhancements there&#8217;s still a perf hit, but my guess is that most people
+will accept the hit to get the code savings and consistency. For those that
+really need optimal performance, the manual child techniques from CSLA .NET
+1.x/2.x/3.0 still work of course.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 08, 2008 7:30 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] MethodCaller: Possible Big Performance Boost??<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>There's another possiblity for speeding up reflection base
+method calls.&nbsp; I actually implemented it in my DAL when I had to add some
+more MethodInfo calls.&nbsp; The technique can be <a href="http://www.codeproject.com/KB/cs/dynamicmethoddelegates.aspx">found here</a>.&nbsp;
+What you do is basically do the reflection once, then compile the delegate and
+store it in a static field.&nbsp; <br>
+<br>
+I haven't done any testing, but after I added the feature that required the
+MethodInfo call, my unit tests ran noticibly slower.&nbsp; I'm talking from a
+few seconds to about a minute and a half to run all the tests.&nbsp;
+Implementing the method in the link above brought performance back to the few
+second range.&nbsp; <br>
+<br>
+If you like, I can try this in Csla.&nbsp; Just tell me how you would like
+things timed.&nbsp; I can't promise I'll get to it soon though.&nbsp; <img border=0 id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 21, 2008</h2>Ahh, very cool.&nbsp; I was glad when I found this too, as my DAL would have become unusable without this trick. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Monday, January 21, 2008</h2>Well i'm glad to see that something came out of this. I agree that storing the methodinfo does seem to be&nbsp;a bit slower for some reason but i guess there are many ways to skin a cat and it seems like a nice solution has been reached.<BR>Thanks </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

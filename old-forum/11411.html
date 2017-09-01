@@ -1,0 +1,147 @@
+<html><header><title>Deployed SL App giving NotFound from external machines</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deployed SL App giving NotFound from external machines</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11411.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber posted on Wednesday, June 13, 2012</h2><p>We have been trying to deploy our CSLA Silverlight app in our client&#39;s DMZ environment for 2 weeks now and cannot get over this final hurdle.</p>
+<p>The SSL Certificate is installed and working. &nbsp;The application uses an ASP login to authenticate the user before downloading the SL Application. &nbsp;Everything works fine when running the site from the web server (IIS 7.5 btw). &nbsp;We can login on the ASP login page, the SL app loads, the PrincipalGetter authenticates through the WcfPortal and the app runs perfectly.</p>
+<p>However, when accessing the site from an external machine, the login is successful, the SL app downloads but the PrincipalGetter request returns the infamous NotFound exception. [HttpWebRequest_WebException_RemoteServer] Arguments: NotFound</p>
+<p>I have downloaded the xap directly from the deployed site, extracted it and pasted the ClientConfig&#39;s endpoint address into my browser which correctly brings up the Service page.</p>
+<p>Using Fiddler I have determined that the PrincipalGetter is definitely making its DataPortal call.</p>
+<p>From here I am stumped. &nbsp;I have read almost every post relating to this as well as the eBooks (multiple times) and the videos. &nbsp;From what I can see all my configuration settings are correct.</p>
+<p>We tried adding the cross domain policy xml files but this did not seem to fix the problem either. &nbsp;From what I understand since the only WcfService we need to talk to is on the same server that hosts the Silverlight Application then these should not be necessary?</p>
+<p>Here are the relevant configuration settings (note we used a CompressedHost called&nbsp;Singular.Compression.CompressedHost&nbsp;which inherits from Csla.Server.Hosts.Silverlight.WcfPortal):</p>
+<p><b>Web.Config</b></p>
+<p>&nbsp; &nbsp;&lt;system.serviceModel&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;serviceHostingEnvironment
+aspNetCompatibilityEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;behaviors&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceBehaviors&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;behavior
+name=&quot;serviceBehavior_IWcfPortal_SSL&quot;&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceMetadata
+httpsGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;serviceDebug
+includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/serviceBehaviors&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;/behaviors&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;services&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;service
+behaviorConfiguration=&quot;serviceBehavior_IWcfPortal_SSL&quot; name=&quot;Singular.Compression.CompressedHost&quot;&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint
+address=&quot;&quot; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;basicHttpBinding_IWcfPortal_SSL&quot; contract=&quot;Csla.Server.Hosts.Silverlight.IWcfPortal&quot;&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;identity&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;dns
+value=&quot;localhost&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/identity&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/endpoint&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint
+address=&quot;mex&quot; binding=&quot;mexHttpsBinding&quot; contract=&quot;IMetadataExchange&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/service&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;/services&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;bindings&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;basicHttpBinding&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding
+name=&quot;basicHttpBinding_IWcfPortal_SSL&quot; maxBufferSize=&quot;10000000&quot; maxReceivedMessageSize=&quot;10000000&quot; receiveTimeout=&quot;00:40:00&quot; sendTimeout=&quot;00:40:00&quot; openTimeout=&quot;00:10:00&quot; closeTimeout=&quot;00:10:00&quot;&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxBytesPerRead=&quot;10000000&quot; maxArrayLength=&quot;10000000&quot; maxStringContentLength=&quot;10000000&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;security
+mode=&quot;Transport&quot;&gt;&lt;/security&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/basicHttpBinding&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;</p>
+<p>&nbsp;
+&lt;/system.serviceModel&gt;</p>
+<p>&nbsp;</p>
+<p><b>ServiceReferences.ClientConfig</b></p>
+<p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&lt;</span><span>system.serviceModel</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>bindings</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>basicHttpBinding</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>binding</span><span>
+</span><span>name</span><span>=</span><span>&quot;<span>BasicHttpBinding_IWcfPortal_SSL</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>maxBufferSize</span><span>=</span><span>&quot;<span>10000000</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>maxReceivedMessageSize</span><span>=</span><span>&quot;<span>10000000</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>receiveTimeout</span><span>=</span><span>&quot;<span>00:40:00</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>sendTimeout</span><span>=</span><span>&quot;<span>00:40:00</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>openTimeout</span><span>=</span><span>&quot;<span>00:10:00</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>closeTimeout</span><span>=</span><span>&quot;<span>00:10:00</span>&quot;<span>&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>security</span><span>
+</span><span>mode</span><span>=</span><span>&quot;<span>Transport</span>&quot;<span>/&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>binding</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span>basicHttpBinding</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;/</span><span>bindings</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;</span><span>client</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span>endpoint</span><span>
+</span><span>name</span><span>=</span><span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>address</span><span>=</span><span>&quot;https://<span style="text-decoration:line-through;">clientsite</span>.com/WcfPortal.svc&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>binding</span><span>=</span><span>&quot;<span>basicHttpBinding</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>bindingConfiguration</span><span>=</span><span>&quot;<span>BasicHttpBinding_IWcfPortal_SSL</span>&quot;</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>contract</span><span>=</span><span>&quot;<span>WcfPortal.IWcfPortal</span>&quot;<span>&nbsp; /&gt;</span></span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp; &lt;/</span><span>client</span><span>&gt;</span></p>
+<p class="MsoNormal"><span>&nbsp;
+&lt;/</span><span>system.serviceModel</span><span>&gt;</span></p>
+</p>
+<p>&nbsp;</p>
+<p><b>ClientAccessPolicy.xml</b></p>
+<p>
+<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</p>
+<p>&lt;access-policy&gt;</p>
+<p>&nbsp; &lt;cross-domain-access&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;allow-from http-request-headers=&quot;*&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;domain uri=&quot;http://*&quot; /&gt;</p>
+<p><span>	</span>&lt;domain uri=&quot;https://*&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/allow-from&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;grant-to&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;resource path=&quot;/&quot; include-subpaths=&quot;true&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/grant-to&gt;</p>
+<p>&nbsp; &lt;/cross-domain-access&gt;</p>
+<p>&lt;/access-policy&gt;</p>
+</p>
+<p>&nbsp;</p>
+<p><b>CrossDomain.xml</b></p>
+<p>&lt;?xml version=&quot;1.0&quot;?&gt;</p>
+<p>
+<p>&lt;!DOCTYPE cross-domain-policy SYSTEM &quot;http://www.macromedia.com/xml/dtds/cross-domain-policy.dtd&quot;&gt;</p>
+<p>&lt;cross-domain-policy&gt;</p>
+<p>&lt;allow-http-request-headers-from domain=&quot;*&quot; headers=&quot;*&quot;/&gt;</p>
+<p>&lt;/cross-domain-policy&gt;</p>
+</p>
+<p>&nbsp;</p>
+<p>Can anyone spot my mistake? Or give me any pointers on where else to look?</p>
+<p>Thanks in advance ;)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Wednesday, June 13, 2012</h2><p>Another thing I thought about while on my way back from the client:</p>
+<p>Due to the way the client has set up this machine, there is no Internet Access from the web server, we cannot view any external web pages from the web server at all.</p>
+<p>All web sites running on the server still work with this limitation, but maybe this is what is stopping the Wcf communication?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 13, 2012</h2><p>Since your server has a mex entry, you should be able to use discovery to get metadata about the endpoint. One thing you can try is opening Visual Studio, creating an empty client project, and adding a service reference to that endpoint. I suspect that won&#39;t work, but maybe Visual Studio will give you some more helpful diagnostic info about why it can&#39;t reach the endpoint.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Friday, June 15, 2012</h2><p>Hi Rocky</p>
+<p>I tried adding a service reference for it and I get the following error:</p>
+<p>
+<p>&quot;The document at the url https://<span style="text-decoration:line-through;">clientsite</span>.com/WcfPortal.svc was not recognized as a known document type.</p>
+<p>The error message from each known type may help you fix the problem:</p>
+<p>- Report from &#39;XML Schema&#39; is &#39;The document format is not recognized (the content type is &#39;text/html; charset=UTF-8&#39;).&#39;.</p>
+<p>- Report from &#39;https://<span style="text-decoration:line-through;">clientsite</span>.com/WcfPortal.svc&#39; is &#39;The document format is not recognized (the content type is &#39;text/html; charset=UTF-8&#39;).&#39;.</p>
+<p>- Report from &#39;DISCO Document&#39; is &#39;Discovery document at the URL https://<span style="text-decoration:line-through;">clientsite</span>.com/WcfPortal.svc?disco could not be found.&#39;.</p>
+<p>&nbsp; - The document format is not recognized.</p>
+<p>- Report from &#39;WSDL Document&#39; is &#39;The document format is not recognized (the content type is &#39;text/html; charset=UTF-8&#39;).&#39;.</p>
+<p>Metadata contains a reference that cannot be resolved: &#39;https://<span style="text-decoration:line-through;">clientsite</span>.com/WcfPortal.svc&#39;.</p>
+<p>There was no endpoint listening at https://<span style="text-decoration:line-through;">clientsite</span>.com/WcfPortal.svc that could accept the message. This is often caused by an incorrect address or SOAP action. See InnerException, if present, for more details.</p>
+<p>The remote server returned an error: (404) Not Found.</p>
+<p>If the service is defined in the current solution, try building the solution and adding the service reference again.&quot;</p>
+<p>If this rings bells for anyone please don&#39;t be shy to post ;)</p>
+</p>
+<p>We have used the exact same settings deployed to one of our own web servers using a self signed certificate and the SL app runs perfectly fine.</p>
+<p>I am convinced this has something to do with the way the security has been set up at the client&#39;s site. &nbsp;Somehow the Wcf communication is being blocked.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 16, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>bwebber<br></b>
+<p>I am convinced this has something to do with the way the security has been set up at the client&#39;s site. &nbsp;Somehow the Wcf communication is being blocked.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>That&#39;s what it sounds like to me too.</p>
+<p>Have you tried using fiddler to watch exactly what goes back and forth over the network? That is probably your next step.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bwebber replied on Thursday, June 28, 2012</h2><p>&nbsp;</p>
+<p class="MsoNormal">We finally got it working, I thought I would post how...</p>
+<p class="MsoNormal">After working with our client&#39;s firewall guys they confirmed that the Wcf messages were being passed to the web server from the TMG server, but from the TMG server to the web server the communication no longer used SSL.</p>
+<p class="MsoNormal"><span>I tried a bunch of configuration options and finally got it working by configuring the client side Wcf config to use SSL
+and the web server Wcf config to not use SSL.</span></p>
+<p class="MsoNormal"><span>It no longer works when running it from the
+web server but is working fine when running it externally which is what counts!</span></p>
+<p class="MsoNormal">This kinda makes sense to me considering the comms between the client and the TMG server is through SSL while the comms to the web server is not. &nbsp;Maybe someone has some further explanations about this.</p>
+<p class="MsoNormal">I&#39;m just stoked it is finally working and I can get this monkey off my back ;)&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 30, 2012</h2><p>Thank you for sharing the solution.</p>
+<p>I was having dinner with some people a couple nights ago while I was in SF, and one of them was an IT Pro networking guy. I mentioned your problem and solution, and how I&#39;d never heard of such a thing. He said it is not real common, but isn&#39;t uncommon either. Apparently the reason for doing this is twofold:</p>
+<ol>
+<li>Offload the SSL encryption work from the web server</li>
+<li>Allow the firewall to examine data after it has been decrypted, but before it flows to the web server</li>
+</ol>
+<p>So I appreciate you sharing the solution, because I certainly learned something interesting.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

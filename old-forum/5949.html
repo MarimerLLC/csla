@@ -1,0 +1,84 @@
+<html><header><title>Multiple IDs Criteria Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple IDs Criteria Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5949.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RubRunner posted on Sunday, December 07, 2008</h2><P>Hello, I am doing my first application using CSLA 2.1 and VS2005 (C#). My problem is tath I need to retrieve data from the SALES table but I should let the user to select one o more products to be shown. I can figure it out what is the best approach to get the dat from the database.</P>
+<P>1) If I use a complex criteria object with&nbsp;the list of ProductIDs I will need to send a list of comma separated values to the sql2005 Stored Procedure, creating a temp cursor in the sql server to filter the data</P>
+<P>2) I could retrieve all the sales info with the stored procedure and filter the data in the DataPortal_Fetch method</P>
+<P>I am not sure if one of those solutions are good enough. Can you tell me some tips in order to solve that?</P>
+<P>Best regards</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, December 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using SQL 2008, you can use table valued
+parameter.&nbsp; If you are using SQL 2005, you can probably use XML parameter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RubRunner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, December 07, 2008 2:52 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Multiple IDs Criteria Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello, I am doing my first application using CSLA 2.1 and VS2005 (C#). My
+problem is tath I need to retrieve data from the SALES table but I should let
+the user to select one o more products to be shown. I can figure it out what is
+the best approach to get the dat from the database.<o:p></o:p></p>
+
+<p>1) If I use a complex criteria object with&nbsp;the list of ProductIDs I
+will need to send a list of comma separated values to the sql2005 Stored
+Procedure, creating a temp cursor in the sql server to filter the data<o:p></o:p></p>
+
+<p>2) I could retrieve all the sales info with the stored procedure and filter
+the data in the DataPortal_Fetch method<o:p></o:p></p>
+
+<p>I am not sure if one of those solutions are good enough. Can you tell me
+some tips in order to solve that?<o:p></o:p></p>
+
+<p>Best regards<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Monday, December 08, 2008</h2>If you are not restricted to stored procedures, you could construct your SQL dynamically, using string concatenation and conditional logic.&nbsp; If you go down this path, be sure to use parameters for the variables.&nbsp; This eliminates the risk of "sql injection" if it exists in your situation and may enhance performance: all queries with three products specified "look the same" to the DBMS engine and can re-use the query plan.<br><br>Jon Stonecash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Monday, December 08, 2008</h2><P>Hi.</P>
+<P>The way I approach this is to write Query stored procedures that take a where cluase as a paramater. I have my own criteria objects that converts the query specification provided and creates the where clause that is injected into the query stored procedure. The&nbsp;query&nbsp;spedification its self uses a fluent API based on the business objects properties. This gives you the flexibility of dynamic SQL together with the advantages of uning a stored procedute.</P>
+<P>Regards</P>
+<P>Simon</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

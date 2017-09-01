@@ -1,0 +1,15 @@
+<html><header><title>CslaXML.cst problem with EntitySetName for child collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaXML.cst problem with EntitySetName for child collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6546.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nampord posted on Tuesday, March 03, 2009</h2><P>Hi</P>
+<P>I wonder if there is a bug in these templates or if it is due to my lack of understanding:</P>
+<P>The example template CslaXML.cst together with the MySample.xml does not produce the expected output:</P>
+<P>the MySample.xml states for the Project object</P>
+<BLOCKQUOTE dir=ltr>
+<P>&lt;Property Name="Resources" Type="ProjectResources" EntitySetName="Assignments" Default="ProjectResources.NewProjectResources()" IsChildCollection="true"/&gt;</P></BLOCKQUOTE>
+<P>But the Fetch&nbsp;in the &nbsp;ProjectResources class is created with </P>
+<BLOCKQUOTE dir=ltr>
+<P>private void Fetch(IEnumerable&lt;Dal.<STRONG>ProjectResources</STRONG>&gt; dataSet)</P></BLOCKQUOTE>
+<P>I would expect that the EntitySetName (i.e. Assignments) would apprear as the Dal dataset property and not the type of the child collection (i.e. not&nbsp;ProjectResources); What would the EntitySetName be good for otherwise?</P>
+<P>In fact looking at the TemplateBase.cs it looks like that the Dal&nbsp; dataset&nbsp;&nbsp;is always set to the type of the childcollection !?</P>
+<P>Has anyone ever thoroughly&nbsp;tested &nbsp;the CslaXml.cst?</P>
+<P>I am using the 3.6 templates on csla 3.6.1</P>
+<P>Thanks </P>
+<P>Frank</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

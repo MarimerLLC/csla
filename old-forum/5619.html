@@ -1,0 +1,20 @@
+<html><header><title>updating and deleting objects and collections when updating or deleting their parents</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>updating and deleting objects and collections when updating or deleting their parents</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5619.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>billysixshot posted on Friday, October 17, 2008</h2><P>Hi, I don't have any problems updating or deleting child objects on a parent object it the child object is a collection. I do have problems updating or deleting child objects on a parent object if the child object is simply an object and not a collection.</P>
+<P>ex:</P>
+<P>class classParent</P>
+<P>{</P>
+<P>prop1ChildList</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>vs.</P>
+<P>class classParent</P>
+<P>{</P>
+<P>prop1ChildObj</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>classParent.delete();</P>
+<P>classParent.Save();</P>
+<P>In the 2nd ex. the save for the childObj doesn't happen.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Monday, October 20, 2008</h2>Are you getting any sort of error, or is it just not working?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

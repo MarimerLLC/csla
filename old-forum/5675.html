@@ -1,0 +1,36 @@
+<html><header><title>Bizarre ASP.NET Trust Issue with a hosted site</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bizarre ASP.NET Trust Issue with a hosted site</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5675.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds posted on Sunday, October 26, 2008</h2><P>First off, this isn't necessarily a CSLA issue.&nbsp; I'm just hoping that somebody else on this forum has encountered something like this and can help save both my forehead and my wall!</P>
+<P>I've been developing a hefty website most of this year and have recently just tried to host it (on Fasthosts).&nbsp; I've been trying to publish the site via Visual Studio.</P>
+<P>I get the following exception (which has numerous entries in google which makes it hard to search for my specific problem!):</P>
+<P>[SecurityException: That assembly does not allow partially trusted callers.]</P>
+<P>This exception is in relevance to my CSLA library.&nbsp; From scouting around on the net I found a few articles that led me to add the following line to the AssemblyInfo.cs:</P>
+<P>[assembly: System.Security.<FONT color=#2b91af>AllowPartiallyTrustedCallersAttribute</FONT>()]</P>
+<P>This hasn't seemed to help...</P>
+<P>...but this leads me to the most bizarre issue.&nbsp; The exception states that the call to my CSLA library is pointing to the original path on my local machine!?</P>
+<P>[SecurityException: That assembly does not allow partially trusted callers.]<BR>&nbsp;&nbsp; XO.Store.ProductList.GetNewProductList() in C:\AlexandraSports\XO.Store\Product\ProductList.cs:51<BR>...</P>
+<P>...</P>
+<P>&nbsp;</P>
+<P>??? Any help would <EM>really</EM> be appreciated as I'm completely lost with this !!!<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, October 26, 2008</h2><P>CSLA requires a full trust environment.</P>
+<P>It won't run in a Partial Trust environment which is what most website providers use.</P>
+<P>It makes heavy use of reflection and other concepts which require Full Trust.</P>
+<P>The latest version of CSLA is trying to address this issue because Silverlight can only be run with Partial Trust. If you used the latest version and re-wrote all your business objects then it might work.</P>
+<P>For now your best bet is to find a website host that will allow you to run with Full Trust.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Sunday, October 26, 2008</h2><P>Hmm, I'll contact the hosting provider to see if they'll let it run in full trust.</P>
+<P>It threw me due to the local path reference, and I still find that odd.</P>
+<P>Just a quick query (which has likely been covered in a lot of other places), but how trivial is a conversion from CSLA 2?</P>
+<P>I'll have a search about the partial trust issue and Silverlight - interesting stuff.</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Monday, October 27, 2008</h2><P>Update...</P>
+<P>Our hosting provider only caters for high trust.&nbsp; That is unless we fork out more money for a dedicated server, which is not a viable option at the moment.&nbsp; Fasthosts are a highly regarding provider in the UK which is why I'm reluctant to cancel our hosting and find another UK provider, but I'm guessing CSLA will never work in high trust?</P>
+<P>I've sworn by CSLA for years and have no intention of removing it from our application, especially as we have plans for the future to move it to an in-house server and integrating it with an EPOS system.</P>
+<P>So I'm left with what seems to be a big dilema - strip out CSLA, or change hosting providers.&nbsp; The latter is a more preferable option, but I want to make sure I haven't missed anything before going ahead with this.</P>
+<P>Does anybody know of other options I may have?</P>
+<P>Thanks,</P>
+<P>Dave</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 27, 2008</h2>Another option may be Csla.Net for Silverlight.&nbsp; Lack of trust I believe was one of the design considerations, which is why you'd be required to use the new managed fields... so Csla can get around the fact that it can't do reflection.&nbsp; So that would require effort on your part, if you have an older code base that doesn't use managed fields... but I really recommend them anyway, as the code savings alone is worth it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pfeds replied on Monday, October 27, 2008</h2><P>How would CSLA for Silverlight be beneficial over 3.6?</P>
+<P>I'm assuming the Light version utilises 3.6 anyway, so does that mean they both aim to cater for partial trust?</P>
+<P>I think this is looking like my best option - porting the code to 3.6 and finding a hosting provider that will cater for it.</P>
+<P>Thanks for all the help so far.&nbsp; It's really appreciated.&nbsp; I'm an autocad developer by day, so this website has been eating up my weeknights and weekends for a while now, and will probably continue for a while longer which is why I want to make sure I go down the right path from now on!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, October 27, 2008</h2>Well, Csla.Net for Silverlight is Csla built to work in Silverlight, which is also a partial trust environment.&nbsp; It doesn't use regular Csla.Net, it's port of it.&nbsp; <br><br>It will help because if you update your business object library to work with CSLA - SL you <b><i>should</i></b> be able to use it in a partial trust environment, so you won't have to move hosting providers.<br><br>Here's a <a href="http://www.lhotka.net/Article.aspx?area=22&amp;id=10fb9ba4-f136-4453-b5af-ca83cdbf0612">description</a>.<br><br>Hopefully Rocky will see this thread and comment though, just to clarify if this will actually help or not.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 27, 2008</h2><P>As I understand it, if you code a single BO correctly it will run in both environments. I think each BO needs Regions for .Net and Silverlight - probably with compiler constants or something. Then the one BO can be used in the Silverlight client and serialize back to the same BO on the server and run in .Net.</P>
+<P>I want to learn more about this too. But I am not going to commit my app to it until I understand it better. </P>
+<P>If I were you I would find a Host that supports full trust and ship your current app. The re-write could take a while. Not sure if you have&nbsp;the time or interest.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

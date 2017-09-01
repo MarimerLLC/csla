@@ -1,0 +1,29 @@
+<html><header><title>How should I handle validation failure for uniqueness in an ObjectFactory (CSLA 4)?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How should I handle validation failure for uniqueness in an ObjectFactory (CSLA 4)?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10797.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dane posted on Sunday, October 23, 2011</h2><p>I have a BusinessObject called Dog.&nbsp; Dog has the property Name.&nbsp;I create a new Dog, give it a Name and save.&nbsp;&nbsp;The class DogFactory (which inherits from ObjectFactory)&nbsp;handles the push of information to my data source.&nbsp; At the time of save I need to&nbsp;validate that there are no other dogs in my data source with the new Dog.Name and if there are I&#39;d like to add a validation error directly to the NameProperty but I&#39;m seeing no clear way to do this.</p>
+<p>Thanks for any suggestions you might have.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, October 23, 2011</h2><p>If your code reaches the Save method in object factory then you should throw an exception. </p>
+<p>You should create a business rule to check uniqueness BEFORE the Save. </p>
+<p>IE: </p>
+<ol>
+<li>Create a business rule to check for uniqueness - preferrably an async rule that executes when the user edits the Name field and uses a CommandObject to check uniqueness in the DB.. </li>
+<li>if you wish to run all rules &quot;manually&quot; call &lt;bo&gt;.BusinessRules.CheckRules() after the object is unbound from UI.&nbsp;</li>
+<li>Save is only allowed when &lt;bo&gt; has no broken rules of severity=Error. </li>
+</ol></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Sunday, October 23, 2011</h2><p>As Jonny said, you have to decide, whether you want the error before the save operation or within it.&nbsp;</p>
+<p>In the first case (before) a BusinessRule as Jonny explained is the right choice. </p>
+<p>If you consider duplicate values as a rare case, you might treat it like an exception. For example you declare a check clause right in the database, catch that exception and re-throw a more verbose one; or you check right before the insert/update and throw an exception. <br />On the client tier you get the exception while Save()-ing in a DataPortalException&#39;s BusinessException and have to handle it. </p>
+<p>In our project, we needed to run such rules just before the Save, but not for every change of a property (every keystroke in our case). The solution isn&#39;t pretty, but works: <br />- we have added a Flag Property to every editable BO (actuelly an explicit interface implementation), <br />- have overriden the Save() like this: ... <span style="font-family:courier new,courier;">Save() { IsSaving = true; try { BusinessRules.CheckRules(); return base.Save(); } finally { </span><span style="font-family:courier new,courier;">IsSaving </span><span style="font-family:courier new,courier;">= false; } } </span><br />- every such rule has in its Execute an &quot;<span style="font-family:courier new,courier;">if (!obj.IsSaving) return true;</span>&quot; condition. </p>
+<p>You may want to have a look at this post, where I discussed the problem with Jonny: <a href="http://forums.lhotka.net/forums/p/10484/50302.aspx#50302">Business Rule</a> .</p>
+<p>HTH</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Sunday, October 23, 2011</h2><p>Actually you&#39;ll probably need both, before and after.&nbsp; When the user enters a value, check for uniqueness then via&nbsp;a rule.&nbsp; Just before your insert operation in DataPortal_Insert, you&#39;ll have to run the rule again.&nbsp; Otherwise you end up with a system that says you entered something unique, but someone else saves the same thing before you do.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 24, 2011</h2><p>I&#39;d prefer to have the &quot;transactional uniqueness&quot; handled by the database rather than a rule in code. </p>
+<p>So my preferences would be: </p>
+<ul>
+<li>BusinessRule to check for uniqueness.</li>
+<li>Insert method should fail from database (&quot;unique constraint&quot;) if value has been added between the time the rule was run and the insert was called.</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, October 24, 2011</h2><p>Hi Dane,</p>
+<p>CslaGenFrok has a library of rules that includes a <strong>NoDuplicates</strong> rule. This is a generic rule as you don&#39;t have to specify the parent type (aka the collection type).&nbsp; The rule is a regular Csla rule and checks that on the parent collection, there&nbsp;is no other item with the same name/description.</p>
+<p>Note that you might want some degree of duplication like the brands and models issue:</p>
+<ul>
+<li>on each brand the model name is unique</li>
+<li>different brands may have the same model name</li>
+</ul>
+<p>As the rule checks only the parent collection (<strong>the brand</strong>) and not all models, it handles this use case nicely.</p>
+<p>You can find the Rule sample 1.0.2 DLL and documentation in the form of CHM at&nbsp;<a target="_blank" href="http://cslagenfork.codeplex.com/releases/view/73538" title="Rule sample v.1.0.2">http://cslagenfork.codeplex.com/releases/view/73538</a>&nbsp;</p>
+<p>Source code is available.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

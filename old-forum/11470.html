@@ -1,0 +1,31 @@
+<html><header><title>Project Tracker Sample Problems</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Project Tracker Sample Problems</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11470.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfierstein posted on Thursday, July 12, 2012</h2><p>Hi,</p>
+<p>I&#39;m trying to mess around with the ProjectTracker sample project to follow along with some of the walkthrough videos. I am using Visual Studio 2010 and I&#39;m trying to run the sample from CSLA 3.8. I&#39;m getting an error in the Web.config file after I&#39;ve seemingly rectified all the broken references upon importing the project solution into VS.</p>
+<p>
+<p><i>Could not load file or assembly &#39;PresentationCFFRasterizer, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. The system cannot find the file specified.</i></p>
+<p>&nbsp;</p>
+<p>If I comment that particular line out, it compiles and runs fine, except I get a FileNotFoundException when I click cancel on the Login screen and attempt to navigate to View Project.</p>
+<p><i>Could not load file or assembly &#39;System.Data, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089&#39; or one of its dependencies. The system cannot find the file specified.</i></p>
+<p>&nbsp;</p>
+<p>I converted the project from VS2008 to VS2010, could this have caused problems? I was asked by Visual Studio to upgrade parts of the project but I still get the error regardless of whether or not I upgrade. The output also shows the following right after I click View Projects:</p>
+<p>
+<p><i>A first chance exception of type &#39;System.Data.SqlClient.SqlException&#39; occurred in System.Data.dll</i></p>
+<p><i>A first chance exception of type &#39;Csla.Reflection.CallMethodException&#39; occurred in Csla.DLL</i></p>
+<p><i>A first chance exception of type &#39;Csla.Server.DataPortalException&#39; occurred in Csla.DLL</i></p>
+<p><i>A first chance exception of type &#39;Csla.Server.DataPortalException&#39; occurred in Csla.DLL</i></p>
+<p><i>A first chance exception of type &#39;Csla.Server.DataPortalException&#39; occurred in Csla.DLL</i></p>
+<p><i>A first chance exception of type &#39;System.IO.FileNotFoundException&#39; occurred in mscorlib.dll</i></p>
+<p><i>&#39;PTWin.vshost.exe&#39; (Managed (v2.0.50727)): Loaded &#39;C:\Windows\assembly\GAC_64\System.Transactions\2.0.0.0__b77a5c561934e089\System.Transactions.dll&#39;, Skipped loading symbols. Module is optimized and the debugger option &#39;Just My Code&#39; is enabled.</i></p>
+<p><i>A first chance exception of type &#39;System.IO.FileNotFoundException&#39; occurred in Csla.dll</i></p>
+<p><i>A first chance exception of type &#39;System.IO.FileNotFoundException&#39; occurred in Csla.dll</i></p>
+</p>
+<p>Thanks for any help that could be provided!</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, July 13, 2012</h2><p>Sounds like it&#39;s a mix of .Net 3.5 and 4.0 here.&nbsp; I&#39;d suggest try downloading verion 4.3.x of the framework and its samples, which has a later ProjectTracker sample.&nbsp; That all works in VS 2010 and .Net 4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfierstein replied on Friday, July 13, 2012</h2><p>Well I&#39;ve got the ProjectTracker for 4.3.13 up and running, but could someone explain what is going on here? I set the solution to open the WpfUI version as the startup project. I don&#39;t click login, but instead click on Resources tab on the left hand side of the window. It starts loading, and then throws a bunch of exceptions...but the exceptions seem to &quot;fix themselves&quot;...after about 5 seconds.</p>
+<p>&nbsp;</p>
+<p>Screenshots:</p>
+<p><a href="http://imgur.com/a/3vvUg#2">http://imgur.com/a/3vvUg#2</a></p>
+<p>&nbsp;</p>
+<p>I &nbsp;had to disable &quot;Just My Code&quot; in the Visual Studio Debugger settings in order to get the application to keep running after the exception was thrown. See above screenshots of what&#39;s happening. Could someone explain why the exception is being thrown and why it &quot;goes away&quot; after a several seconds?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>Unable to display report in ReportViewer 2010</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to display report in ReportViewer 2010</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10547.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tous-Citi posted on Thursday, July 21, 2011</h2><p>I&#39;ll just converted all my 3.6 CSLA objects to 4.0. &nbsp;I&#39;ll also converted my Windows application to the 4.0 Net Framework. &nbsp;For datagrids and list controls everything is working as expected. &nbsp;However, I&#39;m now struggling with the ReportViewer. &nbsp;I have taken a simple report that I have built from scratch in VS2010. &nbsp;My data set is populated correctly. &nbsp;When attempting to set the data source for the ReportViewer, I get the following error: &nbsp;An error occurred during local report processing. &nbsp;Failed to load expression host assembly. &nbsp;Details: &nbsp;Attempt by method &#39;Csla.Core.FieldManager.FieldDatamanager.ForceStaticFieldInit(System.Type); to access field &#39;Csla.Security.CslaIdentity._forceInit&#39; failed.</p>
+<p>I&#39;ve made sure that the reference to the&nbsp;Microsoft.ReportViewer.WinForms.dll is for Version&nbsp;10.0.0.0. &nbsp;Do you have any suggestions.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Tous-Citi replied on Thursday, July 21, 2011</h2><p>After much hair pulling, I found a solution. &nbsp;What made this so difficult was a combination of many things and a very poor error message that attempted to incriminate CSLA. &nbsp;First, when converting the report, I found that I had to create a new report and copy the fields from the &quot;converted&quot; report to the new report. &nbsp;Second, the datasource and parameters are nicely hidden in the &quot;Report Data&quot; window. &nbsp;Needed to add parameters and datasource thru the interface. &nbsp;Finally, I had to add&nbsp;<span>reportViewer.LocalReport.SetBasePermissionsForSandboxAppDomain(permissions); when initializing the report viewer. &nbsp;Hopefully, this can help someone avoid the many wasted hours.</span></p>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>override</span>&nbsp;<span>ReportViewer</span>&nbsp;GetReportViewer()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>ReportViewer</span>&nbsp;reportViewer&nbsp;=&nbsp;<span>new</span>&nbsp;<span>ReportViewer</span>();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>//&nbsp;Set&nbsp;report&nbsp;viewer&nbsp;attributes</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reportViewer.ProcessingMode&nbsp;=&nbsp;<span>ProcessingMode</span>.Local;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reportViewer.LocalReport.ReportPath&nbsp;=&nbsp;ApplicationPath&nbsp;+&nbsp;<span>&quot;\\ReportLayout\\Report.rdlc&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reportViewer.LocalReport.DisplayName&nbsp;=&nbsp;<span>&quot;&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b><span>PermissionSet</span>&nbsp;permissions&nbsp;=&nbsp;<span>new</span>&nbsp;<span>PermissionSet</span>(<span>PermissionState</span>.Unrestricted);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>reportViewer.LocalReport.SetBasePermissionsForSandboxAppDomain(permissions);</b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reportViewer.LocalReport.SetParameters(BuildReportParameters());
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;reportViewer.LocalReport.DataSources.Add(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>new</span>&nbsp;<span>ReportDataSource</span>(<span>&quot;ReportData&quot;</span>,&nbsp;_myReportData));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;reportViewer;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>kmgbkj replied on Sunday, April 15, 2012</h2><p>May be you said is a solution,but that dose not solve the original problem.</p>
+<p>I have meet the same by three years ,I wondered the report some time is right,some time not,through many times for trying different solution,</p>
+<p>if your report is a simple one that dose not have &#39;Expression&#39; or not use ReportParameter,report processing is ok ,or you get the error.</p>
+<p>I get the problem is:</p>
+<p>We can&#39;t use CslaIdentityBase for base class,use&nbsp;GenericIdentity directly. like this:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp;<b> &nbsp;private IBeamPrincipal(IBeamIdentity id)</b></p>
+<p><b>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(new GenericIdentity(id.Name,id.AuthenticationType))</b></p>
+<p><b>&nbsp; &nbsp; &nbsp; &nbsp; {</b></p>
+<p><b>&nbsp; &nbsp; &nbsp; &nbsp; }</b></p>
+</p>
+<p>&nbsp;</p>
+<p>Hope this is helpful.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, October 29, 2012</h2><p>Thanks Citi - a strange change and even worse error description. Your solution &nbsp;has helped us in another scenario.</p>
+<p>Coincidentally, I&#39;ve just been pulling my hair out at another issue (though likely related to yours). We have functionality were we print an SSRS report directly, without previewing it. In order to do this we need to &quot;Render&quot; the report to memory and then print it.</p>
+<p>It works very well normally, but as soon as I introduce it unto a CSLA environment it fails with the following exception:<br />&quot;Failed to load expression host assembly. Details: Object reference not set to an instance of an object.&quot;</p>
+<p>After trying so many different things, I started strip away the CSLA &quot;layers&quot; in an attempt to figure out why it works when not part of a CSLA project. I managed to narrow it down to the the current thread&#39;s Principal object which is set when &quot;logging in&quot; with Csla using the SetPrincipal approach.</p>
+<p>To confirm, I manually set the current thread&#39;s Principal object to the current user and the problem went away. I&#39;m not sure how what or why the SSRS local report engine is so sensitive about the security context of the current thread, but hopefully this post will help someone else in some way.</p>
+<p>Jaans</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

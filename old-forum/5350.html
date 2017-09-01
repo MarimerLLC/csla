@@ -1,0 +1,46 @@
+<html><header><title>Managed properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managed properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5350.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 posted on Friday, September 05, 2008</h2><P>Hi all!</P>
+<P>I bought C# Business Objects 2005 in december in preparation for a new project. I've been using some of the concepts in the book and I recently downloaded the latest version of CSLA. </P>
+<P>Our product uses metadata heavily and I see the csla v3.5.x has a way of adding metadata to your BO's properties. This wasn't in the framework when I first looked at CSLA so I "rolled my own".</P>
+<P>First I have to say that I'm not crazy about the concept of&nbsp;managing property <STRONG>values</STRONG> but I do like supporting metadata at the BO level (as opposed to letting the UI domain manage this). </P>
+<P>I'd like to share my approach with you because I'm curios as to the possible benefits of CSLA's approach vrs "my own". </P>
+<P>I chose to use attributes, something like the following:</P><FONT color=#0000ff size=2>
+<P>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>FieldMetaData</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// backing fields, setters/getters left out</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> FieldName; </P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> DisplayLabel;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> ReportLabel;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsRequired;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsVisible;</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Storage; </FONT><FONT color=#008000 size=2>// e.g. TableName.ColumnName</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>MetaDataAttibute</FONT><FONT size=2>: </FONT><FONT color=#2b91af size=2>Attribute</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// backing fields, setters/getters left out</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>FieldMetaData</FONT><FONT size=2> MetaData;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>TestBO</P></FONT><FONT size=2>
+<P>{</P>
+<P>[</FONT><FONT color=#2b91af size=2>MetaData</FONT><FONT size=2>(RegisterFieldMetadata(</FONT><FONT color=#a31515 size=2>"Data"</FONT><FONT size=2>))]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Data;</P>
+<P>}</P></FONT>
+<P>public string Storage; // e.g. TableName.ColumnName</P>
+<P>}</P>
+<P>You get the picture... I've looked at CSLA's PropertyMetadataManager class an how it's used by BusinessBase. Why use a static field instead of attributes? FYI, our metadata can change at runtime and it includes a lot more that is shown in this example.</P>
+<P>I look forward to your thought and comments.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 05, 2008</h2><P>Ultimately I had exactly two goals for this design:</P>
+<OL>
+<LI>I knew Silverlight was coming, and I needed a way to do low-trust serialization of object data, which means managed backing fields, which means some way to describe your properties.</LI>
+<LI>I wanted to eliminate the use of string literals throughout the code (when calling CanReadProperty(), CanWriteProperty(), CheckRules(), PropertyHasChanged(), GetProperty(), SetProperty(), ReadProperty() and LoadProperty()) because string literals reduce maintainability. This is the reason for the static fields - they act as a token for the property and avoid propogation of string literals through business classes.</LI></OL>
+<P>If you look back in time, there's a thread discussing the design a few months ago. The design was refined and enhanced based on feedback from several people, some who'd done similar things to me and you. But ultimately I was after the two goals I listed, and the other changes were nice improvements while still achieving those goals.</P>
+<P>Whether you use managed backing fields or private backing fields is up to you. The concept of managed backing fields exists primarily to support Silverlight, and possibly other medium or low trust scenarios in the future. .NET serialization of non-public fields requires a lot of trust, and managed backing fields exist so CSLA can serialize your object's data without the need for reflection or elevated trust.</P>
+<P>In terms of how you mark your metadata, attributes are fine if you read and cache them. But one of the slowest reflection operations is retrieving custom attributes, so you really need to be careful how you use them. </P>
+<P>I think it would be possible to define attributes for the CSLA model too, but the result would be the same (some code would reflect over your type and would do a RegisterProperty() based on the attribute values - the results being cached in static fields like they are now.</P>
+<P>With CSLA I chose to (generally) follow the pattern Microsoft has set forth with dependency properties in WPF and WF, partially to avoid adding more concepts to the mix. Microsoft already defined the concept, I'm just adapting it to my needs.</P>
+<P>CSLA doesn't (at least not easily) support changing the metadata at runtime. The PropertyInfo&lt;T&gt; objects are cached on a per-type basis for performance and memory reasons. However, you can extend PropertyInfo&lt;T&gt;, and could devise a mechanism by which your additional metadata could be more dynamic. The <EM>core metadata</EM> defined in PropertyInfo&lt;T&gt; can't be dynamic - specifically the property name - because that can't change without a recompile.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 replied on Saturday, September 06, 2008</h2><P>I see the benefits of using static fields to hold metadata (I like the WPF pattern as well).</P>
+<P>What eludes me is how to make the metadata available to databinding mechanisms with out the use of attributes and reflection. CSLA must do it somehow because I see the project tracker example shows friendly names for bo properties. I'll take a deeper look and see how it's done.</P>
+<P>I'm working on some interesting technologies for our product (a POS system currently written in Delphi). As we think of ways to migrate our app to .NET I'm having to takle problems not commonly solved using business objects (e.g. metadata and datamodels that can&nbsp;change in a production environment).</P>
+<P>I look forward to sharing&nbsp;(what I'm allowed to) with the group. &nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

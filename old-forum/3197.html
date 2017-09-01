@@ -1,0 +1,335 @@
+<html><header><title>EditLevel Mismatch ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel Mismatch ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3197.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Monday, July 16, 2007</h2><P>Hi </P>
+<P>I got this error, can someone please explain/ assist.</P>
+<P>scenario: A business object which has no properties of its own, but a different child objects.</P>
+<P>ie. an Employee with a child of Personal Details.</P>
+<P><FONT face=Verdana size=2>DataPortal.Update failed (Csla.Core.UndoException: Edit level mismatch in CopyState<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.UndoableBase.CopyState(Int32 parentEditLevel)<BR>&nbsp;&nbsp; at Csla.Core.BusinessBase.BeginEdit()<BR>&nbsp;&nbsp; at Csla.Core.BusinessBase.IEditableObject_BeginEdit()<BR>&nbsp;&nbsp; at System.Windows.Forms.CurrencyManager.OnCurrentChanged(EventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.CurrencyManager.ChangeRecordState(Int32 newPosition, Boolean validating, Boolean endCurrentEdit, Boolean firePositionChange, Boolean pullData)<BR>&nbsp;&nbsp; at System.Windows.Forms.CurrencyManager.List_ListChanged(Object sender, ListChangedEventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.BindingSource.OnListChanged(ListChangedEventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.BindingSource.InnerList_ListChanged(Object sender, ListChangedEventArgs e)<BR>&nbsp;&nbsp; at System.ComponentModel.BindingList`1.OnListChanged(ListChangedEventArgs e)<BR>&nbsp;&nbsp; at System.ComponentModel.BindingList`1.Child_PropertyChanged(Object sender, PropertyChangedEventArgs e)<BR>&nbsp;&nbsp; at Csla.Core.BindableBase.raise_PropertyChanged(Object sender, PropertyChangedEventArgs e)<BR>&nbsp;&nbsp; at Csla.Core.BindableBase.OnUnknownPropertyChanged()<BR>&nbsp;&nbsp; at Csla.Core.BusinessBase.MarkClean()<BR>&nbsp;&nbsp; at Csla.Core.BusinessBase.MarkOld()<BR>&nbsp;&nbsp; at HumanResources.Library.Employee.DataPortal_Update() in C:\Source\KISS\HumanResources.Library\Employee\Employee.vb:line 151)</FONT></P>
+<P><FONT face=Verdana size=2>Thanks</FONT></P>
+<P><FONT face=Verdana size=2>Ellie</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 16, 2007</h2>This is a new feature of the framework designed to help find data binding errors.<br><br>Basically you need to ensure that you call EndEdit on your binding sources before calling update.&nbsp; Check out the newest ProjectTracker sample, ProjectEdit.cs, to see how to handle the situtation properly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MrPogo replied on Wednesday, July 18, 2007</h2><P>When I change to CSLA 3.0 and I have a <FONT color=#2b91af size=2>BusinessListBase <FONT color=#000000>as a root and bind it to a datagrid and do an edit in the grid on a object in the blb and I get the EditLevel Mismatch once I come of the field or row.&nbsp; Everything else works.</FONT></FONT></P>
+<P><FONT size=2>It seems to be a grandchild not getting an editlevel increase when the parent does.</FONT></P>
+<P><FONT size=2>Thanks in advance.</FONT></P>
+<P><FONT size=2>John</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sean Walsh replied on Thursday, July 19, 2007</h2>
+
+<p class="MsoNormal"><b><font face="Arial"><span>Non-Hierarchical
+Object Graph causes EditLevel problems<o:p></o:p></span></font></b></p>
+
+<p class="MsoNormal"><font face="Arial"><span>I’m
+surprised more people don’t experience this problem.<span>&nbsp; </span>One scenario where it happens is when the
+problem domain is not a strict hierarchy.<span>&nbsp;
+</span>We have an application where we would like to have properties of objects
+that reference other properties of the same object.<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>In our
+case, we’re working in criminal justice and we have a case with various offence
+codes – it’s a collection of child objects (ECOffenceCodes) within the parent
+(ERCase).<span>&nbsp; </span>However, in addition, we also
+want to work with the Primary Offence Code which is one of the objects in the
+collection.<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>The trouble
+is that CSLA expects all Parent-Child relationships to be a hierarchy so upping
+the EditLevel of a parent recursively ups the EditLevel of all of its children
+(and their children and so on).<span>&nbsp; </span>However,
+what if two of its child objects at whatever point in the hierarchy point to
+the SAME object instance within the object graph?<span>&nbsp; </span>Blam!<span>&nbsp;
+</span>EditLevel mismatch in CopyState.<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>I have
+produced a minimal set of code to illustrate the problem.<span>&nbsp; </span>Create yourself a Windows application project
+with a form and a button with the following click event…<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Courier New" size="2"><span><o:p>using System;<br>using System.Windows.Forms;<br><br>namespace EditLevelProblem<br>{<br>&nbsp;&nbsp;&nbsp; public class frmMain : Form<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public frmMain()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void btnProblem_Click(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Create a parent object<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ERParent erParent = ERParent.New();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Add 2 children to its collection<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 0; i &lt; 2; i++)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; erParent.ChildCollection.Add(ECChild.New());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Here's the nub of the problem<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Point to a child via ANOTHER property of the parent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; erParent.PrimaryChild = erParent.ChildCollection[1];<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Light blue touch paper and retire...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; erParent.BeginEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}<br>&nbsp;</o:p></span><br><b><span></span></b></font></p><p class="MsoNormal"><font face="Arial"><b><span>BusinessObjects.cs</span></b><span> – a minimal set of CSLA Objects.<span>&nbsp; </span>I’ve put all 3 business objects – ERParent,
+ECChild and EcChildCollection into one source module to keep things
+simple.<span>&nbsp; </span>No data access, no validation,
+authorisation etc. This is about as bare as I could get it (actually the getter
+for ERParent.PrimaryChild isn’t used but it keeps ReSharper quiet!) but it
+illustrates the problem well…<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font face="Arial"><span><font face="Courier New" size="2">using System;<br>using Csla;<br><br>namespace EditLevelProblem<br>{<br>&nbsp;&nbsp;&nbsp; // ERParent - Parent Class<br>&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; public class ERParent : BusinessBase&lt;ERParent&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ECChild _primaryChild = ECChild.New();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ECChildCollection _childCollection = ECChildCollection.New();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override object GetIdValue()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ECChild PrimaryChild<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return _primaryChild; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { _primaryChild = value; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public ECChildCollection ChildCollection<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return _childCollection; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ERParent New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ERParent();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ERParent()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br></font><br><font face="Courier New" size="2">&nbsp;&nbsp;&nbsp; // ECChild - Child Class<br>&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; public class ECChild : BusinessBase&lt;ECChild&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override object GetIdValue()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ECChild New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ECChild();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ECChild()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; // ECChildCollection - Collection of Child Objects<br>&nbsp;&nbsp;&nbsp; //<br>&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; public class ECChildCollection : BusinessListBase&lt;ECChildCollection, ECChild&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static ECChildCollection New()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new ECChildCollection();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ECChildCollection()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}</font></span></font></p><p class="MsoNormal"><font face="Arial"><span>Maybe what
+is required is for CopyState to maintain a hashtable (or some such) of objects
+visited during the recursive CopyState and only perform CopyState ONCE per
+object instance.?<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>Is it too radical
+to suggest that everywhere an if statement of the form:<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Courier New" size="2"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (this.EditLevel + 1 &gt; parentEditLevel)<o:p></o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>throw new UndoException(string.Format(Resources.EditLevelMismatchException,
+"CopyState"));<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span><o:p>&nbsp;</o:p>appears –
+i.e.:</span></font></p>
+
+<p class="MsoNormal"><font face="Arial"><span>UndoableBase.CopyState, UndoChanges, AcceptChanges<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font face="Arial"><span>BusinessListBase.CopyState, UndoChanges, AcceptChanges<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>it should
+simply read:<o:p></o:p></span></font></p>
+
+
+
+
+
+<p class="MsoNormal"><font face="Courier New" size="2"><span><span>&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;</span>if
+(this.EditLevel + 1 &gt; parentEditLevel)<o:p></o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>return;<o:p></o:p></span></font></p>
+
+
+
+<p class="MsoNormal"><font face="Arial"><span>In other
+words, no child’s EditLevel is ever allowed to get out of step with its
+parent’s? <o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><font face="Arial"><span>I think
+there is a sort of precedent for this sort of behaviour in the comment in
+UndoableBase.UndoChanges that reads:<o:p></o:p></span></font></p>
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><font face="Courier New" size="2"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// if we are a child object we might be
+asked to<o:p></o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// undo below the level of stacked
+states,<o:p></o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>// so just do nothing in that case<o:p></o:p><br><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (EditLevel &gt; 0)<o:p></o:p><br><span>&nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></span></font></p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><font face="Arial"><span><font face="Courier New" size="2"><o:p></o:p></font>Or is there
+some really nasty DataBinding bug I’m encouraging here?<o:p><br></o:p>Does
+_stateStack.Count help?<o:p><br>O</o:p>r are we
+using CSLA incorrectly?<o:p><br></o:p>This is my
+first post so I hope I’m not wasting anyone’s time here…</span></font></p><p class="MsoNormal"><br><font face="Arial"><span><o:p></o:p></span></font></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MrPogo replied on Thursday, July 19, 2007</h2><P>This seems to be my problem I have&nbsp; a blb -bo-child and on the UI its a parent datagrid with a datagrids with the child below it.&nbsp; When I edit the childern datagrids I have no problems with a save but when I edit the parent grid I get an error.&nbsp; The objects are Users-user-userrole</P>
+<P>Edititing the user is where the edit level mismatch occurs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sean Walsh replied on Thursday, July 19, 2007</h2>yeah<br><br>I'm re-reading pp 50-54 of Rocky's book to see if i've got the design wrong - i.e. we're being too data-oriented and not behaviour-oriented enough...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Sean Walsh:</strong></div><div>
+<P class=MsoNormal><B><FONT face=Arial><SPAN>Non-Hierarchical Object Graph causes EditLevel problems<o:p></o:p></SPAN></FONT></B></P>
+<P class=MsoNormal><FONT face=Arial><SPAN>I’m surprised more people don’t experience this problem.<SPAN>&nbsp; </SPAN>One scenario where it happens is when the problem domain is not a strict hierarchy.<SPAN>&nbsp; </SPAN>We have an application where we would like to have properties of objects that reference other properties of the same object.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN>In our case, we’re working in criminal justice and we have a case with various offence codes – it’s a collection of child objects (ECOffenceCodes) within the parent (ERCase).<SPAN>&nbsp; </SPAN>However, in addition, we also want to work with the Primary Offence Code which is one of the objects in the collection.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN>The trouble is that CSLA expects all Parent-Child relationships to be a hierarchy so upping the EditLevel of a parent recursively ups the EditLevel of all of its children (and their children and so on).<SPAN>&nbsp; </SPAN>However, what if two of its child objects at whatever point in the hierarchy point to the SAME object instance within the object graph?<SPAN>&nbsp; </SPAN>Blam!<SPAN>&nbsp; </SPAN>EditLevel mismatch in CopyState.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>If I understand you correctly, what you are describing is a <EM>using</EM> relationship, not a parent-child relationship. You must code using relationships differently, there's no real way around that.</P>
+<P class=MsoNormal>This is one of the more confusing elements of OO design though: confusion between <EM>using</EM> and forms of <EM>containment</EM>.</P>
+<P class=MsoNormal>An Order has LineItems, and each LineItem has a Product.</P>
+<P class=MsoNormal>That seems like an innocent statement that would lead to the belief that Product is somehow a child of LineItem. Very clearly however, Product is its own concept. A LineItem merely <EM>uses</EM> a Product - and in reality probably doesn't use a Product <EM>object</EM> at all - just some product data.</P>
+<P class=MsoNormal>For convenience of navigation (if your use case requires it), LineItem might implement a GetProduct() method that returns a Product object. Honestly though, even that is a form of coupling that is often best avoided (though I do such things sometimes, because it makes the object model more intuitive).</P>
+<P class=MsoNormal>The key here, is that LineItem <EM>never maintains a reference</EM> to a Product. Even if it implements a GetProduct() method, that method looks like this:</P>
+<P class=MsoNormal>Public Function GetProduct()<BR>&nbsp; Return Product.GetProduct(_productId)<BR>End Function</P>
+<P class=MsoNormal>It is merely a shortcut for something the UI could have done itself - again for purposes of making the object model and object relationships more intuitive and perhaps more explicit.</P>
+<P class=MsoNormal>But Product is not a child of LineItem.</P>
+<P class=MsoNormal>Getting the basic object design wrong, especially on a point like this, will cause all sorts of nasty headaches - including some with data binding and edit levels.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sean Walsh replied on Thursday, July 19, 2007</h2>Thanks Rocky<br>I'll consider this.&nbsp; Even at first reading what you say feels right.&nbsp; I think there are several instances in our object hierarchy where we're using a parent-child relationship in an inappropriate fashion...<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Friday, July 20, 2007</h2><P>Thats fine. But what if you have a parent object which has no direct properties, instead it has a series of children which contain a variety of information. ie like the example at the beginning.</P>
+<P>Employee (No Properties)</P>
+<P>&nbsp;&nbsp;&nbsp;Personal Details</P>
+<P>&nbsp;&nbsp;&nbsp;Address Details</P>
+<P>&nbsp;&nbsp;&nbsp;Tax Details</P>
+<P>&nbsp;&nbsp;&nbsp;etc.</P>
+<P>All the children are and should be contained within the parent. How does the Editlevel mismatch issue get resolved.</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sean Walsh replied on Friday, July 20, 2007</h2>Are you using Data Binding?&nbsp; If so, are you using any 3rd party components? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jon replied on Friday, January 23, 2009</h2>***** CSLA VERSION *****<br />3.0.2.0<br /><br /><br />***** PARENT COLLECTION *****<br />public class EventActions : BusinessListBase-EventActions, EventAction-<br /><br /><br />***** CHILD COLLECTION ITEM *****<br />public class EventAction : BusinessBase-EventAction-<br />{<br />	private string _name;<br />	private EventActionType _eventActionType;<br /><br />	public string Name<br />        {<br />		get { return _name; }<br />		set { _name = value; PropertyHasChanged(); }<br />        }<br /><br />	public EventActionType EventActionType<br />        {<br />		get { return _eventActionType; }<br />		set { _eventActionType = value; }<br />        }<br />}<br /><br /><br />***** CHILD OF CHILD COLLECTION ITEM *****<br />EventActionType : BusinessBase-EventActionType-<br /><br /><br />***** WPF WINDOW CODE *****<br />private void EditEventAction()<br />{<br />	myEventActions.BeginEdit();<br /><br />	AddEditEventActionWindow window = new AddEditEventActionWindow(myEventActions[0]);<br />	bool? windowResult = window.ShowDialog();<br />	if (windowResult.HasValue &amp;&amp; windowResult.Value)<br />	{<br />		myEventActions.ApplyEdit();<br />		myEventActions = myEventActions.Save();<br />	}<br />	else<br />		myEventActions.CancelEdit();<br /><br />	myEventActions.ResetBindings();<br />}<br /><br /><br /><br />When editing the myEventActions[0] ...<br />... if I change the Name property of EventAction, the myEventActions.ApplyEdit() works great.<br />... if I change the EventActionType property (in essence, replacing an old child with a different child) I get the "Edit level mismatch in AcceptChanges" error during myEventActions.ApplyEdit().<br /><br />I don't think this is a "using vs. parent-child" relationship issue. I DO "maintain a reference" to the EventActionType in EventAction. As a matter of fact, I am replacing the reference.<br /><br />AFTER replacing the EventActionType in EventAction, the EventAction has an EditLevel of 1 and the EventActionType has an EditLevel of 0 (because its a replacement, not an edit of what was there).<br /><br /><br />I handled this by applying the [NotUndoable()] to the EventActionType field in the EventAction. Having done so, I will need to directly apply BeginEdit() / ApplyEdit() to the EventActionType when editing IT (not replacing).<br /><br /><br />SO, after that long winded explanation (I am really sry about that too), my question is, did I handle that right, or am i missing something in the design that would have allowed me to not HAVE to apply [NotUndoable()] to EventActionType field in EventAction?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 23, 2009</h2>You may want to consider upgrading to 3.0.5, as there are some bug fixes which may affect you.&nbsp; Check the change log to be sure.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jon replied on Monday, January 26, 2009</h2>I've upgraded to 3.5.2 (almost seamlessly, thank you for that).<br /><br />I’m still getting the same error.<br />BUT, I think I know what’s wrong.<br /><br />The Hierarchy is:<br />EventActions -> EventAction -> EventActionType <br /><br />The scenario is as follows:<br />•	Fetch EventActions (RootParent) which loads all the EventAction (Parent / Child) which loads for each EventAction an EventActionType (Child).<br />•	Call BeginEdit() on EventActions which sets the EditLevel for EventActions and all child objects to 1.<br />•	Change the EventActionType IN EventAction. The replacement EventActionType has an EditLevel of 0 because it was NOT part of the EventAction when EventActions.BeginEdit() was called.<br />•	Call EventActions.ApplyEdit() which loops through all the child objects eventually getting to the replaced EventActionType and throwing the EditLevel Mismatch error because it has an EditLevel of 0.<br /><br /><br />The following SEEMS to work.<br /><br />From within EventAction:<br /><br />public EventActionType EventActionType<br />{<br />set{ _eventActionType = EventActionType. FetchChildEventActionType(value.EventActionTypeID, EditLevel); }<br />}<br /><br /><br />From within EventActionType:<br /><br />internal static EventActionType FetchChildEventActionType(short eventActionTypeID, int parentEditLevel)<br />{<br /><br />ChildCriteria criteria = new ChildCriteria(ChildCriteria.Actions.ByEventActionTypeID);<br />criteria.EventActionTypeID = eventActionTypeID;<br />criteria.ParentEditLevel = parentEditLevel;<br /><br />return DataPortal.Fetch(criteria);<br />}<br /><br /><br /><br />private void DataPortal_Fetch(ChildCriteria criteria)<br />{<br />// load up values<br /><br />if(criteria.ParentEditLevel > 0)<br />CopyState(criteria.ParentEditLevel);<br />}<br /><br /><br /><br />Is this solution a good idea or am I going to be bit by some consequence I don't see?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 27, 2009</h2>Just to be clear, is EventActionType a child of the root object EventAction?&nbsp; I'm not sure, so please don't take my word on this, but I'm not sure that's a supported scenario with ERLB.&nbsp; Hopefully someone else here can chime in with better knowledge than I have.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jon replied on Tuesday, January 27, 2009</h2>Yes, EventActionType IS a child of EventAction AND EventAction is a child in the RootCollection EventActions (plural).<br /><br />If I call BeginEdit() on a BusinessListBase, then call BusinessListBase.AddNew(), the new Child takes on an EditLevel appropriate to the Parent.<br /><br />However, if I change a child object to a different Child (the Parent is not a collection, but a BusinessBase - like its Child), then the newly referenced Child's EditLevel is zero (because it was NOT the child at the time BeginEdit was called on the Parent).<br /><br />So, my solution calls CopyState on the newly referenced Child to bring it into synch with it's Parent.<br /><br />The only place I have access to CopyState is from within the Child object itself ... which is why I am calling CopyState inside the DataPortal_Fetch(ChildCriteria criteria) method, and which is why there is a method DataPortal_Fetch which accepts a ChildCriteria (indicating that it is a child, and thus needs to call CopyState).<br /><br />Is this scenario supported, but in a different manner?<br /><br />Ultimately my question is: How DO you change a Child BusinessBase for a Parent BusinessBase after calling BeginEdit() on the Parent BusinessBase?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 27, 2009</h2>This is prior to CSLA 3.5? In CSLA 3.5+ the field manager takes care of<br />these details. But in 3.0 or older, you are responsible for synchronizing<br />the edit level of any new child object added into an existing object graph.<br /><br />To do this, use a double while loop to raise and/or lower the edit level of<br />the new child to match the parent. In 3.0 you should be able to use the<br />Csla.Core.IUndoableObject interface to gain access to the CopyState() and<br />related methods.<br /><br />Also, you can look at the 3.6 code to see how it does this - but it sounds<br />like you already have the concept figured out.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jon replied on Wednesday, January 28, 2009</h2>Thanks Rocky for … well … developing the CSLA framework and taking the time to support it.<br /><br />I have upgraded to 3.6 and am still unclear about a couple things.<br /><br />I have TWO Parent Child relationships:<br /><br />FIRST Parent Child relationship (as described earlier):<br />EventActions -> EventAction -> EventActionType<br />EventActions = BusinessListBase which is the RootParent collection containing Child EventAction objects<br />EventAction = BusinessBase which is a Child of RootParent collection AND Parent to EventActionType BusinessBase<br />EventActionType = BusinessBase which is a Child of EventAction.<br /><br />SECOND Parent Child relationship:<br />EventActionTypes -> EventActionType<br />EventActionTypes = BuisnessListBase which is the RootParent collection containing Child EventAcitonType objects.<br />EventActionType = BuisnessBase which is the Child of RootParent collection.<br /><br />CODE:<br />EventActions myEventActions = EventActions.GetEventActions();<br />EventActionTypes myEventActionTypes = EventActionTypes.GetEventActionTypes();<br /><br />myEventActions.BeginEdit();<br />// CHANGE the EventActionType for one of the EventAction objects to a different EventActionType<br />myEventActions[0].EventActionType = myEventActionTypes[1];<br /><br />if(“button ok clicked”)<br />myEventActions.ApplyEdit();<br />else<br />myEventActions.CancelEdit();<br /><br /><br /><br /><br />The lynch-pin is in the EventAction.EventActionType property.<br />What should the setter DO?<br /><br />POSSIBILITY ONE:<br />set {<br /> _eventActionType = value;<br />}<br /><br />In this case, value is originally a Child of one Parent and is being assigned as a child of another Parent. It is unaware of this fact and thus has an EditLevel of its original Parent (that being zero).<br />So, this fails.<br /><br />POSSIBILITY TWO:<br />set {<br />_eventActionType = EventActionType.FetchChildEventActionType(value.EventActionTypeID, EditLevel);<br />}<br /><br />This scenario is described in my previous post. It syncs up the EditLevel by calling CopyState() with the current EventAciton.EditLevel.<br /><br />This could be tweaked to call (Core.IUndoableObject) _eventActionType).CopyState(EditLevel) after setting _eventActionType on the client side, instead of calling the above on the Server Side in the DataPortal_Fetch method. This would eliminate the need to transfere the copied state across Applicaton Domains.<br /><br />However, what happens when myEventActions.CancelEdit() is called? The OLD EventActionType DID have an EditLevel of 1 (it was a Grandchild of EventActions when myEventActions.BeginEdit() was called), but the reference to THAT EventActionType has since been replaced.<br /><br />In order to support this scenario, I would need to keep a list of replaced EventActionType Children in EventAction, override UndoingChanges method in EventAction and ReReplace the reference to _eventActionType to the one corresponding to the rolledback EditLevel. <br /><br /><br />Am I correct about the above? Is there a better way? Any advice is appreciated.<br /><br />Thanks Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jon replied on Friday, January 30, 2009</h2>To All interested parties, the following is what I ended up with.<br /><br />As stated in my previous post, my dilemma was that I was replacing a Child BusinessBase class with a different Child BusinessBase class from a different Parent AFTER calling BeginEdit on the RootParent of the original Parent.<br />(see previous posts for details)<br /><br />I ended up with the following:<br /><br />Code in EventAction (Parent BusinessBase class):<br /><br /><br />private Stack-EventActionType- replacedEventActionTypes;<br /><br />private EventActionType _eventActionType;<br />public EventActionType EventActionType<br />{<br />get<br />{<br />   return _eventActionType;<br />}<br />set<br />{<br />   if (_eventActionType != null)<br />   {<br />      replacedEventActionTypes.Push(_eventActionType);<br />   }<br /><br />   _eventActionType = EventActionType.GetChildEventActionType(value.EventActionTypeID);<br />}<br /><br /><br />protected override void AcceptingChanges()<br />{<br />   if ((_eventActionType as Csla.Core.IUndoableObject).EditLevel != EditLevel)<br />      (_eventActionType as Csla.Core.IUndoableObject).CopyState(EditLevel, BindingEdit);<br />   base.AcceptingChanges();<br />}<br />protected override void UndoingChanges()<br />{<br />   if ((_eventActionType as Csla.Core.IUndoableObject).EditLevel != EditLevel)<br />   {<br />      EventActionType replacedEventActionType = null;<br />      while(replacedEventActionTypes.Count > 0)<br />      {<br />         replacedEventActionType = replacedEventActionTypes.Pop();<br /><br />         if ((replacedEventActionType as Csla.Core.IUndoableObject).EditLevel == EditLevel)<br />         {<br />            _eventActionType = replacedEventActionType;<br />            break;<br />         }<br />      }<br />   }<br /><br />   base.UndoingChanges();<br />}<br /><br /><br /><br /><br />In essence …<br /><br />I kept a list of replaced Child objects to support UndoingChanges. The Child object was ReReplaced in the overriden UndoingChanges method based on the EditLevel of the Parent.<br /><br />I called CopyState in the overriden AcceptingChanges method to sync the current Child object’s EditLevel to that of the Parent.<br /><br /><br />My only concern for the above solution is that a trip across application domains is occuring every time the EventActionType is changed even though I HAVE an EventActionType I am passing in to the setter. This is necessary because the passed in EventActionType has a different Parent. It would be ideal if I could CHANGE the EventActionType’s Parent from EventActionTypes (the original Parent) to EventAction (the new Parent).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Wal972:</strong></div><div>
+<P><FONT face=Verdana size=2>DataPortal.Update failed (Csla.Core.UndoException: Edit level mismatch in CopyState<BR></FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>Why are you invoking n-level undo in your DataPortal_XYZ methods?</P>
+<P>Not that this is a totally invalid scenario, but it is not a <EM>common</EM> scenario either, and so it is suspicious. It may indicate that you are doing something odd, and it can sometimes be challenging to get odd things working just right.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Friday, July 20, 2007</h2><P>I'm not intentially invoking n-undo. I am using the same code as in the previous 2.x framework. So any assistance would be appreciated. I not sure of how this is happening.</P>
+<P>Thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My guess is that you are using a local data portal, and that you
+are not cloning the object before saving it. This means that the object is still
+connected to the UI through data binding <i>during the save</i> and there&#8217;s
+probably some event-loopback issues going on.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Try saving the object as shown in the current
+ProjectTracker\PTWin code, where the object is cloned before saving, and see if
+that helps.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wal972
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 20, 2007 9:46 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] EditLevel Mismatch ?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm not intentially invoking n-undo. I am using the same code as in the
+previous 2.x framework. So any assistance would be appreciated. I not sure of
+how this is happening.<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>Ellie<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Friday, July 20, 2007</h2><P>Thanks that did the trick. Why does local data portal need the cloning ?</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It doesn&#8217;t technically <i>need</i> the cloning, but the
+cloning is good for a couple reasons &#8211; check Chapter 9 for some
+discussion.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In short, saving the clone does two big things: eliminates data
+binding (since the original is bound, not the clone), and provides a way to
+return to the original object graph in case of an exception during the save.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When using a remote data portal the object is cloned across the
+network, so this is a non-issue. But in the local data portal the object itself
+is what&#8217;s being saved, and that can be a problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One item on my wish list is to automatically do a clone when
+using the local data portal. This would clearly be a breaking change, but I&#8217;ll
+probably do it in version 3.5 because it would make this whole issue fade
+nicely into history.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Wal972
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 20, 2007 11:26 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: EditLevel Mismatch ?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks that did the trick. Why does local data portal need the cloning ?<o:p></o:p></p>
+
+<p>Ellie<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AzStan replied on Friday, November 02, 2007</h2><P>Rocky:</P>
+<P>I notice that you are not cloning the business object when it is being saved as an element of an EditablRootListBase.&nbsp;&nbsp;&nbsp;Is there a reason for this?&nbsp;&nbsp; Such objects will often be bound to the UI, with the Save being initiated by an 'EndEdit' call on a&nbsp;BindingSource.&nbsp; The following is from EditablRootListBase:<FONT color=#0000ff size=2></P>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> SaveItem(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> index)</FONT><FONT size=2></P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> raisingEvents = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.RaiseListChangedEvents;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_activelySaving = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>T item = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[index];</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> editLevel = item.EditLevel;</P>
+<P></FONT><FONT color=#008000 size=2>// commit all changes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> tmp = 1; tmp &lt;= editLevel; tmp++)</P>
+<P>item.AcceptChanges(editLevel - tmp);</P>
+<P></FONT><FONT color=#0000ff size=2>try</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// do the save</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[index] = (T)item.Save();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>finally</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// restore edit level to previous level</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> tmp = 1; tmp &lt;= editLevel; tmp++)</P>
+<P>item.CopyState(tmp);</P>
+<P>_activelySaving = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.RaiseListChangedEvents = raisingEvents;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.OnListChanged(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ListChangedEventArgs</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>ListChangedType</FONT><FONT size=2>.ItemChanged, index));</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Stan</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 04, 2007</h2><P>Not cloning the object in ERLB was an "oversight", which has been fixed in current versions of the framework (3.0.2 and 3.5).</P>
+<P>I put oversight in quotes, because I knew about the issue, but hadn't come up with an elegant solution. The problem is a bit complex, because you only want to do the cloning if the data portal is running in local mode, not when it is using a remote server. </P>
+<P>So in 3.0.2 I added an AutoCloneOnUpdate config setting, so the data portal can actually just take care of this whole issue by itself. In 3.0.2 this defaults to false, and in 3.5 it will default to true.</P>
+<P>Now the ERLB does the clone itself (always) if that config setting is false - which makes the local data portal happy, but incurs unneeded overhead with a remote data portal. But if the flag is true, then it allows the data portal to just do the right (most efficient) thing.</P>
+<P>See the <EM>Using CSLA .NET 3.0</EM> ebook for more details.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

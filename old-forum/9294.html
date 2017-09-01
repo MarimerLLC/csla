@@ -1,0 +1,64 @@
+<html><header><title>RegisterProperty&lt;&gt;, Default Child Object Collection, ChildChanged not fired.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegisterProperty&lt;&gt;, Default Child Object Collection, ChildChanged not fired.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9294.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Thursday, July 29, 2010</h2><p>I have a strange scenario here.&nbsp; We have a Parent object with a BLB Child property as follows:</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>protected&nbsp;</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">internal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">static</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ChildrenBLB</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; ChildBLBProperty = RegisterProperty&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ChildrenBLB</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;(c =&gt; c.ChildBLB, </span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;Items&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">, </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ChildrenBLB</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.NewChildrenBLB());</span></span></p>
+<p>We have a scenario in which when we have no child objects (yet) when creating the parent, thus the default value (ChildrenBLB.NewChildrenBLB()) is execute.</p>
+<p>In our UI code we when the user selects to add a child entry, we execute the following code:</p>
+<p>ChildBB child = _parent.ChildBLB.AddNew()</p>
+<p>This adds a new item to our data grid but does not fire the ChildChanged property.&nbsp; Modifying an existing item works and adding a new item where the BLB was not originally null (or the default setting in the RegisterProperty was not invoked) works as well.</p>
+<p>Has anyone encountered this and have a solution?</p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, July 29, 2010</h2><p>&nbsp;</p>
+<p>Without digging to deep on your post, I noticed right away the following code:</p>
+<p><span><span><span>internal</span></span></span><span><span>&nbsp;</span></span><span><span><span>static</span></span></span><span><span>&nbsp;</span></span><span><span><span>PropertyInfo</span></span></span><span><span>&lt;</span></span><span><span><span>ChildrenBLB</span></span></span><span><span>&gt; ChildBLBProperty = RegisterProperty&lt;</span></span><span><span><span>ChildrenBLB</span></span></span><span><span>&gt;(c =&gt; c.ChildBLB,&nbsp;</span></span><span><span><span>&quot;Items&quot;</span></span></span><span><span>,&nbsp;</span></span><span><span><span>ChildrenBLB</span></span></span><span><span>.NewChildrenBLB());</span></span></p>
+<p><span><span><span><span><span>Focus on your&nbsp;default&nbsp;value of: &nbsp;</span><strong>ChildrenBLB</strong></span></span><span><strong>.NewChildrenBLB()</strong></span></span></span></p>
+<p>This following is an answer Rocky gave me one time that is pretty good and may help you fix your issue:&nbsp;</p>
+<p>------------------</p>
+<p>Actually what you are doing is illegal. Remember that RegisterProperty() is a static method, so that default value you create will be used on every single object ever created - providing the same child instance to multiple parents.</p>
+<p>It is not legal for an object to have multiple parent objects - this will cause all sorts of problems (wrong Parent value, messed up edit levels, etc).</p>
+<div>------------------</div>
+<div></div>
+<div>The avobe post can be found here:</div>
+<div></div>
+<div>http://forums.lhotka.net/forums/p/8103/38870.aspx#38870</div>
+<div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Thursday, July 29, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>Rene Elizondo<br></b>
+<p>&nbsp;</p>
+<p>Without digging to deep on your post, I noticed right away the following code:</p>
+<p><span><span><span>internal</span></span></span><span><span>&nbsp;</span></span><span><span><span>static</span></span></span><span><span>&nbsp;</span></span><span><span><span>PropertyInfo</span></span></span><span><span>&lt;</span></span><span><span><span>ChildrenBLB</span></span></span><span><span>&gt; ChildBLBProperty = RegisterProperty&lt;</span></span><span><span><span>ChildrenBLB</span></span></span><span><span>&gt;(c =&gt; c.ChildBLB,&nbsp;</span></span><span><span><span>&quot;Items&quot;</span></span></span><span><span>,&nbsp;</span></span><span><span><span>ChildrenBLB</span></span></span><span><span>.NewChildrenBLB());</span></span></p>
+<p><span><span><span><span><span>Focus on your&nbsp;default&nbsp;value of: &nbsp;</span><strong>ChildrenBLB</strong></span></span><span><strong>.NewChildrenBLB()</strong></span></span></span></p>
+<p>This following is an answer Rocky gave me one time that is pretty good and may help you fix your issue:&nbsp;</p>
+<p>------------------</p>
+<p>Actually what you are doing is illegal. Remember that RegisterProperty() is a static method, so that default value you create will be used on every single object ever created - providing the same child instance to multiple parents.</p>
+<p>It is not legal for an object to have multiple parent objects - this will cause all sorts of problems (wrong Parent value, messed up edit levels, etc).</p>
+<div>------------------</div>
+<div></div>
+<div>The avobe post can be found here:</div>
+<div></div>
+<div>http://forums.lhotka.net/forums/p/8103/38870.aspx#38870</div>
+<div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>&nbsp;</p>
+<p>Hi Rene,</p>
+<p>This property is actually at the parent level which is the root object.&nbsp; Thus if the root object does not have any children, we want it to create the BLB object so that we can assign child object&#39;s to it.&nbsp; Is this still a problem?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Thursday, July 29, 2010</h2><p>After a little bit of rework and Rene&#39;s suggestion, we have moved the default creation of the BLB from the RegisterProperty.&nbsp; We have also moved our null check on the child result sets from the parent to the child BLB which creates the BLB in the object graph but with 0 elements.</p>
+<p>That did the trick.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, July 29, 2010</h2><p>Hehe,&nbsp;&nbsp;you marked this&nbsp;as answered one millisecond before I was going to reply to your&nbsp;last post. Anyway,&nbsp;since I already&nbsp;have my reply written&nbsp;I am going to post it just for fun and&nbsp;perhaps clarify the issue&nbsp;<img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>---------------------------------------------------</p>
+<p>Yes, it is still a problem.</p>
+<p>What you will need to do is to either to call the &quot;ChildrenBLB.NewChildrenBLB()&quot; on you DataPortal_XYZ calls or on your property &quot;get&quot;&nbsp;method like:</p>
+<p>public ChildrenBLB SomeChildrenBLBProp<br />{<br />&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (m_Xyz == null)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_Xyz = ChildrenBLB.NewChildrenBLB();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return m_Xyz;<br />&nbsp;&nbsp;&nbsp; }<br />}</p>
+<p><br />The bottom line is that you should not have CSLA derived object used as default values on your <strong>RegisterProperty()</strong> calls&nbsp;because you will run in all kinds of issue. In practice, you will best of if you only used ValueType objec as defaut values.</p>
+<p><br />There were talks about making the default value a delegate or throwing an error at runtime if anything other than a ValueType was used as the argument but I am not sure where we are on that.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Thursday, July 29, 2010</h2><p>Thanks for the additional details.&nbsp; </p>
+<p>I had made the assumption that the default value would only be utilized if the property was null and that it was perfectly viable to call the respective child object static method to create the empty BLB.</p>
+<p>Once I read your message I concluded my assumption was incorrect and made the necessary corrections.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

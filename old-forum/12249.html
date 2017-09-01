@@ -1,0 +1,38 @@
+<html><header><title>Concurrent DataPortal Calls from Single Client</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Concurrent DataPortal Calls from Single Client</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12249.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber posted on Wednesday, December 04, 2013</h2><p>In my CSLA Silverlight application my DataPortal will not receive any additional requests from the same client if it is currently processing a request.</p>
+<p>I.e. if I start a DataPortal_Fetch which runs a slow database procedure, no other requests are honored until the fetch completes.</p>
+<p>From what I have read <a href="http://forums.lhotka.net/forums/p/9153/43639.aspx#43639">here</a> this should not be the case and the WcfPortal should allow concurrent requests from the same user. &nbsp;I am definitely not using the&nbsp;<span>SynchronizedWcfProxy (I am using a CompressedProxy which inherits from WcfProxy).</span></p>
+<p><span>We have tested and concurrent requests from separate client instances are processed asynchronously, its just the requests from the same client.</span></p>
+<p>I have not set up any&nbsp;<span class="tag">serviceThrottling settings on the Wcf service.</span></p>
+<p>Any idea what may be preventing these concurrent calls?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, December 04, 2013</h2><p>If you run in browser this may be restricted by the web browser or it is restricted by the <i>maxconnections </i>setting for Silverlight.</p>
+<p>The <i>maxconnection</i> parameter determines how many connections can be made to a
+		  specific IP address. The parameter appears as follows:</p>
+<div class="kb_codebody">
+<div class="kb_codecontent"><code>
+<pre class="code">&lt;connectionManagement&gt;
+    &lt;add address=&quot;*&quot; maxconnection=&quot;2&quot;&gt;
+&lt;/connectionManagement&gt;<br /></pre>
+</code>
+<div class="post-text">
+<p>According to RFC 2068:</p>
+<p>&quot;Clients that use persistent connections SHOULD limit the number of
+   simultaneous connections that they maintain to a given server. A
+   single-user client SHOULD maintain AT MOST 2 connections with any
+   server or proxy. A proxy SHOULD use up to 2*N connections to another
+   server or proxy, where N is the number of simultaneously active
+   users. These guidelines are intended to improve HTTP response times
+   and avoid congestion of the Internet or other networks.&quot;</p>
+</div>
+</div>
+</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Thursday, December 05, 2013</h2><p>Hi JonnyBee</p>
+<p>Thanks for posting. &nbsp;I have tried adding</p>
+<p>&nbsp;&nbsp;&lt;system.Net&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;connectionManagement&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;add address=&quot;*&quot; maxconnection=&quot;2&quot; /&gt;</p>
+<p>&nbsp;&nbsp;&nbsp; &lt;/connectionManagement&gt;</p>
+<p>&nbsp; &lt;/system.Net&gt;</p>
+<p>into the ClientConfig file, but it is still blocking. &nbsp;I also tried the app running OOB but still blocking. &nbsp;I tried upping the maxconnection to 4 ans specifying the exact address but still no luck.</p>
+<p>I am testing by doing the following in the app: &nbsp;Initiating a fetch (which I have intentionally delayed for 15 seconds by adding a&nbsp;WAITFOR DELAY &#39;00:00:15&#39; into the stored proc), then initiating another fetch which normally takes about 0.5 seconds. &nbsp;The 2nd fetch only starts once the 1st fetch has completed and therefore takes over 15 seconds.</p>
+<p>Anything else I can check to try enable multiple connections. &nbsp;I would be happy with 2, but at the moment it seems to only allow 1 :(</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

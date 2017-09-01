@@ -1,0 +1,73 @@
+<html><header><title>Root Object Passed by Ref to Control not reflecting Changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Root Object Passed by Ref to Control not reflecting Changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8695.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Friday, March 19, 2010</h2><p>Hi All,</p>
+<p>I have a WinForm (yes we are still using WinForms) with a split container.&nbsp; Obviously a TreeView and a WinPart control.&nbsp; When the WinForm is loaded we retrieve a Root object that contains Child and GrandChild object(s).</p>
+<p>When an item in the TreeView is selected we construct a WinPart control and perform the usual DataBindings.&nbsp; We pass the Root object by reference to the WinPart control so that we can perform the Bind and Rebind methods as required.</p>
+<p>When the ApplyEdit() and Save methods are invoked in the control and I evaluate the Root object in the WinForm it still indicates that it is Dirty but the Root object in the WinPart control is not.</p>
+<p>Any ideas?&nbsp; Here are some code fragments:</p>
+<p><span style="text-decoration:underline;"><strong>WinForm Code</strong></span>:</p>
+<p>_rootObject = RootObject.GetObject();</p>
+<p>...</p>
+<p>AddWinPart(new&nbsp;WinPartControl(ref _rootObject, _selectedChildObject));&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="text-decoration:underline;"><strong>WinPart Code</strong></span>:</p>
+<p>public WinPartControl(ref RootObject rootObjectItem, ChildObject childObjectItem){</p>
+<p>&nbsp;&nbsp; _rootObject = rootObjectItem;</p>
+<p>&nbsp;&nbsp; _childObject = childObjectItem;</p>
+<p>}</p>
+<p>private void RebindUI() {</p>
+<p>.....</p>
+<p>&nbsp;&nbsp;&nbsp; _rootObject = _rootObject.Save();</p>
+<p>....</p>
+<p>}</p>
+<p>The Saved() event in the WinForm is invoked so I know it&#39;s working on the correct object.</p>
+<p>Thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, March 19, 2010</h2><p>If I&#39;m following you correctly,&nbsp; the root object is being saved in your WinPartControl, but you&#39;re holding a reference to it your WinForm also. </p>
+<p>The WinPart member _rootObject gets updated when assign the result of the Save() operation to it,&nbsp;I don&#39;t see how this could update the original copy of the reference that was supplied when the control was created. </p>
+<p>You passed it by reference, but that just allows the original call to change the value. If you don&#39;t assign anything&nbsp;to the ref parameter during the actual execution of the procedure, then the ref keyword didn&#39;t buy you anything. Your opportunity to change the value expired at the end of your WinPartControl constructor. </p>
+<p>(Coming from a long C++ background, I think I see exactly what you are trying to do, effectively having a pointer to the original reference and keeping them in sync so that when you update one the original is updated, but I don&#39;t know how to directly do&nbsp;that in C# without wrapping the original reference with another&nbsp;object) </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 19, 2010</h2><p>Prior to CSLA 4 you can&#39;t have two Windows Forms UI elements binding to the same object. You can only bind an object to one form (one bindingsource).</p>
+<p>In CSLA 4 this is changed so you can bind an object to multiple bindingsource objects. It still won&#39;t be savable until it is unbound from all forms of course, because that&#39;s the only time the edit level will get down to 0.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Monday, March 22, 2010</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>Prior to CSLA 4 you can&#39;t have two Windows Forms UI elements binding to the same object. You can only bind an object to one form (one bindingsource).</p>
+<p>In CSLA 4 this is changed so you can bind an object to multiple bindingsource objects. It still won&#39;t be savable until it is unbound from all forms of course, because that&#39;s the only time the edit level will get down to 0.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>&nbsp;</p>
+<p><span style="line-height:115%;font-family:&#39;Arial&#39;,&#39;sans-serif&#39;;color:black;font-size:9pt;mso-fareast-font-family:Calibri;mso-fareast-theme-font:minor-latin;mso-ansi-language:EN-US;mso-fareast-language:EN-US;mso-bidi-language:AR-SA;">Thanks for the update Rocky.&nbsp; That&#39;s exactly the behaviour I wanted to utilize in 3.8.0.&nbsp; Instead I created my root object in the WinForm and passed the details to the WinPart control to handle all additional functionality since I couldn&#39;t bind it at both levels.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, March 22, 2010</h2><p>Hi all,</p>
+<p>In our apps we use multiple bindingsources to the same object/instance in different forms and user controls but follow very strict coding guidelines to keep DataBinding working OK. You do need a good understanding of how DataBinding works under the &quot;hood&quot; to make it work (and keep it work) . </p>
+<p>We are mainly using Csla for N2 (.Net 2.0) in our apps. </p>
+<p>You must adhere to the following:</p>
+<p>Save:&nbsp;</p>
+<ul>
+<li>unbind all bindingsources properly</li>
+<li>save and keep the new instance</li>
+<li>rebind all bindingsources to new instance of BO/child/grandchild</li>
+</ul>
+<p>In our apps -&nbsp; the Window Forms/User Controls are only &quot;views&quot; and the UI App has a module handler that know which forms are bound to the BO. And the module handler does all the unbind/save/rebind flow in a generic implementation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Monday, March 22, 2010</h2><p>Yes, I&#39;ve done my fair share of C/C++ programming and had thought passing an item by ref actually passed the memory address pointer.</p>
+<p>What we would like to do is to allow the user to select various elements in the Treeview Node which displays the corresponding Winpart control in the second panel.&nbsp; They can then modify the details and move on to the next item they wish to modify.&nbsp; Once all modifications have been completed a final save call is made.</p>
+<p>To illustrate the example, take a typical CRM application with Client Name, Addresses, Contact Details, Notes.&nbsp; Obviously the Customer is the root object.&nbsp; Addresses, Contacts and Notes are all children.&nbsp; When the user selects a particular address or contact details or note we would create the corresponding WinPart and load it in the second panel.&nbsp; They can add/remove/update any one of these details until they are completed and then select Save.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 22, 2010</h2><p>All reference types (object types) in .NET are aways passed by reference. Which basically means you are passing around a pointer in C++ terms, though you can&#39;t actually use a reference like a pointer of course.</p>
+<p>var x = new Customer();</p>
+<p>In this case &#39;x&#39; is basically a pointer (reference) to an instance of Customer. If you pass x to a method, or assign it to another field, no more instances are created - you are just passing around a reference to the same instance.</p>
+<p>So what you want to do is easy enough - except that data binding complicates matters.</p>
+<p>As soon as a Windows Form or bindingsource get a reference to an object data binding interacts with that object. In existing versions of CSLA having more than one binding target interact with your object doesn&#39;t work - they conflict. In CSLA 4 the objects are smart enough to deal with multiple binding targets - though there are all sorts of caveats around the developer fully understanding what that means - how data binding will act, how the object will act and so forth.</p>
+<p>This is all almost infinitely easier in Silverlight or WPF, where data binding isn&#39;t so heavy-handed in most cases. I debated whether to even address this issue for Windows Forms given its legacy status, but so many people still use Windows Forms it seemed worth adding this one last feature <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Tuesday, March 23, 2010</h2><p>Hi Rocky,</p>
+<p>I am not sure if I am following your first statement correctly.&nbsp; I understand that all non primitive types in .NET are passed by reference.&nbsp; However what I am somewhat confused about is why an object passed into a method, assigned to a variable, and then modified within the method is not reflected by the calling code.&nbsp; For example I have constructed a simple test:</p>
+<p>public class StandardClass{</p>
+<p>&nbsp;&nbsp;&nbsp; private string _testString;</p>
+<p>&nbsp;&nbsp;&nbsp; public void AssignedString(ref string StringFromWinForm){</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _testString = string.Concat(StringFromWinForm, &quot;1&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //StringFromWinForm= string.Concat(StringFromWinForm, &quot;1&quot;);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>}</p>
+<p>//WinForm Code</p>
+<p>private void _button1_Click(...){</p>
+<p>&nbsp;&nbsp;&nbsp; StandardClass class1 = new StandardClass();</p>
+<p>&nbsp;&nbsp;&nbsp; string _localString = &quot;Hello World &quot;;</p>
+<p>&nbsp;&nbsp;&nbsp; class1.AssignedString(ref _localString);</p>
+<p>&nbsp;&nbsp;&nbsp; MessageBox.Show(_localString);</p>
+<p>}</p>
+<p>Running this code produces the result &quot;Hello World &quot; and not &quot;Hello World 1&quot; as I had hoped.</p>
+<p>This is one of two errors I am encountering.&nbsp; The other is databinding and the EditLevels which I am hoping this issue will address the databinding issue.</p>
+<p>As I see it, I have two options:</p>
+<ol>
+<li>Create a protected internal getter and retrieve the root object whenever the object has been saved or the control has been closed and populated with another control.</li>
+<li>Implement Event handlers to invoke and refresh the root object in the WinForm</li>
+</ol>
+<p>Am I missing something obvious here (as I think I have been staring at this problem too long and over-complicating things).</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

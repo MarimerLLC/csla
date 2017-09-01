@@ -1,0 +1,48 @@
+<html><header><title>Storing an active reports format in the Database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Storing an active reports format in the Database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/414.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alandotnet posted on Monday, June 19, 2006</h2>Hi,<br>
+<br>
+I was wondering if there was anyone who has ever stored a report format
+in the database and retrieved that report from the DB as a stream and
+converted it to a usable report object at runtime? Or has anyone got
+any ideas how i would firstly get the report format into the DB and
+secondly how I would then convert the read memory stream to a usable
+report object that i can call the constructor on?<br>
+<br>
+I am using active reports 2.0 but if anyone has done this with another reporting product i would still love to know.<br>
+<br>
+Thanks<br>
+<br>
+Alan<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, June 20, 2006</h2>
+
+<p class="MsoNormal">I've been implementing this using a business object and
+devexpress xtrareports over the past couple of weeks. We have numerous other
+properties attached to the business object, but the report itself is created
+and saved through a single property which returns or accepts an&nbsp;XtraReport
+object. This converts it to a stream, which I then save to a private string and
+save to the database with the rest of the object. When I need to return the report I read the private
+string and then return the report object. Can't say that this is the best way
+to do it, but it is working great for us.<br>
+<br>
+<span>&nbsp; Private _Definition
+As String = String.Empty<br>
+<br>
+&nbsp; Public Property Report() As XtraReport<br>
+&nbsp;&nbsp;&nbsp; Set(ByVal value As XtraReport)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim Stream As MemoryStream = New MemoryStream()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value.SaveLayout(Stream)<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream.Position = 0<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using sr As New StreamReader(Stream)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Definition = sr.ReadToEnd<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>
+<br>
+&nbsp;&nbsp;&nbsp; End Set<br>
+&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Using sw As New StreamWriter(New MemoryStream())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sw.Write(_Definition)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return XtraReport.FromStream(sw.BaseStream,
+False)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Using<br>
+&nbsp;&nbsp;&nbsp; End Get<br>
+&nbsp; End Property</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, June 20, 2006</h2>We do this by using the third party designer and saving the resulting XML to a text field in the database.&nbsp; I would recommend that you just design your reports as objects though.&nbsp; You lose a bit of design-time functionality using the third party designer control, especially in the realm of sub reports.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

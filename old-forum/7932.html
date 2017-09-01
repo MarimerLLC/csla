@@ -1,0 +1,27 @@
+<html><header><title>How do I best bubble the ListChanged events back to a root collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do I best bubble the ListChanged events back to a root collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7932.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rbarna1 posted on Monday, November 02, 2009</h2>I have a linked set of BusinessListBase objects, I'll call them root, child, grandchild where the classes are defined as :<br>Roots : BusinessListBase&lt;Roots, Root&gt;<br>Root : BusinessBase&lt;Root&gt;<br>Children : BusinessListBase&lt;Children, Child&gt;<br>Child : BusinessBase&lt;Child&gt;<br>etc...<br><br>Each child collection has a reference to its parent object that I set in the OnDeserialized() , such as this in Children...<br>&nbsp;private void SetParentOnChildren(Root parent)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (Child item in this)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.RootID = parent.ID;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>... and the converse in Root...<br>&nbsp;&nbsp;&nbsp;&nbsp; protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _children.SetParent(this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;<br><br>This app is WPF MVVM.&nbsp; I am using the Roots_ListChanged() event in my viewmodel to notify the view that the save can execute.&nbsp; The problem is that these Child collections are not bubbling up their ListChanged events.&nbsp; I understand that CSLA 3.7 has an OnChildChanged event that *may* be useful (or isDirtyChanged)??&nbsp; Either way I'm just not wrapping my head around the best way to get that change event in the child objects up to the root parent collection.<br><br>Thanks,<br>Bob<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Monday, November 02, 2009</h2>ChildChanged does just what you need (at least in Windows version of CSLA, I haven't tried it with Silverlight version)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rbarna1 replied on Monday, November 02, 2009</h2>Thanks.<br><br>How does it do it?&nbsp; From what I can tell the event is available on the collection to notify that one of its objects has changed...&nbsp; Whats the best way to push that up to a parent object (not THE CSLA 'parent', but an independent collection that I have created a _parent reference to)?<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 02, 2009</h2><P>ChildChanged will cascade up through your entire business object graph, as many levels as it takes, until the root object raises the event.</P>
+<P>To my knowledge there is no comparable feature in .NET itself - and I'm sure we'd have found it, because ChildChanged was not easy to implement...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rbarna1 replied on Tuesday, November 03, 2009</h2>Yeah, it sounds great.&nbsp; There has got to be some plumbing involved with implementing it though.<br><br>In my ViewModel's Set of the business object collection I am hooking both the ListChanged and ChildChanged events.&nbsp; I am not overriding either event in the business objects themeselves.&nbsp; <br>The ListChanged event still gets called (followed by the ChildChanged)&nbsp; when I change an object belonging to the root collection, but neither gets called when an object in the List&lt;Child&gt; property is changed.<br>In my most recent test I first changed a child object (no events raised), then a root object (event raised) and examined the ChildChangedEventArgs...if I drill down to the child collection it is indeed marked as dirty...its not just not bubbling up this event on its own.<br><br>What am I missing?<br><br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rbarna1 replied on Wednesday, November 04, 2009</h2>bump.<br><br>I really need to know if a particular parent/child property must be set to establish the objects as part of the same graph, or if the events need to be explicitly raised from objects to child collections, or some other plumbing.<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA manages child relationships on your behalf. As long as your
+child objects are in a collection, or are referenced through a managed backing
+field as shown in <i>Expert 2008 Business Objects</i> they are child objects and
+the ChildChanged event should flow up through the object graph to the root
+object.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

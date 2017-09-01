@@ -1,0 +1,26 @@
+<html><header><title>CSLA Inheritance Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Inheritance Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2291.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat posted on Wednesday, February 07, 2007</h2><P>Hi All</P>
+<P>I'm having a problem with my objects which i'm hoping is not a restriction of using CSLA.</P>
+<P>I have a class "<FONT color=#008080 size=2>NonSpecificVehicleSought" which inherits from a base class "<FONT color=#008080 size=2>VehicleBase</FONT>" which in turn inherits from "<FONT color=#008080 size=2>BusinessBase"</FONT></FONT></P>
+<P><FONT color=#008080 size=2><FONT color=#008080 size=2>i.e.</FONT></FONT></P><FONT color=#008080 size=2><FONT color=#008080 size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT color=#000000 size=2> </FONT><FONT color=#008080 size=2>VehicleBase</FONT><FONT color=#000000 size=2> : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT color=#000000 size=2>&lt;</FONT><FONT color=#008080 size=2>VehicleBase</FONT><FONT size=2><FONT color=#000000>&gt;</FONT></FONT></P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT color=#000000 size=2> </FONT><FONT color=#008080 size=2>NonSpecificVehicleSought</FONT><FONT color=#000000 size=2> : </FONT><FONT color=#008080 size=2>VehicleBase</FONT></P>
+<P><FONT color=#008080 size=2>In my NonSpecificVehicleSought<FONT color=#000000 size=2>&nbsp; class, I have a factory method call "<FONT size=2>NewNonSpecificVehicleSought" which calls the DataPortal.Create method.</FONT></FONT></FONT></P>
+<P><FONT color=#000000>i.e.</FONT></P><FONT color=#000000></FONT><FONT color=#008080 size=2><FONT color=#000000 size=2><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NonSpecificVehicleSought</FONT><FONT size=2> NewNonSpecificVehicleSought()</FONT></P>
+<P><FONT size=2>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> DataPortal.Create(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>());</P>
+<P>}</P>
+<P>My problem is that the compiler is complaining:</P>
+<P>i.e.</P>
+<P>"Error&nbsp;1&nbsp;The name 'DataPortal' does not exist in the current context&nbsp;C:\$Crypt\Development\LoyaltyLogistix\Automotive\Autolog\Autolog.Library\Stock\NonSpecificVehicleSought.cs&nbsp;151&nbsp;20&nbsp;Autolog.Library</FONT></FONT></FONT></FONT><FONT size=2><FONT color=#000000>"</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>Is this a limitation of the CSLA framework of am I doing something silly?</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>TIA</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>Smeat</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat replied on Wednesday, February 07, 2007</h2><P>Changing my "<FONT size=2>NewNonSpecificVehicleSought" method to the following solved my problem:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>NonSpecificVehicleSought</FONT><FONT size=2> NewNonSpecificVehicleSought()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>NonSpecificVehicleSought</FONT><FONT size=2>) Csla.</FONT><FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Create(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2>());</P>
+<P>}</P>
+<P>Guess I should have spent a bit more time looking at this before I posted my original question.</P>
+<P>Thx</P>
+<P>Smeat</P></FONT>
+<P><FONT size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

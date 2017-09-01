@@ -1,0 +1,157 @@
+<html><header><title>Polymorphic Lists in Csla 4.0.1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Polymorphic Lists in Csla 4.0.1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12019.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Wednesday, June 12, 2013</h2><p>Hi,</p>
+<p>I have followed the guidelines suggested by Rocky for implementing a polymorphic Csla List.</p>
+<p><a href="http://www.lhotka.net/Article.aspx?id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a">http://www.lhotka.net/Article.aspx?id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a</a></p>
+<p>&nbsp;</p>
+<p>What is not described in above article is how to implement adding different types to the list.</p>
+<p>Factory methods of list child objects should be internal, so I am assuming that one needs to expose public methods for adding on the list itself.</p>
+<p>MyList.AddConcreteType1(ConcreteType1 params)</p>
+<p>MyList.AddConcreteType2(ConcreteType2 params)</p>
+<p>&nbsp;</p>
+<p>Am I missing something,? Is there a cleaner and slicker way to do this?</p>
+<p>Thanks!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, June 12, 2013</h2><p>Hi.</p>
+<p>My preference is to create public factory methods on the child objects. </p>
+<p>The list should IMO not have any knowledge of the possible child types. <br />IE: You should be able to add new child types without modification to the list object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Wednesday, June 12, 2013</h2><p>Hi Jonny</p>
+<p>That was my initial thought, but then I started thinking how I have never implemented a child object with a public factory. The CSLA4 templates themselves have all children implementing internal factories.</p>
+<p>Is potential misuse by a client developer an issue with a public factory on a child? It just seems that allowing creation of a child instance outside of its parent is inviting problems.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 12, 2013</h2><p>Hi,</p>
+<p>When you do lazy loading you need a child object with a &quot;root&quot; public factory method and make sure to call MarkAsChild. This will ensure that other developers cannot call Save on the object.</p>
+<p>&nbsp;Some code must know which type of child to add. My preference is that the list should not require changes in order to accept a new child type.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Wednesday, June 12, 2013</h2><p>Ahh I see. I have never used lazy loaded properties before. I just assumed that a child object&#39;s factory must be internal.</p>
+<p>Nice to see protection from client misuse is built in.</p>
+<p>Thanks for your help!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, June 12, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>
+<p>When you do lazy loading you need a child object with a &quot;root&quot; public factory method and make sure to call MarkAsChild. This will ensure that other developers cannot call Save on the object.</p>
+<p>&nbsp;</div></p>
+<p>Hi Jonny,</p>
+<p>As far as I understand, the factory method will be called by the property getter on the parent object. So why public factory method?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, June 12, 2013</h2><p>BTW this a very interesting thread!</p>
+<p>I was just re-evaluating the &quot;custom fields&quot; question and a list of polymorphic objects is a good starting point.</p>
+<p>The requisite goes like this:</p>
+<p><em>Different kind of documents need different custom fields that may be defined by configuration.</em></p>
+<ul>
+<li><em>plain letters need no custom fields</em></li>
+<li><em>invoice need fields for pre-tax amount, tax amount, validation info, etc</em></li>
+<li><em>requests for water well drill permit need custom fields to evaluate environmental issues</em></li>
+</ul>
+<p>As the custom fields need to be defined by configuration, this must be handled at runtime. All the application can do is make available different types of custom field: text, date, money, integer, etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Thursday, June 13, 2013</h2><p>This is a first for me in these forums. I don&#39;t know if the proper thing was to mark it as unanswered again. Let me know if I should have submitted a second question.</p>
+<p>Tiago brings up a a good point.&nbsp;</p>
+<p>I referenced the Expert C# Business Objects 2008, and it seems to support what Tiago is saying. In discussing lazy loaded properties, Rocky describes 2 scenarios. In both scenarios...</p>
+<p><b>&quot;The factory method (internal scope) is called.&quot;</b> &nbsp;(referring to the lazy loaded property.)</p>
+<p>This is on page 151.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, June 13, 2013</h2><p>Concerning the polymorphic list I think Jonny is write: the list shouldn&#39;t know about the item&#39;s type. So you should add items to the collection like this:</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;"><span style="COLOR:darkcyan;">Add</span>(item);
+</pre>
+<p>So your items must be already made when you add them to the list. For creating and fetching the items, you should use the factory methods. I think you shouldn&#39;t make the factory methods public. I prefer to have a <strong>public creator object </strong>that is responsible for creating and adding items to the list.</p>
+<p>After creating and saving your items and now you need to fetch them in order to show/edit them. Again the list shouldn&#39;t know about the item&#39;s type. Again a getter object should be use but I believe this time it doesn&#39;t need to be public.</p>
+<p>As I said before, very interesting thread <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Thursday, June 13, 2013</h2><p>Hi Tiago,</p>
+<p>I agree with you and Jonny about the list not knowing anything about the objects it contains.</p>
+<p>In my particular case, the client application dictates which type of object is going to be added to the list. As you point out, this means i must have reference to the child object in order to call Add.&nbsp;</p>
+<p>I don&#39;t see any difference between making a factory public, and the Creator object as you described. The bottom line is, as a client developer I can now create reference to a child object without needing a list. </p>
+<p>Is this bad? I don&#39;t know. &nbsp;I guess if a client developer was confused and trying to use it for anything else other than adding items to a list it could be an issue.</p>
+<p>About your Creator object. Does it return reference to the child object as I perceived? Or do you have a method where you pass the list in and it creates the object locally and adds it?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Thursday, June 13, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Matthew Copeland<br></b> </p>
+<p>About your Creator object. Does it return reference to the child object as I perceived? Or do you have a method where you pass the list in and it creates the object locally and adds it?</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Hi Matthew</p>
+<p>I changed the generated code as little as I could. On the collection class I changed only one line</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:darkcyan;">Fetch</span>(<span style="color:darkblue;">SafeDataReader</span>&nbsp;dr)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;rlce&nbsp;=&nbsp;<span style="color:purple;">RaiseListChangedEvents</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">RaiseListChangedEvents</span>&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">while</span>&nbsp;(dr.<span style="color:darkcyan;">Read</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//Add(DataPortal.FetchChild&lt;ICustomField&gt;(dr));</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkcyan;">Add</span>(<span style="color:darkblue;">DocCustomFieldCreator</span>.<span style="color:darkcyan;">CreateCustomField</span>(dr));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">RaiseListChangedEvents</span>&nbsp;=&nbsp;rlce;
+}</pre>
+<p>The static CreateCustomField method loads a DTO with DB data and according to the CustomFieldTypeName returns by calling the relevant internal static factory method, passing the DTO as parameter.</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><span style="color:blue;">switch</span>&nbsp;(docCustomFieldDto.<span style="color:purple;">CustomFieldTypeName</span>)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#a31515;">&quot;Int32&quot;</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">DocCustomFieldInteger</span>.<span style="color:darkcyan;">LoadDocCustomFieldInteger</span>(docCustomFieldDto);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#a31515;">&quot;Date&quot;</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">DocCustomFieldSmartDate</span>.<span style="color:darkcyan;">LoadDocCustomFieldSmartDate</span>(docCustomFieldDto);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">default</span>:
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">DocCustomFieldString</span>.<span style="color:darkcyan;">LoadDocCustomFieldString</span>(docCustomFieldDto);
+}</pre>
+<p>In this case I&#39;m populating the collection and I don&#39;t need to expose anything at all.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Thursday, June 13, 2013</h2><p>I did not provide an adequate background in my initial question.</p>
+<p>This project does not have a DAL layer or utilize object factories. We are tightly coupled to a database technology. It is too small of a project and has time constraints which do not allow that level of implementation.</p>
+<p>I have an abbreviated version of what I have done but would like to post the code in the manner that you have. How did you accomplish that? I tried using the Word paste function, but it did not work. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Thursday, June 13, 2013</h2><p>Here is the code. I am using a screen shot, if there is a better way to add formatted code please inform me :).</p>
+<p>Given the fact we have no DAL or object factories...</p>
+<p>My question now - is the following a poor implementation of a polymorphic list just because it is so tightly coupled? If so are their any options other than object factory / DAL?</p>
+<p>(There is a typo in the second Add of fetch pseudo code it should read Add(ripCut) not Add(setup))</p>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.01.27.22/CslaCode.jpg"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.01.27.22/CslaCode.jpg" border="0" alt="" /></a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, June 16, 2013</h2><p>Hi Matthew,</p>
+<p>Your Child_Fetch knows about two different sets of properties. You have two &quot;select&quot; each one followed by a loop adding distinct child types. From what I see, I imagine that on</p>
+<ul>
+<li>Add(setup)</li>
+<li>Add(ripCut)</li>
+</ul>
+<p>&quot;setup&quot; and &quot;ripCut&quot; must be nethods that populate each child type, element by element and return a collection of children. So &quot;Add&quot; should be &quot;AddRange&quot;.</p>
+<p>I prefer the approach of having a single select, followed by a single loop that calls the&nbsp;loader (or getter) object. This object handles the child type difference and returns a ready made child, thus making the collection completely unaware of the item details</p>
+<p>When you need to change some item detail or add a new item type, you don&#39;t change the collection&#39;s code but just the getter object code.</p>
+<p>Since we started this thread I implemented a polymorphic collection of custom properties as explained above. In my case I also needed to handle the creating part, as collection items are created on root object save. I must say it all works quite well except I only created a few item types. Now I need to create the others and for each new item type, I know I only have to add an entry in the switch statement. Quite easy to maintain...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Sunday, June 16, 2013</h2><p>Hi Tiago,</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b></p>
+<p>Your Child_Fetch knows about two different sets of properties. You have two &quot;select&quot; each one followed by a loop adding distinct child types. From what I see, I imagine that on</p>
+<ul>
+<li>Add(setup)</li>
+<li>Add(ripCut)</li>
+</ul>
+<p>&quot;setup&quot; and &quot;ripCut&quot; must be nethods that populate each child type, element by element and return a collection of children. So &quot;Add&quot; should be &quot;AddRange&quot;.</p>
+<p></div></p>
+<p>Actually the pseudo code should have been more specific. I am calling internal factory method on the type being retrieved from the database, &nbsp;passing the datareader with each call. It just returns a single object. It builds the collection because it is contained in the while.</p>
+<p><strong><i>while (dr.Read()) Add(Setup.GetEditableChild(dr) )</i></strong></p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b>I prefer the approach of having a single select, followed by a single loop that calls the&nbsp;loader (or getter) object. This object handles the child type difference and returns a ready made child, thus making the collection completely unaware of the item details</div></p>
+<p>I am not able to have a single select. Each type that implements ITask is different, with different data, stored in different tables. I cannot produce a same shaped datareader containing the data for all of the different types.</p>
+<p>I think the mismatch may be that your solution deals with value types while I am talking about complex object types.</p>
+<p>Do you have a single table with a CustomPropertyType column and then a column for each value type to contain the actual data?</p>
+<p>If not, how are you &quot;shaping&quot; your datareader?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>comp1mp replied on Tuesday, June 18, 2013</h2><p>Based upon the response to this thread, I am left to believe that the story for working with polymorphic CSLA lists is incomplete.</p>
+<p>Currently, there is not a clean method for adding polymorphic complex objects to the list, other than exposing a public factory on a child object. While this works, it breaks CSLA encapsulation in my opinion.</p>
+<p>It may be the inherent use of generics in CSLA business objects makes a clean solution impossible.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, June 18, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Matthew Copeland<br></b>
+<p>Currently, there is not a clean method for adding polymorphic complex objects to the list, other than exposing a public factory on a child object. While this works, it breaks CSLA encapsulation in my opinion.</p>
+</div></p>
+<p>Hi Matthew,</p>
+<p>How come you need a <strong>public </strong>factory method? Why isn&#39;t <strong>internal</strong> enough?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Friday, June 21, 2013</h2><p>Hi Tiago,</p>
+<p>Sorry for delayed response. Things got busy at work :).</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b></p>
+<p>Hi Matthew,</p>
+<p>How come you need a <strong>public </strong>factory method? Why isn&#39;t <strong>internal</strong> enough?</p>
+<p></div></p>
+<p>The user chooses what types are added to the list, so the ability to add any new type of ITask must be exposed to the UI developer. Instead of making the factory for all types of ITask public, I have exposed a method from the list (ie AddSetup, AddRipcut etc.) We thus keep the child factories internal.</p>
+<p>We are using SQLite so we do not have the luxury of abstracting the database call into a single stored procedure returning multiple result sets with a jobid as the parameter. We have to execute separate SQL statements for each type.</p>
+<p>&nbsp;This list semantically is used for managing types of ITask, and after some time to contemplate, I am comfortable with tight coupling and the list containing all of the top level management logic as illustrated by my sample code. In my opinion, it is the natural place to make maintenance changes whenever new types are added or current types are changed. Ultimately, we could factor out the code into a helper class as described by you and Jonny. But this code would still reside in the business dll and require recompilation while adding one more non-intuitive type to be managed during maintenance. Perhaps coupling is not so evil in this case?</p>
+<p>Thank you both for your thoughtful responses.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, June 18, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Matthew Copeland<br></b> </p>
+<p>I am not able to have a single select. Each type that implements ITask is different, with different data, stored in different tables. I cannot produce a same shaped datareader containing the data for all of the different types.</p>
+<p>I think the mismatch may be that your solution deals with value types while I am talking about complex object types.</p>
+<p>Do you have a single table with a CustomPropertyType column and then a column for each value type to contain the actual data?</p>
+<p>If not, how are you &quot;shaping&quot; your datareader?</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Hi Matthew,</p>
+<p>Currently I&#39;m using a single varchar column to store all kinds of values: int32, string, SmartDate, etc That&#39;s a choice I&#39;ve made based on the principle &quot;make the simplest thing that could work&quot;.</p>
+<p>This choice can be changed so there is one database column for each data type. The fetch issue can be solved in two ways.</p>
+<p>1) single result set that includes all columns - simpler but inefficient (since there are always meaningless columns)</p>
+<p>2) each child type is populated by a different result set&nbsp; efficient but more complex</p>
+<p>While option 1) needs small code changes only, option 2) needs a serious refactoring. To be more specific,</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;"><span style="COLOR:blue;">while</span>&nbsp;(dr.<span style="COLOR:darkcyan;">Read</span>())
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//Add(DataPortal.FetchChild&lt;ICustomField&gt;(dr));</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">Add</span>(<span style="COLOR:darkblue;">DocCustomFieldHelper</span>.<span style="COLOR:darkcyan;">CustomFieldGetter</span>(dr));
+}
+</pre>
+<p>needs to&nbsp;be refactored to something that moves to the next result set, until you are out of result sets. Note that the core</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;"><span style="COLOR:darkcyan;">Add</span>(<span style="COLOR:darkblue;">DocCustomFieldHelper</span>.<span style="COLOR:darkcyan;">CustomFieldGetter</span>(dr));</pre>
+<p>doesn&#39;t need to be changed, in order to keep the parent collection agostic about its child/item types&nbsp;(and respect the &quot;separation of concerns&quot; principle).</p>
+<p>All the dirty work of populatiing each child/item type is done by the method</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;"><span style="COLOR:darkblue;"><pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;"><span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:darkblue;">ICustomField</span>&nbsp;<span style="COLOR:darkcyan;">CustomFieldGetter</span>(<span style="COLOR:darkblue;">SafeDataReader</span>&nbsp;dr)</pre>
+</span></pre>
+<p>and that method needs big changes in order to accomodate for child types that might have big or not so big differences. Using a DTO might be usefull or it can prove useless. On the later case, the switch statement should pass the&nbsp;SafeDateReader instance to the factory method. These are implementation details, so I won&#39;t discuss them further.</p>
+<p>EDIT</p>
+<p>Note option 2) can be used for very different child/item types, including child that fecth data from different database tables, whatsoever.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

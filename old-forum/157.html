@@ -1,0 +1,445 @@
+<html><header><title>Type is not resolved for member 'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Type is not resolved for member 'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/157.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wayne.Hauck posted on Sunday, May 21, 2006</h2><P>I am getting this error message when I try to run the PTTracker (c#) project:</P>
+<P><EM>System.Runtime.Serialization.SerializationException: Type is not resolved for member 'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library</EM></P>
+<P>I'm stuck. Any ideas?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, May 21, 2006</h2>I assume this is PTWeb? Did you follow the instructions in the PDF you can download from <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>? To run the web UI you need to do some configuration in IIS due to the way the ASP.NET Development Server does (or actually doesn't) resolve assembly references.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wayne.Hauck replied on Sunday, May 21, 2006</h2><P>Yes it is PTWeb, and yes, I tried to&nbsp;follow all the instructions. I had trouble registering EnterpriseServicesHostcs.dll (it said entry point not found). I tried using <FONT color=#008000 size=2><FONT color=#000000 size=3>WebServicesHost </FONT><FONT color=#000000 size=3>as an alternative but always get the same error message regardless.</FONT></P>
+<P><FONT color=#000000 size=3>I may have&nbsp;built PTTracker before CSLA before I read the instructions - if this makes any difference.</FONT></P>
+<P><FONT color=#000000 size=3>Also, the website works if I browse <A href="http://localhost/PTWeb">http://localhost/PTWeb</A>, but I am&nbsp;gettting the error message when I try to debug. </FONT></P>
+<P><FONT color=#000000 size=3>I really appreciate your help.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Friday, September 22, 2006</h2><P>I too am trying to run the project tracker PTWeb example and am getting the following error message</P>
+<H2><I>Type is not resolved for member 'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.</I> </H2>
+<P>I dont know how to get over this.&nbsp; Please advise</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 22, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2>Hey Andy, this is one for the FAQ!</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2>Terry, have you read the install document from the download 
+page (<A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>)? 
+If not, that may be helpful.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2>The basic problem is that you are probably trying to run 
+PTWeb in the developmet web server (Cassini), rather than in IIS. I mention this 
+in the book a couple times too - that it can't work due to limitations of 
+Cassini. </FONT></SPAN></DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2>This is frustrating, and&nbsp;I communicated my frustration 
+to the ASP.NET team and even blogged about it when I discovered the issue - but 
+it is the way it is...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=515133214-22092006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2>Fortunately&nbsp;it is pretty easy to tell VS to run the 
+project in IIS instead of&nbsp;Cassini, so there's a perfectly happy 
+workaround.&nbsp;</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=515133214-22092006></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=515133214-22092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT>&nbsp;</SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> TerryHolland [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, September 22, 2006 9:11 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Type is not resolved for 
+  member 
+  'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I too am trying to run the project tracker PTWeb example and am getting the 
+  following error message</P>
+  <H2><I>Type is not resolved for member 
+  'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library, 
+  Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.</I> </H2>
+  <P>I dont know how to get over this.&nbsp; Please advise</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 22, 2006</h2>I'll add it during my lunch break in about 30 minutes.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Monday, September 25, 2006</h2><P>thanks rocky - I hadn't set the Base URL.&nbsp; When I set it to <A href="http://Loacalhost/PTWeb">HTTP://Loacalhost/PTWeb</A> I get the follwoing error:</P>
+<P>
+<TABLE cellSpacing=5 cellPadding=3>
+
+<TR>
+<TD id=tableProps2 align=left>
+<H1 id=term1><SPAN id=errorText>You are not authorized to view this page</SPAN></H1></TD></TR>
+<TR>
+<TD id=tablePropsWidth colSpan=2><FONT id=LID1>You might not have permission to view this directory or page using the credentials you supplied.</FONT></TD></TR></TABLE></P>
+<P>If I change it to <A href="http://Loacalhost/PTWeb/Login.aspx">HTTP://Loacalhost/PTWeb/Login.aspx</A> then I get to the login page but it has no stylesheet.&nbsp;&nbsp;If I just open an instance of ie and type in the url then the page has its stylesheet.</P>
+<P>When I try to login I get the following error:</P>
+<P><EM>An attempt to attach an auto-named database for file C:\VISUAL STUDIO PROJECTS\CSLA20\PROJECTTRACKER20VB\PTracker.MDF failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share</EM></P>
+<P>Ive placed the db files included in download in <EM>C:\VISUAL STUDIO PROJECTS\CSLA20\PROJECTTRACKER20VB\PTracker.MDF </EM></P>
+<P>&nbsp;</P>
+<P><EM></EM>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=597530613-25092006><FONT face=Arial color=#0000ff size=2>The first problem sounds like you don't have ASP.NET set up 
+properly. Or at least you don't have IIS configured to look for default.aspx as 
+a default page.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=597530613-25092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=597530613-25092006><FONT face=Arial color=#0000ff size=2>The second problem sounds like you are trying to run the 
+data portal in local mode in PTWeb. You can do that - but you need to move the 
+database files into App_Data and change the web.config connection strings to 
+point there. By default, ASP.NET can't go read arbitrary files on the hard 
+drive.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=597530613-25092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=597530613-25092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> TerryHolland [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, September 25, 2006 4:51 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: Type is not resolved 
+  for member 
+  'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>thanks rocky - I hadn't set the Base URL.&nbsp; When I set it to <A href="http://Loacalhost/PTWeb">HTTP://Loacalhost/PTWeb</A> I get the follwoing 
+  error:</P>
+  <P>
+  <TABLE cellSpacing=5 cellPadding=3>
+    
+    <TR>
+      <TD id=tableProps2 align=left>
+        <H1 id=term1><SPAN id=errorText>You are not authorized to view this 
+        page</SPAN></H1></TD></TR>
+    <TR>
+      <TD id=tablePropsWidth colSpan=2><FONT id=LID1>You might not have 
+        permission to view this directory or page using the credentials you 
+        supplied.</FONT></TD></TR></TABLE></P>
+  <P>If I change it to <A href="http://Loacalhost/PTWeb/Login.aspx">HTTP://Loacalhost/PTWeb/Login.aspx</A> 
+  then I get to the login page but it has no stylesheet.&nbsp;&nbsp;If I just 
+  open an instance of ie and type in the url then the page has its 
+  stylesheet.</P>
+  <P>When I try to login I get the following error:</P>
+  <P><EM>An attempt to attach an auto-named database for file C:\VISUAL STUDIO 
+  PROJECTS\CSLA20\PROJECTTRACKER20VB\PTracker.MDF failed. A database with the 
+  same name exists, or specified file cannot be opened, or it is located on UNC 
+  share</EM></P>
+  <P>Ive placed the db files included in download in <EM>C:\VISUAL STUDIO 
+  PROJECTS\CSLA20\PROJECTTRACKER20VB\PTracker.MDF </EM></P>
+  <P>&nbsp;</P>
+  <P><EM></EM>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Monday, September 25, 2006</h2><P>Thanks once again.&nbsp; I moved PTTracker and Security&nbsp;to App_Data and added default aspx as a default page.</P>
+<P>When I run project, I now see the default page with formatting.&nbsp; </P>
+<P>I try logging on using pm and pm and I successfully get logged in.&nbsp; I try clicking the Project List link and get the following error:</P>
+<P><EM>Unable to open the physical file "C:\Program Files\csla20vb\ProjectTracker20vb\www\PTWeb\App_Data\PTracker.MDF". Operating system error 5: "5(error not found)".<BR>An attempt to attach an auto-named database for file C:\Program Files\csla20vb\ProjectTracker20vb\www\PTWeb\App_Data\PTracker.MDF failed. A database with the same name exists, or specified file cannot be opened, or it is located on UNC share.</EM> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Saturday, March 24, 2007</h2>Okay, so, for those of us who are apparently blind what is the easy way to tell VS.Net to run in IIS?<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 24, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Right-click on the web project and choose properties. You&#8217;ll
+see a dialog where you can specify the startup configuration/location for the
+site.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sydneyos
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, March 24, 2007 5:17 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Type is not resolved for member
+'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Okay, so, for those of us who are apparently blind what is
+the easy way to tell VS.Net to run in IIS?<br>
+<br>
+Thanks.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JMPatrick replied on Monday, July 23, 2007</h2>I have configured vs.net to run in IIS and I am still getting this error when I try to login. Am I overlooking something?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, May 01, 2008</h2><P>I'm still having this problem with the error with PTWeb</P>
+<P><EM><STRONG>Type is not resolved for member 'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null'.</STRONG></EM> </P>
+<P>I have followed all of this forum and still can't seem to get through the browser for PTWeb. I have added the reference to EnterpriseServicesHostcs.dll the IIS virtual directory is set and is using the 2.0 framework. I've followed and re-followed the instructions in <A href="http://www.lhotka.net/files/csla20/BuildCsla.pdf">http://www.lhotka.net/files/csla20/BuildCsla.pdf</A>&nbsp;thoroughly and am still lost.</P>
+<P>please help</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 02, 2008</h2><P>I am not sure what else to add.</P>
+<P>When using a custom principal object you must run the web site in IIS. This is a limitation of the development web server, and affects any custom principal scenario.</P>
+<P>PTWeb uses a custom principal, so you must run it in IIS, not in the development web server.</P>
+<P>To do that</P>
+<OL>
+<LI>Add a virtual root in IIS that points to the PTWeb directory</LI>
+<LI>Change the web project's properties in VS so the startup option runs from a custom web server (often <A href="http://localhost/ptweb">http://localhost/ptweb</A>)</LI></OL>
+<P>It is also the case that PTWeb needs to talk to the database. By default ASP.NET apps don't have security to talk to the database. So you have two options: configure the database to accept direct ASP.NET calls, or configure the data portal to use a remote host (remoting, enteprrise services, etc).</P>
+<P>Of those two options, the simplest is typically to configure the data portal to use a remote host. In version 3.0 and higher the configuration defaults to using WCF and so it should just work. In 2.1 and earlier the download uses EnterpriseServices because that's easiest - only requiring that you register that one assembly with COM+.</P>
+<P>But the exception you are getting is NOT a database access or dataportal access exception. So your problem is, almost certainly, that you don't have PTWeb running in IIS.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PrimeCipher replied on Thursday, August 28, 2008</h2>Wow, brilliant coder and amazing patience - you're lucky.&nbsp; <br />Thanks for everything by the way.&nbsp; <br /><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>I am not sure what else to add.</p></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrosenthal replied on Saturday, August 30, 2008</h2>I too have been following this thread and have the same issue.&nbsp; I have set up the virtual directory in IIS as PTracker and changed the properties of PTWeb to use that dir.&nbsp; Now I get&nbsp; - Unable to start debugging on the web server. and a recommendation to start w/o debugging.&nbsp; When I do that I get You are not authorized to view this page. (I am using version CSLA 3.5.1 and VS2008 and IIS)<img alt=""></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The biggest source of problems with any of the web-based
+projects (PTWeb and any of the service-based interfaces and data portal hosts)
+is that IIS and/or ASP.NET aren&#8217;t set up or configured correctly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrosenthal replied on Sunday, August 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Regardless of the problem &#8211; I want you to know personally that I
+have read all 3 of the books and have learnt so much from you.&nbsp; Thank you!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jeff <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 31, 2008 8:59 PM<br>
+<b>To:</b> Jeffrey Rosenthal<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: RE: Type is not resolved for member
+'ProjectTracker.Library.Security.PTPrincipal,ProjectTracker.Library<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The biggest source of problems with any of the web-based
+projects (PTWeb and any of the service-based interfaces and data portal hosts)
+is that IIS and/or ASP.NET aren&#8217;t set up or configured correctly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus
+found in this incoming message.<br>
+Checked by AVG - http://www.avg.com<br>
+Version: 8.0.169 / Virus Database: 270.6.13/1642 - Release Date: 8/30/2008 5:18
+PM</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Monday, January 12, 2009</h2><P><FONT face=Verdana size=2>There is a workaround to this issue under the Visual Studio Development Server (Cassini). </FONT></P>
+<P><FONT face=Verdana size=2>The work around&nbsp;basically provides an alternate/custom serialization implementation, specifically around the CrossAppDomain serialization required by the Visual Studio Development Server (Cassini). It essentially "substitutes" the custom identity and principal objects with GenericIdentity and GenericPrincipal instances respectively. I strongly suggest using this under development environments only.</FONT></P>
+<P><FONT face=Verdana size=2>The Cassini web development server is able to serialize the GenericIdentity and GenericPrincipal instances sucessfully.</FONT></P>
+<P><FONT face=Verdana size=2><STRONG><U>Workaround:</U></STRONG></FONT></P>
+<P><FONT face=Verdana size=2>Add the following to your CustomIdentity class (and remember to add the ISerializable interface to the class declaration):</FONT></P><FONT face=Verdana size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> ISerializable Members</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Populates a </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> with the data needed to serialize the target object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="info"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> to populate with data.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="context"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The destination (see </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.StreamingContext"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>) for this serialization.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;exception cref="T:System.Security.SecurityException"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The caller does not have the required permission. </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/exception&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetObjectData( </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SerializationInfo</FONT></FONT><FONT size=2> info, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContext</FONT></FONT><FONT size=2> context )</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// State will be CrossAppDomain for serialization induced by WebDev.WebServer </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> ( context.State == </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContextStates</FONT></FONT><FONT size=2>.CrossAppDomain )</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> generic = </FONT><STRONG><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GenericIdentity</FONT></FONT></STRONG><FONT size=2><STRONG>( Name, AuthenticationType );</STRONG></P>
+<P>info.SetType( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableMembers = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetSerializableMembers( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableValues = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetObjectData( generic, serializableMembers );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>for</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> i = 0; i &lt; serializableMembers.Length; i++)</P>
+<P>info.AddValue( serializableMembers<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Name, serializableValues<img src="/emoticons/emotion-55.gif" alt="Idea [I]" /> );</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Perform 'real' serialization here if necessary </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InvalidOperationException</FONT></FONT><FONT size=2>( </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Serialization not supported"</FONT></FONT><FONT size=2> );</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P><FONT color=#000000>Add the following to your CustomPrincipal class (and remember to add the ISerializable interface to the class declaration):</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2><FONT color=#000000> ISerializable Members</FONT></P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Populates a </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> with the data needed to serialize the target object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="info"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> to populate with data.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="context"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The destination (see </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.StreamingContext"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>) for this serialization.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;exception cref="T:System.Security.SecurityException"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The caller does not have the required permission. </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/exception&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetObjectData( </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SerializationInfo</FONT></FONT><FONT size=2> info, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContext</FONT></FONT><FONT size=2> context )</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// State will be CrossAppDomain for serialization induced by WebDev.WebServer </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> ( context.State == </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContextStates</FONT></FONT><FONT size=2>.CrossAppDomain )</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> generic = </FONT><STRONG><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GenericPrincipal</FONT></FONT><FONT size=2>( Identity, ((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomIdentity</FONT></FONT></STRONG><FONT size=2><STRONG>)Identity).GetRoles() );</STRONG></P>
+<P>info.SetType( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableMembers = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetSerializableMembers( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableValues = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetObjectData( generic, serializableMembers );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>for</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> i = 0; i &lt; serializableMembers.Length; i++)</P>
+<P>info.AddValue( serializableMembers<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Name, serializableValues<img src="/emoticons/emotion-55.gif" alt="Idea [I]" /> );</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Perform 'real' serialization here if necessary </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InvalidOperationException</FONT></FONT><FONT size=2>( </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Serialization not supported"</FONT></FONT><FONT size=2> );</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P><FONT color=#000000>You'll notice in the constructor call to GenericPrincipal a call to provide the Roles for the identity. Your likely to need to expose such an instance&nbsp;method string[] GetRoles() on your CustomIdentity class.</FONT></P>
+<P><FONT color=#000000>I have recently started using CSLA 3.6 and also made use of Rocky's much simplified CslaIdentity abstract baseclass for my CustomIdentity objects and also the now built-in UnauthenticatedIdentity and UnauthenticatedPrincipal classes. Unfortunately, these built in principal and identity classes will suffer the same fate with the Visual Studio Development Server (Cassini) to the effect of "Type is not resolved for member UnauthenticatedPrincipal".</FONT></P>
+<P><FONT color=#000000>To fix this I have added (similar to the implementations shown above, but simpler) to our local copy of the Csla 3.6.0 source code through partial classes. Here follows the code:</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2><FONT color=#000000> System;</FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2><FONT color=#000000> System.Runtime.Serialization;</FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2><FONT color=#000000> System.Security.Principal;</FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>namespace</FONT></FONT><FONT size=2><FONT color=#000000> Csla.Security</FONT></P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>sealed</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>UnauthenticatedIdentity</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ISerializable</P></FONT></FONT><FONT size=2>
+<P>{</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2><FONT color=#000000> ISerializable Members</FONT></P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Populates a </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> with the data needed to serialize the target object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="info"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> to populate with data.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="context"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The destination (see </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.StreamingContext"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>) for this serialization.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;exception cref="T:System.Security.SecurityException"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The caller does not have the required permission. </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/exception&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetObjectData( </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SerializationInfo</FONT></FONT><FONT size=2> info, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContext</FONT></FONT><FONT size=2> context )</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// State will be CrossAppDomain for serialization induced by WebDev.WebServer </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> ( context.State == </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContextStates</FONT></FONT><FONT size=2>.CrossAppDomain )</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> generic = </FONT><STRONG><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GenericIdentity</FONT></FONT></STRONG><FONT size=2><STRONG>( Name, AuthenticationType );</STRONG></P>
+<P>info.SetType( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableMembers = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetSerializableMembers( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableValues = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetObjectData( generic, serializableMembers );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>for</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> i = 0; i &lt; serializableMembers.Length; i++)</P>
+<P>info.AddValue( serializableMembers<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Name, serializableValues<img src="/emoticons/emotion-55.gif" alt="Idea [I]" /> );</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Perform 'real' serialization here if necessary </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InvalidOperationException</FONT></FONT><FONT size=2>( </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Serialization not supported"</FONT></FONT><FONT size=2> );</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P>
+<P><FONT color=#000000>And here's the UnauthenticatedPrincipal class' implementation:</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2><FONT color=#000000> System;</FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2><FONT color=#000000> System.Runtime.Serialization;</FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2><FONT color=#000000> System.Security.Principal;</FONT></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>namespace</FONT></FONT><FONT size=2><FONT color=#000000> Csla.Security</FONT></P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Implementation of a .NET principal object that represents</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> an unauthenticated user. Contains an UnauthenticatedIdentity</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>sealed</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>UnauthenticatedPrincipal</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ISerializable</P></FONT></FONT><FONT size=2>
+<P>{</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2><FONT color=#000000> ISerializable Members</FONT></P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Populates a </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> with the data needed to serialize the target object.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="info"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.SerializationInfo"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> to populate with data.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="context"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The destination (see </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;see cref="T:System.Runtime.Serialization.StreamingContext"&gt;&lt;/see&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>) for this serialization.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;exception cref="T:System.Security.SecurityException"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The caller does not have the required permission. </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/exception&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetObjectData( </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SerializationInfo</FONT></FONT><FONT size=2> info, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContext</FONT></FONT><FONT size=2> context )</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// State will be CrossAppDomain for serialization induced by WebDev.WebServer </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> ( context.State == </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>StreamingContextStates</FONT></FONT><FONT size=2>.CrossAppDomain )</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> generic = </FONT><STRONG><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GenericPrincipal</FONT></FONT><FONT size=2>( Identity, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT></STRONG><FONT size=2><STRONG> );</STRONG></P>
+<P>info.SetType( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableMembers = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetSerializableMembers( generic.GetType() );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> serializableValues = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>FormatterServices</FONT></FONT><FONT size=2>.GetObjectData( generic, serializableMembers );</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>for</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> i = 0; i &lt; serializableMembers.Length; i++)</P>
+<P>info.AddValue( serializableMembers<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.Name, serializableValues<img src="/emoticons/emotion-55.gif" alt="Idea [I]" /> );</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Perform 'real' serialization here if necessary </P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>InvalidOperationException</FONT></FONT><FONT size=2>( </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Serialization not supported"</FONT></FONT><FONT size=2> );</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT><FONT size=2></FONT></FONT></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>joet505 replied on Monday, July 20, 2009</h2><P>I've tried to implement this solution but still have the same error.&nbsp; I dont know if I'm putting in the correct values.</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> generic = </FONT><STRONG><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GenericIdentity</FONT></FONT></STRONG><FONT size=2><STRONG>( Name, AuthenticationType ); </STRONG></FONT></P>
+<P><FONT size=2><STRONG>- Is name ( _name from the class)?</STRONG></FONT></P>
+<P><FONT size=2><STRONG>- Is AuthenticationType = 'Csla'?</STRONG></FONT></P><FONT size=2>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> generic = </FONT><STRONG><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GenericPrincipal</FONT></FONT><FONT size=2>( Identity, ((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomIdentity</FONT></FONT></STRONG><FONT size=2><STRONG>)Identity).GetRoles() );&nbsp;</STRONG></FONT></P>
+<P><FONT size=2><STRONG>- I'm assuming that CustomIdentity is my identity object</STRONG></FONT></P>
+<P><FONT size=2><STRONG>- Does the GetRoles() really have to return all the roles?&nbsp; For the user or just all the roles in the database?&nbsp; How does this affect the IsInRole?</STRONG></FONT></P>
+<P><FONT size=2><STRONG></STRONG></FONT>&nbsp;</P>
+<P><FONT size=2><STRONG>Thanks</STRONG></P></FONT></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 21, 2009</h2><P>The issue discussed in this thread stems from a limitation in Cassini. I've talked to people at Microsoft about this a couple times, and they show no signs of fixing the issue from their side - so I think we're stuck with workarounds.</P>
+<P>This isn't a CSLA specific issue. Anyone using custom principals or custom membership provider implementations runs into the same problem.</P>
+<P>One workaround is to put your business assembly in the GAC. This is kind of a pain, but if you use a post-build step in VS you can update the GAC on each build. This does require strong naming your business assembly, which might also be an extra step if you aren't already doing so.</P>
+<P>Another solution, if you are using current versions of CSLA .NET, is to use a GenericPrincipal instead of a custom principal type. The limitation here is that you can't extend the principal or identity with extra properties, but the benefit is that the types are in .NET itself and so work with Cassini.</P>
+<P>Two posts back there's a lot of code showing one way to work with GenericPrincipal. In current versions of CSLA you can use it directly, because the data portal no longer requires that your principal inherit from BusinessPrincipalBase. Any serializable principal object is acceptible.</P>
+<P>GenericPrincipal and GenericIdentity are standard parts of .NET. They provide the most basic and simple implementations of IPrincipal and IIdentity possible. GenericPrincipal maintains an array of roles for the current user and has an IsInRole() method that checks that array. GenericIdentity maintains the username and authentication type. If the username is not null, then IsAuthenticated returns true.</P>
+<P>To fit this into the CSLA model, you'll almost certainly create some object that is responsible for initial creation of the GenericPrincipal/GenericIdentity pair. I'd use a ReadOnlyBase object for this purpose. It would look something like this:</P>
+<P>[Serializable]<BR>public class Authenticator : ReadOnlyBase&lt;Authenticator&gt;<BR>{<BR>&nbsp; public IPrincipal Principal { get; set; }</P>
+<P>&nbsp; public static void Login(string username, string password)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; var obj = DataPortal.Fetch&lt;Authenticator&gt;(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new Csla.Security.UsernameCriteria(username, password));<BR>&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.User = obj.Principal;<BR>&nbsp; }</P>
+<P>&nbsp; private void DataPortal_Fetch(Csla.Security.UsernameCriteria criteria)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // validate the username/password data<BR>&nbsp;&nbsp;&nbsp; // if valid, load a roles array with data<BR>&nbsp;&nbsp;&nbsp; var roles = new string[] { };<BR>&nbsp;&nbsp;&nbsp; Principal = <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new GenericPrincipal(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new GenericIdentity(criteria.Username),<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;roles);<BR>&nbsp; }<BR>}</P>
+<P>This way the HttpContext and/or thread are connected to a GenericPrincipal/GenericIdentity, not to any custom type, so Cassini should be happy. And in CSLA 3.5 or higher the data portal should also be happy.</P>
+<P>So as long as you only need the most basic principal/identity behaviors, this is probably a decent overall solution. If you need more advanced or custom behaviors, you'll be stuck with the GAC if you must use Cassini.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rcollette replied on Friday, January 22, 2010</h2>This issue seems to rear its head in unit tests as well.<br><br>This URL has a concise description of the issue with VSTestHost<br>http://social.msdn.microsoft.com/forums/en-US/vststest/thread/81814766-a522-4a19-8575-7bc7f581623c/<br><br>Does anyone know if this is resolved in Visual Studio 2010?&nbsp;&nbsp; The workarounds for this (gac'ing, modifying the vstesthost loader path, etc.) are a PITA when working in development groups.&nbsp;&nbsp; It's pretty hard to do TDD when part of the process isn't... continuous.<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 22, 2010</h2>To my knowledge this is a "feature" of Cassini. Though how <EM>not replicating IIS</EM> in such a key way can be a feature is beyond me...</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

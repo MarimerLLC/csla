@@ -1,0 +1,58 @@
+<html><header><title>Combobox DisplayMember is showing 'key' instead of 'value'</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Combobox DisplayMember is showing 'key' instead of 'value'</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10163.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jack.doe77 posted on Monday, March 14, 2011</h2><p>Hi,
+I&#39;m new to CSLA (using CSLA 2 for VB)
+</p>
+<p>
+I have Product object which one of the field is ComboBox referring to SupplierList object. When I create a new Product, initially Supplier&#39;s ComboBox is showing &#39;key&#39; instead of &#39;value&#39; (I can see &#39;value&#39; when I clicked ComboBox). If I tried to choose a Supplier, an exception occured &#39;Input string was not in a correct format&#39;.
+</p>
+<p>
+I have tried to use SupplierList object in a form (no object binding) and it worked perfectly. </p>
+<p>Can anyone please enlight me, what I have missed ? Thank you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jack.doe77 replied on Monday, March 14, 2011</h2><p>Anyone can help me <img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /></p>
+<p>Here&#39;s what I&#39;ve done :<br />- create SupplierList (inherit from NameValueListBase)<br />- in Product&#39;s form constructor </p>
+<p style="padding-left:30px;">Public Sub New(ByVal product As Product)<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent()<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mProduct  = product <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mProduct .BeginEdit()<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.SupplierListBindingSource.DataSource = SupplierList.GetList<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me.ProductBindingSource.DataSource = mProduct<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()<br /><br />&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>- in Product&#39;s form design, at Dealer&#39;s combobox, I set DataSource to SupplierListBindingSource, DisplayMember to Value, ValueMember to Key</p>
+<p>Is there anything I missed ? Thank you.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 15, 2011</h2><p>You probably also have a databinding on combo.Text that makes the combo show the Key initially. </p>
+<p>Forms designer automatically adds a databinding to .Text when you add a ComboBox from the datasources window.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jack.doe77 replied on Tuesday, March 15, 2011</h2><p>Hi Jonny,</p>
+<p>Thanks for replying.</p>
+<p>The ComboBox has binding to SupplierId of Product object. The ComboBox .Text property is binding to SupplierId, but has no value. </p>
+<p>Could you please elaborate more ?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 15, 2011</h2><blockquote>
+<p class="normal" align="left"><span lang="de-ch">The Combobox doesn&#39;t have a DataMember
+          property - instead it has a <b>DisplayMember</b> and <b>ValueMember</b>
+          property:</span></p>
+<table style="border-collapse:collapse;" id="AutoNumber3" border="0" cellpadding="0" cellspacing="0" width="90%">
+<tbody>
+<tr>
+<td width="100%">
+                
+<ul>
+<li><span lang="de-ch">The <b>DisplayMember</b> of a Combobox g</span>ets or sets
+                  a string that specifies the property of the data source whose contents you want
+                  to display.</li>
+</ul>
+</td>
+</tr>
+<tr>
+<td width="100%">
+                
+<ul>
+<li>The <b>ValueMember</b> property determines which value gets moved into
+                  <span lang="de-ch">the</span> <b>SelectedValue</b> <span lang="de-ch">of the
+                  Combo Box.</span> In the example, whenever the user selects a <span lang="de-ch">Customer</span> by <span style="font-size:x-small;">&quot;Customers.CompanyName&quot;<span lang="de-ch">,</span></span> the SelectedValue is the <span style="font-size:x-small;">&quot;Customers.CustomerID&quot;<span lang="de-ch">.</span></span> Whenever the
+                  SelectedValue changes, the data-binding moves the new value into the Customer
+                  object.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+<p>So you would typically setup databinding only on:</p>
+<ul>
+<li>DisplayMember</li>
+<li>ValueMember&nbsp;</li>
+<li>SelectedValue&nbsp; </li>
+</ul>
+<p>You would only want to setup databinding on combo.Text if you use the styles <b>Simple </b>or <b>DropDown </b>where the combox acts like a text box with a list of &quot;suggested&quot; selctions but still allow the user to enter a new text value. (And in in this case the SelctedValue will have no meaning when you add new items/string values).</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jack.doe77 replied on Tuesday, March 15, 2011</h2><p>Thanks a lot Jonny <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>I thought Text property in the DataBinding as Text property. Now everything worked like a charm.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

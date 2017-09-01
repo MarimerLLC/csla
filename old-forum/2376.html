@@ -1,0 +1,42 @@
+<html><header><title>Bind Object to several Control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bind Object to several Control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2376.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin posted on Monday, February 19, 2007</h2>Hi..<br><br>I have a read only object, lets name it PersonList contains(PersonId, JobType, PersonName) with JobType in my CriteriaInfo.<br>I'm trying to bind this object on the same webform into three webcombo control. 1st combo will contain personlist with jobtype=1, 2nd combo will contain personlist with jobtype=2 and 3rd combo will contain personlist with jobtype=3<br><br>I've tried create 3 different csladatasource for each combo, and I send the criteria on it's selectobject event. but it doest work.<br><br>can any body help me how to solve this?<br>I'm using VB<br>Thanks<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PWorthy replied on Tuesday, February 20, 2007</h2><TABLE class=CAPageContent id=ctl00_ctl01_bcr_PostForm___ComposePage cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD>
+<DIV id=ctl00_ctl01_bcr_PostForm___Reply><FONT face=Tahoma size=2>akhirudin</FONT></DIV>
+<DIV><FONT face=Tahoma size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma size=2>You will need to create NameValueListBase Object and create a criteria</FONT></DIV>
+<DIV><STRONG><FONT face=Tahoma size=2></FONT></STRONG>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class FilteredCriteria<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private int _jobType;</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int&nbsp;JobType</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return _jobType; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></DIV>
+<DIV><FONT face=Tahoma size=1></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public FilteredCriteria(int jobtype)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _jobtype = jobtype;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000000 size=2>on your dataPortal_Fetch</FONT></DIV>
+<DIV><FONT size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma><FONT color=#000080 size=1>&nbsp;private void DataPortal_Fetch(FilteredCriteria criteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</FONT></FONT></DIV>
+<DIV><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face=Tahoma color=#000080>Call SP to Return data&nbsp;matching criteria.JobType</FONT></FONT></DIV>
+<DIV><FONT size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face=Tahoma color=#000080>}</FONT><FONT face=Tahoma><FONT color=#000080>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></FONT></FONT></DIV>
+<DIV><FONT face=Tahoma><FONT color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;while (dr.Read())</FONT></FONT></DIV>
+<DIV><FONT face=Tahoma><FONT color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(new NameValueListBase&lt;string,string&gt;.NameValuePair(dr.Getstring("JobType"),dr.GetString("PersonName"))));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</FONT>&nbsp;&nbsp;</FONT></DIV>
+<DIV><FONT face=Tahoma></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma size=2>You can then bind&nbsp;directly to this list object passing in the filter criteria you require. This does mean the&nbsp;BO will go back to the database for every jobtype you ask&nbsp;it to filter on&nbsp;</FONT></DIV>
+<DIV><FONT face=Tahoma>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT></DIV>
+<DIV><FONT face=Tahoma size=1>&nbsp;<FONT color=#000080>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PersonList&nbsp;PL = PersonList.GetPersonList(Jobtype1);</FONT></FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Last5LogRuns.InvalidateCache();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DDJobtype1.DataSource = PL;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DDJobtype1.DataTextField = "value";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DDJobtype1.DataValueField = "key";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DDJobtype1.DataBind();</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000000 size=2>hope i have understood you correctly and answered your question</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000000 size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000000 size=2>regards</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000000 size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000000 size=2>Paul</FONT></DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma color=#000080 size=1></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma></FONT>&nbsp;</DIV>
+<DIV><FONT face=Tahoma></FONT>&nbsp;</DIV>
+<DIV><STRONG></STRONG>&nbsp;</DIV>
+<DIV><STRONG><FONT face=Tahoma size=2></FONT></STRONG>&nbsp;</DIV></TD></TR></TABLE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

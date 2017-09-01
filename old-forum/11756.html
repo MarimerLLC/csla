@@ -1,0 +1,7 @@
+<html><header><title>CreateChildAsync ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CreateChildAsync ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11756.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy posted on Tuesday, December 18, 2012</h2><p>Hello,</p>
+<p>why there is no CreateChildAsync method on the DataPortal?</p>
+<p>I have a ContactEdit object containing PrimaryAddressEdit and DeliveryAddressEdit as child objects.<br />Commonly the DeliveryAddressEdit is null, falling back to the Primary one.</p>
+<p>How to create the AddressEdit object for the DeliveryAE property asynchronously from the client side?<br />There is a button &quot;add delivery Address&quot; &nbsp;in the UI...</p>
+<p>thanks,<br />Alex.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 18, 2012</h2><p>No child method will use the DataPortal to go to the server (N-Tier). </p>
+<p>Meaning that you will normally create Child objects on the client using synchronous calls without any remote access. </p>
+<p>If you need to go to the server for initialization then use the &quot;root&quot; DataPortal.Create method and make sure to mark the object as child.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

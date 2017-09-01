@@ -1,0 +1,48 @@
+<html><header><title>Combobox Binding Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Combobox Binding Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1207.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GinoK posted on Wednesday, September 13, 2006</h2><P>Hi, </P>
+<P>I have recently started developing a system using CSLA and have come up with a problem with Combobox binding I cannot find a solution to. </P>
+<P>I have a Business object with some foreign key fields which I am editing through a windows form. One of the fields is a currencyID field where I present a ComboBox&nbsp; which allows the usere to pick a currency using its description. The Combo box is populated using an NameValue List and displays perfectly. The selectedvalue property is set to the underlying binding source for the BusinessBase object and is being set correctly. However, if I tab from the field the text portion of the combo is cleared and I receive a null conversion error from the error provider. Even though the error is set the underlying property appears to still be set correctly.</P>
+<P>The only way I can get around this at present is to include a readonly description field in the root object and reference this in the databindings 'text' field which from other forum discussions should be left blank. Has anyone any ideas where I am going wrong with this?</P>
+<P>Thanks in advance for any assistance provided.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, September 13, 2006</h2>Is something bound to ComboBox.Text?&nbsp; If you are binding to ComboBox.SelectedValue I would normally recommend making sure that nothing is bound to ComboBox.Text.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GinoK replied on Friday, September 15, 2006</h2><P>I have resolved this by switching from the MS Combobox to the Combobox supplied by Janus.&nbsp; </P>
+<P>I added the Janus Combo box to a form manually. Then I dragged my NameValue List onto the Combo setting up the binding. I switched the DataSourceUpdate mode to OnPropertyChanged for the selected value which defaults to OnValidation. I then cleared the DisplayMember and Value member properties to prevent them being set in the InitializeComponent Sub. (When left the application compained they did not exist event though they were se to expected Key and Value respectively). In my load I then added following lines:</P><FONT color=#0000ff size=2>
+<P>Me</FONT><FONT size=2>.CurrencyNVListBindingSource.DataSource = CurrencyNVList.GetList()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyIDComboBox.DataSource = CurrencyNVListBindingSource</P>
+<P>CurrencyIDComboBox.DisplayMember = </FONT><FONT color=#800000 size=2>"Value"</P></FONT><FONT size=2>
+<P>CurrencyIDComboBox.ValueMember = </FONT><FONT color=#800000 size=2>"Key"</P></FONT>
+<P>Everything as a result worked fine.&nbsp; Now who was that who told me there was no need for third party tools with Visual Studio 2005?</P>
+<P>&nbsp;</P>
+<P>Regards,</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, September 17, 2006</h2>I do the same thing with the regular MS DropDownList control.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GinoK replied on Monday, September 18, 2006</h2><P>David,</P>
+<P>I would expect that this is a regular requirement and expect I am doing something stupid. However, I am getting nowhere on support sites.&nbsp;Using the MS Dropdown I get the following properties in designer.</P><FONT color=#008000 size=2>
+<P>'MSCurrencyIDComboBox1</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'</P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Me</FONT><FONT color=#000000 size=2>.ReadWriteAuthorization1.SetApplyAuthorization(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT color=#000000 size=2>.MSCurrencyIDComboBox1, </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2><FONT color=#000000>)</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MSCurrencyIDComboBox1.DataBindings.Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Windows.Forms.Binding(</FONT><FONT color=#800000 size=2>"SelectedValue"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ControlCompanyBindingSource, </FONT><FONT color=#800000 size=2>"CurrencyID"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MSCurrencyIDComboBox1.DataSource = </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyNVListBindingSource</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MSCurrencyIDComboBox1.DisplayMember = </FONT><FONT color=#800000 size=2>"Value"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MSCurrencyIDComboBox1.FormattingEnabled = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MSCurrencyIDComboBox1.Name = </FONT><FONT color=#800000 size=2>"MSCurrencyIDComboBox1"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.MSCurrencyIDComboBox1.ValueMember = </FONT><FONT color=#800000 size=2>"Key"</P>
+<P></FONT></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>On my own Initialization of the component I have:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyNVListBindingSource.SuspendBinding()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyNVListBindingSource.DataSource = CurrencyNVList.GetList()</P>
+<P>MSCurrencyIDComboBox1.DataSource = CurrencyNVListBindingSource</P>
+<P>MSCurrencyIDComboBox1.DisplayMember = </FONT><FONT color=#800000 size=2>"Value"</P></FONT><FONT size=2>
+<P>MSCurrencyIDComboBox1.ValueMember = </FONT><FONT color=#800000 size=2>"Key"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ControlCompanyBindingSource.ResumeBinding()</FONT></P>
+<P><FONT size=2>What I am trying to find out is what I am missing. Selected value is being set fine and forwarded to B.O. &nbsp;but display is blank on attempting to leave the combo control.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Janus control got following from designer and my initialization similar to MS control&nbsp;above.</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyIDComboBox.ComboStyle = Janus.Windows.EditControls.ComboStyle.DropDownList</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyIDComboBox.DataBindings.Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Windows.Forms.Binding(</FONT><FONT color=#800000 size=2>"SelectedValue"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.ControlCompanyBindingSource, </FONT><FONT color=#800000 size=2>"CurrencyID"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>True</FONT><FONT size=2>, System.Windows.Forms.DataSourceUpdateMode.OnPropertyChanged))</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.CurrencyIDComboBox.Name = </FONT><FONT color=#800000 size=2>"CurrencyIDComboBox"</P></FONT><FONT size=2>
+<P></FONT><FONT size=2>Again any help in identifying what the problem is would be appreciated. I would prefer not to use the Janus COntrol if unnecessary as I prefer additional properties available in MS control.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Regards</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, September 18, 2006</h2>You seem to be doing lots of extra steps.&nbsp; The designer is setting up all of your bindings for you.&nbsp; I would think that the only line of code you would need to write is:<br><p><font color="#0000ff" size="2">Me</font><font size="2">.CurrencyNVListBindingSource.DataSource = CurrencyNVList.GetList()</font></p>That's how it works for me at least.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GinoK replied on Friday, September 22, 2006</h2><P>I solved my problem. I previously wrote a code generator for building my classes from an Informix database. The primary keys in the database are mostly system allocated similar to an identity key in SQL Server. I translated this to a Long type in my classes which would be also be the&nbsp; type on all foreign keys referencing these tables.&nbsp; The NameValueList&nbsp;is&nbsp;&nbsp;defined as having a key of integer which while the system had no problem populating the class the selectedItem on the BoundCombo&nbsp;failed to display correctly. By changing my Foreign keys in my underlying datasource to Integer, Int32 or int16 all my binding issues were resolved. </P>
+<P>&nbsp;</P>
+<P>Thanks to all those who tried to assist me.</P>
+<P>&nbsp;</P>
+<P>Regards,</P>
+<P>&nbsp;</P>
+<P>GinoK<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

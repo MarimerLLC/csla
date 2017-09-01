@@ -1,0 +1,13 @@
+<html><header><title>SmartDate versus Nullable&lt;DateTime&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate versus Nullable&lt;DateTime&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9067.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i posted on Friday, June 11, 2010</h2><p>Folks,<br />Just a quick question about whether or not we can replace SmartDate with Nullable&lt;DateTime&gt;?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CBoland replied on Friday, June 11, 2010</h2><p>Throwing my $0.02 in...</p>
+<p>Given nullable DateTime, SmartDate seems like an anachronism held over for backward compatibility. My current project uses them, but on my next project I&#39;m going to try using nullable DateTime instead.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 11, 2010</h2><p>SmartDate does two things:</p>
+<ol>
+<li>It understands the concept of an empty date</li>
+<li>It does powerful string parsing/conversion</li>
+</ol>
+<p>Basically, if you want to bind a textbox control to a date property, how do you do it? Especially if an empty text value means an empty date. And consider than an empty date might be the smallest possible, or largest possible date value in terms of comparisons with other date values.</p>
+<p>SmartDate is intended to solve that specific problem.</p>
+<p>It is true that <i>some</i> UI technologies now include date/time pickers that are powerful enough to represent this concept with a nullable date. But that&#39;s not universally true. And even in that case, a nullable date can&#39;t be compared to a real date in the way SmartDate can.</p>
+<p>A great example is a ShipDate property. If it is empty, that means the order will ship infinitely far in the future, so that empty date is larger than any other date. In other cases an empty date might need to be the smallest possible date.</p>
+<p>So I don&#39;t think SmartDate is without value. You just need to understand the value it provides, and use it when you need the functionality it offers.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Thursday, July 22, 2010</h2><p>Thanks for these replies folks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

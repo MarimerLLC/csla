@@ -1,0 +1,114 @@
+<html><header><title>Unable to catch exception with async dataportal call (async/await)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to catch exception with async dataportal call (async/await)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12851.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chit Swe posted on Friday, March 20, 2015</h2><p>Hello,</p>
+<p>&nbsp;</p>
+<p>I am developing window form application by using &nbsp;CSLA 4.5.501.0 with visual studio 2013 and dot net 4.0. I can successfully fetch data from remote dataportal.&nbsp;</p>
+<p>&nbsp;</p>
+<p>The following is static factory method from BusinessBase class.</p>
+<p>&nbsp;</p>
+<p>&nbsp;public static async Task&lt;PurchaseHeader&gt; GetPurchaseVoucher(string prefix, long serial)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; VoucherNoCriteria criteria = new VoucherNoCriteria()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Prefix = prefix,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Serial = serial</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; PurchaseHeader purchase = await DataPortal.FetchAsync&lt;PurchaseHeader&gt;(criteria);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; purchase.MarkOld();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return purchase;</p>
+<p>&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>----------------------------------------------------------------------------------</p>
+<p>&nbsp;</p>
+<p>private async void SearchPurchase(VoucherNo vno) {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Cursor = Cursors.WaitCursor;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (vno != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ultraStatusBar1.Text = string.Format(&quot;Loading purchase voucher ({0}-{1}).&quot;, vno.Prefix, vno.Serial);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.purchase = await PurchaseHeader.GetPurchaseVoucher(vno.Prefix, vno.Serial);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BindData();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; commandToolBar1.SetSavedState();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ultraStatusBar1.Text = string.Format(&quot;Done loading purchase voucher ({0}-{1}).&quot;, vno.Prefix, vno.Serial);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Csla.DataPortalException ex) {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ex.BusinessException is RecordNotFoundException)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UltraMessageBoxManager.Show(&quot;Purchase voucher cannot found.&quot;, &quot;Purchase&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if (ex.BusinessException != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UltraMessageBoxManager.Show(&quot;Fail to load purchase voucher\n&quot; + ex.BusinessException.Message, &quot;Purchase&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ultraStatusBar1.Text = &quot;Ready&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UltraMessageBoxManager.Show(&quot;Fail to load purchase voucher\n&quot; + ex.Message, &quot;Purchase&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.ultraStatusBar1.Text = &quot;Ready&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; finally {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Cursor = Cursors.Default;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>But if awaiting &nbsp;async dataportal call throw exception, &nbsp;catch block is unable to catch exception and TargetInvocationException is throw at Application.Run() method in Program.cs.</p>
+<p>&nbsp;</p>
+<p>How can I handle exception in this case.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, March 22, 2015</h2><p>Hi,&nbsp;</p>
+<p>When you use async methods that return a Task you must catch System.AggregateException that may contain several exceptions. One of these exception will be a Csla.DataPortalException.</p>
+<p>See this article:&nbsp;https://msdn.microsoft.com/en-us/library/dd537614(v=vs.110).aspx</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chit Swe replied on Sunday, March 22, 2015</h2><p>As you suggested, I changed my code.</p>
+<p>private async void SearchPurchase(VoucherNo vno) {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Cursor = Cursors.WaitCursor;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (vno != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Program.MainForm.ShowLoading(string.Format(&quot;Loading purchase voucher ({0}-{1}).&quot;, vno.Prefix, vno.Serial));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.purchase = await PurchaseHeader.GetPurchaseVoucherAsync(vno.Prefix, vno.Serial);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BindData();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; commandToolBar1.SetSavedState();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Program.MainForm.HideLoading(string.Format(&quot;Done loading purchase voucher ({0}-{1}).&quot;, vno.Prefix, vno.Serial));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (AggregateException ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ex.Handle(x =&gt; { HandleException(&quot;Failed to load purchase voucher&quot;, x); return true; });</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Csla.DataPortalException ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (ex.BusinessException is RecordNotFoundException)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Program.MainForm.HideLoading(&quot;Ready&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UltraMessageBoxManager.Show(&quot;Purchase voucher cannot found.&quot;, &quot;Purchase&quot;, MessageBoxButtons.OK, MessageBoxIcon.Information);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if (ex.BusinessException != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; HandleException(&quot;Fail to load purchase voucher&quot;,ex);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UltraMessageBoxManager.Show(&quot;Fail to load purchase voucher\n&quot; + ex.Message, &quot;Purchase&quot;, MessageBoxButtons.OK, MessageBoxIcon.Error);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Program.MainForm.HideLoading(&quot;Ready&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; finally {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Cursor = Cursors.Default;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>Here I found two interesting things.</p>
+<p>1.If exception is thrown by server side code (in my case, I throw my custom exception &#39;RecordNotFoundException&#39;), it pass to the client and I can successfully catch the exception (by DataPortalException catch block not by AggregateException catch block) that return from server as expected.</p>
+<p>2.If exception is throw by client code (in my case, I unplugged network cable from my computer &nbsp;to throw exception), the exception cannot be catch as expected and throw at Application.Run() method in Program.cs.</p>
+<p>&nbsp;</p>
+<p>As workaround, I catch this kind of user unable to handle exception by using Application.SetUnhandledExceptionMode(UnhandledExceptionMode.CatchException) and&nbsp;</p>
+<p>attach event handler&nbsp;</p>
+<p>Application.ThreadException += Application_ThreadException.</p>
+<p>But it is not perfect. Because I cannot perform required action if communication is failed.</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>Chit Swe</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

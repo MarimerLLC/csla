@@ -1,0 +1,33 @@
+<html><header><title>Async LocalProxy DeadLock</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async LocalProxy DeadLock</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12746.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>miguelbernard posted on Friday, September 12, 2014</h2><p>Hi,</p>
+<p>I&#39;m having an issue when I&#39;m using the Async dataPortal methods (FetchAsync(), etc...) at the same time as using a Local Server DataPortal</p>
+<pre></pre>
+<pre> public async Task Fetch(Type objectType, object criteria, DataPortalContext context, bool isSync)
+    {
+      if (isSync || Csla.ApplicationContext.LogicalExecutionLocation == ApplicationContext.LogicalExecutionLocations.Server)
+      {
+        return await _portal.Fetch(objectType, criteria, context, isSync);
+      }
+      else
+      {
+        var tcs = new TaskCompletionSource();
+        var bw = new Csla.Threading.BackgroundWorker();
+        bw.DoWork += (s, o) =&gt;
+        {
+          o.Result = _portal.Fetch(objectType, criteria, context, isSync).Result;
+        };
+        bw.RunWorkerCompleted += (s, o) =&gt;
+        {
+          if (o.Error == null)
+            tcs.TrySetResult((DataPortalResult)o.Result);
+          else
+            tcs.TrySetException(o.Error);
+        };
+        bw.RunWorkerAsync();
+        return await tcs.Task;
+      }
+    }
+</pre>
+<pre><br /></pre>
+<p>In my case I&#39;m always falling the in &quot;else&quot; block which seems to dead lock on the &quot;.Result&quot; which for some reason never completes</p>
+<p>I just don&#39;t get the else block and why this method cannot use the code inside the &quot;if&quot; block all the time.</p>
+<p>When I change the code to always enter the &quot;if&quot; block no more dead lock. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 19, 2014</h2><p>Discussion around this question is in GitHub here: <a href="https://github.com/MarimerLLC/csla/issues/300">https://github.com/MarimerLLC/csla/issues/300</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

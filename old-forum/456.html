@@ -1,0 +1,26 @@
+<html><header><title>Read only child list?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Read only child list?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/456.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Thursday, June 22, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>hi,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Looking through the templates, I noticed there is 
+no implementation for a read only child list. Of course the read only list can 
+be modified to be a child list, but just wondering if such an implementation was 
+looked over.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>The situation is that I have a 
+SelectedCategoryInformation object that is created when a user selects a 
+category. This object&nbsp; allows for listing of subcategories and of products 
+under that category, all of which are read only.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Also, I noticed that, though the read only list 
+implementation uses SafeDataReader, ReadOnlyChild uses SqlDataReader, oddly 
+enough. Just a couple of observations.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Brandon</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 27, 2006</h2><P>I only created templates for what I thought were the most common scenarios. You are correct that a ROLB might be a child - in which case you just need to use the child-style factory and data access approaches shown in other objects in the book.</P>
+<P>Regarding the different datareader objects - when writing the book I tried to use a variety of different approaches in different areas. As an author, I was trying to show the various ways to do things. In a real app I alwasy recommend picking a consistent, appropriate, approach and sticking with that.</P>
+<P>As a bigger example, I try not to mix Guid and Identity primary keys in my apps - I'll try to pick one approach or the other. Mixing various PK styles is just asking for confusion. But in the book I felt the need to show both, because the implementation is different in each case.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

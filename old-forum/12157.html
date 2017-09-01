@@ -1,0 +1,11 @@
+<html><header><title>Probelm regarding Foreign key code in Business Classes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Probelm regarding Foreign key code in Business Classes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12157.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave posted on Saturday, September 21, 2013</h2><p>I have created a Silverlight application using CSLA,without MVVM.</p>
+<p>Database Name;EmployeeDb</p>
+<p>Tables:&nbsp;</p>
+<p>1] Country {Id,CountryName}</p>
+<p>2] State{Id,StateName,CountryId}</p>
+<p>I have developed StateEdit.cs,StateGetter.cs,StateExistCommand.cs, StateInfo.cs, StateList.cs.&nbsp;</p>
+<p>My StateList.xaml contains a state datagrid with columns as Id,StateName,CountryName.</p>
+<p>I want to display the CountryName of the CountryId from State table on xaml.</p>
+<p>To do this,What is the code required in StateInfo.cs &amp; StateList.cs?</p>
+<p>Now Datagrid displays CountryId. But how to display its respective CountryName?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, September 21, 2013</h2><p>The simple answer is to ad CountryNameas property to StateInfo and load field value when loading data from the database.&nbsp;</p>
+<p>Or if you are concenerned about message size you may load CountruId and CountryName into a KeyValueList and cache the list.<br />Then make the CountryName property in StateInfo do a lookup in the KeyValueList to return the actual name.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mayurimalgave replied on Thursday, September 26, 2013</h2><p>Thank you.. My problem is solved now...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

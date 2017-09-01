@@ -1,0 +1,67 @@
+<html><header><title>I am stumped - just how DO you insert a new child? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I am stumped - just how DO you insert a new child? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/564.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Friday, July 07, 2006</h2>I know there has been considerable discussion on this, but none of the posts asnwers my problem...<br>
+<br>
+The context here is that I have an object called (an) Assessment and it
+has child objects called Assessors - an assessment can have a number of
+assessors.&nbsp; I am new to CSLA, and so I created code using the
+Ricky Supit CodeSmith templates (not blindly, I think I know how that
+all works) and created:<br>
+<br>
+Assessment - EditableRoot<br>
+Collection of Assessors - EditableChildList<br>
+Assessor - EditableChild.<br>
+<br>
+I can do fetches ok, and can create a new assessment no problem - or at
+least an assessment without any assessor(s). It is the inserting of an
+Assessor that is the problem. <br>
+<br>
+In my code I have, more or less:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assessment a = Assessment.NewAssessment(Guid.NewGuid());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a.StatusCode = "ACTIVE";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ... etc<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a.Save();<br>
+&nbsp;Fine.<br>
+<br>
+Then I try:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; a.Assessors.AddNew();<br>
+and I get an exception:<br>
+"Constructor on type '[mylibraryname].Assessor' not found."<br>
+<br>
+If I do, ill advisedly,:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assessor s = a.Assessors.AddNew();<br>
+I get the same exception <br>
+<br>
+So, just how on earth do I get a new assessor in the collection!! <br>
+<br>
+If this is explicitly covered in The Book (C#) then please provide a
+page number, as I have yet to find explicit reference to this in the
+example code.<br>
+<br>
+Of course, maybe what I am doing is invalid, and I should perhaps be
+creating the child object within the parent object&nbsp; - again, how?
+- maybe with a special method such as
+CreateNewAssessmentWithThisListOfAssessors(...) where every property of
+both assessment and assessor is passed in and all is dealt with
+internally within the parent.<br>
+<br>
+Having invested so much time on CSLA so far and since, here, it is late
+on Friday evening, and I am desparate for help with this....!!<br>
+<br>
+Thanks in anticipation,<br>
+<br>
+James.<br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 07, 2006</h2><P>In general terms you need to implement some "add" method on the collection class. Yes, I know the collection has an Add (a couple actually, due to interfaces), but they are primarily designed to work with data binding, not your code.</P>
+<P>If you look at the ProjectTracker code, for instance, you'll see that the collections implement their own Assign() methods (or similar), which are basically "add" methods. But they are (imo) better, because they follow the business use case and are not blind "add" operations.</P>
+<P>In general there are a couple ways to add items to collections:</P>
+<OL>
+<LI>(a) Create the child; (b) add the child to the collection</LI>
+<LI>ask the collection to create and add a child</LI></OL>
+<P>In the book I use approach #2, and I favor it in general. I think it is better in most cases, because it means you are implementing a method on your collection which is responsible for proper creation and addition of that child object - based on your business rules and the state of the object within the use case.</P>
+<P>It is also the case that implementing #2 typically makes it easier to override AddNewCore(), which is what you need to do in order to make in-place adding of items in a DataGridView work.</P>
+<P>However, option #1 offers more flexibility, and some people do prefer that approach. And that's fine. You just need to have a public factory method on your child class (i.e. NewChild()) to do part (a). And of course your code in the child class needs to be written to operate with or without an actual parent (since it won't have a parent until (and if) you actually add it to the collection).</P>
+<P>I think that the standard collection interface includes an Add() method that accepts a pre-build child object, so you probably don't need to do any work in the collection, UNLESS you have business rules that must trigger when a child is added. In that case you'll have to override the appropriate collection methods to intercept the addition of the child and verify that it is OK.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs replied on Sunday, July 09, 2006</h2>Rocky:<br><br>Your quick reply has been very helpful - as ever, when you are too close to a problem, you fail to see the fairly obvious. I suppose I was expecting that the Ricky Supit templates would make this step for me - or that there would be some subtle reason why not...&nbsp; Anyway, at the end of the weekend, I have now successfully built a full tree of objects from two databases and there is much relief. I used your option (2) as if feels better (from one who cut his teeth on "just create a pointer..." K&amp;R C - those who don't know what that means don't need to!).<br>A child, by definition, after all, is a thing with a parent!<br><br>I am attracted to the ideas behind your term "behaviour normalisation" - can you recommend some good texts on this subject?<br><br>Many thanks for taking the time to help,<br><br>James.<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

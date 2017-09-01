@@ -1,0 +1,40 @@
+<html><header><title>Class Responsibilty</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Class Responsibilty</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6234.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby posted on Wednesday, January 21, 2009</h2><P>I am trying to wrap my head around behavioral classes and the single responsibilty principle so any advice is greatly appreciated. The use case below is not actual but only to serve as a generic situation.</P>
+<P>Every Year the Administrator must perform a Rollover to finalize accounts and start a fresh.</P>
+<P>Now lets pretend that once they click the Rollover button this starts off a chain of events.</P>
+<P>Invoices all get marked as closed.</P>
+<P>Accounts balances are set back to zero.</P>
+<P>Customer summary data all cleared. etc etc</P>
+<P>&nbsp;</P>
+<P>So my initial thoughts were well I don't really want the UI to control all this so lets create a EditableRolloverBusinessBase.</P>
+<P>Then I thought I could call&nbsp;a method&nbsp;on&nbsp;a EditableInvoiceList to mark all as closed. However this would couple the two classes together as possibly in the future the the CloseInvoices method could be changed. Maybe I should have a EditableRolloverInvoiceList?</P>
+<P>As an alternative I thought grab all the infomation required and put it in this EditableRolloverBusinessBase then run the methods on that.&nbsp; I dismissed this because it violates the Single Responsibilty Principle.</P>
+<P>My last thought was that a rollover was an action that is taken by many classes and each does different things. Some of which rely on&nbsp;other class's running the rollover. So maybe I could have&nbsp;an interface and any classes that need to perfom a rollover implement this method.</P>
+<P>Im rambling a bit here. :)</P>
+<P>So anyway Im hoping that someone can put me on the right track with this. Im just a little confused as to how to design these classes.</P>
+<P>Your help is&nbsp;greatly appreciated</P>
+<P>Jeremy</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2>Actually, unless you need to display the data being changed, I'd probably implement this as a CommandBase object.&nbsp; It's DataPortal_Execute would simply perform all the tasks.&nbsp; It could have helper objects.. one that closes invoices, one that sets account balances.. but the concept is the same.&nbsp; It's a single command that doesn't seem to take any parameters or return any values.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Thursday, January 22, 2009</h2><P>If the CommandBase does not accept parameters how would you say,</P>
+<P>Close all Invoices (Within this Range)</P>
+<P>Also in my situation I need to display the data changed (GridView's) &nbsp;in all processes once it has finished. So the user understands what the Rollover function has done.</P>
+<P>Thanks&nbsp;&nbsp;Ajj</P>
+<P>Jeremy</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 23, 2009</h2>Oh, I misspoke.&nbsp; The command CAN accept parameters, but in your year end use case, I"m not sure what parameters you'd expect to pass.<br><br>The command could also return some ROB or ROLB classes to give the information.&nbsp; But this does feel more like a command than a use case where a user modifies or creates a new business object and there are validation rules that must be run.<br><br>OTOH, if there ARE some rules, you could use a BB who's DataPortal_Insert does what the command Execute would have.&nbsp; But I'd only do that if the user parameters entered need some validation rules enforced.&nbsp; <br><br>Does that help at all?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>greengumby replied on Wednesday, January 28, 2009</h2><P>Thanks ajj and Joe for the explanation of the command object</P>
+<P>In a real scenario what would happen is they hit the Rollover button and in actual fact it would create a new record for the upcoming financial year.</P>
+<P>However on the screen there would be a checkboxlist of rollover events along with the year they want to rollover. Now they get the choice of which ones to tick and once they hit the rollover button it would iterate over this list of checkboxes and only run the RollOver events that&nbsp;are ticked using the year selected as a parameter.&nbsp; The actual RollOver event is essentially a Clone() where you pass in the year you want to clone and it would Clone the information to the new financial year.</P>
+<P>Once finished next to each ticked checkbox would be a "View Results" link that would be just a simple grid of changed items. </P>
+<P>Now I see how all the View Results links are essentially different ROLB but the actual Rollover event feels like a "Chain of Responsibility or Iterator" design pattern.</P>
+<P>So should I have a command object for every possible rollover method in the checkboxlist and then once the Rollover button has been clicked it would dynamically create a List&lt;CommandBase&gt; and set the &nbsp;yearproperty and then run Execute.</P>
+<P>Im thinking of separating the commands purely because some of the behavior is actually replicated in different sections of the system.</P>
+<P>Thankyou for your help</P>
+<P>Regards</P>
+<P>Jeremy</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 29, 2009</h2><P>You could have a normal root BO that contains the various check box options.</P>
+<P>It also contains calls to each of the Command Objects (one per option).</P>
+<P>When you "Save" the root BO it calls the various Command BOs based on what items are checked.</P>
+<P>This lets you write each Rollover command BO once and call it from various BOs and you know it works the same way for each one.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, January 23, 2009</h2><P>The CommandBase object can take parameters. So you could define a StartDate property and an EndDate property and set them before calling Execute. Then they would be available on the server.</P>
+<P>Not clear what data you need to display but that is a separate issue from the work of executing the rollover itself. </P>
+<P>So I would use the Command object to do the work. And once it is complete I guess I would have some sort of Readonly root object that contains read only lists of the various tables that would be displayed.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

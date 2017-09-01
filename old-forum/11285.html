@@ -1,0 +1,192 @@
+<html><header><title>Mocking database with DalFactory and Avoiding Shared Fixtures</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Mocking database with DalFactory and Avoiding Shared Fixtures</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11285.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Friday, April 06, 2012</h2><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>So
+I really enjoy the wonderful solution posed by mocking the dal, illustrated
+with the project tracker sample. It&#39;s simple and sweet and really decouples
+your data layer. Still for testing though, I&#39;ve continued to run into a
+specific problem, which is that this patter will pretty much force me to share
+the mocked database among all tests. Shared fixture == code smell. Sometimes I
+want to isolate or stub my tests for a specific data configuration only. </p>
+<p>Sure, we could make multiple mock
+libraries for testing and toggle the app config on each test, but one for each
+isolated or data stubbed test? No good. A lot of mocking libraries present some
+solutions for fakes nicely for this but they usually depend on things like
+dependency injection - which with CSLA&#39;s serialization, reflection, and
+dataportal this becomes messy and more difficult. They cater well in single
+tiered architectures, But the dataportal is there for a reason and it poses
+several challenges for testing. This somewhat dated article from 2009 sums up
+my findings pretty well. But it&#39;s old and I imagine a lot of people have come
+up with solutions since then that I&#39;m unaware of <a href="http://richallen.blogspot.com/2009/04/unit-testing-csla-with-type-mock.html">http://richallen.blogspot.com/2009/04/unit-testing-csla-with-type-mock.html</a>
+</p>
+<p>I had fiddled with the Moles
+framework after seeing it at a conference (now called fakes framework in
+vs2012) which allows for literally &quot;faking&quot; any method on your
+assemblies for a test using anon delegates. Fabulous! Syntax is super simple,
+and working with it is built right into the IDE. Fakes can be coded right into
+the test method for easy self explaining and clear test code. On the surface,
+this looked fantastic, but in implementing it, it just bogs VS down and
+productivity hit the floor in dealing with it. No dice. Maybe MS will improve
+it in future versions but my experiences were lousy.</p>
+<p>So I&#39;d tried several other things
+and I think I&#39;ve settled on a possible solution, so I&#39;d like to hear anyone&#39;s
+thoughts, as I&#39;m sure many have come up with solutions better than mine.</p>
+<p>Using the exact same pattern as
+the Mocked database pattern in the CSLA Project Tracker sample code, I made a
+slight modification to the DalManager in my Mocking library. Here&#39;s the
+dalmanager for the mocks:</p>
+<p>&nbsp;</p>
+<p>public class
+DalManager : IDalManager</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Overridden Mocks</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static Dictionary&lt;Type,
+object&gt; _OverriddenMocks = new Dictionary&lt;Type, object&gt;();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static T
+GetOverriddenMock&lt;T&gt;()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (T)_OverriddenMocks[typeof(T)];</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void ClearOverriddenMocks()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _OverriddenMocks.Clear();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void AddOverriddenMock&lt;T&gt;(T dalMock)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _OverriddenMocks.Add(typeof(T), dalMock);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static string _typeMask = typeof(DalManager).FullName.Replace(&quot;DalManager&quot;, @&quot;{0}&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public T GetProvider&lt;T&gt;() where T : class</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_OverriddenMocks.ContainsKey(typeof(T)))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (T)_OverriddenMocks[typeof(T)];</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var typeName = string.Format(_typeMask,
+typeof(T).Name.Substring(1));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var type = Type.GetType(typeName);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (type != null)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Activator.CreateInstance(type)
+as T;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else throw new NotImplementedException(typeName);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Dispose()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void
+SubmitChanges()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {
+}</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>Not really much change, but I&#39;ve
+added the static dictionary which can be used in the tests to add a stub for
+that specific test and some public generic methods to deal with the type
+conversion (that&#39;s just my personal API stlye of choice, but isn&#39;t necessary if
+it doesn&#39;t float your boat). So, now, using your favorite mocking framework you
+can easily add your stubbed dal provider in as needed. Here&#39;s a quick example.
+Sorry, this is a real world test, so it&#39;s not dumbed down for demonstration.
+Basically, the point is that it allows me to successfully stub out data access
+as needed inline to isolate the test:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TestMethod]</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void
+When_get_email_from_aod_selected_should_fetch_email_from_aod()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // arrange</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var fixture = MigrantFixture.Create();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixture.Accessor.FetchEmailFromAod
+= true;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mockAodService = MockRepository.GenerateMock&lt;IAodService&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixture.Accessor._aodClient
+= mockAodService;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var stubEmps = MockRepository.GenerateStub&lt;IEmpsDal&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stubEmps.Stub(x
+=&gt; x.FetchFromM3(fixture.Accessor.Co)).Return(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new List&lt;EmpDto&gt;()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new EmpDto() { ssn
+= &quot;111-11-1111&quot;, id = &quot;1&quot; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DalMock.DalManager.AddOverriddenMock&lt;IEmpsDal&gt;(stubEmps);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var stubEmpList = MockRepository.GenerateStub&lt;IEmpListDal&gt;();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; stubEmpList.Stub(x
+=&gt; x.GetEmpListFromM3(fixture.Accessor.Co)).Return(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new List&lt;EmpListDto&gt;()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new EmpListDto(){
+Ssn = &quot;111-11-1111&quot;, Id = &quot;1&quot; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; });</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DalMock.DalManager.AddOverriddenMock&lt;IEmpListDal&gt;(stubEmpList);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // act</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; fixture.Accessor.ProcessAndSaveEmps();</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // assert</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mockAodService.AssertWasCalled(x
+=&gt; x.GetEmployeeEssEmail(&quot;111-11-1111&quot;));</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>Note though, you&#39;ll have to
+consider teardown of the overridden mocks to prevent the erratic and
+unrepeatable tests. Just simply clear the static dictionary on your testing
+framework&#39;s test test cleanup. IE, MSUnit just use the test cleanup attribute
+on a method in your test class: </p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TestCleanup()]</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void
+MyTestTeardown()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Aps.SaasHr.DalMock.DalManager.ClearOverriddenMocks();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>The only catch, I suppose, is
+that when faking your dal, you have to consider any validation on your object
+(make sure you load up valid data). So this seems to work good for me, but what
+are others doing to address this? Feedback welcomed :)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 06, 2012</h2><p>A lot of patterns for this assume single tier scenarios, which can complicate matters. Obviously you also want to avoid complicating the real Dal or the provider indirection code just to enable testing.</p>
+<p>One thing to consider is passing out of band data from the test to the mock Dal using ApplicationContext.ClientContext. No real code would ever see of use this, but it provides a channel by which the test code can pass data or metadata to the mock Dal so that Dal can change its behavior,</p>
+<p>One Twix is that the default  ApplicationContext provider shares context on the client, so if you run tests in parallel using the mstest multi threading support you need to supply a threadsafe context provider (not hard to do).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, April 09, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>A lot of patterns for this assume single tier scenarios, which can complicate matters. Obviously you also want to avoid complicating the real Dal or the provider indirection code just to enable testing.</p>
+<p></div></p>
+<p>Excellent. My thoughts exactly, sounds like I&#39;m on the right track with making modifications to just the mock dal.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+</p>
+<p>One thing to consider is passing out of band data from the test to the mock Dal using ApplicationContext.ClientContext. No real code would ever see of use this, but it provides a channel by which the test code can pass data or metadata to the mock Dal so that Dal can change its behavior,</p>
+<p></div></p>
+<p>Making use of the ClientContext is a splendid idea! If I understand what you&#39;re suggesting, I could pass a switch value from a test that would tell my mock dal which test data to load. The only downside I see to this (for me) is that the actual data has to be loaded/defined inside the dal itself. I really like being able to clearly define stubs in the test code itself (like with lambdas), because I feel it lends to self documented and intent revealing test code. While some might not care about this, this kind of test quality is suggested by&nbsp;<span><a href="http://xunitpatterns.com/index.html">Gerard Meszaros</a>&nbsp;in xUnitPatterns and&nbsp;I believe I&#39;ve read a blog or two where <a href="http://martinfowler.com/">Martin Fowler</a>&nbsp;has suggested the same.&nbsp;</span>If it weren&#39;t for serialization, I would just load the DTO to the ClientContext to solve this problem, but alas, that won&#39;t work easily - DTO would have to be serialized. So I&#39;m still leaning back to my proposed solution of a simple static dictionary on the mock dal.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+</p>
+<p><span>One Twix is that the default ApplicationContext provider shares context on the client, so if you run tests in parallel using the mstest multi threading support you need to supply a threadsafe context provider (not hard to do).</span></p>
+<p></div></p>
+<p>Yeah, my proposed static Mock dictionary also suffers from this very problem. I&#39;m not familiar with writing a thread safe context provider, but I figured I could just make the ManagedThreadId+Type the dictionary key. The teardown would solve the problem of re-used threads, so I can&#39;t really think of any reason this wouldn&#39;t work. I&#39;ll give it a shot maybe this week.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Monday, April 16, 2012</h2><p>Just wanted to report back and say that what I&#39;ve been implementing seems to work fine. I&#39;m essentially injecting my Mocks this way fine.&nbsp;</p>
+<p>I should note, I did come across this other link below where JonnyBee answers to someone else trying to do exactly what I&#39;m setting out to accomplish here. It might be a more elegant way of doing what I&#39;m trying to do by using MEF.&nbsp;</p>
+<p><a href="http://forums.lhotka.net/forums/p/10022/47062.aspx">http://forums.lhotka.net/forums/p/10022/47062.aspx</a></p>
+<p>I&#39;m a bit too far into this project to try to rewrite everything I would need to for this though.</p>
+<p>In all, I can&#39;t say the solution that I&#39;m implementing is bad. It&#39;s relatively simple, and doesn&#39;t require a lot of work. The only downside I&#39;m seeing is that to work around supporting multithreaded testing it requires a little more work to keep a key on each thread in your mocked dal. And more imortantly (to me) is that the test code where I inject the mock might seem somewhat foreign to some people.&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

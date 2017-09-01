@@ -1,0 +1,38 @@
+<html><header><title>BeginRefresh With Criteria</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BeginRefresh With Criteria</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11574.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mehgerbil posted on Tuesday, September 11, 2012</h2><p>I&#39;ve the following code that works fine:</p>
+<p>BeginRefresh(Library.Records.TaskList.GetTaskList);</p>
+<p><span style="font-family:Consolas;"><span style="font-family:Consolas;"><span style="font-family:Arial;font-size:x-small;">This code is located the viewmodel and it works really well.&nbsp; My problem is that I don&#39;t know how to alter it to handle a criteria object (or parameters).&nbsp; Is there a way to create a criteria object and pass it into this mess?&nbsp;&nbsp; I apologize for the noob question - I&#39;m still learning all this lambda stuff.&nbsp; Obviously, I&#39;m using BXF here.</span></span></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>kgulden replied on Tuesday, September 11, 2012</h2><p>
+<p>
+<p><span style="font-family:Consolas;font-size:small;"><span style="font-family:Consolas;font-size:small;">You can create a criteria object as an encapsulated class within TaskList.</span></span></p>
+<p><span style="font-family:Consolas;font-size:small;"><span style="font-family:Consolas;font-size:small;">Something like:</span></span></p>
+<p><span style="font-family:Consolas;font-size:small;"><span style="font-family:Consolas;font-size:small;">&nbsp; public class TaskList....<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; public class CriteriaForTaskByName : CriteriaBase&lt;CriteriaForTaskByName&gt;<br />&nbsp;&nbsp;&nbsp; { <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;string&gt; PhraseProperty =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;string&gt;(c =&gt; c.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ReadProperty(NameProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { LoadProperty(NameProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp; }</span></span></p>
+<p><span style="font-family:Consolas;font-size:small;"><span style="font-family:Consolas;font-size:small;">&nbsp;&nbsp; ... other stuff....<br />&nbsp; }</span></span></p>
+<span style="font-family:Consolas;font-size:small;"><span style="font-family:Consolas;font-size:small;">
+<p>&nbsp; // Add a GetTaskList using the criteria:</p>
+<p>&nbsp; public static void GetTaskList(CriteriaForTaskByName criteria,<br />&nbsp;&nbsp;&nbsp; EventHandler&lt;DataPortalResult&lt;TaskList&gt;&gt; callback)<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; DataPortal.BeginFetch&lt;TaskList&gt;(criteria, callback);<br />&nbsp; }</p>
+<p>&nbsp; // In Data Access region</p>
+<p>&nbsp; private void DataPortal_Fetch(CriteriaForTaskByName criteria)<br />&nbsp; {<br />&nbsp; }</p>
+<p>}</p>
+<p>In your ViewModel use:</p>
+<p>&nbsp;&nbsp;&nbsp; public FetchWithCriteria(string name)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TaskList.CriteriaForTaskByName = <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new TaskList.CriteriaForTaskByName() { Name = name };</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BeginRefresh( Library.Records.TaskList.GetTaskList(criteria) );<br />&nbsp;&nbsp;&nbsp; }</p>
+<font face="Consolas" size="3"><font face="Consolas" size="3">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="3">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;font-size:small;"><span style="font-family:Consolas;font-size:small;"></span></span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mehgerbil replied on Wednesday, September 12, 2012</h2><p>I get an error in the viewmodel on this line:</p>
+<p>BeginRefresh( Library.Records.TaskList.GetTaskList(criteria) );</p>
+<p>The error says: No overload method GetTaskList takes one argument. I think that is because GetTaskList, as you have it above, takes a criteria and a callback and I&#39;m only passing in the criteria.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mehgerbil replied on Wednesday, September 12, 2012</h2><p>Okay, I found the answer.&nbsp;&nbsp; I replaced the problem line with this code:</p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>BeginRefresh(callback =&gt; Library.Records.TaskList.GetTaskList(criteria, callback));</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kgulden replied on Wednesday, September 12, 2012</h2><p>Yeah, you got it.&nbsp; Sorry about that mistake.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

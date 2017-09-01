@@ -1,0 +1,92 @@
+<html><header><title>Proper way to handle deletes in a DataGridView?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Proper way to handle deletes in a DataGridView?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2487.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy posted on Wednesday, March 07, 2007</h2>I'm the only person in my organization who has implemented a fully updateable DataGridView using CSLA, so I'm looking for some advice from you folks.<br><br>The DataGridView works great on inserts and updates.&nbsp; If there is a broken business rule, the user sees the nice little error provider icon showing them that something is wrong.<br><br>My question is, what if something goes wrong on a delete?&nbsp; The row has been removed from the grid, and it has been removed from the underlying collection.&nbsp; There's no way to show them the little exclamation point that something is wrong.<br><br>The UserDeletingRow event won't work, because changes haven't been written back to the list at that point.<br><br>Any ideas would be appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 08, 2007</h2>What would go wrong on a delete?&nbsp; Do you mean the actual delete command running, or simply being marked as deleted?&nbsp; Or by deleting the object, have you broken a business rule?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bearntrail replied on Wednesday, June 27, 2007</h2><P>I'm having the same issue.&nbsp; In my case, the delete fails because another user has updated the record and my stored procedure aborts the delete, returning an error.&nbsp; </P>
+<P>To get around the DataGridView issue, I implemented an UnDelete(child) in the Business class and call it when the Save fails.&nbsp; I also question whether this is the best way to re-add the child on a failed delete.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 27, 2007</h2>Technically to do an "undelete" you should call CancelEdit on the collection itself - thus restoring deleted items back to the list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bearntrail replied on Thursday, June 28, 2007</h2><P>Well, I'm&nbsp;doing something wrong then. (Probably many things wrong.)</P>
+<P>I tried a CancelEdit() on the collection, but it&nbsp;didn't recover the deleted item from the DeletedList.&nbsp;Looking further, the EditLevel was 0 in the collection object prior to the CancelEdit.</P>
+<P>So, I tried to do a BeginEdit() on the collection prior to assigning it to the binding source. But, when I try to save the changes, I get a CSLA validation exception "Object is still being edited and can not be saved".&nbsp; So, before the save, I added temp.ApplyEdit() to the cloned collection.&nbsp; Then, if it succeeds, I ApplyEdit() on the original collection. If it fails, I do&nbsp;CancelEdit()&nbsp;on the original collection.&nbsp; Then, when I re-bind the datasource, I again do a BeginEdit().&nbsp; </P>
+<P>This works, except that ResetBindings(false) bumps (only) the first collection object's EditLevel by 1, and subsequently give me a "Edit level mismatch in CopyState" (CSLA v3.0 Beta2) exception when I try to do the BeginEdit() on the collection.&nbsp; If I ApplyEdit() on the first object in the collection prior to doing the BeginEdit on the whole collection, everything seems to work... but I don't want to leave it that way.&nbsp; Any suggestions?</P>
+<P>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 28, 2007</h2>Well you shouldn't be calling the xxxEdit methods on the collection directly ever.&nbsp; You shouldn't need to call Beginedit at all, the BindingSource will do that.&nbsp; Try just calling cancel edit on the bindingsource and see if that solves your problems.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bearntrail replied on Thursday, June 28, 2007</h2><P>I removed the BeginEdits on the collection and tried the CancelEdit on the binding source.&nbsp; Again, it did not recover the item from the DeleteList... the EditLevel is 0 after I assign the collection to the binding source.&nbsp; I'm thinking this is the source of my problem.&nbsp; </P>
+<P>Before I get to my test case, I'm re-using the DataGridView to display&nbsp;two prior collections.&nbsp;&nbsp;I notice the first time I assign the first collection to the datasource (and hence the DataGridView), the EditLevel is changed to 1. (this is good)&nbsp; Then, in moving on to the next collection, I do an EndEdit on the datasource, assign it&nbsp;null, and&nbsp;then assign it the second collection, on my way to&nbsp;my test case.&nbsp;At this point, the EditLevel&nbsp;is 0.&nbsp; The same happens when I&nbsp;finally get to my test case collection.&nbsp;So, I end up with a DataGridView that uses a DataSource where the underlying collection has an EditLevel of 0.&nbsp; Which I think is not good, and the reason the CancelEdit on the datasource does not un-do.&nbsp; Am I on the right track?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 28, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What is your root object?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your root is a BB, with a child BLB of children, then you
+should never have to call ___Edit() yourself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If your root is a BLB then you may need to call ___Edit()
+yourself, but you must do it BEFORE and AFTER data binding. In other words,
+call BeginEdit() before hooking up data binding, and only call CancelEdit() or
+ApplyEdit() after you&#8217;ve disconnected data binding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can see an example of doing this in the BLBTest sample app&#8217;s
+<a href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/BLBTest/BLBTest/Form1.cs?view=markup">Form1
+code</a>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> bearntrail [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Thursday, June 28, 2007 2:44 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Proper way to handle deletes in a DataGridView?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I removed the BeginEdits on the collection and tried the CancelEdit on the
+binding source.&nbsp; Again, it did not recover the item from the DeleteList...
+the EditLevel is 0 after I assign the collection to the binding source.&nbsp;
+I'm thinking this is the source of my problem.&nbsp; <o:p></o:p></p>
+
+<p>Before I get to my test case, I'm re-using the DataGridView to
+display&nbsp;two prior collections.&nbsp;&nbsp;I notice the first time I assign
+the first collection to the datasource (and hence the DataGridView), the
+EditLevel is changed to 1. (this is good)&nbsp; Then, in moving on to the next
+collection, I do an EndEdit on the datasource, assign it&nbsp;null,
+and&nbsp;then assign it the second collection, on my way to&nbsp;my test
+case.&nbsp;At this point, the EditLevel&nbsp;is 0.&nbsp; The same happens when
+I&nbsp;finally get to my test case collection.&nbsp;So, I end up with a
+DataGridView that uses a DataSource where the underlying collection has an
+EditLevel of 0.&nbsp; Which I think is not good, and the reason the CancelEdit
+on the datasource does not un-do.&nbsp; Am I on the right track?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

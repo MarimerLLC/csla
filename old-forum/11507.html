@@ -1,0 +1,51 @@
+<html><header><title>Undo Delete from collection during Child_DeleteSelf (server invoke)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Undo Delete from collection during Child_DeleteSelf (server invoke)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11507.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH posted on Friday, July 27, 2012</h2><p>I have an object graph that contains a parent, children, and grandchildren.</p>
+<p>We are using Silverlight as the client, and we have a screen that supports editing the entire graph at the same time. &nbsp;So invoking Save() on the parent will save all of its grand/children.</p>
+<p>The specific scenario that we are plagued with occurs when a user deletes a child or grandchild, and that delete fails on the server for whatever reason (typically due to concurrency, etc.)</p>
+<p>Typically, this scenario leaves the entire object in an invalid state, as the Save() will always fail due to that deleted object failing on Child_DeleteSelf().</p>
+<p>This can be very frustrating for a user, as they may have made changes to the parent and children as well, and this scenario basically forces them to reload the entire graph.</p>
+<p>So my question is: is there a way to undelete the item on the server so that I can get the object graph back into a valid state? &nbsp;I&#39;ve tried this in ways, and always get an exception about the collection changing. &nbsp;Is there a sneaky way around this? &nbsp;Admittedly, I have not dug real deep into this.</p>
+<p>Depending on the feedback that I get, I&#39;ll follow up with further questions.</p>
+<p>Thanks much!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 27, 2012</h2><p>No, you cannot do this within Child_DeleteSelf. </p>
+<p>You can however do this within the the update method but that also means that you cannot use the helper methods in CSLA like DataPortal.UpdateChildren. </p>
+<p>Altho&#39; I am unsure as to how the user dialog would be if this is partially successful save....</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 27, 2012</h2><p>&quot;<span>You can however do this within the the update method&quot;</span></p>
+<p>Which update method are you speaking of? &nbsp;The DP_Update() of the root object?</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 27, 2012</h2><p>You must implement your own Child_Update method on the list:</p>
+<p>This is the default implementation in BusinessListBase:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Update(<span style="color:blue;">params</span>&nbsp;<span style="color:blue;">object</span>[]&nbsp;parameters)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;oldRLCE&nbsp;=&nbsp;<span style="color:blue;">this</span>.RaiseListChangedEvents;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;DeletedList)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">DataPortal</span>.UpdateChild(child,&nbsp;parameters);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeletedList.Clear();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;child&nbsp;<span style="color:blue;">in</span>&nbsp;<span style="color:blue;">this</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(child.IsDirty)&nbsp;<span style="color:#2b91af;">DataPortal</span>.UpdateChild(child,&nbsp;parameters);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">finally</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.RaiseListChangedEvents&nbsp;=&nbsp;oldRLCE;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>. You need to override this method and implement your own to &quot;re-add&quot; the item if delete failed. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 27, 2012</h2><p>I see, that would work, but not the most ideal.</p>
+<p><br />What if I allowed the delete to complete (catch the exception and leave the item removed from the collection) but then want to notify the user that the delete was unsuccessful and will reappear when the object is reloaded? &nbsp;Not ideal, but this way all the DP methods would succeed.</p>
+<p>I thought about adding a ConcurrencyError property to the deleted object, but of course, the object won&#39;t exist after the object returns to the UI.</p>
+<p>I thought about traversing upwards until I grab it&#39;s parent and adding the message there, but that&#39;s pretty hacky.</p>
+<p>I thought about writing it out to the ClientContext or GlobalContext, but it seems that values written to them on the server are not persisted back to the client (only the originating values that came from the client are).</p>
+<p>Any thoughts on how I could marshal messages back with the payload?</p>
+<p>&nbsp;</p>
+<p>Thanks again!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 27, 2012</h2><p>GlobalContext is 2-way so that may be used but I would prefer an separate AppContextObject and add the messages to the root object as it&acute;s own property. &nbsp;It is a bit tricky when you do async DataPortal calls so I would prefer to make it a property on the root object.</p>
+<p>You can override the DataPortal_BeginInvoke and DataPortal_EndInvoke on the root object and set the property value in EndInvoke from a &quot;context&quot; variable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Friday, July 27, 2012</h2><p>Yes, this is actually the route that I have chosen. &nbsp;Not happy with it, but I essentially add concurrency error messages to the GlobalContext, and on&nbsp;DataPortal_OnDataPortalInvokeComplete (which only invokes for the root object), take all of the messages and add them to a ConcurrenyErrors list (defined in my own base class that inherits from businessBase). &nbsp;Still a bit hacky, but it works.</p>
+<p>The problem I have now is with Root business lists, as they don&#39;t honor serializing properties.</p>
+<p>I know I&#39;m supposed to override the OnGet/Set methods, but they don&#39;t seem to be honoring serializing my property back to the client.</p>
+<p>I have defined a property of type MobileList&lt;string&gt; to hold all of the concurrency errors, and then de/serializing via the&nbsp;OnGet/Set/Children methods, but to no avail.</p>
+<p>Any thoughts on that?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 28, 2012</h2><p>Yes, you cannot use all types of root objects with this technique. </p>
+<p>I would change the root list objects to be child objects of an EditableRoot object. </p>
+<p>Have you thought of maybe using a CommandObject to wrap the save method (somewhat like the CQRS type of code)?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronH replied on Monday, July 30, 2012</h2><p>That&#39;s a great idea, thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

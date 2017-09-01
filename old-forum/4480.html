@@ -1,0 +1,18 @@
+<html><header><title>Issue with ASP.NET Update event</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issue with ASP.NET Update event</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4480.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rotsenpelot posted on Saturday, March 08, 2008</h2><P>Hello,</P>
+<P>I realize this might be related to ASP.NET itself and not CSLA.NET, but I haven't been able to find a solution in ASP.NET forums, please shine a light on me :-)</P>
+<P>I have a web user control which contains a GridView with a list of questions / responses, and a DetailsView that displays the selected&nbsp;question / response&nbsp;from the GridView.&nbsp; Both grid and details have templated fields.</P>
+<P>When I set the DetailsView in Edit mode, change a few fields then hit the Edit link the following happens (or does not happen):</P>
+<P>1) If I do a myDetailsView.DataBind() inside the Page_Load when IsPostBack() = true, the CslaDataSource Update method fires just fine, but the UpdateObjectArgs contain the same data the detailsView had before I changed it and hit Edit.&nbsp; I realize this probably has to do with DataBinding it.</P>
+<P>2) If I DO NOT issue the myDetailsView.DataBind() inside the Page_Load when IsPostBack() = true, then the Update method does not fire at all!</P>
+<P>So my question to you is, what am I missing here???</P>
+<P>I will post code if required but it's a very simple bare-bones web user control slapped onto a web form.&nbsp; I assume I'm overlooking something very simple here!</P>
+<P>&nbsp;</P>
+<P>Many thanks!</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rotsenpelot replied on Wednesday, March 12, 2008</h2><P>A follow-up on this.</P>
+<P>I re-created the page one control at a time, and I was able to get all the events working properly.</P>
+<P>So then I proceeded to paste the code to my original page and guess what!</P>
+<P>The update event ceased to work again!</P>
+<P>I narrowed it down to using a Master Page.&nbsp; Basically I have this problem when my gridview / detailsview combo are inside a Content Page.&nbsp; If I put them in a regular page, the events work fine.</P>
+<P>Stumped...</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

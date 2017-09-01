@@ -1,0 +1,111 @@
+<html><header><title>Problem PTWIN under WCF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem PTWIN under WCF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5936.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cangfriend posted on Thursday, December 04, 2008</h2>
+ 
+  Normal
+  0
+  
+  7.8 pt
+  0
+  2
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+ 
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:表格內文;
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-fareast-font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+
+
+
+<p class="MsoNormal"><span><span>Hello all , i'm new guy, i Have a problem in PTWIN under WCF,<br></span></span></p><p class="MsoNormal"><span><span><br></span></span></p><p class="MsoNormal"><span><span>www\WcfHost CONFIG FILE IN IIS</span></span></p><p class="MsoNormal"><span><span>&nbsp; <br></span></span></p><p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>services</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>service</span><span> </span><span>name</span><span>=</span><span>"<span>Csla.Server.Hosts.WcfPortal</span>"<span> </span><span>behaviorConfiguration</span><span>=</span>"<span>returnFaults</span>"<span>&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>endpoint</span><span> </span><span>name</span><span>=</span><span>"<span>WcfDataPortal</span>"<span> </span><span>contract</span><span>=</span>"<span>Csla.Server.Hosts.IWcfPortal</span>"<span> </span><span>binding</span><span>=</span>"<span>mexHttpBinding</span>"<span> </span><span>address</span><span>=</span>"<span>mex</span>"<span> /&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>service</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>services</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>behaviors</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>serviceBehaviors</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>behavior</span><span> </span><span>name</span><span>=</span><span>"<span>returnFaults</span>"<span>&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;</span><span>serviceMetadata</span><span> </span><span>httpGetEnabled</span><span>=</span><span>"<span>true</span>"<span>/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>behavior</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>serviceBehaviors</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>behaviors</span><span>&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;/</span><span>system.serviceModel</span><span>&gt;</span></p><p class="MsoNormal"><br></p><p class="MsoNormal"><br></p><p class="MsoNormal">I can ask <span>http://sfcserver03:8080/WcfHost/WcfPortal.svc usder&nbsp; IE.</span><br><span></span><span><o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p><br></o:p></span></p><p class="MsoNormal"><span><o:p>PTWIN CONFIG FILE <br></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;
+</span>&lt;system.serviceModel&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;
+</span>&lt;client&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;endpoint name="WcfDataPortal"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>address="http://sfcserver03:8080/WcfHost/WcfPortal.svc"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>binding="mexHttpBinding"<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>contract="Csla.Server.Hosts.IWcfPortal" /&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;
+</span>&lt;/client&gt;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;
+</span>&lt;/system.serviceModel&gt;</span></p><p class="MsoNormal"><br></p><p class="MsoNormal">MESSAGE</p><p class="MsoNormal">There was no endpoint listening at <span>http://sfcserver03:8080/WcfHost/WcfPortal.svc that could accept the message. This is often caused by an incourrect address or soap action......................<br></span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 04, 2008</h2><P>I doubt the mexHttpBinding will work for the data portal. That binding is designed to transfer metadata about the service, not to actually invoke the service.</P>
+<P>You should be using wsHttpBinding or maybe basicHttpBinding.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

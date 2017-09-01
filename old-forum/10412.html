@@ -1,0 +1,56 @@
+<html><header><title>confused over async and sync ebooks and sample code</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>confused over async and sync ebooks and sample code</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10412.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Friday, June 03, 2011</h2><p>Hi</p>
+<p>I have e-books (csla creating and data access) alos downloadedd code DataAccess sample code.</p>
+<p>In sample code below I am confused by the code in bold - is this not Async code and should come under the #if SILVERLIGHT directive? &nbsp;An error in the book/code sample of my understanding? </p>
+<p>My understanding is that anything BeginCreate, BeginFetch etc is SL (async) and the rest DataPortal.Create/Fetch etc is Sync.</p>
+<p>Thanks. Richard</p>
+<p>&nbsp;</p>
+<p>
+<pre><span>#if</span>&nbsp;SILVERLIGHT
+<span>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;void&nbsp;NewOrderEdit(int&nbsp;customerId,&nbsp;EventHandler&lt;DataPortalResult&lt;OrderEdit&gt;&gt;&nbsp;callback)</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.BeginCreate&lt;OrderEdit&gt;(customerId,&nbsp;callback,&nbsp;DataPortal.ProxyModes.LocalOnly);</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+ 
+<span>&nbsp;&nbsp;&nbsp;&nbsp;protected&nbsp;void&nbsp;DataPortal_Create(int&nbsp;customerId,&nbsp;Csla.DataPortalClient.LocalProxy&lt;OrderEdit&gt;.CompletedHandler&nbsp;handler)</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;using&nbsp;(BypassPropertyChecks)</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Id&nbsp;=&nbsp;-1;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CustomerId&nbsp;=&nbsp;customerId;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OrderDate&nbsp;=&nbsp;DateTime.Today;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LastEdit&nbsp;=&nbsp;DateTime.Today;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OrderLineItems&nbsp;=&nbsp;DataPortal.CreateChild&lt;OrderLineItems&gt;();</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.DataPortal_Create(handler);</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;}</span>
+<span>#else</span>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;NewOrderEdit(<span>int</span>&nbsp;customerId,&nbsp;<span>EventHandler</span>&lt;<span>DataPortalResult</span>&lt;<span>OrderEdit</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>DataPortal</span>.BeginCreate&lt;<span>OrderEdit</span>&gt;(customerId,&nbsp;callback);
+&nbsp;&nbsp;&nbsp;&nbsp;}</b>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>OrderEdit</span>&nbsp;NewOrderEdit(<span>int</span>&nbsp;customerId)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>DataPortal</span>.Create&lt;<span>OrderEdit</span>&gt;(customerId);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>OrderEdit</span>&nbsp;GetOrderEdit(<span>int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>DataPortal</span>.Fetch&lt;<span>OrderEdit</span>&gt;(id);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Friday, June 03, 2011</h2><p>Bold hasn&#39;t &nbsp;worked so it&#39;s this code in the if !SILVERLIGHT code area:</p>
+<p>&nbsp;</p>
+<p><span>
+<pre><b>&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;NewOrderEdit(<span>int</span>&nbsp;customerId,&nbsp;<span>EventHandler</span>&lt;<span>DataPortalResult</span>&lt;<span>OrderEdit</span>&gt;&gt;&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>DataPortal</span>.BeginCreate&lt;<span>OrderEdit</span>&gt;(customerId,&nbsp;callback);
+&nbsp;&nbsp;&nbsp;&nbsp;}</b></pre>
+</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 03, 2011</h2><p>I generally write the async factory methods so they are available to .NET and SL code. The sync factory methods are only available to .NET code, because they can&#39;t work in SL.</p>
+<p>In that example I think I was showing how to use RunLocal on .NET, and the equivalent (but different) technique on SL - and so the async factory is implemented differently for SL and .NET.</p>
+<p>I use async factories on .NET a lot - specifically in WPF apps. In fact, I pretty much only use the sync factory methods in web apps or servce apps.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Friday, June 03, 2011</h2><p>&nbsp;</p>
+<p>So my understanding is correct then? &nbsp;The examples show that you choose to call async methods outside of Silverlight environment e.g. .Net /WPF for example .</p>
+<p>I think it makes sense now.</p>
+<p>Thanks</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

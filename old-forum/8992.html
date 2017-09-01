@@ -1,0 +1,22 @@
+<html><header><title>Invalid cast from 'System.DateTime' to 'Csla.SmartDate' when debugging</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Invalid cast from 'System.DateTime' to 'Csla.SmartDate' when debugging</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8992.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeGoldsmith posted on Wednesday, May 26, 2010</h2><p>
+<p>Hello all</p>
+<p>I&#39;ve recently upgraded my workstation from Vista to Windows 7 Enterprise and all seemed to have gone well. Projects build fine but am not experiencing an odd error when trying to debug our IIS hosted application locally. The app build and works as expected but when attaching to the IIS process (w3wp.exe) no symbols are loaded then when server processing is started an invalid cast exception is generated (see below).</p>
+<p>Stack trace:</p>
+<p>System.InvalidCastException occurred</p>
+<p>&nbsp;&nbsp;Message=&quot;Invalid cast from &#39;System.DateTime&#39; to &#39;Csla.SmartDate&#39;.&quot;</p>
+<p>&nbsp;&nbsp;Source=&quot;mscorlib&quot;</p>
+<p>&nbsp;&nbsp;StackTrace:</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; at System.Convert.DefaultToType(IConvertible value, Type targetType, IFormatProvider provider)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; at System.DateTime.System.IConvertible.ToType(Type type, IFormatProvider provider)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; at System.Convert.ChangeType(Object value, Type conversionType, IFormatProvider provider)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; at System.Convert.ChangeType(Object value, Type conversionType)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; at Csla.Utilities.CoerceValue(Type desiredType, Type valueType, Object oldValue, Object value) in C:\Documents\Communicator\Trunk\Csla\Utilities.cs:line 191</p>
+<p>&nbsp;&nbsp;InnerException: (None)</p>
+<p>I&#39;m really stuggling to figure out whats happening as it isn&#39;t happening on my colleagues machines who are still running Vista.</p>
+<p>My setup:</p>
+<p>Windows 7 Enterprise<br />Visual Studio 2008<br />IIS 6.1<br />CSLA 3.8<br />.Net 2, 3, 3.5 and 4.0 installed&nbsp;</p>
+<p>Any suggestions / pointers?</p>
+</p>
+<p>Thanks,<br />Mike&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MikeGoldsmith replied on Wednesday, May 26, 2010</h2><p>The line that the exception is thrown is 191 in Utilities.cs<br /><br />
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return Convert.ChangeType(value, desiredType);&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 26, 2010</h2><p>What is your line of code that triggers this? Is it a SetProperty() call?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

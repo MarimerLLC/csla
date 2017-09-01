@@ -1,0 +1,19 @@
+<html><header><title>ChildDataPortal DataPortalException inside BusinessException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildDataPortal DataPortalException inside BusinessException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8179.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>djjlewis posted on Thursday, December 17, 2009</h2>Hi,<br><br>I am using csla 3.8.2 and was just playing around with showing exceptions to the user in a nicer way. A good example is when you try to delete a database record that has a foreign key constraint on another table and you end up breaking referential integrity. With the SqlClient, this is thrown as a SqlException with a Number of "547".<br><br>I realise that all exceptions that originate from the DataPortal are thrown as type DataPortalException with the "real" exception placed inside a BusinessException property. What I have found in my testing, is that if the exception is thrown in a Child DataPortal method like Child_Update, then the BusinessException on the top DataPortalException is also of type DataPortalException and the second DataPortalException contains the "real" SqlException as the BusinessException property.<br><br>My question then is if this behaviour is "by design" or not and if so, how many levels deep would I need to check if the BusinessException was not of type DataPortalException so I could be sure it really was the BusinessException or not?<br><br>Now presumably I could loop through the chain of BusinessExceptions and check that they are not of type DataPortalException, but wanted to be sure this was a reasonable thing to have to do before I continue down this road?<br><br>Regards,<br><br>Dan.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, December 17, 2009</h2>Page 430 (CHAPTER 15 PERSIS TENCE AND THE DATA PORTAL) all the way at the end of the page:
+
+<br />
+<br />
+
+Note Csla.DataPortal always throws a Csla.DataPortalException in case of failure. You must use
+either its InnerException or BusinessException properties, or the GetBaseException() method to retrieve the
+original exception that occurred.
+
+<br />
+<br />
+
+Based on that, your answer is yes and no :)
+
+<br />
+<br />
+
+Just remember that SQL server could potentially throw and Exception that contains the “real” exception 10 levels deep. What the DataPortalException calls the BusinessException is just what SQL server threw at it. So BusinessException may not always be the same as calling the GetBaseException(). ( I think... someone please correct me if I am full of it).
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

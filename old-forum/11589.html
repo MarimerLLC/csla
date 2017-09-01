@@ -1,0 +1,19 @@
+<html><header><title>Child object initialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child object initialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11589.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasona22 posted on Thursday, September 20, 2012</h2><p>I saw some 2010 posts on this topic, but they seemed dated.&nbsp; So I will ask what is likely been beaten down before.</p>
+<p>We are using .NET, CodeSmith generation, MEF, Prism, WPF and MVVM technologies/patterns.</p>
+<p>The short version is: How can I initialize a child object on creation?</p>
+<p>Explanation: </p>
+<p>I have a &quot;Flight&quot; record (Editable Root).&nbsp; This Flight record has a child collection on it AirCrew (EditableChild).&nbsp; From the UI, there is a list of Personnel available for selection that are added as AirCrew.&nbsp; For the most part, an AirCrew object is an ID, a FlightID, a PersonnelID and some detail data that is unimportant for this discussion.&nbsp; One of the things that I would like to do is display the name of the person selected on the UI as a readonly property when they are added to the AirCrew; however name is not stored with the AirCrew object (don&#39;t want to repeat data if possible).&nbsp; So when AddNew is called to add an AirCrew object, I would like to provide the Personnel.Name as a parameter.&nbsp; </p>
+<p>A solution that we do not like is to create read/write properties such that the UI can set the Name after the AirCrew is created.&nbsp; However, this makes the UI know something about the business purpose.&nbsp; For &#39;separation of concerns&#39; purposes, we prefer the UI to not do any kind of business object initialization.</p>
+<p>Anyone have any ideas on a good way since AddNew/AddNewCore does not accept parameters?</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, September 20, 2012</h2><p>In the ebook DataAccess &quot;Creating New Grandchild Objects&quot; describes differebnt options: </p>
+<p>You can use the built-in AddNew functionality, or the Add method, or a custom AddItem method. - however, AddNew() is no option for you. </p>
+<p>I would&nbsp;prefer AddItem(parameters).&nbsp; <br />The other option is: &nbsp;Add( ChildType.NewChild(parameters) ) -- I don&#39;t want developers get used to &quot;create&quot; child objects just like root objects. </p>
+<p><div style='padding-left: 50px;background-color:silver'><b>jasona22<br></b>However, this makes the UI know something about the business purpose.&nbsp;</div></p>
+<p>Most of the time only at UI level (ViewModel) you know the context. So, that&#39;s not an concern to me.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 20, 2012</h2><p>You may also consider to create&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>a lazy loaded property on Flight that fetches Name&nbsp;</li>
+<li>a virtual property without backing field that returns the Name from a list of Names.</li>
+</ul>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

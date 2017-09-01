@@ -1,0 +1,39 @@
+<html><header><title>silverlight criteria question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>silverlight criteria question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11485.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Thursday, July 19, 2012</h2><p>When I do this</p>
+<p>
+<pre>&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Maintains&nbsp;metadata&nbsp;about&nbsp;</span><span>&lt;see&nbsp;cref=</span><span>&quot;ClientID&quot;</span><span>/&gt;</span><span>&nbsp;property.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+<span>#if</span>&nbsp;SILVERLIGHT
+ 
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;Int32&gt;&nbsp;ClientIDProperty&nbsp;=&nbsp;RegisterProperty&lt;Int32&gt;(p&nbsp;=&gt;&nbsp;p.ClientID);</span>
+ 
+<span>#else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>Int32</span>&gt;&nbsp;ClientIDProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>Int32</span>&gt;(p&nbsp;=&gt;&nbsp;p.ClientID);
+<span>#endif</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;Gets&nbsp;the&nbsp;Client&nbsp;ID.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>///</span><span>&nbsp;</span><span>&lt;value&gt;</span><span>The&nbsp;Client&nbsp;ID.</span><span>&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>Int32</span>&nbsp;ClientID
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;ReadProperty(ClientIDProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>&nbsp;{&nbsp;LoadProperty(ClientIDProperty,&nbsp;<span>value</span>);&nbsp;}</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<pre>However when I miss off the</pre>
+<pre><pre>#if&nbsp;SILVERLIGHT
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;Int32&gt;&nbsp;ClientIDProperty&nbsp;=&nbsp;RegisterProperty&lt;Int32&gt;(p&nbsp;=&gt;&nbsp;p.ClientID);
+ 
+#else</pre>
+<pre></pre>
+<pre>I get errors - is this correct and can someone explain - thanks</pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 19, 2012</h2><p>I recommend declaring the PropertyInfo fields as public in scope. It is just too messy and hard to maintain the #if statements and duplicate code necessary to have two scopes. Besides, having those values as public is valuable in many UI and&nbsp;DAL&nbsp;scenarios, because that other code can also use the metadata if necessary.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, July 19, 2012</h2><p>With respect to the UI scenarios (like binding) it might not seem immediately useful as they are static, so just wanted to raise what we do to get around it.</p>
+<p>We expose a public collection of PropertyInfos in our base class for&nbsp;businessbase&nbsp;(instance property) that is calculated and then cached, and provides an &quot;indexable&quot; propertyinfo list we use for databinding to labels.</p>
+<p>(i.e. Model.PropertyInfos[&quot;PropertyName&quot;].FriendlyName</p>
+<p>It&#39;s a really useful construct we&#39;ve built into our base classes.&nbsp; Just wanted to mention it as it seemed on-topic and we use it quite heavily.</p>
+<p>Slightly more on-topic, we declare our property infos to be public, but we tag them as readonly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 19, 2012</h2><p>Ahh, you should like the 4.3 enhancement that now includes a public method to get all the registered PropertyInfo elements for a type. That allows you to use the list already maintained by CSLA.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

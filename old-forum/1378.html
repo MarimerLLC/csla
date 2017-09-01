@@ -1,0 +1,22 @@
+<html><header><title>Newbie - Various</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie - Various</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1378.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, October 03, 2006</h2><P>Hi</P>
+<P>Version csla 1.0</P>
+<P>A newbie with some preliminary questions I&nbsp;hope someone can answer.</P>
+<P>1 ) How to bind NamevalueList to a cbo? Doesn't seem to support Ibindinglist is this right? Does someone ahve a workaround.</P>
+<P>2) when I added a raiseevent in a property of my BO it caused errors on the dataportal_update.&nbsp; </P>
+<P>Take out the raiseevent&nbsp; and it works okay.&nbsp;Is this a known problem?</P>
+<P>Thanks in advance</P>
+<P>Richard Griffiths</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 03, 2006</h2>There are quite a few bug fixed / enhancements to Csla 1.0.&nbsp; The latest version is 1.53.&nbsp; If you're on .Net 2.0, you should use 2.1.&nbsp; Is there any reason you are using 1.0?&nbsp; If you're just starting,&nbsp; I strongly recommend 1.53, both for the bug fixes and for the fact that moving to 2.1 should you decide to later will be easier.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 04, 2006</h2><P>You can't bind an NVL to a cbo in CSLA 1.x.</P>
+<P>Unless you implement BindableList code supplied by one of the members of this forum.</P>
+<P>It was written a few years back but is widely used.</P>
+<P>Just search for it and you should find the Region of code you need to add to the NVL base class.</P>
+<P>Then you can bind easily.</P>
+<P>&nbsp;</P>
+<P>I recommend you use CSLA 2.1 for new projects though.</P>
+<P>And I agree - if you need 1.x use the latest version so the pain of upgrading later will be lessened.</P>
+<P>The key thing is that BrokenRules.Assert is discontinued.</P>
+<P>You need to write rules the way that 2.x uses them and 1.53 is the closest thing to it.\</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Thursday, October 05, 2006</h2><P>Thanks for your help. I am using 1.53 but not 2.1 as we have not rolled out xp sp2 and so are still using VS2003.</P>
+<P>Richard</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

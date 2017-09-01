@@ -1,0 +1,32 @@
+<html><header><title>Parser Error when using custom membership provider</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parser Error when using custom membership provider</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1821.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>f.scherer posted on Thursday, November 23, 2006</h2><P>Hi,</P>
+<P>i am not sure if this is the right place to ask but i will do it&nbsp;anyway. I have i problem when i want to use a custom membership provider as described in the csla book.</P>
+<P>Since two days i have vista rtm installed and i debug the web application using the iis 7 which comes with vista. I use the new ajax beta 2 framework in the application.</P>
+<P>The problem is, that after i added all the stuff i need for using custom membership to my web.config, i get the following error when compiling.</P>
+<P><SPAN> </P>
+<H1>Server Error in '/myapp' Application. 
+<HR>
+</H1>
+<H2><I>Configuration Error</I> </H2>
+<P></SPAN><FONT face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><B>Description: </B>An error occurred during the processing of a configuration file required to service this request. Please review the specific error details below and modify your configuration file appropriately. <BR><BR><B>Parser Error Message: </B>The specified connectionStringName, 'LocalSqlServer', was not registered.<BR><BR><B>Source Error:</B> <BR><BR>
+<TABLE bgColor=#ffffcc>
+
+<TR>
+<TD><CODE><PRE>Line 352:                &lt;providers&gt;
+Line 353:                    &lt;add connectionStringName="LocalSqlServer"
+<FONT color=red>Line 354:                        name="AspNetSqlPersonalizationProvider" type="System.Web.UI.WebControls.WebParts.SqlPersonalizationProvider, System.Web, Version=2.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" /&gt;
+</FONT>Line 355:                &lt;/providers&gt;
+Line 356:</PRE></CODE></TD></TR></TABLE><BR><B><FONT face=Verdana>Source File: </FONT></B>C:\Windows\Microsoft.NET\Framework\v2.0.50727\Config\web.config<B><FONT face=Verdana> &nbsp;&nbsp; Line: </FONT></B>354 <BR><BR></P>
+<HR>
+
+<P><B><FONT face=Verdana>Version Information:</FONT></B>&nbsp;Microsoft .NET Framework Version:2.0.50727.312; ASP.NET Version:2.0.50727.312 </P>
+<P>&nbsp;</P>
+<P>How can i get rid of this error message. </P>
+<P>This is what i entered in my web.config:</P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#800000 size=2>membership</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>defaultProvider</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>HAMembershipProvider</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>providers</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>HAMembershipProvider</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>type</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>HAMembershipProvider</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>enablePasswordRetrieval</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>enablePasswordReset</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>requiresQuestionAndAnswer</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>applicationName</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>/</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>requiresUniqueEmail</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>passwordFormat</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Clear</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>description</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Stores and retrieves membership data using Csla business objects.</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>/&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>providers</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>membership</FONT><FONT color=#0000ff size=2>&gt;</P></FONT>
+<P>Thanks for your help in advance,</P>
+<P>&nbsp;</P>
+<P>Frank.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Thursday, November 23, 2006</h2>Funny.<br><br>You mention an addition in one part of the config, while the exception is about another part.<br><br>The error is about your connection string name 'LocalSqlServer'.&nbsp; Apparently you make use of named connection (or at least, that's what you specify in the config). If would start debugging on this part, is this name actually registered? Apparently VS is unable to recover it.<br><br>If the config worked fine before, and only started throwing exception after addition of the custom membership provider then perhaps there was no need to verify this LocalSqlServer earlier. And your addition of the custom membership provider just caused VS to drill down to the part of the config that refers to this named connection and therefore you suddenly recieve the error.<br><br>Good luck debugging. ;-)<br><br>Bayu<br><br><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

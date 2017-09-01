@@ -1,0 +1,113 @@
+<html><header><title>Newbie Complex Validation Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie Complex Validation Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5452.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumaran24 posted on Wednesday, September 24, 2008</h2><P>Dear Friends,</P>
+<P>I have been using CSLA.NET past few week now and able to understand the basic function and currently using it to develop a software. Everything was going well until i come up with this problem which I'm still not able to solve. I search the forum posting and still unable to find a solution. Here is my problem.</P>
+<P>I&nbsp;have 3 classes</P>
+<P>Project : BusinessBase</P>
+<P>Sample : BusinessBase</P>
+<P>Samples : BusinessListBase&lt;Samples, Sample&gt;</P>
+<P>Project has a property called SampleSize and Project will have&nbsp;a Samples.</P>
+<P>Sample has a property called Allocation.</P>
+<P>Samples will have a collection of Sample.</P>
+<P>Im displaying SampleSize in a textbox and Samples in a datagridview.I allow user to edit the Allocation field and the SampleSize. Each time the user edit the Allocation or SampleSize&nbsp;i need to perform a validation where the total "allocation" of all the Sample in the Samples object should not be be greater than SampleSize.&nbsp;SampleSize is a property from&nbsp; Project object.</P>
+<P>I need to,</P>
+<P>1. Show error in each row after the user edited the "Allocation"&nbsp;value if total allocation is &gt; sampleSize.</P>
+<P>2 Show error in each row after the user edited the "SampleSize" value if total allocation is &gt; sampleSize</P>
+<P>This means, when ever the user change the allocation it should check weather the total allocation &gt; then the sampleSize, if it is then show error on each row because user maybe&nbsp;can modify any single row and make the allocation valid.</P>
+<P>User can either choose to modify the Sample Allocation or the Project&nbsp;SampleSize to make the allocation valid hence removing the error from each now and making the whole object valid again.</P>
+<P>Can this be done? Or is there any other way to solve this kind of&nbsp;situation.</P>
+<P>I hope i have explain my problem clearly. Please guide me to solve this problem</P>
+<P>Thanks.</P>
+<P>P.S :&nbsp;I'm using CSLA.NET 2.1.4</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Wednesday, September 24, 2008</h2><P>If I were you I would not mark the whole grid as erroneous (so&nbsp;showing the error icon in each row) but rather only on your SampleSize textbox. Implementing this would be simple:</P>
+<P>1. Add the rule logic in Project and assign it to property SampleSize.<BR>2. * Not 100% sure about this bit as I am guessing * Add an event handler for Sample.PropertyChanged on Project. When this get fired, validate the rule for SampleSize again.</P>
+<P>This should be sufficient for the errorprovider to show the error next to your SampleSize textbox.</P>
+<P>Now if you still want to mark every row as erroneous then I can only think of the following workaround (there are probably better ways):</P>
+<P>1. In Project.OnPropertyChanged , when SampleSize is modified then perform your check. If it fails then have a dummy string&nbsp;field in Sample (e.g. ErrorDescription") which has a rule that its length should not be greater than zero and set it to a message from Project. Doing that to all the child records will make them invalid and the error will be shown.<BR>2. Add an event handler for Sample.PropertyChanged on Project. When this get fired, perform the same actions as above.</P>
+<P>I guess both ways are not perfect and need tweeking but it should give yuo an idea.</P>
+<P>Btw since you are just beginning with CSLA I would suggest you use version 3.0.4 (it works with .Net 2.0 if that is of importance to you) as its the latest stable pre .Net 3.5 version.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumaran24 replied on Wednesday, September 24, 2008</h2><P>Hi triplea, thanks alot for the tips. I only want to mark every row as erroneous and&nbsp;this how i solve following the guideline&nbsp;you gave me.</P>
+<P>I added this code to the Project object</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddBusinessRules()</FONT></P>
+<P><FONT size=2>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;</FONT><FONT color=#008080 size=2>Project</FONT><FONT size=2>&gt;(AllocationGTSampleSize&lt;</FONT><FONT color=#008080 size=2>Project</FONT><FONT size=2>&gt;, </FONT><FONT color=#800000 size=2>"SampleSize"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> AllocationGTSampleSize&lt;T&gt;(T target, Csla.Validation.</FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>Project</P></FONT><FONT size=2>
+<P>{</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> totalAllocatedSample = 0;</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Sample</FONT><FONT size=2> sample </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> target._samples)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;totalAllocatedSample = totalAllocatedSample + sample.Allocation;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (totalAllocatedSample &gt; target._sampleSize)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Sample</FONT><FONT size=2> sample </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> target._samples)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sample.ErrorDesc = </FONT><FONT color=#800000 size=2>"1234567890"</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Sample</FONT><FONT size=2> sample </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> target._samples)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sample.ErrorDesc = </FONT><FONT color=#800000 size=2>""</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P><FONT size=3>Added this code at Sample Object</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddBusinessRules()</P>
+<P>{</P>
+<P>ValidationRules.AddRule&lt;</FONT><FONT color=#008080 size=2>Sample</FONT><FONT size=2>&gt;(AllocationGTSampleSizeError&lt;</FONT><FONT color=#008080 size=2>Sample</FONT><FONT size=2>&gt;, </FONT><FONT color=#800000 size=2>"ErrorDesc"</FONT><FONT size=2>);</P>
+<P>}</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> AllocationGTSampleSize&lt;T&gt;(</P>
+<P>T target, Csla.Validation.</FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e) </FONT><FONT color=#0000ff size=2>where</FONT><FONT size=2> T : </FONT><FONT color=#008080 size=2>Sample</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (target._errorDesc.Length &gt; 1)</P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#800000 size=2>"Allocation has exceted sample size"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>} </P>
+<P></P>
+<P>}</P></FONT>
+<P><FONT size=3>This will trigger the validation where user change the SampleSize</FONT></P>
+<P><FONT size=3>To trigger the event when user change the Allocation on the gridview i added this code to the Project Object</FONT></P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ....................</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .................</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // load child objects</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.NextResult();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _samples = </FONT><FONT color=#008080 size=2>Samples</FONT><FONT size=2>.GetProjectSamples(dr);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _samples.ListChanged += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>ListChangedEventHandler</FONT><FONT size=2>(_samples_ListChanged);</P></FONT>
+<P>}</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> _samples_ListChanged(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, System.ComponentModel.</FONT><FONT color=#008080 size=2>ListChangedEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (e.PropertyDescriptor.Name == </FONT><FONT color=#800000 size=2>"Allocation"</FONT><FONT size=2>)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules(</FONT><FONT color=#800000 size=2>"SampleSize"</FONT><FONT size=2>);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P>
+<P><FONT size=3>All this code manage to solve my problem. The only thing is that the datagridview show the erroneous only when i move my cursor to it. It does not refresh i guess, I slove this problem by using this code.</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> projectBindingSource_BindingComplete(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>BindingCompleteEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataGridView1.UpdateRowErrorText(0, dataGridView1.RowCount - 1);</P>
+<P></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2><FONT size=3>Basically this solves the problem. Do you think i can apply this solution for my project? Does anyone else have a different idea?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Thanks</FONT></P></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Wednesday, September 24, 2008</h2><P>Not sure but what if you call ValidationRules.CheckRules() (so not the property specific overload) after your fetch from the db is complete?</P>
+<P>Also note that depending on the dataportal setup you choose to use, you will have to re hookup the _samples_ListChanged handler. Do that in the&nbsp;<FONT color=#0000ff size=2>OnDeserialized</FONT>&nbsp;override otherwise you may loose the functionality after a save.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumaran24 replied on Wednesday, September 24, 2008</h2><P>Hi again really thanks for the replies its helping me alot to slove this problem.</P>
+<P>"Not sure but what if you call ValidationRules.CheckRules() (so not the property specific overload) after your fetch from the db is complete?" (Im not quite sure what you mean)</P>
+<P>&nbsp;re hookup the _samples_ListChanged handler is done like this right?</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnDeserialized(System.Runtime.Serialization.</FONT><FONT color=#008080 size=2>StreamingContext</FONT><FONT size=2> context)</P>
+<P>{</P>
+<P>_samples.ListChanged += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>ListChangedEventHandler</FONT><FONT size=2>(_samples_ListChanged);</P>
+<P>}</P>
+<P>Really Thanks </P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, September 25, 2008</h2><P>What I meant was (in your example):</P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P>private<FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)<BR>{<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;....................<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>.................</FONT></P>
+<P><FONT size=2><FONT color=#008000 size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// load child objects<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>dr.NextResult();</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_samples = </FONT><FONT color=#008080 size=2>Samples</FONT><FONT size=2>.GetProjectSamples(dr);</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_samples.ListChanged += </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.ComponentModel.</FONT><FONT color=#008080 size=2>ListChangedEventHandler</FONT><FONT size=2>(_samples_ListChanged);</FONT></FONT></P>
+<P><FONT size=2><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<STRONG><FONT>this.ValidationRules.CheckRules();</FONT></STRONG><BR></FONT>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skumaran24 replied on Thursday, September 25, 2008</h2><P>So far everything works fine. Thanks alot for the help.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

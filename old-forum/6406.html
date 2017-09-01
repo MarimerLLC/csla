@@ -1,0 +1,256 @@
+<html><header><title>Change connection string at runtime! Is it effect on your application?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Change connection string at runtime! Is it effect on your application?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6406.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Raghav posted on Thursday, February 12, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin-top:0in;
+	mso-para-margin-right:0in;
+	mso-para-margin-bottom:10.0pt;
+	mso-para-margin-left:0in;
+	line-height:115%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoNormal">Dear friends</p>
+
+<p class="MsoNormal">I am using CSLA.NET 3.6 version. I have some issue with
+connection string. </p>
+
+<p class="MsoNormal">See my connection string is as mentioned below (before
+running my application),</p>
+
+<p class="MsoNormal">Connection string file is <b>MyApp.exe.config<o:p></o:p></b></p>
+
+<p class="MsoNormal"><span>&lt;</span><span>add</span><span> </span><span>name</span><span>=</span><span>"<span>MyApp</span>"<span> </span><span>connectionString</span><span>=</span>"<span>Data Source=;Initial
+Catalog=;User ID=;Password=</span>"<span> </span><span>providerName</span><span>=</span>"<span>System.Data.SqlClient</span>"<span>
+/&gt;<o:p></o:p></span></span></p>
+
+<p class="MsoNormal">While logging in I change my connection sting as mentioned
+below,</p>
+
+<p class="MsoNormal"><span>&lt;</span><span>add</span><span> </span><span>name</span><span>=</span><span>"<span>MyApp</span>"<span> </span><span>connectionString</span><span>=</span>"<span>Data Source=<b>MyServer</b>;Initial Catalog=<b>MyDB</b>;User ID=<b>sa</b>;Password=<b>sa</b></span>"<span> </span><span>providerName</span><span>=</span>"<span>System.Data.SqlClient</span>"<span> /&gt;</span></span></p>
+
+<p class="MsoNormal">I have changed highlighted words in my connection string
+file while logging in.</p>
+
+<p class="MsoNormal">The problem is that application will not take the modified
+connection string while logging in, but when I run my application next time it
+takes the modified connection string.</p>
+
+<p class="MsoNormal">Application takes a connection string from MyApp.exe.config
+file while loading application. This connection string remains same until
+unless we close the application. <span>&nbsp;</span>That means
+connection string loads only once at a time while loading an application.</p>
+
+<p class="MsoNormal">We can change connection string in config file while
+application running, but It will not effect on application.</p>
+
+<p class="MsoNormal">I want to change my connection string at runtime and it also
+should effect on application, please help me out!</p>
+
+<p class="MsoNormal">Thanks</p>
+
+<p class="MsoNormal">Raghav</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, February 12, 2009</h2><P>See page 497 of the book to review how the Connection manager works to retrieve connection strings from the app.config file.</P>
+<P>You should be able to set up multiple connection strings and then just request any one of them to be used.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

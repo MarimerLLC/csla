@@ -1,0 +1,43 @@
+<html><header><title>Re: SL 3.8.2  Object.Save fails in the InvokeMethod</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: SL 3.8.2  Object.Save fails in the InvokeMethod</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8641.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>slh4342 posted on Wednesday, March 10, 2010</h2><p>I am having a similar problem but when I remove the Path=Data from the data context, the data doesn&#39;t initialize my fields.</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Grid</span></span><span style="font-size:x-small;color:#000000;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">x</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Name</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;grdDates&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> DataContext</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;{</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Binding</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Source</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">={</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">StaticResource</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> PQIProviderDetailAccess</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">}}&quot; &gt;</span></span></p>
+</p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">basics</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">DatePicker</span></span><span style="font-size:x-small;color:#000000;"> </span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Text</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;{</span></span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Binding</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Path</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=CreateDate,</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Mode</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=TwoWay}&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Grid.Row</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;2&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Grid.Column</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;1&quot; /&gt;</span></span></p>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&lt;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">Button</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> x</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Name</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;SaveButton&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Content</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Save Dates&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Width</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;100&quot;</span></span></p>
+<p><span style="font-size:x-small;"><span style="color:#000000;"> </span><font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">Grid.Row</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;22&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Grid.Column</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;0&quot;</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;"> Grid.ColumnSpan</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;2&quot;</span></span><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">csla</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">InvokeMethod.TriggerEvent</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Click&quot;</span></span><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">csla</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">:</span></span><span style="font-size:x-small;color:#ff0000;"><span style="font-size:x-small;color:#ff0000;">InvokeMethod.MethodName</span></span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=&quot;Save&quot;/&gt;</span></span></p>
+</p>
+</span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

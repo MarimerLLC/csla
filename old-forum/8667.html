@@ -1,0 +1,35 @@
+<html><header><title>RegisterProperty - TypeInitializationException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegisterProperty - TypeInitializationException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8667.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag posted on Tuesday, March 16, 2010</h2><p>I am occasionally
+(not consistently) getting the following exception:</p>
+<p>System.TypeInitializationException
+was unhandled<br />
+&nbsp; Message=&quot;The type initializer for &#39;DV.Lib.Query&#39; threw an
+exception.&quot;<br />
+&nbsp; Source=&quot;DV.Lib&quot;<br />
+&nbsp; TypeName=&quot;DV.Lib.Query&quot;<br />
+&nbsp; StackTrace:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at DV.Lib.Query.NewObject()<br />
+&nbsp;&nbsp;&nbsp; (lots of callstack stuff missing)<br />
+<br />
+<br />
+&nbsp; InnerException: System.InvalidOperationException<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Message=&quot;Can not register property
+Params after containing type (ListCore) has been instantiated&quot;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Source=&quot;Csla&quot;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; StackTrace:<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+Csla.Core.FieldManager.PropertyInfoManager.RegisterProperty[T](Type objectType,
+PropertyInfo&#39;1 info)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+Csla.BusinessBase&#39;1.RegisterProperty[P](PropertyInfo&#39;1 info)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+DV.Lib.Query..cctor() in C:\Develop\dotNet\DV\DV.Lib\Qry\Query.vb:line 104<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InnerException: </p>
+<p>&nbsp;</p>
+<p>Some background - &quot;DV.Lib.ListCore&quot; inherits off of BusinessBase.&nbsp; &quot;DV.Lib.Query&quot; inherits from &quot;ListCore&quot;, and &quot;Params&quot; is a child collection property off of &quot;Query&quot;.&nbsp; Whenever I get this error, it is during the creation of one of the subclasses of ListCore - almost like &quot;RegisterProperty&quot; doesn&#39;t like things where there&#39;s an extra subclass layer between my class and BusinessBase.</p>
+<p>And, just to really throw things off, this happens only occasionally.&nbsp; I could stop the program and retrace the steps exactly and not run into the same exception.</p>
+<p>Params is declared off of &quot;DV.Lib.Query&quot; as follows:</p>
+<p>Private Shared ParamsProperty As PropertyInfo(Of QueryParameters) = RegisterProperty(New PropertyInfo(Of QueryParameters)(&quot;Params&quot;))<br />&nbsp;&nbsp;&nbsp; Public ReadOnly Property Params() As QueryParameters<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not FieldManager.FieldExists(ParamsProperty) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of QueryParameters)(ParamsProperty, QueryParameters.NewObject)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of QueryParameters)(ParamsProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marthac replied on Wednesday, September 29, 2010</h2><p>Did you ever figure this out?</p>
+<p>I&#39;m having the same problem. :(</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, September 29, 2010</h2><p>I strongly recommend using the RegisterProperty() overload that accepts a lambda expression for the property, so CSLA can just do the right thing for you.</p>
+<p>The RegisterProperty() call you show is invalid - the first parameter needs to be the type of the declaring class. And that is a source of numerous copy-paste bugs, which is why the lambda is better - with the lambda CSLA can figure out the containing type for you.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,64 @@
+<html><header><title>InvokeMethod vs. Execute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>InvokeMethod vs. Execute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8178.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky posted on Thursday, December 17, 2009</h2>Hi Rocky,<br /><br />In this post: <br /><br />http://www.lhotka.net/weblog/CSLANET38Beta2MVVMSupport.aspx<br /><br />you mention the following:<br /><br />"The advantage of using InvokeMethod is that it has several options around data binding that simply aren’t available to a trigger action like Execute. Most notably, InvokeMethod has a MethodParameter property that can be bound using a binding expression – so it can pull values from other UI controls, resources, the DataContext, etc. There’s no way to do this with a trigger action like Execute."<br /><br />I'm a bit confused. I'm looking at the source code for Csla.Wpf.Execute, and there IS a MethodParameter property on that class. <br /><br />Did you mean that there was no such parameter (at the time you posted), or did you mean that Invoke.MethodParameter can't be bound using a binding expression ?<br /><br />Also, are these classes ready for production code ? I'm starting to move away from Windows Forms, and would like to learn more about Wpf, MVVM, Prism and how CSLA.NET fits in between. Do you have any formal documentation yet on the different Wpf UI support classes ?<br /><br />Thanks<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 17, 2009</h2><P>There is a MethodParameter on both types. But you can't use a binding expression with Execute because of the way the XAML is nested. Or at least I couldn't figure out a way to write valid XAML that included a binding expression inwide the trigger action.</P>
+<P>The only "docs" for the XAML stuff is in the CSLA .NET for Silverlight video series. As soon as I finish the Core 3.8 video series I'll do a WPF video that walks through the various CSLA components specifically designed for WPF.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Thursday, December 17, 2009</h2>That WPF video is good news ! 
+<br />
+<br />I'm probably out of my league here as I really don't have a good understanding of WPF binding expressions yet, but it seems to me that the Execute's MethodParameter is capable of handling binding expressions. 
+<br />
+<br />In the MVVMexperiment project, in the ListPage.xaml, there is a &quot;Process Items&quot; button. I've simply created a copy of it on the same page, and now I have the following XAML: 
+<br />
+<br />
+<br />
+<br />
+<br />&lt;Button Content=&quot;Process items&quot; Tag=&quot;{Binding ElementName=DataListBox}&quot;&gt;
+<br />        &lt;i:Interaction.Triggers&gt;
+<br />          &lt;i:EventTrigger EventName=&quot;Click&quot;&gt;
+<br />            &lt;csla:Execute MethodName=&quot;ProcessItems2&quot; MethodParameter=&quot;{Binding ElementName=DataListBox, Path=SelectedItems}&quot; /&gt;
+<br />          &lt;/i:EventTrigger&gt;
+<br />        &lt;/i:Interaction.Triggers&gt;
+<br />&lt;/Button&gt;
+<br />&lt;Button Content=&quot;Process items&quot; Tag=&quot;{Binding ElementName=DataListBox}&quot;
+<br />               csla:InvokeMethod.TriggerEvent=&quot;Click&quot;
+<br />               csla:InvokeMethod.MethodName=&quot;ProcessItems2&quot;
+<br />               csla:InvokeMethod.MethodParameter=&quot;{Binding ElementName=DataListBox, Path=SelectedItems}&quot;&gt;
+<br />&lt;/Button&gt;
+<br />
+<br />
+So, one button is calling the ProcessItems2 method by using an InvokeMethod, and the other one using Execute, and in both case I can pass the SelectedItems using a binding expression.
+<br />
+<br />
+Is this a too simple use case, or is it typical of what one will have to do to call methods on the VM ? 
+<br />
+<br />
+That's on Windows 7 + VS2010 beta 2.
+<br />
+<br />
+Thanks 
+<br />
+<br />
+(waiting for the WPF video...)
+<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It may be that WPF 4 allows binding to properties of a trigger
+action. I was unable to use binding in SL3/WPF3.5.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Thursday, December 17, 2009</h2>That's great news then :-)
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

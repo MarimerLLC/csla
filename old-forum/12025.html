@@ -1,0 +1,11 @@
+<html><header><title>ViewModelBase performance, solution</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModelBase performance, solution</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12025.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh posted on Monday, June 17, 2013</h2><p>I&#39;m experiencing some terrible performance with ViewModelBase (WPF)&nbsp;class.&nbsp;If changing Model properties or&nbsp;adding items to list, profiler is returning results that are hundreds of times slower then expected.&nbsp;I figured out that such performance is because of events attached in HookChangedEvents method?</p>
+<p>Solution may be to implement some disposable class, eg. BypassChangedEvents wich will wrap UnhookChangedEvents, HookChangedEvents and OnSetProperties.</p>
+<p>After that code that is changing Model may look like:</p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">using</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> (BypassChangedEvents)<br />{<br />// Model.Property = something;<br />// Model.Child.Add(item);<br />// ...<br />}</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 17, 2013</h2><p>What events are you talking about? Custom events, or standard PropertyChanged events?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh replied on Tuesday, June 18, 2013</h2><p>Standard PropertyChanged and ChildChanged events.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

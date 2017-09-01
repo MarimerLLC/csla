@@ -1,0 +1,13 @@
+<html><header><title>Address Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Address Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4360.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Saturday, February 16, 2008</h2><DIV>Ok,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am trying to create an "Address" object.</DIV>
+<DIV><BR>I also have the following objects.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>"Company"</DIV>
+<DIV>"Contact"<BR>"Customer"<BR>"Employee"</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Each of these objects will have an "Address" Object attached to them.<BR><BR>I am trying to figure out what would be the proper way to create the "Address" object.<BR>I don't want to make the "Address.NewAddress" factory methods to be a public.</DIV>
+<DIV><BR>Because in really,&nbsp; the Address object, even though in a seperate project, will still be a "Child" object itself.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any suggestions?<BR><BR>Thanks,<BR>Mark<BR></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Wednesday, February 20, 2008</h2>Not much you can do if Address is in a different project than the classes that&nbsp;use it. If you can put it in the same project then Address.NewAddress could be declared internal instead of public (thus preventing UI code from creating Address instances)....</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Wednesday, February 20, 2008</h2><P>You might want to create a separate&nbsp;module for CRUD and validation and use an interface for interaction with child object and then create separate children for each parent because the address is being used in different use cases. The properties are repeated but key activities are kept central.</P>
+<P>Cheers</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

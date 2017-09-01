@@ -1,0 +1,71 @@
+<html><header><title>PropertyStatus</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyStatus</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5648.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, October 22, 2008</h2>I'm looking at PropertyStatus, trying to figure out it's use.&nbsp; At first I thought it'd wrap the entire form or user control, but it looks like it may be geared toward a single property of the BO.<br><br>One thing I noticed though... there's some code in the property setter for the control's Source property.&nbsp; I thought I read in WPF Unleased it's not safe to do that, because WPF will call SetValue directly, thus bypassing the setter.&nbsp; Is that code that should only be run if the property is set directly?&nbsp; If you do set the property in code, will SetSource be called twice; once by the property setting, and once via the registered DependencyPropertyChangedCallback?&nbsp; Just want to make sure I'm using the control properly.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 22, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are correct, you should have one Property Status per
+field/property in your UI/business object.&nbsp; There is code in Dependency property
+declaration that would still run all needed operations even if SetValue is
+called, so you are safe on the second question.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 22, 2008 9:41 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] PropertyStatus<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm looking at PropertyStatus, trying to figure out it's
+use.&nbsp; At first I thought it'd wrap the entire form or user control, but it
+looks like it may be geared toward a single property of the BO.<br>
+<br>
+One thing I noticed though... there's some code in the property setter for the
+control's Source property.&nbsp; I thought I read in WPF Unleased it's not safe
+to do that, because WPF will call SetValue directly, thus bypassing the
+setter.&nbsp; Is that code that should only be run if the property is set
+directly?&nbsp; Just want to make sure I'm using the control properly<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

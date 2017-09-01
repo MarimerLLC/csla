@@ -1,0 +1,64 @@
+<html><header><title>Inheritance security rules violated while overriding member: </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Inheritance security rules violated while overriding member: </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12744.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>7designs posted on Tuesday, September 09, 2014</h2><p>I receive this error when I deploy to a shared hosting server at godaddy. I do not get this error on localhost or deployed to development server. Any ideas?</p>
+<p>&nbsp;</p>
+<p><span>
+<h2> <i>Inheritance security rules violated while overriding 
+member: 
+&#39;Csla.Server.DataPortalException.GetObjectData(System.Runtime.Serialization.SerializationInfo,
+ System.Runtime.Serialization.StreamingContext)&#39;. Security accessibility
+ of the overriding method must match the security accessibility of the 
+method being overriden.</i> </h2>
+</span>
+            <span style="font-family:Arial,Helvetica,Geneva,SunSans-Regular,sans-serif;">
+            <b> Description: </b>An unhandled exception occurred during 
+the execution of the current web request. Please review the stack trace 
+for more information about the error and where it originated in the 
+code.
+            <br /><br />
+            <b> Exception Details: </b>System.TypeLoadException: 
+Inheritance security rules violated while overriding member: 
+&#39;Csla.Server.DataPortalException.GetObjectData(System.Runtime.Serialization.SerializationInfo,
+ System.Runtime.Serialization.StreamingContext)&#39;. Security accessibility
+ of the overriding method must match the security accessibility of the 
+method being overriden.<br /><br />
+            <b>Source Error:</b> <br /><br />
+            
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td>
+                      <code>
+An unhandled exception was generated during the execution of the current
+ web request. Information regarding the origin and location of the 
+exception can be identified using the exception stack trace below.</code>
+                  </td>
+</tr>
+</tbody>
+</table>
+<br />
+            <b>Stack Trace:</b> <br /><br />
+            
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td>
+                      <code>
+<pre>[TypeLoadException: Inheritance security rules violated while overriding member: &#39;Csla.Server.DataPortalException.GetObjectData(System.Runtime.Serialization.SerializationInfo, System.Runtime.Serialization.StreamingContext)&#39;. Security accessibility of the overriding method must match the security accessibility of the method being overriden.]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) +0
+   Csla.DataPortal.Fetch(Object criteria) +56
+   QSLDL.CountryList.GetAll() in CountryList.Generated.cs:84
+   Default.LoadForm() in Default.aspx.cs:35
+   Default.Page_Load(Object sender, EventArgs e) in Default.aspx.cs:21
+   System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e) +51
+   System.Web.UI.Control.OnLoad(EventArgs e) +92
+   System.Web.UI.Control.LoadRecursive() +54
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +772
+</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 16, 2014</h2><p>This may be because godaddy isn&#39;t running your code in a FullTrust AppDomain.</p>
+<p>The Microsoft BinaryFormatter and NetDataContractSerializer types require FullTrust.</p>
+<p>If you are using CSLA 4.5+ you can configure CSLA to use MobileFormatter instead. This formatter has some limitations, but if you are using managed properties and standard CSLA base classes it should just work. MobileFormatter was written for Silverlight and WinRT, and so doesn&#39;t require FullTrust.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>7designs replied on Tuesday, September 16, 2014</h2><p>Thanks for the reply. I found adding&nbsp; &lt;trust level=&quot;Full&quot; /&gt; to the web config file allows the code to run with full trust.</p>
+<p>&nbsp;</p>
+<p>&lt;system.web&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp; &lt;trust level=&quot;Full&quot; /&gt;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

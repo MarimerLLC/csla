@@ -1,0 +1,21 @@
+<html><header><title>Business Validations</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Validations</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11354.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tanny posted on Friday, May 11, 2012</h2><p>All,</p>
+<p>I&#39;m newbie to CSLA and I&#39;m trying to implement validations in my application (Business layer -&gt; CSLA). I have requirement&nbsp;where in&nbsp;batch application we would check the data in DB&nbsp;against some business conditions and perform appropriate business logic accordingly. Later when these data entities are viewed from the screen, the same appropriate validation message needs to be displayed in the screen as well.</p>
+<p>I&#39;m just in initial approach phase, where I&#39;m thinking if its required to store the appropriate validation message against that data entity or use the Business validation rules in CSLA for the same.</p>
+<p>If in CSLA, can someone please share me some samples on business validation rules? </p>
+<p>Thanks!</p>
+<p>Regards,</p>
+<p>Tanny</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, May 11, 2012</h2><p>Hi,</p>
+<p>CSLA does NOT support the idea of storing broken rules in the database and restoring them as part of the fetch operation later. </p>
+<p>BusinessRules is a lot more than just validation and broken rules so you should run all your Business Rules when you fetching the Editable object.<br />You _could_ save broken rules to a database and just load as an information string property on a readonly object but it would not be recommended by me. </p>
+<p>You should be aware that Broke Rules can be</p>
+<ul>
+<li>a object level or </li>
+<li>property level </li>
+<li>may be more than one for object or property</li>
+<li>can be any level of Error, Warning or Information </li>
+</ul>
+<p>For samples look at the <b>UsingCsla4-02-Objects</b> ebook available for purchase at <a href="http://store.lhotka.ne">http://store.lhotka.net</a> and the samples download projects</p>
+<p>\Samples\Net\cs\RuleTutorial<br />\Samples\Net\cs\BusinessRuleDemo<br />\Samples\Net\cs\ProjectTracker</p>
+<p>So my recommendation is:</p>
+<p>1. If batch processing is time / performance critical - do the checks in the database if possible. That will always give the best performance. </p>
+<p>2. Create/Add Business rules to CSLA entities to run when you load objects for edit.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

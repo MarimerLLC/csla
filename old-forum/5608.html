@@ -1,0 +1,116 @@
+<html><header><title>Whither VB to C#?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Whither VB to C#?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5608.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jemmer posted on Thursday, October 16, 2008</h2><P>In light of Rocky's recent post about his decision to support C# exclusively going forward, we are starting to see the handwriting on the wall and are considering converting our app to C#.</P>
+<P>We are old-time VB programmers.&nbsp; Our company has invested a significant amount in the application, and we are continually extending and enhancing it.&nbsp; We'll probably be doing that forever.&nbsp; Our application consists of both Web and desktop components, as well as a random collection of services, daemons, and the like.&nbsp; It is based on CSLA (VB version), and we have been and still are quite happy with the environment, the performance, and our productivity.</P>
+<P>When we engaged in preliminary discussions with management about the possibility of moving to C#, of course their first reaction was "Why should we do this? What's it going to cost?".</P>
+<P>I'm looking for some answers to the "why should we do this" part.&nbsp; There are non-trivial costs, which I think we can reasonably identify,&nbsp;and those reasons to convert need to somehow be perceived as offsetting those costs.&nbsp; There's a lot of app to convert, we need to learn the language, and I would expect some sort of productivity hit for a while as we come up to speed.</P>
+<P>I see that there are any number of VB to C# converters out there (can anyone recommend a good one?), but I'm sure we'll still have a non-trivial amount of work addressing things a converter can't convert.</P>
+<P>Can any help me with some reasons why it makes sense to undergo the conversion and learning curve?&nbsp; Or not??</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, October 16, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jemmer:</strong></div><div>
+<P>I'm looking for some answers to the "why should we do this" part.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Just my opinion of course, but I don't see any benefit - I wouldn't spend a bunch of time just to have an app in a different language. At the risk of pointing out the obvious, VB.NET apps can&nbsp;use a .dll written in C#.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cclark replied on Thursday, October 16, 2008</h2>By VB, do you mean VB.NET or VB 6?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jemmer replied on Thursday, October 16, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>cclark:</strong></div><div>By VB, do you mean VB.NET or VB 6?</div></BLOCKQUOTE></P>
+<P>VB.NET</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jemmer replied on Thursday, October 16, 2008</h2><P>Thanks for the reply.</P>
+<P>I guess the question is that the future of VB seems pretty clear to me - there isn't one.&nbsp; Obviously it will be a long time before VB completely&nbsp;disappears, but what to do to minimize the impact when that day does eventually arrive?</P>
+<P>I mentioned that we are continually adding to and enhancing our app. It now consists of a bazillion lines of code in several dll's, and it just doesn't seem reasonable and practical from a development (and maintenance) standpoint to mix the languages and end up with part of the app in VB and part in C#.&nbsp; I'm not speaking strictly about CSLA, but rather in the broader scope of the application itself.&nbsp; This is why we're considering a conversion of our application (CSLA notwithstanding) - having everything in a single language just seems to make sense from a number of perspectives.</P>
+<P>Surely it will be easier to hire new developers with C# expertise.&nbsp; Also, I don't mind learning a new language - increasing my skills is always a good thing.&nbsp; But I doubt management would be too sympathetic to my desires to enhance my resume; they are hardly interested that increasing my knowledge makes me more marketable <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>Is there any benefit to moving to C# beyond the broader availability of programming resources, and the fact that we are now programming in what may very well become a dead language?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would not be so sure labeling VB.Net a deal language.&nbsp;
+Granted C# has slightly more developers, but not much more.&nbsp; According to
+the last numbers I saw there was only about 10% difference.&nbsp; VB is still under
+active development in Microsoft, even though this may change &#8211; but not in
+the near future.&nbsp; My guess is that you will have many more reasons to
+re-write your app besides VB way before VB truly goes off the market.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jemmer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 16, 2008 5:10 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Whither VB to C#?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the reply.<o:p></o:p></p>
+
+<p>I guess the question is that the future of VB seems pretty clear to me -
+there isn't one.&nbsp; Obviously it will be a long time before VB
+completely&nbsp;disappears, but what to do to minimize the impact when that day
+does eventually arrive?<o:p></o:p></p>
+
+<p>I mentioned that we are continually adding to and enhancing our app. It now
+consists of a bazillion lines of code in several dll's, and it just doesn't
+seem reasonable and practical from a development (and maintenance) standpoint
+to mix the languages and end up with part of the app in VB and part in
+C#.&nbsp; I'm not speaking strictly about CSLA, but rather in the broader scope
+of the application itself.&nbsp; This is why we're considering a conversion of
+our application (CSLA notwithstanding) - having everything in a single language
+just seems to make sense from a number of perspectives.<o:p></o:p></p>
+
+<p>Surely it will be easier to hire new developers with C# expertise.&nbsp; Also,
+I don't mind learning a new language - increasing my skills is always a good
+thing.&nbsp; But I doubt management would be too sympathetic to my desires to
+enhance my resume; they are hardly interested that increasing my knowledge
+makes me more marketable <img id="_x0000_i1025" src="/emoticons/emotion-5.gif" alt="Wink <img src=" />"><o:p></o:p></p>
+
+<p>Is there any benefit to moving to C# beyond the broader availability of
+programming resources, and the fact that we are now programming in what may
+very well become a dead language?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cclark replied on Thursday, October 16, 2008</h2><P>VB.NET is not going away anytime soon, and regardless of the trends for programmers in the various .net languages, it is a very shallow learning curve to transition from C# to VB.NET and vice versa. The base class libraries, MSIL, the CLR, etc. are all the same amoung the various languages. So improvement to the core platform will always be available to any language. </P>
+<P>C# will always have a few rarely used&nbsp;capabilities that VB.NET won't, such as unsafe code (and who here has used the venerable stackalloc keyword?). These are not usually needed for business application development, which is the point of these forums.</P>
+<P>In the end, I think its whatever language speaks to you; go with whatever syntax you prefer. If you like writing inline XML, go w/ VB. If you just have to have your brackets, then C# is for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 17, 2008</h2>I wouldn't bother converting existing code.&nbsp; If you want to switch, then build new assemblies in C#.&nbsp; If you have newer asp.net sites, build new pages in C# and leave existing pages in vb.net, since you can mix languages.<br><br>The concepts for each language are similar; I find C# easier just because it requires so many less keywords, but that could be because I started with C# when .Net first appeared.&nbsp; Also, Classic Asp&nbsp; VBScript may have put a sore taste for VB in my mouth.. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 17, 2008</h2><P>I agree that there is no need or reason to re-write existing code from VB.Net to C#. I would bet a lot of money that there is no valid argument that Management would ever accept to do this. It is&nbsp;a huge drain for "no gain".</P>
+<P>I wish Microsoft did a better job of promoting VB.Net - it is my preferred language. But it is going to die any time soon -&nbsp;if ever. I think you are premature in trying to head off this coming "disaster". </P>
+<P>VB.Net is being actively developed - look at the XML literal feature in the latest version. Awesome! VB.Net also has a lot of future potential with other initiatives that MS is developing in regards to late binding and&nbsp;dynamic languages. I wouldn't be in such a hurry to write off VB.Net as a dead language!</P>
+<P>You could always write new code on C# but then you will have a mixed code base. I am not sure you would gain much by that - other than making your existing staff want to leave for a C# job somewhere.</P>
+<P>IMO - you are worrying about something that is not a real issue right now. I would stay focused on the app instead. Or look for a C# job in a different company.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

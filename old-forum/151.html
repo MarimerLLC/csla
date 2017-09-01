@@ -1,0 +1,204 @@
+<html><header><title>Version 2.0.1 beta available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 2.0.1 beta available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/151.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, May 19, 2006</h2><P>A beta release of version 2.0.1 is now available at <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>.</P>
+<P>This is primarily a bug fix release to fix the various errata that people have submitted thus far. It does include some code changes to improve functionality in some areas, again based on reader feedback. You can find a change log from the download page.</P>
+<P>The biggest, and most in-need-of-testing change is to the CslaDataSource web data control. I enhanced the VS 2005 designer support in this control so it detects and reloads your business object's metadata when you rebuild the solution - without the need for closing the designer window or VS 2005 itself. This was a <EM>very big</EM> change and I really don't know if my solution will work in all VS configurations, so if you get a chance to test this I'd really appreciate it!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, May 19, 2006</h2><P>Hello Rocky, </P>
+<P>Thanks for issuing a .0.1 release. I have downloaded it (really to try to CslaDataSource).</P>
+<P>To me, it's not too horrendous to exit and come back in, but it didn't work for me without doing so. I'm probably a fringe case.</P>
+<P>I use the CslaDataSource with my "NameValuePairs" replacement which I call CodeType. &nbsp;</P>
+<P>My base class is:<FONT color=#0000ff size=1></P>
+<P>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>abstract</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>CodeType</FONT><FONT size=1>&lt;CT, K, V, S&gt; : </FONT><FONT color=#008080 size=1>ReadOnlyBase</FONT><FONT size=1>&lt;</FONT><FONT color=#008080 size=1>CodeType</FONT><FONT size=1>&lt;CT, K, V, S&gt;&gt; </FONT><FONT color=#0000ff size=1>where</FONT><FONT size=1> S : </FONT><FONT color=#008080 size=1>IComparable</P></FONT>
+<P>Within CodeType is the ability to get various "depth level" CodeOptionTrees, which are:</P>
+<P><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>CodeOptionTree</FONT><FONT size=1> : </FONT><FONT color=#008080 size=1>ReadOnlyBindingList</FONT><FONT size=1>&lt;</FONT><FONT color=#008080 size=1>CodeOption</FONT><FONT size=1>&gt;, </FONT><FONT color=#008080 size=1>IHierarchicalDataSource</P></FONT>
+<P>And a CodeOptionTree is a list of CodeOption (similar to a name value pair but with parentkey and sortvalue). CodeOptionTree is what&nbsp;I bind to. It is within CodeOption that I attempted to add a value called "TestKey" to go along with "Key", "Value", "Extended Value", ..etc... It is this value that didn't show up until I exited and reentered VS 2005. (Tried rebuilding solution, refreshing schema, etc.)</P>
+<P>Now my concrete code type classes are as such:</P><FONT size=1>
+<P>[</FONT><FONT color=#008080 size=1>Serializable</FONT><FONT size=1>()]</P>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>Prefix</FONT><FONT size=1> : </FONT><FONT color=#008080 size=1>StandardCodeTypeBase</FONT><FONT size=1>&lt;</FONT><FONT color=#008080 size=1>Prefix</FONT><FONT size=1>&gt;</P>
+<P>{</P>
+<P></FONT>
+<P><FONT color=#808080 size=1></P></FONT><FONT size=1></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> Prefix(): </FONT><FONT color=#0000ff size=1>base</FONT><FONT size=1>()</P>
+<P>{</P>
+<P>_codeTypeID = 3;</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=1>// Simply provide a signature that can be used by the CSLA Data Source</P></FONT><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>class</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>Options</FONT><FONT size=1> : </FONT><FONT color=#008080 size=1>CodeOptionTree</FONT><FONT size=1> { }</P>
+<P>}</P></FONT>
+<P>Where the majority of the guts of most CodeTypes (standard code types)&nbsp;are in StandardCodeTypeBase (which is an abstract class that&nbsp;inherits from CodeType).</P>
+<P>One other thing is that I find I have to declare a "signature" class in my concrete classes as you see above, nothing major.&nbsp;Otherwise I can't seem to get the CSLA Data Source to recognize my class. </P>
+<P>My CSLA data sources tend to look like this:</P>
+<P>ID: ContactTypeDataSource</P>
+<P>TypeAssemblyName: Prototype.Library</P>
+<P>TypeName: Prototype.Library.Prefix+Options</P>
+<P>(My CodeTypes, or NameValuePairs, maintain a list of "CodeOptionTrees", one list for each "depth" level of coding). </P>
+<P>So obviously I'm probably a fringe case and I'm not too concerned about exiting and reentering but I thought I'd let you know it is still an issue for me. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>One thing to keep in mind is that you may have been using 
+the old CslaDataSource control.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>The only way I have found to upgrade a control (once the 
+designer has been loaded) is to do this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>1) Open your solution in VS</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>2) Close all designers and code windows</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>3) Close VS</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>4) Open your solution in VS (now with no windows 
+open)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>5) Do a complete solution rebuild - thus ensuring that the 
+new Csla.dll is loaded into all projects</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>6) Close VS</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>7) Open your solution in VS and work with it - you should 
+now be running the new Csla.dll</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010430622-19052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, May 19, 2006</h2>Or get <a href="http://wiki.shahine.com/default.aspx/MyWiki.CleanSources">the best companion for a crashing ide</a> (really a very handy tool!) and...<br>1-Close all designers (Optional, but once you rebuild you'll need to close-reopen them).<br>2-Close VS<br>3-Run Clean sources in your solution's folder.<br>4-Reopen VS.<br>5-Rebuild Solution.<br><br>That's it!<br><br>It helped a lot when working on those pesky attributes to get generic / abstract forms working on the ide.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 24, 2006</h2><P>I have refreshed the beta of 2.0.1 to fix a couple reported issues - and to add a couple new changes.</P>
+<P>The big one is to address the need to support polymorphic child objects in a BusinessListBase collection. Given that the code still passes all the old unit tests I don't think my change broke anything in the framework, and it should allow you to create a non-generic interface that all your child classes can implement.</P>
+<P>And of course the really big change is to CslaDataSource as noted earlier.</P>
+<P>If you get a chance to try using 2.0.1 over the next few days I would appreciate it. I would very much like to release this update, because it does include a number of important bug fixes. You can get it from <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>.</P>
+<P>Thank you!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>niros replied on Friday, May 19, 2006</h2>Where is the updated Project Tracker?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=010273102-20052006><FONT face=Arial color=#0000ff size=2>I'll get there, I'll get there :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010273102-20052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010273102-20052006><FONT face=Arial color=#0000ff size=2>(I knew I'd forget something...)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=010273102-20052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=010273102-20052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+  <DIV></DIV>Where is the updated Project 
+Tracker?<BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=244533502-20052006><FONT face=Arial color=#0000ff size=2>The zip files have now been updated to contain the 
+ProjectTracker sample app as well as the framework code. If you downloaded them 
+earlier today, please download them again to get the full 
+deal.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=244533502-20052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=244533502-20052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>OK, <a href="http://www.lhotka.net/cslanet/download.aspx">this is the final beta of 2.0.1</a>. Barring any negative feedback from you I'll release it next week. So you can either test it now, while I can still react to issue, or test it after I release <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />.<br><br>At the rate I'm going with changes, I'll never get it out if I don't do a firm cut-off, so this is it. No more changes other than bug fixes until 2.0.1 is out. Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, May 25, 2006</h2>Hi Rocky,<br><br>The errata says that the ClientContext has the threading issuse discussed in this thread addressed, but I don't see the files that would contain the update in the zip file.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>The change is to the ApplicationContext.(vb/cs) file under DataPortal.<br><br>Make sure the zip file you downloaded is csla20XX-2.0.1-060525.zip - specifically note the date, which should be 060525.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 26, 2006</h2>Ok, must have used files from an older folder I extracted.<br><br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Friday, May 26, 2006</h2><P>Just downloaded the latest beta w/the changes to ClientContext.</P>
+<P>I noticed that the entire call to GetClientContext/SetClientContext is locked.&nbsp; Since the lock is only necessary if you're accessing ClientContext via the AppDomain, couldn't you rewrite&nbsp;GetClientContext as...</P>
+<P>internal static HybridDictionary GetClientContext()<BR>{<BR>&nbsp;&nbsp; if (HttpContext.Current == null)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (_syncClientContext)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (HybridDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (HybridDictionary)Thread.GetData(slot);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp; }<BR>&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (HybridDictionary) HttpContext.Current.Items[_clientContextName];<BR>}</P>
+<P>That would avoid the overhead (however slight it may be) for those that don't need it.&nbsp; SetClientContext would be modified similiarly, of course.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2>If you look further you'll see that the call to 
+GetClientContext is wrapped within the ClientContext property - and that 
+property is locked in its entirety (it has to be because it potentially does 2 
+different operations with the value).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2>The Get/SetClientContext methods are only called by the 
+data portal, or by the ClientContext property.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2>So I think you are right - I can optimize the Get/Set 
+methods, which would be highly beneficial on the server - but won't actually 
+impact client usage at all.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=556225813-26052006><FONT face=Arial color=#0000ff size=2>Thanks for that! Rocky</FONT></SPAN><B></DIV></B></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, May 26, 2006</h2>Rocky,<br>I recall you once agreed to integrating the possibility for the dataportal fetch method to be more "GenericType Aware". Mainly because of the cases where you have things to fetch that don't really need criteria.<br><br>I was hoping you could integrate that to 2.0.1. The changes would be fairly simple and they wouldn't break any existing code... It would look similar to this:<br><br>&nbsp; Public Function Fetch(Of T)(ByVal criteria As Object) As T<br>&nbsp;&nbsp;&nbsp; Return DirectCast(Fetch(criteria, GetType(T)), T)<br>&nbsp; End Function<br><br>&nbsp; Public Function Fetch(ByVal criteria As Object) As Object<br>&nbsp;&nbsp;&nbsp; Return Fetch(criteria, MethodCaller.GetObjectType(criteria))<br>&nbsp; End Function<br><br>&nbsp;&nbsp; 'this doesn't really need to be public, <br>&nbsp;&nbsp; 'but making it protected might help those who extend the dataportal (like AO!)<br>&nbsp; Protected Function Fetch(ByVal criteria As Object, ByVal t As Type) As Object<br><br>...<br>&nbsp;&nbsp;&nbsp; Dim method As MethodInfo = _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodCaller.GetMethod( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t, "DataPortal_Fetch", criteria) 'Note that I'm using t here as a param!<br><br>....<br><br><br>Would you please please please integrate that to 2.0.1?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, May 26, 2006</h2>Ok, maybe it involves a little more than that...<br><br>Public Function Fetch( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal criteria As Object, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal context As Server.DataPortalContext)<br><br>Which exists in Server.DataPortal and implements IDataPortalServer does the same assumption about the criteria.<br><br>So, I figure that one way of solving this is adding an overload to IDataPortalServer that accepts type.<br>This still doesn't break existing code, but it's not as simple as 4 lines of code anymore.<br>I'm working on it, do you think that you might integrate it if I send you a patch?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2>You are right, it is a bit more complex than 4 lines of 
+code, because it means changing the whole flow of the type through the data 
+portal.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2>I may do this for next next release, but not for 2.0.1. If 
+I keep adding stuff to 2.0.1 it will never come out, and there are a couple key 
+changes in there that are required for some of the upcoming code generation 
+templates. I don't want to delay other people's work by indefinitely delaying 
+2.0.1.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2>Changing the Fetch behavior isn't terribly hard. It is 
+merely a matter of making it mirror the Create behavior - and then possibly 
+refactoring the solution to combine any overlapping behaviors between Create and 
+Fetch. However, it does mean touching several of the data portal classes from 
+client through to server to provide the complete flow - and that means 
+relatively complex testing due to the various proxy/host combinations as well as 
+local vs remote in general.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=071182616-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, May 26, 2006</h2><P>I downloaded the update and&nbsp;tried to rebuild&nbsp;the ProjectTracker solution.</P>
+<P>I am getting an error "could not create type 'PTService'" which takes me here when I double-click:<FONT size=2></P>
+<P>&lt;%</FONT><FONT color=#0000ff size=2>@</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>WebService</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Language</FONT><FONT color=#0000ff size=2>="C#"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>CodeBehind</FONT><FONT color=#0000ff size=2>="~/App_Code/PTService.cs"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Class</FONT><FONT color=#0000ff size=2>="PTService"</FONT><FONT size=2> %&gt;</FONT></P>
+<P><FONT size=2>Building just the web service project I get "Error&nbsp;1&nbsp;Cannot convert type 'ProjectTracker.Library.ProjectInfo' to 'ProjectInfo'"</P></FONT>
+<P>When I open the&nbsp;ProjectInfo.cs in that PTWebService\App_Code folder&nbsp;I note it does not have a namespace.&nbsp; The one in the ProjectTracker.Library does.</P>
+<P>Did the previous version not include a namespace?&nbsp; (I don't see that in the change log.)</P>
+<P>Would you expect to have to manually replace those App_Code files?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=665051019-26052006><FONT face=Arial color=#0000ff size=2>Hmm. At a late point in writing the book I renamed all the 
+___Info classes to ___Data inside the PTService project - specifically to avoid 
+using the same names as the classes in ProjectTracker.Library (because it was 
+way to confusing in the prose of Chapter 11 to have the same class names for 
+both purposes).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=665051019-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=665051019-26052006><FONT face=Arial color=#0000ff size=2>Perhaps something has gotten messed up in the code in cvs 
+so it doesn't reflect the correct naming - I'll have to look at 
+this.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=665051019-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=665051019-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  </DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT size=2><FONT face=Tahoma><B>From:</B> DansDreams 
+  [mailto:cslanet@lhotka.net]&nbsp;<BR></FONT><SPAN class=665051019-26052006><FONT face=Arial color=#0000ff>&nbsp;</FONT></SPAN></FONT></DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT size=2><SPAN class=665051019-26052006>&nbsp;</SPAN></FONT>I downloaded the 
+  update and&nbsp;tried to rebuild&nbsp;the ProjectTracker solution.</DIV>
+  <P>I am getting an error "could not create type 'PTService'" which takes me 
+  here when I double-click:<FONT size=2></P>
+  <P>&lt;%</FONT><FONT color=#0000ff size=2>@</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>WebService</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Language</FONT><FONT color=#0000ff size=2>="C#"</FONT><FONT size=2> 
+  </FONT><FONT color=#ff0000 size=2>CodeBehind</FONT><FONT color=#0000ff size=2>="~/App_Code/PTService.cs"</FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2>Class</FONT><FONT color=#0000ff size=2>="PTService"</FONT><FONT size=2> %&gt;</FONT></P>
+  <P><FONT size=2>Building just the web service project I get 
+  "Error&nbsp;1&nbsp;Cannot convert type 'ProjectTracker.Library.ProjectInfo' to 
+  'ProjectInfo'"</P></FONT>
+  <P>When I open the&nbsp;ProjectInfo.cs in that PTWebService\App_Code 
+  folder&nbsp;I note it does not have a namespace.&nbsp; The one in the 
+  ProjectTracker.Library does.</P>
+  <P>Did the previous version not include a namespace?&nbsp; (I don't see that 
+  in the change log.)</P>
+  <P>Would you expect to have to manually replace those App_Code 
+files?</P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=587221419-26052006><FONT face=Arial color=#0000ff size=2>Dan, is it possible that you have some old files in your 
+App_Code directory? If you just unzipped over that directory, and had some 
+pre-RTM code there somehow, you might still have the ProjectInfo.cs file - which 
+is no longer valid. The only files in App_Code should be the ones listed in cvs 
+(<A href="http://www.lhotka.net/cslacvs/viewcvs.cgi/ProjectTracker20cs/www/PTWebService/App_Code/">http://www.lhotka.net/cslacvs/viewcvs.cgi/ProjectTracker20cs/www/PTWebService/App_Code/</A>).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=587221419-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=587221419-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Friday, May 26, 2006</h2><P>Yes, I did (unzip and have some old files).&nbsp; :)&nbsp; Cleaning that up seems to have fixed it.</P>
+<P>My "real" app that has a couple of CslaDataSources on a web form I'm playing with is still working fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, May 26, 2006</h2>Rocky,<br>I've implemented these changes and I've tested them succesfully in local mode and with remoting.<br>I'm sure more testing is required but at least it's a step forward. Maybe it'll be in for 1.0.2 ?<br><br>I attached a diff file with the changes. (BTW, the forum won't let you attach files with the diff ext. I had to rename it to txt)<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Tuesday, August 08, 2006</h2>Can someone please explain this to me?&nbsp; I'm having trouble grasping when the "ExecutionLocation" would actually be "Client" vs "Server".&nbsp; Isn't the ApplicationContext only residing on the Client?&nbsp; I don't recall the ApplicationContext being passed between layers, but then again I haven't had a chance to memorize your book yet <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" />.<br><br><font size="2">internal static HybridDictionary GetClientContext()<br>{<br>&nbsp;&nbsp; if (HttpContext.Current == null)<br>&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ApplicationContext.ExecutionLocation == ExecutionLocations.Client)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; lock (_syncClientContext)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (HybridDictionary)AppDomain.CurrentDomain.GetData(_clientContextName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LocalDataStoreSlot slot = Thread.GetNamedDataSlot(_clientContextName);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (HybridDictionary)Thread.GetData(slot);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp; }<br>&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (HybridDictionary) HttpContext.Current.Items[_clientContextName];<br>}</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 08, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=443524214-08082006><FONT face=Arial color=#0000ff size=2>ExecutionLocation is discussed in Chapter 4, and it is 
+managed by the data portal itself so it doesn't need to be passed across the 
+network. In general terms, the data portal knows where it is running and is able 
+to set the location value accordingly.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=443524214-08082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=443524214-08082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Arial color=#0000ff size=2></FONT><BR>&nbsp;</DIV>
+  <DIV></DIV>Can someone please explain this to me?&nbsp; I'm having trouble 
+  grasping when the "ExecutionLocation" would actually be "Client" vs 
+  "Server".&nbsp; Isn't the ApplicationContext only residing on the 
+  Client?&nbsp; I don't recall the ApplicationContext being passed between 
+  layers, but then again I haven't had a chance to memorize your book yet <IMG alt="Stick out tongue <img src=" />" 
+src="/emoticons/emotion-4.gif">.<BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

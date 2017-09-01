@@ -1,0 +1,35 @@
+<html><header><title>Business Rules Persisting Between Instances Derived from BusinessBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules Persisting Between Instances Derived from BusinessBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9718.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Friday, November 05, 2010</h2><p>I have noticed that business rules are persisted between instances derived from&nbsp;BusinessBase. &nbsp;What am I doing wrong. &nbsp;I&#39;ve tried explicitly null the instance when done. &nbsp;Please help.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;InboundPOAppointment appointment = InboundPOAppointment.NewInboundPOAppointment();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.Type = InboundPOAppointment.eInboundPOAppointmentType.Reserved;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.Date = dtpAppointmentCalendar.Value;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.StartTime = startTime;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.StopTime = stopTime;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.DockName = _CurrentDock;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.RegionNumber = _Region;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.FacilityNumber = _Facility;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment.ApplyEdit();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// saves appointment</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;InboundPOAppointment savedAppointment = appointment.Save();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;appointment = null;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;savedAppointment = null;</p>
+<p>&nbsp;</p>
+<p>// during the save two additional rules are added</p>
+<div></div>
+<p>When I turn around and create another instance of InboundPOAppointment the two additional rules are there.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, November 05, 2010</h2><p>I don&#39;t understand what you mean by &quot;rules are added&quot;. You mean you associate rules with the type in the save process?</p>
+<p>The <em>only</em> place you should associate rules with a type is in AddBusinessRules. Rules are associated with a type exactly one time per AppDomain lifetime, and they are cached for the lifetime of that AppDomain. There is no provision for dynamically adding/removing rule associations. If you need different rule sets, use the CSLA 4 rule set feature.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow replied on Friday, November 05, 2010</h2><p>In a header/detail relationship I was saving the header in order generate an Id so that details records would have access. &nbsp;I was adding rules (BusinessRules.AddRule(new Csla.Rules.CommonRules...) in the DataPortal_Fetch and DataPortal_Update to add a required Id rule so that it would be avaialbe to the children which is the culprit so the next new instance would already have the added rules.. &nbsp;I remember now reading awhile back that this is handled in the Editable Parent so move the Requied Id rule back and delay the save.</p>
+<p>&nbsp;</p>
+<p>As always, thanks for the quick response. &nbsp;Enjoying using 4.0.1-100828. &nbsp;Recently came from 2.1.1-070223/</p>
+<p>&nbsp;</p>
+<p>Keep up the GREAT work!!!</p>
+<p>&nbsp;</p>
+<p>Keith</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

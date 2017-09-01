@@ -1,0 +1,16 @@
+<html><header><title>Can't build CSLA35CS </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't build CSLA35CS </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4179.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rayc posted on Tuesday, January 15, 2008</h2><P>I recently downloaded csla35cs and I loaded it using Visual Studio 2008. I changed my connectionstring so that it works locally. I rebuilt csla.dll (that worked fine). </P>
+<P>However, I tried rebuilding PTWpf and I got errors...</P>
+<P>The errors are in the xaml files. It says that the Assembly 'Csla' cannot be found. This error occurs on the line :</P><FONT color=#ff0000 size=2>
+<P>xmlns</FONT><FONT color=#0000ff size=2>:</FONT><FONT color=#ff0000 size=2>csla</FONT><FONT color=#0000ff size=2>="clr-namespace:Csla.Wpf;assembly=Csla"</FONT><FONT size=2> </FONT></P>
+<P><FONT size=2><FONT size=3>in the file ResourceEdit.xaml.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>I checked the references for the project PTWpf and Csla was there, it was pointing to the newly built Csla.dll that I just rebuilt.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>I also rebuilt ProjectTracker.Library and that compiled successfully.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>What can I be doing wrong?</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Thanks in advance</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Ray</FONT></FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 16, 2008</h2><P>I don't know. I have the solutions on three different machines (to make sure I don't do some machine-specific thing by mistake)...</P>
+<P>Look in PTWpf\bin\debug and make sure Csla.dll is there.</P>
+<P>Also, make sure you are building everything in debug mode (to start with anyway). I often make that mistake - building Csla.dll in Release mode and then I'm unable to build ProjectTracker because it references the debug version that isn't there...</P>
+<P>Also, the file reference uses relative paths. It is assumed that you unzip everything so the relative paths are the same as they are for me:</P>
+<P>...\cslacs\csla<BR>...\ProjectTrackercs<BR>...\cslatest</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

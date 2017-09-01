@@ -1,0 +1,224 @@
+<html><header><title>Audit Logging Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Audit Logging Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7492.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor posted on Friday, August 21, 2009</h2>Hi,<br /><br />I'm currently in the process of migrating an existing FoxPro application to CSLA and DotNet ( WinForms ). I am accessing VFP data via OleDB as the new application must work alongside the old one. I can't just start from scratch with an SQL database. In my version of VFP there is no concept of a database, and therefore all the tables are "free" tables ( i.e. no triggers, no stored procedures, no nothing! ). I need to implement some kind of audit logging on certain fields and tables. You know the kind of thing, who changed it, when did they change it, what fields where changed etc. etc.<br /><br />I am wondering what is the best way to do this? Should I build this directly into the business objects?, or is there a better way perrhaps...?<br /><br />Any suggestions would be welcome...<br /><br />Thanks,<br /><br />Nick</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Friday, August 21, 2009</h2>Nick,<br>&nbsp; I've been pondering this very issue. My thought was to create a set of descendents of the baseobjects (BLB, BB, etc) and override SetProperty to store the changes in an "AuditObject". Then override .Save to write the AuditObjects data to a Log table somewhere when the Save completes.<br><br>Again, this may absolutely be the wrong way, but it's the path I'm about ready to explore.<br><br>Jeff Young<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, August 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RedShiftZ:</strong></div><div>Nick,<br>&#160; I've been pondering this very issue. My thought was to create a set of descendents of the baseobjects (BLB, BB, etc) and override SetProperty to store the changes in an "AuditObject". Then override .Save to write the AuditObjects data to a Log table somewhere when the Save completes.<br><br>Again, this may absolutely be the wrong way, but it's the path I'm about ready to explore.<br><br>Jeff Young<br><br><br></div></BLOCKQUOTE><br /><br />This is basically what we did, except that we instead intercept a "OnPropertyChanging" notification and use this to capture the previous property value. <br /><br />Note that your implementation has to be smart enough to detect when somethine puts the original value back before saving the object, in which case no change occurred and nothing needs to be logged in the audit log(which is why we grab and cache the original value in the implementation when it's changed to something else).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Wednesday, August 26, 2009</h2>It appears there are a number of ways of doing this, and I guess I need to have a play around for a while and see what works best for us. The difficulty for us is not having a database where we could perhaps use triggers etc. to automate the process of recording changes. I dont wan't to clog my business objects up with too much auditing code, but obviously I will have to put the code somewhere. I will report back once I have decided which way to go...<br /><br />Thank you for your input, its much appreciated...<br /><br />Nick </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, August 26, 2009</h2>Hi Nick, <br><br>If you use SqlServer 2008 as your database there is  built in functions for auditing. <br>With no extra code in BO's and low impact on performance in application.<br><br>/jonnybee<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Wednesday, August 26, 2009</h2><P>If only...!</P>
+<P>Sadly we have a need to&nbsp;access legacy FoxPro data at the moment, and only when all of our old forms have been migrated to dotnet could we consider changing databases.</P>
+<P>Its certainly one for the future though...</P>
+<P>Thanks,</P>
+<P>Nick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Wednesday, August 26, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div><br>This is basically what we did, except that we instead intercept a "OnPropertyChanging" notification and use this to capture the previous property value. 
+
+Note that your implementation has to be smart enough to detect when somethine puts the original value back before saving the object, in which case no change occurred and nothing needs to be logged in the audit log(which is why we grab and cache the original value in the implementation when it's changed to something else).</div></BLOCKQUOTE><br><br>This sounds intriguing. Would you mind posting a sample BO using this methodology? <br><br>Thanks,<br><br>Jeff<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, August 27, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RedShiftZ:</strong></div><div><BR>This sounds intriguing. Would you mind posting a sample BO using this methodology? <BR></div></BLOCKQUOTE></P>
+<P>This is implemented in a common base class (rather large), but&nbsp;I can post some pieces. </P>
+<P>The idea was to have the capability to store the original value of any changed property. I took&nbsp;a page out of Rocky's Undo playbook and used a HybridDictionary for this.</P>
+<P>If you don't change any properties, then no space (other than empty reference to value cache) is wasted. You also don't preallocate space for each property -- only the changed ones are stored. </P>
+<P>Some of this you won't probably use -- for example, we use parts of it to enforce column-level (versus row-level)&nbsp;database concurrency.</P>
+<P>As you can see, for auditing purposes it is pretty easy to get a list of field that have changed and what the old values were... </P>
+<P>Here is the implementation:</P>
+<P>&nbsp;</P><PRE>        #region Changed Value Support
+        // Changed Value Support modeled after WOMapperBusinessBase implementation, except it 
+        // uses property names only and ignores member fieldnames
+        // Similar OnPropertyChanging() interface kept for consistency/switchability
+        protected virtual void OnPropertyChanging(string propertyName, object oldValue, string memberfieldName)
+        {
+            // Enforce authorization rules
+            CanWriteProperty(propertyName, true);
+
+            // When editing existing object, cache original value on first property change 
+            // for dirty field/concurrency support. 
+
+            // NOTE: Differs from WORMapperBusinessBase implementation because uses property and not field names
+            if (!IsNew &amp;&amp; !String.IsNullOrEmpty(propertyName))
+            {
+                CacheValue(propertyName, oldValue);
+            }
+        }
+
+        protected void CacheValue(string propertyName, object oldValue)
+        {
+            // Cache only value types for now
+            if (!ValueCache.Contains(propertyName) &amp;&amp; (oldValue == null || oldValue.GetType().IsValueType || !typeof(Csla.Core.BusinessBase).IsAssignableFrom(oldValue.GetType())))
+                ValueCache.Add(propertyName, oldValue);
+        }
+
+        public void ClearConcurrencyCache()
+        {
+            if (!ReferenceEquals(_valueCache, null))
+                _valueCache.Clear();
+            _valueCache = null;
+        }
+
+        protected System.Collections.Specialized.HybridDictionary _valueCache;
+
+        protected System.Collections.Specialized.HybridDictionary ValueCache
+        {
+            get
+            {
+                if (ReferenceEquals(_valueCache, null))
+                    _valueCache = new System.Collections.Specialized.HybridDictionary();
+                return _valueCache;
+            }
+        }
+
+        protected T ReconstructOriginal()
+        {
+            T copy = this.Clone();
+
+            if (!ReferenceEquals(_valueCache, null) &amp;&amp; _valueCache.Count &gt; 0)
+            {
+                foreach (object key in _valueCache.Keys)
+                {
+                    Util.ReflectHelper.SetPropertyValue(
+                        copy, key.ToString(), _valueCache[key]);
+                }
+            }
+            return copy;
+        }
+
+        protected void CopyChangedFields(T target)
+        {
+            if (!ReferenceEquals(_valueCache, null) &amp;&amp; _valueCache.Count &gt; 0)
+            {
+                foreach (object key in _valueCache.Keys)
+                {
+                    Util.ReflectHelper.SetPropertyValue(
+                        target, key.ToString(), _valueCache[key]);
+                }
+            }
+        }
+
+
+        protected bool IsDirtyProperty(string fieldMember)
+        {
+            object original;
+            return IsDirtyProperty(fieldMember, out original);
+        }
+
+        protected bool IsDirtyProperty(string fieldMember, out object original)
+        {
+            bool bDirty = false;
+            original = null;
+            if (_valueCache != null &amp;&amp; _valueCache.Contains(fieldMember))
+            {
+                object cachedValue = _valueCache[fieldMember];
+                object currentValue = Util.ReflectHelper.GetPropertyValue(this, fieldMember);
+
+                if (!object.Equals(cachedValue, currentValue))
+                {
+                    original = cachedValue;
+                    bDirty = true;
+                }
+            }
+
+            return bDirty;
+        }
+        #endregion
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Thursday, August 27, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>As you can see, for auditing purposes it is pretty easy to get a list of field that have changed and what the old values were... </div></BLOCKQUOTE><br><br>Very nice. Two things.. <br>Do you override Save() in your WOMapperBusinessBase or do you handle saving the changes in the DataPortal_Update()? Have an example you can share?<br><br>What do 'Util.ReflectHelper.GetPropertyValue' &amp; 'Util.ReflectHelper.SetPropertyValue' do?<br><br>Thanks again,<br><br>Jeff<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, August 27, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RedShiftZ:</strong></div><div>Very nice. Two things.. <BR>Do you override Save() in your WOMapperBusinessBase or do you handle saving the changes in the DataPortal_Update()? Have an example you can share?<BR><BR>What do 'Util.ReflectHelper.GetPropertyValue' &amp; 'Util.ReflectHelper.SetPropertyValue' do?<BR></div></BLOCKQUOTE></P>
+<P>I do the main updating in DataPortal_Update() -- pretty much a requirement if you want to support a 3-tier deployment as Save() executes client-side. </P>
+<P>I could provide an example, but I'm using an ORM as DAL, so&nbsp;I don't know how much it would help. In a nutshell, I reconstruct the original object, tell the ORM to start tracking it, copy the changes to the object be tracked, and then tell the ORM to persist the object. Changes to child objects are propagated similarly. </P>
+<P>The auditing mechanism itself is invoked as part of this update. It just inspects the valuecache above and (depending on our configuration), optionally writes out individual objects into a separate logging table, one per changed property. </P>
+<P>The other methods are simple reflection helpers. Here is the source. (These are older and now that I look at them, some minor refactoring is probably in order, but you get the idea...)</P><PRE>        static public object GetPropertyValue(object target, string property, BindingFlags flags)
+        {
+            PropertyInfo pi = target.GetType().GetProperty(property, flags);
+            if (pi == null)
+                pi = target.GetType().GetProperty(property);
+
+            if (pi != null)
+            {
+                return pi.GetValue(target, null);
+            }
+            else
+                throw new System.ArgumentException("Invalid property name", property);
+        }
+
+        static public object GetPropertyValue(Type type, string property)
+        {
+            PropertyInfo pi = type.GetProperty(property, BindingFlags.Public | BindingFlags.IgnoreCase | BindingFlags.Static | BindingFlags.FlattenHierarchy);
+
+            if (pi != null)
+            {                
+                return pi.GetValue(null, null);
+            }
+            else
+                throw new System.ArgumentException(string.Format("Invalid property name {0} for type {1}", property, type));
+        }
+
+
+        static public void SetPropertyValue(object target, string property, object newValue)
+        {
+            SetPropertyValue(target, property, newValue, BindingFlags.Public | BindingFlags.Static | BindingFlags.Instance);
+        }
+
+        static public void SetPropertyValue(object target, string property, object newValue, BindingFlags flags)
+        {
+            PropertyInfo pi = target.GetType().GetProperty(property, flags);
+            if (pi == null)
+                pi = target.GetType().GetProperty(property, flags | BindingFlags.IgnoreCase);
+
+            if (pi != null)
+            {
+                pi.SetValue(target, newValue, null);
+            }
+            else
+                throw new System.ArgumentException("Invalid property name", property);
+        }
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Friday, August 28, 2009</h2>You are a long way ahead of me here, but I am interested in what you have done. Can I ask a ( probably dumb ) question...<br /><br />I'm not clear on how and where you trigger the initial updating of the value cache, i.e. how do you call OnPropertyChanging() ? I am currently using the 2005 version of CSLA, and I dont see and event suitable for this.<br /><br />I am interested in your methodology here, and would welcome any further advice...<br /><br />Thanks,<br /><br />Nick<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, September 02, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div>You are a long way ahead of me here, but I am interested in what you have done. Can I ask a ( probably dumb ) question... I'm not clear on how and where you trigger the initial updating of the value cache, i.e. how do you call OnPropertyChanging() ? I am currently using the 2005 version of CSLA, and I dont see and event suitable for this. I am interested in your methodology here, and would welcome any further advice... Thanks, Nick</div></BLOCKQUOTE></P>
+<P>Sorry, I was out of town for a few days. </P>
+<P>With managed properties, CSLA will call OnPropertyChanging() for you. </P>
+<P>If you are implementing your own non-managed properties, then you do this in your property setter. This&nbsp;can get tedious without snippets or code generation, but here is an example from our code generator. Note that we don't use CSLA property-level authorizations so there is some missing code here if you plan on doing that.</P>
+<P>&nbsp;</P><PRE>		private string _lastName;
+		///Database mapping to column EMPLOYEE.LastName
+		
+		[DisplayColumn("Last", 1)]
+		public string LastName
+		{
+			get { return _lastName; }
+			set
+			{
+				if (_lastName != value)
+				{
+					OnPropertyChanging("LastName", _lastName, "_lastName" );
+					_lastName = value;
+					OnPropertyChanged("LastName");
+				}
+			}
+		}
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickTaylor replied on Friday, August 28, 2009</h2><P>Can I ask another question ( a slight off topic ), but related to the thread we have been discussing here...</P>
+<P>We are converting an in-house application from Visual Foxpro to dotnet using CSLA as the base framework. The old application was a badly written / badly structured application where everything sat in the UI layer. There was no n-tier structuring of any kind. ( which of course now means we cant change the damn thing! )</P>
+<P>I believe you have a <SPAN>separate</SPAN> Data Access Layer, and then I guess a number of other layers perhaps one for business logic and one for your user interface ( in its most simplistic form ). This would be the way I am looking to go at the moment. Currently however in our initial CSLA coding, I'm not convinced we&nbsp;have got it quite right as there is still too much in the UI layer, and my "business logic" is sitting a bit uncomfortably in the middle. Im sure it isn't really structured in a clean and scalable manner.</P>
+<P>So, if we take a typical CSLA business object ( i.e. anything based on BusinessBase ),&nbsp;I should consider these to be the DAL components / layer of the application. In fact currently I have one for each of my FoxPro tables, and typically they have their DataPortal_Insert(), DataPortalUpdate(), and DataPortalFetch() methods populated with the relevant code. They also have a bunch of static methods such as ( in the case of BoCustomer ), GetByCustID(string CustID), and GetByCustName(string custName) etc. etc. I might also have a few methods such as Exists(string custID), or IsOnCreditHold(string custID), which obviously return boolean information as&nbsp;and when required.</P>
+<P>But, thinking about it, shouldn't the last two methods sit in the business logic layer ?, And indeed what CSLA objects should comprise the business logic layer ?Are they typically command objects that each perform&nbsp;a specific function in line with&nbsp;a prescribed use case ?&nbsp;Presumably these are quite fine grained with lots of objects all providing a specific function.</P>
+<P>I then have transactional requirements, for example I might have a method that removes a part from inventory. This may have a number of child tasks to complete such as checking if the bin is empty and then updating is empty status flag, and logging the transaction in the part transaction history. Should this sort of stuff all sit in the business layer ? Are these again just command objects that <SPAN>instantiate</SPAN> the relevant business objects, make the necessary changes, and then&nbsp;finish ?</P>
+<P>I know that the UI should do nothing other than call methods in the business layer ( which is where we are falling short at present ), and perhaps the DAL too. The UI will need to grab data via the business objects ( or indeed business object collections ), it will need to verify what the user is doing whilst the form is open&nbsp;via calls to the business logic layer, and then it will allow the user to save their changes directly via the business objects Save() method. </P>
+<P>Does that sound about right, or am I off track ( again )...!?</P>
+<P>Thanks,</P>
+<P>Nick</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Friday, August 28, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div>So, if we take a typical CSLA business object ( i.e. anything based on BusinessBase ),&nbsp;I should consider these to be the DAL components / layer of the application. <br></div></BLOCKQUOTE><br><br>Nick, From my understanding of the CSLA methodology, I would say no to this statement. CSLA is the Business Layer. It talks to the Data Layer to read/write data. You can change the Insert/Update/Fetch to a completely different database without breaking your UI. <br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div><br>In fact currently I have one for each of my FoxPro tables, and typically they have their DataPortal_Insert(), DataPortalUpdate(), and DataPortalFetch() methods populated with the relevant code. <br></div></BLOCKQUOTE><br><br>I would say this also is not essentially correct for the use case methodology. You want to start with the use case... This may span multiple tables in your database... Take the following VERY contrived example. Using the following overly normalized tables...<br><br>tblCustomer, tblCustomerPhone, tblCustomerAddress<br><br>If I have a use case to Edit/Create a customer including Address and Phonenumber... Even thought the addresses and phonenumbers are in a separate table, CSLA won't care, just the accessors will... <br><br>Lets call the use case object "EditCustomerDemographics". This object loads it's data via Fetch from the three different tables it is in and displays it to the UI as a single object for editing, when Save is called, it calls Update to update the appropriate tables.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div><br>&nbsp;IsOnCreditHold(string custID), which obviously return boolean information as&nbsp;and when required.<br></div></BLOCKQUOTE><br>On BoCustomer, it will already be loaded so you don't need the custID...<br>I would have implemented this on the BoCustomer as boolean property public bool IsOnCreditHold() that does not necessarily load directly from the database... Something like <br><br>&nbsp;&nbsp;&nbsp; public bool IsOnCreditHold<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return IsCustOnCreditHold(); }<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; private bool IsCustOnCreditHold()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.AwaitingCreditPaperwork|| <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SomethingElse<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>&nbsp;&nbsp;&nbsp; }<br><br>I hope I've helped in some small way.<br><br>Jeff<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, August 28, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div> 
+<P>So, if we take a typical CSLA business object ( i.e. anything based on BusinessBase ),&nbsp;I should consider these to be the DAL components / layer of the application. In fact currently I have one for each of my FoxPro tables, and typically they have their DataPortal_Insert(), DataPortalUpdate(), and DataPortalFetch() methods populated with the relevant code. They also have a bunch of static methods such as ( in the case of BoCustomer ), GetByCustID(string CustID), and GetByCustName(string custName) etc. etc. I might also have a few methods such as Exists(string custID), or IsOnCreditHold(string custID), which obviously return boolean information as&nbsp;and when required.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Maybe we are talking semantics, but I would not consider the CSLA BO a 'DAL' component even if it is 1:1 mapped to a table.&nbsp; It is a business object, it holds data and the methods/properties/rules that interact with that data.&nbsp; It is your business layer.&nbsp; That said, it is quite possible to have the DAL portion within your BO.&nbsp; However I think that a lot of people (myself included), separate out the DAL portion to a separate location.&nbsp; I, for example, took the simplistic approach of having a DAL class that takes care of the connection, reading cn string from config, and calling procs/sql on the database.&nbsp; I can generate most of the code by pointing it to the procs on the database, and create a partial class of methods that return datareaders.&nbsp; My DataPortal methods remain in the BO and call out to the DAL methods.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div></P>
+<P>But, thinking about it, shouldn't the last two methods sit in the business logic layer ?, And indeed what CSLA objects should comprise the business logic layer ?Are they typically command objects that each perform&nbsp;a specific function in line with&nbsp;a prescribed use case ?&nbsp;Presumably these are quite fine grained with lots of objects all providing a specific function.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes the 2&nbsp;methods sit in your business layer, but the BO's are your business layer even if most are a 1:1 mapping to the underlying data model.&nbsp; It is possible that they are implemented as command objects, however your business objects should include ones that handle specific use cases.&nbsp; It is therefore possible to have a use case based business object that uses the command object to expose the functionality (a contains relationship).</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div></P>
+<P>I then have transactional requirements, for example I might have a method that removes a part from inventory. This may have a number of child tasks to complete such as checking if the bin is empty and then updating is empty status flag, and logging the transaction in the part transaction history. Should this sort of stuff all sit in the business layer ? Are these again just command objects that <SPAN>instantiate</SPAN> the relevant business objects, make the necessary changes, and then&nbsp;finish ?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Some users of CSLA, myself included, have found it useful to create 'use case' based business objects whose job is to encapsulate the classes/functionality to complete a given use case.&nbsp; This use case controller may expose editable collections, read-only collections, command objects, mediate communication between bo's, orchastrate the work required to complete the task etc.&nbsp; Again this is a composition type of approach and I have found it useful in clarifying the scope and functionality that is needed to complete a given task.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div></P>
+<P>I know that the UI should do nothing other than call methods in the business layer ( which is where we are falling short at present ), and perhaps the DAL too. The UI will need to grab data via the business objects ( or indeed business object collections ), it will need to verify what the user is doing whilst the form is open&nbsp;via calls to the business logic layer, and then it will allow the user to save their changes directly via the business objects Save() method. </P>
+<P></div></BLOCKQUOTE></P>
+<P>The use case controller approach I mentioned above can help clarify this confusion.&nbsp;&nbsp;The question I ask myself is "Can I take my business layer and do all the required tasks without the UI?"&nbsp; If the answer is 'no' then I may have some re-factoring to do.&nbsp; If the answer is 'yes' then I have something that is de-coupled from the UI, and that can be tested in isolation.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>NickTaylor:</strong></div><div></P>
+<P>Does that sound about right, or am I off track ( again )...!?</P>
+<P>Thanks,</P>
+<P>Nick</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>All the best,</P>
+<P>Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RedShiftZ replied on Friday, August 28, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>I could provide an example, but I'm using an ORM as DAL, so&nbsp;I don't know how much it would help. In a nutshell, I reconstruct the original object, tell the ORM to start tracking it, copy the changes to the object be tracked, and then tell the ORM to persist the object. Changes to child objects are propagated similarly. 
+<p>The auditing mechanism itself is invoked as part of this update. It just inspects the valuecache above and (depending on our configuration), optionally writes out individual objects into a separate logging table, one per changed property.</div></BLOCKQUOTE></p><p>Would you mind posting the example anyway? Sometimes, just looking at other people's code is worth days of scratching your head and wondering what you did wrong. :)<br> </p>
+<p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>The other methods are simple reflection helpers. Here is the source.</div></BLOCKQUOTE></p><p>Thanks for those! <br></p><p>Thanks again,</p><p><br></p><p>Jeff<br></p><p><br></p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, August 21, 2009</h2><P><FONT face=Tahoma size=2>There have been some discussions concerning this on the forum before, so a search should give you some more info to use.</FONT></P>
+<P><FONT face=Tahoma size=2>From my perspective, you have a couple of options:</FONT></P>
+<P><FONT face=Tahoma size=2>1. Implement auditing in your DAL.&nbsp; If you don't have a separate DAL assembly (i.e. all your data-access code is embedded directly in your DP methods), then you might look at making one, or adding the logging code to your DP methods.</FONT></P>
+<P><FONT face=Tahoma size=2>2. Implementing auditing in your BO.&nbsp; There are a couple of ways to do this, and again, there have been discussions surrounding this, so a forum search should provide some ideas.</FONT></P>
+<P><FONT face=Tahoma size=2>If you don't have a separate DAL, then the difference between #1 and #2 is admittedly subtle.&nbsp; But it's an important difference - one puts the auditing code in a methods that specifically deal with data access, while the other puts the auditing code into methods that deal with business logic/interactions.&nbsp; Plus, if you're not careful, #2 can start to creep on you, and you end up with auditing code in a lot of places.</FONT></P>
+<P><FONT face=Tahoma size=2>I'm not a big fan of #2, because from a responsibility perspective, your BO's really aren't responsible for auditing data.&nbsp; Others may think differently, but I don't really consider auditing a business requirement - and business objects are about fulfilling business requirements.&nbsp; Yes, auditing requirements are sometimes put into the business requirements.&nbsp; But in my experience, auditing is rarely an actual business requirement - people tend to put it in there "just in case", or because company policy dictates it.</FONT></P>
+<P><FONT face=Tahoma size=2>Regardless of the method chosen, you would be wise to devise a centralized scheme that you can call from wherever you need it.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

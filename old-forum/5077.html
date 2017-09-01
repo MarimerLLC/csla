@@ -1,0 +1,112 @@
+<html><header><title>Bug in Csla 3.5.1?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in Csla 3.5.1?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5077.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jureleskovec posted on Wednesday, July 09, 2008</h2>I just switched from csla 3.5.0 to the csla 3.5.1 and Undo doesn't work any more:<br><br>I do the the following:<br>1) 'root' (with 'child' is loaded/created). 'root.child' has value other than null (child is a managed field and references an undoable object).<br>2) Invoke root.BeginEdit()<br>2) Set root.child = null;<br>3) Invoke root.UndoChanges()<br><br>When trying to reference the 'root.child' it throws the following exception in the 'ReadProperty' method:<br>Unable to cast object of type 'System.Boolean' to type 'TaskResponsibility'.<br>in line:<br>result = (P)data.Value;<br>and data.Value is 'false' but should instead be object of type 'TaskResponsibility'.<br><br><br><br>I traced the problem and have seen the following:<br>1) In the FieldDataManager.CopyState for the 'root' object the 'child' field was not saved into the 'state' storage:<br>// indicate that there was a value here<br>state[index] = new FieldData&lt;bool&gt;(item.Name);<br><br>2) Later, when I invoked root.UndoChanges() in FieldDataManager.UndoChanges() method wrong value was restored into the 'child' field. So, instead of my previous object the value is 'false'. The following code block clearly shows this:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var undoable = item.Value as IUndoableObject;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (undoable != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // current value is undoable<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (oldItem != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; undoable.UndoChanges(parentEditLevel, parentBindingEdit);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // restore IFieldData object into field collection<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = oldItem;<br><br><br>-- Jure<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 10, 2008</h2><P>Isn't this the same behavior as you'd get without using a managed field?</P>
+<P>UndoableBase has never stored a child object reference as part of the parent's stacked state, because that would cause serialization of the child.</P>
+<P>I won't necessarily say this isn't a bug of sorts - but I think this is the behavior that has existed since CSLA .NET 1.0 (more or less).</P>
+<P>The problem is, it is a bug that isn't easy to solve. The parent <EM>can not</EM> store a reference to the child as part of its state, because then the child would be serialized - and that would have a whole host of undesirable side-effects.</P>
+<P>It <EM>might</EM> be possible to address the issue now that child objects are managed fields. Not something I've thought through, but it seems like it should be possible for a FieldData object to do some clever stacking of child object references or something...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jureleskovec replied on Thursday, July 17, 2008</h2>I dug into csla a bit and I can see now what you mean. But this in short means the csla can only cope with fixed businnes object trees.<br>I think this is a very serious limitation of the framework. Do you see any workaround in a scenario with 'dynamic' BO trees?<br><br>If this is the case only with the undo capabilities I will give up my fancy undo button. And I wonder if there are any other issues regarding dynamic BO trees using csla.<br><br>-- Jure<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know of a great answer right now, no. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The framework supports the concept of the value being null, then
+being an object, and an undo reverting back to null. That is required for lazy
+loading, which is why that concept was added.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I agree that this is a limitation of the framework, but fwiw you
+are the first person to bring up the issue in 6 years, so I don&#8217;t know
+how serious it is overall.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll add this to the wish list as something to look into
+at some point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Looking briefly at the IUndoableObject implementation in
+FieldDataManager, I think it can be done. It will require changes there, and
+also in FieldData (or creation of a new ChildData perhaps &#8211; yeah, that
+might be more elegant).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Having both FieldData and ChildData classes, and making
+PropertyInfo&lt;T&gt; detect whether a type is a child or not so it can return
+the right container as needed is half the answer. The goal would be for
+ChildData to directly implement IUndoableObject. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then changing FieldDataManager&#8217;s CopyState() and
+UndoChanges() methods to see if <i>item</i> is IUndoableObject rather than <i>item.Value</i>
+would be the next step. That way the undo call would cascade into ChildData,
+rather than directly into the child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This would allow ChildData to maintain its own (nonserialized)
+stack of child references AND to cascade the undo calls to the real child
+object as necessary.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m sure there are complexities and quirks to be found
+here &#8211; but at a high level I suspect this is the solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jureleskovec
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 17, 2008 1:33 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bug in Csla 3.5.1?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I dug into csla a bit and I can see now what you mean. But
+this in short means the csla can only cope with fixed businnes object trees.<br>
+I think this is a very serious limitation of the framework. Do you see any
+workaround in a scenario with 'dynamic' BO trees?<br>
+<br>
+If this is the case only with the undo capabilities I will give up my fancy
+undo button. And I wonder if there are any other issues regarding dynamic BO
+trees using csla.<br>
+<br>
+-- Jure<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

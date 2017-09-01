@@ -1,0 +1,48 @@
+<html><header><title>Reflection Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Reflection Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3762.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc posted on Monday, October 22, 2007</h2><FONT color=#808080 size=2>
+<P>I am having problems accessing a property of an object becasue of late binding. I know what the base of the object is, but because that base is based of the CSLA ROB it uses reflection to pass the object to itself. In any case I cannot figure out how to access the property if I do not know the exact implementation of the base being used. I figured a short example might help explain what I am looking to do. I know this isn't a CSLA specific question, but I was hoping someone on this forum could help.</P>
+<P>Thanks</P>
+<P>'------------------SUB CLASS</P></FONT><FONT size=2>
+<P>&lt;</FONT><FONT color=#000080 size=2>Serializable</FONT><FONT size=2>()&gt; </FONT><FONT color=#000080 size=2>_</P></FONT><FONT color=#0000ff>
+<P><FONT size=2>Public</FONT></FONT><FONT size=2> <FONT color=#0000ff>MustInherit</FONT> <FONT color=#0000ff>Class</FONT> <FONT color=#000080>ColorBase</FONT>(<FONT color=#0000ff>Of</FONT> <FONT color=#000080>T</FONT> <FONT color=#0000ff>As</FONT> <FONT color=#000080>ColorBase</FONT>(<FONT color=#0000ff>Of</FONT> <FONT color=#000080>T</FONT>))</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Inherits</FONT> <FONT color=#000080>Csla</FONT>.<FONT color=#000080>ReadOnlyBase</FONT>(<FONT color=#0000ff>Of</FONT> <FONT color=#000080>T</FONT>)</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Private</FONT> <FONT color=#000080>_Hue</FONT> <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Overridable</FONT> <FONT color=#0000ff>Property</FONT> <FONT color=#000080>Hue</FONT>() <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</P></FONT></FONT>
+<P><FONT color=#0000ff><FONT size=2>Get</FONT></P></FONT>
+<P><FONT size=2><FONT color=#0000ff>Return</FONT> <FONT color=#000080>_Hue</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Get</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>Friend</FONT> <FONT color=#0000ff>Set</FONT>(<FONT color=#0000ff>ByVal</FONT> <FONT color=#000080>value</FONT> <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>String</FONT>)</FONT></P>
+<P><FONT size=2><FONT color=#000080>_Hue</FONT> = <FONT color=#000080>value</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Set</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>End</FONT> </FONT><FONT color=#0000ff><FONT size=2>Property</FONT></P>
+<P><FONT size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff><FONT size=2>Class</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></FONT><FONT color=#808080 size=2>
+<P>'--------------IMPLEMENTATIONS</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>BlueColor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>ColorBase</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>BlueColor</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>GetIdValue</FONT><FONT size=2>() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>RedColor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>ColorBase</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>RedColor</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>GetIdValue</FONT><FONT size=2>() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#808080 size=2>'--------------PROBLEM</P></FONT><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>GetHue</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> </FONT><FONT color=#000080 size=2>o</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#808080 size=2>'I know o is from the ColorBase, so I know it has a property Hue</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>'but I do not know if it is BlueColor or RedColor. How can I </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>'access the Hue property if Option Strict is ON? Also keep in mind</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>'that although in this example I have control over what o is in the declaration,</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>'in my actually situtation I can not change the fact that it is set as</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>'an Object. I would like to do some sort of DirectCast to the ColorBase, but I </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>'can't figure out the syntax.</P></FONT><FONT color=#0000ff size=2>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Monday, October 22, 2007</h2><P>Hi stanc,</P>
+<P>Probably the best way to do this is to define an interface (for instance <FONT face="Courier New" size=2>IColor</FONT>) that defines the <FONT face="Courier New" size=2>Hue</FONT> property. The interface must be implemented by <FONT face="Courier New" size=2>ColorBase(Of T)</FONT>. In the <FONT face="Courier New" size=2>GetHue</FONT> method you can cast object o to <FONT face="Courier New" size=2>IColor</FONT>. Now the <FONT face="Courier New" size=2>Hue</FONT> property is available.</P>
+<P>Hope this helps!</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Monday, October 22, 2007</h2><P>That is exactly what I needed! I must be going brain dead! Thank you for the response.</P>
+<P>Thanks,</P>
+<P>Stanley</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

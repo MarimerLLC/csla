@@ -1,0 +1,147 @@
+<html><header><title>Rolling up child broken rules in Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rolling up child broken rules in Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6661.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh posted on Tuesday, March 24, 2009</h2><P>Two questions in one here, </P>
+<P>I'm not sure if I'm doing this the best way, but on a business form I'm desgining I have a&nbsp; root object and multiple child objects bound.</P>
+<P>I want the child objects to be able to be flagged or unflagged as 'main', but&nbsp;I want one and only one to be flagged.</P>
+<P>If the user flags multiple children the object should be invalidated.</P>
+<P>At the moment I've got it working by adding a new rule at the root object level which checks all the children to see how many are flagged. To make this work, I've added a new boolean property which the rule is attached to. I've overridden OnChildChanged event and in the handler I've toggled the new property from true/false to fire the validation rule and check the children.</P>
+<P>It's a bit of a hack, is there a better way to re-validate the roots business rules on change of child objects?</P>
+<P>Also is there a way to roll up all the broken rules on a root object and display them in one error provider on the page? The problem is, with multiple pages used, the user can not see all the broken rules, so they have no idea why the save button is disabled. I want to be able to add an error provider next to the save button which will display all errors on the root object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, March 24, 2009</h2>Both of your questions have been discussed many times here. The answers are long and invovled. Try searching first and then come back with refined questions.<br /><br />The basic answer is that yes there are ways to do both.<br /><br />Joe<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Wednesday, March 25, 2009</h2><P>I found some code on the forums which worked for the full version of CSLA, it didn't work for Light as IBindableList in CSLALight doesn't implement enumerableness. I modded IBindableList and I've rewritten the procedure in c# to get a List&lt;string&gt; of the errors which I then bind to a custom error control to display them.</P>
+<P>Anyway, it's working now so no more confused users!</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 25, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Charleh:</strong></div><div>
+<P>as IBindableList in CSLALight doesn't implement enumerableness</div></BLOCKQUOTE></P>
+<P>What does this mean exactly? Perhaps this is a bug or oversight that should be corrected?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Charleh replied on Wednesday, March 25, 2009</h2><P>Well, the IBindingList implementation in CSLALight doesn't seem to allow iteration. </P>
+<P>The code I found on the forum looped through the objects on a business object by casting it to IBindingList and iterating through it. It wouldn't work like that because IBindingList isn't enumerable.</P>
+<P>I added IList to the&nbsp;definition&nbsp;of IBindingList in the CslaLight project and that fixed the problems.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>interface</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IBindingList</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IList</FONT></FONT></P>
+<P><FONT color=#2b91af size=2><FONT color=#2b91af size=2><FONT color=#000000 size=3>My code now is as follows:</FONT></FONT></FONT></P><FONT color=#2b91af size=2><FONT color=#2b91af size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ErrorRollup</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Get text for errors if object is invalid - should work with any CSLA business object</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;returns&gt;Error text for invalid object&lt;/returns&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;remarks&gt;&lt;/remarks&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; GetErrorInformation(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Object</FONT></FONT><FONT size=2> target)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>&gt; inspectedObjects = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetErrorInformation(target, inspectedObjects);</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Get text for errors for one object based on IDataErrorInfo interface</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;param name="target"&gt;Object to get error text for&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;param name="inspectedObjects"&gt;List of hash codes of objects that are inspected.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// This is necessary to avoid infinite recursion.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;returns&gt;Text for errors for one object based on IDataErrorInfo interface&lt;/returns&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// &lt;remarks&gt;&lt;/remarks&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; GetErrorInformation(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Object</FONT></FONT><FONT size=2> target, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2>&gt; inspectedObjects)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; returnValue = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> targetID = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Empty;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (target == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> returnValue;</P>
+<P>}</P>
+<P>targetID = target.GetType().ToString() + </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>":"</FONT></FONT><FONT size=2> + target.GetHashCode().ToString();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!inspectedObjects.Contains(targetID))</P>
+<P>{</P>
+<P>inspectedObjects.Add(targetID);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (target </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IBindingList</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// check error messages for each row in the list</P></FONT></FONT><FONT size=2>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>for</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> oneItem = 0; oneItem &lt; ((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IBindingList</FONT></FONT><FONT size=2>)target).Count; oneItem++) </P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IBindingList</FONT></FONT><FONT size=2>)target)[oneItem] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; itemError = GetErrorInformation(((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IBindingList</FONT></FONT><FONT size=2>)target)[oneItem], inspectedObjects);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// if we do not have this message already, add it</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (itemError.Count &gt; 0)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2> s </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> itemError)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!returnValue.Contains(s))</P>
+<P>{</P>
+<P>returnValue.Add(s);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (target </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// run through broken rules collection for this object</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BrokenRule</FONT></FONT><FONT size=2> oneBrokenRule </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> ((</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>)target).BrokenRulesCollection)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// if we do not have this message already, add it</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!returnValue.Contains(oneBrokenRule.Description))</P>
+<P>{</P>
+<P>returnValue.Add(oneBrokenRule.Description);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// get list of properties for this object</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>[] properties = target.GetType().GetProperties();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2> oneProperty </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> properties)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// get object that sits on this property</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!oneProperty.PropertyType.IsPrimitive)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (oneProperty.GetIndexParameters().Length == 0)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Object</FONT></FONT><FONT size=2> propTarget = oneProperty.GetValue(target, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// call this procedure resursively to get error for property based object</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>List</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; propErrorText = GetErrorInformation(propTarget, inspectedObjects);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// if we do not have this message already, add it</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (propErrorText.Count &gt; 0)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2> s </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> propErrorText)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!returnValue.Contains(s))</P>
+<P>{</P>
+<P>returnValue.Add(s);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// strip out duplicate carriage returns before returning the value.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> returnValue;</P>
+<P>}</P>
+<P>}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 25, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, sure, that makes sense.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The object itself is enumerable, but we didn&#8217;t mark the
+interface that way. I&#8217;ll add this to the wish list, as it would make
+things cleaner if the interface better reflected the nature of the object
+itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

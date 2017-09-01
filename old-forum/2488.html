@@ -1,0 +1,21 @@
+<html><header><title>Design Question: EditableList-&gt; EditableChild    DataPortal_Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question: EditableList-&gt; EditableChild    DataPortal_Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2488.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko posted on Wednesday, March 07, 2007</h2><P>Hi All,</P>
+<P>In my Editable List I need to fetch data several times.</P>
+<P>First time I fetch list of child objects based on some criteria and then when my EditableList is instantiated I need to&nbsp;fetch one more child based on some rules and add it to the previously loaded list. </P>
+<P>When I do that by overloading DataPortal_Fetch it returns me EditListObject with only one child in it. All the previously loaded child objects are destroyed.</P>
+<P>I need to know what is the appropriate way of doing this.</P>
+<P>Thank you,</P>
+<P>Igor.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, March 08, 2007</h2><P>It depends on what you know and when you know it.</P>
+<P>If you know everything up front then you do all the work in the normal DP method call.</P>
+<P>1. Load the full list.</P>
+<P>2. Add the extra child object to the list.</P>
+<P>3. Then return the fully loaded list.</P>
+<P>It sounds like you are making 2 calls to the DP. The first call returns the fully loaded list. But the 22nd call destroys the list and returns only the extar child. This is the expected behavior.</P>
+<P>If you need the full list but can only add the child later then your list needs a method to add a child.</P>
+<P>My ECC lists all have methods like Add. I also include a function AddChild which takes the PK value, creates the child instance, adds it to the list and then returns me a reference to the newly created child. Then I can set the rest of the properties.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko replied on Thursday, March 08, 2007</h2><P>As you adviced I've added the method to my EditableList to add a child to existing list.</P>
+<P>Thank you,</P>
+<P>Igor.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

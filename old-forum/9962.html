@@ -1,0 +1,20 @@
+<html><header><title>CSLA 4.1 ReadOnlyBase DataPortal_Fetch removed ~ issue 867</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.1 ReadOnlyBase DataPortal_Fetch removed ~ issue 867</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9962.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SNiedinger posted on Thursday, January 20, 2011</h2><p>Hi,</p>
+<p>What is the recommended alternative?</p>
+<p>Thanks,</p>
+<p>Siegfried</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SNiedinger replied on Thursday, January 20, 2011</h2><p>What I am doing is to move the code from the DataPortal_Fetch method into the static &#39;Get&#39; method of the ReadOnlyBase class.</p>
+<p>This works ok.</p>
+<p>Siegfried</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 20, 2011</h2><p>The Bugid says that ReadOnlyBase should NOT have a default DataPortal_Fetch. </p>
+<p>This means that your code will no longer need to override a base class method, so you&nbsp; much change from:</p>
+<p><i>protected override void DataPortal_Fetch(object criteria) </i></p>
+<p>to</p>
+<p><i>private void DataPortal_Fetch(object criteria) </i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SNiedinger replied on Thursday, January 20, 2011</h2><p>Yes, that makes sense. Thank you.</p>
+<p>The purpose of the private DataPortal_Fetch method would thus only be the &#39;general&#39; method for data retrieval in that class, I assume.</p>
+<p>I try to follow the same structure as in the CSLA sample BOs. mmm.. perhaps I need to check out the new 4.1 samples to see how Rocky does it! :)</p>
+<p>Kewl beans!</p>
+<p>Siegfried</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

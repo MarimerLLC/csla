@@ -1,0 +1,19 @@
+<html><header><title>can we  track the model  and view model when validation massage</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>can we  track the model  and view model when validation massage</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10089.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Saturday, February 19, 2011</h2><p>
+<p class="MsoNormal">I have one parent window in that left side view navigation </p>
+<p class="MsoNormal">In view area whenever navigation is click view display on
+view area</p>
+<p class="MsoNormal">I am using CSLA4+Silverlight4+MVVM </p>
+<p class="MsoNormal">I am binding one class to parent window, if any validation
+like client side or server side validation, I am show validation error summary
+on parent window, <span>&nbsp;</span>but validation massage
+coming from business model,</p>
+<p class="MsoNormal"><span>&nbsp;</span>I am unable find out which
+validation massage of which view,</p>
+<p class="MsoNormal"><span>&nbsp;</span>my view model is <span>&nbsp;</span>not depend on model vice versa model is not
+dependent on view model</p>
+<p class="MsoNormal">can we <span>&nbsp;</span>track the
+model<span>&nbsp; </span>and view model when validation
+massage</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 19, 2011</h2><p>Passing messages or events between viewmodel objects or visual regions is something that should be handled at the UI framework level.</p>
+<p>I know Prism (for example) has a message routing feature as part of the framework.</p>
+<p>If you are using Bxf, this is not something Bxf current supports.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Sunday, February 20, 2011</h2><p>The MvvmLight framework has a nice, ligheweight messaging component which I&#39;ve used. It seems a lot easier to use than Prism&#39;s one.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>AuthorizationActions.ExecuteMethod</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AuthorizationActions.ExecuteMethod</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11036.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alireza posted on Saturday, January 07, 2012</h2><p>Hi</p>
+<p>Can anyone&nbsp;explain me why in BussinessRules class there is no overload static HasPermission method that accept &nbsp;Csla.Core.IMemberInfo parameter?</p>
+<p>Whenever I want to check permission for a shared(static) method , I am forcing to create an instance of that class and then test the permission.</p>
+<p>like this&nbsp;</p>
+<p>
+<p>Dim item = MyBussinessClass.NewNyBusiness()</p>
+<p>item.CanExecuteMethod(MyMethodInfo, False)</p>
+<p>I like to do like this</p>
+<p>Csla.BussinessRules.HassPermission(Gettype(MyBussinessClass),AuthorizationActions.ExecuteMethod,MyMethosInfo)</p>
+</p>
+<p>Thanks and Regards</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, January 07, 2012</h2><p>Hi,</p>
+<p>You are correct in that BusinessRules does not allow authorization rules for static methods like AuthorizationActions.ExcecuteMethod.</p>
+<p>For static method CSLA only has CreateObject, GetObject, EditObject and DeleteObject. and these are automatically checked by the &lt;root&gt; DataPortal methods.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Thursday, August 01, 2013</h2><p>Hi,</p>
+<p>but what is the reason why there&#39;s no support for static evaluation of method or property authorization?</p>
+<p>I need to have static evaluation of authorization if I can execute certain method.</p>
+<p>&nbsp;</p>
+<p>Thank You</p>
+<p>&nbsp;</p>
+<p>Mirec</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, August 01, 2013</h2><p>Hi</p>
+<p>CSLA only provides authorization for instance properties and methods and static for the &quot;root&quot; DataPortal verbs..&nbsp;</p>
+<p>The assumption is that you need static authorization for get/create/edit/delete (ie - to get an instance or perform a &quot;root&quot; dataportal method) and then you will have instance methods and properties that needs authentication.&nbsp;</p>
+<p>There is one special version - in which you should create a CommandObject and must use the Edit authorization action. So from a CSLA perspective - if you have anything that is not a get/create/edit/delete it should be created as a CommandObject and authorization is provided for this stereoptype and may be exposed as a static method on another business object..&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Thursday, August 01, 2013</h2><p>Hi,&nbsp;</p>
+<p>thank you for your response, but this doesn&#39;t give me the answer what I&#39;m looking for.</p>
+<p>You just told me what are the options but not why is it so.&nbsp;</p>
+<p>From my point of view, there is no technical or logical reason why there should not be the option to have static authorization for ExecuteMethod action. Am I right? But this leads me to make the guard checks weaker</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(action&nbsp;==&nbsp;<span>AuthorizationActions</span>.ReadProperty&nbsp;||
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action&nbsp;==&nbsp;<span>AuthorizationActions</span>.WriteProperty&nbsp;||
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;action&nbsp;==&nbsp;<span>AuthorizationActions</span>.ExecuteMethod)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>throw</span>&nbsp;<span>new</span>&nbsp;<span>ArgumentOutOfRangeException</span>(<span>&quot;action&quot;</span>);</pre>
+<pre>from&nbsp;static <span>BusinessRules.</span>HasPermission method and to add an overload which takes additional parameter describing IMemberInfo.</pre>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, August 01, 2013</h2><p>One of the design principles in CSLA is to use static factory methods (= DataPortal.XYZ verbs) so that the DataPortal acts as a logical/physical tier and execution may cross over to other servers.</p>
+<p>And beyond the normal CRUD operations there is the CommandObject for other purposes. </p>
+<p>So an additional static method in your business object that does any kind of data access and not call the Create/Fetch/Update/Delete _should_ be represented as a CommandObject in your code and then exposed as either a static or member method on your object. If it doesn&acute;t require data access then it interacts with the given object and is an instance method.</p>
+<p>To give a more accurate description on why we need Rocky&acute;s opinion, however the above is my understanding of this design principle.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Thursday, August 01, 2013</h2><p>But you are not considering the business methods.&nbsp;You have just explained that there exists workarround through the CommandObject stereotype. But this is just workarround for me and not the solution.</p>
+<p>I need the static support for authorization of business methods because, we have concept of operations which are described in database and we want to asociate that operation with business method and evaluate it before we have an instance of some business class.</p>
+<p>Mirec</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, August 01, 2013</h2><p>The only authorization rules thatis includedin CSLA is IsInRole and IsNotInRole.</p>
+<p>So any static method that you have can just as easy call Thread.CurrentPrincipal.IsInRole(roleName) to check for authentication.</p>
+<p>If you are not able to use CreateObject or GetObject AuthorizationActions then you are on your own to implement a solution as the code is right now.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Thursday, August 01, 2013</h2><p>OK, thank you for your time and your comments.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,48 @@
+<html><header><title>Critical Bug - Rule that sets output value for field with null default fails</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Critical Bug - Rule that sets output value for field with null default fails</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11786.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, January 14, 2013</h2><p>Hi Rocky / Jonny</p>
+<p>I&#39;ve just discovered a badly breaking bug with new code that was recently introduced and is present in the current release of CSLA 4.5.10.</p>
+<p>I&#39;ve managed to track down specifically where it happens, and what conditions cause it to trip up.</p>
+<p>It&#39;s a new set of method in the Csla\Core\BusinessBase.cs class:<br /><b>protected void LoadPropertyMarkDirty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P newValue)</b></p>
+<p>The code fails with a null reference exception in the event that any of the following returns null whereupon it is assigned to variable <b>oldValue</b>.</p>
+<p>
+<ul>
+<li>default(P)&nbsp;</li>
+<li>propertyInfo.DefaultValue</li>
+<li>fd.Value</li>
+<li>fieldData.Value&nbsp;</li>
+</ul>
+</p>
+<p>When <b>oldValue</b>&nbsp;is null, the following statement throws the null reference exception:</p>
+<p><b>var valuesDiffer = !(oldValue.Equals(newValue));</b></p>
+<p><br />This wasn&#39;t an problem with the previous release of Csla 4.3.x.</p>
+<p>The circumstances where a field&#39;s default value might be null is any reference type or even a byte[] type. The above code is only called when there is a mutator rule that calls <b>context.OutValue( property, someValue )</b>&nbsp;in the rule. When the value of the property in question was null, then we run into the problem.</p>
+<p>Also see attached screenshot showing a debug session.</p>
+<p>Thanks,<br />Johann&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 17, 2013</h2><p>Hi Jaans,&nbsp;</p>
+<p>I will look into it next week when I am back from holiday.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Thursday, January 17, 2013</h2><p>No problem!</p>
+<p>Thanks Jonny - I hope you&#39;re enjoying your time over here!&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, January 17, 2013</h2><p>Updated in trunk.&nbsp;</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1134">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1134</a>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, January 24, 2013</h2><p>I ran into this too. Excellent! Thanks Johnny! </p>
+<p>When will this make it to the stable release? Seems like a pretty critical bug IMO. All my business rules operate this way and I never bother to set default values of reference types</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Saturday, January 26, 2013</h2><p>Even little bit cleaner - get rid of PropertyInfo param in ValuesDiffer by checking:</p>
+<p>if (typeof (IBusinessObject).IsAssignableFrom(typeof(P)))</p>
+<p>instead of:</p>
+<p>if (typeof (IBusinessObject).IsAssignableFrom(propertyInfo.Type))</p>
+<p>Take care,</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 02, 2013</h2><p>If all goes well I expect to do the next 4.5 release this month.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, February 05, 2013</h2><p>Excellent! </p>
+<p>Thanks all.</p>
+<p>PS: Any chance you are looking at including fixes for:</p>
+<p>&nbsp;</p>
+<ul>
+<li>SaveAsync under&nbsp;Xaml.ViewModelBase (Silverlight) (<a href="http://forums.lhotka.net/forums/p/11789/54604.aspx">Post</a>)&nbsp;</li>
+<li>Adding the suggested&nbsp;<span>RefreshAsync method (same post as above)<br />&nbsp;</span></li>
+<li>CancelEdit Bug in Silverlight code (<a href="http://forums.lhotka.net/forums/p/11775/54581.aspx#54581">Post</a>)</li>
+</ul>
+<p>Jaans</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 06, 2013</h2><p>I believe that the first issue is resolved with the changes I&#39;ve made to the data portal. Hopefully you can test and confirm once I get the prerelease online.</p>
+<p>I am not sure I see the need for a RefreshAsync method, because there&#39;s a new/better way to work with async methods when initializing the viewmodel (imo anyway). This is done by overriding DoInitAsync and calling your business object&#39;s factory method from there.</p>
+<p>I haven&#39;t had time to look into the CancelEdit issue. I did file it as a bug so it doesn&#39;t get lost, but I doubt I&#39;ll have time to get it into this WP8-focused release, because I&#39;m under some time pressure to get the WP8 support finalized.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Wednesday, February 06, 2013</h2><p>Thanks Rocky</p>
+<p>Re the RefreshAsync Method request - I&#39;m sure there are many ways to skin the proverbial cat, so what ever you feel is appropriate.<br />We have our own base class that inherits from the CSLA viewmodel so we can just slot our RefreshAsync method there.</p>
+<p><i>Some background on why we are preferring the &quot;RefreshAsync&quot; way might be interesting.<br />For us, the value of it over the InitAsync method is that it &quot;raising&quot; the OnRefreshing / OnRefreshed methods and it follows the paradigm of &quot;Refresh&quot; that the earlier version of CSLA ViewModels used to have, making our upgrade story to the new versions of CSLA easier. <br /><br />The new method is a logical way for us to &quot;refresh&quot; the model for a viewmodel that was previously &quot;Init&quot;-ed. The implementation also gives &nbsp;&quot;strongly-typed&quot; support, especially when calling the factory with multiple parameters (compared to the string based Refresh we had before). Think &quot;Refresh&quot; button.</i></p>
+<p><i>Though what is nice about the InitAsync is that the actual work that is done to update the model property is encapsulated.</i></p>
+<p><i>So, maybe it is more of a case of what suits the developers needs more and therefore up to the developer to add the method if it suits them.&nbsp;</i></p>
+<p>Good luck with the new release!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

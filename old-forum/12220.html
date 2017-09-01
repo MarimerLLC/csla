@@ -1,0 +1,58 @@
+<html><header><title>Unable to cast object of type 'Library.FormatParameters' to type 'Csla.BusinessBase`1</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to cast object of type 'Library.FormatParameters' to type 'Csla.BusinessBase`1</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12220.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry posted on Thursday, November 14, 2013</h2><p>Hi,</p>
+<p>I am getting the following error when saving a business object.</p>
+<p>&quot;Unable to cast object of type &#39;Library.FormatParameters&#39; to type &#39;Csla.BusinessBase`1[Library.FormatParameters]&#39;.&quot;</p>
+<p>&nbsp;</p>
+<p>I am loading the DLL that contains the business object at run time as I need a pluggable type architecture. My DalManager is attached. &nbsp;It works to read in the business object but fails when I try to save the changes.</p>
+<p>I found this post that is quite old but I do not know if this is the same problem and if so where the solution is in the new books.</p>
+<p><a href="http://forums.lhotka.net/forums/t/3732.aspx">http://forums.lhotka.net/forums/t/3732.aspx</a></p>
+<p>using System;</p>
+<p>using System.Reflection;</p>
+<p>namespace DataAccess.Mock</p>
+<p>{</p>
+<p>&nbsp; &nbsp; public class DalManager : DataAccess.IDalManager</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static string _typeMask = typeof(DalManager).FullName.Replace(&quot;DalManager&quot;, @&quot;{0}&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Assembly ass = null;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public T GetProvider&lt;T&gt;() where T : class</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var typeName = string.Format(_typeMask, typeof(T).Name.Substring(1));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (typeName.Contains(&quot;FormatParameters&quot;))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Load assembly</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ass = Assembly.LoadFile(@&quot;C:\Dev\B4B\Formats\XYZ\XYZViews\bin\Debug\XYZViews.DLL&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Create DAL instance.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AppDomain.CurrentDomain.Load(ass.GetName());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Create instance of formatparametersview class.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Type dalType = ass.GetType(&quot;DataAccess.SQL.FormatParametersDal&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dalType == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NotImplementedException(typeName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dynamic dal = Activator.CreateInstance(dalType);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //var type = Type.GetType(typeName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dal != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Assign connection string.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dal.ConnectionString = &quot;Server=server;Database=TEST6;Uid=User;Pwd=XX;&quot;;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // return object.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return dal as T;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NotImplementedException(typeName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var type = Type.GetType(typeName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (type != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return Activator.CreateInstance(type) as T;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw new NotImplementedException(typeName);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public void Dispose()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; { }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+<div></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

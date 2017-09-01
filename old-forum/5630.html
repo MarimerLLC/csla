@@ -1,0 +1,437 @@
+<html><header><title>Checking shared authorizations before instantiating business objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Checking shared authorizations before instantiating business objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5630.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben posted on Monday, October 20, 2008</h2><P class=MsoNormal><SPAN>Is it possible to check Shared Authorization rules before any instance of an object type has been instantiated?.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We need to check whether the current user can read some properties from an object before instantiating it in order to customize the UI. When AutorizationRules.HasReadAllowedRoles is executed the following sequence of method calls ends up with a new </SPAN><SPAN>AuthorizationRulesManager created and added to the Dictionary “mMangers” in SharedAuthorizationRules but no authorization rules are loaded into it.</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>1. </SPAN><SPAN>AutorizationRules.HasReadAllowedRoles</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>2. </SPAN><SPAN>AuthorizationRules.get_TypeRules </SPAN><SPAN>(property “TypeRules”)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>3. </SPAN><SPAN>SharedAuthorizationRoles.GetManager<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>After this, when the first business object is instantiated, the shared authorization rules are not loaded because already there is an </SPAN><SPAN>AuthorizationRulesManager </SPAN><SPAN>loaded. So we end up with no authorization rule loaded and the user gets full access to all properties.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is there a way to solve this issue?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is it resolved in new release of CSLA? (We use version 3.0.2)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Does anybody have this problem?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks in advance.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, October 20, 2008</h2><P>Please post the business object code where you declared the set of authorization roles for your type.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Tuesday, October 21, 2008</h2><P class=MsoNormal>Hi Joe,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>We are getting authorization rules from the database in a class that extends BusinessBase (from CSLA) and from which our business logic objects inherit. We have overridden method “</SPAN><SPAN>AddAuthorizationRules</SPAN><SPAN>”<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Sub</SPAN> AddAuthorizationRules()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> cmd <SPAN>As</SPAN> Paca.Security.GetAuthorizationsCommand<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> row <SPAN>As</SPAN> Paca.TableViews.TableViewRow<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> member <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> roles <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cmd = Paca.Security.GetAuthorizationsCommand.Execute(<SPAN>Me</SPAN>.GetType().FullName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>' Authorizations<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> row <SPAN>In</SPAN> cmd.AllowRead<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>member = <SPAN>CStr</SPAN>(row(<SPAN>"IdMiembro"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>roles = <SPAN>CStr</SPAN>(row(<SPAN>"Roles"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>AuthorizationRules.AllowRead(member, roles.Split(<SPAN>New</SPAN> <SPAN>Char</SPAN>() {";"c}, StringSplitOptions.RemoveEmptyEntries))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> row <SPAN>In</SPAN> cmd.AllowWrite<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>member = <SPAN>CStr</SPAN>(row(<SPAN>"IdMiembro"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>roles = <SPAN>CStr</SPAN>(row(<SPAN>"Roles"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>AuthorizationRules.AllowWrite(member, roles.Split(<SPAN>New</SPAN> <SPAN>Char</SPAN>() {";"c}, StringSplitOptions.RemoveEmptyEntries))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> row <SPAN>In</SPAN> cmd.AllowExecute<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>member = <SPAN>CStr</SPAN>(row(<SPAN>"IdMiembro"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>roles = <SPAN>CStr</SPAN>(row(<SPAN>"Roles"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>AuthorizationRules.AllowExecute(member, roles.Split(<SPAN>New</SPAN> <SPAN>Char</SPAN>() {";"c}, StringSplitOptions.RemoveEmptyEntries))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>' Prohibitions<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> row <SPAN>In</SPAN> cmd.DenyRead<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>member = <SPAN>CStr</SPAN>(row(<SPAN>"IdMiembro"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>roles = <SPAN>CStr</SPAN>(row(<SPAN>"Roles"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>AuthorizationRules.DenyRead(member, roles.Split(<SPAN>New</SPAN> <SPAN>Char</SPAN>() {";"c}, StringSplitOptions.RemoveEmptyEntries))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> row <SPAN>In</SPAN> cmd.DenyWrite<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>member = <SPAN>CStr</SPAN>(row(<SPAN>"IdMiembro"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>roles = <SPAN>CStr</SPAN>(row(<SPAN>"Roles"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>AuthorizationRules.DenyWrite(member, roles.Split(<SPAN>New</SPAN> <SPAN>Char</SPAN>() {";"c}, StringSplitOptions.RemoveEmptyEntries))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> row <SPAN>In</SPAN> cmd.DenyExecute<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>member = <SPAN>CStr</SPAN>(row(<SPAN>"IdMiembro"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>roles = <SPAN>CStr</SPAN>(row(<SPAN>"Roles"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>AuthorizationRules.DenyExecute(member, roles.Split(<SPAN>New</SPAN> <SPAN>Char</SPAN>() {";"c}, StringSplitOptions.RemoveEmptyEntries))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Next<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We have many grids in our application and we need to hide all their columns the user can’t see. We have added to our BusinessBase class the following property that allow the UI to customize every grid before data has been loaded:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Shared</SPAN> mSharedAuthorizations <SPAN>As</SPAN> Csla.Security.AuthorizationRules<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> SharedAuthorizations() <SPAN>As</SPAN> Csla.Security.AuthorizationRules<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mSharedAuthorizations <SPAN>Is</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' Create an instance to make sure Authorization rules are loaded.<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Activator.CreateInstance(<SPAN>GetType</SPAN>(T), <SPAN>True</SPAN>)</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mSharedAuthorizations = <SPAN>New</SPAN> Csla.Security.AuthorizationRules(<SPAN>GetType</SPAN>(T))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mSharedAuthorizations<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>As you can see, we have found a workaround to force the CSLA framework to load authorization rules even before any business object is loaded from the UI. We don’t know if it is the best approach but it works for us (at the moment).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your attention.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Ben<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 21, 2008</h2><P>Ben,</P>
+<P>You asked:</P>
+<P class=MsoNormal><SPAN>"Is it possible to check Shared Authorization rules before any instance of an object type has been instantiated?"</SPAN></P>
+<P class=MsoNormal><SPAN>The obvious answer is Yes - that is what the whole Authorization subsytem is designed to do!</SPAN></P>
+<P class=MsoNormal><SPAN>I knew you must be doing something which is non-standard - otherwise you wouldn't have asked the question.</SPAN></P>
+<P class=MsoNormal><SPAN>I suggest you start by creating a small test class which inherits directly from CSLA (skip your base class for now)&nbsp;which does things the "standard" way. Hard code a single role into one of the methods and then trace the sequence&nbsp; so you can fully understand what happens and when it happens using the std design.</SPAN></P>
+<P class=MsoNormal><SPAN>Once you have a good feel for the normal sequence you can then re-trace your non-std design and see what you are doing which causes things to break.</SPAN></P>
+<P class=MsoNormal><SPAN>This is "obviously" causing the problem:<BR></SPAN><SPAN><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> SharedAuthorizations() <SPAN>As</SPAN> Csla.Security.AuthorizationRules<O:P></O:P></SPAN></P></SPAN>
+<P>I just can't tell you how to fix it.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Tuesday, October 21, 2008</h2><P class=MsoNormal><SPAN>If you are right then I'm missing something.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>All shared authorization data is loaded in the method “AddAuthorizationRules” which is an instance method called just once, the first time its owner business object is instantiated. The constructor takes care of calling it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I’m not wrong, there is no authorization associated to one target object type until one business object of that type is instantiated. So all checks we do against any method from Csla.Security.AuthorizationRules(GetType(T))<O:P></O:P> <SPAN>&nbsp;</SPAN>will not have any information about authorizations. This means that all properties are allowed.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Our shared authorization infrastructure is not based on shared methods only. As shared methods can’t be overridden and we need to override AddAuthorizationRules to gain all its benefits then we need to depend on an instance method to be called from the object constructor.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Based on this thinking we decided to use our workaround. We instantiate a business object when the AuthorizationRules is asked by the first time to make sure the authorization rules are loaded following the standard procedure. Other way we would have to load authorization rules in some where different to AddAuthorizationRules. May be a shared method, but this would be so far from the standard method.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I can’t agree with you that CSLA authentication system is designed to allow checking authorization without instantiating any object. It seems to but it doesn’t really. The class AuthorizationRules provide access to shared authorizations only if one object has been instantiated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This is what I think. Please, tell me where I’m wrong.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Ben.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 21, 2008</h2><P>Try using AddObjectAuthorizationRules instead.</P>
+<P>That is for per Type rules which do *not* require an instance to ever be created.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Wednesday, October 22, 2008</h2><SPAN>
+<P class=MsoNormal><SPAN>I don’t know method “</SPAN><SPAN>AddObjectAuthorizationRules</SPAN><SPAN>”, do you mean “</SPAN><SPAN>AddInstanceAuthorizationRules</SPAN><SPAN>”?. We can’t use “</SPAN><SPAN>AddInstanceAuthorizationRules</SPAN><SPAN>” for two reasons:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Getting the authorization data for each instance would have too impact in performance because our application loads many instances at the same time.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We need access to shared authorization data before any instance is created.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Our workaround works for now but later, when we have time we’ll try to redesign the security system of our version of CSLA. I think the problem is because of the security system should not let other classes set its data from outside. Any UI programmer may set authorization data before any business object is instantiated so we have a big hole in our security system. The system should get by itself the information it needs. No one outside the security system should be able to set security information unless the security system asked it for it. To customize the security data source there may be an inheritable class or an interface (like IPrincipal and IIdentity), or may be both. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks a lot for your time, any way. You’re so kind,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin.<o:p></o:p></SPAN></P>
+<P class=MsoNormal></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 22, 2008</h2><P>&nbsp;I don’t know method “<SPAN>AddObjectAuthorizationRules</SPAN><SPAN>”, do you mean “</SPAN><SPAN>AddInstanceAuthorizationRules</SPAN><SPAN>”?</SPAN></P>
+<P><SPAN>Nope.</SPAN></P>
+<P><SPAN>I meant what I wrote. <SPAN>AddObjectAuthorizationRules is for per type rules declarations.</SPAN></SPAN></P>
+<P><SPAN><SPAN>Check out version 3.6 code base.</SPAN></SPAN></P>
+<P><SPAN><SPAN>Joe</SPAN></SPAN></P>
+<P><SPAN><SPAN></SPAN></SPAN>&nbsp;</P>
+<P><SPAN></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Thursday, October 23, 2008</h2><P class=MsoNormal><SPAN>Thanks Joe. I’m going to start studying CSLA version 3.6.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 23, 2008</h2><P>Hmm.</P>
+<P>To clarify, <SPAN>AddObjectAuthorizationRules is used like this:</SPAN></P>
+<P><SPAN>AuthorizationRules.AllowCreate(typeof(Project), "Project Manager");<BR></SPAN><SPAN><SPAN>AuthorizationRules.AllowEdit(typeof(Project), "Project Manager");<BR></SPAN><SPAN><SPAN>AuthorizationRules.AllowDelete(typeof(Project), "Project Manager");</SPAN></SPAN></SPAN></P>
+<P><SPAN><SPAN><SPAN>So I guess that does not help you.</SPAN></SPAN></SPAN></P>
+<P><SPAN><SPAN><SPAN>I am going to have to defer to Rocky on this one.</SPAN></SPAN></SPAN></P>
+<P><SPAN><SPAN><SPAN>Especially the comment about a potential bug.</SPAN></SPAN></SPAN></P>
+<P><SPAN><SPAN><SPAN>Joe</SPAN></SPAN></SPAN></P>
+<P><SPAN><SPAN><SPAN></SPAN>&nbsp;</P></SPAN></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 23, 2008</h2><P>Rocky - can you please review this thread?</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Thursday, October 23, 2008</h2><P class=MsoNormal><SPAN>I’ve spent some time looking at version 3.6 this morning. I haven’t time enough to study it as I&nbsp;want but I think “AddObjectAuthorizationRules” does not help me&nbsp;very much. To gain CRUD permission security we are already using a subsystem developed by us some time ago and its works fine. Instead of setting permission logic inside every business object we set them in the database (more manageable). Before any CRUD operation starts we report the action to the security system. If the current user has permission to do the action then everything works fine but when the user hasn’t the right permission (the right role)&nbsp;the security system throws an exception. UI has also a specialized method to ask for user permission getting a Boolean value.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>To create a new permission the only thing we need is to create a new record in a table called "Permissions" and we also have a table called "RolesPermissions" to store the roles authorized for each permission. With these two tables and the other explined by Rocky in&nbsp;his book "Expert One-on-One Visual Basic .NET Business Objects" we are managing CRUD logic.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>These are our key classes to manage permissions:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.Security<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.Security.Permissions<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.Collections.Specialized<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.Threading<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Namespace</SPAN><SPAN> Security<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Class</SPAN> AccessControl<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Shared</SPAN> mPermission <SPAN>As</SPAN> HybridDictionary<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> UserAuthenticated() <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> Thread.CurrentPrincipal.Identity <SPAN>Is</SPAN> <SPAN>Nothing</SPAN> _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>OrElse</SPAN> <SPAN>Not</SPAN> Thread.CurrentPrincipal.Identity.IsAuthenticated <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>'The user isn't authenticated<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> CanI(<SPAN>ByVal</SPAN> PermissionName <SPAN>As</SPAN> <SPAN>String</SPAN>) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> UserAuthenticated() <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>GetPermission(PermissionName).Demand()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Catch</SPAN> se <SPAN>As</SPAN> SecurityException<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Catch</SPAN> e <SPAN>As</SPAN> Exception<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> e<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Shared</SPAN> <SPAN>Sub</SPAN> GoingTo(<SPAN>ByVal</SPAN> PermissionName <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> UserAuthenticated() <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> <SPAN>New</SPAN> System.Security.SecurityException( _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>My</SPAN>.Resources.Security.NotAuthenticatedUser)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>GetPermission(PermissionName).Demand()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Catch</SPAN> e <SPAN>As</SPAN> Exception<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> e<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> GetPermission(<SPAN>ByVal</SPAN> PermissionName <SPAN>As</SPAN> <SPAN>String</SPAN>) <SPAN>As</SPAN> Paca.Security.Permission<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> Permission.Contains(PermissionName) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>DirectCast</SPAN>(Permission.Item(PermissionName), Paca.Security.Permission)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> newPerm <SPAN>As</SPAN> Paca.Security.Permission<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>newPerm = Paca.Security.Permission.LoadPermission(PermissionName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Permission.Add(PermissionName, newPerm)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> newPerm<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Shared</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> Permission() <SPAN>As</SPAN> HybridDictionary<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> mPermission <SPAN>Is</SPAN> <SPAN>Nothing</SPAN> <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mPermission = <SPAN>New</SPAN> HybridDictionary<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mPermission<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Namespace<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> Paca.Core<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.Data.SqlClient<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.Security.Permissions<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Namespace</SPAN><SPAN> Security<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp; </SPAN><SPAN>Friend</SPAN> <SPAN>Class</SPAN> Permission<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Inherits</SPAN> Csla.ReadOnlyBase(<SPAN>Of</SPAN> Permission)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> mPermissionName <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> mExceptionMessage <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> mPrincialPermission <SPAN>As</SPAN> PrincipalPermission<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Application logic "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> IsRegisteredInDB() <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> Len(mPermissionName) &gt; 0<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> Name() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> <SPAN>Not</SPAN> IsRegisteredInDB <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> <SPAN>New</SPAN> Exception(<SPAN>"Permission name not registered in the data base."</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mPermissionName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Sub</SPAN> Demand()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mPrincialPermission.Demand()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Catch</SPAN> ex <SPAN>As</SPAN> Exception<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> <SPAN>New</SPAN> System.Security.SecurityException(mExceptionMessage)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Create and Load "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Overrides</SPAN> <SPAN>Function</SPAN> GetIdValue() <SPAN>As</SPAN> <SPAN>Object<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Return</SPAN><SPAN> mPermissionName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Overrides</SPAN> <SPAN>Function</SPAN> ToString() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> mPermissionName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Friend</SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> LoadPermission(<SPAN>ByVal</SPAN> UserName <SPAN>As</SPAN> <SPAN>String</SPAN>) <SPAN>As</SPAN> Paca.Security.Permission<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>CType</SPAN>(Csla.DataPortal.Fetch(<SPAN>New</SPAN> Criteria(UserName)), Paca.Security.Permission)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Catch</SPAN> ex <SPAN>As</SPAN> Exception <SPAN>' Control exceptions from DataPortal<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> <SPAN>New</SPAN> GettingPermissionException(ex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Class</SPAN> Criteria<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> PermissionName <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>(<SPAN>ByVal</SPAN> PermissionName <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.PermissionName = PermissionName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' prevent direct creation<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>Region</SPAN> <SPAN>" Data access "<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Protected</SPAN> <SPAN>Overrides</SPAN> <SPAN>Sub</SPAN> DataPortal_Fetch(<SPAN>ByVal</SPAN> Criteria <SPAN>As</SPAN> <SPAN>Object</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> crit <SPAN>As</SPAN> Criteria = <SPAN>CType</SPAN>(Criteria, Criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mPrincialPermission = <SPAN>New</SPAN> PrincipalPermission(<SPAN>"Administrador"</SPAN>, <SPAN>"Administradores"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> cn <SPAN>As</SPAN> <SPAN>New</SPAN> SqlConnection(Database.SecurityConnection)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> cm <SPAN>As</SPAN> <SPAN>New</SPAN> SqlCommand<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cn.Open()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.Connection = cn<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.CommandText = <SPAN>"usp_Security_ObtenerPermiso"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.CommandType = CommandType.StoredProcedure<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cm.Parameters.AddWithValue(<SPAN>"@NombrePermiso"</SPAN>, crit.PermissionName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> dr <SPAN>As</SPAN> SqlDataReader = cm.ExecuteReader()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> dr.Read() <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mPermissionName = crit.PermissionName<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mExceptionMessage = dr.GetString(1)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>If</SPAN> dr.NextResult <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> strRoleName <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>While</SPAN> dr.Read<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>strRoleName = dr.GetString(0)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Dim</SPAN> newPermis <SPAN>As</SPAN> <SPAN>New</SPAN> PrincipalPermission(<SPAN>Nothing</SPAN>, strRoleName)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mPrincialPermission = <SPAN>CType</SPAN>(mPrincialPermission.Union(newPermis), System.Security.Permissions.PrincipalPermission)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>While<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Else<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>mPermissionName = <SPAN>""<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Finally<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dr.Close()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Catch</SPAN> ex <SPAN>As</SPAN> SqlException <SPAN>' Throw a friendlier exception<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Throw</SPAN> <SPAN>New</SPAN> Exceptions.SecurityDBException(ex)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>' Leave any other exception propagate<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Finally<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>cn.Close()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<SPAN>End</SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Namespace<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Usage example:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In CRUD methods add the following line before doing anything else:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Paca.Security.AccessControl.GoingTo(<SPAN>"PermissionName"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For the UI you can use:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>btnDelete.Enabled = Paca.Security.AccessControl.CanI(<SPAN>"PermissionName"</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>This implementation is very simple (was developed for CSLA 1.x) and it could be improved a lot, but it works very well. May be some one may like it and use it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 24, 2008</h2><P>CSLA .NET version 3.5 introduced per-type authorization. I don't know if it will meet your needs, but here's how it works.</P>
+<P>In your business class you implement a Shared method named AddObjectAuthorizationRules(). In this method you specify which roles are allowed to create, get, edit or delete this type of object. You could load those roles from the database, hard code them, or whatever. Inside this method, you make calls like this:</P>
+<P>&nbsp;&nbsp;&nbsp; Csla.Security.AuthorizationRules.AllowCreate(GetType(Customer), "Manager")</P>
+<P>The AddObjectAuthorizationRules() method is automatically called once per AppDomain, the <EM>first time anyone asks for per-type authz rules for the specfied type</EM>.</P>
+<P>Please note that&nbsp;as an advanced option you could call this line of code from <EM>somewhere else</EM>, as long as it only gets called once per AppDomain. So if you wanted, you could come up with your own scheme where you set all permissions for all types - as long as you make sure that occurs once per AppDomain, and before any "real" code runs.</P>
+<P>Anywhere else in your code - in the UI, other business objects, and so forth, you can make calls like this:</P>
+<P>&nbsp;&nbsp;&nbsp; Dim canCreate As Boolean = _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Security.AuthorizationRules.CanCreate(GetType(Customer))</P>
+<P>This will use the current principal and the list of roles associated with the type. If AddObjectAuthorizationRules() hasn't been called for this type yet, it is called first (but only once per AppDomain).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Friday, October 24, 2008</h2><P class=MsoNormal><SPAN>Many thanks, Rocky, for your explanations. You saved me so much time to understand how “AddObjectAuthorizationRules” works.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Now we have work to do&nbsp;:-)</SPAN><SPAN> . We have to do some test to check whether we can use “AddObjectAuthorizationRules” to load properties authorizations and use them before any business instance is created.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In our security requirements we have to set permissions for actions that are not business actions, such as “CustomizeToolbars”, “LoadLibraryXxxx”, “SeeSpecialCommandBars”. “UseUIFeatures”, … We don’t have business objects that implement methods or properties for those kind of actions. And I can’t see how to get this with “AddObjectAuthorizationRules” or “AddAuthorizationRules”.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>May you tell me how we could get this with the CSLA features?.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks again for everything.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Ben<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The CSLA per-type features are designed to help you write UI
+code that responds to the four operations at an object level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don’t expect that you would have objects directly
+corresponding to those other actions. That’s the kind of thing you may choose
+to attach as properties in a custom Principal or Identity object, or load as an
+ApplicationFeatures object when the user first logs in (and maybe put into
+LocalContext on the client so it is easily accessible).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 24, 2008</h2><P>I have both Roles and Permissions in my custom Identity class. When a user logs in they get authenticated and then assigned their roles and perms. Then as the user navigates the app you can always ask the Principal if user.HasPermission("somePerm"). This is a totally different concept than where this thread started though!! The original question was about Property level authorizations and then it took a few twists to end up here. Hopefully this helps you move on with your coding.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Monday, October 27, 2008</h2><P class=MsoNormal><SPAN>Thanks to both. We’ll consider your suggestion.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cute replied on Monday, August 17, 2009</h2><P class=MsoNormal><FONT face=Calibri>Hi Rocky,</FONT></P><FONT face=Calibri>
+<P class=MsoNormal>As what you have posted method AddObjectAuthorizationRules in csla3.5 is loaded per AppDomain. Is there a way that I can be able to reload the ObjectAuthorizationRules for every login of the user and used the Csla.Security.AuthorizationRules.* static method to determine if object can allow object CRUD. </P>
+<P class=MsoNormal>I made a Web Application that the super admin can modifying the roles for each Group. As of this moment I used my customize object to handle the AuthorizationRules of my web application to check the roles for every user’s login. But still I do consider that using the Csla ObjectAuthorizationRules will be an excellent approach though.</P>
+<P class=MsoNormal>I really appreciate of your response regarding this concerned.</FONT></P>
+<P class=MsoNormal>Cute</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Tuesday, October 21, 2008</h2><P class=MsoNormal>Hi Joe,</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>I would like you to do the following test with the ProjectTracker sample application:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>1.- Add the following code at the beginning of the procedure MainForm_Load:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN>&nbsp;hacker <SPAN>As</SPAN> <SPAN>New</SPAN> Csla.Security.AuthorizationRules(<SPAN>GetType</SPAN>(Project))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>hacker.IsReadAllowed(<SPAN>""</SPAN>)</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>2.-&nbsp;Set&nbsp;a break point &nbsp;to the "</SPAN><SPAN>AddAuthorizationRules</SPAN><SPAN>" method in the "Project" class. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>3.- Run the application and try to edit any project with any user.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>As you can see the "</SPAN><SPAN>AddAuthorizationRules</SPAN><SPAN>" method is never executed.&nbsp;These two&nbsp;lines of code have disabled all authorizations for the type "Project". We could do an iteration for all business classes to disable all authorizations for all properties and methods. The source of the problem is in the BusinessBase constructor. When AuthoriazationRules.IsReadAllowed is called a new AutorizationRulesManager object is added to the dictionary mManagers in the module “SharedAuthorizationRules”. After this any call to SharedAuthorizationRules.RulesExistFor will return true and so the constructor of the class “Project” don’t call its method AddAuthorizationRules.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I think this is a bug in the security system. Isn’t it?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>We are using version 3.0.2, but I think this problem is similar in newer versions. </SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your attention.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Benjamin</SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,46 @@
+<html><header><title>All or nothing with data portal is giving me fits. (Wish list please!)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>All or nothing with data portal is giving me fits. (Wish list please!)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Saturday, July 05, 2008</h2>&nbsp;&nbsp;&nbsp; I hope that this makes it into the wish list;<br><br>The new system we are working on uses three libraries - 'X' and 'Y' and 'Z' for simplicity.&nbsp; All are CSLA based; but 'Y' is written far better than 'X' and 'Z' is far better than 'Y' - because we've learned and grown with CSLA over the years.&nbsp; <br><br>'Z' at a flip of a switch can be truely extended to run on a remote portal; 'Y', maybe if we did a couple weeks worth of maintenance might be able to - our biggest issues there are security context, not huge - 'X' on the other hand could never be used in a true remoting situation without a complete re-write which would take 6 months minimum.<br><br>So we're in this situation now where we need all the business rules of 'X', but we want 'Z' to run remotely because it does some heavy processing and shouldn't run on the 'client' machine.&nbsp; Problem is that with CSLA portal, your either running EVERYTHING across the remote portal or NOTHING.&nbsp; You can't say object in assembly 'X' and 'Y' run locally, but object in assembly 'Z' run remotely and here is the remote portal information for that object.&nbsp; And to complicate matters in my shop (this hasn't happened yet thankfully, but could), 'X' runs locally, 'Y' runs remotely on machince 'A', and 'Z' runs remotely on machine 'B' - and even if they were the same machines they could be different ports.<br><br>I tried to solve this problem myself; but to be honest, what I came out with was a horrible hack at best and just never would work quite right.<br><br>Has anyone else made the required core changes to CSLA core to do something like this that they wouldn't mind sharing?&nbsp; Rocky, can this please make it into an upcoming version?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Saturday, July 05, 2008</h2><P>I don't know if this is too cumbersome for you or not but it would give you granular control. </P>
+<P>Can you use the run-local attribute on all of your DP methods for classes that you're not ready to have use the dataportal? Granted, it's cumbersome but relatively straightforward in its application - and although I've only used RunLocal on my DP_Create but I don't remember there being limitations that it only be DP_Create. (I don't have Csla in front of me to be able to look at it).&nbsp; </P>
+<P>Chris</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Saturday, July 05, 2008</h2>For the sake of argument, let's assume these are other assemblies we're bringing in; not code that we're importing into the solution; so using RunLocal doesn't solve this.&nbsp; It also doesn't solve the potential future problems that 'Y' is remoted on machine A port 98 and 'Z' is remoted on machine B, or on machine A port 99.<br><br>Good thought though!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 06, 2008</h2><P>The solution is to create your own data portal proxy. This has been discussed on the forum numerous times, and is not difficult to do (typically you can take one of the existing proxy classes to use as a starting point).</P>
+<P>The trick, of course, is defining the criteria for which objects/requests should go to which server (or not).</P>
+<P>If I did something like this in CSLA itself, it would be "resource based". In other words, you'd attribute your DP_XYZ method with a ResourceRequired attribute sort of like this:</P>
+<P>[ResourceRequired("HRdatabase")]</P>
+<P>Then your client's app.config/web.config would have some x-ref section that defines which resources are on which servers so the data portal could do the routing. Or perhaps I'd require you have just one well-known data portal server that acts as a locator service, so the x-ref data is on that server, and every time a client starts up it would download the x-ref data. Something like that anyway.</P>
+<P>This might or might not solve your particular problem, but would address a broader and (to me) more interesting problem, which is to be able to have the data portal automatically route calls to the right server based on the resources of that server.</P>
+<P>None of this is high on my to-do list honestly, because the custom proxy solution is sufficient to address pretty much any need people have brought forward thus far.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, July 06, 2008</h2>I guess my hope was that instead of several people having several different versions of a solution for the same problem that at some point in the future the CSLA framework would provide a common solution that would be better supported by the community than an individuals implementation.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not saying it won&#8217;t happen someday, because you
+just never know. I&#8217;m just saying that my priorities for the next 6 months
+or so are CSLA Light and the <i>Expert 2008 Business Objects</i> book. Beyond
+that, who knows what&#8217;ll catch my interest.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve added this concept to the wish list so it doesn&#8217;t
+get lost.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, July 06, 2008</h2>Thanks - and I understand priorities - and you getting the 2008 Business Objects book done first is high on my priority list to.&nbsp; :)<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

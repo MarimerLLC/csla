@@ -1,0 +1,59 @@
+<html><header><title>Create my own exceptions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Create my own exceptions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5973.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Wednesday, December 10, 2008</h2><P>When a database error occurs in the dal layer I want to translate it for certain errors to my own exceptions. Is there a central place where I can call my method TranslateException? I don't want to do this in the UI because the UI must be agnostic for which type of database we are using (sqlexception, oracleexception).</P><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Translate a SqlException to the correct DALException</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="ex"&gt;</FONT><FONT color=#008000 size=2>SqlException to be translated</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>An DALException</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> TranslateException(</FONT><FONT color=#2b91af size=2>SqlException</FONT><FONT size=2> ex) {</P>
+<P></FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> dalException = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</FONT><FONT size=2></P>
+<P></FONT><FONT color=#008000 size=2>// Return the first Custom exception thrown by a RAISERROR</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlError</FONT><FONT size=2> error </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> ex.Errors) {</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (error.Number &gt;= 50000) {</P>
+<P>dalException = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DalException</FONT><FONT size=2>(error.Message, ex);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (dalException == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) {</P>
+<P></FONT><FONT color=#008000 size=2>// uses SQLServer 2000 ErrorCodes</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>switch</FONT><FONT size=2> (ex.Number) {</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 17:</P>
+<P></FONT><FONT color=#008000 size=2>// SQL Server does not exist or access denied.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 4060:</P>
+<P></FONT><FONT color=#008000 size=2>// Invalid Database</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 18456:</P>
+<P></FONT><FONT color=#008000 size=2>// Login Failed</P></FONT><FONT size=2>
+<P>dalException = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DalLoginException</FONT><FONT size=2>(ex.Message, ex);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 547:</P>
+<P></FONT><FONT color=#008000 size=2>// ForeignKey Violation</P></FONT><FONT size=2>
+<P>dalException = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DalForeignKeyException</FONT><FONT size=2>(ex.Message, ex);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 1205:</P>
+<P></FONT><FONT color=#008000 size=2>// DeadLock Victim</P></FONT><FONT size=2>
+<P>dalException = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DalDeadLockException</FONT><FONT size=2>(ex.Message, ex);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 2627:</P>
+<P></FONT><FONT color=#0000ff size=2>case</FONT><FONT size=2> 2601:</P>
+<P></FONT><FONT color=#008000 size=2>// Unique Index/Constriant Violation</P></FONT><FONT size=2>
+<P>dalException = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DalUniqueConstraintException</FONT><FONT size=2>(ex.Message, ex);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>default</FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#008000 size=2>// throw a general DAL Exception</P></FONT><FONT size=2>
+<P>dalException = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>DalException</FONT><FONT size=2>(ex.Message, ex);</P>
+<P></FONT><FONT color=#0000ff size=2>break</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// return the error</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> dalException;</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 10, 2008</h2>You could try to do this by overriding DataPortal_OnDataPortalException, I would think, in your common base classes (you do have base classes between Csla BusinessBase and your own Business objects, right?)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Wednesday, December 10, 2008</h2><P>Override DataPortal_OnDataPortalException.&nbsp; So&nbsp;I need to create a MyCompanyBusinessBase, and have all my classes inherit that subclass.&nbsp; I believe Rocky recommends creating such a subclass even if initially it doesn't add any behavior at all, because someday you will. Apparently this day is arrived.</P>
+<P>DataPortal_OnDataPortalException is declared as follows:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_OnDataPortalException(</FONT><FONT color=#2b91af size=2>DataPortalEventArgs</FONT><FONT size=2> e, </FONT><FONT color=#2b91af size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>}</P>
+<P></FONT><BR>But if I replace the exception with my own&nbsp;dalexception, there's no way of getting this new exception type back to the DataPortal to be thrown back to the client as the return type of&nbsp; DataPortal_OnDataPortalException is void and the parameter to the method is not passed by ref.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Wednesday, March 10, 2010</h2><p>Alef,</p>
+<p>We&#39;re having some weird exception issues and I am curious to know how you solved your issue.</p>
+<p>Thanks,<br />John</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 10, 2010</h2><p>The data portal will always return a DataPortalException from the server. That is necessary because it is the server DataPortalException that knows how to do things like carry the server-side stack trace back to the client and merge it with the client-side stack trace.</p>
+<p>The server-side DataPortalException carries an InnerException, which is the &quot;real&quot; exception that occurred on the server.</p>
+<p>On the client, the data portal gets the server-side DataPortalException, and takes it apart, using it to create a client-side DataPortalException, which is then thrown on the client side.</p>
+<p>The client-side DataPortalException has an InnerException, but it also has a BusinessException. The BusinessException is typically the original exception that cause the issue to start with. The InnerException may or may not be the same, depending on whether intermediate layers of code wrapped that original exception (which can happen in some cases).</p>
+<p>In short, it is BusinessException that you typically want.</p>
+<p>In your Save() override, you can catch the DataPortalException and throw the BusinessException if you&#39;d like. You&#39;ll lose a bunch of useful information by doing so, because the BusinessException only has part of the server-side stack trace, etc. But you might choose to give up that information to simplify the consuming code - it will be easier to write and harder to debug.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

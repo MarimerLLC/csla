@@ -1,0 +1,380 @@
+<html><header><title>Can't undo lazy-loaded child loaded after BeginEdit (managed property)?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't undo lazy-loaded child loaded after BeginEdit (managed property)?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6420.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 posted on Friday, February 13, 2009</h2><P>I'm having what seems to be a related (but different) problem from the one I described a few weeks ago, and this is admittedly&nbsp;related to undo support for child objects which isn't currently fully&nbsp;supported. Still, it seems like this isn't quite right. I'm using CSLA 3.5.1, DisableIEditableObject=true.</P>
+<P>This is a somewhat unusual lazy child scenario. The child isn't automatically loaded just because you call GetProperty(). The lazy loading occurs elsewhere, so a call to GetProperty() returns a null value if the object isn't loaded. </P>
+<P>At the time I called BeginEdit(), it evidently pushed an IFieldData value onto the state stack for which the Value is null, so the object didn't exist before. </P>
+<P>When the child is lazily loaded, it syncs up it's edit level correctly and every thing seems fine. </P>
+<P>Now I call CancelEdit().</P>
+<P>What I expected (and want) to happen is for this child to now disappear. It wasn't there when I called BeginEdit(), and now I want it to go away. </P>
+<P>However, the undo code in FieldDataManager sees that there was previously an item on the state stack (not looking closer to see that it was really null, e.g. IFieldData.Value==null), so calls UndoChanges on the the lazy child instead of removing it. </P>
+<P>I think in this case a reasonable course of action is to just restore the previous item from the state stack, e.g. just put back the IFieldData with the null value. </P>
+<P>I think I can program around it for now, but it seems&nbsp; to me that there is clearly enough information on the state stack for UndoChanges to detect that the previous object value was really null. However, I can see how this might be an edge case. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 13, 2009</h2><P>I'm not sure it does have enough information to do what you want.</P>
+<P>Remember this is n-level undo. I don't think it has enough information to know that the value was null at level n1, but you are now at n3 and so it will take three CancelEdit() calls to get back to the null.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, February 14, 2009</h2><P>If the child object was null at n1 but present at n2 and n3, here is what I think happens: (and how a possible fix might work)</P>
+<P>When you CancelEdit on the Parent at n3, the state stack has one of your "boolean placeholders" that just indicates the child object was present at n2, so you cascade the UndoChanges call to the current child value. Then you pop the state stack. </P>
+<P>Then you CancelEdit on the&nbsp;Parent&nbsp;at n2. The prior state on the stack for the child now has IFieldData(null value) rather than the boolean. This is not&nbsp;tested for currently but I think it could be. &nbsp;So, instead of&nbsp;cascading the call to the child like you do now, you could instead&nbsp;discard the child object entirely and restore the IFieldData reference as the child&nbsp;value in the FieldDataManager.</P>
+<P>Now the Parent object is at n1, and it would (with the fix) look just like it did before the&nbsp;BeginEdit() BeginEdit() CancelEdit() CancelEdit() sequence. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You miss my point. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var root = Root.NewRoot();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.Child = Child.NewChild();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.BeginEdit();&nbsp; // edit level of root and child are now
+at 4<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>root.CancelEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is where the problem occurs. At this point, how do we know
+whether to revert to the null value that the child started with, or to cascade
+the CancelEdit() call to the child?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I agree that this should be resolved. I&#8217;m just saying that
+it isn&#8217;t a trivial thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There&#8217;s already an item in the wish list that basically
+addresses this question &#8211; which is that a direct managed reference to a
+child object needs to act much more like a single item BusinessListBase
+reference to that child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I mean <i>really</i> what you want is more than you are asking. <i>Really</i>
+what you want is to be able to do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>var root = Root.GetRoot(123);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.RemoveChild(); // removes existing child, which is marked
+for deletion and stored in a &#8220;deletedList&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>root.Child = Child.NewChild();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>// &#8230; (any number of nested Begin/Cancel/Apply edit
+operations<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>root.CancelEdit(); // removes new child, replacing it with the &#8220;deleted&#8221;
+child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is the same problem as your null problem &#8211; just with
+an initial non-null value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem is absolutely solvable. Either by having the
+FieldData object use a BusinessListBase internally to handle all the complexity,
+or by creating a ChildFieldData class that does much of what BLB does.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, February 14, 2009</h2><P>I think I did understand the point. I'm not asking for a perfect solution -- I think this is a&nbsp;2-3&nbsp;line fix. Also, this example works the way I want it to with a non-managed field, it just doesn't work with a managed field. </P>
+<P>Using your example:</P>
+<P><SPAN>var root = Root.NewRoot();<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>root.BeginEdit();<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>root.Child = Child.NewChild();<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>root.BeginEdit();<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>root.BeginEdit();<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>root.BeginEdit();&nbsp; // edit level of root and child are now at 4<O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN></P>
+<P class=MsoNormal><SPAN>root.CancelEdit();</SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><O:P>At this point I don't see a problem -- the state stack in the FieldManager indicates a previous value was present, so you call UndoChanges() on the root.Child value.&nbsp;Then you pop the state stack. </O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><O:P>The same would be true on&nbsp;the 2nd and&nbsp;3rd&nbsp;calls to CancelEdit(). So, again you call UndoChanges() on the Child.</O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><O:P>On a 4th call to CancelEdit(), matching the first BeginEdit(), however, the state stack tells you there wasn't a child value, so you would remove it. </O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 14, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Non-managed fields work correctly because the null value is
+stacked into the state &#8211; so CSLA actually knows at which point to switch
+back to the null.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I may address this in 3.6.2 &#8211; I just don&#8217;t know for
+sure &#8211; it is a matter of time and priority. But I need to fix it
+correctly, to address not only the null issue, but the delete issue too &#8211;
+because if I fix the delete issue the null issue is resolved by definition.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, February 14, 2009 3:51 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Can't undo lazy-loaded child loaded after
+BeginEdit (managed property)?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I think I did understand the point. I'm not asking for a perfect solution --
+I think this is a&nbsp;2-3&nbsp;line fix. Also, this example works the way I
+want it to with a non-managed field, it just doesn't work with a managed field.
+<o:p></o:p></p>
+
+<p>Using your example:<o:p></o:p></p>
+
+<p>var root = Root.NewRoot();<o:p></o:p></p>
+
+<p class=MsoNormal>root.BeginEdit();<o:p></o:p></p>
+
+<p class=MsoNormal>root.Child
+= Child.NewChild();<o:p></o:p></p>
+
+<p class=MsoNormal>root.BeginEdit();<o:p></o:p></p>
+
+<p class=MsoNormal>root.BeginEdit();<o:p></o:p></p>
+
+<p class=MsoNormal>root.BeginEdit();&nbsp;
+// edit level of root and child are now at 4<o:p></o:p></p>
+
+<p class=MsoNormal>root.CancelEdit();<o:p></o:p></p>
+
+<p class=MsoNormal>At
+this point I don't see a problem -- the state stack in the FieldManager
+indicates a previous value was present, so you call UndoChanges() on the
+root.Child value.&nbsp;Then you pop the state stack. <o:p></o:p></p>
+
+<p class=MsoNormal>The
+same would be true on&nbsp;the 2nd and&nbsp;3rd&nbsp;calls to CancelEdit(). So,
+again you call UndoChanges() on the Child.<o:p></o:p></p>
+
+<p class=MsoNormal>On
+a 4th call to CancelEdit(), matching the first BeginEdit(), however, the state
+stack tells you there wasn't a child value, so you would remove it. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Saturday, February 14, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Non-managed fields work correctly because the null value is stacked into the state – so CSLA actually knows at which point to switch back to the null.<o:p></o:p></SPAN></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>I'm not trying to quibble, but (unless I'm missing something and I've waded in pretty deeply already) your managed field implementation has the same information. However, your test in the FieldDataManager&nbsp;to see if a previous value was in the state stack only looks to see if it there is *any* non-null value. This test gets confused if the previous "value" is an IFieldData w/null data value. It works fine if the field was actually never previously accessed and there is no IFieldData at all on the stack. </P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>I went to managed fields for child objects per your recommendation because they are supposed to simplify the programming and you automatically get whatever fixes or improvements you put into the infrastructure. In this case, my old code worked as I expected it to (with the known limitations), and then suddenly broke just because I changed it to a managed property.&nbsp; </P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Until you get around to a complete solution, I'm just asking that they work the same way. </P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>&nbsp;</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, February 14, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Don’t worry about quibbling :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have not looked at that code for (probably) months and am
+going from memory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have a 2-3 line fix, post the idea and that’ll help me
+when I get time to look at the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, February 14, 2009 4:14 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Can't undo lazy-loaded child loaded
+after BeginEdit (managed property)?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>Non-managed
+fields work correctly because the null value is stacked into the state â€“ so
+CSLA actually knows at which point to switch back to the null.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal>I'm
+not trying to quibble, but (unless I'm missing something and I've waded in
+pretty deeply already) your managed field implementation has the same
+information. However, your test in the FieldDataManager&nbsp;to see if a
+previous value was in the state stack only looks to see if it there is *any*
+non-null value. This test gets confused if the previous &quot;value&quot; is an
+IFieldData w/null data value. It works fine if the field was actually never
+previously accessed. <o:p></o:p></p>
+
+<p class=MsoNormal>I
+went to managed fields for child objects per your recommendation because they
+are supposed to simplify the programming and you automatically get whatever
+fixes or improvements you put into the infrastructure. In this case, my old
+code worked as I expected it to (with the known limitations), and then suddenly
+broke just because I changed it to a managed property. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, February 15, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Don’t worry about quibbling :)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have not looked at that code for (probably) months and am going from memory.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If you have a 2-3 line fix, post the idea and that’ll help me when I get time to look at the issue.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p></o:p>&nbsp;</P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>Here is my current FieldDataManager.UndoChanges() implementation for 3.5.1. It has two fixes in it. The first fix is for this problem, the second fix &nbsp;was where a previous non-null child is set to null and then UndoChanges() left a FieldData&lt;bool&gt;, causing an invalid cast. Both changes are commented. </P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; void Core.IUndoableObject.UndoChanges(int parentEditLevel, bool parentBindingEdit)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (EditLevel &gt; 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.EditLevel - 1 &lt; parentEditLevel)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new UndoException(string.Format(Properties.Resources.EditLevelMismatchException, "UndoChanges"));</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IFieldData[] state = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (MemoryStream buffer = new MemoryStream(_stateStack.Pop()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; buffer.Position = 0;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var formatter = SerializationFormatterFactory.GetFormatter();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; state = (IFieldData[])(formatter.Deserialize(buffer));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (var index = 0; index &lt; _fieldData.Length; index++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var oldItem = state[index];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = _fieldData[index];<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var undoable = item.Value as IUndoableObject;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (undoable != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // current value is undoable<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (oldItem != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Change to CSLA here. If oldItem is an IFieldData with null value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // then there really wasn't an object here previously, so don't<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // cascde the call. Just put the IFieldData reference back<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (oldItem.Value != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; undoable.UndoChanges(parentEditLevel, parentBindingEdit);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = oldItem;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = null;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // CHANGE TO CSLA HERE<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Workaround for previously existing child object being set to NULL<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // NOTE: This does not make change to null undoable, but avoids leaving mismatching FieldData <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // type in the slot formerly occupied by an object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.Value == null &amp;&amp; (oldItem != null &amp;&amp; oldItem.GetType() != item.GetType()))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; continue; // Leave existing FieldData with null value for now<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // restore IFieldData object into field collection<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _fieldData[index] = oldItem;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Wednesday, August 04, 2010</h2><p>Hi,</p>
+<p>has this issue been solved in one of the current releases?&nbsp;<br />Is there any workaround available? <br />The following test still fails with Csla 8.3.4 Beta :</p>
+<p><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"></span></span>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class BusinessRoot : BusinessBase&lt;BusinessRoot&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected BusinessRoot()&nbsp;&nbsp; { }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static BusinessRoot Create()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new BusinessRoot() { Name = &quot;BusinessRoot&quot; };<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(o =&gt; o.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return this.GetProperty(NameProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SetProperty(NameProperty, value);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;BusinessChild&gt; ChildProperty = RegisterProperty&lt;BusinessChild&gt;(o =&gt; o.Child);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public BusinessChild Child<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return this.GetProperty(ChildProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SetProperty(ChildProperty, value);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class BusinessChild : BusinessBase&lt;BusinessChild&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected BusinessChild()&nbsp; {&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;public static BusinessChild Create(string name)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return new BusinessChild() {Name = name};<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(o =&gt; o.Name);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return this.GetProperty(NameProperty);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.SetProperty(NameProperty, value);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [TestMethod]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void Undotest()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BusinessRoot b = BusinessRoot.Create();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b.Child = BusinessChild.Create(&quot;Child1&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(b.Child.Name == &quot;Child1&quot;, &quot;Setting Child faild&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b.BeginEdit();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b.Child = BusinessChild.Create(&quot;Child2&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(b.Child.Name == &quot;Child2&quot;, &quot;Setting Child faild&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; b.CancelEdit();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // FAILS !!!!<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(b.Child.Name == &quot;Child1&quot;, &quot;Undo faild&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 04, 2010</h2><p>I think so, but I&#39;m not sure. When you register a property in CSLA 4 (and maybe 3.8.4?) you can (and must) mark the property as lazy loaded - it is an extra property on the RegisterProperty() call. That tells CSLA to treat the property somewhat differently because it is lazy loaded.</p>
+<p>None of your RegisterProperty() calls are indicating that the property is lazy loaded, so I wouldn&#39;t expect it to work.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Thursday, August 05, 2010</h2><p><span lang="EN-US" style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:10pt;mso-ansi-language:EN-US;mso-bidi-font-size:7.0pt;">The test fails in Csla 3.8.4 and Csla 4. And changing in the RelationshipType of RegisterProperty doesn&#39;t&nbsp;change the behavior. After looking in the source I suspect that child objects are simply ignored for serializing in FieldDataManager.CopyState(), because they are never&nbsp;inserted in&nbsp;the object state collection that is finally put on the stack - I am not sure if it is by purpose or if it is a bug. <br /></span><span lang="EN-US" style="FONT-FAMILY:&#39;Arial&#39;,&#39;sans-serif&#39;;COLOR:black;FONT-SIZE:10pt;mso-ansi-language:EN-US;mso-bidi-font-size:7.0pt;"><br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 05, 2010</h2><p>Normally the child&#39;s state should <em>not</em> be part of the parent state. Each object in the object graph is responsible for managing its own state.</p>
+<p>If you serialize/deserialize the child into the parent, then CancelEdit won&#39;t be an &quot;in-place&quot; operation anymore. Any UI elements (or anything else) referencing the child would need to rebind or recreate their reference to the child after CancelEdit. That&#39;s a major change compared to the behavior CSLA has had since its inception.</p>
+<p>The &quot;fake FieldData&quot; object that&#39;s added to the parent is a placeholder for the child object so we know it exists and therefore should be processed in the undo step. If the child value was null (there was no child) then the placeholder isn&#39;t added, and the undo doesn&#39;t process it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Thursday, August 05, 2010</h2><p>Does this basically mean, that changing the instances of child properties during an edit&nbsp;operation (like the unit test above) is not fully supported by the undo operation, because&nbsp;the FieldDataManager&#39;s UndoChanges() can&#39;t revert the child properties&nbsp;value&nbsp;(or instance) -&nbsp;with the only exception&nbsp;that it was null before BeginEdit() was called? If yes, will this be changed some day?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 05, 2010</h2><p>That is correct, that is not supported.</p>
+<p>There is a broader semantic issue at work here. A child object <em>is part of the object graph</em>. So changing a child reference has broader meaning.</p>
+<p>Ultimately your graph ends up tying back to some data store (99.999% of the time anyway). So changing an object reference <em>must be reflected in the underlying data store</em> when the object graph is saved. So just swapping out an object reference has to involve more than just changing the reference.</p>
+<p>What happened to the previous instance? If it is no longer &quot;part of the graph&quot; then it semantically means it should be marked for deletion and so should actually be still part of the graph (just invisible). Like DeletedList in BLB.</p>
+<p>My long-term intent (thought this has never become a real high priority) is for singular child references to automatically act very much like a BLB - which would address your requirement, while preserving the semantics you get when using a BLB - specifically meaning that when you change a child reference the previous instance is marked for deletion and put into a deleted list, so when the graph is saved that object&#39;s Child_DeleteSelf() is invoked.</p>
+<p>So from a <em>public</em> perspective&nbsp;it would appear that the child instance has changed - but from an <em>internal</em> perspective there are now two (or more) instances being tracked. And when you do an undo operation it would basically back up a step - much like BLB does by undeleting and/or unadding items.</p>
+<p>The work to do this is somewhat non-trivial obviously, and it isn&#39;t something tons of people are crying out to have, so it just hasn&#39;t floated to the top of my to-do list.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

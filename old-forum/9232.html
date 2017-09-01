@@ -1,0 +1,22 @@
+<html><header><title>Windows Forms data binding bug? (CSLA 3.8.3)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Forms data binding bug? (CSLA 3.8.3)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9232.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy posted on Tuesday, July 20, 2010</h2><p>I&#39;ve encountered what appears to be a bug with the CancelEdit functionality in a Windows Forms app.</p>
+<p>Steps to reproduce:</p>
+<ol>
+<li>Launch Project Tracker (PTWin) and bring up the project edit form (any project will do)</li>
+<li>Type some stuff into the description field</li>
+<li>Shut down your SQL server instance</li>
+<li>Hit the apply button (this will cause an exception from SQL server)</li>
+<li>Restart your SQL server instance</li>
+<li>Hit the Cancel button.&nbsp; Nothing happens.&nbsp; The original text should have been restored for Description at this point.</li>
+</ol>
+<p>I&#39;ve found that when the object is in this state, it has an EditLevel of 0, which is why CancelEdit isn&#39;t working.&nbsp; Any exception thrown from the database layer will cause this same behavior.&nbsp; I tested this by calling RAISERROR from the stored proc.</p>
+<p>Any workarounds would be appreciated.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 20, 2010</h2><p>That&#39;s actually standard behavior.</p>
+<p>What happens is this:</p>
+<ol>
+<li>The user clicks Save</li>
+<li>That means ApplyEdit() is called on the object graph, committing all user changes to the object in memory</li>
+<li>The object is then cloned</li>
+<li>The clone is then saved</li>
+<li>The exception occurs, so the clone is discarded</li>
+<li>The UI is left referencing the original object because Save() errors out</li>
+</ol>
+<p>If you want different behavior, you&#39;d need to grab a clone of your object graph <em>before the ApplyEdit() call</em>, then catch the exception from Save() and bind the UI to the clone.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Tuesday, July 20, 2010</h2><p>Very interesting.&nbsp; Any suggestions for how I can grab the new object instance if I&#39;m using a CslaActionExtender?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>frankhoffy replied on Wednesday, August 18, 2010</h2><p>I think I&#39;m very close but I keep running into an exception.&nbsp; I&#39;m using CslaActionExtender.&nbsp; I clone the object in the ObjectSaving event.&nbsp; I trap the ErrorEncountered event to handle exceptions from the database server.&nbsp; In that event, I call ResetActionBehaviors using the clone (this is because data bindings are lost when the exception occurs).&nbsp; When I hit the Cancel button, it works fine on the parent, but the child list collection is giving me an edit level mismatch exception.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

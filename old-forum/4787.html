@@ -1,0 +1,72 @@
+<html><header><title>Infragistics Ultragrid - Businesslistbase Boolean property not firing on bindingsource</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Infragistics Ultragrid - Businesslistbase Boolean property not firing on bindingsource</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4787.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies posted on Friday, May 02, 2008</h2><P><FONT size=2>Hi, Friday is here at last!!</FONT></P>
+<P><FONT size=2>I have a businesslistbase class bound to a ultragrid. when changing a column value the bindingsource does not seem to recognise a change has been made. Only when leaving the column by clicking on a different column does the bindingsource recognise the change.</FONT></P>
+<P><FONT size=2>I have tried to change settings on the ultragrid for e.g "UpdateMode=OnCellChange" but still cant seem&nbsp; to get the change to fire when&nbsp;I change the value. Does the settings on the ultragrid actually negate&nbsp;changes to the bindingsource?&nbsp;</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Friday, May 02, 2008</h2><P>I cannot seem to set "OnPropertyChanged" for databinding&nbsp;on ultragrid columns.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I had to deal with a similar issue before.&nbsp; The only
+workaround that I found was to issue grid.EndEdit in your Save or Cancel
+button.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Joffies
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 02, 2008 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Infragistics Ultragrid - Businesslistbase
+Boolean property not firing on bindingsource<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I cannot seem to set &quot;OnPropertyChanged&quot; for databinding&nbsp;on
+ultragrid columns.&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MGervais replied on Friday, May 02, 2008</h2><P><FONT face=Tahoma size=2>I may be mistaken (it wouldn't be the first and certainly won't be the last), however, I do not believe the UltraGrid registers a change until the user leaves the cell in which they are editing. It is at the point where the User leaves the cell that the change is recognized and thus committed to the data source.</FONT></P>
+<P><FONT face=Tahoma size=2>You could use the CellChange event if you wish to deal with the potential changes prior to the change&nbsp;being committed to the data source. (<A href="http://help.infragistics.com/Help/NetAdvantage/NET/2008.1/CLR2.0/html/Infragistics2.Win.UltraWinGrid.v8.1~Infragistics.Win.UltraWinGrid.UltraGrid~CellChange_EV.html">http://help.infragistics.com/Help/NetAdvantage/NET/2008.1/CLR2.0/html/Infragistics2.Win.UltraWinGrid.v8.1~Infragistics.Win.UltraWinGrid.UltraGrid~CellChange_EV.html</A>)</FONT></P>
+<P><FONT face=Tahoma size=2>Hope that helps.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Friday, May 02, 2008</h2><P><FONT face=Tahoma size=2>Thanks for the suggestions guys.</FONT></P>
+<P><FONT face=Tahoma size=2>I did get around it by calling UpdateData method on the grid like so..</FONT></P>
+<P><FONT face=Tahoma size=2>MyUltraGrid.UpdateData()</FONT></P>
+<P><FONT size=2><FONT face=Tahoma>RebindUI(</FONT><FONT face=Tahoma><FONT color=#0000ff>True</FONT>, <FONT color=#0000ff>True</FONT>)</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Joffies replied on Thursday, July 24, 2008</h2><P>The only slight problem i run into now is using the Undo clsa capability with the UltraGrid. The undo works, its only the cell that doesnt reflect the undo immediately but only once it looses focus. I have tried Ultragrid.Refresh but still no joy.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

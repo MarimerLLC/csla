@@ -1,0 +1,353 @@
+<html><header><title>Obviously I am doing soemthing wrong --Pl. Help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Obviously I am doing soemthing wrong --Pl. Help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6202.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Abir posted on Monday, January 19, 2009</h2><P>I am using CSLA.<o:p></o:p></P>
+<P>I have Contact Class. Doctor and Employee derived from Contact.<o:p></o:p></P>
+<P>I have Contacts which is a collection of Contact. <o:p></o:p></P>
+<P>Now Doctors and Employees are derived from contacts. I have something different to do with those collections. Doctors is collection of Doctor. Employees is collection of Employee.<o:p></o:p></P>
+<P>Problem with validation rule, where the parent of Doctor is not the collection of Doctor (Doctors)&nbsp;. Following is the source code. And forgive my ignorance with object oriented technology.<o:p></o:p></P>
+<P>//////&nbsp; Contact.vb //////////////<o:p></o:p></P>
+<P><SPAN>Imports</SPAN><SPAN> Csla<o:p></o:p></SPAN></P>
+<P><SPAN>Namespace</SPAN><SPAN> CSLAParentChild<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> Contact(<SPAN>Of</SPAN> C <SPAN>As</SPAN> Contact(<SPAN>Of</SPAN> C))<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits</SPAN><SPAN> MistyBase(<SPAN>Of</SPAN> C)<o:p></o:p></SPAN></P>
+<P><SPAN>#Region</SPAN><SPAN> <SPAN>" Business Methods "<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Enum</SPAN> Properties<o:p></o:p></SPAN></P>
+<P><SPAN>ContactId<o:p></o:p></SPAN></P>
+<P><SPAN>ContactTypeId<o:p></o:p></SPAN></P>
+<P><SPAN>ContactName<o:p></o:p></SPAN></P>
+<P><SPAN>Title<o:p></o:p></SPAN></P>
+<P><SPAN>Country<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Enum<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> _ContactID <SPAN>As</SPAN> Guid<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> _ContactTypeID <SPAN>As</SPAN> Guid<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> _ContactName <SPAN>As</SPAN> <SPAN>String</SPAN> = <SPAN>String</SPAN>.Empty<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> _Title <SPAN>As</SPAN> <SPAN>String</SPAN> = <SPAN>String</SPAN>.Empty<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> _Country <SPAN>As</SPAN> <SPAN>String</SPAN> = <SPAN>String</SPAN>.Empty<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Friend</SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()<o:p></o:p></SPAN></P>
+<P><SPAN>'Required for inheritance<o:p></o:p></SPAN></P>
+<P><SPAN>MarkAsChild()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Property</SPAN> ContactId() <SPAN>As</SPAN> Guid<o:p></o:p></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _ContactID<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Set</SPAN><SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> Guid)<o:p></o:p></SPAN></P>
+<P><SPAN>CanWriteProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> <SPAN>Not</SPAN> _ContactID.Equals(value) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>_ContactID = value<o:p></o:p></SPAN></P>
+<P><SPAN>PropertyHasChanged()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> ContactTypeId() <SPAN>As</SPAN> Guid<o:p></o:p></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _ContactTypeID<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Property</SPAN> ContactName() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> _ContactName.Trim = <SPAN>""</SPAN> <SPAN>OrElse</SPAN> <SPAN>String</SPAN>.IsNullOrEmpty(_ContactName) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>"Provide Name"<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Else<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _ContactName<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Set</SPAN><SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>CanWriteProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> <SPAN>Not</SPAN> _ContactName.Equals(value) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>_ContactName = value<o:p></o:p></SPAN></P>
+<P><SPAN>PropertyHasChanged()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Property</SPAN> Title() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _Title<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Set</SPAN><SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>CanWriteProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> <SPAN>Not</SPAN> _Title.Equals(value) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>_Title = value<o:p></o:p></SPAN></P>
+<P><SPAN>PropertyHasChanged()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Property</SPAN> Country() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _Country<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Set</SPAN><SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>CanWriteProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> <SPAN>Not</SPAN> _Country.Equals(value) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>_Country = value<o:p></o:p></SPAN></P>
+<P><SPAN>PropertyHasChanged()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>#End</SPAN><SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>#Region</SPAN><SPAN> <SPAN>" Validation Rules "<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Sub</SPAN> AddBusinessRules()<o:p></o:p></SPAN></P>
+<P><SPAN>ValidationRules.AddRule(<SPAN>AddressOf</SPAN> Validation.CommonRules.StringMaxLength, <SPAN>New</SPAN> Validation.CommonRules.MaxLengthRuleArgs(Properties.ContactName.ToString, 50))<o:p></o:p></SPAN></P>
+<P><SPAN>ValidationRules.AddRule(<SPAN>AddressOf</SPAN> Validation.CommonRules.StringMaxLength, <SPAN>New</SPAN> Validation.CommonRules.MaxLengthRuleArgs(Properties.Title.ToString, 50))<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>#End</SPAN><SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Namespace<o:p></o:p></SPAN></SPAN></P>
+<P>/////// Contacts.vb<o:p></o:p></P>
+<P><SPAN>Imports</SPAN><SPAN> Csla<o:p></o:p></SPAN></P>
+<P><SPAN>Namespace</SPAN><SPAN> CSLAParentChild<o:p></o:p></SPAN></P>
+<P><SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> Contacts(<SPAN>Of</SPAN> T <SPAN>As</SPAN> Contacts(<SPAN>Of</SPAN> T, C), C <SPAN>As</SPAN> Contact(<SPAN>Of</SPAN> C))<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits</SPAN><SPAN> MistyListBase(<SPAN>Of</SPAN> T, C)<o:p></o:p></SPAN></P>
+<P><SPAN>#Region</SPAN><SPAN> <SPAN>" Business Methods "<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Function</SPAN> AddNewCore() <SPAN>As</SPAN> <SPAN>Object<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Throw</SPAN><SPAN> <SPAN>New</SPAN> ApplicationException(<SPAN>"Not Supported"</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Overloads</SPAN> <SPAN>Sub</SPAN> Remove(<SPAN>ByVal</SPAN> contactId <SPAN>As</SPAN> Guid)<o:p></o:p></SPAN></P>
+<P><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> Item <SPAN>As</SPAN> C <SPAN>In</SPAN> <SPAN>Me<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> Item.ContactId = contactId <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Item.IsActive = <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Next<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Overloads</SPAN> <SPAN>Function</SPAN> Contains(<SPAN>ByVal</SPAN> contactId <SPAN>As</SPAN> Guid) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> Item <SPAN>As</SPAN> C <SPAN>In</SPAN> <SPAN>Me<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> Item.ContactId = contactId <SPAN>AndAlso</SPAN> _<o:p></o:p></SPAN></P>
+<P><SPAN>Item.IsActive <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Next<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Function</SPAN> FindById(<SPAN>ByVal</SPAN> contactId <SPAN>As</SPAN> Guid) <SPAN>As</SPAN> C<o:p></o:p></SPAN></P>
+<P><SPAN>For</SPAN><SPAN> <SPAN>Each</SPAN> Item <SPAN>As</SPAN> C <SPAN>In</SPAN> <SPAN>Me<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> Item.ContactId = contactId <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> Item<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Next<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>Nothing<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>#End</SPAN><SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Namespace<o:p></o:p></SPAN></SPAN></P>
+<P>//////////Doctor.VB<SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Imports</SPAN><SPAN> Csla<o:p></o:p></SPAN></P>
+<P><SPAN>Namespace</SPAN><SPAN> CSLAParentChild<o:p></o:p></SPAN></P>
+<P><SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> Doctor<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits</SPAN><SPAN> Contact(<SPAN>Of</SPAN> Doctor)<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>#Region</SPAN><SPAN> <SPAN>" Validation Rules "<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Sub</SPAN> AddBusinessRules()<o:p></o:p></SPAN></P>
+<P><SPAN>MyBase</SPAN><SPAN>.AddBusinessRules()<o:p></o:p></SPAN></P>
+<P><SPAN>ValidationRules.AddRule(<SPAN>AddressOf</SPAN> Validation.CommonRules.StringRequired, Properties.ContactName.ToString)<o:p></o:p></SPAN></P>
+<P><B><SPAN>ValidationRules.AddRule(<SPAN>Of</SPAN> Doctor)(<SPAN>AddressOf</SPAN> DuplicatesNotAllowed, <SPAN>"ContactName"</SPAN>, 1)<o:p></o:p></SPAN></B></P>
+<P><SPAN>ValidationRules.ProcessThroughPriority = 0<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><B><SPAN>Private</SPAN></B><B><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> DuplicatesNotAllowed(<SPAN>Of</SPAN> T <SPAN>As</SPAN> Doctor)(<SPAN>ByVal</SPAN> target <SPAN>As</SPAN> T, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> Validation.RuleArgs) <SPAN>As</SPAN> <SPAN>Boolean<o:p></o:p></SPAN></SPAN></B></P>
+<P><B><SPAN>Dim</SPAN></B><B><SPAN> parent <SPAN>As</SPAN> Doctors = <SPAN>DirectCast</SPAN>(target.Parent, Doctors)<o:p></o:p></SPAN></B></P>
+<P><B><SPAN>For</SPAN></B><B><SPAN> <SPAN>Each</SPAN> existingItem <SPAN>As</SPAN> Doctor <SPAN>In</SPAN> parent<o:p></o:p></SPAN></B></P>
+<P><B><SPAN>If</SPAN></B><B><SPAN> existingItem.ContactName.ToLower = target.ContactName.ToLower <SPAN>AndAlso</SPAN> _<o:p></o:p></SPAN></B></P>
+<P><B><SPAN>Not</SPAN></B><B><SPAN> ReferenceEquals(existingItem, target) <SPAN>Then<o:p></o:p></SPAN></SPAN></B></P>
+<P><B><SPAN>e.Description = <SPAN>"Duplicate Doctor"<o:p></o:p></SPAN></SPAN></B></P>
+<P><B><SPAN>e.Severity = Validation.RuleSeverity.Error<o:p></o:p></SPAN></B></P>
+<P><B><SPAN>Return</SPAN></B><B><SPAN> <SPAN>False<o:p></o:p></SPAN></SPAN></B></P>
+<P><B><SPAN>End</SPAN></B><B><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></B></P>
+<P><B><SPAN>Next<o:p></o:p></SPAN></B></P>
+<P><B><SPAN>Return</SPAN></B><B><SPAN> <SPAN>True<o:p></o:p></SPAN></SPAN></B></P>
+<P><B><SPAN>End</SPAN></B><B><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></B></P>
+<P><SPAN>#End</SPAN><SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>#Region</SPAN><SPAN> <SPAN>" Factory Methods "<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Friend</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> NewContact(<SPAN>ByVal</SPAN> contactName <SPAN>As</SPAN> <SPAN>String</SPAN>) <SPAN>As</SPAN> Doctor<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>New</SPAN> Doctor(contactName)<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Friend</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> GetContact(<SPAN>ByVal</SPAN> contactId <SPAN>As</SPAN> Guid) <SPAN>As</SPAN> Doctor<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>Nothing<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()<o:p></o:p></SPAN></P>
+<P><SPAN>'MarkAsChild()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Private</SPAN><SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>(<SPAN>ByVal</SPAN> contactName <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>'MarkAsChild()<o:p></o:p></SPAN></P>
+<P><SPAN>Me</SPAN><SPAN>.ContactName = contactName<o:p></o:p></SPAN></P>
+<P><SPAN>MarkAsChild()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>#End</SPAN><SPAN> <SPAN>Region<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Namespace</SPAN></SPAN><o:p></o:p></P>
+<P>&nbsp;<o:p></o:p></P>
+<P><SPAN>////////Doctors.VB</SPAN><o:p></o:p></P>
+<P><SPAN>Imports</SPAN><SPAN> Csla</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Namespace</SPAN><SPAN> CSLAParentChild</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>&lt;Serializable()&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Public Class Doctors<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits Contacts(Of Doctors, Doctor)<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>#Region</SPAN><SPAN> </SPAN><SPAN>" Factory Methods "<o:p></o:p></SPAN></P>
+<P><SPAN>Friend Shared Function NewContacts() As Doctors<o:p></o:p></SPAN></P>
+<P><SPAN>Return New Doctors<o:p></o:p></SPAN></P>
+<P><SPAN>End Function<o:p></o:p></SPAN></P>
+<P><SPAN>Friend Sub New()<o:p></o:p></SPAN></P>
+<P><SPAN>' require use of factory methods<o:p></o:p></SPAN></P>
+<P><SPAN>MarkAsChild()<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Function AddContact(ByVal contactName As String) As Doctor<o:p></o:p></SPAN></P>
+<P><SPAN>Dim newContact As Doctor = Nothing<o:p></o:p></SPAN></P>
+<P><SPAN>newContact = Doctor.NewContact(contactName)<o:p></o:p></SPAN></P>
+<P><SPAN>Me.Add(newContact)<o:p></o:p></SPAN></P>
+<P><SPAN>Return newContact<o:p></o:p></SPAN></P>
+<P><SPAN>End Function<o:p></o:p></SPAN></P>
+<P><SPAN>#End</SPAN><SPAN> </SPAN><SPAN>Region<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>End Class<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> </SPAN><SPAN>Namespace<o:p></o:p></SPAN></P>
+<P><SPAN>//////IEditableMistyObject.vb<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> </SPAN><SPAN>Interface</SPAN><SPAN> IEditableMistyObject</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Inherits Csla.Core.IEditableBusinessObject<o:p></o:p></SPAN></P>
+<P><SPAN>ReadOnly Property ID() As Guid<o:p></o:p></SPAN></P>
+<P><SPAN>Property IsActive() As Boolean<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> </SPAN><SPAN>Interface<o:p></o:p></SPAN></P>
+<P><SPAN>////////MistyBase.vb</SPAN><o:p></o:p></P>
+<P><SPAN>Imports</SPAN><SPAN> Csla<o:p></o:p></SPAN></P>
+<P><SPAN>Namespace</SPAN><SPAN> CSLAParentChild<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>MustInherit</SPAN> <SPAN>Class</SPAN> MistyBase(<SPAN>Of</SPAN> T <SPAN>As</SPAN> MistyBase(<SPAN>Of</SPAN> T))<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits</SPAN><SPAN> BusinessBase(<SPAN>Of</SPAN> T)<o:p></o:p></SPAN></P>
+<P><SPAN>Implements</SPAN><SPAN> IEditableMistyObject<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Friend</SPAN> _ObjectID <SPAN>As</SPAN> Guid = Guid.NewGuid<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Friend</SPAN> _LastModifiedDate <SPAN>As</SPAN> <SPAN>Date</SPAN> = <SPAN>Date</SPAN>.MinValue<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Friend</SPAN> _IsActive <SPAN>As</SPAN> <SPAN>Boolean</SPAN> = <SPAN>True<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.ComponentModel.DataObjectField(<SPAN>True</SPAN>, <SPAN>True</SPAN>)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> ID() <SPAN>As</SPAN> Guid <SPAN>Implements</SPAN> IEditableMistyObject.ID<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _ObjectID<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Property</SPAN> IsActive() <SPAN>As</SPAN> <SPAN>Boolean</SPAN> <SPAN>Implements</SPAN> IEditableMistyObject.IsActive<o:p></o:p></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _IsActive<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Set</SPAN><SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>Boolean</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>CanWriteProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> <SPAN>Not</SPAN> _IsActive.Equals(value) <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>_IsActive = value<o:p></o:p></SPAN></P>
+<P><SPAN>PropertyHasChanged()<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> LastModifiedDate() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>If</SPAN><SPAN> _LastModifiedDate = <SPAN>Date</SPAN>.MinValue <SPAN>Then<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> <SPAN>"NOT SUBMITTED"<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Else<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _LastModifiedDate.ToLocalTime.ToString<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>If<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Function</SPAN> GetIdValue() <SPAN>As</SPAN> <SPAN>Object<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> _ObjectID<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Namespace<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>//////MistyListBase.vb</SPAN><o:p></o:p></P>
+<P><SPAN>Imports</SPAN><SPAN> Csla</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Namespace</SPAN><SPAN> CSLAParentChild</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Public MustInherit Class MistyListBase(Of T As MistyListBase(Of T, C), C As IEditableMistyObject)<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits BusinessListBase(Of T, C)<o:p></o:p></SPAN></P>
+<P><SPAN>Public Shadows Sub RemoveItem(ByVal itemId As Guid)<o:p></o:p></SPAN></P>
+<P><SPAN>InActivateItem(itemId)<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Shadows Sub Remove(ByVal itemId As Guid)<o:p></o:p></SPAN></P>
+<P><SPAN>InActivateItem(itemId)<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Shadows Sub Remove(ByVal item As C)<o:p></o:p></SPAN></P>
+<P><SPAN>InActivateItem(item.ID)<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Shadows Sub RemoveAt(ByVal index As Integer)<o:p></o:p></SPAN></P>
+<P><SPAN>Me(index).IsActive = False<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Overridable Sub InActivateItem(ByVal itemId As Guid)<o:p></o:p></SPAN></P>
+<P><SPAN>For Each Item As C In Me<o:p></o:p></SPAN></P>
+<P><SPAN>If Item.ID = itemId Then<o:p></o:p></SPAN></P>
+<P><SPAN>Item.IsActive = False<o:p></o:p></SPAN></P>
+<P><SPAN>Exit For<o:p></o:p></SPAN></P>
+<P><SPAN>End If<o:p></o:p></SPAN></P>
+<P><SPAN>Next<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Overloads Property Item(ByVal id As Guid) As C<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>For Each child As C In Me<o:p></o:p></SPAN></P>
+<P><SPAN>If child.ID = id Then<o:p></o:p></SPAN></P>
+<P><SPAN>Return child<o:p></o:p></SPAN></P>
+<P><SPAN>End If<o:p></o:p></SPAN></P>
+<P><SPAN>Next<o:p></o:p></SPAN></P>
+<P><SPAN>Return Nothing<o:p></o:p></SPAN></P>
+<P><SPAN>End Get<o:p></o:p></SPAN></P>
+<P><SPAN>Set(ByVal value As C)<o:p></o:p></SPAN></P>
+<P><SPAN>For Each child As C In Me<o:p></o:p></SPAN></P>
+<P><SPAN>If child.ID = id Then<o:p></o:p></SPAN></P>
+<P><SPAN>child = value<o:p></o:p></SPAN></P>
+<P><SPAN>Exit For<o:p></o:p></SPAN></P>
+<P><SPAN>End If<o:p></o:p></SPAN></P>
+<P><SPAN>Next<o:p></o:p></SPAN></P>
+<P><SPAN>End Set<o:p></o:p></SPAN></P>
+<P><SPAN>End Property<o:p></o:p></SPAN></P>
+<P><SPAN>Public ReadOnly Property IsSavable() As Boolean<o:p></o:p></SPAN></P>
+<P><SPAN>Get<o:p></o:p></SPAN></P>
+<P><SPAN>If IsValid AndAlso IsDirty Then<o:p></o:p></SPAN></P>
+<P><SPAN>Return True<o:p></o:p></SPAN></P>
+<P><SPAN>End If<o:p></o:p></SPAN></P>
+<P><SPAN>Return False<o:p></o:p></SPAN></P>
+<P><SPAN>End Get<o:p></o:p></SPAN></P>
+<P><SPAN>End Property<o:p></o:p></SPAN></P>
+<P><SPAN>End Class<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> </SPAN><SPAN>Namespace<o:p></o:p></SPAN></P>
+<P><SPAN>//////Module1.VB - for test<o:p></o:p></SPAN></P>
+<P><SPAN>Imports</SPAN><SPAN> CSLAParentChild.CSLAParentChild</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Module</SPAN><SPAN> Module1</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>Sub </SPAN><SPAN>Main</SPAN><SPAN>()<o:p></o:p></SPAN></P>
+<P><SPAN>Dim docs As Doctors = Doctors.NewContacts()<o:p></o:p></SPAN></P>
+<P><SPAN>docs.AddContact(</SPAN><SPAN>"George"</SPAN><SPAN>)<o:p></o:p></SPAN></P>
+<P><SPAN>docs.AddContact(</SPAN><SPAN>"David"</SPAN><SPAN>)<o:p></o:p></SPAN></P>
+<P><STRONG><SPAN>' Here adding duplicate, it goes to validation (</SPAN></STRONG><B><SPAN>DuplicatesNotAllowed<STRONG><SPAN>) <SPAN>&nbsp;</SPAN>but target.parent is nothing, </SPAN></STRONG></SPAN></B></P>
+<P><STRONG><SPAN>docs.AddContact(</SPAN></STRONG><STRONG><SPAN>"George"</SPAN></STRONG><STRONG><SPAN>)</SPAN></STRONG><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>If docs.IsValid Then<o:p></o:p></SPAN></P>
+<P><SPAN>End If<o:p></o:p></SPAN></P>
+<P><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> </SPAN><SPAN>Module<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, January 20, 2009</h2><P><SPAN>FYI - your property code is no longer supported and you should change it.</SPAN></P>
+<P><SPAN>No need for the attribute anymore - plus you *must* pass the string property name (or a propertyinfo object) to CanReadProperty. You *cannot* rely on the original stack trace code to locate the property name for you.</SPAN></P>
+<P><SPAN>=============================================</SPAN></P>
+<P><SPAN>&lt;System.Runtime.CompilerServices.MethodImpl(Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; _<O:P></O:P></SPAN></P>
+<P><SPAN>Get<O:P></O:P></SPAN></P>
+<P><SPAN>CanReadProperty(<SPAN>True</SPAN>)</SPAN></P>
+<P><SPAN>==============================================</SPAN></P>
+<P><SPAN>Joe</SPAN></P>
+<P><SPAN></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Abir replied on Wednesday, January 21, 2009</h2><P>Joe, </P>
+<P>I do really appreciate your response. I did&nbsp; the necessary changes. I hate to ask you to do my job, but I was not still&nbsp;able to get the target.parent working. By that I mean that the "parent" is not&nbsp;having the collection (Doctors).&nbsp; The "target" is the "Doctor".</P>
+<P>Really appreciate for identifying the correct way of doing things.</P>
+<P>- Abir</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

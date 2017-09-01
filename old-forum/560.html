@@ -1,0 +1,65 @@
+<html><header><title>Transaction Isolation Levels using System.Transactions.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transaction Isolation Levels using System.Transactions.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/560.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>karl posted on Friday, July 07, 2006</h2><P>When using ADO.NET transactions in Data Access Code I can set the Isolation Level of the transaction as follows:-</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Criteria)</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Common.Connections.MyConnection)</P>
+<P>cn.Open()</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> tr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlTransaction = <STRONG>cn.BeginTransaction(IsolationLevel.ReadCommitted</STRONG></FONT><FONT size=2><STRONG>)</STRONG></P>
+<P><FONT size=3>Now,&nbsp;if I&nbsp;altered the code to use System.Transactions (as Rocky recommends in his new book) I would write the code as follows:- </FONT></P><FONT size=2>
+<P>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Insert()</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Database.PTrackerConnection)</P>
+<P>cn.Open()</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SqlCommand = cn.CreateCommand</P>
+<P></FONT><FONT color=#0000ff size=2>etc.</FONT></P>
+<P><FONT size=2><FONT color=#000000 size=3>How do I set the Transaction Isolation level of the system.transaction, as I did with the ADO.NET transaction? </FONT></P>
+<P></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Friday, July 07, 2006</h2><P>This is just a guess but perhaps by referencing the System.Transactions assembly from your class library and adding the following code to your DataPortal_XYZ methods: </P><FONT size=2>
+<P>System.Transactions.Transaction.Current.IsolationLevel = <STRONG>IsolationLevel.ReadCommitted</STRONG></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karl replied on Friday, July 07, 2006</h2><P>Martin, </P>
+<P>That was the first thing that I tried, but the Property 'IsolationLevel' is Readonly!!!!!</P>
+<P>Thanks for&nbsp;making the effort though.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Friday, July 07, 2006</h2><P>Kark, I've just had a look in the documentation for transactionscope - RTFM ;)&nbsp; It looks like when you create a transaction scope you can specify options - timeout and isolationlevel.&nbsp; You would have to create another transaction scope in your DataPortal_XYZ.&nbsp; If I'm reading it correctly, there are also the Required, Requires New, ... options&nbsp;- they look to work like the old MTS/COM+ option.&nbsp; You should be able to make the new transactionscope join the ambient transactionscope but with a downgraded isolationlevel.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karl replied on Friday, July 07, 2006</h2><P>Kartin, </P>
+<P>Thanks for your reply. Will creating a new transaction scope automatically&nbsp;particapate in the current ambient transaction. For example would&nbsp;the following work :-</P><FONT size=2>
+<P>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Update()</P>
+<P></FONT><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> tranop </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Transactions.TransactionOptions</FONT></P>
+<P><FONT size=2>tranop.IsolationLevel = Transactions.IsolationLevel.Snapshot</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> tso </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Transactions.TransactionScopeOption</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> mytransscope </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Transactions.TransactionScope(tso, tranop)</P>
+<P></FONT><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlConnection(Database.PTrackerConnection)</FONT></P>
+<P><FONT size=2>etc</FONT></P>
+<P><FONT size=2><FONT size=3>Thanks in advance, <STRONG><U>Karl.</U></STRONG></FONT></P>
+<P></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Monday, July 10, 2006</h2><P>I'm not sure <STRONG>Karl</STRONG>.&nbsp; You'll have to try it yourself, I have real work to do ;)&nbsp; It looks to be on the right lines but I you may have missed a bit.&nbsp; Try this: </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> tranOpt </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> TransactionOptions</P>
+<P>tranOpt.IsolationLevel = IsolationLevel.Snapshot</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> tscope </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> TransactionScope(<STRONG>TransactionScopeOption.RequiresNew</STRONG>, tranOpt)</P>
+<P></FONT><FONT color=#008000 size=2>'data access code in here</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</FONT></P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>karl replied on Monday, July 10, 2006</h2><P>It looks like you do need the&nbsp;<STRONG><FONT size=2>TransactionScopeOption.RequiresNew</FONT></STRONG> statement otherwise you get an error when it tries to change the isolation level of the current ambient transaction. If you don't use the using statement you get a &nbsp;system.transactions.transactionscope.dispose error when it tries to change the isolation level of the current ambient transaction, the MSDN documentation does mention this. </P>
+<P>I guess that you would also need a tscope.complete statement just before the end of using statement, otherwise the trans wouldn't commit. I presume Rocky does something similar within the framework? </P>
+<P>Although I appreciate your help Martin, I think we have drifted away from the original question! What I really want to do is create attributes to specify the isolation level on the the DataPortal Methods, example :-</P><FONT size=2>
+<P>&lt;Transactional(TransactionalTypes.TransactionScope_<STRONG>ReadUncommited</STRONG>)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Update()</FONT></P>
+<P><FONT size=2>or</FONT></P>
+<P><FONT size=2>&nbsp;</P>
+<P>&lt;Transactional(TransactionalTypes.TransactionScope_<STRONG>Chaos</STRONG>)&gt; _</P>
+<P><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Update()</FONT></P></FONT>
+<P>I guess I will need to add my own Transaction Scope types to the framework, for example Csla.TransactionTypes.TransactionScope_ReadUncommitted, I would then set the isolation within these. I wonder if anyone has read the section in the book on Transactions - is what I suggest possible?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Monday, July 10, 2006</h2><P>I agree, doing it with attributes would be a good idea - after all one of the aims of the framework is to reduce the amount of plumbing code needed.&nbsp; </P>
+<P>Not sure if it's the ideal way but the TransactionalDataPortal code could be changed.&nbsp; It looks like this now: </P><FONT size=2>
+<P></FONT><FONT size=1><FONT color=#0000ff>Public</FONT> <FONT color=#0000ff>Function</FONT> Fetch( _</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>ByVal</FONT> objectType <FONT color=#0000ff>As</FONT> Type, _</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>ByVal</FONT> criteria <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Object</FONT>, _</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>ByVal</FONT> context <FONT color=#0000ff>As</FONT> Server.DataPortalContext) <FONT color=#0000ff>As</FONT> Server.DataPortalResult _</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>Implements</FONT> Server.IDataPortalServer.Fetch</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>Dim</FONT> result <FONT color=#0000ff>As</FONT> DataPortalResult</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>Using</FONT> tr <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>New</FONT> TransactionScope</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>Dim</FONT> portal <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>New</FONT> SimpleDataPortal</FONT></P>
+<P><FONT size=1>result = portal.Fetch(objectType, criteria, context)</FONT></P>
+<P><FONT size=1>tr.Complete()</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Using</P></FONT></FONT>
+<P><FONT size=1><FONT color=#0000ff>Return</FONT> result</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>End</FONT> <FONT color=#0000ff size=2>Function</FONT></FONT></P>
+<P><FONT size=1><FONT color=#0000ff size=2><FONT color=#000000>This could be changed to look&nbsp;at the&nbsp;attribute and &nbsp;include the options based on what isolation level was asked for.&nbsp; </FONT></FONT></FONT></P>
+<P><FONT size=1><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

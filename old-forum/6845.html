@@ -1,0 +1,18 @@
+<html><header><title>v3.6.2 Light CslaDataProvider InvokeMethod commanding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>v3.6.2 Light CslaDataProvider InvokeMethod commanding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6845.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido_xml posted on Friday, April 24, 2009</h2><P>I like the idea of having as little code behind as possible. I would like to use the CslaDataProvider and the attached properties of InvokeMethod as much as possible.</P>
+<P>I need to provide "follow up" functionality i.e. a user is viewing a widget the following buttons are visible New, Save, Cancel, Delete and Follow Up. Clicking Follow Up will create a new widget based on the&nbsp;current widget but will default some parameters.</P>
+<P>I can see how to use the attached properties of InvokeMethod for Save and Cancel. For the other operations I am using event handlers in code behind. Is there a way I can avoid the code behind? Should I derive from CslaDataProvider and create my own DataProvider with my own commands?&nbsp;&nbsp;I am not concerned with the Delete operation at the moment. The follow up finds the appropriate data portal method via method overloading.</P>
+<P><U>FollowUpButtonClick</U></P>
+<P>CslaDataProvider expenseProvider = this.Resources["ExpenseData"] as CslaDataProvider;<BR>&nbsp;&nbsp;&nbsp;if (expenseProvider != null)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;expenseProvider.FactoryParameters.Clear();<BR>&nbsp;&nbsp;&nbsp;&nbsp;XXX.Business.BusinessClasses.Expense exp =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;expenseProvider.Data as XXX.Business.BusinessClasses.Expense;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;expenseProvider.FactoryParameters.Add(exp);<BR>&nbsp;&nbsp;&nbsp;&nbsp;expenseProvider.FactoryMethod = "CreateExpense";<BR>&nbsp;&nbsp;&nbsp;&nbsp;expenseProvider.Refresh();<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;</P>
+<P><U>NewButtonClick</U></P>
+<P>CslaDataProvider expenseProvider = this.Resources["ExpenseData"] as CslaDataProvider;</P>
+<P>if (expenseProvider != null)</P>
+<P>{expenseProvider.FactoryParameters.Clear();</P>
+<P>expenseProvider.FactoryMethod = "CreateExpense";</P>
+<P>expenseProvider.Refresh();}</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 24, 2009</h2><P>I would look into creating a subclass of CslaDataProvider.</P>
+<P>One of the major advantages of the approach we took in Silverlight, with InvokeMethod and the CslaDataProvider, is that you can treat the data provider control pretty much like the current (very trendy) <EM>view-model</EM> concept.</P>
+<P>That means the data provider is an object that exposes the model (your object), and a set of commands that can be executed on or around that model. The CslaDataProvider already provides a set of standard commands, and you can add more by subclassing.</P>
+<P>Unfortunately I haven't actually <EM>tried</EM> this - but the concept is sound, and it is a direction I want to support.</P>
+<P>When SL3 comes out and we can do relative binding, we should be able to alter InvokeMethod so it can target any object, not just resources, and that'll make it work even better with the MVVM scenarios (with or without the CslaDataProvider - though I personally really do like the data provider approach).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,123 @@
+<html><header><title>doubts about the DataPortal Mobile Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>doubts about the DataPortal Mobile Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7249.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson posted on Thursday, July 09, 2009</h2>Hello everyone !<br><br>The&nbsp; English is not my domain, so I will try my best :( <br><br>I am new to CSLA and I have some doubt about the DataPortal and I would like to ask some question. Thanks<br><br>1.<br>In the example of ProjectTracker the DataPortal is Hosted in WCF (WCFHost site), but I don´t see any class for the contract and Service.<br><br>2.<br>In the book I read about WCF Service Interface, what is the relation with the WCFHost? <br><br>3.<br>The ProjectTracker use an example of WCF Service Interface (PTWcfClient) with Custom Authentication (PTWcfServiceAuth) , with certificate, secure message, can I do the same thing on the WCFHost?<br><br>4.<br>The video of silverlight&nbsp; SL0104-NTierArch , talk about the CompressedProxy , can I use this techinque also with CSLA.NET?<br><br>wcfsPortal.svc&nbsp;&nbsp;&nbsp; ------&nbsp;&nbsp; &lt;% @ServiceHost Service="Bussiness.Compression.CompressedHost" %&gt;<br><br>Thanks in advance.<br><br>Nicky<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2><P>1. The contract and service implementation are in the Csla.Server.Hosts namespace in the Csla.dll assembly</P>
+<P>2. WcfHost is an example of a WCF service project that hosts the data portal. You can create a svc file and web.config entries in almost any web site (as long as Csla.dll is in the bin directory) and host the data portal. There's nothing special about WcfHost.</P>
+<P>3. You can secure the data portal using SSL or a custom certificate. That's relatively easy because it is just WCF configuration (though WCF configuration is rarely easy).</P>
+<P>The data portal doesn't normally support the concept of passing custom credentials from the client, so the credentials are validated by WCF itself. If you really need to do that you will probably need to create your own custom WcfHost class. This is possible, but is an advanced scenario.</P>
+<P>4. No, the .NET data portal does not have the same extensibility option for compression that we built for the Silverlight data portal. This is because there are other compression options in WCF that you can use, by purchasing (or building) a custom WCF binding that does compression.</P>
+<P>However, several people have asked if I would enhance the .NET data portal to support compression, because it seems simpler and cheaper to use the technique we built for Silverlight, and so I may add this feature to .NET in the future.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Friday, July 10, 2009</h2>Thanks Rocky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Saturday, July 11, 2009</h2>Hello Rocky.<br><br>Can I ask you for a complete example CSLA.NET data portal to support compression (WCF) if you don´t mind, or maybe can you show me some useful links, anythings that can show me the way.<br><br><div id="result_box">I hope that this request has not upset you, if so my apologize.<br><div id="result_box"><br>Paulo<br></div></div><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is discussed in the FAQ and you can see it in action in the
+InventoryDemo sample. If you want a more complete walk-through, check out the CSLA
+.NET for Silverlight video series.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>FAQ; <a href="http://www.lhotka.net/cslanet/faq/">www.lhotka.net/cslanet/faq/</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Samples: <a href="http://www.lhotka.net/cslalight/download.aspx">www.lhotka.net/cslalight/download.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Video series: <a href="http://store.lhotka.net">http://store.lhotka.net</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> NickyLarson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, July 11, 2009 6:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] doubts about the DataPortal Mobile Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello Rocky.<br>
+<br>
+Can I ask you for a complete example CSLA.NET data portal to support
+compression (WCF) if you donÂ´t mind, or maybe can you show me some useful
+links, anythings that can show me the way.<o:p></o:p></p>
+
+<div id="result_box">
+
+<p class=MsoNormal>I hope that this request has not upset you, if so my
+apologize.<o:p></o:p></p>
+
+<div id="result_box">
+
+<p class=MsoNormal><br>
+Paulo<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Monday, July 13, 2009</h2>Hello Rocky,<br><br>This example InventoryDemo is for CSLA.NET for Silverlight, and I want is for CSLA.NET.<br><br>I bought the video series (<span id="ctl00_ContentPlaceHolder1_GridView1_ctl02_Label1">CSLA .NET for Silverlight video series) it´s amazing, a very good job :) but I&nbsp; need an example for the </span>CSLA.NET (Data Portal Compression) not for CSLA.NET for Silverlight. I like Silverlight but I will wait for Silverlight 3 to be mature enough to use it, so for now I will stick with CSLA.NET&nbsp; :-)<br><br><br>Thanks.<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Oh, compression for the .NET data portal?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t have an example. CSLA doesn&#8217;t handle this &#8211;
+any compression would be purely at the WCF level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, you&#8217;d need to find/buy a WCF binding that
+does compression and use that instead of wsHttpBinding or basicHttpBinding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Monday, July 13, 2009</h2>Hello Rocky.<br><br>I will do that.<br><br>Thanks for reply.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 13, 2009</h2><P>I thought Andres built a compression module for the dataportal a while back. Do a search of the forum for XAL (Andres' user name) and compression.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NickyLarson replied on Monday, July 13, 2009</h2>Great,&nbsp; that´s what I am looking for..<br><br>Thank you Joe<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 14, 2009</h2>I'm using that, but wasn't it for remoting, not WCF?  I bet its pretty easy to adapt though.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

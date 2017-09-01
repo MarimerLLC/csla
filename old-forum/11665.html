@@ -1,0 +1,12 @@
+<html><header><title>ApplicationContext.User and threading</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ApplicationContext.User and threading</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11665.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy posted on Monday, October 29, 2012</h2><p>Hello,</p>
+<p>in my WPF applications start method the Csla.ApplicationContext.User is setup with a custom principal/identity instance.<br />Later this will be queried on a background thread from the thread pool, but there the property is set to Csla.Security.UnauthenticatedPrincipal.</p>
+<p>The background thread is invoked using Task.Run(() =&gt; toDo());<br />I am using Csla 4.3.13.0&nbsp;</p>
+<p>Thanks, Alex.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 29, 2012</h2><p>The WPF handling is as follows: (make sure Csla.Xaml.dll) is referenced and included with your app)&nbsp; </p>
+<ul>
+<li>When System.Windows.Application.Current != null will return the member variable&nbsp; _principal in ApplicationContext</li>
+<li>When  System.Windows.Application.Current == null will return the Thread.Principal. </li>
+</ul>
+<p>So when you run a background task it is your responsibility to make sure that the custom user principal is transferred to that thread. </p>
+<p>Csla.Threading.BackgroundWorker.cs will handle do this for you. I have not digged into how this may be handled for Tasks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 29, 2012</h2><p>Tasks run on a background thread from the thread pool. Because they are a different thread, thread-specific context (like the principal) doesn&#39;t automatically follow onto those threads.</p>
+<p>The Csla.Threading.BackgroundWorker automatically spins threads onto the thread pool <em>with all the primary thread&#39;s context</em>.</p>
+<p>Also, the WPF, Silverlight, WP7, and WinRT User properties are implemented as <em>static</em> behind the scenes, so they should automatically follow onto all threads in the AppDomain. Other context values won&#39;t necessarily follow automatically (I don&#39;t remember the behavior for certain - check the &#39;Using CSLA 4&#39; books or the code in svn for details).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

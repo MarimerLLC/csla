@@ -1,0 +1,15 @@
+<html><header><title>Suggestions for implementing CSLA authorization roles when they are also data related</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Suggestions for implementing CSLA authorization roles when they are also data related</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7508.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Tuesday, August 25, 2009</h2><P>I have a number of simple roles in my application but they are also dependent on which chunk of data is being worked on.</P>
+<P>I have the following hierarchy in my application</P>
+<P>Programs</P>
+<P>&nbsp;&nbsp;&nbsp;Program</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sites</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Site</P>
+<P>I have programs/projects as the top level of business object.&nbsp; The problem is that people have different roles across the different projects and different sites.&nbsp; There is a different site_admin at each site which is also different in each program.</P>
+<P>So when program_id = 400 john has role=program_admin but in program_id = 200 he does not.</P>
+<P>Within program_id = 400 and site_id = 47 he is the site_admin but not at program_id=400 and site_id in (41..46)</P>
+<P>Obviously in the database it is quite easy as I have my application roles and I have my data_roles that are tied to the entity.&nbsp; I'm trying to figure out how best to do it in the CSLA authorization.</P>
+<P>I don't want to re-read the roles based on a program_id/site_id all the time as you can jump all over the place and that would get confusing.&nbsp; I've contemplated appending the data_id to the role name and doing something like ProgramAdmin400, SiteAdmin400 and then trying to do the same in my authorization.&nbsp; It gets a little bit annoying though...</P>
+<P>Surely someone else is doing something similar?&nbsp; Any suggestions.</P>
+<P>thanks</P>
+<P>jack</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

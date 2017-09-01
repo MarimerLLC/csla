@@ -1,0 +1,62 @@
+<html><header><title>DataPortal non CSLA stereotypes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal non CSLA stereotypes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11702.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka posted on Wednesday, November 14, 2012</h2><p>Is there anything wrong with using the DataPortal like this:</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp;public class FieldMustBeUnique : Csla.Rules.BusinessRule</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; FieldIsUniqueCommand _cmd = null;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public FieldMustBeUnique(IPropertyInfo primaryProperty, FieldIsUniqueCommand cmd)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; : base(primaryProperty)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (InputProperties == null) InputProperties = new System.Collections.Generic.List&lt;IPropertyInfo&gt; { primaryProperty };</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _cmd = cmd;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected override void Execute(RuleContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string field = context.InputPropertyValues[PrimaryProperty].ToString();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _cmd.Field = field;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; _cmd = DataPortal.Update(_cmd);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!_cmd.IsUnique)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; context.AddErrorResult(Localization.Localization.GetMessage(Localization.Messages.ObjectAlreadyExists));</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; [Serializable]</p>
+<p>&nbsp; &nbsp; public abstract class FieldIsUniqueCommand</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public bool IsUnique</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected set;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public string Field</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; set;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; protected abstract void DataPortal_Update();</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, November 14, 2012</h2><p>You can invoke the data portal from inside a business rule, yes. That is supported.</p>
+<p>My one comment, is that by implementing this as a synchronous rule you&#39;ll block the user from interacting with the UI until that rule completes. You might choose to make the rule async (as described in the &#39;Using CSLA 4&#39; books) so the UI doesn&#39;t freeze.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, November 14, 2012</h2><p>Oh, I see - your question was about the Command object not inheriting from CommandBase?</p>
+<p>The answer to that is a little more complex.</p>
+<p>In pure .NET code the data portal will do what you describe, because it only cares that the type is Serializable and that you implement the appropriate DataPortal_XYZ methods.</p>
+<p>But in Silverlight, Windows Phone, and WinRT code this won&#39;t work because your type also needs to implement a serialization interface so the MobileFormatter can work. That interface is tricky to implement, and you are better off subclassing one of the CSLA base classes (at a minimum the Csla.Core.MobileObject base class).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 14, 2012</h2><p>Just a couple of suggestions:</p>
+<p>&nbsp;</p>
+<ol>
+<li>Make the command object inherit from CommandBase (will make life easier for you)</li>
+<li>Inherit your rule from PropertyRule. This will give you the option of setting CanRunInCheckRules/CanRunInServer/CanRunAsAffected property so the rule may be denied to run in any combination of these contexts. Typically - these rules should only run when the user edits a filed in the UI (on a rich client) or in the postback on an web application.&nbsp;</li>
+<li>Make sure to use managed properties on your command object. This will make your rule/command more veratile and work in all supported platforms.</li>
+<li>I suspect you should try to use the generic version of the DataPortal call but haven&acute;t tried to compile/run your code.&nbsp;</li>
+</ol>
+<p>&nbsp;</p>
+<p>Otherwise the code is good.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>aramka replied on Wednesday, November 14, 2012</h2><p>I have taken your suggestion into account. Thanks for your help.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,23 @@
+<html><header><title>Binding Nested Objects in an Object Graph</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Binding Nested Objects in an Object Graph</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11471.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AndrewR posted on Thursday, July 12, 2012</h2><p>Hi All,</p>
+<p>I am trying to create an object graph as follows:</p>
+<p>I have a parent class named BBparent in which when I call BBparent.NewParent, I must also create a child BBchild. The child BBchild must then create two separate child objects; lets say BBchildA and BBchildB. BBchildA must then create a collection BLBcollectionA. BLBcollectionA must then create one or more child&nbsp;BBchildC. BBchildC must then create a new collection BLBcollectionB and then this collectiion must then create one ore more BBchildD.&nbsp;This is the object graph hierarchy:</p>
+<p>BB</p>
+<p>&nbsp;|</p>
+<p>BB__</p>
+<p>&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; | </p>
+<p>BB&nbsp;&nbsp; BB</p>
+<p>&nbsp;|</p>
+<p>BLB</p>
+<p>&nbsp;|</p>
+<p>BB</p>
+<p>&nbsp;|</p>
+<p>BLB</p>
+<p>&nbsp;|</p>
+<p>BB</p>
+<p>&nbsp;Basically, when I call the BBparent.NewParent, that is turn causes all the other objects in the object graph to call their &lt;object&gt;.NewObject. And when I&nbsp;call BBparent.Save, I must save all the way though in a transaction, which by the way works (I have instantiate BBparent and set all properties by code in my test harness as part of testing).</p>
+<p>My challenge is I have only one datasource BBparent on the page. However, I have several data aware controls; detailsview, gridview, formview and need to bind them to their own datasources in the object graph. However, because of the way I have one datasource as an object graph, I am not sure how to bind the controls to their individual datasources. Ideally, I would like to bind at design time.</p>
+<p>I believe&nbsp;my need&nbsp;is not quite like any of the Project Tracker examples where the child creation is triggered by a&nbsp;user event.&nbsp;</p>
+<p>Am I doing this the wrong way? Is this too complicated? Any suggestions would greatly be appreciated.</p>
+<p>I am using VS 2008, .Net 3.5&nbsp;and CSLA 3.0&nbsp;</p>
+<p>Much thanks,</p>
+<p>Andrew</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,59 @@
+<html><header><title>LoadProperty vs SetProperty setters and performance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>LoadProperty vs SetProperty setters and performance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12232.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana posted on Wednesday, November 20, 2013</h2><p>Hi there,</p>
+<p>In my windows project I have more than 50 registered properties per object (more or less) and not every one of them has corresponded field in a Database.</p>
+<p>If I use SetProperty as a setter, I run to a severe performance issues, due to PropertyHasChanged event being fired all the time a property changes its value.</p>
+<p>Now, when I use LoadProperty as a setter to all properties that I do not want PropertyHasChanges to be fired, and leave SetProperty setter for ones that I do like this event to be fired, the performance is awesome (as it should be), BUT now, all properties that I need to save in the database that used LoadPropery setter are not marked as Dirty, and because of that they cannot be saved (I only save Dirty properties in my database; insert/update).</p>
+<p>How can I use LoadProperty, but make the property dirty in the same time (I want the property to be dirty, but I do not want rules to be checked against them automatically or fire OnChildChanged event)? Or would you suggest another approach?</p>
+<p><span style="font-size:12px;">I use CSLA.NET 4, .net 4 framework, and winforms.</span></p>
+<p>&nbsp;</p>
+<p>Thanks in advance,</p>
+<p>Tanja.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 20, 2013</h2><p>Is the performance an issue when loading from the database or while the user is editing the properties on the screen?&nbsp; </p>
+<p>If its during the database fetch you can use BypassPropertyChecks in a using block and set all your properties there; that will temporarily disable the problematic events.</p>
+<p>If its on user editing&nbsp;do you have the controls set to update the data source OnPropertyChanged or OnValidation?&nbsp; The former will fire property changed for each keystoke, while the latter will only fire when the user tabs out of the control.&nbsp; You may need to switch to OnValidation if your rules are complex enough that its causing an issue.&nbsp; Also make sure you set the PropertyChangedMode on&nbsp;the ApplicationContext on startup of your app; it defaults to Xaml which may have an&nbsp;impact.&nbsp;I&#39;ve had pretty complex forms using OnPropertyChanged for most controls and performance was good, but this was a few years ago.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Wednesday, November 20, 2013</h2><p>- Yes,&nbsp;<span>PropertyChangedMode</span><span>&nbsp; is set to&nbsp;ApplicationContext.PropertyChangedModes.Windows</span></p>
+<p><span>- I override&nbsp;PropertyHasChanged and&nbsp;</span>OnChildChanged.</p>
+<p>- The performance issues are when user edits the controls. &nbsp;I also use BypassPropertyCheckes, but the properties that are set in that block are not mark as dirty either, which makes sense, but I do need them dirty).</p>
+<p>I guess what I want to achieve is this:</p>
+<p style="padding-left:30px;">- property A of business object child, to be set (all rules run etc., which is achieved with the SewtProperty setter, and that&#39;s good). &nbsp;This will&nbsp;<span>fire the child&#39;s PropertyHasChanged and parent&#39;s&nbsp;</span><span>PropertyHasChanged</span><span>&nbsp; and parent&#39;s&nbsp;</span><span>OnChildChange events</span></p>
+<p style="padding-left:30px;"><span>- In the child&#39;s&nbsp;</span><span>PropertyHasChanged</span><span>&nbsp;I&nbsp;</span><span>set new value for property B, which I want to be marked as dirty, but I do not want this change to fire the child&#39;s&nbsp;<span>PropertyHasChanged</span><span>&nbsp;and&nbsp;</span></span><span>parent&#39;s&nbsp;</span><span>PropertyHasChanged</span><span>&nbsp; and parent&#39;s&nbsp;</span><span>OnChildChange events. I want to be able to save this property B in the DB</span></p>
+<p><span>Can this be achieved?</span></p>
+<p><span>I haven&#39;t tried to override&nbsp;</span><span>OnValidation yet though.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 20, 2013</h2><p>Hi,</p>
+<p>The recommended way of updating other properties is to use BusinessRules. CSLA .NET 4 is quite vague - which version do you use?&nbsp;</p>
+<p>Do you use sync rules that hit a database?&nbsp;</p>
+<p>I would recommend that you use a profiler and check where the time is consumed in your application.</p>
+<p>IIRC starting from CSLA 4.3 and up you have a new LoadPropertyMarkDirty which is also used when you update other properties in a BusinessRule (context.AddOutValue). This method will load the value and mark the field as dirty if the value was changed.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Wednesday, November 20, 2013</h2><p>I use CSLA.NET 4.1.0</p>
+<p>I use a sync rule that hits a database, yes, and I tried to make it async, but I ran into an issue to have the Save button disabled cause the object was still in Busy state.&nbsp;</p>
+<p>I like this&nbsp;<span>LoadPropertyMarkDirty</span><span>&nbsp;that you mentioned; looks like it does exactly what I like to achieve. Can it also be used as a property setter? &nbsp;</span></p>
+<p><span>Do you recommend I upgrade to this version? &nbsp;How much would the upgrade cost?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 20, 2013</h2><p>I&#39;m not so happy on using LoadPropertyMarkDirty in the setter.&nbsp;</p>
+<p>As you already mentioned - you are overriding PropertyHasChanged and it is actually <i>base.PropertyHasChanged()&nbsp;</i>that trigger the rule engine and raise OnPropertyChanged event(s).&nbsp;</p>
+<p>So for those properties that should _NOT_ call the rule engine or raise OnPropertyChanged - you could just have f.ex a static list of these properties and add a check in PropertyHasChanged to just return and do nothing if the propertyinfo is in this list. </p>
+<p>I DO recommend to keep the same coding style for all your &nbsp;properties. You _could_ also create your own interface and subclass of PropertyInfo and check for an additional flag in PropertyHasChanged.&nbsp;</p>
+<p>My recommendation is to use SetProperty/GetProperty in you property declarations such that you can also have authorization on your properties. So if you have overrides for CanReadProperty/CanWriteProperty that does database access this may also be a cause for sluggish performance.&nbsp;</p>
+<p>The upgrade from 4.1 to 4.3 should be fairly easy. I do not believe there is many breaking changes. You should however read the release notes to get an overview of the changes.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Wednesday, November 20, 2013</h2><p>I&#39;d like to try this OnValidation (or OnValidationComplete, since I do not see this OnValidation event) approach instead of OnPropertyChanged. &nbsp;Could you recommend any sample project that&#39;s available for download that I can take a look at?</p>
+<p><span><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>So for those properties that should _NOT_ call the rule engine or raise OnPropertyChanged - you could just have f.ex a static list of these properties and add a check in PropertyHasChanged to just return and do nothing if the propertyinfo is in this list.</div></span></p>
+<p><span>What do you mean by &quot;f.ex&quot;?&nbsp;</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 20, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>Tatjana<br></b>I&#39;d like to try this OnValidation (or OnValidationComplete, since I do not see this OnValidation event) approach instead of OnPropertyChanged. &nbsp;Could you recommend any sample project that&#39;s available for download that I can take a look at?</div></p>
+<p>Sorry I wasn&#39;t clear.&nbsp; I don&#39;t mean you need to override anything, I mean change the designer properties on the Form controls itself, the Data Source Update Mode.&nbsp; See this Figure 1 &amp; 2&nbsp;in this MSDN link:&nbsp; <a href="http://msdn.microsoft.com/en-us/library/aa480734.aspx">http://msdn.microsoft.com/en-us/library/aa480734.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Thursday, November 21, 2013</h2><p>Ah, I see. &nbsp;Thanks for the link, I am checking that too at the moment.</p>
+<p><span style="font-size:12px;">~Tanja</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 21, 2013</h2><p>&quot;f.ex&quot; is abbreviation for &quot;for example&quot;.&nbsp;</p>
+<p>The difference between LoadProperty and SetProperty is that SetProperty calls:</p>
+<ul>
+<li>CanWriteProperty to verify authorization</li>
+<li>If new value is different from &quot;managed backing field&quot;
+<ul>
+<li>update managed backing field value and mark field as dirty&nbsp;</li>
+<li>call PropertyHasChanged (to trigger rules and OnPropertyChanged)</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p><b>The mistake that many developer make is to add additional code in the property setter. When users &quot;tab&quot; around in the form the DataBinding wil actually call the property setters - but SetProperty will only act on those that have a new value.&nbsp;</b></p>
+<p>If your performance is sluggish, I would first suspect that you have code in&nbsp;</p>
+<p>
+<ul>
+<li>the property setter code or</li>
+<li>CanWriteProperty</li>
+</ul>
+</p>
+<p>that degrades the performance as the user tabs around.</p>
+<p>Could you show us how your properties is defined?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tatjana replied on Thursday, November 21, 2013</h2><p>Hi Jonny,</p>
+<p>Thank you for your quick responses. My setters are simple, using SetProperty. &nbsp;Something like shown in the attached file [PseudoCode.zip; 4K]</p>
+<p>&nbsp;</p>
+<p>~Tanja</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

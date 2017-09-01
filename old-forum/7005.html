@@ -1,0 +1,147 @@
+<html><header><title>OT: Design Help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Design Help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7005.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, May 27, 2009</h2>I've created an abstract base class for managing composite UI views that is working well for number of descendants and I've realized it is also very useful for some other slightly more detailed use cases I'm plugging in.&nbsp; However one of the things I did at the beginning was to create a couple of initialization methods driven off of an enum.&nbsp; This works great except for these new descendants which really have a different set of enum values.&nbsp; I think there is a better way I could have done this and was hoping for some tips.<br><br>the Enum values are used all over so that I know what UI view I'm using, I pass it to an Init method and return in as part of a few argument classes so I can make processing<br>decisions based on common variables + action (ie Action-NewObject View-MasterA).<br><br><br>AbstractBaseClass<br><br>&nbsp;&nbsp;&nbsp; enum baseViews {MasterA, MasterB, MasterC} <br><br>&nbsp;&nbsp;&nbsp; protected virtual void RegisterExplorerCompononents<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerCompononent(baseViews.MasterA);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerCompononent(baseViews.MasterB);<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected virtual void RegisterExplorerCompononent(baseViews view)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch(view) ...<br>&nbsp;&nbsp;&nbsp; }<br><br>Works great for my generic descendants, I just override RegisterExplorerCompononents to initialize the subset of enum views I care about.<br><br>But in my more detailed descendants I basically have a unique set of views and a different enum<br><br><br>DerivedUniqueDescendantClass<br><br>&nbsp;&nbsp;&nbsp; enum ChildViewsAbc {DetailA, DetailB, DetailC} or enum ChildViewsXyz {DetailX, DetailY, DetailZ}<br><br>&nbsp;&nbsp;&nbsp; //I'm basically overriding the generic register to point it at a unique register method and then re-implementing a unique RegisterXyzComponents and a RegisterXyzComponentXyz(childViewEnum childView) for each unique descendants.<br><br>&nbsp;&nbsp;&nbsp; protected override void RegisterExplorerCompononents<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterChildXyzCompononents<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected override void RegisterExplorerCompononent(baseViews view)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NotImplementedException();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected void RegisterChildXyzCompononents<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterChildXyzCompononents<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected override void RegisterChildXyzCompononent(childViews view)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; switch(view) ...<br>&nbsp;&nbsp;&nbsp; }<br><br><br>Any suggestions on a better way to do this.&nbsp; It seemed a bit awkward as I've been coding although it doesn't seem that terrible as I type it out..<br><br>thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, May 27, 2009</h2><P>Do you have actual classes that represent the views?&nbsp; If so, then I'd use the Type to describe the views.&nbsp; Then you can have the RegisterExplorerComponent method accept the Type or, if you are instantiating the Views, the base class or interface&nbsp;used by the Views.</P>
+<P>Another option would be to use a class rather than an enumeration to define the various views.&nbsp; Each view can be defined as a read-only property on the class.&nbsp; Then you can derive this class to extend it with additional views.&nbsp; Since your RegisterExplorerComponent method accepts the base type, it will accept the derived class as well.</P>
+<P>Not knowing your full use-case, here is an example of how I've implemented something similar:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition<BR></FONT></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> ViewDefinition(System.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2> name)<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>Name = name;<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; public</FONT></FONT><FONT size=2> System.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>String</FONT></FONT><FONT size=2> Name<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2>;<BR>&nbsp;&nbsp;&nbsp; }<BR>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>abstract</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MasterViews<BR></FONT></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2> View1 = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"View1"</FONT></FONT><FONT size=2>);<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2> View2 = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"View2"</FONT></FONT><FONT size=2>);<BR>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomViews</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MasterViews<BR></FONT></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2> NewView1 = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NewView1"</FONT></FONT><FONT size=2>);<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>readonly</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2> NewView2 = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NewView2"</FONT></FONT><FONT size=2>);<BR>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>abstract</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>AbstractBaseClass<BR></FONT></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> AbstractBaseClass()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize();<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>virtual</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Initialize()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MasterViews</FONT></FONT><FONT size=2>.View1);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MasterViews</FONT></FONT><FONT size=2>.View2);<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> RegisterExplorerComponents(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ViewDefinition</FONT></FONT><FONT size=2> view)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// ...<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2>}<BR>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DerivedClass</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>AbstractBaseClass<BR></FONT></FONT><FONT size=2>{<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> DerivedClass() : </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>()<BR>&nbsp;&nbsp;&nbsp; { }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Initialize()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomViews</FONT></FONT><FONT size=2>.View1);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomViews</FONT></FONT><FONT size=2>.View2);<BR>&nbsp;&nbsp;&nbsp; }<BR>}</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, May 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>perfect &nbsp;- for the most part I have actual classes that
+match the views but I'm using the same enum for multiple purposes.&nbsp; ie) enum.SomethingDetailView
+would be used for the readonly or the edit or the list version just depending
+on the use.&nbsp; The example you laid out is exactly what I needed.&nbsp; I
+basically wanted an inheritable enum which is easily represented with a class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> May-27-09 4:33 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Design Help<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Do you have actual classes that represent the views?&nbsp; If so, then I'd
+use the Type to describe the views.&nbsp; Then you can have the
+RegisterExplorerComponent method accept the Type or, if you are instantiating
+the Views, the base class or interface&nbsp;used by the Views.<o:p></o:p></p>
+
+<p>Another option would be to use a class rather than an enumeration to define
+the various views.&nbsp; Each view can be defined as a read-only property on
+the class.&nbsp; Then you can derive this class to extend it with additional
+views.&nbsp; Since your RegisterExplorerComponent method accepts the base type,
+it will accept the derived class as well.<o:p></o:p></p>
+
+<p>Not knowing your full use-case, here is an example of how I've implemented
+something similar:<o:p></o:p></p>
+
+<p><span>public</span><span> <span>class</span> <span>ViewDefinition<br>
+</span>{<br>
+&nbsp;&nbsp;&nbsp; <span>internal</span> ViewDefinition(System.<span>String</span> name)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Name = name;<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp; public</span><span> System.<span>String</span> Name<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>get</span>;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>private</span>
+<span>set</span>;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>abstract</span> <span>class</span> <span>MasterViews<br>
+</span>{<br>
+&nbsp;&nbsp;&nbsp; <span>public</span> <span>static</span> <span>readonly</span> <span>ViewDefinition</span> View1 = <span>new</span>
+<span>ViewDefinition</span>(<span>&quot;View1&quot;</span>);<br>
+&nbsp;&nbsp;&nbsp; <span>public</span> <span>static</span> <span>readonly</span> <span>ViewDefinition</span> View2 = <span>new</span>
+<span>ViewDefinition</span>(<span>&quot;View2&quot;</span>);<br>
+}<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>class</span> <span>CustomViews</span> : <span>MasterViews<br>
+</span>{<br>
+&nbsp;&nbsp;&nbsp; <span>public</span> <span>static</span> <span>readonly</span> <span>ViewDefinition</span> NewView1 = <span>new</span>
+<span>ViewDefinition</span>(<span>&quot;NewView1&quot;</span>);<br>
+&nbsp;&nbsp;&nbsp; <span>public</span> <span>static</span> <span>readonly</span> <span>ViewDefinition</span> NewView2 = <span>new</span>
+<span>ViewDefinition</span>(<span>&quot;NewView2&quot;</span>);<br>
+}<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>abstract</span> <span>class</span> <span>AbstractBaseClass<br>
+</span>{<br>
+&nbsp;&nbsp;&nbsp; <span>protected</span>
+AbstractBaseClass()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Initialize();<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp; protected</span><span> <span>virtual</span> <span>void</span> Initialize()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(<span>MasterViews</span>.View1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(<span>MasterViews</span>.View2);<br>
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp; protected</span><span> <span>void</span>
+RegisterExplorerComponents(<span>ViewDefinition</span>
+view)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>// ...<br>
+&nbsp;&nbsp;&nbsp; </span>}<br>
+}<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>class</span> <span>DerivedClass</span> : <span>AbstractBaseClass<br>
+</span>{<br>
+&nbsp;&nbsp;&nbsp; <span>public</span> DerivedClass() : <span>base</span>()<br>
+&nbsp;&nbsp;&nbsp; { }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp; protected</span><span> <span>override</span> <span>void</span> Initialize()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(<span>CustomViews</span>.View1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterExplorerComponents(<span>CustomViews</span>.View2);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}</span><o:p></o:p></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,12 @@
+<html><header><title>Data Provider Timestamp Abstraction</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Provider Timestamp Abstraction</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/629.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>WyattRidesAgain posted on Friday, July 14, 2006</h2><P>I'm trying to use CSLA with MySQL.&nbsp; I'm also trying to abstract the specifics of accessing data providers out of the business classes so I can more easily migrate to other databases in the future if need be (most likely MS SQL, Access, or Oracle).&nbsp; I've done much of the data access abstraction already via a separate DataAccessLayer dll which works well, but am stuck with what to do about TimeStamp columns which are used for optimistic locking.</P>
+<P>PTracker in the CSLA download&nbsp;uses MS SQL with its binary-based TimeStamp datatype.&nbsp; MySQL uses a DateTime-based&nbsp;TimeStamp datatype.&nbsp; I'm not sure offhand what format Oracle's TimeStamp may be.&nbsp; Given my still-growing experience with OO design, I'd appreciate any suggestions on an approach to do the abstraction.&nbsp; </P>
+<P>Thanks,</P>
+<P>Wyatt</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chriss replied on Monday, July 17, 2006</h2><P>Hi,</P>
+<P>You could always just use a normal datetime field. i.e. table has a MODIFIED column that gets set to current date on record creation.&nbsp; Then in the stored proc/sql code add to the update criteria somthing along the lines of:</P>
+<P>where ID = @ID</P>
+<P>... and MODIFIED &lt; @NEW_MODIFIED</P>
+<P>Otherwise works exactly the same as the timestamp in the PTRacker example. Using a normal Datetime datatype&nbsp;will be compatible with all RDBMS platforms.&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WyattRidesAgain replied on Monday, July 17, 2006</h2><P>Chriss,</P>
+<P>Thanks for the suggestion!&nbsp; I like its simplicity.&nbsp; I think I was making this too complicated, no doubt from my inexperience.</P>
+<P>Wyatt</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

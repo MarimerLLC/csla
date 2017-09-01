@@ -1,0 +1,23 @@
+<html><header><title>Strange CSLA Design.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange CSLA Design.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/748.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog posted on Thursday, July 27, 2006</h2><P>I am working with a client who is using CSLA 1.5. As I was looking through their code base I noticed something odd in how the modeled their parent child relationships. We are supposed to follow their "standards" but I am not real sure that what they did is good design.</P>
+<P>&nbsp;I am looking for some insight into their approch. Perhaps validation to my gut feel that it is not good design. Or perhaps pointing out something I missed that may show it is. Below is what they did assume all objects are read only base objects.</P>
+<P>InvoiceInfo has a child collection ProductInfoCollection. However instead of creating a ProductInfoCollection class. The create a private struct inside the InvoicInfo object. The DataPortal_Fetch then creates and populates a list of the struct. See p-code below.</P>
+<P>&nbsp;</P>
+<P>class InvoiceInfo : ReadOnlyBase{</P>
+<P>&nbsp;&nbsp; struct ProductInfo{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;private&nbsp;string productName;&nbsp;&nbsp;&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;DataPortal_Fetch(){</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;this.list.add(new ProductInfo)</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>This does not seem like good OOAD. Also, if there was any need for ProductInfoCollection to be a switchable base this would totally fall apart. Any insight on some more pros or cons on this approach.</P>
+<P>&nbsp;</P>
+<P>PD</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdubious replied on Friday, July 28, 2006</h2><P>The 1.x book was written this way intentionally.&nbsp; The logic, if I remember, for doing it is that in NORMAL uses, the read only collection is just a collection of static data.&nbsp; The performance benefits of 'using structs' instead of 'newing up' classes was the main reason for that design.</P>
+<P>I have a lot of 'Nested Info Structs' around, and it hasn't hindered me in these apps yet.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, July 28, 2006</h2>
+
+<p class="MsoNormal"><span>Rocky
+stated that using structs in Readonly Collections would offer better performance
+in his 1.0 book.<span>&nbsp; </span>However, this was not
+true because of the boxing penalties when adding a value type to a collection.<span>&nbsp; </span>He later changed the structs to classes in
+the 2.0 book.<span>&nbsp; </span>Ironically, you can now add
+structs to generic collections without the boxing penalty in .Net 2.0.</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

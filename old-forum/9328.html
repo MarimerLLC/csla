@@ -1,0 +1,22 @@
+<html><header><title>Overrides sub AddBusinessRules is not executed. Please help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Overrides sub AddBusinessRules is not executed. Please help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9328.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng posted on Thursday, August 05, 2010</h2><p>Hi everyone, </p>
+<p>In Project Tracker application, for object Project,&nbsp; procedure AddBusinessRules is automatically executed.</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+<p>However, in my application this&nbsp;procedure is not executed at all. I set breakpoint inside the procedure, but it is not executed.</p>
+<p>Below is my code excerpt. Please advice. Thank you very much in advance.</p>
+<p>--------------</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Protected</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Overrides</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span><span style="font-size:x-small;"> AddBusinessRules()<font size="2">
+<p style="padding-left:30px;">AddSharedCommonRules()<br />AddSharedCustomRules()</p>
+</font></span>
+<p style="padding-left:30px;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">MyBase</span></span><span style="font-size:x-small;">.AddBusinessRules()<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub</span></span></p>
+</span></span></p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Thursday, August 05, 2010</h2><p>Where are you in the stack when you are trying to see this behavior?</p>
+<p>For example, you won&#39;t see this during a Fetch by default or in the Create if you override that method.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng replied on Friday, August 06, 2010</h2><p>In Project Tracker application, it happens when opening existing project (ie, Edit project - select a project - click OK)</p>
+<p>In my application, I follow the same logic as project tracker, but <span style="font-size:x-small;">AddBusinessRules not executed.</span></p>
+<p><span style="font-size:x-small;">Are there any &quot;pre-requirements&quot; for this to work?</span></p>
+<p><span style="font-size:x-small;">Thanks.</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 06, 2010</h2><p>AddBusinessRules() is called exactly once per type per appdomain. So the first time any of your code interacts with the rules subsystem for a specific type that&#39;ll cause that type&#39;s rules to be initialized and cached.</p>
+<p>Normally this is triggered by a CheckRules() call - which in turn is normally triggered by a SetProperty() call in a property.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

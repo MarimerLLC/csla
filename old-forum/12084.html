@@ -1,0 +1,41 @@
+<html><header><title>How to trigger validation rules between child objects.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to trigger validation rules between child objects.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12084.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stuart.bale posted on Monday, July 22, 2013</h2><p class="p1">What would you do in this situation?</p>
+<p class="p1">Parent A</p>
+<p class="p1">&nbsp;Child B</p>
+<p class="p1">&nbsp;&nbsp;Property B1</p>
+<p class="p1">&nbsp;Child C</p>
+<p class="p1">&nbsp;&nbsp;Property C2</p>
+<p class="p1">Basically, there is a parent business object, with two child business objects, each with a property.</p>
+<p class="p1">Now, what I need is to have a validation rule on Child B Property B1, that checks if the value in Child C Property C2 is the same. &nbsp;</p>
+<p class="p1">So this would need to be triggered whenever either Child B Property B1 changes, or Child C Property C2 changes.</p>
+<p class="p1">I don&#39;t want Child B to have to know about the existence of Child C, or vice-versa.</p>
+<p class="p1">This is a cut down example of a real-world issue, which is far more complex, but finding a simple approach to this should apply for the more complex.</p>
+<p class="p1">BTW, it&#39;s impractical for me to have a replica of Child B Property B1 and/or Child C Property C2 on Parent A.</p>
+<p class="p1">And I am quite ok to use multiple rules, and to trigger them from OnChildChanged, if that makes it easier.</p>
+<p class="p1">I&#39;m using CSLA 4.3.</p>
+<p class="p1">I&#39;m open to any suggestions.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Monday, July 22, 2013</h2><p>I think the best way to handle this would be to have a rule in ParentA that looks at both Child B and C whenever the child object is changed.</p>
+<p>In Parent A you will obviously need a property that is of type ChildA and one of type ChildB. Create a rule for each of these properties that checks whatever fields you need in the Child objects.</p>
+<p>then override the OnChildChanged method.</p>
+<p>protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)</p>
+<p>{</p>
+<p>&nbsp; &nbsp;base.OnChildChanged(e);</p>
+<p>&nbsp; &nbsp;if (e.ChildObject is ChildA &amp;&amp; e.PropertyChangedArgs.PropertyName.Equals(&quot;PropertyB1&quot;))</p>
+<p>&nbsp; &nbsp; &nbsp; PropertyHasChanged(_ChildAProperty);</p>
+<p>&nbsp; &nbsp;}</p>
+<p>}</p>
+<div></div>
+<div>This should fire the rule you created for ChildA property.</div>
+<div></div>
+<div>Is this what you&#39;re after?</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, July 23, 2013</h2><p>Hi,</p>
+<p>The rule must be registered on the object that should have the broken rule message.</p>
+<p>And if the child A and child B is not allowed to know about each other youn will have to add some logic to the list (assuming rules are connected to the child objects) and trigger som special rule on all objects - and the rule in each child must must be able to call a &nbsp;method on the list (Parent) for existance of other values in list. You _MAY_ use an objectlevel rule to control when this rule is executed by your code (f.ex OnChildChanged in the list).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stuart.bale replied on Friday, July 26, 2013</h2><p>Hi Jonny,</p>
+<p>Just to clarify, in this case, Parent ISN&#39;T a BusinessListBase, it is just BusinessBase.</p>
+<p>So I think, what you&#39;d recommend is that the child object calls a method on it&#39;s Parent property, as part of the business rule attached to the property on the child.</p>
+<p>So, for example, we could add a rule PropertyB1IsValid, and Add it to Child B, using the PropertyB1 property as a param.</p>
+<p>Then, inside that rule, we would get the Parent of the Target, and call a method, such as GetChildCPropertyC2(), which returns the value of Property C2 on Child C. &nbsp;We can then compare the values, and set the appropriate rule result.</p>
+<p>The only downside of this, is that the validation would only appear on PropertyB1 of Child B - whereas I actually want it to appear on both the properties.</p>
+<p>I guess I could capture the OnChildChanged event on the Parent (as cfarren suggests), but then how do I call each child to tell it to only run the rules attached to one specific property?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 26, 2013</h2><p>I see this as multiple steps.&nbsp;</p>
+<p><ol>
+<li>Validate the field that has been editet - and within the Execute method get the Parent and cast to some interface and get some additional value as input for validation. This will put the validation error on ChildB</li>
+<li>Then Parent must have code in OnChildChanged to trigger validation on ChildC as these 2 objects do not know about each other. On an object that is databound you should call the PropertyHasChanged method in ChildC. You may have to add a new interface and method to your child objects in order to do that. PropertyHasChanged will run business rules for the given property (and affected properties) and call OnPropertyChanged to notify UI of changes to field/brokenrules.&nbsp;</li>
+</ol></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

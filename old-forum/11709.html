@@ -1,0 +1,37 @@
+<html><header><title>Accessing the &quot;click&quot; action of a datagridcheckbox column</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Accessing the &quot;click&quot; action of a datagridcheckbox column</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11709.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pegesaka posted on Sunday, November 18, 2012</h2><p>I am trying to get my head around the wpf way of doing things, as well as being a bit of a newbee on CSLA 4, so please excuse me. </p>
+<p>I have a DatagridCheckBoxColumn bound to a boolean property in a CSLA editable child object. I am trying to trap when the user changes the checked status of the checkbox (with either mouse or spacebar - the old &quot;Click&quot; event), but there is no click event on the checkbox column, nor the datagrid. So I figure I should be reacting to changes in the bound object, rather than the UI. So I try to tap into the PropertyChanged event but notice that this is protected and not accessable in the wpf window class (different assembly).</p>
+<p>I simply want the form to do something when the user changes the checked status, or the business object property changes. Can anyone point me in the right direction please?</p>
+<p>Ta,</p>
+<p>Perry</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, November 18, 2012</h2><p>You can access the OnPropertyChanged (and other events) by casting the object to the actual Interface. </p>
+<p>Here is how Csla.Xaml.ViewModelBase ataches itelf to a BO (here newValue): </p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; <span style="color:green;">// hook events on new value</span></pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; <span style="color:blue;">if</span> (newValue != <span style="color:blue;">null</span>)</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; {</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span> npc = newValue <span style="color:blue;">as</span> <span style="color:#2b91af;">INotifyPropertyChanged</span>;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (npc != <span style="color:blue;">null</span>)</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; npc.PropertyChanged += Model_PropertyChanged;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span> ncc = newValue <span style="color:blue;">as</span> <span style="color:#2b91af;">INotifyChildChanged</span>;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (ncc != <span style="color:blue;">null</span>)</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; ncc.ChildChanged += Model_ChildChanged;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span> nb = newValue <span style="color:blue;">as</span> <span style="color:#2b91af;">INotifyBusy</span>;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (nb != <span style="color:blue;">null</span>)</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; nb.BusyChanged += Model_BusyChanged;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">var</span> cc = newValue <span style="color:blue;">as</span> <span style="color:#2b91af;">INotifyCollectionChanged</span>;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span> (cc != <span style="color:blue;">null</span>)</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; cc.CollectionChanged += Model_CollectionChanged;</pre>
+<pre style="margin:0px;">&nbsp;&nbsp;&nbsp; &nbsp; }<br /><br /></pre>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pegesaka replied on Wednesday, November 21, 2012</h2><div><span class="750103306-19112012"><span style="font-family:Arial;color:#0000ff;font-size:x-small;">Thanks for that 
+JonnyBee. <br /></span></span></div>
+<div><span class="750103306-19112012"></span>&nbsp;</div>
+<div><span class="750103306-19112012"><span style="font-family:Arial;color:#0000ff;font-size:x-small;">I can 
+work with the timing (event occurs when the list&#39;s selectedIndex is changed or 
+datagrid looses focus), and I spose this is the WPF way of doing things (being 
+controlled by the bound object rather than the UI), but it does seem strange 
+that there is no OnClick, especially for a CheckBox. If you wanted something to 
+occur on the UI as a result of the checkbox changing state as the user changes 
+it, how can you get access to this event? Just curious.</span></span></div>
+<div><span class="750103306-19112012"></span>&nbsp;</div>
+<div><span class="750103306-19112012"><span style="font-family:Arial;color:#0000ff;font-size:x-small;">Cheers,</span></span></div>
+<div><span class="750103306-19112012"></span>&nbsp;</div>
+<div><span class="750103306-19112012"><span style="font-family:Arial;color:#0000ff;font-size:x-small;">Perry</span></span></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

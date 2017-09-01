@@ -1,0 +1,155 @@
+<html><header><title>&quot;Mobile objects&quot; - so let me get this straight...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;Mobile objects&quot; - so let me get this straight...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5203.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gjbdebug posted on Thursday, August 07, 2008</h2><P>Evaluating various distributed architecture frameworks and CLSA is up for consideration. However, I'm very much concerned about the bandwidth and other resource requirements that a mobile object architecture such as CSLA will impose, particulary how its client &lt;--&gt; server message format is serialized objects which winds up adding an enormous amount of extra data on the wire compared to actual data&nbsp;and instructions being transmitted.</P>
+<P>So, and I offer this as an example to ensure that I've got this straight, let's say the client process requires a result set for whatever reason, and let's further assume the result set consists&nbsp;of 100 rows of data. Nothing too unusual there. In CSLA, is it true that&nbsp;after the application server (object server, middle tier, data portal,&nbsp;whatever) retrieves the actual data, it then creates an object, presumably some type of collection, and returns that serialized object back to the requesting process to be deserialized back to an exact copy of the original object?</P>
+<P>If that is case, why endure the extra steps and network overhead of object creation, serialization, encoding, etc. by creating the object on the server if it provides the server no value, and is only being created for use by the client? Why not instead use a might lighter response that contains the data in some lightweight format (even CSV) and leave it up to the client to create a collection? Is that possible in CSLA?</P>
+<P>Thanks</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Thursday, August 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your assumption here is that nothing but rudimentary fetch,
+insert, update and delete are done on the server side when it comes to the Csla,
+right?&nbsp; And then why not have just a DTO that is sent to the server, and
+essentially only DAL layer resides there.&nbsp; And then all of the business
+logic runs on the client and that is it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But what if you wanted an ability to decide on the server side
+when you are fetching a record (lets say bank account) whether user is
+authorized to access an account (this is prior to account being loaded on the
+client, lets say object Banker is requesting an account).&nbsp; If you can perform
+this authorization on the server to check whether Banker is in role that has
+access to viewing such an account, you are actually saving a network roundtrip.&nbsp;
+In another type of architecture you would have to make 2 network calls, first
+that checks whether Banker can access the account and second one where banker
+requests an Account object.&nbsp; Since the Validation and Authorization rules are
+available on both sides, scenarios like this one are made much simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In addition if you take a look at how Csla objects preserve
+their state, for example BusinesListBase, you can actually perform a number of
+different tasks on a client (delete few records, add few others, modify few
+more) without actually incurring any network traffic &#8211; no individual
+round-trips.&nbsp; Then when Save is requested the whole set is sent in one
+chunk and server determines based on internal state of the list of what DAL
+operations to perform.&nbsp; In other frameworks each individual operation on
+the client could require a network roundtrip.&nbsp; I would think that is much
+worse impact than Csla.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> gjbdebug
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, August 07, 2008 10:19 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] &quot;Mobile objects&quot; - so let me get this
+straight...<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Evaluating various distributed architecture frameworks and CLSA is up for
+consideration. However, I'm very much concerned about the bandwidth and other
+resource requirements that a mobile object architecture such as CSLA will
+impose, particulary how its client &lt;--&gt; server message format is
+serialized objects which winds up adding an enormous amount of extra data on
+the wire compared to actual data&nbsp;and instructions being transmitted.<o:p></o:p></p>
+
+<p>So, and I offer this as an example to ensure that I've got this straight,
+let's say the client process requires a result set for whatever reason, and
+let's further assume the result set consists&nbsp;of 100 rows of data. Nothing
+too unusual there. In CSLA, is it true that&nbsp;after the application server
+(object server, middle tier, data portal,&nbsp;whatever) retrieves the actual
+data, it then creates an object, presumably some type of collection, and
+returns that serialized object back to the requesting process to be
+deserialized back to an exact copy of the original object?<o:p></o:p></p>
+
+<p>If that is case, why endure the extra steps and network overhead of object
+creation, serialization, encoding, etc. by creating the object on the server if
+it provides the server no value, and is only being created for use by the
+client? Why not instead use a might lighter response that contains the data in
+some lightweight format (even CSV) and leave it up to the client to create a
+collection? Is that possible in CSLA?<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jamie replied on Thursday, August 07, 2008</h2><P>While I completely understand the concept and benefits of server-side processing (as in nermin's example), we have been using CSLA.net under the assumption that the whole server-side/client-side decision is supposed to be fairly transparent to the developer. In other words, our developers develop and use the mobile objects without regard to WHERE the code is being executed.</P>
+<P>So in proposing specific server-side coding as a possible solution to keep the size of the objects down, it seems that you are suggesting a practice that goes against one of the main benefits of using CSLA. That benefit, I thought, was shielding our developers from the physical layers involved at runtime.</P>
+<P>Am I missing something? Thanks for your feedback.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonStonecash replied on Thursday, August 07, 2008</h2>One key point that you should understand is that when a CSLA object is serialized and transmitted across the wire, it is only the data fields in the object that are transmitted.&nbsp; This could be a lot of data but it does not include any of the code.&nbsp; While I do not have exact figures, my experience is that the size of this data is comparable to what would be transmitted for a SQL Select statement and is less than what would be transmitted for a comparable dataset.&nbsp; <br><br>Another point is that you do not have to use a server.&nbsp; You can easily configure CSLA to be a two-tier client/server setup in which all of the processing is done on the "client" machine.&nbsp; That is, the client makes requests to SQL Server and turns the returned data into objects on the client.&nbsp; However, there are a number of factors that might make you want to use an application server: security, performance gained by filtering the data on the server (using business rules) before transmitting over a lower speed network, caching, and so on.&nbsp; The beauty of CSLA is that switching between the client/server model and the n-tier model is very simple and easy.&nbsp; <br><br>Jon Stonecash<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, August 07, 2008</h2>While he's asking, though, at what point should you start to be concerned about object size? I have a test serializer that serializes objects as they go through the portal just to compute the size, so I was wondering how large an object could be reasonably moved around.&nbsp; I'd expect the answer to vary depending on an intranet versus internet environment. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gjbdebug replied on Thursday, August 07, 2008</h2><P>Thanks&nbsp;for the responses and I'm looking forward to more.</P>
+<P>Regarding whether I'm looking at rudimentary scenarios, yes, because if a simple data fetch of say 1000 bytes of raw data results in 10,000 or even more bytes of serialized/encoded object data, then that side effect is going to manifest regardless of what entities and their&nbsp;relationships a business object represents and what can be done with it. Stated differently, I understand what the architecture and the objects can do, but what I'm looking to answer definitively is "what does it cost to run it?", with the fuel being bandwidth.</P>
+<P>To the comment about serialization, right, obviously serialization, especially a "true" serializer like the BinaryFormatter, transforms a complete object graph's data down to a series of bytes that can then be used to create an exact copy of the original object. The problem, however, is the added meta data incurred with such serialization, such as the extensive type information (just do a packet capture, base 64 decode it, then open the result in a hex editor). There are alternatives that I refer to as "pseudo-serializers", like the System.Xml.XmlSerializer, but that has its limitations like requiring parameterless constructors and an inability to process read-only properties.</P>
+<P>Under a mobile object architecture such as CSLA where binary data is being trucked back and forth over the wire, I'm sure I'm not the first one to raise and eyebrow when it comes to the potential bandwidth impact.&nbsp;As such, and focusing mainly on the message formatting between the client and server, does anyone have any experience in&nbsp;implementing a&nbsp;lighter-weight&nbsp;format (while keep the 3 tier and not resorting to a 2 tier model). MTOM encoding? WCF? JSON?</P>
+<P>Thanks again</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, August 08, 2008</h2><P>CSLA imposes no more overhead than other methods in an n-tier scenario IMHO - as you say its just serialising the object data and sending back and forth over the wire using the various formatters and channels available in .Net.&nbsp; The binaryformatter is very efficient.</P>
+<P>I believe you have a few choices now with CSLA and can configure what channel and formatter to use.</P>
+<P>What's more likely to impact performnace is&nbsp;the object design - get that right and you are laughing no matter what framework you use.</P>
+<P>Frameworks are great - people should use them more than they do.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, August 08, 2008</h2><P>In terms of object design and serialization, an unresolved issue is how to handle lazy-loaded child objects (e.g. objects that aren't fetched until you actually try to access the property that loads them)<BR><BR>If I've gone to the trouble to fetch an object from the server (e.g. database), should I continue to serialize it around or should I tag it as nonserialized? After all, if I don't serialize it, then if I need it again later it will be just be refetched.</P>
+<P>&nbsp;It's not clear to me which is worse, a larger object or repeated database accesses for the same data. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 08, 2008</h2>You can lazy load child objects if needed.&nbsp; The decision for me is one of access.&nbsp; If the users WILL use the child data most of the time in the given use case, lazy loading is not a good idea.&nbsp; If on the other hand users rarely need the child data, then lazy loading would be a better choice.<br><br>It should be noted too that lazy loading isn't "repeat database accesses for the same data."&nbsp; Once loaded, there isn't a need to go to the database anymore.. you BO now has the child collection populated and in the client memory.&nbsp; It's the same from that point as if you had loaded it initially.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, August 08, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>...<BR>It should be noted too that lazy loading isn't "repeat database accesses for the same data."&nbsp; Once loaded, there isn't a need to go to the database anymore.. </div></BLOCKQUOTE></P>
+<P>I used this in the context of marking a lazy loaded member as [Nonserialized], with the goal of reducing object size.&nbsp; </P>
+<P>A member thus tagged would be refetched if the server side processing for the object referenced it&nbsp;even if it had already been fetched on the client, or the client accessed the same property again after a round-trip to the server. </P>
+<P>I just don't have enough experience yet to weigh the trade-offs. My impression thus far is that memory is so abundant these days that even SQL Express could hold several production databases entirely in memory. &nbsp;Maybe&nbsp;refetching (and keeping your objects very lean) isn't so bad, especially if you're doing a keyed or indexed read. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 08, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>I used this in the context of marking a lazy loaded member as [Nonserialized], with the goal of reducing object size. </div></BLOCKQUOTE><br><br>But there's no need to do that.&nbsp; If you're lazy loading, the field you just marked as NonSerialized will be null... which I would think is just a zero byte.&nbsp; <br><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>A member thus tagged would be refetched if the server side processing for the object referenced it&nbsp;even if it had already been fetched on the client, or the client accessed the same property again after a round-trip to the server.</div></BLOCKQUOTE></p><p>Which is why you wouldn't mark a child field as NonSerialized.&nbsp; Who advocated doing that?&nbsp; I think that goes against standard Csla practices.&nbsp; At any rate, even if you DID mark the field as such (and thus lost any hope of actually committing the users changes to the child BO), the "round trip" would be the app server talking to the database server... and that hit may be minimal still if you're setup like I am, where the app server is the same server as the database server.&nbsp; Even if it wasn't, I'd hope you have a good pipe between app server and database server.. since normal DB communications is pretty chatty anyway.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>I just don't have enough experience yet to weigh the trade-offs. My impression thus far is that memory is so abundant these days that even SQL Express could hold several production databases entirely in memory. &nbsp;Maybe&nbsp;refetching (and keeping your objects very lean) isn't so bad, especially if you're doing a keyed or indexed read.</div></BLOCKQUOTE></p><p>Well, like I said, I would be suprised if you lazy loaded a child BO and also marked it as non-serialized.&nbsp; If you did, the child BO is likely a readonly object which don't be updated anyway... and I would think it would be bad design to get the data from such a child object when you can just get it from the DB anyway..&nbsp;&nbsp; but that's just my opinion.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, August 08, 2008</h2><P>^^^^^</P>
+<P>You're correct in that it would generally be a read-only object. Of course you wouldn't mark something that could be updated as [Nonserialized]. </P>
+<P>I disagree on the "bad design" though. Letting the BO fetch the object, even if it's read-only, &nbsp;from the DB provides for encapsulation and provides for an abstraction layer. You wouldn't put unrelated data in a BO anyway, so these means you keep the knowledge of how the relationship is constructed and the data is fetched in the BO. </P>
+<P>You can also make the choice not store a reference to such an object in the BO at all, but then again maybe it is needed later&nbsp;(e.g. sometimes for validation rule enforcement) </P>
+<P>Decisions, decisions... :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Friday, August 08, 2008</h2><P>I implement caching of my readonly collections using MS Ent Lib.&nbsp; I can do this in my custom objects that sit between CSLA and my concrete BO classes.&nbsp; Works slick, and it allows me to&nbsp;mark the field as non-serializable in my root controller class and use lazy loading to acquire the RO object(s) if needed.&nbsp; If the cache contains the object then there is no round-trip overhead on the re-load.&nbsp; If it does not exist in the cache, then the RO object was probably due for a refresh anyway.&nbsp; It is always a tradeoff between memory and time.&nbsp; Your implementation will depend on your (or your users) tolerence for where the pivot point should lie.</P>
+<P>Fintan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 08, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>gjbdebug:</strong></div><div>
+<P>Under a mobile object architecture such as CSLA where binary data is being trucked back and forth over the wire, I'm sure I'm not the first one to raise and eyebrow when it comes to the potential bandwidth impact.&nbsp;As such, and focusing mainly on the message formatting between the client and server, does anyone have any experience in&nbsp;implementing a&nbsp;lighter-weight&nbsp;format (while keep the 3 tier and not resorting to a 2 tier model). MTOM encoding? WCF? JSON?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Writing a serializer that provides the equivalent functionality to BinaryFormatter or NDCS is very difficult. I wrote most of one several years ago, but was unable to finish dealing with circular references when objects implement ISerializable. I've subsequently learned (and forgotten) the name of the API Microsoft uses to create object instances without running a constructor - which is what is required in that case.</P>
+<P>We just wrote a serializer for Silverlight (and .NET) for CSLA Light. But it doesn't provide all the functionality of BF or NDCS&nbsp;- that's not actually possible on SL right now (without serious hacks anyway).</P>
+<P>When you get right down to it though, all you can affect are the meta-tags. You can't avoid sending the actual field values for the objects. And if you want the shared-context features provided by the data portal, you can't avoid passing the field data required for that to happen.</P>
+<P>So all you can do is decide how to create the meta-tags.</P>
+<BLOCKQUOTE dir=ltr>
+<P>&lt;FirstName&gt;Fred&lt;/FirstName&gt;&lt;LastName&gt;Smith&lt;/LastName&gt;</P>
+<P>FirstName=Fred<BR>LastName=Smith</P>
+<P>Fred#Smith</P></BLOCKQUOTE>
+<P>Regardless, the "Fred" and "Smith" must go through.</P>
+<P>I was just talking to a dev on the WCF serializer team. He pointed out that XML serialization is faster than JSON even though JSON seems smaller. It turns out XML has fewer special characters than JSON, so the escaping of those characters is cheaper for XML.</P>
+<P>It is also the case that you can use compression. The BF produces data that doesn't compress well. But NDCS produces XML that compresses quite well.</P>
+<P>It is also the case that in <EM>most scenarios</EM> the cost of serialization/deserialization of the object graph is higher than the transport of the data over the wire. Obviously this wouldn't be true over a slow network like an old-fashioned modem, but over LAN/MAN/WAN configurations you can't discount the cost of the serialization/deserialization itself.</P>
+<P>Of course compression takes processing time as well - and so you must balance whether the compression/decompression costs more or less than the bytes on the wire. It is quite possible to enable compression and <EM>lose</EM> performance.</P>
+<P>What I'm getting at is that it isn't all about the size of the data on the wire. It is about features, performance on the server, size of the byte stream, compressability of the byte stream, performance on the client, etc. Many factors must be considered.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

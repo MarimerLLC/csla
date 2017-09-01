@@ -1,0 +1,76 @@
+<html><header><title>User Object Nightmare - A Question of Responsibility?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>User Object Nightmare - A Question of Responsibility?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2850.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Thursday, May 10, 2007</h2><P>As I am&nbsp;somewhat new to the OO game, I am&nbsp;still struggling to realign&nbsp;my data-centric way of thinking to one that is more&nbsp;responsibility focused.&nbsp; With that acknowledgement...&nbsp; </P>
+<P>I am facing a bit of a problem designing objects to handle User management in my application.&nbsp; Specifically, I am trying to satisfy the following general use cases:</P>
+<P>1.&nbsp; All users can&nbsp;Get/View non-sensitive user information.</P>
+<P>2.&nbsp; An Administrator can Add, Edit and Delete any user information.</P>
+<P>3.&nbsp; A user can Edit certain portions of his or her own&nbsp;user information&nbsp;(i.e., password, last name, etc.)</P>
+<P>My first approach was to create the following objects:</P>
+<P>- UserList (read-only list containing&nbsp;UserInfo objects)</P>
+<P>- UserInfo (read-only, non-sensitive user information that can be viewed by all users)</P>
+<P>- User (editable root object containing all user information and related methods)</P>
+<P>The User object contains all of the user's information, including account related stuff such as FailedLoginAttempts, IsLockedOut, IsActive, etc.&nbsp; In addition to the standard CRUD methods, the object also contains methods for managing&nbsp;the User's account (e.g.,&nbsp;SetPassword, LockUser&nbsp;, UnlockUser, etc.).</P>
+<P>The problems I am facing are centered around authorization.&nbsp; My User object is a nightmare!&nbsp; I have to implement three levels of authorization to properly control who can do what within the object:</P>
+<P>1.&nbsp; Type Level&nbsp;(CanAddObject, CanGetObject, CanEditObject, CanDeleteObject) - To provide high level access to the object.</P>
+<P>2.&nbsp; Instance Level&nbsp;(IsReadable, IsEditable, IsDeleteable) - To allow a user to edit his or her own object.</P>
+<P>3.&nbsp; Property Level (CanReadProperty, CanWriteProperty) - To control access to each property.</P>
+<P>Further, I am realizing that I also need to implement Method Level authorization for methods such as LockUser and UnlockUser.&nbsp; From the UI perspective, this object&nbsp;is cumbersome and&nbsp;is not very databinding friendly (does the UI call static, instance, property or method authorization, and under what circumstances?)</P>
+<P>Ultimately I have come to the conclusion that I have missed the OO mark on this one.&nbsp; Can someone provide me with some guidance?</P>
+<P>I am considering the following objects:</P>
+<P>UserList and UserInfo - as described above</P>
+<P>User - containing all user information and related methods, but restricted to Administrator (maybe this should be split into User and UserAccount?).&nbsp; This would implement Type Level authorization.</P>
+<P>UserOwned - containing information and methods&nbsp;that can be edited/executed only by the owning user (e.g., ChangePassword).&nbsp; This would implement Instance Level authorization.</P>
+<P>How are others doing this?&nbsp; Any help would be appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 10, 2007</h2><P>Your UserEdit object and UserInfo object should be quite different from your princpal object.</P>
+<P>I would expect that you'd (at least) have the following:</P>
+<UL>
+<LI>UserPrincipal - custom princpal</LI>
+<LI>UserIdentity - custom identity (contains list of roles for user, etc)</LI>
+<LI>UserEdit - allows viewing/editing of data for a user</LI>
+<LI>UserList - read-only list of users</LI>
+<LI>UserInfo - allows viewing of a subset of data for a user (child of UserList)</LI></UL>
+<P>To get your editing authorization correct you'd do:</P>
+<OL>
+<LI>UserEdit would have authorization rules on its properties to (dis)allow anyone from seeing certain data.</LI>
+<LI>UserEdit would have authorization rules on its properties to allow people in the Administrator role to view/edit all properties.</LI>
+<LI>UserEdit would override CanWriteProperty() to also allow the current user to edit specific properties if the object represents that user.</LI></OL>
+<P>Of course your UserPrincipal/UserIdentity would be a read-only representation of the currently logged in user's identity/roles. If you want live updates, you could have UserEdit notify UserIdentity (using a Friend/internal method) that it is invalid so it could reload itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Friday, May 11, 2007</h2>Rocky,<br><br>could you explain on why you see a need for special readonly versions of the custom principal/identity objects in this case. We usually already access these object (from within the BOs) when calling IsInRole(...), so the check whether the current user is editing his own record already works with the existing objects.<br><br>Stefan<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Single responsibility design says that an object should have
+exactly one responsibility.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The principal/identity objects have a very clear responsibility:
+provide identity and role information about the current user.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The responsibility to <i>edit that data</i> is entirely
+different, and so it must be a different object. In other words, the
+principal/identity objects shouldn&#8217;t be responsible for editing the data
+they contain in addition to providing identity/role information for the
+application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, May 11, 2007</h2>
+
+<p class="MsoNormal">You might want to also look into the protection proxy design
+pattern.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

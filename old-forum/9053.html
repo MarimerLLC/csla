@@ -1,0 +1,36 @@
+<html><header><title>Memory Leak - 3.8.2?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Memory Leak - 3.8.2?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9053.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Monday, June 07, 2010</h2><p>G&#39;day,</p>
+<p>I&#39;ve got a CSLA data loading application that generates a OutOfMemory Exception when I load 64,000+ children into a ChildList. I ran Red-gate memory profile 5.2 over the solution, and found some unexpected results when reviewing the memory usage. I found a series of CSLA based memory usage that didn&#39;t make sense to me. See screenshot below.</p>
+<p>I can understand all the increases that match the volume of records in the child object, but the first few entries concern me. Does this indicate a memory leak in some of the CSLA namespaces?</p>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.00.42.12/Case874_5F00_MemoryLeakLoading64KChildren.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.00.42.12/Case874_5F00_MemoryLeakLoading64KChildren.png" border="0" alt="" /></a></p>
+<p>Can anyone with Memory profiling experience shed some light on these results?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ejames replied on Wednesday, June 09, 2010</h2><p>I ran into this problem recently. &nbsp;Here is my solution.</p>
+<p>Upon construction, the Csla.Security.RoleForProperty class instantiates 6 List&lt;string&gt; objects for each of its properties. &nbsp;This happens even if you do not use Authorisation rules.</p>
+<p>I changed the Csla.Secuirty.RoleForProperty &nbsp;and my memory leaks went away (and performance improved).</p>
+<p>Here&#39;s what I changed:</p>
+<p>
+<code>
+</code></p>
+<p><code>
+</code></p>
+<p><code>
+</code></p>
+<p><code>
+</code></p>
+<p><code>
+<p>&nbsp;</p>
+<p><a href="http://forums.lhotka.net/cfs-file.ashx/__key/CommunityServer.Components.UserFiles/00.00.00.22.29/role_5F00_for_5F00_property.png"><img src="http://forums.lhotka.net/resized-image.ashx/__size/550x0/__key/CommunityServer.Components.UserFiles/00.00.00.22.29/role_5F00_for_5F00_property.png" border="0" alt="" /></a></p>
+<p><span style="font-family:Arial, Helvetica, sans-serif;">You must change all the properties to lazy initialise the List&lt;string&gt; object.</span></p>
+</code></p>
+<p>Hope this works for you as it did for me.</p>
+<h4></h4></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 09, 2010</h2><p>That seems like a good optimization, I&#39;ll add that to the to-do list.</p>
+<p>I don&#39;t know that a List&lt;string&gt; can be characterized as a memory leak though - just a waste if you don&#39;t use them <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Leak implies some reference scheme by which the memory can&#39;t be reclaimed - which typically comes from a static field or object maintaining a reference to non-static objects (either directly or by exposing a static event).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, June 14, 2010</h2><p>
+<p>Hello,</p>
+<p>We will be making this change in the CSLA 3.8.x branch. Here is a link to the <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=775">bug</a>.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Wednesday, July 14, 2010</h2><p>
+<p>Hello,</p>
+<p>The fix has been checked in.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

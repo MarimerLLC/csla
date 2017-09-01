@@ -1,0 +1,18 @@
+<html><header><title>Serialising a class that inherits from a CSLA object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serialising a class that inherits from a CSLA object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11937.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjmorris1 posted on Tuesday, April 16, 2013</h2><p>When I try to serialise the following class, it only contains BasketItem and nothing from Basket.</p>
+<p>BusinessListBase is a CSLA class.</p>
+<p>Can you tell me why?</p>
+<p>public class Basket : BusinessListBase&lt;Basket, BasketItem&gt;</p>
+<p>{</p>
+<p>}</p>
+<p>So I get all the properties of a BasketItem but nothing from Basket.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, April 16, 2013</h2><p>CSLA does not support properties on a list.&nbsp;</p>
+<p>If you need business properties on a list you should create</p>
+<p>Basket (BusinessBase)</p>
+<p>&nbsp; &nbsp; BasketItemList (BusinessListBase)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BasketItem. (BusinessBase)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjmorris1 replied on Tuesday, April 16, 2013</h2><p>Basket is what I want and this is not a list.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 17, 2013</h2><p>Hi,</p>
+<p>The point is this:</p>
+<p><i>public class Basket : BusinessListBase&lt;Basket, BasketItem&gt; </i></p>
+<p>Your Basket class is a list class - you must change your structure so that Basket is a BusinessBase with properties and create a new list class to hold BasketItems. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, April 17, 2013</h2><p>What Jonny is suggesting is change:</p>
+<p>Basket (BLB) containing BasketItem (BB) to:</p>
+<p>Basket (BB), with whatever additional properties you want, <span style="text-decoration:underline;"><em>including</em></span> a property of BasketItemList (BLB) containing BasketItem (BB)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

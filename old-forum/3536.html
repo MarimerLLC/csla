@@ -1,0 +1,68 @@
+<html><header><title>Data binding heirarchy mis-match</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data binding heirarchy mis-match</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3536.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson posted on Thursday, September 13, 2007</h2><P>I'm looking ahead to an app I'll build next month to handle timesheet entry.&nbsp; At the core of the class structure will be the Timesheet.&nbsp; The Timesheet is a root collection of TimeRecords.&nbsp; And if it had a simple set of properties, binding those to a grid would be easy, obviously.&nbsp; However, each TimeRecord object will have as one of its properties a collection of segment code values for the accounting system.&nbsp; If the number of segments was going to be the same for all my customers, this would also be no problem.&nbsp; They would just each be a property and I'd still have a 2D hierarchy - the second dimension would just be wider by the number of segments.</P>
+<P>But, alas, I have to allow for a dynamic number of segments because I will (hopefully &lt;g&gt;) have lots of customers and they'll all have different structures to their charts of account.&nbsp; So it <STRONG><EM>seems</EM></STRONG> to me that I should be creating a collection property for the TimeRecord object to hold its segment values.&nbsp; </P>
+<P>And now you can see how the binding is going to be a problem.&nbsp; I'd like to have a column in the entry grid for each "regular property" of the TimeRecord class (start time, end time, Job Title, EarningType, etc.)&nbsp;<STRONG><EM>and a column for each account code segment value</EM></STRONG>.&nbsp; Any ideas how to manage this without flattening the heirarchy?&nbsp; How about an elegant way of flattening the heirarchy?&nbsp; Any ideas on how to create a class with a dynamic number of properties that isn't resolved until run time?</P>
+<P>[FYI, I have done&nbsp;this in the past with the flattening techinque.&nbsp; But it seemed like such a hack.&nbsp; Using it here I would create ten (an obviously arbitrarily chosen number) string properties for those account code values in the TimeRecord class;&nbsp;there would be&nbsp;no children in a collection property.&nbsp; Then I would manage the population, fetching, updating, and saving of those properties by referring to them by index numbers using&nbsp;hideous volumes of CallByName statements.&nbsp; All over my DP_xxx methods I'd have loops iterating from zero to MaxSegCount (to build dynamic SQL and set and retrieve values) so that I don't try to populate properties or access data which doesn't exist in the customer's data.&nbsp; And MaxSegCount is a property, too, of course.&nbsp; And this certainly worked in that older CSLA app.&nbsp; But yuck!]</P>
+<P>So, to repeat the questions if you read this far: Any ideas how to manage this without flattening the heirarchy?&nbsp; How about an elegant way of flattening the heirarchy?&nbsp; Any ideas on how to create a class with a dynamic number of properties that isn't resolved until run time?</P>
+<P>Thanks in advance,</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 13, 2007</h2><P>Taking a step back - why not use a fixed number of segments and save yourself all the trouble?</P>
+<P>Granted, many clients will have many different accounting systems. But I have dozens of clients in various industries (many in the Fortune 500) and am able to segment their chart of accounts into 3 tables.</P>
+<P>A G/L code is typically made of these 3 segments:</P>
+<P>1. Company</P>
+<P>2. Cost Center</P>
+<P>3. Account Code</P>
+<P>Some clients will tell you they have other accounts. But they can all fit inside the Account table if you are just a bit creative.</P>
+<P>e.g. Account = 123</P>
+<P>But clients have projects as sub-accounts. </P>
+<P>So you put this in your table instead:</P>
+<P>123-proj1</P>
+<P>123-proj2</P>
+<P>123-proj3</P>
+<P>etc.</P>
+<P>There was only one client in the last 10 years that could not work with this style. They produced TV shows and had an account code for every episode. It was 26 million account codes and growing when I last checked.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Thursday, September 13, 2007</h2><P>Joe,</P>
+<P>I wish I had the luxury of those kinds of assumptions.&nbsp; But all my clients are nonprofit and government organizations whose chart structure complexity varies widely.&nbsp; I know of one of my clients with only three segments but I have a client that is a state agency who actually uses 23!!!&nbsp; In my experience (of about 17 years) about 3/4 of them use between 4 and 7.&nbsp; That's why I was willing to use 10 in the last app.&nbsp; </P>
+<P>Not only do they have multiple segments, but they also have to balance by a variable number of them.&nbsp; So if they have segments called Grant, Fund, Location, Program, GL, and Restriction (to comply with FASB117 reporting), they might have to make entries in which the debits and credits balance BY FUND&nbsp; or even by Fund AND BY GRANT.&nbsp; These kinds of variations in their structure and expected behavior are just the every day challenges in my problem domain.&nbsp; Furthermore, different kinds of entry line items require that different numbers of the segments be populated with a code value (making Validation Rules really interesting).&nbsp; </P>
+<P>I'll give is some more thought and see if I can find away to apply that in a generic enough manner to take on bulk of situations I'll like face.&nbsp; But I'm not optimistic.</P>
+<P>btw, I also have a TV station client (they're PBS, of course) and they managed to avoid making THAT mistake you mentioned at least &lt;g&gt;. But they required some very special treatment that required maintenance of a cash basis and accrual basis set of books at the same time.&nbsp; That was fun.</P>
+<P>Anyway, thanks as always for the response.&nbsp; I really will give it some thought.&nbsp; </P>
+<P>Regards,</P>
+<P>Q</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, September 14, 2007</h2><P>Q,</P>
+<P>You have a lot of experience with complex G/Ls. If your app was one where you had to balance all these&nbsp;possible G/Ls I would completely agree with you.</P>
+<P>But you said this was a Timesheet app. So your users are only going to have to use some subset of possible accounts. Maybe Projects or something. You have to keep track of this value and when you post the data to the accounting system only then do you need to build out the full G/L code. So couldn't you keep your UI simplified and add the complexity on the back end somehow?</P>
+<P>Just an idea.</P>
+<P>I built a Swipecard time tracking system a decade ago for Nestle. It was pretty straightforward. But then again it was only one client.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Friday, September 14, 2007</h2><P>re: &gt;&gt;&nbsp; "But you said this was a Timesheet app. So your users are only going to have to use some subset of possible accounts. Maybe Projects or something." &lt;&lt;</P>
+<P>Right.&nbsp; But ususually I only get to omit one of the many segments (the restrictions one because the default value of Unrestricted is always valid for Payroll). The rest are all needed.</P>
+<P>&gt;&gt;&nbsp;"You have to keep track of this value and when you post the data to the accounting system only then do you need to build out the full G/L code. So couldn't you keep your UI simplified and add the complexity on the back end somehow?" &lt;&lt;</P>
+<P>Good thought.&nbsp; But I want to offer a combobox for each segment's codes so that they can choose from among valid values (that I'm fetching from the acctg system's SQL Server db) so it seems I need a separate column for each, doesn't it?&nbsp; So I'm afraid that combining them in a single column&nbsp;like this,&nbsp;123-45221-678-A27,&nbsp;probably isn't going to work for this.&nbsp; Otherwise I think it would be fine.&nbsp; </P>
+<P>I&nbsp;could offer&nbsp;a hot-key that will bring up a modal "account selector" dialog that offers comboboxes for all of the segments.&nbsp; Then the user could make their choices and when they click OK, the values are put into that single field with the hyphens.&nbsp; But it is a lot of extra work for them to have to bring up that dialog for every line (though it can be argued that they'll learn the values and key them eventually) in the timesheet and it complicates the validation code significantly, too.&nbsp; I think the kludge I have isn't any worse than these would be.&nbsp; Maybe I shouldn't discard that design quite so soon??? &lt;g&gt;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, September 14, 2007</h2><P>"But I want to offer a combobox for each segment's codes so that they can choose from among valid values "</P>
+<P>Be careful with this one.</P>
+<P>One of the gotchas in breaking up segments is that not all combinations are valid within the G/L.</P>
+<P>e.g. </P>
+<P>================</P>
+<P>CostCenter = 1</P>
+<P>Acctcode = 123</P>
+<P>Acctcode = 456</P>
+<P>================</P>
+<P>CostCenter = 2</P>
+<P>Acctcode = 123</P>
+<P>Acctcode = 789</P>
+<P>================</P>
+<P>So if the user selects CostCenter = 1 the Acctcode dropdown needs to be</P>
+<P>Acctcode = 123</P>
+<P>Acctcode = 456</P>
+<P>but NOT Acctcode = 789 which is only valid for CostCenter=2.</P>
+<P>================</P>
+<P>I have a table of all valid AcctCodes and all valid Cost Centers. </P>
+<P>But I have to validate the COMBINATION of the 2 against the G/L of my clients.</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Friday, September 14, 2007</h2><P>Actually, that's one of the real strong points of the target accounting system: all combinations ARE valid.&nbsp; When they create a new Program code, for example, it is automatically able to work in combination with any other account code in any other segment.&nbsp; (And it also makes reporting a breeze because you don't have to parse the "account field" to build criteria for your queries.&nbsp; So there's a payoff for all the work I have to do in data entry: my reports are a piece of cake.)</P>
+<P>Now it DOES have&nbsp;the flexibility to let the user restrict those combinations <STRONG><EM>if they choose to</EM></STRONG>.&nbsp; They can set up a table of valid combinations or invalid combinations.&nbsp; And my own validation checks&nbsp;against those, too, once the whole line item is coded.&nbsp; But I do&nbsp;NOT change the codes in the combobox dynamically to limit them.&nbsp; I'm not much of a fan of catching validation problems at the keystoke.&nbsp; I let them code a whole line before I check.&nbsp; Particularly in the case of combination edits, you really can't catch it at the keystroke unless you can read their mind.&nbsp; By the time you realize the combination is invalid, it may have been the fault of the FIRST segment value they entered, not the one they're on NOW.&nbsp; So I just don't even attempt that kind of assistance.&nbsp; And my clients seem to prefer that anyway.&nbsp; It works just like their accounting system and this is often a criteria in my own decisions about application behavior.&nbsp; I want mine to work like the one they spend most of their time in.</P>
+<P>I was just hoping there was some elegant way to make the binding process see the data from different levels of this heirarchy in such a way that it can render them in the grid without a lot of custom code on my part.&nbsp; I was thinking that there might be a way to render the heirarchy as flat for the data entry use case only, while preserving the parent child relationship elsewhere.&nbsp; But if that elegance isn't there, I can live with flattening it for all contexts and supporting a maximum of ten segments as I did in the other app.&nbsp; And with code generation, extending it to support 20 isn't really that big a deal (for a customer who comes along with a great enough need to pay for that enhancement &lt;g&gt;).&nbsp; </P>
+<P>I just have to admit that I cringe when I scroll past all those property declarations for the ones that will likely never get used. It just makes me feel slimy.&nbsp; But I could get over that rather than go down an even <STRONG>more </STRONG>ugly road &lt;g&gt;.</P>
+<P>Thanks for your input.&nbsp; Have a great weekend.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

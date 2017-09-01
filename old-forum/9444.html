@@ -1,0 +1,66 @@
+<html><header><title>I found two errors in WcfPortal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I found two errors in WcfPortal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9444.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>itracker posted on Friday, August 27, 2010</h2><p>Hello!</p>
+<p>My englishis bad. Sorry. I like CSLA and your book. I buy it and read. Your framework help me save our time.</p>
+<p>CSLA 4.0.1 beta. &nbsp;I found 2 Mistakes in class WcfPortal:</p>
+<p>&nbsp;</p>
+<p>1. &nbsp;Method proxy_DeleteCompleted and others (UpdateCompleted, ExecuteCompleted ...) fails on&nbsp;e.Result when we have CommunicationException.&nbsp;</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;private void proxy_DeleteCompleted(object sender, Csla.WcfPortal.DeleteCompletedEventArgs e)</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;var response = ConvertResponse(e.Result);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;if (e.Error == null &amp;&amp; response.ErrorData == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_globalContext = (ContextDictionary)MobileFormatter.Deserialize(response.GlobalContext);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnDeleteCompleted(new DataPortalResult&lt;T&gt;(default(T), null, e.UserState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;else if (response.ErrorData != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var ex = new DataPortalException(response.ErrorData);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnDeleteCompleted(new DataPortalResult&lt;T&gt;(default(T), ex, e.UserState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnDeleteCompleted(new DataPortalResult&lt;T&gt;(default(T), e.Error, e.UserState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;catch (Exception ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;OnUpdateCompleted(new DataPortalResult&lt;T&gt;(default(T), ex, e.UserState));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>
+<p>Because:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public Csla.WcfPortal.WcfResponse Result {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.RaiseExceptionIfNecessary();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return ((Csla.WcfPortal.WcfResponse)(this.results[0]));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>And i dont have DeleteCompleted event :( My ProgressWindow still open and i dont know when close him :(</p>
+<p>Because DeleteCompleted does not raises.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>2.&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;OnUpdateCompleted(new DataPortalResult&lt;T&gt;(default(T), ex, e.UserState));</p>
+<p>&nbsp;</p>
+<p>Why OnUpdateCompleted when this is in proxy_DeleteCompleted() method?</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 27, 2010</h2><p>1. You are saying that this line:</p>
+<p>var response = ConvertResponse(e.Result);</p>
+<p>should be inside the try block? That is probably correct.</p>
+<p>&nbsp;</p>
+<p>2. This looks like a bug.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itracker replied on Friday, August 27, 2010</h2><p>Why try catch? I think just check e.Error for null.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, August 27, 2010</h2><p>Maybe like this:</p>
+<p>
+
+<pre style="font-family:consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.WcfPortal.<span style="color:#2b91af;">WcfResponse</span>&nbsp;response&nbsp;=&nbsp;<span style="color:blue;">null</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.Error&nbsp;==&nbsp;<span style="color:blue;">null</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;response&nbsp;=&nbsp;ConvertResponse(e.Result);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.Error&nbsp;==&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;response&nbsp;!=&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;response.ErrorData&nbsp;==&nbsp;<span style="color:blue;">null</span>)<br /></pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itracker replied on Friday, August 27, 2010</h2><p>I need something like this:</p>
+<p>if (e.Error != null)</p>
+<p>{&nbsp;</p>
+<p>OnDeleteCompleted(new DataPortalResult&lt;T&gt;(default(T), e.Error, e.UserState));</p>
+<p>return;</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itracker replied on Friday, August 27, 2010</h2><p>In last your checkin if e.Error != null i have never gain DeleteCompleted event :( I need know if CommunicationException or something else is occured.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>itracker replied on Friday, August 27, 2010</h2><p>Sorry. I view code. All right. That it was i need. thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

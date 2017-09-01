@@ -1,0 +1,23 @@
+<html><header><title>MobileBindingList.OnSetChilderen() Deserialization/RaiseListChangedEvents</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MobileBindingList.OnSetChilderen() Deserialization/RaiseListChangedEvents</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11422.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Thursday, June 21, 2012</h2><p>Hi Rocky/Jonny,</p>
+<p>I&#39;m using the recommended practice of using SuppressListChangedEvents in my ObjectFactory when loading data from my DB into a BusinessListBase/ReadOnlyListBase.</p>
+<p>I was surprised to notice that when the object is deserialized on the client the same pattern is not followed, an event is raised for every item added to the collection during deserialization (MobileBindingList.OnSetChilderen() when deserializing $list). &nbsp;Is this&nbsp;behavior&nbsp;expected? &nbsp;I think it would also impact n level undo?</p>
+<p>For my case I added a workaround to my&nbsp;BusinessListBase/ReadOnlyListBase&nbsp;base classes:</p>
+<p>&nbsp;</p>
+<p>protected override void OnSetChildren(Csla.Serialization.Mobile.SerializationInfo info, Csla.Serialization.Mobile.MobileFormatter formatter)</p>
+<p>{</p>
+<p>&nbsp; &nbsp; // prevent list change events whilst deserializing</p>
+<p>&nbsp; &nbsp; using (this.SuppressListChangedEvents)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;base.OnSetChildren(info, formatter);</p>
+<p>&nbsp; &nbsp; }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>If the behavior is not expected I can investigate a suitable fix within csla.</p>
+<p>What do you think?</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 21, 2012</h2><p>Peran,</p>
+<p>It is not expected, but it is a known bug. I believe there&#39;s already an issue for this, and if you&#39;d like to dig into it that&#39;d be great!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Monday, June 25, 2012</h2><p>Ok, I&#39;ll have a look into it.</p>
+<p>&nbsp;</p>
+<p>Peran</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,79 @@
+<html><header><title>Using EditableRootList/EditableChild with datagrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using EditableRootList/EditableChild with datagrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11717.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bdeluard posted on Wednesday, November 21, 2012</h2><p>Hello,</p>
+<p>i&#39;m using DevExpress UI components for SL5. With DynamicRootList/DynamicRoot, all works well.</p>
+<p>I have another scenario where I want to defer saving objects in the list to a process called by a button. So I changed my classes to use EditableRootList/EditableChild. When I try to insert a line in the grid, I have an exception saying &quot;List item must be marked as a child object&quot;.</p>
+<p>I found in the source that the child object is not marked at its creation to be a child objet. I tried to write a default constructor in the EditableChild class which call &quot;MarkAsChild ()&quot; =&gt; result is no more exception...</p>
+<p>My questions are:&nbsp;is it normal? Is there a better solution (because this new constructor is called each time an object is necessary, not only in my new scenario)?</p>
+<p>Thanks in advance,</p>
+<p>Bruno</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, November 21, 2012</h2><p>Your EditableChild should override Child_Create method.</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span> override <span style="color:blue;">void</span>&nbsp;Child_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild();<br />       base.Child_Create();
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />One might argue that the base.Child_Create method should call MarkAsChild - however the existing code is: <br /><br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bdeluard replied on Wednesday, November 21, 2012</h2><p>I tried your solution, but it seems not to work : I encapsulate the code in a #if SILVERLIGHT directive, but in the debugger it never stops in it. To compile, I had to change the protected attribute to public attribute.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 21, 2012</h2><p>Normally - if control is performing properly with DataBinding - the &lt;list&gt;.AddNew () method should be called from the grid. </p>
+<p>This will in turn call &lt;list&gt;.AddNewCore() and end up i DataPortal.CreateChild. </p>
+<p>The actual code doing the work is in ChildDataPortal and is like this: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">object</span>&nbsp;Create(System.<span style="color:#2b91af;">Type</span>&nbsp;objectType,&nbsp;<span style="color:blue;">bool</span>&nbsp;hasParameters,&nbsp;<span style="color:blue;">params</span>&nbsp;<span style="color:blue;">object</span>[]&nbsp;parameters)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">LateBoundObject</span>&nbsp;obj&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">IDataPortalTarget</span>&nbsp;target&nbsp;=&nbsp;<span style="color:blue;">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;eventArgs&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DataPortalEventArgs</span>(<span style="color:blue;">null</span>,&nbsp;objectType,&nbsp;parameters,&nbsp;<span style="color:#2b91af;">DataPortalOperations</span>.Create);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;create&nbsp;an&nbsp;instance&nbsp;of&nbsp;the&nbsp;business&nbsp;object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">LateBoundObject</span>(objectType);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target&nbsp;=&nbsp;obj.Instance&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">IDataPortalTarget</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.Child_OnDataPortalInvoke(eventArgs);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.MarkAsChild();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.MarkNew();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CallMethodIfImplemented(<span style="color:#a31515;">&quot;Child_OnDataPortalInvoke&quot;</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eventArgs);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CallMethodIfImplemented(<span style="color:#a31515;">&quot;MarkAsChild&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CallMethodIfImplemented(<span style="color:#a31515;">&quot;MarkNew&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;tell&nbsp;the&nbsp;business&nbsp;object&nbsp;to&nbsp;create&nbsp;its&nbsp;data</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(hasParameters)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CallMethod(<span style="color:#a31515;">&quot;Child_Create&quot;</span>,&nbsp;parameters);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CallMethod(<span style="color:#a31515;">&quot;Child_Create&quot;</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.Child_OnDataPortalInvokeComplete(eventArgs);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.CallMethodIfImplemented(<span style="color:#a31515;">&quot;Child_OnDataPortalInvokeComplete&quot;</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;eventArgs);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;return&nbsp;the&nbsp;populated&nbsp;business&nbsp;object&nbsp;as&nbsp;a&nbsp;result</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;obj.Instance;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />Which should take care of calling both Child_Create, MarkAsChild and MarkNew. <br /><br />So - how do add a new item to the list? <br /><br />Does your code call &lt;list&gt;.AddNew() or is it the datagrid control <br />that does not follow databinding rules? <br /><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bdeluard replied on Wednesday, November 21, 2012</h2><p>Thanks for your time for me!</p>
+<p>It seems that it&#39;s the control which do not call the &lt;list&gt;AddNew() method... If I have well understand things during debugging, it&#39;s the InsertItem(...) method which is called. I modified it to call a new method in the child class which calls only the MarkAsChild() method, and all works fine.</p>
+<p>At the beginning, I had some problems with same things when generating my DynamicList/DynamicRoot and concluded that AddNew() is not called, and InsertItem() was called at the place.</p>
+<p>I will ask information at the DevExpress support team, to know how the list is used.</p>
+<p>Thanks for your help!</p>
+<p>Bruno</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 22, 2012</h2><ul>
+<li>For SL and ObservableCollection they may be correct. </li>
+</ul>
+<p>There is no standard AddNew() method without parameters:</p>
+<p><i>Collection&lt;T&gt;.Add(T)<br />ObservableCollection&lt;T&gt;.InsertItem(int, T)<br />IList.Add(object)</i></p>
+<p>So you may need to find a way to override the default behavior to call list.AddNew() or make changes to your child object so it is always a Child object. </p>
+<p>Another alternative is to: </p>
+<ul>
+<li>override the &lt;list&gt;.InsertItem </li>
+<li>and create an ObjectAccessor that inherits from ObjectFactory and exposes the MarkAsChild method</li>
+<li>and call MarkAsChild on the object to add to list.</li>
+</ul></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bdeluard replied on Thursday, November 22, 2012</h2><p>I have implemented code like your alternative and it seems to work fine.</p>
+<p>Thanks for your help.</p>
+<p>Bruno</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

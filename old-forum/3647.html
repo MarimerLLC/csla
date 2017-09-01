@@ -1,0 +1,391 @@
+<html><header><title>ErrorWarnInfoProvider object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ErrorWarnInfoProvider object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3647.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles posted on Thursday, October 04, 2007</h2><P class=MsoNoSpacing><SPAN>I've always liked the idea of the ErrorProvider; however, all it displays are the errors. <SPAN>&nbsp;</SPAN>I couldn't find anything else so I tried my hand at extending it.<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>If you take a look at the code in my attachment (don't forget to update the references for CSLA before you try to compile!), you can see I've created an ErrorWarnInfoProvider object that that displays all three levels of severity for the BrokenRulesCollection. <SPAN>&nbsp;</SPAN>I like it a lot, but I can't figure out how to get it to "hook" itself to the appropriate events automatically - so I took a short cut. <SPAN>&nbsp;</SPAN>Unfortunately that means you need to add the following line (or something like it) within the associated form's constructor:<SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNoSpacing><SPAN><FONT color=#0000ff>this</FONT></SPAN><SPAN>.errorWarnInfoProvider1.Initialize(<SPAN><FONT color=#0000ff>this</FONT></SPAN>.Controls);<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>Obviously there are many areas open for improvement (like being able to set each icon as well as setting it's respective offset from the base ErrorProvider icon, etc); however, I was hoping someone might be able to lead me in the right direction for both trying to tie this into the control events automatically (without needing the Initialize method).<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>Any suggestions / recommendations?<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>Thanks,<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><SPAN>Ken</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 04, 2007</h2>Hmm... well the standard one does this:<br>System.Windows.Forms.ErrorProvider( this.components )<br><br>perhaps that helps?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 04, 2007</h2><P class=MsoNoSpacing><FONT face=Calibri>I realize that the constructor is passed a container object:</FONT></P>
+<P class=MsoNoSpacing><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN><FONT color=#0000ff>public</FONT></SPAN> ErrorWarnInfoProvider(<SPAN><FONT color=#006400>IContainer</FONT></SPAN> container)<o:p></o:p></SPAN></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I’m not exactly sure what that container object is.<SPAN>&nbsp; </SPAN>I do know it is not the form itself – and I can’t figure out how to “back out” from the component’s within the container (of which my&nbsp;object is one) to get back to the form.<SPAN>&nbsp; </SPAN>The container object contains components, but it does not contain controls.</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>I need to be able to get to the </FONT><SPAN><FONT color=#006400>Control</FONT></SPAN><SPAN><FONT color=#006400>.</FONT><SPAN><FONT color=#006400>ControlCollection</FONT> </SPAN></SPAN><FONT face=Calibri>of the form in order to set the events correctly.</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>More ideas?</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Ken</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 04, 2007</h2>Did you create an extender control?&nbsp; Because each control that interacts with errorprovider has something like this in the .designer file..<br><br>ErrorProvider.Somemethod( Control, true ); // Or false, if the provider should ignore it.<br><br>I can't remember what Somemethod is. and its time to go home :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 04, 2007</h2><P class=MsoNormal><FONT face=Calibri>Hmmm.<SPAN>&nbsp; </SPAN>Maybe that is where I took a wrong turn.<SPAN>&nbsp; </SPAN>I ended up creating a Component Class – because that is what I thought the ErrorProvider object was.<SPAN>&nbsp; </SPAN>I don’t see extended control as an option (obviously I’m new at creating these); however, there is Inherited User Control.<SPAN>&nbsp; </SPAN>I didn’t think the ErrorProvider was a control though since technically it doesn’t show up on the form (but rather down in the bottom area).</FONT></P>
+<P class=MsoNormal><FONT face=Calibri></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>There is very little in my .designer file.&nbsp; My Component Class just inherits System.Windows.Forms.ErrorProvider, IExtenderProvider</FONT></P>
+<P class=MsoNormal><FONT face=Calibri></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>Do I need to start from scratch?&nbsp; Maybe it will look better in the morning...</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 04, 2007</h2>It does need to be an extender control. Look at Chapter 5, at the ReadWriteAuthorizer and BindingSourceRefresh controls in CSLA itself for some information on creating extender controls.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Friday, October 05, 2007</h2><P class=MsoNoSpacing><FONT face=Calibri>I finally figured out and solved my problem!&nbsp; Thanks ajj3085 and Rocky for your help.<SPAN>&nbsp; (It turns out that&nbsp;</SPAN>when I originally started this endeavor I started with a printout of Rocky’s ReadWriteAuthorization.cs; however, I still couldn't quite figure things out at that time.)<SPAN>&nbsp;&nbsp;</SPAN></FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Initially, I was trying to bind my internal Validation_Event to the either the bound control’s KeyUp event (when it’s binding.DataSourceUpdateMode == DataSourceUpdateMode.OnPropertyChanged) or the control’s Validated event (when it’s binding.DataSourceUpdateMode == DataSourceUpdateMode.OnValidation) from within the constructor of my control.<SPAN>&nbsp; </SPAN>The problem here is that the object’s ContainerControl is null at this point – so there is no way to get any information from the Form that the control has been placed on.<SPAN>&nbsp; </SPAN>I needed something else to be able to get the information later in the object’s lifecycle. </FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>The only thing I knew that needed to be set was the DataSource property; however, since I was inheriting from the ErrorProvider that property already existed.<SPAN>&nbsp; </SPAN>The solution was to force my object to get the DataSource property – and then pass that value to the base object.<SPAN>&nbsp; </SPAN>The “trick” here was to add the keyword “new” to the property in order to hide the base object’s property.<SPAN>&nbsp; </SPAN>Just when I thought I had it figured out, I ran into another problem.<SPAN>&nbsp; </SPAN>At the time the DataSource property value is set, the object’s ContainerControl is populated; however, its Controls collection is still empty.<SPAN>&nbsp; </SPAN>OK, somehow I need to delay even further.<SPAN>&nbsp; </SPAN>The way I was able to do this was to create an EventHandler and tie it to the object’s ContainerControl.BindingContextChanged event.<SPAN>&nbsp; </SPAN>It just happens that by the time the BindingContextChanged event is fired – the ContainerControl.Controls collection is populated.<SPAN>&nbsp; </SPAN>At this point, I am home free and I just need to bind to each control’s KeyUp or Validated event like I did before.</FONT></P>
+<P class=MsoNoSpacing><o:p><FONT face=Calibri>The attached control</FONT></o:p><FONT face=Calibri> should be “safe” for all BindingSources; however, the warning and information features will only function if the bound object is a Csla.Core.BusinessBase object – because those are the only ones I know how to extract.<SPAN>&nbsp; </SPAN>I’ve included the updated files as an attachment.<SPAN>&nbsp; </SPAN>Again, don’t forget to set your reference to your Csla.DLL.<SPAN>&nbsp; </SPAN>I hope someone finds this useful!</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Enjoy,</FONT></P>
+<P class=MsoNoSpacing><FONT face=Calibri>Ken</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Monday, October 29, 2007</h2><P class=MsoPlainText><FONT face=Consolas>I've attached the latest version.<SPAN>&nbsp; I had a request so I thought I'd update it.&nbsp; </SPAN>There are two things I improved.<SPAN>&nbsp; </SPAN>Initially it did not take into account controls within controls (like textboxes, etc within tabs).<SPAN>&nbsp; </SPAN>Additionally, when I cancelled an edit on an object it was not clearing the warnings and information items.<SPAN>&nbsp; </SPAN>I fixed that.</FONT></P>
+<P class=MsoPlainText><o:p><FONT face=Consolas>&nbsp;</FONT></o:p></P>
+<P class=MsoPlainText><FONT face=Consolas>Enjoy,</FONT></P>
+<P class=MsoPlainText><FONT face=Consolas>Ken<o:p></o:p></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 29, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are you willing to put this into CSLAcontrib? That may make it
+more discoverable for people who want to use it?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KKoteles
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 29, 2007 4:19 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ErrorWarnInfoProvider object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoPlainText><span>I've attached the
+latest version.&nbsp; I had a request so I thought I'd update it.&nbsp; There are
+two things I improved.&nbsp; Initially it did not take into account controls
+within controls (like textboxes, etc within tabs).&nbsp; Additionally, when I
+cancelled an edit on an object it was not clearing the warnings and information
+items.&nbsp; I fixed that.</span><o:p></o:p></p>
+
+<p class=MsoPlainText><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoPlainText><span>Enjoy,</span><o:p></o:p></p>
+
+<p class=MsoPlainText><span>Ken</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Monday, October 29, 2007</h2>
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Rocky,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>That would be great.&nbsp; I haven’t spent too much time on the CSLAcontrib portion of the web site.&nbsp; If that is the best place, then great.&nbsp; If you would even want to add it along with ReadWriteAuthorization, that would be great too!<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is there anything I need to do in order to put it into CSLAcontrib?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks,<o:p></o:p></SPAN></P>
+<DIV>
+<P class=MsoNormal><B><I><SPAN>Ken Koteles (K</SPAN></I></B><B><I><SUP><SPAN>2</SPAN></SUP></I></B><B><I><SPAN>)</SPAN></I></B><SPAN> </SPAN></P></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ideally you&#8217;d put it into CSLAcontrib yourself, especially
+if you have any plans to alter it or update it going forward.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you don&#8217;t want to do that, I can add it to the
+repository for you, but that won&#8217;t allow you to do any updates over time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to use the repository directly, just create an
+account on <a href="http://www.codeplex.com">www.codeplex.com</a> and email me
+your user id. I&#8217;ll make you a contributor on the site so you have
+read/write access to the repository.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The site uses TFS behind the scenes, so to get code in/out you
+need to have a TFS client installed. Microsoft has a free one you can download,
+that integrates with VS 2005 (and soon 2008). I believe there&#8217;s also a
+client on codeplex that integrates with the Windows shell much like TortoiseSVN
+&#8211; but I haven&#8217;t had time to go find that yet.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kenneth Koteles
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 29, 2007 7:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] ErrorWarnInfoProvider object<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Rocky,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That would be great.&nbsp; I haven&#8217;t spent too much time
+on the CSLAcontrib portion of the web site.&nbsp; If that is the best place,
+then great.&nbsp; If you would even want to add it along with
+ReadWriteAuthorization, that would be great too!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is there anything I need to do in order to put it into
+CSLAcontrib?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks,<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><i><span>Ken
+Koteles (K</span></i></b><b><i><sup><span>2</span></sup></i></b><b><i><span>)</span></i></b><span> <br>
+</span><span>(904) 220-0118</span><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 29, 2007 7:43 PM<br>
+<b>To:</b> KKoteles@comcast.net<br>
+<b>Subject:</b> RE: [CSLA .NET] ErrorWarnInfoProvider object<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Are you willing to put this into CSLAcontrib? That may make it
+more discoverable for people who want to use it?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> KKoteles [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> Monday, October 29, 2007 4:19 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ErrorWarnInfoProvider object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoPlainText><span>I've attached the
+latest version.&nbsp; I had a request so I thought I'd update it.&nbsp; There
+are two things I improved.&nbsp; Initially it did not take into account
+controls within controls (like textboxes, etc within tabs).&nbsp; Additionally,
+when I cancelled an edit on an object it was not clearing the warnings and
+information items.&nbsp; I fixed that.</span><o:p></o:p></p>
+
+<p class=MsoPlainText><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoPlainText><span>Enjoy,</span><o:p></o:p></p>
+
+<p class=MsoPlainText><span>Ken</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tbot155 replied on Thursday, November 15, 2007</h2><P>Thanks for posting this control. I've been looking for something like this.</P>
+<P>I do have one question though. When changing one property causes another property to be valid, the 'information' and 'warning' icons on the newly valid property are not cleared. When I run the same test with the severity set to 'error' it works fine, but when it's set to 'information' or 'warning' I need to physically cause validation (by tabbing out of a textbox, etc) to cause the icon to dissappear. </P>
+<P>Am&nbsp;I doing something wrong? </P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Friday, November 16, 2007</h2><P>Tbot155,</P>
+<P>No - you are not doing anything wrong.</P>
+<P>The reason the 'error' icon is working correctly is because underneath my control is an actual ErrorProvider - and it is working like it always had.&nbsp; The 'problem' is that for the other two icons I am hooking to change events off the bound control.&nbsp; In your case, with dependant properties - control2 is changing and the validation / business rule violations are cleared for control1 as a result.&nbsp; My problem is that control1 didn't change; therefore, I don't have anyway (right now anyway) to notify my control that control1 needs to have its icons updated.</P>
+<P>Looks like I have more work to do...&nbsp; I've been a little tied up. Hopefully I will get this control into CSLAContrib shortly.&nbsp; After that, I'll try to spend some time to see if I can't figure out a way to keep my control 'aware' of the changes to the business object itself and not just the controls bound to it...&nbsp; </P>
+<P>Thinking out loud...&nbsp; Seems like I'll need to keep an internal array of all the bound controls - and when any one of them changes, then check / reverify all the others as well.&nbsp; Have to make sure this isn't a hit on performance too.&nbsp; Maybe there is a way to store a count of broken rules for each bound control - then only address the 'non-triggering' controls if their broken rule count changes.&nbsp; Hmmm - need to make sure I address newly broken rules and not just cleared rules.</P>
+<P>I've got some ideas.&nbsp; I'll see what I can come up with.&nbsp; Thank you for the feedback!!!</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tbot155 replied on Friday, November 16, 2007</h2><P>Thanks Ken.&nbsp;Great work so far. Looking forward to seeing what you come up with.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Monday, November 26, 2007</h2><P>All,</P>
+<P>Latest code (including the change Tbot155 requested) is now on CSLAContrib.</P>
+<P>Enjoy,</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Sunday, May 04, 2008</h2><P>Hallo all, I've download the latest files of this control from CSLAContrib, but I can't make it works to show the warning nor Information icons, but it works ok to shows the Error Icon</P>
+<P>am I missing something? </P>
+<P>Thank you</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 05, 2007</h2>That's fine; you just need to implement IExtenderProvider.&nbsp; Rocky's code should prove as a good example, he has the ReadWriteAuthorization component.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 07, 2008</h2>Hi all,<br><br>I have done a bit of change to the ErrorWarnInfoProvider. <br>1. Only hooks to the DataBindingSource - not to change event on UI controls<br>2. A new property for "ShowMostSevereOnly" to only display most severe icon and message<br>3. Works properly on initalization of bindingsource.<br>4. Processes all UI controls bound to BindingSource when properties or current is changed.<br>5. Set default blink rate to 0 (I find blinking is annoying to users)<br>6. Optimized performance on processing properties.<br><br>Hope this works fine for your projects too. <br><br>/jonny <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Wednesday, May 07, 2008</h2><P>Hallo Jonny</P>
+<P>Thank you for your reply, really appriciate this</P>
+<P>anyway I've download your files and put it to the latest project I've download from contrib site, but it's still not working for Warning or Information validation, can you please send me the complete project file.</P>
+<P>btw, I am using this on VB.Net project which is using CSLA 2.1.4 version</P>
+<P>Thank you</P>
+<P>Fahmi</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry_Seldon replied on Wednesday, May 07, 2008</h2>Hi Fahmi,<br><br>I've got the same problem. I'm using CSLA 3.0.3. Errors show up but Warnings and Info do not.<br><br>Not really clear to me how I'm supposed to use this nearly really really useful control. I included the code in the Csla project in the Windows folder/namespace, then I referenced Csla as usual. Added the control to my VS Toolbox, dragged it onto my form creating errorWarnInfoProvider1.<br><br>If I do nothing more, errors will display as usual. Warning and Information severity broken rules do not.<br><br>I tried setting the errorWarnInfoProvider1.Datasource to the same as my dataGridView1 control, had no effect.<br><br>Anybody wana sell us a vowel?<br><br>-Harry<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 07, 2008</h2><P>Hi All, </P>
+<P>I have added a sample Form1 and a TestBusinessObject to the project and tested with Csla 2.1.4 (and we are using 3.0.4 at our regular projects). Hope this helps to show the usage of the ErrorWarnInfoProvider. </P>
+<P>/jonnybee</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 07, 2008</h2><P>Please note - this provider does not work with DataGridView (nor does the standard ErrorProvider). The DataGridView has its own internal implementation of the ErrorProvider (and how error icons are shown - properties like ShowCellErrors and ShowRowErrors). </P>
+<P>The ErrorWarnInfoProvider works with most other standard windows controls - as the ordinary ErrorProvider does (and it is actually ErrorProviders doing the work).</P>
+<P>/jonnybee</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry_Seldon replied on Wednesday, May 07, 2008</h2>&lt;quote&gt;<br>Please note - this provider does not work with DataGridView <br>&lt;/quote&gt;<br><br>whoops = that would be the one little thing I was missing.!!!<br><br>Appreciate your help johnnybee!<br>Wow, I'm going to have to put my thinking hat on now :-(&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Wednesday, May 07, 2008</h2><P>Hallo Jonny</P>
+<P>&nbsp;</P>
+<P>thank you foy your assistance, I've download your sample and it works great</P>
+<P>I'll now try to implement on my project.</P>
+<P>&nbsp;</P>
+<P>Really appriciate this mate</P>
+<P>Harry:</P>
+<P>CSLAerror Treeview looks good enought to provide Grid (Collection) validation with severity</P>
+<P>however it would be great if we can have the validation provider attach to the grid</P>
+<P>&nbsp;</P>
+<P>cheers</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Thursday, May 08, 2008</h2><P>Hallo Jonny</P>
+<P>&nbsp;</P>
+<P>I'ts working good </P>
+<P>&nbsp;</P>
+<P>Thank you so much</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Annesh replied on Friday, May 23, 2008</h2><P><FONT face="Courier New">Hi all</FONT></P>
+<P><FONT face="Courier New">I am using VS2008 Teams edition, the sample runs fine, but when i open the form1 in the designer i recieve the following error: "Type 'ErrorWarnInfo.ErrorWarnInfoProvider' does not have a constructor with parameters of types DesignerHost.". If i create a new windows form and try to drag this control within it, i also recieve this error and it does not allow me to add this control to a new form. Please advise.</FONT> </P>
+<P>Thanks in advance</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>akhirudin replied on Sunday, May 25, 2008</h2><P><FONT face=Verdana size=1>Hi</FONT></P>
+<P><FONT face=Verdana size=1>I haven't got chance to to try this on VS2008</FONT></P>
+<P><FONT face=Verdana size=1>but you may please try directly add compiled library in my attachment into your CSLA UI project</FONT></P>
+<P><FONT face=Verdana size=1>or if you want to add the project directly into your solution I think you need to convert the project first.</FONT></P>
+<P><FONT face=Verdana size=1>FYI the attachments referenced into CSLA.Net Version 2.1.4</FONT></P>
+<P><FONT face=Verdana size=1>i'm not sure it will work if you are using the newer version CMIIW</FONT></P>
+<P><FONT face=Verdana size=1></FONT>&nbsp;</P>
+<P><FONT face=Verdana size=1>Regards</FONT></P>
+<P><FONT face=Verdana size=1>Fahmi</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Monday, July 28, 2008</h2>I am still having this same issue with VS2008.<br><br>Did someone find a solution to this designer problem?<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, November 24, 2008</h2><P>Hi JonnyBee,</P>
+<P>I download and tested both files bellow<BR>ErrorWarnInfoProvider2.zip (2008&nbsp; May 07, 09:06)<BR>ErrorWarnInfoProvider2_withsample.zip (2008&nbsp; May 07, 20:06)</P>
+<P>The later has an extra line on ErrorWarnInfoProvider.cs:<BR>public bool ShowOnlyMostSevere, line 460<BR>ProcessAllControls();</P>
+<P>I guess this is the correct one. Can you confirm?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Wednesday, July 30, 2008</h2>***EDIT***<br>Nevermind... must have had old version.&nbsp; Issue with icon resolved by downloading new version.<br><br>Thanks for the awesome tool!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, June 02, 2011</h2><p>Hi Ken and others</p>
+<p>Thanks for all the hard work so far. I know I&#39;m pretty late to the party, but I&#39;ve attached a new version which uses reflection to subscribe to the standard ErrorProvider&#39;s ErrorManager_BindingsChanged, ErrorManager_ItemChanged and ErrorManager_CurrentChanged events. This means that we don&#39;t have to rely on the controls&#39; KeyUp or Validated events to trigger our updates (which was problematic), and there&#39;s also no need for a costly ProcessDependentProperties loop. As soon as you bind your CSLA object to the binding source, if there are errors, warnings or information to display, they show up.</p>
+<p>As a personal preference, I&#39;ve converted it to a non-partial class with no designer file, and moved the icons into a resource file, so they can be reused more easily. Ken&#39;s information and warning icons are included in the zip which will need to be added to a resource file to get the class to build.</p>
+<p>Kind regards</p>
+<p>Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alan Hinton replied on Friday, June 17, 2011</h2><p>Michael</p>
+<p>Thanks, your code does just what I was looking for.</p>
+<p>I have added your code to my project and it works fine for warnings, but the info items don&#39;t show up. &nbsp;I have the&nbsp;ShowInformation bool set to true, but it doesn&#39;t seem that these bools do anything anyway.</p>
+<p>Alan</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 19, 2011</h2><p>Hi Alan, </p>
+<p>There is also a version on <a href="http://cslacontrib.codeplex.com">http://cslacontrib.codeplex.com</a> that you could look at. </p>
+<p>I&#39;ve updated the code and used this in several projects and works fine with all error levels. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Sunday, June 19, 2011</h2><p>Hi Alan</p>
+<p>Sorry for the late reply.</p>
+<p>I&#39;ve just tested it again, and it&#39;s working fine for me. I get error, warning and information icons showing (concurrently when appropriate). I&#39;m using the default settings for the ErrorWarningInformationProvider component and CSLA 3.8.3.Try updating the following sample validation methods and add them to one of your business objects:</p>
+<pre style="font-family:Bitstream Vera Sans Mono;font-size:12px;color:silver;background:none repeat scroll 0% 0% black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<span style="color:#0080c0;">Project</span>&gt;(TestError&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style="color:#0080c0;">Project</span>&gt;,&nbsp;NumberProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<span style="color:#0080c0;">Project</span>&gt;(TestWarning&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style="color:#0080c0;">Project</span>&gt;,&nbsp;NumberProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;<span style="color:#0080c0;">Project</span>&gt;(TestInformation&lt;<span style="color:#0080c0;">Project</span>&gt;,&nbsp;NumberProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">private</span>&nbsp;<span style="color:#4080ff;">static</span>&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;TestError&lt;T&gt;(T&nbsp;target,&nbsp;<span style="color:#0080c0;">RuleArgs</span>&nbsp;e)&nbsp;<span style="color:#4080ff;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#0080c0;">Project</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description&nbsp;=&nbsp;<span style="color:red;">&quot;An&nbsp;error.&quot;</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">return</span>&nbsp;<span style="color:#4080ff;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">private</span>&nbsp;<span style="color:#4080ff;">static</span>&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;TestWarning&lt;T&gt;(T&nbsp;target,&nbsp;<span style="color:#0080c0;">RuleArgs</span>&nbsp;e)&nbsp;<span style="color:#4080ff;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#0080c0;">Project</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description&nbsp;=&nbsp;<span style="color:red;">&quot;A&nbsp;warning.&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Severity&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span style="color:#2b91af;">RuleSeverity</span>.Warning;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">return</span>&nbsp;<span style="color:#4080ff;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">private</span>&nbsp;<span style="color:#4080ff;">static</span>&nbsp;<span style="color:#4080ff;">bool</span>&nbsp;TestInformation&lt;T&gt;(T&nbsp;target,&nbsp;<span style="color:#0080c0;">RuleArgs</span>&nbsp;e)&nbsp;<span style="color:#4080ff;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#0080c0;">Project</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description&nbsp;=&nbsp;<span style="color:red;">&quot;Some&nbsp;information.&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Severity&nbsp;&nbsp;&nbsp;&nbsp;=&nbsp;<span style="color:#2b91af;">RuleSeverity</span>.Information;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#4080ff;">return</span>&nbsp;<span style="color:#4080ff;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>For the reasons mentioned earlier, this new version of the error provider is much better, so it&#39;s well worth getting it to work.</p>
+<p>Kind regards</p>
+<p>Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alan Hinton replied on Monday, June 20, 2011</h2><p>Michael</p>
+<p>Thanks for looking into this. &nbsp;After much head scratching I found the problem: I have multiple bindings for each control, for things like &#39;enabled&#39; as well as &#39;value&#39;. &nbsp;The code in your zip applied only the warning or info items from the &#39;last&#39; binding for any given control. &nbsp;The &#39;last&#39; binding is&nbsp;effectively&nbsp;random, which is why I was seeing some icons and not others, it just&nbsp;happened&nbsp;that I wasn&#39;t seeing info items.</p>
+<p>I have updated the code, attached,&nbsp;to deal with multiple bindings on each control and join together all the warning and info items for all the bindings. &nbsp;During working with the code I ended up converting chunks of it to our house coding style and made a few other minor changes, hope this doesn&#39;t grate too much. &nbsp;I also modified it to have the icons shuffle up so that warnings are only offset if there are no errors and so on.</p>
+<p>Cheers</p>
+<p>Alan</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, June 20, 2011</h2><p>Ah, multiple bindings, I hadn&#39;t tested that. Excellent, thanks for the update, I&#39;ll check it out.</p>
+<p>Kind regards</p>
+<p>Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Monday, June 20, 2011</h2><p>Hi Alan</p>
+<p>That would have given me a nasty surprise when my information and/or warnings weren&#39;t showing up. Because we haven&#39;t had a way to display warnings and information effectively until recently, we haven&#39;t really made use of them yet. (Fixing the error / warning / information provider is something that&#39;s been on my to-do list for about two years now.)</p>
+<p>I had only done a simple test harness on a text box with only the Text bound, which of course worked with the code as it was. Naturally, we have heaps of controls with multiple bindings, so this definitely would have been a pain.</p>
+<p>Thanks for fixing this; it works great. Your icon offset is a much better implementation, too.</p>
+<p>Kind regards</p>
+<p>Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, August 02, 2011</h2><p>Hi all,</p>
+<p>I believe you may have a very eager updating in your ErrorWarningInformationProvider. </p>
+<p>I added the control to the BussinessRuleDemo sample (just a simple editing form) and </p>
+<p><b>on startup (update all fields called 20 times):</b></p>
+<p>ErrorWarninInformationProvider: ErrorManager_ItemChanged<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890831453995<br />ErrorWarninInformationProvider: ErrorManager_ItemChanged<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890831493997<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832144035<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832164036<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832174036<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832174036<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832184037<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832194037<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832194037<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832254041<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832264041<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832264041<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832274042<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832274042<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832284043<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832284043<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832294043<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478890832294043</p>
+<p><b>Per each editing of a field (called 2 times):</b></p>
+<p>ErrorWarninInformationProvider: ErrorManager_ItemChanged<br />ErrorWarninInformationProvider: ErrorManager_CurrentChanged: 634478891076398005</p>
+<p><b>I do believe you should consider to attach to the CurrentItemChanged event on the BindingSource. </b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, August 02, 2011</h2><p>It&#39;s subscribing to the base ErrorProvider&#39;s ItemChanged and Bindings.CollectionChanged events. As far as I know, this is what&#39;s required to make the errors, warnings and information respond immediately OnPropertyChanged. Because it&#39;s subscribing to the base error provider events, it cannot be very much less efficient than the standard one.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, August 03, 2011</h2><p>Same sample with my ErrorWarnInfoProvider from CslaContrib will:</p>
+<p><b>on startup (called 3 times)</b></p>
+<p>ErrorWarnInfo: CurrentItemChanged, 634479584377318706<br />ErrorWarnInfo: CurrentItemChanged, 634479584377358708<br />ErrorWarnInfo: CurrentItemChanged, 634479584377398710</p>
+<p><b>on a property changed (1 time):</b></p>
+<p>ErrorWarnInfo: CurrentItemChanged, 634479584450912915</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingsource.currentitemchanged.aspx">http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingsource.currentitemchanged.aspx </a></p>
+<p>&quot;The <span><span class="selflink">CurrentItemChanged</span></span> event is raised in response to all of the circumstances that raise the <span><a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingsource.currentchanged.aspx">CurrentChanged</a></span> event. Additionally, <span><span class="selflink">CurrentItemChanged</span></span> is also fired whenever the value of one of the properties of <span><a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingsource.current.aspx">Current</a></span> is changed.&quot;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, August 03, 2011</h2><p>I think my issue is with:</p>
+<pre style="font-family:Consolas;font-size:13px;color:white;background:none repeat scroll 0% 0% #39322d;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#e8e8e8;">currencyManager</span>.<span style="color:#e8e8e8;">Bindings</span>.<span style="color:#e8e8e8;">CollectionChanged</span>&nbsp;+=&nbsp;<span style="color:#e8e8e8;">ErrorManager_BindingsChanged</span>;
+</pre>
+<p>causing the update to be called as<b> each databinding</b> is added to the CurrencyManager.Bindings collection. </p>
+<p>The number of fields (controls) that is databound to the BindingSource&nbsp; - is the same amount of times the update will be called on startup + when other events is called!!</p>
+<p>You should probably hook into </p>
+<ul>
+<li>CurrencyManager.CurrentItemChanged</li>
+</ul>
+<p>events - which is essentially the same as BindingSource.CurrentItemChanged event. </p>
+<p>CurrencyManager.CurrentItemChanged</p>
+<p><a href="http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingmanagerbase.currentitemchanged.aspx">http://msdn.microsoft.com/en-us/library/system.windows.forms.bindingmanagerbase.currentitemchanged.aspx:</a></p>
+<p><i>&quot;The <span><span class="selflink">CurrentItemChanged</span></span> event 
+occurs whenever there is a change in the state in the currently bound 
+item. This can occur if one of the properties of this item is changed or
+ if the item itself is replaced or moved.&quot;</i></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

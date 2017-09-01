@@ -1,0 +1,10 @@
+<html><header><title>Help with CurrentPrincipal error.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with CurrentPrincipal error.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2373.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>herbmanII posted on Sunday, February 18, 2007</h2><P>I have been debugging this problem for four hours with no luck.</P>
+<P>I have an ASP.NET 2.0 application using CSLA 1.x</P>
+<P>I get this exception when calling <FONT color=#008080 size=2>DataPortal</FONT><FONT size=2>.Fetch&nbsp;(...)&nbsp;&nbsp; <FONT size=3>from one of my business objects.</FONT></P></FONT><FONT color=#008080 size=2></FONT>
+<P>"Principal must be of type BusinessPrincipal, not System.Security.Principal.GenericPrincipal."</P>
+<P>Basically I have a login.aspx where I call the BusinessPrincipal.Login method.</P>
+<P>At this point the Thread.CurrentPrincipal is of type BusinessPrincipal.&nbsp; It's only when I redirect the page and then call one of my business object static get methods that I get this error.</P>
+<P>Why is the Thread.CurrentPrincipal not set correctly inside my business object?</P>
+<P>Any ideas would be appreciated.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

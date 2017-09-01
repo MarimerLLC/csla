@@ -1,0 +1,8 @@
+<html><header><title>CSLA 4.x + VS2010 + .NET 3.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.x + VS2010 + .NET 3.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9104.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Friday, June 18, 2010</h2><p>Hi,</p>
+<p>is it possible to compile Csla 4.x with .NET 3.5 and VS2010? We would love to fully switch&nbsp;to Csla 4.x with our projects but our customers&nbsp;don&#39;t want to&nbsp;install .NET 4 before&nbsp;next year. I&nbsp;worked on it about 2 hours but&nbsp;I am not sure about the changes. I couldn&#39;t find any forum entries&nbsp;if there is a &quot;no go&quot; for .NET 3.5 and Csla 4. There are definitly some restrictions (DataAnnotations namespace, VisuaStateManager etc.) which can be solved,&nbsp;but I am not sure if&nbsp;if&nbsp;will break everything else?&nbsp;</p>
+<p>Andreas </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Friday, June 18, 2010</h2><p>
+<p>Hello,</p>
+<p>CSLA 4.0 was created around .NET 4.0, I would recommend changing the target framework to 3.5 and then fixing all the build errors and code that was written against 4.0. The way to test to make sure you did everything correctly would be to run the unit tests. But even then I think you are going to run into some issues as there are core differences between .NET 3.5 and .NET 4.0 that are not very well documented.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

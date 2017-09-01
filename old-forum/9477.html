@@ -1,0 +1,227 @@
+<html><header><title>CSLA - IPrincipal - Permissions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA - IPrincipal - Permissions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9477.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Wednesday, September 08, 2010</h2><p>Hi gents,</p>
+<p>It&#39;s seem an eon since I last visited this forum - which I guess is a testament to the CSLA framework I&#39;ve been using for so many years. </p>
+<p>I&#39;m looking for some pointers/advice or a shove in the right direction here.</p>
+<p>I have been and am still using csla v2.1 in my win application and I now have the requirement to incorporate some permissions that are proprietary to the backend database we use.</p>
+<p>Essentially, the permissions have two&nbsp;relevant columns (beyond USERID) - a&nbsp;[MODULENAME] and an [ACTION], </p>
+<p>e.g. &quot;CUSTOMER&quot; might be the&nbsp;[MODULENAME] and [ACTION] may be &quot;VIEW&quot;, &quot;EDIT&quot;, &quot;EXEC&quot;, etc. A row will exist for each permission given.</p>
+<p>Now, I&#39;ve been using the CSLA authentication from day one, and looking at the model I thought this was a fairly simple inclusion - and that I could simply add a new child/necessary functions to my PTPrincipal, PTIdentity, BusinessPrincipalBase and so on. </p>
+<p>The code changes I have implemented compile, but I&#39;m missing something....</p>
+<p>Here&#39;s what I have changed....</p>
+<p>added to csla - BusinessPrincipalBase.vb</p>
+<p><span style="color:#008000;">&#39;&#39;&#39; </span><span style="color:#808080;">&lt;summary&gt;</span></p>
+<p><span style="color:#008000;">&#39;&#39;&#39; Returns a value indicating whether the</span></p>
+<p><span style="color:#008000;">&#39;&#39;&#39; user has permission for a given module / action.</span></p>
+<p><span style="color:#008000;">&#39;&#39;&#39; </span><span style="color:#808080;">&lt;/summary&gt;</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Overridable</span> <span style="color:#0000ff;">Function</span> HasPermission(<span style="color:#0000ff;">ByVal</span> modulename <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>, <span style="color:#0000ff;">ByVal</span> action <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>) <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></p>
+<p><span style="color:#0000ff;">Return</span> <span style="color:#0000ff;">False</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></p>
+<p>My PtIdentity now looks like this in my projectlibrary;</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="color:#0000ff;"><span style="color:#0000ff;">
+<p>Imports</p>
+</span></span>
+<p>&nbsp;</p>
+System.Security.Principal<span style="color:#0000ff;"><span style="color:#0000ff;">
+<p>Namespace</p>
+</span></span>
+<p>&nbsp;</p>
+Security</p>
+</p>
+<p>&lt;Serializable()&gt; _</p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Class</span> PTIdentity</p>
+<p><span style="color:#0000ff;">Inherits</span> ReadOnlyBase(<span style="color:#0000ff;">Of</span> PTIdentity)</p>
+<p><span style="color:#0000ff;">Implements</span> IIdentity</p>
+<p>#<span style="color:#0000ff;">Region</span> <span style="color:#a31515;">&quot; Business Methods &quot;</span></p>
+<p><span style="color:#0000ff;">Protected</span> <span style="color:#0000ff;">Overrides</span> <span style="color:#0000ff;">Function</span> GetIdValue() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Object</span></p>
+<p><span style="color:#0000ff;">Return</span> mName</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></p>
+<p>#<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Region</span></p>
+<p>#<span style="color:#0000ff;">Region</span> <span style="color:#a31515;">&quot; IsInRole &quot;</span></p>
+<p><span style="color:#0000ff;">Private</span> mRoles <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">New</span> List(<span style="color:#0000ff;">Of</span> <span style="color:#0000ff;">String</span>)</p>
+<p><span style="color:#0000ff;">Friend</span> <span style="color:#0000ff;">Function</span> IsInRole(<span style="color:#0000ff;">ByVal</span> role <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>) <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></p>
+<p><span style="color:#0000ff;">Return</span> mRoles.Contains(role)</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></p>
+<p>#<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Region</span></p>
+<p><strong>#<span style="color:#0000ff;">Region</span> <span style="color:#a31515;">&quot; Permissions &quot;</span></strong>
+<p><strong><span style="color:#0000ff;">Private</span> <span style="color:#0000ff;">Class</span> mPerm</strong></p>
+<p><strong><span style="color:#0000ff;">Private</span> mMODULENAME <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></strong>
+<p><strong><span style="color:#0000ff;">Private</span> mACTION <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></strong>
+<p><strong><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> MODULENAME() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></strong>
+<p><span style="color:#0000ff;"><strong>Get</strong></span></p>
+<p><strong><span style="color:#0000ff;">Return</span> mMODULENAME</strong></p>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></strong>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></strong>
+<p><strong><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> ACTION() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></strong>
+<p><span style="color:#0000ff;"><strong>Get</strong></span></p>
+<p><strong><span style="color:#0000ff;">Return</span> mACTION</strong></p>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></strong>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></strong>
+<p><strong><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Sub</span> <span style="color:#0000ff;">New</span>(<span style="color:#0000ff;">ByVal</span> modulename <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>, <span style="color:#0000ff;">ByVal</span> action <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>)</strong></p>
+<p><strong>mMODULENAME = modulename</strong></p>
+<p><strong>mACTION = action</strong></p>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Sub</span></strong>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Class</span></strong>
+<p><strong><span style="color:#0000ff;">Private</span> mPerms <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">New</span> List(<span style="color:#0000ff;">Of</span> mPerm)</strong></p>
+<p><strong><span style="color:#0000ff;">Friend</span> <span style="color:#0000ff;">Function</span> HasPermission(<span style="color:#0000ff;">ByVal</span> modulename <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>, <span style="color:#0000ff;">ByVal</span> action <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>) <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></strong>
+<p><strong><span style="color:#0000ff;">For</span> <span style="color:#0000ff;">Each</span> PERM <span style="color:#0000ff;">As</span> mPerm <span style="color:#0000ff;">In</span> mPerms</strong></p>
+<p><strong><span style="color:#0000ff;">If</span> PERM.MODULENAME = modulename <span style="color:#0000ff;">And</span> PERM.ACTION = action <span style="color:#0000ff;">Then</span></strong>
+<p><strong><span style="color:#0000ff;">Return</span> <span style="color:#0000ff;">True</span></strong>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">If</span></strong>
+<p><span style="color:#0000ff;"><strong>Next</strong></span></p>
+<p><strong><span style="color:#0000ff;">Return</span> <span style="color:#0000ff;">False</span></strong>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></strong>
+<p><strong>#<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Region</span></strong>
+<p>#<span style="color:#0000ff;">Region</span> <span style="color:#a31515;">&quot; IIdentity &quot;</span></p>
+<p><span style="color:#0000ff;">Private</span> mIsAuthenticated <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></p>
+<p><span style="color:#0000ff;">Private</span> mName <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span> = <span style="color:#a31515;">&quot;&quot;</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> AuthenticationType() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span> _</p>
+<p><span style="color:#0000ff;">Implements</span> System.Security.Principal.IIdentity.AuthenticationType</p>
+<p><span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">Return</span> <span style="color:#a31515;">&quot;Csla&quot;</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> IsAuthenticated() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span> _</p>
+<p><span style="color:#0000ff;">Implements</span> System.Security.Principal.IIdentity.IsAuthenticated</p>
+<p><span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">Return</span> mIsAuthenticated</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> Name() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span> _</p>
+<p><span style="color:#0000ff;">Implements</span> System.Security.Principal.IIdentity.Name</p>
+<p><span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">Return</span> mName</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></p>
+<p>#<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Region</span></p>
+<p>#<span style="color:#0000ff;">Region</span> <span style="color:#a31515;">&quot; Factory Methods &quot;</span></p>
+<p><span style="color:#0000ff;">Friend</span> <span style="color:#0000ff;">Shared</span> <span style="color:#0000ff;">Function</span> UnauthenticatedIdentity() <span style="color:#0000ff;">As</span> PTIdentity</p>
+<p><span style="color:#0000ff;">Return</span> <span style="color:#0000ff;">New</span> PTIdentity</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></p>
+<p><span style="color:#0000ff;">Friend</span> <span style="color:#0000ff;">Shared</span> <span style="color:#0000ff;">Function</span> GetIdentity( _</p>
+<p><span style="color:#0000ff;">ByVal</span> username <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>, <span style="color:#0000ff;">ByVal</span> password <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>) <span style="color:#0000ff;">As</span> PTIdentity</p>
+<p><span style="color:#0000ff;">Return</span> DataPortal.Fetch(<span style="color:#0000ff;">Of</span> PTIdentity)(<span style="color:#0000ff;">New</span> Criteria(username, password))</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></p>
+<p><span style="color:#0000ff;">Private</span> <span style="color:#0000ff;">Sub</span> <span style="color:#0000ff;">New</span>()</p>
+<p><span style="color:#008000;">&#39; require use of factory methods</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Sub</span></p>
+<p>#<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Region</span></p>
+<p>#<span style="color:#0000ff;">Region</span> <span style="color:#a31515;">&quot; Data Access &quot;</span></p>
+<p>&lt;Serializable()&gt; _</p>
+<p><span style="color:#0000ff;">Private</span> <span style="color:#0000ff;">Class</span> Criteria</p>
+<p><span style="color:#0000ff;">Private</span> mUsername <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></p>
+<p><span style="color:#0000ff;">Private</span> mPassword <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> Username() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></p>
+<p><span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">Return</span> mUsername</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">ReadOnly</span> <span style="color:#0000ff;">Property</span> Password() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span></p>
+<p><span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">Return</span> mPassword</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Get</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Property</span></p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Sub</span> <span style="color:#0000ff;">New</span>(<span style="color:#0000ff;">ByVal</span> username <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>, <span style="color:#0000ff;">ByVal</span> password <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span>)</p>
+<p>mUsername = username</p>
+<p>mPassword = password</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Sub</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Class</span></p>
+<p><span style="color:#0000ff;">Private</span> <span style="color:#0000ff;">Overloads</span> <span style="color:#0000ff;">Sub</span> DataPortal_Fetch(<span style="color:#0000ff;">ByVal</span> criteria <span style="color:#0000ff;">As</span> Criteria)</p>
+<p><span style="color:#0000ff;">Using</span> cn <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">New</span> SqlConnection(Database.SecurityConnection)</p>
+<p>cn.Open()</p>
+<p><span style="color:#0000ff;">Using</span> cm <span style="color:#0000ff;">As</span> SqlCommand = cn.CreateCommand</p>
+<p>cm.CommandText = <span style="color:#a31515;">&quot;Login&quot;</span></p>
+<p>cm.CommandType = CommandType.StoredProcedure</p>
+<p>cm.Parameters.AddWithValue(<span style="color:#a31515;">&quot;@user&quot;</span>, criteria.Username)</p>
+<p>cm.Parameters.AddWithValue(<span style="color:#a31515;">&quot;@pw&quot;</span>, criteria.Password)</p>
+<p><span style="color:#0000ff;">Using</span> dr <span style="color:#0000ff;">As</span> SqlDataReader = cm.ExecuteReader()</p>
+<p><span style="color:#0000ff;">If</span> dr.Read() <span style="color:#0000ff;">Then</span></p>
+<p><span style="color:#008000;">&#39;roles</span></p>
+<p>mName = criteria.Username</p>
+<p>mIsAuthenticated = <span style="color:#0000ff;">True</span></p>
+<p><span style="color:#0000ff;">If</span> dr.NextResult <span style="color:#0000ff;">Then</span></p>
+<p><span style="color:#0000ff;">While</span> dr.Read</p>
+<p>mRoles.Add(dr.GetString(0))</p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">While</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">If</span></p>
+<p><span style="color:#008000;"><strong>&#39; perms</strong></span></p>
+<p><strong><span style="color:#0000ff;">If</span> dr.NextResult <span style="color:#0000ff;">Then</span></strong></p>
+<p><strong><span style="color:#0000ff;">While</span> dr.Read</strong></p>
+<p><strong>mPerms.Add(<span style="color:#0000ff;">New</span> mPerm(dr.GetString(0), dr.GetString(1)))</strong></p>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">While</span></strong></p>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">If</span></strong></p>
+<p><span style="color:#0000ff;">Else</span></p>
+<p>mName = <span style="color:#a31515;">&quot;&quot;</span></p>
+<p>mIsAuthenticated = <span style="color:#0000ff;">False</span></p>
+<p>mRoles.Clear()</p>
+<p><strong>mPerms.Clear()</strong></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">If</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Using</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Using</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Using</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Sub</span></p>
+<p>#<span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Region</span></p>
+<p><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Class<span style="color:#0000ff;">
+<p>End</p>
+</span></span></p>
+<p><span style="color:#0000ff;">Namespace</span></p>
+<p>and my PTPrincipal in the projectlibrary has the following addition;</p>
+<p><strong><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Overrides</span> <span style="color:#0000ff;">Function</span> HasPermission( _</strong></p>
+<p><strong><span style="color:#0000ff;">ByVal</span> modulename <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span> _</strong></p>
+<p><strong>, <span style="color:#0000ff;">ByVal</span> action <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">String</span> _</strong></p>
+<p><strong>) <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></strong>
+<p><strong><span style="color:#0000ff;">Dim</span> identity <span style="color:#0000ff;">As</span> PTIdentity = <span style="color:#0000ff;">DirectCast</span>(<span style="color:#0000ff;">Me</span>.Identity, PTIdentity)</strong></p>
+<p><strong><span style="color:#0000ff;">Return</span> identity.HasPermission(modulename, action)</strong></p>
+<p><strong><span style="color:#0000ff;">End</span> <span style="color:#0000ff;">Function</span></strong>
+<p>&nbsp;</p>
+<p>Now, I suspect having looked closer at this, it relates to the fact that something - and I don;t understand exactly what inherits the windows system security Principal class - which has a roles() property.</p>
+<p>But should I not be able to inherit and add my own properties from that?</p>
+<p>Basically, what I&#39;m trying to achieve is in my projectlibrary classes, i want to be able to check permissions in the same way as i check roles;</p>
+<p>e.g.</p>
+<p>Instead of</p>
+<p><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Shared</span> <span style="color:#0000ff;">Function</span> CanAddObject() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></p>
+<p><span style="color:#0000ff;">Return</span> Csla.ApplicationContext.User.IsInRole(<span style="color:#a31515;">&quot;SALES&quot;</span>) _</p>
+<p>I want to do something like;</p>
+<p><strong><span style="color:#0000ff;">Public</span> <span style="color:#0000ff;">Shared</span> <span style="color:#0000ff;">Function</span> CanAddObject() <span style="color:#0000ff;">As</span> <span style="color:#0000ff;">Boolean</span></strong>
+<p><strong><span style="color:#0000ff;">Return</span> Csla.ApplicationContext.User.HasPermissions(<span style="color:#a31515;">&quot;CUSTOMER&quot;, &quot;ADD&quot;</span>) _</strong></p>
+<p>I do see that ApplicationContext inherits from IPrincipal...</p>
+<p>Frankly, I&#39;m lost when I have to dig so deep into the CSLA framework - and am uncertain if this is even possible.</p>
+<p>My only other option is to &#39;fuj&#39; the permissions into looking like a &#39;role&#39; .. so, I&#39;d end up with roles &#39;CUSTOMER_VIEW&quot;, &quot;CUSTOMER_EXEC&quot;, etc ..&nbsp; this would work - but I kind of liked the idea of separation between roles and permissions...</p>
+<p>Any comments or suggestions would be greatly appreciated - provided laughter does not accompany them ;)</p>
+<p>Many thanks,</p>
+<p>Graham </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>richardb replied on Wednesday, September 08, 2010</h2><p>Rocky has an example in the latest Samples code download, a Permissions project which shows how to do custom roles and HasPermissions method.</p>
+<p>Take a look at that as it will show you - essentially I think you&#39;ll end up with a wrapper class called somthing like CurrentUser around it so you can do things like If CurrentUser.HasPermissions(&quot;CanAddCustomer&quot;) Then....</p>
+<p>We&#39;ve done the same thing here although we have users in Roles for periods of time (Start and End Dates) and also a permissions table too (we have some project planning and resource capacity reports where our end users want to know who&#39;s in a role that month to help out).&nbsp; Fun.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Wednesday, September 08, 2010</h2><p>Thanks Richard - I&#39;ll go looking for that...</p>
+<p>I think my biggest obstacle may be that my CSLA version is so far behind. I have to address that at some point in the near future - using .Net 08 will be the next step and a subsequent move up to CSLA 4.</p>
+<p>I did find an article that suggests using the Roles as a roles/permissions do-all.</p>
+<p><a href="http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx">http://www.lhotka.net/weblog/PermissionbasedAuthorizationVsRolebasedAuthorization.aspx</a></p>
+<p>As my particular &quot;roles&quot; and &quot;permissions&quot; should never clash it will probably suffice, but I do plan on looking at the sample and making my judgment then...</p>
+<p>Thanks so much for a quick reply - this is a great framework - and I am always happily surprised by its community of developers and participants.</p>
+<p>Thanks again!</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

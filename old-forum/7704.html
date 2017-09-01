@@ -1,0 +1,41 @@
+<html><header><title>svn repository structure changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>svn repository structure changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7704.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, September 29, 2009</h2><P class=MsoNormal><FONT face=Calibri>This is a fair warning post for people who directly access the svn repository. In the near future I plan to reorganize the structure of the repository to reflect the various CSLA-related projects that are active.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Calibri>Right now there are really several top-level CSLA projects somewhat mixed together in the repository:</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>CSLA .NET</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The C# versions for Windows and Silverlight – mostly what <B>is in /trunk, /branches and /tags now, and I propose putting these into a sub-tree named core.</B></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Samples</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The various samples for CSLA .NET. This is in /samples/trunk now, and is fine as-is.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>CSLA .NET VB</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The VB version for Windows. <B>This is in /trunk now, and I propose moving it to /vb/trunk.<o:p></o:p></B></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>CSLA .NET N2</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The N2 version for Windows. <B>This is in a branch now, and I propose moving it to /n2/trunk.</B></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>CSLA .NET CE</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The CE version. This is in /ce/trunk now, and is fine as-is.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>MCsla</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The Oslo CSLA .NET language and runtime. This is in /mcsla/trunk now, and is fine as-is.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>csla10</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>The old version 1.x code imported from cvs and is fine as-is.</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri></FONT></o:p>&nbsp;</P>
+<P class=MsoNormal><B><FONT face=Calibri>In short, I propose creating three new trees:<o:p></o:p></FONT></B></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoListParagraph><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/core</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/core/trunk</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/core/branches</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/core/tags</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/vb</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/vb/trunk</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/vb/branches</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/vb/tags</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>·<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/n2</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/n2/trunk</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/n2/branches</FONT></P>
+<P class=MsoListParagraph><SPAN><SPAN>o<SPAN>&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>/n2/tags</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>This way the top-level of the repository would be just the projects: core, vb, n2, samples, ce, mcsla, csla10.</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,29 @@
+<html><header><title>DataFormatString a CSLA Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataFormatString a CSLA Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3012.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons posted on Friday, June 08, 2007</h2><P>Howdy,</P>
+<P>I have a case where I have created a UserInfo CSLA Class that is used for displaying a person’s name.&nbsp; I have overridden the ToString method to look at a displaystyle enum in the class and to return a string of the users name formatted according to the displaystyle (First Last or Last, First or FiLast etc...)</P>
+<P>I have another ToString that takes a displaystyle enum and returns the person’s name in that style.</P>
+<P>&nbsp;</P>
+<P>I want to give this ability to the UI.&nbsp; When using a grid for example, I can select the UserName as a column.&nbsp; It displays the name using the ToString method and this works well.&nbsp; It displays whatever the default style is.&nbsp; </P>
+<P>How can I then use the DataFormatString to modify this at the UI layer?</P>
+<P>What do I need to add to my CSLA class so it can understand what is typed into the DataFormatString of a &lt;ASP:BoundField&gt;?</P>
+<P>&nbsp;</P>
+<P>Aslo,&nbsp;Can you use the DataFormatString against a SmartDate?&nbsp; I have a smart date object that I want to display as well and it looks like it ignores the formatstring.&nbsp; If I change the property to give out a date instead of a smartdate, the formatstring works correctly.</P>
+<P>Thank you,</P>
+<P>Keith</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Friday, June 08, 2007</h2><P>It looks like I was able to answer my first question.</P>
+<P>I made my class implement IFormattable which created a new ToString method:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> ToString(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> format </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> formatProvider </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.IFormatProvider) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> System.IFormattable.ToString</FONT></P>
+<P><FONT size=2>I then look at the string values of the format var and send out the person's name based on the format string that I made up.</FONT></P>
+<P><FONT size=2>&nbsp;FiLi = First Initial Last Initial (JC)</FONT></P>
+<P><FONT size=2>FiLn = First Initial Last Name (JCash)</FONT></P>
+<P><FONT size=2>FnLn = Johnny Cash</FONT></P>
+<P><FONT size=2>LnFn = Cash, Johnny</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT color=#ff0000 size=2>Still pondering if this will work for a SmartDate.</FONT></P>
+<P><FONT size=2>Thank you,</FONT></P>
+<P><FONT size=2>Keith</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, June 08, 2007</h2>You can add the IFormattable interface to SmartDate yourself.&nbsp; If the SmartDate is empty, return an empty string, otherwise return _date.ToString(format).<br><br>Rocky, this may be a sensible addition to SmartDate.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 09, 2007</h2>Added to the wish list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Monday, June 11, 2007</h2><P>Brian,</P>
+<P>Where would I add this functionality?&nbsp; Into the CSLA framework code and compile? I think that would be bad since&nbsp;I&nbsp;would not want to re-modify every&nbsp;framework update to fix my code.</P>
+<P>Should I create a custom date object that inherits from SmartDate to add this <SPAN>functionality </SPAN>into?</P>
+<P>Thank you,</P>
+<P>Keith</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, June 11, 2007</h2>Well, I personally modify a few paerts of the framework directly.&nbsp; I store my copy of CSLA in Subversion.&nbsp; When Rocky releases a new version, I unzip it into my repository.&nbsp; This causes my customisations to be overwritten, so I diff all of the changed files and inlude my modifications back in.&nbsp; Finally, I add all of the new files to Subversion and commit.&nbsp; Total time from start to finish : 15-30 minutes.<br><br>In this case, I would suggest adding IFormattable directly to SmartDate and implement it using the algorithm suggested above.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

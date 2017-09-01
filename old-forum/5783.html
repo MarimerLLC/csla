@@ -1,0 +1,178 @@
+<html><header><title>CslaDataProvider Async Save</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataProvider Async Save</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5783.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Tuesday, November 11, 2008</h2>Hi,<br><br>I wanted to throw this code out there.. it's a change to CslaDataProvider to enable the Save method to respect the IsAsync flag.&nbsp; I haven't had any issues so far in my limited testing.. I'm hoping others will try it and see if it will help them.<br><br>Thanks<br>Andy<br><br>
+ 
+  Normal
+  0
+  
+ 
+
+
+
+
+<p class="MsoNormal"><span>public</span><span> </span><span>void</span><span> Save() {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// only do something if the object
+implements<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// ISavable<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Csla.Core.</span><span>ISavable</span><span> savable = </span><span>this</span><span>.Data </span><span>as</span><span> Csla.Core.</span><span>ISavable</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( savable != </span><span>null</span><span> )<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>IsBusy = </span><span>true</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( IsAsynchronous ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>System.Threading.</span><span>ThreadPool</span><span>.QueueUserWorkItem(
+DoSave, savable );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>else</span><span> {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>DoSave( savable );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>IsBusy = </span><span>false</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>private</span><span> </span><span>void</span><span> DoSave( </span><span>object</span><span> state ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Csla.Core.</span><span>ISavable</span><span> savable = state </span><span>as</span><span> Csla.Core.</span><span>ISavable</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>object</span><span> result = savable;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>Exception</span><span> exceptionResult
+= </span><span>null</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>try</span><span> {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// apply edits in memory<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Csla.Core.</span><span>ISupportUndo</span><span> undo = savable </span><span>as</span><span> Csla.Core.</span><span>ISupportUndo</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( undo != </span><span>null</span><span> &amp;&amp; _manageLifetime )<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>undo.ApplyEdit();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( !Csla.</span><span>ApplicationContext</span><span>.AutoCloneOnUpdate
+) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// clone the object if possible<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>ICloneable</span><span> clonable =
+savable </span><span>as</span><span> </span><span>ICloneable</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( clonable != </span><span>null</span><span> )<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>savable = (Csla.Core.</span><span>ISavable</span><span>)clonable.Clone();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// save the clone<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>result = savable.Save();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( !ReferenceEquals( savable, </span><span>this</span><span>.Data )
+&amp;&amp; !Csla.</span><span>ApplicationContext</span><span>.AutoCloneOnUpdate ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// raise Saved event from
+original object<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Core.</span><span>ISavable</span><span> original = </span><span>this</span><span>.Data </span><span>as</span><span> Core.</span><span>ISavable</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( original != </span><span>null</span><span> ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> (
+System.Windows.</span><span>Application</span><span>.Current.Dispatcher.CheckAccess() ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>original.SaveComplete(
+result );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>else</span><span> {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>System.Windows.</span><span>Application</span><span>.Current.Dispatcher.Invoke(<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>new</span><span> </span><span>Action</span><span>&lt;</span><span>object</span><span>&gt;(<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>(
+obj ) =&gt; { original.SaveComplete( obj ); }<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>),<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>System.Windows.Threading.</span><span>DispatcherPriority</span><span>.Normal,<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>result<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// start editing the resulting object<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>undo = result </span><span>as</span><span> Csla.Core.</span><span>ISupportUndo</span><span>;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( undo != </span><span>null</span><span> &amp;&amp; _manageLifetime )<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>undo.BeginEdit();<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>catch</span><span> ( </span><span>Exception</span><span> ex ) {<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>exceptionResult = ex;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>if</span><span> ( !System.Windows.</span><span>Application</span><span>.Current.Dispatcher.CheckAccess()
+)<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>System.Windows.</span><span>Application</span><span>.Current.Dispatcher.Invoke(<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;
+</span></span><span>new</span><span> </span><span>Action</span><span>( () =&gt; { IsBusy = </span><span>false</span><span>; } ),<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&nbsp;
+</span></span><span>new</span><span> </span><span>object</span><span>[] { }<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>);<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>&nbsp;<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// clear previous object<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>base</span><span>.OnQueryFinished( </span><span>null</span><span>,
+exceptionResult, </span><span>null</span><span>, </span><span>null</span><span> );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>// return result to base class<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span>base</span><span>.OnQueryFinished( result, </span><span>null</span><span>, </span><span>null</span><span>, </span><span>null</span><span> );<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>}<span><o:p></o:p></span></span></p>
+
+<p class="MsoNormal">&nbsp;<o:p></o:p></p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 12, 2008</h2>Hi,<br><br>Found an issue if there's PropertyStatus controls being used.&nbsp; I've updated the following event handlers in PropertyStatus.cs to resolve a VerifyAccess exception:<br><br>&nbsp;&nbsp;&nbsp; void source_BusyChanged(object sender, BusyChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ( Application.Current.CheckAccess() ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ( e.PropertyName == Property )<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; IsBusy = e.Busy;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UpdateState();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Application.Current.Dispatcher.Invoke(<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; new BusyChangedEventHandler( source_BusyChanged ),<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; sender,<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; e<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; private void source_PropertyChanged(object sender, PropertyChangedEventArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ( Application.Current.CheckAccess() ) {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if ( e.PropertyName == Property || string.IsNullOrEmpty( e.PropertyName ) )<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; UpdateState();<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; else {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Application.Current.Dispatcher.Invoke(<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; new PropertyChangedEventHandler( source_PropertyChanged ),<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; sender,<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; e<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; );<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 13, 2008</h2><P>We considered doing this, and decided against it. The reason we decided against it is because of the PropertyStatus issue you discovered - but in the broader sense.</P>
+<P>It is quite possible for other controls, or UI code, or we-don't-know-what, to set up handlers for PropertyChanged events. They would all break if the Save() operation occurred on a background thread. This could cause massive confusion and unhappiness - and possibly unsolvable issues (think about third-party controls that handle the event for example).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, November 13, 2008</h2>Hmm... I see the concern.&nbsp; Is this mitigated at all by the BO being cloned, and the clone actually being saved?&nbsp; Or are there other areas that might cause these events to raise too?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 13, 2008</h2>You'd think the cloning would resolve the issue. Sergey did the work on this, so I can't say exactly what issues were there...</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

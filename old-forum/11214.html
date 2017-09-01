@@ -1,0 +1,131 @@
+<html><header><title>CSLA 3.8.4 Authorization rules - Code Implementation Confirmation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8.4 Authorization rules - Code Implementation Confirmation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11214.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jamie.clayton posted on Thursday, March 08, 2012</h2><p>Just wanted to check my code is implemented correctly. I&#39;ve found that if I don&#39;t create a method &quot;AddObjectAuthorizationRules&quot; any application menu logic that tests for permission will fail.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">Me</span>.ClientSearchToolStripMenuItem.Visible&nbsp;= _<br />Csla.Security.<span style="color:#2b91af;">AuthorizationRules</span>.CanGetObject(<span style="color:blue;">GetType</span>(MyVIP.Library.Client<span style="color:#2b91af;"></span>))
+</pre>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">#Region</span>&nbsp;<span style="color:#a31515;">&quot;Authorization&nbsp;Rules&quot;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">#If</span>&nbsp;<span style="color:blue;">Not</span>&nbsp;SILVERLIGHT&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;&#39;&nbsp;Allows&nbsp;the&nbsp;specification&nbsp;of&nbsp;CSLA&nbsp;based&nbsp;authorization&nbsp;rules.&nbsp;&nbsp;Specifies&nbsp;what&nbsp;roles&nbsp;can&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;&#39;&nbsp;perform&nbsp;which&nbsp;operations&nbsp;for&nbsp;a&nbsp;given&nbsp;business&nbsp;object</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;&#39;&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;	<span style="color:blue;">Private</span>&nbsp;<span style="color:blue;">Shared</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;AddObjectAuthorizationRules()&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;More&nbsp;information&nbsp;on&nbsp;these&nbsp;rules&nbsp;can&nbsp;be&nbsp;found&nbsp;here&nbsp;(http://www.devx.com/codemag/Article/40663/1763/page/2).</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Dim&nbsp;canWrite&nbsp;As&nbsp;String()&nbsp;=&nbsp;{&nbsp;&quot;AdminUser&quot;,&nbsp;&quot;RegularUser&quot;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;canRead&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>()&nbsp;=&nbsp;{<span style="color:#a31515;">&quot;AdminUser&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;RegularUser&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;ReadOnlyUser&quot;</span>}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Dim&nbsp;admin&nbsp;As&nbsp;String()&nbsp;=&nbsp;{&nbsp;&quot;AdminUser&quot;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowCreate(GetType(Client),&nbsp;admin)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowDelete(GetType(Client),&nbsp;admin)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowEdit(GetType(Client),&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuthorizationRules.AllowGet(<span style="color:blue;">GetType</span>(<span style="color:#2b91af;">Client</span>),&nbsp;canRead)
+&nbsp;&nbsp;&nbsp;&nbsp;	<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span><span style="color:blue;"></span>&nbsp;
+		
+	<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;AddAuthorizationRules()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">MyBase</span>.AddAuthorizationRules()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Identification</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_identificationProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Guid</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_guidProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_guidProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Address1</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_address1Property,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_address1Property,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Address2</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_address2Property,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_address2Property,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Suburb</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_suburbProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_suburbProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;State</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_stateProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_stateProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;PostCode</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_postCodeProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_postCodeProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Phone</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_phoneProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_phoneProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Fax</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_faxProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_faxProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Mobile</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_mobileProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_mobileProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Email</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_emailProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_emailProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;ObsoletePassword</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_obsoletePasswordProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_obsoletePasswordProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;LastUpdatedDate</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_lastUpdatedDateProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_lastUpdatedDateProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;LastUpdatedByUserID</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_lastUpdatedByUserIDProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_lastUpdatedByUserIDProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;IsInternational</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_isInternationalProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_isInternationalProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;FullName</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_fullNameProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_fullNameProperty,&nbsp;canRead)</span>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+<span style="color:blue;">#End</span>&nbsp;<span style="color:blue;">If<br /><br /></span><span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&nbsp;Call&nbsp;the&nbsp;base&nbsp;class,&nbsp;if&nbsp;this&nbsp;call&nbsp;isn&#39;t&nbsp;made&nbsp;than&nbsp;any&nbsp;declared&nbsp;System.ComponentModel.DataAnnotations&nbsp;rules&nbsp;will&nbsp;not&nbsp;work.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">MyBase</span>.AddBusinessRules()
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;AddBusinessValidationRules()&nbsp;<span style="color:blue;">Then</span>&nbsp;<span style="color:blue;">Exit&nbsp;Sub</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_address1Property,&nbsp;100))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_address2Property,&nbsp;100))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_suburbProperty,&nbsp;50))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_stateProperty,&nbsp;3))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_postCodeProperty,&nbsp;12))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_phoneProperty,&nbsp;50))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_faxProperty,&nbsp;50))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_mobileProperty,&nbsp;20))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule(<span style="color:blue;">AddressOf</span>&nbsp;<span style="color:blue;">Global</span>.Csla.Validation.<span style="color:#2b91af;">CommonRules</span>.StringMaxLength,&nbsp;<span style="color:blue;">New</span>&nbsp;<span style="color:#2b91af;">CommonRules</span>.<span style="color:#2b91af;">MaxLengthRuleArgs</span>(_emailProperty,&nbsp;100))
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 08, 2012</h2><p>How does it fail? Does CanGetObject throw an exception?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>jamie.clayton replied on Thursday, March 08, 2012</h2><p>Rocky,</p>
+<p>It doesn&#39;t generate an error, I thought it was generating the wrong true/false result. After much *pie on face* I determined that the VS2010 debug environment is incorrectly returning the value for the Strip Menu Item Visible property<span style="color:blue;"></span>. Looks like rollover variable declaration, debug window and Locals report the default value as &quot;False&quot; rather than the value I have configured. DOH!</p>
+<p><span style="background-color:#ffff00;"><span style="color:blue;">Me</span>.ClientSearchToolStripMenuItem.Visible</span></p>
+<p>So CanGetObject returns the correct value. So the code in CodeSmith Generator is correct for AddAuthorizationRule and the <a title="Issue" href="http://code.google.com/p/codesmith/issues/detail?id=611&amp;can=1&amp;q=Framework%3ACSLA&amp;colspec=ID%20Type%20Status%20Stars%20Priority%20Framework%20Owner%20Summary&amp;start=200">issue I suggested</a> is wrong.</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;AddAuthorizationRules()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">&#39;&#39;More&nbsp;information&nbsp;on&nbsp;these&nbsp;rules&nbsp;can&nbsp;be&nbsp;found&nbsp;here&nbsp;(http://www.devx.com/codemag/Article/40663/1763/page/2).</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Dim&nbsp;canWrite&nbsp;As&nbsp;String()&nbsp;=&nbsp;{&nbsp;&quot;AdminUser&quot;,&nbsp;&quot;RegularUser&quot;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;canRead&nbsp;<span style="color:blue;">As</span>&nbsp;<span style="color:blue;">String</span>()&nbsp;=&nbsp;{<span style="color:#a31515;">&quot;AdminUser&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;RegularUser&quot;</span>,&nbsp;<span style="color:#a31515;">&quot;ReadOnlyUser&quot;</span>}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;Dim&nbsp;admin&nbsp;As&nbsp;String()&nbsp;=&nbsp;{&nbsp;&quot;AdminUser&quot;&nbsp;}</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowCreate(GetType(Client),&nbsp;admin)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowDelete(GetType(Client),&nbsp;admin)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowEdit(GetType(Client),&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AuthorizationRules.AllowGet(<span style="color:blue;">GetType</span>(<span style="color:#2b91af;">Client</span>),&nbsp;canRead)
+&nbsp;&nbsp;&nbsp;&nbsp;	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:green;">&#39;&#39;Identification</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_identificationProperty,&nbsp;canRead)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;&#39;Guid</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowWrite(_guidProperty,&nbsp;canWrite)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">&#39;AuthorizationRules.AllowRead(_guidProperty,&nbsp;canRead)<br /><br /></span><span style="color:blue;">End</span> <span style="color:blue;">Sub</span>
+<br />Drags tail between legs....Thanks for the prompt to prove myself wrong...again.</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

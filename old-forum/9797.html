@@ -1,0 +1,68 @@
+<html><header><title>How to implement a 1:1 relationship?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to implement a 1:1 relationship?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9797.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Tuesday, November 23, 2010</h2><p>The database i have been working on has several 1:1 relationship that i need to implement in BOs.</p>
+<p>As an example, I have the following tables:</p>
+<p>CONTACT.PERSON</p>
+<p style="padding-left:60px;">ID</p>
+<p style="padding-left:60px;">LastName</p>
+<p style="padding-left:60px;">FirstName</p>
+<p style="padding-left:60px;">MiddleName</p>
+<p>&nbsp;</p>
+<p>PERSON.DETAIL</p>
+<p style="padding-left:60px;">ContactID</p>
+<p style="padding-left:60px;">Sex</p>
+<p style="padding-left:60px;">MaritalStatus</p>
+<p style="padding-left:60px;">BirthDate</p>
+<p style="padding-left:60px;">BirthPlace</p>
+<p>&nbsp;</p>
+<p>CONTACT.ADDRESS</p>
+<p style="padding-left:60px;">ContactID</p>
+<p style="padding-left:60px;">Street</p>
+<p style="padding-left:60px;">Barangay</p>
+<p style="padding-left:60px;">Municipality</p>
+<p>&nbsp;</p>
+<p>A sample BO that I need to create would be the Candidate ERO with the following properties:</p>
+<p style="padding-left:60px;">ID</p>
+<p style="padding-left:60px;">LastName</p>
+<p style="padding-left:60px;">FirstName</p>
+<p style="padding-left:60px;">MiddleName</p>
+<p style="padding-left:60px;">Sex</p>
+<p style="padding-left:60px;">MaritalStatus</p>
+<p style="padding-left:60px;">BirthDate</p>
+<p style="padding-left:60px;">BirthPlace</p>
+<p style="padding-left:60px;">Street</p>
+<p style="padding-left:60px;">Barangay</p>
+<p style="padding-left:60px;">Municipality</p>
+<p>&nbsp;</p>
+<p>There are records in the Contact.Person table that has no equivalent records in the Person.Detail and Contact.Address. But in the Candidate BO, the user can add the Person.Detail and Contact.Address records.</p>
+<p>I can no longer change the database tables structure. How do I implement my business object? </p>
+<p>Thank you in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, November 23, 2010</h2><p>Hi superkuton</p>
+<p>I would say that PERSON.DETAIL and CONTACT.ADDRESS are childs of CONTACT.PERSON</p>
+<p>As to Candidate BO, I don&#39;t care if he lives in the same database table and has the same childs of CONTACT.PERSON. If it&#39;s a different use case, it&#39;s also a different BO. The point is:</p>
+<ul>
+<li>Is it a different use case?</li>
+</ul></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, November 23, 2010</h2><p>I would recommend simply have all the fields on one BO, unless you can resue exactly the address and / or detail.&nbsp; If you can reuse either one (the behavior is the same in another use case), then go with the child BOs.&nbsp; But if not, I wouldn&#39;t make the BO more than one class, and it can hide the details of where exactly the data is stored.&nbsp; Don&#39;t model your BOs according to your tables, model them how to best fit your use case.&nbsp; This will make your application more maintainable, and your UI easier to code.</p>
+<p>I wouldn&#39;t go the child BO route unless&nbsp;I could reuse them, because this will make your binding to the UI more complex than it needs to be.</p>
+<p>To answer your question if you don&#39;t want a flat model, just create Address and Detail as normal child objects.&nbsp; When you create / fetch the root BO, you can simplly call an interal factory method to create / fetch the children, as I would assume they should never be null.&nbsp; (Again, the properties on the root to the child could always have a value and the child BO can determine whether or not a row is even needed in the table).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 23, 2010</h2><p>I&#39;ll join in with Andy and recommend a flattened business object. </p>
+<p>You can use SQL with outer joins to fetch data -&nbsp; and only save/update date when there is data to update in your Save method. </p>
+<p>I&#39;d also like to point out that BusinessRules often get&nbsp; simpler when you have a flattened structure.<br />F.ex -address may have different required rules dependent on whether the parent is a person or a company.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Wednesday, November 24, 2010</h2><p>Thanks to all of you for your replies guys.</p>
+<p>Just like JonnyBee has repeatedly been suggesting to me, I should go the &quot;flattened&quot; structure (creating a single <b>Candidate ERO</b>) way. However, there are things that I am bothered yet.</p>
+<p>This is my problem:&nbsp; in the existing database, there are <b>Contact.Person</b> records that does not have any matching<b> Contact.Address</b> and <b>Contact.Detail</b> records. When a <b>Candidate ERO</b> is created and presented to the UI, the user may <b>add </b>the <b>Candidate address </b>and <b>detail </b>entries. How would&nbsp; I now save the new <b>address </b>and <b>detail </b>records?</p>
+<p>FETCH&nbsp; - I can fetch the matching address and detail records using SQL joins and subqueries.</p>
+<p>UPDATE - If there are existing address and detail records, i can update them using normal SQL procedures.</p>
+<p><b>INSERT&nbsp; - Herein lies my problems:</b></p>
+<p>How can the ERO insert a new instance of <b>address </b>and <b>detail </b>records for an already existing <b>Contact.Person</b> record?</p>
+<p>If the ERO object <i>fecthes</i> a <b>Candidate ERO</b> which has not yet any <b>Contact.Address</b> and <b>Person.Detail</b> records, how does it create them into the database?</p>
+<p>What procedures do I need to implement in the Candidate ERO to save the new records into the child tables?&nbsp; Or what SQL procedures do I need to implement?</p>
+<p>Please help me guys. Thank you.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 24, 2010</h2><p>Well, your flattened BO would have a property which holds the AddressId.&nbsp; Make that a nullable int, and your BO can use that to determine if there&#39;s an address or not when saving.&nbsp; Remember, your BO should have all the data it needs to fulfill its use case.&nbsp; If a matching record doesn&#39;t always exist, then the BO needs to keep that bit of information with it.&nbsp; You&#39;ll likely need the AddressId anyway to update the Contact.Address record which is already there; you can use that to also determine if there&#39;s a record there at all.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Wednesday, November 24, 2010</h2><p>Thank you very much Andy.</p>
+<p>Yes, this use case requires that an address and&nbsp; a detail record <b>should </b>exist for the BO.</p>
+<p> (There are also use cases in the application that allows inserting a record into the Contact.Person table without any corresponding address or detail records.)</p>
+<p>I wouldn&#39;t have any problem in creating a new Candidate object because all properties required by the BO will be inserted into the corresponding tables.</p>
+<p>If in my Candidate ERO use case, however,&nbsp; when a Candidate is loaded and found not to have yet address and detail records, how will I insert new records? In such a case, I will be updating the Candidate, but in the database I will be doing the following:</p>
+<p style="padding-left:30px;">UPDATE the Contact.Person record if there are changes</p>
+<p style="padding-left:30px;">INSERT a new record in the Contact.Address table, and</p>
+<p style="padding-left:30px;">INSERT a new record in the Person.Detail table.</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>Should this implementation be done in the BO or in the Stored Procedures? How will we do it?</p>
+<p>Thank you, once again.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 24, 2010</h2><p>Well, how you get the data into the database is irrelevent; do whatever you need to for your environment.&nbsp; The BO can determine, based on the information it has, if it needs to insert the records or not.&nbsp; Just because you&#39;re code is in a DataPortal_Update doesn&#39;t mean you can insert, update, or delete rows.&nbsp; DP_U just means the BO exists in your system already and you&#39;re modifying it.&nbsp; But you can make it smart enough to do whatever data operations you want.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

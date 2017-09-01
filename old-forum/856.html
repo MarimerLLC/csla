@@ -1,0 +1,24 @@
+<html><header><title>Csla.XmlSerializers.dll and Csla.config</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.XmlSerializers.dll and Csla.config</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/856.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>William posted on Wednesday, August 09, 2006</h2><P>Hi,</P>
+<P>I am starting to use CSLA 2.0 for my project. When I compiled CSLA source code, the Release build generated an additional file Csla.XmlSerializers.dll, which is not available in Debug build. May I know what is this file use for?</P>
+<P>And, there is Csla.config, what is this file use for?</P>
+<P>Thanks.</P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>The XmlSerializer dynamically creates a class to serialize/deserialize each type you have it serialize. It does this by reflecting against your type, code-genning a class and compiling it in memory. That can be slow. To optimize this, Microsoft is now pre-building these dynamic classes in release builds, thus avoiding some overhead at runtime.<br><br>The Csla project has an app.config file. In .NET 2.0 DLLs can now have config files, and Csla.config is that file. You really don't need it, as you'll typically set any options in your real app.config or web.config. You can use this as a guide in some ways I suppose, but really you can just discard it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Wednesday, August 09, 2006</h2><P>Thanks Rocky for your response.</P>
+<P>Do I need to distribute this Csla.XmlSerializers.dll together with my application?</P>
+<P>Regards,<BR>William</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=015502315-09082006><FONT face=Arial color=#0000ff size=2>If you want to get the runtime performance boost yes. 
+However, the only use of the XmlSerializer in CSLA is in the Web Services data 
+portal proxy, so it is only needed if you use that particular data portal 
+channel.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015502315-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015502315-09082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>Thanks Rocky for 
+  your response.</DIV>
+  <P>Do I need to distribute this Csla.XmlSerializers.dll together with my 
+  application?</P></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

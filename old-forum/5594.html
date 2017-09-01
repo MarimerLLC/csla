@@ -1,0 +1,143 @@
+<html><header><title>Opf3 as an ORM together with CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Opf3 as an ORM together with CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5594.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, October 15, 2008</h2><P>Hello,</P>
+<P>Im not yet using the CSLA.NET framework, but im just researching if it's smart to do so. Our current application is very large builded&nbsp;in&nbsp;pascal and ported to&nbsp;delphi. It's&nbsp;an business to business application including: customer management, insurances, financials and alot of other stuff u can think about. With over 1200 tables, 1000 data entry screens / forms,&nbsp;200 reports and ofcourse alot of "behind the screen" functionality. <BR><BR>We created a small .NET application but used an ORM named Opf3 to create a data model in Objects. This application can now use those objects&nbsp;as being a&nbsp;repository. Working great! Except that the entities are data-entities and not business-entities.<BR><BR>The bad thing is that the database is Pervasive,&nbsp;and in the past people desided&nbsp;to disable&nbsp;the foreign keys etc, the legacy delphi application is using BTrieve API instead of SQL to access the tables. It's very frustrating to bump into so many database problems :(<BR>But anyhow our management desided not to migrate, but to build a new application against the current database but keeping in mind we should switch to another database whenever the new application is large enough. With no BIG-BANG scenaro :)</P>
+<P>Anyway, my <STRONG>real question</STRONG> is about what Rockford Lhotka said about "<STRONG>object factory model</STRONG>" being better when using an ORM tool. In which CSLA.NET version is the object factory model available? Which book will describe more about it? Are there any good examples in how to use the object factory model? How is it related to several DAO's? So many questions ;)</P>
+<P>Greetings,<BR>Raymond de Jong</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 15, 2008</h2><P>I think the object factory is available in 3.6. </P>
+<P>However, I'ved used CSLA with an ORM since 2.1. It really comes into play only when fetching a single object, not a list. When you're fetching a list, you get to populate it anyway you want. </P>
+<P>The workaround I used for fetching a single object was to (1) fetch an obect with the data in it using the ORM, and (2) copy the data from the fetched object to the one CSLA was asking me to populate. It was a little awkward, but it works fine. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, October 15, 2008</h2><P>hmm, but 3.6 is a beta version and not proven yet "in the real world"? Does anyone know when it's going to be released as an official version? Rockford? :)</P>
+<P>I wonder why Rockford says the Data Portal way isn't suitable enough when using an ORM, or from the other side.. why the Object Factory should be used when using an ORM.</P>
+<P>rsbaker0 u say it's possible and it works,&nbsp;but do u know if unittesting using a data portal is possible and what happens after transfering the business object between the business tier to a client tier. I guess it can't always access the data-tier when it's across the data-tier boundaries. I've no experience with WCF yet so maybe "Lazy Loading" will still be possible no matter where the Business Object is at that moment. I just want to avoid using any DTO technique, as less mapping as possible&nbsp;:)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, October 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I will try to explain the ObjectFactory and how that relates to
+the ORM tools.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One of the major differences between Csla objects and other
+business object frameworks is that each Csla object is &#8220;mobile object&#8221;.
+What does that mean?&nbsp; It means that the object is constructed in one context,
+lets say application server, but also used in another &#8211; client/ui
+context.&nbsp; Object exits in both places, csla takes care of necessary
+serialization &#8211; transporting object back and forth for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But what does that mean for you as a developer.&nbsp; There is
+one major constraint &#8211; you cannot construct the object directly on the
+client.&nbsp; Hence the use of Factory Method pattern and more important
+DataPortal.&nbsp; We request an instance of the Csla object from the data
+portal, which constructs it for us on the server and then serializes it to the
+client for us.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every ORM framework that maps the db object to &#8220;entities&#8221;.&nbsp;
+Lets presume that the entity we want to generate is the Csla object.&nbsp; That
+means that ORM framework has to have a way of accessing your method of
+constructing an object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>NHIbernate and MS Entity Framework are the two ORM frameworks I
+am familiar with.&nbsp; The problem in Csla world is telling the ORM framework
+how to construct Csla entity.&nbsp; Since DataPortal constructs Csla object
+that generally means making ORM somehow aware of DataPortal.&nbsp; That is
+where the ObjectFactory comes in.&nbsp; It plugs directly into DataPortal
+creation/retrieval process and allows us to substitute Csla own object creation
+process with our own factory that is integrated into ORM.&nbsp; And that is the
+purpose of the ObjectFactory.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As you have mentioned the ObjectFactory is a part of Beta 3.6
+release, but if you take a look at the &nbsp;NHIBERNATE example on CslaContrib
+project, hosted on CodePlex, you will see that it uses an ORM&nbsp; tool
+without the need for ObjectFactory.&nbsp; They found a different approach to go
+around a DataPortal issue.&nbsp; So &#8211; no ObjectFactory is not necessary
+for integrating Csla with an ORM.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rfcdejong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 15, 2008 7:38 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Opf3 as an ORM together with CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>hmm, but 3.6 is a beta version and not proven yet &quot;in the real
+world&quot;? Does anyone know when it's going to be released as an official
+version? Rockford? :)<o:p></o:p></p>
+
+<p>I wonder why Rockford says the Data Portal way isn't suitable enough when
+using an ORM, or from the other side.. why the Object Factory should be used
+when using an ORM.<o:p></o:p></p>
+
+<p>rsbaker0 u say it's possible and it works,&nbsp;but do u know if unittesting
+using a data portal is possible and what happens after transfering the business
+object between the business tier to a client tier. I guess it can't always
+access the data-tier when it's across the data-tier boundaries. I've no
+experience with WCF yet so maybe &quot;Lazy Loading&quot; will still be
+possible no matter where the Business Object is at that moment. I just want to
+avoid using any DTO technique, as less mapping as possible&nbsp;:)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, October 15, 2008</h2><P>^^^ </P>
+<P>I think this may be overcomplicating things. </P>
+<P>The only ORM related issue I ran into was that my particular ORM will not allow you to populate the values of the object "in place" -- it wants to create the object for you. </P>
+<P>It turns out, incidentally, that NHibernate allows you to do exactly that -- it's perfectly happy to allow someone else to construct the empty object for you-- exactly what happens in the default DataPortal_Fetch implementation with CSLA -- and then allow NHibernate to fill the values.&nbsp; So, for NHibernate, you don't even need a special factory implementation. </P>
+<P>My ORM constructs and fetches at the same time, so it can construct a CSLA object server side, but I have no direct&nbsp;way of "returning" this object when CSLA has provided me with&nbsp;an empty object to fill out. So, I get around this just by copying the fields from the object fetched by the ORM to the one CSLA wants populated. I'd prefer not to have to do this for performance reasons, but it only comes into places with individual object fetches, not list object fetches. </P>
+<P>DataPortal_Fetch executes on the server side of the Data Portal by default, so any fetching will occur on the server whether you use an ORM or not. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, October 16, 2008</h2><P>It's only sad to see that there isn't much documentation about the "Object factory model" yet.</P>
+<P>A guy called "Alfred Ortega" did found a link for me:<BR><FONT face=Tahoma size=2><A href="http://www.lhotka.net/weblog/CSLANETObjectFactoryAttribute.aspx">http://www.lhotka.net/weblog/CSLANETObjectFactoryAttribute.aspx</A> <BR></FONT>But that is all i have at the moment.</P>
+<P>Is it smart to start the new application with 3.5, or start with 3.6..<BR>- it will be&nbsp;a 3 or 4 tier application mainly focussed at windows (but using WPF)<BR>- using Opf3 as ORM<BR><BR>I guess that only Rockford can answer this question :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, December 02, 2008</h2><P>This post was a while ago, and i know alot more about the Object Factory.</P>
+<P>Ryann Kelley's source code on google helped alot, it's not hard to understand. Except that he didn't use DTO's and that's exactly what we want to use.. </P>
+<P>I'm still trying to find a way to write a&nbsp;"generic piece of framework code" just to fill the properties of an CSLA business object. Each business object would have an mapper object which knows how to fill the properties with properties from the DTO.</P>
+<P>Anyway i see Ryann Kelly stept away from CSLA :(<BR><A href="http://www.techfocus2.com/2008/11/csla-first-base-was-fun-but-i-want-a-relationship/">http://www.techfocus2.com/2008/11/csla-first-base-was-fun-but-i-want-a-relationship/</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, December 02, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rfcdejong:</strong></div><div>
+<P>I'm still trying to find a way to write a&nbsp;"generic piece of framework code" just to fill the properties of an CSLA business object. Each business object would have an mapper object which knows how to fill the properties with properties from the DTO.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That is exactly what the DataMapper class in CSLA is for.</P>
+<P>Very useful!</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Tuesday, December 02, 2008</h2>Hi, could please pass exactly the link where is the Ryan Kelley's source code?<br><br>
+I am very interested in implementing NHibernate + ActiveRecord, using
+ObjectFactory in CSLA.NET. Of course, other links to source code or
+documentation in this regard, they are welcome. <br><br> In advance thank you very much. <br><br> Jorge</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Wednesday, December 03, 2008</h2>I myself found the link <br><a><br></a><a href="http://cslaptrackerfactory.googlecode.com/">http://cslaptrackerfactory.googlecode.com/</a><br><br>In addition, I will create a new post about NHibernate + ActiveRecord<br><br>Jorge<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, December 03, 2008</h2><P>sorry, i didn't had the time to reply yet.<BR>gladly u did found the link yourself :)<BR><BR>I'm trying to find a example for using CSLA 3.6 object factory&nbsp;combined with DTO.<BR>Our DTO would be an Opf3 data entity object, completely seperated from the business.</P>
+<P>But im not sure if we should let the data layer knows about the business objects.<BR>On the other side the business objects don't know about the datalayer.<BR>Only the factories are allowed to know.</P>
+<P>I hope we don't need to write a factory for each business object.</P>
+<P>But about the DataMapper... it's using a DataMap for the property definition, i'll look more into that.<BR>I don't want to use reflection myself with the differend kind of possible exceptions.</P>
+<P>Greetings,<BR>Raymond de Jong</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Wednesday, December 03, 2008</h2>Raymond, <br><br> In the Ryan Kelly's Blog referred to the Frank Mao's Blog, which are used Repository and DTOs, specifically this post <br><br><a href="http://maonet.wordpress.com/2008/10/06/repository-pattern-in-csla/"> http://maonet.wordpress.com/2008/10/06/repository-pattern-in-csla/</a> <br><br> for the full list of publications related to CSLA.NET <br><br> <a href="http://maonet.wordpress.com/category/csla/">http://maonet.wordpress.com/category/csla/</a> <br><br> There are various topics that I think are related to their concerns.<br><br>Jorge<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,3158 @@
+<html><header><title>Redundant Code?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Redundant Code?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/660.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin posted on Tuesday, July 18, 2006</h2>I have had occasion to step throught the Csla code in the debugger many times while trying to understand how to get BO's configured properly. I have notices that in 2 areas (portal-related code) and validation-related code, the same blocks of code get executed over and over and over again. Last night I was stepping through some validation code and the validity of the each property of the BO was checked over 20 times in the course of calling Save().<br><br>This seems to be incredibly inefficient, but there is so much indirection involved in the code at these points that I am at a loss as to how to determine if this is the expected behavior or if something is not right with the code.<br><br>So far, with the 2 projects in which I have used Csla and actually put into production, I have had to go into the root BO's and rip out all of the Csla framework stuff and make the insert, update and delete methods public methods of the class in order to get decent execution speed and reliable behavior. The readonly lists, on the other hand, seem to work fine. This kind of defeats the point of using the framework in the first place.<br><br>Any help or suggestions would be appreciated.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>Normally CheckRules() should only be called from PropertyHasChanged(), which should only be called in your property set blocks.</P>
+<P>During a Save() operation the properties shouldn't be getting set, so CheckRules() shouldn't trigger. If it is triggering, then you have something odd with either your UI or object (I am assuming you are using a local data portal).</P>
+<P>If, by checking validity, you mean IDataErrorInfo methods are called, then that's a different matter. Those methods are called by data binding, and quite often. But if they are being called during your Save() call, then you are not properly disconnecting event handling at the bindingsource. This is discussed in the book - you need to turn off event handling at the bindingsource or things get ugly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 18, 2006</h2>Thanks. The behavior that I have ended up with is probably the result of <br />trying to make sure that all of the controls that did not properly <br />notify the BO of their changes from the UI, got their changes applied <br />just before doing the save.<br /><br />I've obviously got to resolve the UI notification failure as that is the <br />root of all this evil. I will look into turning off the event handling too.<br /><br />btw, any suggestions on how best to get a control that isn't signaling <br />that it has been updated, to send a signal?<br /><br />Thanks again,<br /><br />RockfordLhotka wrote:<br />><br />> Normally CheckRules() should only be called from PropertyHasChanged(), <br />> which should only be called in your property set blocks.<br />><br />> During a Save() operation the properties shouldn't be getting set, so <br />> CheckRules() shouldn't trigger. If it is triggering, then you have <br />> something odd with either your UI or object (I am assuming you are <br />> using a local data portal).<br />><br />> If, by checking validity, you mean IDataErrorInfo methods are called, <br />> then that's a different matter. Those methods are called by data <br />> binding, and quite often. But if they are being called during your <br />> Save() call, then you are not properly disconnecting event handling at <br />> the bindingsource. This is discussed in the book - you need to turn <br />> off event handling at the bindingsource or things get ugly.<br />><br />><br />><br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>Are your combobox controls <EM>never</EM> updating the object? That's not right. I use comboboxes all the time and they update when you tab off the control (I just sometimes wish they did an update when I selected an item).</P>
+<P>If this is the case, then you aren't binding to them correctly - at least that's been my experience.</P>
+<P>I always use drag-and-drop binding now with comboboxes.</P>
+<OL>
+<LI>Set the object property control type to combobox in the data sources window</LI>
+<LI>Drag the object (or property) onto the form to create the combobox</LI>
+<LI>THEN drag the namevaluelist object node from the data sources window onto the existing combobox control</LI></OL>
+<P>It is like a magic incantation - all the data binding properties of the control get set up correctly. When I try to do it by hand I usually mess it up, so I've taken to just doing it this way all the time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 18, 2006</h2>I've been doing it by hand. I'll try drag-and-drop.<br /><br />Thanks,<br />de<br /><br />On Tue, 18 Jul 2006 16:41:45 -0500, "RockfordLhotka"<br /> said:<br />> Are your combobox controls never updating the object? That's not right. I<br />> use comboboxes all the time and they update when you tab off the control<br />> (I just sometimes wish they did an update when I selected an item).<br />> <br />> If this is the case, then you aren't binding to them correctly - at least<br />> that's been my experience.<br />> <br />> I always use drag-and-drop binding now with comboboxes.<br />> <br />> Set the object property control type to combobox in the data sources<br />> window<br />> Drag the object (or property) onto the form to create the combobox<br />> THEN drag the namevaluelist object node from the data sources window onto<br />> the existing combobox control<br />> <br />> It is like a magic incantation - all the data binding properties of the<br />> control get set up correctly. When I try to do it by hand I usually mess<br />> it up, so I've taken to just doing it this way all the time.<br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 18, 2006</h2>Using the drag-and-drop is the answer. It set a whole bunch of things<br />that I wouldn't have thought to do manually. Things are working more as<br />I would expect.<br /><br />What can you tell me about OnUnknownPropertyChanged().<br />When I call CancelEdit, this particular method is taking over 30 seconds<br />to execute. the BO has about 60 fields. (and you're right, I'm running<br />local).<br /><br />Thanks,<br />de<br /><br />On Tue, 18 Jul 2006 16:41:45 -0500, "RockfordLhotka"<br /> said:<br />> Are your combobox controls never updating the object? That's not right. I<br />> use comboboxes all the time and they update when you tab off the control<br />> (I just sometimes wish they did an update when I selected an item).<br />> <br />> If this is the case, then you aren't binding to them correctly - at least<br />> that's been my experience.<br />> <br />> I always use drag-and-drop binding now with comboboxes.<br />> <br />> Set the object property control type to combobox in the data sources<br />> window<br />> Drag the object (or property) onto the form to create the combobox<br />> THEN drag the namevaluelist object node from the data sources window onto<br />> the existing combobox control<br />> <br />> It is like a magic incantation - all the data binding properties of the<br />> control get set up correctly. When I try to do it by hand I usually mess<br />> it up, so I've taken to just doing it this way all the time.<br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 18, 2006</h2><P>I discuss OnUnknownPropertyChanged() in the book, and not in entirely glowing terms. You can read up on it there, and why it is the way it is.</P>
+<P>But for it to take 30 seconds with 60 fields seems quite amazing to me. It is certainly the case that it triggers data binding to do a refresh for each property on the object - which is not pleasant. Normally this is bad, but not THAT bad. My guess is that you've got some extra work occuring due to the data binding refresh, that really shouldn't happen in such a case.</P>
+<P>The good news is that the method is Overridable/virtual, so you can replace it with a more efficient implementation for your particular object.</P>
+<P>The thing is, all it REALLY needs to do is raise the PropertyChanged event for any single property that you KNOW is currently bound to a control. One general solution is to return to what I did in CSLA .NET 1.x, and raise PropertyChanged for the IsDirty property - then make sure to always, always, always bind a checkbox control to IsDirty on every form (and set the checkbox control's size to 0,0).</P>
+<P>Another possibility, on a per-object basis, is to pick a property you know will always be bound to a visible, enabled control and raise PropertyChanged for that particular property. For instance, if you know that the Id property will always be bound on your forms, you could do this:</P>
+<P>Protected Overrides Sub OnUnknownPropertyChanged()<BR>&nbsp; OnPropertyChanged("Id")<BR>End Sub</P>
+<P>The result is that data binding will refresh as needed - but just once, instead of once per property.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, July 19, 2006</h2>Thanks. I think I have a property that is a perfect candidate for the <br />override to signal on. I'll go to work on it. This project is really <br />starting to gel!<br /><br />Thanks again,<br />de<br /><br />RockfordLhotka wrote:<br /><br />> I discuss OnUnknownPropertyChanged() in the book, and not in entirely <br />> glowing terms. You can read up on it there, and why it is the way it is.<br />><br />> But for it to take 30 seconds with 60 fields seems quite amazing to <br />> me. It is certainly the case that it triggers data binding to do a <br />> refresh for each property on the object - which is not pleasant. <br />> Normally this is bad, but not THAT bad. My guess is that you've got <br />> some extra work occuring due to the data binding refresh, that really <br />> shouldn't happen in such a case.<br />><br />> The good news is that the method is Overridable/virtual, so you can <br />> replace it with a more efficient implementation for your particular <br />> object.<br />><br />> The thing is, all it REALLY needs to do is raise the PropertyChanged <br />> event for any single property that you KNOW is currently bound to a <br />> control. One general solution is to return to what I did in CSLA .NET <br />> 1.x, and raise PropertyChanged for the IsDirty property - then make <br />> sure to always, always, always bind a checkbox control to IsDirty on <br />> every form (and set the checkbox control's size to 0,0).<br />><br />> Another possibility, on a per-object basis, is to pick a property you <br />> know will always be bound to a visible, enabled control and raise <br />> PropertyChanged for that particular property. For instance, if you <br />> know that the Id property will always be bound on your forms, you <br />> could do this:<br />><br />> Protected Overrides Sub OnUnknownPropertyChanged()<br />>   OnPropertyChanged("Id")<br />> End Sub<br />><br />> The result is that data binding will refresh as needed - but just <br />> once, instead of once per property.<br />><br />><br />><br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, July 19, 2006</h2>One more question about IsDirty. It doesn't show up as a property in the<br />data source so there is no way to drag it to a checkbox. I tried setting<br />the binding on the checkbox manually but I get an error "Cannot bind to<br />perperty IsDirty of the datasource."<br /><br />Any pointers on how to make this work?<br /><br />Thanks,<br />de<br /><br />On Tue, 18 Jul 2006 19:44:46 -0500, "RockfordLhotka"<br /> said:<br />> I discuss OnUnknownPropertyChanged() in the book, and not in entirely<br />> glowing terms. You can read up on it there, and why it is the way it is.<br />> <br />> But for it to take 30 seconds with 60 fields seems quite amazing to me.<br />> It is certainly the case that it triggers data binding to do a refresh<br />> for each property on the object - which is not pleasant. Normally this is<br />> bad, but not THAT bad. My guess is that you've got some extra work<br />> occuring due to the data binding refresh, that really shouldn't happen in<br />> such a case.<br />> <br />> The good news is that the method is Overridable/virtual, so you can<br />> replace it with a more efficient implementation for your particular<br />> object.<br />> <br />> The thing is, all it REALLY needs to do is raise the PropertyChanged<br />> event for any single property that you KNOW is currently bound to a<br />> control. One general solution is to return to what I did in CSLA .NET<br />> 1.x, and raise PropertyChanged for the IsDirty property - then make sure<br />> to always, always, always bind a checkbox control to IsDirty on every<br />> form (and set the checkbox control's size to 0,0).<br />> <br />> Another possibility, on a per-object basis, is to pick a property you<br />> know will always be bound to a visible, enabled control and raise<br />> PropertyChanged for that particular property. For instance, if you know<br />> that the Id property will always be bound on your forms, you could do<br />> this:<br />> <br />> Protected Overrides Sub OnUnknownPropertyChanged()<br />>   OnPropertyChanged("Id")<br />> End Sub<br />> <br />> The result is that data binding will refresh as needed - but just once,<br />> instead of once per property.<br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 20, 2006</h2>Its marked with a Browsable( false ) attribute, so you can't use it for databinding.&nbsp; One solution is to create your own property which just returns IsDirty, and bind do that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 20, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>It is just one line of code to do the binding - often 
+placed in the form load event handler:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>chkIsDirty.DataBindings.Add("Value", _customer, 
+"IsDirty")</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>To make this really work, you need to be able to rebind as 
+well - if you ever change the object to which the form is bound. In the previous 
+edition of the books I'd created a helper function to handle the unbind-rebind 
+code (because unbinding isn't so easy).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, July 20, 2006 7:21 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Redundant 
+  Code?<BR></FONT><BR></DIV>
+  <DIV></DIV>Its marked with a Browsable( false ) attribute, so you can't use it 
+  for databinding.&nbsp; One solution is to create your own property which just 
+  returns IsDirty, and bind do that.<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 20, 2006</h2>
+
+
+  
+  
+
+
+<font size="+1">Thanks. I was trying to used "Checked" rather than
+value.<br>
+<br>
+de<br>
+</font><br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">It is just one line of code to
+do the binding - often placed in the form load event handler:</font></span></div>
+  <div align="left"><span class="903595014-20072006"></span>&nbsp;</div>
+  <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">chkIsDirty.DataBindings.Add("Value",
+_customer, "IsDirty")</font></span></div>
+  <div align="left"><span class="903595014-20072006"></span>&nbsp;</div>
+  <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">To make this really work, you
+need to be able to rebind as well - if you ever change the object to
+which the form is bound. In the previous edition of the books I'd
+created a helper function to handle the unbind-rebind code (because
+unbinding isn't so easy).</font></span></div>
+  <div align="left"><span class="903595014-20072006"></span>&nbsp;</div>
+  <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div>
+  <br>
+  <blockquote>
+    <div class="OutlookMessageHeader" align="left">
+    <hr> <font face="Tahoma" size="2"><b>From:</b>
+ajj3085 [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+    <b>Sent:</b> Thursday, July 20, 2006 7:21 AM<br>
+    <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+    <b>Subject:</b> Re: [CSLA .NET] Redundant Code?<br>
+    </font><br>
+    </div>
+Its marked with a Browsable( false ) attribute, so you can't use it for
+databinding.&nbsp; One solution is to create your own property which just
+returns IsDirty, and bind do that.<br>
+    <br>
+    <br>
+    <br>
+  </blockquote>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 20, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=544130122-20072006><FONT face=Arial color=#0000ff size=2>Well, Checked might be the right property - I typed this 
+into Outlook, and so there was no Intellisense :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=544130122-20072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=544130122-20072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Daniel Essin [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, July 20, 2006 4:52 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Redundant 
+  Code?<BR></FONT><BR></DIV>
+  <DIV></DIV><FONT size=+1>Thanks. I was trying to used "Checked" rather 
+  than value.<BR><BR>de<BR></FONT><BR>Rockford Lhotka wrote: 
+  <BLOCKQUOTE>
+    
+    <DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>It is just one line of code to do the binding - often 
+    placed in the form load event handler:</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=903595014-20072006></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>chkIsDirty.DataBindings.Add("Value", _customer, 
+    "IsDirty")</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=903595014-20072006></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>To make this really work, you need to be able to rebind 
+    as well - if you ever change the object to which the form is bound. In the 
+    previous edition of the books I'd created a helper function to handle the 
+    unbind-rebind code (because unbinding isn't so easy).</FONT></SPAN></DIV>
+    <DIV align=left><SPAN class=903595014-20072006></SPAN>&nbsp;</DIV>
+    <DIV align=left><SPAN class=903595014-20072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+    <BLOCKQUOTE>
+      <DIV class=OutlookMessageHeader align=left>
+      <HR>
+      <FONT face=Tahoma size=2><B>From:</B> ajj3085 [<A class=moz-txt-link-freetext href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</A>] 
+      <BR><B>Sent:</B> Thursday, July 20, 2006 7:21 AM<BR><B>To:</B> <A class=moz-txt-link-abbreviated href="mailto:rocky@lhotka.net">rocky@lhotka.net</A><BR><B>Subject:</B> Re: 
+      [CSLA .NET] Redundant Code?<BR></FONT><BR></DIV>Its marked with a 
+      Browsable( false ) attribute, so you can't use it for databinding.&nbsp; 
+      One solution is to create your own property which just returns IsDirty, 
+      and bind do 
+  that.<BR><BR><BR><BR></BLOCKQUOTE><BR><BR><BR></BLOCKQUOTE><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Monday, July 24, 2006</h2>
+
+
+  
+  
+
+
+Followup. I finally found something that worked.<br>
+<br>
+I added the following to my class which made it appear in the
+datasources list of fields and I could then drop it onto the check box.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.ComponentModel.Browsable(true)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public new bool IsDirty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.IsDirty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+I then added to the form:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void chkIsDirty_CheckedChanged(object sender, EventArgs
+e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; saveChangesToolStripMenuItem.Enabled = (chkIsDirty.Checked);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+I think that I may add the first snippet to my template and generate it
+into all of the instances. It seems useful. Your thoughts?<br>
+<br>
+Thanks,<br>
+Dan<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  
+  <div align="left"><span class="544130122-20072006"><font color="#0000ff" face="Arial" size="2">Well, Checked might be the right
+property - I typed this into Outlook, and so there was no Intellisense
+:)</font></span></div>
+  <div align="left"><span class="544130122-20072006"></span>&nbsp;</div>
+  <div align="left"><span class="544130122-20072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div>
+  <br>
+  <blockquote>
+    <div class="OutlookMessageHeader" align="left">
+    <hr> <font face="Tahoma" size="2"><b>From:</b>
+Daniel Essin [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+    <b>Sent:</b> Thursday, July 20, 2006 4:52 PM<br>
+    <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+    <b>Subject:</b> Re: [CSLA .NET] Redundant Code?<br>
+    </font><br>
+    </div>
+    <font size="+1">Thanks. I was trying to used "Checked" rather
+than value.<br>
+    <br>
+de<br>
+    </font><br>
+Rockford Lhotka wrote:
+    <blockquote>
+      
+      <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">It is just one line of code to
+do the binding - often placed in the form load event handler:</font></span></div>
+      <div align="left"><span class="903595014-20072006"></span>&nbsp;</div>
+      <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">chkIsDirty.DataBindings.Add("Value",
+_customer, "IsDirty")</font></span></div>
+      <div align="left"><span class="903595014-20072006"></span>&nbsp;</div>
+      <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">To make this really work, you
+need to be able to rebind as well - if you ever change the object to
+which the form is bound. In the previous edition of the books I'd
+created a helper function to handle the unbind-rebind code (because
+unbinding isn't so easy).</font></span></div>
+      <div align="left"><span class="903595014-20072006"></span>&nbsp;</div>
+      <div align="left"><span class="903595014-20072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div>
+      <br>
+      <blockquote>
+        <div class="OutlookMessageHeader" align="left">
+        <hr> <font face="Tahoma" size="2"><b>From:</b>
+ajj3085 [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+        <b>Sent:</b> Thursday, July 20, 2006 7:21 AM<br>
+        <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+        <b>Subject:</b> Re: [CSLA .NET] Redundant Code?<br>
+        </font><br>
+        </div>
+Its marked with a Browsable( false ) attribute, so you can't use it for
+databinding.&nbsp; One solution is to create your own property which just
+returns IsDirty, and bind do that.<br>
+        <br>
+        <br>
+        <br>
+      </blockquote>
+      <br>
+      <br>
+      <br>
+    </blockquote>
+    <br>
+    <br>
+    <br>
+  </blockquote>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 20, 2006</h2>
+
+
+  
+
+
+<font size="+1">good suggestion.<br>
+<br>
+Thanks,<br>
+de<br>
+</font><br>
+ajj3085 wrote:
+<blockquote>Its marked with a Browsable( false ) attribute, so you
+can't use it for databinding.&nbsp; One solution is to create your own
+property which just returns IsDirty, and bind do that.<br>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Monday, July 24, 2006</h2>Question: Why does<br />    protected void MarkClean()<br />    {<br />      _isDirty = false;<br />      OnUnknownPropertyChanged();<br />    }<br />call OnUnknownPropertyChanged(). Following your suggestion to override <br />it and raise OnPropertyChanged on a field that I know is bound and <br />visible, OnUnknownPropertyChanged raises OnPropertyChanged("MRN") which <br />sets _isDirty back to true - so the form never thinks that it is done <br />saving and it keeps prompting to save over and over.<br /><br />I must have missed something.<br /><br />Thanks,<br />de<br /><br />RockfordLhotka wrote:<br />><br />> I discuss OnUnknownPropertyChanged() in the book, and not in entirely <br />> glowing terms. You can read up on it there, and why it is the way it is.<br />><br />> But for it to take 30 seconds with 60 fields seems quite amazing to <br />> me. It is certainly the case that it triggers data binding to do a <br />> refresh for each property on the object - which is not pleasant. <br />> Normally this is bad, but not THAT bad. My guess is that you've got <br />> some extra work occuring due to the data binding refresh, that really <br />> shouldn't happen in such a case.<br />><br />> The good news is that the method is Overridable/virtual, so you can <br />> replace it with a more efficient implementation for your particular <br />> object.<br />><br />> The thing is, all it REALLY needs to do is raise the PropertyChanged <br />> event for any single property that you KNOW is currently bound to a <br />> control. One general solution is to return to what I did in CSLA .NET <br />> 1.x, and raise PropertyChanged for the IsDirty property - then make <br />> sure to always, always, always bind a checkbox control to IsDirty on <br />> every form (and set the checkbox control's size to 0,0).<br />><br />> Another possibility, on a per-object basis, is to pick a property you <br />> know will always be bound to a visible, enabled control and raise <br />> PropertyChanged for that particular property. For instance, if you <br />> know that the Id property will always be bound on your forms, you <br />> could do this:<br />><br />> Protected Overrides Sub OnUnknownPropertyChanged()<br />>   OnPropertyChanged("Id")<br />> End Sub<br />><br />> The result is that data binding will refresh as needed - but just <br />> once, instead of once per property.<br />><br />><br />><br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>Two things:<br /><br />1. You probably don't want to call OnPropertyChanged, but rather just raise<br />the PropertyChanged event. I think I misspoke in a previous post on this<br />topic.<br /><br />2. In this thread or another, there's been discussion about<br />OnUnknownPropertyChanged and how it works. Someone kindly pointed out that<br />if you raise PropertyChanged with a property name of "" or string.Empty data<br />binding will refresh all controls - which is really nice. So in 2.1 this is<br />what CSLA will do in its default OnUnknownPropertyChanged implementation.<br /><br />What this means, is that you _should_ be able to raise PropertyChanged for<br />"" and all should be well.<br /><br />Rocky<br /><br />> -----Original Message--<br />> From: Daniel Essin [mailto:cslanet@lhotka.net] <br />> Sent: Monday, July 24, 2006 6:55 PM<br />> To: rocky@lhotka.net<br />> Subject: Re: [CSLA .NET] Redundant Code?<br />> <br />> Question: Why does<br />>     protected void MarkClean()<br />>     {<br />>       _isDirty = false;<br />>       OnUnknownPropertyChanged();<br />>     }<br />> call OnUnknownPropertyChanged(). Following your suggestion to <br />> override it and raise OnPropertyChanged on a field that I <br />> know is bound and visible, OnUnknownPropertyChanged raises <br />> OnPropertyChanged("MRN") which sets _isDirty back to true - <br />> so the form never thinks that it is done saving and it keeps <br />> prompting to save over and over.<br />> <br />> I must have missed something.<br />> <br />> Thanks,<br />> de</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Monday, July 24, 2006</h2>
+
+
+  
+  
+
+
+Thanks. I'll try that.<br>
+<br>
+Dan<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  <pre>Two things:
+
+1. You probably don't want to call OnPropertyChanged, but rather just raise
+the PropertyChanged event. I think I misspoke in a previous post on this
+topic.
+
+2. In this thread or another, there's been discussion about
+OnUnknownPropertyChanged and how it works. Someone kindly pointed out that
+if you raise PropertyChanged with a property name of "" or string.Empty data
+binding will refresh all controls - which is really nice. So in 2.1 this is
+what CSLA will do in its default OnUnknownPropertyChanged implementation.
+
+What this means, is that you _should_ be able to raise PropertyChanged for
+"" and all should be well.
+
+Rocky
+
+  </pre>
+  <blockquote>
+    <pre>-----Original Message--
+From: Daniel Essin [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] 
+Sent: Monday, July 24, 2006 6:55 PM
+To: <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a>
+Subject: Re: [CSLA .NET] Redundant Code?
+
+Question: Why does
+    protected void MarkClean()
+    {
+      _isDirty = false;
+      OnUnknownPropertyChanged();
+    }
+call OnUnknownPropertyChanged(). Following your suggestion to 
+override it and raise OnPropertyChanged on a field that I 
+know is bound and visible, OnUnknownPropertyChanged raises 
+OnPropertyChanged("MRN") which sets _isDirty back to true - 
+so the form never thinks that it is done saving and it keeps 
+prompting to save over and over.
+
+I must have missed something.
+
+Thanks,
+de
+    </pre>
+  </blockquote>
+  <pre>
+
+
+
+  </pre>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 25, 2006</h2>
+
+
+  
+
+
+Rocky,<br>
+<br>
+I'm getting really confused but I think the problem originates with the
+way data binding works. Here's my scenario. A user changes data in a
+field on an mdi child form and then clicks a menu item on the mdi
+parent form to change to a different function of the app. I want to
+detect and warn the user if their changes have not been saved.
+Regardless of how much fiddling I do with PropertyHasChanged or
+IsDirty, if the user has not caused the focus to shift to another field
+of the form that they are currently on, the IsDirty property never gets
+set. On the other hand, if I override UnknownPropertyHas changed and
+raise PropertyHasChanged("") then the BO never gest marked as clean
+(i.e. it keeps testing dirty no matter how many times applyedit and
+save are invoked<br>
+<br>
+It seem to be a no-win situation. The only thing that I have come up
+with that works is the following:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void PostData()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int marker = this.tabControl1.SelectedIndex;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.tabControl1.SelectedIndex = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.chkIsDirty.Focus();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.tabControl1.SelectedIndex = marker;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((MainForm)MdiParent).StatusMessage = ex.Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void SaveData()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_call.IsDirty)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _call.ApplyEdit();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _call.Save();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((MainForm)MdiParent).StatusMessage = "Record
+Saved";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((MainForm)MdiParent).StatusMessage = ex.Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void FormPhoneCall_FormClosing(object sender,
+FormClosingEventArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PostData();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_call.IsDirty)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (MessageBox.Show("Save Changes?", "Data Changed",
+MessageBoxButtons.YesNo) == DialogResult.Yes)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SaveData();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+PostData() gets called at every point where I want
+to test IsDirty, before actually testing it.<br>
+<br>
+I have also added the following to my business object:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void OnUnknownPropertyChanged()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnUnknownPropertyChanged();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //PropertyHasChanged("");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.ComponentModel.Browsable(true)]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public new bool IsDirty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.IsDirty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+and this IsDirty is bound to chkIsDirty with 0,0 size that is on the
+form.<br>
+<br>
+I have a feeling that I've totally perverted what you originally had in
+mind. What am I missing?<br>
+<br>
+<br>
+Thanks,<br>
+Dan<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  <pre>Two things:
+
+1. You probably don't want to call OnPropertyChanged, but rather just raise
+the PropertyChanged event. I think I misspoke in a previous post on this
+topic.
+
+2. In this thread or another, there's been discussion about
+OnUnknownPropertyChanged and how it works. Someone kindly pointed out that
+if you raise PropertyChanged with a property name of "" or string.Empty data
+binding will refresh all controls - which is really nice. So in 2.1 this is
+what CSLA will do in its default OnUnknownPropertyChanged implementation.
+
+What this means, is that you _should_ be able to raise PropertyChanged for
+"" and all should be well.
+
+Rocky
+
+  </pre>
+  <blockquote>
+    <pre>-----Original Message--
+From: Daniel Essin [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] 
+Sent: Monday, July 24, 2006 6:55 PM
+To: <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a>
+Subject: Re: [CSLA .NET] Redundant Code?
+
+Question: Why does
+    protected void MarkClean()
+    {
+      _isDirty = false;
+      OnUnknownPropertyChanged();
+    }
+call OnUnknownPropertyChanged(). Following your suggestion to 
+override it and raise OnPropertyChanged on a field that I 
+know is bound and visible, OnUnknownPropertyChanged raises 
+OnPropertyChanged("MRN") which sets _isDirty back to true - 
+so the form never thinks that it is done saving and it keeps 
+prompting to save over and over.
+
+I must have missed something.
+
+Thanks,
+de
+    </pre>
+  </blockquote>
+  <pre>
+
+
+
+  </pre>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, July 27, 2006</h2>Just catching up on some reading from a few days ago ...<br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Are your combobox controls <em>never</em> updating the object? That's not right. I use comboboxes all the time and they update when you tab off the control (I just sometimes wish they did an update when I selected an item).</div></BLOCKQUOTE>If you want a control to update instantly, edit its DataBindings / Advanced properties and change the data source update mode for that binding from OnValidation to OnPropertyChanged. It works great for discreet value type controls like checkboxes, dropdown lists etc. Probably not the best thing to do with a textbox because it would fire away on every keystroke.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 27, 2006</h2>Thanks, that's extremely helpful. I didn't know about that property<br />before. I will definitely try it.<br /><br />de<br /><br />On Thu, 27 Jul 2006 15:57:52 -0500, "tetranz"  said:<br />> Just catching up on some reading from a few days ago ...<br />> RockfordLhotka:Are your combobox controls never updating the object?<br />> That's not right. I use comboboxes all the time and they update when you<br />> tab off the control (I just sometimes wish they did an update when I<br />> selected an item).If you want a control to update instantly, edit its<br />> DataBindings / Advanced properties and change the data source update mode<br />> for that binding from OnValidation to OnPropertyChanged. It works great<br />> for discreet value type controls like checkboxes, dropdown lists etc.<br />> Probably not the best thing to do with a textbox because it would fire<br />> away on every keystroke.<br />> <br />> Ross<br />> <br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 25, 2006</h2>That call to OnUnknownPropertyChanged() really does take between 30 and <br />45 seconds to get to the DataPortal_Update method.<br /><br />This is the structure of the BO:<br /><br />        //declare members<br />        private Guid _EncId = Guid.NewGuid();<br />        private string _MRN = string.Empty;<br />        private string _ENCTYPE = string.Empty;<br />        private string _CALLERNAME = string.Empty;<br />        private string _CALLERPHONENUM = string.Empty;<br />        private string _PROVIDERONCALL = string.Empty;<br />        private SmartDate _CALLDATE = new SmartDate(true);<br />        private int _AFTERHOURS = 0;<br />        private string _PTADDR1 = string.Empty;<br />        private string _PTADDR2 = string.Empty;<br />        private string _PTCITY = string.Empty;<br />        private string _PTZIP = string.Empty;<br />        private string _PTPHONENUM = string.Empty;<br />        private string _PRIMARYCARESITE = string.Empty;<br />        private string _COVERAGE = string.Empty;<br />        private string _CALLEDFROM = string.Empty;<br />        private string _CALLINGPROVIDER = string.Empty;<br />        private string _CALLERADDRESS1 = string.Empty;<br />        private string _CALLERADDRESS2 = string.Empty;<br />        private string _CALLERCITY = string.Empty;<br />        private string _CALLERSTATE = string.Empty;<br />        private string _CALLERZIP = string.Empty;<br />        private string _CHIEFCOMPLAINT = string.Empty;<br />        private string _TEMPERATURE = string.Empty;<br />        private string _PULSE = string.Empty;<br />        private string _RESP = string.Empty;<br />        private string _BP = string.Empty;<br />        private string _ALLERGIES = string.Empty;<br />        private int _NEWPROBLEM = 0;<br />        private string _PROBLEMDURATION = string.Empty;<br />        private string _PROBUNITS = string.Empty;<br />        private string _PASTMEDHX = string.Empty;<br />        private string _MEDICATIONS = string.Empty;<br />        private string _WORKINGDX = string.Empty;<br />        private string _ICD9 = string.Empty;<br />        private string _NOTES = string.Empty;<br />        private string _ADVICEGIVEN = string.Empty;<br />        private string _DISPO = string.Empty;<br />        private string _REFERRALTYPE = string.Empty;<br />        private string _INPATIENTSITE = string.Empty;<br />        private string _URGENTCARESITE = string.Empty;<br />        private string _EXTERNALSITE = string.Empty;<br />        private string _AUTHACTION = string.Empty;<br />        private string _AUTHNUM = string.Empty;<br />        private string _AUTHLOS = string.Empty;<br />        private string _TRANSPORTATION = string.Empty;<br />        private SmartDate _CmNotifydate = new SmartDate(true);<br />        private int _NEEDSFU = 0;<br />        private string _FuNotes = string.Empty;<br />        private SmartDate _CHPADMINDATE = new SmartDate(true);<br />        private SmartDate _PCSDATE = new SmartDate(true);<br />        private SmartDate _CREATEDATE = new SmartDate(true);<br />        private string _ORIGINALMRN = string.Empty;<br />        private string _UmOperator = string.Empty;<br />        private SmartDate _TimeMdCalled = new SmartDate(true);<br />        private SmartDate _TimeMdResp = new SmartDate(true);<br />        private string _CALLINGPROVIDERPHONE = string.Empty;<br /><br />As I mentioned before, leaving the call to OnUnknownPropertyChanged() in <br />has the side effect of either resetting or not clearing the IsDirty flag.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DanEssin:</strong></div><div>As I mentioned before, leaving the call to OnUnknownPropertyChanged() in has the side effect of either resetting or not clearing the IsDirty flag.</div></BLOCKQUOTE></P>
+<P>And this is what has me concerned. This call shouldn't be altering IsDirty at all. Only the MarkDirty() and MarkClean() methods alter the value of IsDirty. Neither of these methods are called as part of OnPropertyChanged() or OnUnknownPropertyChanged(), and so something <EM>else</EM> is obviously triggering a call to one or both of these methods. That's suspicious, as it implies that there's some other processing going on here outside of CSLA itself.</P>
+<P>When in doubt, always fall back to a simple example and troubleshoot. I'm attaching a simple example that doesn't seem to have your issue, and which illustrates how the binding should work. There's something different in your code that's causing your IsDirty issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2><P>Sorry, forgot the Cancel button. It is just another button, with the following code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Button2_Click(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.Object, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> Button2.Click</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Me</FONT><FONT size=2>.PersonBindingSource.CancelEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 25, 2006</h2>
+
+
+  
+
+
+Did I miss something? You mentioned an attachment but I can't find
+it.<br>
+<br>
+Thanks,<br>
+Dan<br>
+<br>
+RockfordLhotka wrote:
+<blockquote>
+  <blockquote>
+    <div><img src="/Themes/default/images/icon-quote.gif"> <strong>DanEssin:</strong></div>
+    <div>As I mentioned before, leaving the call to
+OnUnknownPropertyChanged() in has the side effect of either resetting
+or not clearing the IsDirty flag.</div>
+  </blockquote>
+  <p>And this is what has me concerned. This call shouldn't be altering
+IsDirty at all. Only the MarkDirty() and MarkClean() methods alter the
+value of IsDirty. Neither of these methods are called as part of
+OnPropertyChanged() or OnUnknownPropertyChanged(), and so something <em>else</em>
+is obviously triggering a call to one or both of these methods. That's
+suspicious, as it implies that there's some other processing going on
+here outside of CSLA itself.</p>
+  <p>When in doubt, always fall back to a simple example and
+troubleshoot. I'm attaching a simple example that doesn't seem to have
+your issue, and which illustrates how the binding should work. There's
+something different in your code that's causing your IsDirty issue.</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=497053522-25072006><FONT face=Arial color=#0000ff size=2>If you are doing this via email you'll need to go to the 
+forum itself to get the attachment. It appears as a link in the header of that 
+particular post.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=497053522-25072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=497053522-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Daniel Essin [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, July 25, 2006 5:24 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Redundant 
+  Code?<BR></FONT><BR></DIV>
+  <DIV></DIV>Did I miss something? You mentioned an attachment but I can't 
+  find it.<BR><BR>Thanks,<BR>Dan<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Tuesday, July 25, 2006</h2>
+
+
+  
+  
+
+
+duhh...<br>
+It's on page 2 (of course)<br>
+Thanks,<br>
+Dan<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  <div align="left"><span class="497053522-25072006"><font color="#0000ff" face="Arial" size="2">If you are doing this via email
+you'll need to go to the forum itself to get the attachment. It appears
+as a link in the header of that particular post.</font></span></div>
+  <div align="left"><span class="497053522-25072006"></span>&nbsp;</div>
+  <div align="left"><span class="497053522-25072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div>
+  <br>
+  <blockquote>
+    <div class="OutlookMessageHeader" align="left">
+    <hr> <font face="Tahoma" size="2"><b>From:</b>
+Daniel Essin [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+    <b>Sent:</b> Tuesday, July 25, 2006 5:24 PM<br>
+    <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+    <b>Subject:</b> Re: [CSLA .NET] Redundant Code?<br>
+    </font><br>
+    </div>
+    Did I miss something? You mentioned an attachment but I can't
+find it.<br>
+    <br>
+Thanks,<br>
+Dan<br>
+    </blockquote>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, July 26, 2006</h2>
+
+
+  
+
+
+Yeah, my oversight. I didn't notice that there was a page 2.<br>
+<br>
+I've got a couple more questions about the OnUnknownPropertyChanged and
+the sample.<br>
+<br>
+1 - The sample didn't actually compile until I added an inner Criteria
+class to person and pass a new instance to the Fetch.<br>
+<br>
+2 - In your sample, OnUnknownPropertyChanged() is called 9
+times<br>
+<br>
+2 - When I run the sample it calls OnUnknownPropertyChanged()
+once and executes instantaneously. When I call _call.Save() in my app,
+it calls OnUnknownPropertyChanged() twice and each call takes
+65-70 seconds to execute. If I comment out the call to OnUnknownPropertyChanged(),
+everything still saves OK.<br>
+<br>
+I have also noted the following. This code from BusinessBase:<br>
+&nbsp;&nbsp;&nbsp; public override bool Equals(object obj)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj is T)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object id = GetIdValue();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (id == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentException(Resources.GetIdValueCantBeNull);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ((T)obj).GetIdValue().Equals(id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;is being executed 71 times, once for each property of my BO and each
+time it has to do 2 calls to obj.GetID.<br>
+<br>
+Also in your example nonSerializableHandlers is null. In my project
+this is not null and it calls:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nonSerializableHandlers.Invoke(this,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new PropertyChangedEventArgs(propertyName));<br>
+71 times. Each of these calls seems to visit more than one property of
+the BO so the net effect is that there are several hundred visits to
+properties of the bo for each call to OnUnknownPropertyChanged().<br>
+<br>
+Then for some reason, the whole sequence repeats a second time before
+completing the call to Save().<br>
+<br>
+<br>
+&nbsp;so that leaves a couple of questions:<br>
+<br>
+a) When is it absolutely essential? (It will be called routinely unless
+I override it in the BO and suppress the call to base.OnUnknownPropertyChanged(),
+which I have done in this case. )<br>
+<br>
+b) It seems like the verification of the object identity could
+be done only once per save rather than once perproperty?<br>
+<br>
+c) Any idea on how to track down why each property is being visited so
+many times?<br>
+<br>
+One final thing. I really think that the IsDirty on BusinessBase should
+be made browsable so that you could bind to it in a form. Doing this
+seems to help alot. I've made that change in the source for now.<br>
+<br>
+Any ideas?<br>
+<br>
+Thanks, Dan<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  <div align="left"><span class="497053522-25072006"><font color="#0000ff" face="Arial" size="2">If you are doing this via email
+you'll need to go to the forum itself to get the attachment. It appears
+as a link in the header of that particular post.</font></span></div>
+  <div align="left"><span class="497053522-25072006"></span>&nbsp;</div>
+  <div align="left"><span class="497053522-25072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div>
+  <br>
+  <blockquote>
+    <div class="OutlookMessageHeader" align="left">
+    <hr> <font face="Tahoma" size="2"><b>From:</b>
+Daniel Essin [<a class="moz-txt-link-freetext" href="mailto:cslanet@lhotka.net">mailto:cslanet@lhotka.net</a>] <br>
+    <b>Sent:</b> Tuesday, July 25, 2006 5:24 PM<br>
+    <b>To:</b> <a class="moz-txt-link-abbreviated" href="mailto:rocky@lhotka.net">rocky@lhotka.net</a><br>
+    <b>Subject:</b> Re: [CSLA .NET] Redundant Code?<br>
+    </font><br>
+    </div>
+    Did I miss something? You mentioned an attachment but I can't
+find it.<br>
+    <br>
+Thanks,<br>
+Dan<br>
+    </blockquote>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>Are you running 2.0.3? Or at least 2.0.2? In that case my 
+code should run just fine without the need for a criteria 
+class.</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV><BR>1 - The sample didn't actually compile until I added an inner 
+  Criteria class to person and pass a new instance to the Fetch.<BR><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>&nbsp;[...]&nbsp;</FONT></SPAN><BR>c) Any idea on how to track 
+  down why each property is being visited so many times?<BR><BR>One final thing. 
+  I really think that the IsDirty on BusinessBase should be made browsable so 
+  that you could bind to it in a form. Doing this seems to help alot. I've made 
+  that change in the source for now.<BR><BR><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></DIV></BLOCKQUOTE>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>Yes, I know exactly why many of these methods are called so many times - 
+this is the way data binding works. If this is unacceptable,&nbsp;then don't use 
+data binding. Other people have, in the past, found data binding to not meet 
+their needs, and they've&nbsp;written their own replacements - and you may need 
+to do the same thing.</FONT></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>However, I return to the fact that your IsDirty flag is somehow being set 
+based on a PropertyChanged event&nbsp;being raised - and I again point out that 
+you have something in your app that is doing this - it is not CSLA code by 
+itself. Given that this is happening, no other results can be considered 
+reliable, because we don't know (and you don't either) what code is running to 
+cause this, and how long that code might take, etc.</FONT></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>In 
+another thread it has been found that cascading ListChanged from a child 
+collection up through the parent as PropertyChanged is highly problematic. I 
+don't know if you are doing this, but at this point it is a highly suspect thing 
+to do. Certainly the DataSet doesn't do this, and it appears that data binding 
+just can't handle such an approach.</FONT></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>I 
+have also updated my article on binding to IsDirty (and IsSavable, etc.), to 
+specifically recommend the use of a bindingsource event rather than data binding 
+when dealing with these top-level properties</FONT></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=953391302-27072006><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c">http://www.lhotka.net/Article.aspx?area=4&amp;id=5faaee8e-8496-4845-86f7-787c6b64096c</A></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>This is largely based on that other thread dealing with cacading events 
+through parent objects - but it may matter here as 
+well.</FONT></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV><SPAN class=953391302-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 26, 2006</h2><P>Sorry if the tone of my previous post seems abrupt. That was not my intent.</P>
+<P>However, the point is this: you are encountering an issue that I have not seen in other apps, and which hasn't come up with the hundreds of other apps built by people using the framework.</P>
+<P>Part of the issue is simply the way data binding works - it is <EM>very</EM> chatty with its data source.</P>
+<P>But it seems quite clear that part of the issue must lie with your code. Since other appliations don't have these explosions of event processing, and don't have IsDirty getting changed mysteriously, the problem would appear to be unique to your situation - and thus to your code.</P>
+<P>I strongly suggest stripping back your code to the simplest possible example and building forward from there. At some point you'll add in some feature that exists in your current app and the problem will appear, and then you'll know what change causes the issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 27, 2006</h2>
+
+
+  
+  
+
+
+I didn't take your response as abrupt. I have a long history of
+finding creative ways to break things that are supposed to be bullet
+proof. This goes back to finding bugs in the A/D conversion assembly
+ routines on the PDP-11,&nbsp; having 5 of 5 crts shipped to me
+fail within the first year back in 1980, having Perter Norton tell me
+in 1981 that he didn't know that you could use Word to edit exe's that
+had ASCII drive letters embedded in the binaries to get them to use a
+different default drive, to finding over a dozen problems with the
+early releases of StrataFrame (a commercial BO framework that was
+released in 12/2005). Sometimes I just break things for stupid reasons
+because I am working in areas that I am still learning about and just
+plain violate the rules.<br>
+<br>
+In any case, the version I was running is csla20cs-RTM-060321.zip. I
+will go get the latest one and I will take your suggestion about
+stripping it down. <br>
+<br>
+The reason the IsDirty is getting reset when I put the
+PropertyHasChanged("") in the overridden OnUnknownPropertyChanged() is
+this:<br>
+&nbsp;&nbsp;&nbsp; protected virtual void PropertyHasChanged(string propertyName)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules(propertyName);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkDirty(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(propertyName);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+----<br>
+At this point I've installed the latest 2.0.3 and striped the app down
+to a minimum. Here's a trace of what happens when it loads a record,
+processes on changed field and then does a save.<br>
+This is the code for the save:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void SaveData()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_call.IsDirty)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("EndEdit");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bindingSourceCall.EndEdit();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Save");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _call.Save();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Done with Save");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((MainForm)MdiParent).StatusMessage = "Record
+Saved";<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.bindingSourceCall.ResetBindings(false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((MainForm)MdiParent).StatusMessage = ex.Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+This is the trace (I've embedded a few comments):<br>
+Load an existing record--<br>
+BusinessBase.MarkOld()<br>
+BusinessBase.MarkClean()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnUnknownPropertyChanged()<br>
+BindableBase.OnPropertyChanged()EncId<br>
+BindableBase.OnPropertyChanged()MRN<br>
+BindableBase.OnPropertyChanged()ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERNAME<br>
+BindableBase.OnPropertyChanged()CALLERPHONENUM<br>
+BindableBase.OnPropertyChanged()PROVIDERONCALL<br>
+BindableBase.OnPropertyChanged()CALLDATE<br>
+BindableBase.OnPropertyChanged()CALLDATEString<br>
+BindableBase.OnPropertyChanged()AFTERHOURS<br>
+BindableBase.OnPropertyChanged()PTADDR1<br>
+BindableBase.OnPropertyChanged()PTADDR2<br>
+BindableBase.OnPropertyChanged()PTCITY<br>
+BindableBase.OnPropertyChanged()PTZIP<br>
+BindableBase.OnPropertyChanged()PTPHONENUM<br>
+BindableBase.OnPropertyChanged()PRIMARYCARESITE<br>
+BindableBase.OnPropertyChanged()COVERAGE<br>
+BindableBase.OnPropertyChanged()CALLEDFROM<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDER<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS1<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS2<br>
+BindableBase.OnPropertyChanged()CALLERCITY<br>
+BindableBase.OnPropertyChanged()CALLERSTATE<br>
+BindableBase.OnPropertyChanged()CALLERZIP<br>
+BindableBase.OnPropertyChanged()CHIEFCOMPLAINT<br>
+BindableBase.OnPropertyChanged()TEMPERATURE<br>
+BindableBase.OnPropertyChanged()PULSE<br>
+BindableBase.OnPropertyChanged()RESP<br>
+BindableBase.OnPropertyChanged()BP<br>
+BindableBase.OnPropertyChanged()ALLERGIES<br>
+BindableBase.OnPropertyChanged()NEWPROBLEM<br>
+BindableBase.OnPropertyChanged()PROBLEMDURATION<br>
+BindableBase.OnPropertyChanged()PROBUNITS<br>
+BindableBase.OnPropertyChanged()PASTMEDHX<br>
+BindableBase.OnPropertyChanged()MEDICATIONS<br>
+BindableBase.OnPropertyChanged()WORKINGDX<br>
+BindableBase.OnPropertyChanged()ICD9<br>
+BindableBase.OnPropertyChanged()NOTES<br>
+BindableBase.OnPropertyChanged()ADVICEGIVEN<br>
+BindableBase.OnPropertyChanged()DISPO<br>
+BindableBase.OnPropertyChanged()REFERRALTYPE<br>
+BindableBase.OnPropertyChanged()INPATIENTSITE<br>
+BindableBase.OnPropertyChanged()URGENTCARESITE<br>
+BindableBase.OnPropertyChanged()EXTERNALSITE<br>
+BindableBase.OnPropertyChanged()AUTHACTION<br>
+BindableBase.OnPropertyChanged()AUTHNUM<br>
+BindableBase.OnPropertyChanged()AUTHLOS<br>
+BindableBase.OnPropertyChanged()TRANSPORTATION<br>
+BindableBase.OnPropertyChanged()CmNotifydate<br>
+BindableBase.OnPropertyChanged()CmNotifydateString<br>
+BindableBase.OnPropertyChanged()NEEDSFU<br>
+BindableBase.OnPropertyChanged()FuNotes<br>
+BindableBase.OnPropertyChanged()CHPADMINDATE<br>
+BindableBase.OnPropertyChanged()CHPADMINDATEString<br>
+BindableBase.OnPropertyChanged()PCSDATE<br>
+BindableBase.OnPropertyChanged()PCSDATEString<br>
+BindableBase.OnPropertyChanged()CREATEDATE<br>
+BindableBase.OnPropertyChanged()CREATEDATEString<br>
+BindableBase.OnPropertyChanged()ORIGINALMRN<br>
+BindableBase.OnPropertyChanged()UmOperator<br>
+BindableBase.OnPropertyChanged()TimeMdCalled<br>
+BindableBase.OnPropertyChanged()TimeMdCalledString<br>
+BindableBase.OnPropertyChanged()TimeMdResp<br>
+BindableBase.OnPropertyChanged()TimeMdRespString<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDERPHONE<br>
+BindableBase.OnPropertyChanged()IsNew<br>
+BindableBase.OnPropertyChanged()IsDeleted<br>
+BindableBase.OnPropertyChanged()IsDirty<br>
+BindableBase.OnPropertyChanged()IsSavable<br>
+BindableBase.OnPropertyChanged()IsValid<br>
+BindableBase.OnPropertyChanged()BrokenRulesCollection<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+<br>
+Edit 1 field--<br>
+<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDER<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+<br>
+Call the SaveData() routine--<br>
+<br>
+EndEdit()<br>
+Save()<br>
+SimpleDataPortal.Update()<br>
+BusinessBase.MarkClean()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnUnknownPropertyChanged()<br>
+BindableBase.OnPropertyChanged()EncId &nbsp;&nbsp; &nbsp;&nbsp; // each one of these field
+events takes about 1 second and there are<br>
+PhoneCall.GetIdValue()&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // 71 of them.<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()MRN<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ENCTYPE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERNAME<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERPHONENUM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PROVIDERONCALL<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AFTERHOURS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTADDR1<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTADDR2<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTCITY<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTZIP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTPHONENUM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PRIMARYCARESITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()COVERAGE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLEDFROM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDER<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS1<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS2<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERCITY<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERSTATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERZIP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CHIEFCOMPLAINT<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TEMPERATURE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PULSE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()RESP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()BP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ALLERGIES<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()NEWPROBLEM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PROBLEMDURATION<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PROBUNITS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PASTMEDHX<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()MEDICATIONS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()WORKINGDX<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ICD9<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()NOTES<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ADVICEGIVEN<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()DISPO<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()REFERRALTYPE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()INPATIENTSITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()URGENTCARESITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()EXTERNALSITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AUTHACTION<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AUTHNUM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AUTHLOS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TRANSPORTATION<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CmNotifydate<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CmNotifydateString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()NEEDSFU<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()FuNotes<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CHPADMINDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CHPADMINDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PCSDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PCSDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CREATEDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CREATEDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ORIGINALMRN<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()UmOperator<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdCalled<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdCalledString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdResp<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdRespString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDERPHONE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsNew<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsDeleted<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsDirty<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsSavable<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsValid<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()BrokenRulesCollection<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.MarkOld()&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; // Why it does this
+whole thing a second time after the MarkOld()<br>
+BusinessBase.MarkClean()&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp; // I have no idea? but
+it takes another 70 seconds<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnUnknownPropertyChanged()<br>
+BindableBase.OnPropertyChanged()EncId<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()MRN<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ENCTYPE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERNAME<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERPHONENUM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PROVIDERONCALL<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AFTERHOURS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTADDR1<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTADDR2<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTCITY<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTZIP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PTPHONENUM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PRIMARYCARESITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()COVERAGE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLEDFROM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDER<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS1<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS2<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERCITY<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERSTATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLERZIP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CHIEFCOMPLAINT<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TEMPERATURE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PULSE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()RESP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()BP<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ALLERGIES<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()NEWPROBLEM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PROBLEMDURATION<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PROBUNITS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PASTMEDHX<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()MEDICATIONS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()WORKINGDX<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ICD9<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()NOTES<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ADVICEGIVEN<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()DISPO<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()REFERRALTYPE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()INPATIENTSITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()URGENTCARESITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()EXTERNALSITE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AUTHACTION<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AUTHNUM<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()AUTHLOS<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TRANSPORTATION<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CmNotifydate<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CmNotifydateString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()NEEDSFU<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()FuNotes<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CHPADMINDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CHPADMINDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PCSDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()PCSDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CREATEDATE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CREATEDATEString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()ORIGINALMRN<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()UmOperator<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdCalled<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdCalledString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdResp<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()TimeMdRespString<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDERPHONE<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsNew<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsDeleted<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsDirty<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsSavable<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()IsValid<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnPropertyChanged()BrokenRulesCollection<br>
+PhoneCall.GetIdValue()<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+Done with Save<br>
+<br>
+<br>
+<br>
+RockfordLhotka wrote:
+<blockquote>
+  <p>Sorry if the tone of my previous post seems abrupt. That was not
+my intent.</p>
+  <p>However, the point is this: you are encountering an issue that I
+have not seen in other apps, and which hasn't come up with the hundreds
+of other apps built by people using the framework.</p>
+  <p>Part of the issue is simply the way data binding works - it is <em>very</em>
+chatty with its data source.</p>
+  <p>But it seems quite clear that part of the issue must lie with your
+code. Since other appliations don't have these explosions of event
+processing, and don't have IsDirty getting changed mysteriously, the
+problem would appear to be unique to your situation - and thus to your
+code.</p>
+  <p>I strongly suggest stripping back your code to the simplest
+possible example and building forward from there. At some point you'll
+add in some feature that exists in your current app and the problem
+will appear, and then you'll know what change causes the issue.</p>
+  <br>
+  <br>
+<br>
+</blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 27, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=140484513-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE>
+  <DIV>The reason the IsDirty is getting reset when I put the 
+  PropertyHasChanged("") in the overridden OnUnknownPropertyChanged() is 
+  this:<BR>&nbsp;&nbsp;&nbsp; protected virtual void PropertyHasChanged(string 
+  propertyName)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  ValidationRules.CheckRules(propertyName);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  MarkDirty(true);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  OnPropertyChanged(propertyName);<BR>&nbsp;&nbsp;&nbsp; }<BR><SPAN class=140484513-27072006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></DIV></BLOCKQUOTE>
+<DIV><SPAN class=140484513-27072006>
+<DIV align=left><SPAN class=140484513-27072006><FONT face=Arial color=#0000ff size=2>But PropertyHasChanged() is only called in a property set 
+block. OnUnknownPropertyChanged() triggers the raising of PropertyChanged 
+event(s) and does NOT trigger calling any set blocks - only get blocks. Yes, 
+data binding is very chatty, in that it reads values a lot. But it doesn't set 
+them unless your UI code or the user sets them.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=140484513-27072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=140484513-27072006><FONT face=Arial color=#0000ff size=2>If PropertyHasChanged() is being called, it is because you 
+have code somewhere that is setting one or more properties when a 
+PropertyChanged event is handled.</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<DIV align=left><SPAN class=140484513-27072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></SPAN></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 27, 2006</h2>
+
+
+  
+
+
+I'm really trying hard to understand this stuff but I am baffled. I
+wish that you would look at this trace. The background is that an
+existing record has been retrieved into the BO and bound to the form
+and one text field has been edited. There is NO code that manipulates
+the BO other than the EndEdit and the Save.<br>
+<br>
+The trace begins at the point where the Save menu is clicked. I don't
+know how to tell what is contained within _nonSerializableHandlers but<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (nonSerializableHandlers != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; nonSerializableHandlers.Invoke(this,<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new PropertyChangedEventArgs(propertyName));<br>
+seems to be the origin of all the activity but I have not been able to
+discover why these fields are referenced over and over in every Invoke.<br>
+<br>
+Save Menu Clicked<br>
+EndEdit()<br>
+Save()<br>
+SimpleDataPortal.Update()<br>
+BusinessBase.MarkOld()<br>
+BusinessBase.MarkClean()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+BindableBase.OnUnknownPropertyChanged()<br>
+BindableBase.OnPropertyChanged()EncId<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()MRN<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()ENCTYPE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+The thread '&lt;No Name&gt;' (0x118) has exited with code 0 (0x0).<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERNAME<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERPHONENUM<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PROVIDERONCALL<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLDATE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLDATEString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()AFTERHOURS<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PTADDR1<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PTADDR2<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PTCITY<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PTZIP<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PTPHONENUM<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PRIMARYCARESITE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()COVERAGE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLEDFROM<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDER<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS1<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERADDRESS2<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERCITY<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERSTATE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLERZIP<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CHIEFCOMPLAINT<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()TEMPERATURE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PULSE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()RESP<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()BP<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()ALLERGIES<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()NEWPROBLEM<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PROBLEMDURATION<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PROBUNITS<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PASTMEDHX<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()MEDICATIONS<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()WORKINGDX<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()ICD9<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()NOTES<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()ADVICEGIVEN<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()DISPO<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()REFERRALTYPE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()INPATIENTSITE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()URGENTCARESITE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()EXTERNALSITE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()AUTHACTION<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()AUTHNUM<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()AUTHLOS<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()TRANSPORTATION<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CmNotifydate<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CmNotifydateString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()NEEDSFU<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()FuNotes<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CHPADMINDATE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CHPADMINDATEString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PCSDATE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()PCSDATEString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CREATEDATE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CREATEDATEString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()ORIGINALMRN<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()UmOperator<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()TimeMdCalled<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()TimeMdCalledString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()TimeMdResp<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()TimeMdRespString<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()CALLINGPROVIDERPHONE<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()IsNew<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()IsDeleted<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()IsDirty<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()IsSavable<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()IsValid<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+BindableBase.OnPropertyChanged()BrokenRulesCollection<br>
+BusinessBase.Equals<br>
+PhoneCall.GetIdValue()<br>
+IDataErrorInfo.this CALLDATEString<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this AFTERHOURS<br>
+IDataErrorInfo.this UmOperator<br>
+IDataErrorInfo.this MRN<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLEDFROM<br>
+IDataErrorInfo.this CALLINGPROVIDERPHONE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this COVERAGE<br>
+IDataErrorInfo.this CALLINGPROVIDER<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PRIMARYCARESITE<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this PROVIDERONCALL<br>
+IDataErrorInfo.this CALLERPHONENUM<br>
+IDataErrorInfo.this CALLERNAME<br>
+IDataErrorInfo.this ENCTYPE<br>
+IDataErrorInfo.this ENCTYPE<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+PhoneCall.GetIdValue()<br>
+Done with Save<br>
+<br>
+<br>
+Rockford Lhotka wrote:
+<blockquote>
+  
+  
+  
+  <div align="left"><span class="140484513-27072006"></span>&nbsp;</div>
+  <br>
+  <blockquote>
+    <div>The reason the IsDirty is getting reset when I put the
+PropertyHasChanged("") in the overridden OnUnknownPropertyChanged() is
+this:<br>
+&nbsp;&nbsp;&nbsp; protected virtual void PropertyHasChanged(string propertyName)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules(propertyName);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkDirty(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(propertyName);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+    <span class="140484513-27072006"><font color="#0000ff" face="Arial" size="2">&nbsp;</font></span></div>
+  </blockquote>
+  <div><span class="140484513-27072006">
+  <div align="left"><span class="140484513-27072006"><font color="#0000ff" face="Arial" size="2">But PropertyHasChanged() is only
+called in a property set block. OnUnknownPropertyChanged() triggers the
+raising of PropertyChanged event(s) and does NOT trigger calling any
+set blocks - only get blocks. Yes, data binding is very chatty, in that
+it reads values a lot. But it doesn't set them unless your UI code or
+the user sets them.</font></span></div>
+  <div align="left"><span class="140484513-27072006"></span>&nbsp;</div>
+  <div align="left"><span class="140484513-27072006"><font color="#0000ff" face="Arial" size="2">If PropertyHasChanged() is being
+called, it is because you have code somewhere that is setting one or
+more properties when a PropertyChanged event is handled.</font></span></div>
+  <div align="left">&nbsp;</div>
+  <div align="left"><span class="140484513-27072006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div>
+  </span></div>
+  <br>
+  <br>
+<br>
+  </blockquote>
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, July 27, 2006</h2>It looks like the problem is that you overrode OnUnknownPropertyChanged incorrectly.&nbsp; If you look at the beginning of your stack trace, it calls MarkOld() which calls MarkClean() which calls OnUnknownPropertyChanged.&nbsp; Your implementation is then calling PropertyHasChanged(string.Empty).&nbsp; This goes right back to marking the whole thing as dirty again.&nbsp; What happens if you override OnUnknownPropertyChanged to just call OnPropertyChanged(string.Empty)?&nbsp; Your stack trace should quiet down after that, but I imagine that it will still be a bit chatty.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 27, 2006</h2>Thanks, but I stripped all of that out before generating the last trace.<br /><br />On Thu, 27 Jul 2006 15:33:33 -0500, "Brian Criswell"<br /> said:<br />> It looks like the problem is that you overrode OnUnknownPropertyChanged<br />> incorrectly.  If you look at the beginning of your stack trace, it calls<br />> MarkOld() which calls MarkClean() which calls OnUnknownPropertyChanged. <br />> Your implementation is then calling PropertyHasChanged(string.Empty). <br />> This goes right back to marking the whole thing as dirty again.  What<br />> happens if you override OnUnknownPropertyChanged to just call<br />> OnPropertyChanged(string.Empty)?  Your stack trace should quiet down<br />> after that, but I imagine that it will still be a bit chatty.<br />> <br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Thursday, July 27, 2006</h2>I did some more testing of your sample with a completely virgin<br />installation of 2.0.3.<br />I have noted the same "malfunction". The Forms<br />propertyChangedEventHandler gets inserted into the<br />NonSerializableEventHandlers property of the BO twice and whenever there<br />is a data change in the form the PropertyChanged event is raised twice<br />on each field of the BO and it keeps gouing around and around.<br /><br />I think the difference in my app is that in addition to the _call BO, I<br />have 6 others that are filling combo dropdowns. It looks like the<br />handlers for each of the lists has also gotten added twice to the<br />NonSerializableEventHandlers which is undoubtedly why that cascade of<br />field checks goes off recursively for each of the 71 fields in the main<br />BO.<br /><br />I hope that you can recommend a fix for this (if my diagnosis is<br />correct).<br /><br />Thank you,<br />Dan<br /><br />On Thu, 27 Jul 2006 08:50:44 -0500, "Rockford Lhotka"<br /> said:<br />> The reason the IsDirty is getting reset when I put the<br />> PropertyHasChanged("") in the overridden OnUnknownPropertyChanged() is<br />> this:<br />>     protected virtual void PropertyHasChanged(string propertyName)<br />>     {<br />>       ValidationRules.CheckRules(propertyName);<br />>       MarkDirty(true);<br />>       OnPropertyChanged(propertyName);<br />>     }<br />>  But PropertyHasChanged() is only called in a property set block.<br />>  OnUnknownPropertyChanged() triggers the raising of PropertyChanged<br />>  event(s) and does NOT trigger calling any set blocks - only get blocks.<br />>  Yes, data binding is very chatty, in that it reads values a lot. But it<br />>  doesn't set them unless your UI code or the user sets them. If<br />>  PropertyHasChanged() is being called, it is because you have code<br />>  somewhere that is setting one or more properties when a PropertyChanged<br />>  event is handled. Rocky<br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DanEssin replied on Wednesday, July 26, 2006</h2>I did some experimentation with raising PropertyChanged("") in my<br />overridden OnUnknownPropertyChanged() method. It has the nasty<br />side-effect of resetting the IsDirty flag after a successful save so it<br />keeps nagging the user that there are unsaved changes.<br /><br />So far the only thing that seems to work reliably is the following<br />kludge:<br />1 - Override OnUnknownPropertyChanged() with an empty method body.<br />2 - Make IsDirty of BusinessBase browsable<br />3 - bind it to a 0,0 checkbox using drag-and-drop<br />4 - every time the user clicks save, flip to the tab that has the<br />checkbox, set focus to the checkbox, and flip back to their original<br />position. This seems to reliably get all the changes pushed into the bo<br />and the object marked dirty.<br />5 - then exec bindingsource.endedit() and obj.Save()<br /><br />On Tue, 25 Jul 2006 17:36:34 -0500, "Rockford Lhotka"<br /> said:<br />> If you are doing this via email you'll need to go to the forum itself to<br />> get the attachment. It appears as a link in the header of that particular<br />> post. Rocky<br />> From: Daniel Essin [mailto:cslanet@lhotka.net] <br />> Sent: Tuesday, July 25, 2006 5:24 PM<br />> To: rocky@lhotka.net<br />> Subject: Re: [CSLA .NET] Redundant Code?<br />> <br />> Did I miss something? You mentioned an attachment but I can't find it.<br />> <br />> Thanks,<br />> Dan<br />> <br />> <br />> </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 26, 2006</h2>Again, this problem doesn't exist in my testing, or any other apps I'm aware<br />of. I really don't think the problem with IsDirty getting set is due to the<br />framework itself. There's something in your code - possibly in your UI -<br />that is causing this issue. Very possibly you have UI code that is somehow<br />updating a property on the object due to the PropertyChanged event being<br />raised - I'm not sure.<br /><br />What you'll probably need to do is walk through in the debugger from the<br />point where PropertyChanged("") is raised to see what property is being<br />changed by your code.<br /><br />Rocky <br /><br />> I did some experimentation with raising PropertyChanged("") <br />> in my overridden OnUnknownPropertyChanged() method. It has <br />> the nasty side-effect of resetting the IsDirty flag after a <br />> successful save so it keeps nagging the user that there are <br />> unsaved changes.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,29 @@
+<html><header><title>Batch queing hosted in IIS</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Batch queing hosted in IIS</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1063.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lewischris posted on Tuesday, August 29, 2006</h2><P>Hi,</P>
+<P>It would seem that, to be contactable,&nbsp;the Batch Server client component 'BatchQueue' requires that the Windows service host&nbsp;for the server-side components is running (i.e. started). This is because the host environment is a windows service and not IIS.</P>
+<P>I need to be able to queue BatchJobRequests at any time - whether or not the windows service is running - so I need to be able to host the 'queue processor' components in a windows service, but the 'BatchQueue' server side components in IIS.</P>
+<P>Does this make sense, and can it be done?</P>
+<P>Thanks for any advice.</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Tuesday, August 29, 2006</h2><P>?&nbsp; are you saying that some process or user needs to submit a request to a server that will take time to be done and you want to know how to do that ?</P>
+<P>&nbsp;</P>
+<P>if so you may want to look at MSMQ -- Microsoft Message Queuing </P>
+<P>you create a q and put requests in one end and have another program pull requests out and process them.</P>
+<P>many options on how you handle each part of the pipeline</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lewischris replied on Wednesday, August 30, 2006</h2><P>Yes, this is what I want to do and we are already using a different batch queue engine in conjunction with MSMQ to do this. The CSLA batch job processor has some nice features that we would like to exploit.</P>
+<P>The BatchQueueServer, as implemented in the CSLA 1.x book, can be contacted through remoting by the BatchQueue 'client side' proxy object - but only if the Windows service is running, which is not ideal.</P>
+<P>What I want to do is to be able to submit BatchJobRequests to the batch queue processor even if (for some reason) the BatchQueueServer Windows service has been stopped. So I would guess that the BatchJobRequest submission side needs to be hosted in IIS, but the MSMQ processing side would continue to be hosted as a Windows service.</P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, August 30, 2006</h2><P>Hmm... I am using 2.xx and have not seen this "BatchQueue" class so I can't comment directly on it.</P>
+<P>it sounds like the service impliments the logic that recives the requests from the client.</P>
+<P>if that is true then I think you have 2 things to look at:</P>
+<P>&nbsp;</P>
+<P>1) separate them and let the reciver store them </P>
+<P>2) have a procedure for activating the processing logic when needed.</P>
+<P>&nbsp;</P>
+<P>as I have not found the code in 2.0 I do not think I can help much with what it does etc...</P>
+<P>but I'd think that you could just accept requests and push them into MQ and let it store and fwd the request.</P>
+<P>then activate the service to pull the jobs off the MQ and complete them.</P>
+<P>or I am missing something...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lewischris replied on Wednesday, August 30, 2006</h2><P>You're exactly right in what you say - and this is what I have now done.</P>
+<P>I have implemented the client-side BatchQueue class in the same way as the client-side DataPortal class, and I'm hosting the BatchQueueServer server-side components (the&nbsp;component that receives the BatchJobRequests and sticks them on the queue) in IIS.</P>
+<P>What this means is that the BatchQueueServer is always available to accept incoming BatchJobRequests - even when the Windows service is not running.</P>
+<P>I was really asking the questions here because my remoting skills are a bit rusty!</P>
+<P>Thanks,</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 30, 2006</h2>Your idea seems totally realistic to me. Since MSMQ is the intermediary that stores inbound requests until the service can process them, you can certainly split the "queue a request" part of the process from the "handle a request" part.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

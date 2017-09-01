@@ -1,0 +1,44 @@
+<html><header><title>How to handle exceptions on client side (e.g. UI)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to handle exceptions on client side (e.g. UI)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11865.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda posted on Monday, March 04, 2013</h2><p>Hi, </p>
+<p>I&#39;m running on Csla 4.5.10. I&#39;m having problem how to determine what exception caused the problem.</p>
+<p>I know that Csla throws Csla.DataPortalException for every exception that occures during the DataPortal call.</p>
+<p>On the client side I cannot use the standard way of handling/catching the exceptions base on the type because every exception is wrapped in Csla.DataPortalException which has BusinessException property which should contain the exception that I&#39;m interested in. </p>
+<p>But what I found is that the BusinessException property is System.AggregateException which contains inside it &nbsp;Csla.Server.DataPortalException and in that exception the BusinessException is the exception which is the core exception on which I can make decission how to handle it.</p>
+<p>I didn&#39;t find any usefull information or guideline even not in the Csla books!</p>
+<p>I don&#39;t want to &quot;hard-code&quot; this logic in the client side code, because I shouldn&#39;t know anything about internal logic of the exception graph thrown by Csla.</p>
+<p>Please help.</p>
+<p>&nbsp;</p>
+<p>Thank You</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, March 04, 2013</h2><p>The CSLA books cover version 4.0-4.3. </p>
+<p>The data portal has changed _significantly_ in 4.5 because we now fully support async/await.</p>
+<p>The new async/await behaviors in .NET introduce some interesting exception handing issues, and I tried to handle them in a meaningful way.</p>
+<p>Because your DP_XYZ or factory methods can now be async, they could easily run multiple async tasks on the server. As a result, it is entirely possible for them to throw numerous exceptions, all of which are automatically collected into an AggregateException by the async/await functionality of .NET.</p>
+<p>At the same time, I wanted to preserve backward compatibility on the client as much as possible. On the client you could call the data portal synchronously or with BeginXYZ methods. Those techniques continue to work as before - by only exposing the _first_ exception in the AggregateException and discarding the rest.</p>
+<p>I didn&#39;t need to preserve backward compatibility for the new client-side XYZAsync methods, and so those methods return the entire AggregateException (when possible) so you have access to the complete exception detail from the server.</p>
+<p>What you are seeing is intended behavior, and hopefully it makes sense why I opted to pursue this approach.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Monday, March 04, 2013</h2><p>
+<p>Hi, thank you for your answer.</p>
+<p>Can you provide the solution or the method of extracting the right exception which is thrown inside the DataPortal call, please?</p>
+<p>It seems to me that the this exception handling should be provided by you as an author because what I could actually do is to experiment and observe the behavior and the structure of the exception graph to correctly detect the right exception.</p>
+<p>And at least there should be some transparent and general way where I can put the logic that extracts the right &quot;business exception&quot;.</p>
+<p>Can you please provide solution built into Csla that could give me a single point/way of extracting and handling the exception so that when you change the behavior in the future I could still use the same mechanism.</p>
+<p>I&#39;m not writing about the backward compatibility. I&#39;m writing about keeping or providing alternative functionality.</p>
+<p>Is it possible to create in Csla some working mechanism? Or can you provide me some workaround which has to be transparent from the caller/client.</p>
+<p>&nbsp;</p>
+<p>Thank You</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 04, 2013</h2><p>What would this look like?</p>
+<p>You should be aware that any normal await scenario will result in an AggregateException, so the only difference with CSLA is that the top level exception (as always) is DataPortalException.</p>
+<p>In other words, dealing with AggregateException has nothing to do with CSLA, it is an artifact of the new .NET async/await functionality.</p>
+<p>I am not averse to having CSLA provide a helper - assuming we can define what such a helper would do - and also assuming one of the numerous existing async/await/TPL libraries on codeplex/github don&#39;t already provide the needed functionality.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Wednesday, April 10, 2013</h2><p>Hi, </p>
+<p>I&#39;ve somehow &quot;solved&quot; it and I want to share and discuss the solution.</p>
+<p>The solution is that I have extension methods for the exception class and inside it I extract the exception from BusinessException property on Csla.<span>DataPortalException class.</span></p>
+<p><span>The exception extraction:</span></p>
+<p>A) if (exception is System.<span>AggregateException)</span></p>
+<p><span></span>1. iterate on the list of exceptions obtained from flattening the exception (System.<span>AggregateException.Flatten())</span></p>
+<p><span>2. walk through InnerExecptions chain to get the first non-csla exception and return it</span></p>
+<p><span>3. the client handles the returned exception</span></p>
+<p><span>B) otherwise</span></p>
+<p>1. walk through InnerExecptions chain to get the first non-csla exception and return it</p>
+<p>2. the client handles the returned exception</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

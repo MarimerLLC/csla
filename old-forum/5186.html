@@ -1,0 +1,15 @@
+<html><header><title>ProjectTracker PTWcfCleint</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectTracker PTWcfCleint</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5186.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SimonL posted on Friday, August 01, 2008</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Can anyone tell me how to set up the PTWcfClient and PTWcfService. I've done the following</P>
+<P>1. I've downloaded CSLA 3.0.4 and unzipped the files. </P>
+<P>2. I then added PTWcfClient and PTWcfService to the ProjectTracker solution. </P>
+<P>3. Rebuilt the solution&nbsp;&nbsp;</P>
+<P>If I try and update the reference (PTWcfService) under the references section of PTWcfClient I keep getting error messages saying "unable to connect to remote server. Metadata contains a refernce that cannnot be resolved." etc.</P>
+<P>I've also tried adding the folder www\PTWcfService to my c:\inetpub\wwwroot which&nbsp;then appears&nbsp;in IIS. Should&nbsp;I be able to browse to the .SVC file.&nbsp;</P>
+<P>I'm lost, does anybody know what&nbsp;steps I need to take to run the ProjectTracter Wcf sample (I'm not interested in the WcfPortal just the&nbsp;WCF client and service example). </P>
+<P>Thanks,</P>
+<P>Simon</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 02, 2008</h2><P>The simplest possible thing is to check the server URL (including the port number) in the client config to make sure the client config points to the right place.</P>
+<P>That demo is potentially quite complex. If you read the WCF chapter in the <EM>Using CSLA .NET 3.0</EM> ebook you'll see that this app can be configured to use no security all the way through passing an encrypted username/password pair over the network for authentication. The simple model is pretty easy, but the encrypted authentication gets really complicated very rapidly.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

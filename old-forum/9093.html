@@ -1,0 +1,20 @@
+<html><header><title>CSLA 4, EF 4 - Implementation question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4, EF 4 - Implementation question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9093.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>joemorin73 posted on Wednesday, June 16, 2010</h2><p>I&#39;m currently working on a project using CSLA4 and EF4 to create a custom shopping cart system for an online registration system.&nbsp; Everything is coming along pretty well, but I seem to be stumbling a bit on how to approach the check out system.</p>
+<p><em>Background</em></p>
+<p>The client requires the cart to contain items that can differ not only in product, but in class type all together.&nbsp; These items can differ so extensively, including different order systems.&nbsp; When the cart has received payment, the cart is to be closed and registration records must be created in the appropriate tables based on the type of Item.&nbsp; If any problem occurs during this process, the cart must rollback undoing any of the changes.</p>
+<p><em>So far, so good.</em></p>
+<p>Most of this has been figured out, but I will include some details to help show the problem.</p>
+<p>The cart contains the status and a collection of readonly cart items.&nbsp; Each cart item is a common object that can be&nbsp;used to call up the appropriate item.&nbsp;&nbsp;For each type of Item, we&#39;ve created a different class.&nbsp; (IE, For a member registration, we have a member class.&nbsp; For a clinic registration, we have a clinic class.)&nbsp;</p>
+<p>The cart &quot;commits&quot; its items to the tables dynamically by calling each Item through a common ICartItem interface.&nbsp; (Sidenote: DataPortal was a good demonstration on how to call methods of different items without knowing what they were until runtime.&nbsp; Thanks Rocky!)&nbsp; In this case, I call ICartItem.CommitToFinal for each Item.</p>
+<p><em>Problem</em></p>
+<p>Transaction and Rollback.</p>
+<p>As I&#39;m looping through each Item, my short version of ICartItem.CommitToFinal&nbsp;implementation in most classes is&nbsp;as follows:</p>
+<ol>
+<li>Get Existing or Instantiate New Record for Final</li>
+<li>Copy Information from CartItem to Final</li>
+<li>Save</li>
+<li>Copy references from Final into CartItem</li>
+</ol>
+<p>After the save, I need to copy information from the final back into the cart items as well as make some links within the final after the save.&nbsp; (Final&#39;s DB design uses autonumber identity, I can&#39;t change this.)</p>
+<p>What I&#39;m looking for is how to save, without saving.&nbsp; I know this can be done on a per item basis.&nbsp; IE, My CartItem and all its children are enclosed in a transaction on a DataPortal call.&nbsp; How do I approach this since each item is it&#39;s own EditableRoot making it&#39;s own DataPortal calls?</p>
+<p>Unless I answered my question.&nbsp; Do I make the root items switchable and add them to a Collection and have to collection commit the items?&nbsp; Is there another approach?</p>
+<p>Thank you.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

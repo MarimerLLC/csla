@@ -1,0 +1,17 @@
+<html><header><title>Asynchronous WCF error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Asynchronous WCF error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8413.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikevalentino posted on Wednesday, January 27, 2010</h2><P>Hi everybody,</P>
+<P>I am currently using version 3.6.0 and try to run the asynchronous data portal call using the BeginFetch method in&nbsp;DataPortalT with WcfProxy. However, I encounter the following error:</P><FONT><STRONG>There was an error while trying to deserialize parameter </STRONG></FONT><A href="http://ws.lhotka.net/WcfDataPortal:request"><FONT><STRONG>http://ws.lhotka.net/WcfDataPortal:request</STRONG></FONT></A><FONT><STRONG>.&nbsp; Please see InnerException for more details.</STRONG></FONT>
+<P>When I debug the error happens at the following&nbsp;method Fetch of WcfProxy class:</P>
+<P><FONT size=2>response = svr.Fetch(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> FetchRequest(objectType, criteria, context)</P>
+<P></FONT><FONT size=3>I use basicHttpBinding in the app.config and web.config respectively.</FONT></P>
+<P><FONT size=2><FONT size=3>Is there any problem that&nbsp;causes the WcfProxy does not work in the BackgroundWorker or is there is anything in the configuration that I missing? When I switch it back to use Fetch method in DataPortalT, it works perfectly fine. I am puzzled.</FONT></FONT></P>
+<P>Desperately in need of guidance.</P>
+<P>A thousand thanks.</P>
+<P>From Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 28, 2010</h2><P>You are using the VB version of the framework?</P>
+<P>I strongly recommend using that only for reference. You should use the C# version of the framework for anything real. The C# version undergoes a lot more testing and generally has a more reliable implementation of the async behaviors.</P>
+<P>In fact, the reason I quit building and maintaining the VB code was because of the difficulty in getting async code working in VB. The multiline lambda feature in C# makes this code almost infinitely easier, and I just wasn't willing to deal with the pain VB incurred.</P>
+<P>Fortunately several members of the community stepped forward (Sean Rhone most of all) and did port the code to VB, pain and all.</P>
+<P>But even so, that code is for learning and reference, not for actual use.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikevalentino replied on Thursday, January 28, 2010</h2><P>Hi Rocky,</P>
+<P>Yes. You are right. I am using VB version of CSLA because I am from the old school of VB6, so developing using VB .NET is easier for me. :)</P>
+<P>I will try to use the C# version to see if the problem goes away. </P>
+<P>Thanks for your advice.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 28, 2010</h2><P>You can still develop your code in VB - that's fine! </P>
+<P>I'm just suggesting that you use the C# framework. Your code should be unaffected.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

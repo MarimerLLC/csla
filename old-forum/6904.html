@@ -1,0 +1,61 @@
+<html><header><title>Request for MS-Word-like undo and questionable &quot;CSLA policy&quot; on EditLevel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Request for MS-Word-like undo and questionable &quot;CSLA policy&quot; on EditLevel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6904.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Wednesday, May 06, 2009</h2><P class=MsoNormal><SPAN>Hi,</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>I have two questions:</SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<OL>
+<LI class=MsoNormalCxSpMiddle><SPAN>I would like to implement an undo operation that works nearly like MS-Word. The main difference is that the user is able to undo changes even after he pressed the save button. I think many users expect this kind of undo for business applications as well. Of cause, this can result in a inconsistency nightmare if you work with a relational database underneath when data relations don't exists any more after you pressed CancelEdit() and then Save(). But there are a lot of situations when this would make sense and can be easy implemented. This behavior is not supported by standard CSLA (maybe in the future ;-). Any suggestions how to implement this behavior today?<o:p></o:p></SPAN></LI></OL>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<OL>
+<LI class=MsoNormalCxSpMiddle><SPAN>Why must the EditLevel of child objects always match the parent EditLevel (in BB and BLB)? Is this only because CSLA policy defines that parent/child operations should be controlled by the parent only? We can think of several scenarios in our application where it would make sense to control undo (and Save) operations on single child level as well as on parent level. But this leads to different EditLevel values which again results in CSLA exceptions….</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></LI></OL>
+<P class=MsoNormal><SPAN>Regards,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Andreas<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Andreas:</strong></div><div> 
+<OL>
+<LI class=MsoNormalCxSpMiddle><SPAN>I would like to implement an undo operation that works nearly like MS-Word. The main difference is that the user is able to undo changes even after he pressed the save button. I think many users expect this kind of undo for business applications as well. Of cause, this can result in a inconsistency nightmare if you work with a relational database underneath when data relations don't exists any more after you pressed CancelEdit() and then Save(). But there are a lot of situations when this would make sense and can be easy implemented. This behavior is not supported by standard CSLA (maybe in the future ;-). Any suggestions how to implement this behavior today?<o:p></o:p></SPAN></LI></OL>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p></div></BLOCKQUOTE></o:p></SPAN></P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p>Implementing undo at this level of detail is quite difficult, and usually can't be done entirely at the business layer - it requires participation from the UI layer as well.</o:p></SPAN></P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p>I have no plans to implement this type of undo capability into CSLA.</o:p></SPAN></P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Andreas:</strong></div><div></o:p></SPAN></P>
+<P class=MsoNormalCxSpMiddle><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<OL>
+<LI class=MsoNormalCxSpMiddle><SPAN>Why must the EditLevel of child objects always match the parent EditLevel (in BB and BLB)? Is this only because CSLA policy defines that parent/child operations should be controlled by the parent only? We can think of several scenarios in our application where it would make sense to control undo (and Save) operations on single child level as well as on parent level. But this leads to different EditLevel values which again results in CSLA exceptions….</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></LI></OL>
+<P></div></BLOCKQUOTE></P>
+<P>The edit level behaviors in CSLA exist to serve data binding. Which also means they are limited to the range of concepts data binding supports.</P>
+<P>But moreover, n-level undo is a form of transactional operation, and a transaction always has a "root" or top-level control point where the transaction starts and ends. This isn't a CSLA thing - this is just the nature of transactional systems.</P>
+<P>If you have scenarios where you want to control undo at different points, then each of those points needs to be a root object - the top-level control point for the transaction.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><P>I guess I could be more clear on the edit level exception issue.</P>
+<P>For many years CSLA .NET did not throw these exceptions. It was up to the UI developer to do the right thing - and to test to make sure they did the right thing. If they didn't do the right thing, then data binding would become confused and the app would slowly quit working - revealing very hard to debug issues that could waste days of time and cause serious user frustration.</P>
+<P>Based on the reality that these problems were so bad that they'd eventually make CSLA have a poor reputation (who'd want to use a framework that makes it so easy to create bugs that are <EM>that</EM> hard to find and fix???), I added the exceptions.</P>
+<P>The result is that n-level undo is less flexible than it was a few years ago. But the result is also that 99% of people building Windows Forms, WPF or Silverlight UIs can have some confidence that their UI code actually works. </P>
+<P>Unfortunately this means the 1% (or less) of people who wanted to do strange and innovative things are blocked. In this case the needs of the many do outweigh the needs of the few, or the one.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Friday, May 08, 2009</h2>Here is a related question on EditLevel and IsSavable. The implementation for IsSavable property checks IsDirty and IsValid flags. Should it check for EditLevel &gt; 0 as well? This is being enforced in the Save() method.<br><br><font size="2" face="Courier New">// Core\BusinessBase.cs<br>public virtual bool IsSavable<br>{<br>&nbsp; get { return (IsDirty &amp;&amp; IsValid); }<br>}<br><br>// BusinessBase.cs<br>public virtual T Save()<br>{<br>&nbsp; T result;<br>&nbsp; if (this.IsChild)<br>&nbsp;&nbsp;&nbsp; throw new NotSupportedException(Resources.NoSaveChildException);<br>&nbsp; if (EditLevel &gt; 0)<br>&nbsp;&nbsp;&nbsp; throw new Validation.ValidationException(Resources.NoSaveEditingException);<br>&nbsp; if (!IsValid &amp;&amp; !IsDeleted)<br>&nbsp;&nbsp;&nbsp; throw new Validation.ValidationException(Resources.NoSaveInvalidException);<br>&nbsp; if (IsDirty)<br>&nbsp;&nbsp;&nbsp; result = (T)DataPortal.Update(this);<br>&nbsp; else<br>&nbsp;&nbsp;&nbsp; result = (T)this;<br>&nbsp; OnSaved(result);<br>&nbsp; return result;<br>}<br><br></font><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, May 08, 2009</h2>I think the logic here is that IsSavable is just an easier way to check if an object is actually requires saving and is in a valid state. <br>We use it throughout the UI to enable save buttons, etc. However, the EditLevel would generally be > 0 because it is still in data-binding mode.<br /><br />However, before doing the save it is expected that the object would have ApplyEdit would be called and if it hasn't been then the save shouldn't occur.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is an interesting point, but that isn&#8217;t practical.
+The reason is that many people bind their Save button to IsSavable, but the
+final ApplyEdit() isn&#8217;t called until Save is clicked&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

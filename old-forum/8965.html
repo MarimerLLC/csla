@@ -1,0 +1,24 @@
+<html><header><title>Advantages of using criteria objects in v4?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advantages of using criteria objects in v4?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8965.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy posted on Thursday, May 20, 2010</h2><p>I decided to use v4 for a project and am curious if there&#39;s any advantage in using a custom criteria object to pass multiple values in the DataPortal.Fetch method as opposed to passing them as a param array?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 20, 2010</h2><p>No, if you are passing a single, serializable/primitive value then there&#39;s no value in having your own criteria class.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Thursday, May 20, 2010</h2><p>Rocky, thanks for csla, writing a great book, and supporting us newbies on your forums.&nbsp; I really appreciate it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, May 22, 2010</h2><p>Hi Rocky,</p>
+<p>I was under the impression that for CSLA.NET 4 a Criteria class was no longer needed. Re-reading &quot;CSLA 4 data portal changes&quot; on your blog you say &quot;It is now possible to use any serializable object as a criteria.&quot;</p>
+<p>[pedantic mode on]</p>
+<p>When you say &quot;a criteria&quot; it looks like you mean &quot;one criteria&quot;. But then again &quot;criteria&quot; is&nbsp;plural so one should say &quot;one criterion&quot; or &quot;a criterion&quot;.&nbsp;</p>
+<p>[pedantic mode off]</p>
+<p>Entering the no jokes mode, the point is: when do we need to use a Criteria class?</p>
+<p>a) when we need to pass a non primitive type?</p>
+<p>b) when we need to pass more than one type?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, May 22, 2010</h2><p>That is correct, you need a criteria class when</p>
+<ol>
+<li>you need to pass a non-primitive and otherwise non-serializable type</li>
+<li>you need to pass more than one value</li>
+</ol>
+<p>I thought about extending the data portal calls to accept params arrays, like I do with the child data portal. But there are problems with using params that many people have encountered with the child data portal, and I don&#39;t know how to solve them. The problems are edge cases, but they do occur, and I decided I didn&#39;t want to introduce that issue to the top-level data portal without a solution.</p>
+<p>So you can pass any one serializable or primitive value as criteria in CSLA 4. Of course your serializable value can be a custom criteria (or any other business type), so the flexibility is very high.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Friday, December 28, 2012</h2><p>Hi,</p>
+<p>Picking up on this thread and hope you could clarify one thing. </p>
+<p>You say that you need a criteria class when: &quot;1. You need to pass a non-primitive type&quot;. Is that true for strings as well, since strings are not a primitive type. </p>
+<p>Regards</p>
+<p>Peter Centellini</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, December 28, 2012</h2><p>String work just fine - no need for a criteria object when the criteria is one string value.. </p>
+<p><i><b>&quot;you need to pass a non-primitive and otherwise non-serializable type&quot;</b></i></p>
+<p>For CSLA 4.x you should regard SingleCriteria as obsolete - you normally only need a criteria object when </p>
+<ul>
+<li>there is more than one value or</li>
+<li>the value/criteria is not serializable by the MobileFormatter </li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

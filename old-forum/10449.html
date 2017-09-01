@@ -1,0 +1,31 @@
+<html><header><title>Overloading DataPortal_Delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Overloading DataPortal_Delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10449.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslasoup posted on Thursday, June 16, 2011</h2><p>Hello all,</p>
+<p>I am currently writing a page that has to persist a delete status for items in a cart. &nbsp;When I click on the delete button, it changes the status of the item to a pending deletion status. &nbsp;Then, the user at another date or from another role, will confirm the delete and physically delete the record from the database.</p>
+<p>I was trying to overload DataPortal_Delete with criteria other than a SingleCriteria object and I received the error message:&nbsp;<strong>&quot;Value cannot be null. &nbsp;Parameter name: key&quot;</strong></p>
+<p>It doesn&#39;t actually get to the DataPortal_Delete overload. &nbsp;From other posts and what Rocky has said, maybe it is getting confused? &nbsp;Both overloads take in a single string, however one uses the SingleCriteria and the other just uses string so I&#39;m not sure if that&#39;s the problem or not.</p>
+<p>Below is my code:</p>
+<p>&nbsp;</p>
+<p>Public Shared Sub MarkForDelete(ByVal barcode As String)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; DataPortal.Delete(New SingleCriteria(Of Item, String)(barcode))</p>
+<p>End Sub</p>
+<p>Public Shared Sub DeleteItem(ByVal pBarCode As String)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; DataPortal.Delete(pBarCode)</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</p>
+<p>&nbsp;</p>
+<p>Private Overloads Sub DataPortal_Delete(ByVal criteria As SingleCriteria(Of Item, String))</p>
+<p>&nbsp; &nbsp; Using ctx = ContextManager(Of DB.DalLinq.dbDataContext).GetManager(DB.DalLinq.Database.db)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; ctx.DataContext.UpdateItemMarkDeleted(criteria.Value)</p>
+<p>&nbsp; &nbsp; End Using</p>
+<p>End Sub</p>
+<p>&lt;Transactional(TransactionalTypes.TransactionScope)&gt; _</p>
+<p>Private Overloads Sub DataPortal_Delete(ByVal barcode As String)</p>
+<p>&nbsp; &nbsp; Using ctx = ContextManager(Of DB.DalLinq.dbDataContext).GetManager(DB.DalLinq.Database.db)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;ctx.DataContext.DeleteItem(barcode)</p>
+<p>&nbsp; &nbsp; End Using</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>Thanks in advance for any responses.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cslasoup replied on Monday, June 20, 2011</h2><p>[Update] A workaround I implemented was using LINQ to SQL within my MarkForDelete method which called the stored procedure to update the status of the particular item and kept DataPortal_Delete as the way to physically delete the record. &nbsp;</p>
+<p>On the UI, I combined the button handlers by casting the sender to my LinkButton and checking the IDs to determine which method I would call...MarkForDelete or DeleteItem.</p>
+<p>The result was a consolidation of code and a fix to the solution. &nbsp;Not sure if this is the proper way to do what i was asking about but for now it works.</p>
+<p>Any feedback is appreciated. &nbsp;Thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

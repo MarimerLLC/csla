@@ -1,0 +1,86 @@
+<html><header><title>Problem deserializing when using Chrome but not IE8</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem deserializing when using Chrome but not IE8</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9377.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>saggett posted on Monday, August 16, 2010</h2><p>I&#39;ve just deployed a new version of my site, now using Silverlight 4.0, .NET 4.0 and CSLA 4.0. However I&#39;m getting a deserialization error when accessing the site via Chrome 5 but not when accessing it via IE8:</p>
+<p>
+<p style="padding-left:30px;">There was an error deserializing the object of type System.Collections.Generic.List`1[[Csla.Serialization.Mobile.SerializationInfo, Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30]]. The input source is not correctly formatted.</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at TreeBrowser.SilverlightLib.Cache.ReadOnlyLineagesCache.Client_FetchLineagesCompleted(Object sender, DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortal`1.OnFetchCompleted(DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortal`1.proxy_FetchCompleted(Object sender, DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.proxy_FetchCompleted(Object sender, FetchCompletedEventArgs e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.WcfPortal.WcfPortalClient.OnFetchCompleted(Object state)</p>
+<p>I&#39;m using basic http binding, like so:</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var bhb = new BasicHttpBinding</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Name = &quot;BasicHttpBinding_IWcfPortal&quot;,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MaxBufferSize = 10000000,</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MaxReceivedMessageSize = 10000000</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;};</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;bhb.Security.Mode = BasicHttpSecurityMode.None;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Csla.DataPortalClient.WcfProxy.DefaultBinding = bhb;</p>
+<p>Strangely I never got this exception in my development environment, even when calling the live WCF service from local code.</p>
+<p>The problem site is live at www.religionstree.com, if you want you can browse to it with both IE and Chrome to see what I mean.</p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, August 16, 2010</h2><p>HI Stephen</p>
+<p>I just tried your site from IE8 and get an error - do you have the CrossDomain.xml and ClientAccessPolicy.xml files deployed in the root directory of your site?</p>
+<p>That seems to be the problem from what I can see in your error message.</p>
+<p>Craig</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, August 16, 2010</h2><p>OK, I just had a look at your site again - the problem seems to be that your WcfPortal.svc is in a sub-folder - TreeBrowser.Silverlight.WebApplication - and that&#39;s where you&#39;d need to deploy the CrossDomain.xml and ClientAccessPolicy.xml files.</p>
+<p>When I try accessing them from your root they work fine, but in the sub-folder I get a 404.</p>
+<p>&nbsp;</p>
+<p>Craig</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>saggett replied on Monday, August 16, 2010</h2><p>TreeBrowser.Silverlight.WebApplication&nbsp;is the subfolder of my local dev WCF service, it was still configured to call that instead of the live web service, so it was working locally but not anywhere else. Embarassing to find, simple to fix, but unfortunately it&#39;s still having issues.</p>
+<p>Having corrected the WCF service path it&#39;s reverted to the error given above (&quot;There was an error deserializing the object of type System.Collections.Generic.List`1[[Csla.Serialization.Mobile.SerializationInfo, Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30]]&quot;). However that&#39;s only on Chrome. IE gives:</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">Can not register property Id after containing type (ReadOnlyLineage) has been instantiated</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at TreeBrowser.SilverlightLib.Cache.ReadOnlyLineagesCache.Client_FetchLineagesCompleted(Object sender, DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortal`1.OnFetchCompleted(DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortal`1.proxy_FetchCompleted(Object sender, DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.OnFetchCompleted(DataPortalResult`1 e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.DataPortalClient.WcfProxy`1.proxy_FetchCompleted(Object sender, FetchCompletedEventArgs e)</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.WcfPortal.WcfPortalClient.OnFetchCompleted(Object state)</p>
+<p>&nbsp;</p>
+<p>The code by which this property is registered is as follows:</p>
+<p style="padding-left:30px;">private static PropertyInfo&lt;int&gt; IdProperty = RegisterProperty&lt;int&gt;(typeof(ReadOnlyLineage), new PropertyInfo&lt;int&gt;(&quot;Id&quot;, &quot;Id&quot;, 0));</p>
+<p>Which I believe is correct, plus I&#39;ve never encountered this exception locally.</p>
+<p>I&#39;m thinking of trying out the various serialization configuration options to fix it but that would be very much a trial and error thing when I don&#39;t understand the root cause.</p>
+<p>Thanks for your help, it&#39;s much appreciated.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>saggett replied on Monday, August 16, 2010</h2><p>I&#39;ve just been running Fiddler on the requests to http://www.religionstree.com/wcfportal.svc and got the full exception stack:</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;&lt;s:Body&gt;&lt;FetchResponse xmlns=&quot;http://ws.lhotka.net/WcfDataPortal&quot;&gt;&lt;FetchResult xmlns:a=&quot;http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight&quot; xmlns:i=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;a:ErrorData&gt;&lt;a:ExceptionTypeName&gt;System.Runtime.Serialization.SerializationException&lt;/a:ExceptionTypeName&gt;&lt;a:InnerError&gt;&lt;a:ExceptionTypeName&gt;System.Xml.XmlException&lt;/a:ExceptionTypeName&gt;&lt;a:InnerError i:nil=&quot;true&quot;/&gt;&lt;a:Message&gt;The input source is not correctly formatted.&lt;/a:Message&gt;&lt;a:Source&gt;System.Runtime.Serialization&lt;/a:Source&gt;&lt;a:StackTrace&gt; &nbsp; at System.Xml.XmlExceptionHelper.ThrowXmlException(XmlDictionaryReader reader, String res, String arg1, String arg2, String arg3)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Xml.XmlBufferReader.ReadValue(XmlBinaryNodeType nodeType, ValueHandle value)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Xml.XmlBinaryReader.ReadNode()&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Xml.XmlBinaryReader.Read()&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Xml.XmlBaseReader.IsStartElement()&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Xml.XmlBaseReader.IsStartElement(XmlDictionaryString localName, XmlDictionaryString namespaceUri)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Runtime.Serialization.XmlReaderDelegator.IsStartElement(XmlDictionaryString localname, XmlDictionaryString ns)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializer.IsRootElement(XmlReaderDelegator reader, DataContract contract, XmlDictionaryString name, XmlDictionaryString ns)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Runtime.Serialization.DataContractSerializer.InternalIsStartObject(XmlReaderDelegator reader)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Runtime.Serialization.DataContractSerializer.InternalReadObject(XmlReaderDelegator xmlReader, Boolean verifyObjectName, DataContractResolver dataContractResolver)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName, DataContractResolver dataContractResolver)&lt;/a:StackTrace&gt;&lt;a:TargetSiteName&gt;ThrowXmlException&lt;/a:TargetSiteName&gt;&lt;/a:InnerError&gt;&lt;a:Message&gt;There was an error deserializing the object of type System.Collections.Generic.List`1[[Csla.Serialization.Mobile.SerializationInfo, Csla, Version=4.0.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30]]. The input source is not correctly formatted.&lt;/a:Message&gt;&lt;a:Source&gt;System.Runtime.Serialization&lt;/a:Source&gt;&lt;a:StackTrace&gt; &nbsp; at System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator reader, Boolean verifyObjectName, DataContractResolver dataContractResolver)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Runtime.Serialization.DataContractSerializer.ReadObject(XmlReader reader)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 278&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 249&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 434&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request) in C:\Visual Studio Projects\csla\40\Source\Csla\Server\Hosts\Silverlight\WcfPortal.cs:line 95&lt;/a:StackTrace&gt;&lt;a:TargetSiteName&gt;ReadObjectHandleExceptions&lt;/a:TargetSiteName&gt;&lt;/a:ErrorData&gt;&lt;a:GlobalContext i:nil=&quot;true&quot;/&gt;&lt;a:ObjectData i:nil=&quot;true&quot;/&gt;&lt;/FetchResult&gt;&lt;/FetchResponse&gt;&lt;/s:Body&gt;&lt;/s:Envelope&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>The exception occurs when going from remotely hosted silverlight to remotely hosted service, but not locally hosted silverlight to remote service.</p>
+<p>It looks like when loading the same page with IE8 it successfully deserializes the data of several requests but then fails later on with the &quot;cannot register property&quot; error.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>saggett replied on Monday, August 16, 2010</h2><p>Just to see what would happen I tried switching UseBinaryXML off. Now I get this instead (on Chrome, no change on IE8):</p>
+<p>&nbsp;</p>
+<p>
+<p style="padding-left:30px;">&lt;s:Envelope xmlns:s=&quot;http://schemas.xmlsoap.org/soap/envelope/&quot;&gt;&lt;s:Body&gt;&lt;FetchResponse xmlns=&quot;http://ws.lhotka.net/WcfDataPortal&quot;&gt;&lt;FetchResult xmlns:a=&quot;http://schemas.datacontract.org/2004/07/Csla.Server.Hosts.Silverlight&quot; xmlns:i=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;a:ErrorData&gt;&lt;a:ExceptionTypeName&gt;System.IO.FileLoadException&lt;/a:ExceptionTypeName&gt;&lt;a:InnerError i:nil=&quot;true&quot;/&gt;&lt;a:Message&gt;Could not load file or assembly &#39;Csla, Version=3.7.0.0, Culture=neutral, PublicKeyToken=93be5fdc093e4c30&#39; or one of its dependencies. The located assembly&#39;s manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)&lt;/a:Message&gt;&lt;a:Source&gt;mscorlib&lt;/a:Source&gt;&lt;a:StackTrace&gt; &nbsp; at System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMarkHandle stackMark, Boolean loadTypeFromPartialName, ObjectHandleOnStack type)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeTypeHandle.GetTypeByName(String name, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp;amp; stackMark, Boolean loadTypeFromPartialName)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.RuntimeType.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase, Boolean reflectionOnly, StackCrawlMark&amp;amp; stackMark)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at System.Type.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase)&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.GetType(String typeName, Boolean throwOnError, Boolean ignoreCase) in C:\Visual Studio Projects\csla\40\Source\Csla\Reflection\MethodCaller.cs:line 147&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Reflection.MethodCaller.GetType(String typeName) in C:\Visual Studio Projects\csla\40\Source\Csla\Reflection\MethodCaller.cs:line 166&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.GetTypeFromCache(String typeName) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 224&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.DeserializeAsDTO(List`1 deserialized) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 295&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(List`1 data) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 453&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(XmlReader reader) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 279&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Stream serializationStream) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 249&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Serialization.Mobile.MobileFormatter.Deserialize(Byte[] data) in C:\Visual Studio Projects\csla\40\Source\Csla\Serialization\Mobile\MobileFormatter.cs:line 434&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.GetCriteria(Byte[] criteriaData) in C:\Visual Studio Projects\csla\40\Source\Csla\Server\Hosts\Silverlight\WcfPortal.cs:line 214&amp;#xD;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp; at Csla.Server.Hosts.Silverlight.WcfPortal.Fetch(CriteriaRequest request) in C:\Visual Studio Projects\csla\40\Source\Csla\Server\Hosts\Silverlight\WcfPortal.cs:line 89&lt;/a:StackTrace&gt;&lt;a:TargetSiteName&gt;GetTypeByName&lt;/a:TargetSiteName&gt;&lt;/a:ErrorData&gt;&lt;a:GlobalContext i:nil=&quot;true&quot;/&gt;&lt;a:ObjectData i:nil=&quot;true&quot;/&gt;&lt;/FetchResult&gt;&lt;/FetchResponse&gt;&lt;/s:Body&gt;&lt;/s:Envelope&gt;</p>
+</p>
+<p>I&#39;ve no idea why it&#39;s looking for CSLA v3.7.0.0, I&#39;ve checked each of my projects and the configs thoroughly and all references are to 4.0.0, all deployed CSLA binaries are 4.0.0. I&#39;m so confused.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>saggett replied on Tuesday, August 17, 2010</h2><p>&#39;Could not load file or assembly &#39;Csla, Version=3.7.0.0&#39;&nbsp;was caused by the Silverlight execution choosing to use an old version of the CSLA dll instead of the new version included in the xap. Clearing the browser cache fixed it, so the site is now up and running with UseBinaryXML set to false. Switching it back on causes the original error (&quot;There was an error deserializing the object of type System.Collections.Generic.List`1[[Csla.Serialization.Mobile.SerializationInfo, Csla, Version=4.0.0.0, [...]]. The input source is not correctly formatted.&quot;) to occur on both IE8 and Chrome.</p>
+<p>&nbsp;</p>
+<p>So in summary, the site had two errors, the cross-domain error (caused by a misconfigured service path) and an old version of CSLA sticking around in the browser cache (fixed by clearing the cache). After implementing both of these fixes the serialization succeeds with UseBinaryXML = false, but fails with UseBinaryXML = true, and then only on the deployed site.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>CSLA and distributed transactions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA and distributed transactions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4968.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin posted on Thursday, June 12, 2008</h2>&nbsp;&nbsp;&nbsp; Hi,<br><br>Just a question, I haven't tried it yet:<br>Say that I have a root object and some MSMQs to update when I press the save button. How would the code look like in the save click event handler? <br>Never worked with distributed transactions before. Do you need to start the transaction manually?<br><br>Thanks,<br>Cosmin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 12, 2008</h2><P>In the CSLA model, you would interact with MSMQ inside the DataPortal_XYZ method, not the Save() method. "Server-side" resources like databases and queues should only be used within a DataPortal_XYZ method.</P>
+<P>Then all you need to do is put the standard CSLA Transactional attribute on your DataPortal_XYZ method and indicate if you want EnterpriseServices or TransactionScope style transactions (probably depends on whether all your server resources have a provider for TransactionScope), and CSLA takes care of the rest for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Friday, June 13, 2008</h2>All right, but in case you don't want to mess with other resources inside you business object? There might be situations where you want to do different things at different times like: <br><br>CustomerBO.Save()<br>msmq.Send()<br>otherThings.Update()<br><br><br>or <br><br>CustomerBO.Save()<br>SomeOtherResource.Update()<br><br>But I think for these situations one just needs to create another business objects and encapsulate the operations in the dataportal_xxx methods, right? <br><br>Cosmin.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, if you want to interact with numerous business objects
+within the same logical operation (transactional or not), you should create
+another business object (often a Command object) that orchestrates the
+interactions within a DataPortal_XYZ method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

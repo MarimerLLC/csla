@@ -1,0 +1,22 @@
+<html><header><title>DiscountAsp + CSLA + WCF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DiscountAsp + CSLA + WCF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7349.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Tuesday, July 28, 2009</h2><DIV>For some reason, my SilverLight project is working fine on my local machine.</DIV>
+<DIV>When I deploy it out to my DiscountAsp hosted account, it doesn't seem to bring any data back.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I did a test with a few message boxes and the "e.Object" is returning back null.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But,</DIV>
+<DIV><BR>Here is what DiscountAsp requires are developers to do in order to get WCF working correctly.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I had to create a "code behind" .cs file on my .svc file.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Here is the code they made us add.<BR><BR>Also, I found a thread here <A href="http://forum.discountasp.net/showthread.php?t=7719">http://forum.discountasp.net/showthread.php?t=7719</A></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Isn't most of this done?</DIV>
+<DIV><BR>&nbsp;</DIV>
+<DIV><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=2>
+<P>&lt;%</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>@</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>ServiceHost</FONT></FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Language</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="C#"</FONT></FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Debug</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="true"</FONT></FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Service</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="General.EnterpriseObjects.HelperClasses.Compression.CompressedHost"</FONT></FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Factory</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="MyHost.CSLAService"</FONT></FONT><FONT size=2> </FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>CodeBehind</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CSLAService.svc.cs"</FONT></FONT><FONT size=2> %&gt;</P></FONT></FONT></FONT></DIV>
+<DIV><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P><BR>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ServiceHost</FONT></FONT><FONT size=2> CreateServiceHost(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Type</FONT></FONT><FONT size=2> serviceType, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Uri</FONT></FONT><FONT size=2>[] baseAddresses)<BR>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Uri</FONT></FONT><FONT size=2> webServiceAddress = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Uri</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2><A href="http://MyDomain.com/CSLAService.svc">http://MyDomain.com/CSLAService.svc</A></FONT></FONT><FONT size=2>);</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2></P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ServiceHost</FONT></FONT><FONT size=2> webServiceHost = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ServiceHost</FONT></FONT><FONT size=2>(serviceType, webServiceAddress);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT size=2> webServiceHost;<BR>}<BR></FONT></P>
+<P><FONT size=2>Any ideas of why this will work locally, but not on my hosted account?<BR><BR></P></FONT></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

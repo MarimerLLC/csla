@@ -1,0 +1,205 @@
+<html><header><title>How to Make CopyState Work With a Tree?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to Make CopyState Work With a Tree?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3080.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff posted on Monday, June 25, 2007</h2>I have a CSLA class representing an equation, and the terms are stored in a tree.&nbsp; The tree node includes references to both parent and children&nbsp; (necessarily, I think).&nbsp; I believe this is the source of an error (StackOverflowException) I'm experiencing when databinding.&nbsp; I figure that the CopyState call is not real understanding of the circular references.<br><br>How do I get around this?&nbsp; Note that n-level undo is not especially important to the app I'm working on, so I can sacifice it for this particular class if necessary.<br><br>Thanks!<br>JK<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 25, 2007</h2><P>You must mark any parent field with the NotUndoable attribute so n-level undo ignores that field.</P>
+<P>You may need to (and probably should) mark parent fields as NonSerialized as well. Though the serializer honors circular references, they do tend to expand the size of the serialized byte stream. If you mark the field as NonSerialized, then make sure to override the OnDeserialized method and re-hook the reference, otherwise your references will get lost during the serialization/deserialization process.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Monday, June 25, 2007</h2>Not that it sounds all that hard, but I haven't written any handlers for serialization events before.<br><br>Can I ignore (at least for the time being) if I don't plan to use n-level undo?<br><br>Hearing that probably breaks your heart, knowing what a PITA it was to implement.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Oh, and that's now at least a six-pack I owe you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 25, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you use Windows Forms data binding you <i>must</i> make
+n-level undo work. No option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(well, in CSLA 3.0 there&#8217;s an option because you can set DisableIEditableObject
+to True to block automatic use of undo by data binding, but in that case you&#8217;ll
+find that the UI doesn&#8217;t quite work like you expect unless YOU call
+BeginEdit/CancelEdit/ApplyEdit appropriately&#8230;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But to make n-level undo work all you need to do is put the NotUndoable
+attribute on your parent fields.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The serialization issue is only important if you use a remote
+data portal server or call Clone (which is recommended when saving your objects
+when using a local data portal configuration).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, the n-level undo fix is trivial. The
+serialization fix is slightly harder, but is necessary for a couple
+common/important persistence scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Tuesday, July 10, 2007</h2>Rocky,<br><br>Can you point me to an example of how a tree (or any data structure with circular references) would be deserialized?&nbsp; I searched the PTracker solution, but found nothing.<br><br>JK<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2><P>You'll notice that I never actually <EM>do</EM> serialization or deserialization. Instead I use the BinaryFormatter or NetDataContractSerializer to do any real (de)serialization.</P>
+<P>n-level undo serializes individual objects only - never an actual graph. That avoids the complexity.</P>
+<P>I did once try to write a complete serializer. Serialization is relatively easy. Deserialization (if you ignore ISerializable) is tricky, but possible - even with circular references. But as soon as ISerializable enters the picture you are in serious difficulty, because you need to be able to create objects without running their constructor or any other initialization code. Without that ability, you can't avoid an ugly circular reference issue.</P>
+<P>Long after I abandoned that project (because I wanted an XML serializer, and got one with WCF), I did find the answer. Unfortunately I don't remember the type/method name now, but buried deep in .NET there's a type that has a method that can create an object without initializing that object. That's the method used by BF and NDCS to create an object, and then they manually invoke the "constructor" after they've done all the fix-ups needed to resolve circular references.</P>
+<P>It is also the case that .NET includes some serialization helper objects. If you use Reflector against the BF you can find them. I didn't use them, because I wanted to see how it worked from the bottom up, but using them can help a lot, because they do the fix-up work for you, etc.</P>
+<P>Of course my answer could be totally going in a different direction from the intent of your question...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Tuesday, July 10, 2007</h2>Earlier in this thread, you wrote that I'd need to write a Deserialization handler so that I can make the child pointer to parent work.&nbsp; I have no idea how to do this, so I was wondering if you had a simple example.<br><br>I only need to deserialize this one class (an n-ary tree).<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, I was afraid I was going off into left field with my last
+answer </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you look at CSLA itself (specifically BusinessListBase) you&#8217;ll
+see what I mean. It has a deserialization handler where it loops through its
+children to call SetParent(). This re-links the child&#8217;s parent reference
+back to the collection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Tuesday, July 10, 2007</h2>So, here's the relevant object structure:<br><br>Public Class Study<br>&nbsp;&nbsp;&nbsp; mEquations as StudyEquationList<br><br>Public Class Equation<br>&nbsp;&nbsp;&nbsp; mRoot as Equation Node<br><br>Public Class EquationNode<br>&nbsp;&nbsp;&nbsp; &lt;NonSerialized()&gt; &lt;NotUndoable()&gt; Private mParent As EquationNode<br>&nbsp;&nbsp;&nbsp; Private mChildren As EquationNodeList = EquationNodeList.NewEquationNodeList<br><br>And I put this in the EquationNode class:<br><br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each tempItem As EquationNode In mChildren<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tempItem.ParentNode = Me<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.OnDeserialized(context)<br>&nbsp;&nbsp;&nbsp; End Sub<br><br>But it's not being called when anywhere.&nbsp; I expect it to be called in the following (from my form's save button code):<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _study.ApplyEdit()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _study = _study.Save<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _study.BeginEdit()<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are missing some relevant bits.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Either you are<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;Serializable()&gt; _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Public Class Study<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Inherits BusinessBase<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you are<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;Serializable()&gt; _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Public Class Study<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you inherit from BusinessBase, then you are part of the
+n-level undo cycle itself, and your object won&#8217;t be serialized by n-level
+undo. Instead, UndoableBase uses reflection to trap your fields.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you do NOT inherit from BB, then you will be serialized using
+the BinaryFormatter, but you won&#8217;t be able to override OnDeserialized()
+because that comes from BB. Instead, you&#8217;ll need to declare a method with
+an attribute (look at BB for an example) so the BinaryFormatter calls you
+directly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the former case, where you do inherit from BB,
+OnDeserialized() will only be called due to a Clone() or Save() call (pretty
+much). You don&#8217;t typically need to reset the parent on a CancelEdit() or
+ApplyEdit() because the NonUndoable attribute tells n-level undo to <i>entirely
+ignore</i> the specified field. This means it is never touched &#8211; not cleared
+or anything.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So when inheriting from BB you <i>do need to reset the parent</i>
+on deserialization. You do <i>not</i> need to reset the parent due to n-level
+undo.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>josh.kodroff replied on Tuesday, July 10, 2007</h2>All classes are &lt;Serializable()&gt; and inherit from BusinessBase.<br><br>The problem is, when I call save, my mParent for the EquationNode turns to nothing.&nbsp; Something is happening in those 3 lines (apply edit, save) that turns my mParents&nbsp; to nothing.<br><br>JK<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Right, Save() will cause serialization and deserialization. That
+should cause your method to run.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using a local data portal, you are probably saving a
+clone &#8211; so it is the Clone() call that actually triggers the process. If
+you are using a remote data portal it is the data portal that triggers the
+process.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using a local data portal and not calling Clone(),
+then no serialization would occur.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 10, 2007</h2><P>Looking at your code, you are not doing a Clone(). So if you are using a local data portal then no serialization occurs. That probably explains why the method is never invoked <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>But if that is the case, then neither serialization nor undo are clearing the field, so you must have code (perhaps in your DP_XYZ methods) that is somehow clearing the field.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,92 @@
+<html><header><title>EditableRootList and Undo problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootList and Undo problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2995.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud posted on Wednesday, June 06, 2007</h2><P>LAst few days I have been struggling days and nights to&nbsp;implement EditableRootListBase. My scenario is:</P>
+<P>(1) A gridview bound with an EditableRootList, _currencycs&nbsp;(CurrencyId, CurrencyName and ConversionRate)</P>
+<P>(2) We disabled 'Add New' in grid, so user have to press 'New' button to add records in gridview. In the New button code we inserted a new record in gridview by - _currencycs.AddNew() . This adds and saves the new record in the editablerootlist collection. So, Eas does not undo the new entry.</P>
+<P>(3) Now, the problem is regarding Undo. We have code in 'RowValidating' where we check whether CurrencyName is empty or CurrencyRate is 0. If the error condition is there, then we set Cancel=true. We have put the following code in Undo button - </P>
+<P>gridMain.CancelEdit(&lt;current row&gt;)</P>
+<P>If the 'Undo' is pressed when there is no error, then its OK - and undo works perfectly. But after the row has not been passed RowValidating, then error comes.</P>
+<P>I would like to get a clear idea about how to Undo changes&nbsp;with EditableRootList when RowValidating in gridview is in effect. This is very urgent, because all of our dictionary tables will be edited this way.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 07, 2007</h2><P>Two things. </P>
+<P>First, the whole idea of CSLA is to help you get all business logic <EM>out of the UI</EM>. That code you are writing in step 3 is putting business logic <EM>into</EM> the UI. I suggest you don't do that.</P>
+<P>Second, what is the error?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud replied on Thursday, June 07, 2007</h2><P>RowValidating is the only place that I know, where to write validation code for a specific row before saving for validity. Any other alternatives? Are you proposing AddBusinessRule? Then check for broken rules?</P>
+<P>The error is: Operation did not succeed because the program cannot commit or quit a cell value change.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, June 07, 2007</h2>Yes, creating&nbsp; a rule method, then using AddBusinessRule would be the best way to go.&nbsp; Your BO would likely then accept the invalid value, but because the rule would be run (via the PropertyHasChanged method you call in the property setter), Save would thrown an exception.&nbsp; The cell or row (depending on how the grid is configured) would show a red circle with a white ! mark in it.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud replied on Friday, June 08, 2007</h2>I am still waiting to get a clear indication of how to handle Undo in gridview bound to an EditableRootList. &nbsp;</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 08, 2007</h2>Undoing changes to all the items in the grid?&nbsp; Or just to one item?&nbsp; The former goes against what ERL is meant to do, which is commit each row as the user leaves it (thus accepting the changes).&nbsp; I would think that pressing ESC should be enough to undo changes to a row, provided you haven't left the row yet.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud replied on Saturday, June 09, 2007</h2><P>We have to remove the facility of AllowNew from the grid, according to our design team. Now, the undo for a new row is not working as expected (pressing Esc does not undo a new row). We are using EditableRootList, so every row is on its own - if you move from the row - its saving automatically.</P>
+<P>Still unable to find a workable solution...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud replied on Saturday, June 09, 2007</h2><P>I think, I should explain a little bit more - so that at least someone with clear understanding of CSLA and gridview can help me out. </P>
+<P>(1) We have bound a gridview with a bindingsource bound to a EditableRootListBase - CurrencyList of Currency objects. The gridview has AllowUsersToAddRows set to False. So there is no New Record line in the gridview.</P>
+<P>(2) We have a NEW button, here is the code - </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!gridMain.IsCurrentRowDirty)</P>
+<P>{</P>
+<P>bsCurrency.AddNew();</P>
+<P>gridMain.Focus();</P>
+<P>gridMain.CurrentCell = gridMain.Rows[gridMain.RowCount - 1].Cells[1];</P>
+<P>}</P>
+<P>(3) We have an Undo button, here is the code - </P><FONT size=2>
+<P>atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2> lineobj = (atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2>)bsCurrency.Current;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj.IsNew)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> lineindex = gridMain.CurrentRow.Index;</P>
+<P>gridMain.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>bsCurrency.RemoveAt(lineindex);</P>
+<P>_currencys.CancelNew(lineindex);</P>
+<P>RefreshData();</P>
+<P>gridMain.DataSource = bsCurrency;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj.IsDirty)</P>
+<P>{</P>
+<P>RefreshData();</P>
+<P></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2>(4) We validate every record in the gridview RowValidating event - </FONT></P><FONT size=2>
+<P>atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2> lineobj = (atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2>)(gridMain.Rows[e.RowIndex].DataBoundItem);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_bNewRecord &amp;&amp; lineobj.IsNew &amp;&amp; lineobj.BrokenRulesCollection.Count == 0)</P>
+<P>lineobj.CheckValidity();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj.BrokenRulesCollection.Count &gt; 0)</P>
+<P>e.Cancel = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P></FONT>
+<P><FONT size=2>(5) CheckValidity calls Validation.CheckRules(). There is only one rule set in the business class - CurrencyName is required. So, when user tries to move from the new row and does not give CurrencyName, the RowValidating runs and ensures that the user cannot move from the error row. </FONT></P>
+<P><FONT size=2>Can anyone suggest whether this is the right way to proceed, or we have some erronious code...</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mahmud replied on Saturday, June 09, 2007</h2><P>I think, I should explain a little bit more - so that at least someone with clear understanding of CSLA and gridview can help me out. </P>
+<P>(1) We have bound a gridview with a bindingsource bound to a EditableRootListBase - CurrencyList of Currency objects. The gridview has AllowUsersToAddRows set to False. So there is no New Record line in the gridview.</P>
+<P>(2) We have a NEW button, here is the code - </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!gridMain.IsCurrentRowDirty)</P>
+<P>{</P>
+<P>bsCurrency.AddNew();</P>
+<P>gridMain.Focus();</P>
+<P>gridMain.CurrentCell = gridMain.Rows[gridMain.RowCount - 1].Cells[1];</P>
+<P>}</P>
+<P>(3) We have an Undo button, here is the code - </P><FONT size=2>
+<P>atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2> lineobj = (atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2>)bsCurrency.Current;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj.IsNew)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> lineindex = gridMain.CurrentRow.Index;</P>
+<P>gridMain.DataSource = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>bsCurrency.RemoveAt(lineindex);</P>
+<P>_currencys.CancelNew(lineindex);</P>
+<P>RefreshData();</P>
+<P>gridMain.DataSource = bsCurrency;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj.IsDirty)</P>
+<P>{</P>
+<P>RefreshData();</P>
+<P></FONT><FONT size=2>}</FONT></P>
+<P><FONT size=2>(4) We validate every record in the gridview RowValidating event - </FONT></P><FONT size=2>
+<P>atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2> lineobj = (atlMSLibrary.</FONT><FONT color=#008080 size=2>Currency</FONT><FONT size=2>)(gridMain.Rows[e.RowIndex].DataBoundItem);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_bNewRecord &amp;&amp; lineobj.IsNew &amp;&amp; lineobj.BrokenRulesCollection.Count == 0)</P>
+<P>lineobj.CheckValidity();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (lineobj.BrokenRulesCollection.Count &gt; 0)</P>
+<P>e.Cancel = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P></FONT>
+<P><FONT size=2>(5) CheckValidity calls Validation.CheckRules(). There is only one rule set in the business class - CurrencyName is required. So, when user tries to move from the new row and does not give CurrencyName, the RowValidating runs and ensures that the user cannot move from the error row. </FONT></P>
+<P><FONT size=2>Can anyone suggest whether this is the right way to proceed, or we have some erronious code...</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Mahmud:</strong></div><div>
+<P>We have to remove the facility of AllowNew from the grid, according to our design team. Now, the undo for a new row is not working as expected (pressing Esc does not undo a new row). We are using EditableRootList, so every row is on its own - if you move from the row - its saving automatically.</P>
+<P>Still unable to find a workable solution...</P>
+<P></div></BLOCKQUOTE></P>
+<P>I'm not entirely sure this is possible then. The grid isn't designed to do what you want, and you'll have to figure out how to trick the grid and/or data binding into doing this.</P>
+<P>When you add the item to your list, it is added to the grid, but in a way such that the grid doesn't think it is new (because it came from an external source, not the grid). That's why ESC won't get rid of it.</P>
+<P>Your only hope (I think) is to perhaps catch the ESC keypress in the grid (keyup handler or something) and force removal of the new item - assuming you can detect it is a new one in some way.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

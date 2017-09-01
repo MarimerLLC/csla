@@ -1,0 +1,17 @@
+<html><header><title>Saving 500 or so child objects from a Excel Sheet - DataSet</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Saving 500 or so child objects from a Excel Sheet - DataSet</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3249.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB posted on Monday, July 23, 2007</h2><P>Hi,</P>
+<P>I am using CSLA for my current project and successfully implementing it for our design. It is really exciting and fitting our requirements.</P>
+<P>I have a requirement for which I want to implement an effective solution.</P>
+<P>I have a excel sheet uploaded to my web app (asp.net 2.0, C#), which will contain 100 - 1000 child object.</P>
+<P>My parent object will have the following attributes</P>
+<P>name,<BR>id,<BR>childlist1,<BR>childlist2.</P>
+<P>Childlist1 and child list 2 will be necessarily from an excel sheet (100 - 1000 rows) How do I save the parent object?</P>
+<P>The straightforward way, I think of this is, within the datatable (excel rows and cols converted to datatable in aspx), </P>
+<P>for each row in the datatable</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; initialize the child objects</P>
+<P>}</P>
+<P>call the parent object's save method and save all the child objects at one stretch.. I handle the db stored proc to retrieve the parent object in xml and save the child object list at one step..</P>
+<P>Any other suggestions for performance. I am looping in the front end once to initialize all the objects and looping in the backend to store all the rows(child object table)</P>
+<P>Thanks,<BR>RSB</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 23, 2007</h2><P>One anti-pattern (opposite of design patterns) is Premature Optimization. No sense optimizing unless you <EM>know</EM> you are going to have a performance issue <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Your approach seems straightforward to me, and is probably what I'd do as a first pass. If it works, great! If not, you can optimize from there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RSB replied on Tuesday, July 24, 2007</h2><P>Thank you. </P>
+<P>RSB</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

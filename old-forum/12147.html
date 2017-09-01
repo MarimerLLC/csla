@@ -1,0 +1,425 @@
+<html><header><title>CslaModelBinder and OnChildChanged problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaModelBinder and OnChildChanged problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12147.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 posted on Monday, September 09, 2013</h2><p class="MsoPlainText">Hi</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">My code below works as expected in a unit test but fails
+when using the MVC CslaModelBinder. In this case OnChildChanged is not called. I
+think also it would be better if I could invoke the sibling rules only when the
+child object&#39;s rule gets broken. Can you help?</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">Thanks</p>
+<p class="MsoPlainText">Andrew</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; [TestClass]</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; public class
+EditableRootTest</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+[TestMethod]</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void
+AddDuplicateEmails_BothShouldBeInvalid()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+account = EditableRoot.New();</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+account.Email1.EmailAddress = &quot;dup@emailagain.com&quot;;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+account.Email2.EmailAddress = &quot;dup@emailagain.com&quot;;</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(false, account.Email1.IsValid);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(false, account.Email2.IsValid);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; [Serializable]</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; public class
+EditableRoot : BusinessBase&lt;EditableRoot&gt;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Business Methods</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+static readonly PropertyInfo&lt;EditableChild&gt; Email1Property =</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RegisterProperty&lt;EditableChild&gt;(c =&gt; c.Email1);</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+static readonly PropertyInfo&lt;EditableChild&gt; Email2Property =</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+RegisterProperty&lt;EditableChild&gt;(c =&gt; c.Email2);</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+EditableChild Email1</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {
+return GetProperty(Email1Property); }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+set { LoadProperty(Email1Property, value); }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+EditableChild Email2</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {
+return GetProperty(Email2Property); }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+set { LoadProperty(Email2Property, value); }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Business Rules</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected
+override void OnChildChanged(ChildChangedEventArgs e)</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(e.ChildObject is EditableChild &amp;&amp; e.PropertyChangedArgs.PropertyName
+== &quot;EmailAddress&quot;)</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Email1.CheckEmailRules();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Email2.CheckEmailRules(); </p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+base.OnChildChanged(e);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Factory Methods</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+EditableRoot()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
+Require use of factory methods */</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+static EditableRoot New()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+DataPortal.Create&lt;EditableRoot&gt;();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Data Access</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [RunLocal]</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected
+override void DataPortal_Create()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using
+(BypassPropertyChecks)</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Email1 = EditableChild.New();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Email2 = EditableChild.New();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+base.DataPortal_Create();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; [Serializable]</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; public class
+EditableChild : BusinessBase&lt;EditableChild&gt;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Business Methods</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+static readonly PropertyInfo&lt;string&gt; EmailAddressProperty =
+RegisterProperty&lt;string&gt;(c =&gt; c.EmailAddress);</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+string EmailAddress</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get {
+return GetProperty(EmailAddressProperty); }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set {
+SetProperty(EmailAddressProperty, value); }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Business Rules</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected
+override void AddBusinessRules()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessRules.AddRule(new DuplicatesRule(EmailAddressProperty));</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+class DuplicatesRule : BusinessRule</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+DuplicatesRule(IPropertyInfo primaryProperty)</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+base(primaryProperty)</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+InputProperties = new List&lt;IPropertyInfo&gt; { primaryProperty };</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+protected override void Execute(RuleContext context)</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+address = (string)context.InputPropertyValues[PrimaryProperty];</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(string.IsNullOrEmpty(address)) return;</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+target = (EditableChild) context.Target;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;var parent = (EditableRoot) target.Parent;</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+email1 = (EditableChild)ReadProperty(parent, EditableRoot.Email1Property);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+email2 = (EditableChild)ReadProperty(parent, EditableRoot.Email2Property);</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var
+addresses = new List&lt;string&gt;();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!string.IsNullOrEmpty(email1.EmailAddress))
+addresses.Add(email1.EmailAddress);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(!string.IsNullOrEmpty(email2.EmailAddress))
+addresses.Add(email2.EmailAddress);</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(addresses.Count() &gt;
+addresses.Distinct(StringComparer.OrdinalIgnoreCase).Count())</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+context.AddErrorResult(&quot;Duplicate email address not
+allowed.&quot;);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal
+void CheckEmailRules()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BusinessRules.CheckRules(EmailAddressProperty);</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region
+Factory Methods</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+EditableChild()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /*
+Require use of factory methods */</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; internal
+static EditableChild New()</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return
+DataPortal.CreateChild&lt;EditableChild&gt;();</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion</p>
+<p class="MsoPlainText">&nbsp;&nbsp;&nbsp; }</p>
+<p class="MsoPlainText">&nbsp;</p>
+<p>&nbsp;</p>
+<p class="MsoPlainText">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Wednesday, September 11, 2013</h2><p>Hi</p>
+<p>I&#39;m sure this is a bug in CSLA. The ChildChanged event must and should fire when a property changes regardless of the UI technology.&nbsp;</p>
+<p>This post highlights the same issues I&#39;m having without identifying a solution.</p>
+<p class="MsoPlainText"><a href="http://forums.lhotka.net/forums/p/11282/52449.aspx">http://forums.lhotka.net/forums/p/11282/52449.aspx</a></p>
+<p class="MsoPlainText">I really need a fix for this.</p>
+<p class="MsoPlainText">Thank you</p>
+<p class="MsoPlainText">Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 15, 2013</h2><p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">No, this is not a bug in CSLA.&nbsp;</p>
+<p style="color:#000000;font-family:Arial, Helvetica, sans-serif;font-size:12px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:auto;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:auto;word-spacing:0px;-webkit-text-stroke-width:0px;">Here is the semantic flow of execution in the CslaModelBinder when EMal1 and EMail2 child objects is not initialized:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">TestMethod</span>()]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CslaModelBinderTest()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;root&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">EditableRoot</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(root&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).SuppressRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;create&nbsp;child1</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;child1&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(child1&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).SuppressRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child1.EmailAddress&nbsp;=&nbsp;<span style="color:#a31515;">&quot;my@email.com&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(child1&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).ResumeRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(child1&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;set&nbsp;EMail1&nbsp;property</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.Email1&nbsp;=&nbsp;child1;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;create&nbsp;Child2</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;child2&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(child2&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).SuppressRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;child2.EmailAddress&nbsp;=&nbsp;<span style="color:#a31515;">&quot;my@email.com&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(child2&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).ResumeRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(child2&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;set&nbsp;EMail2&nbsp;property</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.Email2&nbsp;=&nbsp;child2;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(root&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).ResumeRuleChecking();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(root&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">ICheckRules</span>).CheckRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(root.Email1.GetBrokenRules().Count&nbsp;&gt;&nbsp;0);&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Assert</span>.IsTrue(root.Email2.GetBrokenRules().Count&nbsp;&gt;&nbsp;0);
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />As you can see the <br />My preferred solution would be to add an object level rule on the root object to call checkrules on the child objects. <br /><br />When I update the code to this the rules (and test above) run as expected: <br /><br />&nbsp; [<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">EditableRoot</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">EditableRoot</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Name
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(NameProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(NameProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;AdressProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Adress);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Adress
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(AdressProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(AdressProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">EditableChild</span>&gt;&nbsp;Email1Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">EditableChild</span>&gt;(c&nbsp;=&gt;&nbsp;c.Email1);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>&nbsp;Email1
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Email1Property);&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Email1Property,&nbsp;<span style="color:blue;">value</span>);}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">EditableChild</span>&gt;&nbsp;Email2Property&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">EditableChild</span>&gt;(c&nbsp;=&gt;&nbsp;c.Email2);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>&nbsp;Email2
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(Email2Property);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(Email2Property,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">EditableRoot</span>&nbsp;New()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Create&lt;<span style="color:#2b91af;">EditableRoot</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">EditableRoot</span>&nbsp;Get(<span style="color:blue;">int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.Fetch&lt;<span style="color:#2b91af;">EditableRoot</span>&gt;(id);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Fetch(<span style="color:blue;">int</span>&nbsp;id)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(NameProperty,&nbsp;<span style="color:blue;">string</span>.Format(<span style="color:#a31515;">&quot;Cust&nbsp;</span><span style="color:mediumseagreen;">{0}</span><span style="color:#a31515;">&quot;</span>,&nbsp;id));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnChildChanged(<span style="color:#2b91af;">ChildChangedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(e.ChildObject&nbsp;<span style="color:blue;">is</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>&nbsp;&amp;&amp;&nbsp;e.PropertyChangedArgs.PropertyName&nbsp;==&nbsp;<span style="color:#a31515;">&quot;EmailAddress&quot;</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.CheckObjectRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnChildChanged(e);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.AddBusinessRules();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;add&nbsp;object&nbsp;level&nbsp;rule&nbsp;to&nbsp;check&nbsp;rules&nbsp;in&nbsp;child&nbsp;when&nbsp;&lt;this&gt;.CheckRules&nbsp;is&nbsp;called&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CheckEMailRules</span>());
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CheckEMailRules</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;root&nbsp;=&nbsp;(<span style="color:#2b91af;">EditableRoot</span>)&nbsp;context.Target;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.Email1.CheckEmailRules();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;root.Email2.CheckEmailRules();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}
+}<br /><br />&nbsp; [<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">EditableChild</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;EmailAddressProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.EmailAddress);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;EmailAddress
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(EmailAddressProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(EmailAddressProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddRule(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">DuplicatesRule</span>(EmailAddressProperty));
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">DuplicatesRule</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;DuplicatesRule(<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:blue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InputProperties&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">IPropertyInfo</span>&gt;&nbsp;{&nbsp;primaryProperty&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Execute(<span style="color:#2b91af;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;address&nbsp;=&nbsp;(<span style="color:blue;">string</span>)context.InputPropertyValues[PrimaryProperty];
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">string</span>.IsNullOrEmpty(address))&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;target&nbsp;=&nbsp;(<span style="color:#2b91af;">EditableChild</span>)context.Target;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;parent&nbsp;=&nbsp;(<span style="color:#2b91af;">EditableRoot</span>)target.Parent;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(parent&nbsp;==&nbsp;<span style="color:blue;">null</span>)&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;email1&nbsp;=&nbsp;(<span style="color:#2b91af;">EditableChild</span>)ReadProperty(parent,&nbsp;<span style="color:#2b91af;">EditableRoot</span>.Email1Property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;email2&nbsp;=&nbsp;(<span style="color:#2b91af;">EditableChild</span>)ReadProperty(parent,&nbsp;<span style="color:#2b91af;">EditableRoot</span>.Email2Property);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;((email1&nbsp;==&nbsp;<span style="color:blue;">null</span>)&nbsp;||&nbsp;(email2&nbsp;==&nbsp;<span style="color:blue;">null</span>))&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;addresses&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:blue;">string</span>&gt;();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!<span style="color:blue;">string</span>.IsNullOrEmpty(email1.EmailAddress))&nbsp;addresses.Add(email1.EmailAddress);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!<span style="color:blue;">string</span>.IsNullOrEmpty(email2.EmailAddress))&nbsp;addresses.Add(email2.EmailAddress);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(addresses.Count()&nbsp;&gt;&nbsp;addresses.Distinct(<span style="color:#2b91af;">StringComparer</span>.OrdinalIgnoreCase).Count())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.AddErrorResult(<span style="color:#a31515;">&quot;Duplicate&nbsp;email&nbsp;address&nbsp;not&nbsp;allowed.&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">internal</span>&nbsp;<span style="color:blue;">void</span>&nbsp;CheckEmailRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.CheckRules(EmailAddressProperty);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">internal</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">EditableChild</span>&nbsp;New()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.CreateChild&lt;<span style="color:#2b91af;">EditableChild</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}<br /><br /><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Monday, September 16, 2013</h2><p>Hi</p>
+<p>Thank you for the detailed response. I have applied your suggestions to my code and can see that the test passes correctly with both email objects having a broken rule.</p>
+<p>However, when I run things in an MVC controller, the CslaModelBinder does not update the ModelState errors correctly. In this case only Email2 error gets added.</p>
+<p>Also I notice that the test calls OnChildChanged but the CslaModelBinder does not.</p>
+<p>I can send you the test project if that helps? &nbsp;How would I do that?</p>
+<p>Thank you<br />Andrew&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, September 16, 2013</h2><p>You can send the test project to jonny.bekkum(a)gmail.com.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Tuesday, September 17, 2013</h2><p>Hi Jonny</p>
+<p>Just to let you know I&#39;ve emailed you my project, subject &#39;CslaModelBinder and OnChildChanged problem&#39;.</p>
+<p>Thanks<br />Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>j0552 replied on Friday, September 20, 2013</h2><p>Hi there</p>
+<p>Any progress with this one?</p>
+<p>Thanks</p>
+<p>Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, September 20, 2013</h2><p>Hi, </p>
+<p>No, haven&#39;t had time to dive into this one yet.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

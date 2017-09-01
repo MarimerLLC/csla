@@ -1,0 +1,10 @@
+<html><header><title>ProjectTracker Bugs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectTracker Bugs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2198.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gareth posted on Tuesday, January 23, 2007</h2><P>I've been using ProjectTracker recently as a base for a new web project. I've been testing some areas and come across a few bugs and I'm wondering if anyone has seen these and been able to fix them.</P>
+<P>1) After adding a new project role, if I click on "Add Role" to add another new record, the previously added record's data&nbsp;still appears in the text boxes. </P>
+<P>2) If you add a new project role with invalid data (i.e. ID = 'XX', Name='XX') it causes a "property not copied (Id)"&nbsp;error to be displayed but it still adds a new row to the datagrid. Is there anyway to prevent this? I am trying to add a RequiredFieldValidator and RegularExpressionValidator to the view to fix this problem but I haven't worked out how to add these controls to the multiview control as yet.</P>
+<P>3) After successfully adding a new project role and you are returned to the datagrid view, if you press F5 to refresh the page the previously added record is added again to the datagrid, therefore displaying it twice. It is not added to the database however, it is just the display that is wrong.</P>
+<P>4) Similarly adding a new role with an existing ID displays the required error message but also&nbsp;adds a new row to the grid showing the invalid record. Is there anyway to stop the grid adding this invalid row?</P>
+<P>Has anyone come across these issue and fixed them?</P>
+<P>Regards,<BR>Gareth</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>After adding a new record and returning to the grid view, if I press F5 to refresh the page the new data is adding to the grid again and an error is displayed.<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

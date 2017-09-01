@@ -1,0 +1,25 @@
+<html><header><title>CSLA With Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA With Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7605.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Thursday, September 10, 2009</h2><P>Hey guys:</P>
+<P>I'm looking through all of the examples available with the lightsamples downloads and I'm trying to figure out what all I need to do with my codesmith templates to output CSLA objects that are consumable by both Silverlight and normal ASP.NET applications.</P>
+<P>I am&nbsp;using the latest Codesmith CSLA templates provided by the Codesmith team and I want to customize them for Silverlight. Can someone list what needs to happen to the generated classes?</P>
+<P>Is it as simple as wrapping all of the currently generated DataPortal_XYZ functions with #if !SILVERLIGHT and having the templates also generate a set of DataPortal_XYZ methods that silverlight can consume in the #else block?</P>
+<P>I've also seen in the demo applications where the constructor is public for Silverlight and I don't quite understand why that would be?</P>
+<P>Also, where exactly would a WCF service layer most appropriately fit? I see in the examples that you can use WCF from Silverlight directly or you can use the remote data portal (which may or may not employ WCF services).</P>
+<P>Is either method better than the other? Would the remote data portal approach be a better choice considering we want to use the objects in Silverlight and normal Web/Windows applications?</P>
+<P>Keep in mind this Silverlight and WCF territory is very new to me so if some of these questions seem overly noobish please be gentle.</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 10, 2009</h2><P>The best source of information about CSLA .NET for Silverlight is the video series from <A href="http://store.lhotka.net">http://store.lhotka.net</A>.</P>
+<P>Silverlight objects do have some different requirements, including:</P>
+<OL>
+<LI>Public default constructor (due to Silverlight reflection limitations)</LI>
+<LI>Use of managed backing fields (for serialization - or you must override OnGetState/OnSetState to serialize all your private backing fields manually)</LI>
+<LI>Add a "using Csla.Serialization;" at the top of each class (because Silverlight doesn't have a [Serializable] attribute among other things)</LI>
+<LI>Any non-Silverlight code must be in a separate partial class or in #if !SILVERLIGHT blocks (because that code won't compile for Silverlight)</LI>
+<LI>Every business class needs to be included in <EM>two projects</EM>: a Silverlight class library and a .NET class library (because the target runtimes are different, and you need to build a Silverlight DLL and a .NET DLL with the same code)</LI></OL>
+<P>CSLA .NET for Silverlight supports several different architectural configurations, including:</P>
+<OL>
+<LI>"Edge" application architectures where the data portal runs in local mode, and the client-side DataPortal_XYZ methods invoke remote REST or SOAP services as you choose</LI>
+<LI>3-tier or 4-tier client/server architectures where the data portal runs in remote mode, talking to a CSLA .NET for Windows application server via WCF - this is comparable to the "normal" usage of CSLA .NET in other environments</LI></OL>
+<P>There are variations on these themes, with various authentication capabilities and so forth.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Friday, September 11, 2009</h2><P>Thanks Rocky.</P>
+<P>I'll put pressure on my manager today for the video series. They sounded open enough to do it so maybe I can rush them along.</P>
+<P>I appreciate the tips!</P>
+<P>Will</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

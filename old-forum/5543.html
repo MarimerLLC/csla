@@ -1,0 +1,144 @@
+<html><header><title>One Project... Reference 2 Library Projects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One Project... Reference 2 Library Projects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5543.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Monday, October 06, 2008</h2>Currently I have a Windows application that is using a library of business objects using CSLA 3.0.4.<br><br>We are about to start a new project in WPF that will have it's own library of business objects as well, but it will need access to some of the objects from the other project.<br><br>What is the best approach to this?<br><br>Is there an issue with having one project reference 2 CSLA libraries or should I just add a seperate namespace to the existing library project?<br><br>Any guidance greatly appreciated!<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In theory there is no issue to have two references to your
+libraries, where each one references Csla.&nbsp; The issue is though that those
+two libariries will reference different versions of Csla.&nbsp; I do not think
+you would want to do this.&nbsp; So, if you are staying on 3.0, then you are
+OK.&nbsp; Otherwise I would recommend upgrading your first project to 3.5.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 3:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] One Project... Reference 2 Library Projects?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Currently I have a Windows application that is using a
+library of business objects using CSLA 3.0.4.<br>
+<br>
+We are about to start a new project in WPF that will have it's own library of
+business objects as well, but it will need access to some of the objects from
+the other project.<br>
+<br>
+What is the best approach to this?<br>
+<br>
+Is there an issue with having one project reference 2 CSLA libraries or should
+I just add a seperate namespace to the existing library project?<br>
+<br>
+Any guidance greatly appreciated!<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Monday, October 06, 2008</h2>Thanks for the reply... My other concern has to so with which library would be in charge of Identity/Principal.<br><br>Would I have to call the&nbsp; login on each library so that my authorization rules work or what?&nbsp; <br><br>Thanks for the insight so far :)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not really.&nbsp; I think you only need one principal object for
+two libraries.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> reagan123
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 5:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: One Project... Reference 2 Library
+Projects?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the reply... My other concern has to so with
+which library would be in charge of Identity/Principal.<br>
+<br>
+Would I have to call the&nbsp; login on each library so that my authorization
+rules work or what?&nbsp; <br>
+<br>
+Thanks for the insight so far :)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

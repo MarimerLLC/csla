@@ -1,0 +1,18 @@
+<html><header><title>Error encountered when compiling PtWpf project inside the ProjectTracker solution</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error encountered when compiling PtWpf project inside the ProjectTracker solution</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9861.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hadi teo posted on Sunday, December 12, 2010</h2><p>Currently I am using &quot;CslaSamples-4.1.0-101210&quot; combined with the CSLA version 4.1.0 dlls. I have noticed that PtWpf project is not added to the ProjectTracker solution initially. </p>
+<p>I am using Visual Studio 2010.</p>
+<p>So when i added PtWpf project and compiled it, it threw 4 exceptions below:</p>
+<p>1) Cannot find the Style Property &#39;PopupTemplate&#39; on the type &#39;Csla.Xaml.PropertyStatus&#39;. Line 152 Position 15.&nbsp;&nbsp;&nbsp; C:\Development\CslaSamples-4.1.0-101210\NET\cs\ProjectTrackercs\PTWpf\Application.xaml</p>
+<p>2) The property &#39;TargetControl&#39; does not exist in XML namespace &#39;clr-namespace:Csla.Xaml;assembly=Csla.Xaml&#39;. Line 102 Position 32.&nbsp;&nbsp;&nbsp; C:\Development\CslaSamples-4.1.0-101210\NET\cs\ProjectTrackercs\PTWpf\ProjectEdit.xaml&nbsp;&nbsp; </p>
+<p><br />3) The property &#39;TargetControl&#39; does not exist in XML namespace &#39;clr-namespace:Csla.Xaml;assembly=Csla.Xaml&#39;. Line 30 Position 34.&nbsp;&nbsp;&nbsp; C:\Development\CslaSamples-4.1.0-101210\NET\cs\ProjectTrackercs\PTWpf\RolesEdit.xaml&nbsp;&nbsp;&nbsp; </p>
+<p>4) The tag &#39;Authorizer&#39; does not exist in XML namespace &#39;clr-namespace:Csla.Xaml;assembly=Csla.Xaml&#39;. Line 83 Position 10.&nbsp;&nbsp;&nbsp; C:\Development\CslaSamples-4.1.0-101210\NET\cs\ProjectTrackercs\PTWpf\ResourceEdit.xaml&nbsp;&nbsp; </p>
+<p>&nbsp;</p>
+<p>I have tried to open and see inside the CSLA 4.0.1 source code and i cannot find &quot;PopupTemplate&quot; property inside the CSLA.Xaml project especially the PropertyStatus.cs file.</p>
+<p>&nbsp;</p>
+<p>For your information, i have encountered the same exception for CSLA Samples for version 4.0.</p>
+<p>&nbsp;</p>
+<p>Thank you very much for your help in enlightening this issue.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>&nbsp;</p>
+<p>hadi teo</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hadi teo replied on Sunday, December 12, 2010</h2><p>I have found similar issue posted by &quot;sorrapob&quot; . The issue was posted at&nbsp; http://forums.lhotka.net/forums/p/9652/45463.aspx</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, December 12, 2010</h2><p>ProjectTracker is not up to date - I probably should just remove it from the Samples download.</p>
+<p>Look at other samples - I think all the others are up to date at this point.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hadi teo replied on Monday, December 13, 2010</h2><p>Thanks Rocky for your reply.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

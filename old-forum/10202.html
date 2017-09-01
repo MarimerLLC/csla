@@ -1,0 +1,17 @@
+<html><header><title>[Help me - get value combobox]</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[Help me - get value combobox]</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10202.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>linhvu posted on Friday, March 25, 2011</h2><p>I have one combobox. Combobox Datasource&nbsp;is object NameValueList.</p>
+<p>My code: combobox.DataSource = objNameValueList;</p>
+<p>When event combobox<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">_DropDownClosed raise, i want to get ValueMember of Combobox but i can&#39;t.</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">And combobox.SelectedItem&nbsp;has Key (1) and Value (&quot;Jack&quot;). I want to get key (1). I can&#39;t do it.</span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">Please.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jack.doe77 replied on Friday, March 25, 2011</h2><p>Can you get the value with </p>
+<p>dim cbKey as integer<br />cbKey = combobox.SelectedValue</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>linhvu replied on Friday, March 25, 2011</h2><p>I dont think so. it&nbsp;dont do that.</p>
+<p>???&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Friday, March 25, 2011</h2><p>What tech are you using?&nbsp; ASP.NET?&nbsp; WPF? Winforms? Silverlight?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Friday, March 25, 2011</h2><p>Try casting your combobox.SeletedItem to a NameValuePair and retrieve it from that.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">((Csla.<span style="color:#2b91af;">NameValueListBase</span>&lt;<span style="color:blue;">string</span>,&nbsp;<span style="color:blue;">string</span>&gt;.<span style="color:#2b91af;">NameValuePair</span>)myCombo.SelectedItem).Key
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>linhvu replied on Saturday, March 26, 2011</h2><p>Thanks so much!</p>
+<p>You are Pro.</p>
+<p>I can do it.<div style='padding-left: 50px;background-color:silver'><b>Curelom<br></b></p>
+<p>Try casting your combobox.SeletedItem to a NameValuePair and retrieve it from that.</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:13px;">((Csla.<span style="color:#2b91af;">NameValueListBase</span>&lt;<span style="color:blue;">string</span>,&nbsp;<span style="color:blue;">string</span>&gt;.<span style="color:#2b91af;">NameValuePair</span>)myCombo.SelectedItem).Key
+</pre>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

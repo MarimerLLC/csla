@@ -1,0 +1,293 @@
+<html><header><title>CSLA for Silverlight: Inconsistency with ContextDictionary key type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for Silverlight: Inconsistency with ContextDictionary key type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5941.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb posted on Friday, December 05, 2008</h2>As with most of my posts, this is aimed at Rocky and the Magenic guys.<br><br>I've been doing some work recently in Csla Silverlight where I needed to have a business object property of a Dictionary&lt;&gt; type.&nbsp; <br>Now obviously Dictionnary doesn't implement IMobileObject, so that was out.&nbsp; Looking through the framework I found ContextDictionary which fit the bill - a Csla-serialisable dictionary type.<br><br>All was good until I hit errors when trying to iterate through the keys after a fetch from the server.&nbsp; It was at this point that I discovered that ContextDictionary has two different implementations in Csla for .Net and Cslafor Silverlight respectively.&nbsp; <br>In Csla for .Net, ContextDictionary extends HybridDictionary, whilst in Csla for Silverlight it extends Dictionary&lt;string, object&gt;. Since Silverlight doesn't have a HybridDictionary, Dictionary is fine.<br>The problem though is that the concrete implementation of ContextDictionary on the Silverlight side is restricted to string key types, whilst on the server you can have object key types.<br>So when I populated my ContextDictionary object with int keys on the server side, I hit trouble once it got back over to Silverlight.<br><br>The easy fix for this would obviously be for the Csla for Silverlight ContextDictionary to extend Dictionary&lt;object, object&gt;, but I know this might cause some issues for the ApplicationContext class which currently employs ContextDictionary objects.&nbsp; So maybe more refactoring needed...<br><br>To me though, a far better solution then would be to create a MobileDictionary class in Csla (which allows object keys and values) to go with MobileList.&nbsp; And then make ContextDictionary internal to force people to use MobileDictionary?<br><br>Either way,&nbsp; that small inconsistency in the current implementation of ContextDictionary isn't great and from a naming perspective a general purpose mobile dictionary called MobileDictionary would be nicer to see in code than ContextDictionary which has a more specific sounding name.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 05, 2008</h2><P>Thanks Paul,</P>
+<P>I don't disagree that a MobileDictionary would be nice. But for what is effectively version 1 we were focused on getting CSLA working, so we only created serializable base types for things required directly by CSLA.</P>
+<P>This whole serialization thing is less than ideal, but is really unavoidable. Silverlight simply doesn't have what is required to make something like the BinaryFormatter or NDCS, so MobileFormatter is our answer. Sadly, implementing IMobileObject, especially for lists or dictionaries, is non-trivial.</P>
+<P>I was working with a limited time/budget and so we had to prioritize our efforts around what was necessary to get the framework itself functioning - realizing that in future versions there's the need for continual expansion of types.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Sunday, December 07, 2008</h2>Fair enough Rocky.&nbsp; <br>I was thinking it would be as easy as copying the ContextDictionary, renaming it to MobileDictionary and changing the key type to object in the Silverlight implementation.<br>From your reply this would not seem to be the case.<br><br>Consider MobileDictionary a feature request for a future version then :)<br><br>Although I might have a crack at implementing a MobileDictionary myself - if I have some success I'll contribute it to Csla if you like.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, December 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>MobileFormatter will require that both the key and value
+implement IMobileObject. So I suppose it can be done by creating the type with
+a constraint on both generic parameters to require them to implement that interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only real trick is that ContextDictionary has (I think) a
+bit of code to deal with the key value, since we know it is string, and that
+code would need to change to somehow serialize the key values and put them into
+the serialized byte stream. Pretty much the same as the code for the values now
+&#8211; but in a way such that the keys and values can be matched up on
+deserialiation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, December 07, 2008 4:29 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA for Silverlight: Inconsistency with
+ContextDictionary key type<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Fair enough Rocky.&nbsp; <br>
+I was thinking it would be as easy as copying the ContextDictionary, renaming
+it to MobileDictionary and changing the key type to object in the Silverlight
+implementation.<br>
+From your reply this would not seem to be the case.<br>
+<br>
+Consider MobileDictionary a feature request for a future version then :)<br>
+<br>
+Although I might have a crack at implementing a MobileDictionary myself - if I have
+some success I'll contribute it to Csla if you like.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Monday, December 08, 2008</h2>Hi Rocky<br><br>I've put together a basic MobileDictionary and my initial testing seems to indicate that it works OK with the following combinations:<br>primitive key + IMobileObject value<br>primitive key + primitive value<br>IMobileObject key + IMobileObject value<br>IMobileObject key + primitive value<br><br>I haven't yet tightened up the generic parameters because I thought that might exclude primitives from being used - correct me if I'm wrong on that count.&nbsp; I also had the server side match the Silverlight side in terms of inheriting from Dictionary&lt;&gt;.&nbsp; This means that the same source code is used on both sides through the VS add as link feature instead of seperate implementations.<br><br>To keep the relationship between key and value I used a simple incremental counter concatenated to two constant string values to define the serialisation keys for the dictionary key and dictionary value.&nbsp; Then some basic linq enabled me to query the serialised info values during deserialisation.<br><br>Anyhow its a rough cut but it does work - let me know what you think.<br><br><font size="2" face="Courier New">using System.Collections.Generic;<br>using System.Linq;<br>using Csla.Serialization;<br>using Csla.Serialization.Mobile;<br>using System;<br><br>&nbsp; [Serializable()]<br>&nbsp; public class MobileDictionary : Dictionary&lt;object, object&gt;, IMobileObject<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; #region IMobileObject Members<br>&nbsp;&nbsp;&nbsp; private const string keyTxt = "MobDictKey";<br>&nbsp;&nbsp;&nbsp; private const string valueTxt = "MobDictValue";<br><br>&nbsp;&nbsp;&nbsp; void IMobileObject.GetState(SerializationInfo info)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int count = 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var key in this.Keys) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!(key is IMobileObject))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddValue(keyTxt + count, key);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = this[key];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!(value is IMobileObject))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddValue(valueTxt + count, value);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count++;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int count = 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var key in this.Keys) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMobileObject mobilekey = key as IMobileObject;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mobilekey != null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SerializationInfo si = formatter.SerializeObject(mobilekey);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddChild(keyTxt + count, si.ReferenceId);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = this[key];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMobileObject mobile = value as IMobileObject;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mobile != null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SerializationInfo si = formatter.SerializeObject(mobile);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddChild(valueTxt + count, si.ReferenceId);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count++;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; void IMobileObject.SetState(SerializationInfo info)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Find the MobileDictionary keys<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mobileKeyList = from key in info.Values.Keys<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where key.StartsWith(keyTxt)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select key.Substring(keyTxt.Length);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (string keyCounter in mobileKeyList) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Look for a non-MobileObject base field value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (info.Values.ContainsKey(valueTxt + keyCounter))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value = info.Values[valueTxt + keyCounter].Value;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(info.Values[keyTxt + keyCounter].Value, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; void IMobileObject.SetChildren(SerializationInfo info, MobileFormatter formatter)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Find MobileDictionary keys<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mobileKeyList = from key in info.Children.Keys<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where key.StartsWith(keyTxt)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select key.Substring(keyTxt.Length);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (string keyCounter in mobileKeyList) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Look in the MobileObject children for a value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (info.Children.ContainsKey(valueTxt + keyCounter))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value = formatter.GetObject(info.Children[valueTxt + keyCounter].ReferenceId);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Else look in the non-MobileObject base fields for a value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (info.Values.ContainsKey(valueTxt + keyCounter))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value = info.Values[valueTxt + keyCounter].Value;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object key = formatter.GetObject(info.Children[keyTxt + keyCounter].ReferenceId);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(key, value);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Attempt to find non-MobileObject keys for MobileObject values which do not have MobileObject keys<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mobileValueList = from&nbsp;&nbsp;&nbsp; value in info.Children.Keys<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where&nbsp;&nbsp; value.StartsWith(valueTxt) &amp;&amp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; !mobileKeyList.Contains(keyTxt + valueTxt.Substring(valueTxt.Length))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select&nbsp; value.Substring(valueTxt.Length);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (string valueCounter in mobileValueList) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.ContainsKey(info.Values[keyTxt + valueCounter].Value))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this[info.Values[keyTxt + valueCounter].Value] = formatter.GetObject(info.Children[valueTxt + valueCounter].ReferenceId);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion<br>&nbsp; }<br></font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 08, 2008</h2><P>Thanks for doing that work, that is very helpful!!</P>
+<P>I've added this to the wish list (<A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=252">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=252</A>) and it will probably go into 3.6.1.</P>
+<P>3.6.0 is feature locked at this point, as I hope for final release on 12/15 - so only show-stopping bugs (and lots of XML commenting) are happening between now and RTW :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 12, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you, this looks quite good.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I will absolutely consider this for 3.6.1, as a high priority,
+because it is obviously useful.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As I think I said previously &#8211; 3.6.0 is feature-locked and
+only critical bug fixes are going in now in anticipation of release.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> paupdb
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 08, 2008 7:10 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA for Silverlight: Inconsistency with
+ContextDictionary key type<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky<br>
+<br>
+I've put together a basic MobileDictionary and my initial testing seems to
+indicate that it works OK with the following combinations:<br>
+primitive key + IMobileObject value<br>
+primitive key + primitive value<br>
+IMobileObject key + IMobileObject value<br>
+IMobileObject key + primitive value<br>
+<br>
+I haven't yet tightened up the generic parameters because I thought that might
+exclude primitives from being used - correct me if I'm wrong on that
+count.&nbsp; I also had the server side match the Silverlight side in terms of
+inheriting from Dictionary&lt;&gt;.&nbsp; This means that the same source code
+is used on both sides through the VS add as link feature instead of seperate
+implementations.<br>
+<br>
+To keep the relationship between key and value I used a simply incremental
+counter concatenated to two constant string values to define the serialisation
+keys for the dictionary key and dictionary value.&nbsp; Then some simply linq
+enabled me to query the serialised inf o values when during deserialisation.<br>
+<br>
+Anyhow its a rough cut but it does work - let me know what you think.<br>
+<br>
+using System.Collections.Generic;<br>
+using System.Linq;<br>
+using Csla.Serialization;<br>
+using Csla.Serialization.Mobile;<br>
+using System;<br>
+<br>
+&nbsp; [Serializable()]<br>
+&nbsp; public class MobileDictionary : Dictionary&lt;object, object&gt;,
+IMobileObject<br>
+&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; #region IMobileObject Members<br>
+&nbsp;&nbsp;&nbsp; private const string keyTxt = &quot;MobDictKey&quot;;<br>
+&nbsp;&nbsp;&nbsp; private const string valueTxt = &quot;MobDictValue&quot;;<br>
+<br>
+&nbsp;&nbsp;&nbsp; void IMobileObject.GetState(SerializationInfo info)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int count = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var key in this.Keys) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!(key is IMobileObject))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddValue(keyTxt +
+count, key);<br>
+<br>
+&nbsp;&nbsp;&amp;n bsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = this[key];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!(value is IMobileObject))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddValue(valueTxt +
+count, value);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; void IMobileObject.GetChildren(SerializationInfo info,
+MobileFormatter formatter)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int count = 0;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var key in this.Keys) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMobileObject mobilekey = key as
+IMobileObject;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mobilekey != null) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SerializationInfo si =
+formatter.SerializeObject(mobilekey);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddChild(keyTxt +
+count, si.ReferenceId);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = this[key];<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IMobileObject mobile = value as
+IMobileObject;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (mobile != null) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SerializationInfo si =
+formatter.SerializeObject(mobile);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddChild(valueTxt +
+count, si.ReferenceId);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; count++;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; void IMobileObject.SetState(SerializationInfo info)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Find the MobileDictionary keys<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mobileKeyList = from key in info.Values.Keys<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where key.StartsWith(keyTxt)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select key.Substring(keyTxt.Length);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (string keyCounter in mobileKeyList) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Look for a non-MobileObject base
+field value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (info.Values.ContainsKey(valueTxt
++ keyCounter))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value =
+info.Values[valueTxt + keyCounter].Value;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(info.Values[keyTxt +
+keyCounter].Value, value);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; void IMobileObject.SetChildren(Serializatio nInfo info,
+MobileFormatter formatter)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Find MobileDictionary keys<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mobileKeyList = from key in
+info.Children.Keys<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+where key.StartsWith(keyTxt)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select key.Substring(keyTxt.Length);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (string keyCounter in mobileKeyList) {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object value = null;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Look in the MobileObject children
+for a value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(info.Children.ContainsKey(valueTxt + keyCounter))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ; value =
+formatter.GetObject(info.Children[valueTxt + keyCounter].ReferenceId);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Else look in the non-MobileObject
+base fields for a value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if
+(info.Values.ContainsKey(valueTxt + keyCounter))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value =
+info.Values[valueTxt + keyCounter].Value;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object key =
+formatter.GetObject(info.Children[keyTxt + keyCounter].ReferenceId);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(key, value);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Attempt to find non-MobileObject keys for
+MobileObject values which do not have MobileObject keys<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var mobileValueList = from&nbsp;&nbsp;&nbsp;
+value in info.Children.Keys<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where&nbsp;&nbsp;
+value.StartsWith(valueTxt) &amp;&amp;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+!mobileKeyList.Contains(keyTxt + valueTxt.Substring(valueTxt.Length))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select&nbsp; value.Substring(valueTxt.Length);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (string valueCounter in mobileValueList)
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(this.ContainsKey(info.Values[keyTxt + valueCounter].Value))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this[info.Values[keyTxt
++ valueCounter].Value] = formatter.GetObject(info.Children[valueTxt +
+valueCounter].Reference Id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; #endregion<br>
+&nbsp; }<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

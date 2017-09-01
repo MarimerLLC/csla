@@ -1,0 +1,13 @@
+<html><header><title>Datagridview combox </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Datagridview combox </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/754.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardW posted on Friday, July 28, 2006</h2><P>I cannot get a combox box in a datagridview (Net 2.0) to work correctly using my NVL object using CSLA 1.5.</P>
+<P>I try:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.GridComboBox</P>
+<P>.DataSource = NVL.GetList.BindableList</P>
+<P>.DisplayMember = </FONT><FONT color=#800000 size=2>"Value"</P></FONT><FONT size=2>
+<P>.ValueMember = </FONT><FONT color=#800000 size=2>"Key"</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT>
+<P>All I get is an error 'Argument 'Prompt' cannot be converted to type string.</P>
+<P>Thanks Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Friday, July 28, 2006</h2><P>Richard,</P>
+<P>In your NVL, what are the Key and Value types?&nbsp; My keys are almost always ints or guids, and my values are usually ints or strings.&nbsp; This type of binding works fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardW replied on Friday, July 28, 2006</h2><P>Jon - My Key is an int and the Value is a string.</P>
+<P>What's really puzzling is that I can get a regular combo box to bind perfectly - I just get the error on a combo box in a datagrid. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

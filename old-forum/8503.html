@@ -1,0 +1,14 @@
+<html><header><title>CSLA Light Serialization of Complex Types in MobileList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light Serialization of Complex Types in MobileList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8503.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>solidgranite posted on Tuesday, February 09, 2010</h2><p>Hi </p>
+<p>I&#39;m using&nbsp;a CSLA MobileList containing CriteriaBase derived objects.</p>
+<p>I need the list to serialize from SL3 to .NET.</p>
+<p>I&#39;ve noticed that if the list contains simple objects like String that the serialization/deseriaization process succeeds however if I insert CriteriaBase derived objects in to the list I get serialization errors.</p>
+<p>I should add that my MobileList is a managed backed field on a CriteriaBase derived object.</p>
+<p>I should also add that all properties in this scenario are managed backed fields.</p>
+<p>I&#39;ve noticed the same issue with MobileDictionary when inserting Critiera objects as opposed to simple objects.</p>
+<p>Is it possible to insert CriteriaBase derived objects in to a MobileList and have CSLA serialize the list correctly or can it only handle simple types?</p>
+<p>Thanks in advance</p>
+<p>Paul</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, February 10, 2010</h2><p>CriteriaBase derives from MobileObject, and so should work fine with MobileList - assuming your properties are managed, or you override the OnGetState/OnSetState methods to move your private fields, and assuming your criteria properties are all primitive types (string, int, etc).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

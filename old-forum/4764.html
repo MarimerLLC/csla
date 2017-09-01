@@ -1,0 +1,39 @@
+<html><header><title>Help with Interface implementation for Child Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Help with Interface implementation for Child Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4764.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 posted on Monday, April 28, 2008</h2><P>I have been struggling with trying to find a way for a common piece of code to walk through similar child collections of different root objects.</P>
+<P>I have 2 root objects that are derived from the same base as follows:</P>
+<P>ItemBase</P>
+<P>&nbsp;&nbsp;&nbsp;ShoppingCartItem</P>
+<P>&nbsp;&nbsp;&nbsp;OrderItem</P>
+<P>Each of the subclasses contains a child collection of objects derived from ItemAttributeBase, ShoppingCartItemAttribute and OrderItemAttribute respectively.</P>
+<P>What I am trying to accomplish is making the same piece of&nbsp;code access the objects in both collections by passing a reference to ItemBase.</P>
+<P>To accomplish this, I have created an interface for my ShoppingCartItemAttributeCollection and OrderItemAttributeCollection objects called IItemAttributeCollection. This interface exposes a special overload of the Item property that returns an object of type ItemAttributeBase.</P>
+<P>The implementation of my properties for accessing both Attribute collections look like this:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Attributes() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ShoppingCartItemAttributeCollection</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mAttributes</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT><FONT size=2>
+<P></FONT>
+<P><FONT color=#008000 size=2></P></FONT><FONT size=2></FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>ReadOnly</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> AttributeCollection() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IItemAttributeCollection
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mAttributes</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>As you can see, they both return the same reference to my attribute collection. However, I have run into an issue where when I try to access the collection through this AttributeCollection() property, it doesn't return a populated object. Here is my code that tries to access the collection:</FONT></FONT></P>
+<P>Item.AttributeCollection(AttributeCategoryEnum.Height)</P>
+<P>This returns a reference to the attribute object that represents "height" so my business logic can tell it apart from the other attribute objects. However, it&nbsp;although it&nbsp;returns an instance of the object, it is not the same instance that I&nbsp;updated with my code.&nbsp;This next line of code does function:</P>
+<P>CType(Item, ShoppingCartItem).Attributes(3)</P>
+<P>This is passing "3" as the attribute id (key) of the same object. The object reference I get back from this line contains an instance of the object that is populated with the values that I put there.</P>
+<P>So, although I am returning a pointer to the same collection through my properties, I am not receiving the same collection for my code to use. I have stepped through this code several times and I always get the same results. I know for certain there is nothing wrong with my Item properties - the entire collection I am getting back has "new" object references in it.</P>
+<P>I am not saying this approach is perfect, but I would like to know exacly how I can structure my child collections so I can walk through both of them using the same business rules code. Please help!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, April 29, 2008</h2><P>It sounds to me like the wrong overload is being called.</P>
+<P>You *think* you are calling Item.AttributeCollection(Enum.Height) which is your new overload. But in reality it is calling the standard (index) instead. </P>
+<P>Always be careful when overloading a single numeric parameter.</P>
+<P>Try adding a 2nd parameter like myDummyParam As Boolean to your method and then ignore the 2nd parameter in the method. But when you call it, pass the 2nd param in (T or F - it won't matter.) Then step through your code and see if it is working correctly and calling the correct overloaded method.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 replied on Tuesday, April 29, 2008</h2><P>Thanks for the help Joe.</P>
+<P>Actually, this is not the case. I have confirmed that it is a type casting problem, but for the life of me I can't figure out why. I stepped all the way through the code and confirmed the right overload was being called - the problem was that the overload was being called on another "ghost" copy of the collection that wasn't the same copy that my UI code was updating.</P>
+<P>If the wrong indexer was being used, I would have received the wrong object - but I am getting an object with the correct AttributeID, but all of the other properties are blank. The object I received was in the same state it would have been after calling the "create" method on the collection. However, I confirmed that the object I was looking for also exists in memory by casting to the correct root type first.</P>
+<P>For the time being I got around this problem by passing both an instance of ItemBase AND an object that conforms with my IItemAttributeCollection interface into my function. While not the most elegant solution, it at least gives me the ability to step through the objects without knowing exactly which type they are.</P>
+<P>However, if there are any other suggestions please post them. I will be revisiting this issue when I upgrade my framework to CSLA 2.0.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

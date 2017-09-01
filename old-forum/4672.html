@@ -1,0 +1,281 @@
+<html><header><title>System.AccessViolationException in 64-bit server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.AccessViolationException in 64-bit server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4672.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>haripriya_kumar posted on Friday, April 11, 2008</h2>
+
+<p class="MsoNormal"><font color="#000080">Hi All,<o:p></o:p></font></p>
+
+<p class="MsoNormal"><font color="#000080"><o:p>&nbsp;</o:p></font></p>
+
+<p class="MsoNormal"><font color="#000080">We have .Net Product works on .Net 2.0 environment or higher.<o:p></o:p></font></p>
+
+<p class="MsoNormal"><font color="#000080">My client has a 64-bit windows server 2003, which provides
+Terminal Services. If multiple users are logged-in to the server the .Net application(run
+through the terminal service) errors out and closes all instance of the .Net application
+which is currently open. If only one user is running the .Net application there
+is no issue with the application. Only if multiple instance of the application
+is created the System.AccessViolationException prevails. (They do have .net
+framework 64-bit installed)<o:p></o:p></font></p>
+
+<p class="MsoNormal"><font color="#000080">We have several clients who have Windows Server 2003 64-bit
+and Windows Server 2003 32-bit (with Terminal Services), it does work for them
+just fine.<o:p></o:p></font></p>
+
+<p class="MsoNormal"><font color="#000080"><o:p>&nbsp;</o:p></font></p>
+
+<p class="MsoNormal"><u>Below is the error thrown on the TS User-End:<o:p></o:p></u></p>
+
+<p><span>DataPortal.Fetch failed
+(Csla.DataPortalException: DataPortal.Fetch failed
+(System.AccessViolationException: Attempted to read or write protected memory.
+This is often an indication that other memory is corrupt.) ---&amp;gt;
+Csla.Server.CallMethodException: DataPortal_Fetch method call failed
+---&amp;gt; System.AccessViolationException: Attempted to read or write protected
+memory. This is often an indication that other memory is corrupt.</span><o:p></o:p></p>
+
+<p class="MsoNormal"><u>Below is the error thrown on the Server-End:<o:p></o:p></u></p>
+
+<p><span>Description:<o:p></o:p></span></p>
+
+<p><span>Faulting application omscheduler.exe, version
+<a href="http://8.0.33.0/" target="_blank">8.0.33.0</a>, faulting module
+mscorwks.dll, version 2.0.50727.63, fault address 0x002231b4.<o:p></o:p></span></p>
+
+<p><span><o:p>&nbsp;</o:p></span></p>
+
+<p><span>Any
+kind of help is really appreciated, thanks.</span><span><o:p></o:p></span></p>
+
+<p class="MsoNormal">-Hari<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Are multiple users using different windows log ins?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> haripriya_kumar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 2:21 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] System.AccessViolationException in 64-bit server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi All,</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>We have .Net Product works on .Net 2.0 environment or
+higher.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>My client has a 64-bit windows server 2003, which provides
+Terminal Services. If multiple users are logged-in to the server the .Net
+application(run through the terminal service) errors out and closes all
+instance of the .Net application which is currently open. If only one user is
+running the .Net application there is no issue with the application. Only if
+multiple instance of the application is created the
+System.AccessViolationException prevails. (They do have .net framework 64-bit
+installed)</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>We have several clients who have Windows Server 2003 64-bit
+and Windows Server 2003 32-bit (with Terminal Services), it does work for them
+just fine.</span><o:p></o:p></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><u>Below
+is the error thrown on the TS User-End:</u><o:p></o:p></p>
+
+<p>DataPortal.Fetch failed (Csla.DataPortalException: DataPortal.Fetch failed
+(System.AccessViolationException: Attempted to read or write protected memory.
+This is often an indication that other memory is corrupt.) ---&amp;gt;
+Csla.Server.CallMethodException: DataPortal_Fetch method call failed
+---&amp;gt; System.AccessViolationException: Attempted to read or write
+protected memory. This is often an indication that other memory is corrupt.<o:p></o:p></p>
+
+<p class=MsoNormal><u>Below
+is the error thrown on the Server-End:</u><o:p></o:p></p>
+
+<p>Description:<o:p></o:p></p>
+
+<p>Faulting application omscheduler.exe, version <a href="http://8.0.33.0/" target="_blank">8.0.33.0</a>, faulting module mscorwks.dll, version
+2.0.50727.63, fault address 0x002231b4.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Any kind of help is really appreciated, thanks.<o:p></o:p></p>
+
+<p class=MsoNormal>-Hari<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>haripriya_kumar replied on Friday, April 11, 2008</h2>Yes different user logins are used to connect to the server.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not sure if this is helpful, but check configuration of the
+terminal server to see how temporary folders are handled for the users.&nbsp;
+They should point to different locations for each user.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> haripriya_kumar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 3:12 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: System.AccessViolationException in 64-bit
+server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes different user logins are used to connect to the server.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>haripriya_kumar replied on Monday, April 14, 2008</h2><font color="#000080" face="Courier New" size="3">Verified, </font><span><font color="#000080" face="Courier New" size="3">Temporary
+folders are set to per session.</font><o:p></o:p></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Would this be the issue you are seeing?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://support.microsoft.com/kb/913384/en-us">http://support.microsoft.com/kb/913384/en-us</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> haripriya_kumar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 14, 2008 10:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: System.AccessViolationException in
+64-bit server<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Verified,
+Temporary folders are set to per session.</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>haripriya_kumar replied on Monday, April 14, 2008</h2>Tried this before but the fix does not get installed since service pack 1 is already installed.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

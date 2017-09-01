@@ -1,0 +1,24 @@
+<html><header><title>Business Rules (not Validation Rules!) on Read-Only Objects. Why not?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules (not Validation Rules!) on Read-Only Objects. Why not?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12679.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jip posted on Monday, June 23, 2014</h2><p>Hi,</p>
+<p>Chapter 4 &quot;Business Rules&quot;&nbsp;of the E-book on CSLA 4: Creating Business Objects describes (p.83):</p>
+<p>&quot;You should use business rules to alter property values in your objects based on any sort of rule, algorithmic process, or calculation. Business rules can do something as simple as upper-casing a string value, or as complex as performing a tax, price, or discount calculation.&quot;</p>
+<p>For&nbsp;read-only objects only authorization rules are called, but wouldn&#39;t it be perfectly valid to apply business rules (not validation rules!)&nbsp;on read-only objects as well, especially&nbsp;when it comes to presentation of data?</p>
+<p>The&nbsp;example describes that it could be as simple as uppercasing a string. So as this is presentation only, why not support this in a read-only situation? This would allow changing the presentation without thinking about the data.</p>
+<p>Wouldn&#39;t it make sense to separate business rules and validation rules?</p>
+<p>Any thoughts?</p>
+<p>Cheers,</p>
+<p>Peter</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 23, 2014</h2><p>No, I do not agree.</p>
+<p>BusinessRules do add memory overhead and execution time overhead to data access. &nbsp;The RuleEngine as such treats all BusinessRules in the same manner nd ValidationRules is just one of the &quot;variants&quot; og BusinessRules.&nbsp;</p>
+<p>The main principle is to keep the readonly objects as slim and fast as possible and only AuthorizationRules was added to this type (these will NOT add overhead on DataAccess and load time).&nbsp;</p>
+<p>The idea is that if you _need_ display logic then you can either</p>
+<p>
+<ul>
+<li>add this in the property getter or</li>
+<li>format values properly in the DataAccess</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, June 23, 2014</h2><p>You need to think of RO objects as immutable; nothing on them can change, so what would cause a recalculation?&nbsp; If you need some properties which are the result of a calculation, you&#39;d do that while creating the RO instance and store it.&nbsp; The other thing to consider is sometimes you do want to refresh your RO objects; you can still have the calculation, the formula does not necessarily have be written directly into a business rule class, it can be done in another POCO class / static class.</p>
+<p>Also, you can make RO only objects but subclass BusinessBase instead; you simply don&#39;t have any properties that are publically settable, and you would typically override SaveAsync to thrown an exception if Save is called; if you really wanted the scenario you describe, that would be the way to go.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jip replied on Monday, June 23, 2014</h2><p>Hi Jonny and Andy,</p>
+<p>Thank you for the quick response!</p>
+<p>Your answers are complementary and clear.</p>
+<p>&quot;Case closed&quot;!</p>
+<p>Cheers,</p>
+<p>Peter</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

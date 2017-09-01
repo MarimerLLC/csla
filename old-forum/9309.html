@@ -1,0 +1,14 @@
+<html><header><title>ObjectAuthorizationRules system perfomance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectAuthorizationRules system perfomance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9309.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Sunday, August 01, 2010</h2><p>Hello everybody:</p>
+<p>I have a doubt concerning to the Project class in the PTracker.</p>
+<p>The developer implemented a function like this:</p>
+<p><b><i>&nbsp;&nbsp; Public Shared Function CanAddObject() As Boolean<br /><br />&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.IsInRole(&quot;ProjectManager&quot;)<br /><br />&nbsp; End Function</i></b></p>
+<p>Is that function the same that doing the following?</p>
+<p><b><i>&nbsp; Protected Shared Sub AddObjectAuthorizationRules()<br /><br />&nbsp;&nbsp;&nbsp; AuthorizationRules.AllowCreate(GetType(Project), &quot;ProjectManager&quot;)<br /><br />&nbsp; End Sub</i></b></p>
+<p>and, when needed, asking for <b><i>Csla.Security.AuthorizationRules.CanCreateObject(GetType(Project))</i></b></p>
+<p>Is perfomance the reason for the change?</p>
+<p>&nbsp;</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>L.M.Santin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, August 01, 2010</h2><p>That is just a bug - some older code I forgot to update to the more modern technique.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

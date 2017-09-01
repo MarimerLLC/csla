@@ -1,0 +1,76 @@
+<html><header><title>RunLocal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RunLocal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1406.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 posted on Thursday, October 05, 2006</h2><P>Does it make any sense to add the RunLocal attribute to a Child BO?</P>
+<P>I am thinking of the case where the UI asks the collection to add a child. The collection may call the Shared Method which calls DataPortal.Create to load default values. In that case, you force the call thru the local dataportal and avoid the network transport hit.</P>
+<P>A similar question - if a Root BO is marked with RunLocal and it fetches child BOs - would they RunLocal even if they were not marked as such?</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2>You don't use the data portal to persist child objects, so it does not make sense to apply the RunLocal attribute to any of their methods, no.<br><br>One think I'm considering as a future idea, is a "child container" abstraction, which would allow you to use the data portal (in a sense) to persist your child objects. But even if I go down that road, RunLocal still wouldn't make sense, because the child would have to be persisted within the same AppDomain as its parent - so it is the parent's DataPortal_XYZ methods that determine the physical location that the code will run for the entire object graph.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 05, 2006</h2><P>Rocky,</P>
+<P>I am not talking about child persistence. I am talking about child creation.</P>
+<P>Page 369 of the VB book shows the diagram of what I mean. Note that DataPortal_Create is called and the child object is sent to the server to load its default values. So my question is would the RunLocal attribute be a good thing to add to the child DataPortal_Create method if I know the default values are not coming from the DB? This assumes the Constructor is essentially empty (just&nbsp;has the call to MarkAsChild)&nbsp;and that the Shared Factory method calls DataPortal.Create.</P>
+<P>&nbsp;Friend Shared Function NewChild() As Child<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of Child)()<BR>&nbsp;End Function</P>
+<P>&nbsp;&lt;RunLocal()&gt; _<BR>&nbsp; Protected Overrides Sub DataPortal_Create()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetDefaults()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules()<BR>&nbsp; End Sub<BR></P>
+<P>By setting the defaults in DP_Create I can call an Overridable method. One of the FxCop rules is to not call Overridable methods from a Constructor because the fields in the next level have not been initialized yet. By letting the DataPortal create the instance we know that all fields have been initialized and calling an Overridaable method at this point is not "dangerous".</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2>Ahh, I see what you are after.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2>So let me put it another way: the RunLocal attribute is 
+always honored by the data portal. The data portal has no concept of root vs 
+child objects - it just deals with objects by calling their DataPortal_XYZ 
+methods. If a DataPortal_XYZ method has the RunLocal attribute, the data portal 
+will only use the local channel.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2>Remember that RunLocal merely means that the 
+<EM>called</EM> code runs in the same AppDomain as the <EM>calling </EM>code. If 
+the calling code is already on the app server, then that's where the called code 
+will run too. Or if the calling code is on the client, that's where the called 
+code will run.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=296523000-06102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> JoeFallon1 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, October 05, 2006 7:09 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] 
+  RunLocal<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky,</P>
+  <P>I am not talking about child persistence. I am talking about child 
+  creation.</P>
+  <P>Page 369 of the VB book shows the diagram of what I mean. Note that 
+  DataPortal_Create is called and the child object is sent to the server to load 
+  its default values. So my question is would the RunLocal attribute be a good 
+  thing to add to the child DataPortal_Create method if I know the default 
+  values are not coming from the DB? This assumes the Constructor is essentially 
+  empty (just&nbsp;has the call to MarkAsChild)&nbsp;and that the Shared Factory 
+  method calls DataPortal.Create.</P>
+  <P>&nbsp;Friend Shared Function NewChild() As 
+  Child<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of 
+  Child)()<BR>&nbsp;End Function</P>
+  <P>&nbsp;&lt;RunLocal()&gt; _<BR>&nbsp; Protected Overrides Sub 
+  DataPortal_Create()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  SetDefaults()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+  ValidationRules.CheckRules()<BR>&nbsp; End Sub<BR></P>
+  <P>By setting the defaults in DP_Create I can call an Overridable method. One 
+  of the FxCop rules is to not call Overridable methods from a Constructor 
+  because the fields in the next level have not been initialized yet. By letting 
+  the DataPortal create the instance we know that all fields have been 
+  initialized and calling an Overridaable method at this point is not 
+  "dangerous".</P>
+  <P>&nbsp;</P>
+  <P>Joe</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P>
+  <P>&nbsp;</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 05, 2006</h2><P>Ok.</P>
+<P>Thanks!</P>
+<P>We agree. &lt;g&gt;</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

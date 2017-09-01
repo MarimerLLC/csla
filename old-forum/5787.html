@@ -1,0 +1,219 @@
+<html><header><title>void AddNew()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>void AddNew()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5787.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner posted on Tuesday, November 11, 2008</h2><P>Greetings,</P>
+<P>I've been on 2.1.4 for a while, delving into 3.6. I see that .AddNew() returns void now, instead of a child object.</P>
+<P>Is this discussed anywhere? I'm used to creating a child and setting some properties - trying to figure out how to access the newly created child.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, November 11, 2008</h2><P>Hi Mike,</P>
+<P>I've been using the most recent versions&nbsp;so I don't have the compare and contrast...</P>
+<P>But I need to override AddNewCore and just do a ChildObject.NewChildObject(), this.Add(newChildObject), return newChildObject; </P>
+<P>AddNew will work, then. </P>
+<P>Hope that helps! </P>
+<P>Chris Hlusak</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 11, 2008</h2><P>Thanks for the reply Chris.</P>
+<P>That's what I'm used to doing in 2.1.4, but if I try to return an object instead of void from AddNewCore, I get a compile error - return type must be 'void' to match overridden member.</P>
+<P>I must be missing something...</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe you are running against Csla for Silverlight version?&nbsp;
+That one is void because of asynchronous processing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 11, 2008 7:02 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] void AddNew()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the reply Chris.<o:p></o:p></p>
+
+<p>That's what I'm used to doing in 2.1.4, but if I try to return an object
+instead of void from AddNewCore, I get a compile error - return type must be
+'void' to match overridden member.<o:p></o:p></p>
+
+<p>I must be missing something...<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 11, 2008</h2><P>You're right Sergey, it is the Silverlight version -&nbsp;I should have mentioned that.</P>
+<P>Oh man, sorry, but here's a newbie question&nbsp;- how do I access my new child? If you could point me to a link or something, that would be great.</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, November 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What type of access are you looking for?&nbsp; I do not have an immediate
+answer, but I might be able to point you in a right direction&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, November 11, 2008 8:31 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: void AddNew()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>You're right Sergey, it is the Silverlight version -&nbsp;I should have
+mentioned that.<o:p></o:p></p>
+
+<p>Oh man, sorry, but here's a newbie question&nbsp;- how do I access my new
+child? If you could point me to a link or something, that would be great.<o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, November 12, 2008</h2>Well, I'm used to creating children through .AddNew, then setting some properties on the new child. Just trying to get a reference to the new child.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, November 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahhh.&nbsp; I see.&nbsp; You will not be able to accomplish this
+task this way.&nbsp; You will probably need to do this in Child_Create in
+SL.&nbsp; The same approach should work in .NET as well though.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael Hildner
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, November 12, 2008 9:38 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: void AddNew()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, I'm used to creating children through .AddNew, then
+setting some properties on the new child. Just trying to get a reference to the
+new child.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

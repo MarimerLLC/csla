@@ -1,0 +1,130 @@
+<html><header><title> ContextManager.GetManager(..): use another DataContext while accesing a DataContext</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1> ContextManager.GetManager(..): use another DataContext while accesing a DataContext</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11123.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho posted on Thursday, February 02, 2012</h2><p>Hi everybody. I&#39;ve come across an issue regarding the use of CSLA ContextManager.</p>
+<p>I have several DataContexts with different tables / sp each.</p>
+<p>In my case, I have a particular problem during the DataPortal_Fetch&lt;..&gt; operation.</p>
+<p>I have a class that manages Vendor Bills, which includes an BusinessObject child reference to a Currency object having information about the currency, exchange rate, ... used for each bill.</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">public</span> <span style="COLOR:blue;">class</span> <span style="COLOR:#2b91af;">VendorBill</span> : <span style="COLOR:#2b91af;">BusinessBase</span>&lt;<span style="COLOR:#2b91af;">VendorBill</span>&gt;
+{</pre>
+<p>....</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">		<span style="COLOR:blue;">private</span> <span style="COLOR:blue;">static</span> <span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:#2b91af;">Guid</span>&gt; CurrencyIdProperty = RegisterProperty&lt;<span style="COLOR:#2b91af;">Guid</span>&gt;(c =&gt; c.CurrencyId);
+		<span style="COLOR:blue;">public</span> <span style="COLOR:#2b91af;">Guid</span> CurrencyId
+		{
+			<span style="COLOR:blue;">get</span> { <span style="COLOR:blue;">return</span> CurrencyObj.Id; }
+			<span style="COLOR:blue;">set</span>
+			{
+				LoadProperty(CurrencyObjProperty, <span style="COLOR:#2b91af;">CurrencyBase</span>.GetCurrencyBase(<span style="COLOR:blue;">value</span>));
+				PropertyHasChanged(<span style="COLOR:#a31515;">&quot;CurrencyObj&quot;</span>);
+			}
+		}
+ 
+		<span style="COLOR:green;">// CurrencyObj...</span>
+		<span style="COLOR:blue;">private</span> <span style="COLOR:blue;">static</span> <span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:#2b91af;">CurrencyBase</span>&gt; CurrencyObjProperty =
+			RegisterProperty&lt;<span style="COLOR:#2b91af;">CurrencyBase</span>&gt;(p =&gt; p.CurrencyObj);
+		<span style="COLOR:blue;">public</span> <span style="COLOR:#2b91af;">CurrencyBase</span> CurrencyObj
+		{
+			<span style="COLOR:blue;">get</span>
+			{
+				<span style="COLOR:green;">// Lazy loading...</span>
+				<span style="COLOR:blue;">if</span> (!(FieldManager.FieldExists(CurrencyObjProperty)))
+					LoadProperty(CurrencyObjProperty, <span style="COLOR:#2b91af;">CurrencyBase</span>.GetCurrencyBase());
+ 
+				<span style="COLOR:blue;">return</span> GetProperty(CurrencyObjProperty);
+			}
+		}
+....</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"> </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">// Data access...</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">		<span style="COLOR:blue;">private</span> <span style="COLOR:blue;">void</span> DataPortal_Fetch(<span style="COLOR:#2b91af;">SingleCriteria</span>&lt;<span style="COLOR:#2b91af;">VendorBill</span>, <span style="COLOR:#2b91af;">Guid</span>&gt; criteria)
+		{
+			<span style="COLOR:blue;">using</span> (<span style="COLOR:blue;">var</span> ctx =
+				<span style="COLOR:#2b91af;">ContextManager</span>&lt;NrgNet.DalLinq.AP.<span style="COLOR:#2b91af;">APDataContext</span>&gt;.GetManager(Erp.DalLinq.<span style="COLOR:#2b91af;">Database</span>.Erp))
+			{
+</pre>
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">				<span style="COLOR:blue;">var</span> data = (<span style="COLOR:blue;">from</span> p <span style="COLOR:blue;">in</span> ctx.DataContext.VendorBills
+										<span style="COLOR:blue;">where</span> p.BillId == criteria.Value
+										<span style="COLOR:blue;">select</span> p).Single();
+...</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">					<span style="COLOR:green;">// This will call CurrencyId -&gt; Set</span>
+</pre>
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;">					CurrencyId = data.CurrencyId;
+...</pre>
+</pre>
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"> </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">			}
+ 
+		}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">...</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"> </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"> </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">And then I have the CurrencyBase class whose DataPortal_Fetch is on a different DataContext...</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"> </pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">CurrencyBase</span> : <span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;"><span style="color:#2b91af;">CurrencyBase</span></span>&gt;
+{</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">...</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">internal</span> <span style="color:blue;">static</span> <span style="color:#2b91af;">GenMonedaInfoBase</span> GetGenMonedaInfoBase(<span style="color:#2b91af;">Guid</span> id)
+{</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">return</span> <span style="color:#2b91af;">DataPortal</span>.FetchChild&lt;<span style="color:#2b91af;">CurrencyBase</span>&gt;(<span style="color:blue;">new</span> <span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">CurrencyBase</span>, <span style="color:#2b91af;">Guid</span>&gt;((<span style="color:#2b91af;">Guid</span>)id));</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">...</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;">		<span style="color:blue;">private</span> <span style="color:blue;">void</span> Child_Fetch()
+		{
+			<span style="color:blue;">using</span> (<span style="color:blue;">var</span> ctx =
+				<span style="color:#2b91af;">ContextManager</span>&lt;NrgNet.DalLinq.General.<span style="color:#2b91af;">GeneralDataContext</span>&gt;.GetManager(Erp.DalLinq.<span style="color:#2b91af;">Database</span>.Erp))
+			{
+				<span style="color:blue;">var</span> data = (<span style="color:blue;">from</span> p <span style="color:blue;">in</span> ctx.DataContext.Currencies
+													<span style="color:blue;">select</span> p).FirstOrDefault();
+ 
+				<span style="color:blue;">if</span> (data == <span style="color:blue;">null</span>)
+					<span style="color:blue;">throw</span> <span style="color:blue;">new</span> <span style="color:#2b91af;">IndexOutOfRangeException</span>(<span style="color:#2b91af;">Resources</span>.DefaultCurrencyDoesntExist);
+ 
+				Child_Fetch(data);
+			}
+		}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><pre style="font-family:Consolas;background:white;color:black;font-size:15px;">		<span style="color:blue;">private</span> <span style="color:blue;">void</span> Child_Fetch(DalLinq.General.<span style="color:#2b91af;">Currencies</span> dalCurrency)
+		{
+			Id = dalGenMoneda.CurrencyId;
+			Info = <span style="color:blue;">...</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;"></span>		}</pre>
+</pre>
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">...</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">So, when the 2nd ContextManager in the Currencies Class tries to use GetManager, the system throws an exception as I already have a previous ctx open on a different DataContext.</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">This issue will repetedly appear on my App as there are lots of collaborating classes that operate much like this case.</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">Any suggestions will be very appreciated.</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">Thanks in advance :)</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"> </pre>
+</pre>
+</pre>
+</pre>
+</pre>
+</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Friday, February 03, 2012</h2><p>Issue solved. I went through </p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:#2b91af;">ContextManager&lt;C&gt;.GetManager()</span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:#2b91af;"></span></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">and I found this GetManager(db, label) overload where I can call distinct DataContexts simultaneously.</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">Something else arouse... When I tried to inherit from ContextManager, I couldn&#39;t as it has only a private constructor.</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">My itention was to re define the method GetManager as</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">public static new <span style="color:#2b91af;">ContextManager</span>&lt;C&gt; GetManager(string db) </pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">{</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">string label = typeof(C).Name;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">return GetManager(db, label);</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"></pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">Any suggestions on how to do this?</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">Thanx!</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">Troncho</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 03, 2012</h2><p>Hi,</p>
+<p>Yes, you are right that ContextManager at current is not supporting subclasses and as such should have been declared as sealed.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Saturday, February 04, 2012</h2><p>Yes, Jonny, I thought the same. Thanx!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

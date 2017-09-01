@@ -1,0 +1,149 @@
+<html><header><title>Simple remoting problem..</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simple remoting problem..</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2403.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, February 22, 2007</h2>Hi,<br><br>I'm trying to setup remoting, but am running into a problem.&nbsp; I have it setup to use Windows authentication, but I'm getting the following exception:<br><br>System.Security.SecurityException: Principal must be of type BusinessPrincipal, not Nothing<br><br>I found the code, and that should only happen if CslaAuthentication is not Windows..<br><br>I'm a bit stumped..<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>Ok,<br><br>Got that figured out.. It needs to be in the Web.config as well..<br><br>Now I'm hitting another problem.&nbsp; I'm getting a remoting exception, where the inner excetion is an ArgumentExcetion: Invalid token for impersonation - it cannot be duplicated.<br><br>Has anyone gotten remoting setup using Windows Authentication?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2>Windows user tokens can only make one hop. So if it hops from the client to your app server, you can NOT use it to also get to the database - at least that's my understanding. I wonder if that's the issue?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>Possibly, although at the moment I'm only using one machine to host the client, IIS and the db.<br><br>There was a part of my code that was sending a WindowsIdentity to a CommandBase subclass, and then the executed command attempted to get the AD information from that identity.&nbsp; I've changed it to pass the Token from the WI though, and now I'm stuck on a different error... something in my DP_E is using a null reference.. but I'm having problems tracking down exactly where (attaching to the aspnet_wp process doesn't seem to do the trick..).<br><br>I have the web.config to impersonate, and only allow Integrated Authentication..<br><br>When you say 'hop,' do you mean from server to server, or even within a server?&nbsp;&nbsp; In my final configuration, the db server would also host IIS.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&#8220;Hop&#8221; includes cross-process too. Just because your
+server is running on your desktop doesn&#8217;t make it any less of a server.
+The token still moved from one place to another.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 22, 2007 11:14 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Simple remoting problem..<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Possibly, although at the moment I'm only using one machine
+to host the client, IIS and the db.<br>
+<br>
+There was a part of my code that was sending a WindowsIdentity to a CommandBase
+subclass, and then the executed command attempted to get the AD information
+from that identity.&nbsp; I've changed it to pass the Token from the WI though,
+and now I'm stuck on a different error... something in my DP_E is using a null
+reference.. but I'm having problems tracking down exactly where (attaching to
+the aspnet_wp process doesn't seem to do the trick..).<br>
+<br>
+I have the web.config to impersonate, and only allow Integrated
+Authentication..<br>
+<br>
+When you say 'hop,' do you mean from server to server, or even within a
+server?&nbsp;&nbsp; In my final configuration, the db server would also host
+IIS.<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>I was afraid that hop would include cross-process.<br><br>I guess there's no way to setup a website with integrated security and also connect to the db with integrated security... that's a bummer.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, February 22, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>attaching to the aspnet_wp process doesn't seem to do the trick..</div></BLOCKQUOTE><br><br>Andy,<br>Sorry to interrupt with an unrelated thing. I think we had a discussion about this a few months back...<br>You may already know this, but what the heck... It's not really necesary to attach to the process. You can create (or open) the project as an http project instead of the new "local folder" mode.<br>If you remove the project from the solution, you can go to add an existing web project to the solution and choose "Local IIS". Once you add it from there you'll be able to debug the web app directly in IIS without doing anything funny.<br><br>For new projects, when creating them, there's a combobox that lets you pick what type of web project you want. Choose to create it in iis too and that'll be it (This will create the project inside wwwroot, but you may want to create the directory and web app before doing this so that the folder resides where ever you want...).<br><br>Sorry for the "out of the subject" post.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>Andres,<br><br>The client application is actually a Windows forms application.&nbsp; <br><br>I was attempting to attach to aspnet_wp so that I could debug the code running on the 'server' end of the remoting portal (http://localhost/RemotingHost/RemotingPortal.rem) in the same IDE as I used to launch &amp; debug the client.<br><br>Now that you mention that other thread, I seem to recall that you couldn't use a single IDE to debug both "ends" of the application..<br><br>Or am I totally misunderstanding your post?&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, February 22, 2007</h2>No, i did use just one ide...<br>But the same applies if all you want to do is debug what's happening in the remoting portal, since it's still a web site.<br>So, you can add the website that hosts the remoting portal to the solution (through IIS) and add a project reference from that website to the library project and you get painless automatic debugging on the server (that is, without needing to attach to aspnet_wp by hand).<br>Just a tip... Anyway, you may already know that... <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yeah, I do this all the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ProjectTracker is actually set up this way btw. The remoting
+host project references ProjectTracker.Library, allowing you to set breakpoints
+and step through the DataPortal_XYZ code, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 22, 2007 3:29 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Simple remoting problem..<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>No, i did use just one ide...<br>
+But the same applies if all you want to do is debug what's happening in the
+remoting portal, since it's still a web site.<br>
+So, you can add the website that hosts the remoting portal to the solution
+(through IIS) and add a project reference from that website to the library
+project and you get painless automatic debugging on the server (that is,
+without needing to attach to aspnet_wp by hand).<br>
+Just a tip... Anyway, you may already know that... <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+AndrÃ©s<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>Ahh... thanks for the tip then, I actually didn't know that.&nbsp; That will prove very useful if I start using remoting.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

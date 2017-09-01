@@ -1,0 +1,201 @@
+<html><header><title>Partition of EF Model for large application.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Partition of EF Model for large application.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7667.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Tuesday, September 22, 2009</h2><P>I am getting ready to attack a fairly large project (currently 184 tables, 330 Relationships, etc.) and I am going to take the plunge with Silverlight 3, EF 1.0, Csla 3.7.x or Csla 3.8.x or whichever version is the most stable and current!</P>
+<P>I have read that EF models, when they get large (100 tables) have problems.&nbsp; Don't remember specifically what the problems were, but I remember reading there were problems.&nbsp; Would it make sense to partition my EF Models in terms of functionality of the tables.&nbsp; For example, there are some admin tables, some Operations tables (Products, Source, Product Blending, etc.), some Accounting (Billing, Tax Tables, etc.) and numerous other sub systems pertaining to the large system.&nbsp; </P>
+<P>Would it make sense to partition the EF Model into subsystems and keep the business objects (Server and SL) in one .dll (Rocky mentioned earlier that it is good to keep the number of assemblies down and that makes sense based on his reasoning).&nbsp; Doing this, each EF Model could have anywhere from 20 tables to 50 depending on the sub system.&nbsp; Any advice, recomendations would be most appreciated.&nbsp; Yes, I know it is EF v1.0, but I have to start somewhere and I don't want to wait until EF 2.0.&nbsp; There may be some converting of code when the new version comes out but might as well go for it.</P>
+<P>CyclingFoodmanPA</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBursill replied on Tuesday, September 22, 2009</h2>A while back the ADO.NET team blogged a two part article about large EF models:<br><br><a href="http://blogs.msdn.com/adonet/archive/2008/11/24/working-with-large-models-in-entity-framework-part-1.aspx">http://blogs.msdn.com/adonet/archive/2008/11/24/working-with-large-models-in-entity-framework-part-1.aspx</a><br><br><a href="http://blogs.msdn.com/adonet/archive/2008/11/25/working-with-large-models-in-entity-framework-part-2.aspx">http://blogs.msdn.com/adonet/archive/2008/11/25/working-with-large-models-in-entity-framework-part-2.aspx</a><br><br>-Mike.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 22, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+would say that a very large model will negatively affect performance.&nbsp; &nbsp;However,
+too many models are a pain to manage.&nbsp; One rule to keep in mind is that if
+you try to update two different models within the same transaction you will
+have to rely on MSDTC because each context.SaveChanges is one
+transaction.&nbsp; So, if you cleanly divide your tables with this in mind, you
+should be OK.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 22, 2009 1:39 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Partition of EF Model for large application.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am getting ready to attack a fairly large project (currently 184 tables,
+330 Relationships, etc.) and I am going to take the plunge with Silverlight 3,
+EF 1.0, Csla 3.7.x or Csla 3.8.x or whichever version is the most stable and
+current!<o:p></o:p></p>
+
+<p>I have read that EF models, when they get large (100 tables) have
+problems.&nbsp; Don't remember specifically what the problems were, but I
+remember reading there were problems.&nbsp; Would it make sense to partition my
+EF Models in terms of functionality of the tables.&nbsp; For example, there are
+some admin tables, some Operations tables (Products, Source, Product Blending,
+etc.), some Accounting (Billing, Tax Tables, etc.) and numerous other sub
+systems pertaining to the large system.&nbsp; <o:p></o:p></p>
+
+<p>Would it make sense to partition the EF Model into subsystems and keep the
+business objects (Server and SL) in one .dll (Rocky mentioned earlier that it
+is good to keep the number of assemblies down and that makes sense based on his
+reasoning).&nbsp; Doing this, each EF Model could have anywhere from 20 tables
+to 50 depending on the sub system.&nbsp; Any advice, recomendations would be
+most appreciated.&nbsp; Yes, I know it is EF v1.0, but I have to start
+somewhere and I don't want to wait until EF 2.0.&nbsp; There may be some
+converting of code when the new version comes out but might as well go for it.<o:p></o:p></p>
+
+<p>CyclingFoodmanPA<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I would say that a very large model will negatively affect performance.&nbsp; &nbsp;However, too many models are a pain to manage.&nbsp; One rule to keep in mind is that if you try to update two different models within the same transaction you will have to rely on MSDTC because each context.SaveChanges is one transaction.&nbsp; So, if you cleanly divide your tables with this in mind, you should be OK.<o:p></o:p></SPAN></P>
+<P class=MsoNormal></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Is that really true Sergey?</P>
+<P class=MsoNormal>You'd think there would be some way to get EF to use a pre-opened database connection or something, so you could update multiple models against the same database by reusing the same connection?</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, September 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That
+is what I thought as well.&nbsp; Context actually has an overload that takes
+store (underlying) connection, but if connection is already open (which it will
+be because it was using by another context), constructor will throw an
+exception &#8220;Connection already open&#8221;.&nbsp; I even posted this on
+the EF forum (<a href="http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/01e68e13-04ca-4576-8808-8dd7aca5f273">http://social.msdn.microsoft.com/Forums/en-US/adodotnetentityframework/thread/01e68e13-04ca-4576-8808-8dd7aca5f273</a>
+), but got no reply.&nbsp; The only way around it that I am aware of is to rely
+on MSDTC.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 23, 2009 9:58 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Partition of EF Model for large
+application.<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img border=0 id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>sergeyb:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+would say that a very large model will negatively affect performance.&nbsp;
+&nbsp;However, too many models are a pain to manage.&nbsp; One rule to keep in
+mind is that if you try to update two different models within the same
+transaction you will have to rely on MSDTC because each context.SaveChanges is
+one transaction.&nbsp; So, if you cleanly divide your tables with this in mind,
+you should be OK.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal>Is
+that really true Sergey?<o:p></o:p></p>
+
+<p class=MsoNormal>You'd
+think there would be some way to get EF to use a pre-opened database connection
+or something, so you could update multiple models against the same database by
+reusing the same connection?<o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

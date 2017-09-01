@@ -1,0 +1,11 @@
+<html><header><title>Passing object between pages.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Passing object between pages.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1117.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcb posted on Monday, September 04, 2006</h2><P>I have been doing winform applications for a long time now and need to now create a web application.&nbsp; I am going to use CSLA object but need to get some advice on how to pass objects between pages.&nbsp; A code example would be greate.</P>
+<P>Thanks,</P>
+<P>David</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Tuesday, September 05, 2006</h2><P>David</P>
+<P>The best way is to&nbsp;store the object in session state between the pages.<BR><BR>Solution 1:<BR>Page1:<BR>Session("object") = YourObject<BR><BR>Page 2:<BR>Dim obj As YourObjectType = DirectCast(Session("object"), YourObjectType)<BR><BR>This is the most performant solution, although it doesn't scale as good as solution 2l.</P>
+<P>Solution 2:<BR>If you are reluctant to use session state, one alternative is to store the object in the database on page 1, and&nbsp;send the id of the object,&nbsp;via the querystring,&nbsp;to page 2 and reload it there. This is the most scalable solution but doesn't perform so well. <BR><BR>Hope this helps</P>
+<P>/Henrik</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcb replied on Tuesday, September 05, 2006</h2><P>That helps a lot and makes since.&nbsp; Thanks for the example.&nbsp; I will give it a try later today.<o:p></o:p></P>
+<P>Thanks,<o:p></o:p></P>
+<P>David</P>
+<P>
+<P>&nbsp;</P></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

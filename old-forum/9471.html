@@ -1,0 +1,26 @@
+<html><header><title>FieldManager.UpdateChildren in editableroot with editablechildlist and editablechildlistitem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldManager.UpdateChildren in editableroot with editablechildlist and editablechildlistitem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9471.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mliceaga posted on Friday, September 03, 2010</h2><p>Hi, </p>
+<p>I&acute;m building the BL of an an app that will use linq to xml as dataaccess. I have succesfully done it for an editableroot and wrote unit tests for all methods. </p>
+<p><b>Now I&acute;m trying to figure out what should I pass, or the general concept for using FieldManager.UpdateChildren in the editableroot with an editablechildlist of editablechildlistitems in a linq to xml file storage scenario.</b></p>
+<p>I googled: XElement FieldManager.UpdateChildren and the search yielded no results, so apparently is not something that has been widely done before.</p>
+<p>My idea is that the root will persist itself, and throgh the FieldManager.UpdateChildren it will go to the children and the children collection should persist and do all the stuff.</p>
+<p>I have done this before using linq to entities and it was simple, but this other scenario is quite different.</p>
+<p>Any ideas, help or suggestions will be very welcomed!</p>
+<p>Thank you and regards!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 03, 2010</h2><p>I would think that the parent would pass the XElement into which the child object will write its data.</p>
+<p>That&#39;s pretty analogous to what you&#39;d do with EF - pass the context in a state so the child can just write its data into the context.</p>
+<p>The whole idea is that the child shouldn&#39;t know (or care) about the higher level structure of the XML - it should only care about writing its data into the XElement it was provided.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>mliceaga replied on Friday, September 03, 2010</h2><p>Rocky, </p>
+<p>Thank you for your prompt answer.</p>
+<p>&nbsp;</p>
+<p>I thought of that, but the idea is that each child will save its information to its own file.</p>
+<p>So basically the root would save to something like: rootObj_rootGuid.xml</p>
+<p>And the childs to rootObj_rootGuid_childObj_childGuid.xml files.</p>
+<p>I&acute;d like this way (and my boss even more), so  rootObj_rootGuid.xml would have a collection of nodes pointing to the files it contains.</p>
+<p>Is this right or you think that the whole approach doesn&acute;t make sense?</p>
+<p>And if it&acute;s not that bad, how would you do it for achieving that objective?</p>
+<p>&nbsp;</p>
+<p>Regards, </p>
+<p>&nbsp;</p>
+<p>Mariano Liceaga</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, September 03, 2010</h2><p>I have not thought through an approach like that, sorry.</p>
+<p>The key is to ensure that no object knows more than is absolutely necessary. Parent and child objects should know as little about each other as possible.</p>
+<p>So it still seems reasonable to me that the parent would provide the child with an XElement into which the child would write the file name(s) it uses to store its data.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mliceaga replied on Friday, September 03, 2010</h2><p>Rocky,</p>
+<p>Thank you, I&acute;ll try that.<br />Regards!</p>
+<p>Mariano Liceaga</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,9 @@
+<html><header><title>How to get the current principle object within a windows service.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to get the current principle object within a windows service.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8682.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Stephen K posted on Thursday, March 18, 2010</h2><p>Hi all.</p>
+<p>I need to get the current principle object that a windows service is executing under.&nbsp; I would like to use the AD account to&nbsp;generate a Csla principal object to work with my business object library. &nbsp;I thought that System.Threading.Thread.CurrentPrincipal would be it, but it seems that it is nothing in the OnStart procedure.&nbsp; The service is running on a Windows Server 2003 R2.</p>
+<p>Any thoughts would be greatly appreciated.</p>
+<p>Thanks-</p>
+<p>Stephen K.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 18, 2010</h2><p>To get the current principal of the user account which is running any application, you need to do this:</p>
+<p>var prin = new WindowsPrincipal( WindowsIdentity.GetCurrent() );</p>
+<p>By default a Thread will have the GenericPrincipal set.&nbsp; You can also modify this (as the first lines of code your execute on startup)&nbsp;using AppDomain.SetPrincipalPolicy or AppDomain.SetThreadPrincipal, depending on what you need to do.</p>
+<p>HTH</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Stephen K replied on Thursday, March 18, 2010</h2><p>Andy - thanks for the clairification.</p>
+<p>Stephen K.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

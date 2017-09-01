@@ -1,0 +1,203 @@
+<html><header><title>Full CSLA.NET Sample for N-Tier</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Full CSLA.NET Sample for N-Tier</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10476.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Randar posted on Wednesday, June 29, 2011</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">What sample should I use as the best guide for learning an
+N-Tier application using CSLA.NET and a WinForm</p>
+<ul>
+<li><span style="font-family:Symbol;"><span><span style="font:7pt &#39;Times New Roman&#39;;"></span></span></span>It ends up the Project Tracker is not supported
+under 4.1 (<a>http://forums.lhotka.net/forums/p/10072/47244.aspx</a>),
+which is very unfortunate since it seems to be most fully featured.<span style="font-family:Symbol;"><span></span></span></li>
+<li><span style="font-family:Symbol;"><span><span style="font:7pt &#39;Times New Roman&#39;;"></span></span></span>The SimpleNTier sample looks fairly good from a
+code point of view, but it is pretty simple.&nbsp; Plus the database is mocked.<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;"></span></li>
+<li><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;">The RootChildGrandchildWinFormTest sample seems
+to work, and seems to be my best bet at the moment since it will me a chance to
+play with loading an object graph.&nbsp; But it is 1 tier, so I would need to
+use this along with </span>SimpleNTier<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;">.</span></li>
+</ul>
+<p>Is there anything that is the same size as Project Tracker, but works?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 29, 2011</h2><p>Because Windows Forms hasn&#39;t changed in many years, you don&#39;t need a current sample to see how it works. The best sample is the version 3.6 or 3.7 ProjectTracker application.</p>
+<p>Though you&#39;ll want to look at the 4.2 ProjectTracker to see how the business classes are put together.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 29, 2011</h2><p>The one thing to keep in mind, new with CSLA 4, is that you need to use the &quot;BindingList&quot; collection base classes. So BusinessBindingListBase instead of BusinessListBase. Those &quot;BindingList&quot; types exist to support Windows Forms, because Windows Forms data binding (having not changed for years) requires the older collection type, and won&#39;t work with the newer collection type.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Randar replied on Wednesday, June 29, 2011</h2><p>In that case, I guess my question is different.&nbsp; I am completely new to CSLA and just trying to get my feet wet.&nbsp; When I try to run the Project Tracker from CslaSamples-4.1.0-110118.zip, I get the stack trace below.&nbsp; When I searched the forum as to the reason why, I was left with the impression it doesn&#39;t work right now.&nbsp; Can you confirm, the WinForm in ProjectTracker should be working?</p>
+<p>{&quot;DataPortal.Fetch failed (Invalid operation - fetch not allowed)&quot;}</p>
+<p>&nbsp;&nbsp; at Csla.ReadOnlyBase`1.DataPortal_Fetch(Object criteria)<br />&nbsp;&nbsp; at lambda_method(Closure , Object , Object[] )<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)<br />&nbsp;&nbsp; at Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters)<br />&nbsp;&nbsp; at Csla.Reflection.LateBoundObject.CallMethod(String method, Object[] parameters)<br />&nbsp;&nbsp; at Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context)<br />&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br />&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria)<br />&nbsp;&nbsp; at ProjectTracker.Library.Security.PTIdentity.GetIdentity(String username, String password) in C:\Shared\CSLA\Samples-4.1.0-110118\Samples\NET\cs\ProjectTrackercs\ProjectTracker.Library\Security\PTIdentity.cs:line 28<br />&nbsp;&nbsp; at ProjectTracker.Library.Security.PTPrincipal.Login(String username, String password) in C:\Shared\CSLA\Samples-4.1.0-110118\Samples\NET\cs\ProjectTrackercs\ProjectTracker.Library\Security\PTPrincipal.cs:line 31<br />&nbsp;&nbsp; at PTWin.LoginForm.OK_Click(Object sender, EventArgs e) in C:\Shared\CSLA\Samples-4.1.0-110118\Samples\NET\cs\ProjectTrackercs\PTWin\LoginForm.cs:line 23<br />&nbsp;&nbsp; at System.Windows.Forms.Button.OnMouseUp(MouseEventArgs mevent)<br />&nbsp;&nbsp; at System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button, Int32 clicks)<br />&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br />&nbsp;&nbsp; at System.Windows.Forms.ButtonBase.WndProc(Message&amp; m)<br />&nbsp;&nbsp; at System.Windows.Forms.Button.WndProc(Message&amp; m)<br />&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)<br />&nbsp;&nbsp; at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp; msg)<br />&nbsp;&nbsp; at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)<br />&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<br />&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<br />&nbsp;&nbsp; at System.Windows.Forms.Form.ShowDialog(IWin32Window owner)<br />&nbsp;&nbsp; at PTWin.MainForm.DoLogin() in C:\Shared\CSLA\Samples-4.1.0-110118\Samples\NET\cs\ProjectTrackercs\PTWin\MainForm.cs:line 327<br />&nbsp;&nbsp; at PTWin.MainForm.LoginToolStripButton_Click(Object sender, EventArgs e) in C:\Shared\CSLA\Samples-4.1.0-110118\Samples\NET\cs\ProjectTrackercs\PTWin\MainForm.cs:line 317<br />&nbsp;&nbsp; at System.Windows.Forms.ToolStripItem.HandleClick(EventArgs e)<br />&nbsp;&nbsp; at System.Windows.Forms.ToolStripItem.HandleMouseUp(MouseEventArgs e)<br />&nbsp;&nbsp; at System.Windows.Forms.ToolStrip.OnMouseUp(MouseEventArgs mea)<br />&nbsp;&nbsp; at System.Windows.Forms.Control.WmMouseUp(Message&amp; m, MouseButtons button, Int32 clicks)<br />&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br />&nbsp;&nbsp; at System.Windows.Forms.ToolStrip.WndProc(Message&amp; m)<br />&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.DebuggableCallback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)<br />&nbsp;&nbsp; at System.Windows.Forms.UnsafeNativeMethods.DispatchMessageW(MSG&amp; msg)<br />&nbsp;&nbsp; at System.Windows.Forms.Application.ComponentManager.System.Windows.Forms.UnsafeNativeMethods.IMsoComponentManager.FPushMessageLoop(IntPtr dwComponentID, Int32 reason, Int32 pvLoopData)<br />&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoopInner(Int32 reason, ApplicationContext context)<br />&nbsp;&nbsp; at System.Windows.Forms.Application.ThreadContext.RunMessageLoop(Int32 reason, ApplicationContext context)<br />&nbsp;&nbsp; at PTWin.Program.Main() in C:\Shared\CSLA\Samples-4.1.0-110118\Samples\NET\cs\ProjectTrackercs\PTWin\Program.cs:line 17<br />&nbsp;&nbsp; at System.AppDomain._nExecuteAssembly(RuntimeAssembly assembly, String[] args)<br />&nbsp;&nbsp; at Microsoft.VisualStudio.HostingProcess.HostProc.RunUsersAssembly()<br />&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state, Boolean ignoreSyncCtx)<br />&nbsp;&nbsp; at System.Threading.ExecutionContext.Run(ExecutionContext executionContext, ContextCallback callback, Object state)<br />&nbsp;&nbsp; at System.Threading.ThreadHelper.ThreadStart()</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 29, 2011</h2><p>The 3.6 or 3.7 version of ProjectTracker should be used&nbsp;as a&nbsp;Windows Forms example.</p>
+<p>The 4.2 version (currently in svn, or included with the ebooks) shows how to create CSLA 4 business classes, but doesn&#39;t include a Windows Forms UI.</p>
+<p>The 4.0 and 4.1 versions of ProjectTracker do not work.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

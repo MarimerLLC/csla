@@ -1,0 +1,57 @@
+<html><header><title>Visual Studio Test of BO - Custom Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Visual Studio Test of BO - Custom Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4537.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc posted on Friday, March 21, 2008</h2><P>Let me start by saying I am new to unit tests in general.</P>
+<P>I'm trying to create a unit test for my BO using VS2008. I created a very simple test to just call my public factory method to return my Object. I am having a problem with my custom Identity, which makes sense that I would but I am lost as to how to get around it. Below is the error I am gettting.</P>
+<P>DataPortal.Create failed (System.InvalidCastException: Unable to cast object of type 'System.Security.Principal.GenericIdentity' to type 'Company.Library.Security.CIdentity'.</P>
+<P>Any help would be appreciated.<BR>-Stan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 24, 2008</h2><P>In nunit you need to "log in" before each test method. This could be (and probably is) the case with mstest too, because each test is run in an isolated environment, and so the principal is lost between each test.</P>
+<P>In the case of nunit you also must log out after each test method or you get a serialization exception because .NET tries to serialize the principal back to the calling shell process, and that can't happen. I don't know if that's an issue with mstest - depends on how they manage their threads.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Monday, March 24, 2008</h2><P>Thanks Rocky-</P>
+<P>That's what I thought. I would like to test different Authorization levels in my test, and I was wondering if you have any thoughts on how&nbsp;I could&nbsp;accomplish this. I am using network authenication.&nbsp;I would like to have an XLS file or something with different username/password combination that the test could use to log on with to run the test. Could I use impersonation to accomplish this? </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using a custom principal (which you are from your
+problem description), then you totally control how that principal is
+established. If you create a DataPortal_Fetch() in your identity object that
+can load from an XLS file or whatever, then you can do that. Or if you have a
+separate DAL behind your identity object, then perhaps you can use a provider
+model to load some other DAL implementation that reads the XLS instead of your
+normal security database.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or if you want to use your normal security database, then
+perhaps you can have some code in your test project that loads the XLS and provides
+the appropriate username/password at the start of each test.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Those options come to me off the top of my head anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Monday, March 24, 2008</h2>
+
+<DIV class=Section1>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Thanks.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>I am experimenting with the last option. I am using Impersonation to change my identity at the start of each test, and I am reading the login information from an XLS file. This is all in a test environment, so I don’t have any security concerns about storing username/passwords in the XLS file. After I am done, I hope to find the time to create a sample to post back to the site.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN><o:p>&nbsp;</o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Thanks for your help and guidance.<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial color=navy size=2><SPAN>Stan</SPAN></FONT></P></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

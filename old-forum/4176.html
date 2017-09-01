@@ -1,0 +1,79 @@
+<html><header><title>Should I favour Stored Procs over objects?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Should I favour Stored Procs over objects?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4176.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea posted on Tuesday, January 15, 2008</h2><P>I have a requirement where I need to reconcile 2 datasources (from a SQL and an Oracle db). Its a fairly simple process but it does include a bit of logic. The problem is that both data sources return around 20,000 records and even though the query execution time and time required to load in my read only lists is very reasonable, the actual process takes far too long. Nothing to do with CSLA but its just that I need to constantly loop through my total of 40,000 records...</P>
+<P>I could do this process a lot faster within a stored proc and T-SQL. But I prefer to keep any form of logic out of them and this instance would violate this. Would it be a valid point to move all logic into stored procs and not invloving any CSLA object (apart from a final read only list for presenting on the UI) or should I stick into using objects and try optimizing the code as much as possible? Or maybe use a hybrid option of grouping and formatting the data as much as possible before populating the objects and do further processing there?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 15, 2008</h2><P>You should probably start by considering whether the operations you are performing against the records are set-based operations or algorithmic operations.</P>
+<P>If they are set-based (joins, etc) then you are far better off doing the operations in the database (perhaps import raw data from one db into the other, then do the processing).</P>
+<P>If they are algorithmic operations then you are most likely better off doing them in a 3GL like C# or VB. But in this case you need to consider the proper use of data structures and algorithm implementations. If you are doing a lot of linear looping through the data you are probably using the wrong algorithm or a poor implementation of the algorithm.</P>
+<P>As an example, many years ago a colleague was writing a sales analysis system. It had to work against a very large data set (hundreds of thousands of rows) - and this was pre-relational databases. His original attempt sucked all the data into an array and then did processing, which required frequent loops through a lot of that array.</P>
+<P>We changed the code to suck all the data into a binary tree, which allowed for very fast find, greater-than and less-than operations. This avoided most of the looping.</P>
+<P>The result was a report that ran in 10 minutes instead of several hours.</P>
+<P>Getting the right data structure and algorithm is critical to success.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Wednesday, January 16, 2008</h2><P>Thanks Rocky</P>
+<P>Indeed the algorithm is a bit poor but I was still at early stages of development and thought I might be heading into a dead end. So this is beign revised right now.</P>
+<P>As a side question, would this sort of operation be easier to implement using the indexed LINQ queries which I believe you mentioned will be included in CSLA 3.5?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Indexed LINQ might help, though it depends specifically on what
+you are doing. The initial index we&#8217;ve implemented is a hashtable, so it
+is only used for single-item lookups. This means it is only used if the where
+clause uses equality. It doesn&#8217;t do &lt; or &gt; for example. I expect a
+future update will have a more sophisticated index (binary tree or something)
+so the index can do =, &lt;, &gt;, &lt;= and &gt;=.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One thing to consider though, is that a LINQ query is a set
+operation. If your business logic would benefit from LINQ queries, it may be
+that it is set-based and should be done in the database&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 16, 2008 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Should I favour Stored Procs over objects?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky<o:p></o:p></p>
+
+<p>Indeed the algorithm is a bit poor but I was still at early stages of
+development and thought I might be heading into a dead end. So this is beign
+revised right now.<o:p></o:p></p>
+
+<p>As a side question, would this sort of operation be easier to implement
+using the indexed LINQ queries which I believe you mentioned will be included
+in CSLA 3.5?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

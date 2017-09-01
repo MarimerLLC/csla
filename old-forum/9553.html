@@ -1,0 +1,17 @@
+<html><header><title>IsDirty not changing after edit.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsDirty not changing after edit.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9553.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hanspret posted on Monday, September 20, 2010</h2><p>Hi&nbsp;</p>
+<p>I have bought and read the &quot;Expert C# 2008 Business Objects&quot; book and changed my Business Layer code accordingly. My properties Now look like this for example:</p>
+<p>&nbsp;</p>
+<p>
+<p>&quot;<i>public static PropertyInfo&lt;string&gt; MineNameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.MineName);</i></p>
+<p><span><i>		</i></span><i>public string MineName</i></p>
+<p><span><i>		</i></span><i>{</i></p>
+<p><span><i>			</i></span><i>get { return GetProperty(MineNameProperty); }</i></p>
+<p><span><i>			</i></span><i>set { LoadProperty(MineNameProperty, value); }</i></p>
+<p><span><i>		</i></span><i>}</i>&quot;</p>
+<p>My problem is that my object&#39;s IsDirty property doesn&#39;t change to true if I edit the object like this:</p>
+<p>MineName = &quot;MyName&quot;;</p>
+</p>
+<p>&nbsp;</p>
+<p>It always stay false. Can anybody point me to what I am missing?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>hanspret replied on Monday, September 20, 2010</h2><p>As I post the question I read through my writing and saw that I use LoadProperty instead of SetProperty. I have changed this and now it is working.</p>
+<p>I assume LoadProperty is for a ReadOnly object and SetProperty is for an Editable object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Monday, September 20, 2010</h2><p>LoadProperty is useful when fetching data as well, therefore not marking your object as dirty or running validation rules.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

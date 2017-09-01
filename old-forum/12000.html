@@ -1,0 +1,81 @@
+<html><header><title>I got a problem using a Validation Attribute in a non CSLA property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I got a problem using a Validation Attribute in a non CSLA property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12000.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dakianth posted on Monday, June 03, 2013</h2><p>I got a problem using a Validation Attribute in a non CSLA property. The test code follow below.</p>
+<div></div>
+<div>
+<div>
+<div>
+<p>[Serializable]</p>
+<p>public
+class Foo : BusinessBase&lt;Foo&gt;</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;string&gt;
+NameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Name);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Name</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get
+{ return GetProperty(NameProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set
+{ SetProperty(NameProperty, value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;int&gt;
+IdProperty = RegisterProperty&lt;int&gt;(c =&gt; c.Id);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Id</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get
+{ return GetProperty(IdProperty); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set
+{ SetProperty(IdProperty, value); }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<strong> [Required]</strong></p>
+<p><strong>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public int Code { get; set;
+}</strong></p>
+<p>}</p>
+</div>
+</div>
+</div>
+<div></div>
+<div>In the method AddDataAnnotationsFromType of the class BusinessRules the linq clause First used to seek the IPropertyInfom returns a exception only when no results are found. Follows the &nbsp;code that&#39;s generating the error.</div>
+<div></div>
+<div>
+<div>
+<p class="MsoNormal"><span lang="EN-US">private</span><span lang="EN-US">
+</span><span lang="EN-US">void</span><span lang="EN-US"> AddDataAnnotationsFromType(Type metadataType)</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">var</span><span lang="EN-US">
+attList = metadataType.GetCustomAttributes(</span><span lang="EN-US">typeof</span><span lang="EN-US">(System.ComponentModel.DataAnnotations.ValidationAttribute),
+</span><span lang="EN-US">true</span><span lang="EN-US">);</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">foreach</span><span lang="EN-US"> (</span><span lang="EN-US">var</span><span lang="EN-US"> att </span><span lang="EN-US">in</span><span lang="EN-US"> attList)</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddRule(</span><span lang="EN-US">new</span><span lang="EN-US">
+CommonRules.DataAnnotation(</span><span lang="EN-US">null</span><span lang="EN-US">,
+(System.ComponentModel.DataAnnotations.ValidationAttribute)att));</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">// attributes on properties</span><span lang="EN-US"></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">var</span><span lang="EN-US">
+propList = metadataType.GetProperties();</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">foreach</span><span lang="EN-US"> (</span><span lang="EN-US">var</span><span lang="EN-US"> prop </span><span lang="EN-US">in</span><span lang="EN-US"> propList)</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; attList
+= prop.GetCustomAttributes(</span><span lang="EN-US">typeof</span><span lang="EN-US">(System.ComponentModel.DataAnnotations.ValidationAttribute),
+</span><span lang="EN-US">true</span><span lang="EN-US">);</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">foreach</span><span lang="EN-US"> (</span><span lang="EN-US">var</span><span lang="EN-US"> att </span><span lang="EN-US">in</span><span lang="EN-US"> attList)</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US">var</span><span lang="EN-US">
+target = (IManageProperties)_target;</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span lang="EN-US"><b>var</b></span><span lang="EN-US"><b>
+pi = target.GetManagedProperties().First(c =&gt; c.Name == prop.Name);</b></span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+AddRule(</span><span lang="EN-US">new</span><span lang="EN-US"> CommonRules.DataAnnotation(pi,
+(System.ComponentModel.DataAnnotations.ValidationAttribute)att));</span></p>
+<p class="MsoNormal"><span lang="EN-US">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>}</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</span></p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;
+}</span></p>
+</div>
+</div>
+<div>A sugestion to avoid the exception is use the clause FirstOrDefault, but should be cosidered the real necessity for create a rule for a non CSLA property.</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 03, 2013</h2><p>Hi,</p>
+<p>Why not use a CSLA property? &nbsp;</p>
+<p>Considering all - CSLA is made to work on a number of platforms - and using DataAnnotation rules on a CSLA object without adding it to the CSLA Rules is not recommended on any platform. This will cause the broken rules collection to not work as expected - the IsSavable/IsValid will not work as expected and so on.&nbsp;</p>
+<p>You can of course create your own version of AddDataAnnotationFromType but I would not recommend to do so.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dakianth replied on Monday, June 03, 2013</h2><p><span>I will consider the use of a csla property, but analysis the feasibility of do a error treatment for this case, the standard message of the .Net for null references isn&#39;t intuitive for this case.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, June 03, 2013</h2><p>Hi,</p>
+<p>Yes, the error message might be better but you should be very careful when/if mixing 2 different rule systems.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

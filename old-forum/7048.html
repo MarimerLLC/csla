@@ -1,0 +1,194 @@
+<html><header><title>Editable Root Collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable Root Collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7048.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry posted on Thursday, June 04, 2009</h2><P><FONT face=Arial>Hello,</FONT></P>
+<P><FONT face=Arial>I'm running into a little difficulty with a collection. The collection is intended to be an Editable Root Collection as described on p. 187 in the current book.</FONT></P><FONT face=Arial><FONT size=2>
+<P>The collection is defined like this:</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClientList</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessListBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ClientList</FONT></FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2>&gt;</FONT></P>
+<P><FONT size=2>The child client object is defined as</FONT></P><FONT size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2>&gt;<BR>...<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2> GetClient(Data.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2> client){<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.FetchChild&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2>&gt;(client);<BR>}<BR>...<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> Child_Update() { ...</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT size=2>If I understand p.189 correctly, the BLB's default implementation of DataPortal_Update should call the Child_Update on the children.&nbsp; I have no update methods in the list class as shown in the example on p. 188.&nbsp; However when the Silverlight CslaDataProvider Save method is invoked, the base class throws at line 113 in BusinessBase (version 3.6.2)</FONT></FONT></FONT></P><FONT size=2><FONT size=2><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>virtual</FONT></FONT><FONT size=2> T Save(){<BR>T result;<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.IsChild)<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotSupportedException</FONT></FONT><FONT size=2>(Resources.NoSaveChildException);</P></FONT></FONT></FONT></FONT><FONT size=2><FONT size=2></FONT></FONT>
+<P><FONT size=2>I'm trying to use this as follows:</FONT></P>
+<P><FONT size=2>I have a silverlight form that's a "client editor".&nbsp; The bottom half has a grid control of clients bound to the list provided by the data provider.&nbsp; When the selection changes, the selected item is made the data context of the edit form in the top half of the control.&nbsp; </FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataGrid_SelectionChanged(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SelectionChangedEventArgs</FONT></FONT><FONT size=2> e){HorizonSoftware.OSMobileStock.BusinessObjects.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2> client = e.AddedItems[0] </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> HorizonSoftware.OSMobileStock.BusinessObjects.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Client</FONT></FONT><FONT size=2>;<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (client != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>){<BR>GrdClientForm.DataContext = client;<BR></FONT><FONT size=2>}<BR>}</P>
+<P></FONT>The save button is tied to the save function on the data provider.&nbsp; This seems like a reasonable approach.&nbsp; I don't what to have to round trip every time the selection changes to fetch an editable root for the edit form.&nbsp; The book seems to indicate this pattern is supported but if it is I haven't found the magic sprinkles.</FONT></P>
+<P><FONT size=2>Thanks for taking a look.</FONT></P>
+<P><FONT size=2>Elton</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, June 04, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+think you have an issue on your form.&nbsp; I think you are calling Save() on
+an individual client record instead of ClientList object.&nbsp; If you can
+paste the code that fires Save on your form, I can tell for sure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> esaulsberry
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 04, 2009 5:34 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Editable Root Collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hello,</span><o:p></o:p></p>
+
+<p><span>I'm running into a little
+difficulty with a collection. The collection is intended to be an Editable Root
+Collection as described on p. 187 in the current book.</span><o:p></o:p></p>
+
+<p><span>The
+collection is defined like this:</span><span><o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>class</span> <span>ClientList</span> :
+<span>BusinessListBase</span>&lt;<span>ClientList</span>,
+<span>Client</span>&gt;</span><span><o:p></o:p></span></p>
+
+<p><span>The child
+client object is defined as</span><span><o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>class</span> <span>Client</span> : <span>BusinessBase</span>&lt;<span>Client</span>&gt;<br>
+...<br>
+<span>internal</span> <span>static</span>
+<span>Client</span> GetClient(Data.<span>Client</span> client){<br>
+<span>&nbsp;&nbsp;&nbsp;return</span> <span>DataPortal</span>.FetchChild&lt;<span>Client</span>&gt;(client);<br>
+}<br>
+...<br>
+<span>private</span> <span>void</span>
+Child_Update() { ...<o:p></o:p></span></p>
+
+<p><span>If I
+understand p.189 correctly, the BLB's default implementation of
+DataPortal_Update should call the Child_Update on the children.&nbsp; I have no
+update methods in the list class as shown in the example on p. 188.&nbsp;
+However when the Silverlight CslaDataProvider Save method is invoked, the base
+class throws at line 113 in BusinessBase (version 3.6.2)<o:p></o:p></span></p>
+
+<p><span>public</span><span> <span>virtual</span> T Save(){<br>
+T result;<br>
+<span>if</span> (<span>this</span>.IsChild)<br>
+<span>throw</span> <span>new</span> <span>NotSupportedException</span>(Resources.NoSaveChildException);<o:p></o:p></span></p>
+
+<p><span>I'm trying
+to use this as follows:<o:p></o:p></span></p>
+
+<p><span>I have a
+silverlight form that's a &quot;client editor&quot;.&nbsp; The bottom half has
+a grid control of clients bound to the list provided by the data
+provider.&nbsp; When the selection changes, the selected item is made the data
+context of the edit form in the top half of the control.&nbsp; <o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span> DataGrid_SelectionChanged(<span>object</span> sender, <span>SelectionChangedEventArgs</span>
+e){HorizonSoftware.OSMobileStock.BusinessObjects.<span>Client</span>
+client = e.AddedItems[0] <span>as</span>
+HorizonSoftware.OSMobileStock.BusinessObjects.<span>Client</span>;<br>
+<span>if</span> (client != <span>null</span>){<br>
+GrdClientForm.DataContext = client;<br>
+}<br>
+}<o:p></o:p></span></p>
+
+<p><span>The save
+button is tied to the save function on the data provider.&nbsp; This seems like
+a reasonable approach.&nbsp; I don't what to have to round trip every time the
+selection changes to fetch an editable root for the edit form.&nbsp; The book
+seems to indicate this pattern is supported but if it is I haven't found the
+magic sprinkles.<o:p></o:p></span></p>
+
+<p><span>Thanks for
+taking a look.<o:p></o:p></span></p>
+
+<p><span>Elton<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, June 05, 2009</h2><P>Looks like Rocky had the key.</P>
+<P>For what it's worth, here's how it's hooked up.</P><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT face="Courier New"><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>CslaDataProvider</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Key</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDpClient"<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>DataChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDpClient_DataChanged"<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ManageObjectLifetime</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="True"<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>IsInitialLoadEnabled</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="False"<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ObjectType</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="HorizonSoftware.OSMobileStock.BusinessObjects.ClientList, HorizonSoftware.OSMobileStock.BusinessObjects, Version=..., Culture=neutral, PublicKeyToken=null"<BR></FONT></FONT></FONT><FONT face="Courier New"><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>FactoryMethod</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="BeginGetClientList"</FONT></FONT></FONT><FONT size=2><FONT face="Courier New"> <BR></FONT></FONT><FONT face="Courier New"><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>PropertyChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="CslaDpClient_PropertyChanged"</FONT></FONT></FONT><FONT size=2><FONT face="Courier New"> </FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT face="Courier New">/&gt;</FONT></FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT face="Courier New"><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Grid</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Height</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Auto"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Margin</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="0,0,0,0"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="GrdClientEditor"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> VerticalAlignment</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Stretch"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Grid.Column</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="1"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Grid.Row</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="0" </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>DataContext</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Path</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=Data,</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Source</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>={</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>StaticResource</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> CslaDpClient</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}}"&gt;</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>data</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>DataGrid</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> AutoGenerateColumns</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="False"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> HeadersVisibility</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Column"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="dgClient" </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>ItemsSource</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Margin</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="8,0,8,0"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> SelectionChanged</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="DataGrid_SelectionChanged"&gt;</P></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT face="Courier New"><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Button</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> x</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>Name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="BtnSave"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Width</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="76.855"</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Margin</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="0,0,3,0"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.MethodName</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Save"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.Resource</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>StaticResource</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> CslaDpClient</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>csla</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>:</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>InvokeMethod.TriggerEvent</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="Click"<BR></FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>IsEnabled</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>="{</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>Binding</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Mode</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=OneWay,</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Path</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=CanSave,</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> Source</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>={</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>StaticResource</FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2> CslaDpClient</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>}}"&gt;</P></FONT></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Btw, in 3.6.2 and higher you can use a shorter ObjectType value:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ObjectType=&#8221;</span><span>HorizonSoftware.OSMobileStock.BusinessObjects.ClientList,
+HorizonSoftware.OSMobileStock.BusinessObjects</span><span>&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The version/culture/etc aren&#8217;t required unless you sign
+the assembly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 04, 2009</h2><P>I know there's some minor errata in that area of the book - like one word is wrong - but that could be the issue.</P>
+<P>For a root collection you do need to implement DataPortal_Update(), because CSLA doesn't know how to open your database connection, object context, data context or whatever you are using to talk to your database.</P>
+<P>Also, CSLA doesn't know what transactional model you want, so you need to implement the DataPortal_Update() method so you can put the appropriate Transactional attribute on the method.</P>
+<P>But the implementation is generally easy, because Child_Update() does all the work:</P>
+<BLOCKQUOTE dir=ltr>
+<P>protected override void DataPortal_Update()<BR>{<BR>&nbsp; // open database connection or whatever<BR>&nbsp; base.Child_Update();<BR>&nbsp; // close database connection or whatever<BR>}</P></BLOCKQUOTE>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, June 05, 2009</h2>That's all it took.&nbsp; Thanks.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cdkisa replied on Thursday, June 04, 2009</h2><font face="Arial"><font size="2"><p><font size="2">Change your code to this instead...(root objects do not call "Child" methods)<br></font></p><p><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">internal</font></font><font size="2"> </font><font size="2" color="#0000ff"><font size="2" color="#0000ff">static</font></font><font size="2"> </font><font size="2" color="#2b91af"><font size="2" color="#2b91af">Client</font></font><font size="2"> GetClient(int clientID</font><font size="2">){<br></font><font size="2" color="#0000ff"><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;return</font></font><font size="2"> </font><font size="2" color="#2b91af"><font size="2" color="#2b91af">DataPortal</font></font><font size="2">.Fetch&lt;</font><font size="2" color="#2b91af"><font size="2" color="#2b91af">Client</font></font><font size="2">&gt;(clientID);<br>}<br></font></font></p><p><font size="2"><font size="2">...</font></font></p><p><font face="Arial"><font size="2"><font size="2"><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">private</font></font><font size="2"> </font><font size="2" color="#0000ff"><font size="2" color="#0000ff">void</font></font><font size="2"> DataPortal_Fetch() { ...</font></font></font></font></font></p><p><font size="2"><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">private</font></font><font size="2"> </font><font size="2" color="#0000ff"><font size="2" color="#0000ff">void</font></font><font size="2"> DataPortal_Update() { ...</font></font></font></p><p><font face="Arial"><font size="2"><font size="2"><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">private</font></font><font size="2"> </font><font size="2" color="#0000ff"><font size="2" color="#0000ff">void</font></font><font size="2"> DataPortal_Insert() { ...</font></font></font></font></font></p><p><font face="Arial"><font size="2"><font size="2"><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">private</font></font><font size="2"> </font><font size="2" color="#0000ff"><font size="2" color="#0000ff">void</font></font><font size="2"> DataPortal_Delete() { ...</font></font></font></font></font></p></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esaulsberry replied on Friday, June 05, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>cdkisa:</strong></div><div><FONT face=Arial><FONT size=2>
+<P><FONT size=2>Change your code to this instead...(root objects do not call "Child" methods)<BR></FONT></P>
+<P></FONT></FONT></div></BLOCKQUOTE></P>
+<P>Thanks for taking a look.&nbsp; In this case, the collection is the root and the business object is a child of the collection, so the UI calls for the collection and it does the rest.&nbsp; The individual BO's aren't created by the UI individually.</P>
+<P>Elton</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

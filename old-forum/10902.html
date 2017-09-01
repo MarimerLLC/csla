@@ -1,0 +1,20 @@
+<html><header><title>wpf app losing Csla.ApplicationContext.User</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>wpf app losing Csla.ApplicationContext.User</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t posted on Monday, November 21, 2011</h2><p>Hi,</p>
+<p>I am porting an app from csla v3.8 to v4 (4.2.0-111004). The (development) app combines client &amp; server in a single exe.</p>
+<p>I have a custom principal class (similar to PTPrincipal) which worked as expected with v3.8. However in 4.2 the application &#39;loses&#39; the principal shortly after a successful login.</p>
+<p>The app does use background threads.</p>
+<p>Any clues as to what I should be looking at?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Monday, November 21, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>kosta_t<br></b>The app does use background threads.</div></p>
+<p class="CommonTitle"><span style="font-family:arial,helvetica,sans-serif;"><span style="font-size:small;">The explanation of Jonny in&nbsp; &quot;<a href="http://forums.lhotka.net/forums/p/10856/50686.aspx#50686">problems with ClientContext being cleared</a>&quot; might be helpful.</span></span></p>
+<p class="CommonTitle">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 21, 2011</h2><p>Hi,</p>
+<p>In short:</p>
+<p>1. Make sure that your app use Csla.Threading.BackgroundWorker and not System.ComponentModel.BackgroundWorker</p>
+<p>2. Make sure that Csla.Web.dll is not in your bin folder. </p>
+<p>3. Make sure that Csla.Xaml.dll is in your bin folder.</p>
+<p>The referenced post is for a web application that need Csla.Web.dll to be present in bin folder.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 22, 2011</h2><p>Also, in a WPF client, you <em>must</em> reference Csla.Xaml.dll so you get the correct ApplicationContext.User provider for WPF.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t replied on Tuesday, November 22, 2011</h2><p>Hi,</p>
+<p>thanks for the reply</p>
+<p>the &#39;development&#39; app is a single WPF application combining both client &amp; server components. It is composed of several dlls (eg csla level, WPF level, data level etc)</p>
+<p>CSLA.xaml.dll is referenced by the WPF dll, but not directly by the exe itself. </p>
+<p>The WPF dll aslo uses <a href="http://msdn.microsoft.com/en-us/library/system.delegate.aspx">System.Delegate.BeginInvoke</a>. </p>
+<p>The same code (async calls &amp;&nbsp;custom Principal)&nbsp;was working fine with CSLA 3.8.x</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 22, 2011</h2><p>The difference between 3.8 and 4 is that the WPF User provider was in Csla.dll in 3.8, and it is in Csla.Xaml.dll in 4. Your WPF <em>application</em> must reference Csla.Xaml.dll so the .NET type loader can find the correct provider.</p>
+<p>(we pulled all UI-specific code from Csla.dll in 4, so the core framework has no dependencies on any of the UI technologies - necessary to support mono, as well as to position us for WinRT, etc.)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t replied on Tuesday, November 22, 2011</h2><p>Thanks, that was it.</p>
+<p>Referencing Csla.Xaml.dll from the application (.exe) fixed the problem.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

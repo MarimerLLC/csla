@@ -1,0 +1,459 @@
+<html><header><title>ArgumentNullException in CommonRules.RegExMatch()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ArgumentNullException in CommonRules.RegExMatch()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2188.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cstaley posted on Monday, January 22, 2007</h2><P>I've modified the CSLA.Contib templates to&nbsp;generate nullable value types on columns that allow nulls.&nbsp; As a result,&nbsp;I'm running into problems with the RegExMatch() method in the Csla.Validation.CommonRules class when new CSLA objects are created.&nbsp; The problem is that a null value is being validated, and the RegEx.IsMatch() method doesn't like null values being passed in (i.e. it throws a ArgumentNullException).</P>
+<P>It seems like the RegExMatch() method should handle this situation more gracefully.&nbsp; A null value should simply cause the rule to break, rather than throw an exception.&nbsp; Afterall, a null value couldn't possibly match the regular expression, could it?</P>
+<P>To handle this, I've modified the RegExMatch() method as follows (changes in bold):</P><FONT color=#0000ff size=2>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr><FONT face="Courier New">public</FONT></FONT><FONT face="Courier New"><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> RegExMatch(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, </FONT><FONT color=#2b91af size=2>RuleArgs</FONT></FONT><FONT face="Courier New"><FONT size=2> e) <BR>{<BR></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp; Regex</FONT><FONT size=2> rx = ((</FONT><FONT color=#2b91af size=2>RegExRuleArgs</FONT></FONT><FONT face="Courier New"><FONT size=2>)e).RegEx;<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp; <STRONG>string</STRONG></FONT><STRONG><FONT size=2> propertyValue = </FONT><FONT color=#2b91af size=2>Utilities</FONT><FONT size=2>.CallByName(target, e.PropertyName, </FONT><FONT color=#2b91af size=2>CallType</FONT><FONT size=2>.Get) </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT></STRONG></FONT><FONT face="Courier New"><FONT size=2><STRONG>;</STRONG><BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp; if</FONT><FONT size=2> (<STRONG>propertyValue == </STRONG></FONT><FONT color=#0000ff size=2><STRONG>null</STRONG></FONT></FONT><FONT face="Courier New"><FONT size=2><STRONG> || !rx.IsMatch(propertyValue)</STRONG>)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = </FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#2b91af size=2>Resources</FONT></FONT><FONT face="Courier New"><FONT size=2>.RegExMatchRule, e.PropertyName);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT></FONT><FONT face="Courier New" size=2>;<BR>&nbsp;&nbsp; }<BR></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>&nbsp;&nbsp; else<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2><FONT face="Courier New">;<BR>}</FONT></P></BLOCKQUOTE></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 22, 2007</h2>I've added this request to my to-do list for future versions of the framework.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LEEG replied on Thursday, March 01, 2007</h2><P>I ran into the same situation.&nbsp; The one difference I would make is that&nbsp;a null or empty string would return true.&nbsp; If the value shouldn't be null or an empty string then you would use the CommonRules.StringRequired rule as well.</P>
+<P>So instead of the following:</P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>if</FONT> (<STRONG>propertyValue == </STRONG><FONT color=#0000ff><STRONG>null</STRONG></FONT></FONT></FONT><FONT size=2><FONT face="Courier New"><STRONG> || !rx.IsMatch(propertyValue)</STRONG>)<BR></FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">you would have:</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff>if</FONT><FONT size=2> (!<STRONG>String.IsNullOrEmpty(propertyValue)</STRONG></FONT><FONT face="Courier New"><FONT size=2><STRONG> &amp;&amp; !rx.IsMatch(propertyValue)</STRONG>)<BR></FONT></FONT></P></FONT></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My goal with RegEx is to allow anything that can be evaluated to
+be evaluated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your regex might reject or accept an empty string &#8211; I can&#8217;t
+make that judgment in code without restricting what can be expressed in the
+regex itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the only real debate here, and I agree that there is one, is
+what to do about null values?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are three answers:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A null is an automatic True result<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A null is an automatic False result<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>A null is converted to string.Empty and the regex runs<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m not entirely sure which is the right answer overall,
+but thinking about it right now I lean toward #3.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> LEEG
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, March 01, 2007 3:56 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ArgumentNullException in
+CommonRules.RegExMatch()<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I ran into the same situation.&nbsp; The one difference I would make is
+that&nbsp;a null or empty string would return true.&nbsp; If the value
+shouldn't be null or an empty string then you would use the
+CommonRules.StringRequired rule as well.<o:p></o:p></p>
+
+<p>So instead of the following:<o:p></o:p></p>
+
+<p><span>if</span><span> (<strong><span>propertyValue == <span>null</span>
+|| !rx.IsMatch(propertyValue)</span></strong>)</span><o:p></o:p></p>
+
+<p><span>you would have:</span><o:p></o:p></p>
+
+<p><span>if</span><span> (!<strong><span>String.IsNullOrEmpty(propertyValue)
+&amp;&amp; !rx.IsMatch(propertyValue)</span></strong>)<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cstaley replied on Thursday, March 08, 2007</h2>Given the three options, I would argue for #2 by the process of elimination.<br><br>#1 is out because, as I originally posted at the start of the thread, passing in a null value to RegEx.IsMatch() will throw an exception.&nbsp; Therefore, if you can't definitively say, "Yes, this value matches the regular expression," then you should never return true.<br><br>#3 should be eliminated for the same reason, but with the additional aggravating circumstance wherein a comparison of the actual value is never being made.&nbsp; Additionally, since null and empty string can have different meanings, the method could effectively be misunderstanding the property's value, especially if the regular expression accepts empty strings.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 09, 2007</h2><P>For fun I implemented 1 and 2 - allowing you to specify the result of a null. You can see the code in svn (C#) if you'd like.</P>
+<P>I think I might actually support 3 using a similar technique - that wouldn't be terribly hard to do.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Friday, September 21, 2007</h2>Rocky,<br><br>i am having an bo say employee. which do have up an required field i.e companyid (to which company he belongs) now i wnat to implement this in my bo .<br>that is in validation rules there is something called stringrequired , but this is going to be an int filed so doesnt there do exist something like intrequired .<br><br>another thing . coming up to the same scenario ,assuming the same business object employee , the companyid (which is to be populated via another namevalue list object) is the foreign key in database , but the datamapper maps it and returns 0 if null so to overcome this , what would be the best approach as if to handle null values and pss the null values back to database . like this should go null rather then 0 to database and come 0 rather then null from database as all the namevalue lsit objects do contain a default item with index 0 so i dont thing that could b a prob . <br><br>thanks <br>govind<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>A &#8220;required integer&#8221; field probably just means the
+value must be &gt;0 right? So you can use the MinValue rule, or the RegExMatch
+rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To deal with null values that should flow from the UI to/from
+the database, you should look at Nullable(Of T). In C# the compiler implements
+some syntactic sugar around Nullable&lt;T&gt; to give you things like int? and
+bool? which are nullable values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 21, 2007 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ArgumentNullException in
+CommonRules.RegExMatch()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+i am having an bo say employee. which do have up an required field i.e
+companyid (to which company he belongs) now i wnat to implement this in my bo .<br>
+that is in validation rules there is something called stringrequired , but this
+is going to be an int filed so doesnt there do exist something like intrequired
+.<br>
+<br>
+another thing . coming up to the same scenario ,assuming the same business
+object employee , the companyid (which is to be populated via another namevalue
+list object) is the foreign key in database , but the datamapper maps it and
+returns 0 if null so to overcome this , what would be the best approach as if
+to handle null values and pss the null values back to database . like this
+should go null rather then 0 to database and come 0 rather then null from
+database as all the namevalue lsit objects do contain a default item with index
+0 so i dont thing that could b a prob . <br>
+<br>
+thanks <br>
+govind<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Friday, September 21, 2007</h2>Rocky,<br><br>I am using csla 3.0<br>I am working on to integrate validatino application blocks(VAB), DAAB, and caching application blocks with csla .<br><br>firstly moving with VAB here are the steps i had followed.<br>1. got the refrence of VAB,Common , from application blocks<br>2. created a class VAB with the following definition<br>&nbsp;public class VABRules<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class VABRuleArgs : RuleArgs<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private string _ruleset;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Ruleset<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return _ruleset; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public VABRuleArgs(string propertyName)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : this(propertyName, null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public VABRuleArgs(string propertyName, string ruleset)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(propertyName)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ruleset = ruleset;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool VABValid&lt;T&gt;(object target, RuleArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Validator&lt;T&gt; validator = ValidationFactory.CreateValidator&lt;T&gt;(((VABRuleArgs)e).Ruleset);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (validator == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationResults results = validator.Validate(target);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (results == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (ValidationResult result in results)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (result.Key == e.PropertyName)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = result.Message;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>now on csla object say currency<br><br>for one of my property .<br>&nbsp; [NotNullValidator]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [StringLengthValidator(1, 50, MessageTemplate = "Currency code can not be empty")]<br>&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string sCode<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _Code;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty(true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value == null) value = string.Empty;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_Code != value)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Code = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>and finally in the <br><br>&nbsp; protected override void AddBusinessRules()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(VABRules.VABValid&lt;Currency&gt;, new VABRules.VABRuleArgs("sCode","RuleSetCurrency"));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><br>but this is not getting called and not firing validation . on contrary done with csla.validation it is working fine .<br><br>coould you please shed some light on the issue why i am not able to get the validation check .<br><br>thanks<br>govind<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One possible issue: you aren&#8217;t using the NoInlining
+attribute in your property declaration, but you are using the CanReadProperty(),
+CanWriteProperty() and PropertyHasChanged() overloads that only reliable work
+if you DO use the NoInlining property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 21, 2007 7:23 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ArgumentNullException in
+CommonRules.RegExMatch()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+I am using csla 3.0<br>
+I am working on to integrate validatino application blocks(VAB), DAAB, and
+caching application blocks with csla .<br>
+<br>
+firstly moving with VAB here are the steps i had followed.<br>
+1. got the refrence of VAB,Common , from application blocks<br>
+2. created a class VAB with the following definition<br>
+&nbsp;public class VABRules<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public class VABRuleArgs : RuleArgs<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private
+string _ruleset;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+string Ruleset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+get { return _ruleset; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+&amp;nbs p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+VABRuleArgs(string propertyName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: this(propertyName, null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public
+VABRuleArgs(string propertyName, string ruleset)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: base(propertyName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_ruleset = ruleset;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool V
+ABValid&lt;T&gt;(object target, RuleArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Validator&lt;T&gt; validator =
+ValidationFactory.CreateValidator&lt;T&gt;(((VABRuleArgs)e).Ruleset);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if
+(validator == null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ValidationResults results = validator.Validate(target);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (results
+== null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return true;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach
+(ValidationResult result in results)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (result.Key == e.PropertyName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+e.Description = result.Message;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+now on csla object say currency<br>
+<br>
+for one of my property .<br>
+&nbsp; [NotNullValidator]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [StringLe ngthValidator(1, 50,
+MessageTemplate = &quot;Currency code can not be empty&quot;)]<br>
+&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string sCode<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CanReadProperty(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return _Code;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CanWriteProperty(true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;n
+bsp;&nbsp;&nbsp;&nbsp; if (value == null) value = string.Empty;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+if (_Code != value)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_Code = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+PropertyHasChanged();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+}<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+and finally in the <br>
+<br>
+&nbsp; protected override void AddBusinessRules()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+ValidationRules.AddRule(VABRules.VABValid&lt;Currency&gt;, new
+VABRules.VABRuleArgs(&quot;sCode&quot;,&quot;RuleSetCurrency&quot;));<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+but this is not getting called and not firing validation . on contrary done
+with csla.validation it is working fine .<br>
+<br>
+coould you please shed some light on the issue why i am not able to get the
+validation check .<br>
+<br>
+thanks<br>
+govind<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Friday, September 21, 2007</h2>hmm ,<br><br>seems as if i had to use the csla contrib library instead of validation application block .<br>but the only mess i m facing with is that i am nto able to throw custom messages if using the commonrules.<br>thats why i opted for validation blocks . <br><br>is there any workaround to get the custom message s.<br><br>1 most importatnt thing is that while being up in insert mode , say for example i do get up the validation rule exception the whole of the dataview is cleared mean the object is recreated fresh which i want to avoid mean i want that if error is there then the object does not get clear but instead stops processing if something is wrong there if with the data being retained (which is correct)<br><br>how to achieve this .<br><br>thanks<br>govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you don&#8217;t like the messages returned from the rule
+methods in CommonRules then you can create your own rule methods &#8211; create
+your own common rules library within your application. This is the whole reason
+the architecture is so open and delegate-based, is to allow you to create your
+own rule methods to meet your needs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t understand what you are saying about the grid,
+sorry. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 21, 2007 8:42 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: ArgumentNullException in
+CommonRules.RegExMatch()<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>hmm ,<br>
+<br>
+seems as if i had to use the csla contrib library instead of validation
+application block .<br>
+but the only mess i m facing with is that i am nto able to throw custom
+messages if using the commonrules.<br>
+thats why i opted for validation blocks . <br>
+<br>
+is there any workaround to get the custom message s.<br>
+<br>
+1 most importatnt thing is that while being up in insert mode , say for example
+i do get up the validation rule exception the whole of the dataview is cleared
+mean the object is recreated fresh which i want to avoid mean i want that if
+error is there then the object does not get clear but instead stops processing
+if something is wrong there if with the data being retained (which is correct)<br>
+<br>
+how to achieve this .<br>
+<br>
+thanks<br>
+govind<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, September 26, 2007</h2>Rocky,<br><br>i am working up with&nbsp; a scenario .<br>suppose my users comes up with an insert mode in detail view and then successfully inserts the object .<br>now he wants to do more insertions like , go on inserting .till he wishes.<br>not getting over it .<br><br>thanks<br>govind<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

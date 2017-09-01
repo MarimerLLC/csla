@@ -1,0 +1,50 @@
+<html><header><title>Unit Testing in Csla.Net</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit Testing in Csla.Net</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2801.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin posted on Monday, April 30, 2007</h2><P>I have recenlty posted a blog article on my implementation of unit testing with Csla, views on Test Driven Development and a usage of the TypeMock dynamic mock library that helped me generate some of my tests.</P>
+<P>I would like to hear from feedback from folks that had more expirience with Csla than I have, as well as alternative approaches to Unit Testing with Csla.</P>
+<P>Original post can be found here:</P>
+<P><A href="http://www.nermins.net/PermaLink,guid,d9a9fa9c-a700-4157-9c5e-59119bf0ea08.aspx">http://www.nermins.net/PermaLink,guid,d9a9fa9c-a700-4157-9c5e-59119bf0ea08.aspx</A></P>
+<P>Regards,</P>
+<P>Nermin&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>the.next.peter.parker replied on Tuesday, May 08, 2007</h2>personally i would move the data access outside of the business object and replace the DataPortalXXX methods with calls to a factory that would call the right data provider.&nbsp; the dal would return an interfaced dto.<br><br>so when you go to test the business object, you could set up a mocked or dummy provider to test your business object with for things like behavior, business logic, custom validation, etc.&nbsp; <br><br>i think maintaining seperate code layers (not to be confused with physical tiers), imho, make things cleaner, easier to extend, much easier to test and you're back to the an object should really only do one thing/have one purpose rule.&nbsp; (plus this might make it easier to switch your objects to using linq later, which is a bonus, but should not be your main reason for creating layers at this point).<br><br>another thing is that i would not use the Sqlxxxx objects (in example SqlDataReader) but use the interfaces in the System.Data namespace like IDbParameter etc, that way you can easily switch between database providers, not to mention most mock libraries utilize interfaces for mocking purposes.<br><br>notice that SafeDataReader takes an object that implements the IDataReader, which is pretty smart on rocky's part so that you can easily user datareaders from other providers that extend from those interfaces like the mysql connector for .net.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 08, 2007</h2><P>Also, if you look at the DeepData sample from my site you can see a technique by which you can externalize the opening of the database connection, the setup of the command and the creation of the datareader. Then the business object only deals with a pre-opened datareader.</P>
+<P>This is relatively easy to mock, because you can create a mock object that doesn't open a db or command, but does create a mock datareader with test data, so your object is populated from it.</P>
+<P>Same concept can work for insert/update - though obviously the data goes into the ether because there's no actual database.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, May 09, 2007</h2><P class=MsoNormal><FONT face=Calibri>Rocky, “the.next.peter.parker” I would like to thank you both on your recommendations.<SPAN>&nbsp; </SPAN>Looking at how it simplifies mocking process, I couldn’t stop thinking “How come I didn’t think of this?”<SPAN>&nbsp; </SPAN>But hey, this is why we post issues we have to newsgroups.<SPAN>&nbsp; </SPAN>Following your example (I did not use the one with DTOs – too much coding for me, without any obvious advantages I can see at this time) I modified the code in the PTracker sample under <SPAN>&nbsp;</SPAN>ProjectList Fetch() to see what I get from this:</FONT></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> Fetch(<SPAN>string</SPAN> nameFilter)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>RaiseListChangedEvents = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>DataFactory</SPAN> df = <SPAN>new</SPAN> <SPAN>DataFactory</SPAN>();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>using</SPAN>(<SPAN>ProjectListData</SPAN> data = df.GetProjectListDataObject()) {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>SafeDataReader</SPAN> dr = data.GetProjectList();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>IsReadOnly = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>while</SPAN> (dr.Read()) {<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ProjectInfo</SPAN> info = <SPAN>new</SPAN> <SPAN>ProjectInfo</SPAN>(<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dr.GetGuid(0),<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>dr.GetString(1));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// apply filter if necessary<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> ((nameFilter.Length == 0) || (info.Name.IndexOf(nameFilter) == 0))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Add(info);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>IsReadOnly = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>RaiseListChangedEvents = <SPAN>true</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri>Code above is simpler than the original or the refactored code I had (only a single using block, and no ADO.NET dependencies) Test is then as simple as:<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN>[<SPAN>Test</SPAN>]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>void</SPAN> LoadsOne()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Mock</SPAN> mockProjectListData = <SPAN>MockManager</SPAN>.Mock(<SPAN>typeof</SPAN> (<SPAN>ProjectListData</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mockProjectListData.ExpectAndReturn(<SPAN>"GetProjectList"</SPAN>, <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>new</SPAN> <SPAN>ProjectListFetchOneDRStub</SPAN>().GetDataReaderStub());<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>mockProjectListData.ExpectCall(<SPAN>"Dispose"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ProjectList</SPAN> item = <SPAN>ProjectList</SPAN>.GetProjectList();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Assert</SPAN>.AreEqual(1,item.Count);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN></P>
+<P class=MsoNormal><FONT face=Calibri>Basically I just mock the ProjectListData and assure that I replace the SafeDataReader returned by “ProjectListData” object with the one I need for the test (one created by </FONT><SPAN>ProjectListFetchOneDRStub</SPAN><SPAN>().GetDataReaderStub()</SPAN><FONT face=Calibri>).<SPAN>&nbsp; </SPAN>Second expectation is assuring that the Dispose() is called on ProjectListData object.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>As far as the recommendation to not use Sqlxxx objects but generic interfaces instead,<SPAN>&nbsp; </SPAN>I generally use Enterprise Library DAAB as my data access library which does that for me.<SPAN>&nbsp; </SPAN>In that example I was just refactoring the original PTracker project which had Sqlxxx implementation which I did not modify for simplicity and easier of comparison to the original.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Thanks,</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Nermin</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

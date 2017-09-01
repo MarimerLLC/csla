@@ -1,0 +1,22 @@
+<html><header><title>Unable to generate a temporary class </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unable to generate a temporary class </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10569.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Friday, July 29, 2011</h2><p>Attempting to consume CSLA 4.1 business object via web services and receiving the following exception (constructors were made public):</p>
+<p>
+<pre>System.InvalidOperationException: Unable to generate a temporary class (result=1).
+error CS0200: Property or indexer &amp;#39;Csla.Rules.BrokenRule.RuleName&amp;#39; cannot be assigned to -- it is read only
+error CS0200: Property or indexer &amp;#39;Csla.Rules.BrokenRule.Description&amp;#39; cannot be assigned to -- it is read only
+error CS0200: Property or indexer &amp;#39;Csla.Rules.BrokenRule.Property&amp;#39; cannot be assigned to -- it is read only
+error CS0200: Property or indexer &amp;#39;Csla.Rules.BrokenRule.Severity&amp;#39; cannot be assigned to -- it is read only
+
+   at System.Xml.Serialization.Compiler.Compile(Assembly parent, String ns, XmlSerializerCompilerParameters xmlParameters, Evidence evidence)
+   at System.Xml.Serialization.TempAssembly.GenerateAssembly(XmlMapping[] xmlMappings, Type[] types, String defaultNamespace, Evidence evidence, XmlSerializerCompilerParameters parameters, Assembly assembly, Hashtable assemblies)
+   at System.Xml.Serialization.TempAssembly..ctor(XmlMapping[] xmlMappings, Type[] types, String defaultNamespace, String location, Evidence evidence)
+   at System.Xml.Serialization.XmlSerializer.FromMappings(XmlMapping[] mappings, Type type)
+   at System.Web.Services.Protocols.XmlReturn.GetInitializers(LogicalMethodInfo[] methodInfos)
+   at System.Web.Services.Protocols.XmlReturnWriter.GetInitializers(LogicalMethodInfo[] methodInfos)
+   at System.Web.Services.Protocols.MimeFormatter.GetInitializers(Type type, LogicalMethodInfo[] methodInfos)
+   at System.Web.Services.Protocols.HttpServerType..ctor(Type type)
+   at System.Web.Services.Protocols.HttpServerProtocol.Initialize()
+   at System.Web.Services.Protocols.ServerProtocolFactory.Create(Type type, HttpContext context, HttpRequest request, HttpResponse response, Boolean&amp; abortProcessing)
+</pre>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, July 29, 2011</h2><p>This is because CSLA objects aren&#39;t serializable using the XmlSerializer or DCS:</p>
+<p><a href="http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx">http://www.lhotka.net/cslanet/faq/XmlServicesFaq.ashx</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

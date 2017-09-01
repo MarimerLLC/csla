@@ -1,0 +1,131 @@
+<html><header><title>CSLA authorization problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA authorization problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10675.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Direvius posted on Monday, September 12, 2011</h2><p>Hello all!</p>
+<p>We have a WCF server based on CSLA running on IIS and a Silverlight client for it. The client has to authenticate itself using Windows (NTLM/Negotiate) authorization procedure. I need a simple WCF client for testing purposes so I wrote one.</p>
+<p>My client is able to authenticate on IIS with provided credentials but I have an exception from CSLA framework:</p>
+<p>&quot;Attempted to perform an unauthorized operation.&quot;</p>
+<p>...</p>
+<p>
+<p>&nbsp; &nbsp;at System.Security.Principal.Win32.LsaOpenPolicy(String systemName, PolicyRights rights)&amp;#xD;</p>
+<p>&nbsp; &nbsp;at System.Security.Principal.SecurityIdentifier.TranslateToNTAccounts(IdentityReferenceCollection sourceSids, Boolean&amp;amp; someFailed)&amp;#xD;</p>
+<p>&nbsp; &nbsp;at System.Security.Principal.SecurityIdentifier.Translate(IdentityReferenceCollection sourceSids, Type targetType, Boolean forceSuccess)&amp;#xD;</p>
+<p>&nbsp; &nbsp;at System.Security.Principal.SecurityIdentifier.Translate(Type targetType)&amp;#xD;</p>
+<p>&nbsp; &nbsp;at Csla.Silverlight.Security.WindowsIdentity.PopulateWindowsIdentity()&amp;#xD;</p>
+<p>&nbsp; &nbsp;at HCFB.UFO.Infrastructure.UfoWindowsIdentity.DataPortal_Fetch()&amp;#xD;</p>
+<p>&nbsp; &nbsp;at lambda_method(Closure , Object , Object[] )&amp;#xD;</p>
+<p>&nbsp; &nbsp;at Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters)</p>
+<p>...</p>
+<p>I also tried service invocation using SOAP UI and it works fine. The request bodies are the same when I use SOAP UI and .NET client. All that differ is the NTLM headers of http message:</p>
+<h3>.NET Client (does NOT work):</h3>
+</p>
+<p>
+<p>-[NTLM Type1: Negotiation]------------------------------</p>
+<p>Provider: NTLMSSP</p>
+<p>Type: 1</p>
+<p>OS Version: 6.1:7601</p>
+<p>Flags:<span>	</span>0xe2188297</p>
+<p><span>	</span>Unicode supported in security buffer.</p>
+<p><span>	</span>OEM strings supported in security buffer.</p>
+<p><span>	</span>Request server&#39;s authentication realm included in Type2 reply.</p>
+<p><span>	</span>Sign (integrity)</p>
+<p><span>	</span>NTLM authentication.</p>
+<p><span>	</span>Negotiate Always Sign.</p>
+<p><span>	</span>Negotiate NTLM2 Key.</p>
+<p><span>	</span>Supports 56-bit encryption.</p>
+<p><span>	</span>Supports 128-bit encryption.</p>
+<p><span>	</span>Client will provide master key in Type 3 Session Key field.</p>
+<p>Domain_Offset: 0; Domain_Length: 0; Domain_Length2: 0</p>
+<p>Host_Offset: 0; Host_Length: 0; Host_Length2: 0</p>
+<p>Host:&nbsp;</p>
+<p>Domain:&nbsp;</p>
+<p>------------------------------------</p>
+<p>-[NTLM Type3: Authentication]------------------------------</p>
+<p>Provider: NTLMSSP</p>
+<p>Type: 3</p>
+<p>OS Version: 6.1:7601</p>
+<p>Flags:<span>	</span>0xe2988215</p>
+<p><span>	</span>Unicode supported in security buffer.</p>
+<p><span>	</span>Request server&#39;s authentication realm included in Type2 reply.</p>
+<p><span>	</span>Sign (integrity)</p>
+<p>&nbsp;</p>
+<p><span>	</span>NTLM authentication.</p>
+<p><span>	</span>Negotiate Always Sign.</p>
+<p><span>	</span>Negotiate NTLM2 Key.</p>
+<p><span>	</span>Target Information block provided for use in calculation of the NTLMv2 response.</p>
+<p><span>	</span>Supports 56-bit encryption.</p>
+<p><span>	</span>Supports 128-bit encryption.</p>
+<p><span>	</span>Client will provide master key in Type 3 Session Key field.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>lmresp_Offset: 136; lmresp_Length: 24; lmresp_Length2: 24</p>
+<p>ntresp_Offset: 160; ntresp_Length: 370; ntresp_Length2: 370</p>
+<p>Domain_Offset: 88; Domain_Length: 6; Domain_Length2: 6</p>
+<p>User_Offset: 94; User_Length: 16; User_Length2: 16</p>
+<p>Host_Offset: 110; Host_Length: 26; Host_Length2: 26</p>
+<p>msg_len: 530</p>
+<p>Domain: std</p>
+<p>User: VBazarov</p>
+<p>Host: DIREVIUS-DELL</p>
+<p>lm_resp: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00&nbsp;</p>
+<p>nt_resp: 87 71 9D 9C 6A CD 4B 20 8C 5F 63 1D C6 A8 9B 8B 01 01 00 00 00 00 00 00 8A 52 CB ED 52 71 CC 01 BE 49 32 D2 68 B5 FD FA 00 00 00 00 02 00 06 00 53 00 54 00 44 00 01 00 0E 00 4F 00 53 00 2D 00 30 00 31 00 37 00 31 00 04 00 22 00 73 00 74 00 64 00 2E 00 68 00 6F 00 6D 00 65 00 63 00 72 00 65 00 64 00 69 00 74 00 2E 00 72 00 75 00 03 00 32 00 4F 00 53 00 2D 00 30 00 31 00 37 00 31 00 2E 00 73 00 74 00 64 00 2E 00 68 00 6F 00 6D 00 65 00 63 00 72 00 65 00 64 00 69 00 74 00 2E 00 72 00 75 00 05 00 22 00 73 00 74 00 64 00 2E 00 68 00 6F 00 6D 00 65 00 63 00 72 00 65 00 64 00 69 00 74 00 2E 00 72 00 75 00 07 00 08 00 8A 52 CB ED 52 71 CC 01 06 00 04 00 02 00 00 00 08 00 30 00 30 00 00 00 00 00 00 00 01 00 00 00 00 20 00 00 10 21 18 D2 B5 89 8D 69 0F 02 80 E8 C1 48 B8 4C EC 8C 72 7F 73 3C 2A F6 5F A6 C5 8E 5A 7A B7 64 0A 00 10 00 BA A3 F8 63 17 5A 5D B3 6D E3 D8 6A 14 60 84 F4 09 00 3C 00 68 00 6F 00 73 00 74 00 2F 00 4F 00 53 00 2D 00 30 00 31 00 37 00 31 00 2E 00 73 00 74 00 64 00 2E 00 68 00 6F 00 6D 00 65 00 63 00 72 00 65 00 64 00 69 00 74 00 2E 00 72 00 75 00 00 00 00 00 00 00 00 00 00 00 00 00&nbsp;</p>
+<p>------------------------------------</p>
+<h3>SOAP UI (DOES work):</h3>
+<div>
+<div>-[NTLM Type1: Negotiation]------------------------------</div>
+<div>Provider: NTLMSSP</div>
+<div>Type: 1</div>
+<div>OS Version: 79.83:12333</div>
+<div>Flags:<span>	</span>0x5206</div>
+<div><span>	</span>OEM strings supported in security buffer.</div>
+<div><span>	</span>Request server&#39;s authentication realm included in Type2 reply.</div>
+<div><span>	</span>NTLM authentication.</div>
+<div><span>	</span>Client workstation domain provided. &nbsp;Server can determine if the client eligible for local authentication.</div>
+<div><span>	</span>Server and client are same machine. Client may use local credentials rather than calculating challenge-response.</div>
+<div><span>	</span></div>
+<div><span>	</span></div>
+<div><span>	</span>Domain_Offset: 57; Domain_Length: 3; Domain_Length2: 3</div>
+<div>Host_Offset: 32; Host_Length: 25; Host_Length2: 25</div>
+<div>Host: OS-0171.STD.HOMECREDIT.RU</div>
+<div>Domain: STD</div>
+<div>------------------------------------</div>
+<div>-[NTLM Type3: Authentication]------------------------------</div>
+<div>Provider: NTLMSSP</div>
+<div>Type: 3</div>
+<div>OS Version: 83.84:22084</div>
+<div>Flags:<span>	</span>0x5206</div>
+<div><span>	</span>OEM strings supported in security buffer.</div>
+<div><span>	</span>Request server&#39;s authentication realm included in Type2 reply.</div>
+<div><span>	</span>NTLM authentication.</div>
+<div><span>	</span>Client workstation domain provided. &nbsp;Server can determine if the client eligible for local authentication.</div>
+<div><span>	</span>Server and client are same machine. Client may use local credentials rather than calculating challenge-response.</div>
+<div><span>	</span></div>
+<div>lmresp_Offset: 100; lmresp_Length: 24; lmresp_Length2: 24</div>
+<div>ntresp_Offset: 124; ntresp_Length: 0; ntresp_Length2: 0</div>
+<div>Domain_Offset: 64; Domain_Length: 3; Domain_Length2: 3</div>
+<div>User_Offset: 67; User_Length: 8; User_Length2: 8</div>
+<div>Host_Offset: 75; Host_Length: 25; Host_Length2: 25</div>
+<div>msg_len: 124</div>
+<div>Domain: 呓�</div>
+<div>User: 䉖婁剁噏</div>
+<div></div>
+<div>Host: 协〭㜱⸱呓⹄佈䕍剃䑅呉刮�</div>
+<div>lm_resp: 2B BF 43 D1 A9 B9 87 77 60 AA B5 AE 02 CA 39 BE 2E 17 6E C8 9B F9 72 8E&nbsp;</div>
+<div>nt_resp: empty</div>
+<div>------------------------------------</div>
+<h3>The code of my client:</h3>
+<div>
+<div><span>			</span>ServicePointManager.ServerCertificateValidationCallback =</div>
+<div><span>				</span>new RemoteCertificateValidationCallback((o, cert, chain, error) =&gt; true);</div>
+<div><span>			</span>WcfPortalClient client = new WcfPortalClient();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; client.ClientCredentials.Windows.ClientCredential = new NetworkCredential(&quot;user&quot;, &quot;password&quot;, &quot;std&quot;);</div>
+<div><span>			</span>client.ClientCredentials.ServiceCertificate.Authentication.CertificateValidationMode = System.ServiceModel.Security.X509CertificateValidationMode.None;</div>
+<div><span>			</span>Csla.Server.Hosts.Silverlight.CriteriaRequest critRequest = new Csla.Server.Hosts.Silverlight.CriteriaRequest();</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; critRequest.ClientContext = critRequest.GlobalContext = Convert.FromBase64String(&quot;QBhBcnJheU9mU2VyaWFsaXphdGlvbkluZm8IQW...&quot;);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; critRequest.Principal = Convert.FromBase64String(&quot;QBhBcnJheU9mU2VyaWFsaXphdGlvbkluZm8IQW...&quot;);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; critRequest.TypeName = &quot;HCFB.UFO.Infrastructure.UfoWindowsIdentity, HCFB.UFO.Business, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&quot;;</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.Server.Hosts.Silverlight.WcfResponse response = client.Fetch(critRequest);</div>
+<div>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; logger.Error(response.ErrorData.Message);</div>
+</div>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, September 12, 2011</h2><p>You need to override Csla.DataPortalClient.WcfProxy to pass client credentials through WCF to the server. The default proxy assumes a pretty simple WCF connection to the data portal endpoint on the server.</p>
+<p>This is discussed in some depth in the <em>Using CSLA 4: Data Portal Configuration</em> ebook available from <a href="http://store.lhotka.net">http://store.lhotka.net</a>.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

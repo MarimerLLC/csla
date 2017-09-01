@@ -1,0 +1,13 @@
+<html><header><title>How to use Smart Date</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use Smart Date</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10989.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, December 15, 2011</h2><p>Hi all,</p>
+<p>&nbsp;</p>
+<p>I read this thread</p>
+<p>http://forums.lhotka.net/forums/p/7688/43764.aspx#43764</p>
+<p>currently, I have a field in the database with a Datetime type, and i want to load into a property on my Business Object use SmartDate as Property metadata and string as a expose property to view from UI.</p>
+<p>my question here is : How do i can load technically&nbsp; a datetime type into a my date property ( inside BO )</p>
+<p>public static readonly PropertyInfo&lt;SmartDate&gt; DateProperty =<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;SmartDate&gt;(t =&gt; t.Date, null, new SmartDate { FormatString=&quot;dd-MM-yyyy&quot; });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string Date<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetPropertyConvert&lt;SmartDate, string&gt;(DateProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private set { LoadPropertyConvert&lt;SmartDate, string&gt;(DateProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Am I must do a manual convert from datetime into string as my property expose ??</p>
+<p>any example or suggestion will help me a lot</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 16, 2011</h2><p>I discuss this in the ebook series.</p>
+<p>You can directly call ReadProperty and LoadProperty, and you can create a private property of type SmartDate that makes those calls to abstract their use somewhat. This private property would not declare another PropertyInfo metafield.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

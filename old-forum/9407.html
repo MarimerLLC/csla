@@ -1,0 +1,8 @@
+<html><header><title>???  Create User -- CSLA Identity is Read Only !!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>???  Create User -- CSLA Identity is Read Only !!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9407.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 posted on Thursday, August 19, 2010</h2><p>What&nbsp;are we doing&nbsp;for encapsulating Insert and Update methods for users&nbsp; ??</p>
+<p>Create a User BO ???&nbsp; I&#39;m Fetching login info in the Data_Portal_Fetch of my CustomIdentiy ....</p>
+<p>I&#39;ve searched pretty thoroughly in&nbsp;the ProjectTracker samples ... and didn&#39;t find any create user examples.</p>
+<p>Not really interested in integrating the Windows Membership provider .. but even if I do .... I do not want to lose my CSLA Dal.</p>
+<p>Steve</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, August 19, 2010</h2><p>You should create separate BOs for insert/update on user entity. </p>
+<p>An identity object such as CustomIdentity contains authenticated information for current user with a minimum of username and a list of&nbsp; roles. This object&nbsp; must not be allowed to be modified, ie is ReadOnly after authentication. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

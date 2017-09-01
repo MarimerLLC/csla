@@ -1,0 +1,60 @@
+<html><header><title>Continuing Problem with Error in Project Tracker Demo Code</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Continuing Problem with Error in Project Tracker Demo Code</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2899.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>av_harris posted on Thursday, May 17, 2007</h2><P>I was monitoring the thread <SPAN><A HREF="/forums/thread/13731.aspx"><STRONG>http://forums.lhotka.net/forums/thread/13731.aspx</STRONG></A> for a resolution and it seems to have been abandoned. </SPAN></P>
+<P><SPAN>I've tried following the instructions pertaining to setup for the DataPortal but there were many options and it is possible that I've confused my IIS installation. </SPAN></P>
+<P><SPAN>Does anyone know how to resolve the stoppage at:</SPAN></P><SPAN><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> DataPortalException( _<BR></FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2>"DataPortal.Fetch {0} ({1})"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>My</FONT><FONT size=2>.Resources.Failed, ex.InnerException.InnerException), _<BR>ex.InnerException, result.ReturnObject)</FONT></P>
+<P><FONT size=2>in the DataPortal.vb assembly?</P></FONT></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Friday, May 18, 2007</h2><P><FONT face=Tahoma>If I recall correctly, the PTWeb project is configured to use .Net Remoting by default.&nbsp; If you just want to run it on your local machine, you need to turn this off.&nbsp; In the web.config file of PTWeb, comment out these two keys in &lt;appsettings&gt;</FONT></P><FONT color=#a31515>
+<P><FONT face=Tahoma>add</FONT></FONT><FONT face=Tahoma><FONT color=#0000ff> </FONT><FONT color=#ff0000>key</FONT><FONT color=#0000ff>=</FONT>"<FONT color=#0000ff>CslaDataPortalProxy</FONT>"</FONT></P><FONT color=#a31515>
+<P><FONT face=Tahoma>add</FONT></FONT><FONT face=Tahoma><FONT color=#0000ff> </FONT><FONT color=#ff0000>key</FONT><FONT color=#0000ff>=</FONT>"<FONT color=#0000ff>CslaDataPortalUrl</FONT>"</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2><P>It is actually configured to use EnterpriseServices by default. The reason I chose that is to minimize the configuration effort required to get PTWeb running to start with.</P>
+<P>If you choose local, then you need to put the database files somwhere that they can be reached by ASP.NET and change the connection strings. I didn't want to do that, because then I couldn't share those db files with the other UI projects.</P>
+<P>If you choose remoting or web services, there's extra security configuration required to get IIS/ASP.NET to allow the web app to call the data portal server.</P>
+<P>The easiest channel to configure for this purpose, is the EnterpriseServices channel, because all you need to do is run regsvcs to register one assembly and set one path in a properties dialog to point to the right folder. No complex db or security setup required.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>av_harris replied on Friday, May 18, 2007</h2>Thanks for pointing me in the right direction. Since I will be developing a web app, I decided to go with the WebServices. After a little research, I got the connection string to issue the correct validation against the user I created in SQL Server. The demo is now working fine and I hope to learn from a working model as I complete reading the book.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 18, 2007</h2>
+
+
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Though that is fine (to use web services), I always recommend
+that people use as few physical tiers as possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What this means in practice, is that you should, if at all
+possible, use the data portal in local mode. Your performance will be best that
+way, and your complexity reduced.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In a web environment, the only real reason for using a remote
+data portal at all is if you need to put a second firewall between your web
+server and app server for increased security. If that&#8217;s your setting,
+great. But if not, I strongly recommend the use of the local configuration
+(2-tier) for web apps.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+
+<BR>
+
+<P><FONT SIZE=2>No virus found in this outgoing message.<BR>
+Checked by AVG Free Edition.<BR>
+Version: 7.5.467 / Virus Database: 269.7.3/809 - Release Date: 5/17/2007 5:18 PM<BR>
+</FONT> </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>av_harris replied on Friday, May 18, 2007</h2><P>Alll right. I'd like to try your preferred method because I doubt we will have the 2-firewall scenario. </P>
+<P>Which key do I activate in web.config? And, when you say local, does this refer to the db too? I moved everything from the mdf file into SQL Server 2005 because this is what my development environment will be. </P>
+<P>I've got the book sitting here (VB version) so if you want to point me to the page I need to read, that's fine.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

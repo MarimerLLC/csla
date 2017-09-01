@@ -1,0 +1,27 @@
+<html><header><title>Error in method InitializeBusinessRules in Csla.Core.BusinessBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error in method InitializeBusinessRules in Csla.Core.BusinessBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11511.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>eduardo.micromust posted on Tuesday, July 31, 2012</h2><p>InitializeBusinessRules is marking the rules as Initialized before it is really initialized.</p>
+<p>If a second thread reaches this method while the first thread is still loading the rules, you&acute;ll get a error. To correct this error is necessary to put the line &quot;rules.Initialized = true;&quot; after &quot;AddBusinessRules();&quot;:</p>
+<p>&nbsp; &nbsp; private void InitializeBusinessRules()</p>
+<p>
+<p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; var rules = BusinessRuleManager.GetRulesForType(this.GetType());</p>
+<p>&nbsp; &nbsp; &nbsp; if (!rules.Initialized)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; lock (rules)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!rules.Initialized)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<b><span style="text-decoration:line-through;">rules.Initialized = true;</span></b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; AddBusinessRules();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; BusinessRuleManager.CleanupRulesForType(this.GetType());</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw; &nbsp;// and rethrow exception</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <b>rules.Initialized = true;</b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 31, 2012</h2><p>Thank you for finding this issue, I&#39;ll fix it in 4.3 and 4.5.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

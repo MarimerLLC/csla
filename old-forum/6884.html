@@ -1,0 +1,286 @@
+<html><header><title>Parent Child Grandchild Issue.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent Child Grandchild Issue.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6884.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams posted on Thursday, April 30, 2009</h2><P class=MsoNormal><SPAN>I have a parent object that has a collection of children. At times some of these children will be an existing item and some may be new. What would be the best way to build this?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Example. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I have a trip that has trip specific properties with a collection of stops. Each stop has a child object of destination properties and the destination with an address child. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>A trip can be either new or existing<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>A stop can be either new or existing<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>A stop can have either a new or existing or both destination and child address.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So a stop is the parent of a destination and a destination is a parent of address.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I need to be able to crate a new trip with new stops and those stops may have an existing destination/address or may have a new destination/address OR a combination of both.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Example: <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>StopListing has 2 stops<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>1 new stop with new destination/address<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>2. new stop with existing destination/address (pulled form db)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If the trip object (which is the overall parent) was created as new then it will try and do an insert for all child objects; blowing up on the second stop record when it tries to insert a duplicate destination/address record.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I would like the stop record to have the destination / address object within it.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Any ideas?<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>gwilliams:</strong></div><div>
+<P class=MsoNormal><SPAN>If the trip object (which is the overall parent) was created as new then it will try and do an insert for all child objects; blowing up on the second stop record when it tries to insert a duplicate destination/address record.<o:p></o:p></SPAN></P>
+<P></div></BLOCKQUOTE></P>
+<P>That should not be true.</P>
+<P>Every individual object is responsible for its own IsNew property, and the data portal (in 3.6 with the child data portal) will route the ChildUpdate() call to Child_Insert(), Child_Update() or Child_DeleteSelf() as appropriate based on the IsNew and IsDeleted property values <EM>of the child</EM>.</P>
+<P>In other words, it is totally acceptable to add an existing child to a new root - assuming you have some scheme by which you are retrieving the existing child.</P>
+<P>And you can do <EM>that</EM> by having the child class include a factory method that invokes the data portal - temporarily treating this as a root object, but only for the Fetch operation. The only trick to doing this, is that your DataPortal_Fetch() method must make sure to call MarkAsChild() because that won't happen automatically.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Friday, May 01, 2009</h2><P class=MsoNormal><SPAN>I had tried, however when saving the object it still tries to run the child as an insert not update or nothing if the child has not changed.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Object hierachie<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Trip<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-- StopListing<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-------Stop<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Facility<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp; </SPAN>-- Address<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>From my parent object (Stop)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>PropertyInfo</SPAN>&lt;<SPAN>Facility</SPAN>&gt; FacilityProperty = RegisterProperty&lt;<SPAN>Facility</SPAN>&gt;(<SPAN>new</SPAN> <SPAN>PropertyInfo</SPAN>&lt;<SPAN>Facility</SPAN>&gt;(<SPAN>"Facility"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>public</SPAN> <SPAN>Facility</SPAN> Facility<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (!(FieldManager.FieldExists(FacilityProperty)))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty(FacilityProperty, <SPAN>Facility</SPAN>.NewFacility());<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> GetProperty(FacilityProperty);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>How I load the existing data.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Facility</SPAN><SPAN> fc = _stop.Facility.LoadExistingFacility(<SPAN>new</SPAN> <SPAN>Guid</SPAN>(<SPAN>"98446a25-8546-4911-a9d9-263cf2545820"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Facility load:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>Facility</SPAN> LoadExistingFacility(<SPAN>Guid</SPAN> ID)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>DataPortal</SPAN>.Fetch&lt;<SPAN>Facility</SPAN>&gt;(ID);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> DataPortal_Fetch(<SPAN>Guid</SPAN> ID)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>MarkAsChild();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>using</SPAN> (<SPAN>FacilityDAL</SPAN> dal = <SPAN>new</SPAN> <SPAN>FacilityDAL</SPAN>())<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>using</SPAN> (<SPAN>SafeDataReader</SPAN> data = dal.GetFacilityInfo(ID))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>data.Read();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty&lt;<SPAN>Guid</SPAN>&gt;(IdProperty, data.GetGuid(<SPAN>"Facility_ID"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty&lt;<SPAN>Guid</SPAN>&gt;(ParentfacilityIdProperty, data.GetGuid(<SPAN>"ParentFacility_ID"</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;</SPAN>--load other properties—<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>At this point fc. and its child address is pop populated.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Debugging is showing that the IsNew = false.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Trip.Save() is then called and Trip data is inserted, Stop data is inserted, and the Facility data is hitting the insert not the update Or nothing if the object is not dirty.</SPAN><SPAN><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Friday, May 01, 2009</h2>Check if after your fetch your child items that are trying to be inserted are marked as new.<br /><br />They shouldn't be after getting fetched, that is probably why are they going in the insert when saving.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The thing is, you want to load a pre-existing child into a new
+root. That is not a directly supported scenario &#8211; which is to say that
+you&#8217;ll have to do just a little extra work yourself because CSLA won&#8217;t
+do it for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public class MyChild<br>
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; internal static MyChild NewChild()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; return DataPortal.CreateChild&lt;MyChild&gt;();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; internal static MyChild GetChild(int id)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;MyChild&gt;(new
+SingleCriteria&lt;MyChild, int&gt;(id));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private void Child_Create()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; // set defaults or whatever<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; private void DataPortal_Fetch(SingleCriteria(MyChild,
+int&gt; criteria)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; MarkAsChild();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; // get data and load object&#8217;s fields<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<br>
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Notice how this is a &#8220;hybrid&#8221; of sorts, in that
+there&#8217;s the normal child create (and insert/update/delete that I didn&#8217;t
+show). And there&#8217;s a root fetch implementation, with the one twist that
+MarkAsChild() is called explicitly because otherwise the data portal will
+continue to treat this like a root object, and you don&#8217;t want that.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Friday, May 01, 2009</h2><P class=MsoNormal><SPAN>After reading chapter 9 again I found the error in my implementation. I was expecting the parent object to be smart enough to know what I wanted regarding the child (new or existing)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>A slight modification to the parent and the implementation of the Dataportal_Fetch in the child&nbsp;yielded the proper results.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Parent:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>Facility</SPAN> Facility<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (!(FieldManager.FieldExists(FacilityProperty)))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (<SPAN>this</SPAN>.IsNewFacility)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{ <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty(FacilityProperty, <SPAN>Facility</SPAN>.NewFacility());<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>else<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>LoadProperty(FacilityProperty, <SPAN>Facility</SPAN>.LoadExistingFacility(<SPAN>this</SPAN>.FacilityId));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> GetProperty(FacilityProperty);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>I will always know before adding a new stop if i have an existing facility/address child. all i need to do is set the IsNewFacility flag and make sure i have the stop.facilityID property set. </SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>the facility is selected from an external list. if a facility does not exist then uses can create a new one.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>This is the first real implemenation of CSLA that i have done. Trying to show the powers to be that this is the best framework to use for this project. This app will have a windows, web, system to system (telephony), and possibly mobile interfaces.</SPAN></P>
+<P class=MsoNormal><SPAN>trying to make sure i don't hack my way threw the creation of the objects.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>thanks for all the help.</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Wednesday, May 06, 2009</h2><P class=MsoNormal><SPAN>One last question on this matter… would it be bad design practices to have one object that can be either a child or a root?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So my factory methods would be as follows:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>Facility</SPAN> NewFacilityBase()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>return</SPAN><SPAN> <SPAN>DataPortal</SPAN>.Create&lt;<SPAN>Facility</SPAN>&gt;();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>internal</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>Facility</SPAN> NewFacility()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>return</SPAN><SPAN> <SPAN>DataPortal</SPAN>.CreateChild&lt;<SPAN>Facility</SPAN>&gt;();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>Facility</SPAN> GetFacilityBase(<SPAN>Guid</SPAN> id)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>return</SPAN><SPAN> <SPAN>DataPortal</SPAN>.Fetch&lt;<SPAN>Facility</SPAN>&gt;(<SPAN>new</SPAN> <SPAN>SingleCriteria</SPAN>&lt;<SPAN>FacilityBase</SPAN>, <SPAN>Guid</SPAN>&gt;(id));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>internal</SPAN><SPAN> <SPAN>static</SPAN> <SPAN>Facility</SPAN> GetFacility(<SPAN>SafeDataReader</SPAN> dr)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>return</SPAN><SPAN> <SPAN>DataPortal</SPAN>.FetchChild&lt;<SPAN>Facility</SPAN>&gt;(dr);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}</SPAN><SPAN><o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> would it be bad design practices to have one object
+that can be either a child or a root?<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This is called a Switchable object and is a supported
+stereotype.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>However, <i>usually</i> a switchable object is an indication
+of a flawed object model, so be careful.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Switchable objects are only acceptable if their
+responsibility is <i>exactly the same</i> regardless of whether they are acting
+as a root or child. In other words, as long as you have no code like<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>if (IsChild)<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp; // do child stuff<o:p></o:p></p>
+
+<p class=MsoNormal>else<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp; //do root stuff<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Then you are in pretty good shape. Obviously the data access
+code will be somewhat different &#8211; but that&#8217;s more in the DAL.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The key is to ensure that your <i>business logic</i> is not
+different &#8211; then switchable is fine.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gwilliams replied on Thursday, May 07, 2009</h2><P class=MsoNormal>Thanks, this object does meet the "Switchable" object definition. With this being the first production implementation use the CSLA frame work i am possibly being over cautious with the implementation. I don't want to bastardize the implementation.<SPAN><o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

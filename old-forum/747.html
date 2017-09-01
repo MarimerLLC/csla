@@ -1,0 +1,15 @@
+<html><header><title>Question about Transaction Handling</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about Transaction Handling</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/747.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jason posted on Thursday, July 27, 2006</h2><P>I am just starting with CSLA.Net 2.0 and have a basic business object built off of the EditableRoot template.&nbsp; I'm using System.Transactions to handle any transactions.&nbsp; I abstracted some of the data access code in DataPortal_Fetch into a separate&nbsp;project I am using to handle interaction with my database.&nbsp; The data access code doesn't really do anything&nbsp;different than what is in the CSLA templates other than it is in a different project.&nbsp; When my UI fetches a record using the standard CSLA template, everything works as expected.&nbsp; When I change my business object to fetch from my new data access project, it begins a transaction.&nbsp; I only noticed b/c implicit transactions were turned off on my DB so an exception was thrown.&nbsp; I guess I don't understand why a transaction is enlisted in the second scenario, but not the first.</P>
+<P>Here is my call to my data acess routines:</P><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr = </FONT><FONT color=#008080 size=2>CslaSqlHelper</FONT><FONT size=2>.ExecuteReader(</FONT><FONT color=#008080 size=2>Config</FONT><FONT size=2>.Database.ConnectionString,</FONT><FONT color=#800000 size=2>"getMyData"</FONT><FONT size=2>,</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2>[] { criteria.Id }))</P>
+<P>{</P>
+<P>FetchObject(dr);</P>
+<P>ValidationRules.CheckRules();</P>
+<P></FONT><FONT color=#008000 size=2>//load child object(s)</P></FONT><FONT size=2>
+<P>//FetchChildren(dr);</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>Any ideas?</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

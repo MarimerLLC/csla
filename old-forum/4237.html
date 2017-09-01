@@ -1,0 +1,8 @@
+<html><header><title>InvalidatingCache in Namevalue Lists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>InvalidatingCache in Namevalue Lists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4237.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>IanK posted on Friday, January 25, 2008</h2><P>Hi </P>
+<P>Is it possible to use reflection for example to identify all the namevalue lists in a WinForms application and the invoke the invalidateCache method on all these lists.&nbsp; If not has anyone any quick alternatives for accomplishing this ?</P>
+<P>&nbsp;</P>
+<P>Regards,</P>
+<P>Iank</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, January 25, 2008</h2><P>What if you add a custom attribute in a base NameValue class which all NameValue classes would extend and then as you sai use reflection to invalidate them?</P>
+<P>Otherwise you can just create a static list (or something like that) and manually add all NVLs and then just loop through it to invalidate each one...</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

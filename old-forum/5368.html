@@ -1,0 +1,572 @@
+<html><header><title>CSLA Light - Error when calling BeginSave &quot;The remote server returned an unexpected response: (404) Not Found.&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light - Error when calling BeginSave &quot;The remote server returned an unexpected response: (404) Not Found.&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5368.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 posted on Tuesday, September 09, 2008</h2><P>Hello All!</P>
+<P>I am currently developing a CSLA Light application and&nbsp;am struggling getting my object to save, or really even hitting my server side data portal code as a result to calls to BeginSave on the silverlight client. When I call BeginSave I get a protocolexception "The remote server returned an unexpected response: (404) Not Found.". What's weird though is that I am not having any problems with calls to BeginCreate or BeginFetch. What could be different? Any ideas anyone? I just upgraded this past Friday to the latest code release Rocky mentioned on his blog. Thanks in advance for the help</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 09, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sometimes I have seen .NET exceptions resulting in 404.&nbsp; Did
+you try to put a breakpoint on the server side and trace it through to see if
+your calls are getting to the server and if so are there any exceptions thrown?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 09, 2008 1:08 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA Light - Error when calling BeginSave &quot;The
+remote server returned an unexpected response: (404) Not Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello All!<o:p></o:p></p>
+
+<p>I am currently developing a CSLA Light application and&nbsp;am struggling
+getting my object to save, or really even hitting my server side data portal
+code as a result to calls to BeginSave on the silverlight client. When I call
+BeginSave I get a protocolexception &quot;The remote server returned an
+unexpected response: (404) Not Found.&quot;. What's weird though is that I am
+not having any problems with calls to BeginCreate or BeginFetch. What could be
+different? Any ideas anyone? I just upgraded this past Friday to the latest
+code release Rocky mentioned on his blog. Thanks in advance for the help<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Tuesday, September 09, 2008</h2><P>My God man you are quick! Isn't it odd that CSLA being a free product gets better support than&nbsp;some of these third party vendors! WOW</P>
+<P>Anyway, I placed breakpoints on my server side DataPortal_Update/Insert methods and they never hit. I also placed breakpoints on method Csla.Server.Hosts.Silverlight.WcfPortal.Update but it also never hits. Is this the right place to place the server side breakpoint?<FONT size=2></P>
+<P>Thanks for all your help!</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 09, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal>Csla.Server.Hosts.Silverlight.WcfPortal.Update is the first
+correct breakpoint that is hit on the server.&nbsp; If nothing is messing with
+proxy settings during update process, this should work.&nbsp; You are not
+getting a warning on that breakpoint &#8220;no symbols have been loaded&#8230;&#8221;,
+do you?&nbsp; It is really puzzling that fetch works without problems.&nbsp;
+You can try to also increase quotas in your .CLientConfig to see if that makes
+any difference.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 09, 2008 1:40 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA Light - Error when calling BeginSave
+&quot;The remote server returned an unexpected response: (404) Not Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>My God man you are quick! Isn't it odd that CSLA being a free product gets
+better support than&nbsp;some of these third party vendors! WOW<o:p></o:p></p>
+
+<p>Anyway, I placed breakpoints on my server side DataPortal_Update/Insert
+methods and they never hit. I also placed breakpoints on method
+Csla.Server.Hosts.Silverlight.WcfPortal.Update but it also never hits. Is this
+the right place to place the server side breakpoint?<span><o:p></o:p></span></p>
+
+<p><span>Thanks for all your help!<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Tuesday, September 09, 2008</h2>No I don't get the warning that "no symbols have been loaded..". Actually I am able to break in the Fetch and Create methods just fine. It's just the Update method that's whack I will try your suggestions. Thanks</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Tuesday, September 09, 2008</h2>The error&nbsp;appears to happen only when saving my particular object. I say this because I created a dummy business object and it worked fine. However my particular object continues to bomb. One thing about this object is that it does all of its serialization manually via GetState, GetChildren, SetState, SetChildren, etc... However having said this I have no problem fetching the object, so going from the server to the client does not appear to be an issue. It's going from the client to the server where things go whack. For example, when going to the server from the client&nbsp;if I step over the GetChildren code such that none of child objects/collections are serialized then I am able to hit the server side code without issue. But if I let the GetChildren code run I never hit the server side code. Do you got any ideas???</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 09, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not really.&nbsp; This sounds pretty strange to me.&nbsp; If it
+was a serialization issues, you would have gotten a different error from
+formatter.&nbsp; Any chance you can comment the whole GetChildren out, then
+start un-commenting one line at a time to see what property is killing the
+process?&nbsp; You can also break at the server to see what size the request is
+to see if message size is an issue.&nbsp; If it is, you can increase the quotas
+at the server and the client to fix it.&nbsp; As a matter of cat, I would bump
+them to the max just to rule that out altogether.&nbsp; I think the limit is 2
+GB, but default is 64 K.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 09, 2008 5:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA Light - Error when calling
+BeginSave &quot;The remote server returned an unexpected response: (404) Not
+Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The error&nbsp;appears to happen only when saving my
+particular object. I say this because I created a dummy business object and it
+worked fine. However my particular object continues to bomb. One thing about
+this object is that it does all of its serialization manually via GetState,
+GetChildren, SetState, SetChildren, etc... However having said this I have no
+problem fetching the object, so going from the server to the client does not
+appear to be an issue. It's going from the client to the server where things go
+whack. For example, when going to the server from the client&nbsp;if I step
+over the GetChildren code such that none of child objects/collections are
+serialized then I am able to hit the server side code without issue. But if I
+let the GetChildren code run I never hit the server side code. Do you got any
+ideas???<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Wednesday, September 10, 2008</h2><P>Hi Sergey,</P>
+<P>I have a very simple sample application the reproduces the problem I am talking about. Would it be possible to email it to you somewhere? The sample consists of&nbsp;a single class that handles serialization. it has a child object of the same type as itself. if the child object is serialized in GetChildren the error occurs, otherwise not. i believe it has something to do with the number/order in which fields are serialized maybe??????? would anyone be able to assist? i am at a complete halt with this project. thanks very much!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2><font face="Tahoma">I am getting that particular problem too. <br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2>Fetch operation hits a breakpoint in at start of &nbsp;&nbsp; public WcfResponse Fetch(CriteriaRequest request)<br><br>but update operation does not get to start of &nbsp;&nbsp;&nbsp; public WcfResponse Update(UpdateRequest request)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In case of GA 30, the problem was the size of your object.&nbsp;
+I added the following reader quotas to binding configuration in web.config, and
+the error went away.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;bindings&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;basicHttpBinding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding
+name=&quot;BasicHttpBinding_IWcfPortal&quot;
+maxBufferSize=&quot;2147483647&quot;
+maxReceivedMessageSize=&quot;2147483647&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot;
+maxStringContentLength=&quot;2147483647&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/basicHttpBinding&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/bindings&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 1:42 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA Light - Error when calling BeginSave
+&quot;The remote server returned an unexpected response: (404) Not Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Fetch operation hits a breakpoint in at start of
+&nbsp;&nbsp; public WcfResponse Fetch(CriteriaRequest request)<br>
+<br>
+but update operation does not get to start of &nbsp;&nbsp;&nbsp; public
+WcfResponse Update(UpdateRequest request)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2><font face="Tahoma">Hi, thanks for that, unfortunately however the problem persists. It does appear to be a size problem though, but applying your settings doesn't remove the error. With &gt;= 297 rows returned i get the error, with &lt;= 296 I don't.</font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try to bump up the setting to the max &#8211; 2GB &#8211; 2147483647
+just to see if this works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 7:46 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA Light - Error when calling
+BeginSave &quot;The remote server returned an unexpected response: (404) Not
+Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi, thanks
+for that, unfortunately however the problem persists. It does appear to be a
+size problem though, but applying your settings doesn't remove the error. With
+&gt;= 297 rows returned i get the error, with &lt;= 296 I don't.</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2><font face="Tahoma">That was with size bumped right up to max<br><br><font size="2" face="Courier New">&lt;binding name="WcfPortalLargeBuffer" maxBufferSize="2147483647" maxReceivedMessageSize="2147483647"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxArrayLength="2147483647" maxBytesPerRead="2147483647" maxStringContentLength="2147483647"/&gt;<br>&lt;/binding&gt;</font><br><br>The error can also be reproduced by reducing the size used in </font><span>&lt;basicHttpBinding&gt;.&nbsp;</span><font face="Tahoma"> .</font> <br><br><font face="Tahoma">Set the rows returned to 296, so no 404 error.<br><br>Reduce size to 4100000, get 404 error<br><br><font size="2" face="Courier New">&lt;binding name="WcfPortalLargeBuffer" maxBufferSize="4100000" maxReceivedMessageSize="4100000"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxArrayLength="4100000" maxBytesPerRead="4100000" maxStringContentLength="4100000"/&gt;<br>&lt;/binding&gt;</font><br><br>Increase size to 4200000 and no error<br></font><br><font size="2" face="Courier New">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding name="WcfPortalLargeBuffer" maxBufferSize="4200000" maxReceivedMessageSize="4200000"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxArrayLength="4200000" maxBytesPerRead="4200000" maxStringContentLength="4200000"/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;</font><br><br><font face="Tahoma">UpdateRequest is 3136378 bytes long.</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think I am a bit confused, so I apologize in advance.&nbsp;
+Did it finally work for you with large quotas?&nbsp; Also, how wide are those
+rows?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 8:31 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA Light - Error when calling
+BeginSave &quot;The remote server returned an unexpected response: (404) Not
+Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>That was
+with size bumped right up to max<br>
+<br>
+</span><span>&lt;binding name=&quot;WcfPortalLargeBuffer&quot;
+maxBufferSize=&quot;2147483647&quot;
+maxReceivedMessageSize=&quot;2147483647&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxArrayLength=&quot;2147483647&quot; maxBytesPerRead=&quot;2147483647&quot;
+maxStringContentLength=&quot;2147483647&quot;/&gt;<br>
+&lt;/binding&gt;</span><span><br>
+<br>
+The error can also be reproduced by reducing the size used in </span>&lt;basicHttpBinding&gt;.&nbsp;<span> .</span> <br>
+<br>
+<span>Set the rows returned to 296,
+so no 404 error.<br>
+<br>
+Reduce size to 4100000, get 404 error<br>
+<br>
+</span><span>&lt;binding
+name=&quot;WcfPortalLargeBuffer&quot; maxBufferSize=&quot;4100000&quot;
+maxReceivedMessageSize=&quot;4100000&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas maxArrayLength=&quot;4100000&quot;
+maxBytesPerRead=&quot;4100000&quot;
+maxStringContentLength=&quot;4100000&quot;/&gt;<br>
+&lt;/binding&gt;</span><span><br>
+<br>
+Increase size to 4200000 and no error<br>
+</span><br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;binding name=&quot;WcfPortalLargeBuffer&quot;
+maxBufferSize=&quot;4200000&quot;
+maxReceivedMessageSize=&quot;4200000&quot;&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;readerQuotas
+maxArrayLength=&quot;4200000&quot; maxBytesPerRead=&quot;4200000&quot;
+maxStringContentLength=&quot;4200000&quot;/&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/binding&gt;</span><br>
+<br>
+<span>UpdateRequest is 3136378 bytes
+long.</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2><font face="Tahoma">Hi Sergey, apologies for being obtuse.<br><br>No it didn't work with large quotas. The rows are not particularly wide - 18 fields, ints, dates, bools, a decimal and a few strings. This is a basic example to try and establish our approach to grid editing. So the class is a basic Users business base list containing User child objects. Populate the grid, change a few rows, save back to server. <br><br>After trying the large quotas, 2G, and still getting the 404 error, I reduced the amount of data by one row, the maximum data I can update without getting a 404 error.<br><br>Then to see if the basicHttpBinding settings were having an effect, I reduced their values to a low number, which produced the 404 error.<br><br>Playing with the size of the </font><font face="Tahoma">basicHttpBindingsettings I found that 4200000 allowed the 296 rows to update while 4100000 produced the 404 error.<br><br>Is that clearer?<br><br><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2><font face="Tahoma">Hi Sergey<br><br>Was chatting to Paul here about the problem and the 4 meg boundry rang a bell for him - asp upload limit. Because of our single sign on work we are using asp compatibility mode with wcf. Anyway the fix is<br><br><font face="Courier New">&nbsp;&lt;system.web&gt;<br>&nbsp; &lt;!-- <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; This attribute is used to limit the size of uploads by rejecting any which exceed a certain limit. <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The limit refers to the total size of the HTTP upload in KB (approximately equal to the sum of all the files being upload). <br>&nbsp;&nbsp; You should set a sensible limit here to stop malicious visitors using up your bandwidth by uploading excessively large files.<br>&nbsp; --&gt;<br>&nbsp; &lt;httpRuntime maxRequestLength="1048576" executionTimeout="3600"/&gt;<br>&nbsp; &lt;!--&lt;globalization culture="en-AU" uiCulture="en-AU" requestEncoding="utf-8" responseEncoding="utf-8"/&gt;--&gt;<br>&nbsp; &lt;globalization culture="auto" uiCulture="auto" requestEncoding="utf-8" responseEncoding="utf-8"/&gt;</font><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2><font face="Tahoma">Edit web.config to include the above in the system.web section.<br><br>Thanks for your help.<br><br>Ashley<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I was just trying to make sure I follow the description.&nbsp; I
+think you need to adjust IIS settings.&nbsp; Here is the link with explanation:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://msdn.microsoft.com/en-us/library/e1f13641(VS.71).aspx">http://msdn.microsoft.com/en-us/library/e1f13641(VS.71).aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think you need to increase maxRequestLength element.&nbsp; The
+default is 4 MB (4096), which sounds like about the size you are dealing with.&nbsp;
+Try to bump it up to see if this is the issue &#8211; I do not guaranty this </span><span>J</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img border=0 width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Ash002
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 8:59 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA Light - Error when calling
+BeginSave &quot;The remote server returned an unexpected response: (404) Not
+Found.&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Hi Sergey,
+apologies for being obtuse.<br>
+<br>
+No it didn't work with large quotas. The rows are not particularly wide - 18
+fields, ints, dates, bools, a decimal and a few strings. This is a basic
+example to try and establish our approach to grid editing. So the class is a
+basic Users business base list containing User child objects. Populate the
+grid, change a few rows, save back to server. <br>
+<br>
+After trying the large quotas, 2G, and still getting the 404 error, I reduced
+the amount of data by one row, the maximum data I can update without getting a
+404 error.<br>
+<br>
+Then to see if the basicHttpBinding settings were having an effect, I reduced
+their values to a low number, which produced the 404 error.<br>
+<br>
+Playing with the size of the basicHttpBindingsettings I found that 4200000
+allowed the 296 rows to update while 4100000 produced the 404 error.<br>
+<br>
+Is that clearer?<br>
+<br>
+<br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ash002 replied on Tuesday, September 16, 2008</h2>yes that was the problem, thanks very much for your input.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

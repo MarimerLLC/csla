@@ -1,0 +1,846 @@
+<html><header><title>Silverlight MethodAccessException /w ObjectAuthorizationRules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight MethodAccessException /w ObjectAuthorizationRules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6367.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Friday, February 06, 2009</h2><P>If I have a blank method in my object I am getting a MethodAccessException from the BusinessBas.IsSavable( ).&nbsp; I have blank methods from using the templates to generate my objects a month ago.</P>
+<P><FONT size=2>&nbsp;&nbsp; at System.Reflection.MethodBase.PerformSecurityCheck(Object obj, RuntimeMethodHandle method, IntPtr parent, UInt32 invocationFlags)<BR>&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture, Boolean skipVisibilityChecks)<BR>&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo culture)<BR>&nbsp;&nbsp; at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)<BR>&nbsp;&nbsp; at Csla.Security.ObjectAuthorizationRules.GetRoles(Type objectType)<BR>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.GetAllowEditRoles(Type objectType)<BR>&nbsp;&nbsp; at Csla.Security.AuthorizationRules.CanEditObject(Type objectType)<BR>&nbsp;&nbsp; at Csla.Core.BusinessBase.get_IsSavable()</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In my BO:</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddObjectAuthorizationRules()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// TODO: add authorization rules</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//AuthorizationRules.AllowEdit(typeof(DataField), "Role");</P></FONT></FONT><FONT size=2>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Friday, February 06, 2009</h2>I have exactly the same in mine, but don't get exceptions. I haven't upgraded to 3.6.1 yet. Maybe something's changed between versions?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, February 06, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>AddObjectAuthorizationRules
+must be public in Silverlight.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If I have a blank method in my object I am getting a MethodAccessException
+from the BusinessBas.IsSavable( ).&nbsp; I have blank methods from using the
+templates to generate my objects a month ago.<o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp; at
+System.Reflection.MethodBase.PerformSecurityCheck(Object obj,
+RuntimeMethodHandle method, IntPtr parent, UInt32 invocationFlags)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture, Boolean skipVisibilityChecks)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture)<br>
+&nbsp;&nbsp; at System.Reflection.MethodBase.Invoke(Object obj, Object[]
+parameters)<br>
+&nbsp;&nbsp; at Csla.Security.ObjectAuthorizationRules.GetRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.GetAllowEditRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.CanEditObject(Type objectType)<br>
+&nbsp;&nbsp; at Csla.Core.BusinessBase.get_IsSavable()<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>In my BO:</span><o:p></o:p></p>
+
+<p><span>private</span><span> <span>static</span> <span>void</span> AddObjectAuthorizationRules()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>// TODO: add authorization rules<o:p></o:p></span></p>
+
+<p><span>//AuthorizationRules.AllowEdit(typeof(DataField),
+&quot;Role&quot;);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sergey<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks &#8211; Is there a general rule of thumb here?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:29 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>AddObjectAuthorizationRules
+must be public in Silverlight.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If I have a blank method in my object I am getting a MethodAccessException
+from the BusinessBas.IsSavable( ).&nbsp; I have blank methods from using the
+templates to generate my objects a month ago.<o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp; at
+System.Reflection.MethodBase.PerformSecurityCheck(Object obj,
+RuntimeMethodHandle method, IntPtr parent, UInt32 invocationFlags)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture, Boolean skipVisibilityChecks)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture)<br>
+&nbsp;&nbsp; at System.Reflection.MethodBase.Invoke(Object obj, Object[]
+parameters)<br>
+&nbsp;&nbsp; at Csla.Security.ObjectAuthorizationRules.GetRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.GetAllowEditRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.CanEditObject(Type objectType)<br>
+&nbsp;&nbsp; at Csla.Core.BusinessBase.get_IsSavable()<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>In my BO:</span><o:p></o:p></p>
+
+<p><span>private</span><span> <span>static</span> <span>void</span> AddObjectAuthorizationRules()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>// TODO: add authorization rules<o:p></o:p></span></p>
+
+<p><span>//AuthorizationRules.AllowEdit(typeof(DataField),
+&quot;Role&quot;);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The issue is that Silverlight&#8217;s reflection is limited in
+the fact that you cannot call private members of a class from outside the class
+itself.&nbsp; So, you could have two versions of the method &#8211; private for
+.NET and public for SL, but that seems like an overkill to me, so I personally
+just have one public method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1026" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 8:54 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Sergey<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks &#8211; Is there a general rule of thumb here?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:29 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>AddObjectAuthorizationRules
+must be public in Silverlight.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If I have a blank method in my object I am getting a MethodAccessException
+from the BusinessBas.IsSavable( ).&nbsp; I have blank methods from using the
+templates to generate my objects a month ago.<o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp; at
+System.Reflection.MethodBase.PerformSecurityCheck(Object obj, RuntimeMethodHandle
+method, IntPtr parent, UInt32 invocationFlags)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture, Boolean skipVisibilityChecks)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture)<br>
+&nbsp;&nbsp; at System.Reflection.MethodBase.Invoke(Object obj, Object[]
+parameters)<br>
+&nbsp;&nbsp; at Csla.Security.ObjectAuthorizationRules.GetRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.GetAllowEditRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.CanEditObject(Type objectType)<br>
+&nbsp;&nbsp; at Csla.Core.BusinessBase.get_IsSavable()<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>In my BO:</span><o:p></o:p></p>
+
+<p><span>private</span><span> <span>static</span> <span>void</span> AddObjectAuthorizationRules()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>// TODO: add authorization rules<o:p></o:p></span></p>
+
+<p><span>//AuthorizationRules.AllowEdit(typeof(DataField),
+&quot;Role&quot;);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is what I thought.&nbsp; So basically any internal CSLA methods
+that could be called by the framework should really be public.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is there any way to implement a set of compiler warnings that
+would pick up on that stuff?&nbsp; Or just experience / trial &amp; error?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 7:06 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The issue is that Silverlight&#8217;s reflection is limited in the
+fact that you cannot call private members of a class from outside the class
+itself.&nbsp; So, you could have two versions of the method &#8211; private for .NET
+and public for SL, but that seems like an overkill to me, so I personally just
+have one public method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1026" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 8:54 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Sergey<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks &#8211; Is there a general rule of thumb here?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:29 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>AddObjectAuthorizationRules
+must be public in Silverlight.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If I have a blank method in my object I am getting a MethodAccessException
+from the BusinessBas.IsSavable( ).&nbsp; I have blank methods from using the
+templates to generate my objects a month ago.<o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp; at System.Reflection.MethodBase.PerformSecurityCheck(Object
+obj, RuntimeMethodHandle method, IntPtr parent, UInt32 invocationFlags)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture, Boolean skipVisibilityChecks)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture)<br>
+&nbsp;&nbsp; at System.Reflection.MethodBase.Invoke(Object obj, Object[] parameters)<br>
+&nbsp;&nbsp; at Csla.Security.ObjectAuthorizationRules.GetRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.GetAllowEditRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.CanEditObject(Type objectType)<br>
+&nbsp;&nbsp; at Csla.Core.BusinessBase.get_IsSavable()<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>In my BO:</span><o:p></o:p></p>
+
+<p><span>private</span><span> <span>static</span> <span>void</span> AddObjectAuthorizationRules()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>// TODO: add authorization rules<o:p></o:p></span></p>
+
+<p><span>//AuthorizationRules.AllowEdit(typeof(DataField),
+&quot;Role&quot;);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, February 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not that I am aware of.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1027" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 9:19 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>That is what I thought.&nbsp; So basically any internal CSLA
+methods that could be called by the framework should really be public.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Is there any way to implement a set of compiler warnings that
+would pick up on that stuff?&nbsp; Or just experience / trial &amp; error?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 7:06 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>The issue is that Silverlight&#8217;s reflection is limited in
+the fact that you cannot call private members of a class from outside the class
+itself.&nbsp; So, you could have two versions of the method &#8211; private for
+.NET and public for SL, but that seems like an overkill to me, so I personally
+just have one public method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="_x0000_i1025" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack Addington
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 09, 2009 8:54 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Sergey<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks &#8211; Is there a general rule of thumb here?&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Sergey Barskiy
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:29 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>AddObjectAuthorizationRules
+must be public in Silverlight.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 06, 2009 5:20 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight MethodAccessException /w
+ObjectAuthorizationRules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>If I have a blank method in my object I am getting a MethodAccessException
+from the BusinessBas.IsSavable( ).&nbsp; I have blank methods from using the
+templates to generate my objects a month ago.<o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp; at
+System.Reflection.MethodBase.PerformSecurityCheck(Object obj,
+RuntimeMethodHandle method, IntPtr parent, UInt32 invocationFlags)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj, BindingFlags
+invokeAttr, Binder binder, Object[] parameters, CultureInfo culture, Boolean
+skipVisibilityChecks)<br>
+&nbsp;&nbsp; at System.Reflection.RuntimeMethodInfo.Invoke(Object obj,
+BindingFlags invokeAttr, Binder binder, Object[] parameters, CultureInfo
+culture)<br>
+&nbsp;&nbsp; at System.Reflection.MethodBase.Invoke(Object obj, Object[]
+parameters)<br>
+&nbsp;&nbsp; at Csla.Security.ObjectAuthorizationRules.GetRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.GetAllowEditRoles(Type
+objectType)<br>
+&nbsp;&nbsp; at Csla.Security.AuthorizationRules.CanEditObject(Type objectType)<br>
+&nbsp;&nbsp; at Csla.Core.BusinessBase.get_IsSavable()<o:p></o:p></span></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>In my BO:</span><o:p></o:p></p>
+
+<p><span>private</span><span> <span>static</span> <span>void</span> AddObjectAuthorizationRules()<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>// TODO: add authorization rules<o:p></o:p></span></p>
+
+<p><span>//AuthorizationRules.AllowEdit(typeof(DataField),
+&quot;Role&quot;);<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

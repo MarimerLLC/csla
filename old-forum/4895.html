@@ -1,0 +1,582 @@
+<html><header><title>Developing a dedicated class for Security/Authorizaton under CSLA .NET.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Developing a dedicated class for Security/Authorizaton under CSLA .NET.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4895.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Monday, May 26, 2008</h2><p>I am developing a class to be used as the Central Point of access to Control All Functions for All Application.</p>
+
+<p>In general, the class will provide the following functionality:</p>
+
+<p><b>For a given Application, Who Can Do What and When.</b></p>
+
+<p>I need your input and feedback to implement this class in the best way possible, and if you have other suggestions, please feel free to let me know.</p>
+
+<p><b><u>Sample Use for this Class:</u></b>&nbsp;</p>
+
+<p>For example, we have Attendance System which is live for the past 4 years. Everyone will punch the in/out times. Some times, staff will forget to punch in or out ! So, I created a Screen to Enter Attendance Adjustments.</p>
+
+<p>Of course, this screen need to be secured. Not any one can enter adjustment. Right ?</p>
+
+<p>So, the HR Users requested me to provide the screen for 2 main User Roles:</p>
+
+<p>- Application Admin: He can enter the adjustment for any Staff.</p>
+
+<p>- Department Admin: He can enter the adjustment only for the staff who are in the same department of the user who is making the Data Entry.</p>
+
+<p>Now, I have another application which is used to Display Staff Profile Info On-Line (eHRMD), such as Contact Info, Personal Info, Salary, Medical Lab Requests ...etc.</p>
+
+<p>So, the HR Users requested me to provide extreme flexibility to allow Authorized Staff to view the Profile Data of other Staff based on predefined rules.</p>
+
+<p>For example:</p>
+
+<p>- Application Admin: Can view staff info of any other staff.</p>
+
+<p>- Director: Can view all Staff Info EXCEPT Medical Data.</p>
+
+<p>- Section Head: Can view all Staff Info EXCEPT Medical Data and Salary Data</p>
+
+<p>...etc...</p>
+
+<p><b><u>Database Design:</u></b></p>
+
+<p>I decided to make the Database as follows:</p>
+
+<p><img src="http://lh5.ggpht.com/TatoIsCool/SDqt0bj9k7I/AAAAAAAAAYE/VT77F-4QFSs/SecurityDBRelations.JPG?imgmax=640" height="399" width="640"></p>
+
+<p>Following is a Sample of each table above:</p>
+
+<p>
+</p>
+<font color="#000000" face="Arial">
+</font><table bgcolor="#ffffff" cellspacing="1"><b>tApplications</b><br><br><br><br>
+
+<tr>
+<th><font color="#000000" face="Arial">AppID</font></th>
+<th><font color="#000000" face="Arial">AppDescEng</font></th>
+<th><font color="#000000" face="Arial">AppDescArab</font></th></tr>
+
+
+<tr>
+<td><font color="#000000" face="Arial">AtSys</font></td>
+
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">eHRMD</font></td>
+
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+</table>
+&nbsp;
+<p>
+</p>
+<font color="#000000" face="Arial">
+</font><table bgcolor="#ffffff" cellspacing="1"><b>tUIElements</b><br><br><br><br>
+
+<tr>
+<th><font color="#000000" face="Arial">AppID</font></th>
+<th><font color="#000000" face="Arial">UIElmID</font></th>
+<th><font color="#000000" face="Arial">UIElmDescEng</font></th>
+<th><font color="#000000" face="Arial">UIElemDescArab</font></th>
+<th><font color="#000000" face="Arial">UsesPrivLvl</font></th></tr>
+
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">Adjustmentment Entry.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UIAll</font></td>
+
+<td><font color="#000000" face="Arial">All UI Elements of Attendance System.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">View Info of Other Staff.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">Yes</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UIAll</font></td>
+
+<td><font color="#000000" face="Arial">All UI Elements of eHRMD.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+</table>
+&nbsp;
+<p>
+</p>
+<font color="#000000" face="Arial">
+</font><table bgcolor="#ffffff" cellspacing="1"><b>tUIElmActions</b><br><br><br><br>
+
+<tr>
+<th><font color="#000000" face="Arial">AppID</font></th>
+<th><font color="#000000" face="Arial">UIElmID</font></th>
+<th><font color="#000000" face="Arial">ActionID</font></th>
+<th><font color="#000000" face="Arial">ActionDescEng</font></th>
+<th><font color="#000000" face="Arial">ActionDescArb</font></th></tr>
+
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC001</font></td>
+
+<td><font color="#000000" face="Arial">Enter Adjustment for All Staff.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC003</font></td>
+
+<td><font color="#000000" face="Arial">Enter Adjustment for Staff Only in Same Dept.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UIAll</font></td>
+
+<td><font color="#000000" face="Arial">ACAll</font></td>
+
+<td><font color="#000000" face="Arial">All Actions of Attendance System.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC001</font></td>
+
+<td><font color="#000000" face="Arial">View All Staff Info of any Other Staff.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC003</font></td>
+
+<td><font color="#000000" face="Arial">View Staff Info of Other Staff Only in the Same Dept.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">ACAll</font></td>
+
+<td><font color="#000000" face="Arial">All Actions for View Other Staff Info as per Privacy Level.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UIAll</font></td>
+
+<td><font color="#000000" face="Arial">ACAll</font></td>
+
+<td><font color="#000000" face="Arial">All Actions of eHRMD.</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+</tr>
+
+</table>
+&nbsp;
+<p>
+</p>
+<font color="#000000" face="Arial">
+</font><table bgcolor="#ffffff" cellspacing="1"><b>tRoles</b><br><br><br><br>
+
+<tr>
+<th><font color="#000000" face="Arial">RoleID</font></th>
+<th><font color="#000000" face="Arial">RoleDescEng</font></th>
+<th><font color="#000000" face="Arial">RoleDescArb</font></th>
+<th><font color="#000000" face="Arial">CanViewMaxPrivLvl</font></th></tr>
+
+
+<tr>
+<td><font color="#000000" face="Arial">R001</font></td>
+
+<td><font color="#000000" face="Arial">Application Admin</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">5</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">R005</font></td>
+
+<td><font color="#000000" face="Arial">Director</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">3</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">R007</font></td>
+
+<td><font color="#000000" face="Arial">Section Head</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">3</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">R009</font></td>
+
+<td><font color="#000000" face="Arial">Department Adminsitrator</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">2</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">R015</font></td>
+
+<td><font color="#000000" face="Arial">Attendance Adjustment Entry</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">1</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">R020</font></td>
+
+<td><font color="#000000" face="Arial">Staff</font></td>
+
+<td><font color="#000000" face="Arial"><br></font></td>
+
+<td align="right"><font color="#000000" face="Arial">1</font></td>
+</tr>
+
+</table>
+
+<p>
+</p>
+<font color="#000000" face="Arial">
+</font><table bgcolor="#ffffff" cellspacing="1"><b>tAuthorization</b><br><br><br><br>
+
+<tr>
+<th><font color="#000000" face="Arial">AppID</font></th>
+<th><font color="#000000" face="Arial">UIElmID</font></th>
+<th><font color="#000000" face="Arial">ActionID</font></th>
+<th><font color="#000000" face="Arial">RoleID</font></th>
+<th><font color="#000000" face="Arial">IsDenied</font></th></tr>
+
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC001</font></td>
+
+<td><font color="#000000" face="Arial">Application Admin</font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC001</font></td>
+
+<td><font color="#000000" face="Arial">Attendance Adjustment Entry</font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Attendance System</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC003</font></td>
+
+<td><font color="#000000" face="Arial">Department Adminsitrator</font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC001</font></td>
+
+<td><font color="#000000" face="Arial">Application Admin</font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">AC003</font></td>
+
+<td><font color="#000000" face="Arial">Director</font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+<tr>
+<td><font color="#000000" face="Arial">Staff Profile Application</font></td>
+
+<td><font color="#000000" face="Arial">UI001</font></td>
+
+<td><font color="#000000" face="Arial">ACAll</font></td>
+
+<td><font color="#000000" face="Arial">Staff</font></td>
+
+<td align="right"><font color="#000000" face="Arial">No</font></td>
+</tr>
+
+</table>
+
+<p><b><u>Application Security Class Implementation:</u></b></p>
+
+<p>I decided to implement the class as follows:</p>
+
+<p>- Class Name: <font size="2">AppSecurity</font>&nbsp;</p>
+
+<p>- Use Singleton Pattern: "appsec = AppSecurity.GetSingleton()" to get an instance of the class.</p>
+
+<p>- Load the Tables above into memory using DataSet only once during the Application Life in the Worker Process. This is to avoid frequent Database access.</p>
+
+<p>-&nbsp;Use CSLA .NET DataProtal Fetch method to load the Data. This is to make use of Mobile Business Object, when needed.</p>
+
+<p>- Use DataRelation to relate the tables in the DataSet.</p><p>- Use CSLA .NET Bindable Objects only when need to bind the Data with the Presentation Layer.<br></p>
+
+<p>- To check for security, following is the Application UI sample Code of the <b>Attendance Adjustment Entry Screen</b> (note that this is for clarification purposes, as such code must be encapsulated in the Business Logic Layer in a special class):</p>
+<pre class="coloredcode">sub Page_Load(...)<br>  appsec = AppSecurity.GetSingleton()<br>  if (appsec.CanPerformAction(<span class="st">AppCodes.AtSys</span>, <span class="st">UIElmCodes.UI001</span>, UIElmActCodes.<span class="st">AC001</span>) then<br>    <span class="cmt">' Means can Enter Adjustment for All Staff.<br>    ' Yes, he is authorized, continue ..<br>    ' Setup the DataSource of the Screen to work with all Staff<br></span>  elseif (appsec.CanPeformAction(<span class="st"><span class="st">AppCodes.AtSys</span>, <span class="st">UIElmCodes.UI001</span>, UIElmActCodes.</span><span class="st">AC003</span>) then<br>    <span class="cmt">' Means can Enter Adjustment for only for Staff in the same Dept.<br>    ' Get the Dept. Code of the Loged In User.<br>    ' Filter the DataSource of the Screen to allow only working with <br>    '  Staff who are in the same Dept. of the Loged in user.<br></span>  else<br>    response.write(<span class="st">"Access Denied or something like that."</span><br>  end if<br>end sub</pre><p><u><b>Why not using .NET Native Authorization using web.config:</b></u></p><p>Enabling authorization using web.config and Allow/Deny rules is good
+to Allow or Deny Specific User/Roles to "Open" certain pages/links
+within the web site (with an option for Security Trimming", but using
+this technique "as-is" is not good enough. Why ? Because the logic also
+depends on further data to be retrieved from the Database.</p>
+<p>Using web.config without further work also has additional problem:
+You have to hard-code the authorized Roles within the web.config, and
+hard-code the authorization rules also. In my approach, I am not
+hard-coding the Rules, instead, I am using predefined Keys to hard-code
+the meaning of the codes in the program, and allow the user to change
+the Mapping between the Roles and the Action Codes.</p>
+<p>In order to defined the mapping between the Application Functions
+and User Roles outside the Program, you MUST do additional work. The
+.NET does not do this work for you. Please correct me if I am wrong.
+However, .NET gives something called "Authorization Providers", where
+you can implement them in your program. This is exactly what I am
+trying to do. In the end, the Implementation of such Provider will have
+to call the functionality of the "AppSecurity" class which I mentioned
+earlier.</p>
+You may ask "Why I have encapsulated the Application Security in
+this AppSecurity Class ? Why not implement the Authorization Provider
+directly ?". The answer is: "To allow developing a Web Service Wrapper
+for this class and enable other applications to use it for
+Authorization. Or, to compile it into a DLL, and allow all kind of
+supported UI Platforms to use it where needed."<p><b><u>Sample Code of the Class:</u></b></p>
+
+<p>I am posting below the sample code of the class to clarify the concept:</p>
+<pre class="coloredcode">&lt;Serializable()&gt; _<br><span class="kwd">Public Class</span> AppSecurity<br><br><span class="kwd">#Region <span class="st">"   Hard-Coded Constant Values   "</span></span><br>    <span class="cmt">'<br>    ' Define the Hard-Coded Values to be used in the program<br>    ' Such values are related to the Key Values in the Security Database Tables<br>    ' They are defined as Constants in Classes jsut to make them easier to work with<br>    '<br></span>    <span class="kwd">Public Enum</span> AppCodes<br>        eHRMD<br>        AtSys<br>    <span class="kwd">End</span> enum<br>    <span class="kwd">Public Enum</span> UIElmCodes<br>        UIAll<br>        UI001<br>    <span class="kwd">End Enum<br>    Public Enum</span> ULElmActCodes<br>        ACAll<br>        AC001<br>        AC003<br>    <span class="kwd">End Enum<br><br>#End Region<br><br>    Private Shared</span> mSingleton <span class="kwd">As</span> AppSecurity<br>    <span class="kwd">Private Shared</span> lockobject <span class="kwd">As New Object<br>    Private</span> mAppSecDataSet <span class="kwd">As</span> DataSet<br><span class="kwd">#Region <span class="st">"  Factory Methods  "</span></span><br>    <span class="kwd">Private Sub New</span>()<br><br>    <span class="kwd">End Sub<br>    Public Shared Function</span> GetSingleton() <span class="kwd">As</span> AppSecurity<br>        <span class="kwd">If</span> mSingleton <span class="kwd">Is Nothing Then<br>            SyncLock</span> lockobject<br>                <span class="kwd">If</span> mSingleton <span class="kwd">Is Nothing Then</span><br>                    mSingleton = DataPortal.Fetch(Of AppSecurity)(<span class="kwd">New</span> Criteria())<br>                <span class="kwd">End If<br>            End SyncLock<br>        End If<br>        Return</span> mSingleton<br>    <span class="kwd">End Function<br>#End Region<br><br>#Region <span class="st">"  Data Access  "</span></span><br>    &lt;Serializable()&gt; _<br>    <span class="kwd">Private Class</span> Criteria<br>        <span class="kwd">Public Sub New</span>()<br><br>        <span class="kwd">End Sub<br>    End Class<br>    Private Overloads Sub</span> DataPortal_Fetch(<span class="kwd">ByVal</span> criteria <span class="kwd">As</span> Criteria)<br>        <span class="cmt">'Dim TestEnum As AppCodes<br>        'TestEnum = AppCodes.AtSys<br>        'Console.WriteLine(TestEnum.ToString)<br></span>        <span class="kwd">Try</span><br>            Using con <span class="kwd">As New</span> OleDb.OleDbConnection(Database.AppSecurityDB)<br>                Using cmd <span class="kwd">As</span> OleDb.OleDbCommand = con.CreateCommand<br>                    cmd.CommandType = CommandType.Text<br>                    Using da <span class="kwd">As New</span> OleDb.OleDbDataAdapter(cmd)<br>                        <span class="cmt">'<br>                        ' Load all tables with small set of records into<br>                        '   memory using DataSets<br>                        '<br></span>                        cmd.CommandText = <span class="st">"select * from tApplications"</span><br>                        mAppSecDataSet = <span class="kwd">New</span> DataSet(<span class="st">"ApplicationSecurity"</span>)<br>                        da.Fill(mAppSecDataSet, <span class="st">"tApplications"</span>)<br><br>                        cmd.CommandText = <span class="st">"select * from tAppDataTypes"</span><br>                        da.Fill(mAppSecDataSet, <span class="st">"tAppDataTypes"</span>)<br><br>                        cmd.CommandText = <span class="st">"select * from tUIElements"</span><br>                        da.Fill(mAppSecDataSet, <span class="st">"tUIElements"</span>)<br><br>                        cmd.CommandText = <span class="st">"select * from tUIElmActions"</span><br>                        da.Fill(mAppSecDataSet, <span class="st">"tUIElmActions"</span>)<br><br>                        cmd.CommandText = <span class="st">"select * from tRoles"</span><br>                        da.Fill(mAppSecDataSet, <span class="st">"tRoles"</span>)<br><br>                        cmd.CommandText = <span class="st">"select * from tAuthorization"</span><br>                        da.Fill(mAppSecDataSet, <span class="st">"tAuthorizations"</span>)<br><br>                        <span class="cmt">'<br>                        ' Any lookup required against the Staff or Staff Roles<br>                        '  will have to be done against the Database directly.<br>                        ' This is to avoid loading large number of records <br>                        '<br><br>                        '<br>                        ' Now define the Relationship among the tables in the DataSet<br>                        '<br></span>                        <span class="kwd">Dim</span> ParentColumns(0 <span class="kwd">To</span> 0) <span class="kwd">As</span> DataColumn<br>                        <span class="kwd">Dim</span> ChildColumns(0 <span class="kwd">To</span> 0) <span class="kwd">As</span> DataColumn<br>                        <span class="kwd">Dim</span> Rel <span class="kwd">As</span> DataRelation<br>                        ParentColumns(0) = mAppSecDataSet.Tables(<span class="st">"tApplications"</span>).Columns(<span class="st">"AppID"</span>)<br>                        ChildColumns(0) = mAppSecDataSet.Tables(<span class="st">"tAppDataTypes"</span>).Columns(<span class="st">"AppID"</span>)<br>                        Rel = <span class="kwd">New</span> DataRelation(<span class="st">"App_DataTypes"</span>, ParentColumns, ChildColumns)<br>                        mAppSecDataSet.Relations.Add(Rel)<br>                        Rel = <span class="kwd">Nothing<br><br>                        ReDim</span> ParentColumns(0 <span class="kwd">To</span> 0)<br>                        <span class="kwd">ReDim</span> ChildColumns(0 <span class="kwd">To</span> 0)<br>                        ParentColumns(0) = mAppSecDataSet.Tables(<span class="st">"tApplications"</span>).Columns(<span class="st">"AppID"</span>)<br>                        ChildColumns(0) = mAppSecDataSet.Tables(<span class="st">"tUIElements"</span>).Columns(<span class="st">"AppID"</span>)<br>                        Rel = <span class="kwd">New</span> DataRelation(<span class="st">"App_UIElements"</span>, ParentColumns, ChildColumns)<br>                        mAppSecDataSet.Relations.Add(Rel)<br>                        Rel = <span class="kwd">Nothing<br><br>                        ReDim</span> ParentColumns(0 <span class="kwd">To</span> 1)<br>                        <span class="kwd">ReDim</span> ChildColumns(0 <span class="kwd">To</span> 1)<br>                        ParentColumns(0) = mAppSecDataSet.Tables(<span class="st">"tUIElements"</span>).Columns(<span class="st">"AppID"</span>)<br>                        ParentColumns(1) = mAppSecDataSet.Tables(<span class="st">"tUIElements"</span>).Columns(<span class="st">"UIElemID"</span>)<br>                        ChildColumns(0) = mAppSecDataSet.Tables(<span class="st">"tUIElmActions"</span>).Columns(<span class="st">"AppID"</span>)<br>                        ChildColumns(1) = mAppSecDataSet.Tables(<span class="st">"tUIElmActions"</span>).Columns(<span class="st">"UIElemID"</span>)<br>                        Rel = <span class="kwd">New</span> DataRelation(<span class="st">"UIElements_Actions"</span>, ParentColumns, ChildColumns)<br>                        mAppSecDataSet.Relations.Add(Rel)<br>                        Rel = <span class="kwd">Nothing<br><br>                        ReDim</span> ParentColumns(0 <span class="kwd">To</span> 2)<br>                        <span class="kwd">ReDim</span> ChildColumns(0 <span class="kwd">To</span> 2)<br>                        ParentColumns(0) = mAppSecDataSet.Tables(<span class="st">"tUIElmActions"</span>).Columns(<span class="st">"AppID"</span>)<br>                        ParentColumns(1) = mAppSecDataSet.Tables(<span class="st">"tUIElmActions"</span>).Columns(<span class="st">"UIElemID"</span>)<br>                        ParentColumns(2) = mAppSecDataSet.Tables(<span class="st">"tUIElmActions"</span>).Columns(<span class="st">"ActionID"</span>)<br>                        ChildColumns(0) = mAppSecDataSet.Tables(<span class="st">"tAuthorization"</span>).Columns(<span class="st">"AppID"</span>)<br>                        ChildColumns(1) = mAppSecDataSet.Tables(<span class="st">"tAuthorization"</span>).Columns(<span class="st">"UIElmID"</span>)<br>                        ChildColumns(2) = mAppSecDataSet.Tables(<span class="st">"tAuthorization"</span>).Columns(<span class="st">"ActionID"</span>)<br>                        Rel = <span class="kwd">New</span> DataRelation(<span class="st">"Actions_Authorization"</span>, ParentColumns, ChildColumns)<br>                        mAppSecDataSet.Relations.Add(Rel)<br>                        Rel = <span class="kwd">Nothing<br><br>                        ReDim</span> ParentColumns(0 <span class="kwd">To</span> 0)<br>                        <span class="kwd">ReDim</span> ChildColumns(0 <span class="kwd">To</span> 0)<br>                        ParentColumns(0) = mAppSecDataSet.Tables(<span class="st">"tRoles"</span>).Columns(<span class="st">"RoleID"</span>)<br>                        ChildColumns(0) = mAppSecDataSet.Tables(<span class="st">"tAuthorization"</span>).Columns(<span class="st">"RoleID"</span>)<br>                        Rel = <span class="kwd">New</span> DataRelation(<span class="st">"Roles_Authorizations"</span>, ParentColumns, ChildColumns)<br>                        mAppSecDataSet.Relations.Add(Rel)<br>                        Rel = <span class="kwd">Nothing<br><br>                    End</span> Using<br>                <span class="kwd">End</span> Using<br>            <span class="kwd">End</span> Using<br>        <span class="kwd">Catch</span> ex <span class="kwd">As</span> Exception<br>            <span class="kwd">Throw New</span> Exception(ex.Message, ex)<br>        <span class="kwd">End Try<br>    End Sub<br><br>#End Region<br><br>End Class</span></pre>
+<p><u><b>Questions:</b></u><br></p><p>- What is the best approach to use CSLA .NET Framework to Implment this Logic ? I am finding some difficulty to fit this in CSLA .NET Authorizations.<br></p><p>If you think there is something wrong or you have any suggestions, I appreciate your feedback.</p>
+
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, August 29, 2008</h2><p>Dear All,</p><p>I really need your help !</p><p>My question here is based on the post above.</p><p>I have read Chapter 1,2, 6, 7, 8 and 10 of the Expert VB 2005 Business Objects.</p><p>I am having some difficulty in fitting my requirement (as per above) into CSLA .NET Model.</p><p>The problem I am facing is in Authorization.</p><p>Let us take a simple Example:</p><p>1. User A logs on to the Staff Profile Application (Windows Authentication), and he can view his HR related data.</p><p>2. User A requests to view the Staff Profile of another User B, and he requested to view certain data (Education History for example).</p><p>3. The logic to allow User A to view the Education History of User B, if all the following validation check are TRUE:</p><p>&nbsp;&nbsp; - If User A is in the Manager Role,</p><p>&nbsp;&nbsp; - If User A is in the same Department of User B.<br></p><p>&nbsp;&nbsp; - If the sensitivity level of the Education History is less than the max sensitivity level allowed form the Manager Role.<br></p><p>As you can see is that in order to perform the Authorization Check, the code must perform several lookups to the Security Control Data and to the Profile Data. This means the authorization depends on:</p><p>&nbsp; - The Department Code of the Authenticated User and the Dept. Code of the requested user,</p><p>&nbsp; - The Role of the Authenticated User,<br></p><p>&nbsp; - The sensitivity level of the request user info and the User Role of the authenticated user.</p><p>Now going back to CSLA .NET, in the Authorization Section, the relevant Authorization method that applies here is this one:<br></p>
+<pre>Public Shared Function CanGetObject() As Boolean<br>    Return Csla.ApplicationContext.User.IsInRole("Some Roles")<br>End Function</pre><p>However, as you can see, the Role is hard-coded in the method, and there is no indication on how to perform lookup within this method using CSLA Approach via the Data Portal FETCH method. Because as per the book, the FETCH will occur after the check for CanGetObject().</p><p>The same problem I will face while checking for Authorization for each property:</p>
+<pre>AuthorizationRules.AllowRead("PropertyName", "SomeRole")<br><br>and<br><br>CanReadProperty()<br></pre>
+<p>Also, the same lookup mentioned above is needed to check for authorization, which really does not make sense to perform such lookup for each property and for the CanGetObject() method !!!!!##### This will make the application response very slow, because the number of properties if very large (more than 20 properties).<br></p><p>The other problem I am facing is that the control info changes from one case to another (depends on the selected user), this means the method checking for authorization cannot depend on Shared Properties.</p><p>Check the standard code for GetStaffProfile():</p>
+<pre>Public Shared Function GetStaffProfile(ByVal id As String) As StaffProfile<br>  If Not CanGetObject() Then<br>    Throw New System.Security.SecurityException( _<br>      "User not authorized to view staff profile of this Staff.")<br>  End If<br>  Return DataPortal.Fetch(Of StaffProfile)(New Criteria(id))<br>End Function<br></pre>
+<p>Because I was thinking to load the control info once at the beginning, then perform the check when needed, but seems this is not possible because this is a shared method "GetStaffProfile()".</p><p>This means that I must first create the object, load the control info, then perform authorization check. So, I was thinking to change the methods above as follows:</p>
+<pre>&lt;Serializable()&gt; _<br>public class StaffProfileControl<br>' Add ControlCriteria to be used to call the FETCH of the Control Info<br>&lt;Serializable()&gt; _<br>Private Class ControlCriteria<br>  Private mId As Guid<br>  Public ReadOnly Property Id() As Guid<br>    Get<br>      Return mId<br>    End Get<br>  End Property<br>  Public Sub New(ByVal id As Guid)<br>    mId = id<br>  End Sub<br>End Class<br><br>'Add the call to FETCH the Control Info the Staff Profile as follows<br>Public Shared Function GetStaffProfileControl(ByVal id As Guid) As StaffProfileControl<br>  Return DataPortal.Fetch(Of StaffProfileControl)(New ControlCriteria(id))<br>End Function<br>...<br>... the rest almost the same<br>...<br>End Class<br></pre>
+<p>The idea here is to FIRST OF ALL, do fetch the Control Info, and create an new special control object of StaffProfile which has only the control info. So, in the UI Code, this is the first call to be made and any user can access the control info of this object, so no need to do any authorization here.<br></p><p>Then, during the subsequent calls to load the actual StaffProfile object, we can pass the StaffProfileControl Object as a parameter to the methods where needed.</p><p>I hope this is the correct way for implementing my requirements using CSLA .NET.</p><p>Your feedback will be appreciated.<br></p><p>Tarek.<br></p><p><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div> 
+<P>Now going back to CSLA .NET, in the Authorization Section, the relevant Authorization method that applies here is this one:<BR></P><PRE>Public Shared Function CanGetObject() As Boolean<BR>    Return Csla.ApplicationContext.User.IsInRole("Some Roles")<BR>End Function</PRE>
+<P>However, as you can see, the Role is hard-coded in the method, and there is no indication on how to perform lookup within this method using CSLA Approach via the Data Portal FETCH method. Because as per the book, the FETCH will occur after the check for CanGetObject().</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is not part of CSLA, this code is in <EM>your business class</EM>. It is just an example of what you <EM>might</EM> do, not of what you <EM>must</EM> do. You can replace this with any other code you'd like. And you can move it to another location.</P>
+<P>You might choose to do this check <EM>inside</EM> DataPortal_Fetch() because that's the only place you can really do the check. That's fine, CSLA doesn't care.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tarekahf:</strong></div><div></P>
+<P>The same problem I will face while checking for Authorization for each property:</P><PRE>AuthorizationRules.AllowRead("PropertyName", "SomeRole")<BR><BR>and<BR><BR>CanReadProperty()<BR><P>&nbsp;</P></PRE>
+<P></div></BLOCKQUOTE></P>
+<P>You can override CanReadProperty() and CanWriteProperty() to customize their behavior for a specific type of object. Obviously the implementation in BusinessBase just checks roles, but you could choose to do other checks before or after letting the base class do its work.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, September 03, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+<P>This is not part of CSLA, this code is in <EM>your business class</EM>. It is just an example of what you <EM>might</EM> do, not of what you <EM>must</EM> do. You can replace this with any other code you'd like. And you can move it to another location.</P>
+<P>You might choose to do this check <EM>inside</EM> DataPortal_Fetch() because that's the only place you can really do the check. That's fine, CSLA doesn't care.</P>
+<P>You can override CanReadProperty() and CanWriteProperty() to customize their behavior for a specific type of object. Obviously the implementation in BusinessBase just checks roles, but you could choose to do other checks before or after letting the base class do its work.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Thank you Rocky,</P>
+<P>OK, I think I understand what you mean. However, please allow me to summarize the problem, as the previous post I made was very long and complicated.</P>
+<P>The problem:</P>
+<P>1. In CSLA, checking for authorization is done in Shared Methods, which means you cannot first load the control info into private properties which&nbsp;could be&nbsp;used later for checking if certain operation is authorized for some user.</P>
+<P>2. Checking for authorization has nearly same logic in the authorization methods [ Ex. CanReadProperty() and CanGetObject() ], and will have to be&nbsp;repeated. So, if the check requires first to perform Database Access (look-up), this means such data must be made available in private properties so that it can be reused when needed to avoid making Database Lookups over and over.</P>
+<P>Please correct me if I misunderstood you. </P>
+<P>You suggested to move the check to inside DataPortal_Fetch(), so at this time the base object is created, and I can perform the needed lookup to load the control data into private properties. Is my understanding correct ?</P>
+<P>But, I will have the same requirement for authorization checking for the other DataPortal_XXX methods, which may require same control data, or probably others.</P>
+<P>That is why I was thinking to create a CSLA .NET Base Object to represent the Control Data. This object&nbsp;will have to be created in the UI code before&nbsp;working with the other regular business objects. And also, it can be cashed so that it can be used by other pages ...etc.</P>
+<P>Suppose I have a BO called "StaffProfile". So, I will create another object called "StaffProfileControl" for example. It will be based on CSLA Read Only Business Base, and it is just to load the Control Data into its public properties. And, I will pass this control object as a parameter to the Factory Methods of the regular BO, so that it can be stored as a provide property inside this object for later use any time needed by any other method in this object.</P>
+<P>So, the UI Code will do something like this:</P>
+<P>dim ctrl as StaffProfileControl<BR>ctrl = StaffProfileControl.getObject(AuthenticatedStaffID, AnotherStaffID)<BR>dim theProfile as StaffProfile<BR>theProfile = StaffProfile.getObject(ctrl)<BR>...<BR>...<BR>theProfile.save()</P>
+<P>So, the "ctrl" object will have the necessary data to perform authorization checking, and it can have also any complex code needed for implement the checking, and can be reused over and over without any performance overhead.</P>
+<P>You feedback will be appreciated, because I think this is a bit complicated, and my colleagues may not like this approach. I am now trying to make CSLA .NET as part of our standards for Application Development.</P>
+<P>Tarek.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There are three things here I think.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can use Shared/static methods to implement per-type
+authorization &#8211; authorization that is not specific to any instance of an
+object, but is common for <i>all instances</i> of a given type. That is what
+you get with the CanGetObject() and similar methods shown in the book. And this
+is what you get with CSLA 3.5, which formalizes this concept and makes it part
+of the framework.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can write your own authorization methods to do per-instance
+authorization. You need to decide when and where to do these checks, but one
+logical place is at the top (or bottom) of each DataPortal_XYZ method, because
+that&#8217;s the first opportunity you have to check the security principal
+against the object instance.<br>
+<br>
+Another logical place to do per-instance authorization is in your factory
+methods and an override of the Save() method. These are also locations where
+you have access to the object instance and the security principal.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can do per-property authorization using CanReadProperty()
+and CanWriteProperty(). These methods can be overridden so you can customize or
+replace the default role-based behavior.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you choose to override the per-property authorization, you must
+remember that your code will run on the client and/or the server. And it will
+be called A LOT. So you must make the code efficient. The user&#8217;s
+information should be in the principal/identity objects, and you may want to
+cache the results (CSLA does) so you don&#8217;t need to re-check the
+per-property authz each time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you choose to implement per-instance authorization in the
+factory methods and a Save() override, you must remember that your code will
+run on the client. Again, you need to make this code reasonably efficient &#8211;
+though this isn&#8217;t as critical as with per-property, because the factory
+and Save() methods aren&#8217;t called nearly as often.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, September 03, 2008</h2><p>Rocky, Thank you again ... the explanation you provided was really so useful. </p><p>Please allow me to clarify some points.<br></p><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+
+
+<p class="MsoNormal"><span>There are three things here I think.<o:p> <br></o:p></span></p>
+
+<p class="MsoListParagraph"><span><span>1.<span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can use Shared/static methods to implement per-type
+authorization – authorization that is not specific to any instance of an
+object, but is common for <i>all instances</i> of a given type. That is what
+you get with the CanGetObject() and similar methods shown in the book. And this
+is what you get with CSLA 3.5, which formalizes this concept and makes it part
+of the framework.</span></p></div></BLOCKQUOTE>OK, I will use this type of authorization when the checking does not require Database Access (lookup), and in case it will only depend on Role-Based Authorization. Right ?<br><BLOCKQUOTE><div><br><span><span><span> 
+</span></span></span>You can write your own authorization methods to do per-instance
+authorization. You need to decide when and where to do these checks, but one
+logical place is at the top (or bottom) of each DataPortal_XYZ method, because
+that’s the first opportunity you have to check the security principal
+against the object instance.<br><span></span></div></BLOCKQUOTE>This means I will have to load the Control Info inside the DataPortal_XYZ method, and do the check before any further processing or data access. So there is no need to create another Object for loading the control data ?.<br><BLOCKQUOTE><div><br><span>Another logical place to do per-instance authorization is in your factory
+methods and an override of the Save() method. These are also locations where
+you have access to the object instance and the security principal.<br></span></div></BLOCKQUOTE>In the factory method ??!! you mean after executing this call:<p>myStaffProfile = DataPortal.Fetch(Of StaffProfile)(New Criteria(id))</p><p>Because only after this call, I will have a instance of the object "myStaffProfile". But this means that authorization checking is done after completing the load of the entire private properties, which may not be wise to do so. I think it is better to check for authorization before loading any other data inside DataPortal_XYZ call.<br></p><p>Another thing which confusing me now is that you are saying that the "security principal" I have access to it in the Factor Methods ...etc. I thought this security principal, I have access to it any time any where in the code during run-time, right ?</p><p>Just to confirm that for authorization checking, not only I need to access the control info of the authenticated user, but also need to have access to the control info of the Staff ID which is requested by the authenticated user. This control info is the Department Code of and User Role, and probably few other data fields.<br></p><BLOCKQUOTE><div><span> The user’s
+information should be in the principal/identity objects, and you may want to
+cache the results (CSLA does) so you don’t need to re-check the
+per-property authz each time.<br></span></div></BLOCKQUOTE>Are you telling me that I have to load the control info (eg. Dept. Code) of the authenticated user in the principal/identity objects ? Actually, I tried to do that, but every time I need to get the Dept. Code of the authenticated user using the identity object, then I have to CAST (Convert the Type of) the object to the custom identity object defined in my project. Is my understanding correct ?<p>Your feedback is always appreciated.</p><p>Tarek.<br></p><span></span></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, April 10, 2012</h2><p>Hi Rocky,</p>
+<p>Just wanted to say thank you ... I have completed the implementation of this Security Class, and I deployed it live for more than one year now.</p>
+<p>I have used VS 2005 and CSLA .NET 2.0 and the logic is working like a charm for more than 5 different application objects, and the total number of users is more than 1500 users, and the total number of concurrent users can easily exceed more than 200.</p>
+<p>Thanks God, until now, no problem what so ever.</p>
+<p>Tarek.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

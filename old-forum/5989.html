@@ -1,0 +1,158 @@
+<html><header><title>Design advice:  email collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design advice:  email collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5989.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Saturday, December 13, 2008</h2>Hi,<br><br>I have a use case where the user will be entering multiple email addresses.&nbsp; I'm trying to figure out the best way to handle this.&nbsp; Here's what I've come up with.<br><br>1.&nbsp; A string.&nbsp; The string will contain addresses separated by ; which is what the System.Net.StmpMail class expects. <br>2.&nbsp; A simple string[] or List&lt;string&gt;.&nbsp; Doesn't require any more classes, but keeps the addresses separate.&nbsp; however, I'll need to join to a single string anyway.<br>3.&nbsp; EmailAddresses BLB, containing EmailAddress.&nbsp;&nbsp; This would allow business rules and such... although I don't have any validation requirements as of now.&nbsp; The problem is that the UI is geared toward option one; just a text box to enter.<br><br>What do you guys think?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, December 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;d vote for option three.&nbsp; There actually are rules
+of email addresses that are global.&nbsp; If you search for reg ex for email
+address, you will find it.&nbsp; It does not assure that the address is valid,
+but it will catch typos.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, December 13, 2008 2:07 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Design advice: email collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I have a use case where the user will be entering multiple email
+addresses.&nbsp; I'm trying to figure out the best way to handle this.&nbsp;
+Here's what I've come up with.<br>
+<br>
+1.&nbsp; A string.&nbsp; The string will contain addresses separated by ; which
+is what the System.Net.StmpMail class expects. <br>
+2.&nbsp; A simple string[] or List&lt;string&gt;.&nbsp; Doesn't require any
+more classes, but keeps the addresses separate.&nbsp; however, I'll need to
+join to a single string anyway.<br>
+3.&nbsp; EmailAddresses BLB, containing EmailAddress.&nbsp;&nbsp; This would
+allow business rules and such... although I don't have any validation
+requirements as of now.&nbsp; The problem is that the UI is geared toward
+option one; just a text box to enter.<br>
+<br>
+What do you guys think?<br>
+<br>
+Thanks<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 15, 2008</h2>Ya, I'd like to go that route.&nbsp; Option #3 though means I need to have something that maps the single text input box to multiple child objects.&nbsp; I'll also need a way to highlight addresses in error within that text box (this is for a Web UI).&nbsp; <br><br>Anyone done something like this before?&nbsp; Any advice for going between the UI and the business layer?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, December 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmmm.&nbsp; I would lean toward a grid in the UI to type each
+individual address.&nbsp; This way it would be pretty clean.&nbsp; I would even
+stored them in a child table instead of a single field.&nbsp; If this is not an
+option, then I would go a different route.&nbsp; You can still have a single
+box/property with a validation rule.&nbsp; The rule would parse the text on &#8220;:&#8221;
+then run reg ex rule on each string in the array.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 15, 2008 8:37 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Design advice: email collection<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ya, I'd like to go that route.&nbsp; Option #3 though means
+I need to have something that maps the single text input box to multiple child
+objects.&nbsp; I'll also need a way to highlight addresses in error within that
+text box (this is for a Web UI).&nbsp; <br>
+<br>
+Anyone done something like this before?&nbsp; Any advice for going between the
+UI and the business layer?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 15, 2008</h2>I would prefer a grid as well, but my client is pretty particular about the UI, and they are the one's that design it.&nbsp; I didn't think of the rule breaking up the string.. maybe I will go that route.&nbsp; <br><br>Thanks for the feedback!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, December 17, 2008</h2><P>I have done this and gone a few different ways based on the customer's preference:</P>
+<P>1. If you are also identifying the type of e-mail address, e.g. work, home, etc., then the MS-Outlook approach could suffice.&nbsp; In this case, you'd have a drop-down list/button that identifies the type and a single textbox that displays the address corresponding to the selected type.&nbsp; This option limits you to a finite number of e-mail addresses, though, based on the number of types.</P>
+<P>2. If you are interested in what I would consider more straight-forward code (than #3), you could have a list/grid bound to your list of e-mail addresses and indicated above.&nbsp; Then, it would be up to you if you want to support inline editing or have buttons that display a dialog to create and modify the items.</P>
+<P>3. Another path I have taken in the past, also borrowed from Outlook, is a open text field that accepts a semicolon- or comma-delimited list of e-mail addresses.&nbsp; When the form is posted back, you'd Split the string on the delimiter and have your string[] of e-mail addresses.</P>
+<P>In any case, I would recommend using BO's so that you can validate the addresses - at least the format using RegEx.&nbsp; You can, if the business case exists, find examples online that demonstrate how to actually verify that an e-mail address is legitimate but that is quite a bit of work and I'd only recommend it if you really needed to know.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 17, 2008</h2>Hi Pirate,<br><br>I think the UI they want is most like your #3.&nbsp; In my case though I'll end up storing the value(s) until later, when an email is actually sent.&nbsp; This use case is a setup for an automated email that is sent by another part of the system.<br><br>Thanks, your feedback does help.<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

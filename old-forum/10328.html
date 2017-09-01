@@ -1,0 +1,40 @@
+<html><header><title>Stop Rule Execution</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stop Rule Execution</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10328.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bastidas posted on Friday, April 29, 2011</h2><p>Hello</p>
+<p>Is there a way to stop the BusinessRule execution if certain value is set on the Object? </p>
+<p>I know that I can&nbsp;Short-Circuit the process using the Rules Priorities and ProcessThroughPriority; but it is my understanding this will only happen if the rule has failed. What I need is for the rule to still be valid but if certain value are set the rules with lower priority (higher number) shouldn&#39;t run.</p>
+<p>In my example, an order entry, I calculate all prices, discount, taxes etc for a normal order, but if the user marks it as been a &#39;Free Order&#39; I don&#39;t want to go through all those unneeded calculations.</p>
+<p>Thank you<br />Andres</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 29, 2011</h2><p>Yes, your rule can call AddSuccessResult(true) to not fail, but to prevent subsequent rules from running.</p>
+<p>Combine that feature with rule priorities, and you can have a rule that blocks other rules from running.</p>
+<p>For example, create this &quot;preventer&quot; rule and add it at priority -1 so it runs before any normal rules at priority 0.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bastidas replied on Monday, May 02, 2011</h2><p>Rocky</p>
+<p>You answer does exactly what you said it would, but I realized that my question is not what I really need. After tinkering around with this I think I&#39;m not understanding how the rules work because after applying all the &#39;Pricing&quot; and &quot;Discount&quot; rules, I&#39;m ending up with a &#39;Stack Overflow&quot; error. </p>
+<p>I try using the context.AddOutValue or even the LoadProperty to prevent recursive Rule execution, which works, but then the UI doesn&#39;t get refreshed with the new values. So I&#39;m setting the values casting the context.target and using object.property = value but then all the other rules start running and since I&#39;m setting new values for each of the children on a collection that&#39;s where I belive the  &#39;Stack Overflow&quot; is happening.</p>
+<p>Any way, back to drawing board I guess.</p>
+<p>Thank you<br />Andres<br /><br />P.S.: Jonny the clacontrib has some wonderful rules I can use, the only issue is finding the code, I wasted some time trying to find then from the &#39;Recommended&quot; download, then I figured I had to use the &#39;Source Code&quot;. But then I feel I might be using unstable code.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 02, 2011</h2><p>To use AddOutValue you should have to add those properties to the AffectedProperties list. When the first rule completes, that should cause the rules to be run for the affected properties as well. At the very end, the PropertyChanged event should be automatically raised for each affected property (CSLA maintains a list of all the affected properties and raises those events).</p>
+<p>There are cases where PropertyChanged events are not automatically raised, because the code is assumed to be running in a non-interactive environment:</p>
+<ul>
+<li>DataPortal_Create</li>
+<li>Child_Create</li>
+<li>Other automatic server-side data portal scenarios</li>
+<li>ICheckRules.CheckRules</li>
+</ul>
+<p>But in a normal interactive scenario, where a property is changed through its setter, that will cause PropertyHasChanged to be invoked. PropertyHasChanged will have the BusinessRules object run all the rules for the property and affected properties, and then it raises PropertyChanged events for each affected property.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marthac replied on Wednesday, May 04, 2011</h2><p>I have one rule that resets the value of a property to it&#39;s previous value using&nbsp; <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">context.AddOutValue() it is in the AffectedProperties list. But the other rules I have for that poperty are not run again after AddOutValue is called.</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">I put a breakpoint in the following CSLA function and <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">PropertyHasChanged is not called because <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">markDirty = false</span></span></span></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>LoadPropertyValue&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo, P oldValue, P newValue, </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">bool </span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">markDirty)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Should I call PropertyHasChanged from my rule that resets the value?</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, May 05, 2011</h2><p>That would really create a recursive check rules!!! </p>
+<p>Problem is that when the Rule engine updates the value it doesn&#39;t really know if the value was changed or not and so will not &quot;retrigger&quot; rules on the original property.</p>
+<p>It might be possible to use:</p>
+<ul>
+<li>the LoadProperty method in BusinessRule base class </li>
+<li>retrigger rules for the property as you have the actual BO by using the ICheckRules interface</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, April 30, 2011</h2><p>You could also look at the additional rules in <a title="CslaContrib" href="http://cslacontrib.codeplex.com">CslaContrib&nbsp; </a>and specifically the StopIfNotCanWrite rule.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

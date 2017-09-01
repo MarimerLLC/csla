@@ -1,0 +1,46 @@
+<html><header><title>MS Wpf Datagrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MS Wpf Datagrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5661.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, October 23, 2008</h2>Hi,<br><br>I thought I read that MS was releasing their own WPF datagrid (finally!) with 3.5SP1.&nbsp; If they have.. can anyone tell me where it is??<br><br>Thanks<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Thursday, October 23, 2008</h2><P>Not quite.&nbsp; It was to be released outside of the normal .NET Framework ship cycle.&nbsp; They have actually put it on codeplex and it is still in CTP.</P>
+<P><A href="http://www.codeplex.com/wpf/Release/ProjectReleases.aspx?ReleaseId=14963">http://www.codeplex.com/wpf/Release/ProjectReleases.aspx?ReleaseId=14963</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 23, 2008</h2>Ahh..&nbsp; well at least it's coming.&nbsp; Thanks for the info.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 23, 2008</h2><P>And it appears to have some issues with CSLA because they aren't (currently) conforming to the Windows Forms behaviors around IEditableObject, etc.</P>
+<P>So I encourage you to use it, find the quirks, and report them to Microsoft so they can (hopefully) address any issues.</P>
+<P>It is also possible that CSLA will need to accomodate the WPF grid behaviors too. And ultimately I can see a day (not too far off?) where CSLA will have to stop supporting Windows Forms in order to support WPF. That would be sad, but is a likely outcome if WPF continues to diverge from the established Windows Forms behaviors for interfaces and events.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 23, 2008</h2>Hmm..<br><br>I'm really not sure what to do. Unfortunately the Xceed grid doesn't support IDataErrorInfo (well, not the free version).&nbsp; We have purchased the Infragistics NetAdvantage, and their grid is mostly working except for this issue.&nbsp; Then finally the MS grid is still in CTP mode...<br><br>I think I'm going to finish up other areas and come back to this..<br><br>It's interesting though, because I had gotten the impression that WinForms databinding as overly strict (and/or broken) and you prefered Wpf's databinding.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 23, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do prefer WPF&#8217;s data binding, as it is simpler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, part of the reason it is simpler is because there&#8217;s
+no grid control :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So as the grid control becomes reality in WPF, it complicates
+WPF data binding too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In short, grid controls are the source of much pain&#8230; And
+right now in WPF they are the source of a LOT of pain because Microsoft doesn&#8217;t
+have one to set the standard. So the third party vendors have been (to some
+degree) making things up as they go &#8211; which is clearly a mess.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,110 @@
+<html><header><title>CslaDataSource_UpdateObject() e.Values has null values</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataSource_UpdateObject() e.Values has null values</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1256.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bahadir posted on Monday, September 18, 2006</h2>Hi,<br><br>I am new to Csla. I have a root collection object, EmployeeList, and its children, Employee objects. I have a basic website where a GridView pulls data from EmployeeList by calling:<br><br><font color="#808080">&nbsp;<font color="#000000">&nbsp;&nbsp; protected void EmployeesListDataSource_SelectObject(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object sender, Csla.Web.SelectObjectArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp; // Sql query: Select * From Employees<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.BusinessObject = GetEmployeesList();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br></font></font>The whole employees table displays just fine in the GridView. Next, I click on edit, on one of the rows, edit the row and press update. In this case, I expect to update this row with the following:<br><br>&nbsp;&nbsp; protected void EmployeesListDataSource_UpdateObject(<br>&nbsp;&nbsp;&nbsp; object sender, Csla.Web.UpdateObjectArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EmployeesList obj = GetEmployeesList(); // From Session<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Employee emp = obj.getItem(<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; new Guid(e.Keys["Id"].ToString()));<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp; // emp is valid here.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Data.DataMapper.Map(e.Values, emp);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; emp.Save();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;  catch <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; ...<br>&nbsp;&nbsp;&nbsp; }<br><br>The DataMapper call fails with: <span id="ErrorLabel">Property copy failed (Name)</span><br>If I try to manually try copying fields "Name", "Surname", and "JobTitle" from e.Keys[], these fields are null, but not the "Id" field. Essentially e.Values just contains "Id" of Employee. Do you see any mistakes? Shouldn't the GridView pass all columns' values to UpdateObject?<br><br>Thanks,<br>Bahadir<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bahadir replied on Monday, September 18, 2006</h2>Hi,<br><br>I've just seen on this post http://forums.lhotka.net/forums/thread/6370.aspx<br><br>that UpdateObject returns null on fields that are left blank. In my case however fields were not blank.<br><br>Thanks,<br>Bahadir<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Tuesday, September 19, 2006</h2>Bahadir, Do you have ViewState enabled on the grid?&nbsp; Not sure if this would make a difference . . .<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bahadir replied on Tuesday, September 19, 2006</h2>Hi,<br>
+<br>
+No I haven't had luck with this. I will seek help in an asp.net forum. At least you have non-template fields
+working. By the way, perhaps you've seen it already, but each column
+has a property: "ConvertEmptyStringToNull" this might help with
+eliminating null keys for empty fields.<br><br>Bahadir</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Wednesday, September 20, 2006</h2>Could you post the code you have for the grid and the code-behind that handles the grid?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bahadir replied on Wednesday, September 20, 2006</h2>Hi,<br>
+<br>
+Thanks, for helping me out. I didn't post thinking it would be off-topic. Here's what I posted at: <a href="http://forums.asp.net/thread/1404722.aspx" target="_blank">http://forums.asp.net/thread/1404722.aspx</a><br>
+<br>
+Note I was using csla2.1 beta originally, then down to csla2.0.3 and still the same.<br>
+<br>
+---<br>
+<div class="ForumPostBodyArea">
+									<div id="_ctl0__ctl1_bcr__ctl0___PostRepeater__ctl1_PostViewWrapper" class="ForumPostContentText">
+										<p>Hi,</p><p>I have a basic GridView control that is bound to a custom object data source as below:<br>
+</p>
+<p>&nbsp;</p>
+<p>&nbsp;&lt;form id="form1" runat="server"&gt;&lt;br /&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;nbsp;&lt;asp:GridView
+ID="GridView1" runat="server" AutoGenerateColumns="False"
+BackColor="White"
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+BorderColor="#999999" BorderStyle='Solid' BorderWidth='1px'
+CellPadding='3' DataKeyNames='Id'<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+DataSourceID="EmployeesListDataSource" ForeColor="Black"
+GridLines="Vertical"&gt;
+<br>
+</p>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;FooterStyle BackColor="#CCCCCC" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Columns&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;asp:CommandField ShowDeleteButton="True" ShowEditButton="True"
+ShowSelectButton="True" /&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;asp:BoundField DataField="Id" HeaderText="Id"
+InsertVisible="False" ReadOnly="True" SortExpression="Id" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;asp:BoundField DataField="Name" HeaderText="Name"
+SortExpression="Name" /&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;asp:BoundField DataField="Surname" HeaderText="Surname"
+SortExpression="Surname" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;asp:BoundField DataField="JobTitle" HeaderText="Job Title"
+SortExpression="JobTitle" /&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/Columns&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;SelectedRowStyle BackColor="#000099" Font-Bold="True"
+ForeColor="White" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;PagerStyle BackColor="#999999" ForeColor="Black"
+HorizontalAlign="Center" /&gt;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;HeaderStyle BackColor="Black" Font-Bold="True" ForeColor="White"
+/&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;AlternatingRowStyle BackColor="#CCCCCC" /&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/asp:GridView&gt;
+<br>&nbsp;&nbsp;&nbsp; &lt;/form&gt;<br><br>&nbsp;&nbsp;&nbsp; &lt;csla:CslaDataSource ID="EmployeesListDataSource" runat="server"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TypeName="classlib_cslatest.EmployeesList"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TypeAssemblyName="classlib_cslatest" 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnDeleteObject="EmployeesListDataSource_DeleteObject"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnUpdateObject="EmployeesListDataSource_UpdateObject"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnSelectObject="EmployeesListDataSource_SelectObject"&gt;
+<br>&nbsp;&nbsp;&nbsp; &lt;/csla:CslaDataSource&gt;</div>
+<div>&nbsp;</div>
+<div>As you can see, there are Id, Name, Surname and JobTitle fields,
+and Id is the only key field (see DataKeyNames). The GridView is
+successfully populated with rows and columns via the
+EmployeesListDataSource_SelectObject() call. In other words, the column
+names are correct, and all the rows of my Employee table is displayed
+correctly. So my assumption is that data is bound correctly. Then when
+I want to update the GridView, I do the following:</div>
+<div>&nbsp;</div>
+<div>1) Click edit on the row that I want to modify.</div>
+<div>2) Change the fields in a row that are enabled for modification.</div>
+<div>3) Click update.</div>
+<div>&nbsp;</div>
+<div>Then I expect to get updated fields in "UpdateObjectArgs e" argument to EmployeesListDataSource_UpdateObject() (See below).</div>
+<div>But there are no keys defined in the UpdateObjectArgs argument for
+the modified fields. I would expect to get e.Keys["Name"],
+e.Keys["Surname"] and e.Keys["JobTitle"] to obtain new values, but
+there are no such keys defined. The only defined dictionary key is "Id"
+and that contains the original Id value, since it is defined in
+DataKeyNames.</div>
+<div>&nbsp;</div>
+<div>Could you think of a reason why Update wouldn't work? Could you
+point me at the first point in the ASP.NET calls where the DataGrid
+values are captured before being passed to UpdateObjectArgs? Maybe I
+can debug it from there?<br>
+</div>
+<div>&nbsp;</div>
+<div>Thanks,</div>
+<div>Bahadir&nbsp;</div>
+<div>&nbsp;</div>
+<div>The function to update the database is as follows:</div>
+<div>&nbsp;</div>
+<div>&nbsp;&nbsp;&nbsp; protected void EmployeesListDataSource_UpdateObject(<br>
+<div>&nbsp;&nbsp;&nbsp; object sender, Csla.Web.UpdateObjectArgs e)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EmployeesList obj = GetEmployeesList();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</div>
+<div>&nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  // e.Keys["Id"] exists and keeps its original value.</div>
+<div> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Employee emp = 
+obj.getItem(new Guid(e.Keys["Id"].ToString()));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String total = string.Empty;</div>
+<div>&nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  // Neither of the below keys exist:</div>
+<div>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; MessageLabel.Text = "Name: " + e.Keys["Name"] +<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "Surname: " + 
+e.Keys["Surname"] + "Jobtitle: " + e.Keys["JobTitle"];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //Csla.Data.DataMapper.Map(e.Values, emp);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageLabel.Text += "Total: " + total;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; emp.Save();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 1;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException
+ ex)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ErrorLabel.Text = ex.BusinessException.Message;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ErrorLabel.Text = ex.Message
+;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.RowsAffected = 0;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }</div>
+<div>&nbsp;</div>
+<div>// Function I use to fetch data. Uses SQL Query: Select * From Employee. Works just fine.&nbsp;</div>
+<div>&nbsp;&nbsp;&nbsp; protected void EmployeesListDataSource_SelectObject(<br>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object sender, Csla.Web.SelectObjectArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.BusinessObject = GetEmployeesList();
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</div>
+&nbsp;</div>&nbsp;
+<br>
+</div>
+
+
+									</div>
+									</div>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Wednesday, September 20, 2006</h2>Hmm, I am using e.Values["mykey"] to get the values back - that seems to work (except for my template columns that are being bound in the RowDataBound code-behind).&nbsp; Have you tried that instead of e.Keys["mykey"]?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bahadir replied on Wednesday, September 20, 2006</h2>Grrr.. I knew it was a simple error. It works now.<br><br>Keys I believe returns what you define in DataKeyNames. I got confused by the fact that "mykey" is a key and there's a Keys dictionary.<br><br>Thanks a lot sydneyos.<br><br>Bahadir<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Monday, September 18, 2006</h2>I am having perhaps a similar problem - I can't tell if you are saying there is a Dictionary entry for "Name" but the value is null, or there is just no entry.&nbsp; My problem is that I don't even have a dictionary entry for any fielsds where I am using a Template column, and I don't see any way for my Template columns to communicate the field to which they are bound.&nbsp; Bound columns work as expected (but do have null values rather than empty string) if left blank.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 18, 2006</h2>You have to understand how ASP.NET data binding works. CslaDataSource doesn't create e.Values - that is created and populated purely by ASP.NET data binding - the data control merely passes the dictionary through from data binding to your code.<br><br>You'd have the same basic results using the ObjectDataSource or any other data source - but you'd have a harder time debugging. The reason is that those other data controls use reflection (or other means) to copy the values from the dictionary into your object. The fact that you have access to e.Values itself allows you the option of using reflection (with DataMapper.Map) or using any other technique of your choice to copy the values, and allows for more flexible debugging.<br><br>What it sounds like is that you need to set up your template controls differently to support data binding from the template. That's just a matter of using the right ASP.NET tag syntax or control property dialogs in VS 2005, and you should be able to get the correct answers for that sort of thing from a good ASP.NET book.<br><br>What I've done in the past (because I'm allergic to books <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />), is create a databound column, and then convert it to a template column so I can look at the tag structure. From that you can typically infer how you need to set up your template controls to get them to be properly data bound.<br><br>Remember that the data binding name in those tags defines the name of the value that ends up in the dictionary. If you want to use DataMapper.Map, the name in the control must match the name of the property on your object.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sydneyos replied on Tuesday, September 19, 2006</h2>That's a good trick, but it doesn't seem to translate when the inner control of the template column needs to be a DropDownList - or I'm missing something.&nbsp; Anyway, my workaround is to not use e.Values - instead I get the GridViewRow, do FindControl and get the value from that. <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

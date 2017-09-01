@@ -1,0 +1,222 @@
+<html><header><title>Culture Name Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Culture Name Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6871.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Wednesday, April 29, 2009</h2><P>We just had some users in Singapore start using an application built with CSLA 3.5 and I am getting a strange error.&nbsp; Here is the error:</P>
+<P>DataPortal.Fetch failed (Culture name 'en-sg' is not supported. Parameter name: name)</P>
+<P>I know it has something to do with the language settings but can someone help me with why this is happening?&nbsp; How do I get 'en-sg' to be supported?&nbsp; Thanks.</P>
+<P>Jonathan</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 29, 2009</h2>You probably need to build a resx dictionary for the culture en-sg.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Wednesday, April 29, 2009</h2><P>How and where do I build that file?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, April 29, 2009</h2>You will need to create a new culture specific resources file in the CSLA solution.&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2><P>That really shouldn't be the case (the need to create a new resx), because .NET should fall back to using the default resx (US english).</P>
+<P>Can you look at the stack trace to see exactly what component is failing?</P>
+<P>Is that really a valid culture name? Maybe it is .NET or Windows that simply doesn't recognize that culture string.</P>
+<P>Or maybe there's a language pack you need to install at the OS level to enable that culture?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Thursday, April 30, 2009</h2><P>EN-SQ stands for English (Singapore).&nbsp; From what I've found so far, this language only became available with Vista so I cannot install it on my XP box.&nbsp; I have created a resource file for en-sg but when I compile on an XP box it does not create the subfolder and dll.&nbsp; I compiled it on a Vista machine and the subfolder and dll did get created.&nbsp; I am in the process of setting up a Vista machine to use as a build box for this application.&nbsp; I guess I may upgrade to Vista but I'm trying to hold off for now.</P>
+<P>I thought it would default back to US English based on other things I've read but it appears it isn't.&nbsp; Any other thoughts or ideas?</P>
+<P>I've included the stack trace for the error in case you want to see it.&nbsp; </P>
+<P>Thanks for your help.</P>
+<P>Jonathan</P>
+<P>&nbsp;</P>
+<P><FONT face=Tahoma size=2>Csla.DataPortalException: DataPortal.Fetch failed (Culture name 'en-sg' is not supported.<BR>Parameter name: name) ---&gt; System.ArgumentException: Culture name 'en-sg' is not supported.<BR>Parameter name: name<BR>&nbsp;&nbsp; at System.Globalization.CultureTableRecord..ctor(String cultureName, Boolean useUserOverride)<BR>&nbsp;&nbsp; at System.Globalization.CultureTableRecord.GetCultureTableRecord(String name, Boolean useUserOverride)<BR>&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name, Boolean useUserOverride)<BR>&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name)<BR>&nbsp;&nbsp; at Csla.Server.DataPortal.SetContext(DataPortalContext context) in C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 299<BR>&nbsp;&nbsp; at Csla.Server.DataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 94<BR>&nbsp;&nbsp; --- End of inner exception stack trace ---<BR>&nbsp;&nbsp; at System.Globalization.CultureTableRecord..ctor(String cultureName, Boolean useUserOverride)<BR>&nbsp;&nbsp; at System.Globalization.CultureTableRecord.GetCultureTableRecord(String name, Boolean useUserOverride)<BR>&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name, Boolean useUserOverride)<BR>&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name)<BR>&nbsp;&nbsp; at Csla.Server.DataPortal.SetContext(DataPortalContext context) in C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 299<BR>&nbsp;&nbsp; at Csla.Server.DataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 94<BR>&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria)<BR>&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria)<BR>&nbsp;&nbsp; at STR.STRG_Explorer.Library.BLL.RefSearchList.GetRefSearchList(String formName)<BR>&nbsp;&nbsp; at STR.STRG_Explorer.SearchForm.SearchForm_Load(Object sender, EventArgs e)<BR>&nbsp;&nbsp; at System.EventHandler.Invoke(Object sender, EventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.OnLoad(EventArgs e)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.OnCreateControl()<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl(Boolean fIgnoreVisible)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl()<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.WmShowWindow(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.ScrollableControl.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.ContainerControl.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.WmShowWindow(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Form.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<BR>&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32 msg, IntPtr wparam, IntPtr lparam)</FONT><FONT face=Tahoma size=2></P>
+<DIV><BR></DIV></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The exception is coming from .NET, because it can&#8217;t set
+the culture. I suspected that was the case.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So either .NET or Windows (and I suspect Windows) doesn&#8217;t
+support that culture. You&#8217;ll have to figure out a way for the OS to
+support the culture, or stop the data portal from trying to set the culture to
+the invalid value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately there&#8217;s no hook to do this. The data portal
+sets the context before doing anything else, and there&#8217;s never been a
+need for that to be extensible. This means you&#8217;ll probably need to alter
+Csla.Server.DataPortal &#8211; just change the SetContext() method to look for
+a culture of name &#8220;en-sg&#8221; and replace it with something valid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 30, 2009 1:34 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Culture Name Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>EN-SQ stands for English (Singapore).&nbsp; From what I've found so far,
+this language only became available with Vista so I cannot install it on my XP
+box.&nbsp; I have created a resource file for en-sg but when I compile on an XP
+box it does not create the subfolder and dll.&nbsp; I compiled it on a Vista
+machine and the subfolder and dll did get created.&nbsp; I am in the process of
+setting up a Vista machine to use as a build box for this application.&nbsp; I
+guess I may upgrade to Vista but I'm trying to hold off for now.<o:p></o:p></p>
+
+<p>I thought it would default back to US English based on other things I've
+read but it appears it isn't.&nbsp; Any other thoughts or ideas?<o:p></o:p></p>
+
+<p>I've included the stack trace for the error in case you want to see
+it.&nbsp; <o:p></o:p></p>
+
+<p>Thanks for your help.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p><span>Csla.DataPortalException:
+DataPortal.Fetch failed (Culture name 'en-sg' is not supported.<br>
+Parameter name: name) ---&gt; System.ArgumentException: Culture name 'en-sg' is
+not supported.<br>
+Parameter name: name<br>
+&nbsp;&nbsp; at System.Globalization.CultureTableRecord..ctor(String
+cultureName, Boolean useUserOverride)<br>
+&nbsp;&nbsp; at System.Globalization.CultureTableRecord.GetCultureTableRecord(String
+name, Boolean useUserOverride)<br>
+&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name, Boolean
+useUserOverride)<br>
+&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name)<br>
+&nbsp;&nbsp; at Csla.Server.DataPortal.SetContext(DataPortalContext context) in
+C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 299<br>
+&nbsp;&nbsp; at Csla.Server.DataPortal.Fetch(Type objectType, Object criteria,
+DataPortalContext context) in C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line
+94<br>
+&nbsp;&nbsp; --- End of inner exception stack trace ---<br>
+&nbsp;&nbsp; at System.Globalization.CultureTableRecord..ctor(String
+cultureName, Boolean useUserOverride)<br>
+&nbsp;&nbsp; at
+System.Globalization.CultureTableRecord.GetCultureTableRecord(String name,
+Boolean useUserOverride)<br>
+&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name, Boolean
+useUserOverride)<br>
+&nbsp;&nbsp; at System.Globalization.CultureInfo..ctor(String name)<br>
+&nbsp;&nbsp; at Csla.Server.DataPortal.SetContext(DataPortalContext context) in
+C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 299<br>
+&nbsp;&nbsp; at Csla.Server.DataPortal.Fetch(Type objectType, Object criteria,
+DataPortalContext context) in
+C:\CSLA\3.5\C#\cslacs\Csla\DataPortal\Server\DataPortal.cs:line 94<br>
+&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria)<br>
+&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria)<br>
+&nbsp;&nbsp; at
+STR.STRG_Explorer.Library.BLL.RefSearchList.GetRefSearchList(String formN ame)<br>
+&nbsp;&nbsp; at STR.STRG_Explorer.SearchForm.SearchForm_Load(Object sender,
+EventArgs e)<br>
+&nbsp;&nbsp; at System.EventHandler.Invoke(Object sender, EventArgs e)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Form.OnLoad(EventArgs e)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Form.OnCreateControl()<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl(Boolean
+fIgnoreVisible)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.CreateControl()<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.WmShowWindow(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Control.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.ScrollableControl.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.ContainerControl.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Form.WmShowWindow(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.Form.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at
+System.Windows.Forms.Control.ControlNativeWindow.OnMessage(Message &amp; m)<br>
+&nbsp;&nbsp; at
+System.Windows.Forms.Control.ControlNativeWindow.WndProc(Message&amp; m)<br>
+&nbsp;&nbsp; at System.Windows.Forms.NativeWindow.Callback(IntPtr hWnd, Int32
+msg, IntPtr wparam, IntPtr lparam)<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Thursday, April 30, 2009</h2><P>Rocky,</P>
+<P>So even if I create the resource file it won't fix my problem?&nbsp; </P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know &#8211; maybe it will. But it appears that
+the OS is not accepting the culture value, so I&#8217;d be surprised if that fixed
+the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 30, 2009 2:25 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Culture Name Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>So even if I create the resource file it won't fix my problem?&nbsp; <o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

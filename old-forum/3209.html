@@ -1,0 +1,114 @@
+<html><header><title>How can  I use AddBusinessRules for a Read Only Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How can  I use AddBusinessRules for a Read Only Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3209.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi posted on Monday, July 16, 2007</h2><P>I have a read only object that need to call&nbsp; AddBusinessRules to do some data validations for the user inputs used in search, but I'm getting "ValidationRules.AddRule is not accessible in this context" error as it is protected.&nbsp; I understand why I'm getting this error is because the Object that calls the <FONT face=Arial size=2>"ValidationRule.AddRule" is a Read Only Object, but ValidationRule is defined in BusinessBase.</FONT></P>
+<P><FONT face=Arial size=2>So is it possible for RO object to use VlidationRule to do any data entry validation then?</FONT></P>
+<P><FONT face=Arial size=2>Any insights is appreciated.&nbsp; </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 16, 2007</h2><P>A read-only object can only have read-only properties (or at least that's all that CSLA supports), so there's never a reason to have validation rules in a read-only object.</P>
+<P>If you want to have input fields on your search form, you should bind them to an editable root object - though perhaps one that doesn't actually do any data access. Your read-only list can have a factory that accepts the input object (editable root) as a parameter:</P>
+<P>Private Shared Function GetList(userInput As SearchInput)<BR>&nbsp; ' ...<BR>End Function</P>
+<P>The SearchInput class would be an editable root, but with none of the data access code. In other words, it would have only properties and business rules.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Tuesday, July 17, 2007</h2><P>Okay I see.&nbsp; Thanks Rocky for pointing me&nbsp;at&nbsp;a different&nbsp;direction I never thought of before.</P>
+<P>I thought my app only needed read-only and read-only list because it basically emcompasses several search input forms/controls and&nbsp;a list of search results for each search form/control.&nbsp; Each&nbsp;search result is read-only list, which has a criteria class defined.&nbsp; Each search form/control is binded to the criteria class (I use it as search criteria).</P>
+<P>To clarify, I already have a factory in read-only list that accepts criteria class as a parameter, so what I'm getting at from your solution is that I will need to create an editable root object to replace the criteria class I'm using now to have the search form bind to.&nbsp; That will allow the search form to have validation rules such as data validation etc.&nbsp; In this case, criteria class will not be needed any more, right?</P>
+<P>My second question on this, would it make difference if I change the criteria to inherit from BusinessBase instead of being created within a read-only list (I'm sure it will)?&nbsp; I guess my question is what is the difference to create an editable root object vs. use criteria as an editable root object?</P>
+<P>Thank you very much for your time and helps.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, July 17, 2007</h2><P>I have a lot of search screens in my app and I created Root BOs with validation rules in them just as Rocky describes. Then when the user clicks Search, the valid BO is passed to the ROC as a parameter and is used to determine which records to fetch.</P>
+<P>There are no DataPortal methods - the factory just uses a New constructor to build an instance of the BO.</P>
+<P>e.g.</P><FONT size=2>
+<P>&lt;Serializable()&gt; _<BR></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> MySearchCriteriaBO<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> MyBusinessBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> MySearchCriteriaBO)</P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 17, 2007</h2><P>If you don't call the data portal, then you must be doing the data access directly? You'll never be able to use a remote data portal in that case.</P>
+<P>What I recommend is passing the valid BO into the ROC factory method as a parameter. In the factory method you should call the data portal, passing a criteria object, and the data load should occur in the ROC's DataPortal_Fetch().</P>
+<P>There are a&nbsp;couple ways you can create the criteria object:</P>
+<UL>
+<LI>The BO can be a public, nested class inside the ROC: this allows the "criteria" class to inherit from BusinessBase so you can bind it to the UI and is a simple solution - but it is odd to have a public nested class and fxcop will bark at you</LI>
+<LI>The BO can be a regular, public BO too. Obviously it must inherit from BusinessBase, so it <EM>can't</EM> inherit from CriteriaBase. So in this scenario the ROC factory method must get the BO data into the Criteria object.</LI>
+<UL>
+<LI>This can be done by copying the property values from the BO into the Criteria (probably passed in via the Criteria's constructor)</LI>
+<LI>This can be done by passing the BO itself to the Criteria, and having the Criteria object hold the BO as a field within the BO - this is the simplest and most elegant solution</LI></UL></UL>
+<P>Overall I think I'd lean toward that last option: separate BO (with no data access of its own) that is then passed into the Criteria object's constructor and exposed as a property of the Criteria for use in your DP_Fetch() method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Tuesday, July 17, 2007</h2><P><FONT color=#0000ff>Thank you both Joe and Rocky for&nbsp;sharing your thoughts and solutions.</FONT></P>
+<P><FONT color=#0000ff>In my case (as stated in my previous post), my app is definitely missing an editable root object that allows putting in validation rules.&nbsp;And I will continue to use the data portal to do data access.</FONT></P>
+<P><FONT color=#0000ff>I have a few questions for the three options of creating the criteria object Rocky provided:</FONT></P>
+<LI>The BO can be a public, nested class inside the ROC: this allows the "criteria" class to inherit from BusinessBase so you can bind it to the UI and is a simple solution - but it is odd to have a public nested class and fxcop will bark at you&nbsp; <FONT color=#0000ff>&gt;&gt;&gt; Since I already have a public nested "criteria" class defined inside the ROC to be used as search criteria, do I just need to change it to inherit from BusinessBase then put in the validation rules?&nbsp; This does seem to be a simple solution, but let me read on for more options...&nbsp;</FONT> 
+<LI>The BO can be a regular, public BO too. Obviously it must inherit from BusinessBase, so it <EM>can't</EM> inherit from CriteriaBase. So in this scenario the ROC factory method must get the BO data into the Criteria object.&nbsp;&nbsp; <FONT color=#0000ff>&gt;&gt;&gt;So&nbsp; I will need to create an editable root object but also need to keep the "criteria" class that I already have to get the BO data into it?&nbsp; or is the Criteria object noted here referring to the Criteria oject in csla?</FONT> </LI>
+<UL>
+<LI>This can be done by copying the property values from the BO into the Criteria (probably passed in via the Criteria's constructor) 
+<LI>This can be done by passing the BO itself to the Criteria, and having the Criteria object hold the BO as a field within the BO - this is the simplest and most elegant solution.</LI></UL>
+<P>Overall I think I'd lean toward that last option: separate BO (with no data access of its own) that is then passed into the Criteria object's constructor and exposed as a property of the Criteria for use in your DP_Fetch() method.&nbsp; <FONT color=#0000ff>&gt;&gt;&gt; I want to try this solution.</FONT></P><FONT color=#0000ff><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Is the following prototype heading the right direction?&nbsp; Thanks for your time and help!</P>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>SearchInput</P>
+<P>&nbsp;&nbsp;&nbsp;Inherits BusinessBase(of SearchInput)</P>
+<P>End Class</P>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2><FONT color=#0000ff> SearchResultList</FONT></P></FONT><FONT color=#0000ff size=2>
+<P>&nbsp;&nbsp;&nbsp;Inherits ReadOnlyListBase(Of SearchResultList, SearchResultInfo)</P>
+<P>&nbsp;&nbsp;&nbsp;Public Shared Function GetSearchResultList(ByVal&nbsp;UserInput As SearchInput) As SearchResultList</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return DataPortal.Fetch(Of SearchResultList)(New FilteredCriteria(UserInput))</P>
+<P>&nbsp;&nbsp;&nbsp;End Function</P>
+<P>&nbsp;&nbsp;&nbsp;Private Sub New()</P></FONT><FONT color=#008000 size=2>
+<P>&nbsp;&nbsp;&nbsp;' require use of factory methods</P></FONT><FONT color=#0000ff size=2>
+<P>&nbsp;&nbsp;&nbsp;End Sub</P>
+<P>&lt;Serializable()&gt; _</P>
+<P>Private Class FilteredCriteria</P>
+<P>&nbsp;&nbsp;&nbsp;Private mUserInput As SearchInput</P>
+<P>&nbsp;&nbsp;&nbsp;Public ReadOnly Property UserInput() As SearchInput</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Return mUserInput</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End Get</P>
+<P>&nbsp;&nbsp;&nbsp;End Property</P>
+<P>&nbsp;&nbsp;&nbsp;Public Sub New(ByVal&nbsp;UserInput As SearchInput)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;mUserInput = UserInput</P>
+<P>&nbsp;&nbsp;&nbsp;End Sub</P>
+<P>End Class</P>
+<P>&nbsp;&nbsp;&nbsp;Private Overloads Sub DataPortal_Fetch(ByVal criteria As FilteredCriteria)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetch(criteria.UserInput)</P>
+<P>&nbsp;&nbsp;&nbsp;End Sub</P>
+<P>End Class</P></FONT>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Tuesday, July 17, 2007</h2><P>Sorry about the formatting of the prototype, I don't know why it turned out that way</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 17, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, your prototype is headed in the right direction.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then all you need is SearchInput, which would inherit from
+BusinessBase, but would only include the <i>Business Methods, Business Rules</i>
+and <i>Factory Methods</i> regions. The NewInput() factory would be:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Shared Function NewInput() As SearchInput<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Return New SearchInput<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>End Function<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So there&#8217;d be no data portal interaction in this class at
+all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Tuesday, July 17, 2007</h2><P>Rocky,</P>
+<P>Thanks so much for your guiding me to the right&nbsp;solution, helping review my prototype and giving valuable advices.&nbsp; Sure I will remember to only include the <I>Business Methods, Business Rules</I> and <I>Factory Methods</I> regions in the SearchInput BO.</P>
+<P>This is my first app using the csla framework.&nbsp; With all the kind assistance from this wonderful community, I'm more confident than ever to use the framework.&nbsp; I also bought and read your book on it, I enjoyed reading the theroy chapters as well as the example chapters.&nbsp; Excellent book, in my mind.</P>
+<P>Thanks again for all your time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 18, 2007</h2><P>You got it.</P>
+<P>That is the exact technique I use for my Search screens.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Wednesday, July 18, 2007</h2>Good to hear.&nbsp; Thanks Joe.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>yimiqi replied on Friday, July 20, 2007</h2><P>Joe, </P>
+<P>Do you bind your search screen to the&nbsp;BO at design time or run time?&nbsp;Just curious.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

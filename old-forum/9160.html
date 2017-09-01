@@ -1,0 +1,10 @@
+<html><header><title>Regions in an abstract class</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Regions in an abstract class</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9160.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Thursday, July 01, 2010</h2><p>Hi all,</p>
+<p>In an abstract class,</p>
+<p>Must I implement the Authorization Rules, Factory Methods and Data Access regions? or just the Business Methods?</p>
+<p>Will the methods in Authorization Rules, Factory Methods and Data Access regions be just a declaration of MUSTOVERRIDE methods?</p>
+<p>Thanks in advance,</p>
+<p>&nbsp;</p>
+<p>L.M</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, July 02, 2010</h2><p>Typically an abstract class is there to act as a base class for other types. And typically it exists so you can customize or tweak CSLA base class behaviors.</p>
+<p>So I don&#39;t usually have all the regions - just a few overrides for the small number of methods I&#39;m trying to customize.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

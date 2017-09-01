@@ -1,0 +1,241 @@
+<html><header><title>OO design</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OO design</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/232.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski posted on Wednesday, May 31, 2006</h2><P>Hello all,<BR>I am quite new to the OO world, I have been working with .NET for about a year and most of the work I have done with it has been procedural in nature. I got the Expert Business Objects book and am trying to change my thinking to fit OO programming.</P>
+<P><BR>I have a rather general question with a mock application I'm trying to develop with CSLA.NET. I have come up with a mock use case based on the company I work for. In trying to layout the object design I've come across a problem and want to make sure I'm going down the right path.<BR></P>
+<P>My design has several root objects. <BR>&nbsp;&nbsp; Vendor, Customer, Driver, Plant, Contact<BR></P>
+<P>I also have a class called Address. Each one of the above objects exhibits a has-a relationship to the Address class. Further Vendor, Customer, Plant also have a has-a relationship to the Contact Class.<BR>In the book Rocky talks about normalizing behavior, so my thought is that the way I have this setup is correct, however he also advises against overly complex relationships so this gives me pause. The mock application isn't going to be used for anything, but I would like to understand and make sure I am learning the design process correctly.<BR>&nbsp;<BR>Anyone out there have a similar problem/solution? Am I heading down the right path? Any advice would be greatly appreciated. <BR></P>
+<P>Thanks,</P>
+<P>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 31, 2006</h2><P>On the surface it sounds like you are analyzing your objects based on data relationships - which is something to avoid.</P>
+<P>As a specific example, you note that&nbsp;Plant has-a Contact. While that is most likely a valid data relationship, it is only meaningful in your object model if you have a use case where that matters.</P>
+<P>In other words, objects come into being through a use case that requires them, not just because there's some data that exists in the database.</P>
+<P>So you might have an "Edit Plant Profile" use case. And in that use case the user may be editing the plant information, and as part of that information there's a contact for the plant.</P>
+<P>But the use case also needs to define how the user associates a contact with the plant. Do they enter the contact info directly? Or do they choose the contact from a list of existing contacts? Or both? And if they can choose the contact from a list, do they need the ability to add a contact if it isn't in the list? And if THAT is the case, then you have the scenario where one use case links to another - because you can be sure that "Add a Contact" is its own use case, with its own objects.</P>
+<P>What I would expect to see out of this are objects like this:</P>
+<P>"Edit Plant Profile"<BR>Plant&lt;-BusinessBase (root)<BR>PlantContacts&lt;-BusinessListBase (child)<BR>PlantContact&lt;-BusinessBase (child, probably display-only)</P>
+<P>"Add a Contact"<BR>Contact&lt;-BusinessBase (root)</P>
+<P>The responsibilty of Contact is to enter/edit valid contact data. The responsibility of PlantContact is to indicate an association between a plant and a contact. Different use cases, different responsibilities and thus different objects/classes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski replied on Wednesday, May 31, 2006</h2><P>Rocky,<o:p></o:p></P>
+<P>I think you're exactly right, looking back at it I am looking at my data relationships and trying to base objects off of them, I'm trying to get myself to stop doing this (it's a lot harder than it sounds)<o:p></o:p></P>
+<P>Looking at&nbsp;the object model you describe, I would then look at Vendor, Customer the same way even though those contact objects are identical? So I would have a Contact class and then in Vendor for instance I would have <o:p></o:p></P>
+<P>"Edit Vendor Profile"<o:p></o:p></P>
+<P>Vendor&lt;-BusinessBase (root)<BR>VendorContacts&lt;-BusinessListBase (child)<BR>VendorContact&lt;-BusinessBase (child, probably display-only) so on and so forth with all of my objects that have a has-a relationship to the Contact class?<o:p></o:p></P>
+<P>Then there is the question of Address class. I suppose the same would hold true but since the circumstance is a bit different I want to make sure I'm doing this right.<o:p></o:p></P>
+<P>The use case says that all Entities (Vendor, Driver, Plant, Contact etc.) will have an address that is unique to that Entity. Further on most entities (Driver is the exception here) will have at least one contact, the address of a contact may or may not be the same as the entity address. <o:p></o:p></P>
+<P>So I would have another use case "Add a Address"<o:p></o:p></P>
+<P>Address &lt;- Business Base (root) then in the case of a Vendor<o:p></o:p></P>
+<P>I would modify the above by adding VendorAddress class. </P>
+<P>Again working to normalize the behavior here since an&nbsp;Address is always the same set of variables Street, City, State etc. or should I look at this like normalization in the database where you can end up overdoing it and add too much complexity? I could for instance just add the Street, City, State properties to the Vendor since there isn't a collection of addresses.</P>
+<P>Again I appreciate the input<o:p></o:p></P>
+<P>Justin<o:p></o:p></P>
+<P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>LayeredDev replied on Wednesday, May 31, 2006</h2><P>Justin,</P>
+<P>Here is my 2 cents. If you don't have a collection of Addresses to maintain for a Vendor, then you are better off adding the Street, City, State etc properties to the Vendor object. Same holds true for other objects like Driver, Plant etc.</P>
+<P>Cosmic Ovungal</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, May 31, 2006</h2>
+
+<p class="MsoNormal"><span>If Vendor
+and Customer are the same class, you only have one class.<span>&nbsp; </span>Address is a separate class.<span>&nbsp; </span>Do not place the address data into the Vendor or
+Customer class.<span>&nbsp; </span>A class should only
+encapsulate one set of cohesive behaviors.<span>&nbsp;
+</span>If you placed the Address information into the Vendor class, the Vendor
+class would be responsible for the behavior of a Vendor and an Address.<span>&nbsp; </span>Splitting them up will make your code more
+cohesive and flexible.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2>For a scenario where the use case dictates a 1:1 
+relationship - as in a Vendor has ONE Address - you might consider (and I think 
+someone else suggested this too) just including the address properties as part 
+of your main object. Or having Address be a direct child of the root (no 
+collection involved).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2>You can't generalize all object relationships into a single 
+pattern - the design and implementation vary based on the specific use cases and 
+what is required to fulfill the business requirements.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2>You might really have an Address child object that is a 
+child of various types of editable root - that's just fine. The complexity there 
+comes into the data access (potentially). If you have just one Addresses table 
+in your database it isn't so much of an issue - assuming you have a common key 
+type for all Vendor/Customer/etc - which is kind of a requirement for a common 
+Addresses table.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2>But if you have a different Addresses table for each 
+Vendor/Customer/etc. then you need to get the data access out of the Address 
+class because it will be different on a per-type basis.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2>Again, normalize the behavior so one object has only one 
+behavior, and no behavior is duplicated (as much as possible 
+anyway).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546381716-31052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, May 31, 2006</h2>
+
+<p class="MsoNormal">IMHO, your database structure shouldn’t really dictate you
+object structure.<span>&nbsp; </span>This makes your design
+tightly-coupled with the database.<span>&nbsp; </span>Deciding
+whether you should include the address properties in the Vendor class based on
+the number of address tables you have, doesn’t seem like a good idea to me.<span>&nbsp; </span>All addresses will share some behavior and
+that behavior doesn’t belong in the Vendor class.<span>&nbsp; </span>Each class should only encapsulate one set of
+cohesive behaviors.<span>&nbsp; </span>Adding the address
+properties to the Vendor class violates this.<span>&nbsp;
+</span>Further, this also violates the single-responsibility principle.<span>&nbsp; </span>The Vendor class would have two reasons to
+change.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jlazanowski replied on Wednesday, May 31, 2006</h2><P>To be honest, I can see it both ways.<o:p></o:p></P>
+<P>The Address (in this mock design) is a 1:1 relationship with any other object, a Vendor can have&nbsp;1 and only 1 address, a Contact can have 1 and only one address. It I wanted to do some specific validation on the address I could see having it in another class, however I can also see it as just a simple property of an object.<o:p></o:p></P>
+<P>All of my objects Vendor, Customer, Plant etc. Have a Name property, I don't try and break this out into a separate class because it's simple property of an object, so I can see it both ways.<o:p></o:p></P>
+<P>&nbsp;<o:p></o:p></P>
+<P>I would like to say thank you to everyone who responded. I appreciate all the input. <o:p></o:p></P>
+<P><SPAN>BTW Rocky, Thanks for the book it's an incredible resource even if it does take a little while to get through my thick skull</SPAN></P>
+<P><SPAN>Thanks again to all,</SPAN></P>
+<P><SPAN>Justin</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>In general I agree, but if the concept of a "vendor" has 
+one and exactly one address then it may be the case that the Vendor object has 
+properties for Addr1, Addr2, City, etc. Arguably this fits within the 
+responsibility to "enter/edit valid vendor data" that such an object might 
+fulfill.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>Now my guess is that typically other objects will also have 
+an address concept, and this is the case in the original example, and so it 
+probably makes sense to normalize the address behaviors into their own class. 
+HOWEVER, if all you are normalizing are the fields/properties, then you are 
+mostly just normalizing data, not behavior. It is only the RULES pertaining to 
+the fields that are behaviors, not the fields themselves.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>So I see two possible approaches.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>The obvious one is to create an Address object (editable 
+child) - and that's typically the right answer I think.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>The second is to create an AddressRules class that contains 
+the behaviors for address fields, and then any use of an address field/property 
+in any object would link that property to these rules. The behavior remains 
+normalized.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>This latter approach can be useful in some applications 
+where only a zip code or city name is collected for a Customer, while a complete 
+address is collected for a Vendor. Given recent privacy concerns, this isn't all 
+that rare - and yet you still want the same behaviors for the ZipCode property 
+on Customer as you do for Vendor.Address.ZipCode&nbsp;- so you must normalize 
+that behavior in some manner.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  </DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT size=2><FONT face=Tahoma><B>From:</B> malloc1024 
+  [mailto:cslanet@lhotka.net]&nbsp;<BR></FONT><SPAN class=625514619-31052006><FONT face=Arial color=#0000ff>&nbsp;</FONT></SPAN></FONT></DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT size=2><SPAN class=625514619-31052006>&nbsp;</SPAN></FONT>IMHO, your database 
+  structure shouldnbt really dictate you object structure.<SPAN>&nbsp; 
+  </SPAN>This makes your design tightly-coupled with the database.<SPAN>&nbsp; 
+  </SPAN>Deciding whether you should include the address properties in the 
+  Vendor class based on the number of address tables you have, doesnbt seem 
+  like a good idea to me.<SPAN>&nbsp; </SPAN>All addresses will share some 
+  behavior and that behavior doesnbt belong in the Vendor class.<SPAN>&nbsp; 
+  </SPAN>Each class should only encapsulate one set of cohesive 
+  behaviors.<SPAN>&nbsp; </SPAN>Adding the address properties to the Vendor 
+  class violates this.<SPAN>&nbsp; </SPAN>Further, this also violates the 
+  single-responsibility principle.<SPAN>&nbsp; </SPAN>The Vendor class would 
+  have two reasons to change.</DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichaelBosch replied on Wednesday, May 31, 2006</h2>I am interested in how this will affect the data access portion of
+it.&nbsp; If we encapsulate the rules for this Address object, will the
+Parent object be in charge of saving the address information, whether
+that be in an global Address table or not?&nbsp; If all addresses are
+saved in the same table, then the update/insert data access would be in
+the Address object.&nbsp;&nbsp; If all addresses aren't saved in a
+specific table, then would the Address object have to do something like
+:<br>
+<br>
+If Me.Parent.GetType = Vendor<br>
+then save here,<br>
+else<br>
+save there...<br>
+<br>
+I guess what I'm asking is whether the parent is in charge of saving
+the address information or the address itself because this address
+looks like a 1/2 business object 1/2 data structure mutant.&nbsp; I
+know objects should not be defined by data, but.. uhmm.. how do I save
+it?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 31, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>You wouldn't want the parent to be responsible for saving 
+the Address child data, no. That would imply some very strong coupling between 
+those objects and would reduce the maintainability of your code by quite a 
+lot.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>As with all object graphs in CSLA .NET, it is the parent's 
+sole job to ask the child to save itself - typically by calling a 
+Friend/internal method like Insert or Update. The most the parent should do is 
+pass a reference to the parent into the Insert/Update 
+method.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>Inside the Address class your Update() method might look 
+something like this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>Friend Sub Update(ByVal parent As 
+IHaveAddress)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp; Dim sprocName As String</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp; If TypeOf parent Is Vendor Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; sprocName = 
+"updateVendorAddress"</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp; ElseIf TypeOf parent Is Customer 
+Then</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; sprocName = 
+"updateCustomerAddress"</FONT></SPAN></DIV>&nbsp; ' ...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp; End If</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp; ' ...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Using cm As SqlCommand = 
+cn.CreateCommand()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = 
+sprocName</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' ...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+cm.Parameters.AddWithValue("@id", parent.Id)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ' 
+...</FONT></SPAN></DIV></SPAN>&nbsp;&nbsp;&nbsp; End 
+Using</FONT></SPAN></DIV></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>End Sub</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>IHaveAddress is a custom interface you might use - it just 
+defines how to get the unique Id value from the any/all parent 
+objects.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=312073322-31052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> MichaelBosch [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, May 31, 2006 5:22 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: OO 
+  design<BR></FONT><BR></DIV>
+  <DIV></DIV>I am interested in how this will affect the data access portion of 
+  it.&nbsp; If we encapsulate the rules for this Address object, will the Parent 
+  object be in charge of saving the address information, whether that be in an 
+  global Address table or not?&nbsp; If all addresses are saved in the same 
+  table, then the update/insert data access would be in the Address 
+  object.&nbsp;&nbsp; If all addresses aren't saved in a specific table, then 
+  would the Address object have to do something like :<BR><BR>If 
+  Me.Parent.GetType = Vendor<BR>then save here,<BR>else<BR>save 
+  there...<BR><BR>I guess what I'm asking is whether the parent is in charge of 
+  saving the address information or the address itself because this address 
+  looks like a 1/2 business object 1/2 data structure mutant.&nbsp; I know 
+  objects should not be defined by data, but.. uhmm.. how do I save 
+it?<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Monday, January 06, 2014</h2><p>Hi Rocky. I&#39;ve just found this old post and one question comes to my mind. In the case of embedding the [Address] BO as a property of the [Vendor] BO, how do you bind the [Vendor].[Address].[..properties..] in the UI?</p>
+<p>Troncho</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Wednesday, May 31, 2006</h2><p class="MsoNormal"><span>I agree. <span>&nbsp;</span>If you are only normalizing data, you could place the address
+properties in the vendor class.<span>&nbsp;
+</span>However, addresses usually contain address specific behavior.<span>&nbsp; </span>This is why I suggested using an address
+class, to separate behavior.<span>&nbsp; </span>Using an
+AddressRule class is a good idea because it encapsulates the address specific
+behavior.<span>&nbsp; </span>I have used similar classes
+in the past and they have worked out well.<span>&nbsp;
+</span>As long as the address behavior is encapsulated in its own class, you
+should have a good design.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Wednesday, May 31, 2006</h2>I'm no OO expert, but I fall into the camp of having an Address class. Our address class contains two "codes" for state and country. These codes are associated with a NameValueList. The Address class has a method that concatenates the individual fields to a single string. This concatenation uses the country's value from the NVL, and has logic based on the country to determine whether the state uses the key or the description. For USA and Candadian addresses, we use the key. For Mexican addresses, we use the value.<br><br>Our address objects are sortable, which is used when generating mailing lists. These are the two main behaviors in our address object. Oh, I almost forgot -- read/write access is usually controlled through the Address object because we have no use cases where the city can be maintained but the state cannot.<br><br>To me, this is clearly behavior that I would not want to duplicate across objects. My Invoice object has multiple addresses (Ship-to, Bill-to, Sold-From) that the user has the ability to maintain in a free-form manner.<br><br>As Rocky pointed out, data access can be problematic. We don't have a normalized Address table, but we have a naming convention for the columns in the table. For tables with multiple addresses, we use a prefix. Because Address is always a child, the constuctors take a datareader and a prefix as parameters. The data is loaded from the data reader without the business object programmer having to write extra lines.<br><br>Saving data is also handled by the parent. Our objects track original values, and we have an Updater object that generates parameterized SQL Update statements based on the fields that have changed. The Parent passes the Updater to the Address and the Address adds its fields to the Updater.<br><br>Rocky stated that this kind of design is a very tight cohesion between objects. This tight cohesion can hinder flexibility and maintenance. That is potentially a problem. I would counter that argument with the point that Addresses are unlikely to require major changes. We also don't have any need for the Address object to be used outside of this project. Tight cohesion is a risk, but it is not to be avoided like the plague. For our needs, it made sense.<br><br>There are certainly other ways to deal with this behavior. In all cases, you should consider your needs and determine if the behavior is likely to change. Also consider that even the experts don't get the object model perfect on the first try. Martin Fowler is considered an expert in OOD, and he wrote a book (Refactoring) that is focused solely on changing the design of existing applications.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

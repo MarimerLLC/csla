@@ -1,0 +1,36 @@
+<html><header><title>Multiple ReadOnlyBase objects in ReadOnlyListBase?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple ReadOnlyBase objects in ReadOnlyListBase?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6663.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Tuesday, March 24, 2009</h2>Hello,<br>Quick question.&nbsp; Let's say I have two ReadOnlyBase objects Object1 and Object2.&nbsp; Each of these objects have their own class and different properties.&nbsp; Is it possible to get a ReadOnlyListBase object that will populate with both types of objects at the same time?<br><br>Thanks!<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2><P>Yes, you just need to define some non-generic (polymorphic) commonality between Object1 and Object2. The easiest thing is to use an interface like IObject1and2:</P>
+<P>public class MyList : ReadOnlyListBase&lt;MyList, IObject1and2&gt;<BR>{<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Tuesday, March 24, 2009</h2>I'll give it a shot... i'm still new to some of these concepts.<br><br>Thanks Rocky for your help :)<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Tuesday, March 24, 2009</h2>Just to clarify....i'm assuming you mean that the interface would provide certain properties that would be required in each object.&nbsp; My list then could be data bound to a grid (or whatever) and display those fields the two have in common... Is this correct?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, kind of. The UI stuff is tricky, because data binding won&#8217;t
+use interfaces.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So yes, the interface will define what is common in each object,
+but data binding will actually use reflection to interact with the objects &#8211;
+which will work as long as both types have a common set of public properties
+for data binding to use &#8211; otherwise you&#8217;ll get a runtime failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

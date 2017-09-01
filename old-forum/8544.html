@@ -1,0 +1,8 @@
+<html><header><title>DataPortal, EditableChildList, creation of child object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal, EditableChildList, creation of child object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8544.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fsl posted on Wednesday, February 17, 2010</h2><p>Hi</p>
+<p>When creating a new EditableChildList I want to populate it with some children, is it possible to pass some data to these children. E.g. could i just add a method:</p>
+<p>private void Child_Create(Foo data)</p>
+<p>to my child class?</p>
+<p>And then call this method in my EditableChildList class..</p>
+<p>Regards,</p>
+<p>Fredrik</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>fsl replied on Wednesday, February 17, 2010</h2><p>Doh, I think i can answer that myself.. The signature of CreateChild is</p>
+<p>DataPortal.CreateChild&lt;T&gt;(params object[] parameters)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

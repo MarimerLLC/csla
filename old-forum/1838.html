@@ -1,0 +1,19 @@
+<html><header><title>Here is the VB.Net and C# Code for Creating Your Own Business Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Here is the VB.Net and C# Code for Creating Your Own Business Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1838.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm posted on Monday, November 27, 2006</h2><P>VB.Net:</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOBusinessBase(Of T As MyBOBusinessBase(Of T))<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.BusinessBase(Of T)<BR>End Class</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOBusinessListBase(Of T As MyBOBusinessListBase(Of T, C), C As Csla.Core.IEditableBusinessObject)<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.BusinessListBase(Of T, C)<BR>End Class</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOCommandBase<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.CommandBase<BR>End Class</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBONameValueListBase(Of K, V)<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.NameValueListBase(Of K, V)<BR>End Class</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOReadOnlyBase(Of T As MyBOReadOnlyBase(Of T))<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.ReadOnlyBase(Of T)<BR>End Class</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOReadOnlyListBase(Of T As MyBOReadOnlyListBase(Of T, C), C As Csla.Core.IReadOnlyObject)<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.ReadOnlyListBase(Of T, C)<BR>End Class</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOEditableRootListBase(Of T As {Csla.Core.IEditableBusinessObject, Csla.Core.ISavable})<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.EditableRootListBase(Of T)<BR>End Class</P>
+<P>&nbsp;</P>
+<P>C#:</P>
+<P>[Serializable()]<BR>public abstract class MyBOBusinessBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt; where T : MyBOBusinessBase&lt;T&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOBusinessListBase&lt;T, C&gt; : Csla.BusinessListBase&lt;T, C&gt; where T : MyBOBusinessListBase&lt;T, C&gt; where C : Csla.Core.IEditableBusinessObject<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOCommandBase : Csla.CommandBase<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBONameValueListBase&lt;K, V&gt; : Csla.NameValueListBase&lt;K, V&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOReadOnlyBase&lt;T&gt; : Csla.ReadOnlyBase&lt;T&gt; where T : MyBOReadOnlyBase&lt;T&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOReadOnlyListBase&lt;T, C&gt; : Csla.ReadOnlyListBase&lt;T, C&gt; where T : MyBOReadOnlyListBase&lt;T, C&gt; where C : Csla.Core.IReadOnlyObject<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOEditableRootListBase&lt;T&gt; : Csla.EditableRootListBase&lt;T&gt; where T : Csla.Core.IEditableBusinessObject, Csla.Core.ISavable<BR>{<BR>}</P>
+<P>Just wanted to get them all in one place for easy access.</P>
+<P>Thanks to everyone who has contributed on other posts.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, December 05, 2006</h2>Thank you very much!&nbsp; You just saved me hours of work!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

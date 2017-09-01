@@ -1,0 +1,19 @@
+<html><header><title>Validating/Sanitizing input for ReadOnlyListBase criteria....</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validating/Sanitizing input for ReadOnlyListBase criteria....</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2855.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kdog posted on Friday, May 11, 2007</h2><P>I want to validate / sanitize the input for my criteria objects for a readonlylistbase object I have.</P>
+<P>I created a validate routine in the readonlylistbase and the fetch's call the validate routine.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ValidateCriteria(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> criteria.Trim &lt;&gt; </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Empty </FONT><FONT color=#0000ff size=2>OrElse</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Not</FONT><FONT size=2> Regex.IsMatch(criteria, </FONT><FONT color=#a31515 size=2>"[0-9a-zA-Z-\s]{1,30}"</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Csla.Validation.ValidationException(</FONT><FONT color=#a31515 size=2>"Invalid search criteria"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>If it fails I throw a CSLA.Validation.ValidationException and let the caller handle it.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Catch</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> ex.GetBaseException.GetType.ToString = </FONT><FONT color=#a31515 size=2>"Csla.Validation.ValidationException"</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>' do something...</FONT><FONT color=#0000ff size=2></FONT></P>
+<P><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>'some other exception</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>''' TODO Add code for this....</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT>
+<P>I believe this is the way to go to ensure if client validation fails or is subverted&nbsp;&nbsp;no matter where it is (web, forms,etc)&nbsp;then my object will stop it.</P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>I am looking for feedback on if this is a good way to solve this....</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>Thanks,</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#000000 size=3>Kevin</FONT></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

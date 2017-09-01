@@ -1,0 +1,23 @@
+<html><header><title>I upgraded my silverlight5+MVVM+Prisam with CSLA 4.5 but not call Server side</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I upgraded my silverlight5+MVVM+Prisam with CSLA 4.5 but not call Server side</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12043.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Thursday, June 27, 2013</h2><p><strong>i have a application (SL5+MVVM+Prisam+EF4+CSLA 4.3)but i upgraded with CSLA 4.5 for improving the perfomance</strong></p>
+<p><strong>but when i update the csla source code with 4.5 i am getting compile error ,because i am using CompressedProxy technique for send and receiving the request,</strong></p>
+<p><strong>public class CompressedProxy&lt;T&gt; : Csla.DataPortalClient.WcfProxy&lt;T&gt; </strong></p>
+<p><strong>any have commentted the code</strong></p>
+<p><strong>&nbsp;public class CompressedProxy&lt;T&gt; : Csla.DataPortalClient.WcfProxy//&lt;T&gt;</strong></p>
+<p><strong>&nbsp; &nbsp; //where T : Csla.Serialization.Mobile.IMobileObject</strong></p>
+<p><strong><br /></strong></p>
+<p><strong>its got compiled,then i change the some setting app.xmal and web.config and wcf</strong></p>
+<p><strong><br /></strong></p>
+<p><strong>app.xmal</strong></p>
+<p><strong>Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;&nbsp;</strong></p>
+<p><strong><br /></strong></p>
+<p><strong>web.config</strong></p>
+<p><strong>service model</strong></p>
+<p><strong>contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot;</strong></p>
+<p><strong>appsetting or app.xmal</strong></p>
+<p><strong>&nbsp; &lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.MobileProxy, Csla&quot;/&gt;</strong></p>
+<p><strong>&nbsp; &nbsp; &lt;add key=&quot;CslaDataPortalUrl&quot; value=&quot;http://localhost:52624/WcfPortal.svc&quot;/&gt;</strong></p>
+<p><strong><br /></strong></p>
+<p><strong>still i am facing problem to connect with setver i am getting error</strong></p>
+<p>Note:-</p>
+<p><b>can you explain how to use the (SL5+CSLA 4.5) with&nbsp;<span>CompressedProxy</span><span>&nbsp;</span></b></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

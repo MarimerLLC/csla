@@ -1,0 +1,63 @@
+<html><header><title>Non CSLA question from a newbie</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Non CSLA question from a newbie</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bobby posted on Wednesday, September 05, 2007</h2><P>Just starting with the Expert VB 2005 book but I have a general question as to how to handle where the data for my business objects is stored.</P>
+<P>For now, I am using single SQL server database. I have a data access library which gets called from various business objects to store/retrive the business object's data. I use factory methods to create the objects so the end user can't create these business objects using the New keyword.</P>
+<P>My problem is that now I need to copy some business objects from 1 database to the other. I will retrieve some of the objects from 1 database and then do some modifications and store them in the second database.</P>
+<P>I just don't know how to handle this. I don't know how to tell my business objects which underlying data store they should use. Since for now I have been using 1 data store, I read database/server name from a config file and my data access layer handles the storing/retreiving of the relation data. The objects do the O/R mapping.</P>
+<P>I have seen some code where people use separate Factory class to create objects of a particular type but then it creates some other problems as now I need to make the GUID keys (that I use for uniquely idenfying my objects) to be Public rather then Private. Also the constructor for the Account class can't be private then.</P>
+<P>Here is an example of an Account class that I have using 1 database. </P><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> Account</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2>()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></FONT><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> _AccountID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid</P>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> AccountID() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid</P>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> _AccountID</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid)</P>
+<P>_AccountID = value</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> _AccountNumber </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>String</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> _DateCreated </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> DateTime</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>' The get/set methods for various properties</FONT></FONT></P><FONT size=2><FONT color=#000000><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> GetAccount(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> accountID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Guid) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Account</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> a </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Account = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> dt </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> DataTable</P>
+<P>dt = DataAccessLayer.ExecuteDataTable(</FONT><FONT color=#a31515 size=2>"dbo.GetAccountByAccountID"</FONT><FONT size=2>, _</P>
+<P>DataAccessLayer.CreateParameter(</FONT><FONT color=#a31515 size=2>"@AccountID"</FONT><FONT size=2>, SqlDbType.UniqueIdentifier, accountID))</P>
+<P>a = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Account</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> a.MapData(dt) = </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>a = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> a</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT color=#000000 size=2> CreateAccount(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> accountNumber </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Account</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> a </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Account = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Account</FONT><FONT size=2></P>
+<P>a.AccountNumber = accountNumber</P>
+<P>a.DateCreated = Now</P>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> a</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Functio</FONT><FONT color=#0000ff size=2>n</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT color=#000000 size=2> MapObject(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> DataRow) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> Account</FONT></P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> a </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Account = </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> Account</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> a.MapData(dr) = </FONT><FONT color=#0000ff size=2>False</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>a = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> a</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT color=#000000 size=2> MapData(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> System.Data.DataRow) </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AccountID = DatabaseHelper.GetGuidValue(dr, </FONT><FONT color=#a31515 size=2>"AccountID"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.AccountNumber = DatabaseHelper.GetStringValue(dr, </FONT><FONT color=#a31515 size=2>"AccountNumber"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.DateCreated = DatabaseHelper.GetDateTimeValue(dr, </FONT><FONT color=#a31515 size=2>"DateCreated"</FONT><FONT size=2>)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> True</FONT><FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT></FONT></FONT></FONT></FONT></FONT></FONT><FONT color=#0000ff size=2>
+<P>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</P></FONT>
+<P>How should I go about changing this Account class so that I can tell that this Account object comes from this database but another Account object that I create comes from another database?</P>
+<P>Hope I am clearly explaining this. I have tried reading more on the net but most of the examples talk about very basic stuff and don't provide any real meat. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 06, 2007</h2><P>It looks like you have a formal DAL handling the database communication.</P>
+<P>But what you are saying is that the DAL needs to be aware of some element of the object's state to do its work. As in: the object knows (logically) what database to talk to, and needs to communicate this to the DAL.</P>
+<P>So your DAL needs to allow the object to (logically) indicate the database to use, and then the DAL can translate that to an actual database connection as appropriate.</P>
+<P>So unless I'm missing something, your object's state (possibly only private state) must include some logical database identifier so it knows what database it wants to talk to.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Thursday, September 06, 2007</h2><P>&nbsp;You might want to consider looking at the Microsoft Enterprise Library Data Access Block - this allows you to define database connections in the config file and refer to them in code by strings. In your case you could then use code such as </P>
+<P>database1 = DatabaseFactory.CreateDatabase("SourceDB") </P>
+<P>when doing a Fetch, and then</P>
+<P>database2 = DatabaseFactory.CreateDatabase("TargetDB") </P>
+<P>in the Insert.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bobby replied on Thursday, September 06, 2007</h2>Thanks.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

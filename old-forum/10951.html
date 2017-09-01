@@ -1,0 +1,15 @@
+<html><header><title>Is Business Rule Serialize ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is Business Rule Serialize ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10951.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Tuesday, December 06, 2011</h2><p>Hi all,</p>
+<p>&nbsp;</p>
+<p>I have a question about Business Rule / validation Declaration and Location ?</p>
+<p>1.&nbsp; read from http://www.lhotka.net/weblog/CSLA4BusinessRulesSubsystem.aspx , </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; I read that a business rule is declare as a private class on Business Object, that location is a regulation or just guide ? ( what are the considerations needed to declare a Rule ? as a nested class or as independent class so that it can be used by another object ? )</p>
+<p>2. If I declare as independent class, is it needed a Serialize attribute ? for moving across tiers / layers ? and Why ?</p>
+<p>&nbsp;</p>
+<p>Could anyone explain me around this concept , anything suggestion is welcome :)</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 07, 2011</h2><p>1. General rules should be independent class and BO specific rules is often better placed inside the actual business object.</p>
+<p>2. Rules does not have to be serializable. </p>
+<p>BrokenRule (builtin class in Csla used in BrokenRulesCollection) is serializable so it can move between tiers just like any other child list in a business object. </p>
+<p>A rule instance is registered for all instance of a given business object type. As such - the rule should be considered a &quot;singelton&quot; and can not contain any poperties that are specific for the code in Execute method. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

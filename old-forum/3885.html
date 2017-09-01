@@ -1,0 +1,16 @@
+<html><header><title>Custom Identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3885.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi posted on Monday, November 12, 2007</h2><P>Hi.</P>
+<P>I'm following the PTTracker model of Identities, I'm trying to add an Integer&nbsp;property called adminID to the identitiy to use in my code behind of my page.&nbsp; I've added it to my Fetch method and have made (what I think) are the appropriate changes to the business methods (declaration and property).</P>
+<P>However in my app I cannot access it using User.Identity.adminID like I can User.Identity.Name....is there something I need to do in my membershipprovider?</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, November 12, 2007</h2><P>The Interface only exposes certain values.</P>
+<P>Try casting User.Identity to your specific type.</P>
+<P>Then you should be able to see your custom properties.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Monday, November 12, 2007</h2><P>I think there is something more to this....trying to cast I get an error:</P>
+<P><EM>Unable to cast object of type 'System.Web.Security.FormsIdentity' to type 'CslaProject.Library.AdminSecurity.AdminIdentity'.</EM> </P>
+<P>Something seems off...like my AdminPrincipal class needs to do something else...</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Monday, November 12, 2007</h2><P>Got it...</P>
+<P>Here's the thread that sent me down the right road</P>
+<P><A HREF="/forums/thread/15308.aspx">http://forums.lhotka.net/forums/thread/15308.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Monday, November 12, 2007</h2><P>Ok so this works but now in order to make it globally available is it ok to make this a public property of my Master Page and then&nbsp;access the property&nbsp;from my pages?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 12, 2007</h2><P>Yes, though I usually do it with a static class or Module in my business layer:</P>
+<P>public static class Security<BR>{<BR>&nbsp; public static MyPrincipal User()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; return (MyPrincipal)Csla.ApplicationContext.User;<BR>&nbsp; }<BR>}</P>
+<P>Then you can use Security.User anywhere in your app and you always get the right type automatically.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Tuesday, November 13, 2007</h2>Perfect!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

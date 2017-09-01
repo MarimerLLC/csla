@@ -1,0 +1,171 @@
+<html><header><title>How to trap the event when a child is been added, how can a child object has access to a property of his parent</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to trap the event when a child is been added, how can a child object has access to a property of his parent</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5433.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Friday, September 19, 2008</h2><P class=MsoNormal><FONT face=Arial size=2>I’ve the following classes for a Point Of Sale application:</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>Model : EditableRoot</FONT></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>à</SPAN></SPAN><FONT face=Arial>ModelColors : </FONT></FONT><A name=OLE_LINK2></A><A name=OLE_LINK1><SPAN><FONT face=Arial size=2>EditableChildList</FONT></SPAN></A></P>
+<P class=MsoNormal><FONT size=2><SPAN><FONT face=Arial>&nbsp;&nbsp; </FONT></SPAN><SPAN><SPAN>à</SPAN></SPAN><FONT face=Arial>ModelColor : EditableChild</FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><SPAN><FONT face=Arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN><SPAN>à</SPAN></SPAN><FONT face=Arial> Articles : EditableChildList</FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><SPAN><FONT face=Arial>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></SPAN><SPAN><SPAN>à</SPAN></SPAN><FONT face=Arial> Article : EditableChild</FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>BeamOfMeasures : NameValueListBase</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>SizeList : </FONT><A name=OLE_LINK6></A><A name=OLE_LINK5><SPAN><FONT face=Arial size=2>NameValueListBase</FONT></SPAN></A></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>I want to implement the following use case:</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>User fills in a new model (with properties like Season, Mark, <B>Beam of measures</B>)</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>User <B>add colors </B>in which the model can be delivered.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>When a new color is been added (ModelColor), automatically records must be added to the Articles collection of this ModelColor instance. For each article instance the properties ModelColorId and SizeId must be filled in automatically by the business layer. So the number of records of the Articles collection corresponds to the number of existing sizes for the chosen “Beam of Measures”.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>User fills in the sell price for the different sizes for the different colors.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>So when the user chooses a different “Beam of Measures”, or adds a color, the sizes must be automatically displayed</FONT></P>
+<P class=MsoNormal><FONT face=Arial><SPAN><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.g.</FONT></SPAN><SPAN> </SPAN><SPAN><FONT size=2>a grid with all the possible sizes on the first column and the second column the price of the article.<o:p></o:p></FONT></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>Size<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Price<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>36<SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>37<SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>38<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>39<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>40<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>41<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><FONT face=Arial>42<o:p></o:p></FONT></FONT></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>I’ve already the following code in the class Model for the property BeamOfMeasuresLID.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>This solves the problem when the user is changing the property “Beam Of Measures” of the Model.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT size=2><SPAN>public</SPAN><SPAN> <SPAN>int</SPAN> BeamOfMeasuresLID<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>get<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanReadProperty(<SPAN>"BeamOfMeasuresLID"</SPAN>, <SPAN>true</SPAN>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> _beamOfMeasuresLID;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN><SPAN>set<o:p></o:p></SPAN></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>CanWriteProperty(<SPAN>"BeamOfMeasuresLID"</SPAN>, <SPAN>true</SPAN>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>if</SPAN> (!_beamOfMeasuresLID.Equals(<SPAN>value</SPAN>))<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>_beamOfMeasuresLID = <SPAN>value</SPAN>;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropertyHasChanged(<SPAN>"BeamOfMeasuresLID"</SPAN>);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN></SPAN><SPAN>SizeList</SPAN> SizeList = <SPAN>SizeList</SPAN>.GetSizeListByBeamOfMeasuresLID(_beamOfMeasuresLID);<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>foreach</SPAN> (<SPAN>ModelColor</SPAN> tmpModelKleur <SPAN>in</SPAN> <SPAN>this</SPAN>.Colors)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>{<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>tmpModelColor.Articles.Clear();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>foreach</SPAN> (<SPAN>SizeList</SPAN>.<SPAN>NameValuePair</SPAN> item <SPAN>in</SPAN> SizeList)<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>{<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Article</SPAN> </FONT><A name=OLE_LINK4></A><A name=OLE_LINK3><SPAN><FONT size=2>tmpArticle</FONT></SPAN></A><FONT size=2> = tmpModelColor.Articles.AddNew();<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>tmpArticle.ModelKleurId = tmpModelColor.Id;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>tmpArticle.SizeId = item.Key;<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>tmpArticle</SPAN><SPAN>.Size = item.Value;<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><FONT size=2><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>}<o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=2><SPAN>&nbsp; </SPAN>}<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT size=2><SPAN>}</SPAN><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>But I don’t know how to trap the event when the user has added a color, to let also automatically appear the sizes. So the other colors which are already been added must not be touched, but for the new color the different sizes must appear so the user can fill in the sell price. So the things I don’t know how to do are how to trap when a color is added and how can I know what is the value of the property “Beam Of Measures” of the parent Model, because children doesn’t know anything about their parent.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, September 23, 2008</h2><p class="MsoNormal"><font size="2"><span>The code I posted already is not so good. I've changed it to the following by keeping in mind the <b>separation of concerns</b> rule. The code in the class Model</span></font><span><font size="2"><span></span></font></span><font size="2"><span>
+will delegate the creation of the articles to his child collection
+ModelColors, which in turn will delegate it to the child object
+ModelColor.<br>
+I've found also how I can trap the event when a child object ModelColor is been added.<br>
+The only thing which I can't find is how I can get access to a parent property?<br>
+</span></font></p>
+<p class="MsoNormal"><font size="2"><span><br>
+1) class Model<br>
+</span></font></p>
+<p class="MsoNormal"><font size="2"><span>public</span><span> <span>int</span> BeamOfMeasuresLID<o:p></o:p></span></font></p>
+
+<p class="MsoNormal"><span><font size="2">{<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp; </span>get<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp; </span>{<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>CanReadProperty(<span>"BeamOfMeasuresLID"</span>, <span>true</span>);<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span><span>return</span> _beamOfMeasuresLID;<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp; </span>}<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp; </span><span>set<o:p></o:p></span></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp; </span>{<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>CanWriteProperty(<span>"BeamOfMeasuresLID"</span>, <span>true</span>);<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span><span>if</span> (!_beamOfMeasuresLID.Equals(<span>value</span>))<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>{<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>_beamOfMeasuresLID = <span>value</span>;<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>PropertyHasChanged(<span>"BeamOfMeasuresLID"</span>);<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Colors.CreateAvailableArticles(_</span></font></span><span><font size="2">beamOfMeasuresLID</font></span><span><font size="2"><span>);&nbsp;&nbsp; </span><o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>}<o:p></o:p></font></span></p>
+
+<p class="MsoNormal"><span><font size="2"><span>&nbsp; </span>}<o:p></o:p></font></span></p>
+
+<font size="2"><span>}<br>
+<br>
+2) class ModelColors<br>
+<br>
+&nbsp;&nbsp;&nbsp; public void </span></font><span><font size="2"><span>CreateAvailableArticles</span></font></span><font size="2"><span>(int </span></font><span><font size="2"><span>beamOfMeasuresLID</span></font></span><font size="2"><span>)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (ModelColor child in this)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.</span></font><font size="2"><span></span></font><span><font size="2"><span>CreateAvailableArticles</span></font></span><font size="2"><span>(</span></font><font size="2"><span></span></font><span><font size="2"><span>beamOfMeasuresLID</span></font></span><font size="2"><span>)</span></font><font size="2"><span>);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; protected override void OnListChanged(System.ComponentModel.ListChangedEventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (e.ListChangedType == ListChangedType.ItemAdded) <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  this[e.NewIndex].</span></font><span><font size="2"><span>CreateAvailableArticles</span></font></span><font size="2"><span>(</span></font><font size="2"><span>&nbsp; ?????&nbsp; );<br>
+<br>
+<b><font size="3">=====&gt; here I don't know what to do because I don't have access to the property </font></b></span></font><b><font size="3"><span><span>BeamOfMeasuresLID</span></span> of the parent object Model</font></b><font size="2"><span></span></font><br>
+<font size="2"><span><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnListChanged(e);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+3) class ModelColor<br>
+<br>
+&nbsp;&nbsp;&nbsp; public void </span></font><span><font size="2"><span>CreateAvailableArticles</span></font></span><font size="2"><span>(</span></font><font size="2"><span>(int </span></font><span><font size="2"><span>beamOfMeasuresLID</span></font></span><font size="2"><span></span></font><font size="2"><span>)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></font><span><font size="2"><span>SizeList</span> sizeList = <span>SizeList</span>.GetSizeListByBeamOfMeasuresLID(_beamOfMeasuresLID);</font></span><br>
+<font size="2"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Articles.Clear();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (SizeList.NameValuePair item in sizeList)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Article tmpArticle = </span></font><font size="2"><span>Articles</span></font><font size="2"><span>.AddNew();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></font><font size="2"><span>tmpArticle </span></font><font size="2"><span>.ModelColorId = Id;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></font><font size="2"><span>tmpArticle </span></font><font size="2"><span>.SizeId = item.Key;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></font><font size="2"><span>tmpArticle </span></font><font size="2"><span>.Size = item.Value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<br>
+</span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Tuesday, September 23, 2008</h2><FONT size=2><FONT size=2>
+<P></FONT><FONT size=3>&nbsp;If your child collection always exists as&nbsp;a child of your root BO, then I do not see a problem doing the following:</FONT></P>
+<P><FONT size=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>protected override void OnListChanged(System.ComponentModel.ListChangedEventArgs e)<BR>{<BR>&nbsp;&nbsp;&nbsp; if (e.ListChangedType == ListChangedType.ItemAdded)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.Parent != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; int id = ((Model)this.Parent).BeamOfMeasuresLID;&nbsp; // borrow the property from the root parent object<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this[e.NewIndex].CreateAvailableArticles(id);</FONT><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; base.OnListChanged(e);<BR>}<BR></P>
+<P></FONT></FONT><SPAN><FONT size=2><BR></FONT></P></SPAN></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, September 23, 2008</h2><a title="http://forums.lhotka.net/forums/thread/26504.aspx"></a>Thank you for the reply.<br>
+<br>
+But Parent is not a recognized property. I get the following error<br>
+ShoeSoft.Library.ModelColors' does not contain a definition for 'Parent'<br>
+<br>
+I'm using version 3.0.4 of the CSLA framework.<br>
+Did you implement yourself this property Parent?<br>
+If so can you provide a piece of code?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Wednesday, September 24, 2008</h2><font face="Arial">The class ModelColors is a BusinessListBase and this does not contain a variable to hold a reference to the parent.<br>
+<br>
+</font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, September 24, 2008</h2><P>I used this with CSLA 3.5.x where it is provided.&nbsp; However in the past I have added this to my collection class through custom code.&nbsp; Just add a variable to hold the parent reference and mark it with the NotUndoable attribute.&nbsp; You will then need to use some mechanism to set the parent when your child is created and / or deserialized.&nbsp; If you take a look at the 3.5 code you should be able to see what Rocky added.</P>
+<P>Best of luck.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, October 24, 2008</h2><P>I've migrated the project to version 3.5.2.<o:p></o:p></P>
+<P>I removed the old csla.dll and put a reference to the new csla.dll.<o:p></o:p></P>
+<P>I didn't need to change anything else. It worked immediately. Thanks Lhotka for the backwards compatibility.<o:p></o:p></P>
+<P>Now I have the property parent in the version 3.5.2<o:p></o:p></P>
+<P><SPAN>int id = ((Model)this.Parent).BeamOfMeasuresLID;&nbsp; // borrow the property from the root parent object</SPAN><o:p></o:p></P>
+<P><STRONG>but this.Parent contains null.<o:p></o:p></STRONG></P>
+<P>Do I need to change something at the business layer before this will work?<o:p></o:p></P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

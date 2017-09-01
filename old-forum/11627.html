@@ -1,0 +1,63 @@
+<html><header><title>OnPropertyChanged and maintaining a list of Dirty Properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnPropertyChanged and maintaining a list of Dirty Properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11627.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares posted on Friday, October 05, 2012</h2><p>In CSLA 3.8 I was maintaining a list of dirty properties by overriding the OnPropertyChanged event and adding the propertyname to an internal list of strings if it didn&#39;t already exist. Then I would clear that list in an override of MarkOld. &nbsp;This worked without any issue in 3.8.</p>
+<p>But now in 4.3 the OnPropertyChanged event seems to be working differently with the new Rules system. &nbsp;In 3.8 I would change a property, and I would get a single OnPropertyChanged event thrown for that property. &nbsp;But in 4.2 it is also throwing the OnPropertyChanged for each dependent property of the property I changed. As a result, my dirty properties list contains a bunch of properties in it that aren&#39;t actually dirty because they were never changed.</p>
+<p>Further, there are 2 OnPropertyChanged methods, one with a string parameter and one with a propertyinfo parameter. I&#39;ve tried both of them and while the string parameter method would be thrown for the changed property and all it&#39;s dependent properties, the propertyinfo parameter method wasn&#39;t being thrown at all.</p>
+<p>So my question is, what should I now be doing to keep track of a dirty properties list in 4.3? Should I be using another method altogether?</p>
+<p>Here is my code in my base class right now that is being thrown for the changed property and its dependencies:</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>Public</span>&nbsp;<span>Shared</span>&nbsp;<span>ReadOnly</span>&nbsp;DirtyPropertiesProperty&nbsp;<span>As</span>&nbsp;<span>PropertyInfo</span>(<span>Of</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))&nbsp;=&nbsp;RegisterProperty(<span>Of</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))(<span>Function</span>(obj&nbsp;<span>As</span>&nbsp;My<span>BusinessBase</span>(<span>Of</span>&nbsp;<span>T</span>))&nbsp;obj.DirtyProperties,&nbsp;<span>&quot;Dirty&nbsp;Properties&quot;</span>,&nbsp;<span>New</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;A&nbsp;collection&nbsp;of&nbsp;the&nbsp;properties&nbsp;that&nbsp;have&nbsp;been&nbsp;changed</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&#39;&#39;&nbsp;</span><span>&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>Public</span>&nbsp;<span>Property</span>&nbsp;DirtyProperties()&nbsp;<span>As</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Return</span>&nbsp;GetProperty(DirtyPropertiesProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Set</span>(<span>ByVal</span>&nbsp;value&nbsp;<span>As</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SetProperty(DirtyPropertiesProperty,&nbsp;value)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Property</span></pre>
+</p>
+<p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>Protected</span>&nbsp;<span>Overrides</span>&nbsp;<span>Sub</span>&nbsp;OnPropertyChanged(<span>ByVal</span>&nbsp;propertyName&nbsp;<span>As</span>&nbsp;<span>String</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>MyBase</span>.OnPropertyChanged(propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&nbsp;Add&nbsp;the&nbsp;property&nbsp;to&nbsp;the&nbsp;list&nbsp;of&nbsp;dirty&nbsp;properties</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>If</span>&nbsp;<span>Not</span>&nbsp;ReadProperty(DirtyPropertiesProperty).Contains(propertyName)&nbsp;<span>Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReadProperty(DirtyPropertiesProperty).Add(propertyName)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Sub</span></pre>
+<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>Protected</span>&nbsp;<span>Overrides</span>&nbsp;<span>Sub</span>&nbsp;MarkOld()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>MyBase</span>.MarkOld()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>&#39;&nbsp;clear&nbsp;all&nbsp;dirty&nbsp;properties</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ReadProperty(DirtyPropertiesProperty).Clear()
+&nbsp;&nbsp;&nbsp;&nbsp;<span>End</span>&nbsp;<span>Sub</span></pre>
+<pre><span><br /></span></pre>
+<pre><span>Any help would be greatly appreciated.</span></pre>
+<pre><span>Thanks,</span></pre>
+<pre><span>Mike</span></pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, October 05, 2012</h2><p>Override PropertyHasChanged insted of OnPropertyChanged.</p>
+<p>OnPropertyChanged is just to signal that a property may have changed (or staus has changed) so the UI can refresh its value and status.<br />PropertyHasChanged is called once per property that is changed by yhe user.</p>
+<p>However - you may have rules that update other fields (lookup rules etc) so for managed properties you can also ask the FieldManager of the status for the backing field. The Rule system will now also mark updated managed properties (from AddOutValue) as Dirty. &nbsp;&nbsp;</p>
+<p>You may also take a look at the extensions for backing fields that can check the old/new value to determine if the field is dirty. Code is available on http://cslacontrib.codeplex.com&nbsp;</p>
+<p>If you are using WIndowsForms then make sure to set the proper CslaPropertyChangedMode. The default mode was changed for CSLA 4.x to be Xaml.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares replied on Friday, October 05, 2012</h2><p>Thanks Jonny,</p>
+<p>I never knew about the IsFieldDirty method on the FieldManager. &nbsp;And using the PropertyHasChanged override worked as well. Thanks again.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Wednesday, July 10, 2013</h2><p>I converted the above into C#, but it doesn&#39;t want to compile. Are there changes available in 3.8 that aren&#39;t in 3.7 that would keep it from compiling?</p>
+<p>VB.Net:<br />&nbsp;&nbsp;&nbsp;&nbsp;<span>Public</span>&nbsp;<span>Shared</span>&nbsp;<span>ReadOnly</span>&nbsp;DirtyPropertiesProperty&nbsp;<span>As</span>&nbsp;<span>PropertyInfo</span>(<span>Of</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))&nbsp;=&nbsp;RegisterProperty(<span>Of</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))(<span>Function</span>(obj&nbsp;<span>As</span>&nbsp;My<span>BusinessBase</span>(<span>Of</span>&nbsp;<span>T</span>))&nbsp;obj.DirtyProperties,&nbsp;<span>&quot;Dirty&nbsp;Properties&quot;</span>,&nbsp;<span>New</span>&nbsp;<span>Collection</span>(<span>Of</span>&nbsp;<span>String</span>))</p>
+<p>C#:<br />public static readonly PropertyInfo&lt;List&lt;string&gt;&gt; DirtyPropertiesProperty = RegisterProperty&lt;List&lt;string&gt;&gt;((BusinessBase&lt;T&gt; obj) =&gt; obj.DirtyProperties, &quot;Dirty Properties&quot;, new List&lt;string&gt;());</p>
+<p>Also tried:<br />public static readonly PropertyInfo&lt;List&lt;string&gt;&gt; DirtyPropertiesProperty = RegisterProperty&lt;List&lt;string&gt;&gt;(Expression&lt;Func&lt;T, object&gt;&gt; T.DirtyProperties, &quot;Dirty Properties&quot;, new List&lt;string&gt;(), RelationshipTypes.LazyLoad);</p>
+<p>I get the &quot;Invalid expression term &#39;object&#39;&quot; error on compile.</p>
+<p>Thanks in advance for any light that can be shed on this.</p>
+<p>Kelly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 10, 2013</h2><p>First - you should nor use the basic List&lt;&gt; for a registered property as this is not serializable by the new MobileSerializer (or in SL or WP). You may use the MobileList&lt;&gt; class or create your own business list class.&nbsp;</p>
+<p>This code works in C#:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">MobileList</span>&lt;<span style="color:blue;">string</span>&gt;&gt;&nbsp;DirtyPropertiesProperty&nbsp;=&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">MobileList</span>&lt;<span style="color:blue;">string</span>&gt;&gt;(c&nbsp;=&gt;&nbsp;c.DirtyProperties,&nbsp;<span style="color:#a31515;">&quot;Dirty&nbsp;Properties&quot;</span>,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">MobileList</span>&lt;<span style="color:blue;">string</span>&gt;(),&nbsp;<span style="color:#2b91af;">RelationshipTypes</span>.LazyLoad);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">MobileList</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;DirtyProperties
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(DirtyPropertiesProperty);&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />And in VB.NET:<br />Public Shared ReadOnly DirtyPropertiesProperty As PropertyInfo(Of MobileList(Of String)) = _<br />       RegisterProperty(Of MobileList(Of String))(Function(c) c.DirtyProperties, &quot;Dirty Properties&quot;, New MobileList(Of String)(), RelationshipTypes.LazyLoad)
+Public ReadOnly Property DirtyProperties() As MobileList(Of String)
+	Get
+		Return GetProperty(DirtyPropertiesProperty)
+	End Get
+End Property<br /></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

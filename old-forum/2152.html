@@ -1,0 +1,16 @@
+<html><header><title>How does mParent get set for an existing child object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How does mParent get set for an existing child object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2152.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM posted on Tuesday, January 16, 2007</h2><P>Hi everyone and Happy New Year,</P>
+<P>If I am instantiating an EditableRootCollection with existing EditableChild content BO, how does the mParent field in each BO get set?</P>
+<P>If I look at example DataPortal_Fetch code for&nbsp;an&nbsp;Editable&nbsp;Collection (in ProjectResources for example) it just creates a DataReader and passes the reader to the 'Get' factory method of the Child BO class.</P>
+<P>With dr</P>
+<P>&nbsp;&nbsp; While dr.read</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(ChildBOClass.GetEditableChild(dr)</P>
+<P>&nbsp;&nbsp; End While</P>
+<P>End With</P>
+<P>Now if I highlite "Add", right click and "Go to definition", VS points me to the .Net Collection(of T).Add method.</P>
+<P>If I search CSLA for where SetParent( ) is called (or where mParent is set), I can only find it in&nbsp;one place, an&nbsp;override method for InsertItem(int, T) in BusinessListBase.</P>
+<P>The only thing I can think of is that Collection(of T).Add internally uses the InsertItem() method to actually add the object to the end of the collection.&nbsp; Since CSLA overrides InsertItem to update mParent, it gets updated as a part of the "standard" Add method call.</P>
+<P>Have I completely missed something here or is this assumption correct?</P>
+<P>Thanks.</P>
+<P>BBM</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 17, 2007</h2>You are correct, since CSLA .NET overrides InsertItem(), it gets notified when the child (any child) is added to the collection, so it can call SetParent() at that time.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BBM replied on Wednesday, January 17, 2007</h2><P>Thanks Rocky.</P>
+<P>But how did you know that Collection(of T).Add uses InsertItem?&nbsp; I couldn't find that documented anyplace.</P>
+<P>BBM</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

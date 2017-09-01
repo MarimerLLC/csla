@@ -1,0 +1,78 @@
+<html><header><title>Bug in CslaActionExtender?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in CslaActionExtender?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6425.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CodeSmartNotHard posted on Saturday, February 14, 2009</h2><P>Hi,</P>
+<P>I think I found a bug using the CslaActionExtender.&nbsp; I am using the latest version of 3.6.1.&nbsp; Basically I want the Save button to be disabled when the object is clean.&nbsp; By default DisableWhenClean is true.&nbsp; If I change it to false, then it will write the following line in designer code:<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;this</FONT></FONT><FONT size=2>.cslaActionExtender1.SetDisableWhenClean(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.btnSave, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>);</P></FONT>
+<P>In&nbsp;my scenerio I want this to be true.&nbsp; When I change it back to true this line is removed because it is the default value.&nbsp; However, in the CslaActionExtender class, the true value is lost and DisableWhenClean is always false.<BR><FONT size=2>&nbsp;&nbsp;&nbsp;ChangeEnabled(ctl, !pair.Value.DisableWhenClean);</P></FONT>
+<P><FONT size=2><FONT size=3>The fix I found is to manually put the line in the designer to force DisableWhenClean to true.<BR><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;this</FONT></FONT><FONT size=2>.cslaActionExtender1.SetDisableWhenClean(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.btnSave, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>);</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=3><FONT size=2><FONT size=3>Now it correctly disables the button when the object is clean and enables it when the object is dirty.</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=3><FONT size=2><FONT size=3>Has anyone else run into this?</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=3><FONT size=2><FONT size=3>Thanks,</FONT></FONT></FONT></FONT></P>
+<P><FONT size=2><FONT size=3><FONT size=2><FONT size=3>Mike</FONT></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 15, 2009</h2><P>You are saying that it works fine normally.</P>
+<P>But if you set, in VS,&nbsp;the value to false, then back to true this changes the behavior?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CodeSmartNotHard replied on Sunday, February 15, 2009</h2><P>Rocky,</P>
+<P>No,&nbsp; I believe it doesn't work anytime when it is true.&nbsp; When I first add the extender and it is set to true it doesn't write the line either since it is default.&nbsp; So it didn't when then.&nbsp; Somewhere the default value is lost.&nbsp; I used the ActionClassExtender sample to figure it out.&nbsp; </P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks. It sounds like the default simply isn&#8217;t set in
+code. probably the field that contains this value simply isn&#8217;t initialized
+to true in the code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ll add this to the bug list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CodeSmartNotHard
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, February 15, 2009 10:51 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bug in CslaActionExtender?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>No,&nbsp; I believe it doesn't work anytime when it is true.&nbsp; When I
+first add the extender and it is set to true it doesn't write the line either
+since it is default.&nbsp; So it didn't when then.&nbsp; Somewhere the default
+value is lost.&nbsp; I used the ActionClassExtender sample to figure it
+out.&nbsp; <o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p>Mike<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

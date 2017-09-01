@@ -1,0 +1,175 @@
+<html><header><title>CslaDataProvider and Callback method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataProvider and Callback method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9215.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>arobadol posted on Thursday, July 15, 2010</h2><p>Dear all,</p>
+<p>&nbsp;</p>
+<p>I&#39;ve just read the article&nbsp;<a title="here" href="http://www.code-magazine.com/article.aspx?quickid=0811061&amp;page=2">here</a>&nbsp;which introduce CSLA and Silverligth. I may have miss something in article but there some static factory created for the business entity &quot;GetCompany&quot; This method takes as parameter the Company criteria and a call back method. On the last page Rockford introduce the CSLADataProvider and make use of the static factory method. But I cannot understand how the callback parameter is provided to the static factory...</p>
+<p>&nbsp;</p>
+<p>Any help would be appreciated.</p>
+<p>&nbsp;</p>
+<p>Regards,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 15, 2010</h2><p>CslaDataProvider invokes static factory methods only if they have the correct method signature. In Silverlight this means the method must accept the callback parameter.</p>
+<p>CslaDataProvider actually handles the callback itself, and uses the callback to know that it needs to update its Data and ObjectInstance properties with the results. It then raises appropriate data binding events (PropertyChanged) so Silverlight knows to refresh the UI.</p>
+<p>As a UI developer, when you use CslaDataProvider you typically write little or no C#/VB code - the work is handled through XAML and CslaDataProvider.</p>
+<p>However, you should also know that Microsoft is clearly not continuing down the data provider path. In Visual Studio 2010 and Blend 4 they&#39;ve moved away from using any data provider objects.</p>
+<p>So while CSLA 4 still has the CslaDataProvider, it is my recommendation that people explore alternatives - most notably the MVVM design pattern. CSLA 4 (and 3.8) provides support for MVVM that is quite comparable to the data provider model, but I think is actually better.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arobadol replied on Saturday, July 17, 2010</h2><p>Thanks Rocky for the answer.</p>
+<p>I cannot agree more to your point . I&#39;m clearly taking that direction to. I&#39;m trying to find a nice way to plug the Factory operations to my UI. I&#39;m currently prototyping an application which will be build on top of Caliburn and CSLA 4.0.</p>
+<p>In Caliburn there is a concept of WebServiceResult which is used to connect a UI operation and a web service call. I was trying to do the same thing and building a sort of CSLAFactoryResult.</p>
+<p>&nbsp;</p>
+<p>This class will Implement the IResult interface (Caliburn) and will take as parameter the Factory operation and the callback... My problem is that we are using Factory Operation which are static operation that takes the call back as parameter:</p>
+<p>FactoryOperation(DataPortalResult&lt;BusineeObject callback&gt;)</p>
+<p>While the WebServiceResult is build on top of a Service reference proxy which is build on top of an async operation and a compelted event.</p>
+<p>Operation()</p>
+<p>OperationCompleted+= eventHandler</p>
+<p>I need a way to kind of encapsulate my callback with ui operation (Stop the busy animation...) but it is hard as this is passed directly to the factory.</p>
+<p>&nbsp;</p>
+<p>I have started by looking at the CSLADataProvider source code to inspire my self on this one to build my CSLAFactoryResult :)</p>
+<p>I do not know If I have make my self clear but if so I will be more than happy to get some advice on this. If not I can try to provide more information on this :)</p>
+<p>Thansk for your help.</p>
+<p>arobadol</p>
+<p>Alexandre</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>arobadol replied on Saturday, July 17, 2010</h2><p>I found what I wanted to do :)</p>
+<p>Maybe this short peice of code will help someone else :)</p>
+<p>&nbsp;</p>
+<p>
+<p>using System;</p>
+<p>using System.Collections.Generic;</p>
+<p>using System.Linq;</p>
+<p>using System.Reflection;</p>
+<p>using Caliburn.Core;</p>
+<p>using Caliburn.PresentationFramework;</p>
+<p>using Csla;</p>
+<p>using Csla.Properties;</p>
+<p>using Csla.Reflection;</p>
+<p>using Microsoft.Practices.ServiceLocation;</p>
+<p>&nbsp;</p>
+<p>namespace Kpm.Finance.Client.Infrastructure</p>
+<p>{</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;/// This class handle the Factory method call and the callback operation</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;/// &lt;typeparam name=&quot;TCslaBusinessEntity&quot;&gt;the CSLA Type the factory method is for&lt;/typeparam&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;public class CslaFactoryResult&lt;TCslaBusinessEntity&gt; : IResult</p>
+<p>&nbsp;&nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private string _factoryMethod;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private readonly IList&lt;object&gt; _factoryParameters;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private readonly EventHandler&lt;DataPortalResult&lt;TCslaBusinessEntity&gt;&gt; _callback;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// Constructor</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public CslaFactoryResult(string factoryMethod, IList&lt;object&gt; factoryParameters) : this(factoryMethod, factoryParameters, null) { }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// Constructor</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public CslaFactoryResult(string factoryMethod, EventHandler&lt;DataPortalResult&lt;TCslaBusinessEntity&gt;&gt; callback) : this(factoryMethod, new List&lt;object&gt;(), callback) { }</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// Constructor</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;/// &lt;/summary&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public CslaFactoryResult(string factoryMethod, IList&lt;object&gt; factoryParameters, EventHandler&lt;DataPortalResult&lt;TCslaBusinessEntity&gt;&gt; callback)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_factoryMethod = factoryMethod;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_callback = callback;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_factoryParameters = factoryParameters;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public void CallOriginalCallBack(object sender, DataPortalResult&lt;TCslaBusinessEntity&gt; arg)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ServiceLocator.Current.GetInstance&lt;ILoadScreen&gt;().StopLoading();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//or re-enable the control that caused the service to be called:</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//ChangeAvailability(message, true);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (_callback != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_callback(sender, arg);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Completed(this, null);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#region Implementation of IResult</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public void Execute(IRoutedMessageWithOutcome message, IInteractionNode handlingNode)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ServiceLocator.Current.GetInstance&lt;ILoadScreen&gt;().StartLoading();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//if you would rather disable the control that caused the service to be called, you could do this:</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//ChangeAvailability(message, false);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//If a call back was provided we assume the factory method will expect one</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (_callback != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_factoryParameters.Add(new EventHandler&lt;DataPortalResult&lt;TCslaBusinessEntity&gt;&gt;(this.CallOriginalCallBack));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;object[] parameters = _factoryParameters.ToArray();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;object result = null;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Exception exceptionResult = null;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// get factory method info</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BindingFlags flags = BindingFlags.Static | BindingFlags.Public | BindingFlags.FlattenHierarchy;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;System.Reflection.MethodInfo factory = typeof(TCslaBusinessEntity).GetMethod(_factoryMethod, flags, null, MethodCaller.GetParameterTypes(parameters), null);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (factory == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// strongly typed factory couldn&#39;t be found so find one with the correct number of parameters&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;int parameterCount = parameters.Length;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;System.Reflection.MethodInfo[] methods = typeof(TCslaBusinessEntity).GetMethods(flags);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (System.Reflection.MethodInfo method in methods)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (method.Name == _factoryMethod &amp;&amp; method.GetParameters().Length == parameterCount)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;factory = method;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;break;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// If no matching factory could be found, throw exception</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (factory == null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;throw new InvalidOperationException(string.Format(Resources.NoSuchFactoryMethod, _factoryMethod));</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;// invoke factory method)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;try</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;result = factory.Invoke(null, parameters);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (DataPortalException ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exceptionResult = ex.BusinessException;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (TargetInvocationException ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (ex.InnerException != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exceptionResult = ex.InnerException;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;var dpe = exceptionResult as DataPortalException;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (dpe != null &amp;&amp; dpe.BusinessException != null)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exceptionResult = dpe.BusinessException;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exceptionResult = ex;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (Exception ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exceptionResult = ex;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;catch (Exception ex)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;exceptionResult = ex;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public event Action&lt;IResult, Exception&gt; Completed = delegate { };</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;#endregion</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private void ChangeAvailability(IRoutedMessage message, bool isAvailable)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(from trigger in message.Source.Triggers</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; where trigger.Message == message</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; select trigger).Apply(x =&gt; x.UpdateAvailabilty(isAvailable));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>}</p>
+<div></div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

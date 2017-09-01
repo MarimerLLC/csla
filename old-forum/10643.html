@@ -1,0 +1,65 @@
+<html><header><title>WP7 and Factory Methods</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WP7 and Factory Methods</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10643.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Atopper posted on Friday, August 26, 2011</h2><p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I&rsquo;m experimenting with WP7 and using a ReadOnlyListBase with the factory methods. Does this work on the WP7 Platform? I keep getting an ArgumentException when the factory method is called. This may be a silly question, I apologize, I&rsquo;m new to 4.1 and have not been using CSLA since the .Net 2.0 versions.</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;"><span style="font-size:small;"><span style="font-family:Calibri;">I have read the books and look through all the examples I could find. If someone has a good example or could direct me to a posting, it would be much appreciated. I&#39;m looking forward to the WP7 book, I hope a draft version is on it&#39;s way this fall.</span></span></p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;">Regards,</p>
+<p class="MsoNormal" style="margin:0in 0in 10pt;">Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 27, 2011</h2><p>In WP7 running in local mode the factory methods get a Callback function as last parameter. I believe that is missing in your code and hence you get an ArgumentException. </p>
+<p>If you look at the WindowsPhone\cs\SimpleApp in Csla samples download you can add a CustomerFactory like this:</p>
+<p>Add object factory attribute to CustomerEdit</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;[<span style="color:#2b91af;">ObjectFactory</span>(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">CustomerEditFactory</span>))]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CustomerEdit</span>&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;<span style="color:#2b91af;">CustomerEdit</span>&gt;<br /><br />And add this class </pre>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">CustomerEditFactory</span>&nbsp;:&nbsp;Csla.Server.<span style="color:#2b91af;">ObjectFactory</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Create(Csla.DataPortalClient.<span style="color:#2b91af;">FactoryProxy</span>&lt;Library.<span style="color:#2b91af;">CustomerEdit</span>&gt;.<span style="color:#2b91af;">CompletedHandler</span>&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;obj&nbsp;=&nbsp;(<span style="color:#2b91af;">CustomerEdit</span>)<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">CustomerEdit</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(BypassPropertyChecks(obj))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Status&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Created&nbsp;&quot;</span>&nbsp;+&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.ExecutionLocation.ToString();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkNew(obj);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.Invoke(obj,&nbsp;<span style="color:blue;">null</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.Invoke(<span style="color:blue;">null</span>,&nbsp;ex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Fetch(<span style="color:#2b91af;">SingleCriteria</span>&lt;<span style="color:#2b91af;">CustomerEdit</span>,&nbsp;<span style="color:blue;">int</span>&gt;&nbsp;criteria, <br />                      Csla.DataPortalClient.<span style="color:#2b91af;">FactoryProxy</span>&lt;Library.<span style="color:#2b91af;">CustomerEdit</span>&gt;.<span style="color:#2b91af;">CompletedHandler</span>&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;obj&nbsp;=&nbsp;(<span style="color:#2b91af;">CustomerEdit</span>)<span style="color:#2b91af;">Activator</span>.CreateInstance(<span style="color:blue;">typeof</span>(<span style="color:#2b91af;">CustomerEdit</span>));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(BypassPropertyChecks(obj))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Id&nbsp;=&nbsp;criteria.Value;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Name&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Test&nbsp;&quot;</span>&nbsp;+&nbsp;criteria.Value;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;obj.Status&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Retrieved&nbsp;&quot;</span>&nbsp;+&nbsp;<span style="color:#2b91af;">ApplicationContext</span>.ExecutionLocation.ToString();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkOld(obj);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.Invoke(obj,&nbsp;<span style="color:blue;">null</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.Invoke(<span style="color:blue;">null</span>,&nbsp;ex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Update(<span style="color:#2b91af;">CustomerEdit</span>&nbsp;obj, <br />                       Csla.DataPortalClient.<span style="color:#2b91af;">FactoryProxy</span>&lt;Library.<span style="color:#2b91af;">CustomerEdit</span>&gt;.<span style="color:#2b91af;">CompletedHandler</span>&nbsp;callback)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;call&nbsp;something&nbsp;to&nbsp;save&nbsp;the&nbsp;object</span>
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkOld(obj);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.Invoke(obj,&nbsp;<span style="color:blue;">null</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback.Invoke(<span style="color:blue;">null</span>,&nbsp;ex);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Atopper replied on Sunday, August 28, 2011</h2><p>That clears things up. The world has changed in the last 5 years! Thank you very much.</p>
+<p>Andrew</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

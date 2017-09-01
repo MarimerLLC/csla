@@ -1,0 +1,75 @@
+<html><header><title>Child collection not having parent set correctly</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child collection not having parent set correctly</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11695.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaveStorey posted on Monday, November 12, 2012</h2><p>Hi,</p>
+<p>When assigning values to child collections on a root object via a DataPortal fetch method call I have noticed that the Parent property of the collection object does not always get assigned correctly.</p>
+<p>Digging a little deeper it would seem that using the&nbsp;SetProperty(propertyInfo, value) method call, regardless of being within a BypassPropertyChecks block or not, the CSLA code does not seem to assign a value to the Parent property. However, if the code is changed to a LoadProperty(propertyInfo, value) then the Parent property of the child collection is correctly set.&nbsp;My understanding of CSLA was that using the SetProperty method performed the same actions as the LoadProperty but with the added benefit of calling business rules and validation rules&nbsp;etc.</p>
+<p> In the scenario I have a business rule on my collection that requires the Parent property be set &nbsp;so I can execute my business rules, however as this is not getting set during the DataPortal fetch of the root object then my business rules are thrown exceptions due to null references.</p>
+<p>Basically I guess my question is, why is the parent is not being set on the collection when SetProperty is used? If there is a&nbsp;valid&nbsp;reason how should I be assigning the value to ensure that my business rules execute correctly?</p>
+<p>Regards,</p>
+<p>Dave</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 12, 2012</h2><p>Which version of CSLA do you use?</p>
+<p>Assuming CSLA 4.5:</p>
+<p>1. If your child objects call BusinessRules.CheckRules in DataPortal_Fetch / DataPortal_Create then Parent will always be null as the child object is not yet added to the Parent.</p>
+<p>2. How do you declare a business rule on the list? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaveStorey replied on Monday, November 12, 2012</h2><p>We are currently using v4.1</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 12, 2012</h2><p>So what you are saying is that the BusinessList does not have Parent set after SetProperty/LoadProperty is called in the parent? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaveStorey replied on Tuesday, November 13, 2012</h2><p>If&nbsp;I use SetProperty then the parent isn&#39;t getting set. If I use LoadProperty then the&nbsp;parent is getting set</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DaveStorey replied on Tuesday, November 13, 2012</h2><p>
+<p>A little more background information:</p>
+<p>We have an object called Client and an object called Role. The mapping between the two is managed by an object called ClientRole. There is also a collection object called ClientRoleCollection which is used to store all the ClientRole mappings for a given client. When we retrieve a User object from the database, during the Client DataPortal_Fetch method we also call the DataPortal.FetchChild&lt;UserRoleCollection&gt; and assign this value to the csla managed property Roles (of type ClientRoleCollection) on the client.</p>
+<p>When we assign a new value into the ClientRoleCollection object we perform some business logic (not a business rule as I previously said) which checks the parent client objects AvailableRoles to ensure that the role being added is valid, and it is here that we have discovered the parent is null.</p>
+<p>The following are snippets from the Client class:</p>
+<p>public static Client GetClient(int clientId)</p>
+<p>{</p>
+<p><span>	</span>var client = DataPortal.Fetch&lt;Client&gt;(clientId);</p>
+<p><span>	</span>client.CanPerform(AclOperations.GetObject, true);</p>
+<p><span>	</span>return client;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>private void DataPortal_Fetch(int clientId)</p>
+<p>{</p>
+<p><span>	</span>using (var ctx = DalManager.GetContext&lt;IClientRepository&gt;())</p>
+<p><span>	</span>{</p>
+<p><span>		</span>var dto = ctx.GetClient(clientId);</p>
+<p><span>		</span>Child_Fetch(dto);</p>
+<p><span>	</span>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>private void Child_Fetch(IClientDto dto)</p>
+<p>{</p>
+<p><span>	</span>using (BypassPropertyChecks)</p>
+<p><span>	</span>{</p>
+<p><span>		</span>Id = dto.ClientId;</p>
+<p><span>		</span>Name = dto.Name;</p>
+<p><span>		</span>Address1 = dto.Address1;</p>
+<p><span>		</span>Address2 = dto.Address2;</p>
+<p><span>		</span>City = dto.City;</p>
+<p><span>		</span>County = dto.County;</p>
+<p><span>		</span>PostCode = dto.PostCode;</p>
+<p>}</p>
+<p><span>		</span></p>
+<p><span>	</span>// Load child objects</p>
+<p><span>	</span>// ##################</p>
+<p><span>	</span>Roles = DataPortal.FetchChild&lt;ClientRoleCollection&gt;(dto.ClientRoles);</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>This correctly sets the parent of the ClientRoleCollection when the value is assigned:</p>
+<p>&nbsp;</p>
+<p>public static readonly PropertyInfo&lt;ClientRoleCollection&gt; RolesProperty = RegisterProperty&lt;ClientRoleCollection&gt;(c =&gt; c.Roles);</p>
+<p>public IClientRoleCollection Roles</p>
+<p>{</p>
+<p><span>	</span>get { return GetProperty(RolesProperty); }</p>
+<p>&nbsp; &nbsp; set { LoadProperty(RolesProperty, value); }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>This does not set the parent of the ClientRoleCollection when the value is assigned:</p>
+<p>&nbsp;</p>
+<p>public static readonly PropertyInfo&lt;ClientRoleCollection&gt; RolesProperty = RegisterProperty&lt;ClientRoleCollection&gt;(c =&gt; c.Roles);</p>
+<p>public IClientRoleCollection Roles</p>
+<p>{</p>
+<p><span>	</span>get { return GetProperty(RolesProperty); }</p>
+<p>&nbsp; &nbsp; set { SetProperty(RolesProperty, value); }</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>I hope this now make a bit more sense?<span>		</span></p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Dave</p>
+<p><span>		</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

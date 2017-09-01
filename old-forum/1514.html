@@ -1,0 +1,33 @@
+<html><header><title>csladatasource ASP.NET question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csladatasource ASP.NET question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1514.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Tuesday, October 17, 2006</h2>>Hi
+
+A Small question.
+
+I try to make my first ASP.NET CSLA form today and I am bit confused.
+
+In the properties for the csladatasource object there is a property
+called "TypeAssemblyName". 
+
+I assume that I should point it to the assembly where my CSLA classes
+are stored.
+
+But , if I make a web-project where I have no separate assembly
+for my CSLA classes, then this won't work? As I won't know the assembly
+name for my ASP.NET web-project? (Basically, I include the CSLA classes
+in my web-project directly).
+
+
+Does this mean that I am forced to use a separate project for my CSLA classes?
+to be able to use the csladatasource functionality?
+
+(I know its good to have a separate assembly for them, but my question is if 
+it is possible to not having it?)
+
+//Andyu
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 17, 2006</h2>It is unfortunately true that you can't use business classes that are directly in the web project.<br><br>I was unable to support both that concept, and still have a way by which you didn't have to restart VS every time you changed your business assemblies.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 17, 2006</h2><P>You should definitely compile Csla to a .dll file once and then use that in your project.</P>
+<P>You should also create a set of Base classes in your BO project that Inherit from Csla. The derive all your BOs from your Base class instead of directly from Csla.</P>
+<P>You should do this even if the Base classes are all essentially blank. In the future you will decide you need to extend Csla somehow and then you will be very grateful that you have these Base classes in place.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Wednesday, October 18, 2006</h2><P>Aha, thanks for the clarification!</P>
+<P>Perhaps a question for the FAQ?</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

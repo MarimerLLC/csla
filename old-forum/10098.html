@@ -1,0 +1,257 @@
+<html><header><title>DataPortal.Update failed (System.Transactions.TransactionManagerCommunicationException)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Update failed (System.Transactions.TransactionManagerCommunicationException)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10098.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 posted on Wednesday, February 23, 2011</h2><p>
+ 
+  
+ 
+
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-CA
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+<span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;"></span></p>
+<p>Hi folks,</p>
+<p>The following error has been plaguing me for weeks now:</p>
+<p><span style="font-size:11pt;font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;">&quot;DataPortal.Update failed
+(System.Transactions.TransactionManagerCommunicationException: Network access
+for Distributed Transaction Manager (MSDTC) has been disabled. Please enable
+DTC for network access in the security configuration for MSDTC using the
+Component Services Administrative tool.&quot; </span></p>
+<p>It happens sporadically when business objects are updated. It seems very random, and I think the error message is misleading because I played with the DTC &amp; firewall settings, lifting any
+and all restrictions, but still no luck &ndash; the error message just changed to:</p>
+<p class="MsoNormal">&nbsp;&quot;Communication with the underlying transaction manager has
+failed.<span>&nbsp; </span>The MSDTC transaction manager
+was unable to pull the transaction from the source transaction manager due to
+communication problems.&quot;</p>
+<p>It seems that what triggered this was when I was doing a one-time mass update of objects programmatically, calling DataPortal_Update() on thousands of objects. That&#39;s when I started seeing these errors (many updates would succeed and then one would fail with this message, and then I would try again, etc.). What really gets me is that now after those changes were reverted and I&#39;m not doing that anymore, this error is repeatedly coming up (even in a different environment!). </p>
+<p>I&#39;m really stuck because there&#39;s nothing I can really do... Changing DTC settings doesn&#39;t seem to help, and the error is originating from deep inside CSLA.NET data portal update code, not my custom code. Can anyone shed some light on this?</p>
+<p>Thanks so much.</p>
+<p>Mark</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 23, 2011</h2><p>The DTC gets involved when your transactions span more than one database connection, </p>
+<p>Ie, your code uses 2 (or more) connections for update to the same database - or separate connections to different databases for updates. </p>
+<p>If it is the same database the use SqlProfiler to see the actual connections and which updates/SQL are called. </p>
+<p>Also, make sure your code uses the .ConnectionManager, ContextManager (L2S) , ObjectContextManager (EF) to keep the very same instance of DatabaseConnection during updates from a number of objects.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Wednesday, February 23, 2011</h2><p>Thanks for the reply. </p>
+<p>I&#39;ve started a trace on audit login/logout and existing connections in SQL Server Profiler.&nbsp; But a lot of information is coming in and I&#39;m not sure exactly what I&#39;m looking for.&nbsp; There&#39;s only one .NET Client connection but there are a couple other connections because I&#39;m querying the database in SQL Server Management Studio - but that has never been a problem before.</p>
+<p>My code uses ContextManager, typically of this form:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ContextManager&lt;AraDataContext&gt;.GetManager(&quot;Ara&quot;))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp; ctx.DataContext.Update etc.&nbsp; }</p>
+<p>But I&#39;m not using a ConnectionManager, never seemed to need it before.</p>
+<p>Any more tips on diagnosing the problem? Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 23, 2011</h2><p>This is discussed in the data access FAQ: <a href="http://www.lhotka.net/cslanet/faq/DataFaq.ashx">http://www.lhotka.net/cslanet/faq/DataFaq.ashx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Tuesday, March 08, 2011</h2><p>Thanks for the replies. I&#39;m still at a loss for what to do about this, and it is causing very serious problems for our organization. The helpdesk is flooded, people aren&#39;t able to get there work done. Is there any workaround I can implement, such as catching the exception and forcing other db connections to close so there is only one connection?</p>
+<p>Thanks,<br />Mark</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Tuesday, March 08, 2011</h2><p>The reason I&#39;m having trouble with this is because the error is originating from within the CSLA framework (BusinessBase&lt;T&gt; class). The code I am using is very simple:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!this.IsNew)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return base.Save();<br /><br />This is where the exception happens and I don&#39;t have any more code to step into.</p>
+<p>Also, this only happens with a few seemingly random objects, and even in separate environments.&nbsp; If I synchronize the databases for the different environments, and try the same action in both environments, the same error occurs, which makes me think there is something about the data itself that is causing the error. But the error seems to have to do with multiple database connections. I have no idea what is going on....</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 08, 2011</h2><p>I am pretty sure a couple people have answered - perhaps not clearly enough.</p>
+<p>When using TransactionScope, if you open more than one connection to a database (even the same database, and not at the same time) within the transaction, TransactionScope will invoke the DTC.</p>
+<p>By default the DTC isn&#39;t enabled on client workstations, and may not be properly configured on your servers. So the result is often an exception.</p>
+<p>You can solve this two ways. Either enable and configure DTC on all machines, or avoid opening more than one database connection within a transaction.</p>
+<p>The Csla.Data namespace includes several types (like ConnectionManager) designed to help you reuse an existing connection.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Tuesday, March 08, 2011</h2><p>Thank you Rocky.&nbsp; I admit my understanding is not quite up to par but I managed to dig a little deeper. I&#39;m not sure about the difference between ContextManager and ConnectionManager but we are using ContextManager.&nbsp; Can you see anything wrong with this code? </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Transactional(TransactionalTypes.TransactionScope)]<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ContextManager&lt;AraDataContext&gt;.GetManager(&quot;Ara&quot;))<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ctx.DataContext.UpdateBasicAra(.....); // ERROR (sometimes)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>I did enable &amp; configure DTC as well and the result was just a different error message:&nbsp; &quot;Communication with the underlying transaction manager has
+failed.&quot;</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, March 08, 2011</h2><p>ContextManager allows the reuse of LINQ to SQL context objects. Because a context object contains a connection object, the result is that you are reusing both the context and connection.</p>
+<p>Your code is fine, assuming that at no point is there any other code using a context that might be invoked outside of that using block.</p>
+<p>For example, your code can&#39;t actually be that simple right? You need to copy the data from the object into the&nbsp;L2S entity object(s) before doing the update. If there are child objects in your object graph, their data is copied into&nbsp;entity objects too.</p>
+<p>ALL THAT MUST BE DONE WITHIN THE TOP-LEVEL using BLOCK.</p>
+<p>These manager classes implement reference counting to keep the connection/context open and enable reuse. For this to work, the top-level using block can&#39;t exit until all child data access (all in their own using blocks) are complete.</p>
+<p>If your code does follow that structure, then you may have some other issue - but if that&#39;s the case it is outside my experience.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Wednesday, March 09, 2011</h2><p>Thanks again. I think I&#39;m getting somewhere with this. In some cases there was an indirect call to DataPortal.Fetch happening within that using block.&nbsp; When I eliminate that call the error goes away so that must have something to do with it.&nbsp; But that call uses a DIFFERENT ContextManager (it is accessing a different database) so I still don&#39;t see what the problem is...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Wednesday, March 09, 2011</h2><p>Your call to the Fetch which is accessing a different database is causing two connections within a SINGLE transactionscope will always promote to DTC.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Thursday, March 10, 2011</h2><p>Thanks guys. That explains it. Now the question is whether to eliminate the possibility of fetching within the transaction scope, or not using TransactionScope in the first place.</p>
+<p>What is the purpose of using TransactionScope, and how necessary is it? Is it basically to protect data from being written to by two connections at the same time? What is the worst-case consequence of NOT using TransactionScope?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, March 10, 2011</h2><p>TransactionScope is a .NET construct that simplifies transaction management.&nbsp; The rules are fairly simple - if all your transactional code happens on one resource, then the DTC doesn&#39;t get involved.&nbsp; As soon as you create a second resource - <i>even if that second resource is a database connection using the same connection string as an already-open one</i> - and enlist that in your TransactionScope, then the transaction is &quot;promoted&quot;, and the DTC gets involved.&nbsp; It&#39;s these rules that spawned the various &quot;manager&quot; classes in CSLA; they help you re-use existing resources so you don&#39;t accidentally promote your transaction.</p>
+<p>If you don&#39;t use it, then &quot;the worst that happens&quot; is that you have to manage your transactions on your own.&nbsp; Nothing in CSLA prevents you from spinning up your own Transaction objects - you just have to tell CSLA that you&#39;re doing that by using the [Transactional(TransactionTypes.Manual)] decoration, and pass them around as you need them.&nbsp; Or you can eschew transactions altogether (if you don&#39;t need them) and not use the Transactional attribute at all.</p>
+<p>It&#39;s not uncommon for people to not use the Transactional attribute on their Fetch methods, but use it for the Update/Delete methods.&nbsp; Rarely do you need to get data in a transactional context.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 10, 2011</h2><p>Scotts right.&nbsp; You likely don&#39;t need your fetch to be done in a transaction at all.&nbsp; Of course you&#39;ll be enlisted automatically.&nbsp; So set the fetch&#39;s transactional attribute to manual, new up your own transactionscope and specifiy&nbsp;Supress as the transactionscopeoption.&nbsp; Basically that&#39;s telling TS that you don&#39;t want the fetch in any transaction.</p>
+<p>If you DO want the fetch in a transaction, you can use RequiresNew instead.&nbsp;I believe&nbsp;that should create a second, separate transaction for your fetch.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Thursday, March 10, 2011</h2><p>Actually, the Fetch is already NOT marked with a transaction. But the Update is, and the Fetch is happening inside the update. And as YOU said:</p>
+<p>&quot;Your call to the Fetch which is accessing a different database is 
+causing two connections within a SINGLE transactionscope will always 
+promote to DTC.&quot;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Thursday, March 10, 2011</h2><p>And as we&#39;ve said, since the Fetch is called within the Update method, it will automatically be enlisted in the TransactionScope, because the TransactionScope is live when the Fetch is called.&nbsp; .NET database connections will automatically enlist in a live TransactionScope unless you tell them not to.</p>
+<p>You need to follow Andy&#39;s advice - mark your Fetch method with the [Transactional(TransactionTypes.Manual)] attribute, and manually create a new TransactionScope with the Suppress TransactionScopeOption.&nbsp; Then put your Fetch DB code inside your created TransactionScope.&nbsp; That should exclude it from the existing TransactionScope surrounding the Update, and you won&#39;t be creating a distributed transaction.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rmp251 replied on Wednesday, March 16, 2011</h2><p>Thanks Scott, that seems to work.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

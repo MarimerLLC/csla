@@ -1,0 +1,17 @@
+<html><header><title>Asp MVC and unique Business Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Asp MVC and unique Business Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8820.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Calin posted on Tuesday, April 20, 2010</h2><p>Hi,</p>
+<p>I am implementing a asp mvc application and I need to save a user business object that has a unique name.</p>
+<p>I&#39;ve&nbsp;implemented&nbsp;the unique business rule using a CommandBase class (like CheckUserName).</p>
+<p>When I try <i>bos.Save()</i> I get &quot;Can&#39;t save object that is busy&quot;.&nbsp;</p>
+<p>I can do the following <i>while(bos.IsBusy); bos.Save()</i>&nbsp;and it works, but I am sure there is someone here that does is much better.</p>
+<p>Any ideas ?</p>
+<p>Thank you,</p>
+<p>Calin</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 20, 2010</h2><p>It is usually best to avoid using async rules or the async data portal when building non-interactive apps (like ASP.NET, workflow, etc).</p>
+<p>If you do want to use async behaviors, then you&#39;ll need to do async programming, there is no way around that.</p>
+<p>The best way to do async programming with rules is to handle the ValidationComplete event - that&#39;s when you know all the rules are done. Use something like a ManualResetEvent object to block the main thread until validation is complete.</p>
+<p>Using a while loop is a bad idea - that&#39;s a busy loop and will waste resources.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Calin replied on Tuesday, April 20, 2010</h2><p>Hi Rocky,</p>
+<p>Thank you for your answer.</p>
+<p>I gave up on the while loop, like you said is not a bright&nbsp;idea,&nbsp;instead&nbsp;I&#39;ve made a static Check metod in my command that calls the Execute syncronus on the dataportal. This means I removed the rule, but it works ok. What do you think ?</p>
+<p>Took a look a the ptracker mvc in the contrib sources and&nbsp;couldn&#39;t&nbsp;find a decent implementation there also.</p>
+<p>Maybe you will include a decent implementation of this problem in some examples, as I see you&#39;ve took a lot of&nbsp;interest&nbsp;in asp mvc with the latest release.</p>
+<p>Thank you,</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

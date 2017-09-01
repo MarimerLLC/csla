@@ -1,0 +1,92 @@
+<html><header><title>CSLA .NET 3.6.1 RC1 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6.1 RC1 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6300.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, January 30, 2009</h2><P>I'd hoped to release 3.6.1 today, but a flurry of last minute issues this week leads me to believe it is smarter to make this a release candidate instead of a release. This is the final pre-release of 3.6.1, and will be the actual release barring any show-stopping bugs or build issues anyone points out to me.</P>
+<P>I believe the code is quite stable and ready for release, but I'd rather err on the side of caution. Here are the download links:</P>
+<P><A href="http://www.lhotka.net/cslanet/download.aspx">Download CSLA .NET for Windows</A></P>
+<P><A href="http://www.lhotka.net/cslalight/download.aspx">Download CSLA .NET for Silverlight</A></P>
+<P>Version 3.6.1 includes some important bug fixes, along with some moderate new features. Most of the new features are addressing oversights in 3.6.0 that block important scenarios (making methods virtual, adding extensibility points, fleshing out ObjectFactory, etc).</P>
+<P>If you are using 3.6.0 you will absolutely want to move to 3.6.1 immediately, so please help me out by trying this release candidate to ensure there are no breaking issues.</P>
+<P>Thank you!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>paupdb replied on Sunday, February 01, 2009</h2><font size="2" face="Arial">Hi Rocky,<br><br>Any chance you could sneak the following change into the 3.6.1 release?<br></font><font size="2" face="Arial"><br>Make the Csla.Core.FieldManager.PropertyInfoManager class public in the cslacs .Net solution.<br><br>The reason I ask this is because currently there is no way to access the registered properties using a type.</font><font size="2" face="Arial"><span></span></font><font size="2" face="Arial">&nbsp; If there is please let me know how!<br><br>We have written a lot of stuff to run off the register properties and often we want to work with the type rather than an instance in order to get at the properties.&nbsp; For example we are using an extended PropertyInfo which holds custom attributes like sql column name - we use these attributes to dynamically build simple sql statements.&nbsp; In a lot of situations, being able to get at these properties (and thus their custom attributes) directly off of the class type makes things a lot cleaner.<br><br>Currently we have to modify the framework ourselves to make the PropertyInfoManager public in the .Net solution side.&nbsp; This is the only mod we make to CSLA at the moment, and obviously it would be cool if this too was part of the standard framework <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 03, 2009</h2>I just upgraded to 3.6.1 RC1.&nbsp; I did the upgrade because AddBusinessRules is not being called when using a remote data portal, and it sounded like the force init issue.<br><br>My case is a bit different though; I subclass the non-generic Csla.Core.BusinessBase.. so I don't know if that is affecting anything.<br><br>I'm going to add the _forceInit code and see if it resolves the issue.&nbsp; I'll post back either way.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 03, 2009</h2>Ok, the _forceInit trick isn't working. So I guess this is something else.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><br />My case is a bit different though; I subclass the non-generic Csla.Core.BusinessBase.. so I don't know if that is affecting anything.</div></BLOCKQUOTE><br /><br />I don't know either - I don't think I have many (if any) tests for objects created directly off Csla.Core.BusinessBase.<br /><br />You are saying that AddBusinessRules() isn't being called - on the client or server?<br /><br />And I assume you know that this method is invoked once per AppDomain per type - so it would be called exactly 2 times for a given business object type in a 3-tier model.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 03, 2009</h2>It was on the client the method wasn't being called at all...&nbsp; but it wasn't anything to do with _forceInit, so I started the other thread. The issue was that I wasn't calling base.OnDeserialized in my Document class.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Wednesday, February 04, 2009</h2>Rocky, <br><br>I just downloaded the RC1 version today (upgrade from the prior 3.6.1 beta), and there is a problem with the WPF property status control (I think ;-).&nbsp; It looks like the following method was added: CheckProperty().&nbsp; In this method an assumption is made that the Source property is never null.&nbsp; I was getting a null reference exception after the upgrade.&nbsp; I modified the code as follows, and it resolved the issue:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void CheckProperty()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Source != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(), Property);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (desc != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _isReadOnly = desc.IsReadOnly;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _isReadOnly = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _isReadOnly = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Best Regards,<br>Fintan<br><br><br>&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you for finding that &#8211; Sergey also reported the
+issue and it has been fixed in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Fintanv
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 04, 2009 2:22 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.6.1 RC1 available<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky, <br>
+<br>
+I just downloaded the RC1 version today (upgrade from the prior 3.6.1 beta),
+and there is a problem with the WPF property status control (I think ;-).&nbsp;
+It looks like the following method was added: CheckProperty().&nbsp; In this
+method an assumption is made that the Source property is never null.&nbsp; I
+was getting a null reference exception after the upgrade.&nbsp; I modified the
+code as follows, and it resolved the issue:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void CheckProperty()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (Source
+!= null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+var desc = Csla.Reflection.MethodCaller.GetPropertyDescriptor(Source.GetType(),
+Property);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&amp;nbs
+p;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (desc != null)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_isReadOnly = desc.IsReadOnly;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_isReadOnly = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_isReadOnly = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Best Regards,<br>
+Fintan<br>
+<br>
+<br>
+&nbsp; <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

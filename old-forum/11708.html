@@ -1,0 +1,132 @@
+<html><header><title>Problem with CSLA 4.3 on a  SQL CE 3.5 SP2 data layer</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with CSLA 4.3 on a  SQL CE 3.5 SP2 data layer</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11708.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mirq posted on Saturday, November 17, 2012</h2><p>Hi, </p>
+<p>Since there&#39;s no any search box here, I decided to make a new post.</p>
+<p>I have a question: how can I use csla objects&nbsp; with methods marked&nbsp; with TransactionScope type attribute, when having as a data access layer implementation , a SQL CE 3.5 file ?</p>
+<p>It seems that SQ CE doesn&#39;t allow TransactionScope when multiple connections have to be made (parent + children update)</p>
+<p>&quot;In a transaction scope, only one <strong>SqlCeConnection</strong> object can be enlisted that too if no other transaction manager is already enlisted into the transaction scope.&quot;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, November 17, 2012</h2><p>Look at the Csla.Data.ConnectionManager&lt;T&gt;.&nbsp; </p>
+<p>This support class will store the Connection object in Thread.LocalStore and allow you to &quot;reuse&quot; the same connection without having to pass it around to all objects as a parameter. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mirq replied on Saturday, November 17, 2012</h2><p>Im am using the ConectionManager when I update every object. In my particular case, when I have one editabe root containing one or more editable children (an editable list), the root is updated through DataPortal_Update() wich will finally call a update method in the DAL implementation of the root object. That method use a connectionmanager :</p>
+<p>&nbsp;<i>using (var ctx = ConnectionManager&lt;SqlCeConnection&gt;.GetManager(&quot;LocalDb&quot;))</i></p>
+<p>Then, back in the business object method DataPortal_Update of the root, there is a call to FieldManager.UpdateChildren(this) . I supose this call will lead finally to execution of the method Update() from each child of the root (in DAL implementation class). The problem is that this method has its own&nbsp; <i>using (var ctx = ConnectionManager&lt;SqlCeConnection&gt;.GetManager(&quot;LocalDb&quot;))</i> sentence.</p>
+<p>It seems to me that this ctx object is not the same object the root created. The question is, how can I make the root to create a ctx (in the Thread.LocalStore as you said) and pass it then to all its children. I believe all the CRUD operations should be made through one single connection, in order to be accepted by SQL CE as a TransactionScope operation. But I am not very sure.</p>
+<p>&nbsp;</p>
+<p>Thank you</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, November 17, 2012</h2><p>You will use the same connection so long as it is in &quot;scope&quot;. </p>
+<p>IE: The DataPortal_XYZ&nbsp; method must &quot;OWN&quot; the connection manager.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Wednesday, July 03, 2013</h2><p>Hi,</p>
+<p>I recently ended up with the same problem, and the code is very similar to the problem described earlier. Jonny, how can I make the DataPortal_XYZ method&nbsp;to own&nbsp;the connection manager?</p>
+<p>Thanks,</p>
+<p>/Peter</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 03, 2013</h2><pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp; [<span style="color:#2b91af;">Transactional</span>(<span style="color:#2b91af;">TransactionalTypes</span>.TransactionScope)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Update()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>&lt;<span style="color:red;">SqlCeConnection</span>&gt;.GetManager(<span style="color:#a31515;">&quot;LocalDb&quot;</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;make&nbsp;sure&nbsp;&nbsp;all&nbsp;the&nbsp;code&nbsp;that&nbsp;uses&nbsp;connetion&nbsp;to&nbsp;database&nbsp;is</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;called&nbsp;within&nbsp;this&nbsp;block</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;this&nbsp;block&nbsp;defines&nbsp;the&nbsp;scope&nbsp;in&nbsp;which&nbsp;you&nbsp;will&nbsp;always&nbsp;get&nbsp;the&nbsp;same&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;connection&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;run&nbsp;SQLs</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.....
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;propagate&nbsp;to&nbsp;children</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FieldManager.UpdateChildren(<span style="color:blue;">this</span>.<span style="color:red;">Id</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}&nbsp;&nbsp;<span style="color:green;">//&nbsp;when&nbsp;execution&nbsp;leaves&nbsp;this&nbsp;scope&nbsp;the&nbsp;connection&nbsp;is&nbsp;closed&nbsp;and&nbsp;released.</span>
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;If&nbsp;you&nbsp;should&nbsp;have&nbsp;code&nbsp;like&nbsp;this&nbsp;it&nbsp;will&nbsp;fail&nbsp;as&nbsp;it&nbsp;tries&nbsp;to&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;create&nbsp;a&nbsp;new&nbsp;connection&nbsp;and&nbsp;enlist&nbsp;in&nbsp;transaction&nbsp;and&nbsp;SqlCE&nbsp;only&nbsp;supports</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;one&nbsp;connection&nbsp;to&nbsp;enlist&nbsp;in&nbsp;transaction</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>&lt;<span style="color:red;">SqlCeConnection</span>&gt;.GetManager(<span style="color:#a31515;">&quot;LocalDb&quot;</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />And also make sure to follow the pattern. <br /><span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;ctx - uses reference counting to find out when it leaves the outermost code<br />block and only then will the connection be closed and released. <br /><br />Failure to follow the pattern may lead to next database call reuse the connection that was used in the <br />previous call. </pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Thursday, July 04, 2013</h2><p>I do exactly as you describe it, and it still fails. If I use a&nbsp;SQLite db I get the error&nbsp;message &quot;Attempt to write to readonly database&quot; which is not true since I in a step earlier write to the same db but to another table (and that works), and if I use Sql Ce instead&nbsp;I get the error message &quot;The connection object can not be enlisted in transaction scope&quot;.&nbsp;</p>
+<p>Below you can see my code:</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>[</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Transactional</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">TransactionalTypes</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.TransactionScope)]<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">protected</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">override</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> DataPortal_Insert()
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> dalManager = </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">DalFactory</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetManager())
+<p>&nbsp;&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> dal = dalManager.GetProvider&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IFillUpDal</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;();<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (BypassPropertyChecks)
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> data = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">FillUpDto</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> { Id = Id, CarId = CarId, FillUpDate = FillUpDate, PartialFillUp = PartialFillup };
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dal.Insert(data);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Id = data.Id;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">this</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);
+<p>&nbsp;&nbsp; }</p>
+<p>}</p>
+</span></span></p>
+</span></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">When the above code runs the code&nbsp;FieldManager.UpdateChildren(<span style="color:#0000ff;">this</span>), the application enters the following code, and the exception occurs on the first using clause:</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Insert(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">LineItemDto</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> data)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp;&nbsp; using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> ctx = </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ConnectionManager</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">SqlCeConnection</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt;.GetManager(</span></span><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;FuelLogDb&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">))
+<p>&nbsp;&nbsp; {</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> cm = ctx.Connection.CreateCommand())
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ......</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp; }</p>
+<p>}</p>
+<p>&nbsp;</p>
+</span></span></p>
+</span></span></span></span></span></span></span></span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Thursday, July 04, 2013</h2><p>Don&#39;t understand why my previous post formats so bad after I post&nbsp;(tried to fix it)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 04, 2013</h2><p>My entire point is that the DataPortal_Insert MUST OWN THE CONNECTIONMANAGER</p>
+<p>Which means that </p>
+<p><strong><span>&nbsp; &nbsp;using</span><span>&nbsp;(</span><span>var</span><span>&nbsp;ctx =&nbsp;</span><span>ConnectionManager</span><span>&lt;</span><span>SqlCeConnection</span><span>&gt;.GetManager(</span><span>&quot;FuelLogDb&quot;</span><span>))<br />&nbsp; &nbsp;{<br />&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // all updated must happen within this using block!!!!!!!!<br /><br />&nbsp; &nbsp;}&nbsp;</span></strong></p>
+<p><strong><span></span>should be placed in DataPortal_Insert and ALL updates to database must happen within that using block.</strong></p>
+<p>As-is your code will most likely create a new connection in each Child_Insert and that is NOT allowed when using SqlCe. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pecen replied on Friday, July 05, 2013</h2><p>Again, as I see it, my child updating occurs within the using-block in DataPortal_Insert through FieldManager.UpdateChildren(this). It&#39;s exactly as described in the EncapsulatedInvokeDto-example from the DataAccess-part in the e-book series. </p>
+<p>If this is not possible (using FieldManager.UpdateChildren()) then I guess I&#39;ll have to move the code from the DAL to the Business class, or just remove the [Transactional...]-statement.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 05, 2013</h2><p>NO - your DataPortal_Update/DataPortal_Insert does NOT own and define the lifetime of the connection. That is the entire point!!!!!</p>
+<p>In SqlCe there can be only one connection that enlists into the transaction and YOUR code can only use that one connection on updates. Hence - the DataPortal_XYZ must define the scope of the connection instance so that all childs get the same connection object!!!!!!!!!!!</p>
+<p>It is NOT FieldManger.UpdateChildren your are struggling with - it is understanding how to make your child objects use that SAME connection object rather than creating a new connection object every time.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

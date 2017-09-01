@@ -1,0 +1,334 @@
+<html><header><title>Delete leaves Root and Children in Inconsistent State</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Delete leaves Root and Children in Inconsistent State</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6231.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh posted on Wednesday, January 21, 2009</h2><P>I&nbsp;am using managed properties, and CSLA 3.5.&nbsp; For purposes of brevity in the post, I'll just show a couple of properties of sample objects in standard object syntax, rather than showing the declaration of the PropertyInfo fields.&nbsp; Rest assured, though, that the PropertyInfo fields are in full use.</P>
+<P>Class Person : BusinessBase<BR>{<BR>&nbsp;&nbsp;&nbsp;int ID { get; set; }<BR>&nbsp;&nbsp; string Name { get; set; }<BR>&nbsp;&nbsp; PhoneNumber HomePhone { get; set; }<BR>}</P>
+<P>Class PhoneNumber : BusinessBase<BR>{<BR>&nbsp;&nbsp;&nbsp;int ID { get; set; }<BR>&nbsp;&nbsp;&nbsp;string AreaCode { get; set; }<BR>&nbsp;&nbsp;&nbsp;string Number {get; set; }<BR>}</P>
+<P>&nbsp;</P>
+<P>Here's what happens when I try to delete a fully instantiated Person object.&nbsp; </P>
+<P>Starting with:&nbsp;&nbsp;<BR>&nbsp;&nbsp;Person.ID = 2<BR>&nbsp; Person.Name = 'Fred'<BR>&nbsp;&nbsp;Person.IsDirty = False<BR>&nbsp;&nbsp;Person.IsNew = False<BR>&nbsp;&nbsp;Person.HomePhone.ID = 37<BR>&nbsp;&nbsp;Person.HomePhone.AreaCode = '555'<BR>&nbsp;&nbsp;Person.HomePhone.Number = '555-1212'<BR>&nbsp;&nbsp;Person.HomePhone.IsDirty = False<BR>&nbsp;&nbsp;Person.HomePhone.IsNew = False</P>
+<P>Make these calls:<BR>&nbsp; Person.Delete( );<BR>&nbsp; Person.Save( );</P>
+<P>With code in Person.DataPortal_Delete to call a stored procedure to delete the full object graph (in this example, Person 2&nbsp;and&nbsp;PhoneNumber 37), this is the end result.</P>
+<P>&nbsp;&nbsp;Person.ID = 2<BR>&nbsp; Person.Name = 'Fred'<BR>&nbsp;&nbsp;Person.IsDirty =&nbsp;TRUE<BR>&nbsp;&nbsp;Person.IsNew =&nbsp;TRUE<BR>&nbsp;&nbsp;Person.HomePhone.ID = 37<BR>&nbsp;&nbsp;Person.HomePhone.AreaCode = '555'<BR>&nbsp;&nbsp;Person.HomePhone.Number = '555-1212'<BR>&nbsp;&nbsp;Person.HomePhone.IsDirty = False<BR>&nbsp;&nbsp;Person.HomePhone.IsNew = False</P>
+<P><FONT color=#ff0000><STRONG>How come the child PhoneNumber object isn't marked IsDirty = True, IsNew = True ??</STRONG></FONT></P>
+<P>I don't have any "Child_DeleteSelf" or "DataPortal_Delete" methods in the PhoneNumber class, because the "DataPortal_Delete" of the root&nbsp;object (Person) takes care of deleting all the data from the database.&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, January 21, 2009</h2><P>You can pretty much guarantee that any code that looks like this is a bug:</P>
+<P>&nbsp;Person.Save( );</P>
+<P>Your code should always update the reference.</P>
+<P>e.g. </P>
+<P>myPerson = myPerson.Save();</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Wednesday, January 21, 2009</h2><P>Fortunantly, my code is better than what was posted.&nbsp; It indeed is written like this:</P>
+<P>myPerson.Delete( );<BR>myPerson = myPerson.Save( );</P>
+<P>So the most obvious error is eliminated, and the question remains, why isn't the child object marked <STRONG><FONT color=#ff0000>IsDirty = True, IsNew = True</FONT></STRONG> ??</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2><P>Also, even if your child objects don't DO anything to delete themselves, you need to cascade the update call to them.</P>
+<P>In your root object's DataPortal_Insert/Update/Delete methods you must at least call ChildUpdate() or otherwise tell the children to update themselves - otherwise how would they know to change their status to new/old/etc?</P>
+<P>You can have empty Child_Delete() methods, which is probably appropriate here.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Wednesday, January 21, 2009</h2><P>Added a call to DataPortal.UpdateChild(this.HomePhone, this) in the Person DataPortal_Delete method.&nbsp; That called in to the ChildDataPortal.Update for the child object, where it quickly hit this code and exited before it could do anything:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (busObj != null &amp;&amp; <FONT color=#ff0000>busObj.IsDirty == false</FONT>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // if the object isn't dirty, then just exit<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#ff0000> return;<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>The Child object isn't marked as IsDirty = True, nor is it marked as IsDeleted = True.&nbsp; If it were, it looks like the ChildDataPortal would call the Child_DeleteSelf method, and life would be better.</P>
+<P>Since the child IsDirty = False, it doesn't even get the chance to run Child_Update.&nbsp; </P>
+<P>Am I missing fundamental step&nbsp;in processing my scenario?&nbsp; I have a fully populated object graph, with parent and child object, call parent.Delete( ), then parent = parent.Save( ).&nbsp; What else do I need to do to get the child object to come out of all this with IsNew = True, IsDirty = True ??</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Maybe I missed something in your scenario.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Are you deleting all the children? In that case I typically just
+create a new (empty) list for the child list and use LoadProperty() to replace
+the previous (now useless) one.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Wednesday, January 21, 2009</h2><P>I am deleting the child object&nbsp;from the parent's DataPortal Delete via a stored procedure.&nbsp;&nbsp; I had gone down the path of replacing the parent's reference to the child with a new child and using LoadProperty.</P>
+<P>That causes another inconsistency in the state of the objects, though.</P>
+<P>From the initial post - here's the data in the object graph:</P>
+<P>&nbsp;&nbsp;Person.ID = 2<BR>&nbsp; Person.Name = 'Fred'<BR>&nbsp;&nbsp;Person.IsDirty =&nbsp;False<BR>&nbsp;&nbsp;Person.IsNew =&nbsp;False<BR>&nbsp;&nbsp;Person.HomePhone.ID = 37<BR>&nbsp;&nbsp;Person.HomePhone.AreaCode = '555'<BR>&nbsp;&nbsp;Person.HomePhone.Number = '555-1212'<BR>&nbsp;&nbsp;Person.HomePhone.IsDirty = False<BR>&nbsp;&nbsp;Person.HomePhone.IsNew = False</P>
+<P>After calling myPerson.Delete( ), myPerson = myPerson.Save ( ), and loading a new PhoneNumber instance in the Person DataPortal_Delete, the state of the object graph is this:&nbsp; (values that change as a result of the Save( ) are shown in <FONT color=#ff0000><STRONG>red</STRONG></FONT> )</P>
+<P>&nbsp;&nbsp;Person.ID = 2<BR>&nbsp; Person.Name = 'Fred'<BR>&nbsp;&nbsp;Person.IsDirty =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.IsNew =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.ID =&nbsp;<STRONG><FONT color=#ff0000>0</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.AreaCode = <FONT color=#ff0000><STRONG>''<BR></STRONG></FONT>&nbsp;&nbsp;Person.HomePhone.Number = <FONT color=#ff0000><STRONG>''<BR></STRONG></FONT>&nbsp;&nbsp;Person.HomePhone.IsDirty =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.IsNew = <FONT color=#ff0000><STRONG>TRUE</STRONG></FONT></P>
+<P>So now after a&nbsp;Delete, the parent object (myPerson) retains values in its properties (Name, in this example), but the child object has its values cleared out.&nbsp; The parent and the child don't behave the same.&nbsp; I'm trying to achieve consistency in behavior of parent and child.&nbsp; Either of the following outcomes would be fine:</P>
+<P>1) Retain values in properties, but child flags change as parent flags do -<BR>&nbsp;&nbsp;Person.ID = 2<BR>&nbsp; Person.Name = 'Fred'<BR>&nbsp;&nbsp;Person.IsDirty =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.IsNew =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.ID = 37<BR>&nbsp;&nbsp;Person.HomePhone.AreaCode = '555'<BR>&nbsp;&nbsp;Person.HomePhone.Number = '555-1212'<BR>&nbsp;&nbsp;Person.HomePhone.IsDirty =&nbsp;<FONT color=#ff0000><STRONG>TRUE</STRONG></FONT><BR>&nbsp;&nbsp;Person.HomePhone.IsNew = <FONT color=#ff0000><STRONG>TRUE</STRONG></FONT></P>
+<P><FONT color=#000000>or</FONT></P>
+<P>2) Parent object gets "New"ed up as well as child&nbsp;object(s)<BR>&nbsp;&nbsp;Person.ID =&nbsp;<FONT color=#ff0000><STRONG>0</STRONG></FONT><BR>&nbsp; Person.Name = <STRONG><FONT color=#ff0000>''</FONT></STRONG><BR>&nbsp;&nbsp;Person.IsDirty =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.IsNew =&nbsp;<STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.ID =&nbsp;<STRONG><FONT color=#ff0000>0</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.AreaCode = <STRONG><FONT color=#ff0000>''</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.Number = <STRONG><FONT color=#ff0000>''</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.IsDirty = <STRONG><FONT color=#ff0000>TRUE</FONT></STRONG><BR>&nbsp;&nbsp;Person.HomePhone.IsNew = <STRONG><FONT color=#ff0000>TRUE</FONT></STRONG></P>
+<P><FONT color=#000000>Does this make sense?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you&#8217;ve deleted all children of the root in the
+database, then there are no children. So the child list should be empty. That&#8217;s
+the closest object match to the database reality, and that&#8217;s the only
+supported scenario for CSLA.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to somehow leave deleted child object placeholders,
+then you&#8217;ll need to mark the child objects as deleted before calling
+Save(), or at least before calling UpdateChild().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe (and I haven&#8217;t tried this), you could add this code
+in your root DP_D() method:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>// delete all the data from the db<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>this.ChildList.Clear();&nbsp; // &#8220;delete&#8221; all child
+objects<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>DataPortal.UpdateChild(ReadProperty(ChildListProperty)); // commit
+the deletes<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think you&#8217;ll still end up with an empty child collection
+though, because the default behavior of a BLB is to remove any deleted child
+objects from the collection.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So to overcome that, you&#8217;ll have to override the
+Child_Update() method of your BLB and implement your own algorithm to do what
+you want with the items in DeletedList.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> The_Tosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 5:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Delete leaves Root and Children in
+Inconsistent State<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am deleting the child object&nbsp;from the parent's DataPortal Delete via
+a stored procedure.&nbsp;&nbsp; I had gone down the path of replacing the
+parent's reference to the child with a new child and using LoadProperty.<o:p></o:p></p>
+
+<p>That causes another inconsistency in the state of the objects, though.<o:p></o:p></p>
+
+<p>From the initial post - here's the data in the object graph:<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;Person.ID = 2<br>
+&nbsp; Person.Name = 'Fred'<br>
+&nbsp;&nbsp;Person.IsDirty =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.IsNew =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.HomePhone.ID = 37<br>
+&nbsp;&nbsp;Person.HomePhone.AreaCode = '555'<br>
+&nbsp;&nbsp;Person.HomePhone.Number = '555-1212'<br>
+&nbsp;&nbsp;Person.HomePhone.IsDirty = False<br>
+&nbsp;&nbsp;Person.HomePhone.IsNew = False<o:p></o:p></p>
+
+<p>After calling myPerson.Delete( ), myPerson = myPerson.Save ( ), and loading
+a new PhoneNumber instance in the Person DataPortal_Delete, the state of the
+object graph is this:<o:p></o:p></p>
+
+<p>&nbsp;&nbsp;Person.ID = 2<br>
+&nbsp; Person.Name = 'Fred'<br>
+&nbsp;&nbsp;Person.IsDirty =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.IsNew =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.HomePhone.ID =&nbsp;0<br>
+&nbsp;&nbsp;Person.HomePhone.AreaCode = ''<br>
+&nbsp;&nbsp;Person.HomePhone.Number = ''<br>
+&nbsp;&nbsp;Person.HomePhone.IsDirty =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.HomePhone.IsNew = TRUE<o:p></o:p></p>
+
+<p>So now after a&nbsp;Delete, the parent object (myPerson) retains values in
+its properties (Name, in this example), but the child object has its values
+cleared out.&nbsp; The parent and the child don't behave the same.&nbsp; I'm
+trying to achieve consistency in behavior of parent and child.&nbsp; Either of
+the following outcomes would be fine:<o:p></o:p></p>
+
+<p>1) Retain values in properties, but child flags change as parent flags do -<br>
+&nbsp;&nbsp;Person.ID = 2<br>
+&nbsp; Person.Name = 'Fred'<br>
+&nbsp;&nbsp;Person.IsDirty =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.IsNew =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.HomePhone.ID = 37<br>
+&nbsp;&nbsp;Person.HomePhone.AreaCode = '555'<br>
+&nbsp;&nbsp;Person.HomePhone.Number = '555-1212'<br>
+&nbsp;&nbsp;Person.HomePhone.IsDirty =&nbsp;<strong><span>TRUE</span></strong><br>
+&nbsp;&nbsp;Person.HomePhone.IsNew = <strong><span>TRUE</span></strong><o:p></o:p></p>
+
+<p><span>or</span><o:p></o:p></p>
+
+<p>2) Parent object gets &quot;New&quot;ed up as well as child&nbsp;object(s)<br>
+&nbsp;&nbsp;Person.ID =&nbsp;<strong><span>0</span></strong><br>
+&nbsp; Person.Name = <strong><span>''</span></strong><br>
+&nbsp;&nbsp;Person.IsDirty =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.IsNew =&nbsp;TRUE<br>
+&nbsp;&nbsp;Person.HomePhone.ID =&nbsp;<strong><span>0</span></strong><br>
+&nbsp;&nbsp;Person.HomePhone.AreaCode = <strong><span>''</span></strong><br>
+&nbsp;&nbsp;Person.HomePhone.Number = <strong><span>''</span></strong><br>
+&nbsp;&nbsp;Person.HomePhone.IsDirty = <strong><span>TRUE</span></strong><br>
+&nbsp;&nbsp;Person.HomePhone.IsNew = <strong><span>TRUE</span></strong><o:p></o:p></p>
+
+<p><span>Does this make sense?</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Thursday, January 22, 2009</h2><BLOCKQUOTE dir=ltr>
+<P class=MsoNormal><SPAN><EM>"If you’ve deleted all children of the root in the database, then there are no children. So the child list should be empty. That’s the closest object match to the database reality, and that’s the only supported scenario for CSLA."<O:P></O:P></EM></SPAN></P></BLOCKQUOTE>
+<P class=MsoNormal><SPAN><O:P>The root has been deleted from the database as well, so by extension,&nbsp;the root object should be empty as well, as the closest match to the database reality.&nbsp; The root, however, remains as a populated object placeholder.&nbsp; The practice of replacing child object and child collections during delete processing with new, empty&nbsp;instances while leaving the root object as a populated placeholder is an inconsistency of&nbsp;object behavior that I'm trying to avoid.&nbsp; </O:P></SPAN></P>
+<P class=MsoNormal><SPAN><O:P></O:P></SPAN><SPAN><O:P></O:P></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Note that in the sample code the root object does not contain a child <EM>collection</EM>, but simply a child <EM>object</EM> (derived from BusinessBase).&nbsp; As such,&nbsp;ChildList.Clear( ) won't work, since it is not a child list.&nbsp; One can't call .Delete( ) on the child object, because it <EM>is</EM> a child object, and that would cause the framework to throw a ChildDeleteException.&nbsp; Neither can&nbsp;one call .DeleteChild( ), because that is an internal method that is not visible from within the root object.&nbsp; </SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>How does one mark a child object (which is not a member of a collection or business list base) for deletion?</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 22, 2009</h2><P>In the Delete for the root object, after the DB has removed all the records, you just create a New child object and update your reference.</P>
+<P>myChild=Child.NewChild(Me.ID)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Thursday, January 22, 2009</h2><P>Joe, you missed the point of the thread.&nbsp; Updating the reference with a New child object gives you an new, empty child object while your root object retains all the values it had before it was deleted.</P>
+<P>Reread post 30162, in this thread for an example of what this does, and for the outcome I'm trying to achieve.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 22, 2009</h2>I think this does what you want?<br><br>using System;<br>using System.Collections.Generic;<br>using System.Linq;<br>using System.Text;<br>using Csla;<br><br>namespace ConsoleApplication1<br>{<br>&nbsp; class Program<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var obj = TheRoot.GetRoot();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.Child.IsNew);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Delete();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = obj.Save();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.Child == null);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine(obj.Child.IsNew);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.ReadLine();<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp; }<br><br>&nbsp; [Serializable]<br>&nbsp; public class TheRoot : BusinessBase&lt;TheRoot&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;TheChild&gt; ChildProperty = RegisterProperty(new PropertyInfo&lt;TheChild&gt;("Child", "Child"));<br>&nbsp;&nbsp;&nbsp; public TheChild Child<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(ChildProperty); }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(ChildProperty, value); }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public static TheRoot GetRoot()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.Fetch&lt;TheRoot&gt;();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #region Data Access<br><br>&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child = TheChild.GetChild();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Insert()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br>&nbsp;&nbsp;&nbsp; {<br><br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; protected override void DataPortal_DeleteSelf()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal_Delete();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; private void DataPortal_Delete()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child = TheChild.NewChild();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp; }<br><br>&nbsp; [Serializable]<br>&nbsp; public class TheChild : BusinessBase&lt;TheChild&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; internal static TheChild NewChild()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.CreateChild&lt;TheChild&gt;();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; internal static TheChild GetChild()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.FetchChild&lt;TheChild&gt;();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; private void Child_Fetch()<br>&nbsp;&nbsp;&nbsp; { }<br>&nbsp; }<br>}<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 23, 2009</h2>In that case, in the root object do this:<br><br>&nbsp;&nbsp;&nbsp; private void DataPortal_Delete()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child.MarkAsDeleted();<br>&nbsp;&nbsp;&nbsp; }<br><br>and in the child object do this:<br><br>&nbsp;&nbsp;&nbsp; internal void MarkAsDeleted()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkNew();<br>&nbsp;&nbsp;&nbsp; }<br><br>I believe that'll generate the result you are after.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Friday, January 23, 2009</h2><P>Yes, that does it.&nbsp; Thank you.</P>
+<P>To make it perfectly clear to any who are casually following along, the MarkAsDeleted method on the child object is a new method that I need to add to my Business Object.&nbsp; MarkAsDeleted( )&nbsp;is not part of the CSLA Framework.&nbsp; Should my child object have children of its own, I would also need to implement MarkAsDeleted( ) on them, and call that right after calling this.MarkNew( ).</P>
+<P>&nbsp; internal void MarkAsDeleted()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; MarkNew( );<BR>&nbsp;&nbsp;&nbsp; child.MarkAsDeleted( );<BR>&nbsp;&nbsp;&nbsp; anotherChild.MarkAsDeleted( );<BR>&nbsp; }</P>
+<P>This is a by-product of the root object deleting all the data for the entire object graph.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Wednesday, March 04, 2009</h2><font size="2" face="Arial">We are developing an AutoCAD application using CSLA. In AutoCAD it is common for users to delete an object from a drawing, which causes the business object to delete itself from the database, and then undo the delete, which brings the object back into the drawing and should reinsert everything back into the db. I also expected the items in a child collection to be marked new and dirty after the parent is deleted.<br><br>Rocky's hack does the trick, but I agree with The_Tosh that "replacing child object and child collections during delete processing with new, empty instances while leaving the root object as a populated placeholder is inconsistent". By <i>default</i>, I believe you should be able to do this repeatedly:<br><br><font face="Courier New">obj.Delete();&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">// Mark for deletion</font><br>obj = obj.Save(); <font color="#008000">// Bye bye</font><br>obj = obj.Save(); <font color="#008000">// Oops, put it back, with all children as they were<br></font></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, March 05, 2009</h2>I'm not sure that it should work this way by default; most people don't have this scenario, so I'm not sure having csla go through and fix everything up would be worthwhile for an object that is going to be on the garbage heap soon anyway.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, March 05, 2009</h2><font size="2" face="Arial">There's nothing to "fix up" - the data remains as it was, it just needs to be marked as new. The performance hit would be virtually nil, and nothing compared to calling a stored procedure over the network</font><font size="2" face="Arial">.</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, January 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>The_Tosh:</strong></div><div>
+<P>Joe, you missed the point of the thread.&nbsp; Updating the reference with a New child object gives you an new, empty child object while your root object retains all the values it had before it was deleted.</P>
+<P>Reread post 30162, in this thread for an example of what this does, and for the outcome I'm trying to achieve.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Well I guess Rocky missed it too since he just recommended what I did.</P>
+<P>It seems like you are doing something that doesn't make sense to either me or Rocky. An I am not sure why you think you need to do it. Maybe you should step back and re-think your position.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>The_Tosh replied on Friday, January 23, 2009</h2><P>Yes, you and Rocky are consistent in your approach.&nbsp; I follow exactly what&nbsp;you're doing, and why.&nbsp; </P>
+<P>&nbsp;</P>
+<P>I'm developing the Business Layer, but not the UI that will consume it.&nbsp; I'm trying to guarantee that my business objects don't give a UI developer unexpected / inconsistent results should he attempt to reuse the root object after Delete( ) and Save( ) by issuing another Save( ) in an effort to implement an UndoDelete feature.&nbsp; With the standard implementation, this an UndoDelete implemented in this manner&nbsp;would succeed for the root object, but would fail for all the children.&nbsp; I'd rather see it either fail for the root as well, or succeed for the children as well as the root.</P>
+<P>&nbsp;</P>
+<P>This is an edge case with a small chance of ever actually happening, but I don't like releasing code that can mislead the UI developer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is the immediate parent object’s job to manage its
+relationship to the child.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BLB does this for you automatically (for the most part), so you
+don’t need to worry about it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In CSLA 3.6 the field manager helps with some aspects of
+managing a child object relationship, but it doesn’t do everything. It is up to
+the immediate parent object (your code) to manage the aspects of the relationship
+not handled by field manager – including deleting the child (presumably
+resetting the value to null or something).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> The_Tosh
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 22, 2009 9:45 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Delete leaves Root and Children in Inconsistent
+State<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<p class=MsoNormal><em>&quot;If
+youâ€™ve deleted all children of the root in the database, then there are no
+children. So the child list should be empty. Thatâ€™s the closest object match
+to the database reality, and thatâ€™s the only supported scenario for
+CSLA.&quot;</em><o:p></o:p></p>
+
+</blockquote>
+
+<p class=MsoNormal>The
+root has been deleted from the database as well, so by extension,&nbsp;the root
+object should be empty as well, as the closest match to the database
+reality.&nbsp; The root, however, remains as a populated object
+placeholder.&nbsp; The practice of replacing child object and child collections
+during delete processing with new, empty&nbsp;instances while leaving the root
+object as a populated placeholder is an inconsistency of&nbsp;object behavior
+that I'm trying to avoid.&nbsp; <o:p></o:p></p>
+
+<p class=MsoNormal>Note
+that in the sample code the root object does not contain a child <em>collection</em>,
+but simply a child <em>object</em> (derived from BusinessBase).&nbsp; As
+such,&nbsp;ChildList.Clear( ) won't work, since it is not a child list.&nbsp;
+One can't call .Delete( ) on the child object, because it <em>is</em> a child
+object, and that would cause the framework to throw a
+ChildDeleteException.&nbsp; Neither can&nbsp;one call .DeleteChild( ), because
+that is an internal method that is not visible from within my root
+object.&nbsp; <o:p></o:p></p>
+
+<p class=MsoNormal>How
+does one mark a child object (which is not a member of a collection or business
+list base) for deletion?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,11 @@
+<html><header><title>Config files</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Config files</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4026.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS posted on Wednesday, December 12, 2007</h2><P class=MsoNormal>Hi</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>We have client applications and an application server side, in IIS. The aap.config of the clients and the server side seems to be fine. <SPAN>&nbsp;</SPAN>I would like to know if we need to put something in the app.config files of the library projects, like business objects. I think the links toward the business projects (in the web project) is sufficient, am I right?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your help<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, December 12, 2007</h2><P>You need to think of this issue in terms of physical deployment of your application.</P>
+<P>If you are hosting the application on IIS as a website, then you need&nbsp;a web.config on the web server for that website.</P>
+<P>If you are hosting a middle-tier Application Server (as well) under IIS then you need a web.config for that website (as well).</P>
+<P>If you are deploying your application to a desktop PC, then you need an app.config on that desktop PC.</P>
+<P>There is no real relationship between config files and how many projects/DLLs you have in your solution.</P>
+<P>HTH</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, December 12, 2007</h2>Ok, thanks, David :) !</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,158 @@
+<html><header><title>Memory leak in Rolodex?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Memory leak in Rolodex?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6532.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas posted on Friday, February 27, 2009</h2>Hi All,<br><br>I think I've run into a memory problem in rolodex, but am not sure how to fix it. I have an app based on Rolodex (with more pages and much more data) and noticed that memory increased each time I changed pages. Checking back, I've found that Rolodex does the same.<br><br>This line: this.LayoutRoot.Children.Remove(this.LayoutRoot.Children[0]); doesn't seem to be freeing the memory used by the last page. I've added an explicit call to GC, but the memory keeps increasing.<br><br>Has anyone else come across this and found the solution?<br><br>Thanks, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Saturday, February 28, 2009</h2>Just to add to this, memory used by IE is:<br><br>Loading login screen: 23mb<br>Logging on: 31mb<br>Editing AT&amp;T: 35mb<br>Closing edit on AT&amp;T: 36mb<br>Editing AT&amp;T: 38mb<br>Closing edit on AT&amp;T: 39mb<br>etc...<br><br>Randomly clicking edit and close on the screens results in more and more memory being taken, but not released.<br><br>Does anyone else see this, or is it something connected with my setup? My application loads more data than rolodex, so quickly runs up 300+mb..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Saturday, February 28, 2009</h2><P>James,</P>
+<P>I've finished my first CSLA w/ Silverlight proof-of-concept for an internal application (very happy with the result) and am preparing to move onto my second one that has some business applicability. I haven't had the chance to test mine for a memory leak, but I am watching this thread very closely myself - it's an interest to me too.</P>
+<P>If I get a chance to test mine out for memory leaks, I'll post the results here. In the meantime, I'm interested in this subject too. </P>
+<P>Chris</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Sunday, March 01, 2009</h2>After a bit more investigation, I'm wondering if the problem is the ValidatedDataGridTextColumns I'm using in the datagrid on a particular page. I use 14 of these columns in the grid and am testing on 25 rows of data (in reality, we'll have a lot more). The datatype of all the cells is decimal. Performance is sluggish for all actions on the page and after repeated loads becomes unacceptably slow.<br><br>When comparing the validated columns with standard text columns, there's this difference in memory consumption of IE after one load of the page:<br>75,340mb&nbsp; after page load with ValidatedDataGridTextColumn<br>56,912mb after page load using standard DataGridTextColumn<br><br>After refreshing the data 10 times, there's this difference:<br>107,440mb with ValidatedDataGridTextColumn<br>65,888mb using standard DataGridTextColumn<br><br>I don't know if this is actually a memory leak, or whether it's just how ValidatedDataGridTextColumns need to work, but even though I'm not asking much of them at the moment, I don't think they are usable in my application - which is a real shame, because they offer far better functionality.<br><br>There's this thread (http://forums.lhotka.net/forums/thread/26314.aspx) on the subject of the ValidatedDataGridTextColumns from a while ago. Has anyone else had similar problems, or found a solution?<br><br>Thanks, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, March 01, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did
+you try by any chance just creating a templated column with PropertyStatus?&nbsp;
+This is essentially what ValidatedDataColumn is.&nbsp; I would be curious what
+performance would be in comparison with Validated column&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, March 01, 2009 6:59 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Memory leak in Rolodex?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>After a bit more investigation, I'm wondering if the problem
+is the ValidatedDataGridTextColumns I'm using in the datagrid on a particular
+page. I use 14 of these columns in the grid and am testing on 25 rows of data
+(in reality, we'll have a lot more). The datatype of all the cells is decimal.
+Performance is sluggish for all actions on the page and after repeated loads
+becomes unacceptably slow.<br>
+<br>
+When comparing the validated columns with standard text columns, there's this
+difference in memory consumption of IE after one load of the page:<br>
+75,340mb&nbsp; after page with ValidatedDataGridTextColumn<br>
+56,912mb after page using standard DataGridTextColumn<br>
+<br>
+After refreshing the data 10 times, there's this difference:<br>
+107,440mb with ValidatedDataGridTextColumn<br>
+65,888mb using standard DataGridTextColumn<br>
+<br>
+I don't know if this is actually a memory leak, or whether it's just how
+ValidatedDataGridTextColumns need to work, but even though I'm not asking much
+of them at the moment, I don't think they are usable in my application - which
+is a real shame, because they offer far better functionality.<br>
+<br>
+There's this thread (http://forums.lhotka.net/forums/thread/26314.aspx) on the
+subject of the ValidatedDataGridTextColumns from a while ago. Has anyone else
+had similar problems, or found a solution?<br>
+<br>
+Thanks, James.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Monday, March 02, 2009</h2>I've just tried it. Nothing fancy - just a textbox with the csla propertystatus. Performance goes sluggish in the same way as with the validated columns. I had to put things back quickly though, as I'm deploying this app for testing now, so didn't have time for a detailed investigation. Can something later if it would help. What kind of scenario would be a good test?<br><br>Thanks, James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, March 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+think just a large number of rows and columns would be OK. Property status does
+have some overhead, but should not be much.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 02, 2009 5:59 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Memory leak in Rolodex?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I've just tried it. Nothing fancy - just a textbox with the
+csla propertystatus. Performance goes sluggish in the same way as with the
+validated columns. I had to put things back quickly though, as I'm deploying
+this app for testing now, so didn't have time for a detailed investigation. Can
+something later if it would help. What kind of scenario would be a good test?<br>
+<br>
+Thanks, James.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, March 02, 2009</h2>Well, I have to ask.. are you sure there's a memory leak?&nbsp; GC.Collect isn't an order, it's suggestion to the GC.&nbsp; Depending on how you're determine the memory usage, and what you're application is doing, there might not be any problem at all.&nbsp; Increasing memory usage does not even necessarily mean a memory leak. <br><br>So.. what problems are leading to suspect a memory leak?&nbsp; OOM Exception?&nbsp; Sluggishness?&nbsp; Something else?&nbsp; Did you run ANTS profiler?&nbsp; What about FxCop?&nbsp; The latter will help you find Disposable objects which aren't being disposed.. those seem to be the only time memory actually is leaking.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, March 10, 2009</h2>Did you get any further with your investigation... Here is a link that might help:<br><br>http://blogs.msdn.com/delay/archive/2009/03/09/controls-are-like-diapers-you-don-t-want-a-leaky-one-implementing-the-weakevent-pattern-on-silverlight-with-the-weakeventlistener-class.aspx</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Monday, March 16, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div>Did you get any further with your investigation... Here is a link that might help:<br><br>http://blogs.msdn.com/delay/archive/2009/03/09/controls-are-like-diapers-you-don-t-want-a-leaky-one-implementing-the-weakevent-pattern-on-silverlight-with-the-weakeventlistener-class.aspx</div></BLOCKQUOTE><br><br>Thanks for the link, Jack, it got me thinking and experimenting. I wondered whether the eventhandlers on page.xaml.cs were behaving in the way that page described, but after removing them (and just reloading the page time and again) I'm getting the same behaviour. I can't see what the problem is... Will keep testing and post again if I find anything.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Tuesday, March 17, 2009</h2>Quick update: I think the sluggish behaviour of grids with ValidatedDataColumns is a separate issue. Things are certainly sluggish, but I get the same memory problems with standard text columns (without the app appearing sluggish to begin with), so am concentrating on the memory issues at the moment.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Monday, March 16, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Well, I have to ask.. are you sure there's a memory leak?&nbsp; GC.Collect isn't an order, it's suggestion to the GC.&nbsp; Depending on how you're determine the memory usage, and what you're application is doing, there might not be any problem at all.&nbsp; Increasing memory usage does not even necessarily mean a memory leak. <br><br>So.. what problems are leading to suspect a memory leak?&nbsp; OOM Exception?&nbsp; Sluggishness?&nbsp; Something else?&nbsp; Did you run ANTS profiler?&nbsp; What about FxCop?&nbsp; The latter will help you find Disposable objects which aren't being disposed.. those seem to be the only time memory actually is leaking.<br></div></BLOCKQUOTE><br><br>Yes - OOM exception - if I reload the page enough times I get memory usage in IE up to 1.47GB and then VS throws the exception. I don't know where the problem is though (see below).<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

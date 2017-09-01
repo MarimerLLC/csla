@@ -1,0 +1,83 @@
+<html><header><title>CSLA .NET 3.8.0 released and available!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.8.0 released and available!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7954.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, November 05, 2009</h2><P>CSLA .NET version 3.8.0 is now released and is available for download. 
+<UL>
+<LI><A href="http://www.lhotka.net/cslanet/download.aspx"><STRONG>Windows version</STRONG></A> 
+<LI><A href="http://www.lhotka.net/cslalight/download.aspx"><STRONG>Silverlight version</STRONG></A></LI></UL>
+<P>For Windows Forms and Web Forms users there are not any major new features, but some of the bug fixes may be valuable. Upgrading from 3.7 to 3.8 should be painless for these UI types (as well as XML services and workflow interfaces). 
+<P>If you use WPF or Silverlight, you will almost certainly want to take a look at the features in 3.8. The downside is that there are several breaking changes in the XAML controls, but the upside is that the new XAML control implementations are far superior to previous versions. Controls impacted include: 
+<UL>
+<LI>PropertyStatus – now supports a “pull model” so a UI control can bind to properties of PropertyStatus, rather than having PropertyStatus directly manipulate the UI control’s IsReadOnly and IsEnabled properties. Also in Silverlight, PropertyStatus now makes use of the Silverlight 3 binding capabilities. 
+<LI>InvokeMethod – can now be triggered by any UI event, and can invoke a couple different method signatures on the DataContext. Also, MethodParameter is now bindable. The end result is that InvokeMethod provides really good support for both the CslaDataProvider model and the MVVM design pattern. 
+<LI>Execute – a new control that is a <EM>trigger action</EM> that works in the Blend 3 Interactivity model. This is very similar to InvokeMethod, but works with the Blend 3 scheme. 
+<LI>ViewModelBase&lt;T&gt; – provides a base class to make it easy to build a viewmodel class when using the MVVM pattern. 
+<LI>ViewModel&lt;T&gt; – provides a base class to make it easy to build a viewmodel class that works with InvokeMethod/Execute when using the MVVM pattern. 
+<LI>CslaDataProvider – the ObjectInstance property is now bindable, so it is possible to create master-detail (parent-child) relationships in the UI between different data provider controls. </LI></UL>
+<P>See <A href="http://www.lhotka.net/weblog/ct.ashx?id=0f76ad49-569f-45ee-91b5-ce954f0b59fa&amp;url=http%3a%2f%2fwww.lhotka.net%2fweblog%2fCSLANET38Beta2MVVMSupport.aspx"><STRONG><FONT color=#0000ff>this blog post</FONT></STRONG></A> for more MVVM information. 
+<P>Other important or interesting features include: 
+<UL>
+<LI>Support for System.ComponentModel.DataAnnotations validation attributes. <A href="http://www.lhotka.net/weblog/LeveragingDataAnnotationAttributesInCSLANET.aspx"><STRONG><FONT color=#0000ff>This blog post</FONT></STRONG></A> has information about the change. 
+<LI>A CSLA .NET specific model binder for ASP.NET MVC, enabling the use of CSLA .NET rule methods and DataAnnotation validation attributes in the same object, with the UI displaying combined results. 
+<LI>Performance enhancements for MobileFormatter, including the use of binary XML. <A href="/forums/thread/37377.aspx"><STRONG>This forum thread</STRONG></A> has some great comparative information around binary XML and compression. 
+<LI>Better support for altering the behavior of IsDirty when using managed backing fields. <A href="http://www.jasonbock.net/JB/Default.aspx?blog=entry.9cc70d85bef34e2b9a683ba82615f8a3"><STRONG><FONT color=#0000ff>This blog post</FONT></STRONG></A> has good information about using the changes. 
+<LI>All the samples have been updated to build with 3.8.0, and the MVVMexperiment projects for WPF and Silverlight illustrate most of the new MVVM features.</LI></UL>
+<P>There are also numerous bug fixes, including a solution to the memory leak issue with BusyAnimation and a null reference issue with LINQ to CSLA. See the change logs for more details about bug fixes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Friday, November 06, 2009</h2>It would appear that you need to have ASP.NET MVC installed in order to build and reference CSLA 3.8.0.<br /><br />http://www.asp.net/mVC/download/ <br /><br />- Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Sunday, November 08, 2009</h2>I haven't tried it yet, but i hope it isn't required to add the MVC assemblies when deploying a csla application to customers. Please make it optional like a csla.mvc project / assembly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 08, 2009</h2>You need the MVC framework to build CSLA, but not to deploy it.<br /><br />Remember that .NET only loads assemblies when a type or method or metadata<br />from that assembly is accessed at runtime. If you never use the<br />CslaModelBinder type you'll never load that part of Csla.dll, and so nothing<br />would try to access any of the MVC assemblies either.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, November 09, 2009</h2>Hi Rocky,<br><br>Is this dependency on MVC something new in 3.8 ? Sorry if I sound like a knob for asking, but I'm still using 3.6 on my current project, and haven't had time to try 3.8 yet, and I don't recall ever having to install the MVC framework.<br><br>I understand the difference between needing it to build CSLA vs. deploying it, but still, I'd much rather not clutter my build machine with unnecessary stuff.<br><br>Are your plans to leave this as is, or is there a possibility that you'd make the stuff that depends on MVC into a separate optional assembly ?<br><br>Regards<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 09, 2009</h2><P>At this point changes to 3.8 are bug fix only, all my attention is on 4.0.</P>
+<P>This issue is temporary - ASP.NET MVC is part of .NET 4.0 - so you'll have it cluttering up your machine soon enough regardless :)</P>
+<P>If you really don't want to install MVC you can make two simple changes to the CSLA project:</P>
+<OL>
+<LI>Remove the \Web\Mvc folder from the project</LI>
+<LI>Remove the Mvc reference from references</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, November 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<p>This issue is temporary - ASP.NET MVC is part of .NET 4.0 - so you'll have it cluttering up your machine soon enough regardless :)</p></div></BLOCKQUOTE><br><br>Hahaha... I almost spat my coffee in the screen !<br><br>Thanks for the workaround.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, November 12, 2009</h2>Can we have an info page or summary matrix of breaking issues and essential changes for upgrading between different versions - as distinct from incremental changes. For example if I was to update an application based on the 2.1.4 library to the latest.&nbsp; I don't need to use all of the intermediate advancements, but may want to incorporate some latest Net 3.5 / csla features -&nbsp; such as workflow, but also not want to have to re-build all existing classes etc.<br><br>jimbo<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It would be really cool if someone wanted to go through the
+change logs and create such a matrix, yes!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jimbo
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 12, 2009 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 3.8.0 released and available!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Can we have an info page or summary matrix of breaking
+issues and essential changes for upgrading between different versions - as
+distinct from incremental changes. For example if I was to update an
+application based on the 2.1.4 library to the latest.&nbsp; I don't need to use
+all of the intermediate advancements, but may want to incorporate some latest
+Net 3.5 / csla features -&nbsp; such as workflow, but also not want to have to
+re-build all existing classes etc.<br>
+<br>
+jimbo<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

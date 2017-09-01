@@ -1,0 +1,282 @@
+<html><header><title>Sharing Validation Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sharing Validation Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4836.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB posted on Monday, May 12, 2008</h2>Some time ago I thought that someone posted about this topic but I have been unable to find the article I'm thinking about. Basically I would like to know if it is possible and/or advisable to share validation rules across objects.<br><br>For example, let's assume that I have several objects that have a 'LastName' property and I would like to make sure that 1) Last name is always required and 2) The length of last name can not exceed say 20 characters.<br><br>I can easily do this in one object and also copy and paste to any other objects that use LastName but I would like to create maybe one global place to store these 'common' validations.<br><br>Any ideas?<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You certainly can create your own Common Rules
+module/class.&nbsp; You can even take CommonRules.StringRequired as a basis for
+your own rule &#8220;LastNameRule&#8221;.&nbsp; I personally think that this is
+a good idea.&nbsp; The only thing I would suggest is not to make these rules
+any BO specific, but create them generically just like Common Rules.&nbsp; This
+way you will not couple unrelated objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Ex:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public Function LastNameRule( _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal target As Object, ByVal e
+As RuleArgs) As Boolean<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim value As String = _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+CStr(CallByName(target, e.PropertyName, CallType.Get))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Len(value) = 0 Then<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = _<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+String.Format(My.Resources.StringRequiredRule, RuleArgs.GetPropertyName(e))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If
+value.Lenght&gt;20<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.
+Description = My.Resource.LastNameRuleTooLong &#8216; or some other message<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return
+True<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End
+If<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;End If<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; End Function<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JohnB
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 12, 2008 3:13 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Sharing Validation Rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Some time ago I thought that someone posted about this topic
+but I have been unable to find the article I'm thinking about. Basically I
+would like to know if it is possible and/or advisable to share validation rules
+across objects.<br>
+<br>
+For example, let's assume that I have several objects that have a 'LastName'
+property and I would like to make sure that 1) Last name is always required and
+2) The length of last name can not exceed say 20 characters.<br>
+<br>
+I can easily do this in one object and also copy and paste to any other objects
+that use LastName but I would like to create maybe one global place to store
+these 'common' validations.<br>
+<br>
+Any ideas?<br>
+<br>
+Thanks,<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Monday, May 12, 2008</h2>Thanks Sergey. I do have another question though. I am using VB but I am always hesitant to use "old" VB methods like CallByName. Is there any particular reason you chose this method instead of using reflection?<br><br>Thanks,<br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not really.&nbsp; I just copied code from CSLA version I am
+using.&nbsp; Feel free to replace them with reflection calls.&nbsp; I think you
+were thinking of target.GetType.GetProperty(e.PropertyName).GetValue(target,
+Nothing)&#8230;&nbsp;&nbsp; Sounds good to me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JohnB
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 12, 2008 3:33 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Sharing Validation Rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Sergey. I do have another question though. I am using
+VB but I am always hesitant to use &quot;old&quot; VB methods like CallByName.
+Is there any particular reason you chose this method instead of using
+reflection?<br>
+<br>
+Thanks,<br>
+John<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Monday, May 12, 2008</h2>Thanks again.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, May 12, 2008</h2><P>One nice thing about CallByName is that it is case insensitive so if you make a casing mistake in one of your strings (Lastname vs LastName) then CallByName still works. Reflection is case sensitive. Although there is probably a parameter somewhere that will make it case insentive - I just haven't looked.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Monday, May 12, 2008</h2>Thanks Joe,<br><br>I believe the parameter is BindingFlags.IgnoreCase.<br><br>John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 13, 2008</h2><P>I use CallByName because I don't like to reinvent the wheel. Though I was forced to reinvent the wheel in the C# code, because I had to replicate parts of CallByName.</P>
+<P>Another way to look at it is that I recommend abstracting the use of reflection. Not that I'm perfect in this regard, but I'm slowly consolidating all use of reflection into classes in Csla.Reflection. Normal code simply shouldn't contain advanced concepts like reflection - which means you need some layer of abstraction.</P>
+<P>So if you don't use Microsoft's well-tested CallByName, I recommend writing your own equivalent. At which point (if you are a VB user) you've got to ask yourself why would you reinvent the wheel?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, May 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are correct, there is.&nbsp; If you use binding flags parameter
+for GetType.GetProperty, one of the binding flags is case-insensitive flag.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 12, 2008 4:51 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Sharing Validation Rules<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>One nice thing about CallByName is that it is case insensitive so if you
+make a casing mistake in one of your strings (Lastname vs LastName) then
+CallByName still works. Reflection is case sensitive. Although there is
+probably a parameter somewhere that will make it case insentive - I just
+haven't looked.<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smiley riley replied on Wednesday, May 14, 2008</h2><P>I cannot talk from a CSLA standpoint but I have always found a good way to do this is to create a validation library. This way other projects can also share common validation rules (telephone numbers e-mail names, salutations etc. </P>
+<P>To do this create a Strategy of Validation objects. </P>
+<P><A href="http://en.wikipedia.org/wiki/Strategy_pattern">http://en.wikipedia.org/wiki/Strategy_pattern</A></P>
+<P>From this you can tag on a composite pattern that allows you to in essence reuse existing concrete strategies, and assign the concrete strategies at runtime propably by use of a factory. This requires no use of reflection although you may use reflection to load an assembly at runtime if you needed to add a validation strategy without re-compiling. Just a 'little' extra code in the Factory.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Saturday, October 25, 2008</h2>Hello, This last idea I find very interesting, please could provide some code? <br><br> I'm also involved in another similar post<br><br><a HREF="/forums/thread/25852.aspx">http://forums.lhotka.net/forums/thread/25852.aspx</a><br><a class="ForumNameRead" title=""></a><br>Jorge<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, October 26, 2008</h2><P>Yes, I think shared validation rules that have a simple basis like this (required or not, maximum length) are a great idea. </P>
+<P>Our CSLA implementation interrogates the database schema to do just this. Non-nullable fields are dynamically flagged as required, and we use the field size for character-type fields to generate maximum length rules for string fields. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

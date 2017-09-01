@@ -1,0 +1,39 @@
+<html><header><title>CSLA &amp; Catel MVVM framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp; Catel MVVM framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11001.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t posted on Wednesday, December 21, 2011</h2><p>Hi,</p>
+<p>I have recently been doing some development with the Catel MVVM framework &amp; have come up with an issue between Catel &amp; CSLA.</p>
+<p>When an object is removed from a BusinessList, the object is marked as dirty, which causes a call to <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">OnUnknownPropertyChanged()</span></span>. This in turn results in the call: </p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">OnPropertyChanged(string.Empty)</span></span></span></p>
+<p>which causes Catel to throw an exception complaining about the lack of a valid property name.</p>
+<p>I have hacked a fix by changing the call in <span style="font-family:Consolas;font-size:x-small;">OnUnknownPropertyChanged()</span> to:</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>OnPropertyChanged(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;__Unknown__Property__&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);</span></span></p>
+</p>
+</p>
+<p>This fixes my immediate issue, but I don&#39;t like having to hack the CSLA library.</p>
+<p>Does anyone have any better ideas on how to avoid/fix this issue?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 21, 2011</h2><p>File an issue on the Catel framework. The Catel framework obviously does not conform to the documentation from Microsoft. </p>
+<p>Read here: <a class="LW_CollapsibleArea_TitleAhref" title="Collapse"></a><a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifypropertychanged.propertychanged.aspx">http://msdn.microsoft.com/en-us/library/system.componentmodel.inotifypropertychanged.propertychanged.aspx</a><span class="LW_CollapsibleArea_Title"></span></p>
+<p><i><b><a class="LW_CollapsibleArea_TitleAhref" title="Collapse"><span class="LW_CollapsibleArea_Title">Remarks</span></a></b></i></p>
+<div class="LW_CollapsibleArea_HrDiv">
+<hr class="LW_CollapsibleArea_Hr" />
+</div>
+<div class="sectionblock"><i><a id="remarksToggle">
+  
+</a></i>
+<p><i>The <span><span class="selflink">PropertyChanged</span></span> event can indicate all properties on the object have changed by using either <span><span class="input"><span>Nothing</span></span><span></span></span> or <span><a href="http://msdn.microsoft.com/en-us/library/system.string.empty.aspx">String<span>.</span>Empty</a></span> as the property name in the <span><a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.propertychangedeventargs.aspx">PropertyChangedEventArgs</a></span>.</i></p>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t replied on Wednesday, December 21, 2011</h2><p>Ok,</p>
+<p>I will file with Catel &amp; post back here when I have something to report...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, December 23, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>kosta_t<br></b> </p>
+<p>I have hacked a fix by changing the call in <span style="FONT-FAMILY:Consolas;FONT-SIZE:x-small;">OnUnknownPropertyChanged()</span> to:</p>
+<p>OnPropertyChanged(</p>
+<p><span style="font-family:Consolas;font-size:x-small;"></span></p>
+<p><span style="FONT-FAMILY:Consolas;COLOR:#a31515;FONT-SIZE:x-small;"><span style="FONT-FAMILY:Consolas;COLOR:#a31515;FONT-SIZE:x-small;"><span style="FONT-FAMILY:Consolas;COLOR:#a31515;FONT-SIZE:x-small;">&quot;__Unknown__Property__&quot;</span></span></span><span style="FONT-FAMILY:Consolas;FONT-SIZE:x-small;"><span style="FONT-FAMILY:Consolas;FONT-SIZE:x-small;">);</span></span></p>
+<p>This fixes my immediate issue, but I don&#39;t like having to hack the CSLA library.</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>That may fix their framework, but it will break standard behavior for all Microsoft data binding technologies, so it is only useful if you never use data binding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kosta_t replied on Monday, December 26, 2011</h2><p>Hi, Catel now accepts calling OnPropertyChanged(String.Empty).</p>
+<p>thanks for all your assistance.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,165 @@
+<html><header><title>WCF DataPortal Compression</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WCF DataPortal Compression</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5992.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman posted on Sunday, December 14, 2008</h2><P><FONT size=2 face=Tahoma>Hi,</FONT></P>
+<P><FONT size=2 face=Tahoma>Did anyone tried to do compression for WCF dataportal? Is there a best practice on how to do compression on the dataportal?</FONT></P>
+<P><FONT size=2 face=Tahoma>Thanks,</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, December 14, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have written a simple compression routine for basicHTTPBinding
+for&nbsp; WFC portal.&nbsp; It does shrink messages to 80% size, although it
+does result in higher CPU utilization on both client and server.&nbsp; It is implemented
+as WCF behavior extension, so it results in no code changes in CSLA or an application
+based on CSLA and is configured entirely in web.config.&nbsp; Then again, I do
+not know if this is a best practice or now, but I was not even remotely happy
+with message sizes.&nbsp; A simple ROLB object with 2000 rows 3 columns each
+resulted in 8.5 MB message using bacisHTTPBinding.&nbsp; With compression size
+went down to about 450KB.&nbsp; I estimated the actual data size at around
+250KB or so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ixman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, December 14, 2008 2:33 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] WCF DataPotal Compression<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Hi,</span><o:p></o:p></p>
+
+<p><span>Did anyone
+tried to do compression for WCF dataportal? Is there a best practice on how to
+do compression on the dataportal?</span><o:p></o:p></p>
+
+<p><span>Thanks,</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Monday, December 15, 2008</h2><P>Hi,</P>
+<P>Thanks for the reply... In my case is even worse, I have to use WSHttpBinding because of security&nbsp;requirements and my ROLB is almost double in size. Is it possible to post some code of how you did the compression? </P>
+<P>Thanks,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ixman replied on Monday, December 15, 2008</h2><P>Hi,</P>
+<P>I've found&nbsp;an example on the Windows SDK and I'll go on that direction...</P>
+<P>Thanks,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, December 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Here is the link to a blog entry I wrote on the subject:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://sergeybarskiy.spaces.live.com/blog/cns!2383900F69B808E0!188.entry">http://sergeybarskiy.spaces.live.com/blog/cns!2383900F69B808E0!188.entry</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you google </span><span>BehaviorExtensionElement and IServiceBehavior
+you will find sample code for the actual class.&nbsp; Let me know if you have
+troubles finding the implementation, and I will try to dig up the actual code.&nbsp;
+I just used .NET compression classes (Deflate or GZip) to compress incoming /
+outgoing messages.</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ixman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 15, 2008 2:08 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: WCF DataPotal Compression<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi,<o:p></o:p></p>
+
+<p>Thanks for the reply... In my case is even worse, I have to use
+WSHttpBinding because of security&nbsp;requirements and my ROLB is almost
+double in size. Is it possible to post some code of how you did the
+compression? <o:p></o:p></p>
+
+<p>Thanks,<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Monday, December 15, 2008</h2>You can see a previous thread about it with files.<br><br>&nbsp; <a HREF="/forums/thread/22070.aspx">http://forums.lhotka.net/forums/thread/22070.aspx</a><br><br>-Paul<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

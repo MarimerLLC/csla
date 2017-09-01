@@ -1,0 +1,9 @@
+<html><header><title>Certification porblems with WSDL file using CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Certification porblems with WSDL file using CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6530.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>marcotonix posted on Friday, February 27, 2009</h2><p class="MsoNormal"><span>In our
+company we are trying to certificate an application in which we are using a CSLA
+3.04 first we were using this one with “remoting” and we had many warnings and errors
+with the WSDL file so we change the configuration to use WCF and there are no
+errors but still some warnings (I attaché the warnings) about the reference
+does not conform to WS-I Basic profile v1.1. <span>&nbsp;</span>Do you have any suggestion about how we can
+use CSLA to avoid these warnings?<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 27, 2009</h2><P>If you are using WCF you need to configure the server endpoint to use the correct profile. </P>
+<P>Normally I use wsHttpBinding, which is absolutely not compliant with the (now ancient) basic profile spec.</P>
+<P>I think (but have never really tested) that you can use basicHttpBinding with the data portal. That profile is probably what you are looking for to be compatible with the old SOAP specs.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>About &quot;protected virtual void DataPortal_Fetch(object criteria)&quot; in ReadOnlyListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>About &quot;protected virtual void DataPortal_Fetch(object criteria)&quot; in ReadOnlyListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11356.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>foxhard posted on Sunday, May 13, 2012</h2><p>Hi,</p>
+<p>I have see several examples of implementation of ReadOnlyList classes. But the fetch method is like this:</p>
+<p>private void DataPortal_Fetch(SomeCriteriaClass criteria)</p>
+<p>{...}</p>
+<p>But, if inside ReadOnlyListBase there is the method:&nbsp;&quot;protected virtual void DataPortal_Fetch(object criteria)&quot; . Is there some performance issue if I use override method inside my inplementation like this:</p>
+<p>protected override DataPortal_Fetch(object criteria)</p>
+<p>{&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp;SomeCriteriaClass someCriteria = (SomeCriteriaClass)criteria;</p>
+<p>}</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, May 14, 2012</h2><p>CSLA internally relies on reflection to make a <b>dynamic </b>call into the object. </p>
+<p>So take f.ex a class that have several criteria classes: </p>
+<p>private void DataPortal_Fetch(SomeCriteriaClass1 criteria)<br />{&nbsp; ...&nbsp;&nbsp; }</p>
+<p>private void DataPortal_Fetch(SomeCriteriaClass2 criteria)<br />
+{&nbsp; ...&nbsp;&nbsp; }</p>
+<p>private void DataPortal_Fetch(SomeCriteriaClass3 criteria)<br />
+{&nbsp; ...&nbsp;&nbsp; }</p>
+<p>The DataPortal_Fetch all have a similar signature with one object as input. <br />Rather than having 3 Fetch methods we prefer to have on method and test for the actual criteria type.</p>
+<p>protected override DataPortal_Fetch(object criteria)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp; // Your code should check for the type of Criteria object. <br />}</p>
+<p>That said, CSLA will check for </p>
+<ul>
+<li>strongly typed methods first then </li>
+<li>method with the correct number of parameter (and some fuzzy logic if finding multiple methods).</li>
+<li>the default name&nbsp;</li>
+</ul>
+<p>So this is not so much about performance as for coding style.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>foxhard replied on Monday, May 14, 2012</h2><p>Thanks Jonny</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

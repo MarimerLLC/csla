@@ -1,0 +1,119 @@
+<html><header><title>Shared library versus linked files for CSLA Light</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Shared library versus linked files for CSLA Light</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7387.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Sunday, August 02, 2009</h2><P>I am wondering what the advantage or reasoning is behind using linked files in the CSLA Light project for shared code from the core CSLA project?&nbsp; I understand that we are dealing with two different runtimes, but is it not possible to use a shared library that contains the common types for both?</P>
+<P>I have a similar situation with some domain code that I will need to share between applications running under .NET and Silverlight.&nbsp; My first instinct was to pull this code out into a common, shared library but now I'm thinking this won't work unless that shared library is recompiled for each platform.</P>
+<P>Isn't there a risk that my common code may reference types or use code (such as reflection) that can't actually be shared?&nbsp; Will that show as a compilation error when I build my Silverlight library?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, August 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes,
+you will get the error.&nbsp; You have to have two projects for shared code &#8211;
+one for each runtime.&nbsp; You can exclude code that is not to be run under
+one runtime by using compiler directives just like all sample Silverlight
+projects do.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SonOfPirate
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, August 02, 2009 9:19 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Shared library versus linked files for CSLA Light<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am wondering what the advantage or reasoning is behind using linked files
+in the CSLA Light project for shared code from the core CSLA project?&nbsp; I
+understand that we are dealing with two different runtimes, but is it not
+possible to use a shared library that contains the common types for both?<o:p></o:p></p>
+
+<p>I have a similar situation with some domain code that I will need to share
+between applications running under .NET and Silverlight.&nbsp; My first
+instinct was to pull this code out into a common, shared library but now I'm
+thinking this won't work unless that shared library is recompiled for each
+platform.<o:p></o:p></p>
+
+<p>Isn't there a risk that my common code may reference types or use code (such
+as reflection) that can't actually be shared?&nbsp; Will that show as a
+compilation error when I build my Silverlight library?<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 02, 2009</h2><P>It would be ideal to have a shared library, absolutely.</P>
+<P>Unfortunately that is not a supported scenario - .NET assemblies won't run on Silverlight and visa versa.</P>
+<P>At Tech Ed earlier this year I had an attendee tell me that he had been able to get a simple Silverlight assembly to run on .NET. I talked to (and he did too I think) Microsoft people about that, and it was a fluke, or at best an unsupported hack.</P>
+<P>You are not alone in wanting to do this though, and I'm sure many of us are telling Microsoft that we'd like some way to run Silverlight code on the server (or some variation on this theme). I'm not sure how such a thing would work, but maybe they'll consider it at some point in the future.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Sunday, August 02, 2009</h2><P>Forgive my ignorance, but I am a Silverlight newbie.&nbsp; If I'm understanding the problem correctly, it is not just that we are compiling for a different runtime but that the framework assemblies we reference are different between the two, correct?&nbsp; I can see how this would prevent us from having any shared libraries.</P>
+<P>I was thinking recompiling for the appropriate target was all that mattered but it sounds like the issue is more deeply rooted.</P>
+<P>My concern, as I'm sure you are well aware, is duplication of code resulting in higher maintenance costs and greater risk as bugs fixed in one framework aren't fixed in the other.</P>
+<P>The ability to add linked files is new to me but would it make sense too create a Shared Code folder that sits "between" the two frameworks with each project linking to the actual source file residing in this folder?&nbsp; Then, if a change is made, it will be reflected in both projects.&nbsp; There wouldn't actually be a shared assembly but the code would be - making maintenance a bit more reliable.</P>
+<P>What do you think?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>All I can suggest is that you play with it and see if you can
+derive a better overall answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One thing that does help is the Project Linker, which is a
+sub-project of the Prism effort from Microsoft Patterns and Practices. It could
+use some flexibility, but it is a good first run at a solution.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

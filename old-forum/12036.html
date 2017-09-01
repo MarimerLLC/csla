@@ -1,0 +1,155 @@
+<html><header><title>Windows Authentification (PopulateWindowsIdentity issue )</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Authentification (PopulateWindowsIdentity issue )</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12036.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Monday, June 24, 2013</h2><p><span style="text-decoration:underline;">Context&nbsp;:&nbsp;</span>NET
+4.5 / SL 5 / Csla:
+4.5.30.0 / IIS:
+7.5 / OS:
+Win7</p>
+<p>Hi everyone,</p>
+<p>I am
+currently experiencing a problem getting windows authentication working with my
+CSLA 4.5 SL application. &nbsp;I have setup windows authentication the same way
+as the samples from the ebook (04-Dataportal).</p>
+<p>When I run
+the application from my development workstation with IISExpress, everything
+works fine.&nbsp;&nbsp;So I have next setup my development and test web servers
+using IIS 7.5. &nbsp;I have worked through many issues getting
+impersonation to work (starting with just enable Windows Authentification and ASP.NET
+Identity, using Asp.net v4.0 Classic application pool ...). &nbsp;Now, I think the
+IIS configuration and web.config are fine (Just in case, I have included them
+at the end of the post). &nbsp;</p>
+<p>Now, when I call
+the application (hosted into iis) from the browser on my development machine, the browser authentication
+prompt is displayed but if I log-in I get the following exception : &quot;Some or all&nbsp;identity&nbsp;references&nbsp;could
+not be translated&quot;:</p>
+<p>So,&nbsp;I ended up setting up remote debugging on my development web server to see what was going on.I have found that the exception came up on the PopulateWindowsIdentity method (Csla.Silverlight.Security)</p>
+<pre>&nbsp;</pre>
+<pre><span style="text-decoration:underline;">Below, the stack trace:</span></pre>
+<p>&nbsp;&nbsp;&nbsp; &agrave;
+System.Security.Principal.SecurityIdentifier.Translate(IdentityReferenceCollection
+sourceSids, Type targetType, Boolean forceSuccess)</p>
+<p>&nbsp;&nbsp; &agrave;
+System.Security.Principal.SecurityIdentifier.Translate(Type targetType)</p>
+<p>&nbsp;&nbsp; &agrave;
+Csla.Silverlight.Security.WindowsIdentity.PopulateWindowsIdentity()</p>
+<p>&nbsp;&nbsp; &agrave;
+Library.CustomIdentity.DataPortal_Fetch() dans c:\Users\CONTE\Documents\Visual
+Studio 2012\Projects\Samples\CSLA
+V4.5.30-23\04-DataPortal-110504\Authentication\Windows 4.5\Library.Net\CustomIdentity.cs:ligne
+27</p>
+<p>&nbsp;&nbsp; &agrave;
+lambda_method(Closure , Object , Object[] )</p>
+<p>&nbsp;&nbsp; &agrave;
+Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle
+methodHandle, Boolean hasParameters, Object[] parameters)</p>
+<p>&nbsp;</p>
+<p>Does anybody know what
+the issue here might be? &nbsp;</p>
+<p>&nbsp;</p>
+<p>Here some posts with interesting advices:</p>
+<p><a href="http://forums.lhotka.net/forums/p/8931/42494.aspx">http://forums.lhotka.net/forums/p/8931/42494.aspx</a></p>
+<p><a href="http://forums.lhotka.net/forums/p/9453/44801.aspx">http://forums.lhotka.net/forums/p/9453/44801.aspx</a></p>
+<p>&nbsp;</p>
+<pre><span style="text-decoration:underline;">IIS Configuration used :</span></pre>
+<pre>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IIS Authentication settings: ASP.NET Impersonation and Windows Authentication are enabling.</pre>
+<pre>&middot;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ASP.NET v4.0 Classic is used for the application pool</pre>
+<pre><br />
+<span style="text-decoration:underline;">web.config used:</span><span style="text-decoration:underline;"></span></pre>
+<pre>&nbsp;</pre>
+<pre>&lt;configuration&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;appSettings&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add&nbsp;key=&quot;CslaAuthentication&quot;&nbsp;value=&quot;Windows&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add&nbsp;key=&quot;CslaWriter&quot;&nbsp;value=&quot;Csla.Serialization.Mobile.CslaBinaryWriter,&nbsp;Csla&quot;&nbsp;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;add&nbsp;key=&quot;CslaReader&quot;&nbsp;value=&quot;Csla.Serialization.Mobile.CslaBinaryReader,&nbsp;Csla&quot;&nbsp;/&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;/appSettings&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;system.web&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;compilation&nbsp;debug=&quot;true&quot;&nbsp;targetFramework=&quot;4.5&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;authentication&nbsp;mode=&quot;Windows&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;identity&nbsp;impersonate=&quot;true&quot;&nbsp;/&gt;&nbsp;&lt;!--&nbsp;comment&nbsp;it&nbsp;to&nbsp;run&nbsp;with&nbsp;iis&nbsp;express&nbsp;--&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;pages&nbsp;controlRenderingCompatibilityVersion=&quot;4.0&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;/system.web&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;system.diagnostics&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;sources&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;source&nbsp;name=&quot;System.ServiceModel&quot;&nbsp;switchValue=&quot;Information,&nbsp;ActivityTracing&quot;&nbsp;propagateActivity=&quot;true&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;listeners&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;add&nbsp;name=&quot;traceListener&quot;&nbsp;type=&quot;System.Diagnostics.XmlWriterTraceListener&quot;&nbsp;initializeData=&quot;c:\temp\WinAuthTrace.xml&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/listeners&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/source&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/sources&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;trace&nbsp;autoflush=&quot;true&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;/system.diagnostics&gt;</pre>
+<pre>&nbsp;&nbsp;</pre>
+<pre>&nbsp;&nbsp;&lt;system.serviceModel&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceHostingEnvironment&nbsp;multipleSiteBindingsEnabled=&quot;true&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;services&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;service&nbsp;name=&quot;Csla.Server.Hosts.WcfPortal&quot;&nbsp;behaviorConfiguration=&quot;windowsAuthReturnFaults&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;endpoint&nbsp;binding=&quot;wsHttpBinding&quot;&nbsp;bindingConfiguration=&quot;wsHttpBinding_IWcfPortal&quot;&nbsp;contract=&quot;Csla.Server.Hosts.IWcfPortal&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/service&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;service&nbsp;name=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot;&nbsp;behaviorConfiguration=&quot;returnFaults&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;endpoint&nbsp;binding=&quot;basicHttpBinding&quot;&nbsp;bindingConfiguration=&quot;basicHttpBinding_IWcfPortal&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot;&nbsp;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/service&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/services&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;bindings&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;basicHttpBinding&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;binding&nbsp;name=&quot;basicHttpBinding_IWcfPortal&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxReceivedMessageSize=&quot;2147483647&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxBufferPoolSize=&quot;2147483647&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxBufferSize=&quot;2147483647&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;readerQuotas&nbsp;maxBytesPerRead=&quot;2147483647&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxArrayLength=&quot;2147483647&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxStringContentLength=&quot;2147483647&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxNameTableCharCount=&quot;2147483647&quot;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxDepth=&quot;2147483647&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;security&nbsp;mode=&quot;TransportCredentialOnly&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;transport&nbsp;clientCredentialType=&quot;Windows&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/security&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/binding&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/basicHttpBinding&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;wsHttpBinding&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;binding&nbsp;name=&quot;wsHttpBinding_IWcfPortal&quot;&nbsp;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxReceivedMessageSize=&quot;2147483647&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;readerQuotas&nbsp;maxBytesPerRead=&quot;2147483647&quot;&nbsp;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxArrayLength=&quot;2147483647&quot;&nbsp;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxStringContentLength=&quot;2147483647&quot;&nbsp;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxNameTableCharCount=&quot;2147483647&quot;&nbsp;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;maxDepth=&quot;2147483647&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/binding&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/wsHttpBinding&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/bindings&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;behaviors&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceBehaviors&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;behavior&nbsp;name=&quot;returnFaults&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceDebug&nbsp;includeExceptionDetailInFaults=&quot;true&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceAuthorization&nbsp;impersonateCallerForAllOperations=&quot;true&quot;&nbsp;/&gt;&nbsp;&lt;!--&nbsp;comment&nbsp;it&nbsp;to&nbsp;run&nbsp;with&nbsp;iis&nbsp;express&nbsp;--&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/behavior&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;behavior&nbsp;name=&quot;windowsAuthReturnFaults&quot;&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceDebug&nbsp;includeExceptionDetailInFaults=&quot;true&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;serviceAuthorization&nbsp;impersonateCallerForAllOperations=&quot;true&quot;/&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/behavior&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/serviceBehaviors&gt;</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/behaviors&gt;</pre>
+<pre>&nbsp;&nbsp;&lt;/system.serviceModel&gt;</pre>
+<pre>&lt;/configuration&gt;</pre>
+<p>&nbsp;</p>
+<p>Best regards,</p>
+<p>&nbsp;</p>
+<p>Cedric</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, July 01, 2013</h2><p>Hi everyone,</p>
+<p><span>I&#39;m scratching my head and i&#39;m running out</span><span>&nbsp;of options about the PopulateWindowsIdentity issue. I dont know if my problem came from IIS setting issue or something with the csla.&nbsp;</span>Is someone has set windows authentification with&nbsp;<span>&nbsp;</span><span>NET 4.5 / SL 5 to give some feedback ?</span></p>
+<p><span>I think to use a woraround byimplementing &nbsp;impersonation on the server&nbsp;</span><span>&nbsp;based on their username/password.</span></p>
+<p><span>Thx for your help in advance.</span></p>
+<p><span>Cedric</span></p>
+<p><span><br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 01, 2013</h2><p>Is it possible that the IIS server is running your code in partial trust? Maybe that blocks the API call to AD to get the user&#39;s info?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Tuesday, July 02, 2013</h2><p>Thank you Rocky for your help.</p>
+<p> I have checked it and the IIS trust level is set to Full.</p>
+<p>I&#39;m keep going &nbsp;investigating...</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>cconte replied on Monday, August 19, 2013</h2><p>Hi everyone,</p>
+<p class="MsoNormal"><span lang="EN-US">Just
+wanna share with you what i have found about the windows authentification for the Silverlight Application. Actually,
+to make it run, I have switched the IIS </span><span lang="EN-US">Application
+Pool Identity &nbsp;from &ldquo;ApplicationPoolIdentity&rdquo;
+to &ldquo;NetWorkService&rdquo; and next restart IIS. All the settings (web.config
+and IIS) from my previous post was right, the only little thing missing &nbsp;was the</span><span lang="EN-US">&nbsp;IIS </span><span lang="EN-US">Application
+Pool Identity.&nbsp;</span></p>
+<p>
+<span lang="EN-US">Hope </span><span lang="EN-US">it helps someone else</span>.<span lang="EN-US"> </span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SPeters replied on Tuesday, March 18, 2014</h2><p>I am having this exact same problem. &nbsp;&quot;Some or all identity references could not be translated.&quot; occuring when calling&nbsp;PopulateWindowsIdentity().</p>
+<p>However, if I switch my AppPool to NetworkService, the error goes away but then the AppPrincipal is retrieving the user &#39;NETWORK SERVICE&#39;. &nbsp;This is a problem as I need to be able to check the AppPrincipal.Username and assign appication level security based on that information. &nbsp;I suspect I need to use ApplicationPoolIdentity.</p>
+<p>Running locally works perfectly but I can&#39;t seem to find the IIS setting to make this work on the webserver. &nbsp;Using .NET 4.5 and CSLA 4.5.40.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, April 16, 2014</h2><p>Are you setting identityImpersonate in your web.config?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

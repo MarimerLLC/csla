@@ -1,0 +1,165 @@
+<html><header><title>Memory Leak with Async DataPortal calls?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Memory Leak with Async DataPortal calls?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9920.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons posted on Wednesday, January 05, 2011</h2><p>Howdy,</p>
+<p>I am having an issue&nbsp;similar&nbsp;to this poster&#39;s problem (<a href="http://forums.lhotka.net/forums/p/9209/43741.aspx">http://forums.lhotka.net/forums/p/9209/43741.aspx</a>).</p>
+<p>I have used Windbg attached to Silverlight and it appears that my ViewModels are not being GC&#39;ed. &nbsp;</p>
+<p>It appears that the Async DataPortal callback EventHandler is holding a reference to the VM. &nbsp;</p>
+<p>Any help would be&nbsp;appreciated.</p>
+<p>Thank you,</p>
+<p>Keith</p>
+<p>(CSLA 4.0.1)</p>
+<p>&nbsp;</p>
+<p>Below is the output of Windbg:</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">0:008&gt; !dumpheap -type Eis.Silverlight.SecurityAdminModule.ViewModels.UserAdministrationViewModel</p>
+<p style="padding-left:30px;">&nbsp;Address &nbsp; &nbsp; &nbsp; MT &nbsp; &nbsp; Size</p>
+<p style="padding-left:30px;">0c44bb48 07624ab4 &nbsp; &nbsp; &nbsp;104 &nbsp; &nbsp;&nbsp;</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;">0:008&gt; !gcroot 0c44bb48&nbsp;</p>
+<p style="padding-left:30px;">Note: Roots found on stacks may be false positives. Run &quot;!help gcroot&quot; for</p>
+<p style="padding-left:30px;">more info.</p>
+<p style="padding-left:30px;">Scan Thread 5 OSTHread 1e04</p>
+<p style="padding-left:30px;">Scan Thread 43 OSTHread 1888</p>
+<p style="padding-left:30px;">Scan Thread 44 OSTHread 365c</p>
+<p style="padding-left:30px;">Scan Thread 45 OSTHread 2d90</p>
+<p style="padding-left:30px;">DOMAIN(10958B10):HANDLE(Strong):29f1198:Root: &nbsp;0c45c3d0(System.Threading._TimerCallback)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c45c278(System.ServiceModel.Channels.HttpChannelFactory+HttpRequestChannel+HttpChannelAsyncRequest)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c45c168(System.ServiceModel.Channels.ServiceChannel+SendAsyncResult)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c45a440(System.ServiceModel.ClientBase`1+AsyncOperationContext[[Csla.WcfPortal.IWcfPortal, Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c45a40c(System.Threading.SendOrPostCallback)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c458dfc(Csla.WcfPortal.WcfPortalClient)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c45a3ac(System.EventHandler`1[[Csla.WcfPortal.FetchCompletedEventArgs, Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c457a24(Csla.DataPortalClient.WcfProxy`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c457ad0(System.EventHandler`1[[Csla.DataPortalResult`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]], Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4579ec(Csla.DataPortal`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4577b4(System.EventHandler`1[[Csla.DataPortalResult`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]], Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c44bb48(Eis.Silverlight.SecurityAdminModule.ViewModels.UserAdministrationViewModel)</p>
+<p style="padding-left:30px;">DOMAIN(10958B10):HANDLE(Pinned):29f12f8:Root: &nbsp;0cfe4250(System.Object[])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c208858(Eis.Silverlight.App)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214ab0(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214afc(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214938(System.Windows.ResourceDictionary)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214990(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c2149dc(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c2148d4(MS.Internal.ResourceDictionaryCollection)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214a18(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214a64(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c20fafc(System.Windows.ResourceDictionary)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c20fea4(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c2147e4(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c214870(System.Windows.DataTemplate)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4614d0(Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c460cfc(System.Windows.Controls.Border)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c44cd84(Eis.Silverlight.Library.Controls.MainContentContainerControl)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c44deac(System.Windows.Controls.StackPanel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c44df10(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4a32f4(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c454d6c(System.Windows.Controls.Border)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c454dd0(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c454e1c(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c454744(System.Windows.Controls.StackPanel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4547a8(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4547f4(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c4549ac(System.Windows.Controls.ItemsControl)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c454bf8(System.Windows.DataContextChangedEventHandler)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c454ba4(System.Windows.Data.BindingExpression)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0c44bb48(Eis.Silverlight.SecurityAdminModule.ViewModels.UserAdministrationViewModel)</p>
+<div></div>
+<div></div>
+<div>Here is the code in the VM:</div>
+<div>
+<pre>&nbsp;&nbsp;&nbsp;<span>private</span>&nbsp;<span>void</span>&nbsp;LoadExistingUser(<span>int</span>&nbsp;userId)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</pre>
+</div>
+<div>
+<pre>&nbsp;&nbsp;         IsBusy&nbsp;=&nbsp;<span>true</span>;<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>UserManagementUnitOfWork</span>.Get(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;userId,&nbsp;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;(o,&nbsp;e)&nbsp;=&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(e.Error&nbsp;==&nbsp;<span>null</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DomainList&nbsp;=&nbsp;((<span>UserManagementUnitOfWork</span>)e.Object).DomainNames;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;allGroupInfoCollection&nbsp;=&nbsp;((<span>UserManagementUnitOfWork</span>)e.Object).SecurityGroups;<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Model&nbsp;=&nbsp;((<span>UserManagementUnitOfWork</span>)e.Object).User;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BuildSecurityGroupLists();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsBusy&nbsp;=&nbsp;<span>false</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</pre>
+<pre>}</pre>
+<pre></pre>
+<pre>And the Get method in the UOW object:</pre>
+<pre><pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>void</span>&nbsp;Get(<span>int</span>&nbsp;id,&nbsp;<span>EventHandler</span>&lt;<span>DataPortalResult</span>&lt;<span>UserManagementUnitOfWork</span>&gt;&gt;&nbsp;callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>var</span>&nbsp;dp&nbsp;=&nbsp;<span>new</span>&nbsp;<span>DataPortal</span>&lt;<span>UserManagementUnitOfWork</span>&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.FetchCompleted&nbsp;+=&nbsp;callback;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dp.BeginFetch(id);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+</pre>
+</div>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 05, 2011</h2><p>Your second&nbsp;trace is almost certianly caused by datatemplate related memory leak in SL 4.&nbsp; Your first trace has TimerCallBack.&nbsp; Do you use any timers in your app?&nbsp; I know that Busy animation is using timer, so if you take snapshot while it is running, you will likely have it on the callstack.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Thursday, January 06, 2011</h2><p>If the memory leak is coming from the datatemplate, let me post the windbg for the view below.</p>
+<p>It shows that a DataTemplate is referencing the view.</p>
+<p>I am not using any&nbsp;timers&nbsp;directly, but I do use the Busy Animation control from the SL4 toolkit (4.0.40412.2000).</p>
+<p>I have seen some workarounds for the DataTemplate issue on the SL forums and will see if the workaround will fix the issue.</p>
+<p>Thank you,</p>
+<p>Keith</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;">0:032&gt; !gcroot 0bf29eb4&nbsp;</p>
+<p style="padding-left:30px;">Note: Roots found on stacks may be false positives. Run &quot;!help gcroot&quot; for</p>
+<p style="padding-left:30px;">more info.</p>
+<p style="padding-left:30px;">Scan Thread 4 OSTHread 7cc</p>
+<p style="padding-left:30px;">Scan Thread 43 OSTHread 1510</p>
+<p style="padding-left:30px;">Scan Thread 44 OSTHread 1888</p>
+<p style="padding-left:30px;">Scan Thread 45 OSTHread 32f4</p>
+<p style="padding-left:30px;">DOMAIN(074A08E0):HANDLE(Strong):5921190:Root: &nbsp;0bf3b840(System.Threading._TimerCallback)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf3b6dc(System.ServiceModel.Channels.HttpChannelFactory+HttpRequestChannel+HttpChannelAsyncRequest)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf3b5ac(System.ServiceModel.Channels.ServiceChannel+SendAsyncResult)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf39884(System.ServiceModel.ClientBase`1+AsyncOperationContext[[Csla.WcfPortal.IWcfPortal, Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf39850(System.Threading.SendOrPostCallback)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf38240(Csla.WcfPortal.WcfPortalClient)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf397f0(System.EventHandler`1[[Csla.WcfPortal.FetchCompletedEventArgs, Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf36e30(Csla.DataPortalClient.WcfProxy`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf36ef8(System.EventHandler`1[[Csla.DataPortalResult`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]], Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf36df8(Csla.DataPortal`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf36bc0(System.EventHandler`1[[Csla.DataPortalResult`1[[Eis.Library.SecurityManagement.UserManagementUnitOfWork, Eis.Library]], Csla]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf29ba0(Eis.Silverlight.SecurityAdminModule.ViewModels.UserAdministrationViewModel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf29e20(Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequest`1[[Microsoft.Practices.Prism.Interactivity.InteractionRequest.Confirmation, Microsoft.Practices.Prism.Interactivity]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf45ad0(System.EventHandler`1[[Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestedEventArgs, Microsoft.Practices.Prism.Interactivity]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf4202c(Microsoft.Practices.Prism.Interactivity.InteractionRequest.InteractionRequestTrigger)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf41d90(System.Windows.Controls.Border)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2b0c4(Eis.Silverlight.Library.Controls.MainContentContainerControl)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2c21c(System.Windows.Controls.StackPanel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2c280(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bfc786c(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf34040(System.Windows.Controls.Border)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf340a4(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf340f0(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33a04(System.Windows.Controls.StackPanel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33a68(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33ab4(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33c6c(System.Windows.Controls.ItemsControl)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33d44(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33d90(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33dcc(System.Collections.Generic.Dictionary`2[[System.UInt32, mscorlib],[System.Windows.DependencyObject, System.Windows]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33e18(System.Collections.Generic.Dictionary`2+Entry[[System.UInt32, mscorlib],[System.Windows.DependencyObject, System.Windows]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2a634(System.Windows.DataTemplate)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf29eb4(Eis.Silverlight.SecurityAdminModule.Views.UserAdministrationView)</p>
+<p style="padding-left:30px;">DOMAIN(074A08E0):HANDLE(Pinned):59212f8:Root: &nbsp;0cd24260(System.Object[])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd3b480(Eis.Silverlight.App)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47ea4(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47ef0(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47d2c(System.Windows.ResourceDictionary)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47d84(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47dd0(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47cc8(MS.Internal.ResourceDictionaryCollection)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47e0c(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47e58(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd4374c(System.Windows.ResourceDictionary)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd43b0c(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47bd8(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bd47c64(System.Windows.DataTemplate)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf42580(Microsoft.Practices.Prism.Interactivity.InteractionRequest.PopupChildWindowAction)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf41d90(System.Windows.Controls.Border)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2b0c4(Eis.Silverlight.Library.Controls.MainContentContainerControl)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2c21c(System.Windows.Controls.StackPanel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2c280(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bfc786c(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf34040(System.Windows.Controls.Border)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf340a4(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf340f0(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33a04(System.Windows.Controls.StackPanel)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33a68(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33ab4(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33c6c(System.Windows.Controls.ItemsControl)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33d44(System.Collections.Generic.Dictionary`2[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33d90(System.Collections.Generic.Dictionary`2+Entry[[MS.Internal.IManagedPeerBase, System.Windows],[System.Object, mscorlib]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33dcc(System.Collections.Generic.Dictionary`2[[System.UInt32, mscorlib],[System.Windows.DependencyObject, System.Windows]])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf33e18(System.Collections.Generic.Dictionary`2+Entry[[System.UInt32, mscorlib],[System.Windows.DependencyObject, System.Windows]][])-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf2a634(System.Windows.DataTemplate)-&gt;</p>
+<p style="padding-left:30px;">&nbsp;&nbsp;0bf29eb4(Eis.Silverlight.SecurityAdminModule.Views.UserAdministrationView)</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ksirmons replied on Thursday, January 06, 2011</h2><p>Moving all of the DataTemplates from inline into the usercontrol.resources appears to fix the issue I was seeing. &nbsp;(REF:&nbsp;<a href="http://forums.silverlight.net/forums/p/171739/389243.aspx">http://forums.silverlight.net/forums/p/171739/389243.aspx</a>)</p>
+<p>My Views and ViewModels are now being GC&#39;ed</p>
+<p>Thank you,</p>
+<p>Keith</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

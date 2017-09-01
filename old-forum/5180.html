@@ -1,0 +1,140 @@
+<html><header><title>Collection loads during Fetch operation set IsDirty flag to true</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Collection loads during Fetch operation set IsDirty flag to true</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5180.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dkehring posted on Thursday, July 31, 2008</h2><P>I'm using CSLA.NET 3.5.1</P>
+<P>When performing a fetch on a root object with children, the IsDirty flag is being set when the collection class is loaded via LoadProperty. This forces me to have to call MarkOld at the end of the DataPortal_Fetch method although MarkOld is being called in Server.SimpleDataPortal. First of all, when the collection is first accessed and the collection does not exist, it is created via SetProperty in the collection property:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>&gt; ResourcesProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Project</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Resources"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2> Resources</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!(FieldManager.FieldExists(ResourcesProperty)))</P>
+<P>{</P>
+<P>SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>&gt;(ResourcesProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>.NewProjectResources());</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ProjectResources</FONT></FONT><FONT size=2>&gt;(ResourcesProperty);</P>
+<P>}</P>
+<P>}</P>
+<P>The SetProperty call causes the IsDirty flag to be set to true. This is okay, if MarkOld is called _after_ all child objects are loaded. However, the data portal (SimpleDataPortal in this example), calls MarkOld _before_ the call to DataPortal_Fetch:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>try</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// create an instance of the business object.</P></FONT></FONT><FONT size=2>
+<P>obj = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LateBoundObject</FONT></FONT><FONT size=2>(objectType);</P>
+<P>target = obj.Instance </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalTarget</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (target != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P>target.DataPortal_OnDataPortalInvoke(eventArgs);</P>
+<P>target.MarkOld();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>obj.CallMethodIfImplemented(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"DataPortal_OnDataPortalInvoke"</FONT></FONT><FONT size=2>, eventArgs);</P>
+<P>obj.CallMethodIfImplemented(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"MarkOld"</FONT></FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// tell the business object to fetch its data</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (criteria </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>is</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>)</P>
+<P>obj.CallMethod(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"DataPortal_Fetch"</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>obj.CallMethod(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"DataPortal_Fetch"</FONT></FONT><FONT size=2>, criteria);</FONT></P>
+<P><FONT size=2>I would expect the call to MarkOld be made _after_ DataPortal_Fetch. Am I missing something or is this a bug? I also noticed the same is true for DataPortal_Create.</FONT></P>
+<P><FONT size=2>Regards,</FONT></P>
+<P><FONT size=2>Dave</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 31, 2008</h2>I think you want to use LoadProperty, not SetProperty in your getter.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 31, 2008</h2><P>Actually the call to Mark Old used to be after the DP _Fetch. But I hated that behavior because in the original CSLA newsgroup it was discussed on how to handle fetching a BO that is not in the Database. Half the group recommended an exception and the other half recommended branching to DP_Create and returning a New empty BO instead. I went that route and the call to MarkOld after DP_Fetch made a mess of it. So Rocky kindly moved it to before the Fetch so that if you branched to Create it would not break things. Now I do not have to comment it out of the framework anymore.</P>
+<P>Anyway - that is the background.</P>
+<P>But the solution is as Andy describes - use LoadProperty not SetProperty in DP_Fetch.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 31, 2008</h2>I think the change was made because some rules change based on whether or not the object IsNew, not so that it would facilitate branching to a create.&nbsp; Since ValidationRules.CheckRules must be called manually if you want it done in a fetch, and MarkOld wouldn't be called until after the rules were run, rules didn't correctly break or pass because IsNew was wrong.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 31, 2008</h2><P>Andy's point is also correct. Rocky ran into that issue after I pointed out my problem and the weight of both caused him to make the change.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 31, 2008</h2>Yes, BLAME JOE!!! ;)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dkehring replied on Friday, August 01, 2008</h2><P>To all,</P>
+<P>Thanks for the responses. However, I am using LoadProperty in my DataPortal_Fetch method. Unless I'm missing something in the responses or didn't explain things well I think everyone else is missing something. When I call LoadProperty on the collection class:</P><FONT size=2>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Operatories</FONT></FONT><FONT size=2>&gt;(OperatoriesProperty, Operatories.GetOperatories(dto));</FONT></P>
+<P><FONT size=2>... the call to Operatories enters the getter for Operatories. The Operatories property is lazy-intialized and so it creates a new Operatories collection and calls SetProperty, thus causing the IsDirty flag to be set:</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp; get<BR></FONT></FONT><FONT size=2>&nbsp;&nbsp; {<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT></FONT><FONT size=2> (!(FieldManager.FieldExists(OperatoriesProperty)))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Operatories</FONT></FONT><FONT size=2>&gt;(OperatoriesProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Operatories</FONT></FONT><FONT size=2>.NewOperatories());<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Operatories</FONT></FONT><FONT size=2>&gt;(OperatoriesProperty);<BR>&nbsp;&nbsp; }</FONT></P>
+<P><FONT size=2>This syntax is per the ProjectTracker project. I know how to solve this. Call LoadProperty here instead of SetProperty. But, since this is part of the sample code, I thought this might be an issue. Plus, I wonder about what the implications will be by changing this from SetProperty to LoadProperty.</FONT></P>
+<P>Anyone? ..... Bueller? ..... Bueller?</P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 01, 2008</h2>Yes... the suggestion was to use LoadProperty in the property getter, and that won't cause your root BO to become dirty.<br><br>So it should read this:<br><font><font size="2"><font size="2" color="#0000ff"><font size="2" color="#0000ff">&nbsp;&nbsp; get<br></font></font><font size="2">&nbsp;&nbsp; {<br></font><font size="2" color="#0000ff"><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</font></font><font size="2"> (!(FieldManager.FieldExists(OperatoriesProperty)))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br></font><font size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>Load</b>Property&lt;</font><font size="2" color="#2b91af"><font size="2" color="#2b91af">Operatories</font></font><font size="2">&gt;(OperatoriesProperty, </font><font size="2" color="#2b91af"><font size="2" color="#2b91af">Operatories</font></font><font size="2">.NewOperatories());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></font><font size="2" color="#0000ff"><font size="2" color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</font></font><font size="2"> GetProperty&lt;</font><font size="2" color="#2b91af"><font size="2" color="#2b91af">Operatories</font></font><font size="2">&gt;(OperatoriesProperty);<br>&nbsp;&nbsp; }</font></font></font><br><br>Also, if you're calling LoadProperty in your DP_F, then you're NOT lazy loading the Operatories property... you're loading it at fetch time, and so you don't need the if block in your getter at all.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The ProjectTracker code is wrong &#8211; there&#8217;s an item
+in my to-do list to fix it, but I haven&#8217;t had time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I probably should find time &#8211; this is (I think) the third
+thread where I&#8217;ve had to confess to this mistake :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dkehring
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 01, 2008 12:03 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Collection loads during Fetch operation set
+IsDirty flag to true<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>To all,<o:p></o:p></p>
+
+<p>Thanks for the responses. However, I am using LoadProperty in my
+DataPortal_Fetch method. Unless I'm missing something in the responses or
+didn't explain things well I think everyone else is missing something. When I
+call LoadProperty on the collection class:<o:p></o:p></p>
+
+<p><span>LoadProperty&lt;<span>Operatories</span>&gt;(OperatoriesProperty,
+Operatories.GetOperatories(dto));</span><o:p></o:p></p>
+
+<p><span>... the call to Operatories enters the getter
+for Operatories. The Operatories property is lazy-intialized and so it creates
+a new Operatories collection and calls SetProperty, thus causing the IsDirty
+flag to be set:</span><o:p></o:p></p>
+
+<p><span>&nbsp;&nbsp; get<br>
+</span><span>&nbsp;&nbsp; {<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</span>
+(!(FieldManager.FieldExists(OperatoriesProperty)))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetProperty&lt;<span>Operatories</span>&gt;(OperatoriesProperty, <span>Operatories</span>.NewOperatories());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</span>
+GetProperty&lt;<span>Operatories</span>&gt;(OperatoriesProperty);<br>
+&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>This syntax is per the ProjectTracker
+project. I know how to solve this. Call LoadProperty here instead of
+SetProperty. But, since this is part of the sample code, I thought this might
+be an issue. Plus, I wonder about what the implications will be by changing
+this from SetProperty to LoadProperty.<o:p></o:p></span></p>
+
+<p><span>Anyone? ..... Bueller? ..... Bueller?<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Saturday, August 02, 2008</h2>Hi,<br><br>apart from the ProjectTracker code being wrong, <br>what you, in addition, have wrong in your code, is that <br>you named your property 'Operatories' the same as your class,<br>thus triggering the getter each time you want to call the factory method <br>Operatories.NewOperatories...<br>So you are registering your managed property on the first call, <br>but what you are always getting back is a new reference <br>to a newly created object, which the fieldmanager is unaware of!<br><br>Edit:<br>Thinking over it again: Your code should result in an infinite loop, <br>calling LoadProperty over and over again, and would never get to <br>the factory call.<br><br><br>Stefan<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, August 04, 2008</h2>No, the compiler is smart enough to figure out when the type is being referenced vs. the property.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

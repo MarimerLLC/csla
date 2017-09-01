@@ -1,0 +1,37 @@
+<html><header><title>ObjectListView Bug in constructor</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectListView Bug in constructor</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1104.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 posted on Friday, September 01, 2006</h2><P>Brian, </P>
+<P>I am testing the ObjectListView and did not get very far. There seems to be a bug in one of the constructors. Here is the code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> ObjectListView(</FONT><FONT color=#008080 size=2>IList</FONT><FONT size=2> list, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> propertyName, ListSortDirection direction, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> filter)</P>
+<P>: </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>(list, TypeDescriptor.GetProperties(list.GetType().GetProperty(</FONT><FONT color=#ff00ff size=2>"Item"</FONT><FONT size=2>).PropertyType)[propertyName], direction, filter)</P>
+<P>{</P>
+<P>}</P></FONT>
+<P>My collection class has an overloaded Item Property so you can find an Item by the PK as well as the Index. This causes the costructor above to crash with this exception:</P>
+<P>'System.Reflection.AmbiguousMatchException' occurred in mscorlib.dll</P>
+<P>Additional information: Ambiguous match found.<BR></P>
+<P>I think it is rather common to have such overloads.</P>
+<P>Do you think you can fix this?</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>============================================================</P>
+<P>PS - I will try some of the other constructors for now.</P>
+<P>&nbsp;</P>
+<P>============================================================</P>
+<P>Same problem occurs in this constructor only further down:</P>
+<P><FONT color=#0000ff size=2>public</FONT><FONT size=2> ObjectListView(</FONT><FONT color=#008080 size=2>IList</FONT><FONT size=2> list, ListSortDescriptionCollection sorts, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> filter)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (filter == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) filter = </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P>_list = list;</P>
+<P>_indexedType = _list.GetType().GetProperty(</FONT><FONT color=#ff00ff size=2>"Item"</FONT><FONT size=2>).PropertyType;</P>
+<P></P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, September 01, 2006</h2>Hi Joe,<br><br>Thanks for the feedback.&nbsp; I am assuming you still have the default indexer and your overloaded version indexes by string or Guid?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, September 01, 2006</h2>Hi Joe,<br><br>I did some poking around and have changed all places where it was trying to find the return type of the Item property to specify the Item property that is indexed by an integer (which all IList should have).&nbsp; This seems to work with a list that has two Item properties, one indexed by an integer and the other indexed by a Guid.&nbsp; I have updated the version on CodePlex.&nbsp; Would you be willing to try it?<br><br>Cheers,<br>Brian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, September 02, 2006</h2><P>Hey Brian,</P>
+<P>Sure I would like to try it. Thanks for making the fix so quick.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Saturday, September 02, 2006</h2><P>Hi Brian,</P>
+<P>I just ran a quick test and got past the bug in the constructor. Nice solution.</P>
+<P>I bound it to a web page grid and it all works very well.</P>
+<P>I think I may end up using it in my project after I test it some more.</P>
+<P>But so far so good!</P>
+<P>Thanks.</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

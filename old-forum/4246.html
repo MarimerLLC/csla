@@ -1,0 +1,18 @@
+<html><header><title>I am getting an HTTP error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>I am getting an HTTP error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4246.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shai posted on Monday, January 28, 2008</h2><P>I have placed both the&nbsp;WcfPortal and WcfService under IIS (tried different configurations of application pools) - hosted in Windows 2003 Server.</P>
+<P>I am keep getting the folowing error (this happens after I get information from the database in some point) --&gt;&nbsp;has someone know where I can start investigating???</P><FONT size=2><FONT size=2>
+<P>An error occurred while receiving the HTTP response to http://localhost/WcfHost/WcfPortal.svc. This could be due to the service endpoint binding not using the HTTP protocol. This could also be due to an HTTP request context being aborted by the server (possibly due to the service shutting down). See server logs for more details.</P></FONT>
+<P>&nbsp;</P>
+<P>Server stack trace: </P>
+<P>at System.ServiceModel.Channels.ServiceChannel.ThrowIfFaultUnderstood(Message reply, MessageFault fault, String action, MessageVersion version, FaultConverter faultConverter)</P>
+<P>at System.ServiceModel.Channels.ServiceChannel.HandleReply(ProxyOperationRuntime operation, ProxyRpc&amp; rpc)</P>
+<P>at System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)</P>
+<P>at System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway, ProxyOperationRuntime operation, Object[] ins, Object[] outs)</P>
+<P>at System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage methodCall, ProxyOperationRuntime operation)</P>
+<P>at System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)</P>
+<P>Exception rethrown at [0]: </P>
+<P>at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)</P>
+<P>at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)</P>
+<P>at OSWcfClient.OSWcfService.IOSService.Login(String id)</P>
+<P>at OSWcfClient.OSWcfService.OSServiceClient.Login(String id) in C:\Dev\Server\Unittest\TestWcf\Service References\OSWcfService.cs:line 586</P>
+<P>at OSWcfClient.Program.Main(String[] args) in C:\Dev\Server\Unittest\TestWcf\Program.cs:line 61</P></FONT>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

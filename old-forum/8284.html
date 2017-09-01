@@ -1,0 +1,15 @@
+<html><header><title>Using Linq in Sliverlight with CSLA ListBase Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Linq in Sliverlight with CSLA ListBase Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8284.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa posted on Monday, January 04, 2010</h2><P>I am very new to Linq. </P>
+<P>Today, I was trying to use Linq in silverlight code behind together with ListBase object </P>
+<P>For example, my dataportal will get all customers from database, then in the silverlight UI</P>
+<P>I would like to do some filtering work such as only show customers who had first name starts with letter "A" and then bind the filtered data to&nbsp;a datagrid. </P>
+<P>public void BindDataGrid()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaDataProvider provider = this.DataContext as CslaDataProvider;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ROCustomers&nbsp;customers = provider.Data as ROCustomers;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var customers= from customer in customers where customer.FirstName.StartsWith("A")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select customer;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CustomerDG.ItemsSource = customers.ToArray();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>This code seems work, but I am not very confident at this point. I would like to seek your input on this manner </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 04, 2010</h2><P>On Silverlight CSLA does nothing special with LINQ. So you will get standard LINQ to Objects behaviors - which means the result of a query is an IEnumerable&lt;T&gt;.</P>
+<P>This means that if you add or remove items from the query result they will NOT be added or removed from the real list, and so the add/remove operation won't be persisted when you save the real collection.</P>
+<P>Also, IEnumerable&lt;T&gt; doesn't raise any changed events unless you use it to create a new ObservableCollection&lt;T&gt;.</P>
+<P>Otherwise you can bind the IEnumerable&lt;T&gt; result to the UI and it should work pretty well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa replied on Wednesday, January 06, 2010</h2><P>Thank you for the answer. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

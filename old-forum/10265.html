@@ -1,0 +1,14 @@
+<html><header><title>Get Registered Properties of Type</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Get Registered Properties of Type</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10265.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GoGO posted on Friday, April 15, 2011</h2><p>Hello.</p>
+<p><span><span title="Click for alternate translations" class="hps">In my</span>&nbsp;<span title="Click for alternate translations" class="hps">scenario</span>&nbsp;<span title="Click for alternate translations" class="hps">I need</span>&nbsp;<span title="Click for alternate translations" class="hps">to get</span>&nbsp;<span title="Click for alternate translations" class="hps">all registered</span>&nbsp;<span title="Click for alternate translations" class="hps">properties of a</span>&nbsp;<span title="Click for alternate translations" class="hps">type</span><span title="Click for alternate translations">.</span></span></p>
+<p><span><span title="Click for alternate translations" class="hps">I inherited</span>&nbsp;<span title="Click for alternate translations" class="hps">from</span>&nbsp;<span title="Click for alternate translations" class="hps">ReadOnlyBase &lt;T&gt; and</span>&nbsp;<span title="Click for alternate translations" class="hps">in</span>&nbsp;<span title="Click for alternate translations" class="hps">my</span>&nbsp;<span title="Click for alternate translations" class="hps">subclass</span>&nbsp;<span title="Click for alternate translations" class="hps">wrote</span>&nbsp;<span title="Click for alternate translations" class="hps">the following</span>&nbsp;<span title="Click for alternate translations" class="hps">method</span></span></p>
+<p><span><span title="Click for alternate translations" class="hps">
+<p>public static List&lt;string&gt; GetObjectProperties()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var o = (ReadOnlyBase&lt;T&gt;)Activator.CreateInstance(typeof(T));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return o.FieldManager.GetRegisteredProperties().Where(p =&gt; !(</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; p.RelationshipType.HasFlag(RelationshipTypes.Child) ||</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; p.RelationshipType.HasFlag(RelationshipTypes.LazyLoad)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;)).Select(p =&gt; p.Name).ToList();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>Is this correct?&nbsp;</p>
+</span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

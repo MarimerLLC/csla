@@ -1,0 +1,176 @@
+<html><header><title>CslaDataProvider for Silverlight bug</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaDataProvider for Silverlight bug</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6894.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds posted on Sunday, May 03, 2009</h2><P>Hi</P>
+<P>I've upgraded to 3.6.2 of CslaLight having previously used 3.6.1. Some code in the CslaDataProvider has changed which has now broken my application.</P>
+<P>My specific problem relates to the CslaDataProvider::QueryCompleted method. </P>
+<P>In 3.6.1 the ObjectInstance property was set before the Error property, but in 3.6.2 it happens that the Error property is set before the ObjectInstance property is set. Here's the code:</P>
+<P>3.6.2:</P>
+<P><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> QueryCompleted(<SPAN>object</SPAN> sender, <SPAN>EventArgs</SPAN> e)<o:p></o:p></SPAN></P>
+<P><SPAN>{<o:p></o:p></SPAN></P>
+<P><SPAN>IDataPortalResult</SPAN><SPAN> eventArgs = e <SPAN>as</SPAN> <SPAN>IDataPortalResult</SPAN>;<o:p></o:p></SPAN></P>
+<P><SPAN>this</SPAN><SPAN>.Error = eventArgs.Error;<o:p></o:p></SPAN></P>
+<P><SPAN>this</SPAN><SPAN>.ObjectInstance = eventArgs.Object;<o:p></o:p></SPAN></P>
+<P><SPAN>RefreshCanOperationsValues();<o:p></o:p></SPAN></P>
+<P><SPAN>this</SPAN><SPAN>.IsBusy = <SPAN>false</SPAN>;<o:p></o:p></SPAN></P>
+<P><SPAN>}<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;</SPAN>3.6.1:</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;<FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> QueryCompleted(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P>IDataPortalResult eventArgs = e </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> IDataPortalResult;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_manageObjectLifetime &amp;&amp; eventArgs.Object != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2> &amp;&amp; eventArgs.Error == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.ObjectInstance = eventArgs.Object;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Error = eventArgs.Error;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (eventArgs.Error != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Error = eventArgs.Error;</P>
+<P>}</P>
+<P>RefreshCanOperationsValues();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.IsBusy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT></FONT></o:p><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P>The reason this matters is that the Error property also sets IsBusy to false. And the reason that matters is the crux of the issue...</P>
+<P>In my system I want to know when the CslaDataProvider has completed an async&nbsp;Refresh operation. There doesn't seem to be any way to detect that. So, back in 3.6.1 I sub-classed the CslaDataProvider and then overrode the OnPropertyChanged method to listen for changes to the IsBusy property and fired my own method when IsBusy went from true to false. Back in 3.6.1 this worked, because the ObjectInstance property had already been set by the time IsBusy was set to false. This all seems like a hack but it was the only way I could get it to work, short of modifying the CslaDataProvider source myself (which I'm loathe to do).</P>
+<P>So, what I'm really driving at here is why the various OnXXX methods in the CslaDataProvider aren't virtual. If they were I could just override them and handle the event myself. </P>
+<P>So, Rocky - can you please advise whether you consider the order of setting the Error property and the ObjectInstance property is a bug, and whether you can introduce virtual methods into this class?</P>
+<P>Alternatively what's the correct way of solving the problem of wanting to be advised when the Refresh has completed? I'm trying to build some generic code for a bunch of maintenance screens and I'd rather be able to subclass the CslaDataProvider rather than have to hook up and detach events. </P>
+<P>Thanks,</P>
+<P>Craig</P>
+<P>(And here's my subclass code so you can see what I'm trying to do)</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MyDataProvider</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CslaDataProvider</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> _isBusy;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> HasData</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> ObjectInstance != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> HasNoData</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> ObjectInstance == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnPropertyChanged(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyChangedEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>switch</FONT></FONT><FONT size=2> (e.PropertyName)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Data"</FONT></FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.OnPropertyChanged(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyChangedEventArgs</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"HasData"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.OnPropertyChanged(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyChangedEventArgs</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"HasNoData"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Error"</FONT></FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (Error != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Debug</FONT></FONT><FONT size=2>.WriteLine(Error);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>case</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"IsBusy"</FONT></FONT><FONT size=2>:</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> newBusy = IsBusy;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!newBusy &amp;&amp; _isBusy)</P>
+<P>OnOperationComplete();</P>
+<P>_isBusy = newBusy;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>break</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.OnPropertyChanged(e);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Action</FONT></FONT><FONT size=2> _operationCompleteAction;</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Registers a one-time action to execute when IsBusy changes back to false - i.e. when an</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> operation completes.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;param name="action"&gt;</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>The action.</FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> WhenComplete(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Action</FONT></FONT><FONT size=2> action)</P>
+<P>{</P>
+<P>_operationCompleteAction = action;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnOperationComplete()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_operationCompleteAction != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>try</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>_operationCompleteAction.Invoke();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>catch</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Exception</FONT></FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Debug</FONT></FONT><FONT size=2>.WriteLine(ex);</P>
+<P>}</P>
+<P>_operationCompleteAction = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 04, 2009</h2><P>The change to CslaDataProvider was necessary to fix a rather serious bug in the way the Error and Data properties were being set during data load (query or refresh). The problem was that each value, as it was set, would raise a PropertyChanged and DataChanged event, and this would cause the UI to double-bind.</P>
+<P>The most notable example of this is when there was an error, your error handling code (such as the new ErrorDialog control) would execute twice - even though there was only one query. It was a mess.</P>
+<P>So the 3.6.2 code is much more careful about how this works, so the DataChanged event is raised just one time, even though both the Error and Data properties may have been set.</P>
+<P>Ultimately, the way you know that a query operation is complete is by handling the DataChanged event. This is the same in Silverlight as in WPF. I would think you'd be able to handle DataChanged to accomplish your goal?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cds replied on Monday, May 04, 2009</h2><P>Hi Rocky</P>
+<P>Thanks for the reply. I will give this a go but from a quick look at the CslaDataProvider code I don't think this is going to help me - the DataChanged event is raised by calling OnDataChanged(), and this is called both by the Error property being set and by the ObjectInstance property being set. </P>
+<P>Won't this cause the DataChanged event to be raised twice, with the first one raised <STRONG>before</STRONG> the ObjectInstance is actually set?</P>
+<P>Finally, are there reasons that there are so few virtual methods in this class? As I said in my first post, I wanted to inherit from it but the lack of virtual methods makes this difficult. I guess, if all else fails, I can take the code and modify it to suit my purposes...</P>
+<P>Thanks,</P>
+<P>Craig</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The current code (maybe I&#8217;m thinking of 3.6.3?) calls
+OnDataChanged() once per query. That&#8217;s the bug fix I referred to in my
+previous post.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are a couple reasons there are few virtual methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>First, the intent is to emulate the WPF control as much as
+possible, and it has few virtual methods.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Second, as a framework designer, it is always best to not make
+methods virtual unless there&#8217;s a specific scenario that requires such a
+move. This is because virtual methods and inheritance are an incredibly tight
+form of coupling, and the more virtual methods in a class, the more fragile the
+overall system. The more methods I make virtual, the better the odds I&#8217;ll
+break your code as I enhance/fix/change the framework over time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I do make methods virtual, but not casually, and certainly
+not by default. If there are specific members that should be virtual to meet a
+scenario, please call them to my attention &#8211; we can discuss the
+scenario(s) and decide on a good way to solve them.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Saturday, May 16, 2009</h2><P>Rocky,</P>
+<P>Your right...that fix will be in&nbsp;3.6.3.&nbsp;&nbsp;I am getting the behavior you are mentioning in 3.6.2 of DataChanged firing many times for one query.</P>
+<P>Sean</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Saturday, May 16, 2009</h2><P>I got the latest source for ErrorDialog and CslaDataProvider and recompiled...</P>
+<P>still getting the DataChanged event firing 16 times for one query (8 of those after the object is actually returned)</P>
+<P>I confirmed that my factory method is only being called once.</P>
+<P>Sean</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Saturday, May 16, 2009</h2><P>Ugh it helps if one does this:</P><FONT size=2>
+<P>m_Provider.DataChanged += CslaDataProvider_DataChanged;</P></FONT>
+<P>instead of this:</P><FONT size=2>
+<P>m_Provider.PropertyChanged += CslaDataProvider_DataChanged;</P></FONT>
+<P>Tried to delete previous post but I didn't get it fast enough...sorry.&nbsp; It works fine now!</P>
+<P>Sean</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

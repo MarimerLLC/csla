@@ -1,0 +1,61 @@
+<html><header><title>3.8 Beta Silverlight ViewModelBase&lt;T&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.8 Beta Silverlight ViewModelBase&lt;T&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7872.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Sunday, October 25, 2009</h2>I have been testing a Csla Light ViewModelBase&lt;EditableRootList&gt;<br><br>ViewModelBase&lt;T&gt;.DoRemove(T item) does not make sense to me as the 'item' parameter should not be typed as the EditableRootList but as an item within the List.<br><br>Could the Model property be typed as T rather than object, to remove the need for casting?<br><br><br><br>Peran<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, October 25, 2009</h2>Take a look at Beta 2 (just released) which should address this issue.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Monday, October 26, 2009</h2>Thanks, I'm finding your VM implementation excellent to work with and creating data maintenance screens with very little code.<br><br>I'm using an EditableRootList as my model bound to a silverlight DataGrid.&nbsp; I noticed that I was not receiving notifications of errors when  Items within the list were saved.&nbsp; Does this approach sound reasonable?:<br><br><br>Make ViewModelBase.HookObjectEvents virtual <br>Extend the method in my ViewModel and unhook/hook Model.Saved and ((INotifyUnhandledAsyncException)Model).UnhandledAsyncException <br>Call ViewModelBase.OnError as appropriate from the hooked events.<br><br><br>Cheers<br><br>Peran<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 26, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That&#8217;s a good point Peran, I hadn&#8217;t put much thought into ERLB scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Really I think you are right to make HookObjectEvents() virtual
+overall, as this opens up the possibility of handling other arbitrary events on
+the model. Though if it is public I think it should probably be renamed to OnModelChanged().
+I&#8217;ll make this happen.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=619">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=619</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you!<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, November 05, 2009</h2>Hi Rocky,<br><br>Now that ViewModelBase.Model is typed as T it would be nice to have ViewModelBase.OnModelChanged oldValue and newValue parameters typed as T aswell.<br><br>The ModelProperty.PropertyMetadata callback would need to cast the the values to T on the call to OnModelChanged.<br><br><br>Regards<br><br>Peran<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks Peran, you are absolutely correct about typing the oldValue
+and newValue parameters.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

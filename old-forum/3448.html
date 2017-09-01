@@ -1,0 +1,54 @@
+<html><header><title>Roles and Permissions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Roles and Permissions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3448.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav posted on Wednesday, August 29, 2007</h2>Rocky,
+
+I am implementing RBAC(role based access control system in my APP).
+for which my roles (custom) will be having permissions sets rights on objects .
+example :Customer (Add,update,view,delete,authorise,confirm) etc
+
+this method is there to get the users authentication for the specified action 
+ public static bool CanAddObject()
+    {
+      return Csla.ApplicationContext.User.IsInRole(
+        "ProjectManager");
+    }
+
+but i dont want to hard code the roles , "ProjectManager" etc  instead i would like to go for a custom implementation of the above method like 
+
+ public static bool CanAddObject()
+    {
+      return Csla.ApplicationContext.User.hasRight(enumActions.Add,enumObjects.Customer,user.rol);
+    }
+
+or in this way
+
+ public static bool CanAddObject()
+    {
+      return Csla.ApplicationContext.User.IsInRoles(
+        getRolesforAction(enumActions.Add,enumObjects.Customer);
+    }
+
+
+Could this kind be of thing possible to achieve with CSLA or it do require the base modifications at CSLA level .
+
+thanks
+govind</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><P>I moved this to its own thread to keep things more organized. And because there are other people on the forum with differing (and very valid) opinions that may provide insight. You should search the forum though, because this topic has been discussed before.</P>
+<P>In my view there are just two scenarios:</P>
+<OL>
+<LI>You have a flat list of roles/permissions against which you check authorization (authz)</LI>
+<LI>You sometimes check authz against roles, and sometimes check authz against permissions - mixing the two</LI></OL>
+<P>By far, most people fit into scenario 1. At <EM>runtime</EM> they check against a flat list of roles/permissions/whatever-you-want-to-call-them to see if the user is allowed.</P>
+<P>Sometimes "roles" are merely containers for lists of "permissions" - they act as an administrative helper so some admin can assign entire groups of permissions to a user by putting the user in a role.</P>
+<P>But at <EM>runtime</EM> only the "permissions" are checked - the "roles" are ignored. In this case you can "misuse" IsInRole() to see if the user has a permission. This is the simplest solution.</P>
+<P>If you fit into scenario 2 then your code sometimes calls IsInRole() to check real roles. And sometimes your code calls HasPermission() to check a permission. And your code mixes and matches those two models. To me this seems overly complex, but it does happen from time to time. </P>
+<P>In <EM>either</EM> case, remember that you can load the role/permissions required by your object from a database. These values are just strings after all, so loading them from a table is not hard. So your idea of a GetRolesForAction() method seems entirely possible, but wouldn't work as you describe without some effort on your part.</P>
+<P>You wouldn't need to alter CSLA. CSLA isn't the issue, .NET is the issue. .NET defines the IPrincipal interface with IsInRoles(). This is the standard authz model in .NET, and that's why CSLA uses this model.</P>
+<P>But you can (must anyway) create your own custom principal class. And in that class you can go beyond the IPrincipal interface by adding anything you want, including IsInRoles().</P>
+<P>There are a couple catches though.</P>
+<P>First, you must cast the User object to your custom type:</P>
+<P>CustomPrincipal p&nbsp;= (CustomPrincipal)Csla.ApplicationContext.User;<BR>bool result = p.IsInRoles(...);</P>
+<P>Second, CSLA has no knowledge of anything beyond IPrincipal. But you can override CanReadProperty(), CanWriteProperty() and CanExecuteMethod() in your base class (because you should have a base class of your own between BusinessBase and your business objects anyway), and in that method you can call your custom IsInRoles() or whatever.</P>
+<P>Unfortunately, this entirely bypasses CSLA's authz result caching and other features. The <A href="http://www.lhotka.net/cslanet/wishlist.aspx">wish list</A> includes a request to make the bottom-level IsInRole() call delegate based, allowing you to plug in at a lower level, and that would make this harder to implement, but more elegant and powerful. I don't know when I'll get to that change though.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 29, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>jhoojharsinghyadav:</strong></div><div>Rocky,<BR><BR>1 more thing , why there isnt any place for permissions . in CSLa , may be i could be wrong as i cant find them .<BR>but as per mine understanding it should go like this , <BR>a permission base class should be there and instead of checking the user.inrole at every action (add,delete) etc&nbsp; it should go like for asking the user.haspermission(permissionname)&nbsp; .<BR></div></BLOCKQUOTE></P>
+<P>See my previous post regarding the normal (admin-time) relationship between "roles" and "permissions".</P>
+<P>Odds are I'll never support "permissions" as a concept in CSLA. I say this, because .NET supports a role-based model and I'm following their lead.</P>
+<P>However, WCF introduces a claims-based model, and if that becomes more pervasive I could see providing some support for that - if needed. Right now the only infrastructure to support claims is in WCF though (System.IdentityModel and System.ServiceModel), and this model sits alongside the role model, so it isn't at all clear that CSLA needs to do anything extra to support the concept within a WCF service implementation.</P>
+<P>Reusable .NET code <EM>must</EM> be role-based, because that's the only universal model. WCF service code can be claims based, but that can't extend into a business library without locking that library for use only by WCF...</P>
+<P>The same would be true of a permissions model. A business library written against such a model could <EM>only</EM> work within your custom app environment, because there's no broader infrastructure support by .NET, WCF or anything else for such a model.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Thursday, September 06, 2007</h2>Thanks a lot&nbsp; rocky for your suggestion .<br><br>based&nbsp; on the same analogy i had implemented the haspermission by cretating a custom identity and principal . <br><br>a refrence to the same implementation is <a HREF="/forums/thread/17224.aspx">here</a> .<br>&nbsp;<br>Thanks<br>Govind<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

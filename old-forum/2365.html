@@ -1,0 +1,76 @@
+<html><header><title>SmartDate Default Format</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate Default Format</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2365.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 posted on Friday, February 16, 2007</h2><P>In my web app in Global.asax I just add this code to the Application Start event handler:</P><FONT size=2>
+<P>SmartDate.SetDefaultFormatString(</FONT><FONT color=#ff00ff size=2>"MM/dd/yyyy"</FONT><FONT size=2>)</P></FONT>
+<P>This changed the default output of all SmartDates to use leading zeros on dates.</P>
+<P>This adds a lot of consistency to my screens and reports. I standardized the output on dozens of reports with this one line of code.</P>
+<P>Rocky&nbsp; - just wanted to say thanks for adding it to the framework.</P>
+<P>It was a little thing but it&nbsp;just came in very handy.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>My pleasure! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, February 16, 2007</h2><P>Hey Joe or Rocky,</P>
+<P>Can the same be done in the App.config or some other startup file&nbsp;for Windows CSLA Apps?</P>
+<P>Kelly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You could certainly do so, yes. CSLA doesn&#8217;t do it for
+you, but it is just Joe&#8217;s line of code, but with the format string
+retrieved using System.Configuration.ConfigurationManager &#8211; not hard.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jkellywilkerson
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 16, 2007 11:55 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SmartDate Default Format<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hey Joe or Rocky,<o:p></o:p></p>
+
+<p>Can the same be done in the App.config or some other startup file&nbsp;for
+Windows CSLA Apps?<o:p></o:p></p>
+
+<p>Kelly.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jkellywilkerson replied on Friday, February 16, 2007</h2>Would I put something like SmartDate.SetDefaultFormatString("MM/dd/yyyy") in program.cs; I have been using <FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _birthdate.Date.ToString(</FONT><FONT color=#800000 size=2>"MM/dd/yyyy"</FONT><FONT size=2>);</FONT></P>
+<P><FONT size=2><FONT size=3>in each SmartDate Property Get method.&nbsp; But, if I could set it globally at runtime similar to the way Joe did using Global.asax, that would be much nicer.</FONT></FONT></P>
+<P><FONT size=2><FONT size=3>Thanks,</FONT></FONT></P>
+<P>Kelly.<FONT size=2></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

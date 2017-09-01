@@ -1,0 +1,46 @@
+<html><header><title>Using CustomFieldData cannot invoke the Child_DeleteSelf()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CustomFieldData cannot invoke the Child_DeleteSelf()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11060.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Saturday, January 14, 2012</h2><p>I have a child BLB with BusinessCore. when I save the RootOjbect. &nbsp; the Child_Insert and Child_Update work well, but the Child_deleteSelf doesn&#39;t work. &nbsp;what&#39;s wrong?</p>
+<p>
+<p>&nbsp; &nbsp; private void Child_DeleteSelf()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var ctx = DALFactory.GetManager())</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dal = ctx.GetProvider&lt;IPermissionDAL&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (BypassPropertyChecks)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dal.Delete(this.Id);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 14, 2012</h2><p>Hi,</p>
+<p>If you use DataPortal.UpdateChild or DataPortal.UpdateChildren on the child BLB then all Child_Insert, Child_Update and Child_DeleteSelf must have the same signature, ie if you send in the parent of the objkect as parameter then something like this: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_Insert(object parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TODO: insert values<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_Update(object parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TODO: update values<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Child_DeleteSelf(object parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // TODO: delete values<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>The other important part is object state. If the deleted object has<b> IsNew = true</b> then there is no record to delete in the database and CSLA will NOT call Child_DeleteSelf. So it is important that you check the state of the objects in BLB.DeletedList.</p>
+<p>So the semantic for when CSLA will call Child_DeleteSelf is: </p>
+<p>forach (var busObj in DeletedList)<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (busObj.IsDeleted)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!busObj.IsNew)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Call Child_DeleteSelf .....<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp; }<br />}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Saturday, January 14, 2012</h2><p>I use the same signature. </p>
+<p>&nbsp;private void Child_Insert(Object obj)</p>
+<p>private void Child_Update(Object obj)</p>
+<p>&nbsp;private void Child_DeleteSelf(Object obj)</p>
+<p>but the Child_DeleteSelf does&#39;t excuted.</p>
+<p><strong>if i change the child class Permission:BusinessCore&lt;Permission&gt; to Permission:BusinessBase&lt;Permission&gt;. the Child_DeleteSelf will be excuted.</strong></p>
+<p>BO tree as below:</p>
+<p>+Objects (BusinessListBase)</p>
+<p>++Object (BusinessCode)</p>
+<p>+++Permissions(BusinessListBase)</p>
+<p>++++Permission(BusinessCore)</p>
+<p>+++Objects(BussinessListBase)</p>
+<p>................</p>
+<p>the BO Object&nbsp; is switchable bo. it&#39;s contains a child BLB Permissions.</p>
+<p>I checked the DeleteList in permissions. the item&#39;s IsNew is false.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, January 14, 2012</h2><p>Then the case is probably that the deleted item has IsDirty = false. </p>
+<p>The IsSelfDirty method in BusinessCore should be like this: </p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; public override bool IsSelfDirty<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;get<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; if (IsDeleted) return true; <br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;var isSelfDirty = false;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;foreach(var registeredProperty in this.FieldManager.GetRegisteredProperties())<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;{<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; // skip lazy fields (is by definition child object)<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp; if (!registeredProperty.RelationshipType.HasFlag(RelationshipTypes.LazyLoad))<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; var fieldData = FieldManager.GetFieldData(registeredProperty);<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; // fielddata object implements ITrackStatus it is a child object and must be excluded<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; if (!fieldData is ITrackStatus) <br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.FieldManager.IsFieldDirty(registeredProperty))<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;isSelfDirty = true;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;break;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}&nbsp; &nbsp;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br /><br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;return isSelfDirty;<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}<br />&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Saturday, January 14, 2012</h2><p>Thank&nbsp; You.&nbsp; It work.</p>
+<p>if in the child collection( BLB) there are&nbsp;2 items as below</p>
+<p>ItemA</p>
+<p>ItemB</p>
+<p>I Add Item C into the collection. the ViewModelBase&nbsp; CanSave become true. then and I delete Item C. CanSave become false. it&#39;s OK.</p>
+<p>If I delete Item A, the CanSave Become true. then I&nbsp; Add Item A(use Item.NewItem() and add into collection, all propertys is as&nbsp;same as the lay in the DeleteList), but the CanSave still&nbsp; true.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

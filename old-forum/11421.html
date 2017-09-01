@@ -1,0 +1,22 @@
+<html><header><title>SaveITem(int) &amp; ArgumentOutOfRangeException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SaveITem(int) &amp; ArgumentOutOfRangeException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11421.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com posted on Thursday, June 21, 2012</h2><p>Dear all,</p>
+<p>I&#39;m unsure if this is a bug or a wrong use on my side.</p>
+<p>I&#39;m having troubles in production that - unfortunately - I&#39;m not able to reproduce yet.</p>
+<p>This CSLA code is deployed in a Silverlight Client. </p>
+<p>The stack trace indicates that the code is inside CSLA:</p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp; </span>at System.ThrowHelper.ThrowArgumentOutOfRangeException()</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at System.Collections.Generic.List`1.get_Item(Int32 index)</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at System.Collections.ObjectModel.Collection`1.get_Item(Int32 index)</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at Csla.DynamicListBase`1.SaveItem(Int32 index)</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at Csla.DynamicListBase`1.Csla.Core.IParent.ApplyEditChild(IEditableBusinessObject child)</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at Csla.Core.BusinessBase.AcceptChangesComplete()</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at Csla.Core.UndoableBase.AcceptChanges(Int32 parentEditLevel)</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at Csla.Core.BusinessBase.ApplyEdit()</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at Csla.Core.BusinessBase.System.ComponentModel.IEditableObject.EndEdit()</span></span></p>
+<p class="MsoPlainText" style="margin:0in 0in 0pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;&nbsp; </span>at MyCompany.ViewModel.ActivitiesCollectionItemVm.System.ComponentModel.IEditableObject.EndEdit()</span></span></p>
+<p>My custom VM code is implementing IEditableObject.EndEdit and calls it on a Dynamic List Base collection.</p>
+<p>Are there any situations in which I should not &#39;allow&#39; this EndEdit to be propagated?</p>
+<p>Is&nbsp;anyone else&nbsp;facing the same trouble?</p>
+<p>I&#39;m using CSLA 4.3.10.</p>
+<p>Regards,</p>
+<p>Gilles</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 21, 2012</h2><p>If you are going to interact with a dynamic list, you must&nbsp;call the IEditableObject methods on the business object <em>exactly</em> as if it were Windows Forms data binding calling those methods.</p>
+<p>In other words, we ensure those methods work with standard data binding, most notably WinForms, but also WPF. If you are the one calling those methods from your viewmodel, then you must understand and follow the exact same calling conventions.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

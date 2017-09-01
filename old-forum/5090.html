@@ -1,0 +1,545 @@
+<html><header><title>Practical TDD/BDD in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Practical TDD/BDD in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5090.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Monday, July 14, 2008</h2>Hi guys<br>I know that this topic has been discussed a bit but it seems to have been a while since it was last raised.<br><br>The following post goes to some length about the theory/philosophy behind TDD (http://forums.lhotka.net/forums/thread/17914.aspx) but i am more interested in if anyone is actively doing TDD with CSLA.<br><br>If so how do you go about writing your classes? What do you attempt to test? What do you try to mock out? How do you test your data access methods since they are private methods? etc, etc<br><br>Cheers<br>Anthony<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Monday, July 14, 2008</h2><P>We used MbUnit to test our CSLA-based business objects and it worked well. I posted some example code&nbsp;in this thread&nbsp;<A HREF="/forums/thread/22641.aspx">http://forums.lhotka.net/forums/thread/22641.aspx</A>. The tests became more complicated still, so be forewarned that you will write a lot of test code.</P>
+<P>It is worth it though, almost all the bugs we found in user-acceptance were in the UI code (which wasn't subject to TDD) rather than in the business layer. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter replied on Tuesday, July 15, 2008</h2>What is DBB?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think he meant to say BDD &#8211; Behavior Driven Development.&nbsp;
+It is a technique for people who are moving into Test Driven Development to
+show that you are not writing tests but rather documenting and assuring
+behavior, or use case assumptions in your tests.&nbsp; That is why they are
+called Behaviors and no tests.&nbsp; There is also a set of rules one has to
+follow when practicing BDD:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://en.wikipedia.org/wiki/Behavior_driven_development">http://en.wikipedia.org/wiki/Behavior_driven_development</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To me this could be very interesting to many Csla developers, as
+I believe that Csla framework itself encourages Behavior driven design, of an
+OO system.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mr_lasseter
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 15, 2008 8:03 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Practical TDD/DBB in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>What is DBB?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, July 15, 2008</h2>
+ 
+  Normal
+  0
+  
+  
+  false
+  false
+  false
+  
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+ 
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:10.0pt;
+	font-family:"Times New Roman";
+	mso-ansi-language:#0400;
+	mso-fareast-language:#0400;
+	mso-bidi-language:#0400;}
+
+
+
+<p class="MsoNormal">Yes you are right i made a typo there... I was referring to
+BDD.<br>
+<br>
+I also i think your right about this being very interesting to many CSLA
+developers and I think that the framework facilitates the concept of BDD very
+well, hence why i am really looking into this space at the moment (even though
+it would seem as if BDD has lost a little momentum over the last 6-12 mths).
+From everything that I have been looking into BDD certainly puts the focus
+where i believe it should be (i.e. on the behaviour and functionality) rather
+than the code its self.<br>
+<br>
+The reason for the post though was to see if anyone it doing BDD or TDD and how
+they go about doing it in a CSLA setting? What do you try to mock out? How do
+you test your data access methods since they are private methods? etc, etc<br>
+<br>
+Cheers<br>
+Anthony </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, July 15, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are right about BDD.&nbsp; I would point to it as an
+easy way/concept to introduce folks into TDD world, but not go with BDD tools/frameworks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Well the problem with Mocking in CSLA is that it uses &#8220;Mobile
+Object&#8221; concept (which is the coolest part about it - &nbsp;the thing
+that puts it way above anything else).&nbsp; Mobile object meaning that client
+requests the object (client context), and then the server instantiates it
+configures it (server context).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How does one Mock something (like DAL components) that does not
+exist in the context in which you instantiate your object?&nbsp; Moreover, most
+of the mock frameworks require that the component that is being mocked is
+visible from the outside and is passed as a reference to the object that we are
+going to unit test.&nbsp; Csla objects encapsulates everything.&nbsp; You do
+not pass dependencies to your Factory Method.&nbsp; And even if you would, is
+it possible to pass references to DAL objects and then serialize them over
+network to the server.&nbsp; Most of the ADO.Net infrastructure is not
+serializible, and honestly the whole idea sounds just to complicated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So is there a solution to this &#8211; yes there is! <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In your test configuration you will have to assure that you are
+running SimpleDataPortal request are passed to local context.&nbsp; Then you
+will need a Top Gun mocking framework: TypeMock.Net (The just changed the name
+to Isolator).&nbsp; There is a free version and a commercial one.&nbsp; The
+difference with TypeMock is that it uses Profiler API so it can intercept ANY
+object instantiation.&nbsp; Therefore it if you use TypeMock/Isolator you do
+not have to worry about having to &#8220;inject &#8221; dependencies.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are, however some strategies you use in mocking, and
+approaches where as you use it you realize that more complex object it is, harder
+it is to mock it.&nbsp; All of the ADO.NET belongs to that category.&nbsp; You
+do not mock things such as DataReaders, Linq DataContexts &#8211; you create
+wrappers with really simple interfaces around them.&nbsp; I have few examples
+on my blog where I show how to Mock few DAL dependencies.&nbsp; Posts are old,
+but they might give you some ideas.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>http://www.nermins.net<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 15, 2008 5:04 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Practical TDD/DBB in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Normal 0 false false false MicrosoftInternetExplorer4 /*
+Style Definitions */ table.MsoNormalTable {mso-style-name:&quot;Table
+Normal&quot;; mso-tstyle-rowband-size:0; mso-tstyle-colband-size:0;
+mso-style-noshow:yes; mso-style-parent:&quot;&quot;; mso-padding-alt:0cm 5.4pt
+0cm 5.4pt; mso-para-margin:0cm; mso-para-margin-bottom:.0001pt; mso-pagination:widow-orphan;
+font-size:10.0pt; font-family:&quot;Times New Roman&quot;;
+mso-ansi-language:#0400; mso-fareast-language:#0400; mso-bidi-language:#0400;} <o:p></o:p></p>
+
+<p class=MsoNormal>Yes
+you are right i made a typo there... I was referring to BDD.<br>
+<br>
+I also i think your right about this being very interesting to many CSLA
+developers and I think that the framework facilitates the concept of BDD very
+well, hence why i am really looking into this space at the moment (even though
+it would seem as if BDD has lost a little momentum over the last 6-12 mths).
+From everything that I have been looking into BDD certainly puts the focus
+where i believe it should be (i.e. on the behaviour and functionality) rather
+than the code its self.<br>
+<br>
+The reason for the post though was to see if anyone it doing BDD or TDD and how
+they go about doing it in a CSLA setting? What do you try to mock out? How do
+you test your data access methods since they are private methods? etc, etc<br>
+<br>
+Cheers<br>
+Anthony <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 15, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>vdhant:</strong></div><div>
+
+
+
+
+
+
+ 
+<P class=MsoNormal>How do you test your data access methods since they are private methods? etc, etc<BR></div></BLOCKQUOTE></P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>I think the key here is to have a formal data access layer. Have your DataPortal_XYZ methods call your DAL, and have them get the DAL instance using a factory/provider model.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>That allows you to do a couple important things:</P>
+<OL>
+<LI>
+<DIV class=MsoNormal>You can test the DAL independently of the business objects, because the DAL itself can have public methods (usually <EM>must</EM> have public methods)</DIV></LI>
+<LI>
+<DIV class=MsoNormal>You can mock the DAL to create a DAL that doesn't talk to the database, but rather just returns known test data into the objects</DIV></LI></OL>
+<P class=MsoNormal>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Wednesday, July 16, 2008</h2><p class="MsoNormal"><span>Thanks for
+the reply,<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Humm when
+you say "Have your DataPortal_XYZ methods<b> call your</b> DAL",
+maybe i have missed something really big here, but I thought that a big part of
+CSLA, was that the DataPortal methods are your DAL... As in, when you code your
+DataPortal methods your putting your ADO code
+(or the wrapper you may have around ADO
+i.e. safedatareader), directly in these methods. From the sounds of what you
+have said here it sounds like you are saying that this is not the case.<br>
+<br>
+I know why you are suggesting that you have a "formal data access
+layer" in this case, but i thought that the point that you have been
+making with parts of CSLA, here when you were making these kinds of posts and
+feedback (http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=3264097&amp;SiteID=1)
+and in your book was, that if you use a separate DAL you end up with the
+problem of how do you put data into you private fields (see points "<span id="_ctl0_MainContent_PostFlatView">So then how do you load the object’s fields</span>")
+and that if you have a separate DAL you defeated the point of encapsulation....<br>
+<br>
+Now what i would like to do is be able to test my data access methods
+independently and mock them but if i don't have a physically separate data
+access class (for the reasons you have mentioned) and do it with the way that
+CSLA would normally handle the DAL, how would I do my testing?<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p>
+
+<p class="MsoNormal"><span>Thanks<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>Anthony<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is the beauty of Csla &#8211; you have a choice of putting
+a DAL code directly inside DataPortal_XYZ or extract DAL into a formal layer /
+separate set of classes.&nbsp; There are examples of this in Deep Data sample
+project that can be downloaded from Lhotka.ne:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=7fbb619a-ba81-4157-b434-8756b68ccbd0">http://www.lhotka.net/Article.aspx?area=4&amp;id=7fbb619a-ba81-4157-b434-8756b68ccbd0</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using Linq in your DAL, then I would recommend Repository
+Pattern as implemented by Rob Connery in MVC Storefront sample (it makes both
+automated Unit and Integration tests a breeze.&nbsp; Just keep in mind that
+since that example does not use csla he separates Business Layer objects into
+Service and Entity objects &#8211; Csla objects act as both Service and Entity
+objects in that example):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://blog.wekeroad.com/mvc-storefront/asp-net-mvc-mvc-storefront-part-2/">http://blog.wekeroad.com/mvc-storefront/asp-net-mvc-mvc-storefront-part-2/</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 16, 2008 12:12 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Practical TDD/DBB in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks
+for the reply,<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Humm
+when you say &quot;Have your DataPortal_XYZ methods<b> call your</b> DAL&quot;,
+maybe i have missed something really big here, but I thought that a big part of
+CSLA, was that the DataPortal methods are your DAL... As in, when you code your
+DataPortal methods your putting your ADO code (or the wrapper you may have
+around ADO i.e. safedatareader), directly in these methods. From the sounds of
+what you have said here it sounds like you are saying that this is not the
+case.<br>
+<br>
+I know why you are suggesting that you have a &quot;formal data access
+layer&quot; in this case, but i thought that the point that you have been
+making with parts of CSLA, here when you were making these kinds of posts and
+feedback
+(http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=3264097&amp;SiteID=1)
+and in your book was, that if you use a separate DAL you end up with the
+problem of how do you put data into you private fields (see points &quot;So
+then how do you load the object???s fields&quot;) and that if you have a
+separate DAL you defeated the point of encapsulation....<br>
+<br>
+Now what i would like to do is be able to test my data access methods
+independently and mock them but if i don't have a physically separate data
+access class (for the reasons you have mentioned) and do it with the way that
+CSLA would normally handle the DAL, how would I do my testing?<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal>Anthony<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is certainly true that a separate DAL forces you to deal with
+the issue of getting data into/out of your business object. But there are
+decent solutions to that, as noted in the MSDN forum post you reference, and
+posts here and on my blog.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ProjectTracker 3.5 code actually uses LINQ to SQL as a
+formal DAL, using the DTO method of getting data in/out of the business object.
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can also look at the DeepData sample (available in my
+subversion repository) to see more variations, ranging from the fast DataReader
+approach through to using DTOs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is absolutely NOT the goal of CSLA to tell you how to access
+your data, or to force you to write the data access code in the DataPortal_XYZ
+methods. While it is simplest and fastest to write the code directly in the
+DP_XYZ methods, that approach does have drawbacks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Architecture is <i>always</i> about making trade-offs. Making the
+hard choices that pit performance against maintainability against scalability
+against testability.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sometimes you have to lose some simplicity or performance to get
+testability. That&#8217;s just reality, and you need to decide, for your
+application, whether you need testability or performance or simplicity most &#8211;
+what is most important to <i>your particular scenario</i>. That&#8217;s why it
+is both fun and hard to be an architect.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, July 17, 2008</h2>lol i get what your saying now... I will have to have a look into the DeepData sample and see what the implementation is like. And i would also agree that these issues are what makes architecture and design fun. I guess the light bulb moment for me here is realising that there is not one right way (not that I ever really did) but realising as you said its a trade off between whats important.<br><br>So getting back to BDD... BDD says that i should write tests to match business functionality, if i split out the Business and Data Layers, BDD would say (I think) that the functionality tests go against the business layer (because the business layer is what provides the business value) how do i conceptually go about doing the same for the data layer? <br><br>Also typemock was mentioned before, I have been looking into to it a bit lately and to really use it to aid in TDD/BDD do i need the paid version or do people find that the free one mtches the majority of cases? I know what the feature set says is different but how often do people find they use the additional features.<br><br>Cheers<br>Anthony<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 17, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think from a BDD perspective (and I&#8217;m not an expert on
+the TDD/BDD thing), you&#8217;d want to have a mock DAL so you can have
+repeatable tests against your business objects. I doubt BDD itself would test
+the DAL. Your other alternative is to use a real test database and have some
+way be which it can be restored to the same initial state before each test (or
+test run). I honestly think it is often cheaper to create the real test
+database than it is to mock the entire DAL, but you&#8217;ll have to evaluate
+which makes the most sense for you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>TDD would test the DAL. TDD wants to test everything at a unit
+level, which is a fine thing (though expensive). So TDD would certainly want
+you to have unit tests for all your DAL methods. And testing a DAL really does
+mean having a test database &#8211; or mocking your data access technology
+(ADO.NET, LINQ to SQL, EF, etc). While mocking low-level ADO.NET is somewhat
+practical, I&#8217;m a bit skeptical about the practicality of mocking all of
+ADO.NET, much less the Entity Framework, etc. So I really think using a test
+database initialized to a known start point is the best way to unit test a DAL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, July 17, 2008 7:15 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Practical TDD/DBB in CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>lol i get what your saying now... I will have to have a look
+into the DeepData sample and see what the implementation is like. And i would
+also agree that these issues are what makes architecture and design fun. I
+guess the light bulb moment for me here is realising that there is not one
+right way (not that I ever really did) but realising as you said its a trade
+off between whats important.<br>
+<br>
+So getting back to BDD... BDD says that i should write tests to match business
+functionality, if i split out the Business and Data Layers, BDD would say (I
+think) that the functionality tests go against the business layer (because the
+business layer is what provides the business value) how do i conceptually go
+about doing the same for the data layer? <br>
+<br>
+Also typemock was mentioned before, I have been looking into to it a bit lately
+and to really use it to aid in TDD/BDD do i need the paid version or do people
+find that the free one mtches the majority of cases? I know what the feature
+set says is different but how often do people find they use the additional
+features.<br>
+<br>
+Cheers<br>
+Anthony<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Thursday, July 17, 2008</h2>Cheers and thanks for your time, this is a good starting point.<br>Anthony <br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

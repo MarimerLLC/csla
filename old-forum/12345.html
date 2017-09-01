@@ -1,0 +1,41 @@
+<html><header><title>Object reference not set to an instance of an object” at Csla.LinqBindingList`1.d__0.MoveNext() in D:\Softwares\cslacs-3.5.3-090205\cslacs\Csla\Linq\LinqBindingList.cs:line 775</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object reference not set to an instance of an object” at Csla.LinqBindingList`1.d__0.MoveNext() in D:\Softwares\cslacs-3.5.3-090205\cslacs\Csla\Linq\LinqBindingList.cs:line 775</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12345.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Riz posted on Thursday, February 06, 2014</h2><p class="MsoNormal">Hello Everyone.</p>
+<p class="MsoNormal">We have upgraded our clsa version from <strong>&ldquo;2.1.4&rdquo;</strong> to <strong>&ldquo;3.5.3&rdquo;</strong>, and
+after the up-gradation we have successfully build all of our projects and the
+solution as well. While doing the unit testing after the csla upgrade we come
+across one scenario where we are getting an issue as shown below:</p>
+<p class="MsoNormal"><strong><span>&ldquo;Object reference not set to an instance of an object&rdquo;</span></strong><br />
+<span class="info"><strong><span>at Csla.LinqBindingList`1.d__0.MoveNext() in
+D:\Softwares\cslacs-3.5.3-090205\cslacs\Csla\Linq\LinqBindingList.cs:line 775</span></strong><span></span></span></p>
+<p class="MsoNormal">When we debug the code we got the issue at highlighted
+point:</p>
+<p style="padding-left:30px;" class="MsoNormal"><span>if</span><span> (Family.Addresses.Count
+&gt; 0)</span></p>
+<p style="padding-left:30px;" class="MsoNormal"><span>&nbsp;{<br /></span>&nbsp; &nbsp; &nbsp;var familyAddress
+= <strong>Family.Addresses</strong>;<br />&nbsp; &nbsp; &nbsp;ListViewCommonAddresses.DataSource
+= familyAddress;<br />&nbsp; &nbsp; &nbsp;ListViewCommonAddresses.DataBind();</p>
+<p style="padding-left:30px;" class="MsoNormal">}</p>
+<p class="MsoNormal">As we are facing the same kind of issue at other pages also
+where similar kind of code has been used, so we googled a bit and found out
+that to fix this kind of issue we can use the following solution as highlighted
+below:</p>
+<p style="padding-left:30px;" class="MsoNormal"><span>if</span><span> (Family.Addresses.Count
+&gt; 0)</span></p>
+<p style="padding-left:30px;" class="MsoNormal"><span>&nbsp;{</span></p>
+<p style="padding-left:30px;" class="MsoNormal"><span>&nbsp; &nbsp; &nbsp;<span>var</span> familyAddress
+= <strong>Family.Addresses<span>.ToList()</span></strong>;<br /></span>&nbsp; &nbsp; &nbsp;ListViewCommonAddresses.DataSource
+= familyAddress;<br />&nbsp; &nbsp; &nbsp;ListViewCommonAddresses.DataBind();</p>
+<p style="padding-left:30px;" class="MsoNormal">&nbsp;&nbsp; }</p>
+<p class="MsoNormal">By doing this change in that particular piece of code that
+issue was resolved but as told earlier we have some existing code where same
+kind of code has been implemented at multiple places already. </p>
+<p class="MsoNormal">Also while finding the fix for this issue we come across
+some links in the csla forum where it has been mentioned that the same kind of issue
+has been fixed in some higher csla versions such as <strong>&ldquo;3.6.1&rdquo;</strong> and above, but in our case we currently cannot directly
+move to those higher versions as there will be a lot of code changes in the BO
+classes of our project, which are not feasible for us now.</p>
+<p class="MsoNormal"><strong><span>Question:</span></strong> So is there any <strong>common solution</strong> to fix this kind of issue by doing some
+modification at one place by which we are able to solve this issue without the
+code modifications at other files as well? As told earlier we are facing this
+issue after we have upgraded the csla version from <strong>&ldquo;2.1.4&rdquo; to &ldquo;3.5.3&rdquo;. </strong></p>
+<p>Please advice.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 07, 2014</h2><p>One option you have is to download the code for CSLA 3.5.3 and update the LinqBindingList call to the latest version to get all bugfixes and then compile your own version of CSLA 3.5.3. </p>
+<p>I know there is some bugfixes for SortedBindingList and FileteredBindingList as well that you may or may not use in your application. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

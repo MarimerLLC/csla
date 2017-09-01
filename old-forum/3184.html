@@ -1,0 +1,15 @@
+<html><header><title>Threads and Posts</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Threads and Posts</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3184.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Thursday, July 12, 2007</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Just looking&nbsp;for a little advice about object design.</P>
+<P>&nbsp;</P>
+<P>I'm making a CMS of sorts that has generic posts.</P>
+<P>&nbsp;</P>
+<P>The posts come in different types, like news, blog, forum, etc.</P>
+<P>&nbsp;</P>
+<P>Further, the posts belong to threads. Some posts have a null thread ID, so those are the threads themselves, then the posts with the thread ID of that parent post are the comments / replies to that post.</P>
+<P>&nbsp;</P>
+<P>So, should I make a switchable object Post so that it can have children of its own type? Or should I create a Thread object and a Post object?</P>
+<P>&nbsp;</P>
+<P>Further, should&nbsp;I create threads and posts for specific types, like articles or blog posts or forum posts, or just have threads and posts with a type property?</P>
+<P>&nbsp;</P>
+<P>Thanks in advance.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

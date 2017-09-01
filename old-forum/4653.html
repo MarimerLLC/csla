@@ -1,0 +1,158 @@
+<html><header><title>Generate Text File</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generate Text File</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4653.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay posted on Wednesday, April 09, 2008</h2><P>Hello,</P>
+<P>I am new to the using CSLA and need some help. My requirement is i have to open cursor from database and going through the loop i need to generate a file (.xls) and show the link on .aspx page to download/open the file. I am using VS 2008 with CSLA. Can someone guide me how should i start with. Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, April 10, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA does not have ability to create XLS files.&nbsp; You will
+need a third part product to do so programmatically or use Excel.Application
+(not good).&nbsp; I think, ComponentOne has .NET excel library.&nbsp; In any
+case, create CSLA read-only base and read-only list base classes, populate them
+from data reader, then loop through items in the list, populating data in Excel
+spreadsheet.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vijay
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 10, 2008 12:47 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Generate Text File<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello,<o:p></o:p></p>
+
+<p>I am new to the using CSLA and need some help. My requirement is i have to
+open cursor from database and going through the loop i need to generate a file
+(.xls) and show the link on .aspx page to download/open the file. I am using VS
+2008 with CSLA. Can someone guide me how should i start with. Thanks.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vijay replied on Saturday, April 12, 2008</h2><P>Thanks Sergery for your reply.</P>
+<P>So what i understand is, i have to follow these steps to generate a text file:</P>
+<P>1. I have to open the cursor and write to the file do i need to create object for ReadOnlyChile. Can't I pass SafeDataReader to application from ReadOnlyListBase.&nbsp;Would it possible if you can provide some code or link where this is implemented.</P>
+<P>2. On same screen i need to open 14 different cursors and generate the file. Is there any way so that i can resuse the objects or i need to create seperately for all cursors. Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, April 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can create ReadOnlyList and use data reader to populate
+it.&nbsp; Then you can scroll through the list, writing data to a file.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>If files contain different data, you need to create a separate
+ReadOnlyList for each one and use different command to populate it with data.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Depending on requirements, I am not sure if you need the
+ReadOnlyList or you can just use custom objects to write the data out<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vijay
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, April 12, 2008 8:17 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Generate Text File<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Sergery for your reply.<o:p></o:p></p>
+
+<p>So what i understand is, i have to follow these steps to generate a text
+file:<o:p></o:p></p>
+
+<p>1. I have to open the cursor and write to the file do i need to create
+object for ReadOnlyChile. Can't I pass SafeDataReader to application from
+ReadOnlyListBase.&nbsp;Would it possible if you can provide some code or link
+where this is implemented.<o:p></o:p></p>
+
+<p>2. On same screen i need to open 14 different cursors and generate the file.
+Is there any way so that i can resuse the objects or i need to create
+seperately for all cursors. Thanks.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

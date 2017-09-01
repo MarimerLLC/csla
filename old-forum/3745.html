@@ -1,0 +1,112 @@
+<html><header><title>Errata: Using CSLA.NET 3.0 (VB) Page 117</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Errata: Using CSLA.NET 3.0 (VB) Page 117</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3745.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rwilkerson posted on Friday, October 19, 2007</h2><P>On page 117 in the VB version of Using CSLA.NET 3.0 I believe the code for the UnbindBindingSource helper routine doesn't match the usage in the rest of the chapter.</P>
+<P>The second parameter is named "apply" and the usage is</P>
+<P>if apply then<BR>&nbsp;&nbsp;&nbsp;current.endedit()<BR>Else<BR>&nbsp;&nbsp;&nbsp;current.canceledit()<BR>End If</P>
+<P>Which is fine... but in the code for the Save, Apply, Cancel, Close button the usage is reversed.&nbsp; In the Save and Apply button handlers the method is called with False.&nbsp; In the Cancel and Close button handlers the method is called with True.</P>
+<P>Rick...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 19, 2007</h2><P>Thanks Rick, I'll look into this as soon as I get a chance.</P>
+<P>Rocky</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rwilkerson:</strong></div><div></P>
+<P>On page 117 in the VB version of Using CSLA.NET 3.0 I believe the code for the UnbindBindingSource helper routine doesn't match the usage in the rest of the chapter.</P>
+<P>The second parameter is named "apply" and the usage is</P>
+<P>if apply then<BR>&nbsp;&nbsp;&nbsp;current.endedit()<BR>Else<BR>&nbsp;&nbsp;&nbsp;current.canceledit()<BR>End If</P>
+<P>Which is fine... but in the code for the Save, Apply, Cancel, Close button the usage is reversed.&nbsp; In the Save and Apply button handlers the method is called with False.&nbsp; In the Cancel and Close button handlers the method is called with True.</P>
+<P>Rick...</P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you again Rick. The errata is<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/Article.aspx?id=0beb2b55-7f2d-4cb9-8386-798774f92af5">http://www.lhotka.net/Article.aspx?id=0beb2b55-7f2d-4cb9-8386-798774f92af5</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And the C# errata (which is worse actually) is:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/Article.aspx?id=31705d87-2960-4810-b1fc-d1f5362f91bc">http://www.lhotka.net/Article.aspx?id=31705d87-2960-4810-b1fc-d1f5362f91bc</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 19, 2007 3:42 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Errata: Using CSLA.NET 3.0 (VB) Page 117<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rick, I'll look into this as soon as I get a chance.<o:p></o:p></p>
+
+<p>Rocky<o:p></o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img border=0 id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>rwilkerson:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>On page 117 in the VB version of Using CSLA.NET 3.0 I believe the code for
+the UnbindBindingSource helper routine doesn't match the usage in the rest of
+the chapter.<o:p></o:p></p>
+
+<p>The second parameter is named &quot;apply&quot; and the usage is<o:p></o:p></p>
+
+<p>if apply then<br>
+&nbsp;&nbsp;&nbsp;current.endedit()<br>
+Else<br>
+&nbsp;&nbsp;&nbsp;current.canceledit()<br>
+End If<o:p></o:p></p>
+
+<p>Which is fine... but in the code for the Save, Apply, Cancel, Close button
+the usage is reversed.&nbsp; In the Save and Apply button handlers the method
+is called with False.&nbsp; In the Cancel and Close button handlers the method
+is called with True.<o:p></o:p></p>
+
+<p>Rick...<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

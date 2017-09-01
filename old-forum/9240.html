@@ -1,0 +1,13 @@
+<html><header><title>Save operation works fine in localproxy, not with WCF Data Portal (NetTcpBinding)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Save operation works fine in localproxy, not with WCF Data Portal (NetTcpBinding)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9240.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud posted on Wednesday, July 21, 2010</h2><p>Hi,</p>
+<p>We&#39;ve run into a weird problem.&nbsp; We&#39;ve been developing with a local proxy, and have now moved the business library to a server for testing, using the WCF Data Portal, NetTcp Binding.</p>
+<p>For one of the objects, the value for IsDirty does not seem to be propagated back to the client - i.e., after a (successful) save, on return the object is still marked as dirty.&nbsp; I modified the server-side code to send me an e-mail with various values after the save, and IsDirty is set to false, as expected.&nbsp; However when I trace on the client side, IsDirty is true.&nbsp; So somehow it&#39;s as if it&#39;s not being sent back to the client (if that makes any sense...) This did not happen when running locally.</p>
+<p>So far I haven&#39;t seen anything out of the ordinary, but I&#39;m still relatively new at this.&nbsp; Just wondering if anyone here might have an idea as to what may be causing this?</p>
+<p>(This is a BusinessBase object.)</p>
+<p>Thanks,<br />Michel</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Wednesday, July 21, 2010</h2><p>What does your code when doing the actually calling save on the object look like?</p>
+<p>The most common occurance of this in type of issue in the past has been where you have code like this:</p>
+<p><b>Object.Save()</b></p>
+<p>instead of&nbsp;</p>
+<p><b>Object = Object.Save()</b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud replied on Wednesday, July 21, 2010</h2><p>Hi Marjon,</p>
+<p>That&#39;s exactly it - I knew it had to be something simple since the business object code itself looked fine.</p>
+<p>Thanks a lot for your help!&nbsp; Now I&#39;ll go finish cleaning up my mess. :)</p>
+<p>Michel</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

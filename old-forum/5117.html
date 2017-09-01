@@ -1,0 +1,46 @@
+<html><header><title>Error in Retrieving List colliection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error in Retrieving List colliection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5117.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>beach17 posted on Thursday, July 17, 2008</h2><P><SPAN>Has any one seen this error and can tell me the cause of the error and how to get over the problem. I am new to CSLA and might not be explaining&nbsp;the situation&nbsp;in&nbsp;the best way,&nbsp;but here is my attempt to explain the scenario<o:p></o:p></SPAN></P>
+<P><SPAN>I have 3 levels of hierarchy GranParent class, Parent, Class and Child class.<o:p></o:p></SPAN></P>
+<P><SPAN>GrandParent, Parent and Child have list classes to display collections of these classes, all the collections are editable in the sense that&nbsp;I will need to add or remove members to the collections<o:p></o:p></SPAN></P>
+<P><SPAN>GranParent manages ParentList<o:p></o:p></SPAN></P>
+<P><SPAN>and ParentList manages ChildList<o:p></o:p></SPAN></P>
+<P><SPAN>In the parent Class I attempt to obtain&nbsp; the collection of&nbsp;Child called&nbsp; ChildList<o:p></o:p></SPAN></P>
+<P><SPAN>Public Class Parent<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits&nbsp; BuisnessBase(of Parent)<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN># Region " Data Access"<o:p></o:p></SPAN></P>
+<P><SPAN>-----------------------<o:p></o:p></SPAN></P>
+<P><SPAN>--------------------------<o:p></o:p></SPAN></P>
+<P><SPAN>This Call at this location in the Parent Class<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>In the&nbsp; Data access region of the Parent class&nbsp; when&nbsp;I attempt to&nbsp;get <SPAN>&nbsp;</SPAN>ChildList with the line of code immediately <SPAN>&nbsp;</SPAN>below :-<o:p></o:p></SPAN></P>
+<P><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P><SPAN>LoadProperty(<SPAN>Of</SPAN> ChildList)(SubOwnersProperty, _<o:p></o:p></SPAN></P>
+<P><SPAN>ChildList.GetChildList(data.ChildList.ToArray))<o:p></o:p></SPAN></P>
+<P><SPAN>I get his error<o:p></o:p></SPAN></P>
+<P><SPAN>DataPortal.Getch Failed Csla.DataPortalException <SPAN>ChildDataPortal.Fetch Failed on the server System.array Type mismatch sorce array type cannot be assigned to destination array type</SPAN>&nbsp; that is&nbsp;generated within CSLA &nbsp;by Function Fetch in&nbsp;the class ChildatPortal.vb--------<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>--------------<o:p></o:p></SPAN></P>
+<P><SPAN>---------------<o:p></o:p></SPAN></P>
+<P><SPAN># End Region<o:p></o:p></SPAN></P>
+<P><SPAN>End Class<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>The ChildList Class is defined as<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN>&nbsp; ChildList<o:p></o:p></SPAN></P>
+<P><SPAN>Inherits</SPAN><SPAN> ReadOnlyListBase(<SPAN>Of</SPAN> ChildListList,&nbsp; Parent)<o:p></o:p></SPAN></P>
+<P><SPAN>-----------------------<o:p></o:p></SPAN></P>
+<P><SPAN>---------------------<o:p></o:p></SPAN></P>
+<P><SPAN>----------------------<o:p></o:p></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> GetChildList(<SPAN>ByVal</SPAN> name <SPAN>As</SPAN> <SPAN>String</SPAN>) <SPAN>As</SPAN> ChildrList<o:p></o:p></SPAN></P>
+<P><SPAN>Return</SPAN><SPAN> DataPortal.Fetch(<SPAN>Of</SPAN> ChildList)(<SPAN>New</SPAN> SingleCriteria(<SPAN>Of</SPAN> ChildrList, <SPAN>String</SPAN>)(name))<o:p></o:p></SPAN></P>
+<P><SPAN>End</SPAN><SPAN> <SPAN>Function</SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>-------------------</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P><SPAN>------------</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>End Class<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;Thanks</o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 17, 2008</h2><P>Wait, are you saying this:</P>
+<P><SPAN>ChildList.GetChildList(data.ChildList.ToArray))<O:P></O:P></SPAN></P>
+<P>is calling this:</P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Shared</SPAN> <SPAN>Function</SPAN> GetChildList(<SPAN>ByVal</SPAN> name <SPAN>As</SPAN> <SPAN>String</SPAN>) <SPAN>As</SPAN> ChildrList</SPAN></P>
+<P><SPAN>You are passing an array to a method that expects a simple string? That shouldn't even compile, much less run.</SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

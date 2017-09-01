@@ -1,0 +1,116 @@
+<html><header><title>Normalisation of behaviour ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Normalisation of behaviour ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1123.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs posted on Tuesday, September 05, 2006</h2>Rocky's book has talked 
+of the importance of "normalisation of behaviour" - does anyone know of any good sites or texts on 
+this vital-sounding topic?&nbsp; <br>
+<br>
+Too many of us map tables to objects and suffer the 
+consequences!<br>
+<br>
+James.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 05, 2006</h2>To my knowledge, I am the one who coined that phrase "normalization of behavior", so at the moment the phrase itself is unique to my book.<br><br>However, I hardly lay claim to the central idea, as it flows from responsibility-driven design and behavioral design of objects. You can find material about these concepts on the web, and also from authors such as David Taylor and David West.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhoeting replied on Wednesday, September 06, 2006</h2>I think the "normalization of behavior" idea is brilliant.&nbsp; It resonated the moment I read it...&nbsp; It greatly helps make the mental distiction between data modeling and object modeling.&nbsp; <br><br>Slightly OT, but I now wonder if we can apply this to SOA and "Service Modeling":<br><br>Data Modeling --&gt;&nbsp; Normalization of Data<br>Object Modeling --&gt; Normalization of Behavior<br>Service Modeling --&gt; Normalization of Process<br><br>Do folks think the last statement is accurate?&nbsp;&nbsp; Why or Why not?<br><br>Rob<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Thursday, September 07, 2006</h2><p class="MsoNormal">Normalizing behavior is not new and has been around for awhile.<span>&nbsp; </span>It should be easy to find information on this
+topic.<span>&nbsp; </span>I did find a good article that
+describes class normalization.<span>&nbsp; </span>It is
+like data normalization except that you normalize the behavior in classes.<span>&nbsp; </span>A class can be in First Object Normal Form, Second
+Object Normal Form or Third Object Normal Form.<span>&nbsp;
+</span>Ideally, you would like your class to be in Third Object Normal
+Form.<span>&nbsp; </span>These steps are very simple to
+follow. <span>&nbsp;</span>This article is very helpful and
+informative.</p>
+
+
+
+
+<p class="MsoNormal"><a href="http://www.agiledata.org/essays/classNormalization.html#1ONF">http://www.agiledata.org/essays/classNormalization.html#1ONF</a><br>
+</p>
+<p class="MsoNormal"><br>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jas_nhs replied on Friday, September 08, 2006</h2>Thanks - on the basis of the ariticle, I have ordered Scott Ambler's
+"Agile Database Techniques". As ever, I expect you learn better by
+doing than by reading, but it should be a useful guide,<br>
+<br>
+James.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dr.Vlado replied on Friday, September 08, 2006</h2><p class="MsoNormal"><span>The last
+page about Behavior Normalitation (</span><span><a href="http://www.agiledata.org/essays/classNormalization.html#1ONF"><span>http://www.agiledata.org/essays/classNormalization.html#1ONF</span></a></span><span>) is ok, but all that theory is
+inside the Object Oriented Software Engineering, as you know, exactly in the
+entity or potential objects identification.</span></p><p class="MsoNormal"><span><o:p><br></o:p></span></p><p class="MsoNormal"><span><o:p> </o:p>I think
+that, If you follows a correct way of creating Use Cases, Sequences and
+Collaboration Diagrams, your final Class diagram or Business Objects Model,
+should not be in less than 3ONF, because of you were able to identify correctly
+the Business Objects with a normalization of behavior, from that potential ones,
+due to the collaborations between them.<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, September 08, 2006</h2><p class="MsoNormal"><span>Of course all that theory is inside
+Object Oriented Software Engineering.<span>&nbsp;
+</span>That is why I recommended it.<span>&nbsp;
+</span>That article is for those that are coming from a data-centric view.<span>&nbsp; </span>It will be old hat for those that have
+mastered OOD.<span>&nbsp; </span>You should learn the
+basics of OOP along with the principles.<span>&nbsp;
+</span>The aforementioned article mentions this as well.&nbsp; This will help you more than anything.<span>&nbsp;
+</span>You can know how to create Use Cases, Sequences and Collaboration
+Diagrams and still be unable to create a good design without knowing the OOP
+basics and principles.<o:p><br>
+&nbsp;</o:p></span></p>
+
+
+
+
+<p class="MsoNormal"><span>List of OOP principles you should
+know by heart:<o:p></o:p><br>
+<a href="http://sis36.berkeley.edu/projects/streek/agile/oo-design-principles.html">http://sis36.berkeley.edu/projects/streek/agile/oo-design-principles.html</a><o:p></o:p></span></p>
+
+
+
+
+
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p><br>
+In-depth description of some of the principles:<o:p></o:p><br>
+<a href="http://ifacethoughts.net/2006/03/24/design-principles/">http://ifacethoughts.net/2006/03/24/design-principles/</a><o:p><br>
+&nbsp;</o:p></span></p>
+
+
+
+
+<p class="MsoNormal"><span>Liskov Substitution Principle:<o:p></o:p><br>
+<a href="http://www.objectmentor.com/resources/articles/lsp.pdf">http://www.objectmentor.com/resources/articles/lsp.pdf</a><o:p></o:p></span></p>
+
+
+
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p><br>
+Interface Segregation Principle:<o:p></o:p><br>
+<a href="http://www.objectmentor.com/resources/articles/isp.pdf">http://www.objectmentor.com/resources/articles/isp.pdf</a><o:p></o:p></span></p>
+
+
+
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p><br>
+The Dependency
+Inversion Principle:<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><o:p></o:p><br>
+<a href="http://www.objectmentor.com/resources/articles/dip.pdf">http://www.objectmentor.com/resources/articles/dip.pdf</a><o:p></o:p></span></p>
+
+
+
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p><br>
+The
+Open-Closed Principle:<o:p></o:p><br>
+<a href="http://www.objectmentor.com/resources/articles/ocp.pdf">http://www.objectmentor.com/resources/articles/ocp.pdf</a><o:p></o:p></span></p>
+
+
+
+
+<p class="MsoNormal"><span><o:p></o:p><br>
+These are
+only a few of the principles.<span>&nbsp; </span>You should
+be able to find the rest.<span>&nbsp; </span><a href="http://www.objectmentor.com/">http://www.objectmentor.com</a> is a good
+site to get more information on this.<o:p></o:p></span></p>
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dr.Vlado replied on Friday, September 08, 2006</h2><p class="MsoNormal"><span>Nice! Now I
+recognize your point, and I agree with you (“</span><span>know how to create Use Cases, Sequences and Collaboration
+Diagrams </span><span>and still be unable to create a good design”). I think from
+that perspective is very helpful.</span></p><br><p class="MsoNormal"><br></p><p class="MsoNormal"><br><span><o:p></o:p></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

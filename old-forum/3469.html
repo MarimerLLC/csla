@@ -1,0 +1,43 @@
+<html><header><title>how to use SetColumnError in business Object CSLA??? </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how to use SetColumnError in business Object CSLA??? </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3469.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GoldenB posted on Monday, September 03, 2007</h2><font face="Times New Roman">Halo..im newbie. I have problem to use SetColumnError in business object. Can anyone give me a solution. Because this is very urgent...thks<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Tuesday, September 04, 2007</h2><P>Pls check the PTracker example for more details.</P>
+<P>In your business object</P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddBusinessRules()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Add your req validations - here as an example we want to verify "Name" column with a&nbsp;method called ValueRequired.</FONT></P>
+<P><FONT size=2>ValidationRules.AddRule(</FONT><FONT color=#2b91af size=2>CommonRules</FONT><FONT size=2>.ValueRequired, </FONT><FONT color=#a31515 size=2>"Name"</FONT><FONT size=2>);</P>
+<P></P></FONT>
+<P>}</P>
+<P>&nbsp;</P>
+<P>In the ValueRequired method which will define in this way:</P><FONT color=#0000ff size=2>
+<P>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> ValueRequired(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></P></FONT>
+<P><FONT color=#008000 size=2>// Do checks here, if&nbsp;result is&nbsp;false then </FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!Result) </P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#2b91af size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2>"Value Cannot be Blank"</FONT><FONT size=2>, e.PropertyName);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2>This will set the error message for that column. I hope have understood your question properly.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GoldenB replied on Tuesday, September 04, 2007</h2>ok..i will try it..thks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GoldenB replied on Tuesday, September 04, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Vinodonly:</strong></div><div><p>Pls check the PTracker example for more details.</p>
+<p>In your business object</p><font color="#0000ff" size="2">
+</font><p><font color="#0000ff" size="2">protected</font><font size="2"> </font><font color="#0000ff" size="2">override</font><font size="2"> </font><font color="#0000ff" size="2">void</font><font size="2"> AddBusinessRules()</font></p>
+<p><font size="2">{</font></p>
+<p><font color="#008000" size="2">// Add your req validations - here as an example we want to verify "Name" column with a&nbsp;method called ValueRequired.</font></p>
+<p><font size="2">ValidationRules.AddRule(</font><font color="#2b91af" size="2">CommonRules</font><font size="2">.ValueRequired, </font><font color="#a31515" size="2">"Name"</font><font size="2">);</font></p>
+<p></p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>In the ValueRequired method which will define in this way:</p><font color="#0000ff" size="2">
+</font><p><font color="#0000ff" size="2">static</font><font size="2"> </font><font color="#0000ff" size="2">public</font><font size="2"> </font><font color="#0000ff" size="2">bool</font><font size="2"> ValueRequired(</font><font color="#0000ff" size="2">object</font><font size="2"> target, Csla.Validation.</font><font color="#2b91af" size="2">RuleArgs</font><font size="2"> e)</font></p>
+<p><font size="2">{</font></p>
+<p></p>
+<p><font color="#008000" size="2">// Do checks here, if&nbsp;result is&nbsp;false then </font></p><font size="2">
+</font><p><font color="#0000ff" size="2">if</font><font size="2"> (!Result) </font></p>
+<p><font size="2">{</font></p>
+<p><font size="2">e.Description = </font><font color="#2b91af" size="2">String</font><font size="2">.Format(</font><font color="#a31515" size="2">"Value Cannot be Blank"</font><font size="2">, e.PropertyName);</font></p>
+<p><font color="#0000ff" size="2">return</font><font size="2"> </font><font color="#0000ff" size="2">false</font><font size="2">;</font></p>
+<p><font size="2">}</font></p>
+<p>&nbsp;</p>
+<p><font size="2">}</font></p>
+<p><font size="2">This will set the error message for that column. I hope have understood your question properly.</font></p></div></BLOCKQUOTE><br>i allready try it, and how to use <font size="2">ValidationRules in ReadOnlyBase&lt;T&gt;???<br><br>actualy my problem is i want use setcolumerror in a grid,can u give me a solution??<br></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

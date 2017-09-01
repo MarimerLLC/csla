@@ -1,0 +1,124 @@
+<html><header><title>Managing resource (images) /w a BO framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Managing resource (images) /w a BO framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6222.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, January 21, 2009</h2>As I start to tie in my UI to my first set of CSLA BO classes I'm wondering how best to handle the set of icons I want to show for different data states.&nbsp; I have a number of flags that indicate to the user the state of their data (Invalid, Missing, Corrected, Edited, HasAuditTrail, etc).<br><br>From a GUI perspective the users can click on the icon and 'do stuff' based on the current state.<br><br>Anyhow its previous life the application GUI had all the icons placed on top of each other and some logic in the visible property to hide/show them.<br><br>I'd like to be a little cleaner this time but I was wondering which way other people were doing this type of thing.&nbsp; Currently I have an enum of states for each icon set that basically each state would match an icon filename.<br><br>In the GUI I'm displaying a collection of these objects so each row can have the same set of icons.&nbsp; My GUI's are Silverlight/ASP and WPF (at somepoint)<br><br>I thought of a couple of options:<br><br><blockquote>1) In the GUI preload all the resource icons and then on state change I change the image object to show the new icon<br><br>1a) Do this dynamically so I only load icons I need (LazyLoad)<br><br>2) Keep everything in the BO and have a bindable byte[] stream property? Then I would maybe LazyLoad the icons as I need them from the assembly into a dictionary type collection so I can just return the ones I need?&nbsp; I would keep the dictionary/collection of icons in the BOList parent.&nbsp; I saw Sergey's blog post about databinding to a byte[] property to show images in Silverlight<br><br>2a)&nbsp; Same idea but load all my icons up front<br></blockquote><br>Any direction would be appreciated<br><br>thanks<br><br>jack<br><br>3) <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As long as you are talking WPF/SL and fixed set of images, my
+vote be:<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Keep images in resource file<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Have a flag in BO (such as enum /int to indicate what state a BO
+is in)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use IValueConverter to translate BO flag into an image from
+resource file.&nbsp; You can also cache icons in value converter to optimize access.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This way you are keeping UI from BO and can still use standard
+XAML binding to show images by binding to a flag from BO with a converter.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jack
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 9:24 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Managing resource (images) /w a BO framework<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>As I start to tie in my UI to
+my first set of CSLA BO classes I'm wondering how best to handle the set of
+icons I want to show for different data states.&nbsp; I have a number of flags
+that indicate to the user the state of their data (Invalid, Missing, Corrected,
+Edited, HasAuditTrail, etc).<br>
+<br>
+From a GUI perspective the users can click on the icon and 'do stuff' based on
+the current state.<br>
+<br>
+Anyhow its previous life the application GUI had all the icons placed on top of
+each other and some logic in the visible property to hide/show them.<br>
+<br>
+I'd like to be a little cleaner this time but I was wondering which way other
+people were doing this type of thing.&nbsp; Currently I have an enum of states
+for each icon set that basically each state would match an icon filename.<br>
+<br>
+In the GUI I'm displaying a collection of these objects so each row can have
+the same set of icons.&nbsp; My GUI's are Silverlight/ASP and WPF (at
+somepoint)<br>
+<br>
+I thought of a couple of options:<o:p></o:p></p>
+
+<p class=MsoNormal>1) In the GUI preload all the resource icons and then on
+state change I change the image object to show the new icon<br>
+<br>
+1a) Do this dynamically so I only load icons I need (LazyLoad)<br>
+<br>
+2) Keep everything in the BO and have a bindable byte[] stream property? Then I
+would maybe LazyLoad the icons as I need them from the assembly into a
+dictionary type collection so I can just return the ones I need?&nbsp; I would
+keep the dictionary/collection of icons in the BOList parent.&nbsp; I saw
+Sergey's blog post about databinding to a byte[] property to show images in
+Silverlight<br>
+<br>
+2a)&nbsp; Same idea but load all my icons up front<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+Any direction would be appreciated<br>
+<br>
+thanks<br>
+<br>
+jack<br>
+<br>
+3) <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

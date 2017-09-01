@@ -1,0 +1,29 @@
+<html><header><title>[NotUndoable] implementation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[NotUndoable] implementation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10016.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Wednesday, February 02, 2011</h2><p class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">&lt;&lt;&lt; DELETED&gt;&gt;&gt;</span></span></p>
+<p class="MsoNormal">----------------------------</p>
+<p class="MsoNormal"><span style="font-size:small;"><span style="font-family:Calibri;">
+</span></span></p>
+<p class="MsoNormal">[EDIT]</p>
+<p class="MsoNormal">Ooops, sorry about replacing my original post with &lt;&lt;DELETED&gt;&gt;.</p>
+<p class="MsoNormal">I wanted to post a question about the NotUndoable attribute but
+I was in a hurry to leave and ended up copy / paste the wrong thing. I wanted
+to delete it before anyone answered but Jonny responded at the same time I was
+deleting it&hellip; Sorry Jonny.</p>
+<p class="MsoNormal">Since I can no longer delete the post&hellip;. the question that I
+originally intended to ask was if anyone could provide me with some links to other
+post where the issue about possible alternatives to not using the NotUndoable
+attribute had been discussed.</p>
+<p class="MsoNormal">Basically why do we have to resort to using unmanaged field
+for undoable functionality when it appears that we could use the managed field
+with some flag that indicates the field is not undoable? I have a strong
+feeling that has been discussed before.</p>
+<p class="MsoNormal">Sorry again.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 02, 2011</h2><p>Or how about if we add some extra code to
+
+</p>
+<pre style="font-family:consolas;"><span style="color:#2b91af;">DefaultPropertyInfoFactory</span><br /></pre>
+<p>&nbsp;</p>
+<p>To check for NotUndoable attribute and store this in a boolean property in the PropertyInfo object? </p>
+<p>DefaultPropertyInfoFactory already checks for DisplayNameAttribute on the property to set FriendlyPropertyName (if this is not specified) and is only run the first time the code touch the class so it wouldn&#39;t be time consuming reflection calls during CopyState or UndoChanges. </p>
+<p>This would only require small changes to PropertyInfo and the IUndoableObject implementation in FieldDataManager.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rxelizondo replied on Wednesday, February 02, 2011</h2><p>&nbsp;</p>
+<p>No need to answer this by the way, I quick search on this forum answered my question.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

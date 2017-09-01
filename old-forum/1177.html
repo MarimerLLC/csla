@@ -1,0 +1,37 @@
+<html><header><title>SaveItem(index) is called when CancelNew at EditableRootListBase?!?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SaveItem(index) is called when CancelNew at EditableRootListBase?!?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1177.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Monday, September 11, 2006</h2><FONT size=2><FONT size=2>
+<P>My business object has&nbsp;a&nbsp;property&nbsp;required.&nbsp;An exception is throw when I call CancelNew.</P>
+<P>This is my code:</P><FONT size=2>
+<P>_CurrentIndex = _List.IndexOf(_List.AddNew());</P>
+<P></FONT>T CurrentObject = _List[_CurrentIndex];</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (CurrentObject.IsNew)</P>
+<P>&nbsp;&nbsp;&nbsp; _List.CancelNew(_CurrentIndex); // SaveItem(index)&nbsp; is called</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp; CurrentObject.CancelEdit();</P>
+<P>&nbsp;</P>
+<P><FONT color=#000000> This function is from EditableRootListBase:</FONT></P>
+<P>protected<FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RemoveItem(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> index)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// delete item from database</P></FONT><FONT size=2>
+<P>T item = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[index];</P>
+<P>item.Delete();</P>
+<P><FONT color=#ff0000>SaveItem(index); // <STRONG>WHY</STRONG></FONT></P>
+<P>...</P>
+<P>}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 11, 2006</h2>Why are you deleteing the item from the database immediately?&nbsp; That won't work with n-level undo.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Monday, September 11, 2006</h2><P>Not me, reason of problem is CSLA call SaveItem(index) after delete. See below code:</P>
+<P><FONT color=#000000>This function is from EditableRootListBase:</FONT></P>
+<P>protected<FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RemoveItem(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> index)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// delete item from database</P></FONT><FONT size=2>
+<P>T item = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[index];</P>
+<P>item.Delete();</P>
+<P><FONT color=#ff0000>SaveItem(index); // <STRONG>WHY</STRONG></FONT></P>
+<P>...</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 12, 2006</h2>Ahh ok.&nbsp; Thought that wsa your code..<br><br>Well this make sense.&nbsp; Delete only marks the object as deleted.&nbsp; SaveItem instructs the objecto Save itself.&nbsp; Since the object knows it was marked as deleted, it should intereperate the Save to mean 'delete myself from the database.'<br><br>The problem sounds like your object is also New however.&nbsp; A new object should do nothing when IsDeleted is true and IsNew is true, and the object should simply be removed from the collection.<br><br>Is your object overriding Save?&nbsp; What are you trying to acomplish with the code you posted?&nbsp; Where is it being called?&nbsp; I'd think you wouldn't have to do anything special; the grid and bindingsource should be calling AddNew and CancelNew for you..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Tuesday, September 12, 2006</h2><P>I think this is a bug in EditableRootListBase. To fix this bug, I suggest to change RemoveItem function of EditableRootListBase.</P>
+<P>protected<FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> RemoveItem(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> index)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// delete item from database</P></FONT><FONT size=2>
+<P>T item = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[index];</P>
+<P>item.Delete();</P>
+<P><STRONG>if(!IsNew) </STRONG></P>
+<P><STRONG>&nbsp;&nbsp;&nbsp;&nbsp; </STRONG><FONT color=#ff0000><STRONG>SaveItem(index);</STRONG> </FONT></P>
+<P>...</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 12, 2006</h2>Yes, it is a bug in ERLB. I fixed it in a similar manner a few days ago, so the fix will be in the beta release.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 13, 2006</h2>Nevermind... jjust saw the next thread <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Rocky,<br><br>Is the beta with this fixed released?&nbsp; Or was it included in the last refresh?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2>The beta I put up on Sept 12 has this change.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

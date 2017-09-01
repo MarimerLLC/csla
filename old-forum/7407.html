@@ -1,0 +1,285 @@
+<html><header><title>Silverlight Databinding Validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Databinding Validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7407.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBonner posted on Wednesday, August 05, 2009</h2>I have some business objects that have Int32 fields.  When I designed the fields, I used Int32 datatypes for the type of the backing property.<br /><br />Now, when I databind those fields from a Silverlight form, I'd like to detect invalid input and display it as part of the broken rules/CSLA:PropertyStatus implementation.  I.E. if the user enters "Bob" in the numeric entry textbox, I want a message to show up "Please enter a valid number!"<br /><br />At the moment, the only way I can think to implement this type of rule is to change my backing property to a string type and then use a RegEx or a custom validation to detect if the string is a valid integer.<br /><br />Is there a way to accomplish this without having to re-engineer my business object?<br /><br />Thanks...<br /><br />- Mike :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 05, 2009</h2><P>This is a constant issue with data binding on any platform.</P>
+<P>Silverlight 3 does have an answer, in that they have a basic validation mechanism that is triggered by an exception being thrown when attempting to set the property. I haven't really explored it, as it is a pure UI thing (the value never gets into the object obviously), but it may be helpful for your scenario?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBonner replied on Saturday, August 08, 2009</h2>Rocky,<br /><br />Activating the SL3 validations is as easy as changing the data binding from:<br /><br />Text="{Binding Path=G2Total, Mode=TwoWay"<br /><br />To:<br /><br />Text="{Binding Path=G2Total, Mode=TwoWay, NotifyOnValidationError=true, ValidatesOnExceptions=true}"<br /><br />However, I now have two distinctive validation styles, the CSLA PropertyStatus exclamation point and the SL3 styled red frame with the little red triangle at the top and error messages that pop up when you re-enter the field.  This is ok for my current prototype but I'd like to get to a point where I have a single style/error list.  I'll probably take a look at your PropertyStatus code and see if I can push the errors into the SL3 Validation class's ErrorsProperty somehow, or pull the ErrorsProperty values into the CSLA PropertyStatus class.<br /><br />In the meantime, if anyone else has already tackled this issue or has a proposed solution, please let me know.<br /><br />Thanks...<br /><br />- Mike :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 08, 2009</h2><P>I've thought about making CSLA work with the SL3 validation model - and I still might do so in version 3.8.</P>
+<P>However, there are some very serious and real limitations to the SL3 model that make it undesirable. This is because it is an exception-based model, not an interface-based model.</P>
+<P>This means that it works by handling any exception thrown when the setter is called. Nothing more complex than that.</P>
+<P>The result of this is that it can only display one error, not multiples. And since the setters aren't being called on dependent properties, the entire dependent property validation concept goes away (changing one property can't cause another property to be shown as invalid).</P>
+<P>So I haven't gotten too excited about supporting their model, because it is not a good model, and it would cripple some nice features of CSLA.</P>
+<P>On the other hand, maybe that's OK - and it wouldn't be that terribly hard to support. I'd just change CheckRules() to throw an exception on the first broken rule (probably ignoring all warn/info severity rules entirely) and to not process any dependent property rules. </P>
+<P>Again, very far from ideal, and so it isn't real likely that I'll do it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Saturday, August 08, 2009</h2><P>I haven't had time to look at the new Validation model but it had been on the back of my mind and I was waiting for a mention of it in the forums.</P>
+<P>Can you not just set a 'reminderToThrowMSException flag', continue to process all the CSLA magic, then once you are done check the reminder flag and throw it?&nbsp; Obviously only if a flag to 'throw MSExecption' was set by the developer...</P>
+<P>It does seem a lot like all the other 'wizard' tools - does something blanket for the simple basic CRUD related activities but if you want anything custom then its a pain in the butt.</P>
+<P>&nbsp;</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I can absolutely throw an exception in CheckRules(), that&#8217;s not
+the hard part.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The hard part is that you&#8217;d STILL need to have the dual model
+(SL and PropertyStatus) or dependent properties wouldn&#8217;t work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And you&#8217;d lose info/warn severities.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And only one of the rules would actually appear in the
+exception, even if several were broken.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Wednesday, August 12, 2009</h2>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin-top:0in;
+	mso-para-margin-right:0in;
+	mso-para-margin-bottom:10.0pt;
+	mso-para-margin-left:0in;
+	line-height:115%;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoNormal"><span>I am currently having a problem with this
+issue where if an integer field is correctly populated (to show the accept
+button) then incorrectly populated with some text then the “accept changes”
+button is still available.</span></p>
+
+<p class="MsoListParagraphCxSpFirst"><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Is it possible to get the
+accept button to disappear with the Silverlight validation as well as with the
+CSLA validation?</span></p>
+
+<p class="MsoListParagraphCxSpMiddle"><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>I notice that you might be
+addressing this issue in CSLA 3.8 is this still the case?</span></p>
+
+<p class="MsoListParagraphCxSpLast"><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Any idea when CSLA light 3.8
+will be publically available?</span></p><p class="MsoListParagraphCxSpLast"><br><span></span></p>Many thanks
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 13, 2009</h2><P class=MsoNormal><SPAN>I don’t know that SL validation can address that issue. Maybe it can, but I don’t know how.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I don’t think I’ll be addressing this issue in 3.8, because I don’t know how to address it. If the data type doesn’t match, the value never gets through data binding to the business object, so the object doesn’t even know that an attempt was made to change the value. CSLA lives at the object level, so it is entirely unclear that CSLA can do anything about this at all.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>What I'd mentioned<EM>&nbsp;</EM>I <EM>could do</EM> is to gut CSLA's capabilities and have&nbsp;CheckRules() throw an exception when a rule is broken.&nbsp;Basically disable all the CSLA goodness in favor of purely supporting the SL model. I rather doubt I'll do that though, because I don't see&nbsp;the value in abandoning a powerful model in favor of a much&nbsp;more limited model.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I’ll probably do a preview release of 3.8 to solicit feedback on some of the changes I’ve made to InvokeMethod and PropertyStatus late this week. I’m on vacation next week, and would like to get something online so people can play with it while I’m out of touch.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Rocky<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam replied on Thursday, August 13, 2009</h2>Thanks for the reply Rocky and I think your right stick with the powerful model :)<br><br>Look forward to trying 3.8 later this week and hope you have a nice hoilday.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

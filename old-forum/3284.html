@@ -1,0 +1,58 @@
+<html><header><title>DataPortal.Delete&lt;T&gt;(object criteria) Why not?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Delete&lt;T&gt;(object criteria) Why not?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3284.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq posted on Friday, July 27, 2007</h2>
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>I implemented an Editable Root, it has DataPortal_Delete
+method<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>private void DataPortal_Delete(int Id)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>{<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>}<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>And<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Private static void Delete(int Id)<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>{<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.Delete(Id);<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>}<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>It don&#8217;t work because &#8220;DataPortal.Delete&#8221;
+find method by </span></font><font size=2 face="Courier New"><span>GetObjectType(<font color=blue><span>object</span></font> criteria), while
+criteria&#8217;s type is int<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>I think Csla should be implemented DataPortal.Delete&lt;T&gt;(object
+criteria) method<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span><o:p>&nbsp;</o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 face="Courier New"><span>Thanks.</span></font><font size=2 color=navy face=Arial><span><o:p></o:p></span></font></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

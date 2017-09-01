@@ -1,0 +1,87 @@
+<html><header><title>Rocky...new class in future release?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rocky...new class in future release?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5408.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Tuesday, September 16, 2008</h2><P>Rocky:</P>
+<P>I noticed you included a "ConnectionManager" class in CSLA 3.5 for sharing database connections between objects.&nbsp; Is there any chance we'll see a similar "TransactionManager" class in a future&nbsp;version of CSLA?&nbsp; I've run into an unusual situation where I need to share, not a connection, but a transaction between editable root objects.&nbsp; (or is that functionality already&nbsp;there and I've missed it?)</P>
+<P>Thanks,</P>
+<P>Jason</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus replied on Tuesday, September 16, 2008</h2>Check this: http://forums.lhotka.net/forums/thread/26158.aspx<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 16, 2008</h2>I would think that shared a connection on which a transaction is active would have each BO use that transaction.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Tuesday, September 16, 2008</h2>ajj3085....if you are given&nbsp;an SqlTransaction object you can derive&nbsp;the related&nbsp;SqlConnection object, but&nbsp;not the other way around&nbsp;(look at the&nbsp;members on the 2 classes and you'll see what I mean).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, September 16, 2008</h2><P><FONT face=Tahoma size=2>True... but if you use the new TransactionScope object (in the System.Transactions namespace), or the TransactionalAttribute that's in the framework (which&nbsp;directs the DataPortal to use a&nbsp;TransactionScope), then you can let .NET automatically enlist your objects in an active transaction.&nbsp; This is the new "preferred approach" to transactional programming within .NET.&nbsp; And if you use the same connection, then the transaction is not promoted to a distributed one.&nbsp; It's this scenario that spawned the creation of the ConnectionManager class.</FONT></P>
+<P><FONT face=Tahoma size=2>Having said that, if you need something similar for transactions, you could certainly create one yourself, using the ConnectionManager class as a model.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, September 16, 2008</h2>But if you're using ConnectionManager, you're getting the exact same connection object each time it's called.&nbsp; So some other BO that wants to save two roots at once, for example, would use the connection manager to start the connection, set a transaction, and then call an internal SaveSelf method on each root object to save.<br><br>They'll use connection manager as well.. and get the connection already opened and with a transaction set.<br><br>Check out the code I posted earlier; it works, I do the same thing only using a ContextManager because I'm using linq... but the DataContext is equivolent to a connection.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 16, 2008</h2><P>This is not a bad idea though. While TransactionScope is the better model overall, it doesn't work with Oracle or other non-SQL Server databases, and people might need to resort to Manual transactions. In that case a TransactionManager would be helpful.</P>
+<P>I'll add it to the wish list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Tuesday, September 16, 2008</h2><P>Thanks Rocky!</P>
+<P>In the meantime, I'll research the "TransactionScope" you guys suggested.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, September 16, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Rocky &#8211; you mean TransactionScope will not work on Oracle
+database unless you have &#8220;Oracle Services for Microsoft Transaction
+Server&#8221; installed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.oracle.com/technology/tech/windows/ora_mts/index.html">http://www.oracle.com/technology/tech/windows/ora_mts/index.html</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>Oracle Services for Microsoft Transaction Server<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+Oracle Services for MTS allow Oracle databases to be used as resource managers
+in MTS-coordinated transactions, providing strong integration between Oracle
+databases and MTS. The Oracle Services for MTS act as a proxy for the Oracle
+database to the Microsoft Distributed Transaction Coordinator (MSDTC). As a
+result, these services provide client-side connection pooling and allow client
+components that leverage Oracle to participate in distributed transactions. In
+addition, Oracle Services for MTS can operate with Oracle databases running on
+any operating system, given that the services themselves are run on Windows. <o:p></o:p></p>
+
+<p class=MsoNormal>Oracle
+Services for MTS support Windows, COM, and .NET-based transactional
+applications. They run on 32-bit and 64-bit Windows natively, including Windows
+x64 and Windows Itanium.<o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, September 16, 2008 1:36 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] Rocky...new class in future release?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>This is not a bad idea though. While TransactionScope is the better model
+overall, it doesn't work with Oracle or other non-SQL Server databases, and
+people might need to resort to Manual transactions. In that case a
+TransactionManager would be helpful.<o:p></o:p></p>
+
+<p>I'll add it to the wish list.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,20 @@
+<html><header><title>N-Level Undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>N-Level Undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11551.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AntonyM posted on Friday, August 24, 2012</h2><p>Hi Everyone,</p>
+<p>This is my first post so please bare with me.</p>
+<p>I have&nbsp; an object &quot;Transport&quot; which inherits from BusinessBase, this object has several properties one of which named &quot;TransportType&quot; which&nbsp;is of type ITransportType. I have 3 further objects that also inherit from BusinessBase and implement interface ITransportType these are name &quot;Vehicle&quot;, &quot;Motorbike&quot;, &quot;Bicycle&quot;</p>
+<p>When a user edits these details through the front end they have a list of TransportTypes in a drop down and on selection I set the Transport.TransportType to a new object of the type they selected, so if they select Bicycle I create a new Bicycle object and set Transport.TransportType = Bicycle.</p>
+<p>Everything works fine except the Undo, when the ui dialog opens I get the Transport object and call BeginEdit() the user then changes the TransportType property and clicks Cancel, I then call CancelEdit().</p>
+<p>The CancelEdit() restores all the properties in the Transport object to their original values except the TransportType, I can only assume that this is because the property is storing an interface.I have tried to add <span style="font-size:x-small;"><font size="2">
+<p>Csla.Core.</p>
+</font></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">IEditableBusinessObject to the list of implemented interfaces on the ITransportType interface but still no joy.</span></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Please could someone advise how I can get the Undo to support this scenario.</span></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">I am currently using version 3.6.2</span></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Many thanks#</span></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Antony</span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>You should not declare a property of the Interface type. </p>
+<p>This is because an Interface is not serializable/deserializable. You need a concrete type to make the property serializable.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AntonyM replied on Tuesday, August 28, 2012</h2><p>Hi JonnyBee,</p>
+<p>I thought this may be the case, after reading your post I created a Abstract base class for TransportType which inherits from BusinessBase. I then changed &quot;Vehicle, Motorbike, Bicycle&quot; objects to inherit from the new TransportType abstract base class.</p>
+<p>Unfortunately this doesn&#39;t work either, same result.</p>
+<p>Thanks</p>
+<p>Antony</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 28, 2012</h2><p>You made your base class generic right? That should work fine, as it is a supported scenario.</p>
+<p>The real answer though, is to use your interface scheme, along with concrete implementation classes (because CSLA, data binding, ORMs, and other tools generally ignore interfaces). Just make sure your interface derives from IEditableObject so it meets the requirement for the type C in BusinessListBase&lt;T, C&gt;.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

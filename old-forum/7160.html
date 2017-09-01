@@ -1,0 +1,107 @@
+<html><header><title>Secure Silverlight using CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Secure Silverlight using CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7160.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>osgrooves posted on Wednesday, June 24, 2009</h2>I am starting to look at creating Silverlight applications for our company.  One issue which I have come across so far is the problem of security.<br /><br />If we have an n-tier application with a WCF end-point how do we ensure that only the Silverlight application sends data to the end-point?  Do we have to do it manually or is there something built into CSLA to help us do this?  Because we're doing this over the internet we cannot use Windows Authentication.<br /><br />Any help would be appreciated.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 24, 2009</h2><P>Even if you did use Windows Authn you'd have the same issue&nbsp;- this is not an authentication issue, it is a communication issue.</P>
+<P>And it is not unique to Silverlight. Any time you allow any client that doesn't include a tamper-proof phsyical structure that is bolted to the floor with the cabling running through reinforced concrete shielded with lead pipes you can't know for sure who's calling your server.</P>
+<P>This includes browsers, terminals, Windows clients, Mac clients - you name it. They are all hackable. And the wire between them and your server is hackable.</P>
+<P>Of course most of us can't afford to engineer hardened workstations the only work in hardened facilities with direct, shielded wiring directly to our servers, and so we have to engage in more realistic threat analysis.</P>
+<P>When it comes to security it is all about threat analysis - determining the possible threat vectors, the likelihood of the threat being employed and the cost if the threat succeeds. The result is a set of probable costs of failure. You can then assess the costs required to mitigate each threat. If the cost of mitigation is less than the cost of failure then you address the threat, otherwise you live with the threat, or use a partial mitigation (like logging or auditing).</P>
+<P>If your worry is that power users will figure out how to call your WCF service - don't. It is virtually inconcievable that a power user will comprehend the serialization protocol used by the data portal. If they <EM>can</EM> understand it, they are an advanced programmer.</P>
+<P>If your worry is that advanced programmers (hackers) will figure out how to call your WCF service, and you are in a setting where there's a real threat of hackers doing so, then you may need to take steps.</P>
+<P>In that case, I suggest you can't use n-tier architectures at all, and you should use service-oriented, message-based architectures. And you should do it right - understanding that you are creating two entirely separate applications: the client app and the server app. And that only the server app is ever trustable - the client app is a convenience to the user, but must always, always, always be assumed to be compromised.</P>
+<P>Obviously it is a lot more expensive to create and maintain that type of architecture. And it requires a pretty high level of paranoia at all times, probably accompanied by consistent code reviews just for security purposes - it is terribly easy for a developer to accidentally allow privileged information to slip out past the service boundary, or for a developer to accidentally implement a service in a way that can be exploited.</P>
+<P>You'll probably want to look around to find one of those companies that specialize in secure communications and software security audits. It is a specialized skill-set and one that most people simply don't have.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>osgrooves replied on Tuesday, July 07, 2009</h2>Rocky,
+
+Thanks for the reply.  I have done a bit more research into this and I am still not clear.
+
+Does the Data Portal inherently trust the information which is sent to it by the Silverlight application?
+
+I can see this would be fine for an application hosted on the Intranet.  However, for an internet application, if I understand what your saying, we'd have to write our own web service which would perform all of the checking again.
+
+Is this correct?
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 07, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>By default the data portal inherently trusts what is sent by the
+client.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I realize that&#8217;s not always the case, and so the data
+portal has a feature by which you can write an &#8220;inspector&#8221; object
+that gets to examine the client request before any processing occurs. This
+object is called a MobileFactory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The most common thing this inspector object does, is to call
+CheckRules() on the object to force all business rules to be re-applied before
+invoking the data portal to complete the original request. But the object could
+do other things as well &#8211; verifying authorization rules, or even
+performing extra algorithmic behaviors to verify that the inbound request is
+valid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I show how to use this feature in the <a href="http://store.lhotka.net/">CSLA.NET for Silverlight video series</a>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you use a combination of SSL to secure the transport of the
+data, and the MobileFactory &#8220;inspector&#8221; concept, you can have a
+pretty good level of confidence that the client request is a valid request.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> osgrooves
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, July 07, 2009 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Secure Silverlight using CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky, Thanks for the reply. I have done a bit more research
+into this and I am still not clear. Does the Data Portal inherently trust the
+information which is sent to it by the Silverlight application? I can see this
+would be fine for an application hosted on the Intranet. However, for an
+internet application, if I understand what your saying, we'd have to write our
+own web service which would perform all of the checking again. Is this correct?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Monday, November 30, 2009</h2><i>I show how to use this feature in the CSLA.NET for Silverlight video series.</i><br /><br /><br />I just purchased your Silverlight Video series. <br /><br />I was wondering if you could point out whhich Title this is located in and at what time. <br /><br />Thanks!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 01, 2009</h2>I can't say for sure. I think it is in segment 7 as part of the security discussion, but I might also mention it in the n-tier (segment 4) video.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Thursday, December 03, 2009</h2>N-Tier segment 4.<br /><br />50:40<br /><br /><br />I have one more question concerning the authorization / authentication sub system.<br /><br />Does the sub system properly handle the case where a malicious user inserts a value into a property that it is not authorized to manipulate?<br /><br />For example, I'm a user signed in as "employee" and I get a business object, Lets say as an employee I'm allowed to manipulate many properties except one but I don't like this limitation and I have no problem with getting fired tomorrow. So, I open up the UI siverlight code maybe with some tools or because i'm awesome - then I inject a vallue into this property. <br /><br />Now, using your observer object I call checkRules / authorization on the server.<br /><br />Does this throw an exception on the server? Or does it simply say, oh here is a business object its dirty, this employee is allowed to update, proceed?<br /><br />This is kinda a special case since the employee can update, just not that ONE property. <br /><br />Very worth while video to purchase if you're serious about developing with your framework.<br /><br /><br /><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 04, 2009</h2><P>I haven't done silverlight yet, but with csla .net a call to SetProperty will check authorization, and if auth. is denied it won't let the property change.&nbsp; And usually the UI will disable the field anyway, so a user shouldn't be able to type.</P>
+<P>Now if you're worried about a programmer trying to hack his way past, then you need to move to building two applications, as Rocky has described in this forum before.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Friday, December 04, 2009</h2>Yes, but i'd rather not have to maintain two applications.<br /><br /><br />I think the framework DOES handle your princiapl pretty secrurely, ( SSL of course ) so I'm thinking in my DataPortal_Xyz methods to switch sql statements based on user login:<br /><br />For example:<br /><br />switch ( Csla.Role )<br />{<br />   case "Employee": sql = Update Customer Set FName = @Fname;<br /><br />   case "Manager": sql = Update CUstomer set ID = @ID, FName = @FnAME;<br /><br />}<br /><br /><br />This would reinfoce the your authorization on the server side.<br /><br />I didn't say it was pretty but as long as your not handing out your manager login... then this would probably work well.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 04, 2009</h2><P>Well you don't have a choice if you're worried about malicous programmers.&nbsp; They could just set their role as well at that point... </P>
+<P>But if you're not worried about that possibility, I'd say the standard Csla permissions would work, and wouldn't see a need for a switch statement in the DP_XYZ.</P>
+<P>If you find you have a need for such an object, then perhaps you need two different objects, because your use cases are different.&nbsp; one use case is an employee managing the record, a seperate use case is a manager changing the record.&nbsp; So you'd have two csla BOs, and your server could check in the DP_F the role and throw an exception there (in addition to the normal checks you do).</P>
+<P>So maybe that's a way to go too..</P>
+<P>HTH</P>
+<P>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Friday, December 04, 2009</h2><i>Well you don't have a choice if you're worried about malicous programmers.  They could just set their role as well at that point... </i><br /><br />Isn't there a way to reload the roles on the server based on the login information? You probably want to reload those before any CRUD operations.<br /><br />The dataportal_xyz methods are a fairly nice place to recheck things coming from the client ( or use the inspector )<br /><br />You could certainly break out every role into a use case, though the framework is designed to support different roles manipulating different properties. <br /><br />Yes, its extra to work to recheck things on the server, but it seems like there is a place to do it.<br /><br /><br />The CSLA framework supports very rich ways to inform your client about what is not acceptable on the server. Some of those rules you may want to reinforce - which is why this inspector pattern was introduced.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2><P>There's no pre-built way to detect that a hacker changed a property that isn't changable.</P>
+<P>Detecting that case requires that the server have the original value for comparison purposes. Beyond that, it requires some knowledge of concurrency so you can (and I don't know how you'd do this) realize the difference between a concurrency violation (where the database changed in the meantime) and a hack (where the object changed in the meantime).</P>
+<P>I know you don't want to maintain two apps - but if you are honestly worried about a hacker getting deep enough into your code to change property values that aren't changable, you are in a position where you shouldn't be trusting anything from the client - and thus should be following a service oriented mindset (and thus writing two apps).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Friday, December 04, 2009</h2><i>I know you don't want to maintain two apps</i><br /><br />You have no idea.<br /><br /><br />I'm just brain storming. There are plenty of things to love about CSLA. <br /><br />So, I guess a good question to ask at this point, is can indeed the Principal be fairly secured ( using ssl ) talking to the WCF service?<br /><br />If the principal can be secured to a good extent then ( breaking encapsulation ) you should be able to validate pretty much everything in the dataportal_xyz methods based on that principal. Correct?<br /><br />Thanks for your time gents :)<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 04, 2009</h2><P>No... because if you don't trust the client, no amount of SSL will help you.. because what's being put on the ssl channel may already be compromised at the client level.</P>
+<P>I suppose you could encrypt the principal somehow before you send it to the client... but then its completely unusable on the client (without allowing it to be compromised again).&nbsp;&nbsp; So you're only option is not to send the principal, and I think at that point you're at the step of having two applications agian..</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Friday, December 04, 2009</h2>One possibility.<br /><br />Using aspMembership, does the returned principal carry the password? Or just the username.<br /><br />Sounds to me like the client needs to hold onto its password - maybe in some secure way because they need to be re-approved on each dataportal call. ( Obviously some overhead to that )<br /> <br />If the client can securely hold onto its full credentials, maybe just making them revalidate on every call is a must. I think thats how SOA WCF services work, you provide full credentials username, pw, certifcate every time you want to use the service?<br /><br />Again, I'm just knocking around ideas. But I can see what you're saying.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2>Normally the password is not maintained on the client. It is impossible to<br />truly secure the value, and based on the questions you are asking, it sounds<br />like you assume the client has been compromised by a skilled hacker.<br /><br />What you can do, and this is what ASP.NET does with its security token, is<br />use a symmetric encryption algorithm where the key is only on the server.<br />This way the client has a security token, but the client can't crack it open<br />because it doesn't have the key. Normally ASP.NET puts this in a cookie.<br /><br />You can use a similar technique - this token then becomes the "password"<br />granting subsequent access to the server.<br /><br />The trick with THAT is you become subject to token hijacking and/or replay<br />attacks. You can mostly avoid replay attacks with SSL, but token hijacking<br />is harder to avoid.<br /><br />ASP.NET minimizes that issue by putting a timestamp in the encrypted token,<br />and it reissues the token on server requests as long as the user's session<br />doesn't time out. It is a sliding expiration of the token, measured in<br />seconds or minutes.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Watson replied on Monday, December 07, 2009</h2>Now, is this something that could be implemented into the dataportal architecture?<br /><br />Would you use wcf sessions to get this to work? Can you leverage the functionality of asp.net since wcf is hosted in iis? <br /><br />http://blogs.msdn.com/sajay/archive/2006/08/03/687361.aspx<br /><br />Again just shooting around ideas. If you can secure your client's identity, seems like CSLA can do validation on the server.<br /><br />Additional resources that may be useful:<br /><br />http://www.zamd.net/2009/04/15/IntegratingFormsAuthenticationAndFederatedSecurity.aspx<br /><br />If you can use a STS with the dataportal that would give you a pretty good idea that your client is who they say they are, on subsequent calls.<br /><br /><br />I guess I'm wondering if I could get all this working with just modifying config and web files...</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

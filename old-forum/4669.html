@@ -1,0 +1,91 @@
+<html><header><title>Validation rule not firing consistently?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation rule not firing consistently?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4669.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stacy.odell posted on Friday, April 11, 2008</h2><P>I am using 2.1.4 and I have a custom validation rule set up on a property (I am not using any rule priorities -- they are all 0).&nbsp; I also call PropertyHasChanged() in my property setter.</P>
+<P>In my UI I am setting the property manually -- not databinding.</P>
+<P>The problem is this -- the validation rule will get called the <EM>first time</EM> this property is set, and the validation will work just fine.&nbsp; But if&nbsp;the&nbsp;validation&nbsp;fails, and the end user changes the value a subsequent time (presumably to fix the error), I can see via breakpoints that the PropertyHasChanged method is getting called -- but the custom validation rule code never runs again.</P>
+<P>Any ideas?</P>
+<P>One thing to note -- I do call the PropertyHasChanged overload with no parameter name -- PropertyHasChanged();&nbsp; -- would that have something to do with it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Even though it is not good to use parameter-less version of
+PropertyHasChanged(), it should work on debug mode.&nbsp; I would change it
+anyway, because those calls were deprecated in subsequent version of CSLA.&nbsp;
+However, I think this should work regardless.&nbsp; I would put breakpoint
+inside the rule itself to verify.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stacy.odell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 11, 2008 10:14 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Validation rule not firing consistently?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am using 2.1.4 and I have a custom validation rule set up on a property (I
+am not using any rule priorities -- they are all 0).&nbsp; I also call
+PropertyHasChanged() in my property setter.<o:p></o:p></p>
+
+<p>In my UI I am setting the property manually -- not databinding.<o:p></o:p></p>
+
+<p>The problem is this -- the validation rule will get called the <em>first
+time</em> this property is set, and the validation will work just fine.&nbsp;
+But if&nbsp;the&nbsp;validation&nbsp;fails, and the end user changes the value
+a subsequent time (presumably to fix the error), I can see via breakpoints that
+the PropertyHasChanged method is getting called -- but the custom validation
+rule code never runs again.<o:p></o:p></p>
+
+<p>Any ideas?<o:p></o:p></p>
+
+<p>One thing to note -- I do call the PropertyHasChanged overload with no
+parameter name -- PropertyHasChanged();&nbsp; -- would that have something to
+do with it?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stacy.odell replied on Friday, April 11, 2008</h2><P>Thanks Sergey -- I had no idea calling that without the property name was not advisable.&nbsp; I guess I need to go back and edit those code snippets I downloaded and have been using.&nbsp; :)</P>
+<P>I'll give that a try when I get back to the office.</P>
+<P>-- Stacy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, April 11, 2008</h2><P>Calling wihtout the property name was supposed to benefit you by eliminating the need to have string literals in your code - if you have a typo or an incorrect case then things don't work right. The problem is it relies on a stack trace to find the property name and it was later learned that it was not a reliable way to handle it in all situations. There were some edge cases where it failed. That is why Rocky deprecated it in 3.5. </P>
+<P>I use Codesmith so I never had a problem with using the String literals since they were code generated anyway.</P>
+<P>I agree with Sergey that the rule should run so definitely add a break point to it. Be sure the property name spelling is the same everywhere! Including case sensitivity. You may be calling it or adding it one way but then subsequent calls have incorrect spelling and it won't run.</P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

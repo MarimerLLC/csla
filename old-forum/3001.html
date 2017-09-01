@@ -1,0 +1,87 @@
+<html><header><title>New to CSLA, trying to implement custom identity</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New to CSLA, trying to implement custom identity</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3001.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DJMikeAZ posted on Thursday, June 07, 2007</h2><P>Hey all,</P>
+<P>If you didn't figure it out from the subject, I am relatively new to CSLA. I am involved in a project using CSLA and I am currently implementing login/authentication control. As per the book and instructions I have read, I have already constructed custom identity and custom principal objects. We are using the .NET login control and configured web.config to authenticate via a&nbsp;custom&nbsp;app_code MembershipProvider class. Long story short, the login works fine...it's using my custom principal login as desired however, the Csla.ApplicationContext.User is not getting set properly or doesn't reflect my custom identity- which contains properties I need such as first name, last name, user type, email etc.</P>
+<P>In other words, once the login is successfull, I would like the Csla.ApplicationContext.User to contain all the properties I defined in my custom identity. Currently,&nbsp;this user object seems to just be a System.Security.Principal.GenericPrincipal. How do I accomplish this? I can provide existing code I have if necessary.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcleven replied on Friday, June 08, 2007</h2><P>Hi Mike,</P>
+<P>In your login you should set the ApplicationContext.User to your Principal object. Here is a snippet from my IMSPrincipal static Login method. </P><FONT color=#2b91af size=2>
+<P>IMSIdentity</FONT><FONT size=2> identity = </FONT><FONT color=#2b91af size=2>IMSIdentity</FONT><FONT size=2>.GetIdentity(user);&nbsp;&nbsp;&nbsp;// fetch the user roles from the db</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (identity.IsAuthenticated)&nbsp;&nbsp;&nbsp;// make sure user is ok</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;IMSPrincipal</FONT><FONT size=2> principal = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IMSPrincipal</FONT><FONT size=2>(identity); // create the new Principal with user</P>
+<P>&nbsp;&nbsp;&nbsp;Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User = principal;&nbsp;&nbsp;&nbsp;</P>
+<P>}</FONT></P>
+<P><FONT size=3>Hope this helps.</FONT></P>
+<P><FONT size=3>Doug</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DJMikeAZ replied on Friday, June 08, 2007</h2><P><FONT face="Courier New" size=2>This is the current contents of my BTPrincipal Login method:</FONT></P>
+<P><FONT face="Courier New" size=2>public static bool Login(string userName, string password)<BR>{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;BTIdentity identity = BTIdentity.GetIdentity(userName, password);</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;if (identity.IsAuthenticated)<BR>&nbsp;&nbsp;&nbsp;{&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BTPrincipal principal = new BTPrincipal(identity);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla.ApplicationContext.User = principal;<BR>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;return identity.IsAuthenticated;<BR>}</FONT></P>
+<P><FONT face="Courier New" size=2>It is clear that I am&nbsp;setting the ApplicationContext.User to the principal however, Csla.ApplicationContext.User (referenced elsewhere) does not contain the properties I have exposed in my BTPrincipal object...I have custom things like First Name, Last Name, User Type, etc.</FONT></P>
+<P>Where am I going wrong? Do I need to modify any files in the framework to accomplish this? I simply want to validate a user logging in (which works) and have access to that user's information.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dcleven replied on Friday, June 08, 2007</h2><P>When you access it you will need to cast it to your BTPrincipal object.</P>
+<P>BTPrincipal myPrincipal = (BTPrincipal)Csla.ApplicationContext.User;</P>
+<P>--Doug</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DJMikeAZ replied on Friday, June 08, 2007</h2><P>When I do that, I get the following error:</P>
+<P>Unable to cast object of type 'System.Security.Principal.GenericPrincipal' to type 'Csla.Security.BTPrincipal'. <BR><BR>Being new to the framework, I'm not sure what to do with this.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, June 08, 2007</h2><ol><li>Are you using IIS or Cassini for development?</li><li>Are you doing hat the book says under the <i>Reloading the Principal</i> section of chapter 10?</li><li>If you breakpoint the setting of ApplicationContext.User, after that line runs, what is its value?<br></li></ol></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DJMikeAZ replied on Saturday, June 09, 2007</h2><P>1. using IIS<BR>2. have read chapter 10 and seem to be complying with it<BR>3. in my BTPrincipal.cs Login method, Csla.ApplicationContext.User is type Csla.Security.BTPrincipal</P>
+<P>This is what it should be however, if I reference Csla.ApplicationContext.User on any of my aspx pages, it is back to&nbsp;type System.Security.Principal.GenericPrincipal.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 09, 2007</h2>Do you have code in global.asax to restore the principal on every page request? That is required.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DJMikeAZ replied on Sunday, June 10, 2007</h2><P>Here is what's in my global.asax, I think it's right but maybe it's not.</P>
+<P>protected void Application_AcquireRequestState(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; object sender, EventArgs e)&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.Security.Principal.IPrincipal principal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; principal = (System.Security.Principal.IPrincipal)HttpContext.Current.Session["CslaPrincipal"];&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; principal = null;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (principal == null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // didn't get a principal from Session, so<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // set it to an unauthenticated BTPrincipal<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Security.BTPrincipal.Logout();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // use the principal from Session<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.User = principal;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>As I mentioned before, The intellisense in VS2005 for my Csla.ApplicationContext.User does not contain any of the properties in my BTPrincipal. I'm sure there's one little thing that I missed. Generally I find that&nbsp;the more time I spend on a problem, the simpler the solution ends up being. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As someone mentioned earlier in the thread,
+ApplicationContext.User returns an IPrincipal. If you want access to your
+custom properties or methods you must cast the value to your custom type.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BTPrincipal principal =
+(BTPrincipal)Csla.ApplicationContext.User;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Dim principal As BTPrincipal =
+DirectCast(Csla.ApplicationContext.User, BTPrincipal)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> DJMikeAZ
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, June 10, 2007 7:08 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] New to CSLA, trying to implement custom
+identity<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>As I mentioned before, The intellisense in VS2005 for my
+Csla.ApplicationContext.User does not contain any of the properties in my
+BTPrincipal. I'm sure there's one little thing that I missed. Generally I find
+that&nbsp;the more time I spend on a problem, the simpler the solution ends up
+being. <o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

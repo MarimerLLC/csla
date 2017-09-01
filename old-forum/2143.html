@@ -1,0 +1,98 @@
+<html><header><title>TransactionException saving children of a root object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TransactionException saving children of a root object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2143.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy posted on Monday, January 15, 2007</h2><P>I am using CSLA 2.1 with my client Windows XP SP2 at home and my data located on a decdicated server at the hosting service location.</P>
+<P>When I save the root object all is fine but when I try to open a second connection for saving the child collection I get the following error on the cn.Open() statement.</P>
+<P><FONT size=2>3:53:11 PM: MTGOSession 0: MTGOTraderController:TradePerformed Exception:DataPortal.Update failed (System.Transactions.TransactionException: The partner transaction manager has disabled its support for remote/network transactions. (Exception from HRESULT: 0x8004D025) ---&gt; System.Runtime.InteropServices.COMException (0x8004D025): The partner transaction manager has disabled its support for remote/network transactions. (Exception from HRESULT: 0x8004D025)</FONT></P>
+<P><FONT size=1><FONT size=3>I was able to insert the root using the TransactionType.TransactionScope setting.&nbsp; I am able to also update the root object.&nbsp; Seem all is related to the child objects Insert method.&nbsp;&nbsp;Any ideas?&nbsp; I am guess that MSDTC isn't talking through the fire walls correctly.&nbsp; I check the MSDTC settings on the server an my client and all seems to be setup correctly.&nbsp; </FONT></FONT></P>
+<P><FONT size=1><FONT size=3>Here is the root Portal_Update code, the child collections Update methods and the child object insert method.</FONT></FONT></P><FONT size=1><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// TODO: update values</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsDirty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.ApplicationConnection))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"updateTrade"</FONT><FONT size=2>;</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@SDTradeID"</FONT><FONT size=2>, _SDTradeID);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@LastChanged"</FONT><FONT size=2>, _timestamp);</P>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> param;</P>
+<P>param = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@DateUpdated"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.DateTime);</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cm.Parameters.Add(param);</P>
+<P>DoInsertUpdate(cm);</P>
+<P></FONT><FONT color=#008000 size=2>// Get output parameters</P></FONT><FONT size=2>
+<P>_DateUpdated = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SmartDate</FONT><FONT size=2>((</FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>)(cm.Parameters[</FONT><FONT color=#a31515 size=2>"@DateUpdated"</FONT><FONT size=2>].Value));</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// update child objects</P></FONT><FONT size=2>
+<P>_TradeItemsDealer.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>_TradeItemsTrader.Update(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>);</P>
+<P>}</P></FONT></FONT>
+<P><FONT size=1></FONT>&nbsp;</P>
+<P><FONT size=1></FONT>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Update(</FONT><FONT color=#2b91af size=2>BOTrade</FONT><FONT size=2> Trade)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// update (thus deleting) any deleted child objects</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>BOTradeItem</FONT><FONT size=2> obj </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> DeletedList)</P>
+<P>{</P>
+<P>obj.DeleteSelf(Trade);</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2>// now that they are deleted, remove them from memory too</P></FONT><FONT size=2>
+<P>DeletedList.Clear();</P>
+<P></FONT><FONT color=#008000 size=2>// add/update any current child objects</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>BOTradeItem</FONT><FONT size=2> obj </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj.IsNew)</P>
+<P>{</P>
+<P>obj.Insert(Trade);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>obj.Update(Trade);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P></FONT>
+<P><FONT size=1></FONT>&nbsp;</P><FONT size=1><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2>Transactional</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>TransactionalTypes</FONT><FONT size=2>.TransactionScope)]</P>
+<P></FONT><FONT color=#0000ff size=2>internal</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Insert(</FONT><FONT color=#2b91af size=2>BOTrade</FONT><FONT size=2> Trade)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// if we're not dirty then don't update the database</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsDirty)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>Database</FONT><FONT size=2>.ApplicationConnection))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"addTradeItem"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// Setup to get back identity column</P></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2> param = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>SqlParameter</FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2>"@SDTradeItemID"</FONT><FONT size=2>, </FONT><FONT color=#2b91af size=2>SqlDbType</FONT><FONT size=2>.Int);</P>
+<P>param.Direction = </FONT><FONT color=#2b91af size=2>ParameterDirection</FONT><FONT size=2>.Output;</P>
+<P>cm.Parameters.Add(param);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@SDTradeID"</FONT><FONT size=2>, _SDTradeID);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@SDAccountID"</FONT><FONT size=2>, _SDAccountID);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@MTGOAccountID"</FONT><FONT size=2>, _MTGOAccountID);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@MTGOAccountName"</FONT><FONT size=2>, _MTGOAccountName);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@InventoryCode"</FONT><FONT size=2>, _InventoryCode);</P>
+<P>cm.Parameters.AddWithValue(</FONT><FONT color=#a31515 size=2>"@DateCreated"</FONT><FONT size=2>, _DateCreated.DBValue);</P>
+<P>DoInsertUpdate(cm);</P>
+<P></FONT><FONT color=#008000 size=2>// Get identity</P></FONT><FONT size=2>
+<P>_SDTradeItemID = (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2>)cm.Parameters[</FONT><FONT color=#a31515 size=2>"@SDTradeItemID"</FONT><FONT size=2>].Value;</P>
+<P>MarkOld();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT size=2>}</P></FONT></FONT>
+<P><FONT size=1></FONT>&nbsp;</P>
+<P><FONT size=1>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, January 15, 2007</h2>Why are you opening a second connection?&nbsp; Is it to another database?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ktweedy replied on Monday, January 15, 2007</h2><P>That is just the way the example project does it.&nbsp; It opens seperate connection objects for the root and then does it again for the children.</P>
+<P>Since I posted this I found a work around that was discuss in one of th topics on this site.</P>
+<P>That is to pass down the connection object and not to open a new one, like how transaction objects were pass down to child objects in CSLA 1.0 and reused.</P>
+<P>so now I say childList.Update(this, cn) passing the root object and the connection object.</P>
+<P>Seems opening the second connection object kicks in the MSDTC and seems I either don't have something configured correctly or my firewall is interfering.</P>
+<P>Thanks.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

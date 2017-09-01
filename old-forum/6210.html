@@ -1,0 +1,174 @@
+<html><header><title>Bidirectional associations - StackOverflow</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bidirectional associations - StackOverflow</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6210.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Tuesday, January 20, 2009</h2>Hi All,<br><br>How should I write a bidirectional relationship in CSLA?&nbsp; <br><br>For the child I need to reference the correct parent not the collection.&nbsp; I have Sample which has a collection of SampleResults of type SampleResult.&nbsp; The SampleResult has a Sample which is the true parent (needed for true parent child in NHibernate).<br><br>I can fetch into the structure using NHibernate without a problem, but I get StackOverflow's when I try to MarkOld() in the ObjectFactory.&nbsp; Is there a way to mark the Sample property on the SampleResult so that it doesn't get stuck in a circular ref? or how should I do this?<br><br>TIA<br>Kevin<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, January 20, 2009</h2>I should mention I am using CSLA 3.6.0.0 with managed fields.<br><br>It gets stuck in IsDirty of FieldData<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2><P>Unfortunately this is a known issue. It is actually a broader issue, and I hadn't considered the MarkOld() aspect of it... The core issue is that there's no current way to mark a managed child reference as NotUndoable or NonSerialized.</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=30">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=30</A></P>
+<P>However, I don't necessarily consider this a bug (seriously). The reason is because Sample can not be a child of SampleResult, because SampleResult is a child of Sample. You can't be both father and son (or grandson) unless you are in a "Back to the Future" movie, and even then the idea is wierd&nbsp;:)</P>
+<P>A child object can maintain a back reference to a parent, but that back reference is not a "child reference", it is just a reference.</P>
+<P>Managed child references are "child references", not arbitrary references. In other words, when you put an object reference into a managed backing field, it is always a child reference. A parent reference can't be a child reference, and so you can't put a parent reference into a managed backing field.</P>
+<P>Which is why the issue I listed earlier is an 'enhancement', not a 'bug'. At some point I might enhance the framework to allow managed backing fields to store aribtrary references - and of course you'll have to indicate the nature of that reference (containment/child, containment/aggregation, using, parent, etc).</P>
+<P>In any case, the answer to your immediate problem is to not use a managed backing field, because this isn't a child reference. Instead, you'll need to use a traditional property syntax, with a private backing field that is marked as NonSerialized and NotUndoable.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant replied on Tuesday, January 20, 2009</h2>If this is the can (given that the link to the parent object is marked as NonSerialized) how would you recommend re-building the think to the parent object on the deSerialize? Just look at CSLA's parent property twice??<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, it is no different than the pre-3.5 model, where this
+reference must be fixed up on deserialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> vdhant
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 20, 2009 3:05 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bidirectional associations - StackOverflow<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>If this is the can (given that the link to the parent object
+is marked as NonSerialized) how would you recommend re-building the think to
+the parent object on the deSerialize? Just look at CSLA's parent property
+twice??<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, January 21, 2009</h2>Thanks for the help.&nbsp; One question, in order to set the reference back on the DeSerialize event,&nbsp; I needed to expose the Parent on the collection (because of the protection level) , is this right?<br><br>SampleResults class<br><br>new internal Sample Parent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return (Sample)base.Parent; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>SampleResult class<br><br>protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sample = ((SampleResults)Parent).Parent;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.OnDeserialized(context);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Thanks<br>Kevin<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that is one way to get the parent value, and should work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Kevin Fairclough
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 9:12 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Bidirectional associations - StackOverflow<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for the help.&nbsp; One question, in order to set the
+reference back on the DeSerialize event,&nbsp; I needed to expose the Parent on
+the collection (because of the protection level) , is this right?<br>
+<br>
+SampleResults class<br>
+<br>
+new internal Sample Parent<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+(Sample)base.Parent; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+SampleResult class<br>
+<br>
+protected override void
+OnDeserialized(System.Runtime.Serialization.StreamingContext context)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Sample =
+((SampleResults)Parent).Parent;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+base.OnDeserialized(context);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Thanks<br>
+Ke vin<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, July 06, 2010</h2><p>Hi</p>
+<p>I am using this technique to obtain Parent references.&nbsp; This is working using a local dataportal but when I use WCFPortal the Parent property is null and this fails with a NullReferenceException.</p>
+<p>Any ideas how to resolve this?</p>
+<p>Regards</p>
+<p>Kevin</p>
+<p>CSLA 3.8.0.0</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 06, 2010</h2><p>The OnDeserialized method(s) are called when the serializer tells each object that it has been deserialized. That&#39;s out of our control - it is something the .NET framework&#39;s deserializers are doing.</p>
+<p>This is one area of slight behavior difference between the BinaryFormatter and the NetDataContractSerializer - they don&#39;t appear to follow quite the same timing about when the call OnDeserialized.</p>
+<p>It is wise, when using OnDeserialized, to assume the order is indeterminate - which is to say that you should never count on <em>other objects</em> being deserialized just because one specific object is deserialized. Or to put it another way - when the serializer calls OnDeserialized all it says is that your one object is deserialized, not the entire object graph.</p>
+<p>In CSLA 4 I&nbsp;have&nbsp;(with mixed feelings) made the Parent property public on all the base classes, so it should be possible to walk from a leaf child node up through the object graph to the root.</p>
+<p>But you are just re-exposing the existing protected Parent value right? That should be available once deserialization of the entire object graph is complete.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Tuesday, July 06, 2010</h2><p>Thanks for the quick reply.</p>
+<p>Unfortunately I&#39;m having to store a reference to the &quot;real&quot; parent in the child, therefore I need to update that reference somewhere.&nbsp;&nbsp; I was doing this in the OnSerialized override,&nbsp; this is because NHibernate requires bidirectional to manage FK inserts.</p>
+<p>Regards</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 06, 2010</h2><p>Ahh, I see. You might avoid storing that reference though, and make the property algorithmic - just walk up the graph to find the &quot;real&quot; parent when requested. That&#39;s just a simple graph traversal&nbsp;- though it does presuppose that the CSLA Parent properties are accessible (which they aren&#39;t until CSLA 4).</p>
+<p>But you can always make the Parent property accessible by adding a public property or method in your custom base classes - thus making it easy to walk the properties as needed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Wednesday, July 07, 2010</h2><p>Will walk for the getter, but NHibernate requires something to set so I have to do this:</p>
+<p>&nbsp;#region BiDirectional Item property required for not null foreign keys<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [NonSerialized]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [NotUndoable]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private Item _item;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Item Item<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return (Item) ((ChildList) Parent).Parent;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />#endregion</p>
+<p>Thanks Rocky</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 07, 2010</h2><p>We are running into similar problems at work, but not using Csla, we have more POCO business objects with simplier validation behavior (basically the same thing MVC does in the model binder calling ValidatoinAttributes)..&nbsp; It sounds like you&#39;re doing the same thing we are; putting the repository at the Business layer level, and having the UI talk directly to it to hydrate / dehydrate the BOs.&nbsp; Something like this in an MVC controller perhaps:&nbsp; var repo = GetRepo();&nbsp;repo.Save(myBO)&nbsp;(or in your case, repo.Save(myCslaBO).</p>
+<p>Given the problems we&#39;re htting, I&#39;m not sure that&#39;s the way to go, and I find I&#39;m again hitting problems which I have considered long&nbsp;solved by following the standard Csla pattern (where the BO talks to the DAL in the DP_xyz methods).&nbsp; In other words, the issues are database design impacting the BOs and all the fragileness that entails.</p>
+<p>For my own work,&nbsp;I am planning on implementing a repository pattern, but having the BO talk to the repoistory so that I can have my unit tests running without hitting the database, a problem I currently have and do need to solve.&nbsp; I&#39;m hoping this will give me the best of both words; full Csla goodness, while having unit tests injecting mocks to verify the BO talks to the repo correctly, without actually hitting the database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Thursday, July 08, 2010</h2><p>Hi Andy,</p>
+<p>Our objects are loaded and saved via the ObjectFactory, so we do follow the standard Csla method.&nbsp; Our objects are also saved via a repository, so I guess its similar to what you are doing but we have the extra hop over the DataPortal.&nbsp; The ObjectFactory contains a Repository which does the data access work.</p>
+<p>Our work has a based on both <a href="http://cslacontrib.codeplex.com/">ProjectTrackerNHibernate in CSLA Contrib</a>&nbsp; and <a href="http://code.google.com/p/cslaptrackerfactory/">this.</a></p>
+<p>Regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 08, 2010</h2><p>Looking at the NHibernate PTracker, that looks somewhat like what we are doing, passing Nhibernates ISession.Save the actual BO... except that instead of the BO doing that call our repository is.&nbsp; </p>
+<p>So I am wondering what your opinion is; to me it seems our design has too much of NHibernate leaking into the domain models, and trying to have Nhibernate persist the actual BO (vs. creating DTOs that exactly match the DB) is causing us more trouble than its worth.&nbsp; Of course, NHibernate is still fairly new to me, so perhaps I&#39;m not doing it right either.</p>
+<p>Would you mind sharing your thoughts on this?&nbsp; Has directly mapping the BO caused any issues for you, or is it working rather well?</p>
+<p>Oh... and mapping a ReadOnly and BusinessObject.. you just tell NHibernate the same table name, and it should work, correct?</p>
+<p>Thanks for any feedback!</p>
+<p>Andy</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, July 09, 2010</h2><p>It is a bit of a nightmare and it&#39;s our first project in .NET too so I&#39;m not an expert.&nbsp; We used the ObjectFactory to move most of NHibernate out of the BO, however we still need to collection/bag/set reference in there.&nbsp; Read only properties need private/protected setters.</p>
+<p>You have to be careful with lazy attibute and also loading collections is a pain.</p>
+<p>You also have to make sure NHibernate doesn&#39;t cascade changes by using cascade=&quot;none&quot; or leaving off the cascade attribute.&nbsp; This means you have to use Csla&#39;s object state to determine what to send as changes to NHIbernate in order to persist correctly.&nbsp; In our ObjectFactory.Update which is always the Root object we have a method to cascade through the graph telling Nhibernate to SaveOrUpdate or Delete the particular object.&nbsp; We use the FieldManager to help with this.&nbsp; We had to do this because NHibernate hasn&#39;t got the dirty state,&nbsp; it can get it but that results in extra selects server side to determine if objects need updating.</p>
+<p>RO objects are mapped again this hasn&#39;t caused any issues.</p>
+<p>Were still learning this as we go and I&#39;m not sure that we are doing it right.&nbsp; We never really tried to DTO way, with a good mapper it might work better.</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, July 09, 2010</h2><p>Well, at least your not alone in this... although at least you are able to use Csla, I think things would be less painful if we were.&nbsp; But your feedback so far pretty much matches up with my experience.&nbsp; Up until now I&#39;ve always used DTOs in the DP_xyz methods, I have a feeling that would work out better than mapping BOs.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>Tasks vs Roles</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Tasks vs Roles</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3402.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBursill posted on Monday, August 20, 2007</h2><font class="messagecontent">I'm playing around with the MMC Authorization Manager attempting to setup some role based security.<br><br></font><font class="messagecontent">From what I can tell, CSLA allows me to look at roles and easily
+figure out what user belongs to what role. Can the same be said for tasks?</font><br><font class="messagecontent"><br>The
+software I'm developing is for a smaller sized businesses. We're the
+type of place where one day the operations manager is filling the shoes
+of the accountant because the accountant called in sick, or is on
+vacation. As a result, my system needs to be flexible when it comes to authorization rules. I wish to limit read/write access of propertes not based on roles, but tasks.<br><br>I can foresee situations where I may want to
+allow tasks for a user without exposing all the tasks of an already defined role. I may end up
+with a lot of specialized roles, each with just a few tasks and maybe one user, but it will offer me the flexability to really break up and easily manage the various parts of my system.<br><br>Has anyone encountered this type of scenario and what was done about it?<br><br>Thanks.<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBursill replied on Monday, August 20, 2007</h2><span>As a quick follow up to this I just discovered
+that Microsofts Security Application Block encourages the use of tasks to
+enforce authorization rules.<br><br>If CSLA is only using roles, won't that make the defining of tasks through
+something like AzMan pointless?</span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ank replied on Monday, August 20, 2007</h2><P>I had done something simmilar in one of my projects. It did not use CSLA. Instead of creating many roles I used a concept of "delegating tasks to some other user".&nbsp;This&nbsp;requires checking tasks and not roles of the user for authorization. All tasks are not available for delegation. If a user logs on as a delegate of someone they only get a subset of tasks available to the real user. I am fairly new to CSLA so not sure if such a thing is supported.</P>
+<P>Ank</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 20, 2007</h2><P>I have Roles in my Identity (because I have to.)</P>
+<P>But I use an identical structure to also fill my Identity with Permissions. I guess you could say that Permissions and Tasks are the same thing. So a user could be in Role "Manager" but be given permissions to "Edit Accounts". In that case they will be able to open and use the Account edit form because instead of checking for IsInRole("Accountant") </P>
+<P>I will check for:&nbsp; HasPermission("Edit Accounts")</P>
+<P>During LogIn I fill both roles and permissions from my database for the user.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MBursill replied on Wednesday, August 22, 2007</h2>That sounds like exactly what I'm trying to do. I'm assuming you added the HasPermission method to the BusinessPrincipalBase?<br><br>Inside RolesForProperties (which you maybe renamed PermissionsForProperties) how do you check for IsReadAllowed? Do you take in a BusinessPrincipalBase instead of IPrincipal and than use HasPermission?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, August 26, 2007</h2><P>"I'm assuming you added the HasPermission method to the BusinessPrincipalBase?"</P>
+<P>Yes.I derived&nbsp;Principal and Identity classes from Rocky's base classes. Then I duplicated the IsInRole code and re-named them to HasPermission. Then during Fetch I get both Roles and Permissions.</P>
+<P>==============================================================</P>
+<P>"Inside RolesForProperties&nbsp;how do you check for IsReadAllowed?"</P>
+<P>I did not go that far. I saw that I would have to duplicate 95% of Rocky's Authorization code in&nbsp;order to make effective use of IsReadAllowed using my Permissions. This is because he directly calls IsInRole. I asked him to use a Delegate instead and he added it to the wish list a while ago. There is a thread on the subject which you can read from the Wish list.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Friday, September 07, 2007</h2>Joe ,<br><br>have a look at this ,<br>this is also the same thing which you are talking about this .<br>and i m using this perfectly <br><a HREF="/forums/thread/17224.aspx">http://forums.lhotka.net/forums/thread/17224.aspx</a></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

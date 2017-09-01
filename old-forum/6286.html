@@ -1,0 +1,77 @@
+<html><header><title>My Gotchas so far in CSLA Light (Silverlight)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>My Gotchas so far in CSLA Light (Silverlight)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6286.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Thursday, January 29, 2009</h2>So as I finally got my first CSLA use case almost working as expected I starting porting it to CSLA Light so that I can do the UI in Silverlight.&nbsp; I thought I had done a good job of perusing the forums but maybe a FAQ or a document on things to watch out for would be useful.<br><br>So far there have been a few surprises :-).&nbsp; I do want to retain as a much as possible as I will need to have a WPF/Winforms version of some of the application.<br><br>Anyhow so far CodeGen is making a very big a positive difference as I essentially find/replace.&nbsp; My thoughts:<br><br>1)I was wondering if it was possible to add some of the attributes into CSLA light but not have them do anything (maybe a compiler warning?).&nbsp; I had used the [Indexable] and now my code is littered with #if !SILVERLIGHT [Indexable] #endif<br><br>1a) Also turns out DataObjectField is no longer available [System.ComponentModel.DataObjectField(true, false)] - now that is not CSLA but also a gotcha - more #if !SILVERLIGHT<br><br>2) The compiler directives are a bit funny and misleading from one of the blogs I read.&nbsp; In the blog the directive was in lowercase and depending if you are in the silverlight assembly or your .net assembly then it appears as if it works.<br><br>#if Silverlight ... #end appears to works fine when not in Silverlight but isn't really.<br><br>#if !Silverlight #end if does not work however #if Silverlight else xxx # appears as if it does work until you jump back to Silverlight and try to compile.<br><br>#if SILVERLIGHT #end if works fine<br>
+
+#if !SILVERLIGHT #end if works fine<br>
+
+<br>Bottom line - use UPPERCASE (which is annoying if you dislike ALL UPPER).<br><br>3) The #if SILVERLIGHT directives do not play well with #region &amp; #endregion.&nbsp; I basically had to put the #if SILVERLIGHT wrappers inside my regions. Which is annoying when you have nested regions.<br>&nbsp;<br>4) LinqBindingList - I started using this a fair amount to create filtered collections to bind on - I need to change this to ObservableCollection where I'm using it as a dataBinding source.&nbsp; I was passing them around for updates so I'm not sure how best to do that.&nbsp; I'm stuck at the moment as my LINQ queries are returning LinqBindingList and that doesn't cast to ObservableCollection so I need to figure that out... which means - what is the role then of LinqBindingList if I want to share assemblies?&nbsp; The only benefit I see now is the indexing if I do large data processing on the server?&nbsp; How am I going to do filtering now on my bindable collection in Silverlight?&nbsp; Do I do it now at the UI level in the grid?<br><br>Just some thoughts<br><br>jack<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 29, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div><br>1)I was wondering if it was possible to add some of the attributes into CSLA light but not have them do anything (maybe a compiler warning?).&nbsp; I had used the [Indexable] and now my code is littered with #if !SILVERLIGHT [Indexable] #endif<br></div></BLOCKQUOTE><br><br>That is an oversight on our part, and I'll make sure this is fixed in 3.6.1. The attribute won't do anything, but at least it will be there so it does no harm.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div><br>4) LinqBindingList - I started using this a fair amount to create filtered collections to bind on - I need to change this to ObservableCollection where I'm using it as a dataBinding source.&nbsp; I was passing them around for updates so I'm not sure how best to do that.&nbsp; I'm stuck at the moment as my LINQ queries are returning LinqBindingList and that doesn't cast to ObservableCollection so I need to figure that out... which means - what is the role then of LinqBindingList if I want to share assemblies?&nbsp; The only benefit I see now is the indexing if I do large data processing on the server?&nbsp; How am I going to do filtering now on my bindable collection in Silverlight?&nbsp; Do I do it now at the UI level in the grid?<br></div></BLOCKQUOTE><br><br>LINQ to CSLA has a dependency on the C5 data structure library. At the time we were building 3.6 there wasn't a fully working C5 for Silverlight (might not be now, I haven't checked) and so it wasn't possible to port the indexing features to SL.<br><br>LinqBindingList exists primarily to support various data binding scenarios, mostly in Windows Forms. I'm sure it will become important in WPF as well - though there's another thread where the whole question of collections and WPF binding is discussed - and this is probably the thorniest issue I face looking at version 4.0.<br><br>The picture was (and is) even less clear in Silverlight. Does LBL have a role? Would it offer value, or get in the way?<br><br>Due to those issues, and in the interest of time, because LINQ to CSLA is a volunteer effort on Aaron's part, I decided to leave LINQ to CSLA out of CSLA .NET for Silverlight for the time being.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, June 03, 2009</h2>Would this help for an implementation of LinqBindingList in Silverlight? <br />http://blogs.msdn.com/delay/default.aspx<br /><br />If Microsoft is maintaining the tree logic ...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Geeky replied on Monday, February 23, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Jack:</strong></div><div>#if SILVERLIGHT #end if works fine<BR>#if !SILVERLIGHT #end if works fine<BR><BR>Bottom line - use UPPERCASE (which is annoying if you dislike ALL UPPER).</div></BLOCKQUOTE></P>
+<P>Project Properties -&gt; Build -&gt; Conditional compilation symbols - change to "Silverlight"?</P>
+<P>Although it should be upper case by convention so I don't know if that will even work or if it will affect other things.&nbsp; You could just add "ag" ;-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, February 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Didn&#8217;t know that was an option - Thanks<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Geeky [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> February-23-09 7:20 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] My Gotchas so far in CSLA Light (Silverlight)<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>#if SILVERLIGHT #end if works fine<br>
+#if !SILVERLIGHT #end if works fine<br>
+<br>
+Bottom line - use UPPERCASE (which is annoying if you dislike ALL UPPER).<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Project Properties -&gt; Build -&gt; Conditional compilation symbols -
+change to &quot;Silverlight&quot;?<o:p></o:p></p>
+
+<p>Although it should be upper case by convention so I don't know if that will
+even work or if it will affect other things.&nbsp; You could just add
+&quot;ag&quot; ;-)<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,43 @@
+<html><header><title>Exception raised when trying to generate WSDL for Data Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception raised when trying to generate WSDL for Data Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8677.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sameer posted on Wednesday, March 17, 2010</h2><p>We are using Csla 3.8 to stand up a web application with an Application server (with data portal hosted in it) and a web server (with the web.config file pointed to the data portal in the application server).&nbsp;</p>
+<p>I seem to have done everything including the following:</p>
+<p>1. Copied all the relevant dlls into a bin folder</p>
+<p>2. Using IIS to host the data portal</p>
+<p>3. Created a web.config file with the following Data Portal settings:</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&lt;system.runtime.remoting&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;application&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;wellknown mode=&quot;SingleCall&quot; objectUri=&quot;RemotingPortal.rem&quot; type=&quot;Csla.Server.Hosts.RemotingPortal, Csla&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/service&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;channels&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;channel ref=&quot;http&quot;&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;serverProviders&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;provider ref=&quot;wsdl&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;formatter ref=&quot;soap&quot; typeFilterLevel=&quot;Full&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;formatter ref=&quot;binary&quot; typeFilterLevel=&quot;Full&quot;/&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;/serverProviders&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&lt;/channel&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&lt;/channels&gt;</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;/application&gt;</p>
+<p>&nbsp;&nbsp;&lt;/system.runtime.remoting&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>When I try to access the wsdl by going to the URL&nbsp;</p>
+<p>http://localhost/ConnectorService/RemotingPortal.rem?wsdl</p>
+<p>I get the following error page:</p>
+<p>&nbsp;</p>
+<pre>System.NullReferenceException: Object reference not set to an instance of an object.
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.RealSchemaType.PrintMessageWsdl(TextWriter textWriter, StringBuilder sb, String indent, ArrayList refNames)
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.PrintWsdl()
+   at System.Runtime.Remoting.MetadataServices.WsdlGenerator.Generate()
+   at System.Runtime.Remoting.MetadataServices.MetaData.ConvertTypesToSchemaToStream(ServiceType[] serviceTypes, SdlType sdlType, Stream outputStream)
+   at System.Runtime.Remoting.MetadataServices.SdlChannelSink.GenerateSdl(SdlType sdlType, IServerResponseChannelSinkStack sinkStack, ITransportHeaders requestHeaders, ITransportHeaders responseHeaders, Stream&amp; outputStream)
+   at System.Runtime.Remoting.MetadataServices.SdlChannelSink.ProcessMessage(IServerChannelSinkStack sinkStack, IMessage requestMsg, ITransportHeaders requestHeaders, Stream requestStream, IMessage&amp; responseMsg, ITransportHeaders&amp; responseHeaders, Stream&amp; responseStream)
+   at System.Runtime.Remoting.Channels.Http.HttpHandlerTransportSink.HandleRequest(HttpContext context)
+   at System.Runtime.Remoting.Channels.Http.HttpRemotingHandler.InternalProcessRequest(HttpContext context)
+</pre>
+<pre>I am at my wits end on how to resolve this issue. Can someone please chime in and let me know if you see something that I am not doing right?</pre>
+<pre></pre>
+<pre>Thanks,</pre>
+<pre>Sameer</pre>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

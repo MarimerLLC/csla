@@ -1,0 +1,16 @@
+<html><header><title>Best way for edit more objects  at same time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Best way for edit more objects  at same time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11779.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>caste posted on Friday, January 11, 2013</h2><p>Hi all, I have an &nbsp;ER object with a list of childs.&nbsp;Childs are display in a &nbsp;list.</p>
+<p>I want edit childs is this way:</p>
+<p>1) if I have seleced a single child, it is display in a &nbsp;details mask for editing the properties.</p>
+<p>2)&nbsp;if I selected more than a child I wan&#39;t to edit all childs, in the same mask edit (like a property grid that combine same properties for assign objects).</p>
+<p>&nbsp;Which is the better solution? I wan&#39;t to see anything changes in list until &nbsp;modified childs is saved.&nbsp;</p>
+<p>I must use a Read only list and a Editable root at same time?</p>
+<p>Any suggestions is appreciated.</p>
+<p>Thanks </p>
+<p>caste&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, January 14, 2013</h2>This is a UI or view or presentation level issue, not a business model issue.
+
+In other words, your existing business object model doesn&#39;t need to be altered. What you need is a viewmodel that manages the interaction between the one UI control (your textbox) and the set of selected items in the collection.
+
+I&#39;ve done this for a client or two over the years, and it is not a terribly hard problem to solve as long as you recognize the need for a UI-specific viewmodel object that handles this particular type of interaction.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>caste replied on Tuesday, January 15, 2013</h2><p>Hi Rocky, you are right, this is a presentation level issue. I have implemented a VM, that manages the list of business objects.</p>
+<p>Thanks for your replay.</p>
+<p>caste</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

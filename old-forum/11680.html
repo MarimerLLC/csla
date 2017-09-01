@@ -1,0 +1,131 @@
+<html><header><title>[System.Security.SecurityException] = {&quot;Property set not allowed (RolePermissionsID)&quot;}</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[System.Security.SecurityException] = {&quot;Property set not allowed (RolePermissionsID)&quot;}</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11680.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>neel.sawant posted on Wednesday, November 07, 2012</h2><p>[System.Security.SecurityException] = {&quot;Property set not allowed (RolePermissionsID)&quot;}</p>
+<p>&nbsp;&nbsp; at Csla.Core.BusinessBase.CanWriteProperty(IPropertyInfo property, Boolean throwOnFalse)<br />&nbsp;&nbsp; at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue, NoAccessBehavior noAccess)<br />&nbsp;&nbsp; at Csla.Core.BusinessBase.SetProperty[P](PropertyInfo`1 propertyInfo, P newValue)<br />&nbsp;<br />{Boolean CanWriteProperty(Csla.Core.IPropertyInfo, Boolean)}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 07, 2012</h2><p>That is a totally valid exception. I&#39;m assuming you posted it to illustrate some unspoken question?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>neel.sawant replied on Thursday, November 08, 2012</h2><p>Hi,</p>
+<p>I am facing above issue. while assigning values to property.</p>
+<p>var item = (RolePermission)Activator.CreateInstance(typeof(RolePermission), true);</p>
+<p>// getting error here<br />item.RolePermissionsID = reader.GetGuid(&quot;RolePermissionsID&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 08, 2012</h2><p><b>The Exception is caused by either an AuthorizationRule or override to CanWriteProperty that denies the user from editing the property value. </b></p>
+<p>In your mapping from DataAccess to BO you should bypass the authorization rules by : </p>
+<ul>
+<li>using LoadProperty to set the value </li>
+<li>use BypasssPropertyChecks </li>
+</ul>
+<p>BypassPropertyChecks may be used like this inside the Item class:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void MapToItem(SafeDataReader reader)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (BypassPropertyChecks)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RolePermissionsID = reader.GetGuid(&quot;RolePermissionsID&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>neel.sawant replied on Thursday, November 08, 2012</h2><p>Following is the code lines which give me the above mentioned error</p>
+<p>&nbsp;</p>
+<p>
+<p>&nbsp; objExpressDemo.CompanyInsert(objLReqLogDt, objReqCompany);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; foreach (System.Reflection.PropertyInfo prp in props)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; TimesheetHR.Business.Security.Permissions.IsMandatory(Roles.GetRolesForUser(objReqLogin.UserName), prp.ReflectedType.Name, prp.Name);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>RolePermissionList objRoles = RolePermissionList.GetIsManditory(objCriteria);</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; public static RolePermissionList GetIsManditory(RolePermissionCriteria criteria)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RolePermission item;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; RolePermissionList listitem = NewList();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (SqlConnection connection = new SqlConnection(ADOHelper.ConnectionString))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; connection.Open();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (SqlCommand command = new SqlCommand(&quot;[dbo].[p_RolePermission_GetIsManditory]&quot;, connection))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.CommandType = CommandType.StoredProcedure;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddRange(ADOHelper.SqlParameters(criteria.StateBag));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@EntityHasValue&quot;, criteria.EntityHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@AuthorisationActionHasValue&quot;, criteria.AuthorisationActionHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@ExtendedAttributesHasValue&quot;, criteria.ExtendedAttributesHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@DateUpdatedHasValue&quot;, criteria.DateUpdatedHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@UserUpdatedHasValue&quot;, criteria.UserUpdatedHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@DateDeletedHasValue&quot;, criteria.DateDeletedHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; command.Parameters.AddWithValue(&quot;@PermissionGrantedHasValue&quot;, criteria.PermissionGrantedHasValue);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (var reader = new SafeDataReader(command.ExecuteReader()))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; while (reader.Read())</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item = Map(reader);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; listitem.Add(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return listitem;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private static RolePermission Map(SafeDataReader reader)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var item = (RolePermission)Activator.CreateInstance(typeof(RolePermission), true);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.RolePermissionsID = reader.GetGuid(&quot;RolePermissionsID&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.OriginalRolePermissionsID = reader.GetGuid(&quot;RolePermissionsID&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.Entity = reader.GetString(&quot;Entity&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.AuthorisationAction = reader.GetString(&quot;AuthorisationAction&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.RoleName = reader.GetString(&quot;RoleName&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.ExtendedAttributes = reader.IsDBNull(&quot;ExtendedAttributes&quot;) ? (System.String)null : reader.GetString(&quot;ExtendedAttributes&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.DateCreated = reader.GetDateTime(&quot;DateCreated&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.UserCreated = reader.GetGuid(&quot;UserCreated&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.DateUpdated = reader.IsDBNull(&quot;DateUpdated&quot;) ? (System.DateTime?)null : reader.GetDateTime(&quot;DateUpdated&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.UserUpdated = reader.IsDBNull(&quot;UserUpdated&quot;) ? (System.Guid?)null : reader.GetGuid(&quot;UserUpdated&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.DateDeleted = reader.IsDBNull(&quot;DateDeleted&quot;) ? (System.DateTime?)null : reader.GetDateTime(&quot;DateDeleted&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; item.PermissionGranted = reader.IsDBNull(&quot;PermissionGranted&quot;) ? (System.Boolean?)null : reader.GetBoolean(&quot;PermissionGranted&quot;);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return item;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>When I tried your above solution in business it is not allowing me to use using&nbsp;syntax&nbsp;with&nbsp;<span>using (BypassPropertyChecks)? could you help on the same</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 08, 2012</h2><p>Hi,</p>
+<p>You have to understand that the BusinessObject does not know if it is the user (databinding/UI) or the data access code that tries to set the property value. </p>
+<p>CSLA endorses encapsulation, in your case - the suggested handling is to send the DataReader to a method on the businessobject and then it is the objects responsibility to read from the data reader and set its properties. This way the business object will know that it is now loading data and have access to either </p>
+<ul>
+<li>LoadProperty or </li>
+<li>use BypassPropertyChecks</li>
+</ul>
+<p>to safely set the propertys value - even iwhen the user is not allowed to edit the value.</p>
+<p>You can also create an ObjectAccessor class that inherits from ObjectFactory to provide helper methods to access LoadProperty / BypassPropertyChecks. But this accessor does NOT come out of the box. The ObjectFactory class is a patten you might want to look into more closesly as it seems that this may be in your mindset but not what you are using. You should use the <b>DataPortal </b>properly!!!</p>
+<p>I do reccommend the CSLA 4 Ebooks:</p>
+<ul>
+<li>Using CSLA 4 - Data Access (describes both DataPortal_XYZ methods and ObjectFactory) </li>
+<li>Using CSLA 4 - Business Objects (on desgining business objects and business rules).</li>
+<li>Using CSLA 4 - Data Portal (on using and configuring DataPortal) </li>
+</ul></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

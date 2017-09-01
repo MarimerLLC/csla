@@ -1,0 +1,60 @@
+<html><header><title>SP1 Upgrade- no longer accepts winPart</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SP1 Upgrade- no longer accepts winPart</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2501.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazor posted on Saturday, March 10, 2007</h2>After upgrading to Service Pack 1&nbsp; (SP1) for Visual Studio, now when I create a user control and add<br>Inherits WinPart, I get this error:<br><br><i>Bass class 'WinPart" specified for class 'UserControl2'<br>cannot be different from the base class<br>'System.Windows.Forms.UserControl' of one of its other<br>partial types<br><br>Change class 'UserControl2' to inherit from<br>'WindowsApplication1.WinPart'.<br><br>Change class 'UserControl2' to inherit from<br>'System.Windows'Forms.UserControl'.<br></i><br>Neither corrects.&nbsp; I downloaded the latest version as of 3/9/2007 - still no help. <br>How do I fix it?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 10, 2007</h2>I am running SP1, and I just successfully added a usercontrol to ProjectTracker, and then changed it so it inherits from WinPart. This worked fine, so I am guessing you have some other issue with your UI code.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazor replied on Saturday, March 10, 2007</h2>Hmmmmm...Thanks for the help.&nbsp; However, I also added a user control to Project tracker and after adding "Inherits WinPart" still got the same error.&nbsp;&nbsp; Any ideas? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you are using C#, make sure you&#8217;ve built the solution. The
+lack of a background compiler means that some things don&#8217;t work until
+after you build.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Lazor
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, March 10, 2007 11:46 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SP1 Upgrade- no longer accepts winPart<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hmmmmm...Thanks for the help.&nbsp; However, I also added a
+user control to Project tracker and after adding &quot;Inherits WinPart&quot;
+still got the same error.&nbsp;&nbsp; Any ideas? <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Saturday, March 10, 2007</h2>You say "after <b>adding</b> Inherits WinPart"... Did you change the inherits line in the designer's partial class or just added that in the standard class?<br><br>Sounds like the same class has 2 inherits lines in 2 different partial classes.<br>You can also avoid this issues by choosing add -&gt; Component in your project and then choose "inherited user control". That'll show you a list of available user controls to inherit from.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lazor replied on Monday, March 12, 2007</h2>I recompiled but the problem presists.&nbsp; However I tried adding the component and that worked fine.&nbsp; I'm still puzzled - I just added a user control to the PTWin project, and added the inherits WinPart.&nbsp; However since the adding component worked - I won't lose sleep.&nbsp; Thanks guys for the help.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, March 12, 2007</h2>Ok, I think you missed the partial class thing. Notice how when you open up the code for the usercontrol, you just get the class definition and nothing else? It doesn't even say "Inherits UserControl". That's because there's a second partial class that's hidden by default that contains all the designer generated code and the "inherits" line. You need to toogle "Show all files" on (second button in solution explorer's toolbar) and you'll be able to expand the user control. Open the ".Designer.vb" file and you'll be able to see that....<br><br>I hope that solves your issue!<br><br>Andrés<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

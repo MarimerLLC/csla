@@ -1,0 +1,114 @@
+<html><header><title>How to get Project Tracker running in VS2013</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to get Project Tracker running in VS2013</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W posted on Wednesday, October 30, 2013</h2><p>This is a copy of an entry from our in house wiki that describes everything I did to get Project Tracker up and running VS2013. &nbsp;This took me probably 12 hours to achieve, hopefully this post will save others that pain!</p>
+<h2>V4.5.30 Samples in VS2013</h2>
+<p>Install the whole 4.5.30 package (CSLA and samples) using the installer here: &nbsp;<a href="http://www.cslanet.com/Download.html">http://www.cslanet.com/Download.html</a>. &nbsp;That installer creates a folder on the C drive&nbsp;C:\Program Files (x86)\Marimer LLC\CSLA .NET\4.5.30\</p>
+<p>You&#39;ll find PtojectTracker at: &nbsp;C:\Program Files (x86)\Marimer LLC\CSLA .NET\4.5.30\Csla\Samples\NET\cs\ProjectTracker</p>
+<h3>Grant Permissions</h3>
+<p>This cost me hours... you won&#39;t be able to log in to any of the PT projects until you go to sample directory and grant the Users group full permissions. &nbsp;This is because SQL Server doesn&#39;t have write permissions onto the Program Files directory where the samples are installed. &nbsp;(To see this issue, install SQL Management Studio Express and connect to (LocalDB)\v11.0. &nbsp;You will see the databases are greyed out indicating they are readonly).</p>
+<h3>Getting Winforms and WPF UI projects working</h3>
+<p>Now open up the Project Tracker solution in VS2013, VS will convert it to a 2013 project. &nbsp;If you then temporarily unload the Mvc3UI project you should find everything builds first time. &nbsp;If you set the start up project as WfUI (the winforms project) you should then be able to run it and perform CRUD operations.</p>
+<p>Login as admin/admin or manager/manager (Note that pm/pm no longer works). &nbsp; Also note that only the manager login can edit projects etc.</p>
+<h3>Getting&nbsp;MVC UI working</h3>
+<p>For MVC there is an issue here as the solution was built in VS2012 against MVC 3 which VS2013 doesn&#39;t support (MVC 4 or later only), so we have to fix up the references in PT&#39;s Mvc3UI project in this order (the order seems to make a difference):</p>
+<ul>
+<li>System.Web.MVC (needs fixing as pointing at MVC3, it is in the Extensions sub section in the References form)</li>
+<li>CSLA (there is a dependencies folder in the samples directory that has all the dlls)</li>
+<li>Csla.Web</li>
+<li>Csla.Web.Mvc4</li>
+<li>We also seem to need to add a reference to System.Web.WebPages to get PTIdenty.cs to compile</li>
+</ul>
+<p>The next thing I did may not be necessary, but I reinstalled the MVC 4 framework from NUGET, as this forces all the MVC references in an older project to be updated to the ones for the version you just installed. &nbsp;I did this via package manager (<a href="https://www.nuget.org/packages/Microsoft.AspNet.Mvc/4.0.30506">https://www.nuget.org/packages/Microsoft.AspNet.Mvc/4.0.30506</a>&nbsp;was the version I used).&nbsp; this was provoked by reading this: &nbsp;<a href="http://stackoverflow.com/questions/7668252/migrating-my-mvc-3-application-to-mvc-4">http://stackoverflow.com/questions/7668252/migrating-my-mvc-3-application-to-mvc-4</a></p>
+<p>After that I was still getting errors about web.config and then finally I realised that web.config files have the dll versions hard coded in, so I needed to change them to match the versions of the dlls that are now referenced in the project. &nbsp;In my case this was:</p>
+<p><strong>C:\Program Files (x86)\Marimer LLC\CSLA .NET\4.5.30\Csla\Samples\NET\cs\ProjectTracker\Mvc3UI\Web.config</strong></p>
+<p>&nbsp;</p>
+<table class="Basic">
+<tbody>
+<tr>
+<td>&lt;add assembly=&quot;System.Web.Helpers, Version=<span>1</span>.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot;/&gt;</td>
+<td>
+<p>Changed from 1 to 2</p>
+</td>
+</tr>
+<tr>
+<td>&lt;add assembly=&quot;System.Web.Mvc, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot;/&gt;</td>
+<td>
+<p>Changed from 3 to 4</p>
+</td>
+</tr>
+<tr>
+<td>&lt;add assembly=&quot;System.Web.WebPages, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31BF3856AD364E35&quot;/&gt;</td>
+<td>
+<p>Changed from 1 to 2</p>
+</td>
+</tr>
+</tbody>
+</table>
+<p><strong>C:\Program Files (x86)\Marimer LLC\CSLA .NET\4.5.30\Csla\Samples\NET\cs\ProjectTracker\Mvc3UI\Web.config</strong></p>
+<p><span>Change all the MVC file refs from 3.0.0.0 to 4.0.0.0</span></p>
+<p>Once all of that is done then the mvc project should run and you will get the ProjectTracker homepage. &nbsp;If you click to the Projects list you will get an error if you have &#39;Break on CLR exceptions&#39; ticked in the debug options, but if you untick that everything will run smoothly.</p>
+<div>You shouldn&#39;t need to attach databases manually or change connection strings or make any other config changes.</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, November 12, 2013</h2><p>Thank you for the great post. I am marking it for future reference. Also, I might need to contact you later.</p>
+<p>Have you been through the case where you developed a project using older version of CSLA .NET and then you wanted to move to CSLA 4.5?</p>
+<p>Is there a way to keep old class files referencing the old CSLA DLL (for all application parts), and start using the new CSLA DLL for all new developed application parts.</p>
+<p>What did you do in this case?</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 12, 2013</h2><p>Hi Tarek,&nbsp;</p>
+<p>You may want to read my blog post on Csla.Validation too:&nbsp;<br /><a href="https://jonnybekkum.wordpress.com/2013/10/07/csla-validationthe-new-nuget-package-in-csla-net-4-5-40/">https://jonnybekkum.wordpress.com/2013/10/07/csla-validationthe-new-nuget-package-in-csla-net-4-5-40/</a>&nbsp;</p>
+<p>This blog post concentrates on how to move from CSLA 3.6 (or higher) to CSLA 4.5. If you are on CSLA 2.x there is even a considerable amount of changes to move to CSLA 3.6.&nbsp;</p>
+<p>1. You _could_ create a special build of the CSLA version you use and change all namespaces to use Csla.N2 or whatever and update your application to use this namespace - and then you can also add the new assemblies and start moving code to new assembly and Csla namespace or </p>
+<p>2. Or move your code to Csla 3.6 (or never) and then use Csla 4.5 and Csla.Validation to make the move a bit smoother. </p>
+<p>One of the main hurdles is the property declarations. If you use code then you will get a lot of help. Without codegen you have a big task. All properties MUST have a PropertyInfo to be associated with Rules (or Authorizations) and preferable use the simplified property declaration with automatic backing field unless you have using/referencing relationship.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, November 12, 2013</h2><p>I am not sure why the links you provide don&#39;t work in the first time. I will try them after a while, maybe it will work.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Tuesday, November 12, 2013</h2><p>OK... the link is working now.</p>
+<p>I checked the post your pointed me to, and I am feeling nervous, to be honest. I am used to VB Code style, and most of what I am reading sounds like something totally new to me.</p>
+<p>Let me put this straight. We have a new request to update the existing application to add new features. which I developed using VS 2005 and CSLA .NET 2.x. <a target="_blank" href="https://drive.google.com/file/d/0B97clwYte2SHaEpYb3llaGh5Njg/edit?usp=sharing">This is the list of required improvements</a>.</p>
+<p>It was decided to upgrade to VS 2013 Prof., and we already purchased the licenses for 2 developers.</p>
+<p>I am not sure what shall I do now?</p>
+<p>Should I migrate the entire project to VS 2013 only and continue using CSLA 2.x?</p>
+<p>Should I also consider migrating to a new CSLA version for the existing code?</p>
+<p>We are actually looking for professional services for development support, and we have some budget allocated for this project.</p>
+<p>I truly appreciate it if someone could recommend a course of action.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Tuesday, November 12, 2013</h2><p>Hi Tarek</p>
+<p>We are moving from 3.6.3 to 4.5. &nbsp;I&#39;m in the process of migrating the first production code at the moment, so I can tell you more once that&#39;s done.</p>
+<p>3.6.3 was when we got going with CSLA, so I don&#39;t have any experience of migrating CSLA 2 to 3.x I&#39;m afraid. &nbsp;</p>
+<p>I understand your nervousness, it is pretty overwhelming at first. &nbsp;Even if you know CSLA well I&#39;d recommend reading Rocky&#39;s ebooks for CSLA 4 before going anywhere near the code. &nbsp;There are a lot of breaking changes that need to be considered. &nbsp;I&#39;ve not done the migration from 2 to 3, but I suspect you may also need to read the Using CSLA 3 book too as that will explain new concepts that are assumed knowledge when you come to learning about CSLA 4/4.5. &nbsp;</p>
+<p>As far as whether you should update the existing app goes, it depends on the business case, budget and deadline. &nbsp;If you have no need for any of the new features of CSLA and are working with winforms then I&#39;d probably just stay on the version you&#39;re on. &nbsp;If the client is happy to pay for you to go up the CSLA 3,4,4.5 learning curve then that&#39;s different of course, there&#39;s a ton of great stuff in the newer versions of CSLA.</p>
+<p>As Jonny said, if you aren&#39;t using code generation for your classes I&#39;d definitely look into that too. &nbsp;Codesmith do good CSLA templates as part of their product and Blake form Codesmith is really helpful on their forums. &nbsp;There used to be a CSLA Contrib templates project too, I&#39;m not sure whether that is still active.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, November 12, 2013</h2><p>Hi,&nbsp;</p>
+<p>Not knowing much of the details in your requirements - but it does not seem like upgrading CSLA to latest version is going to help you a lot here.&nbsp;</p>
+<p>Some other points to consider:&nbsp;</p>
+<p><ol>
+<li>Does your app use 3rd party controls? If yes - then you should also upgrade these to latest versions to get tooling / designer support in VS2013</li>
+<li>Does your app use ReportViewer control? if yes- then you should upgrade to latest ReportViewer as the report format (RDL) will automatically be upgraded when you open a report in the report designer.&nbsp;</li>
+</ol></p>
+<p>My suggestion is to upgrade the solution to VS 2013 but still continue to use CSLA 2.x version that you are using.&nbsp;<br />You _should_ be able to &nbsp;upgrade the .NET solution to NET 4.0 or NET 4.5 if you need WCF, LINQ, EF or other new components for integration.&nbsp;</p>
+<p>The reality is that Windows Forms has not seen much updates since .NET 2.0. The Visual Basic Power Pack controls has become part of the .NET Framework (from .NET 4.0) and in .NET 4.5 it is supported to use Interfaces in DataBinding.&nbsp;</p>
+<p>What I do know from having done several migrations is that moving from CSLA 2.x to CSLA 4.5 is close to a complete rewrite and will require much work and testing. It will be a lot less code lines (like just each property from 11 lines down to 5 lines of code) and much easier to write unit tests on business rules but is a big investment to take.&nbsp;</p>
+<p>So if you only require some minor changes / additions and the possibility of using new technologies for f.ex. integration with other systems or database access then I&#39;d just continue to be one the same CSLA version and do a minimum of code changes. And whether you want to upgrade the .NET version to never depends on your requirements and clients.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, November 13, 2013</h2><p>Thank you all so much for the valuable information.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b> f.ex. integration </div></p>
+<p>What is f.ex. integration?</p>
+<p>It seems we will do the following:</p>
+<p>1. Migrate the solution to VS 2013.</p>
+<p>2. Migrate to CSLA version which is compatible with .NET 2.0/.NET 3.0. This is to be as close as possible to the ideal situation.</p>
+<p><strong><span style="text-decoration:underline;">Questions:</span></strong></p>
+<p>&nbsp;</p>
+<ol>
+<li>Does migrating to latest version of CSLA, which is compatible as mentioned above, does this result into major re-coding or breaking changes?&nbsp;&nbsp;&nbsp;</li>
+<li>Does migrating to latest .NET 4.x version requires recoding or major work for the existing solution to compile using the latest compatible CSLA 2.0/3.x version?&nbsp;&nbsp;</li>
+<li>Due to time constraint for the project, we will need immediate support to solve problem which might result while going through the above. Could you please point me to a company where they can offer flexible supporting services such as for number of calls, or something similar?&nbsp;</li>
+</ol>
+<p>&nbsp;</p>
+<p>Thank you again for your support.</p>
+<p>Tarek.</p>
+<p><span style="font-family:mceinline;">Note on the side: We are suffering in general due to such drawback from Microsoft Office (MS Access) and VS Development platforms. This issue has been raised in the departmental meeting and there was very strong feedback from the management. Why does migrating from one version to new requires us to go through such a pain? On a similar subject, we have several MS Access Applications running for several years, and now they are behaving in a strange way. We noticed this after some Windows update or after installing a new MS Office version.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, November 13, 2013</h2><p>Hi,</p>
+<p>Integration is f.ex. calling into WCF or REST services or OData services which is a lot easier in .NET 4.0/4.5.</p>
+<p><ol>
+<li>No - it should not require re-coding or breaking changes (or you could even continue to use the existing version).</li>
+<li>Retargeting of the solution/projects to .NET 4 or 4.5 should not &nbsp;introduce breaking changes.</li>
+<li>You probably need access to developer(s) with deep knowledge of CSLA and Visual Stuido. <br />Magenic (USA) has several and so do Inmeta (Norway). <br />How flexible support service that may be offered, I do not have details to provide right now. &nbsp;</li>
+</ol></p>
+<p>You may require some work in upgrade of 3rd party UI components/ReportViewer etc to get tooling support in VS2013. </p>
+<p>Which source control system do you use? Is it supported in VS2013? </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, November 13, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Integration is f.ex. calling into WCF or REST services or OData services which is a lot easier in .NET 4.0/4.5</div></p>
+<p>I am happy to hear that .... <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /> because&nbsp;we don&#39;t use such things in the VS Solution to be migrated. But, the solution has a separate Project for Web Services which has only Web Services. Any problem here?</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>You may require some work in upgrade of 3rd party UI components/ReportViewer etc to get tooling support in VS2013.</div></p>
+<p>Nothing much. We only use EO.Grid control. I think I have to contact the company to check if we need to use a new DLL for .NET 4.x.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Which source control system do you use? Is it supported in VS2013?</div></p>
+<p>All source code is hosted on NT Shared Folders on the Network. We use VS 2005 and we open the project directly from the shared folder. Do you see any problem here if we move to VS 2013?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Sunday, November 17, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>Magenic (USA) has several and so do Inmeta (Norway). </div></p>
+<p>I know Magenic, and I hope you could give me a link to Inmeta. I will hand-over their contact details (Magenic and Inmeta) to our local service provider to check the possibility of using their services.</p>
+<p>Tarek</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

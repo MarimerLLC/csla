@@ -1,0 +1,51 @@
+<html><header><title>Rule in child object using properties in parent object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rule in child object using properties in parent object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11989.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques posted on Monday, May 20, 2013</h2><p>
+<p><span>I
+have a rule in my children objects that uses some values from the parent
+object. The rule must be executed when any of those values in the parent
+changes. The rule also adds different error result messages depending of
+certain conditions.</span></p>
+<p><span>The options I have are:</span></p>
+<p><span>1-Add the needed properties to
+the child object and update its values every time the values in the parent
+change using PropertyHasChanged. Those properties have to be loaded also for
+every new child and when the children objects are being load from the database.</span></p>
+<p><span>What I don&#39;t like about this
+approach is to add properties to the child that don&#39;t&nbsp;really&nbsp;belong
+there and all the code needed to load those properties.</span></p>
+<p><span>&nbsp;</span>2-Create
+a lambda rule in the child that uses the values from the parent through the
+Parent property of the child object. Add some method in the child object to
+call BusinessRules.CheckRules(MyProperty). That method will be used from the
+parent object inside PropertyHasChanged to trigger the execution of the rule in
+the children.</p>
+<p><span>In
+this option I&nbsp;don&#39;t&nbsp;know how to output different messages for the rule
+depending of conditions inside the rule code. This is how I define the rule:</span></p>
+<p><span>BusinessRules.AddRule&lt;MyChild&gt;(MyPropertyProperty,</span></p>
+<p><span>o
+=&gt; {</span></p>
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &hellip;rule code here using (MyParent)o.Parent
+&hellip;</span></p>
+<p><span>},
+&ldquo;Broken rule message&rdquo;);</span></p>
+<p><span>&nbsp;</span></p>
+<p><span>My
+questions are:</span></p>
+<p><span>Is
+there a better solution for this?</span></p>
+<p><span>If
+not, how can I output different messages from the rule using the second option?</span></p>
+<p>Thanks in advance.</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, May 20, 2013</h2><p>Which version of CSLA do you use?&nbsp;</p>
+<p>My suggestion for this solution is to override PropertyHasChanged and ChildChanged in the &quot;parent&quot; object.</p>
+<p>PropertyHasChanged is only called when a property value is updated and you can loop check which property was updated and loop through the child objects to call a method to &quot;recheck&quot; rules for the given properties.&nbsp;</p>
+<p>As for Severity there is different solutions depending on version (3.x or 4.x) and you cannot use a lambda rule to do this. &nbsp;The rules in the child object must read the values from the &quot;parent&quot; object and you must make sure that your rules can run even when the parent is null (ie CheckRules is called in DataPortal_Create before the object is added to the parent).&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Monday, May 20, 2013</h2><p>Hi Jonny,</p>
+<p>I&#39;m using CSLA 4.5.</p>
+<p>If I go with your suggestion, how can I get the parent from within the rule in the child object? Using the Target property?</p>
+<p>And when the parent is null, I will have to make the rule to skip the execution and add code to the ChildrenList object to rerun the rules in the child after they had been created and added to the collection. Is that the right approach?</p>
+<p>Thanks a lot for your time.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, May 20, 2013</h2><p>Yes, you would use the context.Target property.&nbsp;</p>
+<p>I would &quot;hook&quot; into the ChildChanged event on the &quot;parent&quot; object to run rules on a &quot;inserted&quot; item. When an item is added to the list you have no guarantee that the list has been added to the parent.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>correodemarques replied on Tuesday, May 21, 2013</h2><p>Great idea to use ChildChanged instead of adding the code to the list. Thank you very much for your explanations.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

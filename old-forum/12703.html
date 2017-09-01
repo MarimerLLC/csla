@@ -1,0 +1,30 @@
+<html><header><title>Triggering Authorization Rules on the Server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Triggering Authorization Rules on the Server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12703.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 posted on Thursday, July 24, 2014</h2><p>I&#39;ve set up static Auth Rules on my object by creating a method on it:</p>
+<p>&nbsp; &nbsp; &nbsp;public static void AddObjectAuthorizationRules()</p>
+<p>In which I add to the static BusinessRules collection:</p>
+<p>&nbsp; &nbsp; &nbsp;BusinessRules.AddRule(typeof(MyObject), ... etc</p>
+<p>&nbsp;</p>
+<p>I have CSLA set for 3-Tier usage, and I can see that the Authorization rules get checked in the client when the DataPortal is used.</p>
+<p>However, when it hits the server DataPortal it doesn&#39;t seem check the rules. &nbsp;As this will be a publicly available server, I need it to check the rules on the server too.</p>
+<p>Is there an easy way to configure the server DataPortal to also check the Authorization rules? I couldn&#39;t see anything in the CSLA books.&nbsp;</p>
+<p>I am using&nbsp;4.5.501.0</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Thursday, July 24, 2014</h2><p>Either subclass WcfPortal or provide your Service Portal for public clients. </p>
+<p>If your clients are intern/partially trusful you maybe can use one of the two Interfaces:</p>
+<p>Csla.Server.IAuthorizeDataPortal: Interface to be implemented by a custom authorization Provider. <br />Csla.Server.IInterceptDataPortal: Implement this interface to create a data portal interceptor that is notified each time the data portal is invoked and completes processing. </p>
+<p>&nbsp;void Initialize(Csla.Server.InterceptArgs e)&nbsp; <br />&nbsp;void Complete(Csla.Server.InterceptArgs e)</p>
+<p>Server Startup (or static constructor):<br />&nbsp;Csla.Server.DataPortal.InterceptorType = typeof(MyInterceptor);</p>
+<p>And CheckRules in Initialize(..), copy the implementation from DataPortalT.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 24, 2014</h2><p>IAuthorizeDataPortal is intended to address this scenario. Implement this interface, configure your implementation to be used by the data portal, and your code will be invoked on the server for each data portal request immediately after the request has been deserialized and before the data portal starts to process the request.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Friday, July 25, 2014</h2><p>Thanks Rocky</p>
+<p>I am already using IAuthorizeDataPortal for an authentication token check, so this isn&#39;t too bad for me :)</p>
+<p>What exactly do I call from within there to trigger a check of the Authorization Rules based upon the&nbsp;AuthorizeRequest details? &nbsp;Is there anything within CSLA to help me with this or do I need to manually check my permissions?</p>
+<p>Thanks again</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 26, 2014</h2><p>You need to manually do the check, but you can do it by invoking the same public static methods often used in ASP.NET or other UI code.</p>
+<p>I&#39;m not near an actual computer just now, but from memory I think this is all in Csla.Rules.AuthorizationRules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Monday, July 28, 2014</h2><p>Thanks Rocky.</p>
+<p>I had a look at DataPortal&lt;T&gt;.DoFetchAsync to see how it was being called in there and have essentially recreated it in my IAuthorizeDataPortal:</p>
+<p>if (!BusinessRules.HasPermission(clientRequest.Operation.ToAuthAction(), clientRequest.ObjectType))</p>
+<p>{</p>
+<p>&nbsp; &nbsp;throw new SecurityException(</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; string.Format(Resources.UserNotAuthorizedException, clientRequest.Operation.ToSecurityActionDescription(), clientRequest.ObjectType.Name)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; );</p>
+<p>}</p>
+<p>(With a couple of extension methods to a) map the Operation to AuthorizationAction and b) duplicate the logic from the DataPortal to provide the friendly action in the exception message, such as &quot;get&quot;, &quot;create&quot; etc.)</p>
+<p>It&#39;s a shame that I have to throw the exception myself (and build the message string myself to match what the client data portal does) - a BusinessRules.CheckPermissions method that did this for me would be useful. &nbsp;Just a thought.</p>
+<p>Thanks again</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 28, 2014</h2><p>You could add a feature request to GitHub for this if you&#39;d like. If you are ambitious you could implement it and do a&nbsp;pull request :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrew123 replied on Monday, July 28, 2014</h2><p>Ambitious, but busy ;)</p>
+<p>I will see what I can do.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,605 @@
+<html><header><title>Blending ORM with CSLA is like mixing oil and water to me</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Blending ORM with CSLA is like mixing oil and water to me</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/171.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jijay posted on Tuesday, May 23, 2006</h2>Hi, I'm using CSLA, and to tell the truth, I'm not quite sure how to deal with data access layer with it. <br>I tried to use ORM to gain benefit of its strong type, caching, performance, lazy-loading, reduced plumbing, rapid development, adaptive to changes, and all other benefits. But I found out that it is very hard to me to blend CSLA with CRM smoothly.<br><br>First, it's almost impossible to use ORM which requires inheritance to a base class.<br>Second, as the premise of CSLA suggest, the business object design should not be tied to any table in DB. Therefore, I use an approach where persistence objects are used only to fetch and manipulate information for business object. I build procedures to extract information in some ORM object (persitence objects) into a buiness object, then keep the persistence objects inside the business objects to support its data access. <br>But this approach apparently doesn't work well with n-level undo, serializable (if the ORM objects inherits an unserializable base class), and surprisingly requires unacceptably much manual effort on monkey job (something that CSLA was initially designed to reduced).<br><br>I'm realy glad if anyone could share what approach they use to work using ORM together with CSLA.<br>Thanx...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, May 23, 2006</h2><P>My view is that ORM and CSLA are complimentary technologies.&nbsp; See my post on this thread regarding <A HREF="/forums/thread/584.aspx">NHibernate</A>.</P>
+<P>As I see it, an ORM tool is responsible for getting data into and out from the database engine of your choice.</P>
+<P>CSLA provides you with the ability to have mobile objects with business level validation that can be surfaced via a number of different UIs.</P>
+<P>I don't have any problem with populating a CSLA business object using the <A href="http://www.hibernate.org/343.html">NHhibernate</A> framework in this way.</P>
+<P>My objects inherit from the CSLA base classes and are not tied to any particular database vendor, but they are linked to tables within my schema (that's the Mapping part).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, May 23, 2006</h2>I agree with David.<br><br>Your ORM layer is your data layer, which is consumed within your business layer (which is built on the CSLA framework) in the DataPortal_XXX methods.<br><br>I think ORM is a misnomer; ORMs generate objects which closely mirror the database, but your business objects will likely have quite a different structure.&nbsp; To me, ORM just seems to be an object for maniuplating a table in a database, so that you don't have to worry about which specific database you're talking to.<br><br>So its ORM isn't so much a mapper as it is a database independant way to work with databases.&nbsp; The 'mapping' from data world to business world would be handled by your business objects.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, May 23, 2006</h2><P>Have you ever dream to have strongly typed objects that represent the database schema so that instead of doing </P>
+<P>this._id = dataReader.GetString("CustomerID"); </P>
+<P>you could do </P>
+<P>this._id = MyOrm.CustomerId; </P>
+<P>...and get a compile error if you screw up instead of a run time error.&nbsp; Also, if you change you database layer, your CSLA library will not compile until you fix the compile error thrown by the strongly typed object.</P>
+<P>You see, CSLA and ORM are not like oil and water; they are very much complimentary to one another.&nbsp; If anything one shouldn’t be used without the other.&nbsp; Using an ORM will also allow you (or make it way more easier) to change to an Oracle database or Firebird, or any support database by you ORM.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jijay replied on Wednesday, May 24, 2006</h2>Mapping a business object using ORM is sensible, but is not quite an option for me, because as what Rocky suggested in his idea of CSLA, the use of ORM in BO violates at least 2 basic OO principle.<br><ol><li>Most ORM disallowes us to employ OO concept like inheritance and data-hiding.</li><li>It makes our object to be relationally designed. It would be difficult to design the objects based on their business roles. It tends to normalize the objects by their data rather than by their behavior.</li></ol>'guyroch' idea is the one I adpot. Yes, what I write in my previous post is basically the approach outlined by guyroch (this._id = MyOrm.CustomerId;). That snippet was what I called as procedure to extract info into BO. What needs to be highlighted is the fact that MyORM (and other persistence object, e.g.: DataReader) has to be in local scope, and not in instance scope. This means that the ORM object should be discarded each time it's used, and should be somehow reconstructed on another call.<br>However, that is usually not quite an easy task. You may notice that only a small part of the MyORM content extracted into BO. How do I managed the rest? This way, give me no clue how to gain benefits of the ORM itself, such as relations, lazy-loading, smart-update, cascade update/delete, and many more.<br><br>Below is a short illustration<br>public static BO RetrieveObject(Criteria criteria)<br>{<br>&nbsp;&nbsp; &nbsp;ORM1 orm1 = ORM1Factory.Retrieve(BuildORM1Criteria(criteria);<br>&nbsp;&nbsp; &nbsp;ORM2 orm2 = ORM2Factory.Retrieve(BuildORM2Criteria(criteria);<br>&nbsp;&nbsp; &nbsp;return ExtractFromDbo(orm1, orm2);<br>}<br>public void Update()<br>{<br>&nbsp;&nbsp; &nbsp;// Yeah, you somehow reconstruct your ORM objects here<br>&nbsp;&nbsp; &nbsp;FillToORM1(orm1); // This should be rebuild all children objects &amp; relations as well<br>&nbsp;&nbsp; &nbsp;FillToORM2(orm2); // This should be rebuild all children objects &amp; relations as well<br>&nbsp;&nbsp; &nbsp;orm1.Update();<br>&nbsp;&nbsp; &nbsp;orm2.Update();<br>}<br><br>public ChildList TheChildren // Load from ORM relation (Lazy-Load)<br>{<br>&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp; if(this._theChildren == null)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  &nbsp;&nbsp;  // Somehow reconstruct ORM1 objects<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; this._theChildren = Child.ConvertFromORMList(orm1.ChildOrmList);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return this._theChildren;<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>Yeah, I'm a rookie in CSLA, so I realy curious how the heck the guys outthere manage their data-access in CSLA. So I really wonder in how you use nHibernate in CSLA. I really appreciate if you could share me the practice you usually use when working with ORM in CSLA, and what ORM you think suits CSLA best.<br>Thank you for any response.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, May 24, 2006</h2><P>As an example of what our BO code looks like, here is an extract from our abstract base class class called NhibernateReadOnlyBase.&nbsp; This forms the basis for our ReadOnly BOs.&nbsp; The only thing we have to do in our concrete BO class is mark the properties that are being persisted with an NHibernate specific attribute - NHibernate then takes care of the rest.</P>
+<P>protected override void DataPortal_Fetch(object criteria)<BR>{<BR>&nbsp;// Get an NHibernate session factory<BR>&nbsp;NH.ISessionFactory sessionFactory = Nfs.Nhibernate.Cfg.BuildSessionFactory(SessionFactoryKey);</P>
+<P>&nbsp;// Get an NHibernate session from the factory<BR>&nbsp;using (NH.ISession session = sessionFactory.OpenSession())<BR>&nbsp;{<BR>&nbsp;&nbsp;// Get the identifier required from the criteria<BR>&nbsp;&nbsp;object identifier = GetNhibernateIdentifier(criteria);</P>
+<P>&nbsp;&nbsp;// Load the current instance from the NHibernate session based on the identifier<BR>&nbsp;&nbsp;session.Load(this, identifier);<BR>&nbsp;}<BR>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, May 24, 2006</h2><P>Ok, I'd like to run this by you guys and see how it makes sense in the context of something like NHibernate.</P>
+<P>I am envisioning a design whereby a business object knows only how to accept or pass an XML representation of its data.&nbsp; The DAL (which could possible be an ORM or NHibernate??) knows how to get that XML DTO from the database.&nbsp; The beauty I'm seeing here is that it is a fairly simple matter at that point to wrap something like a web service around the business objects.&nbsp; No significant additional translation functionality or classes necessary, just another way the XMLDTOs get in and out of the BO.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 24, 2006</h2><P>Dan,</P>
+<P>I've been toying with something along this line. In the VB6 CSLA I used a structure to contain an object's data, and I'm thinking that perhaps a return to such a model (with the exception of child object references) is part of the overall solution. If you object keeps all its data (except child references) in a DTO (class or structure) then you have the means (with the XmlSerialize or DataContractSerializer) to easily convert that state into/out of XML.</P>
+<P>Either that, or use DataMapper to easily copy the values into/out of the DTO - but that seems like an extra copy that may not be necessary if you are willing to always access your "fields" through a _state variable.</P>
+<P>Instead of x = 10 you'd write _state.x = 10.</P>
+<P>There is an impact here in terms of n-level undo, because this DTO would be treated as a single field in the object. However, as long as it is marked as serializable there's no issue - and marking it as serializable doesn't interfere with the XmlSerializer.</P>
+<P>To me the primary drawback is that you have to declare/code the DTO, and it probably needs to be in its own assembly so it can be shared between your business assembly and your data assembly. On the other hand, you can use public fields (because you'll never data bind directly to the DTO) so that reduces the coding effort quite a lot <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Thursday, May 25, 2006</h2><P>I think I see where you want to go with this idea and I've seen&nbsp;Rocky's response as well.</P>
+<P>But I'm not convined that an ORM tool is what is needed to do this job though.&nbsp; It sounds to me like you're talking about the DTO being an XML formatted object, or containing an XML object.&nbsp; So the initial transformation that's needed is from relational data tables into structured XML.&nbsp; That's not ORM (Object Relational Mapping), but perhaps something called XRM (XML Relational Mapping).&nbsp; Yes that&nbsp;XML is part of an object&nbsp;(the DTO), but it's not a BO in the sense that we talk about them with relation to CSLA.</P>
+<P>What NHibernate gives you is a way of mapping the relational data tables directly into the private member fields of your BO.&nbsp; Or you can go through the public properties if you want instead.&nbsp; </P>
+<P>So we're using it to replace the kind of code you'd traditionally write in your DataPortal_Fetch(), such as:</P>
+<P>_id = dr.GetGuid("Id");<BR>_name = dr.GetString("Name");<BR>_started = dr.GetSmartDate("Started", _started.EmptyIsMin);<BR>_ended = dr.GetSmartDate("Ended", _ended.EmptyIsMin);<BR>_description = dr.GetString("Description");</P>
+<P>which instead becomes a single call in the base class:</P><FONT size=2>
+<P>session.Load(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>, identifier);</FONT></P>
+<P><FONT size=2>(see the fuller example in my earlier post).</P></FONT>
+<P>For the DTO concept to work then the definition of the object should be driven by the XSD schema definition in the web service via the WSDL, which defines your contract with the outside world.</P>
+<P>We're currently running a Web Service project using a technique called Web Services Contract First (WSCF).&nbsp; This starts with the contract (i.e. interface) you agree with the outside world for your Web Service.&nbsp; We've found that going down this route you then need facade classes to bridge between the class definitions used by the Web Service and those of your BO.&nbsp; These are somewhat analagous to the "facade" classes in the ProjectTracker Web Services example, where the code maps the data between the BO class and Web Service class.&nbsp; In our case, the two are not exactly 100% the same - things are never that easy <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /></P>
+<P>BTW, good to see you again on the new forum Dan&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, May 25, 2006</h2><P>Rocky, that's taking it in a slightly different direction - or at least it comes from a slightly different motivation - but I've thought about that too.&nbsp; I've liked the benefit this decoupling offers in the databinding.&nbsp; There would be no more need to think in terms of getting a new object from the save operations and having to unbind and rebind in the UI.&nbsp; This data container would just be replaced in the BO and nobody higher up would know any better.</P>
+<P>While the undo could still work as is, wouldn't it be better to take advantage of the fact that we would then know that what we want to save as "state" is precisely and only this state object?&nbsp; No need to wade through all the properties of the BO and do all that checking and filtering.</P>
+<P>David, I think the ORM&nbsp;still applies in that case as you still need data access code to get the data into that state class.</P>
+<P>I think what I was describing is a slightly different thing, or maybe it's a part of the bigger picture including this concept.&nbsp; Considering Chapter 11, what if we move some of the facade concept into the BO class itself?&nbsp; For example, what if we had something like:</P>
+<P>private DataPortal_Fetch(SimpleCriteria criteria)<BR>{<BR>&nbsp;&nbsp;&nbsp;ProjectData[] data =&nbsp;SomeDAL.GetProjectList(criteria);<BR>&nbsp;&nbsp; loadFromDataArray(data);<BR>}</P>
+<P>private&nbsp;void loadFromDataArray(ProjectData[] dataArray)<BR>{<BR>&nbsp;&nbsp; // Load from the ProjectData array as&nbsp;demonstrated in Chapter 11<BR>}</P>
+<P>Then it's easy peasy to add a factory method</P>
+<P>public static ProjectList LoadProjectList(ProjectData[] dataArray)<BR>{<BR>&nbsp;&nbsp; loadFromDataArray(dataArray);<BR>}</P>
+<P>And that in turn makes the web method to add Projects really just a simple pass through if it accepts an XML structure representing a list of ProjectData data.&nbsp; Ok, I'm sort of typing this thinking out load, but I think you'll see what I'm driving at.</P>
+<P>Does this really provide a development productivity gain, or a loss because of increased complexity?&nbsp; Would it usually be the case that enough BOs need to be exposed through web services that it makes sense to do this as a general rule, or does it make more sense to just deal with what needs to be exposed via WS on a case by case basis?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2>Dan, I think you misunderstand what I'm saying. I think you 
+and I are in agreement - that DTO would only be used to load the object, it 
+would not be exposed directly to the UI.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2>All I'm suggesting is that you'd replace your use of 
+private fields in the object with the DTO itself - thus avoiding having to copy 
+the data into/out of the private fields. And that would have some impact on the 
+way undo works, because then your DTO would be a single (THE single) field in 
+your object and it would be serialized as a blob. In most cases I think the 
+functionality would be identical, but without further thought it is hard to say 
+for sure.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2>I think overall that I prefer the idea of mapping the data 
+into/out of the DTO - possibly using an enhanced version of DataMapper - is the 
+best approach, even though it does involve some overhead. Apparently this type 
+of overhead is considered trivial, because looking at LINQ, that's what 
+Microsoft is doing all over the place. :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DansDreams [mailto:cslanet@lhotka.net] 
+  <BR></FONT></DIV>
+  <P>Rocky, that's taking it in a slightly different direction - or at least it 
+  comes from a slightly different motivation - but I've thought about that 
+  too.&nbsp; I've liked the benefit this decoupling offers in the 
+  databinding.&nbsp; There would be no more need to think in terms of getting a 
+  new object from the save operations and having to unbind and rebind in the 
+  UI.&nbsp; This data container would just be replaced in the BO and nobody 
+  higher up would know any better.<SPAN class=360012815-25052006><FONT face=Arial color=#0000ff size=2>&nbsp;[...]&nbsp;</FONT></SPAN></P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Thursday, May 25, 2006</h2><P>Rocky, I agree with all that 100% and I'm seriously considering this design for the major project about to launch here.&nbsp; I pretty much never give <EM>much</EM> concern to overhead in CRUD contexts since even theoretically or otherwise significant hits almost always get totally buried in the data access.</P>
+<P>I think I'm still suggesting I guess one slight addition from the public perspective, which is that coding this way in a version-safe&nbsp;manner against a DTO would enable that DTO to easily come in the form of XML from a web service, and I'm pondering the potential value of that.</P>
+<P>One of the back-end vendors here has some significant web service capabilities.&nbsp; When I ask for a list of contacts I get something like</P>
+<P>&lt;ContactContainer xmlns="<A href="http://corrigo.com/contact.xsd">http://corrigo.com/contact.xsd</A>"&gt;<BR>&nbsp; &lt;Contact ID="13373" CustomerNumber="101781" Action="update"&nbsp; FirstName="Joyce" LastName="Brothers" Phone="555-1212"/&gt;<BR>&lt;/ContactContainer&gt;</P>
+<P>And to update that contact I just send that XML back to the update method with the changes.&nbsp; To add a new contact or delete one I do the same thing but change the Action to "add" or "delete" respectively.&nbsp; It's the kind of behavior I believe you had in mind in Chapter 11 when speaking of the service-oriented design option.&nbsp; It works very well.</P>
+<P>It just strikes me that XML like that is functionally equivalent to the DTO in the design we're discussing - which begs the question why not handle both with as much of the same code as possible?</P>
+<P>Or am I just seeing things as way too simplistic because I haven't actually pounded out this code?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>I think the primary concern I have is that dealing with XML directly is a PITA (imo anyway). Until XLinq arrives, I'd much rather conver the XML into proxy objects (DTOs) so I can work with the objects and then convert them back into XML for transmission. This is what the XmlSerializer is for, and I think it does a good job.<br><br>And yes, this is exactly the kind of thing I am talking about in Chapter 11. While this is arguably not "service-oriented", what you are talking about doing is treating the external services as "XML stored procedures", and I totally buy into that as a sound philosophy on which to build an app with CSLA .NET.<br><br>So whether you directly interact with the XML or use DTO proxy objects doesn't matter - that's plumbing. The architectural concept itself is entirely sound - because you can simply envision the XML/DTO taking the place of ADO.NET DataReader and Command objects.<br><br>What I'm contemplating is enhancing DataMapper to more easily support the DTO concept, with the intent of formalizing support for an external DAL that returns and consumes DTO proxy objects - whether they be populated by ADO.NET, a web service, DLinq or some future data access technology.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Thursday, May 25, 2006</h2><DIV>Rocky, are you avoiding the copy to/from the DTO to limit the extra work of the developer or is there some other reason?&nbsp; Performance? Scalability?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I do this but the "copy" code is done in code generation.&nbsp; The DAL can return either a DataReader or a DataTable and the business object fills itself by checking the type of the object returned.&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I ask to make sure there is something I don't understand.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2>The copy to/from the DTO has (I think) two drawbacks: extra 
+work for the developer (which can be offset by code gen), but more importantly 
+performance.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2>This is the same reservation I have around using a DataSet 
+to load your objects. ADO.NET copies the data into the DataSet and then you copy 
+it from the DataSet to your fields. As compared to a DataReader where you copy 
+the values directly into your fields (saving one whole copy 
+process).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2>A DTO, or ORM, cause the same double-copy as with a 
+DataSet. Which is why I've personally resisted that approach when 
+possible.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2>But I'm starting to cave in :)&nbsp;&nbsp; It is very clear 
+that most people, including Microsoft itself, just don't worry about extra copy 
+operations. It may be the case that I've fallen for a premature optimization 
+trap and should just quit worrying about it.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> pelinville [mailto:cslanet@lhotka.net] 
+  <BR></FONT></DIV>
+  <DIV></DIV>
+  <DIV>Rocky, are you avoiding the copy to/from the DTO to limit the extra work 
+  of the developer or is there some other reason?&nbsp; Performance? 
+  Scalability?</DIV>
+  <DIV><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+  <DIV>I do this but the "copy" code is done in code generation.&nbsp; The DAL 
+  can return either a DataReader or a DataTable and the business object fills 
+  itself by checking the type of the object returned.&nbsp; </DIV>
+  <DIV><FONT face=Arial color=#0000ff size=2><SPAN class=571475213-26052006>[...]</SPAN></FONT></DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, May 26, 2006</h2><p class="MsoNormal">Why not use a separated interface approach instead of DTOs?<span>&nbsp; </span><span>This will allow you to load the object directly
+from the DAL.<span>&nbsp; </span>The trick, </span>use explicit interfaces instead on implicit
+interfaces.<span>&nbsp; </span>Create an explicit interface
+for each object and add them to the DAL.<span>&nbsp;
+</span>Have each object implement their respective interface.<span>&nbsp; </span>Add a LoadingFromDAL flag to each interface.<span>&nbsp; </span>Setting this flag before loading an object
+will allow you to load your object directly without evoking
+broken rules, MarkDirty etc.<span>&nbsp; </span>Further, it
+also allows you to load ReadOnly properties.<span>&nbsp;
+</span>Using explicit interfaces will also allow you to load private properties
+from the DAL.<span>&nbsp;&nbsp; </span>The only way to access
+these private properties (not including reflection) is through casting to the
+interface. However, since the interface resides in the DAL, the presentation
+layer will never be able to access these private properties.<span>&nbsp; </span>Using explicit interfaces solves most of the
+problems that are associated the separated interface method.&nbsp; Does anyone see any potentail problems with this? <o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, May 26, 2006</h2><DIV>Malloc</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Wouldn't that tie the BO's to the DAL to much?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>For example I have Project A and B.&nbsp; Project B needs to add some fields so the interfaces must now be updated.&nbsp; This will break Project A when it tries to get it's data because of serialization issues, no?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Maybe I just don't understand so here are a couple questions.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>1. What is the difference between an implicit and explicit interface?&nbsp; Do you mean implicit as the interface a Class has vs explicit&nbsp;as in &nbsp;"Public Interface XYZ"?</DIV>
+<DIV>2.&nbsp;Are you saying the the DAL returns, say, an IPerson and because your BO is also an IPerson it exoses the IPerson from the DAL through it's own implementation of IPerson?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Please explain more.</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>Explicit/implicit is a concept in C# due to the way the 
+language implements interfaces. Explicit is functionally equivalent to the VB6 
+idea of having a private method implement the interface, while implicit is 
+similar to the VB6 idea of having that method be public in 
+scope.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>VB.NET and VB 2005 are (I think) a bit more explicit in 
+both cases:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>Public Class X</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; Implements Y</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; ' like C# implicit</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; Public Sub Foo() Implements 
+Y.Foo</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; ' implement method 
+here</FONT></SPAN></DIV>&nbsp; End Sub</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; ' like C# explicit</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; Private Sub Bar() Implements 
+Y.Bar</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; ' implement method 
+here</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; End Sub</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>End Class</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>(If you didn't catch the hint of attitude, it is my view 
+that this is the one area where the C# language just got it totally wrong, and 
+where they should have learned from VB6 and gone with a more explicit and 
+visually clear way of implementing interfaces rather than doing a minor tweak of 
+the (lame) VB6 approach...)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>But in the end it doesn't matter about the syntactic 
+difference - the concept is sound. And to avoid tying the business library too 
+close to the DAL, you could have a third assembly to contain the interfaces - 
+referenced by both the business and data assemblies, but not by the 
+UI.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>Back to the point of the original 
+concept:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>Public Class X</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; Implements Y</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; Private _foo As String = ""</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; Public Property Foo() As String</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+CanReadProperty(True)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 
+_foo</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; End Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Set(ByVal value As 
+String)</FONT></SPAN></DIV><SPAN class=415293819-26052006><SPAN class=415293819-26052006>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+CanWriteProperty(True)</FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial><FONT color=#0000ff><FONT size=2><SPAN class=415293819-26052006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If Not _foo Is 
+value Then</SPAN></FONT></FONT></FONT></DIV>
+<DIV align=left><FONT><FONT><SPAN class=415293819-26052006>
+<DIV align=left><FONT face=Arial><FONT color=#0000ff><FONT size=2><SPAN class=415293819-26052006>&nbsp;&nbsp;</SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _foo 
+= value</FONT></FONT></FONT></DIV><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;</FONT></SPAN><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<SPAN class=415293819-26052006>PropertyHasChanged()</SPAN></FONT></FONT></FONT></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2><SPAN class=415293819-26052006>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End 
+If</SPAN></FONT></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; 
+End Set</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; End Property</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;Private Property Y_Foo() As String Implements 
+Y.Foo</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 
+_foo</FONT></SPAN></DIV>&nbsp;&nbsp;&nbsp; End Get</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; Set(ByVal value As 
+String)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _foo = 
+value</FONT></SPAN></DIV>&nbsp;&nbsp;&nbsp; End Set</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>&nbsp; End Property</FONT></SPAN></DIV>&nbsp; 
+</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>End Class</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>Notice that the public Foo property is like normal, while 
+the private Y_Foo (or whatever you choose to call it) bypasses all the normal 
+processing.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>This is (I think) a great approach if you are using a 
+code-gen tool - otherwise it virtually doubles your effort to implement each 
+property. Though I suppose snippets would reduce that effort as well, so maybe 
+it isn't so bad either way.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>As long as the interface is in its own assembly you should 
+be reasonably decoupled from the DAL, so that should be OK too. With the overall 
+understanding that adding/removing a property means updating three 
+assemblies.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=415293819-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 26, 2006</h2>Hi Rocky,<br><br>Just curious, why is the C# way of explicit implemention wrong?<br><br>&nbsp;&nbsp;&nbsp; public class Class1 : IClass {<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region IClass Members<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void IClass.MySub() {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Exception( "The method or operation is not implemented." );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public interface IClass {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void MySub();<br>&nbsp;&nbsp;&nbsp; }<br><br>You can still see that MySub is an explicit interface because its prefixed by IClass.<br><br>I think it makes sense that its private too; if you think about it, MySub should NOT be visible for explicit implementations until you cast the object to the interface.&nbsp; So the method is private until you cast it to the interface, at which time it becomes public.&nbsp; <br><br>Just my thoughts. <br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 26, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2>The explicit approach is acceptable, other than that you 
+should be able to mark it as protected, because that is a common 
+requirement.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2>It is limited, in that multiple interfaces require multiple 
+method implementations - often routing to the same common implementation method 
+- where VB's approach allows you to explicitly map interface methods to any 
+class method that has the same signature. So if you have two interfaces with a 
+Foo() method in VB you can have a single implementation method for 
+both.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2>My complaint is with the implicit implementation. You can't 
+look at the code for a method and know that the method implements something on 
+an interface. You have to look at the class, see what interfaces it implements 
+and then compare the method signature to all methods on those interfaces. That's 
+the part that I find particularly sloppy. For an otherwise highly explicit and 
+self-explanatory language, this kind of magic seems very inconsistent to 
+me.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=509534621-26052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR></FONT></DIV><BR>Just curious, why is the C# way of explicit implemention 
+  wrong?<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, May 26, 2006</h2><DIV>Ahh, now it is coming back... horribly.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I had to take over a c# project a couple of years ago and&nbsp;most classes implemented 3 or 4 interfaces.&nbsp; Curly braces and semicolons and all the other c#isms no problem.&nbsp;&nbsp;Even grew to like it. But&nbsp;that&nbsp;implicit interface implementation (didn't know it was called that) drove me nuts!&nbsp; Maybe it wouldn't be so bad if I was in on the ground up but coming in at the end (and the guy leaving)&nbsp;made that stuff a nightmare.&nbsp; It took forever to figure out what was doing what. And the classes that implemented interfaces that had the same member names or if you wanted to inherit from a class that happened to have a member with the same signature.....&nbsp; AHHHHHHH!&nbsp; </DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I agree, the&nbsp;VB.Net way makes things much clearer.&nbsp; Call me a nooby mort all you want, I like the extra verbosity.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>(one other thing that killed me.&nbsp; There where some methods that where exactly the same except for the names where different case one protected the other public.&nbsp; Try inheriting from that in VB.&nbsp; I know, bad developer and not the language. But still.)</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, May 26, 2006</h2>Rocky,<br>
+
+
+
+
+<p class="MsoNormal">Couldn’t you expose the same property to the UI that you used
+to load from the DAL? You can set a flag to avoid evoking the business rules,
+MarkDirty etc.<span>&nbsp; </span>This way you only have
+one property to take care of.<span>&nbsp; </span><br>
+</p>
+<p class="MsoNormal">Below is
+some pseudo code.</p>////////////////////////////////////////////////////////////<br>
+//Interfaces located in DAL or Seperate Assembly<br>
+public interface ILoadFromDAL<br>
+{<br>
+&nbsp;&nbsp;&nbsp; bool LoadingFromDAL<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+<br>
+public interface ICustomer : ILoadFromDAL<br>
+{<br>
+&nbsp;&nbsp;&nbsp; string FirstName<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; get;<br>
+&nbsp;&nbsp;&nbsp; set;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; string LastName<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; get;<br>
+&nbsp;&nbsp;&nbsp; set;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; string MiddleName<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; get;<br>
+&nbsp;&nbsp;&nbsp; set;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+<br>
+////////////////////////////////////////////////////////////<br>
+//Business Layer<br>
+public class BusinessBase: ILoadFromDAL<br>
+{<br>
+private bool mLoadingFromDAL;<br>
+&nbsp;&nbsp; <br>
+bool ILoadFromDaL.LoadingFromDAL<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return mLoadingFromDAL;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mLoadingFromDAL = value;<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; //Add&nbsp; rest of BusinessBase <br>
+}<br>
+<br>
+public class Customer : BusinessBase,&nbsp; ICustomer<br>
+{<br>
+&nbsp;&nbsp;&nbsp; private string&nbsp; mFirstName;<br>
+&nbsp;&nbsp;&nbsp; private string mLastName;<br>
+&nbsp;&nbsp;&nbsp; private string mMiddleName;<br>
+<br>
+&nbsp;&nbsp;&nbsp; private string FirstName //Note that it is Private <br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mFirstName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mFirstName= value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(mLoadingFromDAL==false)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //call broken rules<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //MarkDirty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; public string LastName //Note that it is Readonly<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mLastName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(mLoadingFromDAL == true)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mLastName= value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+throw new Exception("This property is readonly.");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; public string MiddleName //Note that this is public and exposed to UI<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return mMiddleName;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mMiddleName= value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(mLoadingFromDAL==false)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //call broken rules<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //MarkDirty<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; public void Load()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CustomerDAL.Fetch(this);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+&nbsp;&nbsp;&nbsp; <br>
+<br>
+////////////////////////////////////////////////////////////<br>
+//DAL<br>
+public class CustomerDAL<br>
+{<br>
+&nbsp;&nbsp;&nbsp; static public void Fetch(ICustomer obj)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.LoadingFromDAL = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.FirstName= "Foo";&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //note that it is private<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.mLastName= "Foo1";&nbsp; //note that is is read-only<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.mMiddleName= "Foo2";&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.LoadingFromDAL = false;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; static public void Add(ICustomer obj)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; //add code to add<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; static public void Update(ICustomer obj)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; //add code to update<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, May 26, 2006</h2><DIV>Malloc</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I get it!&nbsp; I stared at the screen for at least thirty minutes before getting that eureeka moment.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This is what threw me...</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT color=#0000ff>//this property is acutally located in Business Base.<BR>&nbsp;&nbsp;&nbsp; bool ILoadFromDaL.LoadingFromDAL<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; get<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; return mLoadingFromDAL;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; set<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; mLoadingFromDAL = value;<BR>&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></DIV>
+<DIV><FONT color=#0000ff></FONT>&nbsp;</DIV>
+<DIV><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; public void Load()<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; CustomerDAL.Fetch(this)<BR>&nbsp;&nbsp;&nbsp; }&nbsp;</FONT></DIV>
+<DIV><BR></DIV>
+<DIV>Didn't under stand you Modified BusinessBase (or have a class that extends BusinessBase).&nbsp; And that there is no factory methods.&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>A part of me really likes this.&nbsp; REALLY like it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The only thing that I don't like is that my DAL has to be updated and wouldn't be able to work with the different versions of the apps which are accessing it. <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>But i will have to remember this.&nbsp; Thanks!</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, May 26, 2006</h2><p class="MsoNormal">Pelinville,</p>
+
+
+<span>I didn’t have a lot of time to write up the puesdo-code
+at the time.<span>&nbsp; </span>The code could have been clearer.<span>&nbsp; </span>BusinessBase actually implements ILoadFromDAL
+and contains the IloadFromDal.LoadingFromDAL property.<span>&nbsp; </span>The mLoadingFromDAL variable also resides in
+the BusinessBase.<span>&nbsp; </span>Customer should have
+inherited from BusiessBase as well.<span>&nbsp; </span>There
+is actually a lot more code to this that I didn’t add for the sake of
+brevity.<span>&nbsp; I will try to edit some of the code in that post to make it easier to understand.&nbsp; </span>Thanks for taking a look at
+it.&nbsp; <br>
+</span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Saturday, May 27, 2006</h2>If you want to load a collection of objects from the DAL you can use
+another interface for the collection.&nbsp; This time the code is
+written in VB.NET<br>
+<br>
+'//////////////////////////////////////////<br>
+'Intefaces located in Separate Assembly<br>
+<br>
+Public Interface IAddress<br>
+&nbsp;&nbsp;&nbsp; Property Foo () As String<br>
+End Interface<br>
+<br>
+'The following interface is implemented in the collection<br>
+Public Interface IAddFromDAL<br>
+&nbsp;&nbsp;&nbsp; Function AddFromDAL() As IAddress<br>
+End Interface<br>
+<br>
+'//////////////////////////////////////////<br>
+'BusinessLayer<br>
+<br>
+Public Class Address<br>
+&nbsp;&nbsp;&nbsp; Inherits BusinessBase<br>
+&nbsp;&nbsp;&nbsp; Implements IAddress<br>
+<br>
+&nbsp;&nbsp;&nbsp; Private mFoo As String<br>
+<br>
+&nbsp;&nbsp;&nbsp; Property Foo () As String Implements IAddress.Foo<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mFoo<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mFoo = Value<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If NOT LoadingFromDAL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //CheckRule, MarkDirty etc.<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; END IF<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>
+&nbsp;&nbsp;&nbsp; End Property<br>
+<br>
+End Class<br>
+<br>
+Public Class Addresses<br>
+&nbsp;&nbsp;&nbsp; Inherits BusinessCollectionBase<br>
+&nbsp;&nbsp;&nbsp; Implements IAddFromDAL<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp; Public Sub Load() //Loads All of the address objects<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressDAL.Fetch(Me)<br>
+&nbsp;&nbsp;&nbsp; End Sub<br>
+<br>
+//This is called from the DAL. Note that it is private.&nbsp; It can be called from the DAL<br>
+//because of the explict interface.&nbsp; However it cannot be called from the UI.<br>
+Private Function AddFromDAL() As IAddress Implements IAddFromDAL.AddFromDAL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim obj As New Address()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.Add(obj)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return obj<br>
+&nbsp;&nbsp;&nbsp; End Function<br>
+<br>
+End Class<br>
+<br>
+'//////////////////////////////////////////<br>
+'DAL<br>
+<br>
+Public Class AddressDAL<br>
+&nbsp;&nbsp;&nbsp; Public Shared Sub Fetch(ByVal p As IAddFromDAL)<br>
+&nbsp;&nbsp;&nbsp; Dim obj As IAddress<br>
+&nbsp;&nbsp;&nbsp; For each record in recordset<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = p.AddFromDAL<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.LoadingFromDAL = True;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Foo = record["Foo"]<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.LoadingFromDAL = False;<br>
+&nbsp;&nbsp;&nbsp; Next<br>
+End Sub<br>
+<br>
+End Class<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, May 30, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN></DIV><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2>A DTO, or ORM, cause the same double-copy as with a DataSet. </FONT></SPAN><SPAN class=571475213-26052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN></DIV>
+<DIV align=left>
+<DIV align=left></div></BLOCKQUOTE></DIV>
+<DIV align=left>Just a quick note on this point.&nbsp; NHibernate loads the private member fields of the instance object directly from (I think) an NDataReader (i.e. an NHibernate DataReader).</DIV>
+<DIV align=left>&nbsp;</DIV>
+<DIV align=left>Therefore, it's only doing a "single-copy".</DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2>No, of course not :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2>I've been saying for some time now that the next big thing 
+will be OMM (object message mapping). Similar to ORM, but mapping against SOA 
+messages instead of relational tables.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> DavidDilworth 
+  [mailto:cslanet@lhotka.net] <BR></FONT></DIV>
+  <P><SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2>&nbsp;[...]&nbsp;</FONT></SPAN>For the DTO concept to work then the 
+  definition of the object should be driven by the XSD schema definition in the 
+  web service via the WSDL, which defines your contract with the outside 
+  world.</P>
+  <P>We're currently running a Web Service project using a technique called Web 
+  Services Contract First (WSCF).&nbsp; This starts with the contract (i.e. 
+  interface) you agree with the outside world for your Web Service.&nbsp; We've 
+  found that going down this route you then need facade classes to bridge 
+  between the class definitions used by the Web Service and those of your 
+  BO.&nbsp; These are somewhat analagous to the "facade" classes in the 
+  ProjectTracker Web Services example, where the code maps the data between the 
+  BO class and Web Service class.&nbsp; In our case, the two are not exactly 
+  100% the same - things are never that easy&nbsp;<SPAN class=601582515-25052006><FONT face=Arial color=#0000ff size=2>&nbsp;[...]&nbsp;</FONT></SPAN></P></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Friday, May 26, 2006</h2>Hi David.<br>The followin text is part of "Hibernate in Action"<br><i>"The application might have multiple SessionFactorys if it accesses multiple datasources.<br>But you should never create a new SessionFactory just to service a particular<br>request—creation of a <b>SessionFactory is extremely expensive</b>. On the other<br>hand, S<b>ession creation is extremely inexpensive</b>; the Session doesn’t even obtain a<br>JDBC Connection until a connection is required."<br></i>I have a different approach to use NHibernat with-in CSLA.<br>I had create a NHibernateHelper class with a singleton; it's responsability is:<br>mantein a sigle instance of NHibernate.Cfg.Configuration<br>Add assemblies to the configuration<br>create NHibernate.ISession<br>This class can work with or without CSLA.<br><br>In the same assembly i have another class PersistanceManager. It's responsability is to give me APIs to persist objects using NHibernate with the approach <i><b>session-per-request</b></i>.<br>An example of a method of PersistanceManager is:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void Save(object obj)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ISession session = NHibernateHelper.Instance.GetSession();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ITransaction transaction = session.BeginTransaction();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; session.Save(obj);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {transaction.Commit();}<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (NHibernate.HibernateException)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; transaction.Rollback();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { session.Close(); }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>In the future, i can chage the approch without chage other classes but PersistanceManager.<br><br>To use this clases from CSLA i have create a new assembly named CslaNHb with an extention of BusinessBase<br>namespace CslaNHb<br>{<br>&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp; public abstract class BusinessBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt; where T : BusinessBase&lt;T&gt;<br>......<br>In this class i have, for example<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_Insert()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HibernateHelpers.PersistanceManager.Save(this);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Looking inside this approch:<br>-If you hinerit from CslaNHb.BusinessBase you don't need to implement any data access method or, if you want, you can override all data access methods.<br>-In the future i can chage the ORM without change my BOs<br>-If Roky change the CSLA using some other ORM-FW i can change only the base class from my CslaNHb.BusinessBase to CsalXYZ.BusinessBase (really i hope this is the only chage i must do in my's BOs).<br>Now i'm studing how to use the potencial of Hibernate criteria class without using intrusive code in my BOs.<br><br>What happens if&nbsp; "C# Business Objects 3 Edt" come with DLinq ? <br><br>Bye.<br>Fabio.<br><i><br></i></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, May 26, 2006</h2><P>Although I don't have that specific book, the statement is actually obvious when you think about what is going on.</P>
+<P>So we anticipated that and decided to use a singleton pattern.&nbsp; Well actually a singleton&nbsp;HashTable of NHibernate.SessionFactory, as we are catering for multiple database usage.</P>
+<P>So our line of code: </P>
+<P>// Get an NHibernate session factory<BR>&nbsp;NH.ISessionFactory sessionFactory = Nfs.Nhibernate.Cfg.BuildSessionFactory(SessionFactoryKey);</P>
+<P>doesn't create a new NHibernate.SessionFactory every time - only the first time a new SessionFactoryKey is requested.&nbsp; After that, it's simply returning the pre-built SessionFactory from the singleton HashTable (this is all handled inside our wrapper code - notice the namespace).</P>
+<P>We could have chosen to wrap that code further as well to make it ORM neutral, which is what you've chosen to do.&nbsp; But we decided against that.</P>
+<P>However, it's good to know that we're thinking along the same lines <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>We have already used the criteria object so we are now writing code like this:</P>
+<P>// Check MinCovers allowed is greater than requested<BR>NH.Expression.GeExpression minExpression = new NH.Expression.GeExpression("MinCovers", _unavailableRoomListCriteria.NoOfCovers);</P>
+<P>// Check MaxCovers allowed is not less than or equal to the amount requested<BR>NH.Expression.LeExpression maxExpression = new NH.Expression.LeExpression("MaxCovers", _unavailableRoomListCriteria.NoOfCovers);</P>
+<P>// Add the check as an "OR" constraint<BR>nhibernateCriteria.Add(new NH.Expression.OrExpression(minExpression, maxExpression) );</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>willfarnaby replied on Thursday, June 15, 2006</h2>David:<br><br>I've done a fair bit of Hibernate (v2, v3) work in Java, and am just about to look at NHibernate, to use with CSLA.<br><br>It appears to me in your code you're creating SessionFactory objects with abandon. AFAIK (i.e., in Hibernate) SessionFactory is extremely heavyweight. I've always created a SessionFactory singleton via dependency injection in the Spring Framework, in effect before the application proper even runs. The singleton is then used throughout the app to create lightweight Hibernate Session objects.<br><br><br>----------------------------------------------<br><div class="ForumReplyToPostArea">
+					<p>As an example of what our
+BO code looks like, here is an extract from our abstract base class
+class called NhibernateReadOnlyBase.&nbsp; This forms the basis for our
+ReadOnly BOs.&nbsp; The only thing we have to do in our concrete BO class is
+mark the properties that are being persisted with an NHibernate
+specific attribute - NHibernate then takes care of the rest.</p>
+<p>protected override void DataPortal_Fetch(object criteria)<br>{<br>&nbsp;// Get an NHibernate session factory<br>&nbsp;NH.ISessionFactory sessionFactory = Nfs.Nhibernate.Cfg.BuildSessionFactory(SessionFactoryKey);</p>
+<p>&nbsp;// Get an NHibernate session from the factory<br>&nbsp;using (NH.ISession session = sessionFactory.OpenSession())<br>&nbsp;{<br>&nbsp;&nbsp;// Get the identifier required from the criteria<br>&nbsp;&nbsp;object identifier = GetNhibernateIdentifier(criteria);</p>
+<p>&nbsp;&nbsp;// Load the current instance from the NHibernate session based on the identifier<br>&nbsp;&nbsp;session.Load(this, identifier);<br>&nbsp;}<br>}</p>
+					</div><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>willfarnaby replied on Thursday, June 15, 2006</h2>Ah, I see this issue was discussed earlier in the thread (sans Spring Framework, which name reminds me of Spring.NET).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Monday, June 19, 2006</h2><P>Will,</P>
+<P>As you rightly pointed out I covered the fact that we do use a singleton pattern earlier in the thread.</P>
+<P>Good to see someone with "real-world" Hibernate experience on the forums.</P>
+<P>Welcome to the CSLA.NET world!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

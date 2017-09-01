@@ -1,0 +1,253 @@
+<html><header><title>BusyAnimiation... how to use?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusyAnimiation... how to use?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5506.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Wednesday, October 01, 2008</h2>Any examples on using the BusyAnimation in 3.6?<br><br>I'm trying something new in wpf applications... I want the UI to display as quickly as possible, and let the loading go on while my user controls are loading in the background.&nbsp; I'm hoping the BusyAnimation will help.. <br><br>So.. anyone use this yet?&nbsp; What exactly does it do?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 01, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>BusyAnymation simply displays an animation (moving circles) when
+IsRunning property is set to true.&nbsp; You can find WPF example in
+ProjectRacker v3.6 in SVN.&nbsp; It is used in ProjectEdit.xaml for example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 01, 2008 4:46 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] BusyAnimiation... how to use?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Any examples on using the BusyAnimation in 3.6?<br>
+<br>
+I'm trying something new in wpf applications... I want the UI to display as
+quickly as possible, and let the loading go on while my user controls are
+loading in the background.&nbsp; I'm hoping the BusyAnimation will help.. <br>
+<br>
+So.. anyone use this yet?&nbsp; What exactly does it do?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 01, 2008</h2>Guess Ill need an svn client... :-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, October 01, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is the easiest way. Tortoise SVN is one option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 01, 2008 4:58 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: BusyAnimiation... how to use?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Guess Ill need an svn client... :-)<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 02, 2008</h2>Ok,<br><br>I must be missing something.&nbsp; The animation doesn't show, even if I put a Thread.Sleep in the project's DataPortal_Update.<br><br>I think that's because IsAsyn was false on the CslaDataProvider... but when I set it to true, the user control disappears when I click save.<br><br>So what does it do?&nbsp; Overload the user control and display a the circle animation?&nbsp; That's pretty much what I'm looking for.. so if that's what it does I can just backport it to my Csla version and get started.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are correct about IsAsynch.&nbsp; Busy animation will never
+show if there is a running process on main (UI) thread.&nbsp; This is just a
+general UI rule though, not having much to do with busy animation.&nbsp; So, if
+you want to show it for long running tasks, they must run on a background
+thread.&nbsp; I am not sure why control would disappear, is there an exception
+thrown at some point?&nbsp; I ran PT 3.6 this morning, and the animation does
+appear if provider is set to asynch.&nbsp; I think I used Resources List? for
+testing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 02, 2008 9:32 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: BusyAnimiation... how to use?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok,<br>
+<br>
+I must be missing something.&nbsp; The animation doesn't show, even if I put a
+Thread.Sleep in the project's DataPortal_Update.<br>
+<br>
+I think that's because IsAsyn was false on the CslaDataProvider... but when I
+set it to true, the user control disappears when I click save.<br>
+<br>
+So what does it do?&nbsp; Overload the user control and display a the circle
+animation?&nbsp; That's pretty much what I'm looking for.. so if that's what it
+does I can just backport it to my Csla version and get started.<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 02, 2008</h2>No exception that I noticed... it just vanished, so you're left like the application after you first logon.<br><br>I was using the project edit screen to test.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 02, 2008</h2><P>The current ProjectList and ResourceList forms in PTWpf use BusyAnimation, maybe that'll help?</P>
+<P>I had an issue where I couldn't&nbsp;see the control a couple days ago. Turned out it was two things. First, I didn't set a size, so it was essentially invisible. Second, my background is dark, and so is the animation, so it simply didn't have any contrast over the background.</P>
+<P>You can change the style of the animation, or you can take the cheap way out (like I did) and put it inside a while container :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 03, 2008</h2>Ok, I'll check those controls as well.<br><br>I'm not sure what was happening; the project edit was visible up until I clicked Save, at which point it was gone.<br><br>I'm still kinda struggling with wpf... but mainly because I'm trying to go the user control route instead of having dozens of Forms specific to what I was doing.&nbsp; Trying to par that down so that I have a list window, an edit window, and maybe a list select window.&nbsp; Then I can just create an instance of an edit window and pop in the control.<br><br>Also, I'm trying to get the window to display as quickly as possible, even if disabled, until the data loads.<br><br>If anyone has done something similar, please let me know... any tips would be great!<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In many cases, to get a form loading before the data arrives,
+you can use IsAsynchronous=&#8221;True&#8221; on the data provider and let it
+do the work. The form will display, &nbsp;and they&#8217;ll display data when
+the async data load completes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This also allows you to bind a BusyAnimation to the data
+provider&#8217;s IsBusy property so the user knows something is happening.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick with WPF (and to some degree Silverlight) is to
+realize that nearly everything is bindable &#8211; as a source and target.
+Also, value converters are your friend because they allow you to change one (or
+more) property values into some other value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For example, convert a Boolean into a Visibility, thus making it
+possible for a bool property to control whether the user sees entire parts of
+your UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 03, 2008</h2>Great, thanks!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

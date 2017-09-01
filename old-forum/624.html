@@ -1,0 +1,29 @@
+<html><header><title>Partial classes and delegates - probably a very straightforward question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Partial classes and delegates - probably a very straightforward question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/624.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Friday, July 14, 2006</h2><P>I'm exploring the partial class generation approach with the C# code smith templates, and it is not entirely clear to me how to hook up my "AddCustomRules" method in my handcrafted part of the partial class. </P>
+<P>The generated code is below. How do I add my method to the addCustomRulesDelegate without changing the generated code?&nbsp; </P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>protected</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> AddBusinessRules()</P>
+<P>{</P>
+<P>AddCommonRules();</P>
+<P>onAddCustomRules();</P>
+<P>}</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>delegate</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>rulesAction</FONT><FONT size=1>();</P>
+<P></FONT><FONT color=#008000 size=1>//</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>// Business Rules</P></FONT><FONT size=1>
+<P></FONT><FONT color=#008000 size=1>//</P></FONT><FONT size=1>
+<P>[</FONT><FONT color=#008080 size=1>NonSerialized</FONT><FONT size=1>()]</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#008080 size=1>rulesAction</FONT><FONT size=1> addCustomRulesDelegate = </FONT><FONT color=#0000ff size=1>null</FONT><FONT size=1>;</P>
+<P></FONT><FONT color=#0000ff size=1>private</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> onAddCustomRules()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=1>if</FONT><FONT size=1> (addCustomRulesDelegate != </FONT><FONT color=#0000ff size=1>null</FONT><FONT size=1>)</P>
+<P>addCustomRulesDelegate();</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, July 14, 2006</h2>You are supposed to create the handlers inside Initialize() and&nbsp; OnDeserialized()<br><br><br>like (vb example, but you'll get the point):<br><br>Protected Overrides Sub Initialize()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.Initialize()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddHandler Me.DelegateName, AddressOf HandlerName<br>End Sub<br><br>Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.OnDeserializedObject(context)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddHandler Me.DelegateName, AddressOf HandlerName<br>End Sub<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, July 14, 2006</h2><P>Thanks for the quick answer, Xal - it worked, now I know! </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, July 14, 2006</h2><P>Thanks xal, you beat me to it.</P>
+<P>Since this is a delagate, you could also do as follow:</P>
+<P><FONT color=#0000ff>addCustomRulesDelegate = addCustomRules;</FONT></P>
+<P>which is a shortcut version of:</P>
+<P><FONT color=#0000ff>addCustomRulesDelegate = new rulesAction(addCustomRules);</FONT></P>
+<P>in Vb I believe it would be:</P>
+<P><FONT color=#0000ff>addCustomRulesDelegate = AddressOf addCustomRules</FONT></P>
+<P>or</P>
+<P><FONT color=#0000ff>addCustomRulesDelegate = new rulesAction(AddressOf addCustomRules)</FONT></P>
+<P>HTH,</P>
+<P>Ricky</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

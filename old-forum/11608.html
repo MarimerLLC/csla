@@ -1,0 +1,108 @@
+<html><header><title>EditLevel Mismatch - what am I doing wrong?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel Mismatch - what am I doing wrong?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11608.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Saturday, September 29, 2012</h2><p>Hi gents,</p>
+<p>Have an issue.</p>
+<p>I have a Parent/Children BO that requires that the Children (BusinessBindListBase) is sorted by a SequenceNo column.</p>
+<p>I tried to adopt a SortedBindingList methodology with this, but no matter how I approach it, when I attempt to Save the Parent, I get an EditLevel Mismatch.</p>
+<p>Basically, in the UI (Windows Forms), I have up/down buttons that allow the user to move a schedule&#39;s sequence up or down.</p>
+<p>This is what I have tried in the &quot;up&quot; event, all of which cause the same issue:</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub btnUp_Click(sender As System.Object, e As System.EventArgs) Handles btnUp.Click</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; we want to move a service up in the schedule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim row As Integer = ProjectSchedulesDataGridView.CurrentCell.RowIndex<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If row &lt; 1 Then Exit Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pProjectSchedule As ProjectSchedule = mPROJECT.ProjectSchedules(row - 1)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mPROJECT.ProjectSchedules(row - 1) = mPROJECT.ProjectSchedules(row)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mPROJECT.ProjectSchedules(row) = pProjectSchedule</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>or)</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub btnUp_Click(sender As System.Object, e As System.EventArgs) Handles btnUp.Click</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; we want to move a service up in the schedule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim row As Integer = ProjectSchedulesDataGridView.CurrentCell.RowIndex<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If row &lt; 1 Then Exit Sub</p>
+<p><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim seqno As Integer = ProjectSchedulesDataGridView(&quot;SequenceNo&quot;, row).Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim contractno As String = ProjectSchedulesDataGridView(&quot;SKED_ContractNo&quot;, row).Value</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim prevseqno As Integer = ProjectSchedulesDataGridView(&quot;SequenceNo&quot;, row - 1).Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim prevcontractno As String = ProjectSchedulesDataGridView(&quot;SKED_ContractNo&quot;, row - 1).Value</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As ProjectSchedule In mPROJECT.ProjectSchedules</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.ContractNo = contractno Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.SequenceNo = prevseqno<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.ContractNo = prevcontractno Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.SequenceNo = seqno<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>or)</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub btnUp_Click(sender As System.Object, e As System.EventArgs) Handles btnUp.Click</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; we want to move a service up in the schedule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim row As Integer = ProjectSchedulesDataGridView.CurrentCell.RowIndex<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If row &lt; 1 Then Exit Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mPROJECT.ProjectSchedules.Swap(row, row - 1)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>In this last attempt, I created a method in my collection object that looks like this:</p>
+<p>&nbsp;&nbsp;&nbsp; Public Sub Swap(_fromposition As Integer, _toposition As Integer)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim fromschedule As ProjectSchedule = Me(_fromposition) _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , toschedule As ProjectSchedule = Me(_toposition)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(_toposition) = fromschedule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(_fromposition) = toschedule</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim id As Integer<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For id = 0 To Me.Count - 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Me(id).SequenceNo = id + 1<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next id</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>None of which are working.</p>
+<p>Any ideas?</p>
+<p>I tested to see what happens if I just make a random change to some column data in one of the children;</p>
+<p>mPROJECT.ProjectSchedules(0).ContractNo = &quot;123&quot;</p>
+<p>and that saves with no problem.</p>
+<p>Any ideas?</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 30, 2012</h2><p>Hi, </p>
+<p>2 things come to mind: </p>
+<ol>
+<li>You should NOT set the items in the list. This will add the new item and remove the original (and add it to deleted items) and actually your item (row)&nbsp; will be in the list at 2 different positions and CSLA lists will notify the UI of the changes by raising OnListChanged event per action.&nbsp; </li>
+<li>You should make sure that the &quot;current item&quot; is not in edit mode in the datagridview</li>
+</ol>
+<p>So NOT like this:</p>
+<p><i>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim pProjectSchedule As ProjectSchedule = mPROJECT.ProjectSchedules(row - 1)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mPROJECT.ProjectSchedules(row - 1) = mPROJECT.ProjectSchedules(row)<br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // here - row will be at 2 positions in list, row and row-1, and datagridview will get notification by OnListChanged<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // and pProjectSchedule item has been added to DeletedItemsList. </b><br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // This is a potetial large problem and should NOT be done this way. </b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mPROJECT.ProjectSchedules(row) = pProjectSchedule</i></p>
+<p>This should work:</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub btnUp_Click(sender As System.Object, e As System.EventArgs) Handles btnUp.Click</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39; we want to move a service up in the schedule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim row As Integer = ProjectSchedulesDataGridView.CurrentCell.RowIndex<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If row &lt; 1 Then Exit Sub</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>&nbsp;&nbsp; ProjectSchedulesDataGridView.EndEdit()</b></p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim seqno As Integer = ProjectSchedulesDataGridView(&quot;SequenceNo&quot;, row).Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim contractno As String = ProjectSchedulesDataGridView(&quot;SKED_ContractNo&quot;, row).Value</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim prevseqno As Integer = ProjectSchedulesDataGridView(&quot;SequenceNo&quot;, row - 1).Value<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim prevcontractno As String = ProjectSchedulesDataGridView(&quot;SKED_ContractNo&quot;, row - 1).Value</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As ProjectSchedule In mPROJECT.ProjectSchedules</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.ContractNo = contractno Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.SequenceNo = prevseqno<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.ContractNo = prevcontractno Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.SequenceNo = seqno<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules()</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>Just make sure that the &quot;current row&quot; in the datagrid is not in EditMode by calling &lt;dataGridView&gt;.EndEdit(). <br />IE: The DataGridView will call BeginEdit/CancelEdit/EndEdit a number of times through DataBinding and assumes total ownership of the object.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Sunday, September 30, 2012</h2><p>Thanks Jonny - I&#39;ll give it a try...&nbsp; such a shame I have to address this in the UI because of Winforms limitations on binding list sorts. Oh well...</p>
+<p>Will give it a try.</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Sunday, September 30, 2012</h2><p>OK Jonny,</p>
+<p>It kind of works - in that what you suggested is correct - and I had foiund that before. But that solution was dependent on my datagridview being bound to a sortedbindinglist, so that I could maintain the &quot;Sort&quot; of SequenceNo.</p>
+<p>So, with your fix in place.</p>
+<p>I Call a method &quot;RefreshSchedules&quot; - with the intent of just pulling the current collection into a the sorted list and displaying it:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; Private Sub RefreshSchedules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectSchedulesDataGridView.EndEdit()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sortedScheduleList = New Csla.SortedBindingList(Of ProjectSchedule)(mPROJECT.ProjectSchedules)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sortedScheduleList.ApplySort(&quot;SequenceNo&quot;, ListSortDirection.Ascending)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectSchedulesDataGridView.DataMember = &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectSchedulesDataGridView.DataSource = sortedScheduleList</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>The same error occurs at save time.</p>
+<p>Could it be something to do with the initial bindings?</p>
+<p>ProjectScheduleDatagridView has a datasource of ProjectSchedulesBindingSource - which in turn has a Datasource=ProjectBindingSource/DataMember=ProjectSchedules</p>
+<p>I&#39;m sure I&#39;m close...</p>
+<p>Thanks again,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>gajit replied on Sunday, September 30, 2012</h2><p>I figured it out Jonny...</p>
+<p>My RefreshSchedules (which I call after any remove,assign or moving around of the sequenceno&#39;s, now looks like this:</p>
+<p>&nbsp;&nbsp;&nbsp; Private Sub RefreshSchedules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With ProjectSchedulesBindingSource</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .EndEdit()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sortedScheduleList = New Csla.SortedBindingList(Of ProjectSchedule)(mPROJECT.ProjectSchedules)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; sortedScheduleList.ApplySort(&quot;SequenceNo&quot;, ListSortDirection.Ascending)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .DataMember = &quot;&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .DataSource = sortedScheduleList</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>Rather than setting the datasource on the gridview, I&#39;m setting it directly to the binding source... I &quot;think&quot; that works... </p>
+<p>Thanks again,</p>
+<p>Graham.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

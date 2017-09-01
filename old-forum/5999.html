@@ -1,0 +1,114 @@
+<html><header><title>AsyncRuleHandler vs. RuleHandler</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AsyncRuleHandler vs. RuleHandler</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5999.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas posted on Monday, December 15, 2008</h2><P><SPAN>I've written quite a few custom validation rule handlers in Csla.NET. Some of them hit the server/database&nbsp;to validate properties.&nbsp;Csla 3.6 introduced classes like&nbsp;AsyncRuleHandler,<SPAN>&nbsp;</SPAN>AsyncRuleArgs, AsyncValidationRuleContext etc. Because I don't want to rewrite them all for Silverlight&nbsp;I still use <SPAN>Csla.Validation.</SPAN>RuleHandler under Silverlight as well. So I put a conditional #if SILVERLIGHT/#else/#endif directive in to my handler, like this:<o:p></o:p></SPAN></P>
+<P><SPAN>#if SILVERLIGHT <BR>...<BR>DataPortal.BeginExecute&lt;CMDType&gt;(....);<BR>...<BR>#else<BR>...<BR>DataPortal.Execute&lt; CMDType &gt; (....);<BR>...<BR>#endif<o:p></o:p></SPAN></P>
+<P><SPAN>Although it works for me just fine, I am not sure&nbsp;if&nbsp;there is any problem by bypassing the new AsyncRule concept? What do I get more when using AsyncRuleHandler?</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 15, 2008</h2><P>In SL, all server-side communication is async. So if you have a validation rule that hits the server, it must be async too, by definition.</P>
+<P>Any validation rules that don't talk to the server can be synchronous, and probably should be. But any rules that talk to a server must be async, because the result of the rule isn't immediately known - it can't be known until the server-side callback occurs actually.</P>
+<P>So while your code may work "fine", you'll find that your rules aren't actually being processed properly, because the command object comes back <EM>after your rule is already completed</EM> on the SL side...</P>
+<P>What we did do to provide parity, is add async rules on the .NET side too. So while you will need to rewrite your rules, at least you can (possibly) make them the same on both SL and .NET.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Andreas replied on Tuesday, December 16, 2008</h2><P><SPAN>Ok, but I trapped in the problem that AsyncRuleHandler is missing the "object target" parameter (like RuleHandler). Unfortunately this breaks my current validation&nbsp;code because most of my custom validation rules need to&nbsp;call member functions&nbsp;on&nbsp;the current business object instance <EM>before</EM> I am&nbsp;calling the server side. Why this&nbsp;restriction? Any suggestion how to get access to the business object instance inside the async rule handler?</SPAN></P>
+<P><SPAN>Btw: I couldn't find an&nbsp;AddInstanceRule-Method that takes an AsyncRuleHandler and AsyncRuleArgs</SPAN></P>
+<P><SPAN></SPAN>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>We made a conscious choice to disallow using the object instance
+from an async rule method. The odds of someone interacting with the object
+instance from a background thread would be VERY high &#8211; and that&#8217;s
+totally illegal to do. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So rather than enabling (encouraging?) 99% of people probably do
+something wrong, we opted to disallow the more rare case where someone would
+interact safely with the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sorry about that, but the alternative (as I see it) would be
+utter chaos as most people innocently did the wrong thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What we DID do, is allow you to specify all the properties
+required by your rule, and those property values are copied and provided to the
+rule method. in other words, CSLA takes a copy of all the property values, puts
+them into a list, and provides that list to the rule method. This is safe,
+because your rule method is now interacting with a snapshot of the values as
+they were when the rule was started, and your code can&#8217;t accidentally
+break any threading rules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This also avoids nasty race conditions, where property values
+change over time WHILE THE RULE IS RUNNING, which could and would happen if you
+directly interacted with the object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It is also true that we didn&#8217;t add async rule support for
+per-instance rules. if you really look at it, per-instance rules are pretty
+broken, because there&#8217;s not a great way to add instance rules after the
+object has been loaded with data. So you need to load the rules for an instance
+before you even know the state of the object &#8211; so you can&#8217;t really
+load conditional rules.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In my view there are much better solutions to any per-instance
+requirement by using per-type rules, and I have no qualms about encouraging
+people to abandon the use of per-instance rules as being just a bad idea. I
+suspect Andres was right &#8211; I should have just dropped them entirely in the
+2.0-&gt;2.1 shift&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Andreas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 19, 2008 11:39 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] AsyncRuleHandler vs. RuleHandler<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok, but I trapped in the problem that AsyncRuleHandler is missing the
+&quot;object target&quot; parameter (like RuleHandler). Unfortunately this
+breaks my current validation&nbsp;code because most of my custom validation
+rules need to&nbsp;call member functions&nbsp;on&nbsp;the current business
+object instance <em>before</em> I am&nbsp;calling the server side. Why
+this&nbsp;restriction? Any suggestion how to get access to the business object
+instance inside the async rule handler?<o:p></o:p></p>
+
+<p>Btw: I couldn't find an&nbsp;AddInstanceRule-Method that takes an AsyncRuleHandler
+and AsyncRuleArgs<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

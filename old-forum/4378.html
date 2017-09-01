@@ -1,0 +1,56 @@
+<html><header><title>Design question: create dummy objects or not?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design question: create dummy objects or not?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4378.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Wednesday, February 20, 2008</h2><SPAN>
+<P class=MsoNormal><SPAN>I’m developing a point of sale application.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Use case:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>User wants to edit an existing article (e.g. a shoe with identity 123).<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>This shoe has a property beam of measures e.g. men_shoes (which include for example&nbsp;the&nbsp;sizes 36, 37, 38, 39,40, 41, 42)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Now the users want to edit this article.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>On the screen he wants to see:<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>season<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>mark<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>beam of measures<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>-</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>a grid with all the possible sizes on the first column and the second column the price of the article for this particular size.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Size<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Price<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>36<SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>37<SPAN>&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>38<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>39<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>12<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>40<SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>12<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>41<SPAN>&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>42<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Notice: only a price is filled for the sizes 39 and 40. This means for this article the manager of the shop has only bought these two sizes (the manufacturer makes also the other sizes). But by filling in only a price for particular sizes the user knows that only these sizes are being sold in the shop.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In the database we have the following tables<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Article with fields Id, Name, Season, Mark, Beam of measures, ..<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ArticleDetails with fields Id, ArticleId, SizeId, Price<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Sizes with fields Id, Type, Name<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>For database efficiency my idea is to store in the table ArticleDetails only records for the sizes we have in the shop. In our example two records for the sizes 39 and 40.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>My design question is now the following.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>I will create an editable root parent object for Article.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>This object will have a child collection of the sizes.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Should I construct a collection with records for each size, so not only records for 39 and 40, but records for all the sizes? So is this a good object oriented design to create a child collection like this because in the database we don’t have so many records? Or is it&nbsp;the responsibility of the GUI to do this, see what beam of measures the article has, show on the screen all the possible sizes and put a price for the right size? <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I was thinking to construct the collection that the GUI wants in the business layer. So the GUI just binds the collection Article.Sizes to a grid and the job is done.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Can you&nbsp;give me some advise what is a good approach?<o:p></o:p></SPAN></P>
+<P class=MsoNormal></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff replied on Wednesday, February 20, 2008</h2>I know someone else might have a more detailed reply but since I'm bored I'll throw out a little of my opinion.<br><br>The size/price listing looks like a read only collection that is specific to this UI. I would not have the biz objects responsible for producing this otherwise they get cluttered up with code specific to particular UIs. You could instantiate a read only collection with 1 - list of valid sizes, 2 - article details, then have it populate itself with children items specific for this UI view.<br><br>Now, since the UI grid does not line up exactly with your biz objects I think you would need to intercept grid edits and do the add/remove to the article details biz objects yourself.<br><br>Just some thoughts.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, February 21, 2008</h2><P class=MsoNormal><FONT size=2><FONT face=Arial>I think we want the GUI as "dumb" as possible so that when it comes time to build a new one we don't have to transfer a lot of logic from the old UI to the new one.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT size=2><FONT face=Arial>On top of that suppose you have other screens where you have to fill in quantities that you have ordered for this article, you want to see also all the possible sizes (disable the sizes that you don't sell so that the user can not order this).<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>So I think in a Point Of Sale application everywhere an article is showed all the possible sizes are showed. So if this is the case, shouldn't it be better to construct the business objects in the way the GUI can use it immediately?</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>Can you point me in the good direction of how to create a good object model?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jeff replied on Thursday, February 21, 2008</h2>OK, so maybe you do need functional objects to represent the sizes and
+articles together. In my original response I was more thinking of it
+as just a different view of the business information. You'll just have
+to handle the DB mismatch in the dataportal methods. So in your update
+for the "PricePerSize" object you would be adding/removing
+article detail rows. Maybe your use cases don't require an actual
+article detail object even though its a table in the DB.<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br>
+
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

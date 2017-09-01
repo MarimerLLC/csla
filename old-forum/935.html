@@ -1,0 +1,33 @@
+<html><header><title>Case Sensitivity of DataMapper and PropertyHasChanged is an unnecessary Nuisance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Case Sensitivity of DataMapper and PropertyHasChanged is an unnecessary Nuisance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/935.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Thursday, August 17, 2006</h2><P>1. DataMapper fails with an exception if the Property name in &lt;%# Bind("address") %&gt; differes from the Property name e.g., "Address" in case only.&nbsp; </P>
+<P>2. I am using ActiveObjects, so this may be a problem with Petar's code, but the following results in an exception also.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Property Zip<FONT color=#ff0000><STRONG>c</STRONG></FONT>ode() As String<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty("Zipcode", False)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mZipcode<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal Value As String)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty("Zipcode", False)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mZipcode = Value<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged("Zip<FONT color=#ff0000><STRONG>C</STRONG></FONT>ode")<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property</P>
+<P>When auto-generating the code, the problem is not likely.&nbsp; When typing the code by hand it&nbsp;creates&nbsp;unnecessary problems for VB programmers.</P>
+<P>Jav&nbsp;<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Friday, August 18, 2006</h2>Hi,<br>
+<br>
+Right after my private fields in my business object I decalre another
+set of&nbsp; string variables for each field which are prefixed with
+'fn' to which I assign the name of each field. <br>
+<br>
+Then in all my Can Reads and Can Writes I use those fn variables (which
+avoids any reflection), and in fetching parameters I also use them
+avoiding dependency on field positions in result sets. <br>
+<br>
+So as long as I spell them correct once, there spelt correctly throughout the application.<br>
+<br>
+Cheers,<br>
+<br>
+Des<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, August 18, 2006</h2><P>Thank you Des.&nbsp; That is a way to handle it - a workaround.&nbsp; But the point still remains. We name things (all things)&nbsp;to identify them and to make our lives <STRONG><EM>easier</EM></STRONG> - not more difficult.</P>
+<P>Only in a colony of idiots people will start a custom where case sensitivity of a name is meant to be a differentaiting factor - like "my name is 'James', but my brother is named 'james'"</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 18, 2006</h2>Hey now... there were good reasons for case senstivity.&nbsp; For one, its faster to do a direct compare; case insensitivity does take time (no matter how little).&nbsp; <br><br>At any rate, if it really bothers you, you can modifly Csla.&nbsp; The reflection API does allow you to specifiy if you want to ignore case or not.&nbsp; As alternates, you can just copy and paste the property name into the PropertyHasChanged parameter or just not specify it at all (and let Csla work out the name of the property).<br><br>I wouldn't want that Csla modification to be the default though, since in my code private fields which are exposed via a property DO only differ by case.. I've personally always found it silly to have to prepend some random character to force some artifical difference to distinguish between private fields and public properties.<br><br><br><br>Andy<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, August 18, 2006</h2><P>As I understand it, the C# and the VB version of the Csla library can both be used to support C# and VB classes.</P>
+<P>If case sensitivity is removed from the Csla library, it will not be able to properly support a C# module.</P>
+<P>It may not affect you, but it would affect others.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 18, 2006</h2>If the OP doesn't care about C# libraries though, modifying Csla to fit his needs is fine.&nbsp; I was just giving different ways for the OP to solve the problem he was having (not specifying the property name explicitly is probably the best one).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, August 18, 2006</h2>
+
+<p class="MsoNormal"><span>CSLA is a
+teaching tool on how to build a framework.<span>&nbsp;
+</span>The code is provided so you can change it to your liking.<span>&nbsp; </span>If there is something you don’t like about
+it, stop complaining and change it.<span>&nbsp; </span>It
+really is that simple.<o:p></o:p></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

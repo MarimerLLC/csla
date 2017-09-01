@@ -1,0 +1,74 @@
+<html><header><title>Csla 3.8 Video DEMO 005: ArrayDataReader fixes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 3.8 Video DEMO 005: ArrayDataReader fixes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8563.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Annesh posted on Tuesday, February 23, 2010</h2><p>Hi Rocky</p>
+<p>We have purchased your video series and it is great.</p>
+<p>We are using your ArrayDataReader class to mock our databases just as you did in your demo005 but I have fixed the class to accomodate a single row of data and when the NextResult() is called it resets the rowcount to zero again. Please find fixes below:</p>
+<p>&nbsp;<span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">public</span></span><span style="font-size:medium;"> </span><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">bool</span></span><span style="font-size:medium;"> NextResult() </span></span></span></p>
+<p>
+<p>
+<p>{</p>
+<p>_resultSet++;</p>
+<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></p>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">if</span></span><span style="font-size:medium;"> (_resultSet &lt; _data.Count)
+<p>{</p>
+<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#008000;font-size:medium;"><span style="color:#008000;font-size:medium;">//------------------------------</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>_row = 0; </p>
+</span></span>
+<p><span style="color:#008000;font-size:medium;"><span style="color:#008000;font-size:medium;">// reset row counter</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#008000;font-size:medium;"><span style="color:#008000;font-size:medium;">//------------------------------</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">return</span></span><span style="font-size:medium;"> </span><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">true</span></span><span style="font-size:medium;">;
+<p>}</p>
+<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">else</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">return</span></span><span style="font-size:medium;"> </span><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">false</span></span><span style="font-size:medium;">;
+<p>}</p>
+<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">public</span></span><span style="font-size:medium;"> </span><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">bool</span></span><span style="font-size:medium;"> Read()
+<p>{</p>
+<p>_row++;</p>
+<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#008000;font-size:medium;"><span style="color:#008000;font-size:medium;">//------------------------------</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#008000;font-size:medium;"><span style="color:#008000;font-size:medium;">// -1 not -2 because only one field header row</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">if</span></span><span style="font-size:medium;"> (_row &gt; _data[_resultSet].GetLength(0) - 1)<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#008000;font-size:medium;"><span style="color:#008000;font-size:medium;">//------------------------------</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">return</span></span><span style="font-size:medium;"> </span><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">false</span></span><span style="font-size:medium;">;<span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span></p>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">else</span></span></p>
+<span style="font-size:medium;"><span style="font-size:medium;">
+<p>&nbsp;</p>
+</span></span>
+<p><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">return</span></span><span style="font-size:medium;"> </span><span style="color:#0000ff;font-size:medium;"><span style="color:#0000ff;font-size:medium;">true</span></span><span style="font-size:medium;">;
+<p>}</p>
+</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 23, 2010</h2><p>Thanks, I appreciate it!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

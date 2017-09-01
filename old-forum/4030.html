@@ -1,0 +1,98 @@
+<html><header><title>Simpler but good alternative to CSLA framwork </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simpler but good alternative to CSLA framwork </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4030.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo posted on Wednesday, December 12, 2007</h2><P>Hi,</P>
+<P>With no intention of committing heresy, I am looking to see if there is a good alternative to CSLA.&nbsp; I have used it for a while and find it quite useful, but I find that it adds a lot of complexity for features that I will never use.&nbsp; </P>
+<P>I do not feel like re-inventing the wheel and write my own lighter-weight framework, but all I really need is a framework that supports the same type of business object philosophy as Rocky uses, but without remoting, n-level undo, etc.&nbsp; The features I need are not many:&nbsp; Generic Business Object baseclasses for Sorting, Filtering, Validation &amp; State / persistance (roughly).&nbsp; </P>
+<P>Any help on this would be greatly appreciated.</P>
+<P>Thanks,</P>
+<P>Jim</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Thursday, December 13, 2007</h2><P>I know some people have stripped out remoting and n-level undo, etc&nbsp;as they needed a CSLA Lite to work on a mobile platform - It's easier to remove stuff than try and write it in the first place :-).</P>
+<P>Someone posted on this I recall in the past - have a search on CSLA Lite.</P>
+<P>CSLA.Net is getting to the point now where it does&nbsp;so much&nbsp;for you with minimum effort in your business object code.&nbsp; Version 3.5 will take that further and cut down the property get / set code even more.&nbsp; CSLA isn't lightweight in terms of functionality but it is lightweight in terms of code you need to write - at least&nbsp;I think so.&nbsp; You never know how your business objects might be used in the future, or on what platform -&nbsp;so being able to support all these scenarios is a big bonus.&nbsp; </P>
+<P>I've been there - developed a Windows application and there was no thought by the business that a Web UI was required at the time.&nbsp; 18 Months later the business decided they wanted part of the application on the web.&nbsp; Reused my business objects and had two thirds of the application done just by adding the library into my web project.&nbsp; Management love you when that happens.</P>
+<P>You've got the microsoft framework blocks but I find they are sledgehammers to crack nuts sometimes - depends on the size of your nut of course.</P>
+<P>Richard.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 13, 2007</h2>Well if you don't use remoting or n-level undo, they shouldn't be adding any overhead, nor do you have to code anything differently if you do use such features.<br><br>What part are you finding too complex?&nbsp; I'm not aware of anything similar that's focused on business objects.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 13, 2007</h2><P>I agree with Andy. There is no overhead to NOT using certain features.</P>
+<P>I would stick with CSLA and write the code as if those things might happen some day - then you won't have an issue when Management asks for them in a year or two.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, December 13, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I'm not aware of anything similar that's focused on business objects.<BR></div></BLOCKQUOTE></P>
+<P>The only other business object framework I'm aware of is Mere Mortals - <A href="http://www.oakleafsd.com/">http://www.oakleafsd.com/</A>&nbsp;- you can check out an evaluation version.</P>
+<P>Been a couple years since I used it, can't remember if it had undo, pretty sure it did not support remoting. I wouldn't say it's less complex than CSLA.</P>
+<P>There's lots of reasons I like CSLA over MM - community is bigger and more active, seems cleaner and easier to work with, you've got books, and the price is better. So personally I&nbsp;prefer CSLA, but MM is an option.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Thursday, December 13, 2007</h2><P>Hi and thanks for the reply.</P>
+<P>I guess the preceived complexity from my end is in the data access parts.&nbsp; It's been a while since I coded in CSLA, but from what I recall: when&nbsp;you get an exception&nbsp;in the data access code, you usually wind up somewhere deep in the&nbsp;csla framework very far from where&nbsp;the problem originated.&nbsp; Usually I wind up stopping the debugging session, placing a breakpoint in the insert or update code (or whatever) that where the problem most likely originated and restart debugging.&nbsp; Then I check out the SQL statement that causes the exception and go from there.</P>
+<P>There are a few more scenarios like the above when there just seem to be&nbsp;a lot of complexity added by the framework.&nbsp; Usually not a problem unless an exception gets thrown from deep inside the framework and it makes it harder to debug.&nbsp; </P>
+<P>But part of the equation is of course the fact that I do not know the framework very well.&nbsp; I wear a lot of different hats (constantly jumping between languages and environments), so it is hard to dedicate the time to really get to know it in depth.</P>
+<P>Jim</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 13, 2007</h2>Oh, that's a feature of the IDE.&nbsp; It's trying to set the next statement to execute, which will be in Csla somewhere.&nbsp; It's probably easier to open the Call Stack window though and move up until you find your code.&nbsp; Double clicking will take you to the method that cause the problem.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Friday, December 14, 2007</h2><P>I would agree with the others and suggest that you try and stick with vanilla CSLA if you possibly can.&nbsp; Just don't use the bits you don't need.&nbsp; That's what we do.</P>
+<P>CSLA provides a great structure and patterns for you to follow to get the most out of the code you do actually have to write.</P>
+<P>You get great support from the framework author (Rocky) from his books,&nbsp;e-books and on this forum.&nbsp; And also some great community support on these&nbsp;forums from a very knowledgable group of people that share some common development ideals.</P>
+<P>FWIW !</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Friday, December 14, 2007</h2><P>Yes, I believe you are right. </P>
+<P>Now, I did come across a post in a thread about CSLA where&nbsp;person A stated that he was very surprised that person B used the framework straight as it is, since according to person A, it was meant as an "example framework" and not meant to be put directly into a production environment.&nbsp; He argued that it was supposed to be used as a base that you can re-write to fit your specific needs.&nbsp; </P>
+<P>While I can see that this makes sense in some cases, it seems to me that you are better off doing like you guys suggest in this thread - simply don't use the features you don't need.&nbsp; If you start customizing it, you are of course on your own and cannot easily use future updates.</P>
+<P>Anyhow, thanks for your advice.&nbsp; It is great to have an active forum like this.</P>
+<P>Jim</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 17, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>JimBalo:</strong></div><div>
+<P>Now, I did come across a post in a thread about CSLA where&nbsp;person A stated that he was very surprised that person B used the framework straight as it is, since according to person A, it was meant as an "example framework" and not meant to be put directly into a production environment.&nbsp; He argued that it was supposed to be used as a base that you can re-write to fit your specific needs.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>This is probably someone reiterating things I said in the past. CSLA started as a side-effect of my books and wasn't originally intended to be a "framework". But somewhere in the late 90's people started sending me "bug report" emails on my "framework" because they were using my example code as a basis for their apps.</P>
+<P>When I first created CSLA .NET I sort of treated it like a framework, but still not really like a "product". It was still primarily a side-effect of the books.</P>
+<P>Somewhere around CSLA .NET 1.3 I realized it was a framework whether I liked it or not. This was around 2003.</P>
+<P>By the time I created CSLA .NET 2.0 (in 2005) I had given in entirely - source control, versioned releases, continuing documentation updates, etc.</P>
+<P>So for the past 4 years or so the recommendation has been to go ahead and use CSLA .NET as-is, only modifying it if absolutely necessary. And over that time I've incorporated a lot of extensibility points to help people achieve flexibility without having to alter the core implementation.</P>
+<P>Of course, as always, the software is provided as-is with no warranty or guarantee of any sort - read the license for details.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, June 26, 2009</h2><P class=MsoNormal><SPAN>Just an idea :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In CSLA, we can do many many things but everybody doesn't need everything.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So it will be good to edit a such list (perhaps that exists already) :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>You don't want to use<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>so do the following<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- remoting<SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>……………………<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- n-level undo <SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>……………………<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>- ………….. <SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>……………………<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, June 26, 2009</h2>Heh... well I'm not sure there's a comprehensive list anywhere, but your first option is easy... Just don't put the remoting configuration in your config file.<br /><br />The second option, I'm not sure you really have a choice, short of not using databinding.  If you're don't use databinding, and don't manually call BeginEdit etc, n-lvl doesn't come into play. But usually it's just databindnig that uses it, and it would be odd to NOT use databinding, because it saves you so much work.<br /><br />Of course, if you start cutting out more and more Csla features, you end up using Csla when you don't need to.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 28, 2009</h2><P>It is true that there's support for some "legacy" technologies. Ones that I'll probably drop from ProjectTracker in 4.0 (not from CSLA .NET mind you - just from ProjectTracker). They include</P>
+<UL>
+<LI>Data portal channels</LI>
+<UL>
+<LI>Remoting (use WCF)</LI>
+<LI>asmx web services (use WCF)</LI>
+<LI>Enterprise Services (use WCF)</LI></UL>
+<LI>Example interfaces</LI>
+<UL>
+<LI>asmx web services (use WCF)</LI>
+<LI>Windows Workflow 3.0 (use WF 4.0)</LI></UL>
+<LI>Example clients</LI>
+<UL>
+<LI>asmx web service client (use WCF)</LI></UL></UL>
+<P>Other "legacy" technologies are too vibrant to be dropped (so are they legacy?). They include</P>
+<UL>
+<LI>Windows Forms (use WPF)</LI>
+<LI>Non-AJAX Web Forms (use jquery, etc - or MVC - or Silverlight)</LI></UL>
+<P>Things that clearly need to be added</P>
+<UL>
+<LI>Windows Workflow 4.0</LI>
+<LI>ASP.NET MVC</LI>
+<LI>ASP.NET Web Forms with AJAX</LI></UL>
+<P>Yes, once 3.7 for SL3 is complete the <EM>real</EM> work begins :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, June 28, 2009</h2>Hi, <br><br>I would recommend you to do configure your IDE to "stop on CRL error" when Thrown. <br>Debug - Exceptions - (and you get a new screeen to tick off certain types of errors). <br><br>Debugger will then stop execution on the exact line where the error is thrown.<br><br>/jonny <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Friday, December 14, 2007</h2><P>ajj3085,</P>
+<P>Yes I know how to use the stack trace, but the point I was bringing up is that the origin of the problem is not in the stack trace if the error is in the data access code.&nbsp; Example:</P>
+<P>This is line 951 of Rule.cs:&nbsp; dataLayer.ExecuteNonQuery(sqlString);</P>
+<P>The&nbsp;sqlString is incorrect so it throws an exception.&nbsp; The stack trace (top part only):</P>
+<P>Csla.dll!Csla.DataPortal.Update(object obj = Count = 169) Line 329 + 0x74 bytes&nbsp;C#<BR>Csla.dll!Csla.DataPortal.Update&lt;Csla.BusinessListBase&lt;Jims.ProTrack.BusinessLayer.RuleCollection,Jims.ProTrack.BusinessLayer.Rule&gt;&gt;(Csla.BusinessListBase&lt;Jims.ProTrack.BusinessLayer.RuleCollection,Jims.ProTrack.BusinessLayer.Rule&gt; obj = Count = 169) Line 273 + 0x7 bytes&nbsp;C#<BR>Csla.dll!Csla.BusinessListBase&lt;Jims.ProTrack.BusinessLayer.RuleCollection,Jims.ProTrack.BusinessLayer.Rule&gt;.Save() Line 612 + 0x40 bytes&nbsp;C#<BR>Jims.ProTrack.PresentationLayer.exe!Jims.ProTrack.PresentationLayer.RuleMaintenanceForm.SaveChanges(bool promptUser = false) Line 198 + 0xe bytes&nbsp;C#<BR>Jims.ProTrack.PresentationLayer.exe!Jims.ProTrack.PresentationLayer.RuleMaintenanceForm.uxAddRuleButton_Click(object sender = {Text = "Add Rule"}, System.EventArgs e = {X = 50 Y = 7 Button = Left}) Line 303 + 0x9 bytes&nbsp;C#</P>
+<P>I cannot see an easy way to directly identify the culprit "dataLayer.ExecuteNonQuery(sqlString);" on line 951 of Rule.cs from that stack trace.&nbsp; I can get an idea of where it is coming from, stop debugging, place a breakpoint at line 951 of Rule.cs and start the debug session again so that I can scrutinze the sqlString, etc.&nbsp; </P>
+<P>Without the csla, I would have the offending ExecuteNonQuery just a few lines from the top of the stack trace.&nbsp; </P>
+<P>Not a huge deal, just wanted to clarify the added complexity I was referring to.&nbsp; </P>
+<P>Jim</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Yang replied on Wednesday, January 02, 2008</h2><P>Jim,</P>
+<P>If you are concerned about&nbsp;figuring out where exceptions occured, you can implement something like this :</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> ExtractTrueException(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> ex </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Exception</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> cslaEx </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> DataPortalException = </FONT><FONT color=#0000ff size=2>TryCast</FONT><FONT size=2>(ex, DataPortalException)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> cslaEx </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> cslaEx.BusinessException</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> ex</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>CSLA Business Methods wraps exception into a DataPortalException. The beauty of which is it contains the Original Exception in the BusinessException field and the BO in the which the exception was thrown BusinessObject&nbsp;field. You just need to extract this BusinessException to get the real cause of the problem.</P>
+<P>Regards</P>
+<P>Yang</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tstout replied on Thursday, June 25, 2009</h2>I don't know about simpler or good, but the Business Logic Toolkit certainly looks interesting:<br />http://www.bltoolkit.net/index.htm</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

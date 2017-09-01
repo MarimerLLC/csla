@@ -1,0 +1,16 @@
+<html><header><title>Where to bootstrap?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Where to bootstrap?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9405.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough posted on Thursday, August 19, 2010</h2><p>Where do I put bootstrap code that will work for both n-tier and single tier configurations?</p>
+<p>Especially configuring server side responsibilities.&nbsp; These may not exist on the client.</p>
+<p>Regards</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, August 19, 2010</h2><p>Usually you&#39;re hosting the server side stuff in IIS, so you can use standard asp.net techniques, such as Application_Start.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Friday, August 20, 2010</h2><p>I was hoping for somewhere in Csla to do this; i.e. ClientBootstrap (not a problem normal places) ServerBootstrap (?) this could be in different places depending on configuration.&nbsp; I dont really want to put the code in IIS.</p>
+<p>I need a hook into Csla.Server.DataPortal to run my bootstrap code.&nbsp; A client that may be running n-tier cannot call ServerBootstrap because the assemblies wont be there.</p>
+<p>Regards</p>
+<p>Kevin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, August 20, 2010</h2><p>Maybe I&#39;m misunderstanding the question, but if not I don&#39;t think there&#39;s any place in Csla to do this.&nbsp; </p>
+<p>If you&#39;re talking about bootstrapping in the Ioc / DI context, then I think my answer will work fine for you.&nbsp; I&#39;m coming from a background in StructureMap though, so maybe your IoC container doesn&#39;t have similar features.</p>
+<p>Anyway,&nbsp;&nbsp;your client code (before it shows any forms) can ask StructureMap to scan the folder containing the executing assembly to find any Registry classes.&nbsp; So for server only stuff you put your registry classes only in your server side assemblies.&nbsp; Since they won&#39;t get deployed, those registries won&#39;t be found and thus nothing scanned.&nbsp; Same goes for your client assemblies on the server side.&nbsp; Common registries should be in assemblies which will always be in both locations.</p>
+<p>So like I said, I may be misunderstanding yoru question, and if I am please feel free to correct me!</p>
+<p>HTH</p>
+<p>andy</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

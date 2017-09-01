@@ -1,0 +1,630 @@
+<html><header><title>SmartInt16, SmartInt32, SmartInt64, SmartBool and SrdSafeDataReader Available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartInt16, SmartInt32, SmartInt64, SmartBool and SrdSafeDataReader Available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1684.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Saturday, November 04, 2006</h2><P>I added the above c# classes to the CSLA Contrib project.</P>
+<P>They are designed to be in a separate DLL but could be easily modified to fit inside the CSLA project by a global search and replace on the NameSpace names.</P>
+<P>The "Smart" classes mimic SmartDate for their respective data types.</P>
+<P>The SrdSafeDataReader extends SafeDataReader and recognizes the additional "Smart" classes.</P>
+<P>Please pass on any suggestions for improvements, I'm still learning the nuances of C#.</P>
+<P>Enjoy!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, November 12, 2006</h2>Renamed SrdSafeDataReader to SmartSafeDataReader and loaded it up to CSLA Contrib, along with other features dealing with validation rules.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares replied on Wednesday, November 15, 2006</h2><P>Hi David,</P>
+<P>Just took a look at the code for the SmartBool, and seems like the code can only make the assumption that it is empty when it is set to either true (EmptyIsMax)&nbsp;or false (EmptyIsMin).&nbsp; Shouldn't there be some way to represent it in a tri-state mechanism, sort of like a nullable(of boolean).&nbsp; There will be times when I want to distinguish between something that is true or false and something that is empty, and it seems like right now that class cannot distinguish that. Because if I have EmptyIsMin set and then actually set my value of the property to false, then the DBValue equivalent is going to return DBNull, and not false. (Unless of course i'm not reading the code properly).&nbsp; Just an observation, so let me know if i'm off base in my logic.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 15, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div>
+<P>Hi David,</P>
+<P>Just took a look at the code for the SmartBool, and seems like the code can only make the assumption that it is empty when it is set to either true (EmptyIsMax)&nbsp;or false (EmptyIsMin).&nbsp; Shouldn't there be some way to represent it in a tri-state mechanism, sort of like a nullable(of boolean).&nbsp; There will be times when I want to distinguish between something that is true or false and something that is empty, and it seems like right now that class cannot distinguish that. Because if I have EmptyIsMin set and then actually set my value of the property to false, then the DBValue equivalent is going to return DBNull, and not false. (Unless of course i'm not reading the code properly).&nbsp; Just an observation, so let me know if i'm off base in my logic.</P>
+<P></div></BLOCKQUOTE></P>
+<P>The SmartBool class was cloned from the SmartDate class and should (mistakes on my part excluded) handle this type of situation exactly like SmartDate would.</P>
+<P>I'll take a look and see if I broke something and didn't catch it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 15, 2006</h2><P>Yep, I broke something in SmartBool.</P>
+<P>Will get the fix up within the next few days.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, November 16, 2006</h2><P>I made a copy of SmartDate and turned it into SmartBool with&nbsp;a rather mindless clone and edit process, much as I did the SmartInt series.</P>
+<P>But the fact that the datatype for the Smart class contents and the datatype for the min/max indicator are the same datatype actually requires a somewhat different concept than SmartDate and SmartInt.</P>
+<P>SmartDate has many constructors, some accept no values, some accept just a date value, some accept just the min/max indicator, and some accept both types.</P>
+<P>SmartBool cannot do that, as the compiler cannot tell the difference between:</P>
+<BLOCKQUOTE dir=ltr>
+<OL>
+<LI>public SmartBool (bool value)</LI>
+<LI>public SmartBool(bool emptyIsMin)</LI></OL></BLOCKQUOTE>
+<P>If I pick option two above, then option 1 below becomes conceptually different from the other Smart class behaviors.</P>
+<BLOCKQUOTE dir=ltr>
+<OL>
+<LI>public SmartBool(string value)</LI>
+<LI>public SmartBool(string value, bool emptyIsMin)</LI></OL></BLOCKQUOTE>
+<P>So, upon further reflection, I'm actually unsure what to do.</P>
+<P>Suggestions?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, November 27, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div>
+<P>Hi David,</P>
+<P>Just took a look at the code for the SmartBool, and seems like the code can only make the assumption that it is empty when it is set to either true (EmptyIsMax)&nbsp;or false (EmptyIsMin).&nbsp; Shouldn't there be some way to represent it in a tri-state mechanism, sort of like a nullable(of boolean).&nbsp; There will be times when I want to distinguish between something that is true or false and something that is empty, and it seems like right now that class cannot distinguish that. Because if I have EmptyIsMin set and then actually set my value of the property to false, then the DBValue equivalent is going to return DBNull, and not false. (Unless of course i'm not reading the code properly).&nbsp; Just an observation, so let me know if i'm off base in my logic.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Take a look at SmartBool again, I believe it is better structured now.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>owensig replied on Monday, November 27, 2006</h2><P>In my opinion these classes should really be called CslaXXX class names.&nbsp; Rocky's SmartDate should also be renamed to CslaDate.&nbsp; SmartDate should be depricated.&nbsp; </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, November 28, 2006</h2><P>I named them to match SmartDate to reduce confusion.&nbsp; Any Csla programmer should automatically know what they do just by their name.&nbsp; Until Rocky changes SmartDate to CslaDate, I don't see any gain in doing so.</P>
+<P>PS - quite a few programmers seem unable to remember "csla".</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares replied on Tuesday, November 28, 2006</h2><P>I took a look at it again, and made a few changes. I'm not a C# guy, and haven't tried a recompile so there may be some syntax issues, i'm not sure.&nbsp; I think the text property should be used to determine whether the value is null or not, so what I did was reset the _initialized field in the StringToBool and BoolToString methods.&nbsp; Also, I don't think that the getter for the Bool property should reset the _initialized field, just the setter.&nbsp; This way it can still return false (or true is emptyIsMax), but the actual internal value can still keep track of the difference between false-empty and false-false.&nbsp; And since I'll be using the text property to setup my BO's property, making the text an empty string should force the internal handling to set itself to empty.&nbsp; Finally, as a note, I noticed that the SmartBool isn't being handled by your SmartSafeDataReader class.&nbsp; Hope this helps.&nbsp; Here's the code:</P><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> CslaSrd;</P></FONT><FONT color=#0000ff size=2>
+<P>using</FONT><FONT size=2> CslaSrd.Properties;</P></FONT><FONT color=#0000ff size=2>
+<P>namespace</FONT><FONT size=2> CslaSrd</P>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Provides an boolean data type that understands the concept</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> of an empty value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> See Chapter 5 for a full discussion of the need for a similar </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> data type and the design choices behind it. Basically, we are </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> using the same approach to handle booleans instead of dates.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> However, there are a few differences in behavior and interface from SmartDate, SmartInt16, etc.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Major Difference One: More Limited Set of Constructors</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> SmartDate (etc.) has a constructor that accepts a primitive of the appropriate underlying datatype, and a separate constructor</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> that is a boolean that sets whether an empty object is considered to have a maximum or minimum value. Since the underlying</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> primitive is also a boolean, both of these constructors cannot exist. So, we had to choose. I chose to keep the ability to </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> define how an empty SmartBool is to be compared.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Major Difference Two: IsEmpty does not return based upon Minimum or Maximum value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> SmartDate (etc.) compare the internal value with the minimum or maximum possible value to determine whether to return an empty value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Given that a Date or Int have many, many possible values to choose from, this is an acceptable practice. Given that a bool has</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> only two values, it does not work. An internal indicator, _isInitialized, is used to determine the answer instead.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Possible Major Difference Three: FormatString may be useless.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> It may be just my ignorance of the format capability for booleans built into the .Net framework, but this functionality</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> doesn't appear to be properly supported (in that I did not find any settings that made a difference to the output).</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> I left the capability in place in case others know how to use it, in the hope that they will update this code or send me a message</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> to let me know. :)</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>Serializable</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>struct</FONT><FONT size=2> SmartBool : </FONT><FONT color=#008080 size=2>IComparable</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>const</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _minValue = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>const</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _maxValue = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _bool;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _initialized;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> _emptyIsMax;</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> _format;</P></FONT><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> Constructors</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new, empty SmartBool object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The SmartBool created will have an empty value. </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> It will compare as the minimum or maximum possible value as specified.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="emptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Whether to compare an empty value as the minimum or maximum value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartBool(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P>_emptyIsMax = !emptyIsMin;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_emptyIsMax)</P>
+<P>{</P>
+<P>_bool = _maxValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>_bool = _minValue;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The SmartBool created will use the value supplied. If the object is later set to </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> an empty value, it will compare as the minimum or maximum possible value as specified.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty bool is the min or max bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartBool(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P>_emptyIsMax = !emptyIsMin;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>_bool = value;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartBool object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The SmartBool created will use the min possible</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> bool to represent an empty bool.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object (as text).</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartBool(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P>_emptyIsMax = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P>_bool = _minValue;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (value != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Text = value;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Creates a new SmartBool object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The initial value of the object (as text).</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty bool is the min or max bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> SmartBool(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P>_emptyIsMax = !emptyIsMin;</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_emptyIsMax)</P>
+<P>{</P>
+<P>_bool = _maxValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>_bool = _minValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (value != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Text = value;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>&nbsp;</P>
+<P>#region</FONT><FONT size=2> Text Support</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets or sets the format string used to format a bool</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value when it is returned as text.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The format string should follow the requirements for the</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> .NET </FONT><FONT color=#808080 size=2>&lt;see cref="System.String.Format"/&gt;</FONT><FONT color=#008000 size=2> statement.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;value&gt;</FONT><FONT color=#008000 size=2>A format string.</FONT><FONT color=#808080 size=2>&lt;/value&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> FormatString</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_format == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_format = </FONT><FONT color=#800000 size=2>"d"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _format;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_format = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets or sets the bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This property can be used to set the bool value by passing a</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> text representation of the bool. Any text bool representation</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> that can be parsed by the .NET runtime is valid.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> When the bool value is retrieved via this property, the text</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> is formatted by using the format specified by the </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;see cref="FormatString" /&gt;</FONT><FONT color=#008000 size=2> property. The default is the</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> short bool format (d).</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> Text</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> BoolToString(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool, FormatString, !_emptyIsMax); }</P>
+<P></FONT><FONT color=#0000ff size=2>set</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool = StringToBool(</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>, !_emptyIsMax); }</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Bool Support</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets or sets the bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Bool</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_initialized)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_emptyIsMax)</P>
+<P>{</P>
+<P>_bool = _maxValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P>_bool = _minValue;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _bool;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>_bool = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> System.Object overrides</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a text representation of the bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> ToString()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Text;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares this object to another </FONT><FONT color=#808080 size=2>&lt;see cref="SmartBool"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> for equality.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Equals(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> obj)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> SmartBool)</P>
+<P>{</P>
+<P>SmartBool tmp = (SmartBool)obj;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsEmpty &amp;&amp; tmp.IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool.Equals(tmp.Bool);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool.Equals((</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2>)obj);</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (obj </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.CompareTo(obj.ToString()) == 0);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a hash code for this object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> GetHashCode()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool.GetHashCode();</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> DBValue</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a database-friendly version of the bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> If the SmartBool contains an empty bool, this returns </FONT><FONT color=#808080 size=2>&lt;see cref="DBNull"/&gt;</FONT><FONT color=#008000 size=2>.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Otherwise the actual bool value is returned as type Bool.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This property is very useful when setting parameter values for</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> a Command object, since it automatically stores null values into</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the database for empty bool values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;&lt;para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> When you also use the SafeDataReader and its GetSmartBool method,</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> you can easily read a null value from the database back into a</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> SmartBool object so it remains considered as an empty bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/para&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> DBValue</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DBNull</FONT><FONT size=2>.Value;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool;</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Empty Bools</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a value indicating whether this object contains an empty bool.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsEmpty</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !_initialized;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets a value indicating whether an empty bool is the </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> min or max possible bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Whether an empty bool is considered to be the smallest or largest possible</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> bool is only important for comparison operations. This allows you to</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> compare an empty bool with a real bool and get a meaningful result.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> EmptyIsMin</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !_emptyIsMax; }</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Conversion Functions</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a string value into a SmartBool.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="value"&gt;</FONT><FONT color=#008000 size=2>String containing the bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A new SmartBool containing the bool value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> EmptyIsMin will default to </FONT><FONT color=#808080 size=2>&lt;see langword="true"/&gt;</FONT><FONT color=#008000 size=2>.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> SmartBool Parse(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> SmartBool(value);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a string value into a SmartBool.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="value"&gt;</FONT><FONT color=#008000 size=2>String containing the bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="emptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty bool is the min or max bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A new SmartBool containing the bool value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> SmartBool Parse(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> SmartBool(value, emptyIsMin);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a text bool representation into a Bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> An empty string is assumed to represent an empty bool. An empty bool</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> is returned as the MinValue of the Bool datatype.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The text representation of the bool.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A Bool value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> StringToBool(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> StringToBool(value, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a text bool representation into a Bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> An empty string is assumed to represent an empty bool. An empty bool</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> is returned as the MinValue or MaxValue of the Bool datatype depending</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> on the EmptyIsMin parameter.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The text representation of the bool.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty bool is the min or max bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A Bool value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> StringToBool(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> tmp;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>String</FONT><FONT size=2>.IsNullOrEmpty(value))</P>
+<P>{</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (emptyIsMin)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _minValue;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _maxValue;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2>.TryParse(value, </FONT><FONT color=#0000ff size=2>out</FONT><FONT size=2> tmp))</P>
+<P>{</P>
+<P>_initialized = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> tmp;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> lint = value.Trim().ToLower();</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentException</FONT><FONT size=2>(Resources.StringToBoolException);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a bool value into a text representation.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> The bool is considered empty if it matches the min value for</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the Bool datatype. If the bool is empty, this</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> method returns an empty string. Otherwise it returns the bool</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value formatted based on the FormatString parameter.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The bool value to convert.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="FormatString"&gt;</FONT><FONT color=#008000 size=2>The format string used to format the bool into text.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>Text representation of the bool value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> BoolToString(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> formatString)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> BoolToString(value, formatString, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Converts a bool value into a text representation.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Whether the bool value is considered empty is determined by</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> the EmptyIsMin parameter value. If the bool is empty, this</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> method returns an empty string. Otherwise it returns the bool</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> value formatted based on the FormatString parameter.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The bool value to convert.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="FormatString"&gt;</FONT><FONT color=#008000 size=2>The format string used to format the bool into text.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="EmptyIsMin"&gt;</FONT><FONT color=#008000 size=2>Indicates whether an empty bool is the min or max bool value.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>Text representation of the bool value.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> BoolToString(</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> value, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> formatString, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> emptyIsMin)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_initialized)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Empty;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(</FONT><FONT color=#800000 size=2>"{0:"</FONT><FONT size=2> + formatString + </FONT><FONT color=#800000 size=2>"}"</FONT><FONT size=2>, value);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Manipulation Functions</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares one SmartBool to another.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This method works the same as the </FONT><FONT color=#808080 size=2>&lt;see cref="bool.CompareTo"/&gt;</FONT><FONT color=#008000 size=2> method</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> on the Bool type, with the exception that it</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> understands the concept of empty bool values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="Value"&gt;</FONT><FONT color=#008000 size=2>The bool to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison bool is less than, equal to or greater than this bool.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(SmartBool value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsEmpty &amp;&amp; value.IsEmpty)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _bool.CompareTo(value.Bool);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares one SmartBool to another.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> This method works the same as the </FONT><FONT color=#808080 size=2>&lt;see cref="bool.CompareTo"/&gt;</FONT><FONT color=#008000 size=2> method</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> on the Bool type, with the exception that it</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> understands the concept of empty bool values.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/remarks&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="obj"&gt;</FONT><FONT color=#008000 size=2>The bool to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison bool is less than, equal to or greater than this bool.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IComparable</FONT><FONT size=2>.CompareTo(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (value </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> SmartBool)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> CompareTo((SmartBool)value);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentException</FONT><FONT size=2>(Resources.ValueNotSmartBoolException);</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares a SmartBool to a text bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="value"&gt;</FONT><FONT color=#008000 size=2>The bool to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison bool is less than, equal to or greater than this bool.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool.CompareTo(StringToBool(value, !_emptyIsMax));</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Compares a SmartBool to a bool value.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;param name="value"&gt;</FONT><FONT color=#008000 size=2>The bool to which we are being compared.</FONT><FONT color=#808080 size=2>&lt;/param&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>A value indicating if the comparison bool is less than, equal to or greater than this bool.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(</FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Bool.CompareTo(value);</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>#region</FONT><FONT size=2> Operators</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> ==(SmartBool obj1, SmartBool obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> !=(SmartBool obj1, SmartBool obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> ==(SmartBool obj1, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> !=(SmartBool obj1, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> ==(SmartBool obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> !=(SmartBool obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> !obj1.Equals(obj2);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;(SmartBool obj1, SmartBool obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;(SmartBool obj1, SmartBool obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;(SmartBool obj1, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;(SmartBool obj1, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;(SmartBool obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;(SmartBool obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt; 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;=(SmartBool obj1, SmartBool obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;=(SmartBool obj1, SmartBool obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;=(SmartBool obj1, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;=(SmartBool obj1, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &gt;=(SmartBool obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &gt;= 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>operator</FONT><FONT size=2> &lt;=(SmartBool obj1, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> obj2)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> obj1.CompareTo(obj2) &lt;= 0;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, November 28, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div>
+<P>I think the text property should be used to determine whether the value is null or not, so what I did was reset the _initialized field in the StringToBool and BoolToString methods.&nbsp; <FONT size=2></FONT></div></BLOCKQUOTE></P>
+<P>Remember, I'm trying to have the entire set of Smart... classes act just like SmartDate whenever possible.&nbsp; That way, the programmers don't have to "learn" them if they've already learned SmartDate's&nbsp;quirks.</P>
+<P>Your suggestion is problematic.&nbsp; Both those routines are static ones in the Smart... series.&nbsp; (Is that "shared" in VB?)&nbsp; Basically, you can't access the object's internal variables from the static routine.</P>
+<P>That said, I think you are right in not being happy with those routines.&nbsp; :(</P>
+<P>Basically, SmartDate used a "cheat" in some ways.&nbsp; It assumed that no one would **really** want to use the highest or lowest possible date value as a "real" date, so some of the routines return the min or max values when the object is not initialized.&nbsp; These static routines use the same trick, but they have to rely upon a match to the min or max values, since the _initialized variable isn't available in the static routines.&nbsp; The problem is that the min and max values, for a smart boolean, are two of the three possible values!&nbsp;&nbsp; Given that, there really is no use for these static routines.</P>
+<P>I will probably ditch them unless a better idea shows up.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div> </P>
+<P>Also, I don't think that the getter for the Bool property should reset the _initialized field, just the setter.&nbsp; This way it can still return false (or true is emptyIsMax), but the actual internal value can still keep track of the difference between false-empty and false-false.&nbsp;</P><FONT size=2>
+<P></FONT></div></BLOCKQUOTE></P>
+<P>I agree, but that would make SmartBool inconsistent with SmartDate in its behavior!&nbsp; That's why I left it as is.&nbsp; (I also think that SmartDate should also be returning the max value depending upon the emptyIsMax setting.)&nbsp; So, in order for it to be consistent with SmartDate, I'm inclined to leave it as it stands.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div> </P>
+<P>And since I'll be using the text property to setup my BO's property, making the text an empty string should force the internal handling to set itself to empty.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>The Text property has to be re-written to NOT use BoolToString for the reasons cited above.&nbsp; I'll make sure this feature works in that manner.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div> </P>
+<P>Finally, as a note, I noticed that the SmartBool isn't being handled by your SmartSafeDataReader class.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>Yeah, disabled that when I realized SmartBool was broken.&nbsp; Thought it best to wait until SmartBool was really ready before activating SmartSafeDataReader support again.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div> </P>
+<P>Hope this helps.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>Very Much!!!&nbsp; Thanks!&nbsp; This has been a nasty one to do.</P>
+<P>The SmartInt classes were easy to do.&nbsp; (I've been using SmartInt32 for several months and haven't noticed any problems yet.&nbsp; Of course, I haven't used every single feature in it either.)&nbsp; I should have a SmartFloat up and running fairly soon.&nbsp;&nbsp; That should be an easy one!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, November 28, 2006</h2><P>Forgot to add something about SmartDate (and thus the rest of the Smart... series):</P>
+<P>If you want to know if a SmartDate is empty, the only true way to know for sure is to check it's IsEmpty property.</P>
+<P>So, to check a SmartDate for empty values and take different action based upon that, the right way would be :</P>
+<P>if (theSmartDateObject.IsEmpty)<BR>{<BR>&nbsp;&nbsp;&nbsp;doSomethingIfEmpty();<BR>}<BR>else <BR>{<BR>&nbsp;&nbsp;&nbsp;doSomethingElseIfNotEmpty();<BR>}</P>
+<P>So, the SmartDate Text property does not ever return an empty string even if the date hasn't been initialized yet. It will return the min or max date instead, depending upon the setting of the EmptyIsMin property.&nbsp; Given that, I'm going to keep the StringToBool and BoolToString functionality as it is, as it matches SmartDate.&nbsp; </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mtavares replied on Wednesday, November 29, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div> 
+<P>So, the SmartDate Text property does not ever return an empty string even if the date hasn't been initialized yet. It will return the min or max date instead, depending upon the setting of the EmptyIsMin property.&nbsp; Given that, I'm going to keep the StringToBool and BoolToString functionality as it is, as it matches SmartDate.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't think that's the case about SmartDate.&nbsp; I took a look at the DateToString function and it shows the following:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> DateToString( _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Date</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> formatString </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> emptyValue </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> EmptyValue) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> emptyValue = SmartDate.EmptyValue.MinDate </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> value = </FONT><FONT color=#0000ff size=2>Date</FONT><FONT size=2>.MinValue </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>""</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Else</FONT><FONT size=2> </FONT><FONT color=#008000 size=2>' maxdate is empty</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> value = </FONT><FONT color=#0000ff size=2>Date</FONT><FONT size=2>.MaxValue </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#800000 size=2>""</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>.Format(</FONT><FONT color=#800000 size=2>"{0:"</FONT><FONT size=2> + formatString + </FONT><FONT color=#800000 size=2>"}"</FONT><FONT size=2>, value)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P><FONT color=#000000 size=3>
+<P><FONT size=2>You can see that it is passing back the empty string when the date is max or min depending upon whether empty is min or empty is max.&nbsp; And vice versa in the StringToDate function it is taking an empty string and translating it into Min or Max date based on what emptyIsMin is.&nbsp;&nbsp;So using the Text property would actually allow the user to set an empty date.&nbsp; </FONT></P>
+<P><FONT size=2>That being said, I understand that you want SmartBool to work like SmartDate, but when you are only dealing with Max and Min being the only 2 values for a boolean, you need make it function a little different.&nbsp; You need that 3rd internal variable (which you are using) to keep track of when it is empty, not just passing min or max back. The&nbsp;StringToBool and BoolToString functions that I modified would give you that ability to set empty booleans, as well as display empty booleans, whereas, I don't think your versions of those functions&nbsp;would do that.&nbsp; (At least I don't think so by looking at it.&nbsp; Honestly, I haven't fully tested it).&nbsp; I follow what you are saying about them being static methods in the SmartDate class, but I'm just not sure you will be able to make SmartBool just like the other classes. It's tough to replicate the 'Smart' functionality when you are trying to store something with 3 possible values, in a storage type that can only hold 2 possible values.</FONT></P>
+<P><FONT size=2>As far the question regarding the VB versions mentioned earlier, I have converted your classes from C# to VB using Instant VB and they work quite well.&nbsp; I don't mind sharing them, just let me know.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Sunday, December 03, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div> 
+<P>So, the SmartDate Text property does not ever return an empty string even if the date hasn't been initialized yet. It will return the min or max date instead, depending upon the setting of the EmptyIsMin property.&nbsp; Given that, I'm going to keep the StringToBool and BoolToString functionality as it is, as it matches SmartDate.&nbsp; </P>
+<P></div></BLOCKQUOTE></P>
+<P>I don't think that's the case about SmartDate.&nbsp; I took a look at the DateToString function and it shows the following:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Shared</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> DateToString( _</FONT></P>
+<P><FONT size=2>...</FONT></P>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT size=2>Agreed.&nbsp; It returns an empty string when the value is the min or max value.</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#000000><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mtavares:</strong></div><div></FONT></FONT></P>
+<P><FONT color=#000000 size=3><FONT size=2>You can see that it is passing back the empty string when the date is max or min depending upon whether empty is min or empty is max.&nbsp; And vice versa in the StringToDate function it is taking an empty string and translating it into Min or Max date based on what emptyIsMin is.&nbsp;&nbsp;So using the Text property would actually allow the user to set an empty date.&nbsp; </FONT></P>
+<P><FONT size=2>That being said, I understand that you want SmartBool to work like SmartDate, but when you are only dealing with Max and Min being the only 2 values for a boolean, you need make it function a little different.&nbsp; You need that 3rd internal variable (which you are using) to keep track of when it is empty, not just passing min or max back. </FONT></P>
+<P><FONT size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT size=2>In a C# static function (and I suspect in a VB shared function) there is no 3rd internal variable.&nbsp; The 3rd internal variable, _initialized, only exists for an instantiated object.&nbsp; The static function does not reference the instantiated object.&nbsp; Only the parameters being passed in are useable, not the internal object variables.&nbsp; I suspect that's true for VB as well.&nbsp; </FONT></P>
+<P><FONT size=2>Basically, the BoolToString function is worthless as written because you can only ever get two values back.</FONT></P>
+<P><FONT size=2>This is a nasty design problem.&nbsp; Basically, I think I will just need to strip out some of the standard "Smart..." functionality to start with, then see what I can add back in that would be useful.&nbsp; I think I'll finish up SmartFloat first.</FONT></P>
+<P><FONT size=2>I would love to put your VB versions of the classes up on CSLA Contrib.&nbsp; Send me a private email via the forum and I'll send you my email address.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Monday, December 04, 2006</h2><P>Made the corrections to SmartBool previously discussed.&nbsp; Plus, added SmartFloat.</P>
+<P>Enjoy, and comments/corrections welcome!</P>
+<P>mtavares is volunteering to port these classes to VB from C#.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>glenntoy replied on Tuesday, November 28, 2006</h2>Just a thought is there a VB.NET version for this one?<br><br>Thanks,<br>Glenn<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

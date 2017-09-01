@@ -1,0 +1,68 @@
+<html><header><title>Validation Rules need Lazy Loaded property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rules need Lazy Loaded property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8598.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle posted on Tuesday, March 02, 2010</h2><p>I have a person object that has a few rules that depend on a lzy loaded object of MembershipRecords.&nbsp; The membership records was set to lazy load because they are not always needed across other applications and it became very large and slow to retireve. When the person object was serilized to disk is was 32kb, when the person object with the membership loaded was serilized, it was 1,048kb.</p>
+<p>I have a custom valiation rule in the person object that needs to check a value in the membership Records property child object.&nbsp; my rule has the following signature:</p>
+<p>Private Shared Function SMSMailPrefValidation(Of T As Person)(ByVal target As T, ByVal e As Csla.Validation.RuleArgs) As Boolean</p>
+<p>Then within the rule a line to get teh membership records object.</p>
+<p>Dim _MemberRecords As Membership.MemberRecordList = target.GetProperty(MemberRecordsProperty)</p>
+<p><br />the Membership records property is coded as such:</p>
+<p>Public ReadOnly Property MemberRecords() As Membership.MemberRecordList<br />&nbsp;Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;If Not FieldManager.FieldExists(MemberRecordsProperty) Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(Of Membership.MemberRecordList)(MemberRecordsProperty, Membership.MemberRecordList.GetMemberRecordByPersonID(PersonID:=Me.PersonID))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of Membership.MemberRecordList)(MemberRecordsProperty)<br />&nbsp;End Get<br />End Property</p>
+<p>But the fieldmanager.FieldExists is always true and does not load the object.<br />What do I need to change?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, March 02, 2010</h2><p>Are you using the current version of CSLA? In some earlier versions I think there was a bug that caused FieldExists to erroneously return true.</p>
+<p>But the other primary cause of this issue is accidentally &quot;touching&quot; the property. Data binding will touch it, and you could have other code that touches it. Anything that reads the property value will, of course, trigger your code and initialize the field - to null if nothing else.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, March 02, 2010</h2><p>Are you sure you don&#39;t have code that&#39;s triggering the lazy load?&nbsp; If you bind it, it may load, possibly even if you don&#39;t display it.&nbsp; I&#39;d put a breakpoint anywhere you do a LoadProperty for the collection in question.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nj609eagle replied on Tuesday, March 02, 2010</h2><p>I&#39;m using 3.8.1.</p>
+<p>I removed the dim _MemberRecords line and changed it to <span style="font-size:x-small;">target.MemberRecords.&nbsp; this seems to have the effect I was hoping for.</span></p>
+<p><span style="font-size:x-small;">Unfortunately I notived that i&#39;m calling <span style="font-size:x-small;">ValidationRules.CheckRules() at the bottom of the fetch, so the lazy load is a little pointless i think since now the whole object is getting returned all the time</span></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, March 03, 2010</h2><p>I think the trick is to make your rule a little smarter.</p>
+<p>If the MemberRecords property is null then your rule should just return True. (Because in the current use case the property was not already loaded so it must not be needed.)</p>
+<p>Only when there is an already loaded property should you attempt to validate the email. You should not be loading the lazy loaded object when it is not needed. Also, this will solve your issue with calling ValidationRules.CheckRules - it won&#39;t load the property just because you called a rule.</p>
+<p>Joe</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Friday, September 23, 2011</h2><p><span style="font-size:small;">How would you do this? I tried (using CSLA 4.1)&nbsp; both:</span></p>
+<p style="padding-left:30px;"><span style="font-size:small;"><span style="font-family:courier new,courier;"><span style="color:#000000;">context.InputPropertyValues[PrimaryProperty]&nbsp;&uml;</span></span></span></p>
+<p style="padding-left:30px;"><span style="color:#008000;"><span style="color:#008000;"><span style="color:#008000;"><span style="color:#000000;"></span></span></span></span><span style="font-family:Consolas;color:#008000;"><span style="font-family:Consolas;color:#008000;"><span style="font-family:Consolas;color:#008000;">
+<p style="padding-left:30px;"><span style="color:#000000;"><span style="font-size:x-small;"><span style="font-family:Arial;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-size:x-small;"><span style="font-family:courier new,courier;"><span style="font-size:small;">ReadProperty(context.Target, PrimaryProperty) </span></span></span><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><span style="color:#000000;"><font size="2"><font face="Arial"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p><span style="font-size:small;"><span style="font-family:arial,helvetica,sans-serif;"><span style="color:#000000;">but&nbsp;both threw an Exception (from BusinessBase ReadProperty&nbsp;which checks for LayLoad and FieldExists). </span></span></span></p>
+<p><span style="font-size:small;"><span style="color:#008000;"><span style="font-family:arial,helvetica,sans-serif;"><span style="color:#000000;">What&nbsp;I would like is to have a FieldExists available in a BusinessRule.&nbsp; </span></span></span><span style="color:#008000;"><span style="color:#008000;"><span style="color:#008000;"><span style="color:#000000;"><span style="font-size:small;"><span style="font-family:arial,helvetica,sans-serif;">Is there a way to check for field exists?</span></span></span></span></span></span></span></p>
+<p><span style="color:#008000;"><span style="color:#008000;"><span style="color:#008000;"><span style="color:#000000;"><span style="font-size:small;"><span style="font-family:arial,helvetica,sans-serif;"></span></span></span></span></span></span></p>
+<p><span style="font-family:Consolas;color:#008000;"><span style="font-family:Consolas;color:#008000;"><span style="font-family:Consolas;color:#008000;">
+<p><span style="color:#000000;"><span style="font-size:x-small;"><span style="font-family:Arial;"><span style="font-size:x-small;"><span style="font-family:arial,helvetica,sans-serif;"><span style="font-size:small;">Steve</span></span></span></span></span></span></p>
+</span></span></span></p>
+</p>
+</font></font></font></font></span></font></font></font></span><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><span style="color:#000000;"><font size="2"><font face="Arial"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></font></span></font></font></font></span><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><span style="color:#000000;"><font size="2"><font face="Arial">
+<p>&nbsp;</p>
+</font></font></span></font></font></font></span><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><font face="Consolas" color="#008000"><span style="color:#000000;"><font size="2">
+<p>&nbsp;</p>
+</font></span></font></font></font></span></span></p>
+</span><font face="Consolas" color="#008000"><font face="Consolas" color="#008000">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" color="#008000">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, September 23, 2011</h2>Hi,
+
+In these cases I create the BusinessRule as an inner class inside the BO. This way I will get access to the inner properties/field of the BO, like  FieldManager and can check if the field fieldExists.I would consider these rules as specialized rules for just this BO.
+
+Use snippet cslarule to create the inner rule.
+
+Semantical code to be placed inside the BO:
+
+    private class InnerRule : Csla.Rules.BusinessRule
+    {
+      public InnerRule(IPropertyInfo primaryProperty)
+        : base(primaryProperty)
+      { }
+ 
+      protected override void Execute(RuleContext context)
+      {
+        var myRoot = (Root)context.Target;
+        var fm = myRoot.FieldManager;
+ 
+        if (fm.FieldExists(PrimaryProperty))
+        {
+          // do  the check here 
+          var value = (objectType)myRoot.GetProperty(PrimaryProperty);
+        }
+      }
+    }</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

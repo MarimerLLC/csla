@@ -1,0 +1,36 @@
+<html><header><title>ValidationRules MinValue Workaround?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidationRules MinValue Workaround?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1315.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>brembot posted on Sunday, September 24, 2006</h2><font size="2"><font face="Tahoma">Does anyone implemented this? There's a bug in implementing ValidationRules to a <font color="#0000ff">Short </font>datatype.<br><br></font></font><font size="2"><font face="Tahoma">ValidationRules.AddRule(<font color="#0000ff">AddressOf </font>CommonRules.MinValue(<font color="#0000ff">Of Short</font>), New CommonRules.MinValueRuleArgs(<font color="#0000ff">Of Short</font>)(<font color="#a52a2a">"MyProperty"</font>, 1))<br><br></font></font><font size="2"><font face="Tahoma">Validation Rules does not work if the value is -1 (negative 1) but if the value is 0 (zero) it works.</font></font><br><font size="2"><font face="Tahoma"><br>Thanks<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 24, 2006</h2>The only workaround is to either apply the change to MinValue that I implemented in version 2.1, or to write your own version of MinValue for your application and use that instead.<br><br>As we discussed in another thread, the issue is a bug in the Int16 (Short) data type, where its CompareTo implementation returns arbitrary negative values rather than -1 like it is supposed to.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brembot replied on Sunday, September 24, 2006</h2><font face="Tahoma"><font size="2">Thank you very much Rocky. I applied the changes and it works as expected. That's solved my problem co'z i don't want to break our coding standards.<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 25, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>As we discussed in another thread, the issue is a bug in the Int16 (Short) data type, where its CompareTo implementation returns arbitrary negative values rather than -1 like it is supposed to.</div></BLOCKQUOTE><br><br>Rocky, do you have any code to repo this?&nbsp; I haven't run into this problem in C#, which is not what I would expect.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 25, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2>Hmm. I actually traced it down in C# first, because the 
+first person who discovered it was a C# user.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2>I simply wrote an editable child class with a single short 
+property (using the C# data type, not Int16), put them in an editable root 
+collection. Added a MinValue rule for that short property and bound it to a 
+WinForm grid. Immediate failure.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2>Walk through in the debugger and you find that the short 
+data type returns values other than -1 - and my code in MinValue (and MaxValue) 
+check specifically for -1, 0 or 1. Now they are more forgiving - checking for 
+&lt;0, 0, &gt;0.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=910341013-25092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, September 25, 2006 8:06 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] ValidationRules MinValue 
+  Workaround?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/basicblue/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>As we discussed in another thread, the issue is a bug in the Int16 
+    (Short) data type, where its CompareTo implementation returns arbitrary 
+    negative values rather than -1 like it is supposed 
+  to.</DIV></BLOCKQUOTE><BR><BR>Rocky, do you have any code to repo this?&nbsp; 
+  I haven't run into this problem in C#, which is not what I would 
+  expect.<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 25, 2006</h2>Ok, that's what i would expect.&nbsp; I wrote a small test program that only did CompareTo on shorts, but I must have not written it properly.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

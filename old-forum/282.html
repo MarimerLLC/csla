@@ -1,0 +1,80 @@
+<html><header><title>Project Tracker Winform UI bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Project Tracker Winform UI bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/282.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Huw posted on Tuesday, June 06, 2006</h2><P>I'm fairly new to c# and business objects and have recently downloaded the demo app and have been having a play.&nbsp; </P>
+<P>I have come across a bug in the winform ui that i can't for the life of me work out why.</P>
+<P>I'd be grateful if anybody could give me an explanation as to why and some pointers on how to fix this.</P>
+<P>Here's the problem:&nbsp; after clicking on the "Apply" button in "Resource Edit" to save a new resource and then choosing the "assign" button, the datagridview does not update itself.&nbsp;If, however, I click in another field on the form e.g. Last name and make a change when i move out of this field the datagridview does indeed update itself.&nbsp;&nbsp; I hope this sufficiently explains the odd behaviour i'm seeing.&nbsp; If you need more info please just ask.&nbsp; In the meantime if anybody has any ideas on this i'd really appreciate some advice.</P>
+<P>Many thank!!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2><P>Are you running version 2.0 or 2.0.1? There's a known issue with the Apply button code from the book, and 2.0.1 (hopefully) addressed that issue.</P>
+<P><A href="http://www.lhotka.net/Articles.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8">http://www.lhotka.net/Articles.aspx?id=6432c872-92ce-4bb8-bc26-b610b71956c8</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Huw replied on Tuesday, June 06, 2006</h2><P>Hi Rocky,</P>
+<P>Thanks for the reply.</P>
+<P>I'm running the code as downloaded from the APRESS website.&nbsp; However, i have made the changes to the code as detailed in the errata and it's still not working for me.</P>
+<P>OK, i've also just downloaded the latest 2.0.1 version from the website and i'm getting the same problem here too.&nbsp; I guess it works with you?&nbsp; So what am i missing?&nbsp; Basically after making a change and hitting the Apply button i immediately try to assign or unassign and it won't refresh for me.</P>
+<P>Thanks,</P>
+<P>Huw</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Tuesday, June 06, 2006</h2>Hi Rocky,<br><br>I have similiar problem when I tried to add new project.<br><br>Step:<br>
+1. Add New Project<br>
+2. Enter project detail, assign few resource to the project<br>
+3. Click on the Apply button<br><img src="http://www.sroksreonline.com/erro_apply_button.jpg"><br><br>If I add new project without resource it works fine.<br>I am using CSLA.NET 2.0.1<br><br>Please advice.<br>Kid<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2><P>Hi kids,</P>
+<P>That's a totally different and unrelated problem. Your problem is that the DTC isn't enabled on your computer - or perhaps it is enabled, but you are running WinXP SP2 and haven't followed Microsoft's KB article to defeat all the new security that they put in place to block the DTC from being useful...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Tuesday, June 06, 2006</h2>WOW, Rocky you spray the magic now it works.<br>Many thanks,<br>Kids<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kids_pro replied on Tuesday, June 06, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>Hi kids,</p>
+<p>That's a totally different and unrelated problem. Your problem is that the DTC isn't enabled on your computer - or perhaps it is enabled, but you are running WinXP SP2 and haven't followed Microsoft's KB article to defeat all the new security that they put in place to block the DTC from being useful...</p></div></BLOCKQUOTE><br><br>Rocky, will this problem occur if I decided to use MySQL instead of SQL Server.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=593562604-07062006><FONT face=Arial color=#0000ff size=2>The problem will occur if you tell the data portal to use 
+anything other than Manual transactions on your DataPortal_XYZ methods. Both 
+COM+ (Enterprise Services) and TransactionScope will use the DTC. Manual 
+transactions typically won't use the DTC, as you are usually using ADO.NET or 
+stored procedure transactions (or none at all).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=593562604-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=593562604-07062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> kids_pro [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, June 06, 2006 11:18 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Project Tracker Winform UI 
+  bug?<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <BLOCKQUOTE>
+    <DIV><IMG src="/Themes/default/images/icon-quote.gif"> 
+    <STRONG>RockfordLhotka:</STRONG></DIV>
+    <DIV>
+    <P>Hi kids,</P>
+    <P>That's a totally different and unrelated problem. Your problem is that 
+    the DTC isn't enabled on your computer - or perhaps it is enabled, but you 
+    are running WinXP SP2 and haven't followed Microsoft's KB article to defeat 
+    all the new security that they put in place to block the DTC from being 
+    useful...</P></DIV></BLOCKQUOTE><BR><BR>Rocky, will this problem occur if I 
+  decided to use MySQL instead of SQL Server.<BR><BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Rocky,<br><br>Transaction scope won't use DTC unless you open more than one connection within the scope.&nbsp; I have DTC disabled completely on my computer to catch places where I forget to open a more persistant connection in my DAL.<br><br>At least, this is the behavior with Sql 2k5.&nbsp; Sql 2k may always use DTC; I'm not sure on that.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=015335612-07062006><FONT face=Arial color=#0000ff size=2>True, the DTC only kicks in with TransactionScope if you 
+open a second db connection or use any database other than SQL2k5. But the 
+question was about MySQL - and if TransactionScope works with MySQL (which I 
+doubt very much will happen any time soon), it will likely use the 
+DTC.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015335612-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015335612-07062006><FONT face=Arial color=#0000ff size=2>But your clarification is valuable, because my reply was 
+certainly vague on this point.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=015335612-07062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=015335612-07062006><FONT face=Arial color=#0000ff size=2>Thx, Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> ajj3085 [mailto:cslanet@lhotka.net] 
+  <BR></FONT></DIV>
+  <DIV><SPAN class=015335612-07062006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></DIV>
+  <DIV><SPAN class=015335612-07062006>&nbsp;</SPAN>Rocky,<BR><BR>Transaction 
+  scope won't use DTC unless you open more than one connection within the 
+  scope.&nbsp; I have DTC disabled completely on my computer to catch places 
+  where I forget to open a more persistant connection in my DAL.<BR><BR>At 
+  least, this is the behavior with Sql 2k5.&nbsp; Sql 2k may always use DTC; I'm 
+  not sure on that.<BR><BR>Andy</DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 07, 2006</h2>Ahh,<br><br>I missed the part where the question was on MySql.<br><br>It is disappointing that the only db that doesn't use DTC is Sql Server 2k5. At the very least you'd think MS would figure out TransactoinScope without DTC and Sql Server 2k.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2><P>Yes, I see the problem. It is interesting, and I don't know how I didn't run into this when writing Chapter 9 in the first place.</P>
+<P>It turns out that after you re-enable the data binding events in the finally block the data isn't refreshed from the underlying data source - at least not automatically. So the controls are bound to the correct data, but that data isn't refreshed. You can solve this by adding the following line in the finally block after turning the event handling back on:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ResourceBindingSource.ResetCurrentItem();</P></FONT>
+<P>It appears to be sufficient to trigger a reset on the top level binding source - but that may be due to the nature of the PTWin UI layout, so your mileage may vary... In other words, I imagine it could be the case that you need to reset all binding source objects - though that seems unlikely since you'd have to do a reset on every row for data in a grid (I would think).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 06, 2006</h2><P>OK, to reply to my own reply, there may be a better method: ResetBindings</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.ResourceBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.AssignmentsBindingSource.ResetBindings(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>);</P></FONT>
+<P>From the description of this method it appears to be the better one to use in general terms, because it triggers a refresh of any bound controls - presumably including grids, etc.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Huw replied on Wednesday, June 07, 2006</h2><P>Cool, thank you very much.</P>
+<P>Nice to know i was thinking along kinda the same lines.&nbsp; I tried to implement this code prior to raising this topic here but i was putting it in the wrong place!!&nbsp; I originally tried putting it in immediately after rebinding the datasources.&nbsp; Oh well back to the books i guess to read up more about databinding.</P>
+<P>Once again thank you very much for your quick response to this problem and for all your help!!!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,22 @@
+<html><header><title>CSLA class bloat??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA class bloat??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1678.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhinoishere posted on Friday, November 03, 2006</h2><P>Let's use "ProjectType" as an example.<BR><BR>In the past I would have created a Project business object and added a method to it that would return a dataset of project types. </P>
+<P>However, CSLA requires that you create a seperate class called "ProjectTypeList" (or "ProjectTypes").&nbsp; Along with that, you need a "ProjectTypeInfo".&nbsp; And you probably will also need just a "ProjectType" class. </P>
+<P>So that's three classes that would not have existed at all in the past.</P>
+<P>Now, I understand why it is much better to utilize the smart data of a business object rather than a dataset. But how many classes is too much to be contained inside one assembly?&nbsp; 100?&nbsp; 500? 1000??<BR><BR>I worry for two reasons:</P>
+<P>1) I worry about new developers being overwhelmed when they open our business object library.<BR>2) Also, at what point does the number of classes start degrading performance?&nbsp; Is that even a concern?</P>
+<P>thanks, Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 03, 2006</h2>You can easily ask those two questions about the .Net framework itself.<br><br>The best way to tackle #1 is to have good API documentation.&nbsp; The nice thing about Csla is that many of those objects you won't need to worry about.&nbsp; If it doesn't have a public factory method, that's not a 'starting point.<br><br>If the number of classes becomes too great, you probably have many isolated use cases in your assembly.&nbsp; Many use cases interact with a few others (maybe) and that's it, so it should be possible to move them to another assembly.<br><br>So, I wouldn't worry about having too many classes.&nbsp; I would worry more that your poor new developer makes a one line change that breaks 50 different classes than I would about having them learn 50 different classes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Friday, November 03, 2006</h2><P>I don't think the number of classes in any given assembly will have any performance implication - other from the fact that it might take a bit longer to initially JIT compile the assembly that is.</P>
+<P>Most of us are using code generation with partial classes.&nbsp; This helps to offset being overwhelmed by the amount of code, or _look_a_like_ code from one class to antoher.</P>
+<P>At the end of the day though, I think Csla does exactly the opposite.&nbsp; Because all of the business&nbsp;objects have the same skelleton, developers will be able to immediatly make out the difference between _framework_ code and _business_logic_ code... and this will help you down the road.</P>
+<P>If you're concened about the number of classes in one given assembly, nothing prevents you from splitting your library into smaller, more managable, assemblies.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, November 03, 2006</h2><span></span>You can use façades to simply the interface of the business
+layer if it becomes too complex.<span>&nbsp; </span>
+
+
+
+<p class="MsoNormal"><br>
+Business objects provide many advantages over
+datasets.&nbsp; This is more so in larger projects.&nbsp; IMO, it would be a
+mistake to go with datasets over business objects in any large project.<o:p></o:p></p>
+
+<br>
+<span><span>&nbsp;
+</span></span></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

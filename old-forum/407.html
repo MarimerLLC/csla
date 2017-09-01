@@ -1,0 +1,85 @@
+<html><header><title>Clarification of populating grandchildren and saveable broken rules objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Clarification of populating grandchildren and saveable broken rules objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/407.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Coxy posted on Monday, June 19, 2006</h2><P>Hi,</P>
+<P>I've worked my way through most of the Expert C# 2005 Business Objects book and am about to start my first project using CSLA 2.0.2. However there are still 2 issues that I'm not clear on even after reading through the same issues on searchcsla.com.</P>
+<P>Part of my object hierarchy looks like this</P>
+<P>UnderwritingEnquiry (EditableRoot)</P>
+<P>&nbsp;&nbsp;&nbsp;-&gt; Applicants (EditableChildCollection)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; Applicant (EditableChild)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; AddressHistory (EditableChildCollection)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-&gt; Address (EditableChild)</P>
+<P>1) Loading grandchildren</P>
+<P>It seems that a lot of people are using an extension developed by a member of the forum (SafeRowReader) for populating object graphs more than two levels deep. I can't seem to find an example of using this code or the actual class itself (attachments to posts don't seem to be available from searchcsla.com). Surely something this common should be added to the framework and explained in the book, or at the very list shown in the example ProjectTracker application?</P>
+<P>2) Severity of business rules</P>
+<P>Again this seems to have been solved by&nbsp;multiple members of the forum in different ways but I can't seem to find any code. The default implementation in CSLA automatically stops an object from being saved if any business rules are broken. This does not seem granular enough for a lot of business cases. For instance in my model, these are&nbsp;some of the business rules</P>
+<P>&nbsp;&nbsp;&nbsp;i) An applicant must have a name and telephone number.</P>
+<P>&nbsp;&nbsp;&nbsp;ii) An applicant must have at least 3 years address history.</P>
+<P>If rule i) is broken then the object should be prevented from being saved. However if rule ii) is broken then the object should still be allowed to be saved even though the error should still be displayed to the user. By default, the UI developer shouldn't have to worry about the difference between the different severitiy levels unless they have a specific requirement.</P>
+<P>&nbsp;</P>
+<P>Any help tracking down the code that is alluded to on searchcsla.com would be much appreciated.</P>
+<P>&nbsp;</P>
+<P>Thanks,<BR>Coxy.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, June 19, 2006</h2>Well, I can help you with the grandchild objects.&nbsp; I fiddled a bit with the old SafeRowReader and gave it the ability to automatically sort out which rows belonged to which parent.&nbsp; Add the included files to the Csla.Data folder.&nbsp; If you want, you can change Csla.Data.SafeDataReader to implement ISafeDataReader instead of IDataReader.&nbsp; Rudimentary example follows.&nbsp; I will be able to answer questions later tonight.<br><br>// In root object fetch<br>using (DataSet results = new DataSet)<br>{<br>&nbsp;&nbsp;&nbsp; // Fill DataSet<br>&nbsp;&nbsp;&nbsp; // Add DataRelations to link tables<br>&nbsp;&nbsp;&nbsp; using (SafeDataRowReader dr = new SafeDataRowReader(results.Tables[0].Rows))<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // Read root object values using dr.Get...("ColumnName");<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  using (SafeDataRowReader childDr = dr.GetData())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // Read first child's values<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  dr.NextResult()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // Read next child's values<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // etc.<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>// In a child object that has grandchildren<br>private void Fetch(ISafeDataReader dr)<br>{<br>&nbsp;&nbsp;&nbsp; // Read values<br>&nbsp; <br>&nbsp;&nbsp;&nbsp;  using (SafeDataRowReader childDr = dr.GetData())<br>&nbsp;&nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;  // Read first child's values<br>&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;  dr.NextResult()<br>&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;  // Read next child's values<br>&nbsp;&nbsp;&nbsp;  &nbsp;&nbsp;  // etc.<br>&nbsp;&nbsp;&nbsp;  }  <br>}<br><br>So try it out and see if it works for you.&nbsp; The implementation of dr.GetBytes might be a bit dodgy as I have not had much of an opportunity to test it.&nbsp; I also may have made too many assumptions with dr.GetData to fit how the majority of people would want to use it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Truth replied on Wednesday, November 15, 2006</h2>Brian,<br><br>Reviving an old thread. Do you have any more recent example code of using your SafeDataRowReader?<br><br>Also, in the example:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  using (SafeDataRowReader childDr = dr.GetData())<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // Read first child's values<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  dr.NextResult()<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // Read next child's values<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  // etc.<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  }<br><br>Do you actually mean to execute childDr.NextResult or is the code correct?&nbsp; Trying to determine what you are doing with dr.NextResult.<br><br>I see the same thing in thise post too.<br>http://forums.lhotka.net/forums/post/3541.aspx<br><br><br>Thanks for any assistance.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 19, 2006</h2>
+
+<p class="MsoNormal">Loading grandchildren has been discussed numerous times in
+the old forum.<span>&nbsp; </span>One of the most common
+ways is to use a dataset.<span>&nbsp; </span>You could also
+load the children first, close the data reader and then load the grandchildren.<span>&nbsp; </span>Both options are not ideal, but they do the
+job.<span>&nbsp; </span>If you want more ideas try
+seacrchcsla.com.<span>&nbsp; </span>You might not get code
+that you can plug into your project directly, but you should be able to figure
+it out.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Business Rules Severity was just discussed in depth last
+week.<span>&nbsp; </span>This has also been discussed numerous
+times in the old forum.<span>&nbsp; </span>There are many
+ways to approach this problem and there is no official answer. </p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">There are no official answers to your questions.<span>&nbsp; </span>There are simply many ways to solve the
+issues you brought up.<span>&nbsp; </span>Take a look at
+the alternatives and choose the ones you like best.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Below are some links that discuss the issues that you brought
+up.</p>
+
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+
+<p class="MsoNormal">Loading grandchildren:</p>
+
+
+<p class="MsoNormal"><a href="http://www.lhotka.net/Articles.aspx?id=8354fb43-f676-48dc-b6a8-692f7ba27bb0">http://www.lhotka.net/Articles.aspx?id=8354fb43-f676-48dc-b6a8-692f7ba27bb0</a><br>
+<br>
+</p>
+
+
+<p class="MsoNormal">Severity of Business Rules:</p>
+
+
+<p class="MsoNormal"><a>http://forums.lhotka.net/forums/1/1745/ShowThread.aspx</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Coxy replied on Tuesday, June 20, 2006</h2><P>Thank you both, that's very helpful.</P>
+<P>I'll look at updating the wiki for these issues once I've got some code working. Although not too difficult to sort out, they do seem very common for developers new to CSLA.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Tuesday, June 20, 2006</h2>The issues that you brought up are very common for people new to
+CSLA.&nbsp; I would like to see these issues answered and placed in a
+closed thread called "For Beginners".&nbsp; This thread should always
+remain on top so it is easy for people to see.&nbsp; This would make it
+easier for new users to get the answers they need.&nbsp; Many other
+forums have a closed thread called "For Beginners".&nbsp; I think this
+would be very benifical to this fourmn.&nbsp; What do others think
+about this idea?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 20, 2006</h2>malloc,<br><br>I agree, and actually suggested this in the Forum administration section.&nbsp; Didn't get any feedback though.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, June 20, 2006</h2>Perhaps they would be more appropriate as a wiki pages instead of a forum topics?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 21, 2006</h2>The problem with seperate Wiki pages is that people will likely still come here first instead of going to the Wiki, and post their question anyway.&nbsp; If its a 'sticky' forum topic, hopefully they'll be more inclined to read the topic.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PitDog replied on Wednesday, June 21, 2006</h2>I could not agree more!!! </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 21, 2006</h2>If you want to keep discussing the FAQ idea, you should probably move the discussion to this thread: <a HREF="/forums/thread/1516.aspx">http://forums.lhotka.net/forums/thread/1516.aspx</a>.&nbsp; Don't want this thread to get any more off-topic.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 15, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>malloc1024:</strong></div><div>
+<P class=MsoNormal>Business Rules Severity was just discussed in depth last week.<SPAN>&nbsp; </SPAN>This has also been discussed numerous times in the old forum.<SPAN>&nbsp; </SPAN>There are many ways to approach this problem and there is no official answer. </P>
+<P class=MsoNormal>There are no official answers to your questions.<SPAN>&nbsp; </SPAN>There are simply many ways to solve the issues you brought up.<SPAN>&nbsp; </SPAN>Take a look at the alternatives and choose the ones you like best.</P>
+<P class=MsoNormal>Severity of Business Rules:</P>
+<P class=MsoNormal><A>http://forums.lhotka.net/forums/1/1745/ShowThread.aspx</A></P>
+<P></div></BLOCKQUOTE></P>
+<P>v2.1 contains the capability to designate a rule as an Error, a Warning or an Informational Message.</P>
+<P>It disallows saves on Errors.</P>
+<P>For some rule extensions I've coded, see the CslaSrd sub-project in the CSLA Contrib solution.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,39 @@
+<html><header><title>SafeDataReader and Sql 2008 new datatypes + nullables</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SafeDataReader and Sql 2008 new datatypes + nullables</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10438.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal posted on Tuesday, June 14, 2011</h2><p>Hi Rocky,</p>
+<p>Would you consider adding getters for the new datatypes in sql 2008 (DateTimeOffset, TimeSpan, etc...) to the SafeDataReader?</p>
+<p>Also, at this stage, it wouldn&#39;t be bad to add nullable support as well.</p>
+<p>I understand that the safedatareader works against a standard interface that doesn&#39;t have those getters, but considering it already supports a non-standard SmartDate I don&#39;t see why we couldn&#39;t have this better, up to date support for these features.</p>
+<p>It could easily detect in the constructor if it&#39;s a sqldatareader, set a flag and if it&#39;s not you&#39;d get a not supported exception when calling those methods.</p>
+<p>The original purpose of the SafeDataReader was to handle null values gracefully (by getting rid of them), back when nullables weren&#39;t supported in .net. But today they are fully supported, so having a GetNullableInt32, would fit nicely into the &quot;handling gracefully philosophy&quot;.</p>
+<p>Cheers,</p>
+<p>Andr&eacute;s</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 15, 2011</h2><p>That would tie the type directly to SQL Server though right? So it wouldn&#39;t work against other IDataReader types? I won&#39;t do that - I personally use it against non-SQL data reader sources...</p>
+<p>The only feature you are really looking for (I am guessing) is the name/ordinal conversion so you can do dr.GetInt32(&quot;column&quot;) instead of dr.GetInt32(5) right? Especially if you are using nullables?</p>
+<p>I am not against the idea of a more flexible implementation of a &quot;safe data reader&quot; family of types - a base type that only does the name/ordinal conversion, then a de-nulling subclass that does what the current one does, and maybe a SQL-specific type with these other database types.</p>
+<p>I can add this to the wish list, but without someone contributing the work, I can say that it probably won&#39;t happen any time soon.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, June 15, 2011</h2><p>It&#39;s not just about the name/ordinal conversion. If you attempt to get a nullable Int32, the current function returns just Int32, not Int32?, plus if the value is null, it actually returns DBNull.Value instead of null. So when you&#39;re reading the column value, you&#39;ll get an exception.</p>
+<p>So in short, this is what I&#39;m proposing gets added (aside from the sql specific types).</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public virtual int? GetNullableInt32(int i)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (DataReader.IsDBNull(i))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataReader.GetInt32(i);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>I&#39;ve been working on such a change based on your comments and I now have the following structure:</p>
+<p><b>public class SafeDataReaderBase&lt;T&gt; : IDataReader where T : IDataReader</b></p>
+<p>This is the old safe datareader, unchanged, except for the type definition.</p>
+<p><b>NullableSafeDataReaderBase&lt;T&gt; : SafeDataReaderBase&lt;T&gt;</b></p>
+<p>This implements the GetNullableXYZ methods.</p>
+<p><b>SafeDataReader : NullableSafeDataReaderBase&lt;IDataReader&gt;</b></p>
+<p>No code in this one, just leaves SafeDataReader for anyone to use as before, plus adding support for nullable types.</p>
+<p>This could also be changed into 2 classes: SafeDataReader that inherits from SafeDataReaderBase and NullableSafeDataReader that inherits from NullableSafeDataReaderBase, but I don&#39;t see any real benefit from doing this.</p>
+<p><b>SqlSafeDataReader : NullableSafeDataReaderBase&lt;SqlDataReader&gt;</b></p>
+<p>This initially has support for just DateTimeOffset and TimeSpan and their nullables.</p>
+<p>Would you consider incorporating such changes?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 15, 2011</h2><p>Is there any value in having this be a generic type? The base code won&#39;t ever use anything beyond what is defined in IDataReader right?</p>
+<p>I think the base type should be called DataReader&lt;T&gt; - it is directly useful for the ordinal/name conversion, and that&#39;s a common request, so naming the type something that makes it sound directly useful is good.</p>
+<p>I also think this new DataReader&lt;T&gt; class should implement the GetNullableXYZ methods. It seems to me that they are broadly useful as well, and don&#39;t cause any issues for general use?</p>
+<p>Then have a SafeDataReader&lt;T&gt; to add the de-null functionality.</p>
+<p>Then SafeDataReader can subclass SafeDataReader&lt;T&gt; for backward compatibility.</p>
+<p>The result would be three types:</p>
+<ul>
+<li>DataReader&lt;T&gt;</li>
+<li>SafeDataReader&lt;T&gt;</li>
+<li>SafeDataReader</li>
+</ul>
+<p>Or we can drop the generics - unless there&#39;s a compelling reason where they add value?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Wednesday, June 15, 2011</h2><p>Sorry, I just saw this response. I&#39;ll send you a revised version with the suggestions.</p>
+<p>The generics is helpful when working with the specific datareaders, for instance, if you create a MySqlSafeDataReader, the protected &quot;DataReader&quot; property will reflect the correct type and you won&#39;t need to do casting or store the reference to the datareader again. It&#39;s a small benefit but a benefit nonetheless.</p>
+<p>Andr&eacute;s</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

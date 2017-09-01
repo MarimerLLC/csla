@@ -1,0 +1,19 @@
+<html><header><title>Where to put methods that don't fit nicely into a fetch,update etc</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Where to put methods that don't fit nicely into a fetch,update etc</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1459.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhinoishere posted on Wednesday, October 11, 2006</h2><P>I am finally beginning to put CSLA into real-world use, but I am confused on one point.</P>
+<P>Doesn't every business object have methods that interact with data that don't fit nicely into a fetch,update etc?&nbsp; </P>
+<P>Where do methods such as these go?</P>
+<P>For example, in the past when I created business logic, I would often create them in three classes: object, object list, and object data acces. Using a Carrier business object as an example I would end up with:</P>
+<P>Carrier<BR>CarrierList<BR>CarrierDAO<BR><BR>The relevant part to this post lies inside CarrierDAO.</P>
+<P>There is a method in&nbsp;there called CustNumFromTrackNum.&nbsp; It grabs a tracking number from the data source (based upon criteria passed in), from that tracking number it extracts a customer number and that customer number is what is returned from that method.&nbsp; </P>
+<P>So&nbsp;where would I put a method such as this using CSLA. <BR><BR>thanks for any help, Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Wednesday, October 11, 2006</h2><DIV>I can think the CustNumFromTrackNum() method as a private (i.e. helper) method in your new "Carrier" business object class, which might be used in the DataPortal_XXX() method as needed.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rhinoishere replied on Wednesday, October 11, 2006</h2><P>Thank you for your reply.</P>
+<P>What I'm worried about is mudying up the business object with a whole bunch of "helper methods". </P>
+<P>It makes me think that maybe I am designing my BO's incorrectly (I'm new to all this...).<BR><BR>So, do you think that helper methods inside a business object are fine as long as they are private?</P>
+<P>Helper methods are a necessary evil and should not be viewed as bad design, right??</P>
+<P>thanks again, Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Thursday, October 12, 2006</h2><DIV>There is nothing wrong to include helper methods in your BO so long as it helps your BO. As in this particular scenario, you should invoke the helper method(s) in any one of the DataPortal_XXX() method so that your data access code is running in the correct context (e.g. transaction).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>However, in my opinion, if you are including too many&nbsp;(although a very subjective term) helper methods that look like "utility" methods, you might need to rethink your object design. As Rocky always stress, objects are modelled by behaviors.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Regards,</DIV>
+<DIV>William</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 12, 2006</h2>You might want to encapuslate this in a private nested class which subclasses CommandBase.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

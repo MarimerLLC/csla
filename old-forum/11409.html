@@ -1,0 +1,21 @@
+<html><header><title>StackoverflowException with dynamics in NameValueListBase Dataportal_Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>StackoverflowException with dynamics in NameValueListBase Dataportal_Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11409.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet posted on Tuesday, June 12, 2012</h2><p>I&#39;ve still gotta figure out exactly how to debug this, but it seems there is a problem resulting in a StackoverflowException in NameValueListBase when utilizing Massive (the micro ORM by Rob Conery) to extract the data out of the database.</p>
+<p>Basically what happens is this...</p>
+<p>List&lt;dynamic&gt; list = tableAccessor.FetchAll();</p>
+<p>foreach(dynamic item in list)</p>
+<p>&nbsp;Add(new NameValuePair(item.Code, item.Name)); --&gt; this line results in a StackoverflowException.</p>
+<p>&nbsp;</p>
+<p>If I change my code to this...</p>
+<p>&nbsp;</p>
+<p>List&lt;dynamic&gt; list = tableAccessor.FetchAll();</p>
+<p>string code = &quot;&quot;;</p>
+<p>string name = &quot;&quot;;</p>
+<p>foreach(dynamic item in list){</p>
+<p>&nbsp; code = item.Code;&nbsp;--&gt; this line results in a StackoverflowException.</p>
+<p>&nbsp; name = item.Name;</p>
+<p>&nbsp;Add(new NameValuePair(code, name));&nbsp;</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>Interestingly, if I put a breakpoint on the faulting line, and use the Watch window to peak into the dynamic object, then the Code and Name properties are indeed there as expected.</p>
+<p>It should be noted that in other stereotypes (like ReadonlyListBase, BusinessListBase, etc) I use the exact same approach to extract data from the database and it works fine.</p>
+<p>So to work around the problem, I have replaced my use of NameValueListBase with ReadOnlyListBase.</p>
+<p>(I&#39;m using CSLA 4.3.10).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>shawndewet replied on Tuesday, June 12, 2012</h2><p>what I can&#39;t fathom is why the same line of code would run fine in the DataPortal_Fetch of other stereotypes, but runs into a StackoverflowException when run in the DataPortal_Fetch of NameValueListBase. &nbsp;Does this make sense to anybody out there?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

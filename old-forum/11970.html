@@ -1,0 +1,160 @@
+<html><header><title>Per-property authorization rule that depends on async, lazy-loaded property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Per-property authorization rule that depends on async, lazy-loaded property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11970.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chattererman posted on Tuesday, May 07, 2013</h2><p>What is the best approach for implementing a per-property authorization rule that depends on the result of an async, lazy-loaded property?</p>
+<p>Here&#39;s my suggestion:</p>
+<p>&nbsp;</p>
+<p>[Serializable]</p>
+<p>public sealed class Parent : BusinessBase&lt;Parent&gt;</p>
+<p>{</p>
+<p style="padding-left:30px;"><span>	</span>public static readonly PropertyInfo&lt;string&gt; NameProperty = RegisterProperty&lt;string&gt;(c =&gt; c.Name);</p>
+<p style="padding-left:30px;"><span>	</span>public string Name</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>get { return GetProperty(NameProperty); }</p>
+<p style="padding-left:60px;"><span>		</span>set { SetProperty(NameProperty, value); }</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>public static readonly PropertyInfo&lt;ChildrenList&gt; ChildrenProperty = RegisterProperty&lt;ChildrenList&gt;(c =&gt; c.Children, RelationshipTypes.Child | RelationshipTypes.LazyLoad);</p>
+<p style="padding-left:30px;"><span>	</span>public ChildrenList Children</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>get</p>
+<p style="padding-left:60px;"><span>		</span>{</p>
+<p style="padding-left:90px;"><span>			</span>if (!FieldManager.FieldExists(ChildrenProperty))</p>
+<p style="padding-left:90px;"><span>			</span>{</p>
+<p style="padding-left:120px;"><span>				</span>if (IsNew)</p>
+<p style="padding-left:150px;"><span>					</span>LoadProperty(ChildrenProperty, ChildrenList.NewList());</p>
+<p style="padding-left:120px;"><span>				</span>else</p>
+<p style="padding-left:120px;"><span>				</span>{</p>
+<p style="padding-left:150px;"><span>					</span>ChildrenList.GetListAsync(Id, (o, e) =&gt;</p>
+<p style="padding-left:150px;"><span>					</span>{</p>
+<p style="padding-left:180px;"><span>						</span>if (e.Error != null)</p>
+<p style="padding-left:210px;"><span>							</span>throw e.Error;</p>
+<p style="padding-left:180px;"><span>						</span>LoadProperty(ChildrenProperty, e.Object);</p>
+<p style="padding-left:180px;"><span>						</span>OnPropertyChanged(ChildrenProperty);</p>
+<p style="padding-left:150px;"><span>					</span>});</p>
+<p style="padding-left:150px;"><span>					</span>return null;</p>
+<p style="padding-left:120px;"><span>				</span>}</p>
+<p style="padding-left:90px;"><span>			</span>}</p>
+<p style="padding-left:90px;"><span>			</span>return GetProperty(ChildrenProperty);</p>
+<p style="padding-left:60px;"><span>		</span>}</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>protected override void AddBusinessRules()</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>base.AddBusinessRules();</p>
+<p style="padding-left:60px;"><span>		</span>BusinessRules.AddRule(new Required(NameProperty));</p>
+<p style="padding-left:60px;"><span>		</span>BusinessRules.AddRule(new MaxLength(NameProperty, 255));</p>
+<p style="padding-left:60px;"><span>		</span>BusinessRules.AddRule(new CanWriteParentNameRule(AuthorizationActions.WriteProperty, NameProperty));</p>
+<p style="padding-left:60px;"><span>		</span>BusinessRules.AddRule(new Dependency(ChildrenProperty, NameProperty));</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>public class CanWriteParentNameRule : AuthorizationRule</p>
+<p>{</p>
+<p style="padding-left:30px;"><span>	</span>public CanWriteParentNameRule(AuthorizationActions action, IMemberInfo element)</p>
+<p style="padding-left:60px;"><span>		</span>: base(action, element) { }</p>
+<p style="padding-left:30px;">&nbsp;</p>
+<p style="padding-left:30px;"><span>	</span>protected override void Execute(AuthorizationContext context)</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>var parent = context.Target as Parent;</p>
+<p style="padding-left:60px;">&nbsp;</p>
+<p style="padding-left:60px;"><span>		</span>if (parent != null &amp;&amp; parent.Children != null)</p>
+<p style="padding-left:90px;"><span>			</span>context.HasPermission = (parent.Children.Count == 0);</p>
+<p style="padding-left:60px;"><span>		</span>else</p>
+<p style="padding-left:90px;"><span>			</span>context.HasPermission = false;</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p>}</p>
+<p>The binding of the name property causes the authorization rule to be evaluated which in turn triggers the async retrieval by accessing the Children property. The property returns null and we default HasPermission to false until we have the children.</p>
+<p>When the Children property eventually returns, it raises OnPropertyChanged which in turn (via the Dependency business rule) causes the name property rules to be re-evaluated including the authorization rule. This time the authorization rule gets the children and sets HasPermission accordingly.</p>
+<p>What do you think? Does this seem plausible?</p>
+<p>Thanks in advance,</p>
+<div></div>
+<div>Joe</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 08, 2013</h2><p>Hi,<br /><br />First I&#39;d like to question why you even consider to use a AuthorizationRule to perform lazy loading of a property? <br /><br />Why not load/initilize the property right away in your data access? (at least for a new object !! preferrablyfor both new and existing)<br />Especially when you know at design time that you are going to need the children property for authorization. </p>
+<p><br /><b>Problem areas:</b></p>
+<ol>
+<li>As your code is now the property may be read a number of times and lazy loading triggered in parallel a number of times... </li>
+<li>Unless you set CacheResult to false - the Authz rule will only be executed ONCE and the result be cached in the BO. </li>
+<li>There can only be one authorization per AuthorizationAction and MethodInfo/Property - ie: you cannot add an extra IsInRole/IsNotInRole rule. </li>
+</ol>
+<p><b>My preferences is:</b></p>
+<ol>
+<li>An authorization rule should NOT trigger lazy loading.</li>
+<li>Starting from CSLA 4.2 (or 4.3) you should use LoadPropertyAsync to lazy load the property (will make sure to only trigger 1 - one load)</li>
+<li>When you have &quot;data driven&quot; authorization I&#39;d rather just override CanWriteProperty inside the BO to handle whether the property has been lazy loaded or not - and make sure to NOT trigger lazy loading.</li>
+</ol>
+<p>&nbsp;So I&#39;d rather have code like this: </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanWriteProperty(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!(<span style="color:blue;">base</span>.CanWriteProperty(property)))&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">false</span>;&nbsp;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(property&nbsp;==&nbsp;NameProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;check&nbsp;if&nbsp;ChildrenField&nbsp;has&nbsp;been&nbsp;loaded&nbsp;and&nbsp;has&nbsp;no&nbsp;rows&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;will&nbsp;NOT&nbsp;trigger&nbsp;lazy&nbsp;loading&nbsp;of&nbsp;property.&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;childrenFieldExistsAndHasNoRows&nbsp;=&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FieldManager.FieldExists(ChildrenProperty)&nbsp;&amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; !ReadProperty(ChildrenProperty).Any();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;childrenFieldExistsAndHasNoRows;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">true</span>;
+}
+<br />and still have the option of adding IsInRole/IsNotInRole authorization to the Name field. </pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chattererman replied on Wednesday, May 08, 2013</h2><p><a name="_GoBack"></a>Hi Jonny</p>
+<p>In reality these business objects
+service a Silverlight application where they fit in the middle of a larger
+hierarchy. The children need to be lazy loaded because their retrieval could be
+expensive.</p>
+<p>The basic requirements for this
+part of the hierarchy are that the parent&#39;s name cannot be changed when there
+are children present and, later, children cannot be added until the parent&#39;s
+name is &#39;valid&#39;.</p>
+<p>My initial stab at the first
+requirement was in fact to use the CanWriteProperty override but I opted for
+the AuthorizationRule because it seemed like a nice way to encapsulate the
+requirement in a well-defined class. To be honest I had forgotten about only
+being allowed to have one AuthorizationRule per property/method and about the
+CacheResult - thanks for the reminder.</p>
+<p>As for your preferences:</p>
+<p>1.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Triggering
+the lazy loading of the children within an AuthorizationRule was simply an
+unintentional side-effect that needed to be dealt with to satisfy the
+requirement.</p>
+<p>2.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+I&#39;ll
+certainly look into using LoadPropertyAsync for the lazy loading implementation.
+Examples are hard to come by so I guess I&#39;ll just have to man-up and break open
+Csla when necessary.</p>
+<p>3.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+I&#39;ll take
+your advice and re-implement the CanWriteProperty override whilst not
+triggering the lazy loading.</p>
+<p>From point 3, I guess I&#39;ll just
+have to manually raise OnPropertyChanged for the parent&#39;s name property once
+the children have arrived to ensure that the UI can refresh the availability of
+the name field or could it be done through a DependencyRule? Not to worry.</p>
+<p>Thanks for the advice.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 08, 2013</h2><p>Hi,</p>
+<p>I can post some examples on the LoadPropertyAsync and Rules tomorrow. </p>
+<p>A Dependency rule may be used although I usually prefer another named rule like NotifyChanged just to clarifiy the purpose/action of the rule for readability in AddBusinessRules. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chattererman replied on Wednesday, May 08, 2013</h2><p>This should do it,</p>
+<p>&nbsp;</p>
+<p>public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;ChildrenList&gt;&nbsp;ChildrenProperty&nbsp;=&nbsp;RegisterProperty&lt;ChildrenList&gt;(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; c&nbsp;=&gt;&nbsp;c.Rules,&nbsp;RelationshipTypes.Child&nbsp;|&nbsp;RelationshipTypes.LazyLoad);</p>
+<p>public&nbsp;ChildrenList Children</p>
+<p>{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(!FieldManager.FieldExists(ChildrenProperty))</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(IsNew)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(ChildrenProperty,&nbsp;ChildrenList.NewChildrenList());</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadPropertyAsync(ChildrenProperty,&nbsp;(completed,&nbsp;parentId)&nbsp;=&gt; ChildrenList.GetChildrenListAsync(parentId,&nbsp;completed),&nbsp;ParentId);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;null;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;GetProperty(ChildrenProperty);</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>}</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

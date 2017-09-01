@@ -1,0 +1,353 @@
+<html><header><title>GAC and CSLA.NET</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GAC and CSLA.NET</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2707.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O posted on Monday, April 16, 2007</h2><P>&nbsp;&nbsp;&nbsp; Forgive me if I am reviving a dead horse here. I have read the FAQ and searched the forum, and still need an answer to give a BizTalk developer who insists we must GAC the CSLA framework and any business objects we create. Whenever we do that, we get an error under remoting that says "DLL can not be found"(p). </P>
+<P>&nbsp; We can GAC the business objects and they load from wherever, but the framework must be in the BIN folder of the remoting host, the web client applications, and anywhere else we need it. </P>
+<P>Thanks for any help,</P>
+<P>Brian</P>
+<P><A href="mailto:brian.f.oneil@gmail.com">brian.f.oneil@gmail.com</A></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 16, 2007</h2>If you put Csla.dll into the GAC then you'll need to use its fully qualified name rather than the short name when setting up your web.config file. I haven't spent any time researching this - I generally recommend against using the GAC - but that is the basic solution to this problem.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mercule replied on Thursday, April 19, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>If you put Csla.dll into the GAC then you'll need to use its fully qualified name rather than the short name when setting up your web.config file. I haven't spent any time researching this - I generally recommend against using the GAC - but that is the basic solution to this problem.</div></BLOCKQUOTE></P>
+<P>I've been having a rough time just getting Csla into the GAC, let alone accessing it.&nbsp; Is there something unusual that I need to do?&nbsp; I added another assembly to the GAC at the same time, without issue, so I know I know how to do it, normally.</P>
+<P>Also, when you say you generally recommend against using the GAC, do you mean just for Csla, or in general?&nbsp; I'd be interested to hear the "why" in either case, if you don't mind.&nbsp; We've been having this discussion internally and the GAC seems much superior to including the .dll with every project.&nbsp; Then again, I do ASP.NET development, which means I have a really good idea about what the destination looks like -- I could see some issues with Windows development.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 19, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What problem are you having adding Csla.dll to the GAC?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I recommend against the GAC in general. This is because I very
+much think you should only use a technology because you need its features. So
+you should only use the GAC because you specifically need something it gives
+you, and because you can live without the things it takes away.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The GAC takes away registry-free installation. To me that is a
+huge loss, not only for client apps, but also for server apps. No longer can
+you simply copy the dll to the target location and use it. Now you have to log
+into the machine and run a registration step. But for you this may be a
+non-issue, and you may feel no loss.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But even so, the GAC introduces complexity, and so should only
+be used if you need what it offers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And what it offers, primarily, is that the dll will be loaded
+into physical RAM just once for the machine. This is only important if your dll
+is used by multiple processes on the machine. On a client, this only typically
+happens for the .NET runtime and for a handful of UI controls. On the server it
+can happen for your framework assemblies, but virtually never for app-specific
+assemblies, since they are per-virtual root and thus are per-process. So the
+GAC doesn&#8217;t offer its key value to most of the assemblies people create.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The GAC also offers COM-like versioning: the ability to force an
+application to upgrade to a newer assembly even if it hasn&#8217;t been tested
+against that assembly. To me this is not a positive: it brings the DLL Hell of
+COM into the .NET world. But to some, very small number, of organizations who
+had (and have) the iron discipline to make COM versioning actually work to
+their benefit, then this aspect of the GAC is a positive. But to the vast
+majority of organizations where DLL Hell was a very real, and very bad thing,
+this use of the GAC is most certainly a negative feature.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In short, for most organizations, the only value to the GAC is
+if they have a shared framework that is used across many processes (virtual
+roots on a web server), and where that assembly is physically large
+enough&nbsp; that it actually matters to save RAM by loading it only once into
+physical memory.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Against that you must weigh the costs of loss of easy
+deployment, increased complexity and potential to re-engage COM-like versioning
+and DLL Hell.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The result, to my mind, is that the GAC is almost never of value
+to the vast majority of assemblies or applications.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> mercule
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 19, 2007 4:01 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] GAC and CSLA.NET<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>If you put Csla.dll into the GAC then you'll need to use its
+fully qualified name rather than the short name when setting up your web.config
+file. I haven't spent any time researching this - I generally recommend against
+using the GAC - but that is the basic solution to this problem.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>I've been having a rough time just getting Csla into the GAC, let alone
+accessing it.&nbsp; Is there something unusual that I need to do?&nbsp; I added
+another assembly to the GAC at the same time, without issue, so I know I know
+how to do it, normally.<o:p></o:p></p>
+
+<p>Also, when you say you generally recommend against using the GAC, do you
+mean just for Csla, or in general?&nbsp; I'd be interested to hear the
+&quot;why&quot; in either case, if you don't mind.&nbsp; We've been having this
+discussion internally and the GAC seems much superior to including the .dll
+with every project.&nbsp; Then again, I do ASP.NET development, which means I
+have a really good idea about what the destination looks like -- I could see
+some issues with Windows development.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Saturday, April 21, 2007</h2>I don't generally disagree with Rocky, he's a very smart man; but for us at least, the GAC is a wonderful, powerful thing that has done us a lot of good.&nbsp; We run CSLA 2.1.4 in the GAC side by side with 2.0 (until recently when everything got transferred out).&nbsp; DLL hell like scenerio's have never been a problem and when we went form 2.1.1 to 2.1.4 we just used a publisher policy and didn't break any applications.&nbsp; I could go on for days about the DLL hell we HAVE had because of private assemblies.&nbsp; But hey; everyone has there war stories and we all have our preferences for reasons.<br><br>I actually create a MSI that contains CSLA that the OPS team installs just like any other program; a batch script could do the same thing though; but OPS likes GUI.<br><br>I'm going to read again to see if I can't help you with your specific problems...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 21, 2007</h2><P>I don't think you are disagreeing at all. My point is merely that you should use the GAC only if you get value from the features it provides. If you do get value, than by all means use it! But if you don't get value, then don't use it because it is just a complication you don't need.</P>
+<P>Most people don't need it for most assemblies. Csla.dll is actually one possible exception, because it is likely to be used across multiple virtual roots - as opposed to your typical business assemblies that are likely per-application.</P>
+<P>But even then, you need to weigh the costs vs the benefits and make a business decision about whether using the GAC makes sense for your specific setting.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, April 22, 2007</h2>mercule - all you should have to do to get it into the GAC is to sign it and then use the gacutil command line.&nbsp; To use it, where ever you have it compiled to, just reference it and it will use the GAC'd version.<br><br>As I said above we use an MSI.&nbsp; The MSI puts a copy of CSLA into the GAC, we also in the MSI install it into one of the special folder's Visual Studio looks in when you use the 'Add Reference' and look under the .NET tab.&nbsp; This way it's intuitive to people who are use to adding assemblies from that tab.&nbsp; We create this special folder for Visual Studio to look in (which is really just the install folder which we don't allow to be set in the MSI) by setting a registry key in the MSI.&nbsp;  <br><br>There is no versioning hell if the GAC is used properly...we never have had applications be forced to used the wrong version of CSLA; I mean think about it...the .NET framework uses the GAC and this is why you can have .NET 1.0 and .NET 1.1 and .NET 2.0 and .NET 3.0 all on the same machine...if the GAC forced applications to upgrade we'd have a lot of .NET 1.0/1.1 applications broken out there.<br><br>For our organization the MSI and the GAC work well because any developer can go to any machine and have CSLA available; it's on our servers, and for windows apps we can make it a part of the MSI for that particular application if we ever needed to.&nbsp; Before we started really understand the GAC and taking advantage of it, for our needs, we had a lots of problems where there would be 4 applications with the same private assembly version 1.0.0.0 but that assembly (if a binary compare was done) will be different for each of those groups - so as long as you don't 'lose' the original assembly to the referencing application; your okay...but we've seen people replace a lost 1.0.0.0 assembly reference with the wrong 1.0.0.0 assembly - of course this all gets into CM (configuration management) but for our CM - GAC is the way to go for things that are 'enterprise' standard.<br><br>But like Rocky said this is extra steps for us, but for us what we get out of these extra steps are worth it...private assemblies are much easier from the XCOPY stand-point; but XCOPY is a lot less controlled and we have a tightly controlled organization... so as Rocky said use it if you need, but if you don't need it, don't build in extra complexity.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mercule replied on Monday, April 23, 2007</h2><P>I think I may have botched the strong naming of the Csla framework, actually.&nbsp; I didn't realize it until boo said something.&nbsp; I'll give it another shot and see how it works.</P>
+<P>I guess I'm not too far off from what you guys are saying on the GAC.&nbsp; I was only looking at using it for things like CSLA, custom providers, etc.&nbsp; I don't think it makes sense for assemblies like a specific implementation of a BOL.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian O replied on Friday, August 03, 2007</h2><P>&nbsp;Not to argue, but I would doubt you are able to run CSLA 2.0 "bone stock" on the client side without a copy in the "bin" folder. Our mileages must truly be varying. </P>
+<P>&nbsp;&nbsp; I have&nbsp;a solution which involves a change to one line of code in a CSLA class that allows a true GAC reference on the client side to work. Nobody seems to want it but me, so I'll refrain from posting it unless requested.</P>
+<P>&nbsp;&nbsp; Thanks for giving me a place to soundboard this problem. The journey to a solution has been much less lonely being able to post here. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>phucphlq replied on Friday, August 03, 2007</h2>
+
+
+
+
+
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Hi!<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>My program includes two part: client and
+server(.Net Remoting). I want to share a value for many clients, data that
+flows from client to server and then from server back to client and &#8220;many
+other clients&#8221; that connected to server, changes on either end are
+carried across the network.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Do Global Context support?<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span>Thanks.<o:p></o:p></span></font></p>
+
+<p class=MsoNormal><font size=2 color=navy face=Arial><span><o:p>&nbsp;</o:p></span></font></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 04, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, nothing in Csla.ApplicationContext is designed to solve that
+problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You may consider using the ASP.NET Application object, assuming
+you have just a single application server. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have, or might have, a cluster of application servers though,
+the problem clearly becomes more complex because you need some way to share
+that value across all your servers. The obvious answer in that case is the
+database.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Pham Huu Le Quoc
+Phuc [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 03, 2007 11:13 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> [CSLA .NET] How to share Global Context for many clients and
+one server?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal><span>Hi!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>My program
+includes two part: client and server(.Net Remoting). I want to share a value
+for many clients, data that flows from client to server and then from server
+back to client and &#8220;many other clients&#8221; that connected to server,
+changes on either end are carried across the network.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Do Global
+Context support?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 04, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If there&#8217;s a simple change like that, which wouldn&#8217;t
+<i>require</i> the use of the GAC, I will certainly consider putting into the
+official code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I am curious what the problem is &#8211; why doesn&#8217;t it
+work as-is?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Brian O
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, August 03, 2007 10:48 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] GAC and CSLA.NET<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>&nbsp;Not to argue, but I would doubt you are able to run CSLA 2.0
+&quot;bone stock&quot; on the client side without a copy in the &quot;bin&quot;
+folder. Our mileages must truly be varying. <o:p></o:p></p>
+
+<p>&nbsp;&nbsp; I have&nbsp;a solution which involves a change to one line of
+code in a CSLA class that allows a true GAC reference on the client side to
+work. Nobody seems to want it but me, so I'll refrain from posting it unless
+requested.<o:p></o:p></p>
+
+<p>&nbsp;&nbsp; Thanks for giving me a place to soundboard this problem. The
+journey to a solution has been much less lonely being able to post here. <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

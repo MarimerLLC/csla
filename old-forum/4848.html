@@ -1,0 +1,10 @@
+<html><header><title>Bug in PTWin CSLA 3.5.1??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in PTWin CSLA 3.5.1??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4848.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw posted on Wednesday, May 14, 2008</h2><P>Hi,</P>
+<P>When I try to create New Project from PTWin, do nothing and close it, there is UndoException in class BusinessListBase being raised:</P>
+<P>&nbsp;Private Sub UndoChanges(ByVal parentEditLevel As Integer) Implements Core.IUndoableObject.UndoChanges<BR>&nbsp;&nbsp;&nbsp; Dim child As C<BR>&nbsp;&nbsp;&nbsp; Dim index As Integer</P>
+<P>&nbsp;&nbsp;&nbsp; If Me.EditLevel - 1 &lt; parentEditLevel Then<BR>*****ERROR RAISED HERE!<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New UndoException( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; String.Format(My.Resources.EditLevelMismatchException, "UndoChanges"))<BR>&nbsp;&nbsp;&nbsp; End If<BR>...</P>
+<P>I try to debug and found that the error occur when trying to unbind the ProjectBindingSource in Rebind method.</P>
+<P>I tried CSLA 3.5 and it is working fine, is it a bug in 3.5.1?</P>
+<P>Thanks in advance.</P>
+<P>Jason Law</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 16, 2008</h2>Hmm, I don't know - I'll have to take a look at it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>admin replied on Tuesday, May 27, 2008</h2><P>I believe the issue is due to a bug in CSLA itself, which I have now hopefully addressed. The fix is in svn now, and will be in the next test release of 3.5.1 - please give it a try and see if it addresses the issue.</P>
+<P>Thank you!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jasonlaw replied on Thursday, May 29, 2008</h2><P>Hi, I have downloaded the lastest 3.5.1 and it is working fine now.</P>
+<P>Thank you.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

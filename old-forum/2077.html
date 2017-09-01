@@ -1,0 +1,42 @@
+<html><header><title>EditableRootListBase with datagridview control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase with datagridview control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2077.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy posted on Thursday, January 04, 2007</h2><P><FONT color=#000000>I&nbsp;have employees collections derived from <FONT size=2>EditableRootListBase setting up to do on demand editing with datagridview control&nbsp;using sample template from the follow post</FONT></FONT></P>
+<P><A HREF="/forums/post/8887.aspx">http://forums.lhotka.net/forums/post/8887.aspx</A></P>
+<P><FONT color=#000000><FONT size=2>. </FONT></FONT></P>
+<P><FONT color=#000000 size=2>The 'isDirty' flag only set to true for the very first row of the datagridview when doing editing.&nbsp; As a result, the rest of the rows never get updated.&nbsp; Not quite sure what the problem is.&nbsp; Any suggestion?</FONT></P>
+<P><FONT color=#000000 size=2>Andy</FONT></P>
+<P><FONT color=#008080 size=2></FONT>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT color=#008080 size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2><P>So when you edit, say, line 3 and change the values in that object somehow IsDirty is set on the first object in the list? Since each object in the list tracks its own state, including IsDirty, it should not be possible for an edit of one object to change the state of another object. Can you elaborate further on what you are doing?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Thursday, January 04, 2007</h2><P>Rocky,</P>
+<P>I am only able to edit the very first row.&nbsp; The rest of the rows in the datagridview can not&nbsp; be updated because&nbsp; 'isDirty' flag is not being set<FONT size=2>.&nbsp; </FONT>I found out through tracing the executing process in debug mode in Visual studio.</P>
+<P><FONT size=2><FONT size=2>Andy</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=781103916-04012007><FONT face=Arial color=#0000ff size=2>I still don't understand. You can't edit the remaining rows 
+because the grid puts those rows into read-only mode? Or your edits to those 
+rows are ignored?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=781103916-04012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=781103916-04012007><FONT face=Arial color=#0000ff size=2>In other words, can you get into the row in the grid and 
+edit the data? And if not, why? And if so, what happens exactly? Do the changes 
+in the grid not make it to the object? Or do they make it to the object and then 
+get ignored?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=781103916-04012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=781103916-04012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Thursday, January 04, 2007</h2><P>I am able to edit the rows just fine.&nbsp; It just those rows never get persisted in the database because the <FONT size=2>DataPortal_Update method in my biz object never get called since the 'isDirty' is not being set properly for the base class to do so.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>Andy</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=625445716-04012007><FONT face=Arial color=#0000ff size=2>In that case I'd suggest putting a breakpoint in your 
+property set so you can ensure that the object's property is being set as you 
+expect. IsDirty gets set when PropertyHasChanged() is called. If that code is 
+running, then there's some point in there where the object is being rolled back 
+(CancelEdit probably).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=625445716-04012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=625445716-04012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Thursday, January 04, 2007</h2><P>It's very strange that it's only working for the very first row of the grid.</P>
+<P>Anyway, I'll poke around to see I can pin point the problem.</P>
+<P>Andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andy replied on Thursday, January 04, 2007</h2><P>Just to follow up with the issue.&nbsp; </P>
+<P>I got a System.StackOverflowException when try to force the update via base.Save(true) in my biz object SAVE's method.&nbsp;&nbsp;&nbsp;Not sure it can trigger an infinite loop or recursion by doing just that.</P>
+<P>Andy</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

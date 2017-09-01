@@ -1,0 +1,35 @@
+<html><header><title>Conditional required business rule and UI prompting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Conditional required business rule and UI prompting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11532.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane posted on Friday, August 17, 2012</h2><p>We have numerous instances of fields that are conditionally required based on the state of an object or based on properties of related entities. Typical examples: Customer PO is required on an order depending on a property of the related customer. Tracking number is required on shipment record depending on the selected carrier and customer. My order detail form has about a dozen of these conditionally required fields.</p>
+<p>I have demonstrated in WinForms and WPF that the field can have an indicator when it is not filled in. The stakeholders are insisting that we display an asterisk on the field caption when it is required, even if it is filled in, and not violating the business rule. As the condition changes, they want the asterisk to automatically appear and disappear.</p>
+<p>I am struggling with coming up with an elegant way to achieve this requirement.</p>
+<p>My primary goals (maybe not realistic):</p>
+<ul>
+<li>No duplication of the conditional logic (i.e. keep it in the model)</li>
+<li>Do not require the developer laying out the form to have to know that the field is conditionally required</li>
+<li>Avoid extra property clutter (especially on the order detail classes)</li>
+</ul>
+<p>We have not decided on Winforms vs. WPF yet. I&#39;m not averse to creating custom text box and drop-down controls or helper classes (something akin to the WPF PropertyInfo class, perhaps?).</p>
+<p>I&#39;m hoping somebody else has had similar requirements and could offer some suggestions.</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 18, 2012</h2><p>As the rules is statically typed (per type) and only report the</p>
+<ul>
+<li>Registered rules</li>
+<li>Broken Rules (based on the current status)</li>
+</ul>
+<p>That is really the limit. </p>
+<p>Depending on how many &quot;total combinations&quot; you have - the only way that i can get this to work with the rule engine as-is is to use <b>RuleSets</b>. <br />RuleSets is the only solution in the RuleEngine to switch between complete sets of&nbsp; rules and provide &quot;metadate&quot; for f.ex Required fields. <br />IE&nbsp; - one complete ruleset for each condition per-type and use the &quot;registered rules&quot; in active ruleset to set the asterisk on the fields in the UI. </p>
+<p>Not an ideal solution maybe by the only solution I can come up with using the RuleEnginge/model. </p>
+<p>The last alternative would be to duplicate logic in the UI to set the asterisk. </p>
+<p><i>And I wouldn&#39;t be surprised if this last alternative gives less clutter in the model and is easier to maintain. It may be more work to handle rulesets and keep the &quot;active&quot; ruleset updated based ogn values from other objects (intergraph references). </i></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Sunday, August 19, 2012</h2><p>Off the top of my head...</p>
+<p>Could your business object contain 1 additional property being a collection of references to properties that are required. Your business rules could add/remove the property references within the collection as required.</p>
+<p>WPF would use a property converter or custom binding to add/remove the asterisk from the caption, WinForms would probably need a control similar to PropertyInfo.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Monday, August 20, 2012</h2><p>Peran,</p>
+<p>As I thought about this problem over the weekend, I came up with a very similar answer. I like the idea of defining a collection for required fields. This does not introduce too much clutter, and we would make it part of our products base editable object.</p>
+<p>I am thinking we might only put conditionally required fields in the collection. Business developers can use the &quot;standard&quot; attribute for fields that are always required. For conditional attributes, they can use a &quot;gateway&quot; rule that manipulates the collection and optionally executes a required rule when the condition is met. The gateway rule would have all of the criteria included as input properties, so it would be checked automatically and the collection would be updated as needed, without any extra code written by the business developer. This keeps the conditions in a single business rule.</p>
+<p>The UI framework could then be developed to support both statically required field and conditionally required fields.</p>
+<p>I am really liking the business rules system in CSLA 4.3 as compared to CSLA 3.0. While we have a lot of code to update in order to make this upgrade, it seems like it is going to simplify some of our most complex classes.</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, August 20, 2012</h2><p>Please take a look at my post where we solved simular problems by introducing a new kind of Rule &nbsp;&quot;ConditionRule&quot;</p>
+<p><a href="http://forums.lhotka.net/forums/p/9699/45668.aspx">http://forums.lhotka.net/forums/p/9699/45668.aspx</a>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 20, 2012</h2><p>The question from the original poster was more like&nbsp;</p>
+<p><b>* How can I get metadata about which fields is required for the object in this (object structure) state.&nbsp;<br />&nbsp; So that I can place an asterisk on ALL required fields and update as the state changes.</b></p>
+<p>Not which rules is broken at this state or all registered rules and not how to write conditional rules.</p>
+<p>I cannot se how that conditional rule will provide metadata as to whether the field is required or not?&nbsp;&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

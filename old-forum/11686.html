@@ -1,0 +1,10 @@
+<html><header><title>SIlverlight, Custom Authentication and  IIS7</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SIlverlight, Custom Authentication and  IIS7</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11686.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard posted on Thursday, November 08, 2012</h2><p>Howdy,</p>
+<p>I have a silverlight application that we implemented custom authentication using a custom IPrincipal and IIdentity.&nbsp; My initial test were between two XP machines running IIS.&nbsp; In these these test the ApplicationContext.User flowed back to the server on DataPortal calls.&nbsp; I have deployed the application to a Server 2008 system and now the User object is blank.&nbsp; Its not null but it doesn&#39;t contain any of the user information in it.&nbsp; I have fiddled with some of the settings in IIS7 but nothing seems to change this behavior.&nbsp; </p>
+<p>Does anybody have any suggestions?</p>
+<p>Thanks</p>
+<p>dbl</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 13, 2012</h2><p>Have you confirmed that the User object is fully populated and correct on the client after the user logs in?</p>
+<p>The data portal doesn&#39;t do anything fancy. It just serializes the client-side Principal object to the server.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>dblwizard replied on Tuesday, November 13, 2012</h2><p>I discovered that this was not actually related to the IIS 7/2008 but was related to the issue talked about here:</p>
+<p>http://forums.lhotka.net/forums/t/8914.aspx</p>
+<p>with the optimizer causing issues with public/private properties.&nbsp; The same problem occurred when I built in &quot;Release&quot; mode locally.&nbsp; So it appeared to be an issue when pushing it up to the server but it really wasn&#39;t.</p>
+<p>Thanks</p>
+<p>dbl</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

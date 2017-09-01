@@ -1,0 +1,75 @@
+<html><header><title>Can't get PTWeb to work</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can't get PTWeb to work</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3051.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vertigo1 posted on Wednesday, June 20, 2007</h2><P>Hi,</P>
+<P>Sorry for the noobish nature of this but I just can't get the PTWeb app to work on a new machine.</P>
+<P>It all works perfectly on my home box, from when I first installed it all last year but, on this other machine I'm having problems.</P>
+<P>Everything is configured the same as the home machine as far as I can tell.&nbsp; Everything builds fine and PTWin works flawlessly but when I try to run PTWeb I can't login.&nbsp; I get the login screen up (incidentally I had to change the default files on the PTWeb virtual directory settings in IIS to login.aspx as otherwise I got nothing) but when I enter the username and password and click to login, I get an exception in the Fetch method of the DataPortal class.&nbsp; The "result = proxy.Fetch(..." line throws the exception "Object reference not set to an instance of an object".</P>
+<P>It looks like the EnterpriseServices proxy is throwing the exception but I just can't see why.&nbsp; Everything looks fine to me.</P>
+<P>Anyone got any ideas of things to look for as I'm at a total loss here :(</P>
+<P>Toby.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>If you had to manually set the default document to login.aspx in your virtual root, then it sounds like ASP.NET isn't properly installed/configured on your machine. It should have added default.aspx to your global list of default documents if it was configured correctly...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vertigo1 replied on Thursday, June 21, 2007</h2><P>Hi Rocky,</P>
+<P>It's possible that something else was set incorrectly when I couldn't get it to work with the original&nbsp;default documents in the virtual directory settings.&nbsp; Just tried changing it back to default.aspx and it works fine now.</P>
+<P>The default page comes up, I can click the login link and enter the username and password fine, so it looks like the ASP.NET pages are being generated and served fine, it's just when I try to actually login I get the above exception on the DataPortal Fetch method.&nbsp; Looks like the EnterpriseServicesHost is failing to retrieve the data from the database somehow, although everything seems to be configured correctly from what I can tell.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 21, 2007</h2><P>Try getting it to work without Enterprise Services. You most likely won't need it anyway and it adds a huge level of complexity to the task of getting PTwin to run.</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>And you ran the regsvcs utility to register the ES assembly, and
+you configured the COM+ Application as required (see Chapter 12)?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Vertigo1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 21, 2007 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Can't get PTWeb to work<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Rocky,<o:p></o:p></p>
+
+<p>It's possible that something else was set incorrectly when I couldn't get it
+to work with the original&nbsp;default documents in the virtual directory
+settings.&nbsp; Just tried changing it back to default.aspx and it works fine
+now.<o:p></o:p></p>
+
+<p>The default page comes up, I can click the login link and enter the username
+and password fine, so it looks like the ASP.NET pages are being generated and
+served fine, it's just when I try to actually login I get the above exception
+on the DataPortal Fetch method.&nbsp; Looks like the EnterpriseServicesHost is
+failing to retrieve the data from the database somehow, although everything
+seems to be configured correctly from what I can tell.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

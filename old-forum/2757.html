@@ -1,0 +1,12 @@
+<html><header><title>Pass critiera on a Dataportal_Create</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Pass critiera on a Dataportal_Create</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2757.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM posted on Monday, April 23, 2007</h2><P>Is it just me or does the CSLA.net 2.x not support passing a criteria through the Dataportal_Create?</P>
+<P>Jon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, April 23, 2007</h2><P>Don't specify the function as an override... it works. </P>
+<P>Good luck! </P>
+<P><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (criteria == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentNullException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"criteria"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>_address = criteria.Address;</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, April 23, 2007</h2>Thanks!&nbsp; I did have to change the class from protected to private and it worked great!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

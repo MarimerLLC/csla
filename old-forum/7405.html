@@ -1,0 +1,65 @@
+<html><header><title>Upgraded to 3.7.0 - getting errors</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgraded to 3.7.0 - getting errors</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7405.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ambuj posted on Wednesday, August 05, 2009</h2>After upgrading from 2.1.4 to 3.7.0, I'm getting this error when trying to browse to my website:<br><br><i>GenericArguments[0], 'Reach.Security.User', on 'Csla.BusinessBase`1[T]' 
+violates the constraint of type parameter 'T'.</i> <br><br>Don't get any build errors.&nbsp; Any ideas?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 05, 2009</h2>Can you provide the full stack trace, that might help.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ambuj replied on Thursday, August 06, 2009</h2>OK, I got past that error but getting another error now:<br><br>Method not found: 'Void Reach.Security.User.Populate(Csla.Data.SafeDataReader)'.<br><br>Even though the Populate method does exist in the same class.&nbsp; Here's a snippet of the code:<br><br><font color="#0000ff"><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(UserCriteria criteria)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(ReachFunctions.ConnectionString))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = ReachFunctions.DBName + "spUser_getUserName";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@username", criteria.Login);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (dr.Read())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<font color="#ff0000"> Populate(dr); // failing on this line</font><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // load child objects<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.NextResult();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //LATE BINDING<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //_usercustoms = UserCustoms.GetUserCustoms(dr);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //_resources = ProjectResources.GetProjectResources(dr);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private new void Populate(SafeDataReader dr)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Populate(dr);</font><br><br><br>Full call stack is this:<br>Method not found: 'Void Reach.Security.User.Populate(Csla.Data.SafeDataReader)'.
+         body {font-family:"Verdana";font-weight:normal;font-size: .7em;color:black;} 
+         p {font-family:"Verdana";font-weight:normal;color:black;margin-top: -5px}
+         b {font-family:"Verdana";font-weight:bold;color:black;margin-top: -5px}
+         H1 { font-family:"Verdana";font-weight:normal;font-size:18pt;color:red }
+         H2 { font-family:"Verdana";font-weight:normal;font-size:14pt;color:maroon }
+         pre {font-family:"Lucida Console";font-size: .9em}
+         .marker {font-weight: bold; color: black;text-decoration: none;}
+         .version {color: gray;}
+         .error {margin-bottom: 10px;}
+         .expandable { text-decoration:underline; font-weight:bold; color:navy; cursor:hand; }
+        <span><h2><i>Method not found: 'Void 
+Reach.Security.User.Populate(Csla.Data.SafeDataReader)'.</i> </h2></span><font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif "><b>Description: 
+</b>An unhandled exception occurred during the execution of the current web 
+request. Please review the stack trace for more information about the error and 
+where it originated in the code. <br><br><b>Exception Details: 
+</b>System.MissingMethodException: Method not found: 'Void 
+Reach.Security.User.Populate(Csla.Data.SafeDataReader)'.<br><br><b>Source 
+Error:</b> <br><br>
+<table bgcolor="#ffffcc">
+
+<tr>
+<td><code></code><pre>Line 1819:                _trace = dr.GetBoolean("trace");
+Line 1820:            }
+<font color="red">Line 1821:        }
+</font>Line 1822:
+Line 1823:        protected void PopulateWithRating(SafeDataReader dr)</pre></td></tr></table><br><b>Source 
+File: </b>C:\Temp\Reach.Web\Main\Solution1\Reach.Framework\User.cs<b> &nbsp;&nbsp; Line: 
+</b>1821 <br><br><b>Stack Trace:</b> <br><br>
+<table bgcolor="#ffffcc">
+
+<tr>
+<td><code></code><pre>[MissingMethodException: Method not found: 'Void Reach.Security.User.Populate(Csla.Data.SafeDataReader)'.]
+   Reach.Framework.User.Populate(SafeDataReader dr) in C:\Temp\Reach.Web\Main\Solution1\Reach.Framework\User.cs:1821
+   Reach.Framework.User.DataPortal_Fetch(UserCriteria criteria) in C:\Temp\Reach.Web\Main\Solution1\Reach.Framework\User.cs:1752
+   dm(Object , Object[] ) +74
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\Temp\Reach.Web\Main\Solution1\Csla\Reflection\MethodCaller.cs:332
+
+[CallMethodException: DataPortal_Fetch method call failed]
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, DynamicMethodHandle methodHandle, Object[] parameters) in C:\Temp\Reach.Web\Main\Solution1\Csla\Reflection\MethodCaller.cs:336
+   Csla.Reflection.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in C:\Temp\Reach.Web\Main\Solution1\Csla\Reflection\MethodCaller.cs:260
+   Csla.Reflection.LateBoundObject.CallMethod(String method, Object[] parameters) in C:\Temp\Reach.Web\Main\Solution1\Csla\Reflection\LateBoundObject.cs:86
+   Csla.Server.SimpleDataPortal.Fetch(Type objectType, Object criteria, DataPortalContext context) in C:\Temp\Reach.Web\Main\Solution1\Csla\Server\SimpleDataPortal.cs:125
+
+[DataPortalException: DataPortal.Fetch failed (Method not found: 'Void Reach.Security.User.Populate(Csla.Data.SafeDataReader)'.)]
+   Csla.DataPortal.Fetch(Type objectType, Object criteria) in C:\Temp\Reach.Web\Main\Solution1\Csla\DataPortal.cs:262
+   Csla.DataPortal.Fetch(Object criteria) in C:\Temp\Reach.Web\Main\Solution1\Csla\DataPortal.cs:173
+   Reach.Framework.User.GetUserByLogin(String login) in C:\Temp\Reach.Web\Main\Solution1\Reach.Framework\User.cs:1198
+   Reach.Framework.User.Login(String Username, String Password, String sessionID) in C:\Temp\Reach.Web\Main\Solution1\Reach.Framework\User.cs:138
+   Reach.GlobalConnect.Web.UI.Common.ReachMembershipProvider.ValidateUser(String username, String password) in C:\Temp\Reach.Web\Main\Solution1\Reach.GlobalConnect\Web.UI\Common\ReachMembershipProvider.cs:18
+   System.Web.UI.WebControls.Login.AuthenticateUsingMembershipProvider(AuthenticateEventArgs e) +60
+   System.Web.UI.WebControls.Login.OnAuthenticate(AuthenticateEventArgs e) +119
+   System.Web.UI.WebControls.Login.AttemptLogin() +115
+   System.Web.UI.WebControls.Login.OnBubbleEvent(Object source, EventArgs e) +101
+   System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args) +37
+   System.Web.UI.WebControls.Button.OnCommand(CommandEventArgs e) +118
+   System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument) +166
+   System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument) +10
+   System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument) +13
+   System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData) +36
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +1565
+</pre></td></tr></table></font><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 06, 2009</h2><P>You have a comment in there about late binding. Are you somehow using a form of late binding? </P>
+<P>The exception you are getting comes from the .NET runtime when it can't dynamically invoke a method, but since you are doing C# you shouldn't get that (until 4.0) because C# doesn't do late binding normally.</P>
+<P>But I'm now suspecting you are using some add-on or compiler trick to do late binding?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

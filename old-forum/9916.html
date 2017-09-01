@@ -1,0 +1,115 @@
+<html><header><title>Using CSLA 4: Creating Business Objects draft online</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using CSLA 4: Creating Business Objects draft online</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9916.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, January 04, 2011</h2><p>The completed first draft of the <a href="http://store.lhotka.net/Default.aspx?tabid=1560&amp;CategoryID=4&amp;List=1&amp;SortField=DateCreated+DESC%2cProductName&amp;Level=1&amp;ProductID=24"><strong><span style="color:#0000ff;">Using CSLA 4: Creating Business Objects</span></strong></a> ebook is now online and available for purchase.&nbsp;<a></a> </p>
+<p>If you&rsquo;ve purchased (or now purchase) the <a href="http://store.lhotka.net/Default.aspx?tabid=1560&amp;CategoryID=4&amp;List=1&amp;SortField=DateCreated+DESC%2cProductName&amp;Level=1&amp;ProductID=22"><strong><span style="color:#0000ff;">Using CSLA 4 ebook series</span></strong></a> you&rsquo;ll also have access to this new ebook. </p>
+<p>This is book 2 of the series. The next book will be <em>Using CSLA 4: Data Access</em>, followed by <em>Using CSLA 4: Security</em>. These first four ebooks cover all the core concepts around using CSLA 4 to build your business layer, along with various options for building a data access layer and implementing authentication. </p>
+<p>After these four are complete I&rsquo;ll move on to ebooks covering how to use a CSLA .NET business layer to create applications with different types of UI, including Silverlight, WPF, ASP.NET MVC and Windows Phone 7 (WP7). </p>
+<p>Here&rsquo;s the top-level outline of the <em>Creating Business Objects</em>&nbsp;book&rsquo;s contents: </p>
+<ol>
+<li>
+<p>Introduction</p>
+</li>
+<li>
+<p>Key Object Concepts</p>
+<ol>
+<li>
+<p>Stereotypes</p>
+</li>
+<li>
+<p>Serialization</p>
+</li>
+<li>
+<p>Object Lifetime</p>
+</li>
+<li>
+<p>Object Relationships</p>
+</li>
+<li>
+<p>Object Identity and Equality</p>
+</li>
+<li>
+<p>Platform Differences in .NET and Silverlight</p>
+</li>
+<li>
+<p>Property Declarations</p>
+</li>
+<li>
+<p>Method Declarations</p>
+</li>
+<li>
+<p>Metastate</p>
+</li>
+</ol></li>
+<li>
+<p>Solution Structure</p>
+<ol>
+<li>
+<p>Project Types and Assembly References</p>
+</li>
+<li>
+<p>Combining Project to Create Solutions</p>
+</li>
+</ol></li>
+<li>
+<p>Object Stereotypes</p>
+<ol>
+<li>
+<p>Editable Objects</p>
+</li>
+<li>
+<p>Read-Only Objects</p>
+</li>
+<li>
+<p>Execution Objects</p>
+</li>
+<li>
+<p>Criteria Objects</p>
+</li>
+<li>
+<p>LINQ Types</p>
+</li>
+<li>
+<p>Windows Forms Types</p>
+</li>
+</ol></li>
+<li>
+<p>Business Rules</p>
+<ol>
+<li>
+<p>Business and Validation Rules</p>
+</li>
+<li>
+<p>Authorization Rules</p>
+</li>
+</ol></li>
+</ol>
+<p>For those who are wondering, the first ebook is almost through the editing process and the &ldquo;draft&rdquo; designation will then be removed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Wednesday, January 05, 2011</h2><p>Hello Rocky,</p>
+<p class="MsoNormal" style="margin:0cm 0cm 10pt;"><span lang="EN-US" style="mso-ansi-language:EN-US;"><span style="font-size:small;"><span style="font-family:Calibri;">In the different types of UI, that you enumerate, and in the list of the seven books, I don&rsquo;t see WinForm.</span></span></span></p>
+<p class="MsoNormal" style="margin:0cm 0cm 10pt;"><span lang="EN-US" style="mso-ansi-language:EN-US;"><span style="font-size:small;"><span style="font-family:Calibri;">Do you plan to abandon to support WinForm ?</span></span></span></p>
+<p class="MsoNormal" style="margin:0cm 0cm 10pt;"><span lang="EN-US" style="mso-ansi-language:EN-US;"><span style="font-size:small;"><span style="font-family:Calibri;"><span style="mso-spacerun:yes;">&nbsp;</span>It is good that CSLA supports new technologies but Winform is still used by many developpers.</span></span></span></p>
+<p>Dominique</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 05, 2011</h2><p>CSLA 4 does support Windows Forms, in fact I put in a fair amount of effort to make sure Windows Forms remains supported. The <em>Creating Business Objects</em> book discusses the collection types that exist specifically to support Windows Forms.</p>
+<p>The thing is that Windows Forms itself is no longer in active development at Microsoft, so it hasn&#39;t changed for the past 5 years. All the Windows Forms information in the <em>Using CSLA 3.0</em> ebook remains completely relevant today. The only difference in CSLA 4 is that you need to use the new collection base classes when building your collections, otherwise there&#39;s simply nothing new.</p>
+<p>So I <em>might</em> write a Windows Forms ebook at the end, if I have time before .NET v.next and CSLA v.next come out, but it isn&#39;t a high priority because it isn&#39;t like the content doesn&#39;t already exist.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Wednesday, January 05, 2011</h2><p class="MsoNormal" style="margin:0cm 0cm 10pt;"><span style="font-size:small;"><span style="font-family:Calibri;"><span lang="EN-US" style="mso-ansi-language:EN-US;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;">Yes the content (for Windows Forms) already exists but with a big difference : </span><em><span lang="EN" style="font-family:&#39;Calibri&#39;,&#39;sans-serif&#39;;color:#333333;mso-ansi-language:EN;mso-bidi-theme-font:minor-latin;mso-ascii-theme-font:minor-latin;mso-hansi-theme-font:minor-latin;">Using CSLA 3.0</span></em><span lang="EN" style="color:#333333;mso-ansi-language:EN;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;"> ebook cover all the core concepts around using CSLA 3.0 (it is like the first four ebooks you are writing), it is not truly a ebook covering how to use a CSLA .NET business layer to create applications as you will do for the others UI.</span></span></span></p>
+<p class="MsoNormal" style="margin:0cm 0cm 10pt;"><span lang="EN" style="mso-ansi-language:EN;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;"><span style="font-size:small;"><span style="font-family:Calibri;">If you can write a small ebook with differences from csla 3.0, and with useful things to create application, it would be fine. And if you can write that after the ebook on WPF, not at the end, it would be still finest. I think that I am not alone to dream to that.</span></span></span></p>
+<p class="MsoNormal" style="margin:0cm 0cm 10pt;"><span lang="EN" style="mso-ansi-language:EN;mso-bidi-font-family:Calibri;mso-bidi-theme-font:minor-latin;"><span style="font-size:small;"><span style="font-family:Calibri;">Thanks and Happy New Year to you and your family.</span></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emathias replied on Monday, January 10, 2011</h2><p>Rocky,</p>
+<p>I&#39;ve already inhaled most of Creating Business Objecst.&nbsp; Great job.&nbsp; I know you are a busy guy but do you have a tentative schedule for the next release?</p>
+<p>&nbsp;I was in Miguel Castro&#39;s training class some years back and I had a conversation with you at Fuddruckers regarding how nice it would be to have (in a perfect world)&nbsp;2 different CSLA books; one focused on framework, and one focused on using CSLA.&nbsp;.&nbsp; These ebooks seem to be much more towards the usability angle than your apress book, which has me absolutely thrilled!&nbsp; It&#39;s already been&nbsp;well worth the prepay.&nbsp; Highly recommended.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 10, 2011</h2><p>A schedule for the <em>Using CSLA 4: Data Access</em> book you mean?</p>
+<p>I&#39;ll start working on this when I get back from my current trip (so tomorrow), and it will take around 3 weeks to put out the draft.</p>
+<p>Teresa is done editing the first book, so that will move out of draft sometime this week. She&#39;ll start working on editing book 2, and that&#39;ll take 2-3 weeks too, then that&#39;ll go out of draft.</p>
+<p>Basically it takes around 3-4 weeks per book, but in real time it can take longer as I get little writing done as I fly around the country for other aspects of my job.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, January 10, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>emathias<br></b></p>
+<p>&nbsp;I was in Miguel Castro&#39;s training class some years back and I had a conversation with you at Fuddruckers regarding how nice it would be to have (in a perfect world)&nbsp;2 different CSLA books; one focused on framework, and one focused on using CSLA.&nbsp;.&nbsp;</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>This was also proposed here <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p><a href="http://forums.lhotka.net/forums/p/3955/19955.aspx#19955">http://forums.lhotka.net/forums/p/3955/19955.aspx#19955</a></p>
+<p>Realistically&nbsp;though, I just don&#39;t see how the time / money / energy for a CSLA inner workings book can be&nbsp;justified since I have a feeling (I&nbsp;may&nbsp;be wrong as usual) that the absolute great majority of&nbsp;people (99.5 %) don&#39;t care about inner workings..... and who can blame&nbsp;them, with so many new technologies being&nbsp;thrown&nbsp;at us so often, who has time to learn the nuts and bolts!!??</p>
+<p>What I would like to see though, is a LOT more comments on the CSLA code itself... I mean, given&nbsp;enough&nbsp;time, everything can be figured out, but its just nice to have those extra inline&nbsp;helpful code comments&nbsp;here and there.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emathias replied on Monday, January 10, 2011</h2><p>Interesting.&nbsp; Never saw that thread, but it pretty much sums up what I&#39;ve thought also.</p>
+<p>I know from talking to other .NET gurus that authoring books for one of the big companies is not exactly&nbsp;a path to retirement riches.&nbsp; Some have hinted that it&#39;s almost not even worth the effort&nbsp;except than for the name recognition it brings.&nbsp;&nbsp;Hopefully the ebook &nbsp;route will prove lucrative enough that projects such as what we&#39;re discussing here will become much more feasible.&nbsp; Like most of us here, I don&#39;t mind paying more if it saves me effort, and Rocky&#39;s latest will certainly do that!</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, February 01, 2011</h2><p>&nbsp;</p>
+<p>On page 16, under the section:&nbsp;<span>&ldquo;<strong><i>Table 6. Elements defined by IPropertyInfo in Csla.Core</i></strong>&quot;</span></p>
+<p>The Description for the PropertyInfo DefaultValue says:<span>&nbsp;Gets the default value for a new instance of the property</span></p>
+<p>I think you need to add more details to the description. I think you should add a note indicating that default values are only good for value types, CSLA derived reference types don&rsquo;t&rsquo; work because the instance would be shared between all classes so it would have different parents.</p>
+<p>-------</p>
+<p>Later on, at the end of page 33 &nbsp;you have some sample code as follows:</p>
+<p>private PersonEdit _person = PersonProperty.DefaultValue;</p>
+<p>Perhaps you should indicate there that if the default value was not null, doing that may not be a good idea (assuming that &quot;PersonEdit&quot; is a reference type.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 01, 2011</h2><p>Thanks, I&#39;ve forwarded this to <a href="mailto:errata@lhotka.net">errata@lhotka.net</a>, which is the official location for errata.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh replied on Friday, July 01, 2011</h2><p>There is not &quot;Using CSLA 4: Creating Business Objects&quot;&nbsp;&nbsp;sample code&nbsp;available?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 01, 2011</h2><p>Because it is essentially impossible to create working business classes without some DAL, it wasn&#39;t clear to me how to create code samples beyond what was in the book itself that had any meaning. The <em>Data Access</em> ebook has DAL examples (and thus code examples) for all stereotypes.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mesh replied on Friday, July 01, 2011</h2><p>I&#39;m looking for more BusinessRules sample code, but I can&#39;t find it? I thing that rules are maybe the most complex thing in whole CSLA...&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,73 @@
+<html><header><title>DeepData with Linq in C#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DeepData with Linq in C#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5756.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Thursday, November 06, 2008</h2><FONT size=2>
+<P>When I try to run the DeepData example with Linq it fails when&nbsp;executing the following line of code </P>
+<P>data = ((DeepData.DTO.</FONT><FONT color=#2b91af size=2>OrderDto</FONT><FONT size=2>[])(dal.GetOrders()));</FONT></P>
+<P><FONT size=2>the following error is raised</FONT></P>
+<P><FONT color=#ff0000 size=2>Unable to cast object of type <FONT color=#000000>Csla.Data.SafeDataReader&nbsp;</FONT> to type <FONT color=#000000>DeepData.DTO.OrderDto</FONT></FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>In App.Config I added the following:</FONT></P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#a31515 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>OrderData</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>DeepData.DAL.DLinq.OrderData,DeepData.DAL.DLinq</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>/&gt;</P></FONT>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, November 07, 2008</h2>I've found partially a solution. With the modifications below the grid with the orders will be filled in.<br>
+But the other grids with LineItems and LineItemDetails stay still empty. I'm alreday 50% happy.<br>
+dal.GetOrders must return an object (see abstract method in DeepData.DAL : public abstract object GetOrders())<br>
+So GetOrders will cast the SafeDataReader to an object.<br>
+And in FetchDto we can cast back the object to a SafeDataReader.<br>
+Apparently this is not a problem. But converting a
+Csla.Data.SafeDataReader to a DeepData.DTO.OrderDto doesn't want to
+work in C#, but in VB it is not a problem.<br>
+Can somebody explain this a little bit? I want to understand the differences between VB and C#.<br>
+<br>
+Below the code modifications:<br>
+Project DeepData.DAL.DLinq.csproj<br>
+class : OrderData.cs<br>
+<br>
+&nbsp;&nbsp; public override object GetOrders()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var q = from o in db.Orders select o;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IDbCommand command = db.GetCommand(q);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Connection = db.Orders.Context.Connection;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; command.Connection.Open();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SafeDataReader reader = new
+SafeDataReader(command.ExecuteReader(CommandBehavior.CloseConnection));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return reader;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Project DeepData.Library.csproj<br>
+class OrderList.da.cs<br>
+&nbsp;&nbsp;&nbsp; private void FetchDto()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeepData.DAL.DataFactory df = new DeepData.DAL.DataFactory();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SafeDataReader data;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var dal = df.GetOrderDataObject())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; data = new SafeDataReader((IDataReader)dal.GetOrders());<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (data.Read())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(OrderInfo.GetOrderInfo(data));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<br>
+<br>
+The other grids with LineItems and LineItemDetails stay empty.<br>
+Is the reason maybe the following:<br>
+When I compare the VB version and the C# version of DeepData I remark that in VB you have the following classes:<br>
+&nbsp; OrderInfo.da.vb<br>
+&nbsp; LineItemInfo.da.vb<br>
+&nbsp; LineItemDetailInfo.da.vb<br>
+but these classes are missing in C#<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

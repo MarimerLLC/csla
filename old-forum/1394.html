@@ -1,0 +1,110 @@
+<html><header><title>Newbie simple question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie simple question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1394.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 posted on Wednesday, October 04, 2006</h2>I am trying to figure out business objects and how to implement it. I went through the Project Tracker example in the book.<br>Now I have some questions.<br>How do I deal in the following scenario<br>I have an Invoice object which is a Business Base Object. A invoice may include a salesman which is an object by itself (Business Base), where would I create the reference to a salesman object in the invoice object. <br>Do I create a single new salesman object within the invoice object or consider it as a child object?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 04, 2006</h2><P>Interestingly, this is not really a simple question at all <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Nor is it at all uncommon.</P>
+<P>This question gets at the fundamental OO design philosophy you need to use to succeed with CSLA .NET, and is a topic that is discussed quite frequently, and often at great length, here on the forum.</P>
+<P>Remember that your objects should be modeled around behavior, not data.</P>
+<P>Or to be more pragmatic: look at your use case and define objects to meet the needs of <EM>that specific use case</EM>. Don't worry about reuse - it will or won't happen, but is really incidental.</P>
+<P>So in your example, the Invoice absolutely does not include or contain a Salesman. A Salesman is its own thing - a standalone object. What an Invoice <EM>does include</EM> is an AssociatedSalesman (or something like that), which is an object representing the fact that there's a Salesman associated with the Invoice.</P>
+<P>What I'm getting at, is that Salesman and Invoice could be <EM>data entities</EM>, in which case they have a direct relationship. But we're not doing that - we're doing object modeling, and so Salesman is almost certainly an object from the enter-and-edit-sales-person-data use case, while Invoice is from the enter-and-edit-an-invoice use case. They are unrelated.</P>
+<P>But the enter-and-edit-an-invoice use case does require that the Invoice be <EM>associated with</EM> a salesman. So the use case doesn't need the Salesman object - it needs an AssociatedSalesman object.</P>
+<P>The responsibility of Salesman is probably to "enter and edit sales person data", while the responsibility of AssociatedSalesman is probably to "associate a sales person with an invoice". Very different responsibilities, that happen to have some overlap in the data they require.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, October 05, 2006</h2>Thanks Rocky for responding.<br><br>I just want to clarify what you mean with <i>AssociatedSalesman</i> object. Is it enough if I add a SalesmanID field in the invoice which would contain just the ID of the salesman and create a method where I can get a the full Salesman object using the ID, or do I create a new object <i>AssociatedSalesman</i> and include it in my Invoice object as:&nbsp;&nbsp;  <br>&nbsp;&nbsp;&nbsp; <font face="Courier New">Private mAssociatedSalesman As New AssociatedSalesman</font><br>where the <i>AssociatedSalesman</i> object would have limited salesman data like ID, Name with a method to get a full <i>Salesman</i> object<br><br>The examples in the book cover parent child objects, where <i>Project</i> is a parent and it has a collection of <i>ProjectResource</i>. However when a parent object needs a reference to another object not as a child as in my example where an <i>Invoice</i> may have <u>one</u> <i>Salesman</i> associated with it, I am not clear if I just include the ID of the salesman in the <i>Invoice</i> object or create a object for the association of the 2 objects, where I would have the ID's of the 2 objects I am using.<br><br>Thanks again.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 05, 2006</h2><P>If I may I'll jump in and see if I can give you one possible answer.</P>
+<P>here is how I see the "Invoice and Salesman" working from my POV</P>
+<P>SalesMan has it's BO that manages Create,Update,Read and so on...</P>
+<P>Invoice BO has a child BO InvoiceDetails</P>
+<P>Invoice may have olther childern depending on how you need / want it to work, possible childern might include:&nbsp;</P>
+<P>&nbsp;ShipTo (an adrress BO - may be filled with data from a Customer BO)</P>
+<P>&nbsp;BillTo (an adrress BO - may be filled with data from a Customer BO)</P>
+<P>WhoSold / SalesMan may be a child BO or may just be an ID like an INT or a GUID</P>
+<P>generally I'd have a NameValueList of SalesMan (ID,Name)</P>
+<P>and have the Invoice Rules say that the ID of the sales man must be found in the NameValue List.</P>
+<P>but you could if you need to have a child BO that could have more info.</P>
+<P>but it does not need to be the full data from the SalesMan BO, like what I gave on ShipTo and BillTo</P>
+<P>you could have a "simple" object with a few items and an ID to point back to the root Object</P>
+<P>for example ShipTo over time for a customer can chnage, this lets an Invoice show the address at that time.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, October 05, 2006</h2>In your scenario where you have a <i>ShipTo</i> BO with some basic information and an ID to point back to the root object. Is this <i>ShipTo</i> object considered as a <i><u>child</u></i> of <i>Invoice</i>? <br><br>I understand when a Parent object can have many children like <i>InvoiceItems</i> we create a collection of child objects, but an <i>Invoice</i> can only have one <i>ShipTo</i>, so where do I implement it? Do I include all the fields I need for the <i>ShipTo</i> information in the <i>Invoice</i> object or I create an object by itself <i>ShipTo</i> where we associate a Invoice with an address. What are the benefits of doing it this way, and how is it implemented?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 05, 2006</h2><P>any BO can have any member of any type.</P>
+<P>so a BO can have members that can be other BO's</P>
+<P>generaly you would create for the example I gave one or more EditableChild Objects.</P>
+<P>in my sample a ShipTo and a BillTo might share a common "InvoiceAddress" object that is based on EditableChild.</P>
+<P>that way they can each read default values from an "Account" Object or Database row.</P>
+<P>if you did this then your SQL DB will have tables with names like InvoiceBillTo and InvoiceShipTo</P>
+<P>that each have an invoice ID to link them to an Invoice.</P>
+<P>OR</P>
+<P>you could store all the data in the Invoice table and when you create the Invoice Object (BO)</P>
+<P>you could populate the child address objects with the data and just use the BO's in memory to help manage and organise the app's OO </P>
+<P>each of the two has it's pro's and con's -- you need to evaluate what way is best in your case.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, October 05, 2006</h2>I understand your 2 ways in the database design.<br><br>However, in the object design you suggest to always create an object for the <i>ShipTo </i>and include a <i>ShipTo </i>object in the <i>Invoice </i>Object and not just include the <u>fields</u> in the <i>Invoice </i>object. Is that right?<br><br>What do I gain by doing it this way, creating a seperate object?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Thursday, October 05, 2006</h2><P>what you gain depends on what you need....</P>
+<P>for example:</P>
+<P>look at the "Invoice" as a logical "Object"&nbsp; now if you need to drill down and break that into more detaild units then I'd start with</P>
+<P>Invoice IS</P>
+<P>Header and</P>
+<P>Details.</P>
+<P>then you say "what's a Header?"</P>
+<P>well the ID, the date, the customer, the payment terms, the ship to address, the bill to address and....</P>
+<P>and then you can go from there with more details.... about what a header is.</P>
+<P>if you load all the details in one object you *CAN* but you may find it more "manageable" and more "Object Oriented" to see that the "Addresses" are sub-objects / child objects of the header.</P>
+<P>relate this to for example a "Work Order" which may have</P>
+<P>Billing Address, Customer Address, Work-site Address and in some cases more than that... like say a phone company work order may have C/O address, Pole-EquipmentAddress etc...</P>
+<P>but all of them could be a common class of "Address" and if you for example have an invoice with ship-to and bill-to that are the same then you only create one object - if you save them in different tables then you might save 1 invoiceaddress record and let the invoice header have ID's </P>
+<P>Shipto = 123, billto=123</P>
+<P>so that you have 2 references to one object in that case.</P>
+<P>this also gives an OO design and view of the thing.</P>
+<P>also if you find that invoices in your system ever need more than 2 addesses you could add one more property / filed set to the invoice object and re-use the "address" object and make the chnages to support the new vewrsion minimal.... and keep your app running w/o a huge update.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>white911:</strong></div><div>Thanks Rocky for responding.<br>I just want to clarify what you mean with <i>AssociatedSalesman</i> object. Is it enough if I add a SalesmanID field in the invoice which would contain just the ID of the salesman and create a method where I can get a the full Salesman object using the ID, or do I create a new object <i>AssociatedSalesman</i> and include it in my Invoice object as:&nbsp;&nbsp;  <br></div></BLOCKQUOTE><br><br>Sure, that might be enough, and I've done that sort of thing.<br><br>But odds are, when creating the Invoice, you are going to need a SalesmanList object that contains SalesmanInfo objects so the user can select the right sales person for the invoice. And you might have other information about the association between an Invoice and the sales person - beyond just the salesman id - and in that case you might need an object to represent that association.<br><br>As you note, however, in many simpler cases all you need is the id value, and then there's no need for an object to represent the association itself.<br><br>And really, in most cases you don't need a GetSalesman() method on Invoice - because the use case (user experience) probably doesn't involve the user navigating from the invoice screen to the salesman editing screen - so there'd be no reason to actually get a Salesman object from an Invoice object.<br><br>Don't implement methods unless they are actually needed. Otherwise you end up maintaining code that isn't being used - and that's just a cost with no benefit.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag replied on Thursday, October 05, 2006</h2><font face="Verdana" size="1">Something I've done fairly often - I include the SalesmanID and SalesmanName as properties on the Invoice object. I also make them readonly, then create a SetSalesman method<br><br>readonly prop SalesID as int<br>get<br>&nbsp; return fSalesID<br>end get<br>end prop<br><br></font><font face="Verdana" size="1">readonly prop SalesName as string<br>
+get<br>
+&nbsp; return fSalesName<br>
+end get<br>
+end prop<br><br>sub SetSalesman(nID as int, cName as string)<br>&nbsp; if fSalesID &lt;&gt; nID<br>&nbsp;&nbsp;&nbsp; fSalesID = nID<br>&nbsp;&nbsp;&nbsp; fSalesName = cName<br>&nbsp;&nbsp;&nbsp; MarkDirty<br>&nbsp;&nbsp;&nbsp; CheckRules<br>&nbsp; endif<br>end sub<br><br>Then in my UI, I bind a (readonly) textbox to SalesName, and include a "..." button next to it. The ... box pops a "picker" dialog where the user picks a salesman, and when the user comes out of that dialog, I pull the selected ID and name off of it and call SetSalesman on the Invoice object.<br><br>matt tag<br>
+</font><br><br><font face="Verdana" size="1"><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marioe2000 replied on Thursday, October 05, 2006</h2><P>Matt,</P>
+<P>I'm doing something similar to what you described, but instead of having a readonly textbox with a button besides it, my text box is editable and the user is free to typein a textual identification of the wanted object (in this case it would be the salesman number or something). </P>
+<P>I bind a salesmanString property of the invoice to this textbox and whatever the user types there I try to fetch from the DB using what the user typed.</P>
+<P>I did this because I noticed that many users dont use combo boxes or lookup windows because they already know (or have in hand) the ID or name or code of the needed object, and this allows them to work a bit faster.</P>
+<P>Regards</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Thursday, October 05, 2006</h2>Hi, Mario,<br><br>I use same approach with you. I want to know where you put the validation logic of this kind of Associated Object, cause you let user to enter the id or code freely, people make mistake. First I try to incorporate this with brokenRule, but it seems not so efficient, every time validation happens, it will hit database. Put it in the Save method, then you have two different place have validation logic. <br><br>May be I'm wrong, I don't sure this kind of Associated Relationship Validation should be classified to bussiness logic, is there an elegant way to describe and validate Object Association?&nbsp; CSLA is perfect to describe BO parent, child&nbsp; relationship, but how to describe BO Association more meaningful?<br><br>Sorry for my English.<br><br>Regards<br><br>Dawn</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marioe2000 replied on Monday, October 09, 2006</h2><P>What I'm doing is providing the user the ability to lookup the needed item. Now the user can choose not to lookup the data and instead type it in. I setup a string property and bind it to the textbox, on my set procedure for this property I fetch the read-only object from the db using whatever value typed. Yes, I go back and hot the db again to fetch a ro object. (in my current config this happens very quickly and it does not bother the user much). On my ro objects i've implemented an IsValid property which I set whenever the object is fetched from the db. So if the user types in something not found on the db, I'll have an "invalid" ro object and use it's valid property on my checkrules.</P>
+<P>Eventually what I'll do to better the process a bit is to have this in-edit fetch happen within a separate thread so the user does not have to pause not even for the second or two the fetch takes to complete.</P>
+<P>Regards,</P>
+<P>Mario Estrella</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Thursday, October 05, 2006</h2>Thanks Rocky.<br>
+<br>
+In my case, where would I save the commission a salesman gets for the
+invoice. The commission % may differ for each invoice. Would I save it
+in the <i>AssociatedSalesman</i> object or this information (how much commission a salesman gets) belongs in the <i>Invoice </i>object?<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=187492622-05102006><FONT face=Arial color=#0000ff size=2>Yes, this is the kind of thing you might put in an 
+AssociatedSalesman object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=187492622-05102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=187492622-05102006><FONT face=Arial color=#0000ff size=2>It is very much a judgement call as to whether these two 
+bits of data (id and %) get put in Invoice or an actual AssociatedSalesman 
+object. For me, the determining factor is behavior - is there any real behavior 
+around these bits of data, or are they just values maintained along with every 
+invoice? If the latter, then I'd just put them in Invoice itself - and I expect 
+that is the case here.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=187492622-05102006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=187492622-05102006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> white911 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Thursday, October 05, 2006 4:05 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Newbie simple 
+  question<BR></FONT><BR></DIV>
+  <DIV></DIV>Thanks Rocky.<BR><BR>In my case, where would I save the commission 
+  a salesman gets for the invoice. The commission % may differ for each invoice. 
+  Would I save it in the <I>AssociatedSalesman</I> object or this information 
+  (how much commission a salesman gets) belongs in the <I>Invoice 
+  </I>object?<BR><BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>marioe2000 replied on Thursday, October 05, 2006</h2><P>White911,</P>
+<P>This is the way I've approached a similar situation. </P>
+<P>Being a newbie on CSLA also I used a similar technique as the one described by Matt although I think I took things a bit further that what I had to (I think).</P>
+<P>I constructed ReadOnly classes to use in RO collections from which the user would choose some BO for editing and/or lookup selection (in your case that would be RO salesmen). That same read-only class I used as the type for the child object of invoice (ie. mInvoiceSalesMan&nbsp;as ROSalesman).</P>
+<P>On the invoice editing screen I place a salesman lookup edit control which has the elipsis button Matt described (mine is a looking glass glyph) which launches a search/lookup/select window that displays a ROSalesmen collection&nbsp;in a read-only grid; from that the user has several options. He can simply select one of the salesmen and populate the lookup edit control text box of the invoice screen, he can also press a button to create a new salesman record, or double click an existing salesman to bring up an editor screen where the user views/modifies a Salesman BO.</P>
+<P>To the invoice table on the db I only save the associated salesman ID along the other invoice fields. Things get complicated when I need to fetch an invoice BO because now I have to initialize a complete ROSalesman variable to populate the mInvoiceSalesMan member of the invoice BO.</P>
+<P>So trying to reuse code this is what I came up with: I made a sql view to represent each of my RO entities (ie. salesman) and use it from the fetch stored procedure to get a list of salesman for my lookup collection. I then re-use that same view in the stored procedure that fetches an invoice object and link it through the salesmanID on the invoice table.</P>
+<P>On the DataPortal_Fetch method for the invoice the datareader now has both the natural fields required for the invoice and the complete list of fields required to populate a ROSalesman instance I then just call the "friendly" GetSalesman(dr as safedatareader) method from the ROSalesman class and throw the invoice datareader as it's parameter.</P>
+<P>This way I not only have the salesman name but also a full set of it's most relevant data for whatever display purposes I need on the invoice screen.</P>
+<P>What I don't like from this approach is that some of the stored procedures (invoice for example) return quite a bit of fields. If bill-to and ship-to were also customer and/or location RO classes their data would also be returned alongside the invoice and salesman data. </P>
+<P>But then again, if that is what your use-case requires then OK.</P>
+<P>From newbie to newbie ...</P>
+<P>Regards,</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, October 06, 2006</h2><P>I don’t know how you are going to end up implementing your solution but you need to keep in mind how the CSLA handles BeginEdit and CancelEdit. Remember that the CSLA does not take a snapshot of an object reference, it only takes a snapshot of the properties of the object.</P>
+<P>Assuming that you use the full Salesman object and save the reference to the Salesman object on you Invoice object as:</P>
+<P>Private mSalesman As New Salesman</P>
+<P>What are you going to do if you need to update the Salesman object after you BeginEdit? Are you going to retrieve a new Salesman object using the factory method and then replace the old reference with the new one? If you do that, what do you thing will happen if you Apply or Cancel Edit? You are not going to get what you expect, the old reference to the Salesman object (where the BeignEdit happened) is long gone.<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

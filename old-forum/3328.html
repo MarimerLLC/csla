@@ -1,0 +1,37 @@
+<html><header><title>Parent Child?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Parent Child?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3328.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>webdad3 posted on Sunday, August 05, 2007</h2><div class="ForumPostBodyArea">
+									    <div class="ForumPostContentText">
+										    <p>All,</p><p>&nbsp;</p><p>I'm just starting my CSLA adventure and I thought I would post this question here.</p><p>&nbsp;</p><p>I
+see that the Editable Root Object has a Update Child sub with a
+connection as a param.&nbsp; How do I use this function to actually update
+my child record?&nbsp; Sorry for the newbie question.</p><p>&nbsp;</p><p>Thank You,</p><p>&nbsp;</p><p>Jeff&nbsp; <br></p>
+										    
+									    </div>
+									    
+									    </div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Sunday, August 05, 2007</h2><P>You can look at the Project Tracker example. its really good,&nbsp;very helpful</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, August 06, 2007</h2><P>Jeff,</P>
+<P>Here is some sample code that you can examine to see how the pattern is implemented.</P>
+<P>===========================================================================================================</P>
+<P>&nbsp; &lt;Serializable()&gt; _<BR>&nbsp; Public Class MyRootBO<BR>&nbsp;&nbsp;&nbsp; Inherits MyBusinessBase(Of MyRootBO)</P>
+<P>&nbsp;&nbsp;&nbsp; 'private fields here</P>
+<P>&nbsp;&nbsp;&nbsp; Protected mChildColl As ChildColl</P>
+<P><BR>&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Update()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim tr As IDbTransaction = Nothing</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Try<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; tr = BeginTransaction()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DoUpdate(tr)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EndTransaction(tr)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Catch ex As Exception<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RollbackTransaction(tr)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Try<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub DoUpdate(ByVal tr As IDbTransaction)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim user As MyUser<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user = DirectCast(Thread.CurrentPrincipal, MyUser)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateData(tr, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PostUpdateData(tr, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateChildren(tr)<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub UpdateData(ByVal tr As IDbTransaction, ByVal user As MyUser)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DAL.ExecuteNonQuery(tr, CommandType.Text, GetSQL.Update(..., user.Userkey))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub UpdateChildren(ByVal tr As IDbTransaction)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChildColl.Update(tr, DirectCast(Me, MyRootBO))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>===========================================================================================================</P>
+<P>'childColl BO sample code</P>
+<P><BR>&nbsp;&nbsp;&nbsp; Protected Friend Overridable Sub Update(ByVal tr As IDbTransaction, ByVal MyRootBO As MyRootBO)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = False</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each child As MyChild In DeletedList<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.Update(tr, Item)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeletedList.Clear()</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each child As MyChild In Me<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.Update(tr, Item)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = True<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P><BR>===========================================================================================================<BR>'child BO sample code</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Friend Overridable Sub Update(ByVal tr As IDbTransaction, ByVal MyRootBO As MyRootBO)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not Me.IsDirty Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit Sub<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim user As MyUser<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; user = DirectCast(Thread.CurrentPrincipal, MyUser)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me.IsDeleted Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not Me.IsNew Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DeleteChildren(tr)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DAL.ExecuteNonQuery(tr, CommandType.Text, GetChildSQL.Delete(mKey))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PostDeleteData(tr, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkNew()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Me.IsNew Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InsertData(tr, MyRootBO, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PostInsertData(tr, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateData(tr, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; PostUpdateData(tr, user)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UpdateChildren(tr)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkOld()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub DeleteChildren(ByVal tr As IDbTransaction)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'marker method that can be overridden in child class<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub InsertData(ByVal tr As IDbTransaction, ByVal MyRootBO As MyRootBO, ByVal user As MyUser)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DAL.ExecuteNonQuery(tr, CommandType.Text, GetChildSQL..Insert(MyRootBO.Key,..., user.Userkey))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub UpdateData(ByVal tr As IDbTransaction, ByVal user As MyUser)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DAL.ExecuteNonQuery(tr, CommandType.Text, GetChildSQL.Update(..., user.Userkey))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Protected Overridable Sub UpdateChildren(ByVal tr As IDbTransaction)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'marker method that can be overridden in child class<BR>&nbsp;&nbsp;&nbsp; End Sub</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

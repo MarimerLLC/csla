@@ -1,0 +1,21 @@
+<html><header><title>Membership Providers as Generics - possible?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Membership Providers as Generics - possible?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2062.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Tuesday, January 02, 2007</h2><P>The path I'll be taking with the Membership API in my ASP.Net application will be to utilize the SqlMembershipProvider but to provide a wrapper class to shuttle it to the application server (if so configured) via a CSLA command class object. </P>
+<P>The bottom line is that I'd like to be able to utilize a class:</P>
+<P>CslaMembershipProvider&lt;T&gt; : MembershipProvider where T : MembershipProvider </P>
+<P>And then to be able to provide SqlMembershipProvider, for instance, as a valid generic parameter. I'm not entirely sure it'll work as such - I'm overriding Initialize() on CslaMembershipProvider to function as such:</P><FONT size=1>
+<P></FONT><FONT color=#0000ff size=1>public</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>override</FONT><FONT size=1> </FONT><FONT color=#0000ff size=1>void</FONT><FONT size=1> Initialize(</FONT><FONT color=#0000ff size=1>string</FONT><FONT size=1> name, </FONT><FONT color=#008080 size=1>NameValueCollection</FONT><FONT size=1> config)</P>
+<P>{</P>
+<P>_wrappedProvider = </FONT><FONT color=#008080 size=1>Activator</FONT><FONT size=1>.CreateInstance&lt;T&gt;();</P>
+<P>_wrappedProvider.Initialize(name, config);</P>
+<P>}</P></FONT>
+<P>Unfortunately, before it gets to the Initialize code, I think there are issues with my MembershipProvider being a generic class. </P>
+<P>In my web config, I'm doing this:</P><FONT color=#0000ff size=1>
+<P>&lt;</FONT><FONT color=#800000 size=1>membership</FONT><FONT color=#0000ff size=1> </FONT><FONT color=#ff0000 size=1>defaultProvider</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>CslaMembershipProvider</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=1>providers</FONT><FONT color=#0000ff size=1>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=1>clear</FONT><FONT color=#0000ff size=1> /&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=1>add</FONT><FONT color=#0000ff size=1> </FONT><FONT color=#ff0000 size=1>name</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>CslaMembershipProvider</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1> </FONT><FONT color=#ff0000 size=1>type</FONT><FONT color=#0000ff size=1>=</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1>CslaMembershipProvider</FONT><FONT color=#ff0000 size=1>&amp;lt;</FONT><FONT color=#0000ff size=1>SqlMembershipProvider</FONT><FONT color=#ff0000 size=1>&amp;gt;</FONT><FONT size=1>"</FONT><FONT color=#0000ff size=1> </FONT><FONT color=#ff0000 size=1></FONT></P>
+<P><FONT size=1><FONT color=#ff0000>...other attributes... </FONT><FONT color=#0000ff>/&gt;</FONT></FONT></P>
+<P>I had attempted to place the generic parameter in the defaultProvider and name attributes above as well to no avail. </P>
+<P>My error occurs when the membership API is accessed and the following error is thrown:&nbsp;Could not load type 'CslaMembershipProvider&lt;SqlMembershipProvider&gt;'. (c:\inetpub\wwwroot\xxx\web.config line 133)</P>
+<P>Any one have an idea as to if using a generic class as a provider is possible? </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, January 02, 2007</h2><P>Strike this, I'm going to do this without generics. </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

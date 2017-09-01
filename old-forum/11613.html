@@ -1,0 +1,10 @@
+<html><header><title>Csla multiple Data Portal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla multiple Data Portal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11613.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Antonio Sandoval posted on Monday, October 01, 2012</h2><p>
+<p>I&#39;m working in a project on wich I need to save some business object to a Remote WCF server, and others to a local server. That means that I need to have two DataPortals.</p>
+<p>&nbsp;</p>
+<p>How Can I do that? There is a way to create an instance of the local DataPortal with his own channel?</p>
+<p>&nbsp;</p>
+<p>Thanks in advance.</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, October 02, 2012</h2><p>You can configure CSLA to use&nbsp; remote dataportal and then use the [RunLocal] attribute to make force &quot;root&quot; data access methods use the local dataportal. </p>
+<p>This is similar to the default handling of DataPortal_Create that has [RunLocal] attribute. </p>
+<p><i>&nbsp;<b>&nbsp;&nbsp; [RunLocal]</b><br />&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// this update method will use LocalPortal <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// no matter if the Csla config says to use a remote portal. <br />&nbsp;&nbsp;&nbsp; }</i></p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,221 @@
+<html><header><title>CancelEdit() not moving children in DeletedList back</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit() not moving children in DeletedList back</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7241.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold posted on Wednesday, July 08, 2009</h2>I'm beating my head against the wall a bit on this one.&nbsp; I'm using 3.6.2 with managed properties and EF as my backend (not that it matters for this part).&nbsp; I'll include the appropriate code as necessary.&nbsp; I use lots of partial classes to separate the long list of properties from the business logic so I will do my best to copy and past the necessary pieces.&nbsp; I roughly have the following:<br><br> public partial class Estimate : BusinessBase&lt;Estimate&gt;<br><br>private static PropertyInfo&lt;EstimateWorkItemList&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; EstimateWorkItemsProperty = RegisterProperty&lt;EstimateWorkItemList&gt;(c =&gt; c.EstimateWorkItems);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public EstimateWorkItemList EstimateWorkItems<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(EstimateWorkItemsProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>public partial class EstimateWorkItem : BusinessBase&lt;EstimateWorkItem&gt;<br><br>public class EstimateWorkItemList<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : BusinessListBase&lt;EstimateWorkItemList, EstimateWorkItem&gt;<br><br>I load my list using using internal static methods and the DataPortal.FetchChild&lt;&gt; and BeginEdit is automatically called by my bindingsource.&nbsp; I use the common Rebind(bool save, bool rebind) method to do the changes but I also have done it in a test program and have the same issue.&nbsp; If I find the item in the EstimateWorkItemList I wish to remove and then use Remove(obj) I correctly see the item move to the DeletedList but when I call CancelEdit it leaves the EstimateWorkItemList as being dirty and does not move the items back into the editable list.&nbsp; What am I doing wrong?&nbsp; I have every other scenario working in my screen and this one is the last.&nbsp; I can just reload the screen if I have to but I am anal retentive and prefer the right way <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>How
+do you load the work item list?&nbsp; FetchChild?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> cberthold
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 08, 2009 1:02 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CancelEdit() not moving children in DeletedList
+back<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm beating my head against the wall a bit on this
+one.&nbsp; I'm using 3.6.2 with managed properties and EF as my backend (not
+that it matters for this part).&nbsp; I'll include the appropriate code as
+necessary.&nbsp; I use lots of partial classes to separate the long list of
+properties from the business logic so I will do my best to copy and past the
+necessary pieces.&nbsp; I roughly have the following:<br>
+<br>
+public partial class Estimate : BusinessBase&lt;Estimate&gt;<br>
+<br>
+private static PropertyInfo&lt;EstimateWorkItemList&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+EstimateWorkItemsProperty = RegisterProperty&lt;EstimateWorkItemList&gt;(c
+=&gt; c.EstimateWorkItems);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public EstimateWorkItemList
+EstimateWorkItems<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+return GetProperty(EstimateWorkItemsProperty);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+public partial class EstimateWorkItem : BusinessBase&lt;EstimateWorkItem&gt;<br>
+<br>
+public class EstimateWorkItemList<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; :
+BusinessListBase&lt;EstimateWorkItemList, EstimateWorkItem&gt;<br>
+<br>
+I load my list using using internal static methods and the
+DataPortal.FetchChild&lt;&gt; and BeginEdit is automatically called by my
+bindingsource.&nbsp; I use the common Rebind(bool save, bool rebind) method to
+do the changes but I also have done it in a test program and have the same
+issue.&nbsp; If I find the item in the EstimateWorkItemList I wish to remove
+and then use Remove(obj) I correctly see the item move to the DeletedList but
+when I call CancelEdit it leaves the EstimateWorkItemList as being dirty and
+does not move the items back into the editable list.&nbsp; What am I doing
+wrong?&nbsp; I have every other scenario working in my screen and this one is
+the last.&nbsp; I can just reload the screen if I have to but I am anal
+retentive and prefer the right way <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Wednesday, July 08, 2009</h2><br>Inside of my list I have the internal static method and likewise I have an internal static method that loads the data in the EstimateWorkItem passing the DAL.EstimateWorkItem.&nbsp; I'm using EF with includes to do a single round trip but wouldn't be any different if I used DataSets or MARS:<br><br>internal static EstimateWorkItemList GetEstimateWorkItemList(DAL.Estimate estimate)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.FetchChild&lt;EstimateWorkItemList&gt;(estimate);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>private void Child_Fetch(Spectrum.Estimation.Module.DAL.Estimate estimate)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (var child in estimate.EstimateWorkItem)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(EstimateWorkItem.GetEstimateWorkItem(child));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>in my EstimateWorkItem I have:<br><br>internal static EstimateWorkItem GetEstimateWorkItem(DAL.EstimateWorkItem ewi)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return DataPortal.FetchChild&lt;EstimateWorkItem&gt;(ewi);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;private void Child_Fetch(DAL.EstimateWorkItem data)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(IdProperty, data.Id);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadData(data); // load all properties &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2><P>It is important to realize that data binding will not automatically call BeginEdit() on the collection itself. And without a call to BeginEdit() on the collection itself, there's no way to use a CancelEdit() to undelete items.</P>
+<P><EM>You </EM>must make the call to BeginEdit() on the collection itself, before binding the collection to the UI - at least in Windows Forms.</P>
+<P>In WPF or Silverlight, if you use CslaDataProvider, things are a little more automatic.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Wednesday, July 08, 2009</h2>I'm confused then.&nbsp; My understanding was that the BindingSource will automatically call a BeginEdit on the Root object and in turn since the ELB has the managed properties would automatically call the BeginEdit on the children which I would assume to mean itself and the children?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, the bindingsource will call BeginEdit() on the <i>object
+with currency</i>. In the case of a collection, that is <i>never the collection
+itself</i>, but instead is exactly <i>one item within the collection</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Wednesday, July 08, 2009</h2>Rocky,<br><br>That makes sense, which in my case the object with Currency is the root object.&nbsp; I figured out the problem of why it is not updating but I have not figured out the why of how it gets in the state it is in.&nbsp; I've determined that the Root object is EditLevel = 1 but the child collection and its child objects are all EditLevel = 0, when I call the Remove, hence the reason it doesn't role it back.&nbsp; The child object being removed from the collection was added at EditLevel = 0 and was deleted at 0 so it might have well been added new.&nbsp; If I call BeginEdit directly on the Root object after the object is loaded I see all of the EditLevels = 1 (Root,Child Collection, and Children) as I had expected from my understanding of what should be going on.&nbsp; I then set a breakpoint directly after I load the BindingSource with the object and now I see the Root object go to EditLevel = 2 and the Child Collection and Children stay EditLevel = 1.<br>Now that I understand the intended behavior, what behavior am I missing that causes the IEditableObject.BeginEdit not to put the Child Collection into the same EditLevel as the Root object when object is loaded into BindingSource.DataSource?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 08, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The n-level undo behaviors where changed (in 3.0 I think) to
+mirror the DataTable/DataSet, because that&#8217;s what Windows Forms expects.
+Basically I&#8217;d been fighting for years trying to use IEditableObject in a
+way that Windows Forms didn&#8217;t expect, and it brought nothing but pain.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in 3.0 (see the <a href="http://store.lhotka.net/">Using CSLA
+.NET 3.0 ebook</a> for a complete chapter on this) I changed things so
+IEditableObject behaves the way data binding expects. It still uses n-level
+undo, but doesn&#8217;t cascade the calls &#8211; which is exactly what data
+binding <i>doesn&#8217;t expect</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>By changing IEO, data binding now works as expected in the
+normal drag-and-drop scenarios.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And by leveraging n-level undo underneath, it is still possible &#8211;
+<i>before binding and after unbinding</i> to do n-level undo for something like
+a Cancel button.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But it did change the way the two concepts interact, that is
+true.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Thursday, July 09, 2009</h2>That makes a lot of sense. What else makes sense is that wonderful DisableIEditableObject flag which is exactly what fixed it for me.&nbsp; Even after almost 7 years of developing .NET I still have not figured out Binding 100%.&nbsp; In my complex binding scenario with the BindingSource I had a BindingSource on one control bound to the root and a tab control with a single BindingSource on each of the children (not the child collection) and when I was unbinding the BindingSource it was leaving the root at EditLevel = 1 and the Children at EditLevel = 0.&nbsp; No matter what I did I couldn't figure out how to keep them at the same level. Disabling the IEO f<span class="userInput"></span>unctionality let me keep the important property changing events and the ease of binding in the IDE without the headache of the BeginEdit and Cancel/ApplyEdits firing.&nbsp; I didn't bring into the fact that I had GrandChildren two (the tabs have details).&nbsp; It's working now but something about the bindingsources not being cascaded caused the problem.&nbsp; That brings me to a few more questions I'm interested in and haven't been able to find in the book:<br><br>1. When unbinding parent - children - grandchild, which direction should I unbind from parent or grandchild? or does it matter?<br><br>2. I see the recommendation not to use DisableIEO in the book.&nbsp; I only use the BindingSource to bind my objects and none of the other functionality like addnew etc. Are there going to be other bugs I have created as result? (knowing that is a hard question but in general is all I can ask for)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>1. You must unbind from grandchild to child to parent. Order
+absolutely matters. The CslaActionExtender control in 3.6 can help you do the
+right thing with a lot less code than doing it by hand.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>2. I have done virtually no testing with DisableIEO. I put in
+that functionality so people can use it as they see fit &#8211; but at their
+own risk. You are on your own to research what does and doesn&#8217;t work if
+you use it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Wednesday, July 08, 2009</h2>I think I figured out my problem now but now I need some more explanation.&nbsp; If I am using a BindingSource and it calls BeginEdit on the root object&nbsp; the BLB Core.IUndoableObject.CopyState prevents the CopyState from being called on itself if it the parent is being bound.&nbsp; Why is that?&nbsp; It almost seems like that needs to check if any of the children are being bound and only copy state for those that aren't for the complex binding scenarios.&nbsp; I'm still pretty green but I know there are no stupid questions only stupid people <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cberthold replied on Wednesday, July 08, 2009</h2>I gave that a shot and it does not allow me to BeginEdit() telling me "BeginEdit is not valid on a child object"<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

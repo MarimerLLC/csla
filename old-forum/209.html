@@ -1,0 +1,84 @@
+<html><header><title>Can Query-by-Example be done in CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can Query-by-Example be done in CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/209.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Steven posted on Friday, May 26, 2006</h2><P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am trying to duplicate a Query-by-Example capability in an existing application that I am porting to CSLA.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The current application has a toolbar button that when pressed puts an operator button next to each textbox and combobox on the form.<SPAN>&nbsp; </SPAN>The user can click the operator button to toggle between the following operator choices.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>None, Equal, Not Equal, Less Than, Less Than or Equal, Greater than, Greater Than or Equal, Like, Not Like.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The buttons all start out set as None and then toggle through the other choices each time it is clicked.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The user is free to enter selection criteria in any combination of fields on the form and have any field’s operator set to any of the states listed above.<SPAN>&nbsp; </SPAN>So For example the following criteria to find All employees that started <SPAN>&nbsp;</SPAN>before 1/1/2000 that live in CA and are 65 or over:<o:p></o:p></P>
+<P class=MsoNormal>“Start Date: 1/1/2000” with operator of <SPAN>&nbsp;</SPAN>&lt; <o:p></o:p></P>
+<P class=MsoNormal>“State: CA” with operator of =<o:p></o:p></P>
+<P class=MsoNormal>“Age: 65” with operator of &gt;=<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>So my question is with regards to CSLA would this be implemented by creating a Criteria class that includes all of the fields in the BO or is there a better way?<SPAN>&nbsp; </SPAN>Also, I didn’t see any example of the Criteria class providing an operator for each of its fields. For example if criteria contained Age am I only able to filter for just one age or can I say I want return all records with an age above a specified age.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If anyone here has implemented similar functionality can you gives some information on how you have implemented this.<SPAN>&nbsp; </SPAN>I didn’t see this covered in the book, did I miss it?<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks<o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 26, 2006</h2>This isn't covered in the book (although I haven't finishd the 2nd edition yet).<br><br>Your best bet may be to create an object, PersonSearcher, which is a business object, that implements the behavior you want.<br><br>I did some search functionality, but it was a bit simpler; everything the user entered was a substring search.&nbsp; So I had a SearchCriteria class, which instead of being private was public.&nbsp; I then bound the search form inputs to the various properties.<br><br>I then exposed a static Fetch method which accepted this criteria class and the method basically passed this to the DataPortal Fetch.&nbsp; <br><br>The only part I don't like is the exposing of the Criteria class... but I didn't want to make another class which was basically identical.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Friday, June 09, 2006</h2>
+<O:P>
+
+
+
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2>There was an excellent thread in which a general purpose 
+search/filter form was contributed by the participants (largely the work of 
+JCasa as I recall - haven't seen his postings on the board in a while) that may 
+interest you.&nbsp; You can find it in the old forum at this 
+URL:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2>&nbsp;&nbsp;&nbsp; <A href="http://groups.msn.com/CSLANET/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=15114">http://groups.msn.com/CSLANET/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=15114</A></FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2>There are 68 postings on the thread, so you'll need some 
+time to digest it all.&nbsp; But you'll likely find it 
+useful.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=609241023-08062006><FONT face=Arial color=#0000ff size=2>One cautionary item:&nbsp; be careful if you try to create 
+that "Criteria" class you mentioned in a generic fashion in your posting.&nbsp; 
+There is a Criteria Class in CSLA that will likely cause some ambiguity issues 
+for you (and anyone you happen to discuss it with, too!! 
+&lt;g&gt;).</FONT></SPAN></DIV><BR>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> Steven [mailto:cslanet@lhotka.net] 
+<BR><B>Sent:</B> Friday, May 26, 2006 1:48 PM<BR><B>To:</B> 
+QJohnson@TeamNFP.com<BR><B>Subject:</B> [CSLA .NET] Can Query-by-Example be done 
+in CSLA<BR></FONT><BR></DIV>
+<DIV></DIV>
+<P class=MsoNormal></O:P></P>
+<P class=MsoNormal>I am trying to duplicate a Query-by-Example capability in an 
+existing application that I am porting to CSLA.<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>The current application has a toolbar button that when 
+pressed puts an operator button next to each textbox and combobox on the 
+form.<SPAN>&nbsp; </SPAN>The user can click the operator button to toggle 
+between the following operator choices.<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>None, Equal, Not Equal, Less Than, Less Than or Equal, 
+Greater than, Greater Than or Equal, Like, Not Like.<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>The buttons all start out set as None and then toggle through 
+the other choices each time it is clicked.<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>The user is free to enter selection criteria in any 
+combination of fields on the form and have any fieldbs operator set to any of 
+the states listed above.<SPAN>&nbsp; </SPAN>So For example the following 
+criteria to find All employees that started <SPAN>&nbsp;</SPAN>before 1/1/2000 
+that live in CA and are 65 or over:<O:P></O:P></P>
+<P class=MsoNormal>bStart Date: 1/1/2000b with operator of 
+<SPAN>&nbsp;</SPAN>&lt; <O:P></O:P></P>
+<P class=MsoNormal>bState: CAb with operator of =<O:P></O:P></P>
+<P class=MsoNormal>bAge: 65b with operator of &gt;=<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>So my question is with regards to CSLA would this be 
+implemented by creating a Criteria class that includes all of the fields in the 
+BO or is there a better way?<SPAN>&nbsp; </SPAN>Also, I didnbt see any example 
+of the Criteria class providing an operator for each of its fields. For example 
+if criteria contained Age am I only able to filter for just one age or can I say 
+I want return all records with an age above a specified age.<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>If anyone here has implemented similar functionality can you 
+gives some information on how you have implemented this.<SPAN>&nbsp; </SPAN>I 
+didnbt see this covered in the book, did I miss it?<O:P></O:P></P>
+<P class=MsoNormal><O:P></O:P></P>
+<P class=MsoNormal>Thanks<O:P></O:P></P><BR><BR><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,444 @@
+<html><header><title>Silverlight 2 RTW (with CSLALight), ready for production?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight 2 RTW (with CSLALight), ready for production?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5940.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito posted on Thursday, December 04, 2008</h2>Hi,<br><br>I've been playing a bit with SL/CSLALight (and EF) combo and wanted to ask if someone here has implemented this combo for production. I'm evaluating using this combo in a near future project and i know there are some issues with the SL datagrid among others.<br><br>I would like to ask about feedback here (SL reliability or overall project experience)<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />.<br><br>Roger<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Wednesday, December 10, 2008</h2>Someone sharing experiences in SL 2 with business objects?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Wednesday, December 10, 2008</h2>Hi<br><br>About SilverLight, I think that in version 2 is pretty good with several frameworks or projects as CSLA.NET and Silverlight ToolKit
+among others, applications can be made fairly stable. You can check out the view of Rocky<br><br><a href="http://www.lhotka.net/weblog/IsSilverlightReadyForBusinessApps.aspx">http://www.lhotka.net/weblog/IsSilverlightReadyForBusinessApps.aspx</a><br><br>As for EF, I think still lack a lot, We should wait a while. For now I prefer to rely on NHibernate who has extensive experience and is very stable.<br><br>Jorge<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Thursday, December 11, 2008</h2><P>I got discouraged by the disappearing datagrid row bug (Silverlight - nothing to do with CSLA). I have seen no signs of it being fixed but I have not looked for a while. <BR><BR><A HREF="/forums/thread/27889.aspx">http://forums.lhotka.net/forums/thread/27889.aspx</A><BR><A href="http://silverlight.net/forums/p/41538/121028.aspx#121028">http://silverlight.net/forums/p/41538/121028.aspx#121028</A></P>
+<P>Otherwise it looks and works quite nice though there is quite a bit of learning to do.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, December 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can try to use agDataGrid from DevExpress.&nbsp; It is free
+(at least now) and appears to work with CSLA lists just fine.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> triplea
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight 2 RTW (with CSLALight), ready for
+production?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I got discouraged by the disappearing datagrid row bug (Silverlight -
+nothing to do with CSLA). I have seen no signs of it being fixed but I have not
+looked for a while. <br>
+<br>
+<a href="/forums/thread/27889.aspx">http://forums.lhotka.net/forums/thread/27889.aspx</a><br>
+<a href="http://silverlight.net/forums/p/41538/121028.aspx#121028">http://silverlight.net/forums/p/41538/121028.aspx#121028</a><o:p></o:p></p>
+
+<p>Otherwise it looks and works quite nice though there is quite a bit of
+learning to do.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Thursday, December 11, 2008</h2>Thank you everyone for the kind responses. <br>I'm also very disappointed by the SL disappearing row case, but the agGrid so could be good news. <br>(I had tried the C1 and new Telerk new prebeta grid with no success but im not sure I did it right )<br><br>Sergey, would you paste a little code, for instance, the Rolodex "ContactPhones" grid (which easily fails with the ms grid in this regard) using the agGrid code? I tried but couldn't make csla:PropertyStatus work, so to show Csla validation in the grid.<br><br>Thanks in advance.<br><br>P.S. I almost finish the C# 2005 BO book for the basics(will wait for the 08 book to be hardcopied), and now doing some csla 3.6 test samples, I must say that i'm totally sold with the CslaLight art piece.<br>Congratulations to the team.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, December 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I will add this to my &#8220;to-do list&#8221; 8-)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;I am a bit swamped with my current project, but will try
+to find time to come up with an example.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 11:03 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight 2 RTW (with CSLALight), ready
+for production?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thank you everyone for the kind responses. <br>
+I'm also very disappointed by the SL Normal 0 21 false false false ES-MX X-NONE
+X-NONE MicrosoftInternetExplorer4 /* Style Definitions */ table.MsoNormalTable
+{mso-style-name:&quot;Tabla normal&quot;; mso-tstyle-rowband-size:0;
+mso-tstyle-colband-size:0; mso-style-noshow:yes; mso-style-priority:99;
+mso-style-qformat:yes; mso-style-parent:&quot;&quot;; mso-padding-alt:0cm 5.4pt
+0cm 5.4pt; mso-para-margin-top:0cm; mso-para-margin-right:0cm; mso-para-margin-bottom:10.0pt;
+mso-para-margin-left:0cm; line-height:115%; mso-pagination:widow-orphan;
+font-size:11.0pt; font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;
+mso-ascii-font-family:Calibri; mso-ascii-theme-font:minor-latin;
+mso-fareast-font-family:&quot;Times New Roman&quot;; mso-fareast-theme-font:minor-fareast;
+mso-hansi-font-family:Calibri; mso-hansi-theme-font:minor-latin;} disappearing
+row case, but the agGrid so could be a good news. <br>
+(I had tried the C1 and new Telerk new prebeta grid with no success but im not
+sure I did it right )<br>
+<br>
+Sergey, would you paste a little code, for instance, the Rolodex
+&quot;ContactPhones&quot; grid (which easily fails with the ms grid in this
+regard) using the agGrid code? I tried but couldn't make csla:PropertyStatus
+work, so to show Csla validation in the grid.<br>
+<br>
+Thanks in advance.<br>
+<br>
+P.S. I almost finish the C# 2005 BO book for the basics(will wait for the 08
+book to be hardcopied), and now doing some csla 3.6 test samples, I must say
+that i'm totally sold with the CslaLight art piece.<br>
+Congratulations to the team.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, December 13, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have only spent a limited amount of time on this.&nbsp; Here
+is how you can configure AgDataGrid to use PropertyStatus<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>I used Rolodex and replaces phones grid with AgDataGrid<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Code behind:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>this</span><span>.DevExpressGrid.DataSource
+= ((<span>CompanyContact</span>)<span>this</span>.Contacts.SelectedItem).ContactPhones;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>XAML<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGrid</span><span> x</span><span>:</span><span>Name</span><span>=&quot;DevExpressGrid&quot;</span><span> Grid.Row</span><span>=&quot;6&quot;</span><span> Grid.Column</span><span>=&quot;0&quot;</span><span> Grid.ColumnSpan</span><span>=&quot;3&quot;</span><span> Margin</span><span>=&quot;6,6,6,6&quot;</span><span>
+AutoGenerateColumns</span><span>=&quot;False&quot; &gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGrid.Columns</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGridColumn</span><span> FieldName</span><span>=&quot;PhoneNumber&quot;</span><span> Width</span><span>=&quot;200&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellDisplayTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;*&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;Auto&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>TextBox</span><span> x</span><span>:</span><span>Name</span><span>=&quot;PhoneBox&quot;</span><span> Text</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>.</span><span>PhoneNumber</span><span>,</span><span> Mode</span><span>=TwoWay}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span> Property</span><span>=&quot;PhoneNumber&quot;</span><span>
+RelativeTargetName</span><span>=&quot;PhoneBox&quot;</span><span> Grid.Column</span><span>=&quot;1&quot;</span><span> Source</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellDisplayTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellEditingTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;*&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;Auto&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>TextBox</span><span> x</span><span>:</span><span>Name</span><span>=&quot;PhoneBox&quot;</span><span> Text</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>.</span><span>PhoneNumber</span><span>,</span><span> Mode</span><span>=TwoWay}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span> Property</span><span>=&quot;PhoneNumber&quot;</span><span>
+RelativeTargetName</span><span>=&quot;PhoneBox&quot;</span><span> Grid.Column</span><span>=&quot;1&quot;</span><span> Source</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellEditingTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGridColumn</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGridColumn</span><span> FieldName</span><span>=&quot;FaxNumber&quot;</span><span> Width</span><span>=&quot;200&quot;&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellDisplayTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;*&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;Auto&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>TextBox</span><span> x</span><span>:</span><span>Name</span><span>=&quot;FaxBox&quot;</span><span> Text</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>.</span><span>FaxNumber</span><span>,</span><span> Mode</span><span>=TwoWay}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span> Property</span><span>=&quot;FaxNumber&quot;</span><span>
+RelativeTargetName</span><span>=&quot;FaxBox&quot;</span><span> Grid.Column</span><span>=&quot;1&quot;</span><span> Source</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellDisplayTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellEditingTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;*&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>ColumnDefinition</span><span> Width</span><span>=&quot;Auto&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid.ColumnDefinitions</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>&lt;</span><span>TextBox</span><span> x</span><span>:</span><span>Name</span><span>=&quot;FaxBox&quot;</span><span> Text</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>.</span><span>FaxNumber</span><span>,</span><span> Mode</span><span>=TwoWay}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;</span><span>csla</span><span>:</span><span>PropertyStatus</span><span> Property</span><span>=&quot;FaxNumber&quot;</span><span>
+RelativeTargetName</span><span>=&quot;FaxBox&quot;</span><span> Grid.Column</span><span>=&quot;1&quot;</span><span> Source</span><span>=&quot;{</span><span>Binding</span><span> RowValue</span><span>}&quot;/&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>Grid</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>DataTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGridColumn.CellEditingTemplate</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGridColumn</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGrid.Columns</span><span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; </span><span>&lt;/</span><span>agGrid</span><span>:</span><span>AgDataGrid</span><span>&gt;</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rogercito
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 11:03 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight 2 RTW (with CSLALight), ready
+for production?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thank you everyone for the kind responses. <br>
+I'm also very disappointed by the SL Normal 0 21 false false false ES-MX X-NONE
+X-NONE MicrosoftInternetExplorer4 /* Style Definitions */ table.MsoNormalTable
+{mso-style-name:&quot;Tabla normal&quot;; mso-tstyle-rowband-size:0;
+mso-tstyle-colband-size:0; mso-style-noshow:yes; mso-style-priority:99;
+mso-style-qformat:yes; mso-style-parent:&quot;&quot;; mso-padding-alt:0cm 5.4pt
+0cm 5.4pt; mso-para-margin-top:0cm; mso-para-margin-right:0cm; mso-para-margin-bottom:10.0pt;
+mso-para-margin-left:0cm; line-height:115%; mso-pagination:widow-orphan;
+font-size:11.0pt; font-family:&quot;Calibri&quot;,&quot;sans-serif&quot;;
+mso-ascii-font-family:Calibri; mso-ascii-theme-font:minor-latin;
+mso-fareast-font-family:&quot;Times New Roman&quot;; mso-fareast-theme-font:minor-fareast;
+mso-hansi-font-family:Calibri; mso-hansi-theme-font:minor-latin;} disappearing
+row case, but the agGrid so could be a good news. <br>
+(I had tried the C1 and new Telerk new prebeta grid with no success but im not
+sure I did it right )<br>
+<br>
+Sergey, would you paste a little code, for instance, the Rolodex
+&quot;ContactPhones&quot; grid (which easily fails with the ms grid in this
+regard) using the agGrid code? I tried but couldn't make csla:PropertyStatus
+work, so to show Csla validation in the grid.<br>
+<br>
+Thanks in advance.<br>
+<br>
+P.S. I almost finish the C# 2005 BO book for the basics(will wait for the 08
+book to be hardcopied), and now doing some csla 3.6 test samples, I must say
+that i'm totally sold with the CslaLight art piece.<br>
+Congratulations to the team.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Monday, December 15, 2008</h2>It worked great!<br><br>Even though 1&nbsp; &lt;csla:ValidatedDataGridTextColumn&gt; line equals 26 lines in Ag, this is pretty much a "green light" for me to start prototyping a Silverlight LOB app, at least while ms deliver the stable datagrid version.<br><br>
+In case Ms keeps delaying this, perhaps will be time to think in a way to do a AgValidatedDataGridTextColumn and the like.<br>
+<br>
+Thank you very much for your help.<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rogercito replied on Friday, December 19, 2008</h2>Just wanted to share with the community that the Ms <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=084a1bb2-0078-4009-94ee-e659c6409db0&amp;displaylang=en#top">datagrid patch</a> has been released. I tried it with the rolodex sample and seems to work fine. Be warned that the installation instructions are not very friendly.<br><br>This is good news indeed <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Roger<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thunt replied on Wednesday, January 14, 2009</h2>I have updated my solution with references to the new Dec. Datagrid patch and now I get build errors saying <FONT color=#a31515>
+<P>csla</FONT><FONT color=#0000ff>:</FONT><FONT color=#a31515>ValidatedDataGridTextColumn was not found...missing assembly reference, etc.</FONT></P>
+<P><FONT color=#a31515><FONT color=#000000>Has anyone else had problems using CSLA 3.6 with Dec. datagrid? </FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 14, 2009</h2>Did you rebuild Csla.dll against the new datagrid assembly?</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

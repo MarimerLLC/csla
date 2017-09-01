@@ -1,0 +1,105 @@
+<html><header><title>Try a collaborative solution before inheriting your CSLA Business Object!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Try a collaborative solution before inheriting your CSLA Business Object!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1340.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thomasc@magenic.com posted on Wednesday, September 27, 2006</h2><P>When faced with the need to extend a CSLA Business Object, keep in mind that inheritance is not your only option.&nbsp; Inheritance should be considered only after looking at using a solution using composition or collaboration.&nbsp; Additionally, inheritance should only be considered when your intention is to extend behavior, not data (properties).</P>
+<P>Consider the following scenario:&nbsp; You write a CSLA Business Object, and your intention is to reuse that Business Object from multiple consuming applications.&nbsp; Your intention is that the ValidationRules will differ in each of those sites.&nbsp; </P>
+<P>A first thought might be to actually write a "BaseCustomer" class and derive from that class for each site implemention, override the AddBusinessRules method.&nbsp; Interesting thought, but have you tried trying to extend a CSLA Business Object's behavior?&nbsp; Tough...and it will leave you wanting to try something else.</P>
+<P>Here is a solution that Rocky and I worked out this week.&nbsp; Rocky encouraged me to attempt a collaborative solution, and this is an implementation of his idea that I thought was pretty cool:&nbsp; Use a delegate to apply the business rules.&nbsp; Here's a sample:</P>
+<P>Declare a delegate in your CSLA Business Object file (outside of the class definition), representing the function signature of the class containing your rules:</P>
+<P><STRONG>internal delegate void ApplyRulesDelegate(ValidationRules rules);</STRONG></P>
+<P>Remember that declaring a delegate is like writing a class.&nbsp; The above code is actually a declaration of a class, that inherits from System.Delegate.</P>
+<P>Declare the delegate as a static object reference within your class as such:</P>
+<P><STRONG>private static ApplyRulesDelegate customerRules;</STRONG></P>
+<P>Within your AddBusinessRules function, simply invoke the delegate as such, passing your ValidationRules collection to the delegate as a reference:</P>
+<P><STRONG>protected override void AddBusinessRules()</STRONG></P>
+<P><STRONG>{</STRONG></P>
+<P><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customerRules.Invoke(this.ValidationRules);</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P>Write a static method in your CSLA Business Object to set the type containing your CLSA Business Rules as such:</P>
+<P><STRONG>public static void UseRulesFrom(Type rulesType){</STRONG></P>
+<P><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MethodInfo mInfo = rulesType.GetMethod("SetRules")</STRONG></P>
+<P><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; customerRules= (ApplyRulesDelegate)Delegate.CreateDelegate(typeof(ApplyRulesDelegate), mInfo, true);</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P>Write a class to encase your varying behavior:</P>
+<P><STRONG>public class ExtendedCustomerBusinessRules</STRONG></P>
+<P><STRONG>{</STRONG></P>
+<P><STRONG>public static void SetRules(ValidationRules rules)</STRONG></P>
+<P><STRONG>{</STRONG></P>
+<P><STRONG>rules.AddRule(new RuleHandler(CommonRules.StringRequired), "FirstName");</STRONG></P>
+<P><STRONG>rules.AddRule(new RuleHandler(CommonRules.StringMaxLength),</STRONG></P>
+<P><STRONG>new CommonRules.MaxLengthRuleArgs("FirstName", 30));</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P>Rocky's suggestion was to set this property once at the load of the AppDomain.&nbsp; Assuming you are writing a web-app, you can pull this off by wiring up the CurrentDomain.AssemblyLoad Method in the global.asax like this:</P>
+<P><STRONG>AppDomain.CurrentDomain.AssemblyLoad += new AssemblyLoadEventHandler(MyAssemblyLoadEventHandler);</STRONG></P>
+<P>and here would be how to set the rules library:</P>
+<P><STRONG>static void MyAssemblyLoadEventHandler(object sender, AssemblyLoadEventArgs args)</STRONG></P>
+<P><STRONG>{</STRONG></P>
+<P><STRONG>BO.CustomerUseRulesFrom(typeof(BO.ExtendedCustomerBusinessRules));</STRONG></P>
+<P><STRONG>}</STRONG></P>
+<P>The nice thing about this solution is that its dynamic.&nbsp; As you write Business Rule extensions for your object, you simply plug them in.&nbsp; No nasty case logic in your business objects!<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justncase80 replied on Wednesday, September 27, 2006</h2><P>Rather than passing in the Type and using reflection to set the delegate couldn't you just use&nbsp;the delegate itself as the parameter instead, something more like (using the ValidationRules collection rather than a string) :</P><PRE>namespace ConsoleApplication1
+{
+	//This would have a validation rules collection parameter instead
+	public delegate void ApplyRulesDelegate(string test);
+
+	class Program
+	{
+		public static void Main(string[] args)
+		{</PRE><PRE>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#ff0000>//this would be called in the app domain load.
+			UseRulesFrom(MyCustomRules.ApplyRules);</FONT>
+
+			Program p = new Program();
+			p.ApplyRules();
+
+			Console.ReadLine();
+		}
+
+		public void ApplyRules()
+		{
+			//You would pass in your ValidationRulesCollection here
+			<FONT color=#ff0000>ProgramRules("Hello World!");</FONT>
+		}
+
+		private static ApplyRulesDelegate ProgramRules;
+
+		<FONT color=#ff0000>public static void UseRulesFrom(ApplyRulesDelegate rules)
+		{
+			ProgramRules = rules;
+		}</FONT>
+	}
+
+	public class MyCustomRules
+	{
+		public static void ApplyRules(string test)
+		{
+			//You would add your business rules to the validationrules collection ehre.
+			Console.WriteLine(test);
+		}
+	}
+}</PRE>
+<P>You could even create an interface and use that to develop your business rule handlers:</P><PRE>public class MyCustomRules : IRulesPlugin
+{
+	public void ApplyRules(string test)
+	{
+		//You would add your business rules to the validationrules collection ehre.
+		Console.WriteLine(test);
+	}
+}
+
+public interface IRulesPlugin
+{
+	void ApplyRules(string Test);
+}
+
+//in Main call this:
+UseRulesFrom(new MyCustomRules());
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thomasc@magenic.com replied on Wednesday, September 27, 2006</h2><P>I considered passing the delegate, but if you do that, you have to expose the Delegate type publicly, so the business object consumer can resolve the type.</P>
+<P>In doing that, you are forcing the business object consumer to have a specific knowledge of the technical inplementation.&nbsp; In my example, that is true also, but to a lessor degree.&nbsp; In my example, the BO Consumer must know which "RulesEngine" he wants to apply.</P>
+<P>Your second idea works also, the one about the interface, but again, you'd need to expose the interface type publicly, so it can resolve, thus this idea also lends itself to a degree of understanding about how the solution is implemented.</P>
+<P>I do see the value in not applying the reflection, so maybe my points are negated by that. :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>justncase80 replied on Wednesday, September 27, 2006</h2><P>Well in either case you're talking about creating a class that has a single method that creates the desired business rules, it seems to me that you'd actually have to know less about the technical implementation with this system because you have the interface there to guide you. It seems like "just knowing" that your method has to be called "SetRules" is less intuitive then implementing an interface. And actually if you explicitly implement the interface like this:</P><PRE>public class MyCustomRules : IRulesPlugin
+{
+	<FONT color=#ff0000>void IRulesPlugin.ApplyRules</FONT>(string test)
+	{
+		//You would add your business rules to the validationrules collection ehre.
+		Console.WriteLine(test);
+	}
+}</PRE>
+<P>Then your ApplyRules method will actually be private but when you cast the MyCustomRules object into an IRulesPlugin you will be able to access it still, so you don't have to expose anything undesireable publicly.</P>
+<P>To me that is one of the most powerful uses of interfaces... very cool!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

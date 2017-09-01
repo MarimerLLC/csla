@@ -1,0 +1,11 @@
+<html><header><title>VS 2010</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>VS 2010</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9788.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>heisal posted on Monday, November 22, 2010</h2><p>Is there any issues in using Visual Studio 2010 while we are still targeting .NET 2.0?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Monday, November 22, 2010</h2><p>
+<p>Hello,</p>
+<p>I&#39;m not aware of any issues with targeting .NET 2.0 with&nbsp;Visual Studio 2010. I&#39;ve been using this functionality since Beta 1 of&nbsp;Visual Studio 2010. You might have to update your build server to .NET 4.0 and use MSBuild 4.0 because the project files have been updated even though you are targeting .NET 2.0</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 22, 2010</h2><p>Your test projects will be upgraded to use .NET 4.0. </p>
+<p>This might cause some problems if you are using LinqBridge to get C# 3.0 and Linq2Objects in you .NET 2.0 projects.</p>
+<p>(I keep getting OutOfMemory exceptions from my test projects i VS2010 when testing code that targets .NET 2.0 and uses LinqBridge) </p>
+<p>Also - the ReportViewer designer in V2010 is not so good (IMO) when targeting reports for ReportViewer 8.0 / ReportViewer 9.0. </p>
+<p>Windows Forms designer and databinding works fine with .NET 2.0 project. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

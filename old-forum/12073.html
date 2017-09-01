@@ -1,0 +1,238 @@
+<html><header><title>Problem overriding DataPortalUrl property at runtime</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem overriding DataPortalUrl property at runtime</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12073.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>murtaza.tinwala posted on Monday, July 15, 2013</h2><p>Hi,</p>
+<p>I have a silverlight application which connects to a WCF service using HTTPS using CSLA framework.&nbsp; As usual the service references are stored in ServiceReferences.clientconfig.&nbsp; That is a problem and we have to hack .xap file when we deploy on production.&nbsp; What tried to set endpoint address at runtime but CSLA throws 
+ 
+  
+ 
+</p>
+<p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-NZ
+  ZH-CN
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+<span style="font-size:12.0pt;font-family:&#39;Times New Roman&#39;,&#39;serif&#39;;mso-fareast-font-family:SimSun;mso-fareast-theme-font:minor-fareast;mso-ansi-language:EN-NZ;mso-fareast-language:ZH-CN;mso-bidi-language:AR-SA;">&quot;The provided
+URI scheme &#39;https&#39; is invalid; expected &#39;http&#39;&quot; <br /></span></p>
+<p>exception.&nbsp; Please note that this exception does not occur when endpoint address is picked from client configuration file.&nbsp; So that means CSLA data portal is doing something when we override DataPortalUrl property.&nbsp; This does not look like WCF configuration or HTTPS issue.</p>
+<p><br />//&nbsp;&nbsp;&nbsp; base.DataPortalUrl = dynamicURL;//build dynamic url here</p>
+<p>If someone has attempted this earlier, please help me.</p>
+<p>Regards,</p>
+<p>Murtaza</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, July 16, 2013</h2><p>,</p>
+<p>Have you tried to set the </p>
+<p>ApplicationContext.DataPortalUrlString in code? </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">string</span>&nbsp;DataPortalUrlString
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">return</span>&nbsp;_dataPortalUrl;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_dataPortalUrl&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">Uri</span>&nbsp;DataPortalUrl
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Uri</span>(DataPortalUrlString);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>murtaza.tinwala replied on Tuesday, July 16, 2013</h2><p>Hi Jonny,</p>
+<p>&nbsp;</p>
+<p>Thanks for posting.&nbsp; But I cannot find ApplicationContext object?&nbsp; Is that some specific CSLA entity?&nbsp; What namespace do I need to import?</p>
+<p>&nbsp;</p>
+<p>Murtaza</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Peran replied on Wednesday, July 17, 2013</h2><p>Are you also updating the binding to support https?</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var binding = new BasicHttpBinding();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.MaxBufferSize = int.MaxValue;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.MaxReceivedMessageSize = int.MaxValue;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.ReceiveTimeout = TimeSpan.FromMinutes(1);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.SendTimeout = TimeSpan.FromMinutes(1);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.OpenTimeout = TimeSpan.FromMinutes(1);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.CloseTimeout = TimeSpan.FromMinutes(1);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // allow https endpoint url</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; binding.Security.Mode = BasicHttpSecurityMode.Transport;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.DataPortalClient.WcfProxy.DefaultUrl = &quot;https://myweb.com/WcfPortal.svc&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Csla.DataPortalClient.WcfProxy.DefaultBinding = binding;</p>
+<div></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>murtaza.tinwala replied on Friday, July 19, 2013</h2><p>Hi Peran,</p>
+<p>Is it necessary to set Binding if we are setting HTTPS url?&nbsp; Can CSLA pick up binding information from Silverlight Servicereferences.clientconfig file?&nbsp; Because we are not setting any binding properties in code - we specify binding properties only in silverlight configuration file.&nbsp; This works fine with HTTP.&nbsp; I am wondering why it does not work with HTTPS.&nbsp; Please note that mine is a Silverlight application.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Murtaza</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Tuesday, July 23, 2013</h2><p>I have not tried part code/part .clientconfig before. &nbsp;Do you get the same problem if you set the Binding in code?</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Peran</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

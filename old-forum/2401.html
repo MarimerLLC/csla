@@ -1,0 +1,246 @@
+<html><header><title>ISavable not implemented on BusinessBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ISavable not implemented on BusinessBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2401.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb posted on Wednesday, February 21, 2007</h2><P>Why didn't Rocky implement ISavable on the BusinessBase class? I can understand that he wanted BusinessBase&lt;T&gt; to return a type-specific object when saving (&lt;T&gt; Save()), but then why not place the functionality in BusinessBase and call the base implementation in BusinessBase&lt;T&gt;?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>I think I asked that before, but didn't get an answer.&nbsp; It seems like it would be a good idea to implement ISavable in Core.BusinessBase, because sometimes the answer when generics is in the way is to use Core.BusinessBase instead of the generic one..<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2><P>The ISavable implementation requires the Save() method.</P>
+<P>If I move the Save() method to Core.BusinessBase then it must return type object.</P>
+<P>At that point BusinessBase&lt;T&gt; can't override Save() to return a T, because an override can't vary by only the return type.</P>
+<P>If I do down that route, then there's no value in having BusinessBase&lt;T&gt; at all really, because the point of that class is to get Save() to return a T.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>Ahh right.. I always forget about that until the compiler yells at me.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, February 22, 2007</h2>Well, correct me if I'm wrong but arguably, you could implement ISavable in BusinessBase with another name, like SaveObject (maybe even make it private/protected if you prefer...). <br>That way, BusinessBase&lt;T&gt; can implement Save returning the correct type and you don't break compatibility...<br><br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, February 22, 2007</h2>Andres,<br><br>I thought about something like that, but then you have to Save methods you could override.. Save and SaveObject.&nbsp;&nbsp; You'd have to figure out which one to override, because if you didn't want the default SaveObject behavior (which I assume would be what is currently in Save) you override SaveObject.. if you just want to add behavior to Save, you'd choose to override Save or SaveObject..<br><br>Also, you&nbsp; I don't think you can make SaveObject private or protected unless you make ISavable internal and implement SaveObject explicity, which would defaut the purpose of the interface..<br><br>That could get a bit confusing.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I thought about that too.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But Save() is virtual. If I move the REAL save behaviors up to
+Core.BusinessBase you can bet good money that people who don&#8217;t use
+BusinessBase&lt;T&gt; would want this new method to be virtual for the same
+reasons.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I can&#8217;t make Save() NOT virtual without breaking much
+(most?) existing code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I&#8217;m left making BOTH methods virtual. Then there&#8217;s
+a documentation question: which do I override, and when? The resulting chaos is
+something I don&#8217;t think is a good thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 22, 2007 1:15 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ISavable not implemented on BusinessBase<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, correct me if I'm wrong but arguably, you could
+implement ISavable in BusinessBase with another name, like SaveObject (maybe
+even make it private/protected if you prefer...). <br>
+That way, BusinessBase&lt;T&gt; can implement Save returning the correct type
+and you don't break compatibility...<br>
+<br>
+<br>
+<br>
+AndrÃ©s<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, February 22, 2007</h2>That is a good point... <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 22, 2007</h2><P>Another way to look at this (though it may not be popular), is that inheriting from Csla.Core.&lt;anything&gt; is an advanced concept. I put the things into a sub-namespace because they aren't really intended for daily use. If you are inheriting from them, it is because you are doing something out of the ordinary (at least from a CSLA perspective). So if you have to do some extra work (like implement ISavable in your own base class), I'm not sure that's a terrible thing.</P>
+<P>Please note that I have <EM>no problem</EM> with people using the stuff in Csla.Core! That's just fine to do - but it <EM>is</EM> an advanced scenario and may require extra work and understanding.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Monday, February 26, 2007</h2><P>Well, it seems to me that with all this said, the real solution is for microsoft to fix visual studio to work with generic forms...???</P>
+<P>I have not yet found a solution to the generic form problem that presents itself well (or at all).</P>
+<P>Thinking about the purpose of the &lt;T&gt;Save() method a little more, however... The save method is the only method that returns a specific type. It seems to me that there is a lot of extra work having to be done in order to keep Save() type-specific/generic. I noticed that BusinessBase has the Clone method that does not return type-specific/generic, what is so special about the Save() method?</P>
+<P>I could be very wrong... But it seems to me that the BusinessBase.Save() method <EM>could</EM> be something more like "protected virtual object BusinessBase.SaveObject()" and&nbsp;"&lt;T&gt; BusinessBase&lt;T&gt;.Save()" could cast the object for you and even though the generic form of Save() wouldn't be overridable, you would still be able to modify the functionality of saving by overriding BusinessBase.SaveObject(). Seems like this could be done to the clone method, as well?</P>
+<P>BusinessBase:<BR>&nbsp;&nbsp;&nbsp;protected virtual object SaveObject();<BR>&nbsp;&nbsp;&nbsp;protected virtual object CloneObject();<BR>BusinessBase&lt;T&gt;:<BR>&nbsp;&nbsp;&nbsp;public &lt;T&gt; Save() { return (T) base.SaveObject(); }<BR>&nbsp;&nbsp;&nbsp;public &lt;T&gt; Clone() { return (T) base.CloneObject(); }</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, February 26, 2007</h2>Well, if you can't wait for microsoft to solve it, try this <br><br>http://forums.lhotka.net/forums/thread/341.aspx<br><br><img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br><br>I've recently made some improvements to that, I'll post the update when I have the time...<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Monday, February 26, 2007</h2><P>Thank you...<BR>First off, I've looked at your posts before, and though it is a good solution, my project is a C# project and I haven't found a C# port of your MagikAttribute class. If you have one, let me know, PLEASE ;)<BR>Secondly, this question (pertaining to the placement of the save method), for me, is more of a question in the foundation of the CSLA framework and how "people" think it "should be." Not to doubt rocky's framework - it's the best I've seen - but I just want to know if it this is really the best way to deal with this (for I don't think it is).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Monday, February 26, 2007</h2><P>Rocky,</P>
+<P>I understand what your saying about not making a change without a good reason, and I hate to beat a dead horse, but this seems to me as though it IS a good reason; Normalizing the purpose of the generic form of BusinessBase and the way cloning and saving works. Further-more, I don't believe the change I suggested would cause existing applications to break...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Technically no, it wouldn&#8217;t break existing code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, as I discussed in an earlier post, BOTH SaveObject()
+and Save() would need to be virtual to avoid this being a breaking change &#8211;
+and that would be just as bad a design flaw as the current one as I see it.
+Which method do you override? The obvious one is Save(), but the RIGHT one
+would actually be SaveObject()&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You must remember that I&#8217;m a one-man support team here.
+Not only do I do the dev work, but I have to field all the questions about the
+quirks (like this one). So I&#8217;m very careful (where possible) to minimize
+the quirks so as to minimize the time I spend answering questions about them,
+when I could be doing fun stuff like adding features or spending time with my
+kids </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I&#8217;ll do, is add this to the <a href="http://www.lhotka.net/Article.aspx?id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36">wish
+list</a> as a possible future enhancement/change. But as you can tell, I&#8217;ve
+gotten this into a spot where there are no good answers and ultimately I need to
+choose the lesser of two evils&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Monday, February 26, 2007</h2><P>Rocky,</P>
+<P>Well spoken and received. Thanks for the time you've spent on the thought thus far.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, February 27, 2007</h2>[deleted]</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>To answer of how it <i>should</i> be, there&#8217;s no doubt
+that ISavable would be better implemented in Core.BusinessBase. If I didn&#8217;t
+have to worry about backward compatibility, I&#8217;d have certainly put it
+there. But the cost to doing that was, imo, too high and so this was a
+necessary compromise.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This is the way with frameworks btw. Your version 1.0 can be
+anything you want. But everything after that point is compromise. Finding a
+balance between the &#8220;right&#8221; solution and the &#8220;practical&#8221;
+solution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Every now and then you get &#8220;lucky&#8221;, and there&#8217;s
+a major tech change that externally breaks things (like COM to .NET), and you
+have the chance to fix those compromises &#8211; kind of a reset to 1.0 again.
+But at that point the cycle of compromise just resumes&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you <i>really</i> get down to it, I&#8217;m not entirely sure
+I&#8217;d have used generics in the base classes at all. Having strongly typed
+Save() and Clone() methods is probably not actually worth the cost of using
+generics. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Of course then market perception enters into it. If CSLA .NET
+2.0 hadn&#8217;t very visibly use generics it is quite likely that people would
+have viewed it as irrelevant from day one. If you don&#8217;t use the shiny new
+toys you must have missed the point after all.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In retrospect though, these particular toys, while very shiny,
+also have some very sharp spines.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, February 26, 2007</h2>I don't think I'll <i>port </i>it to c# because there's really no point in doing so. The thing is that currently, c# is not supported because of a "hack" vb uses (it exposes controls as properties instead of fields). I've found that when it does that it adds an attribute to the fields named "ExposeThroughProperty" (or something along those lines). So, the fix is simply check for fields instead of properties and if they contain that attribute, look for the prop, otherwise, use the field.<br>The only thing this affects currently is that inherited controls are not accesible through the designer, but other than that you can use it as it is.<br>I'll fix that and release as soon as I can, and then you can simply reference the dll and use it in your c# projects.<br><br>The "new version" brings a huge improvement (through a <i>major </i>hack) to the current implementation. I'll discuss this when I release the code...<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Monday, February 26, 2007</h2><P>Andréa,</P>
+<P>If you don't mind briefly explaining to me: Based on what you said previously, I don't understand why generic forms are such a problem. It was my impression that due to generics, the designer couldn't instantiate an instance of the form because it doesn't know what type to pass to the class. Is this even remoting close to the truth?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Monday, February 26, 2007</h2>Oh, now you got me talking!! shame on you...<br>Well, that's exactly it. If you read the link to the page that gave me the idea, you'll find more details.<br>The solution is basically providing a "dummy" form that the designer can instantiate.<br>This works "great" except for the fact that there are some things that you can't do, like having an inherited grid autofill it's default properties so that you can tweak them to your liking (because it will use that dummy type).<br><br>My recent breakthrough (and major hack) was to overcome this limitation. I've found a way to make that work. Now I can host a binding source and a grid in my base form and have the grid show the default columns (for the type T that I choose) without doing anything strange at all. I still create the dummy forms as a fallback, but so far it works "fine" (except that every now and then you need to close and reopen vs).<br>I will post this version (working on c# and vb) along with a sample app soon.<br><br>Andrés<br><br>(btw, Andrea is a girls name!! -at least in Argentina) ;)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kbcb replied on Tuesday, February 27, 2007</h2><P>The name... Sorry! I have a friend named Andréa, so Im guessing I overlooked it subconciously thinking it was his name I was seeing. ;)</P>
+<P>Anyways, I look forward to seeing your newest version of the fix.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 26, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, if I was willing to break most existing objects in the
+hundreds or thousands of apps built on CSLA .NET I could easily make some
+changes that would work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But IF I made such a change it would have to be for a very
+compelling benefit, and it would have to be at a major version change for CSLA
+itself &#8211; because that&#8217;s a non-trivial thing to consider.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Right now, the burden for creating your own non-generic subclass
+of Core.BusinessBase is not high. While having to implement a simple interface is
+not ideal, I can&#8217;t see how that one, relatively advanced and uncommon,
+scenario could justify breaking everyone&#8217;s code.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

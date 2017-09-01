@@ -1,0 +1,281 @@
+<html><header><title>cslaDataSource and resusable namevaluelist</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>cslaDataSource and resusable namevaluelist</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav posted on Tuesday, September 04, 2007</h2>Rocky ,<br><br>i am using cslaDatasource to bind with comboboxes in asp.net .<br>but i had done a little bit of modification in the namevalue list class for my bussiness objct .<br>like instead of making a namevalue list for each and everyobject , what i wish is i do create a criteria class which expects a parameter type for name value list and then based on criteria.type calls the underlying stored procedure to populate the csladatasource collectioin .<br><br>could&nbsp; you throw somelight on how to achieve this .<br><br>thanks<br>govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 04, 2007</h2><P>I don't recommend doing this, as it makes your object model less intuitive. All name/value lists end up as the same type, which can be confusing.</P>
+<P>However, you can certainly do this. I'd recommend using some sort of type-based factory model to get a "data provider" in the DP_F() method of your name/value class:</P>
+<P>Private Overloads Sub DataPortal_Fetch(ByVal criteria As CustomCriteria)<BR>&nbsp; Dim dataProvider As IDataProvider&nbsp;= DataProvider.GetProvider(criteria.ListType)<BR>&nbsp; Using dataProvider<BR>&nbsp;&nbsp;&nbsp; Using dr As SqlDataReader = dataProvider.GetData()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' loop through data and populate list<BR>&nbsp;&nbsp;&nbsp; End Using<BR>&nbsp; End Using<BR>End Sub</P>
+<P>The GetProvider() method would create an instance of IDataProvider, which is defined as:</P>
+<P>Public Interface IDataProvider<BR>&nbsp; Function GetData() As SqlDataReader<BR>End Interface</P>
+<P>The particular instance of IDataProvider would be based on the ListType - which could be some Type object, or a string descriptor or whatever you want to use to identify the particular name/value data to be returned.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, September 05, 2007</h2>Rocky,<br><br>Regarding to achieve this , here is what i had done .<br><br><i>&nbsp;[Serializable()]<br>&nbsp;&nbsp;&nbsp; public class FillCombo : NameValueListBase&lt;int, string&gt;<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Business Methods<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static int DefaultRole (string combotype)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FillCombo list = GetList(combotype);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (list.Count &gt; 0)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return list.Items[0].Key;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NullReferenceException(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "No Data available; ");<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Factory Methods<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private static FillCombo[] _list=new FillCombo[10];<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Returns a list of roles.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static FillCombo GetList(string combotype)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //here reading the IndexerList collection<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_list == null) //mean no collection exist<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return&nbsp; _list [Convert.ToInt32(combotype)] =&nbsp; DataPortal.Fetch&lt;FillCombo&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (new FilteredCriteria(combotype));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else if (_list[Convert.ToInt32(combotype)] == null) //mean its not null<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _list[Convert.ToInt32(combotype)] = DataPortal.Fetch&lt;FillCombo&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (new FilteredCriteria(combotype));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else&nbsp; //mean its already there <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //get the collection by name and return it .<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _list[Convert.ToInt32(combotype)];<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp; <br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// Clears the in-memory RoleList cache<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// so the list of roles is reloaded on<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// next request.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /// &lt;/summary&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static void InvalidateCache()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _list = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public static void InvalidateCache(int Index)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _list[Index] = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private FillCombo()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { /* require use of factory methods */ }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #region Data Access<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Serializable()]<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private new class Criteria<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; { /* no criteria - retrieve all projects */ }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Serializable()]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private class FilteredCriteria<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private string _ComboType;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public string ComboType<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return _ComboType; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public FilteredCriteria( string combotype)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ComboType = combotype;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch(FilteredCriteria criteria)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection cn = new SqlConnection(Database.DTCConnection))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cn.Open();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = </i><i>Custom</i><i>Constants.spFillCombos&nbsp;&nbsp; ;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@UserID", ((CustomProviders.CustomIdentity) Csla.ApplicationContext.User.Identity).Id&nbsp;&nbsp;&nbsp; );<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.AddWithValue("@CodeType", Convert.ToInt32 (criteria.ComboType)&nbsp; );<br>&nbsp;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SafeDataReader dr =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //adding the default selection to the list<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(new NameValuePair(0, "------Select------"));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (dr.Read())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(new NameValuePair(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.GetInt32("id"), dr.GetString("name")));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; #endregion<br>&nbsp;&nbsp;&nbsp; }<br><br><br></i>but here i want a little bit of flexibility i.e i do not want to initially declare the size of the&nbsp; _list instead it should be on the fly .the reason for this is with the current form of implementation it does support only upto 10 combotypes but that would not suffice mine requirement .<br><br>Could u suggest on same .<br><br><br><br>About the RBAC which i had talked to you a little while ago here is my implementation of the same ,<br><a HREF="/forums/thread/17224.aspx"><br>http://forums.lhotka.net/forums/thread/17224.aspx</a><br><br>Please give your comments on it .<br>Thanks<br>Govind</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Saturday, September 22, 2007</h2>Rocky ,<br><br>Problem is not with using a type based data provider or something like that .,but what the actual prob is that the private variable holding the name value collection is static i.e static _list<br>so if following that approach then no matter you choosse the dataprovider based factory or something the list will fill only once and on subsequent calls will return the old resultset , <br>thats the issue .<br><br>thats is the reason i do had created an array of that private varialbe but still i m not to convieineit with that appproach as its not much logical and resourcefull for the reason i do may have as much as 50 types of name value list and being static array all would load in memory and consume resources .<br><br>not getting a better way out of it . can u suggest .<br><br>thanks<br>govind<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 22, 2007</h2><P>Like I said, I don't think this is a good idea. NVLB streamlines the creation of a name/value list so the only real difference in each class is the DataPortal_Fetch(). Personally, I just create one NVL class for each list.</P>
+<P>In any case, caching is a different issue. In the web, you can use System.Web.Caching, or you can use a static field, or you can use Application or you can use Session. These are all well-understood techniques for caching any sort of data in ASP.NET, and you should be able to find information about these options in any good ASP.NET book.</P>
+<P>All of those options consume memory on the web server. That's the whole point of caching - you are consuming memory on the web server to avoid hitting the database over and over. If you can't spare the memory on the web server, then don't use caching and just reload the list from the database on each request.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Monday, September 24, 2007</h2>Rocky,<br><br>I do honor your reply .<br>but again just to simplify my requirement it is like .<br>i do had created one nvl for each list .<br><br>now , i do not want them all to be called on by different names&nbsp; mean say nvl for Country , City,FreightTerm ,PaymentTerm etc ....<br><br>i just simply want to call FilllCombos.GetList("Paymentterm") <br>and in its under the hood it do calls the corresponding NVL class .<br><br>just i want to achive it .<br><br>Secondly , like coming over to the listViewForms like as ProjectList.aspx , resourcelist.aspx in PTWeb,<br>
+i do have loads of list forms and they do have loads of columns etc .
+what i am trying to achive it is instead of doing the html coding
+required for boundcolumns , hyperlinkcolumns etc ... i require them to
+be achieved via a class . <br>
+<br>
+i.e in my code i am gonna write on page load<br>
+if (!postback)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; GridViewTemplateSetting.setDevExgridview(dxGridviewList,Constants.CodeGrid);<br>
+&nbsp;&nbsp;&nbsp; Applyauthorisationrule;<br>
+&nbsp;&nbsp;&nbsp; <br>
+}<br>
+<br>
+Class GridviewTemplateSetting<br>{<br>function setDevExgridview(DevexgridView dx,string GridType)<br>{<br>&nbsp;&nbsp;&nbsp; case gridtype: CodeGrid<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  Prepare Grid for code .<br>&nbsp;&nbsp;&nbsp; case gridtype :CountryGrid<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  Prepare Grid for Country<br>}<br>}<br><br>What my lookout on foollowing this kind of approach is that it would make me dynamic and also will free my developer from formating gridview and other stuffs .also i can follow up any kind of customisation using class for the grid . like for creating hyperlinkcolumns i will not have to write the html code like "Project.aspx?id={0}" but will write on the column property that column.Dataitem=constants.ProjectMaster&nbsp; +&nbsp; "?id={0}" ;<br><br>so that in near future if there is change in any pagename or anything i just modify the class and it is done .<br><br>Does this kind of thing could be ahcived more convieniently ...?<br><br><br>thanks<br>govind<br>&nbsp;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Monday, October 08, 2007</h2>Hi Rocky,<br><br>Currently i am working with an object say Invoice(editable root) and invoice line items (editable child objects) .<br>what i am trying to achive is . no database trasanction should be there until and unless the user finally push the saves button and the whole object should be saved on in 1 fly by a single querry .<br><br>to be more elaborative what i am trying is .<br>1. user makes entries for invoice header .<br>2. and starts entring the invoice line items by a ui which do have a add button and the line items are displayed in a grid , with edit and delete things .<br>3. as the user pushes add button the line items collections will have that item added to them , but will not have them in the databse coz no db thing should b done .<br>4. after completing all ,he finally saves the object and it is saved by 1 db transacton only .<br><br><br>what i am stucked with how to maintain the iinvoicelineitems on the fly ......<br><br><br>thanks<br>govind<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 08, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is automatic. When you interact with objects all the
+interaction occurs in memory. Only when you call Save() on the root object does
+any (and all) database interaction occur, and that does typically occur in a
+transaction.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 08, 2007 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> [CSLA .NET] Editable Root and Editable Child Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky,<br>
+<br>
+Currently i am working with an object say Invoice(editable root) and invoice
+line items (editable child objects) .<br>
+what i am trying to achive is . no database trasanction should be there until
+and unless the user finally push the saves button and the whole object should
+be saved on in 1 fly by a single querry .<br>
+<br>
+to be more elaborative what i am trying is .<br>
+1. user makes entries for invoice header .<br>
+2. and starts entring the invoice line items by a ui which do have a add button
+and the line items are displayed in a grid , with edit and delete things .<br>
+3. as the user pushes add button the line items collections will have that item
+added to them , but will not have them in the databse coz no db thing should b
+done .<br>
+4. after completing all ,he finally saves the object and it is saved by 1 db
+transacton only .<br>
+<br>
+<br>
+what i am stucked with how to maintain the iinvoicelineitems on the fly ......<br>
+<br>
+<br>
+thanks<br>
+govind<br>
+<br>
+<br>
+<br>
+&lt; br&gt;<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Tuesday, October 09, 2007</h2>Hi Rocky,<br><br>I dint get it exactly , <br>mean when the line items add button will raise event it&nbsp; will call the editablechildlist object for line itmes add method and that will add them up into the line item collection , but that should happen on in memory instead going to do the insert in lineitems table and then again refetching them .<br><br>this is being done in projecttracker refrence application . <br><br>thanks<br>govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, when the Assign button is clicked the new item is added to
+the child collection in memory. It does not go to the database until Save() is
+called on the root object (Project or Resource).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In PTWeb the Save() method is called on each page request (more
+or less) and so the database is immediately updated. This is because most web
+users don&#8217;t expect to have to click a save button at the end, they expect
+things to save all the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But in PTWin and PTWpf the Save() method is only called when the
+save or apply buttons are clicked. This is because most rich client users don&#8217;t
+expect to have things saved automatically, and only want them saved when they
+say so.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 09, 2007 1:19 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Editable Root and Editable Child Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi Rocky,<br>
+<br>
+I dint get it exactly , <br>
+mean when the line items add button will raise event it&nbsp; will call the
+editablechildlist object for line itmes add method and that will add them up
+into the line item collection , but that should happen on in memory instead
+going to do the insert in lineitems table and then again refetching them .<br>
+<br>
+this is being done in projecttracker refrence application . <br>
+<br>
+thanks<br>
+govind<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Wednesday, October 10, 2007</h2>hi rocky,<br><br>yes i found that code working in PTWin ,<br>now for&nbsp; achiving the same functionality in PTWeb app i am not able to find the events such as <br><br>on save<br><br>&nbsp;// stop the flow of events<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // commit edits in memory<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.EndEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.EndEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // clone object and save clone<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Project temp = _project.Clone();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _project = temp.Save();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rebind)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // rebind the UI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.DataSource = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.resourcesBindingSource.DataSource = this.projectBindingSource;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.projectBindingSource.DataSource = _project;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ApplyAuthorizationRules();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><br>being rasied in windows app.<br><br>could you plz throw some light on this .<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 10, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As I said, PTWeb doesn&#8217;t work this way. Web users don&#8217;t
+typically expect a &#8220;form level&#8221; save button. The web is (usually)
+stateless, and so data must be saved on every postback.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to provide a &#8220;form level&#8221; save button in
+your web app, you can certainly do so. Just keep the business object in Session
+and manipulate it there. Then only call Save() on the root object when the user
+clicks the save button.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you do that, I strongly recommend using a bit of javascript
+to prevent the user from navigating away from the page prior to clicking save.
+You can&#8217;t really <i>prevent</i> them from leaving without saving, but you
+can give them a dialog where they have to click OK to leave without saving.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Thursday, October 11, 2007</h2>Hi Rocky , <br><br>i think i had solved the problem and had implemented the form level save button .<br><b>smotthing it more i need to call the child item validation rules be fired before a chld gets added to collection .<br>also on saving any contact it should at least contain one address<br><br></b>summing up the whole here is what the case was and how its being handled.<br>1. contact and addresses <br>&nbsp;&nbsp;&nbsp; a contact can have multiple addresses <br>2. form level save was required as a contact can have upto 20 addresses or more and querrying for every update,entry,delete address was not required coz for of lot hits on database<br>3. the parent id was handled at backened i.e at database level identity field .<br>4. javascript to handle if user migrate without saving the object .<br><br>classes used.<br>1. editableroot (contact class) with an child object read only property addresseslist.<br>2. editablechild (address)<br>3 editablechildlist(addresslist)<br>4. addressbo<br><br>listchanged event handled in contact class causing the propertyhaschanged("address") for addresslist property.<br><br>at formview the 2 tabs <br>1. contact details<br>2. address details (textboxes + add button and a datagridview)<br>3. on add click the datagrid was rebinded .after the item was added to collection<br><br>now on form level save . the rooot object was saved which do returns up an identity <br>child objects save was called which was being done by using the xpath querry .<br><br>objects get saved successfully and edited too .<br><br>my querry is <br><b>1. is it a nice way to do so in web app .<br>2. fire validations for child object when any child object goes for edition or deletion .<br>3. want my user dont go on multiple windows for just making a simple object entry .</b><br><br>Finally when it will be done complete in a smother way will post the whole code , so that no other user do gets stuck for the same issue .as i was , coz i can see a lot ppl querrying for the same in forums and struggling .<br><br>thanks<br>govind<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhoojharsinghyadav replied on Thursday, October 11, 2007</h2>Hello rocky , <br>
+<br>Ok i do saved the object in the session and had implemented the same .<br>when the user is in entry mode the object is new hence its saved completely.<br>and on add(assign) button the child gridview is again databinded so the changes are on screen with the postback . <br><br>but now coming in the update mode . the user do manipulations with the invoicelineitems and then presses save(form level save) and root objects save button is called . but here the root is not dirty so the child is also not save inspite of the fact it is dirty. not able to come out of this looop....<br><br><br>
+<br>
+thanks<br>
+govind</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 11, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In that case you missed the bit in Chapter 7 about overriding
+IsValid and IsDirty in a parent object. That is required, so the parent&#8217;s
+state is affected by the state of its children.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jhoojharsinghyadav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 11, 2007 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: Editable Root and Editable Child Object<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello rocky , <br>
+<br>
+Ok i do saved the object in the session and had implemented the same .<br>
+when the user is in entry mode the object is new hence its saved completely.<br>
+and on add(assign) button the child gridview is again databinded so the changes
+are on screen with the postback . <br>
+<br>
+but now coming in the update mode . the user do manipulations with the
+invoicelineitems and then presses save(form level save) and root objects save
+button is called . but here the root is not dirty so the child is also not save
+inspite of the fact it is dirty. not able to come out of this looop....<br>
+<br>
+<br>
+<br>
+thanks<br>
+govind<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

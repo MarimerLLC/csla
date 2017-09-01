@@ -1,0 +1,37 @@
+<html><header><title>Data Binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Data Binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3974.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>demwa posted on Monday, December 03, 2007</h2><P>I am developing an Human Resources and payroll system.I have created an employee object which can be of four types contract employee,Permanent employee,temporal employee and expariate.I want to be able to change an employee from one type to another type of employee.I have created a polymorphic child object called EmployeeType which can be of any of the types mentioned above.on the employees form&nbsp; i have put a combobox which is bound to the employeetype namevalue list.When I select any options in the combobox a new&nbsp; type of child if&nbsp;the employee type is differennt from the current employee type&nbsp;is created.However the the bound&nbsp;text boxes are not updated to reflect the initial values of the newly created child object of the employee.For example both the temporal employee and contract employee types have the startdate and enddate properties to&nbsp;reflect the start and expiry of the contracts/temporal assignement.When I change a temporal employee&nbsp;to contract employee the startdate and&nbsp;enddate continue to reflect the same startdate and enddate properties of the temporal employee and if save the objects to the database only the employeeid is inserted into the database,startdate and enddate are null.my code snippets are show below .Can someone help me</P>
+<P>&nbsp;</P><FONT size=2>
+<P>InitializeComponent()</P>
+<P>mEmployee = Employee</P>
+<P>mEmployee.BeginEdit()</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.EmployeeBindingSource.DataSource = mEmployee</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.EmployeeTypeListBindingSource.DataSource = Payroll.Library.EmployeeTypeList.GetList</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.EmployeeListBindingSource.DataSource = Payroll.Library.EmployeeList.GetEmployeeList</P>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TabPage1.Select()</P>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> ComboBox1</P>
+<P>.DataSource = Payroll.Library.EmployeeTypeList.GetList</P>
+<P>.DisplayMember = </FONT><FONT color=#800000 size=2>"Name"</P></FONT><FONT size=2>
+<P>.ValueMember = </FONT><FONT color=#800000 size=2>"Value"</P></FONT><FONT size=2>
+<P>.DataBindings.Add(</FONT><FONT color=#800000 size=2>"SelectedValue"</FONT><FONT size=2>, mEmployee, </FONT><FONT color=#800000 size=2>"Type"</FONT><FONT size=2>)</P>
+<P>.DataBindings(0).DataSourceUpdateMode = DataSourceUpdateMode.OnPropertyChanged</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.TextBox1</P>
+<P>.DataBindings.Add(</FONT><FONT color=#800000 size=2>"Text"</FONT><FONT size=2>, mEmployee.EmployeeType, </FONT><FONT color=#800000 size=2>"StartDate"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</FONT></P>
+<P><FONT color=#0000ff size=2>Employee Object</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT color=#000000 size=2> SetEmployeeType(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> ID </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2><FONT color=#000000>)</FONT></P>
+<P>OldEmployeeType = mEmployeeType</P>
+<P>mOldEmployeeType.Delete()</P>
+<P>mEmployeeType = EmployeeTypeFactory.NewEmployeeType(ID)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT color=#000000 size=2> Type() </FONT><FONT color=#0000ff size=2>As</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mTypeList.Value(mType)</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mType &lt;&gt; mTypeList.Key(value) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>mType = mTypeList.Key(value)</P>
+<P>SetEmployeeType(mType)</P>
+<P>PropertyHasChanged()</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</P></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

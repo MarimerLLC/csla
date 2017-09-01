@@ -1,0 +1,28 @@
+<html><header><title>IsDirtyChanged event?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsDirtyChanged event?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11369.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda posted on Tuesday, May 22, 2012</h2><p>Hi, </p>
+<p>I was looking for event IsDirtyChanged which would indicate when IsDirty has changed.</p>
+<p>What I found is OnIsDirtyChanged method in BindableBase class, but in the comment there is stated &quot;This method is for backward compatibility with CSLA .NET 1.x.&quot;. And as I can see this method is never called.</p>
+<p>I would like to implement UI indication when an business object becomes &quot;dirty&quot; and when it becomes &quot;clean&quot; by showing an asterisk in the title bar of the window.</p>
+<p>BusinessBase class provides PropertyChanged and ChildChanged events. This is what I can use. So to encapsulate this for common use I need to create own event IsDirtyChanged which would be triggered when in PropertyChanged and ChildChanged is IsDirty is detected as changed with respect to previous remembered value.</p>
+<p>But as you can see this is something like an old OnIsDirtyChanged() method, which is unsupported on the latest version of Csla. Is there something wrong whith this approach. Why is this method/event unsupported? Is it safe to implement this behavior?</p>
+<p>Thank You</p>
+<p>Yours sincerely</p>
+<p>Miroslav Galajda</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, May 22, 2012</h2><p>Which type of UI do you use? </p>
+<p>The typical recommendation for WPF / SL is to use the ViewModel base class that will give you meta properties as bindable properties. </p>
+<p>Having meta state properties raise OnPropertyChanged is not recommended for Windows Forms. Adding OnPropertyChanged for all the metaproperties in Windows Forms could seriously degrade performance / user experience. </p>
+<p>We have an issue in bugtracker concerning BusinessBase to raise OnPropertyChanged for IsXYZ properties when not in Windows Forms but work is not in progress yet. </p>
+<p>So the proposed solution for all other platforms than .NET would be to raise PropertyChanged events on IsValid and others when user interface is not Windows Forms. You could create this yourself by overriding </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PropertyHasChanged(<span style="color:#2baaaf;">IPropertyInfo</span>&nbsp;property)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.PropertyHasChanged(property);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(<span style="color:#a31515;">&quot;IsDirty&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnChildChanged(<span style="color:#2b91af;">ChildChangedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnChildChanged(e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnPropertyChanged(<span style="color:#a31515;">&quot;IsDirty&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Tuesday, May 22, 2012</h2><p>Unfortunately I&#39;m developing for Windows Forms.</p>
+<p>So what do you propose for Windows Forms?</p>
+<p>&nbsp;</p>
+<p>Thank You</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, May 22, 2012</h2><p>I&#39;d prefer to hook into the PropertyChanged and ChildChanged events on the &quot;root&quot; object in the Form and update the title based on &lt;root&gt;.IsDirty.</p>
+<p>Remember to unhook before Save and rehook to the new object after Save. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Miroslav Galajda replied on Tuesday, May 22, 2012</h2><p>OK, thank you.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

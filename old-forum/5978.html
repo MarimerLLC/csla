@@ -1,0 +1,559 @@
+<html><header><title>OT:  Reporting Services</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT:  Reporting Services</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5978.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Thursday, December 11, 2008</h2>Hi,<br><br>I was wondering if anyone here is using reporting services.&nbsp;&nbsp;&nbsp; I'm looking to use it to do everything from invoices to actual reports.<br><br>Currently, my BO assembly has rdlc as embedded resources, and these accept BOs as data sources.&nbsp; The problem is that every time a new report is needed, I have to add it to the assembly and do a release.&nbsp; This isn't really ideal, and I also end up building BOs which are more like DTOs that BOs.<br><br>What I like about it is I have a (hard coded) list of available reports.. so that I can provide multiple invoice forms, for example, and the selection is done all within my application.&nbsp; Reports show in the ReportViewer control, which I've put into it's own window.&nbsp; I'd like to keep this part.. I dont' want to open a browser to show reports.<br><br>So... anyone gone down this route?&nbsp; Any tips for getting up to speed?&nbsp; I have MS Sql Server 2005 Reporting Services from SAMS, and it gets me half way there (setting up Data Views, etc.) but doesn't include much on getting SSRS more integrated in my application.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, December 11, 2008</h2><P>Andy,</P>
+<P>I've had horrible experiences with the one client I have that uses ReportingServices and would shy away from it if I could.&nbsp; However part of the issues were a not great dev/test infrastructure, little support, a few select personnel, and using it for the wrong thing.&nbsp; I inherited a project that was late and overdue and had 'reports' that turned out to be both formatted (like an invoice) and others that were really just 100k row data dumps.&nbsp; </P>
+<P>It was miserable as the real requirement was a simple CSV file dump from the database for the big extracts, not a webpage.</P>
+<P>However some of the improvements we made were quite useful.&nbsp; Once we were able to separate the data from the report things went well in terms of maintenance.&nbsp; Of course we were using sprocs and not businessObjects to join the data (big difference between reportingServices vs. the embedded VS report Viewer.).&nbsp; To filter out the business layer (done in PL/SQL for my app) I essentially did all my logic processing and then dumped the data back in to a simple flat temp table with a run_id column.</P>
+<P>The reports were then written based on simple select * from tmpTableABC where run_id = 123.&nbsp; They were encapsulated in sProcs but they were simple nontheless.&nbsp; It worked well as we had 1 admin for the server, 1 developer for the web stuff, a different person for the reports, and me. So once I was able to encapsulate the data it worked well.&nbsp; The reports are then maintained outside the app and the database.&nbsp; Big changes (new column) could be done by adding a new column to the temp table and then the reporting guy could tweak the RDL file.</P>
+<P>When I needed to show the report I pulled back the rdl filename from the database lookup table and we showed it on screen with the corresponding rpt_id.&nbsp; Worked really slick and we actually created a secondary reporting portal to manage long running reports and maintaining a reporting queue.</P>
+<P>Ironically I'm now in the same position as you are on my current project.&nbsp; My current reports are in PowerBuilder libraries so I have to recreate them.&nbsp; I have purchased DataDynamics new Data Reports product (not their long standing Report tool) which is backwards compatible with RDL files.&nbsp; I had assumed I would either distribute all the report files as standalone file to be read in on demand or create a single reporting assembly that I would distribute independently...</P>
+<P>Could you save some headaches by not mainting all the reporting file as a group vs. as an embeded resource in each BO?</P>
+<P>I would be very keen to know what paths you go along...&nbsp; </P>
+<P>Thanks</P>
+<P>jack</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 11, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>I've had horrible experiences with the one client I have that uses ReportingServices and would shy away from it if I could.&nbsp; However part of the issues were a not great dev/test infrastructure, little support, a few select personnel, and using it for the wrong thing.&nbsp; I inherited a project that was late and overdue and had 'reports' that turned out to be both formatted (like an invoice) and others that were really just 100k row data dumps.&nbsp; 
+<p>It was miserable as the real requirement was a simple CSV file dump from the database for the big extracts, not a webpage.</div></BLOCKQUOTE></p><p>Well, was there something with SSRS that you didn't like, or was this a case of the wrong tool for the job?&nbsp; For a CVS dump, I would think SSIS would be the right path.<br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>However some of the improvements we made were quite useful.&nbsp; Once we were able to separate the data from the report things went well in terms of maintenance.&nbsp; Of course we were using sprocs and not businessObjects to join the data (big difference between reportingServices vs. the embedded VS report Viewer.).&nbsp; To filter out the business layer (done in PL/SQL for my app) I essentially did all my logic processing and then dumped the data back in to a simple flat temp table with a run_id column.</p>
+<p>The reports were then written based on simple select * from tmpTableABC where run_id = 123.&nbsp; They were encapsulated in sProcs but they were simple nontheless.&nbsp; It worked well as we had 1 admin for the server, 1 developer for the web stuff, a different person for the reports, and me. So once I was able to encapsulate the data it worked well.&nbsp; The reports are then maintained outside the app and the database.&nbsp; Big changes (new column) could be done by adding a new column to the temp table and then the reporting guy could tweak the RDL file.</div></BLOCKQUOTE></p><p>Ok, that's where I'd like to end up.. changing the reports outside of the application.&nbsp; If I went down the SSRS route, I'd use BIDS to create Data Sources, Data Source Views, etc.&nbsp; <br></p>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>When I needed to show the report I pulled back the rdl filename from the database lookup table and we showed it on screen with the corresponding rpt_id.&nbsp; Worked really slick and we actually created a secondary reporting portal to manage long running reports and maintaining a reporting queue.</div></BLOCKQUOTE></p><p>I don't think I'll have any long running reports, fortunately... but this again sounds like where I'd like to go.&nbsp; <br></p><p>So do you basically just set properties on the ReportViewer.ServerReport object?&nbsp; Or did you load reports in another manner?<br></p><p></p><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>Ironically I'm now in the same position as you are on my current project.&nbsp; My current reports are in PowerBuilder libraries so I have to recreate them.&nbsp; I have purchased DataDynamics new Data Reports product (not their long standing Report tool) which is backwards compatible with RDL files.&nbsp; I had assumed I would either distribute all the report files as standalone file to be read in on demand or create a single reporting assembly that I would distribute independently...</p>
+<p>Could you save some headaches by not maintaining all the reporting file as a group vs. as an embedded resource in each BO?</p>
+<p>I would be very keen to know what paths you go along... </div></BLOCKQUOTE></p><p>Well, my main problem is that in order to update or create reports, I need to deploy a whole new version of my application.&nbsp; That is a pain, as it seems like a fairly silly reason to do a deploy.&nbsp; I'm also sick of writing BOs which basically just pull the data back and shape it to match what the report needs.&nbsp; It's almost all boiler plate code, but I have to maintain it.&nbsp; (Don't have any code gen).&nbsp; <br></p><p>I would defiantly separate all reporting into one assembly though.&nbsp; Currently the reports and report BOs live in the same assembly as the related business objects.&nbsp; Also, my BOs that can be printed have a GetReport method which accepts a LocalReport object... and it actually coordinates with the reporting BOs to properly setup the LocalReport object.&nbsp; I was never too crazy about that solution though, as technically the BO is now tied to a specific reporting setup, which is itself a UI layer (Microsoft.Reporting.WinForms).&nbsp; <br></p><p>The other problem is that without SSRS, I have no way to enable end users to do their own reporting.&nbsp; That's something I'd like to allow them to do as well.&nbsp; Also, I'd prefer to use SSRS over buying something else... really because we already own it, and I'd like to get the most value out of Sql server as I can.</p><p>Thanks!</p><p>Andy<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, December 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>We were using ReportingServices 2005 but out source data was an
+Oracle database so SSIS woldn&#8217;t have helped.&nbsp; The worst problems
+were around deploying and testing. <o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Our dev server was virtual and I spend huge amounts of time
+waiting for navigation through the hierarchy.&nbsp; I would finally get the
+report I needed, the parms would take forever to load, and then the report wasn&#8217;t
+the lastest version.&nbsp; There was some caching issues that the developer
+would deploy but it wouldn&#8217;t show up for a while.&nbsp; It also got worse
+if people ran reports and they crapped out then we had no idea where the issues
+were.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>The options for &#8216;params&#8217; are lousy, you have no
+control over the basic layout out of the out of the box controls (dropdown
+lists).<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3)<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>We had issues everytime we deployed we lost the settings on default
+parameter values, required/null setting etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have no experience with BIDS or is capabilities.&nbsp; I had
+to google just to find out what it meant </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>To load our reports we had a couple of ASP pages with the
+embedded control.&nbsp; I haven&#8217;t actually seen the control but I just
+pass the path to the RDL file and it loads it up.&nbsp; I can confirm or get a
+code snippit if you like next time I&#8217;m in that office (Monday).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>From your last statement I would wonder why you are not doing
+all that logic in a StoredProc?&nbsp; I know TSQL/SQLServer isn&#8217;t as robust
+as Oracle but I wouldn&#8217;t want to do anything in .net that I could do in
+the database </span><span>J</span><span>.&nbsp; Of course I&#8217;m a data-centric guy though with my
+expertise more in the database side.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As for users doing reports &#8211; the DataDynamic tools seem to
+have some end-user stuff &#8211; I think ActiveReports does.&nbsp; Its nice to
+say &#8216;use the inhouse&#8217; tool, which was exactly why I was stuck with
+it, but sometimes its best to just get something quick and cheap.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 11:02 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Reporting Services<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I've had horrible experiences with the one client I have
+that uses ReportingServices and would shy away from it if I could.&nbsp;
+However part of the issues were a not great dev/test infrastructure, little
+support, a few select personnel, and using it for the wrong thing.&nbsp; I
+inherited a project that was late and overdue and had 'reports' that turned out
+to be both formatted (like an invoice) and others that were really just 100k
+row data dumps.&nbsp; <o:p></o:p></p>
+
+<p>It was miserable as the real requirement was a simple CSV file dump from the
+database for the big extracts, not a webpage.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Well, was there something with SSRS that you didn't like, or was this a case
+of the wrong tool for the job?&nbsp; For a CVS dump, I would think SSIS would
+be the right path.<o:p></o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1026" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>However some of the improvements we made were quite
+useful.&nbsp; Once we were able to separate the data from the report things
+went well in terms of maintenance.&nbsp; Of course we were using sprocs and not
+businessObjects to join the data (big difference between reportingServices vs.
+the embedded VS report Viewer.).&nbsp; To filter out the business layer (done
+in PL/SQL for my app) I essentially did all my logic processing and then dumped
+the data back in to a simple flat temp table with a run_id column.<o:p></o:p></p>
+
+<p>The reports were then written based on simple select * from tmpTableABC
+where run_id = 123.&nbsp; They were encapsulated in sProcs but they were simple
+nontheless.&nbsp; It worked well as we had 1 admin for the server, 1 developer
+for the web stuff, a different person for the reports, and me. So once I was
+able to encapsulate the data it worked well.&nbsp; The reports are then
+maintained outside the app and the database.&nbsp; Big changes (new column)
+could be done by adding a new column to the temp table and then the reporting
+guy could tweak the RDL file.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Ok, that's where I'd like to end up.. changing the reports outside of the
+application.&nbsp; If I went down the SSRS route, I'd use BIDS to create Data
+Sources, Data Source Views, etc.&nbsp; <o:p></o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1027" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>When I needed to show the report I pulled back the rdl
+filename from the database lookup table and we showed it on screen with the
+corresponding rpt_id.&nbsp; Worked really slick and we actually created a
+secondary reporting portal to manage long running reports and maintaining a
+reporting queue.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>I don't think I'll have any long running reports, fortunately... but this
+again sounds like where I'd like to go.&nbsp; <o:p></o:p></p>
+
+<p>So do you basically just set properties on the ReportViewer.ServerReport
+object?&nbsp; Or did you load reports in another manner?<o:p></o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1028" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Ironically I'm now in the same position as you are on my
+current project.&nbsp; My current reports are in PowerBuilder libraries so I
+have to recreate them.&nbsp; I have purchased DataDynamics new Data Reports
+product (not their long standing Report tool) which is backwards compatible
+with RDL files.&nbsp; I had assumed I would either distribute all the report
+files as standalone file to be read in on demand or create a single reporting
+assembly that I would distribute independently...<o:p></o:p></p>
+
+<p>Could you save some headaches by not maintaining all the reporting file as a
+group vs. as an embedded resource in each BO?<o:p></o:p></p>
+
+<p>I would be very keen to know what paths you go along... <o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Well, my main problem is that in order to update or create reports, I need
+to deploy a whole new version of my application.&nbsp; That is a pain, as it
+seems like a fairly silly reason to do a deploy.&nbsp; I'm also sick of writing
+BOs which basically just pull the data back and shape it to match what the
+report needs.&nbsp; It's almost all boiler plate code, but I have to maintain
+it.&nbsp; (Don't have any code gen).&nbsp;&nbsp;<o:p></o:p></p>
+
+<p>The other problem is that without SSRS, I have no way to enable end users to
+do their own reporting.&nbsp; That's something I'd like to allow them to do as
+well.&nbsp; Also, I'd prefer to use SSRS over buying something else... really
+because we already own it, and I'd like to get the most value out of Sql server
+as I can.<o:p></o:p></p>
+
+<p>Thanks!<o:p></o:p></p>
+
+<p>Andy<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 11, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>We were using ReportingServices 2005 but out source data was an
+Oracle database so SSIS woldn’t have helped.&nbsp; The worst problems
+were around deploying and testing. </div></BLOCKQUOTE><br><br>Ahh, makes sense.
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>Our dev server was virtual and I spend huge amounts of time
+waiting for navigation through the hierarchy. I would finally get the
+report I needed, the parms would take forever to load, and then the report wasn’t
+the lastest version.&nbsp; There was some caching issues that the developer
+would deploy but it wouldn’t show up for a while.  It also got worse
+if people ran reports and they crapped out then we had no idea where the issues
+were.</div></BLOCKQUOTE>
+
+What do you mean by navigate through the hierarchy? Also, were you letting the report prompt for the parameters? Can you still specify them problematically? That's what I do with local reports.. specify everything the report needs to run up front, then let it process. Does the reportviewer VS control cache the reports locally? Or was it a web browser?<br>
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>The options for ‘params’ are lousy, you have no
+control over the basic layout out of the out of the box controls (dropdown
+lists).</div></BLOCKQUOTE>
+
+Drop down lists?  Didn't see them.  :-)
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>We had issues everytime we deployed we lost the settings on default
+parameter values, required/null setting etc.</div></BLOCKQUOTE>
+
+Ouch.. isn't that stored in the rdl?
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>I have no experience with BIDS or is capabilities. I had
+to google just to find out what it meant J</div></BLOCKQUOTE>
+
+Ha.. it's just a VS shell you get with Sql Server.
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>To load our reports we had a couple of ASP pages with the
+embedded control. I haven’t actually seen the control but I just
+pass the path to the RDL file and it loads it up. I can confirm or get a
+code snippit if you like next time I’m in that office (Monday).</div></BLOCKQUOTE>
+
+Ahh.. sounds like the WebForms ReportViewer control.  I plan on sticking with the WinForms one.. maybe that will make things different.
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>From your last statement I would wonder why you are not doing
+all that logic in a StoredProc? I know TSQL/SQLServer isn’t as robust
+as Oracle but I wouldn’t want to do anything in .net that I could do in
+the database J. Of course I’m a data-centric guy though with my
+expertise more in the database side.</div></BLOCKQUOTE>
+
+Well, inteperating the data I usually consider business code, and so it ends up in the business layer.  I was thinking of reports as another use case, and thus build Csla BOs around them.
+
+<BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div>As for users doing reports – the DataDynamic tools seem to
+have some end-user stuff – I think ActiveReports does. Its nice to
+say ‘use the inhouse’ tool, which was exactly why I was stuck with
+it, but sometimes its best to just get something quick and cheap.</div></BLOCKQUOTE>
+
+Well, either way will require me coming up to speed on the technology.. moreso with DD, since I've already done rdlc's, which are fairly similar, just run on the client.  And $0 is always going to beat out &gt; $0. :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>strick9 replied on Thursday, December 11, 2008</h2>Interesting that you should bring this up today.&nbsp; I just started down this same path to establish a proof of concept pattern for a client who has three more weeks of my time.&nbsp; All current reports are RDLC files and bound to BO's.&nbsp; <br><br>It looks like the short path we are going to take to SSRS reporting is to not use BO's and later create "Custom data processing extensions can be created to support other data source types" (http://msdn.microsoft.com/en-us/library/ms345248.aspx).<br><br>I'll be interested in hearing if you keep your BO/DTO objects for binding.<br><br>Thanks,<br>Brian<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 11, 2008</h2>I haven't looked that much into SSRS.&nbsp; I'd like to move away from my current approach.<br><br>What's bringing this to light is that I'm trying to keep my Wpf application clean of WinForms... and so I have no report viewer.&nbsp; I'm getting around this by embedding the reportviewer into a window in my common Wpf library, so the rest of Wpf needn't worry about it.. but this is posing other problems, for example the LocalReport.ReportEmbeddedResource (or whatever) needs to be set in the same assembly in which the report lives.. which is exactly where I'm trying to prevent ReportViewer code from appearing!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, December 11, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Why not spawn an ASP page with the reports (WPF has a IE pluging
+no)? &#8211; or setup a service to take the report request &#8211; run the
+report, PDF it, and present/email it to the users.&nbsp; I&#8217;ve done that
+strategy too.&nbsp; ActivePDF has a great PDF Toolkit that you can intercept
+any print function and do PDF wonders with it before sending it back to the
+user.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SSRS can spawn a PDF as well &#8211; I&#8217;m not sure well
+that can be automated though.&nbsp; I&#8217;ve heard 2008 is much better than
+2005 although my web guy&#8217;s favourite line is &#8211; it&#8217;s a bug but
+fixed in the new version </span><span>J</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m starting to get a bit worried about what I&#8217;m
+going to do </span><span>J</span><span>.&nbsp; I&#8217;m also ditching winforms for Silverlight/WPF and
+hoping to bypass as much ASP as possible.&nbsp; Granted the reportViewer I just
+bought with DataDynamics is winforms/ASP so I&#8217;m going to have a hybrid
+solution as well unless I do it all under the covers and just return PDF&#8217;s
+or excel dumps.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 11:08 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Reporting Services<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I haven't looked that much into SSRS.&nbsp; I'd like to move
+away from my current approach.<br>
+<br>
+What's bringing this to light is that I'm trying to keep my Wpf application
+clean of WinForms... and so I have no report viewer.&nbsp; I'm getting around
+this by embedding the reportviewer into a window in my common Wpf library, so
+the rest of Wpf needn't worry about it.. but this is posing other problems, for
+example the LocalReport.ReportEmbeddedResource (or whatever) needs to be set in
+the same assembly in which the report lives.. which is exactly where I'm trying
+to prevent ReportViewer code from appearing!<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 11, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div><span>Why not spawn an ASP page with the reports (WPF has a IE pluging
+no)? – or setup a service to take the report request – run the
+report, PDF it, and present/email it to the users.&nbsp; I’ve done that
+strategy too.&nbsp; ActivePDF has a great PDF Toolkit that you can intercept
+any print function and do PDF wonders with it before sending it back to the
+user.</span></div></BLOCKQUOTE><br><br>I could pop IE into a Wpf window, but I'd like to keep as much rich client functionality as I can.&nbsp; Using the existing winform control would be closer to that then trying to embed a web page.&nbsp; Plus, the Winform control has an export to PDF built in as well... and its what my users are already used to.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Jack:</strong></div><div><span>I’m starting to get a bit worried about what I’m
+going to do </span><span>J</span><span>.&nbsp; I’m also ditching winforms for Silverlight/WPF and
+hoping to bypass as much ASP as possible.&nbsp; Granted the reportViewer I just
+bought with DataDynamics is winforms/ASP so I’m going to have a hybrid
+solution as well unless I do it all under the covers and just return PDF’s
+or excel dumps.&nbsp; </span><span></div></BLOCKQUOTE><br><br>Ha... reports are the worst part of building this application.&nbsp; It's tedious and boring.&nbsp; I also feel like it's time to re-think what I'm currently doing for reports.&nbsp; I've embedded report viewer too much into the BOs, and I think moving them out of assemblies will allow me to create new reports more easily in the future.&nbsp; One assembly is 2.57 MB... and 2.2 of that is the RDLCs embedded inside!&nbsp; Some of those files have embedded images, which is why they are so large.<br><br>Also, I'm going to have to give users a way to build at least limited reports in the future... I wouldn't mind creating a new Data Source view to bring together what they need... but writing the report is something they should be able to handle.&nbsp; I have enough as it is.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, December 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The webform control that links with SSRS has all the export
+capabilities.  If you just had the control as 100% of the IE window the users
+would never even know.  I don’t know if there are more/less features in the web
+vs. win control.  But if it’s a static report who cares.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 12:59 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OT: Reporting Services<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Why not spawn an ASP page with the reports (WPF has a IE
+pluging no)? â€“ or setup a service to take the report request â€“ run the
+report, PDF it, and present/email it to the users.&nbsp; Iâ€™ve done that
+strategy too.&nbsp; ActivePDF has a great PDF Toolkit that you can intercept
+any print function and do PDF wonders with it before sending it back to the
+user.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I could pop IE into a Wpf window, but I'd like to keep as much rich client
+functionality as I can.&nbsp; Using the existing winform control would be
+closer to that then trying to embed a web page.&nbsp; Plus, the Winform control
+has an export to PDF built in as well... and its what my users are already used
+to.<o:p></o:p></p>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1026" src="/Themes/basicblue/images/icon-quote.gif"><strong>Jack:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Iâ€™m starting to get a bit worried about what Iâ€™m going
+to do J.&nbsp; Iâ€™m also ditching winforms for Silverlight/WPF and hoping to
+bypass as much ASP as possible.&nbsp; Granted the reportViewer I just bought
+with DataDynamics is winforms/ASP so Iâ€™m going to have a hybrid solution as
+well unless I do it all under the covers and just return PDFâ€™s or excel
+dumps.&nbsp; <o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+Ha... reports are the worst part of building this application.&nbsp; It's
+tedious and boring.&nbsp; I also feel like it's time to re-think what I'm
+currently doing for reports.&nbsp; I've embedded report viewer too much into
+the BOs, and I think moving them out of assemblies will allow me to create new
+reports more easily in the future.&nbsp; One assembly is 2.57 MB... and 2.2 of
+that is the RDLCs embedded inside!&nbsp; Some of those files have embedded
+images, which is why they are so large.<br>
+<br>
+Also, I'm going to have to give users a way to build at least limited reports
+in the future... I wouldn't mind creating a new Data Source view to bring
+together what they need... but writing the report is something they should be
+able to handle.&nbsp; I have enough as it is.&nbsp; <img id="_x0000_i1027" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, December 11, 2008</h2><P>You might consider a third party package like Crystal Reports. This would&nbsp;give your&nbsp;clients&nbsp;the ability customize your reports and, depending on what your are supporting, add additional reports to your application. </P>
+<P>There may be other packages that are better, but this is the one I am familiar with. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 11, 2008</h2>I used crystal in the late 90s.&nbsp; Actually creating the RDLC was fairly similar, at least from what I remember.&nbsp; I'm checking out this link currently, since I suspect they are competing products:<br>http://www.crystalreportsbook.com/SSRSandCR_ExecSummary.asp<br><br>Of course, one I already have, and one will cost more... can't ignore that either.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>It looks like that link compares Crystal 11 with SSRS 1 (incl. with Sql Server 2000).. so I'm trying to find a more up to date one.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, December 11, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Something else to think about is using WebServices as your
+datasource.&nbsp; You could still use your BO to do all the datamanipulation and
+then just dump the data out.&nbsp; I&#8217;ve never used it but that might be a way to
+go.&nbsp; Then you just deploy your RDL&#8217;s to the reporting server but get your data
+from the webService.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m sure 2008 version has lots of fun bells &amp; whistles that
+you could piggyback on but you would definitely separate your logic &amp;
+presentation layers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can even then setup standard reports that users can get
+directly from the repository vs. using your app but they share the same source.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, December 11, 2008 1:39 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Reporting Services<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I used crystal in the late 90s.&nbsp; Actually creating the
+RDLC was fairly similar, at least from what I remember.&nbsp; I'm checking out
+this link currently, since I suspect they are competing products:<br>
+http://www.crystalreportsbook.com/SSRSandCR_ExecSummary.asp<br>
+<br>
+Of course, one I already have, and one will cost more... can't ignore that
+either.&nbsp; <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 11, 2008</h2>Do you happen to know if that's in the 2005 version as well?&nbsp; I can't see us upgrading to 2008 in the near future.&nbsp; If I can't do the web service, perhaps the Data source views can help keep things separate, or there are ways to plug in assemblies to the reporting server..&nbsp; maybe that's an option?<br><br>Too much to learn, never enough time...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, December 11, 2008</h2><P>It was new to 2005 -&gt; <A href="http://technet.microsoft.com/en-us/library/aa964129.aspx">http://technet.microsoft.com/en-us/library/aa964129.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, December 12, 2008</h2>Cool, thanks!<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,454 @@
+<html><header><title>Silverlight's Isolated Storage with ReadOnlyListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight's Isolated Storage with ReadOnlyListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6456.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Wednesday, February 18, 2009</h2><P><FONT face=Arial size=2>I wanted to use IsolatedStorage to manage cached "coding" type values. I store a version number as well as the readonlylist - I ask the server what the current version # of the coding is, and if it's valid, I use what's in IsolatedStorage. If not, I initiate the fetch to refresh isolated storage with the new version of this coding. </FONT></P>
+<P><FONT face=Arial size=2>This coding is a list of 24 items, each of which have on the order of 15 categories and potentially subcategories, but there are very few subcategories (15 perhaps in total). The items are nothing special - just a code &amp; description. </FONT></P>
+<P><FONT face=Arial size=2>ReadOnlyClient objects have a collection of ReadOnlyActivity. ReadOnlyActivity have a collection of ReadOnlySubActivity. </FONT></P>
+<P><FONT face=Arial size=2>In code, it does not complain when I set the isolated storage values. In fact, I can look in the debugger and my collection is fully populated within the IsolatedStorage object. </FONT></P>
+<P><FONT face=Arial size=2>However, when I close my browser and try to hop back in, my two&nbsp;isolated storage setting values&nbsp;(the version number and the collection) are not to be found - there is nothing in isolated storage. </FONT></P>
+<P><FONT face=Arial size=2>If I look at the actual IsolatedStorageSetting file, my version number is in the file:</FONT></P>
+<P><FONT face=Arial size=2>&lt;KeyValueOfstringanyType&gt;&lt;Key&gt;CategoriesVersionNumberTEST&lt;/Key&gt;&lt;Value xmlns:d3p1="</FONT><A href="http://www.w3.org/2001/XMLSchema"><FONT face=Arial size=2>http://www.w3.org/2001/XMLSchema</FONT></A><FONT face=Arial size=2>" i:type="d3p1:int"&gt;3&lt;/Value&gt;&lt;/KeyValueOfstringanyType&gt;</FONT></P>
+<P><FONT face=Arial size=2>However, my collection is represented by a bunch of empty nodes. </FONT></P>
+<P><FONT face=Arial size=2>&lt;d3p1:ReadOnlyClient&gt; &lt;d3p1:Activities&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;/d3p1:SubActivities&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;/d3p1:SubActivities&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;/d3p1:SubActivities&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;/d3p1:SubActivities&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;d3p1:ReadOnlySubActivity /&gt; &lt;/d3p1:SubActivities&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;d3p1:ReadOnlyActivity&gt; &lt;d3p1:SubActivities /&gt; &lt;/d3p1:ReadOnlyActivity&gt; &lt;/d3p1:Activities&gt; &lt;/d3p1:ReadOnlyClient&gt; </FONT></P>
+<P><FONT face=Arial size=2>What simple thing am I missing? </FONT></P>
+<P><FONT size=1></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, February 18, 2009</h2>It looks like MobileFormatter is what I need to use, I'll replace this with a solution just so there's an answer to my question once I get it working. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 18, 2009</h2><P>Just be careful about size - the MobileFormatter uses the DCS, and that can create pretty large XML blobs - which is why the Silverlight data portal has hooks where you can plug in compression.</P>
+<P>You might need/want to use compression for your cached data too.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, February 18, 2009</h2><P><FONT face=Arial color=#000000 size=2>You are not kidding - I was all prepared to happily post how easy it was...</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>To store it, </FONT></P>
+<P><FONT face=Arial color=#000000 size=2>settings[myAppSettingsKey] = MobileFormatter.Serialize(myCslaObject);</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>To retrieve it,</FONT></P><FONT size=1>
+<P><FONT face=Arial color=#000000 size=2>myCslaObject = MobileFormatter.Deserialize((byte[])settings[myAppSettingsKey]) as MyBusinessObjectType;</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>And saw my byte array to be 2 megabytes(!!!!). Obviously, I had to shrink down my result set to verify that I could use the MobileFormatter and get back my value. </FONT></P>
+<P><FONT face=Arial color=#000000 size=2>When I shrunk down my result set to contain one client with 15 activities (2 total subactivities) the total number of characters in that object were less than 500. But the byte array was 71,000. Ouch. </FONT></P>
+<P><FONT face=Arial color=#000000 size=2>Is my 400 item (code + description)&nbsp;hierarchical list really causing 2MB to come down through regular DataPortal activity as well? All the more reason to get this caching to work, because that's brutal. </FONT></P>
+<P><FONT face=Arial size=2>Using MobileFormatter is just not a good option, I don't think, for this situation. But is it the case that my fetch is bringing down 2MB? </FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT color=#2b91af size=2></FONT>&nbsp;</P>
+<P><FONT color=#2b91af size=3></FONT>&nbsp;</P>
+<P><FONT color=#2b91af size=3></FONT><FONT size=1></FONT>&nbsp;</P>
+<P><FONT size=1>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, February 18, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is not really mobile formatter issue, just .NET serializer.&nbsp;
+You really should use compression for any SL app IMHO.&nbsp; Once you have
+that, you can actually use the same compression for isolated storage as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 18, 2009 5:22 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Silverlight's Isolated Storage with
+ReadOnlyListBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>You
+are not kidding - I was all prepared to happily post how easy it was...</span><o:p></o:p></p>
+
+<p><span>To
+store it, </span><o:p></o:p></p>
+
+<p><span>settings[myAppSettingsKey]
+= MobileFormatter.Serialize(myCslaObject);</span><o:p></o:p></p>
+
+<p><span>To
+retrieve it,</span><o:p></o:p></p>
+
+<p><span>myCslaObject
+= MobileFormatter.Deserialize((byte[])settings[myAppSettingsKey]) as
+MyBusinessObjectType;</span><span><o:p></o:p></span></p>
+
+<p><span>And
+saw my byte array to be 2 megabytes(!!!!). Obviously, I had to shrink down my
+result set to verify that I could use the MobileFormatter and get back my
+value. </span><span><o:p></o:p></span></p>
+
+<p><span>When
+I shrunk down my result set to contain one client with 15 activities (2 total
+subactivities) the total number of characters in that object were less than
+500. But the byte array was 71,000. Ouch. </span><span><o:p></o:p></span></p>
+
+<p><span>Is
+my 400 item (code + description)&nbsp;hierarchical list really causing 2MB to
+come down through regular DataPortal activity as well? All the more reason to
+get this caching to work, because that's brutal. </span><span><o:p></o:p></span></p>
+
+<p><span>Using MobileFormatter
+is just not a good option, I don't think, for this situation. But is it the
+case that my fetch is bringing down 2MB? </span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 18, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, your fetch is bringing back 2 MB.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Writing a serializer is non-trivial &#8211; just to get it
+working. At some point I&#8217;d like to do some further optimization &#8211;
+but I must say that I&#8217;m more hoping that Microsoft just creates one for
+Silverlight&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the meantime, compression is the answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Really though, if you are using WCF in .NET (ignore Silvleright)
+you should explore compression as well. The NetDataContractSerializer is more
+efficient than the MobileFormatter, but still creates pretty darn big XML blobs&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 19, 2009</h2><P>Thanks both for your answers. </P>
+<P>I assume RemotePortalWithCompressedProxy is the example I want to look at, just judging from the project name. I'll have to take a look at that when I get home from work. </P>
+<P>How effective is the compression? What scale of reduction tends to occur? Even 1MB or even 0.5MB seems expensive to me when you consider the amount of data that is truly being exchanged in my case... </P>
+<P>Reduction in this situation and that in a grander scale is very important if one wants to cache lots of things that don't change regularly&nbsp;into IsolatedStorage. If my situation, which is really a proof-in-concept for Silverlight w/ CSLA for others here, my one list compressed at 50% would take up the entire&nbsp;default allocation of IsolatedStorage. (This list is something that is lucky to change once a month - so simply doing a quick ping to the server to get the active version number and comparing it to the one in IsolatedStorage should be very effective). </P>
+<P>Perhaps for IsolatedStorage and ReadOnlyObjects in certain circumstances, a JSON based representation of the object with a similar factory method might be the route to go -- when you think about the minimal nature of state for read only objects in the CSLA Framework and are dealing with managed properties entirely, I think it makes it completely reasonable that my storing into IsolatedStorage could be more along the lines of the size of the meaningful data. I was thinking that it would not be particularly hard to write such a routine. </P>
+<P>Any thoughts on that? </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, February 19, 2009</h2><P><FONT face=Tahoma size=2>The complexity of a serializer is not in developing the serialized representation - it's managing an object graph of arbitrary complexity and depth.&nbsp; Your situation may be relatively simple, but others might want to serialize a more complicated graph (e.g. with circular references).&nbsp; Heck, your graph&nbsp;probably has circular references, since CSLA objects provide a property to access a child's parent.&nbsp; While I'm pretty sure it's marked as non-serializable, a serializer can't bank on that.</FONT></P>
+<P><FONT face=Tahoma size=2>Having said that, building your own custom serializer to manage your particular needs would probably not be particularly hard, depending on the level of "genericness" you want to build in.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 19, 2009</h2><P>I definitely contemplated that circular references is one case where it gets more complex. But I will say that the vast majority of objects that I deal with tend to not have circular references. Could the algorithm be built to handle such scenarios? Obviously that would take more effort but wouldn't be an immediate focus. </P>
+<P>The nature of a child in CSLA having a parent is not a big deal - when I talk about a factory method to take the JSON representation of the object from IsolatedStorage, I'm talking about considering it as data one would get from a fetch - just in a different format.&nbsp;So you'd simply build up the CSLA business object in the exact same manner that you would with the fetch. </P>
+<P>I'm also only planning on doing this with ReadOnly objects. Other than authorization rules, I can't really think of any meaningful state off the top of my head when it comes to read only lists. So I&nbsp;really don't think - if one considers a scenario where one is using all managed properties, that this would actually be that difficult. Maybe I'm overlooking something, but I don't think so.</P>
+<P>As far as the DataPortal performance, I'm going to try that compression and how that works. I have not looked into what it takes to do ones own serialization and am hoping that compression has a meaningful effect. </P>
+<P>I'm just surprised when I saw the size that was generated because I remember doing a CSLA WinForms app in my earliest days with CSLA (I've been in Web mostly since) and someone from CT (I'm in MN)&nbsp;was pumping down 1000s of rows like this with better performance using WinForms. So when I fired up my silverlight application from a remote location and the thing hung while trying to populate and cache a 300 item coding list (code + description) I was really disappointed. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Building a serializer isn&#8217;t terribly hard, even with
+circular references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Building a <i>deserializer</i> is really quite difficult even
+without circular references, and it is non-trivial when circular references are
+involved. Which is why the MobileFormatter doesn&#8217;t support circular
+references.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are willing to not preserve the graph shape it is a <i>lot</i>
+simpler &#8211; note that XmlSerializer and DataContractSerializer don&#8217;t
+preserve the graph shape </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve been down this road a couple times, once
+unsuccessfully and once (MobileFormatter) successfully. It isn&#8217;t for the
+faint of heart, trust me.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Background on MobileFormatter:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx">http://www.lhotka.net/weblog/CSLALightObjectSerialization.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/weblog/CSLALightIMobileObjectDiagram.aspx">http://www.lhotka.net/weblog/CSLALightIMobileObjectDiagram.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/weblog/CSLALightSerializationImplementation.aspx">http://www.lhotka.net/weblog/CSLALightSerializationImplementation.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are three reasons MF generates such large data. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One is that it serializes the object graph &#8211; including type
+names, broken rules and other metadata &#8211; just like the BinaryFormatter or
+NDCS. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Another is that it doesn&#8217;t de-dup the data, which is the
+primary optimization you can make with an XML-based serializer. If you look at
+the stream, the same type names, data values and so forth may be repeated
+numerous times. If we added another level of indirection within the serialized
+data it would be possible to de-dup these values so they each appear once. That
+would complicate the process and incur more processing overhead, but would
+shrink the blob size. It would also result in a blob of XML that is virtually
+indecipherable by a human because it would be pointers to pointers to values.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Finally, it is XML. Ultimately we use the DataContractSerializer
+to do the actual serialization of an object graph to/from XML. The DCS isn&#8217;t
+bad, but XML is terrible. It may be good for interop, but XML is really a very
+bad technology for efficient data transfer or storage. Unfortunately the only
+other option right now is Json, and the Json serializer is slower than the XML
+serializer because Json is harder to parse. And it isn&#8217;t clear that Json
+would generate a radically smaller blob than XML does.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So another optimization would be to create a binary equivalent
+to the DCS &#8211; or even a text equivalent that used something more compact
+than XML. And as long as you kept the same constraints on the object graph as
+the DCS, writing such a serializer/deserializer wouldn&#8217;t be <i>terribly</i>
+hard to do. But I still have no real desire to write my own serializer at this
+level if I can avoid it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The upside to all this, is that XML is very compressible. It is
+just text after all &#8211; and it typically has a low level of &#8220;randomness&#8221;,
+which means that compression algorithms can really do a great job shrinking the
+blob.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have measured message sizes in Fiddler, and got over 90%
+compression in that project you mentioned.&nbsp; One specific case I recall had
+message shrinking from 8.5 MB to 400 K.&nbsp; On a side note, Isolated Storage is
+not something I use, and probably will never use actually.&nbsp; The issue that
+it is stored on a PC per user, so if you switch a PC or a user, you will lose
+that data.&nbsp; It has a limit as well, although the newest run time release
+(yesterday&#8217;s) supposedly fixes the issue with increasing the quotas, but still
+I think liability of using IS outweighs the benefits.&nbsp; Just my 2 cents
+though&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> skagen00
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 19, 2009 9:25 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Silverlight's Isolated Storage with
+ReadOnlyListBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks both for your answers. <o:p></o:p></p>
+
+<p>I assume RemotePortalWithCompressedProxy is the example I want to look at,
+just judging from the project name. I'll have to take a look at that when I get
+home from work. <o:p></o:p></p>
+
+<p>How effective is the compression? What scale of reduction tends to occur?
+Even 1MB or even 0.5MB seems expensive to me when you consider the amount of
+data that is truly being exchanged in my case... <o:p></o:p></p>
+
+<p>Reduction in this situation and that in a grander scale is very important if
+one wants to cache lots of things that don't change regularly&nbsp;into
+IsolatedStorage. If my situation, which is really a proof-in-concept for
+Silverlight w/ CSLA for others here, my one list compressed at 50% would take
+up the entire&nbsp;default allocation of IsolatedStorage. (This list is
+something that is lucky to change once a month - so simply doing a quick ping
+to the server to get the active version number and comparing it to the one in
+IsolatedStorage should be very effective). <o:p></o:p></p>
+
+<p>Perhaps for IsolatedStorage and ReadOnlyObjects in certain circumstances, a
+JSON based representation of the object with a similar factory method might be
+the route to go -- when you think about the minimal nature of state for read
+only objects in the CSLA Framework and are dealing with managed properties
+entirely, I think it makes it completely reasonable that my storing into
+IsolatedStorage could be more along the lines of the size of the meaningful
+data. I was thinking that it would not be particularly hard to write such a
+routine. <o:p></o:p></p>
+
+<p>Any thoughts on that? <o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 19, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I have measured message sizes in Fiddler, and got over 90% compression in that project you mentioned.&nbsp; One specific case I recall had message shrinking from 8.5 MB to 400 K.&nbsp; On a side note, Isolated Storage is not something I use, and probably will never use actually.&nbsp; The issue that it is stored on a PC per user, so if you switch a PC or a user, you will lose that data.&nbsp; It has a limit as well, although the newest run time release (yesterday’s) supposedly fixes the issue with increasing the quotas, but still I think liability of using IS outweighs the benefits.&nbsp; Just my 2 cents though…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><B><SPAN>Sergey Barskiy<o:p></o:p></SPAN></B></P>
+<P class=MsoNormal><B><I><SPAN>Principal Consultant<o:p></o:p></SPAN></I></B></P>
+<P class=MsoNormal><SPAN>office: 678.405.0687 | mobile:&nbsp;404.388.1899</SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><IMG id=Picture_x0020_1 height=26 alt=cid:_2_0648EA840648E85C001BBCB886257279 width=119><BR></SPAN><B><SPAN>Microsoft Worldwide Partner of the Year |</SPAN></B><SPAN> </SPAN><B><SPAN>Custom Development Solutions, Technical Innovation</SPAN></B><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>I definitely understand IsolatedStorage has limited use, but I think it definitely has its uses in certain scenarios. For instance, the application I'm doing as a proof in concept involves time entry. The clients, activities, and subactivities don't change but every month or two, but the application is used daily for a brief period of time by each staffperson. When currently the wait is 10 seconds or so if someone is not on-site to get the possible selections for their one time use each day, that's discouraging to using the application versus the legacy one. </P>
+<P class=MsoNormal>Now, compression may make a huge difference in my thinking that I want to pursue IsolatedStorage -- right now I'm trying to avoid the 10+ second delay in many cases. If it all of a sudden becomes 1-2 seconds with compression, then I probably have an entirely different perspective on this.</P>
+<P class=MsoNormal>OK... at this point I have to try the compression, I'll come back w/ my results. </P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 19, 2009</h2><P>Thanks everybody.</P>
+<P>I'm not far from having it work, I think. The compressed WCF service is getting hit but I'm getting an error -- I realize not too many people have played with this area yet but here it is. If there's anything obvious that sticks out, I'm interested to hear. I think this thread will likely be useful for others, as if I can get the compression working, that would be great.</P>
+<P>So within CompressedHost, I get to this line when handling "ConvertRequest". </P>
+<P>returnValue.ClientContext = CompressionUtility.Decompress(request.ClientContext);</P>
+<P>My client context is roughly 572 bytes. </P>
+<P>Upon this call in CompressionUtility.Decompress on the server side, it sets <BR>up the stream:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Stream s2 =<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new ICSharpCode.SharpZipLib.Zip.Compression.Streams.InflaterInputStream(ms);</P>
+<P>This s2 appears to not be constructed properly - length is 0 in the debugger. So when this is passed to ReadFullStream in the Compression utility, and this line hits:</P>
+<P><BR>&nbsp;int read = stream.Read(buffer, 0, buffer.Length);</P>
+<P>I get an exception: Header checksum illegal. </P>
+<P>Does anybody have a suggestion as to what might be causing this?&nbsp; <BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just guessing here, but you might need to set the Position of
+your memory stream to 0 first, otherwise it may be trying to read from the end
+of the stream and so would get 0 bytes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 19, 2009</h2><P><FONT face=Arial size=2>I discovered that my breakpoints in the CompressedProxy (as copied from the sample) were not getting hit, and noticed I had forgotten to change this in App.Xaml's code behind:</FONT></P>
+<P><FONT face=Arial size=2>Csla.<FONT color=#2b91af><FONT color=#2b91af>DataPortal</FONT></FONT>.ProxyTypeName = <FONT color=#0000ff><FONT color=#0000ff>typeof</FONT></FONT>(MyCompany.MyApplication.Business.Compression.CompressedProxy&lt;&gt;).AssemblyQualifiedName;</FONT></P>
+<P><FONT color=#008000><FONT face=Arial color=#008000 size=2>//Csla.DataPortal.ProxyTypeName = typeof(Csla.DataPortalClient.SynchronizedWcfProxy&lt;&gt;).AssemblyQualifiedName;</FONT></FONT></P>
+<P><FONT face=Arial size=2>After that, it worked. And did it! </FONT></P>
+<P><FONT face=Arial size=2>At this stage, I will not be using IsolatedStorage for what I was doing, and cannot underemphasize the importance for people to use the compression. I have only worked with one application now and maybe there is some scenario where you wouldn't want it (??), but I can't think of one. The difference in usability is quite improved now. </FONT></P>
+<P><FONT face=Arial size=2>I would have been satisfied, for the moment, with 90% reduction. I still think that's unacceptable (200K for &lt; 20K in meaningful data), but it would have been workable. </FONT></P>
+<P><FONT size=2><FONT face=Arial>Clearly, the type of the object matters. I suspect for record maintenance where you have very fat records, reduction won't be as good as I achieved. <STRONG><FONT color=#ff0000>My reduction was 98.33%!! My 2MB business object ended up being under 34K. </FONT></STRONG></FONT></FONT></P>
+<P><FONT face=Arial size=2>So I just want to really emphasize the compression channel. It was very easy to set up - I can't think of doing a project without the compression channel. </FONT></P>
+<P><FONT size=2><FONT face=Arial>Thanks!! <FONT color=#008000><FONT color=#008000></P></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

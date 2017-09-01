@@ -1,0 +1,19 @@
+<html><header><title>Deep Data - DTO for Editable Root Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deep Data - DTO for Editable Root Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3699.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd posted on Thursday, October 11, 2007</h2><P>The pattern for creating ReadOnlyLists and ReadOnlyInfo BO's is clearly documented in the Deep Data sample for eliminating Data Readers and passing DTO's from the DAL&nbsp; .... </P>
+<P>But what about CRUD functions for Editable Root / Editable Child objects&nbsp;using DTO&nbsp;and DAL architecture&nbsp; ??</P>
+<P>Even tho I am consistently using DTO's in my application, I do see some value in staying with the DataFactory pattern ..... </P>
+<P>But since the example only fetches lists, I'm not clear on how to code Fetches for single objects ... </P>
+<P>Try/Finally</P>
+<BLOCKQUOTE dir=ltr>
+<P>The VB samples have Exception handling in the fetch methods of the OrderList&nbsp;.... I assume try/catch needs to be coded in C#, too ... for ReadOnly and Editable BO's</P>
+<P>This is needed to&nbsp;take advantage of&nbsp;Idisposable, correct ???</P></BLOCKQUOTE>
+<P>DataFactory.GetxxxData() as xxx</P>
+<BLOCKQUOTE dir=ltr>
+<P>Also ... the data factory only has one method for dynamically instantiating the Collection of Orders .... if there was an Order Editable Root, a method would be needed for that ... also, right ???</P>
+<P>So in effect we need to create data factory methods for each of the BO's that&nbsp;may be "hydrated" from dynamically selected DAL assembiles ....</P></BLOCKQUOTE>
+<P dir=ltr>I also noticed a thread on this subject that indicates that the DTOs need to have IsNew, IsDirty, and Is Deleted properties .... any other pointers on CRUD functions for Editable Root and Editible Children when using DTO and dynamic references to DAL ???</P>
+<P dir=ltr>Thanks,</P>
+<P dir=ltr>Steve</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Sunday, October 14, 2007</h2><P>&nbsp;</P>
+<P>I'm continuing to develop my DAL using LLBL and DTO's ... ( I seem to be moving forward OK despite still being puzzled / uncertain about the questions I posted earler)</P>
+<P>Now I'm looking at something else ... In Deep Data the DAL and DTO methods are mostly Public ... Shouldn't access to those funcitons be locked down more securely ??</P>
+<P>Is there a resaon not to&nbsp;decorate themas "Friend Assemblies" so that Protected methods can be authorized for access across different assemblies ... I'm working in C# .. so I know that is a feature I can use .. Not sure about VB.</P>
+<P>Thanks .. Steve</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

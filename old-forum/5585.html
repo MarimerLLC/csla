@@ -1,0 +1,41 @@
+<html><header><title>DataPortal.Fetch failed (Only parameterless constructors and initializers are supported in LINQ to Entities.)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal.Fetch failed (Only parameterless constructors and initializers are supported in LINQ to Entities.)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5585.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>koen@skn.be posted on Tuesday, October 14, 2008</h2><FONT size=2>
+<P>In my CustomerList i have a factory that gets the correct DAL and this for the acomping database</P>
+<P>My business objects can not have any knowledge of the database !!</P>
+<P>This application has to run on different databases.</P>
+<P>When i execute the application i get the error : </P>
+<P>DataPortal.Fetch failed (Only parameterless constructors and initializers are supported in LINQ to Entities.)</P>
+<P>How to resolve this ?</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Fetch()</P>
+<P>{</P>
+<P>FetchDAL();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> FetchDAL()</P>
+<P>{</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> DALFactory = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerDALFactory</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerDAL</FONT></FONT><FONT size=2> dal = DALFactory.CreateCustomersDAL())</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IEnumerable</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerInfo</FONT></FONT><FONT size=2>&gt;) dal.GetDBCustomers();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>foreach</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerInfo</FONT></FONT><FONT size=2> info </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> data)</P>
+<P>{</P>
+<P>Add(info);</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//AddRange(data);</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>DAL : </P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerEAL</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerDAL</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> GetDBCustomers()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> ctx = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ObjectContextManager</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NaturalEntities</FONT></FONT><FONT size=2>&gt;.GetManager(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NaturalEntities"</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> p </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> ctx.ObjectContext.Contact</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CustomerInfo</FONT></FONT><FONT size=2>(p.ContactId, p.Naam));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> data;</P>
+<P>}</P>
+<P>}</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 14, 2008</h2><P>Are you trying to have EF directly create/load your business objects with data? The current version of EF is not really flexible enough to deal with CSLA objects (not easily anyway). Microsoft says they are working on POCO (plain old CLR objects) support for a future release, and perhaps those enhancements will make EF work with CSLA objects directly.</P>
+<P>Also, in CSLA 3.6 there's a new ObjectFactory concept that externalizes data access code entirely out of the business object - no DataPortal_XYZ methods in the object. This feature is something I specifically added in anticipation of these future EF features - but that is almost certainly a better model for what you are trying to do as well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com replied on Thursday, January 22, 2009</h2><br><br><a href="http://www.thedatafarm.com/blog/2008/08/15/AFewThingsYouCantDoWithEFQueriesWhichYouWontFindOutUntilRuntime.aspx">Julie Lerman Blog</a><br><br>I am not sure if this is the reason why you're particular error is occuring but when I was playing with L2E I was able to fetch my projectInfo objects by&nbsp; using the example in the link :<br><br>Throws error:<br><blockquote><font color="#ff0000">var data = from p in ctx.ObjectContext.Project<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select new ProjectInfo( p.id, p.Name);<br><br>this.addRange(data); //Throws Parameterless Contructors exception</font><br><br><br><br></blockquote>Doesn' throw error:<br><blockquote><br><font color="#008000">var data = from p in ctx.ObjectContext.Project<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select p;<br><br>List&lt;ProjectInfo&gt; mylist = new List&lt;ProjectInfo&gt;();<br><br>foreach ( var temp in data)<br>{<br>mylist.add( new ProjectInfo(temp.id, temp.Name);<br>}<br><br>this.addRange(mylist);</font><br><br>An extra step is required. <br><br>Anyway, I was just messing around with different data access technologies and maybe that will help someone. <br></blockquote><br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

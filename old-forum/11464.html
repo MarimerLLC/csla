@@ -1,0 +1,53 @@
+<html><header><title>'Csla.Server.DataPortalException' to type 'Csla.Server.DataPortalResult'</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>'Csla.Server.DataPortalException' to type 'Csla.Server.DataPortalResult'</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11464.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vignesh posted on Tuesday, July 10, 2012</h2><p>Unable to cast object of type &#39;Csla.Server.DataPortalException&#39; to type &#39;Csla.Server.DataPortalResult&#39;</p>
+<p>is this web service error or code error can one give me the clear&nbsp;scenario about &nbsp;this .... &nbsp;</p>
+<p>Thanks.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Tuesday, July 10, 2012</h2><p>Error and valid results are usually not the same.&nbsp;If you could give the code snippet, where the cast occurs or at least the call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vignesh replied on Wednesday, July 11, 2012</h2><p>Hi stefan,</p>
+<p>here the&nbsp;call stack&nbsp;for the &nbsp;error....it happens while it try to call the WCF web&nbsp;service.&nbsp;</p>
+<p><span></span></p>
+<h1>Server Error in &#39;/&#39; Application.
+<hr />
+</h1>
+<h2><i>Unable to cast object of type &#39;Csla.Server.DataPortalException&#39; to type &#39;Csla.Server.DataPortalResult&#39;.</i></h2>
+<p><span></span><span style="font-family:Arial, Helvetica, Geneva, SunSans-Regular, sans-serif;"><strong>Description:&nbsp;</strong>An unhandled exception occurred during the execution of the current web request. Please review the stack trace for more information about the error and where it originated in the code.&nbsp;<br /><br /><strong>Exception Details:&nbsp;</strong>System.InvalidCastException: Unable to cast object of type &#39;Csla.Server.DataPortalException&#39; to type &#39;Csla.Server.DataPortalResult&#39;.<br /><br /><strong>Source Error:</strong>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>An unhandled exception was generated during the execution of the current web request. Information regarding the origin and location of the exception can be identified using the exception stack trace below.</code></td>
+</tr>
+</tbody>
+</table>
+<br /><strong>Stack Trace:</strong>&nbsp;<br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code>
+<pre>[InvalidCastException: Unable to cast object of type &#39;Csla.Server.DataPortalException&#39; to type &#39;Csla.Server.DataPortalResult&#39;.]
+   HIA.BM.BL.CSLAClasses.HIADataPortal.Fetch(Type objectType, Object criteria) +388
+   HIA.BM.BL.CSLAClasses.HIADataPortal.Fetch(Object criteria) +50
+   HIA.BM.BL.CollectionClasses.ModulePermissionsCollection.GetHIAModuleCollection() +640
+   HIA.BM.Web.Controllers.AccountController.Login(String username, String password, Boolean rememberMe, String returnUrl) +711
+   lambda_method(Closure , ControllerBase , Object[] ) +284
+   System.Web.Mvc.ReflectedActionDescriptor.Execute(ControllerContext controllerContext, IDictionary`2 parameters) +248
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethod(ControllerContext controllerContext, ActionDescriptor actionDescriptor, IDictionary`2 parameters) +39
+   System.Web.Mvc.&lt;&gt;c__DisplayClassa.&lt;InvokeActionMethodWithFilters&gt;b__7() +126
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation) +641
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodFilter(IActionFilter filter, ActionExecutingContext preContext, Func`1 continuation) +641
+   System.Web.Mvc.ControllerActionInvoker.InvokeActionMethodWithFilters(ControllerContext controllerContext, IList`1 filters, ActionDescriptor actionDescriptor, IDictionary`2 parameters) +312
+   System.Web.Mvc.ControllerActionInvoker.InvokeAction(ControllerContext controllerContext, String actionName) +741
+   System.Web.Mvc.Controller.ExecuteCore() +198
+   System.Web.Mvc.MvcHandler.ProcessRequest(HttpContextBase httpContext) +195
+   System.Web.CallHandlerExecutionStep.System.Web.HttpApplication.IExecutionStep.Execute() +597
+   System.Web.HttpApplication.ExecuteStep(IExecutionStep step, Boolean&amp; completedSynchronously) +266
+</pre>
+</code></td>
+</tr>
+</tbody>
+</table>
+<br />
+<hr />
+<strong>Version Information:</strong>&nbsp;Microsoft .NET Framework Version:4.0.30319; ASP.NET Version:4.0.30319.1</span></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 12, 2012</h2><p>This is occuring in CSLA 4 version 4.3.x?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vigneshwaranv replied on Friday, July 13, 2012</h2><p>It&#39;s&nbsp;occurring&nbsp;in <b>CSLA 4</b> version...........</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vigneshwaranv replied on Friday, July 13, 2012</h2><p>it&#39;s&nbsp;<span>occurring&nbsp;in&nbsp;</span><b>CSLA 4.0.0.0</b>&nbsp;<span>&nbsp;</span><span>version...........</span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, July 13, 2012</h2><p>This obviously happens in the class HIADataPortal - which is not a part of CSLA. </p>
+<p>It seems lke you have implemented your own HIADataPortal and there is a bug in this class - NOT CSLA. . </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

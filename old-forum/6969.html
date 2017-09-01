@@ -1,0 +1,65 @@
+<html><header><title>Server-side DataPortal enhancement</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Server-side DataPortal enhancement</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6969.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chachek posted on Tuesday, May 19, 2009</h2>Could it be possible for the DataPortalSelector to not only decide between the SimpleDataPortal and the FactoryDataPortal, but also take a class that implements IDataPortalServer given at runtime (via configuration perhaps)....I think this would provide maximum flexibility on the "logical" server side.<br><br>just a suggestion....<br><br>thanks for a great framework!!<br>Alfonso<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 19, 2009</h2><P>It <EM>could</EM> do this, yes. But I try to only add features, especially ones like this, that expand the testing and support surface of the framework, when there's a clear and pressing need for such a change.</P>
+<P>Do you have a scenario where the current two data access models are insufficient?</P>
+<P>The DataPortal_XYZ is (more or less) active record. And the object factory enables a data mapper pattern. I think either of them can be used with the repository pattern, though that is probably a lot easier with the object factory approach.</P>
+<P>That pretty much covers the current trendy DAL patterns, but I'm always open to discussion around scenarios that might be compelling.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chachek replied on Tuesday, May 19, 2009</h2>The only issue that I have right now is the use of TransactionScope. It seems that in certain situations Oracle doesn't know how to handle it, specifically when using DB links (long story).<br><br>I still want to have my root object define my transaction scope, but can not use your Transactional attribute. Right now I'm working around the issue by committing the transaction on DataPortal_OnDataPortalInvokeComplete and rolling back on DataPortal_OnDataPortalException on my base classes. The ideal would be to have something similar to TransactionScope and use it in my own implementation of IDataPortalServer.<br><br>That's my scenario but I understand that you have to keep the framework "lean &amp; mean" and above all maintainable.<br><br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This scenario wouldn&#8217;t be served by opening the selector
+then. The transaction mode is set before the selector is invoked. The
+server-side data portal is actually a pipeline that goes through several steps &#8211;
+which is necessary because in the Enterprise Services option the data portal
+has to actually get your code running inside a COM+ object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want transactional support for Oracle, you might consider
+using Enterprise Services (COM+). As I understand it, Oracle has worked with
+the distributed transaction standards used by COM+ for a very long time, and
+you might have better luck.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I wouldn&#8217;t use the InvokeComplete/Exception methods as you
+describe in any case. Instead, I&#8217;d contain all transaction management in
+the DataPortal_XYZ method (insert/update/deleteself/delete). That keeps things
+more concise.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You might also look at the Csla.Data.TransactionManager class to
+see if it can help you. It is designed to simplify the use of ADO.NET
+transaction objects when using the manual transaction option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>From a &#8220;change the data portal&#8221; viewpoint, what you
+really need/want is to be able to provide your own object to manage the data
+portal transaction instead of using the three models currently supported. The
+only trick there, is that the Transactional attribute is not currently capable
+of expressing arbitrary transaction types. I could add &#8220;Custom&#8221; to
+the list, but then someone would come along and say they need multiple custom
+options or something&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

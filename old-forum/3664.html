@@ -1,0 +1,46 @@
+<html><header><title>PRWpf is slowwwwwww</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PRWpf is slowwwwwww</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3664.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer posted on Monday, October 08, 2007</h2>Finally, I managed to compile and run the PTWpf. But it is very slow compare to PTWin. The login process nearly takes me 1 minute. Is there a way to tweak it and make it faster?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 08, 2007</h2><P>Make sure you are doing a fair comparison. Specifically, make sure that both PTWin and PTWpf are configured to use the same data portal option, and never do timings on the first run.</P>
+<P>The first run has to start up IIS, SQL Server, etc. It is always a killer.</P>
+<P>All that said, WPF is slower than Windows Forms. It is only a version 1.0 technology after all, while WinForms has been around for ~7 years now. But not THAT much slower, so you have something else going on.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer replied on Monday, October 08, 2007</h2><P>Hi Rocky,</P>
+<P>Do you think if developing commerical application using WPF for CSLA is mature enought now? I need your opinion.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 08, 2007</h2><P>It depends on your risk tolerance.</P>
+<P>WPF is actually pretty darn good for a 1.0 technology. I've been spending a lot of time with it over the past few months, and as long as you aren't scared of typing XAML (which I don't think you should have to do, but this is 1.0 remember) it is great fun.</P>
+<P>Some others on this forum have done a lot more with it than I have. I'm at ReMIX in Boston right now and at least one CSLA-based WPF app was on screen for a moment (nice job Paul!). Perhaps they can give you their thoughts as well.</P>
+<P>But I think it comes down to tolerance of risk. Right now the tools are a bit primitive - even with Blend. As a developer you <EM>will</EM> write XAML by hand. Or you'll create a code generator to write it for you. Either way, we're not at Windows Forms levels of productivity.</P>
+<P>On the other hand, the data binding approach used by WPF is, in many ways, nicer than Windows Forms and it is a LOT nicer than Web Forms.</P>
+<P>I think it also depends on your timeline and your project's expected lifetime. WPF is the future - for both Windows and Web (via Silverlight ) in my view. If your app will be used for years to come, WPF is a better bet than Windows Forms or HTML/AJAX.</P>
+<P>But if your (and I mean your employer's) risk tolerance is not high, you are probably better off using established technologies.</P>
+<P>This, though, is the value of CSLA. If you are good about putting all your business logic into your objects it is much easier to change from today's "legacy" technologies to WPF at some point in the future. Sure, you'll need to discard and rewrite all UI/presentation code - but there shouldn't be a <EM>lot</EM> of that if you use data binding against CSLA objects <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CSLAer replied on Tuesday, October 09, 2007</h2><P>Hi Rocky,</P>
+<P>Thanks a lot for the detail information.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Wednesday, October 10, 2007</h2>
+
+<p class="MsoNormal">That’s cool Microsoft is still using that video at their
+ReMix shows. It was debuted at Mix '07 back in May. Tim Sneath was excited to
+have our application in the video because he wanted to show an actual line of
+business application. <br>
+<br>
+We at TempWorks have been using WPF since late 2005, mostly after it was pumped
+up at the 2005 PDC. We were looking for a new platform to migrate our
+application too. Originally built upon Access, it became too confining for our
+needs. We saw WPF as the new generation of Windows programming and we wanted to
+be on the forefront. <br>
+<br>
+I won't lie and tell you how easy it was. There is a huge learning curve to
+WPF, akin to jumping off a cliff :) You mostly have to unlearn your WinForm and
+WebForm ways. Rocky is right however, it is way nicer than the previous
+technologies. Also back when we started there was limited 3rd party components;
+no date pickers, masked textboxes, or decent grids. Today is different and you
+have those things but WPF designers are still lacking compared to WinForms. <br>
+<br>
+All our XAML work is done by hand using the XAML source view in VS2008. We do
+get Intellisense so that isn't so bad but VS2008b2 is buggy and crashes for us
+several times a day.<br>
+<br>
+Overall the combination of WPF and CSLA can't be beat. We use code generators
+to build our base business objects and then hand massage the data access
+portion with LINQ code. For our 3-tier deployments we use WCF with some custom
+dataportal proxy and service for impersonation reasons.<br>
+<br>
+It works well for us. It is fast, easy to program, and very modular.<br>
+<br>
+Paul Czywczynski, CTO<br>
+TempWorks Software<br>
+http://www.tempworks.com/Enterprise.aspx<o:p></o:p></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

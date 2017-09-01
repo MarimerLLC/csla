@@ -1,0 +1,78 @@
+<html><header><title>Logon - SQL Login vs. Trusted Connection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Logon - SQL Login vs. Trusted Connection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/839.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld posted on Monday, August 07, 2006</h2>I remember someone talking about this before, but now I can't find the forum threads anymore.&nbsp; What I need to do is handle Windows Integrated logins as well as just plain SQL Logins.&nbsp; This is a Windows Forms app.<br><br>Here's how it should go:<br><ol><li>User opens the app</li><li>The application attempts to authenticate the user through the data portal by using their Windows logon (current Windows Identity).&nbsp; I am thinking this could be a command or something.<br></li><li>If the Authentication was successful I would get back a User object, if it fails (IsAuthenticated = False), the application will prompt the user with a Logon dialog to ask for their credentials.</li><li>The Logon dialog will then authenticate the user (going through the same process in step 2 but using a CustomPrincipal instead).&nbsp; Step 3 then occurs again until the user is successfully logged in.</li></ol>Does anyone have a suggestion or similar requirement that I could piggy-back on? ;-)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 07, 2006</h2>I did alter the data portal (in 1.5 I think) to make this possible. If you look at the client-side data portal code you'll see that it checks for a non-required appSettings value to force the passing of the Windows identity token to the server, along with using custom authentication.<br><br>What that setting actually does is causes BOTH Windows security (client-side credentials must match on server) and custom authentication to become active at the same time. I think that's what you are asking for?<br><br>To use this you don't need to do a special Command object. The Login() method for custom authentication will attempt to talk to the server through the data portal - which of course will require that the Windows credentials be valid. Two birds with one stone.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Tuesday, August 08, 2006</h2>So is that code / logic in the existing 2.0.3 implementation as well?&nbsp; Or do I need to download 1.5?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 08, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=849265813-08082006><FONT face=Arial color=#0000ff size=2>It is in the remoting proxy in 2.0.3.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=849265813-08082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=849265813-08082006><FONT face=Arial color=#0000ff size=2>I didn't do this in the web services channel, but you 
+could. And the enterprise services channel uses windows integrated security all 
+the time, so it is automatic.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=849265813-08082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=849265813-08082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> tymberwyld [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, August 08, 2006 8:42 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Logon - SQL Login vs. 
+  Trusted Connection<BR></FONT><BR></DIV>
+  <DIV></DIV>So is that code / logic in the existing 2.0.3 implementation as 
+  well?&nbsp; Or do I need to download 1.5?<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Tuesday, August 08, 2006</h2>Actually, I don't think this is what I want (or maybe I'm not understanding how this works).&nbsp; What I am trying to do is build a Connection String dynamically at execution time.&nbsp; This is required because the user can change the Database / Server on the Logon Form's configuration.&nbsp; I don't think this is the same as Windows vs. Custom authentication.&nbsp; This will all work fine on a Local DataPortal, but once it's Remote or WebService, the SqlConnection object won't have the correct credentials.<br><br>What I really want to do is have a static "GetConnectionString(DataPortalContext context)" method on the DataPortal to build the connection string from the User's credentials and the Database and Server properties that will be added to the DataPortalContext (or maybe stored in the ClientContext HybridDictionary).<br><br>Here's my question.&nbsp; If the DataPortal / Business object "Fetch" method is running on the server, how can I set the current credentials to a WindowsPrincipal or CustomPrincipal dynamically in order to build a ConnectionString that is:<br><ol><li>Data Source=(local);Initial Catalog=MyDB;Integrated Security=SSPI<br>OR<br></li><li>Data Source=(local);Initial Catalog=MyDB;User ID=myuser;Password=mypwd<br>depending on the Credentials.</li></ol>If I use ConnectionString #1 on the remote DataPortal, isn't it just going to use the Server's credentials not the credentials I am passing it?&nbsp; If I set the "Thread.CurrentPrincipal = ?" on the remote DataPortal will it then attempt to login using the User's WindowsPrincipal?<br><br>I'm really confused! <img src="/emoticons/emotion-18.gif" alt="Huh? [:^)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, August 08, 2006</h2>Why not just store the server chosen in the ApplicationContext.ClientContext?&nbsp; It will get 'shipped' to the server and you can read it in your DataPortal methods.&nbsp; You could do the same with the security settings.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 08, 2006</h2>Ahh sorry, I missed that you were talking about database logins, not app server logins...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Wednesday, August 09, 2006</h2>Exactly!&nbsp; I am NOT trying to Authenticate the application / user credentials on the Server.&nbsp; I am trying to use these "Credentials" for logging into SQL Server.&nbsp; So this is more like a Database Authentication.&nbsp; It's kind of like the "Partial Trust" model in that the application will "assume" that everyone has access to the application until it hits the database.&nbsp; The first layer of authentication will be if they actually have a valid login into Sql Server.&nbsp; The 2nd level will be that we will pull their Roles from the Database.<br><br>I've come to the conclusion that I cannot use the "WindowsIdentity" by itself because I wouldn't be able to return valid roles from the database (the WindowsIdentity would return only Windows Roles / Groups).&nbsp; What I plan to do is create a new IIdentity object that stores a WindowsIdentity internally.&nbsp; This new Identity will also have a Property that returns an Enum of how the Identity was actually able to connect to the server (Windows Auth vs. a straight Sql Logon) which will be used for subsequent connections so that it doesn't have to keep being discovered.  <br><br>And another thing.&nbsp; Why did Microsoft make Authentication is WinForms totally different than in WebForms?&nbsp; For example, ASP.NET can use the System.Net.AuthenticationManager which attempts to authenticate using different IAuthenticationModules.&nbsp; It would have been nice if I could have re-used this AuthenticationManager in WinForms and just built a "SqlAuthenticationModule" that implemented the IAuthenticationModule but Nooooo...this AuthenticationManager only accepts WebRequests / Responses!&nbsp; Why did they make the System.Net.Credentials and the System.Security classes totally seperate?&nbsp; They're the SAME exact thing (theoretically)!&nbsp; Arghhh!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Wednesday, August 09, 2006</h2>Is it a simple matter of determining the identity of the currently logged in user and passing that to a wrapper that dynamically builds that connection string?<br><br>If you, you can determine who is currently logged in with this: System.Security.Principal.WindowsIdentity.GetCurrent().Name.ToString();<br><br>One you have the name, you can pass that to IPrincipal.Authenticate(). This will allow you to do whatever magic you need to determine if they have been established as a trusted user or one that might perhaps have some kind of visitor access.<br><br>We do this with S3 (Single Sign-on). When a user tries to access our site, we can retrieve their ID from the HTTP headers given to us by S3. With that name, we call IPrincipal.Authenticate() and if Authenticated, great, they have access to the site and we've retrieved their roles. If not, the user is considered a visitor and will have very limited access.<br><br>- John<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=078582714-09082006><FONT face=Arial color=#0000ff size=2>Yes, I think that should work. Just make sure to avoid 
+holding an instance-level&nbsp;reference to the WindowsIdentity, as it isn't 
+serializable.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=078582714-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=078582714-09082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>I've 
+  come to the conclusion that I cannot use the "WindowsIdentity" by itself 
+  because I wouldn't be able to return valid roles from the database (the 
+  WindowsIdentity would return only Windows Roles / Groups).&nbsp; What I plan 
+  to do is create a new IIdentity object that stores a WindowsIdentity 
+  internally.&nbsp; This new Identity will also have a Property that returns an 
+  Enum of how the Identity was actually able to connect to the server (Windows 
+  Auth vs. a straight Sql Logon) which will be used for subsequent connections 
+  so that it doesn't have to keep being discovered. 
+<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tymberwyld replied on Wednesday, August 09, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+<div align="left"><span class="078582714-09082006"><font color="#0000ff" face="Arial" size="2">Yes, I think that should work. Just make sure to avoid 
+holding an instance-level&nbsp;reference to the WindowsIdentity, as it isn't 
+serializable.</font></span></div>
+<div align="left"><span class="078582714-09082006"><font color="#0000ff" face="Arial" size="2"></font></span>&nbsp;</div>
+<div align="left"><span class="078582714-09082006"><font color="#0000ff" face="Arial" size="2">Rocky</font></span></div></div></BLOCKQUOTE><br><br>Well, not entirely true.&nbsp; The WindowsIdentity does Implement the ISerializable interface but it can only be serialized to binary and back.&nbsp; I've tested this and it works.&nbsp; I need to play around and see how this is all going to come together...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2>Hmm, interesting. I didn't know that.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2>You can't serialize it to another machine, and that was my 
+real point - because if you use the data portal with a remote server the custom 
+principal/identity will be serialized across the network on your 
+behalf.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2>I suppose the implement ISerializable, because in the 
+serialization ctor they can re-validate your credentials to recreate the object. 
+I bet they don't actually serialize your roles, etc - the probably just 
+serialize the credentials such that they can re-authenticate on 
+deserialization.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2>Either that, or it may not be Serializable. You can have an 
+MBRO implement ISerializable for the purpose of creating a proxy object. That 
+happens all the time in .NET. When you "serialize" such an object, the byte 
+stream you get contains the data needed to deserialize into a proxy that can 
+call the MBRO. Pretty cool little trick really :)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=718011622-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE>Well, 
+  not entirely true.&nbsp; The WindowsIdentity does Implement the ISerializable 
+  interface but it can only be serialized to binary and back.&nbsp; I've tested 
+  this and it works.&nbsp; I need to play around and see how this is all going 
+  to come together...<BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

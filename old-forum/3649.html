@@ -1,0 +1,28 @@
+<html><header><title>Why MarkDirty in MarkNew? (One2One problem)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why MarkDirty in MarkNew? (One2One problem)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3649.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nickinchina posted on Friday, October 05, 2007</h2><P>I always wonder why csla objects call markdirty in marknew. The problem i have is to create one to one relationship object. </P>
+<P>For example, i have customer object and customerAddress object which is one2one. i like to code like:</P>
+<P>MyCustomer.id = 1</P>
+<P>MyCustomer.Name = "test"</P>
+<P>MyCustomer.MyCustomerAddress.Street = "no where"</P>
+<P>...</P>
+<P>but sometimes i might not like to create MyCustomerAddress when it's not changed and since it's markdirty from beginning , i have no idea it's changed or not.</P>
+<P>Also sometimes we have an object is a one2one child of itself, like an employee which has a suppervisor object which is also an employee.&nbsp;Now it's impossible for me to create object like that 'cause it creates infinite loop when saving the object.</P>
+<P>I have no idea how your guys handle these scenarios, please enlighten me!!! thank in advance.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 05, 2007</h2>Dirty means that the instance does not match what is in the database.&nbsp; A new object, since it doesn't exist at all yet in the database, matches this definition.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nickinchina replied on Friday, October 05, 2007</h2><P>thx a lot. Yes that makes some sense but how do you solve this one 2 one relationship?</P>
+<P>public class employee</P>
+<P>public property employeeid as integer</P>
+<P>public suppervisor as employee</P>
+<P>end class</P>
+<P>in my client code, if i do:</P>
+<P>objEmployee.id = 1</P>
+<P>objEmployee.Save()</P>
+<P>that would enter into an infinite loop(---&gt;objEmployee.supervisor.save---&gt;objEmployee.supervisor.supervisor.save...)</P>
+<P>so i have to code like:</P>
+<P>dim obj as employee = employee.newemployee()</P>
+<P>obj.supervisor.delete()</P>
+<P>obj.id= 1</P>
+<P>obj.save</P>
+<P>That's really weird, and i have no idea when i should call "obj.supervisor.delete()" and when i should not.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nickinchina replied on Friday, October 05, 2007</h2><P>Also I am not really convinced by this dirty definition for a number of reasons:</P>
+<P>1) why give object user something which is only vaguely correct? i think you can only say "dirty = false" mean the object probably matches the database. As an object user,&nbsp; how does that help me? </P>
+<P>2) business objects are created for their users. As an object user, i need a way of knowing whether&nbsp;my cleint app&nbsp;made any change to the object or not? That sounds like a very important feature to me. </P>
+<P>3) how do you explain "deleted object"? yes they are marked as deleted but they are still matched to the database, so why are they "dirty"?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 05, 2007</h2>Well you would do that.&nbsp; You'd accept a SupervisorId (probably a Nullable&lt;Int32&gt;, for those without supervisors).&nbsp; At most, you'd accept an EmployeeInfo, hopefully with a flag for IsSuperVisor, which the Employee object would check to ensure that the person assigned is really a supervisor.&nbsp; <br><br>Also, your Employee class should be managing the employee id, not the UI (unless yoru ID is something like an SSN).<br><br>Andy<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

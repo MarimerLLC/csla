@@ -1,0 +1,46 @@
+<html><header><title>Removing items from NVL</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Removing items from NVL</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1009.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kasvis posted on Thursday, August 24, 2006</h2><P>I am having some problems with the NVLs&nbsp; I am retrieving a list of employees to be assigned to Project. While assigning the users I want to remove users that have already been added to the project. </P>
+<P>So i included a Remove method to the NVL object but its giving an stackoverflow exception. I am not sure how to resolve this issue. I have included the code below .</P>
+<P>Code added to the NVL object</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Remove(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> key)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (ContainsKey(key))</P>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;this</FONT><FONT size=2>.Remove(key);</P></FONT><FONT size=2>
+<P>}</P>
+<P>}</P>
+<P>Code in the Form displaying the Users. _usrlst is the child object of the Project that contains the list of users already assigned.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>User&nbsp;<FONT color=#000000>usr </FONT></FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> _usrlst)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;_users.Remove(rm.UserID);</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>I would appreciate any help in resolving this issue.</P>
+<P>Thanks</P></FONT>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Thursday, August 24, 2006</h2><P>I would have to see your entire class to have a hope of telling you exactly where it went wrong.</P>
+<P>However, if I remember correctly on the RoleList sample class, the class maintains a static copy of the list to avoid hitting the database over and over again.&nbsp; It's possible that another object already removed the key you think is there, if you implemented your class in a similar manner.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kasvis replied on Thursday, August 24, 2006</h2><P>Thanks for responding David.</P>
+<P>&gt;&gt;It's possible that another object already removed the key you think is there</P>
+<P>In order to make sure that an exception is not thrown, I check to see if the object contains the key before attempting to remove it.</P>
+<P>I am not sure why I am getting stackoverflow exception though. seems totally unrelated.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, August 24, 2006</h2>It's ok to check if it exists.<br>The problem is that your doing:<br><br><p><font color="#0000ff" size="2">public</font><font size="2"> </font><font color="#0000ff" size="2">void</font><font size="2"> <b>Remove</b>(</font><font color="#0000ff" size="2">int</font><font size="2"> key)</font></p>
+<p><font size="2">{</font></p>
+<p><font color="#0000ff" size="2">if</font><font size="2"> (ContainsKey(key))</font></p>
+<p><font size="2">{</font></p><font size="2">
+</font><p><font color="#0000ff" size="2">&nbsp;&nbsp;&nbsp;this</font><font size="2">.<b>Remove</b>(key); // &lt;--- This is calling the same function that started the whole thing.<br></font></p><font size="2">
+<p>}</p>
+<p>}</p></font><br>The same operation is running indefinitely, untill the stack overflows...<br><br>You should be calling <b>base</b>.Remove(key)<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kasvis replied on Thursday, August 24, 2006</h2><P>Thanks Andres. That was pretty dumb of me.</P>
+<P>Finally got it to work with the code below. &nbsp;Might not be most efficient but does the job.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Remove(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> key,</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> value)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>NameValuePair</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (item.Key == key &amp;&amp; item.Value == value)</P>
+<P>{</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Remove(item);</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>}</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

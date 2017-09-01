@@ -1,0 +1,402 @@
+<html><header><title>CSLA Light - MobileFormatter</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light - MobileFormatter</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5311.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 posted on Wednesday, August 27, 2008</h2><P>Hello everyone!</P>
+<P>Why is it that methods MobileFormatter.SerializeObject and MobileFormatter.GetObject are scoped as internal rather than public? Wouldn't I need to call these methods from OnGetChildren and OnSetChildren when using backing fields for my child objects? </P>
+<P>Thanks for the help!</P>
+<P>GA</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So, you are not using managed properties in your SilverLight
+project?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 27, 2008 5:21 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] CSLA Light - MobileFormatter<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello everyone!<o:p></o:p></p>
+
+<p>Why is it that methods MobileFormatter.SerializeObject and
+MobileFormatter.GetObject are scoped as internal rather than public? Wouldn't I
+need to call these methods from OnGetChildren and OnSetChildren when using
+backing fields for my child objects? <o:p></o:p></p>
+
+<p>Thanks for the help!<o:p></o:p></p>
+
+<p>GA<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Wednesday, August 27, 2008</h2><P>Hi <SPAN>Sergey,</SPAN></P>
+<P><SPAN>I am but only for&nbsp;new types.&nbsp;The many existing ones I am leaving as is (except for adding the serialization code and public constructors).&nbsp;This system is old and currently has a win forms UI. Now however there are some new sub systems we're creating in Silverlight. These new sub systems use types from the old sub systems.</SPAN></P>
+<P><SPAN>Thanks</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OnGet/OnSetChildrent should contain formatter as one of the parameters.&nbsp;
+You should be able to use is.&nbsp; Here is what I have (see below).&nbsp; Does
+this work for you?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>private</span><span> <span>string</span>
+_someField;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>protected</span>
+<span>override</span> <span>void</span>
+OnGetChildren(Csla.Serialization.Mobile.<span>SerializationInfo</span>
+info, Csla.Serialization.Mobile.<span>MobileFormatter</span>
+formatter)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>var</span> fieldManagerInfo =
+formatter.SerializeObject(_someField);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; info.AddChild(<span>&quot;_someField&quot;</span>,
+fieldManagerInfo.ReferenceId);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 27, 2008 5:59 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: CSLA Light - MobileFormatter<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>I am but only for&nbsp;new types.&nbsp;The many existing ones I am leaving
+as is (except for adding the serialization code and public
+constructors).&nbsp;This system is old and currently has a win forms UI. Now
+however there are some new sub systems we're creating in Silverlight. These new
+sub systems use types from the old sub systems.<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Wednesday, August 27, 2008</h2><P>Hi Sergey,</P>
+<P>Thanks for the response first and foremost.</P>
+<P>I believe I have the latest version of the CSLA code base. And in that code base the SerializeObject method is scoped as internal so I can't call it from the outside. By now I've gotten around the issue by changing against my will the access modifier for this method and GetObject to public. I say against my will because I do my best to avoid changing the framework code so that upgrading does not become problematic. Do you know if this will be changed?????</P>
+<P>Thanks</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm&#8230;&nbsp; The code I pasted into my email does compile on
+my machine (in CSLA Light and CSLA projects), and I only have a references to
+CSLA DLLs there.&nbsp; Did you try to download the latest source for Csla Light
+to see if that works better for you?&nbsp; I looked at the source again, and
+these methods in MobileFormatter are public.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 27, 2008 7:14 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: CSLA Light - MobileFormatter<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>Thanks for the response first and foremost.<o:p></o:p></p>
+
+<p>I believe I have the latest version of the CSLA code base. And in that code
+base the SerializeObject method is scoped as internal so I can't call it from
+the outside. By now I've gotten around the issue by changing against my will
+the access modifier for this method and GetObject to public. I say against my
+will because I do my best to avoid changing the framework code so that
+upgrading does not become problematic. Do you know if this will be changed?????<o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Wednesday, August 27, 2008</h2><P>Hi Sergey,</P>
+<P>I downloaded the code again and still I see these methods scoped as internal. Where are you downloading your code from? I am getting mine from <A href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</A></P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I see&#8230;&nbsp; My bad.&nbsp; I am actually working on it
+straight in source code, in 3.6 version.&nbsp; So, essentially I am running
+against today&#8217;s version of source code&#8230;&nbsp; I am sure you will
+see the fix in the next code drop, but I am not sure when.&nbsp; Can you run
+SVN browser to see if you can see current branch?&nbsp; If so, you can download
+the latest source code?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 27, 2008 7:30 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: CSLA Light - MobileFormatter<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>I downloaded the code again and still I see these methods scoped as
+internal. Where are you downloading your code from? I am getting mine from <a href="http://www.lhotka.net/cslalight/download.aspx">http://www.lhotka.net/cslalight/download.aspx</a><o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GA30 replied on Wednesday, August 27, 2008</h2><P>Hi Sergey,</P>
+<P>Thanks for the info. I will try that and if I can't I will wait for the next version.</P>
+<P>One other thing I want to mention to you. One other area I am having problems&nbsp;is with methods ReadOnlyBase.OnGetChildren and ReadOnlyBase.OnSetChildren. In cases whereby the _fieldManager field is null, such as when the read only object only uses backing fields, these methods bomb with null ref exception. I had mentioned to Rocky on his blog that this was happening but I believe he only made changes to BusinessBase because there I see the code checking to make sure _fieldManager is not null before attempting to serialize. It would be great if the same checks can be added to ReadOnlyBase.</P>
+<P>Thanks very much for all your help! I really do appreciate it</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, August 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks.&nbsp; Those issues have been fixed already &#8211; I just
+looked in source.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> GA30
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 27, 2008 7:48 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: CSLA Light - MobileFormatter<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Sergey,<o:p></o:p></p>
+
+<p>Thanks for the info. I will try that and if I can't I will wait for the next
+version.<o:p></o:p></p>
+
+<p>One other thing I want to mention to you. One other area I am having
+problems&nbsp;is with methods ReadOnlyBase.OnGetChildren and
+ReadOnlyBase.OnSetChildren. In cases whereby the _fieldManager field is null,
+such as when the read only object only uses backing fields, these methods bomb
+with null ref exception. I had mentioned to Rocky on his blog that this was
+happening but I believe he only made changes to BusinessBase because there I
+see the code checking to make sure _fieldManager is not null before attempting
+to serialize. It would be great if the same checks can be added to
+ReadOnlyBase.<o:p></o:p></p>
+
+<p>Thanks very much for all your help! I really do appreciate it<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

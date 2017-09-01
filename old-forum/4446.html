@@ -1,0 +1,54 @@
+<html><header><title>Lost Principal in a WPF application and OnDataPortalInitInvoke has never been called</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Lost Principal in a WPF application and OnDataPortalInitInvoke has never been called</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>snaky posted on Monday, March 03, 2008</h2>I'm using Xceed DataGrid in my application which obviously tries to create new data objects in a separate thread but it fails with a SecurityException. Analysis shows that a principal object has been lost. I saw in the sources of DataPortal that OnDataPortalInitInvoke is called after checking whether user can create an object. So I cannont replace the principal with my own. Is it possible to place an OnDataPortalInitInvoke call before security checking? Or maybe there's another solution?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2>The technique used in the <A href="http://store.lhotka.net"><EM>Using CSLA .NET 3.0</EM> ebook</A> should address this issue. CSLA .NET 3.0 includes a new data portal event where you can set the principal earlier in the process.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snaky replied on Monday, March 03, 2008</h2>You reffer to a technique about storing a principal object and then replacing an incorrect one in DataPortalInitInvoke Event. But this event is never called in my case. I'm using CSLA .NET 3.0 and in the file DataPortal.cs i see that OnDataPortalInitInvoke is called after the security checking. Am I misunderstanding something?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2><P>Are you running the beta of 3.5? I'm guessing so.</P>
+<P>Looking at the 3.5 code I see what you are talking about - and that is a bug, so thanks&nbsp;for helping me find it.</P>
+<P>But in 3.0.4 there is no auth check in the data portal, so you should be OK.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snaky replied on Monday, March 03, 2008</h2>Yes! Thank you for helping :)<br><br>So it'll be safe if I call OnDataPortalInitInvoke earlier in the code and wait for next revision of your great framework?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, March 03, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I&#8217;ll fix this bug very soon.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> snaky
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 03, 2008 7:58 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Lost Principal in a WPF application and
+OnDataPortalInitInvoke has never been called<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Yes! Thank you for helping :)<br>
+<br>
+So it'll be safe if I call OnDataPortalInitInvoke earlier in the code and wait for
+next revision of your great framework?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

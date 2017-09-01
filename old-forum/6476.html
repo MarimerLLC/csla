@@ -1,0 +1,28 @@
+<html><header><title>Can RefCount on ContextManager be public?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can RefCount on ContextManager be public?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6476.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>detritus posted on Saturday, February 21, 2009</h2>Hi Rocky,<br><br>I want to set ObjectTrackingEnabled property of DataContext to false for read-only operations (Fetch) to increase performance. Since this property cannot be changed if any sql statement executed previously, I need to know if the DataContext returned from GetManager method is a brand new one or reusing an old one. I think the easiest way I can do that is to check the value of RefCount on ContextManager but that variable is not accessable. Is it possible for this property to be public?<br><br>Thanks in advance,<br>Sinan.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 22, 2009</h2>public read-only? Seems harmless enough. I'll add this to the wish list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, April 02, 2009</h2>I'd like to cast my vote on this one as well, since it's simple enough and I find it really important for certain scenarios.<br><br>A great example of this is when for some reason need to create and save a root object while saving another root object. I realise this is an edge case and that you can create and internal insert method that doesn't attempt to commit a transaction, but when you're relying heavily on code generation this starts to get messy.<br><br>Anyway, if we had this instead of always calling ctx.Transaction.Commit() you could do:<br>If ctx.RefCount = 1 Then ctx.Transaction.Commit()<br><br>It also has the added bonus of letting it all be done within the same transaction, which brings the TransactionScope feel to it, since it's all done without effort and without having the need to pass parameters around.<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is on the wish list<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=355">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=355</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

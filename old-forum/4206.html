@@ -1,0 +1,320 @@
+<html><header><title>EditLevel problems with WinForms</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditLevel problems with WinForms</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4206.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz posted on Tuesday, January 22, 2008</h2>Hi all<br><br>I thought and hoped EditLevel issues were behind me but unfortunately not quite :( .&nbsp; I've been bashing my head with this and not getting far. I'm running CSLA 3.0.3 and following the ProjectTracker example for binding, rebinding, cancel etc. It all works well when I only have two levels, i.e, a root and child collection. Things don't go well with grandchildren. The problem is mostly if I delete a child and then Cancel.<br><br>I guess my basic question is:&nbsp; Is there a systematic way of extending the binding stuff in ProjectTracker to three or more levels / generations?&nbsp; The relationship between child and grandchild bindingsource mirrors what we do with root and child. i.e, the grandchild bindingsource's DataSource is set to the child bindingsource and its DataMember is set to the collection property of the child object. I'm a little unsure how to unbind the child bindingsource using the UnbindBindingSource() code. Is it considered a root as far as the grandchild collection is concerned?<br><br>I've done some tests monitoring EditLevel. To make this as simple as possible, there is only one child and its grandchild collection is empty. I've seen the same thing happening with grandchildren.<br><br>I'm reporting four EditLevel numbers in this order: root, child collection, child and grandchild collection.<br><br>Before the first BindUI()<br>0,0,0,0<br><br>After BindUI<br>2,1,2,1&nbsp; (ProjectTracker does the same for the first three).<br><br>Now if I delete the child and then press cancel then before BindUI (i.e, after CancelEdit() on the root) I get 0,0,0,1. The root BeginEdit() in BindUI then fails with an Edit Level mismatch.<br><br>I think I need to get the grandchild collection down to zero (before the delete?) but I'm struggling to figure out how to do that.<br><br>I hate to say it but this was working on CSLA 3.0.0 with code similar to ProjectTracker 3.0.0<br><br>Thanks for any help<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 22, 2008</h2><P>I quickly updated my test project</P>
+<P>(<A href="http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/">http://www.lhotka.net/cslacvs/viewvc.cgi/samples/trunk/RootChildGrandchildWinFormTest/</A>)</P>
+<P>to use the 3.0.3+ binding technique and I don't see a failure case there. Maybe I'm not doing something right as a user to make it fail. Can you use that as a test to replicate the issue?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, January 22, 2008</h2>Thanks Rocky. I haven't used the SVN before but I'll give it a go.<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I quickly updated my test project</div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, January 22, 2008</h2>Rocky, I tried the test project and hit the problem immediately. I don't know if somehow my setup is different to yours but all have to do is run the project, delete a child and hit cancel. That gives me an edit level mismatch.<br><br>I couldn't edit the root name because of the null strings so I then modified the objects so that they have a non-zero incrementing id and non null name.<br><br>I can edit or delete a grandchild and bring it back with Cancel, no problem. Editing or deleting a child and then cancelling is a problem.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Tuesday, January 22, 2008</h2><P>Ross,</P>
+<P>We had a similar problem:</P>
+<UL>
+<LI>one form showing a root object (some TextBoxes), a child collection (DataGridView)&nbsp;and a grandchild collection(DataGridView) 
+<LI>root object bound to bindingsource1 
+<LI>child&nbsp;grid bound&nbsp;to bindingsource2 (DataSource = bindingsource1, DataMember = Children) 
+<LI>grandchild grid bound to bindingsource3 (DataSource = bindingsource2, DataMember = Grandchilds)</LI></UL>
+<P>We found that if the Current&nbsp;item of bindingsource 2 changed, EndEdit() was not being called automatically on the Current (grandchild) item, leaving it at EditLevel 1. We solved this problem by calling EndEdit() ourselves. I don't know what event we hooked, but I can look that up if you're interested.</P>
+<P>Hope this helps!</P>
+<P>Cheers,<BR>Herman</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, January 23, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>McManus:</strong></div><div>We found that if the Current&nbsp;item of bindingsource 2 changed, EndEdit() was not being called automatically on the Current (grandchild) item, leaving it at EditLevel 1. We solved this problem by calling EndEdit() ourselves. I don't know what event we hooked, but I can look that up if you're interested.</div></BLOCKQUOTE><br>Thanks Herman. That sounds like the same problem I have. I think you probably used the CurrentChanged event but if you can confirm that some time I'd appreciate it. I've fiddled with similar "fixes" but I haven't had much luck with it. I guess it needs to do either an EndEdit or CancelEdit on the grandchild bindingSource depending on what you're actually doing. I've been concentrating on cancel simply because that's where I first noticed the problem.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 23, 2008</h2><P>Thanks! That does appear to be the solution.</P>
+<P>What a PITA this all turns out to be...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, January 23, 2008</h2>If this is working you then you're having better luck than I am&nbsp;<img src="/emoticons/emotion-6.gif" alt="Sad [:(]" />.<br><br>I'm trying it on your test app Rocky by putting grandchildrenBindingSource.EndEdit() in childrenBindingSource_CurrentChanged. I think that's what Herman was suggesting. That seems to have made it work for saving after modifying a child but I've had no luck at all making cancel work after deleting a child. I tried CancelEdit instead of EndEdit without success. Unfortunately I'm at the limits of my understanding of how these bindingsources really work or at least are supposed to work.<br><br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Thursday, January 24, 2008</h2><P>Ross, Rocky,</P>
+<P>Apparently, calling grandchildrenBindingSource.EndEdit() in childrenBindingSource_CurrentChanged solved just a part of the problem. This call takes care of the fact that the EditLevel of the&nbsp;"Current" GrandChild item changes from 2 to 1 (which is a good thing!).</P>
+<P>But there seems to be another problem: suppose we delete Child2. Just before the object is deleted, the value of BindingEdit is True. After deleting the object,&nbsp;the value of BindingEdit is still True.</P>
+<P>Now, when we cancel the deletion, we first Unbind the bindingsources. This results in all objects being at EditLevel 1 (which is a good thing too!). Then CancelEdit() is called on the Root object. As a result, Child2 is added to the ChildList again. Both have an EditLevel of 0.</P>
+<P>BUT: The GrandChildList of Child2 (and all its items)&nbsp;have an EditLevel of 1!!! The reason for this is that UndoChanges() wasn't called on the GrandChildList of Child2 ==&gt; the result of BindingEdit having the value True.</P>
+<P>When the root object is rebound again, EditLevelMismatchException is thrown.</P>
+<P>&nbsp;</P>
+<P>The same problem occurs in the following sitation:</P>
+<OL>
+<LI>Delete Child2 
+<LI>Apply changes 
+<LI>Change Name of the Root object 
+<LI>Cancel the change</LI></OL>
+<P>Note that the <STRONG>deletion</STRONG> of Child2 was <STRONG>confirmed</STRONG>, but canceling a new edit puts the deleted items back in the list again!!</P>
+<P>Complex stuff, isn't it?!?!</P>
+<P>Cheers,<BR>Herman</P>
+<P><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, January 24, 2008</h2>Thanks Herman. That sounds familiar from my limited testing. I sat down to have another play with it at home last night and noticed that Rocky's test application in the svn has changed from the day before and has some more debugging in it so I think he's looking at it. Good luck Rocky <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /> I'm sure it's time consuming at a awkward time and an absolute PITA to debug.<br><br>I only have this on one form and the n in n-level undo is never really &gt; 1 for me so for now I've made the cancel button throw away the objects and reload from the db. That has solved my immediate problem.<br><br>Cheers<br>Ross</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 24, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Grumble. I sent a response (possible fix) yesterday, but it
+appears to have disappeared between me and the forum :(<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The solution appears to be in Core.BusinessBase. In the
+DeleteChild() method, add a &#8220;BindingEdit = false&#8221; line right before
+the MarkDeleted() call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Can you test this in your scenarios and see if it does address
+the issue? (the EndEdit() call on the grandchild list is still required too)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tetranz
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 24, 2008 11:28 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] EditLevel problems with WinForms<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Herman. That sounds familiar from my limited testing.
+I sat down to have another play with it at home last night and noticed that
+Rocky's test application in the svn has changed from the day before and has
+some more debugging in it so I think he's looking at it. Good luck Rocky <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />">I'm sure it's
+time consuming at a awkward time and an absolute PITA to debug.<br>
+<br>
+I only have this on one form and the n in n-level undo is never really &gt; 1
+for me so for now I've made the cancel button throw away the objects and reload
+from the db. That has solved my immediate problem.<br>
+<br>
+Cheers<br>
+Ross<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, January 24, 2008</h2>Yes, working perfectly. <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />&nbsp; That's good news. I was worried that we might have to change the binding code in the UI forms again.<br><br>My real application uses a Janus grid with the children and grandchildren in a hierarchy so there's no grandchild bindingsource and that's working fine as is a more traditional test application I have.<br><br>Thanks<br>Ross<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+<div class="Section1"><span>Can you test this in your scenarios and see if it does address
+the issue?</span></div></BLOCKQUOTE></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, May 21, 2008</h2><P>Ross,</P>
+<P>What do your BO's look like for your children and grandchildren. I am doing essentially the same thing you are except with an infragistics grid. When I add a child with grandchildren to the grid through code everything is fine. But, when I try to add records on the fly in the grid I get edit level mismatch on the grandchildren. </P>
+<P>Did you just follow the same procedures for your grandchildren as you do for child objects?</P>
+<P>Ryan</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div>Yes, working perfectly. <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />&nbsp; That's good news. I was worried that we might have to change the binding code in the UI forms again.<BR><BR>My real application uses a Janus grid with the children and grandchildren in a hierarchy so there's no grandchild bindingsource and that's working fine as is a more traditional test application I have.<BR><BR>Thanks<BR>Ross<BR><BR><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> </P>
+<DIV class=Section1><SPAN>Can you test this in your scenarios and see if it does address the issue?</SPAN></div></BLOCKQUOTE></DIV></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, May 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rkelley:</strong></div><div><p>Ross,</p>
+<p>What do your BO's look like for your children and grandchildren. I am doing essentially the same thing you are except with an infragistics grid. When I add a child with grandchildren to the grid through code everything is fine. But, when I try to add records on the fly in the grid I get edit level mismatch on the grandchildren. </p>
+<p>Did you just follow the same procedures for your grandchildren as you do for child objects?</p>
+<p>Ryan</div></BLOCKQUOTE></p>Hi Ryan<br>I'm not doing anything special. My form and bindingsources are as if there are no grandchildren and follow the project tracker example. I have two bindingsources, one for the root and one for the children. The children bindingsource is feed from the root in the normal way using the DataMember. The grandchildren stuff happens inside the Janus grid. The Janus designer lets me define a child table and set its DataMember to the name of the collection property on my child objects. Sorry, I don't have any bright ideas about you issue other than wonder if the Infragistics grid does something weird.<br><br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Thursday, May 22, 2008</h2>I believe that my issue lies in the fact that I am using managed (propertyinfo) fields for all of my properties including child object. It looks like if I take my child objects and convert them to private backed fields then this error will go away. I am in the process of testing this now.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, May 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Be aware that if you use private backing fields for your child
+objects that you&#8217;ll have to do all the manual property and event hookups
+that were necessary in CSLA 3.0, because you&#8217;ll lose all the features of automatic
+child management.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, May 22, 2008 3:17 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: EditLevel problems with WinForms<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I believe that my issue lies in the fact that I am using
+managed (propertyinfo) fields for all of my properties including child object.
+It looks like if I take my child objects and convert them to private backed
+fields then this error will go away. I am in the process of testing this now.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Friday, January 25, 2008</h2><P>Rocky,</P>
+<P>The fix in BusinessBase.DeleteChild, together with the EndEdit() call on the GrandChild object solve the problem. </P>
+<P>Forget my remark about confirmed deletions showing up again. It doesn't happen now!</P>
+<P>Cheers,<BR>Herman</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 25, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good, thanks!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;ve checked in that change to 3.0.4 and 3.5 in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> McManus
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 25, 2008 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: EditLevel problems with WinForms<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>The fix in BusinessBase.DeleteChild, together with the EndEdit() call on the
+GrandChild object solve the problem. <o:p></o:p></p>
+
+<p>Forget my remark about confirmed deletions showing up again. It doesn't
+happen now!<o:p></o:p></p>
+
+<p>Cheers,<br>
+Herman<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Thursday, April 17, 2008</h2>Hi,<br>Some more strange behaviour.<br><br>What if you have a collection in the root object but you don't bind it to any bindingsource. The edit level of the first child is 2 and after applying the changes the level 1(which is wrong) and it breaks next time I begin edit.<br><br>To fix it I just bound the collection to a hidden grid and let the binding framework do the work.<br><br>Is this a problem in the UndoableBase class? I'm using 3.0.4.<br><br>Thanks,<br>Cosmin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 26, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not sure I follow what you are saying?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You have something like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Person contains AddressList contains Address(*)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You don&#8217;t bind Person or AddressList but you do bind an
+individual Address?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or you bind Person, but not AddressList, and then you do bind an
+individual Address?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Cosmin
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 17, 2008 9:58 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: EditLevel problems with WinForms<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+Some more strange behaviour.<br>
+<br>
+What if you have a collection in the root object but you don't bind it to any
+bindingsource. The edit level of the first child is 2 and after applying the
+changes the level 1(which is wrong) and it breaks next time I begin edit.<br>
+<br>
+To fix it I just bound the collection to a hidden grid and let the binding framework
+do the work.<br>
+<br>
+Is this a problem in the UndoableBase class?<br>
+<br>
+Thanks,<br>
+Cosmin<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

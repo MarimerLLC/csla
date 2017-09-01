@@ -1,0 +1,78 @@
+<html><header><title>Confusion with object design - Members</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Confusion with object design - Members</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/439.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana posted on Wednesday, June 21, 2006</h2>
+
+
+
+
+
+
+<DIV><FONT face=Arial size=2>Hi,</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Here's my situation.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>My application has some members who can login, 
+register, etc. I'm finding I have a few types of member objects but not sure how 
+I should go about doing this.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Firstly, there should be an editable root member 
+object, for editing one specific member's information. Let's say a member wants 
+to edit their information, or an administrator wants to change some information 
+for that member.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Next, there should be a member list of some kind. 
+There should be methods that return a list of members, such as, FindAllMembers, 
+which retrieves pages of member data. I guess that this could be read only, but 
+it's hard to say.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>However, there should be functionality for removing 
+members, and adding new members. I'm not sure if this should be done through the 
+list or the member object itself?</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Assuming and hoping that can be done through the 
+top level Member object, I'm thinking of having:</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Member (editable root)</FONT></DIV>
+<DIV><FONT face=Arial size=2>MemberList (Read only list)</FONT></DIV>
+<DIV><FONT face=Arial size=2>MemberInformation (Read only child)</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I'll be making a custom provider that'll be using 
+some of the methods from these as well.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Also, there are going to be administrators, 
+employees, and customers, as types of members. Should these be separate objects? 
+Obviously, employees shouldn't be allowed to edit an administrator's data, but 
+an administrator should be able to edit an employee's or customer's information. 
+I should also be able to retrieve lists of administrators, employees, and 
+customers exclusively.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Most of these hold the same data in common, except 
+that customers have address information, which I was thinking could just be 
+profile information.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I'm starting to get better at this object oriented 
+design, but I'm a little confused on this base.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Thanks,</FONT></DIV>
+<DIV><FONT face=Arial size=2>Brandon</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Thursday, June 22, 2006</h2><P>Hi Brandon,</P>
+<P>I would recommend create a Command Object to handle the delete.&nbsp; Then it would work like the following:</P>
+<UL>
+<LI>Member list Displayed</LI>
+<LI>User selects the delete button/link</LI>
+<LI>new MemberDeleteCommand object&nbsp;created using selected member ID, and executed.</LI>
+<LI>Refresh List</LI></UL>
+<P>Looking at your current design, that is what I would do as well in your situation:</P>
+<DIV><FONT face=Arial size=2>Member (editable root)</FONT></DIV>
+<DIV><FONT face=Arial size=2>MemberList (Read only list)</FONT></DIV>
+<DIV><FONT face=Arial size=2>MemberInformation (Read only child)</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>I wouldn't create new objects based on their security requirements,&nbsp;the new Authorization stuff will help you out a great deal with this, you can set read/write permissions on properties depending on the users roles.</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Regards</FONT></DIV>
+<DIV><FONT face=Arial size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face=Arial size=2>Craig</FONT></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>devbanana replied on Thursday, June 22, 2006</h2><P>hi,</P>
+<P>&nbsp;</P>
+<P>Why would you create a separate command just for deleting members? Isn't there a Delete method on the business object itself? A bit confused&nbsp; on this point.</P>
+<P>&nbsp;</P>
+<P>Thanks for the reply.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Thursday, June 22, 2006</h2><P>Hi,</P>
+<P>&nbsp;</P>
+<P>Yes sorry to cause confusion, you could use the Immediate delete option on your Member Class. (didn't think it through before replying :))</P>
+<P>Craig</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

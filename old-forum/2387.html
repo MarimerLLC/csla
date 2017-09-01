@@ -1,0 +1,16 @@
+<html><header><title>Validation, Databinding and Error Provider</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation, Databinding and Error Provider</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2387.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmorris posted on Tuesday, February 20, 2007</h2><P>I have an editable root object Thing that contains a collection of child Thinglets. This is all databound to a form with an embedded data gridview to display the Thinglet lists. Various validation rules are set on the two objects. These work fine with the MS Error Provider that is dropped on the form to give an error icon next to any erroneously set property.</P>
+<P>The operator will at times need to save a draft of his work before committing it to the database. To facilitate this I have set up simple (i.e. not Csla) objects DraftThing which contains a List&lt;&gt; of DraftThinglets. The important properties of the Thing are copied over into the DraftThing class which can then be saved using an out-of-the-box XmlSerialiser. Fine.</P>
+<P>But when I de-serialize the DraftThing and copy its properties into a newly created Thing I reset the forms bindingdatasource to the new Thing. Re-display happens but the validation stops. It seems that I need to jolt the business object into re-validating, but I can't see how to do this without exposing CheckValid methods that are hidden in the Csla design.</P>
+<P>Any ideas please?</P>
+<P>&nbsp;</P>
+<P>Bob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 20, 2007</h2><P>Have you tried calling the reset method on the bindingsource object? </P>
+<P>Remember that the errorprovider is bound to the bindingsource too. Perhaps it is somehow not getting notified of the change to the actual data source or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmorris replied on Friday, March 09, 2007</h2><P>Thanks for the reply. I tried that to no effect, and also the errorProvider.UpdateBinding method. This is the real scenario. I load user control inherited from WinPart. WinPart has a variable pointing to a RootObject say: _data.</P>
+<P>In the _Load event </P>
+<P>_data= null;</P>
+<P>&nbsp;_data = DataNewData();</P>
+<P>check for dud data</P>
+<P>dataBindingSource = _data;</P>
+<P>This works fine first time round. All the validation routines fire the way they should. Now the user loads the WinPart again so we run through that code again which should load a new dirty and invalid Data.</P>
+<P>But this time the when the user edits the bound form fields the Data Validation rules don't fire and won't 'til I restart the program.</P>
+<P>Best Regards</P>
+<P>Bob</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

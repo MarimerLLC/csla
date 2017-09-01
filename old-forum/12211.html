@@ -1,0 +1,35 @@
+<html><header><title>Upgrading from CSLA .NET 2.0 (VS 2005) to the latest stable release (VS 2013)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrading from CSLA .NET 2.0 (VS 2005) to the latest stable release (VS 2013)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12211.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Sunday, November 10, 2013</h2><p>I have a solution with several projects developed using VS 2005 and CSLA .NET 2.0.</p>
+<p>We are now planning to upgrade to VS 2013 and use latest stable release of CSLA .NET 4.x.</p>
+<p><strong><span style="text-decoration:underline;">Questions:</span></strong></p>
+<p>1. Is this as simple as convert the solution and source code from VS 2005 to VS 2013, remove the old reference to CSLA .NET 2.0 DLL and add the latest CSLA .NET DLL reference?</p>
+<p>2. Will be there any breaking changes if I replace &quot;csla.dll&quot; reference with the latest release?</p>
+<p>3. Could you point me to any document which has details/instructions related to this upgrade?</p>
+<p>Appreciate your help.</p>
+<p>Tarek.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, November 10, 2013</h2><p>Hi,&nbsp;</p>
+<p>If you are thinking of moving to the latest version of CSLA .NET (4.5x) then you have a long and winding road ahead of you.</p>
+<p>On the other hand - you should be able to migrate the solution from VS 2005 to VS 2013 and continue to target .NET 2.0 (or up to .NET 3.5) and still use the old reference assemblies.&nbsp;</p>
+<p>As for breaking changes you must study the Change log from the version you are currently using to the one you want to target. The change log is available on the download pages:&nbsp;<a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Awais replied on Wednesday, February 05, 2014</h2><p>Hi-</p>
+<p>in Reference to the post made by tarekahf, I am trying to migrate the same project to Visual Studio 2013, and It gives me following errors &amp; warnings and the&nbsp;CSLAIDB.Library failed to load. Appreciate your help to be able to open this class library project using Visual Studio 2013.</p>
+<p>&nbsp;</p>
+<p>Solution<span>	</span>CSLAIDB.Library\CSLAIDB.Library.vbproj<span>	</span>1<span>	</span>0<span>	</span>0</p>
+<p>CSLAIDB.Library<span>	</span>CSLAIDB.Library\CSLAIDB.Library.vbproj<span>	</span>0<span>	</span>4<span>	</span>178</p>
+<p>&nbsp;</p>
+<p>Solution</p>
+<p>Message</p>
+<p>CSLAIDB.Library\CSLAIDB.Library.vbproj: The imported project &quot;C:\Program Files\MSBuild\Microsoft\VisualStudio\v11.0\WebApplications\Microsoft.WebApplication.targets&quot; was not found. Confirm that the path in the &lt;Import&gt; declaration is correct, and that the file exists on disk. D:\VS2013\Projects\webapp\CSLA.NET\CSLAIDB\CSLAIDB.Library\CSLAIDB.Library.vbproj</p>
+<p>CSLAIDB.Library</p>
+<p>Message</p>
+<p>CSLAIDB.Library\CSLAIDB.Library.vbproj: Visual Studio needs to make non-functional changes to this project in order to enable the project to open in Visual Studio 2013, Visual Studio 2012, and Visual Studio 2010 SP1 without impacting project behavior.</p>
+<p>CSLAIDB.Library\CSLAIDB.Library.vbproj: Visual Studio needs to make non-functional changes to this project in order to enable the project to open in Visual Studio 2013, Visual Studio 2012, and Visual Studio 2010 SP1 without impacting project behavior.</p>
+<p>CSLAIDB.Library\CSLAIDB.Library.vbproj: Your project is targeting .NET Framework 2.0 or 3.0. If your project uses assemblies requiring a newer .NET Framework, your project will fail to build. You can change the .NET Framework version by clicking Properties on the project menu and then selecting a new version in the &#39;.NET Framework&#39; dropdown box. (In Visual Basic, this is located on the Compile tab by clicking the &#39;Advanced Compiler Options...&#39; button.)</p>
+<p>CSLAIDB.Library\CSLAIDB.Library.vbproj: Visual Studio has made non-functional changes to this project in order to enable the project to open in Visual Studio 2013, Visual Studio 2012, and Visual Studio 2010 SP1 without impacting project behavior.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Wednesday, February 05, 2014</h2><p>Hi Awais,</p>
+<p>On my machine, I just modified the Project File at this line as follows:</p>
+<p>&nbsp; &lt;Import Project=&quot;$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v12.0\WebApplications\Microsoft.WebApplication.targets&quot; /&gt;</p>
+<div>and the project loaded successfully, and the entire solution was compiled without any error.</div>
+<div></div>
+<div>I hope it will run without any error in the production server.</div>
+<div></div>
+<div>Tarek</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Awais replied on Thursday, February 06, 2014</h2><p>Thanks Tarek, that worked !</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf replied on Friday, February 07, 2014</h2><p>Awais, please create another virtual website on your laptop for the same project after its was compiled under VS 2013.</p>
+<p>Tarek</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

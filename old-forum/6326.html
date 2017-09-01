@@ -1,0 +1,277 @@
+<html><header><title>ObjectFactory</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6326.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Wednesday, February 04, 2009</h2><P>Ok, it really has it's limits.</P>
+<P>The business object has dirty flags and is the only one knowing what has to be updated.<BR>The ObjectFactory breaks the encapsulation and single responsibility&nbsp;quite a bit, but&nbsp;offers more flexibility.&nbsp;And it&nbsp;gives a better separation between the business layer and data access layer. Performance is very important but on the other hand it shouldn't get too complex!</P>
+<P>It's more work for sure, but most of it works. And in the new 3.6.1 version Rocky implemented the LoadProperty method in the ObjectFactory.</P>
+<P>But until now i bumped into several limitations:</P>
+<P>1) Lazy loading<BR>Using lazy loading with FieldManager.FieldExists(..) works fine until u want to let the root objectfactory persist the business object. <BR>Problem: The objectfactory has no access to the Fieldmanager and so it'll trigger an LoadProperty.</P>
+<P>2) DeletedList<BR>A child as BLB contains deleted childs, an properted property in the BLB. Normally the DataPortal does a UpdateChild resulting in the Child_Update method being executed. Each item in the DeletedList is then being deleted, before the DeletedList is cleared. <BR>Problem: The objectfactory has no access to the DeletedList, so it can't delete those items.<BR><BR><BR>Can those 2 points be solved somehow?<BR>Exposing the FieldManager to the ObjectFactory is not really nice..</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>I'll add these to the wish list.<br /><br />As I've said in other threads, the primary purpose behind ObjectFactory is/was to lay the foundation to support a future version of ADO.NET EF.<br /><br />At the same time, I also figured people would use it for various other types of DAL as well. And I did as little as possible around that, because it wasn't (and still isn't) clear to me what would be the best overall approach to building such a DAL.<br /><br />Certainly this direct approach of having the factory methods reach into the guts of a business object and twist them around is an obvious answer - but I really am not so sure it is elegant or even wise. The coupling between the business and factory objects, and the blatant disregard for encapsulation boundaries really bothers me.<br /><br />At the same time, the ObjectFactory base class has already started down this road, and so it may be that I just keep adding more protected methods to this class to enable tighter coupling and so forth.<br /><br />What I _hope_ is that someone thinks of a solution that has better decoupling and protects encapsulation more effectively. I haven't had time to put a lot of thought into that myself, but I think the possibility exists.<br /><br />And if that happens, I can see adding another base class like ObjectFactory, but one that exposes protected methods to enable that more elegant scenario.<br /><br />I'm not trying to criticize what you are doing! I'm just trying to challenge everyone to think about the consequences of this approach, and to consider that there might be other approaches.<br /><br />For example, I am hopeful that a future EF will use a lambda-based construct to get/set business object field values. In other words, EF will define a delegate signature for get and for set, and CSLA will be able to give EF a lambda that fulfills that requirement. Behind the scenes, the lambda will call ReadPorperty() and LoadProperty(), but to EF it will appear as a standardized get or set method.<br /><br />I don't yet know how they intend on letting something like CSLA control the creation of specific object instances - or if that's even in the cards. But I imagine a similar delegate/lambda scheme can work for that as well.<br /><br />But on the whole, this idea of an external DAL is a mess - because it breaks encapsulation by definition, and because it clearly leads (in any current incarnation I've seen) to really tight coupling beween the business and factory objects. <br /><br />And my worry is that 6 to 18 months from now we'll all discover that the end result isn't great.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, February 04, 2009</h2><P>The main reason i'm using the objectfactory is:</P>
+<P>1) In the business and frontend assembly's there is totally no references needed to any assembly's required by the data access layer. </P>
+<P>2) Our lists can have multiple objects comming from differend data sources, not only the customer database but also an&nbsp;webservice. The business object has a property so the objectfactory can update the correct database or webservice. VETRO? :)<BR>How will it work when i the dataportal_xyz methods..</P>
+<P>Anyway i hope u are wrong that we'll all discover that the endresult won't be great.</P>
+<P><BR>Maybe i can still dump the whole idea of using the objectfactory, it isn't too late yet... i'm still in a pre-fase for building an framework.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I might be wrong, but it appears to me that you can accomplish
+1) and 2) without no need for Object Factory.&nbsp; Check Frank&#8217;s post on
+StructureMap and Csla:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><a href="http://maonet.wordpress.com/2008/08/08/using-structuremap-to-mock-dataaccess-in-csla-bo/">http://maonet.wordpress.com/2008/08/08/using-structuremap-to-mock-dataaccess-in-csla-bo/</a><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>One important thing to note is that in Frank&#8217;s code
+example &#8220;ObjectFactory&#8221; is a StructureMap class.&nbsp; It happens
+to have a same name as Csla ObjectFactory, but serves a different purpose.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I truly believe that using StructureMap(Unity or Windsor, or
+some other IoC tool) to separate out dependencies is a better/simpler way to do
+this, and for now lets leave ObjectFactory as a placeholder for future EF
+integration.<o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rfcdejong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 04, 2009 10:04 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] ObjectFactory<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The main reason i'm using the objectfactory is:<o:p></o:p></p>
+
+<p>1) In the business and frontend assembly's there is totally no references
+needed to any assembly's required by the data access layer. <o:p></o:p></p>
+
+<p>2) Our lists can have multiple objects comming from differend data sources,
+not only the customer database but also an&nbsp;webservice. The business object
+has a property so the objectfactory can update the correct database or
+webservice. VETRO? :)<br>
+How will it work when i the dataportal_xyz methods..<o:p></o:p></p>
+
+<p>Anyway i hope u are wrong that we'll all discover that the endresult won't
+be great.<o:p></o:p></p>
+
+<p><br>
+Maybe i can still dump the whole idea of using the objectfactory, it isn't too
+late yet... i'm still in a pre-fase for building an framework.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nermin is correct, it is absolutely possible to build a nice DAL
+for use directly from the DataPortal_XYZ methods. I prototyped this a long time
+ago in the DeepData sample app, and Frank applied some really nice patterns to
+the overall concept.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One key thing to note about both DeepData and Frank&#8217;s
+post, is the use of a DTO to transport data between the business object and
+DAL. This is the primary mechanism available for decoupling the two objects,
+and it can help preserve encapsulation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The use of DTOs incurs overhead and requires more code, but the
+end result is good from an architectural perspective.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not trying to discourage you from using the object
+factory concept &#8211; don&#8217;t get me wrong.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I&#8217;m just saying that it is a new concept, and so my implementation
+thus far has been as conservative as possible, because I don&#8217;t know yet
+what is a good or bad practice.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I totally understand the desire to have an external DAL
+assembly!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And most of the problems I listed in my previous post are
+universal to having an external DAL. That concept, in general, forces you to
+break encapsulation. And I have yet to see a solution that didn&#8217;t incur a
+lot of tight coupling. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rfcdejong
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 04, 2009 10:03 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ObjectFactory<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>The main reason i'm using the objectfactory is:<o:p></o:p></p>
+
+<p>1) In the business and frontend assembly's there is totally no references
+needed to any assembly's required by the data access layer. <o:p></o:p></p>
+
+<p>2) Our lists can have multiple objects comming from differend data sources,
+not only the customer database but also an&nbsp;webservice. The business object
+has a property so the objectfactory can update the correct database or
+webservice. VETRO? :)<br>
+How will it work when i the dataportal_xyz methods..<o:p></o:p></p>
+
+<p>Anyway i hope u are wrong that we'll all discover that the endresult won't
+be great.<o:p></o:p></p>
+
+<p><br>
+Maybe i can still dump the whole idea of using the objectfactory, it isn't too
+late yet... i'm still in a pre-fase for building an framework.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Wednesday, February 04, 2009</h2>1) Exposing FieldManager to be public.<br>2) I don't think using ObjectFactory for BusinessList is a good idea, it only makes things more complicated. Just leave those Child_XYZ methods still in ChildBO.<br><br>To solve the problem completely, move relationship to ORM, then you can retire FieldManger from BO.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As I&#8217;ve said in a couple other threads, the field manager
+exists to avoid the requirement for reflection during serialization. Field
+manager doesn&#8217;t exist for data access or data factories or any of these concepts.
+It exists so it is possible to serialize an object graph without reflection
+(for Silverlight).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 04, 2009 10:02 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] ObjectFactory<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>1) Exposing FieldManager to be public.<br>
+2) I don't think using ObjectFactory for BusinessList is a good idea, it only
+makes things more complicated. Just leave those Child_XYZ methods still in
+ChildBO.<br>
+<br>
+To solve the problem completely, move relationship to ORM, then you can retire
+FieldManger from BO.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

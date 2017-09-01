@@ -1,0 +1,96 @@
+<html><header><title>CSLA 4.1 performance issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.1 performance issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10213.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>slackmaster posted on Monday, March 28, 2011</h2><p>I have a table of around 15 columns, with a few hundred records, potentially going to thousands. I present the user with a &quot;search&quot; form, so that they can select a record to work with. Using a ReadOnlyListBase/ReadOnlyBase combination, I populate a BindingSource, and bind that to a listbox. </p>
+<p>The problem I have is this: it takes around 15 seconds for the ReadOnlyListBase to populate itself with the 300 or so records? Performing a direct select on the table in SQL Management Studio of course takes milliseconds. Here is a snippet of the ROB:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">internal</span> TableInfo(<span style="color:#2b91af;">WMSSafeDataReader</span>&nbsp;dr)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fetch(dr);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#endregion</span>
+ 
+<span style="color:blue;">&nbsp;&nbsp;&nbsp;&nbsp;#region</span>&nbsp;Data&nbsp;Access
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Fetch(<span style="color:#2b91af;">WMSSafeDataReader</span>&nbsp;dr)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.Id&nbsp;=&nbsp;dr.GetInt32(<span style="color:#a31515;">&quot;ID&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">this</span>.Code&nbsp;=&nbsp;dr.GetString(<span style="color:#a31515;">&quot;CODE&quot;</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.Description&nbsp;=&nbsp;dr.GetString(<span style="color:#a31515;">&quot;DESCRIPTION&quot;</span>);
+&nbsp;&nbsp;&nbsp; }
+<br />and the ROLB:<br /><br />&nbsp;&nbsp;&nbsp; <span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;DataPortal_Fetch(<span style="color:#2b91af;">Criteria</span>&nbsp;criteria)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">using</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;ctx&nbsp;=&nbsp;<span style="color:#2b91af;">ConnectionManager</span>.GetManager(connectionString,&nbsp;<span style="color:blue;">false</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">using</span>&nbsp;(<span style="color:#2b91af;">IDbCommand</span>&nbsp;cm&nbsp;=&nbsp;ctx.Connection.CreateCommand())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cm.CommandText&nbsp;=&nbsp;<span style="color:#a31515;">&quot;SELECT ID, CODE, DESCRIPTION FROM TABLE</span><span style="color:#a31515;"> &quot;</span>;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(criteria.ThisId&nbsp;!=&nbsp;0)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cm.CommandText&nbsp;+= <span style="color:#a31515;">&quot;&nbsp;WHERE&nbsp;&quot;</span><span style="color:#a31515;"></span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText&nbsp;+=&nbsp;<span style="color:#a31515;">&quot; THIS_ID =&nbsp;@THIS_ID &quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cm.Parameters.Add(CreateParm(<span style="color:#a31515;">&quot;THIS_ID&quot;</span>,&nbsp;criteria.ThisId));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+  
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">using</span>&nbsp;(<span style="color:#2b91af;">SafeDataReader</span>&nbsp;dr&nbsp;=&nbsp;<span style="color:blue;">new</span> <span style="color:#2b91af;">SafeDataReader</span>(cm.ExecuteReader()))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">while</span>&nbsp;(dr.Read())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Add(<span style="color:blue;">new</span> <span style="color:#2b91af;">TableInfo</span>(dr));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;IsReadOnly&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RaiseListChangedEvents&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+<br /></pre>
+<p>Is there anything I can do differently to speed this up? 5 seconds per 100 records in absolutely unacceptable?! Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, March 28, 2011</h2><p>When you put a breakpoint in just before the select statement is sent to the db, how long does it take when you press f10 and run that line of code?</p>
+<p>I ask because comparing your code to the time it takes in sql server management studio is a first step at best in getting to the bottom of it. All it proves is how fast the query *could* run, not actually how fast it&#39;s running in your code.</p>
+<p> You&#39;re not necessarily comparing oranges to oranges that way.</p>
+<p>You need to see first off if there is a delay of that length <b>in your code</b> where it executes the statement.</p>
+<p>Don&#39;t assume any delay is where you *think* it is, prove it first.</p>
+<p>(What is firstexpr there for, it&#39;s unclear to me and looks completely redundant?)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slackmaster replied on Monday, March 28, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b></p>
+<p>When you put a breakpoint in just before the select statement is sent to the db, how long does it take when you press f10 and run that line of code?</p>
+<p></div></p>
+<p>The data is retrieved very quickly from the database. The delay is inside &quot;while (dr.Read())&quot;, namely in the call to Add().</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b></p>
+<p>(What is firstexpr there for, it&#39;s unclear to me and looks completely redundant?)</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>I just forgot to edit that out of the code snippet while anonymizing it. Also, the ID is needed, as this is a list of base objects. We want the list to &quot;find&quot; the ID we wish to view/edit.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, March 28, 2011</h2><p>Also isn&#39;t fetching the ID redundant since it&#39;s a known parameter in advance of the query executing?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Monday, March 28, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>slackmaster<br></b></p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span><span style="font-family:Consolas;font-size:x-small;">&nbsp;</span><span style="color:blue;">void</span><span style="font-family:Consolas;font-size:x-small;">&nbsp;Fetch(</span><span style="color:#2b91af;">WMSSafeDataReader</span><span style="font-family:Consolas;font-size:x-small;">&nbsp;dr)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:blue;">this</span><span style="font-family:Consolas;font-size:x-small;">.Id&nbsp;=&nbsp;dr.GetInt32(</span><span style="color:#a31515;">&quot;ID&quot;</span><span style="font-family:Consolas;font-size:x-small;">);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="color:blue;">this</span><span style="font-family:Consolas;font-size:x-small;">.Code&nbsp;=&nbsp;dr.GetString(</span><span style="color:#a31515;">&quot;CODE&quot;</span><span style="font-family:Consolas;font-size:x-small;">);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span style="color:blue;">this</span><span style="font-family:Consolas;font-size:x-small;">.Description&nbsp;=&nbsp;dr.GetString(</span><span style="color:#a31515;">&quot;DESCRIPTION&quot;</span><span style="font-family:Consolas;font-size:x-small;">);
+&nbsp;&nbsp;&nbsp; }<br /></span></pre>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Assuming that you are using managed properties, using one of the below methods should help</p>
+<p>
+<ul>
+<li>using LoadProperty(_IdProperty, dr.GetInt32(&quot;ID&quot;) or&nbsp;</li>
+<li>wrap the property&nbsp;initializers around&nbsp;a Using BypassPropertyChecks().</li>
+</ul>
+</p>
+<p>The constant checking of if a user can write to a property can slow things done in a list significantly, especially when loading.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slackmaster replied on Monday, March 28, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Marjon<br></b></p>
+<p>Assuming that you are using managed properties, using one of the below methods should help</p>
+<p>&nbsp;</p>
+<ul>
+<li>using LoadProperty(_IdProperty, dr.GetInt32(&quot;ID&quot;) or&nbsp;</li>
+<li>wrap the property&nbsp;initializers around&nbsp;a Using BypassPropertyChecks().</li>
+</ul>
+<p>&nbsp;</p>
+<p>The constant checking of if a user can write to a property can slow things done in a list significantly, especially when loading.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Here is how the property declaration is done:</p>
+<p style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">int</span>&nbsp;Id&nbsp;{&nbsp;<span style="color:blue;">get</span>;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">set</span>;&nbsp;}
+</p>
+<p style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% white;">I&#39;ll try your suggestion, and see if it helps.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slackmaster replied on Monday, March 28, 2011</h2><p>Well, unfortunately nothing I try speeds things up any. I experimented trying your suggestion to use managed fields and LoadProperty. I then tried passing in an array of object instead of SafeDataReader, to see if perhaps that was a cause of the slowdown (which didn&#39;t make sense anyway, as it should just be in the same server memory space).</p>
+<p>Another interesting point here, is that when this is processing, my CPU is pinned the whole time. At least one core is, anyway. Why on earth would it need so much processing power to do this? In the time it would take this to process 72000 records, I could encode a bloody H.264 movie.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Monday, March 28, 2011</h2><p>Are you using an application server?</p>
+<p>I can assure you that that ROL&#39;s are not normally this slow, we have several lists that load a thousand or so entries in the time it is taking to load 300 for you. We will get to the bottom your problem, with enough time and patience :)</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, March 29, 2011</h2><p>Run your code with a CLR Profiler. This will pinpont more exectly which lines are consuming so much time. </p>
+<p>VS2010 Premium/Ultimate has a builtin profiler or you can use the DotTrace og Ants profiler trial version to test it.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slackmaster replied on Tuesday, March 29, 2011</h2><p>Thanks for your help guys. I&#39;ll try the profiler, and see what it yields.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>slackmaster replied on Tuesday, March 29, 2011</h2><p>Thanks @Johnny, score! I just found a HUGE performance issue with my custom database access code. Thank you!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

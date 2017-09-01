@@ -1,0 +1,8 @@
+<html><header><title>Order of updating a list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Order of updating a list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12215.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vandenbergjp posted on Monday, November 11, 2013</h2><p>Hi,</p>
+<p>In all example DAL code I have seen for updating a&nbsp;list: first the deleted items and then the regular items are processed. I was wondering if this order is important. </p>
+<p>The reason I ask this is because I have a situation where I would like to copy information associated with the deleted items to certain new items in the list. The associated information can be rather large and only exist in the database and not in memory.</p>
+<p>Thanks,</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 11, 2013</h2><p>Hi,&nbsp;</p>
+<p>When you update items in a list you often have primary / unique keys in the database and could possibly have both deleted and added new items with the same unique key(s). </p>
+<p>That is why the deleted items is always deleted first - and then the list items is updated/inserted.&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vandenbergjp replied on Tuesday, November 12, 2013</h2><p>Thanks JonnyBee. My primairy keys are autoincremented in SqlServer and are using a sequence in Oracle so I don&#39;t think that will cause a problem in my case.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

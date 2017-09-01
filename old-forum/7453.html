@@ -1,0 +1,100 @@
+<html><header><title>CSLA .NET 3.6.3 for .NET 2.0 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6.3 for .NET 2.0 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7453.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, August 13, 2009</h2><P>CSLA .NET 3.6 normally requires .NET 3.5 SP1. However, if you are using Visual Studio 2008 it is possible (with some work and a third party LINQ library) to get CSLA .NET 3.6 running on .NET 2.0 SP1. Jonny Bekkum has done just that, and has contributed the results of his efforts to the community - thank you Jonny!</P>
+<P>The result is a large subset of version 3.6.3 that builds and runs on .NET 2.0 SP1, eliminating the need for .NET 3.5 SP1 (though adding the need for <A href="http://www.albahari.com/nutshell/linqbridge.aspx"><STRONG><FONT color=#0000ff>LINQbridge</FONT></STRONG></A>, a third-party component).</P>
+<P>You get to use the most of the new features in CSLA .NET, including: </P>
+<OL>
+<LI>Managed properties in <B>BusinessBase</B>, <B>ReadOnlyBase</B> and <B>CommandBase</B> that reduces the number of lines required to declare a property. 
+<LI><B>PropertyInfo</B> type for less hardcoding of property names in your code. 
+<LI><B>FieldManager</B> and <B>DataPortal</B> enhancements, including the asynchronous DataPortal and Child_XYZ mehthods. 
+<LI><B>ObjectFactory</B> for separation of BO and DAL 
+<LI><B>CslaActionExtender</B> reduces the amount of code behind required in Windows Forms 
+<LI>Reflection enhancements (<B>MethodCaller</B>) for dynamic calls 
+<LI>An easier upgrade path to CSLA .NET 3.7 and Silverlight 
+<LI>and a lot more …. </LI></OL>
+<P>Jonny has not only got the CSLA .NET framework running on .NET 2.0, but he’s got unit tests and samples! This is an amazing contribution to the community.</P>
+<P>You can download this version from <A href="http://www.lhotka.net/cslanet/N2.aspx"><STRONG>http://www.lhotka.net/cslanet/N2.aspx</STRONG></A>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Friday, August 14, 2009</h2><P>I'm glad this finally materialized! Stuck in the .Net 2.0 world (but having done 1 project with CSLA 3.6.x), I really missed all the new features. The upgrade was also very easy. No compilation errors and so far no runtime errors during testing. </P>
+<P>Thanks for this great effort!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 14, 2009</h2>Hi all,<br><br>And in addition to  new features of Csla 3.6 you get to use nearly all of the C# 3.0 syntax in .Net 2.0 projects!<br><br>Quote from <a href="http://www.albahari.com/nutshell/linqbridge.aspx"><strong><font color="#0000ff">LINQbridge</font></strong></a>:<p><i>"With Studio's multi-targeting and LINQBridge, you'll be able to write local (LINQ 
+to Objects) queries using the full power of the C# 3.0 compiler—and yet your 
+programs will require only Framework 2.0.</i></p>
+<p><i><b>LINQBridge is a reimplementation of all the standard query operators in 
+Framework 3.5's Enumerable class.</b> It's designed to work with the <b>C# 3.0</b> 
+compiler, as used by Visual Studio 2008. LINQBridge comprises a "LINQ to 
+Objects" API for running local queries. (It doesn't include an implementation of 
+LINQ to SQL, nor LINQ to XML; a good compromise can be to force Framework 3.5 
+out to just the server machines, allowing LINQ to SQL to be used where it's 
+needed most).</i></p>
+<p><i>LINQBridge also includes Framework 3.5's generic <b>Func</b> and <b>Action</b> 
+delegates, as well as <b>ExtensionAttribute</b>, allowing you to use C# 3.0's extension 
+methods in Framework 2.0.</i></p>
+<p><i>In fact LINQBridge lets you use nearly all of the features in C# 3.0 with Framework 
+2.0—including extension methods, lambda functions and query comprehensions. The 
+only feature it does not support is compiling lambdas to expression trees (i.e., Expression&lt;TDelegate&gt;)."</i></p>/jonnybee<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, August 24, 2009</h2>Rocky,<br><br>As with many people out there, I am stuck with .NET 2.0 Windows Forms development with CSLA .NET version 3.0.5. I am excited to acknowledge a solution exists that leverages new capabilities in newer version of CSLA .NET from .NET 2.0 directly.<br><br>However, there are some concerns being raised up from my development team on this alternate version of CSLA .NET 3.6.3 for .NET 2.0 from Jonny Bekkum.<br><br>1) Do you see any behavioral difference between the original version and the modified version?<br><br>2) The last stable version of CSLA .NET 3.6.x is 3.6.3. And, the latest stable version of CSLA .NET that is based on .NET 3.5 SP1 is version 3.7. I would assume that any changes (in terms of bug fixes and enhancements) that apply to version 3.7 and above (e.g. 3.7.1, 3.8 and so on) will not be propagated back to this modified version. Correct?<br><br>Do you have any different thoughts or recommendations on this end?<br><br>Thanks.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As I&#8217;m sure you are aware, I&#8217;m a development team of
+one person. This means I have extremely limited resources to manage development
+and maintenance.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Fortunately people have come forward over time to help with the
+framework. Sometimes for one component/feature, sometimes for one release cycle
+and sometimes longer term.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t have time to maintain more than one main version
+at a time myself &#8211; though arguably I&#8217;m already up to maintaining
+two versions (Windows and Silverlight).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, development and maintenance of the N2 version
+(that&#8217;s what we&#8217;re calling Jonny&#8217;s branch) is up to Jonny
+and/or the community.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I view this very much like the VB version, which exists through
+the hard work of 2-3 people (Sean, Von and Rick), and the ongoing work of Sean
+Rhone, who is updating it to 3.6.3 at the moment.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This means that it is really up to Jonny as to whether the N2
+version moves to 3.7, 3.8 and so forth. You should be aware that it may or may
+not be possible for the N2 version to maintain any real parity with CSLA .NET 4.0
+&#8211; it all depends on how much of the .NET 4.0 functionality can be
+implemented in .NET 2.0. Already the N2 version requires LinqBridge to get .NET
+3.5 features in .NET 2.0, and I guess it will be interesting to see what
+lengths people go to for .NET 4.0 in that regard.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I talk about CSLA .NET 4.0, because once I release 3.8 for SL3
+support my focus (and so the live codebase) will be 4.0. All the CSLA .NET 1.x,
+2.x and 3.x versions will be bug-fix only at that point &#8211; and that&#8217;ll
+happen in the next 2-3 months.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, August 24, 2009</h2>Rocky,<br><br>Thanks for your prompt reply and clear elaboration.<br><br>I totally understand your position and agree on the direction you are taking on the development and maintenance efforts.<br><br>Anyway, I appreciate and thank you all your efforts in developing such a great CSLA .NET framework.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>William replied on Monday, August 24, 2009</h2>In addition, I would like to thank Johnny in making the N2 version a reality.<br><br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 24, 2009</h2>Hi William, <br><br>Actually - the modifications to CSLA 3.6.3 to run on .NET 2.0 is quite small (took me about 1 1/2 hrs of coding). The test project is a different matter - having to check the failing tests and consider whether the test is relevant for .Net 2.0 or not. So behavioral difference is not a concern for us. <br><br>We have been using a downscaled version for almost a year at the largest bank in Norway, actually since Csla 3.5.0 for .Net 3.5&nbsp; and our internal version is already upgraded to Csla 3.7.1 (beta). We have about 35 developers using Csla (and primarily) the .Net 2.0 version for development/maintenance. <br><br>If you look at the change log for Csla 3.7.0 (latest release) there is changes to WPF and async events - these do not affect the 3.6.3 version for .Net 2.0. <br><br>There are updates for FilteredBindingList/SortedBindingList and MethodCaller i 3.7.1 (beta) and 3.7.2 (alfa) and I will include these as soon as these versions are released. <br><br>The Csla 3.6.3 version is a result of discussions I had with Rocky during his trip to Norway to NDC 2009 (<a href="http://www.ndc2009.no">www.ndc2009.no</a>) and I have committet myself so support this version. All source code is available in Rockys Subversion repository (with public readonly access) and development/changes will be tracked in Csla  BugTracker. The primary target is for developers that still have to support .Net 2.0 runtime in WinForms applications and want to use the new features of Csla and the C# 3.0 syntax. <br><br>At some point Csla for .Net 2.0 will reach a final stop - but as .Net 2.0  is still  widely used and there is so much added value in moving to VS2008 that I truly believe you will find this version of great value. <br><br>Even the Microsoft Chart Controls (<a href="http://code.msdn.microsoft.com/mschart">http://code.msdn.microsoft.com/mschart</a>) works great in runtime on .Net 2.0 with SP1 - but requires .Net 3.5 SP1 and VS2008 for design time and compile. You will only need to distribute one new assembly with your application. <br><br>Happy coding. <br><br>/jonnybee<br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

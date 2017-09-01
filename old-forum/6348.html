@@ -1,0 +1,24 @@
+<html><header><title>CSLA .NET 3.6.1 released (for Windows and Silverlight)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 3.6.1 released (for Windows and Silverlight)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6348.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, February 05, 2009</h2><P>It has been a month and a half since the release of CSLA .NET 3.6, which was the first release of a major .NET development framework to include Silverlight support.<A href="http://www.lhotka.net/weblog/ct.ashx?id=ed096eb4-ee30-49d3-8f3e-81a9beee48ab&amp;url=http%3a%2f%2fwww.lhotka.net%2fweblog%2fcontent%2fbinary%2fWindowsLiveWriter%2fCSLA.N.1ReleasedforWindowsandSilverlight_BFD8%2fcsla_logo1_72_2.png"><IMG title=csla_logo1_72 border=0 alt=csla_logo1_72 align=right src="http://www.lhotka.net/weblog/content/binary/WindowsLiveWriter/CSLA.N.1ReleasedforWindowsandSilverlight_BFD8/csla_logo1_72_thumb.png" width=240 height=69></A> </P>
+<P>Today I am releasing version 3.6.1 for Windows and for Silverlight. This point release addresses several bugs and issues with 3.6.0, and should include no breaking changes. I recommend that all 3.6 users upgrade to 3.6.1.</P>
+<P>You can review the CSLA .NET for Windows <A href="http://www.lhotka.net/weblog/ct.ashx?id=ed096eb4-ee30-49d3-8f3e-81a9beee48ab&amp;url=http%3a%2f%2fwww.lhotka.net%2fArticle.aspx%3fid%3d3052f53d-9f2f-44e5-ab43-214fa515d823"><STRONG><FONT color=#0000ff>change log</FONT></STRONG></A>, and the CSLA .NET for Silverlight <A href="http://www.lhotka.net/weblog/ct.ashx?id=ed096eb4-ee30-49d3-8f3e-81a9beee48ab&amp;url=http%3a%2f%2fwww.lhotka.net%2fArticle.aspx%3farea%3d4%26id%3d4e991255-fcbe-414c-8e0b-d5022b753063"><STRONG><FONT color=#0000ff>change log</FONT></STRONG></A> to get an overview of the fixes and changes.</P>
+<P>Some enhancements of note on the Windows side include:</P>
+<UL>
+<LI>The use of “_forceInit” to trigger static field initialization is no longer required 
+<LI>Add methods to the ObjectFactory base class to make it easier to build a DAL using ObjectFactory 
+<LI>Allow resetting the proxy type used by the data portal, and allow setting the proxy type through code, to make it easier to change the data portal configuration at runtime </LI></UL>
+<P>Some enhancements of note on the Silverlight side include:</P>
+<UL>
+<LI>The use of “_forceInit” to trigger static field initialization is no longer required if your PropertyInfo&lt;T&gt; fields are declared public in scope 
+<LI>The data portal WcfProxy now has better support for various configuration and subclassing options 
+<LI>MobileFormatter now supports the DateTimeOffset type </LI></UL>
+<P>Though 3.6.1 includes these enhancements, the primary focus is on addressing a few bugs and issues that have been discovered in 3.6.0. Whether you need these enhancements or not, you will benefit from the bug fixes.</P>
+<P>&nbsp;</P>
+<P>On a related note, I have refreshed the pre-release of 3.5.3, which includes some important bug fixes for the 3.5.2 version. If you are using 3.5.2, I strongly suggest you evaluate 3.5.3 to see if it addresses any issues you are facing. Version 3.5.3 is a “floating test release”, which means it is stable, but will continue to be a catch-all for reported bugs over the next few weeks. You should strongly consider using 3.5.3 if you are facing any of the bug fixes it contains.</P>
+<P>As Microsoft rolls out .NET 3.5 SP1 via Windows Update, it is my intent to stop supporting the 3.5.x version, as all 3.5 users should be able to move to 3.6.x. That’ll get me down to dealing with just four versions:</P>
+<OL>
+<LI>3.6.x for Windows 
+<LI>3.6.x for Silverlight 
+<LI>3.0.x C# 
+<LI>3.0.x VB </LI></OL>
+<P>I expect 3.5.3 to be the final release of the 3.5 code line, and I expect that’ll happen sometime in March.</P>
+<P>Thank you for using CSLA .NET!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

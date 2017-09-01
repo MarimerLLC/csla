@@ -1,0 +1,15 @@
+<html><header><title>Implementing a pluggable DAL for many business libraries</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Implementing a pluggable DAL for many business libraries</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10103.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>OscarLauroba posted on Thursday, February 24, 2011</h2><p>Hello,</p>
+<p>The rev o.4 of&nbsp;csla 4&nbsp;DataAccess book talks about implementing a pluggable DAL. I&#39;m wondering how to implement this for many business libraries. Do I need one DAL Interface assembly for each business library or Could I have only one DAL interface library for all the business libraries of the application? </p>
+<p>Solution a)</p>
+<p>BusinessLibrary1 --&gt; Dal_Interface1 --&gt; ConcreteDAL1</p>
+<p>BusinessLibrary2--&gt; Dal_Interface2 --&gt; ConcreteDAL2</p>
+<p>BusinessLibraryN--&gt; Dal_InterfaceN --&gt; ConcreteDalN</p>
+<p>Or solution b)</p>
+<p>Library1, Library2,..., LibraryN --&gt; Dal_Interface --&gt; ConcreteDAL1, ConcreteDal2, ..., ConcreteDalN</p>
+<p>Or Your solution <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>Dal_Interface library uses an app.config to decide the Concrete DAL assembly to load. Would I need an app.config for each dal_interface in solution a)? This would cause a lot of work switching from production to mock assemblies if I wanted to test the whole application.</p>
+<p>Sincerely,</p>
+<p>Oscar.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, February 24, 2011</h2><p>As I mention in the book, there are a LOT of solutions to this problem, including the use of IoC frameworks/containers, provider models, MEF, etc.</p>
+<p>In the book I show one example, that works for many scenarios. But (for example) <a href="http://www.magenic.com">Magenic</a> has customers who use Unity and some that use MEF and some who just hard-code the connections.</p>
+<p>Not that I advocate the hard-coded solution - but not all orgs are culturally ready to create mock DAL providers or really implement testing - so sometimes you just gotta roll with the ambient culture :)</p>
+<p>I don&#39;t personally feel qualified to say that any given design pattern or approach is &quot;the gold standard&quot;. Given the high passions that surround this sort of topic, any statement like that would surely start one or more flame wars - and I just don&#39;t have time for that right now :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,42 @@
+<html><header><title>error logging ...</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>error logging ...</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9554.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 posted on Monday, September 20, 2010</h2><p>I need a solution for logging errors so that we can send a &quot;friendly&quot; message to users, but capture exception details to troubleshoot .... </p>
+<p>I&#39;m looking into ways to send errors to&nbsp;windows server error logs ... but am also interested in open source solutions&nbsp;or a product I can suggest to the &quot;governance powers that be&quot; for purchase.</p>
+<p>Steve</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 21, 2010</h2><p>To my knowledge, the two most common logging frameworks are Enteprise Library and log4net.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Tuesday, September 21, 2010</h2><p>Thanks, RL ... but what about&nbsp; &quot;normalizing this behavior&quot; ??&nbsp;...&nbsp; I&#39;d prefer not having&nbsp; to have complex logic in each BO to handle this ..... </p>
+<p>Where would I put code in one place that would </p>
+<ul>
+<li>Let an exception-free call return the expected object or value to the caller</li>
+<li>for Exception ... most likeley from a call to DataPortal </li>
+</ul>
+<p style="padding-left:90px;">1) persist exception information to error log</p>
+<p style="padding-left:90px;">2) send a friendly message to&nbsp;presentation layer &nbsp;( could be a&nbsp;property of&nbsp;the BO that is returned )</p>
+<p style="padding-left:30px;">So no try/catch in the presentation layer .... just test for a return value in the BO returned from the function call.</p>
+<p style="padding-left:30px;">When BO is returned from call (to DataPortal) the BO would know to either </p>
+<ul>
+<li>
+<div style="padding-left:30px;">process normally <br />or </div>
+</li>
+<li>
+<div style="padding-left:30px;">display error message ( I&#39;d need to establish an interface to insure each BO implements a way to set and test for the error)</div>
+</li>
+</ul>
+<p style="padding-left:30px;">Thanks,</p>
+<p style="padding-left:30px;">Steve</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SDM10012 replied on Tuesday, September 21, 2010</h2><p>thinking out loud re: &quot;normalizing behavior&quot; ...</p>
+<p>I could have an exception handler class that would be called in the catch method of DataPortal / potential source of error&nbsp;call ... so</p>
+<p>If no exception ... returns normally</p>
+<p>if exception ... passes exception to exception handler ... </p>
+<ul>
+<li>exception handler logs exception for troubleshooting</li>
+<li>sets &quot;friendly&quot; problem message in BO</li>
+<li>returns expected return value with error condition set</li>
+</ul>
+<p>makes sense ??</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 21, 2010</h2><p>In you can override the BusinessBase.DataPortal_OnDataPortalException method (and the same in other classes) to be notified when an exception occurred during server-side processing.</p>
+<p>If you have custom base classes for all the CSLA base class types (which is a good idea), then you can just override this method in your base classes to have pretty centralized handling of exceptions.</p>
+<p>If you are using object factories, your factory objects should implement a public InvokeError(Exception) method to be notified of an exception. You can have a custom factory base class (subclass of Csla.Server.ObjectFactory) to do this for all your factory objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 21, 2010</h2><p>Well, what you are describing is possible in CSLA 4.0.x. See http://lhotka.net/cslabugs/edit_bug.aspx?id=679 </p>
+<p>The intention is foremost:</p>
+<p>a) Replace NonSerializable exception with a generic exception<br />b) Replace a DAL specific Exception that is not available on the client (ex custom DB Drivers, MQ Exceptions etc) with a generic exception.<br />c) Centralized logging of all DataPortal exceptions in one class.</p>
+<p>See the .NET/cs sample CusomErrorHandling.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, September 21, 2010</h2><p>Hi,</p>
+<p>You should also add <a target="_blank" title="NLog" href="http://nlog.codeplex.com/">NLog</a> to your shortlist of logging framework. </p>
+<p>If you are going to consider a commercial product then take look at <a target="_blank" title="Gibraltar" href="http://www.gibraltarsoftware.com/">Gibraltar</a></p>
+<p>In general terms -&nbsp; in my apps I have created several exception types that I throw and have a general ExceptionWindows that will either display a &quot;nice&quot; message if based on UserFriendlyException otherwise will show a full stack trace. </p>
+<p>And we have a custom exception logging service that logs the exception details for troubleshooting. NLog shows a really simple way of implementing this. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

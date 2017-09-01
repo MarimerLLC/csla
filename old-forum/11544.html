@@ -1,0 +1,17 @@
+<html><header><title>Multiple record updation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple record updation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11544.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rameshkumark posted on Wednesday, August 22, 2012</h2><p>I am newbe to the CSLA.</p>
+<p>I need the solution for the following logic.</p>
+<p>In my current application I am using Typed Dataset (.xsd)&nbsp; for performing CRUD implementation.</p>
+<p>I have to replace the Typed Dataset from my application and to implement the CSLA.</p>
+<p>In my existing application, I have update the database(Multiple Insert, Update and delete) using the typed dataset adapter.Update(DataTable). This will automatically update the multiple records (Insert/Update/Delete) to database in one shot. I need sample for the similar implementation in CSLA.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, August 23, 2012</h2><p>Search the samples download for UpdateChild and UpdateChildren. </p>
+<p>Basically, you will hve </p>
+<ul>
+<li>a list with child objects.</li>
+<li>each child has Child_Insert/Child_Update/Child_Delete methods for update to database (like DataAdapter)</li>
+<li>if &quot;root&quot; list you call the Save method - if child list (owned by another Parent object)&nbsp; you typically call UpdateCild or UpdateChildren from within the parents DataPortal_XYZ or Child_XYZ methods. </li>
+</ul>
+<p>ProjectTracker sample use this technique to update both Project and it&#39;s list of Resources within one transaction.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

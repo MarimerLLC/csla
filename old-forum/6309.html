@@ -1,0 +1,73 @@
+<html><header><title>Silverlight MethodCaller</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight MethodCaller</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6309.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone posted on Monday, February 02, 2009</h2><P>In the CSLA Silverlight version of the MethodCaller class the definition of&nbsp;oneLevelFlags includes DeclaredOnly, Instance, and Public.</P>
+<P>In CSLA .Net, oneLevelFlags also includes NonPublic.</P>
+<P>What is there about SilverLight that precludes using NonPublic?&nbsp; I would prefer to not have to declare my DataPortal_xxx methods as Public.</P>
+<P>VS documentation for silverlight BindingFlags shows NonPublic as an option.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, February 02, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Reason is that you cannot invoke private methods via reflection
+in Silverlight.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JimStone
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, February 02, 2009 10:33 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight MethodCaller<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>In the CSLA Silverlight version of the MethodCaller class the definition
+of&nbsp;oneLevelFlags includes DeclaredOnly, Instance, and Public.<o:p></o:p></p>
+
+<p>In CSLA .Net, oneLevelFlags also includes NonPublic.<o:p></o:p></p>
+
+<p>What is there about SilverLight that precludes using NonPublic?&nbsp; I
+would prefer to not have to declare my DataPortal_xxx methods as Public.<o:p></o:p></p>
+
+<p>VS documentation for silverlight BindingFlags shows NonPublic as an option.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 02, 2009</h2>Well, you CAN invoke private members, but only in the same physical class as the reflection code.<br /><br />Any other class (including a base class or subclass) is prohibited from using reflection on private members of another class.<br /><br />MethodCaller is designed to invoke members of other classes, and so in SL it can only interact with public members.<br /><br />As an aside, this is the reason there's no BinaryFormatter or NetDataContractSerializer in SL. Both those technologies use private reflection, and so can't be implemented.<br /><br />And this is why CSLA now has MobileFormatter, which is our answer to the lack of BF/NDCS, since CSLA can't function without that high-fidelity serialization model.<br /><br />And the MobileFormatter is the primary reason the field manager came into being in CSLA 3.5 (because I anticipated this eventuality), so we could create a serializer that serializes private field values without the need for reflection.<br /><br />I suspect this was all time well spent. Not only because it makes Silverlight rock, but also because the same basic restrictions apply to the compact framework and to Windows Azure. The field manager combined with the MobileFormatter should make it easier to tackle those platforms going forward.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

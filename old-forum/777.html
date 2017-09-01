@@ -1,0 +1,220 @@
+<html><header><title>Performance of creating large collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance of creating large collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/777.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk posted on Monday, July 31, 2006</h2><P class=MsoNormal>I am evaluating CSLA framework for the use in large distributed app being converted from C++/COM/Java/… Number of simultaneous user can reach 1000+. Many screens are grid based and some of them display large number of records. Connection speed varies.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I am concern with the performance of creating large collection of business objects.</P>
+<P class=MsoNormal>Have anybody measured how long does it take to create and populate from DataReader of collection BO that has 10 properties? 1000 items in collection? 10000 items?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 31, 2006</h2><P>I would be concerned as well, not because of the DataReader, since that is entirely unavoidable when loading data from a database in .NET, but because you propose to create 1000-10,000 objects and that is expensive.</P>
+<P>If you are doing this as a 2-tier app it wouldn't be so bad, but with 1000+ concurrent users you pretty much need to go with 3-tier, and so there's the overhead of moving the data from the database into your objects and then moving the objects across the network to the client. That's non-trivial.</P>
+<P>Of course even if you use a DataSet to do this, it will use a DataReader to load the collection, and the DataSet will have to be serialized across the network from the app server to the client, so much of the overhead is constant... The benefit (potentially) to the DataSet is that they use some tricks internally to store the data in memory - thus avoiding the creation of an object per row. The drawback to the DataSet is that it is notoriously inefficient at serializing to go across the wire...</P>
+<P>So in the end there's no simple answer. The only real answer is to test it yourself.</P>
+<P>One thing I'll point out, is that in CSLA .NET 2.0 each object (row) loads its own validation rules, and that will add up to a lot of overhead with 1000+ rows. Version 2.1 will help address this with per-type validation and authorization rules. For your testing, I would suggest starting with no validation or authorization rules in the objects for now.</P>
+<P>Another thing to consider is your network protocol (data portal channel in CSLA). Of the three options. Enterprise Services is fastest, though it has firewall issues because it uses DCOM. But its performance benefits are non-trivial, and comparatively Remoting and Web Services are both quite slow. That'll be true whether you use CSLA or not - it is just the way the protocols work.</P>
+<P>Yet another thing to consider is the idea of using CSLA only on the client, and having your DataPortal_XYZ methods call a set of data services on the app server. While this costs you the benefits of mobile objects, it can have gains in terms of network bandwidth because you can more tightly control the amount of data actually transferred between clients and the server.</P>
+<P>In the end however, the only way to know for sure what will and won't work is to do some serious simulation/testing. There are just so many variables involved that anyone else's results can be considered merely a data point in your research, not an answer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Tuesday, August 01, 2006</h2>But, putting aside all the inherent drawbacks of Enterprise Services, and looking at the attractive possibility of a very significant speed boost, there is still one question that remains unanswered: is there a large site somewhere using a CSLA application deployed under Enterprise Services?<br /><br />From this forum (and the previous one) I know that a lot of CSLA applications are deployed in 2/3 tiers and widely different setups: SQL, ORA, MySQL, WS, Remoting, etc. But I've never seem ES used (not saying it's not, just saying I haven't seen it).<br /><br />How good a speed boost can we expect with ES? Firewall are not always a problem and having a significant speed boost is worth looking at the option (especially since WCF will deliver many nice things, but no real speed boost).<br /><br />L</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2>Honestly, I am not aware of anyone using the ES data portal channel in<br />production. If you are, please speak up :)<br /><br />I know that Microsoft had commissioned a performance comparison study a<br />while back. They hired Ingo Rammer, the widely regarded expert on Remoting,<br />to do the study. His results showed that, in most cases, ES offered an order<br />of magnitude better performance than Web Services or Remoting. I believe<br />that this study did end up getting published on MSDN, but I don't have a<br />URL.<br /><br />Rocky<br /><br />> How good a speed boost can we expect with ES? Firewall are <br />> not always a problem and having a significant speed boost is <br />> worth looking at the option (especially since WCF will <br />> deliver many nice things, but no real speed boost).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Tuesday, August 01, 2006</h2><br />I think you mean this article: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnwebsrv/html/asmxremotesperf.asp<br /><br />In view of such results, why isn't there more ES deployments? Marketing hype about WS (when in fact almost everybody is doing WS-RPC style instead of true messaging) can't be the only reason. Performance is still key to many systems...<br /><br />Is the support/maintenance pain of ES too great? (I remember components that would not unload and myriads of other pains associated with DCOM :-( )<br /><br />And I've never used DCOM in a WAN. HTTP is resilient to network latency, but what about DCOM?<br /><br />L</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2>Yes, thank you, that's the one. <br /><br />> <br />> I think you mean this article: <br />> http://msdn.microsoft.com/library/default.asp?url=/library/en-<br />> us/dnwebsrv/html/asmxremotesperf.asp<br />> <br />> In view of such results, why isn't there more ES deployments? <br />> Marketing hype about WS (when in fact almost everybody is <br />> doing WS-RPC style instead of true messaging) can't be the <br />> only reason. Performance is still key to many systems...<br />> <br />> Is the support/maintenance pain of ES too great? (I remember <br />> components that would not unload and myriads of other pains <br />> associated with DCOM :-( )<br />> <br />> And I've never used DCOM in a WAN. HTTP is resilient to <br />> network latency, but what about DCOM?<br /><br />I think people have too many negative memories of DCOM. But of course ES<br />isn't straight DCOM. Sure, it uses DCOM on the wire, but it uses COM+ to<br />host the server, and a COM+ proxy on the client to handle the client<br />configuration. The result is that most of the DCOM pain is gone. The big<br />thing is on the server, where things are hosted in COM+ - thus avoiding the<br />locked-DLL issues you refer to from straight DCOM/COM.<br /><br />The remaining (real) issues are going through firewalls, and the fact that<br />there is a client registration step to install the data portal channel proxy<br />(which makes no-touch or ClickOnce deployment problematic).<br /><br />You should also remember that COM+ (MTS) predates IIS, Web Services,<br />Remoting and all the other technologies we're talking about. Because of<br />this, it has several years more maturity. Additionally, it was designed for<br />high transaction volumes in an application server, where IIS/ASP.NET was<br />designed for high transaction volumes in a web server. We just misuse it as<br />an application server.<br /><br />DCOM works fine over a WAN, just not over the Internet (at least not without<br />a VPN). HTTP is only resilient to latency because the timeout values<br />per-request are high enough to deal with most latencies. DCOM is a little<br />different, in that it is connection-based. It establishes a TCP connection<br />to the server and then uses that connection, which means it has less<br />overhead per-call (part of the perf gain), and thus has a slightly easier<br />time dealing with latency.<br /><br />Ultimately, the reason I wrote the ES data portal channel was because Don<br />Box pushed on it. I was arguing that it was a waste of time, that no one<br />would care. He suggested that I was ignoring the highest performing network<br />protocol, and that it was silly not to support it... And of course he was<br />right - it wasn't hard to implement, and it is silly to ignore the highest<br />performing (and oldest and most robust) option available.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Tuesday, August 01, 2006</h2><br />Thanks for the information.<br /><br />I don't know that I'll ever deploy our CSLA apps with ES, but the fact that it is possible is quite important for us. It means we might have an escape tunnel if we are stuck with perf issues at a large site and stacking more middle tier pizza boxes is not a good answer. That extra flexibility is worth a lot (and it goes both ways since it opens the door for WCF too).<br /><br />I am sure one of our salesreps will require us to test/benchmark ES one of these days. If some very large site can go live with 4/5 middle tier servers instead of 10+, the extra work will pay for itself.<br /><br />L</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk replied on Thursday, August 03, 2006</h2><P>I did some test. My findings are quite interesting. I measured different ways of restore large XML. XML will be produced by existing web services, compressed, send over wire, decompressed, etc.</P>
+<P>It takes 1.2 sec to restores 21k of rows, 10 columns into dataset and extract datatable from it. It takes 0.3 sec to restore collection of BO derived from BusinessObjectBase. This is nice surprise.</P>
+<P>However, grid control (Dev Express) bound to datatable is much more responsive. Sorting &amp; filtering is much faster than with the grid bound to collection of business objects. Sorting of grid bound to datatable is sub-second operation. Sorting of the grid bound to collection takes around 3 sec. </P>
+<P>Any suggestions?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 03, 2006</h2><P>You are using SortedBindingList to do the sort?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk replied on Thursday, August 03, 2006</h2><P>No, I have not used SortedBindingList. I have relied on grid control sorting.</P>
+<P>Form the book and examples I understand the I can create use BusinessListBase to keep collection of objects, then create SortedBindingList and use it in data binding. Will sort be faster? Will bus rules validation, changes tracking, etc. of BusinessObjectBase still work in this scenario?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, August 03, 2006</h2>I use the SortedBindingList, and its pretty quick when sorting.&nbsp; Its designed to reduce how much sorting is done; everything else works just as if you were using a standard BusinessListBase subclass, just that the items are sorted.<br><br>To create the sorted list is easy:<br><br>SortedBindingList&lt;Note&gt; sortedList;<br><br>sortedList = new SortedBindingList&lt;Note&gt;( notesCollection );<br><br>bindingSource.DataSource = sortedList;<br><br>Works great!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>leotohill replied on Tuesday, September 12, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Lakusha:</strong></div><div>I think you mean this article: http://msdn.microsoft.com/library/default.asp?url=/library/en-us/dnwebsrv/html/asmxremotesperf.asp
+
+In view of such results, why isn't there more ES deployments? Marketing hype about WS (when in fact almost everybody is doing WS-RPC style instead of true messaging) can't be the only reason. Performance is still key to many systems...
+
+Is the support/maintenance pain of ES too great? (I remember components that would not unload and myriads of other pains associated with DCOM :-( )
+
+And I've never used DCOM in a WAN. HTTP is resilient to network latency, but what about DCOM?
+
+L</div></BLOCKQUOTE><br><br>Are we reading the same article?&nbsp; The one that summarizes "the difference between Web services (which are usually perceived as
+being very slow) and DCOM (which is clearly one of the fastest
+distributed application technology in this test) is in fact very small
+for real applications."&nbsp; ?<br><br>I wonder, because it seems that you and Rockford still think that ES/DCOM is significantly better, but the conclusion of the article was just the opposite. <br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbLuis replied on Wednesday, September 13, 2006</h2><P>I second the observation. In fact, in a couple of the tests Remoting (using TCP/Binary) <STRONG>outperformed </STRONG>Enterprise Services&nbsp;(see figures 4, 7, and 9). And, in the rest it essentially tied (see figures 1, 2 and 5).</P>
+<P>The order of magnitude difference appears to be on loads using a "very small amount of data from server to client" (see figure 7). In that test Remoting using HTTP/Binary (IIS) lags way behind ES,&nbsp;yet Remoting using TCP/Binary blows ES away.</P>
+<P>According to the results of the article (not their conclusion), it seems that for optimal performance, you are better off using Remoting TPC/Binary.</P>
+<P>What am I missing?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2><P>Not to be overly blunt - but the whole thing is academic. Relying on studies when you can do your own tests is always an iffy proposition - there's simply too much variation.</P>
+<P>The data portal allows you to trivially switch between the various protocols, so I recommend you just test it with your app and your data and choose the one that works best for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Thursday, September 14, 2006</h2>Two things that should be reminded when optimizing n tiers performance (thanks to Rocky who brought our attention on this) are:<br /><br />a) circular references in the object graph (e.g. like a Parent member)<br />b) adding serializable events in the graph<br /><br />Both make a HUGE difference in the size of the object and in the time/cpu necessary to serialize/deserialize it.<br /><br />I haven't mesured point A yet, but in our case events were 35% of the object(!). We had quite a few event because of the automation model approach.<br /><br />Point A was fixed by making those references non-serializable and handling them manually at the deserialized event. Point B was fixed by getting rid of most events and handling the rest differently.<br /><br />Moving a mouse is always faster than moving an elephant...whatever the protocol used.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stormc23 replied on Wednesday, September 20, 2006</h2><P>Exists some tool to calculate&nbsp;business layer performance&nbsp;of&nbsp;CSLA.NET for scability purposes? </P>
+<P>&nbsp;</P>
+<P>Thanks in advance!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 20, 2006</h2>I typically use a web load testing tool. Create the simplest UI you can on top of your object(s) and then run a load test. If you can keep the UI simple enough (like avoid data binding, graphics, expensive controls, etc) then mostly what you are testing is the object itself, and the database behind it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skeeboe replied on Saturday, September 30, 2006</h2>I have a question about the broken rules. I'm still using 1.53 for .Net2.0. Since broken rules is so speed taxing, is it possible I can skip the check broken rules on the dataportal side and do it once it gets back to the client side? Or even thread it on the client side? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, September 30, 2006</h2>In 1.53 there are two options you might be using: BrokenRules.Assert(), or CheckRules().<br><br>If you are using BrokenRules.Assert() then you are in complete control in terms of when the rules are checked - so you can really do whatever you'd like (though the idea of running it on a background thread is going to cause you way more pain than gain!!)<br><br>If you are using CheckRules(), with rule methods, you are still in control, because it is your code that called CheckRules(). Typically you'd make the call in DataPortal_Create/Fetch - but you could make the call in the factory on the client instead. This would take a bit of doing, but I'm sure you can make it work.<br><br>The cost you can't avoid, when using the CheckRules() idea, is that AddBusinessRules() is called as each object is created, and in that method you associate rule methods and properties. Really, that's the cost that 2.1 is avoiding with the per-type rule concept.<br><br>What you _might_ be able to do, is leave AddBusinessRules() empty, and implement some other method that you call from your client-side factory method to add the rules. Or better yet, override the Deserialized() method and call your custom method to add rules on deserialization - that'll get them added on return from the server, and after a clone or other operation (which is important).<br><br>This way the rules wouldn't be associated with properties on the app server, on initial load of the objects, but the rules would get associated as soon as the object graph was deserialized back onto the client - and then your factory could scan through the whole object graph, forcing a call to CheckRules on all objects in the graph (that's the tricky part - might require reflection).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chipso4 replied on Thursday, August 03, 2006</h2><P>My own results for 45,000 rows from sql using some optimized codesmith templates. Note: I did turn off validataion to compare apples to apples. </P>
+<P>
+<TABLE cellSpacing=0 cellPadding=0>
+
+
+
+
+
+
+<TR>
+<TD class=xl27><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp; CSLA</FONT></TD>
+<TD class=xl27><FONT face=Arial size=2>&nbsp;&nbsp; DataSets</FONT></TD>
+<TD class=xl27><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Diff</FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>&nbsp;946.2ms</FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>3,440.4ms </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>2,494.2 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Objects Load<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3.6 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>643.6&nbsp; </FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1,253.6 </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>610.0 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Object Iterate<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1.9 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>30.6&nbsp; </FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3,373.4 </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3,342.8 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Objects Update<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>110.2 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1,517.4&nbsp; </FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>2,903.8 </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1,386.4 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Objects Serialize<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1.9 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR></TABLE></P>
+<P>The load time shoots up to ~6,000ms if validataion is enabled. And it shoots up to ~16,000ms if every row is validated during load which, for some odd&nbsp;reason, is the default setting on the codesmith templates. I think Rocky's changes in 2.1 will solve or at least minimize the impact of validation on load times. I'm excited to use the new changes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, August 03, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>chipso4:</strong></div><div><p>My own results for 45,000 rows from sql using some optimized codesmith templates. Note: I did turn off validataion to compare apples to apples. </p>
+<p>
+<table cellpadding="0" cellspacing="0">
+
+
+
+
+
+
+<tr>
+<td class="xl27"><font face="Arial" size="2">&nbsp;&nbsp;&nbsp; CSLA</font></td>
+<td class="xl27"><font face="Arial" size="2">&nbsp;&nbsp; DataSets</font></td>
+<td class="xl27"><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Diff</font></td>
+<td><font face="Arial" size="2"></font></td>
+<td><font face="Arial" size="2"></font></td>
+<td><font face="Arial" size="2"></font></td>
+<td><font face="Arial" size="2"></font></td></tr>
+<tr>
+<td class="xl24"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span>&nbsp;946.2ms</font></font></td>
+<td class="xl25"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;</span>3,440.4ms </font></font></td>
+<td class="xl22"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>2,494.2 </font></font></td>
+<td class="xl23"><font size="2"><strong><font face="Arial"><span>&nbsp;</span>Objects Load<span>&nbsp;</span></font></strong></font></td>
+<td class="xl26"><font size="2"><font color="#0000ff"><strong><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>3.6 </font></strong></font></font></td>
+<td class="xl23" colspan="2"><strong><font size="2"><font face="Arial"><span>&nbsp;</span>times faster then datasets<span>&nbsp;</span></font></font></strong></td></tr>
+<tr>
+<td class="xl24"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>643.6&nbsp; </font></font></td>
+<td class="xl25"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>1,253.6 </font></font></td>
+<td class="xl22"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>610.0 </font></font></td>
+<td class="xl23"><font size="2"><strong><font face="Arial"><span>&nbsp;</span>Object Iterate<span>&nbsp;</span></font></strong></font></td>
+<td class="xl26"><font size="2"><font color="#0000ff"><strong><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1.9 </font></strong></font></font></td>
+<td class="xl23" colspan="2"><strong><font size="2"><font face="Arial"><span>&nbsp;</span>times faster then datasets<span>&nbsp;</span></font></font></strong></td></tr>
+<tr>
+<td class="xl24"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>30.6&nbsp; </font></font></td>
+<td class="xl25"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>3,373.4 </font></font></td>
+<td class="xl22"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>3,342.8 </font></font></td>
+<td class="xl23"><font size="2"><strong><font face="Arial"><span>&nbsp;</span>Objects Update<span>&nbsp;</span></font></strong></font></td>
+<td class="xl26"><font size="2"><font color="#0000ff"><strong><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>110.2 </font></strong></font></font></td>
+<td class="xl23" colspan="2"><strong><font size="2"><font face="Arial"><span>&nbsp;</span>times faster then datasets<span>&nbsp;</span></font></font></strong></td></tr>
+<tr>
+<td class="xl24"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>1,517.4&nbsp; </font></font></td>
+<td class="xl25"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>2,903.8 </font></font></td>
+<td class="xl22"><font size="2"><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp; </span>1,386.4 </font></font></td>
+<td class="xl23"><font size="2"><strong><font face="Arial"><span>&nbsp;</span>Objects Serialize<span>&nbsp;</span></font></strong></font></td>
+<td class="xl26"><font size="2"><font color="#0000ff"><strong><font face="Arial"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>1.9 </font></strong></font></font></td>
+<td class="xl23" colspan="2"><strong><font size="2"><font face="Arial"><span>&nbsp;</span>times faster then datasets<span>&nbsp;</span></font></font></strong></td></tr></table></p>
+<p>The load time shoots up to ~6,000ms if validataion is enabled. And it shoots up to ~16,000ms if every row is validated during load which, for some odd&nbsp;reason, is the default setting on the codesmith templates. I think Rocky's changes in 2.1 will solve or at least minimize the impact of validation on load times. I'm excited to use the new changes.</p></div></BLOCKQUOTE><br><br>The default is to validate on load is there in case the data is changed outside of business objects and that change breaks a validation rule or if the validation rules change in such a way as to render the data in the database invalid.&nbsp; If neither of these happens for you, then you could ostensibly skip the validation on load.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk replied on Thursday, August 03, 2006</h2><P>I set BO private datamembers instead of set on properties in my load test. This code works much faster than dataset.</P>
+<P>Based on your numbers I suspected that something is slowing my sort. That was </P>
+<P>CanReadProperty(true) call within each property.</P>
+<P>With CanReadProperty(true) sort of 21k records takes 2.2 sec. Without 0.15sec, which is great.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, August 03, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>oshokodk:</strong></div><div><p>I set BO private datamembers instead of set on properties in my load test. This code works much faster than dataset.</p>
+<p>Based on your numbers I suspected that something is slowing my sort. That was </p>
+<p>CanReadProperty(true) call within each property.</p>
+<p>With CanReadProperty(true) sort of 21k records takes 2.2 sec. Without 0.15sec, which is great.</p>
+<p>Thanks</p></div></BLOCKQUOTE><br><br>If you want to keep CanReadProperty you can try CanReadProperty("PropertyName", true), which would give you a small performance improvement at the cost of some maintainability.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, August 03, 2006</h2>chipso4:<br>With the new shared rules, those 6 seconds would disappear, because rules would be loaded only when the first of the 20k+ objects load.<br><br>I also agree with ryan. That approach is absolutely recommended, and it costs nothing if you're using code generation. Also, there are tools such as CodeRush to assist in hand creating that sort of code.<br>I have a coderush template that builds a property taking those things into account for csla. I'll post the template code so that coderushers can take advantage of that...<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk replied on Friday, August 11, 2006</h2><P><FONT face=Arial size=2>Some more perfromance numbers:</FONT></P>
+<P><FONT face=Arial size=2>Call MarkOld() on 21k objects without any business rules costs around 100ms. MarkOld() calls MarkClean() which calls OnUnknownPropertyChanged().</FONT></P>
+<P><FONT face=Arial size=2>The only way I see to temporary shuting down OnUnknownPropertyChanged() is to override this method.</FONT></P>
+<P><FONT face=Arial size=2>I wish MarkOld() and MarkClean() would accept suppressEvent parameter as Mark Dirty() does.</FONT></P>
+<P><FONT face=Arial size=2>Is this change comming?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=968485803-12082006><FONT face=Arial color=#0000ff size=2>Have you tried overriding OnUnknownPropertyChanged to only 
+raise PropertyChanged for a property named "" ?</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=968485803-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=968485803-12082006><FONT face=Arial color=#0000ff size=2>That should change the performance radically, as it would 
+avoid the current loop through to raise PropertyChanged for each property of the 
+object.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=968485803-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=968485803-12082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> oshokodk [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, August 11, 2006 9:21 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Performance of creating 
+  large collection<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P><FONT face=Arial size=2>Some more perfromance numbers:</FONT></P>
+  <P><FONT face=Arial size=2>Call MarkOld() on 21k objects without any business 
+  rules costs around 100ms. MarkOld() calls MarkClean() which calls 
+  OnUnknownPropertyChanged().</FONT></P>
+  <P><FONT face=Arial size=2>The only way I see to temporary shuting down 
+  OnUnknownPropertyChanged() is to override this method.</FONT></P>
+  <P><FONT face=Arial size=2>I wish MarkOld() and MarkClean() would accept 
+  suppressEvent parameter as Mark Dirty() does.</FONT></P>
+  <P><FONT face=Arial size=2>Is this change 
+  comming?</FONT></P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk replied on Sunday, August 13, 2006</h2><P>I will have to override <FONT face=Arial color=#0000ff size=2>OnUnknownPropertyChanged </FONT>method to implement your suggestion. Is there a way to create an object mark as "old","clean" from scratch, i.e. without calling MarkDirty.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dileepagarwal replied on Sunday, October 15, 2006</h2><P>&nbsp;</P>
+<P>Hi,</P>
+<P>==================================================</P>
+<P>My own results for 45,000 rows from sql using some optimized codesmith templates. Note: I did turn off validataion to compare apples to apples. </P>
+<P>
+<TABLE cellSpacing=0 cellPadding=0>
+
+<TR>
+<TD class=xl27><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp; CSLA</FONT></TD>
+<TD class=xl27><FONT face=Arial size=2>&nbsp;&nbsp; DataSets</FONT></TD>
+<TD class=xl27><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Diff</FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD>
+<TD><FONT face=Arial size=2></FONT></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>&nbsp;946.2ms</FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;</SPAN>3,440.4ms </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>2,494.2 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Objects Load<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3.6 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>643.6&nbsp; </FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1,253.6 </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>610.0 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Object Iterate<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1.9 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>30.6&nbsp; </FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3,373.4 </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3,342.8 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Objects Update<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>110.2 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR>
+<TR>
+<TD class=xl24><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1,517.4&nbsp; </FONT></FONT></TD>
+<TD class=xl25><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>2,903.8 </FONT></FONT></TD>
+<TD class=xl22><FONT size=2><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1,386.4 </FONT></FONT></TD>
+<TD class=xl23><FONT size=2><STRONG><FONT face=Arial><SPAN>&nbsp;</SPAN>Objects Serialize<SPAN>&nbsp;</SPAN></FONT></STRONG></FONT></TD>
+<TD class=xl26><FONT size=2><FONT color=#0000ff><STRONG><FONT face=Arial><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1.9 </FONT></STRONG></FONT></FONT></TD>
+<TD class=xl23 colSpan=2><STRONG><FONT size=2><FONT face=Arial><SPAN>&nbsp;</SPAN>times faster then datasets<SPAN>&nbsp;</SPAN></FONT></FONT></STRONG></TD></TR></TABLE></P>
+<P>===================================================<o:p></o:p></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; I liked your test result. Recently I have started working on CSLA. I have few questions regarding your results. </P>
+<P>Was you environment same in both cases?</P>
+<P>Did you tried on the same machine or two machines on the LAN or over the Internet?<o:p></o:p></P>
+<P>Could you please let me know which version of dataset you used (ADO 1.x or ADO 2.0)?<o:p></o:p></P>
+<P>Did you use strongly typed dataset or simple dataset?<o:p></o:p></P>
+<P>As CSLA does not have diffgram method like dataset have, how many records(objects) you used while performing your update operation (did you tried update over the network --if answers is yes than&nbsp;my&nbsp;main concern is how much data did you transferred from client to server in both cases).<o:p></o:p></P>
+<P>If anyone did these kind of testing, please share their result (if possible), it will help us a lot.<o:p></o:p></P>
+<P>&nbsp;Thanks,<o:p></o:p></P>
+<P>Dileep Agarwal<o:p></o:p></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

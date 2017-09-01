@@ -1,0 +1,11 @@
+<html><header><title>Re: Design Suggestions Request</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Design Suggestions Request</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, December 06, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>
+<P>We started with a similar application migration and have avoided locking entirely.</P>
+<P>There are several ways to implement concurrency, but we have chosen to implement what we call "changed values concurrency" and not do any locking. First change to a field from a loaded object "wins", any others result in a concurrency exception when the "stale"&nbsp;but changed object is saved. However, two users can independently update separate fields in the same object and both updates can succeed. </P>
+<P>We chose this approach mainly&nbsp;because it requires no database-specific features (e.g. timestamp columns), nor does it require any alteration of the database schema. Also, the odds of two users really wanting to edit the same object are low because of the way the data is partitioned, so we mainly wanted to ensure integrity of the data. This approach works well except for contrived situations (e.g. one user updates city, another updates zip code). </P>
+<P></div></BLOCKQUOTE></P>
+<P>Suppose this concurrency situation&nbsp;happens:</P>
+<P>User A<BR>- changes property StreetName (Elmer St. -&gt; Fudd St.)<BR>- everything is valid, namely the DoorNumber&nbsp;1001 (this door number exists on both the Elmer St. and Fudd St.)</P>
+<P>User B<BR>- changes property&nbsp;DoorNumber to 1101<BR>- everything is valid, namely the StreetName (Elmer St. door numbers go up to 2000)</P>
+<P>The problem is Fudd St. door numbers only go up to 1050...</P>
+<P>So User A change is valid and User B change is valid but the combined result of both changes makes the address invalid.</P>
+<P>How do you handle this problem?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

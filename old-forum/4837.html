@@ -1,0 +1,240 @@
+<html><header><title>IsDirty override not firing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsDirty override not firing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4837.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Tuesday, May 13, 2008</h2><P>Hello:</P>
+<P>I am generating CSLA with Codesmith for a web application. I have a form on which I load a Task_ER object. Each task has a collection (Opportunity_ERL). On the webform when I click the Update button I load the Task_ER from the database and update it appropriately.</P>
+<P>If I've made changes to any of the Opportunity_EC items they get updated. Finally, if all is valid I call Task_ER.Save().</P>
+<P>Before entering the Save function I can see that my Task_ER is dirty (even if it's just the Opportunity_ERL collection (or a single object in the collection) that is dirty. This is the desired behavior. However, once the code goes into the Save function it seems as though my IsDirty overrides are no longer called. instead ONLY the IsDirty decined in BusinessBase is called, which declares my object as clean since it ONLY check local variables and doesn't take into account the extra logic I have in my IsDirty override.</P>
+<P>Any ideas why ther base IsDirty is called but never my overridden IsDirty?</P>
+<P>Thanks, Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Sounds rather strange.&nbsp; Could you put a breakpoint in your
+override to see if it is called?&nbsp; Also, (grasping for straws) is the
+Opportunity collection declared as NotSerialized by any chance?&nbsp; This
+would cause the same symptom after Clone is called.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wjcomeaux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 13, 2008 10:16 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] IsDirty override not firing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hello:<o:p></o:p></p>
+
+<p>I am generating CSLA with Codesmith for a web application. I have a form on
+which I load a Task_ER object. Each task has a collection (Opportunity_ERL). On
+the webform when I click the Update button I load the Task_ER from the database
+and update it appropriately.<o:p></o:p></p>
+
+<p>If I've made changes to any of the Opportunity_EC items they get updated.
+Finally, if all is valid I call Task_ER.Save().<o:p></o:p></p>
+
+<p>Before entering the Save function I can see that my Task_ER is dirty (even
+if it's just the Opportunity_ERL collection (or a single object in the
+collection) that is dirty. This is the desired behavior. However, once the code
+goes into the Save function it seems as though my IsDirty overrides are no
+longer called. instead ONLY the IsDirty decined in BusinessBase is called,
+which declares my object as clean since it ONLY check local variables and
+doesn't take into account the extra logic I have in my IsDirty override.<o:p></o:p></p>
+
+<p>Any ideas why ther base IsDirty is called but never my overridden IsDirty?<o:p></o:p></p>
+
+<p>Thanks, Will<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, May 13, 2008</h2><P>Hey Sergey</P>
+<P>I have put a breakpoint on my override. That's how I verified that it was never called. If I call Task_ER.IsDirty my breakpoint is hit. Immediately after that if I call Task_ER.Save() my breakpoint is NOT hit but the IsDirty in BusinessBase is.</P>
+<P>Nothing is marked as NotSerialized at this time.</P>
+<P>Thanks, Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Could you check the actual data in your object after you call
+save to check if you can see the changes your just made to the
+collection?&nbsp; My only guess is that Save is called on a different object?...<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wjcomeaux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 13, 2008 10:30 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: IsDirty override not firing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hey Sergey<o:p></o:p></p>
+
+<p>I have put a breakpoint on my override. That's how I verified that it was
+never called. If I call Task_ER.IsDirty my breakpoint is hit. Immediately after
+that if I call Task_ER.Save() my breakpoint is NOT hit but the IsDirty in
+BusinessBase is.<o:p></o:p></p>
+
+<p>Nothing is marked as NotSerialized at this time.<o:p></o:p></p>
+
+<p>Thanks, Will<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux replied on Tuesday, May 13, 2008</h2><P>I've checked the actual data. If I let the save continue, the additional objects I've added to the child collection are not persisted.</P>
+<P>However, if I specifically change a property on the parent object before calling save then everything works as it should.</P>
+<P>For now, as a work around I'm calling save on the object collection after adding each child record. Then as a final cleanup I call Save on the Task_ER to commit any changes made there.</P>
+<P>It's a hack for now, but it works...</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, May 13, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>As long as it works&#8230; If you want to post your three
+classes, I could look at those to see if anything jumps at me&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> wjcomeaux
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 13, 2008 11:14 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: IsDirty override not firing<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I've checked the actual data. If I let the save continue, the additional
+objects I've added to the child collection are not persisted.<o:p></o:p></p>
+
+<p>However, if I specifically change a property on the parent object before
+calling save then everything works as it should.<o:p></o:p></p>
+
+<p>For now, as a work around I'm calling save on the object collection after
+adding each child record. Then as a final cleanup I call Save on the Task_ER to
+commit any changes made there.<o:p></o:p></p>
+
+<p>It's a hack for now, but it works...<o:p></o:p></p>
+
+<p>Will<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

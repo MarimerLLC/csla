@@ -1,0 +1,36 @@
+<html><header><title>Multiple WCF services within single host returning root appsettings and not local</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple WCF services within single host returning root appsettings and not local</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5347.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Annesh posted on Friday, September 05, 2008</h2><P><FONT face=Arial>I have a 2 WCF services&nbsp;contained within a WCF WebApplication </FONT><FONT face=Arial>project hosted in Visual Studio Development server.</FONT></P>
+<P><FONT face=Arial>Folder structure looks like:</FONT></P>
+<P><FONT face="Courier New" size=2>WCFHost &lt;Root Folder&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>ModuleA &lt;Folder1&gt;</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New" size=2>1) ModuleA_Service.svc + .cs</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New" size=2>2) IModuleA_Service.cs</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;3) web.config &lt;moduleA config which has ServiceModel settings and overridden appSettings&gt;</FONT></P>
+<P><FONT face=Arial size=2>ModuleB &lt;Folder2&gt;</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New" size=2>1) ModuleB_Service.svc + .cs</FONT></P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT face="Courier New" size=2>2) IModuleB_Service.cs</FONT></P>
+<P><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;3) web.config &lt;moduleB config which has ServiceModel settings and overridden appSettings&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>1) web.config &lt;root config&gt;</FONT></P>
+<P><FONT face="Courier New" size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial>Root web.config </FONT></P>
+<P><FONT face=Arial>--------------------------</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;appSettings&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;add key="ClientName" value="ROOT"/&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;/appSettings&gt;</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>ModuleA config</FONT></P>
+<P><FONT face=Arial>--------------------</FONT></P><FONT face=Arial>
+<P><FONT face="Courier New" size=2>&lt;appSettings&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;add key="ClientName" value="Module A"/&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;/appSettings&gt;</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>ModuleB config</FONT></P>
+<P>------------------------</P>
+<P><FONT face="Courier New" size=2>&lt;appSettings&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;add key="ClientName" value="Module B"/&gt;</FONT></P>
+<P><FONT face="Courier New" size=2>&lt;/appSettings&gt;</FONT><BR>&nbsp;</P></FONT><FONT face=Arial>
+<P><BR>The services for both ModuleA and&nbsp;ModuleB&nbsp;simply returns the config value (note this is just a sample application, just illustrating the problem)</P>
+<P><FONT face="Courier New" size=2>public string GetSetting()</FONT></P>
+<P><FONT face="Courier New" size=2>{</FONT></P>
+<P><FONT face="Courier New" size=2>return System.Configuration.ConfigurationManager.AppSettings["ClientName"];</FONT></P>
+<P><FONT face="Courier New" size=2>}</FONT></P>
+<P>The problem is that the service(which does work fine)&nbsp;returns the appsetting found in the root "clientName='root' " rather than the appsetting stored under its sibling web.config file which should read "clientName='Module A' ". Note the serviceModel settings are on the config files next to the .svc files. So it is using the right config file for the service setup but using the incorrect appsetting. </FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 05, 2008</h2><P>The config file management is handled by ASP.NET. You'll need to research how ASP.NET handles the appSettings block in cases like this (I don't know the answer).</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

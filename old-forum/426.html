@@ -1,0 +1,30 @@
+<html><header><title>Apply Authorization Rules Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Apply Authorization Rules Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/426.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan posted on Wednesday, June 21, 2006</h2>I'm getting&nbsp; null value exception at the line:<br>
+<br>
+this.DetailsView1.Rows[<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.DetailsView1.Rows.Count - 1].Visible = <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Client.CanEditObject();<br>
+<br>
+Value cannot be null&nbsp; Parameter name: container<br>
+<br>
+The Client object definitely exists and I reset the CanEditObject to
+just return true, and finally removed Client.CanEditObject and set
+Visible = true<br>
+<br>
+Nothing seems to work.&nbsp; Ideas?<br>
+<br>
+Bob Hagan<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, June 21, 2006</h2>This could be a silly question, but have you checked everything on the left hand side of the equals sign to make sure that nothing is returning a null?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bobhagan replied on Wednesday, June 21, 2006</h2>Sheesh!&nbsp; DetailsView.Rows[] is null.&nbsp; <br>
+
+On the form, I can refresh the control and it detects the fields in the
+business object.&nbsp; That is what Rows refers to, right?&nbsp; So why
+is it unable to count Rows?<br>
+<br>
+Is this related to the csla DataSource problem discussed here?<br>
+
+http://forums.lhotka.net/forums/thread/2093.aspx.&nbsp; I thought I'd found a work around, and at least the control displays.<br>
+<br>
+ Thanks for the suggestion.&nbsp; Now I know what is wrong, but I have absolutely no idea of how to fix this.&nbsp; <br>
+<br>
+Bob Hagan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

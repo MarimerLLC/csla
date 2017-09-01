@@ -1,0 +1,16 @@
+<html><header><title>Keep object on Server side only</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Keep object on Server side only</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11182.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel posted on Wednesday, February 22, 2012</h2><p>Hi,</p>
+<p>The question is how to keep object on Server side without returning it to a client.</p>
+<p>I can see that all factory method and DataPortal_XYZ intended to return result to client.</p>
+<p>Is there any way to create object to use it during application life without even attempt to return it to client.</p>
+<p>I have 3-tier application and both libraries on client and server the same(WinForms).</p>
+<p>Thanks,</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, February 22, 2012</h2><p>You can have an object that live in a </p>
+<ul>
+<li>static class (in your own assembly) </li>
+<li>memory cache (System.Runtime.Caching.MemoryCache) </li>
+<li>distributed cache (AppFabric)</li>
+</ul>
+<p>CSLA does not&nbsp; provide utilities or helper classes for &quot;server side only&quot; objects but not a tricky part to implement or use. </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 22, 2012</h2><p>Keep in mind that you can make data portal calls on the server and they will work fine. The real question is hiding behind Jonny&#39;s answer- what server code do you have that will call the data portal, and how will you keep the resulting object in memory on the server?</p>
+<p>&nbsp;</p>
+<p>In general, today&#39;s server technologies are designed to be stateless and you wil have to devise a way to maintain state in a world not designed to help you.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

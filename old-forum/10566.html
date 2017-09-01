@@ -1,0 +1,20 @@
+<html><header><title>Return the index of a child in collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Return the index of a child in collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10566.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TScorpio posted on Wednesday, July 27, 2011</h2><p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>I need to search a child collection based on a property value and return the childs index number.</p>
+<p>I&#39;m currently using this:</p>
+<p>Public Function FindChildIndex(ByVal childGuid As Guid) As Integer<br />&nbsp;For i As Integer = 0 To Me.Count - 1<br />&nbsp;&nbsp;If Me.Item(i).ToString.Equals(childGuid.ToString) Then<br />&nbsp;&nbsp;&nbsp;Return i<br />&nbsp;&nbsp;End If<br />&nbsp;Next<br />&nbsp;Return -1<br />End Function</p>
+<p>This doesn&#39;t work so well when the collection gets large...</p>
+<p>I&#39;m looking for a better way to implement this, any suggestions?</p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>Thanks!</p>
+</span></span></span><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, July 27, 2011</h2><p>How large can your collection get? </p>
+<p>You should not use the ToString method - try rather the IComparable.CompareTo method.<br />That may speed thing up a little. </p>
+<p>&nbsp; If childGuid.CompareTo(Me.Item(i)) = 0 Then</p>
+<p>With really large collections you could look into using some indexing library, f.ex<a title="http://i4o.codeplex.com" href="http://i4o.codeplex.com"> http://i4o.codeplex.com</a> and I&#39;m sure there are others as well.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TScorpio replied on Tuesday, August 02, 2011</h2><p>750,000 - 1,000,000 records. It&#39;s not typical, but they do exist out there.</p>
+<p>I&#39;ve glanced at the indexing library, it looks helpful. Thanks!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

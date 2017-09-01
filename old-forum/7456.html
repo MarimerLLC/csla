@@ -1,0 +1,27 @@
+<html><header><title>Workflow vs. Command Orchestration</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Workflow vs. Command Orchestration</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7456.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate posted on Thursday, August 13, 2009</h2><P>I know there has been a lot of discussion around Workflow Foundation (WF) and CSLA on this forum and I don't want to rehash all of that.&nbsp; But... I do have to make some design decisions for a current application and could use some insights to help steer me one way or the other.</P>
+<P>From my perspective, WF can serve one of two purposes:</P>
+<OL>
+<LI>A state machine workflow 
+<LI>Orchestration of multi-step, transactional-type operations</LI></OL>
+<P>I find the latter fits into CSLA, OOP et al much better because WF manages activities that work with or on our business objects.&nbsp; The workflow activities are no different than any other object we collaborate with in our applications and provide the <EM>glue</EM> that makes a set of business objects into an application.</P>
+<P>Let me use the example of a service method called PrintReport.&nbsp; A client calls this method, passing in the report name and number of copies to print, to&nbsp;trigger the printing of a pre-defined report on the server.&nbsp; In order to perform this operation, I must execute the following steps:</P>
+<OL>
+<LI><STRONG>Get the report definition by name</STRONG><BR>This is done by calling the indexer on my ReportDefinitionCache business object.&nbsp; If an object with that name exists, it is returned; otherwise, the&nbsp;GetReportDefinition factory&nbsp;method on my ReportDefinition object is called to load the definition from the data store.<BR>
+<LI><STRONG>Get the report data source by name</STRONG><BR>The ReportDefinition object contains a DataSource property which is used to retrieve the SQL statement from the data store. To do this, I call the DataSourceCache object which will either return an instance from memory or call the DataSource.GetDataSource factory method on my business object. <BR>
+<LI><STRONG>Obtain the data for the report<BR></STRONG>I call the GetData() method on the DataSource object to execute the query used to retrieve the data used for the report <BR>
+<LI><STRONG>Open the report by name<BR></STRONG>I use the FileName property on the ReportDefinition object (from step 1) to open the report file.&nbsp; It is returned as a Report business object. <BR>
+<LI><STRONG>Populate the report with the data<BR></STRONG>I set the Report object's DataSource property to the data retrieved in step 3 <BR>
+<LI><STRONG>Print the report<BR></STRONG>I call the Print method on the Report object</LI></OL>
+<P>Most of these steps are also&nbsp;used when executing other service methods so I immediately recognized the need to encapsulate them in objects that can be shared across operations.&nbsp; This could take the form of WF activities or simple command objects.</P>
+<P>The question is whether WF is really a good fit?&nbsp; My concern mostly stems from the performance impact of having a workflow engine running versus&nbsp;having command objects that are bound together to orchestrate the workflow.&nbsp; For instance, I could have a PrintReportCommand object that uses other command objects representing each step in the workflow and simply be done with it.</P>
+<P>On the other hand, WF is a very flexible and convenient way to implement such orchestration.&nbsp; However, I don't see my workflow changing much so, again, is it worth it to implement WF?</P>
+<P>Finally, I will be exposing my services via WCF and I know WCF and WF play very well together.&nbsp; But, one more time, is it worth it?</P>
+<P>Please share your thoughts and experiences - I appreciate the guidance.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 13, 2009</h2><P>The primary benefits of WF for orchestration are</P>
+<OL>
+<LI>Enable power users to alter workflows to take load off developers</LI>
+<LI>Implement complex things like compensating transactions (which are still complex, but are arguably easier with WF)</LI>
+<LI>Suspend/resume workflows for long-running operations (but if you change the workflow structure or code while workflows are suspended you could be in for a <EM>nasty</EM> surprise, which really limits the value of this feature)</LI>
+<LI>Integration with WCF - of course C# integrates with WCF too, so I think this is really a flipped-around benefit, where WF adds value to WCF rather than WCF adding value to WF</LI></OL>
+<P>I'm a strong believer in only using a technology, any technology, if I clearly need the benefit(s) it provides. This is because every technology you add to your app increases complexity, increases the learning curve for developers and increases fragility (one more thing can break).</P>
+<P>So you need to ask yourself if you need any of these benefits. If you do, then decide if the benefit outweighs the costs. If it does, then go for it.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

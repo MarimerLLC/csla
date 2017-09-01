@@ -1,0 +1,42 @@
+<html><header><title>Developing Coding Standards for our company?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Developing Coding Standards for our company?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/729.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Wednesday, July 26, 2006</h2><P>As well as designing a new system for our company. My partner and I are also trying to come up with a clear set of Company Coding Standards for new people who join our company.</P>
+<P>We ran into something that I believe is personal preference but I'm not sure. So maybe I can get some suggestions :)</P>
+<P>Our thing is when to fully declare an object. We have agreed that all variable/private members&nbsp;must be declared at the top of method or class.</P>
+<P>What we don't agree on is how to declare a reference type. I like the following syntax:</P>
+<P>private MyObject WorkWithMyObject()</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;MyObject _CurrentObject = new MyObject( );</P>
+<P>&nbsp;&nbsp;&nbsp;//WORK WITH MY OBJECT</P>
+<P>&nbsp;return _CurrentObject;</P>
+<P>}</P>
+<P>My partner says to declare it as null first. then initialize it when needed as its not good to hold that memory when it's being declared because if we don't use it then were holding memory for nothing. He likes it like so:</P>
+<P>private MyObject WorkWithMyObject()</P>
+<P>{</P>
+<P>MyObject _CurrentObject = null;</P>
+<P>&nbsp;</P>
+<P>_CurrentObject = new MyObject( );</P>
+<P>//DO SOME WORK WITH "_CurrentObject"</P>
+<P>if (_CurrentObject == null)</P>
+<P>return new MyObject();</P>
+<P>else</P>
+<P>&nbsp;&nbsp;&nbsp;return _CurrentObject;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>Is this personal preference or is there a technical advantage one way or the other?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Wednesday, July 26, 2006</h2><P>hi</P>
+<P>here are my two cents: my personal preference is same as yr friends. even if we use lazy loading for objects properites, the object shud be instantied when used. also there can be conditions like:</P>
+<P>private MyObject WorkwithMyObject()</P>
+<P>{</P>
+<P>MyObject current = new My Object();</P>
+<P>//working with my object</P>
+<P>//some error</P>
+<P>return current;</P>
+<P>}</P>
+<P>Now this will return an instantiated but possibly corrupted object. I dont think its right to do that. but ill await other suggestions on the same.</P>
+<P>vivek</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Wednesday, July 26, 2006</h2><P>The older preference was to declare all of your variables at the top of the method and then instantiate them when you wanted to use them. With Dotnet, the advise is typically the opposite, do not declare your variables until you are ready to use them. Keep the variable declaration as close to the use as possible for maintainability. (This is echoed in the excellent Code Complete book as well.) </P>
+<P>There are cases where you would want to separate your instantiation from the declaration. Consider a polymorphic factory example:</P>
+<P>public&nbsp;shared function&nbsp;GetVal(inputVal as string) as BusinessBase&nbsp;<BR>Dim myObj as BusinessBase<BR>select case inputVal <BR>&nbsp;&nbsp; case "1stCase"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myObj = CustomObj1.GetObj()<BR>&nbsp;&nbsp; case "2ndCase"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; myObj = CustomObj2.GetObj()<BR>&nbsp;&nbsp;&nbsp;case else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentException("Unable to fetch object type " &amp; inputVal)<BR>end Select<BR>return myObj<BR>end function</P>
+<P>Here, we need to declare myObj as a type before it is instantiated and outside of the case statement as we want to use it once we exit the case statement. The same is true for structured exception handling where an object must be declared outside of the exception block and then typically instantiated inside of the try block in order to finalize it in the Finally block (assuming you are not using Using...)</P>
+<P>There are cases for both methods. I would recommend keeping the instantiation as close to the use as possible to facilitate code maintenance. Unless C# handles the instantiation differently, I don't think initializing the object to Nothing/Null explicitly offers any advantage as that is the default for all reference types.</P>
+<P>Jim Wooley<BR>http://devauthority.com/blogs/jwooley</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 26, 2006</h2>Jim,<br><br>I've always found code much easier to read (and thus maintain) when all the var declarations are at the top.&nbsp; I've found its very easy to miss a declaration buried in code, and you'll suddenly be reading and then thinking "where the heck did this come from?"&nbsp; I suspect its more a matter of personal taste though. <br><br>At any rate, reference variables MUST always be initialized before they are used in C# even if its just setting the reference to null.&nbsp; Not doing so will result in a compiler error.&nbsp; Value types do not need to be initialized before use, as they always have a value.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, July 26, 2006</h2>I found Microsoft's .NET design guidelines for class library developers to be very useful.&nbsp; They cover everything from very simple naming conventions to design patterns.&nbsp; http://msdn.microsoft.com/library/default.asp?url=/library/en-us/cpgenref/html/cpconnetframeworkdesignguidelines.asp<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Igor replied on Wednesday, July 26, 2006</h2><P>I would recommend</P>
+<P>Practical Guidelines and Best Practices for Microsoft Visual Basic and Visual C# Developers by Francesco Balena, Giuseppe DiMauro (&nbsp;<A href="http://www.amazon.com/gp/product/0735621721/sr=1-3/qid=1153961023/ref=pd_bbs_3/103-9833135-5151866?ie=UTF8&amp;s=books">http://www.amazon.com/gp/product/0735621721/sr=1-3/qid=1153961023/ref=pd_bbs_3/103-9833135-5151866?ie=UTF8&amp;s=books</A> )</P>
+<P>&nbsp;</P>
+<P>Igor</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

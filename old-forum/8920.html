@@ -1,0 +1,7 @@
+<html><header><title>CommonRules: MinLength issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CommonRules: MinLength issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8920.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>k2so posted on Wednesday, May 12, 2010</h2><p>Hi Rocky,</p>
+<p>I found another issue, with MinLength rule, can you take a look into it?</p>
+<p>In MinLength:</p>
+<p>&nbsp;&nbsp;&nbsp; protected override void Execute(RuleContext context)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var value = context.InputPropertyValues[PrimaryProperty];<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (value != null &amp;&amp; <b>value.ToString().Length &gt; Min</b>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddErrorResult(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Format(Resources.StringMinLengthRule, PrimaryProperty.FriendlyName, Min));<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>Should the line be <b>value.ToString().Length &lt; Min </b>instead, otherwise it is not invalidating the length less than the minimum. Haven&#39;t checked MaxLength yet.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 12, 2010</h2><p>Thanks, that&#39;s a bug.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,36 @@
+<html><header><title>Syntax error on DataPortal_Fetch statement. Please help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Syntax error on DataPortal_Fetch statement. Please help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9277.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davidng posted on Monday, July 26, 2010</h2><p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Hi everyone,</span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;">I encountered a syntax error about &quot;Overloadding&quot; but could not find the cause.</span></p>
+<p><span style="color:#0000ff;font-size:x-small;">For other business objects, I do not have this error.</span></p>
+<p><span style="color:#0000ff;font-size:x-small;">Thank you very much for your help.</span></p>
+<p><span style="color:#0000ff;font-size:x-small;">------------------------</span></p>
+<p><span style="color:#0000ff;font-size:x-small;">In Editable Root Collection (obVendor_List),&nbsp; the following code trys to get list of vendor &amp; error on this line:</span></p>
+<p><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp; Return<span style="color:#000000;font-size:x-small;"> DataPortal_Fetch(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Of</span></span><span style="color:#000000;font-size:x-small;"> obVendor_List)(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">New&nbsp;</span></span><span style="color:#000000;font-size:x-small;"> FilterCriteria())</span></span></p>
+<p>Error message was:</p>
+<p><span style="font-size:x-small;"><span style="color:#0000ff;">Overload resolution failed because no accessible &quot;DataPortal_Fetch&quot; accepts this number of type arguments.</span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;">------------------------<br /></span><span style="font-size:x-small;">&nbsp;Code snippets as follow:</span></p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Shared</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Function</span></span><span style="font-size:x-small;"> GetVendor_List() </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">As&nbsp;</span></span><span style="font-size:x-small;"> obVendor_List<br /></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Return</span></span><span style="font-size:x-small;"> DataPortal_Fetch(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Of</span></span><span style="font-size:x-small;"> obVendor_List)(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">New&nbsp;</span></span><span style="font-size:x-small;"> FilterCriteria())<br /></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End</span></span></p>
+<p><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;">Private Overloads Sub DataPortal_Fetch(ByVal parCriteria As FilterCriteria)<br /></span></span><span style="font-size:x-small;">&nbsp;&nbsp;&nbsp; RaiseListChangedEvents =&nbsp; </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">False<br /><br />&nbsp; </span></span><span style="font-size:x-small;">&nbsp; ExecuteFetch(mDATABASE, parCriteria)<font size="2">
+<p>
+<p>
+<p>&nbsp;&nbsp;&nbsp; RaiseListChangedEvents = </p>
+</p>
+</p>
+</font></span></p>
+</p>
+<p>
+<p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">True</span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">End</span></span><span style="font-size:x-small;"> </span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">Sub<font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<span style="font-size:x-small;">&nbsp;</span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

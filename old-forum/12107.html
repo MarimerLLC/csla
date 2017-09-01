@@ -1,0 +1,70 @@
+<html><header><title>Single Child Object Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Single Child Object Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12107.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Friday, August 09, 2013</h2><p>I am using CSLA 3.8.4</p>
+<p>I have come to the following conclusion, but wanted to soundboard.</p>
+<div><span>CSLA does not support null property semantics, or the idea of single child object property being optional. For all intents and purposes an instance of the property must always exist (even if the instance creation is deferred). CSLA&#39;s internal code requires the existence of an instance in order to work properly for business object metastate management, undo, binding etc.</span></div>
+<p>Is my conclusion correct? Am I missing something?</p>
+<p>&nbsp;</p>
+<p>Here is what I need to accomplish.</p>
+<p>I have an editable root object that has an editable child property (contact). </p>
+<p>It must be exactly one contact, <span style="text-decoration:underline;">not a list of contacts</span>.</p>
+<p>By default the contact is null. </p>
+<p>If the user checks a checkbox, an instance is created. (Unchecking returns to null)</p>
+<p>Rules run only if an instance exists.</p>
+<p>CancelEdit will return the contact to its initial state (not n level undo, just single edit cancellation)</p>
+<p>If the contact is null no database record should exist.</p>
+<p>&nbsp;</p>
+<p>Can the above be accomplished? As an aside, does CSLA 4.x support provide better support for the single child object properties?&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ColourHaze replied on Friday, August 09, 2013</h2><p>Hi,</p>
+<p>Considering the null value for the child, you could consider the applying the null object pattern. I have to admit that I haven&#39;t used it in context of csla before, but I think it can work without any problems. It might require an extra base class or interface though.</p>
+<p>regards,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, August 12, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>ColourHaze<br></b></p>
+<p>Hi,</p>
+<p>Considering the null value for the child, you could consider the applying the null object pattern. I have to admit that I haven&#39;t used it in context of csla before, but I think it can work without any problems. It might require an extra base class or interface though.</p>
+<p>regards,</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hi,</p>
+<p>Thanks for the reply. </p>
+<p>Without going to deeply, I believe that you still run into the same issues with the null object pattern. In all CSLA sample code I have seen for a single child object &nbsp;property, there is no property setter, just a getter. I believe the reason for this is changing that object references leaves CSLA in a bad state. For example, setting the property which was previously a real contact to an instance CONTACT_NULL, loses the old reference and thus leaves an orphan contact record in the database.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, August 11, 2013</h2><p>I believe you can accomplish this by making the Contact property of parent defined as&nbsp;</p>
+<p>
+<ul>
+<li>private backing field&nbsp;</li>
+<li>mark the field as [NotUndoable]</li>
+<li>make sure to upgrade the EditLevel when child is created.</li>
+</ul>
+</p>
+<p>This will eliminate the undo / EditLevel problem.</p>
+<p>To control valid (broken rules) you must override IsValid and add check for Contact != null &amp;&amp; Contact.IsValid&nbsp;</p>
+<p>There is some challenges concerning DataBinding on an object that is null - but that is a whole other issue.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, August 12, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>I believe you can accomplish this by making the Contact property of parent defined as&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>private backing field&nbsp;</li>
+<li>mark the field as [NotUndoable]</li>
+<li>make sure to upgrade the EditLevel when child is created.</li>
+</ul>
+<p>&nbsp;</p>
+<p>This will eliminate the undo / EditLevel problem.</p>
+<p>To control valid (broken rules) you must override IsValid and add check for Contact != null &amp;&amp; Contact.IsValid&nbsp;</p>
+<p>There is some challenges concerning DataBinding on an object that is null - but that is a whole other issue.&nbsp;</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Hi Jonny,</p>
+<p>I had seen this in other posts.</p>
+<p>If I save this child, when I fetch it how do I delete it?</p>
+<p>I notice that all CSLA example code for single child object properties only have property getter. Does the above pattern &nbsp;allow me to call delete directly on the child object?.</p>
+<p>Does the above pattern support:</p>
+<p>Adding new contact, calling CancelEdit on the root object, and rolling back the contact to null?</p>
+<p>While editing root object with existing contact, deleting the contact, calling CancelEdit on the root object and rolling the contact back from null to the original value?</p>
+<p>Thanks!&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 12, 2013</h2><p>The Undo part would not work tho with my first post.&nbsp;</p>
+<p>There is on more alternative route you could take.&nbsp;</p>
+<p>&nbsp;</p>
+<ul>
+<li>make child object a private backing field (so it is not included in parent.IsValid)&nbsp;</li>
+<li>do NOT mark private backing field as [NotUndoable] so it is included with BeginEdit.&nbsp;</li>
+<li>once a child object has been created it is there (and holds it data value - not to be reset to null).&nbsp;</li>
+<li>override CanReadProperty of parent to return false when checkbox datafield is not selected.&nbsp;<br />This will make the GetProperty method return the default value for the object (null) while still keeping the actual object inside the object graph - thus masking the actual field value to anyone that use the object/property.</li>
+<li>override IsValid method of parent to only check for child.IsValid when checkbox datafield is true</li>
+<li>override PropertyHasChanged to call MarkDeleted on child when property is checkbox datafield and child has value (as PropertyHasChanged is ONLY called when field value is changed- remember DataBinding may call the property setter many times with the same value)</li>
+<li>when using DataPortal.Child_XYZ method the Child_Delete method will be called when existing object and has IsDeleted = true - or else when has value call Child_Insert/Child_Update (just skip the MarkOld in previos part and make this a custom logic of the Save DataAccess).</li>
+<li>and Undo mechanism will work as expected.</li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Monday, August 12, 2013</h2><p>Once again great stuff. Another example of the flexibility and power of CSLA meeting out of the box requirements.</p>
+<p>Thanks Jonny!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

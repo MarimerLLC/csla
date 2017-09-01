@@ -1,0 +1,294 @@
+<html><header><title>Child list is intermittently null</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child list is intermittently null</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6653.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BarryC posted on Monday, March 23, 2009</h2><P>I am getting a strange intermittent error when testing one of my business objects with NUnit.&nbsp; </P>
+<P>The Template business object has two editable&nbsp;child Lists: NotificationList and SignOffList.&nbsp; Sometimes when a new Template object is created these child lists are null instead of a new empty list.&nbsp; However, this only happens intermittently.&nbsp; Other times, the tests will run fine.</P>
+<P>Does anybody have any ideas what might be causing this?&nbsp; I am using Csla 3.6.0.</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> System.Linq;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> Csla;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> Csla.Data;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> Csla.Security;</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>using</FONT></FONT><FONT size=2> Csla.Validation;</FONT><FONT size=2></P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>namespace</FONT></FONT><FONT size=2> Templates</P>
+<P>{</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Serializable</FONT></FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2> : Csla.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BusinessBase</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>&gt;</P>
+<P>{</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Business Properties and Methods</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Register properties</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; IDProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Id"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; NameProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Name"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; GroupIDProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"GroupID"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt; DescriptionProperty = RegisterProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Description"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>&gt; LockInfoListProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"LockInfoList"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt; NotificationListProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"NotificationList"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt; SignOffListProperty = RegisterProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>typeof</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PropertyInfo</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"SignOffList"</FONT></FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>byte</FONT></FONT><FONT size=2>[] _lastChanged;</P>
+<P>[System.ComponentModel.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataObjectField</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> ID</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(IDProperty); }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> Name</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(NameProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(NameProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> GroupID</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(GroupIDProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(GroupIDProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> Description</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(DescriptionProperty); }</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2> { SetProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(DescriptionProperty, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2>); }</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Child properties</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2> NotificationList</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!FieldManager.FieldExists(NotificationListProperty))</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>.NewNotificationList());</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2> SignOffList</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!FieldManager.FieldExists(SignOffListProperty))</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>.NewSignOffList());</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2> LockInfoList</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!FieldManager.FieldExists(LockInfoListProperty))</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>&gt;(LockInfoListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>.NewLockInfoList());</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> GetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LockInfoList</FONT></FONT><FONT size=2>&gt;(LockInfoListProperty);</P>
+<P>}</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Business Properties and Methods</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Validation Rules</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddBusinessRules()</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Name</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//</P></FONT></FONT><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringRequired, NameProperty);</P>
+<P>ValidationRules.AddRule(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringMaxLength, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MaxLengthRuleArgs</FONT></FONT><FONT size=2>(NameProperty, 50));</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Description</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//</P></FONT></FONT><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.StringMaxLength, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>CommonRules</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>MaxLengthRuleArgs</FONT></FONT><FONT size=2>(DescriptionProperty, 255));</P>
+<P>AddCustomRules();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> AddCustomRules();</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Validation Rules</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Factory Methods</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2> NewTemplate()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.Create&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>&gt;();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2> GetTemplate(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> id)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(id));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DeleteTemplate(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2> id)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.Delete(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(id));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> Template()</P>
+<P>{ </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>/* require use of factory method */</FONT></FONT><FONT size=2> }</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Factory Methods</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access - Create</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>RunLocal</FONT></FONT><FONT size=2>]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Create()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnCreating(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P>ValidationRules.CheckRules();</P>
+<P>OnCreated();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnCreating(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnCreated();</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Data Access - Create</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access - Fetch</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnFetching(criteria, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PulseDbDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.PulseDb))</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//set option to eager load child object(s)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> opts = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> System.Data.Linq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataLoadOptions</FONT></FONT><FONT size=2>();</P>
+<P>opts.LoadWith&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2>&gt;(p =&gt; p.NotificationList);</P>
+<P>opts.LoadWith&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2>&gt;(p =&gt; p.SignOffList);</P>
+<P>mgr.DataContext.LoadOptions = opts;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = mgr.DataContext.claims_templates_Template</P>
+<P>.Single(r =&gt; r.ID == criteria.Value);</P>
+<P>OnMemberLoading(data);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(IDProperty, data.ID);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(NameProperty, data.Name);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(GroupIDProperty, data.GroupID);</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(DescriptionProperty, data.Description);</P>
+<P>_lastChanged = data.LastChanged.ToArray();</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Load child object(s)</P></FONT></FONT><FONT size=2>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>.GetNotificationList(data.NotificationList));</P>
+<P>LoadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>.GetSignOffList(data.SignOffList));</P>
+<P>OnMemberLoaded();</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P></FONT></FONT><FONT size=2>
+<P>OnFetched();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnFetching(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; criteria, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnFetched();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberLoading(Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2> data);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberLoaded();</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Data Access - Fetch</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access - Insert</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Insert()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnInserting(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PulseDbDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.PulseDb))</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Check that no template with this name already exists.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>.Exists(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Name))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>throw</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Exceptions.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>UniqueConstraintException</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>.Format(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Unable to save template. A template named {0} already exists."</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.Name));</P>
+<P>&nbsp;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2>();</P>
+<P>OnMemberReading(data);</P>
+<P>data.Name = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(NameProperty);</P>
+<P>data.GroupID = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(GroupIDProperty);</P>
+<P>data.Description = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(DescriptionProperty);</P>
+<P>OnMemberRead();</P>
+<P>mgr.DataContext.claims_templates_Template.InsertOnSubmit(data);</P>
+<P>mgr.DataContext.SubmitChanges();</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(IDProperty, data.ID);</P>
+<P>_lastChanged = data.LastChanged.ToArray();</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Insert Child object(s)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P></FONT></FONT><FONT size=2>
+<P>OnInserted();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnInserting(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnInserted();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberReading(Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2> data);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberRead();</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Data Access - Insert</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access - Update</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Update()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnUpdating(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PulseDbDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.PulseDb))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2>()</P>
+<P>{</P>
+<P>ID = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(IDProperty)</P>
+<P>};</P>
+<P>data.LastChanged = _lastChanged;</P>
+<P>mgr.DataContext.claims_templates_Template.Attach(data);</P>
+<P>OnMemberReading(data);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (IsSelfDirty)</P>
+<P>{</P>
+<P>data.Name = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(NameProperty);</P>
+<P>data.GroupID = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(GroupIDProperty);</P>
+<P>data.Description = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2>&gt;(DescriptionProperty);</P>
+<P>}</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Update Child object(s)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P>OnMemberRead();</P>
+<P>mgr.DataContext.SubmitChanges();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (IsSelfDirty)</P>
+<P>{</P>
+<P>LoadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(IDProperty, data.ID);</P>
+<P>_lastChanged = data.LastChanged.ToArray();</P>
+<P>}</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P></FONT></FONT><FONT size=2>
+<P>OnUpdated();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnUpdating(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnUpdated();</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Data Access - Update</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access - Delete</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>override</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_DeleteSelf()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnSelfDeleting(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PulseDbDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.PulseDb))</P>
+<P>{</P>
+<P>OnMemberSelfDeleting();</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Delete Child object(s), which may contain concurrency check</P></FONT></FONT><FONT size=2>
+<P>NotificationList.Clear();</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P>SignOffList.Clear();</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.UpdateChild(ReadProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty), </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2>()</P>
+<P>{</P>
+<P>ID = ReadProperty&lt;</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt;(IDProperty)</P>
+<P>};</P>
+<P>data.LastChanged = _lastChanged;</P>
+<P>mgr.DataContext.claims_templates_Template.Attach(data);</P>
+<P>mgr.DataContext.claims_templates_Template.DeleteOnSubmit(data);</P>
+<P>OnMemberSelfDeleted();</P>
+<P>mgr.DataContext.SubmitChanges();</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P></FONT></FONT><FONT size=2>
+<P>SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>.NewNotificationList());</P>
+<P>SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>.NewSignOffList());</P>
+<P>OnSelfDeleted();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnSelfDeleting(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnSelfDeleted();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberSelfDeleting();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberSelfDeleted();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Delete(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnDeleting(criteria, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PulseDbDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Database</FONT></FONT><FONT size=2>.PulseDb))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> data = mgr.DataContext.claims_templates_Template</P>
+<P>.Single(r =&gt; r.ID == criteria.Value);</P>
+<P>OnMemberDeleting(data);</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Delete Child object(s)</P></FONT></FONT><FONT size=2>
+<P>mgr.DataContext.claims_templates_Notification.DeleteAllOnSubmit(data.NotificationList);</P>
+<P>mgr.DataContext.claims_templates_SignOff.DeleteAllOnSubmit(data.SignOffList);</P>
+<P>mgr.DataContext.claims_templates_Template.DeleteOnSubmit(data);</P>
+<P>OnMemberDeleted();</P>
+<P>mgr.DataContext.SubmitChanges();</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P></FONT></FONT><FONT size=2>
+<P>SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>&gt;(NotificationListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>NotificationList</FONT></FONT><FONT size=2>.NewNotificationList());</P>
+<P>SetProperty&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>&gt;(SignOffListProperty, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SignOffList</FONT></FONT><FONT size=2>.NewSignOffList());</P>
+<P>OnDeleted();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnDeleting(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SingleCriteria</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Template</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>int</FONT></FONT><FONT size=2>&gt; criteria, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnDeleted();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberDeleting(Pulse.PLMSuite.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>claims_templates_Template</FONT></FONT><FONT size=2> data);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>partial</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnMemberDeleted();</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Data Access - Delete</P></FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</FONT></FONT><FONT size=2> </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//Data Access</P></FONT></FONT><FONT size=2>
+<P>}</P>
+<P>}</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, March 24, 2009</h2><font size="2"><font face="Arial">Hi Barry<br><br>I faced a similar problem recently with regards to lazy-loaded child lists and nunit tests. The solution for me was to first check if the child list has in fact been loaded before attempting to insert or update the object, as follows:<br><br><font face="Courier New">if (FieldManager.FieldExists(</font></font></font><font size="2" face="Courier New">NotificationListProperty</font><font size="2" face="Courier New">))<br></font><font size="2" color="#2b91af" face="Courier New"><font size="2" color="#2b91af">&nbsp; DataPortal</font></font><font size="2" face="Courier New">.UpdateChild(ReadProperty&lt;</font><font size="2" color="#2b91af" face="Courier New"><font size="2" color="#2b91af">NotificationList</font></font><font size="2" face="Courier New">&gt;(NotificationListProperty), </font><font size="2" color="#0000ff" face="Courier New"><font size="2" color="#0000ff">this</font></font><font size="2" face="Courier New">);<br><br></font><font size="2" face="Courier New">if (FieldManager.FieldExists(</font><font size="2" face="Courier New">SignOffListProperty</font><font size="2" color="#2b91af" face="Courier New"><font size="2" color="#2b91af">))<br>&nbsp; DataPortal</font></font><font size="2" face="Courier New">.UpdateChild(ReadProperty&lt;</font><font size="2" color="#2b91af" face="Courier New"><font size="2" color="#2b91af">SignOffList</font></font><font size="2" face="Courier New">&gt;(SignOffListProperty), </font><font size="2" color="#0000ff" face="Courier New"><font size="2" color="#0000ff">this</font></font><font size="2" face="Courier New">);</font><br><br><font size="2" face="Arial">For more info see: <a HREF="/forums/thread/30103.aspx">http://forums.lhotka.net/forums/thread/30103.aspx</a></font><font size="2" face="Arial"><br><br>Regards<br>Michael</font><br><font size="2"><font face="Arial"><br></font></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

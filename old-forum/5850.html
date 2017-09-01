@@ -1,0 +1,163 @@
+<html><header><title>Problem with WPF PTracker sample?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with WPF PTracker sample?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5850.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Friday, November 21, 2008</h2>Hi,<br><br>I've been building user controls based on the Wpf PTracker sample, which uses the Loaded event to referesh the CslaDataProvider.<br><br>The problem is that Load and Unload will fire ANY time the control is loaded or unloaded from the visual tree... this manifests itself in different ways.&nbsp; One reason Unload / Load will refire is if the user changes their OS theme.&nbsp; Another reason seems to be if you drop the user control into the DocumentContent portion of the XamDockManager from Infragistics.&nbsp; As you change tabs, the Unload event fires for any user control which is no longer being displayed, and fires again when the user control is displayed.<br><br>This created a weird issue for me; I created a new part edit user control and added it to a tab.&nbsp; I edited the part data and saved, and created another new one without closing the original tab.&nbsp; When I was done, I clicked back to the first tab... and the screen cleared and said I was working on a new part.... the Loaded event fired, and since I never set the user control's PartNumber property, it asked for another new part.&nbsp; Even if I do set it, it will reload the part using the Get factory method, silently losing all user changes.&nbsp; <br><br>Has anyone else hit this problem yet?&nbsp; I'm also looking for a reliable way to do cleanup; my user control starts a DispatchTimer, and I'd like to shut it off when the control is "closed."<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have heard of this issue with WPF tab control.&nbsp; I think
+if you google &#8220;WPF Tab Control Template Load&#8221;, you will probably
+find a solution to tab control problem.&nbsp; We are not using tab control in
+our software, we are faking it with stand-along buttons and grid to load
+selected controls into.&nbsp; Not sure if this will address your load problem
+though.&nbsp; You might need to have check your Provider.Data == null prior to
+firing refresh in Loaded.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 21, 2008 4:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Problem with WPF PTracker sample?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I've been building user controls based on the Wpf PTracker sample, which uses
+the Loaded event to referesh the CslaDataProvider.<br>
+<br>
+The problem is that Load and Unload will fire ANY time the control is loaded or
+unloaded from the visual tree... this manifests itself in different ways.&nbsp;
+One reason Unload / Load will refire is if the user changes their OS
+theme.&nbsp; Another reason seems to be if you drop the user control into the
+DocumentContent portion of the XamDockManager from Infragistics.&nbsp; As you
+change tabs, the Unload event fires for any user control which is no longer
+being displayed, and fires again when the user control is displayed.<br>
+<br>
+This created a weird issue for me; I created a new part edit user control and
+added it to a tab.&nbsp; I edited the part data and saved, and created another
+new one without closing the original tab.&nbsp; When I was done, I clicked back
+to the first tab... and the screen cleared and said I was working on a new
+part.&nbsp; <br>
+<br>
+Has anyone else hit this problem yet?&nbsp; I'm also looking for a reliable way
+to do cleanup; my user control starts a DispatchTimer, and I'd like to shut it
+off when the control is &quot;closed.&quot;<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, November 21, 2008</h2>Ya, it looks like this is pretty normal, but it caught me off guard.&nbsp; I think this may have been asked before, but is it wrong to use the UI samples as "best practice?"&nbsp; I'm still fairly new to Wpf, so when building my Csla Wpf application, I'm tending to mimic what the PTracker does.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, November 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I do not necessarily see sample as wrong or right, but more like
+a training tool/sample code.&nbsp; I think, there is a steep learning curve
+involved in moving to WPF from WinForms, and it is just a matter of doing it
+and seeing what works.&nbsp; I do not follow PTracker exactly in my application,
+but I did use it on occasion when I started with WPF.&nbsp; General principal still
+works&nbsp; - single frame with multiple controls loaded into a placeholder in
+main frame in response to user actions.&nbsp; All controls in my case user data
+providers to get and update the data, and this is probably the only constant
+for screen to screen.&nbsp; Like I mentioned, I do not use tab controls, but
+this is not a major deal. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, November 21, 2008 4:37 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Problem with WPF PTracker sample?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ya, it looks like this is pretty normal, but it caught me
+off guard.&nbsp; I think this may have been asked before, but is it wrong to
+use the UI samples as &quot;best practice?&quot;&nbsp; I'm still fairly new to
+Wpf, so when building my Csla Wpf application, I'm tending to mimic what the
+PTracker does.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 22, 2008</h2><P>I wouldn't necessarily look at the UI projects in ProjectTracker as "best practices". My goal with those projects is to demonstrate how to use data binding (and related techniques) to connect the UI to CSLA-style business objects.</P>
+<P>Very clearly, there are many ways to build web, Windows and WPF interfaces. Many different design patterns, and entire UI frameworks (CAB, Prism, etc). I <EM>absolutely</EM> don't want to side-track CSLA into being a UI framework - those are big all by themselves, as is CSLA.</P>
+<P>So I view the UI projects in ProjectTracker as illustrations of how data binding, and other key related concepts, work with business objects. You should look elsewhere for best practices and frameworks for UI creation.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, November 24, 2008</h2>Ok, fair enough.&nbsp; Back to my particular issue though, is it a UI issue or a data binding issue?&nbsp; I believe the PTracker sample will suffer the same results when you change your OS theme as well.<br><br>I'm handling this in a UserControl subclass I already created, which will call a virtual method only the first time Loaded is fired, for those that run into this same issue.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

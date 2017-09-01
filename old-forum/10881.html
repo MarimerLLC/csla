@@ -1,0 +1,19 @@
+<html><header><title>Where to store multi-tenant info?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Where to store multi-tenant info?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10881.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop posted on Tuesday, November 15, 2011</h2><p>In our system a user can access data of one or multiple clients (tenant). The IDs of all tenants, he is allowed to work with, are fetched while loggin in.</p>
+<p>(A) Now, where would you store this information for a user, the IDs of which tenants he is allowed to fetch?</p>
+<ul>
+<li>In our implementation of Principal (along with the roles we already use)? </li>
+<li>ApplicationContext.ClientContext entry? </li>
+</ul>
+<p>(B) And what is the state of an answer to the post back in 2009? (<a href="http://forums.lhotka.net/forums/t/8011.aspx">http://forums.lhotka.net/forums/t/8011.aspx</a>)</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Rocky<br></b>&nbsp; <span>Issue 13 is in the running for CSLA 4. In the end some of these things will come down to a matter of time. But multi-tenant business and authz rules are fairly high on my priority list.&nbsp; </span></div></p>
+<p>Is this the RoleSet? </p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, November 16, 2011</h2><p>That&#39;s a long thread, I don&#39;t have time to decipher what was &quot;issue 13&quot;. If that was to support multi-tenant business and authz rules, then yes, that is a feature of CSLA 4. The feature is implemented through the concept of rule sets.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, November 17, 2011</h2><p>Thanks, this answers part (B). <br />I suspected that this wouldn&#39;t solve my modality of multi-tenant. </p>
+<p>My solution is to restrict right down in SQL, something like&nbsp;&nbsp; <span style="font-family:courier new,courier;">SELECT ...&nbsp; WHERE tenantid in (1,2,5,7)</span>. <br />All I have to do is send the &quot;(1,2,5,7)&quot; from client to the sever. <br />Remmains question (A), where should I store the IDs?</p>
+<ul>
+<li>In our implementation of Principal (along with the roles we already use)? </li>
+<li>ApplicationContext.ClientContext entry? </li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, November 17, 2011</h2><p>I think those are your two primary options, yes.</p>
+<p>If the TenantId concept is a per-user thing I&#39;d probably put the values in the custom identity object. </p>
+<p>If the concept isn&#39;t directly tied to the user I&#39;d tend to use ClientContext.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

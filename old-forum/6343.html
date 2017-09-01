@@ -1,0 +1,23 @@
+<html><header><title>Child Edit Level problem csla 3.6</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Child Edit Level problem csla 3.6</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6343.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dexter posted on Thursday, February 05, 2009</h2><P>Hi</P>
+<P>I am&nbsp; using CSLA 3.6 for my business objects, with a winforms client that usesDataBinding.</P>
+<P>I am currently have an object hierarchy that has a structure as follows</P>
+<P>Rule - (Root business base object)</P>
+<P>&nbsp;&nbsp;&nbsp;RuleSetting (Child business base object) (represents a group of settings to be recorded at a point in time)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SettingParameters (child business list base object )</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;SettingParameter (Child business base object) </P>
+<P>My problem is as follows:</P>
+<P>When i change a property&nbsp;on the RuleSetting child object, the rule settings edit level is not changed.</P>
+<P>This in turn causes me problems when saving or cancelling. ( Undo Exception ).</P>
+<P>I have followed the structure outlined in Project tracker, but to no avail.</P>
+<P>Any help or ideas from you csla veterans would be greatfully received</P>
+<P>&nbsp;</P>
+<P>Thanks</P>
+<P>Dexter</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 05, 2009</h2><P>Do you have a BindingSource control for your RuleSetting object? It is the BindingSource control that is responsible for invoking the appropriate IEditableObject methods as you interact with the object through binding.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dexter replied on Friday, February 06, 2009</h2><P>Thanks Rocky</P>
+<P>That is&nbsp;what was missing.</P>
+<P>When i dragged the parameters child node of the setting it automatically created&nbsp;a BindingSource component for me, but when i drag the setting child node it doesnt.</P>
+<P>Like you mention in your 2005 book, every business object must have its own BindingSource control&nbsp;to manage the information of a single object or collection.</P>
+<P>Thanks again</P>
+<P>Dexter</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

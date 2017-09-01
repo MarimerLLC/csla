@@ -1,0 +1,12 @@
+<html><header><title>Grid Binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Grid Binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3101.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pieterv posted on Wednesday, June 27, 2007</h2><P><FONT face=Arial size=2>Hi everybody,</FONT></P>
+<P><FONT face=Arial size=2>I'm fairly new to CSLA and was wondering which object to bind to a datagrid? <BR>I does not need to be editable, just a list of records in a table.</FONT></P>
+<P><FONT face=Arial size=2>I've used ReadOnlyListBase but are only able to get 2 columns back. <BR>How do I retrieve the rest of the table or at least more than 2 columns?</FONT></P>
+<P><FONT face=Arial size=2>Also, how would I then filter the datagrid? I used to use a DataView, will it work the same way?</FONT></P>
+<P><FONT face=Arial size=2>Thanks!</FONT></P>
+<P><FONT face=Arial size=2>-Pieter</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 27, 2007</h2><P>For sorting and filtering you have a few choices.</P>
+<P>Rocky includes SortedBindingList and FilteredBindingList in Csla. One of the nice things about these 2 is that they are composable - you can take one and use the other against it.</P>
+<P>Limitation - only single property sorting exists.</P>
+<P>I use the ObjectListView over in CslaContrib. It is an excellent piece of code and works for multiple property sorting. It also does filtering.Search this forum for sample code on how to use it.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pieterv replied on Wednesday, June 27, 2007</h2><P>Thanks Joe. Will check it out.</P>
+<P>I got the Grid/Multiple columns issue sorted out as well.Classic case of fingers in gear, brain in neutral <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

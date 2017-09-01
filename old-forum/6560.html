@@ -1,0 +1,39 @@
+<html><header><title>Broken Rules... Again</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Broken Rules... Again</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6560.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brette.Net posted on Thursday, March 05, 2009</h2><P>Hello All,</P>
+<P>I know it has been beaten to death on this forum. However it seems that there is no real 'standard' solution to getting a list of all broken rules i.e. Root and Children. Correct me if I am wrong but it seems the only options are as follows.</P>
+<P>1. Write some reflection to traverse the object graph and collect all the broken rules. *do not like this at all* </P>
+<P>2. Put hooks in every Root object to return its child broken rules. This is simple enough however it is just another thing you need to keep track of and keep up to date as your domain model matures.</P>
+<P>I am using CSLA 3.5 and it seems to me that this should be built into the framework. After all with the new Child_DataPortal and the FieldDataManager the framework already has a collection of child objects. FieldDataManager.GetChildren(). It strikes me as odd that this is not leveraged to get the broken rules also.</P>
+<P>In any case here is what I have done. Can anyone validate or poke holes in the method...I basically created an extension method on BusinessBase....</P><PRE> public static string GetBrokenRuleString(this BusinessBase businessObject)
+        {
+            //Precondition Check
+            DBC.Check(businessObject == null, new ArgumentNullException("businessObject", "Parameter data cannot be null."));
+
+            string errorMessage = string.Empty;
+            IDataErrorInfo errorInfo;
+
+            //retrun if valid
+            if (businessObject.IsValid)
+            {
+                return errorMessage;
+            }
+
+            //Get root rules
+            if(!businessObject.IsSelfValid)
+            {
+                errorInfo = businessObject;
+                errorMessage += errorInfo.Error;
+            }
+
+            //Lets look at children
+            Type businessObjectType = businessObject.GetType();
+            PropertyInfo property = businessObjectType.GetProperty("FieldManager", BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static);
+            FieldDataManager fieldDataManager = (FieldDataManager)property.GetValue(businessObject, null);
+            List children = fieldDataManager.GetChildren();
+
+            //Call on children
+            for(int i = 0; i );
+            }
+
+            return errorMessage;
+        }
+</Pre></PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JohnB replied on Thursday, March 05, 2009</h2>Brette.Net,<br><br>I created a sample application some time ago that I believe can help you. It's in VB but you should have no problem with it. Let me know if you have any questions.<br><br><a href="/forums/thread/21880.aspx">http://forums.lhotka.net/forums/thread/21880.aspx</a><br><br>Note: I did this using CSLA 3.0.3.<br><br>John<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Friday, November 06, 2009</h2><P>BrokenRules is indeed just the BrokenRules of the business object itself, it would be nice to have the complete object graph available.<BR><BR>I noticed an wishlist issue, but it has a high priority for over 200+ days?<BR><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=363">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=363</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

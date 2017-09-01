@@ -1,0 +1,22 @@
+<html><header><title>CSLA for Silverlight - MobileFormatter serialization payload size issues </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for Silverlight - MobileFormatter serialization payload size issues </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9564.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Wednesday, September 22, 2010</h2><p>I have a project that is a pretty standard CSLA + Silverlight implementation using WCF and Compression and&nbsp;it works very well.</p>
+<p>I discovered that one of my BO&#39;s (and related object graph) serialises to a very large payload.<br /><br />Take <strong><span style="text-decoration:underline;">scenario 1</span></strong></p>
+<p>The BO is structured as follows:<br /><br />RootList (AL)<br />|<br />|---&gt; Child (A)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |------&gt;ChildList (BL)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; |---------&gt;Child (B)</p>
+<p>All of the objects are editable and have the simplest properties on them:</p>
+<p>A</p>
+<ul>
+<li>int Id</li>
+</ul>
+<p>B</p>
+<ul>
+<li>int RefIdA</li>
+<li>int RefIdB</li>
+</ul>
+<p>So at runtime I have AL containing about 150 intances of A, <span style="text-decoration:underline;">and each </span>A has about 150 instances of B in BL. When that is serialised from ASP.NET by the MobileFormatter it comes to a whopping&nbsp;<strong>110Mb!!!</strong></p>
+<p>This seems excessively bloated because if I change the object graph to NOT have BL and B and store the 150 RefIdA and RefIdB in a different structure, it reduced by a dramatic margin. Below is more information on the new object graph.<br /><br />Take <strong><span style="text-decoration:underline;">scenario 2</span></strong></p>
+<p>RootList (AL)<br />|<br />|---&gt; Child (A)</p>
+<p>Instead of BL+B, I&nbsp;define on&nbsp;A a List/Collection property to represent the integer values that would otherwise have&nbsp;been stored in BL+B (for example a MobileList&lt;int,int&gt;). To my surprise the serialization size drops a massive 90% to only <strong>9Mb</strong>.</p>
+<p>To point I&#39;m making is that with scenario 2, the object graph I&#39;m essentially still has150 instances of A and each A still has a collection with 150 instances of two integers. I do understand that with scenario 2 I&#39;m no longer serialising a BusinessListBase containing BusinessBase objects and that the BLB and BB objects are a great deal larger than just a collection structure of 2 integers.</p>
+<p>My question is whether it is whether the larger more complicated BusinessListBase+BusinessBase objects is <span style="text-decoration:underline;">really that much larger </span>to justify the inflated size&nbsp;when&nbsp;serialized such&nbsp;that is almost ten times larger? Or could there be a bug or performance improvement be made?</p>
+<p>Unfortunately my understanding of the MobileFormatter and related bits is lacking to know what it should and shoudn&#39;t be doing.</p>
+<p>Apologies if this is tad verbose and tricky to follow. Please let me know if anything is unclear and I will try to explain more clearly.</p>
+<p>Thanks for reading,<br />Jaans</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

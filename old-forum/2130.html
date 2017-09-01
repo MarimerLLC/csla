@@ -1,0 +1,223 @@
+<html><header><title>Object Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2130.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland posted on Friday, January 12, 2007</h2><P>I am developing an asp.net application and am assessing whether to use clsa.net.&nbsp; The application is a quoting system.&nbsp; Each Quote object will have a collection of QuoteItem objects.&nbsp; Each QuoteItem object will contain a collection of StockItem objects and a collection of LabourItem objects.</P>
+<P>Each Quote will typically contain 100 QuoteItems</P>
+<P>Each QuoteItem object will typically contain 100 StockItem objects and 20 LabourItem objects</P>
+<P>In addition to this there are other related colelction objects that I have not described.</P>
+<P>&nbsp;</P>
+<P>If Im understanding CSLA correctly then the objects Ive described will map to CSLA templates as follows:</P>
+<P>Quote: Editable Root (top level object)</P>
+<P>QuoteItems: Editable Child Collection </P>
+<P>QuoteItem: EditableChild (A QuoteItem only exists as part of a quotes QuoteItems collection&nbsp;- though the user may wish to search the entire db for a QuoteItem in order to copy the QuoteItem to a new Quote)</P>
+<P>StockItems: Editable Child Collection&nbsp; (Each QuoteItem object will contain a collection of StockItem objects)</P>
+<P>StockItem: Editable Child</P>
+<P>&nbsp;</P>
+<P>My concerns are that when loading a quote, Im loading a lot of related data which is not immediately necessary, that may cause a memory problem with the number of concurrent users.</P>
+<P>When a user loads up a Quote, the UI should display a list of QuoteItems in a grid that the user can add to, remove from and edit.&nbsp; A full QuoteObject conatins a large number of properties that do not need to be displayed in the list but should be visible when the user goes into the Item page.&nbsp; What Im not sure about is if I load a Quote object using the&nbsp;stored procedure sprQuote_Select_CSLA (see below)</P>
+<P>This procedure returns all Quote columns and all QuoteItem columns.&nbsp; Should I be loading all QuoteItem columns (approx 30) at this point seeing as I only need to display 3 of the columns in the grid on the Quote page?&nbsp; If I dont return all columns but return only the 3 that I wish to display, that will mean that my QuoteItems (editable child collection)&nbsp;object will only load its QuoteItem (editable child) objects with 3 properties.</P>
+<P>It seems that I should have a QuoteItem_List object which contains a collection of QuoteItem_ListItem objects which contain only the properties that I would display in a list.&nbsp; If I did go down this path, Im not sure how I should then convert this QuoteItem_ListItem object to a full QuoteItem object within the CSLA framework and still have the QuoteItem object a Editable Child object.</P>
+<P>All advice welcome</P>
+<P>&nbsp;</P>
+<P>CREATE PROCEDURE [dbo].[sprQuote_Select_CSLA]<BR>&nbsp;@quot_int_ID int<BR>AS</P>
+<P>SET NOCOUNT ON<BR>SET TRANSACTION ISOLATION LEVEL READ COMMITTED</P>
+<P>SELECT<BR>&nbsp;[quot_int_ID],<BR>&nbsp;[quot_user_int_ID],<BR>&nbsp;[quot_jobb_int_ID],<BR>&nbsp;[quot_tin_Revision],<BR>&nbsp;[quot_tin_Copy],<BR>&nbsp;[quot_int_ID_Parent],<BR>&nbsp;[quot_boo_Hire],<BR>&nbsp;[quot_txt_DuplicateReason],<BR>&nbsp;[quot_cont_int_ID]<BR>FROM<BR>&nbsp;[dbo].<BLOCKQUOTE><div><BR>WHERE<BR>&nbsp;[quot_int_ID] = @quot_int_ID</P>
+<P>--Load related QuoteItem records<BR>Select * from QuoteItem where item_quot_int_ID = @quot_int_ID</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 12, 2007</h2><P>Terry,</P>
+<P>You have an advantage using a web app (IMO) because you can break the object heirarchy into more functional chunks that more emulate how the UI behaves (ergo, how you are using the objects/data).&nbsp; Here is another thread that delves into this a bit: <A href="/forums/thread/10599.aspx">http://forums.lhotka.net/forums/thread/10599.aspx</A></P>
+<P>If you think about it, what you will end up with is a page that displays the details of a Quote and a list of those LineItems. At this point you really don't need to know anything deeper than that.&nbsp; So, to accomplish this, you will need your Quote editable root object and a child collection of read-only LineItemInfo objects.</P>
+<P>To drill into the details for a particular LineItem, you will use the primary key field from the above list to identify the item to instantiate on a new page that displays the LineItem and a list of StockItems and a list of LabourItems.&nbsp; This follows the same pattern as above with the LineItem being an editable root object with a child collection of read-only StockItemInfo objects and a second child collection of read-only LabourItemInfo objects.</P>
+<P>The same approach is used to drill into the StockItems and LabourItems.</P>
+<P>So, in the end, you'd end up with the following objects:</P>
+<P>
+<TABLE cellPadding=5>
+
+<TR>
+<TD>Quote</TD>
+<TD>editable root</TD></TR>
+<TR>
+<TD>QuoteListItemCollection</TD>
+<TD>editable collection (?)</TD></TR>
+<TR>
+<TD>QuoteLineItem</TD>
+<TD>read-only child</TD></TR>
+<TR>
+<TD>LineItem</TD>
+<TD>editable root</TD></TR>
+<TR>
+<TD>LineItemStockItemCollection</TD>
+<TD>editable collection (?)</TD></TR>
+<TR>
+<TD>LineItemStockItem</TD>
+<TD>read-only child</TD></TR>
+<TR>
+<TD>LineItemLabourItemCollection</TD>
+<TD>editable collection (?)</TD></TR>
+<TR>
+<TD>LineItemLabourItem</TD>
+<TD>read-only child</TD></TR>
+<TR>
+<TD>StockItem</TD>
+<TD>editable root</TD></TR>
+<TR>
+<TD>LabourItem</TD>
+<TD>editable root</TD></TR></TABLE></P>
+<P>If you have had a chance to read Rocky's book and review the sample project, you'll find where he goes over how to add new child items, etc. to finish off the needed behavior. (Thus the question marks next to the child collections. It's up to you how to implement these to match the behavior you require from the app.)</P>
+<P>This also means that your queries can be limited to retrieving the specific record and one level down the heirarchy rather than the full graph for the select object.</P>
+<P>So, to answer your initial question, yes, Csla is perfectly suited for your application and is, in fact, aimed at doing just that.</P>
+<P>HTH</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Friday, January 12, 2007</h2><P class=MsoNormal>Thanks for response.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>So let me see if I understand what you are suggesting.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<UL>
+<LI class=MsoNormal>Quote is a full EditableRoot object</LI>
+<LI class=MsoNormal>A Quote object will contain a collection of QuoteLineItem objects that will be exposed through the QuoteListItemCollection property.<SPAN>&nbsp; </SPAN></LI>
+<LI class=MsoNormal>A QuoteLineItem is a ‘small’ readonly object containing only the properties that will be displayed in the QuoteItems list on the Quote page.</LI>
+<LI class=MsoNormal>My stored procedure sprQuote_Select_CSLA should look something like procedure below</LI>
+<LI class=MsoNormal>My Quote object will load this collection via data_portal as in DataPortal_Fetch below</LI>
+<LI class=MsoNormal>The LineItem class is a full QuoteItem editable root object containing all 30 properties</LI>
+<LI class=MsoNormal>The user will click a link on the QuoteItems (QuoteListItemCollection ) grid on the Quote page and the ID from this row will be used to load a QuoteItem (LineItem) object and display this on the QuoteItem page</LI>
+<LI class=MsoNormal>The QuoteItem page will contain a grid bound to the LineItemStockItemCollection property of a QuoteItem (LineItem) object</LI>
+<LI class=MsoNormal>The user will click a link on the StockItems (LineItemStockItemCollection) grid on the QuoteItem (LineItem) page and the ID from this row will be used to load a StockItem object and display this on the QuoteItemStock page</LI></UL>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>And so on…</P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I have understood what you are suggesting correctly then there are a few problems<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<OL>
+<LI class=MsoNormal>Having QuoteListItemCollection as a editable child collection and QuoteLineItem as a readonly child causes a problem because QuoteListItemCollection inherits from Csla.BusinessListBase as follows</LI></OL>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Inherits</SPAN><SPAN> Csla.BusinessListBase(<SPAN>Of</SPAN> </SPAN>QuoteListItemCollection<SPAN>, </SPAN>QuoteLineItem<SPAN>) <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Because <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal>‘QuoteLineItem’ does not inherit from or implement the constraint type 'Csla.Core.IEditableBusinessObject'.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<OL>
+<LI class=MsoNormal>How do I Add a <A name=OLE_LINK2></A><A name=OLE_LINK1><SPAN>QuoteLineItem </SPAN></A>child object to the QuoteListItemCollection? I ask this question because a QuoteLineItem <SPAN>&nbsp;</SPAN>does not equate to a valid QuoteItem <SPAN>&nbsp;</SPAN>object (all 30 properties need to be populated, not just the ones displaying in the list) </LI>
+<LI class=MsoNormal>If you are suggesting I add a new LineItem object (this is a root object), then, in the scenario where I am creating a new quote and Im adding Items to the quote, the Item could be saved to the db before the quote – which I might subsequently decide to cancel</LI>
+<LI class=MsoNormal>By splitting these objects into root objects, won’t we lose the ability to wrap the saving of a Quote and its Items and stock into a single transaction</LI></OL>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>I look forward to your response</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Terry</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>=======================</P>
+<P class=MsoNormal>Code Snippets</P>
+<P class=MsoNormal>=======================</P>
+<P class=MsoNormal><SPAN>Create</SPAN><SPAN> <SPAN>PROCEDURE</SPAN> [dbo]<SPAN>.</SPAN>[sprQuote_Select_CSLA]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>@quot_int_ID <SPAN>int<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>AS<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>SET</SPAN><SPAN> <SPAN>NOCOUNT</SPAN> <SPAN>ON<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>SET</SPAN><SPAN> <SPAN>TRANSACTION</SPAN> <SPAN>ISOLATION</SPAN> <SPAN>LEVEL</SPAN> <SPAN>READ</SPAN> COMMITTED<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>SELECT<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_int_ID]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_user_int_ID]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_jobb_int_ID]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_tin_Revision]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_tin_Copy]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_int_ID_Parent]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_boo_Hire]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_txt_DuplicateReason]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_cont_int_ID]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>FROM<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[dbo]<SPAN>.</SPAN><BLOCKQUOTE><div><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>WHERE<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[quot_int_ID] <SPAN>=</SPAN> @quot_int_ID<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>--Load related </SPAN>QuoteLineItem <SPAN>records<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Select</SPAN><SPAN> <SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[item_int_ID]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[item_int_Column1]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[item_int_Column2]<SPAN>,<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>[item_int_Column3]<SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>from</SPAN><SPAN> Item <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>where</SPAN><SPAN> item_quot_int_id <SPAN>= </SPAN>@quot_int_ID<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>Private</SPAN><SPAN> <SPAN>Overloads</SPAN> <SPAN>Sub</SPAN> DataPortal_Fetch(<SPAN>ByVal</SPAN> objCriteria <SPAN>As</SPAN> Criteria)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dim</SPAN><SPAN> tr <SPAN>As</SPAN> SqlTransaction<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Using</SPAN><SPAN> cn <SPAN>As</SPAN> SqlConnection = <SPAN>New</SPAN> SqlConnection(Database.Contest03UKConnection)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cn.Open()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>tr = cn.BeginTransaction()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Try<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Using</SPAN><SPAN> cm <SPAN>As</SPAN> SqlCommand = tr.Connection.CreateCommand()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cm.Transaction = tr<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cm.CommandType = CommandType.StoredProcedure<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>cm.CommandText = <SPAN>"sprQuote_Select_CSLA"<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>cm.Parameters.AddWithValue(<SPAN>"@quot_int_ID"</SPAN>, objCriteria.ID)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Using</SPAN><SPAN> dr <SPAN>As</SPAN> SafeDataReader = <SPAN>New</SPAN> SafeDataReader(cm.ExecuteReader())<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>dr.Read()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>‘load object from dr<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>ValidationRules.CheckRules()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>'load child object(s)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>dr.NextResult()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>m_objItem_List = clsQuoteListItemCollection.QuoteListItemCollection(dr)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Using<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Using</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>tr.Commit()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Catch<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>tr.Rollback()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Throw<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Try<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Using<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 12, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>TerryHolland:</strong></div><div>
+<P>My concerns are that when loading a quote, Im loading a lot of related data which is not immediately necessary, that may cause a memory problem with the number of concurrent users.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Your objects should be designed around your use cases, not around your data. What you've described thus far are a set of objects that map 1:1 to your tables (pretty much anyway), but it sounds like that is a mismatch when compared to your application's usage.</P>
+<P>I say this because of your concern. You seem to be indicating that there are tasks the user is performing that don't require all the data in that huge object graph. Those tasks are, effectively, use cases. It is most certainly true that each use case should have its own object model: designed specifically to accomodate that use case.</P>
+<P>So it is highly unlikely, especially in a web setting (which it sounds like where you are) that you'd have such a comprehensive object graph. That might make sense in a WinForms setting, where you really could have a form that displays and edits all that data at once. But in the web that's just not likely.</P>
+<P>Odds are that your object model is not 1:1 with the database. Rather, it may be 3:1 - 3 objects per table, with each object filling a different role based on a different use case. The focus isn't on the data though, but rather on the behavior required by the use case.</P>
+<P>You have a use case where the user brings up a quote, with a list of read-only line items. That makes sense, and you should have an object model FOR THIS USE CASE that reflects this need. Probably</P>
+<P>Quote&lt;-ReadOnlyRoot<BR>ItemList&lt;-ReadOnlyChildList<BR>Item&lt;-ReadOnlyChild</P>
+<P>Then it sounds like you have a case where the user wants to edit one of the line items. That's a use case, with its own object(s), probably:</P>
+<P>QuoteItem&lt;-EditableRoot</P>
+<P>Again, in a WinForms setting the object model could be factored at a higher level. And for many web scenarios you don't need this level of breakdown either. But if you are building a high volume web site where you have hundreds of concurrent users hitting your web site, you probably do need to do a design at this level of granularity (where each page (more or less) is considered a use case.</P>
+<P>I don't know if you really do have that kind of scalability requirement or not - most people don't.</P>
+<P>When thinking about server memory consumption it is important to be clear about what's going on. Objects are only as big (in memory) as the size of their <EM>instance fields</EM>. That's it.</P>
+<P>However, you are talking about ~12000 objects in your graph. So for fun, let's say they average 150 bytes of data per object - that's nearly 2 meg per graph (per user). If you only have 10 or 20 users, that should be a non-issue. 200 users becomes an issue <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>On the other hand, rationally thinking about it, can a user actually interact with 12000 objects in any meaningful sense? That seems quite unlikely - even in a WinForms setting.</P>
+<P>So far the idea of this mega-object-graph is not passing any sort of sniff test (for me anyway) - web or Windows aside.</P>
+<P>So perhaps you consider that at a broader level you have these use cases:</P>
+<OL>
+<LI>List quotes</LI>
+<LI>Display a quote</LI>
+<LI>Edit a quote</LI>
+<LI>Edit a line item</LI>
+<OL>
+<LI>Edit stock items</LI>
+<LI>Edit labor items</LI></OL></OL>
+<P>Odds are this set of use cases is consistent across web or Windows. And each one of these use cases will have its own set of objects. DON'T TRY TO REUSE THEM in your initial designs. Just design each use case independantly (use Chapter 6 as a guide). When you are done, THEN you can see if reuse is possible or desirable.</P>
+<P>Certainly any consistent business rules (rule methods) should be candidates for reuse. But DO NOT reuse just because there are common properties. Property code is meaningless - template/snippet stuff, not worthy of reuse. But algorithmic logic or validation logic - that is good for reuse.</P>
+<P>And you might have certain name-value lists or other read-only data objects that appear in multiple use cases - that's quite common.</P>
+<P>But I wouldn't expect to see your mainline business objects span these use cases. Each one of these use cases addresses a different need, and will almost certainly have its own set of objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Saturday, January 13, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>So it is highly unlikely, especially in a web setting (which it sounds like where you are) that you'd have such a comprehensive object graph. That might make sense in a WinForms setting, where you really could have a form that displays and edits all that data at once. But in the web that's just not likely.</P>
+<P></div></BLOCKQUOTE></P>
+<P>So does this imply that you would use a different set of business objects for a web app&nbsp;to those that you would use for a win app?&nbsp; Some of my application will be used in a win application as well as web - though 80% of app will be a web app</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>Quote&lt;-ReadOnlyRoot<BR>ItemList&lt;-ReadOnlyChildList<BR>Item&lt;-ReadOnlyChild</P>
+<P>Then it sounds like you have a case where the user wants to edit one of the line items. That's a use case, with its own object(s), probably:</P>
+<P>QuoteItem&lt;-EditableRoot</P>
+<P></div></BLOCKQUOTE></P>
+<P>It seems from what you are saying, that there is not much need&nbsp; for EditableChildList or EditableChild classes in a web environment.&nbsp; That being the case would it not be better to use ReadOnlyRootList and ReadOnlyRoot classes for my list of QuoteItems that will display on my Quote page.&nbsp; This way, if when I added an Item for example, in a pop-up window,&nbsp;I could easily refresh the list of QuoteItems without having to reload the Quote object when pop-up is closed and focus is back on the Quote page if I use Ajax technology on my QuoteItems list</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>On the other hand, rationally thinking about it, can a user actually interact with 12000 objects in any meaningful sense? That seems quite unlikely - even in a WinForms setting.</P>
+<P></div></BLOCKQUOTE></P>
+<P>You're absolutely right - this is not necessary.</P>
+<P>Thanks again for your input</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Saturday, January 13, 2007</h2><P>Fact is that Win apps will support the more complex object models but that doesn't mean that you have to use them.&nbsp; I have found that following the more web-oriented approach still works well for Win apps.&nbsp; In fact, it allows you to decouple your forms from each other which, IMO, is a better and more flexible design.</P>
+<P>In my experience, although I don't use it much, EditableChildList and EditableChild can come into play in web apps when you want to have an editable grid (i.e. inline editing).</P>
+<P>As for your question about adding items to the child collections, it sounds like you are on the right track.&nbsp; Since the child object (QuoteItem) is being edited in another form, it is persisted to the data&nbsp;store from that form so all you have to do is refresh the original to reflect the changes.&nbsp; As far as the underlying mechanics since the QuoteItems collection is derived from ReadOnlyChildList, well...&nbsp; You never really have to add it to the collection, do you?&nbsp; That's the trick.</P>
+<P>By persisting the child object to the data store itself then refreshing the QuoteItems collection from the same data store, you have the same affect without having to code the addition.&nbsp; Make sense?&nbsp; This is divergent from the way we are used to thinking and is something I struggled to wrap my head around originally, but it works and simplifies things greatly.</P>
+<P>This is different, of course, to many-to-many relationships where you do have to establish that relationship somewhere.&nbsp; Rocky illustrates this with the Project-&gt;ProjectResource-&gt;Resource, etc. design in his ProjectTracker sample project.</P>
+<P>Good luck.&nbsp; HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Saturday, January 13, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div>
+<P>By persisting the child object to the data store itself then refreshing the QuoteItems collection from the same data store, you have the same affect without having to code the addition.&nbsp; Make sense?&nbsp; This is divergent from the way we are used to thinking and is something I struggled to wrap my head around originally, but it works and simplifies things greatly.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Do I lose any undo capability by working this way.&nbsp; ie if my from my Quote page I add a QuoteItem, it seems that the advice is to create a new QuoteItem EditableRoot object and save this to the DB then navigate back to the Quote page and refresh the grid displaying QuoteItems.&nbsp; Could I 'undo' at this point to remove the new QuoteItem?</P>
+<P>Terry</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

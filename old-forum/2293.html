@@ -1,0 +1,283 @@
+<html><header><title>Properties distribution</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Properties distribution</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2293.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gnan posted on Wednesday, February 07, 2007</h2><P><FONT face=Tahoma size=2>Hi,</FONT></P>
+<P><FONT face=Tahoma size=2>I'm new to CSLA.NET. It would be great if anyone could provide me a suggestion on creating the classes. Here is my scenario: I'm having an abstract class named "File". As per the File Type (or extension) I've derived classes namely ExcelFile, TxtFile, etc. The Root class "File" has some properties which is common to all the file types. Also, there are two file formats (or templates). As per the user choose the file template (one template having 3 columns and another having 5 columns and there is 2 similar columns remaining all are different). Now, one option is to have 3 + 3 (where 5 column - 2 common columns) properties in the root class "File" itself and the derived classes will set those properties as per the template choice. Other option could be having an abstract class "FileTemplate" where i would have two derived classes&nbsp;namely "FileTemplate1" and "FileTemplate2", wherein the "FileTemplate" has two common properties and the derived classes would override them and will have extra properties. Please suggest one or if there is some other better options, then please let me know.</FONT></P>
+<P><FONT face=Tahoma size=2>Thanks in advance.</FONT></P>
+<P><FONT face=Tahoma size=2>MSFollower</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 07, 2007</h2><P>The secret to success when using inheritance is to NOT focus on the properties you inherit, but rather to focus on the behaviors you inherit.</P>
+<P>A property declaration (all ~12 lines of code) does not get you reuse. If all you want is a common set of properties, I recommend using an interface. That is far simpler to implement!!</P>
+<P>But if your base class has <EM>behaviors</EM> then inheritance makes sense. In other words, if you have processing and/or rules that are common across all your File classes, then having a FileBase class with those methods is a good thing.</P>
+<P>This is one of the hardest things to "get" around behavioral object design, because so many examples of inheritance focus on inheriting data (properties), rather than behavior (methods). But inheriting for data is wrong and should be avoided.</P>
+<P>In other words, I recommend that you directly implement the "common" properties in all your File classes. If you want polymorphism, declare and implement an interface for that purpose.</P>
+<P>However, if you have rules that apply to, say, the FileExtension property, then that <EM>rule method</EM> could very well be in a FileBase class so it is available to all the File classes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Wednesday, February 07, 2007</h2><P>Hi !</P>
+<P>I have&nbsp;recently read your CSLA 2.0 book (which I liked&nbsp;very much)&nbsp;and noticed that you strongly emphasize&nbsp;importance of focusing on&nbsp;centralizing behavior&nbsp;rather than&nbsp;eliminating data redundancy when creating object model.&nbsp;Which seems perfectly alright to me&nbsp;but...</P>
+<P>&nbsp;What's <FONT color=#a52a2a>wrong</FONT> with inheriting properties ? It's not like we can either inherit methods or inherit properties.&nbsp;Why do you think declaring and implementing an interface is a better approach than having a base class with common properties ?&nbsp;We might not&nbsp;get much code reuse if properties are simple (meaning no smart code in property getters and/or setters) but&nbsp;we will still&nbsp;get some.&nbsp;&nbsp;Why write same things many times even if they are trivial ?? </P>
+<P>Thnx...</P>
+<P>Robert</P>
+<P>anyways, we plan to use CSLA for our next project <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 07, 2007</h2><P>Inheriting properties is simply complex - primarily when it comes to persistence. And the result is unmaintainable code - or poor performance - your choice.</P>
+<P>The reason is simple. Consider Product, with subclasses TaxableProduct and ServiceProduct. Product could have properties (and thus fields) for Id, Name, Price - these are common to all the products. TaxableProduct could add TaxRate, and ServiceProduct could add some sort of overtime price boost.</P>
+<P>Already, with ServiceProduct, we see that Product needs to provide a virtual ActualPrice property, in addition to the simple Price property. So already we're altering Product to accomodate a subclass - which is a danger sign.</P>
+<P>Then think about the simple act of retrieving a product from the database. You can't actually fetch a Product. But when you go to fetch a TaxableProduct how do you get the data? You want just one database query, so you need a SELECT statement that retrieves both the data for Product and for TaxableProduct (remember they have different fields).</P>
+<P>Does TaxableProduct load the fields of Product? It could, they might be protected (another danger sign). Or it might call base.Fetch(dr), passing the datareader up to the base class so it can load itself. That's better - but still, TaxableProduct has to know all the fields Product needs - so there's no encapsulation here. </P>
+<P>Remember that ServiceProduct needs to have similar (but not the same) fetch code. But it too needs to know the fields for Product.</P>
+<P>So when Product adds a field, all its subclasses must be located and updated as well. This is a classic case of the "fragile base class".</P>
+<P>The result is such tight coupling between the base class and the subclasses that they might as well be a single class. In fact maintainability would be <EM>increased</EM> if they <EM>were</EM> a single class, because you'd have less places to change things and keep them in sync.</P>
+<P>An alternative to the fetch approach is to do two database calls per object. Let TaxableProduct load its fields, and have it call base.Fetch() so Product can do its own database call to load its fields. This is a performance issue, but at least it maintains some level of encapsulation and minimizes the fragile base class issue to some degree.</P>
+<P>The point, in my mind, is that we're introducing all this complexity and fragility in an effort to reuse some template-based code. I've worked hard to make all property declarations look exactly the same, so you can create them with code-gen or snippets. Property declarations, to me, aren't real code, and they certainly aren't behavior that's desirable to reuse.</P>
+<P>Yet you do need consistency for polymorphism. And this is where interfaces come into play.</P>
+<P>In this model, define IProduct and implement it in TaxableProduct and ServiceProduct. Now the compiler helps you ensure that you have all the required properties, but you have none of the complexity of the fragile base class.</P>
+<P>If you add a property to IProduct, the compiler helps you find the places it must be added - which takes very little time, thanks to snippets or code-gen. </P>
+<P>Yes, there's still room for some error with this approach, but there's less chance overall, because the compiler is helping you, rather than potentially hiding important changes to a base class.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Thursday, February 08, 2007</h2><P>This discussion again, eh?&nbsp; </P>
+<P>Rocky, so here is my problem with focusing solely&nbsp;on behaviors.&nbsp; In business objects behaviors almost always act on attribute data fetched from some data source or another.&nbsp; If you say that you can't use shared attributes in a base class then I would argue that the vast majority of your shared behaviors can't end up in your base class either.&nbsp; What you then end up with is next to no sub classing of business objects that act on data, instead you would be using interfaces for almost all cases.&nbsp; </P>
+<P>While that would work, it does not hold much interest for me.&nbsp; I don't like the idea of re-coding behavior&nbsp;logic because I&nbsp;decide not to deal&nbsp;with any fetched attributes in base classes.&nbsp;&nbsp;What I do do is your second option, my subclasses tell their base classes to fetch themselves/persist themselves.&nbsp; While there is a performance hit, it is barely perceptible.&nbsp; It is not like I am not updating collections of thousands of business objects at once where this would become a problem.&nbsp; If someone is doing that then I would argue that they made an unfortunate design choice and maybe&nbsp;something like&nbsp;Flyweight was what they were looking for.&nbsp; </P>
+<P>Now if you really want to have your high performance solution where the subclasses save all the data (like your interface solution) so there is only one data call, and&nbsp;the compiler helps you&nbsp;in the case of&nbsp;attribute additions, and end up with shared business logic that deals with attribute data in a base class&nbsp;just make sure your base class exposes&nbsp;any required shared attributes&nbsp;as mustoverride properties.&nbsp; Nothing will be hidden and the compiler will help you just as much as it would if you added a new public property to IProduct.&nbsp; Your abstract base class shouldn't be any more fragile than your interface solution.&nbsp; Pretty much works the same way as creating an interface in fact with the same issues, just with the addition of the ability to add behavioral code.&nbsp; </P>
+<P>Conceptually from a public interface point of view an abstract base class with all mustoverride properties is pretty much the same as an interface with properties.&nbsp; It is just with one case you can add behavioral code and the other not so much.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Thursday, February 08, 2007</h2><p class="MsoNormal">
+
+</p><p class="MsoNormal">Inheritance does make your design more fragile because your subclasses
+become tightly-coupled to its base-class.<span>&nbsp;
+</span>Any change to your base-class can have an adverse effect on its
+subclasses.<span>&nbsp; </span>This is one of the reasons why
+you should favor composition and interfaces over inheritance.<span>&nbsp; </span>Inheritance is useful when used correctly,
+but it is often overused and used incorrectly.</p><p class="MsoNormal"><br></p>
+
+<p class="MsoNormal">Here is a good article that explains the fragile base-class
+problem, why you should not inherit based on data and why you should favor interfaces over inheritance.&nbsp; The article was written by Allen Holub, a well respected author who has written a good book on design patterns.<br></p><p class="MsoNormal"><a href="http://www.javaworld.com/javaworld/jw-08-2003/jw-0801-toolbox.html?page=1">http://www.javaworld.com/javaworld/jw-08-2003/jw-0801-toolbox.html?page=1</a></p><p class="MsoNormal"><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>Malloc,</P>
+<P>I'm afraid that really doesn't answer the mail for me. This argument has been around the block many times before.&nbsp; Either solution you try will create tight coupling in one way or another.&nbsp; Many of the design patterns themselves are about reducing the coupling in your application.&nbsp; But all you can ever do is reduce it's impact.&nbsp; All apps are tightly coupled in one way or another.&nbsp; If you think your interfaces are immutable, I just reply, wait.&nbsp; Those are tightly coupled too, try changing an external one after deployment and start playing the versioning game.&nbsp; We, of course,&nbsp;can play semantic games over just what tight coupling is.</P>
+<P>Rocky's concern around the compiler hiding changes with inheritance and helping you with interfaces is certainly valid but only one factor in making a decision.&nbsp; As I stated using mustinherit properties would seem to answer his issue nicely while still allowing for the possibility of shared behaviors.&nbsp; In that&nbsp;scenario the sub classes would still handle the persistence of the attributes.</P>
+<P>But you are absolutely correct&nbsp;that inheritance is many times overused.&nbsp; People jump on a band wagon and think one method is the answer to every problem.&nbsp; A hammer should not be your only tool and you shouldn't view all problems as a nail.&nbsp; To be honest outside of code generation I rarely use inheritance (partial classes don't give me some of features I need).&nbsp; I rarely run into the fragile base class issue because outside the realm of code generation I rarely use it.&nbsp; For polymorphic purposes I'm much more likely to use an interface.&nbsp; But once again these are tools that should be in&nbsp;your shed and not discarded.&nbsp; </P>
+<P>If a particular problem calls for inheritance then that should be your solution.&nbsp; If that includes some thought around persisted members then that should also be part of your decision making process.&nbsp; You shouldn't force an interface to work when there may be a more appropriate solution because of an ideology.&nbsp; Each decision you make has trade offs and if you think them through and are careful you can reduce the amount you are likely to get burned.&nbsp; Sure some people don't and do get burned but you don't need OOP for that.</P>
+<P>As far as Allen's article those arguments are nothing new.&nbsp; As I stated we have been around the block with them many times before.&nbsp; I place very little stock in appeals to authority and even less on absolutes.&nbsp; </P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>I'm afraid that really doesn't answer the mail for me. This argument has been around the block many times before.&nbsp; Either solution you try will create tight coupling in one way or another.&nbsp; Many of the design patterns themselves are about reducing the coupling in your application.&nbsp; But all you can ever do is reduce it's impact.</div></BLOCKQUOTE><br><br>Um, that's the purpose of the patterns, to reduce the impact of changes.&nbsp; Reducing the impact of changes reduces the chance that your change will break many other classes, meaning your code is more maintainable and accomodating of changes... and that's really the whole point of OOD / OOP.&nbsp; <br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>All apps are tightly coupled in one way or another.&nbsp; If you think your interfaces are immutable, I just reply, wait.&nbsp; Those are tightly coupled too, try changing an external one after deployment and start playing the versioning game.&nbsp; We, of course,&nbsp;can play semantic games over just what tight coupling is.</div></BLOCKQUOTE><br><br>I think you're missing the point; with the inheritence approach, a change may cause bugs that you can ONLY find at runtime.&nbsp; With interfaces, the change prevents compilation and you instantly know each class that needs to be updated.&nbsp; The chance of a run-time only bug creeping in is much much lower in that case.<br>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>Rocky's concern around the compiler hiding changes with inheritance and helping you with interfaces is certainly valid but only one factor in making a decision.&nbsp; As I stated using mustinherit properties would seem to answer his issue nicely while still allowing for the possibility of shared behaviors.&nbsp; In that&nbsp;scenario the sub classes would still handle the persistence of the attributes.</div></BLOCKQUOTE></p><p></p>Your mustinherit properties don't solve anything.&nbsp; The subclass implements them, but if you subclass that subclass you're back to square one again.&nbsp; <br><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>But you are absolutely correct&nbsp;that inheritance is many times overused.&nbsp; People jump on a band wagon and think one method is the answer to every problem.&nbsp; A hammer should not be your only tool and you shouldn't view all problems as a nail.&nbsp; To be honest outside of code generation I rarely use inheritance (partial classes don't give me some of features I need).&nbsp; I rarely run into the fragile base class issue because outside the realm of code generation I rarely use it.&nbsp; For polymorphic purposes I'm much more likely to use an interface.&nbsp; But once again these are tools that should be in&nbsp;your shed and not discarded. </div></BLOCKQUOTE></p><p>No one is saying never to use inheritence.&nbsp; It does have its place, but when you can use composition instead you usually end up with a bertter design.&nbsp; Rocky was saying not to use inheritience based on what properties the super offers, but what behaviors the super offers. <br></p><p></p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>If a particular problem calls for inheritance then that should be your solution.&nbsp; If that includes some thought around persisted members then that should also be part of your decision making process.&nbsp; You shouldn't force an interface to work when there may be a more appropriate solution because of an ideology.&nbsp; Each decision you make has trade offs and if you think them through and are careful you can reduce the amount you are likely to get burned.&nbsp; Sure some people don't and do get burned but you don't need OOP for that.</div></BLOCKQUOTE><br><br>In the example in this thread though, inheritience doesn't seem to fit very well, and that's because the decision to use inheritence is based on what data the super has, not what behaviors it has.&nbsp; If basing your decision to inherit on data was valid, there would be no need for this thread at all, as there would not have been any difficulties resulting from that decision.&nbsp; <br>
+
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>As far as Allen's article those arguments are nothing new.&nbsp; As I stated we have been around the block with them many times before.&nbsp; I place very little stock in appeals to authority and even less on absolutes.</div></BLOCKQUOTE></p><p>So an old arguement automatically makes it invalid?&nbsp; It seems to me these arguments have some weight behind them, becase again, here we are with a problem that is coming from basing inheritance on data instead of behavior.&nbsp; <br></p><p>You discount the arguments because you think they are appeals to authority, but in doing so your dismissing the experience of those you deem an authority.&nbsp;&nbsp; Also, I think the article is a little over the top, but the first paragraph states you should avoid inheritance whenever possible.&nbsp; I'm not sure that's much of an absolute, and it really does seem to be a good suggestion.&nbsp; <br></p>The GOF didn't come up with design patterns because they were bored; they did it because their experience had lead them to the conclusion that inheritance was overused and did have problems and a better way was needed.&nbsp; So discount the experience of veterans at your own risk.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>&lt;quote&gt;<BR>Um, that's the purpose of the patterns, to reduce the impact of changes.&nbsp; Reducing the impact of changes reduces the chance that your change will break many other classes, meaning your code is more maintainable and accomodating of changes... and that's really the whole point of OOD / OOP.&nbsp; <BR>&lt;/quote&gt;</P>
+<P>Nice of you to point out that we just said the same thing.</P>
+<P>&lt;quote&gt;<BR>I think you're missing the point; with the inheritence approach, a change may cause bugs that you can ONLY find at runtime.&nbsp; With interfaces, the change prevents compilation and you instantly know each class that needs to be updated.&nbsp; The chance of a run-time only bug creeping in is much much lower in that case.<BR>&lt;/quote&gt;</P>
+<P>Understood, but that's done with a price.&nbsp; If all you need is polymorphism then&nbsp;interfaces are&nbsp;the perfect solution.&nbsp; If you want shared behaviors they do nothing for you.&nbsp; The genesis of this discussion was Rocky's statement that you should only inherit behaviors not persisted instance data.&nbsp; My reply is that most behaviors act on instance data.&nbsp; So if you think that inheritance shouldn't inherit persisted&nbsp;attribute data and most of your behaviors act on&nbsp;persisted attribute data then what are you to do?&nbsp;</P>
+<P>&lt;quote&gt;<BR>Your mustinherit properties don't solve anything.&nbsp; The subclass implements them, but if you subclass that subclass you're back to square one again.&nbsp; <BR>&lt;/quote&gt;</P>
+<P>If you are sub classing your business logic several layers deep you are asking for trouble.</P>
+<P>&lt;quote&gt;<BR>No one is saying never to use inheritence.&nbsp; It does have its place, but when you can use composition instead you usually end up with a bertter design.&nbsp; Rocky was saying not to use inheritience based on what properties the super offers, but what behaviors the super offers. <BR>&lt;/quote&gt;</P>
+<P>Understood.&nbsp; My point is that with business applications behavior almost always acts on persisted attribute data.&nbsp; If you pull out the possibility of the first you are in many cases removing the possibility of the second.&nbsp; Now you could make the argument for true loose coupling any instance data a method needs should be passed into it.&nbsp; That would remove the problem of inheriting just behaviors.&nbsp;Conceptually I don't like it but it would make Rocky's plan work.&nbsp; You could end up with the methods with a very large number of parameters and constantly changing parameter lists.</P>
+<P>&lt;quote&gt;<BR>In the example in this thread though, inheritience doesn't seem to fit very well, and that's because the decision to use inheritence is based on what data the super has, not what behaviors it has.&nbsp; If basing your decision to inherit on data was valid, there would be no need for this thread at all, as there would not have been any difficulties resulting from that decision.&nbsp; <BR>&lt;/quote&gt;</P>
+<P>I'm sorry if I haven't made this clear.&nbsp; My comments were directed particularly at the concept of never inheriting any&nbsp;attribute&nbsp;data and only behaviors&nbsp;that Rocky made.&nbsp; I have made no comments on its appropriateness&nbsp;for the situation in this thread.</P>
+<P>&lt;quote&gt;<BR>So an old arguement automatically makes it invalid?&nbsp; It seems to me these arguments have some weight behind them, becase again, here we are with a problem that is coming from basing inheritance on data instead of behavior.<BR>&lt;/quote&gt;</P>
+<P>No, I don't like these arguments because they tend to be cyclical.&nbsp; Everyone runs one way until the limitations of that approach become apparent.&nbsp; Then they switch to the other, forgetting why they stopped using that in the first place.&nbsp; Suddenly everyone remembers the problems with that approach.&nbsp; Rinse and repeat.&nbsp; This is not the first time we have been around this cycle.</P>
+<P>&lt;quote&gt;<BR>You discount the arguments because you think they are appeals to authority, but in doing so your dismissing the experience of those you deem an authority.&nbsp; <BR>&lt;/quote&gt;</P>
+<P>There is a difference between dismissing an argument that is an appeal to authority&nbsp;and dismissing what the authority has to say.&nbsp; For example, "You should listen to Joe because he did this."&nbsp;&nbsp;I don't place much stock in that type of argument.&nbsp; I do, however,&nbsp;respond well&nbsp;to, "Joe said this because of these foo factors."&nbsp; I'll certainly take a look at that.</P>
+<P>You shouldn't listen to people's advice&nbsp;because&nbsp;just of their experience, you should judge their advice on why they say it's good advice.&nbsp; There are a lot of people with a lot of experience that still give bad advice and people with little experience that give good advice.&nbsp; I'm not saying that is the case here, only pointing out why appeals to authority are generally problematic on contentious issues.</P>
+<P>&lt;quote&gt;<BR>The GOF didn't come up with design patterns because they were bored; they did it because their experience had lead them to the conclusion that inheritance was overused and did have problems and a better way was needed.&nbsp; So discount the experience of veterans at your own risk.<BR>&lt;/quote&gt;</P>
+<P>A bit of a straw man don't you think?&nbsp; If you can find anywhere where I stated that inheritance shouldn't be used with caution or that we should discount&nbsp;the experience of veterans&nbsp;I'll happily make a retraction.&nbsp; </P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 09, 2007</h2>Kevin,<br><br>I had a longer post, but am replacing it with this one.<br><br>I think the stumbling point is that you interperated what Rocky said as not to inherit propeties.&nbsp; I don't quite think that's what he meant.&nbsp; <br><br>I think the the point was that the decision on whether or not you subclass shouldn't be made so that the subclass gets properties, but should be based on what behaviors your subclass will get.<br><br>In otherwords, you don't subclass because you want to make a class that has property X and Y, you subclass because it can Draw something.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>&lt;quote&gt;<BR>I had a longer post, but am replacing it with this one.<BR>&lt;/quote&gt;</P>
+<P>Replaced just in time too, I was about to reply to the old&nbsp;one.&nbsp;;)</P>
+<P>&lt;quote&gt;<BR>I think the stumbling point is that you interperated what Rocky said as not to inherit propeties.&nbsp; I don't quite think that's what he meant.<BR>&lt;/quote&gt;</P>
+<P>But what he said easily could be taken that way; he has even said as much in this thread.&nbsp; Hear me out and I'll try and explain my thought process (try not to get too scared).&nbsp; Take a look at his first line in that post:</P>
+<P>"Inheriting properties is simply complex - primarily when it comes to persistence. And the result is unmaintainable code - or poor performance - your choice."</P>
+<P>He then spends quite a bit of time discussing those complexities and performance costs.&nbsp; He nowhere states that while it generally has a lot of problems there may be some times when it is appropriate.&nbsp; </P>
+<P>Now role play yourself as a programmer new to OOP.&nbsp; What are you going to take away from that post?&nbsp; In my mind it is going to be something along the lines of "Inheriting persisted attributes makes unmaintainable code or results in poor performance, thus I should never do it."&nbsp;&nbsp;Since most business behaviors act on attribute&nbsp;data that&nbsp;will lead directly to inheritance being pretty much discarded by those people.&nbsp;</P>
+<P>But I don't really want to debate&nbsp;how what&nbsp;someone said could be taken.&nbsp; That is not nearly as interesting as actual technical issues nor really what I believe most of us are here for.</P>
+<P>&lt;quote&gt;<BR>In otherwords, you don't subclass because you want to make a class that has property X and Y, you subclass because it can Draw something.<BR>&lt;/quote&gt;</P>
+<P>Trust me, we are in agreement here.&nbsp; Outside of generated code I'd be surprised if I'm using inheritance in my business object designs any more than you are.&nbsp; What I am afraid of&nbsp;is someone coming away from the discussion thinking that they shouldn't use inheritance because a potential base class has a persisted&nbsp;property X and Y even if it needs them to draw something.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, February 09, 2007</h2><p class="MsoNormal"><span>If you read
+Rocky’s previous response (reply# 11883) to the one you are referring, it seems
+clear to me that he suggested you should design your object based on behavior
+not on data.<span>&nbsp; </span>I don't think he meant that you can’t
+inherit properties.<span>&nbsp; </span>It just meant that
+you should not base inheritance on data.<span>&nbsp;
+</span>If you have no behavior, then you should use an interface like Rocky
+suggested.<span>&nbsp; </span>I agree that his following response
+seems to contradict that a bit by suggesting you should never inherit properties.<span>&nbsp; </span><span>&nbsp;</span>I do
+see your point and now I am a little confused on what he meant.<br></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>All I meant is that inheriting JUST TO GET PROPERTIES should be
+avoided. The costs of doing so are quite high, and it is very hard to imagine
+how you’d justify those costs through the “reuse” you theoretically achieve.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if those properties come along with (or are required by)
+behavior, then the benefits of reuse might offset the fragility costs. (note
+the word “might” – this should be a conscious trade-off you are making)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Better, if you can structure your code to use composition
+instead of inheritance, then you can get the reuse of behavior without the
+fragility of inheritance. At that point, you’d have normalized the common behavior
+into a location where it can be used by what would have been your various
+subclasses. Now you have collaboration through composition, which is a more
+manageable form of reuse. And in this case you might STILL be tempted to use
+inheritance to “reuse” those common properties – and that would (typically) be
+a bad idea, because you are back at the first case where you are “reusing” the
+standard 12 lines of property declaration at the high cost of inheritance-based
+fragility.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> malloc1024
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 09, 2007 12:47 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Properties distribution<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>If
+you read Rockyâ€™s previous response (reply# 11883) to the one you are
+referring, it seems clear to me that he suggested you should design your object
+based on behavior not on data.&nbsp; I don't think this means that you canâ€™t
+inherit properties.&nbsp; It just means that you should not based inheritance
+on data.&nbsp; If you have no behavior, then you should use an interface like
+Rocky suggested.&nbsp; I agree that his following response seems to contradict
+that a bit by suggesting you should never inherit properties.&nbsp; &nbsp;I do
+see your point and now I am a little confused on what he meant.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, February 09, 2007</h2>
+
+<p class="MsoNormal">That’s what I though you meant and I agree completely.<span>&nbsp; </span>Thanks for clearing that up.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>Replaced just in time too, I was about to reply to the old&nbsp;one.&nbsp;;)</div></BLOCKQUOTE><br><br>Whew. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br>
+
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>But what he said easily could be taken that way; he has even said as much in this thread.&nbsp; Hear me out and I'll try and explain my thought process (try not to get too scared).&nbsp; Take a look at his first line in that post:</p>
+<p>"Inheriting properties is simply complex - primarily when it comes to persistence. And the result is unmaintainable code - or poor performance - your choice."</p>&lt;snip&gt;</div></BLOCKQUOTE><p>Ok, I guess I can see where you are coming from.&nbsp; I never thought to take it that way, perhaps because I've read Rocky post about this subject many times before.&nbsp; Fair enough.<br></p><p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>But I don't really want to debate&nbsp;how what&nbsp;someone said could be taken.&nbsp; That is not nearly as interesting as actual technical issues nor really what I believe most of us are here for.</div></BLOCKQUOTE></p><p>This is true, but everyone in a discussion needs to be on the same page to discuss those issues.&nbsp; I know I've personally come to the wrong technical conclusion because there was a misunderstanding between myself and what the other party was trying to tell me about the issue.<br></p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Bowman74:</strong></div><div>Trust me, we are in agreement here.&nbsp; Outside of generated code I'd be surprised if I'm using inheritance in my business object designs any more than you are.&nbsp; What I am afraid of&nbsp;is someone coming away from the discussion thinking that they shouldn't use inheritance because a potential base class has a persisted&nbsp;property X and Y even if it needs them to draw something.</div></BLOCKQUOTE><br><br>Yes, I believe we are, and now that I understand where you are coming from I can see why you expressed concern.&nbsp; Sometimes I forget that you start off 'doing things by the book' as it were.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>&lt;quote&gt;<BR>This is true, but everyone in a discussion needs to be on the same page to discuss those issues.&nbsp; I know I've personally come to the wrong technical conclusion because there was a misunderstanding between myself and what the other party was trying to tell me about the issue.<BR>&lt;/quote&gt;</P>
+<P>Seems to happen quite a bit.&nbsp; Maybe I'm just old, crotchety and pedantic but I don't think anyone will have any confusion now.&nbsp; ;)</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Kevin, <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you hadn&#8217;t decided to go be a hermit, lurking deep in
+the winding labyrinth of roads that is rural Connecticut, you might be less crotchety
+:)&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The pedantic thing, though, I think you were probably born with,
+and I&#8217;m afraid getting old happens to all of us eventually ;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>(for those that don&#8217;t know, Kevin and I go waaay back &lt;vbg&gt;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p>Seems to happen quite a bit.&nbsp; Maybe I'm just old, crotchety and
+pedantic but I don't think anyone will have any confusion now.&nbsp; ;)<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>&lt;quote&gt;<BR>If you hadn’t decided to go be a hermit, lurking deep in the winding labyrinth of roads that is rural Connecticut, you might be less crotchety :)&nbsp; <BR>&lt;/quote&gt;</P>
+<P>Hey I needed a barn to store my cars;&nbsp;the city three car garage just wasn't cutting it.&nbsp; Besides that winding labyrinth of roads is mucho fun in the 914 (not that I encourage traveling at unsafe speeds).</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kosintrouble replied on Friday, February 16, 2007</h2>I am curious if this is worth doing inheritance or if I should just create two different classes.<br><br>Our company deems that everyone is a BusinessAssociate, everyone is stored in the same table.&nbsp; So I was planning on creating a BusinessAssociate:BusinessBase which will Save, Retrieve ect from the database.&nbsp;&nbsp; <br><br>But we also have a form online which allows subcontractors and suppliers to submit thier company as potential BusinessAssociates.&nbsp; In our case, we dont want to put them into our BusinessAssociate table at this point, we only want them to submit their information for review by one of our "people" who then after making changes, adding new information we add them as a BusinessAssociate.<br><br>So I also need to create a BidListAssociate object which I was thinking would inherit the BusinessAssociate but will have two possible loads and saves.&nbsp; One save going to a holding table, one load from the holding table.&nbsp; Then when one of our "people" review the BidListAssociate, add the new information needed to become a BusinessAssociate it then calls the Save of the BusinessAssociate.<br><br>But I am wondering if inheritance is worth it or not, there is some shared behavior between the two, but I am not sure if this is a decent example or time to use inheritance.&nbsp; I am almost leaning to have two seperate classes, and just have the BidListAssociate call a static newBusinessAssociate on the BusinessAssociate object instead of using inheritance.<br><br>Anyone have any suggestions or comments.&nbsp; After writing this out, I believe I have answered my own questions, I am leaning towards two seperate objects without inheritance.<br><br>Kos<br><br><br>*Edit<br>Hmm after further thought, yes inheritance is a waste of resources.&nbsp; There is not shared behavior between the two, only shared properties.&nbsp; So ignore my above post, I am using two different classes with a shared interface.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, February 09, 2007</h2>
+
+<p class="MsoNormal">Bowman74,</p>
+
+<p class="MsoNormal"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoNormal">Ajj3085 provided a good response and pretty much took the
+words out of my mouth; however, I must respond.<span>&nbsp;
+</span>I happen to agree with most of which you said.<span>&nbsp; </span>Yes, using interfaces creates coupling, but the
+coupling is not a tight when using inheritance.<span>&nbsp;
+</span>I idea is to reduce coupling.<span>&nbsp; </span>I
+am not saying that you should never use inheritance, but it must be used responsibly
+and be based on behavior.<span>&nbsp; </span>Yes, the article
+is extreme.<span>&nbsp; </span>I don’t follow what the article
+suggests to that extreme; however, I believe it is a good idea to listen to the
+ideas from authority to see if it works for you.<span>&nbsp; </span>This doesn’t mean that they are correct and
+you should blindly follow the advice.<span>&nbsp; </span>It
+means take the advice, think about it and see if it works for you.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>Fair Enough.&nbsp; I sometimes like to stir the pot a little when I think it needs to be stirred.&nbsp; The thing that caught my eye here was the probability of younger programmers reading Rocky's post and coming to the conclusion that any inheritance that contains persisted attribute members is verboten.&nbsp; Then they realize that most business behaviors work on persisted attributes and end up using interfaces exclusively.&nbsp; </P>
+<P>I know that's not what Rocky intended but I have seen it happen time and time again where people (I don't mean to solely pick on younger programmers here)&nbsp;will take a good practice guideline out to the extreme of being a cast in stone edict.&nbsp; It is particularly problematic when someone&nbsp;with a high level of respect like&nbsp;Rocky mentions a good practice guideline.</P>
+<P>So my intent here is to point out that hey maybe sometimes it is OK when the situation really calls for it.&nbsp; That is what I was trying to get at when I stated that your only tool shouldn't be a hammer and you shouldn't view every problem as a nail.&nbsp; In the end I try to look at every problem as pragmatically as possible.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 09, 2007</h2><P>I do use absolute statements for shock value - and should perhaps be more careful about that.</P>
+<P>But the fact is that inheriting to get properties/fields is a <EM>very expensive</EM> thing to do, and it should be avoided unless you can justify paying that high cost.</P>
+<P>And the fact is that most OO classes still use stupid examples like Mammal&lt;-Canine&lt;-Dog or Person&lt;-Contact&lt;-Employee - which are all about inheriting data, not behavior. So people are trained to do exactly the wrong thing, and they aren't educated about the high cost they'll pay in real applications if they do what they were trained to do.</P>
+<P>Very sad.</P>
+<P>If a little shock value can jump-start a conversation that reveals the true nature of the costs and benefits, then I feel I've done my job <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bowman74 replied on Friday, February 09, 2007</h2><P>&lt;quote&gt;<BR>If a little shock value can jump-start a conversation that reveals the true nature of the costs and benefits, then I feel I've done my job<BR>&lt;/quote&gt;</P>
+<P>Well seems to have worked in this case.&nbsp; ;)</P>
+<P>So is that Minnesota weather getting to you yet?&nbsp; You guys need to take a vacation somewhere warmer.</P>
+<P>Thanks,</P>
+<P>Kevin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 09, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>And the fact is that most OO classes still use stupid examples like Mammal&lt;-Canine&lt;-Dog or Person&lt;-Contact&lt;-Employee - which are all about inheriting data, not behavior. So people are trained to do exactly the wrong thing, and they aren't educated about the high cost they'll pay in real applications if they do what they were trained to do.
+<p>Very sad.</div></BLOCKQUOTE></p>Rocky, that's EXACTLY how my Comp Sci. courses were taught when I was at college, and thus I was paying a high cost at first (well, not at first, since I didn't get to do alot of OOP until .Net came out).<br><br>Since I've switched my focus, I think my programs have gotten much easier to maintain and much more reliable for my users, so I want to thank you for getting me onto the right path.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Friday, February 09, 2007</h2>I love these arguments because both sides are correct!&nbsp; 
+<P>&nbsp;</P>
+<P>Well, correct as&nbsp;long as&nbsp;they are aware and accept the limitations of their approach.</P>
+<P>&nbsp;</P>
+<P>For example I would venture to say we all limit ourselves automatically by using Properties in the first place.<SPAN>&nbsp; </SPAN>David West suggested simply using a collection to store the properties (ie data) in a class. I suggest you try this.<SPAN>&nbsp; </SPAN>It really makes clearer this debate. I think it also makes the classes much easier to design and understand.</P>
+<P>&nbsp;</P>
+<P>Most people would look at a member of type&nbsp;ArrayList&nbsp;simply called "Data" and think "Wow, that is so usefull, I think I will inherit from that!".&nbsp; Now you might need that data but seeing as it is just a collection I think you would be more inclined to use composition.</P>
+<P>&nbsp;</P>
+<P>Alas I don't do it because I like the intellisense Properties provide and because databinding is reliant on Properties. So I give up a very good design idea for the sake of convenience.</P>
+<P>&nbsp;</P>
+<P>It is amazing how the subtle things have such a huge impact.</P>
+<P>&nbsp;</P>
+<P>Such is life.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

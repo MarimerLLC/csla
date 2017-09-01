@@ -1,0 +1,243 @@
+<html><header><title>CslaActionExtender - useful enough vs. even more useful</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaActionExtender - useful enough vs. even more useful</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8009.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, November 17, 2009</h2><P><FONT face=Arial>Hi Miguel Castro,</FONT></P>
+<P><FONT face=Arial>CslaActionExtender is very useful. It makes WinForms apps easier to write. In spite of all the trends, old&nbsp;and new - Web Forms, WPF, Silverlight and even&nbsp;Visual Web GUI - I find WinForms have a lot more to give and they provide the most productive developing environment.</FONT></P>
+<P><FONT face=Arial>As a side note, WPF is here for some time but it just doesn't seem to "take off". Silverlight is interesting enough for some applications (namely media apps) but I'm not sure if it has enough power to replace WinFoms applications in all fields. So let's make more investments on WinForms.</FONT></P>
+<P><FONT face=Arial>Back to the subject, I tried the sample <FONT face="Courier New">ActionExtenderSample</FONT>. I changed some settings, on <FONT face="Courier New">OrderMaint.cs</FONT>:</FONT></P>
+<P><FONT face=Arial>I added a standard <FONT face="Courier New">ErrorProvider</FONT> and on buttons:</FONT></P>
+<UL>
+<LI><FONT face=Arial>Save</FONT></LI>
+<LI><FONT face=Arial>Save/New</FONT></LI>
+<LI><FONT face=Arial>Save/Close</FONT></LI>
+<LI><FONT face=Arial>Cancel</FONT></LI></UL>
+<P><FONT face=Arial>I set <FONT face="Courier New">DisableWhenClean</FONT> property to <FONT face="Courier New">True</FONT>.</FONT></P>
+<P><FONT face=Arial>Take a break here so I can explain what I was expecting. "Intelligent buttons to see I expected" as old Yoda would&nbsp;put it.</FONT></P>
+<P><FONT face=Arial>What do I mean? Buttons that are enabled according to the object editing status: Save should be enabled only when a save can be done, Cancel should be enabled only there is something to cancel, etc. Take Save. The button should be disabled for:<BR></FONT><FONT face=Arial>a) unchanged objects (<FONT face="Courier New">IsClean == True</FONT>)<BR>b) invalid objects (<FONT face="Courier New">IsValid == False</FONT>)</FONT><FONT face=Arial><BR>c) read only objects (<FONT face="Courier New">CanEditObject == False</FONT>)</FONT></P>
+<P><FONT face=Arial>That wasn't the case. I did the following test:</FONT></P>
+<P><FONT face=Arial>1. Object loads and only Close button is enabled -&nbsp;<STRONG>pass</STRONG></FONT></P>
+<P><FONT face=Arial>2. Delete Miguel's name and leave the Card Holder field empty<BR>2.1. Error icon shows on Card Holder field - <STRONG>pass</STRONG><BR>2.2. Only Cancel and Close buttons are enabled - <STRONG><FONT color=#ff0000>fail</FONT></STRONG></FONT></P>
+<P><FONT face=Arial>3. Fill in the Card Holder field<BR>3.1. Error icon goes away - <STRONG>pass</STRONG><BR>3.2. All buttons are visible - <STRONG>pass</STRONG></FONT></P>
+<P><FONT face=Arial>4. Again leave Card Holder field empty<BR>2.1. Error icon shows on Card Holder field - <STRONG>pass</STRONG><BR>2.2. Only Cancel and Close buttons are enabled - <STRONG><FONT color=#ff0000>fail</FONT></STRONG></FONT></P>
+<P><FONT face=Arial>Step 4 was needed because some small changes to <FONT face="Courier New">CslaActionExtender.cs</FONT> made at first weren't enough to make this test pass.</FONT></P>
+<P><FONT face=Arial>Final result pass all tests.</FONT></P>
+<P><FONT face=Arial>Back to specifications above, a) and b) are ready but I din't test for c).</FONT></P>
+<P><FONT face=Arial>Changes made to </FONT><FONT face="Courier New">CslaActionExtender.cs</FONT></P>
+<P><FONT face=Arial>I replaced</FONT></P>
+<P><FONT face="Courier New" color=#006400>&nbsp;&nbsp;&nbsp; private void InitializeControls(bool initialEnabling)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // controls will not be enabled until the BusinessObjectPropertyChanged event fires or if it's in an appropriate state now<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;Control&gt; extendedControls = new List&lt;Control&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (KeyValuePair&lt;Control, CslaActionExtenderProperties&gt; pair in _Sources)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (pair.Value.ActionType != CslaFormAction.None)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Control ctl = pair.Key;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (initialEnabling)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChangeEnabled(ctl, !pair.Value.DisableWhenClean);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pair.Key.Click -= OnClick;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pair.Key.Click += OnClick;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeControl(ctl);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; extendedControls.Add(ctl);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#006400>&nbsp;&nbsp;&nbsp; private void InitializeControl(Control ctl)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!ctl.Enabled)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Core.ISavable businessObject = GetBusinessObject();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (businessObject != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Core.ITrackStatus trackableObject = businessObject as ITrackStatus;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (trackableObject != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face=Arial>with</FONT></P>
+<P><FONT face="Courier New" color=#006400>&nbsp;&nbsp;&nbsp; private void InitializeControls(bool initialEnabling)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // controls will not be enabled until the BusinessObjectPropertyChanged event fires or if it's in an appropriate state now<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; List&lt;Control&gt; extendedControls = new List&lt;Control&gt;();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (KeyValuePair&lt;Control, CslaActionExtenderProperties&gt; pair in _Sources)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (pair.Value.ActionType != CslaFormAction.None)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Control ctl = pair.Key;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (initialEnabling)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChangeEnabled(ctl, !pair.Value.DisableWhenClean);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pair.Key.Click -= OnClick;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; pair.Key.Click += OnClick;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeControl(ctl<FONT color=#ff0000>, pair</FONT>);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; extendedControls.Add(ctl);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face="Courier New" color=#006400>&nbsp;&nbsp;&nbsp; private void InitializeControl(Control ctl<FONT color=#ff0000>, KeyValuePair&lt;Control, CslaActionExtenderProperties&gt; pair</FONT>)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (<FONT color=#ff0000>pair.Value.DisableWhenClean</FONT>)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Core.ISavable businessObject = GetBusinessObject();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (businessObject != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Core.ITrackStatus trackableObject = businessObject as ITrackStatus;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (trackableObject != null)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT color=#ff0000>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (pair.Value.ActionType == CslaFormAction.Cancel)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChangeEnabled(ctl, trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (pair.Value.ActionType == CslaFormAction.Save)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ChangeEnabled(ctl, (trackableObject.IsNew || trackableObject.IsDirty || trackableObject.IsDeleted) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &amp;&amp; trackableObject.IsValid);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR></FONT>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }</FONT></P>
+<P><FONT face=Arial>That's it!</FONT></P>
+<P><FONT face=Arial>Of course there could be another property to say <FONT face="Courier New">DisableWhenUnsavable</FONT> or something of the sort. I had this in some stage but removed it later on. Why do we need to say twice that we want the button disabled when the action it is supposed to do can't be done? Let's just say <FONT face="Courier New">DisableWhenClean</FONT> means <FONT face="Courier New">DisableWhenUseless</FONT>.</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial><STRONG>Miguel,</STRONG></FONT></P>
+<P><FONT face=Arial>can you consider adding these changes to Csla 3.8.x trunk?</FONT></P>
+<P><FONT face=Arial>Thanks.</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>Jonny,</FONT></P>
+<P><FONT face=Arial>in case these changes aren't going into Csla trunk, you can use them for MyCsla.</FONT></P>
+<P><FONT face=Arial></FONT>&nbsp;</P>
+<P><FONT face=Arial>PS 1 - I didn't test for child dirtiness.</FONT></P>
+<P><FONT face=Arial>PS 2 - I enclose the changed file for Csla 3.8.0.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, November 17, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tiago:</strong></div><div>
+<P><FONT face=Arial>PS 2 - I enclose the changed file for Csla 3.8.0.</FONT></P>
+<P></div></BLOCKQUOTE></P>
+<P>Well in fact for Csla 3.8.1</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 21, 2009</h2>I'll add this to the wish list.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, November 22, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I'll add this to the wish list.</div></BLOCKQUOTE></P>
+<P>It's not that simple. I mean the solution.</P>
+<P>Suppose you have a form with no ErrorProvider in it (the sponsor doesn't like red circles or something). You seat at a computer that is displaying that form and only Cancel and Close are enabled. All the Save, Save/Close, Save/New buttons are disabled. You say to yourself:</P>
+<P>"Hmmm... I guess there is something fishy about this data: if the form can't save but can&nbsp;cancel, that's the only explanation. Let me guess what field isn't valid..."</P>
+<P>And then you add:</P>
+<P>"Pitty they didn't put a validate button!"</P>
+<P>In fact all the code for the validate button is there. My second version adds a new ActionType "Validate" that displays the same alert box that was shown on save when the form isn't valid.</P>
+<P>The problem I have is the default <FONT face="Courier New">ObjectIsValid</FONT> message that shows if the form is valid. In order to have a default, I need to add it to Csla resources.</P>
+<P>In order to avoid breaking changes (in code and in behaviour)&nbsp;I added a new property <FONT face="Courier New">SetDisableWhenUseless</FONT>&nbsp;and kept the <FONT face="Courier New">SetDisableWhenClean</FONT> property marking it obsolete and not showing it in the designer.</P>
+<P>Existing&nbsp;code behaves the same way. When designing a new form, you only have the design option of usign <FONT face="Courier New">SetDisableWhenUseless</FONT>. If you set both properties, the button will ignore the obsolete property and behave the new way.</P>
+<P>Hiding the property <FONT face="Courier New">SetDisableWhenClean</FONT> in the designer is questionable.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 15, 2012</h2><p>To cut a long story short, I attach a ZIP file containing 3 files:</p>
+<ul>
+<li>CslaActionExtender.cs</li>
+<li>CslaActionExtenderProperties.cs</li>
+<li>Enums.cs</li>
+</ul>
+<p>They build under Csla 4.3.10 and they go into \Source\Csla.Windows</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, April 15, 2012</h2><p>Hi Tiago, </p>
+<p>This code is not &quot;bulletproof&quot;: </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case CslaFormAction.Validate:<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (savableObject is Csla.Core.BusinessBase)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Core.BusinessBase businessObject = savableObject as Csla.Core.BusinessBase;<br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (businessObject.BrokenRulesCollection.Count &gt; 0)</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(businessObject.BrokenRulesCollection.ToString(), Resources.Error, MessageBoxButtons.OK, MessageBoxIcon.Error);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ObjectIsValidMessage, Resources.Information, MessageBoxButtons.OK, MessageBoxIcon.Information);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; break;</p>
+<p><b>There&#39;s nothing that prevents anyone from using a BusinessBase object that has children so the code should check for &lt;bo&gt;.IsValid </b></p>
+<p>Another known bug is the OnClick</p>
+<p>&uml;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (objectValid)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CslaActionCancelEventArgs savingArgs = new CslaActionCancelEventArgs(<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; false, props.CommandName);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnObjectSaving(savingArgs);<br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <b>if (!savingArgs.Cancel)</b> // this line was <b>!args.Cancel</b></p>
+<p>And there&#39;s a few other know bugs to - check in bugtracker.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 15, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Hi Tiago, </p>
+<p>This code is not &quot;bulletproof&quot;: </p>
+<p>(...)</p>
+<p>And there&#39;s a few other know bugs to - check in bugtracker.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>Found 4 open issues. There are 3 bugs</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=426">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=426</a></p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=700">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=700</a></p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=843">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=843</a></p>
+<p>and 1 enhancement (an earlier version of this one)</p>
+<p><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=650">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=650</a></p>
+<p>Attached is the updated files with solution for&nbsp;issues 426 and 843. Issue 700 duplicates 426. Anyway I tested the sample and it passed.</p>
+<p>Notice that 3 new Csla resources are needed but those lines are commented and hard coded strings are used instead.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Monday, April 16, 2012</h2><p>What is the status of CslaActionExtender in Csla 4.3.10? So at this point all known bugs should be solved with this v3 set of files for 4.3.10?</p>
+<p>I didn&#39;t find any open bugs listed here: http://www.lhotka.net/cslabugs/search.aspx</p>
+<p>but I may not be using the search function correctly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 16, 2012</h2><p>Nothing has changed in Csla.Windows (Windows Forms support) for a very long time. This hasn&#39;t been a priority - our limited dev resources have been busy just keeping up with all the new technologies...</p>
+<p>I have at least one volunteer who&#39;s in the process of signing a contributor agreement, and who has indicated interest in working on some of the Windows Forms items in bugtracker, so there may be some changes that&#39;ll come in 4.5.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, April 16, 2012</h2><p>Hi Rocky,</p>
+<p>The code I post is always public domain. If I need to sign a contributor agreement in order for Csla to use the code above, just tell me where the dotted line is.</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I have at least one volunteer who&#39;s in the process of signing a contributor agreement, and who has indicated interest in working on some of the Windows Forms items in bugtracker, so there may be some changes that&#39;ll come in 4.5.</p>
+<p></div></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, April 29, 2012</h2><p>Hi all,</p>
+<p>Found another issue that was present on Miguel&#39;s code and that I kept in the changed code.</p>
+<p>1)&nbsp;Set <span style="font-family:Courier New;">DisableWhenClean</span> (or the new <span style="font-family:Courier New;">DisableWhenUseless</span>) property to <span style="font-family:Courier New;">True</span> on buttons:</p>
+<ul>
+<li><span style="font-family:Arial;">Save</span> </li>
+<li><span style="font-family:Arial;">Save/New</span> </li>
+<li><span style="font-family:Arial;">Save/Close</span> </li>
+<li><span style="font-family:Arial;">Cancel</span></li>
+</ul>
+<p><span style="font-family:Arial;">2) Load a form =&gt; buttons are disabled (OK)</span></p>
+<p><span style="font-family:Arial;">3) Change something =&gt; buttons are enabled (OK)</span></p>
+<p><span style="font-family:Arial;">4) Save the form&nbsp; =&gt; buttons are disabled (OK)</span></p>
+<p>5) Again, change something =&gt; buttons are disabled (<strong>NOK</strong>)</p>
+<p>Note - <span style="font-family:Courier New;">DisableWhenUseless</span> means the button is disabled when no action is available for it (Save for the save action family and Undo for the cancel action family).</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Tuesday, May 01, 2012</h2><p>That is exactly the same result I have on a Demo project. I was wondering if I was not performing the save operations correctly and that would cause some odd behavior with the child/parent change notification, but I thought everything I did was run of the mill type stuff.</p>
+<p>So I am toying with the root, child, grandchild pattern and after having saved the root, which triggers the Child_Update on child and grandchild, then the child changed events don&#39;t seem to fire when I modify the child or grandchild BO. I&#39;m not sure if there is a problem with the clone process that it is not creating the same even handler subscriptions or if there is a problem somewhere else. I&#39;m not entirely sure it is a problem with ActionExtender as my root object is not listening to child changed events after having saved once... </p>
+<p>I&#39;ve attached a proof of concept hoping that will help anyone who wants to try Tiago&#39;s latest version of the ActionExtender. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, May 06, 2012</h2><p>@cwinkelmann</p>
+<p>I looked at your code and the problem is most likely your code and how you attach to the events. You should not do this in the constructor. </p>
+<p>Alt 1: Do not attach to the events - simply override OnChildChanged event like this in <i><b>EditableRoot.cs</b></i>. This relies on CSLA to use the AddXYEventHook methods to hook into events properly and your code just override the method OnChildChanged (that in turn triggers the ChildChanged event).</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnChildChanged(Csla.Core.<span style="color:#2b91af;">ChildChangedEventArgs</span>&nbsp;e)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnChildChanged(e);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Calculate();
+&nbsp;&nbsp;&nbsp; }<br /><br /></pre>
+<p>Alt 2:Override the proper methods to Add/Remove event hooks like this:</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">    <span style="color:blue;">private</span>&nbsp;EditableRoot()
+    {&nbsp;
+        <span style="color:green;">/*&nbsp;Force&nbsp;use&nbsp;of&nbsp;Object&nbsp;Factory&nbsp;methods&nbsp;*/</span><br />    }</pre>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp; <span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnRemoveEventHooks(Csla.Core.<span style="color:#2baaaf;">IBusinessObject</span>&nbsp;child)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnRemoveEventHooks(child);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.ChildChanged&nbsp;-=&nbsp;EditableRoot_ChildChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnAddEventHooks(Csla.Core.<span style="color:#2baaaf;">IBusinessObject</span>&nbsp;child)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">base</span>.OnAddEventHooks(child);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.ChildChanged&nbsp;+=&nbsp;EditableRoot_ChildChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />    <span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;EditableRoot_ChildChanged(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;Csla.Core.<span style="color:#2b91af;">ChildChangedEventArgs</span>&nbsp;e)
+    {
+      Calculate();
+    }</pre>
+<p>The OnXYEventHooks method is also used by CSLA to attach itself to the events on the child objects.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cwinkelmann replied on Monday, May 07, 2012</h2><p>@<strong>JonnyBee: </strong>That worked perfectly. </p>
+<p>I added both ways to the demo project and I&#39;ll continue developing it. I hope to add functionality to it as a demo of lots of CSLA functionality, so I&#39;ll eventually propose adding it to the CSLAContrib project.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, May 07, 2012</h2><p>Hi Jonny,</p>
+<p>This works perfectly. I enclose V4 with the corrected code for IButtonControl (button and LinkLabel) and for ToolStripButton. Thanks.</p>
+<p>This isn&#39;t closed as the broken rules (and validation) message box is far from ready:</p>
+<ul>
+<li>only lists the broken rules for the root object and its properties (child objects broken rules are missing)</li>
+<li>should list the friendly name of the property (as it&#39;s localizable) instead of the property name</li>
+</ul>
+<p>The later depends on GetPropertyFriendlyName proposal on <a href="http://forums.lhotka.net/forums/p/3424/52654.aspx#52654">http://forums.lhotka.net/forums/p/3424/52654.aspx#52654</a></p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, May 08, 2012</h2><p>Hi, </p>
+<p>You may also want to look into <i>BusinessRules.GetAllBrokenRules</i>(). </p>
+<p>This static method will return a list of all broken rules in &lt;bo&gt; and all child/grandchild objects and may be presented as a list or a tree view.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, May 09, 2012</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b>
+<p>Hi, </p>
+<p>You may also want to look into <i>BusinessRules.GetAllBrokenRules</i>(). </p>
+<p>This static method will return a list of all broken rules in &lt;bo&gt; and all child/grandchild objects and may be presented as a list or a tree view.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I did have a look and found it not very straightforward to use. So I left this issue to later on.</p>
+<p>On the mean time I found that this controls force all buttons to enabled. This isn&#39;t a good idea because I might need to &quot;bind&quot; the enabled state to a BO or Ui state. Another feature to add...</p>
+<p>&lt;edit&gt;</p>
+<p>It&#39;s fixed.</p>
+<p>&lt;/edit&gt;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, May 14, 2012</h2><p>Hi all,</p>
+<p>The attached code solves the issue</p>
+<li>on initialize, only buttons with <strong>DisableWhenUseless </strong>or <strong>DisableWhenClean </strong>options should be forced to enabled state</li>
+<p>This is important if you use CslaActionExtenderTsb (for ToolStripButton) since you can have navigation buttons that are enabled by other UI events. Of course you can also have navigation buttons that are plain buttons, so the fix applies to both classes.</p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, May 05, 2012</h2><p>Hi all,</p>
+<p>No progress on this front. After several hours of debug, I just couldn&#39;t find the soltuion for the &quot;button is always disabled after a save&quot; issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, May 06, 2012</h2><p>@Tiago:</p>
+<p>First I&#39;d refactor so that the ActionExtender has AddEventHoks and RemoveEventHooks methods:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">void</span>&nbsp;ResetActionBehaviors(<span style="color:#2baaaf;">ISavable</span>&nbsp;objectToBind)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;InitializeControls(<span style="color:blue;">true</span>);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">BindingSource</span>&nbsp;rootSource&nbsp;=&nbsp;_dataSource&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2b91af;">BindingSource</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(rootSource&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddEventHooks(objectToBind);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingSourceTree&nbsp;=&nbsp;<span style="color:#2b91af;">BindingSourceHelper</span>.InitializeBindingSourceTree(_container,&nbsp;rootSource);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingSourceTree.Bind(objectToBind);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddEventHooks(<span style="color:#2baaaf;">ISavable</span>&nbsp;objectToBind)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;make&nbsp;sure&nbsp;to&nbsp;not&nbsp;attach&nbsp;many&nbsp;times</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RemoveEventHooks(objectToBind);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2baaaf;">INotifyPropertyChanged</span>&nbsp;propChangedObjParent&nbsp;=&nbsp;objectToBind&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2baaaf;">INotifyPropertyChanged</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propChangedObjParent&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;propChangedObjParent.PropertyChanged&nbsp;+=&nbsp;propChangedObj_PropertyChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2baaaf;">INotifyChildChanged</span>&nbsp;propChangedObjChild&nbsp;=&nbsp;objectToBind&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2baaaf;">INotifyChildChanged</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propChangedObjChild&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;propChangedObjChild.ChildChanged&nbsp;+=&nbsp;propChangedObj_ChildChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;RemoveEventHooks(<span style="color:#2baaaf;">ISavable</span>&nbsp;objectToBind)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2baaaf;">INotifyPropertyChanged</span>&nbsp;propChangedObjParent&nbsp;=&nbsp;objectToBind&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2baaaf;">INotifyPropertyChanged</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propChangedObjParent&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;propChangedObjParent.PropertyChanged&nbsp;-=&nbsp;propChangedObj_PropertyChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2baaaf;">INotifyChildChanged</span>&nbsp;propChangedObjChild&nbsp;=&nbsp;objectToBind&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:#2baaaf;">INotifyChildChanged</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(propChangedObjChild&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;propChangedObjChild.ChildChanged&nbsp;-=&nbsp;propChangedObj_ChildChanged;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And then change the save code to make sure to attach events:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">try</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+ <i><b>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RemoveEventHooks(savableObject)</b></i>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;savableObject&nbsp;=&nbsp;savableObject.Save()&nbsp;<span style="color:blue;">as</span>&nbsp;Csla.Core.<span style="color:#2baaaf;">ISavable</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnObjectSaved(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CslaActionEventArgs</span>(props.CommandName));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">switch</span>&nbsp;(props.PostSaveAction)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#2baf9a;">PostSaveActionType</span>.None:
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(source&nbsp;!=&nbsp;<span style="color:blue;">null</span>&nbsp;&amp;&amp;&nbsp;props.RebindAfterSave)<br /><i><b>                              { </b></i>                       
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _bindingSourceTree.Bind(savableObject);
+<i><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AddEventHooks(savableObject);<br />                              }</b></i>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">break</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#2baf9a;">PostSaveActionType</span>.AndClose:
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CloseForm();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">break</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">case</span>&nbsp;<span style="color:#2baf9a;">PostSaveActionType</span>.AndNew:
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnSetForNew(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">CslaActionEventArgs</span>(props.CommandName));<br />    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <i><b>AddEventHooks(savableObject);</b></i>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">break</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">catch</span>&nbsp;(<span style="color:#2b91af;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_bindingSourceTree.Bind(savableObject);&nbsp;<span style="color:green;">//Issue&nbsp;ID:&nbsp;&nbsp;426</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<i><b>AddEventHooks(savableObject);</b></i>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnErrorEncountered(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ErrorEncounteredEventArgs</span>(props.CommandName,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">ObjectSaveException</span>(ex)));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;raiseClicked&nbsp;=&nbsp;<span style="color:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

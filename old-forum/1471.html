@@ -1,0 +1,34 @@
+<html><header><title>ChildObjects / ReadOnly in Datagrid - a little assistance/clarification required.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ChildObjects / ReadOnly in Datagrid - a little assistance/clarification required.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1471.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Thursday, October 12, 2006</h2><P>Hi guys,</P>
+<P>I need a little guidance or clarification on how child objects are exposed in a UI - and whether I can achieve what I desire or how others may have approached this.</P>
+<P>I am creating a dialogue, that is based on parent/child(ren) table relationship. I store dialog results in a 'selection criteria' table and pass these off to a process...</P>
+<P>To simplify, let's say I have a&nbsp;parent table "criteria" that has two criteria (columns) - salesrep and orderyear (and a PK column), and I also have a child table - "criteria_states" that has a list of states that should be included in the selection. This table has columns; statecode, is_selected (bool), (and parent key column to make the relationship)</P>
+<P>My thinking was that, when creating my selection object, I could populate the selection_state with all states and set the is_selected value to true - I could populate a datagrid on my selection criteria dialogue, with 2 columns - state and is_selected - allowing the user to select/unselect the desired states in the selection screen.</P>
+<P>But my datagrid with the child objects is "readonly" - and havign read a number of threads with similar issues, I understand how this is by design.</P>
+<P>I do however disagree that the child objects shouldn't be edited in the same dialogue as the root...</P>
+<P>Is it POSSIBLE to have a group of editable child objects in the same collection as the root - or does anyone have a better strategy that they have used to popluate/update this type of child object?</P>
+<P>Any help/assistance/clarification would be much appreciated...</P>
+<P>Thanks,</P>
+<P>gaj.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>It is absolutely possible to have a dialog/form where both the parent and child data is edited - look at the PTWin project, and specifically the ProjectEdit form. You can see there where the Project object and its child objects are edited on the same form.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Thursday, October 12, 2006</h2><P>Thanks Rocky,</P>
+<P>&nbsp;</P>
+<P>You know - I THOUGHT I'd come across it - but I've gone so far down in mhy development that I'd forgotten... and somehow inherited what appear to be readonly collections ...</P>
+<P>I'll 'reeducate' myself.</P>
+<P>Thanks,</P>
+<P>g.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

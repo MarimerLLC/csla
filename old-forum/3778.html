@@ -1,0 +1,102 @@
+<html><header><title>BusinessBase/BusinessListBase Problem (Maybe???)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BusinessBase/BusinessListBase Problem (Maybe???)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3778.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Thursday, October 25, 2007</h2><P>I am having a strange issue when adding an object to the collection in which it replaces the details of any existing object already in the collection that has the same name.&nbsp; For example:</P>
+<P>public class&nbsp;A : BusinessBase&lt;A&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; private string _name = string.empty;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;private XmlDocument _xmlDocumentDetails;</P>
+<P>&nbsp;&nbsp;&nbsp; private int _versionNumber = 0;</P>
+<P>&nbsp;&nbsp;&nbsp; ... Getter/Setter routines here....</P>
+<P>}</P>
+<P>public class AList: BusinessListBase&lt;AList, A&gt;</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; public&nbsp;A GetItem(string name, int version)</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (A&nbsp;aItem in this)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ((aItem.Name.Equals(name)) &amp;&amp; (aItem.VersionNumber == version))</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return aItem;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return null;</P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; public void AddA(A aItem)</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!Contains(aItem.Name, aItem.VersionNumber))</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(aItem);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .... etc....</P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P>
+<P>Now if I have&nbsp;one XML as follows:</P>
+<P>&lt;Names&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;Name&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;First&gt;Joe&lt;/First&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Last&gt;Smith&lt;/Last&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;/Name&gt;</P>
+<P>&lt;/Names&gt;</P>
+<P>and another one as follows:</P>
+<P>&lt;Names&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;Name&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;First&gt;John&lt;/First&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Last&gt;Smith&lt;/Last&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;/Name&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;Name&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;First&gt;Jane&lt;/First&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Last&gt;Smith&lt;/Last&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; &lt;/Name&gt;</P>
+<P>&lt;/Names&gt;</P>
+<P>&nbsp;</P>
+<P>I can add the items into the collection as follows:</P>
+<P>AList aItemList = AList.NewAList();</P>
+<P>A aItem = A.NewA();</P>
+<P>aItem.Name = "Test1";</P>
+<P>aItem.DocumentDetails = XML1;</P>
+<P>aItem.VersionNumber = 1;</P>
+<P>aItemList.AddA(aItem);</P>
+<P>&nbsp;</P>
+<P>A aItem2 = A.NewA();</P>
+<P>aItem2.Name = "Test1a";</P>
+<P>aItem2.DocumentDetails = XML2;</P>
+<P>aItem2.VersionNumber = 1;</P>
+<P>aItemList.AddA(aItem);</P>
+<P>&nbsp;</P>
+<P>This apparently works but if execute the following:</P>
+<P>AList aItemList = AList.NewAList();</P>
+<P>A aItem = A.NewA();</P>
+<P>aItem.Name = "Test1";</P>
+<P>aItem.DocumentDetails = XML1;</P>
+<P>aItem.VersionNumber = 1;</P>
+<P>aItemList.AddA(aItem);</P>
+<P>&nbsp;</P>
+<P>A aItem2 = A.NewA();</P>
+<P>aItem2.Name = "Test1";</P>
+<P>aItem2.DocumentDetails = XML2;</P>
+<P>aItem2.VersionNumber = 2;</P>
+<P>aItemList.AddA(aItem);</P>
+<P>&nbsp;</P>
+<P>The xml details for both objects in the collection will be the same.&nbsp; Any ideas?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>KKoteles replied on Thursday, October 25, 2007</h2><P>Phlar,</P>
+<P>It may be a typo, but if I read you code correctly then here is your problem.&nbsp; You are always calling aItemList.AddA(aItem) and never calling aItemList.AddA(aItem<FONT color=#ff0000>2</FONT>).&nbsp; I'm surprised it works the first time.&nbsp; You never add the second item - you are always trying to add the first item twice.</P>
+<P>If what you listed is actually a typo, then could you list the Contains method of the list?&nbsp; I could see where that might stop the second one from being added; however, it doesn't account for why it would be adding a completely different object.</P>
+<P>It also seems a little strange that you would be adding to the list externally.&nbsp; Most of my lists had a method that was called and the list object itself did what it needed to to load the child objects.&nbsp; If it is a ReadOnlyListBase object then you need to worry about things like setting RaiseListChangedEvents and IsReadOnly as you load it.&nbsp; From the code displayed here, you are not addressing those issues.</P>
+<P>Ken</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Thursday, October 25, 2007</h2><P>KKoteles,</P>
+<P>You are correct that was a typo.&nbsp; The sample problem's second add to the aItemList collection should have been:</P>
+<P>aItemList.AddA(aItem2) as you've mentioned.</P>
+<P>Here is the Contains method:</P>
+<P>public bool Contains(string name, int version)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; foreach(A aItem in this)</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ((aItem.Name.Equals(name)) &amp;&amp; (aItem.VersionNumber == version)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;</P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P>
+<P>As an aside note, it actually does add both items to the collection, however the document details are identical (i.e. the XML are identical) when they shouldn't be.&nbsp; That is what has me completely perplexed.&nbsp; I can utilzie the GetItem(Name, Version) to obtain both items and when I examine the XML details, they are the same.&nbsp; The XML details are actually changed during run time.&nbsp; The original one is retrieved from file (XML Example1) and subsequently modified to resemble (XML Example 2) if that helps any.</P>
+<P>I should also mention that the above code are in two different classes.&nbsp; I omitted the extra details in order to simplify the details in the post, conserve space and company knowledge.</P>
+<P>Thanks for any additional comments/suggestions.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 25, 2007</h2>You are properly implementing GetIdValue() in the child objects, so each object returns a unique ID right? This is a common oversight, but since .NET collections use the Equals() method to know which item is which within a list you'll run into trouble if all items in the list don't return unique ID values.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Thursday, October 25, 2007</h2><P>Rockford,</P>
+<P>That is correct.&nbsp; The GetIDValue() is implemented in the child object and returns a unique ID value.&nbsp; </P>
+<P>After much searching and additional logging (utilizing Log4Net), I was able to trace it to another class which did not implement the ICloneable interface which resulted in both items referencing the identical XML details.&nbsp; </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

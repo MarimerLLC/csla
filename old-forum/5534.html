@@ -1,0 +1,90 @@
+<html><header><title>Issues accessing CSLA object from WPF code class.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Issues accessing CSLA object from WPF code class.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5534.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>GusE posted on Saturday, October 04, 2008</h2><P>Hello All... </P>
+<P>I'm trying to use an example right out of the Project Tracker App..&nbsp; I create a WPF user control derived from the EditForm base.&nbsp; I can then in the code base attach events to delagates within the code base with the following code.</P>
+<P>&nbsp;</P>
+<P><FONT color=#808080>&nbsp;&nbsp;&nbsp;Dim dp As Csla.Wpf.CslaDataProvider = TryCast(Me.FindResource("Controller"), Csla.Wpf.CslaDataProvider)<BR>&nbsp;&nbsp;&nbsp;AddHandler dp.DataChanged, AddressOf DataChanged</FONT></P>
+<P>However if I attempt to access the object like this; I get an object Nothing returned.</P>
+<P>&nbsp;</P>
+<P>&nbsp;<FONT color=#808080>Dim objCtrlr as MyObjects.ControllerObject = TryCast(Me.FindResource("Controller"), MyObjects.ControllerObject)</FONT></P>
+<P><FONT color=#808080></FONT>&nbsp;</P>
+<P><FONT color=#000000>Any ideas people??&nbsp; I have seen this done in many code bases... So it should work.. Let us know... :)</FONT></P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2><P>There are two possibilities.</P>
+<OL>
+<LI>There is no resource named "Controller" (due to a typo or something)</LI>
+<LI>The resource can't be cast into your type, so TryCast() returns Nothing/null</LI></OL>
+<P>You may consider (temporarily) breaking that line into two lines so you can debug more easily:</P>
+<P>Dim tmp As Object = Me.FindResource("Controller")</P>
+<P>Dim objCtrlr&nbsp;= TryCast(tmp, <FONT color=#808080>MyObjects.ControllerObject)</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GusE replied on Monday, October 06, 2008</h2><P>Thanks for the reply Rocky.&nbsp;&nbsp; As I said before; while hooking the events to delegates it works fine with the same name..&nbsp; So 'Controller' does exist.&nbsp; I thought of doing this, and I'm not really sure why I haven't tried it yet.. <img src="/emoticons/emotion-8.gif" alt="Indifferent [:|]" />&nbsp; I will try this..&nbsp; </P>
+<P>Just going off onto another thought, when you define a resource on the page; and find that resource.&nbsp; You should be able to Cast that object as any named object that the resource either defines, or inherits.. Correct??&nbsp; </P>
+<P>&nbsp;</P>
+<P>&nbsp; -G</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GusE replied on Monday, October 06, 2008</h2><P>Ok, here is what I'm getting after trying the above attempt...</P>
+<P>&nbsp;</P>
+<P>dim obj as Object = FindResource("Controller")</P>
+<P>The object returns as Csla.Wpf.CslaDataProvider</P>
+<P>&nbsp;</P>
+<P>Then when attempting the TryCast it fails...&nbsp; Mainly because I believe I'm hitting a proxy to the class that I am trying to capture... <img src="/emoticons/emotion-8.gif" alt="Indifferent [:|]" /></P>
+<P>&nbsp;</P>
+<P>Any ideas???</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, October 06, 2008</h2><P>What is the class defintion for ControllerObject?</P>
+<P>Sergey.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>So you don&#8217;t expect to get a CslaDataProvider?</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You should be able to cast the object using normal .NET rules.
+Which means you can cast it to its own type, to anything it inherits from or to
+any interface it implements.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can&#8217;t cast it to a subclass type, unless you
+specifically know that it IS that subclass.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>GusE replied on Thursday, October 09, 2008</h2><P>All I can say is that I was correct in my assumption that I should be able to cast the object.. The only issue is that I have to cast the Property on the Container object... DUH...&nbsp; Can you tell that I've been working WAY too much this week??&nbsp; 40 hours and going and it's just Thursday at 9am!</P>
+<P>The answer is as follows...</P>
+<P>Dim dp as Csla.Wpf.ClsaDataProvider = TryCast(Me.FindResource("Controller"), Csla.Wpf.CslaDataProvider)</P>
+<P>dim _ctrlr as MainDisplayController = TryCast(dp.Data, MainDisplayController)</P>
+<P>And wow, magically data...&nbsp; I think I could drive a spike through my head at this point and it wouldn't effect my cognitive thinking process... <img src="/emoticons/emotion-10.gif" alt="Embarrassed [:$]" /></P>
+<P>&nbsp; -G</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

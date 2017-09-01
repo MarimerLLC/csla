@@ -1,0 +1,20 @@
+<html><header><title>membership provider</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>membership provider</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3741.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred posted on Thursday, October 18, 2007</h2><P>Hello,</P>
+<P>I am trying to add ChangePassword functionality in my application.</P>
+<P>The first problem&nbsp;I ran into was implementing the GetUser functionality.</P>
+<P>This function is supposed to return MembershipUser. As I can't find any membershipuser in CSLA, can&nbsp;I implement one in the CustomIdentity used in PTWEB. And if it isn't fit inheriting from the MembershipUser that already exists in .net and implementing it in the custom identity.</P>
+<P>Is this the only way to implement GetUser.</P>
+<P>Thanks</P>
+<P>Greetings.</P>
+<P>Wilfred</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, October 18, 2007</h2><P>There's a large interface that you "could" build out for the Membership provider. One of the methods, as you have seen, is GetUser, which can return a MembershipUser instance. Via MembershipUser you can do all kinds of things, such as "ChangePassword". MembershipUser is a class used in the Membership API which has quite a few members.&nbsp;Some of the ASP.Net controls plug right into this Membership API. Obviously there's allure there. </P>
+<P>In Rocky's book, this wasn't covered in great deal, as his book is really geared towards CSLA; it wouldn't make sense to walk through fully&nbsp;implementing a Membership provider.&nbsp;&nbsp;</P>
+<P>The approach I took was to leverage&nbsp;the built in providers within the .Net framework to take advantage of the full API without building it myself. The weakness with the providers AS-IS&nbsp;is that it assumes the items invoking the membership API are in a place that can directly access the database. This is not necessarily the case - if we utilize a remoting solution we will likely not have the Web server have capabilities to connect to the database. </P>
+<P>So, I wrote a couple of clasess to wrap the functionality of the built-out providers which happen to leverage a Csla command class - to use the DataPortal, so that the API can execute on the application server. </P>
+<P>The SqlServer providers are right&nbsp;in the .Net Framework - SqlMembershipProvider and SqlRoleProvider. One can download (I'm pretty sure) Oracle ones if that's your flavor. </P>
+<P>The thread which contains my code is here:</P>
+<P><A href="/forums/thread/14844.aspx">http://forums.lhotka.net/forums/thread/14844.aspx</A></P>
+<P>Alternatively, you can just skip out on&nbsp;using the Membership API --&nbsp;just write out methods&nbsp;invoking Csla command classes&nbsp;to do various things like changing a password, etc. (I've also seen one implementation leverage a Csla "User" class with things such as "password" as members.) </P>
+<P>For us, all of the built in implementation of the Membership and Role providers&nbsp;made it worth figuring out how to leverage them. </P>
+<P>Good luck,</P>
+<P>Chris</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,27 @@
+<html><header><title>Designing Root Object with Child Obects and Child Collection Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Designing Root Object with Child Obects and Child Collection Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2220.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>silasimmi posted on Sunday, January 28, 2007</h2><P>Hi,</P>
+<P>Being pretty new to the CSLA framework I find myself&nbsp; lost in design issues. I have designed the architecture of a sizeable application which I am trying to develop. The major business objects are done and so is the database.</P>
+<P>I would like to share my ideas and need some help with the code. One issue is that of having a root BusinessBase object with child BusinessBase objects apart from child BusinessListBase objects. How do I implement the save (insert and update) operations in such an architecture? Kindly email me at <A href="mailto:silaspeter@gmail.com">silaspeter@gmail.com</A> so I could forward the code under discussion.</P>
+<P>Cheers to Rocky and the believers.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 28, 2007</h2><P>So you have an editable root, which directly contains an editable child? Here's the basic pattern:</P>
+<P>public class EditableRoot : BusinessBase&lt;EditableRoot&gt;<BR>{<BR>&nbsp; // ...<BR><BR>&nbsp; protected override void DataPortal_Update()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SqlConnection&nbsp;cn = ...)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // ...<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_child.IsDeleted)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!_child.IsNew)<BR>&nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; _child.DeleteSelf(this, cn);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_child = EditableChild.NewEditableChild();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;else if (_child.IsNew)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_child.Insert()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_child.Update()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp; }<BR>}</P>
+<P>public class EditableChild : BusinessBase&lt;EditableChild&gt;<BR>{<BR>&nbsp;&nbsp;// ...<BR><BR>&nbsp; private EditableChild()<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; MarkAsChild();<BR>&nbsp; }<BR><BR>&nbsp; internal void Update(IParent parent, SqlConnection cn)<BR>&nbsp; {<BR>&nbsp;&nbsp;&nbsp; // ...<BR>&nbsp;&nbsp;&nbsp; MarkOld();<BR>&nbsp; }<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>silasimmi replied on Sunday, January 28, 2007</h2><P>Thank you so much Rocky.</P>
+<P>Miracles do happen!!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>silasimmi replied on Monday, January 29, 2007</h2><P>Hi,</P>
+<P>Does it make sense to create code for an object that can optionally be used as child or root. Something like being able&nbsp;to switch it between being a child and root. If it does then what would the basic template be.</P>
+<P>Something like clubbing the code for Resource Object and the ProjectResource Object and then being able to serialze only the necessary bits based on the context of use.</P>
+<P>This could be a completely wrong idea , am I breaking the normalization rules for the BOs? Please give me some pointers. err, I'd be heading down a oneway street ...</P>
+<P>Regards,</P>
+<P>Silas.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 29, 2007</h2>
+
+
+
+
+<DIV align=left><SPAN class=328553903-30012007><FONT face=Arial color=#0000ff size=2>The Switchable object concept is discussed briefly in 
+Chapter 7, but it is not something that I encourage. It exists to serve an edge 
+case, but is more often misused due to data-centric design.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=328553903-30012007><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=328553903-30012007><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left>&nbsp;</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>silasimmi replied on Tuesday, February 27, 2007</h2><P>Dear Rocky,</P>
+<P>Apologies for being off the radar. Thank you for the pointers. Thanks to the contributions made and found on codeplex. </P>
+<P>~Silas~</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,11 @@
+<html><header><title>Csla BackgroundWorker missing ReportProgress(percent, userState) overload</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla BackgroundWorker missing ReportProgress(percent, userState) overload</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10776.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Turntwo posted on Saturday, October 15, 2011</h2><p>I&#39;m using the Csla BackgroundWorker wrapper because I need the Context available, however I noticed it was missing an override of the ReportProgress method that includes a UserState object (in case you want to report more than just a percent complete). &nbsp;</p>
+<p>I added this to the BackgroundWorker class as it is completely straightforward, but was hoping it could be included in the default CSLA version, as I don&#39;t like to modify CSLA too much - makes upgrading to new versions more complicated. &nbsp;</p>
+<p>
+<pre>&nbsp;	<span>public</span>&nbsp;<span>void</span>&nbsp;ReportProgress(<span>int</span>&nbsp;percentProgress,&nbsp;<span>object</span>&nbsp;userState)
+	{
+		_myWorker.ReportProgress(percentProgress,&nbsp;userState);
+	}</pre>
+<pre>Thanks.</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 16, 2011</h2><p>Thanks, </p>
+<p>Added to bugtracker: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=98">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=98</a><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=98">0 </a></p>
+<p>Done and checked in to repository.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

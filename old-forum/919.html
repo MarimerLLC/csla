@@ -1,0 +1,14 @@
+<html><header><title>Extending BusinessBase&lt;T&gt; in c#</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Extending BusinessBase&lt;T&gt; in c#</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/919.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley posted on Wednesday, August 16, 2006</h2><P>I am trying to extend BusinessBase in a similar fashion to what Petar did with ActiveObjects. I have searched all over to no avail so hopefully someone can help me out. I had a good start on this, I though, however his code is in VB and mine C#</P>
+<P>This is what his constructor looks like in VB</P><PRE>Public MustInherit Class ActiveBusinessBase(Of T As BusinessBase(Of T))
+  Inherits BusinessBase(Of T)
+  Implements IActiveBusinessBase
+  Implements ISafeSubscriber
+</PRE>
+<P>This is what my constructor Looks like:</P><PRE>public abstract class SCBusinessBase : Csla.Core.BusinessBase where T : SCBusinessBase, ISubscriber</PRE>
+<P>With this constructor I get the following error on compilation in my derived class: <BR>"The type MyDerivedClass must be convertible to Observer.ISubscriber in order to use it as a parameter T in the generic type or method SCBusinessBase. </P>
+<P>So I make MyDerivedClass implement the same interface (ISubscriber). Then I get errors such as: <BR><BR>"Cannot Convert from SCBusinessBase to Observer.ISubscriber" </P>
+<P>I have also tried this: </P><PRE>public abstractclass SCBusinessBase : BusinessBase where T: SCBusinessBase</PRE>
+<P>And several other possibilities. So my question is, how can I extend BusinessBase with my own base class and not have to recode what is already in BusinssBase in the framework?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, August 16, 2006</h2>T (or whatever you name your type parameters) are defined in class definitions or static member definitions.<br><br>public abstract class SCBusinessBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt;, ISubscriber<br>&nbsp;&nbsp;&nbsp; where T : SCBusinessBase&lt;T&gt;<br>{<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, August 16, 2006</h2><P>Brian, </P>
+<P>Thanks for the help it is working now, I just had things out of order.</P>
+<P>Thanks,</P>
+<P>Ryan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

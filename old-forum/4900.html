@@ -1,0 +1,40 @@
+<html><header><title>Refresh of 3.5.1 test available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Refresh of 3.5.1 test available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4900.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, May 27, 2008</h2><P>I just put a refresh of 3.5.1 on the <A href="http://www.lhotka.net/cslanet/download.aspx">download page </A>for testing. Check the change log for details - this version includes a bunch of bug fixes and a couple minor feature enhancements from the <A href="http://www.lhotka.net/cslanet/wishlist.aspx">wish list</A>.</P>
+<P>Please let me know if you encounter any issues when using this new code, thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Wednesday, May 28, 2008</h2><P>Rocky,</P>
+<P>I received an UndoException with the message "Edit Level Mismatch in Accept Changes" on Project Tracker.&nbsp; I added a new resource by providing a first name and last name and clicking the "OK" button. (this.EditLevel = 1, parentEditLevel = 1):</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Core.IUndoableObject.AcceptChanges(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> parentEditLevel, </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> parentBindingEdit)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.EditLevel - 1 &lt; parentEditLevel)</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> UndoException(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>.Format(Properties.Resources.EditLevelMismatchException, </FONT><FONT color=#a31515 size=2>"AcceptChanges"</FONT><FONT size=2>));</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thanks for sticking with me in figuring this out. I think I have
+it resolved now (famous last words&#8230;) in the code in svn.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>A change was required to UndoableBase, where the
+ResetChildEditLevel method was allowing the FieldManager to get out of sync
+with its container object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thaehn replied on Thursday, May 29, 2008</h2><P>I check it out and it is working now.&nbsp; Thanks for the fix.</P>
+<P>Todd</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

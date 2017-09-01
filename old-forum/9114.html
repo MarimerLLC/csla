@@ -1,0 +1,193 @@
+<html><header><title>CSLA 3.7 for Silverlight DataGrid ValidatedDataGridTextColumn Wrapping Issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.7 for Silverlight DataGrid ValidatedDataGridTextColumn Wrapping Issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9114.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Adam posted on Monday, June 21, 2010</h2><p>Hi
+<br />
+I am looking for a way to wrap text in a <span style="color:#a31515;font-size:x-small;">ValidatedDataGridTextColumn</span> but cannot find a way to do it. So I have started down the lines of setting up a template column in the datagrid but then I have come unstuck as the statusproperty object doesn&#39;t know what to reference, as shown in the code below...
+<span style="color:#0000ff;font-size:x-small;"><br />
+<br />
+&lt;<span style="color:#a31515;font-size:x-small;">csla</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">ValidatedDataGridTextColumn</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Binding</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;{</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">Binding</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Path</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=Remarks}&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Header</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;Remarks&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Width</span></span>=&quot;150&quot; /&gt;
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">data</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataGridTemplateColumn</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Header</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;Remarks&quot;&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">data</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataGridTemplateColumn.CellTemplate</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">DataTemplate</span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">StackPanel</span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">TextBlock</span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Text</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;{</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">Binding</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Path</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=Remarks}&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Width</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;150&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> TextWrapping</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;Wrap&quot;/&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">StackPanel</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataTemplate</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">data</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataGridTemplateColumn.CellTemplate</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">data</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataGridTemplateColumn.CellEditingTemplate</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">DataTemplate</span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">StackPanel</span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">TextBox</span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Name</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;RemarksTextBox&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Text</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;{</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">Binding</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Path</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=Remarks}&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Width</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;150&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> TextWrapping</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;Wrap&quot;/&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;<span style="color:#a31515;font-size:x-small;">csla</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">PropertyStatus</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> RelativeTargetName</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;RemarksTextBox&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Property</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;Remarks&quot;</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Source</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=&quot;{</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">Binding</span></span><span style="color:#ff0000;font-size:x-small;"><span style="color:#ff0000;font-size:x-small;"> Path</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">=Data}&quot; /&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">StackPanel</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataTemplate</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&nbsp;&nbsp;&nbsp;
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">data</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataGridTemplateColumn.CellEditingTemplate</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;</span></span>
+<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span></span><span style="color:#a31515;font-size:x-small;">
+ 
+</span></span>
+ 
+<br />
+&lt;/<span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">data</span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">:</span></span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">DataGridTemplateColumn</span></span>
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&gt;<br />
+</span></span>
+ </span> 
+<span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+ 
+</span></span></span></span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">
+ 
+</span></span></span><br />
+Any help would be greatly appreciated.
+ 
+ 
+<br />
+Many Thanks
+<br />
+Adam</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Adam replied on Tuesday, June 22, 2010</h2><p>Hi</p>
+<p>I have managed to resolve this with setting the mode to twoway as shown below...</p>
+<p><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">data</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataGridTemplateColumn</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Header</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;Remarks&quot;&gt;<br />&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">data</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataGridTemplateColumn.CellTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">StackPanel</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">TextBlock</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Text</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;{</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">Binding</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Path</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=Remarks}&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Width</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;300&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> TextWrapping</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;Wrap&quot;/&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">StackPanel</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">data</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataGridTemplateColumn.CellTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">data</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataGridTemplateColumn.<span class="style2">CellEditingTemplate</span></span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">StackPanel</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">TextBox</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Name</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;RemarksTextBox&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Text</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;{</span><span class="style2" style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">Binding</span><span class="style2" style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Mode</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;"><span class="style2">=TwoWay</span>,</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Path</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=Remarks}&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Width</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;300&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> TextWrapping</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;Wrap&quot;/&gt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;"><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&lt;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">csla</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">PropertyStatus</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> RelativeTargetName</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;RemarksTextBox&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Property</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;Remarks&quot;</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Source</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=&quot;{</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">Binding</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:red;"> Path</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">=Data}&quot; /&gt;<br /></span><span class="style1" style="font-size:10.0pt;font-family:&#39;Courier New&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&lt;/</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">StackPanel</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br />&nbsp;&nbsp;&nbsp; &lt;/</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">data</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:#A31515;">DataGridTemplateColumn.CellEditingTemplate</span><span style="font-size:10.0pt;font-family:&#39;Courier New&#39;;color:blue;">&gt;<br /></span><span style="font-size:10.0pt;line-height:115%;font-family:&#39;Courier New&#39;;color:blue;">&lt;/</span><span style="font-size:10.0pt;line-height:115%;font-family:&#39;Courier New&#39;;color:#A31515;">data</span><span style="font-size:10.0pt;line-height:115%;font-family:&#39;Courier New&#39;;color:blue;">:</span><span style="font-size:10.0pt;line-height:115%;font-family:&#39;Courier New&#39;;color:#A31515;">DataGridTemplateColumn</span><span style="font-size:10.0pt;line-height:115%;font-family:&#39;Courier New&#39;;color:blue;">&gt;</span></p>
+<p>Hope this helps if anyone else forgets!</p>
+<p>Adam</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

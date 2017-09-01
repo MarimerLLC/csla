@@ -1,0 +1,9 @@
+<html><header><title>raising events in forms</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>raising events in forms</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3564.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhw posted on Tuesday, September 18, 2007</h2><P>Simple example:</P>
+<P>City control with a combobox of provinces from which to pick. The required province is not there so we have to go to the province form and add it. Now I want the city control combobox to be automatically updated.</P>
+<P>The obvious way is to have the editable province list raise an event that the city control catches, and update the combobox binding source.</P>
+<P>But Rocky does not recommend this, even though there is a do not&nbsp;serialize attribute you can add to the event so that the control won't be serialized during saving of the editible list.</P>
+<P>The other soluntion I see is to create a new non-csla object containing&nbsp;a province list changed&nbsp;event. Declare the class&nbsp;globally. Manually raise the list changed event in the province control, and catch this event in the city control.</P>
+<P>Is this the best way to do it? Is is better just to use the non-bindable attribute?</P>
+<P>While this is a simple example and it would be easy just to close and reopen the city control. <BR>But in more complex situations, this does not make the user happy<img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>&nbsp;</P>
+<P>Heath</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

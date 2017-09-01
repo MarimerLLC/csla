@@ -1,0 +1,20 @@
+<html><header><title>When BindingSourceRefresh isn't helpful</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>When BindingSourceRefresh isn't helpful</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6697.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk posted on Sunday, March 29, 2009</h2><P>I believe I may have stumbled across the underlying reason why BindingSourceRefresh is required.&nbsp; </P>
+<P>The background to my problem is this: </P>
+<P>Default databinding in Windows Forms triggers a read of all properties except the one you have edited/are editing.&nbsp; I think I remember Rocky writing of it as a 'quirk' and perhaps hinting that it may be a bug.&nbsp; So when you have a business object property that changes values entered,&nbsp;thoses changes&nbsp;are only reflected in the UI once you have edited another property.&nbsp; To workaround this annoyance the BindingSourceRefresh control was created.&nbsp; It hooks into the databinding events and forces&nbsp;the UI to update once databinding has updated the property in the bound object.&nbsp; </P>
+<P>Databinding has two modes: </P>
+<P>1) OnValidation - Updates the bound business object when you leave a textbox.&nbsp; </P>
+<P>2) OnPropertyChanged - Updates the bound business object when you change its text</P>
+<P>I recently&nbsp;encountered two&nbsp;situations&nbsp;using BindingSourceRefresh and OnPropertyChanged databinding when BindingSourceRefresh isn't helpful: </P>
+<P>1) If your property changed the data entered the cursor jumps back to the start - feels like April Fools Day!&nbsp; Example: the business object property converts strings to uppercase.&nbsp; </P>
+<P>2) If you have formatting enabled - perhaps using commas to seperate the thousands</P>
+<P>Try my attached sample to see this in operation.&nbsp; Just type 123456789 in the first textbox and abcdefg into the second.&nbsp; </P>
+<P>I came up with a few possible solutions and some thoughts: </P>
+<UL>
+<LI>Turn off BindingSourceRefresh - but I like it most of the time</LI>
+<LI>Switch to OnValidation data binding - but then I lose 'real-time' broken rules notification</LI>
+<LI>My property shouldn't be changing the input?&nbsp; That's the users job?&nbsp; Either have the textbox convert to uppercase or implement a&nbsp;CSLA rule that disallows uppercase characters.&nbsp; If I'd used CRC which object would be responsible?</LI>
+<LI>Is formatting really the job of databinding?&nbsp; If formating were done by the TextBox control there may not be a problem.&nbsp; Did the windows forms people use CRC?</LI>
+<LI>Perhaps it's ultimately a difficult situation because the UI component is trying to do two jobs: accept data entry and display the property value all in one place</LI></UL>
+<P>Perhaps this is the reason for the 'quirk'?</P>
+<P>Has anyone else experienced these issues?</P>
+<P>It would be nice to hear of any better solutions anyone has.&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

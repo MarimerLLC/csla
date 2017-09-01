@@ -1,0 +1,83 @@
+<html><header><title>Last possible 2.1 change (and I mean it this time!)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Last possible 2.1 change (and I mean it this time!)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1155.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Thursday, September 07, 2006</h2>I'm nearing the release of a real beta of 2.1 - ideally tomorrow.<br><br>However, I'm seriously contemplating one big change and would value timely input. It is a tough decision.<br><br>Back in 2.0.2 I altered the way the data portal calls DataPortal_Create() and DataPortal_Fetch(), specifically when you pass no criteria parameter or Nothing/null. When I did this, I tried to minimize backward compatibility issues - but the end result is a non-intuitive mess, that appears to be the cause of more support questions than even Remoting... (which is saying something!)<br><br>So in 2.0.2+, the following mappings occur for DataPortal.Create() (and Fetch()):<br><br>DataPortal.Create() --&gt; DataPortal_Create(object)<br>DataPortal.Create(null) --&gt; DataPortal_Create(object)<br>
+DataPortal.Create(criteria) --&gt; DataPortal_Create(criteria) or DataPortal_Create(object)<br>
+<br>What should happen to match normal calling semantics is:<br><br>DataPortal.Create() --&gt; DataPortal_Create()<br>
+DataPortal.Create(null) --&gt; DataPortal_Create(object)<br>
+
+DataPortal.Create(criteria) --&gt; DataPortal_Create(criteria) or DataPortal_Create(object)<br>
+
+<br>Again, the same for Fetch().<br><br>There are two big impacts involved here. <br><br>First, making this change would break all existing Create() and Fetch() calls (with no parameter). Other Create() and Fetch() calls should continue to operate.<br><br>Second, the virtual/Overridable declaration of DataPortal_Create(object) in all base classes would become totally useless - counterproductive even - since most Create() calls are parameterless (or should be). I'd want to change the base class definitions for this method - and that too would break almost every class out there.<br><br><br>So the question is whether it is worth it. I lean toward saying yes - because it is very clear that my 2.0.2 change has created a highly unintuitive mess. But at the same time, I fully realize the upgrade pain from 2.0 to 2.1 that I'd be creating (though I think that most of the changes could be made by a single mass-subtitution across all your class files).<br><br>Thoughts?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, September 07, 2006</h2>Sounds like a good idea to me. If it means a "cleaner" more intuitive frame work. I'm willing to work late and make that change in my system :)
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 07, 2006</h2>I think you should make the changes.&nbsp; Yes, there will be pain, but the benefits gained from being more consistent will be worth it.&nbsp; Clarity in frameworks is very important, and if this has become a huge support issue, I'd rather you break everyone else's code so that you can spend more time on, well, whatever you decide is important.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, September 07, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>I think you should make the changes.&nbsp; Yes, there will be pain, but the benefits gained from being more consistent will be worth it.&nbsp; Clarity in frameworks is very important, and if this has become a huge support issue, I'd rather you break everyone else's code so that you can spend more time on, well, whatever you decide is important.<br></div></BLOCKQUOTE><br>Agreed.&nbsp; Compile time breakages are easy to deal with, and other changes are okay as long as you know the upgrade path.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Thursday, September 07, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>Agreed.&nbsp; Compile time breakages are easy to deal with, and other changes are okay as long as you know the upgrade path.<br></div></BLOCKQUOTE><br>I say go for it, otherwise you'll always be kicking yourself later and it can only get to be more of a pain for more people as time goes on.<br><br>But ... just to be clear, is this a runtime breakage or compile time?<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 07, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=093080922-07092006><FONT face=Arial color=#0000ff size=2>The change to the virtual methods in the base classes are a 
+compile-time breakage.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=093080922-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=093080922-07092006><FONT face=Arial color=#0000ff size=2>The changes to invoking DataPortal_Create() vs 
+DataPortal_Create(object) are a runtime breakage. However, the most likely 
+scenario is that your existing DataPortal.Create() call is calling the override 
+of the virtual method, so (I think) you'll always get a nod that you have a 
+problem at compile-time.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=093080922-07092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=093080922-07092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE><FONT face=Arial color=#0000ff size=2></FONT><FONT face=Arial color=#0000ff size=2></FONT><BR>But ... just to be clear, is this a runtime breakage or 
+  compile time?<BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, September 07, 2006</h2><P>Better to do it now than to always fret about it.&nbsp; I don't think any of us has "released" a product since 2.0.2.&nbsp; As for fixing things - that's what we are doing all day anyway - one more fix aint gonna kill no one. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, September 07, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>I fully realize the upgrade pain from 2.0 to 2.1 that I'd be creating (though I think that most of the changes could be made by a single mass-subtitution across all your class files).<BR></div></BLOCKQUOTE></P>
+<P>One more "Yes" vote. Especially if it's as easy as a ctrl-h. Although I'm not clear either if it's a compile-time break or a runtime break - the latter scares me a little.</P>
+<P>Also, since I'm charging by the hour on this project, it's okay with me if you want to make it more difficult to fix :)</P>
+<P>Client: What do you mean it's going to cost me an extra $1000?</P>
+<P>Me: Don't blame me, it's that dang Lhotka guy. It's still a lot cheaper if we hadn't used CSLA in the first place.</P>
+<P>They'll pay.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 08, 2006</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div>One more "Yes" vote. Especially if it's as easy as a ctrl-h. Although I'm not clear either if it's a compile-time break or a runtime break - the latter scares me a little.</div></BLOCKQUOTE><br><br>Why would a runtime break scare you?&nbsp; You DO have unit tests, right? <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br>
+<p><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>Michael Hildner:</strong></div><div>Also, since I'm charging by the hour on this project, it's okay with me if you want to make it more difficult to fix :)</p>
+<p>Client: What do you mean it's going to cost me an extra $1000?</p>
+<p>Me: Don't blame me, it's that dang Lhotka guy. It's still a lot cheaper if we hadn't used CSLA in the first place.</p>
+<p>They'll pay.<br></div></BLOCKQUOTE></p><p>Ahh.. I guess you don't have unit tests then.&nbsp; <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, September 08, 2006</h2><P>LOL Andy.</P>
+<P>You're right, I don't have unit tests. Well, actually I have about 4 of them, which haven't been run for months.</P>
+<P>I was unable to convince the guy I'm working for that we should have tests. I tried, I guess not good enough. Seems he didn't want to pay for something he didn't understand. It was bad enough the first couple-three weeks into the project when I was creating all the classes, sprocs and DB stuff. Absolutely nothing to show in terms of UI. All that "back end" stuff means nothing to the client&nbsp;- they want something they can touch and see. Kind of a tough position. My project isn't perfect, but it could be worse.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 08, 2006</h2>Mike,<br><br>Definately hear you on those points.&nbsp; Some clients are just tough to work with.&nbsp; I'm not sure how to better explain to those clients that there's much more that just a pretty UI that needs to be built. Did you attempt to show him the database design or class design?&nbsp; Even if they don't understand it, you might be able to say 'this is how your data is stored and this is how the application knows how to perform tasks.'<br><br>At any rate, my post was simply meant to get a laugh, and it seems that it did.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbLuis replied on Wednesday, September 13, 2006</h2>I happen to use DataPortal_Create with a Criteria object. (I often pass one or more values via the Criteria object.) So, if I understand this correctly, all I have to do to be compatible with Csla 2.1 is <STRONG>remove </STRONG>the <EM>Overrides</EM> in the DataPortal_Create declaration of my derived class and it should still work?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=546322503-14092006><FONT face=Arial color=#0000ff size=2>Yes, that is correct.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546322503-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546322503-14092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> vbLuis [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, September 13, 2006 9:04 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Last possible 2.1 change 
+  (and I mean it this time!)<BR></FONT><BR></DIV>
+  <DIV></DIV>I happen to use DataPortal_Create with a Criteria object. (I often 
+  pass one or more values via the Criteria object.) So, if I understand this 
+  correctly, all I have to do to be compatible with Csla 2.1 is <STRONG>remove 
+  </STRONG>the <EM>Overrides</EM> in the DataPortal_Create declaration of my 
+  derived class and it should still work?<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 14, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV align=left><SPAN class=546322503-14092006><FONT face=Arial color=#0000ff size=2>Yes, that is correct.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=546322503-14092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=546322503-14092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+<FONT face=Tahoma size=2><B>From:</B> vbLuis [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Wednesday, September 13, 2006 9:04 PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Last possible 2.1 change (and I mean it this time!)<BR></FONT><BR></DIV>
+<DIV></DIV>I happen to use DataPortal_Create with a Criteria object. (I often pass one or more values via the Criteria object.) So, if I understand this correctly, all I have to do to be compatible with Csla 2.1 is <STRONG>remove </STRONG>the <EM>Overrides</EM> in the DataPortal_Create declaration of my derived class and it should still work?<BR><BR><BR></BLOCKQUOTE>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Sorry to be dense here but I am not getting a&nbsp;clear picture of this issue.</P>
+<P>BusinessBase looks like this:</P>
+<P>&nbsp;Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)</P>
+<P>&nbsp;I use split classes and my Base class looks like this:</P>
+<P>&nbsp; &nbsp; &lt;RunLocal()&gt; _<BR>&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Create(ByVal criteria As Object)<BR>&nbsp;</P>
+<P>If I want to Override it in my final type I can easily do so. Plus I can decide whether or not to RunLocal in the final type.</P>
+<P>Question 1 - What do you propose changing BusinessBase too?</P>
+<P>Question 2 - What would my Base class method look like after the change? This?</P>
+<P>&nbsp; &nbsp;&lt;RunLocal()&gt; _<BR>&nbsp;&nbsp;&nbsp; Protected Overridable Overloads&nbsp;Sub DataPortal_Create(ByVal criteria As Object)<BR>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 14, 2006</h2>BusinessBase is changed from:<br><br>Protected Overridable Sub DataPortal_Create(ByVal criteria As Object)<br><br>to <br><br>Protected Overridable Sub DataPortal_Create()<br><br>Your base class will look like:<br>&lt;RunLocal()&gt; _<br>Private Sub DataPortal_Create(ByVal criteria As Object)<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fabio replied on Thursday, September 14, 2006</h2>Hi.<br>What happened with Delete?<br><br>
+DataPortal.Delete(null) --&gt; DataPortal_Delete(object)<br>
+
+DataPortal.Delete(criteria) --&gt; DataPortal_Delete(criteria) or DataPortal_Delete(object)<br><br>Can we have the same behaviour of Fetch for strongly typed criteria?<br><br>Fabio.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

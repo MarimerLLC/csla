@@ -1,0 +1,52 @@
+<html><header><title>CSLA Light - Validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light - Validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6898.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Tuesday, May 05, 2009</h2>I just added a simple validation rule to one of my BOs and when the validation fails I get the following error message:<br /><br />Object is still being edited and cannot be saved.<br /><br />Here is the validation rule:<br /><br />ValidationRules.AddRule(CommonRules.StringMaxLength, new CommonRules.MaxLengthRuleArgs(DescriptionProperty, 30));<br /><br />To make the rule fail I'm just exceeding the specified maximum string length.  Any idea what I'm doing wrong?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 05, 2009</h2><P>There's a bug (fixed in 3.6.3) where the Save() method uses the wrong text when raising the ValidationException to indicate that the object is invalid and can't be saved.</P>
+<P>The overall behavior is correct - you are getting a ValidationException because you are trying to save an invalid object. The bug is that the text message in the exception is incorrect (again, fixed in 3.6.3).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, May 05, 2009</h2>Thanks Rocky.  I don't see 3.6.3 on the downloads page.  Is it not available for download yet?  If not, any idea when?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>3.6.3 is a work in progress. I&#8217;ll do a test release soon,
+maybe yet today.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CampbellCM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 05, 2009 12:14 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA Light - Validation<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Rocky. I don't see 3.6.3 on the downloads page. Is it
+not available for download yet? If not, any idea when?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Tuesday, May 05, 2009</h2>Cool, I'll keep an eye out.  Thanks Rocky.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

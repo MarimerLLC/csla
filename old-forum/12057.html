@@ -1,0 +1,23 @@
+<html><header><title>What is CSLA LoadProperty()?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What is CSLA LoadProperty()?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12057.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Migs posted on Wednesday, July 03, 2013</h2><p>I had an application that recently handed to me and uses CSLA Version 3.6.2.0.&nbsp; Updating it to the latest CSLA version is kind of messy right now since it&#39;s a huge application and I&#39;m new to CSLA.</p>
+<p>My question is what LoadProperty() does in CSLA Version 3.6.2.0?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, July 03, 2013</h2><p>Did you look at the intellisense provided in visual studio?&nbsp;</p>
+<p>
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>summary</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;Loads a property&#39;s managed field with the&nbsp;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;supplied value</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>/</span><span>summary</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>typeparam</span>&nbsp;<span>name</span><span>=</span><span>&quot;P&quot;</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;Type of the property.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>/</span><span>typeparam</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>param</span>&nbsp;<span>name</span><span>=</span><span>&quot;propertyInfo&quot;</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;PropertyInfo object containing property metadata.&lt;<span>/</span><span>param</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>param</span>&nbsp;<span>name</span><span>=</span><span>&quot;newValue&quot;</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;The new value for the property.&lt;<span>/</span><span>param</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>remarks</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;No authorization checks occur when this method is called,</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;and no PropertyChanging or PropertyChanged events are raised.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;Loading values does not cause validation rules to be</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;invoked.</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>///&nbsp;&lt;<span>/</span><span>remarks</span>&gt;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span>protected</span>&nbsp;<span>void</span>&nbsp;LoadProperty<span>&lt;</span>P<span>&gt;(</span>PropertyInfo<span>&lt;</span>P<span>&gt;</span>&nbsp;propertyInfo<span>,</span>&nbsp;P newValue<span>)</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Migs replied on Wednesday, July 03, 2013</h2><p>Thanks JonnyBee that was so helpful.&nbsp; </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

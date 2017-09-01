@@ -1,0 +1,33 @@
+<html><header><title>Multiple DataPortals - Could I and Should I?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Multiple DataPortals - Could I and Should I?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12225.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NightOwl888 posted on Sunday, November 17, 2013</h2><p>I have an ASP.NET MVC application that I am currently working on. The application should scale to be able to support web farms. In addition to plain old database access, users will have the ability to upload files. Of course this means the files will need to be uploaded to a single server&nbsp;location on a web farm and I am considering using CSLA to fulfill that need.</p>
+<p>The application will also have a search feature and I have determined that the best search available for .NET currently is Lucene.NET. However, being that it is a line-by-line port from Java (which means the API is horrid)&nbsp;and it also requires direct file system access for the indices, I am also seriously considering making a separate data portal for Lucene as well.</p>
+<p>So basically, I have this:</p>
+<table border="1" cellpadding="2" cellspacing="0">
+<tbody>
+<tr>
+<th>Type</th><th>Method</th><th>Likely to be remote?</th>
+</tr>
+<tr>
+<td>Database Access</td>
+<td>Database DataPortal</td>
+<td>Almost Never</td>
+</tr>
+<tr>
+<td>File System Access</td>
+<td>File DataPortal</td>
+<td>Always in Web Farm</td>
+</tr>
+<tr>
+<td>Lucene.NET Access</td>
+<td>Lucene DataPortal</td>
+<td>Always in Web Farm</td>
+</tr>
+</tbody>
+</table>
+<p>First of all, what CSLA types would I need to implement/override to be able to use multiple data portals in CSLA 4.x? I would like to do so using DI if possible. Note that I already use DI to inject my repositories&nbsp;and other dependencies into CSLA.</p>
+<p>Secondly, if you were me, would you just put all of this into the same DataPortal and hard code the RunLocalAttribute on the data access part since running that in a 3 physical&nbsp;tier environment is not all that useful anyway?</p>
+<p>Third, the files (mostly images)&nbsp;will need to be uploaded through CSLA. I realize I can use byte arrays for this, but is there any way to configure or extend CSLA so the files are streamed&nbsp;to a remote data portal directly&nbsp;(browser &gt; data portal)? Or is CSLA not the right tool for the job? </p>
+<p>I will need an abstraction from the file system because the application will also support APIs of CDNs to host the files. In addition, there could be additional APIs for search other than Lucene.NET, so running multiple data portals to allow these pieces&nbsp;to be swapped independently (and separate from the data access part)&nbsp;seems like it might be&nbsp;the right way to go.</p>
+<p>I am currently using MVC 4, .NET 4.5 and CSLA 4.5.20.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, November 18, 2013</h2><p>Hi,&nbsp;</p>
+<p>1. Basically you need to create your own DataPortal and have this inspect the object (Attributes?) to determine which DataPortal to call.&nbsp;</p>
+<p>2. and 3. No - CSLA is not my first choice for this purpose. CSLA use the DataPortal as a transport method to (optionally) move objects from tier to tier. There is no current support for streaming directly from the users browser (remember CSLA is runn ing in NET on the webserver) so IMO a better solution is to handle this in your web application. You must use a upload component anyway to get the file(s) to the web server and I do not see the point in using CSLA to transport the file to another server only to save it.&nbsp;</p>
+<p>4. I&#39;d rather have this implemented in a separate web service for abstraction and add extension points (MEF?) to support other CDN or search engines. Whether you want to use this webservice for data access in a CSLA object or not is entirely up to you.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

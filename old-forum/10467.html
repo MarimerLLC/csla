@@ -1,0 +1,16 @@
+<html><header><title>A problem about the  &quot;DataPortal_OnDataPortalException&quot; method</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>A problem about the  &quot;DataPortal_OnDataPortalException&quot; method</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10467.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Colorful.MrC posted on Sunday, June 26, 2011</h2><p>I&#39;m a Chinese&nbsp;programer, and my English is to bad, I hope someone can&nbsp;understand and answer&nbsp;my quesstion.</p>
+<p>quesstion:</p>
+<p>I want catch the server side exception and record it, I use &quot;DataPortal_OnDataPortalException&quot; method to catch the exception and record the exception in it, but I didn&#39;t want the client can see the real exception so I want rewrite the exception in&nbsp;&nbsp;&quot;DataPortal_OnDataPortalException&quot; method, but I found I can&#39;t rewrite the exception in&nbsp;&nbsp;&quot;DataPortal_OnDataPortalException&quot; method. Now I want to know how to deal with this problem.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>HK.Lee replied on Monday, June 27, 2011</h2><p>Hi MrC,</p>
+<p>There is CslaDataPortalExceptionInspector settings in DataPortal, which is well explained in DataAccess.pdf of Rocky&#39;s new e-book&nbsp;. With this inspector, you can trap exceptions in server side before seding them to&nbsp;client&nbsp;and log them&nbsp;somewhere like event log and also can re-write exception as you wish.</p>
+<p>The setting in webconfig is as follows;</p>
+<p>&lt;appSettings&gt; </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; &lt;add key=&quot;CslaDataPortalExceptionInspector&quot; value=&quot;MyLibrary.PortalInspector,MyLibrary&quot;/&gt; </p>
+<p>&lt;/appSettings&gt;</p>
+<p>and In your portal instector class, you can implement IDataPortalExceptionInspector interface.</p>
+<p>For further details, you had better look into e-book.</p>
+<p>HK.Lee</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Colorful.MrC replied on Monday, June 27, 2011</h2><p>Thank you very much</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

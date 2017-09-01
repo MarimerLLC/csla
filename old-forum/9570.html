@@ -1,0 +1,42 @@
+<html><header><title>Update with Entity Framework</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Update with Entity Framework</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9570.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsvideo posted on Friday, September 24, 2010</h2><p>Hello !<br />I&#39;am New to CSLA. We want to use it in a new application, and<br />so i&#39;m testing it by writing a littel sample application.</p>
+<p>We want to use Entity Framework as Data Layer.</p>
+<p>My Question is:</p>
+<p>The following Code (taken from Rolodex Sample and CSLAExtension generator)<br />does not work:</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]<br />protected override void DataPortal_Update()<br />{<br />&nbsp; using (var contextManager = Csla.Data.ObjectContextManager&lt;MyCSLAWPFAppEntities&gt;.GetManager(Database.Name))</p>
+<p>&nbsp; {<br />&nbsp;&nbsp;&nbsp; DataLayer.Kunde data = new DataLayer.Kunde();<br />&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; data.ID = ReadProperty(IDProperty);<br />&nbsp;&nbsp;&nbsp; data.EntityKey = new System.Data.EntityKey(&quot;MyCSLAWPFAppEntities.Kunden&quot;, &quot;ID&quot;, data.ID);<br />&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp; contextManager.ObjectContext.Attach(data);<br />&nbsp;&nbsp;&nbsp; //***********************************************<br />&nbsp;&nbsp;&nbsp; //Error from ObjectStateManager: Duplicate Entity<br />&nbsp;&nbsp;&nbsp; //Translated from German: &#39;an object with same Key ist already in ObjectStateManager&#39;<br />&nbsp;&nbsp;&nbsp; //***********************************************</p>
+<p>&nbsp;&nbsp;&nbsp; WritePropertiesToData(data);</p>
+<p>&nbsp;&nbsp;&nbsp; contextManager.ObjectContext.SaveChanges();<br />&nbsp; }<br />}</p>
+<p>The problem ist, by Attaching the Object to the Context, the ObjectStateManger<br />throw the exception, that he already have an object with the Entity Key.<br />This is right, because i&#39;m only Updateting the Object. But Why does it<br />Work in the Rolodex sample, what do they other ?<br />(Another Question: is it possible to get an running Rolodex WPF sample ?)</p>
+<p>Now I&#39;am using this Working Code, but is it right ?</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]<br />protected override void DataPortal_Update()<br />{<br />&nbsp; using (var contextManager = Csla.Data.ObjectContextManager&lt;MyCSLAWPFAppEntities&gt;.GetManager(Database.Name))</p>
+<p>&nbsp; {<br />&nbsp;&nbsp;&nbsp; Guid id = ReadProperty(IDProperty);<br />&nbsp;&nbsp;&nbsp; var data = (from kunde in contextManager.ObjectContext.Kunden<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where kunde.ID == id<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select kunde).Single();</p>
+<p>&nbsp;&nbsp;&nbsp; WritePropertiesToData(data);</p>
+<p>&nbsp;&nbsp;&nbsp; contextManager.ObjectContext.SaveChanges();<br />&nbsp; }<br />}</p>
+<p>Please can you help me?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>sergeyb replied on Friday, September 24, 2010</h2><p>It is likely that you have the data from fetching the object in the first place.&nbsp; I.e., the context has not been disposed between you fetching and updating the entry.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tsvideo replied on Monday, September 27, 2010</h2><div style="font-family:&#39;Calibri&#39;;color:#000000;font-size:12pt;">
+<div>Not Only the Problem with the ObjectManger,</div>
+<div>I also have a problem with &#39;EnlistTransaction&#39;, the Error is &#39;MSDTC&#39; ist not startet.</div>
+<div>&nbsp;</div>
+<div>After Reading some Posts in this Forum concerning &#39;MSDTC&#39; i get whats going wrong !</div>
+<div>&nbsp;</div>
+<div>All Data Access i&#39;m doing must wrapped into the using clause. I think this is an Error from a Beginner (me)!</div>
+<div>&nbsp;</div>
+<div>i.e.:</div>
+<div>&nbsp;&nbsp;&nbsp; public void CreateSomeKunden</div>
+<div>&nbsp;&nbsp;&nbsp; {</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //***** Solution -&gt; the next using solves my problem with &#39;MSDTC&#39; and ObjectStateManager</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var context = ObjectContextManager&lt;MyCSLAWPFAppEntities&gt;.GetManager(Database.Name))</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int i = 1; i &lt; 11; i++)</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var kunde = Kunde.NewKunde();</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kunde.Kundennr = String.Format(&quot;{0:0000000}&quot;, i);</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kunde.Suchbegriff = String.Format(&quot;Suchbegriff {0}&quot;, i);</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; kunde.Save();</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.ObjectContext.SaveChanges();</div>
+<div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</div>
+<div>&nbsp;&nbsp;&nbsp; }</div>
+<div>&nbsp;</div>
+<div>After doing this, the DataPortal_update code with Entity Key Works and Insert/Update also.</div>
+<div style="font-family:&#39;Calibri&#39;;color:#000000;font-size:12pt;"></div>
+</div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

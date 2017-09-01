@@ -1,0 +1,21 @@
+<html><header><title>CSLA 4.5 beta version 4.5.11 BCL References</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.5 beta version 4.5.11 BCL References</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11823.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NET-H24 posted on Thursday, February 07, 2013</h2><p>I tried to upgrade one of our project from CSLA 4.5.10 to 4.5.11 BETA today</p>
+<p>Downloaded the binaries from Nuget</p>
+<p><span style="color:#e2e2e2;font-family:&#39;andale mono&#39;, &#39;lucida console&#39;, monospace;font-size:20px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:30.59375px;orphans:2;text-align:start;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;background-color:#202020;float:none;">PM&gt; Install-Package CSLA-Core -Pre</span></p>
+<p>http://nuget.org/packages/CSLA-Core/</p>
+<p>The link mentioned a dependencies on <a href="http://nuget.org/packages/Microsoft.Bcl.Async/" style="color:#0071bc;outline:none;text-decoration:initial;font-family:&#39;Segoe UI&#39;, &#39;Trebuchet MS&#39;, Verdana, Helvetica, sans-serif;font-size:17px;font-style:normal;font-variant:normal;font-weight:normal;letter-spacing:normal;line-height:normal;orphans:2;text-align:left;text-indent:0px;text-transform:none;white-space:normal;widows:2;word-spacing:0px;-webkit-text-size-adjust:auto;-webkit-text-stroke-width:0px;background-color:#ffffff;">Microsoft.Bcl.Async</a></p>
+<p>So Downloaded the same and referred to my project&nbsp;</p>
+<p>But it gave an error</p>
+<p>Could not load file or assembly &#39;System.Threading.Tasks, Version=2.5.16.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a&#39; or one of its dependencies. </p>
+<p>The Version i have downloaded file <span style="text-decoration:underline;"><b>Microsoft.Threading.Tasks.dl</b>l</span> is 1.0.14.0</p>
+<p>Please let me know if I am missing something here.</p>
+<p>Note : I also tried to check the samples available after installing CSLA from the wix Installer. The SImpleApp also had the same error.</p>
+<p>&nbsp;</p>
+<p>I tried to resolve the issue and came across this </p>
+<p>http://connect.microsoft.com/VisualStudio/feedback/details/768521/system-typeloadexception-when-using-async-for-wp7-5-version-1-0-11-beta</p>
+<p>But the workaround didn&#39;t worked from me either.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>NET-H24 replied on Thursday, February 07, 2013</h2><p>My mistake, As there were several project the references were not properly provided.</p>
+<p>Used Manage Nuget Pagkages to resolve this issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 07, 2013</h2><p>I ran into this as well over the past few days. It seems like the process of upgrading from the old Microsoft async library to the new one doesn&#39;t always work smoothly.</p>
+<p>It sounds like you got lucky and could resolve it with package manager.</p>
+<p>In a couple cases I had to do some manual editing of app.config files and some other stuff. It was a PITA...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Saturday, February 09, 2013</h2><p>There are also several nasty bugs&nbsp;still not fixed&nbsp;in v1.0.14.</p>
+<p>ConfigureAwait(false) doesn&#39;t work, exception stack trace is not preserved as it&nbsp;is&nbsp;in .NET v4.5. There was more, but didn&#39;t have time to test with this version, hopefully they fixed it.</p>
+<p>- ngm</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

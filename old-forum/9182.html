@@ -1,0 +1,21 @@
+<html><header><title>Initializing a Dummy Shared Field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Initializing a Dummy Shared Field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9182.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms posted on Thursday, July 08, 2010</h2><p>Hi all friends,</p>
+<p>In the book Expert VB 2008 Business Objects, page 239, chapter 7,&nbsp; there&#39;s a section called &quot;<b><i>Initializing a Dummy Shared Field</i></b>&quot;. I read it and think I understood it.</p>
+<p>I have a doubt, when invoking the protected method <b><i>OnDeserialized(), </i></b>the book don&#39;t say anything about calling the OnDeserialized() base method.</p>
+<p> <span id="result_box" class="short_text"><span>Is not 
+it necessary to call the base method?</span></span></p>
+<p><br />Thanks in advance,</p>
+<p>L.M.Santin</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 08, 2010</h2><p>When the book was written I think the base method was empty. I don&#39;t think that is still true, and you should call the base method.</p>
+<p>However, you should know that the _forceInit trick discussed in that section doesn&#39;t appear to be reliable in .NET 4 and SL4. Microsoft appears to have added more optimizations to the JIT compiler, and it now optimizes that code completely out of the app (it seems that they detect that the code does nothing useful).</p>
+<p>So the recommended solution is to make the PropertyInfo&lt;T&gt; fields public. CSLA 3.8 and higher has code to automatically initialize the static fields for you, but on Silverlight the fields must be public for this to work (due to SL reflection limitations).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lazaroms replied on Thursday, July 08, 2010</h2><p>Thanks Rocky.</p>
+<p>I&#39;m using CSLA 3.6 and .NET 3.5, no SL, &iquest;Could I keep on using the _forceinit trick?</p>
+<p>&nbsp;</p>
+<p>In other hand, you mean changing this line:</p>
+<p>&nbsp; Private Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)(&quot;FirstName&quot;, &quot;First name&quot;))</p>
+<p>for this one:</p>
+<p>&nbsp; <i><b>Public</b></i> Shared FirstNameProperty As PropertyInfo(Of String) = RegisterProperty(New PropertyInfo(Of String)(&quot;FirstName&quot;, &quot;First name&quot;))<br /></p>
+<p>Will it make the user gain direct access to the FirstNameProperty without using <b><i>Public Property FirstName()</i></b>?</p>
+<p>&nbsp;</p>
+<p>L.M.Santin</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 08, 2010</h2><p>The CSLA auto-init feature was added in 3.8. Without that feature the _forceInit trick is the only option - but that won&#39;t be reliable with Silverlight 4 if you build your code in release mode.</p>
+<p>So your options, if you are using SL4, are to only build in debug mode and use _forceInit, or upgrade to 3.8 and make your PropertyInfo&lt;T&gt; fields public.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

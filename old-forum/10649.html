@@ -1,0 +1,59 @@
+<html><header><title>1:1, Parent, and 1:N DB insertion requirements</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>1:1, Parent, and 1:N DB insertion requirements</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10649.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>snakebyteme posted on Monday, August 29, 2011</h2><p>As I read the CSLA book, I see that the examples for Insertion of data are generic:</p>
+<p>Parent then Children&nbsp; or Children then Parent.</p>
+<p>When dealing with a relational database, this is not always the case.</p>
+<p>The correct sequence is:</p>
+<p>1:1 Children then Parent then 1:N Children</p>
+<p>Otherwise, there will be orphaned 1:1 children written to the database.</p>
+<p>To prevent having to explicitly handle each 1:1 child in the portal insert, it would be nice if there was an attribute that could be set on the 1:1 children and then a FieldManager call that would drill through the Properties with that attribute.</p>
+<p>FieldManager.Update1to1Children(Me)<br />AddMe()<br /> FieldManager.Update1toNChildren(Me)</p>
+<p>I&#39;m a little behind on CSLA (using 3.8.x). Is something like this already implemented in the current revision?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, August 29, 2011</h2><p>Hi,</p>
+<p>First, I&#39;d argue that the correct sequence should be Parent - then 1:1 or 1:N children in a transacted update/insert.&nbsp; I&#39;d prefer to have the parent create any unique id and pass it on to its children (no matter relationship) and make them know how to save themselves.</p>
+<p>Assuming that you have an EditableObject with properties that is either a EditableChild (1:1) or EditableChildList (1:N) , you should still only need to call either FieldManager.UpdateChildren or&nbsp; DataPortal.UpdateChild for each child object.</p>
+<p>FieldManager.UpdateChildren will loop through all child object properties (whether 1:1 or 1:N) and call DataPortal.UpdateChild for each property.</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">public</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">UpdateChildren</span><span style="color:#006400;">(</span><span style="color:#ff1493;font-weight:bold;">params</span>&nbsp;<span style="color:#ff0000;">object</span><span style="color:#006400;">[]</span>&nbsp;parameters<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;<span style="color:#006400;">(</span><span style="color:#000080;">var</span>&nbsp;item&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;_fieldData<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(</span>item&nbsp;<span style="color:#006400;">!</span>=&nbsp;<span style="font-weight:bold;">null</span><span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#ff0000;">object</span>&nbsp;obj = item<span style="color:#006400;">.</span>Value<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(</span>obj&nbsp;<span style="color:#008b8b;font-weight:bold;">is</span>&nbsp;IEditableBusinessObject&nbsp;<span style="color:#006400;">||</span>&nbsp;obj&nbsp;<span style="color:#008b8b;font-weight:bold;">is</span>&nbsp;IEditableCollection<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Csla<span style="color:#006400;">.</span>DataPortal<span style="color:#006400;">.</span><span style="color:#191970;font-weight:bold;">UpdateChild</span><span style="color:#006400;">(</span>obj<span style="color:#006400;">,</span>&nbsp;parameters<span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span></p>
+<p><br />And Csla.DataPortal.UpdateChild will check for object type and call the appropriate methods for </p>
+<ul>
+<li>Core.BusinessBase - inspect state and call correct method (either Child_Insert, Child_Update, Child_DeleteSelf) </li>
+<li>Core.ICommandObject - call Child_Execute method</li>
+<li>else call Child_Update method assuming it is a updateable collection or a non business type of object </li>
+</ul>
+<p>Meaning that if your child object type is Core.BusinessBase then assume 1:1 else it is a list and 1:N so just call Child_Update on the list and the list object has a default implementation of this method to process the list:</p>
+<p>From BusinessListBase:</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">virtual</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">Child_Update</span><span style="color:#006400;">(</span><span style="color:#ff1493;font-weight:bold;">params</span>&nbsp;<span style="color:#ff0000;">object</span><span style="color:#006400;">[]</span>&nbsp;parameters<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;oldRLCE =&nbsp;<span style="font-weight:bold;">this</span><span style="color:#006400;">.</span>RaiseListChangedEvents<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">this</span><span style="color:#006400;">.</span>RaiseListChangedEvents =&nbsp;<span style="color:#008b8b;font-weight:bold;">false</span><span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008080;font-weight:bold;">try</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;<span style="color:#006400;">(</span><span style="color:#000080;">var</span>&nbsp;child&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;DeletedList<span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal<span style="color:#006400;">.</span><span style="color:#191970;font-weight:bold;">UpdateChild</span><span style="color:#006400;">(</span>child<span style="color:#006400;">,</span>&nbsp;parameters<span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeletedList<span style="color:#006400;">.</span><span style="color:#191970;font-weight:bold;">Clear</span><span style="color:#006400;">();</span><br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;<span style="color:#006400;">(</span><span style="color:#000080;">var</span>&nbsp;child&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;<span style="font-weight:bold;">this</span><span style="color:#006400;">)</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;<span style="color:#006400;">(</span>child<span style="color:#006400;">.</span>IsDirty<span style="color:#006400;">)</span>&nbsp;DataPortal<span style="color:#006400;">.</span><span style="color:#191970;font-weight:bold;">UpdateChild</span><span style="color:#006400;">(</span>child<span style="color:#006400;">,</span>&nbsp;parameters<span style="color:#006400;">);</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008080;font-weight:bold;">finally</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">{</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">this</span><span style="color:#006400;">.</span>RaiseListChangedEvents = oldRLCE<span style="color:#006400;">;</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#006400;">}</span></p>
+<p><span style="color:#006400;">As long as these child updates are transacted - why care about sequence (by default)? </span></p>
+<p><span style="color:#006400;">If you need a certain sequence then use <b>DataPortal.UpdateChild</b> for those properties that must happend in a certain sequence and call <b>FieldManager.UpdateChildren</b> to process the rest. <br /></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>snakebyteme replied on Monday, August 29, 2011</h2><p>If we put your preferences aside:</p>
+<p>If the database has an identity column (auto incrementing integer ID), then you must insert 1:1 children first or they will be orphaned if the foreign key is nullable. You will get a foreign key error if it is not nullable.</p>
+<p>Generating child IDs would probably require a trip to the database for each child needing a key unless you used a GUID (who wants that?).</p>
+<p>Currently, I have to &quot;Insert 1:1 --&gt; Insert Me --&gt; Insert 1:N&quot; in the portal methods which requires explicit calls to the 1:1 children objects to add themselves to the database and then mark themselves as clean to prevent being invoked again by the FieldManager update call.</p>
+<p>I was offering a potentially elegant way to handle the generic concept without tons of explicit code in every object&#39;s portal methods.</p>
+<p>Your proposed solution is to &quot;make it work with additional code per use case&quot;, which defeats the purpose.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 29, 2011</h2><p>I don&#39;t plan on adding ORM-like features to CSLA.</p>
+<p>But you can certainly create your own attribute and extension methods for FieldManager to do what you suggest. That would require no changes to CSLA itself, and should meet your needs.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

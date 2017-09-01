@@ -1,0 +1,114 @@
+<html><header><title>Couple of Questions about Rolodex Example</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Couple of Questions about Rolodex Example</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6146.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA posted on Tuesday, January 13, 2009</h2><P>Ok, I finally got the Rolodex example to work.&nbsp; All my Wcf error messages were due to me NOT having the Web project as the StartUp project.&nbsp; Glad I finally figured that out through some blogs on this forum.</P>
+<P>Now, I am taking a small of the application I am re-architecting and am going to rewrite it utilizing Csla 3.6 and Silverlight 2.&nbsp; Need to do some by hand before CodeComplete comes out with code to generate the complete application with Silverlight.&nbsp; I always feel like I have to "dig in" and get my hands dirty and figure stuff out before utilizing a code generator.&nbsp; Need to know what is going on so when I make changes, I don't totally mess things up!</P>
+<P>I notice there are 3 files under the Rolodex.Business.Server project in the Security directory.&nbsp; Those files are also shared in the Security directory under the Rolodex.Business.Client project.&nbsp; The question I have is how did those files get to the Client project directory Security folder.&nbsp; I have added existing files and it seems to copy them there, but in the Rolodex project, they are shared.&nbsp; I like that better because if you&nbsp; modify one, it gets modified in both places.&nbsp; So, how did you get them to be shared?</P>
+<P>Also, how does the Rolodex project know to fire up the LoginControl.xaml?&nbsp; I have been looking all over the files to find out how it knows to fire up that control first, but cannot find it.</P>
+<P>Thank you,</P>
+<P>Keith</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, January 13, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You need to right-click on .Client&#8217;s project folder,
+select add existing item, browse to .Server project, select an items to add,
+click on dropdown arrow on OK button, select Add as link.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Login control is initially part of Page.Xaml, so it just shows
+up as part of initial rendering.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> CyclingFoodmanPA
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 13, 2009 3:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Couple of Questions about Rolodex Example<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Ok, I finally got the Rolodex example to work.&nbsp; All my Wcf error
+messages were due to me NOT having the Web project as the StartUp
+project.&nbsp; Glad I finally figured that out through some blogs on this
+forum.<o:p></o:p></p>
+
+<p>Now, I am taking a small of the application I am re-architecting and am
+going to rewrite it utilizing Csla 3.6 and Silverlight 2.&nbsp; Need to do some
+by hand before CodeComplete comes out with code to generate the complete
+application with Silverlight.&nbsp; I always feel like I have to &quot;dig
+in&quot; and get my hands dirty and figure stuff out before utilizing a code
+generator.&nbsp; Need to know what is going on so when I make changes, I don't
+totally mess things up!<o:p></o:p></p>
+
+<p>I notice there are 3 files under the Rolodex.Business.Server project in the
+Security directory.&nbsp; Those files are also shared in the Security directory
+under the Rolodex.Business.Client project.&nbsp; The question I have is how did
+those files get to the Client project directory Security folder.&nbsp; I have
+added existing files and it seems to copy them there, but in the Rolodex
+project, they are shared.&nbsp; I like that better because if you&nbsp; modify
+one, it gets modified in both places.&nbsp; So, how did you get them to be
+shared?<o:p></o:p></p>
+
+<p>Also, how does the Rolodex project know to fire up the
+LoginControl.xaml?&nbsp; I have been looking all over the files to find out how
+it knows to fire up that control first, but cannot find it.<o:p></o:p></p>
+
+<p>Thank you,<o:p></o:p></p>
+
+<p>Keith<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, January 13, 2009</h2><P>Thank you Sergey, you are the man!&nbsp; I was close on the LoginControl, but I didn't know about the "Add as Link" functionality.&nbsp; That is awesome.&nbsp; I always just added both before but the add as link makes sense.&nbsp; Anyway, thanks for your help.</P>
+<P>Keith</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

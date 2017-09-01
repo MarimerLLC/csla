@@ -1,0 +1,164 @@
+<html><header><title>CLSA 3.8.4 - Child Save is not marked as Saved e.g. ISNew remaining True even after database save</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CLSA 3.8.4 - Child Save is not marked as Saved e.g. ISNew remaining True even after database save</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11390.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>astellakis posted on Wednesday, May 30, 2012</h2><p>I&#39;ve recently moved across to the latest version of Code Smith (from v5)</p>
+<p>I&#39;m using the most recent CSLA templates (from Blake http://code.google.com/p/codesmith/ 3.1.zip)</p>
+<p>We&#39;re testing some new developments (vb.net/SQL Server 2008)&nbsp; and I have the following object</p>
+<p>Currency (Editable Root)</p>
+<p>CurrencyList (Editable Root List)</p>
+<p>ExchangeRate (Editable Child)</p>
+<p>ExchangeRates (Editible Child List)</p>
+<p>Each currency has a ExchangeRates child object, detailing the exchange rates for that Currency.</p>
+<p>the issue is that when editing the parent Currency object, it is correctly writing the child data to the database however it is not retaining the Exchange Rate ID assigned to it from the database.</p>
+<p>&nbsp;</p>
+<p>I have put a watch on the child object and the child is getting updated with a new ID from the Database and the IsNew is set to False - all OK so far.</p>
+<p>However the moment the process returns back to the ExchangeRates list e.g. Next Exchange Rate when inspecting the previous Exchange Rate (that we&#39;d seen saved) the ID is 0 and IsNew = True</p>
+<p>The cosequence is that we are now getting duplicate child entries being written when they are clearly being saved (again) each time the Save method is called.</p>
+<p>So in a nut-shell ;</p>
+<p>&nbsp;</p>
+<p>1. Parent and Child updates are being saved, so if I reload all the objects and just do updates then it&#39;s fine.</p>
+<p>2. new Child additions are being saved but the object marked as dirty and IsNew=True even though save is working, so when the user saves again, the child gets re-inserted thus creating duplcates.</p>
+<p>Not that this is very helpful, but the last time I was doing this sort of parent/child update was last year (version 5 of Codesmith) and it worked without a problem</p>
+<p>Not sure if the recent template changes have mucked something up or if there is a bug in the build of CSLA</p>
+<p>&nbsp;</p>
+<p>Any ideas?</p>
+<p>thanks<br />Andrew</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, May 30, 2012</h2><p>Remember that Save actually returns a new Object, so your code should look like. </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bo = bo.Save();</p>
+<p>The new object has updated status (IsNew = false) etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>astellakis replied on Wednesday, May 30, 2012</h2><p>Hi JonnyBee</p>
+<p>you&#39;re right in as much as for a ROOT object it&#39;ll expect a </p>
+<p>bo=bo.save, </p>
+<p>which again on the face of it works.&nbsp; However a Child can only seem to be updated through the </p>
+<p>&nbsp;For Each child As cExchangeRate In Me<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If child.IsDirty Then<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.Insert(cn, parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.Update(cn, parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &#39;&nbsp; child = child.Save<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</p>
+<p>&nbsp;</p>
+<p>the issue is that the CHILD objects are not getting marked as saved (IsDirty=False, IsNew=False) and the ID field is not retained either (the one the Database IS assigning)</p>
+<p>If I didn&#39;t know better it&#39;s almost doing a </p>
+<p>1.&nbsp;&nbsp; Dim tempExRate as ExchangeRate = (Child)Exchange Rate.CLONE</p>
+<p>2.&nbsp;&nbsp; (Child) Exchange Rate.Save</p>
+<p>3.. Return tempExRate - so It returns an object that appears as per the original but without the save flag or values</p>
+<p>Any other ideas?</p>
+<p>thanks </p>
+<p>&nbsp;</p>
+<p>Andrew</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, May 30, 2012</h2><p>I assume that you are using DataPortal_XYZ for Data Access. </p>
+<p>You then have support methods in DataPortal as: </p>
+<p><i><b>FieldManager.UpdateChildren(parent)</b></i>&nbsp; - will call Child_Insert/Child_Delete/Child_Update for all child objects in &quot;parent&quot; or </p>
+<p><b><i>DataPortal.UpdateChild(child)</i></b>&nbsp; - will call  Child_Insert/Child_Delete/Child_Update for all child objects in the &quot;child&quot; list. </p>
+<p>These support methods will also call MarkOld to update state automatically. </p>
+<p>Semantically the code is like: </p>
+<p>BusinessListBase:</p>
+<p>&nbsp;&nbsp;&nbsp; <span style="color:#0000ff;font-weight:bold;">protected</span>&nbsp;<span style="color:#a52a2a;">virtual</span>&nbsp;<span style="color:#ff0000;">void</span>&nbsp;<span style="color:#191970;font-weight:bold;">Child_Update</span>(<span style="color:#ff1493;font-weight:bold;">params</span>&nbsp;<span style="color:#ff0000;">object</span>[]&nbsp;parameters)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#000080;">var</span>&nbsp;oldRLCE =&nbsp;<span style="font-weight:bold;">this</span>.RaiseListChangedEvents;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">this</span>.RaiseListChangedEvents =&nbsp;<span style="color:#008b8b;font-weight:bold;">false</span>;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008080;font-weight:bold;">try</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;(<span style="color:#000080;">var</span>&nbsp;child&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;DeletedList)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal.<span style="color:#191970;font-weight:bold;">UpdateChild</span>(child,&nbsp;parameters);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DeletedList.<span style="color:#191970;font-weight:bold;">Clear</span>();<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">foreach</span>&nbsp;(<span style="color:#000080;">var</span>&nbsp;child&nbsp;<span style="color:#0000ff;font-weight:bold;">in</span>&nbsp;<span style="font-weight:bold;">this</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(child.IsDirty)&nbsp;DataPortal.<span style="color:#191970;font-weight:bold;">UpdateChild</span>(child,&nbsp;parameters);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008080;font-weight:bold;">finally</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="font-weight:bold;">this</span>.RaiseListChangedEvents = oldRLCE;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>and in Csla.Server.ChildDataPortal.Update: </p>
+<p>.......</p>
+<p><span style="color:#0000ff;font-weight:bold;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</span>&nbsp;(busObj.IsDeleted)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(!busObj.IsNew)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// tell the object to delete itself</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethod</span>(<span style="color:#0000ff;">&quot;Child_DeleteSelf&quot;</span>,&nbsp;parameters);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="font-weight:bold;">null</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.<span style="color:#191970;font-weight:bold;">MarkNew</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethodIfImplemented</span>(<span style="color:#0000ff;">&quot;MarkNew&quot;</span>);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(busObj.IsNew)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// tell the object to insert itself</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethod</span>(<span style="color:#0000ff;">&quot;Child_Insert&quot;</span>,&nbsp;parameters);<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// tell the object to update itself</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethod</span>(<span style="color:#0000ff;">&quot;Child_Update&quot;</span>,&nbsp;parameters);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="font-weight:bold;">null</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.<span style="color:#191970;font-weight:bold;">MarkOld</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethodIfImplemented</span>(<span style="color:#0000ff;">&quot;MarkOld&quot;</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span>&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(obj&nbsp;<span style="color:#008b8b;font-weight:bold;">is</span>&nbsp;CommandBase)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// tell the object to update itself</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethod</span>(<span style="color:#0000ff;">&quot;Child_Execute&quot;</span>,&nbsp;parameters);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;operation = DataPortalOperations.Execute;<br />
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// this is an updatable collection or some other</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// non-BusinessBase type of object</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#008000;">// tell the object to update itself</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethod</span>(<span style="color:#0000ff;">&quot;Child_Update&quot;</span>,&nbsp;parameters);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="font-weight:bold;">null</span>)<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.<span style="color:#191970;font-weight:bold;">MarkOld</span>();<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;font-weight:bold;">else</span><br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.<span style="color:#191970;font-weight:bold;">CallMethodIfImplemented</span>(<span style="color:#0000ff;">&quot;MarkOld&quot;</span>);<br />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>astellakis replied on Thursday, May 31, 2012</h2><p>Unless I am missing something I never have used a explicit layer</p>
+<p>&nbsp;</p>
+<p>perhaps this is a&nbsp; (my) hang-up from previous versions but I have not used anything other than the methods available to the object</p>
+<p>&nbsp;</p>
+<p>e.g. Save - on a Root object and </p>
+<p>&nbsp;for each child</p>
+<p>&nbsp;If child.isdirty then</p>
+<p>&nbsp; if child.isnew then</p>
+<p>&nbsp;&nbsp;&nbsp; child.insert(SQLConnection, parent)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; child.update (SQLCOnnection, parent)</p>
+<p>endif</p>
+<p>&nbsp;</p>
+<p>&nbsp;next</p>
+<p>As I said before this has always worked in the past. so something has changed as the child objects are no longer getting updated as saved/clean</p>
+<p>&nbsp;</p>
+<p>Any other ideas, or do I need to scrap it and find a previous version of Codesmith and associated templates as this is the only thing I&#39;ve changes, as well as the version of the CSLA dll of course</p>
+<p>&nbsp;</p>
+<p>thanks</p>
+<p><br />A</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>omar.ouhlous replied on Friday, October 12, 2012</h2><p>I came accross the same probleem:</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> queue = </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">MyQueue</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.NewMyQueue();<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>
+<p>queue.Aanmaakdatum = </p>
+</p>
+</font></font></span><font face="Consolas" size="2">
+<p>
+<p>&nbsp;</p>
+</p>
+</font></span></p>
+<p>
+<p><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">SmartDate.Now</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>queue.ClientNumber = </p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;123456789&quot;</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> item = queue.AddNewMyQueueItem();</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">queue = queue.Save();</span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">I see now that child object item is new and that the id has not been set. Ay suggestions? This probleem doesn&#39;t occure in CSLA version 2.1.</span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

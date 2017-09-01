@@ -1,0 +1,301 @@
+<html><header><title>Using Factory Methods with Polymorphic Children In Collections</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Factory Methods with Polymorphic Children In Collections</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/846.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Tuesday, August 08, 2006</h2><P>I've read Rocky's post on using polymorphic children in collections, and started working with that idea, but I'm a bit confused about how to add items to the collection.&nbsp; Using Rocky's&nbsp;example....</P>
+<P class=Code><FONT face="Lucida Console" size=2>Public Interface ILineItem</FONT></P>
+<P class=Code><FONT size=2><FONT face="Lucida Console"><SPAN>&nbsp; </SPAN>Inherits Csla.Core.IEditableBusinessObject</FONT></FONT></P>
+<P class=Code><o:p><FONT face="Lucida Console" size=2>&nbsp;</FONT></o:p></P>
+<P class=Code><FONT face="Lucida Console" size=2>End Interface</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2></FONT>&nbsp;</P>
+<P class=Code><FONT face="Lucida Console" size=2>&lt;Serializable()&gt; _</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2>Public Class TaxableItem</FONT></P>
+<P class=Code><FONT size=2><FONT face="Lucida Console"><SPAN>&nbsp; </SPAN>Inherits Csla.BusinessBase(Of TaxableItem)</FONT></FONT></P>
+<P class=Code><o:p><FONT face="Lucida Console" size=2>&nbsp;</FONT></o:p></P>
+<P class=Code><FONT size=2><FONT face="Lucida Console"><SPAN>&nbsp; </SPAN>Implements ILineItem</FONT></FONT></P>
+<P class=Code><o:p><FONT face="Lucida Console" size=2>&nbsp;</FONT></o:p></P>
+<P class=Code><FONT size=2><FONT face="Lucida Console"><SPAN>&nbsp; </SPAN>' ...</FONT></FONT></P>
+<P class=Code><o:p><FONT face="Lucida Console" size=2>&nbsp;</FONT></o:p></P>
+<P class=Code><FONT face="Lucida Console" size=2>End Class</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2></FONT>&nbsp;</P>
+<P class=Code><FONT face="Lucida Console" size=2>&lt;Serializable()&gt; _</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2>Public Class LineItems</FONT></P>
+<P class=Code><FONT size=2><FONT face="Lucida Console"><SPAN>&nbsp; </SPAN>Inherits Csla.BusinessListBase(Of LineItems, ILineItem)</FONT></FONT></P>
+<P class=Code><o:p><FONT face="Lucida Console" size=2>&nbsp;</FONT></o:p></P>
+<P class=Code><FONT size=2><FONT face="Lucida Console"><SPAN>&nbsp; </SPAN>' ...</FONT></FONT></P>
+<P class=Code><o:p><FONT face="Lucida Console" size=2>&nbsp;</FONT></o:p></P>
+<P class=Code><FONT face="Lucida Console" size=2>End Class</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2></FONT>&nbsp;</P>
+<P class=Code><FONT face="Lucida Console" size=2>What should the add method look like for the "LineItems" class.&nbsp; My first thought was to overload the AddNew method on the LineItems class to take in a variable with the taxableitemtype.&nbsp; Or is it better to make a public factory method for TaxableItem, so they can be created first then added to the collection?</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2></FONT>&nbsp;</P>
+<P class=Code><FONT face="Lucida Console" size=2>Thoughts?</FONT></P>
+<P class=Code><FONT face="Lucida Console" size=2></FONT>&nbsp;</P>
+<P class=Code><FONT face="Lucida Console" size=2>Jeff</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 08, 2006</h2>There are (at least) two schools of thought as to how child objects should be added to collections. (note that we're not talking about data fetching here - that's a different story)<br><br>One is that you should create the child object first, then pass it to an Add() method. That works fine, but does mean that your child class needs to expose a public factory method so the UI code can create the child.<br><br>The other approach is that your collection should have AddBlah() methods that accept enough parameters that the collection can create and add the new child - possibly returning the new child as a result of the method. I favor this approach, largely because it abstracts the process from the UI. In the case of polymorphic children, the UI just calls the right AddBlah() overload, and the right kind of child object is created.<br><br>Either way, this is a classic case where you likely want a factory method outside of ANY of the child classes. You might call it LineItemFactory, with a set of methods like NewLineItem() - with overloads to get the right data for each type of line item out there. This NewLineItem() factory method is what makes the decision about which type of child object to create - ultimately calling a Friend/internal factory method in the child class itself to do the creation (at least that's my preference).<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>longbridge replied on Thursday, August 10, 2006</h2>I&nbsp;am a newbie to Csla.net, and I am getting some difficulties in the Polymorphic object fetching in collection.&nbsp;Could somebody please show how to write a neat Fetch(SafeDataReader dr) function&nbsp;by Rocky's&nbsp;LineItems example? Thanks a lot.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Thursday, August 10, 2006</h2><P>Here is an example of what I'm using.&nbsp; It is a collection of questions, so for example....</P>
+<P>IQuestion &lt;- AbstractQuestion &lt;- MultipleChoiceWithComment</P><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> SafeDataReader</FONT><FONT size=2>)</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> typeID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>While</FONT><FONT size=2> dr.Read()</P>
+<P>typeID = dr.GetInt32(</FONT><FONT color=#800000 size=2>"QuestionTypeID"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> typeID = QuestionTypeEnum.MultipleChoiceWithComments </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(MultipleChoiceQuestionWithComment.GetMultipleChoiceQuestionWithComment(dr))</P>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> typeID = QuestionTypeEnum.MultipleChoiceNoComments </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(MultipleChoiceQuestion.GetMultipleChoiceQuestion(dr))</P>
+<P></FONT><FONT color=#0000ff size=2>ElseIf</FONT><FONT size=2> typeID = QuestionTypeEnum.Comment </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(CommentQuestion.GetCommentQuestion(dr))</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>longbridge replied on Saturday, August 12, 2006</h2><P>It really helps. Thanks a lot.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Xabatcha replied on Friday, February 16, 2007</h2>Thanx for an example....it helped. <br><br>But How did you solve the update method in Data Access region of&nbsp; child list. As mentioned Rocky, my childs has implement IEditableBusinessObject, which they do through my Interface IToken. Looks like this X509Token &gt; BusinessBase, IToken where IToken &gt; IEditableBusinessObject.<br>Back to the child list...in Update method Update, Insert, DeleteSelft methods of child are called. But my Childlist works only with interface IToken. There are not those methods available. <br><br>So my Qs follows&gt;<br>1. Do I need change type of item into specific type in every loop before calling item methods( line 04,09,11)?<br>2. Am I missing some other Interface from csla?<br>3. Am I completly wrong?<br><br>Bye bye X.<br><br>Part of my Child list ......<br>01&nbsp; internal void Update(IIdentity parent, DbTransaction transaction) {<br>02&nbsp; &nbsp; &nbsp; RaiseListChangedEvents = false;<br>03&nbsp; &nbsp; &nbsp; foreach (IToken item in DeletedList)<br>04 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.<font color="#ff0000">DeleteSelf</font>(transaction);<br>05 &nbsp; &nbsp;&nbsp; DeletedList.Clear();<br>06<br>07 &nbsp; &nbsp;&nbsp; foreach (IToken item in this)<br>08 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.IsNew)<br>09 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.<font color="#ff0000">Insert</font>(parent, transaction);<br>10 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>11 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.<font color="#ff0000">Update</font>(transaction);<br>12 &nbsp; &nbsp;&nbsp; RaiseListChangedEvents = true;<br>13&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CSLA doesn&#8217;t define how a root or parent object talks to
+its children &#8211; that&#8217;s entirely up to you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You have just a few options:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use a known base type that implements internal methods<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use a known interface type that implements public methods
+(public through the interface anyway)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Use reflection (late binding) to invoke the methods by name<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Which you choose is really up to you and your needs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Number 1 is difficult due to the generic base class issue. There
+are days I regret making the CSLA base classes generic&#8230; However, it would
+be ideal, because it offers high performance and doesn&#8217;t add extra public
+members to your interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Number 2 is unfortunate, because it opens the door for the UI
+developer to &#8220;cheat&#8221; and use that interface. It muddies your object&#8217;s
+API in a way that can only be solved by manual code review. But this is a high
+performance option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Number 3 has a negative performance impact and prevents the
+compiler from finding simple typo errors in method names. However, this isn&#8217;t
+a bad option in many cases, because it avoids both the generic base class issue
+and eliminates the need to add public methods to your objects interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Xabatcha
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 16, 2007 8:27 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Using Factory Methods with Polymorphic Children
+In Collections<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanx for an example....it helped. <br>
+<br>
+But How did you solve the update method in Data Access region of&nbsp; child
+list. As mentioned Rocky, my childs has implement IEditableBusinessObject,
+which they do through my Interface IToken. Looks like this X509Token &gt;
+BusinessBase, IToken where IToken &gt; IEditableBusinessObject.<br>
+Back to the child list...in Update method Update, Insert, DeleteSelft methods
+of child are called. But my Childlist works only with interface IToken. There
+are not those methods available. <br>
+<br>
+So my Qs follows&gt;<br>
+1. Do I need change type of item into specific type in every loop before
+calling item methods( line 04,09,11)?<br>
+2. Am I missing some other Interface from csla?<br>
+3. Am I completly wrong?<br>
+<br>
+Bye bye X.<br>
+<br>
+Part of my Child list ......<br>
+01&nbsp; internal void Update(IIdentity parent, DbTransaction transaction) {<br>
+02&nbsp; &nbsp; &nbsp; RaiseListChangedEvents = false;<br>
+03&nbsp; &nbsp; &nbsp; foreach (IToken item in D eletedList)<br>
+04 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.<span>DeleteSelf</span>(transaction);<br>
+05 &nbsp; &nbsp;&nbsp; DeletedList.Clear();<br>
+06<br>
+07 &nbsp; &nbsp;&nbsp; foreach (IToken item in this)<br>
+08 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.IsNew)<br>
+09 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.<span>Insert</span>(parent, transaction);<br>
+10 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>
+11 &nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.<span>Update</span>(transaction);<br>
+12 &nbsp; &nbsp;&nbsp; RaiseListChangedEvents = true;<br>
+13&nbsp; }<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, February 16, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Number 2 is unfortunate, because it opens the door for the UI
+developer to “cheat” and use that interface. It muddies your object’s
+API in a way that can only be solved by manual code review. But this is a high
+performance option.</div></BLOCKQUOTE><br><br>Could the problem be solved by making the interface internal, and only implementing the interface explicitly?&nbsp; I've done this where I needed an interface for internal use but didn't want the UI to see it.&nbsp; I don't see why that couldn't be done here.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Good point Andy – that’ll teach me to answer questions before I’ve
+had my morning coffee </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 16, 2007 10:39 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Using Factory Methods with Polymorphic
+Children In Collections<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Number 2 is unfortunate, because it opens the door for the
+UI developer to â€œcheatâ€ and use that interface. It muddies your objectâ€™s
+API in a way that can only be solved by manual code review. But this is a high
+performance option.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+Could the problem be solved by making the interface internal, and only
+implementing the interface explicitly?&nbsp; I've done this where I needed an
+interface for internal use but didn't want the UI to see it.&nbsp; I don't see
+why that couldn't be done here.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emmanuel replied on Monday, December 03, 2007</h2><P>Hi Rocky and Andy,</P>
+<P>&nbsp;</P>
+<P>I am new to CSLA.NET and actually new to C# and OOP.</P>
+<P>By the way Rocky, I just want to say that your books and framework are making my learning of </P>
+<P>OOP and C# so much more enriching and enjoyable.</P>
+<P>&nbsp;</P>
+<P>Having followed the advice in this thread carefully, I still do not see how you can make the interface </P>
+<P>for a collection of polymorphic children internal.</P>
+<P>It seems to me that in order to achieve a collection with polymorphic child objects as described in:</P>
+<P><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a">http://www.lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a</A></P>
+<P>&nbsp;</P>
+<P>we must define a public interface (e.g. public interface ILineItem) which inherits from</P>
+<P>Csla.Core.IEditableBusinessObject.</P>
+<P>&nbsp;</P>
+<P>This seems to force us to declare void Update, void Insert and void DeleteSelf in the said public interface so that each child must implement these methods as public (as opposed to internal).</P>
+<P>Can one of you please explain explicitly how to avoid having Update, Insert, and DeleteSelf as public methods (thus manipulatable by the UI) coming from the public interface?</P>
+<P>In other words, can you please explain to me explicitly by example why Andy really does have a point?</P>
+<P>&nbsp;</P>
+<P>Thank you,</P>
+<P>Emmanuel</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 04, 2007</h2>well you're starting off wrong; you create an internal interface, like this:<br><br><font color="#0000ff">internal interface</font> <font color="#006400">IMyInterface </font>{<br>&nbsp;&nbsp; <font color="#0000ff">string </font>MyProperty { <font color="#0000ff">get</font>; <font color="#0000ff">set</font>; }<br>}<br><br>Then you implement the interface explicitly:<br><br><font color="#0000ff">public sealed class</font> <font color="#008000"><font color="#006400">MyBo</font> </font>: <font color="#006400">BusinessBase</font>&lt;<font color="#006400">MyBo</font>&gt;, <font color="#006400">IMyInterface </font>{<br>&nbsp;&nbsp; <font color="#0000ff">string </font><font color="#006400">IMyInterface</font>.MyProperty {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">get </font>{ <font color="#0000ff">return </font>myProperty; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">set </font>{ myProperty = <font color="#0000ff">value</font>; }<br>&nbsp;&nbsp; }<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emmanuel replied on Tuesday, December 04, 2007</h2><P>Hi Andy,</P>
+<P>Thank you very much for your quick reply.</P>
+<P>I still can't seem to make the interface IMyInterface internal! </P>
+<P>Did you leave out the fact that IMyInterface must inherit from Csla.Core.IEditableBusinessObject on purpose?</P>
+<P>Here's what I have following the scheme in the first post of this thread:</P>
+<P>namespace Test.Library</P>
+<P>{<BR>&nbsp;&nbsp; internal interface ILineItem : Csla.Core.IEditableBusinessObject {}<BR>}</P>
+<P>namespace Test.Library<BR>{<BR>&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp; public sealed class TaxableItem : BusinessBase&lt;TaxableItem&gt;,ILineItem<BR>&nbsp;&nbsp;&nbsp; { // ... }<BR>}</P>
+<P>namespace Test.Library<BR>{<BR>&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp; public sealed class DiscountableItem : BusinessBase&lt;DiscountableItem&gt;,ILineItem<BR>&nbsp;&nbsp;&nbsp; { // ... }<BR>}</P>
+<P>namespace Test.Library<BR>{<BR>&nbsp;&nbsp;&nbsp; [Serializable()]<BR>&nbsp;&nbsp;&nbsp; public class LineItems : BusinessListBase&lt;LineItems, ILineItem&gt;<BR>&nbsp;&nbsp;&nbsp; { // ... }<BR>}</P>
+<P>When I try to compile this I get:</P>
+<P>Error 1 Inconsistent accessibility: base class 'Csla.BusinessListBase&lt;Test.Library.LineItems,Test.Library.ILineItem&gt;' is less accessible than class 'Test.Library.LineItems'</P>
+<P>This is before we even try to implement the interface explicitly.</P>
+<P>I believe this is because the interface ILineItem must inherit from the interface</P>
+<P>Csla.Core.IEditableBusinessObject (as explained by Rocky) which is **public**.</P>
+<P><BR>This, as I understand, implies that the interface ILineItem must be public in the first place</P>
+<P>which is exactly what we are trying to avoid!</P>
+<P><BR>What am I not getting?</P>
+<P><BR>Thank you,<BR>Emmanuel.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 04, 2007</h2>Sorry, I forgot.&nbsp; Yes, the interface must inherit from IEditableBusinessObject as well.&nbsp; But you only need to implment your interface explicitly.<br><br>Now if you try to use that in your definition of the BusinessListBase, it will have to be public.&nbsp; I hit the same problem.&nbsp; I have an ILineItem interface, which is public and contains only things the UI should see.<br><br>Then any internal only members are defined in an internal interface, ILineItemInternal, which inherits ILineItem.<br><br>If you go this route, you'll need some casting.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>Updating a Child BusinessListBase of a Child BusinessBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating a Child BusinessListBase of a Child BusinessBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Tuesday, April 06, 2010</h2><p>I have a child businessListBase that I&#39;m invoking from it&#39;s parent BusinessBase. The BusinessBase is a child of another BusinessBase.</p>
+<p>I invoke the child list&#39;s update method during the update of it&#39;s parent which is updated during the Save of it&#39;s parent.</p>
+<p>I invoke it with this line</p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortal</span></span><span style="font-size:x-small;">.UpdateChild(ReadProperty(LineItemsProperty), </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">);</span></p>
+<p><span style="font-size:x-small;">This fires the update method of the child list class:</span></p>
+<p>
+<p><span style="font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void</span></span><span style="font-size:x-small;"> Child_Update(</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">ChildListParent</span></span><span style="font-size:x-small;"> parent)</span></span></p>
+</p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">{<span style="font-size:x-small;"><span style="font-size:x-small;"> <span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;<span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DataPortal</span></span><span style="font-size:x-small;">.UpdateChild(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">, parent);</span></p>
+<span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span>
+<p>
+<p>&nbsp;}</p>
+</p>
+<p>
+<p>
+<p>This is where my problem lies. I&#39;m trying to pass the parent of the child list off to it&#39;s children as a parameter. This is how I&#39;ve always done this with BusinessListBase parameters, but with this child-child relationship, it seems to cause a problem, because the DataPortal.Update call endlessly calls this method. </p>
+<p>How can I pass this parent&#39;s parent off as a parameter and not cause this issue?</p>
+</p>
+</p>
+</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">&nbsp;&nbsp;&nbsp; DataPortal</span></span><span style="font-size:x-small;">.UpdateChild(</span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">, parent); </span></span></span><span style="font-size:x-small;">
+<p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">&nbsp;&nbsp;&nbsp; </span></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BTW, the BusinessListBase is getting fetched/created through the DataPortal.FetchChild and DataPortal.CreateChild methods. I would assume this is correct, ne?</span></span></p>
+</p>
+</span></span></span></span></span>
+<p>&nbsp;</p>
+</span></span></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

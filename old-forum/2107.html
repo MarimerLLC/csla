@@ -1,0 +1,27 @@
+<html><header><title>Csla beginner</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla beginner</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2107.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NoviceCoder posted on Wednesday, January 10, 2007</h2><P>Hi,</P>
+<P>I'm new to the Csla framework, and well, to object oriented programming in general.</P>
+<P>First off let me say that it is a really impressive framework indeed. Thanks for sharing it with us Rocky and all the other contributors. </P>
+<P>I have this question that that I've got several ways to solve it, but not sure which one would be preferable:</P>
+<P>I have several database tables that relate to type tables, for example Customer and Document tables </P>
+<P>that relate to CustomerType and DocumentType tables (I like calling these type tables metadata tables because they are static, and never change). </P>
+<P>Now, let's&nbsp;use the customer example. I know that I can differentiate the customer types by either </P>
+<P>using composition or inheritance. So in the&nbsp;case of inheritance for instance, I would have an abstract</P>
+<P>base class like CustomerBase that other customer classes would subclass, like Private, Store, Company&nbsp;etc.</P>
+<P>whereas, by using composition, I would have an instance of a CustomerType (using Enum perhaps?)</P>
+<P>exposed by a property, indicating the customer's type. Somehow using inheritance might be a little bit more flexible i think because I can have the base class have the common</P>
+<P>fields and properties and add the relevant stuff in the derived classes, for example the ContactName</P>
+<P>field might be irrelevant for a private customer. In the end of the day, this might not add anything to the</P>
+<P>solution because they (the base class and the derived ones) are all persisted to the same single table</P>
+<P>in the database. Just thought that it might be nice to show to the user only the relevant options in the UI, depending on the type of customer/documnt etc that he chooses.</P>
+<P>Can you please help with with this? I just want to be sure that I make the right decision here.</P>
+<P>P.S</P>
+<P>Is there any advantage of using architectures like MVC/MVP? I know that the business objects in</P>
+<P>the Csla framework do a perfect job of&nbsp;encapsulating their logic within them, leaving the UI layer</P>
+<P>to just calling methods on them. This is the kind of seperation that these solutons try to achive, isn't it? Or am I missing something here?</P>
+<P>Thank you so much for your time.</P>
+<P>Ben</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dodo replied on Thursday, January 11, 2007</h2>Hi Ben,<br><br>I am not an expert myself but from what you have described, i would go for inheritance. I have something similar for my app: <br><blockquote>Contact object<br>Candidate : Contact<br></blockquote>A Candidate <b>is a </b>Contact within my application. Basically, follow the OOP pricinples. <b>"Is a"</b> for inheritance and <b>"Composed of" </b>for composition....something along those lines. Again as i said i am no expert.<br><br>For info on MVC/MVP just do a search on the forums and you'll find somethin.<br><br>Hope this helps.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NoviceCoder replied on Thursday, January 11, 2007</h2><P>I see.</P>
+<P>Do you also have in the databse a Contact table and a related table table, like ContactType or something similar, as I do?</P>
+<P>Thank you&nbsp;for your time.</P>
+<P>Ben</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dodo replied on Thursday, January 11, 2007</h2>Yes.<br><br>I also have a lookup table for ContactTypes which can be customized by the user e.g. you coluld have a Client Contact, Client Sales Contact etc.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NoviceCoder replied on Thursday, January 11, 2007</h2><P>What if I make a CustomerType class with a &nbsp;CustomerCollection, where each entry will reference a </P>
+<P>different customer type, just like in the database? Is it a flawed design? well, sounds rather too db-ish to me. </P>
+<P>Oh, this whole db/oo thing is givin me a headache&nbsp; :(</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

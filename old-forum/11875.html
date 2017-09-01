@@ -1,0 +1,13 @@
+<html><header><title>Entity Framework 5?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Entity Framework 5?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11875.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brad Rem posted on Saturday, March 09, 2013</h2><p>I&#39;ve been playing with a test project I&#39;ve created that is very similar to the CSLA sample, EncapsulatedInvoke. I&#39;m using CSLA 4.5.10 and Entity Framework 5 and .NET 4.5.&nbsp; When I run unit test against the EF data access library I get an exception that basically says:</p>
+<p>Could not load file or assembly &#39;EntityFramework, Version=4.3.1.0</p>
+<p>Is there something special about CSLA that it looks for the older version of EF?&nbsp;Or, is it something that I&#39;m not doing properly that&#39;s not causing the proper version of EF to be linked?</p>
+<p>For giggles, I just downloaded the latest CSLA beta 4.5.14, but it appears as if this version is missing DbContextManager, so I&#39;m unable to even compile to test it with the beta.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, March 10, 2013</h2><p>in the latest 4.5.14 the EF dependencies is moved tto separate assemblies:</p>
+<p>
+<ul>
+<li>Csla.Data.EF4 &nbsp;</li>
+<li>Csla.Data.EF5</li>
+</ul>
+</p>
+<p>In total 4 assemblies, 2 for NET4 and 2 for NET45. &nbsp;This enables you to use the EF version you want.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brad Rem replied on Monday, March 11, 2013</h2><p>Thanks, Jonny, that&#39;s precisly the direction I needed!</p>
+<p>Once I did a NuGet of the CSLA-EF5 package and included the using reference to CSLA.Data.EF5 everything is working for me.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

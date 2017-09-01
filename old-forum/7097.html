@@ -1,0 +1,50 @@
+<html><header><title>Problem with CslaActionExtender when first saving doesn't succeed.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with CslaActionExtender when first saving doesn't succeed.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7097.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Saturday, June 13, 2009</h2><P>When using the CslaActionExtender&nbsp; there exists the following problem.</P>
+<P>Take the following actions:</P>
+<P>Show a form to edit for example a customer object.</P>
+<P>Stop SQL Server to simulate an error.</P>
+<P>Click on the OK button of the Customer form.</P>
+<P>An error will be raised to say that no connection to SQL Server can be done.</P>
+<P>Until now the behavior is as expected.</P>
+<P>Start SQL Server again.</P>
+<P>Try again to click on the OK button.</P>
+<P>We get the following error:</P>
+<P>System.InvalidCastException: The underlying data source does not cast to a CSLA BusinessBase object</P>
+<P>This behavior is not as expected because the save should work now.</P>
+<P>&nbsp;</P>
+<P>The problem is that the data source is empty. In case of an error you should call _bindingSourceTree.Bind(savableObject) no matter what PostSaveAction you have. Even in the case AndClose you should rebind the datasource so the user can try again&nbsp;to save the object.</P>
+<P>Below follows the code of CslaActionExtender&nbsp; with an added line of code which solves the problem in my opinion.</P>
+<P>Lhotka : can you have a look at this suggestion?</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> OnClick(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, System.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</FONT></FONT><FONT size=2> e)</FONT></P>
+<P><FONT size=2>.....</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>try</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P>savableObject = savableObject.Save() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> Csla.Core.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ISavable</FONT></FONT><FONT size=2>;</P></FONT>
+<P><FONT size=2>...</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2><FONT color=#0000ff><FONT color=#0000ff>catch</FONT></FONT> (<FONT color=#2b91af><FONT color=#2b91af>Exception</FONT></FONT> ex)</FONT></P>
+<P><FONT size=2>{</FONT></P><FONT size=2><FONT size=2>
+<P>_bindingSourceTree.Bind(savableObject); </FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//by adding this line of code it solves the problem</P></FONT></FONT></FONT>
+<P><FONT size=2>OnErrorEncountered(<FONT color=#0000ff><FONT color=#0000ff>new</FONT></FONT> <FONT color=#2b91af><FONT color=#2b91af>ErrorEncounteredEventArgs</FONT></FONT>(props.CommandName, <FONT color=#0000ff><FONT color=#0000ff>new</FONT></FONT> <FONT color=#2b91af><FONT color=#2b91af>ObjectSaveException</FONT></FONT>(ex)));</FONT></P>
+<P><FONT size=2>raiseClicked = <FONT color=#0000ff><FONT color=#0000ff>false</FONT></FONT>;</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, June 18, 2009</h2>In the ProjectTracker example the CslaActionExtender is not used. It is using helper methods. But the same problem exists.<br>
+So in place of calling RebindUI(true, false) it is better to call RebindUI(true, true).<br>
+See code below<br>
+<br>
+&nbsp;&nbsp; private void OKButton_Click(object sender, EventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (StatusBusy busy = new StatusBusy("Saving..."))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //RebindUI(true, false);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //In case of
+failure we have to rebind ==&gt; so above line is put in comment and
+next line is put in place<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RebindUI(true, true);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Close();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; ...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Tuesday, June 23, 2009</h2>Is it clear what I try to explain?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 23, 2009</h2><P>I think so. I've added an entry in the bug tracker</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=426">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=426</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, March 26, 2010</h2><p>Any date foreseen to fix this bug?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 26, 2010</h2><p>I know that Miguel has been doing a lot of travel over the past several months and has little or no time to work on CSLA. In these economic times paying work comes before volunteer efforts for most people.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fordeath21 replied on Monday, March 17, 2014</h2><p>same question in csla 3.8.4.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, March 19, 2014</h2><p>HI</p>
+<p>There was a new release of CslaContrib that fixed all known bugs on CslaActionExtender.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

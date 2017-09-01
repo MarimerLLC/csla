@@ -1,0 +1,167 @@
+<html><header><title>Authorization Rules Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization Rules Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5717.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman posted on Friday, October 31, 2008</h2><P><SPAN>Can I have a field on a BusinessBase that is locked for the user but allows the object itself to update?<SPAN>&nbsp; </SPAN>For instance, I have a field this is calculated based on the values of 2 other fields. <SPAN>&nbsp;So Field3 = Field 1 + Field2.&nbsp; </SPAN>I don’t want the user to be able to update Field 3 but I want logic in the BusinessBase to update the field. <SPAN>&nbsp;</SPAN>If I use AuthorizationRules.AllowWrite to prevent the user from modifying the field, I get an error saying my logic cannot update it either.<SPAN>&nbsp; </SPAN>Is there an easy way around this?<SPAN>&nbsp; Thanks.</SPAN></SPAN></P>
+<P><SPAN></SPAN><SPAN>Jonathan</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 31, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would declare this property as read-only property and just
+update backing field for it and raise PropertyChanged event at that time to
+signal UI that a change occurred.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jfreeman
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 31, 2008 4:23 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Authorization Rules Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Can I have a field on a BusinessBase that is locked for the user but allows
+the object itself to update?&nbsp; For instance, I have a field this is
+calculated based on the values of 2 other fields. &nbsp;So Field3 = Field 1 +
+Field2.&nbsp; I don???t want the user to be able to update Field 3 but I want
+logic in the BusinessBase to update the field. &nbsp;If I use
+AuthorizationRules.AllowWrite to prevent the user from modifying the field, I
+get an error saying my logic cannot update it either.&nbsp; Is there an easy
+way around this?&nbsp; Thanks.<o:p></o:p></p>
+
+<p>Jonathan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jfreeman replied on Friday, October 31, 2008</h2><P>Right now I using managed fields.&nbsp; Is there a way to handle it with them or do I have to using backing fields to make it work?&nbsp; Thanks.</P>
+<P>Jonathan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 31, 2008</h2>LoadProperty will skip security checks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, October 31, 2008</h2><P>If you display the field with WinForms databinding, however, I'm not sure if LoadProperty will update your property being displayed though. I think that's why Sergey mentioned the PropertyHasChanged. </P>
+<P>But I've been doing WebForms so I may not be remembering correctly. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, October 31, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I guess, I will elaborate on my suggestion:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public int Field3<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Get {return GetProperty(Field1Property) + GetProperty(Field2Proprty)}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Public int Field1<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Set<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>SetProperty(Field1Property, value); OnPropertyChanged(&#8220;Field3&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Same for Field2<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Something like this.&nbsp; This way you do not need to worry
+about maintaining Field3 &#8211; it is always in-memory computation only.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 31, 2008 4:46 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Authorization Rules Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>LoadProperty will skip security checks.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, October 31, 2008</h2>Or you could have a private setter? </div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,37 @@
+<html><header><title>Validation (newbie)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation (newbie)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1664.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Thursday, November 02, 2006</h2><P><FONT face=Arial size=2>Hi</FONT></P>
+<P><FONT face=Arial size=2><STRONG>Version 1.53</STRONG></FONT></P>
+<P><FONT face=Arial size=2>I do this in the create part of my BO</FONT></P><FONT face=Arial><FONT color=#0000ff>
+<P><FONT size=2>Protected</FONT></FONT><FONT size=2> <FONT color=#0000ff>Overrides</FONT> <FONT color=#0000ff>Sub</FONT> DataPortal_Create(<FONT color=#0000ff>ByVal</FONT> Criteria <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Object</FONT>)</FONT></P>
+<P><FONT color=#008000 size=2>'Create new object with defaults stored in the Database</FONT></P>
+<P><FONT size=2>BrokenRules.Assert("Mandatory Field", "Last Name must be filled.", "Last Name", (Len(mLastName) = 0))</FONT></P>
+<P><FONT size=2>BrokenRules.Assert("Mandatory Field", "First Name must be filled.", "First Name", (Len(mFirstName) = 0))</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</P></FONT></FONT></FONT>
+<P><FONT face=Arial size=2>On my win form in the Save button I do this:</FONT></P><FONT size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mMainDetails.IsSavable </FONT><FONT color=#0000ff size=2>Then</FONT><FONT size=2> </FONT></P>
+<P><FONT size=2>mMainDetails.ApplyEdit()</P>
+<P>mMainDetails = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(mMainDetails.Save, cMainDetails)</P>
+<P>BindFields()</P>
+<P>Cursor.Current = Cursors.Default</P>
+<P></FONT><FONT color=#0000ff size=2>Else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> br </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CSLA.BrokenRules.Rule</P>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> br </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> mMainDetails.BrokenRulesCollection</P></FONT><FONT size=2>
+<P>MessageBox.Show(br.Description &amp; vbCrLf &amp; br.Rule, br.Property &amp; ": Cannot Save because..")</P>
+<P></FONT><FONT color=#0000ff size=2>Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</FONT></P>
+<P><FONT color=#0000ff>1) &nbsp;Is this a correct implementation?</FONT></P>
+<P><FONT color=#0000ff size=2>2) The problem is only one of the rules is picked up, ie it does not loop through all the broken rules collection so if say the user completes the first name after intial error message displayed (as first and last name have not been filled)&nbsp;then presses save button then the record is saved and the second (last name rule is ommitted).</FONT></P>
+<P><FONT color=#0000ff>Any takers - I am very new to CSLA so as much help as possible is appreciated.</FONT></P>
+<P><FONT color=#0000ff>Does anyone have a small sample/real project that they have put together that encompasses CSLA (I know rocky has one but I'm looking for a 'live' scenario) for me (and other newbie's) to learn from. (version 1.53 and 2.1??)</FONT></P>
+<P><FONT color=#0000ff>Many thanks in advance for the groups help.</FONT></P>
+<P><FONT color=#0000ff>Richard</FONT></P>
+<P><FONT color=#0000ff></FONT>&nbsp;</P>
+<P><FONT color=#0000ff></FONT>&nbsp;</P>
+<P><FONT color=#0000ff></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Thursday, November 02, 2006</h2><P>Take a look at the links provided, theey&nbsp;are&nbsp;excellent resources to get acquinted with Csla</P>
+<P>CSLA 1.x</P>
+<P><U><FONT color=#810081><A href="http://www.primos.com.au/primos/Portals/0/Tech%20articles/CSLA%20WIIFM/What%20could%20CSLA%20do%20for%20me.html">http://www.primos.com.au/primos/Portals/0/Tech%20articles/CSLA%20WIIFM/What%20could%20CSLA%20do%20for%20me.html</FONT></U></A></P>
+<P>CSLA 2.x</P>
+<P><A href="http://www.primos.com.au/primos/Articles/CSLAversion2whatsinitforme/tabid/67/Default.aspx">http://www.primos.com.au/primos/Articles/CSLAversion2whatsinitforme/tabid/67/Default.aspx</A></P>
+<P><A href="http://www.onelittlevictory.com/">http://www.onelittlevictory.com/</A></P>
+<P>Hope this helps.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

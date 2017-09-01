@@ -1,0 +1,93 @@
+<html><header><title>Complex Object Graph Serialization/NotUndoable Workaround Solution</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Complex Object Graph Serialization/NotUndoable Workaround Solution</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10736.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber posted on Tuesday, October 04, 2011</h2><p>Hi</p>
+<p>I have a relatively complex&nbsp;CSLA 4 object graph and would like to know if my solution around the BeginEdit / Serialization issue is correct. &nbsp;This is a Silverlight project.</p>
+<p>Object Graph:</p>
+<ul>
+<li>OrganogramList
+<ul>
+<li>Organogram
+<ul>
+<li>OrganogramEntityList
+<ul>
+<li>OrganogramEntity</li>
+</ul>
+</li>
+<li>ChildOrganogramList
+<ul>
+<li>ChildOrganogram
+<ul>
+<li>&gt;Organogram</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>The problem here is that the child objects re-reference objects in the parent list. &nbsp;The OrganogramList class fetches all required data and builds the entire object graph on the server side. &nbsp;It also links the required ChildOrganogram object to the appropriate Organogram object.</p>
+<p>Before (using older CSLA and WinForms), I would have placed a NotUndoable tag onto the Organogram reference in my ChildOrganogram class, but with the static PropertyInfo declarations this tag is no longer valid, and the serialization no longer works on member variables.</p>
+<p>My workaround is messy, so I was hoping there is a cleaner solution:</p>
+<p>My property declaration is as follows:</p>
+<p>&nbsp; &nbsp; Public Shared
+ChildOrganogramProperty As PropertyInfo(Of Organogram) = RegisterProperty(Of Organogram)(Function(c) c.ChildOrganogram, &quot;Child Organogram&quot;)</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;Public Sub
+SetChildOrganogram(ByVal value As Organogram)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;LoadProperty(ChildOrganogramProperty, value)</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;End Sub</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;&lt;NotUndoable()&gt; Private
+mChildOrganogram As Organogram</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;Public ReadOnly Property ChildOrganogram() As
+Organogram</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return mChildOrganogram</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get</p>
+<p>&nbsp;&nbsp;&nbsp; End Property</p>
+<p>&nbsp;</p>
+<p>My OrganogramList calls SetChildOrganogram during its Fetch to link the ChildOrganogram objects to their correct Organogram. &nbsp;It does the same after an Update. &nbsp;The DataPortal correctly serializes this property. &nbsp;Then on the Silverlight side, to avoid Edit Level&nbsp;mismatches, I have overriden the OnDeserialize as follows:</p>
+<p>
+<p>&nbsp; &nbsp; Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)</p>
+<p>&nbsp; &nbsp; &nbsp; MyBase.OnDeserialized(context)</p>
+<p>&nbsp; &nbsp; &nbsp; &#39; Reinitialise the child organogram</p>
+<p>&nbsp; &nbsp; &nbsp; mChildOrganogram = GetProperty(ChildOrganogramProperty)</p>
+<p>&nbsp; &nbsp; &nbsp; LoadProperty(ChildOrganogramProperty, Nothing)</p>
+<p>&nbsp; &nbsp; End Sub</p>
+</p>
+<p>While this is working, I am not convinced it is the best solution. &nbsp;I am also aware that I am sending multiple copies of the exact same object across the line (though this is not a major concern).</p>
+<p>Any advice would be appreciated. &nbsp;Feel free to respond in C# ;)</p>
+<p>Thanks in advance!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, October 04, 2011</h2><p>The recommended solution is to use private backing fields for properties that must be marked NonSerialized or NotUndoable.</p>
+<p>If you do this in Silverlight/WP7, you must also override OnGetState and OnSetState to serialize/deserialize the value - assuming you want it serialized. In your case you do not :)</p>
+<p>But then you probably need to override OnDeserialized to restore the reference? And in that case, in your OnGetState/OnSetState you might pass some other identifying value (like the object&#39;s primary key?) through the serialization stream so you can use it in OnDeserialized to restore the reference.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Thursday, October 06, 2011</h2><p><span>
+<div>
+<p><span></span></p>
+<div>
+<p>Hi Rocky</p>
+<p>Thank you for your prompt response.</p>
+<p>If found that I did not need the OnGetState and OnSetState as I already had the primary key value as one of my properties. &nbsp;My code is now the following which is much neater:</p>
+<p>&nbsp;</p>
+</div>
+&nbsp; &lt;NotUndoable()&gt; Private mChildOrganogram As Organogram
+<p>&nbsp;</p>
+<p><span></span>&nbsp; &nbsp; Public Property ChildOrganogram() As Organogram<span></span></p>
+<div>
+<p>&nbsp; &nbsp; &nbsp; Get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Return mChildOrganogram</p>
+<p>&nbsp; &nbsp; &nbsp; End Get</p>
+<p>&nbsp; &nbsp; End Property</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; Protected Overrides Sub OnDeserialized(ByVal context As System.Runtime.Serialization.StreamingContext)</p>
+<p>&nbsp; &nbsp; &nbsp; MyBase.OnDeserialized(context)</p>
+</div>
+&nbsp; &nbsp; &nbsp; &#39; Reinitialise the child organogram<span>
+<div>
+<p>&nbsp; &nbsp; &nbsp; mChildOrganogram = CType(CType(CType(Me.Parent, OrganogramChildOrganogramList).Parent, Organogram).Parent, OrganogramList).GetItem(Me.OrganogramIDChild)</p>
+</div>
+</span>&nbsp; &nbsp; End Sub<span>
+<div>
+<p>This is working fine.</p>
+<p>Thanks for the help.</p>
+</div>
+</span>
+<p>&nbsp;</p>
+</div>
+</span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

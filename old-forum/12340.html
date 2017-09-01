@@ -1,0 +1,60 @@
+<html><header><title> “Object of type ‘System.collection.generic.list`1[Lms.WebApp.BO.Account]’ cannot be converted to type ‘Csla.Core.MobilList`1 [Lms.WebApp.BO.Account]’ ”.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1> “Object of type ‘System.collection.generic.list`1[Lms.WebApp.BO.Account]’ cannot be converted to type ‘Csla.Core.MobilList`1 [Lms.WebApp.BO.Account]’ ”.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12340.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Riz posted on Thursday, January 30, 2014</h2><p class="MsoNormal">Hi Everyone</p>
+<p class="MsoNormal">Currently we are using CSLA version 2.1.4 along with .NET
+version 3.5. Now we are looking for CSLA version upgrade. After doing some investigation
+we decided to upgrade the CSLA version to &ldquo;3.8.3&rdquo;. So to start with we first
+upgraded the CSLA version to 3.8.3 then also changed the .NET framework version
+to 4.5 for web application, and for the libraries and BO&rsquo;s we keep the .NET
+Framework version as 3.5. After doing these changes we build all our projects the
+build was successful with upgraded CSLA version 3.8.3. Now while testing the
+webpages we come across one issue as mentioned below:</p>
+<p class="MsoNormal"><b>Error:</b></p>
+<p class="MsoNormal"><b>&nbsp;&ldquo;Object of type &lsquo;System.collection.generic.list`1[Lms.WebApp.BO.Account]&rsquo;
+cannot be converted to type &lsquo;Csla.Core.MobilList`1 [Lms.WebApp.BO.Account]&rsquo; &rdquo;.</b></p>
+<p class="MsoNormal">While debugging the code we are &nbsp;getting the issue, when deserializing the &ldquo;object&rdquo;.</p>
+<p class="MsoNormal">How can we fix the above mentioned issue, we are not able to get any proper solution to fix this issue. &nbsp;</p>
+<p>&nbsp;</p>
+<p class="MsoNormal">Thanks for your help in advance.<b></b></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 30, 2014</h2><p>You cannot use the standard List&lt;T&gt; object with the MobileFormatter (serialize/deserializer) . You must use one of the list objects provided by CSLA such as&nbsp;</p>
+<p>
+<ul>
+<li>MobileList&lt;T&gt;</li>
+<li>BusinessListBase&lt;T&gt;</li>
+<li>BusinessBindingListBase&lt;T&gt;</li>
+<li>ReadOnlyListBase&lt;T&gt;</li>
+<li>ReadOnlyBindingListBase&lt;T&gt;</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Riz replied on Friday, January 31, 2014</h2><p class="MsoNormal">Thanks for your reply Jonny.</p>
+<p class="MsoNormal">Actually we don&rsquo;t want to use the <b>&ldquo;MobileFormatter&rdquo;</b> as there
+are many classes in which we will need to do the changes which will be not feasible
+for us now so by considering this is there any way to use the <b>&ldquo;BinaryFormatter&rdquo;</b>
+as it was used in earlier csla versions and then can we generate the <b>&ldquo;StandardList&rdquo;</b>
+instead of <b>&quot;MobileList&quot;</b> while using the CSLA version 3.8.3. If this is possible
+then where shall we do these changes?</p>
+<p>&nbsp;</p>
+<p class="MsoNormal">We appreciate your help on&nbsp;
+this.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, February 01, 2014</h2><p>Hi,</p>
+<p><ol>
+<li>You should verify that all layers of your application use the same CSLA dll (and version) as well as configuration.&nbsp;</li>
+<li>If your cient side DataPortal is configured to use MobileFormatter the I would expect to get that exception.&nbsp;</li>
+<li>Make sure that none of your code actually uses List&lt;T&gt; directly - I would recommend to use the builtin list types in CSLA for business objects.</li>
+</ol></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Riz replied on Monday, February 03, 2014</h2><p class="MsoNormal">Hi Jonny.</p>
+<p class="MsoNormal">We have some more questions for you and need your suggestion
+on them as well, as told earlier we are currently using CSLA version 2.1.4. So what
+path shall we follow while we upgrade to higher CSLA versions? </p>
+<p class="MsoNormal">Shall we first upgrade the csla version to 3.5.3, as after
+going through some of the CSLA forum links we found that upgrading the CSLA version
+from 2.1.4 to 3.5.3 is not that much tough than directly upgrading to higher
+versions than 3.5.3. What is your though t on this?</p>
+<p class="MsoNormal">&nbsp;Is it really simpler
+to upgrade till version 3.5.3 than directly upgrading to versions 3.8.3 OR 4.0
+and above csla versions?</p>
+<p>&nbsp;</p>
+<p class="MsoNormal">As in our case there are lots of BO classes where we need to
+modify the code if there are any major changes while upgrading the CSLA
+version. Please advice, so that we can follow the proper steps for upgrading the csla version.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 03, 2014</h2><p>Well, it&#39;s been awhile since I worked on version 2 and 3.&nbsp;</p>
+<p>You definitely have a lot of work to move to CSLA 4.x as all properties must be changed to have PropertyInfo and you _should_ also rewrite all your custom business rules to be classes for the v4 RuleEngine.&nbsp;</p>
+<p>So assuming you do not want to do all that you can only move up to CSLA 3.5 or newer with relatively small efforts.&nbsp;</p>
+<p>As I said - it has been a while since I worked on those version - but I would try to go to CSLA 3.8.3 and get all the bugfixes and improvements done so far.&nbsp;</p>
+<p>You should also read the change log for each version as this provides details on breaking changes that you may hit.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,50 @@
+<html><header><title>WinRT config for WCF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WinRT config for WCF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11649.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio posted on Saturday, October 20, 2012</h2><p>we are new with CSLA and WinRT and we are building an LOB app, evaluating CSLA.&nbsp; I built a proof of concept with CSLA and WinRT, the problem is, it seems that the configuration in the application to connect to CSLA Business Object on the WCF server is wrong or blocked or something, it just hang ...</p>
+<p>Do you have an sample app i could use to validate that we are doing thigns right.</p>
+<p>&nbsp;</p>
+<p>thanks,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, October 20, 2012</h2><p>There are two sample apps on</p>
+<p><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/">http://www.lhotka.net/cslacvs/viewvc.cgi/core/trunk/Samples/NET/cs/</a></p>
+<ul>
+<li>SimpleNTier</li>
+<li>ProjectTracker</li>
+</ul>
+<p>SimpleNTier is just a proof of concept in the sense it doesn&#39;t use a database.</p>
+<p>ProjectTracker is a complete application.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Saturday, October 20, 2012</h2><p>Thanks,&nbsp; How do you download those, is that SVN?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, October 20, 2012</h2><p>Yes, that&#39;s SVN</p>
+<p>svn://svn.lhotka.net/csla/core/trunk/Samples</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Saturday, October 20, 2012</h2><p>Ok I downloaded the sample app and tried it, I get this after fixing the CSLA references with NUGET</p>
+<p>{&quot;Object type or assembly could not be loaded (Library.CustomerEdit, Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)&quot;}</p>
+<p>&#39;((Csla.DataPortalException)($exception)).BusinessException&#39; threw an exception of type &#39;System.NullReferenceException&#39;</p>
+<p>All libraries seems to be there ?? any thoughts?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, October 20, 2012</h2><p>Do you get any build errors? You shouldn&#39;t need to fix any dependency.</p>
+<p>You should download the samples folder as there is a dependencies folder you will need to build the samples. They open on VS2012. Use F5 and not CTRL F5 to run them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Saturday, October 20, 2012</h2><p>Here is what i did, </p>
+<ol>
+<li>Got the code from SVN</li>
+<li>Open Visual Studio and opened solution named SimpleApp.sln</li>
+<li>Pressed F5</li>
+</ol>
+<p>It loaded the app , then the screen, waited a bit then stopped on&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> obj = </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">await</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Library.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">CustomerEdit</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.GetCustomerEditAsync(441)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">With this error </span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">Object type or assembly could not be loaded (Library.CustomerEdit, Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">THis time I did not fix anything, just run the project as is</span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, October 21, 2012</h2><p>First of all I&#39;m running Windows7 so no WinRT available on my side.</p>
+<p>There are SimpleApp solutions for different environments: Silverlight, IOS, Android, WindowsPhone and WinRT. I guess you were running the later. </p>
+<p>I suggested ProjectTracker or SimpleNTier that are&nbsp;under the NET folder and are a showcase as they have UI clients for different technologies including WinRT. I tested these projects on everything except WinRT. I know Rocky has done some recent work on these projects so I expect they also run on WinRT.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, October 21, 2012</h2><p>Every sample app i tried i get the same error</p>
+<p>Object type or assembly could not be loaded (ProjectTracker.Library.Dashboard, ProjectTracker.Library, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null)</p>
+<p>Maybe there is a problem with the CSLA version 4.5.4.0?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, October 21, 2012</h2><p>I don&#39;t believe that your issue is due to any problem on Csla 4.5.4.</p>
+<p>1) Do all projects build?</p>
+<p>2) Can you run other UI projects of ProjectTracker solution?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, October 21, 2012</h2><p>The WinRT/SimpleApp in &quot;trunk&quot; runs fine on my Win8 computer. </p>
+<p>You may need to add the Csla.pri and Csla.Xaml.pri to&nbsp; the dependencies folder manually.&nbsp; (just fixed last week).</p>
+<p>There is no more app.config file in WinRT so the config must be done in code. <br />For SimpleApp this is done in App.xaml.cs - OnLainched event in codebehind. </p>
+<p>&nbsp;&nbsp;&nbsp; protected override void OnLaunched(LaunchActivatedEventArgs args)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.DataPortalProxy = typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.ApplicationContext.DataPortalUrlString = &quot;http://localhost:19454/MobilePortal.svc&quot;;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // .......</p>
+<p>The exception message that you gets indicated the the :net library assembly is not present on the WCF AppServer bin folder. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Sunday, October 21, 2012</h2><p>Ok the sample app is working, I had to replace all the CSLA*.dll in each project with the ones in Dependencies... it all works now, thanks for the help</p>
+<p>&nbsp;</p>
+<p>Now let&#39;s see if it works in my app</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Monday, October 22, 2012</h2><p>In my application it hangs on the server, i can see the WCF trace and i see this</p>
+<p>Activity Name&nbsp;Process action &#39;http://ws.lhotka.net/WcfDataPortal/IWcfPortal/Fetch&#39;.<br />Related Activity Name&nbsp;Execute &#39;Csla.Server.Hosts.Mobile.IWcfPortal.Fetch&#39;.<br />Time&nbsp;2012-10-22 02:14:25.0189<br />Level&nbsp;Transfer<br />Source&nbsp;System.ServiceModel<br />Process&nbsp;iisexpress<br />Thread&nbsp;9</p>
+<p>Nothing else, seen that before?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, November 01, 2012</h2><p>Ok by changing a bit the code i use in my WinRT application i got a better error then NONE :-)</p>
+<p>&nbsp;</p>
+<p>Could not load file or assembly &#39;Global.Business.WinRT, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<p>This is the same error that i got when i tried the simpleapp downloaded from <a href="http://www.lhotka.net">http://www.lhotka.net</a>&nbsp;when i tried to use the NuGet Package... </p>
+<p>I did try to use the same CSLA.DLL that came from the SimpleApp but i get the same error</p>
+<p>&nbsp;Any Ideas?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, November 01, 2012</h2><p>Your WinRT and .NET assemblies MUST have the same name for CSLA Serialization to work.&nbsp;</p>
+<p>It seems like you haven&acute;t edited the project assembly names and namespaces to be the same (equal). </p>
+<p>Your business assembly for WinRT should be named Global.Business.dll as the .NET assembly must be named too.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio replied on Thursday, November 01, 2012</h2><p>i&#39;m getting closer, now i&#39;m getting this</p>
+<p>&nbsp;</p>
+<p>DataPortal.Fetch failed (Object reference not set to an instance of an object.)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

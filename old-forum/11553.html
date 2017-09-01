@@ -1,0 +1,49 @@
+<html><header><title>Business Rules - apply to multiple fields and avoiding recursiveness.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules - apply to multiple fields and avoiding recursiveness.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11553.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Friday, August 24, 2012</h2><p>Hi gents,</p>
+<p>Haven&#39;t been here for some months which lays testament to how well I&#39;m doing with CSLA 4.2 :)</p>
+<p>I need some direction on a business rule that I want to implement.</p>
+<p>For simplicity&#39;s sake, I basically have a form dialog that accepts several property values of a &#39;selection&#39; object. This&nbsp;object is&nbsp;a businessbase object, with all of the things you would expect.</p>
+<p>The fields are Every, Interval, StartDate, EndDate and NumberServices.</p>
+<p>Basically, the user can change ANY of these fields and the bix objects needs to go fire a procedure that returns the other values accordingly.</p>
+<p>The problem I have is that to fire any event on any of the changed properties, I assign a rule to the properties ( e.g. .PrimaryProperty=StartDate). The procedure returns new values to the other properties in the class and the propertychanged is raised on those and it becomes a never ending cycle.</p>
+<p>There are essentially two issues I need to solve here - 1. to stop to recursive calls (can I somehow shortcircuit the propertychanged)&nbsp; and 2. Is there a way to pass the PropertyName that has changed to my commandbase business rule? (Affects which properties are updated)</p>
+<p>Here&#39;s what my code looks like:</p>
+<p><br />&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MyBase.AddBusinessRules()</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; With BusinessRules</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CalculateServiceSeriesRule() With {.PrimaryProperty = EveryProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CalculateServiceSeriesRule() With {.PrimaryProperty = IntervalProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CalculateServiceSeriesRule() With {.PrimaryProperty = StartDateProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CalculateServiceSeriesRule() With {.PrimaryProperty = EndDateProperty})<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; .AddRule(New CalculateServiceSeriesRule() With {.PrimaryProperty = NumberServicesProperty})</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End With</p>
+<p>&nbsp;&nbsp;&nbsp; End Sub</p>
+<p>and;</p>
+<p>&nbsp;&nbsp;&nbsp; Private Class CalculateServiceSeriesRule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits Csla.Rules.BusinessRule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Sub Execute(context As Csla.Rules.RuleContext)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim target = DirectCast(context.Target, ServiceSeriesCreator)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _every As Integer = target.Every<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _interval As String = target.Interval<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _startdate As SmartDate = target.StartDate<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _enddate As SmartDate = target.EndDate<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _numberservices As Integer = target.NumberServices<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim _propertychanged As String = &quot;Every&quot; &#39; ** would like to pass the propertyname here ***</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ServiceSeriesCreator.CalculateServiceSeries( _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _propertychanged _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , _every _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , _interval _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , _startdate _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , _enddate _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; , _numberservices _<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; )<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; target.StartDate = _startdate<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; target.EndDate = _enddate<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; target.NumberServices = _numberservices</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Sub<br />&nbsp;&nbsp;&nbsp; End Class</p>
+<p>Any help would be appreciated.</p>
+<p>Thanks,</p>
+<p>Graham</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, August 24, 2012</h2><p>I believe I figured out on of the issues;</p>
+<p>The propertyname I can derived as:</p>
+<p>Dim _propertychanged As String = PrimaryProperty.Name</p>
+<p>Curiously, the code appears to be working...</p>
+<p>Can I confirm that I do in fact have a recursion issue? If whilst checking a value that has risen a PropertyChanged event, my routine updates other members of that BO, do they automatically get fired? If not, that&#39;s great....&nbsp; </p>
+<p>Thanks,</p>
+<p>Graham</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>You should never assign a new value to a property by the property setter directly in the Executre method. This triggers new validation rules from inside the Execute method and makes the rules run recursively.</p>
+<p>You should rather use context.AddOutValue to update property values.</p>
+<p>In your case I would rather: </p>
+<ul>
+<li><span>inherit from CommonRules.CommonBusinessRule</span></li>
+<li><span>Add class constructor&nbsp;</span>
+<ul>
+<li><span>set CanRunAsAffectedProperty = false to make the rule run only for the property that was changed.</span></li>
+<li><span>Add all properties to AffectedProperties list (makes rule engine to return these properties to caller and cann OnPropertyChanged to notify UI)<br /></span></li>
+</ul>
+</li>
+<li><span>call context.AddOutValue to update the Business object<br /></span></li>
+<li><span>The property that was changed is available as PrimaryProperty property on the rule instance.&nbsp;</span></li>
+</ul>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Friday, August 24, 2012</h2><p>Thanks Jonny - I&#39;ll look into that. is CanRunAsAffectedProperty just a tag of the property constructor?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, August 24, 2012</h2><p>It is a property on rules that inherit from PropertyRule or CommonRules.CommonBusinessRule (that in turn inherits from PropertyRule). </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

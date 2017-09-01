@@ -1,0 +1,49 @@
+<html><header><title>Filtered List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Filtered List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1741.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Saturday, November 11, 2006</h2><P>Hi,</P>
+<P>I have a Root BO and child collection with child BOs. So my question is this, how do I use the Filtered list to extract particular children. Is there a template for this ? and where do I have Filtered in my BO structure. ie as a child of the Root BO or something different ?</P>
+<P>thanks</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Sunday, November 12, 2006</h2>Normally you would filter in the UI (or at least I do) but depending on your use case you could expose a FilteredList as a property in your root. Can you describe your use case?<br><br>Dean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 12, 2006</h2>You have to ask yourself whether the filtering is part of the use case, or a user convenience feature?<br><br>If it is part of the use case that only a filtered subset of data is available to the UI, then exposing a pre-filtered list from a BO would make sense.<br><br>If the use case doesn't care if the entire collection is available to the UI, then it isn't part of the business layer to deal with that issue. In this case (which is more common imo), the requirement really comes from the UI, not the business scenario. The <i>user </i>wants filtering to make their lives easier.<br><br>In this latter case, the UI should use FilteredBindingList to create a filtered view of the collection exposed by the business layer.<br><br>This same logic applies to sorting. If the business use case doesn't require sorting (which is relatively rare), then it is a UI issue, and should be handled in the UI layer.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Sunday, November 12, 2006</h2><P>Thanks,</P>
+<P>Is there are template on how to use it ? Is there any examples ? Its the UI that needs the filtering ASP.NET to be exact</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, November 12, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=472135720-12112006><FONT face=Arial color=#0000ff size=2>I am working on an ebook for version 2.1 that should be 
+available before the end of the year. That will describe the usage for all the 
+new 2.1 features.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=472135720-12112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=472135720-12112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Wal972 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Sunday, November 12, 2006 2:23 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Filtered 
+  List<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Thanks,</P>
+  <P>Is there are template on how to use it ? Is there any examples ? Its the UI 
+  that needs the filtering ASP.NET to be exact</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Sunday, November 12, 2006</h2><P>can't wait please do the vb.net one first</P>
+<P>:) Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Monday, November 13, 2006</h2><P>Can anyone please help with an example for the filtered list. I need it really urgent, but I haven't got a clue.</P>
+<P>thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 13, 2006</h2>To use the default filter is pretty easy:<br><br>Dim list As New List(Of String)()<br>' populate with some data<br><br>Dim filtered As New FilteredBindingList(Of String)(list)<br>filtered.ApplyFilter(Nothing, "A")<br>' list now displays only items containing "A"<br><br>Using a custom filter is a bit harder, as you have to implement a filter method matching the FilterProvider delegate. This delegate is passed into the constructor of FilteredBindingList, or it can be set through the FilterProvider property.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Monday, November 13, 2006</h2>I tried using that in the ASP.NET code behind loading code&nbsp;and it won't show the FilteredBindingList but in my BO it shows up ? Confused</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 13, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=456144323-13112006><FONT face=Arial color=#0000ff size=2>Make sure you set e.BusinessObject equal to your filtered 
+list, not the original. Like SortedBindingList, FilteredBindingList is just a 
+view over the existing list, which is entirely unchanged by this 
+process.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=456144323-13112006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=456144323-13112006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=456144323-13112006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Wal972 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Monday, November 13, 2006 2:40 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] RE: Filtered 
+  List<BR></FONT><BR></DIV>
+  <DIV></DIV>I tried using that in the ASP.NET code behind loading code&nbsp;and 
+  it won't show the FilteredBindingList but in my BO it shows up ? 
+  Confused<BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Tuesday, November 14, 2006</h2><P>Helps when I Import the CSLA into the Web Page Code Behind.</P>
+<P>Thanks for the help</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

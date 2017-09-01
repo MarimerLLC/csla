@@ -1,0 +1,135 @@
+<html><header><title>One Service acting as Client and Server</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>One Service acting as Client and Server</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6085.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sjones posted on Tuesday, January 06, 2009</h2><P>I need to have to have 2 different Libraries that use the Csla.&nbsp;&nbsp;&nbsp; Library1.Libraries and Library2.Libraries.&nbsp; They represent 2 different data stores.&nbsp; </P>
+<P>Service1 is the service portion of Library1.Libraries.</P>
+<P>Service2 is the service portion of Library2.Libraries, and also the client for Library1.Libraries</P>
+<P>ClientApplication is the client of Library1 and Library2</P>
+<P>The problem was that Service2 was not able to use the Csla for both client and server purposes.&nbsp; The only way I have been able to come close to making this scenario work, is to make a new copy of Csla and have Library1 reference Csla1 and Library2 reference Csla2.&nbsp; This is not a good solution.</P>
+<P>Is there a way to accomplish this scenario with just one copy of Csla?</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 06, 2009</h2><P>I'm not sure what you are saying?</P>
+<P>You have</P>
+<P>Client --talks to--&gt; Service2 --talks to--&gt; Service1</P>
+<P>and you use the data portal between each layer?</P>
+<P>It is true that this isn't directly supported. The data portal is designed to sit between Client and Server and that's all (with the exception of the Silverlight data portal, which is a bit different).</P>
+<P>However, you can enhance the data portal to support this by creating your own data portal proxy. You can create&nbsp;a data portal proxy to run on Service2 that is smart enough to route calls to Library2 to LocalProxy and calls to Library1 to WcfProxy (or whatever remote proxy you are using).</P>
+<P>This isn't terribly hard, because the data portal is entirely interface-based. Many people have created their own custom proxies for scenarios like this, or for other reasons.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, January 06, 2009</h2><P>If I read this right, you might be&nbsp;saying that you need to have two different data portals in the same application. </P>
+<P>Csla won't do this out of the box, but it can be coaxed into it without too much trouble. </P>
+<P>I had a similar requirement and made some slight modifications to CSLA so that it allows me to substitute a data portal proxy (or, in my case, just force some types through the local data portal) on a per type basis. </P>
+<P>Basically, I added a static Event that you can subcribe to so that CSLA will fire the event each time it wants to get the data portal proxy for a particular type. You can either just force to the local portal or substitute an entirely new proxy if desired. The other related changes were that each call to <FONT size=2>GetDataPortalProxy </FONT>to has to be modified to pass in the object type. </P>
+<P>I used class attributes and a cache in my event&nbsp;handler to redirect certain types, but you could use whatever mechanism you want (e.g. assembly name, etc.). </P>
+<P>Here is the relevant code in dataportal.cs:</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>#region</FONT></FONT><FONT size=2> DataPortal Proxy</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>class</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventArgs</FONT></FONT><FONT size=2> : </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventArgs</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>internal</FONT></FONT><FONT size=2> GetDataPortalProxyEventArgs(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Type</FONT></FONT><FONT size=2> objectType)</P>
+<P>{</P>
+<P>ForceLocal = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>Proxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>ObjectType = objectType;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalProxy</FONT></FONT><FONT size=2> Proxy {</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2>; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2>;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> ForceLocal {</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2>; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2>;}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Type</FONT></FONT><FONT size=2> ObjectType { </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>get</FONT></FONT><FONT size=2>; </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>set</FONT></FONT><FONT size=2>; }</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>delegate</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventHandler</FONT></FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventArgs</FONT></FONT><FONT size=2> e);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>event</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventHandler</FONT></FONT><FONT size=2> OnGetDataPortalEvent;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalProxy</FONT></FONT><FONT size=2> _localPortal;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalProxy</FONT></FONT><FONT size=2> _portal;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalProxy</FONT></FONT><FONT size=2> GetDataPortalProxy(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> forceLocal, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Type</FONT></FONT><FONT size=2> objectType)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// CSLA MODIFICATIONS</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// Allow interception of GetDataPortalProxy call to either substitute a data portal proxy</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>// or force to local portal</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (!forceLocal &amp;&amp; OnGetDataPortalEvent != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventArgs</FONT></FONT><FONT size=2> args = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventArgs</FONT></FONT><FONT size=2>(objectType);</P>
+<P>OnGetDataPortalEvent(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, args);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (args.Proxy != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> args.Proxy;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>forceLocal = args.ForceLocal;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (forceLocal)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_localPortal == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>_localPortal = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LocalProxy</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _localPortal;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_portal == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> proxyTypeName = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ApplicationContext</FONT></FONT><FONT size=2>.DataPortalProxy;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (proxyTypeName == </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Local"</FONT></FONT><FONT size=2>)</P>
+<P>_portal = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LocalProxy</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> typeName =</P>
+<P>proxyTypeName.Substring(0, proxyTypeName.IndexOf(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>","</FONT></FONT><FONT size=2>)).Trim();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> assemblyName =</P>
+<P>proxyTypeName.Substring(proxyTypeName.IndexOf(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>","</FONT></FONT><FONT size=2>) + 1).Trim();</P>
+<P>_portal = (DataPortalClient.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDataPortalProxy</FONT></FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Activator</FONT></FONT><FONT size=2>.CreateInstance(assemblyName, typeName).Unwrap();</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _portal;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> Releases any remote data portal proxy object, so</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> the next data portal call will create a new</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> proxy instance.</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>///</FONT></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2> </FONT></FONT><FONT color=#808080 size=2><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT></FONT><FONT size=2>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EditorBrowsable</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EditorBrowsableState</FONT></FONT><FONT size=2>.Advanced)]</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ReleaseProxy()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> disp = _portal </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>as</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>IDisposable</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (disp != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>disp.Dispose();</P>
+<P>_portal = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#endregion</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sjones replied on Thursday, January 08, 2009</h2><P>Thanks so much for your help!&nbsp; I looked into creating a custom Proxy, as "switchable" proxy.&nbsp; I ran into a problem with that solution.&nbsp;&nbsp;Since the Proxy is cached and the IDataPortalProxy member IsServerRemote is a property ( ie, cant accept parameters ), I couldnt figure a good way to determine which library was calling the proxy and thus wether to use Local or Wcf proxy.</P>
+<P>I then implemented rsbaker0's event based solution.&nbsp; This worked perfectly and was very little work.&nbsp; At first I wasnt sure where to put the eventhandler for OnGetDataPortalEvent.&nbsp; I ended up putting it in my hosting application ( ie Service2 ).&nbsp; Thus the Libraries would act with a local vs wcf based on what host application they were a member of.</P>
+<P><STRONG>This is the eventhandler code that I placed in Service2</STRONG></P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfProxy</FONT></FONT><FONT size=2> wcfProxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LocalProxy</FONT></FONT><FONT size=2> localProxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_OnGetDataPortalEvent(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.ObjectType.ToString().Contains(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Library2.Libraries"</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (localProxy == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>localProxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>LocalProxy</FONT></FONT><FONT size=2>();</P>
+<P>e.Proxy = localProxy;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (wcfProxy == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>wcfProxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfProxy</FONT></FONT><FONT size=2>();</P>
+<P>e.Proxy = wcfProxy;</P>
+<P>}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P><FONT size=3><STRONG>I also had to place an eventhandler in Client:</STRONG></FONT></P><FONT size=2>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfProxy</FONT></FONT><FONT size=2> Library1Proxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfProxy</FONT></FONT><FONT size=2>&nbsp; Library2Proxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_OnGetDataPortalEvent(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortal</FONT></FONT><FONT size=2>.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>GetDataPortalProxyEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.ObjectType.ToString().Contains(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Library2.Libraries"</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (Library2Proxy == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>Library2Proxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfProxy</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Library2WcfDataPortal"</FONT></FONT><FONT size=2>);</P>
+<P>e.Proxy = Library2Proxy;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> ( Library1Proxy == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>&nbsp;Library1Proxy = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>WcfProxy</FONT></FONT><FONT size=2>(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"Library1WcfDataPortal"</FONT></FONT><FONT size=2>);</P>
+<P>e.Proxy =&nbsp; Library1Proxy;</P>
+<P>}</P>
+<P>}</P>
+<P><FONT size=3><STRONG>From Client App.Config I added another endpoint under the Client Section:</STRONG></FONT></P>
+<P><STRONG><FONT size=3></FONT></STRONG>&nbsp;</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>net.tcp://localhost:6050/Library2/</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>netTcpBinding</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>bindingConfiguration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>NetTcpBinding</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Library2WcfDataPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;</FONT></FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>endpoint</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>net.tcp://localhost:6242/Library1/</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>binding</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>netTcpBinding</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>bindingConfiguration</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>NetTcpBinding</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>contract</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Csla.Server.Hosts.IWcfPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> </FONT></FONT><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>name</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"<FONT color=#0000ff>Library1</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>WcfDataPortal</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2> /&gt;</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#000000 size=3>Thanks so much Again for the help!</FONT></P>
+<P><FONT color=#0000ff><FONT color=#000000 size=3>Summer</FONT><FONT size=2><FONT size=2></P></FONT></FONT></FONT></FONT></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

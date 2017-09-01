@@ -1,0 +1,8 @@
+<html><header><title>Sorting on BusinessListBase and WebPage</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sorting on BusinessListBase and WebPage</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4622.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ToddH posted on Saturday, April 05, 2008</h2><P>I've got a parent class (User) with a BusinessListBase child collection (Roles). On my web page, I allow the user to modify the User data through&nbsp;asp:TextBoxes&nbsp;and modify the Roles list (adding/deleting Roles) through an asp:GridView and an "add role" hyperlink. When a user adds a new role, the gridview refreshes.&nbsp;However, I am not actually saving the data and the Roles until the user clicks the "Save" button. How to I force the gridview to automatically sort the Roles list each time another Role is added? On the CslaDataSource, the Roles class, or the GridView?</P>
+<P>(After the list is saved, I sort it from SQL on the next load. However, I'd like it to be sorted pre-saved.)</P>
+<P>Thanks in advance,</P>
+<P>Todd</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, April 07, 2008</h2><P>In 3.5 you can use LINQ for this.</P>
+<P>In older versions use the SortedBindingList which comes with CSLA.</P>
+<P>Or download ObjectListView if you need to sort on more than 1 column. It is part of CSLA Contrib.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

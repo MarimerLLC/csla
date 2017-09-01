@@ -1,0 +1,25 @@
+<html><header><title>[RESOLVED] Trying to add events</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>[RESOLVED] Trying to add events</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1304.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbdotnetguy posted on Friday, September 22, 2006</h2>I have a class that inherits the BusinessBase class.&nbsp; I'm doing something that I would like to raise my own events for.&nbsp; however i'm getting the following error<br><br>Type 'TimeCardWin' in Assembly 'ShumakerLTM, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null' is not marked as serializable.<br><br>how can i add my own events and not get this error message?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, September 22, 2006</h2>Well, TimeCardWin needs the [Serializable] attribute to remove the error.&nbsp; But what is TimeCardWin, and what do you mean by adding your own events?&nbsp; Are you following the pattern that Rocky used in Csla.Core.BindableBase?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 22, 2006</h2>Are you creating new events on TimeCardWin which others can listen to?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbdotnetguy replied on Friday, September 22, 2006</h2>TimeCardWin is the form the custome events are in the TimeCard BO.&nbsp; Also in this class there is a BusinessListBase object and I'm getting the ListChanged event for the BusinessListBase object.&nbsp; This is where I want to fire my own events to indicate that a property changed in the list.&nbsp; Unless i'm going about this completely the wrong way<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, September 22, 2006</h2>Okay, it sounds like your events have not been set up to separate serializable and non-serializable listeners.&nbsp; Form is not serializable.&nbsp; You can either define your events similarly to how Rocky defined Csla.Core.BindableBase.PropertyChanged, or I think you can mark your event with the [NotSerializable] attribute.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 22, 2006</h2>You can't just mark the event with the attribute. The only real solution is what I do in BindableBase. Plus you also need to mark the NonSerializable delegate field with NotUndoable.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbdotnetguy replied on Friday, September 22, 2006</h2>Thank you sooooooooo much... I what you did in the BindableBase, but still couldn't get it to work and was going to post again seeing what I was still doing wrong.&nbsp; Then I read what you posted&nbsp; and saw that you posted that I would need the NotUndoable.&nbsp; Added that and it works... <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />&nbsp; Thank you very much Rocky.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 22, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=926473920-22092006><FONT face=Arial color=#0000ff size=2>Now that I think about it further, you should probably mark 
+_both_ delegate fields as NotUndoable. Neither one should be affected by n-level 
+undo. I need to make this same change to the new Saved event in version 2.1 as 
+well.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=926473920-22092006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=926473920-22092006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=926473920-22092006></SPAN>&nbsp;</DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> vbdotnetguy [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, September 22, 2006 2:38 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Trying to add 
+  events<BR></FONT><BR></DIV>
+  <DIV></DIV>Thank you sooooooooo much... I what you did in the BindableBase, 
+  but still couldn't get it to work and was going to post again seeing what I 
+  was still doing wrong.&nbsp; Then I read what you posted&nbsp; and saw that 
+  you posted that I would need the NotUndoable.&nbsp; Added that and it works... 
+  <IMG alt="Big Smile <img src=" />" src="/emoticons/emotion-2.gif">&nbsp; Thank you very 
+  much Rocky.<BR><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

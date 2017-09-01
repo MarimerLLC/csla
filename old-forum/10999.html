@@ -1,0 +1,30 @@
+<html><header><title>Third Party .DLL to Add/Update some tables.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Third Party .DLL to Add/Update some tables.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10999.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel posted on Tuesday, December 20, 2011</h2><p>Hi,</p>
+<p>I must use some 3rd party .DLL to Add/Update some tables.</p>
+<p>The actual procedure is to create Company object using this library and to call method Add or Update providing required properties values.</p>
+<p>I tried to create Company object as a property of CSLA object and it did not work as it cannot be Serialized.</p>
+<p>So, I create a Public method SaveCompany inside CSLA object&nbsp; to create and use Company object to do Add/Update.</p>
+<p>It&#39;s not a way how we handle CSLA Data Portal method to handle data.</p>
+<p>Does anybody have a better idea how to do this?</p>
+<p>Thanks,</p>
+<p>Pavel</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 20, 2011</h2><p>You should online use the 3rd party classes inside the DataPortal_XYZ methods.</p>
+<p>Map values from your &lt;bo&gt; into instances of the 3rd party object and call methods on that.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Tuesday, December 20, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>You should online use the 3rd party classes inside the DataPortal_XYZ methods.</p>
+<p>Map values from your &lt;bo&gt; into instances of the 3rd party object and call methods on that.</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>What about Silverlight application?</p>
+<p>I ask this because we are about to migrate to Silverlight and I am still in a process of learning.</p>
+<p>I can assume that 3rd party .dll would be on server side and I have to call it from client DataPortal_XYZ method.</p>
+<p>So, this method is going to provide mapping from CSLA object and actual Add/Update would be done on server using this .dll.</p>
+<p>Is that a right scenario?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 20, 2011</h2><p>Yes, that&#39;s the scenario.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Tuesday, December 20, 2011</h2><p>Thanks a lot,</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Monday, February 06, 2012</h2><p>Back to my question....after some testing it turned out that CreateCompanyObject method is a very time consuming.</p>
+<p>It&#39;s absolutely impossible to call it every time we need to Update/Add data to database.</p>
+<p>The solution is to create this object during login operation and keep it alive for calling methods Update or Add of this Company object as it required from DataPortal_XYZ methods.</p>
+<p>What would be the best approach for SL and WinForm applications to create this object?</p>
+<p>Thanks,</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

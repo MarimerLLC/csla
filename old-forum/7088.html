@@ -1,0 +1,77 @@
+<html><header><title>Simplifying properties???</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Simplifying properties???</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7088.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Thursday, June 11, 2009</h2><font face="Lucida Console" size="2"> 
+    [Serializable]
+    public class TestObj : BusinessBase&amp;lt;TestObj&amp;gt;
+    {
+        [CslaProperty(DefaultValue=-1)]
+        public int Id
+        {
+            get { return GetPropertyHelper&amp;lt;int&amp;gt;(&quot;Id&quot;); }
+            set { SetPropertyHelper(&quot;Id&quot;, value); }
+        }
+
+        protected override void AddBusinessRules()
+        {
+            RegisterProperties();
+            // TODO: add validation rules
+            //ValidationRules.AddRule(RuleMethod, &quot;&quot;);
+            ValidationRules.AddRule&amp;lt;TestObj&amp;gt;(IsIdValid, registeredProperties[&quot;Id&quot;]);
+        }
+
+        private static bool IsIdValid&amp;lt;T&amp;gt;(T target, RuleArgs e)
+            where T : TestObj
+        {
+            e.Description = &quot;Id is not valid&quot;;
+            return false;
+        }
+
+        private static Dictionary&amp;lt;string, PropertyInfo&amp;lt;object&amp;gt;&amp;gt; registeredProperties = new Dictionary&amp;lt;string,PropertyInfo&amp;lt;object&amp;gt;&amp;gt;();
+
+        private T GetPropertyHelper&amp;lt;T&amp;gt;(string name)
+        {
+            return (T)GetProperty(registeredProperties[name]);
+        }
+
+        private void SetPropertyHelper(string name, object value)
+        {
+            SetProperty(registeredProperties[name], value);
+        }
+
+        private TestObj()
+        { 
+            /* Require use of factory methods */
+            RegisterProperties();
+        }
+
+        private static bool registered = false;
+
+        private void RegisterProperties()
+        {
+
+            if (!registered)
+            {
+                Type t = this.GetType();
+
+                var bindableProperties = from p in t.GetProperties(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance)
+                                         where p.GetCustomAttributes(typeof(CslaPropertyAttribute), false).Length == 1
+                                         select p;
+
+                bindableProperties.ToList().ForEach(p =&amp;gt;
+                {
+                    PropertyInfo&amp;lt;object&amp;gt; info;
+                    if (((CslaPropertyAttribute)p.GetCustomAttributes(typeof(CslaPropertyAttribute), false)[0]).DefaultValue != null)
+                    {
+                        info = RegisterProperty(new PropertyInfo&amp;lt;object&amp;gt;(p.Name, p.Name,
+                            ((CslaPropertyAttribute)p.GetCustomAttributes(typeof(CslaPropertyAttribute), false)[0]).DefaultValue));
+                    }
+                    else
+                    {
+                        info = RegisterProperty(new PropertyInfo&amp;lt;object&amp;gt;(p.Name));
+                    }
+
+                    registeredProperties.Add(p.Name, info);
+                });
+                registered = true;
+            }
+        }
+    }
+</font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

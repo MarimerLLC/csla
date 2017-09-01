@@ -1,0 +1,10 @@
+<html><header><title>How to fill several collections at once in SL?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to fill several collections at once in SL?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10441.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Wednesday, June 15, 2011</h2><p>Hi,</p>
+<p>in my first(!) real SL-app (so, no MVVM or other &#39;must haves&#39; ;-))&nbsp;now the time has come to load several collections(in fact inheriting from NameValueListBase) to fill some comboboxes.</p>
+<p>I&#39;m a little confused how to do that in a correct way. With only one collection I pass a method to fill into an app-wide-property (since it&#39;s used more than once) as the callback. But what with more than one collection? Isn&#39;t there a prob with several, maybe overlapping db-fetches (made by ADO.net)? In good ol&#39; windows times I wrapped that all into one method that was executed via a backgroundworker in a serial manner.</p>
+<p>Maybe I&#39;m just not seeing the wood for the trees?</p>
+<p>Thanks for any input</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, June 15, 2011</h2><p>You should use a &quot;unit of work&quot; object, as discussed in this FAQ (<a href="http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx">http://www.lhotka.net/cslanet/faq/CslaObjectFaq.ashx</a>) and in the <em>Using CSLA 4</em> ebook series (<a href="http://store.lhotka.net">http://store.lhotka.net</a>). </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Wednesday, June 15, 2011</h2><p>Hi Rocky,</p>
+<p>as always, a direct hit ;-) I really appreciate your answer.</p>
+<p>Maybe I should read the ebook first. If there wouldn&#39;t be that timeframe...</p>
+<p>Thanks a lot and best wishes</p>
+<p>Volker</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

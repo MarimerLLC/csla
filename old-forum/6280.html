@@ -1,0 +1,76 @@
+<html><header><title>CSLA for Silverlight - what's wrong with this code?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for Silverlight - what's wrong with this code?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6280.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas posted on Wednesday, January 28, 2009</h2>Hi All,<br><br>After getting databinding working nicely, I'm learning manipulation of objects in Silverlight now. I've written the following code where ProjectStaffList is an EditableRootListBase. It works fine, but seems much simpler than some of the examples I see. Is there something intrinsically wrong with it?<br><br>Thanks, James.<br><br><br>public void LoadProjectStaffData()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ProjectStaffList.GetProjectStaffList(ProjectStaffListLoaded);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br><br>void ProjectStaffListLoaded(object sender, Csla.DataPortalResult&lt;ProjectStaffList&gt; e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach (ProjectStaff ps in (e.Object as ProjectStaffList))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string test = ps.ProjectStaffName;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; etc...<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Friday, January 30, 2009</h2>Any chance someone knowledgeable could take a quick look? I'm not sure it's quite right - nor how I can get 'busy' animations integrated.<br><br>tia, james.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 30, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I would encourage you to use DataProvider.&nbsp; It will make
+data binding easier in SL as well as easy to bind to Busy Animation.&nbsp; You code
+will work, but you cannot bind to anything, unless you do it manually in your handler.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> James Thomas
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 30, 2009 4:56 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA for Silverlight - what's wrong with this
+code?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Any chance someone knowledgeable could take a quick look?
+I'm not sure it's quite right - nor how I can get 'busy' animations integrated.<br>
+<br>
+tia, james.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Saturday, January 31, 2009</h2>Thanks for your help Sergey. I can see that DataProviders are the way to go for most purposes - it's just that now and again I think I'll need to hand code behaviours. Good to know that I'm not doing anything disastrous in my code.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 31, 2009</h2><P>btw, there's nothing wrong with your code James. It is totally acceptible to have the UI interact directly with the factory methods, providing a callback or event handler to process the result.</P>
+<P>For that matter, you can skip the factory methods entirely and have the UI interact with the data portal - though personally I think that's less than ideal because you lose&nbsp;a level of abstraction.</P>
+<P>Sergey is right though, in that we worked very hard to make the CslaDataProvider the simplest model. Not that we're attached to the data provider necessarily, but I think it is absolutely the case that in a XAML-based world you want to have as little code-behind as possible. Ideally that means writing NO code-behind at all, and that's certainly what I'm driving for.</P>
+<P>There are two main areas left to address: authorization and exception handling.</P>
+<P>I think a Csla.Silverlight.ExceptionDialog control can solve the exception issue. Such a control could be&nbsp;a resource on the page, and the data provider's DataChanged event could route to it. The result would be a messagebox (or something) on any data provider exception - all without code-behind.</P>
+<P>Authorization is harder, because neither .NET nor Silverlight have a standard notification scheme to tell your code when the current principal has changed. And that's the primary trigger for re-running authorization logic.</P>
+<P>But at least within the confines of Csla.ApplicationContext.User I can solve that problem and provide the notification, so there's some hope. That'd eliminate the need to have any code-behind to deal with most authorization scenarios as well.</P>
+<P>In the end, I really think the goal must be to have zero* lines of C#/VB in any XAML UI - just XAML binding to objects and that's it.</P>
+<BLOCKQUOTE dir=ltr>
+<P>* other than "scripting" style UI code - the kind of thing a designer might write behind some XAML to do animations or other UI-ish stuff; and even that is mostly a XAML thing now, so there should be very little of that either</P></BLOCKQUOTE>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James Thomas replied on Friday, February 06, 2009</h2>Hi Rocky,<br><br>Thanks for your reply. In the end I changed my code back to using the CslaDataProviderand standard databinding. I am finding that I'm needing to use C# code to make up for a lack of functionality in some of the UI objects I'm using (e.g. I want to change the colour of cells in a datagrid depending on their value, but DataGridTextColumn doesn't allow me to bind a ValueConverter to its CellStyle - so I'm having to do this manually), but basically sticking to the principle of aiming for zero C# code looks to be a good one.<br><br>Many thanks for a great set of objects!<br><br>Cheers, James.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,89 @@
+<html><header><title>Creating my own Business Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Creating my own Business Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1823.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm posted on Thursday, November 23, 2006</h2><P>I have searched through the posts but can't find a complete of the sytax (VB.Net) for creating my own Business Objects. I have pieced this together from several posts, but can't find EditableRootListBase.&nbsp; So far I have the other six classes:</P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR>Public MustInherit Class IBOBusinessBase(Of T As IBOBusinessBase(Of T))<BR>Inherits Csla.BusinessBase(Of T)<BR>End Class</FONT></P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR>Public MustInherit Class IBOBusinessListBase(Of T As IBOBusinessListBase(Of T, C), C As Csla.Core.IEditableBusinessObject)<BR>Inherits Csla.BusinessListBase(Of T, C)<BR>End Class</FONT></P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR>Public MustInherit Class IBOCommandBase<BR>Inherits Csla.CommandBase<BR>End Class</FONT></P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR>Public MustInherit Class IBONameValueListBase(Of K, V)<BR>Inherits Csla.NameValueListBase(Of K, V)<BR>End Class</FONT></P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR>Public MustInherit Class IBOReadOnlyBase(Of T As IBOReadOnlyBase(Of T))<BR>Inherits Csla.ReadOnlyBase(Of T)<BR>End Class</FONT></P>
+<P><FONT size=2>&lt;Serializable()&gt; _<BR>Public MustInherit Class IBOReadOnlyListBase(Of T As IBOReadOnlyListBase(Of T, C), C)<BR>Inherits Csla.ReadOnlyListBase(Of T, C)<BR>End Class</FONT></P>
+<P><FONT size=2>Do these look correct and can someone let me have the code for EditableRootListBase.</FONT></P>
+<P><FONT size=2>Thanks,</FONT></P>
+<P><FONT size=2>Bill</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, November 23, 2006</h2><P>Bill,</P>
+<P>They look fine! Nice work consolidating them for everyone.</P>
+<P>Comments:<BR>1. I hope your company name is IBO otherwise I have a minor issue with your naming convention. Even if it is IBO I would reconsider the prefix for your custom classes. The problem is that Interfaces always begin with a capital I. So your names are just confusing the types.</P>
+<P>2. I have not implemented EditableRootListBase so I don't have the code. But you got this far - why don't you post it for the rest of us? &lt;g&gt;</P>
+<P>3. For ReadOnlyListBase you can consider adding a constraint to C like you did in BusinessListBase.<BR>Something like:&nbsp; C As Core.IReadOnlyObject</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm replied on Thursday, November 23, 2006</h2><P>Slight change as suggested by Joe:</P>
+<P>&lt;Serializable()&gt; _<BR>Public MustInherit Class MyBOReadOnlyListBase(Of T As MyBOReadOnlyListBase(Of T, c), C As Csla.Core.IReadOnlyObject)<BR>&nbsp;&nbsp;&nbsp; Inherits Csla.ReadOnlyListBase(Of T, c)<BR>End Class</P>
+<P>[Serializable()]<BR>public abstract class MyBOReadOnlyListBase&lt;T, C&gt; : Csla.ReadOnlyListBase&lt;T, c&gt; where T : MyBOReadOnlyListBase&lt;T, c&gt; where C : Csla.Core.IReadOnlyObject<BR>{<BR>}</P>
+<P>Once I get the EditeableRootListBase then maybe I will ask Rocky if he could add them to an FAQ or something to save other people time.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Thursday, November 23, 2006</h2>Nice work!<br><br>Maybe prefix them with BBO (Bill's Business Objects) in ordet to ensure your legacy. <img src="/emoticons/emotion-4.gif" alt="Stick out tongue [:P]" /><br><br>Bayu<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm replied on Thursday, November 23, 2006</h2><P>Yes that was rather stupid of me the prefix with I. My company is called Inventive and I just went for IBO - Inventive Business Objects without thinking.</P>
+<P>Anyway here's the C# version, but I haven't got the EditableRootListBase for that either.</P>
+<P>[Serializable()]<BR>public abstract class MyBOBusinessBase&lt;T&gt; : Csla.BusinessBase&lt;T&gt; where T : MyBOBusinessBase&lt;T&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOBusinessListBase&lt;T, C&gt; : Csla.BusinessListBase&lt;T, C&gt; where T : MyBOBusinessListBase&lt;T, C&gt; where C : Csla.Core.IEditableBusinessObject<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOCommandBase : Csla.CommandBase<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBONameValueListBase&lt;K, V&gt; : Csla.NameValueListBase&lt;K, V&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOReadOnlyBase&lt;T&gt; : Csla.ReadOnlyBase&lt;T&gt; where T : MyBOReadOnlyBase&lt;T&gt;<BR>{<BR>}</P>
+<P>[Serializable()]<BR>public abstract class MyBOReadOnlyListBase&lt;T, C&gt; : Csla.ReadOnlyListBase&lt;T, C&gt; where T : MyBOReadOnlyListBase&lt;T, C&gt;<BR>{<BR>}</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Sarosh replied on Friday, November 24, 2006</h2><P>Hi!</P>
+<P>This is what I use for&nbsp;EditableRootListBase</P>
+<P>[Serializable()]<BR>public abstract class MyBOEditableRootListBase&lt;T&gt; : Csla.EditableRootListBase&lt;T&gt;&nbsp; where T : Csla.Core.IEditableBusinessObject, Csla.Core.ISavable<BR>{<BR>}</P>
+<P>&nbsp;</P>
+<P>Sarosh</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blarm replied on Monday, November 27, 2006</h2><P>Thanks Sarosh.</P>
+<P>I am going to create a new post with the VB.Net and C# code for all the classes.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonM replied on Monday, November 27, 2006</h2>There are templates included with the CSLA framework that work pretty well.&nbsp; Also, <A href="http://onelittlevictory.com">http://onelittlevictory.com</A> has a lot of example code.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, April 06, 2007</h2><P>I use the special purpose generics delegates (Action, Predicate, Converter) a lot of on my read only list object therefore I added a few convinience methods on my inherited ReadOnlyListBase.</P>
+<P>I know Rocky had this in Feature Wish List (item 5) at <A href="http://lhotka.net/Article.aspx?area=4&amp;id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36">http://lhotka.net/Article.aspx?area=4&amp;id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36</A>, but until is implemented, here's the code that I added that I think others might also find it usefull:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;TOutput&gt; ConvertAll&lt;TOutput&gt;(</FONT><FONT color=#008080 size=2>Converter</FONT><FONT size=2>&lt;C, TOutput&gt; converter)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (converter == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentNullException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"converter"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;TOutput&gt; list = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;TOutput&gt;(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count);</P>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i = 0; i &lt; </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count; i++)</P>
+<P>{</P>
+<P>list.Add(converter(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2><img src="/emoticons/emotion-55.gif" alt="Idea [I]" />));</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> list;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;C&gt; FindAll(</FONT><FONT color=#008080 size=2>Predicate</FONT><FONT size=2>&lt;C&gt; match)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (match == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentNullException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"match"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;C&gt; list = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>List</FONT><FONT size=2>&lt;C&gt;();</P>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i = 0; i &lt; </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count; i++)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (match(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2><img src="/emoticons/emotion-55.gif" alt="Idea [I]" />))</P>
+<P>{</P>
+<P>list.Add(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2><img src="/emoticons/emotion-55.gif" alt="Idea [I]" />);</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> list;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> C Find(</FONT><FONT color=#008080 size=2>Predicate</FONT><FONT size=2>&lt;C&gt; match)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> idx = FindIndex(0, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count, match);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (idx == -1) </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>default</FONT><FONT size=2>(C);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>[idx];</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> FindIndex(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> startIndex, </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> count, </FONT><FONT color=#008080 size=2>Predicate</FONT><FONT size=2>&lt;C&gt; match)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (match == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>) </FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentNullException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"match"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (startIndex &gt; </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count) </FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentOutOfRangeException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"startIndex"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (count &lt; 0 || (startIndex + count) &gt; </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count) </FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ArgumentOutOfRangeException</FONT><FONT size=2>(</FONT><FONT color=#800000 size=2>"count"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> endIndex = startIndex + count;</P>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i = startIndex; i &lt; endIndex; i++)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (match(</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2><img src="/emoticons/emotion-55.gif" alt="Idea [I]" />))</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> i;</P>
+<P>}</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> -1;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> FindIndex(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> startIndex, </FONT><FONT color=#008080 size=2>Predicate</FONT><FONT size=2>&lt;C&gt; match)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> FindIndex(startIndex, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count - startIndex, match);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> FindIndex(</FONT><FONT color=#008080 size=2>Predicate</FONT><FONT size=2>&lt;C&gt; match)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> FindIndex(0, </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Count, match);</P>
+<P>}</P></FONT>
+<P><img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

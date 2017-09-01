@@ -1,0 +1,12 @@
+<html><header><title>Where is GetPropertyConvert</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Where is GetPropertyConvert</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11318.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sperber posted on Friday, April 20, 2012</h2><p>Hi,</p>
+<p>I&#39;m new to CSLA and am trying to play around with the GetPropertyConvert method and SmartDate. &nbsp;The problem is that my program complains that GetPropertyConvert and SetPropertyConvert are undefined. &nbsp;Sure enough, when I search the CSLA source code, the search comes up empty.</p>
+<p>Where are these methods?</p>
+<p>I&#39;m using CSLA 3.5 (and CAN&#39;T upgrade to another version)</p>
+<p>&nbsp;</p>
+<p>TIA</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, April 20, 2012</h2><p>From the change log:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><b><span style="text-decoration:underline;"><span style="font-size:16pt;">Pre-release 3.6.0-080626:</span></span></b></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><b>GetProperty/SetProperty/ReadProperty/LoadProperty (080626)</b></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Change all <span class="CodeInline"><span style="font-size:10pt;"><span style="font-family:Courier New;color:#008000;">&lt;P, F&gt;</span></span></span> overloads to include the word &lsquo;Convert&rsquo;. For example, <span class="CodeInline"><span style="font-size:10pt;"><span style="font-family:Courier New;color:#008000;">GetProperty&lt;P,F&gt;</span></span></span> is now <span class="CodeInline"><span style="font-size:10pt;"><span style="font-family:Courier New;color:#008000;">GetPropertyConvert&lt;P,F&gt;</span></span></span>. This avoids an ambiguity scenario and allows the compiler to do better type inference. </p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="background:none repeat scroll 0% 0% yellow;">This is a breaking change for any code using the previous &lt;P,F&gt; overloads.</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sperber replied on Friday, April 20, 2012</h2><p>Thanks!</p>
+<p>Just confirmed our company is using 3.6, not 3.5 as I was told.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,31 @@
+<html><header><title>Unbinding BindingSource and ComboBoxes?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unbinding BindingSource and ComboBoxes?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8715.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar posted on Wednesday, March 24, 2010</h2><p>Good Day All,</p>
+<p>I have encountered a small error in the EditLevels of our application.&nbsp; When the Form is loaded, the EditLevels between the parent and child are correct (2 True, 1 False) after the BindUI is completed.</p>
+<p>After a change is made to the parent and saved, when the BindUI is completed (after the RebindUI is called) our edit levels are (1 False, 1 False).</p>
+<p>The details are saved correctly to the database but a subsequent modification and save will produce an error.</p>
+<p>I am wondering whether not unbinding the combo boxes from their NVL is causing the problem or not?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Wednesday, March 24, 2010</h2><p>After some additional changes, I&#39;ve managed to eliminate the error message I was encountering with the EditLevels still at the root object of 1 False.</p>
+<p>Can anyone forsee a problem with this?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Phlar replied on Friday, March 26, 2010</h2><p>Still stuck at this roadblock.&nbsp; I just realized I should have provided more information.&nbsp; We have a WinForm containing a panel with a treeview in Panel 1.&nbsp; When the form is loaded we retrieve our object (Root, Children, GrandChildren, etc....) and store it in a local varible only at this point.&nbsp; The treeview is constructed based on details in the CSLA object we have retrieved.&nbsp; When a node is selected we dynamically create a WinPart control passing the object selected and execute the following code in the WinPart control:</p>
+<p><strong>Constructor</strong>:&nbsp; </p>
+<p>&nbsp;- assign the object to a local variable</p>
+<p><strong>Load Event</strong>:</p>
+<p>- Initialize the this.<span style="font-size:x-small;">CurrentPrincipalChanged event</span></p>
+<p><span style="font-size:x-small;">- Initialize the object&#39;s PropertyChanged event</span></p>
+<p><span style="font-size:x-small;">- Call the BindUI() and ApplyAuthorizationRules() methods</span></p>
+<p><span style="font-size:x-small;"><strong>BindUI:</strong></span></p>
+<p><span style="font-size:x-small;">- Invoke the BeginEdit() method of the root object in the Parent Form (i.e. WinForm)</span></p>
+<p><span style="font-size:x-small;">-&nbsp;Assign the BindingSource object on the control with the root object from the Parent Form</span></p>
+<p><span style="font-size:x-small;">- Assign the BindingSource for the selected child (or GrandChild) with the local variable assigned in the constructor</span></p>
+<p><span style="font-size:x-small;"><strong>ReBindUI</strong>:</span></p>
+<p><span style="font-size:x-small;">- Disable the events by setting the BindingSource&#39;s&nbsp; <span style="font-size:x-small;">RaiseListChangedEvents to false</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">- Disable the select objects PropertyChanged event (-= Event(PropertyChanged))</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">- Called the UnbindBindingSource method for the two BindingSources and passing saveObject and true parameters to both</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">- Invoked ApplyEdit on the Parent Form&#39;s root object</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">- Invoked Save on the Parent Form&#39;s root object</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">- Re-established the object&#39;s PropertyChanged event</span><font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;- Invoked the BindUI() event</p>
+<p>- Restored events by setting the <span style="font-size:x-small;">BindingSource&#39;s&nbsp; RaiseListChangedEvents to true</span></p>
+<p><span style="font-size:x-small;">- Reset the bindings on the BindingSources (<span style="font-size:x-small;">ResetBindings).</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"></span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">Can anyone lend a helping hand before I completely loose my mind.&nbsp; It will be much appreciated.</span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"></span></span></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

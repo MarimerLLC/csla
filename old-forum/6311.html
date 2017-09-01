@@ -1,0 +1,243 @@
+<html><header><title>CustomCriteria derived from CriteriaBase or Linq with Lambda expression?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CustomCriteria derived from CriteriaBase or Linq with Lambda expression?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6311.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Monday, February 02, 2009</h2><P>Ok, until now i've been using custom criteria classes which contain string properties. Setting one or more of those properties results into firing a query against the database resulting in a subset of the data.</P>
+<P>But reading chapter 14 of the 2008 business entities book i'm not sure if Linq is just more powerfull as the CriteriaBase class, except for it's serialization.</P>
+<P>Question 1:<BR>Linq to CSLA is against a prefetched resultset?</P>
+<P>Question 2:<BR>Why should i use a CustomCriteria class while System.Linq.Expressions.Expression will be more dynamic? Ofcourse the query result has to be smaller&nbsp;resulting in&nbsp;populating less business objects in&nbsp;the list.</P>
+<P>Something like:</P>
+<P>public static PersonList GetPersons(Func&lt;Person,bool&gt; criteria)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return DataPortal.Fetch&lt;PersonList&gt;(criteria);<BR>}</P>
+<P>And in the DataPortal_Fetch method or in the ObjectFactory doing a Predicate.Compile or something.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 02, 2009</h2>1) Yes, LINQ to CSLA is simply an extension to LINQ to Objects, and is nothing like LINQ to SQL.<br /><br />CSLA .NET is not a data access or ORM technology. Those kind of technologies benefit from allowing someone to create a query against their entities that they translate into some form of data access.<br /><br />But CSLA is, in my mind, not about data-centric application design or object design. It is about behavioral and responsibility-driven design. So beyond simple sorting/filtering behaviors, reshaping the object model simply means you did your object design wrong.<br /><br />2) Part of the answer for 2 is the same as 1.<br /><br />But another part is abstraction. The UI developer should be absolutely ignorant of the shape of the data or the ORM entities. Those concepts belong to a much lower layer, and having the UI aware of them decreases your maintainability radically.<br /><br />The UI should interact with the object model. The object model should exist because it meets the needs of the use case or story (which often means the UI). So the idea that the UI developer should have to do anything more than pass in clearly defined parameters to the factory method flies in the face of my view on app design.<br /><br />You could then argue that the factory should know about this stuff. But the factory method is not about talking to the database either, and so IT shouldn't know about such low-level concepts. Again, that simply reduces maintainability by increasing coupling.<br /><br />You can then argue that the DataPortal_XYZ methods should know about this stuff. And that's true if they talk directly to the database. But if you have a formal data access layer, then imo only the DAL should actually know about the shape of the database or data entities.<br /><br />Separation of concerns also means separation of knowledge. Application layers should be created on a "need to know" basis, and the less each layer needs to know about any other layer, the happier you'll be in the long run.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Tuesday, February 03, 2009</h2><P>Ok, that means LINQ to CSLA isn't a technology to use to let the factory or dataportal_xyz methods change there underlaying query? Keeping in mind that the business objects are differend&nbsp;then the data objects, but the business objects do share common properties with the data objects.</P>
+<P>Anyway about the criteria objects, they aren't that flexible and do have alot to impliment. Special criteria for exact matches, contains, smaller then, greater then, having count, etc... It isn't available in the criteria base class for sure :)</P>
+<P>The UI interacting with the Business objects: <BR>LINQ to CSLA over the business objects<BR><BR>The&nbsp;Business objects&nbsp;interacting with the&nbsp;DAL <BR>Reading the LINQ to CSLA expression &amp; does for exanple LINQ to SQL against the DAL<BR><BR>The DAL compile the query and gives a DTO back to the business layer.<BR><BR>So my real question:&nbsp;<BR>Is above possible&nbsp;with a CustomCriteria&nbsp;class?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If you can figure out how to serialize a LINQ to SQL query (or
+whatever kind of LINQ data access technology you are using) across the wire using
+the BinaryFormatter then you can certainly create a criteria class that would
+include such a query.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I was simply saying that, in my view, having the UI become aware
+of the shape of your database or data entities is not good. But other people
+clearly disagree and push that type of information through all levels of their
+applications.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In years past, I too allowed the UI to know about such things,
+and I found it to be a real mess. Some people either haven&#8217;t had that
+experience, or feel that the disaster can be averted through techniques other
+than clear separation of concerns and strict layer boundaries.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the end, if you&#8217;ve got a scheme that works for you,
+then that&#8217;s great!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, February 04, 2009</h2><P>Ok, after some googling i believe it isn't possible to completely serialize an expression tree, only something called 'Funcletization' is getting close. </P>
+<P>I did found the information in this link:<BR><A href="http://social.msdn.microsoft.com/forums/en-US/vcsharp2008prerelease/thread/67f63b9a-ea44-4428-aea0-5dcdb61e918b/">http://social.msdn.microsoft.com/forums/en-US/vcsharp2008prerelease/thread/67f63b9a-ea44-4428-aea0-5dcdb61e918b/</A></P>
+<P>Anyway, i think the criteria class is the only class&nbsp;which can easy parse criteria that can be used to filter the data query. But still alot of our customers want to filter data based on 'criteria contains' or 'criteria greater then', etc..</P>
+<P>How to handle that? Extend that in a CustomCriteria class? It's a shame that those Linq expressions can't be used ;)<BR>Something like Linq to REST.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I know that people have created more powerful criteria base
+classes that understand some expressions. I was kind of hoping one of them
+would jump in on this thread :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The point though, is that you can absolutely create a general
+criteria base class that understands at least limited expression concepts, and
+then use that to easily create criteria objects where necessary.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, February 05, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> <BR><SPAN>I know that people have created more powerful criteria base classes that understand some expressions. I was kind of hoping one of them would jump in on this thread :)<o:p></o:p></SPAN>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>The point though, is that you can absolutely create a general criteria base class that understands at least limited expression concepts, and then use that to easily create criteria objects where necessary.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>Rocky<BR></SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>I hope your right, i'm looking for such a criteria class with lambda expressions or something.</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Thursday, February 05, 2009</h2><P>Sorry in advance for the long post</P>
+<P class=MsoNormal><FONT face=Calibri>Hi</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I have taken an unconventional approach to providing criteria for my DataPortal_Fetch methods to act on. I started with this some years ago before Linq was available. I will briefly describe it and if you are interested in more detail then I can go further. I am a big fan of code generation and my approach uses a combination of code generated into my business objects and some of my own framework classes. It was also designed to tackle the ‘Deep Data’ problem (retrieving multi-generation object graphs).</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>In retrospect, I wanted to achieve three objectives:</FONT></P>
+<P class=MsoListParagraphCxSpFirst><SPAN><SPAN><FONT face=Calibri>1.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Solve the ‘Deep Data’ issue</FONT></P>
+<P class=MsoListParagraphCxSpMiddle><SPAN><SPAN><FONT face=Calibri>2.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Provide a flexible data selection criteria</FONT></P>
+<P class=MsoListParagraphCxSpLast><SPAN><SPAN><FONT face=Calibri>3.</FONT><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>Provide database portability</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I believe that I achieved the first, have made reasonable inroads on the second and laid some foundations for the third. I am a one man band (learning .Net etc as he goes) so I can hardly claim a fully fashioned solution, however I am happy to share my thoughts with others in the spirit of projects like CSLA.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>My business objects are generated from two metadata sources. The first defines the database and the second defines the mapping of this data to the business objects. The business object definitions are organised into namespaces that correspond with the use cases that I am designing for. The generation process emits business object partial classes, DDL for the DB schema and DML the CRUD stored procedures. The code generator is plugable so that specific databases can be supported, though SQL Server is tha only one required to date. The SPs are pretty standard apart from the ‘Read’ which itself actually generates the final code to be executed. This is so the ‘Where’ clause can be injected at run time. (in fact a where clause for each generation retrieved).</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The SafeDataReader is replaced by classes implementing my own data source interface IMitDataSource (MIT is my company name). Basically, there are two implementations of this interface. The first wraps a SafeDataReader and is used for parent/child situations and the second wraps a DataSet and supports multiple generations. </FONT></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>interface</SPAN> <SPAN>IMitDataSource</SPAN> : <SPAN>IDisposable<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ISelectSpecification</SPAN> Specification { <SPAN>set</SPAN>;}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ISafeDataReader</SPAN> DataReader { <SPAN>get</SPAN>;}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> GetNextResult();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> NextRow();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>void</SPAN> AddRelation(<SPAN>string</SPAN> name, <SPAN>int</SPAN> parentTable, <SPAN>string</SPAN> parentColName, <SPAN>int</SPAN> childTable, <SPAN>string</SPAN> childColName);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>bool</SPAN> DataExists();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri><SPAN>&nbsp;</SPAN>The root BO DataPortal_Fetch contains a generated map that sets up the relations in the dataset (the SafeDataReader based implementation does not need any help). The IMitDataSource can now be passed through the object graph in the normal way allowing the various business objects to hydrate themselves. The data source ensures that the dataset tables are presented correctly.</FONT></P>
+<P class=MsoNormal><SPAN>private</SPAN><SPAN> <SPAN>void</SPAN> DataPortal_Fetch(<SPAN>ISelectSpecification</SPAN> spec)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>InitialiseCollections();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>using</SPAN>(<SPAN>IMitDataSource</SPAN> ds = <SPAN>Database</SPAN>.GetDataSource(spec, <SPAN>true</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//Load Data source with relation specs<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"Person"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"PersonRef"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>1, <SPAN>"PersonObjId"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"ClientAttendance"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>2, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"GroupSession"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>2, <SPAN>"SessionRef"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>3, <SPAN>"GroupSessionObjId"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"AccountEntry"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>4, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"AttendanceNote"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>5, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"Measurement"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>6, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"StockMovement"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>7, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"ClientOcuRecord"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>8, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"ClientOrderLine"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>0, <SPAN>"ClientObjId"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>9, <SPAN>"ClientRef"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.AddRelation(<SPAN>"StockRecord"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>9, <SPAN>"StockRecordRef"</SPAN>,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>10, <SPAN>"StockRecordObjId"</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>ds.NextRow();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>//Load directly mapped properties<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>DoFetchData(ds);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>// load child objects<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>DoFetchChildData(ds);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><FONT face=Calibri>The mapping metadata is generated at the same time as the SP. This is a very brief description and once working has worked very well. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Once I had solved the deep data problem I attacked the criteria issue. You will see from the example above an ISelectSpecification is passed to the data portal rather than a criteria object. This ISelectSpecification is passed to the IMitDataSource which in turn injects the Where clauses via parameters into the Select SP. So how does the ISelectSpecification get built?</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>The code generator generates three partial class files: one for development of additional code; the second the classic CSLA stuff like properties, factory methods, data portal methods, etc and the third contains a nested class containing metadata concerning the business object properties and some additional mapping information. A static method on the BO provides a criteria object which is derived from MItBusinessObjectSelectCriteriaBase (BOSCB) which is where all the action is. This method takes one parameter the type of Criteria builder that is specific to the SQL dialect of the database product. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>The result in short is a Fluent interface on my BOs for defining selection criteria. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN>var</SPAN><SPAN> criteria =<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ClientProgramInfo</SPAN>.GetSelectCriteria(<SPAN>typeof</SPAN>(<SPAN>StandardSelectionCriteriaBuilder</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>criteria.AND.WeekNumber.Equal(_client.CurrentAttendance.WeekNumber);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>criteria.AND.Sex.Equal(_client.Sex);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>criteria.AND.IsManagementWeek.Equal(_client.CurrentAttendance.IsInManagemetnt);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>var</SPAN><SPAN> programs = <SPAN>ClientProgramInfoList</SPAN>.GetClientProgramInfoList(criteria);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>The result is a set of Where clauses injected into the Select SP that gives me the data I am looking for. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I have just completed the first phase of an extension to my WinForms environment that allow a user to create their own Criteria. This reflects over the business objects and provide a form in which they can define and save their own queries. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>This is only work in progress with plenty to be done yet. At the moment it is only working for criteria on root BOs but will be extended over time. As is usual with these things, I can see loads of mistakes and potential improvements. However to date I have found it very useful. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>I present it purely to give you some ideas and get some critical feedback.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>HTH</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Simon</FONT></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, February 09, 2009</h2>It seems u have done alot of work, sadly it didn't start any critical feedback..<BR>Im not negative nor positive, im just wondering how your "StandardSelectionCriteriaBuilder" class and "MItBusinessObjectSelectCriteriaBase" class look like :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Monday, February 09, 2009</h2><P>Thanks for the post. The silence was deafening. My aproaches are not everybodies cup of tea but this one cant really be so aweful that there were no comments. </P>
+<P class=MsoNormal><FONT face=Calibri>The MItBusinessObjectSelectCriteriaBase (SCB) is the base for BO’s nested SelectProperties class and SelectCriteria class. It allows the criteria to be strung to together in terms of the property names, the type of comparison, and the literal values to be compared with. <SPAN>&nbsp;</SPAN>There are two additional classes, in my framework:CriteriaComparitor and SelectorCore. The SelectorCore is a nested class in the SCB and has the picture of how the criteria is building up. It is passed between SCB instances in the form of SelectProperties and the SelectCriteria. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN>var</SPAN><SPAN> criteria =<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>ClientProgramInfo</SPAN>.GetSelectCriteria(<SPAN>typeof</SPAN>(<SPAN>StandardSelectionCriteriaBuilder</SPAN>));<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>In this example ClientProgramInfo is my BO the static GetSelectCriteria returns a SelectCriteria object constructed with the CriteriaBuilder and some additional data concerning the BO (all of this gets generated with the BO). The SelectCriteria class has two properties: AND and OR. Both of these properties return a <U>BOclass</U>Properties object (nested class of the BO in this case ClientProgramInfo).</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>ClientProgramInfoProperties</SPAN> AND<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Link = <SPAN>LinkRelation</SPAN>.AND;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>new</SPAN> <SPAN>ClientProgramInfoProperties</SPAN>(<SPAN>this</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN><FONT face=Calibri></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>The <U>BOclass</U>Properties class has a property for each property on the BO. Each of these properties returns a CriteriaComparitor object that allows a comparison to be defined. An example of a property.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><SPAN>public</SPAN><SPAN> <SPAN>CriteriaComparitor</SPAN>&lt;<SPAN>int</SPAN>&gt; WeekNumber<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>PropName = <SPAN>"GroupSessions.ClientProgramInfo.WeekNumber"</SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>return</SPAN> <SPAN>new</SPAN> <SPAN>CriteriaComparitor</SPAN>&lt;<SPAN>int</SPAN>&gt;(<SPAN>this</SPAN>);<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Prop name is a protected property of the SCB which passes the value to the SelectorCore object. A CriteriaComparitor (also derived from the SCB) for the type of the property is constructed passing the SelectCriteria as the only argument. Under the covers the SelectorCore is passed along. The CriteriaComparitor has a number of methods for each of the comparisons required: Equal, Less Than, Between, etc. Each method updates its base the SCB which updates the SelectorCore which will be passed on down the chain. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>One of the main reasons for designing it this way was to get intellisence support. To start off I had criteria that could take the string value for property names but that was far to much like hard work to remember all of the property names were let alone the correct spelling.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Before the Select SP is called the ISelectSpecification which now contains the complete criteria specification creates the required IDataSelectionCriteriaBuilder which in turn uses the data provided by the SelectorCore to create the injectable Where clauses.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>There is a bit more to it but essentially that is the basic idea. As I said before it relies heavily on code generation to be an effective development aid. </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Let me know if you want to get a little deeper</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Regards</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Calibri>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Calibri>Simon</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Wednesday, February 11, 2009</h2>I believe it works, but as u say.. it's .NET 2.0 and my guess is that it's all hardcoded. Blame me if i'm wrong, i don't doubt that u have a good working solution for your situation.<br /><br />Strange enough noone else is responding to this post, i just can't believe noone made some sort of LINQ supporting criteria class based on the 3.5 framework.<br /><br />Anyway, thanks for the long post.<br /><br />I'm not sure if i want to get a little deeper :)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Thursday, February 12, 2009</h2><P>Hi rfcdejong, I am not sure what you mean by 'its .Net 2.0'. Yes I started down this route in 1.1 days. I very mush thought that once Linq was available I would abandon my approach but actually I havent. To my mind Linq is a great way to construct queries and all the other stuff it enables whether as L2S or with EF but is very much applicable on the server side. I am using stored procedures there at the moment but I could change that to Linq if I felt inclined. The advantage that I get from what I have described is a way to easily define queries on the Business Objects and in terms of the business objects without having to understand the what mechanism is used to retreive the data. So if the data portal is accessing a web service for the data and provided that a query can be defined on the web service a CriteriaBuilder object could be written to do the translation from the client side criteria &nbsp;specification to the query mechanics. </P>
+<P>Yes, some of it is hardcoded, but that is just metadata. It could easily be contained in a file or in the database. I just chose to take advantage of partial class files and nested objects. But this is all generated and once generated is never touched or seen, just like all the other metadata generated by Visual Studio or the compiler.</P>
+<P>To my mind it seems far easier to have a general purpose mechanism for criteria rather than having to write criteria classes of each specific case. Mind you I am sure that I wll now find a use case where my approach will fail but it hasnt happened yet</P>
+<P>Simon</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Thursday, February 12, 2009</h2><P>Perhaps, but for now&nbsp;i guess we don't have many use cases yet..</P>
+<P>It would be alot easier if we just supplyed 1 criteria which would search an special indexed table which contains references to all other data. The way google or any other search machine search. Just 1 field in which users type what they seek and then the application returns results which might reside in other tables. A generic search mechanism..<BR><BR>omg.. alot of technical stuff to impliment.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon_may replied on Thursday, February 12, 2009</h2>You have my sympathy. Thats is exactly where I started from. But you have to imagine how you can effectively interface with that object. Which is why I have gone for a BO driven Fluent api.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 12, 2009</h2><P>The problem, as I understand it, is that serializing a LINQ expression tree is non-trivial (otherwise Microsoft would have made them serializable to start with). And not all LINQ expressions generate an expression tree by default, so you have to force it to go down that path, and then write a non-trivial serializer.</P>
+<P>I've been helping my son with math lately, so I apologize if not everyone knows this, but "non-trivial" is math terminology for "you are screwed" :)</P>
+<P>In other words, it can be done. It just requires a lot of time, a ridiculous amount of stubborn determination and enough hair that you might still have some left after you pull most of it out.</P>
+<P>Then again, this is all hearsay on my part. I haven't actually tried to tackle this, I've just read the accounts of people who have tried (or talked to them). It doesn't sound like fun to me - and since I do CSLA for free, fun ranks fairly high in my prioritization scheme for features :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Wednesday, February 11, 2009</h2>I'm struggling the same pain. What a nice thing if DataPortal can take Func&lt;T, bool&gt; as argument. Currently I'm doing the translation from criteria object to linq expression in my ObjectFactory. I don't know the internal details of this&nbsp; linq expression, seems it's not an object at all?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

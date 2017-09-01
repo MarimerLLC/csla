@@ -1,0 +1,15 @@
+<html><header><title>DataPortal_Create Failing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Create Failing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/706.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat posted on Monday, July 24, 2006</h2><P>Hi</P>
+<P>I have a class called DiaryEntry declare as follows:</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>abstract</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>DiaryEntry</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>BusinessBase</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>DiaryEntry</FONT><FONT size=2>&gt;</FONT></P>
+<P><FONT size=2>I also have a class called Task (and several others) that inherit from Diary:</FONT></P><FONT size=2><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>Task</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>DiaryEntry</FONT></P>
+<P><FONT color=#000000 size=2>I only wish to inherit behavior so all data access code is within the DiaryEntry class. My problem is that the framework doesn't seem to recognise this when call the DataPortal_xxx methods. </FONT></P>
+<P><FONT color=#000000>When I create a new Task object, the framework is calling the DataPortal_Create method in BusinessBase instead of in the DiaryEntry class.</FONT></P>
+<P><FONT color=#000000 size=2>Just for fun I also tried placing the DataPortal_Create method within my Task object but the result was the same.</FONT></P>
+<P><FONT color=#000000 size=2>Is this a limitation of the framework? If so, is there a way to work around this?</FONT></P>
+<P><FONT color=#008080><FONT size=2>TIA</FONT></FONT></P>
+<P><FONT color=#008080><FONT size=2>Smeat</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Smeat replied on Monday, July 24, 2006</h2><P>I should have searched the forum before posting my question.</P>
+<P>The following link shows how to get around this:</P>
+<P><A HREF="/forums/thread/3033.aspx">http://forums.lhotka.net/forums/thread/3033.aspx</A></P>
+<P>Not an ideal solution but Rocky's response explains why the criteria parameter has to be declared as type object.</P>
+<P>Smeat</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

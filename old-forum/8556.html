@@ -1,0 +1,58 @@
+<html><header><title>Cannot insert child objects (Possible stale data in FieldMAnager)??</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Cannot insert child objects (Possible stale data in FieldMAnager)??</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8556.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ryanlio posted on Friday, February 19, 2010</h2><p>Hi, appreciate any help on this.</p>
+<p>I&#39;ve got a parent object A, and child objects B.</p>
+<p>parent A consists of a a field A1 that only gets updated after parent object A gets inserted into the database (similar to an identity field)</p>
+<p>Now, after the parent get inserted and field A1 gets the returned value, the new value of A1 get updated on the child objects&#39; field B1.</p>
+<p>The above are achieved by having child list B subscribed to an event of parent A.</p>
+<p>However, when the child objects are inserted into the database via FieldManager.UpdateChildren(this). Somehow the child field B1 still contains an empty value even though the iteration to update the objects are looped thru.</p>
+<p>&nbsp;</p>
+<p>Codes:</p>
+<p>Child&#39;s DataPotal_Insert()</p>
+<p>
+<p><span>		</span>protected override void DataPortal_Insert()</p>
+<p><span>		</span>{</p>
+<p><span>			</span>using(SafeDataReader reader = DataAccessLayer.Instance.MSSKitSetInsert(ReadProperty(_mSSNoProperty), ReadProperty(_remarksProperty)))</p>
+<p><span>			</span>{</p>
+<p><span>				</span>if(reader.Read())</p>
+<p><span>				</span>{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(_mSSNoProperty, reader.GetString(&quot;NewMssNo&quot;));</p>
+<p><span>				</span>}</p>
+<p><span>			</span>}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//Raise an Event to tell child objects to update with New MssNo</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnMSSKitSetSaved(this, new Csla.Core.SavedEventArgs(this));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; //!!!! SOMEHOW FIELDMANAGER STILL HOLDS THE PREVIOUS CHILD OBJECT B, FIELD B1&#39;s VALUE!!!!</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FieldManager.UpdateChildren(this);</p>
+<p><span>		</span>}</p>
+</p>
+<p>&nbsp;</p>
+<p>List of Child Objects B</p>
+<p>//Code to run when parent object is Saved</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;void MSSKitSet_MSSKitSetSaved(object sender, Csla.Core.SavedEventArgs e)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MSSKitSet mssKitSet = (MSSKitSet)sender;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;foreach (MSSKitSetItem item in this)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;item.MSSNo = mssKitSet.MSSNo;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>Ryan</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>triplea replied on Friday, February 19, 2010</h2><p>Is it possible that you simply are not subscribing to the parent event correctly? Maybe you could provide some codeto display how you do that or try setting a breakpoint in the handler to see if you ever actually update the value after <em>OnMSSKitSetSaved(this, new Csla.Core.SavedEventArgs(this));</em> is called in the first place.</p>
+<p>Also, if <em>_mSSNoProperty</em> only gets updated once on insert, would it not be simpler to just loop through your child collection and update the value(s) manually?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Friday, February 19, 2010</h2><p>I&#39;d agree with triplea that it would be easier to just have a method on ObjectB were you could set the appropriate value, if this applied to all the items within the collection or only one it doesn&#39;t really matter, the method would determine the inner workings and could pass in the new value at the same time.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ryanlio replied on Friday, February 19, 2010</h2><p>Hi Triplea,&nbsp;</p>
+<p>We make changes to your recommendations, and it working fine now.</p>
+<p>Its weird that the our previous implementation has got the event triggered and properties updates.</p>
+<p>Well, important thing is that it&#39;s been sorted out with a different implementation.</p>
+<p>THANKS!!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, February 19, 2010</h2><p>Hi&nbsp;ryanlio,</p>
+<p>Just out of curiosity, is there any particular reason why you need to&nbsp;cascade&nbsp;the root ID value of the parent down to the children? </p>
+<p>Are you only doing that to support your CRUD operations? If so, you may&nbsp;want&nbsp;to look at this:</p>
+<p><a href="http://forums.lhotka.net/forums/p/8479/40326.aspx#40326">http://forums.lhotka.net/forums/p/8479/40326.aspx#40326</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ryanlio replied on Friday, February 19, 2010</h2><p>Hi Rene,</p>
+<p>We are working on an existing system. The database is one where the parent PK is a string that is only generated via a SQL function upon insert. This means that we are not able to assign a PK value at the moment the object is instantiated. As the childs FK is of the same value, we therefore need the value to cascade to the child.</p>
+<p>Hope this helps.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, February 19, 2010</h2><p>hmmm, I guess I am missing something,</p>
+<p>Why can&#39;t your <strong>Child_Insert</strong> for example, look something like this:</p>
+<p>private void Child_Insert(Parent parent)<br />{<br />&nbsp;&nbsp; INSERT INTO SomeTable (ForeignerKeyColumn, SomeOterColumn) VALUES (parent.A1, this.SomeVal)<br />}</p>
+<p>Note how you are passing the parent reference to the funciton and note how you are getting the parent value of <strong>A1</strong> directly form the parent reference. There is no need to store that value&nbsp;it on the child too.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>bniemyjski replied on Friday, February 19, 2010</h2><p>
+<p>Hello,</p>
+<p>The issue is that he has a non identity pk, like in the example of petshop. One thing you need to do is override the DataPortal_Create() and create a default value for your pk. Then you should just be passing down the parent to the Child_Insert and also the connection ;). You should check out how the latest nightly build of the CodeSmith CSLA templates handles this. You can actually update a non identity PK and have it cascade down to the children. I don&#39;t think its recommended but it is possible.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

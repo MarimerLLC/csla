@@ -1,0 +1,149 @@
+<html><header><title>Generic SaveObject</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic SaveObject</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5845.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Friday, November 21, 2008</h2>I'm trying to implement a generic SaveObject method :<br>
+<br>
+&nbsp;&nbsp;&nbsp; private void SaveObject&lt;T&gt;(T obj) where T : Csla.Core.ISavable<br>
+&nbsp;&nbsp;&nbsp; {<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = (T)obj.Save();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException ex)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //process normal data exceptions here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //process unexpected exceptions here<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Why does the Save method of the interface ISaveble returns an <b>object </b>(csla book 2.1). Why it is not using also generics? Like the following :<br>
+public interface ISaveble&lt;T&gt;<br>
+{<br>
+&nbsp;&nbsp;&nbsp;&nbsp; T Save();<br>
+&nbsp;&nbsp;&nbsp;&nbsp; event EventHandler&lt;SavedEventArgs&gt; Saved;<br>
+}<br>
+<br>
+If that would be the case I could write the following:<br>
+&nbsp;&nbsp;&nbsp; private void SaveObject&lt;T&gt;(T obj) where T : Csla.Core.ISavable<br>
+
+&nbsp;&nbsp;&nbsp; {<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj = obj.Save&lt;T&gt;();<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException ex)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+
+<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //process normal data exceptions here<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //process unexpected exceptions here<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+
+&nbsp;&nbsp;&nbsp; }<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, November 22, 2008</h2><P>It doesn't use a generic type because generics are not polymorphic. And the intent of ISavable is to enable polymorphic code that can save any savable object.</P>
+<P>Basically, it is intended to enable what you are doing, but without the need for any generic types. So you could create a base Page/Form/Window class that "just knows" how to save a business object, regardless of the type of that object.</P>
+<P>Generics are a fine thing, but they have some serious negative side-effects at times, the most notable being the loss of polymorphism.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, November 24, 2008</h2>I'm trying to understand a little bit more "generics are not polymorphic".<br>
+So I've created a little example where you can see a method SaveObject
+which takes an ISavable&lt;T&gt; as argument. The only thing which is
+not nice is that you have to give the type eg Customer to the
+SaveObject method but ISavable is using generics. So do you mean it is
+not possible to call SaveObject without given the type Customer? <br>
+I'm still having some problems to understand generics. Can you explain a little bit more?<br>
+<br>
+using System;<br>
+using System.Collections.Generic;<br>
+using System.Text;<br>
+<br>
+namespace ConsoleApplication2<br>
+{<br>
+&nbsp; class Program<br>
+&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; static void Main(string[] args)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Customer customer = new Customer();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SaveObject&lt;Customer&gt;(customer);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; private static void SaveObject&lt;T&gt;(ISavable&lt;T&gt; obj)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; obj.Save();<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp; }<br>
+}<br>
+<br>
+<br>
+------------Interface ISavable --------------------------------------<br>
+<br>
+using System;<br>
+using System.Collections.Generic;<br>
+using System.Text;<br>
+<br>
+namespace ConsoleApplication2<br>
+{<br>
+&nbsp; interface ISavable&lt;T&gt;<br>
+&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; T Save();<br>
+&nbsp; }<br>
+}<br>
+<br>
+------------Class Entity which implements ISavable --------------------------------------<br>
+<br>
+using System;<br>
+using System.Collections.Generic;<br>
+using System.Text;<br>
+<br>
+namespace ConsoleApplication2<br>
+{<br>
+&nbsp; public abstract class Entity&lt;T&gt; : ISavable&lt;T&gt;<br>
+&nbsp; {<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; #region ISavable&lt;T&gt; Members<br>
+<br>
+&nbsp;&nbsp;&nbsp; public T Save()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Console.WriteLine("Object " + typeof(T).Name + "is been saved");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return default (T);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; #endregion<br>
+&nbsp; }<br>
+}<br>
+<br>
+------------Class Customer&nbsp; --------------------------------------<br>
+<br>
+using System;<br>
+using System.Collections.Generic;<br>
+using System.Text;<br>
+<br>
+namespace ConsoleApplication2<br>
+{<br>
+&nbsp; public class Customer:Entity&lt;Customer&gt;<br>
+&nbsp; {<br>
+&nbsp; }<br>
+}<br>
+<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

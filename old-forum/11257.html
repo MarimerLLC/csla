@@ -1,0 +1,10 @@
+<html><header><title>Rules for delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rules for delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11257.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Alexey posted on Monday, March 26, 2012</h2><p>&nbsp;</p>
+<p>Good day</p>
+<p>Learn CSLA, developing an small project.</p>
+<p>I have a company and the person objects.</p>
+<p>In humans, one company, the company has a few people.</p>
+<p>&nbsp;</p>
+<p>How do I make a rule that allows you to remove the company that are not referenced from the people and does not allow if the links are?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, March 26, 2012</h2><p>There&#39;s 2 kinds of delete:</p>
+<p><b>Immediate Deletion</b> (only takes an Id in) and should return an Exception if delete is not possible. <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IE, Implement the check in DataPortal_Delete or use Refernetial Integrity in the database.</p>
+<p><b>Deferred Deletion</b> (an object is loaded, marked as deleted but actual delete does not happen until Save is called).&nbsp; <br />Here you can create an AuthorizationRule that will accept the object and check if object has &quot;children&quot;). </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

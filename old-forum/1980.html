@@ -1,0 +1,192 @@
+<html><header><title>GetIdValue() is being called recursively during DataBinding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>GetIdValue() is being called recursively during DataBinding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1980.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jspurlin posted on Thursday, December 14, 2006</h2>I have a situation where GetIdValue is being called recursively when binding to a data aware control.<br><br>The code is a little lengthy, and though I am happy to paste it here, I would like to know if there are "scenarios" where a Recursive Call to GetIdValue() happens during databinding.<br><br>Here is the object hierarchy <br><br>Office<br>Office loads:<br><font color="#006400" size="2">private OfficeAddresses _addresses<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = OfficeAddresses.NewOfficeAddresses();</font><br><br>OfficeAddress : BaseAddress<br>OfficeAddress loads:<br><font color="#006400" size="2">private OfficeAddressAssignments _assignments<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; = OfficeAddressAssignments.NewOfficeAddressAssignments();</font><br><br>OfficeAddressAssignment : BaseAddressAssignments<br><br>I know this isn't much detail.&nbsp; In effect I have Parent, Child which has its own base class, and Grandchild which has its own base class.<br><br>The Fetch appears to work fine.&nbsp; The problem appears to be binding to a data aware control: a recursive call to GetIdValue() throws a <font color="#0000ff">StackOverflowException when I click to edit the record</font>.<font color="#000000"> </font><br><br>Any advice is appreciated. Thank you.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, December 14, 2006</h2>What are you returning inside GetIdValue() ? Are you calling GetIdValue yourself inside anywhere in your bo or in a base class?<br><br><br>GetIdValue should return the value of an variable (or combination of variables) inside your BO.<br>Are you calling a property instead of a variable?<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jspurlin replied on Thursday, December 14, 2006</h2>Andres, thank you for the quick reply.&nbsp; I did find that the error was a databinding routine, therefore a repeated call to a property which in turn hung up the app repeatedly calling for the GetIdValue().<br><br>But, this does raise some questions for me, and I am glad you asked.&nbsp; I have a ReadOnly value AddressId in the BaseClass and I call GetIdValue which returns _addressId.<br><br>I am surprised by the recursion though, so I do need to ask if this recursion is normal as each property is binding to the page.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, December 14, 2006</h2>In the scenario you mention, it shouldn't be a problem, although, it does seem pointless to call GetIdValue from your property when you can access _addressId directly...<br>Not that it is a problem, but GetIdValue returns a value of type object, so an unboxing or cast must take place there.<br><br>Are you using VB? If you are you should try setting option strict on a project level... It really is amazing how many times it can get you in trouble not to set that on!! I'm not sure it even deserves being called a feature, and it should at least be set to on by default... (you can default it to on inside visual studio's options dialog)<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Yost replied on Monday, June 18, 2007</h2><P>I am also getting this problem.&nbsp; I have gone thru my code to make sure that ID property was not being used and just the variable but alas it is still causing me headaches.&nbsp; Here's the "info" class as well as the "List" class that are being used.</P>
+<DIV>
+<P><SPAN>using</SPAN> System;</P>
+<P><SPAN>using</SPAN> System.Collections.Generic;</P>
+<P><SPAN>using</SPAN> System.Text;</P>
+<P><SPAN>using</SPAN> Csla;</P>
+<P><SPAN>using</SPAN> Csla.Data;</P>
+<P>&nbsp;</P>
+<P><SPAN>namespace</SPAN> GTM.Compliance.Core.TPL</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>TPLCountryList</SPAN>:<SPAN>ReadOnlyListBase</SPAN>&lt;<SPAN>TPLCountryList</SPAN>, <SPAN>TPLCountryInfo</SPAN>&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>static</SPAN> <SPAN>TPLCountryList</SPAN> GetCountryList()</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> <SPAN>DataPortal</SPAN>.Fetch&lt;<SPAN>TPLCountryList</SPAN>&gt;(<SPAN>new</SPAN> <SPAN>Criteria</SPAN>(0));</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<DIV>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> TPLCountryList()</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {&nbsp; <SPAN>/* Require use of factory methods */</SPAN> }</P>
+<P>&nbsp;</P>
+<P><SPAN>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion</SPAN></P>
+<P>&nbsp;</P>
+<P><SPAN>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #region</SPAN> Data Access</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; [<SPAN>Serializable</SPAN>()]</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>class</SPAN> <SPAN>Criteria</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>int</SPAN> mId;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>int</SPAN> Id</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; { <SPAN>return</SPAN> mId; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> Criteria(<SPAN>int</SPAN> id)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; { mId = id; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>void</SPAN> DataPortal_Fetch(<SPAN>Criteria</SPAN> criteria)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>this</SPAN>.RaiseListChangedEvents = <SPAN>false</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>List</SPAN>&lt;<SPAN>TPLCountryInfo</SPAN>&gt; dcl = <SPAN>CoreGlobal</SPAN>.DBInterface.GetCountries();</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>this</SPAN>.IsReadOnly = <SPAN>false</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>foreach</SPAN> (<SPAN>TPLCountryInfo</SPAN> d <SPAN>in</SPAN> dcl)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>this</SPAN>.Add(d);</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>this</SPAN>.IsReadOnly = <SPAN>true</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>this</SPAN>.RaiseListChangedEvents = <SPAN>true</SPAN>;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P><SPAN>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; #endregion</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P>
+<P>&nbsp;</P>
+<DIV>
+<P><SPAN>using</SPAN> System;</P>
+<P><SPAN>using</SPAN> System.Collections.Generic;</P>
+<P><SPAN>using</SPAN> System.Text;</P>
+<P><SPAN>using</SPAN> Csla;</P>
+<P><SPAN>using</SPAN> Csla.Data;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><SPAN>namespace</SPAN> GTM.Compliance.Core.TPL</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp; [<SPAN>Serializable</SPAN>]</P>
+<P>&nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>class</SPAN> <SPAN>TPLCountryInfo</SPAN>:<SPAN>ReadOnlyBase</SPAN>&lt;<SPAN>TPLCountryInfo</SPAN>&gt;</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>int</SPAN> _intCountryID;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>string</SPAN> _strCountryName;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>string</SPAN> _strISO3;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>private</SPAN> <SPAN>string</SPAN> _strISO2;</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> TPLCountryInfo()</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> TPLCountryInfo(<SPAN>int</SPAN> id, <SPAN>string</SPAN> name, <SPAN>string</SPAN> iso3, <SPAN>string</SPAN> iso2)</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _intCountryID = id;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _strCountryName = name;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _strISO3 = iso3;</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>int</SPAN> CountryID</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> _intCountryID;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> CountryName</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> _strCountryName;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> ISO3</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> _strISO3;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>string</SPAN> ISO2</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>get</SPAN></P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> _strISO2;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>public</SPAN> <SPAN>override</SPAN> <SPAN>string</SPAN> ToString()</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> _strCountryName;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>protected</SPAN> <SPAN>override</SPAN> <SPAN>object</SPAN> GetIdValue()</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <SPAN>return</SPAN> _intCountryID;</P>
+<P>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P></DIV>
+<P>&nbsp;</P></DIV></DIV></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 18, 2007</h2>I don't see anything functionally incorrect in that code. So when you bind the list it locks up, and if you break in the debugger it always breaks in GetIdValue()? That's what would happen if it is a recursive issue - and then eventually you'll get a stack overflow exception.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Yost replied on Monday, June 18, 2007</h2>It continually jumps back into the GetIdValue() method everytime I click on another item on the screen.&nbsp; I can click on a text box and it will rebind the list to the binding source.&nbsp; Do you know what might cause this?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well GetIdValue() is called by Equals(), and Equals() is called
+any time an item must be found in a list. When you click on an item on a form,
+data binding asks the list to find that item &#8211; triggering calls to
+Equals() and thus to GetIdValue().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have a parent-child or list-detail binding configuration,
+clicking on different controls will cause binding to change the target object &#8211;
+that&#8217;s by design. I recommend creating some very simple data bound UIs
+and playing with them to understand how binding does auto-navigation between rows
+in a data source (in this case a list) &#8211; that way you can leverage what
+they&#8217;ve built in an effective manner.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Matthew Yost
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, June 18, 2007 10:45 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] GetIdValue() is being called recursively during
+DataBinding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>It continually jumps back into the GetIdValue() method
+everytime I click on another item on the screen.&nbsp; I can click on a text
+box and it will rebind the list to the binding source.&nbsp; Do you know what
+might cause this?<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matthew Yost replied on Tuesday, June 19, 2007</h2>Ok I figured out the problem.&nbsp; I had the combo box's SelectedItem/SelectedValue&nbsp;set to the ID property of the TPLCountryInfo object which was recursively being called everytime the focus was lost.&nbsp; Removing this fixed the issue.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

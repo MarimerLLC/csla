@@ -1,0 +1,13 @@
+<html><header><title>Re: What about the ADO.NET Entity Framework?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: What about the ADO.NET Entity Framework?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5321.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, August 29, 2008</h2><DIV>There are a couple things to consider here.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>First, entity objects are very much NOT business objects. They are primarily defined by the data they contain, not the behaviors they encapsulate. EF is about entities, CSLA is about business objects.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Second, fully tying CSLA to EF may be possible in a future version of EF. But in EF 1.0 things are pretty restrictive and the capabilities really aren't there. That's not to say they won't be there in a 2.0 or 3.0 release. This is the primary motivation for the addition of the ObjectFactory concept in CSLA 3.6 - preparing for the possibility that EF will be able to directly build CSLA objects in a future version.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Third, tying the future of CSLA .NET to _any_ Microsoft data access strategy would be silly. Microsoft has demonstrated no willingness to firmly support any data access technology. They used to change out every 2.4 years, now they are down to 1.6 years per technology. CSLA has been around for nearly 12 years now, and has always been data access independent. The last thing I want to do is tie my fate to something that might only be around for 2-3 years...</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>You realize the _longest_ living technology was ADO 2, followed by ADO.NET 2. And ADO.NET 2 shows no sign of going away, because all these fluffy things like EF and LINQ to SQL are built on top of it. So if I tied CSLA to _anything_ it would probably be ADO.NET itself, because that seems to have some level of staying power. But even that is too risky and limiting if you ask me...</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So while I'm adding ObjectFactory in 3.6, it is with the intent of _optionally_ supporting EF, assuming EF gets enough power to be useful in that regard. But I surely have no intention of limiting the future of CSLA by tying it too closely to any given data access whim (I mean technology).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Rocky</DIV><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

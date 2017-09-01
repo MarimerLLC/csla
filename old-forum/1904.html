@@ -1,0 +1,9 @@
+<html><header><title>ErrorProvider DataSource property - Object reference not set to an instance of an object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ErrorProvider DataSource property - Object reference not set to an instance of an object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1904.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tseveryn posted on Tuesday, December 05, 2006</h2><P>Good evening,</P>
+<P>I hope nobody is staying up that late though..</P><FONT size=2>
+<P>Short explanation of the problem:</P>
+<P>My Install_Edit user control inherits WinPart. Controls on the Install_Edit&nbsp;form are bound to the InstallBindingSource, that is in turn bound to MyProject.Library.Install business object as its data source.</P>
+<P>I am trying to set the DataSource property of&nbsp;the ErrorProvider of Install_Edit&nbsp;to the InstallBindingSource, however the list of the datasources for the ErrorProvider is empty and when i click on it&nbsp;I get the message "Object reference not set to an instance of an object".</P>
+<P>Any help would be greatly appreciated.</P>
+<P>&nbsp;</P>
+<P>Thank you,</P>
+<P>TS</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 06, 2006</h2>I've gotten that error if there are no class files in the root of the project.&nbsp; Try right clicking on the project in solution explorer, and adding a class, save, and recompile.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

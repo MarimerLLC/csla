@@ -1,0 +1,70 @@
+<html><header><title>CSla4 Object is still being edited cant be saved Silverlight4 </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSla4 Object is still being edited cant be saved Silverlight4 </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9646.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous posted on Saturday, October 16, 2010</h2><p>hello , iam using CSLA 4 with silverlight . ihave datagrid where it deals with </p>
+<p>BusinessListBase&nbsp;(rootparent List)&nbsp;where it contains BusinessBase(child of rootparent)&nbsp;and the BusinessBase Contains </p>
+<p>Child Element BusinessListBase(child list)&nbsp;&nbsp;and the last level is BusinessBase from&nbsp;(child list)&nbsp;when i add new</p>
+<p>iam using ViewModel </p>
+<p>when i save on edit everything is working fine </p>
+<p>void SaveMethod()</p>
+<p>{</p>
+<p>Model.ApplyEdit();</p>
+<p>BeginSave();</p>
+<p>}</p>
+<p>with the last code i can save when ever i want with no problems </p>
+<p>but my issue is that i when i add new Object to the root and try to save i get the following error : </p>
+<p>Object Still being edit and cant be saved .</p>
+<p>i thought when i add new object to datagrid it doesnt&nbsp;call &nbsp;ApplyEdit </p>
+<p>so i did the following code :</p>
+<p>void SaveMethod()</p>
+<p>{</p>
+<p>Model.ApplyEdit();</p>
+<p>foreach(var item in Model)</p>
+<p>{if(item.IsNew)</p>
+<p>item.ApplyEdit();</p>
+<p>}</p>
+<p>BeginSave();</p>
+<p>}</p>
+<p>when i did the last code the error change to EditLevelMisMatch </p>
+<p>Note : as i said before ihave four levels here (BusinessListBase=&gt;BusinessBase( BusinessListBase =&gt;BusinessBase) all the levels Marked As Child only the First level Not marked</p>
+<p>my grid contain subgrid on each row where i can add rows with no erros</p>
+<p>so the error comes only when i add to the root </p>
+<p>please any help</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, October 16, 2010</h2><p>Every datagrid control is a little different, so that could be the issue.</p>
+<p>But also it is the case that a child object comes into being with the same edit level as its parent. So when you add a child to a parent that has an elevated edit level, that child will also have that elevated edit level, and you need to be aware of that. I suspect that&#39;s what is happening here, and since you never call ApplyEdit on that new child, its edit level is never brought down to 0.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous replied on Sunday, October 17, 2010</h2><p>hello rocky, well i had did foreach for looking for the new objects </p>
+<p>and call item.ApplyEdit() but when doing that i get EditLevelMismatch </p>
+<p>so i cant call BeginSave() it will raise EditLevelMismatch</p>
+<p>here&#39;s my classe structure </p>
+<p>class ParentList:BusinessListBase&lt;ChildParent&gt;</p>
+<p>{</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>class ChildParent:BusinessBase&lt;ChildParent&gt;</p>
+<p>{</p>
+<p>public ChildList</p>
+<p>{</p>
+<p>get</p>
+<p>{</p>
+<p>return ReadProperty(someproperty);</p>
+<p>}</p>
+<p>}</p>
+<p>public ChildParent()</p>
+<p>{</p>
+<p>MarkAsChild();</p>
+<p>}</p>
+<p>}</p>
+<p>class ChildList:BusinessListBase&lt;ChildLastLevel&gt;</p>
+<p>{</p>
+<p>public ChildList()</p>
+<p>{MarkAsChild();</p>
+<p>}</p>
+<p>}</p>
+<p>class ChildLastLevel:BusinessBase&lt;ChildLastLevel&gt;</p>
+<p>{</p>
+<p>public ChildLastLevel()</p>
+<p>{</p>
+<p>MarkAsChild();</p>
+<p>}</p>
+<p>}</p>
+<p>this is how the structure for me works </p>
+<p>when i add ChildLastLevel to the parent object i can save and applyedit with no problems</p>
+<p>but when i add ChildParent to the ParentList i get the error ( Object is still being edited cant be saved&nbsp;)</p>
+<p>and when i&nbsp;apply the edit on the new object it&nbsp;gives me ( Edit Level MisMatch )</p>
+<p>&nbsp;</p>
+<p>really thank you for your&nbsp;Response&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

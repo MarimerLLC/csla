@@ -1,0 +1,26 @@
+<html><header><title>Combination of Business Rule and Valdation Rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Combination of Business Rule and Valdation Rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12786.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>chatzikk posted on Tuesday, October 28, 2014</h2><p>I develop a WinForm application with CSLA 4.3.13 and I have the following case:</p>
+<p>I have a class with three properties:</p>
+<p>CurrentValue</p>
+<p>MaxValue</p>
+<p>Result</p>
+<p>The validation rule is CurrentValue&lt;MaxValue</p>
+<p>The business rule is that changing the value of the&nbsp;Result&nbsp;property changes the value of the MaxValue property.</p>
+<p>I wrote the following rules to implement this scenario:</p>
+<p>BusinessRules.AddRule(new Rules.MaxValueGetFromResult(MaxValueProperty, ResultProperty) { Priority = -1 }); &nbsp;//Business Rule</p>
+<p>BusinessRules.AddRule(new Rules.LessThanProperty(CurrentValueProperty, MaxValueProperty) ); //Validation Rule</p>
+<div>My problem is that when the user changes the Result property the validation rule is executed before the business rule and for that reason it uses the old value of MaxValue property and not the one that is set after the execution of the business rule.</div>
+<div></div>
+<div>Thanks</div>
+<div></div>
+<div></div>
+<div></div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, October 28, 2014</h2><p>Hi,&nbsp;</p>
+<p>First of all - you have misunderstood how the Proritiy is used. It is only effective within rules on the same PrimaryProperty. Not across different PrimaryProperties.</p>
+<p><b>So I would recommend that you change the MaxValueGetFromResult rule so that you have ResultProperty as the PrimaryProperty and MaxValueProperty as the &quot;calculated property&quot; and an OutputPropertyValue in that rule. Now you should also add CurrentValue as an AffectedProperty to the MaxValueGetFromResult rule.&nbsp;</b></p>
+<p>The RuleEngine in CSLA 4.3 will NOT cascade down.&nbsp;</p>
+<p>1. First pass is all rules where PrimaryProperty is the &quot;changed property&quot;</p>
+<p style="padding-left:30px;">- ForEach BusinessRule - when complete - update BO from POutputProperties and add AffectedProperties to Aggregate.</p>
+<p>2. Second pass is to rerun all rules for the distinct sum of (the aggregate of AffectedProperties in FirstPass AND PrimaryProperties from Rules where FirstPass.PrimaryProperty is an InputProperty).&nbsp;</p>
+<p>&nbsp;And after this the execution stops and PropertyChanged event is raised as appropriate to notify the UI.&nbsp;</p>
+<p>So to sum it up:&nbsp;</p>
+<p>- the calculation rule should be defclared with PrimaryProperty = the changed property to run in 1)</p>
+<p>- and the calculation rule should add all affected properties to revalidate in second pass.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chatzikk replied on Tuesday, October 28, 2014</h2><p>Thank you very much.&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

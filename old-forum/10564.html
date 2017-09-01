@@ -1,0 +1,23 @@
+<html><header><title>Custom Busines Rule for numeric property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom Busines Rule for numeric property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10564.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett posted on Wednesday, July 27, 2011</h2><p>Hello,</p>
+<p>I&#39;ve a Custom Rules that checks if the user entered a valid numerical value (Double.TryParse)</p>
+<p>I override the AddBusinessRules Method and added the rule like this:</p>
+<p>BusinessRules.AddRule(new Business.CustomRules.Numerical(PreislistePos.PreisNormalProperty));</p>
+<p>It works fine, as long as the user enters a numeric value. If the user types in characters, the rule doesn&#39;t checks the entered value. And the Property Status will not be shown.</p>
+<p>Property:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static readonly PropertyInfo&lt;decimal&gt; PreisNormalProperty = RegisterProperty&lt;decimal&gt;(c =&gt; c.PreisNormal);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [Display(ResourceType = typeof(Asego), Name = &quot;PreisNormalText&quot;)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public decimal PreisNormal<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(PreisNormalProperty); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; set { SetProperty(PreisNormalProperty, value); }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>XAML:</p>
+<p>&lt;TextBox Grid.Column=&quot;2&quot; Height=&quot;23&quot; Name=&quot;preisNettoTextBox&quot; Text=&quot;{Binding Path=CurrentSelectedPreislistePos.PreisNetto, Mode=TwoWay, ValidatesOnExceptions=true, NotifyOnValidationError=true}&quot; VerticalAlignment=&quot;Center&quot; Margin=&quot;10,4,30,5&quot; BorderBrush=&quot;{Binding Path=IsValid, ElementName=preisNettoStatus, Converter={StaticResource validbrushConverter}}&quot; /&gt;</p>
+<p>&lt;csla:PropertyStatus x:Name=&quot;preisNettoStatus&quot; Property=&quot;{Binding Path=PreisNetto, Mode=TwoWay}&quot; Grid.Column=&quot;2&quot; VerticalAlignment=&quot;Center&quot; HorizontalAlignment=&quot;Right&quot; Margin=&quot;0,0,10,0&quot; IsManipulationEnabled=&quot;True&quot; DataContext=&quot;{Binding Path=CurrentSelectedPreislistePos}&quot; /&gt;</p>
+<p>&nbsp;</p>
+<p>Now my question is, how to &quot;fire&quot; the rule if a user enter a character value in the TextBox?</p>
+<p>Thanks and kind regards</p>
+<p>Kevin</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, July 27, 2011</h2><p>Hi,</p>
+<p>The default value converter is unable to transform the text input from user to a decimal value and so the value is never set in the BO numeric property.</p>
+<p>You could create your own value converter and set a &quot;non valid&quot; numerical value in the BO if the input text can not be parsed to a decimal.</p>
+<p>In short -&nbsp; </p>
+<p>A: your BO property is decimal - and you must use a custom value converter to convert a not valid text to a numeric value</p>
+<p>B: You could change the BO value to a string and add extra logic in Rules/DAL to convert to/from string-numeric value.</p>
+<p>Good info on ValueConverter can be found here: <a title="http://www.wpftutorial.net/ValueConverters.html" href="http://www.wpftutorial.net/ValueConverters.html">http://www.wpftutorial.net/ValueConverters.html</a></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett replied on Wednesday, July 27, 2011</h2><p>Thank you Jonny for your fast replay :-)</p>
+<p>This will work for me, I think I use the &quot;Converter-Option&quot;.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

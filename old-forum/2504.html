@@ -1,0 +1,35 @@
+<html><header><title>Choosing the right templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Choosing the right templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2504.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NoviceCoder posted on Sunday, March 11, 2007</h2><P>Hi all,</P>
+<P>I have these classes that I want them to inherit from several Csla classes.</P>
+<P>In general, I know which classes to inherit from and which templates to use, but I'm not 100 percent sure.</P>
+<P>I have a Customers root parent collection class that contains Customer child objects,</P>
+<P>that in turn contain an Orders collection, containing Order objects (containing OrderDetails collection and OrderDetail objects).</P>
+<P>I just don't want to make mistakes when implementing these classes. This is the core</P>
+<P>of my application and it's very important to me, so I figured&nbsp; I'd ask the experts on this forum :) </P>
+<P>Can you please help me choose the right tamplates and classes with these classes. I'm sure</P>
+<P>that with other classes I will have a better idea of their implementation.</P>
+<P>BTW, the root Customers collection class resembles IMHO to the Roles class the Mr. Lhotka implemented in his ProjectTracker example. Is this correct?</P>
+<P>Thanks a lot,</P>
+<P>Ben</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 11, 2007</h2><P>So you have a single screen that shows all the customers in a grid, allowing the user to edit all of them. And when the user selects a row in the customer grid, on that same form they also get a grid allowing the user to edit all the orders for that customer?</P>
+<P>That's pretty much the use case and/or UI experience you are supporting with the objects you describe.</P>
+<P>With that model, if you have more than a handful of customers you'll find that performance is terrible. Also, it won't work well with more than one concurrent user, because any user would have loaded all the data and you'll have concurrency issues left and right.</P>
+<P>My guess is that you really don't have one single screen, or one single use case. My guess is that you have an "edit customer" use case, a "edit order" use case, etc. Each of these use cases will almost certainly need different objects.</P>
+<P>"Edit customer" for instance, will likely need:</P>
+<UL>
+<LI>CustomerList (read-only root list)</LI>
+<LI>CustomerInfo (read-only child)</LI>
+<LI>CustomerEdit (editable root)</LI></UL>
+<P>"Create order" will likely need:</P>
+<UL>
+<LI>CustomerList (read-only root list)</LI>
+<LI>CustomerInfo (read-only child)</LI>
+<LI>ProductList (read-only root list)</LI>
+<LI>ProductInfo (read-only child)</LI>
+<LI>Order (editable root)</LI>
+<LI>OrderLineItems (editable child list)</LI>
+<LI>OrderLineItem (editable child)</LI></UL>
+<P>It is quite likely that the CustomerList/CustomerInfo objects from both use cases have the exact same responsibility and behaviors. If so, then they are the same object and you can achieve some reuse there.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NoviceCoder replied on Monday, March 12, 2007</h2><P>Thanks for your reply Mr. Lhotka, I really appreciate it.</P>
+<P>You were right regarding the use cases that you described. I really did plan to do it sort of like that.</P>
+<P>I didn't consider the performance and concurrency issues. God, why does software development has to be so complicated :(</P>
+<P>I'll take the direction that you have suggested. It looks much more reasonable. I don't know why, but I couldn't relate the text and the examples in the book to my needs. I guess I need some time to digest what's written in the book. I'll have to read the book again it seems.</P>
+<P>Thanks for such a lovely book (I&nbsp;have the 2nd ed) and great community.</P>
+<P>Ben</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

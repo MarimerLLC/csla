@@ -1,0 +1,141 @@
+<html><header><title>Client callbacks over the internet</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Client callbacks over the internet</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7369.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nitz posted on Thursday, July 30, 2009</h2><P>Hi, </P>
+<P>In my application, i am using Win Forms and CSLA 3.0. The client machines connect to the app server using WCF over https. Now, i have a requirement for implementing the maintenance window activity. At any point of time, the administrator of the application needs to send a message stating "Please save your work. The system will log you out after 15 minutes." to all of the clients connected in the application. After which all of the clients connected at that point of time will be logged off the system. </P>
+<P>The cleint machines may not be in the physical network while connecting to the server as some of the users will be accessing the application from home over the internet. Please suggest the best way of implementing it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2><P>First, the data portal won't help you here, because this sort of scenario is entirely outside its scope. This means you'll need to create your own messaging model outside the context of the data portal.</P>
+<P>Second, doing actual callbacks turns out to be very hard - nearly impossible. There are numerous technical reasons for this, and solving them requires very low-level programming to deal with the various NAT/router/firewall products in use today.</P>
+<P>Third, fortunately there are a couple realistic options provided by Microsoft. </P>
+<P>One is to use the dual http channel provided with WCF, which is a bi-directional channel that is client-initiated (and so avoids the networking complexities I mentioned above). I'd look at this first.</P>
+<P>Another is the Windows Azure platform, which might be cost-prohibitive, but includes a message bus technology that does work through nearly any NAT/router/firewall.</P>
+<P>Yet another is to write your own http polling component. The Silverlight WCF dual http channel uses a very efficient http polling model, and you could construct yours by using theirs as a conceptual model. I suspect, however, that you are better off using the existing dual http channel with WCF.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 30, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>Yet another is to write your own http polling component. The Silverlight WCF dual http channel uses a very efficient http polling model, and you could construct yours by using theirs as a conceptual model. I suspect, however, that you are better off using the existing dual http channel with WCF.</div></BLOCKQUOTE><br /><br />This is actually what I've done, but with standard threads and Csla (although I'm using remoting).  Basically when my application starts I spin up a background thread that starts a timer.  Every so often, the timer fires and executes a Csla command object to see if the application needs to shutdown.  If it does, it will notify the user when the system is going down (so I can provider warning).  Subsequent checks will cause the message to display again, tell a user the shutdown time has moved or the shutdown has been canceled... or actually shut down the application.<br /><br />Also, when initially logging on, theres a check that the application has not been locked out, and if there is, the application closes immediately.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2>I'm sure that works Andy, but it isn't real efficient.<br /><br />As it was described to me, what the Silverlight dual http channel does is to<br />have the client make an http request to the server. The server doesn't<br />respond immediately - in fact it doesn't respond until it has outbound data<br />or some time (30 seconds?) has elapsed.<br /><br />As soon as the client gets a response from the server it processes the<br />result (if any) and re-issues the request.<br /><br />This way any outbound data is delivered almost instantly, because there's<br />virtually always a client request just waiting for the data, but there's<br />relatively little overhead, because the client only issues a request every<br />30 seconds or so.<br /><br />To get similar responsiveness with traditional polling would require the<br />client to issue a new server request a few times a second.<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 30, 2009</h2>Ahh, good to know.  Maybe I'll be able to move to that, but when I built my solution WCF still wasn't around... we were all happy just to have generics finally :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2>I suspect you could use the same model with remoting.<br /><br />Most of the work is actually on the server side, where the inbound request<br />doesn't return immediately, but rather blocks until it either has data or<br />times out.<br /><br />This implies that there's an outbound data queue of some sort on the server<br />btw, so anyone wanting to send data to the client puts the data in that<br />client's queue (could be in memory, or database or whatever), and the<br />server-side code checks the queue or is notified when new data gets into the<br />queue.<br /><br />I imagine, now that I think about it, that you could do this with a<br />ReadOnlyBase or CommandBase object, as long as it was invoked on a<br />background thread from the client (maybe using the async data portal if you<br />are using 3.6 or higher).<br /><br />Rocky</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, July 30, 2009</h2>Rocky,<br><br>Would this work as a way to refresh client side caches from the server?<br><br>I could see all my SL clients doing a 'When were datasets 'abc','def', &amp; 'ghi' changed?' request and then either getting fresh data back to load asynchronously or having a last changed date to make a new client request for the delta changes.<br><br>I could then simulate simple push schedules for app data, site specific data, and user specific data.<br><br>I've been toying with how best to manage aging data on the client and whether to let the user make a decision to ask for new data based on a 'reload/refresh' datetime + button or to put a timer in.&nbsp; I have clients on both the east/west coast sharing a westcoast server so a couple of my eastern clients have much poorer bandwidth and so some generic policies don't make sense or are overkill at certain sites.<br><br>Any chances on a SL demo/sample?<br><br>Jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, July 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;d love to see whatever sample you come up with :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Seriously &#8211; I&#8217;ve been talking about the basic
+capability of a WCF feature, not a specific implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t think the dual http channel would work with the
+data portal. The data portal is designed around a connectionless model. But maybe
+I&#8217;m wrong and it would work &#8211; but it isn&#8217;t something I&#8217;ve
+tried.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But doing this yourself (with the normal wsHttpBinding or
+basicHttpBinding) should be possible. Certainly you could write a ROB object that
+blocked on the server for 30 seconds &#8211; that&#8217;s easy. The hard part
+is interrupting that 30 second wait when outbound data arrives &#8211; that&#8217;d
+require some server infrastructure around an outbound message queue on a
+per-client basis.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;d be fun to write, and I&#8217;d be tempted if I wasn&#8217;t
+in the middle of implementing some MVVM support (though the deeper I get into
+MVVM the more I&#8217;m convinced it isn&#8217;t the right direction).<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, July 30, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You'll love me latest reply then :-).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'm sure you could do it with a looping set of commands and a
+progressId as part of the command.&nbsp; Kick of the command, then kick off a loop
+of GetProgressCommands that query a static dictionary on the server for
+updates.&nbsp; Same idea.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>On the MVVM front I'd love to hear your running commentary
+(especially after our last email thread).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka [mailto:cslanet@lhotka.net]
+<br>
+<b>Sent:</b> July-30-09 3:55 PM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> RE: [CSLA .NET] RE: Client callbacks over the internet<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I&#8217;d love to see whatever sample you come up with :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Seriously &#8211; I&#8217;ve been talking about the basic capability of a
+WCF feature, not a specific implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t think the dual http channel would work with the data
+portal. The data portal is designed around a connectionless model. But maybe
+I&#8217;m wrong and it would work &#8211; but it isn&#8217;t something I&#8217;ve tried.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But doing this yourself (with the normal wsHttpBinding or
+basicHttpBinding) should be possible. Certainly you could write a ROB object
+that blocked on the server for 30 seconds &#8211; that&#8217;s easy. The hard part is
+interrupting that 30 second wait when outbound data arrives &#8211; that&#8217;d require
+some server infrastructure around an outbound message queue on a per-client basis.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;d be fun to write, and I&#8217;d be tempted if I wasn&#8217;t in the
+middle of implementing some MVVM support (though the deeper I get into MVVM the
+more I&#8217;m convinced it isn&#8217;t the right direction).<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

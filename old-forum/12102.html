@@ -1,0 +1,11 @@
+<html><header><title>how to use the CSLA framework for filling child collection associated with a parent all the time</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>how to use the CSLA framework for filling child collection associated with a parent all the time</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12102.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan posted on Thursday, August 01, 2013</h2><p>Hi,</p>
+<p>I have started using csla framework recently. I have a table that is having one to many relationship with several tables. When i create an object of the master table i dont want to fill all my child objects collection except one. So I am using lazy loading for this purpose. My doubt is &quot;the one child object collection which i need to fill, all the time i retrieve the parent object, should i do that </p>
+<ul>
+<li>in a single stored procedure by returning two REF CURSOR&#39;s one with parent details and the other one with child collection and assign it to the corresponding object and object collection (for child)&nbsp;inside DataPortal_Fetch method inside parent class</li>
+<li>Fetch just the parent object in&nbsp;DataPortal_Fetch of parent object class&nbsp;and then do a second trip to the database to find the child collection of that parent and bind it in the DataPortal_fetch method&nbsp;inside child object </li>
+</ul>
+<p>If i do it the first way is there anything wrong? I was thinking i could save one trip to the database by implementing it the first way</p>
+<p>I would like to know the best way to do it using CSLA framework.</p>
+<p>Thanks</p>
+<p>Simi Sreedharan</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, August 02, 2013</h2><p>I would implement this within the scope of &nbsp;DataPortal_Fetch.</p>
+<p>Whether you use a SP that returns multiple recordsets/cursors or separate SQL queries is just a matter of code preferences.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan replied on Friday, August 02, 2013</h2><p>Thanks Jonny</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

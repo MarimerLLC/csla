@@ -1,0 +1,129 @@
+<html><header><title>Execute command object from client-side rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Execute command object from client-side rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9644.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous posted on Friday, October 15, 2010</h2><p>hi, Rocky </p>
+<p>i have scenario where i have validationrule which runs command on server side how can i let the client bin execute it </p>
+<p>on server side here is my code : </p>
+<p>&nbsp;&nbsp;&nbsp; private class RuleClass: BusinessRule<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void Execute(RuleContext context)// bool UniqueCashName&lt;T&gt;(T target, RuleArgs e) where T : Cash<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsAsync = true;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var target = (SomeClass)context.Target;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (target.IsNew &amp;&amp; ExsistCashRefName.IsExsist(target.ReadProperty(NameProperty)))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddErrorResult(&quot;This name is allready exsist&quot;);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br /><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>and the ExsistCashRefName is command where it has to connect with the database</p>
+<p>how should the command or the rule look like to request the server</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, October 16, 2010</h2><p>On a .NET client you can just use this code, the rule will run synchronously and the command will execute. It should work fine because the data portal will make it &quot;just work&quot;.</p>
+<p>On a SL client this won&#39;t work without change, because the command will execute asynchronously. That means your rule needs to be an async rule so it can invoke the async command object and process the result when the command completes.</p>
+<p>That&#39;s not terribly hard to do, and I have a blog post that shows how to implement an async rule.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous replied on Saturday, October 16, 2010</h2><p>Hello Rocky, Thanks for your reply. i have looked at the blog you had put about async validation rules </p>
+<p>and i did as i found in the blog but there&#39;s little problem , that i know that there&#39;s something missing in my code </p>
+<p>iam sure that i have missed something, i would appreciate if you check the following code for me . </p>
+<p>in .NET client ihad this code :</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>&nbsp;</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">private</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">class</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">UniqueCurrency</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> : </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">BusinessRule</span></span></span>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">public</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> UniqueCurrency(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; primaryProperty, </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">PropertyInfo</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;</span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">string</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; Affectedproperty)
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>InputProperties =</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">new</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">List</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&lt;Csla.Core.</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">IPropertyInfo</span></span></span> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&gt; { primaryProperty };
+<p>AffectedProperties.Add(Affectedproperty);</p>
+<p>} </p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">protected</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">override</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> </span></span><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">void</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> Execute(</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">RuleContext</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> context)</span></span> </p>
+<p><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;"><span style="font-family:Consolas;color:#008000;font-size:x-small;">// bool UniqueCurrencyName&lt;T&gt;(T target, RuleArgs e) where T : Currency</span></span></span></p>
+<span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">var</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> target = (</span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">Currency</span></span></span> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">)context.Target;<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">if</span></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"> (target.IsNew &amp;&amp; </span></span><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;"><span style="font-family:Consolas;color:#2b91af;font-size:x-small;">ExsistCurrncyName</span></span></span> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">.IsExsist(target.ReadProperty(NameProperty)))
+<p>{</p>
+<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>context.AddErrorResult(</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;"><span style="font-family:Consolas;color:#a31515;font-size:x-small;">&quot;This name is allready exsist&quot;</span></span></span> <span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">);</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><strong></strong></span></span>&nbsp;</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"><strong>and to Async the rule in SL client side i have put the following code :</strong></span></span></p>
+</span></span></span></p>
+<h3>&nbsp;</h3>
+<h3></h3>
+<h3></h3>
+<h3>private class UniqueCurrency : BusinessRule</h3>
+<h3>{</h3>
+<h3>public UniqueCurrency(PropertyInfo&lt;string&gt; primaryProperty, PropertyInfo&lt;string&gt; Affectedproperty)</h3>
+<h3>{ </h3>
+<h3>IsAsync=true;</h3>
+<h3>InputProperties = new List&lt;Csla.Core.IPropertyInfo&gt; { primaryProperty }; </h3>
+<h3>AffectedProperties.Add(Affectedproperty);</h3>
+<h3>} </h3>
+<h3>&nbsp;</h3>
+<h3>protected override void Execute(RuleContext context)</h3>
+<h3>{</h3>
+<h3>var bw = new System.ComponentModel.BackgroundWorker(); </h3>
+<h3>&nbsp;</h3>
+<h3>bw.DoWork += (o, e) =&gt; </h3>
+<h3>{ </h3>
+<h3>var value = (string)context.InputPropertyValues[InputProperties[0]]; </h3>
+<h3>context.AddOutValue(InputProperties[0], value.ToUpper()); </h3>
+<h3>}; </h3>
+<h3>bw.RunWorkerCompleted += (o, e) =&gt; </h3>
+<h3>{ </h3>
+<h3>if (e.Error != null) </h3>
+<h3>context.AddErrorResult(e.Error.Message); </h3>
+<h3>context.Complete(); </h3>
+<h3>}; </h3>
+<h3>bw.RunWorkerAsync(); </h3>
+<h3>}</h3>
+<h3>}</h3>
+<h2>well , what i think is happeining that the rule doesnt check any thing from the server</h2>
+<h2>one more last thing do i have to change any thing in the command that the rule execute on server-side </h2>
+<h2>&nbsp;</h2>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;">
+<p>&nbsp;</p>
+</span></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;color:#0000ff;font-size:x-small;"></span></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, October 16, 2010</h2><p>You wouldn&#39;t use the BackgroundWorker to call a command object. I used the BW in my blog post just to illustrate the structure of an Execute method that calls some async operation. BW is an async operation, and so is a command object.</p>
+<p>So your Execute method would contain something like this:</p>
+<p>var cmd = new MyCommand();<br />DataPortal.BeginExecute&lt;MyCommand&gt;(cmd, (o, e) =&gt;<br />{<br />&nbsp; if (e.Error != null)<br />&nbsp;&nbsp;&nbsp; context.AddErrorResult(e.Error.Message);<br />&nbsp; else<br />&nbsp;&nbsp;&nbsp; if (e.Object.Exists)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.AddErrorResult(&quot;Value exists&quot;);<br />&nbsp; context.Complete();<br />});</p>
+<p>The whole idea is that your Execute method invokes some async operation (in this case the BeginExecute) and handles the callback to determine the result, which is then provided back to the object through the context parameter.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>emadalsous replied on Sunday, October 17, 2010</h2><p>Hello Rocky, thank you for your response i have applied the code which you have post </p>
+<p>and every thing worked fine the command is executing but there&#39;s a little issue . </p>
+<p>when the command gives when i add new object the command executed right for only one time </p>
+<p>and the second time it gives me the following error : </p>
+<h2>No parametless constructor defined for the object </h2>
+<p>i know that there&#39;s no constructor without parameters but in my case ihave </p>
+<h3>the constructor passing values, then i added constructor without parameters </h3>
+<p>but when i&nbsp; did so every thing worked fine but the error that the fields in my command object becase without values</p>
+<p>because the constructor with parameters wasnt used on .Net client it&#39;s only called on SL client-side </p>
+<p>and the Execute method doest has query which became with where statement with null value so the result is invalid </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

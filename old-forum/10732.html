@@ -1,0 +1,10 @@
+<html><header><title>EncapsulatedInvoke question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EncapsulatedInvoke question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10732.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, October 02, 2011</h2><p>Hi Rocky,</p>
+<p>On the&nbsp;EncapsulatedInvoke sample for <strong>Using Csla 4</strong> ebook series<br />- Library.net project<br /><strong>- OrderEdit.cs</strong> file<br />- DataPortal_Insert method</p>
+<p><span>FieldManager:UpdateChildren is commented and replaced by DataPortalUpdateChild:</span></p>
+<p><span></span></p>
+<p>//FieldManager.UpdateChildren(this);</p>
+<p>DataPortal.UpdateChild(OrderLineItems, this);</p>
+<p>I notice DataPortal_Update uses FieldManager:UpdateChildren as well as other DataPortal_Insert methods elsewhere.. Is there a reason for not using it on the above case?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, October 02, 2011</h2>I think I needed that line of code for the ebook, so I commented out the normal line of code and inserted the one that&#39;s there now.
+
+I do normally use the field manager, except in those rare cases where I need control over the order the child objects update.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

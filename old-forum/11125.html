@@ -1,0 +1,66 @@
+<html><header><title>Method not found: 'Csla.Data.SafeDataReader </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Method not found: 'Csla.Data.SafeDataReader </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11125.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sandhyap posted on Friday, February 03, 2012</h2><p>I have generated class using CSLA code generated and added new class to get the data but its throwing exception method not found when i added parameters. Following&nbsp; is stack trace.</p>
+<p>&nbsp;</p>
+<p><span>
+<h2><i>Method not found: &#39;Csla.Data.SafeDataReader 
+XECOMIT.ERPByNet.DataAccessEntities.ProjectScheduleRevisionDA.Get(Int32)&#39;.</i> 
+</h2>
+</span><span style="font-family:Arial,Helvetica,Geneva,SunSans-Regular,sans-serif;"><b>Description: 
+</b>An unhandled exception occurred during the execution of the current web 
+request. Please review the stack trace for more information about the error and 
+where it originated in the code. <br /><br /><b>Exception Details: 
+</b>System.MissingMethodException: Method not found: &#39;Csla.Data.SafeDataReader 
+XECOMIT.ERPByNet.DataAccessEntities.ProjectScheduleRevisionDA.Get(Int32)&#39;.<br /><br /><b>Source 
+Error:</b> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code></code>
+<pre>Line 84:             };
+Line 85:             RaiseListChangedEvents = true;
+<span style="color:red;">Line 86:         }
+</span>Line 87: 
+Line 88:         protected override void DataPortal_Update()</pre>
+</td>
+</tr>
+</tbody>
+</table>
+<br /><b>Source 
+File: 
+</b>E:\ERPByNet\trunk\SVN_ERPByNet\BusinessEntities\Projects\ProjectScheduleRevisions.cs<b> 
+&nbsp;&nbsp; Line: </b>86 <br /><br /><b>Stack Trace:</b> <br /><br />
+<table bgcolor="#ffffcc" width="100%">
+<tbody>
+<tr>
+<td><code></code>
+<pre>[MissingMethodException: Method not found: &#39;Csla.Data.SafeDataReader XECOMIT.ERPByNet.DataAccessEntities.ProjectScheduleRevisionDA.Get(Int32)&#39;.]
+   XECOMIT.ERPByNet.BusinessEntities.ProjectScheduleRevisions.DataPortal_Fetch(Criteria criteria) in E:\ERPByNet\trunk\SVN_ERPByNet\BusinessEntities\Projects\ProjectScheduleRevisions.cs:86
+
+[CallMethodException: DataPortal_Fetch method call failed]
+   Csla.MethodCaller.CallMethod(Object obj, MethodInfo info, Object[] parameters) in D:\IQQMS\Csla\DataPortal\MethodCaller.cs:56
+   Csla.MethodCaller.CallMethod(Object obj, String method, Object[] parameters) in D:\IQQMS\Csla\DataPortal\MethodCaller.cs:37
+   Csla.Server.SimpleDataPortal.Fetch(Object criteria, DataPortalContext context) in D:\IQQMS\Csla\DataPortal\Server\SimpleDataPortal.cs:101
+
+[DataPortalException: DataPortal.Fetch failed]
+   Csla.DataPortal.Fetch(Object criteria) in D:\IQQMS\Csla\DataPortal\Client\DataPortal.cs:173
+   Csla.DataPortal.Fetch(Object criteria) in D:\IQQMS\Csla\DataPortal\Client\DataPortal.cs:138
+   XECOMIT.ERPByNet.BusinessEntities.ProjectScheduleRevisions.GetProjectScheduleRevision(Int32 opportunityID) in E:\ERPByNet\trunk\SVN_ERPByNet\BusinessEntities\Projects\ProjectScheduleRevisions.cs:40
+   ManageScheduleRevisions.CreateScheduleRevisionVersionNodes(RadTreeNode OpportunityGroupItemNode) in e:\ERPByNet\trunk\SVN_ERPByNet\Applications\SalesPundit\ManageScheduleRevisions.aspx.cs:602
+   ManageScheduleRevisions.CreateNodesForGroupItem(RadTreeNode OpportunityNode) in e:\ERPByNet\trunk\SVN_ERPByNet\Applications\SalesPundit\ManageScheduleRevisions.aspx.cs:589
+   ManageScheduleRevisions.PopulateTreeView(RadTreeView treeView) in e:\ERPByNet\trunk\SVN_ERPByNet\Applications\SalesPundit\ManageScheduleRevisions.aspx.cs:570
+   ManageScheduleRevisions.BindTreeView() in e:\ERPByNet\trunk\SVN_ERPByNet\Applications\SalesPundit\ManageScheduleRevisions.aspx.cs:556
+   ManageScheduleRevisions.Page_Load(Object sender, EventArgs e) in e:\ERPByNet\trunk\SVN_ERPByNet\Applications\SalesPundit\ManageScheduleRevisions.aspx.cs:77
+   System.Web.Util.CalliHelper.EventArgFunctionCaller(IntPtr fp, Object o, Object t, EventArgs e) +14
+   System.Web.Util.CalliEventHandlerDelegateProxy.Callback(Object sender, EventArgs e) +35
+   System.Web.UI.Control.OnLoad(EventArgs e) +99
+   System.Web.UI.Control.LoadRecursive() +50
+   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +627
+</pre>
+</td>
+</tr>
+</tbody>
+</table>
+</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sandhyap replied on Friday, February 03, 2012</h2><p>opps fixed issue. dll were not getting updated on build</p>
+<p>&nbsp;</p>
+<p>pls close this ticket</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

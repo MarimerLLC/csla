@@ -1,0 +1,104 @@
+<html><header><title>Selectable read only objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Selectable read only objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7061.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael posted on Monday, June 08, 2009</h2><font size="2" face="Arial">I often need to bind a ROL of ROB to a WinForms grid with the ability to select items via a CheckBoxColumn. The set in the following property never gets hit when the cell is clicked:<br><br><font face="Courier New">bool m_selected;<br>public bool Selected<br>{<br>&nbsp;&nbsp;&nbsp; get { return m_selected; }<br>&nbsp;&nbsp;&nbsp; set<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_selected = value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged("Selected");<br>&nbsp;&nbsp;&nbsp; }<br>}</font><br><br>The code does work if the ROB is changed to a BB, or by making it a non-CSLA object that implements INotifyPropertyChanged. Has anyone else tried something like this?<br><br>Regards<br>Michael</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 09, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes.&nbsp;
+You need to implement INotifyProopertyChanged interface inside your ROB.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>ROBInstance:
+BB&lt; ROBInstance&gt;, INotifyPropertyChanged<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 09, 2009 12:01 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Selectable read only objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I
+often need to bind a ROL of ROB to a WinForms grid with the ability to select
+items via a CheckBoxColumn. The set in the following property never gets hit
+when the cell is clicked:<br>
+<br>
+</span><span>bool
+m_selected;<br>
+public bool Selected<br>
+{<br>
+&nbsp;&nbsp;&nbsp; get { return m_selected; }<br>
+&nbsp;&nbsp;&nbsp; set<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; m_selected = value;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OnPropertyChanged(&quot;Selected&quot;);<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}</span><span><br>
+<br>
+The code does work if the ROB is change to a BB. Has anyone else tried
+something like this?<br>
+<br>
+Regards<br>
+Michael</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, June 09, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div><span>Yes.&nbsp;
+You need to implement INotifyProopertyChanged interface inside your ROB.<o:p></o:p></span>
+
+
+
+<p class="MsoNormal"><span>ROBInstance:
+BB&lt; ROBInstance&gt;, INotifyPropertyChanged<o:p></o:p></span></div></BLOCKQUOTE></p>
+<p class="MsoNormal">Yeah but I don't think lack of INotifyPropertyChanged explains why Michael's set code never runs. It means that the UI won't automatically know about the change if the property is updated in code. I've done something similar, blurring the definition of read only so I don't know why it's not working. I can bind any plain old object to a grid and the properties get updated (i.e, set runs) when edited in the grid.</p><p class="MsoNormal"><br></p><p class="MsoNormal">Have you tried a simple List&lt;ROB&gt; or even an array? Does the set work then? That would indicate whether or not it's really related to the ROL or something else.<br></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, June 09, 2009</h2><font size="2" face="Arial"><span>ROB already implements INotifyProopertyChanged in Csla.Core.BindableBase (if it didn't the code I posted would not build).<br><br>I tried a List&lt;ROB&gt; and that does indeed work, so ROL must be breaking it somehow.<br><br>Is this "by design"? (Rocky?) Is there a workaround? I'd obviously prefer to use ROL rather than plain List.<br><br>Regards<br>Michael<br></span></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, June 09, 2009</h2><P>Your problem is most likely caused by the fact that the ReadOnlyListBase or, more specifically, the Core.ReadOnlyBindingList class it inherits is marked as read-only be default.&nbsp; When you bind the object to a UI control, such as a DataGrid, the control looks at the IBindingList interface&nbsp;to determine what behaviors are supported.&nbsp; This includes the IsReadOnly property (from IList) as well as AllowEdit, AllowNew and AllowRemove.&nbsp; The latter three are set to false by default.</P>
+<P>If you want a control to allow users to toggle your Selected property, you'll need to either override the AllowEdit property&nbsp;or set it to true in your constructor.&nbsp; I believe you may also need to change IsReadOnly to false, but try changing AllowEdit first to be sure.&nbsp; You will most likely need to apply the Bindable attribute to your business object so that other properties can't be edited in the UI.</P>
+<P>Hope this helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, June 09, 2009</h2><font face="Arial"><font size="2">Setting <font face="Courier New">ROLB.AllowEdit = true</font> is all that's required. Thanks for your help.<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, April 26, 2012</h2><p>I&#39;ve spent the last few days upgrading our projects from CSLA 3.8 to 4.3. Sadly, all of our selectable ReadOnlyBase / ReadOnlyListBase collections bound to WinForms DataGridViews are broken. When I first asked this question, the problem was in the ROLB; binding to a plain List&lt;T&gt; of ROB behaved correctly. However,&nbsp; with 4.3 even binding to a plain List does not work. So, that makes me wonder if the problem is in ROB.</p>
+<p>When programatically changing the Selected field for all items, only the binding source&#39;s current item responds to the OnPropertyChanged (the check box for the current row is updated correctly). No other rows respond. When a different row is clicked, its check box is updated. So, what&#39;s different?</p>
+<p>I know this is an old thread, so If I don&#39;t get any help here I&#39;ll start a new one.</p>
+<p>Regards<br />Michael</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, April 26, 2012</h2><p>For Windows Forms with CSLA 4.3 you must change to use the BindingList derived base class:</p>
+<p><i><b>ReadOnlyBindingListBase </b></i>and<br /><i><b>BusinessListBindingListBase&nbsp; etc<br /></b></i></p>
+<p>The ReadOnlyListBase and BusinessListBase is now derived from ObservableCollection that does not work properly with Windows Forms.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, April 26, 2012</h2><p>Fantastic, thanks Jonny!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,30 @@
+<html><header><title>Is this a viable alternative to a filtered list?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is this a viable alternative to a filtered list?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2024.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jspurlin posted on Saturday, December 23, 2006</h2><P>In the example for Project List, you may apply a filter.&nbsp; If you send a filter as criteria, the project list is fetched and then only filtered items are added to the list.</P>
+<P>I also noticed that this list may reside in memory for a while, in cache. It appears, then, that a filtered list could be the list in cache.</P>
+<P>Is it viable, and by that I mean "not bad practice" to retrieve full lists (if they are relatively small), keep the full list in memory (thus momentarily no more requests to the database are necessary) and do this:</P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CompetencyList</FONT><FONT size=2> _list;</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Returns a list of competencies.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CompetencyList</FONT><FONT size=2> GetCompetencyList(</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> categoryId)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_list == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>_list = </FONT><FONT color=#2b91af size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;</FONT><FONT color=#2b91af size=2>CompetencyList</FONT><FONT size=2>&gt;</P>
+<P>(</FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Criteria</FONT><FONT size=2>());</P>
+<P></FONT><FONT color=#008000 size=2>//return _list;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (categoryId &gt; 0)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>CompetencyList</FONT><FONT size=2> newList = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>CompetencyList</FONT><FONT size=2>();</P>
+<P>newList.IsReadOnly = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>for</FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> i = 0; i &lt;= _list.Items.Count - 1; i++)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_list.Items<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />.CategoryId == categoryId)</P>
+<P>newList.Add(_list.Items<img src="/emoticons/emotion-55.gif" alt="Idea [I]" />);</P>
+<P>}</P>
+<P>newList.IsReadOnly = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> newList;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _list;</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Saturday, December 23, 2006</h2>It is generally considered fine to do this as long as it is uncommon for the list to change while a user is using the application.&nbsp; Otherwise you need to implement some means of checking whether the cached list needs to be refreshed.<br><br>But why not use a FilteredBindingList or an ObjectListView to do your filtering?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

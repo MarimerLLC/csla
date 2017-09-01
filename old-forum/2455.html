@@ -1,0 +1,25 @@
+<html><header><title>Authorization Rules Noob question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization Rules Noob question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2455.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Savij posted on Thursday, March 01, 2007</h2><P><FONT face=Verdana>Hello,</FONT></P>
+<P><FONT face=Verdana>I have been using Rockys framework for a long time, but never needed the auth rules till now. I have a BusinessBase class that has the following code in it:</FONT></P><FONT color=#0000ff size=2>
+<P><FONT face="Courier New">public</FONT></FONT><FONT face="Courier New"><FONT size=2> </FONT><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2><FONT face="Courier New"> EnvironmentName</FONT></P>
+<P><FONT face="Courier New">{</FONT></P>
+<P></FONT><FONT face="Courier New" color=#0000ff size=2>get<BR></FONT><FONT face="Courier New"><FONT size=2>{<BR>CanReadProperty(</FONT><FONT color=#0000ff size=2>true</FONT></FONT><FONT face="Courier New"><FONT size=2>);<BR></FONT><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2><FONT face="Courier New"> _environmentName;<BR>}</FONT></P>
+<P></FONT><FONT face="Courier New" color=#0000ff size=2>set<BR></FONT><FONT face="Courier New"><FONT size=2>{<BR>CanWriteProperty(</FONT><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2><FONT face="Courier New">);</FONT></P>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_environmentName != </FONT><FONT color=#0000ff size=2>value</FONT></FONT><FONT face="Courier New"><FONT size=2>)<BR>{<BR>_environmentName = </FONT><FONT color=#0000ff size=2>value</FONT></FONT><FONT size=2><FONT face="Courier New">;<BR>PropertyHasChanged();<BR>}</FONT></P>
+<P><FONT face="Courier New">}</FONT></P>
+<P><FONT face="Courier New">}</FONT></P>
+<P><FONT face="Courier New">...</FONT></P><FONT size=2>
+<P></FONT><FONT face="Courier New"><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2><FONT face="Courier New"> AddAuthorizationRules()</FONT></P>
+<P><FONT face="Courier New">{<BR>AuthorizationRules.AllowRead(</FONT></FONT><FONT face="Courier New"><FONT color=#a31515 size=2>"EnvironmentName"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"TestReader"</FONT></FONT><FONT face="Courier New"><FONT size=2>);<BR>AuthorizationRules.DenyWrite(</FONT><FONT color=#a31515 size=2>"EnvironmentName"</FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2>"TestReader"</FONT></FONT><FONT face="Courier New" size=2>);<BR>}</FONT></P>
+<P><FONT face=Verdana>I have an ReadWriteAuthorization control on the form that consumes this BO.</FONT></P>
+<P><FONT face=Verdana>Ok, finally for the questions:</FONT></P>
+<OL>
+<LI><FONT size=2><FONT face=Verdana>When I change the textbox that is bound to the property, it allows the change in the textbox. Even though it throws an exception, nothing happens. I also am unable to end the application as long as there is a change to the textbox. It just keeps firing <FONT size=2>CanWriteProperty in BusinessBase and throws an exception. I would expect that the control would be readonly = true since I am in the TestReader role. Can anyone explain this?<BR></FONT></FONT></FONT></LI>
+<LI><FONT size=2><FONT face=Verdana>How can I get the textbox to not allow input since I am specifically Denied or at least have the original value roll back upon the exception that gets thrown??</FONT></FONT></LI></OL>
+<P><FONT size=2><FONT face=Verdana>Maybe I don't understand the AuthRules system as well as I thought I did. Any help is GREATLY apreciated.</FONT></FONT></P>
+<P><FONT size=2><FONT face=Verdana></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT face=Verdana>Thanks,</FONT></FONT></P>
+<P><FONT size=2><FONT face=Verdana>-Jeff</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 01, 2007</h2><P>Look through Chapter 9 to see how the Csla.Windows.ReadWriteAuthorization control is used to automatically enable/disable controls on&nbsp;a form based on the authorization rules in your object.</P>
+<P>And, of course, look at the PTWin sample app code that's described in the chapter.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Savij replied on Thursday, March 01, 2007</h2><P>Rocky,</P>
+<P>Tomorrow is another day. Maybe a fresh look at it again will help. I did read and use as reference the book (and PTracker). I may have just missed something. I'll post tomorrow either way.</P>
+<P>Thanks for the heads up.</P>
+<P>Jeff</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

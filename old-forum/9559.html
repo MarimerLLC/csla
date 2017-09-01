@@ -1,0 +1,24 @@
+<html><header><title>Can I use MobileList&lt;interface&gt;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can I use MobileList&lt;interface&gt;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9559.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tikluganguly posted on Tuesday, September 21, 2010</h2><p>Hi,</p>
+<p>&nbsp;&nbsp; &nbsp;I created a business class with this following property</p>
+<p>&nbsp;</p>
+<p>
+<p>#region AssignmentGrade</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private static PropertyInfo&lt;MobileList&lt;IAssignmentGrade&gt;&gt; AssignmentGradeProperty = RegisterProperty&lt;MobileList&lt;IAssignmentGrade&gt;&gt;(new PropertyInfo&lt;MobileList&lt;IAssignmentGrade&gt;&gt;(&quot;AssignmentGrade&quot;));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;public MobileList&lt;IAssignmentGrade&gt; AssignmentGrade</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;set</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty&lt;MobileList&lt;IAssignmentGrade&gt;&gt;(AssignmentGradeProperty, value);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return GetProperty&lt;MobileList&lt;IAssignmentGrade&gt;&gt;(AssignmentGradeProperty);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>Now this&nbsp;IAssignmentGrade is implemented in a class called&nbsp;GBAssignmentGrade, which is a csla business object.</p>
+<p>Now when I am trying to do a dataportal fetch I am getting a serialization error in WfcPortal for&nbsp;GBAssignmentGrade. Is it because I am using the interface in mobilelist? Or something else I am missing?&nbsp;</p>
+<p>Awaiting your feedback&nbsp;</p>
+<p>Regards</p>
+<p>Tiklu</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, September 21, 2010</h2><p>I don&#39;t think that is possible. The reason is that on deserialization, MobileFormatter needs to create new instances of the type so it can deserialize the data into that instance. Obviously it is not possible to create an instance of an interface, so this is not possible.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

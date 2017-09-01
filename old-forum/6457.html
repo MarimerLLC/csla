@@ -1,0 +1,12 @@
+<html><header><title>EditableRootListBase for Silverlight DataGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootListBase for Silverlight DataGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6457.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhengokusa posted on Wednesday, February 18, 2009</h2><P>In the Rolodex example RankEditor.xaml , it uses EditableRootListBase for RankList&nbsp;object with child Rank.&nbsp;I&nbsp;ran the example and tried to add a new rank to the list. It just added to the DataGrid in UI, but&nbsp;the new data&nbsp;never&nbsp;reach&nbsp;the database. </P>
+<P>I also created my own EditableRootListBase for my silverlight application, and it acts the same as the example. I am just curious is it ever working? </P>
+<P>&lt;Button x:Name="NewButton" Content="New" Width="50" Margin="6,6,6,6" Grid.Row="1" HorizontalAlignment="Left"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.MethodName="AddNewItem"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.Resource="{StaticResource RanksData}"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; csla:InvokeMethod.TriggerEvent="Click"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsEnabled="{Binding Source={StaticResource RanksData}, Path=CanAddNewItem, Mode=OneWay}"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;Button x:Name="CloseButton" Content="Close" Width="50" Margin="6,6,6,6" HorizontalAlignment="Left" Click="CloseButton_Click"/&gt;</P>
+<P>The above code is from the Rolodex example. The AddNewItem seems not work properly. Or maybe I am missing something.</P>
+<P>Thanks.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

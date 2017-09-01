@@ -1,0 +1,103 @@
+<html><header><title>What happened to GetBrokenRulesCollection and GetBrokenRulesString methods?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What happened to GetBrokenRulesCollection and GetBrokenRulesString methods?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1439.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Tuesday, October 10, 2006</h2><P class=MsoNormal>The old CSLA (1.X) business base object used to have two functions that you could override:<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><EM>public override BrokenRulesCollection GetBrokenRulesCollection();<o:p></o:p></EM></P>
+<P class=MsoNormal><EM>public override string GetBrokenRulesString();<o:p></o:p></EM></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The idea behind overriding this functions was similar to overriding the IsValid and IsDirty methods, in other words, you could override this methods and bring a collection of broker rules containing all of the broken rules *including* the children broken rules.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Although I realize that I can add similar functionality to my objects if I needed it, I am curios for the reason why they were removed in the first place, they seem to come in pretty handy to me, what happened?<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks.</P>
+<P class=MsoNormal>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 10, 2006</h2>The functionality continues to exist, but I reorganized the validation behaviors to be much better organized overall. The ValidationRules class exposes GetBrokenRules() so you can get at the broken rules list - which you can expose from your business object if you desire. BrokenRulesCollection has a couple different ToString() overloads and ToArray() overloads to allow you some flexibility in how you get at the list of rules.<br><br>I removed the methods from BusinessBase because of all this lower-level flexibility. Now <i>you </i>get to choose how (or if) you want to expose any of this data to the world.<br><br>As I've stated many times, I recommend creating your own base classes that subclass the 7 CSLA base classes. This is the primary mechanism for extending CSLA. If you do this, then your custom base class could include:<br><br>&lt;Serializable()&gt; _<br>Public MustInherit Class MyBusinessBase(Of T As MyBusinessBase(Of T))<br>&nbsp; Inherits Csla.BusinessBase(Of T)<br><br>&nbsp; Public Function GetBrokenRulesString() As String<br>&nbsp;&nbsp;&nbsp; Return ValidationRules.GetBrokenRules.ToString(RuleSeverity.Error)<br>&nbsp; End Function<br><br>End Class<br><br>If all your business objects then inherit from this base class, they'll all have this customized functionality.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, October 10, 2006</h2><P>Rocky,</P>
+<P>I agree about the Base class. Every project should have them even if they are empty. Then if the need arises later you can easily add code to them and all of your BOs which derive from it get the new behavior.</P>
+<P>I did a quick test of the code you mentioned and it does return a nice string of the broken rules for the current object. But it does not return any broken rules for contained BOs.</P>
+<P>That is why I re-wrote the AllRules implementation from 1.x in 2.x in this thread: <A HREF="/forums/thread/6283.aspx">http://forums.lhotka.net/forums/thread/6283.aspx</A></P>
+<P>For a given BO it checks the rules for it plus all of its children and returns a complete string. This conecpt has worked well for me and I wanted to be able to keep doing it.</P>
+<P>It was impossible for me to figure out how to do it with generics so I switched to Interfaces and I think it works now.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 10, 2006</h2>Yes, the problem I face here is that there's no way (short of reflection) to automatically determine all the child objects and collections within a given object. <br><br>I've thought about addressing this, because it would eliminate the need to override IsValid and IsDirty for parent objects and would allow the sort of thing you are implementing. If I did it right, it would also allow the data portal to automatically cascade the data calls to the child objects, so you wouldn't need to cascade the fetch/insert/update/delete calls through to child objects - saving a bunch of code, especially in collections.<br><br>But, that isn't on the table in the near term - I've got enough to do writing the 2.1 ebook, getting ready for .NET 3.0 and trying to put together some training videos/docs covering the basic usage of CSLA.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 11, 2006</h2><P class=MsoNormal>Do I have the right to disagree?<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Let me begin by saying that I was aware that there are all kind of methods on the broken rules collection class to get what I need, but that wasn’t really my problem, my main beef was about why the function where removed from where they should be.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Like I said before, I am aware that I can extend my objects to meet my needs anyway I want but…. I still think that these methods belong in the BusinessBase object, at least a method that a user could call and get back a BrokenRules collection containing all of the broke rules *including* the children broken rules.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Quite honestly, as a newbie using the CSLA 2, I am already not liking the ValidationRules idea. The reason I don’t like it is because it looks to me like this class is being used to make the code “cleaner” but not because it’s a required abstraction of a business need.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>To me, a business object has a collection of broken rules, a collection of validation rules etc. I just don’t see the ValidationRules class coming into play here.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Further more, if exposing an overrideable BrokenRulesCollection property on the business base (just like on the 1.X version) is a bad idea then why is exposing the IsDirty property ok? The IsDirty property is already available on the ValidationRules class too so why not just retrieve the value from there directly? Why is it ok to have an IsDirty property on the business object but not a BrokenRules collection? Why the double standard? What makes the IsDirty property so special?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>One more thing, I hope I am not appearing to be donkeys butt here, I am really not qualify to criticize anything at this point because for one thing I am an idiot, and the second reason is because I didn’t apply myself reading the book but instead I just examined the code to see what is doing and I am using the book as a reference so I hope I am not being to stupid with what I am saying here.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 11, 2006</h2>Of course you can disagree!! <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>CSLA has never had a way to get the broken rules for the entire object graph. I mentioned this in my previous post - the problem is that there's no automated way for CSLA to know about your child objects and collections. (this is why you must manually override IsValid and IsDirty as well)<br><br>But just to double-check, I looked at BusinessBase and it does include this method:<br><br>&nbsp;&nbsp;&nbsp; public virtual Validation.BrokenRulesCollection BrokenRulesCollection<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return ValidationRules.GetBrokenRules(); }<br>&nbsp;&nbsp;&nbsp; }<br><br>Of course it is attributed to hide the method from data binding, and it is also marked as advanced - meaning that it doesn't show up in intellisense by default. For most C# devs it probably shows up anyway, because most people I know have VS set to show advanced members. For VB devs it is always available - just in the advanced tab rather than the common tab.<br><br>There is not a way to get the string value - but that's what ToString() is for. That was a concious choice on my part - to reduce the coupling between businessbase and the broken rules. And it was a good choice, because with severities in 2.1 I would, otherwise, have had to add several new methods to businessbase. The current implementation is much more maintainable than the older, imo incorrect, implementation.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 11, 2006</h2><P class=MsoNormal>Whooooops! You are right (as always), I just saw the BrokenRulesCollection overridable property. I can’t believe I didn’t see it before. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This is definitely great but there is just one little problem. The constructor on BrokenRulesCollection class is marked as internal, this makes in impossible for a class outside the CSLA assembly to create an instance of BrokenRulesCollection. Without being able to instantiate a new BrokenRulesCollection class there is no way we can use it to populate it with all of the parent and child broken rules.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The easies way that I can think of how to solve this problem with minimal impact to the CSLA would be to create a new “Combine” static method on the BrokenRulesCollection<SPAN>&nbsp; </SPAN>as follows:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><o:p>---------------------------------------</o:p></P>
+<P class=MsoNormal>public static BrokenRulesCollection Combine(BrokenRulesCollection col1, BrokenRulesCollection col2)</P>
+<P class=MsoNormal>{</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>BrokenRulesCollection combinedRules = new BrokenRulesCollection();</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>foreach (BrokenRule br in col1)</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.IsReadOnly = false;</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.Add(br);</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>&nbsp;&nbsp;</SPAN>combinedRules.IncrementCount(br);</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.IsReadOnly = true;</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>foreach (BrokenRule br in col2)</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.IsReadOnly = false;</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.Add(br);</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.IncrementCount(br);</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>combinedRules.IsReadOnly = true;</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>return combinedRules;</P>
+<P class=MsoNormal>}</P>
+<P class=MsoNormal>---------------------------------------</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>This method will return a fresh BrokenRulesCollection without messing anything else. Note that the code below is untested and it’s also candidate to some efficiency improvement, it’s just there to get the point across.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Please advice, other that my suggestion above, is there something I am missing?</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 11, 2006</h2>Let's step back and try to sort out the problem you are actually trying to solve.<br><br>The responsibility of BrokenRulesCollection is to maintain the list of broken rules for an object. While this combine idea would technically work, it would violate the single-reponsibility principle.<br><br>So the question what what are you trying to accomplish? Something like what Xal has done with his rule-displaying-treeview control?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, October 11, 2006</h2><P class=MsoNormal>What I am trying to do is just to get a list of all the broken rules for the complete object (parent and children) like the sample below:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<OL>
+<LI class=MsoNormal>Parent error 1</LI>
+<LI class=MsoNormal>Parent error 2</LI>
+<LI class=MsoNormal>Collection 1 child error 1</LI>
+<LI class=MsoNormal>Collection 1 child error 2</LI>
+<LI class=MsoNormal>Collection 1 child error 3</LI>
+<LI class=MsoNormal>Collection 2 child error 1</LI>
+<LI class=MsoNormal>Collection 2 child error 2</LI></OL>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The reason for this is because my current UI implementation is to display the first broken rule available on the broken rules collection after the user clicks the OK button (assuming the object is invalid). It does not matter if the broken rule is a parent or a child broken rule.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>That’s why I want a single broken rules collection that contains the full list of all broken rules so I don’t have to worry about it. It juts makes things simpler. </P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>In some forms I do display a message box showing all of my broken rules, similar to what Xal did but I display them on a simple message box because the number of rules to display is very small so the error tree view is overkill for me.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>If doing what I suggested with the code on my previous post will violate the single-responsibility principle, then I think you need to make the:</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>public virtual Validation.BrokenRulesCollection BrokenRulesCollection</P>
+<P class=MsoNormal>{</P>
+<P class=MsoNormal><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>get { return ValidationRules.GetBrokenRules(); }</P>
+<P class=MsoNormal>}</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>property non-virtual because the only valid return is the value returned by default, so there is no point on making this property overridable.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>By the way, yes I know that my current UI validation implementation is cheese, I am planning to enhance it later and take advantage of data binding and the works but for right now my current implementation has been working great for the last 2 years so no point on trying to change that at this time.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Frankly I don’t see the problem with combining the broken rules into a BrokenRulesCollection, as far as I am concern, a BrokenRulesCollection object used to show all of the broker rules for the full object (parent and child) is as good logical as one used to show broken rules for a single business object, its just used on a different context, what’s wrong with that?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 12, 2006</h2><P>Rocky,</P>
+<P>One issue that I discovered when writing the code to build the list of rules for a BO and its contained BOs is that you "short circuit" the call to IsValid in the framework. This makes sense for efficiency purposes but it leaves child objects in the incorrect State. The assumption is that a call to IsValid may involve re-running CheckRules "one last time" and then making the call. e.g. The user may have edited the form and modified some values to fix things that were previously Broken. The call to CheckRules fixes the broken rule. When the call is cascaded the pattern repeats itself. So in a child collection I could fix an object but the rule is not removed from Broken rules because you short circuited the call when you found a problem in some other child first. So even though the user fixed something it still shows up as broken in the list of rules. </P>
+<P>By eliminating the short circuit behavior in IsValid, we can be sure that all rules are checked for all BOs before returning the string of broken rules. I Override it in my Base class for BusinessList.</P>
+<P>&nbsp;&nbsp;'override CSLA2 code to look like this - no short circuiting involved here.<BR>&nbsp;&nbsp;&nbsp; 'run through all the child objects and if any are invalid then the collection is invalid<BR>&nbsp;&nbsp;&nbsp; 'call IsValid on all children so that when we examine Broken Rules we get the right set of values.<BR>&nbsp;&nbsp;&nbsp; 'Rocky stopped looping after he found the first invalid child.<BR>&nbsp;&nbsp;&nbsp; Public Overrides ReadOnly Property IsValid() As Boolean Implements IBusinessCollection.IsValid<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim result As Boolean = True</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each child As C In Me<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If Not child.IsValid Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = False<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return result<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<BR>&nbsp;&nbsp;&nbsp; End Property</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>PS - <A HREF="/forums/thread/6283.aspx">http://forums.lhotka.net/forums/thread/6283.aspx</A></P>
+<P>The above thread shows the steps I had to take in Csla2 to use Interfaces to find all the contained BOs within a given BO. It was not trivial but I used the AllRules code from 1.x forum&nbsp;as the basis for it. It seems to work but I only have only given it cursory testing.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 12, 2006</h2>Yes, I do short-circuit. And honestly, that's not going to change - because many people call IsValid on every property change, so they can enable/disable the Save button on their form.<br><br>But this is also why some of these methods are virtual: so you can conciously choose to do things like not short-circuiting. Presumably then you don't enable/disable the Save button, but rather are choosing to go down a different path with your UI style.<br><br>I have to, as much as possible, support these two models - along with others people might have come up with that we haven't even considered.<br><br>Regarding the original question, I really think Xal got it right with his treeview control. What's being discussed here is primarily a UI issue, and can/should be solved in the UI layer.<br><br>However, it is true that CSLA has a flaw: the method returning the broken rules collection is virtual, but that's pointless due to the way the BrokenRulesCollection is implemented. I'll add this to my <a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=42066ed8-ea65-44a3-b7fd-035c9d8bfa36">to-be-considered-for-the-future</a> list, because either the method shouldn't be virtual, or it should be possible to return various types of result - either with the Combine() option proposed earlier, or some other alternative.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

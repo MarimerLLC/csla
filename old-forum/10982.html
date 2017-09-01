@@ -1,0 +1,14 @@
+<html><header><title>Edit level mismatch in UndoChanges in ProjectTracker Silverlight Sample</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in UndoChanges in ProjectTracker Silverlight Sample</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10982.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gautamh posted on Tuesday, December 13, 2011</h2><p>An update here.</p>
+<p>I think the issue is that when a row (item is added to the collection) is added by clicking the Add New, the edit level of that object is set to 1. When we double click a cell on the row to activate the cell/row, the edit level goes up to 2. Now, when we try to cancel, the edit level of the parent collection is 1 and that of the child item is 2 and hence boom.</p>
+<p>&nbsp;</p>
+<p>Hi,</p>
+<p>I have downloaded the ebook sample project tracker silverlight application.I get an Edit level mismatch exception on following the below steps</p>
+<ol>
+<li>Select the &quot;Edit roles&quot; menu option.</li>
+<li>Click Add New.</li>
+<li>Double click on the Name column of the newly added row. You should see the validation message pop up. </li>
+<li>Click Cancel and an UndoException is thrown at UndoableBase.cs in the UndoChanges method.</li>
+</ol>
+<p>I&#39;m having the same issue in our line of business application. I&#39;ve followed some suggestions mentioned in earlier posts to set the ManageObjectLifetime to false. But, this has not helped.</p>
+<p>Has anyone encountered this? Any help is appreciated.</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

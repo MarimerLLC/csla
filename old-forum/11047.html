@@ -1,0 +1,55 @@
+<html><header><title> 'System.OutOfMemoryException' was thrown. iam getting this error help me</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1> 'System.OutOfMemoryException' was thrown. iam getting this error help me</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11047.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 posted on Wednesday, January 11, 2012</h2><p>
+<p>System.OutOfMemoryException: Exception of type &#39;System.OutOfMemoryException&#39; was thrown.</p>
+<p>&nbsp; &nbsp;at System.IO.MemoryStream.set_Capacity(Int32 value)</p>
+<p>&nbsp; &nbsp;at System.IO.MemoryStream.EnsureCapacity(Int32 value)</p>
+<p>&nbsp; &nbsp;at System.IO.MemoryStream.Write(Byte[] buffer, Int32 offset, Int32 count)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlStreamNodeWriter.WriteBytes(Byte[] byteBuffer, Int32 byteOffset, Int32 byteCount)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBinaryNodeWriter.WriteBase64Text(Byte[] trailBytes, Int32 trailByteCount, Byte[] base64Buffer, Int32 base64Offset, Int32 base64Count)</p>
+<p>&nbsp; &nbsp;at System.Xml.XmlBaseWriter.WriteBase64(Byte[] buffer, Int32 offset, Int32 count)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlWriterDelegator.WriteBase64(Byte[] bytes)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.ByteArrayDataContract.WriteXmlValue(XmlWriterDelegator writer, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeAndVerifyType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, Boolean verifyKnownType, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithXsiType(XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle objectTypeHandle, Type objectType, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, Type declaredType)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.InternalSerialize(XmlWriterDelegator xmlWriter, Object obj, Boolean isDeclaredType, Boolean writeXsiType, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at WriteSerializationInfo.FieldDataToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , ClassDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.ClassDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithoutXsiType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.InternalSerialize(XmlWriterDelegator xmlWriter, Object obj, Boolean isDeclaredType, Boolean writeXsiType, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at WriteKeyValueOfstringSerializationInfo.FieldDataOzoZvLrmToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , ClassDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.ClassDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at WriteArrayOfKeyValueOfstringSerializationInfo.FieldDataOzoZvLrmToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , CollectionDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.CollectionDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithoutXsiType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.InternalSerialize(XmlWriterDelegator xmlWriter, Object obj, Boolean isDeclaredType, Boolean writeXsiType, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at WriteSerializationInfoToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , ClassDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.ClassDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithoutXsiType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.InternalSerialize(XmlWriterDelegator xmlWriter, Object obj, Boolean isDeclaredType, Boolean writeXsiType, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at WriteArrayOfSerializationInfoToXml(XmlWriterDelegator , Object , XmlObjectSerializerWriteContext , CollectionDataContract )</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.CollectionDataContract.WriteXmlValue(XmlWriterDelegator xmlWriter, Object obj, XmlObjectSerializerWriteContext context)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.WriteDataContractValue(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializerWriteContext.SerializeWithoutXsiType(DataContract dataContract, XmlWriterDelegator xmlWriter, Object obj, RuntimeTypeHandle declaredTypeHandle)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.DataContractSerializer.InternalWriteObjectContent(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.DataContractSerializer.InternalWriteObject(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializer.WriteObjectHandleExceptions(XmlWriterDelegator writer, Object graph)</p>
+<p>&nbsp; &nbsp;at System.Runtime.Serialization.XmlObjectSerializer.WriteObject(XmlDictionaryWriter writer, Object graph)</p>
+<p>&nbsp; &nbsp;at Csla.Serialization.Mobile.CslaXmlBinaryWriter.Write(Stream serializationStream, List`1 objectData)</p>
+<p>&nbsp; &nbsp;at Csla.Serialization.Mobile.MobileFormatter.Serialize(Stream serializationStream, Object graph)</p>
+<p>&nbsp; &nbsp;at Csla.Serialization.Mobile.MobileFormatter.Serialize(Object obj)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortalClient.WcfProxy`1.BeginCreate(Object criteria, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal`1.BeginCreate(Object criteria, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal.BeginCreate[T](Object criteria, EventHandler`1 callback, Object userState)</p>
+<p>&nbsp; &nbsp;at Csla.DataPortal.BeginCreate[T](Object criteria, EventHandler`1 callback)</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, January 11, 2012</h2><p>Hi,</p>
+<p>Please check that your object structure does not have circular references.</p>
+<p>Any relationship that is not &quot;owning&quot; reference must use private backing field and have [NonSerialized] and [NotUndoable] attributes. </p>
+<p>This is described in Rocky&#39;s books and the <a href="http://download.lhotka.net/UsingCsla4-02/UsingCsla4-02-Objects.pdf">Using CSLA4 Creating Business Objects</a> ebook. (recommended). </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wasiuddin.786 replied on Wednesday, January 11, 2012</h2><p>it working for 40 record,when the record are increasing performance decrease some time it giving </p>
+<p>outofmemory exception if record more then 60 it thrown exception which all ready posted (system.outofmemoryexception)</p>
+<p>&nbsp;</p>
+<p>help what exact problem i&nbsp;checked&nbsp;the&nbsp;business&nbsp;logic it correct</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 12, 2012</h2><p>Hi,</p>
+<p>Could you provide us a code sample that reproduces the problem? </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,98 @@
+<html><header><title>Using business rules to create a child object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using business rules to create a child object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11096.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 posted on Thursday, January 26, 2012</h2><p>I have a parent object that depending on some business logic should create a child.</p>
+<p style="padding-left:30px;">
+<p>&nbsp;</p>
+<p>public class ParentClass : BusinessBase&lt;ParentClass&gt;</p>
+<p>{</p>
+<p style="padding-left:30px;"><span>	</span>private readonly static PropertyInfo&lt;int&gt; SomeIdProperty = RegisterProperty&lt;int&gt;(prop =&gt; prop.SomeId, &quot;Some Id);</p>
+<p style="padding-left:30px;"><span>	</span>public int SomeId</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>get { return GetProperty(SomeIdProperty); }</p>
+<p style="padding-left:60px;"><span>		</span>set { SetProperty(SomeIdProperty, value); }</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p>&nbsp;</p>
+<p style="padding-left:30px;"><span>	</span>private readonly static PropertyInfo&lt;ChildClass&gt; ChildObjectProperty = RegisterProperty&lt;ChildClass&gt;(prop =&gt; prop.Child, &quot;Child Object&quot;);</p>
+<p style="padding-left:30px;"><span>	</span>public ChildClass Child</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>get&nbsp;</p>
+<p style="padding-left:60px;"><span>		</span>{</p>
+<p style="padding-left:90px;"><span>			</span>if (!FieldManager.FieldExists(ChildObjectProperty))</p>
+<p style="padding-left:90px;"><span>			</span>{</p>
+<p style="padding-left:120px;"><span>				</span>LoadProeprty(ChildObjectProperty, DataPortal.CreateChild&lt;ChildClass&gt;());</p>
+<p style="padding-left:90px;"><span>			</span>}</p>
+<p style="padding-left:90px;"><span>			</span>return GetProperty(ChildObjectProperty);&nbsp;</p>
+<p style="padding-left:60px;"><span>		</span>}</p>
+<p style="padding-left:60px;"><span>		</span>set { SetProperty(ChildObjectProperty, value); }</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>// factory methods</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>protected override void AddBusinessRules()</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>BusinessRules.AddRule(new ChildCreateRule(SomeIdProperty,&nbsp;ChildObjectProperty));</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>private class ChildCreateRule : Csla.Rules.BusinessRule</p>
+<p style="padding-left:30px;"><span>	</span>{</p>
+<p style="padding-left:60px;"><span>		</span>public ChildCreateRule(PropertyInfo PrimaryProperty, PropertyInfo ChildProperty)</p>
+<p style="padding-left:60px;"><span>			</span>: base(PrimaryProperty)</p>
+<p style="padding-left:60px;"><span>		</span>{</p>
+<p style="padding-left:90px;"><span>			</span>InputProperties.Add(PrimaryProperty);</p>
+<p style="padding-left:90px;"><span>			</span>InputProperties.Add(ChildProperty);</p>
+<p style="padding-left:60px;"><span>		</span>}</p>
+<p style="padding-left:60px;"><span>		</span></p>
+<p style="padding-left:60px;"><span>		</span>protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p style="padding-left:60px;"><span>		</span>{</p>
+<p style="padding-left:90px;"><span>			</span>base.Execute(context);</p>
+<p style="padding-left:90px;"><span>			</span></p>
+<p style="padding-left:90px;"><span>			</span>int id = (dynamic)context.InputPropertyValues[InputProperties[0]];</p>
+<p style="padding-left:90px;"><span>			</span></p>
+<p style="padding-left:90px;"><span>			</span>if(id &gt; SomeNumberCriteria)</p>
+<p style="padding-left:90px;"><span>			</span>{</p>
+<p style="padding-left:120px;"><span>				</span>ChildClass kid = ChildClass.NewChildClass();</p>
+<p style="padding-left:120px;"><span>				</span></p>
+<p style="padding-left:120px;"><span>				</span>IPropertyInfo childInfo = InputProperties[1];</p>
+<p style="padding-left:120px;"><span>				</span>context.AddOutValue(childInfo, kid);</p>
+<p style="padding-left:90px;"><span>			</span>}</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p style="padding-left:30px;"><span>	</span>}</p>
+<p style="padding-left:30px;"><span>	</span></p>
+<p style="padding-left:30px;"><span>	</span>// dataportal methods</p>
+<p>}</p>
+</p>
+<p>&nbsp;</p>
+<p>Is this a good approach? &nbsp;Should biz rules have this kind of behavior, the reason I went down this road is b/c there are cases when I may(or may not) want a child object. &nbsp;It depends on the value of SomeId.</p>
+<p>If this is not a good approach, can you suggest a better one?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Thursday, January 26, 2012</h2><p>It&#39;s those &quot;AffectedProperties&quot; that got me again. &nbsp;If any needs the answer, something like:</p>
+<p>
+<p>private class ChildCreateRule</p>
+<p><span>	</span>{</p>
+<p style="padding-left:30px;"><span>		</span>public ChildCreateRule(PropertyInfo PrimaryProperty, PropertyInfo ChildProperty)</p>
+<p style="padding-left:30px;"><span>			</span>: base(PrimaryProperty)</p>
+<p style="padding-left:30px;"><span>		</span>{</p>
+<p style="padding-left:60px;"><span>			</span>InputProperties.Add(PrimaryProperty);</p>
+<p style="padding-left:60px;"><span>			</span>AffectedProperties.Add(ChildProperty);</p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span>		</span>protected override void Execute(Csla.Rules.RuleContext context)</p>
+<p style="padding-left:30px;"><span>		</span>{</p>
+<p style="padding-left:60px;"><span>			</span>base.Execute(context);</p>
+<p style="padding-left:60px;"><span>			</span></p>
+<p style="padding-left:60px;"><span>			</span>int id = (dynamic)context.InputPropertyValues[PrimaryProperty];</p>
+<p style="padding-left:60px;"><span>			</span></p>
+<p style="padding-left:60px;"><span>			</span>if(id &gt; SomeNumber)</p>
+<p style="padding-left:60px;"><span>			</span>{</p>
+<p style="padding-left:90px;"><span>				</span>ChildClass kid = ChildClass.NewChildClass();</p>
+<p style="padding-left:90px;"><span>				</span></p>
+<p style="padding-left:90px;"><span>				</span>IPropertyInfo childInfo = AffectedProperties[0];</p>
+<p style="padding-left:90px;"><span>				</span>context.AddOutValue(childInfo, kid);</p>
+<p style="padding-left:60px;"><span>			</span>}</p>
+<p style="padding-left:30px;"><span>		</span></p>
+<p style="padding-left:30px;"><span>		</span>}</p>
+<p><span>	</span>}</p>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, January 26, 2012</h2><p>Hi, </p>
+<p>I do not recommend to use a business rule delete/create child objects.</p>
+<p>I&#39;d rather look at using authorization rules or overloads of Can&lt;XYZ&gt; to &quot;hide&quot; the child object/property values when they should not be available (readable/editable) and shortcircuit the validation rules when user is not allowed to edit fields.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Friday, January 27, 2012</h2><p>I agree with JonnyBee, and that&#39;s what we&#39;ve done in our apps with CanAddBusinessCase, CanDelete_xxxx methods as an example, etc, as we can use these not only to check if user is in correct role, but also look at our custom permissions model and of course execute lookups against our database and/or query other business objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Friday, January 27, 2012</h2><p>The logic to determine if a child object gets created isn&#39;t tied to authorization, it&#39;s more like &quot;if (SomePropertyId == 5) CreateChild&quot;. &nbsp;The basic design is when the parent object is saved to the database, if a property is set to a particular value, then create the child and insert into the db with the parent. &nbsp;There would be no UI piece or any way for the user to interact with it(this is by design).</p>
+<p>If you have access/authorization to the root object, then you have access/authorization to create/save the child object. &nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, January 27, 2012</h2><p>Hi,</p>
+<p>Then it seems to me that this is Save-logic (that belongs in the Data Access Layer) and not a business rule in the Business Object. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Chris62 replied on Friday, January 27, 2012</h2><p>That was my original thought, but then I moved it to a business rule. &nbsp;I&#39;ll be moving it back in the DA layer.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

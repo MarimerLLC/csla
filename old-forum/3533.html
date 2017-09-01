@@ -1,0 +1,110 @@
+<html><header><title>Re: Secure login form</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Re: Secure login form</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3533.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller posted on Thursday, September 13, 2007</h2><P>Hi</P>
+<P>I'm looking for some help to make my app more secure. Currently I'm using the login form from PTTracker. So I'm wondering whether anyone has any idea how I can lockdown the login form so it's not spoofable and passwords are not passed around in the clear. Is there a windows login dialog that can be called? I have been looking at changing all the string variables to SecureString.</P>
+<P>Any help would greatly appreciated.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dean replied on Thursday, September 13, 2007</h2>This is an article from 2006 about secure login:<br><br>http://www.developerfusion.co.uk/show/4693/<br><br>Haven't used it but thought I would pass it along.<br><br>Dean<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 14, 2007</h2>The normal solution, and the one I'd recommend, is to use SSL for the login.aspx page. That's what most web sites do, because SSL is a well understood and trusted protocol that solves the whole issue.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Sunday, September 16, 2007</h2><P>Thanks Rocky and dean.</P>
+<P>I wish winform security was as easy to implement as webforms so I could use something like ssl, but alas, I'm only using winforms. And most of the articles I've seen still use string to pass the password around, pre-SecureString. I been to the pluralsight site and found Keth Brown's example: prompting for a password. Good but still only an example.</P>
+<P>The '<SPAN>Credential Management API </SPAN>' example looks promising, maybe I can use some of it, as I am only interested in the secure dialog returning a securestring. I could change the Keth Brown example it's in C++.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I did assume web.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But Windows is typically easier. The only time your
+username/password combo would go across the wire in that setting is through the
+data portal. Again, the typical answer is to use SSL to protect the data
+flowing across the network &#8211; and you can use SSL and the data portal with
+the WCF, Remoting and Web services channels.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The EnterpriseServices channel can also be encrypted &#8211;
+that&#8217;s just a setting in the COM+ application dialog on the server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The WCF channel can also be encrypted using WCF encryption &#8211;
+based on WS-Security I believe &#8211; which is much like SSL in that it is
+certificate based.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Passing the string around <i>inside your WinForms app itself</i>
+is kind of a non-issue, because that&#8217;s inside the same AppDomain at all
+times. Since the unencrypted string must, at some point, be available to your
+code, the key to decrypt the string would also need to be available within the
+AppDomain &#8211; meaning you can&#8217;t <i>actually</i> encrypt the value &#8211;
+all you can do is use a &#8220;fancy&#8221; form of obfuscation or encoding.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, it is kind of silly to encrypt the value in
+memory, because the key is there too &#8211; and any hacker who has access to your
+private fields to get at the encrypted string can, by definition, get at the
+private field containing the key&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So all you can really do is protect the value on the wire &#8211;
+where it is more vulnerable anyway (assuming a hacker can put a tap on your
+network) &#8211; and that&#8217;s easily handled through SSL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;</span><o:p></o:p></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ozitraveller
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, September 16, 2007 6:12 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Secure login form<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Rocky and dean.<o:p></o:p></p>
+
+<p>I wish winform security was as easy to implement as webforms so I could use
+something like ssl, but alas, I'm only using winforms. And most of the articles
+I've seen still use string to pass the password around, pre-SecureString. I
+been to the pluralsight site and found Keth Brown's example: prompting for a
+password. Good but still only an example.<o:p></o:p></p>
+
+<p>The 'Credential Management API ' example looks promising, maybe I can use
+some of it, as I am only interested in the secure dialog returning a
+securestring. I could change the Keth Brown example it's in C++.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Monday, September 17, 2007</h2><P>Thanks Rocky.</P>
+<P>I need to look further into SSL then.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

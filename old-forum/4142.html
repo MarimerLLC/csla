@@ -1,0 +1,8 @@
+<html><header><title>Pattern for saving objects without N-Level Undo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Pattern for saving objects without N-Level Undo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4142.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mr_lasseter posted on Thursday, January 10, 2008</h2><P>What is the correct pattern for saving an object in Winforms without using N-Level undo?&nbsp; Is it enough to set DisableIEditableObject to true and not call BeginEdit and ApplyEdit?</P>
+<P>&nbsp;</P>
+<P>Thanks,</P>
+<P>Mike</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RikGarner replied on Thursday, February 07, 2008</h2><P>We don't use n-level undo in several areas of our application. Don't sweat it - just ignore ApplyEdit and BeginEdit and call Save when you've updated your object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 07, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mr_lasseter:</strong></div><div>
+<P>What is the correct pattern for saving an object in Winforms without using N-Level undo?&nbsp; Is it enough to set DisableIEditableObject to true and not call BeginEdit and ApplyEdit?</P>
+<P></div></BLOCKQUOTE></P>
+<P>Yes, that should be correct. Just don't try to use in-place editing in a grid. It will work to a point, but some grid concepts require IEditableObject and so obviously can't work.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,11 @@
+<html><header><title>How to bind WPF New button to AuthorizationRules.CanCreateObject?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to bind WPF New button to AuthorizationRules.CanCreateObject?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5757.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ posted on Thursday, November 06, 2008</h2><P>I have created a WPF form that contains a toolbar and a listview that is bound to a ReadOnlyListBase. The toolbar has a "New" button and a "Delete" button. I am using CSLA 3.5.</P>
+<P>I am trying to find a way to:</P>
+<P>1)&nbsp;bind the IsEnabled property of the "New" button to the Csla.Security.AuthorizationRules.CanCreateObject(typeof(Widget)).</P>
+<P>2) bind the IsEnabled property of the "Delete" button to the Csla.Security.AuthorizationRules.CanDeleteObject(typeof(Widget)) AND&nbsp;ListView.SelectedItems.Count &gt; 0.</P>
+<P>I would prefer to code this in XAML and I am trying to avoid creating an unnecessary instance of Widget.</P>
+<P>Any help would be greatly appreciated.</P>
+<P>Thanks,</P>
+<P>Russ.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 06, 2008</h2><P>I believe we addressed this in 3.6 by adding properties to the ObjectStatus control. You can put an instance of ObjectStatus as a resource on your page, bind it to the CslaDataProvider, and then bind your various UI elements to the properties of ObjectStatus.</P>
+<P>We might have added them to the CslaDataProvider too, but I don't remember for sure. We did on Silverlight, and I'm not sure if we did the same in WPF.</P>
+<P>I don't think the per-type authz properties were exposed in 3.5 (though I could be wrong).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Russ replied on Thursday, November 06, 2008</h2><P>Thanks for the quick response Rocky.&nbsp; I'll get started migrating my project to 3.6b2a.</P>
+<P>Russ.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

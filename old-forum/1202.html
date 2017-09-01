@@ -1,0 +1,132 @@
+<html><header><title>New row cancel on grid not working in 2.1 ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New row cancel on grid not working in 2.1 ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1202.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan posted on Wednesday, September 13, 2006</h2><P>After upgrading to CSLA 2.1 beta&nbsp;from 2.0 I&nbsp;have noticed strange behavior when databinding to grid (Infragistics). In 2.0 when I have clicked on the new row and started editing I could cancel the new added row by pressing Esc twice (once for cell, once again for row). In 2.1 that doesn't work. When I press Esc row clears but doesn't get removed from the grid. I have noticed that RemoveItem(int) isn't called in 2.1 but it is in 2.0. When I switch back to 2.0 everything works fine.<o:p></o:p></P>
+<P>I have also tried new EditableRootListBase and it also doesn’t call RemoveItem when I press Esc to cancel new row.<o:p></o:p></P>
+<P>The reason I whish to upgrade to 2.1 is EditableRootListBase which I think is very useful in my scenario (immediate insert, update, delete).<o:p></o:p></P>
+<P>I would appreciate any help whit this.<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 13, 2006</h2>Certainly sounds like a bug to me.&nbsp; You're subclassing BusinessListBase?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan replied on Wednesday, September 13, 2006</h2>Yes, I'm using BusinessListBase. Everything works fine with 2.0 but not with 2.1. <FONT color=#008080 size=2>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, September 13, 2006</h2>I'm currently updating my UI layer to use Infragistics controls, and one of the pages has and editable grid. I'll see if I can't repo this problem as well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan replied on Wednesday, September 13, 2006</h2>I have done some more test and have verifyed that everything work fine with versons 2.0 - 2.0.3. The problem is evident only with 2.1 (c# and VB).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2><P>So to be clear. </P>
+<P>You are using BusinessListBase to create a collection. </P>
+<P>You are binding this to a grid (Infragistics). </P>
+<P>You move to the last row in the grid, thus adding a new row.</P>
+<P>You press ESC to cancel this new row.</P>
+<P>The virtual/Overridable RemoveItem() method is not being invoked?</P>
+<P>I want to be clear, because that's not my method - it is Microsoft's method. Given that BusinessListBase is the bottom of the inheritance hierarchy, it's RemoveItem() should be the one that is invoked, followed by the one in the new ExtendedBindingList, followed by BindingList&lt;T&gt;, etc.</P>
+<P>I'm not saying I didn't break something, but I want to be clear on the problem before going too far. I don't have the Infragistics grid, so I'll have to try and replicate it with the DataGridView - and/or ask for your help using the debugger to walk through your code and the CSLA code to try and figure out what's going on.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 13, 2006</h2><P>As I feared, I can't replicate the problem with the DataGridView.</P>
+<P>I created a simple test project with a parent, childlist and child. I created a form bound to parent, with a grid bound to the childlist collection.</P>
+<P>I can add new child objects in the grid, and press ESC and they are removed as expected.</P>
+<P>I even added an override of RemoveItem() to ChildList so I could a breakpoint in there, and it is called as expected.</P>
+<P>That's what I suggest you do: override RemoveItem() with a simple override that merely calls MyBase.RemoveItem(index) or base.RemoveItem(index); as you choose. Then you can put a breakpoint on that one line of code to see if it gets called as expected.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan replied on Thursday, September 14, 2006</h2><P>Thanks Rocky for trying to help. I have tested my code with Infragistics UltraGrid and DataGridView. With CSLA 2.0 both grids called RemoveItem that I have overrided in my collection class but with version 2.1 only DataGridView called RemoveItem. </P>
+<P>If I&nbsp;call BeginEdit on my object before databinding to Infragistics UltraGrid then it calls RemoveItem and it worked fine. If this is the solution what then to call on EditableRootListBase which doesn't have BeginEdit and also doesn't work with Infragistics UltraGrid ?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 14, 2006</h2><P>Do you have to manually call BeginEdit in CSLA 2.0.x for UltraGrid to work? Or is the manual call to BeginEdit only required in 2.1?</P>
+<P>Are you using SortedBindingList or FilteredBindingList, or just binding to a BusinessListBase-derived list directly?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan replied on Thursday, September 14, 2006</h2><P>I do not have to call BeginEdit in 2.0 for UltraGrid to work, only in 2.1. I use only BussineListBase derived classes. I have tried binding UltraGrid via BindingSource and directly to BLB objects and no change. Still not working.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan replied on Tuesday, September 26, 2006</h2>I still haven't find solution for this problem or find why it is behaving like this so I had to revert my code back to CSLA 2.0 release. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmay replied on Thursday, October 05, 2006</h2><P>Ivan,&nbsp; </P>
+<P>I upgraded to CSLA 2.1 (RTM) yesterday, and I was caught by your post, since I use the Infragistics WinGrid as well.&nbsp; I have a BusinessListBase child inside a parent&nbsp;BusinessBase class, I used the Add New functionality, and I was able to click ESC (as Rocky did) to get it to delete.&nbsp; </P>
+<P>Just a note, by default, the WinGrid makes you do a double-ESC to remove the row (the first ESC just highlights the cell), but the second ESC call fully removed the row for me. (Also note, no BeginEdit was called here, this was just using the default AddRow functionality&nbsp;in the WinGrid)</P>
+<P>Maybe something in the RTM fixed it? (I didn't try the beta)</P>
+<P>Barry</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ivan replied on Friday, October 06, 2006</h2><P>Barry and Rocky, </P>
+<P>I have the same problem whit RTM. Maybe I am doing something wrong. </P>
+<P>I have done the test project that demonstrates the problem that I have. I made one EditableRootListBase collection and one BusinessListBase. Item objects are of BusinessBase. One is marked as child and other isn't. I have created test form whit two Infragistics grids bined to two BindingSource components. At form load event I create instances of collections and give them as a datasource to binding sources (I have tried also binding them directly to grids whit same result). When I click in the addnewrow and write somethin after hitting ESC it clears the cell. On the second ESC row doesn't get removed. The solution hasCSLA 2.1 project&nbsp;included to easy whit debuging.</P>
+<P>I have created copy of this solution but whit CSLA 2.0 (without EditableRootListBase) and found that OnUnknowPropertyChanged increments the edit level because of call to BeginEdit. I have replaced OnUnknownPropertyChange in 2.1 whit one from 2.0 and the problem whit BusinessListBase has been solved. </P><FONT size=2></FONT><FONT color=#008080 size=2><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>virtual</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> OnUnknownPropertyChanged()<BR>{<BR></FONT><FONT color=#008080 size=2>&nbsp;&nbsp;&nbsp;&nbsp; PropertyInfo</FONT><FONT size=2>[] properties = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.GetType().GetProperties(</FONT><FONT color=#008080 size=2>BindingFlags</FONT><FONT size=2>.Public | </FONT><FONT color=#008080 size=2>BindingFlags</FONT><FONT size=2>.Instance);<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp; foreach</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>PropertyInfo</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> properties) <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(item.Name);<BR></FONT><FONT size=2>}</P></FONT></FONT><FONT size=2></FONT>
+<P>For EditableRootListBase and Infragistics grid problem is in that it calls RemoveChild that doesn't do enything. Microsoft DataGridView calls RemoveItem so it works fine. I have modified RemoveChield whit:</P><FONT color=#0000ff size=2>
+<P>void</FONT><FONT size=2> Csla.Core.</FONT><FONT color=#008080 size=2>IParent</FONT><FONT size=2>.RemoveChild(Core.</FONT><FONT color=#008080 size=2>IEditableBusinessObject</FONT><FONT size=2> child)</FONT>&nbsp;<BR><FONT size=2>{</FONT><BR>&nbsp;&nbsp;&nbsp; i<FONT color=#0000ff size=2>nt</FONT><FONT size=2> index;<BR>&nbsp;&nbsp;&nbsp; &nbsp;index = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IndexOf((T)child); <BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2> (index &gt;= 0)<BR>&nbsp;&nbsp;&nbsp;&nbsp; RemoveItem(index);<BR></FONT><FONT size=2>}</P></FONT>
+<P><FONT size=2><FONT size=3>That has solved the problem with EditableRootListBase and Infragistics grid. It also works fine whit DataGridView.</FONT></FONT></P>
+<P>I dont't like making modifications to CSLA because of the future versions and maintainence. If anybody wants I can send both test projects so you can see for yourself what is happening.</P>
+<P>Once again, maybe I am doing something wrong but I'm using CSLA from version 1.0.</P>
+<P><FONT size=2><FONT size=3>Ivan</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bmay replied on Sunday, October 08, 2006</h2><P>Ivan, </P>
+<P>I'm seeing the problem in 2.1, but I think I see the disconnect you're having with Rocky's scenario.&nbsp; <STRONG>Rocky</STRONG>, I'm also seeing Ivan's scenario, which causes a problem with DataGridView (details below)...</P>
+<P>Rocky stated in his earlier post:<BR>-------------<BR>I created a simple test project with a parent, childlist and child. I created a form <STRONG>bound</STRONG> to parent, with a grid <STRONG>bound</STRONG> to the childlist collection.<BR>-------------<BR><BR>I was doing the exact same thing in my scenario (specifically binding the parent object to the form's separate binding source) and THAT has it working ok, including with the WinGrid.&nbsp; Here's where it falls apart:</P>
+<P><STRONG>Problem Scenario: </STRONG>If you simply add a bindingsource tied only to the BusinessListBase, and <STRONG>not</STRONG> a separate bindingsource tied to the parent BusinessBase, then you'll see the problem (I'm seeing the problem with WinGrid or DataGridView).&nbsp; In CSLA 2.0, this did not cause a problem.<BR><BR><STRONG>Working Scenario: </STRONG>If you have two bindingsources, one tied to the BusinessListBase, and one to tied to the parent BusinessBase, then it'll work fine (with both WinGrid and DataGridView).</P>
+<P>The difference (from what I'm seeing is) appears to be twofold, although I haven't figured out&nbsp;if #1 really is causing a problem, or why #2 is happening at all, and if it should be:<BR>&nbsp;&nbsp;&nbsp;1) The EditLevel is now based on a stack instead of a counter, and<BR>&nbsp;&nbsp;&nbsp;2) The OnPropertyChanged&nbsp;call (which is called on the deletion through UndoChangesComplete's OnUnknownPropertyChanged)&nbsp;is itself causing a BeginEdit to happen (which pushes to the stack)<BR><BR>The bolded check in RemoveChild's line <BR>============<BR>"if (IsNew &amp;&amp; _neverCommitted &amp;&amp; <STRONG>EditLevel &lt;= EditLevelAdded</STRONG>)"<BR>============<BR>&nbsp;is 1&lt;=1 in&nbsp;CSLA 2.1 when it's removing properly,&nbsp;0&lt;=0 in CSLA 2.0 when it's removing properly, and&nbsp;1&lt;=0 in the Problem Scenario in CSLA 2.1.</P>
+<P><STRONG>Ivan, </STRONG>with the workaround above (assuming you have a parent businessbase object), I think you'll should be doing fine with it in 2.1.</P>
+<P><STRONG>Rocky</STRONG>, could you explain a bit more how the change to EditLevel is with 2.1, and if this parent bindingsource tie-in should always be done? Regardless, thanks for all the additions in 2.1 -&nbsp;the new changes look extremely useful.<BR><BR>Barry</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, February 20, 2007</h2><P>I'm addressing a couple BLB issues - or at least trying to - related to binding to a root BLB.</P>
+<P>Unfortunately I'm unable to duplicate the issues I think are being reported.</P>
+<OL>
+<LI>There's a failure to undo when ESC is pressed while adding the a new row in the grid control</LI>
+<LI>There's a null reference exception dealing with validation rules - I think when ESC is pressed in the grid, but I'm not sure</LI></OL>
+<P>To try and isolate the issues, I've created the simplest possible editable root list and editable child combo, and bound it to a grid control. The attached project does this with CSLA version 2.1.3+ (maybe older, but I know 2.1.3 or higher is good).</P>
+<P>If those of you having issues can make this app fail, please post a detailed list of steps to cause failure.</P>
+<P>If you can't make it fail, try to compare it to what you have in your failing code and tell me the difference. Better yet - try to alter my code to match your failing code (without complicating the example) and post it back here.</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaidal replied on Wednesday, February 21, 2007</h2><P><SPAN>Here you have your code modified.<o:p></o:p></SPAN></P>
+<P><SPAN>We have added a property that gets the rules description (in order to configure our UI controls) and then we have eliminated the validation rules in the business base class.<o:p></o:p></SPAN></P>
+<P>Just add some rows and the nullReferenceException appears.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 21, 2007</h2>Are you sure? In that code the grid is bound to the ValidationRulesDescription array, not to the business list at all, and so it is not possible to add items to the grid at all.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Btw, I&#8217;m not asking if your bug doesn&#8217;t exist &#8211;
+I believe that it does &#8211; but the code in the zip file doesn&#8217;t seem
+to illustrate the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Don&#8217;t spend time on it though &#8211; based on your
+code/description I now have a unit test that replicates the issue, so I can work
+on it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, February 21, 2007 9:00 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] New row cancel on grid not working in 2.1 ?<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Are you sure? In that code the grid is bound to the
+ValidationRulesDescription array, not to the business list at all, and so it is
+not possible to add items to the grid at all.<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 21, 2007</h2>OK, that null reference issue is fixed in the code in svn, so it will be in the next 2.1.4 release, or you can get it now at <A href="http://www.lhotka.net/cslacvs">www.lhotka.net/cslacvs</A>&nbsp;- the change only affects the ValidationRules class.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vaidal replied on Wednesday, February 21, 2007</h2><P>yes.... it's only an example. </P>
+<P>In real code we are using devexpress grid and it keeps checking that Property although it's marked as not bindeable.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Wednesday, March 28, 2007</h2><P>Rocky,</P>
+<P>I've been working on this with Microsoft for a while now.&nbsp; I wrote a small project, not as small as yours, that uses data from a Northwind db, and the DataGridView control.&nbsp; It exhibits the behavior of failing to undo when ESC is pressed while adding a new row to the grid.&nbsp; Microsoft gave me an unreleased hotfix for System.Windows.Forms.dll.&nbsp; Using the new dll, the problem goes away sometimes.&nbsp; If the first column in the grid is a checkbox, a null reference exception will be thrown in the DataGridView.CancelEdit method.&nbsp; I'm waiting for feedback from MS on the cause of the checkbox column problem.&nbsp; I also see the null reference exception error with the the dll that shipped with VS2005 and the hotfixed version.&nbsp; I have not been able to isolate it.</P>
+<P>Can you tell me more about how it relates to validation rules?</P>
+<P>I tried to reproduce the same problems with your code, using the original System.Windows.Forms.dll.&nbsp; After adding a new row with the yellow + sign, I could not undo the action with the ESC key.&nbsp; I am able to generate an "Invalid Operation" exception by starting the program, adding a new row, deleting all the rows, add a row by clicking in the empty cell, then pressing ESC.&nbsp; This does not happen with the new dll.</P>
+<P>This is one bug I really want to squish!&nbsp; </P>
+<P>Jeff</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Thursday, March 29, 2007</h2><P>I downloaded CSLA 2.1.4 and spent the morning walking through the code.&nbsp; I think I now understand why the ESC button was not removing the row from the grid in my program, but the checkbox column is still a problem.</P>
+<P>Jeff</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgk1701 replied on Thursday, April 19, 2007</h2><P>I just started using 2.1 with an Infragistics grid, and this is happening to me.&nbsp; I read through all of the posts, but not one suggestion has fixed the issue.&nbsp; Has there been a definative answer to this problem?</P>
+<P>&nbsp;</P>
+<P>Jeff</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein replied on Thursday, April 19, 2007</h2><P>&nbsp;</P>
+<P>Well....I've been using the datagridview control, so your mileage may vary, but here is a list of lessons I learned from dealing with this problem.</P>
+<P>1)&nbsp; In your BusinessListBase collection class, override the AddNewCore() function.</P>
+<P>2) In the child object, implement a private shared variable to store the lastID that was used.&nbsp; In the constructor, decrement the lastID, and assign the lastID to the unique identifier.</P>
+<P>3) Override the GetIDValue in the child object to return the unique identifier.</P>
+<P>4) Use version 2.1.4 of CSLA or later. (bug fixes)</P>
+<P>5) Watch out for components that may call EndEdit or CancelEdit on the binding source.&nbsp; The grid will need to call CancelEdit, and it won't if some component has already done that.&nbsp;(A Command management component was doing this, and it took forever to figure it out. )</P>
+<P>6)&nbsp; There is a bug in the DataGridView control that can cause a problem if you try to cancel the edit of the only row in the grid.&nbsp; MS has a fix, but it has not been released yet.</P>
+<P>7)&nbsp; If the first column in a datagrid control is a checkbox column, you'll run into problems trying to cancel an edit.&nbsp; It's a confirmed bug, but I have not seen the fix yet.</P>
+<P>Hope this helps...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 19, 2007</h2>I'm experiencing a similar problem using an Infragistics grid with an EditableRootListBase.<br><br>The behavior is slightly different though; on adding a new row via the grid, pressing ESC twice (once to cancel the cell edit, again to cancel the row edit).&nbsp; The * in the row selector disappears as does the cells value.&nbsp; However, the error provider icons do not (the new row initally starts invalid).<br><br>Clicking onto another row or another form element causes the grid to call EndEdit, which somehow attempts to save the row that should have been removed.&nbsp; Since its not valid, a ValidationException is thrown.<br><br>RemoveItem in ERLB is never called.<br><br>Any ideas?&nbsp; I'm using Csla 3.0 beta refresh 1.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 19, 2007</h2>Ok, I tracked down why this is occuring.<br><br>Basically, CancelEdit DOES get called.&nbsp; During the Canceling, OnUnknownPropertyChanged is called, which raises the event back to the BindingSource.&nbsp; The BindingSource immediately calles BeginEdit again, before the cancel operation is complete.&nbsp; This re-increments the EditLevel.<br><br>Then in Csla.Core.BusinessBase, CancelEdit returns, and the next statement (an if) executes.&nbsp; The problem is that now EditLevel is &lt;= EditLevelAdded ( 1 &lt;= 0 ), and so the call to RemoveChild never executes.&nbsp; Attempting to leave the row calls EndEdit, which attempts to save the new, invalid row and that is where the exception is occuring.<br><br>At this point I'm going to see if I can't intercept the grids call to CancelEdit so I can turn off RaiseListChangedEvents on the BindingSource (which I hope will callow CancelEdit to complete without the BeginEdit call).<br><br>So am I doing something wrong, or is this a bug?<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 19, 2007</h2>This is by design apparently. Again, look at the current ProjectEdit form code in svn and see how I did the Cancel button. Kind if a&nbsp;PITA, but that appears to be the correct solution.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 19, 2007</h2>I think I might be missing something.&nbsp; One difference between the sample (which I'm browsing in svn) is that I have an EditableRootListBase subclass for the collection in question.<br><br>Implementing code similar to the ProjectEdit.cs, things behave more correctly (as far as EditLevel goes), but the item does not get removed, because ERLB does nothing when Csla.Core.IParent.RemoveChild is called (via the item's CancelEdit).<br><br>I will add some code to handle this scenario... is that the proper way to proceed?<br><br>Code as currently implemented:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">private void</font> DocumentCategoriesGrid_BeforeRowCancelUpdate( <font color="#0000ff">object </font>sender, <font color="#008000">CancelableRowEventArgs </font>e ) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#008000">IEditableObject </font>assignment;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DocumentCategoryBindingSource.RaiseListChangedEvents = <font color="#0000ff">false</font>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DocumentCategoryBindingSource.DataSource = <font color="#0000ff">null</font>;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assignment = (<font color="#008000">IEditableObject</font>)e.Row.ListObject;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; assignment.CancelEdit();<br><br><font color="#008000">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;&nbsp;&nbsp;  // Add code here to remove item from collection?</font><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DocumentCategoryBindingSource.DataSource = assignments;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DocumentCategoryBindingSource.RaiseListChangedEvents = <font color="#0000ff">true</font>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DocumentCategoryBindingSource.ResetBindings( <font color="#0000ff">false </font>);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Cancel = <font color="#0000ff">true</font>;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 19, 2007</h2><P>Hmm, it could be a bug in 2.1. I know there were some collection-based issues I fixed in 3.0 and this could be one of them.</P>
+<P>I just created a simple test in 3.0 using the DataGridView, and I can add, remove, edit objects no problem - including using ESC to cancel an addnew.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

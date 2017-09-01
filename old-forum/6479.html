@@ -1,0 +1,64 @@
+<html><header><title>Why BusinessBase.Save returns a new instance instead of updating the existing one and then discarding the one from the server?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why BusinessBase.Save returns a new instance instead of updating the existing one and then discarding the one from the server?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6479.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell posted on Sunday, February 22, 2009</h2>What is the rationale behind it?<br>I can see one reason, which is the difficulty of replacing the content if the instance is being edited right now. Are there any more reasons for such implementation?<br>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, February 22, 2009</h2><P>I'm sure others will wade in, but one possible rationale is that saving an object is not without possible side-effects. For example, during saving child objects may have autonumber values populated, get marked as "clean", etc. Then at some point during the process an exception may occur. It's "easy" to get the database to rollback any pending changes, but how do you rollback the state of the object?&nbsp; CSLA has shifted toward saving a clone of the original object rather than the object itself to avoid the impact of side effects.</P>
+<P>Also, it's really only feasible to do an "in place" save if you are using the local data portal. Otherwise, a copy of the object is made and sent over the data portal to the server. This save process may also have altered the object in an intended way (e.g. autonumber or identity values for new records now have real values), so you need some way to replace or update the information in the original object to match the saved one, and replacing it with the saved one is the route they have gone. If you're using CSLA out of the box, then saving an object requires unbinding it from the UI before saving and rebinding afterwards, so rebinding with the replacement is only a minor additional step. </P>
+<P>That my $0.02 as a CSLA user. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>robert_m replied on Sunday, February 22, 2009</h2>The object might be changed on the server side during save (by the code in DataPortal_Insert or DataPortal_Update) and you probably want to continue working with the updated version...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, February 22, 2009</h2>Hi All.<br>Let me elaborate the term "in place".<br>The procedure is as follows:<br>1. Save transfers to the server side<br>2. Server side returns the saved object instance back to the client.<br>3. Inside the Save method on the client side, the data is extracted from the object just returned (from the server) and it replaces the current state of the object recursively.<br>4. Save returns void.<br><br>As I have mentioned before, it is problematic if the object is being edited during the Save, but other than that, why not?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 22, 2009</h2><P>If you read chapters 1 and 2 of the book you'll get an idea of some of this thought process and how/why it works the way it does. But here's some more history.</P>
+<P>In the late 90's I created a version of CSLA for COM. The COM platform didn't have the ability to serialize objects, and so I came up with a model by which you'd provide your object's data to a "serializer" by implementing GetState() and SetState() methods.</P>
+<P>When .NET arrived (in 1999-2002) it did include a native object serialization technology in the form of the BinaryFormatter, and more recently also the NetDataContractSerializer. I saw the native serialization technology as a way of escaping the need to write those boring (and bug-prone) state management methods and so centered the data portal around .NET's native serialization mechanism.</P>
+<P>For performance reasons, I didn't want to transfer the state (and meta-state) of the object graph after transfer. I still don't think that would be acceptible to a lot of people. Remember that the state and meta-state is already being converted into and out of a byte stream, and doing a whole other memory copy of all that data would have a measurable impact on an object graph of any size.</P>
+<P>What is a bit ironic is that the MobileFormatter we wrote for Silverlight is more like the older COM model, because Silverlight doesn't have the ability to serialize an object graph like .NET does. So technically the MobileFormatter could have been designed to alter the object graph "in place" - but that would have meant CSLA .NET for Silverlight code would be fundamentally different from CSLA .NET for Windows code. That was unacceptable, because the highest goal in the Silverlight project was to maintain the highest level of code compatibility that's possible.</P>
+<P>Your comment/request is far from new btw. There are other threads about this on the forum. There's even a wish list item to rework the guts of CSLA to do in place object graph serialization. Of course that'd impact everyone who has an existing code base, so it isn't something to be done casually. And there's that nagging performance issue that can't be ignored either, so honestly that wish list item isn't nearly as high on my list as some other things that are more fun, interesting and have lower risk.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>markell replied on Sunday, March 01, 2009</h2>Thanks, for the authoritative reply. I did read the chapters 1 and 2 (amongst others :-)), but I have to admit I must have missed the rationale.<br><br>Is the list of issues you are working on right now available for public view? I am curious <br>to know what are the future improvements you are going to implement, as well as what are the performance problems, that need to be solved.<br><br>Thank you very much.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 01, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslanet/wishlist.aspx">http://www.lhotka.net/cslanet/wishlist.aspx</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> markell
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, March 01, 2009 4:17 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Why BusinessBase.Save returns a new instance
+instead of updating the existing one and then discarding the one from the
+server?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks, for the authoritative reply. I did read the chapters
+1 and 2 (amongst others :-)), but I have to admit I must have missed the
+rationale.<br>
+<br>
+Is the list of issues you are working on right now available for public view? I
+am curious <br>
+to know what are the future improvements you are going to implement, as well as
+what are the performance problems, that need to be solved.<br>
+<br>
+Thank you very much.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,24 @@
+<html><header><title>Display Error icon for a datagridview</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Display Error icon for a datagridview</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2571.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skl posted on Wednesday, March 21, 2007</h2>Hi.<br>Could you help me, please.<br>I have a pretty busy Windows form with number of text and comboboxes and 2 DataGridViews.<br>I use 1 root BO and 2 children, as well I use 3 bindingsources: 2 for grids and 1 for the rest of controls. ErrorProvider implementation works fine for textboxes and combo.<br>One of grids has a business rule that it should contain at least one record and I want to show an error icon next to the grid (similar to ErrorProvider.SetError) if the grid is empty. How can I do it? And how to track changing number of child collection items?<br><br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 21, 2007</h2><P>Something like I discuss here (<A HREF="/forums/post/13266.aspx">http://forums.lhotka.net/forums/post/13266.aspx</A>) would work: a label bound to a readonly property on the parent object that returns the count of items in the collection. Make the label size 0,0 so it isn't visible, but the ErrorProvider will still work, and attach a MinValue rule to that property with a min value of 1.</P>
+<P>Then have the parent object handle the ListChanged event for the collection and call ValidationRules.CheckRules("CollectionCount") (or whatever the property is called) and the ErrorProvider will do the rest.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skl replied on Thursday, March 22, 2007</h2>Thanks a lot. It works!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, March 22, 2007</h2>Funny, but that sounds like the very problem/question that one of
+developers under my guidance asked about&nbsp; yesterday. Perhaps skl
+will become less that anonymous by updating his/her profile geographics.<br>
+Jimbo<br>
+<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Thursday, March 22, 2007</h2>On the subject of providing Real Estate for error icons:<br>
+How can we have the icons appear (for example related to a text box
+control) without specifically creating space in our form table layout
+etc.<br>
+I would like to see the icon appear WITHIN the text box in a similar manner to a grid cell.<br>
+(although again you still have to design the grid appropriately to allow for the icon - else it does not show).<br>
+Rocky's trick with labels also begs the question whether you can
+prescribe whether the default location is to the Left or Right of the
+data control or to have it appear wherever there is space or to have it
+force its location regardless of your underlying form specification (
+eg if the row height is set too low or col width is fixed).<br>
+This aspect&nbsp; has nothing to do specifically with csla and in some
+respects is not a strictly a relevant subject for this discussion
+forum. However any help that may be available is welcome.<br>
+Jimbo<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

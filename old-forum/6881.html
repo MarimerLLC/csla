@@ -1,0 +1,6 @@
+<html><header><title>Transactional</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Transactional</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6881.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Frazer posted on Thursday, April 30, 2009</h2><P>I note that DataPortal_Update methods (for example) are adorned with the Transactional attribute, E.G.:</P><FONT face=TheSansMonoConSemiLight size=1><FONT face="Courier New" size=2>
+<P>[Transactional(TransactionalTypes.TransactionScope)]</P></FONT></FONT>
+<P>However, Child_Update methods are not.</P>
+<P>How does transactional scope and rolling back work for child objects?&nbsp; </P>
+<P>Frazer</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 30, 2009</h2>The data portal only begins/commits a transaction at the root level. If the root is in a transaction, all child objects are in that same transaction, so the root and all its children are committed or rolled back as a unit.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

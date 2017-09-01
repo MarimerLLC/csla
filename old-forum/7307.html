@@ -1,0 +1,38 @@
+<html><header><title>Newbie: Connection strings in both app.config and Linq to SQL DBML</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie: Connection strings in both app.config and Linq to SQL DBML</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7307.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly posted on Monday, July 20, 2009</h2>I am using the ProjectTracker as a guidepost, but actually developing my app (ScoreBoard) one step at a time to make sure I understand the innards.<br /><br />So I created the DBML for the Linq to SQL library (ScoreBoard.DalLinq) and I noticed it created a connection string in that app.config file.  That makes sense, it'd have to.<br /><br />Then I created a Windows forms project that uses the BO from ScoreBoard.Library (which references ScoreBoard.DalLinq).  It needs a connection string, too and it puts one in the SBWin app.config file.<br /><br />I presume I haven't messed up and actually both of these are necessary, at least one for the DBML to function and one for the resulting app to function.<br /><br />When I actually publish the app, does the app.config from the DBML actually get used?  Does it get included in the code?<br /><br />In the end, I was hoping for just one connection string in the deployed application.<br /><br />I've read about this on the web, but not in reference to CSLA.<br /><br />Can anyone shed some light on this?<br /><br />TIA</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 20, 2009</h2><P>Sometimes Visual Studio creates config files for Class Library projects, but they are just for illustration.</P>
+<P>The only config file that ever matters is the one associated with your EXE or your web folders. Never does a config file for a DLL get used.</P>
+<P>(never - ha! It turns out that&nbsp;nunit does some clever trickery to use a config file for your test DLL - but that's absolutely abnormal and is unique to nunit)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Wednesday, July 22, 2009</h2><P>Thanks, Rocky.</P>
+<P>&nbsp;</P>
+<P>I haven't tried to deploy anything yet, so I couldn't tell.</P>
+<P>&nbsp;</P>
+<P>At least now I can stop looking.</P>
+<P>&nbsp;</P>
+<P>You know you're going to guilt-trip me into buying your SL videos, right?</P>
+<P>&nbsp;</P>
+<P>:)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If guilt is what it takes, then so be it :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 23, 2009</h2>Actually....<br /><br />There is another case.  When you create an Office add-in, you can have a config file for your assembly.  The same naming conventions apply (assembly.dll.config).  I've done this actually, to build an add-in which uses Csla and a remote dataportal as well!<br /><br />All I did was have MSTO installed for VS, created a new Outlook Add-in project, and then told it to add an App.config file.  VS took care of the rest, and the build will name the .config file properly, and an installer project will include it when your plug-in is installed.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

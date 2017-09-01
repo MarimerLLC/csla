@@ -1,0 +1,263 @@
+<html><header><title>3.5 child lazy load issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.5 child lazy load issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6207.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael posted on Tuesday, January 20, 2009</h2><font size="2" face="Arial">Hi Rocky et al<br><br>This is a different issue to these posts <a HREF="/forums/1/23891/ShowThread.aspx">http://forums.lhotka.net/forums/1/23891/ShowThread.aspx</a>.<br><br>I have a BB with a BLB child being lazy loaded in the usual way:<br><br><font face="Courier New"><font color="#0000ff">static PropertyInfo</font>&lt;<font color="#0000ff">JointSizes</font>&gt; JointSizesProperty<br>&nbsp;&nbsp;&nbsp; = RegisterProperty(<font color="#0000ff">new PropertyInfo</font>&lt;<font color="#0000ff">JointSizes</font>&gt;("JointSizes", "Joint sizes"));<br><font color="#0000ff">public JointSizes </font>JointSizes<br>{<br>&nbsp;&nbsp;&nbsp; <font color="#0000ff">get</font><br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">if </font>(!FieldManager.FieldExists(JointSizesProperty))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty&lt;<font color="#0000ff">JointSizes</font>&gt;(JointSizesProperty, <font color="#0000ff">JointSizes</font>.NewJointSizes());<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <font color="#0000ff">return </font>GetProperty&lt;<font color="#0000ff">JointSizes</font>&gt;(JointSizesProperty);<br>&nbsp;&nbsp;&nbsp; }<br>}</font><br><br>In a unit test I have created a new parent object and saved it without touching the JointSizes property. Then I attempt to get the JointSizes from the saved object. </font><font size="2" face="Arial">FieldManager.FieldExists(JointSizesProperty) returns true, so the LoadProperty is skipped, but GetProperty returns null.<br><br>Obviously, this can be solved by touching the property in DataPortal_Create or in DataPortal_Insert using:<br><br><font face="Courier New"><font color="#0000ff">DataPortal</font>.UpdateChild(JointSizes, <font color="#0000ff">this</font>);</font><br>instead of<br></font><font size="2" face="Courier New"><font color="#0000ff">DataPortal</font>.UpdateChild(ReadProperty&lt;JointSizes&gt;(JointSizesProperty), <font color="#0000ff">this</font>);</font><font size="2" face="Arial"><br><br>However, that defeats the point of lazy loading.<br><br>The ReadProperty call is loading the field with propertyInfo.DefaultValue, which in this case I do not want to set, so it ends up null. I think FieldManager.LoadFieldData should only be called if propertyInfo.DefaultValue is not null. Very simple fix, but will it break anything else?<br><br>If this has been addressed in 3.6, please let me know.<br><br>Regards<br>Michael<br></font><font size="2" face="Arial"><br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 20, 2009</h2>Are you sure it's not the same issue?&nbsp; Did you try adding <font color="#0000ff">if </font>( FieldManager.FieldExists( JointSizesProperty ) ) before calling your UpdateChild method?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, January 20, 2009</h2><font size="2" face="Arial">Thanks for your reply. It's definitely not the same issue.</font><font size="2" face="Arial"><br><br>Checking if the field exists before calling update child would avoid the problem, but I stand by my view that loading null should not be the default behaviour. There is no point to lazy loading with a default value of null - there's nothing to load.<br><br>Mike<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 20, 2009</h2><P>Clearly some code is causing the creation of the FieldData object. Which means there's an unprotected call to one of the read/get/load/set property methods against that field - probably in your insert/update data code.</P>
+<P>By unprotected I mean that it needs to be wrapped by a check for FieldExists.</P>
+<P>We can't blindly assume that no application will ever want a null value to be valid for one of these fields. You may never allow a null child reference in your app, but that doesn't mean other people share that view or have the same requirements.</P>
+<P>Therefore CSLA can't make blanket assumptions that a null default indicates that the field should never be initialized.</P>
+<P>For that matter, there's code in UndoableBase to deal with the possibility that the value could be null, so when you undo it goes back to being null. This code exists because someone, years ago, required a null in a child property, and needed it to work properly with undo.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Tuesday, January 20, 2009</h2><font size="2" face="Arial">Thanks Rocky<br><br>That makes sense. Incidentally, I followed the same pattern as ProjectTracker's Project class with the ProjectResources lazy load, which does not check if the field exists in DataPortal_Insert or DataPortal_Update, so the same problem would exist there (ProjectResources could possibly end up null and there's no way to change it once that happens - get property only). It might be a good idea to update the ProjectTracker example.<br><br>Mike</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, January 21, 2009</h2>Just to add what Mike has stated.&nbsp; The following test would fail when trying access the Resouces property:<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var p = Project.NewProject();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Name = "Project Name";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.IsTrue(p.IsValid);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p = p.Save();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual(id, p.Id);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual("Project Name", p.Name);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual(0, p.Resources.Count);&nbsp;&nbsp; &lt;-- null reference here<br><br>However, using FieldManager.UpdateChildren(this);&nbsp; will work just fine.&nbsp; So the conclusion is that using DataPortal.UpdateChild(ReadProperty(ResourcesProperty), this); on "lazy create property" will mess up the FieldExists test.&nbsp; To me, that's unexpected.<br><br>Ricky<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I realize it is a little confusing. But it is not the
+UpdateChild() method that&#8217;s the issue. It is the ReadProperty() method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So I ask you this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you have a case where a child reference CAN BE A NULL, and if
+I make ReadProperty() not create the child, what happens?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Does ReadProperty() throw an exception? Does it return null even
+though the child is not null (because it is not there)? Do I create some new
+generic type so it is possible for ReadProperty() to return a &#8220;PlaceHolder&lt;T&gt;&#8221;
+or something?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I hope you see my dilemma. You guys apparently don&#8217;t ever
+want/need a null child. That&#8217;s fine. But can you really speak for the
+entire user base of CSLA now and forever in saying that?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or maybe we decide, here and now, that no one can/will ever have
+a null child reference. In which case I want several people on the record, so I
+can point future unhappy people to this thread ;)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or maybe I&#8217;m missing some other answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Maybe the answer is for PropertyInfo&lt;T&gt; to have a &#8220;lazy
+load flag&#8221;. You&#8217;d set that in your property definition. Then ReadProperty()
+and GetProperty() would throw an exception if you tried to access them prior to
+calling LoadProperty() or SetProperty(). That would prevent accidental
+initialization of the property, without introducing ambiguous behavior.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My point is, and I think I&#8217;m right, that ReadProperty()
+can not return null here &#8211; because the value IS NOT NULL. It simply doesn&#8217;t
+exist, which is not the same thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rasupit
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 7:13 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] 3.5 child lazy load issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Just to add what Mike has stated.&nbsp; The following test
+would fail when trying access the Resouces property:<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var p =
+Project.NewProject();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p.Name =
+&quot;Project Name&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.IsTrue(p.IsValid);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p = p.Save();<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(id, p.Id);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Assert.AreEqual(&quot;Project Name&quot;, p.Name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp; Assert.AreEqual(0, p.Resources.Count);&nbsp;&nbsp;
+&lt;-- null reference here<br>
+<br>
+However, using FieldManager.UpdateChildren(this);&nbsp; will work just
+fine.&nbsp; So the conclusion is that using
+DataPortal.UpdateChild(ReadProperty(ResourcesProperty), this); on &quot;lazy
+create property&quot; will mess up the FieldExists test.&nbsp; To me, that's
+unexpected.<br>
+<br>
+Ricky<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Wednesday, January 21, 2009</h2><font size="2" face="Arial">I can see the dilemma. In my case, I did not not want to set a default value at all, but the default is null, so I think a "lazy load/can not be null/no default value" flag is a good idea. Then the call to DataPortal.UpdateChild would behave as expected for null and non-null child scenarios.</font><font size="2" face="Arial"><br><br>Regards<br>Mike</font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Wish list:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=303">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=303</a><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Michael
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 5:37 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: 3.5 child lazy load issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I
+can see the dilemma. In my case, I did not not want to set a default value at
+all, but the default is null, so I think a &quot;lazy load/can not be null/no
+default value&quot; flag is a good idea. Then the call to
+DataPortal.UpdateChild would behave as expected for null and non-null child
+scenarios.<br>
+<br>
+Regards<br>
+Mike</span><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Wednesday, January 21, 2009</h2>I think is fine to return null (default value) when ReadProperty could not find any value.&nbsp; I believe DataPortal.UpdateChild would not process when child object is null.&nbsp; However the issue is FieldManager.FieldExists will return true _after_ the first call of ReadProperty.<br><br>I track down the code that causing an insert of FieldData with null value to _fieldData[].&nbsp; I'm sure there were a good reason for call the LoadFieldData, however this create the problem with FieldExists.<br><br>&nbsp;&nbsp;&nbsp; protected P ReadProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; P result = default(P);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.IFieldData data = FieldManager.GetFieldData(propertyInfo);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (data != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.IFieldData&lt;P&gt; fd = data as FieldManager.IFieldData&lt;P&gt;;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (fd != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = fd.Value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = (P)data.Value;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = propertyInfo.DefaultValue;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.LoadFieldData&lt;P&gt;(propertyInfo, result);&nbsp;&nbsp; &lt;--- this function calls GetOrCreateFieldData internally<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br>&nbsp;&nbsp;&nbsp; }<br><br>Ricky<br>&lt;rant to self&gt;<br>Not being able to post or have email access at work is a pain in the $$$.&nbsp; It really annoys the heck out of me know..... I think I should start look for place that don't me you feel like in prison...;(<br>&lt;/rant to self&gt;<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rasupit:</strong></div><div>I think is fine to return null (default value) when ReadProperty could not find any value. </div></BLOCKQUOTE><br><br>I don't.&nbsp; It doesn't make any sense most of the time, and I think it would cause problems with databinding.&nbsp; If something asks for the collection, I think it's reasonable to assume you get the collection... not null.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 22, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In terms of absolute correctness, the right answer is for
+ReadProperty/GetProperty to throw an exception if the value hasn&#8217;t been
+initialized (for a lazy loaded property). There is no valid default for
+something that hasn&#8217;t been initialized, and trying to access the
+uninitialized value is basically a bug.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 22, 2009 7:32 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: 3.5 child lazy load issue<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>rasupit:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>I think is fine to return null (default value) when
+ReadProperty could not find any value. <o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I don't.&nbsp; It doesn't make any sense most of the time, and I think it would
+cause problems with databinding.&nbsp; If something asks for the collection, I
+think it's reasonable to assume you get the collection... not null.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, January 22, 2009</h2>Hmmm.. that is a good point.&nbsp; Perhaps that is the correct solution.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

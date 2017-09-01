@@ -1,0 +1,46 @@
+<html><header><title>CSLA Light deploy problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Light deploy problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8200.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhangxijun posted on Wednesday, December 23, 2009</h2><P>My computer's configuration:<BR>OS: Windows XP Professional<BR>web server: IIS5.1<BR>csla light version: 3.8.1</P>
+<P>I have just finished my project using csla light,&nbsp;and&nbsp;deployed to the IIS. When I use the address <A href="http://localhost/">http://localhost/</A>, it can open default page, and <STRONG>run correctly</STRONG>; but when I use the address <A href="http://192.168.0.9">http://192.168.0.9</A> (my computer's ip address)or <A href="http://127.0.0.1">http://127.0.0.1</A> , it just display the silverlight UI, but do not display any data(retrived&nbsp;by calling&nbsp;csla business object's method). When I use Visual&nbsp;studio 2008's&nbsp;"Add Service Reference" Dialog and input&nbsp;the address <A href="http://192.168.0.9/WcfPortal.svc">http://192.168.0.9/WcfPortal.svc</A>, and it can also find&nbsp;the service.&nbsp;why???</P>
+<P>I have removed the port number(:xxxx) from the servicereference.clientconfig file, and close the firewall.</P>
+<P>I also try to deploy the csla sample project&nbsp;"CslaLight\cs\SimpleApp", and the same thing happened.&nbsp; It pops up a "Data error" dialog.</P>
+<P>I think that&nbsp;the wcf service configuration must have some problems, but I have no idea.</P>
+<P>Thanks in advance!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, December 23, 2009</h2><P>You are running into a cross-domain security policy that is built into Silverlight's networking stack.</P>
+<P>You need to create a cross-domain policy file on your server to allow clients from other URL addresses to access your service.</P>
+<P>Or you can change your clientconfig file to reference the service using the same URL from which you are launching the app.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhangxijun replied on Wednesday, December 23, 2009</h2><P>Thanks.</P>
+<P>I just test the methods in my project. It seems that I must do the following items at the same time:</P>
+<OL>
+<LI>create a cross-domain policy file on your server 
+<LI>change servicereferences.clientconfig file from "&lt;endpoint address=<A href="http://localhost/wcfportal.svc">http://localhost/wcfportal.svc</A>"&nbsp;to "&lt;endpoint address=<A href="http://192.168.0.9/wcfportal.svc">http://192.168.0.9/wcfportal.svc</A>"</LI></OL>
+<P>My application is not a traditional web application, it deployed on&nbsp;a test and measurement instrument that conforms to the LXI standard(<A href="http://www.lxistandard.org/">http://www.lxistandard.org/</A>). By using my application ,the instrument user can &nbsp;changed the instrument's ip address, hostname, domain name, and so on.</P>
+<P>To my project, the item 1 is not a problem, but item 2 restricts my web server's ip address to 192.168.0.9, this is not my wish, because&nbsp;my application user&nbsp;is permitted to &nbsp;change the web server's ip&nbsp;address.</P>
+<P><STRONG>Is there a way to declare that endpoint's address is same to the web server's(which host the silverlight application) ip address?</STRONG></P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>zhangxijun replied on Thursday, December 24, 2009</h2><P>After google for a while, I found the following content:</P>
+<OL>
+<LI><A href="http://stackoverflow.com/questions/373219/relative-url-in-wcf-service-binding">http://stackoverflow.com/questions/373219/relative-url-in-wcf-service-binding</A> 
+<LI><A href="http://smehrozalam.wordpress.com/2008/12/23/using-relative-urls-to-access-wcf-services-in-silverlight/">http://smehrozalam.wordpress.com/2008/12/23/using-relative-urls-to-access-wcf-services-in-silverlight/</A></LI></OL>
+<P>It seems that the only way to do that is by changing the csla's source code to adapte it..., but I dont know&nbsp;if it is possible but do not effect csla's other function. Can someone tell me what file I should change? It seems to be the function "protected virtual WcfPortal.WcfPortalClient GetProxy(){}" located in wcfproxy.cs, am I right?</P>
+<P>I wish that is built in csla light if it is impossible.</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can subclass Csla.DataPortalClient.WcfProxy&lt;T&gt; on the
+client to create your own proxy class. In that class you can override the GetProxy()
+method, and in that override you can create the WCF proxy the way you want.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

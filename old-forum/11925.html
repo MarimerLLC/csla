@@ -1,0 +1,32 @@
+<html><header><title>Filter a list using FilteredBindingList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Filter a list using FilteredBindingList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11925.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Blerina posted on Monday, April 08, 2013</h2><p>I use the csla.FilteredBindingList to fill a combobox in my windows form. I choose the option &quot;Use data Bounds&quot; of the combobox and i link it to a database table(Office), then i use the FilteredBindingList method to filter the list. Here is my code.</p>
+<p>&nbsp;_accessibleOffices = OfficeList.GetAll</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; filterAccessibleOffices()</p>
+<p>
+<p>Sub filterAccessibleOffices()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Dim mFiltered As New Csla.FilteredBindingList(Of Office)(_accessibleOffices)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mFiltered.FilterProvider = AddressOf Filtersoffice</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; mFiltered.ApplyFilter(&quot;&quot;, _OfficesAccess)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; OfficeListBindingSource.DataSource = mFiltered</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Catch ex As Exception</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MsgBox( ex.Message)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; End Try</p>
+<p>&nbsp; &nbsp; End Sub</p>
+<p>&nbsp; &nbsp; Private Function Filtersoffice(ByVal item As Object, ByVal filterValue As List(Of Integer)) As Boolean</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Dim result As Boolean = False</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;....some variable declarations</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; For Each office As OfficeInfo In officeList</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; If filterValue.Contains(office.OfficeId) Then</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; result = True</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Return result</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; End If</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Next</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Return result</p>
+<p>&nbsp; &nbsp; End Function</p>
+</p>
+<p>This code works fine, but for some purposes in my project, i would like to filter the _accessibleOffices list i use as the parameter of the FilteredBindingList. I realised that this method doesnt update this list, it remains the same. I tried this code in the FilteredBindingList method</p>
+<p>_accessibleOffices = mFiltered</p>
+<p>but it wasn&#39;t possible as a conversion.</p>
+<p>Any kind of help to achieve my purpose would be very grateful.</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

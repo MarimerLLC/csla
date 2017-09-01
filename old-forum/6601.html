@@ -1,0 +1,57 @@
+<html><header><title>IsSelfDirty and DataPortal_Update / Child_Update</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsSelfDirty and DataPortal_Update / Child_Update</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6601.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DivisibleByZero posted on Thursday, March 12, 2009</h2>Would it be a wise idea to do something like this in my DataPortal_Update and Child_Update methods?<br><br>private void DataPortal_Update()&nbsp; //Child_Update(Parent parent)<br>{<br>&nbsp;&nbsp;&nbsp; if( IsSelfDirty )<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // database code<br>&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(this);<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 12, 2009</h2>Yes - though you'll probably want to open your connection in all cases, so you can re-use the same connection in the child objects (using ConnectionManager or one of the other manager classes).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DivisibleByZero replied on Friday, March 13, 2009</h2>If I have the following object hierarchy:<br><br>Root<br>&nbsp;&nbsp; Child<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Grandchild<br><br>and in Child.Child_Update() I don't use the ConnectionManager would it close the connection?<br><br><br>Root.DataPortal_Update<br>{<br>&nbsp;&nbsp;&nbsp; using( var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(Database.Foo) )<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(this);<br>}<br><br>Child.Child_Update(Root parent)<br>{<br>&nbsp;&nbsp;&nbsp; if( IsSelfDirty )&nbsp; // false in this case<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using( var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(Database.Foo) )<br>
+&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FieldManager.UpdateChildren(this);<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>Grandchild.Child_Update(Child parent)<br>
+{<br>
+&nbsp;&nbsp;&nbsp; if( IsSelfDirty )&nbsp; // true in this case<br>
+&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // is this a new connection since Child didn't open it?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using( var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(Database.Foo) )<br>
+
+&nbsp;&nbsp; &nbsp; &nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, March 13, 2009</h2><P>Normally you'd call UpdateChildren() inside the using statement in the root object, so all the objects reuse the same connection. The reason for this is to avoid using the DTC (and its performance hit) when using TransactionScope transactions.</P>
+<P>Or if you are using manual transactions, it is still a good idea, because you can set up the transaction on the connection in the root, and use that same connection (with its transaction) in the child objects.</P>
+<P>As you show your code, it is virtually impossible to get any transactional protection - or if you do, it will involve the use of the DTC, so you'll take a perf hit.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za replied on Wednesday, July 14, 2010</h2><p>I am working in CSLA.net 4, Using a DataGrid with a BusinessListBase and<strong>&nbsp; BusinessBase. My fetch work nice.</strong></p>
+<p><strong>To update a line in the Grid my CanSave binding works on my apply button. I use this:</strong></p>
+<p>&nbsp;&lt;Button x:Name=&quot;ButtonApplyTop&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Width=&quot;75&quot; Content=&quot;Apply&quot; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsEnabled=&quot;{Binding CanSave, Mode=OneWay}&quot;/&gt;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;my1:TriggerAction Height=&quot;0&quot; x:Name=&quot;ButtonApplyTopTrigger&quot; Width=&quot;0&quot; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TargetControl=&quot;{Binding ElementName=ButtonApplyTop}&quot; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TriggerEvent=&quot;Click&quot; MethodName=&quot;Save&quot;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; /&gt;</p>
+<p>&nbsp;</p>
+<p>When I click Apply it execute the save method, i know because i ovveride it,&nbsp;but do not reach my Child_Update() in the <strong>BusinessBase:</strong></p>
+<p><strong></strong></p>
+<p>&nbsp;private void Child_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p><strong>Do not even reach this in:</strong></p>
+<p>BusinessListBase: </p>
+<p>&nbsp;</p>
+<p>&nbsp;[Transactional(TransactionalTypes.TransactionScope)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(&quot;StaffSenseDb&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.Child_Update(ctx);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //FieldManager.UpdateChildren(this);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>What is wrong? Please help.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jjloubser@symbioses.co.za replied on Wednesday, July 14, 2010</h2><p>I also try this in the child object not working:</p>
+<p>&nbsp;</p>
+<p>[Transactional(TransactionalTypes.TransactionScope)]<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; protected override void DataPortal_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base.DataPortal_Update();</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ConnectionManager&lt;SqlConnection&gt;.GetManager(&quot;xxxx&quot;))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser replied on Wednesday, August 18, 2010</h2><p>VMMV Search:</p>
+<p>public void Search()<br />&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Presenter.ShowStatus(new Status { IsBusy = true, Text = &quot;Searching row calls...&quot; });<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BeginRefresh(&quot;Search&quot;);</p>
+<p>&nbsp;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Client Side:</p>
+<p>&nbsp;public static void Search(EventHandler&lt;DataPortalResult&lt;RowCallSummaryRORL&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var dp = new DataPortal&lt;RowCallSummaryRORL&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.FetchCompleted += callback;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dp.BeginFetch(rowCallSummaryDateCriteria_);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Server side:</p>
+<p>&nbsp;</p>
+<p>private void Child_Fetch(SafeDataReader dr, Business.RowCall.RowCallDetailsCriteria criteria)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;</p>
+<p>...</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>Apply:</p>
+<p>&nbsp;</p>
+<p>server side:</p>
+<p>&nbsp;private void Child_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<p>...</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>we just had to play around with the ViewModel verbs, Server Side names and Criteria Objects content</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

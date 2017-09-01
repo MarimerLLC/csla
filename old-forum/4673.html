@@ -1,0 +1,262 @@
+<html><header><title>NEWBIE - Help required with UI based on Ptracker</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NEWBIE - Help required with UI based on Ptracker</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4673.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren posted on Friday, April 11, 2008</h2><P><BR>In the last few months I have been learning OOP, VB.NET, CSLA and CSLAGen. I have a small app up and running based on PTracker complete with WinPart, StatusBusy etc. Creating the UI is turning out to be harder than I expected mostly due to my inexperience with .NET and OOP.</P>
+<P>I have&nbsp;used the PTracker design in that a main form dynamically loads users controls instead <BR>of a design based on multiple forms. My first CSLA objects are somewhat data centric but are <BR>based on use cases and have a single responsibility. These objects are responsible for editing the <BR>base data. Later the I plan to develop the more business oriented objects. To edit base data I use 3 <BR>objects, Editable Root, Readonly Collection and Readonly object like PTracker.&nbsp; </P>
+<P>PTracker&nbsp; used separate menu options for creating editing or deleting an object. I would like to build <BR>an UI which provides 1 logical form (actually a user control) for the user to perform add, change or delete in one place without needing to access a menu option each for each function. Something like a user control (form) with search(finds record to edit or delete), new, delete, save, and exit buttons. I am also wondering if there is a way to build these buttons and reuse them on each user control via inheritance.</P>
+<P>Has anyone done this with the PTtracker model and be willing to share some ideas to help me speed things up?&nbsp;&nbsp;Alternatively, does anyone have a shell of a VB.Net UI that uses CSLA and a single form one stop shopping approach for editing base data that I could review to assist me?</P>
+<P>I am also interested to hear if anyone started with Ptracker but converted it to&nbsp;be able to view multiple forms at one time, - is that MDI vs SDI?</P>
+<P>I&nbsp;convinced my shop to allow my to use CSLA and I still believe it was the right decision since more apps are likely to follow but learning curve has been rather steep and I need to push out my prototype soon.</P>
+<P>Thanks </P>
+<P>Warren</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Monday, April 14, 2008</h2><P>I am thinking that the reason I didn't get a reply on my original post was because the questions I am asking are too broad so I'll narrow it down and be more specific with individual questions. </P>
+<P>Now that I have a decent handle on CLSA and code generation via CSLAGen, I want to make sure I my application's architecture and UI design is solid before I add more forms for editing my base objects.&nbsp; </P>
+<P>I now have the start of an application built upon the PTtracker example application. As per Rocky's advice on best practices for WinForms apps I'd like to continue with my forms as user controls instead of Forms. &nbsp;Just like PTracker I have a mainform with a panel control which contains the individual user controls which implement my forms.</P>
+<P><STRONG>My design consists of approximately 50 forms. Do you think it is acceptable design to have MainForm include code which references the 50 forms as per PTracker or am using the PTracker architecture to do something it was never intended to? </STRONG></P>
+<P>Thanks in advance.</P>
+<P>Warren</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Tuesday, April 15, 2008</h2><P>Hi Warren,</P>
+<P>I'm developing an app much like yours only bigger in scope (probably 350-400 forms) so I'll try and answer your questions. I am also fairly new to this so I'll tell you what I've got and you can take it for what it's worth.</P>
+<P>For the main form I virtually duplicated the PTracker MainForm. But of course,&nbsp;I had to come up with something on my own for the menu. With that many forms (which are, indeed, WinPart user controls) I obviously needed something a bit more dynamic than just adding menu selections and a "click" event for each. What I did was build my menu with ToolStripDropDownButtons with selections that contain subselections (which may contain subselections, etc.). I have one single event handler that handles the "Click" event for all ToolStripMenuItems that actually open a form. The code for that method is as follows (sorry, it's C#):</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> chosenToolStripMenuItem_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#2b91af size=2>Assembly</FONT><FONT size=2> currentAssembly = </FONT><FONT color=#2b91af size=2>Assembly</FONT><FONT size=2>.GetAssembly(</FONT><FONT color=#0000ff size=2>typeof</FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2>MainForm</FONT><FONT size=2>));</P>
+<P></FONT><FONT color=#2b91af size=2>ToolStripMenuItem</FONT><FONT size=2> mi = (</FONT><FONT color=#2b91af size=2>ToolStripMenuItem</FONT><FONT size=2>)sender;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> classToInstantiate = </FONT><FONT color=#a31515 size=2>"VisionWinForms."</FONT><FONT size=2> + (</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2>)mi.Tag;</P>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> selectedForm = currentAssembly.CreateInstance(classToInstantiate);</P>
+<P>ShowSelectedForm((</FONT><FONT color=#2b91af size=2>WinPart</FONT><FONT size=2>)selectedForm);</P>
+<P>}</P>
+<P><FONT size=3>...where 'VisionWinForms' is the name of my project. Then on each ToolStripMenuItem I put the class name of form (user control) I want to open in the Tag property. It has to include any namespace portion as well so that your classToInstantiate string can contain a fully qualified classpath. For example, my Tax Code Maintenance form is in my CS classpath. So for its corresponding ToolStripMenuItem, the Tag property would be set to CS.TaxCodeMaintenance. This works well for me - whenever I add a new form all I do is add a new menu item, set its tag property, and set it's click event to my chosenToolStripMenuItem_click event and I'm all set.</FONT></P>
+<P><FONT size=3>As for your other question of an all-in-one setup for creating, editing, saving, deleting all from the same form. I have that setup as well. It took only slight modification to the PTracker model to get it done. The first thing I did was create a user control that handles record selection and contains the New, Save, Cancel, and Delete buttons (although looking back I'm not sure how much I gained from breaking out what I did into a user control other than it takes a little less time to place controls on the form). Record selection is done via a comboBox that utilizes the readOnlyList collection of readOnly Info objects. The only read tricky parts are:</FONT></P>
+<P><FONT size=3>- Knowing when to call RebindUI and what values to pass it in certain situations.</FONT></P>
+<P><FONT size=3>- Making sure you do IsDirty checks in all the right spots: anytime a record changes, whenever a new record request is made, when the for is closed, etc. so you can prompt the user to save any unsaved changes.</FONT></P>
+<P><FONT size=3>It took a little trial and error but I have a very workable standard solution to my object edit forms (we call them "file maintenances"). If you have specific questions about that let me know and I'll answer as best I can.</FONT></P>
+<P><FONT size=3>Dennis</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Wednesday, April 16, 2008</h2><P>Hi Dennis, <BR></P>
+<P>Thanks so much for answering my questions, it is very helpful to see how you have modified the Ptracker design. I would like to do something similar in my application. </P>
+<P>I was concerned about Mainform becoming too lengthy due to the handling of code for each control. My Mainform is a clone of the PTracker version, for editing my Bank objects I have:</P>
+<P>Private Sub NewBankToolStripMenuItem_Click<BR>Private Sub EditBankToolStripMenuItem_Click<BR>Public Sub ShowEditBank(ByVal bankId As Integer<BR>Private Sub DeleteBankToolStripMenuItem_Click</P>
+<P><STRONG>In your design, are these moved to the user control class? <BR></STRONG></P>
+<P>I built a VB version of your chosenToolStripMenuItem to test this out: </P><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> chosenToolStripMenuItem_Click(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> DeleteBankToolStripMenuItem.Click</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> currentAssembly </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Assembly = Assembly.GetAssembly(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(MainForm))</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> mi </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ToolStripMenuItem = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(sender, ToolStripMenuItem)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> classToInstantiate </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2>"OffsetInterestWin."</FONT><FONT size=2> + </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(mi.Tag, </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> selectedForm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2> = currentAssembly.CreateInstance(classToInstantiate)</P>
+<P></FONT><FONT color=#008000 size=2>'ShowSelectedForm(DirectCast(selectedForm, WinPart))</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3><STRONG>If you create an instance of the control&nbsp;in this manner, how do you get the PTtracker&nbsp; behavior which cycles through the users controls&nbsp;and to see if&nbsp;the object&nbsp;is already loaded.&nbsp; </STRONG></FONT></FONT><FONT color=#0000ff size=2><FONT color=#000000 size=3><STRONG>Is that what you do in ShowSelectedForm and if so I'm confused with the reason for the CreateInstance code. </STRONG></FONT></FONT></P>
+<P><STRONG>Warren</STRONG></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Wednesday, April 16, 2008</h2><P>Hi Warren,</P>
+<P>My New, Save, Cancel, and Delete buttons are on the user control classes rather than the main form's menu strip. The biggest reason for this I guess is because I have many types of forms for which those buttons are not appropriate (inquiry listing, processing functions, reports, etc.). So it's just easier for me to implement them only on forms where they are appropriate. If those buttons are appropraite on all your forms, you should be able to implement them from the main form menu easily enough.</P>
+<P>As for the code in the chosenToolStripMenuItem_click, if you were to write a click event handler for each user tool strip menu item's click event, they would likely be 1 line of code each:</P>
+<P>ShowSelectedForm(new SampleForm());</P>
+<P>Basically you're doing the same thing. You're still just doing ShowSelectedForm (which handles all the stuff with open documents and adding the new form to the open documents list, etc.). All the other code in the method really just replaces: "new SampleForm()". Because you're trying to create 1 generic method that instantiates a class based on a string value, you need to use that Assembly.CreatInstance() method instead of a 'new xxxx()' instantiation.</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Wednesday, April 16, 2008</h2><P>Hi Dennis, </P>
+<P>My project manager wants the New Save, Cancel buttons on each formal also so I will need to figure that out next also.</P>
+<P>I understand that chosenToolStripMenuItem_Click uses reflection in order to use CreateInstance but am still confused as to why you need to invoke CreateInstance when you may want to simply make the control visible by bringing it to the front if it already exists as per the PTracker model. You mention that ShowSelected Form handles this functionality. </P>
+<P>I <STRONG>know this is likely fundemental .NET stuff I am missing here but if you have an existing control&nbsp; in memory and you call CreateInstance, don't you end up with a duplicate?</STRONG></P>
+<P>Thanks </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Thursday, April 17, 2008</h2><P>Warren,</P>
+<P>That's where the "GetIdValue" method that you put in all your WinPart forms comes into play. You pass 'ShowSelectedForm' an instance of the form (user control) you want to display. If you look at 'ShowSelectedForm', you see a loop that&nbsp;looks through&nbsp;all the forms that are already created and checks their 'GetIdValue' against that of the form instance you passed in. If there's a match, ShowSelectedForm opens that form, effectively discarding the instance you passed in. If there's not, it uses your instance to create a new form.</P>
+<P>You can actually use this to go two routes: there's the route I went where you can only have 1 instance of each form open at once. In that case, you would make your "GetIdValue" methods in your forms pass something that will be the same for each form - like the class name or something. Or there's the second route where you can allow users to have multiple instances of the same form open. To do this, you would pass something that could be different based on the data currently in use in the form - like the class name plus the id value of the current record.</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Thursday, April 17, 2008</h2><FONT size=2>
+<P>Hi Dennis, </P></FONT>
+<P><FONT color=#000000 size=2>I am stuck at the following line&nbsp;in chosenToolStripMenuItem_Click, "constructor not found". I believe </FONT></P>
+<P><FONT color=#000000 size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> chosenToolStripMenuItem_Click(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> EventArgs) </FONT><FONT color=#0000ff size=2>Handles</FONT><FONT size=2> DeleteBankToolStripMenuItem.Click</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> currentAssembly </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Assembly = Assembly.GetAssembly(</FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(MainForm))</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> mi </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ToolStripMenuItem = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(sender, ToolStripMenuItem)</P>
+<P></FONT><STRONG><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> classToInstantiate </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2> = </FONT><FONT color=#a31515 size=2>"OffsetInterestWin."</FONT><FONT size=2> + </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(mi.Tag, </FONT><FONT color=#0000ff size=2>String</FONT></STRONG><FONT size=2><STRONG>)</STRONG></P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> selectedForm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2> = currentAssembly.CreateInstance(</FONT><FONT color=#a31515 size=2>"OffsetInterestWin.BankEdit"</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#008000 size=2>ShowSelectedForm(DirectCast(selectedForm, WinPart))</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Thursday, April 17, 2008</h2><P>Opps, please disregard previous unfinished message, the time period for deletes has elapsed.</P>
+<P>Hi Dennis, </P>
+<P>I am wondering how you managed to implement CreateInstance in your 'chosenToolStripMenuItem' method without passing any parameters for the constructor of the form object. Did you modify the constructor in the user control so&nbsp;it doesn't require parameters. My&nbsp;constructor for 'BankEdit', based on Ptracker 'ProjectEdit', looks like this: </P><FONT color=#0000ff>
+<P dir=ltr><FONT face="Times New Roman" color=#000000 size=2>Public Sub New(ByVal bank As Bank)<BR>InitializeComponent()<BR>mBank = bank<BR>BindUI()<BR>ApplyAuthorizationRules()</FONT></P>
+<P dir=ltr></FONT>which expects a parameter so CreateInstance Fails. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><FONT size=2></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dtabako replied on Friday, April 18, 2008</h2><P>Hi Warren,</P>
+<P>Yes my user controls all have default constructors that do not&nbsp;have parameters. I haven't researched createInstance deeply enough to know if that's a requirement but one thing you could do is give your user controls empty constructors and create a public property for the info you want to pass to it. So the pseudocode in chosenToolStripMenuItem_click&nbsp;would be something like:</P>
+<P>yourForm = createInstance(yourClassName);</P>
+<P>yourForm.DataToPass = initializationDataObject;</P>
+<P>ShowSelectedForm(yourForm);</P>
+<P>You might have to play around with castings a little to get that to work, but I think it can be done.</P>
+<P>Dennis</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, April 18, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>CreateInstance method has an overload that takes parameter(s) as
+array of objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dtabako
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 18, 2008 9:23 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] UI based on Ptracker<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Hi Warren,<o:p></o:p></p>
+
+<p>Yes my user controls all have default constructors that do not&nbsp;have
+parameters. I haven't researched createInstance deeply enough to know if that's
+a requirement but one thing you could do is give your user controls empty
+constructors and create a public property for the info you want to pass to it.
+So the pseudocode in chosenToolStripMenuItem_click&nbsp;would be something like:<o:p></o:p></p>
+
+<p>yourForm = createInstance(yourClassName);<o:p></o:p></p>
+
+<p>yourForm.DataToPass = initializationDataObject;<o:p></o:p></p>
+
+<p>ShowSelectedForm(yourForm);<o:p></o:p></p>
+
+<p>You might have to play around with castings a little to get that to work,
+but I think it can be done.<o:p></o:p></p>
+
+<p>Dennis<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Warren replied on Monday, April 21, 2008</h2><P>Thanks Sergey, Dennis and ozitraveller for your responses, </P>
+<P>I resolved my issue with Creatinstance for now by using a parameterless constructor in the user object. Like Dennis, I am utilizing a design based on PTracker with a difference being <BR>my winpart user controls (which I call maintenance forms) for editing base data, have their own <BR>New/Save/Delete buttons instead of using the buttons on Mainform. </P>
+<P>At the moment I am trying to determine best way to implement the constructor and strategy for GetIdValue in the user control.&nbsp; At the point when the user control is instantiated I don't know if the user wants to add, edit or delete a record. Consequently, I'm not sure what the default constructor should do.&nbsp; </P>
+<P>If my design specifies that there can only be a single instantiation of a user control form, then if I understand correctly as per what Dennis said and Chapter 3 is that it would be adequate if GetIdValue just returns the business object being editied. Does this mean I need to create the business object at the time user control is instantiated even before I know what the user wants to do? </P>
+<P>Thanks</P>
+<P><BR>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, April 21, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I wonder if simplest solution would be to have add this
+functionality to your base user control.&nbsp; For example, you can add sub
+Post Initialize to your base control that would take description of user action
+as a parameter. &nbsp;&nbsp;Even cleaner, have all your user controls implement
+an interface that you need to tell each control what it needs to do after initialization.&nbsp;
+Sounds reasonable?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Warren
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, April 21, 2008 8:06 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: UI based on Ptracker<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks Sergey, Dennis and ozitraveller for your responses, <o:p></o:p></p>
+
+<p>I resolved my issue with Creatinstance for now by using a parameterless
+constructor in the user object. Like Dennis, I am utilizing a design based on
+PTracker with a difference being <br>
+my winpart user controls (which I call maintenance forms) for editing base
+data, have their own <br>
+New/Save/Delete buttons instead of using the buttons on Mainform. <o:p></o:p></p>
+
+<p>At the moment I am trying to determine best way to implement the constructor
+and strategy for GetIdValue in the user control.&nbsp; At the point when the
+user control is instantiated I don't know if the user wants to add, edit or
+delete a record. Consequently, I'm not sure what the default constructor should
+do.&nbsp; <o:p></o:p></p>
+
+<p>If my design specifies that there can only be a single instantiation of a
+user control form, then if I understand correctly as per what Dennis said and
+Chapter 3 is that it would be adequate if GetIdValue just returns the business
+object being editied. Does this mean I need to create the business object at
+the time user control is instantiated even before I know what the user wants to
+do? <o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p><br>
+&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozitraveller replied on Wednesday, April 16, 2008</h2><P>Hi</P>
+<P>I've also used PTracker as a basis for my app. My app has a LOT of data and so I need to have more than just combo selection to open the Edit 'forms'. I have search 'forms' which are static, so I don't get 2 of the same search form open at once. So doing this '<FONT size=2>currentAssembly.CreateInstance(classToInstantiate)</FONT>' won't work for me. I ended up using MVC as well as WinPart to get the flexibility I wanted and it got a lot of code out of MainForm. I had thought of using an XML file to load the menus on startup so I don't have to look through tags to find things.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,13 @@
+<html><header><title>Updating just the changed columns</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating just the changed columns</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8060.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Sunday, November 29, 2009</h2><P>I had a dream where I saw my Csla editable objects updating just the changed column.</P>
+<P>The first step was made by Jason Bock's CustomFieldData classes. If I want to save just the changed columns, I must know for sure the exact properties that were changed.</P>
+<P>Using Jason Bock's technique, I can add a few properties to PropertyInfo&lt;T&gt;, say</P>
+<UL>
+<LI>TableName (for this property) 
+<LI>ColumnName (for this property) 
+<LI>PKPropertyName (for this table)</LI></UL>
+<P>On the Dataportal side I can now prepare SQL update statements on the fly that update just the columns of the changed properties.</P>
+<P>So what's the problem? These extra properties of PropertyInfo&lt;T&gt; must be present on the DataPortal side but have no business on the client side and I certainly don't want then to be serialized.</P>
+<P>When I come to think of it, why properties? Why not static private fields? They are defined per type and not per instance, so they can be static all right. Can the DataPortal see them if they are private?</P>
+<P>If I don't use an ObjectFactory, it's the same object on the client and on the DataPortal. So private fields are seen by the DataPortal.</P>
+<P>If I use the ObjectFactory, these private fields may exists only on the factory, as the business object (the one that travels down the wires) has no use for them.</P>
+<P>Anyone tried it yet?</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,97 @@
+<html><header><title>Oracle REF CURSOR and Procedures</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Oracle REF CURSOR and Procedures</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4520.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dorlett posted on Wednesday, March 19, 2008</h2>This may be too basic a question, if so please forgive...<br><br>I'm testing switching from using SQL Server database to Oracle.&nbsp; By following tips from other posts here, I've successfully tested creating a Package defining a REF CURSOR variable and a Procedure that uses the REF CURSOR variable as an OUT parameter, and successfully retrieved data in my test object using:<br><br>&nbsp;&nbsp;&nbsp; private void ExecuteFetch(OracleConnection cn, FilterCriteria criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (OracleCommand cm = cn.CreateCommand())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandType = CommandType.StoredProcedure;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.CommandText = "PACKAGE1.ship_test_select";<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OracleParameter p_refcursor = new OracleParameter("outCursor",OracleType.Cursor);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; p_refcursor.Direction = ParameterDirection.Output;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; cm.Parameters.Add(p_refcursor);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; while (dr.Read())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Add(Ship_TestReadOnlyChild.GetShip_TestReadOnlyChild(dr));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dr.Close();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//using<br>&nbsp;&nbsp;&nbsp; }<br><br>I have too many questions, but am I correct in thinking I will need to define every stored procedure in my Package in order to use the REF CURSOR variable to return the result set to my objects?<br><br>Thanks,<br>Dan<br><br>P.S.&nbsp; How do you get syntax coloring to work when you post code here?<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yeah, I'm a newb.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Wednesday, March 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>REF CURSOR variable/type has to e declared outside of the SP.&nbsp;
+Therefore yes, you have to place the stored procedure in the same package as
+where you define the OUT CURSOR.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Nermin<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dorlett
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, March 19, 2008 11:40 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> [CSLA .NET] Oracle REF CURSOR and Procedures<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>This may be too basic a question, if so please forgive...<br>
+<br>
+I'm testing switching from using SQL Server database to Oracle.&nbsp; By
+following tips from other posts here, I've successfully tested creating a
+Package defining a REF CURSOR variable and a Procedure that uses the REF CURSOR
+variable as an OUT parameter, and successfully retrieved data in my test object
+using:<br>
+<br>
+&nbsp;&nbsp;&nbsp; private void ExecuteFetch(OracleConnection cn, FilterCriteria
+criteria)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (OracleCommand cm =
+cn.CreateCommand())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cm.CommandType = CommandType.StoredProcedure;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cm.CommandText = &quot;PACKAGE1.ship_test_select&quot;;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+OracleParameter p_refcursor = new OracleParameter(&quot;outCursor&quot;,OracleType.Cursor);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+p_refcursor.Direction = ParameterDirection.Output;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+cm.Parameters.Add(p_refcursor);<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using
+(SafeDataReader dr = new SafeDataReader(cm.ExecuteReader()))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+while (dr.Read())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.Add(Ship_TestReadOnlyChild.GetShip_TestReadOnlyChild(dr));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+dr.Close();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }//using<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+I have too many questions, but am I correct in thinking I will need to define
+every stored procedure in my Package in order to use the REF CURSOR variable to
+return the result set to my objects?<br>
+<br>
+Thanks,<br>
+Dan<br>
+<br>
+P.S.&nbsp; How do you get syntax coloring to work when you post code here?<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Yeah, I'm a newb.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

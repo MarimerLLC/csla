@@ -1,0 +1,59 @@
+<html><header><title>Custom User properties Serverside</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Custom User properties Serverside</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11605.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard posted on Thursday, September 27, 2012</h2><p>Howdy All,</p>
+<p>We are starting to implement security on our application and I&#39;m realizing I don&#39;t know near enough about CSLA and permissions to fully make these decisions.&nbsp; I have been reading but I&#39;m still wondering some things.&nbsp; To start this is a Silverlight Application using CSLA and the Data_Portal.&nbsp; We have not yet migrated to the new await functionality recently released.</p>
+<p>We have a &quot;ProcessingGroup&quot; which is a field on each of our primary working objects called a &quot;case&quot;.&nbsp; I need to be able to limit the user can see based on the &quot;ProccesingGroup(s)&quot; they have been assigned to.</p>
+<p>We had originally our own MembershipProvider/RoleProvider/User following the .net Forms Authentication model and added a customCollection called ProcessingGroups to the user.&nbsp; And that works great for having client side acess to this.&nbsp; But it doesn&#39;t get the data serverside.&nbsp; What is the best way to do this?</p>
+<p>I have the CSLA books and am reading through them.&nbsp; Right now I&#39;m looking through the 04-DataPortal.pdf but thought I would see if somebody might point me in the right direction.&nbsp; Also will the principles here change when we do migrate to the latest release of CSLA and use the await protocol?</p>
+<p>is there a good working sample of a silverlight app with some level of security implemented out there somewhere that I could use as a reference?</p>
+<p>thanks</p>
+<p>dbl</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, September 27, 2012</h2><p>The data portal book does discuss how and when the principal flows from a SL client to the app server. There are a couple models you can use that will ensure your server code has the same principal as the client.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard replied on Monday, October 22, 2012</h2><p>Ok, I&#39;ve read the ebooks and several posts on this site about implementing an authentication model with CSLA.&nbsp; When I read Rockies post in http://forums.lhotka.net/forums/p/10033/47084.aspx#47084 it shows using &quot;Forms Authentication&quot; and then it says that you have to use an IAuthorizeDataPortal implementation to get the Principal object server side.&nbsp; But if I read book for on page 91 is says this is only required if you do not want to send the principal with ever call.&nbsp; Since our call to validate the Principal is an expensive one we were planing on just including it with ever call.</p>
+<p>Problem is I can&#39;t seem to get the Csla.ApplicationContext.User to get populated.&nbsp; In our current code I can see the User object in the Login Callback as below but the Csla.ApplicationContext.User object does not match.&nbsp; Is there some setting or some code that I&#39;m missing?&nbsp; I&#39;ve tried adding identity impersonate=&quot;true&quot; setting in the Web.config but that doesn&#39;t seem to have made any difference.:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">		<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;PerformLoginCallback(<span style="color:#2b91af;">LoginOperation</span>&nbsp;lo)
+		{
+			<span style="color:blue;">if</span>&nbsp;(lo.HasError)
+			{
+				LoginResultToDisplay&nbsp;=&nbsp;lo.Error.Message;
+				lo.MarkErrorAsHandled();
+			}
+			<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(lo.LoginSuccess&nbsp;==&nbsp;<span style="color:blue;">false</span>)
+			{
+				LoginResultToDisplay&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Login&nbsp;failed.&nbsp;Please&nbsp;check&nbsp;user&nbsp;name&nbsp;and&nbsp;password.&quot;</span>;
+			}
+			<span style="color:blue;">else</span>&nbsp;<span style="color:blue;">if</span>&nbsp;(lo.LoginSuccess&nbsp;==&nbsp;<span style="color:blue;">true</span>)
+			{
+				<span style="color:green;">//notify&nbsp;our&nbsp;conductor&nbsp;that&nbsp;login&nbsp;succeeded&nbsp;so&nbsp;it&nbsp;can&nbsp;show&nbsp;what&nbsp;it&nbsp;should&nbsp;(controls,&nbsp;notification&nbsp;login&nbsp;worked)</span>
+				_loginSuccess&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+				<span style="color:#2b91af;">Debug</span>.WriteLine(<span style="color:#2b91af;">WebContext</span>.Current.User);
+				<span style="color:#2b91af;">Debug</span>.WriteLine(Csla.<span style="color:#2b91af;">ApplicationContext</span>.User.Identity.Name);
+				<span style="color:#2b91af;">Login</span>&nbsp;loginMessage&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Login</span>(_loginSuccess);
+				eventAggregator.Publish(loginMessage);
+ 
+				<span style="color:blue;">this</span>.TryClose();
+			}
+			CanPerformLogin&nbsp;=&nbsp;<span style="color:blue;">true</span>;
+		}
+ 
+</pre>
+<p>I have the Csla.Web reference included in my Web project.</p>
+<p>Thanks</p>
+<p>dbl</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 22, 2012</h2><p>The web is different from smart client scenarios.</p>
+<p>In the web, the web server (ASP.NET/IIS) is designed to forget everything in between client requests. </p>
+<p>This is good because it provides scalability and enables relatively low-cost fault tolerance.</p>
+<p>It is bad, because you can&#39;t easily keep anything in server memory between client requests - including the user&#39;s principal object.</p>
+<p>You can overcome this by using Session. You can put the user&#39;s principal object in Session, and get it back from Session on each page request. The ProjectTracker web projects do this.</p>
+<p>The drawback to using Session is that you are now maintaining state on the web server, so you lose scalability and low-cost fault tolerance. You can overcome some of that by using multi-server in-memory caching, or a centralized Session state server. Any good ASP.NET book should cover these topics around Session management quite thoroughly.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dblwizard replied on Monday, October 22, 2012</h2><p>Rocky,</p>
+<p>Thanks for the quick reply but I don&#39;t want to implement anything with Session.&nbsp; At least on on the DataPortal calls.&nbsp; I&#39;m just trying to figure out how to get the User object to flow from the client to the server on the dataportal calls.&nbsp; The book does a good job of telling what not to do but I can&#39;t seem to put all the pieces together of what to do.&nbsp; For example on page 88 under &quot;Accessing the Principal in Silverlight and WP7&quot; it says:</p>
+<p>Although the Silverlight platform defines the IPrincipal and IIdentity types, it does not provide a standard location to store or access the current principal. For example, there is no CurrentPrincipal property on the Thread type.<br />CSLA .NET addresses this issue by supporting the User property on the Csla.ApplicationContext type on Silverlight just like it does on .NET. The result is that any code using this User property will compile and work on .NET or Silverlight interchangeably.</p>
+<p>But as you can see from my example code above the WebContext.Current.User is a valid implementation of the IPrincipal and IIdentity interfaces.&nbsp; </p>
+<p>Then on page 92 is says:</p>
+<p>Server Configuration for Silverlight Clients<br />For Silverlight and WP7 client applications, the server-side data portal does not verify that the principal sent from the client is null or not null based on the authentication type. This means that the authentication type on the client and server don&rsquo;t have to match.<br />You should understand the ramifications of the values not matching.<br />If the client&rsquo;s authentication type is custom and the server&rsquo;s authentication type is Windows authentication, impersonation will not work properly because the server will ignore the principal object sent from the client.</p>
+<p>This tells me how it &quot;won&#39;t&quot; work and implies if I don&#39;t these things it will work ... but maybe not.</p>
+<p>So I tried adding the following line to my code from above:</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Csla.ApplicationContext.User = WebContext.Current.User;</p>
+<p>This causes a Serialization error even though I&#39;ve marked the User object as [Serializable].</p>
+<p>dbl</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

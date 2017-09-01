@@ -1,0 +1,38 @@
+<html><header><title>AddNew() not used to add new item via DataGrid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AddNew() not used to add new item via DataGrid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11723.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pegesaka posted on Monday, November 26, 2012</h2><p>I am using CSLA 4.3.12 and .Net 4, developing a simple WPF app, without any view models etc. I have a BusinessListBase as the ItemsSource to a DataGrid. I have overridden AddNewCore()</p>
+<p><br />&nbsp;&nbsp;&nbsp; protected override MasterRoster AddNewCore() {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var child = DataPortal.CreateChild&lt;MasterRoster&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(child);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return child;<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>I have set AllowNew to true in its constructor.</p>
+<p>But it appears that the only requirement to allow new items to be added via a DataGrid is to make the constructor of the list&#39;s children public. All the rest can be commented out, it has no effect.</p>
+<p>I discovered this by trying to access the IObservableBindingList AddedNew event, which didnt fire. AddNewCore() was never visited.</p>
+<p>This is not a show stopper as the child object is currently simple. I would like to use the blank row at the bottom of a DataGrid to create new child items, but if they become complex and require db initialisation then I will need to manually add new children, so I can use the factory methods, rather than use the blank grid row.</p>
+<p>Am I missing something here?</p>
+<p>Cheers,</p>
+<p>Perry</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, November 27, 2012</h2><p>Sadly the WPF team decided not to support the add new concepts from Windows Forms...</p>
+<p>This is a limitation of WPF (and SL) and the way they interact with data binding, and there&#39;s unfortunately nothing really to be done about it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pegesaka replied on Wednesday, November 28, 2012</h2><p>
+ 
+  Normal
+  0
+  
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+ 
+
+
+
+</p>
+<p class="MsoNormal">Thanks Rocky.</p>
+<p class="MsoNormal">Thats unfortunate. The reason I posted the question was
+because all the documentation on CSLA I have read suggests that it did support
+the AddNew functionality, so I&#39;m glad to have it confirmed that I&#39;m not missing
+something. </p>
+<p class="MsoNormal">Is there any likelihood in the future that CSLA will support
+AddNew with WPF and DataGrids?</p>
+<p class="MsoNormal">Can I just confirm then that for now the grid can be used to
+create new child instances as long as they dont require db access. If new
+children do require db access, DataGrid.CanUserAddRows needs to be disabled and
+new children need to be explicitly added with an &#39;Add&#39; button etc.</p>
+<p class="MsoNormal">Cheers,</p>
+<p class="MsoNormal">Perry</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

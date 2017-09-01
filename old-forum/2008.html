@@ -1,0 +1,62 @@
+<html><header><title>Global User object and multiple applications</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Global User object and multiple applications</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2008.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>applecran posted on Tuesday, December 19, 2006</h2><P>I'm hoping someone can point me in the right direction on how to solve a problem i'm having.</P>
+<P>I'm in the middle of creating a framework for our company that currently has multiple custom apps, each with their own security DB and settings etc, but for the same users across all apps.&nbsp; </P>
+<P>So we are creating a centeral security/profile db and integrating it with the apps.</P>
+<P>We are starting by upgrading an asp app to asp.net and I am now integrating CSLA.NET into what little code I already have.</P>
+<P>&nbsp;I have a CommonUser Object that has the User's info and profile etc in it.&nbsp; My plan was to inherit from this object in each of my applications and just add the extra properties that I would need that are specific to each of these applications, just want to have some code re-use.</P>
+<P>My first problem is with something as simple as loging in.&nbsp; I have a Login Function on my CommonUser object that is static and returns a CommonUser object using the DataPortal_Fetch() function.&nbsp; That works fine.</P>
+<P>The problem is that really I don't want other developers to have to deal with the CommonUser object and I was going to put a Login Function on my CustomAppUser Object that would call the base class (CommonUser) login function.&nbsp; But I don't think this will work.</P>
+<P>I'm just not sure that inheritance is the best way to do this, and if it is, i'm not sure how I should implement this login process as I really want to keep the CommonUser dataaccess etc in that object and have seperate data access for the customAppUsers in each CustomApp.</P>
+<P>Here is what I was going to do<BR></P>
+<P>[Serializable()]<BR>public class CommonUser <FONT color=#000000><FONT size=2>: </FONT><FONT size=2>BusinessBase</FONT><FONT size=2>&lt;Common</FONT><FONT size=2>User</FONT><FONT size=2>&gt;</P></FONT></FONT>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;protected GUID _id;<BR>&nbsp;&nbsp;&nbsp;protected string _username;<BR>&nbsp;&nbsp;&nbsp;protected string _password;<BR>&nbsp;&nbsp;&nbsp;//assocated public properties&nbsp;would be available</P>
+<P><BR>&nbsp;&nbsp;&nbsp;protected static CommonUser Login(sting username, string password)<BR>&nbsp;&nbsp;&nbsp;{<BR><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT color=#000000><FONT size=2> </FONT><FONT size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;Common</FONT><FONT size=2>User</FONT><FONT size=2>&gt;(</FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>LoginCriteria</FONT><FONT size=2>(username, password));<BR></FONT></FONT>&nbsp;&nbsp;&nbsp;}</P><FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>&nbsp;&nbsp;&nbsp;private</FONT><FONT size=2> </FONT><FONT size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT size=2>Criteria</FONT></FONT><FONT size=2><FONT color=#000000> criteria)<BR></FONT><FONT color=#000000>&nbsp;&nbsp;&nbsp;{&nbsp;<BR></FONT><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//fill up the object<BR></FONT></FONT><FONT size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;}</FONT></P></FONT>
+<P>}</P>
+<P>&nbsp;</P>
+<P>public class AppUser : CommonUser<BR>{<BR>&nbsp;&nbsp;&nbsp;private string _AppUserProperty<BR>&nbsp;&nbsp;&nbsp;//apropriate public properites would go with these appuser properties</P>
+<P>&nbsp;&nbsp;&nbsp;public static AppUser Login(UserName, Password)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//this is where i'm not sure what to do.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;option 1.&nbsp; </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AppUser user = (AppUser) base.Login(username, password);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.Fill() //some private method that then fills up the app specific properties with anther DB call<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P>}</P>
+<P>Am i going about this all wrong?</P>
+<P>Any help is appreciated.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, December 19, 2006</h2><P>The way you've described it isn't all bad.</P>
+<P>What you don't show is that you'll have to override the DataPortal_x methods in your AppUser class in order to incorporate any additional properties that will be passed to/from the database.&nbsp; (Unless you use a CommandBuilder/DataMapper to handle that.)&nbsp;</P>
+<P>I'm concerned that perhaps you should make the CommonUser class generic?&nbsp; I would have to retrace the DataPortal code, but I believe that the statement: DataPortal_Fetch&lt;CommonUser&gt;(...) will cause the data portal to instantiate an object of type CommonUser.&nbsp; You obviously want this to be AppUser or the returned object will be CommonUser and you'll get casting errors as soon as you try working with it as an AppUser.</P>
+<P>One other thing to consider, find a different name or signature for the base class Login method.&nbsp; You'll get compiler warnings because you can't override static methods so you'll be prompted to add the "new" keyword to your declaration.&nbsp; I tend to use the prefix "Perform" or "Execute" for my base class methods like this.&nbsp; So, you'd have CommonUser.PerformLogin(username, password).</P>
+<P>Consider making CommonUser abstract as well.&nbsp; Just to satisfy a couple of those OOP rules floating around out there...</P>
+<P>HTH</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>applecran replied on Tuesday, December 19, 2006</h2><P>Yes for the AppUser I was thinking of this</P>
+<P>&nbsp;public static AppUser Login(UserName, Password)<BR>&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AppUser user = (AppUser) base.Login(username, password);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;user.Fill() //some private method that then fills up the app specific properties with another&nbsp;&nbsp;&nbsp; DB&nbsp;call<BR>&nbsp;&nbsp;&nbsp;}</P>
+<P>So there I will be casting the CommonUser that is returned by base.Login to an AppUser (I think that will work).&nbsp; I'm not sure if that stops the need for the CommonUser to be generic.</P>
+<P>If I were to make common user generic how would that be declared.&nbsp; Sorry for what is probably an entry level question but this is my first time really working with Generics and with CSLA.</P>
+<P>Now, my Fill function would call my DataPortal_Fetch method I guess.&nbsp; This is really where my confusion lies.&nbsp; Do I want to call the base.Login function and then the DataPortal_Fetch on the AppUser?&nbsp; Is that even possible since the DataPortal.Fetch&lt;object&gt;(Criteria()) function creates a new instance of the object?&nbsp;</P>
+<P>I'm jsut not sure where how to go about creating the object and how the DataPortal_xxxxx functions will work since I would already have an object from the base.Login() function.</P>
+<P>By making the CommonUser class abstract though, I would not be able to instantiate an instance and this could be problematic because I will also have a management app that will allow users porofiles etc. to be updated and added to applications.&nbsp; This will be at the CommonUser level so I think I would need to be able to instantiate these users.</P>
+<P>I'll deffinately consider renaming my functions as that could be quite annoying.</P>
+<P>Thanks for taking the time to help me with this.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, December 19, 2006</h2><P>Here's how it works:</P>
+<P>You call AppUser.Login(username, password).&nbsp; Execution then passes to your CommonUser base class Login method which calls DataPortal.Fetch(...)&nbsp; When control reaches the data portal server (SimpleDataPortal), a new instance of your object will be instantiated and&nbsp;its DataPortal_Fetch method called.</P>
+<P>I checked the source code and the Criteria object that you pass to DataPortal.Fetch is what controls the data type of the class that is instantiated.&nbsp; If the object is derived from Criteria, then Criteria.ObjectType defines what type if created.&nbsp; Otherwise, the same type as the criteria argument is created.</P>
+<P>So, to ensure that you instantiate an AppUser object instead of CommonUser, you'll need to make sure that the ObjectType of the LoginCriteria object is set to AppUser.&nbsp; Maybe add the type as a parameter to the constructor and pass it to the CommonUser.Login method.</P>
+<P>This would also allow you to avoid working with generics if you're not familiar with them.</P>
+<P>Make your DataPortal_Fetch method protected virtual in the CommonUser class and handle the properties you have defined in that class.&nbsp; Then override this method in AppUser, handle the additional properties and defer back to the base.DataPortal_Fetch so that CommonUser can do its thing.</P>
+<P>Once the DataPortal_Fetch method returns, the new object will be passed back through the data portal to your Login method where you can cast it to AppUser and work with it as desired.</P>
+<P>HTH</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>applecran replied on Thursday, December 21, 2006</h2><P>Thanks SonOfaPirate.</P>
+<P>That really helps.</P>
+<P>I ended up doing it slightly differently because once I got the the casting to AppUser part, I was getting a cast exception.&nbsp;</P>
+<P>What I ended up doing is this:</P>&nbsp;&nbsp;public static AppUser Login(sting username, string password)<BR>&nbsp;&nbsp;&nbsp;{<BR><FONT color=#0000ff size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT></FONT><FONT color=#000000><FONT size=2> </FONT><FONT size=2>DataPortal</FONT><FONT size=2>.Fetch&lt;AppUser</FONT><FONT size=2>&gt;(</FONT><FONT size=2>new</FONT><FONT size=2> </FONT><FONT size=2>LoginCriteria</FONT><FONT size=2>(username, password, Type.GetType("AppUser")));<BR></FONT></FONT>&nbsp;&nbsp;&nbsp;}<FONT size=2>
+<P></FONT><FONT color=#000000><FONT size=2>&nbsp;&nbsp;&nbsp;protected override </FONT><FONT size=2>void </FONT><FONT size=2>DataPortal_Fetch(Login</FONT><FONT size=2>Criteria</FONT></FONT><FONT size=2><FONT color=#000000> criteria)<BR></FONT><FONT color=#000000>&nbsp;&nbsp;&nbsp;{&nbsp;</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//call the CommonUser dataportal_fetch and have that class fill it's own proeprties<BR></FONT><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;base.DataPortal_Fetch(criteria);</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//deal with the appuser properties.<BR></FONT></FONT><FONT size=2><FONT color=#000000>&nbsp;&nbsp;&nbsp;}</FONT></P></FONT>
+<P>&nbsp;</P>
+<P>The LoginCriteria is defined within the commonuser class and inherties from CriteriaBase so that I can pass in the type that is actually needed just to make sure there are no problems.</P>
+<P>This seems to work and I think it is flowing through the csla framework properly without going back and forth through the dataportal uneccesarily (i traced it in debugging).</P>
+<P>If there is a better way or someone has another idea then that would be great.</P>
+<P>I'll need to do simmilar processes for the other DataPortal_xxxxx functions depending on what I want to do as I may not want a delete call in the appuser to do a delete or anything for that matter in the commonUser.</P>
+<P>Thanks again.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, December 21, 2006</h2><P>Looks like you've got it.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

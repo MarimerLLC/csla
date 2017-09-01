@@ -1,0 +1,19 @@
+<html><header><title>Error: TCP error code 10048: Only one usage of each socket address</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error: TCP error code 10048: Only one usage of each socket address</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9014.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud posted on Tuesday, June 01, 2010</h2><p>Hi,</p>
+<p>We&#39;ve been getting this error for the past few days - ever since we deployed a test version for the users, actually: <b>TCP error code 10048: Only one usage of each socket address (protocol/network address/port) is normally permitted </b></p>
+<p>This does not seem to happen on our development machines for some reason.&nbsp; I&#39;ve looked at various threads on StackOverflow and MSDN, but haven&#39;t found anything there that could possibly help since here it is really CSLA that&#39;s taking care of all the plumbing.</p>
+<p>Anyone has an idea as to what we can check - be it on the client or server side - to resolve this?&nbsp; The Net.TCP service is deployed as a Windows Service (the server is Windows Server 2003).</p>
+<p>Thanks,<br />Michel</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 01, 2010</h2><p>You might need to use fiddler or&nbsp;other network monitor app to see what&#39;s going on. I assume you are using WCF? It is probably something to do with WCF or your service implementation that&#39;s causing a port conflict.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichelRenaud replied on Tuesday, June 01, 2010</h2><p>Hi Rockford,</p>
+<p>Yes, we are using WCF (though I&#39;ve renamed it internally to &quot;WTF&quot;, which I find more suiting - hehe).&nbsp; Alright so most likely it&#39;s the WCF configuration section, or the way the Windows Service was configured.&nbsp; We did our best with this stuff - it&#39;s not easy finding good answers to questions about WCF.&nbsp; What really sucks trying to troubleshoot the problem is that to test any solution, we have to redeploy the service and have the users try it since it doesn&#39;t happen on our own machines.</p>
+<p>If anyone has suggestions for specific areas to focus on, please feel free to reply.&nbsp; We&#39;re using CSLA 3.0, by the way (if that makes any difference.)</p>
+<p>Thanks,<br />MIchel</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, July 09, 2013</h2><p>Hi Michel</p>
+<p>We&#39;ve just started to see this error in production for a new ASP.NET MVC based website front-end, which calls to a remote CSLA data portal host on another server using WCF Proxy over NET TCP.</p>
+<p>The errors are happening on the client side (not server side) for us. Still no clue as to why yet...</p>
+<p>Please post if anyone has any past experiences with this.</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Tuesday, July 09, 2013</h2><p>These links might relate:</p>
+<p>
+<ul>
+<li><a href="http://msdn.microsoft.com/en-us/library/aa560610(v=bts.20).aspx">http://msdn.microsoft.com/en-us/library/aa560610(v=bts.20).aspx</a></li>
+<li><a href="http://technet.microsoft.com/en-us/library/cc938217.aspx">http://technet.microsoft.com/en-us/library/cc938217.aspx</a></li>
+<li><a href="http://stackoverflow.com/questions/1339142/wcf-system-net-socketexception-only-one-usage-of-each-socket-address-protoco">http://stackoverflow.com/questions/1339142/wcf-system-net-socketexception-only-one-usage-of-each-socket-address-protoco</a></li>
+</ul>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

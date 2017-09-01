@@ -1,0 +1,28 @@
+<html><header><title>.NET 4.5 broke my CSLA 4.3 app</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>.NET 4.5 broke my CSLA 4.3 app</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11538.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lgroup posted on Monday, August 20, 2012</h2><p>CliffsNotes:</p>
+<p>
+<ul>
+<li>ASP.NET 4.0 web forms app built with CSLA 4.3 (upgraded through the years since 1.x)</li>
+<li>Installed Visual Studio 2012, loaded the solution, compiled. &nbsp;Exception hit on first page load.</li>
+<li>Recompiled back in Visual Studio 2010. Same exception hit on first page load.</li>
+<li>Debugged attached to dev machine&#39;s IIS process... same exception hit.</li>
+<li>Debugged using 2010&#39;s built in web server... no issues at all.
+</li>
+<li>Deployed the same app to a different .NET 4.0 IIS machine. &nbsp;No issues.</li>
+</ul>
+</p>
+<p>The exception is coming because at some point the Csla.ApplicationContext.User.Identity.Name is getting reset to a different value. (not blank) &nbsp;This only happens in <b>IIS</b> with .NET 4.5. &nbsp;It&#39;s not happening with the VS dev server on the same box.</p>
+<p>In my app I&#39;m setting the Name property to a custom string containing the user&#39;s Id, app username, domain username, and email address. &nbsp;When the exception hits I am only seeing a portion of that string.</p>
+<p>I&#39;ve read a couple messages here about page redirects resetting the Name property and I&#39;m sure there&#39;s something going on with that here, but the value is not blank as others have mentioned.</p>
+<p>Any ideas why the jump from .NET 4.0 to 4.5 is causing this? &nbsp;Or why it doesn&#39;t happen with the VS web server? &nbsp; I thought 4.5 was supposed to be backward compatible with 4.0.</p>
+<p>&nbsp;</p>
+<p>Thanks,<br />John&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, August 20, 2012</h2><p>You do realize that 4.5 isn&#39;t yet in beta - everything available is pre-release preview code. Perhaps you can think of it as alpha code.</p>
+<p>This is true for the pre-release on the downloads page, and also if you pull the current code from svn. The current code in svn is <em>a lot</em> different from that earlier pre-release, but has some very real issues with the data portal that I&#39;m in the process of solving.</p>
+<p>For the most part (other than on Silverlight) 4.5 will be backward compatible with 4.3. But that won&#39;t be true until 4.5 is actually done.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lgroup replied on Monday, August 20, 2012</h2><p>I was afraid my post was going to be a bit confusing. &nbsp; By 4.5 I meant <b>.NET 4.5</b>, not CSLA. &nbsp; I&#39;m still using CSLA 4.3 in my app. &nbsp; Sorry about that.</p>
+<p>John</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 20, 2012</h2><p>Ahh, sorry, I see now what you are saying.</p>
+<p>I don&#39;t know the answer, but can provide some info you may find useful in troubleshooting.</p>
+<p>Csla.ApplicationContext.User delegates to HttpContext.Current.User in an ASP.NET host if you have Csla.Web.dll referenced in your project (so it is in the \bin folder).</p>
+<p>As a side-note, if you don&#39;t have Csla.Web.dll in the \bin folder then you&#39;ll get incorrect results sometimes - but that&#39;s not new to .NET 4.5. The reason is that the default is to pull the principal from System.Threading.Thread.CurrentPrincipal, and that value isn&#39;t guaranteed to be consistent starting with ASP.NET 2.0.</p>
+<p>If I understand your problem, you are basically finding that HttpContext.Current.User is being changed by IIS and/or ASP.NET 4.5. Perhaps this view on the problem will allow for some better search results or answers via ASP.NET forums or other sources.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lgroup replied on Tuesday, August 21, 2012</h2><p>Hmmm... &nbsp;I do have the Csla.Web.dll in the \bin folder. &nbsp; I&#39;ll do some more searching on HttpContext.Current.User and see what that turns up.</p>
+<p>Thanks,</p>
+<p>John&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

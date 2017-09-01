@@ -1,0 +1,101 @@
+<html><header><title> how to use PropertyStatus in CSLA3.8</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1> how to use PropertyStatus in CSLA3.8</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7844.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>HenryYu posted on Wednesday, October 21, 2009</h2><P> </P>
+<P class=MsoNormal>Hi folks,</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT size=3>Nice to see you,our team are using your CSLA, and I am using Csla3.8 for Wpf binding, I have a problem when I used PropertyStatus in defining my CreateContainer view like this(it is metioned in </FONT><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=492"><FONT color=#800080 size=3>http://www.lhotka.net/cslabugs/edit_bug.aspx?id=492</FONT></A><FONT size=3>):</FONT></SPAN></P>
+<P class=MsoNormal><FONT size=3><SPAN>&lt;</SPAN><SPAN>csla</SPAN><SPAN>:</SPAN><SPAN>PropertyStatus</SPAN><SPAN> Property</SPAN><SPAN>="{</SPAN><SPAN>Bindin </SPAN><SPAN>Path</SPAN><SPAN>=Model.LocationId,</SPAN><SPAN>Mode</SPAN><SPAN>=TwoWay}"<SPAN>&nbsp; </SPAN></SPAN><SPAN>TargetControl</SPAN><SPAN>="{</SPAN><SPAN>Binding</SPAN><SPAN> ElementName</SPAN><SPAN>=LocationIdTextBox}" /&gt;</SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT size=3></FONT></SPAN>&nbsp;</P><SPAN><FONT size=3>
+<P class=MsoNormal><SPAN>But when I<SPAN>&nbsp; </SPAN>executed this statement to get my defined view: createContainerWin.Content = _container.Resolve&lt;IContainerEditViewModel&gt;().View;</SPAN></P>
+<P class=MsoNormal><SPAN>It throw an exception(</SPAN><I><SPAN>Resolution of the dependency failed, type = "CambridgeSoft.COE.Inventory.Modules.ContainerModule.Interfaces.IContainerEditViewModel", name = "". Exception message is: The current build operation (build key Build Key[CambridgeSoft.COE.Inventory.Modules.ContainerModule.ContainerActions.ContainerEditViewModel, null]) failed: Object reference not set to an instance of an object. (Strategy type BuildPlanStrategy, index 3</SPAN></I><SPAN>)which seemed like the progress creating view,Also I found the true reason is about this using way :</SPAN><SPAN>PropertyStatus</SPAN><SPAN> Property</SPAN><SPAN>="{</SPAN><SPAN>Bindin </SPAN><SPAN>Path</SPAN><SPAN>=Model.LocationId,</SPAN><SPAN>Mode</SPAN><SPAN>=TwoWay}".(</SPAN><SPAN>Since I uncommented this statement,the codes run)</SPAN></P>
+<P class=MsoNormal></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT size=3></FONT></SPAN>&nbsp;</P>
+<P><SPAN><FONT size=3>So which way can I use if I want to implement the validation of Property using PropertyStatus?</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, October 22, 2009</h2>Just to get this out of the way, but I notice that twice in your post you use "Bindin" instead of "Binding" with reference to the PropertyStatus declaration.&nbsp; Is this a mistake in your code or just in this posting?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>You are saying that it works when you remove the TargetControl property so PropertyStatus isn't&nbsp;trying to manipulate the TextBox control?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>I think you are using Beta 1?</P>
+<P>I do think there was a bug in Beta 1 when using dot notation to index into a property.</P>
+<P>If you are trying to use Beta 1 for anything but testing, that is probably a mistake. Since you say this is urgent, you are probably trying to use it for more than testing :(</P>
+<P>However, Beta 2 should be available in the next few days. I am mostly waiting to find out if the BusyAnimation bug has been resolved, and then I will release Beta 2.</P>
+<P>I think (but I don't know for sure) that it will fix your problem.</P>
+<P>You can always pull the latest code from the svn repository and see if your problem has been fixed. The svn path is svn://svn.lhotka.net/csla/core/branches/V3-8-x.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HenryYu replied on Thursday, October 22, 2009</h2><P>Thanks for your reply,but I could not access the svn://svn.lhotka.net/csla/core/branches/V3-8-x,</P>
+<P>could you tell me the way to access it?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span><a href="http://www.lhotka.net/cslanet/Repository.aspx">http://www.lhotka.net/cslanet/Repository.aspx</a></span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HenryYu replied on Friday, October 23, 2009</h2><P>Hi Rocky,</P>
+<P>&nbsp;I think&nbsp;our team is&nbsp;using 3.8 alpha version, not the beta1 version,</P>
+<P>Also I differ the different version in <SPAN>&nbsp;</SPAN><A href="http://www.lhotka.net/cslanet/Repository.aspx"><FONT color=#800080>http://www.lhotka.net/cslanet/Repository.aspx</FONT></A></P>
+<P class=MsoNormal><SPAN>I tried to find the your fix codes about PropertyStatus in this link, but I found that there are not any changes about in PropertyStatus between the version(</SPAN>svn://svn.lhotka.net/csla/core/branches/V3-8-x<SPAN>) and the </SPAN>3.8 alpha version(which our team is just using).</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>In other word, the PropertyStatus.cs in <FONT face=Calibri>the </FONT>3.8 alpha version(which our team is just using) is the latest version code base on your changes logs in the link I metioned.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>HenryYu replied on Friday, October 23, 2009</h2><P class=MsoNormal>also I differ the&nbsp; difference from the three version <o:p></o:p></P>
+<P class=MsoNormal><SPAN>Revision4288 Revision4271 Revision4267 in link</SPAN><o:p></o:p></P>
+<P><A href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Wpf/PropertyStatus.cs?view=log#rev4267"><FONT color=#800080>http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/Csla/Wpf/PropertyStatus.cs?view=log#rev4267</FONT></A><o:p></o:p></P>
+<P>I found that the <SPAN>PropertyStatus <SPAN>&nbsp;</SPAN></SPAN>codes in 3.8 alpha(which version I am just using) is same as the codes in <SPAN>Revision4288. (i.e. I think maybe there is a small bug in PropertyStatus needed to be fixed)</SPAN></P>
+<P><SPAN>This is an urgent problem, thanks for you help. </SPAN><o:p></o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> This is an urgent problem, thanks for you help.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>How can you have an <i>urgent</i> problem with alpha code? <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If this is really urgent then you need to help me. Remember that
+CSLA .NET is free, which means there&#8217;s no support (unless you&#8217;d
+like to pay for it).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can create a small repro of this problem that occurs on Beta
+1 &#8211; and by small I mean something you can put in a zip file that I can
+unzip, build and run without having to download dependencies, etc. To do this
+you&#8217;ll need to replicate the issue without using your DI framework &#8211;
+I don&#8217;t have time to sift through complex UI/config code. In other words,
+I&#8217;m not going to get pulled into debugging interactions with some random
+UI framework that&#8217;s not included in the .NET standard install.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you get me such a repro I&#8217;ll look at it and try to
+identify/fix the issue.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2><P>Actually the simplest thing for you and me is if you can take the MVVMexperiment solution (SL or WPF) and get it to fail.</P>
+<P>This app already uses the "Model.Property" syntax with PropertyStatus. And you can easily change the DataListViewModel constructor to not create an instance of the Model, which means it will be null.</P>
+<P>But that works - having a null Model value is perfectly acceptible - so I'm having a hard time understanding or replicating your issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2><P>Hmm. I thought perhaps the problem was that the DataContext itself was null. But that doesn't trigger the problem either - I just created a simple XAML form that uses PropertyStatus with dot notation for the property name, with no DataContext at all:</P>
+<P>&lt;UserControl x:Class="SilverlightApplication3.MainPage"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:csla="clr-namespace:Csla.Silverlight;assembly=Csla"<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; mc:Ignorable="d" d:DesignWidth="640" d:DesignHeight="480"&gt;<BR>&nbsp; &lt;Grid x:Name="LayoutRoot"&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;StackPanel&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel Orientation="Horizontal"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBox Text="{Binding Path=Model.Name, Mode=TwoWay}" Width="150" Margin="5"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:PropertyStatus Property="{Binding Path=Model.Name}" Margin="5" /&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;StackPanel Orientation="Horizontal"&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;TextBox Text="{Binding Path=Model.City, Mode=TwoWay}" Width="150" Margin="5"/&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:PropertyStatus Property="{Binding Path=Model.City}" Margin="5" /&gt;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;<BR>&nbsp;&nbsp;&nbsp; &lt;/StackPanel&gt;<BR>&nbsp; &lt;/Grid&gt;<BR>&lt;/UserControl&gt;</P>
+<P>Clearly when this form is initialized it will create the PropertyStatus controls along with the TextBox controls, and DataContext is null, because it is never set to anything (there's not even a business class in this project).</P>
+<P>But this works fine too - so DataContext being null is OK, and Model being null is OK (based on the MVVMexperimentSL project).</P>
+<P>So I'm really at a loss as to what your app is doing to get something to be null...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Halil replied on Thursday, December 10, 2009</h2>I am able to recreate this issue. The key is to set the DataContext after the control has been initialized. The null reference is encountered in the GetRealSource(object source, string bindingPath) method in the PropertyStatus control. The source parameter is null.<br><br>namespace CSLA3._8._2_PropertyStatusFail<br>{<br>&nbsp;&nbsp;&nbsp; public partial class Window1 : Window<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public Window1()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // does not fail when first setting data context<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //DataContext = this;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataContext = this;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>&lt;Window x:Class="CSLA3._8._2_PropertyStatusFail.Window1"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Title="Window1"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Height="300"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Width="300"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"&gt;<br>&nbsp;&nbsp;&nbsp; &lt;Grid&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;csla:PropertyStatus Property="{Binding Path=XXXX.YYYY}" /&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/Grid&gt;<br>&lt;/Window&gt;<br><br>Halil<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, December 10, 2009</h2>Thank you, that is very helpful information!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>McManus replied on Saturday, October 24, 2009</h2>Hi,<br /><br />I noticed a typo in the XAML. The Bindin is missing a "g" (should be Binding).<br /><br />HTH,<br />Herman</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

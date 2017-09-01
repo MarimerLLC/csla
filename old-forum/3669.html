@@ -1,0 +1,62 @@
+<html><header><title>CSLA 3.0.2: Authorization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.0.2: Authorization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3669.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Monday, October 08, 2007</h2><P>1. I would like have the "save" button disabled as long as the BO is not valid. As soon as the BO becomes valid the "save" button must be enabled. I had it like this for CSLA 1.5 and 2.x but how to implement this for CSLA 3.x.? Would it be unnecessary?</P>
+<P>2. In the ReBindUI procedure there are two catch statements. If I click the "save" button without having capture data in the form, the second catch is executed. Why is this, if the BO is not valid, why don't I get the error from the first catch statement which contains the BusinessException ? Am I misunderstanding it?</P>
+<P>3. In the CSLA. 3.0.2 PDF book, Rocky states that code in the UI should never interact with the BO but with the BindingSource. Then why do I have to call _bo.BeginEdit() and _bo.ApplyEdit()according to the PT source code examples?</P>
+<P>4. In PT source code, would I still use "public event EventHandler CurrentPrincipalChanged" if I don't use WinPart, i.e. if my login happens before the application starts.</P>
+<P>Thanks</P>
+<P>Regards</P>
+<P>Casper Erasmus</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 08, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>cjherasmus:</strong></div><div>
+<P>1. I would like have the "save" button disabled as long as the BO is not valid. As soon as the BO becomes valid the "save" button must be enabled. I had it like this for CSLA 1.5 and 2.x but how to implement this for CSLA 3.x.? Would it be unnecessary?</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is unchanged from 2.x.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>cjherasmus:</strong></div><div></P>
+<P>3. In the CSLA. 3.0.2 PDF book, Rocky states that code in the UI should never interact with the BO but with the BindingSource. Then why do I have to call _bo.BeginEdit() and _bo.ApplyEdit()according to the PT source code examples?</P>
+<P></div></BLOCKQUOTE></P>
+<P>The specific rule is that you should never interact directly with the business object <EM>while it is data bound</EM>. If the object is unbound you can do what you'd like. This is why it is unbound before calling Save() for example.</P>
+<P>_bo.BeginEdit() is called <EM>before the object is bound</EM>. The explicit calls to BE() and AE() are to support the form-level Cancel and Apply buttons. If you don't have form-level Cancel or Apply buttons then you probably don't need to make those calls in your UI.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>cjherasmus:</strong></div><div></P>
+<P>4. In PT source code, would I still use "public event EventHandler CurrentPrincipalChanged" if I don't use WinPart, i.e. if my login happens before the application starts.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That whole WinPart thing is my "mini-framework" for the UI. Most people have their own UI approach or UI framework. You would do whatever is appropriate for your particular UI approach.</P>
+<P>One thing your UI approach/frameworks should do is notify your code when the current principal changes. That notification is important, because it allows any active forms to refresh their authorization to reflect the new principal.</P>
+<P>The <EM>business object</EM> will automatically start using the new principal as soon as it changes. That's just automatic. But the <EM>user interface</EM> needs to know that it changes so it can update the presentation to match the new user's capabilities.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus replied on Monday, October 08, 2007</h2><P>Rocky,</P>
+<P>regarding point 1:</P>
+<P>apologies, was thinking about something else. The "2.x" shouldn't be there, only 1.5x. I'm upgrading code from version 1.53 to 3.0.2 and would like to know how to implement the behaviour in 1.53 of using the hidden checkbox which either enabled or disabled the "Save/Apply" button.</P>
+<P>regarding point 2:</P>
+<P>you haven't answer this one :-)</P>
+<P>regarding point 3 and 4:</P>
+<P>Understood, thanks</P>
+<P>Regards,</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 08, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Point 1 then, is covered in an article at <a href="http://www.lhotka.net/cslanet">www.lhotka.net/cslanet</a> (don&#8217;t
+have time to find it for you &#8211; use <a href="http://www.lhotka.net/search.aspx">www.lhotka.net/search.aspx</a> for
+help).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I don&#8217;t understand point 2, so I was hoping someone else
+would understand and comment on it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

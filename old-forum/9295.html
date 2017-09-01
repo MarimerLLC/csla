@@ -1,0 +1,11 @@
+<html><header><title>Question about &quot;SingleCriteria&quot; in Csla 4</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Question about &quot;SingleCriteria&quot; in Csla 4</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9295.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav posted on Thursday, July 29, 2010</h2><p>Reading the Change Log, I got the impression that one can pass parameters to DataPortal.xyz methods&nbsp;like we do to any other method.&nbsp; I tried testing that in a few situations (Client and Server partial classes).&nbsp; In one I got a compile error, in the other a runtime error.&nbsp; I made the assumption that I must have read something wrong, and decided to let things be.</p>
+<p>But I thought I should report this in case there is actually a problem.</p>
+<p>Jav</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, July 29, 2010</h2><p>You can pass any single serializable value as a parameter to Create, Fetch or Delete. So SingleCriteria is now useless, since you can just pass a single value.</p>
+<p>If you need to pass more than one value then you&#39;ll need to implement a serializable object (in SL the minimum is to implement IMobileObject or subclass MobileObject).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, August 02, 2010</h2><p>Hi Rocky,</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>You can pass any single serializable value as a parameter to Create, Fetch or Delete. So SingleCriteria is now useless, since you can just pass a single value.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>I&#39;ve been here before. From the previous thread I understood SingleCriteria is needed when you need to pass a non serializable parameter, like a non native type (I won&#39;t discuss this scenario). Otherwise it would be useless and could/should be deprecated.</p>
+<p>Regards</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

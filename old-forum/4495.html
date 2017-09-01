@@ -1,0 +1,17 @@
+<html><header><title>Authorization and DataGridViews</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorization and DataGridViews</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4495.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham posted on Thursday, March 13, 2008</h2><P>I have a editable business base that has editable child objects of three different types.</P>
+<P>Parent</P>
+<P>&nbsp;&nbsp;&nbsp;ChildTypeOneCollection</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ChildTypeOne</P>
+<P>&nbsp;&nbsp;&nbsp;ChildTypeTwoCollection</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ChildTypeTwo</P>
+<P>&nbsp;&nbsp;&nbsp;etc</P>
+<P>They are all editable together on a single WinForm.</P>
+<P>The base object uses standard controls (text boxes, combo boxes, check boxes, etc.).&nbsp; The children are edtiable within a datagridviews on separate tab pages on the same form.</P>
+<P>I am overriding the CanWriteProperty for some parent and child object properties that are only editable at certain times (based on data).</P>
+<P>I'm using the read/write authorization control to update the controls automatically based on those overrides.</P>
+<P>The contols for&nbsp;the parent properties that are not editable are disabled and don't allow the user to believe they can edit the field.</P>
+<P>However, the datagridview that is bound to the child object DOES NOT disable the column in the grid (and doesn't even appear to "check" the editability of the child properties until AFTER the user enters data; at which point the business object returns the security exception that the field is read-only).</P>
+<P>I realize that datagridviews need&nbsp;instantiated on all the tabpages before binding and I've done that.&nbsp; Regardless, the initial tabpage that displays doesn't even appear to work properly.</P>
+<P>Does anybody know what I'm missing as to why the datagridviews don't check the child property editability and disable them so the user isn't inclined to think they can edit the data?</P>
+<P>Do I need separate read/write authorization controls for each child?&nbsp; Does it have something to do with object and control instantiation timing?</P>
+<P>Any help would be GREATLY appreciated!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 13, 2008</h2>The readwriteauthorization control only affects detail controls. You need to deal with complex controls (like grids, etc) in your own UI code.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sgraham replied on Thursday, November 20, 2008</h2>&nbsp;I'm still having this problem.&nbsp; Does anybody have an suggestions or ideas?&nbsp; I would apprecaite any and all help!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

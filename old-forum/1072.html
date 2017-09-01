@@ -1,0 +1,120 @@
+<html><header><title>Remoting Questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remoting Questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1072.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd posted on Wednesday, August 30, 2006</h2>Hi All,<br><br>I was wondering if someone could please point me in the right direction.<br><br>Overview, I have followed chapter 12 and implemented remoting on an remote IIS server and can access the interface via WDSL. so remoting is all working fine.<br><br><ol><li>I have a demo interface that has references to dlls and other projects within the solution, i have changed the app.config to now use remoting. Do i need to have these references as reference within the project anymore, This also covers when i install the application as a test, do i need to install any other dlls that the application uses or can all of these be used via remoting on the IIS Server.</li><li>I also have a need extended the Identiy and Pricipal object to include ID as this is used within the user context. Please see code below. <br></li></ol>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  Namespace Security<br><br>&nbsp;&nbsp;&nbsp; &lt;Serializable()&gt; _<br>&nbsp;&nbsp;&nbsp; Public Class UserContext : Inherits Csla.ReadOnlyBase(Of UserContext)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Private Shared _ID As System.Guid = Guid.Empty<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared ReadOnly Property AuthenticationType() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.Identity.AuthenticationType<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared ReadOnly Property IsAuthenticated() As Boolean<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.Identity.IsAuthenticated<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared ReadOnly Property Name() As String<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Csla.ApplicationContext.User.Identity.Name<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Property ID() As System.Guid<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return _ID<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Set(ByVal value As System.Guid)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _ID = value<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Set<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Property<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Protected Overrides Function GetIdValue() As Object<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return Nothing<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br>&nbsp;&nbsp;&nbsp; End Class<br><br>End Namespace<br><br>The ID property is populated from the Identity DataPortal_Fetch class, however after i have made the call via remoting this object no longer seems to be populated. Am i missing something??<br><br>Any help would be great.<br><br>Thanks, Tim.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 30, 2006</h2>The goal of the data portal is to allow you to run the data portal remotely with no change to your existing code - that means no change to your project's references or anything else. This is the design goal, and the assumption. Typically you can not remove references.<br><br>However, it is sometimes possible to NOT INSTALL certain assemblies on the client. Remember that .NET is very lazy about loading assemblies. Just because you reference an assembly doesn't mean it actually has to be installed! It only need to be physically present if you try to use some code (or type information) from that assembly.<br><br>Certainly you'll always have to install Csla.dll and your business object assemblies. That's the reality of this model.<br><br>But if you have a seperate data access assembly, that is only used by your business objects from their DataPortal_XYZ methods, then that assembly wouldn't have to be installed on the client machine. Note that your business assemblies would still reference the DAL assembly - but since DataPortal_XYZ methods never run on the client, the DAL assembly will never be loaded into memory on the client, and so it doesn't need to be installed there at all.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Friday, June 15, 2007</h2><P class=MsoNormal><SPAN>Hi<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>If I understand correctly, there is no mean to use the CSLA without the client getting reference to the business object library; we can’t use something like shared interface between server and clients.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In our model object, the client app is very simple. It receives an object and just calls the “execute” method of the object, then saves the object. Let say the client gets a Doc object from Document class. It just does “Doc.execute”.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>What is the best solution, if the Business library always changes? Let’s say the “execute” method change, we frequently write a new code. Do we have to install all the clients again with a new version, across the country? <SPAN>&nbsp;</SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for your help<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Cordially<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 15, 2007</h2><P>The data portal is designed to enable <EM>mobile objects</EM>, which is a form of client/server. Part of the bargain is that the client and server need to have the same business assembly (dll). Both the client and server are <EM>tiers in the same app</EM>, and are merely deployment choices you've made.</P>
+<P>But you don't have to use the data portal. If you want to create a service-oriented system, for example, you can use CSLA to create both client and server applications. But it is important to realize you are creating <EM>two</EM> <EM>applications</EM>.</P>
+<P>In the client app, you would typically configure the data portal to run local, on the client. The DataPortal_XYZ methods call services in this case, rather than calling stored procedures.</P>
+<P>In the server app, you should follow the model shown in Chapter 11, abstracting the service interface with DTOs (message objects) and calling the real business object in your asmx or svc code.</P>
+<P>The <A href="http://www.lhotka.net/Article.aspx?area=11&amp;id=a7cb616f-eb41-440a-abd8-d01525ba2ba0">BenchManager sample </A>I created for Tech Ed illustrates how this works. Actually it has both models - BenchManager is client/server, BenchManagerSO is service-oriented.</P>
+<P>The thing is, the decision to go client/server or SO is a fundamental choice. Both have their strengths and weaknesses, and it is important to choose the right architecture for your needs, or you'll suffer some nasty consequences pretty much every time...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Monday, June 18, 2007</h2><P class=MsoNormal><SPAN>Thanks for the answer, Rocky.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>As interoperability is not an issue for us and as we need good performances, we did not choose a SO solution, but a client/server one.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>What I was thinking was about an implementation with a shared interface between server and client side.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 18, 2007</h2><P>You can certainly do that, but that is not how the data portal is designed to work.</P>
+<P>The challenge with the shared interface approach is that "interface" is more than the API - it also must include some "message contract". Even if you aren't "SOA" you still need to get the data across the wire after all - and if you don't want a shared business assembly, then you need a shared DTO (data transfer object) assembly.</P>
+<P>You can use pre-built .NET objects, allowing .NET itself to be the shared assembly. Options include the DataSet, arrays, lists, dictionaries, hashtables, etc. All loosely typed obviously.</P>
+<P>Or you can use a shared DTO assembly, in which case you can create strongly typed DTOs, or strongly typed DataSet objects - either way works.</P>
+<P>But if you use a shared DTO assembly you have the same deployment issues as with a business assembly. And in that case, I'd personally use the data portal, because it offers other benefits like context sharing, impersonation for custom authentication, transparent transactional support and painless migration to WCF in the future.</P>
+<P>Also note that with the data portal you don't have to write code to copy the data into/out of your business objects (into your array/DataSet/hashtable/DTO/whatever), because that is done for you. If you use the shared interface approach, you'll have to manually write (or code-gen) code to get the data into/out of your business objects.</P>
+<P>I did, btw, consider that approach for the framework when I first designed in in 1999-2000. But I rejected that idea, because it led to the same coding structure I used in VB6. And one of the primary sources of bugs in the VB6 approach was missing a field in this hand-crafted serialization code...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Tuesday, June 19, 2007</h2><P class=MsoNormal><SPAN>Ok, thanks for the answer, Rocky. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Well, all the clients will always call a method from a descendant from the same parent object, Entity. As the descendants will often change, and there will be a lot of new descendants, I shall have to often update clients. Have-you any advice about the better way to do that? The ideal solution would be that when a client connects to a server, it downloads and installs automatically new code, who could be in a new DLL. I know that is off topic, not really CSLA related, but any advice, from you or another reader, would be welcome.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks a lot.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Richard<o:p></o:p></SPAN></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 19, 2007</h2>Check out ClickOnce deployment.&nbsp; Makes deployment as easy as publishing a web page.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 19, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>ClickOnce is the clear answer to this problem, as it is directly
+supported by Microsoft and is an integral part of the .NET framework. You can
+configure an application to require current code, in which case when the user
+attempts to run the app, it will always download and install new code before
+the app comes up.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RichardETVS
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, June 19, 2007 7:06 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Remoting Questions<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok,
+thanks for the answer, Rocky. <o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Well,
+all the clients will always call a method from a descendant from the same
+parent object, Entity. As the descendants will often change, and there will be
+a lot of new descendants, I shall have to often update clients. Have-you any
+advice about the better way to do that? The ideal solution would be that when a
+client connects to a server, it downloads and installs automatically new code,
+who could be in a new DLL. I know that is off topic, not really CSLA related,
+but any advice, from you or another reader, would be welcome.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Thanks
+a lot.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal>Richard<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RichardETVS replied on Wednesday, June 20, 2007</h2><P>Ok, thank to you both, I'll check that.</P>
+<P>&nbsp;</P>
+<P>Richard</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

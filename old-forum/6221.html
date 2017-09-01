@@ -1,0 +1,1328 @@
+<html><header><title>Need to know exactly what to tell a 3rd party Vendor to support Serialization</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need to know exactly what to tell a 3rd party Vendor to support Serialization</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6221.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, January 21, 2009</h2>I use a small and powerful math parser (USPExpress<o:p></o:p>
+
+Pro) to do realtime calculations in my application.&nbsp; However when moving to CSLA I realized they do not support serialization.&nbsp; I have requested they add the feature.<br><br>I just got a response back from them that they are underway (such a nice company) and wanted to get some confirmation from the forums as I have so little experience with this.<br><br>Their tool consists of a number of objects but the main one that requires some effort to initialize is their expressionTree (you have to link all the variables and formulas etc).&nbsp; Anyhow their reply to me was:<br><br>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<blockquote><p class="MsoPlainText">We are in the process of adding the following functions
+to USPExpress<o:p></o:p></p><p class="MsoPlainText">Pro, ExpressionTree class:<o:p></o:p></p><p class="MsoPlainText">- public void Serialize(Stream stream)<o:p></o:p></p><p class="MsoPlainText">- public static ExpressionTree Deserialize(Stream stream)<o:p></o:p></p><p class="MsoPlainText"><o:p>&nbsp;</o:p></p><p class="MsoPlainText">These functions would serialize/deserialize
+ExpressionTree object, in a binary form.</p><p class="MsoPlainText"><br></p></blockquote><p class="MsoPlainText">I thought this was the correct path but was hoping for some validation from people that really knew.</p><p class="MsoPlainText"><br></p><p class="MsoPlainText">Thanks</p><p class="MsoPlainText"><br></p><p class="MsoPlainText">Jack<br><o:p></o:p></p>
+
+
+
+
+
+
+
+
+
+
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, January 21, 2009</h2><P><FONT face=Tahoma size=2>Is there a reason they simply aren't hooking into the existing .NET serialization behavior - i.e. implementing ISerializable on their objects (or, depending on how their objects are constructed, adding a "Serializable" attribute)?&nbsp; Doing so would be no harder than implementing the functions they are suggesting, and would solve your problem without requiring you to write any code.</FONT></P>
+<P><FONT face=Tahoma size=2>Their proposed functions could be worked with, but if that were the route chosen, then you would have to write code in your BO's to serialize/deserialize their objects at the appropriate places.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Scott, <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have no idea&#8230; I sort of assumed that was what they were doing
+and those functions were part of that implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I will pass your message along &#8211; at the end of the day I don&#8217;t
+actually have an issue with calling a single function to serialize/deserialize
+their object as there is spot to do it already in the CSLA framework and I only
+need to do one object.&nbsp; I beats rebuilding the ExpressionTree object which involves
+looping through all my collections and essentially redoing the entire initialization
+and assignment of variables.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks very much for you input.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmg4340
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 7:33 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Need to know exactly what to tell a 3rd party
+Vendor to support Serialization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Is there a
+reason they simply aren't hooking into the existing .NET serialization behavior
+- i.e. implementing ISerializable on their objects (or, depending on how their
+objects are constructed, adding a &quot;Serializable&quot; attribute)?&nbsp;
+Doing so would be no harder than implementing the functions they are
+suggesting, and would solve your problem without requiring you to write any
+code.</span><o:p></o:p></p>
+
+<p><span>Their
+proposed functions could be worked with, but if that were the route chosen,
+then you would have to write code in your BO's to serialize/deserialize their
+objects at the appropriate places.</span><o:p></o:p></p>
+
+<p><span>HTH</span><o:p></o:p></p>
+
+<p><span>- Scott</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Wednesday, January 21, 2009</h2><P><FONT face=Tahoma size=2>Nope - ISerializable doesn't use method signatures like that.&nbsp; And while they could implement ISerializable and then expose that functionality through those functions, I don't see a whole lot of benefit to doing that.</FONT></P>
+<P><FONT face=Tahoma size=2>But what do I know?</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, January 21, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Scott,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you so much &#8211; I&#8217;ve passed both your comments along to them
+as well as asked how they suggested I implemented their design.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I appreciate your help.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jack<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmg4340
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, January 21, 2009 7:53 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Need to know exactly what to tell a 3rd
+party Vendor to support Serialization<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>Nope -
+ISerializable doesn't use method signatures like that.&nbsp; And while they
+could implement ISerializable and then expose that functionality through those
+functions, I don't see a whole lot of benefit to doing that.</span><o:p></o:p></p>
+
+<p><span>But what do
+I know?</span><o:p></o:p></p>
+
+<p><span>- Scott</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, February 04, 2009</h2><font face="Tahoma" size="3">I have received an updated dll from the Vendor and am trying to test the functionality.&nbsp; I'm getting the following error:<br><br></font>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoPlainText"><font color="#ff0000" face="Tahoma" size="3">Unable to cast object of type
+'System.DelegateSerializationHolder' to type 'AliasAddEventHandler'.</font></p>
+
+<p class="MsoPlainText"><font face="Tahoma" size="3"><o:p>&nbsp;</o:p></font></p><p class="MsoPlainText"><font face="Tahoma" size="3">Any ideas - is there something I should be doing?&nbsp; All I did was remove the </font>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0in 5.4pt 0in 5.4pt;
+	mso-para-margin:0in;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+<font face="Tahoma" size="3"><span>[NonSerialized] attribute </span>and commented out the code I was doing in OnDeserialized() to re-create it.<br><o:p></o:p></font></p><p class="MsoPlainText"><font face="Tahoma" size="3"><br><o:p></o:p></font></p><p class="MsoPlainText"><font face="Tahoma" size="3">Any ideas on what I can tell them to try and help them out?</font></p><p class="MsoPlainText"><font face="Tahoma" size="3"><br></font></p><p class="MsoPlainText"><font face="Tahoma" size="3">Thanks</font></p><p class="MsoPlainText"><font face="Tahoma" size="3"><br></font></p><p class="MsoPlainText"><font face="Tahoma" size="3">jack</font><br><o:p></o:p></p><p class="MsoPlainText"><o:p><br></o:p></p>
+
+<p class="MsoPlainText">The stacktrace is below:</p>
+
+<p class="MsoPlainText"><o:p><br></o:p></p>
+
+<p class="MsoPlainText"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoPlainText">Server stack trace: </p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadVariableFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfanyTypeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString , XmlDictionaryString , CollectionDataContract )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.CollectionDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfanyTypeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfanyTypeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadSerializationInfo(XmlReaderDelegator
+xmlReader, Type type)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadDelegateSerializationHolderFromXml(XmlReaderDelegator ,
+XmlObjectSerializerReadContext , XmlDictionaryString[] , XmlDictionaryString[]
+)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadVariableFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfanyTypeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString , XmlDictionaryString , CollectionDataContract )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.CollectionDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfanyTypeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadExpressionVariablesCollectionFromXml(XmlReaderDelegator ,
+XmlObjectSerializerReadContext , XmlDictionaryString[] , XmlDictionaryString[]
+)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadSerializationInfo(XmlReaderDelegator
+xmlReader, Type type)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadExpressionTreeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadDataCalcFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfDataCalcFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext
+, XmlDictionaryString , XmlDictionaryString , CollectionDataContract )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.CollectionDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at ReadArrayOfDataCalcFromXml(XmlReaderDelegator
+, XmlObjectSerializerReadContext , XmlDictionaryString[] ,
+XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfDataCalcFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext
+, XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadFieldDataOfArrayOfDataCalcqjVpHK2nFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext
+, XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadArrayOfanyTypeFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString , XmlDictionaryString , CollectionDataContract )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.CollectionDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadFieldDataManagerFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext
+, XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadDataEntrySessionFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext
+, XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadDataPortalResultFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext
+, XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, RuntimeTypeHandle declaredTypeHandle, String
+name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+ReadWcfResponseFromXml(XmlReaderDelegator , XmlObjectSerializerReadContext ,
+XmlDictionaryString[] , XmlDictionaryString[] )</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.ClassDataContract.ReadXmlValue(XmlReaderDelegator
+xmlReader, XmlObjectSerializerReadContext context)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContext.ReadDataContractValue(DataContract
+dataContract, XmlReaderDelegator reader)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserializeInSharedTypeMode(XmlReaderDelegator
+xmlReader, Int32 declaredTypeID, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializerReadContextComplex.InternalDeserialize(XmlReaderDelegator
+xmlReader, Type declaredType, String name, String ns)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.NetDataContractSerializer.InternalReadObject(XmlReaderDelegator
+xmlReader, Boolean verifyObjectName)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.XmlObjectSerializer.ReadObjectHandleExceptions(XmlReaderDelegator
+reader, Boolean verifyObjectName)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Serialization.NetDataContractSerializer.ReadObject(XmlDictionaryReader
+reader, Boolean verifyObjectName)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.DeserializeParameterPart(XmlDictionaryReader
+reader, PartInfo part, Boolean isRequest)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.DeserializeParameter(XmlDictionaryReader
+reader, PartInfo part, Boolean isRequest)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Dispatcher.DataContractSerializerOperationFormatter.DeserializeBody(XmlDictionaryReader
+reader, MessageVersion version, String action, MessageDescription
+messageDescription, Object[] parameters, Boolean isRequest)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Dispatcher.OperationFormatter.DeserializeBodyContents(Message
+message, Object[] parameters, Boolean isRequest)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Dispatcher.OperationFormatter.DeserializeReply(Message
+message, Object[] parameters)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Dispatcher.ProxyOperationRuntime.AfterReply(ProxyRpc&amp;
+rpc)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Channels.ServiceChannel.HandleReply(ProxyOperationRuntime
+operation, ProxyRpc&amp; rpc)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway,
+ProxyOperationRuntime operation, Object[] ins, Object[] outs, TimeSpan timeout)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Channels.ServiceChannel.Call(String action, Boolean oneway,
+ProxyOperationRuntime operation, Object[] ins, Object[] outs)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Channels.ServiceChannelProxy.InvokeService(IMethodCallMessage
+methodCall, ProxyOperationRuntime operation)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.ServiceModel.Channels.ServiceChannelProxy.Invoke(IMessage message)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><o:p>&nbsp;</o:p></font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2">Exception rethrown at [0]: </font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg,
+IMessage retMsg)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp;
+msgData, Int32 type)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+Csla.Server.Hosts.IWcfPortal.Fetch(FetchRequest request)</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+Csla.DataPortalClient.WcfProxy.Fetch(Type objectType, Object criteria,
+DataPortalContext context) in
+C:\Csla\Framework\cslacs\Csla\DataPortalClient\WcfProxy.cs:line 130</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+Csla.DataPortal.Fetch(Type objectType, Object criteria) in
+C:\Csla\Framework\cslacs\Csla\DataPortal.cs:line 262</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+Csla.DataPortal.Fetch[T](Object criteria) in
+C:\Csla\Framework\cslacs\Csla\DataPortal.cs:line 173</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+Epm.Library.DataEntry.DataEntrySession.GetDataEntrySession(Int32 dataSessionId)
+in C:\epm\SourceCode\EPM.Libary\DataEntry\DataEntrySession.cs:line 290</font></p>
+
+<p class="MsoPlainText"><font face="Courier New" size="2"><span>&nbsp;&nbsp; </span>at
+EpmWin.DataEntrySessionForm.GetData() in
+C:\epm\SourceCode\EpmWin\EpmWin\DataEntrySessionForm.cs:line 64</font></p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>Are they trying to use the XmlSerializer to serialize a CSLA object? That won't work - the XmlSerializer is pretty limited and isn't designed for this scenario.<br /><br />They need to use the BinaryFormatter or the WCF NetDataContractSerializer.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, February 04, 2009</h2>They aren't serializing the CSLA object, it is the opposite.  They have a<br />couple of objects I load with data and then pass to a math parser.  I've<br />asked them to allow their objects to be serialized.  I think you next post<br />is what they need to hear.<br /><br />Thanks<br />jack<br /><br />-----Original Message-----<br />From: RockfordLhotka [mailto:cslanet@lhotka.net] <br />Sent: Wednesday, February 04, 2009 8:54 AM<br />To: jaddington@alexandergracie.com<br />Subject: Re: [CSLA .NET] RE: RE: Need to know exactly what to tell a 3rd<br />party Vendor to support Serialization<br /><br />Are they trying to use the XmlSerializer to serialize a CSLA object? That<br />won't work - the XmlSerializer is pretty limited and isn't designed for this<br />scenario.<br /><br />They need to use the BinaryFormatter or the WCF NetDataContractSerializer.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>Or, if they really can't stomach using these more advanced serializers too deeply, they (or you) can use the BinaryFormatter to create a byte array of your object graph, which can then be converted easily into a Base64 string. And they can pass this string around all they'd like.<br /><br />This is exactly what the WebServiceProxy does in the data portal btw. That's required because asmx web services only use the XmlSerializer, and so CSLA directly uses the BinaryFormatter to create and consume a byte array, and that array can be serialized by XmlSerializer to get the data over the wire.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Wednesday, February 04, 2009</h2>Rocky,<br /><br />If they don't come up with a working solution and I decide to use the<br />binaryFormatter to create a byte array where do I plug that logic in?  <br /><br />Currently I am doing:<br /><br />RemoteWCF DataPortal - GetBO( )<br />1 - define 3rd party objects with [NonSerialized] attributes <br />2 - instatiate objects<br />3 - fill with data<br />4 - parse formulas, run calcs, set values for results.<br /><br />... Serialized to Client<br /><br />5 - repeat steps 2,3,4 in the OnDeserialized() and I'm okay.<br /><br />When they gave me their updated dll I simply removed the [NonSerialized]<br />attributes and removed step 5.<br /><br />If they cannot achieve that implementation where do I plug in the<br />BinaryFormatter? I'm assuming as 4a and inlieu of 5.<br /><br />Thanks<br /><br />jack<br /><br /><br /><br />-----Original Message-----<br />From: RockfordLhotka [mailto:cslanet@lhotka.net] <br />Sent: Wednesday, February 04, 2009 8:54 AM<br />To: jaddington@alexandergracie.com<br />Subject: Re: [CSLA .NET] Need to know exactly what to tell a 3rd party<br />Vendor to support Serialization<br /><br />Or, if they really can't stomach using these more advanced serializers too<br />deeply, they (or you) can use the BinaryFormatter to create a byte array of<br />your object graph, which can then be converted easily into a Base64 string.<br />And they can pass this string around all they'd like.<br /><br />This is exactly what the WebServiceProxy does in the data portal btw. That's<br />required because asmx web services only use the XmlSerializer, and so CSLA<br />directly uses the BinaryFormatter to create and consume a byte array, and<br />that array can be serialized by XmlSerializer to get the data over the wire.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 04, 2009</h2>Assuming they allow their objects to be serialized/deserialized using _any_<br />technique - you don't really care - the end result will be a blob (byte<br />array, string, etc).<br /><br />In other words, you really don't need to care a lot which serializer they<br />choose to support, as long as they support one. And then you can invoke that<br />serializer and you'll get a blob (probably a MemoryStream, which you can<br />easily convert to a byte array).<br /><br />You can then put that blob into a serializable field of your object, and the<br />data portal will move it across the wire. <br /><br />On the other side of the wire you need to invoke the same serializer and<br />give it the blob, and you'll get back an object.<br /><br />You can see the basic code to invoke a serializer in the ObjectCloner class,<br />or WebServiceProxy class. Not all serializers have exactly the same<br />interface, but they all work in pretty much the same way even if the method<br />names are different.<br /><br />Rocky</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

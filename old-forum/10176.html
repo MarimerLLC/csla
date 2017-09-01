@@ -1,0 +1,87 @@
+<html><header><title>The args list of factory method DataPortal calls to the Data Access method args - Questions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The args list of factory method DataPortal calls to the Data Access method args - Questions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10176.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 posted on Thursday, March 17, 2011</h2><p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>This pertains to CSLA 4.1.0. Using C#. I&#39;m in the process of changing our code base from CSLA 2.1.3 to 4.1.0. I&#39;m fairly new to C# too, so don&#39;t be too cruel <img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p>
+<p>I thought I had this figured out, but by accident I found that my conclusions are not correct in all scenarios or base types. I thought...</p>
+<p>When a factory method calls a DataPortal method it can pass arguments in the following way:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Pass a single argument of any data type. The CSLA-related data access method that is called by the DataPortal call should have a matching parameter. Ex: (int parentId)</li>
+<li>Pass multiple arguments. The DataPortal code will place these arguments into an object array to be passed to the various CSLA-related data access methods as argument. Ex: (object[] parameters).</li>
+<li>Pass multiple arguments inside an argument of type Criteria class. The CSLA-related data access method that is called by the DataPortal call should have a matching Criteria parameter. Ex: (Criteria criteria)</li>
+</ul>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Example code:&nbsp;</p>
+<p>-----------------------------------------------------------------------------------------------</p>
+<p>//Pass a single argument.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;public static MyClass GetObject(int arg) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;MyClass obj = Csla.DataPortal.Fetch&lt;MyClass&gt;(arg1);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (!obj.DataExists) { obj = null; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;return obj;</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;private void DataPortal_Fetch(int arg) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;Arg = arg;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;// my code</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>-----------------------------------------------------------------------------------------------</p>
+<p>//Pass multiple arguments straight through - no Criteria object.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;public static MyClass GetObject(int arg1, int arg2) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;MyClass obj = Csla.DataPortal.Fetch&lt;MyClass&gt;(arg1, arg2);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (!obj.DataExists) { obj = null; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;return obj;</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;private void DataPortal_Fetch(object[] parameters) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (parameters.Length &gt; 0 &amp;&amp; parameters[0] is int) { Arg1 = (int) parameters[0]; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (parameters.Length &gt; 1 &amp;&amp; parameters[1] is int) { Arg2 = (int) parameters[1]; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;// my code</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>-----------------------------------------------------------------------------------------------</p>
+<p>//Pass multiple arguments via a Criteria object.</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;public static MyClass GetObject(int arg1, int arg2) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;MyClass obj = Csla.DataPortal.Fetch&lt;MyClass&gt;(new Criteria(arg1, arg2));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (!obj.DataExists) { obj = null; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;return obj;</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;[Serializable]</p>
+<p>&nbsp;&nbsp; &nbsp;private class Criteria {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;public int Arg1 { get; private set; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;public int Arg2 { get; private set; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;public Criteria(int arg1, int arg2) { Arg1 = arg1; Arg2 = arg2; }</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;protected override void PopulateVariablesFromCriteria(object criteria) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (criteria == null) { return; }</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;if (criteria is Criteria) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Criteria crit = (Criteria) criteria;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Arg1 = crit.Arg1;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Arg2 = crit.Arg2;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;crit = null;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;private void DataPortal_Fetch(Criteria criteria) {</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;PopulateVariablesFromCriteria(criteria);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;// my code</p>
+<p>&nbsp;&nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>-----------------------------------------------------------------------------------------------</p>
+<p>&nbsp;</p>
+<p>For example, in an EditableChild class I found I could pass three GUID arguments in the factory method&#39;s Csla.DataPortal.CreateChild call which successfully called my &quot;protected void Child_Create(Guid arg1, Guid arg2, Guid arg3)&quot; method. But I have tried this in other classes and it has generated errors. I don&#39;t recall which object type (editable root, readonly, list, etc).</p>
+<p>My question is, has anyone figured out what these rules are per base class type? Also, is there a design reason why the ways to pass args through DataPortal method calls are not consistent per base class type? Maybe they ARE consistent and I&#39;m not doing something right.</p>
+<div>Thanks.</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 17, 2011</h2><p>It is not accurate that you can pass multiple arguments.</p>
+<p>The data portal operates on two levels: the root data portal, and the child data portal.</p>
+<p>You can tell which you are calling thought the method name. If the method name has the word &quot;Child&quot; in it, it is the child data portal (like FetchChild). If the word &quot;Child&quot; isn&#39;t in the method name (like Fetch or BeginFetch) then it is the root data portal.</p>
+<p>The root data portal accepts 0 or 1 arguments. If you supply 1 argument, it must be a primitive or serializable type. If you are on Silverlight or WP7, &quot;serializable&quot; means the Serializable attribute and implementing IMobileObject, otherwise it just means the Serializable attribute.</p>
+<p>The DataPortal_XYZ or object factory method must also have 0 or 1 arguments. If it has 1 argument, the argument type must match the type of the parameter passed to the data portal client method (such as Fetch).</p>
+<p>The child data portal accepts 0 or more arguments. The Child_XYZ method must have the same number of arguments, and the same argument types, as you pass to the data portal method (such as FetchChild).</p>
+<p>I discuss all this in great detail in the <em>Using CSLA 4: Data Access</em> ebook.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tbim92 replied on Friday, March 18, 2011</h2><p>Thank you for the clarification. I have purchased several paper copies of your CSLA books over the years (VB and C#) and have two versions of your eBooks, but not the latest. I&#39;ll be asking my boss if I can get it.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

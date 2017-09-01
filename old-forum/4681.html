@@ -1,0 +1,24 @@
+<html><header><title>3.5 Parent/Child Updates, Inserts and Deletes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>3.5 Parent/Child Updates, Inserts and Deletes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4681.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Saturday, April 12, 2008</h2><DIV>I am trying to follow the project tracker for 3.5.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>If I want to pass a Transaction from the parent to the child objects.</DIV>
+<DIV><BR>What is the proper way to do this?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I am using LINQ by the way.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This is what I did before.</DIV>
+<DIV><FONT color=#0000ff size=2><BR>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Address </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;If</FONT><FONT size=2> item.IsNew </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>item.Insert( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objTransaction)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Else<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> item.IsDirty </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT size=2>item.Update( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objTransaction)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT color=#0000ff size=2>Next</DIV>
+<DIV></FONT><BR>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, April 13, 2008</h2><P>The simplest approach is to use the Transactional attribute on the DP_XYZ method and say you want a TransactionScope.</P>
+<P>Then use the new Csla.Data.ContextManager class to create/manage your LINQ data context object. The transaction is then automatically handled for you, as long as you allow an exception to bubble up in the case of failure (so TransactionScope knows to do a rollback).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Sunday, April 13, 2008</h2><DIV>Rocky,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Can you give me some sample code for this.</DIV>
+<DIV>I am looking at the project tracker, but I am a bit lost on how it is going through each item in the collection, then updating each one.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Any help would be great.</DIV>
+<DIV><BR>I simply can't put my finger on it.</DIV>
+<DIV><BR>Thanks,<BR>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Monday, April 14, 2008</h2><DIV>Never mind,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I figured it out, all I have to say is wow.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>That's awesome that is does a lot of the stuff for you.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn replied on Monday, April 14, 2008</h2>bump</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

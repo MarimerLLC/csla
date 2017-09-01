@@ -1,0 +1,80 @@
+<html><header><title>Saved Event is not providing the property values after object save.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Saved Event is not providing the property values after object save.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11290.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Tuesday, April 10, 2012</h2><p>Hi,</p>
+<p>In our project we have a company object of BusinessBase&lt;Company&gt;. We have to do some operations after the user saves his company details. (like sending an email, mobile notification, etc...)</p>
+<p>I&#39;ve hooked the saved event in my business in the private constructor and the OnDeserialized methods</p>
+<p>private Company()</p>
+<p>{</p>
+<p style="padding-left:30px;">this.Saved += new EventHandler&lt;Csla.Core.SavedEventArgs&gt;(Company_Saved);</p>
+<p>}&nbsp;</p>
+<p>&nbsp;[Transactional(TransactionalTypes.TransactionScope)]</p>
+<p>protected override void DataPortal_Insert()</p>
+<p>{</p>
+<p>&nbsp; &nbsp; using (var ctx = Dal.DalFactory.GetManager())</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dal = ctx.GetProvider&lt;Dal.ICompanyDal&gt;();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; using (BypassPropertyChecks)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var item = new Dal.CompanyDto</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CompanyTypeId = this.CompanyTypeId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CompanyName = this.CompanyName,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Address = this.Address,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;City = this.City,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;StateId = this.StateId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Zip = this.Zip,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;TimeZoneId = this.TimeZoneId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessPhone = this.BusinessPhone.ToString(),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;BusinessTIN = this.BusinessTin,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FirstName = this.FirstName,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LastName = this.LastName,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Email = this.Email,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CellPhone = this.CellPhone.ToString(),</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;CellProviderId = this.CellProviderId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AccountTypeId = this.AccountTypeId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AccountStatusId = this.AccountStatusId,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;AcceptedTnC = this.TermsOfService,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsDeleted = IsDeleted,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;IsNew = IsNew,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;DateofRegistration = DateTime.UtcNow,</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;ModifiedDate = DateTime.UtcNow</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; };</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dal.Update(item);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.CompanyId = item.CompanyId;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.TimeStamp = item.LastChanged;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;FieldManager.UpdateChildren(this);</p>
+<p>&nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;}</p>
+<p>protected override void OnDeserialized(System.Runtime.Serialization.StreamingContext context)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.OnDeserialized(context);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; this.Saved += new EventHandler&lt;Csla.Core.SavedEventArgs&gt;(Company_Saved);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>private void Company_Saved(object sender, SavedEventArgs e)</p>
+<p>{</p>
+<p style="padding-left:30px;">Debug.Print(string.Format(&quot;Saved Company Id: {0}&quot;,this.CompanyId));</p>
+<p style="padding-left:30px;">// Output &quot;Saved Company Id: 0&quot;</p>
+<p>}</p>
+<p>protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; Debug.Print(string.Format(&quot;Saved Company Id: {0}&quot;,this.CompanyId));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; // Output: &quot;Saved Company Id: 19&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>Dal is successfully saving the data and returning the id through item.CompanyId and assigning to this.CompanyId. But it remains 0 in the Company_Saved event. But, the data is storing in the database and the Id is returning to the UI.</p>
+<p>I&#39;m unable to figure out why the CompanyId remains 0 even after saving the object and assigning the vaule to the CompanyId Property. I&#39;m able to get the new Company Id value in DataPortal_OnDataPortalInvokeComplete method.</p>
+<p>And also i&#39;ve the following doubts about the events and override methods</p>
+<p>1. How can we access the updated values in the Company_Saved method.</p>
+<p>2. I observed that the override method DataPortal_OnDataPortalInvokeComplete is firing two times (one is before saving and the other is after saving the object). Why this is firing two times.</p>
+<p>3. I&#39;ve gone through the Using CSLA 4 ebook series. But, Rocky is not discussed about the events or overridden methods in them. Where can i get the extra stuff about these methods or events.</p>
+<p>4. When to use the Saved Event / DataPortal_OnDataPortalInvokeComplete</p>
+<p>5. There is no enum value in DataPortalOperations to determine the Insert operation. Is there any other way to determine the Insert operation?</p>
+<p>Thanks and Regards,</p>
+<p>SreeRam.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Marjon1 replied on Tuesday, April 10, 2012</h2><p>I can only answer your first question, because you get a new object back when you perform a save, this object is passed into the SavedEventArgs as the NewObject&nbsp;parameter, so something like this: </p>
+<p><b>DirectCast(e.NewObject, Company).CompanyId&nbsp;</b>will get the new value correctly.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Wednesday, April 11, 2012</h2><p>Hi Marjon,</p>
+<p>Thanks for your reply. We are able to continue our work using the Saved Event.</p>
+<p>once again Thanks for your response.</p>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, April 11, 2012</h2><p>The first issue to check out is which objects are these events raised on. </p>
+<p>I do believe the OnSaved should be virtual just like the other OnXYZ methods. </p>
+<p>Added to bugtracker: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1040">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=1040</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

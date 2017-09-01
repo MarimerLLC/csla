@@ -1,0 +1,328 @@
+<html><header><title>SilverLight Loading Objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SilverLight Loading Objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7332.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, July 24, 2009</h2><DIV>As we all know, that SL is Async.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is it possible to have the loading screen delay until all Async calls are done loading the page?<BR><BR>If so, can someone please point me to a code example.</DIV>
+<DIV><BR>Thanks</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, July 24, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes.&nbsp;
+I set all my providers typically to IntiatlLoadEnabledd&nbsp; = false and use a
+helper class to control the load.&nbsp; I also cover up the screen with
+semi-transaparent grid to keep the user from clicking anywhere.&nbsp; Once load
+is completed, you can hide the curtain.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Something
+like this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p><span>using</span><span> System;<o:p></o:p></span></p>
+
+<p><span>using</span><span>
+System.Collections.Generic;<o:p></o:p></span></p>
+
+<p><span>using</span><span>
+Csla.Silverlight;<o:p></o:p></span></p>
+
+<p><span>public</span><span> </span><span>class</span><span> </span><span>DataProviderLoadController</span><span><o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>private</span><span> </span><span>Dictionary</span><span>&lt;</span><span>CslaDataProvider</span><span>, </span><span>bool</span><span>&gt; _providers;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>private</span><span> </span><span>EventHandler</span><span>
+_completedHandlers;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>public</span><span> </span><span>event</span><span> </span><span>EventHandler</span><span>
+LoadAllCompleted<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>add</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _completedHandlers = (</span><span>EventHandler</span><span>)System.</span><span>Delegate</span><span>.Combine(_completedHandlers,
+</span><span>value</span><span>);<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; CheckAll();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>remove</span><span><o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _completedHandlers = (</span><span>EventHandler</span><span>)System.</span><span>Delegate</span><span>.Remove(_completedHandlers,
+</span><span>value</span><span>);<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>private</span><span>
+DataProviderLoadController() { }<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>public</span><span> DataProviderLoadController(</span><span>params</span><span> </span><span>object</span><span>[] providers)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; _providers = </span><span>new</span><span> </span><span>Dictionary</span><span>&lt;</span><span>CslaDataProvider</span><span>, </span><span>bool</span><span>&gt;();<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>foreach</span><span> (</span><span>CslaDataProvider</span><span> item </span><span>in</span><span> providers)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _providers.Add(item, item.Data != </span><span>null</span><span>);<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; item.DataChanged += </span><span>new</span><span> </span><span>EventHandler</span><span>(item_DataChanged);<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; CheckAll();<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>foreach</span><span> (</span><span>CslaDataProvider</span><span> item </span><span>in</span><span> providers)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>if</span><span> (item.IsInitialLoadEnabled == </span><span>false</span><span>)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; item.Refresh();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>private</span><span> </span><span>void</span><span>
+item_DataChanged(</span><span>object</span><span> sender, </span><span>EventArgs</span><span> e)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>CslaDataProvider</span><span> provider = sender </span><span>as</span><span> </span><span>CslaDataProvider</span><span>;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>if</span><span> (provider.Error != </span><span>null</span><span>)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _providers[provider] = </span><span>true</span><span>;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>if</span><span> (provider.Data != </span><span>null</span><span>)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _providers[provider] = </span><span>true</span><span>;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; CheckAll();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+</span><span>private</span><span> </span><span>void</span><span> CheckAll()<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>bool</span><span> alldone = </span><span>true</span><span>;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>foreach</span><span> (</span><span>var</span><span> item </span><span>in</span><span> _providers.Values)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>if</span><span> (!item)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; alldone = </span><span>false</span><span>;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; </span><span>if</span><span> (alldone)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>if</span><span> (_completedHandlers != </span><span>null</span><span>)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+_completedHandlers.Invoke(</span><span>this</span><span>, </span><span>EventArgs</span><span>.Empty);<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; </span><span>foreach</span><span> (</span><span>var</span><span> item </span><span>in</span><span>
+_providers.Keys)<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+item.DataChanged -= </span><span>new</span><span> </span><span>EventHandler</span><span>(item_DataChanged);<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; _providers.Clear();<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp; }<o:p></o:p></span></p>
+
+<p><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, July 24, 2009 1:45 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] SilverLight Loading Objects<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>As we all know, that SL is Async.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Is it possible to have the loading screen delay until all
+Async calls are done loading the page?<br>
+<br>
+If so, can someone please point me to a code example.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+Thanks<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

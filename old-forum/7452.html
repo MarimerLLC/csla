@@ -1,0 +1,59 @@
+<html><header><title>Silverlight and static caching readonly lists</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight and static caching readonly lists</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7452.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Thursday, August 13, 2009</h2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P><FONT color=#000000>I'm fairly new to Silverlight, but I've got&nbsp;my feet wet with a couple apps now.&nbsp; I've run into several issues that I've had to re-train myself on, but I've run into another I need advice and help with.</FONT></P>
+<P><FONT color=#000000>In the past, with read only lists I have provided a little bit of the "old school" caching by using the approach&nbsp;below:</FONT></P>
+<P>private</FONT></FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2><FONT color=#000000> TosList _list;</FONT></P></FONT>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> TosList GetList()</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_list == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2> )</P>
+<BLOCKQUOTE dir=ltr>
+<P>_list = DataPortal.Fetch&lt;TosList&gt;(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>);</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> _list;</P></BLOCKQUOTE>
+<P>}</P>
+<P>But now, with Silverlight factory methods, this is less possible due to the callback method used.&nbsp; I realize I could just manually call from codebehind for any of these objects and handle the callback myself instead of letting the CslaProvider do it for me, however, that pushes all of the caching code out of the Business Object and onto the client code.... </P>
+<P>How are others handling with this?</P>
+<P>&nbsp;</P>
+<P>PS, I also run into this when using the FilteredBindingList class, if I want to simply filter an already fetched object, but expose that as a "Factory Method" on the class, but with a Csla.FilteredBindingList&lt;MyInfo&gt; class...</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, August 13, 2009</h2><P>Here Rocky promotes the use of static caching with Silverlight.</P>
+<P><A href="/forums/thread/30744.aspx">http://forums.lhotka.net/forums/thread/30744.aspx</A>&nbsp;</P>
+<P>So it seems it is being done, but is it possible to use static caching with the CslaDataProvider? Perhaps I'm missing something, but the encapsulation of the callback method of the CslaDataProvider seems to prevent this.</P>
+<P>Do I need to extend the CslaDataProvider to do this or is there another way?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 13, 2009</h2><P>Remember that CslaDataProvider invokes your factory method. Your factory method has access to the callback handler, and you can add code to do processing during the callback, before letting the data provider get the result.</P>
+<P>In fact, you need to do this, so the factory returns the cached value rather than invoking the data portal if there is a valid cached value.</P>
+<P>Look at the ProductList class in InventoryDemo for an example.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, August 13, 2009</h2><BLOCKQUOTE dir=ltr>
+<P>Ah, I see now! Thanks Rocky!</P></BLOCKQUOTE><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> GetProductList(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;DataPortalResult&lt;ProductList&gt;&gt; callback)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (_cache == </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> dp = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> DataPortal&lt;ProductList&gt;();</P>
+<P>dp.FetchCompleted += (o, e1) =&gt;</P>
+<BLOCKQUOTE dir=ltr>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>_cache = e1.Object;</P>
+<P>callback(o, e1);</P></BLOCKQUOTE>
+<P>};</P></BLOCKQUOTE>
+<P>dp.BeginFetch();</P></BLOCKQUOTE>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<BLOCKQUOTE dir=ltr>
+<P>callback(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> DataPortalResult&lt;ProductList&gt;(_cache, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>));</P></BLOCKQUOTE>
+<P>}</P></BLOCKQUOTE>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, August 14, 2009</h2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P><FONT color=#000000>Is this the best way to provide a FactoryMethod for a filtered list (with filtering performed on the client)? I'm a little shaky with my LINQ, so I presumed the only way to get the proper Type was constructing a list and copying the IEnumerable into the constructed obj (see below)....</FONT></P>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>static</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> BeginGetFilteredTosList(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> category, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> includeInactive, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>EventHandler</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TosList</FONT></FONT><FONT size=2>&gt;&gt; callback)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//call the normal factory method that gets an unfiltered list</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TosList</FONT></FONT><FONT size=2>.BeginGetTosList(includeInactive, (o, e) =&gt;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;//now filter it</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;var</FONT></FONT><FONT size=2> filteredList = e.Object.Where(i =&gt; i.ServSfxCd == category);</P>
+<P></FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;TosList</FONT></FONT><FONT size=2> result = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TosList</FONT></FONT><FONT size=2>();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.AddRange(filteredList);</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;result.IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;callback(o, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>DataPortalResult</FONT></FONT><FONT size=2>&lt;</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TosList</FONT></FONT><FONT size=2>&gt;(result,</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>,</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>));</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;});</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

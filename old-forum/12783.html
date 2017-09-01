@@ -1,0 +1,55 @@
+<html><header><title>Server Culture is Overridden with request ClientCulture</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Server Culture is Overridden with request ClientCulture</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12783.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ronnymgm posted on Friday, October 24, 2014</h2><p class="MsoNormal"><span>Hi there,&nbsp;</span></p>
+<p class="MsoNormal"><span>Currently running
+version Csla 4.5.501 and some weeks ago a new customer from Germany reported an
+issue with number conversions.</span></p>
+<p class="MsoNormal"><span>We are running in a
+deployment scenario where the application server is a location and connected to
+enterprise databases and ERP systems. &nbsp;It is a requirement that all these
+pieces &quot;talk&quot; the same culture, &quot;de-de&quot; (German) for instance.</span></p>
+<p class="MsoNormal"><span>But clients applications
+(win forms, workstations or browsers) can be (and are free to) running in any
+culture. English commonly.<br />
+<br />
+We would like to understand why the Csla in methods SetThreadContext() insist
+in syncing the client request culture into the actual running thread culture.
+Even when the thread is on the other side of the&nbsp;data-portal&nbsp;(This
+overrides IIS settings in the application server). ?</span></p>
+<p class="MsoNormal"><span>Thread.CurrentThread.CurrentCulture
+= request.CurrentCulture;</span></p>
+<p class="MsoNormal"><span>Thread.CurrentThread.CurrentUICulture
+= request.CurrentUICulture;</span></p>
+<p class="MsoNormal"><span>And also if there is a
+visible risk removing those synchronization and let each part use its own
+culture configuration?<br />
+<br />
+So far we haven&#39;t found inconvenient but any concern or comment is appreciated.</span></p>
+<p>&nbsp;</p>
+<p class="MsoNormal">Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, October 27, 2014</h2><p>I think there are a number of reasons for this.&nbsp; Data entered as a string (such as a decimal or a date) would fail to parse correctly if the client is running en-US and thus entered 10/30/2014 but the server was using de-DE to parse.&nbsp; </p>
+<p>Also server side business rules may also have translations (via use of MessageDelegate) to allow the rule error message to be delivered to the client in the language they have selected.&nbsp; I would expect if your application is running under en-US that I see all my error messages in American English; however if the server forces de-DE, the error messages would come back in German, not very helpful for an American that doesn&#39;t read the language.&nbsp; This would also affect Csla error messages which have been translated as well.</p>
+<p>I don&#39;t believe there are any other issues that you&#39;d need to consider; if you are passing number / date data in strings (which is common, as some UI controls have issues with empty dates or if you want to allow things such as typing T as shorthand for Today), but it depends on how your application handles the data.&nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ronnymgm replied on Monday, October 27, 2014</h2><p><br /><br />Thanks for your feedback Andy.</p>
+<p>Yes Decimals and Dates are our major concerns. and actually the original cause of the problem.<br /><br />But we try to always load Client UI data into the business object typed properties and the serialization-de-serialization process performed by the DataPortal (WCF) is managing types correctly. Even when they are in different Cultures. So far.<br /><br />On the other hand.. talking about resources is not a real problem, we are not using resources embedded in the assemblies for final user display. We let the client application resolves the appropriated resources based on Broken rules name or ID only.</p>
+<p>I think we are on the right way. Just don&#39;t want to let some scenario out of the equation.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, October 27, 2014</h2><p>In addition to resources you may also have server tasks/commands that f.ex.</p>
+<p>&nbsp;</p>
+<ul>
+<li>generate reports or documents</li>
+<li>send mail/text message</li>
+</ul>
+<p>&nbsp;</p>
+<p>where you want to have the client culture set on the server process to get correct language.&nbsp;</p>
+<p>For broken rules - sometimes you want to have the actual value included in the error message and that will be hard to resolve with a message id or based on the broken rule name.&nbsp;</p>
+<p>So I take it you are not using any of the builtin CSLA rules (or messages) in your application.&nbsp;</p>
+<p>Inside the framework we want the code tp perform consistently on both client and server and in background threads. Imagine a client selecting german in the application and running english OS. You set the client culture on the current (UI) thread (and in .NET 4.5 you may also set the default on the AppDomain) but the background threads running on the client will use the OS default unless you have some mechanism to pass it on to the background thread. You could very well have have a mix of some data access code on an async dataportal running on the client (RunLocalAttribute) or running on the server. And both should behave in the same way and preferrable keep the cultures from the UI thread.&nbsp;</p>
+<p>And it is not just and the CurrentCulture/CurrentUICulture. This also includes the ApplicationContext (LocalContext/ClientContext/GlobalContext) that may be stored in either HttpContext (WebApp), a static instance (Xaml application) or a NamedSlot on the current thread. So CSLA use the same mechanism to transfer the ApplicationContext to background threads - whether it is in a WinForms or Web application or on the client side or server side. Remember - you loose the HttpContext when running Tasks or executing code in background threads in a web application too.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ronnymgm replied on Monday, October 27, 2014</h2><p>&nbsp;</p>
+<p>Thanks. Great scenarios.<br /><br />*generate reports or documents - ( don&#39;t have at the moment but need to keep an eye on them ).<br />*send mail/text message - ( in place but right now is using User Profile Preferences not Thread Culture ).</p>
+<p>Your are correct about Csla resources and messages all of them handled by application and never re-throw as is.<br /><br />Last point is more Interesting and complex.&nbsp;<br /><br />Yes we do create&nbsp;<span>background threads&nbsp;</span>in the client side and yes we do Sync the thread cultures, identity ,etc. Exactly to avoid the Client UI / OS Mix..<br /><br />But I&#39;m not sure of doing the right thing with the &nbsp;<span>RunLocal decorated dataportal methods...i didn&#39;t see that coming.. Great catch.!!<br /><br />Maybe I can trust the&nbsp;ExecutionLocation Flag because the&nbsp;main idea is to intercept and avoid client-to-server culture synchronization only. To avoid UI Client Culture Data pass to the ERP System that only understand German. &nbsp;<br /><br />Thanks again.&nbsp;</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 28, 2014</h2><p>So do your BOs expose numbers / date via string properties?&nbsp; If so, you may want to consider creating private companion properties, and when the string value is changed create&nbsp;rule to parse the value (using the current culture) to the real decimal or date value and use that to send to the ERP / database.&nbsp; That way all the parsing is done at the client and respects their culture settings; if you allow en-US, I&#39;d expect your app to allow me to enter 1,200.50 or 10/31/2014, were the German would be (I think) 1.200,50 or 31/10/2014.&nbsp; &nbsp; </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ronnymgm replied on Tuesday, October 28, 2014</h2><p><span><br />
+No, no the opposite:</span></p>
+<p><span>&quot;we try to always load Client UI data into the business
+object typed properties and the serialization-de-serialization process
+performed by the DataPortal (WCF) is managing types correctly. Even when they
+are in different Cultures.&quot;</span></p>
+<p><span>&nbsp;</span></p>
+<p>&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

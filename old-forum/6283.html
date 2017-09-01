@@ -1,0 +1,117 @@
+<html><header><title>databinding a user control</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>databinding a user control</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6283.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 posted on Thursday, January 29, 2009</h2><P class=MsoNormal><SPAN>Hello All,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>Perharps a stupid question on databinding.</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I use Csla 3.52 in WinForm VS 2008 vb.net.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I do databinding with drag and drop from data source windows.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Everything is OK with standard controls (textbox) and even derived controls.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Example of derived control :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Partial</SPAN> <SPAN>Class</SPAN> dgTextBox<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Inherits</SPAN><SPAN> System.Windows.Forms.TextBox<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When I fetch data, these controls display the data and when I change the data in the textbox, the property changes. If I run Save, it is ok.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Now I use a user control, a composite control with a textbox (tbEssai) and a button :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.ComponentModel<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;DefaultBindingProperty(<SPAN>"Text"</SPAN>)&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> ucEssai<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>&lt;System.ComponentModel.Bindable(<SPAN>True</SPAN>)&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Overrides</SPAN> <SPAN>Property</SPAN> Text() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>Me</SPAN>.tbEssai.Text<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.tbEssai.Text = value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Class</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;<SPAN>Global</SPAN>.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Partial</SPAN><SPAN> <SPAN>Class</SPAN> ucEssai<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Inherits</SPAN> System.Windows.Forms.UserControl<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>…<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The data binding is OK when I fetch data, the textbox tbEssai inside ucEssai displays the data.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>But if I change the data with the keyboard, the property binded doesn't change.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I tried to add in ucEssai :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Event</SPAN> ucEssaiChanged(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.EventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> tbEssai_TextChanged(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.EventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Handles</SPAN> tbEssai.TextChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> ucEssaiChanged(sender, e)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Or :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.tbEssai.Text = value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> ucEssaiChanged(<SPAN>Me</SPAN>, <SPAN>New</SPAN> EventArgs)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>It is the same : the binded property never changes.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Thanks for help.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Dominique<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 29, 2009</h2><P>Your control needs to properly implement the notification (INotifyPropertyChanged) that utimately informs the binding that the value has changed and needs to be written to the bindingsource. Unless you raise the event specific to the changed property (analagous to&nbsp;PropertyHasChanged() in CSLA BO's), no one ever knows your property value changed:</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <SPAN>RaiseEvent</SPAN> PropertyChanged(<SPAN>Me</SPAN>, <SPAN>New</SPAN> PropertyChangedEventArgs("Text"))<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Thursday, January 29, 2009</h2><P class=MsoNormal><SPAN>Thanks for your answer.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>So, I implement the INotifyPropertyChanged in the ucEssai and I put the RaiseEvent in the Set of the property.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>The code is now :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Imports</SPAN><SPAN> System.ComponentModel<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&lt;DefaultBindingProperty(<SPAN>"Text"</SPAN>)&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public</SPAN><SPAN> <SPAN>Class</SPAN> ucEssai<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Implements</SPAN> INotifyPropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>&lt;System.ComponentModel.Bindable(<SPAN>True</SPAN>)&gt; _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Overrides</SPAN> <SPAN>Property</SPAN> Text() <SPAN>As</SPAN> <SPAN>String<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Return</SPAN> <SPAN>Me</SPAN>.tbEssai.Text<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Get<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Set</SPAN>(<SPAN>ByVal</SPAN> value <SPAN>As</SPAN> <SPAN>String</SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Me</SPAN>.tbEssai.Text = value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> PropertyChanged(<SPAN>Me</SPAN>, <SPAN>New</SPAN> PropertyChangedEventArgs(<SPAN>"Text"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Set<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>Public</SPAN> <SPAN>Event</SPAN> PropertyChanged(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>&nbsp;</SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</SPAN><SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.ComponentModel.PropertyChangedEventArgs)&nbsp;_</SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<SPAN>&nbsp;</SPAN></SPAN><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Implements</SPAN> System.ComponentModel.INotifyPropertyChanged.PropertyChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Class<o:p></o:p></SPAN></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Is it the good place to put the RaiseEvent ?<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>My problem is that I don't go on the Set (and then on RaiseEvent) when I enter text in the textbox inside the user control or when I leave the user control.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I put a breakpoint and I never stop. </SPAN></P>
+<P class=MsoNormal><SPAN>I go on the Set when it initialize the text property with the fetch but not when I enter characters in the user control. I don't understand why.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 29, 2009</h2><P>Somehow you have to be monitoring the text changed event of your child control (tbEssai?) and pass it on via the PropertyChanged notification.&nbsp;I think you had some of this code in your original post. </P>
+<P>Since you are essentially passing this property through from the exposed Text property on your user control, I'd just raise it when your tbEssai raises its notification internal to your control. </P>
+<P>Also,in your setter you may need to check to see if the value is changed and skip the processing (depending on whether the tbEssai control raises the event even if you set it to the same value). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Thursday, January 29, 2009</h2><P class=MsoNormal><SPAN>I use :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>Private</SPAN> <SPAN>Sub</SPAN> tbEssai_TextChanged(<SPAN>ByVal</SPAN> sender <SPAN>As</SPAN> <SPAN>Object</SPAN>, <SPAN>ByVal</SPAN> e <SPAN>As</SPAN> System.EventArgs) _<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN><SPAN>Handles</SPAN> tbEssai.TextChanged<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN><SPAN>RaiseEvent</SPAN> PropertyChanged(<SPAN>Me</SPAN>, <SPAN>New</SPAN> PropertyChangedEventArgs(<SPAN>"Text"</SPAN>))<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End</SPAN><SPAN> <SPAN>Sub</SPAN></SPAN><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>When the text in tbEssai changed, I go on this RaiseEvent but I don't go on the setter of the BO property or on the setter of the Text property in ucEssai. The binding in this direction (control </SPAN><SPAN><SPAN>à</SPAN></SPAN><SPAN> BO) doesn't work.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I don't understand what's happen. </SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Have you (or others) (or do you know where I can find) a sample to use a user control (composite control) with binding in csla or only in winforms ? Thanks<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, January 29, 2009</h2><P>Have you actually tabbed off the control to see if the binding will write the value to the data source? Ordinarily, this happens during control validation versus the actual property change notification. I'm not an expert, but I've seen values in the control property that aren't written to the bound property until you tab off them. You can also change the binding itself in the designer (the "datasource update mode") and see if this makes a difference.</P>
+<P>It's also possible to "bludgeon" the value into the bound property by interrogating the binding yourself and calling it's WriteValue method, but that's something I have done only as a last result. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, January 30, 2009</h2><P class=MsoNormal><SPAN>Yes I tabbed off the control but the binding don't write the value on the data source. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In the designer, in "datasource update mode", the default is OnValidation, I change it for On PropertyChanged, then I rebuild and it is the same.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>I read there are some problems with OnValidation but I think there are also some problems with OnPropertyChanged. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>There are no many samples about binding user controls. As often Microsoft do many samples for easy things but when it is more complicated, they don't.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, January 30, 2009</h2><P>Hmmmm. I started with this sample on CodeProject:</P>
+<P><A href="http://www.codeproject.com/KB/cs/BindBetterINotifyProperty.aspx">http://www.codeproject.com/KB/cs/BindBetterINotifyProperty.aspx</A></P>
+<P>It's in C# though -- even so maybe you could compare what you are doing to the sample. </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,121 @@
+<html><header><title>Unit of Work and Silverlight &quot;edge applications&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Unit of Work and Silverlight &quot;edge applications&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11848.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, February 19, 2013</h2><p>Hi Rocky,</p>
+<p>First of all, let&#39;s make clear I&#39;m referring to CSLA 4.3 concepts.</p>
+<p>Reading USING CSLA4 eboks 2 &amp; 3 (Objects and Data Access) I understand <strong>Unit of Work</strong> is a pattern used to simplify the use of async server communication. The problems it solves can show on any UI technology but are unavoidable for Silverlight and Windows Phone.</p>
+<p>The problem this pattern solves is the need to load several objects for a given form and the fact that async server communication doesn&#39;t allow us to make sure every needed object is in place before we start rendering the form.</p>
+<p>Since all server side DataPortal code runs synchronously, it&#39;s the server side DataPortal that makes sure every needed object was fetched from the database, before returning control to the client side. The server side DataPortal acts like a synchronizer (and makes life a lot easier).</p>
+<p>The point concerns Silverlight applications that don&#39;t use the server side DataPortal but make the client side DataPortal use services - the kind of apps you described as &laquo;SOA &ldquo;edge application&rdquo; that is invoking services (SOAP or REST)&raquo;. After several approaches I couldn&#39;t figure out how to use <strong>Unit of Work</strong> for those &quot;Silverlight using services&quot; applications.</p>
+<p>The problem is that the synchronizer role is played by the <strong>SERVER</strong> side DataPortal and this kind of applications uses only the <strong>CLIENT</strong> side DataPortal.</p>
+<p>On other kinds of applications, what we have is the server side DataPortal calling synchronous methods: </p>
+<ul>
+<li>they can call synchronous factory methods that call synchronous DataPortal methods</li>
+<li>or they can call synchronous DataPortal methods&nbsp;directly.</li>
+</ul>
+<p>The fact is Silverligth client side DataPortal knows quite well DataPortal.BeginFetch() but doesn&#39;t know about DataPortal.Fetch(). So the Silverlight client side DataPortal only allows you to use <strong>asynchronous</strong> DataPortal calls.</p>
+<p>On &quot;Silverlight using services&quot; applications we throw away the server side DataPortal and its synchronizer role is also thrown away. So, for this kind of applications, we can use <strong>Unit of Work</strong> if the the services&nbsp;(SOAP or REST) play that role by themselves.</p>
+<p>Am I missing something?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 20, 2013</h2><p>A UOW object is typically a ReadOnly object that fetch all the required objects before returning to the client.&nbsp;</p>
+<p>On a SL Edge application you can still use a ReadOnly object and in the asyncronous BeginFetch you can call chain several async serive calls to load all necessary objects before you call the async callback method to the UI (typically the controller). </p>
+<p>The <b>Microsoft.Bcl.Async </b>package (in beta) allows you to use Task (async/await) in SL 4 and 5 applications with VS2012 and would simplify the local data access. See <a href="https://nuget.org/packages/Microsoft.Bcl.Async">https://nuget.org/packages/Microsoft.Bcl.Async</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Wednesday, February 20, 2013</h2><p>Hi Jonny,</p>
+<p>I&#39;m referring to .NET 4.0/CSLA 4.3. So no async/awat etc. Of course I can chain several async calls but I have no way to wait until they are all finished before returning.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, February 20, 2013</h2><p><strong>If you use VS2012 and target .NET4/SL4/SL5 then you can use Async Targeting pack and async/await is available in your code.&nbsp;</strong></p>
+<p>There is also&nbsp;<span style="font-size:1.17em;">Portable HttpClient for .NET Framework and Windows Phone&nbsp;</span>coming from the Bcl team:&nbsp;<a href="http://blogs.msdn.com/b/bclteam/archive/2013/02/18/portable-httpclient-for-net-framework-and-windows-phone.aspx">http://blogs.msdn.com/b/bclteam/archive/2013/02/18/portable-httpclient-for-net-framework-and-windows-phone.aspx</a>&nbsp; &nbsp;that will support the following:</p>
+<p><i>&quot;This release of HttpClient adds support for the following platforms:</i></p>
+<ul>
+<li><i>.NET framework 4.0</i></li>
+<li><i>Windows Phone 7.5 and higher</i></li>
+<li><i>Portable class libraries</i></li>
+</ul>
+<h1><i>What&nbsp;does HttpClient do?</i></h1>
+<p><i>HttpClient is a part of .NET Framework 4.5 and Windows Store apps that provides developers an extremely easy way to connect with services across the internet including REST-based services. In fact, the methods exposed by HttpClient are the same verbs the HTTP protocol uses to communicate like GET/PUT/POST/DELETE.</i></p>
+<p><i>In order to get some content from a web server say www.contoso.com we can write the following simple lines of code</i></p>
+<pre><i>HttpClient httpClient = new HttpClient();
+string responseBodyAsText = await httpClient.GetStringAsync(&ldquo;www.contoso.com&rdquo;);&nbsp;</i></pre>
+<p><i>&hellip;and get a response back from a web service. Obviously this is the simplest example, and the HttpClient library has many more feature and functions.</i></p>
+<h1><i>What do I need?</i></h1>
+<p><i>In order to use this release of HttpClient you need to ensure that you have two things.</i></p>
+<ul>
+<li><i>Visual Studio 2010 (for .NET 4.0 Windows Phone 7.1) or Visual Studio 2012 (required for .NET 4.5, Windows Store and Windows Phone 8).</i></li>
+<li><i>The NuGet package manager version 2.1 or higher.</i></li>
+</ul>
+<p>
+<h1><i>Using HttpClient on .NET Framework 4.0 or Windows Phone 7.5</i></h1>
+<p><i>If you are writing a cross platform app targeting .Net 4.0 or the windows phone and write the code that you had written above you will get a compile error.</i></p>
+<p><span><i>&ldquo;Cannot await System.Threading.Task&lt;HttpRequestMessage&gt;&rdquo;</i></span></p>
+<p><i>This is because .Net 4.0 and Windows Phone 7.5 did not support the async/await keywords.In order to fix this add a reference to the Microsoft.Bcl.Async nuget package, which adds the support for Async and Await in down level platforms.To read more about this release go <a href="http://blogs.msdn.com/b/bclteam/archive/2012/10/22/using-async-await-without-net-framework-4-5.aspx">here</a>.</i><i>&quot; &nbsp;</i></p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2013</h2><p>In 4.3 (no async/await) you can solve this problem.</p>
+<p>The pre-async/await Silverlight data portal requires that your DataPortal_XYZ methods (that run on the client) make a method call to tell the data portal when the method is complete.</p>
+<p>Inside the DataPortal_XYZ method you can do as much async work as you desire, as long as you ensure that the complete method is only invoked when all the work is done.</p>
+<p>Is this a pain? Yes, absolutely, because you typically need to orchestrate your async calls as a set of nested event handlers. Sadly that&#39;s the reality for any inter-related async calls in the pre-async/await Silverlight world.</p>
+<p>You would be _far_ happier (I suspect) if you upgrade to CSLA 4.5 and use the Microsoft async targeting pack so you get the async/await keywords, and the newer and easier data portal behaviors.</p>
+<p>In that case your DataPortal_XYZ method can be marked as async, and you can either await a series of async calls, or you can dispatch several and then wait for all the tasks to complete. This is a _lot_ simpler than the old-fashioned Silverlight eventing model.</p>
+<p>To run serial requests:</p>
+<p style="padding-left:30px;">private async Task DataPortal_Fetch(int id)<br />{<br />&nbsp; await DoTheFirstThingAsync();<br />&nbsp; await DoTheSecondThingAsync();<br />}</p>
+<p>Or to run concurrent requests&nbsp;(from memory, so might not be quite right):</p>
+<p style="padding-left:30px;">private async Task DataPortal_Fetch(int id)<br />{<br />&nbsp; var task1 = DoTheFirstThingAsync();<br />&nbsp; var task2 = DoTheSecondThingAsync();<br />&nbsp; var taskList = new List&lt;Task&gt; { task1, task2 };<br />&nbsp; Task.WaitAll(taskList);<br />}</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ngm replied on Friday, February 22, 2013</h2><p>&nbsp;</p>
+<p class="MsoNormal">Hello Tiago,</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Here&#39;s my take on the Unit of Work (UoW) stereotype.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">This type of object can be very handy. However, I look at it
+as a transporter for the other, usually well-defined objects. It&#39;s basically
+container that helps you bringing certain number and combination of objects
+back and forth.</p>
+<p class="MsoNormal">There&#39;s one very big benefit that UoW brings in. That is, it
+frees you from very complex object compositions and therefore tighter coupling.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">As far as UI goes, I would not relate UoW strictly to UI.
+There are a lot of other scenarios where it can be useful beyond UI. It&rsquo;s true
+that it can be tricky to sync retrieval of all necessary objects for display of
+certain views, especially if that retrieval has to be done in parallel and if
+there are number of such objects. However, you want to think twice about UoW
+object&rsquo;s granularity i.e. it&rsquo;s much better to display one section of the view
+to user while the other one is still loading.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Speaking of asynchronous calls to Data Portal or its data
+access strategy, I think it has nothing to do with UoW concept. It&rsquo;s totally up
+to you how and when you&rsquo;re going to synchronize those asynchronous calls. On
+top of that, whether that asynchronity is implemented with Asynchronous
+Programming Model (BeginXXX, EndXXX, callbacks) or async/await it&rsquo;s really
+implementation detail that&rsquo;s not related to UoW in particular.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Let me give you a brief example, if UoW is used for
+presentation purposes, you might end up with two UoW objects: SongDetailsRetriever
+and SongImagesRetriever. The former would bring you let&rsquo;s say AlbumAttributes
+and AuthorAttributes while the latter will retrieve CoverImages and
+UnofficialImages.</p>
+<p class="MsoNormal">On the ViewModel you would issue two calls, which will start
+execution in parallel:</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">SongDetailsRetriever.Get SongDetailsRetriever(songId,
+songDetailsCallback);</p>
+<p class="MsoNormal">SongImagesRetriever.GetSongImagesRetriever(songId,
+songImagesCallback);</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">You would probably want to update proper properties in
+ViewModel from songDetailsCallback with AlbumAttributes and AuthorAttributes
+objects that came via SongDetailsRetriever and thus give user feedback even if
+images&nbsp;didn&#39;t&nbsp;get back yet.</p>
+<p class="MsoNormal">The moment songImagesCallback comes back; you would update
+adequate properties for CoverImages and UnofficialImages and give user even
+more visually appealing feedback.</p>
+<p class="MsoNormal">If perhaps you want to prevent images coming first, you
+might want to suppress updating of ViewModel properties with CoverImages and UnofficialImages
+until songDetailsCallback gets invoked.</p>
+<p class="MsoNormal">The other option is to chain the call to GetSongImagesRetriever from songDetailsCallback, but then you lose parallelism.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Speaking of local or remote Data Portal and service
+invocation data access, it really doesn&rsquo;t matter. As long as your request to the
+Data Portal is executing on the worker thread you can consider the request
+relative to the worker as being synchronous i.e. request is not going to be
+completed until data access is finished, awaitable completed or your callback
+in there signals it.</p>
+<p class="MsoNormal">All that is of your concern is that the callbacks are
+eventually going to be invoked signaling the completion and bringing the result
+back.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal">Hope this helps.</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">&nbsp;- ngm</p>
+<p class="MsoNormal">&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

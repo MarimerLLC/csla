@@ -1,0 +1,109 @@
+<html><header><title>CSLA performance</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA performance</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4979.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosesmalone posted on Monday, June 16, 2008</h2><P>I am trying to decide on whether or not to use CSLA for smart client application with a hosted application layer and datacenter.&nbsp; The application will have between 10 and 15 thousand concurrent users during peak times.&nbsp; Has anybody had experience building a csla application for this type of usage?&nbsp; How does&nbsp;CSLA perform?&nbsp; What kind of performance issues should I be aware of?&nbsp; What tricks are there for designing a high performance application with csla?&nbsp; Is CSLA even the right choice for me?</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Monday, June 16, 2008</h2><P>Well the S stands for Scalable. ;-)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosesmalone replied on Monday, June 16, 2008</h2>It is a done deal then.&nbsp;..lol.&nbsp;&nbsp; I need something concrete.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 16, 2008</h2><P>That is a large app, and I doubt you'll find many examples that push CSLA .NET (or any other framework) that far. Apps at that scale are just plain rare.</P>
+<P>I know CSLA has been used for some very large web apps, though I don't have concrete usage numbers - but thousands of concurrent users.</P>
+<P>The good news is that smart client architectures scale farther than web architectures do - by definition - the processing is more distributed because smart client apps leverage the client's processing power, and client/server protocols consume less bandwidth than the typical HTML-based app.</P>
+<P>However, there are clearly many things you can do to reduce scalability - but if you are working in this space, I'm sure you are well aware of the many pitfalls. So let's talk about CSLA specifically.</P>
+<P>CSLA uses a mobile object pattern - which you can use or not use as you choose. </P>
+<P>Mobile objects means that your business objects are cloned across the network from client to app server and back. This is a powerful technique, because it means that you can write a single set of classes, and that code runs on client and/or server as appropriate. And only the <EM>field data</EM> for the objects actually move across the network, so it is reasonably efficient.</P>
+<P>The value for scalability is quite high, because the technique helps you create a lot of business logic that can run on the client workstation. Most validation rules, most authorization rules and&nbsp;a lot of business logic can run purely on the client - which is as scalable as you can get because no shared resources are consumed.</P>
+<P>Obviously some server interaction is required. If you design your objects around use cases, following responsibility-driven design, your objects will tend to have the minimum data required to fulfil thier responsiblity within the use case - meaning that as little data as possible will flow to/from the server. This isn't really a CSLA thing, it is an OO design thing, but it is obviously important.</P>
+<P>Similarly, careful identification of resource, reference, response/request and activity data will help you design your objects to minimize server access through the proper use of caching and batching. CSLA makes caching pretty easy on a smart client, and effectively does batching by default.</P>
+<P>But I want to be clear here - CSLA enables the creation of a rich OO business layer. The performance and scalability of that layer is more determined by the OO design than it is by CSLA itself.</P>
+<P>Back to serialiation of objects over the wire. CSLA helps you out by also moving a certain amount of context data. Things like the client's principal (when using custom authentication), the client's culture (a short string), the object's meta-state (isnew/isdirty/isdeleted/etc) and a couple other items. Usually this is desirable, because it means that (to a very large extent) your objects have the same context on the client and server, so your code is very consistent between the two environments.</P>
+<P>The potential downside to this is that it inflates the serialized byte stream. And if you don't care about contextual parity, then this is just overhead. But don't run to the DataSet for help, because CSLA tends to use a lot less bandwidth than the DataSet&nbsp;- to improve over CSLA you'd need to use optimized data contracts.</P>
+<P>What I'm getting at here, is that one of the obvious constraints when dealing with the scale you are talking about is bandwidth at the server end, and while CSLA is quite efficient at moving objects across the network, you could do better if you architect specifically to minimize bytes on the wire (as long as you recognize that you'd be unable to also do what CSLA does in terms of features).</P>
+<P>So I'll return to my earlier statement - you can use or not use mobile objects as you choose. If mobile objects is attractive (and it usually is) then use it. If it is not, then you can still use CSLA to create your client app, and then your objects can make (presumably optimized) calls to back-end services for any server interaction. Some people have used this approach to create optimized datagrams that flow between CSLA client and the app server to minimize bandwidth. There is no consistent context between client and server of course, but they dealt with that in order to minimize bandwidth.</P>
+<P>In any case, I assume you are familiar with this formula: ctps = (u / t) * d<BR><A href="http://www.lhotka.net/Article.aspx?id=1049435b-6b05-412a-8bad-62869b1f1074">http://www.lhotka.net/Article.aspx?id=1049435b-6b05-412a-8bad-62869b1f1074</A></P>
+<P>If you can get solid estimates for <EM>t</EM> and <EM>d</EM> you can get a pretty good idea what kind of load you'll be placing on your servers. And if you can derive an estimate for the number of bytes transferred on each server request you can come up with an idea of the likely bandwidth that your app will use.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 16, 2008</h2><P>One other word of caution. While you certainly need to give serious thought to your architecture and design when scaling this high, it is important to remember that premature optimization is an anti-pattern.</P>
+<P>With an app of this size, it is a good bet that Microsoft will let you use one of their test centers. My recommendation would be to prototype some key parts of the app - the parts where peak usage will likely hit most - and then see if you can get access to a testing lab to simulate very high loads.</P>
+<P>That way you can make adjustments to your architectural choices and/or design decisions early on, based on objective testing data.</P>
+<P>Otherwise it is terribly easy to start architecting and designing around hypothetical scenarios, and you can often end up wasting a lot of time and money solving problems that don't really exist.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mosesmalone replied on Wednesday, June 18, 2008</h2><P>Rocky,</P>
+<P>Thanks for the quick and helpful response.&nbsp; You make some excellent points.&nbsp;&nbsp;</P>
+<P>You mentioned in your first post this approach:</P>
+<P>"Some people have used this approach to create optimized datagrams that flow between CSLA client and the app server to minimize bandwidth. There is no consistent context between client and server of course, but they dealt with that in order to minimize bandwidth."</P>
+<P>Did these people start out with a pure csla solution?&nbsp; Do you recommend this "optimized datagram" approach starting out? (given the scale)</P>
+<P>Does not having a consistent context between client and server defeat the purpose of CSLA?&nbsp;</P>
+<P>Thanks again for all the help. </P>
+<P>MosesMalone</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 18, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>They didn&#8217;t start out with the optimized datagram, no.
+They used it for select cases where they were manipulating just a few items in large
+collections. This is not an all-or-nothing option &#8211; you can use the
+normal data portal for most things, and optimize for specific use cases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Regarding the consistent context and its value, yes it is
+valuable. But most people use CSLA because of these benefits:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Data binding support<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Validation and business rule support<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Authorization support<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>4.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Consistent data access pattern<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>5.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Consistent coding model for all objects<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>These benefits are constant, regardless of whether you are
+building 2- or 3-tier applications.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are building a 3- or n-tier application, then mobile
+objects and the data portal become important. The data portal provides the
+consistent context between client and server &#8211; and that is a powerful
+benefit. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But architecture is all about choosing trade-offs, that is an
+inescapable truth. Whenever possible, CSLA allows you to make choices. In the
+case of the data portal, you can use mobile objects and shared context, or you
+can run the &#8220;server-side&#8221; code on the client and make your own
+service calls to the server (like the datagram example), or you can use a mix
+of both.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>My recommendation would be to use mobile objects to start, and
+only fall back to some of the more painful (though presumably optimized)
+solutions on a per-case basis when absolutely necessary.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

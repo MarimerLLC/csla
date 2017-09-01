@@ -1,0 +1,12 @@
+<html><header><title>Why does Save() return new instance.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why does Save() return new instance.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6156.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dctc42 posted on Wednesday, January 14, 2009</h2><P>I've been wondering why this is done by csla? What's the value? </P>
+<P>I'm only using csla locally, is this needed for remote data portal?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 14, 2009</h2><P>This is explained in chapters 1 and 2 of the Expert Business Objects book.</P>
+<P>Originally it was required by a remote data portal. However, it turns out to be useful for a local data portal as well, for a couple different reasons.</P>
+<UL>
+<LI>Deterministic state - if an exception occurs during data access (especially during an update) the object graph is left in an indeterminate state; essentially it is corrupt. By cloning the object graph and then saving the clone, an exception during data access leaves your object graph in a deterministic state</LI>
+<LI>Consistency - one goal of CSLA is to enable you to switch between 2-, 3- and 4-tier deployment models by just changing config; but it used to be easy to cheat in 2-tier mode such that you'd do things that made it virtually impossible to move to 3- or 4-tier and never know that you did them. Now you'll find out almost immediately that you messed up, even when using a local data portal.</LI></UL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 15, 2009</h2><P>Rocky,</P>
+<P>I completely agree. We have been using CSLA for many years now but our testing of "remoting" was not very complete. We thought that we had coded everything the "right way" but when we upgraded to 3.6 we got hit with a handful of subtle bugs that were exposed due to AutoCloneOnUpdate for the local dataportal. This is a good thing! Now when we fix them and continue coding we will knwo that the remte data portal will work reliably and we do not need a separate test environment to full test it - it is always being tested now.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

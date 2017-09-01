@@ -1,0 +1,12 @@
+<html><header><title>Need help with CslaContrib template VB CodeSmith 2.0</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need help with CslaContrib template VB CodeSmith 2.0</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5946.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 posted on Friday, December 05, 2008</h2><p>Hello Everyone.</p>
+<p>I'm new to the templates and i'm trying to generate a
+ReadOnlyRootList.&nbsp; My list object is called JobInfoList.&nbsp; I've tried
+creating my JobInfo class from both ReadOnlyChild and ReadOnlyRoot and
+can't get either to work.&nbsp; When I use ReadOnlyChild it gets to the
+following method in the JobInfoBase class and fails</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Friend Shared Function GetJobInfo(ByVal dr As SafeDataReader) As T<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim child As T = DataPortal.Create(Of T)()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; child.Fetch(dr)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return child<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</p>
+<p>"Csla.DataPortalException: DataPortalFetch failed(System.ArgumentNullException: Value cannot be null. Paramerter name: element"</p>
+<p>If I use ReadOnlyRoot I get a compiler issue on this line in my JobInfoBase class.</p>
+<p>&nbsp; Me.Add(JobInfoBase(Of C).GetJobInfo(dr))</p>
+<p>Can someone help me out to find out what I'm doing wrong?<br><br>Thanks!</p>
+<p>CodeSmith 2.6<br>CSLA 2.0 VB Templates from CSLA Contrib<br>VisualStudio 2005<br>SplitBase Generation<br></p><p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>reagan123 replied on Monday, December 08, 2008</h2>Nevermind... I got it.&nbsp; I had to change the signature of my DataPortal_Create from <br><br>Private Sub DataPortal_Create(ByVal criteria As Object)<br><br>to<br><br>Private Sub DataPortal_Create()<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

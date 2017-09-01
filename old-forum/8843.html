@@ -1,0 +1,11 @@
+<html><header><title>System.Runtime.Serialization.SerializationException: Type is not resolved for member 'ContractManagerBO.CMBO.CMBusinessPrincipal,ContractManagerBO, Version=3.0.5.2, Culture=neutral, PublicKeyToken=null'.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.Runtime.Serialization.SerializationException: Type is not resolved for member 'ContractManagerBO.CMBO.CMBusinessPrincipal,ContractManagerBO, Version=3.0.5.2, Culture=neutral, PublicKeyToken=null'.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8843.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nitinbande posted on Tuesday, April 27, 2010</h2><p>Hello,</p>
+<p>&nbsp;</p>
+<p>I am using VS2005, VB.net and trying to integrate CSLA object in my web application. when i take simple page it is working properly but when i integrating this page with master page i am getting an error </p>
+<p><b>&quot;System.Runtime.Serialization.SerializationException: Type is not resolved for 
+member &#39;ContractManagerBO.CMBO.CMBusinessPrincipal,ContractManagerBO, 
+Version=3.0.5.2, Culture=neutral, PublicKeyToken=null&#39;.&quot;</b></p>
+<p>here is my CSLA object </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ContractManagerBO.CMBO.CMBusinessPrincipal.Login(&quot;&quot;, &quot;&quot;, True)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim temp As String = ContractManagerBO.CMBO.Carrier.GetCarrier(&quot;RDWY&quot;).CarrName</p>
+<p>My CSLA objects are written 1.1 and web application is in 2.0.</p>
+<p>Thanks,<img alt="" /></p>
+<p>Nitin</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, April 27, 2010</h2><p>Are you using the ASP.NET Development Web Server (code name Cassini)? If so, this is a known limitation of Cassini - you can&#39;t use custom principal types unless you install the containing assembly in the GAC. You are better off using IIS for your dev work when using a custom prinicpal.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,25 @@
+<html><header><title>Object Design Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object Design Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3169.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>malachai24 posted on Wednesday, July 11, 2007</h2><P>I am designing&nbsp; some business objects in order to accomodate a tree like hierarchy in a web application. The hierarchy is similar to a treeview. For example, lets say there is 1 root object, Entity1, that is the parent node to Entity2 and Entity3 (all 3 are of the same type, think TreeNode and TreeNodeCollection). </P>
+<P>The difference in the hierarchy is that a node that is a child of Entity3 (say Entity4) could also be a node under Entity2 (and could be a child under Entity1, even). No circular references would be allowed, so it would not be possible for say Entity4 to have a child of Entity1</P>
+<P>A quick picture (with a few more nodes, notice how Entity4 is in several locations)</P>
+<P>Entity1</P>
+<P>---Entity2</P>
+<P>------Entity4</P>
+<P>------Entity5</P>
+<P>---Entity3</P>
+<P>------Entity4</P>
+<P>------Entity6</P>
+<P>------Entity7</P>
+<P>and possibly</P>
+<P>---Entity4</P>
+<P>I am concerned that this type of hierarchy is going to be difficult to deal with. I am trying to think of another situation in which this hierarchy is used, but have not come up with any. The folder structure is the closest that I have come up with so far.</P>
+<P>The use cases for an Entity/EntityList objects in the hierarchy are:</P>
+<P>1. Add an Entity object to the hierarchy.</P>
+<P>2. Move an Entity object around in the hierarchy.</P>
+<P>3. Delete an Entity object from the hierarchy (and possibly merge children of the Entity to the Entity's parent)</P>
+<P>4. Display the entire Entity hierarchy in flattened form.</P>
+<P>5.&nbsp;Display the entire Entity hierarchy in hierarchical form.</P>
+<P>My thought is to have a ReadOnlyListBase EntityList object that contains the name and id of all the Entities (takes care of use case 4). Then, create the Entity object that would inherit from BusinessBase. Would it make sense to implement use cases 1,2, and 3&nbsp;using CommandBase objects? Obviously, once either use case 1, 2, or 3 are encountered, the list object(s) would need to be notified of the changes.</P>
+<P>I still would need to account for use case 5, so I think I would implement something similar to what is in this post <A HREF="/forums/thread/15686.aspx">http://forums.lhotka.net/forums/thread/15686.aspx</A>&nbsp;.</P>
+<P>Does this seem like a viable solution overall?&nbsp;Am I overcomplicating it?</P>
+<P>Thanks for any suggestions,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Wednesday, July 11, 2007</h2>I was an initial responder to the thread you referenced. I have dealt with a hierarchy involving "bills of material". A bicycle started out as a bill of material. The same item (e.g. #8x1/2" bolt) may be used in different "subassembly" nodes. Circular references are not allowed.<br><br>Entity 1 would be the bicycle. Entity 2 might be the handle bar assembly. Entity 3 might be the rear wheel gear assembly.<br><br>In my use case, each instance of an item within a bill of material has unique properties. Within the handle bar assembly, we might use 2 bolts. In the gear assembly, we may only need 1 bolt. Within the hierarchy, they are distinctly different objects. I'm not sure if that is the case with your entities.<br><br>We use the "composite" design pattern to represent this hierarchy. It works very well for hierarchies. This is not an easy pattern to implement for the first time. There are several implementation decisions to make that have no "right" answer. One that vexed us for&nbsp; a while was whether we would include hierarchical methods (e.g. Add/Remove) in the base interface, or just on container object types (i.e. a subassembly).<br><br>In our case, we chose to include hierarchical methods on the base interface. This includes a method to get the immediate children of a node. This method is when filling a treeview with the hierarchy, starting from any point in the hierarchy. We also have a method to retrieve the object and *all* of its children in a single collection. This method supports displaying the structure in a flattened form, from any point in the hierarchy. Add/Move/Delete methods also exist.<br><br>Your idea of "merging" can be accomplished by moving the children before it is deleted. In your example, if Entity 1 already contained Entity 4, and you deleted Entity 3, would the merge result in two Entity 4 objects under Entity 1?<br><br>I'm not sure in an n-level hierarchy pattern is suitable for you. It is doable with CSLA.NET, as we've been using such a design for about 18 months now.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

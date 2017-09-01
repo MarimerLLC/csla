@@ -1,0 +1,309 @@
+<html><header><title>OT: Infragistics Grid EditLevel Help!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Infragistics Grid EditLevel Help!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4901.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley posted on Tuesday, May 27, 2008</h2><P>I have been banging my head against this one all afternoon so maybe somebody can help.</P>
+<P>I have a Root object which has a collection of children, which each have a collection of Grandchildren. I have 3 bindingsources on my form (Root, Child, Grandchildren)</P>
+<P>I can save the object fine and rebind the UI, all edit levels work great with Rocky's latest fix. However, if I call CancelEdit() I get an editlevel mismatch. One of the grandchildren stays at an elevated edit level.</P>
+<P>This does NOT occur when using a Janus grid, or when using two windows grids on the same object base. So this has to be something to do with Infragistics. If anybody has seen this before please let me know. I am also posting this on the infragistics site.</P>
+<P>Thanks,</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 27, 2008</h2>With the standard .NET controls you do need to handle the binding changed event at the child level and explicitly call EndEdit on the grandchild bindingsource. I assume you are doing this?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, May 27, 2008</h2><P>Yes, I am handling Current Change on the Child binding source. In fact I replaced the two grids in the RootChildGrandchild with an Infragistics grid to get the error.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 27, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I suppose the next question is whether the event is firing? It
+seems that their grid must be doing something different from the standard grid &#8211;
+either in its interaction with the bindingsource or the object itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+<p class=MsoNormal><b><span><o:p>&nbsp;</o:p></span></b></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Manu Singhal replied on Wednesday, May 28, 2008</h2><P>I am having a simillar&nbsp;issue while using Infragistics&nbsp;WinGrid. for a child object.</P>
+<P>When i call the BeginEdit() the edit level is incremented and On ApplyEdit It is properly decremented. But any call to CancelEdit() or EndEdit() the editlevel is not decremented</P>
+<P>&nbsp;</P>
+<P>What I have is a RootObject with Child Object on a Form. I am using 2 Bindingsources. One for root and the other for child.</P>
+<P>I have the functionality that whenver a user double clicks on the Grid the child object is opened in its own seperate window. where in the Child Forms constructer I bind it to a bindingsource and Call BeginEdit(). On Ok button on the form I Call ApplyEdit() and on Cancel Button I call CancelEdit() on child objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, May 28, 2008</h2>The events are firing I have checked that. I think it has to be something with the way the grid interacts with the binding source. CancelEdit Decrements the Edit level from 2 to 0 but then something calls beginedit again on the binding source for that one object so it gets incremented back to 1.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, May 28, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Just something to try&#8230;&nbsp; Try to call grid&#8217;s ExitEditMode(?I
+do not remember exact name) before calling end / cancel edit on data sources.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 27, 2008 10:40 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Infragistics Grid EditLevel Help!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Yes, I am handling Current Change on the Child binding source. In fact I
+replaced the two grids in the RootChildGrandchild with an Infragistics grid to
+get the error.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, May 28, 2008</h2><P>Thanks for the suggestion, I did :</P>
+<P>ultragrid1.PerformAction(<FONT color=#2b91af size=2><FONT color=#2b91af size=2>UltraGridAction</FONT></FONT><FONT size=2>.ExitEditMode);</FONT></P>
+<P><FONT size=2>but it didn't change anything.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Wednesday, May 28, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, I tried </span><span>L</span><span>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Did you also try to add UpdateData call after PerfomAction?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, May 28, 2008 9:17 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OT: Infragistics Grid EditLevel Help!<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the suggestion, I did :<o:p></o:p></p>
+
+<p>ultragrid1.PerformAction(<span>UltraGridAction</span><span>.ExitEditMode);</span><o:p></o:p></p>
+
+<p><span>but it didn't change anything.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>If a data source is still bound to a bindingsource, the
+bindingsource will call BeginEdit() on the current row of the data source. As
+long as your object is data bound, it will have an elevated edit level, that&#8217;s
+the rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So it is interesting to consider that your code works with the
+.NET grid, and not the UltraGrid. Perhaps the UG is directly interacting with
+your object, bypassing the bindingsource behavior?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Because the code in PTWin (which I assume you are doing too)
+detaches the grandchild from the bindingsource, then resets the edit level on
+what was the current row. And then it repeats for the child, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if the UG somehow maintained its own reference to the
+object, the fact that you detached it from the bindingsource might not help?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Wednesday, May 28, 2008</h2><P>I have passed along all of our troubles and findings to the kind folks over at Infragistics. They are now looking into the problem as well, since I believe it is definitly an infragistics problem.</P>
+<P>Will let you know what I find out, when I find it out.</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Friday, May 30, 2008</h2><P>Rocky,</P>
+<P>Just got this response back from Infragistics:</P>
+<P class=MsoPlainText><FONT face=Consolas><STRONG>We aren't familiar with CSLA .NET, nor do we support the use of third party software with our WinGrid.</STRONG></FONT></P>
+<P class=MsoPlainText><o:p><FONT face=Consolas><STRONG>&nbsp;</STRONG></FONT></o:p></P>
+<P class=MsoPlainText><FONT face=Consolas><STRONG>Our hierarchical grid does not work the same way as two flat Microsoft grids would, it's structured very differently, and that could be part of the problem, but we have no way of knowing that.</STRONG></FONT></P>
+<P class=MsoPlainText><o:p><FONT face=Consolas><STRONG>&nbsp;</STRONG></FONT></o:p></P>
+<P class=MsoPlainText><FONT face=Consolas><STRONG>That being said, we need some explanation of what an EditLevel is.<SPAN>&nbsp; </SPAN>We may be able to progress with this if we have that.<SPAN>&nbsp; </SPAN>Still, our only way of moving forward with this is with .NET objects alone, as that is all we support.<SPAN>&nbsp; </SPAN>For instance, depending on what an EditLevel is, if there is a .NET equivalent, we could test that and see if it does the same thing.</STRONG></FONT></P>
+<P class=MsoPlainText><STRONG><FONT face=Consolas></FONT></STRONG>&nbsp;</P>
+<P class=MsoPlainText><FONT face=Consolas>Can you give me a quick and dirty explanation of editlevels? If I am not mistaken it all has to do with the n-level undo capablity. So what the edit level tracks is the version of changes or better yet what has changed so that the object can be "undone" to its previous state. Is there a .net equivalent?</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 30, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am not surprised by that response :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The ultimate issue is their use of
+System.ComponentModel.IEditableObject, which may be operating in a slightly
+non-standard manner. Or may be operating in a way they have found works with
+the DataSet through trial and error.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA imposes some restrictions that the DataSet does not &#8211;
+specifically requiring that the calls to IEditableObject.BeginEdit() are
+balanced by a later call to CancelEdit() or EndEdit(). The DataSet doesn&#8217;t
+care if there&#8217;s a subsequent call &#8211; from what I can tell, it defaults
+to &#8220;EndEdit()&#8221; behavior if the calls are unbalanced.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So the term &#8220;edit level&#8221; in this context refers to
+the tracking CSLA does to ensure that every BeginEdit() call is balanced by a
+CancelEdit()/EndEdit() call.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, June 02, 2008</h2><P>Still no word from Infragistics but in the mean time I have found a workaround.</P>
+<P>If I set base.DisableIEditableObject = true;&nbsp; in each of my business objects constructor, then everything works as it should. All edit levels match, N-level undo works, etc...</P>
+<P>I am assuming this only works because I have balanced the calls to BeginEdit with calls to either ApplyEdit or CancelEdit.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 02, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that should be a decent workaround. The only issue you may
+find is that pressing ESC while editing a row may not reset that row to its
+previous values &#8211; that&#8217;s really what IEditableObject provides
+within the grid context.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, June 02, 2008</h2><P>I will have to investigate but I think there is a grid event that i could implement to handle that scenario as well. Will let you know if Infragistics comes up with anything.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JNE replied on Tuesday, November 03, 2009</h2>Any updates on this thread?<br />Have you found a solution?<br /><br />I struggled on this all day but finally I ended up re-writting the UnbindBindingSource() helper :<br /><br /><font face="Lucida Console" size="2"><br />        Public Shared Sub UnbindBindingSource( _<br />          ByVal source As BindingSource, ByVal apply As Boolean, ByVal isRoot As Boolean)<br /><br />            Dim _list As IList = source.List<br /><br />            If isRoot Then<br />                  source.DataSource = Nothing<br />            End If<br /><br />            For Each obj As Object In _list<br />                Dim current As System.ComponentModel.IEditableObject = _<br />                        TryCast(obj, System.ComponentModel.IEditableObject)<br /><br />                If current IsNot Nothing Then<br />                    If apply Then<br />                        current.EndEdit()<br />                    Else<br />                        current.CancelEdit()<br />                    End If<br />                End If<br />            Next<br />        End Sub<br /></font><br /><br />And it works perfectly!<br /><br />I posted it for two reasons, first to share it with csla/infragistics mates who are facing the same issue and also to make sure this code works properly (I mean without any side effects).</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 04, 2009</h2><P>After a quick glance, this seems similar to what BindingSourceNode gets you.&nbsp; Does that not work, but this one does for Infragistics?</P>
+<P>I ask because I sitll have odd problems on some of my grids, but it could be I'm not binding them proplery... but on the ones that work I think BSN takes care of it.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

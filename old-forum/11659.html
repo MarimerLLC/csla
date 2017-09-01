@@ -1,0 +1,58 @@
+<html><header><title>Recommendation on Readonly Property dependant of managed Property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Recommendation on Readonly Property dependant of managed Property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11659.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez posted on Wednesday, October 24, 2012</h2><p>&nbsp;</p>
+<pre>I have the following case, on which a calculated property, WeekdaysToExpectedStartDate depends on<br /> StartDateProperty and current date.</pre>
+<pre></pre>
+<pre><pre>WeekdaysToExpectedStartDate must be binded on the UI as readonly, meaning an change on the StartDateProperty </pre>
+<pre>should refresh the WeekdaysToExpectedStartDate readonly property.</pre>
+See the code below:
+public static readonly PropertyInfo&lt;SmartDate&gt; StartDateProperty = RegisterProperty&lt;SmartDate&gt;(c =&gt; <br />c.StartDate, &quot;Start Date&quot;, RelationshipTypes.PrivateField);
+[Trim]
+public string StartDate
+{
+	get { return GetPropertyConvert&lt;SmartDate, string&gt;(StartDateProperty, _StartDate); }
+      	set { SetPropertyConvert&lt;SmartDate, string&gt;(StartDateProperty, ref _StartDate, value); }
+}
+public int WeekdaysToExpectedStartDate
+{
+	get { return GetWeekdaysInBetween(ReadProperty(StartDateProperty).Date, DateTime.Today); }
+}
+I understand that I could do the above or create a member variable for the <br />WeekdaysToExpectedStartDate, and create a business rule to set it with the calculated value, <br />but this seems rather extensive for a simple calculation.</pre>
+<pre>..
+What is the recommended way in this case?
+
+Thanks!</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>skagen00 replied on Wednesday, October 24, 2012</h2><p>For something like this I&#39;ve typically just captured the property change of StartDate in PropertyHasChanged of the BO and just invoke OnPropertyChanged(&quot;WeekdaysToExpectedStartDate&quot;) in that case to notify UI to refresh its databinding.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 25, 2012</h2><p>Skagen&#39;s solution is what I have used from time to time too!! </p>
+<p>You can also do this within the rule engine if you add a PropertyInfo for the WeekdaysToExpectedStartDateProperty and a rule like this: </p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">RaisePropertyChanged</span> : Csla.Rules.<span style="color:#2b91af;">BusinessRule</span></p>
+<p style="margin:0px;">&nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">public</span> RaisePropertyChanged(<span style="color:#2b91af;">IPropertyInfo</span> primaryProperty, <span style="color:blue;">params</span> <span style="color:#2b91af;">IPropertyInfo</span>[] raiseChangedProperties)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; : <span style="color:blue;">base</span>(primaryProperty)</p>
+<p style="margin:0px;">&nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; AffectedProperties.AddRange(raiseChangedProperties);</p>
+<p style="margin:0px;">&nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; }</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">Usage:</p>
+<p style="margin:0px;">&nbsp;</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; BusinessRules.AddRule(<span style="color:blue;">new</span> <span style="color:#2b91af;">RaisePropertyChanged</span>(StartDateProperty, WeekdaysToExpectedStartDateProperty));</p>
+<p style="margin:0px;">&nbsp;</p>
+<p style="margin:0px;">So it&#39;s down to your own coding preferences to select one of the solutions.</p>
+</div>
+</div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez replied on Thursday, October 25, 2012</h2><p>Thank you both... it helped a lot.. I am sticking with JB solution... Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez replied on Thursday, October 25, 2012</h2><p>JonnyBee, when you mean add a PropertyInfo, just as:</p>
+<p>&nbsp;</p>
+<p>
+<pre>&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>int</span>&gt;&nbsp;<span>WeekdaysToExpectedStartDateProperty</span>&nbsp;=&nbsp;RegisterProperty&lt;<span>int</span>&gt;(c&nbsp;=&gt;&nbsp;c.<span>WeekdaysToExpectedStartDate</span>,&nbsp;</pre>
+<pre><span>    &quot;Weekdays&nbsp;To&nbsp;Expected&nbsp;Start&nbsp;Date&quot;</span>,&nbsp;<span>RelationshipTypes</span>.PrivateField);
+&nbsp;&nbsp;</pre>
+<pre><pre>&nbsp;&nbsp;<span>public</span>&nbsp;<span>int</span>&nbsp;WeekdaysToExpectedStartDate
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetWeekdaysInBetween(<span>DateTime</span>.Today,&nbsp;_startDate);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+</pre>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, October 25, 2012</h2><p>Yes, that is what I mean. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

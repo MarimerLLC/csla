@@ -1,0 +1,178 @@
+<html><header><title>Basic Question reagrding CSLA Architecture</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Basic Question reagrding CSLA Architecture</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/694.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit posted on Friday, July 21, 2006</h2><P><FONT face=Verdana size=2>Hi</FONT></P>
+<P><FONT face=Verdana size=2>I think my question might be answered already in this forum(but i didnt&nbsp;find any post)&nbsp;as it was the first thing wich struck me when i used CSLA.NET. Ill be glad if some1 thrws light on this:</FONT></P>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN><FONT face=Verdana>&nbsp;Wat confuses me is that&nbsp; CSLA.NET&nbsp;uses data access code in the business layer only. wat abt those age old rules of making BL independt of DAL? if one has to change the data store, then he needs to modify BL. am i corrct here?<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Verdana size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Verdana>let me knw yr thgts<o:p></o:p></FONT></SPAN></P>
+<P class=MsoNormal><FONT face=Verdana size=2><SPAN><o:p></o:p></SPAN></FONT></P>
+<P class=MsoNormal><SPAN><FONT face=Verdana>Vivek<o:p></o:p></FONT></SPAN></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, July 21, 2006</h2><P>I've seen threads discussing this topic on the forum.</P>
+<P>(Sorry, don't have them handy, you'll just have to look again unless someone else posts where they are. :)</P>
+<P>The threads discussed how you would go about changing the class structure to allow for a totally separated DAL.&nbsp;&nbsp; </P>
+<P>IMHO, unless you have a business need to support multiple DALs at the same time,&nbsp;it's not worth the bother.&nbsp; It just means you have two&nbsp;files to keep in synch instead of one.&nbsp;&nbsp; The DAL components within the CSLA business objects are logically separated from the other methods even though they are in the same class, so it's not like the DAL and&nbsp;business rules are all jumbled together in a haphazard manner.&nbsp;&nbsp; </P>
+<P>If you do have to support multiple DALs at the same time, it obviously would be worth the bother!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Friday, July 21, 2006</h2><P>thanks david!</P>
+<P>i agree with you. Also i noticed one more thing: In the sample projects tracker app, we have DataTransfer Objects (DTO) being used to pass data instead of business logic across layers. I know the pros and cons of such approach, and have a query:</P>
+<P>in my project i am using a business layer, a web service layer and a DAL. now i have creatd DTOs for each object and have put them in a Common Lib project. the BL communicates to DAL using these DTOs. now the WebService also uses DTOs to talk with BL. And the WebService passes these DTOs&nbsp;to the GUI.&nbsp;Since i am using DTOs throughout, i dont need to map Buisness Objects to DTO (no use of DataMapper.cs). Is this approach fine? Or do u find any potential flaws in this? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>vicky_iit:</strong></div><div>
+<P>in my project i am using a business layer, a web service layer and a DAL. now i have creatd DTOs for each object and have put them in a Common Lib project. the BL communicates to DAL using these DTOs. now the WebService also uses DTOs to talk with BL. And the WebService passes these DTOs&nbsp;to the GUI.&nbsp;Since i am using DTOs throughout, i dont need to map Buisness Objects to DTO (no use of DataMapper.cs). Is this approach fine? Or do u find any potential flaws in this? </P>
+<P></div></BLOCKQUOTE></P>
+<P>This is fine, as long as you realize that you have TWO applications. Web Services should not (normally) be used to communicate between <EM>tiers</EM> of an application, but rather should be used to communicate between separate applications. The whole point of using web services and DTOs in a message-based architecture like this is to decouple the two applications so they can version separately.</P>
+<P>Now I realize that precious few people do this, choosing instead to misuse web services as a (rather lame) client/server network protocol. And if that works for you great! But the direction the web service and SOA industry support is moving is <EM>not</EM> to support client/server models and you should expect your life to get harder and harder as time goes on, and vendors like Microsoft move further and further from allowing their SOA technologies (like web services or WCF) to provide support for what we think of as client/server.</P>
+<P>Another caution I'll toss out here is this: your DTO in a web service is part of your <EM>external contract</EM>. Thus, I strongly believe you should not use it within your actual business layer. The reason is that decoupling goal again - you want to be able to alter your business layer, or the consuming application, independently. If you've tighly coupled your internal implementation to the external contract (the DTO) then you can't get this type of decoupling and all the benefits of web services are out the window - leaving only the high cost (inefficient XML serialization, etc.)</P>
+<P>In my view, as I explain in Chapter 11, a web service is just another type of UI on top of your business objects. The "user" in this case is another application, but the archtiectural reality remains the same: the web service is just an XML UI and should be treated as such.</P>
+<P>From the consumer's perspective, a web service is very much like a stored procedure. It is a remote procedure that you call, passing in some parameters, and getting a set of data as a result. Architecturally web services should be treated no differently than a database when writing a consuming application - with the one exception being that you <EM>must assume</EM> that the web service is used by other applications as well, and so you can't trust it like you might trust a database that only your application uses.</P>
+<P>I've blogged about this sort of thing quite a bit - mostly about a year ago&nbsp;- so you can find a lot more thoughts by looking back through my blog history.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Monday, July 24, 2006</h2><P>Hi Rocky!</P>
+<P>thanks for giving a detailed and informative reply. regaridng my app, Web service is not a layer above BL but a separate project independent of the app.&nbsp;</P>
+<P>If i get u correctly the scnario should be: since&nbsp;BL and DAL are seprate projects, the BL sends DTOs to DAL which fill them up or uses them&nbsp; as needed and returns back to the BL. the BL can then use this DTO to set its object properties and the return that object or its collection to the service interface. now if i dont do this, what is the other option i have? i think BL is not tightly coupled with the DTO layer as BL only references DTO one way only. DTO is unware of the BL. i dont want the DAL code in the BL classes as my project needs to be DB independent. </P>
+<P>let me knw yr thgts on this</P>
+<P>thanks</P>
+<P>vivek</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 24, 2006</h2>I think the key is to remember that you are doing two things - you are building an XML UI on top of your business objects, and you are creating a separate DAL. These are two totally different and unrelated architectural decisions. Both are very valid - but they are unrelated.<br><br>The client application calls your web service UI. To do this, it passes DTOs back and forth over the wire. This means your web service UI consumes and produces DTO data for consumers. This also means that your web service UI is responsible for converting business object data into and out of those DTOs - just like I show in Chapter 11. The DTOs here are the formal contract defined by your web service UI for any clients that want to use your XML UI.<br><br>As a seperate thing, the business objects persist themselves using a DAL. You are choosing to pass data between the business objects and the DAL using DTOs, which is a fine solution. BUT THESE DTOs ARE NOT THE WEB SERVICE DTOs. These DTOs are defined by your business objects as the formal contract that must be met by any DAL. <br><br>It is VERY likely that these DAL-DTOs will contain a lot of extra data that would never be in the web service DTOs, because the DAL-DTO is used to populate your business objects themselves, while the WS-DTO is used to provide data to unknown external consumers.<br><br>The thing is, at some level your BOs and your DAL <i>must</i> be coupled. In that they must share some known information or they can't work. The DAL needs to know exactly which bits of data it must provide to or get from the BO or it can't do its job. <br><br>That's a form of coupling, but a necessary one. The DAL-DTOs themselves provide the important level of decoupling, because any DAL can use them to do the job. The BO doesn't care which DAL does the work, as long as it conforms to that DTO contract. And that gives you loose coupling where it counts.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Tuesday, July 25, 2006</h2><P>thanks Rocky!</P>
+<P>yr answer clarified everything nicely! i wish u cud give seminars in India too! </P>
+<P>thanks</P>
+<P>Vivek</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Friday, July 21, 2006</h2>Vivek,<br>
+<br>
+While one can certainly build an independent DAL, and its good idea if
+you're a software seller with a major product, but for individual
+companies which rarely change there DB Server, a simpler approach is to
+abstractly model your interaction with your server and keep the surface
+area of your solution small. <br>
+<br>
+Then if you find yourself in that rare instance of having to change
+from say SQL Server to Oracle then you have a small well defined area
+of your application to change. In the case of CSLA that is basically
+the data portal routines on your business object. If yor never have to
+make the switch you will gain the benefit of a working with a more
+straightforward application because it has one less level of
+indirection.<br>
+<br>
+Cheers,<br>
+<br>
+Des Nolan<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 21, 2006</h2><A href="http://www.lhotka.net/Article.aspx?area=4&amp;id=2e6468d6-9a02-4f0e-a31c-a7eecc268e1b">http://www.lhotka.net/Article.aspx?area=4&amp;id=2e6468d6-9a02-4f0e-a31c-a7eecc268e1b</A></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Friday, July 21, 2006</h2>thanks..! i am really learning a lot! please comment on the DTO query too!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Friday, July 21, 2006</h2>
+
+<p class="MsoNormal">I believe you can avoid the problems
+mentioned about the DAL by using explicit interfaces and flags.<span>&nbsp; </span>You would create an explicit interface that
+would include the properties for each class and place them in a separate assembly.
+<span>&nbsp;&nbsp;</span>Each class would implement their own interface.<span>&nbsp; </span>The same properties that are used by the presentation
+layer would be used by the DAL to load the object.<span>&nbsp;&nbsp; </span>The explicit interface allows you to load
+the private properties while hiding them from the presentation layer.<span>&nbsp; </span>The only way to access these private
+properties (not including reflection) is through casting to the interface.
+However, since the interface resides in another assembly, the presentation
+layer would never have access to these private properties.&nbsp; Each interface
+would also include a LoadingFromDAL flag.<span>&nbsp;
+</span>This flag would be set when the DAL is loading the object.<span>&nbsp; </span>You can use this flag in each property to avoid
+checking the rules etc.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Tuesday, July 25, 2006</h2><P>hey malloc!</P>
+<P>thanks for yr reply..ill look into this approach!</P>
+<P>vivek</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mahesh replied on Tuesday, July 25, 2006</h2><P>really nice post.... </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Tuesday, July 25, 2006</h2><P>Hmmm... interesting.&nbsp; These concepts have been on my mind recently and I'm glad Rocky gave his insights here.</P>
+<P>My thought process has been like this:&nbsp; </P>
+<P>I like the idea of a DAL-DTO regardless of any web service discussion.&nbsp; The idea of using XML for this has been interesting because of the inherent flexibility.&nbsp; For example, it seems like it would be valuable to have a little bit of looseness in the coupling between BO and DAL such that an extra column showing up in the DTO doesn't break anything... similar to the way&nbsp;there are modifications you could do to a table, view or sproc without breaking "classic" CSLA data&nbsp;access.&nbsp;</P>
+<P>Once you go down the path of saying that the data acess of a BO is only that it knows how to persist and save itself via XML, with that flexibility of dealing with extra (or missing?) columns, then you're 90% of the way to enabling web service access to the BO.</P>
+<P>I still think the general concept is valid in that there's a lot of code reuse possible if you think&nbsp;about a BO having that general capability, but there is still indeed likely a difference in the contracts on the web service side vs. the DAL side.</P>
+<P>Or am I completely out of my mind in thinking that I'd like my BO to be able to continue working with somebody submitting an "old" XML schema version or only just a few fields via a web service?&nbsp; From my experiences working with one of our web service enabled vendors I can say it's quite nice to be able to submit just &lt;customer ID="123291" LastName="Smith" /&gt; to change the last name even though there are 100 other fields in the full customer BO.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 25, 2006</h2>
+
+
+
+
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</DIV>
+<BLOCKQUOTE>
+  <DIV></DIV>
+  <P>Once you go down the path of saying that the data acess of a BO is only 
+  that it knows how to persist and save itself via XML, with that flexibility of 
+  dealing with extra (or missing?) columns, then you're 90% of the way to 
+  enabling web service access to the BO.<SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></P></BLOCKQUOTE>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>I am not 
+sure I agree with this. I view object persistence as fundamentally different 
+from UI interaction. The DAL is persistence, a web service is UI and the object 
+is in the middle. The parameters for dealing with your UI are quite different 
+from a typical DAL interaction. You don't trust the UI (or at least the user), 
+but you do trust the DAL in many cases. In other words, you run validation and 
+other business logic against anything coming from the UI, but you rarely run all 
+that logic against data coming from the DAL.</FONT></SPAN></P>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>Conversely, you'll give data to the DAL that you'd never give to the 
+UI&nbsp;- sensitive values, values that aren't formatted in certain ways, etc. 
+You might give the UI someone's age, but you'll give the DAL their birthdate. 
+Stuff like that.</FONT></SPAN></P>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>So I 
+agree that the <EM>mechanics</EM> of dealing with XML are possibly common, I'd 
+suggest that the way in which the interaction is treated is fundamentally 
+different.</FONT></SPAN></P>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>That, 
+and the object should <EM>never</EM> generate the XML for a web service. That's 
+blurring the line between UI and business layers, and is exactly the same as 
+suggesting that your object should generate the HTML for a web page, the XAML 
+for WPF and the Windows Forms controls for WinForms.</FONT></SPAN></P>
+<BLOCKQUOTE>
+  <P>Or am I completely out of my mind in thinking that I'd like my BO to be 
+  able to continue working with somebody submitting an "old" XML schema version 
+  or only just a few fields via a web service?&nbsp; From my experiences working 
+  with one of our web service enabled vendors I can say it's quite nice to be 
+  able to submit just &lt;customer ID="123291" LastName="Smith" /&gt; to change 
+  the last name even though there are 100 other fields in the full customer 
+  BO.<SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>&nbsp;</FONT></SPAN></P></BLOCKQUOTE>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>Not at 
+all. But this is the job of the web service UI, not your business object. It is 
+<EM>absolutely</EM> a goal of web services (service-orientation anyway) that you 
+should allow the service consumer and provider to version independently. And 
+that, by definition, means that you must accommodate old versions of your XML 
+messages. </FONT></SPAN></P>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>As soon 
+as you stop honoring an old version, you break any consumers using that version 
+and force them to update their code - and at that point you've re-coupled the 
+consumer and service. Obviously in real life this <EM>will</EM> happen, which is 
+why SO isn't a silver bullet. However, it is certainly the case that you can 
+honor a number of old contracts over time, and so SO does have great value in 
+this regard.</FONT></SPAN></P>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>But to 
+return to my point: this handling of old XML contracts isn't the job of the 
+business layer. The job of the business layer is to implement the business use 
+case. If you want to support old XML contracts, that is the job of the XML UI. 
+It is then the UI's job to "fill in the blanks" for missing data, 
+etc.</FONT></SPAN></P>
+<P><SPAN class=278245714-25072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Wednesday, July 26, 2006</h2><P>Rocky,</P>
+<P>Yr recent posts forced me to ask you one more query, slightly more granular. sometime back i was wrking on a project whose BL layer used to talk with DAL using DAL DTOs. </P>
+<P>There I noticed that the BL objects never had&nbsp;any private members but used the DTO itself.</P>
+<P>Eg.: there is a Customer class with 3 attributes.</P>
+<P>now, when thinking of using DTOs, my approach is like:</P>
+<P><FONT color=#006400>class Customer<BR>{ private string _name;<BR>private int _age;<BR>private int _id;</FONT></P>
+<P><FONT color=#006400>public Customer() {} //public constructor<BR>internal Customer(customerDTO data)<BR>{<BR>&nbsp; _name = data.Name;<BR>&nbsp; _age&nbsp; = data.Age;<BR>&nbsp; _id&nbsp;&nbsp; = data.Id;<BR>}</FONT></P>
+<P><FONT color=#006400>public string Name<BR>{<BR>//return this._name;<BR>}</FONT></P>
+<P><FONT color=#006400>//similary properties for each private attribute that needs to be exposed.<BR>}</FONT></P>
+<P>Now, in CustomerList class i will have some method FindCustomers(criteria) which will return a list of CustomerDTOs. I will then instantiate a new Customer object passing that DTO in the constructor.</P>
+<P>But in that project,&nbsp;I noticed different behaviour. The DTO was passed in the Customer objects constructor but the code was like:</P>
+<P><FONT color=#006400>class Customer<BR>{<BR>&nbsp; private CustomerDTO _data;&nbsp; //no other private attributes<BR>&nbsp;<BR>&nbsp; internal Customer(CustomerDTo data)<BR>&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._data = data; <BR>&nbsp;&nbsp; }</FONT></P>
+<P><FONT color=#006400>&nbsp;&nbsp; public string Name<BR>&nbsp;{<BR>&nbsp; return _data.Name;<BR>&nbsp; }</FONT></P>
+<P><FONT color=#006400>//similarly other properties<BR>}</FONT></P>
+<P>Now, i think that this approach isnt right as BL is now more tightly coupled with the </P>
+<P>DAL DTOs. Its like intead of the BL defining the attributes, the job is upto the DTO.&nbsp;&nbsp;Am i right?</P>
+<P>wud luv to hear u on this.</P>
+<P>vivek</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler replied on Thursday, August 17, 2006</h2><P>Hi,</P>
+<P>first of all, I'm new to this forum and new to CSLA, so excuse me if I ask stuff that has already been answered.</P>
+<P>I followed the whole thread and it gave some insight into the way people do Data Access. </P>
+<P>But I found this thread while I was looking for something slightly different. I am looking for a way to separate the BO from the Data Access calls but only for one specific reason: </P>
+<P>We highly rely on SQL Server and stored procedures. And we are in the process of migrating to vb.net (and the new SQL Server 2005). While prototyping (and before we found CSLA, which we really want to use as base framework) we did some data access stuff where we use stored procedures that expect only one parameter, an XML document and return an xml document. We simply serialized the business object to XML and sent it to the stored proc where our DBA wrote code to "flatten" it and do some key checking (the primary validation was done in the business object), then the data is saved to the related tables and the saved object is returned again as xml string. This allowed us to simply deserialize the xml to a fully functional business object without setting every property one by one. And it provided us with a simple way to execute our stored procs without providing numerous parameters. </P>
+<P>We liked this approach and I am trying to implement this same behaviour with CSLA. The problem now is of course that the DataPortal_XYZ functions are instance methods and I cannot deserialize the returned xml document into my current instance. </P>
+<P>So, after a long and boring intro my question is: is it possible to redirect the DataPortal calls to another class that instanciates my BO and returns it to the CSLA object or is sending and retrieving xml to a stored proc simply a bad idea. (What we don't want to do is giving the business developer direct access to the underlying data tables of the data base)</P>
+<P>Please let me know your thoughts or if there's a possibility to use external data access methods</P>
+<P>Kind regards</P>
+<P>Mike Dobler</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Lakusha replied on Thursday, August 17, 2006</h2>Mike,<br /><br />Sending and retrieving xml to a stored procedure is expensive in cpu/memory server side. It works and can be extremely efficient in some scenarios but I am afraid that an entire system built in this fashion won't scale well.<br /><br />Better perform lots of benchmarking before you invest in that avenue<br /><br />L</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler replied on Friday, August 18, 2006</h2><P>Thanks for that input, Lakusha. If this can really be a problem we must look into that and do some good testing.</P>
+<P>Regards </P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler replied on Sunday, August 20, 2006</h2><P>Hi again,</P>
+<P>even if I'm told that relying on XML transfer in and out of an SQL Server 2005 might result in a badly scaleable database we still think that sending back and forth the whole data structure as xml has some nice things about it too. For one thing, you're completely transactional within you parent/child data when sending it as a complete package to the server and the other thing is the nicely instantiation of complete classes, which would erase the need for some dull data reading code.</P>
+<P>What I've found in this forum to circumvent the problem of instantiating a complete CSLA class is the use of DTOs (data transfer objects). I did some testing where I wrote a DTO whose XML-Element attributes match those of my SQL Server returned document and whose Public Fields match the private fields of the corresponding CSLA class. Then I can use the DataMapper from CSLA to quickly copy the info to and from the CSLA class to the DTO class and then serialize the DTO class and send it to the stored procedure. And by matching the Public fields of the DTO to the private fields of the CSLA class I won't trigger any validation code.</P>
+<P>My question now would be: Is the additional code worth the resulting easiness of programming or does the data mapping and serializing result in a huge loss of performance? And does anybody have practical experience in using XML on SQL Server 2005 (which should be lots better if you trust MS)</P>
+<P>Regards</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Sunday, August 20, 2006</h2>First, the disclaimer that I have not done much with SQL Server 2005.<br><br>Second, just a note that it is very easy to be fully transactional in .NET 2.0 and CSLA 2.0 by wrapping everything in a TransactionScope block.&nbsp; The CSLA 2.0 DataPortal will do this for you by marking you DataPortal_XYZ methods with the Transactional(TransactionScope) attribute.&nbsp; This will make all access within that method hook into a single transaction even if it you are accessing data across multiple sources.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>m.dobler replied on Sunday, August 20, 2006</h2><P>Hi Brian,</P>
+<P>thanks for your reply. I know that CSLA does support transactions and it does make sense to control transactions in the client code (meaning everything but SQL Server in this case) if you are accessing multiple sources but in our case we are using only one (large) database and loading all the validation and lookup data (for foreign key checkings, basic data integrity and so on) into the client code didn't seem very appropriate to us so we encapsulated the basic lookups and reference checkings into stored procedures - so it made sense to us to try to load and save complete structures instead of single data rows. And our DBA wouldn't let us write directly into the tables anyway;-)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, July 25, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>DansDreams:</strong></div><div>
+<P>...My thought process has been like this:&nbsp; </P>
+<P>I like the idea of a DAL-DTO regardless of any web service discussion.&nbsp; The idea of using XML for this has been interesting because of the inherent flexibility.&nbsp; For example, it seems like it would be valuable to have a little bit of looseness in the coupling between BO and DAL such that an extra column showing up in the DTO doesn't break anything... similar to the way&nbsp;there are modifications you could do to a table, view or sproc without breaking "classic" CSLA data&nbsp;access.&nbsp;</P>
+<P></div></BLOCKQUOTE></P>
+<P>Rocky gave some excellent reasons not to do it.</P>
+<P>Personally, I would&nbsp;rarely choose xml as a data access method for business objects (whose code I control) for day-to-day access to a database (whose code I control).&nbsp; It's going to shove gobs more data over the network than a result set would - not only the data has to move, but multiple copies of each&nbsp;XML tag!&nbsp;&nbsp; Not only that, but if the data set is large, you can spike the memory usage on the machine that has to process the xml file.</P>
+<P>XML isn't the end-all and be-all of data transfer.&nbsp; It's a nice technique that's been grossly over-hyped - like pretty much anything else in our line of work that marketing folks realize can pry money out of technically incompetent managers. :)</P>
+<P>XML is great for somewhat self-documenting small configuration files, and handy for ad-hoc transfers of data across disparate technology stacks.&nbsp; </P>
+<P>For reliable, day-to-day electronic data interchange (EDI) operations, it suffers from the same problems that EDI operations had in pre-XML days.&nbsp; People:</P>
+<UL>
+<LI>do not design the right file format to put data into, </LI>
+<LI>don't put the right data into the file, </LI>
+<LI>don't pull it out correctly, and </LI>
+<LI>don't understand what to do with it when they get it.</LI></UL>
+<P>EDI systems came with data validation&nbsp;tools that people failed to use correctly and XML comes with schema validation tools that people fail to use correctly.&nbsp; And, regardless of what the standard's body says, the one with the big bucks in their wallet that the other party wants wins the argument as to what will be put in the file.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vicky_iit replied on Thursday, July 27, 2006</h2>nice thoughts David!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

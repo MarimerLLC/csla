@@ -1,0 +1,10 @@
+<html><header><title>Linq Search on Child </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq Search on Child </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11394.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tanny posted on Monday, June 04, 2012</h2><p>All,</p>
+<p>I have parent and child class.&nbsp; For example, my parent class is Customers and child class is CustomerDetails. </p>
+<p>I wanted to load all customers with state as NY (where state is property in customer details ). Could someone let me know how this can be done using LINQ? </p>
+<p>from p in DataContextObj.Customers where p.CustomerDetails..... ??</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>Tanny</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 04, 2012</h2><p>You are using the Entity Framework and are using LINQ to Entities?</p>
+<p>Or you want to do this query against a graph of business objects already in memory?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tanny replied on Tuesday, June 05, 2012</h2><p>Thanks for the reply. I&#39;m using LINQ to SQL classes.</p>
+<p>I was also able to&nbsp;achieve&nbsp;what I wanted. I tried using the LINQ query below and it worked.</p>
+<p><strong>from p in DataContextObj.Customers where p.CustomerDetails.Any (x =&gt; x.State == &quot;NY&quot;)</strong></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

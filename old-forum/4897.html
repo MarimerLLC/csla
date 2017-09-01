@@ -1,0 +1,14 @@
+<html><header><title>Why there is no function to Get List of User Roles in Identity.vb class ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why there is no function to Get List of User Roles in Identity.vb class ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4897.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tarekahf posted on Tuesday, May 27, 2008</h2><P>I am writing a security controller class that will collaborate with the Basic CSLA Security Model "Identity" class and "Pricipal" class (as per the PTracker Sample Application).</P>
+<P>I need to get a list of user roles, but&nbsp;I could not find a property or function for this purpose, although the Roles are being loaded in the Private Variable "mRoles". Any reason ?</P>
+<P>So, I decided to add the following property to the Identity class, in the region <FONT color=#800000 size=2>" IsInRole ":</FONT></P><PRE>        Friend ReadOnly Property Roles() As List(Of String)
+            Get
+                Return mRoles
+            End Get
+        End Property
+</PRE>
+<P>I need to know if this is OK or&nbsp;if there is an&nbsp;alternative.</P>
+<P>Why I need such&nbsp;property ?</P>
+<P>I am&nbsp;developing a Testing Page, and I need to add a Drop-Down Box to show the List of the Roles for a Selected User. So it does make sense to add such property "Roles()".</P>
+<P>I was thinking probably it should be under the Membership Provider, but I was really not sure where is should be added.</P>
+<P>Please let me know your feedback.</P>
+<P>Tarek.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

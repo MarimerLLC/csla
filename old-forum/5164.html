@@ -1,0 +1,172 @@
+<html><header><title>Changing authorization based on role &amp; property value?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Changing authorization based on role &amp; property value?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5164.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, July 28, 2008</h2>I have a changing use case, which revolves around editing a department which belongs to a company.<br><br>Currently, we have a department name, type, phone &amp; fax, and list of address information.&nbsp; There's also an accounting id editable only by accounting.<br><br>What I now need to do is restrict department editing, based on these rules.<br><ul><li>Only invoicing and accounting can create departments which will be of type Accounts Payable (this is just a property of a department which can otherwise be edited by anyone).</li><li>Only accounting can change department type from Accounts Payable to something else.</li><li>Only invoicing and accounting should be able to edit ANY information on a department where the type is Accounts Payable.</li></ul>Some of these are clearly business rules that factor in role and property values.&nbsp; Others are authorization rules.. which is where I'm not clear on.<br><br>Certainly an easy thing to do is override CanWriteProperty to check for roles and find an answer that way.&nbsp; But is that the best way, or is there a better approach?&nbsp; I don't think separate classes is an option here, because departments can be changed arbitrary from one type to another.<br><br>Thanks<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 28, 2008</h2>Another thing I'm not clear on the best way to handle..<br><br>The Department BO has child BO properties; a collection of addresses and a phone and fax number.&nbsp; The children will need to adjust their rules so that only the appropriate roles can edit if the department type is of a restricted kind.<br><br>My current thought is to also override CanWriteProperty in these BOs, and to ask the parent the list of roles which are allowed to edit.&nbsp; The list changes if the department BO's type changes.<br><br>Thoughts?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 28, 2008</h2><P>This is why CanWriteProperty() is virtual, so you can add extra rules beyond smiple role checks to your property-level authorization.</P>
+<P>You may also add checks in your factory (or DataPortal_Fetch()) methods to prevent the wrong user from retrieving an object they shouldn't see.</P>
+<P>Obviously the per-type authorization can't handle this, because we're talking about instance-level values.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, July 28, 2008</h2><P>The way I've handled this type of situation may be more complicated and a bigger change than you want, so definitely go with the simplest option that works for you.</P>
+<P>In my case, my security model resolves to the individual permission/privilege/right (synonyms - all depends on who you are talking to).&nbsp; To manage organizational needs, I have "borrowed" the concept of Privilege Depth from Microsoft CRM's security model where a user&nbsp;may have been assigned a certain privilege, such as "May edit departments," but the final answer depends on their depth which can be one of the following:</P>
+<UL>
+<LI>Basic - users can only edit their own objects (objects the "own").</LI>
+<LI>Local - users can edit objects within their own business unit (department)</LI>
+<LI>Deep - users can edit objects within their own business unit and business units that are children to their business unit.</LI>
+<LI>Global - users can edit anything</LI></UL>
+<P>When you combine the privilege with depth, you get tremendous control over who can do what.&nbsp; Best bet, if you want to know more, is to do a web search on "Microsoft CRM Security".</P>
+<P>HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 28, 2008</h2>We are not quite that strict, although it seems like we could very well have that level of security later.<br><br>So how did you end up implementing this scheme?&nbsp; Overriding CanWriteProperty?&nbsp; Or something else?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, July 28, 2008</h2><P>I have an external security manager object that resolves the request.&nbsp; So, my CanXYZProperty method, for instance, would delegate to the SecurityManager.HasPermission() method passing in the appropriate arguments.&nbsp; I have two scenarios that I use: simple privileges or complex/specific privileges.</P>
+<P>In the latter case, privileges are very detailed, usually one privilege per operation.&nbsp; I find this most prevalent in service apps.&nbsp; So, the app could have privileges like "Can Check-Out Projects", "Can Assign Resources" and so on.</P>
+<P>In this case, for general inquiries,&nbsp;the only argument is the&nbsp;privilege&nbsp;being checked&nbsp;and authorization is simply checking if the user has that permission at that depth.</P>
+<P>For per-instance checks, the object and the permission are passed and the state of the object can be evaluated to make sure that the user can perform the operation.&nbsp; This is governed by additional rules such as ownership and assignment (ie, a user can't edit an object when it's been assigned to someone else).</P>
+<P>With this approach, per-type authorization really doesn't apply.</P>
+<P>On the other hand,&nbsp;with simple Read, Edit,&nbsp;Delete privileges, these can be granted on a per-type basis. When I do this, authorization is granted when the user has the desired privilege on the specified type.&nbsp; For instance, per-type authorization would answer a question like: "Can this user edit Products?"</P>
+<P>Likewise, for per-instance checking, we first check based on the object's type then apply the additional rules to make sure that can perform the operation on that specific object.&nbsp; This answers the question "Can this user edit THIS Product?"</P>
+<P>Make sense? &nbsp;HTH</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, July 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div>
+<P>I have an external security manager object that resolves the request.&nbsp; So, my CanXYZProperty method, for instance, would delegate to the SecurityManager.HasPermission() method passing in the appropriate arguments.&nbsp; I have two scenarios that I use: simple privileges or complex/specific privileges.</P>
+<P>...</P>
+<P>In this case, for general inquiries,&nbsp;the only argument is the&nbsp;privilege&nbsp;being checked&nbsp;and authorization is simply checking if the user has that permission at that depth.</P>
+<P>For per-instance checks, the object and the permission are passed and the state of the object can be evaluated to make sure that the user can perform the operation.&nbsp; This is governed by additional rules such as ownership and assignment (ie, a user can't edit an object when it's been assigned to someone else).</P>
+<P></div></BLOCKQUOTE></P>
+<P>This sounds very similar to our requirement. We can't use the type-based roles as is because the object itself must be inspected to determine if the privilege applies (e.g. your depth concept). </P>
+<P>Are you using the CSLA role mechanism at all or is your implementation completely separate?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Monday, July 28, 2008</h2><P>It is based on the CSLA implementation.&nbsp; We have an additional interface (IUser) that our custom principal implements.&nbsp; This interface defines the Privileges property which returns the list of privileges granted to the user (pulled from the db).&nbsp; Then we've added a layer on top of the authorization code to allow the per-instance rules to be applied.</P>
+<P>We still have the role-based methods in place, so if we wanted we could simply check for the role.&nbsp; But, since our roles are dynamic and user-defined, it doesn't make any sense in most of applications to hard-code roles into the business objects.&nbsp; A finite set of privileges does the job.</P>
+<P>In the database, we relate each role to the privileges associated with it and the depth.&nbsp; So, for instance, the "Project Manager" role is granted the&nbsp;"Can Create Projects" privilege at the Local depth while "Development Managers" are granted the same right at the Deep depth.</P>
+<P>Our authorization methods check for role membership when a role (string) is passed.&nbsp; Overloaded methods accept the privilege (custom object) and, optionally, the depth (enum) and&nbsp;checks for the specific permission at the given depth.&nbsp; Another set of overloads takes the business object as an argument, delegates to the other methods for the Privilege Check then applies the additional logic to authorize access to the specific object.</P>
+<P>I hope that answers your question.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 28, 2008</h2>Ok, that's what I thought the answer would be.<br><br>My only hesitation was because of the Instance-level authorization rules.. that would be the other place I suspect this could work, and I thought I was missing something by not seeing how it would work with those kind of rules.<br><br>So I guess the question is.. when would you ever use instance-level authorization rules?&nbsp; It seems like you either never would.. or there's some very niche place for them I don't see.<br><br>Thanks!<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>There is no support for instance-level auth rules in CSLA. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I expect any instance-level rules would be in the factory
+methods and/or an override of Save().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 28, 2008 12:23 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Changing authorization based on role &amp;
+property value?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok, that's what I thought the answer would be.<br>
+<br>
+My only hesitation was because of the Instance-level authorization rules.. that
+would be the other place I suspect this could work, and I thought I was missing
+something by not seeing how it would work with those kind of rules.<br>
+<br>
+So I guess the question is.. when would you ever use instance-level
+authorization rules?&nbsp; It seems like you either never would.. or there's
+some very niche place for them I don't see.<br>
+<br>
+Thanks!<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 28, 2008</h2>Ok... then I'm really confused.. because I see these methods on Csla.Security.AuthorizationRules:<br><br>InstanceAllowExecute(string, params string[])<br>InstanceAllowRead(string, params string[])<br>InstanceAllowWrite(string, params string[])<br>InstanceDenyExecute(string, params string[])<br>InstanceDenyRead(string, params string[])<br>InstanceDenyWrite(string, params string[])<br><br>So by support do you mean those methods are hold-overs from previous versions, or that they should be removed (or have already been removed in the latest beta)?&nbsp; <br><br>These method signatures are from Csla 3.5.0.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 28, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Those are per-property authorization that are customized
+per-instance.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>They are really a hold-over from the poor 2.0 implementation,
+and I don&#8217;t recommend their use. Xal tried to argue me into removing
+them, and I think he was right, but that&#8217;s all water under the bridge at
+this point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, July 28, 2008 1:49 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Changing authorization based on role &amp;
+property value?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Ok... then I'm really confused.. because I see these methods
+on Csla.Security.AuthorizationRules:<br>
+<br>
+InstanceAllowExecute(string, params string[])<br>
+InstanceAllowRead(string, params string[])<br>
+InstanceAllowWrite(string, params string[])<br>
+InstanceDenyExecute(string, params string[])<br>
+InstanceDenyRead(string, params string[])<br>
+InstanceDenyWrite(string, params string[])<br>
+<br>
+So by support do you mean those methods are hold-overs from previous versions,
+or that they should be removed (or have already been removed in the latest
+beta)?&nbsp; <br>
+<br>
+These method signatures are from Csla 3.5.0.<br>
+<br>
+Andy<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

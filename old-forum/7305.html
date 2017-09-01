@@ -1,0 +1,59 @@
+<html><header><title>ASync AddNewCore()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASync AddNewCore()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7305.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Monday, July 20, 2009</h2><p>I had to answer an question from a collegue on how to implement AddNewCore() with ASync. Well i didn&#39;t know for sure on how to implement it, so my answer was far from good.</p>
+<p>With Sync it goes like:</p>
+<p>&nbsp;</p>
+<blockquote dir="ltr" style="MARGIN-RIGHT:0px;">
+<p>protected override object AddNewCore()<br />{<br />&nbsp; var item = DataPortal.Create&lt;C&gt;();<br />&nbsp; Add(item);<br />&nbsp; return item;<br />}</p>
+</blockquote>
+<p>How should this be done ASync ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 20, 2009</h2><p>On .NET the method isn&#39;t designed for async, so I don&#39;t think you can do it. Data binding (mostly datagrid controls) will be expecting the new value as a result from the method, and will almost certainly fail to work properly if you don&#39;t return the value.</p>
+<p>On SL the method is designed for async (because we created it as part of CSLA), so the method returns void and there&#39;s an easy way to handle the callback scenario.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong replied on Monday, July 20, 2009</h2><P>Thanks!</P>
+<P>PS: im missing a button "mark as answer" on this community server forum ;)</P></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>Calin replied on Monday, March 01, 2010</h2><p>Hi there,</p>
+<p>I found a solution to this problem, not the most elegant one, but it does what you requiere:</p>
+<p>&nbsp;</p>
+<p>
+<p>[NonSerialized]</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private FrameworkElement _frameWorkElement;</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private delegate Week Creator(int facilityId);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;protected override object AddNewCore()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_frameWorkElement = new FrameworkElement();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Creator creator = facilityId =&gt;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (facilityId != 0)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return Week.Create(new SingleCriteria&lt;Week, int&gt;(facilityId));</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return Week.Create();</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;};</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (Parent is Menu)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;creator.BeginInvoke((Parent as Menu).FacilityId, CreatorCallback, creator);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;creator.BeginInvoke(0, CreatorCallback, creator);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;return null;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;private void CreatorCallback(IAsyncResult result)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;if (_frameWorkElement.Dispatcher.Thread != Thread.CurrentThread)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_frameWorkElement.Dispatcher.Invoke(</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(Action)delegate</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;{</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Creator creator = (Creator)result.AsyncState;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Week week = creator.EndInvoke(result);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Add(week);</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;});</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;}</p>
+</p>
+<p>&nbsp;</p>
+<p>What I basiclly do is intially return null, and add the real item after it has been created.</p>
+<p>Let me know if it helps or you have any improvements.</p>
+<p>&nbsp;</p>
+<p>Regards,</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

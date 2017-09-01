@@ -1,0 +1,92 @@
+<html><header><title>Tool for speeding up CSLA development</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Tool for speeding up CSLA development</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4029.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo posted on Wednesday, December 12, 2007</h2><P>Hi,</P>
+<P>I have used CSLA 2.x for a&nbsp;little while and find it quite good, but I have a concern about the amount of time it takes to write each business object (I am not using any code generator or similar).&nbsp; I have looked briefly at some tools out there, but have not found anything that seems to fit what I am looking for:&nbsp; A tool that would take a table and generate&nbsp;csla skeleton classes for it.&nbsp; So if I had a table Invoice and another InvoiceLine, the tool would generate four classes:</P>
+<P>Invoice, InvoiceCollection, InvoiceLine, InvoiceLineCollection.</P>
+<P>If I could template these to make them fit my coding standards, etc. it would be good.&nbsp; </P>
+<P>What tool(s) would be best for this job (without having a ton of other features that makes the learning curve steep)?</P>
+<P>Thanks,</P>
+<P>Jim</P>
+<P>Ps. The database would be different depending on project, but usually MySQL or Sql Server.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 13, 2007</h2>Well I'm not sure you'd find any tools to create Csla objects from database tables.&nbsp; That's data driven design, and Csla is mainly geared toward behavior based design.&nbsp; There may be something that takes your use case object design diagrams.<br><br>There are various code generation templates in the cslacontrib project as well, so you could look there to see what tools have templates.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 13, 2007</h2><P>Jim,</P>
+<P>I use Codesmith for creating CSLA BOs. It used to be free (I think 2.6 still is) but as of version 4.0 they are trying to make some money on it. The older version does not support .Net 2.0 so it could be limiting.</P>
+<P>It is a GREAT product and has won many awards. Well worth the investment.</P>
+<P><A href="http://community.codesmithtools.com/blogs/announcements/archive/2007/06/15/codesmith-wins-visual-studio-magazine-readers-choice-merit-award.aspx">http://community.codesmithtools.com/blogs/announcements/archive/2007/06/15/codesmith-wins-visual-studio-magazine-readers-choice-merit-award.aspx</A></P>
+<P>You use templates to design BOs according to your coding style and then replace hard coded stuff with variables. I point it at my DB to create basic BOs like you are describing and they are done in just a few seconds. Then I spend the rest of my time coding the business logic and deciding if they should be contained in a Use Case Controller BO (which is just a root object.). The Use Case controller conforms to the design Andy is referring to. And the contained BOs are similar to Entity objects because they represent the underlying DB table. Plus I can borrow fields from other tables if needed for a given BO. It is all very flexible.</P>
+<P>Once the templates are built the return on investment is huge.</P>
+<P>My About screen shows that I have generated 438,738 lines of code (and that doesn't count older versions which has this feature.)</P>
+<P>This has saved about 9,000 hours of time! Which is over half a million dollars. This assumes a developer can hand-code 50 Lines Of Code per hour and is paid $60 per hour.</P>
+<P>Plus other members of my team use it so the savings only increase.</P>
+<P>The templates that are online for CSLA can give you a good start point. They are powerful but can be a bit confusing to the new user. I have developed my own templates which meet my coding style. </P>
+<P>The big issue is that you have to have some real BOs that do real things before you can make templates out of them! I was learning way too mnay things 4 years ago when I started with CSLA. But my templates have improved over time and with experience. </P>
+<P>I can't recommend a code generator enough. You really do not want to hand code all the BOs for a project. You want to generate them and then use inheritance or partial classes in a 2nd file to tweak them. This way you can always re-generate them without liosing your hand coded modifications.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Thursday, December 13, 2007</h2><P>Thanks for the informative reply.&nbsp; </P>
+<P>Couple of questions:&nbsp; Can CodeSmith use an existing table in a DB to determine what fields to generate in the BO?&nbsp; Or do you define the fields in CodeSmith and have it generate the code accordingly (could it also generate&nbsp;a DB&nbsp;table at the same time?)</P>
+<P>Thanks agani,</P>
+<P>Jim</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Thursday, December 13, 2007</h2><P class=MsoNormal>Jim,</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>Templates for CodeSmith and MyGeneration can be obtained from the CSLAcontrib link on the top of this page. Get them now and never write another class again. Somewhere in the project list at that link there should be the program CSLAGen that extends CodeSmith to provide further automation,&nbsp;(at least I think I remember it was&nbsp;called CLSAGen, I'm sure Andes its author&nbsp;with be along shortly to tell you about it).<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>The CodeSmith&nbsp;version 2.6 is still&nbsp;downloadable online at: <A href="http://www.codesmithtools.com/freeware.aspx"><FONT color=#800080>http://www.codesmithtools.com/freeware.aspx</FONT></A><o:p></o:p></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>MyGeneration is freeware and can be ontained with source code (C#) from source forge: <A href="http://sourceforge.net/projects/mygeneration">http://sourceforge.net/projects/mygeneration</A></SPAN><o:p></o:p></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Some versions of the templates above will even produce every type of CSLA business class for every table in the database in one go. Then all you need is to add a couple of lines to your parent classes to stitch in the child collections. Simpler versions of the templates will produce single classes or one set of Parent-Detail classes.</SPAN><o:p></o:p></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Definitely do yourself a favor and spend some time checking these out as it the ROI is fantastic.</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>It's been awhile since I looked at these things, and that's as much as I can remember. You can search this forum for peoples comments on them. But be advises when I did it, I found no common prefrences, and even some people who raved about one tool, came back a few months later to rave about another tool. Best advice I can give, is get one of them and use it. </SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>(I'm using CodeSmith with Ricky Supit's templates from the CSLAcontrib site with the free version of CodeSmith 2.6. But will likely go back and look at MyGeneration, because its free, written in C#, source is provided, and I can probably extend it to do anything I want i.e. produce an entire object graph for a sophisitcated collection of classes, and possibly screens and reports eventually. )</SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Cheers,</SPAN><o:p></o:p></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Des</SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Thursday, December 13, 2007</h2><P>Des &amp; Joe,</P>
+<P>I took Joe's advice and downloaded CodeSmith a few hours ago.&nbsp; So far I like it a lot!&nbsp; I will try to create my own templates based on some existing BOs to make it fit my needs.&nbsp; </P>
+<P>I did look at the CSLA templates that came CodeSmith (Ricky Supit's) and they are a bit over my head at this point.&nbsp; The problem is that my apps frequently use 2-3 different types databases&nbsp;(MySql, SQL Server &amp; ISAM [via ODBC])&nbsp;at the same time, so I have&nbsp;a&nbsp;provider factory to handle that part.&nbsp; Ricky's templates appear to be written for specifically for SQL server.&nbsp; </P>
+<P>I downloaded the professional version and it is quite expensive.&nbsp; Does the free 2.6 version work well?&nbsp; Any specific problems with it?&nbsp; (I am using VS 2005, but I probably do not need integration with it).</P>
+<P>Thanks,</P>
+<P>Jim</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DesNolan replied on Thursday, December 13, 2007</h2><P>Jim,</P>
+<P>I've not worked with the professonal version of CodeSmith, and have not dug too far into the actual options of 2.6. The one limitation I found with the 2.6 version when using Ricky's templates, is that it only spotted tables in the [dbo] owner schema, and I use other schemas, which required me copying tables to [dbo] to just generate the BOs. </P>
+<P>And not sure I will get to look at it too much more, as MyGeneration is free, and I will probably move on to using that next.</P>
+<P>Ricky's templates may very well be designed for SQL Server, but as for being complex, the versions I have aren't, but you may have newer ones.</P>
+<P>As you can tell, I quickly got out of my depth here, so I don't think I have much more to offer you.</P>
+<P>Sincerely,</P>
+<P>Des Nolan</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 13, 2007</h2><P>Codesmith 2.6 works fine. But it does not support .Net 2.0 code. That may or may not be an issue for you.</P>
+<P>I do not run Codesmith integrated to VS. I just use Codesmith Studio whenever I need it.</P>
+<P>Codesmith can be used to generate classes 1 at a time or many at a time. I usually use 1 at a time mode. I have a separate template that I can pass a list of tables to which then generates code for all the tables in the list. I use that for generating all the SQL statements for a given table. Then I inherit from that and hand code more statements. But the CRUD, Paging, Lists etc are all code generated.</P>
+<P>I strongly recommend you simply use SQL Server as your "development" database. In other words you always point Codesmith at it and generate code based on those table structures. No need to point it at some other DB type if they have the same schema. (And if the schema is NOT the same -what are you doing??)</P>
+<P>Codesmith has the ability to read special fields that you can create as meta data on your table. I forget the name off hand but if I was n charge of our datamodel I would use this feature more often. You can add this metadata to a table and then use it in Codesmith to branch your logic or fill in a template better. The point is - that you get to define this extra data for as many tables as you want to help you code gen stuff better.</P>
+<P>The Codesmith Schema Explorer helps to visualize lots of stuff.</P>
+<P>I have a class called CSLAHelper where I write all the code for my templates. I try to keep the code out of the templates themselves and just call functions which do all the work. Much easier to&nbsp;debug and&nbsp;read later. Ricky Supit's templates probably have many of the same functions which you can copy over to your own version as needed. I helped Matt Altoadonna get them started a long time ago but then branched off to my own as my coding style and helper classes were unique to my environment. I believe Ricky picked up the work and completed it and has kept it up to date since. A lot of the "complexity" in his templates is due to the "flexibility" that many users demanded early on. I wanted indenting and they vame up with a solution that works but is sort of ugly on the eyes. They have also moved on to centralized files which is good coding practice but makes interpreting what is going on very difficult.</P>
+<P>The templates you design are "living documents" so you should include them in your source control system. You should be prepared to work on them heavily at the start and intermittently from then on.</P>
+<P>e.g. I added all the new style business rules to my templates when Rocky came out with version 2.x of CSLA. I also re-coded a lot of my BOs to be compliant with the new version. I also took the opportunity to clean them up - I had learned a thing or two in the intervening years. (Trying to learn VB.Net, CSLA, ASP.Net, Codesmith&nbsp;and OOP all at once was a bit of a challenge.)</P>
+<P>If you already have a project with many BOs and data access code in them then you should be able to create templates fairly quickly. I find it easiest to copy a real class and then start adding the variable code based on the table name and column names etc. Then I run the template frequently and double check that the output is the same as the section I was working on before deleting&nbsp;the original code&nbsp;and leaving behind just the template code.</P>
+<P>Good luck.</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimBalo replied on Friday, December 14, 2007</h2><P>Joe,</P>
+<P>Thanks for the very informative reply.</P>
+<P>Actually the schema is often not the same between the DBs.&nbsp; My apps frequently fill an "integration" function -&nbsp;I pull data from various system including a legacy Cobol system,&nbsp;MAS90 accouting system, MySQL and SQL Server.&nbsp; The reason the schemas are different is that the apps&nbsp;and databases are totally different.&nbsp; I only created some of the DBs myself (SQL&nbsp;or MySQL) - the other DBs simply are what they are and I pull data from there.&nbsp; But I create BOs based on the data no matter the origin of it.&nbsp; Most of the BOs are based on tables in MySQL, though, and this works fine with CodeSmith.&nbsp; I just have to write the templates to be non-provider specific in the data access code.</P>
+<P>Thanks,</P>
+<P>Jim</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SethSpearman replied on Friday, December 14, 2007</h2><P>Joe,</P>
+<P>I am trying to learn all of those things now as well.&nbsp; Glad&nbsp;to know it can be done successfully.&nbsp; </P>
+<P>I am using CodeSmith and I started with Ricky's as base templates and have rolled my own from them that support the creation of a DAL and Unit Tests.&nbsp; They are very kludgy for now but, as you say, they will be works in progress.&nbsp; </P>
+<P>It was only about 2 weeks ago and after 6 to 8 weeks of writing base BO to use as the start for my new templates and then finishing the templates that I actually code-genned.&nbsp; (I have to do this in the evenings wheen I can fit it in usually).&nbsp; </P>
+<P>What a GREAT feeling when I created my second set of objects.&nbsp; It took me about 2-3 horus to create:&nbsp; Base classes for root and child, derived classes for root and child, DAL for two different providers, and Unit Testss.&nbsp; And then the unit tests ACTUALLY ran.</P>
+<P>I think the trickiest thing about Ricky's CSLA templates is this:&nbsp; If you want to create base classes and derived classes then set the GenerationMethod class to SplitBase.&nbsp; Be sure the AuthorizationRules property is set to True.&nbsp; Then set ClassType to Generated...this will create the Base class.&nbsp; Set the ClassType to User and this will create the Derived class.&nbsp; This is probably because "I am not a very smart man..." - Forest Gump my hero - but it took me weeks to figure it out.</P>
+<P>CodeSmith is worth the price of admission.&nbsp; But you can get a discount if you just get on their mailing list and wait for a discount to come in your email.&nbsp; I paid less than $100 for both version 3 and then again for version 4.</P>
+<P>&nbsp;</P>
+<P>Seth</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

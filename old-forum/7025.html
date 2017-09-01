@@ -1,0 +1,250 @@
+<html><header><title>Code generation - Avoiding duplication of effort!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Code generation - Avoiding duplication of effort!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7025.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W posted on Monday, June 01, 2009</h2>Hi All<br><br>OK, as is no doubt annoyingly clear to everyone here already, I'm trying to get code gen working for 3.6.x.<br><br>In particular I'm trying to get it all working with Codesmith 5.1, which seems like the code gen tool with the widest adoption.&nbsp; At the moment I've found two sets of 3.6.x compatible templates, the ones on the CSLA Contrib site and the ones Blake at CodeSmith is developing.<br><br>From looking at the various forums it seems like several of us are trying to get to the same result, and that both sets of templates contain great features but that a hybrid of the two would probably have almost everything needed.<br><br>It seems like there is probably a heck of a lot of duplication of effort going on with some of us working on the CSLA Contrib templates, some of us feeding back to CodeSmith on their templates and a lot of us just starting with one or the other set of templates and hacking them to include our particular requirements.<br><br>Would there be some value in trying to get all of our heads together on this to avoid all this duplication of effort (it's very sunny here, I'd much rather be in a beer garden than reinventing the wheel!)?<br><br>My initial thought is that we could start with a wishlist of features we'd like in the templates and then try and assist the template authors by writing this code and feeding it back to them for review and possible inclusion in the templates (in fact with the amount of custom templates knocking around I bet a lot of this code has already been written by someone).<br><br>My other thought is that between this forum, codeplex and CodeSmith's forums there are probably too many places to post ideas, and centralising all this in one place (a subset of this forum seems the obvious location) might help in giving the whole thing some focus.<br><br>Anyway, that's my thoughts, anybody else have any thoughts?&nbsp; <br><br><br>Disclaimer:&nbsp; I'm not trying to undermine any of the hard work that has gone all ready and I am so grateful to all those involved, I'm just wondering if the community can help more?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Monday, June 01, 2009</h2>I'm happy to participate - I'm using CodeSmith 5.1 to generate against 3.6.x although my templates could use a little bit of tweaking to implement some of the newer best practices.&nbsp; I also find that the information was spread far around so a consolidated forum would be beneficial.&nbsp; I'd suggest speaking/emailing with the fellow at CodeSmith working on their templates.<br><br>I've just found that the templates meant to do everything for you fall down as soon as you want to do anything custom or slightly different.&nbsp; I haven't yet looked at their contribution although I had certainly planned on it and then pilfering as much as I could :-)<br><br>I found the biggest issue with other templates was that I'm using Oracle ODP.net so I had to modify them to be Oracle compatible.&nbsp; With the codeplex ones moving to a DAL and LINQ to SQL they became useless to me for that side of things.&nbsp; I actually had to work with Codesmith and they fixed a number of OracleSchemaProvider bugs for me.&nbsp; There is less metadata in the Oracle columns than the SQLServer so I had to do a few tweaks there as well.<br><br>Also my project is in Silverlight so I've tried to make them output as much Silverlight compatible code as well.&nbsp; I could definitely add more.&nbsp; I also have to admit that my CSLA understanding has moved beyond my templates so they could definitely be improved.&nbsp; <br><br>I'm thinking also about making them generate separate files for common vs. server vs. silverlight specific logic but I'm still not sure if I want to go that far.&nbsp; I also need to modify all my 'column' picker references to actually use real columns in lieu of a set of strings. <br><br>However I'm late on my current project so I'm just living with what I have for now and I tweak occasionally.&nbsp; <br><br><br>jack<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Monday, June 01, 2009</h2>Hi guys,<br><br>I definitely would like to see a more centralized repository for CSLA + CodeSmith templates.<br><br>I've been hacking away at my own set of templates based on the fine work of Rick Supit (CSLAContrib).<br><br>Personally, what I'd like to see is a set of templates that would give me the flexibility to intervene at almost any steps of object creation/fetch/update/delete, but not forcing me to do so. I think that in order to get there, we would need to establish a common set of "hooks".<br><br>In my present templates, I have added such hooks in the form of partial methods and I follow this pattern:<br><br>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+
+ /* Style Definitions */
+ table.MsoNormalTable
+	{mso-style-name:"Table Normal";
+	mso-tstyle-rowband-size:0;
+	mso-tstyle-colband-size:0;
+	mso-style-noshow:yes;
+	mso-style-priority:99;
+	mso-style-qformat:yes;
+	mso-style-parent:"";
+	mso-padding-alt:0cm 5.4pt 0cm 5.4pt;
+	mso-para-margin:0cm;
+	mso-para-margin-bottom:.0001pt;
+	mso-pagination:widow-orphan;
+	font-size:11.0pt;
+	font-family:"Calibri","sans-serif";
+	mso-ascii-font-family:Calibri;
+	mso-ascii-theme-font:minor-latin;
+	mso-fareast-font-family:"Times New Roman";
+	mso-fareast-theme-font:minor-fareast;
+	mso-hansi-font-family:Calibri;
+	mso-hansi-theme-font:minor-latin;}
+
+
+
+<p class="MsoPlainText">private void DataPortal_Fetch(CustomerCriteria
+criteria)<span>&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+
+<p class="MsoPlainText">{</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>SqlConnection
+conn = null;</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>conn =
+GetConnectionPartial(ref conn);</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>if (conn ==
+null)</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>conn =
+GetConnection();</p>
+
+<p class="MsoPlainText"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>SqlCommand
+comm = null;</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>comm =
+GetFetchCommandPartial(ref comm, criteria);</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>If (SqlCommand
+== null)</p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>comm =
+GetFetchCommand();</p>
+
+<p class="MsoPlainText"><o:p>&nbsp;</o:p></p>
+
+<p class="MsoPlainText"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>//So on....<span> </span></p>
+
+<p class="MsoPlainText">}</p>
+
+<br>Basically, I start with a null reference, and call the partial method, passing it the reference as a "ref" parameter (partial methods can't have return values). If the reference comes back still being null, it means that the partial method was never implemented in my user code, so I use the default generated method. Since non implemented partial methods don't have overhead (do they ?), the only overhead is the "if" check (which I don't think weights a lot in the process of retrieving an object from the DB).<br><br>The above code is just an example of the pattern I'd like to see implemented in CodeSmith templates, and is not bound to a specific DAL. The CodeSmith templates developed by Blake use a 3 files pattern. One for the generated business properties, one for user code, and finally one for the DAL (though at this point in time he puts ALL BOs' DAL in the same file. I'm more in favor of having one DAL file per BO). <br><br>If we could fit a set of common methods within that pattern to customize the process of transfering the data to/from the database, then it would make things easier.<br><br>Correct me if I'm wrong, but the most tedious task is actually declaring the BO's properties, and writing the CRUD. For the rest, like Validation rules, I'd be fine to have all this in my user code as there's no current way of removing a Validation rule that was added in the generated code.<br><br>Those are some ideas, so feel free to comment.<br><br>Regards.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Monday, June 01, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>lukky:</strong></div><div><br>Basically, I start with a null reference, and call the partial method, passing it the reference as a "ref" parameter (partial methods can't have return values). If the reference comes back still being null, it means that the partial method was never implemented in my user code, so I use the default generated method. Since non implemented partial methods don't have overhead (do they ?), the only overhead is the "if" check (which I don't think weights a lot in the process of retrieving an object from the DB).<br></div></BLOCKQUOTE><br>Brilliant!&nbsp; I was just trying to work out a good approach for that, you've saved me a lot of time, thank you!&nbsp; I owe you beer...<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>lukky:</strong></div><div><br>and finally one for the DAL (though at this point in time he puts ALL BOs' DAL in the same file. I'm more in favor of having one DAL file per BO). <br><br>If we could fit a set of common methods within that pattern to customize the process of transfering the data to/from the database, then it would make things easier.<br><br>Correct me if I'm wrong, but the most tedious task is actually declaring the BO's properties, and writing the CRUD. For the rest, like Validation rules, I'd be fine to have all this in my user code as there's no current way of removing a Validation rule that was added in the generated code.<br></div></BLOCKQUOTE><br>
+Couldn't agree more on all counts.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Monday, June 01, 2009</h2>@Jack<br><br>Good stuff.&nbsp; The Silverlight stuff is fairly alien to me at present (I don't think we'll really get going on that until VS2010 ships) but great to have someone on board who is already working with it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Monday, June 01, 2009</h2>My Wishlist:<br><br><u>Composition/Aggregation</u><br><br>One of the things near the top of my wishlist/todo list is to get composition/aggregation working.&nbsp; I.e. parent objects with a single child object (rather than a collection of child objects).<br><br>Obviously there are issues with databinding here (it doesn't like objects which aren't 'flat') but for our apps we tend to have say a Contact object which then optionally has say a 'CustomerProfile' child object if the Contact becomes a customer.&nbsp; This data is shown on a seperate tab typically, so we can deal with the databinding issues there.<br><br>I don't think this will be too hard to do, although I'm going to need to really get my head round the ObjectInfo class in the CSLAContrib templates in order to add new Aggregated Child Object Names/Types collections to hold the definitions.<br><br>Ideally I also need to come up with a way for the template to spot the difference between&nbsp; a one-to-zero-to-many relationship and a one-to-zero-to-one relationship.&nbsp; That may be trickier as it's going to be difficult to spot the difference between an aggregated object (which would be a child) and a look up reference (which should just be an id field).<br><br><u><br>Optimistic Concurrency</u><br><br>I don't think either of the template sets deal with this at present.&nbsp; I'm not actually sure what the best way to handle this is with the L2S based approach in the CSLA Contrib templates - need to give that some thought.<br><br><br><u>Removing 'system' fields from Info classes<br><br></u>For our sins we have some apps that require basic replication functionality, but without a central controlling SQL Server.&nbsp; This means we have a lot of fields that should never be available to the user to edit and which are automatically maintained by the system.&nbsp; I need to add a list of these fields to the code that generates the Info classes so that these are never shown in the info classes.&nbsp; <br><br><br>And no doubt there's lots more too!<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mbblum replied on Tuesday, June 02, 2009</h2>The template information is definitely spread over many places, here on Rocky's home sight, this CSLA forum, codeplex, google code, CodeSmith home, 3 different Discussion groups on CodeSmith forum, plus various blogs. Then as Tom notes, the templates are not current or are still being developed for CSLA 3.6 release. Definitely room to work together to get generally good templates.<br /><br />However, the templates can only get close and still be generic for everyones use. Eventually something will have to be customized as each of us will have something unique to our situation.<br /><br />That said, I am definitely willing to assist. Though I am supporting our current CSLA 2.0 app, which takes a fair amount of my time.<br /><br />Tom, another challenge facing me is many-to-many relationships using a linking table. For example, addresses, phone, and email use linking tables to people/businesses, so a person/biz can have multiple of each and each could be associated to more than one person/biz.<br /><br />Luc, that is good information. Like Tom, that partial method will be very helpful.<br /><br /><br />Regarding this:<br /><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>lukky:</strong></div><div><br>Correct me if I'm wrong, but the most tedious task is actually declaring the BO's properties, and writing the CRUD. For the rest, like Validation rules, I'd be fine to have all this in my user code as there's no current way of removing a Validation rule that was added in the generated code.<br></div></BLOCKQUOTE><br /><br />Agreed, it is exceptionally tedious and detailed work to build out the basic BO and CRUD. That is something the code generators are great at performing.<br /><br />My philosophy and approach is to get all my Validation, Authorization, and other business logic/rules/functionality into the CSLA objects I create. If by "user code" you mean the UI code behind, that is what I am trying to get away from. <br /><br />The app I'm supporting the developers about 3 years ago created CSLA objects that basically replicate the database, then put all the business logic and rules in the WinForm code behind. Several forms have more than a thousand lines of code, and a few are approaching 10,000 loc. It is frustrating to fix the same thing, even something as simple as a field max length, in multiple places, then learn from users their is yet another place to make the same fix. <br /><br />I want to get all that logic into thebusiness objects, maintain it once, and have the UI get all its information from the objects. <br /><br />mbb</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Tuesday, June 02, 2009</h2>@mbb<br><br>When I refer to "user code" in the context of code generation, I mean the portion of the code that doesn't get overwritten by the generator. In most cases this code will be in a separate file. I use this name in opposition to the "generated code" that gets overwritten every time you run the generator.<br><br>For example, I don't like having CSLA Validation Rules in the "generated" file, because most of the time they will no be to my taste. Having them in the generated file prevents me from modifying them. The current templates will generate a lot of "StringRequired" validation rules that are not needed. I kept having to move those manually back to my user file until I decided to modify the templates <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>On the other hand, if those Validation Rules get generated for me the first time, but in the "user" code file, then I can customize them to my taste. So if Blake and other template maintainers are lurking by, please move Validation Rules to the user code file.<br><br>Regards.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, June 02, 2009</h2>Hello guys,<br><br>Composition/Aggregation<br><br>One of the things near the top of my wishlist/todo list is to get composition/aggregation working.&nbsp; I.e. parent objects with a single child object (rather than a collection of child objects).<br><b>This should be working in the latest set of the CodeSmith.CSLA Templates.</b><br><br>Ideally I also need to come up with a way for the template to spot the difference between&nbsp; a one-to-zero-to-many relationship and a one-to-zero-to-one relationship.&nbsp; That may be trickier as it's going to be difficult to spot the difference between an aggregated object (which would be a child) and a look up reference (which should just be an id field).<br><br><b>This is also working in the latest set of the CodeSmith.CSLA Templates.</b><br><br>Optimistic Concurrency<br><br>I don't think either of the template sets deal with this at present.&nbsp; I'm not actually sure what the best way to handle this is with the L2S based approach in the CSLA Contrib templates - need to give that some thought.<br><br><b>I am currently working on this.</b><br><br>Removing 'system' fields from Info classes<br><br>For our sins we have some apps that require basic replication functionality, but without a central controlling SQL Server.&nbsp; This means we have a lot of fields that should never be available to the user to edit and which are automatically maintained by the system.&nbsp; I need to add a list of these fields to the code that generates the Info classes so that these are never shown in the info classes.&nbsp; <br><br>And no doubt there's lots more too!<br><br><b>This would probably be above and beyond the basic templates.</b><br><br>The template information is definitely spread over many places, here on Rocky's home sight, this CSLA forum, codeplex, google code, CodeSmith home, 3 different Discussion groups on CodeSmith forum, plus various blogs. Then as Tom notes, the templates are not current or are still being developed for CSLA 3.6 release. Definitely room to work together to get generally good templates.<br><b><br>I couldn’t agree with you more on that. This is one of the reasons we started implementing our own templates. We couldn’t get any support for fixing bugs and wasn’t up-to-date with CSLA so answering questions was kind of tuff todo. I did a lot of research on about 10 different set of templates and made a bullet point list of what I thought were the best features and things to have. I also read the new 2008 book and emailed rocky a few times. My goal for the templates were to be 100% CSLA, I didn’t want to deviate at all from rocky.<br></b><br><b>I think that all the CSLA Questions remain on rockys forums, any code discussion can be in our forums when it comes to the templates. We have created a separate forum. Once our templates clear up we will remove the extra forums and the other CSLA templates as ours are the only ones supported. </b><br><br>“Tom, another challenge facing me is many-to-many relationships using a linking table. For example, addresses, phone, and email use linking tables to people/businesses, so a person/biz can have multiple of each and each could be associated to more than one person/biz.”<br>This has already been done and is working. I spent a lot of time on relationships getting it right. If you find any bugs please let me know.<br><br><b>As for your pain points, this is something I’d be willing to sit down and work through. We want the best experience possible when working with the CSLA templates.<br><br>If you guys wanted to help me with my endeavor that would be great! I have a CSLA Developer who is willing to convert the templates to VB.NET when I am finished with C#. I have quite a bit of resources at our disposal. Like we could set up a Google code site or possibly use the current issue tracker (I’d need to talk to Eric). Also we could have meetings via a toll free conference line via skype, or just use skype. We could also use go-to-meeting. I’m here to contribute and provide an amazing experience for all CSLA developers. Please feel free to contact me (bniemyjski AT codesmithtools DOT com)<br></b><br>Thanks<br>-Blake Niemyjski<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tom_W replied on Tuesday, June 02, 2009</h2>Hi Blake,<br><br>Many thanks for your detailed response, that really helps :-)<br><br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>bniemyjski:</strong></div><div><b></b><b>I think that all the CSLA Questions remain on rockys forums, any code discussion can be in our forums when it comes to the templates. We have created a separate forum. Once our templates clear up we will remove the extra forums and the other CSLA templates as ours are the only ones supported. </b></div></BLOCKQUOTE><br><br>That sounds sensible, but I think the key is that from the CSLA community point of view it might be better to define the requirements for the 'ideal' templates separately.<br><br>That way, anyone who wants to implement templates based on these 'ideal' standards can do so.&nbsp; As soon as we narrow down to one template technology we will lose the input of all of the community members who use other code generation tools.<br><br>In my mind we need to define a matrix with all the things the templates can do on one axis and all of the different template technologies on the other axis.<br><br>That's only my thoughts though and if everyone is happy to go the CodeSmith route (I certainly am) then there are big advantages to that too in terms of people being able to produce code for a single code generation technology (and suggest to suggest actual bug fixes and improvements).<br><br>Anyone else have any views on this? <br><br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>bniemyjski:</strong></div><div><b>As for your pain points, this is something I’d be willing to sit down and work through. We want the best experience possible when working with the CSLA templates.<br><br>If you guys wanted to help me with my endeavor that would be great! I have a CSLA Developer who is willing to convert the templates to VB.NET when I am finished with C#. I have quite a bit of resources at our disposal. Like we could set up a Google code site or possibly use the current issue tracker (I’d need to talk to Eric). Also we could have meetings via a toll free conference line via skype, or just use skype. We could also use go-to-meeting. I’m here to contribute and provide an amazing experience for all CSLA developers. Please feel free to contact me (bniemyjski AT codesmithtools DOT com)</div></BLOCKQUOTE><br></b><br>That sounds great and I for one am all up for that.&nbsp; At the minute I can't use the version of the new Codesmith.CSLA templates I have for production code (due to the FK issues), but I know you have a new version coming very shortly that fixes these problems, and as soon as these templates are production ready I'm very happy to try them and to contribute.<br><br>If you have resource available then this has to be the quickest way to get templates with all the desired features up and going.<br><br>One request I'd make here though is that you share the detailed development plan for these templates so everyone can see what is coming and <span>when </span>- it's pointless to post about features that you are already planning to do, and it is vital to know what the timescales are.&nbsp; There are features we can wait for and features we can't!<br><br><br>OK, what does everyone else think?<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,24 @@
+<html><header><title>CodeSmith Templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CodeSmith Templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8582.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort posted on Thursday, February 25, 2010</h2><p>Using the CodeSmith C# Templates on Codeplex for CSLA v. 3.8, is there a way to generate an entity from a stored procedure?&nbsp; This used to be possible way back when.&nbsp; I ask b/c we want to create some&nbsp;&#39;Light&#39; objects which we would do so after writing the SP for it.&nbsp; </p>
+<p>Tks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Thursday, February 25, 2010</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>Generating from a view or stored procedure is currently not possible. We have thought about adding support for this in one of the next versions of the templates. If we did this the light objects would more than likely be limited to read only BO as there would be no way for us to update the BO or do deletes against it intelligently. Could you please log this request on the <a href="http://code.google.com/p/codesmith/issues/list">CodeSmith bug tracker</a>.</p>
+<p>Another&nbsp;possibility&nbsp;is for us to update the ignore expression regex to be applied to columns as well.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>petervdm replied on Friday, April 30, 2010</h2><p>Hi Blake,</p>
+<p>Has anything been done on modifying the ignore expression regex to strip out columns?&nbsp; </p>
+<p>Another possibility would be to have a collection of columns you would like to include - this being more useful on tables with loads of columns.</p>
+<p>More often than not we create business objects that contain just the fields that we require.</p>
+<p>Thanks</p>
+<p>Peter</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Friday, April 30, 2010</h2><p>&nbsp;</p>
+<p>Hello,</p>
+<p>Support for this hasn&#39;t been added, but the templates could be modified very easily to support this. &nbsp;I think there would have to be a discussion on what to check by. You wouldn&#39;t want to exclude table columns that are required (non nullable with no default values). But you would want to ignore all columns from a view or read only Business Object. Could you please log this request on the&nbsp;<a href="http://code.google.com/p/codesmith/issues/list">CodeSmith bug tracker</a>.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, May 04, 2010</h2><p>
+<p>Hello,</p>
+<p>I have committed a patch for this on the following&nbsp;<a href="http://code.google.com/p/codesmith/issues/detail?id=355">Google Code Issue</a>.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,72 @@
+<html><header><title>CSLA 3.6 child collection error &quot;Property load or set failed for property Sizes (One or more properties are not registered for this type)&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.6 child collection error &quot;Property load or set failed for property Sizes (One or more properties are not registered for this type)&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7128.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry_Seldon posted on Wednesday, June 17, 2009</h2><br>Hi All,<br><br>I'm haveing an issue with a child collection.<br>I'm getting the error "Property load or set
+failed for property Sizes (One or more properties are not registered for this
+type"<br><br>
+
+<p>&nbsp;</p>
+
+<p>My property
+declaration in the parent is:<br></p>
+
+<p>private static
+PropertyInfo&lt;Sizes&gt; SizesProperty =
+RegisterProperty&lt;Sizes&gt;(typeof(Sizes), new
+PropertyInfo&lt;Sizes&gt;("Sizes"));</p>
+
+<p>&nbsp;</p>
+
+<p>Trying to load the
+Sizes child collection in DataPortal_Fetch of the parent.<br></p>
+
+<p>LoadProperty&lt;Sizes&gt;(SizesProperty,
+Sizes.GetSizes(repository));</p>
+
+<p>&nbsp;</p>
+
+<p>The Sizes object is
+pretty straight forward and has no properties at all.<br></p>
+
+<p>[Serializable()]</p>
+
+<p><span>&nbsp;&nbsp;&nbsp; </span>public class Sizes :
+Csla.BusinessListBase&lt;Sizes, Size&gt;</p>
+
+<p><span>&nbsp;&nbsp;&nbsp; </span>{</p>
+
+<p><span>&nbsp;</span></p>
+
+<p>BTW generated with
+codesmith 3.6 templates.</p>
+
+<p>&nbsp;</p>
+
+<p>The Size class also
+generated with codesmith templates, has only two properties.<br></p>
+
+<p>&nbsp;</p>
+
+<p>[Serializable()]</p>
+
+<p><span>&nbsp;&nbsp;&nbsp; </span>public class Size :
+Csla.BusinessBase&lt;Size&gt;</p>
+
+<p><span>&nbsp;&nbsp;&nbsp; </span>{</p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>#region Business Properties and Methods</p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>//register properties</p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>private static PropertyInfo&lt;int&gt;
+IdProperty = RegisterProperty&lt;int&gt;(typeof(Size), new
+PropertyInfo&lt;int&gt;("Id"));</p>
+
+<p><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>private static
+PropertyInfo&lt;string&gt; DescriptionProperty =
+RegisterProperty&lt;string&gt;(typeof(Size), new
+PropertyInfo&lt;string&gt;("Description"));</p>
+
+<p>&nbsp;</p><p>The data is fetched from the child, but the LoadProperty in the parent fails with the error as above and I just don't know what it really means. The object Sizes has no properties, so I don't know what the error is referring to.</p><p><br></p><p>I'm using CSLA 3.6.3</p><p>Any insight would be great. By the way I do have the Business objects 2008 book. I didn't find any help in there.</p><p><br></p><p>Thanks in advance.</p><p><br></p>
+
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 18, 2009</h2>I think that message used to appear a lot whenever there was a problem with the managed properties getting "out of alignment". There was a forceInit static variable trick that was used to ensure that all the register property statements occurred. Without it there was no guarantee that all of the properties would register and you would get that message.<br /><br />The odd thing is that Rocky fixed that issue in CSLA 3.6.2 or thereabouts and eliminated the need for forceInit. So if you are running 3.6.3 you should not be seeing this. Maybe something else is incorrect about the way you are registering properties.<br /><br />Joe<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Harry_Seldon replied on Friday, June 19, 2009</h2>Thanks Joe, just the hint I needed.<br>
+I started playing around with the register code, eventually this seems to work<br>
+<br>New:<br>
+private static PropertyInfo&lt;Sizes&gt; SizesProperty = RegisterProperty&lt;Sizes&gt;(new PropertyInfo&lt;Sizes&gt;("Sizes"));<br><br>Old - difference is bold:<br>private static PropertyInfo&lt;Sizes&gt; SizesProperty = RegisterProperty&lt;Sizes&gt;(<b>typeof(Sizes)</b>, new PropertyInfo&lt;Sizes&gt;("Sizes"));<br><br>Thanks again.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

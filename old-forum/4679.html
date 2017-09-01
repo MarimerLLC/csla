@@ -1,0 +1,206 @@
+<html><header><title>Csla.Net Application Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla.Net Application Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4679.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sunil posted on Saturday, April 12, 2008</h2><P><SPAN>&nbsp;I have created the simple CSLA.Net Application.when I am trying to execute the application I am getting the error.It is in the form of Dialog box.</SPAN></P>
+<P><SPAN></SPAN><SPAN>Error:"WebDev.Webserver.exe has encountered a problem and needs to close.We are sorry for the inconvenience."&nbsp;&nbsp; and</SPAN></P>
+<P><SPAN>When I am Debugging the Application I am getting the Exception &nbsp;"StackOverflowException was Unhandled".</SPAN></P>
+<P><SPAN>Exception:"An unhandled exception of type 'System.StackOverflowException' occurred in mscorlib.dll" at the position&nbsp; "<FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2>(cm.ExecuteReader()))"</P></FONT></SPAN>
+<P><SPAN></SPAN></P>
+<P><SPAN>The Following code is:</SPAN></P><SPAN><FONT size=2>
+<P>[</FONT><FONT color=#008080 size=2>RunLocal</FONT><FONT size=2>()]</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Create(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>&nbsp;</P></FONT><FONT size=2>
+<P>_hiredate.Date = </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2>.Today;</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>Database</FONT><FONT size=2>.employeeConnection))</P>
+<P>{</P>
+<P>cn.Open();</P>
+<P>ExecuteFetch(cn, criteria);</P>
+<P>}</FONT><FONT color=#008000 size=2>//using</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> ExecuteFetch(</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn, </FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlCommand</FONT><FONT size=2> cm = cn.CreateCommand())</P>
+<P>{</P>
+<P>cm.CommandType = </FONT><FONT color=#008080 size=2>CommandType</FONT><FONT size=2>.Text;</P>
+<P>cm.CommandText = </FONT><FONT color=#800000 size=2>"Select empno, empname, hiredate, job,sal,city from employee where empno='"</FONT><FONT size=2> + criteria.empno + </FONT><FONT color=#800000 size=2>"'"</FONT><FONT size=2>;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2>(cm.ExecuteReader()))</P>
+<P>{</P>
+<P>FetchObject(dr);</P>
+<P>ValidationRules.CheckRules();</P>
+<P>}</P>
+<P>}</FONT><FONT color=#008000 size=2>//using</P></FONT><FONT size=2>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> FetchObject(</FONT><FONT color=#008080 size=2>SafeDataReader</FONT><FONT size=2> dr)</P>
+<P>{</P>
+<P>dr.Read();</P>
+<P>_empno = dr.GetString(</FONT><FONT color=#800000 size=2>"empno"</FONT><FONT size=2>);</P>
+<P>_empname = dr.GetString(</FONT><FONT color=#800000 size=2>"empname"</FONT><FONT size=2>);</P>
+<P>_hiredate = dr.GetSmartDate(</FONT><FONT color=#800000 size=2>"hiredate"</FONT><FONT size=2>);</P>
+<P>_job = dr.GetString(</FONT><FONT color=#800000 size=2>"job"</FONT><FONT size=2>);</P>
+<P>_sal = dr.GetInt32(</FONT><FONT color=#800000 size=2>"sal"</FONT><FONT size=2>);</P>
+<P>_city = dr.GetString(</FONT><FONT color=#800000 size=2>"city"</FONT><FONT size=2>);</P></FONT><FONT size=2>
+<P>} </P>
+<P>Please help me on this issue.</P></FONT></SPAN>
+<P><SPAN>&nbsp;&nbsp; If any help would be appreciated.<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, April 12, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nothing immediately obvious.&nbsp; I would check the rules to
+see if there is a custom rule that is causing the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> sunil
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, April 12, 2008 9:59 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Csla.Net Application Error<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>&nbsp;I have created the simple CSLA.Net Application.when I am trying to
+execute the application I am getting the error.It is in the form of Dialog box.<o:p></o:p></p>
+
+<p>Error:&quot;WebDev.Webserver.exe has encountered a problem and needs to
+close.We are sorry for the inconvenience.&quot;&nbsp;&nbsp; and<o:p></o:p></p>
+
+<p>When I am Debugging the Application I am getting the Exception
+&nbsp;&quot;StackOverflowException was Unhandled&quot;.<o:p></o:p></p>
+
+<p>Exception:&quot;An unhandled exception of type
+'System.StackOverflowException' occurred in mscorlib.dll&quot; at the
+position&nbsp; &quot;<span>using</span><span> (<span>SafeDataReader</span> dr = <span>new</span> <span>SafeDataReader</span>(cm.ExecuteReader()))&quot;<o:p></o:p></span></p>
+
+<p>The Following code is:<o:p></o:p></p>
+
+<p><span>[<span>RunLocal</span>()]<o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span>
+DataPortal_Create(<span>Criteria</span> criteria)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>&nbsp;<o:p></o:p></span></p>
+
+<p><span>_hiredate.Date = <span>DateTime</span>.Today;<o:p></o:p></span></p>
+
+<p><span>ValidationRules.CheckRules();<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span>
+DataPortal_Fetch(<span>Criteria</span> criteria)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>SqlConnection</span> cn = <span>new</span> <span>SqlConnection</span>(<span>Database</span>.employeeConnection))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>cn.Open();<o:p></o:p></span></p>
+
+<p><span>ExecuteFetch(cn, criteria);<o:p></o:p></span></p>
+
+<p><span>}<span>//using<o:p></o:p></span></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>private</span><span> <span>void</span> ExecuteFetch(<span>SqlConnection</span> cn, <span>Criteria</span>
+criteria)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>SqlCommand</span> cm =
+cn.CreateCommand())<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>cm.CommandType = <span>CommandType</span>.Text;<o:p></o:p></span></p>
+
+<p><span>cm.CommandText = <span>&quot;Select
+empno, empname, hiredate, job,sal,city from employee where empno='&quot;</span>
++ criteria.empno + <span>&quot;'&quot;</span>;<o:p></o:p></span></p>
+
+<p><span>using</span><span> (<span>SafeDataReader</span> dr = <span>new</span> <span>SafeDataReader</span>(cm.ExecuteReader()))<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>FetchObject(dr);<o:p></o:p></span></p>
+
+<p><span>ValidationRules.CheckRules();<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<span>//using<o:p></o:p></span></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>protected</span><span> <span>void</span> FetchObject(<span>SafeDataReader</span> dr)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>dr.Read();<o:p></o:p></span></p>
+
+<p><span>_empno = dr.GetString(<span>&quot;empno&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>_empname = dr.GetString(<span>&quot;empname&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>_hiredate = dr.GetSmartDate(<span>&quot;hiredate&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>_job = dr.GetString(<span>&quot;job&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>_sal = dr.GetInt32(<span>&quot;sal&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>_city = dr.GetString(<span>&quot;city&quot;</span>);<o:p></o:p></span></p>
+
+<p><span>} <o:p></o:p></span></p>
+
+<p><span>Please help me on this issue.<o:p></o:p></span></p>
+
+<p>&nbsp;&nbsp; If any help would be appreciated.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Saturday, April 12, 2008</h2>Hi,<br><br>I experienced a similar behaviour at a costumer a few weeks ago, as we tried to run our app on a new test workstation for the first time. The application crashed at startup, whithout even reaching the first line of code. The message shown did not give any hints. I don't remember if it was exacly the same as the one you got, but at least it sounds similar...<br><br>Finally, the solution to this was running windows update, <br>and <b>install</b> the optional <b>.Net Framework 2.0 Service Pack 1</b>.<br><br>Hope that helps. Let us know what it was.<br><br>Stefan<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

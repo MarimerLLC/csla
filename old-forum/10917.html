@@ -1,0 +1,27 @@
+<html><header><title>Architecture</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Architecture</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10917.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Thursday, November 24, 2011</h2><p>Hi all..</p>
+<p>&nbsp;</p>
+<p>I want to build distributed application on several location, and which is the best one :</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; use one database server on central office and each branch office has application access those server remotely for real time usage </p>
+<p>OR</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; each branch office has a database server for work locally so that branch office has better performance access and then synchronize to database server on central office</p>
+<p>&nbsp;??</p>
+<p>the case : </p>
+<p>1. any real time transaction that central and branch need to know those information ( like mutation , etc )</p>
+<p>2. there is a transaction that can be sent into central office on evening ( for example : sales order, etc )</p>
+<p>&nbsp;</p>
+<p>Could anyone give me a suggestion ? </p>
+<p>I confuse which architecture i should choose ??</p>
+<p>If&nbsp; you need more information let me know (&nbsp; I&#39;m sorry if i difficult to describe the scenario )</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, November 27, 2011</h2><p>I&nbsp; prefer to have one common database and a farm of stateless application servers (to scale up for performance). </p>
+<p>Having distributed database servers and replication is a lot more work to adminstrate. </p>
+<p>Yes, that architecture may require some extra care in designing your app and messages/UOW objects.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Monday, November 28, 2011</h2><p>Hi jonny, thanks for your response</p>
+<p>&nbsp;</p>
+<p>Yes, I&#39;m agree with you about a lot of work to synchronize the database.</p>
+<p>I&#39;m sorry , I still not understand about :</p>
+<p>1. &quot;a farm of stateless app servers&quot;</p>
+<p>2. that architecture may require some extra care in designing your app and message </p>
+<p>&nbsp;</p>
+<p>could you explain / with an example, so i can understand those ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

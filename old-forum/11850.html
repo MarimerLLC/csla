@@ -1,0 +1,40 @@
+<html><header><title>Async rule called during DataPortal_Fetch</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async rule called during DataPortal_Fetch</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11850.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp.au posted on Thursday, February 21, 2013</h2><p>
+<p>Hi,</p>
+<p>I am using CSLA 4.2.2 with Silverlight (love it).</p>
+<p>I have a question about the use of async rules.</p>
+<p>I have some BusinessBase objects I fetch from the database.There is the possibility the database data can be incorrect, so I want to call BusinessRules.CheckRules() from within DataPortal_Fetch.</p>
+<p>In this way the CSLA PropertyStatus controls in the GUI will flag any errors even if the user has not changed anything.</p>
+<p>However I got caught out when doing this with async rules.</p>
+<p>It looks like if you call an async rule from within DataPortal_Fetch or Child_Fetch on BusinessBase, and there is not time for the rule to complete before the object is serialised, the IsBusy flag for the BusinessBase object is locked on.</p>
+<p>This causes weird GUI behaviour e.g. if you change the object you can never cancel the changes.</p>
+<p>Has anyone else seen this problem? I&#39;m not sure if this is a CSLA bug or I am doing something wrong?</p>
+<p>I have worked around it by adding the following code to all of my async rules -</p>
+<p>if (ApplicationContext.ExecutionLocation != ApplicationContext.ExecutionLocations.Silverlight)</p>
+<p>{</p>
+<p>_log.Debug(&quot;skipping async rule check as we are not executing on Silverlight&quot;);</p>
+<p>context.Complete();</p>
+<p>return;</p>
+<p>}</p>
+<p>Of course this means all of my async rules are ignored on the server side.</p>
+<p>Kind Regards,</p>
+<p>Richard.&nbsp;</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Thursday, February 21, 2013</h2><p>You have 2 options (from my braindump)</p>
+<p>&nbsp;</p>
+<ol>
+<li>Make rule <strong>async </strong>on SL and <strong>sync </strong>on .NET Serverside. <br />ie - CSLA have separate registration of rules on server and client and can set IsAsync to a configured value on the serverside and code the&nbsp;the execute method to handle both sync/async behavior.&nbsp;</li>
+<li>Add code to your rule so that it will not run for a given condition (as you have).&nbsp;</li>
+</ol>
+<p>&nbsp;</p>
+<p>Option1 makes your rule run in both client and server.&nbsp;</p>
+<p>Starting from CSLA 4.3 &nbsp;(IIRC) rules can specify:</p>
+<p>&nbsp;</p>
+<ul>
+<li>CanRunOnServer &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;(when false - exclude from run in serverside of DataPortal)</li>
+<li>CanRunAsAffectedProperty &nbsp; (when false - exclude from run when this property is an affected property of another rule)</li>
+<li>CanRunInCheckRules &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; (when false - exclude from run in CheckRules)</li>
+</ul>
+<p>&nbsp;</p>
+<p>I often find that especially async lookup rules should only run on the &quot;rich&quot; client side when a user changes the value, hence it is nice to be able to instruct the rule engine to not run the rule for a given set of conditions. This also means that the affected properties/input properties for excluded rules is ignored.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardp.au replied on Thursday, February 21, 2013</h2><p>Thanks Jonny that clears it up.</p>
+<p>Perhaps it would be a good to have the CSLA framework throw a SerializationException on any BusinessBase object that still had rules running at the time it was attempted to be serialized. That would make this situation very obvious. It took a little time to work out what was happening here and it definitely broke my app.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 25, 2013</h2><p>Starting in 4.5.13 the data portal will throw an exception if IsBusy is true when the object tries to return to the client.</p>
+<p><a href="https://github.com/MarimerLLC/csla/issues/33">https://github.com/MarimerLLC/csla/issues/33</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

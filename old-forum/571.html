@@ -1,0 +1,31 @@
+<html><header><title>Creation of object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Creation of object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/571.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kaspyanand posted on Saturday, July 08, 2006</h2>
+The requirement in my project is creation of itinerary ..which will
+have a name,category(like adventure,classisc),noofdays(eg 6 day
+itinerary),and activities assigned to each day..so..to design this
+situation when user creates an itinerary,i need to create an itinerary
+object with name,category and noofdays(my understnding is that these
+are invariant of class)..my question is where to check if data supplied
+by user is incorrect(eg 0 nofodays is invalid)..in constructor..if
+so,if data is invalid..what needs to be done.. raise exception and
+destroy object? or use a factory class to create object..which will
+check data provided and if everything is ok,then create itinerary
+object..I am using C#..<br>
+Does CSLA has any guideline for such a scenario?<br>
+thks<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jurjen replied on Saturday, July 08, 2006</h2><P>You should add some 'rules' to the brokenrules collection within the object. When the object is created all rules will be checked, when as you say NoOfDays must be greater than 0 it will invalid a rule, making the object invalid. Invalid objects can't be saved. You may want to look it up in the book to see how it works, here's some code that might help.</P>
+<P>Jurjen.</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddBusinessRules()</P>
+<P></FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.AddBusinessRules()</P>
+<P></FONT><FONT color=#0000ff size=2>With</FONT><FONT size=2> BrokenRules</P>
+<P>.AddRule(</FONT><FONT color=#0000ff size=2>AddressOf </FONT><FONT size=2>&nbsp;CodeRequired, </FONT><FONT color=#ff0000 size=2>"Code"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> RuleArgs(</FONT><FONT color=#ff0000 size=2>"Code"</FONT><FONT size=2>))</FONT><FONT size=2></P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>With</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2></FONT>&nbsp;</P>
+<P><FONT size=2></P>
+<P>&lt;Description(</FONT><FONT color=#ff0000 size=2>"{0} is a required field."</FONT><FONT size=2>)&gt; _</P>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> CodeRequired(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> target </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> RuleArgs) </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> Len(CallByName(target, e.PropertyName, CallType.Get)) &gt; 0</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

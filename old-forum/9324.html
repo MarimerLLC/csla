@@ -1,0 +1,38 @@
+<html><header><title>How to call the xyz_InsertObject(object sender,EventArgs e)  event from the button click event</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to call the xyz_InsertObject(object sender,EventArgs e)  event from the button click event</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9324.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sirak posted on Thursday, August 05, 2010</h2><p>Hi guys</p>
+<p>i have a gridview control whis is bind to the itemDatasourceCsla datasource ....and i want to add a new row to the gridview control ....and configure the footer to accept new row and also add an insert link button....here the question is i want to call the itemdatasourceCsla datasource insertObject() event from this insert button ....pls help.....look like this(it is webbased)</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;color:#0000ff;"><font size="2" color="#0000ff">
+<p>protected <span style="font-size:x-small;color:#0000ff;">void</span><span style="font-size:x-small;"> ItemCslaDataSource_InsertObject(</span><span style="font-size:x-small;color:#0000ff;">object</span><span style="font-size:x-small;"> sender, Csla.Web.</span><span style="font-size:x-small;color:#2b91af;">InsertObjectArgs<span style="color:#000000;"> e)</span></span></p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p>
+<p><span style="font-size:x-small;">{</span></p>
+<p><span style="font-size:x-small;">code to insert item ....look the question from lnkInset_Click event...
+<p>{</p>
+</span></p>
+</p>
+<p><span style="font-size:x-small;color:#0000ff;">
+<p>protected void<span style="font-size:x-small;"> lnkInsert_Click(</span><span style="font-size:x-small;color:#0000ff;">object</span><span style="font-size:x-small;"> sender, </span><span style="font-size:x-small;color:#2b91af;">EventArgs</span> e)</p>
+<p>{</p>
+<p>//i want to call the obove event from here....help pls</p>
+<p>}</p>
+<p>&nbsp;</p>
+<font size="2" color="#0000ff">
+<p>
+<p><span style="font-size:x-small;"></span></p>
+</p>
+</font></span>
+<p>&nbsp;</p>
+</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">&nbsp;</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, August 05, 2010</h2><p>That is not the way Web Forms data binding works.</p>
+<p>In Web Forms, you tell the UI control (datagridview, detailsview, etc) that you want to insert an item, and <em>the UI control tells data binding</em> it wants a new item, and data binding tells the datasource control it wants a new item. That&#39;s when the CslaDataSource control raises the event to get a new item.</p>
+<p>This isn&#39;t a CSLA thing - this is the way Web Forms is designed to work. So you can find examples and information on inserting items from pretty much any decent Web Forms book.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sirak replied on Friday, August 06, 2010</h2><p>Thanks Rocky for your replay ....the problem i encounter is that by default Gridview control doesn&#39;t have option to insert new row....so i have to manually create an insert button in the footer template with the associated textbox control to insert data,and give my insert link button command name Insert ,then from this click event of the link button i want to execute the InsertObject of csla ...b/c it is here that i write code to insert my data....</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, August 06, 2010</h2><p>It has been a few years since I did web forms work, so I don&#39;t remember the specifics - but I do know there&#39;s a way to have the datagridview do an insert operation. As I remember it, the process is somewhat awkward - but it does work more or less as I described in my previous post.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

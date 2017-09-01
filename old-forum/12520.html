@@ -1,0 +1,74 @@
+<html><header><title>Impersonation not working in PopulateWindowsIdentity()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Impersonation not working in PopulateWindowsIdentity()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12520.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SPeters posted on Friday, March 21, 2014</h2><p>Hi guys,</p>
+<p>I think I have an interesting one. &nbsp;I have been reading many, many discussions on this topic and altering my code and have found an interesting quirk. &nbsp;Below are the most useful discussions I&#39;ve read and taken ideas from.</p>
+<p>http://forums.lhotka.net/forums/p/12036/56156.aspx</p>
+<p>http://forums.lhotka.net/forums/p/8931/42494.aspx</p>
+<p>I have a .NET 4.5, CSLA 4.5.40, Silverlight 5, IIS 7.5 application that has been working terrifically locally but I&#39;ve been trying to deploy to a webserver. &nbsp;My AppPool settings have gone through every possible permutation but I have settled with Integrated and Identity: LocalSystem. &nbsp;If I change the identity it gives similar results as mentioned below but with a different system account. &nbsp;IIS site authentication only has ASP .NET Impersonation and Windows Authentication Enabled.</p>
+<p>Here is the web.config with all the tags that have been identified as required:</p>
+<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</p>
+<p>&lt;configuration&gt;</p>
+<p>&nbsp; &lt;appSettings&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;EventLogName&quot; value=&quot;GreyDev&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;CslaAuthentication&quot; value=&quot;Windows&quot;/&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;CslaWriter&quot; value=&quot;Csla.Serialization.Mobile.CslaBinaryWriter, Csla&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;add key=&quot;CslaReader&quot; value=&quot;Csla.Serialization.Mobile.CslaBinaryReader, Csla&quot; /&gt;</p>
+<p>&nbsp; &lt;/appSettings&gt;</p>
+<p>&nbsp; &lt;connectionStrings&gt;</p>
+<p>PRIVATE :)</p>
+<p>&nbsp; &lt;/connectionStrings&gt;</p>
+<p>&nbsp; &lt;system.web&gt;</p>
+<p>&nbsp; &nbsp; &lt;compilation debug=&quot;true&quot; targetFramework=&quot;4.5&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;authentication mode=&quot;Windows&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;identity impersonate=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;pages controlRenderingCompatibilityVersion=&quot;4.0&quot;/&gt;</p>
+<p>&nbsp; &lt;/system.web&gt;</p>
+<p>&nbsp; &lt;system.webServer&gt;</p>
+<p>&nbsp; &nbsp; &lt;validation validateIntegratedModeConfiguration=&quot;false&quot; /&gt;</p>
+<p>&nbsp; &lt;/system.webServer&gt;</p>
+<p>&nbsp; &lt;system.serviceModel&gt;</p>
+<p>&nbsp; &nbsp; &lt;serviceHostingEnvironment multipleSiteBindingsEnabled=&quot;true&quot; aspNetCompatibilityEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;services&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Business.Compression.CompressedHost&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint binding=&quot;basicHttpBinding&quot; contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot; bindingConfiguration=&quot;BasicHttpBinding_IWcfPortal&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p>&nbsp; &nbsp; &lt;/services&gt;</p>
+<p>&nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p><span>	</span> &nbsp;&lt;serviceAuthorization impersonateCallerForAllOperations=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &lt;/behaviors&gt;</p>
+<p>&nbsp; &nbsp; &lt;bindings&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;binding name=&quot;BasicHttpBinding_IWcfPortal&quot;&nbsp;</p>
+<p><span>		</span>maxReceivedMessageSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxBufferPoolSize=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;maxBufferSize=&quot;2147483647&quot; &gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;readerQuotas maxBytesPerRead=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxArrayLength=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxStringContentLength=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxNameTableCharCount=&quot;2147483647&quot;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; maxDepth=&quot;2147483647&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;security mode=&quot;TransportCredentialOnly&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;transport clientCredentialType=&quot;Windows&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/security&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/binding&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/basicHttpBinding&gt;</p>
+<p>&nbsp; &nbsp; &lt;/bindings&gt;</p>
+<p>&nbsp; &lt;/system.serviceModel&gt;</p>
+<p>&lt;/configuration&gt;</p>
+<div></div>
+<div></div>
+<div>On to my results. &nbsp;In my AppIdentity class I call the CSLA method&nbsp;PopulateWindowsIdentity(). &nbsp;Digging into this method I found that the main call to retrieve the impersonated windows user is: &nbsp;var currentUser = System.Security.Principal.WindowsIdentity.GetCurrent();</div>
+<div>No matter what config, IIS or AppPool settings I have changed, the returned WindowsIdentity.Name is always &quot;NT AUTHORITY\SYSTEM&quot; (this varies when changing the AppPool Identity as mentioned before). &nbsp;It never impersonated the user, in my case &#39;speters&#39; (my AD name). &nbsp;I have made a small ASP web app with the same config and IIS settings and in that app, Impersonation works! &nbsp;In that application, I have found that the web.config setting &lt;identity impersonate=&quot;true&quot; /&gt; directly turns off or on the Impersonation with the true/false setting.</div>
+<div></div>
+<div>After 3 days of trying every setting I could find, reading every article I could find, I decided to call another method in my AppIdentity class,&nbsp;var cslaname = Csla.ApplicationContext.User.Identity.Name.</div>
+<div>This Csla.ApplicationContext call successfully retreives my Impersonated AD credentials. &nbsp;With this information I have managed to check the result of both Identity calls and choose the one that is needed, so technically my applicaton is working. &nbsp;However, I still would love to know what it takes to get the WindowsIdentity to properly Impersonate.</div>
+<div></div>
+<div>In Summary, with all the above settings:</div>
+<div>System.Security.Principal.WindowsIdentity.GetCurrent().Name; Does NOT Impersonate Client User AD</div>
+<div>Csla.ApplicationContext.User.Identity.Name; &nbsp;Does Impersonate/Fetch Client User AD</div>
+<div></div>
+<div>Any thoughts on whats happening here?</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Thursday, April 17, 2014</h2><p>I think I just saw an older thread about this.&nbsp; I believe the solution was to change your apppool to run as network service, not system.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SPeters replied on Monday, April 21, 2014</h2><p>Sadly I&#39;ve tried every possible appPool setting and none of them change the behavior.&nbsp; The only difference by changing the appPool setting is that when it fails to alias the windows user, it shows the service account rather than the system account.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

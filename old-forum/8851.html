@@ -1,0 +1,12 @@
+<html><header><title>CallMethod: Simple suggestion for more helpful error message.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CallMethod: Simple suggestion for more helpful error message.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8851.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AnthonyV posted on Wednesday, April 28, 2010</h2><p>I would like to suggest the following change to the thrown error in &quot;Csla.Reflection.MethodCaller.CallMethod&quot;:</p>
+<p>public static object CallMethod(object obj, string method, params 
+object[] parameters)<br />public static object CallMethod(object obj, 
+MethodInfo info, params object[] parameters)</p>
+<p>From: throw new NotImplementedException(method + &quot; &quot; + 
+Resources.MethodNotImplemented</p>
+<p>To: throw new NotImplementedException(method + &quot; &quot; + 
+Resources.MethodNotImplemented + &quot; on &quot; + obj.GetType().ToString());</p>
+<p>The benefit is that the error messages gives a better clue to what is missing.</p>
+<p>Thanks</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, April 28, 2010</h2><p>Something like this is a good idea. The word &quot;on&quot; is English though, so it can&#39;t be hard-coded into the output.</p>
+<p>The real answer is for the MethodNotImplemented resource to be a string format mask - but that&#39;d break all the international translations - and by break I mean throw an exception at runtime - so it is somewhat hard to do the right thing :(</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AnthonyV replied on Thursday, April 29, 2010</h2><p>Ouch, forgot that part.&nbsp; <br /><br />You could use something else to delimit the object type such as brackets.&nbsp;&nbsp; That would be reasonably language independent and almost as readable.<br /><br />To: throw new NotImplementedException(method + &quot; &quot; + Resources.MethodNotImplemented + &quot; ( &quot; + obj.GetType().ToString() + &quot;)&quot;);<br /><br />Anthony</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,89 @@
+<html><header><title>CSLA .NET 2.0.3 available</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 2.0.3 available</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/622.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Friday, July 14, 2006</h2><P>CSLA .NET version 2.0.3 is now available at <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A></P>
+<P>You can get to the change log from the download page. I also blogged a bit about the <A href="http://www.lhotka.net/weblog/CSLANET203Available.aspx">changes to CslaDataSource</A>, which is the primary focus of this update (though a handful of other bugs are fixed too).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, July 14, 2006</h2><P>Thanks again for your continuing efforts - you really spread your wealth of knowledge generously.&nbsp; </P>
+<P>Am I dense or was there at some point inclusion of a static collection of validation rules and so forth? Is that in this release? </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Friday, July 14, 2006</h2>Skagen, that's going to be released on 2.1<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 16, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=421132819-16072006><FONT face=Arial color=#0000ff size=2>Oh, sorry, misunderstood the "static" 
+bit...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=421132819-16072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=421132819-16072006><FONT face=Arial color=#0000ff size=2>Yes, the ability to associate validation rules with a class 
+rather than an instance is coming in 2.1.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=421132819-16072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=421132819-16072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> xal [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, July 14, 2006 2:44 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 2.0.3 
+  available<BR></FONT><BR></DIV>
+  <DIV></DIV>Skagen, that's going to be released on 
+  2.1<BR><BR>AndrC)s<BR><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 16, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=281082719-16072006><FONT face=Arial color=#0000ff size=2>The common validation rules are in 2.0+ and are discussed 
+in Chapter 5.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=281082719-16072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=281082719-16072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> skagen00 [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Friday, July 14, 2006 2:34 PM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 2.0.3 
+  available<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Thanks again for your continuing efforts - you really spread your wealth of 
+  knowledge generously.&nbsp; </P>
+  <P>Am I dense or was there at some point inclusion of a static collection of 
+  validation rules and so forth? Is that in this release? </P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>PatrickVD replied on Saturday, July 15, 2006</h2><P><FONT face=Tahoma size=2>Hi Rocky,</FONT></P>
+<P><FONT face=Tahoma size=2>I just wanted to drop a note that I've spotted a minor 'error' in the SortedBindingList unit tests.</FONT></P>
+<P><FONT face=Tahoma size=2>As the implementation of the <FONT face="Courier New">SortedBindingList.IndexOf</FONT> method now returns the 'sorted index', there is one of the unit tests that fails on this as it's still based on the 'old implementation' (unsorted index).</FONT></P>
+<P><FONT face=Tahoma size=2>In the file SortedBindingListTests.cs in the AscendingSort test method (cslatests.sln) there is :</FONT></P><FONT face="Courier New" color=#000000>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>Assert.AreEqual(<EM>2</EM>, sortedList.IndexOf(56));</FONT></P></BLOCKQUOTE>
+<P><FONT face=Tahoma size=2>This should become for version 2.0.3:</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>Assert.AreEqual(<STRONG><FONT color=#a52a2a><EM>4</EM></FONT></STRONG>, sortedList.IndexOf(56));</FONT></P></BLOCKQUOTE>
+<P><FONT face=Tahoma size=2>Regards,</FONT></P>
+<P><FONT face=Tahoma size=2>Patrick.</FONT></P>
+<P><FONT face=Tahoma size=2></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 19, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=609511316-19072006><FONT face=Arial color=#0000ff size=2>Thanks Patrick, I missed that one. I have fixed it in 
+version 2.1, and will fix it if I have to do a 2.0.4 in the 
+meantime.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=609511316-19072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=609511316-19072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> PatrickVD [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Saturday, July 15, 2006 9:36 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] CSLA .NET 2.0.3 
+  available<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P><FONT face=Tahoma size=2>Hi Rocky,</FONT></P>
+  <P><FONT face=Tahoma size=2>I just wanted to drop a note that I've spotted a 
+  minor 'error' in the SortedBindingList unit tests.</FONT></P>
+  <P><FONT face=Tahoma size=2>As the implementation of the <FONT face="Courier New">SortedBindingList.IndexOf</FONT> method now returns the 
+  'sorted index', there is one of the unit tests that fails on this as it's 
+  still based on the 'old implementation' (unsorted index).</FONT></P>
+  <P><FONT face=Tahoma size=2>In the file SortedBindingListTests.cs in the 
+  AscendingSort test method (cslatests.sln) there is :</FONT></P><FONT face="Courier New" color=#000000>
+  <BLOCKQUOTE dir=ltr>
+    <P><FONT size=2>Assert.AreEqual(<EM>2</EM>, 
+    sortedList.IndexOf(56));</FONT></P></BLOCKQUOTE>
+  <P><FONT face=Tahoma size=2>This should become for version 2.0.3:</FONT></P>
+  <BLOCKQUOTE dir=ltr>
+    <P><FONT size=2>Assert.AreEqual(<STRONG><FONT color=#a52a2a><EM>4</EM></FONT></STRONG>, 
+  sortedList.IndexOf(56));</FONT></P></BLOCKQUOTE>
+  <P><FONT face=Tahoma size=2>Regards,</FONT></P>
+  <P><FONT face=Tahoma size=2>Patrick.</FONT></P>
+  <P><FONT face=Tahoma size=2></FONT>&nbsp;</P></FONT><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

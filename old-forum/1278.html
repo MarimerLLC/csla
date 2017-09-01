@@ -1,0 +1,9 @@
+<html><header><title>VB Templates and StringRequired Validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>VB Templates and StringRequired Validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1278.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mikeclimbs posted on Wednesday, September 20, 2006</h2><P>When generating an object based on a Table,&nbsp; if a column is set to AllowNulls=False.&nbsp; The template adds the StringRequired Validation rule for the field.</P>
+<P>Currently I need to comment out the validation because of this.</P>
+<P>I'm using AllowNulls=False and a default value of '' t avoid the issues of having null or blank in a database.</P>
+<P>Am I using them incorrectly or is it case of more users want it the current way.&nbsp; </P>
+<P>Thanks </P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, September 20, 2006</h2><P>FWIW,</P>
+<P>In my version of the Codesmith templates I use code like this to test to see if I should add the StringRequired rule. I also initialize my String variables to "" but the only columns I care about that must have non-blank entries are those shown below.</P>
+<P>&nbsp;If variableType = "String" AndAlso col.AllowDBNull = False AndAlso _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (col.IsUnique OrElse col.IsPrimaryKeyMember OrElse col.IsForeignKeyMember) Then<BR>&nbsp;&nbsp; </P>
+<P>Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,55 @@
+<html><header><title>BeginCreate vs CreateAsync in 4.5</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>BeginCreate vs CreateAsync in 4.5</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11396.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Tuesday, June 05, 2012</h2><p>I&#39;d appreciate input from the community.</p>
+<p>I am looking at the CSLA 4.5 data portal vs the current data portal, and the new async/await keywords. I am also thinking about the value of taking existing code to WinRT and reusing it unchanged.</p>
+<ul>
+<li>On .NET&nbsp;Create, BeginCreate, and CreateAsync all work</li>
+<li>On Silverlight only BeginCreate works, like today</li>
+<li>On WinRT both BeginCreate and CreateAsync work</li>
+</ul>
+<p>This is all good, because the consumers of the data portal can continue to use BeginCreate, or can opt into the new CreateAsync as desired.</p>
+<p>But&nbsp;when I look at the <em>local data portal</em> on Silverlight vs what could be done with async/await, I really don&#39;t want to continue the old model.</p>
+<p>Specifically, in SL with the local data portal you need this:</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>public</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">void</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> DataPortal_Create<br />&nbsp; (Csla.DataPortalClient.</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">LocalProxy</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&lt;</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">ItemList</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&gt;.</span></span><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;"><span style="font-size:x-small;font-family:Consolas;color:#2b91af;">CompletedHandler</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> handler)</span></span></p>
+<p>and you must remember to call &#39;handler&#39; to tell the data portal the method is complete.</p>
+<p>Of course in .NET the method would be simpler:</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">public</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> </span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">void</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> DataPortal_Create(</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)<font face="Consolas" size="2"><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>and&nbsp;if I truly embrace async/await it would look like this:</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>public</p>
+</font></font></font></span><font face="Consolas" size="2" color="#0000ff"><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></font></span><font face="Consolas" size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">&nbsp;</span></span><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;"><span style="font-size:x-small;font-family:Consolas;color:#0000ff;">Task&lt;T&gt;</span></span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;"> DataPortal_Create(</span></span><span style="font-size:x-small;font-family:Consolas;"><span style="font-size:x-small;font-family:Consolas;">)</span></span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>And &nbsp;you&#39;d return a Task&lt;T&gt; object as a result of the method.</p>
+<p>So here&#39;s the question I&#39;m struggling with.</p>
+<p>Backward compatibility is important. It is a core value proposition for CSLA.</p>
+<p>At the same time, the Silverlight DataPortal_XYZ model is far from ideal, and I don&#39;t know that a whole lot of people make extensive use of the local data portal in SL.</p>
+<p>So I am <em>strongly</em> considering making the WinRT local data portal use the new DataPortal_XYZ scheme that returns a Task&lt;T&gt;. Or at least making it match the existing void .NET method signature. </p>
+<p>Thoughts?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Wednesday, June 06, 2012</h2><p>I&#39;d move to Task&lt;T&gt; as long as it offers the same experience across the board and won&#39;t need to be changed for a considerable amount of time in the future. One thing I&#39;ve noticed that dealing with Task&lt;T&gt; is that if you have any exception occur in the task. It can bring down your app. There are some handy extension methods out there that help soft this problem...</p>
+<p>Also, couldn&#39;t one create some wrappers to help people upgrading? From a code generation stand point, this would be a seamless upgrade.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 06, 2012</h2><p>When using await on a Task, any exceptions in the task flow back to the awaiting code. That&#39;s been my experience thus far, and is the intended behavior according to the CLR team.</p>
+<p>From an upgrading perspective, there&#39;s no doubt that someone could leave the old event-based method intact, and could invoke it using a pretty standard bit of code that wraps an event-based async operation in a task. I actually use this right now in the current async/await code for .NET.</p>
+<p>Someone doing an upgrade would just add the new DataPortal_XYZ that returns a task, and we could supply a snippet to implement that method to delegate to the old event-driven method. That&#39;d provide a reasonably quick technique for upgrading.</p>
+<p>Though the reality is that most local data portal code from Silverlight won&#39;t just work in WinRT, because the WCF and/or REST service proxies created by Visual Studio in WinRT use async/await instead of the Silverlight event-driven model. This isn&#39;t a CSLA thing, it is Microsoft changing the async model and the code <em>they</em> generate for us.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, June 06, 2012</h2><p>Hi all,</p>
+<p>My vote goes for Task&lt;T&gt; and make the code similar for .NET/WinRT/SL. </p>
+<p>Since SL local data portal won&#39;t just work in WinRT I consider this to be a better solution.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

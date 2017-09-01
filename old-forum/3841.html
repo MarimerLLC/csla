@@ -1,0 +1,17 @@
+<html><header><title>NUnit tests give different results for local vs. remote data portals</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NUnit tests give different results for local vs. remote data portals</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3841.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM posted on Friday, November 02, 2007</h2><P>I'm having a problem where certain NUnit tests are succeeding when a local data portal is used and failing when a remote data portal is used.&nbsp; The tests that are failing have a trailing // X and are at the bottom of the snippet below:</P>
+<P>Guid guid = new Guid("CEC71B06-668D-4ae5-986A-F89919FC8AF7");</P>
+<P>snippetType = SnippetType.NewSnippetType();<BR>Assert.AreEqual(Guid.Empty, snippetType.ID);<BR>Assert.AreEqual(string.Empty, snippetType.Description);</P>
+<P>snippetType.ID = guid;<BR>snippetType.Description = "abc";</P>
+<P>Assert.AreEqual(true, snippetType.IsDirty);<BR>Assert.AreEqual(true, snippetType.IsNew);<BR>Assert.AreEqual(true, snippetType.IsSavable);<BR>Assert.AreEqual(true, snippetType.IsValid);</P>
+<P>snippetType.Save();</P>
+<P>Assert.AreEqual(false, snippetType.IsDirty);&nbsp;&nbsp;&nbsp; // X<BR>Assert.AreEqual(false, snippetType.IsNew);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // X<BR>Assert.AreEqual(false, snippetType.IsSavable);&nbsp; // X<BR>Assert.AreEqual(false, snippetType.IsDeleted);</P>
+<P>I reviewed the Csla tests and the assumptions would appear to be correct in that after the initial save (which would be an insert) IsDirty, IsNew, and IsSavable should all be false.&nbsp; When these test are run using a remote data portal&nbsp;the results are just the opposite (all true).&nbsp; I know this can't be a bug so the question is: What am I doing wrong?</P>
+<P>I'm using version 2.1.1 of Csla.<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, November 02, 2007</h2><P>This is wrong:</P>
+<P>snippetType.Save();</P>
+<P>You have to remember that a new BO is returned from the DataPortal so you have to update your reference. When the DP is local, your code works because the BO is updated in memory and the reference is still valid.</P>
+<P>When remote, your reference is the OLD one - not the new one from the DP.</P>
+<P>Try something like:</P>
+<P>snippetType = snippetType.Save();</P>
+<P>You should also clone your BO before hand - there is a bunch of stuff about this in the book and the eBook. I think Rocky is going to make Autocloning&nbsp;the default in the next version to point out bugs like this.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CampbellCM replied on Saturday, November 03, 2007</h2>That was it alright.&nbsp; Thanks Joe.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

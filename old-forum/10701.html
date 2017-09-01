@@ -1,0 +1,46 @@
+<html><header><title>DiffGram  Update Order problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DiffGram  Update Order problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10701.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Wednesday, September 21, 2011</h2><p>I Have a tree. &nbsp;I add &nbsp;new node1 and new node2 &nbsp;as below</p>
+<p>node 0</p>
+<p>-node1</p>
+<p>--node2</p>
+<p>when i save , &nbsp;throw Exception. &nbsp;i checked it and fund the BLB save the node2 firstly. so the node2&#39;s parentId does not exist in the database.</p>
+<p>in the root list, code as below.</p>
+<p>
+<p>&nbsp; public override void &nbsp;BeginSave(EventHandler&lt;Csla.Core.SavedEventArgs&gt; handler, object userState)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; { &nbsp; &nbsp; &nbsp;&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dg = new Csla.DiffGram.DiffGramGenerator();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var dto = dg.GenerateGraph(this);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; var cmd = new SaveObject { DiffGram = dto };</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; cmd = DataPortal.Execute&lt;SaveObject&gt;(cmd);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; dg.IntegrateGraph(this, cmd.DiffGram);</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; base.BeginSave(handler, userState);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; [Serializable]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; private class SaveObject : CommandBase&lt;SaveObject&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; public Csla.DiffGram.DataItem DiffGram { get; set; }</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; protected override void DataPortal_Execute()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;//do insert/update/delete operations on entire diffgram</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>in the child code as below:</p>
+<p>
+<p>&nbsp; protected override void ImportFrom(Csla.DiffGram.DataItem dto)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dto.IsNew)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; InsertItem();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else if (dto.IsDeleted)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; DeleteItem();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; UpdateItem();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;}</p>
+<p>how to update the parent node firstly?</p>
+</p>
+<p>I use Csla 4.2.0</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Wednesday, September 21, 2011</h2><p>Any Advise?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, September 21, 2011</h2><p>The diffgram sample is a sample, nothing more. If you care about the order in which the items are inserted/updated in the database, then you need to control the order in your code.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

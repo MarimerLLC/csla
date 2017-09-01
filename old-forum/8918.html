@@ -1,0 +1,27 @@
+<html><header><title>SmartDate not honoring FormatString?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SmartDate not honoring FormatString?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8918.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RandyH posted on Wednesday, May 12, 2010</h2><p>I have the following property defined:</p>
+<p>Private Shared _ApptTimeProperty As PropertyInfo(Of SmartDate) = RegisterProperty(Of SmartDate)(Function(x) CType(x, PatientAppointmentTable).ApptTime, &quot;ApptTime&quot;, New SmartDate() With {.FormatString = &quot;G&quot;})</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp;Public Property ApptTime() As System.String Implements IPatientAppointmentTableBase.ApptTime</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return (GetPropertyConvert(Of SmartDate, String)(_ApptTimeProperty))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As System.String)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetPropertyConvert(Of SmartDate, String)(_ApptTimeProperty, value)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</p>
+<p>&nbsp;&nbsp; &nbsp;End Property</p>
+<div>The date always returns using the &quot;d&quot; format and never the &quot;G&quot; format that is being set when the property is being registered. What am I missing??</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 12, 2010</h2><p>This probably has to do with SmartDate being a value type, not a reference type. If you ever set the value to a new SmartDate (which happens in the setter of course) then you&#39;d lose the FormatString value, because the property is now using a completely different SmartDate instance than the default one you provided.</p>
+<p>This is one of those quirky things that happens when a value type has properties - they start to feel like a reference type, but they really aren&#39;t...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RandyH replied on Wednesday, May 12, 2010</h2><p>So I changed the getter from :</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetPropertyConvert(Of SmartDate, String)(_ApptTimeProperty)</p>
+<p>to:</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Dim value = GetProperty(Of SmartDate)(_ApptTimeProperty)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return value.ToString(_ApptTimeProperty.DefaultValue.FormatString)</p>
+<div></div>
+<div>Does this seem like the right way to handle it?</div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 17, 2010</h2><p>Unless you can set the static default format string for all SmartDate instances, yes.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RandyH replied on Tuesday, May 18, 2010</h2><p>No, I can&#39;t set the static default I need the other dates to format with &quot;d&quot;.</p>
+<p>&nbsp;</p>
+<p>Thanks for the help</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, May 18, 2010</h2><p>Hi Randy, </p>
+<p>What version of CSLA are you using?&nbsp;</p>
+<p>Check if Utilities.CoerceValue handles SmartDate in a specific way.&nbsp; In later versions there is special handling to only update the value on existing instance rather than assigning a new SmartDate instance to the backing field. </p>
+<p>\Core\TypeConverters\SmartDateConverter handles default converting to/from string and datetime values.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RandyH replied on Tuesday, May 18, 2010</h2><p>I am using version 3.7.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

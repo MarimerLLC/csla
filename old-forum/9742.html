@@ -1,0 +1,47 @@
+<html><header><title>Updating EditableRoot contained in a Unit of Work</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Updating EditableRoot contained in a Unit of Work</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9742.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir posted on Wednesday, November 10, 2010</h2><p>Hi</p>
+<p>I&#39;m trying to use Unit Of Work (ReadOnlyBase) to retrieve in one trip an EditableRootObject and a bunch of NVL, ReadOnlyLists, etc.</p>
+<p>Each one of those objects are declared as properties with a private setter... like this:</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Shared ReadOnly _AfiliacionProperty As PropertyInfo(Of Afiliacion) = RegisterProperty(Of Afiliacion)(Function(p As AfiliacionUnitOfWork) p.AfiliacionMember, Csla.RelationshipTypes.Child)</p>
+<p>Public Property AfiliacionMember() As Afiliacion Implements IUnitOfWork(Of Afiliacion, AfiliacionSecurityObject).Model<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Get<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(_AfiliacionProperty)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Get<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Private Set(ByVal value As Afiliacion)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_AfiliacionProperty, value)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Set<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Property</p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Shared _NacionalidadesProperty As PropertyInfo(Of NacionalidadNameValueList) = RegisterProperty(Of NacionalidadNameValueList)(Function(p As AfiliacionUnitOfWork) p.NacionalidadesMember, Csla.RelationshipTypes.Child)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Public Property NacionalidadesMember As NacionalidadNameValueList<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Get<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(_NacionalidadesProperty)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Get<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Private Set(ByVal value As NacionalidadNameValueList)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(_NacionalidadesProperty, value)<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Set<br />&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Property</p>
+<div>... And so on.</div>
+<div></div>
+<div>So far so good,&nbsp;</div>
+<div></div>
+<div>As I&#39;m binding some UI elements to AfiliacionMember which is an EditableRootObject, for example: IsSavable, IsDirty, IsBusy, etc... and to the business object properties as well: AfiliacionId, AfiliacionDate, etc. I noticed that&nbsp;the EditableRootObject retrieved with the UOW is never Savable according to the property IsSavable...</div>
+<div></div>
+<div>If I try to bypass this validation like this</div>
+<div></div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp;&#39;If mobjModel.IsSavable Then</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;mobjModel.BeginSave()</div>
+<div>&nbsp;&nbsp; &nbsp; &nbsp;&#39;End If</div>
+<div></div>
+<div>then an exception is thrown indicating that the object is not ready to be saved. </div>
+<div></div>
+<div>Now, If I try to ApplyEdit before BeginSave then nothing happens and dataportal_Update never gets called.</div>
+<div></div>
+<div>The strange part of it is that this works fine when I retrieve the object out of an UOW.</div>
+<div></div>
+<div>Any Ideas?</div>
+<div></div>
+</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, November 10, 2010</h2><p>The exception should also tell you <em>why</em> it can&#39;t be saved. One of</p>
+<ol>
+<li>It is a child</li>
+<li>It is still being edited</li>
+<li>It is invalid</li>
+<li>It is busy</li>
+</ol>
+<p>Hard to help you without knowing which of these is the issue.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>jpmir replied on Thursday, November 11, 2010</h2><p>Hi Rocky!,</p>
+<p>I guess you missed the &quot;factor number five&quot;!... Badly designed UI custom controls that never raise OnPropertyChanged Events for the Value property...</p>
+<p>I&#39;m really sorry for wasting your time like this... It&#39;s 1:48am here and I just find this bug.<img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p>
+<p>For anyone interested in this situation, the answer is&nbsp;</p>
+<p>5.- The user( or in my case, the user interface control) &nbsp;is not reporting changes to Datasource before calling BeginSave so<br />&nbsp;&nbsp; &nbsp; &nbsp;nothing has changed and CSLA avoids the trip to the server to save an unchanged object.</p>
+<p>This answer why IsSavable was False all the time.</p>
+<p>Thank you very much for your time.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

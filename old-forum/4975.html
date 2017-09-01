@@ -1,0 +1,53 @@
+<html><header><title>VS2008 and Object Binding Source</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>VS2008 and Object Binding Source</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4975.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>William posted on Saturday, June 14, 2008</h2>Hi,<br><br>I am currently using Visual Studio 2008 and CSLA .NET 3.0.4 for my project development. As I tried to bind the object manually using the older approach, e.g. obj.BeginEdit(), control.DataBinding.Add(...), etc. the object's EditLevel seems to be out of control when I invoked form.Validate(). Based on the PTWin example, it looks like that recommended approach to do databinding to business objects is through Object Binding Source. Please advise.<br><br>Thanks.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, June 14, 2008</h2><P>It is possible that the pre-bindingsource approach no longer works. My focus has been entirely on getting things to work with the bindingsource.</P>
+<P>You can always turn off the IEditableObject support entirely - that might help.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>beerisgood replied on Friday, July 04, 2008</h2><P>Hello, Mr. Obvious.&nbsp; Long time listener, first time caller.&nbsp; :)</P>
+<P>I think I just stumbled upon this issue today.&nbsp; I think my issue is directly related to this.&nbsp; In my BindUI procedure I have these 2 lines of code, as they appear in the Project Tracker sample:</P><FONT size=1>
+<P><FONT size=3>_customer.BeginEdit();</FONT></P>
+<P><FONT size=3>customerBindingSource.DataSource = _customer;</FONT></P>
+<P><FONT size=3>Both of these lines cause the UndoableBase object to fire the CopyStateComplete() event, therefore I'm getting it twice.&nbsp; I also noticed that the AcceptChangesComplete() event is also fired twice.&nbsp; </FONT></P>
+<P><FONT size=3>Are you saying that I should no longer call BeginEdit, ApplyEdit and CancelEdit on my business object if it is bound to a bindingsource?</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, July 05, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is covered in the <i>Using CSLA .NET 3.0</i> ebook chapter
+on Windows Forms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want a top-level Cancel button that resets the form to
+its original values, then you need to call BeginEdit() <i>before</i> binding
+the object, and then call CancelEdit() or ApplyEdit() <i>after unbinding the
+object</i>.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In between those calls, data binding will also call the *Edit()
+methods &#8211; probably many, many times.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you don&#8217;t have a top-level Cancel button on your form,
+then you should <i>never</i> manually call *Edit() except in the helper method
+to unbind the object(s) from the bindingsource.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

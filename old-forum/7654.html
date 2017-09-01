@@ -1,0 +1,41 @@
+<html><header><title>RegisterPropery( Type, PropertyInfo )</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegisterPropery( Type, PropertyInfo )</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7654.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Friday, September 18, 2009</h2>Hi,<br /><br />I have a abstract business class which doesn't inherit Csla.BusinessBase, instead inheriting Csla.Core.BusinessBase.  Other classes then inhert this class.<br /><br />For the first time in this class (its fairly old), I'm trying to setup a managed property, and I only  have the method RegisterProperty( Type, PropertyInfo ).  <br /><br />My question is this:  What are the effects of specifying the abstract class' type vs. the "final" subclass type?  Here's some sample code:<br /><br />public abstract Document : Csla.Core.BusinessBase { <br />   private static readonly PropertyInfo ChildProperty = <br />RegisterProperty( typeof( Document ), "Child" );<br /><br />public MyChild Child { get; private set; }<br />}<br /><br />public sealed Quote : Document {<br />  <br />}<br /><br />So will that setup cause any problems?  Most of the UI code only deals with the abstract,and in the case of the Child property, this will always be true.<br /><br />Thanks<br />Andy</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 18, 2009</h2><P>If you don't reuse that abstact base type as a base class for other final subclass types it should work fine.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Saturday, September 19, 2009</h2><P>The other option is to make your base class generic and use the generic type in the RegisterProperty call.&nbsp; For example:</P>
+<P><CODE>public abstract Document&lt;T&gt; : Csla.Core.BusinessBase<BR>&nbsp; &nbsp; where T : Document&lt;T&gt;<BR>{<BR>private static readonly PropertyInfo ChildProperty =<BR>&nbsp; &nbsp; RegisterProperty(typeof(T), "Child");<BR>&nbsp;<BR>public MyChild Child { get; private set; }<BR>}<BR>&nbsp;<BR>public sealed Quote : Document&lt;Quote&gt;<BR>{<BR>}</CODE></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Sunday, September 20, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>If you don't reuse that abstact base type as a base class for other final subclass types it should work fine.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Why would this cause a problem? (Sorry if I'm missing something obvious, but I don't see why you would ever have an abstract base if you planned on deriving only one class from it)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, September 20, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well let me put it another way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Properties are registered to types. If you register your
+properties with the type in which the property is actually declared you won&#8217;t
+have a problem (inheritance or not). If you register a property for a type in
+which it isn&#8217;t declared then things will break.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So declaring properties in an abstract base class, using the
+RegisterProperty() overload that takes an explicit type is fine &#8211; as long as
+the type you provide is the type of the abstract base class, and the property
+is actually declared/implemented in that abstract base class.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, September 21, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><br />So declaring properties in an abstract base class, using the<br />RegisterProperty() overload that takes an explicit type is fine – as long as<br />the type you provide is the type of the abstract base class, and the property<br />is actually declared/implemented in that abstract base class.</div></BLOCKQUOTE><br /><br />Yes, that's exactly what I'm doing.  The subclasses only differ in their AddAuthorizationRules overrides, but the property registration and the implementation of the property is all in the abstract class.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

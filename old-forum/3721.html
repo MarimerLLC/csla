@@ -1,0 +1,38 @@
+<html><header><title>Remove Item in NVL gets Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Remove Item in NVL gets Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3721.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Tuesday, October 16, 2007</h2><P>Hi</P>
+<P>using a NVL as&nbsp; the datasource for a listbox and want to remove an item from the list.</P>
+<P>I have added a sub.....</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT color=#000000 size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT color=#000000 size=2> Remove(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT color=#000000 size=2> clientID </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2><FONT color=#000000> Int32)</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> res </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> NameValuePair </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> res.Key = clientID </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.remove(res)</P>
+<P></FONT><FONT color=#0000ff size=2>Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>For</P></BLOCKQUOTE></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></BLOCKQUOTE></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Next</P></BLOCKQUOTE></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT color=#0000ff size=2>This throws the following error...</P>
+<P></FONT></FONT>
+<P><FONT color=#0000ff size=2></P></FONT><FONT size=3>"Remove is an invalid operation"</FONT></P>
+<P><FONT size=3>Can anyone shed light on this, thanks</FONT></P>
+<P>Richard</P>
+<P>&nbsp;</P>
+<P><FONT size=3>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, October 16, 2007</h2><P>The NVL base class extends ReadOnlyBindingList - the list is always ReadOnly.</P>
+<P>You need to make it editable while you do your change.&nbsp; The following code is an example:</P><FONT size=2>
+<P></FONT><FONT color=#008000 size=2>// Stop raising list events while changing the list<BR></FONT><FONT size=2>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</FONT></P>
+<P><FONT color=#008000 size=2>// Make the list not ReadOnly (so it can be changed)<BR></FONT><FONT size=2>IsReadOnly = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// Do some changes here....<BR></FONT><FONT size=2>&lt;snip&gt;;</P>
+<P></FONT><FONT color=#008000 size=2>// Make the list ReadOnly again<BR></FONT><FONT size=2>IsReadOnly = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#008000 size=2>// Start raising list events again<BR></FONT><FONT size=2>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, October 16, 2007</h2><P>Thanks that sorted it.</P>
+<P>Richard</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, October 16, 2007</h2><P>Hi</P>
+<P>further to this....removing the item from the list works fine and I can now add into the list in a similar fashion. However the newly added item is added to the bottom of the lstBox/NVL - how do you apply sorting to the NVL?</P>
+<P>Richard</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Tuesday, October 16, 2007</h2>Have you tried using the Insert(index, item) method to put the item into the right place in the list?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, October 16, 2007</h2><P>No, but how would I know what the value of 'index' was?</P>
+<P>I'm looking into&nbsp;using a sorted list to handle this</P>
+<P>Richard</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DavidDilworth replied on Wednesday, October 17, 2007</h2><P>You'd have to work out what the index was for yourself.</P>
+<P>Don't forget that the main purpose behind the NVL is to populate drop-down list style controls from data in&nbsp;a DB table.&nbsp; Usually all the sorting is done when you get the data from the DB.</P>
+<P>It sounds like you've got a slightly different requirement here.&nbsp; So that means you need to write some slightly different code to handle your specific case.</P>
+<P>The best solution will always be to sort the data before you start building the NVL though.</P>
+<P>HTH.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

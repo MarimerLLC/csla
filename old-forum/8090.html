@@ -1,0 +1,237 @@
+<html><header><title>Edit level mismatch in AcceptChanges when moving items from one list to another</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit level mismatch in AcceptChanges when moving items from one list to another</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8090.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Friday, December 04, 2009</h2><br>In the UI I'm using the following code :<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void cmdAdd_Click(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.AddCountry(((Country)AvailableCountriesListBox.SelectedItem));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <br><br>The UI has two listboxes and the user can move country objects from the available listbox to the selected listbox. But I'm receiving the following error :<b> Edit level mismatch in AcceptChanges</b><br><br>The code in the business layer:<br><br>&nbsp;public CountryCollection SelectedCountries<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(SelectedCountriesProperty))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(SelectedCountriesProperty, CountryCollection.NewCountryCollection());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(SelectedCountriesProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public CountryCollection NonSelectedCountries<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!FieldManager.FieldExists(NonSelectedCountriesProperty))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; LoadProperty(NonSelectedCountriesProperty, CountryCollection.NewCountryCollection());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return GetProperty(NonSelectedCountriesProperty);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void AddCountry(Country country)<br>&nbsp;&nbsp;&nbsp; {<br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonSelectedCountries.Remove(country);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SelectedCountries.Add(country);</b><br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public void RemoveCountry(Country country)<br>&nbsp;&nbsp;&nbsp; {<br><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonSelectedCountries.Add(country);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SelectedCountries.Remove(country);</b><br>&nbsp;&nbsp;&nbsp; }<br><br><br>When using the following methods I don't receive an error, but here I'm creating new Country objects and copying the value of the property CountryId<br><br>&nbsp;&nbsp;&nbsp; public void AddCountry(ICountry country)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Country item = SelectedCountries.AddNew();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.CountryId = country.CountryId;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonSelectedCountries.Remove(country.CountryId);</b><br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+&nbsp;&nbsp;&nbsp; public void RemoveCountry(ICountry country)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SelectedCountries.Remove(country.CountryId);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Country item = NonSelectedCountries.AddNew();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.CountryId = country.CountryId;</b><br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br><br>What can be the problem?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2><P>You are probably running into issues/limitations with Windows Forms data binding.</P>
+<P>The rule when dealing with Windows Forms data binding is that you can never directly interact with an object while it is data bound. You must always unbind an object before manipulating it (outside just settng properties).</P>
+<P>You are removing an item from a list, and adding it to another list. All while both lists and the child object are data bound. This violates the rule.</P>
+<P>(to head off possible questions - yes, this is simpler in Silverlight/WPF because data binding is simpler in XAML)</P>
+<P>There are various possible solutions. "Cloning" the object into the other list is a valid answer, and is probably the most common solution.</P>
+<P>Also, is Country <EM>really a child</EM> of this parent object? I don't know what the parent object is, but very few things own a Country. A Ruler or Dictator might. Arguably (in the US) a Citizen owns a Country in a very loose sense.</P>
+<P>If you get what I mean, it could be the case that the CountryList object should be a read-only list, and your business object should be maintaining two (or one) collection of CountryId values and nothing else - because your object doesn't own the country, it owns its <EM>relationship with the country</EM>.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, December 04, 2009</h2>I'm using the cslaActionExtender control, so normally the unbinding should be done automatically.<br><br>But what happens with the EditLevelAdded property? The item Country exists first in the list NonSelectedCountries. So when the user wants to move it to the SelectedCountries list, what happens with the EditLevelAdded property because we are adding the Country object for the second time.<br><br>The parent object is an employee.<br>The whole UCase you can find in the following thread http://forums.lhotka.net/forums/thread/38568.aspx.<br>I've attached also an example in this thread.<br>I think you have a point here to say :&nbsp; "Employee does not own a Country". But this we discuss better in the other thread to keep the issues separately. I'm looking forward to see your solution on this thread also.<br><br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>cslaActionExtender works at a form level. It doesn&#8217;t unbind your
+object while the form is active &#8211; and you are moving an item from one editable
+list to another editable list while the form is active. cslaActionExtender
+doesn&#8217;t automatically make that scenario work.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, December 04, 2009</h2>&nbsp;&nbsp; When doing the binding manually with the following it is the same problem.<br><br>&nbsp; private void buttonApply_Click(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RebindUI(true, true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void RebindUI(bool saveObject, bool rebind)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // disable events<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.employeeBindingSource.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.selectedCountriesBindingSource.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.nonSelectedCountriesBindingSource.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // unbind the UI<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UnbindBindingSource(this.nonSelectedCountriesBindingSource, saveObject, false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UnbindBindingSource(this.selectedCountriesBindingSource, saveObject, false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; UnbindBindingSource(this.employeeBindingSource, saveObject, true);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // save or cancel changes<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (saveObject)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.ApplyEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee = _employee.Save();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Csla.DataPortalException ex)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.BusinessException.ToString());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; catch (Exception ex)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MessageBox.Show(ex.ToString());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.CancelEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; finally<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // rebind UI if requested<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rebind)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; BindUI();<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // restore events<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.employeeBindingSource.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.selectedCountriesBindingSource.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.nonSelectedCountriesBindingSource.RaiseListChangedEvents = true;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (rebind)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // refresh the UI if rebinding<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.employeeBindingSource.ResetBindings(false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.selectedCountriesBindingSource.ResetBindings(false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.nonSelectedCountriesBindingSource.ResetBindings(false);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp; private void UnbindBindingSource(BindingSource source, bool apply, bool isRoot)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; System.ComponentModel.IEditableObject current =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; source.Current as System.ComponentModel.IEditableObject;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (isRoot)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; source.DataSource = null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (current != null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (apply)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; current.EndEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; current.CancelEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Friday, December 04, 2009</h2><br>When doing the following in a Unit Test it works:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.BeginEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.AddCountry(_employee.NonSelectedCountries[0]);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.ApplyEdit();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.Save();<br><br>So it is definitely the binding in the UI which causes the problem.<br>The code in my previous reply is only when saving the form.<br>So maybe when calling the method AddCountry on the _employee object I have to do also something??<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void cmdAdd_Click(object sender, EventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.AddCountry(((Country)AvailableCountriesListBox.SelectedItem));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 04, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Your unit test probably isn&#8217;t simulating data binding though.
+Odds are you have a bindingsource for each collection? So the current item in
+each collection (based on UI currency) is also running at an elevated edit
+level.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Additionally, calling BeginEdit() directly is not the same as
+casting to IEditableObject and then calling BeginEdit() &#8211; and data binding only
+goes through IEditableObject.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> alef
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 04, 2009 10:10 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Edit level mismatch in AcceptChanges when
+moving items from one list to another<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+When doing the following in a Unit Test it works:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.BeginEdit();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_employee.AddCountry(_employee.NonSelectedCountries[0]);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.ApplyEdit();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.Save();<br>
+<br>
+So it is definitely the binding in the UI which causes the problem.<br>
+The code in my previous reply is only when saving the form.<br>
+So maybe when calling the method AddCountry on the _employee object I have to
+do also something??<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void cmdAdd_Click(object sender,
+EventArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_employee.AddCountry(((Country)AvailableCountriesListBox.SelectedItem));<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; } <br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Saturday, December 05, 2009</h2><P>I'm sorry. I my unit test</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_employee.BeginEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.AddCountry(_employee.NonSelectedCountries[0]);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.ApplyEdit();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _employee.Save();</P>
+<P>&nbsp;I tested the method AddCountry (creating a new Country object) which also works in the UI.</P>
+<P>&nbsp;&nbsp;&nbsp; public void AddCountry(ICountry country)<BR>&nbsp;&nbsp;&nbsp; {<BR><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Country item = SelectedCountries.AddNew();<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; item.CountryId = country.CountryId;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonSelectedCountries.Remove(country.CountryId);</B><BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>&nbsp;</P>
+<P>When unit testing (so without binding) the following method&nbsp;(using the same Country object)</P>
+<P>&nbsp;&nbsp;&nbsp; public void AddCountry(Country country)<BR>&nbsp;&nbsp;&nbsp; {<BR><B>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NonSelectedCountries.Remove(country);<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SelectedCountries.Add(country);</B><BR>&nbsp;&nbsp;&nbsp; }</P>
+<P>the Unit Test&nbsp;fails.</P>
+<P>So I'm thinking that this case is not taken care of in CSLA (moving items between lists).The country object is linked to two collections. 1) the DeletedList from NonSelectedCountries and 2) the SelectedCountries list.</P>
+<P>Below you can find the Edit Level of the objects at the different moments.</P>
+<P>EL = EditLevel&nbsp;&nbsp; ;&nbsp;&nbsp;&nbsp; ELA = EditLevelAdded</P>
+<P>A) Edit level of the objects before calling&nbsp;<STRONG> NonSelectedCountries.Remove(country);</STRONG></P>
+<P>Empoyee Auman : EL=1</P>
+<P>&nbsp;&nbsp;SelectedCountries</P>
+<P>&nbsp;&nbsp;&nbsp; Country USA EL=1 (ELA = 0)</P>
+<P>&nbsp; NonSelectedCountries</P>
+<P>&nbsp;&nbsp;&nbsp; Country&nbsp;Begium EL=1 (ELA = 0)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;Country&nbsp;UK EL=1 (ELA = 0)</P>
+<P>B) Edit level of the objects after calling&nbsp;<STRONG> NonSelectedCountries.Remove(country);</STRONG></P>
+<P>Empoyee Auman : EL=1</P>
+<P>&nbsp;&nbsp;SelectedCountries</P>
+<P>&nbsp;&nbsp;&nbsp; Country USA EL=1 (ELA = 0)</P>
+<P>&nbsp; NonSelectedCountries</P>
+<P>&nbsp;&nbsp;&nbsp; Country&nbsp;Begium EL=1 (ELA = <STRONG>0</STRONG>) ==&gt; belongs now &nbsp;to the internal DeletedList of CSLA</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;Country&nbsp;UK EL=1 (ELA = 0)</P>
+<P>C) Edit level of the objects after calling&nbsp;<STRONG> SelectedCountries.Add(country);</STRONG></P>
+<P>Empoyee Auman : EL=1</P>
+<P>&nbsp;&nbsp;SelectedCountries</P>
+<P>&nbsp;&nbsp;&nbsp; Country USA EL=1 (ELA = 0)</P>
+<P>&nbsp;&nbsp;&nbsp; Country&nbsp;Begium EL=1 (ELA = <STRONG>1</STRONG>)</P>
+<P>&nbsp; NonSelectedCountries</P>
+<P>&nbsp;&nbsp;&nbsp; Country&nbsp;Begium EL=1 (ELA = <STRONG>1</STRONG>) ==&gt; belongs to the internal DeletedList of CSLA</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;Country&nbsp;UK EL=1 (ELA = 0)</P>
+<P>&nbsp;</P>
+<P>So as you can see the Country object Belgium belongs to two collections.</P>
+<P>So now when calling _employee.ApplyEdit() we get the error Edit level mismatch in AcceptChanges.</P>
+<P>I'm thinking when calling ApplyEdit, <FONT size=2><FONT size=3>AcceptChanges will be called with EditLevel-1 and this will loop through the&nbsp;whole hierarchy of objects and so the EditLevel of&nbsp;Country object Belgium will be decreased two times which finally results in an error.</FONT></P></FONT>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><BR>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P><STRONG></STRONG></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 05, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, I see, I need to take more time when answering some of
+these questions&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are right, one object can only have one parent. Once an
+object is a child of one BLB, it is forever the child of that BLB. That&#8217;s
+the way BLB works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Remember that when you delete a child from a BLB, that child
+just goes into the DeletedList &#8211; it is still a child, it just isn&#8217;t
+visible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So you can&#8217;t add that child to another BLB, because it
+already has a parent.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can probably fake this out with a little work. I haven&#8217;t
+tried this, but you could probably implement a method in your collection class
+like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public void ReallyRemove(ChildType child)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; child.BeginEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Remove(child);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; DeletedList.Remove(child);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; child.CancelEdit();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This would remove the child from the list, then remove it from DeletedList
+so the list has no reference to the child. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The trick is that the child gets marked for deletion as part of
+that process, so doing BeginEdit() and CancelEdit() should (I think) reset the
+IsDeleted value to false, while leaving the child detached from the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The child&#8217;s Parent property will still point to the list &#8211;
+but that&#8217;ll get reset when you add it to the other list.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Monday, December 07, 2009</h2>Thanks for given this information.<br><br>Finally I decided to create a new object and copying the values of the properties.<br>I prefer this more then implementing the workaround because otherwise the undo will not work anymore when we delete the object in the DeletedList. When the item in the DeletedList is gone the undo can't do his work anymore<br><br>The reason I wanted to move the item in place of creating a new item was for the implementation of the GUI control (the duallist). When the user moves an item from left to right, I want that the moved item in the right listbox should be selected for a user friendly GUI. When it was really the same item (ReferenceEquals) in the left and the right listbox it was easy to implement this selection.<br>Because of the side effects (Edit level mismatch in AcceptChanges) I searched another solution for the GUI control. The solution I implemented was to override the Equals method.<br><br>&nbsp;&nbsp;&nbsp; protected override object GetIdValue()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return ReadProperty&lt;int?&gt;(CountryIdProperty);<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public override bool Equals(object obj)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (obj is Country)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return Object.Equals(GetIdValue(), ((Country)obj).GetIdValue());<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return false;<br>&nbsp;&nbsp;&nbsp; }<br><br><br>Again many thanks. I've now a perfectly working solution.<br>So lesson learned : do not move items between lists.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

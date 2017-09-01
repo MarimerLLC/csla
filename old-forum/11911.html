@@ -1,0 +1,64 @@
+<html><header><title>How to delete editable child from editable root</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to delete editable child from editable root</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11911.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy posted on Thursday, March 28, 2013</h2><p>I have an editable root object which contains an editable child.&nbsp; I would like to detete the editable child but I receive an error stating &quot;Can not directly mark a child object for deletion - use its parent collection&quot;.&nbsp;&nbsp; The child is not part of a collection.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, March 30, 2013</h2><p>Cast the child object to IEditableBusinessObject from Csla.Core and use the DeleteChild method.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Wednesday, April 17, 2013</h2><p>When I delete the child object, it deletes it from the database, but fails to null the property on the parent.&nbsp;&nbsp; Instead, it marks the child as new.&nbsp; Do I have to manually null the property after deletion?</p>
+<p>I overrode child changed on my root object:</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Protected</span>&nbsp;<span style="color:blue;">Overrides</span>&nbsp;<span style="color:blue;">Sub</span>&nbsp;OnChildChanged(e&nbsp;<span style="color:blue;">As</span>&nbsp;Core.<span style="color:#2b91af;">ChildChangedEventArgs</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;e.PropertyChangedArgs&nbsp;<span style="color:blue;">IsNot</span>&nbsp;<span style="color:blue;">Nothing</span>&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#2b91af;">Console</span>.WriteLine(e.ChildObject.ToString&nbsp;&amp;&nbsp;<span style="color:#a31515;">&quot;:&nbsp;&quot;</span>&nbsp;&amp;&nbsp;e.PropertyChangedArgs.PropertyName)</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;"><pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</pre>
+</pre>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;            <span style="color:blue;">MyBase</span>.OnChildChanged(e)
+ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">Sub</span></pre>
+<p>When I delete the object on the UI, it generates:</p>
+<p>HCM.Library.EntityPerson: IsDeleted<br />HCM.Library.EntityPerson: <br />HCM.Library.EntityPerson: IsSelfDirty<br />HCM.Library.EntityPerson: IsDirty<br />HCM.Library.EntityPerson: IsSavable</p>
+<p>And then when I do a beginsave on the viewmodel it generates:</p>
+<p>HCM.Library.EntityPerson: IsNew<br />HCM.Library.EntityPerson: IsDeleted<br />HCM.Library.EntityPerson: </p>
+<p>I put a breakpoint in my root DP and the IsNew change occurs immediately following the FieldManager.Update(me).</p>
+<p>My root object child property:</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Private</span>&nbsp;<span style="COLOR:blue;">Shared</span>&nbsp;<span style="COLOR:blue;">ReadOnly</span>&nbsp;_entityPersonProperty&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>(<span style="COLOR:blue;">Of</span>&nbsp;<span style="COLOR:#2b91af;">EntityPerson</span>)&nbsp;=
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;RegisterProperty(<span style="COLOR:blue;">Of</span>&nbsp;<span style="COLOR:#2b91af;">EntityPerson</span>)(<span style="COLOR:blue;">Function</span>(p&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:#2b91af;">Entity</span>)&nbsp;p.EntityPerson,&nbsp;Csla.<span style="COLOR:#2b91af;">RelationshipTypes</span>.Child)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Public</span>&nbsp;<span style="COLOR:blue;">ReadOnly</span>&nbsp;<span style="COLOR:blue;">Property</span>&nbsp;EntityPerson()&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:#2b91af;">EntityPerson</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;<span style="COLOR:blue;">Not</span>&nbsp;(FieldManager.FieldExists(_entityPersonProperty))&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Dim</span>&nbsp;criteria&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:blue;">New</span>&nbsp;HCM.Library.<span style="COLOR:#2b91af;">EntityPersonCriteria</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;criteria.EntityId&nbsp;=&nbsp;Identification
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">If</span>&nbsp;(HCM.Library.<span style="COLOR:#2b91af;">EntityPerson</span>.Exists(criteria))&nbsp;<span style="COLOR:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(_entityPersonProperty,&nbsp;HCM.Library.<span style="COLOR:#2b91af;">EntityPerson</span>.GetByEntityIdChild(Identification))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">If</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Return</span>&nbsp;GetProperty(_entityPersonProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Property</span></pre>
+<p>&nbsp;My child DP:</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Private</span>&nbsp;<span style="COLOR:blue;">Sub</span>&nbsp;Child_DeleteSelf()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;DataPortal_Delete(<span style="COLOR:blue;">New</span>&nbsp;<span style="COLOR:#2b91af;">EntityPersonCriteria</span>(EntityId))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Sub</span></pre>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;<span style="COLOR:#2b91af;">Transactional</span>(<span style="COLOR:#2b91af;">TransactionalTypes</span>.TransactionScope)&gt;&nbsp;_
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">Protected</span>&nbsp;<span style="COLOR:blue;">Shadows</span>&nbsp;<span style="COLOR:blue;">Sub</span>&nbsp;DataPortal_Delete(<span style="COLOR:blue;">ByVal</span>&nbsp;criteria&nbsp;<span style="COLOR:blue;">As</span>&nbsp;<span style="COLOR:#2b91af;">EntityPersonCriteria</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;FieldManager.UpdateChildren(<span style="COLOR:blue;">Me</span>)
+	   <span style="COLOR:blue;">Using</span>&nbsp;df&nbsp;=&nbsp;<span style="COLOR:#2b91af;">DalFactory</span>.GetDalManager
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   <span style="COLOR:blue;">Dim</span>&nbsp;DataAccess&nbsp;=&nbsp;df.GetProvider(<span style="COLOR:blue;">of</span>&nbsp;<span style="COLOR:#2b91af;">IEntityPersonDal</span>)()
+	      DataAccess.Delete(criteria)&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;	
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Using</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">End</span>&nbsp;<span style="COLOR:blue;">Sub</span></pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Wednesday, April 17, 2013</h2><p>Well, my problem appears to be by design.&nbsp; I found this in the&nbsp;ChildDataPortal source which marks a child object as new after it is deleted:</p>
+<pre style="FONT-SIZE:13px;FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(busObj.IsDeleted)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(!busObj.IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;tell&nbsp;the&nbsp;object&nbsp;to&nbsp;delete&nbsp;itself</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.CallMethod(<span style="COLOR:#a31515;">&quot;Child_DeleteSelf&quot;</span>,&nbsp;parameters);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(target&nbsp;!=&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;target.MarkNew();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lb.CallMethodIfImplemented(<span style="COLOR:#a31515;">&quot;MarkNew&quot;</span>);
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>I&#39;m hoping it&#39;s a bug, but guessing that I&#39;m doing something wrong.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>c_manboy replied on Wednesday, April 17, 2013</h2><p>Ok, I added this to my child delete dp after the db call, and it works as expected:</p>
+<pre style="font-size:13px;font-family:Consolas;background:white;color:black;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">Dim</span>&nbsp;parent&nbsp;=&nbsp;<span style="color:blue;">TryCast</span>(<span style="color:blue;">Me</span>.Parent,&nbsp;<span style="color:#2b91af;">IParent</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">If</span>&nbsp;parent&nbsp;<span style="color:blue;">IsNot</span>&nbsp;<span style="color:blue;">Nothing</span>&nbsp;<span style="color:blue;">Then</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;parent.RemoveChild(<span style="color:blue;">Me</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">End</span>&nbsp;<span style="color:blue;">If</span></pre>
+<p>However, I would appreciate it if someone could confirm that this is the correct way.</p>
+<p>Thanks!</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

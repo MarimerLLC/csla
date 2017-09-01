@@ -1,0 +1,28 @@
+<html><header><title>AuthorizationRules - A (simple) quick question.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>AuthorizationRules - A (simple) quick question.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2067.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit posted on Tuesday, January 02, 2007</h2><P>I'm sure this is a common question, or rather the answer is widely known...</P>
+<P>But I&nbsp;would like to implement some authorization rules based on the state of my BO in&nbsp;conjunction with a role.</P>
+<P>So, I'd like to do something like...</P>
+<P>If Me.isNew = False Then</P><FONT size=3>
+<P>&nbsp;&nbsp;&nbsp;AuthorizationRules.DenyWrite(</FONT><FONT color=#800000 size=3>"PHONE"</FONT><FONT size=3>, </FONT><FONT color=#800000 size=3>"SALES"</FONT><FONT size=3>)</P>
+<P></FONT>End if</P>
+<P>In this scenario, I do not want "SALES" to be able to edit a phone number if an object is not new. Could someone enlighten me as to the "correct" way of doing this? I suspect the above neither works nor is considered OO...</P>
+<P>Many thanks,</P>
+<P>Gaj.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, January 02, 2007</h2>Override CanReadProperty and CanWriteProperty to take into account the property name and the IsNew flag.&nbsp; Sof if the property name is PHONE and !IsNew, then you return false.&nbsp; Otherwise you return base.CanWriteProperty.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, January 02, 2007</h2><P>So I override the CanWriteProperty in my&nbsp;business object?</P>
+<P>Now sure I know how to implement that.. wouldn't the remainder of my properties use the same overridden method?&nbsp;</P>
+<P>Confused.... :(</P>
+<P>Sorry,</P>
+<P>G.</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>gajit replied on Tuesday, January 02, 2007</h2><P>OK, I think I've got it (Holmes!) :)</P>
+<P>In my BO..</P><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>Public</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>Overrides</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>Function</FONT><FONT size=3> CanWriteProperty(</FONT><FONT color=#0000ff size=3>ByVal</FONT><FONT size=3> propertyName </FONT><FONT color=#0000ff size=3>As</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>String</FONT><FONT size=3>) </FONT><FONT color=#0000ff size=3>As</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>Boolean</P></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>If</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>Me</FONT><FONT size=3>.IsNew </FONT><FONT color=#0000ff size=3>And</FONT><FONT size=3> propertyName = </FONT><FONT color=#800000 size=3>"PHONE"</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>Then</P></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>Return</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>False</P></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>Else</P></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>Return</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>MyBase</FONT><FONT size=3>.CanWriteProperty(propertyName)</P>
+<P></FONT><FONT color=#0000ff size=3>End</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>If</P></FONT><FONT size=3>
+<P></FONT><FONT color=#0000ff size=3>End</FONT><FONT size=3> </FONT><FONT color=#0000ff size=3>Function</FONT></P>
+<P>Thanks Brian!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Thursday, January 04, 2007</h2>Almost.&nbsp; You are missing your sales role.&nbsp; I also think that these cases lend themselves well to switch statements.<br><p><font color="#0000ff" size="3">Public</font><font size="3"> </font><font color="#0000ff" size="3">Overrides</font><font size="3"> </font><font color="#0000ff" size="3">Function</font><font size="3"> CanWriteProperty(</font><font color="#0000ff" size="3">ByVal</font><font size="3"> propertyName </font><font color="#0000ff" size="3">As</font><font size="3"> </font><font color="#0000ff" size="3">String</font><font size="3">) </font><font color="#0000ff" size="3">As</font><font size="3"> </font><font color="#0000ff" size="3">Boolean</font></p><font size="3">
+</font><p><font color="#0000ff" size="3">&nbsp;&nbsp;&nbsp; Select Case propertyName</font></p><p><font color="#0000ff" size="3">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  Case "PHONE"</font></p><p><font color="#0000ff" size="3">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  Return IsNew Or Not Csla.ApplicationContext.User.IsInRole("SALES")<br></font></p><p><font color="#0000ff" size="3">&nbsp;&nbsp;&nbsp; End Select<br></font></p>&nbsp;&nbsp;&nbsp; <font color="#0000ff" size="3">Return</font><font size="3"> </font><font color="#0000ff" size="3">MyBase</font><font size="3">.CanWriteProperty(propertyName)</font><p><font color="#0000ff" size="3">End</font><font size="3"> </font><font color="#0000ff" size="3">Function</font></p><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

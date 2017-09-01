@@ -1,0 +1,238 @@
+<html><header><title>CSLA.net 4 CanSave CanCancel error/problem Xaml ViewModel</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.net 4 CanSave CanCancel error/problem Xaml ViewModel</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9917.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JJLoubser posted on Wednesday, January 05, 2011</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-ZA
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>The
+CanSave &amp; CanCancel work when we do one/two actions(insert, move, drag,
+update, delete) of parent and child objects in a xaml form, but more than one/two actions the CanSave and
+CanCancel do not update or do not work, we must do a advance debug now, but is
+there something we are missing? We did a bit of debugging before and some of the objects IsDirty do not update. Why?</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>&lt;telerik:RadButton
+Name=&quot;SaveButton&quot;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Height=&quot;Auto&quot; </p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>Content=&quot;Apply&quot;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span><b><span>&nbsp;</span>IsEnabled=&quot;{Binding Path=CanSave}</b>&quot;/&gt;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>&lt;telerik:RadButton Name=&quot;CancelButton&quot;
+Height=&quot;Auto&quot;<span>&nbsp;
+</span>Margin=&quot;5,0,0,0&quot; </p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Content=&quot;Cancel&quot;</p>
+<p class="MsoNoSpacing"><b><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>IsEnabled=&quot;{Binding Path=CanCancel}&quot;/</b>&gt;</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNormal">&nbsp;</p>
+<p class="MsoNoSpacing">public CompanyViewModel(Business.OrgStructure.CompanyEC
+company)</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp; </span>{</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>StatusIsBusy
+= true;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>ManageObjectLifetime = false;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>Model = company;</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>StatusIsBusy
+= false;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp; </span>}</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">We set the ManageObjectLifetime to false, to get rid of
+some issues and to get the following to work:</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing" style="margin-left:36pt;text-indent:-18pt;"><span><span>a.<span style="font:7pt &#39;Times New Roman&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>IsDirty
+and </p>
+<p class="MsoNoSpacing" style="margin-left:36pt;text-indent:-18pt;"><span><span>b.<span style="font:7pt &#39;Times New Roman&#39;;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span></span></span>protected
+override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>{</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span>base.OnChildChanged(e);</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing"><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>}</p>
+<p class="MsoNoSpacing">&nbsp;</p>
+<p class="MsoNoSpacing">but after that still getting canSave errors?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

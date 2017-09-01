@@ -1,0 +1,79 @@
+<html><header><title>&quot;The remote server returned an error: NotFound&quot;</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>&quot;The remote server returned an error: NotFound&quot;</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6394.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davido posted on Tuesday, February 10, 2009</h2><P>I moved my WcfHostWeb from Cassini to IIS. </P>
+<P>Updated the ServiceReferences.ClientConfig file to point to</P><FONT color=#ff0000 size=2><FONT color=#ff0000 size=2>
+<P>address</FONT></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>=</FONT></FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>http://localhost/WcfPortal.svc</FONT></FONT><FONT size=2>"</P></FONT>
+<P>placed the clientaccesspolicy.xml and crossdomain.xml in the home directory of my iis default web site but I get the exception </P>
+<P>"The remote server returned an error: NotFound"</P>
+<P>Am I missing something?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, February 10, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are missing the actual virtual directory.&nbsp; Should be something
+like &#8220;http://localhost/VirDir/WcfPortal.svc&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> davido
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, February 10, 2009 12:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] &quot;The remote server returned an error:
+NotFound&quot;<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I moved my WcfHostWeb from Cassini to IIS. <o:p></o:p></p>
+
+<p>Updated the ServiceReferences.ClientConfig file to point to<o:p></o:p></p>
+
+<p><span>address</span><span>=</span><span>&quot;<span>http://localhost/WcfPortal.svc</span>&quot;<o:p></o:p></span></p>
+
+<p>placed the clientaccesspolicy.xml and crossdomain.xml in the home directory
+of my iis default web site but I get the exception <o:p></o:p></p>
+
+<p>&quot;The remote server returned an error: NotFound&quot;<o:p></o:p></p>
+
+<p>Am I missing something?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

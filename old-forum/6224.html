@@ -1,0 +1,20 @@
+<html><header><title>How do I implement a sortable EditableRootListBase?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How do I implement a sortable EditableRootListBase?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6224.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar posted on Wednesday, January 21, 2009</h2><P>Hello,</P>
+<P>Can anyone give me some pointers or an&nbsp; example on how to implement a sortable dynamic&nbsp;list using editablerootlistbase class? Prior to using the ERLB, I was implementing a sortable list (where objectList inherits from readonlylistbase) like this:</P><FONT color=#008000 size=2>
+<P>objectListBindingSource.DataSource = New SortedBindingList(Of objectInfo)(objectList)</P></FONT>
+<P>Thanks,</P>
+<P>Andrew</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Wednesday, January 21, 2009</h2><P>I am guessing this is not possible!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, January 26, 2009</h2><FONT face=Arial size=2><FONT face=Arial size=2>
+<P>Well... in fact it is possible. Take a BrandColl ERLB made&nbsp;of Brand root objects:</P>
+<P>Attach the BindingSource to the DataGridView</FONT></P>
+<P>&nbsp;</P><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff><FONT color=#0000ff><FONT color=#0000ff>
+<P></FONT></FONT><FONT size=2><FONT color=#000000>brandCollDGV.DataSource = </FONT><FONT color=#000000>brandCollBindingSource;</FONT></FONT></P></FONT></FONT></FONT></FONT>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>Now make the sorted list</FONT></P>
+<P>&nbsp;</P>
+<P><FONT face="Courier New" size=2>_thisBrandColl = </FONT><FONT face="Courier New"><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BrandColl</FONT></FONT><FONT size=2>.GetBrandColl();</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">brandCollBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff><FONT face="Courier New" color=#0000ff>false</FONT></FONT><FONT face="Courier New">;</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff>var</FONT></FONT> sortedList = <FONT color=#0000ff><FONT color=#0000ff>new</FONT></FONT> <FONT color=#2b91af><FONT color=#2b91af>SortedBindingList</FONT></FONT>&lt;<FONT color=#2b91af><FONT color=#2b91af>Brand</FONT></FONT></FONT><FONT face="Courier New">&gt;(_thisBrandColl);</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">sortedList.ApplySort(</FONT><FONT face="Courier New"><FONT color=#a31515><FONT color=#a31515>"BrandName"</FONT></FONT>, <FONT color=#2b91af><FONT color=#2b91af>ListSortDirection</FONT></FONT></FONT><FONT face="Courier New">.Ascending);</FONT></FONT></P>
+<P><FONT face="Courier New" size=2>brandCollBindingSource.DataSource = sortedList;</FONT></P>
+<P><FONT size=2><FONT face="Courier New">brandCollBindingSource.RaiseListChangedEvents = </FONT><FONT color=#0000ff><FONT face="Courier New" color=#0000ff>true</FONT></FONT><FONT face="Courier New">;</FONT></FONT></P>
+<P><FONT size=2><FONT face="Courier New">brandCollBindingSource.ResetBindings(</FONT><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff>false</FONT></FONT>);</FONT></FONT><FONT face="Courier New"><FONT color=#0000ff><FONT color=#0000ff></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>andrewrajcoomar replied on Tuesday, January 27, 2009</h2><P>I'll be damn. Makes sense now as they all implemet IList(Of T).</P>
+<P>Thanks,</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

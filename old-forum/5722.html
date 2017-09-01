@@ -1,0 +1,15 @@
+<html><header><title>Farpoint problem with root child grandchild relationship</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Farpoint problem with root child grandchild relationship</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5722.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef posted on Monday, November 03, 2008</h2><p>I've used the little test project from Lhotka around data binding to
+grandchild objects. I've replaced the grid from MicroSoft with farpoint
+spread control but nothing appears in the spread control.<br>
+</p>
+<p>When using BindingSouce for the datasource property of a spread control 
+nothing appears in the spread for the grandchildren. The grid with the 
+grandchildren stays empty.<br>
+</p>
+<p><br>
+<br>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>backwardshoop replied on Tuesday, November 04, 2008</h2><P>Hello,</P>
+<P>I see the same issue as you and have reported this as a bug (#23539) for the FarPoint development team to fix for the next maintenance release. The problem is the Spread source is not expecting to be bound to a BindingSource with many levels of BindingSources as the List. For now, you can set the DataSource to the parent BindingSource and you would see the full hierarchy in the Spread. Comment out the code to set the AutoGenerateColumns property to False and then add this code in the Form_Load event.</P><FONT size=2>
+<P>Rebind(root);</P>
+<P>fpSpread1_Sheet1.DataSource = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.grandchildrenBindingSource.DataSource;</P>
+<P>fpSpread1_Sheet1.Columns[2].Visible = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

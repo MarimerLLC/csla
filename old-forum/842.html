@@ -1,0 +1,45 @@
+<html><header><title>Generics in Listing and ListItems</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generics in Listing and ListItems</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/842.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd posted on Tuesday, August 08, 2006</h2><p class="MsoNormal">Afternoon All,<br>
+<br>
+Just wondering if someone can point me in the right direction. <br>
+<br>
+I have a list which needs to be generic but the listitems also need to be
+generic as well. I have attached a diagram of what I’m trying to achieve and
+wondered if this might be possible.<br>
+<br>
+Text Version.<br>
+<br>
+I have a need for a ContactList and a ContactListItem and ideally would like to
+use generic to achieve multiple classes<br>
+<br>
+I will need <br>
+<br>
+CustomerContactList to Return a Collection of CustomerContactListItem<br>
+LocationContactList to Return a Collection of LocationContactListItem<br>
+MeetingContactList to Return a Collection of MeetingContactListItem</p><p class="MsoNormal">The Customer, Location Meeting Contact List Item needs to inherit from ContactListItem and when i call the top level Class CustomerContacts it needs to call the BusinessObjectLoad under the ContactList and return a list dependant for the Customer, Location, Meeting ListItems.<br>
+</p><p class="MsoNormal">
+Hope this makes sense and is possible?<br>
+<br>
+Thanks, Tim.<o:p></o:p></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RRorije replied on Tuesday, August 08, 2006</h2>Hi<br><br>The first idea that pops into my head is that this closely resembles the abstract factory pattern (see Gamma et al, "Design Patterns"), but this pattern can of course also be found on the web.<br><br>I do not know how this must be implemented in this case, yet it might be worth looking into.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 08, 2006</h2>Generics are not polymorphic. To create a strongly typed list of child generic types, those child generic types need to have some non-generic type in common. Typically this is a non-generic interface that all the generic child classes can implement, so the list can hold items of that non-generic interface type.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Tim FOrd replied on Wednesday, August 09, 2006</h2>Hi Rocky,<br><br>I think i might have acehived what i was looking to do, please see the code below, i would be greateful if you could have a look and see if i'm barking up the wrong tree.<br><br>Thanks, Tim.<br><br>&nbsp;&nbsp;&nbsp; Public Class ContactList(Of T As ContactListItem(Of T))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits ReadOnlyListBase(Of ContactList(Of T), ContactListItem(Of T))<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function GetCustomerContactList(ByVal ID As System.Guid) As ContactList(Of CustomerContactListItem)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch(Of ContactList(Of CustomerContactListItem))(New CustomerCriteria(ID))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function GetLocationContactList(ByVal ID As System.Guid) As ContactList(Of LocationContactlistItem)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch(Of ContactList(Of LocationContactlistItem))(New LocationCriteria(ID))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function GetMeetingContactList(ByVal ID As System.Guid) As ContactList(Of MeetingContactListItem)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Fetch(Of ContactList(Of MeetingContactListItem))(New MeetingCriteria(ID))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp; End Class<br><br>&nbsp;&nbsp;&nbsp; Public MustInherit Class ContactListItem(Of T As ContactListItem(Of T))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Inherits ReadOnlyBase(Of ContactListItem(Of T))<br><br>&nbsp;&nbsp;&nbsp; End Class<br><br>&nbsp;&nbsp;&nbsp; Public Class CustomerContactListItem : Inherits ContactListItem(Of CustomerContactListItem)<br><br>&nbsp;&nbsp;&nbsp; Public Class LocationContactListItem : Inherits ContactListItem(Of LocationContactListItem)<br><br>&nbsp;&nbsp;&nbsp; Public Class MeetingContactListItem : Inherits ContactListItem(Of MeetingContactListItem)<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=171252414-09082006><FONT face=Arial color=#0000ff size=2>Oh, I see. You didn't want the list to contain both types 
+at the same time, just one type or the other? Then that should work I would 
+think. The only drawback to this is that your top-level list is a generic, which 
+could cause you some grief in the UI, since your two lists won't be polymorphic 
+at that level. If that doesn't cause you issues then I don't see a 
+problem.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=171252414-09082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=171252414-09082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Tim FOrd [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Wednesday, August 09, 2006 3:11 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Generics in Listing and 
+  ListItems<BR></FONT><BR></DIV>
+  <DIV></DIV>Hi Rocky,<BR><BR>I think i might have acehived what i was looking 
+  to do, please see the code below, i would be greateful if you could have a 
+  look and see if i'm barking up the wrong tree.<BR><BR>Thanks, 
+Tim.<BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

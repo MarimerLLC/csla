@@ -1,0 +1,60 @@
+<html><header><title>a business object only have &quot;CreateObject&quot; AuthorizationRules,then invoke Save()  Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>a business object only have &quot;CreateObject&quot; AuthorizationRules,then invoke Save()  Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10947.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hibo.Zhang posted on Monday, December 05, 2011</h2><p>a business object only have &quot;CreateObject&quot;&nbsp;AuthorizationRules,then invoke Save()&nbsp; method&nbsp;Error.</p>
+<p>is it must have &quot;CreateObjecet&quot; and &quot;EditObject&quot; AuthorizationRules?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 06, 2011</h2><p>Authorization rules is not required in CSLA, they are optional. </p>
+<p>What is the error message you get? </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hibo.Zhang replied on Tuesday, December 06, 2011</h2><p>&nbsp;&nbsp;&nbsp;if&nbsp; the&nbsp;method&nbsp; like this:</p>
+<p>public static void AddObjectAuthorizationRules()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Csla.Rules.BusinessRules.AddRule(typeof(ProjectEdit), new Csla.Rules.CommonRules.IsInRole(Csla.Rules.AuthorizationActions.CreateObject, &quot;ProjectManager&quot;));<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>you can&#39;t&nbsp;save this object.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 06, 2011</h2><p>This authorization rule only guards the invoke of DataPortal.Create&lt;T&gt; for a static NewXYZ method on the PropertyEdit object. </p>
+<p>It has nothing to do with the Save method. </p>
+<p>You can&#39;t save an object that has BrokenRules with severity Error. So most likely&nbsp;- you object (or child or grandchild) has validation errors and IsValid is false. This will cause DataPortal to throw an exception if Save is called on an invalid object. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hibo.Zhang replied on Tuesday, December 06, 2011</h2><p>if this object only&nbsp;have &quot;CeateObject&quot; Authorization Rules,but have not &quot;EditObject&quot; Authorization Rules,then can&#39;t save</p>
+<p>must have&nbsp; &quot;EditObject&quot; Authorization Rules ,then can save</p>
+<p>but my object demand only allow it have&nbsp; &quot;CeateObject&quot; Authorization Rules,so i can&#39;t save this object</p>
+<p>my english very bad,sorry!</p>
+<p>you see what i mean?<img src="http://forums.lhotka.net/emoticons/emotion-4.gif" alt="Stick out tongue" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 06, 2011</h2><p>Well, you problem may be related to the code in Csla DataPortal:</p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(bbase.IsNew)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;methodName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;DataPortal_Insert&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.CreateObject,&nbsp;obj))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;System.Security.<span style="color:#2b91af;">SecurityException</span>(<span style="color:blue;">string</span>.Format(<span style="color:#2b91af;">Resources</span>.UserNotAuthorizedException,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a31515;">&quot;create&quot;</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectType.Name));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;methodName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;DataPortal_Update&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.EditObject,&nbsp;obj))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;System.Security.<span style="color:#2b91af;">SecurityException</span>(<span style="color:blue;">string</span>.Format(<span style="color:#2b91af;">Resources</span>.UserNotAuthorizedException,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a31515;">&quot;save&quot;</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectType.Name));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">and when using ObjectFactory:</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!Csla.Rules.<span style="color:#2b91af;">BusinessRules</span>.HasPermission(Rules.<span style="color:#2baf9a;">AuthorizationActions</span>.EditObject,&nbsp;obj))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">throw</span>&nbsp;<span style="color:blue;">new</span>&nbsp;System.Security.<span style="color:#2b91af;">SecurityException</span>(<span style="color:blue;">string</span>.Format(<span style="color:#2b91af;">Resources</span>.UserNotAuthorizedException,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#a31515;">&quot;save&quot;</span>,
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;objectType.Name));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(factoryType&nbsp;!=&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(obj&nbsp;<span style="color:blue;">is</span>&nbsp;Core.<span style="color:#2baaaf;">ICommandObject</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;=&nbsp;Server.<span style="color:#2b91af;">DataPortalMethodCache</span>.GetMethodInfo(factoryType,&nbsp;factoryInfo.ExecuteMethodName,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">object</span>[]&nbsp;{&nbsp;obj&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;method&nbsp;=&nbsp;Server.<span style="color:#2b91af;">DataPortalMethodCache</span>.GetMethodInfo(factoryType,&nbsp;factoryInfo.UpdateMethodName,&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:blue;">object</span>[]&nbsp;{&nbsp;obj&nbsp;});</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">Meaning that in order to call Save:</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">If you use DataPortal_XYZ methods you need: </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"><ul><li><pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">on a new object you need the CreateObject permission and </pre>
+</li>
+<li>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">to Edit an existing object you need the EditObject permission.</pre>
+</li>
+</ul>
+</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">If you use ObjectFactory attribute (the data access only calls the Update method on the ObjectFactory)</pre>
+<ul>
+<li>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">only checks for EditObject permission. </pre>
+</li>
+</ul>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">So CSLA have a different authorization check for DataPortal_XYZ and ObjectFactory data access. </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">Rocky will have to decide on whether this is bug or not that will be fixed in next version of CSLA. </pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>edore replied on Tuesday, December 06, 2011</h2><p>We do faced the same issue and would be grateful if this is fixed.&nbsp; We know the ObjectFactory only has an Update method and this is probably the reason why CSLA only checks for EditObject.&nbsp; But maybe it is reason enough to add an Insert method (big breaking change, I know) that will check for the CreateObject permission...</p>
+<p>&nbsp;</p>
+<p>Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 07, 2011</h2><p>Added to bugtracker: <a href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=998">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=998</a>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

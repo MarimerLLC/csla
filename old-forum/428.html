@@ -1,0 +1,49 @@
+<html><header><title>RE: Validation of collection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RE: Validation of collection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/428.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Wednesday, June 21, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=109453600-21062006><FONT face=Arial color=#0000ff size=2>It is important to remember that IsValid is not an event - 
+it is a property. And that property is almost never actually called, because it 
+isn't part of data binding </FONT></SPAN></DIV>
+<DIV><SPAN class=109453600-21062006></SPAN><FONT face=Arial color=#0000ff size=2>or&nbsp;anything&nbsp;like&nbsp;that.&nbsp;In&nbsp;fact,&nbsp;if&nbsp;you&nbsp;don't&nbsp;write&nbsp;code&nbsp;to&nbsp;call&nbsp;it,&nbsp;it&nbsp;won't&nbsp;be&nbsp;called&nbsp;-&nbsp;and<SPAN class=109453600-21062006> 
+m</SPAN>ost&nbsp;people&nbsp;never&nbsp;do&nbsp;call&nbsp;it.</FONT></DIV>
+<DIV><FONT face=Arial><FONT color=#0000ff><FONT size=2></FONT></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT><FONT><FONT face=Arial color=#0000ff size=2><SPAN class=109453600-21062006>This is why it implements the task by looping through 
+the child objects - no need for complexity to solve a problem that doesn't 
+really exist. There'd only be a problem if you have a lot of child objects 
+(thousands) and you call IsValid very often.</SPAN></FONT></FONT></FONT></DIV>
+<DIV><FONT><FONT><FONT face=Arial color=#0000ff size=2><SPAN class=109453600-21062006></SPAN></FONT></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT><FONT><FONT face=Arial color=#0000ff size=2><SPAN class=109453600-21062006>Rocky</SPAN></FONT></FONT></FONT></DIV>
+<DIV><BR></DIV>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> BigRon [mailto:cslanet@lhotka.net] 
+  <BR><B>Sent:</B> Tuesday, June 20, 2006 10:10 AM<BR><B>To:</B> 
+  rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Validation of 
+  collection<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>Rocky - I was trying to extract from this thread an answer to this 
+  question:&nbsp; What is the best practice for checking validity among items 
+  (child objects) within a collection from the parent object?&nbsp; Book 
+  examples show overriding the base "IsValid" method with&nbsp;mybase.IsValid 
+  and mResources.IsValid.&nbsp; The problem is that using that example does NOT 
+  raise validation exceptions if a child object of that child collection is not 
+  in accordance with a validation rule.</P>
+  <P>Are you recommending looping through the child collection items and 
+  checking .IsValid for each item to raise the IsValid flag of the collection to 
+  false?&nbsp; I thought that the framework was designed 
+  to&nbsp;"bubble&nbsp;up" these kinds of events.&nbsp; </P><BR><BR>--<BR>View 
+  this message online at: <A href="http://forums.lhotka.net/forums/thread/2070.aspx">http://forums.lhotka.net/forums/thread/2070.aspx</A><BR>--<BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DansDreams replied on Wednesday, June 21, 2006</h2><P>Whoah there with those assumptions Rocky.&nbsp; IsValid is called by IsSavable, which I believe was added specifically because many of us found it very powerful to do things like bind IsSavable to a Save button's Enabled property.</P>
+<P>I'd agree that the issue is&nbsp;probably not significant until the collection reaches thousands of elements, but I think you should count on IsValid being called "often" not being so unusual.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 replied on Wednesday, June 21, 2006</h2><P>Big Ron,</P>
+<P>When you start down the "find the documentation" trail, look for these two threads among many in the old forum:</P>
+<P><A href="http://www.searchcsla.com/Details.aspx?msn_id=8264">http://www.searchcsla.com/Details.aspx?msn_id=8264</A><BR><A href="http://www.searchcsla.com/Details.aspx?msn_id=5525">http://www.searchcsla.com/Details.aspx?msn_id=5525</A></P>
+<P>The best way to get what you want is by using an observer pattern either home-brewed or with Petar Kozul's ActiveObjects version of the CSLA framework in 1.5 and 2.0 flavors.</P>
+<P>You're not going to get much more help than that, really, but framework issues are discussed very well here, albeit you'll be left twisting on some topics that were discussed ad nauseum. Some kind souls will sometimes jump in and tell you.</P>
+<P>I'm originally UI design&nbsp;only (hey Mac people draw stuff)&nbsp;and I for one didn't know how it affected me until I got several huge projects dumped on me with short time frames and a manger who thinks everything is MSAccess-like. Catching what the error actually is has begun to help me greatly.</P>
+<P>They just don't teach this stuff in MCAD/MCSD classes. :-\</P>
+<P>_E</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 22, 2006</h2><P>Fair enough Dan <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>But then I should point out that IsValid is Overridable/virtual in both BusinessBase and BusinessListBase, so if it <EM>does</EM> become a performance issue for you, you can always override the behavior. In particular, you could override it in your collection class to use a pre-cached value. That pre-cached value could be generated by listening for PropertyChanged events from the child objects and using that notification to keep the value up to date as each child changes.</P>
+<P>The easiest way to do this is to override OnListChanged. BLB already handles the child objects' PropertyChanged events and automatically raises ListChanged to notify the UI and/or parent of the change. You can override OnListChanged within your collection to also get this notification, and that could be your trigger to update IsValid. Actually that is the only good way to do it, because it would also cover the delete and clear cases...</P>
+<P>Still, it is probably only worth this extra effort in the case that there's an actual performance issue that you are facing, otherwise it seems just like extra work.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

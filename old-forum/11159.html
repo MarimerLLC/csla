@@ -1,0 +1,16 @@
+<html><header><title>Could not find default endpoint element that references contract 'WcfPortal.IWcfPortal' </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Could not find default endpoint element that references contract 'WcfPortal.IWcfPortal' </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11159.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>smgrisw posted on Tuesday, February 14, 2012</h2><p>Hello,</p>
+<p>I am using CSLA version 4.3.1.0 and Silverlight 5. &nbsp;I am getting an error message that is very strange. &nbsp;When I try to create a new business object I am getting an error&nbsp;Could not find default endpoint element that references contract &#39;WcfPortal.IWcfPortal. &nbsp;I do not have an endpoint with the name. &nbsp;I could find no reference in my code that says&nbsp;WcfPortal.IWcfPortal. &nbsp;Does anyone know why I would be getting a message for and endpoint contract name that does not exist in my code?</p>
+<p>&nbsp;</p>
+<p>Thanks,</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 14, 2012</h2><p>Did you set the data portal url as the app starts up? The data portal defaults to using the WCF proxy to talk to an app server, but you need to supply the url for the server.</p>
+<p>The contract you are seeing is the data portal contract.</p>
+<p>Or you can set the proxy name to Local to run the data access code on the client. Obviously that has a whole other set of implications.</p>
+<p>The Using CSLA 4: Data Portal Configuration book has a lot of detail on all the various configuration options.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smgrisw replied on Friday, February 17, 2012</h2><p>Dear Mr. Lhotka,</p>
+<p>Than you for your response.&nbsp; Your answer pointed me in the right direction and I was able to resolve my issue.</p>
+<p>&nbsp;</p>
+<p>Regards,</p>
+<p>&nbsp;</p>
+<p>Scott Griswold</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

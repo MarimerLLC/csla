@@ -1,0 +1,17 @@
+<html><header><title>Asynchronous BeginFetch an Csla 4.5.10</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Asynchronous BeginFetch an Csla 4.5.10</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11803.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>neo_u posted on Saturday, January 26, 2013</h2><p>Hi. I just figured out that BeginFetch is not asynchronous in Csla 4.5.</p>
+<p>I&#39;m using .net 4.0 and before I updated to the Csla 4.5 everything worked fine, but right now all calles become synchronous and it&#39;s a huge problem.</p>
+<p>How can I get back to work BeginFetch as asynchornous method?</p>
+<p>&nbsp;</p>
+<p>I&#39;m using WPF windows application, .net framework 4.0 Client Profile.&nbsp;</p>
+<p>Thanks in advance.</p>
+<p>&nbsp;</p>
+<p>PS: I tried to read books but there are no information about this issue.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, January 26, 2013</h2><p>Hi neo_u</p>
+<p>Porting a WPF application from Csla 4.1 to Csla 4.5 should be straightforward: add a reference to Async Targeting Pack. The easiest way is to use NuGet. Have a look at <a href="http://tribunatek.blogspot.pt/2012/10/how-to-install-async-targeting-pack.html">How to install the Async Targeting Pack?</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>neo_u replied on Saturday, January 26, 2013</h2><p>Hm...</p>
+<p>Maybe I&#39;m doing something wrong, or I need to do something more except adding Async Targeting Pack.</p>
+<p>Because right now nothing changed BeginFetch still synced.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, February 02, 2013</h2><p>In the current 4.5 implementation, when using the <em>local</em> data portal the async methods don&#39;t automatically spin the work onto a background thread.</p>
+<p>That will change in an upcoming release, because I solicited feedback on this implementation and most people feel that the local data portal should emulate the remote data portal. That will add extra overhead in some cases (because CSLA will always do the work on a background thread), but it will make the local and remote data portal behaviors the same.</p>
+<p>In the meantime, you can make your DataPortal_XYZ methods return async Task, and inside your method you can use Task.StartNew to make the work occur on your own background thread.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>neo_u replied on Saturday, February 02, 2013</h2><p>Thanks.</p>
+<p>I&#39;ll do like you suggesting.</p>
+<p>&nbsp;</p>
+<p>PS: Waiting for the CSLA with async local dataportal :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

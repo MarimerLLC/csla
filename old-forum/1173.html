@@ -1,0 +1,42 @@
+<html><header><title>Roles &amp; Related Permissions Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Roles &amp; Related Permissions Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1173.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Saturday, September 09, 2006</h2>UPDATE:
+
+I casted the Principal object to a custom principal object like so
+
+((MyCustomPrincipal)Csla.ApplicationContext.User)
+
+This allowed me to create method to search the roles assigned to the user for an appropriate RightID :)
+
+Security Model is 80% compelete now. I believe :|
+
+--------------------------------------------------------------------------------------
+UPDATE: 
+
+I figured it out. The tough part is making the roles dynamic so an admin can use a tool to create roles. We don't want to hard code roles<BR> into the business objects (I still need to figure out how to do this). <BR><BR>
+
+But I did get the NameValueList of Roles/Rights working. I don't know if it's right but the footprint is like this <BR>NameValueList Key = RoleID, Value = RoleObject<BR>
+
+The role object contains a list of permissions.<BR> I have it pulling from the DB and bound to controls so I can make sure all is pulled correctly. 
+<BR><BR>
+Now I just have to make the method in Identity to check to see if the users role has a specific right.
+<BR><BR>
+
+--------------------------------------------------------------------------------------------------------------------------------------------------------------
+I am building the Security Section of our application this weekend and am hoping to get some insight. Our Users, Roles and Permissions are DB Driven. <br><br>
+
+Here is how our security model needs to function. The permission list is not user configurable but are stored<br> in the database.<br><br>
+
+1) Admin creates a Role called: Data Entry Clerk Level 1<br>
+2) Admin assigns specific permissions to the role.<br>
+3) Admin creates users.<br>
+3) Admin assigns users to the Data Entry Clerk Level 1 Role.<br>
+4) User logs in and system authenicates the users gets his/her role(s) and related permissions(I think).<br>
+<br><br>
+The part I don't understand is where is the relationship between Roles and Permissions. It's easy in the<br> database but I don't understand how the BO's and UI are supposed to work with single permissions.<br><br>
+
+For Example: Admin Level 1 can view a specific set of Reports. <br><br>
+
+Our pages will have a permission id value hardcoded on the page. 
+<br><br>
+When the user loads it's Role(S) should I also load the list of permissions associated to that role?<br><br>
+
+We don't want to hard code what role can access what feature. It needs to be DB driven. I'm a little confused<br> as how to fit this into CSLA security model. In our classic asp application that I am re developing now we just<br> used queries to make sure the use had a specific permission ID.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

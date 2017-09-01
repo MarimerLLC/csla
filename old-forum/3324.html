@@ -1,0 +1,84 @@
+<html><header><title>csla 3 Problem getting ProjectTracker running  - ConfigurationErrorsException occurred</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla 3 Problem getting ProjectTracker running  - ConfigurationErrorsException occurred</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3324.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo posted on Friday, August 03, 2007</h2>The following exception occurs in csla<br>
+System.Configuration.ConfigurationErrorsException occurred<br>
+&nbsp; BareMessage="Configuration system failed to initialize"<br>
+&nbsp; Line=0<br>
+&nbsp; Message="Configuration system failed to initialize"<br>
+&nbsp; Source="System.Configuration"<br>
+&nbsp; StackTrace:<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Configuration.ClientConfigurationSystem.EnsureInit(String configKey)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+System.Configuration.ClientConfigurationSystem.System.Configuration.Internal.IInternalConfigSystem.GetSection(String
+sectionName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Configuration.ConfigurationManager.GetSection(String sectionName)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Configuration.ConfigurationManager.get_AppSettings()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at
+Csla.ApplicationContext.get_AuthenticationType() in
+D:\Working\Download\cslavb-3.0.2-070727\cslavb\Csla\DataPortal\ApplicationContext.vb:line
+268<br>
+<br>
+.......................<br>
+Running in Debug mode<br>
+ProjectTracker is configured to use&nbsp; remoting with csla authentication.<br>
+NET20 directive is applied to both csla and also the&nbsp; ProjectTracker projects.<br>
+.NET 3 assembly references are removed in Web.Config<br>
+To avoid other annoyances that prevent compilation, the following
+unneeded projects are removed from the ProjectTracker solution:<br>
+PTWeb, PTWebService, wcfHost, WebServicesHost.<br>
+<br>
+Jimbo<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 04, 2007</h2><P>I've never encountered that issue. System.Configuration is obviously a key part of .NET itself (starting at 2.0), so if it is failing to initialize then that seems bad...</P>
+<P>I don't know what would cause that. Corrupt .NET install? Corrupt app.config file? File security/permissions issues?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, August 04, 2007</h2>Rocky,<br>
+<br>
+yes the PTWin app.config file is the issue.<br>
+<br>
+You cant ignore the "Informational" messages in VS ....<br>
+Message&nbsp;&nbsp;&nbsp; 1&nbsp;&nbsp;&nbsp; Could not find schema
+information for the element 'system.serviceModel'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+27&nbsp;&nbsp;&nbsp; 4&nbsp;&nbsp;&nbsp; PTWin<br>
+Message&nbsp;&nbsp;&nbsp; 2&nbsp;&nbsp;&nbsp; Could not find schema
+information for the element 'client'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+29&nbsp;&nbsp;&nbsp; 6&nbsp;&nbsp;&nbsp; PTWin<br>
+Message&nbsp;&nbsp;&nbsp; 3&nbsp;&nbsp;&nbsp; Could not find schema
+information for the element 'endpoint'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+30&nbsp;&nbsp;&nbsp; 8&nbsp;&nbsp;&nbsp; PTWin<br>
+Message&nbsp;&nbsp;&nbsp; 4&nbsp;&nbsp;&nbsp; Could not find schema
+information for the attribute 'name'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+30&nbsp;&nbsp;&nbsp; 17&nbsp;&nbsp;&nbsp; PTWin<br>
+Message&nbsp;&nbsp;&nbsp; 5&nbsp;&nbsp;&nbsp; Could not find schema
+information for the attribute 'address'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+31&nbsp;&nbsp;&nbsp; 17&nbsp;&nbsp;&nbsp; PTWin<br>
+Message&nbsp;&nbsp;&nbsp; 6&nbsp;&nbsp;&nbsp; Could not find schema
+information for the attribute 'binding'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+32&nbsp;&nbsp;&nbsp; 17&nbsp;&nbsp;&nbsp; PTWin<br>
+Message&nbsp;&nbsp;&nbsp; 7&nbsp;&nbsp;&nbsp; Could not find schema
+information for the attribute 'contract'.&nbsp;&nbsp;&nbsp;
+D:\Working\csla\cslavb\ProjectTrackervb\PTWin\app.config&nbsp;&nbsp;&nbsp;
+33&nbsp;&nbsp;&nbsp; 17&nbsp;&nbsp;&nbsp; PTWin<br>
+<br>
+remming out this tag solves the problem<br>
+<br>
+&lt;!--&lt;system.serviceModel&gt;<br>
+<br>
+&nbsp;&nbsp;&nbsp; &lt;client&gt;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+address="http://localhost:4216/WcfHost/WcfPortal.svc"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; binding="wsHttpBinding"<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+contract="Csla.Server.Hosts.IWcfPortal" /&gt;<br>
+&nbsp;&nbsp;&nbsp; &lt;/client&gt;<br>
+<br>
+&nbsp; &lt;/system.serviceModel&gt;--&gt;<br>
+<br>
+Maybe there needs to be a note <br>
+<br>
+Thanks<br>
+Jimbo<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,21 @@
+<html><header><title>Request advice with issue concerning BusinessListBase - need a fill method.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Request advice with issue concerning BusinessListBase - need a fill method.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3135.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nicholas DL posted on Tuesday, July 03, 2007</h2><P><FONT face=Verdana size=2>Assume a business entity "<STRONG>Account</STRONG>":</FONT></P>
+<P><FONT face=Verdana size=2><FONT color=#0000ff>public class Account : BusinessBase&lt;Account&gt; { ... }</FONT> </FONT></P>
+<P><FONT face=Verdana size=2>Include an "Account" collection:</FONT></P><FONT face=Verdana size=1><FONT color=#0000ff>public class AccountList : BusinessListBase&lt;AccountList, Account&gt;<BR>{ <BR>&nbsp;&nbsp;... <BR>&nbsp;&nbsp;protected override void DataPortal_Fetch(object criteria)<BR>&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;if(criteria is AccountList.FetchByAccountIDCriteria)<BR>&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AccountList.FetchByAccountIDCriteria fetchcriteria = criteria as AccountList.FetchByAccountIDCriteria;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<FONT color=#006400>//=== if 300 fetchcriteria.AccountIDs; 300 times Account.Fetch(accountid) ===</FONT> <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;foreach (string accountid in fetchcriteria.AccountIDs)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Account account = Account.Fetch(accountid);<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if(null != account) { this.Add(account); }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;}<BR>}<BR></FONT></FONT><FONT face=Verdana color=#000000 size=2>
+<P>The issue with BusinessListBase DataPortal_Fetch is that it has no access to the DataPortal; only a business entity may invoke the DataPortal.</P>
+<P>In the "AccountList" snippet above, the collection creates a new "Account" entity for each provided account ID. Each newly created "Account" entity invokes its internal Fetch method.</P>
+<P>This to me is a concern; were <STRONG>300</STRONG> account IDs supplied, <STRONG>300</STRONG> separate database invocations would occur.</P>
+<P>I am familiar with almost every line of CSLA yet I cannot find a batch "Fill" method for a collection in which the DB may return 300 rows and all the "Account" entities created with one DB call.</P>
+<P>Has anyone a work around?</P>
+<P>Thanks all!</P>
+<P>Nick</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, July 05, 2007</h2>BLB can use the dataportal.&nbsp; Are you sure you had "using Csla;" in your code?<br><br>Typically I have the collection fetch all the data, and the BO implements an internal factory method that takes the data object from which to load, instead of hitting the db itself.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nicholas DL replied on Thursday, July 05, 2007</h2><FONT face=Verdana size=2>
+<P>My mistake; after I read your message, I inspected some of the mods I had created within CSLA and realized that the Command Pattern I implemented in the business entity base was not implemented in the list base as well.</P>
+<P>I preferred not to permit the entity access to the DAL and created a command pattern in which Fetch simply called <B>Execute()</B> for each command object provided.</P>
+<P>I have extended his FW quite significantly; adding methods such as these to the list base:</P><FONT color=#808080>
+<UL>
+<LI>TrueForAll(Predicate&lt;C&gt; predicate);</LI>
+<LI>ISet&lt;U&gt; ConvertAll&lt;U&gt;(Converter&lt;C, U&gt; converter);</LI>
+<LI>ISet&lt;C&gt; FindAll(Predicate&lt;C&gt; predicate);</LI>
+<LI>ForEach(Action&lt;C&gt; action);</LI>
+<LI>ValidateAll(Predicate&lt;C&gt; predicate);</LI>
+<LI>C [] ToArray();</LI>
+<LI>List&lt;C&gt; Where(string property, WhereParameters parameter, string value);</LI></UL></FONT>Thanks for the help! </FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

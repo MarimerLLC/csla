@@ -1,0 +1,130 @@
+<html><header><title>Building now for CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Building now for CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5560.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com posted on Thursday, October 09, 2008</h2>Greetings. I am new to this forum and to CSLA.net and have a couple questions about CSLA.net<br><br>1.&nbsp; If I were to build business objects for a .net winforms application today, can these business objects be ported over to silverlight with relative ease?<br><br>2. Are business objects written in CSLA for .net clients only? Or is it possible for java clients to consume them?<br><br>3. Does CSLA.net have any mechanisms that support updating stale data automatically and record locking? I haven't seen a solution to pushing out data to clients if their data changes locally.<br><br>4. What are the direct competitors to CSLA.net? <br><br>5. Does anyone know if silverlight will likely be able to run on mobile phones such as the Iphone or linux?<br><br>6. Is there any licensing fees for CSLA.net? Or is the this an open source business model ( pay for the expertise )?<br><br>So far, I have been using datasets with winforms applications. While it is easy to get objects into and out of the database there really isn't a standardized way to implement business logic, thus I am looking for a framework that can simplify and standardize the development process. <br><br>Thank you for any and all comments. <br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 09, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>6 is technically not a couple :- )<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>1.&nbsp; If I were to build business objects for a .net
+winforms application today, can these business objects be ported over to
+silverlight with relative ease?<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp; -- Yes if you use latest syntax (3.6)<br>
+<br>
+2. Are business objects written in CSLA for .net clients only? Or is it
+possible for java clients to consume them?<br>
+&nbsp; --&nbsp; I am not familiar with his approach.&nbsp; My guess is that you
+would need to write a custom service to expose CSLA objects in a format that
+Java understands.<br>
+<br>
+3. Does CSLA.net have any mechanisms that support updating stale data
+automatically and record locking? I haven't seen a solution to pushing out data
+to clients if their data changes locally.<br>
+&nbsp; -- CSLA is built with premise of abstract data persistence.&nbsp; It
+does support locking via transaction scope, but depends on DB engine to
+understand that.<br>
+<br>
+4. What are the direct competitors to CSLA.net? <br>
+&nbsp;-- I am not sure.<br>
+<br>
+5. Does anyone know if silverlight will likely be able to run on mobile phones
+such as the Iphone or linux?<br>
+&nbsp; --&nbsp; In the future definitely yes. &nbsp;MS has plans to support
+this scenario in the very near future.<br>
+<br>
+6. Is there any licensing fees for CSLA.net? Or is the this an open source
+business model ( pay for the expertise )?<br>
+&nbsp;-- No.&nbsp; You cannot beat the price of free, can you?&nbsp; Read
+licencing agreement for more details.<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span>
+kyle.l.watson@gmail.com [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 09, 2008 3:14 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Building now for CSLA<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Greetings. I am new to this forum and to CSLA.net and have a
+couple questions about CSLA.net<br>
+<br>
+1.&nbsp; If I were to build business objects for a .net winforms application
+today, can these business objects be ported over to silverlight with relative
+ease?<br>
+<br>
+2. Are business objects written in CSLA for .net clients only? Or is it
+possible for java clients to consume them?<br>
+<br>
+3. Does CSLA.net have any mechanisms that support updating stale data
+automatically and record locking? I haven't seen a solution to pushing out data
+to clients if their data changes locally.<br>
+<br>
+4. What are the direct competitors to CSLA.net? <br>
+<br>
+5. Does anyone know if silverlight will likely be able to run on mobile phones
+such as the Iphone or linux?<br>
+<br>
+6. Is there any licensing fees for CSLA.net? Or is the this an open source
+business model ( pay for the expertise )?<br>
+<br>
+So far, I have been using datasets with winforms applications. While it is easy
+to get objects into and out of the database there really isn't a standardized
+way to implement business logic, thus I am looking for a framework that can
+simplify and standardize the development process. <br>
+<br>
+Thank you for any and all comments. <br>
+<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 09, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>sergeyb:</strong></div><div>6. Is there any licensing fees for CSLA.net? Or is the this an open source
+business model ( pay for the expertise )?</div></BLOCKQUOTE><br><br>Well I think Rocky would appreciate if the OP bought the Expert Business Objects 2008 book, coming soon.. or one of the released versions, or donated.&nbsp;<img src="/emoticons/emotion-5.gif" alt="Wink [;)]" />&nbsp;&nbsp; Still, not a high price to pay.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kyle.l.watson@gmail.com replied on Thursday, October 09, 2008</h2><span><o:p></o:p></span><p class="MsoNormal">Will Rocky be releasing a book or other material using csla.net light in the near future ( which will use the version 3.6 or greater)<br></p><p class="MsoNormal">Thank you for the quick response.</p><p class="MsoNormal"><br></p><p class="MsoNormal">Is the Expert Business Objects 2008 book going to include the latest information about csla.net light, 3.6?</p><p class="MsoNormal"><br></p><p class="MsoNormal">http://www.lhotka.net/weblog/Expert2008BusinessObjectsTentativeTOC.aspx</p><p class="MsoNormal"><br></p><p class="MsoNormal">I will have to keep up to date.<br></p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 09, 2008</h2><P>Expert 2008 Business Objects will cover CSLA .NET 3.6 for Windows. </P>
+<P>Since it is likely that the book and Silverlight will literally come out within a couple weeks of each other, I'd have to delay publishing the book for 2-3 months for it to cover Silverlight - and that's unworkable.</P>
+<P>The good news, however, is that 85% of the book's content applies to CSLA .NET for Silverlight just as much as it does to Windows. The frameworks are essentially the same, and we back-ported all the Silverlight functionality into the Windows version in 3.6 - including the most important UI controls (PropertyStatus in particular) for WPF and the asynchronous data portal and validation rules concepts.</P>
+<P>In other words, the 2008 book really does cover the framework for Silverlight - it just doesn't cover the creation of a Silverlight app using CSLA .NET. That'll almost certainly be an ebook and/or some training videos which I'll work on starting (probably) in December or January.</P>
+<P>Right now if you want to see CSLA .NET for Silverlight in action you should plan to attend <A href="http://www.vslive.com">VS Live</A> in Dallas in December, or VS Live San Francisco in February as I'll be talking about it at both of those shows. Or if you are in the Minnesota area, come to the <A href="http://www.twincitiescodecamp.com/TCCC/Default.aspx">code camp</A> in two days, because I'll be talking about it there.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,210 @@
+<html><header><title>CSLA 3.8 target Silverlight 4?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 3.8 target Silverlight 4?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9663.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrussel9 posted on Friday, October 22, 2010</h2><p>
+ 
+  Normal
+  0
+  
+  
+  
+  
+  false
+  false
+  false
+  
+  EN-US
+  X-NONE
+  X-NONE
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+  MicrosoftInternetExplorer4
+  
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+   
+  
+
+ 
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+ 
+
+
+
+</p>
+<p class="MsoNormal">Need help on some issues we&rsquo;re
+experiencing with trying to make one of our products (which is based on CSLA 3.8 and .NET 3.5.SP1) run under SL4. Basically, I took a
+na&iuml;ve approach in simply setting the target version on all our Silverlight
+projects to &ldquo;Silverlight 4,&rdquo; including the CSLA SL project. After all the references were
+updated, we tried to run an installation on a virtual machine, but
+were presented with an interesting error &ndash; one that we <b>can&rsquo;t</b> run down in
+development. No one can reproduce it in&nbsp; development.</p>
+<p class="MsoNormal">The error seems to point to a difference in the
+way data is transferred between the client and server. A simple example can be
+found during the log in process where the client sends the server some
+credentials which it checks against the database. On success, the client
+creates and provides principal information to an &ldquo;ApplicationContext&rdquo; object. From what I can tell, the
+server does not appear to be &ldquo;getting&rdquo; the same context information set by the
+client as server-side checks against the ApplicationContext fail.</p>
+<p class="MsoNormal">I commented out our server-side checks against the
+ApplicationContext&#39;s principal (which ensure the user has been authenticated) and re-deployed. This time, I was presented with another exception related to some problems
+serializing/deserializing data which make me think this is a more fundamental change in the
+way SL4 transfers data.</p>
+<p>Is it even possible to make CSLA 3.8 target SL4? If not, what about upgrading to another version such as 3.8.4? I should mention that we would like to avoid making the move to .NET 4.0.</p>
+<p class="MsoNormal">Any help would be appreciated.</p>
+<p class="MsoNormal">Thanks.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, October 22, 2010</h2><p><a href="http://www.lhotka.net/weblog/RunningCSLANET382UnderNET4AndSilverlight4.aspx">http://www.lhotka.net/weblog/RunningCSLANET382UnderNET4AndSilverlight4.aspx</a></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jrussel9 replied on Friday, October 22, 2010</h2><p>Sounds like this will require .NET 4 though, correct? We were hoping to avoid that. Perhaps it&#39;s required.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 22, 2010</h2><p>I don&#39;t know why it would require you to shift to .NET 4 on the server. You&#39;ll have to go to VS10 I would think, but probably not .NET 4.</p>
+<p>There are some issues around getting the code to compile and actually work in SL4 - but that&#39;s all SL-related and shouldn&#39;t affect the .NET 3.5 SP1 side of things (or if it does, you can use #if SILVERLIGHT blocks to overcome the differences).</p>
+<p>One thing Jaans might not have addressed in his blog post, because we discovered it late, is that SL4 reserved a state name that we were happily using in SL3. The result is that PropertyStatus didn&#39;t work right, and fixing that required changing the state name in PropertyStatus and in its related xaml file. I blogged about this issue though, so you can find info on my blog (<a href="http://www.lhotka.net/weblog">www.lhotka.net/weblog</a>).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,137 @@
+<html><header><title>FieldDataManager getting wrong field?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>FieldDataManager getting wrong field?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5998.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, December 15, 2008</h2>Hi,<br><br>I'm getting an exception which I can't figure out.&nbsp; I have a PropertyInfo&lt;string&gt;, named PartNumber in a BB subclass.&nbsp; I also have some other managed properties.&nbsp; For some reason, when the PartNumberProperty is used in GetProperty, the FieldDataManager is returning the UnitPriceProperty.&nbsp; protected P ReadProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo) in BB then fails, because it can't case the decimal data type to a string.<br><br>What's going on?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, December 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think there was a thread recently regarding this.&nbsp; I believe
+it boiled down to not having static _dummy variable in all classes.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 15, 2008 1:05 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] FieldDataManager getting wrong field?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+<br>
+I'm getting an exception which I can't figure out.&nbsp; I have a
+PropertyInfo&lt;string&gt;, named PartNumber in a BB subclass.&nbsp; I also
+have some other managed properties.&nbsp; For some reason, when the
+PartNumberProperty is used in GetProperty, the FieldDataManager is returning
+the UnitPriceProperty.&nbsp; protected P
+ReadProperty&lt;P&gt;(PropertyInfo&lt;P&gt; propertyInfo) in BB then fails,
+because it can't case the decimal data type to a string.<br>
+<br>
+What's going on?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 15, 2008</h2>Hmm, I don't remember it. I'll give that a shot... I'm surprised I've been able to avoid this issue for so long.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 15, 2008</h2>Thanks, it looks like that was the fix.<br><br>I'm a bit surprised, because the fields in question were defined on the derived class anyway.. nothing to do with the fields defined in the base class.<br><br>Anyway, I'm glad it's working now.. thanks again!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, December 15, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The issue is that your indexes for property info objects would
+collide without that, that is what you were running into.&nbsp; You had two
+properties with index X &#8211; one in base class and the other in inherited class.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 15, 2008 1:39 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: FieldDataManager getting wrong field?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks, it looks like that was the fix.<br>
+<br>
+I'm a bit surprised, because the fields in question were defined on the derived
+class anyway.. nothing to do with the fields defined in the base class.<br>
+<br>
+Anyway, I'm glad it's working now.. thanks again!<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 15, 2008</h2>That makes sense; I just converted the base class to use managed properties with private backing fields. Previously, they didn't do anything but directly return the value.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

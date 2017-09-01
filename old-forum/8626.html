@@ -1,0 +1,14 @@
+<html><header><title>Dynamic Linq</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Linq</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8626.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrazerS posted on Sunday, March 07, 2010</h2><p>If I provide a reference to System.Linq.Dynamic (assembly obtained from CSharpSamples) in my UI, the following works:</p>
+<p>&nbsp;employees = Business.EmployeeList.GetEmployeeList():<br />bsEmployees.DataSource = employees.OrderBy(&quot;LastName&quot;).Skip(4).Take(3);</p>
+<p>(where EmployeeList is an ERL and bsEmployees a Windows.Forms.BindingSource)</p>
+<p>But,&nbsp;figuring that its not such a good idea to do the sorting and paging on the client, I try to move this to the factory method in the ERL:</p>
+<p>public static EmployeeList GetEmployeeList(string sortProperty, int startItem, int pageSize)<br />{<br />&nbsp;&nbsp;&nbsp; return (EmployeeList)DataPortal.Fetch&lt;EmployeeList&gt;().OrderBy(sortProperty).Skip(startItem).Take(pageSize);<br />}</p>
+<p>This builds okay, but throws on execution with:</p>
+<p>Unable to cast object of type &#39;System.Linq.EnumerableQuery`1[Business.Employee]&#39; to type &#39;Business.EmployeeList&#39;</p>
+<p>Why does this work in the client but not in the business object?</p>
+<p>Frazer</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, March 07, 2010</h2><p>LINQ can have some unexpected and unintended side-effects. You need to understand how it works or you can get into trouble.</p>
+<p>LINQ queries create a completely new list object as a result. This list object is not connected to the original list, and is not of the same type (normally it is just an IEnumerable&lt;T&gt;, which is the most basic list type in .NET).</p>
+<p>What&#39;s confusing is that the elements in the list are the same elements from the original list - so you can interact with them and it works fine. But if you add or remove items from the query result they won&#39;t be added/removed from the original list - and in a CSLA setting this means they won&#39;t be persisted.</p>
+<p>This is the reason for LinqBindingList - see Chapter 14 (I think) for details about the problem and solution.</p>
+<p>In CSLA 4 the new LinqObservableCollection solves the problem too - but in a different way.</p>
+<p>In the end though, returning the result of the query from your factory method is problematic. The reason is that the UI would then have a reference to something that isn&#39;t the original list - so things like saving the object won&#39;t work - you won&#39;t even have a Save() or BeginSave() method to call.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

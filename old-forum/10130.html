@@ -1,0 +1,16 @@
+<html><header><title>Documentation of Authentication and Security</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Documentation of Authentication and Security</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10130.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kirby posted on Friday, March 04, 2011</h2><p>Hi,</p>
+<p>I&#39;m new to CSLA 4 and try to understand how security and authorization works (Windows Authentication for the first step). </p>
+<p>I&#39;ve bought the CSLA 4 eBook series but the Security book is not available yet. What could you suggest as a beginners documentation for security and Authorization / Authentication for the moment?</p>
+<p>Thank You!</p>
+<p>Kirby</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Saturday, March 05, 2011</h2><p>The <em>authorization</em> functionality in CSLA is entirely unaffected by your choice of authentication. Authentication is security, authorization is business logic.</p>
+<p>My blog has some information about the CSLA 4 authorization rules system, and right now that&#39;s the only real documentation around creating authorization rules (and perhaps some other forum posts).</p>
+<p>When it comes to authentication, the behavior is the same from 3.8 to 4. The Core 3.8 video series includes a video covering this topic.</p>
+<p>Basically for Windows authentication:</p>
+<ol>
+<li>Set CslaAuthentication to Windows in client and server config files</li>
+<li>Configure your ASP.NET/IIS, WAS, or AppFabric host to use Windows authentication</li>
+<li>Set your ASP.NET/IIS, WAS, or AppFabric host to use impersonation in the server config file</li>
+<li>Remember the limitations on Windows impersonation (it can impersonate for only one hop), and implement Kerberos if you need multiple hops (I won&#39;t cover this in any video or ebook - this is way complex IT Pro networking stuff)</li>
+</ol>
+<p>Obviously this all only works if the user is logging into a domain account on their client workstation. That implies that the workstation is part of the domain, or that they are hitting a web page that is domain-secured. I don&#39;t (and won&#39;t) talk in depth about how to get client workstations and/or web pages to do Windows authentication - those are IT Pro topics that are (in all honesty) outside of my expertise. Because there are many variations on how to configure domain security, client policy, and all that stuff, I focus on how to make CSLA work within the context of a domain that has been set up by a competent IT group.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

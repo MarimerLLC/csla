@@ -1,0 +1,25 @@
+<html><header><title>Adding Authorization Rule to a 'unmanaged' read-only property?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Adding Authorization Rule to a 'unmanaged' read-only property?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11771.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez posted on Tuesday, January 08, 2013</h2><p>First, I have a readonly property which is basically a formula, that depends on two &#39;managed&#39; properties. One of these managed properties have an Authorization Rule while the other does not.<br />How can I add an authorization rule to this read-only property? What is the recommended mechanism?</p>
+<p>Thanks!</p>
+<pre>Ex:</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>static</span>&nbsp;<span>readonly</span>&nbsp;<span>PropertyInfo</span>&lt;<span>double</span>&gt;&nbsp;SalesCostsProperty&nbsp;=&nbsp;RegisterProperty&lt;<span>double</span>&gt;(c&nbsp;=&gt;&nbsp;c.SalesCosts,&nbsp;<span>&quot;Sales&nbsp;Costs&quot;</span>,&nbsp;<span>RelationshipTypes</span>.PrivateField);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>double</span>&nbsp;SalesCosts
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetProperty(SalesCostsProperty,&nbsp;_salesCosts);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>&nbsp;{&nbsp;SetProperty(SalesCostsProperty,&nbsp;<span>ref</span>&nbsp;_salesCosts,&nbsp;<span>value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;public&nbsp;static&nbsp;readonly&nbsp;PropertyInfo&lt;decimal&gt;&nbsp;ReconciledProFormaNOIProperty&nbsp;=&nbsp;RegisterProperty&lt;decimal&gt;(c&nbsp;=&gt;&nbsp;c.ReconciledProFormaNOI,&nbsp;&quot;Reconciled&nbsp;Pro&nbsp;Forma&nbsp;NOI&quot;,&nbsp;RelationshipTypes.PrivateField);</pre>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>decimal</span>&nbsp;ReconciledProFormaNOI
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;GetProperty(ReconciledProFormaNOIProperty,&nbsp;_reconciledProFormaNOI);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>set</span>&nbsp;{&nbsp;SetProperty(ReconciledProFormaNOIProperty,&nbsp;<span>ref</span>&nbsp;_reconciledProFormaNOI,&nbsp;<span>value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<pre> &nbsp;</pre>
+<pre>  ///// HOW DO I ADD AN AUTHORIZATION RULE FOR THIS ONE??????????? &nbsp;</pre>
+<pre> public&nbsp;decimal&nbsp;GoingInCapRate</pre>
+<p>&nbsp;</p>
+<pre>&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>get</span>&nbsp;{&nbsp;<span>return</span>&nbsp;ReconciledProFormaNOI&nbsp;*&nbsp;SalesCosts;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alainrodriguez replied on Tuesday, January 08, 2013</h2><p>LOL.. nevermind... &nbsp;since one of them is already &#39;managed&#39;, adding the authorization rule to that one will trigger the rule on the readonly property... so i guess it is all good.. :) ....</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

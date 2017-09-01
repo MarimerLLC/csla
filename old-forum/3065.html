@@ -1,0 +1,16 @@
+<html><header><title>Serializing Foreign Keys</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Serializing Foreign Keys</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3065.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pbevis posted on Thursday, June 21, 2007</h2><P>Hi there,<o:p></o:p></P>
+<P>I'm a bit of a CSLA newbie so I'm looking for some advise on the best way to model foreign key relationships with regard to serialization.<o:p></o:p></P>
+<P>Say I have an Order BO which has a collection of OrderLine BOs.<SPAN>&nbsp; </SPAN>Each OrderLine BO will need a reference to the parent Order BO in order to access some of the order properties&nbsp;like OrderID when it comes to persisting the OrderLine to the database.<o:p></o:p></P>
+<P>This seems reasonable to me and should work when the Data Portal is local to the client but what happens when the Data Portal is on a remote server and the Order needs to be serialised?&nbsp; I assume that I would need to mark the OrderLine's reference to the Order BO as non-serializable to avoid an infinite serialization loop.&nbsp; However, does that mean that when the OrderLine reaches the remote server it no longer has a reference to the parent Order BO (As it was not sent to the server)?<o:p></o:p></P>
+<P>I suppose that I could pass all the required information to the OrderLine when it is created so that it does not need a reference to Order but that’s surely moving away from OO design?</P>
+<P>Does anyone have any advice on how to solve this problem?</P>
+<P>Thanks in advance</P>
+<P>Paul</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlutz52 replied on Thursday, June 21, 2007</h2><P><FONT face=Tahoma size=2>Paul --</FONT></P>
+<P><FONT face=Tahoma size=2>On page 124 of the VB version of Rocky's book, you will find this discussed. I do not know the page number for the C# version of his book. Just look for "parent objects" in the index. </FONT></P>
+<P><FONT face=Tahoma size=2>Essentially, the child's member variable that holds the reference to the parent object is marked as &lt;NonSerialized()&gt; and will not be included in the serialization process.</FONT></P>
+<P><FONT face=Tahoma size=2>Hope this helps.</FONT></P>
+<P><FONT face=Tahoma size=2>David Lutz</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pbevis replied on Friday, June 22, 2007</h2><P>Hi David,</P>
+<P>Thanks for your reply, that makes perfect sense now, I was unaware of the OnDeserialised&nbsp;attribute which solves my problem.</P>
+<P>Cheers,</P>
+<P>Paul</P>
+<P>P.S&nbsp;I found the section on page 120 - 121 of the C# book.&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

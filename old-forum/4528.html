@@ -1,0 +1,86 @@
+<html><header><title>Invalid rule method </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Invalid rule method </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4528.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind posted on Thursday, March 20, 2008</h2><P>Hello All,</P>
+<P>I am getting the following&nbsp;exception in my debugger (instance methods of the target object not allowed).</P>
+<P>I&nbsp;want to write a CustomRule and I am following the method described&nbsp; in ProjectTracker example.This is what I have so far.</P><FONT size=2><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> AddBusinessRules()</P>
+<P>{</P>
+<P>ValidationRules.AddRule(YearRange, </FONT><FONT color=#a31515 size=2>"Year"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> YearRange(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_year &lt; 2006 || _year &gt; </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now.Year)</P>
+<P>{</P>
+<P>e.Description = </FONT><FONT color=#a31515 size=2>"Year range is out of bounds"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>Logger</FONT><FONT size=2>.Bug(</FONT><FONT color=#a31515 size=2>"Year range is out of bounds"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>Now in the Property I have</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Int16</FONT><FONT size=2> _year = 0;</P>
+<P>[System.ComponentModel.</FONT><FONT color=#2b91af size=2>DataObjectField</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>)]</P>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>Int16</FONT><FONT size=2> Year</P>
+<P>{</P>
+<P>[System.Runtime.CompilerServices.</FONT><FONT color=#2b91af size=2>MethodImpl</FONT><FONT size=2>(System.Runtime.CompilerServices.</FONT><FONT color=#2b91af size=2>MethodImplOptions</FONT><FONT size=2>.NoInlining)]</P>
+<P></FONT><FONT color=#0000ff size=2>get</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanReadProperty(</FONT><FONT color=#a31515 size=2>"Year"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> _year;</P>
+<P>}</P>
+<P>[System.Runtime.CompilerServices.</FONT><FONT color=#2b91af size=2>MethodImpl</FONT><FONT size=2>(System.Runtime.CompilerServices.</FONT><FONT color=#2b91af size=2>MethodImplOptions</FONT><FONT size=2>.NoInlining)]</P>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanWriteProperty(</FONT><FONT color=#a31515 size=2>"Year"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (_year != </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>_year = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>ValidationRules.CheckRules(</FONT><FONT color=#a31515 size=2>"Year"</FONT><FONT size=2>);</P>
+<P>PropertyHasChanged(</FONT><FONT color=#a31515 size=2>"Year"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P>
+<P>}</P>
+<P>Thanks in Advance</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, March 20, 2008</h2><P>I'm not sure exactly which version of Csla you're using but my rule methods tend to be static and the target being passed in contains the object instance you'll be testing. </P>
+<P>That is, you'd be looking at:</P>
+<P><FONT color=#0000ff size=2>private</FONT><FONT size=2> static </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> YearRange(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target, Csla.Validation.</FONT><FONT color=#2b91af size=2>RuleArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;if</FONT><FONT size=2> (target._year &lt; 2006 || target._year &gt; </FONT><FONT color=#2b91af size=2>DateTime</FONT><FONT size=2>.Now.Year)</P>
+<P>&nbsp;&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description = </FONT><FONT color=#a31515 size=2>"Year range is out of bounds"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#2b91af size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Logger</FONT><FONT size=2>.Bug(</FONT><FONT color=#a31515 size=2>"Year range is out of bounds"</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;}</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>}</P>
+<P>Also, you should note that you don't have to issue a ValidationRules.CheckRules(<FONT color=#a31515 size=2>"Year"</FONT><FONT size=2>); when you've already said that the property has changed, as it should test any rules you have applied to the "Year" property.</FONT></P>
+<P><FONT size=2>You might also want to consider accomodating your default value of 0 in the rule. Is it valid? Is it not valid? Does 0 mean empty? Maybe you should consider using a nullable integer as a backing field. </FONT></P>
+<P>hth,</P>
+<P>Chris</P>
+<P>&nbsp;</P>
+<P><FONT size=2>&nbsp;</P>
+<P></FONT><FONT size=2></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Thursday, March 20, 2008</h2><P>Thanks Chris for your response but now I am getting Error&nbsp;2&nbsp;Argument '1': cannot convert from 'method group' to 'Csla.Validation.RuleHandler'&nbsp;error.</P>
+<P>I have searched the forum for answers and right now too confused because I found too many ways and none worked for me so I went back to the book.</P>
+<P>I started out with 2.0 and now using 3.0&nbsp;and the book Im refering to is Expert C# 2005.</P>
+<P>I am doing UI validation&nbsp;&nbsp;as well and that is totally independent&nbsp;but all the BO's needs its own vlaidation so that the broken rules collection can be used if UI validation logic is not prefered by someone who wants just my BO's.</P>
+<P>Thanks again.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, March 20, 2008</h2><P><FONT face=Arial size=2>Hmm..</FONT></P>
+<P><FONT face=Arial size=2>Here's an example I have:</FONT></P>
+<P><FONT face=Arial size=2>In AddBusinessRules:</FONT></P>
+<P><FONT face=Arial size=2>ValidationRules.AddRule&lt;<FONT color=#2b91af>Individual</FONT>&gt;(IsBirthYearValid, _birthYear); (I'm using 3.5 managed properties)</FONT></P>
+<P><FONT face=Arial size=2>And the Rule Method (note the target is of the type the rule is being added for)</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>static</FONT> <FONT color=#0000ff>bool</FONT> IsBirthYearValid(<FONT color=#2b91af>Individual</FONT> target, Csla.Validation.<FONT color=#2b91af>RuleArgs</FONT> e)</FONT></FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>int</FONT>? birthYear = target.ReadProperty&lt;<FONT color=#0000ff>int</FONT>?&gt;(_birthYear);</FONT></FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>if</FONT> ((birthYear.HasValue) &amp;&amp; </FONT></FONT></P>
+<P><FONT face=Arial size=2>(birthYear &lt; 1900 || birthYear &gt; <FONT color=#2b91af>DateTime</FONT>.Today.Year + 1))</FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT face=Arial size=2>e.Description = <FONT color=#2b91af>BusinessRules</FONT>.InvalidBirthYear;</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>return</FONT> <FONT color=#0000ff>false</FONT>;</FONT></FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT size=2><FONT face=Arial><FONT color=#0000ff>return</FONT> <FONT color=#0000ff>true</FONT>;</FONT></FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>I tried to just add a rule like this:</FONT></P>
+<P><FONT size=2><FONT face=Arial>ValidationRules.AddRule</FONT><FONT face=Arial>(IsBirthYearValid, <FONT color=#a31515>"BirthYear"</FONT>);&nbsp; &lt;-- this doesn't compile</FONT></FONT></P>
+<P><FONT face=Arial size=2>and I received probably the errors you were getting. To fix it, you need to add the type parameter of the "target" you're checking. </FONT></P>
+<P><FONT size=2><FONT face=Arial>ValidationRules.AddRule&lt;</FONT><FONT face=Arial><FONT color=#2b91af>Individual</FONT>&gt;(IsBirthYearValid, <FONT color=#a31515>"BirthYear"</FONT>); &lt;-- This compiles. </P></FONT></FONT>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inquistive_Mind replied on Thursday, March 20, 2008</h2><P>Thank&nbsp;a Million&nbsp;works perfectly!!!Added the type for the target and everything works superbly.I need to by the new copy of 3.5 book.</P>
+<P>Thanks again Chris.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

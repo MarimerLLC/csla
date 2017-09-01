@@ -1,0 +1,29 @@
+<html><header><title>Objects as Parent and Child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Objects as Parent and Child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1687.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TravelinMan posted on Sunday, November 05, 2006</h2><P>Question,</P>
+<P>After going through the book and the sample app I am trying to find the best way to impl an object as both a parent <STRONG>and</STRONG> a child. For example my <EM>Location</EM> object can be a parent and a child of other <EM>Locations</EM>. </P>
+<P>In the database this is represented by a <EM>Locations</EM> and a <EM>RelatedLocations</EM> table that manages the relationships between the objects. </P>
+<P>In first looking at it I was assuming that I would need a <EM>BusinessListBase</EM> class to manage the collection of relationships but now I am not so certain...any suggestions?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Sunday, November 05, 2006</h2><P>Although I've never used it, the Switchable type is designed to be both a parent and a child. It's described in chapter 7.</P>
+<P>Now, people will say, and the book says that using switchable objects is usually a sign of bad design, but there are times when it makes sense. I've never seen an example of when it would make sense, but apparently there are.</P>
+<P>There's nothing wrong, and usually there's good reasons to have two objects (or more). That is, you can have a LocationRoot object and a LocationChild object. They may share the same data, but they're used differently, so that's a good reason for two objects.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TravelinMan replied on Sunday, November 05, 2006</h2><P>Mike,</P>
+<P>Thanks for the reply. Yes I saw that discussion in Chap. 7 about switchable objects (and the note about it being bad design). I guess I just wasnt clear on how it would apply in this case (esp managing relationships between the parent and child).</P>
+<P>Your right about using two objects, that would certainly work...</P>
+<P>Kind of a yin and a yang situation...</P>
+<P>Mark</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WesS replied on Tuesday, November 14, 2006</h2><P>What about Figure 3-3 on page 120? There is a Parent-Child-Grandchild relationship pictured, and this "ChildParent" class being a child and a parent *at the same time*. I'm facing a situation exactly like this right now, and I'm not sure I can figure out a way around it.</P>
+<P>Wes</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 14, 2006</h2><P>I think the terminology needs to be cleared up. Instead of parent and child, we should be saying root and child. A root object is just that - it's a root that stands on it's own. A root object can contain children, and those children can contain child objects as well. Like I said, I've never used a Switchable object, but I understand it as it can be a root or a child.</P>
+<P>I'm going to guess that if sometimes you need an object to be a root, and sometimes you need it to be a child, you're going to want to have two objects. e.g. CustomerEditableRoot and CustomerEditableChild.</P>
+<P>What are your use cases? I think explaining what you need to do would help clear up what types of objects you need.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WesS replied on Tuesday, November 14, 2006</h2><P>Let's focus on "those children that can contain child objects as well". To my understanding, they are parents/roots <U>and</U> children, therefore can't be switchable, because switchable objects are parents/roots <U>or</U> children. Is there a standard template for those "ChildParents" available somewhere?</P>
+<P>Wes</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>brucep replied on Tuesday, November 14, 2006</h2><P>Wes:</P>
+<P>Root and parent are different concepts.</P>
+<UL>
+<LI>Root: Always starts the retrieval/save transaction.</LI>
+<LI>Parent: Has child objects, irrespective of whether it is itself a Child or not.</LI>
+<LI>Child: Is child of another object irrespective of its parent being a Root or not.</LI></UL>
+<P>So your middle class in your Root -&gt; Child -&gt; Child hierarchy is still a Parent, but not a Root, i.e.&nbsp;you&nbsp;never start the save/retrieve process at the middle level of this class hierarchy.</P>
+<P>So a "switchable" object is one that can act as Root (start the transaction), or as a child in another retrieval/save transaction.</P>
+<P>--Bruce</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, November 14, 2006</h2>Bruce,<br><br>This is by far one of the best explainations of the terms here, and those terms have been cause for a lot of confusion.<br><br>Thanks for posting this.<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>WesS replied on Tuesday, November 14, 2006</h2>Thanks, Bruce &amp; Mike</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, November 14, 2006</h2><P>Hope I'm not being confusing with the parent/root thing. "those children that can contain child objects as well" are not root objects. They're parents, but not roots. The paragraph on pg. 120 of the C# book, just above figure 3.3 explains this.</P>
+<P>I use the CodeSmith templates, and those cover everything you need. Not sure if other templates are out there or not.</P>
+<P>Mike</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

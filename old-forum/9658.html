@@ -1,0 +1,15 @@
+<html><header><title>csla smart date display issue in devexpress grid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>csla smart date display issue in devexpress grid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9658.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Coetser posted on Tuesday, October 19, 2010</h2><p>Hi There,&nbsp;</p>
+<p>&nbsp;</p>
+<p>I have a problem with the display format of the smartdate within a devexpress grid.</p>
+<p>Please look at the attachedment, and within the archive there is a screendump folder.</p>
+<p>&nbsp;</p>
+<p>What you will not is I have a normal datatable with a normal datetime column. &nbsp;it display the date correctly within the grid. &nbsp;when you click within the date column it still keeps the correct date format of dd/mm/yyyy (that is my regional settings)</p>
+<p>&nbsp;</p>
+<p>I have another datatable with a smart date column (instead of datetime) &nbsp;and what you will note is when the data is displayed in the grid, it displayed correctly as dd/mm/yyyy. &nbsp;but when you click within the date column it swap the dd and mm around and then try to do a parse of that date. &nbsp;if the day &gt; 12 then it becomes the month and it cannot parse that date and it will clear the active editors text. &nbsp;if the day is &lt;= 12 it will swap the dd and mm around in the active editors text.</p>
+<p>Now this behaviour does not happen with normal datetime.</p>
+<p>&nbsp;</p>
+<p>So I&#39;am not 100% sure where the problem is, but i tend to think it is within the smartdate class..</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Paul Coetser</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 21, 2010</h2><p>SmartDate is designed to solve a specific problem where the property type is string, and the backing field needs to be a date that can treat an empty string as an empty (not null) date.</p>
+<p>If you are exposing a SmartDate directly as the property type, then what are you hoping to gain that you don&#39;t get from DateTime itself?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

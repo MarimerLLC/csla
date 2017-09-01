@@ -1,0 +1,171 @@
+<html><header><title>Problem with user control databound to a ReadOnly CSLA BO property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem with user control databound to a ReadOnly CSLA BO property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11621.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho posted on Wednesday, October 03, 2012</h2><p>Hi everybody. I&#39;ve written a winform helper user control to get access to lists associated with the the entity bound to the control and to open the corresponding edit form related to the entity bound to the user control.</p>
+<p>Everything works great with read / write BO properties. Now, I&#39;ve come accross an issue with read only properties.</p>
+<p>I have a BusinessBase normal inherited class (<strong>ImpTax</strong>) with normal BO properties&nbsp;like:</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:#2b91af;"><span style="COLOR:#2b91af;">ImpTaxCollectorInfoBase</span></span>&gt;&nbsp;TaxCollectorObjProperty&nbsp;= RegisterProperty&lt;<span style="COLOR:#2b91af;"><span style="COLOR:#2b91af;">ImpTaxCollectorInfoBase</span></span>&gt;(c&nbsp;=&gt;&nbsp;c.TaxCollectorObj);</p>
+<p><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:#2b91af;">ImpTaxCollectorInfoBase</span>&nbsp;TaxCollectorObj<br />{<br /><span style="COLOR:blue;">&nbsp; get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(TaxCollectorObjProperty);&nbsp;}<br /><span style="COLOR:blue;">&nbsp; set</span>&nbsp;{&nbsp;SetProperty(TaxCollectorObjProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}<br />}</p>
+<p><span style="COLOR:#2b91af;"><span style="COLOR:#2b91af;">ImpTaxCollectorInfoBase</span></span>&nbsp;has a couple of properties (Guid Id, string Description) and is a ReadOnlyBase class.</p>
+<p>I&#39;ve implemented the CanWrite method on this class:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">override</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;CanWriteProperty(<span style="COLOR:blue;">string</span>&nbsp;propertyName)
+{
+	<span style="COLOR:blue;">if</span>&nbsp;(InternalUse)
+		<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">false</span>;
+	<span style="COLOR:blue;">else</span>
+		<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:blue;">base</span>.CanWriteProperty(propertyName);
+}
+</pre>
+<p>So under certain circumstances,&nbsp;all object&#39;s properties from an instance of this class can be read only.</p>
+<p>I&#39;ve then written the custom control. It has a browse button (for bringing up all the records of the type being shown) and a LinkLabel (for opening an edit form associated with the BO property being displayed).</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">[System.ComponentModel.<span style="COLOR:#2b91af;">DefaultBindingProperty</span>(<span style="COLOR:#a31515;">&quot;InfoObj&quot;</span>)]
+[<span style="COLOR:#2b91af;">DefaultProperty</span>(<span style="COLOR:#a31515;">&quot;ControlText&quot;</span>)]
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">partial</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">UCNrgHelpBase</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">UserControl</span>
+{
+<span style="COLOR:blue;">	#region</span>&nbsp;Business...
+
+	<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:#2b91af;">IReadOnlyInfo</span>&nbsp;infoObj;
+	<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+	<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Default&nbsp;Binding&nbsp;Property...</span>
+	<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+	<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">virtual</span>&nbsp;<span style="COLOR:#2b91af;">IReadOnlyInfo</span>&nbsp;InfoObj
+	{
+		<span style="COLOR:blue;">get</span>
+		{
+			<span style="COLOR:blue;">return</span>&nbsp;infoObj;
+		}
+		<span style="COLOR:blue;">set</span>
+		{
+			SetInfoObj(<span style="COLOR:blue;">value</span>);
+		}
+	}
+ 
+	<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;SetInfoObj(<span style="COLOR:#2b91af;">IReadOnlyInfo</span>&nbsp;obj)
+	{
+		<span style="COLOR:blue;">if</span>&nbsp;(infoObj&nbsp;!=&nbsp;obj)
+		{
+			infoObj&nbsp;=&nbsp;obj;
+
+			<span style="COLOR:blue;">if</span>&nbsp;(obj&nbsp;==&nbsp;<span style="COLOR:blue;">null</span>)
+				InfoLinkLabel.Text&nbsp;=&nbsp;<span style="COLOR:blue;">string</span>.Empty;
+			<span style="COLOR:blue;">else</span>
+				InfoLinkLabel.Text&nbsp;=&nbsp;infoObj.Info;
+		}
+	}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">&nbsp;</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">	[<span style="COLOR:#2b91af;">Browsable</span>(<span style="COLOR:blue;">true</span>)]
+	[<span style="COLOR:#2b91af;">EditorBrowsable</span>]
+	[<span style="COLOR:#2b91af;">Description</span>(<span style="COLOR:#a31515;">&quot;What this control represents...&quot;</span>)]
+	<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">string</span>&nbsp;ControlText
+	{
+		<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;InfoLabel.Text;&nbsp;}
+		<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;InfoLabel.Text&nbsp;=&nbsp;<span style="COLOR:blue;">value</span>;&nbsp;}
+	}
+ 
+	<span style="COLOR:blue;">bool</span>&nbsp;_readOnly&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+	[<span style="COLOR:#2b91af;">Browsable</span>(<span style="COLOR:blue;">true</span>)]
+	[<span style="COLOR:#2b91af;">EditorBrowsable</span>]
+	<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">virtual</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;ReadOnly
+	{
+		<span style="COLOR:blue;">get</span>
+		{
+			<span style="COLOR:blue;">return</span>&nbsp;_readOnly;
+		}
+		<span style="COLOR:blue;">set</span>
+		{
+			_readOnly&nbsp;=&nbsp;<span style="COLOR:blue;">value</span>;
+			InfoBrowseButton.Enabled&nbsp;=&nbsp;!_readOnly;
+			InfoBrowseButton.StartColor&nbsp;=&nbsp;_readOnly&nbsp;?&nbsp;System.Drawing.<span style="COLOR:#2b91af;">Color</span>.Gray&nbsp;:&nbsp;System.Drawing.<span style="COLOR:#2b91af;">Color</span>.Chocolate;
+
+		}
+	}
+}</pre>
+<p>Then on the the winform, I use a BindingSource, an ErrorProvider, a BindingSourceRefresh and a ReadWriteAuthorization helper controls. And I bind the BindingSource.TaxCollectorObj property to InfoObj property on the user control. I use &quot;Data Source Update Mode == OnValidation&quot;. And the user control &quot;ApplyAuthorization&quot; is set to true.</p>
+<p>So, when ImpTax.InternalUse == false, all public properties are read/write and everything works well.</p>
+<p>But, when ImpTax.InternalUse == true, all public properties become read only and here my problem comes to be.</p>
+<p>I&#39;ve noticed that every time focus leaves the user control (UCNrgHelpBase), just by tabbing or by clicking on the LinkLabel within it (which opens a new form), the BusinessBase Tax class bound property (TaxCollectorObj), executes its setter which in turn checks the CanWrite(..) and fails cause its a read only property. This happens even thoung the bound value never changed. In fact, I&#39;ve debugged the setter and the [value] it receives == the GetProperty(TaxCollectorObjProperty). So the property never changed but the setter is getting called. </p>
+<p>I&#39;ve also checked it with the property TaxCollectorObj being read write and the setter gets always exectued, every time the user control looses focus.</p>
+<p>I&#39;ve found a non elegant solution: inside TaxCollectorObj&#39;s setter I can check </p>
+<p>&nbsp;&nbsp; if (GetProperty(TaxCollectorObjProperty) == value)</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;</p>
+<p>I truly think there must be a cause why this is happening. I must be missing something here and that must be the cause of this setter executing every time I exit the user control no matter its bound property didnt ever change.</p>
+<p>Every suggestion is very appreciated.</p>
+<p>Thanx in advance <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, October 04, 2012</h2><p>Windows Forms data binding works in very specific ways.</p>
+<p>If the user changes a value in a UI control and tabs out of that control, data binding will put that value into the object&#39;s property. If the property setter throws an exception data binding won&#39;t work right.</p>
+<p>A ReadOnlyBase object doesn&#39;t have the necessary features to allow for a public setter, so you can&#39;t use that.</p>
+<p>A BusinessBase object does allow for a public setter, and it also supports authorization rules on the setter to block the property from being changed. In that case it throws an exception and will confuse data binding.</p>
+<p>To prevent data binding from being confused, you should make sure to change the UI control to read-only if the user isn&#39;t allowed to change the property. That way the user can&#39;t change the value in the UI control, so data binding will never try to set the property, so the exception won&#39;t happen.</p>
+<p>The Csla.Windows namespace has helper controls for Windows Forms to make this work. The Windows Forms app in ProjectTracker demonstrates how to do this. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Thursday, October 04, 2012</h2><p>Hi Rocky, thank you very much for your answer. The problem still stands.</p>
+<p>I&#39;ve added a <strong>ReadOnly </strong>Property to the user control I wrote which is working (apparently) very well in combination with your CSLA Windows Helper controls: ReadWriteAuthorization and BindingSourceRefresh. Heres is the users control code for the <strong>ReadOnly</strong> property:</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">bool</span>&nbsp;_readOnly&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">[<span style="COLOR:#2b91af;">Browsable</span>(<span style="COLOR:blue;">true</span>)]
+[<span style="COLOR:#2b91af;">EditorBrowsable</span>]
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">virtual</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;ReadOnly
+{
+	<span style="COLOR:blue;">get</span>
+	{
+		<span style="COLOR:blue;">return</span>&nbsp;_readOnly;
+	}
+	<span style="COLOR:blue;">set</span>
+	{
+		_readOnly&nbsp;=&nbsp;<span style="COLOR:blue;">value</span>;
+		InfoBrowseButton.Enabled&nbsp;=&nbsp;!_readOnly;
+		InfoBrowseButton.StartColor&nbsp;=&nbsp;_readOnly&nbsp;?&nbsp;System.Drawing.<span style="COLOR:#2b91af;">Color</span>.Gray&nbsp;:&nbsp;System.Drawing.<span style="COLOR:#2b91af;">Color</span>.Chocolate;
+	}
+}
+</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">&nbsp;</pre>
+<p>&nbsp;Then, on the form, when I drop this user control,&nbsp;I let its&nbsp;CSLA.Windows.ReadWriteAuthorization extender property <strong>ApplyAuthorization == true.</strong> So, when the code runs, the BusinessBase.CanWrite(..) executes and checks if the property bound to my user control can be written. If not, it &quot;sets&quot; the user control <strong>ReadOnly </strong>property and the code above executes just fine. The inner button (InfoBrowseButton) gets disabled. But this user control also has a &quot;<strong>LinkLabel</strong>&quot;, and you can TAB into this LinkLabel or click on it to open the Edit Form associated with the databound ReadOnlyBase info associated with it (<em>just as your Project Example does with LinkLabels on the resources and projects grids</em>). </p>
+<p>The problem arises when this user control loses focus, the Validating event gets executed and afterwards its bound property setter gets executed. And the setter in this case fails cause the property cannot be written to.</p>
+<p>Here is where I&#39;m getting confused. When I compare the &quot;value&quot; received by the property&#39;s setter and the GetProperty(objProperty) they are equal (the references are equal as they are class instances of a BO derived class.</p>
+<p>I must be missing something cause the setter here should never be called to as neither the actual property value nor the user control value was ever changed.</p>
+<p>Am&nbsp;I&nbsp;adding the <strong>ReadOnly </strong>user control property in a correct manner? Or do you suggest any other way of avoiding the setter being called?</p>
+<p><strong>Or am I missing something that makes the setter always being called every time the user control loses its focus?</strong></p>
+<p>What I dont understand is why the setter always gets called upon the user control losing focus (no matter if I modify its value or not and no matter if&nbsp;its ReadOnly Property is true or false). Just by TABBING through it causes the bound property setter being called.</p>
+<p>I can compare the setter&#39;s &quot;value&quot; property with GetProperty(objProperty), but is seems like cheating. The problem must be somewhere before the setter gets called.</p>
+<p>If there is a better way of writing a databinding user control that avoids this issue when being ReadOnly, I&#39;ll really appreciate you point me in the right direction.</p>
+<p>For all other things, I&#39;m using the CSLA.Windows extenders (ReadWriteAuthorization and BindingSourceRefresh) in combination with the winform ErrorProvider in almost every editable form and it&#39;s working really well.</p>
+<p>The results so far are <strong>OUTSTANDING</strong>!!!</p>
+<p>Rocky, thanks again <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Saturday, October 06, 2012</h2><p>Hi Rocky I addede a &quot;public virtual bool ReadOnly&quot; property to my user control. I explain in more detail in my main answer. Still the setter gets called. I must be missing something or must be declaring something wrong on my user control. May be you have some tip on this issue.</p>
+<p>Thanks again,</p>
+<p>Troncho</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Saturday, October 06, 2012</h2><p>Now I&#39;ve added this code to my user control&#39;s ReadOnly setter:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;ReadOnly
+{
+	<span style="color:blue;">get</span>
+	{
+		<span style="color:blue;">return</span>&nbsp;_readOnly;
+	}
+	<span style="color:blue;">set</span>
+	{
+		<span style="color:blue;">if</span>&nbsp;(_readOnly&nbsp;!=&nbsp;<span style="color:blue;">value</span>)
+		{
+			_readOnly&nbsp;=&nbsp;<span style="color:blue;">value</span>;
+			InfoBrowseButton.Enabled&nbsp;=&nbsp;!_readOnly;
+			InfoBrowseButton.StartColor&nbsp;=&nbsp;_readOnly&nbsp;?&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">                            System.Drawing.<span style="color:#2b91af;">Color</span>.Gray&nbsp;:</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">                            System.Drawing.<span style="color:#2b91af;">Color</span>.Chocolate;
+</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">			<span style="color:blue;">foreach</span>&nbsp;(<span style="color:#2b91af;">Binding</span>&nbsp;binding&nbsp;<span style="color:blue;">in</span>&nbsp;<span style="color:blue;">this</span>.DataBindings)
+			{
+				binding.DataSourceUpdateMode&nbsp;=&nbsp;_readOnly&nbsp;?&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">                                   <span style="color:#2b91af;">DataSourceUpdateMode</span>.Never&nbsp;:&nbsp;</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">                                   <span style="color:#2b91af;">DataSourceUpdateMode</span>.OnValidation;
+			}
+		}</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">     }</pre>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">}</pre>
+<p>When the user control is ReadOnly, this effectively prevents the bound source to get updated.</p>
+<p>Still the question remains on why does the bound source property setter gets called just by tabbing in the user control. May be its a winform bug, or I may still be missing something getting called&nbsp;which I&#39;m not a aware of...</p>
+<p>In order to cross check if any property gets updated, I added an event handler to the form where my user control is:</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;impTipoBaseBindingSource_CurrentItemChanged(<span style="color:blue;">object</span>&nbsp;sender,&nbsp;<span style="color:#2b91af;">EventArgs</span>&nbsp;e)
+{
+	<span style="color:#2b91af;">MessageBox</span>.Show(<span style="color:#a31515;">&quot;CurrentItemChanged&quot;</span>);
+}</pre>
+<p>When I tab out of my user control, the BO setter gets called and this &quot;CurrentItemChanged&quot; event never gets called.</p>
+<p>Could&nbsp;the problem&nbsp;be&nbsp;in the way I&#39;m declaring my user control as being Data Bound? </p>
+<p>Does this way of declaring a Single Property Data Bound User Control causes the bound property always being refreshed each time the control loses focus no matter what?</p>
+<p>[System.ComponentModel.<span style="color:#2b91af;">DefaultBindingProperty</span>(<span style="color:#a31515;">&quot;InfoObj&quot;</span>)]<br /><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">partial</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">UCNrgHelpBase</span>&nbsp;:&nbsp;<span style="color:#2b91af;">UserControl</span><br />{<br />...</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;">}</pre>
+<p>If anybody has had any similar problems or experience with winform user controls, any advice is appreciated.</p>
+<p>Thanks again,</p>
+<p>Troncho</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

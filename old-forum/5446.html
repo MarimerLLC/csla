@@ -1,0 +1,97 @@
+<html><header><title>How to synchronize the edit level for a private BusinessBase derived child object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to synchronize the edit level for a private BusinessBase derived child object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5446.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan posted on Tuesday, September 23, 2008</h2>My customer class is holding all the contact data in a private contactdata member variable.<br>I do not want to expose the contactdata object. It should take care of the data passed to it, <br>provide the undo functionality, raise the appropriate events when data changes and handle the <br>ChildDataPortal functionality...<br><br>My customer class wrappes all the contactdata properties and has the associated validation rules, <br>which is the main reason for this architecture: I want to have the authorization subsystem associated to the customer, not to the contactdata!<br><br>PropertyHasChanged for these properties is triggered from the contactdata child object. <br>The customer subscribes to these notifications over the new ChildChanged event, <br>and would trigger his own PropertyHasChanged event respectively for databinding to work...<br>(That is at least what I plan for.)<br><br>The problem is, as often, WinForms databinding:<br>Despite not having a bindingsource for my contactdata childobject, <br>I somehow need to keep the edit level synchronized with the customer object in the object itself!<br><br><b>How can I keep the edit level of a non public child business object in sync with its parent edit level, so that undo works as well for this (private) child?.</b><br><br>Stefan<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 23, 2008</h2><P>You can implement ContactData in two ways</P>
+<OL>
+<LI>As a plain .NET object - in which case n-level undo will simply serialize/deserialize the object as a blob. This can work very well, as long as you refresh the instance reference and event hooks when undo is complete (there's a method you override to be notified when an undo operation is complete). There is no edit level in this case - snapshots of the "child" object are automatically maintained/restored.</LI>
+<LI>As a BusinessBase&lt;T&gt; object - in which case you should maintain a reference using a managed backing field in 3.5+. In this case the edit level is automatically maintained by the framework and you shouldn't have to worry about it.</LI></OL>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Wednesday, September 24, 2008</h2>Thanks for your suggestions.<br><br>I would like to implement it&nbsp; following alternative 2.<br>But, my Contactdata needs to be updated (inserted) prior to anything else (providing the primary key), <br>so I cannot call FieldManager.UpdateChildren (which I do for the remaining child objects).<br><br><b>Is there a way to exclude a specific child from the UpdateChildren process, <br>or can we interfere somehow manually?</b><br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, September 24, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Nothing forces you to use UpdateChildren() &#8211; it is a
+helper method to make things simpler, but it is not required.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Your parent object could just do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Protected Overrides Sub DataPortal_Insert()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; Using &#8230;ConnectionManager&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;DataPortal.UpdateChild&lt;ContactData&gt;(ReadProperty(ContactDataProperty))<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; &nbsp;&nbsp;&#8216; repeat for each child<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; End Using<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>End Sub<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s all UpdateChildren() does &#8211; simply loops
+through all your child fields and calls the data portal. If you do it manually,
+it is a little more work, but then you control the order of processing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stefan
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, September 24, 2008 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] How to synchronize the edit level for a private
+BusinessBase derived child object?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks for your suggestions.<br>
+<br>
+I would like to implement it&nbsp; following alternative 2.<br>
+But, my Contactdata needs to be updated (inserted) prior to anything else
+(providing the primary key), <br>
+so I cannot call FieldManager.UpdateChildren (which I do for the remaining
+child objects).<br>
+<br>
+<b>Is there a way to exclude a specific child from the UpdateChildren process, <br>
+or can we interfere somehow manually?</b><br>
+<br>
+Stefan<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,36 @@
+<html><header><title>Performance and memory issues for CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Performance and memory issues for CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11395.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TF Zheng posted on Monday, June 04, 2012</h2><p><span style="font-size:small;">
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Folks:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Our configuration system below using CSLA, together with Entity Framework and SQL 2008, has some performance and memory management issues.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Our system:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Buildings (150 properties/building)---&gt; Floors (17 properties/floor)-----<span style="font-family:Wingdings;mso-ascii-font-family:Arial;mso-ascii-theme-font:minor-latin;mso-hansi-font-family:Arial;mso-hansi-theme-font:minor-latin;mso-char-type:symbol;mso-symbol-font-family:Wingdings;"><span style="mso-char-type:symbol;mso-symbol-font-family:Wingdings;">&agrave;</span></span>Rooms (34 properties/room)</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">We tried one Model below:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="mso-spacerun:yes;">&nbsp; </span>Buildings (<b style="mso-bidi-font-weight:normal;"><i style="mso-bidi-font-style:normal;"><span style="color:#7030a0;">EditableRootList</span></i></b>) ---<span style="font-family:Wingdings;mso-ascii-font-family:Arial;mso-ascii-theme-font:minor-latin;mso-hansi-font-family:Arial;mso-hansi-theme-font:minor-latin;mso-char-type:symbol;mso-symbol-font-family:Wingdings;"><span style="mso-char-type:symbol;mso-symbol-font-family:Wingdings;">&agrave;</span></span>Floors(<b style="mso-bidi-font-weight:normal;"><i style="mso-bidi-font-style:normal;"><span style="color:#7030a0;">EditableChildList</span></i></b>) -----<span style="font-family:Wingdings;mso-ascii-font-family:Arial;mso-ascii-theme-font:minor-latin;mso-hansi-font-family:Arial;mso-hansi-theme-font:minor-latin;mso-char-type:symbol;mso-symbol-font-family:Wingdings;"><span style="mso-char-type:symbol;mso-symbol-font-family:Wingdings;">&agrave;</span></span> Rooms(<b style="mso-bidi-font-weight:normal;"><i style="mso-bidi-font-style:normal;"><span style="color:#7030a0;">EditableChildList</span></i></b>) </p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">For one building with total: 2511 objects, and 85334 properties in three tables:</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">It took:<br /><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp; </span><span style="mso-spacerun:yes;">&nbsp;</span>24 seconds to create/initialize and populate in DB.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>14 seconds for a complete update.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="mso-spacerun:yes;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </span>4.5 seconds to delete all.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Our goal is to do 100 buildings. So, the performance and memory management will be critical for us, as far as initialization, updating, binding, etc.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">We plan to replace <b style="mso-bidi-font-weight:normal;"><i style="mso-bidi-font-style:normal;"><span style="color:#7030a0;">EditableRootList</span></i><span style="color:#7030a0;"> </span></b><span style="mso-spacerun:yes;">&nbsp;</span>to <b style="mso-bidi-font-weight:normal;"><i style="mso-bidi-font-style:normal;"><span style="color:#7030a0;">DynamicRootList</span></i><span style="color:#7030a0;"><span style="mso-spacerun:yes;">&nbsp; </span></span></b>for Buildings and Floors.</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">Any&nbsp;other good approach for such system? Such as paging, etc&hellip;.</p>
+<font size="3">
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+</font></span>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">&nbsp;</p>
+</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;">All suggestions are welcome...Thanks ahead...</p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;"></span></p>
+<p class="MsoNormal" style="margin:0in 0in 0pt;"><span style="font-size:small;">Ting</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 04, 2012</h2><p>You have the basic structure of your DataPortal_XYZ methods correct I assume? Things like turning off list changed events, using BypassPropertyChecks, etc. Missing those basic things can cause substantial performance issues.</p>
+<p>Assuming you have all that correct, the next step is to isolate whether the issue is in:</p>
+<ul>
+<li>The EF data access</li>
+<li>Loading the business objects with data</li>
+<li>Serializing the business objects to the client</li>
+<li>Binding the business objects to the UI</li>
+</ul>
+<p>Those are all potential performance bottlenecks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Tuesday, June 05, 2012</h2><p>In addition to what Rocky says, you might want to consider getting away from root list and instead have just one building as the root with a search screen to allow users to select a single building.&nbsp; YOu have to be carefull with EF when populating 2500 objects in a single swoop.&nbsp; I would get aways from lazy loading as this may results in excessive number of queries, event though each one is fast, but if you fire 2000 of them, there is no way you could execute all that in less then&nbsp;10 seconds probably.&nbsp; I am guessing this is your #1 problem.&nbsp; You can confirm easily enoguh with an SQL profiler.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,43 @@
+<html><header><title>Accessing child object property from parent object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Accessing child object property from parent object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/766.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fpmalard posted on Monday, July 31, 2006</h2><P>Hello,</P>
+<P>I have two objects implemented with CollectionBase framework, say MyParent and MyChild.<BR>MyChild object is embedded into MyParent and I need to bind some MyChild properties via MyParent.</P>
+<P>I would like to&nbsp;bind a MyChild property without need to create a property copy&nbsp;into MyParent just to allow access to the&nbsp;MyChild's property because this will duplicate my entire code.</P>
+<P>So I have decided to bind the property through the MyParent object&nbsp;using a reference to the MyChild object. To do that I have&nbsp;created a property called "MyChildRef"&nbsp;inside MyParent which returns a reference to MyChild embedded object.</P>
+<P>According to VStudio manual I can do the following:</P><FONT color=#000080>
+<P><EM><STRONG>"You can also use a period-delimited navigation path when you bind to an object whose properties return references to other objects (such as a class with properties that return other class objects). "</STRONG></EM></P>
+<P><FONT color=#000000>So I expect that the following binding&nbsp;should work (PropInChild is a MyChild property):</FONT></P><FONT color=#000080>
+<P><STRONG><EM>txtMyTextBox.SetDatabind(MyDataSource,"MyChildRef.PropInChild");</EM></STRONG></P>
+<P><FONT color=#000000>But this returns an error: "<STRONG><FONT color=#ff0000><EM>Cannot bind to property or column PropInChild on DataSource.</EM></FONT></STRONG>"&nbsp;</FONT></P>
+<P><FONT color=#000000>So my questions are:</FONT></P>
+<P><FONT color=#000000>- Is is possible to do that?<BR>- What is the best way to put an object embedded into another and access its properties from the parent?</FONT></P>
+<P><FONT color=#000000>Regards,<BR>Fernando Malard.</FONT></FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 replied on Monday, July 31, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>fpmalard:</strong></div><div><FONT color=#000080><FONT color=#000080>
+<P><STRONG><EM>txtMyTextBox.SetDatabind(MyDataSource,"MyChildRef.PropInChild");</EM></STRONG></P>
+<P><FONT color=#000000>But this returns an error: "<STRONG><FONT color=#ff0000><EM>Cannot bind to property or column PropInChild on DataSource.</EM></FONT></STRONG>"&nbsp;</FONT></P>
+<P></FONT></FONT></div></BLOCKQUOTE></P>
+<P>Fernando,</P>
+<P>I'm not using 2.0, but try it this way:</P>
+<P>txtMyTextBox.SetDatabind(MyDataSource.MyChildRef, "PropInChild");</P>
+<P>_E</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fpmalard replied on Monday, July 31, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>esteban404:</strong></div><div><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>fpmalard:</strong></div><div><FONT color=#000080><FONT color=#000080> 
+<P><STRONG><EM>txtMyTextBox.SetDatabind(MyDataSource,"MyChildRef.PropInChild");</EM></STRONG></P>
+<P><FONT color=#000000>But this returns an error: "<STRONG><FONT color=#ff0000><EM>Cannot bind to property or column PropInChild on DataSource.</EM></FONT></STRONG>"&nbsp;</FONT></P>
+<P></FONT></FONT></div></BLOCKQUOTE></P>
+<P>Fernando,</P>
+<P>I'm not using 2.0, but try it this way:</P>
+<P>txtMyTextBox.SetDatabind(MyDataSource.MyChildRef, "PropInChild");</P>
+<P>_E</P>
+<P></div></BLOCKQUOTE></P>
+<P>Hi esteban,</P>
+<P>Actually we are using Custom Collections (not ADO)&nbsp;and your suggestion is not possible once the first binding parameter needs to be a collection and can't be an object.</P>
+<P>We are using embedded collections inside MyParent&nbsp;with success once we can bind its properties this way:</P>
+<P>txtMyTextBox.SetDatabind (MyParent.PropMyChildCollection, "PropInChild");</P>
+<P>We could create an embedded collection with a single object to simulate an embedded object. This solves the binding problem but causes another problems when updating this&nbsp;object (grid refresh, etc).</P>
+<P>Thank you anyway! Any other idea?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Monday, July 31, 2006</h2>If I understand your situation correctly, you are trying to bind a property on a collection to a TextBox.&nbsp; As I understand it, you can only bind a list to a list control (which a TextBox is not).&nbsp; To do what you want to do, I would suggest creating a wrapper class that would not be a list and would pass through the properties you want databound on your collection.<br><br>public class MyParentWrapper<br>{<br>&nbsp;&nbsp;&nbsp; private MyParent _dataSource;<br>&nbsp;&nbsp;&nbsp; public MyParent DataSource<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  get { return _dataSource; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  set { _dataSource = value; }<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public string PropInChild<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  get { return _dataSource.MyChildRef.PropInChild; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  set { _dataSource.MyChildRef.PropInChild = value; }<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br><br>You can then bind MyParentWrapper.PropInChild to your TextBox.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>esteban404 replied on Monday, July 31, 2006</h2><P>Sorry,&nbsp;F, nothing more hits me other than the depth of the bind. It seems the binding is missing the specific child instance where it can find the "PropInChild" value. But, like I said, not on the next plain of existence yet.</P>
+<P>Good luck</P>
+<P>_E</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fpmalard replied on Monday, July 31, 2006</h2><P>Yes esteban, I suspect exactly this.<BR>I don't know if this is a design limitation of CSLA&nbsp;or if my object classes are missing something related to binding.</P>
+<P>Brian, regarding to your solution, its not necessary to create a wrapper because I can create these properties&nbsp;inside MyParent mapping every MyChild property I would like to bind. This way works but it is very tedious to keep creating duplicated properties at both&nbsp;MyParent and MyChild.</P>
+<P>The best solution is to bind passing through the MyParent going direct to MyChild property...but...</P>
+<P>:(</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, August 01, 2006</h2><P>I'm not familiar with the approach you are taking to solve this problem.&nbsp; (I'm still new at C# and OO programming.)</P>
+<P>But I just learned how to bind a child collection to a grid from a parent object yesterday, and it might help you out...&nbsp; It has the virtue of being really simple.</P>
+<P>Take a look at ResourceEdit.aspx in the sample Project Tracker application.&nbsp; It has a resource object that contains a collection of another object.&nbsp; The resource "record-level" properties are displayed in a DetailView and the resource "assignment" properties are displayed in a GridView.&nbsp; The trick to getting it to work nicely was in how the csla datasources were defined.&nbsp; </P>
+<P>Hope that helps!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

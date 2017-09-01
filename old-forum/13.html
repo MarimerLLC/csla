@@ -1,0 +1,44 @@
+<html><header><title>Similiar DataBinding... Understanding....</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Similiar DataBinding... Understanding....</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/13.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 posted on Friday, May 05, 2006</h2><P>This is similar to my previous post...</P>
+<P>I have a simple grid (LineItems) that lists all the rows of LineItems (a child collection of my Invoice Root Object)</P>
+<P>I simply update the LineItems.Item(3).SaleQuantity Property (an int32) from a simply button on the form... but the Grid will not update that row with the new quantity?&nbsp; I know it changes... because.. when I popup a form...and close it the grid updates... but not from a simple button click on the form?</P>
+<P>I do have a Check box (two of them) bound to both the Invoice Root Object IsDirty property as well as the LineItems Collection Object IsDirty Property...</P>
+<P>not sure what is going?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 05, 2006</h2><P>You need to make sure the events flow back properly.</P>
+<P>When you change the child object, presumably your property set calls PropertyHasChanged()?</P>
+<P>That should trigger the child to raise an event which is ignored by data binding, but is used by the collection (BusinessListBase-derived?). The BLB object should automatically raise its ListChanged event - which data binding will typically handle to refresh the display.</P>
+<P>However, (and I don't know the rules here) it doesn't always. But your <EM>parent</EM> object can also handle the ListChanged event (use WithEvents in VB, or manually hook the event in C#) so it knows to raise its PropertyChanged event. To make this effective you either need to <EM>know</EM> that a given property is data bound, or you need to call the method to raise all the property changed events (which is safer, if less efficient).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Friday, May 05, 2006</h2><P>I have not had time to review or look at CSLA 2.0... sorry... I am still in v1.5... (got your new book on order however :)&nbsp; )</P>
+<P>So... I am not sure exactly how to implement what you are saying... Do you mean I need to have an event in my form that captures the ListChanged Event from the collection object?&nbsp; OR... do you mean to have my Invoice Object (the parent object) capture the ListChanged Event from the Child&nbsp;LineItems Collection in order to trigger the IsDirty flag?... sorry... little confused...</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 05, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2>That explains it somewhat.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2>I think version 1.52 includes the automatic elevation of a 
+child event as a ListChanged event in the collection. However, you still need to 
+have the parent object handle ListChanged and then call 
+MarkDirty().</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2>If you are running 1.5, I think you should look at 1.52 to 
+see if that fixes your problem (because it should raise ListChanged for 
+you).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=451044421-05052006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Friday, May 05, 2006</h2><P>I will take a look at the differences between 1.5 and 1.52.... I know one of the guys here put some of the changes into 1.5 from 1.52 (sorry a little quick hack to get some of the new changes in there)... so I am not sure exactly what we have between 1.5 and 1.52...</P>
+<P>what classes particular am I suppose to look at?</P>
+<P>thanks for all your help Rocky</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, May 05, 2006</h2>BusinessCollectionBase is the important one for the event handling.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Monday, May 08, 2006</h2><P>I have the first bug working since we just upgraded to v1.52.... now when I change a child object in a collection everything updates appropriately.</P>
+<P>However... I am still having an issue with my "CurrentItem" Grid databinding.&nbsp; Again, using the example: Invoice (Root Obj) -&gt; LineItems Collection -&gt; CurrentLineItem.</P>
+<P>I bind a grid to BindingSource that uses the class object LineItem called LineItemBindingSource.&nbsp; Now in my code I setup all the databindings in the beginning. for example: </P>
+<P>LineItemBindingSource.DataSource = Customer.ActiveInvoice.LineItems.ActiveLineItem</P>
+<P>However... when I set this up... Cust....ActiveLineItem always returns Nothing... because LineItems.Count = 0.</P>
+<P>My Question is... do I have to setup the binding again when a I add the a LineItem to the Invoice.LineItems Collection... or will the grid/bindingsource know automatically that the ActiveLineItem object is different/changed?</P>
+<P>Big problem.</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 09, 2006</h2><P>This is .NET 2.0 right? If you set up your form properly, the BindingSource controls will all be interlinked automatically. I discussed this in the book - though I got the Save() operation wrong and you'll find errata on <A href="http://www.lhotka.net/cslanet">www.lhotka.net/cslanet</A> to this effect. (rebinding to a new root object is a bit different from what I did in the book).</P>
+<P>But it should be the case that setting the BindingSource.DataSource property for the root BindingSource should automatically link up the child BindingSource controls to your child collection(s). You should not have to manually set the child BindingSource controls at all.</P>
+<P>(again, except for the case of rebinding after&nbsp;a Save() - in which case you actually need to reset the child BindingSource controls to their original values as defined by the VS designer)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Tuesday, May 09, 2006</h2><P>I guess I really need to take a step back and read more about the BindingSource control and how to implement it.... because I am not sure how to implement what you mentioned above... (i ordered your VB book 2.0... but has not come it yet).</P>
+<P>I have a separate&nbsp;BindingSource Control for each grid on my form... One Grid/BindingSource for the invoice root object; one Grid/BindingSource control for the list of LineItems (child collection) and finally a third grid/bindingsource displaying the Current LineItem from the collection... I have to set up all three of these BindingSource objects (their respective DataSource Property) manually... when I load the grid...</P>
+<P>Your saying I should only have to set up the Invoice BindingSource and the other two BindingSources should be setup automatically?</P>
+<P>I need to read about this a little more...</P>
+<P>thanks Rocky,</P>
+<P>ward0093</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

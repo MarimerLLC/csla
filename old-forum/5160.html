@@ -1,0 +1,111 @@
+<html><header><title>Why would Remoting with WCF work for some calls, but not others?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why would Remoting with WCF work for some calls, but not others?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5160.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar posted on Sunday, July 27, 2008</h2><P>I have an app that is using basic http binding to remote to a server for making the database calls.&nbsp; We are just in the process of deploying this to production, but for some data portal fetches, some people are getting this error consitently,&nbsp; </P>
+<P>"An error occured while receiving the HTTP response to htt:p//CSLAProd/G2DotNetDataPortalProd/WcfPortal.svc.&nbsp; This could be due to the service endpoint binding not using the HTTP protocol.&nbsp; This could also be due to an HTTP request context being aborted by the server (possibly due to the service shutting down).&nbsp; See server logs for more details."</P>
+<P>This is especially troublesome for these reasons:</P>
+<OL>
+<LI>I've never gotten this error on my development machine.&nbsp; I've created an MSI install package in order to install the client, and every non-development machine that has this installed, is having issues, while my machine is not 
+<LI>The error comes up only during certain database calls.&nbsp; Other calls work just fine. 
+<LI>The error only comes up in the production enviroment.&nbsp; All other environments work fine.</LI></OL>
+<P>If anyone has any suggestions, that would be more than appreciated.</P>
+<P>&nbsp;</P>
+<P>Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, July 27, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Did you try to use production DB for testing on your
+machine?&nbsp; I wonder if this is a manifestation of a timeout issue due to
+length of a call&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dlabar
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, July 27, 2008 6:43 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Why would Remoting with WCF work for some calls,
+but not others?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I have an app that is using basic http binding to remote to a server for
+making the database calls.&nbsp; We are just in the process of deploying this
+to production, but for some data portal fetches, some people are getting this
+error consitently,&nbsp; <o:p></o:p></p>
+
+<p>&quot;An error occured while receiving the HTTP response to
+htt:p//CSLAProd/G2DotNetDataPortalProd/WcfPortal.svc.&nbsp; This could be due
+to the service endpoint binding not using the HTTP protocol.&nbsp; This could
+also be due to an HTTP request context being aborted by the server (possibly
+due to the service shutting down).&nbsp; See server logs for more
+details.&quot;<o:p></o:p></p>
+
+<p>This is especially troublesome for these reasons:<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>I've never gotten this error on my development
+     machine.&nbsp; I've created an MSI install package in order to install the
+     client, and every non-development machine that has this installed, is
+     having issues, while my machine is not<o:p></o:p></li>
+ <li class=MsoNormal>The error comes up only during certain database
+     calls.&nbsp; Other calls work just fine.<o:p></o:p></li>
+ <li class=MsoNormal>The error only comes up in the production
+     enviroment.&nbsp; All other environments work fine.<o:p></o:p></li>
+</ol>
+
+<p>If anyone has any suggestions, that would be mroe than appreciated.<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Thanks.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Paul Czywczynski replied on Sunday, July 27, 2008</h2>Your best bet is to set up tracing on both sides of the wire. There are numerous blog posts to do this, here is a concise one: &nbsp; <a href="http://dotnetwithme.blogspot.com/2007/08/wcf-diagnostics-message-logging.html">http://dotnetwithme.blogspot.com/2007/08/wcf-diagnostics-message-logging.html</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dlabar replied on Sunday, July 27, 2008</h2><P>I've enabled tracing and I belive that the server is throwing a some sort of WCF Security Exception because I'm getting this exception:</P>
+<P>&nbsp;</P>
+<P>There was an error while trying to serialize parameter <A href="http://ws.lhotka.net/WcfDataPortal:FetchResult">http://ws.lhotka.net/WcfDataPortal:FetchResult</A>. The InnerException message was 'Enum value '0' is invalid for type 'System.Security.Permissions.SecurityAction' and cannot be serialized. Ensure that the necessary enum values are present and are marked with EnumMemberAttribute attribute if the type has DataContractAttribute attribute.'.&nbsp; Please see InnerException for more details.</P>
+<P>&nbsp;</P>
+<P>and it is mentioned in this thread (<A HREF="/forums/thread/14905.aspx">http://forums.lhotka.net/forums/thread/14905.aspx</A>&nbsp;) which Rocky posted a response of&nbsp;(<A href="http://www.lhotka.net/weblog/WCFNetDataContractSerializerAndSecurityException.aspx">http://www.lhotka.net/weblog/WCFNetDataContractSerializerAndSecurityException.aspx</A>) .</P>
+<P>&nbsp;</P>
+<P>Now I need to figure out what the Security Exception that I'm throwing is, so that I can get this resolved.&nbsp; Any ideas?&nbsp; Any ideas why it is only for certain business objects?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 27, 2008</h2><P>What version of CSLA are you using? </P>
+<P>The issue of serializing a security exception (at least one thrown by CSLA itself) was resolved in some point release (see the change logs). It turns out that SecurityException isn't like other exceptions, and requires a little extra work to serialize properly.</P>
+<P>I don't remember the details, it was months ago that I did the research on this - but it should be resolved in some point release of 3.0.x or later.</P>
+<P>(that said, I suppose it is possible I missed applying the fix to some bit of CSLA code that raises a SecurityException - you can compare all cases of "new SecurityException()" in CSLA to see if one is different)</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

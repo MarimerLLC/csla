@@ -1,0 +1,174 @@
+<html><header><title>Snippets and templates</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Snippets and templates</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5672.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tkd posted on Friday, October 24, 2008</h2><P>I'm using the very latest 3.6 2 release in VS2008.</P>
+<P>In the cslacs dir there are snippets, templates and visual studio templates directories. How are these used?</P>
+<P>In VS2008 I used Tools| Snippet Manager to import the snippets files. I can see them. Back in my code I can start to type say cslaprop. It comes up in intellisense. But when I press Tab or Enter it simply puts in the word cslaprop. It doesn't actually expand them out.</P>
+<P>And the template directories, I'm not sure what to do with them at all :-(</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, October 25, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Try to hit Ctrl+K+X.&nbsp; This should open up snippets drop
+down, select your imported folder, and try to expand the same snippet.&nbsp;
+This will verify that snippet is working correctly.&nbsp; Templates are sample
+code files for each CSLA stereotype &#8211; such as root or child object.&nbsp;
+They are intended to show you how to properly write code.&nbsp; You will need
+to customize them of course to fit your needs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tkd
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Saturday, October 25, 2008 1:00 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Snippets and templates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm using the very latest 3.6 2 release in VS2008.<o:p></o:p></p>
+
+<p>In the cslacs dir there are snippets, templates and visual studio templates
+directories. How are these used?<o:p></o:p></p>
+
+<p>In VS2008 I used Tools| Snippet Manager to import the snippets files. I can
+see them. Back in my code I can start to type say cslaprop. It comes up in
+intellisense. But when I press Tab or Enter it simply puts in the word
+cslaprop. It doesn't actually expand them out.<o:p></o:p></p>
+
+<p>And the template directories, I'm not sure what to do with them at all :-(<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Saturday, October 25, 2008</h2>I have the same problem with the code snippets...<br><br>As for install templates as follows: <br><br> 1. Open file deploy.sln (.. \ cslacs \ deploy) <br> 2. Generate the complete solution <br> 3. Run setup.exe (.. \ cslacs \ deploy \ Setup \ Debug) and follow the instructions <br><br>
+At the moment there is only Item Templates, so that you can use them
+in the same way you add a new element to an existing project, like when
+you add a new class, in the Add New Item dialog you'll see a new
+category "CSLA.NET" , There you'll find the templates
+that correspond to all types of business objects that you can use.<br><br>If desired, check the Change Log 3.6.0 (Beta 2), below "Beta 2 3.6.0-081021:"<span id="ctl00_ContentPlaceHolder1_BodyLabel"><span></span></span>.<br><br><a href="http://www.lhotka.net/Article.aspx?id=9b0ca1dd-3640-4088-9034-11538a0504f9">http://www.lhotka.net/Article.aspx?id=9b0ca1dd-3640-4088-9034-11538a0504f9</a><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, October 25, 2008</h2><P>I haven't used the snippet wizard - maybe that's the issue?</P>
+<P>I always just copy the snippet files into the "my documents"\VS2008\Code Snippets\C# (or VB)&nbsp;directory and they just show up.</P>
+<P>But then again, you have them showing up in Intellisense, so they should be working for you.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ozhug replied on Thursday, January 08, 2009</h2><P>All i needed to do&nbsp;was double click the vsi file found in </P>
+<P>cslacs-3.6.0-081217\\cslacs\Visual Studio Templates\VSI\cs</P>
+<P>cslacs.vsi</P>
+<P>The Visual Studio Wizard asked me were to place the code snippets and the templates appeared as expected.&nbsp;</P>
+<P>Great Job Nermin, well done!</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Thursday, January 08, 2009</h2>I have returned to test the Deploy of the latest version of Csla.Net and works perfect, there was no problem with IntelliSense.<br><br>Jorge<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Thursday, January 08, 2009</h2>Just one more simple concern, looking the code snippets for properties, There are three labels that are identical.<br><br>Define a Csla Property<br>Define a Csla Property<br>
+Define a Csla Property<br>
+<br>The issue is in 'DefineACslaConvertProperty.snippet' and 'DefineACslaSmartDateProperty.snippet', IMHO should alter these two code snippets files, specifically the titles<br><br><span>DefineACslaConvertProperty.snippet</span><br>&lt;Title&gt;Define a Csla Convert Property&lt;/Title&gt;<br><br><span>DefineACslaSmartDateProperty.snippet</span><br>&lt;Title&gt;Define a Csla SmartDate Property&lt;/Title&gt;<br><br>Jorge<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 09, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Thank you for pointing this out, I&#8217;ll add it to the bug
+list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jgamba
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, January 08, 2009 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Snippets and templates<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Just one more simple concern, looking the code snippets for
+properties, There are three labels that are identical.<br>
+<br>
+Define a Csla Property<br>
+Define a Csla Property<br>
+Define a Csla Property<br>
+<br>
+The issue is in 'DefineACslaConvertProperty.snippet' and
+'DefineACslaSmartDateProperty.snippet', IMHO should alter these two code
+snippets files, specifically the titles<br>
+<br>
+DefineACslaConvertProperty.snippet<br>
+&lt;Title&gt;Define a Csla Convert Property&lt;/Title&gt;<br>
+<br>
+DefineACslaSmartDateProperty.snippet<br>
+&lt;Title&gt;Define a Csla SmartDate Property&lt;/Title&gt;<br>
+<br>
+Jorge<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RTime replied on Friday, January 16, 2009</h2><P>I was able to install the templates &amp; snippets via the cslacs.vsi, but when trying to use several of the templates I receive the following error;</P>
+<P>"Error: this template attempted to load an untrusted component&nbsp;CslaTemplateItemWizards, ....</P>
+<P>It errors out when attempting to add DynamicRootList, EditableChildList, EditableRootList, ReadOnlyChildList, EditableRootParent, &amp;&nbsp;ReadOnlyList.</P>
+<P>I was able to successfully add CommandObject, DynamicRoot,&nbsp;EditableChild, EditableRoot, NameValueList, ReadOnlyChild, ReadOnlyRoot, and SwitchableObject.</P>
+<P>&nbsp;</P>
+<P>Thanks in advance for any and all help,</P>
+<P>Ralph</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Saturday, January 17, 2009</h2>Have you installed the Visual Studio 2008 SP1 Beta at this time?<br><br>Jorge<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RTime replied on Saturday, January 17, 2009</h2><P><FONT face=Tahoma>Thanks for your response.&nbsp; Yes I have installed 2008 sp1.&nbsp; Here is the complete error.&nbsp;</FONT></P>
+<P><FONT face=Tahoma><BR>Error: this template attempted to load an untrusted component 'CslaItemTemplateWizards, Version=1.0.0.0, Culture=Neutral, PublicKeyToken=93be5fdc093e4c30'.&nbsp; For more information on this problem and how to enable this template, please see documentation on Customizing Project Templates.<BR><BR>Ralph</FONT></P>
+<P><FONT face=Tahoma>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Saturday, January 17, 2009</h2>About your VS2008 SP1 install, is Beta, Release Candidate or final version?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RTime replied on Sunday, January 18, 2009</h2>Final version</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mobile5guy replied on Monday, February 02, 2009</h2>Compile the project "CslaItemTemplateWizards" found in "Visual Studio Templates\Wizards\CslaItemTemplateWizards\CslaItemTemplateWizards".<br><br>Toss the assembly in the GAC.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

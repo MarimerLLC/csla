@@ -1,0 +1,160 @@
+<html><header><title>ProjectTraker throws error - missing definition for AddRange </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectTraker throws error - missing definition for AddRange </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5476.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>hampole posted on Friday, September 26, 2008</h2>I am trying to build ProjectTraker and getting the following errors.<br>'ProjectTracker.Library.ProjectList does not contain a definition for 'AddRange' and no extension method 'AddRange' accepting a first argument of type 'ProjectTracker.Library.ProjectList' could be found (are you missing a using directive or an assembly reference?)<br><br>Whereever there is ref. to AddRange, I am getting the error. Am I missing something? Please help.<br><br>Thanks,<br>Ravi<br><br>Here is code snippet:<br>&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx = ContextManager&lt;ProjectTracker.DalLinq.PTrackerDataContext&gt;.GetManager(ProjectTracker.DalLinq.Database.PTracker))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = from role in ctx.DataContext.Roles<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select new NameValuePair(role.Id, role.Name);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.<b>AddRange</b>(data);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp; }<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You probably have done this already, but did you make sure references
+to CSLA are valid In that project?&nbsp; Also, what version of .NET framework
+are you using for compilation?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> hampole
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 4:41 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] ProjectTraker throws error - missing definition for
+AddRange<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am trying to build ProjectTraker and getting the following
+errors.<br>
+'ProjectTracker.Library.ProjectList does not contain a definition for
+'AddRange' and no extension method 'AddRange' accepting a first argument of
+type 'ProjectTracker.Library.ProjectList' could be found (are you missing a
+using directive or an assembly reference?)<br>
+<br>
+Whereever there is ref. to AddRange, I am getting the error. Am I missing
+something? Please help.<br>
+<br>
+Thanks,<br>
+Ravi<br>
+<br>
+Here is code snippet:<br>
+&nbsp;&nbsp;&nbsp; private void DataPortal_Fetch()<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; using (var ctx =
+ContextManager&lt;ProjectTracker.DalLinq.PTrackerDataContext&gt;.GetManager(ProjectTracker.DalLinq.Database.PTracker))<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var data = from role in
+ctx.DataContext.Roles<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+select new NameValuePair(role.Id, role.Name);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.<b>AddRange</b>(data);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.RaiseListChangedEvents = true;<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hampole replied on Friday, September 26, 2008</h2>I am using VS2008 with .Net3.5 and CSLA3.5(3.5.1). I have all the references to CSLA. I appreciate your help.<br><br>Ravi<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, September 26, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is strange.&nbsp; AddRange is part of ExtendedBindingList
+that NameValueList inherits from.&nbsp; Try to just follow &#8220;Go to Definition
+&#8221; from NameValueListBase that this class inherits from to see if you can
+get to ExtendedBindingList and find AddRange method.&nbsp; It is strange that
+it does not compile for you though&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> hampole
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 26, 2008 4:53 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: ProjectTraker throws error - missing
+definition for AddRange<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I am using VS2008 with .Net3.5 and CSLA3.5(3.5.1). I have
+all the references to CSLA. I appreciate your help.<br>
+<br>
+Ravi<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hampole replied on Friday, September 26, 2008</h2>I resolved the issue. I downloaded CSLA3.5.2 and I am able to build. Looks like the 3.5.1 does not have the <b>AddRange </b>definition.<br><br>Thanks,<br>Ravi<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

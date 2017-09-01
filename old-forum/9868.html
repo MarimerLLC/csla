@@ -1,0 +1,64 @@
+<html><header><title>ValidationRules.AddRules(delegate, propertyInfo) does not work</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ValidationRules.AddRules(delegate, propertyInfo) does not work</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9868.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lmtoy posted on Tuesday, December 14, 2010</h2><p>Hi,&nbsp;</p>
+<p>&nbsp;</p>
+<p>I have the following code:</p>
+<p>
+<p>protected override void AddBusinessRules()</p>
+<p>{</p>
+<p><span>	</span>// Do not validate is marked deleted</p>
+<p><span>	</span>if (IsDeleted)</p>
+<p><span>		</span>return;</p>
+<p>&nbsp;</p>
+<p><span>	</span>AddValidationRule(AccountingClientProperty, VoucherLineValidator.HasValidAccountingClient);</p>
+<p><span>	</span>AddValidationRule(AccountingPeriodProperty, VoucherLineValidator.HasValidAccountingPeriod);</p>
+<p><span>	</span></p>
+<p><span>	</span>// will only work for first validation</p>
+<p><span>	</span>AddValidationRule(DueDateProperty, VoucherLineValidator.HasValidDueDate);</p>
+<p><span>	</span>AddValidationRule(DueDateProperty, DateTimeValidationRules.ValidSmallDateTime);</p>
+<p><span>	</span></p>
+<p><span>	</span>// This works:</p>
+<p><span>	</span>//ValidationRules.AddRule&lt;VoucherLine&gt;(VoucherLineValidator.HasValidDueDate, DueDateProperty);</p>
+<p><span>	</span>//ValidationRules.AddRule&lt;VoucherLine&gt;(DateTimeValidationRules.ValidSmallDateTime, DueDateProperty);</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>private void AddValidationRule(IPropertyInfo propertyInfo, Func&lt;VoucherLine, RuleArgs, bool&gt; validationFunc)</p>
+<p>{</p>
+<p><span>	</span>ValidationRules.AddRule&lt;VoucherLine&gt;((target, ruleArgs) =&gt;</p>
+<p><span>		</span>{</p>
+<p><span>			</span>// Default validation text. Can be overwritten in validation method</p>
+<p><span>			</span>ruleArgs.Description = string.Format(&quot;{0} {1}&quot;, propertyInfo.FriendlyName, Resources.IsRequired);</p>
+<p><span>			</span>return validationFunc(target, ruleArgs);</p>
+<p><span>		</span>},</p>
+<p><span>		</span>propertyInfo</p>
+<p><span>	</span>);</p>
+<p>}</p>
+</p>
+<p>&nbsp;</p>
+<p>We have a wrapper method for AddRules where we set a default ruleArgs.Description text. This works fine as long as a property has only 1 validation method. For 2 or more it is only the first validation that is handled properly. All though the code does get called... and it returns false... the property stays valid if the first validation was true.</p>
+<p>I can only conlude that the problem is that the ValidationRules.AddRules method cannot handle delegates as first parameter. Can somebody else verify or suggest another way of archieving what I want here? 1 place to set a default text. I have many more proerties and that is why I want this, to avoid having to write it in every validation method.&nbsp;</p>
+<p>I tried to add the validation rules outside our wrapper... and the validation worked fine.&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, December 14, 2010</h2><p>Hi,</p>
+<p>I think you have missed some important points on business rules!!! </p>
+<p>1. AddBusinessRules is only called once per Type, even if it is an instance method!!!!&nbsp; This is where you define Shared validation rules for all instances of your type. These rules should point to a static method (not depending on an instance of an object). </p>
+<p>2. Instance rules should be placed in method AddInstanceBusinessRules and added by calling ValidationRules.AddInstanceRule.</p>
+<p>AddBusinessRules and AddInstanceRules are both called&nbsp; from the constructor of your object (seems like you believe this is instance rules and no sense in testing for IsDeleted here). And you should NOT call these methods from your code</p>
+<p>3. Csla default rules does NOT use the RuleArgs.Description. They read the description from a resource string (localizable) to support multiple languages.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lmtoy replied on Wednesday, December 15, 2010</h2><p>Thansk for the reply.&nbsp;</p>
+<p>1. The rules does point to static methods.&nbsp;</p>
+<p>Here is an example:</p>
+<p>&nbsp;</p>
+<pre><span>public</span>&nbsp;<span>static</span>&nbsp;<span>bool</span>&nbsp;<span>HasValidAccountingPeriod</span>(<span>VoucherLine</span>&nbsp;target,&nbsp;<span>RuleArgs</span>&nbsp;ruleArgs)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(target.<span>AccountingPeriod</span>&nbsp;==&nbsp;<span>null</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ruleArgs.<span>Description</span>&nbsp;=&nbsp;<span>GetIsRequiredDescription</span>(ruleArgs);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>false</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(target.<span>AccountingPeriod</span>.<span>PeriodFinalized</span>&nbsp;==&nbsp;<span>EC_AccountingPeriodStatus</span>.<span>Closed</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ruleArgs.<span>Description</span>&nbsp;=&nbsp;<span>Resources</span>.<span>AccountingPeriodIsClosed</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>false</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br /> <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>if</span>&nbsp;(target.<span>AccountingPeriod</span>.<span>PeriodVatFinalized</span>&nbsp;==&nbsp;<span>true</span>&nbsp;&amp;&amp;&nbsp;target.<span>VatAccount</span>&nbsp;!=&nbsp;<span>null</span>)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ruleArgs.<span>Description</span>&nbsp;=&nbsp;<span>Resources</span>.<span>VatPeriodIsClosed</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>false</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>return</span>&nbsp;<span>true</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre></pre>
+<p>&nbsp;</p>
+<p>2. Ok.. yes IsDeleted was in the wrong place. I have moved this to Validate() method.&nbsp;</p>
+<p>&nbsp;</p>
+<p>Question: when would you use Instance rules?</p>
+<p>&nbsp;</p>
+<p>3.This is do not understand? Can you please elaborate.</p>
+<p>We have our program in 2 languages so I do pick up text from resources files. And I also want to write spesific messages to what went wrong, see point 1. We do assign friendlyname to property from resources also.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 15, 2010</h2><p>1. I&nbsp; consider ruleArgs.Description as an Out parameter from the Rule.&nbsp; </p>
+<p>2. Instance rules no longer exists in Csla 4.x and it was a lagacy from the first versions of CSLA before Type rules were introduced. So if you are not using instance rules then it is better to just forget about them.&nbsp; The did work nicely for scenarios where you want to load rules dynamically from f.ex a database for a given instance of an object in a given state but there are alternate ways of achieving this with type rules..</p>
+<p>3. The Rule engine expects a static method reference in memory to the validation method that must be available for the entire lifetime of the application. I have never tried to use a Func in this part and for my own preference I&#39;d rather set the message inside the rule or use a combination of rules and use Priority to control the sequence/flow. ex.</p>
+<p>IMO: The rule method does the checking and should also be responsible for the message that is returned and not trust some external code to have set a default/initial text for the first condition.</p>
+<p>In Csla 4.x Rules are now classes and you can now create a rule that f.ex inherits from Required rule and extend with more checks. </p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

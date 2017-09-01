@@ -1,0 +1,38 @@
+<html><header><title>Is there a better way than this to handle a complicated delete?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is there a better way than this to handle a complicated delete?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6773.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft posted on Thursday, April 09, 2009</h2><P><FONT face=Arial>I have a case (that I will simplify here) where I need to do some business logic on a delete.&nbsp; When a parent is deleted, a great-grandchild of the parent may need to "return a part to inventory" which means it needs to issue inserts and updates to our parts tables.&nbsp; I would like to do this all in the delete transaction, but don't see a good way to do that.&nbsp;&nbsp;The .Save() call to DataPortal_Delete does not pass the business object across the across the data portal; so I don't have access to the object and all its children where I want to begin my transaction.&nbsp; Should we pass our parent object across the dataportal ourselves?</FONT></P>
+<P><FONT face=Arial>Currently, we override Delete() and we .Remove the great-grandchild objects if we have them, issue a .Save(), then issue the base.Delete() and let the UI's call to .Save() delete the root object (we use cascade deletes in the database to delete all the child records).</FONT></P>
+<P><FONT face=Arial>Is there a better way to do complicated stuff on the children when the parent is getting deleted?</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 09, 2009</h2><P>Remember that CSLA has two delete modes: deferred and immediate.</P>
+<P>If you use DataPortal.Delete(), that's immediate mode, and only the criteria is passed through the data portal to the DataPortal_Delete() method.</P>
+<P>But if you use deferred delete, you'll retrieve the business object with a fetch, interact with it, including possibly calling Delete() on the object (which marks it for deletion). And in this case when you call Save() on the object, you'll end up in DataPortal_DeleteSelf() with full access to the object, just like you would in DataPortal_Insert() or DataPortal_Update().</P>
+<P>All that is true for root objects. For <EM>child</EM> objects, only deferred delete is available, because the child object is always deleted as part of the root object being saved (regardless of whether the root is doing an insert, update or delete).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RobKraft replied on Monday, April 13, 2009</h2><FONT face=Arial>Thanks Rocky!&nbsp; The few places where we are using DataPortal_DeleteSelf() we actually have it calling DataPortal.Delete().&nbsp; I don't know how we stumbled into that incorrect pattern but we will correct it so that we can use DataPortal_DeleteSelf() for the complicated things we need to do.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 13, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That isn&#8217;t really an &#8220;incorrect pattern&#8221; for
+mainstream cases. I actually do that all the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you have more complex behaviors, then it may not work for
+you &#8211; and I think your scenario is one where you can&#8217;t just
+delegate the call to a simple implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

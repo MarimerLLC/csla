@@ -1,0 +1,19 @@
+<html><header><title>PTracker Example - Multiple Resource Types</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PTracker Example - Multiple Resource Types</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2354.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>davecorun posted on Thursday, February 15, 2007</h2><P>Hi everyone, we have a quick CSLA design question.&nbsp; We're just getting into the framework and are pushing our way through the C# version of the book.&nbsp; Very exciting stuff!</P>
+<P>To relate our question to the&nbsp;included PTracker example:</P>
+<P>We have a situation where a Project can have Resources of <EM>different data types</EM>.&nbsp; This means we are currently considering having a seperate class for each data type.&nbsp; So they would be ResourceBoolean, ResourceDateTime, etc.&nbsp; We like this design b/c of the possibility of overriding ToString and modifying the output, as well as the inherant type-safety of this approach.</P>
+<P>How would we accomplish this type of scenario, while using the CSLA framework and leveraging it's capabilities?&nbsp; We definitely want to have the N-Level undo, object collections, permissions, etc.</P>
+<P>Any guidance would be greatly appreciated.</P>
+<P>Thanks!</P>
+<P>// Dave</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 15, 2007</h2><P>One way is to define an interface such as IProjectResource, and then you'd have a ProjectResources collection that would contain IProjectResource members. </P>
+<P>(i.e. a polymorphic collection - you'll find threads if you search on that I believe)</P>
+<P>Polymorphic collections are a little trickier to work with but sometimes it's what I find I end up needing to do myself. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davecorun replied on Thursday, February 15, 2007</h2><P>Ok, this makes a lot of sense.&nbsp; We (my co-worker and I) are going to go researching through the threads to find a good example of the polymorphic collection in action.</P>
+<P>Aside from this solution, are there any other good ways to implement our scenario?</P>
+<P>Thanks!</P>
+<P>// Dave</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, February 15, 2007</h2><P>BTW, You can look at this "document" from Rocky on the subject.</P>
+<P><A href="http://lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a">http://lhotka.net/Article.aspx?area=4&amp;id=b8515cd9-7f8e-43df-9efd-cd958dfdc21a</A></P>
+<P>Though I found that there were a couple questions unanswered (especially w/ data access). </P>
+<P>No obvious good alternatives come to my mind but others might have nice suggestions. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>davecorun replied on Thursday, February 15, 2007</h2><P>Awesome, I just found that same article too.</P>
+<P>I'm looking forward to new&nbsp;and fresh perspectives on this scenario.</P>
+<P>Thanks!</P>
+<P>// Dave</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

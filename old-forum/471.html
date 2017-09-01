@@ -1,0 +1,19 @@
+<html><header><title>Design Question - primary member of collection.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Question - primary member of collection.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/471.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Monday, June 26, 2006</h2><P>I did some searching but couldn't seem to find a thread to address this question.</P>
+<P>Here is my example - basically names that may be associated with an individual. </P>
+<P>An individual <EM>always</EM> has a name (a primary name). </P>
+<P>An individual may also have "alternate names" or aliases. </P>
+<P>There will be a child class that represents an individual's name. It may have the name parts plus a well defined set of derived name builds (which can be overwritten by the user).</P>
+<P>Two choices that I can think of when it comes to designing the classes: </P>
+<P>1) Individual has a PrimaryName (simple child) plus a collection of AlternativeNames. </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Individual --&gt; IndividualName (PrimaryName) and</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Individual --&gt; IndividualNameCollection --&gt; IndividualName (AlternativeNames) </P>
+<P>2) Individual has a collection of Names, one of which is marked as primary. </P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Individual --&gt; IndividualNameCollection --&gt; IndividualName</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;When considering this, it seemed like it might be a little tricky handling the primary. Does the Individual contain a "primary name" reference to the primary in the collection, etc. </P>
+<P>One assumption to make as well is that 90%+ of individuals will likely only have one name ever entered, and probably less than 1% would have more than one alternative name.&nbsp;&nbsp; </P>
+<P>I am leaning towards option one, and I'm hoping someone can educate me on whether or not that is the right choice. I think it will be easier to conceptualize and easier to work with&nbsp;when binding to the UI. </P>
+<P>I could see other collections that contain primaries to perhaps take a different approach, but my only concern at the moment is this one with names.&nbsp; Obviously, this would be normalized when it came to the DB. </P>
+<P>Thanks for any input. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 26, 2006</h2><P>For data binding, the idea would be to flatten the primary name directly into Individual, so it doesn't appear as a child object at all. At least that's the simplest way to get data binding to work.</P>
+<P><EM>Inside</EM> Individual you'd do the collection idea, with one of the items being the primary. The concept of primary belongs to the collection, not to the children. So Individual's Name property would be something like this:</P>
+<P>Public Property Name() As String<BR>&nbsp; Get<BR>&nbsp;&nbsp;&nbsp; Return mNames.PrimaryName.FullName<BR>&nbsp; End Get<BR>&nbsp; Set<BR>&nbsp;&nbsp;&nbsp; mNames.PrimaryName.FullName = value<BR>&nbsp; End Set<BR>End Property</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

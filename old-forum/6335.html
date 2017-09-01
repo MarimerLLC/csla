@@ -1,0 +1,39 @@
+<html><header><title>passing dynamic linq where clause string</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>passing dynamic linq where clause string</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6335.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dmeadowcroft posted on Wednesday, February 04, 2009</h2><P>given my fetch method as follows</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#region</FONT></FONT><FONT size=2> Data Access - Fetch List</P>
+<P>[</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Transactional</FONT></FONT><FONT size=2>(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>TransactionalTypes</FONT></FONT><FONT size=2>.TransactionScope)] </P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>string</FONT></FONT><FONT size=2> filter)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>bool</FONT></FONT><FONT size=2> cancel = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P>OnBLUserEndorsementEmailsFetching(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ref</FONT></FONT><FONT size=2> cancel);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (cancel) </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>using</FONT></FONT><FONT size=2> (</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> mgr = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>ContextManager</FONT></FONT><FONT size=2>&lt;Pinsoft.Net.DalLinq.</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>PinsoftDataContext</FONT></FONT><FONT size=2>&gt;</P>
+<P>.GetManager(</FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Globals</FONT></FONT><FONT size=2>.PinsoftConnectionString,</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>))</P>
+<P>{</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>false</FONT></FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (filter == </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>""</FONT></FONT><FONT size=2>)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.AddRange(</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> row </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> mgr.DataContext.UserEndorsementEmail</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BLUserEndorsementEmail</FONT></FONT><FONT size=2>.GetBLUserEndorsementEmail(row)</P>
+<P>);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>else</P></FONT></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>this</FONT></FONT><FONT size=2>.AddRange(</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>from</FONT></FONT><FONT size=2> row </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>in</FONT></FONT><FONT size=2> mgr.DataContext.UserEndorsementEmail</P>
+<P>.Where(filter)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>select</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>BLUserEndorsementEmail</FONT></FONT><FONT size=2>.GetBLUserEndorsementEmail(row)</P>
+<P>);</P>
+<P>}</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>true</FONT></FONT><FONT size=2>;</P>
+<P>}</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>//using</P>
+<P>&nbsp;</P></FONT></FONT><FONT size=2>
+<P>OnBLUserEndorsementEmailsFetched();</P>
+<P>}</P>
+<P>I am trying to pass the following string as the filter..</P><FONT color=#a31515 size=2><FONT color=#a31515 size=2>
+<P>"PolicyID = new Guid(\"b5e7a7e0-4e38-4da1-bb6b-9b7a00b0f9c1\")"</P></FONT></FONT>
+<P>but it failing with - "'(' expected"</P>
+<P>from what I can see in studying the info on the web for dynamic linq, this should work ..</P>
+<P>anyone know what I might be doing wrong?</P>
+<P>thanks in advance..</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Monday, June 29, 2009</h2>I have same problem.&nbsp; in the wish list&nbsp; about dynamic linq 300 days ago is still open. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 29, 2009</h2><P>This is not, from what I can see, a CSLA issue. This is about constructing dynamic LINQ queries using LINQ to SQL.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

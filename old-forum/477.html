@@ -1,0 +1,182 @@
+<html><header><title>ASP.NET 2.0 Provider Model</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.NET 2.0 Provider Model</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/477.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>James posted on Tuesday, June 27, 2006</h2><p class="MsoNormal"><span>I
+have not seen much discussion on the forum regarding the provider models and
+was wondering how folks are approaching using the various ASP.NET 2.0 Providers
+with CSLA.NET 2.x.</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span>I
+have an existing ASP.NET 2.0 proof of concept application that makes use of the
+membership, profile and web parts personalisation providers.<span>&nbsp; </span>I am in the process of changing the application
+to incorporate the CSLA.NET framework.<span>&nbsp;
+</span>The core business functionality of the application map into regular CSLA
+business objects, so far so good.<span>&nbsp; </span>What I
+am struggling with is what to do with the built in providers that I am using.<span> <br></span></span></p><p class="MsoNormal"><br><span><span> </span><o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span>If
+the application runs with a local data portal then as far as I can see there is
+no issue.<span>&nbsp; </span>The providers connect to the
+database defined in the web.config and get on with the job.<span>&nbsp; </span>However if a remote data portal is required
+this raises the complexity.<span>&nbsp; </span>From what I understand
+(could be very wrong…) I can:</span></p><p class="MsoNormal"><span><br></span></p><p class="MsoNormal"><span>- Continue to use the previous approach for the
+provider data only and not make use of the remote data portal, use a separate database
+to store the provider info, this does not feel like a good approach.<span><br></span></span></p><p class="MsoNormal"><span><span>&nbsp; </span><br></span></p><p class="MsoNormal"><span>- I could write my own CSLA business objects to
+handle the tasks performed by the various providers.<span>&nbsp; </span>This would require defining own database schema
+to persist the data, writing the various business objects and implementing a
+bespoke mechanism on the front end, this would end up being a lot of work and defeat
+reusing the existing code from Microsoft.<span><br></span></span></p><p class="MsoNormal"><span><span>&nbsp; <br></span></span></p><p class="MsoNormal"><span><span>- </span>I could try and extend each of the provider models to somehow
+incorporate CSLA, again I think this would involve a fair amount of work but
+does feel like a better approach.<span>&nbsp; </span>Has
+anybody done this with these providers?<span>&nbsp; </span>For
+example any application that utilises the membership provider for allowing an
+admin user to add, delete, update other users would need to do this if the
+intention was to make use of a remote data portal.</span></p><p class="MsoNormal"><br><span><o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><o:p></o:p>The
+book does discuss some of these areas and makes reference to overriding the
+ValidateUser method and also wrapping the ASP.NET membership principal in a
+CSLA style principal (pg 533-537 c# book).<span>&nbsp;
+</span>Before I start trying to extend providers it would be great
+to get some feedback to find out if this is a reasonable approach, what others
+have been doing, anybody even using web parts and CSLA together, or if I am missing something obvious…<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p></span></p><p class="MsoNormal"><span><o:p><br></o:p></span></p>
+
+<p class="MsoNormal"><span>Cheers,<o:p></o:p></span></p>
+
+<p class="MsoNormal"><span>James<o:p></o:p></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 27, 2006</h2><P>Hi James,</P>
+<P>I know that Magenic has at least one customer for whom we implemented your second approach - creating a set of replacement providers that are written using CSLA and thus can use the data portal. That worked quite well.</P>
+<P>Certainly your first approach would work - but the non-CSLA providers would continue to operate in a 2-tier mode. As long as that isn't a problem it would work fine.</P>
+<P>I don't know what you mean by your third option, but it sounds complex <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>Typically I recommend using a 2-tier model for web apps. Web servers are already app servers anyway, so having an app server doesn't get you much (except possibly security when in a DMZ setting). If you don't need an app server for security reasons, I would try to stick with a 2-tier physical deployment.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>James replied on Wednesday, June 28, 2006</h2><P class=MsoNormal><SPAN>Rocky thanks for the feedback.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Agree with 2-tier approach - only worry is potential deployments where second firewall protects the db.<SPAN>&nbsp; </SPAN>I need to think about deployment a bit more as no point in extra work if it will not be required.<SPAN>&nbsp; </SPAN>Thanks for the sanity check – James<o:p></o:p></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, January 02, 2007</h2><P>James, I think I understand what you want to achieve with the 3rd option and that's what I'm doing. </P>
+<P>I've created a CslaMembershipProvider that inherits MembershipProvider and contains a "wrapped provider" instance, created based on the type specified in the web.config file. Right now, I have "Microsoft.Samples.SqlMembershipProvider" as my "functionalProvider". </P>
+<P>The initialize of the CslaMembershipProvider creates the wrapped provider of the specified type and then passes along the name &amp; config information to the wrapped provider's initialize. </P>
+<P>All properties currently just expose the wrapped provider without any remoting - for my purposes that's fine. (the properties just expose config items).</P>
+<P>All of my methods, however, use a shared Csla command object to remote if necessary and invoke the provider methods on the app server, returning the result <EM>plus any out parameters</EM>. (some of the MembershipProvider members use out parameters).&nbsp; </P>
+<P>Everything seems to be working quite well (so far), and I get to leverage all of the SqlMembershipProvider logic &amp; implementation. As I get things cleaned up I hope to share this implementation with anyone interested.&nbsp; </P>
+<P>What I found helpful as well is that you can download the Membership provider code from <A href="http://weblogs.asp.net/scottgu/archive/2006/04/13/442772.aspx">http://weblogs.asp.net/scottgu/archive/2006/04/13/442772.aspx</A>&nbsp;and thus can step through the code in the debugger to understand it better. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, January 04, 2007</h2><P>Well, maybe I'm a little lost in this discussion but, ironically, I'm venturing into the whole provider model as well and having some difficulty figuring out how to work it in with the Csla framework and approaches.</P>
+<P>It seems to me that the real basis for the provider model is to allow applications to easily switch the data access methods used for certain data.&nbsp; The difference between the ActiveDirectoryMembershipProvider and SqlMembershipProvider is where the data is stored (and thereby how it is accessed).&nbsp; So, a provider is a bridge between the code and the data store.</P>
+<P>Isn't this what the data portal accomplishes?</P>
+<P>Doesn't that mean that we could repackage the data portal classes into a provider-type structure and allow our BO's to interchange this provider for others should we want?</P>
+<P>However, it seems like the provider model has been expanded to emulate a factory that returns BO's.&nbsp; For example, the Membership class returns a MembershipUser object (via its provider) - which would presumably be a BO.</P>
+<P>Perhaps an example outside of the FCL would help explain my confusion.</P>
+<P>I am part of a team developing an "application" that is to be used by various groups within the corporation to manage&nbsp;customer information.&nbsp; Unfortunately, this is a very large corporation with a variety of business systems in place.&nbsp; Some data is kept in AD, one group uses Sql Server and a couple others use Oracle.&nbsp; Our "application" is intended to provide an abstraction of all of this for intranet web apps to make use of this data so that developers can work with a single interface.</P>
+<P>We are still early in the design stage, but this seemed like a perfect place to use the provider model.&nbsp; As such, we would create an ActiveDirectoryCrmProvider, SqlCrmProvider and OracleCrmProvider that can be interchanged based on the needs of the client application.&nbsp; The app code would always reference the CrmManager class.&nbsp; But, the question remains how to incorporate Csla and the data portal into this?</P>
+<P>When we call CrmManager.GetCustomer(guid) it will (obviously) delegate to the designated provider.&nbsp; We then have a choice.&nbsp; In using the IL-Disassembler tool, the FCL implementations, as expected, go to the data store and populate the BO directly.&nbsp; This goes against the concept of mobile objects, etc.&nbsp; If we are to make use of our Csla BO's, our provider would simply return Customer.GetCustomer(guid).&nbsp; But, in order to make this work, we would have to have a separate BO for each provider: ActiveDirectoryCustomer, SqlCustomer and OracleCustomer.</P>
+<P>Talk about exploding the size of the library!!!</P>
+<P>Has anyone given any thought to this and how we can effectively marry the provider model with Csla (mobile objects, remoting, etc.)???</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 04, 2007</h2><P>The broader goal of CSLA .NET however, is to enable responsibility-driven object models that match your use cases - abstracting things like the data access, application servers and other details behind those objects.</P>
+<P>If you have a use case that needs Customer then it should have a customer object - independant of the data store. If there are various contextual scenarios that dictate the customer data should come from SQL or Oracle then that should be abstracted at the data access layer.</P>
+<P>Yes, in the book I put the data access code in the business classes - but the abstraction of the data access should be clear: it is the DataPortal_XYZ methods.</P>
+<P>In other threads, and on my web site, there's been discussion of various techniques you can use to put the data access code into a formal DAL, invoked by the DataPortal_XYZ methods. Your DAL could easily use a provider model to further abstract the use of various data stores.</P>
+<P>Personally I favor the use of DTOs (data transfer objects) for this purpose.</P>
+<OL>
+<LI>Create a DTO assembly that defines the data transferred to/from your business objects</LI>
+<LI>Create a DalFactory assembly that loads the correct DAL provider</LI>
+<LI>Create a DAL provider assembly for each data store</LI>
+<LI>Create a business object assembly for your business objects</LI>
+<LI>Make your DataPortal_XYZ methods interact only with the DTO and DalFactory assemblies, using the DTOs to send/receive data from the DAL provider you get from the DalFactory</LI></OL>
+<P>There's some overhead to this of course, because your DAL provider must copy the data into/out of the DTO so it can be moved safely to/from the business object, which also must copy its data into/out of the DTO.</P>
+<P>If you step back slightly, what I'm describing here is a pure service oriented model for data store interaction. This is something I (somewhat tongue-in-cheek) proposed a long time ago in <A href="http://www.theserverside.net/tt/articles/showarticle.tss?id=FallacyDataLayer">this article</A>. The fact is, however, that there's some serious truth to the idea that the data store is the perfect candidate for a service - because it is rarely controlled or owned by a single application, and so it should be logically "normalized" within your overall architecture. And SO is the technology for such normalization.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 05, 2007</h2><P>Sounds like I may be farther along than I thought.&nbsp; I have already abstracted the code in the DataPortal_XYZ methods by making use of the new DbProviderFactory classes for connection, command, etc creation.&nbsp; I should be able to easily make this "provider compliant" if I choose.</P>
+<P>Then, if I'm on the same page with you, all client application code will continue to use Customer.GetCustomer(guid) to instantiate an object (and, likewise, CustomerList.GetCustomerList(), etc.) and this method will make use of the data portal architecture to retrieve the object.&nbsp; It is in the DataPortal_XYZ methods that we differentiate our data source.</P>
+<P>I find the idea of using a provider-based approach for the DataPortal_XYZ methods intriguing.&nbsp; I recently completed an application that (due to a variety of customer-driven reasons) used XML file for ALL data storage.&nbsp; I&nbsp; found that the current approach was slanted towards SQL-based storage mediums and wound up creating&nbsp;a FromXml() static method and ToXml() instance method that used a custom XmlSerializer to interact with the files.</P>
+<P>Thinking this through a bit more now, it seems that there would be no reason that the code I used in the FromXml() method would be perfectly suited for the DataPortal_Fetch() method; likewise with ToXml() and DataPortal_Update().</P>
+<P>To make the object "switchable", I would abstract this implementation into a provider-based scheme so that the DataPortal_Fetch() method calls some factory method which uses the appropriate "provider" to retrieve the data (e.g. Xml...Provider, Sql...Provider, Oracle...Provider, etc.).&nbsp; Then, I can control the physical data store to use without code changes.&nbsp; So when (if) the customer decides to purchase a Sql Server license at some point in the future and migrate the application to use that data store in lieu of the XML files, it becomes a simple configuration change to enable.</P>
+<P>Am I on the right page?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Thursday, February 28, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>Personally I favor the use of DTOs (data transfer objects) for this purpose.</P>
+<OL>
+<LI>Create a DTO assembly that defines the data transferred to/from your business objects 
+<LI>Create a DalFactory assembly that loads the correct DAL provider 
+<LI>Create a DAL provider assembly for each data store 
+<LI>Create a business object assembly for your business objects 
+<LI>Make your DataPortal_XYZ methods interact only with the DTO and DalFactory assemblies, using the DTOs to send/receive data from the DAL provider you get from the DalFactory</LI></OL>
+<P></div></BLOCKQUOTE></P>
+<P>Greetings,</P>
+<P>Does anyone know where I might find a code example of this? Particularly numbers 2, 3 and 5. I haven't used a DAL yet, but going to try an experiment. I'm not sure how to go about creating DAL providers and loading it.</P>
+<P>Thanks,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 05, 2007</h2><P>I think perhaps we're talking about slightly different things. </P>
+<P>The Role and Membership API both have fairly robust predefined interfaces and can be leveraged by the ASP.Net Web Administration Tool along with login controls, etc. </P>
+<P>Beyond that, there is, within the .NET framework, fully implemented providers that fulfill those API's. For instance, SqlMembershipProvider fulfills the Membership API and SqlRoleProvider fulfills the Role API. There is a registration tool that sets up the entirety of the database structure along with stored procedures that will be leveraged by the implemented Provider classes to fulfill the API. </P>
+<P>I don't deny that in many respects there may be other places in Csla or in the application around Csla that is familiar to the actual approach that the ASP.Net provider models take, but we're talking about different things at this point! </P>
+<P>What I've been able to do is to wrap the implemented Role &amp; Membership Providers in a CslaRoleProvider and CslaMembershipProvider, respectively, and have it operate through the DataPortal so that the code executes on the application server. So essentially, the 30 pages printed of relatively highly used code and hopefully tested (there was actually one bug I ran into) for the SqlMembershipProvider, for instance, I don't have to touch. </P>
+<P>When Rocky took the approach with the ProPrincipal and introduced the first implemented method of the membership provider - ValidateUser - he opened up the door for the developer to have to code the entirety of the API - after all - only one method of the Membership API at that point was being implemented. (That's certainly not a knock at Rocky who obviously isn't writing a book on step-by-step create your own Membership Provider). </P>
+<P>Anyways, I just wanted to chime in and say that I think we're talking about two different problems (perhaps two problems that are being solved through a similar sort of design pattern). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 05, 2007</h2><P>You are exactly right and that is where my confusion came from.</P>
+<P>The first issue, as demonstrated by the Role, Membership, Profile, etc. providers, is how to extend these provider models to return our Csla BO's.&nbsp; Rocky's simple implementation of a custom MembershipProvider, as you pointed out, provides insight into how this can be done.</P>
+<P>But, there is a second level to this and that is how we create the BO in the first place.&nbsp; After all, our custom MembershipProvider is simply delegating/instantiating our BO class which now has to be populated with data from the appropriate store.&nbsp; The second issue is how to implement the same model WITHIN our BO's to allow our BO's to have the same configurable flexibility that the higher-level provider classes have.</P>
+<P>I don't know that the built-in examples demonstrate the scenerio best which is why I brought up our need to develop an application interface that can provide data in a unified way to client applications from a variety of data sources.&nbsp; After this discussion I have a better understanding that the built-in providers flatten the application to 2-tiers whereas Csla is designed to build 3-tier apps.&nbsp; So, our custom provider needs to instantiate our BO and allow it to provide it's own data access - which may involve its own provider model.</P>
+<P>Really, when you boil it down, the provider model simply establishes an API for client code with an extensibility feature that allows client code to specify how the API is implemented.&nbsp; This can exist between our BO's and the data store, between our UI and BO's or whereever. It seems to me that it is essentially a flexible factory model where you have a "manager" class that delegates to a factory class (the provider) which can be defined and switched at run-time by the user/client via the apps configuration file.</P>
+<P>So, if I have an application that currently uses an Oracle&nbsp;database (because&nbsp;that's what the customer currently uses) but later needs to be upgraded to Sql Server because the corporate standards are changing (real world situation!), I see this as being the best way to allow such changes without changes to any code.&nbsp; A simple change in the apps config file to switch providers and the app keeps right on running.</P>
+<P>And, by specifying various providers based on functional areas, you can tailor the application to fit the physical environment for the application.&nbsp; Another real example has to do with the aforementioned application for the company I am currently consulting with.&nbsp; All employee information is currently maintained in an Oracle database with network security info in Active Directory.&nbsp; Contractor information is maintained solely in AD.&nbsp; The company is in the process of unifying their platforms across multiple business units and Sql Server is the new company standard for new development.&nbsp; As a result, at some time in the future when an on-going, long-running data warehousing project is implemented, all of this data will be relocated to Sql Server.&nbsp; So, I am looking at having an EmployeeProvider which deals with the current Oracle/AD data source for employee information and a ContractorProvider which retrieves data from AD.&nbsp; With this model, we can later create a SqlEmployeeProvider and SqlContractorProvider, change the config files for all affected applications and they all continue running without any code changes, recompliation, redeployment, etc.</P>
+<P>Where I think my confusion was centered was the thought that we could make use of the same approach for client access to our BO's themselves - in a similar manner to the built-in classes.&nbsp; So, our EmployeeManager would use providers to perform its operations.&nbsp; But, I think this was my attempt to apply the model at a level that is not condusive because, as Rocky pointed out, we would want these methods to return our BO's which are themselves data-agnostic so the provider model gets us nowhere.</P>
+<P>Make sense?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 05, 2007</h2><P>Let's look at it this way: everything we design should have the goal of simplifying or abstracting some task. Our software abstracts the user's task, and each layer of our software should abstract something about the developer's task.</P>
+<P>The provider model, as used by ASP.NET, abstracts the complexity of data interaction for authorization and profile data. The result is that <EM>most </EM>developers never see that complexity - they simply use the abstract API.</P>
+<P>The built-in membership providers are all 2-tier. Magenic built a CSLA-based membership provider for one of our clients, because they wanted the same simple API, but with 3-tier capabilities behind the scenes. Since CSLA already does this, they simply implemented the provider API using CSLA objects and automatically gained the 3-tier behaviors.</P>
+<P>I did a tiny subset of this in the book - only supporting authorization. As was noted, my intent wasn't (and isn't) to write a book about implementing the membership APIs.</P>
+<P>SonOfPirate is looking at this provider model and seeing how it could be used elsewhere in an application&nbsp;- and that's certainly true. It is merely a pattern after all, and any decent pattern has many target scenarios.</P>
+<P>For example, the data portal itself uses a provider pattern to implement the channel adapter pattern so you can switch between different network protocols or add your own.</P>
+<P>One very logical place to use a provider pattern is where you want a more abstract DAL, so you can easily switch between various data stores. I'm sure there may be other places the pattern could fit as well - along with many other patterns. Fixating on just one pattern is an anti-pattern.</P>
+<P>What I was trying to get at in my previous email is that, at the top level, your business objects themselves should be the abstract, simple API. If you've designed them according to your use cases you shouldn't need to abstract the business objects or their creation, because they are already highly abstract.</P>
+<P>However, abstracting things like the data access can make a great deal of sense. And any other area where you have potentially complex and/or repetative code should be viewed as a candidate for abstraction and simplification.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, January 05, 2007</h2><P>Thanks, Rocky.&nbsp; Well&nbsp;said as usual.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, January 05, 2007</h2><P>Certainly all good points.</P>
+<P>I think the original post was prompted by the poster's currently used providers not supporting 3-tier. As mentioned in a couple of the posts above, the built in ones don't provide for 3-tier. The challenge appeared to be - dang, do I have to write my own providers? Can I incorporate Csla into the existing ones somehow? (I highly suspect the SqlMembershipProvider and SqlRoleProvider were being used). </P>
+<P>My angle in this thread is my intial wall-run-into after looking at the largess of the API (Membership especially) in handling various password formats, locking out, recovery of password, etc.&nbsp;There's no less than 30 pages printed (if you get the code from the blog) for the SqlMembershipProvider and a fair amount of work plowed into the stored procedures and tables. All of this likely being used by a good cross-section of Asp.Net 2.0 developers. </P>
+<P>So my goal was in trying to reuse the already implemented providers and not having to rewrite them from scratch using Csla objects. Use a Csla object to handle the necessary traversal of the data portal and utilize all of the existing implementation of the built in providers. I have no desire to walk through each function of the API - understand/code/test each one of them. I think that's overkill (based on my user requirements).&nbsp;</P>
+<P>I look forward to sharing what I did as soon as I have a chance to clean it up a little. I suspect some of the Csla community using ASP.Net 2.0 has already done this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tsaltd replied on Sunday, February 18, 2007</h2><P>Here's how I'm doing it ...</P>
+<P>First, I set up a non-CSLA Web-based front-end to Membership and Roles using the tools from <FONT color=#008000 size=2><A href="http://peterkellner.net"><FONT size=3>http://peterkellner.net</FONT></A><FONT size=3> ... </FONT></FONT><FONT color=#008000 size=2><FONT color=#000000 size=3>Login and roles using Membership db in SQLServer2005 Database using the .NET 2.0 provider ... it has its own Provider in web.config</FONT></FONT></P>
+<P>My CSLA Web application (and the BO Library that it interfaces with) are configured ( in web.config) with </P>
+<UL>
+<LI>2&nbsp;Membership providers </LI>
+<UL>
+<LI>Default &nbsp;provider is Custom&nbsp;CSLA Membership provider -- inherits from MembershipProvider</LI>
+<LI>2nd Provider&nbsp;using <FONT color=#0000ff size=2>System.Web.Security.SqlMembershipProvider</FONT>&nbsp;</LI></UL></UL>
+<BLOCKQUOTE dir=ltr>
+<BLOCKQUOTE dir=ltr>
+<P>they both share a connection string to the&nbsp;&nbsp;SQL Membership Provider data store set up in the Kellener solution ... but up to this point I have not needed to use the data store for the CSLA Custom Membership Provider ... I'm using the System.Web.Security SQL Membership Provider API to authenticate and get roles.</P></BLOCKQUOTE></BLOCKQUOTE>
+<P dir=ltr>I just got the Login function uses the Login widget, but requires custom code to process using CSLA.</P>
+<P dir=ltr>Login Form:</P>
+<BLOCKQUOTE dir=ltr><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> Login1_Authenticate(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2>AuthenticateEventArgs</FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> Authenticated = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>Authenticated = </FONT><FONT color=#2b91af size=2>Membership</FONT><FONT size=2>.ValidateUser(Login1.UserName,Login1.Password);</P>
+<P>e.Authenticated = Authenticated;</P>
+<P></P>
+<P>}</P>
+<P>Which calls </P>
+<P>&nbsp;</P><FONT color=#0000ff size=2>
+<BLOCKQUOTE dir=ltr>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> ValidateUser(</FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> username, </FONT><FONT color=#0000ff size=2>string</FONT><FONT size=2> password)</P>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> result = </FONT><FONT color=#2b91af size=2>CustomCSLAPrincipal</FONT><FONT size=2>.Login(username, password);</P>
+<P></FONT><FONT color=#2b91af size=2>HttpContext</FONT><FONT size=2>.Current.Session[</FONT><FONT color=#a31515 size=2>"CslaPrincipal"</FONT><FONT size=2>] = Csla.</FONT><FONT color=#2b91af size=2>ApplicationContext</FONT><FONT size=2>.User;</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> result;</P>
+<P>}</P></BLOCKQUOTE></FONT></FONT>
+<P dir=ltr>in CustomMembershipProvider</P></BLOCKQUOTE>
+<UL>
+<LI>and eventually winds up at DataPortal_Fetch of CustomCSLAPrincipal<BR><BR><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#2b91af size=2>Criteria</FONT><FONT size=2> criteria)</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr>{</FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (System.Web.Security.</FONT><FONT color=#2b91af size=2>Membership</FONT><FONT size=2>.Providers[</FONT><FONT color=#a31515 size=2>"MyMembershipProvider"</FONT><FONT size=2>].ValidateUser(criteria.Username,criteria.Password))<BR></FONT><FONT size=2>{<BR></FONT><FONT size=2>&nbsp;&nbsp;&nbsp; _isAuthenticated = </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;<BR>&nbsp;&nbsp; </FONT><FONT size=2>_name = criteria.Username;<BR></FONT><FONT size=2>}</FONT></P></BLOCKQUOTE></LI></UL>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr><FONT size=2>All of the above adheres to examples in the C# 2.0 book -- but -- unless I missed something here in the forums -- this solution switches away from the DEFAULT MEMBERSHIP PROVIDER ( CSLACUSTOM) to use the SQL Membership provider so that I can Use the API's ValidateUser function</FONT></P>
+<P dir=ltr><FONT size=2>Next step is to grab the roles ... Kellner has some valuable wrappers that I'm planning to use.</FONT></P>
+<P dir=ltr><FONT size=2>So far so good .... Any gotcha's lurking in the shadows ????</FONT></P>
+<P dir=ltr><FONT size=2>Steve</FONT></P></BLOCKQUOTE>
+<P dir=ltr>&nbsp;</P>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr><BR></P></BLOCKQUOTE>
+<P>&nbsp;</P>
+<P>&nbsp;</P>
+<P><FONT color=#008000 size=2>&nbsp;</P>
+<P><FONT size=3></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skaue replied on Monday, May 21, 2007</h2>Cant get this to work, Steve :-(<br><br>It just loops running ValidateUser over and over again, first in custom providers ValidateUser, then in the DataFetch_Portal...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, May 21, 2007</h2><P>I just wanted to mention that I've posted the approach I have used in a separate thread if anyone finds it useful. </P>
+<P><A HREF="/forums/thread/14844.aspx">http://forums.lhotka.net/forums/thread/14844.aspx</A></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

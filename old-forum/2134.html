@@ -1,0 +1,41 @@
+<html><header><title>problem with fetch methode</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>problem with fetch methode</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2134.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wilfred posted on Friday, January 12, 2007</h2><FONT color=#0000ff size=2>
+<P>I don' usually put code on forums, but i can't seem to get a recordset with this code, while the stored procedure should return&nbsp; one, i have tried to debug but just am stuck, anyone with an idea. There are no records affected, after cm.executereader. So the activelookup remains empty, anyone.</P>
+<P>Willem</P>
+<P>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> Criteria </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> s </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> crit </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> CustomCriteria = </FONT><FONT color=#0000ff size=2>DirectCast</FONT><FONT size=2>(Criteria, CustomCriteria)</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cn </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.Data.SqlClient.SqlConnection(ActiveObjects.My.Settings.CDOLVSConnection)</P>
+<P>cn.Open()</FONT><FONT color=#008000 size=2></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> cm </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IDbCommand = </FONT><FONT color=#0000ff size=2>Nothing</P></FONT><FONT size=2>
+<P>cm = cn.CreateCommand</P>
+<P>cm.CommandType = CommandType.StoredProcedure</P>
+<P>cm.CommandText = </FONT><FONT color=#a31515 size=2>"usp_getKolomNamen"</P></FONT><FONT size=2>
+<P>s = </FONT><FONT color=#a31515 size=2>"tbl"</FONT><FONT size=2> + crit.TableName</FONT><FONT color=#008000 size=2></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> param </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SqlClient.SqlParameter</P>
+<P>param.ParameterName = </FONT><FONT color=#a31515 size=2>"@TabelNaam"</P></FONT><FONT size=2>
+<P>param.Value = s</P>
+<P>MsgBox(crit.TableName)</P>
+<P>param.Direction = ParameterDirection.Input</P>
+<P>cm.Parameters.Add(param)</P>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> cm</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Using</FONT><FONT size=2> dr </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> SafeDataReader(cm.ExecuteReader)</P></FONT><FONT size=2>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>False</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> i </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</P></FONT><FONT size=2>
+<P>i = dr.RecordsAffected</P>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> k </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</P></FONT><FONT size=2>
+<P>k = 0</P>
+<P></FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>While</FONT><FONT size=2> dr.Read()</P></FONT><FONT size=2>
+<P>MsgBox(dr.GetValue(4 + i).ToString)</P>
+<P>k = i - 1</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>.Add(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> NameValuePair(k.ToString, dr.GetValue(4 + i).ToString))</P>
+<P>i = i + 1</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>While</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Finally</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Try</P></FONT><FONT size=2>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2>True</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Using</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 12, 2007</h2>Does the database call include a SET NOCOUNT ON statement?&nbsp; Even with NOCOUNT OFF, i'm not sure that RecordsAffected is ever set properly...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Friday, January 12, 2007</h2><P>I guess your sproc is a SELECT... statement?&nbsp;You may want to check out&nbsp;MSDN - says IDataReader.RecordsAffected doesn't get set until you read everything and close the IDataReader.</P>
+<P>Regardless, whenver I expect to get some rows back and I don't, I fire up the profiler and check out what's really going on. Copy what the profiler says when you execute your sproc, and paste into a new query window and run it from there. Usually I have a simple typo.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

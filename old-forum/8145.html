@@ -1,0 +1,88 @@
+<html><header><title>Need help posting code.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need help posting code.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8145.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Monday, December 14, 2009</h2><P>Hello,</P>
+<P>Could someone please tell me what’s the trick to posting code on the forum?</P>
+<P>I tried posting raw code and it’s not posted correctly, I tried escaping all the special characters but that didn’t work either. I am sure its something really stupid but I am not getting it.</P>
+<P>I tried it with Google Chrome and Internet Explorer (ver 6 and 8) and none of them worked.</P>
+<P>-------</P>
+<P>On another note. Rocky, what about upgrading the newsgroups to a newer version? I think the community server is now on version 5, I have not played around with the newest version but it may have some cool things on it. No big deal, just a suggestion. <BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, December 14, 2009</h2><P>I copy/paste from Visual Studio.</P>
+<P>The code loses its indentation and gets double spaced.</P>
+<P>I often fix it in the post by hand if it is small enough.</P>
+<P>The trick to removing the double spacing is to delete the blank line and then press Shift-Enter to get single line spacing.</P>
+<P>I do not know of any way to paste into this forum without manually adjusting the code.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Monday, December 14, 2009</h2>I have trouble with this also. <br /><br />The best thing I have so far come up with is to wrap the code with the "pre" and "/pre" tags (use the standard angle brackets for the quotes marks). <br /><br />At least this will keep your code from being mangled. Here is a sample:<br /><br /><pre><br />        ///Status property description<br />        public GaugeStatuses Status<br />        {<br />            get { return GetProperty(StatusProperty); }<br />            set { SetProperty(StatusProperty, value); }<br />        }<br /></pre><br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, December 14, 2009</h2>Cool, let me try this my self:<br /><br /><br /><pre><br /><br />        private static PropertyInfo NameProperty = RegisterProperty(o => o.Name);<br />        public string Name<br />        {<br />            get { return GetProperty(NameProperty); }<br />            set { SetProperty(NameProperty, value); }<br />        }<br /><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, December 14, 2009</h2>Sweeeeeeeeeeet!<br /><br />Thanks rsbaker0 and Joe.<br /><br />Wish Rocky would updated the forum to the latest community server version (I think is version 5). Maybe this issue are not existent in the newer version... but something tells me that it may be more trouble upgrading the forum that what its worth.<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xAvailx replied on Monday, December 14, 2009</h2>I know it probably will never happen...but I would LOVE if Rocky migrated this forum to something like Stack Exchange.<br /><br />http://stackexchange.com/<br /><br />Problem is it costs $$$</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, December 15, 2009</h2><P>I think there has been some success copying and pasted code into Word first, then copying and pasting into the text editor here.&nbsp; Not sure why color doesn't work for me anymore tho <img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P><SPAN>namespace</SPAN><SPAN> Csla<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> This is the base class from which most business objects<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> will be derived.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;remarks&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;para&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> This class is the core of the CSLA .NET framework. To create<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> a business object, inherit from this class.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/para&gt;&lt;para&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> Please refer to 'Expert C# 2008 Business Objects' for<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> full details on the use of this base class to create business<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> objects.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/para&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/remarks&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;typeparam name="T"&gt;</SPAN><SPAN>Type of the business object being defined.</SPAN><SPAN>&lt;/typeparam&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>[</SPAN><SPAN>Serializable</SPAN><SPAN>()]<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN></SPAN><SPAN>public</SPAN><SPAN> </SPAN><SPAN>abstract</SPAN><SPAN> </SPAN><SPAN>class</SPAN><SPAN> </SPAN><SPAN>BusinessBase</SPAN><SPAN>&lt;T&gt; :<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>Core.</SPAN><SPAN>BusinessBase</SPAN><SPAN>, Core.</SPAN><SPAN>ISavable</SPAN><SPAN> </SPAN><SPAN>where</SPAN><SPAN> T : </SPAN><SPAN>BusinessBase</SPAN><SPAN>&lt;T&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>#region</SPAN><SPAN> Object ID Value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> Override this method to return a unique identifying<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> value for this object.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>protected</SPAN><SPAN> </SPAN><SPAN>virtual</SPAN><SPAN> </SPAN><SPAN>object</SPAN><SPAN> GetIdValue()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>return</SPAN><SPAN> </SPAN><SPAN>null</SPAN><SPAN>;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>#endregion<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>#region</SPAN><SPAN> System.Object Overrides<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> Returns a text representation of this object by<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> returning the </SPAN><SPAN>&lt;see cref="GetIdValue"/&gt;</SPAN><SPAN> value<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> in text form.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>///</SPAN><SPAN> </SPAN><SPAN>&lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>public</SPAN><SPAN> </SPAN><SPAN>override</SPAN><SPAN> </SPAN><SPAN>string</SPAN><SPAN> ToString()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>{<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>object</SPAN><SPAN> id = GetIdValue();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>if</SPAN><SPAN> (id == </SPAN><SPAN>null</SPAN><SPAN>)<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>return</SPAN><SPAN> </SPAN><SPAN>base</SPAN><SPAN>.ToString();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>else<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>return</SPAN><SPAN> id.ToString();<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>}<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>&nbsp;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp; </SPAN>#endregion<o:p></o:p></SPAN></P>
+<P class=MsoNormal>&nbsp;}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CyclingFoodmanPA replied on Tuesday, December 15, 2009</h2>I copy the code into Notepad and then the forum. Not fun, but it works really well...</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, December 15, 2009</h2><P>&nbsp;xxx</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 15, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div>Sweeeeeeeeeeet! Thanks rsbaker0 and Joe. Wish Rocky would updated the forum to the latest community server version (I think is version 5). Maybe this issue are not existent in the newer version... but something tells me that it may be more trouble upgrading the forum that what its worth.</div></BLOCKQUOTE></P>
+<P>I have (or can get) a license for the current CS version. From what I understand, the upgrade takes a day or two - numerous SQL upgrade scripts, install/configure the new software and email gateway components and redo the UI style changes.</P>
+<P>Fortunately my UI style changes are pretty minimal - mostly color changes.</P>
+<P>I guess I have avoidance issues with this. I hate, hate, hate, hate fighting with email gateways and other network infrastructure stuff. So the idea of spending 1-2 days doing exactly that sort of thing is somewhere below the bottom of my list of things I want to do.&nbsp; Much like deciding that for the next two days you'll hit yourself on the head with a hammer repeatedly. :)</P>
+<P>Maybe it is because in a previous life (many many years ago) I managed a help desk and IT support group. What a horrible type of work - though it does give one great appreciation for the difference between supportable software and unsupportable software, and so I'm very grateful for the experience I gained in that job, as it made me a much better developer.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, December 15, 2009</h2>I feel your pain Rocky, I would not want to touch that either.<br /><br />I was thinking that since Community Server cost and arm and a leg, that they would have a nice update.exe that would do everything for you while you sit back and enjoy a cup of java.<br /><br />Of course, I am sure this is probably not the case, chances are you won’t even have a chance to have your firs sip of java before you get the first (of many) error message!<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, December 16, 2009</h2>Actually, I changed my mind about this… not that it really matters what I think but :)<br /><br />I think you should give updating the forum at least a shot. Primarily because hopefully, the new version of the forum may be more “code posting” user friendly. This is especially important now that the CSLA is starting to open up more and more to contributors. I can see contributors wanting to post code more often.<br /><br />Just a suggestion of course.  You know that this forum upgrade will need to happen sooner or later... <br /><br />Hey, just get one of those interns to do the leg work, they always do what you tell them to do and never complain, specially if they are brand new :)<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, December 16, 2009</h2>OK, I think I finally got a solution:<br />
+<br />
+1) Go to the forums preferences. <br />
+2) Once there select the &#x201c;Site Options&#x201d;  tab.<br />
+3) On the &#x201c;Content Editor&#x201d; select &#x201c;DefaultTextEditor&#x201d; option from the dropdown.<br /><br />
+<br />
+<br />
+Once you do that you can post all the HTML you want without having to worry about the editor trying to help you and end up screwing your post.<br />
+<br />
+The only (but very annoying) problem is that what you post there is treated as pure HTML so you will need to escape and format everything to HTML.<br />For this I found this very handy site:<br />
+<br />
+<br />
+
+<a href="http://www.htmlescape.net/htmlescape_tool.html">http://www.htmlescape.net/htmlescape_tool.html</a>
+
+
+<br />
+<br />
+Just drop your post, click on the &#x201c;Escape&#x201d; button and drop the escaped text in the CSLA forums.<br /></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

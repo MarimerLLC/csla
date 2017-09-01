@@ -1,0 +1,35 @@
+<html><header><title>What is the life-time of server-side caching list?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>What is the life-time of server-side caching list?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12236.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Monday, November 25, 2013</h2><p>I&#39;m trying to understand csla 3-tier mechanism.</p>
+<p>&nbsp;</p>
+<p>Let&#39;s say I have cached NameValueList&lt;int, string&gt;</p>
+<p>I would like to use it in ReadOnlyBase Fetch operation:</p>
+<div style="border:#000080 1px solid;color:#000;font-family:&#39;Courier New&#39;, Courier, Monospace;font-size:10pt;">
+<div style="background-color:#ffffff;overflow:auto;padding:2px 5px;white-space:nowrap;"><span style="color:#0000ff;">void</span> DataPortal_Fetch(SomeDto dto)<br />
+{<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">this</span>.Id = dto.Id;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">this</span>.TypeId = dto.TypeId;<br />
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:#0000ff;">this</span>.TypeName = TypeList.GetList().GetTypeName(dto.TypeId);
+<br />
+&nbsp;&nbsp;&nbsp;&nbsp;...<br />
+}</div>
+</div>
+<p>&nbsp;where, TypeList is&nbsp; my cached NameValueList&lt;int, string&gt;.</p>
+<p>As we know in 3-tier architecture &quot;DataPortal_Fetch&quot; method will be executed on server side. So TypeList.GetList() will be cached on server side. But what is the life-time of this cached list? Only during time of &quot;DataPortal_Fetch&quot; execution or client application execution or maybe something else?</p>
+<p>What is &nbsp;scope of this list: &quot;client application&quot;, &quot;all client applications&quot;,&nbsp;
+or maybe something else?
+</p>
+<p>nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, November 25, 2013</h2><p>Default implementation is that the list is cached until the</p>
+<p>
+<ul>
+<li>application pool is recycled (or IIS / server is restarted) or</li>
+<li>your code call list.ClearCache method explicitly (f.ex in DataPortal_Insert/Update/Delete of items)</li>
+</ul>
+</p>
+<p>IE: The default cache duration is linked to process uptime.</p>
+<p>You could also change implementation to use AppFabric or other Cache systems that allow you to specify ejection criterias (typically a timespan or absolute time).</p>
+<p>CslaContrib has baseclasses and project that show how to use AppFabric for caching.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, November 25, 2013</h2><p>So,</p>
+<p>&quot;server-side cached list&quot; is global to all client applications and it&#39;s stay cached until application pool is recycled or IIS/server is restarted.</p>
+<p><em>&quot;IE: The default cache duration is linked to process uptime.</em>&quot;: Process uptime - is&nbsp; IIS process uptime?</p>
+<p>Do I understand correctly?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, November 25, 2013</h2><p>Yes. That is the default behavior.&nbsp;</p>
+<p>If you look inside the code you will find that the lst is cached in a static member field.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, November 25, 2013</h2><p>Thank you very much <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

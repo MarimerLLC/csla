@@ -1,0 +1,29 @@
+<html><header><title>Shopping Cart Object - Simple Question (or is it?)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Shopping Cart Object - Simple Question (or is it?)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/349.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichaelBosch posted on Monday, June 12, 2006</h2>I've been fighting with one of two ways to implement a shopping
+cart.&nbsp; I'm sure both of them will work, but I wanted some quick
+opinions on which of the two is correct in an object oriented context.<br>
+<br>
+ShoppingCart<br>
++ShoppingCartItems: BusinessListBase<br>
+++ShoppingCartItem: BusinessBase<br>
+<br>
+OR<br>
+<br>
+ShoppingCart: BusinessListBase<br>
++ShoppingCartItem: BusinessBase<br>
+<br>
+so... The ShoppingCart object IS A collection of ShoppingCartItems - or
+- The ShoppingCart HAS A collection of ShoppingCartItems.<br>
+<br>
+I would also want to support things like a property for the created
+time of the shopping cart, the username of the owner of the shopping
+cart etc, but I think this should be able to be implemented in either
+scenario.&nbsp; Correct?<br>
+<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, June 12, 2006</h2>The fact that you want to have properties on the cart itself suggests you should go with the former route (Cart which has CartItems).<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>malloc1024 replied on Monday, June 12, 2006</h2><p class="MsoNormal">Replace the “is-a” test with a “behaves-as-a” test.<span>&nbsp; </span>Does a shopping cart behave as a collection of shopping
+cart items?<span> &nbsp; I would say no.</span> </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 12, 2006</h2><P>As has been noted, since the cart has properties of its own, then the first option is correct.</P>
+<P>Unless of course, you need or want to be stateless (like in an ASP.NET UI), in which case neither is correct and you must have all editable root objects <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, June 13, 2006</h2><P>Everything must be editable root objects in ASP.Net? </P>
+<P>Isn't that letting the UI dictate the object model? I'm actually having a pretty good go of it with business objects containing collections and so forth. </P>
+<P>&nbsp;</P>
+<P>Edit: Sorry, I didn't read your post thoroughly enough where you explicitly said "stateless" interaction on ASP.Net. I guess maintaining an "active object" between postbacks isn't stateless! </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MichaelBosch replied on Tuesday, June 13, 2006</h2>I guess it was an easy question!&nbsp; Thanks everyone.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

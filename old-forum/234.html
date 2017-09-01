@@ -1,0 +1,104 @@
+<html><header><title>Documenting security</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Documenting security</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/234.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark posted on Wednesday, May 31, 2006</h2><P>Have any of you come up with a nice scheme to document the security in your objects?&nbsp; For example, I'd like to be able to be able to detail the security rights for "Controller", "Accounting Clerk", etc - listing&nbsp;by object which properties they have read/write access to, as well as the general 'CanGet/Add/Edit/DeleteObject' routines.</P>
+<P>On small projects, it's not that hard to keep up with, but on larger projects, it's fairly time-consuming to do it by hand (and keep it up-to-date).&nbsp; The project I'm working on now has over 300 objects (and climbing) with 20+ roles.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>hurcane replied on Thursday, June 01, 2006</h2>This is just an off-the-cuff idea...<br><br>You could write a program to do a brute force analysis using reflection. The general flow could be like this:<br><br>Load list of security roles<br>For each security role<br>&nbsp;&nbsp;&nbsp; Create principal object that has the single security role<br>&nbsp;&nbsp;&nbsp; For each object in the assembly<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Test CanGet/Add/Edit/DeleteObject<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; For each public property<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  Test CanReadProperty/CanWriteProperty<br><br>As the application runs, it would generate output that you can then use to create your documentation. By using reflection, this application would not need to be changed unless multiple assemblies are involved.<br><br>This would not be a trivial program to write, but I think it would do the job.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 02, 2006</h2><P>Another way to look at this is to consider that AddAuthorizationRules can be data driven. So you could put the auth rules in a table or config file of some sort, and then load the values when the object is created.</P>
+<P>Then you could just run your report against that table, because it would be the same auth rules as used by the object.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Friday, June 02, 2006</h2><P>I think I might explore the data-driven approach.&nbsp; Haven't sat down and put much thought into it (yet), but I'm thinking I'd probably want a SecurityManager class that would cache all the security-related data from the database.&nbsp; That would prevent repetitive data-access calls during object creation.&nbsp; The individual objects would then talk to the SecurityManager instead of the DB directly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 02, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Yes, I think that's exactly what you'd want to do. I'd make 
+SecurityManager NOT inherit from CSLA - but rather be an object with 
+Shared/static methods like:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>SecurityManager.GetSecurityInfo(obj)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><SPAN class=560143115-02062006><SPAN class=560143115-02062006></SPAN>&nbsp;</DIV>
+<DIV align=left>
+<DIV align=left>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Internally, SecurityManager would keep a dictionary of 
+SecurityInfo objects, which would inherit from ReadOnlyBase - and would be keyed 
+by the object's type name. SecurityInfo would have instance methods 
+like:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>CanGetObject()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>CanAddObject() </FONT>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>CanEditObject() </FONT>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>CanDeleteObject()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>LoadAuthorizationRules(authRules)</FONT></SPAN></DIV></SPAN></DIV></SPAN></DIV></SPAN></DIV>
+<DIV align=left><FONT face=Arial color=#0000ff size=2></FONT></SPAN><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2><FONT face=Arial color=#0000ff size=2><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2><SPAN class=560143115-02062006></SPAN></FONT>&nbsp;</DIV></DIV></SPAN></FONT></SPAN></FONT></FONT></SPAN>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>So then in your business object code you can easily 
+implement the four Shared/static methods like this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Public Shared Function CanGetObject() As 
+Boolean</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; Return 
+SecurityManager.GetSecurityInfo(Me).CanGetObject()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; ' return 
+SecurityManager.GetSecurityInfo(this).CanGetObject();</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>End Function</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>And your AddAuthorizationRules would look like something 
+like this:</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Protected Overrides Sub 
+AddAuthorizationRules()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; 
+SecurityManager.GetSecurityInfo(Me).LoadAuthorizationRules(AuthorizationRules)</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006></SPAN><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>End 
+Sub</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Obviously this means any complexity has been shifted into 
+the SecurityInfo class - but that shouldn't be too hard to implement - its 
+DataPortal_Fetch() will retrieve all auth data for a given object type and will 
+store the allowed/denied lists for each property so those values can be easily 
+used to set the AuthorizationRules.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>SecurityManager basically then acts as an indexed cache of 
+SecurityInfo objects - which are loaded on demand, but are only loaded once for 
+an object type over the lifetime of the application.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006></SPAN></SPAN></SPAN><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV></DIV></DIV><FONT face=Arial color=#0000ff size=2></FONT><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  </DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Tahoma><FONT size=2><B>From:</B> Mark 
+  [mailto:cslanet@lhotka.net]&nbsp;<SPAN class=560143115-02062006><FONT face=Arial color=#0000ff>&nbsp;</FONT></SPAN></FONT></FONT></DIV>
+  <DIV class=OutlookMessageHeader align=left><FONT face=Tahoma><FONT size=2><SPAN class=560143115-02062006>&nbsp;</SPAN><BR></FONT></FONT>I think I might 
+  explore the data-driven approach.&nbsp; Haven't sat down and put much thought 
+  into it (yet), but I'm thinking I'd probably want a SecurityManager class that 
+  would cache all the security-related data from the database.&nbsp; That would 
+  prevent repetitive data-access calls during object creation.&nbsp; The 
+  individual objects would then talk to the SecurityManager instead of the DB 
+  directly.</DIV></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Friday, June 02, 2006</h2><P>Your sample code looks almost identical to what I've quickly thrown together as a proof-of-concept.&nbsp; :-)</P>
+<P>The only gotcha with your sample - in the static&nbsp;CanGet/Add/Edit/DeleteObject methods, you can't reference 'this' (Me), so I'm passing in the object name instead.&nbsp; Already had a const defined in each class with the object name, so it worked out well.</P>
+<P>This looks very promising - I especially like the idea that I'll be able to adjust the security behavior of the application on-the-fly without having to recompile.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Friday, June 02, 2006</h2><P>Mark,</P>
+<P>Search on Object Security on <A href="http://www.searchcsla.com">www.searchcsla.com</A>.&nbsp; I have created something like this for CSLA 1.x and have been using this method on all my projects.&nbsp; Others have converted this to use database instead of xml.</P>
+<P>This implementation works pretty good for company that I work here where&nbsp;security some times is an after tought and requesting global group could take weeks.</P>
+<P>The design should be applicable to CSLA 2.0 version.</P>
+<P>HTH,</P>
+<P>Ricky</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Friday, June 09, 2006</h2>After searching on the old forum for "Object Level Security" I found what seems to be the most recent version of the ObjectSecurity code which uses a database as the backend. Here is the link so you dont need to search for it&nbsp;<img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />.<br><br>http://groups.msn.com/CSLANET/general.msnw?action=get_message&amp;mview=0&amp;ID_Message=13839<br><br>All the best<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stefan replied on Saturday, June 03, 2006</h2>In addition, you should check if the user changed in the meantime (think of the ProjectTracher example logout-login feature.) Then you'd have to refresh the whole SecurityManager's cache...<br><br>Edit:<br>Well, emptying the SecurityManager's cache on each logout would accomplish this issue, <br>so it really wasn't an issue ;-)<br><br>Stefan<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, June 14, 2006</h2><P>Regardless of how the list of rules is created, one thing to consider is to have your rules authorization method allow a rule to remain defined but be disabled at run-time (via a screen in your application).</P>
+<P>This is very handy when doing demonstrations of your pre-alpha, alpha or beta code to your users and you discover that one of your custom validation rules has been coded incorrectly.</P>
+<P>Pop up the screen, turn the rule off, and continue with your demo!</P>
+<P>It's much better than having your users twiddle their thumbs waiting for you to recompile/re-install - particularly if you have to get a slow, lazy sysadmin to do the installation due to your company's security policies.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vbexpert replied on Sunday, June 25, 2006</h2><P>I'm new to C#. Currently using C# for my new application. I was told I&nbsp;could not use "this" in static method when I implemented the following.</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+</P>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN><SPAN class=560143115-02062006><SPAN class=560143115-02062006></DIV>
+<DIV align=left>
+<DIV align=left>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>....</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>Public Shared Function CanGetObject() As Boolean</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; Return SecurityManager.GetSecurityInfo(Me).CanGetObject()</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>&nbsp; ' return SecurityManager.GetSecurityInfo(this).CanGetObject();</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>End Function</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2>...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=560143115-02062006></SPAN></SPAN></SPAN><SPAN class=560143115-02062006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV></DIV></DIV><FONT face=Arial color=#0000ff size=2></FONT><FONT face=Arial color=#0000ff size=2></FONT><BR>
+<BLOCKQUOTE>
+<DIV class=OutlookMessageHeader align=left>
+<HR>
+</DIV>
+<DIV class=OutlookMessageHeader align=left><FONT face=Tahoma><FONT size=2><B>From:</B> Mark [mailto:cslanet@lhotka.net]&nbsp;<SPAN class=560143115-02062006><FONT face=Arial color=#0000ff>&nbsp;</FONT></SPAN></FONT></FONT></DIV>
+<DIV class=OutlookMessageHeader align=left><FONT face=Tahoma><FONT size=2><SPAN class=560143115-02062006></SPAN><BR></FONT></FONT>I think I might explore the data-driven approach.&nbsp; Haven't sat down and put much thought into it (yet), but I'm thinking I'd probably want a SecurityManager class that would cache all the security-related data from the database.&nbsp; That would prevent repetitive data-access calls during object creation.&nbsp; The individual objects would then talk to the SecurityManager instead of the DB directly.</DIV></BLOCKQUOTE></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark replied on Sunday, June 25, 2006</h2><P>That's correct - you can't (you'd typically pass in the object type instead).&nbsp; Rocky's pretty much eliminated the need for this SecurityManager&nbsp;class by introducing class-level ValidationRules and AuthorizationRules in the forthcoming 2.1 release of CSLA.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Tuesday, June 27, 2006</h2><P>However, remaining consistent with the concept of collaboration used within CSLA and throughout the .NET Framework, creating a SecurityManager class would allow additional features and functions not provided by the object-level methods presented in 2.1.&nbsp; </P>
+<P>We've used this approach previously and are in the process of implementing again in the new version because we use many configuration settings to drive security, such as a master enable/disable flag and the ability to use "integrated" security on our apps, etc.&nbsp; Under this approach, as Rocky has shown, our objects delegate the security checks to the SecurityManager which encapsulates all of the logic for the requested operations.&nbsp; Of course, this can always be overriden when desired in our business classes.</P>
+<P>&nbsp;I would only recommend this if there is some valued added by a separate SecurityManager class; otherwise, as you've said, the 'built-in' object-level features do the job well.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

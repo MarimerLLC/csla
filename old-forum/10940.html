@@ -1,0 +1,114 @@
+<html><header><title>CancelEdit() / Binding Issue.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CancelEdit() / Binding Issue.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10940.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo posted on Saturday, December 03, 2011</h2><p>
+<p>&nbsp;</p>
+<p>I have a problem that is driving me crazy. Not sure if this is a CSLA issue or a WPF (possible Silverlight) issue or both.</p>
+<p>In essence, a property set accessors is being called on a property bounded to a combobox. It&rsquo;s hard to explain so I created a supper simply sample project that reproduces the behavior.</p>
+<p>If anyone has some time or is interested, please download the attached project and see if you can find what the issue is. The project consists of a very straight forward CSLA parent child collection.</p>
+<p>SomeParent -&gt; SomeCollection -&gt; SomeChild</p>
+<p>To reproduce the issue:</p>
+<p>1)<span>	</span>Start the project: You will see the MainWindow appear with a single button on it.</p>
+<p>2)<span>	</span>Click the button: Behind the button there is code that gets a reference to the &ldquo;SomeParent&rdquo; object with one child added to it, after that, the code calls a &ldquo;parent.BeginEdit()&rdquo; and popups a dialog form displaying the &ldquo;SomeChild&rdquo; object data.&nbsp;</p>
+<p>3)<span>	</span>Click the &ldquo;Cancel&rdquo; button on the popup form: The pop-up form only has one combobx and a cancel button. Do nothing except click on the cancel button, this will resume execution on the MainWindow form where a &ldquo;parent.CancelEdit()&rdquo; call will be made and that&rsquo;s where bad things start to happen.</p>
+<p>&nbsp;</p>
+<p>Basically, the &ldquo;PayrollNumber&rdquo; property of the &ldquo;SomeChild&rdquo; object gets call when it shouldn&rsquo;t be called.</p>
+<p>The sample project is very, very simple to follow (at least I think so) so I ask you to take a minute to see if you can see why such weird behavior is happening.</p>
+<p>THANK YOU!.</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, December 04, 2011</h2><p>The &quot;issue&quot; is caused by having the list items as part of the edit/undo operation. If you change SomeChild to this: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Employee</span>&gt;&gt;&nbsp;ValidPayrollNumbersProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Employee</span>&gt;&gt;(c&nbsp;=&gt;&nbsp;c.ValidPayrollNumbers,&nbsp;<span style="color:#2baf9a;">RelationshipTypes</span>.PrivateField);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[<span style="color:#2b91af;">NotUndoable</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Employee</span>&gt;&nbsp;_validPayrollNumbers;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Employee</span>&gt;&nbsp;ValidPayrollNumbers
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(ValidPayrollNumbersProperty,&nbsp;_validPayrollNumbers);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">SomeChild</span>&nbsp;NewChild()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:#2b91af;">DataPortal</span>.CreateChild&lt;<span style="color:#2b91af;">SomeChild</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">void</span>&nbsp;Child_Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LoadProperty(PayrollNumberProperty,&nbsp;222);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;lst&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">List</span>&lt;<span style="color:#2b91af;">Employee</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lst.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Employee</span>()&nbsp;{&nbsp;EmployeePayrollNumber&nbsp;=&nbsp;111,&nbsp;EmployeeName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Eeny&quot;</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lst.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Employee</span>()&nbsp;{&nbsp;EmployeePayrollNumber&nbsp;=&nbsp;222,&nbsp;EmployeeName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Meeny&quot;</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lst.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Employee</span>()&nbsp;{&nbsp;EmployeePayrollNumber&nbsp;=&nbsp;333,&nbsp;EmployeeName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Miny&quot;</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;lst.Add(<span style="color:blue;">new</span>&nbsp;<span style="color:#2b91af;">Employee</span>()&nbsp;{&nbsp;EmployeePayrollNumber&nbsp;=&nbsp;444,&nbsp;EmployeeName&nbsp;=&nbsp;<span style="color:#a31515;">&quot;Moe&quot;</span>&nbsp;});
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;_validPayrollNumbers&nbsp;=&nbsp;lst;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>The code will work as expected. </p>
+<p>So for my own preference:</p>
+<p>A: Add list/namevalue lists for use in combo boxes into a UOW object (not a part of the BO)</p>
+<p>B: Add as a property with private backing field and mark as NotUndoable </p>
+<p>When the list is part of the Edit/Undo the content of the list will also get a &quot;rollback&quot; so the items in the list is cleared and reread - and this causes databinding to update the field. </p>
+<p>It doesn&#39;t matter that you do not have a setter on the list. It is a managed field and as of up tilll now - all managed fields are part of the Edit/Undo. You must use a private field to use the NotUndoable attribute and exclude that field from being part of the Edit/Undo.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, December 04, 2011</h2><p>Jonny,</p>
+<p class="MsoNormal"></p>
+<p class="MsoNormal">Thank you *very* much for taking the time to try to help me out with my issue. I
+also suspected that the culprit was the ItemSource being rebinded during the
+undo operation but believe it or not, this is not always the case. I have
+updated the sample project to show that under special circumstances the issue
+does not occur.</p>
+<p class="MsoNormal">The revised project, works the same way but instead of
+having a List&lt;Employee&gt;() as the combobox items source I now use a simple array of integers (also removed the&nbsp;SelectedValuePath=&quot;EmployeePayrollNumber&quot; DisplayMemberPath=&quot;EmployeeName&quot; XAML from the combo).&nbsp;If you follow the same steps as before, you will now see that the
+issue is no longer there, Can you tell why is that?</p>
+<p class="MsoNormal">Also,&nbsp;unfortunately, my&nbsp;business&nbsp;object is a little bit more complicated than the sample project I posted. In my real&nbsp;business&nbsp;object I *do* need my list to be undoable. The reason for this is&nbsp;because&nbsp;the list values depend on the value of some other property so when the other property undoes, the list also has to be reverted to its previous value to stay in sync.</p>
+<p class="MsoNormal">So far my solution has been to do a &quot;DataContext = null&quot; on the form before I do a &quot;CancelEdit&quot; but I don&#39;t like the hack.</p>
+<p class="MsoNormal">What is up with the rating by the way? Did you rated the post?</p>
+<p class="MsoNormal">Thanks again.</p>
+<p class="MsoNormal">&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, December 05, 2011</h2><p>Somethign else that is kind of weird is that if you do:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someChild.BeginEdit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someChild.CancelEdit();</p>
+<p>Istead of:</p>
+<p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someParent.BeginEdit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someParent.CancelEdit();</p>
+<p>Then things work as expected.This seems odd to me because I would expect for both way to work or both ways to break....mmmmm.</p>
+</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 05, 2011</h2><p>The difference is in which object gets restored. </p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Rene Elizondo<br></b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someChild.BeginEdit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someChild.CancelEdit();</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>Will only restore the properties on someChild</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Rene Elizondo<br></b></p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someParent.BeginEdit();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; someParent.CancelEdit();</p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>This will restore the field values of someParent and all child/grandchild objects. And since someChild is in a collection the object instance is restored to a new instance.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, December 05, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>This will restore the field values of someParent and all child/grandchild objects. And since someChild is in a collection the <strong><i>object instance is restored to a new instance</i></strong>.</p>
+<p></div></p>
+<p>&nbsp;</p>
+<p>Really? I was always under the impression that the big thing about <strong><i>BeginEdit()</i></strong> / <strong><i>CancelEdit()</i></strong> was that property values where edited in place. So basically I&nbsp;thought&nbsp;that <strong><i>BeginEdit() </i></strong>just copied <strong><span style="text-decoration:underline;">property </span></strong>values and <strong><i>CancelEdit() </i></strong>just replace the <strong><span style="text-decoration:underline;">property </span></strong>values. I did&#39;t know the whole child instance was recreated.</p>
+<p>Man, I really need to go back and&nbsp;re-familiarize&nbsp;myself with the CSLA source code, its been a looooong time.</p>
+<p>&nbsp;</p>
+<p>Can&#39;t help but wonder.... &nbsp;Am I really the&nbsp;first person&nbsp;to run into this type of issue? Wonder if the way I am doing things is all wrong.</p>
+<p>Thanks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 05, 2011</h2><p>Hi,</p>
+<p>I could be wrong about restoring into new instances - it could easily have to do with CollectionChanged event args being sent to the UI as well. </p>
+<p>I&#39;ll have to look into the actual code to check what happends in the CancelChanges part.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 05, 2011</h2><p>Yes, I was wrong -&nbsp; the objects are NOT restored into new instances. </p>
+<p>But when a collection is &quot;Undo&quot;ed the code will suppress ListChanged events and when completed send a OnCollectionChanged evet: </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">this</span>.OnCollectionChanged(<span style="color:blue;">new</span>&nbsp;NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset));
+</pre>
+<p>It&#39;s most likely this event that mess up the databinding. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Tuesday, December 06, 2011</h2><p>&nbsp;</p>
+<p>Jonny,</p>
+<p>Out of curiosity, do you see anything particularly&nbsp;wrong with the sample project I uploaded? In other words, do you see something being done there that is out of the ordinary that you&nbsp;would&#39;t&nbsp;expect anyone to do?</p>
+<p>I am only asking because if you don&rsquo;t see anything wrong (and I personally don&rsquo;t see anything wrong) then I would call this issue a limitation of the CSLA.</p>
+<p>I realize that maybe the issue is with WPF (or maybe even Silverlight) but since you will have better luck of squeezing water from a desert rock than to have Microsoft touch the WPF code to fix anything then perhaps something could be added to the CSLA to make this scenario work.</p>
+<p>Just curious..</p>
+<div></div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>rxelizondo replied on Wednesday, December 07, 2011</h2><p>&nbsp;</p>
+<p>Well, incase anyone cares..... after many hours of screwing around with this thing, I finally figured out what the issue was.</p>
+<p>As it&nbsp;appears, the issue had to do with me not having&nbsp;overridden&nbsp;Equals on the object&nbsp;being&nbsp;used as the backing store for the combobox item. The effects of this were that when&nbsp;the ItemsSource property on the combobox got updated, the currently selected item (a reference type) was no longer able to find an item on the collection that corresponded to itself (because all list items where new references) so the selected items would be cleared out triggering an update on the&nbsp;business&nbsp;object property.</p>
+<p>Once I override Equals on the&nbsp;object&nbsp;being&nbsp;used as the backing store for the combobox item, I was able to replace the ItemsSource collection and as long as one item on the collection was considered &quot;Equals&quot; to the selected item there were no side effects.</p>
+<p>Special thanks to Jonny for&nbsp;trying&nbsp;to help me out with the&nbsp;issue.</p>
+<p>Cheers.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

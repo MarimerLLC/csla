@@ -1,0 +1,134 @@
+<html><header><title>Silverlight Friendly Name Binding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight Friendly Name Binding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6242.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC posted on Thursday, January 22, 2009</h2>Hi All,<br>I was just wondering if there is a way to set bind the description of a field to the friendly name entered in the Business Object. Something like...<br>&lt;TextBlock Text="{Binding Path=FriendlyNames.FirstName}" Grid.Column="0"/&gt;<br>&lt;TextBox Text="{Binding Path=Data.FirstName, Mode=TwoWay}" Grid.Column="1"/&gt;<br><br>Thanks,<br>Chris.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, January 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>In general, you can bind to almost anything in Silverlight, so
+if you BO has a friendly name property for a field, you can bind to it.&nbsp;
+So, in your case you would have a property &#8220;FriendlyNames&#8221; that
+exposes an object with a property of FirstName.&nbsp; However, it seems you are
+mixing UI logic into your BO, which may not be a good idea.&nbsp; Instead, I
+would encourage you to use IValueConverter that would simply accept a parameter
+of property name, interpret it and return property description, possibly from
+resource file.&nbsp; Something like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Text=&#8221;{Binding Source=Data, Converter=FrendlyNameConverter,
+ConverterParameter=FirstName}&#8221;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> TAC
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, January 23, 2009 12:17 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Silverlight Friendly Name Binding<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi All,<br>
+I was just wondering if there is a way to set bind the description of a field
+to the friendly name entered in the Business Object. Something like...<br>
+&lt;TextBlock Text=&quot;{Binding Path=FriendlyNames.FirstName}&quot;
+Grid.Column=&quot;0&quot;/&gt;<br>
+&lt;TextBox Text=&quot;{Binding Path=Data.FirstName, Mode=TwoWay}&quot;
+Grid.Column=&quot;1&quot;/&gt;<br>
+<br>
+Thanks,<br>
+Chris.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TAC replied on Wednesday, January 28, 2009</h2>Thanks for that, it works quite well.<br>I am using a Resource file from my Business layer. Although I agree that it is putting some of the Presentation logic in the Business Object, the truth is that all Business Objects do it, at least any with Business Rules anyway. A business rule returns a string with an error, if you want to get technical the actual message is presentation logic, however it makes perfect sense for the Business layer to generate the message.<br>Our Business object properties have a friendly name so that the error messages can use them. It seems awfully redundant not to reuse them on our screens (and could leave to inconsistencies - error message says surname, field says last name). Luckily I already get the friendly names from a resource file. But I would prefer to get them from the business object instead.<br><br>-<br>Chris.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Thursday, January 29, 2009</h2><P>This is one of the reason we decided to use property attributes for friendly name, max length, required, etc.</P>
+<P>These are things that both the BO and the UI&nbsp;should honor&nbsp;and have them defined in one place.</P>
+<P>So our BO property declarations look like:</P>
+<P>[Attributes.TextField(FriendlyName="Company Name", MaxLength=50, Required=true)]&nbsp;</P>
+<P>public string CompanyName<BR></P>
+<P>In order to do localization you would simply make the FriendlyName property getter read from a resource based on a key given in the attribute initializer instead.</P>
+<P>Like:</P>
+<P>[Attributes.TextField(FriendlyNameResourceID="CompanyName", MaxLength=50, Required=true)]&nbsp;</P>
+<P>Of course this requires some changes to CSLA and if you want to data bind directly to the attributes in XAML you will need to do something like this:<A href="http://blog.spencen.com/2008/05/13/applying-metadata-to-wpf-bindings.aspx">http://blog.spencen.com/2008/05/13/applying-metadata-to-wpf-bindings.aspx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 29, 2009</h2>You can also make the static PropertyInfo&lt;T&gt; fields public in scope, which makes them available to other code.<br><br>This is a good idea in CSLA .NET for Silverlight 3.6.1 because it eliminates the need for the _forceInit concept when using inheritance.<br><br>It is also a good idea when using the ObjectFactory attribute, because then the property token is available for use in your factory object (for use with the new LoadProperty() method in ObjectFactory).<br><br>However, doing this probably won't directly solve the XAML binding issue, because I don't think XAML can bind to a static value, or a field. But doing this would make it pretty easy to create a UI component similar to the way ObjectStatus works in WPF, or CslaDataProvider works in Silverlight - where the component exposes the data as a bindable property, but gets the values from the underlying business object.<br><br>You'd need a similar component to elevate any attribute-based values as well, because XAML can't bind to attributes.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, January 29, 2009</h2><P>Rocky,</P>
+<P>Thanks for resolving the _forceInit concept in 3.6.1. I have not gone down this road yet but I was really not looking forward to having to explain why we would need to implement it in all of our hundreds of BOs.</P>
+<P>Now you have just provided a hint as to how we should handle the issue for Silverlight. I want to be able to use the same BO in both environments with little to no changes. I have not been able to start a Silverlight project yet but when I do get around to it, I want things to be as smooth as possible.</P>
+<P>Thanks.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The more I work with the 3.6.1 implementation, the more
+convinced I&#8217;m becoming that the static PropertyInfo&lt;T&gt; fields
+should be public.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That&#8217;s the way Microsoft does the DependencyProperty
+fields too &#8211; they are public &#8211; and for the same basic reasons. The static
+field is a token representing the property &#8211; both inside and outside the
+object itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Making the fields public allows an ObjectFactory to work nicely,
+provides metadata to the UI, and allows Silverlight to avoid the _forceInit
+issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, January 30, 2009</h2>Hmm... I liked keeping them private, just because I try to hide anything not necessary.&nbsp; But if making them public solves some problem, it's probably a good idea.&nbsp; <br><br>Since PropertyInfo&lt;T&gt; has always been roughly equivalent to DependencyProperty (at least, that's the idea I got from everything posted here and in the book so far), I've always been declaring them as readonly anyway.&nbsp; That's not what's shown in the book though, so if the convention does become to make them public, there should probably be lots of big warnings that they should be readonly as well.<br><br>Also, is there anything in PropertyInfo that can be changed once instanciated?&nbsp; That might be a problem if they are made public as well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 30, 2009</h2><DIV>I agree that a wholesale recommendation to make them public will require some double-checking on these issues (especially in terms of what can be changed on the PropertyInfo&lt;T&gt; object).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Rocky</DIV><BR></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,28 @@
+<html><header><title>crypto and csla data</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>crypto and csla data</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1587.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Wednesday, October 25, 2006</h2><P>Hi, anyone have thoughts on this:</P>
+<P>I might need to run some code on one box but have the user on another box.</P>
+<P>but the data is confidentail so it should be encrypted when it goes across the network.</P>
+<P>I am wondering -- will remoting give me a way to do that ?</P>
+<P>or should I build some kind of crypto functions ?</P>
+<P>I know how web services can use ssl etc...</P>
+<P>but I have not done remoting and this case is on a local network.</P>
+<P>thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 25, 2006</h2>I'm not aware of any encryption for remoting that comes with the framework.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, October 25, 2006</h2><P>I have partly answerd my own question, but still I'd like to hear from others.</P>
+<P>remoting with .net 2.0 provides several options to make for a secure channel.</P>
+<P>now has anyone here used that ?</P>
+<P>looks like the pipe is like this:</P>
+<P>app == CSLA == remoting == crypto == network ...... network == crypto == remoting == CSLA</P>
+<P>so the CSLA classes do&nbsp;not need to be altered in any way.</P>
+<P>just as the data goes out it gets crypted and then the other side reverses and the other csla app gets the data.</P>
+<P>looks like the back of the book says a tiny bit on this.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pelinville replied on Wednesday, October 25, 2006</h2>Since IIS is being used to host this, couldn't you just use SSL?&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, October 25, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>pelinville:</strong></div><div>Since IIS is being used to host this, couldn't you just use SSL?&nbsp;</div></BLOCKQUOTE></P>
+<P><BR>I am working on a small Point Of Sale app.</P>
+<P>so most of the time the shop will have 2-5 pc's and no server.</P>
+<P>so for this app one pc running xp home or pro will be "in back" and run sql express.</P>
+<P>so with a local network and few pc's I am looking to skip use of IIS</P>
+<P>most of the data can just use sql connections - </P>
+<P>a few things need to be secured like CreditCard numbers.</P>
+<P>I am going to put the cc processing on the sql box and the sql data with cc# etc.. will have enctyption</P>
+<P>so the last item is for terminal x running a sale to send a packet to the sql box and get an auth to finish the sale.</P>
+<P>for example 4 pc's 1 in back with sql express</P>
+<P>3 "out front" doing sales.</P>
+<P>most of the data is ok in this case to just use sql connections to pass around info</P>
+<P>but a few items like CC auth need to be less exposed.</P>
+<P>so I am thinking TCP channel remoting for just CC actions.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

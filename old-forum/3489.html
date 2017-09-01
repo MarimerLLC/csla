@@ -1,0 +1,85 @@
+<html><header><title>OT: Infragistics grid insists on resorting grid after every save</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OT: Infragistics grid insists on resorting grid after every save</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3489.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer posted on Thursday, September 06, 2007</h2><P>Ok.&nbsp; I know this is slightly off topic for this forum, but I also know that there are quite a few developers on here that use both Infragistics and CSLA.&nbsp; Here is my problem:</P>
+<P>I'm using the following code to save my business object (BLB):</P>
+<P>BindingSource.RaiseListChangedEvents = false;<BR>BindingSource.EndEdit();<BR>UltraGrid.UpdateData();<BR>//Some custom business object save code here<BR>BindingSource.RaiseListChangedEvents = true;<BR>BindingSource.ResetBindings(false);<BR></P>
+<P>As far as I know, this is code is pretty common for saving business objects.&nbsp; I have setup my grid/form so that the business object will be saved&nbsp;each time that the user changes rows in the grid.&nbsp; My problem is with the BindingSource.ResetBindings(false) line.&nbsp; This causes the grid to "resort" the data in the grid, which is really annoying to users as the row they just modified gets moved by the sort.&nbsp; What I'd really like to do is sort the data when the form opens, and then not again unless I specify in code, or the user clicks on the column headers.&nbsp; Anybody got any ideas as to how to fix this issue?</P>Thanks, <BR>Dustin</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 06, 2007</h2>Is this an ERLB? <br><br>I've implemented a refresh to readonly lists, and infragistics grids have been good about keeping the proper row selected.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Thursday, September 06, 2007</h2><P>Yeah.&nbsp; It's an ERLB.&nbsp; Basically I have to call the ResetBindings() because, as you know,&nbsp;CSLA returns a clone when you save an object.&nbsp; When I put that code in, it causes the grid to perform the sort again, which could cause the record that the user was editing to move around in the grid.</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 06, 2007</h2>What does your GetIdValue method return?&nbsp; I bet its the primary key (an int) of your collection.&nbsp; See if you can't use a Guid (in the object, not the db) and see if that doesn't fix the problem.&nbsp; The grid is probaly looking for the ListObject which .Equals something in the new collection, and if you're using ints, you changed from a temp -1 id to a positive real id, and so it never finds the item in question.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Thursday, September 06, 2007</h2><P>Thanks for the feedback.&nbsp; Actually I'm already using a Guid for both the business object's GetIdValue and the primary key in the database.&nbsp; If only there was some way to disable the automatic sorting so that it didnt' try to sort when the ResetBindings() ran.</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 06, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>dshafer:</strong></div><div>
+<P>Yeah.&nbsp; It's an ERLB.&nbsp; Basically I have to call the ResetBindings() because, as you know,&nbsp;CSLA returns a clone when you save an object.&nbsp; When I put that code in, it causes the grid to perform the sort again, which could cause the record that the user was editing to move around in the grid.</P>
+<P>Dustin</P>
+<P></div></BLOCKQUOTE></P>
+<P>Wait. An ERLB does replace the individual child that was saved, but the list object itself is never cloned and is not a mobile object.</P>
+<P>If you have an editable root list (BusinessListBase), then you'd get back a new list object when calling Save(), and you'd need to rebind.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Friday, September 07, 2007</h2><P>Rocky,</P>
+<P>You are correct.&nbsp; Sorry for the confusion, I misinterpreted the ERLB abbreviation.&nbsp; I'm uing an editable root list (BusinessListBase) and therefore it is giving me a new object back on the save.&nbsp;&nbsp;A co-worker of mine&nbsp;found the ResetCurrentItem method on the binding source that seems to do the trick.&nbsp; Have any of you ever used this command instead of the binding source's ResetBindings method?</P>
+<P>Dustin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I have not used either.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When you get back a whole new root object, you need to replace
+the bindingsource.DataSource with the new object. I don&#8217;t believe
+ResetX() will update the DataSource at all. Instead, you must unbind the old
+value and then bind to the new value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The version 3.0.2 code is the only known correct code in this
+regard (in PTWin &#8211; <a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a>).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> dshafer
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, September 07, 2007 7:55 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] OT: Infragistics grid insists on resorting grid
+after every save<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>You are correct.&nbsp; Sorry for the confusion, I misinterpreted the ERLB
+abbreviation.&nbsp; I'm uing an editable root list (BusinessListBase) and
+therefore it is giving me a new object back on the save.&nbsp;&nbsp;A co-worker
+of mine&nbsp;found the ResetCurrentItem method on the binding source that seems
+to do the trick.&nbsp; Have any of you ever used this command instead of the
+binding source's ResetBindings method?<o:p></o:p></p>
+
+<p>Dustin<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dshafer replied on Friday, September 07, 2007</h2><P>Rocky,</P>
+<P>We are&nbsp;actually already doing the bsToSave.DataSource = _newListAfterSave.....&nbsp;We were trying to use the&nbsp;bsToSave.ResetCurrentItem method to get the Infragistics grid to "update it's link" with the binding source, without actually resorting.&nbsp; So far it looks successful, but I've never used this command before so I was wondering if anyone else had.&nbsp; We'll keep an eye out for any odd behavior and test like crazy to make sure it's acting correctly.&nbsp; Thanks for the feedback.</P>
+<P>Dustin</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,26 @@
+<html><header><title>Single Child Object MarkAsDeleted returns New Object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Single Child Object MarkAsDeleted returns New Object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12720.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jteneglio posted on Wednesday, August 13, 2014</h2><p>I&#39;ve been reading on Child Object on this forum and I didn&#39;t see an exact match for my issue, here it is</p>
+<p>I have a 1:1 relationship object&nbsp;</p>
+<p>In Object1 I have this</p>
+<p>private static readonly PropertyInfo&lt;IObject2&gt; Object2Property = RegisterProperty&lt;IObject2Property&gt;(p =&gt; p.Object2Property, RelationshipTypes.Child);</p>
+<p>public IObject2 Object2<br />{<br /> &nbsp; &nbsp;get { return GetProperty(Object2Property ); }<br /> &nbsp; &nbsp;set { SetProperty(Object2Property , value); }<br />}</p>
+<p>The issue here is that Object2 can be set to Null when another field is set to 0 using a business Rule like&nbsp;</p>
+<p>&nbsp;if (this.OnOrderQty &gt; 0)<br /> &nbsp;{<br /> &nbsp; &nbsp; &nbsp;var newObject2 = new Object2();<br /> &nbsp; &nbsp; &nbsp;newObject2.Property1 = this.OnOrderQty;</p>
+<p>&nbsp; &nbsp; &nbsp; context.AddOutValue(Object2Property, newObject2);<br /> &nbsp;}<br /> &nbsp;else<br /> &nbsp;{<br /> &nbsp; &nbsp; &nbsp;if (Object2 != null)<br /> &nbsp; &nbsp; &nbsp;{<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;object2.MarkAsDeleted();<br /> &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;context.AddOutValue(Object2Property, object2);<br /> &nbsp; &nbsp; &nbsp;}<br /> &nbsp;}</p>
+<p>&nbsp;</p>
+<p>The problem I&#39;m having is</p>
+<p> If I leave the code this way when I save Object1 and Object2 is MarkAsDelete, it does delete the Object2 (Calls the Delete function of Object2) but It when it returns to the UI (WinRT) Object2 is still there and the isNew is set to true</p>
+<p>What I would like is the object to be deleted and set to Null so Object1.Object2 would return null not a new Object2 with the same properties that the one i Just deleted.</p>
+<p>&nbsp;</p>
+<p>Am I doing something wrong here?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, August 13, 2014</h2><p>Yes, you are doing something wrong.&nbsp;</p>
+<p>My preferred solution is to override and add some logic to CanReadProperty so that the user is not allowed to read the value when a certain condition happens.&nbsp;</p>
+<p>This will make GetProperty return the default value for the type (ie: NULL) while you still retain the original object in the underlying object structure.&nbsp;</p>
+<p>Next I would override Save/SaveAsync (depending on which version of CSLA) to mark the Child2 for delete if the given condition exists. This gives the most flexible solution that the user may edit the properties back and forth - and only when the user wants to save is when your code should mark the Child2 object for Delete.&nbsp;</p>
+<p>So the key concepts:</p>
+<p>
+<ul>
+<li>do not &quot;destroy&quot; the underlying object structure&nbsp;</li>
+<li>use authorization (business) logic to mask away the underlying object&nbsp;</li>
+<li>only mark for delete when user actually says he/she is finished and wants to save.&nbsp;</li>
+</ul>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

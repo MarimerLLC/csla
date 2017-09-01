@@ -1,0 +1,24 @@
+<html><header><title>Windows Form Grand Child </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Windows Form Grand Child </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11139.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg posted on Wednesday, February 08, 2012</h2><p>Hi,</p>
+<p>&nbsp; I&#39;m working on a windows form (implementing a Winpart). This control contains a DataGridView bound to a Grand Child Collection. </p>
+<p>&nbsp;&nbsp;&nbsp; 1. Do we need to bind from the root&nbsp;object, then child object, then grandChild ? Or just bind&nbsp;from child object?</p>
+<p>&nbsp;&nbsp;&nbsp; 2. &nbsp;In &nbsp;RebindUI(), when saving,&nbsp;is it enough to just save&nbsp;the root object:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; root = root.Save();</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 09, 2012</h2><p>Hi, </p>
+<p>1. Are you creating a UserControl that contains a DatagridView? </p>
+<p>If so then you should have: </p>
+<ul>
+<li>UserControl only knows about the objects it needs to know (items for list)</li>
+<li>Provide methods for Bind / Unbind to datasource(s)</li>
+</ul>
+<p>It should be the outside forms responsibility to set up databinding properly.</p>
+<p>2. You can never call Save on an object that has active databinding - so your form must always make sure to unhook databinding before calling save. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cymro replied on Thursday, February 23, 2012</h2><p>Hi Jonny,</p>
+<p>I have a similar scenario , I have a Form hosting several UserControls. &nbsp;The Root object has several Child Lists, maintained by each of the UserControls and all using data binding.</p>
+<p>My complication is that a couple of these Child Objects have Grand Children and these are maintained on a Modal Form created from the responsible UserControl. &nbsp;</p>
+<p>My problem is how to handle the Accept / Cancel buttons on the Modal Form. &nbsp;I know need to be able to initiate a new edit level on entering the form with a BeginEdit and either ApplyEdit or CancelEdit depending on the DialogResult and that I need to Unbind before doing so. &nbsp;What I am unsure about is whether I need to Unbind <i>everything</i>&nbsp;(i.e. the whole object graph from the main Form) and call the BeginEdit on the Root object or whether I can just Unbind just the Child List I am working with and start an BeginEdit on the Child List.</p>
+<p>Your advice would be greatly appreciated.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>fredg replied on Thursday, February 09, 2012</h2><p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;font-size:12pt;mso-fareast-font-family:SimSun;mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:AR-SA;">&quot;Are you creating a UserControl that contains a DatagridView?&quot;</span></p>
+<p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;font-size:12pt;mso-fareast-font-family:SimSun;mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:AR-SA;">&nbsp; No.</span></p>
+<p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;font-size:12pt;mso-fareast-font-family:SimSun;mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:AR-SA;">---------</span></p>
+<p><span style="font-family:&#39;Verdana&#39;,&#39;sans-serif&#39;;font-size:12pt;mso-fareast-font-family:SimSun;mso-fareast-theme-font:minor-fareast;mso-bidi-font-family:&#39;Times New Roman&#39;;mso-ansi-language:EN-US;mso-fareast-language:ZH-CN;mso-bidi-language:AR-SA;">Is there any sample code which demonstrates how to deal with grand child object for windows form?</span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, February 09, 2012</h2><p>Hi,</p>
+<p>The only sample I can remember is <b>Samples\Net\cs\RootChildGrandchildWinFormTest</b> in the Samples download. </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

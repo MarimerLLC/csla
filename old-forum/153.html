@@ -1,0 +1,36 @@
+<html><header><title>Version 2.0.1 beta Bug Report</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Version 2.0.1 beta Bug Report</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/153.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn posted on Friday, May 19, 2006</h2>private static bool AlwaysImpersonate<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ConfigurationManager.AppSettings["AlwaysImpersonate"] == "true");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return AlwaysImpersonate;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+cause infinite loop. should be<br>
+<br>
+private static bool AlwaysImpersonate<br>
+
+&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; bool result =<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (ConfigurationManager.AppSettings["AlwaysImpersonate"] == "true");<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return <b>result</b>;<br>
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+it's seem only occur when you use remoting, <br>
+if use connect string, the code doen's reach this property.<br>
+<br>
+Dawn<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, May 20, 2006</h2><P>Thanks Dawn,</P>
+<P>I've fixed this in cvs now, so it will be correct in the actual 2.0.1.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Sunday, May 21, 2006</h2>Thanks you for&nbsp; this great Framework.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

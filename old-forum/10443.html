@@ -1,0 +1,19 @@
+<html><header><title>How to set child property into null value when the root object is initialize</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to set child property into null value when the root object is initialize</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10443.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sutono posted on Thursday, June 16, 2011</h2><p>HI All,</p>
+<p>please someone tell me how to set child property into null value when the root object is initialize...</p>
+<p>i need this because of my specific business case, i have a parent object that contain a lot of editable child property inside, and sometimes user can fill in some of the child information (not all) thats why i need the validation at the root object to determine which child is not filled in.</p>
+<p>
+<p>private static PropertyInfo&lt;PDGravureSR&gt; _PDGravureSRProperty = RegisterProperty&lt;PDGravureSR&gt;(p =&gt; p.PDGravureSR);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public PDGravureSR PDGravureSR</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; get</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!(FieldManager.FieldExists(_PDGravureSRProperty)) || FieldManager.GetFieldData(_PDGravureSRProperty).Value == null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; LoadProperty(_PDGravureSRProperty, PDGravureSR.New(F_Id));</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return GetProperty(_PDGravureSRProperty);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</p>
+<p>&nbsp;</p>
+<p>i have this child property inside my root object, each time my root object was initialize, this property will always assigned by its default value, i know CSLA framework made this for &quot;lazy loading&quot; purpose, but is there any ways to set this child property into &quot;null&quot; when its initialize, so that i can have my validation on UI.</p>
+<p>Thx,</p>
+<p>Stone</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

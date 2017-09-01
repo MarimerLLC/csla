@@ -1,0 +1,73 @@
+<html><header><title>Business Rules Logic implementation Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Business Rules Logic implementation Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4017.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko posted on Monday, December 10, 2007</h2><P>Hello all,</P>
+<P>We are developing&nbsp;highly interactive&nbsp;WinForm app that is used by underwriters to generate quotes.</P>
+<P>We&nbsp;have been&nbsp;using CSLA 2.1x to create BOs behind the forms.</P>
+<P>We now came to the point where we need to implement the business rules logic that is not dependant on one object&nbsp;but on several of them.</P>
+<P>Ex:</P>
+<P>We have three objects:</P>
+<P>WorkSheet (editable root)</P>
+<P>PrevQuoteInfo (readonly)</P>
+<P>ConditionsList (editable&nbsp;collection)-&gt; Condition (editable child)</P>
+<P>&nbsp;</P>
+<P>We need to implement the following business rule.&nbsp;&nbsp;</P>
+<P>If some property in WorkSheet more than&nbsp;some property&nbsp;in PrevQuoteInfo then</P>
+<P>add some condition in ConditionList object and&nbsp;do this only if the Worksheet.State&lt;&gt;"IL"</P>
+<P>&nbsp;</P>
+<P>Our goal is to simplify the&nbsp;maintenance of the business rules logic because it is everchanging.</P>
+<P>For that reason&nbsp;we&nbsp;would like&nbsp;to&nbsp;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1)separate the business logic from the aforementined Business Objects</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; and put them into the separate object.</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2)make some rules database driven so we don't have to re-deploy our app&nbsp;</P>
+<P>It is very important to note that the business rules&nbsp;have to be&nbsp;evaluated&nbsp; in interactive manner and display the results to the user right away (underwriters have to see condition added right after they change some property that would trigger the business rule that adds that condition).</P>
+<P>So far all we could think of&nbsp; is this:</P>
+<P>Create a businessrules class that contains the business rules methods than on every property change go and search for the&nbsp;rule appropriate to it and then dynamically run the business rule method that was returned from the search logic.</P>
+<P>I tried to find the topics related to this but could not find an answer I am looking for.</P>
+<P>Please give me your thoughts on this. </P>
+<P>Thank you in advance,</P>
+<P>Igor.</P>
+<P>&nbsp;&nbsp;</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 replied on Monday, December 10, 2007</h2><P>Hi Igor</P>
+<P>You might want to attach the business rules in the form of a validation Below is a thread this discusses (briefly) this.</P>
+<P><A HREF="/forums/thread/19467.aspx">http://forums.lhotka.net/forums/thread/19467.aspx</A></P>
+<P>Hope that helps</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko replied on Wednesday, December 12, 2007</h2><P>Ellie,</P>
+<P>&nbsp;</P>
+<P>Thank you&nbsp;for your reply but the common rules doesn't solve our problem. </P>
+<P>Our business rules are workflow-like not validation-like</P>
+<P>There are several objects involved not one.</P>
+<P>If obj1.limit &gt; obj2.curlimit then obj3.DoSomething</P>
+<P>As far as I understand the common rules are validation-oriented.</P>
+<P>Igor.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, December 13, 2007</h2><P>Igor,</P>
+<P>You can create a special Root object which *contains* your other BOs. Because it is a Root object it can have its own rules and methods.</P>
+<P>e.g you could override IsValid and call root.MySpecialValidationMethodCode and then check:</P>
+<P>If obj1.limit &gt; obj2.curlimit then obj3.DoSomething</P>
+<P>I do this all the time and call this type of BO a Use Case Controller object. (I also call it a Unit of Work - but apparently that has a more technical meaning than what I am using it for.)</P>
+<P>This root BO can have Validation rules, create, fetch and save methods, etc.</P>
+<P>It is responsible for fetching your other 3 BOs and then validating the rules between them and then saving them in the correct sequence.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amit replied on Friday, December 14, 2007</h2><P>Hi JoeFallon1,</P>
+<P>I am also&nbsp;trying to access multiple objects in one class. as per your logic ,&nbsp;I&nbsp;&nbsp;have to create one root class.and access the three different object in that class.(by adding it's reference or inheriting these class in&nbsp;root class).</P>
+<P>Can u please elabroate this.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, December 14, 2007</h2><P>Here is a sample outline:</P>
+<P><SPAN>&lt;Serializable()&gt; _<BR><SPAN>Public</SPAN> <SPAN>Class</SPAN> MyUOW<BR>&nbsp; <SPAN>Inherits</SPAN> BusinessBase(<SPAN>Of</SPAN> MyUOW)<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp; Private</SPAN><SPAN> mBO1 <SPAN>As</SPAN>&nbsp;BO1<BR><SPAN>&nbsp; Private</SPAN> mBO2 <SPAN>As</SPAN> BO2</SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Sub</SPAN> <SPAN>New</SPAN>()<BR>&nbsp; <SPAN>'require use of factory methods <BR></SPAN><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Overridable</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> BO1 () <SPAN>As</SPAN> BO1 <BR><SPAN>Get<BR>&nbsp; Return</SPAN> mBO1 <BR><SPAN>End</SPAN> <SPAN>Get<BR>End</SPAN> <SPAN>Property<o:p></o:p></SPAN></SPAN></P>
+<P><SPAN>Public</SPAN><SPAN> <SPAN>Overridable</SPAN> <SPAN>ReadOnly</SPAN> <SPAN>Property</SPAN> BO2 () <SPAN>As</SPAN> BO2 <BR><SPAN>Get<BR>&nbsp; Return</SPAN> mBO2 <BR><SPAN>End</SPAN> <SPAN>Get<BR>End</SPAN> <SPAN>Property</SPAN></SPAN></P>
+<P><SPAN>Protected Overrides Sub AddBusinessRules()<BR>&nbsp; &nbsp;</SPAN><SPAN>'add rules here that interact with BO1 and BO2 (plus rules for any other private variables in this class.)<BR></SPAN><SPAN>End Sub<o:p></o:p></SPAN></P>
+<P><SPAN>Public Shared Function NewMyUOW(ByVal userid As Long) As MyUOW<BR>&nbsp; Return DataPortal.Create(Of MyUOW)(New CriteriaLongKey(GetType(MyUOW), </SPAN><SPAN>"NewMyUOW"</SPAN><SPAN>, userid))<BR>End Function<o:p></o:p></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Overrides</SPAN> <SPAN>Function</SPAN> GetIdValue() <SPAN>As</SPAN> <SPAN>Object<BR>&nbsp; Return</SPAN> <SPAN>"MyUOW."</SPAN> &amp; mUserid.ToString<BR><SPAN>End</SPAN> <SPAN>Function</SPAN></SPAN></P>
+<P><SPAN>Protected</SPAN><SPAN> <SPAN>Overridable</SPAN> <SPAN>Overloads</SPAN> <SPAN>Sub</SPAN> DataPortal_Create(<SPAN>ByVal</SPAN> criteria <SPAN>As</SPAN> <SPAN>Object</SPAN>)<BR><SPAN>&nbsp;&nbsp;&nbsp; Dim</SPAN> crit <SPAN>As</SPAN> CriteriaLongKey = <SPAN>DirectCast</SPAN>(criteria, CriteriaLongKey)<BR>&nbsp;&nbsp; &nbsp;mUserid = crit.Key</SPAN></P>
+<P><SPAN>&nbsp;&nbsp; GetData()&nbsp;&nbsp; <SPAN>'fetch BO1 and BO2 here</SPAN><o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp; MarkNew()<o:p></o:p></SPAN></P>
+<P><SPAN>&nbsp; ValidationRules.CheckRules()<BR><SPAN>End</SPAN> <SPAN>Sub<o:p></o:p></SPAN></SPAN></P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>isharko replied on Friday, December 14, 2007</h2><P>Joe,</P>
+<P>Thank you for your reply.</P>
+<P>I think the implementation your offering is&nbsp;a very good idea.</P>
+<P>The only thing would be different for us is that in our scenario the objects are already exist in memory&nbsp;and don't need to be loaded.</P>
+<P>The MyUOW would reference and manipulate bo1 and bo2 based on the rules being evaluated.</P>
+<P>Igor.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>white911 replied on Friday, December 14, 2007</h2><P>Joe,</P>
+<P>I would appreciate if you could give us a full example for the Case Controller object, with fetch, save, delete examples, plue examples where you interact with 2 or more objects. <BR>Also, explain how the data binding works. What is my Binding Source? How do I bind?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>amit replied on Monday, December 17, 2007</h2><P>Hi,, JoeFallon1</P>
+<P>Thanks for your reply.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

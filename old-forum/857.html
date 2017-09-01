@@ -1,0 +1,80 @@
+<html><header><title>Excel style undo/redo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Excel style undo/redo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/857.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>oshokodk posted on Wednesday, August 09, 2006</h2><P>Our app has requirement to support undo/redo functionality the way Word and Excel do it. As I understand, with CSLA is not available out of box. Older version of our app implements undo/redo using stack of commands against Model.<o:p></o:p></P>
+<P>Since CSLA supports undo I am considering building on top of CSLA functionality. Have anybody tried to implement Excel style undo/redo functionality by modifying behavior of BeginEdit (), CancelEdit (), AcceptChanges ()?<o:p></o:p></P>
+<P class=MsoNormal>Thanks,</P>
+<P class=MsoNormal>Oleg</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, August 09, 2006</h2>I've used excel, but what exactly is 'excel style undo'?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 09, 2006</h2>The n-level undo functionality is not the right match for a command-replay undo model. I wouldn't try to use BeginEdit(), etc. for that purpose - the mismatch is too great I think.<br><br>You are probably better off making sure that every property/method on every object has a counter-property and counter-method, and then building a seperate object that maintains a stack of the commands (property sets, method calls) on your object so they can be replayed in reverse for an undo.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dirk.Rombauts replied on Saturday, August 12, 2006</h2><P>I'm currently reading the C# 2005 version of the CSLA.NET book, and I just started Chapter 4 about the Data Portal.&nbsp; So I am quite new to CSLA.NET.</P>
+<P>The question of n-level Redo did pop up for me too, though.&nbsp; My (perhaps naive) assumption is that is should be enough to do this: Whenever an operation is undone, do not discard the undone state but store it in a Queue.&nbsp; When actions need to be redone, you can load the state that is at the front of the queue.</P>
+<P>Is there anything blatantly wrong with this approach?</P>
+<P>Dirk</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Wednesday, August 16, 2006</h2><P>We've implemented this by maintaining dual Stacks.&nbsp; One for undo and the other for redo.&nbsp;&nbsp;The key here is to distinguish between the two snapshots:</P>
+<UL>
+<LI>The UndoStack contains the object as it was BEFORE the change was made.</LI>
+<LI>The RedoStack contains the object as it was AFTER the change was made.</LI></UL>
+<P>When BeginEdit is called, you want to take a snapshot of the object before any changes are made so that it can be restored to that point.&nbsp; Likewise with UndoEdit except that the state you will want to restore when Redo is clicked is the state the object is in at the time Undo is clicked - with all of the changes made.</P>
+<P>The process works as follows:</P>
+<OL>
+<LI>BeginEdit is called to start editing.&nbsp; A snapshot of the object is stored on the UndoStack.</LI>
+<LI>When CancelEdit is called, a current snapshot is taken of the object and stored on the RedoStack then the most recent snapshot is taken from the UndoStack and the object restored.</LI>
+<LI>Subsequent calls to CancelEdit follow the same behavior until there are no more snapshots on the UndoStack. (CanUndo returns&nbsp;false).</LI>
+<LI>At this point, there will be a number of snapshots on the RedoStack and the changes can all be re-applied by calling the RedoEdit method which does the reverse of CancelEdit by taking a new snapshot of the object without edits and storing it on the UndoStack&nbsp;and restoring the top item from the RedoStack.</LI>
+<LI>Once the RedoStack is emptied again, RedoEdit is disabled. (CanRedo returns false).</LI>
+<LI>At any point during this process if BeginEdit is called, the RedoStack is cleared and the new snapshot is added to the UndoStack on top of whatever items are already there.</LI>
+<LI>When ApplyEdit is called, as mentioned, both stacks are cleared.</LI></OL>
+<P>Not sure if this is the best way to do this from a memory consumption point-of-view, but it works and behaves just like Excel.&nbsp; Trick is when you call BeginEdit to take snapshots that can be undone/redone (character-by-character like in Word, for instance).&nbsp;The rest is...automatic.</P>
+<P>What we haven't been able to implement yet is a way to limit the size of the stacks from within the objects themselves so only 'x' number of changes can be undone.&nbsp; It would be nice to be able to remove the "oldest" item from the stack when attempting to add a new one if the size reached a certain limit.&nbsp; If anyone knows a structure that supports this or a way to do so, I'd appreciate the heads up.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JHurrell replied on Thursday, August 17, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>SonOfPirate:</strong></div><div>What we haven't been able to implement yet is a way to limit the size of the stacks from within the objects themselves so only 'x' number of changes can be undone.&nbsp; It would be nice to be able to remove the "oldest" item from the stack when attempting to add a new one if the size reached a certain limit.&nbsp; If anyone knows a structure that supports this or a way to do so, I'd appreciate the heads up.</div></BLOCKQUOTE><br><br>How about rolling your own. Use an ArrayList internally and create your own Pop and Push methods. When you Push, you could do a RemoveAt(0) to get rid of the oldest item if the number of items meets your 'x' number.<br><br>- John<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Thursday, August 17, 2006</h2><P>That's not a bad idea.&nbsp; I'd actually use the System.Collections.ObjectModel.Collection&lt;T&gt; for the inner list, just cuz I think it's more lightweight than List&lt;T&gt; and we would want to implement using generics.&nbsp; And, I think implementing an IsFixedSize property (along with the <EM>initialCapacity</EM> parameter to the constructor), like IList, would provide a consistent way to set this up.&nbsp; Then, if IsFixedSize = false, it would behave like a normal Stack&lt;T&gt;; if true, we could implement our "drop off" at the end once capacity is reached.</P>
+<P>Great idea!&nbsp; Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 23, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2>You are correct, except that instead of a Queue you need to 
+use a Stack. If you look at Chapter 3, you'll see that this is exactly how 
+n-level undo is implemented.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2>The thing is, n-level undo is a relatively heavy-weight 
+approach because it captures the state of the entire object graph. The reason is 
+does this is to ensure complete consistency across the graph in the case of an 
+undo operation (CancelEdit).</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2>Replaying commands is an alternative that is potentially 
+lighter weight (in terms of memory consumption). But that approach can't be done 
+from _inside_ the object graph, because all commands against any object in the 
+entire graph, and against any objects outside the graph that the objects rely on 
+(such as other root objects related through a 'using' relationship) need to be 
+captured such that they can be played back (undone) in reverse 
+order.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2>That replay (undo) process requires that every property or 
+method have a "reverse" counterpart. That can be very challenging, because it 
+could mean destroying old objects, recreating destroyed objects, resetting 
+property values, reversing calculations, etc. It is _far_ more difficult than 
+simply resetting the state of the object graph, and requires that your object 
+model be designed to support the concept from day one.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2>Even so, some things probably can't be undone. It is not 
+always possible to create a reverse of every method. This happens in 
+applications from time to time, and the undo mechanism needs to be aware of 
+those operations. The UI often warns the user that "blah can't be undone", and 
+of course Edit|Undo grays out, or simply ignores that particular 
+operation.</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=796065514-12082006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Dirk.Rombauts 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Saturday, August 12, 2006 4:32 
+  AM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] Excel 
+  style undo/redo<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I'm currently reading the C# 2005 version of the CSLA.NET book, and I just 
+  started Chapter 4 about the Data Portal.&nbsp; So I am quite new to 
+  CSLA.NET.</P>
+  <P>The question of n-level Redo did pop up for me too, though.&nbsp; My 
+  (perhaps naive) assumption is that is should be enough to do this: Whenever an 
+  operation is undone, do not discard the undone state but store it in a 
+  Queue.&nbsp; When actions need to be redone, you can load the state that is at 
+  the front of the queue.</P>
+  <P>Is there anything blatantly wrong with this approach?</P>
+  <P>Dirk</P><BR><BR><BR></BLOCKQUOTE></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

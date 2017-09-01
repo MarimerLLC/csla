@@ -1,0 +1,75 @@
+<html><header><title>XAML list control NOT showing bound data from edited - ProjectTrackerVB demo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>XAML list control NOT showing bound data from edited - ProjectTrackerVB demo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8374.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jaydawg posted on Monday, January 18, 2010</h2><P>Hello All!</P>
+<P>This is my first post in this community.</P>
+<P>I am a Senior Software Engineer/System Architect&nbsp;in a growing IS department for a global Titanium manufacturer based in northeastern Ohio, USA.</P>
+<P>&nbsp;</P>
+<P>I am responsible for putting together a completly custom MES system and, after some investigation, I plan to use the CSLA framework, VB.Net,&nbsp;a WPF interface, and data access layers to both SQL Server 2008 and Oracle 10g.</P>
+<P>My Challanges:</P>
+<P>* I am well versed in Oracle, but rather new to SQL Server</P>
+<P>* I am just on my way to learning WPF.</P>
+<P>* My strength is VB6. This is my first dotNet project.</P>
+<P>* I am just on my way to learning CSLA.Net.</P>
+<P>&nbsp;</P>
+<P>My issue:</P>
+<P>I've read through the 'Expert VB 2008 Business Objects' book.&nbsp;I have somewhat of a foundation to build off of, but for hands-on I like to reverse-engineer working code.</P>
+<P>I have taken the ProjectTrackerVB demo for PTWpf&nbsp;and I'm&nbsp;have introduced my own DataAccessLayer.Linq project using my own SQL Express database and&nbsp;my own Business Objects. I have successfully created OrderList and OrderInfo BOs based off of the ResourceList and ResourceInfo BOs.</P>
+<P>The OrderList BO was successfully loaded with the data from my database file.</P>
+<P>My problem is that the XAML is setup exactly like the ResourceList.xaml but the list control doesn't display the data in the OrderList BO.</P>
+<P>I have even tried taking the code as close to the original demo as possible. I am using the ResourceList.xaml and I have adjusted only the Data Access code to pull from the other database.</P><FONT size=2><FONT size=3>
+<P>&nbsp;</P>
+<P>ResourceList.vb file</P></FONT></FONT><FONT size=3></FONT>
+<P><FONT size=3>Demo Code:</FONT><FONT color=#008000 size=2><FONT color=#008000 size=2></FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2>'Private Overloads Sub DataPortal_Fetch()</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' RaiseListChangedEvents = False</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Using ctx = ContextManager(Of ProjectTracker.DalLinq.PTrackerDataContext).GetManager(ProjectTracker.DalLinq.Database.PTracker)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Dim data = From r In ctx.DataContext.Resources _</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Select New ResourceInfo(r.Id, r.LastName, r.FirstName)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' IsReadOnly = False</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' Me.AddRange(data)</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' IsReadOnly = True</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' End Using</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>' RaiseListChangedEvents = True</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#008000 size=2><FONT color=#008000 size=2>'End Sub</FONT></FONT></P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#008000 size=2><FONT color=#008000 size=2><FONT color=#000000 size=3>My Code:</FONT></P></FONT></FONT><FONT size=2></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#Region</FONT></FONT><FONT color=#000000 size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>" Data Access "</P>
+<P></FONT></FONT>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overloads</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT><FONT size=2> DataPortal_Fetch()</P>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Using</FONT></FONT><FONT size=2> ctx = ContextManager(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> DataAccessLayer.Linq.ShopFloorDataContext).GetManager(DataAccessLayer.Linq.Database.ShopPro)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Dim</FONT></FONT><FONT size=2> data = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>From</FONT></FONT><FONT size=2> r </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>In</FONT></FONT><FONT size=2> ctx.DataContext.SAP_Active_ProdOrders _</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Select</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> ResourceInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>CType</FONT></FONT><FONT size=2>(r.ProdOrdNum, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Integer</FONT></FONT><FONT size=2>), r.ProdOrdNum, r.ProdOrdNum)</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.AddRange(data)</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Using</P></FONT></FONT><FONT size=2>
+<P>RaiseListChangedEvents = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Sub</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>#End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Region</P>
+<P>#Region</FONT></FONT><FONT size=2> </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>" Design Time Support"</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</FONT></FONT><FONT size=2> DesignTime_Create() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> ResourceList</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>False</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> ResourceInfo(60000001, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"60000001"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"60000003"</FONT></FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</FONT></FONT><FONT size=2>.Add(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> ResourceInfo(60000002, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"60000002"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"60000004"</FONT></FONT><FONT size=2>))</P>
+<P>IsReadOnly = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>True</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Me</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Function</P>
+<P>#End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Region</P></FONT></FONT>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>The data.Results object has the appropriate data from my database.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>The listbox in design time contains the test data from above.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>When I run the application, the listbox shows nothing.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3></FONT></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>This is probably an easy fix, but I haven't found anything on my internet search.</FONT></FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT color=#000000 size=3>I would appreciate any and all&nbsp;help.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Curelom replied on Monday, January 18, 2010</h2>Could you post your XAML?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jaydawg replied on Monday, January 18, 2010</h2>Here is the XAML code - straight out of the demo project.<br /><br />ResourceList.xaml<br />    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"<br />    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"<br />    xmlns:local="clr-namespace:PTWpf"  <br />    xmlns:csla="clr-namespace:Csla.Wpf;assembly=Csla"  <br />    xmlns:PTracker="clr-namespace:ProjectTracker.Library;assembly=ProjectTracker.Library"><br />    <br />                                   ObjectType="{x:Type PTracker:ResourceList}"<br />                             FactoryMethod="GetResourceList"<br />                             IsAsynchronous="False"><br />      <br />    <br />    <br />      <br />        <br />          <br />            <br />          <br />          <br />            <br />          <br />        <br />        Resources:<br />        <br />      <br />    <br /><br /><br />ResourceList.xaml.vb<br />Imports ProjectTracker.Library<br /><br />''' <br />''' Interaction logic for ResourceList.xaml<br />''' <br /><br />Partial Public Class ResourceList<br />  Inherits EditForm<br /><br />  Private Sub ShowResource(ByVal sender As Object, ByVal e As EventArgs)<br />    Dim item As ResourceInfo = CType(Me.listBox1.SelectedItem, ResourceInfo)<br /><br />    If item IsNot Nothing Then<br />      Dim frm As ResourceEdit = New ResourceEdit(item.Id)<br />      MainForm.ShowControl(frm)<br />    End If<br /><br />  End Sub<br /><br />End Class</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jaydawg replied on Tuesday, January 19, 2010</h2><P>It looks as though I'm getting unhandled exceptions.</P>
+<P>Here is the output from when the Resource List Listbox tries to load.</P><FONT size=1>
+<P>'PTWpf.vshost.exe' (Managed): Loaded 'H:\Visual Studio 2008\Projects\TimesSolution\PTWpf\bin\ProjectTracker.DalLinq.dll', Symbols loaded.</P>
+<P>A first chance exception of type 'System.ServiceModel.CommunicationException' occurred in mscorlib.dll</P>
+<P>'PTWpf.vshost.exe' (Managed): Loaded 'C:\WINDOWS\assembly\GAC_32\System.Transactions\2.0.0.0__b77a5c561934e089\System.Transactions.dll', Skipped loading symbols. Module is optimized and the debugger option 'Just My Code' is enabled.</P>
+<P>A first chance exception of type 'System.ServiceModel.CommunicationException' occurred in Csla.dll</P>
+<P>A first chance exception of type 'System.ServiceModel.CommunicationException' occurred in Csla.dll</P>
+<P>A first chance exception of type 'System.Reflection.TargetInvocationException' occurred in mscorlib.dll</P>
+<P>A first chance exception of type 'System.ServiceModel.CommunicationException' occurred in mscorlib.dll</P>
+<P>A first chance exception of type 'System.ServiceModel.CommunicationException' occurred in Csla.dll</P>
+<P>A first chance exception of type 'System.ServiceModel.CommunicationException' occurred in Csla.dll</P>
+<P>A first chance exception of type 'System.Reflection.TargetInvocationException' occurred in mscorlib.dll</P>
+<P><FONT size=3>I'm looking up these exceptions now. </FONT></P>
+<P><FONT size=3>Any additional help would be appriciated.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, January 19, 2010</h2><P>Looks like a WCF configuration problem.</P>
+<P>I would start by running the dataportal in local mode.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

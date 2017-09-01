@@ -1,0 +1,56 @@
+<html><header><title>SaveObject() is always failing.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SaveObject() is always failing.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10789.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it posted on Thursday, October 20, 2011</h2><p>Hi,</p>
+<p>I&#39;m trying to save my business object using the below code</p>
+<p>
+<p>
+<p>public ActionResult Create()</p>
+<p>{</p>
+<p style="padding-left:30px;">ViewData.Model = Representative.NewRepresentative();</p>
+<p style="padding-left:30px;">return PartialView(&quot;_CreateRepresentative&quot;);</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>[HttpPost]</p>
+<p>public ActionResult Create(Representative representative, FormCollection collection)</p>
+<p>{</p>
+<p style="padding-left:30px;"><span>	</span>if (ModelState.IsValid)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; ValidateModel(representative);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (SaveObject(representative, false))</p>
+<p style="padding-left:30px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return PartialView(&quot;_RepresentativeList&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="padding-left:30px;"><span>	</span>return PartialView(&quot;_CreateRepresentative&quot;);</p>
+<p>}</p>
+<p>The Issue is ModelState.IsValid is returning true and the ValidateModel is also not raising any errors. The BO representative metadata contains true for all of these properties IsValid, IsSelfValid, IsNew, IsDirty, and IsSavable. The body of if condition &quot;SaveObject&quot; is not executing.</p>
+<p>I have placed a break point at first if condition and debug the whole process but the SaveObject is not saving the BO.</p>
+</p>
+<p>I appreciate your help.</p>
+</p>
+<p>Thanks &amp; Regards,</p>
+<p>SreeRam.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msrs_it replied on Thursday, November 24, 2011</h2><p>This issue was raised because of calling UpdateModel(item) in the SaveObject method.</p>
+<p>Even though the below code is not solution but a simple work around.</p>
+<p>&nbsp;</p>
+<p>public ActionResult Create(Company company)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; try</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ViewData.Model = company.Save(false);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return RedirectToAction(&quot;Confirmation&quot;, &quot;Wizard&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Csla.DataPortalException dpex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (dpex.BusinessException != null)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;&quot;, dpex.BusinessException.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;&quot;, dpex.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; catch (Exception ex)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;&quot;, ex.Message);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return View();</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>Still we can continue using the SaveObject() method if we set any private set properties of the business object.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,94 @@
+<html><header><title>Using Statement and ConnectionManager in VB</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using Statement and ConnectionManager in VB</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5440.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx posted on Monday, September 22, 2008</h2><P>I'm trying to start using the ConnectionManager and I'm struggling a bit.&nbsp; Can someone post a Visual Basic "Using" statement for the CSLA's ConnectionManger class?&nbsp; I can't figure out the syntax at the end of the first line - I keep getting the blue squiggly line underneath it.&nbsp; I have to be missing something super simple.</P>
+<P>Using objConnectionManager ........????????.......</P>
+<P>End Using</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Monday, September 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is this what you are looking for:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span>Using</span> manager <span>As</span>
+Csla.Data.ConnectionManager(<span>Of</span> SqlConnection) =
+Csla.Data.ConnectionManager(<span>Of</span>
+SqlConnection).GetManager(<span>&quot;DBConnString&quot;</span>,
+<span>True</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>End</span> <span>Using</span></span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899<o:p></o:p></span></p>
+
+<p class=MsoNormal><b><i><span>Magenic</span></i></b><span> </span><span>&reg;</span><b><i><span><o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xxxJasonxxx
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, September 22, 2008 9:54 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Using Statement and ConnectionManager in VB<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I'm trying to start using the ConnectionManager and I'm struggling a
+bit.&nbsp; Can someone post a Visual Basic &quot;Using&quot; statement for the
+CSLA's ConnectionManger class?&nbsp; I can't figure out the syntax at the end
+of the first line - I keep getting the blue squiggly line underneath it.&nbsp;
+I have to be missing something super simple.<o:p></o:p></p>
+
+<p>Using objConnectionManager ........????????.......<o:p></o:p></p>
+
+<p>End Using<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ayubu replied on Monday, September 22, 2008</h2><P>AM far from any reference may be this&nbsp;&nbsp; can help</P>
+<P>&nbsp;</P>
+<P>Using objConnectionManager =ConnectionManager(of sqlclient.sqlconnection).getmanager("<STRONG><EM>DatabaseKey")</EM></STRONG></P>
+<P>dim cm as sqlcommand=objConnectionManager.connection.CreateCommand</P>
+<P>End Using</P>
+<P>&nbsp;</P>
+<P>Note:</P>
+<P><STRONG><EM>DatabaseKey can be either a complete connection string</EM></STRONG></P>
+<P><STRONG><EM>Or</EM></STRONG></P>
+<P><STRONG><EM>A connectionstring string key name in the configuration file</EM></STRONG></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xxxJasonxxx replied on Monday, September 22, 2008</h2><P>Thanks....that was what I needed.&nbsp; I was struggling with what to put in with the "(Of .....)".</P>
+<P>Now that I see it, maybe it should have been obvious.&nbsp; Thanks for the help.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

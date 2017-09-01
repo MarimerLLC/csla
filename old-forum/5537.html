@@ -1,0 +1,1096 @@
+<html><header><title>ObjectFactory Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectFactory Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5537.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley posted on Monday, October 06, 2008</h2><P>Rocky,</P>
+<P>How hard would it be to allow the use of generics with the object factory. For instance, I am creating an object factory for each object now. But they are all doing the same thing. I can make an abstract&nbsp;base class for the factory with generics but I still have to create a factory for every object just so the BO has a concrete factory to use. </P>
+<P>Does this make sense or am I just missing something somewhere?</P>
+<P>&nbsp;</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2><P>If there's no difference, why don't you just have one concrete factory?</P>
+<P>To <EM>allow</EM> the use of generics would be hard, because I'd have to try to create the generic type, and if I couldn't find that type, I'd create a non-generic type. All that reflection is not cheap.</P>
+<P>To <EM>require</EM> the use of generics would be easier, though still harder than the current scheme.</P>
+<P>But I don't know that I need to do any of the above. <EM>You</EM> can do this if you'd like. Just create one concrete factory that is used by all objects. In your factory methods, you can do the same reflection I'd have to do to create a concrete instance of the generic type, and delegate the call to that instance.</P>
+<P>I'm trying to keep ObjectFactory (as a concept) as simple as possible, because I don't yet know where Microsoft is going to go with ADO.NET Entity Framework. And my primary goal with ObjectFactory is to try and enable some cool scenarios around EF for future versions of EF (when it grows up).</P>
+<P>So the more fancy/restrictive I make the implementation now, the more likely I am to introduce breaking changes when the future of EF becomes more clear.</P>
+<P>As a result, I'm treating factories as "hands off" - allowing you nearly ultimate flexibility - including implementing your own models (like using generics) beneath the CSLA implementation.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, October 06, 2008</h2><P>Sorry to be so dumb, but reflection is not my strong suite by any means. So I am having trouble wrapping my head around how to implement one concrete factory for all objects because for instance in the Create method of the factory don't I have to create a new Project instance and return that? The part I am really having trouble with I guess is this. If I have one factory how does it know what type of object to create an instance of and return?</P>
+<P>Thanks,</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>To create an instance of your business object, you&#8217;d just
+do this:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>object newObject = Activator.CreateInstance(myType);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>or<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Dim newObject As Object = Activator.CreateInstance(myType)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You can get myType from the parameters passed to the factory method.
+You really don&#8217;t need generics at all &#8211; they are just a convenience
+in this case. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But if you really DO want generics, you&#8217;d use myType and reflection
+to find and create an instance of your generic factory type. That is fancy
+coding, and generics makes it quite a bit harder, but it can be done.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, October 06, 2008</h2><P>Rocky,</P>
+<P>Thanks for the help. I had managed to figure out what you posted and from what I can tell that would work great if you have a constructor with a parameter, especially if the parameter is an object. but what about this:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> Create()<BR>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>var</FONT></FONT><FONT size=2> obj = </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>new</FONT></FONT><FONT size=2> </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Project</FONT></FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>base</FONT></FONT><FONT size=2>.MarkNew(obj);</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>return</FONT></FONT><FONT size=2> obj;</P>
+<P>}</P>
+<P>There is no parameters for the Create method, or is there a way to add them, when I tried to pass a Type in as a paramenter I get an exception "Ambigous match found". So I don't think I am doing something right.</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is a good point!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have to head to the airport, so I&#8217;ll be offline for a
+few hours, but this you are right &#8211; this is a hole in the current design.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 11:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>Thanks for the help. I had managed to figure out what you posted and from
+what I can tell that would work great if you have a constructor with a
+parameter, especially if the parameter is an object. but what about this:<o:p></o:p></p>
+
+<p><span>public</span><span> <span>object</span> Create()<br>
+{<o:p></o:p></span></p>
+
+<p><span>var</span><span> obj = <span>new</span> <span>Project</span>();<o:p></o:p></span></p>
+
+<p><span>base</span><span>.MarkNew(obj);<o:p></o:p></span></p>
+
+<p><span>return</span><span> obj;<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>There is no parameters for the Create method,
+or is there a way to add them, when I tried to pass a Type in as a paramenter I
+get an exception &quot;Ambigous match found&quot;. So I don't think I am doing
+something right.<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Monday, October 06, 2008</h2>I went down the path of creating a Generic Factory for the ObjectFactory, simply because I wanted to deal with Concrete types and interfaces to simplify testing and Mocking.&nbsp; And also I did not want to be in position to create one factory per each BO as well as not wanting to duplicate Rocky's before-mentioned implementation.<br><br>What I soon discovered was that if I go down the route of generics I will need one factory par one Csla type (one for ReadOnlyList, one for EditableRoot, etc).<br><br>Also I discovered that I need to pass the "Generic Factory", concrete types that I want constructed, like ReadOnlyList, for example, needs a Csla List object - ProjectList and also ReadOnly Item type - ProjectInfo for example.&nbsp; <br><br>That meant changing the ObjectFactory attribute to accept that, something like:<br><font color="#0000ff" face="Courier New">[ObjectFactory("Factory Type=ReadOnlyListServerFactory;List Type=ExtJsCslaDemo.Lib.CustomerList, ExtJsCslaDemo.Lib;Item Type=ExtJsCslaDemo.Lib.CustomerInfo, ExtJsCslaDemo.Lib;DTO Type=Northwind.Data.Customers, Northwind.Data")]</font><br><br>You can see that besides the 2 before mentioned types - I am also passing the DTO type - So my Generic Factory would be aware of DTO object used to populate the Csla List Object, as well as object implementing IRepository interface.&nbsp; The reason for that is having Factory inject all of the dependencies needed for Fetch and Create, and leaving that decision to Factory.&nbsp; The IRepository&lt;T&gt; where T is the DTO send to the Fetch is definded as:<br><font color="#0000ff" face="Courier New">&nbsp; public interface IRepository&lt;T&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; IQueryable&lt;T&gt; GetAll();<br>&nbsp; }</font><br>The nice thing about that part was that Repositories are used to hide the Linq/Entity Framework implementation from the Business Layer, but still since we return the IQueriable, we still have the full advantage of Linq.&nbsp; In adition to that as the whole DAL is represented by a single interface with a single method it is very easy to come up with test scenarios where we can send the MockRepository instead of going against the database.<br><br>In order to implement a scenario of more than one Generic Factory (one per Csla base type), I needed to override besides the ObjectFactory also a FactoryLoader.&nbsp; Here is my custom implementation:<br><font color="#0000ff" face="Courier New">&nbsp; public class GenericFactoryLoader : IObjectFactoryLoader<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; #region Constructor<br><br>&nbsp;&nbsp;&nbsp; private readonly IFactoryLoaderConfigParser parser;<br><br>&nbsp;&nbsp;&nbsp; public GenericFactoryLoader():this(new GenericFactoryLoaderAttributeParser())<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; public GenericFactoryLoader(IFactoryLoaderConfigParser parser)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.parser = parser;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion<br><br><br>&nbsp;&nbsp;&nbsp; public virtual Type GetFactoryType(string factoryConnectionString)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(factoryConnectionString==null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new ArgumentNullException("factoryConnectionString");<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; parser.Parse(factoryConnectionString);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var factoryTypeName = parser.FactoryType;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if(factoryTypeName=="ReadOnlyListServerFactory")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var generic = typeof (ReadOnlyListServerFactory&lt;,,&gt;);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Type[] typeArgs = {Type.GetType(parser.ListType), Type.GetType(parser.ItemType), Type.GetType(parser.DTOType) };<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var constructed = generic.MakeGenericType(typeArgs);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return constructed;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new UnkownFactoryTypeArgumentException();<br><br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public virtual object GetFactory(string factoryName)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var factoryType = GetFactoryType(factoryName);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (factoryType == null)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string.Format("Factory Type Not Found: {0}", factoryName));<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; factoryType.GetGenericTypeDefinition() == typeof(ReadOnlyListServerFactory&lt;,,&gt;) ? <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Activator.CreateInstance(factoryType, new object[] {Activator.CreateInstance(Type.GetType(parser.RepositoryType))}) : <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Activator.CreateInstance(factoryType);<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp; }</font><br><br>So basically the FactoryLoader has to implement those 2 methods GetFactoryType() and GetFactory().&nbsp; In this&nbsp; case you see that the GenericFactoryLoader accepts a ObjectFactoryAttribute values mentioned above and passes it to an object called GenericFactoryLoaderAttributeParser, which parses the values and returns to the loader type of factory, as well as Csla Types that need to be passed to that Generic Factory.<br><br>So finally bellow is an initial implementation of GenericReadOnlyListFactory as an example of my ObjectFactory implementation - factory by default implements the Fetch, Create,Delete,Update - and those are the default names for the ObjectFactory methods used for those operations:<br><br><font color="#0000ff" face="Courier New">&nbsp; /// &lt;typeparam name="L"&gt;Csla ROL type&lt;/typeparam&gt;<br>&nbsp; /// &lt;typeparam name="I"&gt;Csla ROL item type&lt;/typeparam&gt;<br>&nbsp; /// &lt;typeparam name="R"&gt;DTO type returned by IRepository&lt;/typeparam&gt;<br>&nbsp; public class ReadOnlyListServerFactory&lt;L, I, R&gt; :<br>&nbsp;&nbsp;&nbsp; AbstractServerBusinessFactory&lt;L&gt;<br>&nbsp;&nbsp;&nbsp; where L : ReadOnlyListBase&lt;L, I&gt;, new()<br>&nbsp;&nbsp;&nbsp; <br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; private readonly IRepository&lt;R&gt; repository;<br>&nbsp;&nbsp;&nbsp; public ReadOnlyListServerFactory(IRepository&lt;R&gt; repository)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.repository = repository;<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;<br>&nbsp;&nbsp; &nbsp; ...<br><br>&nbsp;&nbsp;&nbsp; public override L Create(SingleCriteria&lt;L, int&gt; criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new NotImplementedException();<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public override L Fetch()<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var list = new L();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var canFetchAll = (ICanFetchAll&lt;R&gt;) list;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.RaiseListChangedEvents = false;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; canFetchAll.FetchAll(repository);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; list.RaiseListChangedEvents = true;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return list;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; public override L Fetch(CriteriaBase criteria)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var t = new L();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var canFetchBy = (ICanFetchWitCriteria&lt;R&gt;) t;<br><br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.RaiseListChangedEvents = false;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; canFetchBy.FetchBy(repository,criteria);<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; t.RaiseListChangedEvents = true;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return t;<br>&nbsp;&nbsp;&nbsp; }</font><br><br>As you can see the Generic Object Factory above actually passes the IRepository&lt;T&gt; to the Csla object, but it aslo requires the object to implement ICanFetch&lt;R&gt; interface if call comes from parameterless Object Factory Fetch(), or ICanFetchWithCriteria&lt;R&gt;.<br><br>So finally here is an example of an object that is called by that Factory:<br><br><font color="#0000ff" face="Courier New">&nbsp; [ObjectFactory("Factory Type=ReadOnlyListServerFactory;List Type=ExtJsCslaDemo.Lib.CustomerList, ExtJsCslaDemo.Lib;Item Type=ExtJsCslaDemo.Lib.CustomerInfo, ExtJsCslaDemo.Lib;DTO Type=Northwind.Data.Customers, Northwind.Data;Repository Type=Northwind.Data.SqlCustomerRepository, Northwind.Data")]<br>&nbsp; [Serializable]<br>&nbsp; public class CustomerList : ReadOnlyListBase&lt;CustomerList, CustomerInfo&gt;, ICanFetchAll&lt;Customers&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; #region Data Access<br><br>&nbsp;&nbsp;&nbsp; public void FetchAll(IRepository&lt;Customers&gt; customersRepository)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var customers =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; from customer in customersRepository.GetAll()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select customer;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = false;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; foreach(var customer in customers)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(new CustomerInfo(customer));<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsReadOnly = true;<br>&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; #endregion</font><br><br>So as you can see - a lot of work, perhaps too much, but it turns the Csla object into Unit Test "friendly" object, and the actual CustomerList implementation is quite simple.&nbsp; Is it worth it - I leave that up to you.<br>&nbsp;<font color="#0000ff" face="Courier New"> public interface ICanFetchAll&lt;T&gt; <br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; void FetchAll(IRepository&lt;T&gt; repository);<br>&nbsp; }<br><br>&nbsp; public interface ICanFetchWitCriteria&lt;T&gt; :ICanFetchAll&lt;T&gt;<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; void FetchBy(IRepository&lt;T&gt; repository, CriteriaBase criteria);<br>&nbsp;&nbsp;&nbsp; //void Fetch(SingleCriteria&lt;L, int&gt; criteria);<br>&nbsp; }<br><br>&nbsp; public interface ICanCreate<br>&nbsp; {<br>&nbsp;&nbsp;&nbsp; void Create();<br>&nbsp; }</font><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Monday, October 06, 2008</h2><P>nermin,</P>
+<P>WOW! Thank you for posting that. I am still digesting most of it seems like you are/were tackling the same issues that I am tackling, Unit Testing, Mock Objects, etc..., hence the object factory. </P>
+<P>Couple of questions for you though, </P>
+<P>Are you using an IoC container to instantiate/inject your Business Objects? If so which one. </P>
+<P>Are you using an ORM with your DTO objects? If so which ORM and are you injecting the "entity" object with the IoC container or just instantiating it directly from your BO. Reason I ask is I am using NHibernate and I have a Genereic IRepository that handles all of the db calls inside a Unit of Work. The reason the object factory is so appealing to me is because it brings greater seperation of concern and like you said that makes them very test friendly.</P>
+<P>I had some guys tell me the other day that you should not use an IoC container to create instances of Business/Entity objects, so I was just curious if you were or not.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Unfortunately I got busy with few other tasks, as the deadline
+for Csla.Net 3.6 approaches.&nbsp; The code was part of an example of custom
+ObjectFactory and Factory Loader that I wanted to share with the community.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do not have IoC plugged in yet.&nbsp; My plan was to use
+StructureMap.&nbsp; It has been there for few years and I like its Fluent
+syntax. &nbsp;The most popular IoC is most likely Windsor, by Castle Project,
+and it is preferred one for NHibernate folks I believe.&nbsp; There is also MS
+Unity, but it has been built by the &nbsp;same team that came up with
+ObjectBuilder (too complex/hard to use, as well as poorly documented and
+impossible to extend) so based on that experience most folks were hesitant to
+adopt it.&nbsp; It is also new product on the market while StructureMap and
+Windsor have been out there for few years.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As far as ORM, behind mine IRepository&lt;T&gt; is just a wrapper
+class around Entity Frameworks DataContext.&nbsp; So EF does the table to DTO
+mapping, and I use DTOs to populate Csla objects.&nbsp; The idea about generic
+repository comes from MVC Store Front example, and they have essentially went
+to NHibernate folks (Ayende) for an idea on implementation.&nbsp; I do think
+that no matter if we use NHibernate or EF, pattern should be interchangable<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Currently the Entity types are passed to the Generic Factory from
+the ObjectFactoryAttribute &#8211; and the idea is to have the IoC container
+pass them instead.&nbsp; However I do not have that implemented yet.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Take a look at the sample implementation:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+<span>public</span> <span>class</span> <span>SqlCustomerRepository</span> : <span>SqlRepositoryBase</span>&lt;<span>Customers</span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>override</span>
+<span>IQueryable</span>&lt;<span>Customers</span>&gt;
+GetAll()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> customers = <span>from</span>
+c <span>in</span> _db.Customers<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>orderby</span> c.CompanyName<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> c;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> customers;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And here is the SqlRepositoryBase:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+<span>public</span> <span>abstract</span>
+<span>class</span> <span>SqlRepositoryBase</span>&lt;T&gt;
+: <span>IRepository</span>&lt;T&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>NORTHWNDEntities</span>
+_db;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>protected</span> SqlRepositoryBase()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+: <span>this</span>(<span>new</span> <span>NORTHWNDEntities</span>())<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+SqlRepositoryBase(<span>NORTHWNDEntities</span> db)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+_db = db;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>abstract</span>
+<span>IQueryable</span>&lt;T&gt; GetAll();<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Why does the Repository implement only GetAll().&nbsp; As long
+as you do not convert your IQueryable&lt;T&gt; to the list as ToList() the
+actual Query expression is not evaluated run.&nbsp; That means that I can use
+this IQueryable&lt;T&gt; result in my custom expressions in my BO to further
+limit/filter results without any problem.&nbsp; (Take a look at the
+CustomerList.FetchAll() for example).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That also means that I can add &#8220;Testable Filters&#8221; as
+extension methods, like:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>void</span>
+FetchBy(<span>IRepository</span>&lt;<span>Orders</span>&gt; ordersRepository, <span>CriteriaBase</span> criteria)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> criteria1 = (<span>CustomerFKCriteria</span>)
+criteria;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> orders =<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>from</span> order <span>in</span>
+ordersRepository.GetAll().WithCustomerID(criteria1.Id)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> order;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IsReadOnly = <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>foreach</span> (<span>var</span>
+order <span>in</span> orders)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Add(<span>new</span> <span>OrderInfo</span>(order));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IsReadOnly = <span>true</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you see the Linq expression inside OrderList.FetchBy(), you
+will notice that I call ordersRepository.GetAll().WithCustomerID(criteria1.Id)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>ordersRepository.GetAll() returns all records from
+OrderList.&nbsp; The part of expression (and that is the &#8220;Fluent&#8221;
+part) .WithCustomerID(int customerId) is just an extension method applied onto
+the IQueryable&lt;T&gt; that returns another (filtered) IQueryable&lt;T&gt;.&nbsp;
+That allows us to chain these expressions into a sentence, but also to test
+them individually.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>static</span> <span>IQueryable</span>&lt;<span>Orders</span>&gt;
+WithCustomerID(<span>this</span> <span>IQueryable</span>&lt;<span>Orders</span>&gt; qry,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>string</span> customerID)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> <span>from</span> o <span>in</span> qry<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>where</span> o.Customers.CustomerID == customerID<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> o;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 1:40 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>nermin,<o:p></o:p></p>
+
+<p>WOW! Thank you for posting that. I am still digesting most of it seems like
+you are/were tackling the same issues that I am tackling, Unit Testing, Mock
+Objects, etc..., hence the object factory. <o:p></o:p></p>
+
+<p>Couple of questions for you though, <o:p></o:p></p>
+
+<p>Are you using an IoC container to instantiate/inject your Business Objects?
+If so which one. <o:p></o:p></p>
+
+<p>Are you using an ORM with your DTO objects? If so which ORM and are you
+injecting the &quot;entity&quot; object with the IoC container or just
+instantiating it directly from your BO. Reason I ask is I am using NHibernate
+and I have a Genereic IRepository that handles all of the db calls inside a
+Unit of Work. The reason the object factory is so appealing to me is because it
+brings greater seperation of concern and like you said that makes them very
+test friendly.<o:p></o:p></p>
+
+<p>I had some guys tell me the other day that you should not use an IoC
+container to create instances of objects, so I was just curious if you were or
+not.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Monday, October 06, 2008</h2>StructureMap is great for unit-test CSLA, we are using it right now and enjoy it very much. The inject method is so amazing. The only drawback might be lack of documents.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, October 07, 2008</h2><P>nermin,</P>
+<P>Thanks for the additional insight, it has spawned a few more questions now.</P>
+<P>As you know I am using NHibernate as the ORM, NHibernate populates the business object directly whereas what you are using uses a DTO object in between is that correct?</P>
+<P>Would you mind showing us a sample of your DTO object and how that works in relation to the EF and the Csla object? Who populates the properites on the object? Is it automatic or do you have to populate each one individually?</P>
+<P>I totally agree with you that the DAL should be interchangeable whether you are using NHibernate, EF, etc... this is what makes OO programming so awsome.</P>
+<P>Based on the input you gave me yesterday I have almost got all of my 4 factories implemented and working. I am&nbsp;using structuremap to inject any dependencies they have on other services and I am also letting structuremap create the instances of the factory when it is needed. </P>
+<P>One other question. How do you handle child updates from the parent object? A call to dataportal.updatechild does not seem to use the object factory to do the update. is this correct by design or should I be updating child object differently?</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Essentially I am using Entity Framework generated Entities as
+DTOs.&nbsp; There is a problem with Entity Framework as it does not allow creation
+of objects other than the ones that expose public constructors, and therefore
+Csla.Net objects cannot be populated directly from EF.&nbsp; &nbsp;&nbsp;Rocky
+might have mentioned earlier that EF team is working on building extensions
+that would allow for Custom Factories to be registered with EF so that EF can
+construct and map directly into different/complex BOs as CSLA.&nbsp; Rocky can
+probably explain this problem a bit better, and actually he has built his
+ObjactFactory concept as a placeholder for the EF custom factory concept.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Personally I prefer the simplest possible implementation, and if
+the architecture does not require DTOs I would not use them, but for EF and
+Linq to Sql we do not have choice yet<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I will also let Rocky answer the child updates issue.&nbsp; That
+&#8211; I believe is a missing piece, and I remember we discussed it couple of
+weeks ago, but I guess have not gotten to completing yet.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As far as EF implementation &#8211; take a look at the
+SqlOrdersRepository:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+<span>public</span> <span>class</span> <span>SqlOrdersRepository</span> : <span>SqlRepositoryBase</span>&lt;<span>Orders</span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>override</span>
+<span>IQueryable</span>&lt;<span>Orders</span>&gt;
+GetAll()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> orders = <span>from</span>
+o <span>in</span> _db.Orders<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> o;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> orders;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>The _db object is Entity Framework&#8217;s DataContext which
+contains all of the Entities and their mapping to DB tables.&nbsp; Hence in
+Linq above we are selecting everything from &#8220;Orders&#8221; entity, and
+passing that as a query expression.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Then if you take a look at the OrderList.Fetch() CSLA BO:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>void</span>
+FetchBy(<span>IRepository</span>&lt;<span>Orders</span>&gt; ordersRepository, <span>CriteriaBase</span> criteria)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> criteria1 = (<span>CustomerFKCriteria</span>)
+criteria;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> orders =<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>from</span> order <span>in</span>
+ordersRepository.GetAll().WithCustomerID(criteria1.Id)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> order;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IsReadOnly = <span>false</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>foreach</span> (<span>var</span>
+order <span>in</span> orders)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Add(<span>new</span> <span>OrderInfo</span>(order));<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+IsReadOnly = <span>true</span>;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the Fetch() above you can see that we start with
+ordersRepository.GetAll() Linq query, but then apply filter to it by chaining
+in WithCustomerID(customerID).&nbsp; WithCustomerID(id) is an extenstion method
+that allows me to apply filter &#8211; it accepts a Linq query from
+orderRepository.GetAll() and applies the :<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> <span>static</span> <span>IQueryable</span>&lt;<span>Orders</span>&gt;
+WithCustomerID(<span>this</span> <span>IQueryable</span>&lt;<span>Orders</span>&gt; qry,<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>string</span> customerID)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>return</span> <span>from</span> o <span>in</span> qry<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>where</span> o.Customers.CustomerID == customerID<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> o;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Actually I could have had the following in the Fetch() query,
+without the need for an Extension method:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>var</span> orders =<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>from</span> order <span>in</span>
+ordersRepository.GetAll()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>where</span> order.Customers.CustomerID == criteria1.Id<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span>select</span> order;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>The reason I have not taken the shorter rote is that with the
+Extension method approach I can test independently OrderRepository.GetAll() and
+the filter using my MockRepository<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then finally as you can see in Fetch I am using a List of
+Customers entities, to populate the list of Csla Read Only objects &#8211;
+OrderInfo.&nbsp; Each OrderInfo accepts a reference to the Order entity object
+in its constructor and then we manually map the entity to the Csla BO &#8211;
+not the best option, and more work than I want to, but I just could not try to
+push for NHibernate also in this sample (Having, MVC, ExtJS, xUnit.net, and
+StructureMap is enough of the unfamiliar tools for many Csla folks):<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+[<span>Serializable</span>]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+<span>public</span> <span>class</span> <span>OrderInfo</span> : <span>ReadOnlyBase</span>&lt;<span>OrderInfo</span>&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; #region</span><span>
+Constructor<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+<span>public</span> OrderInfo(<span>Orders</span>
+order)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;
+{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>int</span>&gt;(OrderIdProperty,
+order.OrderID);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(OrderDateProperty,
+order.OrderDate.HasValue ? order.OrderDate.Value.ToShortDateString():<span>&quot;&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShipAddressProperty,
+order.ShipAddress);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShipCityProperty,
+order.ShipCity);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShipCountryProperty,
+order.ShipCountry);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShipNameProperty,
+order.ShipName);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShippedDateProperty,
+order.ShippedDate.HasValue ? order.ShippedDate.Value.ToShortDateString():<span>&quot;&quot;</span>);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShipCompanyNameProperty,
+order.ShipName);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+LoadProperty&lt;<span>string</span>&gt;(ShipPostalCodeProperty,
+order.ShipPostalCode);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; }</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 11:54 AM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>nermin,<o:p></o:p></p>
+
+<p>Thanks for the additional insight, it has spawned a few more questions now.<o:p></o:p></p>
+
+<p>As you know I am using NHibernate as the ORM, NHibernate populates the
+business object directly whereas what you are using uses a DTO object in
+between is that correct?<o:p></o:p></p>
+
+<p>Would you mind showing us a sample of your DTO object and how that works in
+relation to the EF and the Csla object? Who populates the properites on the
+object? Is it automatic or do you have to populate each one individually?<o:p></o:p></p>
+
+<p>I totally agree with you that the DAL should be interchangeable whether you
+are using NHibernate, EF, etc... this is what makes OO programming so awsome.<o:p></o:p></p>
+
+<p>Based on the input you gave me yesterday I have almost got all of my 4
+factories implemented and working. I am&nbsp;using structuremap to inject any
+dependencies they have on other services and I am also letting structuremap
+create the instances of the factory when it is needed. <o:p></o:p></p>
+
+<p>One other question. How do you handle child updates from the parent object?
+A call to dataportal.updatechild does not seem to use the object factory to do
+the update. is this correct by design or should I be updating child object
+differently?<o:p></o:p></p>
+
+<p>Ryan<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Tuesday, October 07, 2008</h2><P>Thanks for the information nermin. I really enjoy seeing how other minds think about similar problems. I am going to try and have a conversion of the ProjectTracker library done using Csla, Nhibernate, sturcturemap, and probably RhinoMocks (although from the test thread I may be able to satisfy the tests with structuremap) in the next day or two. </P>
+<P>I would like to share the source so other people can look at it as reference or make critiques on it, you interested?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, October 07, 2008</h2>nermin, our IRopsitory returns IEnumerable&lt;DTO&gt; instead of IQuerable&lt;DTO&gt; in your example. So BO does not care what kind of dataaccess tech repository is using, either linq, EF, NH, and mock.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Actually let me share the problem I had with this.&nbsp; First
+let me say that I prefer the IQueryable&lt;T&gt; as I believe that it allows me
+to use Linq Expressions inside the BO.&nbsp; IQueryable&lt;T&gt; will work with
+either Linq or EF.&nbsp; I also believe that Ayende has worked on Linq to
+NHibernate, so that&nbsp; is why I was not concerned about that part.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>As far as Mocks (actually Stubs) it is easy to SELECT from hard-coded
+List&lt;T&gt; which will return IQueryable&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem in this whole thing is not whether to use IEnumerable&lt;DTO&gt;
+or IQueryable&lt;DTO&gt;, but rather that if you use LinqToSql object as DTO
+that will not be re-usable as a EF Entity DTO.&nbsp; Those objects are similar but
+actually different types.&nbsp; Therefore unless you define custom data objects
+as DTOs there is no interoperability in this version of the pattern.&nbsp;
+Being lazy myself I decided to limit my implementations to EF, and not worry
+about interoperability until I have to.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>BTW Rocky is the one that pointed to this problem in the
+Repository pattern.&nbsp; I am curios to see whether you might have solution
+for this also </span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 2:05 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>nermin, our IRopsitory returns IEnumerable&lt;DTO&gt;
+instead of IQuerable&lt;DTO&gt; in your example. So BO does not care what kind
+of dataaccess tech repository is using, either linq, EF, NH, and mock.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 07, 2008</h2><P>Ultimately I think you need to decide just how much flexibility you really need. Flexibility and decoupling are not free - in fact they are very expensive. So the business benefit to that flexibility had better be quite high to offset the cost.</P>
+<P>When it comes to a DAL (ORM or not), there are levels at which flexibility may be desired:</P>
+<OL>
+<LI>Physical database (tables, indexes, etc)</LI>
+<LI>Logical database (logical data shape, views, sprocs)</LI>
+<LI>Database vendor (SQL dialect, etc)</LI>
+<LI>Data access technology (ADO.NET)</LI>
+<LI>Abstraction technology (DataSet, L2S, EF, NHibernate)</LI></OL>
+<P>Flexibility at each level becomes more expensive, in terms of dev cost/complexity and often performance. This is partially because each level as you go from 1 to 5 <EM>already exists to offer flexibility</EM>.</P>
+<P>It is an old saying (joke) that the solution to any computer science problem is to add a layer of abstraction. And if you get so many layers of abstraction that things become complex, the answer is (yet again) to add another layer of abstraction.</P>
+<P>Each layer already exists to provide abstraction over the lower layer(s). If you decide you want to be independent at level 5, then you are building a layer of abstraction over really big/complex layers of abstraction like EF or NHibernate. That's non-trivial and is not cheap. And I think you have to ask whether the benefit can offset that cost.</P>
+<P>I'm not saying yea or nay, just saying that a responsible software architect/designer is always taking an objective look at the costs and benefits in an effort to come up with the best solution - which isn't always the <EM>ideal</EM> solution - just the best balance of cost/benefit.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, October 07, 2008</h2><span>I see. I am using custom data objects
+as DTOs, so I don't have this pain. And I can still use some basic linq query to those IEnumerable objects. Maybe not all, but it's enough to our project.<br></span></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>But custom DTO is one more object I have to code for essentially
+every Business entity.&nbsp; And that is the point that Rocky made lot clearer
+than I was attempting to -&nbsp; every layer of abstraction costs in
+development time and code size/complexity, as well as sometimes performance.&nbsp;
+EF Entities are already generated from mapping, I did not have to code that, or
+maintain that.&nbsp; Adding new set of object on top of those to achieve true
+separation from DAL is a good thing, but at least for code that I work on &#8211;
+EF works on several major DB vendors, and I get flexibility on DAL that way
+while limiting myself to EF.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unless flexibility is specified in requirements or is easy to accomplish
+I tend to avoid adding extra.&nbsp; I think I mentioned it before, the only
+reason for existence and passing these &#8220;DTO/Entities&#8221; in code I am
+working on is the fact that EF still cannot map directly into CSLA BO Instance,
+like rkelley is doing in his NHibernate implementation.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Just my 2c<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 4:53 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I see. I am using custom data objects as DTOs, so I don't
+have this pain. And I can still use some basic linq query to those IEnumerable
+objects. Maybe not all, but it's enough to our project.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, October 07, 2008</h2>Just one more DTO class then you gain the pure isolation from data access tech, I think it's worth to do it. And, if using code gen, this won't be a problem at all. <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Thursday, October 09, 2008</h2><P>Do you guys mind taking a look at this code and telling me if there is a better way to do this? I want my fetch method to take in criteriaBase because some object may have a SingleCriteria with a Guid others an int etc... </P>
+<P>This is what I came up with, it works but I wonder if it could be better:</P><PRE>public override T Fetch(CriteriaBase criteria)
+        {
+            var obj = (T) Activator.CreateInstance(typeof (T), true);
+
+            if (criteria.GetType().GetGenericTypeDefinition() == typeof (SingleCriteria&lt;,&gt;))
+            {
+                Type[] genericArguments = criteria.GetType().GetGenericArguments();
+
+                Type originalType = genericArguments[1];
+                object criteriaValue = null;
+                if(originalType.IsPrimitive)
+                {
+                    if(originalType == typeof(int))
+                        criteriaValue = ((SingleCriteria)criteria).Value;
+                    if (originalType == typeof(decimal))
+                        criteriaValue = ((SingleCriteria) criteria).Value;
+                    if (originalType == typeof(float))
+                        criteriaValue = ((SingleCriteria)criteria).Value;
+                    if (originalType == typeof(string))
+                        criteriaValue = ((SingleCriteria)criteria).Value;
+                    if (originalType == typeof(object))
+                        criteriaValue = ((SingleCriteria)criteria).Value;
+                }
+                else
+                    criteriaValue = ((SingleCriteria) criteria).Value;
+
+
+                SingleCriteria newCriteria = new SingleCriteria(criteriaValue);
+
+                using (UnitOfWork.Start(DatabaseKey))
+                {
+                    _repository.Load(obj,newCriteria.Value);
+                }
+            }
+            MarkOld(obj);
+            return obj;
+        }
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rkelley replied on Sunday, October 19, 2008</h2><P>Alright guys, I have some code up you can look at / contribute to if you want. Some of the implementation may not be the best way or the most flexible so I am up for modifying it collectively if you are interested let me know:</P>
+<P>Google Code Site:</P>
+<P><A href="http://cslaptrackerfactory.googlecode.com">http://cslaptrackerfactory.googlecode.com</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kevin Fairclough replied on Monday, November 16, 2009</h2>We are using this (or at least a flavour of it) for our project.&nbsp; <br><br>Currently we are experiencing strange errors when calling the DataPortal using async calls (from a <a HREF="/forums/thread/38150.aspx">WPF gui </a>).&nbsp; Can anyone give us some clues to why this might be.&nbsp; Our GenericFactoryLoader class is not static, however we do have a static constructor to do the initialisation of StructureMap.<br><br>Any help would be greatly appreciated.<br><br>Kevin<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 16, 2009</h2><P>The data portal creates <EM>exactly one instance</EM> of the factory loader object and then calls methods on that instance, potentially from different threads at the same time.</P>
+<P>So any static or instance level fields in your factory loader must be used in a threadsafe manner, and if any objects are referenced by those fields, those objects must be threadsafe.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nermin replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is an awesome idea &#8211; and that is essentially what
+this forum is about &#8211; us sharing ideas and code.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Could I suggest xUnit.net as a test framework. &nbsp;</span><span>J</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, October 07, 2008 1:54 PM<br>
+<b>To:</b> Nermin Dibek<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Thanks for the information nermin. I really enjoy seeing how other minds
+think about similar problems. I am going to try and have a conversion of the
+ProjectTracker library done using Csla, Nhibernate, sturcturemap, and probably
+RhinoMocks (although from the test thread I may be able to satisfy the tests
+with structuremap) in the next day or two. <o:p></o:p></p>
+
+<p>I would like to share the source so other people can look at it as reference
+or make critiques on it, you interested?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 07, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Regarding child objects:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal operates now in one of two modes. Either a data
+portal managed mode where the data portal manages your objects lifetimes, or a
+factory mode where the data portal delegates all responsibility to your factory
+object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In the factory model <i>all responsibility</i> is delegated to
+your factory objects. The data portal imposes as little restriction on the
+factory objects as possible &#8211; thus providing as much flexibility as I can
+manage. The trade-off is that the data portal does essentially nothing for you.
+The ObjectFactory base class can be used to tap into some key behaviors that
+are used by the data portal, so you can use them too, but otherwise what happens
+in the factory is up to you.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There is no plan for a child factory concept. It is not clear to
+me that I could create a factory model for child objects that would meet the
+(unknown) requirements for some future version of EF, and NHibernate, and
+your-custom-DAL. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In some theoretical future, where an ORM could directly create
+and populate a CSLA object graph, there&#8217;d be no need for any child object
+factory, because the ORM would do this. And that&#8217;s really the overarching
+goal here &#8211; to allow/enable (and thus require) that the DAL (the object
+factories) create and manipulate all the objects in the object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, October 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That is a good point &#8211; I didn&#8217;t think to mention the
+fact that you can create your own factory loader and entirely change the way
+the factory objects are created. for your scenario that may be the better
+option.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rkelley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, October 06, 2008 1:39 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: ObjectFactory Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>nermin,<o:p></o:p></p>
+
+<p>WOW! Thank you for posting that. I am still digesting most of it seems like
+you are/were tackling the same issues that I am tackling, Unit Testing, Mock
+Objects, etc..., hence the object factory. <o:p></o:p></p>
+
+<p>Couple of questions for you though, <o:p></o:p></p>
+
+<p>Are you using an IoC container to instantiate/inject your Business Objects?
+If so which one. <o:p></o:p></p>
+
+<p>Are you using an ORM with your DTO objects? If so which ORM and are you
+injecting the &quot;entity&quot; object with the IoC container or just
+instantiating it directly from your BO. Reason I ask is I am using NHibernate
+and I have a Genereic IRepository that handles all of the db calls inside a
+Unit of Work. The reason the object factory is so appealing to me is because it
+brings greater seperation of concern and like you said that makes them very
+test friendly.<o:p></o:p></p>
+
+<p>I had some guys tell me the other day that you should not use an IoC
+container to create instances of objects, so I was just curious if you were or
+not.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

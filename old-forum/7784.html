@@ -1,0 +1,34 @@
+<html><header><title>Can someone please explain..... DTOs in multiple assemblies</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Can someone please explain..... DTOs in multiple assemblies</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7784.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis posted on Wednesday, October 14, 2009</h2>Hi everyone,&nbsp; we currently have a business layer using the csla framework and would like to split it into 2 as i need multiple DALs (one for sql, one for xml, webservice etc).<br><br>I understand that we cannot pass business objects to the dal and dal objects to the business layer, so i get it that we need to create a DTO object that can be passed in between them.<br><br>What i dont get is why in the ProjectTracker solution, why are there DTOs created in each project, when the DTOs are all the same??&nbsp; Surely it would be better to create 1 dto class library and get the projects to pass them around, as you will only need to update the 1 dto file rather then each one in each class library?<br><br>Can someone explain if i have got this wrong and why?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 14, 2009</h2>The PTracker is just a hodge-podge to show you various ways of doing the same thing.  If you have DTOs which will be shared across applications, then they should be fine in a seperate shared assembly.  The PTracker is probably setup that way because its easier to copy and paste then create yet another assembly.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 14, 2009</h2><P>This is something you can do, but it turns out to be somewhat difficult.</P>
+<P>The LINQ to SQL designer, the Entity Framework designer, the Add Web Reference dialog and the Add Service dialog will all create DTOs for you when you run them.</P>
+<P>If you want to manually create your own DTO classes, it is possible to get each designer/dialog to target your DTO types - but it is never the default or native behavior. Sometimes it is easy, sometimes you have to decorate your DTOs with attributes. Sometimes you have to manually alter generated proxy code.</P>
+<P>In short, it is a mess. For a specific application environment you can surely do it. But if I did it in ProjectTracker I'd have needed at least a whole other chapter just to discuss the mechanics of conning Visual Studio into doing this stuff - which (imo) is outside the scope of what the book is about.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Wednesday, October 14, 2009</h2>Rocky, Are you saying though, in your opinion, you could have in the PTracker application created a single dto project for the dal and referenced that instead of creating the dtos in each project.<br><br>And if i were to create a webservice, which got data for a web page, then that would be a separate/different sort of dto, rather then a dto used for the dal?&nbsp; Or am i creating too much work for myself, and not understanding this correctly.<br><br>As example layers, i am thinking<br>1.Website (UI)<br>2.Webservice (guess this is another sort of UI layer, as it gets data for the UI, as business layer would of got data from DAL?)<br>3.BO (business rules layer)<br>4.DAL for different datastores (DAL)<br>5.Datastore (database or another type of data store)<br><br>DAL DTO<br>This class library could pass data from 3 -&gt; 4 and vice versa, but a different class library of dtos, would be used to pass data from 1 -&gt; 2, 2 -&gt; 3 and vice versa??<br><br>Please if anyone has an opinion on this please say, as not sure whether i am getting this or making it more confusing for myself lol<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 14, 2009</h2><P>I think I discuss some of these options in Chapter 18 of the <EM>Expert 2008 Business Objects</EM> book, though not necessarily with complete code.</P>
+<P>Yes, you can create your own DTO assembly with your own DTO types. And you can get WCF to target your DTO types for service proxies. And you can get EF to target your DTO types (assuming you attribute the DTO classes with EF cruft). And you can get LINQ to SQL to target your DTO types (assuming you attribute the DTO classes with L2S cruft).</P>
+<P>What I'm saying is that this scenario is not terribly well supported by the Microsoft tools, but it is absolutely possible.</P>
+<P>Or you can use the dynamic language features of C# 4.0 to interact with different DTO types as long as they have the same shape. That uses some reflection and so is slower, but is a lot simpler. (this is something you've been able to do with VB for the past 15 years or so :) )</P>
+<P>You might look at the (now rather old) DeepData sample app, which does the sort of thing you are talking about.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Nemisis replied on Thursday, October 15, 2009</h2>Rocky, thanks for this.<br><br>I have looked at the DeepData solution, which i think is why i was getting confused as in that example, there is the 1 DTO class library which everything seems to reference, yet because i was comparing it to the PTracker example, i think this is why i was getting confused on which was right.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Reusing the DTOs is complicated and would obscure the main
+purpose of ProjectTracker, so I chose to make ProjectTracker work in a simpler
+manner to focus more on the business objects and UI elements, and less on the
+nasty technical issues involved in creating a super-flexible DAL model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

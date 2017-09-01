@@ -1,0 +1,274 @@
+<html><header><title>Deep Data: In general who should be responsible for object graph retrieval and persistence</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Deep Data: In general who should be responsible for object graph retrieval and persistence</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5990.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vdhant posted on Sunday, December 14, 2008</h2>Hi guys <br>In short when using the Deep Data pattern which uses Data Access objects and DTO object, who should be responsible for object graph retrieval and persistence, the business object or the data access object. <br><br>The reason for asking is because to me this doesn't exactly seem clear. My gut tells me it should be the business object but when considering this problem from a data access prospective it doesn't always make sense. <br><br>In that, if I am retrieving data from a data source, if within the one request it returns all the data that I need to populate multiple the objects in the graph I should (note this is at the DTO layer so the data access layer is only populating other DTO objects). If this is the case, it would seem silly not to populate as much of the object graph that I can with the returned data.<br><br>The same can be said for the reverse that if the data source allows me to persist the majority of the object graph in one go it would seem silly not to do so (again dealing with the DTO object graph that the system is trying to persist not the business object graph). <br><br>The problem is though that this means that the majority of the logic that says what objects should be retrieved and persisted in a given action lays in the Data Access object. Having said that this doesn't seem entirely right as it means one Data Access object needs to know about other business object and/or other data access objects. <br><br>This just doesn't fell right as it means that business object is losing the ability to say I want to persist one object over another or to say that this properties object data need to be retrieved as well. What is one business object does have data access object and uses some other method of data retrieval. <br><br>This is what makes me think that the logic should belong in the business object. On the other hand if I deviate from the pure for of the Deep Data pattern that I am trying to use (i.e. the data access object doesn’t know anything about the business objects and only knows about the DTO’s) and let the data access layer know about business objects, does this solve my problem?&nbsp; I don’t think so as it means that the business objects my need to work with data access objects in order to achieve the object. Maybe I have to say that all business objects must have a data access object and DTO counter part...<br><br>Now this may be ok but it is the part of my question, who should be responsible for object graph retrieval and persistence. Or is there a middle ground where the logic is split, in some cases like retrieval it is in the data access if and for persistence its in the business object. If this is taken it is an assumption is being made that data access object returns a full DTO object tree and the business obejct doesn't need to have any population logic bar the initial request and the persistence logic is in the business object... <br><br>Cheers<br>Anthony<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Sunday, December 14, 2008</h2>Looks like it's a lazy-load/Eager-Fetch decision. If using NH, it can be controlled by mapping config. <br><br>We got the similar problem when using DTO, combining everything into one query is possible, but you lost the flexibility. We let BO decide this, it's still in mulitple queries. Unless you want to create a DTO tree... <br><br>We don't want DTO knows too many bissiness. It's definatally a trade off.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Sunday, December 14, 2008</h2><P><FONT face=Tahoma size=2>Maybe I'm oversimplifying things, but in the case where I use DTO's, I follow these rules:</FONT></P>
+<P><FONT face=Tahoma size=2>1. The BO knows how to populate itself from the DTO, and vice-versa.</FONT></P>
+<P><FONT face=Tahoma size=2>2. The DAL knows how to populate the DTO from the database, and vice-versa.</FONT></P>
+<P><FONT face=Tahoma size=2>From a certain perspective, that's the whole point of the DTO - to provide that separation.&nbsp; If you're going to use DTO's, that means you have a reason to shield the BO from direct data-access code (all the SqlConnection, SqlCommand stuff).&nbsp; If you're doing that, then all the persistence details should not be the purview of the&nbsp;BO - otherwise, why use a DTO?&nbsp; If you're having your BO make decisions about "persist[ing] one object over another", then it seems like you're diluting much of the benefit you get out of using DTO's.</FONT></P>
+<P><FONT face=Tahoma size=2>Having said that, when building DTO's, I build them like I build BO's - build a DTO graph for&nbsp;each BO graph.&nbsp; This possibly isn't a strict use of a DTO, and it pushes the impedence-mismatch issues into the DAL, which some people don't like.&nbsp; But it makes it easier for me to work with.&nbsp; Once I have my DTO structures, then I can go back and see where I can re-use/merge and still make things work.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Tuesday, December 16, 2008</h2><P>You've got to split it up -- otherwise you'll end up using BusinessBase&lt;T&gt; as your DTO base class, and you'll go mad once you realize that your DAL has become a second dataportal. In my code, usually the Fetch will get the full object graph. Some of my&nbsp;child updates will send a graph of DTOs to the DAL, other's just send its corresponding&nbsp;DTO. I don't worry about purity, I just worry about being able to maintain the code in&nbsp;future years. They're not the same thing at all. BTW, my DAL knows NOTHING about the Domain layer. All my DAL does is fill DTOs (using nHibernate).&nbsp;My DTOs do not have dirty flags. The DAL does not make decisions. It inserts, updates, and fetches as instructed. All the decision logic is already in the Domain. A developer would not be able to modify the Domain without understanding the nHibernate mappings for a particular DTO -- i.e. without&nbsp;understanding the DAL.&nbsp;That's my design tradeoff, my deal with the devil, if you will.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, December 16, 2008</h2>I totally agree with you. But, have you looked into the new csla.ObjectFactory? <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>daniel_higgins replied on Tuesday, December 16, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>FrankM:</strong></div><div>I totally agree with you. But, have you looked into the new csla.ObjectFactory? <BR></div></BLOCKQUOTE></P>
+<P>no, not yet.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, December 16, 2008</h2><P>You'll probably find that ObjectFactory is helpful with a DTO-based DAL.</P>
+<P>When using an object factory, your factory object is entirely responsible for creating and loading the business object graph. Your root business class has an ObjectFactory attribute that tells the data portal to create/invoke the factory rather than the business object's DataPortal_XYZ methods.</P>
+<P>You can imagine a case where the factory object gets the data from the db into a DTO graph. It then creates an instance of the root business object. It then gives the root business object a reference to that DTO graph. The business object then loads itself (and its children) from the DTO graph.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Tuesday, December 16, 2008</h2>The problem I am having is lazy-loading child. Do you have any suggestions about how to deal with those children not loaded / created in the root BO's factory?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 19, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>A lazy loaded child is, in all cases, a hybrid. It is a child in
+terms of insert/update/delete. But it is a root in terms of fetch (and maybe
+create).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So your DAL needs to support loading a &#8220;child&#8221; as a
+root if that child can be lazy loaded.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, December 19, 2008 11:50 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Deep Data: In general who should be responsible
+for object graph retrieval and persistence<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>The problem I am having is lazy-loading child. Do you have
+any suggestions about how to deal with those children not loaded / created in
+the root BO's factory?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Saturday, December 20, 2008</h2>+1<br><br>Can you reply my other question about unBinding? Is it only for NLevel Undo purpose?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, December 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Unbinding?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When using Windows Forms data binding, you must unbind before
+doing a save. This is a data binding thing, not an n-level undo thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I didn&#8217;t cover Windows Forms (much) in the 2008 book, but
+the <i>Using CSLA .NET 3.0</i> ebook has a full chapter on dealing with the
+data binding issues around Windows Forms.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Sunday, December 21, 2008</h2>What's wrong with saving without unbinding?&nbsp; What kind of error will happen (when)? What if a UI control is binded to an object directly, not through datasource? I'm looking for a clear reason. Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, December 21, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don&#8217;t know what happens without a bindingsource. The
+bindingsource fixes so many issues that I can&#8217;t imagine NOT using it, and
+haven&#8217;t done data binding that way since 2005.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>With a bindingsource, your object is always in edit mode. The bindingsource
+control calls BeginEdit() on the current object. Even if you call
+_bindingSource.EndEdit(), the control will <i>immediately</i> call BeginEdit()
+after the EndEdit().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only way to get your object to edit level 0 is to unbind it,
+using the code shown in the <i>Using CSLA .NET 3.0</i> ebook, or the new
+CslaActionExtender control in version 3.6 (which is discussed in <i>Expert C#
+2008 Business Objects</i>).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you object isn&#8217;t at edit level 0 when you save it, by
+default an exception occurs. If you work around that (which you can do) then it
+is quite likely that your object will end up in an inconsistent state unless
+you fully understand what happened, and the consequences of the next
+Begin/End/CancelEdit() call through the bindingsource.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>About 18-24 months ago there were a couple <i>very</i> extensive
+threads about this on the forum. If you can find those threads, you can gain
+the wisdom of the full discussion, involving research and experimentation by
+quite a few people in the community.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The rule we all came up with, after a lot of pain and suffering,
+is simple:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Never call methods on an object unless you unbind it first.<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>That includes (perhaps most notably) the Save() method.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Sunday, December 21, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><div class="Section1"><span>The rule we all came up with, after a lot of pain and suffering,
+is simple:<o:p></o:p></span>
+
+
+
+<p class="MsoNormal"><b><span>Never call methods on an object unless you unbind it first.<o:p></o:p></span></b></p>
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>That includes (perhaps most notably) the Save() method.<o:p></o:p></span></p>
+
+
+
+
+
+<p class="MsoNormal"><span><o:p>&nbsp;</o:p>Rocky</span><b><span><o:p></o:p></span></b><span><o:p></o:p></span></div></BLOCKQUOTE></p><p class="MsoNormal">I get a little concerned about what I'm doing when I see you write that, Rocky. Do you really mean that we shouldn't call <span>any</span> method at all on our objects without unbinding first? I certainly follow the eBook and what ProjectTracker does for binding, saving, canceling etc but I sometimes have methods that do something that result in one or more properties changing. They never do any BeginEdit, EndEdit stuff, just manipulate properties. I've always assumed that it's okay to call those directly on the object without unbinding. I've never had (or at least noticed) a problem. My method usually causes PropertyChanged to fire, the UI updates and all seems well. Am I skating on thin ice?<br><br>Cheers<br>Ross<br>
+
+</p></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Sunday, December 21, 2008</h2><ol><li>Isn't editlevel a N-Level Undo thing only?</li><li>For lazy-load properties, I have to bind them to object directly instead of through datasource. (datasource will trigger an unexpected load)</li><li>I had to unbind datasource in VS2005, but since VS2008 I don't need to do this anymore, at least no strange thing happened so far.</li></ol>Anyway I will keep finding those old threads to find out why.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, December 22, 2008</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>FrankM:</strong></div><div>Isn't editlevel a N-Level Undo thing only?</div></BLOCKQUOTE><br><br>N-level undo is what is used to implement the required behaviors for databinding's BeginEdit / CancelEdit/ EndEdit.&nbsp; It makes sense, since 1 level undo is the same as n-level, except that you only expect one level. <br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>FrankM:</strong></div><div>For lazy-load properties, I have to bind them to object directly instead of through datasource. (datasource will trigger an unexpected load)</div></BLOCKQUOTE><br><br>Using data binding without a BindingSource control is outside the scope of Csla, I believe.&nbsp; You're on your own if you want to do that.&nbsp; My suggestion would be to re-evaluate your object design.&nbsp; If you don't HAVE to have the child element collection, then it sounds like the collection shouldn't be a child, and should instead be a root BLB; and again, you should use the BindingSource control even if you make this change.<br><br><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>FrankM:</strong></div><div>I had to unbind datasource in VS2005, but since VS2008 I don't need to do this anymore, at least no strange thing happened so far.Anyway I will keep finding those old threads to find out why.</div></BLOCKQUOTE><br><br>Consider yourself lucky.&nbsp; Of course, I've had things work fine in development, but once deployed broke horribly.&nbsp; The only solution was to do the data binding correctly, following the strict rules illistrated by the PTracker sample.<br><br>HTH!<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>EditLevel is an n-level undo thing, but data binding (Windows
+Forms/WPF/Silverlight) use this feature to support in-place editing of data in
+a form or grid.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For lazy-loaded properties you absolutely must be careful how
+the binding is set up. You can still use a bindingsource, but you must
+configure it so the binding occurs through code, not automatically (which is
+the default). Obviously, as you point out, the result is otherwise an
+unexpected load of the child, because data binding does hit the property.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Binding has nothing to do with Visual Studio. It may be that
+Microsoft changed the runtime behavior between .NET version 2.0 and 3.5 &#8211;
+though I doubt it. I suspect that such a change to the bindingsource control
+would break a lot of people. On the other hand, perhaps they did figure out a
+way to make the bindingsource behave better &#8211; in which case we should all
+be happy :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, December 22, 2008 1:10 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: RE: Deep Data: In general who should be
+responsible for object graph retrieval and persistence<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<ol>
+ <li class=MsoNormal>Isn't editlevel a N-Level Undo thing only?<o:p></o:p></li>
+ <li class=MsoNormal>For lazy-load properties, I have to bind them to
+     object directly instead of through datasource. (datasource will trigger an
+     unexpected load)<o:p></o:p></li>
+ <li class=MsoNormal>I had to unbind datasource in VS2005, but since
+     VS2008 I don't need to do this anymore, at least no strange thing happened
+     so far.<o:p></o:p></li>
+</ol>
+
+<p class=MsoNormal>Anyway I will keep finding those old threads to find out
+why.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

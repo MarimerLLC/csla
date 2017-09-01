@@ -1,0 +1,20 @@
+<html><header><title>Linq to CSLA Value cannot be null. Parameter name: source (System.Core)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Linq to CSLA Value cannot be null. Parameter name: source (System.Core)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9030.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds posted on Thursday, June 03, 2010</h2><p>I&#39;m a total noob but I see that linq can save me a ton of code.</p>
+<p>I am trying to sum up rows grouped by two fields:</p>
+<p>Dim list = From A In mInvoiceHead.InvoiceRows Where A.PERIODE &gt; 0 _<br />&nbsp;&nbsp; Group A By A.PERIODE, A.AAR _<br />&nbsp;&nbsp; Into Total = Sum(A.Amount) _<br />&nbsp;&nbsp; Select PERIODE, AAR, Total</p>
+<p>When I execute the code i get the following error:</p>
+<p>Value cannot be null.<br />Parameter name: source (System.Core)<br />------------------------------<br />Program Location:<br /><br />&nbsp;&nbsp; at System.Linq.Queryable.Select[TSource,TResult](IQueryable`1 source, Expression`1 selector)<br />&nbsp;&nbsp; at ButikkdataNETWin.MDIParent1.TESTToolStripMenuItem_Click(Object sender, EventArgs e) in C:\DEVELOP\NET35\Butikkdata\ButikkdataNET.root\ButikkdataNETWin\MDIParent1.vb:line 1016</p>
+<p>&nbsp;</p>
+<p>I have no idea what the problem is. Is the query constructed wrong or have I made a mistake designing the csla objects?</p>
+<p>(CSLA 3.8.2) </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Friday, June 04, 2010</h2><p>OK. I have found the source of the problem.</p>
+<p>If I use CSLA 3.6.1 the code works fine and the query is returning the expected result.</p>
+<p>If I use CSLA 3.8.2 i get the error:&nbsp; Value cannot be null. Parameter name: source (System.Core)</p>
+<p>&nbsp;</p>
+<p>Can you confirm this and, if so, add it to the issues list?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>wilfreds replied on Thursday, June 10, 2010</h2><p>I have tested this on CSLA 3.8.3 and found it not working.</p>
+<p>Tested on CSLA 4.0.0 WORKING. But I had not planed to move to 4.0 just yet.</p>
+<p>I have also found that if I convert BusinesstBase and BusinessListBase to ReadOnlyBase and ReadOnlyListBase the query is working. The objects I have used is from the ProjectTracker project.</p>
+<p>Is no one using Linq in this way? </p>
+<p>Rocky, what do you think?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, June 10, 2010</h2><p>In 3.8 you can force CSLA to bypass its custom query provider by adding ToList() to your original list:</p>
+<p>var x = from r in _myList.ToList() ...</p>
+<p>The reason you don&#39;t see the problem in CSLA 4 is that I removed the custom query provider - it has proven to be far more trouble than it is worth...</p>
+<p>So by using .ToList() or CSLA 4, your query will <em>not</em> return a LinqBindingList - it will return a standard IEnumerable&lt;T&gt;.</p>
+<p>In CSLA 4 if you want a synced view, you need to use the ToSyncList() extension method on the result of the query.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

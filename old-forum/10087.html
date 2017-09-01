@@ -1,0 +1,30 @@
+<html><header><title>4.1 DataPortal_Create ebook example - compile warning CS0114  do I ignore it?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>4.1 DataPortal_Create ebook example - compile warning CS0114  do I ignore it?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10087.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina posted on Friday, February 18, 2011</h2><p>I&#39;m building an editable root business object and following along with the csla 4 data access ebook and it&#39;s example of DataPortal_Create does *not* show overriden methods e.g.:</p>
+<p>&nbsp;private void DataPortal_Create(int regionId) <br />&nbsp;&nbsp;&nbsp; {&nbsp; </p>
+<p>...etc...</p>
+<p>and when I copy them exactly I get the compiler error:</p>
+<p>zEditableRoot.cs(236,21): warning CS0114: &#39;Test.Library.zEditableRoot.DataPortal_Create()&#39; hides inherited member &#39;Csla.Core.BusinessBase.DataPortal_Create()&#39;. To make the current member override that implementation, add the override keyword. Otherwise add the new keyword.</p>
+<p>Do I just use the &quot;new private void DataPortal_Create()&quot; signature instead? Does the ebook need to be updated with the new keyword added?</p>
+<p>Also if I want to support both silverlight and wpf / asp.net mvc do I need to make two DataPortal_Create methods in every business object?&nbsp; One for Silverlight and one for the rest?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, February 18, 2011</h2><p>The method signatures for DataPortal_Create are different on .NET and Silverlight, because the SL one must be public and async.</p>
+<p>If you are building your app to run in 1-tier or 2-tier deployments, so you expect the DataPortal_Create methods to run always on the client (.NET and SL) then yes, you need to implement the method using both signatures with either compiler directives (my preference) or partial classes.</p>
+<p>The next revision of the <em>Data Access</em> ebook provides a direct example of this scenario - I just wrote that bit today actually.</p>
+<p>I suspect the reason you are encountering the compiler issue is because of the SL base class, where the default virtual method is a method with a single parameter. The code in the version of the book you are using is for .NET only.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Saturday, February 19, 2011</h2><p>Interesting.&nbsp; Thank you for the information.</p>
+<p>Can you explain what you mean by&nbsp; implementing the method using both signatures with compiler directives? (Do you mean the #If Silverlight directives, where both signatures are there just conditionally compiled for each directive?)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, February 21, 2011</h2><p>Rocky I&#39;m trying to implement this as you suggested however now I&#39;m getting:</p>
+<p>&#39;Csla.DataPortal&#39; does not contain a definition for &#39;ProxyModes&#39;</p>
+<p>on compile.&nbsp; </p>
+<p>Any chance that Ebook is coming out soon? :)</p>
+<p>I really need an example.&nbsp; </p>
+<p>Aside from that compiler error, from what I can determine what I need to do to support both SL and .net in my library is to make a DataPortal_Create with a runlocal attribute for .net then a static &quot;New&quot; method for SL like this:</p>
+<p>&nbsp;public static void New(EventHandler&lt;DataPortalResult&lt;zEditableRoot&gt;&gt; callback)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataPortal.BeginCreate&lt;zEditableRoot&gt;(callback, DataPortal.ProxyModes.LocalOnly);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>However, you mentioned conditional compilation so would the above *not* call the .net DataPortal_Create method?&nbsp; If not then what is it calling.</p>
+<p>Do any of the sample projects show this because I can&#39;t find any example of a local create method that supports both SL and .net in one project?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Monday, February 21, 2011</h2><p>Found a sample that *might* be what I&#39;m after but I don&#39;t trust any of the samples now that Johnny has said that the ProjectTracker is not meant to be used even though it&#39;s in the samples folder so I just want to confirm if the &quot;SimpleApp&quot; solution found in the silverlight samples is illustrating the correct way of doing things in the CustomerEdit class?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, February 22, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JCardina<br></b>
+<p>Rocky I&#39;m trying to implement this as you suggested however now I&#39;m getting:</p>
+<p>&#39;Csla.DataPortal&#39; does not contain a definition for &#39;ProxyModes&#39;</p>
+<p>on compile.&nbsp; </p>
+<p>Any chance that Ebook is coming out soon? :)</p>
+<p>I really need an example.&nbsp; </p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>The pre-release of the <em>Data Access</em> book that I put online yesterday includes a discussion of persistence for the editable root and editable root list stereotypes, and it includes factory methods for .NET and Silverlight - exactly the issue you are asking about.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JCardina replied on Wednesday, February 23, 2011</h2><p>Thanks Rocky, that updated ebook really helps.&nbsp; It&#39;s starting to come together.&nbsp; When I was just looking at the samples I was all kinds of confused and went in a lot of wrong directions.&nbsp; </p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

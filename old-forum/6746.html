@@ -1,0 +1,54 @@
+<html><header><title>Newbie question about IntegerMinValueRuleArgs - cslava20</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Newbie question about IntegerMinValueRuleArgs - cslava20</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6746.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow posted on Monday, April 06, 2009</h2><P>I've read the first two chapters of 'Expert VB 2005 Business Objects' in an attempt to determine if the architecture will work for our enterprise.</P>
+<P>IntegerMinValueRuleArgs appears to imply 'required'.&nbsp; Is there a way to require an integer property to range from 1 - 999999 if there is a value (other than zero or a character)?&nbsp; I would prefer to not alter the csla.</P>
+<P>Thanks in advance (and sorry for the newbee question).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>triplea replied on Monday, April 06, 2009</h2><P>If I remember well you specify the min value only - not a range. Considering that the check will be done on an int type property, characters will be excluded anyway.</P>
+<P>If you want more tailor made validation then you can create your own. E.g.</P>
+<P>private int _myInt;<BR>public int&nbsp;MyInt { ... }</P>
+<P>protected override override AddBusinessRules()<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ValidationRules.AddRule&lt;MyClass&gt;(IsValidRange&lt;MyClass&gt;, "MyInt");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...<BR>}<BR><BR>private static bool IsValidRange&lt;T&gt;(T target, Csla.Validation.RuleArgs e)<BR>&nbsp;&nbsp;&nbsp;where T : MyClass<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if (target._myInt &lt; 1 &amp;&amp; target._myInt &gt; 99999)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;e.Description = "Invalid number";<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return false;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return true;<BR>}</P>
+<P>If this is going to be used frequently you can of course centralize it.This is just a quick dirty example.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow replied on Monday, April 06, 2009</h2><P><FONT face=Arial size=2>Good point on the range.&nbsp; I was too quick to post without checking my statements.&nbsp; Character values do trip the validation (as it should).&nbsp; I've built a simple screen to check this.&nbsp; </FONT></P>
+<P><FONT face=Arial size=2>The question still&nbsp;stands...will a separate validation method need to be written to allow blank integers or&nbsp; can the existing IntegerMinValue and IntegerMaxValue methods be used for both required and non-required integers.</FONT></P>
+<P><FONT face=Arial size=2>This is our first time using an open source architecture and&nbsp;trying to get a feel for how much modification is or should be required for use and what this will mean when we move to future versions.</FONT></P>
+<P><FONT face=Arial size=2>Thanks much for your patients with a newbie</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 06, 2009</h2><P>The business and validation rule subsystem in CSLA .NET is designed to be extended with your own rule methods. </P>
+<P>There is absolutely no reason to alter CSLA to add new or different rules - they can be added to your individual business classes, or as a library of rules for your application.</P>
+<P>It would be the rare application that didn't need some rules beyond the very basic ones in CommonRules. I suspect every real application out there includes a number of other rule methods to provide other validation or business behaviors based on the application's requirements.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow replied on Monday, April 06, 2009</h2>I realize this can be done outside the CSLA but was&nbsp;checking to see if this functionality existed in the current 'common' validation&nbsp;classes-- don't read any attitude into that statement.&nbsp; To me, this common validation would not be business-specific and we would add it&nbsp;to the CSLA.&nbsp; I&nbsp;am attempting to determine what 'common' validation functionality might need to be added by us and how best to do this to make migration to future releases to CSLA as seamless as possible. Any recommendations, or suggested reading on implementing open source would be appreciated.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, April 06, 2009</h2>Well, usually it's recommended to have a library that subclasses each Csla BO class, in case you need to add behavior to all your BOs.&nbsp; Such a library would also be a good place for the rules you're looking to add.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not sure you are understanding what I&#8217;m saying.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA includes 6-8 &#8216;common rule&#8217; implementations. In
+practice, they can&#8217;t meet everyone&#8217;s needs. Obviously even
+something as a &#8220;minimum value&#8221; rule has an element of controversy. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I have no desire to write &#8220;the ultimate set of rules in
+the universe&#8221;, so instead I created a subsystem by which organizations
+can implement their own rule libraries to meet their needs. No one needs to (or
+should) modify CSLA itself to create their rule library. That would be silly.
+They can (and should) create their library as part of their codebase.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RumbleCow replied on Monday, April 06, 2009</h2>Makes perfect sense.&nbsp; Thanks for your help.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

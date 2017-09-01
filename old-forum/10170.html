@@ -1,0 +1,66 @@
+<html><header><title>dataportal fail</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>dataportal fail</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10170.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider posted on Wednesday, March 16, 2011</h2><p>I&#39;m trying to get this old website project running and I&#39;m stuck on this error:</p>
+<p>My Page fires an event that calls my BusinessLayer...I can follow the debug all the way to this line:</p>
+<p>child = DataPortal.Fetch&lt;UserChild&gt;(new UserNamePasswordCriteria(userName, encryptedPassword));</p>
+<p>but DataPortal_Fetch() method never gets called and instead this exception is thrown:</p>
+<p>&quot;The input stream is not a valid binary format. &nbsp;The starting contents (in bytes) are: 53-79-73-74-65-6D-2E-52-75-6E-74-69-6D-65-2E-52-65 ... &quot;</p>
+<p>This is what the stackTracke looks like:</p>
+<p><img src="http://forums.lhotka.net/cfs-filesystemfile.ashx/__key/CommunityServer.Components.UserFiles/00.00.01.16.17/3_2D00_16_2D00_2011-11_2D00_30_2D00_47-AM.png" border="0" style="max-width:1100px;" alt="" /></p>
+<p>&nbsp;</p>
+<p>Any ideas would be appreciated.</p>
+<p>&nbsp;</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 16, 2011</h2><p>Questions:</p>
+<ol>
+<li>You have the same version of .NET on both sides of the wire (including service packs)?</li>
+<li>You have the same version of the CSLA assemblies on both sides of the wire</li>
+<li>You have the same version of your business assemblies?</li>
+<li>Have you double-checked point 2?</li>
+</ol>
+<p>Those are the most likely things that would cause this sort of serialization issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Wednesday, March 16, 2011</h2><p>added the port VS uses on localhost to the CslaDataPortalUrl and that fixed it.</p>
+<p>By &quot;both sides of the wire&quot; what do you mean? &nbsp;</p>
+<p>Is there any way to debug the DataPortal_Fetch method? &nbsp;I put a breakpoint in it but it never fires...</p>
+<p>Now I have a different error on the same line which I have no idea what it is:</p>
+<p>{&quot;The underlying connection was closed: An unexpected error occurred on a receive.&quot;}</p>
+<p>InnerException: {&quot;Unable to read data from the transport connection: An existing connection was forcibly closed by the remote host.&quot;}</p>
+<p>
+<p>&nbsp;</p>
+<p>Server stack trace:&nbsp;</p>
+<p>&nbsp;&nbsp; at System.Runtime.Remoting.Channels.Http.HttpClientTransportSink.ProcessResponseException(WebException webException, HttpWebResponse&amp; response)</p>
+<p>&nbsp;&nbsp; at System.Runtime.Remoting.Channels.Http.HttpClientTransportSink.ProcessMessage(IMessage msg, ITransportHeaders requestHeaders, Stream requestStream, ITransportHeaders&amp; responseHeaders, Stream&amp; responseStream)</p>
+<p>&nbsp;&nbsp; at System.Runtime.Remoting.Channels.BinaryClientFormatterSink.SyncProcessMessage(IMessage msg)</p>
+<p>&nbsp;</p>
+<p>Exception rethrown at [0]:&nbsp;</p>
+<p>&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)</p>
+<p>&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)</p>
+<p>&nbsp;&nbsp; at Csla.Server.IDataPortalServer.Fetch(Type objectType, Object criteria, DataPortalContext context)</p>
+<p>&nbsp;&nbsp; at Csla.DataPortalClient.RemotingProxy.Fetch(Type objectType, Object criteria, DataPortalContext context) in \\cqi-master2\CQI-BIGSITES\Installers\CSLA.Net Framework\2.1.4\csla20cs\csla20cs\Csla\DataPortal\Client\RemotingProxy.cs:line 111</p>
+<p>&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria) in \\cqi-master2\CQI-BIGSITES\Installers\CSLA.Net Framework\2.1.4\csla20cs\csla20cs\Csla\DataPortal\Client\DataPortal.cs:line 185</p>
+<p>&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria) in \\cqi-master2\CQI-BIGSITES\Installers\CSLA.Net Framework\2.1.4\csla20cs\csla20cs\Csla\DataPortal\Client\DataPortal.cs:line 140</p>
+<p>&nbsp;&nbsp; at CareTracker.BusinessObjects.User.UserChild.GetUserChild(String userName, String encryptedPassword) in C:\CQI\Projects\CareTracker\CareTracker.BusinessObjects\User\UserChild.cs:line 2769</p>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 16, 2011</h2><p>&quot;both sides of the wire&quot; is jargon, sorry. You have a client, and a server, and they are connected by a network - a network consists of wires. So &quot;both sides of the wire&quot; means both sides of the network: the client and the server.</p>
+<p>The original problem you were having was a serialization issue - which means that the message flowing across the network didn&#39;t make it to any CSLA code or business code - it failed at the point .NET tried to understand the message. That is why you couldn&#39;t debug DataPortal_Fetch - that code would never run if the issue is a network or serialization issue.</p>
+<p>Your new problem is also a networking problem. Now it sounds like the client is entirely unable to establish a connection to the server. So obviously no server-side code will run, so you can&#39;t debug it.</p>
+<p>Remoting can be hard to troubleshoot. You should consider using a network sniffer, like fiddler, to watch what is going across the network (or what your app is trying to send anyway). That can sometimes give you clues about why the network connection is failing.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Thursday, March 17, 2011</h2><p>Right now I&#39;m just hitting the &#39;play&#39; button in VS. &nbsp;I don&#39;t see how it could be a network issue since everything&#39;s on my machine but I will google the error and see if I cant figure anything out. &nbsp;I&#39;ll also try deploy/publishing the solution to see if that changes anything but I do have this question.</p>
+<p>I&#39;m using ASP.NET to serve up some client side code, when the client enters their user/pass and clicks submit it&#39;s sent to the server where the code runs. &nbsp;I&#39;m then on the server using my BO dll&#39;s (from the bin folder of the website?) to call DataPortal.Fetch&lt;&gt;()....Should I have some kind of service waiting on the end of my url:&nbsp;&lt;add key=&quot;CslaDataPortalUrl&quot; value=&quot;http://localhost:1225/ApplicationServerRemotingHost/RemotingPortal.rem&quot;/&gt;</p>
+<p>Maybe I&#39;m missing a piece. &nbsp;I&#39;m trying to figure this out but it&#39;s hard looking into an infrastructure that&#39;s already half built...is there a certain walkthrough/tutorial that might shed some light on how this design is implemented?</p>
+<p>Thanks for the help, will update if i can figure anything else out...</p>
+<p>Oh, and I think dll hell was the reason for the first error, btw! So you were right on that.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 17, 2011</h2><p>Part of the challenge is that Remoting is very old at this point. WCF became the recommended network technology in 2006, and it has been more than 5 years since I&#39;ve personally used Remoting... Although WCF can be hard to configure, it is easier to troubleshoot than Remoting was.</p>
+<p>Here&#39;s some info</p>
+<p><a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=641515c6-d870-4d18-b9a6-78593e4f1ecd">http://www.lhotka.net/Article.aspx?area=4&amp;id=641515c6-d870-4d18-b9a6-78593e4f1ecd</a></p>
+<p>That&#39;s just one article from here: <a href="http://www.lhotka.net/cslanet/Default.aspx">http://www.lhotka.net/cslanet/Default.aspx</a></p>
+<p>If you look at the articles from 2005 and older, there&#39;s a lot of content around the data portal and Remoting.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Thursday, March 17, 2011</h2><p>I&#39;m thinking about giving up on this guys implementation and going WCF since that&#39;s what&#39;s being used now ... &nbsp;I&#39;m currently using CSLA version 2.1.4.0. &nbsp;Will this version work with WCF? &nbsp;Could you point me to a starter on getting a WCF implementation going?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 17, 2011</h2><p>You need to go to 3.0.5 to get WCF support. But honestly that&#39;s what you should be running anyway, because it is basically 2.1 with tons of bug fixes plus WCF support.</p>
+<p>The <em>Using CSLA 3.0</em> ebook has a chapter covering the use of WCF in version 3.0.x.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 17, 2011</h2><p>Here&#39;s the instructions for building CSLA .NET 3.0.5 for .NET 2.0:</p>
+<p><a href="http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356">http://www.lhotka.net/Article.aspx?area=4&amp;id=ac20fe4c-6afc-4176-bcb4-d74b5a370356</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Thursday, March 17, 2011</h2><p>Can I read an eBook on the computer? or do i need an appropriate reader?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Thursday, March 17, 2011</h2><p>I have another question. &nbsp;For simplicities&#39; sake, and to get a working demo/temporary solution. &nbsp;How hard would it be to not have a physical layer in between? &nbsp;In other words, If I put the whole website and business layer on the same server as the database then shouldn&#39;t I not need any kind of client/server portal solution? &nbsp;What exactly controls the DataPortal functionality and how does it know what protocol to use? &nbsp;How do I make it just use the layer it is in instead of looking for a remoting protocol or web service?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, March 17, 2011</h2><p>The ebooks are in PDF format - they are best viewed on a computer, or perhaps an iPad. Unfortunately for me, not as well on a Kindle :(</p>
+<p>(though the new ASUS Win7 tablet looks like a totally awesome machine - and it would display the ebooks just fine!)</p>
+<p>To your question about not having a network connection at all, especially for a web app that&#39;s usually the recommended solution. The only real good reason for having a separate app server in a web app is when the web server needs to go through a second firewall to talk to the app server that is inside the corporate network. In other words, where the web server is running in a&nbsp;DMZ.</p>
+<p>Otherwise having an app server is just overhead - costing performance for (usually) no gain.</p>
+<p>All the <em>Expert Business Objects</em> books from 2005 onward, the Core 3.8 video series, and the <em>Using CSLA 4: Data Access</em> and <em>Using CSLA 4: Data Portal Configuration</em> ebooks discuss or demonstrate how to use the data portal in local mode.</p>
+<p>It is &quot;easy&quot; though, because it is the default on .NET. Just do the following:</p>
+<ol>
+<li>Entirely remove the web.config appSettings entry for CslaDataPortalProxy</li>
+<li>Make sure your database connection string is in the web.config file on the web server (just like it is on the app server now)</li>
+<li>Make sure your web server can physically call the database server (there&#39;s no firewall in the way, ASP.NET is running under a valid user account for the database, etc)</li>
+<li>Make sure your data access assemblies (if they are separate) are installed on the web server, just like they are on the app server now</li>
+</ol>
+<p>That&#39;s it. Steps 2 and 3 are the places you are most likely to encounter trouble. It is quite possible that the web server is in a DMZ, in which case this just won&#39;t work. It is also quite possible the web server has ASP.NET running under an account that has no login access to your database, but you can fix that either by changing the ASP.NET account, or adding its credentials to the database, or by using an explicit username/password in the connection string.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BunnyStrider replied on Friday, March 18, 2011</h2><p>Wow, that easy, huh? &nbsp;Thanks for all that information. &nbsp;I&#39;ll end up implementing WCF as we go along but for now this helps to get it running.</p>
+<p>Thanks again.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

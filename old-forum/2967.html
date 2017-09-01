@@ -1,0 +1,10 @@
+<html><header><title>Which BO should I use?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Which BO should I use?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2967.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames posted on Thursday, May 31, 2007</h2><P>Hey,</P>
+<P>I'm very new with CSLA. I'm really trying to get my head around the different BOs (EditableRoot, EditableChildList and so on).</P>
+<P>I would like to have a list of EditableRoot objects contained in a EditableRootList. Just a list of objects - no parent/child relationship. I'm going to bind the EditableRootList to a DataGridView.</P>
+<P>My problem is that EditableRootList calles "DeleteSelf", "Update", "Insert" on the items in the list. And EditableRoot does not implement those methods.</P>
+<P>What am I doing wrong here?</P>
+<P>Thanks,</P>
+<P>Jimmy</P>
+<P>Ps. using CSLA 2.1.4 on Windows forms</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kamanova replied on Thursday, May 31, 2007</h2><P>You need to use EditableChild with EditableRootList. (I'm not sure what EditableRoot is for.) </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Thursday, May 31, 2007</h2><P>I will try that. I'm also dissecting the ProjectTracker application to learn more (besides digging more into the book) :)</P>
+<P>Thanks,</P>
+<P>Jimmy</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

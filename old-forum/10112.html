@@ -1,0 +1,14 @@
+<html><header><title>PropertyStatus &amp; PropertyInfo</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>PropertyStatus &amp; PropertyInfo</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10112.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hamchuck posted on Saturday, February 26, 2011</h2><p>Can someone please exaplain the difference between this controls ?</p>
+<p>I&#39;m developing with WPF, should I be using one instead of the other ?</p>
+<p>In Rocky&#39;s blog posting</p>
+<p>&nbsp;<a href="http://www.lhotka.net/weblog/CSLA4Version41Beta2Available.aspx">http://www.lhotka.net/weblog/CSLA4Version41Beta2Available.aspx</a></p>
+<p>he states to look at Samples\NET\cs\SimpleNTier solution&rsquo;s WP7 UI project for an example of how this works.&nbsp; This example contains both controls does this mean that both are required for each element in a UI ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Sunday, February 27, 2011</h2><p>It is easy.</p>
+<p>PropertyInfo is a <em>non-visual</em> control that makes the metastate properties about a business object property available for data binding.</p>
+<p>PropertyStatus is a <em>visual</em> control that uses the metastate properties about&nbsp;a business object property to display info/warn/error rule information to the user. It also exposes the metastate properties like ProprtyInfo, so you can use them for other binding purposes.</p>
+<p>If you want a quick-and-dirty solution to display broken rules, and you like the way PropertyStatus looks (or choose to style it yourself) then it is the easy answer.</p>
+<p>If you want complete and total control over the visual results, you&#39;ll want PropertyInfo.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Hamchuck replied on Sunday, March 06, 2011</h2><p>Rocky</p>
+<p>Do you know of an example that shows the usage of the PropertyInfo control ?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 06, 2011</h2>It is used in the WP7 project in the net\cs\simplentier solution.
+
+The reason I created the control in the first place is that PropertyStatus doesn&#39;t fit into the WP7 world and I needed a good solution there.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

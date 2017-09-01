@@ -1,0 +1,59 @@
+<html><header><title>How to use MVVM binding to combox?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to use MVVM binding to combox?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9783.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon posted on Thursday, November 18, 2010</h2><p>I bought the CSLA 4.0 MVVM Serials, &nbsp;and according to the sample, &nbsp;i set up a ProductCategoryViewModel, and ProductCategoyrView , in the ProductcategoryView &nbsp;there a combox for parent product category, &nbsp;how to bind the ProductCategorListViewModel to the combox itemsource?</p>
+<p>&nbsp;</p>
+<p>Thank you.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>griff replied on Friday, November 19, 2010</h2><p>Hi</p>
+<p>this is what I&#39;ve done (binding to namevaluelsit)</p>
+<p>&lt;custom:AutoCompleteComboBox x:Name=&quot;cboKeywordSearch&quot; Width=&quot;200&quot; Margin=&quot;10&quot; MaxDropDownHeight=&quot;1000&quot;&nbsp;</p>
+<p>SelectedValue=&quot;{Binding Path= Model.KeywordID,Mode=TwoWay}</p>
+<p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; SelectedValuePath=&quot;Value&quot; &nbsp;SelectedValue=&quot;{Binding Path= KeywordSearch,Mode=TwoWay}&quot;&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ItemsSource=&quot;{Binding KeywordList, ValidatesOnDataErrors=true, Mode=TwoWay}&quot;&gt;</p>
+</p>
+<p>&nbsp;</p>
+<p>HTH</p>
+</p>
+<p>Richard</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simon replied on Sunday, November 21, 2010</h2><p>
+<div>
+<p>Hi Richard</p>
+<p>How to get the keywordList ? &nbsp;use :CslaDataProvider?&nbsp;</p>
+<p>In my project, I use the code as below, but not work..</p>
+<p>&nbsp;</p>
+<p>&nbsp;&lt;CollectionViewSource x:Key=&quot;productCategorySource&quot; Source=&quot;vm:ProductCategoryViewModel&quot; /&gt;</p>
+<p>&nbsp;&nbsp; &lt;CollectionViewSource x:Key=&quot;productCategoryListSource&quot;Source=&quot;vm:ProductCategoryListViewModel&quot; &nbsp;/&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</div>
+</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>griff replied on Monday, November 22, 2010</h2><p>This is in my VM:</p>
+<p>&nbsp;</p>
+<p>
+<p>Private _KeywordList As Abraca.Business.KeywordNVL</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Public Property KeywordList() As Abraca.Business.KeywordNVL</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If _KeywordList Is Nothing Then</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadKeywordList()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return _KeywordList</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As Abraca.Business.KeywordNVL)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;_KeywordList = value</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;OnPropertyChanged(&quot;KeywordList&quot;)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End Set</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Property</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Sub LoadKeywordList()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Abraca.Business.KeywordNVL.GetBySchoolIDAsync(App.SchoolID, AddressOf LoadKeywordListCompleted)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Sub LoadKeywordListCompleted(ByVal sender As Object, ByVal e As Csla.DataPortalResult(Of Abraca.Business.KeywordNVL))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If Not e.Object Is Nothing Then</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;KeywordList = e.Object</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MessageBox.Show(e.Error.Message, &quot;Error getting subject index list&quot;, MessageBoxButton.OK)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+</p>
+<p>&nbsp;</p>
+<p>My combo binds to &nbsp;KeywordList</p>
+<p>Richard</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

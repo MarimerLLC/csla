@@ -1,0 +1,69 @@
+<html><header><title>Self Referencing Hierarchy with Null Guids crashes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Self Referencing Hierarchy with Null Guids crashes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9800.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Wednesday, November 24, 2010</h2><p>I have a situation where I have a self referencing hierarchy table with guids. In the ParentID there has to be nulls for it to be recognized as the top level parent. When I run this through my csla object, it crashes at populating the object such as LoadProperty(of Guid)(_ParentIDProperty,data.ParentID) with an error of NullReferenceException throw (I believe). Now I&#39;ve tried to solve this with declaring my ParentID as a Nullable(of Guid) with no success. Does anyone else have a solution? This clsa build is 3.6</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>am_fusion replied on Wednesday, November 24, 2010</h2><p>I am not so sure what your actual problem may be (your solution of making the ParentId nullable should work).</p>
+<p>A couple of suggestions though:</p>
+<ul>
+<li>maybe use empty guid instead of null to represent a root level entity in the hierarchy</li>
+<li>are you sure you need to populate your BO with this value... shouldn&#39;t the ParentId field only be needed in the database?&nbsp; The child, can get the parent&#39;s ID through the parent property, so all entities need only have their own ID.</li>
+</ul></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, November 24, 2010</h2><p>ok in my BO I have this setup...</p>
+<p>#region &quot;Business Logic&quot;</p>
+<p>
+<p>&nbsp;Private Shared _IDProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid)(GetType(ProductCategory), New PropertyInfo(Of Guid)(&quot;ID&quot;, &quot;ID&quot;, Guid.NewGuid))</p>
+<p>&nbsp;&nbsp; &nbsp;Private _ID As Nullable(Of Guid) = _IDProperty.DefaultValue</p>
+<p>&nbsp;&nbsp; &nbsp;Private Shared _ParentIDProperty As PropertyInfo(Of Guid) = RegisterProperty(Of Guid)(GetType(ProductCategory), New PropertyInfo(Of Guid)(&quot;ParentID&quot;, &quot;ParentID&quot;, Guid.Empty))</p>
+<p>&nbsp;&nbsp; &nbsp;Private _ParentID As Nullable(Of Guid) = _ParentIDProperty.DefaultValue</p>
+</p>
+<p>&nbsp;</p>
+<p>
+<p>&lt;System.ComponentModel.DataObjectField(True, True)&gt; _</p>
+<p>&nbsp;Public ReadOnly Property ID() As Guid</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(Of Guid)(_IDProperty, _ID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</p>
+<p>&nbsp;&nbsp; &nbsp;End Property</p>
+<p>&nbsp;&nbsp; &nbsp;&lt;System.ComponentModel.DataObjectField(True, True)&gt; _</p>
+<p>&nbsp;&nbsp; &nbsp;Public Property ParentID() As Nullable(Of Guid)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Return GetProperty(Of Guid)(_ParentIDProperty)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Get</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Set(ByVal value As Nullable(Of Guid))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;SetProperty(Of Guid)(_ParentIDProperty, value)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Set</p>
+<p>&nbsp;&nbsp; &nbsp;End Property</p>
+</p>
+<p>#End Region&nbsp;</p>
+<p>#region &quot;Child Data Logic&quot;</p>
+<p><span style="font-size:11.8056px;">Private Sub Child_Fetch(ByVal data As CK.Linq.ProductCategory)</span></p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Guid)(_IDProperty, data.ID)</p>
+<p style="padding-left:60px;">It crashes here when retrieving data from the DB if it has a null&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Guid)(_ParentIDProperty, data.ParentID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_name, data.Name)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_description, data.Description)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_imageUrl, data.ImageUrl)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of ProductList)(_productlist, Productlist.GetProductList(data.XrefProductCategories.ToArray))</p>
+<p>&nbsp;&nbsp; &nbsp;End Sub</p>
+</p>
+<p>#End Region</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>am_fusion replied on Wednesday, November 24, 2010</h2><p>very odd... the only thing I can think of is your LoadProperty generic type is (of Guid) and might need to be (of nullable(of guid)):</p>
+<p>LoadProperty(Of nullable(of Guid))(_ParentIDProperty, data.ParentID)</p>
+<p>also, your register property static call should be:</p>
+<p>&nbsp;Private Shared _ParentIDProperty As PropertyInfo(<strong>Of nullable</strong>(of Guid)) = RegisterProperty(<strong>Of nullable</strong>(Of Guid))(GetType(ProductCategory), New PropertyInfo(<strong>Of nullable</strong>(Of Guid))(&quot;ParentID&quot;, &quot;ParentID&quot;, Guid.Empty))</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Wednesday, November 24, 2010</h2><p>I change to your solution because that was a great idea and also added.</p>
+<p><span style="font-size:11.8056px;">&nbsp;Private Sub Child_Fetch(ByVal data As CK.Linq.ProductCategory)</span></p>
+<p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Guid)(_IDProperty, data.ID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;If data.ParentID.HasValue = True Then</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Nullable(Of Guid))(_ParentIDProperty, data.ParentID)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of Nullable(Of Guid))(_ParentIDProperty, Guid.Empty)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_name, data.Name)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_description, data.Description)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of String)(_imageUrl, data.ImageUrl)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;LoadProperty(Of ProductList)(_productlist, Productlist.GetProductList(data.XrefProductCategories.ToArray))</p>
+<p>&nbsp;&nbsp; &nbsp;End Sub</p>
+<p><span style="font-size:11.8056px;">I feel as if I&#39;m getting closer.. now I have no errors with no results... oh btw.. this is binding to a very plain treeview.&nbsp;</span></p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

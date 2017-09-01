@@ -1,0 +1,27 @@
+<html><header><title>SL 4 and CSLA 3.8.x</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SL 4 and CSLA 3.8.x</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8812.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Monday, April 19, 2010</h2><p>Is/has anybody upgraded their Silveright application to SL4 with the existing 3.8.x framework?&nbsp;&nbsp; I would like to upgrade my UI controls but don&#39;t need the headache of CSLA issues.</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>sergeyb replied on Monday, April 19, 2010</h2><p>I was able to do it.&nbsp; No issues with CSLA, although I did not recompile the CSLA as 4.0, I left them on .NET 3.5 SP1/ SL 3 versions.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, April 19, 2010</h2><p>Same as Sergey - pointed all references for the Web app and class libraries for server and Silverlight side to 4 and all is well.</p>
+<p>Using CSLA 3.8.3 still too.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, May 11, 2010</h2><p>1) I can compile with no errors.&nbsp; I didn&#39;t touch the 3.8.2 dll builds I had referenced.</p>
+<p>2) When I start to run I get the following error:&nbsp; </p>
+<p>&#39;WebDev.WebServer40.EXE&#39;: Loaded &#39;C:\Windows\assembly\NativeImages_v4.0.30319_32\Microsoft.JScript\657c944537a05caa1b1f55cffb8aabb9\Microsoft.JScript.ni.dll&#39;, Cannot find or open the PDB file</p>
+<p>&#39;WebDev.WebServer40.EXE&#39; (Managed (v4.0.30319)): Loaded &#39;C:\Windows\Microsoft.Net\assembly\GAC_MSIL\Microsoft.JScript\v4.0_10.0.0.0__b03f5f7f11d50a3a\Microsoft.JScript.dll&#39;</p>
+<p>First-chance exception at 0x7599b727 in WebDev.WebServer40.EXE: Microsoft C++ exception: EEFileLoadException at memory location 0x0516a528..</p>
+<p>I can continue past and ignore this error.&nbsp; Then I get the following:</p>
+<p>3) - Could not load file or assembly &#39;System.ServiceModel.NetTcp, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<p>This is happening in reference.cs (cslalightcs) at the&nbsp; </p>
+<p>public WcfPortalClient()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>4) I can continue past this and then I get this:</p>
+<p>Could not load file or assembly &#39;System.ServiceModel.PollingDuplex, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<p>At the same point.</p>
+<p>5) Again I can continue debugging past that and I get:</p>
+<p>Could not load file or assembly &#39;System.ServiceModel.Extensions, Version=2.0.5.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35&#39; or one of its dependencies. The system cannot find the file specified.</p>
+<p>&nbsp;private class WcfPortalClientChannel : ChannelBase&lt;Csla.WcfPortal.IWcfPortal&gt;, Csla.WcfPortal.IWcfPortal {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public WcfPortalClientChannel(System.ServiceModel.ClientBase&lt;Csla.WcfPortal.IWcfPortal&gt; client) : <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; base(client) {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>6) And then my application is loaded and seems to work okay... I have a few SL4 issues with XAML parse errors I hadn&#39;t had in SL3 but I&#39;m assuming those are just convention changes or badly formed XAML that used to work okay.</p>
+<p>Anyhow I&#39;m a bit worried about trying to deploy without rectifiying some of these issues.</p>
+<p>I can&#39;t build/deploy 3.8.3 (not that I think that would make a difference) .</p>
+<p>Any ideas or suggestions?</p>
+<p>Thanks</p>
+<p>jack</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Tuesday, May 11, 2010</h2><p>Just as an update I did a deploy and everything runs okay.&nbsp; For anyone else updating everything to SL4 / .NET4 don&#39;t forget to install the .NET 4 client on your webserver and to update the application pool to version 4.x.</p>
+<p>As for the debugging errors I just set the debugger to ignore c++ exceptions and to ignore IO.FileNotFound and it isn&#39;t beeping at me anymore.</p>
+<p>It would be nice not have any exceptions but this should do until I can upgrade to CSLA 4.x</p>
+<p>jack</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

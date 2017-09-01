@@ -1,0 +1,16 @@
+<html><header><title>CSLA 4.3.13 (old) - Remove rules?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4.3.13 (old) - Remove rules?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12680.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSherman posted on Monday, June 23, 2014</h2><p>Hi,</p>
+<p>I know I am using an older version, but is there a way to remove rules? We have many unit test drivers testing various rule states and scenarios - our problems come on every rebuild the rules may be added in different orders because the tests run in a pseudorandom order based on the rebuild. We have no way to control when our objects have different rules, and because we no longer have instance rules, we need to be able to remove the active rules before we add more rules to test those specific rules. Is this possible?</p>
+<p>Thanks,</p>
+<p>Matt</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, June 23, 2014</h2><p>Hi,</p>
+<p>In short - no you cannot remove or clear rules.&nbsp;</p>
+<p>But: you can create multiple complete RuleSet and switch between these in your code.&nbsp;</p>
+<p>By default all rules are added to a &quot;default&quot; RuleSet.</p>
+<p>I would however recommend to unit test your rules as well. Have a look at the RuleTutorial sample that includes some helper classes to make it easier to unit test BusinessRules.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MSherman replied on Friday, August 01, 2014</h2><p>Thanks for responding (sorry for the time difference).</p>
+<p>I can&#39;t give you actual code snippets for many reasons, including the sheer amount of code, but if I understand what you say, maybe this hypothetical situation might be answered using rulesets.</p>
+<p>We have cases where config files decide how the application can be run. If the user wants to switch to a different config file, a different set of rules may be run. Since we&#39;re unable to remove rules, could we use rulesets by, when loading/adding all rules, adding them to a specific ruleset relative to that config only (each one has a unique ID), and upon switching, no rules would be on the new config?</p>
+<p>Would something like that work?</p>
+<p>thanks,</p>
+<p>Matt</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, August 02, 2014</h2><p>You would actually have to register all rulesets when AddBusinessRules is called (just once per-type). And then you could switch between rulesets.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

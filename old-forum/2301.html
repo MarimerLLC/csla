@@ -1,0 +1,44 @@
+<html><header><title>CSLA Principal Object and Form Authenication Cookie?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA Principal Object and Form Authenication Cookie?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2301.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Thursday, February 08, 2007</h2><P>Hi There,</P>
+<P>I have a login in page for the Administrative side of the site i'm building. I have the VS.net 2005 Login Control all wired up to my CLSA principal object and it works great! Except for the Remember Me Option. When I return to the site I am not authenticated.</P>
+<P>How do I go about getting the pricipal object to check for a security cookie from the form login control?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Thursday, February 08, 2007</h2><P>OK I just re-read the pages that cover the Login Control for the web project in the book. </P>
+<P>How do I get the Forms Authentication to "RE" log in the user&nbsp;securely when thier session expires if they have clicked on "Remember Me".</P>
+<P>We don't use sessions for anything but storing the current user. So&nbsp;I just want the session to be regenerated in our administrative side of the application if it times out. Our public section of the application is different and does need to be redirect to another page when the session times out.</P>
+<P>If I am using the ASP.net Log in control can I encrypt the password to the UserData section of the AuthCookie? </P>
+<P>Then could retrieve the username and password and attempt to log the user back in with the data from the cookie. </P>
+<P>Anybody done this before?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Tuesday, February 13, 2007</h2><P><FONT face=Arial size=2>Here is the solution that I came up with. </FONT></P>
+<P><FONT face=Arial size=2>I wrote the code to build the ticket manually and encrypt it and add it to the cookie value but for some reason Response.Cookie.Add(authCookie) was not send it to the client so I figured out this way which is much simplier than adding data to the UserData Field of the auth ticket.</FONT></P>
+<P><FONT face=Arial size=2>Here is my Log In button click event: </FONT></P><FONT color=#0000ff size=2>
+<P>protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> btnLogIn_Click(</FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> sender, </FONT><FONT color=#008080 size=2>EventArgs</FONT><FONT size=2> e)</P>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#008080 size=2>FormsAuthentication</FONT><FONT size=2>.Initialize();</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Membership</FONT><FONT size=2>.ValidateUser(txtUserName.Text, txtPassword.Text))</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>FormsAuthentication</FONT><FONT size=2>.RedirectFromLoginPage(((</FONT><FONT color=#008080 size=2>MyIdentity</FONT><FONT size=2>)Csla.</FONT><FONT color=#008080 size=2>ApplicationContext</FONT><FONT size=2>.User.Identity).UserID.ToString(), chkRememberMe.Checked);</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#008000 size=2>// Username and or password not found in our database...</P></FONT><FONT size=2>
+<P>LogInFailure.IsValid = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>; </P>
+<P>}</P>
+<P>}</P></FONT>
+<P><FONT face=Arial><FONT size=2>In Application_AcquireRequestState I do the same as the book to check if the Prinicipal is in the session. If the pricipal is null I check for the Authenication Cookie which I have assigned the USER ID to.</FONT></FONT></P>
+<P><FONT face=Arial><FONT size=2>I then call a <FONT color=#008080>MyPrincipal</FONT>.Login(UserID) and assign the session variable again if successful the code is below:</FONT></FONT></P><FONT face=Arial><FONT color=#008080>
+<P><FONT size=2>FormsAuthenticationTicket</FONT></FONT><FONT size=2> authTicket = <FONT color=#008080>FormsAuthentication</FONT>.Decrypt(authCookie.Value);</FONT></P>
+<P><FONT size=2><FONT color=#008080>Guid</FONT> UserID = <FONT color=#0000ff>new</FONT> <FONT color=#008080>Guid</FONT>(authTicket.Name.ToString());</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>if</FONT> (<FONT color=#008080>MyPrincipal</FONT>.Login(UserID))</FONT><FONT size=2>{</FONT></P>
+<P><FONT size=2><FONT color=#008080>HttpContext</FONT>.Current.Session[<FONT color=#800000>"MyPrincipal"</FONT>] = Csla.<FONT color=#008080>ApplicationContext</FONT>.User;</FONT></P>
+<P><FONT size=2>principal = (System.Security.Principal.<FONT color=#008080>IPrincipal</FONT>)<FONT color=#008080>HttpContext</FONT>.Current.Session[<FONT color=#800000>"MyPrincipal"</FONT>];</FONT></P>
+<P><FONT size=2>}</FONT></P>
+<P><FONT color=#0000ff><FONT size=2>else</FONT></P></FONT>
+<P><FONT size=2>{</FONT></P>
+<P><FONT color=#ff0000 size=2>//Cookie is not valid so throw an exception</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>throw</FONT> <FONT color=#0000ff>new</FONT> <FONT color=#008080>Exception</FONT>(<FONT color=#800000>"INVALID USER ID PROVIDED FROM SECURITY COOKIE!"</FONT>);</FONT></P>
+<P><FONT size=2>}</FONT></P></FONT>
+<P><FONT face=Arial><FONT size=2></FONT>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoOfMetL replied on Tuesday, February 03, 2009</h2><br>Hello, 
+<br>
+<br> I used a different solution: 
+<br>
+<br> If the object is no longer in session, but that its authorization
+ticket is still valid, then I reload the data only with his username.<br><br>In Application_AcquireRequestState : <br><br>if (HttpContext.Current.Session != null) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; principal = HttpContext.Current.Session["CslaPrincipal"] as System.Security.Principal.IPrincipal;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if ((principal == null) &amp;&amp; (Csla.ApplicationContext.User.Identity.IsAuthenticated)) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (MyPrincipal.LoadPrincipal(Csla.ApplicationContext.User.Identity.Name)) {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; principal = Csla.ApplicationContext.User;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; HttpContext.Current.Session["CslaPrincipal"] = Csla.ApplicationContext.User;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bagpuss replied on Tuesday, February 03, 2009</h2>Hi,<br><br>I've got exactly the same problem, did you find a solution? Or does anyone have the solution?<br><br>Thanks,<br><br>Simon<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,106 @@
+<html><header><title>Doing more than validation in Business rules. </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Doing more than validation in Business rules. </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7155.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz posted on Tuesday, June 23, 2009</h2><P>Sorry if this is a bit of a ramble. I'm refactoring a project somewhat and reviewing how I do a few things.</P>
+<P>I'm interested in any advice or guidance on the following. It's a common situation but the ProjectTracker example doesn't quite have it. </P>
+<P>Let's say I have a class called TimeRecord. One of it's properties is ProjectId. When TimeRecord.ProjectId is set, I want some other properties of TimeRecord to be updated with infomation about the project that it gets from the db. Let's say ProjectName, ProjectCustomerName. I also want TimeRecord to have a bool property called ProjectIsValid which indicates if ProjectId refers to a valid Project. I have implemented these three "project" properties in TimeRecord as managed properties with private backing fields named _projectName etc ...</P>
+<P>I'm thinking of this thread <A HREF="/forums/permalink/33891/33892/ShowThread.aspx#33892">http://forums.lhotka.net/forums/permalink/33891/33892/ShowThread.aspx#33892</A> where Rocky recommends doing things in business rules rather than PropertyChanged events.</P>
+<P>I have a readonly class called Project which gets the project info. It returns null if given a ProjectId that does not exist. I know that the merits of returning null is a whole other discussion but ... that's the way I do it. It efficiently returns null if Project&nbsp;== 0&nbsp;as it will&nbsp;when TimeRecord is created.</P>
+<P>So ... I have a business rule like this associated with the ProjectId property. It's really a bogus rule in the sense that it always returns true. I'm just making use of the fact that it will run it whenever ProjectId changes and at other appropriate times such as when TimeRecord is Fetched and Created.</P>
+<P>private static bool ProjectRule(TimeRecord timeRec, RuleArgs e)<BR>{<BR>&nbsp;var project = Project.GetProject(timeRec.ProjectId);</P>
+<P>&nbsp;timeRec._projectIsValid = (project != null);</P>
+<P>&nbsp;if (timeRec._projectIsValid)<BR>&nbsp;{<BR>&nbsp;&nbsp;timeRec._projectName = project.Name;<BR>&nbsp;&nbsp;timeRec._projectCustomerName = project.CustomerInfo.Name;<BR>&nbsp;}<BR>&nbsp;else<BR>&nbsp;{<BR>&nbsp;&nbsp;timeRec._projectName = String.Empty;<BR>&nbsp;&nbsp;timeRec._projectCustomerName = String.Empty;<BR>&nbsp;}</P>
+<P>&nbsp;return true;<BR>}</P>
+<P>I also have this rule associated with ProjectIsValid</P>
+<P>private static bool ProjectIsValidRule(TimeRecord timeRec, RuleArgs e)<BR>{<BR>&nbsp;if (!timeRec.ProjectIsValid)<BR>&nbsp;{<BR>&nbsp;&nbsp;e.Description = "Please select a project";<BR>&nbsp;}</P>
+<P>&nbsp;return timeRec.ProjectIsValid;<BR>}</P>
+<P>ProjectIsValid is set as a dependent property of ProjectId</P>
+<P>I'm building WinForms apps and often bind this sort of property to an invisible checkbox. That lets me control where the error icon appears. That's also why I ProjectRule doesn't return timeRec.ProjectIsValid. If ProjectId is somehow on the UI (maybe a dropdown) then I don't necessarily want it showing the error icon.</P>
+<P>That works nicely but there are a couple of awkward points.</P>
+<P>The ProjectName and ProjectCustomerName "magically" change in the UI when I change ProjectId. That's good but it's only really working because of the WinForms behavior (bug?) which causes all properties to be refreshed. The only PropertyChanged event is for ProjectId. Unless excessive updates cause a performance issue, I'd like to future proof my code so it will work with WPF or whatever. What's a nice way to cause the other PropertyChanged events to happen?</P>
+<P>You can see in ProjectRule why I chose private backing fields for those properties. Is there a better way of doing that? My code wouldn't work if ProjectRule was in a separate class. Do I need a SetProjectInfo() method? I guess that's the answer. If it's internal it will be hidden from any UI developer.</P>
+<P>The way I've done this until now is with a ProjectInfo class defined within TimeRecord containing those project properties. I have a property called Project which does a lazy loading type thing. It checks if the private _projectInfo instance currently refers to the correct ProjectId and, if not, loads it with the correct data. Within TimeRecord I then refer to this.Project That works quite well but I do like the idea of putting stuff like this in a rule which might be normalized into another class. I nearly always access the project properties so I don't really gain anything from the lazy loading. </P>
+<P>Thanks for any comments.</P>
+<P>Ross<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, June 23, 2009</h2>A&nbsp;thought I had immediately after posting. I guess ProjectName etc could be read write managed fields with the set being&nbsp;modified as private or internal. That way the correct PropertyChanged events will happen.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, June 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div>
+<P>The ProjectName and ProjectCustomerName "magically" change in the UI when I change ProjectId. That's good but it's only really working because of the WinForms behavior (bug?) which causes all properties to be refreshed. The only PropertyChanged event is for ProjectId. Unless excessive updates cause a performance issue, I'd like to future proof my code so it will work with WPF or whatever. What's a nice way to cause the other PropertyChanged events to happen?</P>
+<P></div></BLOCKQUOTE></P>
+<P>If you attach the rule(s) to the "correct" properties, and use dependent properties so the rules run when appropriate, then WPF will just work (if you tell CSLA you are running in WPF).</P>
+<P>In other words, attach the rules to ProjectName, and make ProjectId depend on ProjectName with AddDependentProperty() so when ProjectId changes the rules for ProjectName are checked.</P>
+<P>If you set the Csla.ApplicationContext.PropertyChangedMode (?) to Xaml then CSLA raises PropertyChanged events properly to make sure things work right in WPF.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, June 24, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>If you attach the rule(s) to the "correct" properties, and use dependent properties so the rules run when appropriate, then WPF will just work (if you tell CSLA you are running in WPF).</p>
+<p>In other words, attach the rules to ProjectName, and make ProjectId depend on ProjectName with AddDependentProperty() so when ProjectId changes the rules for ProjectName are checked.</p>
+<p>If you set the Csla.ApplicationContext.PropertyChangedMode (?) to Xaml then CSLA raises PropertyChanged events properly to make sure things work right in WPF.</p></div></BLOCKQUOTE><br><br>Thanks Rocky. I'm still a little confused. Sorry if I'm missing the forest for the trees and making this more complicated than it needs to be. At first I thought you meant that I should use a rule attached to ProjectName to change the value of ProjectName and have similar rules attached to ProjectCustomerName and ProjectIsValid to change those properties. I think that's what you mean but I also wonder if you mean to only have one rule attached to, say, ProjectName which updates all required fields from Project but still make all properties dependent on ProjectId.<br><br>If each property has a rule which does a lookup and changes that property's value then I would want to cache the Project object that I use to read the project data since I obviously wouldn't want to hit the db for ProjectName and then again for ProjectCustomerName etc. But ... then I'm effectively holding an instance of Project which somewhat defeats the purpose of having those fields in TimeRecord. It seems much cleaner to use Project once to grab some data when ProjectId changes and then throw it away. So ... I wonder if whichever rule runs first should update all fields from Project. Would it make sense to use the rule priority to ensure which runs first? The rules on the other properties would do nothing except return true ... or do I need those rules at all?<br><br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 24, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think rule methods should be relatively narrowly focused &#8211;
+each one should contain one rule.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But sometimes rules only apply in certain cases, and I have no
+problem putting those conditions into the rule method too. So if a rule only
+applies to an object that is not new, I&#8217;m happy to check IsNew in the
+rule method and only really run the rule if it is false.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I do try to avoid putting multiple actual rules in a single rule
+method &#8211; if for no other reason that you can&#8217;t get them to show up
+in the UI correctly, but also because this makes the rules more maintainable.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Next, you should attach rules to the property they primarily
+affect. Or another way to put it, is attach the rule to the property next to
+which you want the icon to appear in the UI.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But some rules operate against multiple properties (reading or
+even manipulating them). You should be able to use dependent properties to link
+(one way or bi-directionally) those properties, so CSLA understands that when
+the rules are checked for one of them, the rules should be checked for the
+other(s) as well. If you do this, and tell CSLA you are using XAML, then CSLA
+will also raise PropertyChanged events for all those properties so the UI
+refreshes correctly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Wednesday, June 24, 2009</h2>Thanks Rocky. That all makes sense. Perhaps my question isn't really so much about rules but more just practical programming advice. Sorry to go on about this.<br><br>Everything is cool if I only have ProjectName. I create a rule for ProjectName and make ProjectName dependent on ProjectId. In my ProjectName rule I lookup the name related to the current ProjectId and update the ProjectName property. My complication is when I also want to lookup another property, eg ProjectCustomerName, based on ProjectId. I can create a rule for ProjectCustomerName to do the same sort of thing. That's all fine but I'm struggling with how to do it efficiently because in practice both rules will involve the same readonly object called Project which does the same db query because it makes no sense to query the project table for Name and then a moment later query it again for CustomerName. I don't really want to cache Project (when would I release it?). I can make my ProjectName rule also update ProjectCustomerName but it seems that I should still have a rule attached to ProjectCustomerName so that the PropertyChanged events happen. So ... should I have a ProjectName rule that updates both ProjectName and ProjectCustomerName and then a rule ProjectCustomerName which really does nothing?<br><br>I guess I'm just asking how you or anyone else would handle this.<br><br>Thanks<br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 20, 2009</h2>Hi all<br><br>I'm resurrecting this thread from a couple of weeks ago. I have one more question and I'd like to know that I'm doing things right before moving forward and duplicating it.<br><br>Another example.&nbsp; Lets say I have an Order object which has properties that include a readwrite CustomerId and readonly CustomerName, CustomerCity and CustomerPhone. The readonly properties are looked up whenever CustomerId changes. So my rules go something like this:<br><br>protected override void AddBusinessRules()<br>{<br>&nbsp;&nbsp; ValidationRules.AddRule&lt;Order&gt;(CustomerNameRule, CustomerNameProperty);<br>&nbsp;&nbsp; ValidationRules.AddRule&lt;Order&gt;(CustomerCityRule, CustomerCityProperty);<br>&nbsp;&nbsp; ValidationRules.AddRule&lt;Order&gt;(CustomerPhoneRule, CustomerPhoneProperty);<br><br>&nbsp;&nbsp; ValidationRules.AddDependentProperty(CustomerIdProperty, CustomerNameProperty);<br>&nbsp;&nbsp; ValidationRules.AddDependentProperty(CustomerIdProperty, CustomerCityProperty);<br>
+&nbsp;&nbsp; ValidationRules.AddDependentProperty(CustomerIdProperty, CustomerPhoneProperty);<br>
+}<br><br>private static bool CustomerNameRule(Order bo, RuleArgs e)<br>{<br>&nbsp;&nbsp; bo.LoadProperty&lt;string&gt;(CustomerNameProperty, LookupCustomerName());<br>&nbsp;&nbsp; return true;<br>}<br><br>private static bool CustomerCityRule(Order bo, RuleArgs e)<br>
+{<br>
+&nbsp;&nbsp; bo.LoadProperty&lt;string&gt;(CustomerCityProperty, LookupCustomerCity());<br>
+&nbsp;&nbsp; return true;<br>
+}<br>
+<br>// likewise for CustomerPhoneRule<br><br>That works fine but to save some code ... the following works fine too.<br><br>protected override void AddBusinessRules()<br>{<br>&nbsp;&nbsp; ValidationRules.AddRule&lt;Order&gt;(CustomerIdRule, CustomerIdProperty);<br><br>&nbsp;&nbsp; ValidationRules.AddDependentProperty(CustomerIdProperty, CustomerNameProperty);<br>&nbsp;&nbsp; ValidationRules.AddDependentProperty(CustomerIdProperty, CustomerCityProperty);<br>
+&nbsp;&nbsp; ValidationRules.AddDependentProperty(CustomerIdProperty, CustomerPhoneProperty);<br>
+}<br><br>private static bool CustomerIdRule(Order bo, RuleArgs e)<br>
+{<br>
+&nbsp;&nbsp; bo.LoadProperty&lt;string&gt;(CustomerNameProperty, LookupCustomerName());<br>
+
+&nbsp;&nbsp; bo.LoadProperty&lt;string&gt;(CustomerCityProperty, LookupCustomerCity());<br>
+
+
+&nbsp;&nbsp; bo.LoadProperty&lt;string&gt;(CustomerPhoneProperty, LookupCustomerPhone());<br>
+
+&nbsp;&nbsp; return true;<br>
+}<br>
+<br>
+Now there are no rules on Name, City and Phone but they are part of dependent properties so that the correct ProperyChanged events happen for WPF.&nbsp; Is this way okay? Perhaps I'm reading too much into it and this is the obvious way to go anyway.<br><br>Thanks<br>Ross<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

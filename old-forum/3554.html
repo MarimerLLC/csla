@@ -1,0 +1,97 @@
+<html><header><title>CSLA General: BusinessBase - Best Practise</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA General: BusinessBase - Best Practise</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3554.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cjherasmus posted on Monday, September 17, 2007</h2><P><FONT face=Arial size=2>I have a question regarding best practices in CSLA.</FONT></P>
+<P><FONT face=Arial size=2>I have a base class from which I derive three subclasses. For example, my base class is Vehicle, my subclasses which derive from&nbsp;Vehicle are: Aeroplane, Car and&nbsp;Bicycle.</FONT></P>
+<P><FONT face=Arial size=2>Should Vehicle derive from BusinessBase, or should each of the subclasses derive from BusinessBase?</FONT></P>
+<P><FONT face=Arial size=2>Vehichle shouldn't be accessible from the application layer.</FONT></P>
+<P><FONT face=Arial size=2>Thanks</FONT></P>
+<P><FONT face=Arial size=2>Regards,</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, September 17, 2007</h2><P>If you have enough behavior within your vehicle class to justify its existance, then yes - have your Aeroplane, Car, and Bicycle derive from Vehicle. If all you have is some common data fields you should seriously consider just having an interface on the three classes - called IVehicle - at which point the three classes should derive from BusinessBase. </P>
+<P>*Regardless* of whether you have the vehicle base class or not, you'll want to have an interface IVehicle which exposes the common properties and methods - if Vehicle is a base class for the three, I would tend to have IVehicle be declared on Vehicle (which should be abstract)&nbsp;- if some things aren't implementable in Vehicle they would be abstract. </P>
+<P>You'll find this interface is necessary, because you can't just pass around a variable typed to Vehicle&lt;T&gt;. You *can* pass around a variable typed to IVehicle. </P>
+<P>Under really no circumstance does it seem to make sense to have Vehicle as a class and have the three subclasses derive from BusinessBase. (Under certain circumstances you might find that you want a vehicle that *doesn't* share any implementation with the vehicle base class, under which case I suppose you could declare other classes that implement IVehicle that derive from BusinessBase. </P>
+<P>When it comes to CSLA classes especially, IMO, any concept of subclassing (if you want to leverage polymorphism)&nbsp;really must be reinforced with interfaces. </P>
+<P>Good luck,</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Thursday, January 19, 2012</h2><p>Hi everybody. I have one question regarding this post. I&#39;m using CSLA 3.8</p>
+<p>Let say I have a business base class called Person</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:#2b91af;">Person</span>&nbsp;:&nbsp;<span style="COLOR:#2b91af;">BusinessBase</span>&lt;<span style="COLOR:#2b91af;"><span style="COLOR:#2b91af;">Person</span></span>&gt; </p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">{</p>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:#2b91af;">Guid</span>&gt;&nbsp;PersonIdProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="COLOR:#2b91af;">Guid</span>&gt;(c&nbsp;=&gt;&nbsp;c.PersonId);
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:#2b91af;">Guid</span>&nbsp;PersonId
+{
+	<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(PersonIdProperty);&nbsp;}
+	<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;LoadProperty(PersonIdProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}
+}
+ 
+<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:#2b91af;">PropertyInfo</span>&lt;<span style="COLOR:blue;">string</span>&gt;&nbsp;NameProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="COLOR:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Name);
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">string</span>&nbsp;Name
+{
+	<span style="COLOR:blue;">get</span>&nbsp;{&nbsp;<span style="COLOR:blue;">return</span>&nbsp;GetProperty(NameProperty);&nbsp;}
+	<span style="COLOR:blue;">set</span>&nbsp;{&nbsp;SetProperty(NameProperty,&nbsp;<span style="COLOR:blue;">value</span>);&nbsp;}
+}</pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="color:blue;"></span></pre>
+<pre style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">internal</span>&nbsp;Person()&nbsp;{&nbsp;}
+</pre>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">And from Person I derive Customer</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Customer</span>&nbsp;:&nbsp;<span style="color:#2b91af;">Person</span></p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;"><span style="color:#2b91af;"></span>{</p>
+<pre style="font-family:Consolas;background:white;color:black;font-size:15px;"><span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:blue;">string</span>&gt;&nbsp;AliasProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:blue;">string</span>&gt;(c&nbsp;=&gt;&nbsp;c.Alias);
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;Alias
+{
+	<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetProperty(AliasProperty);&nbsp;}
+	<span style="color:blue;">set</span>&nbsp;{&nbsp;SetProperty(AliasProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+}</pre>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">}</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">When I try to compile, I get these errors:</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Error&nbsp;2&nbsp;Cannot convert lambda expression to type &#39;Csla.PropertyInfo&lt;string&gt;&#39; because it is not a delegate type&nbsp;D:\Proyectos\NRG Global\NrgNet\Solution\Library.Base\...&nbsp;17&nbsp;80&nbsp;Library.Base</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Error&nbsp;3&nbsp;&#39;NrgNet.Library.Base.GenPersonaBase&#39; does not contain a definition for &#39;Alias&#39; and no extension method &#39;Alias&#39; accepting a first argument of type &#39;NrgNet.Library.Base.GenPersonaBase&#39; could be found (are you missing a using directive or an assembly reference?)&nbsp;D:\Proyectos\NRG Global\NrgNet\Solution\Library.Base\...&nbsp;17&nbsp;87&nbsp;Library.Base</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Should I directly go with the interfase design and replace the inheritance structure as you suggested, or do you have any alternatives here?</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Thanks in advance,</p>
+<p style="FONT-FAMILY:Consolas;BACKGROUND:white;COLOR:black;FONT-SIZE:15px;">Troncho</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, January 19, 2012</h2><p>You must understand generics better. <br />I recommend this MSDN Magazine artticle: Introducing Generics: <a href="http://msdn.microsoft.com/en-us/magazine/cc163683.aspx">http://msdn.microsoft.com/en-us/magazine/cc163683.aspx</a> </p>
+<p>You can only do inheritance like this: </p>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Vehicle</span>&lt;T&gt;&nbsp;:&nbsp;<span style="color:#2b91af;">BusinessBase</span>&lt;T&gt;, IVehicle&nbsp;<span style="color:blue;">where</span>&nbsp;T&nbsp;:&nbsp;<span style="color:#2b91af;">Vehicle</span>&lt;T&gt;
+&nbsp;&nbsp;{
+      // add common properties </pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;[<span style="color:#2b91af;">Serializable</span>]
+&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Car</span>&nbsp;:&nbsp;<span style="color:#2b91af;">Vehicle</span>&lt;<span style="color:#2b91af;">Car</span>&gt;
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;"></pre>
+<pre style="font-family:Consolas;background:#fafafa;color:black;font-size:13px;">  [<span style="color:#2b91af;">Serializable</span>]
+  <span style="color:blue;">public</span> <span style="color:blue;">class</span> <span style="color:#2b91af;">Plane</span> : <span style="color:#2b91af;">Vehicle</span><span style="color:#2b91af;">&lt;Plane</span>&gt;
+  {
+    
+  }</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Thursday, January 19, 2012</h2><p>Thanks for the advice Jonny! I&#39;ll go through the MSDN article you mention and then come back to this topic :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Friday, January 20, 2012</h2><p>Ok, I&#39;ve gone through Generics for 2 days now. I&#39;ve re read all I found around regarding generics.</p>
+<p>Still one definition blows my mind about the way generics are being used here:</p>
+<p><strong>class BusinessBase&lt;T&gt; : BusinessBase ... where T : BusinessBase&lt;T&gt;</strong></p>
+<p>When I try to read this statement in my mind I get an infinite recursive loop over T, as when trying to constrain T, I go back to BusinessBase&lt;T&gt;</p>
+<p>Same goes for the class <strong>Vehicle&lt;T&gt; : BusinessBase&lt;T&gt; where T : Vehicle&lt;T&gt;</strong></p>
+<p>When I try &quot;reading&quot; it in my mind, I still get the same infinite recursive loop over T.</p>
+<p>Jonny, what am I missing? What am I reading wrong?</p>
+<p>Thanks in advance :)</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 21, 2012</h2><p>It&#39;s a generic constraint and the Type specifier for all use of T inside your class. </p>
+<p>Take for example:</p>
+<p>&nbsp;&nbsp;&nbsp; public virtual T Save()</p>
+<p>You will usually want to get the correct type back from a Save, right?<br />And you cannot create an instance of Vechicle&lt;T&gt; because you do not have a constraint!!<br />But inside your class you can access methods and properties on that type on variables declared as T. </p>
+<p>So take the class </p>
+<pre style="font-family:Consolas;background:none repeat scroll 0% 0% #fafafa;color:black;font-size:13px;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:#2b91af;">Car</span>&nbsp;:&nbsp;<span style="color:#2b91af;">Vehicle</span>&lt;<span style="color:#2b91af;">Car</span>&gt;<br /><br />T is here Car and the Save method will return an object of type Car. <br /><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Saturday, January 21, 2012</h2><p>Hey, Jonny, thanks again for clarifying <img src="http://forums.lhotka.net/emoticons/emotion-2.gif" alt="Big Smile" /></p>
+<p>As a matter of fact, I was having a real syntax problem on the &quot;where T : Vehicle&lt;T&gt;&quot; part.</p>
+<p>Then, I came across with this web reference: <a href="http://www.somethingorothersoft.com/2010/09/27/crtp-in-c/">http://www.somethingorothersoft.com/2010/09/27/crtp-in-c/</a></p>
+<p>It&#39;s about Reflexive type parameter constraints. And then I understood the whole picture!</p>
+<p>&nbsp;What the constraint really says is that <em>T is a class that derives from Vehicle</em>, which is what&nbsp;<code>Car</code> is.</p>
+<p>Thank you very much.</p>
+<p>The actual solution I&#39;m building is upon &lt;Persons&gt; and their different appearences on a Business Solution.</p>
+<p>A Person doesn&#39;t need to be instanciated.</p>
+<p>public class Person&lt;T&gt; : BusinessBase&lt;T&gt; where T : Person&lt;T&gt;</p>
+<p>What I need instances of&nbsp;are all these classes, for example:</p>
+<p>public class Customer : Person&lt;Customer&gt;</p>
+<p>public class User : Person&lt;User&gt;</p>
+<p>public class Vendor : Person&lt;Vendor&gt;</p>
+<p>public class Employee : Person&lt;Employee&gt;</p>
+<p>etc...</p>
+<p><strong>Now, here is an extra question regarding this topic</strong>:&nbsp; What would you include in an IPerson interface,&nbsp;regarding this entity hierarchy I&#39;m defining, and considering it&#39;s deriving the whole thing from BusinessBase&lt;T&gt;</p>
+<p>Thanks again Jonny...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, January 21, 2012</h2><p>Hi,</p>
+<p>The <i>IPerson </i>interface should define common properties and methods (typically implemented in Person&lt;T&gt;) and is the only way that you can &quot;cast&quot; the Customer/User/Vendor etc into a generic/common class and access the properties/methods.</p>
+<p>You may also create more than one Interface if that is more suitable (f.ex properties vs behavior).&nbsp; You can also add the one or more interface to subclasses when you declare them.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Troncho replied on Saturday, January 21, 2012</h2><p>Ok, I see. I&#39;ll do some Interface coding and come back to you with the results. Thanks and have a nice weekend.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

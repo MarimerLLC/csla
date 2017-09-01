@@ -1,0 +1,46 @@
+<html><header><title>CodeSmith Templates for CSLA - VB and C# </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CodeSmith Templates for CSLA - VB and C# </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/978.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Tuesday, August 22, 2006</h2><P>Hi all,</P>
+<P>I have seen a few comments about the CodeSmith Templates for VB not being complete / correct and wanted to know more....</P>
+<P>I've done VB for years and C for a long time and a lot of C# in the last year.</P>
+<P>I kinda want to do a new project in VB with the CodeSmith templates but the idea of having to deal with bad gen'ed code is not one I like....</P>
+<P>I see the code moved from GDN to CodePlex and the bug track there is very small.</P>
+<P>can anyone comment on this?</P>
+<P>I might be able to help with the VB temaplates but I'd like to know more before I dive in to them --</P>
+<P>Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Skafa replied on Tuesday, August 22, 2006</h2>I use the C# templates on a regular basis, found a couple of small bugs, reported them and got fixed in no-time.<br><br>Don't know about the VB templates though.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, August 22, 2006</h2><P>I'm just starting to use the C# ones at home, and they seem plausibly correct.</P>
+<P>Most of the issues I've seen on this forum have appeared to be either:</P>
+<UL>
+<LI>a minor bug, easily corrected, or</LI>
+<LI>a misunderstanding by the user about which template they should be using.</LI></UL>
+<P>The second issue is a problem newbies to the architecture have even when using the hand-coded&nbsp;templates Rocky provides</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Tuesday, August 22, 2006</h2><P>According to Ricky, the VB templates are now up to speed in 2.0:</P>
+<P>"C# templates for Csla 2.0 are a complete rewrite to handle&nbsp;many kinds&nbsp;of data source.&nbsp; Imo, they are much better and more stable than the 1.x version.&nbsp; Allan Nielsen has converted these templates to vb version.&nbsp; If you haven't already try it, please check them out at <A href="http://www.codeplex.com/Wiki/View.aspx?ProjectName=CSLAcontrib">CslaContrib</A>.</P>
+<P>Ricky"</P>
+<P>I downloaded the set and took a quick look. They look excellent. Allan has done a great job keeping them in synch with the C# templates. So if you want to use the new 2.0 VB templates you should be fine. The 1.x templates are still suspect in my opinion.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Tuesday, August 22, 2006</h2><P>thanks for the feedback everyone!</P>
+<P>&nbsp;</P>
+<P>this is the best work I have had in a while :-)</P>
+<P>for me learning new stuff is "fun work"</P>
+<P>if the trend with CSLA and CodeSmith keeps going I think I will have the tools to really crank out some apps!</P>
+<P>just need to get a few steps further.... </P>
+<P>I might just post some stuff for sql proc generation after I get the hang of CodeSmith and what I need to hook into CSLA.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TerryHolland replied on Tuesday, December 12, 2006</h2><P>I am exploring the vb templates and notice that, as well as being able to select a 'Root Table' as the source for my class, I can also select a 'Root View' or a 'Root Command'.&nbsp; Ive been truing to experiment with the view and command options without much success.&nbsp; </P>
+<P>I have the following scenario</P>
+<P><STRONG>tblTest </STRONG>is a table containing ID(PK), Forename, Surname, DoB</P>
+<P><STRONG>vieTest</STRONG> has the following sql: Select ID, Forename from tblTest order by Forename </P>
+<P><STRONG>sprTest </STRONG>is essentioall the same as the vieTest</P>
+<P>&nbsp;</P>
+<P>What I find is that if I use Root View, and I select vieTest as my Root View and enter ID as my Unique Column, the template runs but I notice that that the ExecuteFetch procedure is as follows</P>
+<P>==========================</P>
+<P>&nbsp;Private Sub ExecuteFetch(ByVal cn As SqlConnection, ByVal criteria As Criteria)<BR>&nbsp;&nbsp;Using cm As SqlCommand = cn.CreateCommand()<BR>&nbsp;&nbsp;&nbsp;cm.CommandType = CommandType.StoredProcedure<BR>&nbsp;&nbsp;&nbsp;cm.CommandText = "GetCustomerOrder_Display"<BR>&nbsp;&nbsp;&nbsp;cm.Parameters.AddWithValue("@ID", criteria.Id)</P>
+<P>&nbsp;&nbsp;&nbsp;Using dr As SafeDataReader = New SafeDataReader(cm.ExecuteReader())<BR>&nbsp;&nbsp;&nbsp;&nbsp;FetchObject(dr)</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;'load child object(s)<BR>&nbsp;&nbsp;&nbsp;&nbsp;FetchChildren(dr)<BR>&nbsp;&nbsp;&nbsp;End Using<BR>&nbsp;&nbsp;End Using<BR>&nbsp;End Sub</P>
+<P>=========================</P>
+<P>This is trying to execute a procedure so should I be generating a procedure similar to select * from vieTest?</P>
+<P>&nbsp;</P>
+<P>When I try to use Root Command,&nbsp; I cant get the template to generate anything as I get an error saying that Unique Column is Required even though I have entered ID into this column</P>
+<P>&nbsp;</P>
+<P>Please advise</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>David replied on Thursday, August 24, 2006</h2><P>Actually I'm having some problems trying to get the VB templates working with partial classes and I'de love to know how to sort&nbsp;it out. I have tried posting on the codeplex site but there are no responses to any of the issues raised there. Where is the most appropriate place to discuss these issues?</P>
+<P>By the way, I think the templates are awesome and really appreciate the work done by all the contributers!!</P>
+<P>&nbsp;</P>
+<P>David</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

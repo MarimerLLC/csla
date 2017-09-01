@@ -1,0 +1,35 @@
+<html><header><title>Update parent property when child property changes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Update parent property when child property changes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2012.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jeroen Sneyers posted on Thursday, December 21, 2006</h2><P>Hi all, I'm stuck with a small problem here and I hope one of you can help me out.</P>
+<P>I have an EditableRoot object 'Offer', an EditableChildList object 'OfferLines' and an EditableChild object 'OfferLine'. (Basically used as a document with header info and detailed line info). OfferLine contains a property 'Amount' and Offer contains a property 'Total'. Now, I want that my 'Total' (of the offer)&nbsp;is being updated (using databinding) when the property 'Amount'&nbsp;of one of the offerlines changes. I use databinding in a windows form. How do I do this?</P>
+<P>Jeroen.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, December 21, 2006</h2>You need to handle PropertyChanged for each of the children inside the root. When you get that event, check to see what property changed in the child and if necessary update the values you need in the root and raise PropertyHasChanged("&lt;Name of the property in the parent&gt;").<br>Be careful about this when you use remoting, you may need to remove the handlers and readd them when the object is serialized / deserialized. (I don't remember if that event is serializable)<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, December 21, 2006</h2>I'm pretty sure its not, as I've lost events.&nbsp; You don't even need remoting to lose the events either, if you follow the WinForms pattern of saving a clone of the business object, because the cloning does serialization / deserialization as well.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>BVeenstra replied on Thursday, September 27, 2007</h2>ajj,<br><br>Hopefully better late than never...<br><br>You might want to review this thread: http://forums.lhotka.net/forums/thread/17490.aspx.&nbsp; This helped me resolve this finally...<br><br><br><br>I had a similar setup where I was losing "events" when Saving and also trying to have a "parent" object update itself when it's child list changed...&nbsp; <br><br>That's a two step process, #1, you have to be sure setup a handler and hook:<br><br>
+
+<div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>private</span> <span>AllocationDetailList</span> <span>_AllocationDetailList</span> = <span>null</span>;</p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p></div><br>
+
+<div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>private</span> <span>void</span> <span>Fetch</span>(<span>SafeDataReader</span> <span>dr</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;</p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p>
+<p><br></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>_AllocationDetailList</span>.<span>ListChanged</span> += <span>new</span> <span>ListChangedEventHandler</span>(<span>AllocationDetailList_ListChanged</span>);</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>MarkOld</span>();</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+<p><br></p></div><div><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p>
+<p><br></p><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>void</span> <span>AllocationDetailList_ListChanged</span>(<span>object</span> <span>sender</span>, <span>ListChangedEventArgs</span> <span>e</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>PropertyHasChanged</span>(<span>"RemainingAmount"</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p><br><p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//...</span></p><br></div>
+
+<br><br><br>Step #2 - you need to rehook your List's ListChanged in your OnDeserialized method:<br><br>
+
+
+<div>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>protected</span> <span>override</span> <span>void</span> <span>OnDeserialized</span>(<span>System</span>.<span>Runtime</span>.<span>Serialization</span>.<span>StreamingContext</span> <span>context</span>)</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>base</span>.<span>OnDeserialized</span>(<span>context</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>//REQUIED to rehook us up to DataBinding after SAVE!</span></p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; <span>_AllocationDetailList</span>.<span>ListChanged</span> += <span>new</span> <span>ListChangedEventHandler</span>(<span>AllocationDetailList_ListChanged</span>);</p>
+<p>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }</p>
+</div>
+
+<br><br><br><br><br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

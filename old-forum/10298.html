@@ -1,0 +1,113 @@
+<html><header><title>Caching NameValueList (and other lists too)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Caching NameValueList (and other lists too)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10298.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Friday, April 22, 2011</h2><p>You might be familiar with a common structure for NameValueLists</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:darkblue;">DocClassNVL</span>&nbsp;<span style="COLOR:purple;">_list</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Clears&nbsp;the&nbsp;in-memory&nbsp;DocClassNVL&nbsp;cache&nbsp;so&nbsp;it&nbsp;is&nbsp;reloaded&nbsp;on&nbsp;the&nbsp;next&nbsp;request.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">InvalidateCache</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">_list</span>&nbsp;=&nbsp;<span style="COLOR:blue;">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Used&nbsp;by&nbsp;async&nbsp;loaders&nbsp;to&nbsp;load&nbsp;the&nbsp;cache.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;list&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">The&nbsp;list&nbsp;to&nbsp;cache.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">SetCache</span>(<span style="COLOR:darkblue;">DocClassNVL</span>&nbsp;list)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">_list</span>&nbsp;=&nbsp;list;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">internal</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:blue;">bool</span>&nbsp;<span style="COLOR:darkcyan;">IsCached</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:purple;">_list</span>&nbsp;!=&nbsp;<span style="COLOR:blue;">null</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Factory&nbsp;method.&nbsp;Loads&nbsp;an&nbsp;existing&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;DocClassNVL&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;object&nbsp;from&nbsp;the&nbsp;database.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;returns&gt;</span><span style="COLOR:green;">A&nbsp;reference&nbsp;to&nbsp;the&nbsp;fetched&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;DocClassNVL&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;object.</span><span style="COLOR:gray;">&lt;/returns&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">static</span>&nbsp;<span style="COLOR:darkblue;">DocClassNVL</span>&nbsp;<span style="COLOR:darkcyan;">GetDocClassNVL</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(<span style="COLOR:purple;">_list</span>&nbsp;==&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">_list</span>&nbsp;=&nbsp;<span style="COLOR:darkblue;">DataPortal</span>.<span style="COLOR:darkcyan;">Fetch</span>&lt;<span style="COLOR:darkblue;">DocClassNVL</span>&gt;();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:purple;">_list</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;DocClassNVL&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;remarks&gt;</span><span style="COLOR:green;">&nbsp;This&nbsp;isn&#39;t&nbsp;a&nbsp;public&nbsp;access&nbsp;method&nbsp;in&nbsp;order&nbsp;to&nbsp;prevent&nbsp;direct&nbsp;creation.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Use&nbsp;factory&nbsp;methods&nbsp;instead.</span><span style="COLOR:gray;">&lt;/remarks&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:darkblue;">DocClassNVL</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;Prevent&nbsp;direct&nbsp;creation</span>
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre>
+<p>The static _list field holds the data and avoids the need to go SQL Server everytime you need it. The cache is client side or server side but if you use the list both in client code and in server code, you will hit the database twice. In fact static fields aren&#39;t serialized so client side code never knows about the cache build on the server side (and vice versa). Most of the time you don&#39;t use the list server side. Nevertheless you will hit the database for every user that needs to use it. The only way I know of avoiding this problem is to let the DataPortal know about the cache.</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Load&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;DocClassNVL&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;collection&nbsp;from&nbsp;the&nbsp;database.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">DataPortal_Fetch</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(<span style="COLOR:darkcyan;">IsCached</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">LoadCachedList</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">using</span>&nbsp;(<span style="COLOR:blue;">var</span>&nbsp;cn&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">SqlConnection</span>(<span style="COLOR:#a31515;">&quot;DocStore&quot;</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">using</span>&nbsp;(<span style="COLOR:blue;">var</span>&nbsp;cmd&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">SqlCommand</span>(<span style="COLOR:#a31515;">&quot;GetDocClassNVL&quot;</span>,&nbsp;cn))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cmd.<span style="COLOR:purple;">CommandType</span>&nbsp;=&nbsp;<span style="COLOR:darkblue;">CommandType</span>.<span style="FONT-WEIGHT:bold;COLOR:purple;">StoredProcedure</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;cn.<span style="COLOR:darkcyan;">Open</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">LoadCollection</span>(cmd);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">LoadCachedList</span>()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">IsReadOnly</span>&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;rlce&nbsp;=&nbsp;<span style="COLOR:purple;">RaiseListChangedEvents</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">RaiseListChangedEvents</span>&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">AddRange</span>(<span style="COLOR:purple;">_list</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">RaiseListChangedEvents</span>&nbsp;=&nbsp;rlce;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">IsReadOnly</span>&nbsp;=&nbsp;<span style="COLOR:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">LoadCollection</span>(<span style="COLOR:darkblue;">SqlCommand</span>&nbsp;cmd)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">IsReadOnly</span>&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;rlce&nbsp;=&nbsp;<span style="COLOR:purple;">RaiseListChangedEvents</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">RaiseListChangedEvents</span>&nbsp;=&nbsp;<span style="COLOR:blue;">false</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">using</span>&nbsp;(<span style="COLOR:blue;">var</span>&nbsp;dr&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">SafeDataReader</span>(cmd.<span style="COLOR:darkcyan;">ExecuteReader</span>()))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">while</span>&nbsp;(dr.<span style="COLOR:darkcyan;">Read</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">Add</span>(<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">NameValuePair</span>(
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dr.<span style="COLOR:darkcyan;">GetInt32</span>(<span style="COLOR:#a31515;">&quot;DocClassID&quot;</span>),
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;dr.<span style="COLOR:darkcyan;">GetString</span>(<span style="COLOR:#a31515;">&quot;DocClassName&quot;</span>)));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">RaiseListChangedEvents</span>&nbsp;=&nbsp;rlce;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">IsReadOnly</span>&nbsp;=&nbsp;<span style="COLOR:blue;">true</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>The <span style="COLOR:darkcyan;">DataPortal_Fetch</span>() checks whether the list is cached. If&nbsp;the list is cached, <span style="COLOR:darkcyan;">LoadCachedList</span>()<br />is called and <span style="COLOR:darkcyan;">DataPortal_Fetch</span>() returns without further ado (meaning it doesn&#39;t hit the SQL Server).</p>
+<p>PS - You can cache a ReadOnlyList the same way i.e. using the same code structure.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Monday, April 25, 2011</h2><p>It would be nice to set&nbsp;expirations&nbsp;on how long the data is cached for. Also, for ReadOnlyLists, you would want to cache by the a hash of the Criteria because the returned results could be filtered.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, April 25, 2011</h2><p>Hi Blake,</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Blake Niemyjski<br></b>
+<p>It would be nice to set&nbsp;expirations&nbsp;on how long the data is cached for.
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>There is a very powerful caching library available at <a href="http://cslacontrib.codeplex.com/">CSLA .NET Contrib </a>and I didn&#39;t want to duplicate&nbsp;its advanced features.</p>
+</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>Blake Niemyjski<br></b> </p>
+<p>Also, for ReadOnlyLists, you would want to cache by the a hash of the Criteria because the returned results could be filtered.</p>
+<div style="CLEAR:both;"></div>
+<p></div></p>
+<p>Thought about that but chose to ignore cache altogether for filtered lists. The use case was ReadOnly List as replacement for NameValueList (say to build a hierarchical combo box, where you need ID, Value and ParentID). Usually you get a filtered list, after a search. If you are searching, chances are you doing some configuration work: adding, removing or editing list members. And you don&#39;t want caching as the list is supposed to change.</p>
+<p>There must be other scenarios were caching filtered lists is useful. But again there should be a cache expiration policy, etc. So this is just &quot;Simple Cache&quot;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 25, 2011</h2><p>On the server side you can also use AppFabric caching. This is a distributed cache, and so works across a server farm too - very nice stuff.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

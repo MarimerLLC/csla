@@ -1,0 +1,28 @@
+<html><header><title>DynamicListBase problem (maybe a bug)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DynamicListBase problem (maybe a bug)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10402.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad posted on Tuesday, May 31, 2011</h2><p>Hello,</p>
+<p>Due to some tests that I have done, I have noticed that there may be a problem or a kind of bug in the DynamicListBase class. In the DynamicListBase.cs we have the following virtual procedure:</p>
+<p>public virtual void SaveItem(int index)</p>
+<p>{</p>
+<p>...</p>
+<p>dp.UpdateCompleted += (o, e) =&gt;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (item.IsDeleted)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //SafeRemoveItem&nbsp; will raise INotifyCollectionChanged event<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SafeRemoveItem(index);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ...</p>
+<p>}</p>
+<p>For example, let us suppose that we have a simple DynamicListBase which is composed of the following two elements:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 1.&nbsp; Bugs Bunny</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 2.&nbsp; Scooby Doo</p>
+<p>Note: The index of the Bugs Bunny element is 0 and that of Scooby Doo is&nbsp;1.&nbsp;</p>
+<p>Imagine that the user, through the user interface, deletes the first element and then immediately deletes the second one. This is what happens:</p>
+<p>1. DataPortal_Deleteitself is called on the first element &quot;BugsBunny&quot;.</p>
+<p>2. After that, the above virtual procedure &quot;SaveItem&quot;&nbsp;is called with an index&nbsp;that is equal to 0, and this is logic because the index of the first element is 0. Since the element is marked for deletion, then &quot;item.IsDeleted&quot; is equal to true, and as a result SafeRemoveItem(index) is called with an index = 0.</p>
+<p>3. The first element is deleted without any errors.</p>
+<p>4. Now its the turn of the second element. As usual, DataPortal_DeleteItself will be called on the second item.</p>
+<p>5. SaveItem is called with an index that is equal to 1, because logically the index of the second element is 1. The second element is marked for deletion, this means that item.IsDeleted is equal to true, therefore SafeRemoveItem(index) is called with an index = 1. </p>
+<p>6. SafeRemoveItem is executed with errors because the first element &quot;BugsBunny&quot; was deleted and this means that the index of the second element &quot;Scooby doo&quot; became 0 and not 1, and when SaveItem is called on the second element, it is called with an index=1 and not 0, and this causes a problem while removing the element in SafeRemoveItem because the list contains one element which is Scooby Doo and so index=1 does not exist in the list after deleting the first element.</p>
+<p>Thanks</p>
+<p>Ziad</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, May 31, 2011</h2><p>I see what you are talking about. This does appear to be a bug.</p>
+<p>I&#39;ll add it to the bug list.</p>
+<p>It may not be easy to fix, because we can&#39;t change the way data binding works. The &quot;fix&quot; might be to throw an exception if an attempt is made to perform any overlapping SaveItem calls.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ziad replied on Tuesday, May 31, 2011</h2><p>Thank you for your reply!</p>
+<p>At these moments, I&#39;m using the following temporary solution:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;In&nbsp;the SaveItem&nbsp;method, I have added&nbsp;<strong>index = this.IndexOf(item)</strong> in <strong>dp.UpdateCompleted += (o, e) =&gt;</strong><br />&nbsp;</p>
+<p>Thanks again</p>
+<p>Ziad</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

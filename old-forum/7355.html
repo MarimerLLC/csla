@@ -1,0 +1,93 @@
+<html><header><title>Bypassing app.config when trying to access the database</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bypassing app.config when trying to access the database</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7355.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>strangerd posted on Wednesday, July 29, 2009</h2>Hi all<br><br>Our company develops custom software. Therefore the software should be able to move around without having anything important hard coded. The thing is that I have developed a way (before we started trying out CSLA) to allow the user to enter the database details. This is then stored in an XML file on the users pc. The application then reads from this XML to connect to and use the database.<br><br>Now this allows me to completely eliminate the app.config file where it hard codes the database connection string.<br><br>It is my understanding that CSLA looks at the config file in your main project. The thing is that I don't want to use the app.config file for storing the connection. Can you "bypass" the app.config file using CSLA without changing the CSLA dll code itself? <br><br>Thank you<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Vinodonly replied on Wednesday, July 29, 2009</h2>I'm myself not using appconfig as we have multiple servers involved and user can connect on any one..<br /><br />There is no restriction from CSLA for this. It depends on how you create the connection in DataPortal.. You can use your own helper method to retrieve connection info and use it..</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>strangerd replied on Wednesday, July 29, 2009</h2>I must admit that I am completely new to CSLA and am therefore still trying to figure things out. I use LINQ to retrieve my info and set the connection for the dbml file to none and the application settings to false. I would think that it would be enough to make the app ignore the config file and assume that the developer is specifying a custom connection. I'm trying to sort out the custom authentication part of my app.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 29, 2009</h2>Well depending on how you design your DAL, you should be able to get the database connection string yourself.  I believe the ContextManager / ConnectionManager have a method were you can tell it the connection string instead of it reading from the config file.<br /><br />If you're talking about other Csla settings, I can't think of one that should be changable by the user at all.<br /><br />If you need to, it might be possible.  I have my own ConfigurationManager which reads settings from config sections other than appSettings.  So I change Csla to  use my ConfigurationManager to get appSettings in place of the System provided one.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, July 29, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>...If you're talking about other Csla settings, I can't think of one that should be changable by the user at all. If you need to, it might be possible. I have my own ConfigurationManager which reads settings from config sections other than appSettings. So I change Csla to use my ConfigurationManager to get appSettings in place of the System provided one...</div></BLOCKQUOTE></P>
+<P>I would tend to agree, except that the switch from the local proxy to a remote portal is basically changing the "connection", at least that's how we think of it. </P>
+<P>We expose 4 connection types that be configured on the client:&nbsp; Oracle, SQL Server, Access, and Web Service. &nbsp;The first 3 use the local data portal and so the user must provide the connection information and credentials. The Web Service, on the other hand, involves changing the data portal type used by CSLA and the user species only the URL. </P>
+<P>It seems to work, but I'd welcome ideas on how this might be better exposed to the user. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 29, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>I would tend to agree, except that the switch from the local proxy to a remote portal is basically changing the "connection", at least that's how we think of it. </div></BLOCKQUOTE><br /><br />Seems like it could be a dangerous way to think of it... usually the 2-tier vs. 3-tier is an architecture decision which can have pretty far reaching consequences.  <br /><br />At any rate, the only thing I can think of is that you'll have to modify Csla.  Maybe have it use Settings instead of a config file.  I believe you can create a settings file for an assembly, and provided you also create one fo the end application with the same key names, it should "just work."</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 29, 2009</h2><P>Some things, like WCF, are pretty tied to the config file. If you want to configure WCF through code, you'd need to subclass WcfProxy and override the methods that create the underlying WCF connection.</P>
+<P>Other things, like the database connection strings, are not tied to the config file. Yes, CSLA provides some helper overloads to make it easy to use the config file, but there are overloads where you pass the connection string by hand - so you can retrieve it as you choose.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>strangerd replied on Wednesday, July 29, 2009</h2>Thank you<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Wednesday, July 29, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>...Seems like it could be a dangerous way to think of it... usually the 2-tier vs. 3-tier is an architecture decision which can have pretty far reaching consequences...</div></BLOCKQUOTE></P>
+<P>Interesting.&nbsp; I don't disagree there is the potential for trouble, but I completely bought into the touted&nbsp;CSLA ability to&nbsp;write a single application that would work fine on an individual client machine and then scale to 3-tiers just by changing the configuration.&nbsp; That's why we chose it, so we could support 1, 2, and 3-tier (even 4 once we write a web-based GUI) and share the same infrastructure. </P>
+<P>I certainly agree there are far reaching consequences. I've been operating under the assumption that what&nbsp;works using the remote data portal has a high probability of working using the local data portal, but not vice versa. </P>
+<P>So, we're designing toward 3-tier with the idea we can deploy on a single machine as desired.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 29, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>That should be a very valid assumption as long as you do your
+dev/testing work in a 3-tier model. Switching from 3- to 2-tier is pretty
+trivial, but the reverse is not.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, July 29, 2009 9:22 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Bypassing app.config when trying to access the
+database<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender."></span><strong>ajj3085:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>...Seems like it could be a dangerous way to think of it...
+usually the 2-tier vs. 3-tier is an architecture decision which can have pretty
+far reaching consequences...<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Interesting.&nbsp; I don't disagree there is the potential for trouble, but
+I completely bought into the CSLA ability write a single application that would
+work fine on an individual client machine and then scale to 3-tiers just by
+changing the configuration.&nbsp; That's why we chose it, so we could support
+1, 2, and 3-tier (even 4 once we write a web-based GUI) and share the same
+infrastructure. <o:p></o:p></p>
+
+<p>I certainly agree there are far reaching consequences. I've been operating
+under the assumption that what&nbsp;works using the remote data portal has a
+high probability of working using the local data portal, but not vice versa. <o:p></o:p></p>
+
+<p>So, we're designing toward 3-tier with the idea we can deploy on a single
+machine as desired.<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, July 29, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>rsbaker0:</strong></div><div>Interesting.  I don't disagree there is the potential for trouble, but I completely bought into the touted CSLA ability to write a single application that would work fine on an individual client machine and then scale to 3-tiers just by changing the configuration.  That's why we chose it, so we could support 1, 2, and 3-tier (even 4 once we write a web-based GUI) and share the same infrastructure. </div></BLOCKQUOTE><br /><br />Well I'm not even really talking about Csla at that point... I'm talking about firewall configuration, application server setup (remember, the same business assemblies must be available server side, and usually have to be kept in sync with the version on the client side), location issues.  For example, I had the 2-tier model in use for quite some time... but when some of my users moved to another location, performance for them became an issue because database communication is very chatty.  I was able to solve this by moving to .Net remoting and enabling compression, but it makes deployment different because now I also need to keep the client and server assemblies in sync, and thus I can no longer make ANY code only updates when users are in the system, I have to kick them out.<br /><br />I believe you're right though; designing of a remote dataportal should keep you safe so that local and remote works, but I do think there's a gotacha which has to do with when serialization occurs.  It came up on this forum a few weeks ago I think.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>strangerd replied on Wednesday, July 29, 2009</h2>Thanks</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

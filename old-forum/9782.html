@@ -1,0 +1,29 @@
+<html><header><title>Silverlight BeginSave()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight BeginSave()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9782.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vinco83 posted on Thursday, November 18, 2010</h2><p>Hello everyone! i&#39;m hoping someone can point me in the right direction here. I&#39;ve searched high and low and can&#39;t find any help on this! I&#39;ve got a viewmodel, which is inherits from &quot;ViewModel&quot;, and a View who&#39;s datacontext is set to the &quot;Model&quot; property. </p>
+<p>I&#39;m calling BeginRefresh(&quot;factoryMethod&quot;), and everything works great. Now, if I change a &quot;Model&quot; value...I want to save this. However, my code is not working. </p>
+<p>public void SaveData() { Model.Save() } </p>
+<p>Now, my factory method looks like this: </p>
+<p>public override void BeginSave(bool forceUpdate, EventHandler handler, object userState)</p>
+<p>&nbsp;{ </p>
+<p>try </p>
+<p>{ </p>
+<p>var dp = new DataPortal(); </p>
+<p>//dp.UpdateCompleted += handler; </p>
+<p>bool d = IsDirty; dp.BeginUpdate(new SingleCriteria (2)); </p>
+<p>} catch (Exception ex) { string msg = ex.Message; }</p>
+<p>&nbsp;} </p>
+<p>I&#39;m sure i&#39;m doing something wrong here. Can someone show me an example of implementing a simple BeginSave() (including if I need to override the &quot;BeginSave()&quot; method in the Business Object?)... Thanks in advance!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, November 18, 2010</h2><p>ViewModel&lt;T&gt; has a Save method that does all the work for you, just use that and let it do its thing - no need to write your own.</p>
+<p>Also, BusinessBase has a BeginSave method on it that does all the work for you, and that&#39;s what is called by ViewModel&lt;T&gt;.</p>
+<p>If you are using all these things together, you should have to do no actual work, all the hard stuff is done for you.</p>
+<p>The SimpleApp and CslaMvvmSl samples demonstrate these techniques.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Friday, January 14, 2011</h2><p>I have searched within both the CslaMvvmSl and SimpeApp examples in the 4.1 Beta samples and found no reference to &#39;BeginSave&#39;.&nbsp; There is one overridden BeginSave method in the CustomerEdit BO, but that&#39;s it.&nbsp; Am I missing something here?&nbsp; </p>
+<p>Just trying to find a sample of saving data from a SL app.</p>
+<p>Tks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 14, 2011</h2><p>The ViewModel&lt;T&gt; class has a Save method. This invokes BeginSave in Silverlight and WP7. Since the samples you mention are using MVVM and ViewModel&lt;T&gt;, they call Save on the viewmodel (using TriggerAction), which calls BeginSave on the business object and automatically handles the async callback.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Friday, January 14, 2011</h2><p>Is there a way for me to simply save an object in my viewmodel?&nbsp; I&#39;d like to just call:</p>
+<p>MyObject.Save() or MyObject.BeginSave()</p>
+<p>I am doing this now and nothing is happening.</p>
+<p>Tks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 14, 2011</h2><p>Of course, just look at the code in ViewModelBase and copy the implementation.</p>
+<p>The key thing to remember is that Save and BeginSave return a new business object as a result, and you need to update your Model property to reflect that new object (or if you are doing total containment of the business object you need to refresh all the viewmodel properties).</p>
+<p>Save directly returns the new object, while BeginSave returns the new object in the async callback.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Friday, January 14, 2011</h2><p>I&#39;m a bit confused.&nbsp; I am inheriting from ViewModel&lt;T&gt; in my viewmodel.&nbsp; Why would I need to re-implement the BeginSave() method?&nbsp; </p>
+<p>Tks.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, January 14, 2011</h2><p>Then I&#39;m confused. I obviously don&#39;t understand what you are trying to do.</p>
+<p>ViewModelBase has a set of protected methods that are used by ViewModel to implement its public methods. If you are subclassing ViewModel then you have access to the same protected methods, and can use them in your public methods.</p>
+<p>ViewModel has a public Save method that &quot;does the right thing&quot; - which means it calls the protected BeginSave method from ViewModelBase.</p>
+<p>That BeginSave method is protected, which means you can call BeginSave from other methods you implement in your subclass.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Gort replied on Friday, January 14, 2011</h2><p>Ok, that is what I was trying to do but apparently there were other issues with my code that we failing so I just needed reassurance that what I was trying to do SHOULD work.&nbsp; I figured out my issues and it&#39;s working now.&nbsp; </p>
+<p>Thanks so much for your help, Rocky!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

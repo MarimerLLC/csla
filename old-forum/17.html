@@ -1,0 +1,7 @@
+<html><header><title>Support for get BrokenRule Item</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Support for get BrokenRule Item</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/17.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit posted on Saturday, May 06, 2006</h2><P>I see GetFirstBrokenRule method to return the first broken rule item for given property but no method to find a specific broken rule item.&nbsp; This is usefull when writing an NUnit test script, where we can test when a specific broken rule item exist.&nbsp; Currently you have to iterate through broken rules collection or check for an existance of broken rule message in BrokenRuleCollection.ToString()</P>
+<P>The signature could be something like GetBrokenRule(string propertyName, string ruleName) which I think both parameters represent a unique broken rule item within business object.</P>
+<P>Using this convinient method in my test script will be like this:</P>
+<P>Assert.IsNotNull(Project.GetBrokenRule("Started", "StartDateGTEndDate"), "Expected to trigger broken rule");</P>
+<P>Anybody see this will be usefull on other scenario beside test script?</P>
+<P>Ricky</P>
+<P>NB: it feels so good to be able to post my first message here <img src="/emoticons/emotion-19.gif" alt="Party!!! [<:o)]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

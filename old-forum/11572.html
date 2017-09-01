@@ -1,0 +1,12 @@
+<html><header><title>Read Only Base With Editiable Children</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Read Only Base With Editiable Children</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11572.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mehgerbil posted on Tuesday, September 11, 2012</h2><p>I don&#39;t know if this is possible (or recommended) but I wanted to get your thoughts on how I should put this object series together.&nbsp;&nbsp;&nbsp; I&#39;ve a list of records that will be displayed on the left hand side of the screen in a datagrid and as you move through the grid the details of each record will show on the right hand side of the screen.</p>
+<p>If this were entirely read only it wouldn&#39;t be an issue; however, I&#39;d like the user to be able to add &#39;Notes&#39; to each record which suggests that each record, although read only, has a collection that is editable - or more precisely, the user can add notes but not edit or delete.</p>
+<p>So can I have a read only base class have a collection of editable objects?</p>
+<p>Thoughts?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, September 11, 2012</h2><p>You can have a &quot;root&quot; editable list as a property on a readonly object. </p>
+<p>You must however be aware that you must call save on the &quot;root&quot; editable list and update the readonly object with the newly saved object. </p>
+<p>In order to avoid loading to much data I&#39;d prefer to decouple the strucctures. </p>
+<p>IE: </p>
+<ol>
+<li>a list of readonly objects</li>
+<li>a &quot;root&quot; editabllye list that is loaded per the selected readonly object. </li>
+</ol></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>thaehn replied on Tuesday, September 11, 2012</h2><p>I have done the same thing.&nbsp; I used a command object to save the notes.&nbsp; I put up a child window with and &quot;OK&quot; and &quot;Cancel&quot; buttons.&nbsp; After hitting &quot;OK&quot; I created the command to save the data.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mehgerbil replied on Tuesday, September 11, 2012</h2><p>Both of you, thanks for the thoughts.&nbsp;&nbsp; I was hoping that those options were a good fit.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,22 @@
+<html><header><title>ROCKY: Need help</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ROCKY: Need help</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2732.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken posted on Wednesday, April 18, 2007</h2><P>I just updated the c# version of the CslaSrd project in the CslaContrib project.</P>
+<P>Unfortunately, I placed the new version in a sub-directory of the old version.</P>
+<P>I don't know how to fix it with the tools and/or permissions that I have.</P>
+<P>Can you move the contents of CslaContrib\CSharp\CslaSrd\CslaSrd to CslaContrib\CSharp\CslaSrd?</P>
+<P>Or let me know how?</P>
+<P>Thanks!</P>
+<P>PS - take a look at the public Rules property and BrokenRules property of RuleBusinessBase.</P>
+<P>You can use an existing business object class&nbsp;to test it, just change references from Csla.Validation.CommonRules to CslaSrd.Validation.StdRules.</P>
+<P>Of course, your custom rules won't have been coded with the error messages the same way I did it, but the standard rules should work as is.&nbsp; It's an easy fix to make custom rules compatible.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 20, 2007</h2><P>I don't think it is a permission thing - it is a TFS feature thing.</P>
+<P>I'll contact a couple friends who know more about TFS and see what they suggest - but it appears to me that the answer is to </P>
+<OL>
+<LI>copy the files off somewhere safe</LI>
+<LI>delete the errant directory from your working directory and TFS</LI>
+<LI>copy the files to where they belong</LI>
+<LI>add them back into TFS</LI></OL>
+<P>Obviously this will lose any history. Let me see what others think.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 20, 2007</h2><P>Actually, looking at this a bit further - there are already files by those names in the target directory. So even if the Move option was available we'd be in trouble due to a conflict there.</P>
+<P>I think you are going to have to delete those files and get your working directory in order, then re-add them, otherwise how are you going to merge any file changes and make sure the csproj file is correct, etc?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 24, 2007</h2><P>OK, got it figured out with some help from Brian Randell.</P>
+<P>The deal is this: you can move folders and you can move single files. You can't move groups of files.</P>
+<P>Obviously you can't move a folder into its parent, so moving folders won't help you here.</P>
+<P>Instead, you'll have to move each file, one at a time. And while you are at it, the files that already exist in the parent directory are ones you can't <EM>move</EM>, because you need to merge the contents of the two files. You can do that in VS or a text editor or whatever.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 24, 2007</h2><P>Shoot, I didn't say <EM>how</EM> to move them.</P>
+<P>In the Source Control Explorer you can right-click on a file and there's a Move menu option.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, April 27, 2007</h2>Corrections to file placement made.&nbsp; Thanks!</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

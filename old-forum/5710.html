@@ -1,0 +1,131 @@
+<html><header><title>State Pattern and CSLA.NET</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>State Pattern and CSLA.NET</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5710.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich posted on Thursday, October 30, 2008</h2><P>I am trying to implement the state pattern with CSLA; however, I am running into a few issues with it.</P>
+<P>The state pattern basically involves a circular reference between the state itself and the object consuming it (the context) that way the state object can change the context's state on the fly (at least that's my understanding of how it works.. please correct me if I am wrong).</P>
+<P>If I use a managed field (RegisterProperty) to hold the reference to the context inside of the state object, the DataPortal_Create throws a stack overflow exception (I'm assuming because of the circular reference). If I use a private field to hold the context reference, property change notifications aren't fired. </P>
+<P>Could someone please explain to me how I might need to implement the state pattern with CSLA? Basically, my abstract State class (StateBase)&nbsp;has a factory method that calls the DataPortal.Create&lt;ConcreteClass&gt; of the concrete state. </P>
+<P>In the DataPortal_Create of the context class, it calls the factory method of the abstract StateBase.&nbsp; Should the concerete state classes be children of the context? .. Any advice would help. Thanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 30, 2008</h2><P>I don't have a great mental picture of the State pattern.</P>
+<P>But if you are writing code that calls DataPortal_XYZ methods yourself, then you are in trouble, because that's not how the data portal is designed to work.</P>
+<P>If you want a high level of control over how your objects are created/loaded/saved/etc then you should look at the ObjectFactory concept in version 3.6. In that model the data portal invokes a factory object that you create, and your factory object is responsible (completely!) for instantiating and interacting with your object graph.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich replied on Friday, October 31, 2008</h2><P>Hmm... I thought I was making correct calls to the DataPortal, but perhaps that is a problem with my code. I'll have to look back and see how object composition is supposed to be handled. Essentially here's&nbsp;a sample of the state pattern and how I am using it with CSLA.&nbsp; Perhaps this code block will help. The syntax may not be spot on.</P>
+<P>&nbsp;</P><PRE>[System.Serializable()]
+public abstract class StateBase : BusinessBase
+{
+   /* some properties.. cut out */
+   // the reference to the context object
+   [NotUndoable()]
+   private static PropertyInfo MyContextProperty = RegisterProperty(typeof(StateBase), new PropertyInfo(MyContext&gt;("MyContextAccessor"));
+   
+   protected MyContext MyContextAccessor
+   {
+      // normal CSLA ReadProperty/LoadProperty
+   }
+
+   public abstract void ApproveSomething();
+
+   // some validation rules
+   protected StateBase() {}
+   public static StateBase NewStateBase(MyContext ctxt)
+   {
+      return DataPortal.Create&lt;ConcreteStateA&gt;(new SingleCriteria(ctxt));
+   }  
+}
+
+[System.Serializable()]
+public class MyContext : BusinessBase
+{
+   // private reference to the state object... properties are public that access this
+   // object's properties.. for example.. 
+   /*
+      public string Prop
+      { get { return this.internalState.Prop; } }
+   */
+   private StateBase internalState;
+
+   public override bool IsDirty
+   {
+      get { return base.IsDirty || this.internalState.IsDirty; }
+   }
+
+   public override bool IsValid
+   {
+      get { return base.IsValid &amp;&amp; this.internalState.IsValid;
+   }
+
+   public override BrokenRulesCollection BrokenRulesCollection
+   {
+       get { // create a new collection, and merge the internal state with this graph }
+   }
+  
+   public static MyContext NewContext()
+   {
+      return DataPortal.Create();
+   } 
+ 
+   [RunLocal()]
+   protected override void DataPortal_Create()
+   {
+      this.internalState = StateBase.NewStateBase(this);
+      this.ValidationRules.CheckRules();
+   }
+}
+
+[System.Serializable()]
+public class ConcreteStateA : StateBase
+{
+   public override void ApproveSomething()
+   {
+      // approve, then call ChangeStates()
+   }
+
+   private void ChangeStates()
+   {
+      this.MyContextAccessor.internalState = ConcreteStateB.NewStateB(this);
+   }
+  
+   [RunLocal()]
+   private void DataPortal_Create(SingleCriteria ctxt)
+   {
+      this.MyContext = ctxt;
+      ValidationRules.CheckRules();
+   }
+}
+
+</PRE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich replied on Friday, October 31, 2008</h2><P>The issue I am having is when the DataPortal is called I receive a StackOverflow exception.&nbsp; I've tried marking the ConcreteState classes as children (using the DataPortal.CreateChild operations); however, I seem to get null for the Parent.</P>
+<P>Should I be making a second call to the dataportal for objects inside of other objects or should I just use a constructor? THanks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 31, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You can just use a constructor to load child objects. Though I generally
+recommend using a factory method approach, as it provides better abstraction
+overall. Look at ProjectTracker from version 2.0 to 3.0 to see examples of
+using direct method calls (to a factory or constructor).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, if you are trying to create a pure state container to hold
+the state of your object, look at the field manager in version 3.5 and higher.
+The field manager is a state manager that manages the state of the object in a
+separate object (namely the field manager). There are some very interesting quirks
+to getting this to work with n-level undo, serialization and eventing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich replied on Monday, November 03, 2008</h2><P>I'll look into the FieldManager class and see if it will suit my needs; however, I am storing other fields besides the state of the object.&nbsp; I am also storing fields that are related to its state.&nbsp; Essentially, I wanted a structure that allowed business rules to be defined on a per state basis, but I did not want to use a strategy pattern since the client isn't really aware of the different strategies.</P>
+<P>I'll keep toying with the state pattern and CSLA and keep this forum updated. If anyone has had success implementing this pattern with CSLA, feel free to post if you've ran into the same quirks.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, November 03, 2008</h2><P>Whether FM meets your needs or not I don't know. I was suggesting you look at it primarily because it illustrates the issues you'll need to address to create a "child" object that isn't really a child, but rather is the state container for an object.</P>
+<P>Specifically, you'll need to fully participate in the n-level undo process by implementing IUndoableObject, making sure to properly honor the parentBindingEdit parameter. </P>
+<P>If you want to integrate with CSLA 3.6 (for Silverlight at least) you'll also need to implement IMobileObject so you work with the MobileFormatter.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>czuvich replied on Tuesday, November 04, 2008</h2>Thanks for your assistance and guidance. I'll look into the FM and see how you're currently handling state within another object.&nbsp; I'll try to keep this forum posted and put up a successful implementation of the State pattern using CSLA.NET. Thanks again.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

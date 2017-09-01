@@ -1,0 +1,127 @@
+<html><header><title>Returning a Different Type of Exception From DataPortal_OnDataPortalException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Returning a Different Type of Exception From DataPortal_OnDataPortalException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5212.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>grahamm posted on Friday, August 08, 2008</h2><P>Hi,</P>
+<P>we're currently looking at implementing some exception handling at the server-side in order to wrap or replace certain exceptions (such as SQL specific exceptions) with more user-friendly exceptions.&nbsp; In order to achieve this we've been looking at using the Exception Management block in the Enterprise Library which allows you to define "policies" which map exception types to handling mechanisms such as replacing the exception with a different exception, wrapping the exception in a new exception, logging the exception or even performing custom actions such as the ability to email the exception to the sys admin.</P>
+<P>&nbsp;</P>
+<P>The most obvious hook point that we've found is in our base classes' DataPortal_OnDataPortalException method - we're passed the exception so we then pass it onto the Exception Management block.&nbsp; But, if we've defined a policy for the exception that wraps or replaces the exception, there's no way of getting this new exception type back to the DataPortal to be thrown back to the client as the return type of&nbsp; DataPortal_OnDataPortalException is void and the parameter to the method is not passed by ref.&nbsp; </P>
+<P>&nbsp;</P>
+<P>At the moment we've modified the framework to pass the exception by reference but obviously we'd prefer not to have to do this.&nbsp; So are we doing something unique here or are others out there handling this requirement differently?&nbsp; Obviously it would be great if the framework could incorporate this use case but I realise that&nbsp;a single request for a framework&nbsp;enhancement does not have much weighting.</P>
+<P>&nbsp;</P>
+<P>Thanks in advance,</P>
+<P>Graham</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Friday, August 08, 2008</h2>We made the same modification to allow server throwing exception to use wcfLogBook created by Juval Lowy. It would be nice if there is a 'switch' to turn on and off of this server exception wrapping operation.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alef replied on Thursday, December 11, 2008</h2>Maybe you can override DataPortal_OnDataPortalInvokeComplete.<br>
+On the UI you will still have a DataPortalException, but the InnerException will be the one you have created.<br>
+<br>
+<br>
+&nbsp;&nbsp;&nbsp; protected override void DataPortal_OnDataPortalInvokeComplete(DataPortalEventArgs e)<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  call your translation method eg <font size="2">TranslateException</font><br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<br>
+<p><font color="#808080" size="2">///</font><font color="#008000" size="2"> </font><font color="#808080" size="2">&lt;summary&gt;</font></p>
+<font size="2">
+</font>
+<p><font color="#808080" size="2">///</font><font color="#008000" size="2"> Translate a SqlException to the correct DALException</font></p>
+<font size="2">
+</font>
+<p><font color="#808080" size="2">///</font><font color="#008000" size="2"> </font><font color="#808080" size="2">&lt;/summary&gt;</font></p>
+<font size="2">
+</font>
+<p><font color="#808080" size="2">///</font><font color="#008000" size="2"> </font><font color="#808080" size="2">&lt;param name="ex"&gt;</font><font color="#008000" size="2">SqlException to be translated</font><font color="#808080" size="2">&lt;/param&gt;</font></p>
+<font size="2">
+</font>
+<p><font color="#808080" size="2">///</font><font color="#008000" size="2"> </font><font color="#808080" size="2">&lt;returns&gt;</font><font color="#008000" size="2">An DALException</font><font color="#808080" size="2">&lt;/returns&gt;</font></p>
+<font size="2">
+</font>
+<p><font color="#0000ff" size="2">protected</font><font size="2"> </font><font color="#2b91af" size="2">Exception</font><font size="2"> TranslateException(</font><font color="#2b91af" size="2">SqlException</font><font size="2"> ex) {</font></p>
+
+<p><font color="#2b91af" size="2">Exception</font><font size="2"> dalException = </font><font color="#0000ff" size="2">null</font><font size="2">;</font></p>
+
+<p><font color="#008000" size="2">// Return the first Custom exception thrown by a RAISERROR</font></p>
+<font size="2">
+</font>
+<p><font color="#0000ff" size="2">foreach</font><font size="2"> (</font><font color="#2b91af" size="2">SqlError</font><font size="2"> error </font><font color="#0000ff" size="2">in</font><font size="2"> ex.Errors) {</font></p>
+
+<p><font color="#0000ff" size="2">if</font><font size="2"> (error.Number &gt;= 50000) {</font></p>
+
+<p><font size="2">dalException = </font><font color="#0000ff" size="2">new</font><font size="2"> </font><font color="#2b91af" size="2">DalException</font><font size="2">(error.Message, ex);</font></p>
+
+<p><font size="2">}</font></p>
+
+<p><font size="2">}</font></p>
+
+<p><font color="#0000ff" size="2">if</font><font size="2"> (dalException == </font><font color="#0000ff" size="2">null</font><font size="2">) {</font></p>
+
+<p><font color="#008000" size="2">// uses SQLServer 2000 ErrorCodes</font></p>
+<font size="2">
+</font>
+<p><font color="#0000ff" size="2">switch</font><font size="2"> (ex.Number) {</font></p>
+
+<p><font color="#0000ff" size="2">case</font><font size="2"> 17:</font></p>
+
+<p><font color="#008000" size="2">// SQL Server does not exist or access denied.</font></p>
+<font size="2">
+</font>
+<p><font color="#0000ff" size="2">case</font><font size="2"> 4060:</font></p>
+
+<p><font color="#008000" size="2">// Invalid Database</font></p>
+<font size="2">
+</font>
+<p><font color="#0000ff" size="2">case</font><font size="2"> 18456:</font></p>
+
+<p><font color="#008000" size="2">// Login Failed</font></p>
+<font size="2">
+</font>
+<p><font size="2">dalException = </font><font color="#0000ff" size="2">new</font><font size="2"> </font><font color="#2b91af" size="2">DalLoginException</font><font size="2">(ex.Message, ex);</font></p>
+
+<p><font color="#0000ff" size="2">break</font><font size="2">;</font></p>
+
+<p><font color="#0000ff" size="2">case</font><font size="2"> 547:</font></p>
+
+<p><font color="#008000" size="2">// ForeignKey Violation</font></p>
+<font size="2">
+</font>
+<p><font size="2">dalException = </font><font color="#0000ff" size="2">new</font><font size="2"> </font><font color="#2b91af" size="2">DalForeignKeyException</font><font size="2">(ex.Message, ex);</font></p>
+
+<p><font color="#0000ff" size="2">break</font><font size="2">;</font></p>
+
+<p><font color="#0000ff" size="2">case</font><font size="2"> 1205:</font></p>
+
+<p><font color="#008000" size="2">// DeadLock Victim</font></p>
+<font size="2">
+</font>
+<p><font size="2">dalException = </font><font color="#0000ff" size="2">new</font><font size="2"> </font><font color="#2b91af" size="2">DalDeadLockException</font><font size="2">(ex.Message, ex);</font></p>
+
+<p><font color="#0000ff" size="2">break</font><font size="2">;</font></p>
+
+<p><font color="#0000ff" size="2">case</font><font size="2"> 2627:</font></p>
+
+<p><font color="#0000ff" size="2">case</font><font size="2"> 2601:</font></p>
+
+<p><font color="#008000" size="2">// Unique Index/Constriant Violation</font></p>
+<font size="2">
+</font>
+<p><font size="2">dalException = </font><font color="#0000ff" size="2">new</font><font size="2"> </font><font color="#2b91af" size="2">DalUniqueConstraintException</font><font size="2">(ex.Message, ex);</font></p>
+
+<p><font color="#0000ff" size="2">break</font><font size="2">;</font></p>
+
+<p><font color="#0000ff" size="2">default</font><font size="2">:</font></p>
+
+<p><font color="#008000" size="2">// throw a general DAL Exception</font></p>
+<font size="2">
+</font>
+<p><font size="2">dalException = </font><font color="#0000ff" size="2">new</font><font size="2"> </font><font color="#2b91af" size="2">DalException</font><font size="2">(ex.Message, ex);</font></p>
+
+<p><font color="#0000ff" size="2">break</font><font size="2">;</font></p>
+
+<p><font size="2">}</font></p>
+
+<p><font size="2">}</font></p>
+
+<p><font color="#008000" size="2">// return the error</font></p>
+<font size="2">
+</font>
+<p><font color="#0000ff" size="2">return</font><font size="2"> dalException;</font></p>
+
+<p><font size="2">}</font></p>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

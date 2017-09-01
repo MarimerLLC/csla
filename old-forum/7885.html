@@ -1,0 +1,366 @@
+<html><header><title>WPF web enabled client.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF web enabled client.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7885.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor posted on Tuesday, October 27, 2009</h2><P>Hi I’m new to CSLA and CSLA light. We have a requirement to build a WPF client with a central CSLA application server. It would be desirable if the application could operate within the local intranet and over the web. For example the user has the application installed on their laptop which the use in their place of work. They then can take the laptop home and still should be able to connect to the same application server over the web.</P>
+<P>The question is, would we need to use CSLA light to achieve this. I don't think it’s possible with just CSLA .net because the business objects don't serialize to xml without using CSLA light. How would the CSLA light business objects work with a WPF client?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, October 27, 2009</h2><P>WPF and Silverlight are both client technologies, so your question doesn't entirely make sense.</P>
+<P>You can build&nbsp;a WPF client that talks to an app server using CSLA .NET for Windows.</P>
+<P>You can build a Silverlight client that talks to an app server by using CSLA .NET for Silverlight on the client and CSLA .NET for Windows on the server.</P>
+<P>I don't know why you'd do this, but you could create <EM>both WPF and Silverlight clients</EM> that talk to the same app server. But that seems silly, since if you can create the client in Silverlight, then why bother with WPF at all?</P>
+<P>In any case, the data portal takes care of the communication between the client and the app server. It is true that the details around serialization are different with a Silverlight client as compared to any .NET client - but those differences are essentially invisible to you because the data portal takes care of the details.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P class=MsoNormal><FONT face=Calibri>Thanks for the quick reply.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>I don't think you have really answered the question. At the moment we have no plans to create a silver light client we just wanted to leverage our WPF build so that it could work over the internet. A windows based client can call a service just as easily as a browser based one. We would just like to confirm our options. </FONT></P>
+<P class=MsoNormal><FONT face=Calibri>What you state in the last part of your post is that we would be supported by the CSLA framework if we had two different applications. But this would really mean</FONT></P>
+<P class=MsoListParagraphCxSpFirst><SPAN><SPAN><FONT face=Calibri>1.)</FONT><SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri><SPAN>&nbsp;</SPAN>A WPF running in the local intranet only. Not web enabled (CSLA .NET).</FONT></P>
+<P class=MsoListParagraphCxSpLast><SPAN><SPAN><FONT face=Calibri>2.)</FONT><SPAN>&nbsp;&nbsp;&nbsp; </SPAN></SPAN></SPAN><FONT face=Calibri>A Silver light application that’s web enabled (CSLA Light).</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>The reason I asked about CSLA Light was because it was generating DTO's on the fly to enable communication over the web. The CSLA .NET objects won't serialize to xml? So CSLA.NET objects are&nbsp;not web enabled?</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>We thought we could maybe leverage the CSLA light framework to help us with the serialization part. Although we probably wouldn’t need to use CSLA light because the Imobileobject interface is already implemented in CSLA .NET. However there is no CSLA .NET based client data portal expecting an xml DTO instead of a binary object. Only the CSLA light based client is expecting data serialized through the IMobileObject interface not a CSLA .NET client? We would probably have to create our own client data portal? Not something we should attempt lightly? Or is all cross process communication now done via Imobileobject interface?</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>Note : Please correct me if what have stated in the paragraph above is wrong. I’m still a CSLA newbie and it takes a while to get through your book and blogs.</FONT></P>
+<P class=MsoNormal><FONT face=Calibri>You have a point though, if we wanted an app to operate over the internet we should build a silver light one and use that app on the local intranet as well.</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I don’t understand why you want an (inefficient) XML message to
+go over the wire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>There are other threads on the forum right now where people are
+figuring out how to STOP the transfer of XML by getting WCF to use binary
+encoding (binary XML). The reason is because XML is so bloated and inefficient
+that it causes perf issues.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The .NET data portal can use WCF (which I recommend). If you use
+WCF for communication it will work great in intranet and internet settings.
+True, the data over the wire is binary encoded, but <i>that is a good thing</i>
+because the alternative is sending 5-10x more bytes over the wire to get the
+same data transferred.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal is designed for n-tier client/server
+communication. While it is service-based in its design, it doesn’t create “SOA
+services” for use by other applications. And that’s OK, because it provides
+much better perf and data size than you’d get with an open XML model.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want to create SOA services, you should read Chapter 21
+of the <i>Expert 2008 Business Objects</i> book. In that case you would be
+creating <i>two separate applications</i> – a client application and a server
+application. They’d communicate over the internet using XML messages. But they’d
+be separate applications, and should share no code artifacts (because that
+would defeat the whole point of being service oriented).<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>Again thanks for the answers and the quick response.</P>
+<P>Its not that we want to create a WPF client thats strictly xml based. We wanted the flexibility to run binary communication over the intranet and xml communications over the web. We wanted the app to be able to switch over easily between binary and xml and we wanted to stay within the CSLA framework. We didn't want to create extra services.</P>
+<P>When I think it over more I can see that this isn't strictly tied to the CSLA framework. I'm not sure how we would get WCF to switch over on the client. We would also need to expose more than one data portal (not service) on the server.</P>
+<P>We would certainly want to use Binary XML (I thought this was part of the latest CSLA beta release?). </P>
+<P>Our reasoning followed along the lines of, if the CSLA .NET server could talk to the silver light client through the new Imobileobject interface based communication.&nbsp;That is, it&nbsp;takes the CSLA light xml serialized data in and then re-inflates it&nbsp;to a CSLA .NET object then the ability to do what we wanted is already in the framework. Its maybe just not in CSLA .Net dataportal. If we could achieve this&nbsp;while using&nbsp;binary xml for the communication then thats even better.</P>
+<P>Again we are just kicking around the options to see whats possible with the least amount of effort. We would like to avoide having to drop a new service layer between the client and application server.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 28, 2009</h2><P>Wouldn't it be much simpler to use WPF at work and home as the client and just set up a VPN connection to the app server?</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>Hi Joe,</P>
+<P>It would if every client of our application agreeded to doing that. Right at the moment i'm not sure that they would because I don't know who will end up buying it and what kind of policy they have in place.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The one thing you should consider when using the data portal
+over the internet is of course security. And the simplest solution is to use
+https instead of http, which you can easily do with WCF. WCF also has its own
+x509 security model, so if you don&#8217;t have https capability for some reason, you
+can install a server certificate and use WCF encryption instead &#8211; which gets
+you to the same end result as https.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>So to summarize my 3 options are.</P>
+<P>1.) WPF client with CSLA .Net and VPN.</P>
+<P>2.) WPF client supported with WCF SOA services.</P>
+<P>3.) Silver light client with CSLA light.</P>
+<P>Thanks for the answers and support. It is much appreciated.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>What&#8217;s wrong with<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>4.) WPF client with CSLA .NET using SSL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>??</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>Ok,</P>
+<P>I must be missing something in my understanding of whats possible with serialization over the web. What your saying is I can serialize to binary and send my CSLA .NET object over the web as long as i'm using SSL?</P>
+<P>I did not think that was possible.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, October 28, 2009</h2>You can serialize to binary for Csla objects to travel across the web, regardless of if you're using SSL or not.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>When I tried to binary serialize some my objects for my local windows firewall started complaining. Switching to soap serialization stops that. So just to be clear your saying there is no problems going through firewalls using binary serialization over the web? If that was the case why would SOAP and web services have been created?</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>Interoperability aside I thought one of the big things that XML was never stopped by firewalls.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Wednesday, October 28, 2009</h2><P>I'm really confused now. Why would you need to create DTO's on the fly for the CSLA light if you could have just sent through binary serialized CSLA .NET objects?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> I'm really confused now. Why would you need to <span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&gt;</span> create DTO's on the fly for the CSLA light if you <span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&gt;</span> could have just sent through binary serialized CSLA
+.NET objects?<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The .NET framework has something called the BinaryFormatter,
+which is capable of cloning an object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA .NET relies on the ability to clone an object graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Things like the XmlSerializer, JsonSerializer,
+DataContractSerializer, DataContractJsonSerializer, etc. cannot clone an object
+graph.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Silverlight does not have the BinaryFormatter, so we had to
+write an equivalent. The easiest way to write an equivalent was to do a transform
+of the object graph into a flatter object structure. We chose to build that
+flatter object structure as a set of DTOs so we could use existing serializers
+to get them over the wire &#8211; just because that saved us a lot of effort.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Our goal was NOT to get to XML (yuck!), but rather was to get
+the object graph data into a form where existing serializers could do much of
+the heavy work for us. It just turns out that the only serializers on
+Silverlight go to XML or JSON, and according to the PM I talked to on the
+Silverlight WCF team, the XML serialization is typically faster than the JSON
+serialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Personally I&#8217;d <i>much prefer</i> a binary serializer. It would
+be faster, and would result in much smaller data on the wire. But there isn&#8217;t
+such a thing on Silverlight&#8230;<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>This is a common misconception about the web.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The web is just a series of tubes &#8211; no, sorry, that&#8217;s
+true only in Alaska. :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The web is NO DIFFERENT FROM YOUR LAN &#8211; it connects your
+computers to each other through the TCP/IP protocol. In general terms, if you
+can do something on your local network, you can do it on the Internet if you
+can connect to the computers.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>WCF on the intranet is <i>exactly the same</i> as WCF of the
+Internet.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Much Internet traffic is binary btw. Images, audio files, video
+files. Text data transfer obviously happens a lot, but it is the rare web page
+that is pure text and doesn&#8217;t include a ton of images (binary) or Flash
+apps (binary), etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>WCF can transfer XML, JSON and binary data. The choice of which
+format is up to you and your needs. Binary is often the smallest/fastest so it
+is good for n-tier apps, but isn&#8217;t good for open data exchange <i>between
+apps</i>. That&#8217;s where XML and JSON come into play.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you are using the data portal you are doing n-tier, and so
+you are communicating between tiers <i>of your own application</i>. No need for
+open data exchange, but definitely a need for size/speed optimization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So then the only real difference between the Internet and
+intranet is security. On the intranet you often have a level of trust of the
+network itself &#8211; not worrying overmuch about man-in-the-middle attacks.
+But on the Internet you might worry about that sort of attack, and the easy
+solution is to use SSL.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I say <i>might worry</i>, because a lot of web apps don&#8217;t
+use SSL, so clearly those apps aren&#8217;t worried about data attacks. And if
+your app would fit that category, then you can use the data portal without SSL
+too, and achieve the same (or probably better) security. I say probably better,
+because the binary data transferred by the data portal is already obfuscated,
+unlike the HTML transferred by a web app &#8211; so you&#8217;ve already raised
+the bar a little in terms of data protection.<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Thursday, October 29, 2009</h2><P>Again thanks for the response and this is great information.</P>
+<P>As you state we have always been able to send binary over the internet in the form of images etc. I've always viewed that as the content of a web page. It’s a little different talking to a remote object but in the end you are right. Both are using HTTP to communicate.</P>
+<P>My question now is centred on implementation.</P>
+<P>In your 2005 book you mentioned using web services returning byte arrays which contained manually serialized business objects. <A HREF="/members/ajj3085.aspx">ajj3085</A> mentioned that CSLA objects could always be sent over the web. (In the 2008 book I don't see this mentioned. I'll take another read through chapter 21. )</P>
+<P>Looking through info on WCF I see that can&nbsp;perform binary over http using custom binding. This is nothing new; .NET remoting objects usually used that. So when you say we can use WCF and binary serialization over the internet are you talking about binary over http or something like MTOM? I see MTOM as something similar to byte array solution in your 2005 book. If we can use binary over http can we still host our WCF data portal in WAS or do we need to create a custom host.</P>
+<P>Sorry for all these questions. I'm still scanning the forums and the web for answers. If I’m still off track in what I am asking please let me know.</P>
+<P>
+<P>&nbsp;</P></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Thursday, October 29, 2009</h2><P>Don't worry i'm not ignoring security i'm just trying to get the serialization and communication correct first. Then again using the SSL really implies WCF web services? So are we talking about communication in WCF using MTOM?</P>
+<P>I see you have a lot of questions in the forum. I'll scan the forum more and ask less :)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>MTOM isn&#8217;t required. If you use SSL, your communications are
+protected. And you can use SSL with Remoting, asmx web services or WCF &#8211; all of
+which are supported by the data portal.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I think you are overcomplicating the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The data portal works great over the internet, especially with
+WCF, but also with asmx or Remoting.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>This isn&#8217;t something you should have to worry about &#8211; it just
+works.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you should worry about two things: performance and security.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Binary XML can help with performance, because it shrinks the
+size of the byte stream generated by WCF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>SSL can provide security, and is (for more orgs) easy to
+implement because you just switch to https URLs, tweak the WCF config to use
+transport security and you are done.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Inglor replied on Thursday, October 29, 2009</h2><P>Ok great. I'll give that a try.</P>
+<P>With this i'm staying within the framework and not creating any new services like you describe in chapter 21. </P>
+<P>I don't need XML services because i'm not interested in interoperbility I just want to get web enabled.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 29, 2009</h2>That is exactly correct.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,235 @@
+<html><header><title>ObservableCollection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObservableCollection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7846.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>rfcdejong posted on Thursday, October 22, 2009</h2><P>With the comming of CSLA 4.0<BR><BR>I suppose some&nbsp;windows people will not be happy, but i really hope CSLA will drop the BindingList and replace it for ObservableCollection. Fully support WPF or at least with the use of conditionals.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Fintanv replied on Thursday, October 22, 2009</h2>I would like to add my vote in support of this direction.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, October 22, 2009</h2>I would vote for this too although I am not too familiar with WPF binding just yet so I can’t speak with any authority. <br /><br />However, one thing I would like to say is that if I could have it my way, backwards capability would not exist on the CSLA. <br /><br />If people want to use what’s new in the CSLA they should change the code and adapt to what’s new, if not, keep using the old CSLA version. All that backwards compatibility does in the CSLA for the most part (in my opinion) is just to add bloat.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, October 22, 2009</h2><P>Of course people are free to say you could rip out whatever you consider bloat.</P>
+<P>As much as I would love to rewrite my application in Wpf, its not really a choice I have, and so I must continue with WinForms.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, October 22, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div><P>Of course people are free to say you could rip out whatever you consider bloat.</P><br /><P>As much as I would love to rewrite my application in Wpf, its not really a choice I have, and so I must continue with WinForms.</P></div></BLOCKQUOTE><br /><br />I can’t help but agree with you on this one and admit that I jumped the gun a little bit here. <br /><br />When I was refereeing to bloat I was mostly referring to other parts of the CSLA. These other parts could be easily removed and wouldn’t have such drastic consequences like the one you are describing here. Most likely, I will post on this one of these days :)<br /><br />Anyway, I guess this may call for the CSLA to add different collection object, one that is based on the ObservableCollection.<br /><br /> It could be say that having two collections where only one collection will be used at any one time could be consider bloat.  But, at least it’s a *totally different object* so I personally don’t have a big problem with that. <br /><br />What bugs me is when old confusing code and awkward behavior is left on and existing class in the name of backwards compatibility. Especially when the fix required to update the code to remove the “bloat” does not really require that much of an effort.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>This thread already has two different topics...</P>
+<P><STRONG>The ObservableCollection vs BindingList issue </STRONG>is a big one, and I spun up a thread months ago to solicit input. The problem is that a <EM>lot of people</EM> need to migrate from Windows Forms to WPF and can't just do it in one big bang.</P>
+<P>If I drop BindingList, I drop Windows Forms. Pure and simple. Which would mean people using Windows Forms (or doing migration over time) would be unable to move to CSLA .NET 4.0. They could probably run 3.8 on .NET 4.0, but they couldn't upgrade to newer versions of CSLA .NET until the eliminate all use of Windows Forms.</P>
+<P>I would prefer to find a way to allow Windows Forms to function in CSLA .NET 4.0, but I absolutely intend for the collection base classes to switch to ObservableCollection. In my mind that is an absolute requirement for version 4.0.</P>
+<P><STRONG>The backward compat (bloat) issue </STRONG>is a different matter. The reason is that I'll bet you good money that there's no agreement about which "legacy features" to cut.</P>
+<P>Just a couple weeks ago I suggested dropping per-instance business rules and got vehement disagreement. And that's for a very little-used feature.</P>
+<P>But what if I generally cut support for private backing fields? To me that's legacy - but I bet most people still use them.</P>
+<P>One thing I really might do is rework business/validation rules to have more consistent naming, and for business rules to have a different delegate signature - not really cutting out any bloat, but incurring wide-spread breaking change to improve future clarity.</P>
+<P>In one sense you are absolutely correct - a major version change (like 3.x to 4.x) is an opportunity to make some breaking changes. I've managed to preserve backward compat from 2.1 through 3.8 (to a high degree), and 4.0 will almost certainly include a relatively high number of breaking changes.</P>
+<P>At the same time, there are people still to this day trapped on 1.5.3 because the number of breaking changes between 1.5.3 and 2.1 is too big a hurdle. The fewer people I can trap on pre-4.0 versions the better.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Thursday, October 22, 2009</h2><P>Rocky,</P>
+<P>Regarding “bloat” and “legacy code”: You know that people will *ALWAYS* resist change no matter what and if you are going to wait for all of us to agree in something then you might as well forget about it.</P>
+<P>However I will give you my humble opinion. The CSLA has reached a point were its size and complexity has increased to a point where anyone trying to get a good understanding of the framework has to spend *significant* amount of time studding it…. and I am not kidding about the *significant* amount of time.</P>
+<P>I work for a big company in the US and I can tell you that selling the CSLA for new projects is extremely difficult (most times impossible) because people see the 10000 classes on it and all that code and are completely turned off by it. For all practical purposes the CSLA could be closed source and it wouldn’t make a difference because very few people know the CSLA good enough to dare make changes to it anymore.</P>
+<P>So here is my advice to you:</P>
+<P>1.&nbsp;Start fresh every time a new .Net version comes up (including this 4.0), say not to backwards compatibility period.<BR>2.&nbsp;Let contributors enhance and fix previous versions of the CSLA. Anyone that has a vested interest on keeping the old version alive could participate.<BR>3.&nbsp;Split the CSLA in to two dlls, one to hold the core CSLA essentials (this will be covered in the book) and the other the peripheral utilities or non essentials such as WinForms, LINQ to CSLA etc (this could be cover in some e-book). This will keep the CSLA simple and friendly.<BR>4.&nbsp;Do not bloat the framework with stuff like the C5 libraries unless is extremely necessary or if used for the peripheral utilities dll.</P>
+<P>The key here is to bring the CSLA back to the all people and not just the privileged ones that have all that time necessary to study all that material. To remove the added complexity of figuring out what is no longer applicable and what is (“legacy code”) and to remove some fragilities on the framework introduced due to backwards compatibility needs.</P>
+<P>Take a chance and go for it, cold feet never got anyone anywhere. Don’t let the CSLA be a framework lemming.</P>
+<P>Based on my experience, very few people actively make changes to project such as upgrading the CSLA, 95% of the time a project gets created and remains that way. Unless&nbsp;its a major undertaking and if that is the case, its better to update to a compact and readable framework rather than a bloated one. No one likes bloat (legacy code).<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 22, 2009</h2><P>I think the idea that people modify open source code (of any real magnitude) is a general myth. I once had a guy argue that they needed to use MySQL instead of SQL Server because they might need to modify the database engine.</P>
+<P>How many people in the world are actually qualified to modify database engine code? And why would someone who <EM>could</EM> do something like that be working in a regular IT shop? That's just crazy.</P>
+<P>6-7 years ago CSLA .NET was an example of a framework more than an actual framework. And people modified it because it was a skeleton, not a complete thing. Starting in 2005 though, I think it became a real thing, and I've been treating it as such for the past 4-5 years.</P>
+<P>To that end, I've added a lot of "bloat" in the form of extensibility points and flexibility. All so that people (advanced to be sure) could alter the behavior of key aspects of the framework without altering the framework itself.</P>
+<P>There's a lot of complexity introduced by all the virtual methods, provider plugins, indirection services and so forth. Eliminating all of them would radically simplify CSLA .NET - and would ensure that almost everyone had to modify the framework to actually use it.</P>
+<P>In 3.5, anticipating Silverlight's reflection issues, I added the whole new managed backing field concept. And in 3.6, anticipating some future version of ADO.NET EF that may or may not happen, I added the ObjectFactory concept.</P>
+<P>Arguably then, private backing fields and DataPortal_XYZ methods are bloat. As are per-instance business/validation/authz rules. </P>
+<P>Looking into the very near future, I think support for Windows Forms and Web Forms are bloat, as is any support for asmx. And you could argue that the whole channel adapter functionality and support for Enterprise Services are bloat.</P>
+<P>And I think the LINQ to CSLA implementation (at least LinqBindingList) was a mistake and that there's a better, though more intrusive, solution to that problem. And I think the L2C indexing feature might be better handled by an external library like i4o. This, btw, would eliminate the need for C5.</P>
+<P>Don't get me wrong - I do think eliminating some of these things must be done. The framework can't continue to grow at the rate of Microsoft change - because their rate of change is increasing and my bandwidth is constant.</P>
+<P>At the same time, there are thousands of people around the world using CSLA .NET, and I think it only right that I feel some responsibility for providing a level of consistency and a way to migrate for the user community.</P>
+<P>One of the primary features of CSLA .NET, in my mind, is that it helps protect your investment in your business layer. Not the UI - that's disposable. Not the data access - that's disposable. But the business layer, where you capture and codify the logic of your business domain - now that's valuable IP that should be preserved as much as possible over time.</P>
+<P>In other words, dropping Windows Forms isn't entirely out of the question because that's UI - expendable. Radically rearranging the way business classes are constructed must be avoided, because that violates the primary purpose of CSLA .NET.</P>
+<P>Of course you could (and I may) make the argument that 3.5 introduced managed backing fields 3 years ago. By the time I release 4.0 people will have had nearly 4 years to migrate from private to managed backing fields.</P>
+<P>(If you haven't guessed, I'm of two minds on this debate - the side of change, and the side of stability - only time will tell which one wins out)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, October 23, 2009</h2>Hi all, <br><br>I totally agree with you Rocky that we are at a crossroad - and should focus on the future.<br><br>And from my experience we could use more guidance in areas like:<br><ul><li>intermediate baseclasses</li><li>how to extend/modify Csla behaviour without tinkering inside Csla. Like: <br></li><ul><li>ValidationRules</li><li>List classes<br></li><li>Templates and snippets</li><li>Custom UI controls/extenders <br></li></ul><li>Solution structure (UI/BO/Factories)</li><li>Sync vs Async methods (DataPortal) <br></li></ul>I've stepped into most of these pitfalls until I created my own set of intermediate baseclasses and moved my "small" changes out of Csla. If we all used intermediate baseclasses and put our additions into a separate assembly it would be a really small
+change to move to/from different types of baseclasses (ObservableCollection/BindingList) without changes
+in the BusinessObjects. And it would also make it easier to upgrade to newer versions of Csla. <br><br>There is stilla few areas where we need to use private backing fields, such as NotUndoable and NonSerializable, that the framework could handle better. <br><br>.And even if Rocky decides to drop WindowsForms and WebForms we could keep the baseclasses in a community effort (as it is complete) and let Rocky focus on the new stuff. <br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The solution structure and data portal topics are part of the
+CSLA .NET 3.8 video series (yes, I know, it is late &#8211; but it is coming!).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You are right though, I should write an <i>Extending CSLA .NET</i>
+ebook or something&#8230;</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wbmstrmjb replied on Monday, October 26, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>You are right though, I should write an <i>Extending CSLA .NET</i><br />ebook or something…</div></BLOCKQUOTE><br /><br />I vote for this eBook!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 23, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>JonnyBee:</strong></div><div>I've stepped into most of these pitfalls until I created my own set of intermediate baseclasses and moved my "small" changes out of Csla. If we all used intermediate baseclasses and put our additions into a separate assembly it would be a really small change to move to/from different types of baseclasses (ObservableCollection/BindingList) without changes in the BusinessObjects. And it would also make it easier to upgrade to newer versions of Csla. <BR><BR>There is stilla few areas where we need to use private backing fields, such as NotUndoable and NonSerializable, that the framework could handle better. <BR><BR>.And even if Rocky decides to drop WindowsForms and WebForms we could keep the baseclasses in a community effort (as it is complete) and let Rocky focus on the new stuff. </div></BLOCKQUOTE></P>
+<P>What have you moved out that allowed you to easily switch between BindingList&lt;T&gt; and ObservableCollection?&nbsp; My understanding of the problem was that WinForms expects behaviors implemented by BindingList&lt;T&gt;, and WPF expects ObservableCollection, and so changing the base class of BusinessListBase to ovserablecollection would break WinForms applications.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 23, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>In other words, dropping Windows Forms isn't entirely out of the question because that's UI - expendable. Radically rearranging the way business classes are constructed must be avoided, because that violates the primary purpose of CSLA .NET.</div></BLOCKQUOTE></P>
+<P>Well given that, isn't the whole problem that WinForms likes BindingList&lt;T&gt; while WPF / Silverlight would rather ObservableCollection?&nbsp; What happens in a few years when Wpf is replaced by a new UI and we get another collection base to use?</P>
+<P>Something seems wrong if the motivation to switch the ultimate superclass for BusinessListBase from one class to another is driven by the UI of the day.&nbsp;&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> Something seems wrong if the motivation to switch
+the ultimate <o:p></o:p></p>
+
+<p class=MsoNormal>&gt; superclass for BusinessListBase from one class to
+another is driven by the UI of the day.&nbsp;<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I surely agree with this statement!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The problem is that I&#8217;ve wracked my brain for a real
+solution to this, and I don&#8217;t see one. Microsoft keeps inventing UI
+binding technologies that rely on behaviors from the objects.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>While we can create a &#8220;view object&#8221; over a
+collection, that turns out to be very problematic if you have an object
+hierarchy &#8211; because it means you need to intercept all binding attempts
+and replace the real list with a view object &#8211; and that complicates the
+UI code rather a lot &#8211; and sometimes isn&#8217;t even possible (with
+treeview or more powerful datagrid controls that bind to a whole object graph).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, I can elegantly solve the simple case &#8211;
+binding the UI to a 1-level list of objects. But I don&#8217;t see an elegant
+solution to a parent-child-grandchild case&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> <SPAN>I surely agree with this statement!<o:p></o:p></SPAN>
+<DIV class=Section1>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>The problem is that I’ve wracked my brain for a real solution to this, and I don’t see one. Microsoft keeps inventing UI binding technologies that rely on behaviors from the objects.</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>While we can create a “view object” over a collection, that turns out to be very problematic if you have an object hierarchy – because it means you need to intercept all binding attempts and replace the real list with a view object – and that complicates the UI code rather a lot – and sometimes isn’t even possible (with treeview or more powerful datagrid controls that bind to a whole object graph).</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In other words, I can elegantly solve the simple case – binding the UI to a 1-level list of objects. But I don’t see an elegant solution to a parent-child-grandchild case…</SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>You would think that it should be possible to make both happy; are grids going after BindingList&lt;T&gt;, or the IBindlingList interface?&nbsp; Is Wpf going after ObserableCollection&lt;T&gt;, or Collection + INotifyCollectionChanged + INotifyPropertyChanged?</P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&gt;</span> You would think that it should be possible to make
+both happy<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>You would thing&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Unfortunately, while WinForms ignores INotifyCollectionChanged,
+WPF actually honors <i>both interfaces</i>: IBindingList and
+INotifyCollectionChanged.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>When WPF first came out I tried implementing both in BLB and
+that blew WPF out of the water&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And that&#8217;s just the interfaces. In reality, WPF also treats
+BindingList&lt;T&gt; types as second-class citizens, refusing to auto-sort them
+(for example). And that&#8217;s the real crux of the issue here &#8211; is that normal WPF behaviors
+in datagrid controls and elsewhere just don&#8217;t work against a
+BindingList&lt;T&gt;.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I kept hoping that Microsoft would fix this by making WPF work
+better &#8211;but after nearly 4 years it seems unlikely that this will happen :(</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Friday, October 23, 2009</h2>I have several million lines of Csla code written for WinForms applications that are going to live for the next 5-10 years, so I would be very unhappy to loose the BindingList base class. <br /><br />I could just stick with the Csla 3.6 framework and let the Csla 4+ framework drop BindingList support, but I know for sure, that my customers will want their applications extended within their lifetime. Of course I will do everything, in my power, to convince them, that major extensions should motivate for an upgrade to WPF, but the expenses for the upgrade will most likely be on my behalf. Sticking with the Csla 3.6 framework, without possibility of a framework upgrade, would require that I manually fix any bugs that may be found in future versions of the framework and leave me out of any new features. <br /><br />This may not be a problem. However, I think, in the interim periode, until Microsoft drops support, or nears dropping support, for WinForms; creating two separate list base classes, one that builds on BindingList and one that builds on ObservableCollection, would be the optimal solution.<br /><br />I say this without comprehending the scope of maintaining two separate list base classes or if it is even possible with the rest of the framework.<br /><br />(As a side note: A few of the applications was built on Csla.Net 1.0 and 1.5 and have been upgraded to 2.1, 3.0 and 3.6 during their lifetime. Going from 1.5 to 2.1 was expensive, since my customers could not see the business value in the upgrade, so the expenses was kept by my company.)<br /><br />Cheers<br />/Henrik</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Friday, October 23, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>One of the primary features of CSLA .NET, in my mind, is that it helps protect your investment in your business layer. </P>
+<P></div></BLOCKQUOTE></P>
+<P>But it is protected! Even if you were to start a whole new completely different version of the CSLA. Nobody forces anyone to update to a new version of the CSLA. If I build my app using the CSLA version 2.5 then I can keep that version for as long as I want without having to update anything. *That is how* my investment is protected.</P>
+<P>How you define investment is very different from how I define investment, my definition of CSLA investment is: “out with the old, in with the new”. I **MUCH** rather update to a CSLA framework that is a mean lean machine than to a CSLA that tries to be a jack of all trades. Even if it means that I have to do a lot of rework, at the end, I know it would be worth it.</P>
+<P>To put it in simpler words, I agree that it would be great if the battery of my 15 year cell phone could be used by my brand new cell phone, I mean, my battery investment would be protected right? But all things consider I rather pay the price for a new battery that is the size of my credit card rather than have to use an old battery that is the size of a brick.</P>
+<P>Also, you have to understand that so much is riding on the CSLA when an application is built on top of the CSLA that it’s only natural that a company would want its engineers to master the framework before they start coding the app based on it. The in-depth understanding of the CSLA framework is what allows people to take sound architectural decisions *on the spot* with confidence and avoid possible pitfalls. Having a CSLA framework that is a mean lean machine makes it easier for developers to learn it and master it.</P>
+<P>I must insist. I would encourage you to break the CSLA into two dlls, the core (the book) and the utilities (e-book).&nbsp; Let people start learning the CSLA in 1st gear, don’t force people to start on 5th gear. Not just that, what best way to sell the CSLA than to show people how easy is to extend the core dll, you can prove that by showing them what you did with the utilities dll.</P>
+<P>Also, as stated above, say *NO* to backwards compatibility. You and your brains are the *true* investment here. Apply you time to move the CSLA forward and don’t waste your time bending over backwards to provide and maintain backwards compatibility. Microsoft does that all the time, big deal, we have managed to survive.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2><P>&gt;I would encourage you to break the CSLA into two <BR>&gt;dlls, the core (the book) and the utilities (e-book).&nbsp; </P>
+<P>Sadly, this doesn't address the ObservableCollection vs BindingList issue - not in any real sense.</P>
+<P>Ultimately I think the only answer to that problem is that in 4.0 BLB will derive from ObservableCollection, and (hopefully) there can be a Csla.Windows.BusinessListBase that derives from BindingList&lt;T&gt;.</P>
+<P>I haven't done this yet, so there could be unexpected complications, but it seems like the answer.</P>
+<P>Moving Csla.Windows.BusinessListBase into another assembly might be workable - but will almost certainly force me to make a bunch of internal things public. Anything I make public must meet a higher bar than internal types/methods, because people will (mis)use anything that's public.</P>
+<P>So it might be most time/cost-effective to put this new (well, old) BLB in Csla.Windows, but in the same Csla.dll assembly.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Henrik replied on Friday, October 23, 2009</h2>I agree with this. Create a separate Windows or WinForms namespace within the Csla assembly, so encapsulation isn’t broken.<br /><br />It isn’t the amount of classes in the Csla framework that should worry developers,  some of the .NET framework assemblies also contains hundreds if not thousands of classes. As long as things are kept nicely in separate namespaces, one only need to worry about the namespace relevant to ones needs.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, October 23, 2009</h2><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div></FONT>
+<P><FONT face=Tahoma size=2>But it is protected! Even if you were to start a whole new completely different version of the CSLA. Nobody forces anyone to update to a new version of the CSLA. If I build my app using the CSLA version 2.5 then I can keep that version for as long as I want without having to update anything. *That is how* my investment is protected.</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>rxelizondo:</strong></div><div></FONT></P>
+<P><FONT face=Tahoma size=2>Also, as stated above, say *NO* to backwards compatibility. You and your brains are the *true* investment here. Apply you time to move the CSLA forward and don’t waste your time bending over backwards to provide and maintain backwards compatibility. Microsoft does that all the time, big deal, we have managed to survive.</FONT></P>
+<P><FONT face=Tahoma size=2></div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Microsoft doesn't break backwards compatability "all the time".&nbsp; In fact, until rather recently, Microsoft bent over backwards to *maintain* backwards compatability.&nbsp; Yes, doing so is what&nbsp;eventually got them in trouble with Windows.&nbsp; And it also cost them an awful lot of money and time - things Rocky does not possess in great abundance.&nbsp; The fact that he's able to do it at all is somewhat remarkable.</FONT></P>
+<P><FONT face=Tahoma size=2>Also, suggesting that those who use older versions should either "put up or shut up" seems rather harsh.&nbsp; Yes, there is nothing stopping you from staying in 2.5.&nbsp; But what are you to do when you run into one of the issue with 2.5 that was fixed in, say, 3.5?&nbsp; If I were you, I suspect&nbsp;my answer would be "bite the bullet and upgrade".&nbsp; I don't know what your job is, but in my job (and in the job of most programmers I know), that is not a decision taken lightly, whether it's CSLA, .NET, or any other framework we may use to get our job done.&nbsp; My technical issues often do not rate highly on my customers' list of needs, and my paycheck derives rather directly from my customers' list of needs.&nbsp; You can say that "if they want it badly enough, they'll pay for it."&nbsp; But there is another decision to be made - "we won't do that."&nbsp; If those decisions are made often enough, I'm looking for another job - and standing on principle does not feed my wife or children.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT face=Tahoma size=2>Microsoft has quite clearly put Rocky in a&nbsp;rock-and-hard-place situation.&nbsp; I'm saying that taking the stand that you take seems, in large measure, to be an impractical one when you view it from the entire community.&nbsp; To cut off a rather significant segment of his "user base" simply because they don't have the time/money/facilities/whatever to upgrade ultimately takes away&nbsp;a segment of CSLA users, which gives him less money/impetus to continue&nbsp;advancing on the framework.&nbsp; It's also somewhat unfair to penalize them because of these reasons, many of which may be out of their control.</FONT></P>
+<P><FONT face=Tahoma size=2>FWIW, it's been my feeling for a while that&nbsp;CSLA needs to branch into multiple assemblies to deal with the peculiarities of the various technologies he is supporting&nbsp;- WinForms,&nbsp;WPF, ASP.NET (in all its various forms), and Silverlight.&nbsp; I've never been a huge&nbsp;fan of compiler directives, and they only solve a small portion of these issues anyway.&nbsp; Having said that, I have a feeling for what this kind of architecture would do to the CSLA codebase, and just how much work it would likely take Rocky and his team to do this.&nbsp; It's the very definition of "breaking change".&nbsp; But unfortunately, I think it's come to this.</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 23, 2009</h2><P>&gt;<FONT size=2>CSLA needs to branch into multiple assemblies to <BR>&gt;</FONT><FONT size=2>deal with the peculiarities of the various technologies he is supporting</FONT></P>
+<P>I sort of agree with this - but again we come back to the ultimate base class issue.</P>
+<P>I absolutely could split out the UI widgets/helpers for web/win/wpf/wf/silverlight into separate assemblies.</P>
+<P>But that still doesn't mean whatever core I create would work with WinForms and WPF...</P>
+<P>And I should point out that CSLA .NET 1.x had several assemblies. The single biggest complaint I got from people at that time was that they had to reference too many assemblies to do anything. There was a resounding cheer when 2.0 came out with just one Csla.dll :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Friday, October 23, 2009</h2><P><FONT size=2 face=Tahoma>This is part of what I'm talking about when I mentioned the effort of splitting CSLA.&nbsp; I understand the complaints about all the CSLA assemblies.&nbsp; But like I said, Microsoft seems determined to drive you to that end.&nbsp; So I say embrace the insanity.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT size=2 face=Tahoma>I guess what I could see are essentially five "assemblies":</FONT></P>
+<P><FONT size=2 face=Tahoma>1. Core CSLA for the WinForms/ASP.NET world (i.e. the "old" data-binding style)</FONT></P>
+<P><FONT size=2 face=Tahoma>2. Core CSLA for the WPF/Silverlight world (i.e. the "new" data-binding style)</FONT></P>
+<P><FONT size=2 face=Tahoma>3. The Winforms UI/widgets.</FONT></P>
+<P><FONT size=2 face=Tahoma>4. The ASP.NET UI/widgets.</FONT></P>
+<P><FONT size=2 face=Tahoma>5. The WPF/Silverlight UI/widgets (though this might have to be split as well.&nbsp; While the plan is obviously to drive these two to a common base, they aren't there yet...)</FONT></P>
+<P><FONT size=2 face=Tahoma>Things start to get hairy when trying to feed&nbsp;#1 and #2&nbsp;into the DataPortal, but I still think that's </FONT><FONT size=2 face=Tahoma>manageable.&nbsp; Those tracks are fairly similar, and I think the adapter patterns you've set up will help here.</FONT></P>
+<P><FONT size=2 face=Tahoma>It may be possible to have some ultimate base assemblies to support both #1 and #2, because the binding technologies are sorta-kinda-almost common.&nbsp; But I think if you're going to allow the framework to move forward, as well as allow for some kind of backwards compatability, I honestly see this as "the way out".</FONT></P>
+<P><FONT size=2 face=Tahoma>FWIW, I'd say this even if I had to do it.&nbsp; Not that I'm necessarily volunteering - just saying that I'm not offering up the hardest solution because I don't have to figure it out.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></FONT></P>
+<P><FONT size=2 face=Tahoma>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Monday, October 26, 2009</h2><P>I agree with "who will maintain old versions of the CSLA" would be a sticky point when it comes to having people accept that new version of the CSLA should break backward compatibility or not. I guess that if Rocky would make some type of “official” commitment to fix major bug or any type of security issue on older version of the CSLA for a given period of time, users of the CSLA would be more willing to accept having the CSLA break backwards compatibility. Not sure Rocky would have the time do that although I would be willing to bet that fixing old versions of the CSLA would take less time that trying to figure out how to maintain backwards compatibility on new versions.</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>Sadly, this doesn't address the ObservableCollection vs BindingList issue - not in any real sense.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I wasn’t really referring to this issue. My main motivation to break the CSLA is to make it simpler. Yes, I agree that if you put everything in is own little namespace and folder that things could be a little better but you are totally ignoring the physiological factor that having all that code has on developers.</P>
+<P>I remember back in the good old days of CSLA when a developer could go through the whole CSLA and understand every aspect of it. That’s what gave developers confidence to use the CSLA and in my opinion that is what made the CSLA grow.</P>
+<P>Again, my motivation for breaking the CSLA into multiple assemblies and to remove backwards compatibility is to be able to bring the CSLA back to a level where the average Joe can master the core CSLA.</P>
+<P>This will make it a lot easier to sell the CSLA for project creation because developer would be exited to build something on top that they understand or can see the light at the end of the tunnel. All that extra clutter does not help even if it can technically be ignored.</P>
+<P>And by the way, you can complete ignore and call me names for saying this, but the fact remains that most developers biggest problem with the CSLA at this time it’s the size and complexity... atleast that has been my feeling for some time now&nbsp;:)</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>Moving Csla.Windows.BusinessListBase into another assembly might be workable - but will almost certainly force me to make a bunch of internal things public. Anything I make public must meet a higher bar than internal types/methods, because people will (mis)use anything that's public.</P>
+<P></div></BLOCKQUOTE></P>
+<P>This is not good news! I almost want to say that if that is the case then something most be inherently wrong with the CSLA extensibility design….. but I won’t say that because that wouldn’t be appropriate so just ignore this sentence :)</P>
+<P>But seriously, if this was the case maybe there is work to be done here, It think its only logical to think that when it comes down to extending the framework with functionality that is not critical to the CSLA you should be able to do this by using a different assembly and not have to insert such functionally directly it on the CSLA core assembly. But realize that the person writing that is a person that is just picking up on CSLA 3.x so my comment may be completely off the mark.</P>
+<P>&nbsp;</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>And I should point out that CSLA .NET 1.x had several assemblies. The single biggest complaint I got from people at that time was that they had to reference too many assemblies to do anything. There was a resounding cheer when 2.0 came out with just one Csla.dll :)</P>
+<P></div></BLOCKQUOTE></P>
+<P>The thing is that back in the day, the CSLA was split on several dlls that were intrinsic to the operation of the CSLA. Very few people would not reference all those dlls so there was very little point on having the separated. All those dlls had nothing to do with UI stuff by the way (other than perhaps the resources dll).</P>
+<P>Things are different now, UI stuff does not really belong on the CSLA core anymore, that stuff should be removed to make the core CSLA cleaner.<BR></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, October 27, 2009</h2><P>I hope that it stays in one assembly.&nbsp; There seems to be no benefit and a whole lot of headaches to splitting them.&nbsp; The argument for the split seems to be learning... but that's what the book is for.</P>
+<P>I like the idea of moving the current BusinessListBase... but maybe instead of moving it a new collection base of BusinessCollectionBase is called for.&nbsp; </P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

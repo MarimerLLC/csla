@@ -1,0 +1,25 @@
+<html><header><title>CSLA 2.1 bug?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 2.1 bug?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1233.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 posted on Sunday, September 17, 2006</h2><P>Hi</P>
+<P>When I try to fetch a database record&nbsp;from a existing DataBase Server, but where the actual Database does not exist, I get of course an exception in my busienss object&nbsp; fetch method , like</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>void</FONT><FONT size=2> DataPortal_Fetch(</FONT><FONT color=#008080 size=2>Criteria</FONT><FONT size=2> criteria)<BR>{<BR></FONT><FONT color=#0000ff size=2>&nbsp; using</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2> cn = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>SqlConnection</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>Database</FONT><FONT size=2>.MetaKeywordConnection))<BR></FONT><FONT size=2>&nbsp; {<BR>&nbsp; cn.Open();<BR>ExecuteFetch(cn, criteria);<BR>}</FONT><FONT color=#008000 size=2>//using<BR></FONT><FONT size=2>}</FONT></P>
+<P>but it seems that the Framework get stuck here , because my application hangs and does not continiue or let me handle the exception locally.</P>
+<P>I am not using any remoting or remote data, instead using local database connectionstring.</P>
+<P>when I do trace through the CSLA framework code, i end up here:</P>
+<P>&nbsp;</P>
+<P>DataPortal.cs</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> Fetch(</FONT><FONT color=#008080 size=2>Type</FONT><FONT size=2> objectType, </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> criteria)</P></FONT>
+<P>and the program execution hangs in this this line</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> DataPortalException(</FONT><FONT color=#800000 size=2>"DataPortal.Fetch "</FONT><FONT size=2> + Resources.Failed, ex.InnerException, result.ReturnObject);</FONT></P>
+<P><FONT size=2>I can't single step and follow this exception any further.</FONT></P>
+<P><FONT size=2>The parameters to the Throw are:</FONT></P>
+<P><FONT size=2>ex.InnerException says "<FONT size=1>"DataPortal_Fetch method call failed" <FONT size=2>and "<FONT size=2>result.ReturnObject" has count=0 (its empty)</P>
+<P>The CSLA and Visual Studio 2005 hangs from here and I can't break the execution using the VS2005 debugger. Instead I have to "close" the application using taskmanager.</P>
+<P></FONT></FONT></FONT></FONT><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>PS, now I am of to restore the missing database.....</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Sunday, September 17, 2006</h2><P>Ps, some additional information.</P>
+<P>Everything works fine above when I restored the missing database.</P>
+<P>I am not accessing the SQL Server locally, instead&nbsp;I am ccessing&nbsp; a remote SQL server that I am accessing using secure SSH port forwarding/tunneling.&nbsp; But I doubt that should be the case because the exeception handling should not be affected by this.</P>
+<P>/andy</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Sunday, September 17, 2006</h2><P>I think you're running into this:</P>
+<P><A HREF="/forums/thread/3051.aspx">http://forums.lhotka.net/forums/thread/3051.aspx</A></P>
+<P>The&nbsp;solution I discovered in that thread seems to work:</P>
+<P><A HREF="/forums/permalink/3051/3051/ShowThread.aspx#3051">http://forums.lhotka.net/forums/permalink/3051/3051/ShowThread.aspx#3051</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sune42 replied on Sunday, September 17, 2006</h2><P>aha, thanks.</P>
+<P>I am sure that is what I am running into. </P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

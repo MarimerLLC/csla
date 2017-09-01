@@ -1,0 +1,13 @@
+<html><header><title>Casting LINQ resultset directly to a BusinessListBase object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Casting LINQ resultset directly to a BusinessListBase object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5567.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrispinH posted on Friday, October 10, 2008</h2><P>I've got a business collection object based on <EM>BusinessListBase</EM> which is bound to a couple of grids in different ways.&nbsp; I'm trying to use LINQ to provide the two views that I need as well as the dynamic filterering&nbsp;of the common data.&nbsp; This is in preference to the <EM>FilteredBindingList</EM></P>
+<P>A LINQ query on a produces a resultset of type <EM>IEnumerable(Of T)</EM> which therefore lacks the <EM>BusinessListBase</EM> properties that I'd like to pick up on (eg IsNew, IsDirty, etc) for the UI.</P>
+<P>Of course I can create a new instance of my object and iterate through the LINQ resultset to populate it&nbsp;then bind that to the grids as appropriate. But what I'd really like to do is cast the LINQ resultset to directly my type that inherits from <EM>BusinessListBase</EM> (which a long way down the line implements <EM>IEnumerable</EM>).&nbsp; I've worked out that <EM>DirectCast</EM> and <EM>CType</EM> don't work. So the question is: is it possible to return a strongly-typed (ie <EM>BusinessListBase</EM>) object from a LINQ query and if so how?</P>
+<P>TIA</P>
+<P>Crispin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 10, 2008</h2><P>Yes it is possible.</P>
+<P>You can thank Aaron Erickson of Magenic for this wonderful capability.</P>
+<P>I am quite sure it is in the 3.6 code base. Not so sure about 3.5.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>CrispinH replied on Friday, October 10, 2008</h2><P>Joe</P>
+<P>Thanks for the tip.&nbsp; I'll take a look.&nbsp; I'm on an earlier code base at the moment.</P>
+<P>Crispin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, October 10, 2008</h2><P>One of the really cool things about the returned result is that you can bind to it and change it and the *original* list stays up to date!</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

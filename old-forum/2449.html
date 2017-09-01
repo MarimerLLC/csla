@@ -1,0 +1,14 @@
+<html><header><title>help with businessbase properties - please?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>help with businessbase properties - please?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2449.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ianinspain posted on Wednesday, February 28, 2007</h2><P>Hi there,</P>
+<P>been developing one of editablebusinessbase classes, working good. I basically have private variables like</P>
+<P>Guid _id;<BR>string _propertyName = string.empty;<BR>int _plotSize;</P>
+<P>Do i need to initialise _plotSize to a number? I know i have to with strings as it doesn't bind if its null.</P>
+<P>Then i have various public properties like</P>
+<P>public string PropertyName<BR>{<BR>get </P>
+<P>etc</P>
+<P>All fine and now i need another property that will&nbsp;be "Property Type" which will contain things like "house", "office", "farm house", "land", "apartment" etc.. so I presume i create another BusinessEditableBase for property types this i am ok with... but then how do i create the property on my original EditableBase class above, i could put</P>
+<P>private MyNewEditableBase.PropertyTypes _propertyTypes;<BR><BR>public MyNewEditableBase.PropertyTypes PropertyTypes<BR>{<BR>get</P>
+<P>etc..</P>
+<P>But this would tightly couple the 2 objects wouldn't it??</P>
+<P>I don't think i need some kind of Assignment type object like in the csla.net book as its only a 1 to 1 relationship... It is a real estate(property) record and one the of fields/properties on the object will be of a type EditableBase (as it can be modified at a later stage..)</P>
+<P>A little lost, can anyone give me a little input, thanks in advance..</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

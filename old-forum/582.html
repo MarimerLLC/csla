@@ -1,0 +1,313 @@
+<html><header><title>2.0 DataPortalException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>2.0 DataPortalException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/582.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dc92974 posted on Monday, July 10, 2006</h2><P>I'm using CSLA 2.0 and data portal exceptions are locking up visual studio.&nbsp; Seems to get stuck in the DataPortalException class and happens on any data portal errors like an invalid column name.</P>
+<P>Any ideas?&nbsp; Is this possible a&nbsp;known issues fixed in a later release?</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Monday, July 10, 2006</h2><P>Hi,</P>
+<P>Don't think that I can help much, but I think I have the same issue. Sometimes, but not always, throwing a new DataPortalException hangs VS. To be more precise, it happens at DataPortal.cs line 191.</P>
+<P>I think this is an issue with VS and not CSLA, but heck if I know. Not sure if you're using C# or VB.NET, but if you send the error report, Microsoft will tell you it's because of the VB compiler. Strange, because I use C#.</P>
+<P>Since it takes so long for the error reporting dialog to come up, I've just placed a breakpoint on that line.</P>
+<P>I did ask Microsoft about it here <A href="http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=483570&amp;SiteID=1">http://forums.microsoft.com/MSDN/ShowPost.aspx?PostID=483570&amp;SiteID=1</A>&nbsp;- haven't got an answer though.</P>
+<P>This will happen to me, *sometimes*, when I should be getting a SqlException. For example, accessing the database when it's not started, or a bad sproc name.</P>
+<P>Kind of a pain, but not so bad with the breakpoint, at least it saves me time.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Monday, July 10, 2006</h2>Yeah it happens to me too. In a bit of a coincidence, I just happened to finally get around to looking at it today. Not a big deal really because it only happens when I do some bad SQL or forget to give my sproc the correct permissions. I can't really add much info but I did step through it until it disappears into hyperspace. I'm at home now so I'm working from memory but it goes through quite a lot of code until it throws a new DataPortalException.Then its gone.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2><P>That seems quite odd. Looking at the code in question - it is all on the client side, and DataPortalException (the client one) doesn't even get serialized or do anything fancy at all. It merely contains the inner exception and business object references, and takes a snapshot of the inner exception's stack trace.</P>
+<P>So the only bit of that which is remotely interesting is the call to ex.StackTrace in the constructor.</P>
+<P>Could you put your breakpoint into the constructor of DataPortalException to see if that completes?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, July 11, 2006</h2><P>I put a breakpoint in, followed it through, and the constructor for DataPortalException completes just fine. Whatever happens after that causes the crash. That is, you press F11 after the DataPortalException constructor comes back and then the crash.</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, July 11, 2006</h2>I'm still digging but, confirming what Mike says, yes the DataPortalException creation works just fine, its the throw that causes the problem.<br><br>It seems to be something to do with the Business Object. If I make the third parameter null instead of result.ReturnObject then it works AND, still confirming this but, the problem only seems to occur for me for a BO derived from ReadOnlyListBase but not BusinessBase.<br><br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, July 11, 2006</h2>Rocky,<br><br>Just to be clear, I start single stepping at the new DataPortalException() line in Csla.DataPortal.Fetch()<br><br>If I keep single stepping into the throw, it goes through getting the StackTrace in DataPortalException and then StackTrace in Csla.Server.CallMethodException several times and then VS comes back and displays the code I started stepping from in Csla.DataPortal but its locked up.<br><br>There is no obvious difference if I single step into a throw that works (ie from a BO that is a BusinessBase) except that VS eventually comes back with its nice unhandled exception dialog with the View details link etc.<br><br>Again, this is not a big deal to me but it is a bit of a mystery.<br><br>Cheers<br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Wednesday, July 12, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>tetranz:</strong></div><div>still confirming this but, the problem only seems to occur for me for a BO derived from ReadOnlyListBase but not BusinessBase.<BR><BR>Ross<BR><BR></div></BLOCKQUOTE></P>
+<P>Yeah, there's something up with this. When you first wrote this something smelled familiar, but I couldn't duplicate it. Not really sure if I can duplicate 100%, but it seems if that a read-only object triggers a SqlException, this happens. If an editable object does the same, VS doesn't crash.</P>
+<P>I'm using&nbsp;CodeSmith templates too, I have no idea if that's an issue.</P>
+<P>Regards,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Sunday, March 11, 2007</h2><P>Anyone find a solution to this issue? </P>
+<P>Seems pretty easy to reproduce at least on Vista with VS 2005 sp2 with Vista update. Just set the db connection string to something invalid and try and view/edit a project, it will throw a exception from try to list roles and that will lock project tracker and vs. If you kill projectracker sometimes vs comes back sometimes that gets killed to. </P>
+<P>By setting the return object to null in the exception constructor it cures the problem actually going into debugger to show exception.</P>
+<P>Annoying in project tracker but spent a while chasing this down thinking it something I was doing in some changes I made.</P>
+<P>Justin</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, March 11, 2007</h2><P>I don't follow what you are saying Justin. You altered Csla.Server.DataPortalException to set the return object (_result) to null?</P>
+<P>&nbsp;&nbsp;&nbsp; public DataPortalException(<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; string message, Exception ex, DataPortalResult result)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; : base(message, ex)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _innerStackTrace = ex.StackTrace;<BR><STRONG>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _result = null;<BR></STRONG>&nbsp;&nbsp;&nbsp; }</P>
+<P>Or are you saying something else?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Justin replied on Sunday, March 11, 2007</h2><P><FONT face=Arial color=#000000 size=2>No actually I just modified the client dataportal.cs line 193 from </FONT></P>
+<P><FONT size=2><FONT color=#000000><FONT face=Arial>throw new DataPortalException</FONT><FONT face=Arial>(</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000><FONT face=Arial>String.Format("DataPortal.Fetch {0} ({1})", Resources</FONT><FONT face=Arial>.Failed, ex.InnerException.InnerException), </FONT></FONT></FONT></P>
+<P><FONT face=Arial color=#000000 size=2>ex.InnerException, result.ReturnObject);</FONT></P>
+<P><FONT face=Arial color=#000000 size=2>To</FONT></P>
+<P><FONT size=2><FONT color=#000000><FONT face=Arial>throw new DataPortalException</FONT><FONT face=Arial>(</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000><FONT face=Arial>String.Format("DataPortal.Fetch {0} ({1})", Resources</FONT><FONT face=Arial>.Failed, ex.InnerException.InnerException),</FONT></FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000><FONT face=Arial>ex.InnerException, </FONT><FONT face=Arial>null);</FONT></FONT></FONT></P>
+<P><FONT face=Arial color=#000000 size=2>Seemed to cure the problem in my case although might still be a problem otherwise, although as the other posters said it only seems to be a problem when a ReadOnlyListBase is returned which&nbsp;&nbsp;pretty much only occurs on Fetch so I figured I would just change it there.</FONT></P>
+<P><FONT face=Arial size=2>As they said the DataPortalException constructor seems to run through fine but goes into some infinite loop on throw. I didn't try "Unwind the call stack on unhandled exceptions" for vs.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Tuesday, June 19, 2007</h2><P>I have to bring this subject backup... sorry but I think I have a similiar issue going on... and it does not have to do with VS IDE... my issue is the same with both Compiled apps and Debugging apps inside vs.</P>
+<P>When using remoting to a remote server (separate computer) and the Server-Side Business Object Assembly is not the same as the one on the client... after the method call "<FONT size=2>result = proxy.Fetch(objectType, criteria, dpContext)" inside the DataPortal method Fetch... hangs.</FONT></P>
+<P><FONT size=2>I do not understand why... but it does?&nbsp; Is there something I am missing</FONT></P>
+<P><FONT size=2>ward0093</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 20, 2007</h2><BLOCKQUOTE><div><img src="/Themes/basicblue/images/icon-quote.gif"> <strong>ward0093:</strong></div><div>the Server-Side Business Object Assembly is not the same as the one on the client</div></BLOCKQUOTE><br><br>I think that is your problem right there.&nbsp; There's probably an exception being thrown but not getting back to the client, so the call hangs.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is odd though, because you&#8217;d think he&#8217;d get one
+of those obscure Remoting exceptions about a serialization issue&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Still, there&#8217;s no doubt that having out-of-sync assemblies
+is a certain cause for failure.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 20, 2007 7:11 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] 2.0 DataPortalException<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/basicblue/images/icon-quote.gif"><strong>ward0093:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>the Server-Side Business Object Assembly is not the same as
+the one on the client<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p class=MsoNormal><br>
+<br>
+I think that is your problem right there.&nbsp; There's probably an exception
+being thrown but not getting back to the client, so the call hangs.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 20, 2007</h2>Back on Csla.net 1.0, I tried remoting, just to see if I could get it working, and I did experience this.&nbsp; Unfortunately it was over a year ago, and I don't recall what happened.. athough I do remember that at one point I was using a program that captured all HTTP traffic and allowed me to view the messages.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, June 20, 2007</h2><P>So...&nbsp; this issue is getting stranger,</P>
+<P>we have this thread that loops every 60 seconds to make sure we can access the server...&nbsp; The very first time (usually, but not always) returns an error to the client:</P>
+<P><FONT face=Arial size=2>Error occurred while accesssing the server-side business objects or database version; unable to determine if we are currently in-sync with the central server</FONT></P>
+<P><FONT face=Arial size=2>----&nbsp; BASE ERROR MESSAGE&nbsp; ----<BR>Could not load file or assembly 'CMS.BusinessCore, Version=1.1.2726.16851, Culture=neutral, PublicKeyToken=74fbfaac09086bcc' or one of its dependencies. The located assembly's manifest definition does not match the assembly reference. (Exception from HRESULT: 0x80131040)<BR>Error occurred in [CentralServerSettings: GetServerSideAssemblyDetails] method.</FONT></P>
+<P><FONT face=Arial size=2>----&nbsp; EXCEPTION STACK&nbsp;&nbsp;&nbsp;&nbsp; ----</FONT></P>
+<P><FONT face=Arial size=2>Server stack trace: <BR>&nbsp;&nbsp; at System.Reflection.Assembly.GetType(String name, Boolean throwOnError, Boolean ignoreCase)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.FormatterServices.GetTypeFromAssembly(Assembly assem, String name)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.ObjectReader.FastBindToType(String assemblyName, String typeName)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.ObjectReader.Bind(String assemblyString, String typeString)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.ObjectReader.GetType(BinaryAssemblyInfo assemblyInfo, String name)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.ObjectMap..ctor(String objectName, String[] memberNames, BinaryTypeEnum[] binaryTypeEnumA, Object[] typeInformationA, Int32[] memberAssemIds, ObjectReader objectReader, Int32 objectId, BinaryAssemblyInfo assemblyInfo, SizedArray assemIdToAssemblyTable)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.__BinaryParser.ReadObjectWithMapTyped(BinaryObjectWithMapTyped record)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.__BinaryParser.ReadObjectWithMapTyped(BinaryHeaderEnum binaryHeaderEnum)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.__BinaryParser.Run()<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.ObjectReader.Deserialize(HeaderHandler handler, __BinaryParser serParser, Boolean fCheck, Boolean isCrossAppDomain, IMethodCallMessage methodCallMessage)<BR>&nbsp;&nbsp; at System.Runtime.Serialization.Formatters.Binary.BinaryFormatter.Deserialize(Stream serializationStream, HeaderHandler handler, Boolean fCheck, Boolean isCrossAppDomain, IMethodCallMessage methodCallMessage)<BR>&nbsp;&nbsp; at System.Runtime.Remoting.Channels.CoreChannel.DeserializeBinaryRequestMessage(String objectUri, Stream inputStream, Boolean bStrictBinding, TypeFilterLevel securityLevel)<BR>&nbsp;&nbsp; at System.Runtime.Remoting.Channels.BinaryServerFormatterSink.ProcessMessage(IServerChannelSinkStack sinkStack, IMessage requestMsg, ITransportHeaders requestHeaders, Stream requestStream, IMessage&amp; responseMsg, ITransportHeaders&amp; responseHeaders, Stream&amp; responseStream)</FONT></P>
+<P><FONT face=Arial size=2>Exception rethrown at [0]: <BR>&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.HandleReturnMessage(IMessage reqMsg, IMessage retMsg)<BR>&nbsp;&nbsp; at System.Runtime.Remoting.Proxies.RealProxy.PrivateInvoke(MessageData&amp; msgData, Int32 type)<BR>&nbsp;&nbsp; at Csla.Server.IDataPortalServer.Fetch(Type objectType, Object criteria, DataPortalContext context)<BR>&nbsp;&nbsp; at Csla.DataPortalClient.RemotingProxy.Fetch(Type objectType, Object criteria, DataPortalContext context) <BR>&nbsp;&nbsp; at Csla.DataPortal.Fetch(Type objectType, Object criteria) <BR>&nbsp;&nbsp; at Csla.DataPortal.Fetch[T](Object criteria) <BR>&nbsp;&nbsp; at CMS.BusinessCore.AssemblyDetails.GetServerRoot()</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>But every call afterwards causes the client program to hang!&nbsp; Is IIS on the server stopping it... again I say "Usually" we get a return error on the very first call but not always.</FONT></P>
+<P><FONT face=Arial size=2>ward0093</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 20, 2007</h2>Well until you get the assemblies in sync on both client and server, you're going to have problems.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, June 20, 2007</h2><P>I understand problems with errors... but "Hanging"... that should not happen correct?</P>
+<P>Also... I think something else is going on... because we did get the Assemblies In-Sync and the program still hangs?&nbsp; I am using a basic IIS setup with no firewall... what could be missing...</P>
+<P>Even if the Assemblies were "Out of Sync" shouldn't we get an error back to the client?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, June 20, 2007</h2>Well like I said when I was trying remoting in 1.0, I did get just 'hangs.'&nbsp; I can't remember how I figured out what the problem was though.<br><br>I would start small, and get remoting working on a single workstation (client app on the same computer as IIS remoting host).<br><br>This setup should allow you to nail down the problem; you can even step into server side code if you attach to the aspnet process.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, June 20, 2007</h2><P>FINALLY.... After a good night sleep it dawned on me this morning...</P>
+<P>The server is hooked up to the internet with a Static IP and no firewall or router.&nbsp; However... I was misinformed that our dev machines (all of them) are behind a firewall and router.</P>
+<P>After hooking the server up to our internal network... viola!&nbsp; it works... even if the assemblies are out of sync... we get errors back from the server so we can diagnos this server side issue.</P>
+<P>So... with that said... we now have to find out how to properly configure the Firewall to allow those exception traffic in.&nbsp; Rocky... have you seen this before in all your remoting tests?</P>
+<P>sorry for the confusion,</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 20, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I agree.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only &#8220;hang&#8221; situation I know of deals with a
+read-only list. If an exception occurs in DataPortal_Fetch the client-side data
+portal can hang when rethrowing the exception on the client. This appears to be
+due to a bug in the debugger and I&#8217;m working with Microsoft to isolate
+the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The workaround is to uncheck &#8220;Unwind calls stack on
+unhandled exceptions&#8221; in the debugger options.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you said your issue occurs in release mode outside VS, so I
+doubt this is your problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 20, 2007 2:14 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: 2.0 DataPortalException<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well like I said when I was trying remoting in 1.0, I did
+get just 'hangs.'&nbsp; I can't remember how I figured out what the problem was
+though.<br>
+<br>
+I would start small, and get remoting working on a single workstation (client
+app on the same computer as IIS remoting host).<br>
+<br>
+This setup should allow you to nail down the problem; you can even step into
+server side code if you attach to the aspnet process.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Thursday, June 21, 2007</h2><P>“Unwind calls stack on unhandled exceptions” - No... that was the first thing I took a look and it was already unchecked...</P>
+<P>it was definently the firewall in our office... the question I have is that I thought no configuration is needed on the network with CSLA &amp; Remoting because everything is done via HTTP and port 80?&nbsp;Is there a setting we missed on our Router and Firewall by chance?&nbsp; Have you seen this before Rocky?</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 21, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>No, I haven’t seen this before.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But you know, some firewalls screen <i>content</i> as well as blocking
+ports. So perhaps the firewall is doing something based on the actual data
+flowing through the connection?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ward0093
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 21, 2007 7:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: 2.0 DataPortalException<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>â€œUnwind calls stack on unhandled exceptionsâ€ - No... that was the first
+thing I took a look and it was already unchecked...<o:p></o:p></p>
+
+<p>it was definently the firewall in our office... the question I have is that
+I thought no configuration is needed on the network with CSLA &amp; Remoting
+because everything is done via HTTP and port 80?&nbsp;Is there a setting we
+missed on our Router and Firewall by chance?&nbsp; Have you seen this before
+Rocky?<o:p></o:p></p>
+
+<p>ward0093<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>eDjinn replied on Friday, July 20, 2007</h2>Sorry to burst into this thread of yours, but before I read this thread I tried some things myself, because the&nbsp; exception was thrown&nbsp; in my App. too.  <br><br>I checked all the options in Debug-Exceptions Dialog, and I too found that the Constructor completes succesfully, but the throw does not complete. <br><br>From what I tried next I learned that the error occurs when someone (or some code-line) tries to read the Csla.DataPortalException.BusinessObject property. <br>This should be the newly created business-object , but the Exception is thrown in the Fetch, wich was called during construction of the object, hence creating an infinite loop of creating exceptions to read exceptions. (could this be because of the implementation with CodeSmith templates?)<br>This property is not (allways) read when the error is handled, but is the error is unhandled, the system (.net framework?) does read the property and creates this infinite loop. <br><br>This is why setting the businessObject to null works. <br><br>What I read in this thread seems like different problems have simular results. <br>Rocky, do you have any comments on the above? <br>Does this indeed only occur with CodeSmith templates?<br><br>Herman<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, July 20, 2007</h2><P>There is a known problem where data portal exceptions will "lock up" Visual Studio if the business object is a read-only list.</P>
+<P>The workaround is to make sure to uncheck the unwind call stack option as discussed earlier in the thread.</P>
+<P>This appears to be a bug in Visual Studio's debugger (with the exception assistant actually), and I'm working with Microsoft to confirm it is a bug, and if so to get it fixed. I recently sent a consistent repro of the issue to a member of the debugger team, so we'll see what happens.</P>
+<P>It isn't actually the case that VS hangs by the way. If you wait <EM>long enough</EM> it crashes. The actual problem appears to be a stack overflow within the debugger itself.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>screenscribe replied on Tuesday, January 01, 2008</h2><P>This issue, or at least some form of it, has been plaguing some of my development efforts&nbsp;over the past year.&nbsp; I too have been experiencing Visual Studio crashes related to using the ReadOnlyListBase class, although my situation was not fixed by unchecking the 'unwind call stack' option.&nbsp; Instead, I would open my solution, be able to debug once or twice...but if I would Rebuild Solution, Visual Studio would crash towards the end of the build process.&nbsp; In the event log, I was seeing the following:</P><FONT size=1>
+<P>.NET Runtime version 2.0.50727.832 - Fatal Execution Engine Error (7A0592A2) (80131506)</P>
+<P><FONT size=3>I was going to attempt to add some msbuild compile options to kick my build log out to a file to troubleshoot when I noticed that on my project's compile tab, 'Register for COM Interop' was checked.&nbsp; For giggles, I unchecked this and tried to get Visual Studio to crash through my normal process of opening the solution, running in debug and then rebuilding 2-3 times until VS would die.&nbsp; Remarkably, it is no longer crashing.&nbsp; FYI, my application is a class library that eventually goes into Component Services and utilizes Enteprise Services.</FONT></P>
+<P><FONT size=3>Obviously, this isn't a fix but hopefully it spurs more dialogue and hopefully a patch.</FONT></P>
+<P><FONT size=3>Cheers,<BR>Matthew</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=000101020-11072006><FONT face=Arial color=#0000ff size=2>That's a puzzle then - as it must occur in Microsoft's 
+throw implementation itself then...</FONT></SPAN></DIV><BR>
+<BLOCKQUOTE>
+  <DIV class=OutlookMessageHeader align=left>
+  <HR>
+  <FONT face=Tahoma size=2><B>From:</B> Michael Hildner 
+  [mailto:cslanet@lhotka.net] <BR><B>Sent:</B> Tuesday, July 11, 2006 2:40 
+  PM<BR><B>To:</B> rocky@lhotka.net<BR><B>Subject:</B> Re: [CSLA .NET] 2.0 
+  DataPortalException<BR></FONT><BR></DIV>
+  <DIV></DIV>
+  <P>I put a breakpoint in, followed it through, and the constructor for 
+  DataPortalException completes just fine. Whatever happens after that causes 
+  the crash. That is, you press F11 after the DataPortalException constructor 
+  comes back and then the crash.</P>
+  <P>Mike</P><BR><BR><BR></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Tuesday, July 11, 2006</h2>One more note on this.<br><br>I can avoid the problem by going to Tools/Options/Debugging/General and unchecking "Unwind the call stack on unhandled exceptions".<br><br>All seems to work just fine then. I'm not sure what that checkbox really means or what I miss out on with it unchecked. Everything I normally use in the exception assistant still seems to be there including the stack track.<br><br>Cheers<br>Ross<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael Hildner replied on Tuesday, July 11, 2006</h2><P>&gt;&gt;I can avoid the problem by going to Tools/Options/Debugging/General and unchecking "Unwind the call stack on unhandled exceptions".<BR></P>
+<P>Wow, how the heck did you find that? That works for me too. I haven't messed much with the VS defaults - although I've seen that option, I had no idea what it would do, so I never changed it. Quick google says it has something to do with edit and continue. Interesting as the error reporting will tell you it's something with the VB.NET compiler. Still, I use C#.</P>
+<P>Seems more and more like a VS bug. I'll update my MSDN thread and see if anything comes of that.</P>
+<P>Thanks for posting what you've found,</P>
+<P>Mike</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 11, 2006</h2>
+
+
+
+
+<DIV align=left><SPAN class=515301104-12072006><FONT face=Arial color=#0000ff size=2>It could, I suppose, be some odd thing in how the stack is 
+"unwound", where my exception classes aren't "unwinding" properly. Though I'm 
+not sure how that would be, given that the stack trace info is in string 
+format...</FONT></SPAN></DIV>
+<DIV align=left><SPAN class=515301104-12072006><FONT face=Arial color=#0000ff size=2></FONT></SPAN>&nbsp;</DIV>
+<DIV align=left><SPAN class=515301104-12072006><FONT face=Arial color=#0000ff size=2>Rocky</FONT></SPAN></DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

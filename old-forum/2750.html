@@ -1,0 +1,26 @@
+<html><header><title>DataPortal_Create vs. Parameterized Constructor in EditableChild</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataPortal_Create vs. Parameterized Constructor in EditableChild</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2750.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JabbaTheNut posted on Sunday, April 22, 2007</h2><P>I have an EditableChildList object called UserRoles that contains a collection of UserRole objects.&nbsp; I need to create each UserRole using parameters.&nbsp; Is there a difference between the following methods (i.e., which one is preferred)?</P>
+<P>*********** METHOD 1 **************</P>
+<P>internal static UserRole NewUserRole (int userID, int roleID)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return DataPortal.Create&lt;UserRole&gt; (new Criteria (userID, roleID));</P>
+<P>}</P>
+<P>private UserRole ()</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkAsChild();</P>
+<P>}</P>
+<P>private void DataPortal_Create (Criteria criteria)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Load data from database based on parameters contained in criteria.</P>
+<P>}</P>
+<P>*********** METHOD&nbsp;2 **************</P>
+<P>internal static UserRole NewUserRole (int userID, int roleID)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return new UserRole (userID, roleID);</P>
+<P>}</P>
+<P>private UserRole (int userID, int roleID)</P>
+<P>{</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MarkAsChild();</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;// Load data from database based on supplied parameters.</P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Sunday, April 22, 2007</h2>Yes.&nbsp; The purpose of DataPortal_Create is so that the creation occurs on the application server, where as your second example would occur on the client machine.&nbsp; <br><br>You should always do your creation/update/deleting of object through DataPortal methods...i.e. you shouldn't ever access the database if it's not initiated from the one of the DataPortal_XYZ methods.&nbsp; Not only is it consistant with how CSLA is intended to be used, but it will also allow you to not have to re-code things should you ever go to a N-Tier physical architecture.&nbsp; The idea is that the client machine may not have access to a resource, but the server will, the DataPortal_XYZ methods run on the server.<br><br>If you're create method doesn't do anything spectacular that it would need to get values from a data source you can always supply the RunLocal() attribute to the method.<br><br>HTH<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 23, 2007</h2><P>Typically the data portal is only used for root objects.</P>
+<P>While you <EM>can</EM> technically use the data portal for child objects, there's no value to doing so, and so I recommend against it. Instead, I recommend using the coding style from the book, where the parent calls a Friend/internal factory method on the child, that factory method calls the constructor and the constructor calls a private Create() or Fetch() method to do the actual data load.</P>
+<P>If you want, you can skip the factory method and have the parent call the ctor directly, but I prefer to use the factory to keep a higher level of consistency in how the objects are created. Consistency leads to maintainability, and maintainability is the light side of OO <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

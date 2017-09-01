@@ -1,0 +1,21 @@
+<html><header><title>Repository pattern Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Repository pattern Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9085.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 posted on Monday, June 14, 2010</h2><p>Hi,</p>
+<p>At my new job we&#39;re using the respository pattern to remove the data access code from the BOs.&nbsp; I have some reservations about this, namely that some business logic is now in the respository implemention when it really (IMO) should be in the BO.&nbsp; Such things as closing an order when an invoice is saved with certain values.&nbsp; </p>
+<p>Also, does the repository pattern fit with Csla?&nbsp; I haven&#39;t checked out the ObjectFactory stuff, would it fit there?&nbsp; Is OF an implementation of repository?</p>
+<p>Or is repository the new Pattern of the Week?</p>
+<p>Thanks for any insights!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, June 14, 2010</h2><p>The repository pattern is a solid pattern, and is widely used. Like any pattern, it should only be used if it solves a problem you have.</p>
+<p>The repository pattern solves the problem of switching between different data access providers without switching the calling code. It is very closely related to the broader provider pattern concept, and a provider pattern is one way of implementing a repository pattern.</p>
+<p>So if you need to switch DAL implementations, the repository pattern is a good tool to achieve that end.</p>
+<p>CSLA supports four data access models - I describe them in Chapter 18, and more thoroughly in the Core 3.8 video series:</p>
+<ol>
+<li>Business class directly implements DAL in DataPortal_XYZ methods</li>
+<li>Business class invokes DAL from DataPortal_XYZ methods</li>
+<li>Object factory directly implements DAL</li>
+<li>Object factory invokes external DAL</li>
+</ol>
+<p>Options 2 and 4 work very well with the repository pattern.</p>
+<p>Option 3 already implements a repository pattern.</p>
+<p>Options 3 and 4 require the most work, because the object factory models require that you manage all the business object metastate. Options 1 and 2 are easier, because the data portal manages the metastate for your automatically.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, June 15, 2010</h2><p>Rocky,</p>
+<p>Thanks for the answer.&nbsp; That&#39;s pretty much where I would expect repository to fit.&nbsp; It seems that many proponents of the pattern though advocate the UI directly invoking the repositories, which I&#39;m not sure is the best route to go.&nbsp; Many examples also show anemic models as well, and dismiss smart BOs.&nbsp; </p>
+<p>Continuing this, it seems that options 2 - 4 also open up the ability to mock the repository / DAL, so that you can unit test Csla BOs without actually needing a database.&nbsp; Is that a fair statement as well?</p>
+<p>Thanks</p>
+<p>PS - Blake, I&#39;d appreciate the chance to mark my own question answered.&nbsp; If I don&#39;t do so in a few days thats one thing, but I didn&#39;t even get 24 hours to do so.&nbsp; <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, June 18, 2010</h2><p>Yes, options 2-4 allow for a pluggable DAL, regardless of which pattern you use to achieve that goal (repository, DI, etc).</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

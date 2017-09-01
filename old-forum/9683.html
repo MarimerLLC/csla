@@ -1,0 +1,29 @@
+<html><header><title>MVVM and SL and Name value List</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVVM and SL and Name value List</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9683.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Wednesday, October 27, 2010</h2><p>Hi</p>
+<p>need some help. SL4 / csla 4 /MVVM</p>
+<p>Trying to populate name value list into a combo. &nbsp;This is what I have.</p>
+<p>
+<p>
+<p>Public Property MediaList() As Abraca.Business.Locations_nvl</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Sub LoadMediaList()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Abraca.Business.Locations_nvl.GetAllAsync(AddressOf LoadMediaListCompleted)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;Private Sub LoadMediaListCompleted(ByVal sender As Object, ByVal e As Csla.DataPortalResult(Of Abraca.Business.Locations_nvl))</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;If Not e.Object Is Nothing Then</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MessageBox.Show(e.Object.Item(0).Value) &#39; this works</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MediaList = e.Object &#39; this fails</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;MessageBox.Show(e.Error.Message)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;End If</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;End Sub</p>
+</p>
+<p>This fails ...&nbsp;MediaList = e.Object&nbsp;</p>
+<p>Because this ....&nbsp;Public Property MediaList() As Abraca.Business.Locations_nvl does not create a New instance but New is private. Can anyone advise please.</p>
+</p>
+<p>My combo is bound to the property MediaList in my viewmodel.</p>
+<p>Richard</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 27, 2010</h2><p>I don&#39;t understand what you are saying? You are somehow trying to New up the object, and that fails because of the private constructor?</p>
+<p>Your code doesn&#39;t <i>look</i> abnormal - I assume GetAllAsync() is a factory method that calls the data portal - so there&#39;s no point here where you&#39;d be trying to New up an object - the object is created by the data portal on the server.</p>
+<p>Or are you saying that the property you are trying to set is a read-only property? That&#39;s not what the code looks like either.</p>
+<p>I guess, in short, without an actual exception and stack trace there&#39;s no way to help you.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

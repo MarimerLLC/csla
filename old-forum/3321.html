@@ -1,0 +1,49 @@
+<html><header><title>System.InvalidOperationException</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>System.InvalidOperationException</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3321.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bassplayer posted on Friday, August 03, 2007</h2><br>I'm currently using the 2.0 of CSLA (VB.NET) and when I have the following Validation Rule:<br><br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf Validation.CommonRules.StringRequired, "DisplaySort")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf Validation.CommonRules.StringMaxLength, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; New CommonRules.MaxLengthRuleArgs("DisplaySort", 4))<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf NoDuplicates, "DisplaySort")<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp; Private Function NoDuplicates(ByVal target As System.Object, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal e As RuleArgs) As Boolean<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim parent As Units = CType(Me.Parent, Units)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As Unit In parent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.DisplaySort = _displaySort AndAlso Not ReferenceEquals(item, Me) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "Display Sequence must be unique"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br><br>&nbsp;&nbsp;&nbsp; End Function<br><br>This is similar to the Role.vp example in the ProjectTracker20vb project:<br><br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; AddressOf Csla.Validation.CommonRules.StringRequired, "Name")<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf NoDuplicates, "Id")<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp; Private Function NoDuplicates(ByVal target As Object, _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ByVal e As Csla.Validation.RuleArgs) As Boolean<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim parent As Roles = CType(Me.Parent, Roles)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; For Each item As Role In parent<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; If item.Id = mId AndAlso Not ReferenceEquals(item, Me) Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = "Role Id must be unique"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return False<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Next<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return True<br><br>&nbsp;&nbsp;&nbsp; End Function<br><br>Now, in order to have this called, I had to add the following to the New() method:<br><br><br>&nbsp;&nbsp;&nbsp; Private Sub New()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules()<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br><br>I notice the method ValidationRules.CheckRules() was NOT called in the Role.vb file, thus was never called.<br><br>The exception I'm getting is:<br><br>System.InvalidOperationException was unhandled<br>&nbsp; Message="An error occurred creating the form. See Exception.InnerException for details.<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; The error is: DataPortal.Fetch failed (System.InvalidOperationException:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Invalid rule method (instance methods of the target object not allowed):<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; NoDuplicates\r\n&nbsp;&nbsp; at Csla.Validation.ValidationRules.ValidateHandler(MethodInfo method) in<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D:\\cad911\\CSLA20VB\\Csla\\Validation\\ValidationRules.vb:line 593\r\n&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Validation.ValidationRules.ValidateHandler(RuleHandler handler) in<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D:\\cad911\\CSLA20VB\\Csla\\Validation\\ValidationRules.vb:line 580\r\n<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at Csla.Validation.ValidationRules.AddRule(RuleHandler handler, String propertyName) in<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; D:\\cad911\\CSLA20VB\\Csla\\Validation\\ValidationRules.vb:line 389\r\n<br><br>What I need to do is check the make sure there are no duplicate entries for my business object.&nbsp; I need the ErrorProvider to turn on when there is a duplicate on my WinForm.&nbsp; What am I doing wrong?<br><br>When the user is presented with a blank form that is databound to this business object, I want this check to happen when the user types in a value in the field and then tabs to the next field.<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, August 04, 2007</h2><P>You shouldn't call ValidationRules methods in the constructor of your class - that's too early.</P>
+<P>If you want a new object to start out validated, make the call in DataPortal_Create():</P>
+<P>&lt;RunLocal()&gt; _<BR>Private Overloads Sub DataPortal_Create()<BR>&nbsp; ValidationRules.CheckRules()<BR>End Sub</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bassplayer replied on Monday, August 06, 2007</h2><br>Okay.&nbsp;&nbsp; I changed it to do this:<br><br>#Region " Factory Methods "<br><br>&nbsp;&nbsp;&nbsp; Public Shared Function NewUnit() As Unit<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Return New Unit<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of Unit)()<br><br>&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp; Friend Shared Function GetUnit(ByVal dr As Csla.Data.SafeDataReader) As Unit<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return New Unit(dr)<br><br>&nbsp;&nbsp;&nbsp; End Function<br><br>&nbsp;&nbsp;&nbsp; Private Sub New()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'MarkAsChild()<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>&nbsp;&nbsp;&nbsp; Private Sub New(ByVal dr As Csla.Data.SafeDataReader)<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Fetch(dr)<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br>#End Region<br><br>#Region " Data Access "<br><br>&nbsp;&nbsp;&nbsp; &lt;RunLocal()&gt; _<br>&nbsp;&nbsp;&nbsp; Protected Overrides Sub DataPortal_Create()<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; MarkAsChild()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules()<br><br>&nbsp;&nbsp;&nbsp; End Sub<br><br><br>And I still get the System.InvalidOperationException.&nbsp; I modeled this way after the Project.vb example in ProjectTracker20vb:<br><br>#Region " Factory Methods "<br><br>&nbsp; Public Shared Function NewProject() As Project<br><br>&nbsp;&nbsp;&nbsp; If Not CanAddObject() Then<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Throw New System.Security.SecurityException( _<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "User not authorized to add a project")<br>&nbsp;&nbsp;&nbsp; End If<br>&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of Project)()<br><br>&nbsp; End Function<br><br><br>&nbsp; &lt;RunLocal()&gt; _<br>&nbsp; Protected Overrides Sub DataPortal_Create()<br><br>&nbsp;&nbsp;&nbsp; mId = Guid.NewGuid<br>&nbsp;&nbsp;&nbsp; Started = CStr(Today)<br>&nbsp;&nbsp;&nbsp; ValidationRules.CheckRules()<br><br>&nbsp; End Sub<br><br><br>What I don't understand is that either it the ValidationRules.CheckRules() being called in the constructor or being called in the DataPortal_Create(), its still being called when the object is created.<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 06, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is true that the constructor and DP_C() are invoked when the
+object is created, but they occur at different times in the process.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Obviously the constructor is first, by definition.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then a bunch of initialization occurs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Then DP_C() is invoked.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Calling ValidationRules.CheckRules() before that initialization
+is the problem.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

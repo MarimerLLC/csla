@@ -1,0 +1,56 @@
+<html><header><title>Csla 41 Unable to access Protected object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla 41 Unable to access Protected object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10620.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tzfj7l posted on Wednesday, August 17, 2011</h2><p>Hi Rocky,</p>
+<p>I am migrating my application from Csla version # 3.6.1.0 to 4.1.0.0 along with .Net 2008 to 2010. I&nbsp; have problems in the following class.</p>
+<p>Csla.Xaml. Property Status</p>
+<p>in 3.6&nbsp; Object Source and DependencyObject Target are public where as in 4.1 Object Source is protected and there is no Dependency object Target. Could you please let me know how to fix this one. Thank you.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;"><font size="2" color="#0000ff"><font size="2" color="#0000ff">
+<p>private&nbsp;</p>
+</font></font></span><font size="2" color="#0000ff">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">void&nbsp;</span></span><span style="font-size:x-small;">SetStatusControl()
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp; if</span></span><span style="font-size:x-small;"> (Template != </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">null</span></span><span style="font-size:x-small;"> &amp;&amp; </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">DesignModeHelper</span></span><span style="font-size:x-small;">.IsInDesignMode == </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">)</span></p>
+<p><span style="font-size:x-small;">&nbsp;&nbsp; {<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">&nbsp;&nbsp;&nbsp; PropertyStatus</span></span><span style="font-size:x-small;"> status = </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.GetTemplateChild(</span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;PART_PropertyStatus&quot;</span></span><span style="font-size:x-small;">) </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">as</span></span><span style="font-size:x-small;"> </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">PropertyStatus;</span></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp; if</span></span><span style="font-size:x-small;"> (status != </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">null</span></span><span style="font-size:x-small;">)
+<p>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p>&nbsp;</p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if&nbsp;</span></span><span style="font-size:x-small;"> (IsValidatable)
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<font size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status.Property = </p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.ValidationPropertyName;<font size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;status.Source = </p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.DataContext; //&nbsp;(object Source is protected cannot access)<font size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; dataContext = </p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">.DataContext;
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<font size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; status.Target = </p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">this</span></span><span style="font-size:x-small;">;&nbsp;&nbsp; // (does not contain a definition for Target in 4.1)</span></p>
+<p><span style="font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;}</span></p>
+<p><span style="font-size:x-small;">&nbsp;&nbsp; }</span></p>
+<p><span style="font-size:x-small;">}</span></p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 17, 2011</h2><p>The PropertyStatus control was largely rewritten from 3.6 to 3.8. Please look at the current sample apps in the Samples download - several of them use the current PropertyStatus control.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

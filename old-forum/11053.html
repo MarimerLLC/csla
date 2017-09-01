@@ -1,0 +1,9 @@
+<html><header><title>4.2.2 IReadOnlyCollection is not implemented in NameValueListBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>4.2.2 IReadOnlyCollection is not implemented in NameValueListBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11053.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ynijsen posted on Friday, January 13, 2012</h2><p>in my factory classes I wan&#39;t to&nbsp;differentiatie between Editable Collections and Read Only collections. I suppose this is where&nbsp;<span>IReadOnlyCollection is for.</span>&nbsp;</p>
+<p>But NameValueListBase doesn&#39;t implement this (empty) interface.<br />It does inherit from&nbsp;<span>ReadOnlyBindingList, just as ReadOnlyListBase does. And that has a IReadOnlyCollection interface.</span></p>
+<p>The need for this is for the type constraint in the generic class that would allow only ReadOnlyListBase and NameValueListBase implementations:</p>
+<p>Like in:</p>
+<p>&nbsp;</p>
+<pre>&nbsp;<span>internal</span>&nbsp;<span>abstract</span>&nbsp;<span>class</span>&nbsp;<span>ReadOnlyListFactoryBase</span>&lt;TList,&nbsp;C&gt;&nbsp;:&nbsp;<span>FactoryBase</span>&lt;TList,&nbsp;C&gt;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>where</span>&nbsp;TList&nbsp;:&nbsp;<span>IReadOnlyCollection&nbsp;</span>,&nbsp;<span>IBusinessObject</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>where</span>&nbsp;C&nbsp;:&nbsp;DAL.Core.<span>IDataItem</span>&lt;C&gt;,&nbsp;<span>new</span>()<br />  {...}</pre>
+<pre></pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,68 @@
+<html><header><title>Questions about AuthorizationRules.AllowExecute</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Questions about AuthorizationRules.AllowExecute</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5518.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM posted on Thursday, October 02, 2008</h2><ol><li>Does this syntax only work for instance method? If yes, what's the suggested way to if I want to do the similar thing to protect static method?</li><li>I have to call CanExecuteMethod(methodName) in my instance method to take advantage of the role setting set by AllowExecute() earlier. Is this kind of unnecessary?</li><li>What's the reason the old CanExecuteMethod() (no methodName in parms) become obsolete?</li></ol>Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, October 02, 2008</h2><P>For #3 - it is probably the same reason that the no parameter version of&nbsp;CanReadProperty was made obsolete. They relied on walking a stack trace to locate the property name for you. It turns out that is unreliable. So you have to provide the name in your code.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FrankM replied on Thursday, October 02, 2008</h2>Thanks Joe, that means the code shown in another post is not stable?<br><blockquote><code>string methodName = new System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);</code></blockquote></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Thursday, October 02, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Correct, this code is not reliable.&nbsp; It may work most of the
+time, but not 100 % of the time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> FrankM
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, October 02, 2008 4:38 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Questions about AuthorizationRules.AllowExecute<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Thanks Joe, that means the code shown in another post is not
+stable?<o:p></o:p></p>
+
+<p class=MsoNormal><code><span>string methodName = new
+System.Diagnostics.StackTrace().GetFrame(1).GetMethod().Name.Substring(4);</span></code><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

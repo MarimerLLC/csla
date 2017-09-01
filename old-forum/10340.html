@@ -1,0 +1,19 @@
+<html><header><title>Bulk Create Child Items server side</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bulk Create Child Items server side</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10340.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir posted on Wednesday, May 04, 2011</h2><p>Hi,</p>
+<p>I was wondering if anyone has done this before so I wont spend too much time reinventing the wheel.</p>
+<p>My EditableRootObject &quot;Contract&quot; has a Child List of &quot;Payments&quot; and I need to add a bunch of &quot;Payments&quot; to that child list based on a specific criteria. The dark side of the story is that the due date of each of these payments objects needs a lot of interaction with database to exclude several dates which are physically stored or calculated.</p>
+<p>That makes me think that this proces should run as close to the Data tier as possible... in fact, it could be done inside a stored procedure.</p>
+<p>Now, what is driving me crazy is how to create those objects at server side and send them to UI (Silverlight) to insert them into the child list.</p>
+<p>So far, I&#39;ve been thinking on creating a separated ReadOnlyList for transportation only and manually add each item to the child list inside the BO... But, something makes me thing that there is a better approach for this situation...</p>
+<p>What are your thoughs?</p>
+<p>Jean Paul</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Thursday, May 05, 2011</h2><p>Presuming that you do choose to create your objects &quot;server side&quot;, you could use a Command object that returns the list of children, and then manually insert them into your list - in other words, your suggested solution is probably going to be the best one.&nbsp; <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" />&nbsp; However, before you go down that road, you might want to do some testing to see whether doing that is really as poorly-performing as you think.&nbsp; Unless these exclusionary dates change quite frequently, you could probably pre-load and cache the list, thus allowing for a more natural programming model without creating a bunch of networking overhead.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir replied on Thursday, May 05, 2011</h2><p>Hi Scott,</p>
+<p>I really appreciate your answer. Regarding pre-loading those exclusionary dates... You&#39;re right this would be a more natural programming model but it is what it is... &nbsp;I tried but there are many other conditions around this.</p>
+<p>The solution I finally came with is an ReadOnlyListBase(Of GeneratedList, Payment) with an asynchronous Factory method that calls DataPortal.Fetch using a criteria parameter and, on server side DataPortal_Fetch add New Payments to the collection.</p>
+<p>Finally, on client side, I has to add retrieved Items to the child collection &quot;by hand&quot;. </p>
+<p>Now, the use of a command instead of a ReadOnlyListBase (Reusing original child list type &quot;Payments&quot;) sounds really cool since it&#39;ll keep a better level of abstraction in my project... I&#39;ll switch to this approach later.</p>
+<p>Thank you very much!</p>
+<p>JP</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

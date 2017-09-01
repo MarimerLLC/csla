@@ -1,0 +1,211 @@
+<html><header><title>Generic NoDuplicates rule</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Generic NoDuplicates rule</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10494.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Tuesday, July 05, 2011</h2><p>I have a collection of objects with a Name property. Each object must have a unique Name, and no I don&#39;t want to pass this business rule to the database, I want toi hanfle it before it hits the database,</p>
+<p>I wrote this lovely rule</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Validation&nbsp;rule&nbsp;for&nbsp;checking&nbsp;a&nbsp;name&nbsp;property&nbsp;is&nbsp;unique&nbsp;at&nbsp;the&nbsp;collection&nbsp;level.</span>
+<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">class</span>&nbsp;<span style="COLOR:darkblue;">NoDuplicates</span>&nbsp;:&nbsp;<span style="COLOR:darkblue;">CommonBusinessRule</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;NoDuplicates&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;primaryProperty&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">Primary&nbsp;property&nbsp;for&nbsp;this&nbsp;rule.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:darkblue;">NoDuplicates</span>(<span style="COLOR:darkblue;">IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="COLOR:darkblue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">InputProperties</span>&nbsp;=&nbsp;<span style="COLOR:blue;">new</span>&nbsp;<span style="COLOR:darkblue;">List</span>&lt;<span style="COLOR:darkblue;">IPropertyInfo</span>&gt;&nbsp;{&nbsp;primaryProperty&nbsp;};
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="COLOR:gray;">&lt;see&nbsp;cref=</span><span style="COLOR:gray;">&quot;NoDuplicates&quot;</span><span style="COLOR:gray;">/&gt;</span><span style="COLOR:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;primaryProperty&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">Primary&nbsp;property&nbsp;for&nbsp;this&nbsp;rule.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;errorMessageDelegate&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">The&nbsp;error&nbsp;message&nbsp;function.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:darkblue;">NoDuplicates</span>(<span style="COLOR:darkblue;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="COLOR:blue;">string</span>&nbsp;errorMessageDelegate)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="COLOR:darkblue;">this</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">ErrorMessageDelegate</span>&nbsp;=&nbsp;()&nbsp;=&gt;&nbsp;errorMessageDelegate;
+&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Gets&nbsp;the&nbsp;error&nbsp;message.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;value&gt;&lt;/value&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">override</span>&nbsp;<span style="COLOR:blue;">string</span>&nbsp;<span style="COLOR:purple;">ErrorMessage</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:darkcyan;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>&nbsp;<span style="COLOR:purple;">HasErrorMessageDelegate</span>&nbsp;?&nbsp;<span style="COLOR:blue;">base</span>.<span style="COLOR:purple;">ErrorMessage</span>&nbsp;:&nbsp;<span style="COLOR:#a31515;">&quot;{0}&nbsp;must&nbsp;be&nbsp;unique.&quot;</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;Validation&nbsp;rule&nbsp;implementation.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:gray;">///</span><span style="COLOR:green;">&nbsp;</span><span style="COLOR:gray;">&lt;param&nbsp;name=</span><span style="COLOR:gray;">&quot;context&quot;</span><span style="COLOR:gray;">&gt;</span><span style="COLOR:green;">Rule&nbsp;context&nbsp;object.</span><span style="COLOR:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">protected</span>&nbsp;<span style="COLOR:blue;">override</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">Execute</span>(<span style="COLOR:darkblue;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;value&nbsp;=&nbsp;context.<span style="COLOR:purple;">InputPropertyValues</span>[<span style="COLOR:purple;">PrimaryProperty</span>]&nbsp;<span style="COLOR:blue;">as</span>&nbsp;<span style="COLOR:blue;">string</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(value&nbsp;==&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;target&nbsp;=&nbsp;(<span style="COLOR:darkblue;">DocClassEdit</span>)context.<span style="COLOR:purple;">Target</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;parent&nbsp;=&nbsp;(<span style="COLOR:darkblue;">DocClassEditColl</span>)target.<span style="COLOR:purple;">Parent</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(parent&nbsp;!=&nbsp;<span style="COLOR:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">foreach</span>&nbsp;(<span style="COLOR:blue;">var</span>&nbsp;<span style="FONT-WEIGHT:bold;">item</span>&nbsp;<span style="COLOR:blue;">in</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">if</span>&nbsp;(value.<span style="COLOR:darkcyan;">ToUpperInvariant</span>()&nbsp;==&nbsp;((<span style="COLOR:blue;">string</span>)<span style="FONT-WEIGHT:bold;">item</span>.<span style="COLOR:darkcyan;">ReadProperty</span>(<span style="COLOR:purple;">PrimaryProperty</span>)).<span style="COLOR:darkcyan;">ToUpperInvariant</span>()&nbsp;&amp;&amp;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;!(<span style="COLOR:darkcyan;">ReferenceEquals</span>(<span style="FONT-WEIGHT:bold;">item</span>,&nbsp;target)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.<span style="COLOR:darkcyan;">AddErrorResult</span>(<span style="COLOR:blue;">string</span>.<span style="COLOR:darkcyan;">Format</span>(<span style="COLOR:purple;">ErrorMessage</span>,&nbsp;<span style="COLOR:purple;">InputProperties</span>[0].<span style="COLOR:purple;">FriendlyName</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+<p>and now I want to amke it generic. For that purpose I just need to get rid of the castings to&nbsp;<span style="color:darkblue;"><strong>DocClassEdit</strong></span> and to <span style="COLOR:darkblue;"><strong>DocClassEditColl</strong></span>. Any help?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Tuesday, July 05, 2011</h2><p>I don&#39;t think you can eliminate the cast operations, because RuleContext isn&#39;t generic.</p>
+<p>But your rule class can be generic, and so you can do the cast operations to generic types.</p>
+<p>public class MyGenericRule&lt;X, Y&gt; : BusinessRule<br />{<br />&nbsp; protected override void Execute(RuleContext context)<br />&nbsp; {<br />&nbsp;&nbsp;&nbsp; var tmp1 = (X)context.Target;<br />&nbsp;&nbsp; ...<br />&nbsp; }<br />}</p>
+<p>Or something along that line anyway.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, July 05, 2011</h2><p>dynamic and reflection</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;"><span style="color:blue;">using</span>&nbsp;<span style="color:darkblue;">System</span>.<span style="color:darkblue;">Collections</span>.<span style="color:darkblue;">Generic</span>;
+<span style="color:blue;">using</span>&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Core</span>;
+<span style="color:blue;">using</span>&nbsp;<span style="color:darkblue;">Csla</span>.<span style="color:darkblue;">Rules</span>;
+ 
+<span style="color:blue;">namespace</span>&nbsp;<span style="color:darkblue;">DocStore</span>.<span style="color:darkblue;">Library</span>.<span style="color:darkblue;">Rules</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Validation&nbsp;rule&nbsp;for&nbsp;checking&nbsp;a&nbsp;name&nbsp;property&nbsp;is&nbsp;unique&nbsp;at&nbsp;the&nbsp;collection&nbsp;level.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">class</span>&nbsp;<span style="color:darkblue;">NoDuplicates</span>&nbsp;:&nbsp;<span style="color:darkblue;">CommonBusinessRule</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;NoDuplicates&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;primaryProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Primary&nbsp;property&nbsp;for&nbsp;this&nbsp;rule.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">NoDuplicates</span>(<span style="color:darkblue;">IPropertyInfo</span>&nbsp;primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:darkblue;">base</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:purple;">ErrorMessageDelegate</span>&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">ErrorMessageDelegate</span>&nbsp;=&nbsp;()&nbsp;=&gt;&nbsp;<span style="color:#a31515;">&quot;{0}&nbsp;must&nbsp;be&nbsp;unique.&quot;</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">InputProperties</span>&nbsp;=&nbsp;<span style="color:blue;">new</span>&nbsp;<span style="color:darkblue;">List</span>&lt;<span style="color:darkblue;">IPropertyInfo</span>&gt;&nbsp;{primaryProperty};
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Initializes&nbsp;a&nbsp;new&nbsp;instance&nbsp;of&nbsp;the&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;NoDuplicates&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;class.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;primaryProperty&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Primary&nbsp;property&nbsp;for&nbsp;this&nbsp;rule.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;errorMessageDelegate&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">The&nbsp;error&nbsp;message&nbsp;function.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">NoDuplicates</span>(<span style="color:darkblue;">IPropertyInfo</span>&nbsp;primaryProperty,&nbsp;<span style="color:blue;">string</span>&nbsp;errorMessageDelegate)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;<span style="color:darkblue;">this</span>(primaryProperty)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">ErrorMessageDelegate</span>&nbsp;=&nbsp;()&nbsp;=&gt;&nbsp;errorMessageDelegate;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;Validation&nbsp;rule&nbsp;implementation.</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;context&quot;</span><span style="color:gray;">&gt;</span><span style="color:green;">Rule&nbsp;context&nbsp;object.</span><span style="color:gray;">&lt;/param&gt;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:darkcyan;">Execute</span>(<span style="color:darkblue;">RuleContext</span>&nbsp;context)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;value&nbsp;=&nbsp;context.<span style="color:purple;">InputPropertyValues</span>[<span style="color:purple;">PrimaryProperty</span>]&nbsp;<span style="color:blue;">as</span>&nbsp;<span style="color:blue;">string</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(value&nbsp;==&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">dynamic</span>&nbsp;target&nbsp;=&nbsp;context.<span style="color:purple;">Target</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;parent&nbsp;=&nbsp;target.<span style="color:darkblue;">Parent</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(parent&nbsp;<span style="color:darkblue;">!=</span>&nbsp;<span style="color:blue;">null</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;<span style="font-weight:bold;">item</span>&nbsp;<span style="color:blue;">in</span>&nbsp;parent)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">System</span>.<span style="color:darkblue;">Reflection</span>.<span style="color:darkblue;">PropertyInfo</span>&nbsp;compare&nbsp;=&nbsp;<span style="font-weight:bold;">item</span>.<span style="color:darkblue;">GetType</span>().<span style="color:darkblue;">GetProperty</span>(<span style="color:purple;">PrimaryProperty</span>.<span style="color:purple;">Name</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(value.<span style="color:darkcyan;">ToUpperInvariant</span>()&nbsp;<span style="color:darkblue;">==</span>&nbsp;compare.<span style="color:darkblue;">GetValue</span>(<span style="font-weight:bold;">item</span>,&nbsp;<span style="color:blue;">null</span>).<span style="color:darkblue;">ToUpperInvariant</span>()&nbsp;<span style="color:darkblue;">&amp;&amp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">!</span>(<span style="color:darkblue;">ReferenceEquals</span>(<span style="font-weight:bold;">item</span>,&nbsp;target)))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;context.<span style="color:darkcyan;">AddErrorResult</span>(<span style="color:blue;">string</span>.<span style="color:darkcyan;">Format</span>(<span style="color:purple;">ErrorMessage</span>,&nbsp;<span style="color:purple;">PrimaryProperty</span>.<span style="color:purple;">FriendlyName</span>));
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+</pre>
+<p>I admit that might be some easier way.</p>
+<p>Jonny, this can go to CslaContrib</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Thursday, October 20, 2011</h2><p>I have written a similar rule, except it can take multiple properties (and its in VB).&nbsp; I used the generic approach that Rocky suggested.</p>
+<p>I have also implemented a unique in DB rule that must be used together with this rule when working with subsets of complete DB lists.</p>
+<p>My biggest problem with the non DB rule is that the user can fix the duplication in ways that will not unbreak the rule.</p>
+<p>E.G.&nbsp; </p>
+<p>Scenario:</p>
+<p>List has 5 items in it.&nbsp; A new item is added and properties set so that Item 1 and 6 are the duplicate records, but errors only show on item 6.</p>
+<p>&gt; Fixing item 1 will not unbreak rule on item 6</p>
+<p>&nbsp; &gt; one could possibly get around this by somehow invoking the rule again on item 6</p>
+<p>&gt; Deleting item 1 will not unbreak the rule on item 6</p>
+<p>&nbsp; &gt; I have no idea how to get around this one, except possibly handling the remove in the list and then invoking any Unique rules again on each object</p>
+<p>Have any of you clever people found a solution to this problem.&nbsp; Now that our rules are implemented in classes (I&#39;ve only recently upgraded from 2.1), would it be a bad idea to have the rule object actually keep track of the duplicate items in its own lists so that it can invoke rules on those objects?</p>
+<p>At the moment I&#39;m just hoping my users don&#39;t bypass my rules using these methods, but if they do, at least my database will pick it up...</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>StefanCop replied on Thursday, October 20, 2011</h2><p>Hi bwebber</p>
+<p>Your scenario might be solved using the &quot;Executing Rules in Parent Objects&quot; approach described in the ebook (Creating Business Objects).</p>
+<p>If one of the child items changes, you want to re-run the rule for every child.</p>
+<p style="padding-left:30px;">&quot;But you also need to make sure the rule is executed each time a child object is changed, and to do that you&rsquo;ll need to override the OnChildChanged method in the parent business class.&quot; </p>
+<p style="padding-left:30px;"><span style="font-family:courier new,courier;">protected override void OnChildChanged(Csla.Core.ChildChangedEventArgs e)</span><span style="font-family:courier new,courier;"><br />{ <br />&nbsp;&nbsp;&nbsp; base.OnChildChanged(e); <br />&nbsp;&nbsp;&nbsp; BusinessRules.CheckRules(SalesOrderEdit.LineItemsProperty);</span><span style="font-family:courier new,courier;"></span><span style="font-family:courier new,courier;"><br />}</span></p>
+<p>The sample in the ebook added the actual rule in the parent on the Child-List (<span style="font-family:courier new,courier;">LineItemsProperty)</span>. </p>
+<p>I guess, if you want your rule on the child object, the child object has to provide some method to trigger the rule from outside (i.e. <span style="font-family:courier new,courier;">CheckRulesForNameProperty()</span> ).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Friday, October 21, 2011</h2><p>Thank you for your response.</p>
+<p>Yes, I have also implemented a ChildListUnique rule which works perfectly to validate uniqueness in child lists and breaking a rule on the parent when duplicates exist.</p>
+<p>I have 3 rule classes that assist me with validating unique rules:</p>
+<ul>
+<li>UniqueInCachedList<br />
+<ul>
+<li>this is a synchronous rule that validates uniqueness in the parent list of the target object</li>
+<li>Issues (mentioned above) - when user fixes the problem by correcting/deleting the &quot;other&quot; duplicate item</li>
+</ul>
+</li>
+<li>UniqueInDBRule  
+<ul>
+<li>this is an asynchronous rule (I&#39;m using Silverlight) that validates the target object for uniqueness against the database</li>
+<li>Issues - will not pick up other items in the list that are New</li>
+</ul>
+</li>
+<li>ChildListUnique
+<ul>
+<li>this is a synchronous rule that validates a child list property of the target object</li>
+<li>Issues - (not such a biggy) user needs to search through the child list to find the duplicate entry </li>
+</ul>
+</li>
+</ul>
+<p>The problem is validating root lists, where I normally use a combination of UniqueInCachedList and UniqueInDBRule (priorities 0 and 1), but the user can trick my rule checking using the methods explained.</p>
+<p>As mentioned I am considering adding functionality to the UniqueInCachedList rule class to keep track of the duplicate items, so that it can invoke the rule on these items any time 1 of them are changed (using the method StefanCop explains - or possibly using reflection), but this would complicate the rule class and slow it down.</p>
+<p>I am happy to post my VB code if anyone else is interested.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StefanCop replied on Thursday, October 20, 2011</h2><p>Oh yes, &#39;dynamic&#39; seems another option to write common rules. <br />Thanks for your post!</p>
+<p>Instead of getting the value through reflection, you could also use ReadProperty() </p>
+<pre style="font-size:13px;background:none repeat scroll 0% 0% white;color:black;font-family:Consolas;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;<span style="font-weight:bold;">item</span>&nbsp;<span style="color:blue;">in</span>&nbsp;parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:darkblue;">string </span>compare =&nbsp;<span style="font-weight:bold;"></span>(<span style="color:darkblue;">string</span>) <span style="color:darkblue;">ReadProperty</span>(<span style="font-weight:bold;">item</span>, <span style="color:purple;">PrimaryProperty</span>);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">if</span>&nbsp;(<span style="color:darkblue;">string</span>.Equals(value, compare, <span style="color:#008080;">StringComparison</span>.InvariantCultureIgnoreCase) <span style="color:darkblue;">&amp;&amp;</span><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:darkblue;">!</span>(<span style="color:darkblue;">ReferenceEquals</span>(<span style="font-weight:bold;">item</span>,&nbsp;target)))<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; context.<span style="color:darkcyan;">AddErrorResult</span>(<span style="color:blue;">string</span>.<span style="color:darkcyan;">Format</span>(<span style="color:purple;">ErrorMessage</span>,&nbsp;<span style="color:purple;">PrimaryProperty</span>.<span style="color:purple;">FriendlyName</span>));<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <span style="color:blue;">return</span>;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br /><br /><span style="font-family:arial,helvetica,sans-serif;">Btw, whenever possible I use a constructor like this: <br /></span><span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">NoDuplicates</span>(<span style="color:darkblue;">Csla.Core.PropertyInfo</span>&lt;string&gt; primaryProperty)<br /><br /><span style="font-family:arial,helvetica,sans-serif;">to express that I expect a property of type string only.</span><br /></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Friday, December 16, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>Tiago Freitas Leal<br></b></p>
+<p>I admit that might be some easier way.</p>
+<p></div></p>
+<p>&nbsp;</p>
+<p>I realize this post is old, but I was in search of something and saw this. Below might be a simpler approach</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>public class UniqueRule&lt;T, C&gt; : Csla.Rules.BusinessRule</p>
+<p><span>		</span>where T : Csla.BusinessListBase&lt;T, C&gt;</p>
+<p><span>		</span>where C : Csla.BusinessBase&lt;C&gt;</p>
+<p><span>	</span>{</p>
+<p><span>		</span>public IPropertyInfo KeyProperty { get; set; }</p>
+<p><span>		</span>public Func&lt;C, string&gt; UniqueValueFunc { get; set; }</p>
+<p>&nbsp;</p>
+<p><span>		</span>public UniqueRule(IPropertyInfo primaryProperty, Func&lt;C, string&gt; uniqueValueFunc)</p>
+<p><span>			</span>: base(primaryProperty)</p>
+<p><span>		</span>{</p>
+<p><span>			</span>UniqueValueFunc = uniqueValueFunc;</p>
+<p><span>		</span>}</p>
+<p>&nbsp;</p>
+<p><span>		</span>protected override void Execute(RuleContext context)</p>
+<p><span>		</span>{</p>
+<p><span>			</span>var t = context.Target as C;</p>
+<p><span>			</span>if (((T)t.Parent).Count(x =&gt; UniqueValueFunc(x) == UniqueValueFunc(t)) &gt; 1)</p>
+<p><span>			</span>{</p>
+<p><span>				</span>context.AddErrorResult(string.Format(&quot;{0} keys must be unique.&quot;, typeof(C).Name));</p>
+<p><span>			</span>}</p>
+<p><span>		</span>}</p>
+<p><span>	</span>}</p>
+<p>&nbsp;</p>
+<p>EDIT: Actually, I think there might be a serialization issue with the Func&lt;C,string&gt; property. Still, that could be resolved if that was an issue.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

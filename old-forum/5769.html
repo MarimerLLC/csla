@@ -1,0 +1,81 @@
+<html><header><title>Assembly naming convention for CSLA.NET and CSLA.NET for Silverlight</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Assembly naming convention for CSLA.NET and CSLA.NET for Silverlight</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5769.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>darilek posted on Sunday, November 09, 2008</h2>Hello, is it possible declare different assembly names for each part of CSLA framework? For example <b>Csla.dll </b>for original CSLA.NET framework and <b>Csla.Light.dll</b> for new CSLA.NET for Silverlight framework. Current situation with the same assembly naming for client and server side causes a little mess in referencing in VS2008 projects. These assemblies must be located in different folders and at first look on the assembly name, I don't know what assembly type it represents<br><br>Thanks<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Sunday, November 09, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Assembly name is playing an important role in communicating
+between Silverlight client and .NET server.&nbsp; As you may have noticed by
+looking at the Rolodex project that it also has the same assembly name as well
+as root namespace for client and the server, just like CSLA itself.&nbsp; What
+you are trying to accomplish is to have the same assembly qualified class names
+on both sides in order for client and the server to know how to exchange the
+information as well as be able to share classes between different projects.&nbsp;
+It stems from the fact that in Silverlight environment client and the server are
+actually using different run times.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> darilek
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, November 09, 2008 8:09 AM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] Assembly naming convention for CSLA.NET and
+CSLA.NET for Silverlight<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello, is it possible declare different assembly names for
+each part of CSLA framework? For example <b>Csla.dll </b>for original CSLA.NET
+framework and <b>Csla.Light.dll</b> for new CSLA.NET for Silverlight framework.
+Current situation with the same assembly naming for client and server side
+causes a little mess in referencing in VS2008 projects. These assemblies must
+be located in different folders and at first look on the assembly name, I don't
+know what assembly type it represents<br>
+<br>
+Thanks<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, December 29, 2008</h2><P>Wow, I'm glad I stumbled upon this post. I initally started a project myself and built it up and I could not figure out why none of my server code was getting hit. </P>
+<P>So, I started from the Rolodex and added my items and I was getting my server code to run, so I started reorganizing and renaming things and then things started failing again. I had changed my assembly names for my client project and server project to be different and consistent with their project names -- boy was that a tough one to track down. </P>
+<P>Changed both to the same assembly name in project properties and everything started working. </P>
+<P>(Changed post title a bit to match what I would have searched for)</P>
+<P>Chris</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

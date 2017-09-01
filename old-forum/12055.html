@@ -1,0 +1,52 @@
+<html><header><title>ASP.NET MVC 4 only attribute-based broken rules displaying</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.NET MVC 4 only attribute-based broken rules displaying</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12055.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael posted on Wednesday, July 03, 2013</h2><p>Only attribute-based broken rules are being displayed  by Html.ValidationSummary(false), all rules added via AddBusinessRules are not displayed.</p>
+<p>For example, when I use the [Required] attribute, the rule is executing and the broken rule is displayed. When I comment it out and replace it with BusinessRules.AddRule(new Required(EmailAddressProperty)) in AddBusinessRules() the broken rule is not displayed. There is a broken in the BrokenRulesCollection, it&#39;s just not displayed.</p>
+<p>I am using the CslaModelBinder and Csla.Web.Mvc.Controller, CSLA 4.5.30.30.</p>
+<p>Thanks in advance.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Wednesday, July 03, 2013</h2><p>Rocky? Jonny? Anyone?</p>
+<p>I&#39;ve uploaded a sample application showing the problem:</p>
+<p><a href="http://www.softbiz.com.au/temp/MvcApplication1.zip">http://www.softbiz.com.au/temp/MvcApplication1.zip</a></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 04, 2013</h2><p>It is because the initial Create method you only set Model - you must also set ModelState to get the initial validation errors:</p>
+<p>&nbsp;</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">ActionResult</span>&nbsp;Create()
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;c&nbsp;=&nbsp;<span style="color:#2b91af;">Customer</span>.NewX();
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewData.Model&nbsp;=&nbsp;c;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;modelState&nbsp;=&nbsp;ViewData.ModelState;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">var</span>&nbsp;errors&nbsp;=&nbsp;<span style="color:blue;">from</span>&nbsp;r&nbsp;<span style="color:blue;">in</span>&nbsp;c.BrokenRulesCollection
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">where</span>&nbsp;r.Severity&nbsp;==&nbsp;Csla.Rules.<span style="color:#2b91af;">RuleSeverity</span>.Error
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">select</span>&nbsp;r;
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;set&nbsp;property&nbsp;errors</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">foreach</span>&nbsp;(<span style="color:blue;">var</span>&nbsp;item&nbsp;<span style="color:blue;">in</span>&nbsp;errors)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewData.ModelState.AddModelError(item.Property,&nbsp;item.Description);
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;set&nbsp;summary&nbsp;for&nbsp;entire&nbsp;object&nbsp;</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ViewData.ModelState.AddModelError(<span style="color:#a31515;">&quot;&quot;</span>,&nbsp;c.BrokenRulesCollection.ToString());
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;View();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><br />The ModelBinder is only used in a postback to bind input values to your model <br />(and the automatically update the ModelState dictionary).</pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, July 04, 2013</h2><p>Thanks for the reply, Jonny.</p>
+<p>Yes, that code displays the initial errors immediately, but it still doesn&#39;t show new broken rules after a property has changed, unless it is a rule declared via a DataAnnotations attribute.</p>
+<p>What is the difference between [Required] and BusinessRules.AddRule(new Required(EmailAddressProperty))? Are they treated differently? Why don&#39;t normal business rules appear in the validation summary?</p>
+<p>After you click Create in the sample to force the validation summary to refresh, none of the broken rules added via AddBusinessRules() get displayed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, July 04, 2013</h2><p>The difference is that JQuery and ASP.NET MVC understands the DataAnnotation rules (ie JQuery has the same rules defined and activated based on DataAnnotations) to run as javascripts in the browser.&nbsp;</p>
+<p>See the tutorials and documentation on ASP.NET:</p>
+<p><a style="font-size:1em;" href="http://msdn.microsoft.com/en-us/library/ee256141(VS.98).aspx">How to: Validate Model Data Using DataAnnotations Attributes<br /></a><a href="http://msdn.microsoft.com/en-us/library/gg508808(VS.98).aspx">How to: Implement Remote Validation in ASP.NET MVC</a></p>
+<p>More generally speaking - the main issue/problem with regards to implement this in CSLA is that several types (including IClientValidatable) is defind in System.Web.Mvc and this cannot be added to CSLA business rules.&nbsp;</p>
+<p>So your rules (business library) must have a reference to System.Web.Mvc and matching javascripts in order to perform validation on the client.&nbsp;</p>
+<p>On the last part &nbsp;- &nbsp;i &nbsp;believe this is how the CslaModelBinder is meant to work (and maybe somewhat differently from standard).</p>
+<p>ValidationSummary is added as PropertyName = &quot;&quot; (in CslaModelBinder as the ObjectLevel broken rules). This may be altered to show a summary of ALL broken rules tho&#39;.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Michael replied on Thursday, July 04, 2013</h2><p>OK, that makes sense.</p>
+<p>Adding System.Web.Mvc to the business assembly... this seems so horrible. It&#39;s a shame Microsoft didn&#39;t make some interfaces for Remote validation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, July 05, 2013</h2><p>Hi,
+</p>
+<p>Just to be very clear on this subject. </p>
+<p>
+DataAnnotation rules is implemented in System.ComponentModel.DataAnnotations and Validation attributes is how you define/register that this field has that rule (like f.ex RequiredAttribute) . 
+</p>
+<p>Csla.Core.BusinessBase has this code:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:#fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">virtual</span>&nbsp;<span style="color:blue;">void</span>&nbsp;AddBusinessRules()
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;BusinessRules.AddDataAnnotations();
+&nbsp;&nbsp;&nbsp;&nbsp;}</pre>
+<p>And this method will wrap all ValidationAttributes with a Csla.Rules.CommonRules.DataAnnotation rule that will call the actual implementation in System.ComponentModel.DataAnnotations.</p>
+<p>The standard Csla.CommonRules is fully implemented in Csla only. So we have support for different implementations. </p>
+<p>It is a shame that not all interfaces (especially IClientValidatable)&nbsp; made it into System.ComponentModel.DataAnnotations assembly and rather ended up in System.Web.Mvc. This result is that in order to create custom business/validation rules that can be called from javascript - via the Controller class in MVC - your rules assembly must have a reference to the correct assembly of System.Web.Mvc.</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

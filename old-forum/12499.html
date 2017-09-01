@@ -1,0 +1,58 @@
+<html><header><title>Editable collection with properties</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Editable collection with properties</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12499.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Sunday, March 16, 2014</h2><p>Rockford Lhotka says:</p>
+<p>&quot;Collections do not support direct declaration of properties, so you can&rsquo;t implement properties in this class. If properties are required in addition to the list of child objects, you should create an editable parent object that contains the collection, along with those other properties and their rules.&quot;</p>
+<p>&nbsp;</p>
+<p>So, I decided to check this out.</p>
+<p>I&#39;ve declared simply property in my inherited BusinessBindingListBase. Somethink like this:</p>
+<p>property long DocId { get; set; }</p>
+<p>&nbsp;</p>
+<p>I can do &quot;Fetch&quot; and &quot;Update&quot;. And it works. My custom property always persist.</p>
+<p>But I&#39;m working with 2-tier mode.</p>
+<p>&nbsp;</p>
+<p>Maybe it will not work in 3-tier? What reasons could stop me from using custom properties in&nbsp;BusinessBindingListBase?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Sunday, March 16, 2014</h2><p>The issue is that the MS databinding technologies won&#39;t look for properties on collections and you won&#39;t be able to use them.</p>
+<p>Also Csla doesn&#39;t support this (which beyond the databinding reasons, collection classes should just be collections to keep with SRP) so if you do go to 3 tier mode your property will lose its value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, March 17, 2014</h2><p><em>&quot;The issue is that the MS databinding technologies won&#39;t look for properties on collections and you won&#39;t be able to use them.&quot;</em></p>
+<p>I don&#39;t need databinding technology for that property. So this is not my case.</p>
+<p>&nbsp;</p>
+<p>&quot;so if you do go to 3 tier mode your property will lose its value.&quot;</p>
+<p>Are you sure or you think it that will loose it&#39;s value? BusinessBindingListBase supports IClonable interface. ObjectCloner class clones my&nbsp; BusinessBindingListBase with all custom properties. So I think it should &nbsp;works correctly in 3 tier mode.</p>
+<p>So, 100% it will not work?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, March 17, 2014</h2><p>I am like you...I don&#39;t want databinding.&nbsp; I am just tracking some information for internal and temporary purposes...no IsDirty or anything like that.&nbsp; Not even a property...just a variable!</p>
+<p>Just a simple value to pass along with my BusinessListBase.</p>
+<p>IT WORKS and in 3 tier mode.&nbsp; The value gets serialized just fine.&nbsp; </p>
+<p>***The only time I saw any issues was when a parent business object creates the child list through the ChildDataPortal.&nbsp; The value was lost (nothing) in that case when the parent was serialized across the portal in 3 tier mode.&nbsp; But in that case I realized I could just do what I needed before coming back from the portal. </p>
+<p>But on all my lazy loaded BusinessListBase objects, when they came back from the full DataPortal_Fetch the value was there.</p>
+<p>I do not use the PropertyInfo objects...just a private backing field like &quot;Private mSomething as String&quot;</p>
+<p>Hope this helps.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, March 17, 2014</h2><p>Hi.</p>
+<p>CSLA .NET may be configured to use other serializers than the builtin .NET binary serializers (BinaryFormatter/NetDataContractSerializer) and then you must add extra code in your list to make sure these values is passed on to the client. This is necessary for f.ex WindowsMobile, WindowsStore and Silverlight applications. You may now also use these serializers in .NET clients.</p>
+<p>So to make sure that a member variable is always transfered between tiers you shoul override and add code to OnGetState/OnSetState in the list class:</p>
+<p>This is tha actual code in BusinessListBase.cs:</p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;"><span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Method&nbsp;called&nbsp;by&nbsp;MobileFormatter&nbsp;when&nbsp;an&nbsp;object</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;should&nbsp;serialize&nbsp;its&nbsp;data.&nbsp;The&nbsp;data&nbsp;should&nbsp;be</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;serialized&nbsp;into&nbsp;the&nbsp;SerializationInfo&nbsp;parameter.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;info&quot;</span><span style="color:gray;">&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Object&nbsp;to&nbsp;contain&nbsp;the&nbsp;serialized&nbsp;data.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/param&gt;</span>
+<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnGetState(<span style="color:#2b91af;">SerializationInfo</span>&nbsp;info)
+{
+&nbsp;&nbsp;info.AddValue(<span style="color:#a31515;">&quot;Csla.BusinessListBase._isChild&quot;</span>,&nbsp;_isChild);
+&nbsp;&nbsp;info.AddValue(<span style="color:#a31515;">&quot;Csla.BusinessListBase._editLevel&quot;</span>,&nbsp;_editLevel);
+&nbsp;&nbsp;<span style="color:blue;">base</span>.OnGetState(info);
+}
+ 
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Method&nbsp;called&nbsp;by&nbsp;MobileFormatter&nbsp;when&nbsp;an&nbsp;object</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;should&nbsp;be&nbsp;deserialized.&nbsp;The&nbsp;data&nbsp;should&nbsp;be</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;deserialized&nbsp;from&nbsp;the&nbsp;SerializationInfo&nbsp;parameter.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;param&nbsp;name=</span><span style="color:gray;">&quot;info&quot;</span><span style="color:gray;">&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Object&nbsp;containing&nbsp;the&nbsp;serialized&nbsp;data.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/param&gt;</span>
+<span style="color:blue;">protected</span>&nbsp;<span style="color:blue;">override</span>&nbsp;<span style="color:blue;">void</span>&nbsp;OnSetState(<span style="color:#2b91af;">SerializationInfo</span>&nbsp;info)
+{
+&nbsp;&nbsp;_isChild&nbsp;=&nbsp;info.GetValue&lt;<span style="color:blue;">bool</span>&gt;(<span style="color:#a31515;">&quot;Csla.BusinessListBase._isChild&quot;</span>);
+&nbsp;&nbsp;_editLevel&nbsp;=&nbsp;info.GetValue&lt;<span style="color:blue;">int</span>&gt;(<span style="color:#a31515;">&quot;Csla.BusinessListBase._editLevel&quot;</span>);
+&nbsp;&nbsp;<span style="color:blue;">base</span>.OnSetState(info);
+}</pre>
+<pre></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Monday, March 17, 2014</h2><p>So, if my library will be executed f.ex. in WinForms only - everything will work great. But when it should be used not only in WinForms but in WindowsMobile, WindowsStore or Silverlight I should manually add code to OnGetState/OnSetState? Am i correct?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>swegele replied on Monday, March 17, 2014</h2><p>That&#39;s correct...I just tested it last night.&nbsp; And like you I am NOT targeting Silverlight, WP, or WinRT etc. so I did not do the OnGet and OnSet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, March 17, 2014</h2><p>Hi,</p>
+<p>Assuming that you will be using the default BinaryFormatter and WindowsForms then yes- everyting will work.&nbsp;</p>
+<p>You may opt to use the other serializer (f.ex. to incorporate compression) and then you ned the OnGetState/OnSetState overrides.&nbsp;<br />It doesen&#39;t add that much code and will make it easier to experiment with or move to the MobileFormatter based serialization at a later stage. &nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

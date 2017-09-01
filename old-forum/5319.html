@@ -1,0 +1,87 @@
+<html><header><title>Getting the root object from a child</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Getting the root object from a child</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5319.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Thursday, August 28, 2008</h2><P>If I have a child business object, be it a businesslistbase or businessbase, what is the most efficient way to get the ultimate root object? </P>
+<P>I don't normally like the idea of looking up the object graph, but this is an instance where I want to. </P>
+<P>Leveraging the parent property&nbsp;seems&nbsp;appealing to me, but since parent is protected, this sort of logic would be difficult when dealing with grandchildren or even children in a child collection, etc. Thought about providing an interface for my business objects that might provide public access for parent, but I'd rather not add it if I don't have to -- reflection seems like it might be&nbsp;a possible route too but I'm not sold on that either. </P>
+<P>Hoping I'm missing an obvious solution to getting the root object from a child object somewhere in the root's object graph. </P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, August 28, 2008</h2>FYI, I opted to add an interface to my Csla extension classes to GetParent. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, September 05, 2008</h2><P>Chris,</P>
+<P>Is it possible you post some code about this interface and its implementation ?</P>
+<P>Thanks</P>
+<P>Dominique</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Friday, September 05, 2008</h2><FONT size=2>
+<P>The interface:</FONT><FONT color=#808080 size=2></FONT></P>
+<P><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> IChild provides for a means to get a Csla object's parent. Parent is a protected property, </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> so this interface simply provides for a public means to get it. </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>interface</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IChild</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets the parent object of this object. </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>This object's parent.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetParent();</P>
+<P>}</P>
+<P>My business base AND my business list base (inheriting from CSLA objects) implement IChild and provide for GetRootObject.</P><FONT color=#0000ff size=2>
+<P>#region</FONT><FONT size=2> IChild Implementation</P>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets the parent object of this object. </P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>This object's parent.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IChild</FONT><FONT size=2>.GetParent()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.Parent;</P>
+<P>}</P></FONT><FONT color=#0000ff size=2>
+<P>#endregion</P>
+<P>&nbsp;</P><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> Gets the current object's root object.</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;/summary&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#808080 size=2>///</FONT><FONT color=#008000 size=2> </FONT><FONT color=#808080 size=2>&lt;returns&gt;</FONT><FONT color=#008000 size=2>The current object's root object.</FONT><FONT color=#808080 size=2>&lt;/returns&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> GetRootObject()</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> index = </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>while</FONT><FONT size=2> (index </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#2b91af size=2>IChild</FONT><FONT size=2> &amp;&amp; ((</FONT><FONT color=#2b91af size=2>IChild</FONT><FONT size=2>)index).GetParent() != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>index = ((</FONT><FONT color=#2b91af size=2>IChild</FONT><FONT size=2>)index).GetParent();</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> index;</P>
+<P>}</P></FONT>
+<P>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dg78 replied on Friday, September 05, 2008</h2><P>Many thanks for your code and your very quick answer.</P>
+<P>Here your code in VB, I translated it wth SharpDevelop.<BR>If it can help VB people.</P>
+<P class=MsoNormal><SPAN>''' &lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' IChild provides for a means to get a Csla object's parent. Parent is a protected property, <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' so this interface simply provides for a public means to get it. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' &lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public Interface </SPAN><SPAN>IChild<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>''' &lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>''' Gets the parent object of this object. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>''' &lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>''' &lt;returns&gt;This object's parent.&lt;/returns&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Function </SPAN><SPAN>GetParent() </SPAN><SPAN>As </SPAN><SPAN>Object </SPAN><SPAN>Implements </SPAN><SPAN>INotifiedView.Initialize<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End Interface<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>'''My business base AND my business list base (inheriting from CSLA objects) implement IChild and provide for GetRootObject.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<B>Region </B>"IChild Implementation"<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' &lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' Gets the parent object of this object. <o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' &lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' &lt;returns&gt;This object's parent.&lt;/returns&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Private Function </SPAN><SPAN>IChild_GetParent() </SPAN><SPAN>As </SPAN><SPAN>Object </SPAN><SPAN>Implements </SPAN><SPAN>IChild.GetParent<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Return Me</SPAN><SPAN>.Parent<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End Function<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>#<B>End Region<o:p></o:p></B></SPAN></P>
+<P class=MsoNormal><B><SPAN><o:p>&nbsp;</o:p></SPAN></B></P>
+<P class=MsoNormal><SPAN>''' &lt;summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' Gets the current object's root object.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' &lt;/summary&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>''' &lt;returns&gt;The current object's root object.&lt;/returns&gt;<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Public Function </SPAN><SPAN>GetRootObject() </SPAN><SPAN>As </SPAN><SPAN>Object<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>Dim </SPAN><SPAN>index </SPAN><SPAN>As </SPAN><SPAN>Object </SPAN><SPAN>= </SPAN><SPAN>Me<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>While TypeOf </SPAN><SPAN>index </SPAN><SPAN>Is </SPAN><SPAN>IChild </SPAN><SPAN>AndAlso </SPAN><SPAN>DirectCast</SPAN><SPAN>(index, IChild).GetParent() </SPAN><SPAN>IsNot </SPAN><SPAN>Nothing<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>index = </SPAN><SPAN>DirectCast</SPAN><SPAN>(index, IChild).GetParent()<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></SPAN><SPAN>End While<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN>Return </SPAN><SPAN>index<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>End Function<o:p></o:p></SPAN></P>
+<P>
+<P>&nbsp;</P></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

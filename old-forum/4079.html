@@ -1,0 +1,30 @@
+<html><header><title>CSLADesigner Object Creation Tool</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLADesigner Object Creation Tool</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4079.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi posted on Friday, December 21, 2007</h2><P>Hey all.&nbsp; I wrote a quick app for myself and the community to help with the creation of objects.&nbsp; I come from the world of data driven design, so when I started looking at CSLA and the principles of object driven design I was having a hard time stepping out of that world.&nbsp; Additionally the number of objects created for my project started to grow.&nbsp; So I started looking at Code Generators and the trouble I had with all that I looked at was that they all started with the database, which was compounding my trouble of moving away from data centric design.&nbsp; </P>
+<P>So to that end I wrote what I named CSLADesigner which I'm releasing as public domain/open source.&nbsp; It's a simple tool that kick starts object creation.&nbsp; Here's a quick breakdown of CSLADesigner.</P>
+<UL>
+<LI>Templates created based on CSLA 3.0 and the ProjectTracker Sample Objects</LI>
+<LI>Currently creates C# objects only</LI>
+<LI>Takes user input and builds classes around them.</LI>
+<LI>Outputed Objects still&nbsp;need some of your own customization to match your requirements</LI>
+<LI>When creating your objects the first in your list is your key property.</LI></UL>
+<P>There's not much to the tool in this version, mostly accomplishes generating the plumbing of the object quickly.&nbsp; I don't know that it will help everyone, but for me it saves a ton of time and typos and is a little more flexible than data generated objects.&nbsp; </P>
+<P>Future ideas include, saving the objects for later modifcation, VB output, database connectivity to select stored procedures, enhanced validation, persisted object design and relationships (presently nothing gets saved anywhere) and perhaps an enhanced interface.</P>
+<P>If the community wants the source I'd have no problem putting up the source code for the community to play with (it's hack code to be honest but I will clean it up a bit).</P>
+<P>Drop me a line if you have any questions.</P>
+<P>Cheers,</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Friday, December 21, 2007</h2><P>No sooner do I post it that I uncover some bugs and formatting issues.&nbsp; Attached is the new version.</P>
+<P>Also I started implementing VB objects.&nbsp; They will be finished by the next build.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Sunday, December 30, 2007</h2><P>Here's an update to CSLADesigner.&nbsp; I've moved all the code Generation methods into it's own library and have started to refactor it out so that one could conceivable override individual sections of each object, so like the business methods section of a BusinessBase object is broken down into it's individual components and then chain called.</P>
+<P>I've also renamed the library to CSLADesignerLibrary3 the 3 matches the version 3 branch of CSLA, when we get closer to 3.5 I will branch to CSLADesignerLibrary35.&nbsp; But that won't be until we know what the Project Tracker Sample will look like against 3.5</P>
+<P>So having done this I've included a small app that uses the library to show how to implement it.</P>
+<P>This version of the Library is not complete yet but is about 95% complete for CS object generation and about 33% complete for VB objects (only BusinessBase is there and it's almost done).</P>
+<P>I anticipate having this version of the Library and sample app completed this week and then maybe if you guys want we can add it to CSLAContrib and beef it up a bit.&nbsp; </P>
+<P>Drop me a line at ryan at DELETETHISfile-new.com if you have questions or want to help out.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Wednesday, January 02, 2008</h2><P>Hello All,</P>
+<P>I've moved this to Codeplex for the time being so you can all check it out.&nbsp; As I see it I have only the VB version of ReadOnlyListBase to complete...(not counting any bugs or weird things).</P>
+<P>Cheers!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>DocJames replied on Thursday, January 17, 2008</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>webjedi:</strong></div><div>
+<P>Hello All,</P>
+<P>I've moved this to Codeplex for the time being so you can all check it out.&nbsp; As I see it I have only the VB version of ReadOnlyListBase to complete...(not counting any bugs or weird things).</P>
+<P>Cheers!</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>The correct URL is <A href="http://www.codeplex.com/CSLADesignLibrary3">http://www.codeplex.com/CSLADesignLibrary3</A></P>
+<P>Thanks,</P>
+<P>James</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

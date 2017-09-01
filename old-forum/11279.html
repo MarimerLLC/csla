@@ -1,0 +1,32 @@
+<html><header><title>Strange behaviour of PTIdentity using statements</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Strange behaviour of PTIdentity using statements</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11279.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff posted on Wednesday, April 04, 2012</h2><p>Hi</p>
+<p>using latest csla 4.3.10.</p>
+<p>I have used the PTIndentity and PTPrincipal sample code in my project - hooked up and working well.</p>
+<p>However, if I amend these classes and save I get an error (any type of editing e.g adding a space):........</p>
+<p>The using Csla.Serialization disappears from the code below.</p>
+<p>
+<pre><span>using</span>&nbsp;System;
+<span>using</span>&nbsp;Csla;
+<span>using</span>&nbsp;Csla.Security;</pre>
+<pre>using Csla.Serialization;</pre>
+<pre>;
+ 
+<span>namespace</span>&nbsp;WACA.Business.Security
+{
+&nbsp;&nbsp;&nbsp;&nbsp;[<span>Serializable</span>]
+&nbsp;&nbsp;&nbsp;&nbsp;<span>public</span>&nbsp;<span>class</span>&nbsp;<span>PTIdentity</span>&nbsp;:&nbsp;<span>CslaIdentityBase</span>&lt;<span>PTIdentity</span>&gt;</pre>
+<pre></pre>
+<pre>and I get the following error:</pre>
+<pre>type or namespace name &#39;SerializableAttribute&#39; could not be found (are you missing a using directive or an assembly reference?)	D:\Users\Richard\Development\VS2010\SLApps\WACA\WACA.Business\Security\PTIdentity.cs	7	6	WACA.Business.SL</pre>
+<pre></pre>
+<pre>However, if I don&#39;t save using the Save toolbar icon and instead close the code tab (VS2010) and accept the &#39;save changes&#39; prompt  then it compiles okay and off we go all okay.</pre>
+<pre>Anybody have any clues.</pre>
+<pre>Richard</pre>
+<pre></pre>
+<pre></pre>
+<div></div>
+<pre></pre>
+<pre></pre>
+<pre></pre>
+</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 06, 2012</h2><p>Are you running any VS add-ins that might alter or refactor your code?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, April 07, 2012</h2><p>Or you have a Silverlight project that references CSLA.dll for .net.</p>
+<p>IIRC Silverlight does not have Serializable attribute so this is reimplemented in CSLA.dll for Silverlight.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>griff replied on Tuesday, April 10, 2012</h2><p>Yes I do have a number of VS addins - some that refactor - presumably I need to switch these off and test. &nbsp;(I have checked all my references and they seem okay) - thanks</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

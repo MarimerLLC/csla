@@ -1,0 +1,18 @@
+<html><header><title>CSLA on Web App</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA on Web App</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12002.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Tuesday, June 04, 2013</h2><p>Hi.. </p>
+<p>Currently I&#39;m developing application on WPF and SL 5 with CSLA 4.</p>
+<p>I really love programming style , tool, and pattern (MVVM) on those platform.</p>
+<p>For cross platform development, I have to embrace Web Based.</p>
+<p>My Big Interested on CSLA is about mobile object philosophy so that we just manage one single location of business rules because the business object could run on client for Interactive and on server for backend performance reason. So we are able to get more maintainable application = Lower Cost Development.</p>
+<p>COMPARE to web based to get interactive experience ( Without Round Trip ) on UI on web tech ( HTML , CSS, Javascript ) I have to DUPLICATE Some Business Logic on Client Tech ( Javascript ) ?</p>
+<p>So my conclusion is on web based at least I will have duplication business logic on java script for interactive experience beside on CSLA object for another one. Am I right ? </p>
+<p>&nbsp;</p>
+<p>Could anyone give me suggestions or thoughts on this issues ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, June 04, 2013</h2><p>Hi,&nbsp;</p>
+<p>For basic rules you can use standard DataAnnotations on CSLA properties.&nbsp;</p>
+<p>For more advanced rules that you want to run interactively - then yes you must follow the guidance for that.&nbsp;</p>
+<p>Nice tutorial here on OdeToCode:&nbsp;</p>
+<div class="lead"><a href="http://odetocode.com/blogs/scott/archive/2011/02/22/custom-data-annotation-validator-part-i-server-code.aspx">Custom Data Annotation Validator Part I : Server Code</a></div>
+<div class="lead"><a href="http://odetocode.com/blogs/scott/archive/2011/02/23/custom-data-annotation-validator-part-ii-client-code.aspx">Custom Data Annotation Validator Part II: Client Code</a></div>
+<div class="lead"><a href="http://odetocode.com/blogs/scott/archive/2011/02/24/custom-data-annotation-validator-part-iii-qunit-tests.aspx">Custom Data Annotation Validator Part III: QUnit Tests</a></div></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

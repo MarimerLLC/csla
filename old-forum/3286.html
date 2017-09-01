@@ -1,0 +1,9 @@
+<html><header><title>Authorisation coding</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Authorisation coding</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3286.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Wal972 posted on Sunday, July 29, 2007</h2><P>Hi I need to create a flexible authorisation situation to cover four levels of users&nbsp;and then to specify which users have what access.</P>
+<P>ie. High Level User has access to all</P>
+<P>Medium Level will have access to what the High Level User deems appropriate. on an object by object basis.</P>
+<P>Low Level will also have the access given by the High Level User.</P>
+<P>I was thinking of having a grid of the sections and stating the minimum level required to access. L, M&nbsp; or H.&nbsp; The idea I had was an algorithm eg. UL 3&nbsp;&gt;&nbsp; 2 Minimum </P>
+<P>This will be set by the users. But how to code the business objects for this variable arrangement.</P>
+<P>Any suggestions welcomed</P>
+<P>Ellie</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, July 29, 2007</h2><P>Remember that your objects set up their authorization in AddAuthorizationRules(). The methods called in that method are string based, specifically so you can easily make that code data-driven.</P>
+<P>In other words, you can store the object-role metadata in a database, and then use that metadata in AddAuthorizationRules() to specify the roles that can act on each of your objects and their properties.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

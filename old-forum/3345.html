@@ -1,0 +1,102 @@
+<html><header><title>Datagrid Second Update</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Datagrid Second Update</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3345.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc posted on Tuesday, August 07, 2007</h2><P>I have an ERL bound to a DataGridView. I can modify any row once and have the update take. I can also add a row and have it save. Deletes work fine. My problem comes in when I try to modify a row that has already been saved once. All additional updates do not get fired.</P>
+<P>I've looked through the post and found one related to this, but I couldn't figure out how to implement the suggestion. Rocky posted that I would have to handle the ListChanged event and raise the PropertyHasChanged in the root object.</P>
+<P>If anyone has any help, I would appreciate it.</P>
+<P>stan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Wednesday, August 08, 2007</h2><P>I've tracked the issue down to BusinessBase.AcceptChangesComplete. The first time an item is updated, it's parent is the ERL. The next time through it has no parent. This makes some sense because the save actually retuns a new object (although I don't know why it would lose its reference to the parent).</P>
+<P>I do not mark my BusinessBase objects as children (I haven't looked, but I guess the add method for the ERL does it). If I do add MarkAsChild, then I cannot call MyBase.Save.</P>
+<OL>
+<LI>Is there a way to reset the parent after the save comes back?</LI>
+<LI>Should I be marking my objects as children, and overriding MyBase.Save?</LI>
+<LI>Or is there something I'm missing?<FONT color=#000080 size=2></LI></OL>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 08, 2007</h2><P>This could be a bug. Are you using a remote data portal configuration?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Wednesday, August 08, 2007</h2><P>I am using a remote data portal. I've been trying to step through to see where I lose the parent, and I can't track it down. When it gets to the DP_U, it doesn't have the reference to the parent at that point, but it appears to be back after the call. And a light goes off, I was checking the parent of the object making the call and not the returned object. I was checking in the Save of the BO.</P>
+<P>So it seems, it is losing the reference when it crosses te data portal.</P>
+<P>Any ideas?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 09, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, definitely a bug in ERLB. The following code is missing:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>''' </span><span>&lt;summary&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>''' Replaces an
+item in the list.<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>''' </span><span>&lt;/summary&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>''' </span><span>&lt;param name=&quot;index&quot;&gt;</span><span>Index at which the item was replaced.</span><span>&lt;/param&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>''' </span><span>&lt;param name=&quot;item&quot;&gt;</span><span>New item.</span><span>&lt;/param&gt;<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>Protected</span> <span>Overrides</span> <span>Sub</span>
+SetItem(<span>ByVal</span> index <span>As</span>
+<span>Integer</span>, <span>ByVal</span>
+item <span>As</span> T)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; item.SetParent(<span>Me</span>)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; <span>MyBase</span>.SetItem(index,
+item)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; <span>End</span> <span>Sub<o:p></o:p></span></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Add that and the problem should be resolved &#8211; I&#8217;ll
+fix it in 3.0.2.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> stanc
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 08, 2007 11:43 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Datagrid Second Update<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I am using a remote data portal. I've been trying to step through to see
+where I lose the parent, and I can't track it down. When it gets to the DP_U,
+it doesn't have the reference to the parent at that point, but it appears to be
+back after the call. And a light goes off, I was checking the parent of the
+object making the call and not the returned object. I was checking in the Save
+of the BO.<o:p></o:p></p>
+
+<p>So it seems, it is losing the reference when it crosses te data portal.<o:p></o:p></p>
+
+<p>Any ideas?<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>stanc replied on Thursday, August 09, 2007</h2>Thanks for the reply and the solution. This one was driving a little batty.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pandelaras replied on Tuesday, October 30, 2007</h2><P><SPAN class=a><FONT color=#008000 size=2>great work! That one was bugging me too</FONT></SPAN></P>
+<P><SPAN class=a><FONT color=#008000 size=2></FONT></SPAN>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

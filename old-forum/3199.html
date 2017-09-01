@@ -1,0 +1,44 @@
+<html><header><title>Dtos and transaccions</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dtos and transaccions</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3199.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lprada posted on Monday, July 16, 2007</h2>I am trying to follow the DeepData exmaple and implement my BO to use DTO. How would I have to Implement transaccions with the child objects?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lprada replied on Monday, July 16, 2007</h2>Maybe I answer myself. I have to use the global Context? if this the case? any example?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 16, 2007</h2><P>If you are using the DTO model, then you are using a data access layer (DAL). In this case the DAL must be responsible for managing all transactions - neither CSLA nor your DataPortal_XYZ methods should be responsible for any transactions.</P>
+<P>In other words, you should use Manual transactions in CSLA (the default), and your DAL should figure out how to start/commit/rollback the transaction as appropriate.</P>
+<P>Remember that the DTO passed to the DAL includes all data parent, child, everything, and so the DAL entry point is an ideal place to start and commit a transaction.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>msk replied on Wednesday, July 18, 2007</h2><P>Rocky, </P>
+<P>That sounds simple for fetching the data.&nbsp; Updates are less trivial though.&nbsp; </P>
+<P>Would your DTOs contain IsDirty, IsNew and IsDeleted properties so that the DAL can decide what action to take?&nbsp; </P>
+<P>Do you see things working like something like this?</P>
+<P>1) DataPortal_Update called<BR>2) Root object creates RootDto instance from own member variables<BR>3) Root object sets RootDto.ChildList to result of friend function on child collection <BR>[Me.ChildCollection.MakeUpdateDto() ]<BR>...<BR>4) RootDal.Update is called and RootDto instance passed to it.<BR>5) RootDal.Update creates transaction<BR>6) RootDal.Update navigates the DTO object graph and persists according to the Is... flags on each DTO<BR>7) RootDal.Update commits transaction</P>
+<P>I think it's time you enhanced the Data Layer Demo! :)</P>
+<P>Martin. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, July 18, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, the DTOs must contain (at least) IsNew and IsDeleted
+properties. Depending on how you build the DAL, you might have an IsDirty
+property, or you might choose to only create DTOs for dirty objects &#8211;
+though that gets complex when dealing with non-dirty parent objects of dirty
+child objects&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>CSLA 3.5 is primarily focused on enhancing support for data
+access (thanks to LINQ and EF). Due to that, you can expect to see DeepData
+and/or ProjectTracker change to accommodate LINQ, and probably DTOs as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

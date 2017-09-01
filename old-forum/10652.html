@@ -1,0 +1,11 @@
+<html><header><title>Criteriabase and LinqBindingList Error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Criteriabase and LinqBindingList Error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10652.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan posted on Tuesday, August 30, 2011</h2><p>I have a compiling error in CSLA 3.6.0.0 VB in the files CriteriaBase.vb line 26 and LinqBindingList.vb line 536 with errors that say&nbsp;</p>
+<p>
+<p>&nbsp; &lt;EditorBrowsable(EditorBrowsableState.Never)&gt; _</p>
+<p>&nbsp; &nbsp; Public Shared ReadOnly TypeNameProperty As PropertyInfo(Of String) = RegisterProperty(Of CriteriaBase, String)<span style="text-decoration:underline;">(Function(c) (c.TypeName)</span>)</p>
+</p>
+<p>&quot;Lambda expression cannot be converted to &#39;System.Linq.Expressions.BLOCKED EXPRESSION&#39; is not a delegate type.&quot;</p>
+<p>This error just popped up all of a sudden for no reason at all. I know it&#39;s not a csla problem, because I&#39;ve downloaded a fresh new version and built it with no errors. I went along customizing the framework as needed w still no errors. As soon as I reference in my library of objects, I get this error. I had no errors in my library prior to referencing it. So I&#39;m really confused on whats going on, and how I can fix it.</p>
+<p>Any and all help would be appreciated.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AKaplan replied on Tuesday, August 30, 2011</h2><p>
+<p>Error<span>	</span>Lambda expression cannot be converted to &#39;System.Linq.Expressions.BLOCKED EXPRESSION&#39; is not a delegate type.<span>	</span>E:\cslavb\Csla\CriteriaBase.vb<span>	</span>26</p>
+<div>thats what the error says... why did the form change it, idk</div>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

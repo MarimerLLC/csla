@@ -1,0 +1,22 @@
+<html><header><title>MVC Binding blank textbox into SmartDate property</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MVC Binding blank textbox into SmartDate property</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/8785.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bdivsalar posted on Friday, April 09, 2010</h2><p>Dear All, </p>
+<p>I wondered if you can help me please on my ASP.Net MVC 1.0 application where I want to bind a null smartdate into database. </p>
+<p>I am using CslaContrib.Mvc and DefaultCslaModelBinder.cs to bind the view into model. I have got a datetime text box using below code in the view :</p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">
+<p>&lt;%</p>
+</span></span></p>
+<p><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">=</span></span><span style="font-size:x-small;"> Html.TextBox(</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;DisposalDate&quot;</span></span><span style="font-size:x-small;">, instrument.DisposalDate, </span><span style="font-size:x-small;color:#0000ff;"><span style="font-size:x-small;color:#0000ff;">new</span></span><span style="font-size:x-small;"> { @class=</span><span style="font-size:x-small;color:#a31515;"><span style="font-size:x-small;color:#a31515;">&quot;datepicker&quot;</span></span><span style="font-size:x-small;"> })%&gt;</span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">instrument.DisposalDate is as type of SmartDate in the instrument model. If I leave the textbox empty, I will get an error in the modelState just after <span style="font-size:x-small;">TryUpdateModel says, &quot;A value is required&quot; for DisposalDate property where I am assuming SmartDate could be set to null and then it will be saved as null in the database. </span></span></p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">Just to clarify, I am using MVC 1.0 and Csla modelbinder from <span style="font-size:x-small;">CslaContrib.Mvc namespace. Please let me know if there is any newer&nbsp;version and where I can download.</span></span></span>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;">Could someone please let me know how I can change this behaviour&nbsp;in the <span style="font-size:x-small;">BindCslaModel.</span></span></span></p>
+<p>&nbsp;</p>
+<p><span style="font-size:x-small;">Best Regards</span></p>
+<p><span style="font-size:x-small;">Behnam Divsalar</span></p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bniemyjski replied on Tuesday, May 04, 2010</h2><p>
+<p>Hello,</p>
+<p>Is there&nbsp;any chance&nbsp;you could attach a small sample application so we could debug this locally.</p>
+<p>Thanks</p>
+<p>-Blake Niemyjski</p>
+</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

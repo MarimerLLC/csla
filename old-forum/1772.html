@@ -1,0 +1,8 @@
+<html><header><title>Bug in EditableChild template</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Bug in EditableChild template</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1772.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>wjcomeaux posted on Wednesday, November 15, 2006</h2><P>I am generating an EditableChild object on the Buildings table.</P>
+<P>I want this object to have a child of type Company so I also need to generate the Company Editable Child object.</P>
+<P>In the code generated for the Building Editable Child I see this</P><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CompanyEC</FONT><FONT size=2> _company = </FONT><FONT color=#008080 size=2>CompanyEC</FONT><FONT size=2>.NewCompanyEC();</P>
+<P></FONT>However, in the CompanyEC object, no parameterless NewCompanyEC() function is created. The only NewCompanyEC function required an ID parameter.</P>
+<P>Am&nbsp;doing something wrong with the template or would this be a bug?</P>
+<P>Thanks,</P>
+<P>Will</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rasupit replied on Tuesday, November 21, 2006</h2>You normally don't have editable child object inside editable child object, therefore this scenario is not supported.&nbsp; The only supported scenario is to have child collection object inside editable child/root object.<br><br>Ricky<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

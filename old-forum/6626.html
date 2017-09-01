@@ -1,0 +1,219 @@
+<html><header><title>Why is PropertyInfo.FriendlyName read-only ?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why is PropertyInfo.FriendlyName read-only ?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6626.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky posted on Wednesday, March 18, 2009</h2>Hi,<br><br>Just wondering about the rationale behind having that property as read-only.<br><br>The reason I ask is that in a code generation scenario, the PropertyInfo declarations are most likely to be in the generated file, such that one can never customize it without risking seeing it overwritten. Some other threads suggested the use of a resource file, but I'd rather have the possibility to set the friendly name in a separate partial class definition.<br><br>My first idea was to simply modify the FriendlyName property in the csla source code, but then I decided to ask whether this would introduce problems down the road.<br><br>Thanks a lot.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 18, 2009</h2><P>Sometimes the PropertyInfo&lt;T&gt; fields are public. In fact I've taken to usually making them public, as it makes it far easier to build your DAL using an ObjectFactory.</P>
+<P>If they are public, then someone could change the property at any time while the app is running, leading to unpredictable results. In reality, the PropertyInfo&lt;T&gt; objects should be considered to be read-only tokens representing each property.</P>
+<P>However, they don't actually have to be static fields. Nor do they need to be in your business class. The only real constraint is that they be initialized before any code tries to interact with an instance of your business object(s) - including deserialization of a data portal call.</P>
+<P>In other words, it is totally realistic to have some type of initialization routine in your application that loads all the PropertyInfo&lt;T&gt; objects as the app starts up - perhaps using metadata - as long as this occurs before any attempted use of the business objects. And of course, the initialization would need to be run on both the client and app server (and intermediate web server in the 4-tier Silverlight scenario).</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Thursday, March 19, 2009</h2>Rocky,<br><br>I understand that making PropertyInfo.FriendlyName writeable could lead to unexpected results, but it's something I'm willing to live with. I mean, we're a small team of 2 coders, so we can establish that kind of rule rather easily (I hope).<br><br>The way I would use it if it were writeable would be within a static constructor in the "user" partial class file. In there I'd set the friendly name only for those properties that I want to change. That way, I could regenerate the "generated" file if the DB schema changes, and I wouldn't lose my changes.<br><br>I'm not sure I understand when you say that PropertyInfo&lt;T&gt; objects don't have to be in my BO class. Could you provide me with a minimalist example (or is there one in the book ?).<br><br>Thank you.<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My problem is that while <i>you</i> may be willing to live with
+the risk, I&#8217;m not sure the other users of CSLA would be happy to accept
+it :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Putting the RegisterProperty() calls outside the business class
+is very much an advanced scenario, and is not covered in the book. For most
+people it isn&#8217;t appropriate, but it does enable some interesting
+variations in some cases. It looks somewhat like this, though this is not the only
+possible approach:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public static class CustomerMeta<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public static PropertyInfo&lt;string&gt; NameProperty;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public class AppData<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public void InitializeApp()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; CustomerMeta.NameProperty =
+RegisterProperty&lt;string&gt;(typeof(Customer), &#8220;Name&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>[Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>public class Customer : BusinessBase&lt;Customer&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public string Name<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; get { return
+GetProperty(CustomerMeta.NameProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; set { SetProperty(CustomerMeta.NameProperty, value);
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only catch with this, is that AppData.InitializeApp() <i>must
+be run before Customer is used</i> or you&#8217;ll get exceptions. And you must
+run InitializeApp() on the client and app server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The value here, is that InitializeApp() can do the
+RegisterProperty() calls using metadata, perhaps in a way that you couldn&#8217;t
+do when calling RegisterProperty() as a static field initializer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>lukky replied on Friday, March 20, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+
+
+<div class="Section1">
+
+<p class="MsoNormal"><span>My problem is that while <i>you</i> may be willing to live with
+the risk, I’m not sure the other users of CSLA would be happy to accept
+it :)<o:p></o:p></span></p>
+
+</div>
+
+</div></BLOCKQUOTE><br><br>Ohh... I didn't mean that the CSLA code base should be changed, but that WE could change it on our side to make that property read + write :-)<br><br>I just wanted to know what pitfalls could come out of this, but since our scenario would involve writing to that property only in the context I described earlier (static constructor in user partial file), I think we can assume that it wouldn't cause undesired side effects.<br><br>Thanks Rocky for the sample code. Interesting. I'll try to see if we could use something like that instead.<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 19, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>My problem is that while <i>you</i> may be willing to live with
+the risk, I&#8217;m not sure the other users of CSLA would be happy to accept
+it :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Putting the RegisterProperty() calls outside the business class
+is very much an advanced scenario, and is not covered in the book. For most
+people it isn&#8217;t appropriate, but it does enable some interesting
+variations in some cases. It looks somewhat like this, though this is not the only
+possible approach:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public static class CustomerMeta<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public static PropertyInfo&lt;string&gt; NameProperty;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>public class AppData<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public void InitializeApp()<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; CustomerMeta.NameProperty =
+RegisterProperty&lt;string&gt;(typeof(Customer), &#8220;Name&#8221;);<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>[Serializable]<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>public class Customer : BusinessBase&lt;Customer&gt;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>{<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; public string Name<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; {<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; get { return
+GetProperty(CustomerMeta.NameProperty); }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp;&nbsp;&nbsp; set { SetProperty(CustomerMeta.NameProperty, value);
+}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>&nbsp; }<o:p></o:p></span></p>
+
+<p class=MsoNormal><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The only catch with this, is that AppData.InitializeApp() <i>must
+be run before Customer is used</i> or you&#8217;ll get exceptions. And you must
+run InitializeApp() on the client and app server.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The value here, is that InitializeApp() can do the
+RegisterProperty() calls using metadata, perhaps in a way that you couldn&#8217;t
+do when calling RegisterProperty() as a static field initializer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,9 @@
+<html><header><title>ViewModel lifetime</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModel lifetime</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10696.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Monday, September 19, 2011</h2><p>Hi folks,</p>
+<p>We&#39;re developing a business &nbsp;WPF application &nbsp;using &nbsp;CSLA4 and Bxf&nbsp;. We have just encountered an issue to manage the ViewModel lifetime. Cause, we&nbsp;<span>didn&#39;t anticipate the ViewModel keep persisting through the pages.</span></p>
+<p><span>Per exemple, one viewmodel has a timer, to get data data periodically. And this viewmodel continues to get data even when the relevant page is not being viewed because the viewmodel does not get destroyed when the user goes to a different page. (Maybe the timer should be in the page rather than the viewmodel?)</span></p>
+<p><span>Can ViewModels be destroyed when the user navigates away from the associated page that is using them?</span></p>
+<p>Is there an option with bxf to do this ?</p>
+<p>Thanks in advance for your help,</p>
+<p>C&eacute;dric</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Monday, September 19, 2011</h2><p>I answered this in the Bxf forum on CodePlex.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Tuesday, September 20, 2011</h2><p>Thanks Rocky. It was helpful for our WM lifetime understanding..</p>
+<p>Below the link to Rocky answer.</p>
+<p><a href="http://bxf.codeplex.com/discussions/273108#post674015">http://bxf.codeplex.com/discussions/273108#post674015</a></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,82 @@
+<html><header><title>Async Fetch Calls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Async Fetch Calls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4871.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>FireGarden posted on Tuesday, May 20, 2008</h2>I am sure this question has been asked before. I have found this thread offered some help:<br>http://forums.lhotka.net/forums/thread/10752.aspx<br><br>My question is simply how do we make the web requests for sending CSLA accross the portal async? <br><br>I have attempted to use the background worker for the static GET fetch but it always returns the error:<br><br>The calling thread cannot access this object because a different thread owns it.<br><br>Given the amount of time and energy put into Csla it would seem there should be a simple way to make all network calls async. <br><br>Any direction is much appreciated. Thank you,<br><br>Rob FireGarden<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 20, 2008</h2><P>You can use the BackgroundWorker component from Windows Forms or WPF to make async calls. But all the normal multi-threading concerns apply.</P>
+<P>The error you are getting typically occurs because you have code on a background thread that is trying to interact with UI elements. That is not allowed, and Windows Forms/WPF throw that exception to help you avoid disaster.</P>
+<P>So what you need to watch for is that a callback or completion event may be on a background thread. The BackgroundWorker handles this for you - but only if you use it correctly. You can never interact with UI elements in the actual work method - you can only interact with the UI in the progress or complete event handlers because those are on the UI thread.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FireGarden replied on Tuesday, May 20, 2008</h2>Thank you Rocky for taking the time to address my question. I believe I am making the calls correctly. The following is an excerpt of my code perhaps there is something obvious I am missing here.<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public void GetAsync()<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _backgroundWorker = new BackgroundWorker();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _backgroundWorker.DoWork += new DoWorkEventHandler(GetAsync_DoWork);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _backgroundWorker.RunWorkerCompleted += new &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; RunWorkerCompletedEventHandler(GetAsync_RunWorkerCompleted);&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _backgroundWorker.RunWorkerAsync();<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void GetAsync_DoWork(object sender, DoWorkEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Result = Business.Countries.Get();&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; void GetAsync_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _countryList = (Countries)e.Result;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RaiseEvent(GetCompleted);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>The error message occurs when I try to assign _countryList to a property of the UI. I should mention I am using a self referencing MVP implementation where the control implementats IView and creates a&nbsp; presenter which is passed in an IModel. Eg. constructor of IView as follows:<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; public CountryRegionPanel() : IView<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;  <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; new CountryRegionPresenter(this, CountryFactory.New());&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>Thank you,<br><br>Rob FireGarden<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm, that code does look fine at a glance anyway.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think you need to use the debugger &#8211; put a breakpoint at
+the top of GetAsync() and check the thread (you can show the Threads window in
+the debugger to easily see what&#8217;s running on what thread). Then put a
+breakpoint in your completed event handler and ensure the thread is the same.
+Then I&#8217;d step through that raiseevent and follow it to where the data
+binding source is set &#8211; it sure seems like something must be switching
+you to a different thread in there somewhere&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>FireGarden replied on Tuesday, May 20, 2008</h2>The problem was realated to me using the constructor of my window rather than the window loaded event to initialze my MVP triad / M being the CSLA BO. This is not the first time using a windows constructor has caused an unknown threading issue. Please be aware using WindowLoaded seems to lead to more consistent results.<br><p class="MsoNormal"><span>public</span><span> MainWindow()<o:p></o:p><br>{<o:p></o:p><br><span>&nbsp;&nbsp;&nbsp; this</span>.Loaded += <span>new</span>
+<span>RoutedEventHandler</span>(MainWindow_Loaded);<o:p></o:p><br>}<o:p></o:p></span></p>
+
+
+
+
+
+<p class="MsoNormal"><span><o:p></o:p><span>void</span> MainWindow_Loaded(<span>object</span>
+sender, <span>RoutedEventArgs</span> e)<o:p></o:p><br>{<o:p></o:p></span></p>
+
+
+
+<p class="MsoNormal"><span><span>this</span>.Content = <span>new</span>
+Main.<span>MainCanvas</span>(<span>new</span>
+Main.<span>MainModel</span>(), <span>new</span> <span>&nbsp;&nbsp; DecorSoftViewFactory</span>());<o:p></o:p><br>}</span><span><o:p></o:p></span></p>
+
+Thank you,<br><br>Rob Firegarden<br><br>==============<br>www.firegarden.com<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 20, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Ahh, yes. This is an even more common and bigger issue in WPF &#8211;
+avoid the constructor if at all possible!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,17 @@
+<html><header><title>replacement for 3.8.x 'deny' auth rules in 4.x?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>replacement for 3.8.x 'deny' auth rules in 4.x?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10747.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak posted on Friday, October 07, 2011</h2><p>Hi,</p>
+<p>I&#39;m updating an older 3.8 CSLA project to CSLA 4&nbsp;which uses deny... authorization rules used beside allow-rules.</p>
+<p>Unfortunatly actually I&#39;m unable to find something comparable in 4, where all auth-actions are allowing, none denying. (and IsInRole used beside IsNotInRole results in an exception...)</p>
+<p>Is there any chance to save this part of logic?</p>
+<p>Thx for answering</p>
+<p>Volker</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, October 07, 2011</h2><p>Hi, 
+</p>
+<p>One of the requirements for CSLA 4 Authz rules is that there can be only one rule per AuthorizationAction and Object/Property/Method. </p>
+<p>IE: there is no provision for having Deny rules taking priority over Allow rules. <b>There can be only one rule.&nbsp; </b>Hence there is no Deny actions.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>vschaak replied on Saturday, October 08, 2011</h2><p>Hi Jonny,</p>
+<p>&nbsp;thanks for your answer. </p>
+<p>Unfortunatly this means to rewrite our auth-logic, where permitting and denying elements exist<img src="http://forums.lhotka.net/emoticons/emotion-6.gif" alt="Sad" /></p>
+<p>Our business case is to mostly assign permissions to users by giving them certain roles which incorporate permissions. But if the security-admin want&#39;s to deny a certain functionality for&nbsp;a specific user, otherwise incorporated into a role that he is in, without creating a specific role for this case (&#39;User A should have all the rights members of role &#39;manager&#39; have, except doing this specific thing&#39;), the admin can &#39;give&#39; the user a certain denying permission, which leads to the user not beeing allowed to perform the excluded functionality.</p>
+<p>That was exactly the reason we used deny... security actions. My workaround now will be to exclude the &quot;denied permission&quot; as I fetch the list of permissions for the specific user from my security repository.</p>
+<p>Kind regards</p>
+<p>Volker</p>
+<p>P.S.: Will you please have a look at the thread concerning localization/accessing ressources&nbsp;again, since Rocky says, you&#39;re the one with the best knowledge on that? Thx</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

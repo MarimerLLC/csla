@@ -1,0 +1,39 @@
+<html><header><title>IsDirty turns TRUE after setting as datasource.</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IsDirty turns TRUE after setting as datasource.</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NelsonF posted on Monday, June 26, 2006</h2><DIV>I can load my CSLA object into memory and everything is marked as "old" so IsDirty returns false on my root object immediatly after getting it.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The problem occurs when I bind an object to a BindingSource like so:</DIV>
+<DIV><FONT face="Courier New" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2>&nbsp;&nbsp;&nbsp;propertyBindingSource.DataSource = _property;</FONT></DIV>
+<DIV><FONT face="Courier New" size=2></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2><FONT face="Times New Roman" size=3>The _property object becomes dirty immediately after the above code executes.</FONT></FONT></DIV>
+<DIV><FONT face="Courier New" size=2><FONT face="Times New Roman" size=3></FONT></FONT>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2><FONT face="Times New Roman" size=3>Is there a way to bind my CSLA object to a binding source without it going dirty on me?</FONT></FONT></DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Is there a way to know which property is being changed to make it dirty?</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Thanks,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Nelson</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV><FONT face="Courier New" size=2><FONT face="Times New Roman" size=3></FONT>&nbsp;</DIV></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cmellon replied on Tuesday, June 27, 2006</h2><P>Hi Nelson,</P>
+<P>The first thing I would check is that all your property setters compare the value before setting it.</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT><FONT size=2> Identification() </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P></FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P dir=ltr></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> mItemIdentification</FONT></P></BLOCKQUOTE>
+<P dir=ltr><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Get</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Set</FONT><FONT size=2>(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> value </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>)</P>
+<BLOCKQUOTE dir=ltr><FONT size=2>
+<P></FONT><FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> value &lt;&gt; mItemIdentification </FONT><FONT color=#0000ff size=2>Then</P></FONT></FONT><FONT size=2>
+<BLOCKQUOTE dir=ltr>
+<P>mItemIdentification = value</P>
+<P>MarkDirty()</P></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT></BLOCKQUOTE>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Set</P></BLOCKQUOTE></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Property</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000 size=3>It may be that databinding is causing your property setters to be called, and if you don't have a check the value will be set and marked dirty, even if its the same value.</FONT></FONT></P>
+<P>Just a thought, but I would check that first.</P>
+<P>Craig</P>
+<P><FONT color=#0000ff size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>NelsonF replied on Tuesday, June 27, 2006</h2>Thanks,&nbsp;its working now. It turns out a bound lookup combo was being updated from an change event in another control. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Tuesday, June 27, 2006</h2><P>Could be the same problem a lot of people are wrestling with - that the Binder (BindingContext/BindingManager - i can't remember) is actually calling AddNew on the fly to discover the full schema of your objects.</P>
+<P>Do a search of the forum archive and you'll find some stuff.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

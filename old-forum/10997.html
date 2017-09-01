@@ -1,0 +1,94 @@
+<html><header><title>Silverlight CSLA 4.2 - BusinessRules.CheckRules throwing Collection Modified exception</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight CSLA 4.2 - BusinessRules.CheckRules throwing Collection Modified exception</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10997.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber posted on Monday, December 19, 2011</h2><p>I am running into an intermittent problem where 9 times out of 10 everything works fine, but that 10th time I get this weird exception.</p>
+<p>The very first object loaded after authentication is the User object. &nbsp;The constructor for my User object calls the BusinessRules.CheckRules method.</p>
+<p>Occasionally this call throws an InvalidOperation exception &quot;Collection was modified; enumeration operation may not execute.&quot;. &nbsp;While I am quite familiar with this error I have no idea how to solve it in this scenario.</p>
+<p>The User class only has the Required and StringLength&nbsp;Data Annotation&nbsp;rules. &nbsp;The exception is raised from Server Side code.</p>
+<p>Any idea what may be causing this? &nbsp;</p>
+<p>Is it bad practice to call the CheckRules in the constructor? &nbsp;The only reason I have this is to validate my default data (all specified within the class, i.e. not in DataPortal_Create). &nbsp;I could change this to only run this code in Silverlight but then this check would not be done on other platforms.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, December 19, 2011</h2><p>Do you have a stack trace for the exception and could you show us some code that causes the exception? </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Tuesday, December 20, 2011</h2><p>You should not be doing CheckRules in the constructor.&nbsp; The normal Csla pattern you won&#39;t be using a constructor (directly) at all.&nbsp; Instead use DataPortal.Create to create your BO or DataPortal.CreateChild for a child BO.&nbsp; In your DataPortal_Create or Child_Create you may safely call CheckRules.&nbsp; Csla BOs should have private constructors.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Wednesday, December 21, 2011</h2><p>Thanks for the quick responses.</p>
+<p>JonnyBee: I tried to replicate the error again yesterday but (thanks to Murphy) I could not. &nbsp;Though, I was working in SQL most of the day. &nbsp;When it happens again I will record all the info and post.</p>
+<p>Andy: Though this problem is not&nbsp;occurring&nbsp;as a result of a pure create, but rather a fetch, your post raises a concern for me. &nbsp;Maybe I am not 100% understanding the DataPortal process. &nbsp;We have been using CSLA successfully since version 2 and have never made use of the DataPortal.Create methods as my understanding was that these methods were useful for populating default values from the data source, where we were quite happy to just use hard coded values instead of incurring the extra server hit to obtain defaults. &nbsp;In Silverlight I perceived this to be even more important as, according to my understanding, any DataPortal.X call will ultimately result in serialization, post back to server, deserialization on the server, perform the DataPortal_X method, then serialize and return to client which would deserialize to use the object. &nbsp;This seems like a lot of work to merely create a new object, which I want to happen entirely in the Silverlight client, for this reason I have implemented my create / constructor methods as follows:</p>
+<p>We are still using VB, but I&#39;m sure your clever people have no trouble reading both ;)&nbsp;</p>
+<p>&nbsp;</p>
+<p>#If SILVERLIGHT Then</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;Public Shared Function NewUser() As
+User</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;Return New User()</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;End Function</p>
+<p>&nbsp;#End Region</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;Public Sub New()</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp;&nbsp;MarkAsChild()</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;BusinessRules.CheckRules()</p>
+<p>&nbsp;&nbsp; &nbsp;&nbsp;End Sub</p>
+<p>&nbsp;</p>
+<p>If this is not recommended, I would be interested to know the correct approach to accomplish pure client side creation.</p>
+<p>The error is happening during a DataPortal.Fetch of the UserList class.</p>
+<p>UserList code (called by DataPortal_Fetch):</p>
+<p>&nbsp; &nbsp; Private Sub Fetch(ByVal sdr As SafeDataReader)</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp; Me.RaiseListChangedEvents = False</p>
+<p>&nbsp; &nbsp; &nbsp; While sdr.Read</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Me.Add(User.GetUser(sdr))</p>
+<p>&nbsp; &nbsp; &nbsp; End While</p>
+<p>&nbsp; &nbsp; &nbsp; Me.RaiseListChangedEvents = True</p>
+<p>&nbsp; &nbsp; End Sub</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>User code:</p>
+<p>
+<p>&nbsp; &nbsp; Friend Shared Function GetUser(ByVal dr As SafeDataReader) As User</p>
+<p>&nbsp; &nbsp; &nbsp; Dim u As New User()</p>
+<p>&nbsp; &nbsp; &nbsp; u.Fetch(dr)</p>
+<p>&nbsp; &nbsp; &nbsp; Return u</p>
+<p>&nbsp; &nbsp; End Function</p>
+</p>
+<p>&nbsp;</p>
+<p>The first line in the GetUser method invokes the constructor above, which occasionally results in the &quot;Collection Modified&quot; error during the BusinessRule.CheckRules call.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 21, 2011</h2><p>For Silverlight the constructor must public (so we tend to use public constructors everywhere now). </p>
+<p>You _can_&nbsp; use the [<em>RunLocal</em>] attribute on the DataPortal_Create (or any DataPortal_XYZ or ObjectFactory method)&nbsp;&nbsp;to instruct the DataPortal to run this code inline and not send call to server. </p>
+<p>So I would typically:</p>
+<ul>
+<li>use DataPortal to create and initalize a new object in Shared NewUser method</li>
+<li>create a DataPortal_Create method with a RunLocal attribute (always run inline) for .NET. </li>
+<li>in silverlight the RunLocal attribute is not checked - you need to specify LocalProxy in the DataPortal call. </li>
+<li>not call CheckRules in object constructor (will slow down when loading data from DB - rules checked twice). </li>
+<li>Call CheckRules in DataPortal_Create and DataPortal_Fetch after data is initialized. </li>
+</ul>
+<p>You should be aware that your DataAccess may be slowed down by executing rules in both&nbsp;constructor and Fetch.<br />I assume that you also call CheckRules in Fetch?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>bwebber replied on Wednesday, December 28, 2011</h2><p>Hi JonnyBee</p>
+<p>You are right, I am running the CheckRules twice for objects fetched from the database. &nbsp;Once during object construction and the other after loading the data. &nbsp;This is inefficient and I will work to eliminate this by using your suggestions.</p>
+<p>Question: In terms of your suggestions, we mainly work with editable lists and so the list is responsible for adding new items. &nbsp;With the latest version of CSLA I no longer override the AddNewCore and leave CSLA to take care of it for me. &nbsp;Should I now override the AddNewCore to call my Shared NewUser method so that the DataPortal.Create is invoked for new objects added to the list? &nbsp;I have added breakpoints to this code and CSLA does not seem to call them automatically.</p>
+<p>I did manage to replicate that &quot;<span>Collection was modified&quot;&nbsp;</span>error this morning, but I&#39;d expect I could resolve this error by implementing your recommendations above. &nbsp;Thanks for the help.</p>
+<p>This is the stack trace, but it doesn&#39;t really give us any more information:</p>
+<p>
+<p>&nbsp;<span>	</span>[External Code]<span>	</span></p>
+<p>&gt;<span>	</span>Singular.Silverlight.DLL!Singular.Security.User.New() Line 227 + 0x17 bytes<span>	</span></p>
+<p>&nbsp;<span>	</span>Singular.Silverlight.DLL!Singular.Security.User.GetUser(Csla.Data.SafeDataReader dr) Line 256 + 0x15 bytes<span>	</span></p>
+<p>&nbsp;<span>	</span>Singular.Silverlight.DLL!Singular.Security.UserList.Fetch(Csla.Data.SafeDataReader sdr) Line 139 + 0xe bytes<span>	</span></p>
+<p>&nbsp;<span>	</span>Singular.Silverlight.DLL!Singular.Security.UserList.DataPortal_Fetch(Object criteria) Line 180 + 0xd bytes<span>	</span></p>
+<p>&nbsp;<span>	</span>[External Code]<span>	</span></p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Wednesday, December 28, 2011</h2><p>Hi,</p>
+<p>The default AddNewCore executes this code (in SL) :</p>
+<p>&nbsp;&nbsp;&nbsp; protected override void&nbsp; AddNewCore()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; var item = DataPortal.CreateChild&lt;C&gt;();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Add(item);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnAddedNew(item);<br />&nbsp;&nbsp;&nbsp; }</p>
+<p>In a BusinessListBase all the items that is added must be child objects so the default behavior is to call DataPortal_CreateChild() method. <br />IE: The default behavior in an n-tier application is to create the new items locally by calling DataPortal_CreateChild() method.. </p>
+<p>You can override this code in your own intermediate base class to always call DataPortal.Create or just override in specific classes where you need to access a database to set default values.&nbsp; </p>
+<p>Yes, that stack trace is not very helpful in identifying the issue.</p>
+<p>I&#39;m just puzzled that User.New appears to call User.GetUser and UserList.Fetch. This issue may be totally unrelated to business rules.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Friday, February 03, 2012</h2><p>Hi,</p>
+<p>I faced the exact same problem with WPF code. Unfortunately, we already uses DataPortal.Create() as follows in our code</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Public Shared Function NewEntity() As T<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return DataPortal.Create(Of T)()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Function</p>
+<p>(from: MyCompany.BusinessLayer.dll!MyCompany.BusinessLayer.Objects.ICBusinessBase(Of
+ MyCompany.BusinessLayer.Objects.Contact, 
+MyCompany.BusinessLayer.Objects.Contacts).NewEntity() L )</p>
+<p>The stack trace is:</p>
+<p>&gt;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Rules.BusinessRules.RunRules(System.Collections.Generic.IEnumerable&lt;Csla.Rules.IBusinessRule&gt; rules) Line 490 + 0x80e bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Rules.BusinessRules.CheckRulesForProperty(Csla.Core.IPropertyInfo property, bool cascade) Line 456 + 0x14 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Rules.BusinessRules.CheckRules(Csla.Core.IPropertyInfo property) Line 437 + 0x14 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Rules.BusinessRules.CheckRules() Line 384 + 0x12 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Core.BusinessBase.DataPortal_Create() Line 1147 + 0x16 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; [Lightweight Function]&nbsp;&nbsp;&nbsp; <br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Reflection.MethodCaller.CallMethod(object obj, Csla.Reflection.DynamicMethodHandle methodHandle, object[] parameters) Line 545 + 0x1e bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Reflection.MethodCaller.CallMethod(object obj, string method, object[] parameters) Line 413 + 0xf bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Reflection.LateBoundObject.CallMethod(string method) Line 77 + 0x2e bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Server.SimpleDataPortal.Create(System.Type objectType, object criteria, Csla.Server.DataPortalContext context) Line 58 + 0x11 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Server.DataPortalSelector.Create(System.Type objectType, object criteria, Csla.Server.DataPortalContext context) Line 41 + 0x14 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.Server.DataPortal.Create(System.Type objectType, object criteria, Csla.Server.DataPortalContext context) Line 132 + 0x12 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.DataPortalClient.LocalProxy.Create(System.Type objectType, object criteria, Csla.Server.DataPortalContext context) Line 35 + 0x1b bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.DataPortal.Create(System.Type objectType, object criteria) Line 136 + 0x12 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; Csla.dll!Csla.DataPortal.Create&lt;CAST.InfoCAST.BusinessLayer.Objects.Contact&gt;() Line 94 + 0x43 bytes&nbsp;&nbsp;&nbsp; C#<br />&nbsp;&nbsp;&nbsp;&nbsp; MyCompany.BusinessLayer.dll!MyCompany.BusinessLayer.Objects.ICBusinessBase(Of MyCompany.BusinessLayer.Objects.Contact, MyCompany.BusinessLayer.Objects.Contacts).NewEntity() Line 80 + 0x2f bytes&nbsp;&nbsp;&nbsp; Basic</p>
+<p>We are migrating our UI from winform to WPF (&amp; Silverlight also).</p>
+<p>&nbsp;</p>
+<p>The exact same code do work with WinForm. Switching to the WpfForm shows the problem. </p>
+<p>On my&nbsp; WPF form, I have 2 users controls, if I remove one of them, then I do not have the problem on Wpf neither.</p>
+<p>I&#39;m suspecting that the origin of the trouble comes from mutli-threading stuffs called by the databinding... if anyone has clues on how to investigate the problem further, I would be more than interested. I&#39;m using CSLA 4.1.0.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, February 03, 2012</h2><p>Can you provide us with a small sample to reproduce the issue?&nbsp;</p>
+<p>This would help greatly in identifying the issue.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, February 05, 2012</h2><p>Could you try and upgrade you solution to use CSLA 4.3.0 Alpha and check if the issue still exists? </p>
+<p>BrokenRulesCollection has been updated to avoid possible thread race conditions in ClearRules and SetBrokenRules methods. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Monday, February 06, 2012</h2><p>Hi Jonny,</p>
+<p>Unfortunately, CSLA 4.3.0 does not fix the problem (but fixed another of mine, so the try was worth the time).</p>
+<p>My application is quite complex, and the CSLA entity a little too much related to everything else (this was inherited from past, before we started using CSLA and clean principle). If I succeed, I will share it.</p>
+<p>Gilles</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

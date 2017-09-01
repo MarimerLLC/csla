@@ -1,0 +1,41 @@
+<html><header><title>Design Problem - Low Coupling</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Design Problem - Low Coupling</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4893.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tna55 posted on Sunday, May 25, 2008</h2><P>Hello friends,</P>
+<P>I have learned a lot from these forums and CSLA. I have another query that will help me and hopefuly will others may learn from it as well.</P>
+<P>I am working on a payroll system with a lot of calculations. The calculations access database at various places to get tax limits and rates etc. The calculations also need data from various person's records.</P>
+<P>I want to keep the calculations totally seperate from any sort of data access.&nbsp; One of the reason to keep things seperate is that the company wishes to sell the calculation part seperately.</P>
+<P>I am thinking to have something like TaxCalculator and TaxCalculatorManager. The manager will provide whatever data is neccessary to calculator. Another way may be to pass ITaxDataProvider to the TaxCalculator. ITaxDataProvider can then have methods to get data. &nbsp;</P>
+<P>I am not sure whether&nbsp;these solutions&nbsp;are good. I would really appreciate some input from everyone and Rocky specially. How to we keep business logic/calculations seperate from data access?</P>
+<P>Tahir</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>smiley riley replied on Tuesday, May 27, 2008</h2><P>Iwill probably get shot here. </P>
+<P>Why not create the Tax Caluculations as a standalone usable component/application.</P>
+<P>IMHO passing the ITaxDataprovider breaks a number of principles. Much better to define&nbsp; Data and Behavioural contracts and encapsulate any tax specific data access, or include the required information in the interface and allow it to be passed in as specific tax rate type for example. Ideally the first.</P>
+<P>How many tax calculations will you have!! If you have a lot you may benefit from using design patterns such as Strategies, Composites and Factories. e.g. </P>
+<P>&nbsp;</P>
+<P>You may have a </P>
+<P>AbstractTaxCalculator</P>
+<P>{</P>
+<P>protected float percentagerate;</P>
+<P>CalculateTax( float taxableincome );</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>BasicRateCalculator : AbstractTaxCalculator</P>
+<P>{</P>
+<P>public BasicRateCalculator { percentagerate=20;}</P>
+<P>public CalculateTax( float taxableincome ){}</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>HighRateCalculator : AbstractTaxCalculator</P>
+<P>{</P>
+<P>public HighRateCalculator { percentagerate=40;}</P>
+<P>public CalculateTax( float taxableincome ){}}</P>
+<P>&nbsp;</P>
+<P>//There would be an abstract composite that would define the calculators but this should give you </P>
+<P>//an idea of what I am trying to show you.</P>
+<P>IncomeTaxCalculator:AbstractTaxCalculator</P>
+<P>{</P>
+<P>IList&lt;ITaxCalculator&gt; calculators = new.....</P>
+<P>public IncomeTaxCalculator</P>
+<P>{ calculators.add(new LowRateTaxCalculator) ;&nbsp; calculators.add(new HighRateTaxCalculator) ;}</P>
+<P>public CalculateTax( float taxableincome )</P>
+<P>{ foreach ( ICalculator calc in calculators) //add the results of each call retun the tax. obviosuly more too it than this.}}</P>
+<P>}</P>
+<P>The advantage of this is each individual tax object can be used on its own or in combination with many other tax objects, these calculations can be brought together at runtime using a factory pattern.</P>
+<P>Depends on your timescales, and how critical it is that this application be able to operate independently.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

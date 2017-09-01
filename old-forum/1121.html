@@ -1,0 +1,110 @@
+<html><header><title>NoInlining Question?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NoInlining Question?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1121.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy posted on Tuesday, September 05, 2006</h2><P>Not really sure what this is for. If I understand correct it just says if it's a small a method just JIT when it's called instead of&nbsp; when it's compiled.</P>
+<P>Is there any benifets to no inlining.. I noticed that the snippets put this attribute on&nbsp;my get and set methods of my properties. </P>
+<P>I don't have my book here today so I could not&nbsp;look for an explanation and&nbsp;what I found on google was quite complex&nbsp;:(</P><FONT size=2></FONT><FONT size=2><FONT size=2>
+<P>[System.Runtime.CompilerServices.</FONT><FONT color=#008080 size=2>MethodImpl</FONT><FONT size=2>System.Runtime.CompilerServices.</FONT><FONT color=#008080 size=2>MethodImplOptions</FONT><FONT size=2>.NoInlining)]</P></FONT></FONT><FONT size=2></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 05, 2006</h2>The primary benefit to using the noinlining attribute is that your code will work. <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br><br>Inlining is a compiler optimization feature, where the compiler can avoid the overhead of making a method call, if the target method's code is simple enough to just copy it in-line with the calling code. It is a very simple and powerful performance optimization, and is one that compilers have been doing for a very long time.<br><br>Essentially, you have some code, A, that is calling a method, B. Making that call requires putting stuff on the stack, transferring control to B and handling the stack when the call is complete. Not a lot of overhead, but overhead still (especially inside a loop structure). What inlining does, is merges the code from B directly into A, so A doesn't actually call B at all, it just includes B's code.<br><br>That's all good stuff! However, if you are using CanReadProperty(), CanWriteProperty() or PropertyHasChanged() without specifying the property name with a string literal, CSLA .NET uses the stack trace to find the property name. That works fine, unless the property was inlined (properties are just methods after all), in which case "A" would be returned instead of "B". Since the property name is "B", this will cause your app to run incorrectly (not crash - just not work right).<br><br>So either use the noinlining attribute, or supply the property name as a string literal to those methods - either way works, but you must do one or the other.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>owensig replied on Tuesday, November 28, 2006</h2>In my opinion, the&nbsp;parameterless versions should be dropped in the next version (as well as any references to the System.Diagnostics namespace).&nbsp; </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Tuesday, September 05, 2006</h2><P>I do not recall the exact detail but sometimes when a compiler inlines code it can break it.</P>
+<P>sometimes when I used to do C stuff in DOS it might make a function crash or return the wrong results.</P>
+<P>generally inline makes the code a tad larger in your .exe image but faster by not having to do as many</P>
+<P>push, call, pop cycles at the assembly level.</P>
+<P>but in a few cases you need that code to be a "real function" and not cut down to a segment of code.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Tuesday, September 05, 2006</h2><P><FONT size=2>Cool! It makes sense now. Thanks for the explanation. Now I have optimized properties :)</FONT></P>
+<P dir=ltr>public string Phone<BR>{<BR>&nbsp;get<BR>&nbsp;{<BR>&nbsp;&nbsp;CanReadProperty(true);<BR>&nbsp;&nbsp;return _Phone;</P>
+<P dir=ltr>&nbsp;}<BR>&nbsp;<BR>&nbsp;set<BR>&nbsp;{</P>
+<P>&nbsp;&nbsp;CanWriteProperty(true);<BR>&nbsp;&nbsp;if (_Phone != value)<BR>&nbsp;&nbsp;{</P>
+<P>&nbsp;&nbsp;&nbsp;_Phone = value;<BR>&nbsp;&nbsp;&nbsp;PropertyHasChanged("Phone");</P>
+<P>&nbsp;&nbsp;}<BR>&nbsp;}</P>
+<P>}</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, September 05, 2006</h2>Not with that code!!!<br><br>Your calls to CanReadProperty() and CanWriteProperty() also must explicitly pass a string literal property name or you are in trouble!!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Tuesday, September 05, 2006</h2><P><FONT size=2>oh my bad! Sorry about that.... I was leaving them until I do my security but it's better to change them now so I don't forget.</FONT></P>
+<P><FONT size=2>Thanks Rocky!</FONT></P>
+<P><FONT size=2><STRONG>REVISED PROPERTY</STRONG></FONT></P>public string Phone<BR>{<BR>&nbsp;&nbsp;get<BR>&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty("Phone");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _Phone;<BR>&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;set<BR>&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanWriteProperty("Phone");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_Phone != value)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _Phone = value;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;PropertyHasChanged("Phone");<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>}<BR></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Sunday, October 15, 2006</h2><P class=MsoNormal>Not sure if this has been mentioned already but I think you will run into all kinds of problem if you where to obfuscate your project and rely on reflection to run code such as the PropertyHasChanged().<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>Your are better off (IMHO) to create constanst strings that can be used througut your code. For example:<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>const string PROP_PHONE = “Phone”;</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>CanReadProperty(PROP_PHONE , true);<o:p></o:p></P>
+<P class=MsoNormal>iteProperty(PROP_PHONE ,true);<o:p></o:p></P>
+<P class=MsoNormal>PropertyHasChanged(PROP_PHONE);<o:p></o:p></P>
+<P class=MsoNormal>etc<o:p></o:p></P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P>
+<P class=MsoNormal>You can use this constant on your properties, validation rules and security rules and never have to worry about it, even if you change the property name and forgot to change the constant value it would not matter as long as you don’t use the shared reflection based validation functions.</P>
+<P class=MsoNormal><o:p>&nbsp;</o:p></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Tuesday, September 05, 2006</h2>
+
+
+
+
+<DIV align=left><FONT size=1>
+<P align=left><SPAN class=484432814-05092006><FONT face=Arial color=#0000ff size=2>Here's what I found in the eBook (pdf version of the book) at the first 
+of two instances of "noinlining" found with the search tool.&nbsp; The 
+"noinlining" isn't <STRONG>exactly</STRONG> mentioned 
+<STRONG>specifically</STRONG>, but the note below about using MethodImpl() at 
+all seems to explain it. The pasted&nbsp;text below&nbsp;begins&nbsp;near the 
+bottom of&nbsp;page 116&nbsp;in the VB book.</FONT></SPAN></P>
+<P align=left><SPAN class=484432814-05092006><FONT face=Arial color=#0000ff size=2>This is why the $10 cost for the pdf is <STRONG>so cheap</STRONG>.&nbsp; 
+You don't need the book with you at work.&nbsp; Just have a copy of the pdf 
+there and at home (and wherever else you might need it).</FONT></SPAN></P>
+<P align=left><FONT face=Arial color=#0000ff size=2></FONT>&nbsp;</P>
+<P align=left>Calling </FONT><FONT size=1>PropertyHasChanged() </FONT><FONT size=1>by passing the property name as a string value would mean</P>
+<P align=left>hard-coding the property name in code. String literals are 
+notoriously difficult to maintain, so</P>
+<P align=left>there&#8217;s an overload to automatically glean the property name at 
+runtime:</P></FONT><B><FONT size=1>
+<P align=left>&lt;System.Runtime.CompilerServices.MethodImpl( _</P>
+<P align=left>System.Runtime.CompilerServices.MethodImplOptions.NoInlining)&gt; 
+_</P>
+<P align=left>Protected Sub PropertyHasChanged()</P>
+<P align=left>Dim propertyName As String = _</P>
+<P align=left>New System.Diagnostics.StackTrace(). _</P>
+<P align=left>GetFrame(1).GetMethod.Name.Substring(4)</P>
+<P align=left>PropertyHasChanged(propertyName)</P>
+<P align=left>End Sub</P></FONT>
+<P align=left><FONT size=1><SPAN class=484432814-05092006>&gt;&gt; end pg 
+</SPAN>116 </FONT></B><FONT size=1>CHAPTER 3 <FONT color=#c0c0c0>n 
+</FONT>BUSINESS FRAMEWORK IMPLEMENTATION<SPAN class=484432814-05092006> 
+&lt;&lt;</SPAN></FONT></P>
+<P align=left><FONT size=1>This implementation uses System.Diagnostics to 
+retrieve the name of the method or property</FONT></P>
+<P align=left><FONT size=1>that called PropertyHasChanged(). <FONT color=#0000ff>The &lt;MethodImpl()&gt; attribute prevents the compiler from 
+merging</FONT></FONT></P>
+<P align=left><FONT color=#0000ff size=1>this code directly into the property 
+itself, since that would confuse the System.Diagnostics call.</FONT></P>
+<P align=left><FONT size=1>There is a performance penalty (akin to using 
+reflection) to calling System.Diagnostics like this,</FONT></P>
+<P align=left><FONT size=1>but I am usually happy to pay that price to avoid 
+using string literals for property names through a</FONT></P>
+<P align=left><FONT size=1>business class. Using this method, a business 
+object&#8217;s property will look like this:</FONT></P>
+<P align=left><FONT size=1>Public Property Name() As String</FONT></P>
+<P align=left><FONT size=1>Get</FONT></P>
+<P align=left><FONT size=1>CanReadProperty(True)</FONT></P>
+<P align=left><FONT size=1>Return mName</FONT></P>
+<P align=left><FONT size=1>End Get</FONT></P>
+<P align=left><FONT size=1>Set(ByVal value As String)</FONT></P>
+<P align=left><FONT size=1>CanWriteProperty(True)</FONT></P>
+<P align=left><FONT size=1>If mName &lt;&gt; value Then</FONT></P>
+<P align=left><FONT size=1>mName = value</FONT></P>
+<P align=left><FONT size=1>PropertyHasChanged()</FONT></P>
+<P align=left><FONT size=1>End If</FONT></P>
+<P align=left><FONT size=1>End Set</FONT></P>
+<P align=left><FONT size=1>End Property</FONT></P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RangerGuy replied on Tuesday, September 05, 2006</h2><FONT size=2>Yeh, I'd like that it would be handy, where did you see it for $10 on apress it's $30 US.</FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Q Johnson replied on Wednesday, September 06, 2006</h2><P>btw, sorry about my late-looking reply here.&nbsp; I responded as soon as I got my e-mail notification of your message.&nbsp; But clearly there were already replies here (that weren't sent to me yet) that beat mine.</P>
+<P>But on to your question.&nbsp; Look at the very back page of your book.&nbsp; You'll see the offer there for the eBook at $10.&nbsp; The question they will ask has you look to some specific page number in your book and supply the text you find there - so they know you actually <STRONG>have</STRONG> the book.</P>
+<P>Enjoy.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Ton Smeets replied on Tuesday, November 07, 2006</h2><P>Tell me if I'm wrong here, but I looked up the Csla/Core/BusinessBase.cs (C#) and I found the CanReadProperty() that takes no parameter has already implemented this attribute:</P>
+<P>[System.Runtime.CompilerServices.<FONT color=#008080>MethodImpl(</FONT>System.Runtime.CompilerServices.<FONT color=#008080>MethodImplOptions</FONT>.NoInlining)]</P>
+<P><FONT color=#0000ff>public</FONT> <FONT color=#0000ff>bool</FONT> CanReadProperty()</P>
+<P>{</P>
+<P><FONT color=#0000ff>string</FONT> propertyName = </P>
+<P><FONT color=#0000ff>new</FONT> System.Diagnostics.<FONT color=#008080>StackTrace</FONT>().GetFrame(1).GetMethod().Name.Substring(4);</P>
+<P><FONT color=#0000ff>return</FONT> CanReadProperty(propertyName);</P>
+<P>}</P>
+<P>This is also true for the CanReadProperty(true) method. This one has in Csla/Core/BusinessBase.cs also the noinlining attribute implemented.</P>
+<P>Or is this only relevant for the VB version. The templates implement this attribute as well.</P>
+<P>Ton.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RRorije replied on Tuesday, November 07, 2006</h2>That is true, but it is essential that the property itself is not inlined also. AFAIK with inlining the property will be removed altogether, so the system.diagnostics.StackTrace()......Substring(4) will not find the property because it is inlined. <br><br>Another question, I think it is rather easy to extend the csla property snippet to create the CanReadProperty/CanWriteProperty with the propertyName, is there a reason why this is not the case?<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, November 07, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RRorije:</strong></div><div><br>Another question, I think it is rather easy to extend the csla property snippet to create the CanReadProperty/CanWriteProperty with the propertyName, is there a reason why this is not the case?<br></div></BLOCKQUOTE><br><br>You can edit the snippets as you choose - they are merely examples.<br><br>My goal was to provide an alternative that didn't leave a string literal (or 3) embedded in the code, which reduces maintainability. The whole point of those overloads is to increase maintainability of code.<br><br>As I've said before, it is my view that if you are manually writing/maintaining the code you should use the noinlining option and avoid the string literals. If you are using code-gen, so you never touch that code by hand, then you should use the string literals and avoid the noinlining attribute.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rxelizondo replied on Wednesday, November 08, 2006</h2><P>Although I think that the use of reflection to retrieve the property name is really cool, I don’t think this is necessarily a good idea. The reason I say that is because property names are used in many other places such as on the rule validation functionality for example and because of this, you now have to be really careful about keeping everything in sync. In other words, if the property name changes you also need to change the rest of the code.</P>
+<P>So from my point of view, if you have to manually specify the property name by typing the actual property name in multiple places, you better come up with a way to minimize potential for error and code maintainability.</P>
+<P>This is way I think that rather than typing the property name such as “SomePropertyName” wherever is required, I think you are much better off creating public static string that you can share all over. Below is an example of what I am talking about:</P>
+<P>public static readonly string PROP_START_TIME = “StartTime”;</P>
+<P>&nbsp;The reason why it’s public is because the client code that needs the name of the property can use this exposed constant value to do thing such as retrieve the broken rules for a certain property. The reason why is readonly and not a constant is to avoid versioning problems.</P>
+<P>Now, if you ever need to change the property name then you only have to change it in one place but most importantly, you&nbsp; **DON’T** have to tell everyone that is using your dll to change the value.</P>
+<P>If you where to change the PROP_START_TIME value to something like PROP_STARTO_THE_TIMO the client code will get compile errors making it very obvious that they need to adjust the code to comply with the new changes.</P>
+<P>Also, I not sure if this will work since I never done it but I think you can change the above code to something like:</P>
+<P>public static readonly string PROP_START_TIME = Guid.NewGuid().ToString();</P>
+<P>This way you can spare yourself of the task of having to synchronize the string value with the property name.</P>
+<P>Usage example:</P>
+<P>CanReadProperty(PROP_START_TIME, true);<BR>CanWriteProperty(PROP_START_TIME, true);<BR>PropertyHasChanged(PROP_START_TIME);<BR>ValidationRules.AddRule(MyDelegate, PROP_START_TIME);<BR></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

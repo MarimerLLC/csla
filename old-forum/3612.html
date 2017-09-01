@@ -1,0 +1,257 @@
+<html><header><title>TDD and CSLA</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>TDD and CSLA</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3612.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>thedeveloper posted on Friday, September 28, 2007</h2><P class=MsoNormal><FONT face=Arial size=2>I read several times that TDD and CSLA is not the best fit.</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2>Can anyone give some concrete examples of issues when using a TDD approach on a CSLA project?</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2>Thomas</FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 28, 2007</h2><P>While CSLA has a lot of extensibility points, the data portal is relatively closed. This can make it difficult to build mock data access layers. Though if you follow the schemes used in DeepData it isn't that hard really&nbsp;- people just lack imagination sometimes <img src="/emoticons/emotion-2.gif" alt="Big Smile [:D]" />&nbsp;&nbsp; </P>
+<P>Or they act under the illusion that TDD will save effort, when in reality TDD increases the amount of code and effort required to build software. TDD isn't about productivity or maintainability, it is about quality. That quality actually comes at the <EM>cost</EM> of reduced productivity and maintainability.</P>
+<P>As with the data portal, the rule method scheme is abstract. It takes some imagination to test rule methods, because those rule methods are often strongly typed, and may run against private fields (CSLA objects used that time-tested OO concept called data hiding, or encapsulation - which is an enemy of TDD, though it is a best practice for OOD/P - go figure).</P>
+<P>There's also the fact that CSLA mandates a certain structure to your objects. Knowing that structure, you can write tests first if you'd like. You can design your objects to be testable, but they must conform to the basic structure of a CSLA object. </P>
+<P>Due to this structure, and the CSLA base classes, your business object does a lot of things all by itself. It is very much like inheriting from Form or Page and having your resulting object do a lot of things.</P>
+<P>The TDD purists don't like it when objects do extra things (apparently). Which is silly, because the whole value of frameworks like .NET or CSLA is that they provide pre-built functionality so you don't have to write and test it every time.</P>
+<P>Just <EM>think</EM> if you had to write the data binding support into every object?!? Oh my god, you'd never get done!</P>
+<P>Of course data binding is equally evil in the TDD world-view, so I guess they don't care. They just write all the data binding equivalent functionality over and over and over in every Presenter.</P>
+<P>I once watched a TDD (and MVC/MVP) presentation. The speaker wrote several pages of code to build and test a presenter that did a bunch of work. Nice stuff, until you realized that all that could have been done in 1-3 lines of code using data binding. I asked him why he did this rather than using data binding. The answer: you can't test data binding.</P>
+<P>I'm afraid my jaw dropped. See, I have a wife and kids. I like to get home and spend time with them. If I can write 3 lines of code, or write 3 pages of code that I need to test and debug, I'm going to pick the 3 lines of code every time (assuming they both have equivalent results). And honestly, to replicate what data binding does, it is a lot more than 3 pages of code - <EM>for each object you write, since you can't use inheritance (if you could, you could use CSLA)!!</EM></P>
+<P>Quality is awesome, but productivity and maintainabilty matter as well.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>thedeveloper replied on Friday, September 28, 2007</h2><P class=MsoNormal><FONT face=Arial><FONT size=2>Hi Rocky, <o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>Thanks for the reply.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>To be honest, I am not doing <EM>real</EM> TDD. I am writing Unit Tests (very often after), but as you say it’s about quality, not productivity.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>I find Unit Tests very useful. If I can't write a simple test for a method, then the method is doing too much. <o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>I follow the Single Responsibility Principle, and the Unit Tests help me achieved that. (I guess it’s also about maintainability then?)<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>I don't believe that Unit Test in any way can replace QA, but often there is no QA at all. In that case, Unit Tests is better than nothing.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>Believe it or not, many large financial organizations don't have QA!!</FONT></FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Back to CSLA, </FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial><FONT size=2>My main focus is to have high test coverage of my business logic.<o:p></o:p></FONT></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2>I don't want to test the Framework itself.</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Can that be achieved with a reasonable amount of work?</FONT></P>
+<P class=MsoNormal><o:p><FONT face=Arial size=2>&nbsp;</FONT></o:p></P>
+<P class=MsoNormal><FONT face=Arial size=2>Thomas</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, September 28, 2007</h2><P>That goal can be achieved with a reasonable amount of work - absolutely!</P>
+<P>I entirely agree that unit tests are critical. People often confuse TDD with testing. TDD is a philosophy, or perhaps a practice. But testing is valuable with or without TDD. You should have at least one test per method (so two per property, because a property is actually two methods: get and set) on your object.</P>
+<P>Each method should have a single responsibility.</P>
+<P>Each <EM>object</EM> should also have a single responsibility, though that's an OO design concept, and though the words are the same, the intent is slightly different from the method-level implementation detail. You can find lots of single responsibility design hits if you search the forum - but they are about OO design, not method implementation.</P>
+<P>Of course "single" responsibility is vague.</P>
+<P>Take a property set method. It is responsible for recording the new value, but also for validating it and authorizing the change. Personally I view all these "behaviors" as supporting the single responsibility of recording the new value.</P>
+<P>But when you are testing, you may need a number of tests - or at least your test may need to cover a set of aspects. For example, do you feel the need to test authorization? Validation? To be thorough, you should. Which probably means a whole set of tests for each property <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>This is why TDD, or even decent testing, is expensive. I tell people, and I'm entirely serious about this, that they'll typically write more testing code than "real" code. Often around 5-10 times more testing code.</P>
+<P>Of course almost no one actually does this. People write a quick test to make sure the value can be set, and they move on.</P>
+<P>TDD actually encourages this. The goal of TDD isn't comprehensive quality testing. Rather, it is to make sure that every method can be called by a test, or conversely that the test vaguely resembles a consumer of each method, so the method is sure to be callable as needed. Not that the method <EM>works</EM> necessarily, but that it is callable as expected. Subtle, but important difference.</P>
+<P>Now I'm rambling, but hopefully you get the idea.</P>
+<P>TDD aside, when you are doing unit testing you need to decide when to stop. How complete do you want to be.</P>
+<P>A simple string field, that is required and has a max length of 20, and which can be viewed by the User and Admin roles, and edited only by the Admin role could require around 7 tests. And that doesn't include edge case tests - this is just to get the mainstream possibilities covered.</P>
+<P>Of course several of those "tests" could be aspects in a single test. But the authorization parts are harder, because CSLA relies on .NET security to do its work, and so you need to be able to switch the current user principal to do that testing. Even then, with some helper functions in your test library, you can probably get all 7 test aspects into a single test for the property - but you'll have still covered all 7 possibilities, and won't have covered edge cases.</P>
+<P>Numeric fields are often more complex, because they usually tie into calculations. Changing a numeric property can often have a cascade result elsewhere in the object, or in another object (like changing a quantity in a line item affects the TotalAmount in the parent order object).</P>
+<P>Of course none of these testing issues have anything to do with TDD or CSLA. They are universal issues of test coverage. </P>
+<P>Comprehensive unit testing means writing more test code than "real" code - <EM>especially</EM> with something like CSLA, where the plumbing is already abstracted away so all you write is the core business code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr.Underhill replied on Sunday, November 30, 2008</h2><P>Rocky, I'm really interest to hear a little more your point of view on TDD, this discussion of course provides a lot of information so far and I also read some posts on your blog, however I'll like to post some additional ideas and want to hear your feedback (or anyone wanting to expand this discussion!)</P>
+<P>Let me take one sentence that you wrote, which prompted me to write this post, this will allow me to set the stage to explain my point of view:</P>
+<P>You said...</P>
+<P>"I entirely agree that unit tests are critical... You should have at least one test per method (so two per property, because a property is actually two methods: get and set) on your object."</P>
+<P>If that is the case does it really matter is you test at the BEGINNING or at the END?&nbsp; I want to clarify that I'm not doing TDD today, I'm just reading about it and trying to create my own opinion and decide whether or not to adopt it.</P>
+<P>This is my point of view so far:</P>
+<P>1. Testing is testing regardless you do it at front or not, you still have to master some of the key items:&nbsp;what to test? when to stop?<BR>2. TDD however gives you not only testing, it gives you a way of thinking, a way to approach an specific task, it forces you to think about BEHAVIORS (which is something I read many times is key for good OOD)<BR>3. The value I see in TDD is that it provides a nice rhythm for development:<BR>&nbsp;&nbsp;&nbsp;- write down a new user story<BR>&nbsp;&nbsp;&nbsp;- discuss this story with a developer and complement this with CRC / Sequence Diagrams / Class Diagrams or any other modeling tool to picture the requirement<BR>&nbsp;&nbsp;&nbsp;- break down the user story onto smaller tasks<BR>&nbsp;&nbsp;&nbsp;- create a test project (or use&nbsp;an&nbsp;existing one)<BR>&nbsp;&nbsp;&nbsp;- layout your work by&nbsp;creating the&nbsp;tests, this will help the developer define what is that needs to be accomplish in a format of code (think about this test, not just a test but as a "design" that happens to be in code)<BR>&nbsp;&nbsp;&nbsp;- next, write the code to make this test pass<BR>&nbsp;&nbsp;&nbsp;- finally, refactor to make the code cleaner and simpler<BR>4. About binding, I agree with you, I'll not exchange 3 lines of codes for 4 pages, I really don't see the point of TESTING binding, that in my opinion needs to be&nbsp;assumed it works because you are using CSLA objects or any other object that you know BINDS, so no need to test that, unless you are testing the framework!&nbsp; I don't see the point on testing that<BR>5. About testing the internals of the class, like the DataPortal I don't agree with that either, we MUST respect the boundaries of the object and test the public interface, anyways you are testing behaviors, you shouldn't care of have to know how the class works internally, no need to break encapsulation in my opinion!</P>
+<P>&nbsp;</P>
+<P>Again, what I'm trying to point out here is that there are value added to TDD that should be taken onto consideration, and many of the observations I read in this post and others are not an issue of TDD but just an issue of testing as you said in this line:&nbsp; "Of course none of these testing issues have anything to do with TDD or CSLA. They are universal issues of test coverage. "</P>
+<P>&nbsp;</P>
+<P>Let me know what you think, perhaps I still don't know what I'm getting myself into with TDD or perhaps I'm just seem or willing to use the GOODS of it and not that BADS</P>
+<P>I'm particular curious to hear your feedback about TDD from the point of view of approaching a task, do you think it adds value to have the developer THINK and DOCUMENT THRU&nbsp;A TEST CLASS what&nbsp;needs to be done before starting?&nbsp; And then, once&nbsp;he has his mind clear&nbsp;and know&nbsp;exactly what needs to be&nbsp;done with a set of test cases, simply&nbsp;work in the solution?&nbsp; Isn't that even the natural flow, you have a PROBLEM and then you FIX IT!!!!&nbsp; It appears to me that TDD approaches the issues of coding the same way they happen in real life.&nbsp; The test is kind of putting in&nbsp;writting what the problem is and then the code fixes the problem!</P>
+<P>&nbsp;</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Well, one thing I&#8217;ve learned from the TDD community, is
+that TDD is not about testing. The word &#8220;test&#8221; is an unfortunate
+choice, because that&#8217;s not what TDD is about.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>TDD is about design. About forcing a certain design mentality, that
+is primarily driven by coming up with a good API.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you want testing for quality, TDD isn&#8217;t bad, but it
+only gets you a fraction of the way there. You still need to write actual unit
+tests for quality purposes, that you won&#8217;t get from TDD.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What you <i>will</i> get from TDD are unit tests that prove your
+API works. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Developers test to make sure things work. Testers test to find
+the ways things break. Totally different mindsets, and TDD is a
+developer-oriented thing.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Please note, I&#8217;m not saying TDD is bad. I&#8217;m just
+saying it is only part of the puzzle. Also, I am saying that it has
+consequences. Some of those consequences are good &#8211; you have a
+(hopefully) better API, and you have some level of testing (though not really
+sufficient for quality purposes imo). Some of those consequences are negative
+&#8211; you&#8217;ll probably end up implementing abstraction layers and adding
+complexity specifically to enable the unit tests, and that can decrease the
+overall maintainability and increase the overall complexity of your application.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For some applications &#8211; like massive enterprise apps, or
+apps where a mistake can kill people &#8211; extra abstraction/complexity to
+enable testing (assuming the quality tests are also written) is well worth it.
+For other applications &#8211; like the vast majority of business apps &#8211;
+I think it may be questionable whether the extra abstraction/complexity can pay
+for itself.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>What I&#8217;m getting at, is that this isn&#8217;t a black and
+white issue. TDD is not all good, or all bad. It is a tool, and if it is useful
+for your organization and/or app, then you should be happy. If not, then
+don&#8217;t use it.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you do TDD, you <i>must write your tests first</i> because
+the tests aren&#8217;t about quality &#8211; they are about designing your API.
+They are about <i>forcing</i> a certain style of API design that works well
+with the way unit tests are written today.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If you just want quality, and aren&#8217;t interested in the
+philosophical concept of a &#8220;TDD API&#8221;, you can probably write your
+tests before or after. Though you probably won&#8217;t end up with a
+TDD-oriented API.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Things like data binding, by the way, are entirely anti-TDD. In
+fact, a lot of RAD-oriented concepts, tools and techniques that are widely used
+in the Microsoft development world are anti-TDD. Why? Because they get in the
+way of TDD-style tests and they aren&#8217;t TDD-style APIs.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Data binding is particularly evil, because it relies on a
+relatively complex set of interactions between modules of code you don&#8217;t
+control. All those interfaces and events and whatnot interact in ways that are
+barely understood by anyone except a small number of developers deep inside
+Microsoft (like 3 or 4 people). So while data binding can reduce your code by
+40, 50 or 60%, you are handing over a lot of control to a complex subsystem
+that can&#8217;t be effectively simulated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I guess I still like RAD. Yes, I know it is soooo 1990&#8217;s.
+But dammit, RAD works. At least it works given a good architecture and
+consistent coding model. I personally am not willing to give up data binding
+just to be TDD &#8211; that&#8217;d be like going back in time nearly a decade.
+Yuck!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And yet there&#8217;s obvious value in building testable objects
+and testable APIs. And so certain aspects of TDD make sense. This is not new
+btw. 20 years ago we&#8217;d write libraries on the VAX, and we&#8217;d always
+write test apps to exercise the library to provide it worked as expected. I
+suppose we didn&#8217;t typically write the test app before writing the
+library, but the basic concept is the same &#8211; make sure the code in the
+library can be tested so you know it works as expected.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>So in the end, it seems to me that some rational combination of
+RAD techniques with TDD techniques &#8211; using the bits that are
+complementary between the two &#8211; is the correct answer.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky </span><o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mr.Underhill replied on Monday, December 01, 2008</h2><P>That's great, and I'm with you, there is not magical answer, a combinations of techniques that makes sense to your organization is the way to go.</P>
+<P>I agree that TDD is not the final answer for testing, there is still a lot of other tests needed, including: Functional Testing, Usability Testing, Load Testing, Stress Testing, etc etc.&nbsp; TDD only addresses in my opinion the Structural Testing which is a nice add-on if you want to run them together as part of your regressional test at the end of the iteration, it also gives you a nice self documentating repository for reference purpose on how the API works.</P>
+<P>&nbsp;</P>
+<P>Do you particulary like the idea of using TDD as a way to design your API?</P>
+<P>&nbsp;</P>
+<P>Thank you for your feedback</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, December 01, 2008</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I can&#8217;t really say if I like TDD as a way to design my
+API. I have always considered myself a good API designer, and it is something I&#8217;ve
+been doing for more than 20 years one way or another.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>TDD, as I&#8217;ve seen it practiced, can lead to good APIs, but
+it also seems to lead to overly complex APIs, with layers of abstraction that
+normally wouldn&#8217;t be there except to facilitate the tests. Maybe that is
+a net benefit, but layers of abstraction increase complexity &#8211; which is
+bad. So the real question is whether all that extra complexity and (otherwise unnecessary)
+abstraction is offset by the value of the testability.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The TDD zealots poo-poo the complexity/abstraction consequence
+as being a non-issue, but I don&#8217;t. That is a very real negative
+consequence. However, testability, and having even basic prove-that-it-works
+tests is a very real benefit.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Getting any sort of objective comparison or data is difficult at
+best &#8211; so at the moment this is a highly subjective decision people are
+making, based more on emotion than logic.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Sadly, that&#8217;s true for most decisions in our industry. It is
+too expensive to get any sort of real-world comparative data, because that
+requires doing work twice &#8211; using two (or more) different techniques with
+comparably skilled (and different) resources. That never really happens, so we
+always base these decisions on hearsay, guesswork and intuition&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

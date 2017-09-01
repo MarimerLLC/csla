@@ -1,0 +1,39 @@
+<html><header><title>RegistarProperty Nullable Types</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>RegistarProperty Nullable Types</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5590.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 posted on Tuesday, October 14, 2008</h2><P>I am getting an issue with "LoadProperty" call when inserting a new record.&nbsp; I looked at some previous posts but i think this is an issue with "Nullable Types"</P>
+<P>I get an "Index was outside the bounds of the Array." with an outer error "One or more properties are not registered for this type"</P>
+<P>Here is my code (that is blowing up)</P><FONT size=2>
+<P>LoadProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Guid?)(UserCreatedIDProperty, sxr.GetValue(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Guid?)(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"UserCreatedID"</FONT></FONT><FONT size=2>))</P></FONT>
+<P>Here is my property statement</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>Protected</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Shared</FONT></FONT><FONT size=2> UserCreatedIDProperty </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Guid?) = RegisterProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>New</FONT></FONT><FONT size=2> PropertyInfo(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Guid?)(</FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"UserCreatedID"</FONT></FONT><FONT size=2>, </FONT><FONT color=#a31515 size=2><FONT color=#a31515 size=2>"ID of User Who Created Item"</FONT></FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Nothing</FONT></FONT><FONT size=2>))</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Public</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Overridable</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>ReadOnly</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT><FONT size=2> UserCreatedID() </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>As</FONT></FONT><FONT size=2> Guid?</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Return</FONT></FONT><FONT size=2> GetProperty(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Of</FONT></FONT><FONT size=2> Guid?)(UserCreatedIDProperty)</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Get</P></FONT></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>End</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>Property</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>THE ERROR:</FONT></FONT></P><FONT color=#0000ff size=2><FONT color=#0000ff size=2><FONT size=1>
+<P>?ex</P>
+<P>{"One or more properties are not registered for this type"}</P>
+<P>System.InvalidOperationException: {"One or more properties are not registered for this type"}</P>
+<P>Data: {System.Collections.ListDictionaryInternal}</P>
+<P>HelpLink: Nothing</P>
+<P>InnerException: {"Index was outside the bounds of the array."}</P>
+<P>Message: "One or more properties are not registered for this type"</P>
+<P>Source: "Csla"</P>
+<P>StackTrace: " at Csla.Core.FieldManager.FieldDataManager.GetFieldData(IPropertyInfo prop) in \Csla\Core\FieldManager\FieldDataManager.vb:line 113 at Csla.Core.BusinessBase.LoadProperty[P](PropertyInfo`1 propertyInfo, P newValue) in \Csla\Core\BusinessBase.vb:line 2236"</P>
+<P>TargetSite: {System.Reflection.RuntimeMethodInfo}</P>
+<P>?ex.GetBaseException</P>
+<P>{"Index was outside the bounds of the array."}</P>
+<P>System.IndexOutOfRangeException: {"Index was outside the bounds of the array."}</P>
+<P>Data: {System.Collections.ListDictionaryInternal}</P>
+<P>HelpLink: Nothing</P>
+<P>InnerException: Nothing</P>
+<P>Message: "Index was outside the bounds of the array."</P>
+<P>Source: "Csla"</P>
+<P>StackTrace: " at Csla.Core.FieldManager.FieldDataManager.GetFieldData(IPropertyInfo prop) in \Csla\Core\FieldManager\FieldDataManager.vb:line 110"</P>
+<P>TargetSite: {System.Reflection.RuntimeMethodInfo}</P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, October 15, 2008</h2><P>Did you implement the _dummy trick yet?</P>
+<P><A HREF="/forums/2/26807/ShowThread.aspx">http://forums.lhotka.net/forums/2/26807/ShowThread.aspx</A></P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, October 15, 2008</h2><P>Thanks Joe... I thought I read through that post completely but I must not have understood the problem fully until now...</P>
+<P>i got it now and since i have over 5 classes in the inhertance chain (outside the CSLA classes) i am going to go in and put the "Dummy Static Variable" in place..</P>
+<P>i assume it is going to fix everything... so thank you!</P>
+<P>ward0093</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ward0093 replied on Wednesday, October 15, 2008</h2><P>That worked!</P>
+<P>Thanks, Joe</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,15 @@
+<html><header><title>Is there a way to undefine a field in the FieldManager</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Is there a way to undefine a field in the FieldManager</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10256.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>snakebyteme posted on Monday, April 11, 2011</h2><p>I am using CSLA 3.8.4</p>
+<p>I have a backing variable:</p>
+<p>Private Shared mFileIndex As PropertyInfo(Of FileIndex) = RegisterProperty(New PropertyInfo(Of FileIndex)(&quot;FileIndex&quot;))</p>
+<p>After I call GetProperty and get Nothing returned:</p>
+<p>GetProperty(mFileIndex)</p>
+<p>The FieldManager says that the backing variable exists even though I have not assigned a value to it:</p>
+<p>FieldManager.FieldExists(mFileIndex)</p>
+<p>&nbsp;</p>
+<p>Ideally, I would prefer that the FieldManager.FieldExists() method would return false in this case since all I did was ask for a null value.</p>
+<p>Is there a way that I can tell the FieldManager to make a PropertyInfo field &quot;Not Exist&quot; or rollback to it&#39;s initialized state?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, April 11, 2011</h2><p>No, there&#39;s no provision for this. </p>
+<p>When you call GetProperty and if the property value is not set it&#39;s initialized with the default value from the PropertyInfo (here Nothing).<br />Typically, when you create a new object - the field value is initialized with the default value when you call GetProperty the first time. </p>
+<p>Your options would be to modiify the property getter like:</p>
+<p>if (Not FieldManager.FieldExist(mFileIndex)) then<br />&nbsp;&nbsp; return Nothing <br />else <br />&nbsp;&nbsp; return GetProperty(mFileIndex) <br />end if </p>
+<p>Allowing the field value to be reset has been in the wishlist for some time but unfortunately is not trivial to implement due to the N-level edit and how CancelEdit requires the original instance to restore (rollback) to state.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

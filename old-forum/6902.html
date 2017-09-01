@@ -1,0 +1,37 @@
+<html><header><title>MarkClean and PropertyChanged</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MarkClean and PropertyChanged</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i posted on Wednesday, May 06, 2009</h2><P><FONT size=1>Here's a question that I've wondered about often......whenever I want set a property I often first check that its necessary:</FONT></P>
+<P><FONT size=1>if{_field &lt;&gt; value){ _field = value;} sort of thing.</FONT></P>
+<P><FONT size=1>I wonder why in relatively expensive properties/methods CSLA doesn't to something similar. A good example is the MarkClean() method:</FONT></P>
+<P><FONT size=1><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>void</FONT> MarkClean()<BR>{<BR>_isDirty = <FONT color=#0000ff>false</FONT>;<BR>OnUnknownPropertyChanged();<BR>}</FONT></P>
+<P><FONT size=1>if the _isDirty flag is already false then it is a pretty expensive to go down the whole PropertyChanged road - i.e. databound grids/controls/parent collections/parents of parents/etc.</FONT></P>
+<P><FONT size=1>Now, it may be argued that MarkClean() should never be called on a <EM>clean</EM> object but this is just an example (and, in fact, in some peculiar circumstances I have that issue).</FONT></P>
+<P><FONT size=1>This is just a wondering more so than a problem.</FONT></P>
+<P><FONT size=1></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><P>Premature optimization is an anti-pattern.</P>
+<P>If someone comes along and shows that this implementation is causing a measurable performance issue that causes real pain, then I'd add it to the wish list.</P>
+<P>And that happens from time to time - when I wrote version 2.0 there were some issues around business/validation/authorization rules that led to the changes in 2.1 - very clear performance problems that needed solving.</P>
+<P>Other things, like the possibility someone might call MarkClean() on a clean object outside the data portal (because remember that the data portal is operating on a clone of the object <EM>and</EM> the data portal does do an IsDirty check), simply haven't been called out as an issue.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Wednesday, May 06, 2009</h2><P><FONT size=2>Fair comment Rocky. But while on that note the fact that you mark&nbsp;many methods/properties as private (as opposed to virtual protected) have been a diffuclty for me (I have been using your excellent framework for the basis of my work for many years now and, in fact, in recent releases you have added many of the features I had added myself in one way or another). </FONT></P>
+<P><FONT size=2>Personally, I have spent many a day and night <EM>fighting</EM> with event propagation via databinding in any number of UI controls over the years. Mostly this is ok but in some cases too much(for my liking) UI code has to be written - i'd prefer to fetch/bind/format(or maybe format before bind)/edit/save without having to hook to this, that and the other event to <EM>deal</EM> with stuff firing. That's very general comment and not so useful I know. But, my feeling is that firing events only when necessary in complex scenarios where performance really does matter is the way to go.</FONT></P>
+<P><FONT size=2>But like I say my post was a <EM>wondering</EM> more than a problem. Thanks for taking the time to reply.</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2></FONT>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><P>I just responded yesterday, in a different thread, to the question about why all members aren't <EM>protected virtual</EM>. Maybe that was your question?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jh72i replied on Wednesday, May 06, 2009</h2><P><FONT size=2>Maybe I'm wasting forum space but I didn't really have a question about the private xxx stuff. I just mentioned it on the back of your comment that I found interesting:</FONT></P>
+<P><FONT size=2><EM>&nbsp;&nbsp;&nbsp;Premature optimization is an anti-pattern.</EM> </FONT></P>
+<P><FONT size=2>Some strange <EM>patterns</EM> are formed when constraints dictate - I wondered if the <EM>privating</EM> of things (like MarkOld()) as a starting point could be classed in the same thinking. I'm a big believer in patterns but know all too well that there are good ones and bad ones. And that even the good ones aren't good all of the time.</FONT></P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 06, 2009</h2><P>One core concept that makes OO powerful is encpasulation. Encapsulation implies that a class or object is a 'black box' that exposes an interface for consumers to use.</P>
+<P>Everything that is non-private becomes part of that interface - whether protected or public.</P>
+<P>Everything that is non-private must be carefully designed to accomodate as many usage scenarios as the designer and developer can imagine - and even then someone will figure out some unsupported scenario, that's a virtual guarantee.</P>
+<P>Take Utilities.CallByName() for example. This was internal for a long time, and life was good. I made it public a few versions ago, because it is useful for creating generic validation rules. Almost immediately I started getting feedback that the method doesn't work in this or that scenario.</P>
+<P>Of course not. It was designed to meet the specific needs of CSLA itself, and I never really intended on writing a comprehensive reflection helper. Nor do I want to get into the business of writing a comprehensive reflection helper.</P>
+<P>So to some degree I've regretted making that (and several other) methods public - because doing so increases my support burden in areas where I really have no interest. Internally, CSLA has all sorts of cool stuff (like CoerceValue(), dynamic method invocation, etc). <EM>Every one of those things could be a framework by itself!!</EM></P>
+<P>Do I want to accept responsibility for creating a comprehensive value coercion framework? Not at all! Have I essentially done so by making that method public? Absolutely.</P>
+<P>So now, in addition to maintaining a framework that helps build object-oriented business layers in a distributed n-tier environment, I am also maintaining mini-frameworks that do</P>
+<UL>
+<LI>dynamic method invocation</LI>
+<LI>abstraction of reflection</LI>
+<LI>value type coercion</LI>
+<LI>serialization</LI>
+<LI>threading (synchronization primitives)</LI>
+<LI>database/context connection management</LI>
+<LI>object-to-object data mapping</LI>
+<LI>enhanced date/time management</LI>
+<LI>...</LI></UL>
+<P>Some of these were private and I made them public - accepting the cost. Others were public to start with, because I personally can't envision building an app without them.</P>
+<P>I'm not complaining - or at least that's not my intent. What I am doing is trying to convey why it is no small thing to make a member protected or public.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,102 @@
+<html><header><title>Opinion on WCF</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Opinion on WCF</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4363.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>bcrowell posted on Sunday, February 17, 2008</h2>Is everyone conviced that WCF is the way to go for remoting technologies. In the latest book Rocky says we're using WCF because it's the latest thing from Microsoft but doesn't really give an opinion on if it's better, etc. i'm starting a new App and upgrading to .net 3.5 and csla 3.0 so i'm curious if the community has discovered any better way to go or if I should just charge ahead with WCF. Thanks all.<br><br>Byron<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, February 17, 2008</h2><P>There's no doubt in my mind that WCF is the superior option when compared to the others (remoting, asmx with WSE or enterprise services (dcom)).</P>
+<P>WCF is no harder to use than remoting, and is a lot easier than asmx/WSE (though much harder than just asmx). And it avoids all the nastiness that comes with the use of enterprise services (dcom).</P>
+<P>It is roughly as fast as remoting (sometimes faster, sometimes slower) and when used within the data portal is faster than asmx/WSE. It is also almost always faster than enterprise services.</P>
+<P>So it is generally the best choice - has the advantages of remoting and asmx/wse, the (relative) simplicity of remoting and avoids the downsides of enterprise services. </P>
+<P>PLUS it has the flexibility of WCF in terms of supporting numerous channels, security options, etc. Unfortunately, actually <EM>using</EM> this flexibility comes with an insane level of complexity in terms of configuration. But if you can fight your way through that complexity, the flexibility is really impressive.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kumal replied on Monday, July 27, 2009</h2><P>Sorry for bringing such an old post back to life....</P>
+<P>I am researching on performance wcf vs asmx, what exactly did you mean by data portal?</P>
+<P>Thanks!!</P>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div></P>
+<P>There's no doubt in my mind that WCF is the superior option when compared to the others (remoting, asmx with WSE or enterprise services (dcom)).</P>
+<P>WCF is no harder to use than remoting, and is a lot easier than asmx/WSE (though much harder than just asmx). And it avoids all the nastiness that comes with the use of enterprise services (dcom).</P>
+<P>It is roughly as fast as remoting (sometimes faster, sometimes slower) and when used within the <STRONG>data portal</STRONG> is faster than asmx/WSE. It is also almost always faster than enterprise services.</P>
+<P>So it is generally the best choice - has the advantages of remoting and asmx/wse, the (relative) simplicity of remoting and avoids the downsides of enterprise services. </P>
+<P>PLUS it has the flexibility of WCF in terms of supporting numerous channels, security options, etc. Unfortunately, actually <EM>using</EM> this flexibility comes with an insane level of complexity in terms of configuration. But if you can fight your way through that complexity, the flexibility is really impressive.</P></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 27, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The data portal is a feature of CSLA .NET that manages
+communication between the client and app server in a 3- or 4-tier physical
+deployment, and allows transparent switching between 2- and 3-tier deployments with
+no code changes. And it allows switching between various network transport
+technologies such as WCF, Remoting, etc. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It uses a combination of design patterns to do all this,
+including channel adapter, provider, message router, gateway, etc.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>For a full explanation please refer to my <i>Expert 2008
+Business Objects</i> book.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kumal replied on Tuesday, July 28, 2009</h2><P>Oh i see, thank you for the quick response.</P>
+<P>Sorry frankly I am not a CSLA user, I hope that is okay.&nbsp; I am just stumped with some performance result comparing asmx and wcf, was hoping wcf is much faster but the result show pretty much the same speed.&nbsp; </P>
+<P>So with your original statement, does it mean without the data portal,&nbsp;wcf is slower than asmx, always?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, July 28, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Not at all. WCF is probably comparable to asmx in most cases.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I personally haven&#8217;t done any testing of WCF vs asmx
+outside the context of the data portal.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>And the data portal does extra stuff that you wouldn&#8217;t
+normally do with a message-based XML service, because the data portal requires
+more functionality that you get with asmx or default WCF.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In other words, the fact that the data portal has certain
+performance characteristics <i>probably</i> doesn&#8217;t say much about
+vanilla XML services performance, because XML services use a set of simpler
+.NET technologies.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kumal replied on Tuesday, July 28, 2009</h2><P>Thanks again for the explanation.</P>
+<P>Guess i will have to continue researching why my speed test of wcf vs asmx is not as impressive as others have stated.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

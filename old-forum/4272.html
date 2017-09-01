@@ -1,0 +1,31 @@
+<html><header><title>Aggregation relation between tables</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Aggregation relation between tables</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4272.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samurai posted on Friday, February 01, 2008</h2>Hello folks! I'm in a middle of some project and I want to know how
+should I implement Aggregation relation between tables, in database, in
+CSLA.net. Well, I have 3 tabels. The first one represents Blogs (with
+primary key - <u>ID_Blog</u>), the second one represents Categories (with primary key - <u>ID_Category</u>) and the third one represents relation between previous mentioned tables (with primary key - <u>ID_Blog, ID_Category</u>). I hope somebody responds me by some example. <br><br>Regards!</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Friday, February 01, 2008</h2><P>The third table is commonly called a Junction Table. It resolves the Many-Many relationship into two 1-Many relationships.</P>
+<P>I tend to think of this in 2 directions. You may only need to use one of these directions. It depends on you use case(s).</P>
+<P>Use Case #1: For a given blog get an editable list of Categories.</P>
+<P>Blogs is a root BO and contains a child collection of BlogCategories. Each child BO in BlogCatgories is a Category object.&nbsp; You should have a factory method on the Blog which takes a PK named ID_Blog and retrieves all the data about the Blog from the Blog table. This root BO then fetches its child collection of categories based on ID_Blog. The SQL statement does a join between the Junction table and the Category table and SELECTs data based on ID_Blog.</P>
+<P>Use Case #2: For a given Category get an editable list of Blogs.<BR>(Reverse the terms above.)</P>
+<P>You may not need use case #2. But if you do, you will be building different objects for Blog. One is a root and the other is a child. You may decide to use a switchable object but that is a maintenance headache and you will be better off using different names for them.</P>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samurai replied on Monday, February 04, 2008</h2>Joe, thank you for very helpfull answer! I need to ask you something else. If I use Use Case 1#, how should I generate Category object. I suppose it should be Child object, but without parent. Am I right?<br><br>Regards!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SomeGuy replied on Monday, February 04, 2008</h2><P>You are going to have 2 Editable Root Objects, Blog and Category.</P>
+<P>If a Blog can be in more than one Category you will have a Child Collection (BlogCategories) of Editable Child Objects (BlogCategory).</P>
+<P>You will have similar objects for Category; CategoryBlogs, and CategoryBlog.</P>
+<P>Look at the Project and Resource objects in the Project Tracker example app.</P>
+<P>E</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, February 04, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Samurai:</strong></div><div>If I use Use Case 1#, how should I generate Category object. <BR><BR>Regards!<BR></div></BLOCKQUOTE></P>
+<P>===================================================================</P>
+<P>Use Case #1: </P>
+<P>BOs for an editable screen:</P>
+<P>1. Root BO = Blog</P>
+<P>2. Editable Child Collection = BlogCategories</P>
+<P>3. Child BO = Category </P>
+<P>===================================================================</P>
+<P>BOs for a&nbsp;Read Only&nbsp;screen:</P>
+<P>1. Root BO = Blog</P>
+<P>2. Read Only&nbsp;Collection = BlogCategoriesROC</P>
+<P>Nested in the ROC is a class named CategoryInfo.</P>
+<P>===================================================================</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samurai replied on Tuesday, February 05, 2008</h2>Ok, I've succesfully made this part of application, but I still have to modify code to&nbsp; insert datas into Junction table. If I wrote: <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; " Dim objBlog As Blog = Blog.NewBlog(333)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objBlog.StartDate = "2008.01.01"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objBlog.EndDate = "2008.12.31"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Dim objC As Category = Category.NewCategory<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objC.Name = "Sport"<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objC.BlogCategory.Add(objC)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; objBlog.Save()"<br><br>...I would save datas only into table Blog and into table Category. How should I implement Insert into BlogCategories table (for example, I have field "Date" beside Id_Blog and Id_Category). Also, would you explain me how to use transaction for that insert? Thanks <br><br>Regards!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Samurai replied on Tuesday, February 12, 2008</h2>Hello! Does anyone have an idea how to implement update/insert into Junction table? In this case it is BlogCategories table, which has Id_Blog and Id_Category. <br>Actually, my question is, who should delegate insert/update method for BlogCategories<br><br>Regards!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Tuesday, February 12, 2008</h2><P>I would think the "junctions" would be a "child" collection (BusinessListBase) of the object being edited.&nbsp; When the object is saved, it saves the child list of junctions. </P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

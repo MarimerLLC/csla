@@ -1,0 +1,110 @@
+<html><header><title>Receiving the following message: Csla.Core.BusinessCase.CanReadProperty(Bool) is obsolete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Receiving the following message: Csla.Core.BusinessCase.CanReadProperty(Bool) is obsolete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6187.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jscontreras posted on Sunday, January 18, 2009</h2>Hi,<br>I'm receiving the message Csla.Core.BusinessCase.CanReadProperty(Bool) is obsolete when using the following code:<br><br>&nbsp;public Guid Id<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; [System.Runtime.CompilerServices.MethodImpl(System.Runtime.CompilerServices.MethodImplOptions.NoInlining)]<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; CanReadProperty(true);<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return _Id;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>I'm using the PTracker sample from ASP.NET 2.0 migrated to 3.5 sp1 and using the 3.6 Framework I believe.&nbsp; I did this because the PTracker is not available for 3.6 (I didn't see a download).<br><br>How do I fix the issue above?&nbsp;&nbsp; What exactly do I need to do without modifying the framework.<br><br>I really don't want to start getting into the framework just yet.&nbsp; I've only been using for about 2-3 days.<br><br>Thanks,<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 18, 2009</h2><P>ProjectTracker is in the Samples download.</P>
+<P>That overload of CanReadProperty() is obsolete because it has reliability and performance issues.</P>
+<P>You should use one of the other overloads:</P>
+<BLOCKQUOTE dir=ltr>
+<P>CanReadProperty(string, bool); // pass in property name</P>
+<P>CanReadProperty(PropertyInfo&lt;T&gt;, bool); // pass in property info token</P></BLOCKQUOTE>
+<P>Or move to the newer property declaration syntax available in 3.5+</P>
+<BLOCKQUOTE dir=ltr>
+<P>public Guid Id<BR>{<BR>&nbsp; get { return GetProperty(IdProperty, _Id); }<BR>}</P></BLOCKQUOTE>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jscontreras replied on Sunday, January 18, 2009</h2>Hi,<br>Thanks for the quick response:<br>I've upgrade to the 3.5 framework (Business and .NET) build the 3.5 CSLA created a new reference to my BO Project and added this:<br><br>private byte[] mTimestamp = new byte<img src="/emoticons/emotion-29.gif" alt="Music [8]" />;<br><br>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;Guid&gt; IdProperty =<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;Guid&gt;(typeof(Project), new PropertyInfo&lt;Guid&gt;("Id"));<br>&nbsp;&nbsp;&nbsp; [System.ComponentModel.DataObjectField(true, true)]<br>&nbsp;&nbsp;&nbsp; public Guid Id<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty&lt;Guid&gt;(IdProperty); }<br>&nbsp;&nbsp;&nbsp; }<br><br>I was able to build the BO project.<br>Just getting use to the new Framework.&nbsp; BTW I was able to create the BO for my framework in no time.&nbsp; And I also noticed in the 2008 version you're using LINQ does this make the SQL more efficient (I've only done some simple examples with LINQ). <br><br>Thanks,<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, January 18, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>LINQ to SQL is technically less efficient than raw ADO.NET. But
+the code is simpler &#8211; so it is really a choice of maintainability vs
+performance to some degree.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>One note about the property declaration &#8211; there&#8217;s a
+slightly better (more maintainable) syntax available in 3.6:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal>&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;Guid&gt;
+IdProperty =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;Guid&gt;(new PropertyInfo&lt;Guid&gt;(&quot;Id&quot;));<br>
+&nbsp;&nbsp;&nbsp; [System.ComponentModel.DataObjectField(true, true)]<br>
+&nbsp;&nbsp;&nbsp; public Guid Id<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return GetProperty(IdProperty); }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+<span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span>Note that the first parameter of RegisterProperty() is gone, and
+you don&#8217;t need the type parameter on GetProperty()/SetProperty() because
+the compiler can infer the right type.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> jscontreras
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Sunday, January 18, 2009 12:18 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Receiving the following message:
+Csla.Core.BusinessCase.CanReadProperty(Bool) is obsolete<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hi,<br>
+Thanks for the quick response:<br>
+I've upgrade to the 3.5 framework (Business and .NET) build the 3.5 CSLA
+created a new reference to my BO Project and added this:<br>
+<br>
+private byte[] mTimestamp = new byte<span><img width=100 height=100 id="_x0000_i1025" alt="Image removed by sender. Music <img src=" />"></span>;<br>
+<br>
+&nbsp;&nbsp;&nbsp; private static PropertyInfo&lt;Guid&gt; IdProperty =<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RegisterProperty&lt;Guid&gt;(typeof(Project),
+new PropertyInfo&lt;Guid&gt;(&quot;Id&quot;));<br>
+&nbsp;&nbsp;&nbsp; [System.ComponentModel.DataObjectField(true, true)]<br>
+&nbsp;&nbsp;&nbsp; public Guid Id<br>
+&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; get { return
+GetProperty&lt;Guid&gt;(IdProperty); }<br>
+&nbsp;&nbsp;&nbsp; }<br>
+<br>
+I was able to build the BO project.<br>
+Just getting use to the new Framework.&nbsp; BTW I was able to create the BO
+for my framework in no time.&nbsp; And I also noticed in the 2008 version
+you're using LINQ does this make the SQL more efficient (I've only done some
+simp le examples with LINQ). <br>
+<br>
+Thanks,<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

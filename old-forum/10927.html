@@ -1,0 +1,31 @@
+<html><header><title>Running code as close to Data tier as possible</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Running code as close to Data tier as possible</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10927.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir posted on Monday, November 28, 2011</h2><p>Hi,</p>
+<p>Is there any possibility to know when the code is being executed in the nearest tier to Database Server???</p>
+<p>I mean, in the same tier where Dataportal_Execute is being called...</p>
+<p>There is some process in my application that needs to do several data operations over multiple objects and I&#39;m trying to find a way to do them as close to Database server as possible to avoid network latency, iterative serialization and so on. </p>
+<p>I&#39;ve implemented a Command to execute this process, but as complex as it is, results in a very large awful unreadable object violating every single principle of OOP.</p>
+<p>I would like to know to add methods to my business objects that only works in the DataAccess Layer... I&#39;m thinking on some sort of condition like this:</p>
+<p>Public Sub DoSomethingOnThisObject()</p>
+<p>&nbsp; &nbsp; If SomeMagicFormulaToKnowIfIamInDataLayer Then<br />&nbsp; &nbsp; &nbsp; &nbsp; ReadData</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Calculate Data</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; WriteData</p>
+<p>&nbsp; &nbsp; Else</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; Throw New Exception(&quot;This method cannot be called directly&quot;)</p>
+<p>&nbsp; &nbsp; End if</p>
+<p>End Sub</p>
+<p>&nbsp;</p>
+<p>Please any advice is appreciated!</p>
+<p>Regards</p>
+<p>JP</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Monday, November 28, 2011</h2><p>As part of the ApplicationContext there is a property called ExecutionLocation that tells you if you are on the client, server or one silverlight.<br />There is also a LogicalExecutionLocation property, but I&#39;m unsure as to difference between the two and I&#39;m sure that ExecutionLocation worked for this previously.</p>
+<p>So a simple check in your method to do something like this should work.</p>
+<p><span>If</span><span>&nbsp;</span><span>ApplicationContext</span><span>.ExecutionLocation&nbsp;=&nbsp;</span><span>ApplicationContext</span><span>.</span><span>ExecutionLocations</span><span>.Server Then</span>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir replied on Monday, November 28, 2011</h2><p>Hi Marjon1,</p>
+<p>I&#39;m leaving the office right now, I&#39;ll try your recommendation tomorrow.</p>
+<p>Thank you very much!!!</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, November 29, 2011</h2><p>The distinction is as follows: </p>
+<p>Using SimplePortal (ie: data access runs in-process on the Client),&nbsp; when in DataPortal_XYZ or ObjectFactory you will have: <br />LogicalExecutionLocation = Server<br />ExecutionLocation = Client&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;(when running&nbsp;in .NET)<br />ExecutionLocation = Silverlight&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; (when running in Silverlight)</p>
+<p>And when using any other portal (ie: N-tier) - and servercode will always run in .NET<br />LogicalExecutionLocation = Server<br />ExecutionLocation = Server</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jpmir replied on Tuesday, November 29, 2011</h2><p>Thanks guys for your suggestions, that&#39;s exactly what I needed to know.</p>
+<p>According to JonnyBee, as my application will never run data access in-process, I&#39;m taking ExecutionLocation for reference.</p>
+<p>&nbsp;</p>
+<p>Thanks Again</p>
+<p>Jean Paul</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

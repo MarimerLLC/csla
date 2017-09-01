@@ -1,0 +1,114 @@
+<html><header><title>CSLA &amp; SOAP</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA &amp; SOAP</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4208.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse posted on Tuesday, January 22, 2008</h2>Hello All,<br><br>Imagine I have this scenario and these specifications :<br><br>We have to build a solution with these specification:<br>*************************************************************************<br>The Implementers are REQUIRED to use this stack protocol :
+<br><br>Messaging uses XML
+<br>SOAP
+<br>HTTP
+<br>SSL
+<br>TCP
+<br>IP
+<br>Ethernet
+<br><br>All the XML schema messages (xsd) will be provided by an external certification administration .
+<br><br>The WSDL describing the web service will be provided by external certification administration.<br><br>************************************************************************<br>Questions :<br>is it possible to use the CSLA.Net framework on both side ( Client &amp; Host)&nbsp; to build it ?<br>One idea :<br>The XSD schema provided by the admisnistration will be use for the facade&nbsp; to the transport the real business Object on both side of the solution through their stack protocol .<br><br>So I was thinking something like that : <br><br>IE :<br><br>public class MyBusinessClass : BusinessBase<br><br>.........<br><br>public static MyBusinessClassXmlFacade ToXML ( MyBusinessClass&nbsp; obj ) {<br>&nbsp;........<br>}<br><br>public static MyBusinessClass FromXML ( MyBusinessClassXmlFacade obj ) {<br>&nbsp; ..........<br>}<br><br>What do you think and do you see other solution ?<br>Thanks<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 22, 2008</h2><P><FONT face=Tahoma size=2>You don't traditionally try and transmit the entire CSLA-derived BO across via XML/SOAP.&nbsp; I'm not even sure you could, to be honest.&nbsp; IIS-hosted app servers still transmit binary-serialized BO's over HTTP.</FONT></P>
+<P><FONT face=Tahoma size=2>The typical solution in this case is not to transmit the entire CSLA object, but to create DTO's and only transfer the data.&nbsp; </FONT><FONT face=Tahoma size=2>FWIW, you could use DataTables/DataSets as your DTO's, but those are MS-specific objects, so your external XSD/WSDL&nbsp;administration might run into issues.</FONT></P>
+<P><FONT face=Tahoma size=2>If you have Rocky's book (and you really should if you don't <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />), read the chapter on web services.&nbsp; That's essentially what you're creating here.&nbsp; And if you want to be really fancy, and have Rocky's 3.0 e-book, you can see how you would implement a WCF service, so you can take advantage of all the WS-* goodness and throw even more buzzwords into your spec.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" />&nbsp; It's the same technique as a "classic" ASP.NET web service, only using a different hammer to do the job.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse replied on Tuesday, January 22, 2008</h2>Thanks tmg4340,<br><br>I have the book and read the chapter 11 but in this chapter I think the client app web service just bind the DTO object to the visual component and the app do not reuse any BO object function of the real BO class.<br><br>My idea was to do the same kind of architecture and use the xsd schema provied by the administration as a DTO .<br><br>But the problem with this, you do not have the real copy of the object like with remoting. it's just a facade BO<br><br>So my thought was to recreate the BO object on the other size to be able to share the BO assembly on both side also and reuse the BO functions.<br><br>PS : do not forget we must use the given XSD &amp; WSDL schema and must respect the stack protocol (for certification purpose)  . <br>We&nbsp; do not have any choice.<br><br>Thanks again<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 22, 2008</h2><P><FONT face=Tahoma size=2>It's been a while since I read the chapter, and it may be that his example client app just uses the DTO's that are generated from the web service.&nbsp; But there is nothing stopping you from developing a solution where the web service and DTO's are the layer between your BO's on the client and server.&nbsp; You can use the same version of the BO's on both sides - indeed, you would have to.&nbsp; But you would have to write a custom portal/channel to interject the DTO process into the transfer.</FONT></P>
+<P><FONT face=Tahoma size=2>Another possible option would be to take a look at the WebServicePortal Rocky wrote.&nbsp; It's part of CSLA, and it's covered in the book as well.&nbsp; Essentially, it&nbsp;takes&nbsp;your BO, serializes it into a byte stream, and sends that raw byte stream as a SOAP message.&nbsp; It's not an optimal solution - Rocky even says so - but it might serve your purposes.&nbsp; And the XSD and WSDL would be dirt simple, since you're sending raw byte arrays.&nbsp; Even if it doesn't, it could serve as a basis for the solution you create.</FONT></P>
+<P><FONT face=Tahoma size=2>The bottom line is that, unfortunately, if you're being forced into "all web, all the time" (an unfortunate choice, IMHO), you will probably have to develop a slightly customized solution to transmit your BO's across the wire - especially if you don't have any control over the XSD/WSDL creation.&nbsp; But it is doable, and it's not a major programming effort.&nbsp;&nbsp;Plus, Rocky provides enough info in the book that you should be able to get there from here.&nbsp; And there's always the folks here on the forum, most of whom are smarter than I.</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 22, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The kicker is that requirement that the data on the wire is
+governed by an &#8220;external authority&#8221;. That means passing very
+important things like IsNew/IsDeleted/etc will likely be impossible. If you don&#8217;t
+control the data on the wire you are really in trouble &#8211; at least if you
+want to clone your objects across the wire.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If all you want is XML on the wire, then switch to WCF. The WCF
+data portal channel passes the data over the wire in XML format. But the actual
+data is defined by a combination of your objects and the CSLA base classes. I
+can&#8217;t imagine how you&#8217;d reconcile that with some external authority&#8217;s
+idea of what is required on the wire &#8211; because you can bet good money
+they aren&#8217;t think about the meta-state required to make the concept of
+mobile objects work.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> tmg4340
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, January 22, 2008 2:26 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA &amp; SOAP<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p><span>It's been a
+while since I read the chapter, and it may be that his example client app just
+uses the DTO's that are generated from the web service.&nbsp; But there is
+nothing stopping you from developing a solution where the web service and DTO's
+are the layer between your BO's on the client and server.&nbsp; You can use the
+same version of the BO's on both sides - indeed, you would have to.&nbsp; But
+you would have to write a custom portal/channel to interject the DTO process
+into the transfer.</span><o:p></o:p></p>
+
+<p><span>Another
+possible option would be to take a look at the WebServicePortal Rocky
+wrote.&nbsp; It's part of CSLA, and it's covered in the book as well.&nbsp;
+Essentially, it&nbsp;takes&nbsp;your BO, serializes it into a byte stream, and
+sends that raw byte stream as a SOAP message.&nbsp; It's not an optimal
+solution - Rocky even says so - but it might serve your purposes.&nbsp; And the
+XSD and WSDL would be dirt simple, since you're sending raw byte arrays.&nbsp;
+Even if it doesn't, it could serve as a basis for the solution you create.</span><o:p></o:p></p>
+
+<p><span>The bottom
+line is that, unfortunately, if you're being forced into &quot;all web, all the
+time&quot; (an unfortunate choice, IMHO), you will probably have to develop a
+slightly customized solution to transmit your BO's across the wire - especially
+if you don't have any control over the XSD/WSDL creation.&nbsp; But it is
+doable, and it's not a major programming effort.&nbsp;&nbsp;Plus, Rocky
+provides enough info in the book that you should be able to get there from
+here.&nbsp; And there's always the folks here on the forum, most of whom are
+smarter than I.</span><o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse replied on Tuesday, January 22, 2008</h2>Thanks Rock,<br><br>I going to buy your ebook using CSLA.NEt 3.0 to take a look to WCF to try to find out the best approch with my spec and&nbsp; obligatory requirements ( :-(&nbsp; )<br><br>Thanks a lots<br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>mickeymouse replied on Tuesday, January 22, 2008</h2>The Xml serialization is limited the public (read &amp; write) fields and the class must have a public default constructor . <br>what about the methods of the object ? <br><br>One of the solution if I understood should be to create a DTO object ( who will match with one of the given xsd schema) during the transfert process<br>At the other end ( client or host ) the reception process will have to re-create the BO from the DTO received.<br>is it correct ?<br><br>Thanks<br><br><br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, January 22, 2008</h2><P><FONT face=Tahoma size=2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mickeymouse:</strong></div><div>The Xml serialization is limited the public (read &amp; write) fields and the class must have a public default constructor . <BR>what about the methods of the object ? <BR><BR>One of the solution if I understood should be to create a DTO object ( who will match with one of the given xsd schema) during the transfert process<BR>At the other end ( client or host ) the reception process will have to re-create the BO from the DTO received.<BR>is it correct ?</div></BLOCKQUOTE></FONT></P>
+<P><FONT face=Tahoma size=2>Serialization - XML or otherwise - is only concerned with the data within the object.&nbsp; Nothing concerning the signature of the object is sent down the wire.&nbsp; That's why you have to have the assembly containing the object definition at both ends.&nbsp; .NET serialization creates an instance of the object based on the type&nbsp;name that comes with the data, so it's relying on the assembly manifest information to actually construct the object.</FONT></P>
+<P><FONT face=Tahoma size=2>Conceptually, the process you've outlined is correct.&nbsp; However, as Rocky has already mentioned, you may run into several issues trying to get this to work.&nbsp; If you have no control over the XSD that you must work with, and if&nbsp;the "external authority"&nbsp;who is building it will not take your input, then you could be in trouble.&nbsp; While the object data will likely be handled just fine, unless they include the metadata that you would need to correctly populate properties like IsNew, IsDirty, IsDeleted, etc., you will not be able to construct the BO's on the server in such a way that they're going to be useful for updating the database.</FONT></P>
+<P><FONT face=Tahoma size=2>(For what it's worth, it is my humble opinion that if those who are building your schema info do not take this metadata info into account, then you should find someone else.&nbsp; Essentially they are forcing you to use a SOA approach to your data management - how do they expect the server-side processes&nbsp;to know what to do with the data&nbsp;they receive?&nbsp; The answers to that question that do not involve passing metadata around are fairly poor, and will cause you nothing but headaches - whether you use CSLA or not...)</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, January 22, 2008</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>mickeymouse:</strong></div><div>Hello All,<BR><BR>All the XML schema messages (xsd) will be provided by an external certification administration . <BR><BR>The WSDL describing the web service will be provided by external certification administration.<BR><BR></div></BLOCKQUOTE></P>
+<P>You do realize that if you serialize your <EM>actual buisness objects</EM> in XML form, that you are then saying that this "external certification administration" is defining the very properties of your business objects?</P>
+<P>What a horrible architectural limitation that would be! Your business objects very essense would be outside your control! What if you need some other data or a different shape to actually impleemnt your behaviors? Behaviors some external administration never considered?</P>
+<P>What you are describing is <EM>exactly why you should use formal DTOs for data transfer</EM>. Let the external authority define what goes on the wire. If they get it wrong at least you aren't totally fubared, because you still control your internal implementation anyway...</P>
+<P>Otherwise you are turning over your internal design to an external authority, and if I were in that position I'd be looking for a new job!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

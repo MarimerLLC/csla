@@ -1,0 +1,606 @@
+<html><header><title>OnListChanged - PropertyDescriptor - Remoting vs. Non-Remoting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>OnListChanged - PropertyDescriptor - Remoting vs. Non-Remoting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/782.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 posted on Tuesday, August 01, 2006</h2><P><FONT face=Arial size=2>I can't see that this has come up...</FONT></P>
+<P><FONT face=Arial size=2>I was programming with remoting turned off, and noticed when I was overriding OnListChanged that I could determine which property was being changed. </FONT></P>
+<P><FONT face=Arial size=2>This came in handy for me as I wanted to do some special checking on members of the collection, then setting an internal setter on the child for a property that would say that a child has an conflict with other children that makes it invalid. (All the conflicting children would get this property set to true, and by tying a rule to it, I can display an (!) wherever I want to as I tie my rule to this property). </FONT></P>
+<P><FONT face=Arial size=2>This conflict has to do with a date range that cannot overlap across child objects. I used an efficient algorithm but still I really only want to call it when necessary. So when one of the five possible fields change that could change the validity of the children, I want to do this special logic. Otherwise, I'd rather not do it. </FONT></P>
+<P><FONT face=Arial size=2>To determine if I did this extra logic, I found I could look at e.PropertyDescriptor.Name in the ListChangedEventArgs. Worked great. So I turn on remoting, and nothing is working...</FONT></P>
+<P><FONT face=Arial size=2>In BusinessListBase, I notice this code executes when remoting is turned on:</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>private</FONT> <FONT color=#0000ff>void</FONT> Child_PropertyChanged(<FONT color=#0000ff>object</FONT> sender, <FONT color=#008080>PropertyChangedEventArgs</FONT> e)</FONT></FONT></P>
+<P><FONT face=Arial size=2>{</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;for</FONT> (<FONT color=#0000ff>int</FONT> index = 0; index &lt; Count; index++)</FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</FONT> (ReferenceEquals(<FONT color=#0000ff>this</FONT>[index], sender))</FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(<FONT color=#0000ff>new</FONT> <FONT color=#008080>ListChangedEventArgs</FONT>(<FONT color=#008080>ListChangedType</FONT>.ItemChanged, index));</FONT></P>
+<P><FONT face=Arial><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</FONT>;</FONT></FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face=Arial size=2>&nbsp;&nbsp;&nbsp;}</FONT></P>
+<P><FONT face=Arial size=2>}</FONT></P>
+<P><FONT face=Arial size=2>This overload to OnListChanged contains a ListChangedEventArgs which does not include the property name. While <FONT color=#008080>PropertyChangedEventArgs</FONT> contains the property name, it was not immediately evident how one would get a PropertyDescriptor to pass in the other overload of ListChangedEventArgs. </FONT></P>
+<P><FONT face=Arial size=2>As a consequence, OnListChanged doesn't have access to the property being changed, and I had to remove this selective processing from the collection.</FONT></P>
+<P><FONT face=Arial size=2>I appreciate that I could have read further into the 2.0 book as maybe it explains it (I read the first book but haven't read the 2.0 book in depth).</FONT></P>
+<P><FONT face=Arial size=2>But I guess I have two questions - why is there a difference between remoting and non-remoting for this problem, and is there an easy workaround to be able to have access to the changing property in the OnListChanged event when using remoting?</FONT></P>
+<P><FONT face=Arial size=2>Thanks!</FONT></P>
+<P><FONT face=Arial size=2>(using 2.0.3)</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Tuesday, August 01, 2006</h2>Hmmm, BindingList&lt;T&gt; might have been doing some magic with link PropertyChanged events to ListChanged events.<br><br>As for covering it yourself, you could try:<br><br><p><font face="Arial"><font size="2"><font color="#0000ff">private</font> <font color="#0000ff">void</font> Child_PropertyChanged(<font color="#0000ff">object</font> sender, <font color="#008080">PropertyChangedEventArgs</font> e)</font></font></p>
+<p><font face="Arial" size="2">{</font></p>
+<p><font face="Arial"><font size="2"><font color="#0000ff">&nbsp;&nbsp;&nbsp;for</font> (<font color="#0000ff">int</font> index = 0; index &lt; Count; index++)</font></font></p>
+<p><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;{</font></p>
+<p><font face="Arial"><font size="2"><font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;if</font> (ReferenceEquals(<font color="#0000ff">this</font>[index], sender))</font></font></p>
+<p><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{</font></p><p><font face="Arial" size="2">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  &nbsp;&nbsp;  PropertyDescriptor prop = TypeDescriptor.GetProperties(sender)[e.PropertyName];<br></font></p>
+<p><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;OnListChanged(<font color="#0000ff">new</font> <font color="#008080">ListChangedEventArgs</font>(<font color="#008080">ListChangedType</font>.ItemChanged, index, prop));</font></p>
+<p><font face="Arial"><font size="2"><font color="#0000ff">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;return</font>;</font></font></p>
+<p><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;}</font></p>
+<p><font face="Arial" size="2">&nbsp;&nbsp;&nbsp;}</font></p>
+<p><font face="Arial" size="2">}</font></p><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, August 01, 2006</h2><P>Thanks Brian for the quick response.</P>
+<P>This indeed did the trick. I hesitate to make the change to the framework as I'd like to stay true, so I will likely refrain from making the change to the framework. </P>
+<P>Though it seems to me that if what is done isn't a large hit on performance that it would provide a certain consistency between the behavior when using remoting vs. non-remoting. </P>
+<P>Good to know I have an option for this if I need it. Thanks again. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2><P>This sounds like a bug. I wasn't aware that there was a difference in the args parameter.</P>
+<P>BindingList&lt;T&gt; automatically sets up a handler for PropertyChanged when a child object is added. Unfortunately they don't automatically reset that handler when the collection is deserialized, and that's why I wrote the code you are talking about.</P>
+<P>Unfortunately, it would appear that I am not entirely duplicating their behavior in terms of how I raise the ListChanged event...</P>
+<P>Based on the property name, it is possible to get a PropertyDesriptor, but it is a relatively expensive operation, so they must do some caching of the descriptors (presumably by type, because a collection could have different types of child object). Apparently I'll need to do that same thing in this event handling code.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 21, 2006</h2><P>I just wanted to make a note that this appears&nbsp;to have&nbsp;been remedied in 2.1, thank you! </P>
+<P>(I didn't see it in the change log, but it sure looks like it's working now so I just have to assume you made a change). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 21, 2006</h2><P>Here is the 2.1 code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Child_PropertyChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.PropertyChangedEventArgs)</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; For</FONT><FONT size=2> index </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2> = 0 </FONT><FONT color=#0000ff size=2>To</FONT><FONT size=2> Count - 1</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; &nbsp; If</FONT><FONT size=2> ReferenceEquals(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>(index), sender) </FONT><FONT color=#0000ff size=2>Then</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged(</FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> System.ComponentModel.ListChangedEventArgs( _</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ComponentModel.ListChangedType.ItemChanged, index, GetPropertyDescriptor(e.PropertyName)))</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>For</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&nbsp; Next</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>Joe</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 21, 2006</h2><P>The code there is in EditableRootListBase - at least in my 2.1 that exact code doesn't exist in BusinessListBase and I don't think it's actually relevant anymore. </P>
+<P>I notice that the code isn't being even run (Child_PropertyChanged) - so it must be running through the automatic handler - Rocky mentioned that when it was being deserialized, the handler wasn't been reestablished correctly. </P>
+<P>I bet Rocky's changes to the deserialization process remedied this issue. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, September 21, 2006</h2><FONT color=#0000ff size=2>
+<P>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>MustInherit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Class</FONT><FONT size=2> BusinessListBase( _</P>
+<P></FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> BusinessListBase(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> T, C), C </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Core.IEditableBusinessObject)</P>
+<P></FONT><FONT color=#0000ff size=2>Inherits</FONT><FONT size=2> Core.ExtendedBindingList(</FONT><FONT color=#0000ff size=2>Of</FONT><FONT size=2> C)</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> Core.IEditableCollection</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> ICloneable</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> ISavable</P>
+<P></FONT><FONT color=#0000ff size=2>Implements</FONT><FONT size=2> IParent</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>...</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P><FONT size=2><FONT color=#0000ff size=2>
+<P>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Child_PropertyChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, _</P>
+<P></FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.PropertyChangedEventArgs)</FONT></P>
+<P><FONT size=2></FONT>&nbsp;</P>
+<P><FONT size=2>...</FONT></P>
+<P>I downloaded 2.1 on Sep 14.</P>
+<P><FONT size=2>Joe</FONT></P>
+<P><FONT size=2>&nbsp;</P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 21, 2006</h2><P>I'm not sure, the current version downloadable (not counting CVS, for BusinessListBase) is:</P><BR>&nbsp;&nbsp;&nbsp; private void Child_PropertyChanged(object sender, PropertyChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; for (int index = 0; index &lt; Count; index++)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (ReferenceEquals(this[index], sender))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnListChanged(new ListChangedEventArgs(ListChangedType.ItemChanged, index));<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return;<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<BR>&nbsp;&nbsp;&nbsp; }<BR>
+<P>As far as I can tell, there are no changes to that. It passes along what row changes but not which property. This does not pass in what you'd need to get the name of the property that changes. (There are a few different overloads.)</P>
+<P>Regardless, I'm not so sure it's an issue anymore. Does your BusinessListBase look different than what I have? You using the CVS version?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, September 21, 2006</h2><P>Ah, the VB version is different than the C# version.&nbsp; </P>
+<P>I'd be interested if Rocky would comment on if the deserialization changes makes this a non-issue. Because the C# version which does not have the code you are seeing, seems to work now (the method doesn't seem to get hit even). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 21, 2006</h2>Huh. On two counts: huh.<br><br>First, I obviously was playing with a solution and checked it in - which wasn't the plan. I'll have to clean that up.<br><br>Second, I really don't know what I might have done that would make it start working. Are you sure your test is valid? <img src="/emoticons/emotion-5.gif" alt="Wink [;)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Thursday, February 15, 2007</h2><P>I ran into this issue as well in a remoting environment with 2.1.2. The previously mentioned fixes worked for me. I checked the VB and C# code and they both appear to be missing the prop parameter of the OnListChanged call. Below is the code I used in VB (I think Joe leveraged a GetPropertyDescriptor method which I didn't find in the framework at this point).</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Child_PropertyChanged(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> sender </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Object</FONT><FONT size=2>, _<BR>&nbsp; </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> e </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.PropertyChangedEventArgs)</FONT></P>
+<P><FONT size=2>&nbsp; <FONT color=#0000ff>For</FONT> index <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Integer</FONT> = 0 <FONT color=#0000ff>To</FONT> Count - 1<BR>&nbsp;&nbsp;&nbsp; <FONT color=#0000ff>If</FONT> ReferenceEquals(<FONT color=#0000ff>Me</FONT>(index), sender) <FONT color=#0000ff>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2><FONT color=#0000ff>Dim</FONT> prop <FONT color=#0000ff>As</FONT> PropertyDescriptor = TypeDescriptor.GetProperties(sender)(e.PropertyName)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>OnListChanged(<FONT color=#0000ff>New</FONT> System.ComponentModel.ListChangedEventArgs( _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>ComponentModel.ListChangedType.ItemChanged, index, prop))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2><FONT color=#0000ff>Exit</FONT> <FONT color=#0000ff>For<BR>&nbsp;&nbsp;&nbsp; </FONT></FONT><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If<BR>&nbsp; </FONT></FONT><FONT color=#0000ff><FONT size=2>Next<BR></FONT></FONT><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>Sub</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000>While I was looking at it, I believe some code in the SortedBindingList could be optomized to use the indexed .GetProperties.Index(string) overload rather than manually iterating over the collection. For example, couldn't ApplySort be shortened as follows:</FONT></FONT></P><FONT size=2><FONT color=#0000ff><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> ApplySort( _<BR>&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> propertyName </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, _<BR>&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> direction </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> System.ComponentModel.ListSortDirection)</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp; mSortBy = </FONT><FONT color=#0000ff size=2>Nothing<BR>&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> Len(propertyName) &gt; 0 </FONT><FONT color=#0000ff size=2>Then<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp; 'Recommended new code<BR>&nbsp;&nbsp; <FONT size=2><FONT color=#0000ff>Dim</FONT> prop <FONT color=#0000ff>As</FONT> PropertyDescriptor = TypeDescriptor.GetProperties(GetType(T))(propertyName)<BR>&nbsp;&nbsp; End If<BR>&nbsp;&nbsp; ApplySort(prop,direction)<BR></FONT></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp; 'Replaces this:<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> itemType </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> Type = </FONT><FONT color=#0000ff size=2>GetType</FONT><FONT size=2>(T)<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Each</FONT><FONT size=2> prop </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> PropertyDescriptor </FONT><FONT color=#0000ff size=2>In</FONT><FONT size=2> _<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; TypeDescriptor.GetProperties(itemType)<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> prop.Name = propertyName </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>mSortBy = prop<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>For<BR>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;'&nbsp;&nbsp; Next<BR>&nbsp;&nbsp; '</FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR>&nbsp;&nbsp; '</FONT><FONT size=2>ApplySort(mSortBy, direction)<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT></P>
+<P><FONT size=2><FONT color=#000000>It appears that the first issue is a bug. The second code change example is just a recommendation.<BR>Jim Wooley<BR></FONT><A href="http://devauthroity.com/blogs/jwooley"><FONT color=#000000>http://devauthroity.com/blogs/jwooley</FONT></A></FONT><FONT size=2><BR><FONT color=#000000>VB-MVP</FONT></FONT><FONT color=#0000ff size=2></P></FONT></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, February 15, 2007</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I had made that first change at one point, then backed it out
+because the problem had seemed to resolve itself (without the change).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It has been a while since that occurred, and I don&#8217;t
+remember the specifics, but perhaps it needs to be revisited.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jwooley replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It appears to work without explicitly sending the property name
+in a non remoted environment, but something is not serializing properly across
+the dataportal in this instance. I&#8217;m using this in VB at the moment and
+suppose there could be a difference in the CSC which would show different
+behavior. It would be good if someone could test this in C# to confirm. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jim<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 15, 2007 8:25 PM<br>
+<b>To:</b> jimwooley@hotmail.com<br>
+<b>Subject:</b> RE: [CSLA .NET] OnListChanged - PropertyDescriptor - Remoting
+vs. Non-Remoting<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I had made that first change at one point, then backed it out
+because the problem had seemed to resolve itself (without the change).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It has been a while since that occurred, and I don&#8217;t
+remember the specifics, but perhaps it needs to be revisited.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>It is important to realize that MY code is not used until after
+the object has been deserialized. In other words, Microsoft automatically hooks
+up the event and handles it in the normal case, but sadly they don&#8217;t
+re-hook the event on deserialization.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jim Wooley
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, February 16, 2007 7:58 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> RE: [CSLA .NET] OnListChanged - PropertyDescriptor - Remoting
+vs. Non-Remoting<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>It appears to work without explicitly sending the property name
+in a non remoted environment, but something is not serializing properly across
+the dataportal in this instance. I&#8217;m using this in VB at the moment and
+suppose there could be a difference in the CSC which would show different
+behavior. It would be good if someone could test this in C# to confirm. <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Jim<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Rockford Lhotka
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 15, 2007 8:25 PM<br>
+<b>To:</b> jimwooley@hotmail.com<br>
+<b>Subject:</b> RE: [CSLA .NET] OnListChanged - PropertyDescriptor - Remoting
+vs. Non-Remoting<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>I had made that first change at one point, then backed it out
+because the problem had seemed to resolve itself (without the change).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>It has been a while since that occurred, and I don&#8217;t
+remember the specifics, but perhaps it needs to be revisited.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ZeroCoolJr replied on Tuesday, March 27, 2007</h2>Hi,<br><br>Sorry to bump this up...was this fixed? I'm still using CSLA 2.0 in a non-remoting environment so I suspect lots of problems when we move to a remoting environment.<br><br>"...<span>but sadly they don’t
+re-hook the event on deserialization.". Any workaround? Or did I missed something?</span><br><br>Thanks,<br>Win<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, April 10, 2007</h2>I've added the event handling code back into the current code, so the PropertyDescriptor should be included when the event is raised after deserialization. This only affects BLB and is current in svn.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, April 10, 2007</h2><P>Thanks for taking care of this Rocky. Nice to see you up and about (figuratively speaking). </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matt replied on Tuesday, October 30, 2007</h2>Sorry to resurrect an old thread but I'm having the same problem described in this thread using CSLA 3.0.1.0 Did the above mentioned change make it into the 3.x builds?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Matt:</strong></div><div>Sorry to resurrect an old thread but I'm having the same problem described in this thread using CSLA 3.0.1.0 Did the above mentioned change make it into the 3.x builds?<BR></div></BLOCKQUOTE></P>
+<P>The issue was discovered too late to make it into 3.0.2, which is the current build.</P>
+<P>(having slipped "quick fixes" into previous releases at the 11th hour, I've learned my lesson - sometimes even bug fixes must wait for the next version...)</P>
+<P>I may create a 3.0.3 maintenance release, though my focus now is on 3.5. Certainly this fix will be in 3.5, and if I do a 3.0.3 I'll probably put it there as well.</P>
+<P>The whole thing occurs because I assumed that Microsoft would have done the flag check in their base OnListChanged() method. Logically you'd expect the check to occur at that level, because that's where the flag is maintained as well. Unfortunately their implementation apparently checks the flag each place where OnListChanged() is <EM>called</EM> rather than in OnListChanged() itself. This seems like poor design to me, but I'm sure there must be some good reason for it...</P>
+<P>Or I could have seen an OnListChanged(honorFlag) overload, so a caller could choose to honor the raise events flag or not. But they didn't do that either. Ultimately this is probably what I will do though, because at least this technique centralizes the flag check into one location.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matt replied on Wednesday, October 31, 2007</h2>Rocky,<br><br>Thanks for the reply, I'm eagerly awaiting the 3.0.3 maintenence or the 3.5 ;)<br><br>In the mean time, I scanned the rest of the thread and looked through some old and new builds of csla to compare what's changed. Can anyone point me in the right direction to get this temporarily fixed? The current code in 3.0.2 looks like it should work according to previous posts that said passing the property descriptor into the ListChangedEventArgs would fix it. Were there problems with the original modification that will prevent it from running properly by using <br><br><font color="#000080" face="Courier New" size="2">PropertyDescriptor prop = TypeDescriptor.GetProperties(sender)(e.PropertyName);</font><br><br>to pass in the PropertyDescriptor instead of&nbsp; the <font color="#000080" face="Courier New" size="2">GetPropertyDescriptor</font> method?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>&#8220;Fix it&#8221; meaning what?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The primary issue I&#8217;m aware of, and plan to address, is
+that the raise events flag isn&#8217;t honored so events are raised when they
+should be suppressed.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>3.0 does include code to include the property descriptor when
+the event is raised. I believe someone had an issue there, but I haven&#8217;t
+had time to dig into that to find the nature of the issue.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Matt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 31, 2007 4:07 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OnListChanged - PropertyDescriptor -
+Remoting vs. Non-Remoting<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+Thanks for the reply, I'm eagerly awaiting the 3.0.3 maintenence or the 3.5 ;)<br>
+<br>
+In the mean time, I scanned the rest of the thread and looked through some old
+and new builds of csla to compare what's changed. Can anyone point me in the
+right direction to get this temporarily fixed? The current code in 3.0.2 looks
+like it should work according to previous posts that said passing the property
+descriptor into the ListChangedEventArgs would fix it. Were there problems with
+the original modification that will prevent it from running properly by using <br>
+<br>
+<span>PropertyDescriptor
+prop = TypeDescriptor.GetProperties(sender)(e.PropertyName);</span><br>
+<br>
+to pass in the PropertyDescriptor instead of&nbsp; the <span>GetPropertyDescriptor</span>
+method?<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matt replied on Wednesday, October 31, 2007</h2>I think my issue pertains to this part, in 3 tier mode the PropertyDescriptor comes back as null on a ListChanged event when I use PropertyHasChanged("Foo"); (works ok in 2 tier) Is this not happening a result of the raise event flag not being honored or are these two different problems?<br><br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+<div class="Section1"><span>3.0 does include code to include the property descriptor when
+the event is raised. I believe someone had an issue there, but I haven’t
+had time to dig into that to find the nature of the issue.<o:p></o:p></span>
+
+</div>
+
+</div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>These are two different problems.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Matt
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, October 31, 2007 4:26 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: RE: OnListChanged - PropertyDescriptor -
+Remoting vs. Non-Remoting<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I think my issue pertains to
+this part, in 3 tier mode the PropertyDescriptor comes back as null on a
+ListChanged event when I use PropertyHasChanged(&quot;Foo&quot;); (works ok in
+2 tier) Is this not happening a result of the raise event flag not being
+honored or are these two different problems?<o:p></o:p></p>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>3.0 does include code to include the property descriptor
+when the event is raised. I believe someone had an issue there, but I havenâ€™t
+had time to dig into that to find the nature of the issue. <o:p></o:p></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matt replied on Wednesday, October 31, 2007</h2>
+
+Ah, that makes more sense now. <br>
+<br>
+I guess I'm interested in the reason the PropertyDescriptor isn't
+working properly in 3 tier mode. I know some of these posts are older,
+but is anyone else having this problem? And if you are, did you find a
+solution?<br><br>
+
+
+ 
+
+ 
+  
+ <BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+
+
+
+
+
+
+<span><br>These are two different problems.<o:p></o:p></span><div class="Section1">
+
+<p class="MsoNormal"><span><o:p><br></o:p></span></p>
+
+<p class="MsoNormal"><span>Rocky</span></div></BLOCKQUOTE></p></div></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 31, 2007</h2><P>I took some time this evening to work on this, and I believe I have both issues fixed.</P>
+<P>BusinessListBase no longer calls OnListChanged() if RaiseListChangedEvents is false. This should bring it into parity with normal BindingList(Of T) behaviors in this regard.</P>
+<P>After deserialization, when BusinessListBase is explicitly raising ListChanged due to a child raising PropertyChanged, the correct property descriptor is now located. The result is that property descriptors should flow up after deserializiation like they do before serialization of the list in the first place.</P>
+<P>These fixes are in 3.0.3 and 3.5. I put a test version of 3.0.3 on the download page (<A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>). Since (thus far) this is the only meaningful change since 3.0.2, the "test" version should be pretty stable <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, November 01, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>BusinessListBase no longer calls OnListChanged() if RaiseListChangedEvents is false. This should bring it into parity with normal BindingList(Of T) behaviors in this regard.</P>
+<P></div></BLOCKQUOTE></P>
+<P>Rocky,</P>
+<P>I had a similar problem with honoring the flag in this thread:</P>
+<P><A HREF="/forums/thread/18781.aspx">http://forums.lhotka.net/forums/thread/18781.aspx</A></P>
+<P>Can you comment on the issue I faced? Do you think you fixed that too?</P>
+<P>In other words if I change a value in a child collection is the method Child_PropertyChanged still called?</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, November 01, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, I believe my fix addresses that issue as well. The reason I
+say this, is that the child&#8217;s PropertyChanged event is handled in BLB,
+but if RaiseListChangedEvents is false, Child_PropertyChanged immediately exits
+and does nothing in response to the child&#8217;s event.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In my testing I observed parity between a non-deserialized list
+and a deserialized list when changing a child object&#8217;s property value &#8211;
+both with RaiseListChangedEvents set to true and false.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 01, 2007 8:55 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: OnListChanged - PropertyDescriptor -
+Remoting vs. Non-Remoting<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>BusinessListBase no longer calls OnListChanged() if RaiseListChangedEvents
+is false. This should bring it into parity with normal BindingList(Of T)
+behaviors in this regard.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>I had a similar problem with honoring the flag in this thread:<o:p></o:p></p>
+
+<p><a href="/forums/thread/18781.aspx">http://forums.lhotka.net/forums/thread/18781.aspx</a><o:p></o:p></p>
+
+<p>Can you comment on the issue I faced? Do you think you fixed that too?<o:p></o:p></p>
+
+<p>In other words if I change a value in a child collection is the method Child_PropertyChanged
+still called?<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Matt replied on Thursday, November 01, 2007</h2>Rocky,<br><br>Thank you very much for your quick responses and the new version!<br><br>Matt<br><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div><p>I took some time this evening to work on this, and I believe I have both issues fixed.</p>
+<p>BusinessListBase no longer calls OnListChanged() if RaiseListChangedEvents is false. This should bring it into parity with normal BindingList(Of T) behaviors in this regard.</p>
+<p>After deserialization, when BusinessListBase is explicitly raising ListChanged due to a child raising PropertyChanged, the correct property descriptor is now located. The result is that property descriptors should flow up after deserializiation like they do before serialization of the list in the first place.</p>
+<p>These fixes are in 3.0.3 and 3.5. I put a test version of 3.0.3 on the download page (<a href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</a>). Since (thus far) this is the only meaningful change since 3.0.2, the "test" version should be pretty stable <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></p></div></BLOCKQUOTE></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ben replied on Wednesday, September 19, 2007</h2><P class=MsoNormal><SPAN>Hi all,<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN>Here you have a small <B>application for testing this kind of problems</B>.</SPAN><SPAN><o:p>&nbsp;</o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><A HREF="/forums/thread/17690.aspx">http://forums.lhotka.net/forums/thread/17690.aspx</A></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><o:p>I hope you find it useful.<o:p></o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN>Benjamin Moles<o:p></o:p></SPAN></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

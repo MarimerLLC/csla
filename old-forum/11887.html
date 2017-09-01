@@ -1,0 +1,10 @@
+<html><header><title>EditableRootList update non dirty child objects</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>EditableRootList update non dirty child objects</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11887.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark_ posted on Saturday, March 16, 2013</h2><p>Hi,</p>
+<p>I have these classes:</p>
+<p>Child : BusinessBase</p>
+<p>Parent : BusinessBindingListBase&lt;Parent,Child&gt;</p>
+<p>In parent class i have: </p>
+<p>protected override void DataPortal_Update()<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Child_Update();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>Parent list fetch some data from database and fill itself. Problem is when i call Save() on parent object, it updates EVERY child object, even those which i didn&#39;t edited at all. How can i fix this, and update only deleted/edited children?!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, March 16, 2013</h2><p>Hi,</p>
+<p>In your Child_Update check for IsDirty and if false then just return.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Mark_ replied on Saturday, March 16, 2013</h2><p>Tnx Jonny. I did as you said, but, shouldn&#39;t CSLA do that check by itself? Or i did something wrong?!</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Sunday, March 17, 2013</h2><p>There is situations where you need all the data to be present at the dal /remote side.</p>
+<p>F.ex when using a messaging based system that needs ALL data - including those that were not changed by the user.</p>
+<p>So the default action by CSLA is to call Child_Update on all children and your code can easiy decide whether or not to perform any action.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,94 @@
+<html><header><title>Silverlight version of DataPortal_Fetch/DataPortal_Insert/DataPortal_etc</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight version of DataPortal_Fetch/DataPortal_Insert/DataPortal_etc</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10252.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago posted on Friday, April 08, 2011</h2><p>Hi Rocky,</p>
+<p>I feel completely lost like those guys in the Oceanic 815.</p>
+<p>Reading <strong>Using Csla 4 - Data Access</strong> ebook p. 50, I get this <strong>A)</strong> implementation of DataPortal_Fetch:</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:blue;">#if</span>&nbsp;SILVERLIGHT
+[<span style="COLOR:darkblue;">System</span>.<span style="COLOR:darkblue;">ComponentModel</span>.<span style="COLOR:darkblue;">EditorBrowsable</span>(<span style="COLOR:darkblue;">System</span>.<span style="COLOR:darkblue;">ComponentModel</span>.<span style="COLOR:darkblue;">EditorBrowsableState</span>.<span style="FONT-WEIGHT:bold;COLOR:purple;">Never</span>)]
+<span style="COLOR:blue;">public</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">DataPortal_Fetch</span>(<span style="COLOR:blue;">int</span>&nbsp;id,&nbsp;<span style="COLOR:darkblue;">Csla</span>.<span style="COLOR:darkblue;">DataPortalClient</span>.<span style="COLOR:darkblue;">LocalProxy</span>&lt;<span style="COLOR:darkblue;">ProjectEdit</span>&gt;.<span style="COLOR:darkblue;">CompletedHandler</span>&nbsp;handler)
+{
+&nbsp;&nbsp;<span style="COLOR:blue;">try</span>
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;invoke&nbsp;external&nbsp;DAL&nbsp;here&nbsp;(encapsulated&nbsp;invoke)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;handler(<span style="COLOR:blue;">this</span>,&nbsp;<span style="COLOR:blue;">null</span>);
+&nbsp;&nbsp;}
+&nbsp;&nbsp;<span style="COLOR:blue;">catch</span>&nbsp;(<span style="COLOR:darkblue;">Exception</span>&nbsp;ex)
+&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;handler(<span style="COLOR:blue;">null</span>,&nbsp;ex);
+&nbsp;&nbsp;}
+}
+<span style="COLOR:blue;">#endif</span>
+</pre>
+<p>What I can find in every single project is this other&nbsp;<strong>B)</strong> implementation:</p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:blue;">#if</span>&nbsp;!SILVERLIGHT
+<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">DataPortal_Fetch</span>(<span style="COLOR:blue;">int</span>&nbsp;id)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:green;">//&nbsp;invoke&nbsp;external&nbsp;DAL&nbsp;here&nbsp;(encapsulated&nbsp;invoke)</span>
+}
+<span style="COLOR:blue;">#endif</span>
+</pre>
+<p>like this one found on PTracker&#39;s <strong>ProjectEdit</strong></p>
+<pre style="FONT-SIZE:13px;BACKGROUND:white;COLOR:black;FONT-FAMILY:Consolas;"><span style="COLOR:blue;">#if</span>&nbsp;!SILVERLIGHT
+<span style="COLOR:blue;">private</span>&nbsp;<span style="COLOR:blue;">void</span>&nbsp;<span style="COLOR:darkcyan;">DataPortal_Fetch</span>(<span style="COLOR:blue;">int</span>&nbsp;id)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">using</span>&nbsp;(<span style="COLOR:blue;">var</span>&nbsp;ctx&nbsp;=&nbsp;<span style="COLOR:darkblue;">ProjectTracker</span>.<span style="COLOR:darkblue;">Dal</span>.<span style="COLOR:darkblue;">DalFactory</span>.<span style="COLOR:darkcyan;">GetManager</span>())
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;dal&nbsp;=&nbsp;ctx.<span style="COLOR:darkcyan;">GetProvider</span>&lt;<span style="COLOR:darkblue;">ProjectTracker</span>.<span style="COLOR:darkblue;">Dal</span>.<span style="COLOR:darkblue;">IProjectDal</span>&gt;();
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">var</span>&nbsp;data&nbsp;=&nbsp;dal.<span style="COLOR:darkcyan;">Fetch</span>(id);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:blue;">using</span>&nbsp;(<span style="COLOR:purple;">BypassPropertyChecks</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Id</span>&nbsp;=&nbsp;data.<span style="COLOR:purple;">Id</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Name</span>&nbsp;=&nbsp;data.<span style="COLOR:purple;">Name</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Description</span>&nbsp;=&nbsp;data.<span style="COLOR:purple;">Description</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Started</span>&nbsp;=&nbsp;data.<span style="COLOR:purple;">Started</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Ended</span>&nbsp;=&nbsp;data.<span style="COLOR:purple;">Ended</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">TimeStamp</span>&nbsp;=&nbsp;data.<span style="COLOR:purple;">LastChanged</span>;
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="COLOR:purple;">Resources</span>&nbsp;=&nbsp;<span style="COLOR:darkblue;">DataPortal</span>.<span style="COLOR:darkcyan;">FetchChild</span>&lt;<span style="COLOR:darkblue;">ProjectResources</span>&gt;(id);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}
+<span style="COLOR:blue;">#endif</span>
+</pre>
+<p>aaa</p>
+<p>I find the <strong>B)</strong> implementation simple to understand. This code won&#39;t build&nbsp;on the Silverlight client side library as this library has a SILVERLIGHT conditional compilation symbol. This means this method won&#39;t exist on the Silverlight library. When the Silverlight client side factory method runs, it invokes the server side <strong>DataPortal_Fetch</strong> method that is reproduced above as implementation<strong> B)</strong>.</p>
+<p>I also understand that in order to invoke the Silverlight client side <strong>DataPortal_Create </strong>method (aka <strong>RunLocal</strong>), the method must be implemented and must exist in the client side Silverlight library. For this to happen, this method must accept a callback parameter for consistency. When the implementation isn&#39;t local, all remote DataPortal call must use a callback parameter (<strong>CompleteHandler</strong>) and the purpose is to keep the same parameters/signature no matter where the code runs, client side or server side.</p>
+<p>If all projects I saw use the&nbsp;implementation <strong>B)</strong>, Csla must be doing some hard job like:</p>
+<ul>
+<li>taking the asynchronous call and strip out the CompleteHandler callback parameter</li>
+<li>taking care of the remote invocation of the synchronous method</li>
+<li>returning the result back to the Silverlight client side object</li>
+<li>invoking the client side callback</li>
+</ul>
+<p>Back to the point, there are&nbsp;four questions:</p>
+<ol>
+<li>Is the above is correct?</li>
+<li>What&#39;s the purpose of implemention <strong>A)</strong>?</li>
+<li>Why is implementation <strong>B)</strong> absent from the ebook?</li>
+<li>Am I missing something?</li>
+</ol>
+<p>Regards</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, April 08, 2011</h2><p>This is all architectural, and has somewhat to do with the scope of the <em>Data Access</em> ebook.</p>
+<p>There is no data access on Silverlight. No ADO.NET, nothing really. Just isolated storage stream access to the file system (in limited ways).</p>
+<p>The ability to implement &quot;data access&quot; methods on the Silverlight client exists primarily to support calling remote services manually. This type of application is a 1-tier Silverlight app, sometimes called an &quot;edge application&quot; because it runs on the edge of a larger service-oriented system.</p>
+<p>I chose to focus the <em>Data Access</em> ebook on the more common scenario, where the application really does data access - which means the data access code is running on the server in .NET. The server, of course, does have things like ADO.NET.</p>
+<p>If you use the data portal to allow the client to interact with the application server (the normal case), then you get the patterns shown in the <em>Data Access</em> ebook.</p>
+<p>In the final book in the series, the WP7 book, I&#39;ll focus almost entirely on edge applications. The most common scenario (I think) for mobile apps is to build an edge application. The reason is because a service-oriented architecture provides better decoupling between the mobile app and the server. That is important because it is easier to version the server than the mobile app - you really can&#39;t force end users to update the app on the phone, so you have to assume the &quot;client&quot; and server will get out of sync.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, April 09, 2011</h2><p>Thanks for your answer Rocky. It&#39;s a very important clarification.<br />In fact, on p. 5 you show a very simple sample that I agree is the most common scenario.</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;"><span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:darkcyan;">GetPersonEdit</span>(<span style="color:blue;">int</span>&nbsp;id,&nbsp;<span style="color:darkblue;">EventHandler</span>&lt;<span style="color:darkblue;">DataPortalResult</span>&lt;<span style="color:darkblue;">PersonEdit</span>&gt;&gt;&nbsp;callback)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkblue;">DataPortal</span>.<span style="color:darkcyan;">BeginFetch</span>&lt;<span style="color:darkblue;">PersonEdit</span>&gt;(id,&nbsp;callback);
+}
+ 
+<span style="color:blue;">#if</span>&nbsp;!SILVERLIGHT
+<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:darkblue;">PersonEdit</span>&nbsp;<span style="color:darkcyan;">GetPersonEdit</span>(<span style="color:blue;">int</span>&nbsp;id)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkblue;">DataPortal</span>.<span style="color:darkcyan;">Fetch</span>&lt;<span style="color:darkblue;">PersonEdit</span>&gt;(id);
+}
+ 
+<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">void</span>&nbsp;<span style="color:darkcyan;">DataPortal_Fetch</span>(<span style="color:blue;">int</span>&nbsp;id)
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;invoke&nbsp;external&nbsp;DAL&nbsp;here&nbsp;(encapsulated&nbsp;invoke)</span>
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:green;">//&nbsp;or&nbsp;implement&nbsp;DAL&nbsp;code&nbsp;here&nbsp;(encapsulated&nbsp;implementation)</span>
+}</pre>
+<p>This sample is completely different from the <strong>A)</strong> implementation of p. 50 that is showing the edge application scenario:</p>
+<p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b></p>
+<p>I chose to focus the <em>Data Access</em> ebook on the more common scenario, where the application really does data access - which means the data access code is running on the server in .NET. The server, of course, does have things like ADO.NET.</p>
+<p>If you use the data portal to allow the client to interact with the application server (the normal case), then you get the patterns shown in the <em>Data Access</em> ebook.</div></p>
+<p>I agree this is the most common scenario but, from a statistical point of view,&nbsp;I can&#39;t agree with the bit &quot;the patterns shown in the <em>Data Access </em>ebook&quot;. On the <strong>Encapsulation Models</strong> chapter there are 6 samples showing the edge application scenario that are introduced by the phrase &quot;<em>here&rsquo;s an example of a Silverlight implementation</em>&quot;. So the big picture we get is the edge application implementation.</p>
+<p>Edge applications are refered only the <em>Overview</em> ebook. May I suggest that the &quot;edge application versus most common scenario&quot; clarification be included in the Data Access ebook? Before writing this post, I looked for some explanation both in <em>Objects</em> and <em>Data Access</em> ebooks and found none. I guess this would save other people a few hours of ebook and forum browsing.&nbsp; Note that a simple change like&quot;<em>here&rsquo;s an example of a Silverlight <strong>edge application </strong>implementation</em>&quot; whould make a big difference...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, April 09, 2011</h2><p>I&#39;ll add this as errata (<a href="mailto:errata@lhotka.net">errata@lhotka.net</a>) to address one way or another. At the very least it is clear that my discussion of the topic can be misleading.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Saturday, April 09, 2011</h2><p>Thanks Rocky.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

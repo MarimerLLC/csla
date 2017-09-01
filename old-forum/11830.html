@@ -1,0 +1,63 @@
+<html><header><title>Error with Csla.ApplicationContext.User</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Error with Csla.ApplicationContext.User</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11830.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>TomMcCann posted on Monday, February 11, 2013</h2><p>I am evaluating CSLA.NET for an MVC project that I am working on. &nbsp;We would like to us MVC 4 but we are running into some issues with the&nbsp;Csla.ApplicationContext.User.IsInRole method and custom principals and identities. &nbsp;I have been working on a solution using the CSLA.NET 4.5.11 beta, but we have experienced the issues with the 4.5.1 release as well. &nbsp;Here is a link to solution that demostrates the issue.</p>
+<p>http://sdrv.ms/X0rtkf</p>
+<p>Here is what we have been observing.</p>
+<p>1. After a user successfully logs into the system, the CustomPrincipal object is loaded into the&nbsp;Csla.ApplicationContext.User property. &nbsp;This occurs in the&nbsp;Application_AuthenticateRequest as seen in the code examples I have found.</p>
+<p>2. Immediately after loading the principal, the&nbsp;Csla.ApplicationContext.User.IsInRole method works as expected within the context of the global.asax.cs.</p>
+<p>3. The Csla.ApplicationContext.User.IsInRole method does not work as expected when you are in a Controller. &nbsp;IsInRole appears to always return false.</p>
+<p>&nbsp;</p>
+<p>I examined the Csla.ApplicationContext.User property. &nbsp;Based upon the GetType() call it is the CustomPrincipal class I have defined.</p>
+<p>&nbsp;</p>
+<p>I&#39;m stuck and would appreciate any help that is offered.</p>
+<p>&nbsp;</p>
+<p>Cheers</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>ajj3085 replied on Monday, February 11, 2013</h2><p>I&#39;m on my phone, so I can&#39;t look at the sample, but are you referencing csla.web as well acsla.dll</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TomMcCann replied on Monday, February 11, 2013</h2><p>In the MVC4 project, I am referencing Csla, Csla.Web, Csla.Web.Mvc4 and Csla.XmlSerializers</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, February 13, 2013</h2><p>In terms of helping you debug the issue, I want to point out that Csla.ApplicationContext.User is just a wrapper over existing .NET principal concepts.</p>
+<p>In the case of ASP.NET what you are actually getting is the User property of the current HttpContext. So from a debugging perspective you might want to step through the code and confirm that HttpContext.Current.User gets set properly, and that it doesn&#39;t change over time (though it obviously IS changing). That might help you figure out what code is changing the HttpContext.Current.User value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TomMcCann replied on Thursday, February 14, 2013</h2><p>I took a closer look today. &nbsp;I could not see the HttpContext.User being set anywhere else. &nbsp;I added my included references to the csla source code to facilitate deeper debugging.</p>
+<p>Here are some of my observations:</p>
+<p>&nbsp;</p>
+<ul>
+<li>Immediately after setting the Csla.ApplicationContext.User property in the global.asax, everything works correctly:
+<ul>
+<li>If I call IsInRole the IsInRole method in CslaIdentity is called correctly.</li>
+<li>When calling the IsInRole, breakpoints at CslaIdentity.IsInRole and CslaPrincipal.IsInRole are hit and I can step through the code.</li>
+</ul>
+</li>
+<li>Once I am in a controller and attempt to call IsInRole, the breakpoints are not hit.
+<ul>
+<li>I also noticed a long pause before IsInRole returns a result.</li>
+</ul>
+</li>
+</ul>
+<p>&nbsp;</p>
+<p>That&#39;s what I have so far.</p>
+<p>Thanks for the help!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TomMcCann replied on Monday, February 18, 2013</h2><p>I haven&#39;t been able to find anything else. &nbsp;I wonder if there is something with the built-in Internet App MVC 4 template that is causing the issue.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 18, 2013</h2><p>Whuch template did you use for your MVC project?</p>
+<p><span>http://weblogs.asp.net/jgalloway/archive/2012/08/29/simplemembership-membership-providers-universal-providers-and-the-new-asp-net-4-5-web-forms-and-asp-net-mvc-4-templates.aspx&nbsp;</span></p>
+<p>
+<h2><span>Membership in the ASP.NET MVC 4 project templates</span></h2>
+<p><span>ASP.NET MVC 4 offers six Project Templates:</span></p>
+<ul>
+<li><span><strong>Empty</strong>&nbsp;- Really empty, just the assemblies, folder structure and a tiny bit of basic configuration.</span></li>
+<li><span><strong>Basic</strong>&nbsp;- Like Empty, but with a bit of UI preconfigured (css / images / bundling).</span></li>
+<li><span><strong>Internet</strong>&nbsp;- This has both a Home and Account controller and associated views. The Account Controller supports registration and login via either local accounts and via OAuth / OpenID providers.</span></li>
+<li><span><strong>Intranet</strong>&nbsp;- Like the Internet template, but it&#39;s preconfigured for Windows Authentication.</span></li>
+<li><span><strong>Mobile</strong>&nbsp;- This is preconfigured using jQuery Mobile and is intended for mobile-only sites.</span></li>
+<li><span><strong>Web API</strong>&nbsp;- This is preconfigured for a service backend built on ASP.NET Web API.</span></li>
+</ul>
+</p>
+<p>If you used Intranet it would certainly change the Principal object.&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>TomMcCann replied on Monday, February 18, 2013</h2><p>I used the Internet template.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Wednesday, May 15, 2013</h2><p>Ahh, yes, you are right, we hadn&#39;t split that functionality out yet at that point in time.</p>
+<p><a href="http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/">http://www.lhotka.net/cslacvs/viewvc.cgi/core/branches/V3-8-x/cslacs/</a></p>
+<p>Obviously MVC 4 didn&#39;t exist back then, so it is possible that there is some difference in behavior that is causing issues.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Thursday, May 16, 2013</h2><p>I don&#39;t know if this applies to Tom as well but my problem turned out to have nothing to do with CSLA. I was setting Csla.ApplicationContext.User (which is really HttpContext.User for me) in the&nbsp;<strong>Application_AuthenticateRequest</strong><strong> </strong><strong>event handler</strong>. I have moved the code to the&nbsp;<strong>Application_PostAuthenticateRequest </strong>event handler and now it works fine.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alraiani replied on Saturday, May 25, 2013</h2><p>I have a very large ASP.NET website that I converted to an ASP.NET MVC 4 Web Application. &nbsp;What I did to solve this problem was to set &lt;roleManager enabled=&quot;false&quot;&gt; in &lt;system.web&gt;. &nbsp;If you don&#39;t then your custom Principal will be replace with a RolePrincipal.</p>
+<p>Al</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Tuesday, May 14, 2013</h2><p>
+<p>I, too, am encountering this behavior. I always use Csla.ApplicationContext.User (not HttpContext). In Global.asax, it gets set and can be retrieved just fine. As soon as I try to access Csla.ApplicationContext.User from a controller, however, Csla.ApplicationContext.User&nbsp;contains a generic System.Web.Security.RolePrincipal instead of my custom IPrincipal object. The System.Web.Security.RolePrincipal object does have its values filled-in but of course I cannot access my custom IsInRole or any other custom methods/properties.</p>
+<p>I am using CSLA 3.8.3.0, IIS (not Cassini), MVC 4 and .NET 4.0. Does that info help anyone figure out what&#39;s going here?</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 14, 2013</h2><p>&nbsp;Can you confirm that Csla.Web.dll is in your bin folder?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Wednesday, May 15, 2013</h2><p>I do not have the csla.web.dll in my bin folder, which I&#39;m assuming now is the problem. I didn&#39;t know that there existed a&nbsp;separate&nbsp;dll. I looked in my CSLA project from which I built the csla.dll assembly (a loooooooong time ago. I wasn&#39;t using the Csla.ApplicationContext before) and there is no project to build anything other than the csla.dll. So, assuming that this is the problem, here&#39;s what I&#39;ve tried:</p>
+<p>1. Build the 3.8.3 version of csla.web.dll - couldn&#39;t find a project to do that.</p>
+<p>2. Install from NuGet the latest version of csla (4.5-ish) - too many changes since 3.8.3 which would require me to refactor a bunch of stuff.</p>
+<p>3. Build the 3.8.4 version of csla.web.dll (which I&#39;m assuming is the end-of-the line for non-breaking changes for the version I&#39;m using) - downloaded and tried but hit a bunch of errors about classes that existed in multiple namespaces. Noticed that there are references to .NET 3.5 and 4.0.</p>
+<p>What is my least painful option? Am I missing some files from the 3.8.3 version?</p>
+<p>Thanks,</p>
+<p>Kyle</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 15, 2013</h2><p>The simplest thing is probably to download the 3.8.3 code from the old download page</p>
+<p><a href="http://www.lhotka.net/cslanet/download.aspx">http://www.lhotka.net/cslanet/download.aspx</a></p>
+<p>Because you obviously don&#39;t have the full set of code and projects at the moment.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Wednesday, May 15, 2013</h2><p>I got the 3.8.3 from the old download page. I still cannot find a project to build Csla.Web.dll. There is a project to build Csla.Web.Mvc.dll but I&#39;m not using any CSLA MVC stuff. Am I missing something?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Kyle replied on Wednesday, May 15, 2013</h2><p>Although I can&#39;t absolutely verify it, I&#39;m thinking that Csla.Web.dll did not exist before version 4.0. I&#39;m using the 2008 book (version 3.6) and there&#39;s no mention of it. Was it created in 4.0 to solve a problem in the 3.x line?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

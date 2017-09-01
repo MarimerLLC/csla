@@ -1,0 +1,62 @@
+<html><header><title>CSLA.NET &gt; 3.5.1: Bug when using cast in linq against BusinessList</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.NET &gt; 3.5.1: Bug when using cast in linq against BusinessList</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5197.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick posted on Tuesday, August 05, 2008</h2>Hi,<br><br>Using a cast in a linq query against a CSLA results in an exception in LinqBindingList.ItemShouldBeInList():<br><br>1) This works:<br>var results = from LookupValues in _lookupList<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where LookupValues.LookupGroup.ToLower().Equals(LookupGroup.ToLower())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select LookupValues;<br><br>2) This doesn't work:<br>var results = from LookupValues l in _lookupList<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where l.LookupValues.LookupGroup.ToLower().Equals(LookupGroup.ToLower())<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select l;<br><br>3) This doesn't work either:<br>
+var results = from l in _lookupList.Cast&lt;LookupValues&gt;()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; where l.LookupValues.LookupGroup.ToLower().Equals(LookupGroup.ToLower())<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; select l;<br>
+<br>Example 2) + 3) lead to the whereExpression == null in SetFilterByExpression in LinqBindingList<br>---------------<br>private void SetFilterByExpression(Expression expression)<br>{<br>&nbsp; InnermostWhereFinder whereFinder = new InnermostWhereFinder();<br>&nbsp; MethodCallExpression <b>whereExpression </b>= whereFinder.GetInnermostWhere(expression);<br>&nbsp; if (whereExpression == null) <b>return</b>;<br>&nbsp; /// ....<br>}<br>-----------<br><br>which in turn throws an exception in ItemShouldBeInList in LinqBindingList<br>-------------<br>private bool ItemShouldBeInList(T item)<br>{<br>&nbsp; InnermostWhereFinder whereFinder = new InnermostWhereFinder();<br>&nbsp; MethodCallExpression whereExpression = whereFinder.GetInnermostWhere(_expression);<br>&nbsp; Expression&lt;Func&lt;T, bool&gt;&gt; whereBody = (Expression&lt;Func&lt;T, bool&gt;&gt;)((UnaryExpression)(<b>whereExpression.Arguments[1]</b>)).Operand;<br>/// ....<br>}<br>------------<br><br>Thanks for looking into it,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 05, 2008</h2>Thanks, we'll look into it.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Wednesday, August 06, 2008</h2><P>FYI, I have it down to CreateQuery in the CslaQueryProvider, which needs to handle the cast case similar to how the OfType case gets handled.&nbsp; Fix should be in the works with an associated unit test by end of day today.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Wednesday, August 06, 2008</h2>Also, case 2 turns into case 3 at the expression evaluator level, so fixing one fixes the other.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>AaronErickson replied on Wednesday, August 06, 2008</h2>I have committed bits to the trunk that should have this fixed.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Patrick replied on Wednesday, August 06, 2008</h2>I'm impressed how quickly you fixed this :)<br><br>Might be good to back port it to 3.5.1 in subversion as well as quite a few people might not be using 3.6.x yet.<br><br>Thanks a lot,<br>Patrick<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 06, 2008</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>3.5.1 is released, so this will be in 3.5.2. I think that&#8217;s
+where Aaron put the fix &#8211; we&#8217;ll have to merge it into 3.6 as well.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Patrick
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, August 06, 2008 3:32 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA.NET &gt; 3.5.1: Bug when using cast in
+linq against BusinessList<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>I'm impressed how quickly you fixed this :)<br>
+<br>
+Might be good to back port it to 3.5.1 in subversion as well as quite a few
+people might not be using 3.6.x yet.<br>
+<br>
+Thanks a lot,<br>
+Patrick<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

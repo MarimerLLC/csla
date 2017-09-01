@@ -1,0 +1,135 @@
+<html><header><title>MyObject.Delete</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>MyObject.Delete</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4716.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Friday, April 18, 2008</h2><DIV>I am doing something like this.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>MyCompany = Company.GetCompany(Id)</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This is fetching the company information just fine.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Now, when I do a "MyCompany.Delete()"</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>It doesn't fire any of the DataPortal_Delete Methods.<BR><BR>I am using the 3.5 Version of CSLA.</DIV>
+<DIV><BR>Any suggestions?<BR><BR>Thanks,<BR>mark</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Saturday, April 19, 2008</h2><font face="Arial"><font size="2">Mark,<br><br>Your Company.GetCompany(Id) method would have a call to DataPortal.Fetch within it, this is responsible for doing the call to the DataPortal_Fetch methods. <br><br>When you have an object and call MyCompany.Delete(), all it does is set an internal IsDeleted flag to true, you would then need to call MyCompany.Save() to have the DataPortal_DeleteSelf method fire.<br><br>Depending on your use cases, it's not abnormal to have a Company.DeleteCompany(Id) method which calls the DataPortal_Delete method. That way you don't have to fetch the object first to delete it.<br><br>Marjon<br></font></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, April 19, 2008</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You also need to call Save().&nbsp; This should fire
+DataPortal_DeleteSelf, if I follow you situation correctly.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Senior Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> SouthSpawn
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 18, 2008 10:52 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> [CSLA .NET] MyObject.Delete<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<div>
+
+<p class=MsoNormal>I am doing something like this.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>MyCompany = Company.GetCompany(Id)<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>This is fetching the company information just fine.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>Now, when I do a &quot;MyCompany.Delete()&quot;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>&nbsp;<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal>It doesn't fire any of the DataPortal_Delete Methods.<br>
+<br>
+I am using the 3.5 Version of CSLA.<o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p class=MsoNormal><br>
+Any suggestions?<br>
+<br>
+Thanks,<br>
+mark<o:p></o:p></p>
+
+</div>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

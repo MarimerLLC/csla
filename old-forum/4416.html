@@ -1,0 +1,18 @@
+<html><header><title>Collection validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Collection validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4416.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>dogbrain posted on Tuesday, February 26, 2008</h2><P>Hi!</P>
+<P>I am totally new to CSLA (So might have missed something obvious) and have a question about validation of a&nbsp;<FONT color=#2b91af size=2>BusinessBase </FONT>object. The object contains an collection (<FONT color=#2b91af size=2>BusinessListBase</FONT>) and the buissness rule is that&nbsp;there need to be&nbsp;1-n instances.&nbsp;So basicly I need to put the object in an invalid state if something is removed (if it was the last item) or if the&nbsp;object is new and nothing is added. How should I/would&nbsp;you&nbsp;go about doing that?</P>
+<P>Thanks in advance <BR>/Mikael Ohlsson</P>
+<P>Edit:<BR>At the moment I am overriding IsValid. So the question is really.. is there a nicer way?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, February 26, 2008</h2><P>Yes there is a nicer way. </P>
+<P>Let's call your classes Person, Interests, Interest where we're defining a collection of interests for the person. Everyone has got to be interested in _something_, right?</P>
+<P>On Person, you'll have a validation rule...</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;MustHaveAnInterest. It'll be false/invalid if Person.Interests.Count == 0.</P>
+<P>You need to trigger this at the right time. Because you're adding it to the business rules of the root, you'll automatically trigger it upon new people being created.</P>
+<P>However, when the list changes, you need to detect that and have broken rules establish themselves. We want, when the list changes of interests, to test that validation rule. </P>
+<P>So, you can do this by saying Person.Interests.ListChanged += Interests_ListChangedHandler..... that is, subscribe to the interests list from the root object. </P>
+<P>In the event handler, you can just say CheckRules("Interests"); where you've added that validation rule to the interests property (via AddBusinessRules) and then any time items are removed and added and such, you'll trigger that validation event and make the business object valid or not valid as needed. </P>
+<P>Hope that helps,</P>
+<P>Chris</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ssuing8825 replied on Tuesday, February 26, 2008</h2><P>Good Idea.</P>
+<P>A followup question</P>
+<P>Where would you wire up the event handler? Is there any problem loosing that handler through the wcf dataportal?</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, February 26, 2008</h2><P>You'll need to rehook it in OnDeserialized. </P>
+<P>I tend to hook up events in a private LinkEvents() method in the object that I call from the factory methods and OnDeserialized.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>dogbrain replied on Tuesday, February 26, 2008</h2>Much nicer. Thanks a lot!<br><br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,31 @@
+<html><header><title>Advice on getting a contextual error message from AuthorizationRule (CSLA 4.5.30)</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Advice on getting a contextual error message from AuthorizationRule (CSLA 4.5.30)</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12159.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid posted on Monday, September 23, 2013</h2><p>Hi All.</p>
+<p>I am working on a new business object class, wherein I have used several authorization rules to control whether certain methods and properties can be used. eg:</p>
+<blockquote>BusinessRules.AddRule(new CanWritePropertyRule&lt;Task&gt;(TimeProperty,x =&gt; !x.IsCancelled &amp;&amp; !x.IsCompleted));</blockquote>
+<p>I would like meaningful error/reason messages to appear when I call CanWriteProperty. If IsCompeted == true, it should say &quot;Cannot set time on Completed Task&quot;, and when IsCancelled == true, it should say &quot;Cannot set time on Cancelled Task&quot;.</p>
+<p>This is a specific example, but I need to do this for many properties and methods.</p>
+<p>However, I can&#39;t see how I can use AuthorizationRules for this, since they give no message.</p>
+<p>Here is my action:</p>
+<blockquote>
+<p>[HttpGet]</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; public ActionResult TaskTime(int id)</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!ValidateViewModel(id, this.InitializeViewModel))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return JsonHtmlContentError(&quot;Error&quot;, null);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (!ContextViewModel.ModelObject.CanWriteProperty(Task.TimeProperty))</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ModelState.AddModelError(&quot;JsonError&quot;, &quot;Cannot edit Time&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return PartialView(&quot;Info&quot;);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; return PartialView(ContextViewModel.ModelObject);</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; }</p>
+</blockquote>
+<p>So rather than just &quot;Cannot edit Time&quot;, I need to explain why this is the case. My initial thought is that I need to write a custom rule and somehow call that rule directly. something like PropertyRule&#39;s broken rules collection would be nice to have.</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Monday, September 23, 2013</h2><p>Authorization rules by nature only return true or false (has acess or not). </p>
+<p>But - if you look at the overload </p>
+<pre style="font-family:Consolas;font-size:13;color:black;background:white;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">bool</span>&nbsp;CanWriteProperty(Csla.Core.<span style="color:#2b91af;">IPropertyInfo</span>&nbsp;property,&nbsp;<span style="color:blue;">bool</span>&nbsp;throwOnFalse)
+</pre>
+<p>You can also throw an Exception, f.ex Csla.Security.<span style="color:#2b91af;">SecurityException </span>and you may also throw an exception with a contextual message from within the AuthorizationRules Execute method. </p>
+<p>It is the only way that I know of to get a contextual message back to the UI / Client from an authorization rule. </p>
+<p>Also remember to set CacheResult = false on your AuthorizationRule. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kreid replied on Monday, September 23, 2013</h2><p>The problem is, I need a different message for each and every fail reason. The reasons are not always mutually exclusive, so I will possibly need multiple reasons to be displayed.</p>
+<p>I don&#39;t know if this solution will work, as it only allows me to set one string - the exception&#39;s Message property. I suppose I could override SecurityException to allow multiple messages. Or even create a custom authorization rule and custom authorization context to store my messages?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,95 @@
+<html><header><title>SortedBindingList question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/315.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Massong posted on Thursday, June 08, 2006</h2><P class=MsoNormal><SPAN><FONT face=Arial><o:p>Hi Rocky, hi all,</o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><o:p></o:p></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial><o:p>I need to sort a collection by more than one property – in one case by 11 properties to find items that I can group together. At the moment I can help myself with a List(Of T). Will it be possible to sort a future version of the SortedBindingList like an ArrayList with a specified comparer implementing IComparer?</o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><o:p></o:p></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial><o:p>In another scenario the user can select an item of a collection to move it up or down for one position. I would prefer to set a protected SortIndex in the Update-method of the collection instead of in the UI. In my CSLA 1.x implementation I added a MoveUp and MoveDown method to the collection and manipulated the InnerList with RemoveAt and Insert. How can I implement this scenario with CSLA 2.0?</o:p></FONT></SPAN></P>
+<P class=MsoNormal><SPAN><FONT face=Arial><o:p></o:p></FONT></SPAN>&nbsp;</P>
+<P class=MsoNormal><SPAN><FONT face=Arial><o:p>Thanks for your support,<BR>Christian<BR></o:p></FONT></SPAN></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>SonOfPirate replied on Friday, June 09, 2006</h2><P>First, here's another thread where this subject has already been discussed:</P>
+<P><A HREF="/forums/thread/899.aspx">http://forums.lhotka.net/forums/thread/899.aspx</A></P>
+<P>To address your specific question about the IComparer interface, yes there is a way to do it within the CSLA construct.&nbsp; The way we handled this was to overload the ApplySort methods (we have several) and add "IComparer comparer" as an additional parameter.&nbsp;&nbsp;You can either store that as a private variable or pass it to the DoSort method as an argument.</P>
+<P>Then, if you look closely at the code for DoSort, you will see that sorting is actually deferred to the _sortIndex list.&nbsp; The Sort method for a System.Collection.Generic.List&lt;T&gt; object has overloads that will do what you want.&nbsp; In our case we also implemented range sorting using "index" and "count" arguments as well as allowing developers to use their own IComparer objects for sorting.&nbsp; All of these can be passed into the _sortIndex.Sort() methods within the DoSort routine without any additional changes to the code or logic, such as:</P>
+<P><CODE>_sortIndex.Sort(comparer);</CODE></P>
+<P>You don't need to check for null because the underlying List control handles that for you.</P>
+<P>Hope that helps.</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>newbie replied on Friday, June 16, 2006</h2><P>Nevermind. I figured out the problem.</P>
+<P>Thanks anyway.</P>
+<P>Here is how I did to make it work for me. It may work for you for multiple properties sorting...</P>
+<P>I updated CompareTo method in <FONT color=#0000ff size=2>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>class</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>ListItem</FONT><FONT size=2> : </FONT><FONT color=#008080 size=2>IComparable</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>ListItem</FONT><FONT size=2>&gt; class shown in <FONT color=#ff0000>red</FONT>.<FONT size=3> </FONT></FONT><FONT size=2>That is the ONLY change I made to CSLA 2.0 solution.</FONT></P><FONT color=#0000ff><FONT color=#0000ff>
+<P><FONT size=2>public</FONT></FONT><FONT size=2><FONT><FONT color=#000000> </FONT><FONT color=#0000ff>int</FONT><FONT color=#000000> CompareTo(</FONT><FONT color=#008080>ListItem</FONT></FONT><FONT color=#000000> other)</FONT></FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>object</FONT><FONT> target = other.Key;</FONT></FONT></P>
+<P><FONT color=#008000><FONT color=#ff0000 size=2>//made IComparable a generic type</FONT></P></FONT>
+<P><FONT size=2><FONT><FONT color=#0000ff>if</FONT> (Key <FONT color=#0000ff>is</FONT> <FONT color=#008080>IComparable</FONT></FONT><FONT><FONT color=#ff0000>&lt;T&gt;</FONT>)</FONT></FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT><FONT size=2><FONT color=#0000ff>return</FONT> ((<FONT color=#008080>IComparable</FONT><FONT color=#ff0000>&lt;T&gt;</FONT>)Key).CompareTo(<FONT color=#ff0000>(T)</FONT>target);</FONT></FONT></P></BLOCKQUOTE></BLOCKQUOTE>
+<P><FONT size=2>...</FONT></P>
+<P><FONT size=2>...}</FONT></P>
+<P><FONT color=#000000><FONT size=2>Then implemented&nbsp;CompareTo method for IComparable interface in the class&nbsp;which was inheriting from Csla.<FONT color=#008080>BusinessBase. </FONT></FONT></P>
+<P><FONT color=#008080><FONT size=2>eg. I am sorting Form object by <FONT color=#008000>LineOfBusinessTypeiD, FormPrefix, and then FormNumber</P></FONT></FONT><FONT color=#0000ff>
+<P><FONT size=2>public</FONT></FONT><FONT size=2><FONT color=#000000> </FONT><FONT color=#0000ff>partial</FONT><FONT color=#000000> </FONT><FONT color=#0000ff>class</FONT><FONT color=#000000> </FONT><FONT color=#008080>Form</FONT><FONT color=#000000> : Csla.</FONT><FONT color=#008080>BusinessBase</FONT><FONT color=#000000>&lt;</FONT><FONT color=#008080>Form</FONT><FONT color=#000000>&gt;, </FONT><FONT color=#008080>IComparable</FONT><FONT color=#000000>&lt;</FONT><FONT color=#008080>Form</FONT><FONT color=#000000>&gt;</FONT></FONT></P><FONT color=#0000ff>
+<P><FONT size=2>#region</FONT></FONT><FONT color=#000000 size=2> IComparable Members</FONT></P></FONT></FONT><FONT color=#0000ff>
+<P><FONT size=2>public</FONT></FONT><FONT size=2><FONT color=#000000> </FONT><FONT color=#0000ff>int</FONT><FONT color=#000000> CompareTo(</FONT><FONT color=#008080>Form</FONT><FONT color=#000000> y) </FONT></FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT color=#008000><FONT size=2>//compare by LOB Type first</FONT></P></FONT>
+<P><FONT color=#008000><FONT size=2>//coalesce to non-null values for comparison</FONT></P></FONT>
+<P><FONT size=2><FONT color=#0000ff>int</FONT> xLOB = (<FONT color=#0000ff>int</FONT>?)<FONT color=#0000ff>this</FONT>.LineOfBusinessTypeID ?? -1;</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>int</FONT> yLOB = (<FONT color=#0000ff>int</FONT>?)y.LineOfBusinessTypeID ?? -1;</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>if</FONT> (xLOB &lt; yLOB)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> -1;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>else</FONT> <FONT color=#0000ff>if</FONT> (xLOB &gt; yLOB)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> 1;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P>
+<P><FONT color=#0000ff><FONT size=2>else</FONT></P></FONT>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT color=#008000><FONT size=2>//sort by form Prefix</FONT></P></FONT>
+<P><FONT size=2><FONT color=#0000ff>if</FONT> ((<FONT color=#0000ff>this</FONT>.FormPrefix.CompareTo(y.FormPrefix)) &lt; 0)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> -1;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>else</FONT> <FONT color=#0000ff>if</FONT> ((<FONT color=#0000ff>this</FONT>.FormPrefix.CompareTo(y.FormPrefix)) &gt; 0)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> 1;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P>
+<P><FONT color=#0000ff><FONT size=2>else</FONT></P></FONT>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT color=#008000><FONT size=2>//sort by form Number</FONT></P></FONT>
+<P><FONT size=2><FONT color=#0000ff>if</FONT> ((<FONT color=#0000ff>this</FONT>.FormNumber.CompareTo(y.FormNumber)) &lt; 0)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> -1;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>else</FONT> <FONT color=#0000ff>if</FONT> ((<FONT color=#0000ff>this</FONT>.FormNumber.CompareTo(y.FormNumber)) &gt; 0)</FONT></P>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> 1;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P>
+<P><FONT color=#0000ff><FONT size=2>else</FONT></P></FONT>
+<P><FONT size=2>{</FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2><FONT color=#0000ff>return</FONT> 0;</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P></BLOCKQUOTE>
+<P><FONT size=2>}</FONT></P></FONT><FONT color=#0000ff>
+<P><FONT size=2>#endregion</FONT></P>
+<P><FONT color=#000000 size=2>To use this,</FONT></P>
+<P><FONT size=2><FONT color=#008080>SortedBindingList</FONT>&lt;<FONT color=#008080>Form</FONT>&gt; sortedList = <FONT color=#0000ff>new</FONT> <FONT color=#008080>SortedBindingList</FONT>&lt;<FONT color=#008080>Form</FONT>&gt;(TempformsList);</FONT></P>
+<P><FONT color=#008000><FONT size=2>//calls Form.CompareTo IComparable method which sorts by LOB, FormPrefix, then FormNumber. Keep PropertyName field blank (1st parameter in ApplySort).</FONT></P></FONT>
+<P><FONT size=2>sortedList.ApplySort(<FONT color=#800000>""</FONT>, System.ComponentModel.<FONT color=#008080>ListSortDirection</FONT>.Ascending);<FONT color=#008000></P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>foreach</FONT> (<FONT color=#008080>Form</FONT> form <FONT color=#0000ff>in</FONT> sortedList)<FONT color=#008000>//add sorted forms to formsList</FONT></FONT></P>
+<BLOCKQUOTE dir=ltr>
+<P><FONT size=2>formsList.Add(form);</FONT></P></BLOCKQUOTE>
+<P dir=ltr><FONT color=#000000 size=2>Finally, formsList will contain a sorted list of forms by LineOfBusinessTypeID, FormPrefix and FormNumber.</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Aztec_2Step replied on Thursday, March 20, 2008</h2><P>The problem I have with this solution is that it makes modifications to the SortedBindingList class where you are making the framework aware of your Subclass T. This may be defined in your implementation of CSLA or by making CSLA dependent on another assembly that has T defined. Also it is kind of embedding a one-off solution in a more general framework. </P>
+<P>Don't get me wrong, I'm a newbie to C# and CSLA. I'm not trying to tell everyone their business but this is what strikes me as a possible problem... </P>
+<P>I would prefer using the ApplySort(IComparer comparer) method but I've not seen any code on it. If anyone could email me such code, I'd appreciate it greatly!!! Aztec_2Step ( @ ) hotmail.com</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

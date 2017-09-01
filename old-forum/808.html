@@ -1,0 +1,31 @@
+<html><header><title>Tricky list problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Tricky list problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/808.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio posted on Thursday, August 03, 2006</h2><P>I have an EO named 'Customer' that keeps a collection of 'CustomerContact' objects in a Editable Child List named 'CustomerContactList', e.g.:</P>
+<P>Customer</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CustomerContactList</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- CustomerContact</P>
+<P>In CustomerContact there is a boolean property 'DefaultBilling' that <U>must only be true for one item in the collection at one time</U>. I have tried putting a loop in the 'set' property to check all items in the parenet list and set as necessary, but without success.</P>
+<P>Any ideas how this can be done? In a nutshell, when the DefaultBilling property of a CustomerContact is set to true, I need to loop through the parent list to make sure no other CustomerContacts have this property set to true.</P>
+<P>Help gratefully appreciated,</P>
+<P>&nbsp;</P>
+<P>Bonio</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bonio replied on Thursday, August 03, 2006</h2><P>I think I have found the answer to my own problem. I have done the following:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>set</P></FONT><FONT size=2>
+<P>{</P>
+<P>CanWriteProperty(</FONT><FONT color=#800000 size=2>"DefaultShipping"</FONT><FONT size=2>, </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (!_defaultShipping.Equals(</FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>))</P>
+<P>{</P>
+<P></P>
+<P></FONT><FONT color=#008080 size=2>CustomerContactList</FONT><FONT size=2> _list = Parent </FONT><FONT color=#0000ff size=2>as</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>CustomerContactList</FONT><FONT size=2>;</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2>(</FONT><FONT color=#008080 size=2>CustomerContact</FONT><FONT size=2> cont </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> _list)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2>(cont!=</FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>)</P>
+<P>{</P>
+<P>cont._defaultShipping = </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>cont.MarkDirty();</P>
+<P>}</P>
+<P></P>
+<P>}</P>
+<P></P>
+<P>_defaultShipping = </FONT><FONT color=#0000ff size=2>value</FONT><FONT size=2>;</P>
+<P>PropertyHasChanged(</FONT><FONT color=#800000 size=2>"DefaultShipping"</FONT><FONT size=2>);</P>
+<P>}</P>
+<P>}</P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

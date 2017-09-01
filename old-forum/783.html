@@ -1,0 +1,21 @@
+<html><header><title>Need to save new child's PK</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Need to save new child's PK</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/783.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>NelsonF posted on Tuesday, August 01, 2006</h2><DIV>We have a scenario where we have a parent object&nbsp;of Property that contains a child collection of Appraisal objects. I need to tell the Property object which Appraisal is the authoritative one for use in calculating some values.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The way our data is currently schemed, is that the Property object has a property named AuthoritativeAppraisalId to hold the PK of the Appraisal to use.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>When a new Appraisal is entered, it may become the authoritative one but since I have no way of getting a PK without saving the parent (and thus losing my references) I can't figure out how to do this without breaking schema.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>The only way I can think this will work in the CSLA model is to put a bit field into Appraisal to indicate that it is the authoritative one but then I have to insure that only one Appraisal has this bit field set and I introduce a field that for most records in the database is really useless and just taking up space (albeit only a bit field).</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Am I missing something here?</DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, August 01, 2006</h2><P>Keep in mind that your objects are <EM>not</EM> a direct 1:1 map to your database. Business objects should be designed around business use cases and behavior, not around the data.</P>
+<P>So it is perfectly fine to have your objects keep track of this authoritative concept one way in memory, and to persist that concept to the database in a different way.</P>
+<P>In your object model, it isn't probably the responsibility of the Appraisal to know that it is authoritative, as much as it is the responsibility of the Property to know which Appraisal is the authoritative one. You can handle that through a simple object reference - Property would contain a reference like _authoritativeAppraisal along with its reference to the collection of all Appraisal objects.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, August 01, 2006</h2><P>One option (probably too late :) ) would be to use Guids for child objects as a surrogate key. </P>
+<P>Barring that, as Rocky mentions,&nbsp;if you store a reference to the authoritative appraisal ID instead of the key, then you can retain a reference to new and old object alike. </P>
+<P>For my "primary" situations like this in the database, I typically have:</P>
+<P>Property&nbsp;&nbsp;&nbsp;-----&nbsp;&nbsp;&nbsp;Appraisal</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;|</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;AppraisalPrimary (PropertyId (Pk), AppraisalId)</P>
+<P>When updating each appraisal, I would include the following parameter to the SP:</P>
+<P>@IsPrimary&nbsp;&nbsp;&nbsp;= (property.AuthoritativeAppraisal = = this);</P>
+<P>If you store the Authoritative appraisal Id in the property table (a FK to appraisal, which is a bit of a circular ref) you can probably update "authoritativeappraisalId" in the appraisal update/insert SP, as the table row will be there at that point. </P>
+<P>Just my two cents.</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

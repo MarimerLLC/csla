@@ -1,0 +1,136 @@
+<html><header><title>Edit Level Mismatch AND Object Still Being Edited and Can't be saved</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Edit Level Mismatch AND Object Still Being Edited and Can't be saved</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11579.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus posted on Saturday, September 15, 2012</h2><p>Hi all.. </p>
+<p>&nbsp;</p>
+<p>I don&#39;t have an understanding what problem i faced.</p>
+<p>This my scenario :</p>
+<p>I Have a view model for my root view model ( DomainEditGetterVM ), in this vm I have a view model as root&#39;s view model property which is I used for my view ( DomainEditVM ).</p>
+<p>SO, in the DomainEditVM I&#39;m not load my DomainEdit BO by BeginRefresh BUT I received it from constructor like this : </p>
+<p>public DomainEditVM(DomainEdit model, DomainEditGetterVM parent)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Model = model;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Parent = parent<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //&nbsp; ManageObjectLifetime = false;</p>
+<p>..........................................</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;</p>
+<p>AND THEN in this ( DomainEditVM ) I have a method which is call BeginSave();</p>
+<p>&nbsp;</p>
+<p>The Error Raise :</p>
+<p>1. Edit Level Mismatch When I Comment ManageObjectLifetime = false</p>
+<p>2. AND WHEN I Uncomment ManageObjectLifetime = true, THERE IS ANOTHER ERROR :</p>
+<p>&nbsp;&nbsp;&nbsp; Object Still Being Edited and Can&#39;t be saved</p>
+<p>&nbsp;</p>
+<p>Could Anyone Give Me suggestions or explain me what i should to do ?</p>
+<p>&nbsp;</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, September 15, 2012</h2><p>Only &quot;root&quot; viewmodel (or the TopMost VM that has ManageObjectLifetime=true and has a &quot;root&quot; business object) can save the business object. </p>
+<p>When the VM has ManageObjectLifetme it will also take responsibility for calling BeginEdit/ApplyEdit/CancelEdit and handle Save. <br />You should NOT mix this in different VievModels. </p>
+<p>In this case - your DomainEditGetterVM should have ManageObjectLifetime = false and you should set the Model on DomainEditVM using the DependencyProperty.</p>
+<p>From ViewModelBase: </p>
+<p>&nbsp;</p>
+<div style="color:black;background:white;font-family:Consolas;font-size:10pt;">
+<p style="margin:0px;">&nbsp; &nbsp; <span style="color:blue;">public</span> <span style="color:blue;">static</span> <span style="color:blue;">readonly</span> <span style="color:#2b91af;">DependencyProperty</span> ModelProperty =</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:#2b91af;">DependencyProperty</span>.Register(<span style="color:#a31515;">&quot;Model&quot;</span>, <span style="color:blue;">typeof</span>(T), <span style="color:blue;">typeof</span>(<span style="color:#2b91af;">ViewModelBase</span>&lt;T&gt;),</p>
+<p style="margin:0px;"><span style="color:blue;">#if</span> NETFX_CORE</p>
+<p style="margin:0px;"><span style="color:gray;">&nbsp; &nbsp; &nbsp; &nbsp; new PropertyMetadata(default(T), (o, e) =&gt;</span></p>
+<p style="margin:0px;"><span style="color:blue;">#else</span></p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">new</span> <span style="color:#2b91af;">PropertyMetadata</span>((o, e) =&gt;</p>
+<p style="margin:0px;"><span style="color:blue;">#endif</span></p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> viewmodel = (<span style="color:#2b91af;">ViewModelBase</span>&lt;T&gt;)o;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; viewmodel.OnModelChanged((T)e.OldValue, (T)e.NewValue);</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">if</span> (viewmodel.ManageObjectLifetime)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; {</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">var</span> undo = e.NewValue <span style="color:blue;">as</span> Csla.Core.<span style="color:#2b91af;">ISupportUndo</span>;</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; <span style="color:blue;">if</span> (undo != <span style="color:blue;">null</span>)</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; undo.BeginEdit();</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; }</p>
+<p style="margin:0px;">&nbsp; &nbsp; &nbsp; &nbsp; }));</p>
+</div>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Saturday, September 15, 2012</h2><p>Hi Jonny.. thanks for your quick respons</p>
+<p>&nbsp;</p>
+<p>But I still not yet got your explanation,&nbsp; Do you&nbsp; mean I must add that code on My DomainEditVM or on my ViewModelBase Class ?</p>
+<p>And Why I Can&#39;t just call BeginSave() from my DomainEditVM ?</p>
+<p>What information I must know about this topic ? Because I have faced a similar problem and i just set ManageLifetime = false in order I can run BeginSave()</p>
+<p>BUT I don&#39;t the consequence about my action I just confuse Because I can&#39;t save my Business Object.</p>
+<p>&nbsp;</p>
+<p>I really thanks for you help jonny</p>
+<p>&nbsp;</p>
+<p>Stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 16, 2012</h2><p>My understanding of your problem is that DomainEditGetterVM has ManageObjectLifetime = true. <br />IF SO: Then this is the VM that should call Save. </p>
+<p>My suggestion is that you set ManageObjectLifetime = false on the DomainEditGetterVM and set ManageObjectLifetime = true on DomainEditVM .</p>
+<p>And you should use the Model dependency property on DomainEditVM or in you contstructor - you must make sure to call BeginEdit on the BO.<br />The DomainEditVM must be in charge on the BO in order to call Save. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Sunday, September 16, 2012</h2><p>Hi jonny </p>
+<p>I&#39;m glad to see you in this thread again :)</p>
+<p>&nbsp;</p>
+<p>Yes you are right that is my condition, BUT I have tried your suggestions :</p>
+<p>1. I have set ManageObjectLifetime =&nbsp; false on DomainEditGetterVM</p>
+<p>2. I have set ManageObjectLifetime = true on DomainEditVM, BECAUSE in this view model I run BeginSave();</p>
+<p>BUT the problem still arise &quot;Edit Level Mismatch Accept Changes&quot; </p>
+<p>&nbsp;</p>
+<p>SO, if that error is caused by the BeginEdit number DIFFERENCE with ApplyEdit() or CancelEdit() number.</p>
+<p>THEN as long as I&#39;m aware of , I don&#39;t call BeginEdit() or ApplyEdit() anywhere in my code.</p>
+<p>&nbsp;</p>
+<p>SECOND, If that is the real problem WHEN I set ManageObjectLifetime = false on DomainEditVM THEN It&#39;s must be no error, BUT What I got is an error that said : &quot;Object is still being edit can&#39;t saved&quot; </p>
+<p>&nbsp;</p>
+<p>SO I don&#39;t have an understanding what happen here ?</p>
+<p>&nbsp;</p>
+<p>And For Addtional information : </p>
+<p>My DomainEdit Business Object Has Child Collection which is bound to DataGrid in View , Is this an posibility association with this problem ?</p>
+<p>And If yes, Could you help me with those posibility i must check ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>thanks a lot jonny</p>
+<p>stefanus</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 16, 2012</h2><p>You must check EditLevel on your <b>root </b>object. </p>
+<p>After ApplyEdit is called the entire graph should be at editlevel = 0.<br />The Save exception is thrown in BusinessBase.Save: </p>
+<p>&nbsp;&nbsp;&nbsp; public virtual T Save()<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; T result;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (this.IsChild)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(Resources.NoSaveChildException);<br /><b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (EditLevel &gt; 0)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(Resources.NoSaveEditingException);</b><br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!IsValid &amp;&amp; !IsDeleted)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new Rules.ValidationException(Resources.NoSaveInvalidException);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (IsBusy)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; throw new InvalidOperationException(Resources.BusyObjectsMayNotBeSaved);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (IsDirty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = (T)DataPortal.Update(this);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; else<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; result = (T)this;<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnSaved(result, null, null);<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return result;<br />&nbsp;&nbsp;&nbsp; }</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Sunday, September 16, 2012</h2><p>Hi jonny</p>
+<p>&nbsp;</p>
+<p>Where do I must check EditLevel ?</p>
+<p>actually I don&#39;t know how to do your suggestion ( Check EditLevel ) </p>
+<p>&nbsp;</p>
+<p>thanks a lot jonny</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 16, 2012</h2><p>EditLevel is a &quot;state&quot; property on the BO.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Sunday, September 16, 2012</h2><p>Yes jonny</p>
+<p>But, I can&#39;t access it from DomainEditVM</p>
+<p>with Model.EditLevel , AM I right ?</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, September 16, 2012</h2><p>Editlevel is in the IUndoableObject interface or you can add your own public property MyEditLevel to expose it from the BO .</p>
+<p>Like: </p>
+<p><i>public int MyEditLevel<br />{<br />&nbsp;&nbsp;&nbsp;&nbsp; get&nbsp; { return base.EditLevel; }<br />}</i></p>
+<p>or</p>
+<p><i>((IUndoableObject) Model).EditLevel </i></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Sunday, September 16, 2012</h2><p>Hi jonny</p>
+<p>Good Morning, Thanks for your helper so far..</p>
+<p>&nbsp;</p>
+<p>Yes jonny you are right , I have Check EditLevel on DomainEdit BO on DomainEditVM</p>
+<p>I got EditLevel is 4.</p>
+<p>&nbsp;</p>
+<p>SO , What are they which caused the value of EditLevel ( DomainEdit ) is 4 ?</p>
+<p>Or What I have to check or inspect later after this ?</p>
+<p>&nbsp;</p>
+<p>Note : </p>
+<p>This is the structure of My Entire Business Object</p>
+<p>DomainEdit =&gt; DomainClasses =&gt; DomainClassEdit =&gt; DomainStudents =&gt; DomainStudentEdit</p>
+<p>AND I bound DomainClasses with DataGrid ?</p>
+<p>&nbsp;</p>
+<p>thanks jonny</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Monday, September 17, 2012</h2><p>HI jonny</p>
+<p>&nbsp;</p>
+<p>I have checked EditLevel</p>
+<p>And I got like this :</p>
+<p>My BO structure :</p>
+<p>&nbsp;</p>
+<p>DomainEdit =&gt; DomainClasses =&gt; DomainEdit =&gt; DomainStudents =&gt; DomainStudentEdit</p>
+<p>&nbsp;</p>
+<p>I have tried to check each edit level AND The result is :</p>
+<p>&nbsp;</p>
+<p>DomainEdit&nbsp; =&gt; level 4</p>
+<p>DomainClasses =&gt; Level 4</p>
+<p>DomainEdit =&gt; Level 5</p>
+<p>DomainStudents =&gt; Level 5</p>
+<p>DomainStudentEdit is not yet filled with BO</p>
+<p>&nbsp;</p>
+<p>So, this is look like that there is somewhere a trigger to call beginEdit in my BusinessObject Structures , BUT I don&#39;t have enough knowledge, WHERE ?</p>
+<p>Is this problem is asscoicated with DataGrid which is I bound with my DomainClasses ? </p>
+<p>&nbsp;</p>
+<p>thanks jonny..</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>richardb replied on Monday, September 17, 2012</h2><p>Grid control could be firing BeginEdit&#39;s automatically - depends on the control, how you are using it, etc.</p>
+<p>Make sure when you do the save that you Unbind and Rebind to your data control.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>st3fanus replied on Monday, September 17, 2012</h2><p>Hi richard.. thanks for your respons</p>
+<p>&nbsp;</p>
+<p>1. So How Do I can Know The DataGrid Work ?</p>
+<p>2. How I can UnBind and Rebind on DataGrid Silverlight ?</p>
+<p>thanks a lot</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

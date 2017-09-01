@@ -1,0 +1,15 @@
+<html><header><title>Rocky, can you call Dispose() on the DataPortal.ReleaseProxy()</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Rocky, can you call Dispose() on the DataPortal.ReleaseProxy()</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4182.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>slabanum posted on Wednesday, January 16, 2008</h2><P>Just got my hands on the 3.0 e-book and was happy to find that the ReleaseProxy() has been implemented since we implemented our own channel.</P>
+<P>Can I make a request that the ReleaseProxy() implement something like the the below snippet so that it automatically releases the connections in our custom proxy?&nbsp; Another idea is to have IDataPortalProxy implement IDisposable?<FONT size=2></P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> mPortal </FONT><FONT color=#0000ff size=2>IsNot</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Nothing</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Then</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp; Dim</FONT> o <FONT color=#0000ff>As</FONT> <FONT color=#0000ff>Object</FONT> = mPortal</FONT></P>
+<P><FONT size=2>&nbsp;&nbsp;&nbsp;<FONT color=#0000ff>Dim</FONT> dispType <FONT color=#0000ff>As</FONT> System.Type = o.GetType().GetInterface(<FONT color=#a31515>"System.IDisposable"</FONT>)</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;If</FONT> dispType <FONT color=#0000ff>IsNot</FONT> <FONT color=#0000ff>Nothing</FONT> <FONT color=#0000ff>Then </FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;CType</FONT>(o, IDisposable).Dispose()</FONT></P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;End</FONT> <FONT color=#0000ff>If</P></FONT></FONT>
+<P><FONT size=2><FONT color=#0000ff>End</FONT> <FONT color=#0000ff>If</FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff>Thanks.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#0000ff></FONT></FONT>&nbsp;</P>
+<P><FONT size=2><FONT color=#0000ff>&nbsp;</P></FONT></FONT>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 17, 2008</h2><P>This is a good idea.</P>
+<P>I don't think having IDataPortalProxy implement IDisposable is a good idea, because that would imply that proxies should somehow be disposed in normal usage - and that's not practical in most apps. Typically the proxy is created and cached during the entire life of the AppDomain.</P>
+<P>But this release method is an exception to that, and you are right that the proxy should be disposed when it is released.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,87 @@
+<html><header><title>ObjectListView - ChildCollection</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ObjectListView - ChildCollection</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1450.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline posted on Wednesday, October 11, 2006</h2>Hi,<br>
+<br>
+We have an root collection that contains a child collection.&nbsp; When
+we drag the object onto the form to create a datagridview and binding
+source, then drag the child collection on to the form to create it's
+datagridview and binding source, we get an error for the child
+collection grid.&nbsp; The way we hooked it up was just to load the
+root collection, create an ObjectListView of it and set the root
+collection binding source to the objectlistview just created.&nbsp; <br>
+<br>
+The error we get is:<br>
+"Unable to cast object of type 'Schedule.Library.Main.Department' to type 'Csla.ObjectView'."<br>
+Where Department is a child in the child collection which would be a row in the childs datagridview.<br>
+<br>
+If we don't use the objectlistview and just set the root collection
+binding source to the root collection, everything works fine.&nbsp; We
+need the ability to sort and filter which is obviously why we'd like to
+use the ObjectListView.<br>
+<br>
+Any suggestions?<br>
+<br>
+Thanks<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, October 11, 2006</h2>I am not quite sure that I am following what you are doing.&nbsp; Could you post some code?&nbsp; Maybe of where you are loading the object and setting the bindingSource.DataSource?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2>Form loading<br>
+<br>
+The Units object has a child collection of Departments, and when using
+the ObjectListView, the datagrid hooked up to the Departments won't
+load giving the error stated above.&nbsp; Does the ObjectListView
+support child collections and such?<br>
+<br>
+Works...<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private Schedule.Library.Main.Units _units;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ObjectListView _unitsView;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public UnitTesting()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Units_Load(object sender, EventArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._units = Schedule.Library.Main.Units.GetUnits(1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.unitsBindingSource.DataSource =
+this._units;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Doesn't work<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private Schedule.Library.Main.Units _units;<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private ObjectListView _unitsView;<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public UnitTesting()<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; InitializeComponent();<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void Units_Load(object sender, EventArgs e)<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this._units = Schedule.Library.Main.Units.GetUnits(1);<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _unitsView = new ObjectListView(this._units, "RunNum Asc");<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+this.unitsBindingSource.DataSource =
+_unitsView;&nbsp;&nbsp;&nbsp;&nbsp; <br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>
+<br>
+Let me know if you need more info.<br>
+<br>
+Thanks.<br>
+<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, October 11, 2006</h2>That is all pretty normal usage, so the problem is most likely elsewhere.&nbsp; How does Department fit into this?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>Okay, how does Department fit into this?<br></div></BLOCKQUOTE><br>
+<br>
+When we add the Units object as a datasource, you can see all of it's
+properties, one being the Departmetns collection.&nbsp; When we drag
+the Units object onto the form it creates a datagridview and a
+bindingsource.&nbsp; If I expand the Units datasource, and drag the
+Departments collection onto the form, it creates another datagrid and
+binding source.&nbsp; If we simply load the Units object and set it as
+the datasource for the Units binding source (and that's it, you DON'T
+have to do anything else like set the datasource for the Departments
+binding source, it's taken care when we drug the Departments collection
+on to the Form), both the Units Grid and Departments grid poplulate
+with the corrected binding between the two.&nbsp; If we set the Units
+binding source to that of an ObjectListView, the Departments grid is
+having issues.<br>
+<br>
+Not sure if that's what you mean...<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, October 11, 2006</h2>Okay, I will set up a mock up and see what I can find.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Wednesday, October 11, 2006</h2>Well, it looks like my understanding of ITypedList and ICustomTypeDescriptor were stretched beyond their limits.&nbsp; I will look into this and try to get a solution to you by Friday.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Wednesday, October 11, 2006</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>Brian Criswell:</strong></div><div>Well, it looks like my understanding of
+ITypedList and ICustomTypeDescriptor were stretched beyond their
+limits.&nbsp; I will look into this and try to get a solution to you by
+Friday.<br></div></BLOCKQUOTE><br>
+<br>
+Thanks Brian, we really appreciate it.&nbsp; The is a great addition to the CSLA framework!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Friday, October 13, 2006</h2>I have not forgotten about you.&nbsp; I have gotten the ObjectListView working in the designer, but you cannot set the values in the child list.&nbsp; I will let you know when it is finished, probably Monday.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brian Criswell replied on Saturday, October 14, 2006</h2>Unfortunately I never found the ideal solution, and I could not even simulate what you wanted to do with a DataView and typed DataSet.&nbsp; I can offer a good workaround however.<br><ol><li>Set up data sources for the parent list type and the child list type</li><li>Drag the parent list data source onto your control to create a DataGridView</li><li>Drag the child list data source (not the Children property on the parent list) onto your control to create another DataGridView</li><li>Set the parent list binding source's data source to a new ObjectListView when load the control/pass the parent list into the control</li><li>handle the parent list binding source's CurrentChanged event and place the following code in it</li></ol><br><font color="#0000ff">private void</font> itemListBindingSource_CurrentChanged(<font color="#0000ff">object</font> sender, <font color="#7fffd4">EventArgs</font> e)<br>{<br>&nbsp;&nbsp;&nbsp; <font color="#0000ff">try</font><br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; childItemListBindingSource.DataSource = null;<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (itemListBindingSource.Current <font color="#0000ff">is</font> Csla.<font color="#7fffd4">ObjectView</font>)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; Csla.<font color="#7fffd4">ObjectView</font>&nbsp; objectView = (Csla.<font color="#7fffd4">ObjectView</font>)itemListBindingSource.Current;<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; if (objectView.Object != <font color="#0000ff">null</font>)<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; childItemListBindingSource.DataSource = <font color="#0000ff">new</font> Csla.<font color="#7fffd4">ObjectListView</font>(((<font color="#7fffd4">MyParentObject</font>)objectView.Object).Children);<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; }<br><br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; childItemListBindingSource.AllowNew = childItemListBindingSource.DataSource != <font color="#0000ff">null</font>;<br>&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; <font color="#0000ff">catch</font> (<font color="#7fffd4">Exception</font> ex)<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;  // handle exception<br>&nbsp;&nbsp;&nbsp; }<br>}<br><br>This should work with the version that you have, but I have posted a new version with some additional capabilities.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Crestline replied on Saturday, October 14, 2006</h2>Thanks Brian, I'll give this a try.&nbsp; Looks very straight forward.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

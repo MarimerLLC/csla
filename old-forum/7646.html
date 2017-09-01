@@ -1,0 +1,84 @@
+<html><header><title>Request for DataPortalResult Event Arg</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Request for DataPortalResult Event Arg</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7646.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack posted on Wednesday, September 16, 2009</h2>I am continually doing a check to see if my aysnc call worked /w no error and a non-null object was retrieved.&nbsp; Could we add a single bool to the event argument for:<br><br>Completed = e.Error == null &amp;&amp; e.Object != null<br><br>I've found quite a few times I've made copy/paste issues <br><br>Thanks<br><br>jack<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Thursday, September 17, 2009</h2>Hi, <br><br>Csla DataPortalResultEventArgs works very similar to how the Backgroundworkers RunWorkerCompletedEventArgs is defined in .Net. <br><br>You could however make your extension method to add a Completed method: <br><br>&nbsp;&nbsp;&nbsp; public static class MyExtensions<br>&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; public static bool Completed(this IDataPortalResult arg) <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return arg.Error == null;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br>&nbsp;&nbsp;&nbsp; }&nbsp; <br><br>usage:<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void objecttype_FetchCompleted(object sender, DataPortalResult&lt;objecttype&gt; e)<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (!e.Completed()) return;<br><br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; // do whatever you want with returned object <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }<br><br>/jonnybee<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, September 17, 2009</h2><P>That code is incorrect though.</P>
+<P>The way you know success/fail is whether Error is null. It doesn't matter what Object is if Error != null.</P>
+<P>In fact, the Microsoft implementation throws an exception if you try to access e.Object when e.Error != null, and I probably should have done the same thing...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, September 17, 2009</h2>I think this would be a good change, for consistency.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jack replied on Thursday, September 17, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You know I started that way... and somewhere along the line I
+switched to doing both checks.&nbsp; <o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I think now that it was because of an earlier issue with the
+CSLA DataProvider in SL (maybe when it was firing DataChanged twice back in the
+day) or something but I'm sure I was having an issue where I needed to check
+both.&nbsp; I then switched away from the DataProvider and starting just
+managing my own async calls via the DataPortal and then of course it just
+mindlessly propagated.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I'll put my code back to just check error then but it would be
+nice to have the re-assurance of the MS implementation and if I find a null
+Object I'll be certain to run it down.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Would that make sense as well in the DataChanged?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>While my earlier request is not such a big deal now it might
+still be nice to put in a straight bool for success vs. !=null vs. ==
+null.&nbsp; If you don't want to then that is fine, I'll take Johnny Bee's
+advice and plug it in that way.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks for the clarification.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> RockfordLhotka [mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> September-17-09 8:50 AM<br>
+<b>To:</b> jaddington@alexandergracie.com<br>
+<b>Subject:</b> Re: [CSLA .NET] Request for DataPortalResult Event Arg<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>That code is incorrect though.<o:p></o:p></p>
+
+<p>The way you know success/fail is whether Error is null. It doesn't matter
+what Object is if Error != null.<o:p></o:p></p>
+
+<p>In fact, the Microsoft implementation throws an exception if you try to
+access e.Object when e.Error != null, and I probably should have done the same
+thing...<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

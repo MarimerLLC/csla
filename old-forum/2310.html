@@ -1,0 +1,10 @@
+<html><header><title>DataGridView Cancel Edit Problem</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>DataGridView Cancel Edit Problem</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2310.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JZuerlein posted on Friday, February 09, 2007</h2><P>I'm having a problem with a bound DataGridView.</P>
+<P>Here are the steps....</P>
+<P>The user&nbsp;adds a row to in the DataGridView with its built in functionality, and completes the data entry.</P>
+<P>Add a second row in the DataGridView.&nbsp; The preset values that are assigned in the constructor are displayed, but no data entry is performed.</P>
+<P>When you click on the first row the data from the second row disappears.&nbsp;If you attempt to add another row you get an error.</P>
+<P>Here is the error I get...</P>
+<P>System.InvalidOperationException was unhandled<BR>&nbsp; Message="Operation is not valid due to the current state of the object."<BR>&nbsp; Source="System.Windows.Forms"<BR>&nbsp; StackTrace:<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; at System.Windows.Forms.DataGridView.DataGridViewDataConnection.ProcessListChanged(ListChangedEventArgs e)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </P>
+<P>I checked the collection, and all the items have unique ids.&nbsp; I overrode the RemoveItem sub to see if it gets called, but it does not.&nbsp; It seems like the ICancelAddNew interface is not working.&nbsp; </P>
+<P>Does anyone have any ideas about how to trouble shoot this?</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

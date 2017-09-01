@@ -1,0 +1,10 @@
+<html><header><title>Using WCFPortal: It doesn't inserts a child object. SlPortal, HttpProxy instead yes</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Using WCFPortal: It doesn't inserts a child object. SlPortal, HttpProxy instead yes</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12697.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RolandoTonin posted on Monday, July 14, 2014</h2><p>Hy</p>
+<p>I&#39;m try to build a multi UI n-tiers sofware based on CSLA 4.5.600. I have a root object with a child list of child-objects. My solution is as follow:</p>
+<p>- a business library based on recently &quot;Shared&quot; project concept built on Visual Studio 2013 u2&nbsp; </p>
+<p>- a WCFHost localhost server with WCFPortal.svc and SlPortal.svc</p>
+<p>- a MVC5AppServer localhost server with HttpProxy</p>
+<p>- client UI: WPF, Wp8, Universal App (WinRT and WP8.1)</p>
+<p>This is a test solution before to start a very important project based on above configuration (maybe Azure also server option) that will start in the next months.</p>
+<p>Everything of above work perfectly except when in WPF Client i insert a new child object. Probably, the new object is not serialized on server. In fact the root object on client side IsValid,it is IsSavable and the child list contains the new object but when I put a breakpoint on DataPortal_Update(), Server side (WCFHost), the root object is not dirty and child list don&#39;t contains the new object. Instead, when I tried to Update and Delete Child Objects these work perfectly. I have this problem only on WPF (CSLA settings are in App.config file) - WCFPortal.svc. WP8Client-SlPortal.svc work fine. Also Universal App (WinRT 8.1 and WP8.1) with MVC5AppServer, they work as I expected.</p>
+<p>What can I try to discover where there is a bug on my solution?</p>
+<p>Regards, Rolando&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

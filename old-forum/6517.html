@@ -1,0 +1,6 @@
+<html><header><title>CSLALight Local DataPortal with WCF service BLB Updating</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLALight Local DataPortal with WCF service BLB Updating</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6517.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone posted on Thursday, February 26, 2009</h2><P>I am struggling with how to have a type inherited from BLB process updates when using WCF and a local dataportal</P>
+<P>The SL client invokes BeginUpdate with invokes the BLB type's DataPortal_Update.</P>
+<P>Then what?</P>
+<P>Invoking Child_Update certainly executes the appropriate dataportal_*** method of each child, each of which invokes a WCF service to process its update. But I do not see how to tie the completion of them all to a ending method for _Update.</P>
+<P>Having the BLB's DataPortal_Update invoke a service passing a dto of the entire list bypasses all the is it new, is it dirty, is it deleted logic of Child_Update.</P>
+<P>Would someone please tell me what I am missing in understanding this.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

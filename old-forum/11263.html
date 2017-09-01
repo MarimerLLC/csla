@@ -1,0 +1,55 @@
+<html><header><title>IEnumerable LINQ Query SmartDate issue</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>IEnumerable LINQ Query SmartDate issue</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11263.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>BruderKotlett posted on Wednesday, March 28, 2012</h2><p>Hello,</p>
+<p>I&#39;ve an issue regarding LINQ and an IEnumerable collection with BusinessBase objects containing SmartDate properties. Using the latest CSLA.NET Release.</p>
+<p>Here is what I try (hopefully enough code):</p>
+<div>
+I<b>Enumerable collection = ItemsSource as IEnumerable;</b> // Collection of&nbsp;Properhandels&nbsp;Objects<br /><br />
+// query.FilterString --&gt; &quot;ValidUntil != null AND ValidUntil &gt; @0&quot;<br />
+// query.QueryParameters --&gt; [0] DateTime 01.03.2012
+<br />
+<br /><b>
+var result = collection.AsQueryable().Where(query.FilterString, query.QueryParameters.ToArray&lt;object&gt;());
+</b><br /><br /><b>
+namespace System.Linq.Dynamic<br />
+{<br />
+&nbsp; &nbsp; public static class DynamicQueryable<br />
+&nbsp; &nbsp; {<br />
+&nbsp; &nbsp; &nbsp; &nbsp; void CheckAndPromoteOperands(Type signatures, string opName, ref Expression left, ref Expression right, int errorPos)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; {<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Expression[] args = new Expression[] { left, right };<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; MethodBase method;<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; if (FindMethod(signatures, &quot;F&quot;, false, args, out method) != 1)<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; throw IncompatibleOperandsError(opName, left, right, errorPos); // &lt;-- ParseException<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; left = args[0];<br />
+&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; right = args[1];<br />
+&nbsp; &nbsp; &nbsp; &nbsp; }<br />
+<span></span>&nbsp; &nbsp; }<br />
+}
+</b><br />
+<br />
+And I receive this ParseException<br /><b>
+Operator &#39;!=&#39; incompatible with operand types &#39;SmartDate&#39; and &#39;Object&#39;</b></div>
+<div></div>
+<div>Anyone who can help me with this issue? Is there something I do wrong? With an DateTime property everything works fine.</div>
+<div></div>
+<div>Kind Regards</div>
+<div>Kevin</div>
+<div>
+<p>&nbsp;</p>
+</div></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>tmg4340 replied on Wednesday, March 28, 2012</h2><p>Part of what you&#39;re running into is that a SmartDate is declared as a struct.&nbsp; Therefore, by definition it can&#39;t&nbsp;be NULL.</p>
+<p>More specific to your error, the SmartDate struct has several operator overloads, but none of them take an object as the second argument.&nbsp; Since a NULL value doesn&#39;t convert to anything other than an object type without a specific cast, .NET can&#39;t find an operator overload with the correct signature.</p>
+<p>My best recommendation for this error is to remove the NULL check from your query filter, as it shouldn&#39;t be necessary.</p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Wednesday, March 28, 2012</h2><p>My general recommendation is to NOT expose the SmartDate struct as a property.</p>
+<p>Use snippet <i>cslapropdt </i>to define the property. </p>
+<pre style="font-family:Consolas;font-size:13px;color:black;background:none repeat scroll 0% 0% #fafafa;">&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:#2b91af;">PropertyInfo</span>&lt;<span style="color:#2b91af;">SmartDate</span>&gt;&nbsp;StartDateProperty&nbsp;=&nbsp;RegisterProperty&lt;<span style="color:#2b91af;">SmartDate</span>&gt;(c&nbsp;=&gt;&nbsp;c.StartDate);
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:blue;">string</span>&nbsp;StartDate
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">string</span>&gt;(StartDateProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:blue;">string</span>&gt;(StartDateProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}<br /><br />If necessary add a when you also need the DateTime value<br /><br />&nbsp;&nbsp;&nbsp; [<span style="color:#2b91af;">Browsable</span>(<span style="color:blue;">false</span>)]
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">public</span>&nbsp;<span style="color:#2b91af;">DateTime</span>&nbsp;StartDateAsDateTime
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">get</span>&nbsp;{&nbsp;<span style="color:blue;">return</span>&nbsp;GetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:#2b91af;">DateTime</span>&gt;(StartDateProperty);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">set</span>&nbsp;{&nbsp;SetPropertyConvert&lt;<span style="color:#2b91af;">SmartDate</span>,&nbsp;<span style="color:#2b91af;">DateTime</span>&gt;(StartDateProperty,&nbsp;<span style="color:blue;">value</span>);&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;}
+</pre></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

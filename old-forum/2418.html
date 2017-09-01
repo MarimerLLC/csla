@@ -1,0 +1,10 @@
+<html><header><title>ErrorProvider won't show the error</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ErrorProvider won't show the error</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2418.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Optimist posted on Friday, February 23, 2007</h2><P>Hi,</P>
+<P>I've got a really simple Form that has a DataGridView with&nbsp;just 2 columns. Col 1 is an Identity field, col2 is text with a simple rule.</P>
+<P>BindingSource1.DataSource = EntityCollection1<BR>DataGridView1.DataSource = BindingSource1<BR>ErrorProvider1.DataSource = BindingSource1 </P>
+<P>When the rule is broken, I can easily display the error message in a messagebox, but I can't get ErrorProvider to indicate the error (which is what I really want to do).</P>
+<P>Is there something else that I should be doing?</P>
+<P><img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /><BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jimbo replied on Saturday, March 03, 2007</h2>Are you providing enough real estate for the error&nbsp; glyph in your column and row configuration ?<br>
+You also need row header if doing row validation vs cell validation.<br>
+<br>
+<br>
+<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

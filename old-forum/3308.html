@@ -1,0 +1,105 @@
+<html><header><title>Exception in PropertyHasChanged() in BusinessBase</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Exception in PropertyHasChanged() in BusinessBase</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/3308.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone posted on Wednesday, August 01, 2007</h2><P>I have finally hit a problem I could not understand after searching the forum.</P>
+<P>The call to <FONT size=2></P>
+<P>GetFrame(1).GetMethod.Name.Substring(4)</P>
+<P><FONT size=3>in PropertyHasChanged in BusinessBase is throwing an exception, sometimes.&nbsp; Using some traces, I found that the method name being returned is "ADD".&nbsp; This is the method in a EditableCollection that is creating a new object and adding that new object to its collection.</FONT></P>
+<P><FONT size=3>The ADD method code is:</FONT></P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT><FONT size=2> Add(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> arLedger </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, _<BR></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ByVal</FONT><FONT size=2> customer </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> apLedger </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>String</FONT><FONT size=2>, _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> bypassImport </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Boolean</FONT><FONT size=2>) _<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ARReference</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Dim</FONT><FONT size=2> item </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> ARReference = AddNew()<BR></FONT><FONT size=2>item.APLedger = apLedger<BR></FONT><FONT size=2>item.Customer = customer<BR></FONT><FONT size=2>item.ARLedger = arLedger<BR></FONT><FONT size=2>item.BypassImport = bypassImport<BR></FONT><FONT size=2>EndNew(Count)<BR></FONT><FONT color=#0000ff size=2>Return</FONT><FONT size=2> item</P>
+<P></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Function</FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Setting APLedger works fine.&nbsp; Setting Customer fails with the exception. Both properties use PropertyHasChanged().</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>My Trace showed that when setting APLedger, the GetFrame(1).GetMethod call returned set_APLedger, as expected.&nbsp; But when setting Customer, ADD was returned.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>I get this error whenever I run a production installed version of the program.&nbsp; In VS2005, I can only duplicate when running the Release config with Ctrl+F5.&nbsp; Any other combination works fine.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>I am using CSLA 2.0 and VS2005</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>The application is a Windows app.&nbsp; This process that executes this code runs on a background thread via a BackgroundWorker.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>I can work around this by changing the business object to use PropertyHasChanged("PropertyName") instead of just PropertyHasChanged,&nbsp; but I am REAL curious about WHY this is happening.&nbsp; Especially when it works for one property and not another.&nbsp; </FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>Any insight would be appreciated.</FONT></FONT></P>
+<P><FONT color=#0000ff size=2><FONT color=#000000></FONT></FONT>&nbsp;</P>
+<P><FONT color=#0000ff size=2><FONT color=#000000>I have attached a small txt file with the trace info that shows the method names being returned and the excption info.</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 01, 2007</h2><P>Do your get and set blocks have the required compiler attribute to prevent inlining?</P>
+<P>I'm guessing not, because it sounds like your properties have been inlined by the JIT compiler, so they really are running directly in the add method.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JimStone replied on Wednesday, August 01, 2007</h2><P>That's it. I have changed the properties.</P>
+<P>I am distressed that my searches prior to my post did not enlighten me.&nbsp;&nbsp; After Rocky's reply, I sure found plenty.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RickMartinez replied on Friday, October 26, 2007</h2><P><FONT face=Tahoma size=2>I also had the same problem... with&nbsp;an "add" method.&nbsp; And although&nbsp;I understand the solution for the problem (either add the no inlining attribute or specify the property) isn't it a good practice to verify the length of the string before calling substring?</FONT></P>
+<P><FONT face=Tahoma size=2>So in the BusinessBase we should have (for example):</FONT></P><FONT size=2><FONT size=3></FONT><FONT face=Tahoma size=2>[System.Runtime.CompilerServices.<FONT color=#008080>MethodImpl</FONT>(</FONT> <FONT face=Tahoma>System.Runtime.CompilerServices.<FONT color=#008080>MethodImplOptions</FONT>.NoInlining)]</FONT> <BR><FONT face=Tahoma><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>void</FONT> PropertyHasChanged()</FONT> <BR><FONT face=Tahoma>{<BR>&nbsp;&nbsp;&nbsp; <FONT color=#008000></FONT></FONT>&nbsp;<FONT face=Tahoma><FONT color=#0000ff>string</FONT> propertyName = <FONT color=#0000ff>new</FONT> System.Diagnostics.<FONT color=#008080>StackTrace</FONT>().GetFrame(1).GetMethod().Name;</FONT> <FONT face=Tahoma></FONT><FONT face=Tahoma><FONT color=#0000ff><BR><BR>&nbsp;&nbsp;&nbsp;&nbsp; if</FONT>&nbsp;&nbsp;(propertyName.Length &gt;= 4)</FONT> <BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT face=Tahoma>propertyName = propertyName.Substring(4);</FONT> <BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <FONT face=Tahoma>PropertyHasChanged(propertyName);</FONT> 
+<P><FONT face=Tahoma>}</FONT></P></FONT>
+<P><FONT face=Tahoma size=2><STRONG>instead of:</STRONG></FONT></P>
+<P><FONT face=Tahoma size=2>[System.Runtime.CompilerServices.<FONT color=#008080>MethodImpl</FONT>(</FONT><FONT face=Tahoma size=2>System.Runtime.CompilerServices.<FONT color=#008080>MethodImplOptions</FONT>.NoInlining)]</FONT></P>
+<P><FONT size=2><FONT face=Tahoma><FONT color=#0000ff>protected</FONT> <FONT color=#0000ff>void</FONT> PropertyHasChanged()<BR></FONT></FONT><FONT face=Tahoma size=2>{<BR></FONT><FONT size=2><FONT face=Tahoma><FONT color=#0000ff>&nbsp;&nbsp;&nbsp;&nbsp; string</FONT> propertyName = <FONT color=#0000ff>new</FONT> System.Diagnostics.<FONT color=#008080>StackTrace</FONT>().GetFrame(1).GetMethod().Name.Substring(4);</FONT></FONT></P>
+<P><FONT face=Tahoma size=2>&nbsp;&nbsp;&nbsp;&nbsp; PropertyHasChanged(propertyName);</FONT></P>
+<P><FONT face=Tahoma size=2>}</FONT></P>
+<P><FONT face=Tahoma size=2></FONT>&nbsp;</P>
+<P><FONT face=Tahoma size=2>Am i totally off base?&nbsp; If so, please help me understand :)</FONT></P>
+<P><FONT size=3><FONT face=Tahoma size=2>Rick</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 26, 2007</h2>Well you're technically right, it won't solve any issues.&nbsp; If you don't add the attribute and don't specify the property name (which is the only time this blows up), then PropertyHasChanged will return the METHOD being executed, not the PROPERTY just changed.&nbsp; Obviously this isn't the desired result.<br><br>I guess an argument can be made that the exception should be caught and a more meaningful one thrown.&nbsp; Certainly that might be a very good idea, because it would quickly point out the issue, instead of people coming to the forum searching for this same solution.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;ll add this to the wish list, though it is worth considering
+that the &#8220;correct&#8221; solution is a string comparison to ensure the
+text starts with &#8220;get_&#8221; or &#8220;set_&#8221; and throwing an
+exception if not. String compares are not the cheapest thing in the world, so
+you could debate whether this check is worth the expense to catch such an edge
+case (which is why it isn&#8217;t there now).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But I&#8217;ll consider the idea for some future version anyway.
+Maybe make it only active in debug mode and have it compile out of release mode
+or something.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> ajj3085
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, October 26, 2007 2:30 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Exception in PropertyHasChanged() in
+BusinessBase<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well you're technically right, it won't solve any
+issues.&nbsp; If you don't add the attribute and don't specify the property
+name (which is the only time this blows up), then PropertyHasChanged will
+return the METHOD being executed, not the PROPERTY just changed.&nbsp;
+Obviously this isn't the desired result.<br>
+<br>
+I guess an argument can be made that the exception should be caught and a more
+meaningful one thrown.&nbsp; Certainly that might be a very good idea, because
+it would quickly point out the issue, instead of people coming to the forum
+searching for this same solution.&nbsp; <img id="_x0000_i1025" src="/emoticons/emotion-1.gif" alt="Smile <img src=" />"><br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, October 26, 2007</h2>How expensive is the string compare vs. the reflection already used in the call to walk the stack trace?&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, October 26, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>How expensive is the string compare vs. the reflection already used in the call to walk the stack trace?&nbsp; <BR></div></BLOCKQUOTE></P>
+<P>Oh, it is quite incidental.</P>
+<P>Defensive programming is a wonderful thing. But you can carry it too far, in my view anyway. If you stop and think about everything that could go wrong with every method you call, and wrap that method call with checks for every possibility, your code would be insane. Very defensive, but insane.</P>
+<P>I totally agree with defensive programming where the likelihood of a bad thing happening is high, or where the consequences of a bad thing happening has a high cost.</P>
+<P>But to take the time, and incur the overhead, of checking for every edge case - even those with little probablility of occurance and/or a (relatively) low cost when something happens - seems like a bit much to me.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JustinJones replied on Wednesday, August 01, 2007</h2><font face="Times New Roman" size="2">This attribute:<br><br>[MethodImpl(MethodImplOptions.NoInlining)]<br><br>I prefer the named version (</font><font size="2"><font color="#0000ff" size="2"><font color="#000000"><font face="Times New Roman"> PropertyHasChanged("PropertyName")) because it doesn't have to get a call stack.&nbsp; </font><br></font></font></font></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

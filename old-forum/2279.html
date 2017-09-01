@@ -1,0 +1,82 @@
+<html><header><title>CSLA .NET 2.1.4 available for testing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA .NET 2.1.4 available for testing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2279.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka posted on Monday, February 05, 2007</h2><P>I'm working on version 2.1.4 of the framework. Well, to be fair, xal has done most of the work thus far <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>But I've put a test version on the download page.</P>
+<P>The focus, at the moment, is on CslaDataSource. Andres has tracked down a new approach to getting the type information in the designer, and it appears to be <EM>much</EM> better than the previous scheme. It now provides support for VS 2005 SP1 with web projects, and also allows the use of business classes from the App_Code directory or the web project, which is nice for demos anyway.</P>
+<P>I also have a lead on getting the control working when added as a new data source from a grid or details control. That's not in the test build yet, but I"m hopeful that a solution is close.</P>
+<P>So if you have the time and interest, please download 2.1.4 and give the new CslaDataSource a go. Post here with any issues you run into.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, February 12, 2007</h2><P>I have made a newer test version of 2.1.4 (C# only) available for download at <A href="http://www.lhotka.net/cslanet/download.aspx">www.lhotka.net/cslanet/download.aspx</A>. If you have the time, please download this and try it in your web development - let me know if you encounter any issues.</P>
+<P>This test version includes my attempt to allow the control to be added through the "new data source" option from within the GridView and DetailsView controls. <EM>This does not work</EM> properly, but at least it is more stable than the 2.1.3 code. The issue I'm now facing with this is that Visual Studio is somehow loading the new control into a separate appdomain from the actual page designer, which is causing the failure. A solution is not available at this time, and other people (such as the author of LLBLgen) have likewise been unable to resolve the issue... I am beginning to think it may not be worth my time to continue trying to solve it.</P>
+<P>This test version also includes a configuration window for CslaDataSource. You can now click the control's Configure link to more easily specify the type name of your business class. Along with this change, the AssemblyTypeName property is no longer used. I am leaving it on the control to avoid breaking existing ASPX pages, but it is now totally ignored by the control.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, February 15, 2007</h2><P>I think it's gonna woik.&nbsp; <img src="/emoticons/emotion-1.gif" alt="Smile [:)]" /></P>
+<P>I have not dared install SP1 again, having previously&nbsp;installed - uninstalled - reinstalled&nbsp;and&nbsp;finally&nbsp;uninstalled, but in the short time that I have been using 2.1.4, some of the inevitable and frequent&nbsp;"assembly not found" errors, which had almost become as expected as the snow in Minnesota in February, appear to have disappeared. Fantastic.</P>
+<P>Thanks Rocky, and thanks Andres</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Thursday, February 15, 2007</h2><P>I did notice one problem.&nbsp; I have been using Petar's ActiveObjects.&nbsp; Now, I am getting an error complaining about the OnSerialized, OnDeserialized methods in some of the ActiveObjects whenever the code is getting an object.&nbsp; Since I don't use any of those methods, it was simple enough to just comment those out - which took care of the problem.</P>
+<P>Jav</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, February 15, 2007</h2>I have a different version from Petar's latest release. I has some big differences with&nbsp; his latest stuff, so it might be worth trying for you on csla's latest version.<br>Send me a private message if you want that....<br><br><br>Andrés</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Is this at runtime or design time?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>None of the runtime behaviors have changed &#8211; all the
+changes are in the design time behaviors of the control.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jav
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, February 15, 2007 9:55 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] CSLA .NET 2.1.4 available for testing<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I did notice one problem.&nbsp; I have been using Petar's
+ActiveObjects.&nbsp; Now, I am getting an error complaining about the
+OnSerialized, OnDeserialized methods in some of the ActiveObjects whenever the
+code is getting an object.&nbsp; Since I don't use any of those methods, it was
+simple enough to just comment those out - which took care of the problem.<o:p></o:p></p>
+
+<p>Jav<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, February 16, 2007</h2><P>I've now put a VB version of 2.1.4 online too - equivalent to the C# version, so it includes the configuration dialog, along with the other changes.</P>
+<P>My Microsoft contact has indicated that the issue I've been fighting with adding a new data source control from a grid or details control is almost certainly a bug in Visual Studio. The author of LLBLgen has run into the same issue, and he chose to just live with it. I guess I will too - at least until VS gets fixed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jav replied on Friday, February 16, 2007</h2><P>Rocky,</P>
+<P>The problem with Petar's code occured at runtime.&nbsp; Unfortunately I did not write down the error message - which appeared to be quite consistant.&nbsp; I will be out of town till Monday, but I can do the test again&nbsp;then.&nbsp; I am using the latest version that Petar has made available on his site.</P>
+<P>Jav</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

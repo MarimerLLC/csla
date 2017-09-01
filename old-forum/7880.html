@@ -1,0 +1,30 @@
+<html><header><title>ASP.Net DataBinding Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ASP.Net DataBinding Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7880.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>SouthSpawn posted on Monday, October 26, 2009</h2><DIV>Ok,</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>I have an object that is like the following.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Person.Profile.BusinessTypes ("LIST" of "Editable Childs")</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>So basically.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Person = Editable (Parent)</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Profile is EditableChild or Parent Person</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>BusinessTypes is Collection of Editable Childs of parent Profile.<BR></DIV>
+<DIV>============================================<BR>I have an asp.net form with a CSLA Datasource on it.<BR><BR>I also have a asp.net "CheckBoxList" control on the page.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>In code, I am doing the following.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>MyCheckBoxList.DataSource = Person.Profile.BusinessTypes;</DIV>
+<DIV>MyCheckBoxList.DataBind();</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>This works no problem.<BR></DIV>
+<DIV>Here is my question.<BR><BR>Since the CheckBoxList will allow the users to selected multiple.<BR><BR>What is the "Proper" way to update the "EditChildCollection" of objects during the CSLA_DataSource_Update event?<BR><BR>Do I have to do the following.</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>Person = Person.GetPerson(Id)</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>int counter = 0;</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>foreach(myItem in CheckBoxList.Items)<BR>{<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Person.Profile.BusinessTypes[counter].Active = myItem.checked;<BR><BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;counter += 1;<BR>}</DIV>
+<DIV>&nbsp;</DIV>
+<DIV>person = person.Save();<BR><BR>I could do this, but for some reason, I am thinking it should automatically do it for me?<BR><BR>What am I missing here?</DIV></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,76 @@
+<html><header><title>Why is it recommended to unbind bussiness object before save operation?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Why is it recommended to unbind bussiness object before save operation?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12079.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr posted on Friday, July 19, 2013</h2><p>I have WinForms application.<br /><br />Some save operations may take few seconds. Usually, while saving is in progress, I&#39;m blocking (Enable = false) main Panel control which contain all binded controls (TextBox, Combobox etc.) and unblock it when save is done. I don&#39;t unbind datasource, so I see my values on controls. And that&#39;s what I like.<br /><br />But when we set DataSource to null (before save) - all my controls are empty until save operation complete. That is what I don&#39;t like. <br /><br /><br /><br />So why it&#39;s suggested to unbind? </p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Saturday, July 20, 2013</h2><p>Hi,</p>
+<p>Several reasons:</p>
+<p>
+<ul>
+<li>when an edit operation is active you have at least one snapshot of the object (and children) in memory and you do NOT want to include these over the wire.&nbsp;</li>
+<li>when an edit operation is active you cannot be sure if the user has changes in the UI component only that is not updated in the business object yet.</li>
+</ul>
+</p>
+<p>So for async operations in WinForms I usually prefer:</p>
+<p>
+<ul>
+<li>unbind from UI form</li>
+<li>Start async save operation</li>
+<li>rebind the old object&nbsp;</li>
+<li>make form disabled</li>
+<li>in callback handle&nbsp;
+<ul>
+<li>if failure show error message else if success rebind the new object</li>
+<li>make form enabled</li>
+</ul>
+</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Saturday, July 20, 2013</h2><p><em>&quot;when an edit operation is active you have at least one snapshot of the object (and children) in memory and you do NOT want to include these over the wire.&quot;</em></p>
+<p>Can you explain it more detailed? I could not understand.</p>
+<p><em>&quot;when an edit operation is active you cannot be sure if the user has changes in the UI component only that is not updated in the business object yet.&quot;</em></p>
+<p>&nbsp;Maybe I didn&#39;t understand you again, but didn&#39;t bindingSource.EndEdit() method save UI component value to datasource? Because I don&#39;t have a problem with that.</p>
+<p><em>&quot;So for async operations in WinForms I usually prefer:&quot;</em></p>
+<p>&nbsp;Well, I like your method too <img src="http://forums.lhotka.net/emoticons/emotion-21.gif" alt="Yes" />. Thanks.</p>
+<p>&nbsp;</p>
+<p>P.S.</p>
+<p>Forgive me for maybe stupid questions. I&#39;m not a newbee at all. But CSLA is big framework and the only documentations that we have are &quot;CSLA&quot; books from Rockford. Which contain tips that are not suitable for me. And not always I can understand is it the only way or maybe we have another way.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Saturday, July 20, 2013</h2><p>Windows Forms databinding use the <b>IEditableObject </b>interface to call BeginEdit/CancelEdit/EndEdit and there is quite strict rules to follow.&nbsp;</p>
+<p><b>F.ex BeginEdit may be called many times but only the first call through the interface should be honored.&nbsp;</b><br />See:&nbsp;<a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit.aspx">http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.beginedit.aspx</a>&nbsp;&nbsp;</p>
+<p><i>This method is typically used to capture the&nbsp;<span class="selflink">BeginEdit</span>&nbsp;semantics of a&nbsp;<a href="http://msdn.microsoft.com/en-us/library/system.data.datarowview.aspx">DataRowView</a>.</i></p>
+<p><i>If&nbsp;<span class="selflink">BeginEdit</span>&nbsp;is called on an object that is already being edited, the second and subsequent calls are ignored.</i></p>
+<p>&nbsp;</p>
+<p><span class="label"><i>Notes to Implementers</i></span></p>
+<p><i>An object implementing this interface needs to store updates after&nbsp;<span class="selflink">BeginEdit</span>&nbsp;in such a way that they can be discarded if&nbsp;<a href="http://msdn.microsoft.com/en-us/library/system.componentmodel.ieditableobject.canceledit.aspx">CancelEdit</a>&nbsp;is called.</i></p>
+<p>Add to this that the N-level undo mechanism extends this behaviour in such a way that you can take a complete snapshot before you attach the object to databinding and you MUST unbind the object before you can call CancelEdit/ApplyEdit on the corresponding BeginEdit call!!!&nbsp;<br />IE: CSLA has different behavior depending on whether you call BeginEdit directly on the object or through the IEditableObject interface. For as long as the object &nbsp;has an active BeginEdit through the IEditableObject interface any more calls to BeginEdit will NOT be honored/have any impact.</p>
+<p>Take f.ex that you use N-Level undo - then you must first&nbsp;</p>
+<p>
+<ul>
+<li>Unbind the UI&nbsp;</li>
+<li>Then your code must decide on whether to call ApplyEdit or CancelEdit&nbsp;</li>
+<li>And eventually call Save method or rebind original</li>
+</ul>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Sunday, July 21, 2013</h2><p>Honestly, I didn&#39;t understand<img src="http://forums.lhotka.net/emoticons/emotion-42.gif" alt="Confused" />.</p>
+<p>Let&#39;s take an example:</p>
+<p>this.invoice = Invoice.GetInvoice(653);<br />
+this.bindingSource1.DataSource = this.invoice;</p>
+<p>
+<span style="color:green;">
+<p>// State of our invoice BO:<br />
+// &nbsp; &nbsp;EditLevel = 1</p>
+</span></p>
+<p>...</p>
+<p>...</p>
+<p>Then &nbsp;in &quot;OnClick&quot; handler we do this:</p>
+<p>this.bindingSource.EndEdit();</p>
+<p>
+<span style="color:green;">
+<p>// State of our invoice BO:<br />
+// &nbsp; &nbsp;EditLevel = 0 </p>
+</span></p>
+<p>this.invoice = &nbsp;await this.invoice.SaveAsync();<br />
+this.bindingSource1.DataSource = this.invoice;</p>
+<p>&nbsp;</p>
+<p>So, what is wrong with this example?</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sash_kr replied on Tuesday, July 23, 2013</h2><p>OK, forget! I think that everything is fine with my example. Unbind is unnecessary in that situation. I just can&#39;t understand why you make the things so complicated? (taking snapshot before binding (BusinessBase.BeginEdit), than after databinding (IEditableObject.BeginEdit), then call IEditableObject.EndEdit and at the end unbind it and call CancelEdit/ApplyEdit).</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 23, 2013</h2><p><div style='padding-left: 50px;background-color:silver'><b>sash_kr<br></b>
+<p>OK, forget! I think that everything is fine with my example. Unbind is unnecessary in that situation. I just can&#39;t understand why you make the things so complicated? (taking snapshot before binding (BusinessBase.BeginEdit), than after databinding (IEditableObject.BeginEdit), then call IEditableObject.EndEdit and at the end unbind it and call CancelEdit/ApplyEdit).</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>&nbsp;</p>
+<p>The snapshots taken on BeginEdit and removed during cancel or apply are to support n-level undo.&nbsp; Think about in SSMS if&nbsp; you edit a table row using the graphical editor, the row header gets a pencil icon, and as long as you don&#39;t click out of the row, you can hit ESC to cancel your data changes and leave the row unchanged.&nbsp; That&#39;s the behavior Csla is implementing for you.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,63 @@
+<html><header><title>Silverligh Combobox databound to CSLA object</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverligh Combobox databound to CSLA object</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7406.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius posted on Wednesday, August 05, 2009</h2><P><FONT size=2><FONT color=#000000 size=2>I was just curious what other people are doing for this typical "everyday" sort of design issue.</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=2>When binding my CSLA list object to a Silverlight ComboBox, I need a default value in the combobox, like the typical "--Select an item--" of webforms.&nbsp; </FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=2>Problem is, if databinding, the only way to resolve this I see is to either include this value in the BO data access (which couples the business logic the the UI ...&nbsp; ) or handle the data changed event, and modify the Csla list object right there (to which you end up having to create public ctors for the info class!!! yuk!)....</FONT></FONT></P>
+<P><FONT size=2><FONT color=#000000 size=2>Either way seems a little messy to me, is this just a situation where you have to "break some eggs to make an omlet" as the old saying goes? Or is there some tricks of the trade I'm missing.</FONT></FONT></P>
+<P><FONT size=2><FONT size=2><FONT color=#000000>I'm a newb to Silverlight, so maybe i'm just missing something....</FONT></P></FONT></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, August 05, 2009</h2><P>One answer is on this FAQ page</P>
+<P><A href="http://www.lhotka.net/cslanet/faq/SilverlightFaq.ashx">http://www.lhotka.net/cslanet/faq/SilverlightFaq.ashx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, August 06, 2009</h2><P>Thank you, this SelectedValue concept is certainly what I am used to from Winforms and Webforms and solves a different problem I had regarding binding.</P>
+<P>However, I'm still curious about how to get a default item in the combobox like "-All-". I'm just curious how other people handle that. Perhaps this is more of a basic Silverlight question. I will try the Silverlight forums.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>decius replied on Thursday, August 06, 2009</h2><P>Indeed, the Silverlight forums gave me some wisdom almost immediately. </P>
+<P><A href="http://silverlight.net/forums/p/70393/169553.aspx#169553">http://silverlight.net/forums/p/70393/169553.aspx#169553</A></P>
+<P>Sometimes the simplest solution is the best.&nbsp; I would not have thought of that, and it's so easy!</P>
+<P>The only thing I don't like about it is that I end up with a bunch of handled SelectionChanged events just to update the UI:</P><FONT color=#0000ff size=2><FONT color=#0000ff size=2>
+<P>private</FONT></FONT><FONT size=2> </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>void</FONT></FONT><FONT size=2> ddl_SelectionChanged(</FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>object</FONT></FONT><FONT size=2> sender, </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>SelectionChangedEventArgs</FONT></FONT><FONT size=2> e)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>if</FONT></FONT><FONT size=2> (e.AddedItems[0] != </FONT><FONT color=#0000ff size=2><FONT color=#0000ff size=2>null</FONT></FONT><FONT size=2>)</P>
+<P>txt.Visibility = </FONT><FONT color=#2b91af size=2><FONT color=#2b91af size=2>Visibility</FONT></FONT><FONT size=2>.Collapsed;</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, August 06, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Having a default item in a combobox is another one of those permanent
+problems that exists in all UI technologies. I don&#8217;t have an answer, but I
+rather suspect the answer is the same in Silverlight as it is in Windows Forms,
+WPF and Web Forms&#8230;<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The two broad solutions I&#8217;ve seen are to:<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Create a custom control that shows the default item but doesn&#8217;t
+set that item into the underlying object (because it isn&#8217;t a valid item).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Or<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Add the default item to the NVL business object, because the
+default item is a valid item with business meaning, and it can be selected. The
+ProjectTracker sample app shows how to implement a NVL that provides a default
+value &#8211; and any business object using that NVL gets that default value
+and uses it to set the appropriate business object property to that default
+value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

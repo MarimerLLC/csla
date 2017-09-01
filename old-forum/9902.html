@@ -1,0 +1,53 @@
+<html><header><title>ViewModelBase/CanDelete/EditableObject</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ViewModelBase/CanDelete/EditableObject</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9902.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran posted on Tuesday, December 28, 2010</h2><p>I have found that my Delete button is enabled when the Model.IsNew. &nbsp;</p>
+<p>I would not expect CanDelete = true when the editable object does not currently exist on the database (as there is nothing to delete!).</p>
+<p>A potential patch below:</p>
+<p>
+<p>Index: Shared/Source/Csla/4.1.0-101022/Source/Csla.Xaml/ViewModelBase.cs</p>
+<p>===================================================================</p>
+<p>--- Shared/Source/Csla/4.1.0-101022/Source/Csla.Xaml/ViewModelBase.cs<span>	</span>(revision XXX)</p>
+<p>+++ Shared/Source/Csla/4.1.0-101022/Source/Csla.Xaml/ViewModelBase.cs<span>	</span>(working copy)</p>
+<p>@@ -335,7 +335,7 @@</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanCreate = false;</p>
+<p>&nbsp;</p>
+<p>- &nbsp; &nbsp; &nbsp; &nbsp;if (CanDeleteObject &amp;&amp; !isObjectBusy)</p>
+<p>+ &nbsp; &nbsp; &nbsp; &nbsp;if (CanDeleteObject &amp;&amp; !targetObject.IsNew &amp;&amp;!isObjectBusy)</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanDelete = true;</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; else</p>
+<p>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; CanDelete = false;</p>
+<div></div>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Wednesday, January 26, 2011</h2><p>Hi Rocky,</p>
+<p>Do you also regard this as a bug?</p>
+<p>&nbsp;</p>
+<p>Regards</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, January 26, 2011</h2><p>I&#39;m not sure about this. The data portal plumbing actually considers this a valid operation - though obviously it doesn&#39;t really do any work beyond modifying the object&#39;s metastate.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Thursday, January 27, 2011</h2><p>Ok, Ill make some changes within my own code.</p>
+<p>&nbsp;</p>
+<p>Thanks</p>
+<p>Peran</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, January 27, 2011</h2><p>I&#39;d be interested in other people&#39;s thoughts as well. I&#39;m not sure which way is &quot;correct&quot;, and am willing to be swayed.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Thursday, January 27, 2011</h2><p>From my perspective, CanDelete = true really only makes sense on an existing object (i.e. IsNew = false).&nbsp; And in my weird world, my point is supported by the fact that deleting an object turns IsNew = true (sometimes a point of contention on the forum, but the current behavior nonetheless.)&nbsp; It seems to make little sense to let me delete an object multiple times.&nbsp; <img src="http://forums.lhotka.net/emoticons/emotion-1.gif" alt="Smile" /></p>
+<p>HTH</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Saturday, January 29, 2011</h2><p>On the surface this seems to make sense, but I keep having a nagging feeling that there could be an operation where your BO only exists to delete something, and for some reason CommandBase isn&#39;t enough.&nbsp; </p>
+<p>Maybe a DeleteAccount BO, where you have to enter a password that gets validated on the server.&nbsp; And you have business rules where the password cannot be empty, or you have so many minutes from the time the confirmation screen comes up to finish the command...</p>
+<p>I know it&#39;s contreived, but what&#39;s wrong with hiddening your delete button when IsNew = true?&nbsp; Cant be that hard, and this might break some functionality someone is actually using..</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, January 29, 2011</h2><p>Maybe the simple answer is that the property in ViewModelBase should be virtual?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Saturday, January 29, 2011</h2><p>Or another possibility would be to make SetProperties() virtual? So an override would look like:</p>
+<p>{</p>
+<p>&nbsp;&nbsp; &nbsp;base.SetProperties()</p>
+<p>&nbsp;&nbsp; &nbsp;CanDelete = myImplementation....;</p>
+<p>}</p>
+<p>&nbsp;</p>
+<p>Could result in the property value getting changed and flipped back again though...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Sunday, January 30, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>
+<p>I&#39;d be interested in other people&#39;s thoughts as well. I&#39;m not sure which way is &quot;correct&quot;, and am willing to be swayed.</p>
+<div style="CLEAR:both;"></div>
+</div></p>
+<p>When an object IsNew (from the point of view of the &#39;user&#39;)&nbsp;it was created on my screen just now and I have to decide whether to save it or discard it. It&#39;s like when I pick an object in a shop: I can buy it or I can return it to the shelf. I&#39;m not supposed to eat it or do anything else before buying it.</p>
+<p>As I see it, when IsNew=true, Delete can only mean Cancel. I can&#39;t think of a scenario where these buttons could have different meanings. So one of them is in fact a duplication.</p>
+<p>If the user sees&nbsp;both buttons enabled, he might think the object is already saved.&nbsp;Following the least astonishment principle, I&#39;d force the Delete button to be disabled or even hidden.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Sunday, January 30, 2011</h2><p>If we look back at WindowsForms and the Delete button on the BindingNavigator component then from a &quot;user&quot; perspective you can &quot;Remove&quot; items whether they are New or has been saved. </p>
+<p>You could have a list of invoice items - add 5 rows and edit data inn these rows. Shouldn&#39;t there be just one &quot;Remove&quot; button or should there be separate buttons for &quot;Delete&quot; and &quot;Cancel&quot;? </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Sunday, January 30, 2011</h2><p>I thought about this after my initial posting, thinking that perhaps there was an instance - this one - where having the delete would be useful.</p>
+<p>However, I think in this instance my reasoning still applies.</p>
+<p>If you think about what you&#39;re talking about, it&#39;s not deleting an object - it&#39;s removing an object from the list.&nbsp; In CSLA terms, the object is moved to the deleted-items collection.&nbsp; When &quot;Save&quot; is called, it&#39;s on the entire list, and new objects in the deleted list are discarded.&nbsp; So having the delete option available for that individual new instance still doesn&#39;t make sense.</p>
+<p>There still is the possibility of a dynamic list.&nbsp; But even that still doesn&#39;t apply, because the object hasn&#39;t been saved yet, so if someone doesn&#39;t want it they&#39;d hit ESC and cancel the entire edit.</p>
+<p>I will admit that where this falls down is the authorization aspect - if a new object has CanDelete = false, then you technically can&#39;t get rid of the item from a list, because that would disable the delete button when that item becomes the current item.&nbsp; While I don&#39;t want to make the framework any more complex, conceptually I think it might be better to build in properties to differentiate &quot;deleteability&quot; from &quot;ability to remove from a list&quot;.&nbsp; I realize that to some people, it&#39;s essentially a semantic difference, so in the end maybe it is easier just to leave it alone.&nbsp; But they just feel like two different concepts to me.</p>
+<p>- Scott</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, January 31, 2011</h2><p>I do think the answer is to make the property virtual. Peran, can you add an enhancement issue to bug tracker for this? Thanks!</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Peran replied on Monday, January 31, 2011</h2><p>Added as issue 894.</p>
+<p>&nbsp;</p>
+<p>Peran</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

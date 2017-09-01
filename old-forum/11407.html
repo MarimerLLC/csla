@@ -1,0 +1,36 @@
+<html><header><title>CslaAuthentication not returning isAuthenticated </title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CslaAuthentication not returning isAuthenticated </h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11407.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly posted on Monday, June 11, 2012</h2><p>I am trying to run the ProjectTracker solution.&nbsp; Just trying to get the MVC3UI&nbsp;up and working so I can understand what&#39;s happening inside the framework.</p>
+<p>The problem I am having is that the Applicaton_AuthenticateRequest always sees the IsAuthenticated property as false.&nbsp; I&#39;ve traced all the code and the principal has the value and everything looks great until it routes back to the Index and somehow the Csla.ApplicationContext.User.Identity.IsAuthenticated is false.</p>
+<p>I am certain this is a configuration issue, but I can&#39;t find it.&nbsp; Since the principal is found in the ASP database and is being populated, this just somehow isn&#39;t getting back to the web page.</p>
+<p>Any ideas would be great.&nbsp; Thanks in advance...</p>
+<p>Bill</p>
+<p><span style="text-decoration:underline;">This is from the WcfAppServer web.config:</span></p>
+<p><strong>&lt;appSettings&gt;</strong></p>
+<p><strong>&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;</strong></p>
+<p><strong>&lt;!--&lt;add key=&quot;DalManagerType&quot; value=&quot;ProjectTracker.DalMock.DalManager,ProjectTracker.DalMock&quot;/&gt;--&gt;</strong></p>
+<p><strong>&lt;add key=&quot;DalManagerType&quot; value=&quot;ProjectTracker.DalEf.DalManager,ProjectTracker.DalEf&quot;/&gt;</strong></p>
+<p><strong>&lt;/appSettings&gt;</strong></p>
+<p><span style="text-decoration:underline;">And this is from the Mvc3UI web.config:</span></p>
+<p><strong>
+<p>&lt;appSettings&gt;</p>
+<p>&lt;add key=&quot;CslaDataPortalProxy&quot; value=&quot;Csla.DataPortalClient.WcfProxy, Csla&quot;/&gt;</p>
+<p>&lt;add key=&quot;CslaDataPortalUrl&quot; value=&quot;http://localhost:22627/WcfPortal.svc&quot;/&gt;</p>
+<p>&lt;add key=&quot;ClientValidationEnabled&quot; value=&quot;true&quot;/&gt; </p>
+<p>&lt;add key=&quot;UnobtrusiveJavaScriptEnabled&quot; value=&quot;true&quot;/&gt;</p>
+<p>&lt;add key=&quot;CslaAuthentication&quot; value=&quot;Csla&quot;/&gt;</p>
+<p>&lt;/appSettings&gt;</p>
+</strong></p>
+<p>
+<p>
+<p><span style="font-family:Consolas;color:#808080;font-size:x-small;"><span style="font-family:Consolas;color:#808080;font-size:x-small;"><span style="font-family:Consolas;color:#808080;font-size:x-small;"></span></span></span></p>
+</p>
+</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Monday, June 11, 2012</h2><p>Ok, hold up on this.&nbsp; It seems to be working with VS2010...</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Monday, June 11, 2012</h2><p>Not sure what I managed to break just trying to run the code the first time.</p>
+<p>Now it seems to be working OK with VS2012RC, so I have no idea what I did.&nbsp; Sorry guys.</p>
+<p>&nbsp;</p>
+<p>Delete these posts if you want.&nbsp; I just wasn&#39;t sure if they were being monitored or something.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, June 11, 2012</h2><p>Most of the samples are NOT tested with VS12 yet.</p>
+<p>In fact, the only thing I know for sure that&#39;s been actively used in VS12 is the WinRT UI for ProjectTracker, because that&#39;s what I&#39;ve been working on.</p>
+<p>We&#39;ll get to the other samples (including other parts of ProjectTracker), but just haven&#39;t had time yet.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>nhwilly replied on Tuesday, June 12, 2012</h2><p>The problem is definitely me as I am trying to understand ProjectTracker and all the implications of things.&nbsp; I must have broken something, but for the life of me I couldn&#39;t find it.</p>
+<p>I simply went back to the zip file and pull the project out again and just ran it under VS2012RC.&nbsp; I had to unload the WP7 project, but after that it just worked.</p>
+<p>Not sure what I did to break it.&nbsp; </p>
+<p>No worries about catching up at least not for me.</p>
+<p>Appreciate what you&#39;ve done already...</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

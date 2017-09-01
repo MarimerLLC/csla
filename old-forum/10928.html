@@ -1,0 +1,20 @@
+<html><header><title>Csla Best Practice For Building a Binding Object and WinForm Validation</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Csla Best Practice For Building a Binding Object and WinForm Validation</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10928.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp posted on Monday, November 28, 2011</h2><p>Hi,</p>
+<p>I am currently developing a Windows Forms project with Csla 3.8.3.</p>
+<p>Up until this point I have been using BindingSource and building the UI control Bindings using the property grid. (The magic of not having to code!)</p>
+<p>Of course, in the background, the designer is coding BInding objects for me with a default configuration.</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataSourceUpdateMode = OnValidation &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; FormattingEnabled = true</p>
+<p>I ran into an issue when trying to code my own binding&nbsp; for a combo box with a NameValueList as a datasource. The problem turned out to be DataBindings.Add() defaults FormattingEnabled = false.</p>
+<p>I realized that at the end of the project I will have thousands of Bindings created without thought towards the potential impact of how those Bindings are configured. A new unknown requirement may not like that configuration!</p>
+<p>Has anyone run into problems with Bindings using DataSourceUpdateMode.OnValidation?</p>
+<p>Given Csla validation subsystem is&nbsp; DataSourceUpdateMode.OnPropertyChanged a better choice?</p>
+<p>Is it best practice to bypass the standard winforms validation subsystem when using Csla? </p>
+<p>My instinct tells me mixing the two could lead to confusion during maintenance.</p>
+<p>Thanks,</p>
+<p>Matthew</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Tuesday, November 29, 2011</h2><p>Hi Matthew, </p>
+<p>These are just my personal preferences for Windows Forms developement (and I&#39;ve been doing this for the last&nbsp; 6 years): </p>
+<p>1. My preference is for default update mode (OnValidation). This is (almost) required in order to use LookupRules/AsyncLookupRules. <br />2. When user story requires OnPropertyChanged - then also add a unit test to test&nbsp;to the&nbsp;the form so no-one accidentally changes the update mode - or add code in form constructor&nbsp;after Initialize to set/override the default updatemode programmatically. <br />3. Null values can be cumbersome in databinding and I sometimes override the nullvalue too on the DataBinding. This must be done in code. <br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;binding&gt;.NullValue = string.Empty; <br />&nbsp;&nbsp;&nbsp; is not possible to set in the designer. <br />4. In a few specific DataBindings I have also had to hook into the&nbsp;OnParse/OnFormat events - the function is&nbsp;similar to a ValueVonverter in Xaml.</p>
+<p><em><strong>OnValidation</strong></em> means that the BO field value will be&nbsp;updated when focus leaves the current control AND when the&nbsp;next control to get focus has CausesValidation set to true (and that des not have to be first control that gets focus). <br /><em><strong>OnPropertyChanged</strong></em> means that the&nbsp;BO field value will be updated for every keystroke the user enters control.</p>
+<p>I also recommend to read the entire <a href="http://www.windowsclient.net/Samples/Go%20To%20Market/Data%20Binding/DataBinding%20FAQ.doc">DataBinding FAQ</a> available from WindowsClient.Net as well as to&nbsp; look into the samples download. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>comp1mp replied on Tuesday, November 29, 2011</h2><p>Great stuff!</p>
+<p>Thanks Jonny!</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

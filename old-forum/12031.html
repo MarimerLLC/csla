@@ -1,0 +1,33 @@
+<html><header><title>WPF - Windows Authentication</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>WPF - Windows Authentication</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12031.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte posted on Friday, June 21, 2013</h2><p class="MsoNormal">Hi everyone,</p>
+<p>I have recently re-read the excellent ebook
+&laquo;&nbsp;using Csla4-04-Dataportal&nbsp;&raquo; focusing on Windows Authentication.
+Actually, I&#39;m trying to implement a 3 tiers wpf application authentication
+relying on Active Directory identity.</p>
+<p>In my case, the user and client workstation are
+not on the AD domain, so I&#39;m looking for a way where the user can specify a
+windows account AD (by example typing: domain,&nbsp;username and password)
+which will be next checked on the server part.</p>
+<p>In the samples provide with the ebooks, the
+&quot;windows authentication solution&quot; seems good but is it possible to create our
+own WindowsPrincipal :</p>
+<p>I mean to do something like that</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.AppDomain.CurrentDomain.SetPrincipalPolicy(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;New
+MyOwnWindowsPrincipal(&quot;domain&quot;, &quot;UserName&quot;, &quot;Password&quot;));</p>
+<p>&nbsp;</p>
+<p>instead</p>
+<p>&nbsp;</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.AppDomain.CurrentDomain.SetPrincipalPolicy(</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;System.Security.Principal.PrincipalPolicy.WindowsPrincipal);</p>
+<p>&nbsp;</p>
+<p>Or should I use Custom Authentication and base my development on the
+&quot;Custom authentication solution&quot;.</p>
+<p>&nbsp;</p>
+<p>Thanks in advance for your help.</p>
+<p>&nbsp;</p>
+<p>Cedric</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Friday, June 21, 2013</h2><p>You can&#39;t create a Windows principal that actually carries real Windows AD info on the client, but you can create a custom principal that brings the list of roles/groups back to the client.</p>
+<p>In the book I show how to do this with Silverlight, but the same technique works on WPF or any smart client scenario. You need to have your DataPortal_Fetch method for the identity object run on the server (in the domain) and load itself with the user&#39;s domain groups. The object that returns to the client is a custom principal, but at least it has the user&#39;s domain username and groups.</p>
+<p>If you want to implement _impersonation_ on the server, that&#39;s harder. To do that you&#39;ll need the user to provide you with their domain password. Then on the server you can make a pretty simple call to a method on WindowsPrincipal (or WindowsIdentity?) to impersonate the user based on their username/password.</p>
+<p>Obviously if you are ferrying the user&#39;s password around you&#39;ll want to encrypt it.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cconte replied on Monday, June 24, 2013</h2><p>Thanks a lot Rocky for your enlightenment.</p>
+<p><span>I&nbsp;</span><span>take your advice and&nbsp;</span>I&#39;m starting to look at the windows authentifcation using silverlight technique.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,207 @@
+<html><header><title>NotUndoable Attribue on Field But I want to Use Properties with managed backing field</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>NotUndoable Attribue on Field But I want to Use Properties with managed backing field</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6799.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 posted on Thursday, April 16, 2009</h2><P>Hello ,</P>
+<P>I want to put NotUndoable Attribute on some field </P>
+<P>but I used properties with managed backing field to support silver light without writing extra code</P>
+<P>so if I converted my properties to private backing fields </P>
+<P>is it big problem when I use silver light </P>
+<P>second , I think when using private backing field I can't use readProperty and LoadProperty Method </P>
+<P>any more right ????? then I have to use the private field instead </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 16, 2009</h2>You can use ReadProperty; that's an overload that takes the field value as a parameter.  LoadProperty wouldn't be worthwhile (you're storing the property in the FieldDataManager and in your class).<br /><br />I have several private fields because I also want the NotUndoable attribute.. perhaps Csla can add support such that a RegisterProperty overload can take an enum value indicating if the property should be undoable?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 16, 2009</h2><P>This is in the wishlist already - just haven't gotten to it yet.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Thursday, April 16, 2009</h2>Ah, well that's good.  I guess I should have checked first.  :-)</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Thursday, April 16, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>This is in the wishlist already - just haven't gotten to it yet.</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>When you get around to it, can we please also have Nonserialized on managed fields? Thanks!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 16, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I am not sure that will be possible.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>The reason is that, on the .NET side of things, we&#8217;re not
+manually serializing the list of property values. To serialize or not serialize
+them one by one would mean we couldn&#8217;t let .NET do the serialization normally.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>I see the value proposition for not undoing managed fields. But if
+you want a field that isn&#8217;t serialized, just use a private backing field.
+You don&#8217;t lose anything by doing so, because the <i>primary</i> cost of
+using private backing fields is that your field won&#8217;t serialize
+automatically to Silverlight. And if you aren&#8217;t serializing it anyway,
+then you&#8217;ve given up the primary reason for using the private backing
+field in the first place.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 16, 2009 7:00 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] NotUndoable Attribue on Field But I want to Use
+Properties with managed backing field<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>This is in the wishlist already - just haven't gotten to it yet.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>When you get around to it, can we please also have Nonserialized on managed
+fields? Thanks!<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, April 17, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>I am not sure that will be possible.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p>&nbsp;</o:p></SPAN><SPAN>The reason is that, on the .NET side of things, we’re not manually serializing the list of property values. To serialize or not serialize them one by one would mean we couldn’t let .NET do the serialization normally.</SPAN></P></DIV>
+<P></div></BLOCKQUOTE></P>
+<P>I was thinking, perhaps naively, that this could&nbsp; -- generally speaking -- be implemented by simply discarding all such fields immediately before the FieldDataManager itself is serialized. (e.g. set them to the their default value or set their IFieldData value to null). </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, April 17, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hmm, maybe. But then they’d need to be restored too, because (in
+the general case) the original object still remains in memory and usable after
+it has been serialized.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In fact, the local data portal configuration relies on that
+behavior to handle exceptions.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> rsbaker0
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, April 17, 2009 7:07 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: NotUndoable Attribue on Field But I want to
+Use Properties with managed backing field<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal>I
+am not sure that will be possible.<o:p></o:p></p>
+
+<p class=MsoNormal>&nbsp;The
+reason is that, on the .NET side of things, weâ€™re not manually serializing
+the list of property values. To serialize or not serialize them one by one
+would mean we couldnâ€™t let .NET do the serialization normally.<o:p></o:p></p>
+
+</div>
+
+</div>
+
+</blockquote>
+
+<p>I was thinking, perhaps naively, that this could&nbsp; -- generally speaking
+-- be implemented by simply discarding all such fields immediately before the
+FieldDataManager itself is serialized. (e.g. set them to the their default
+value or set their IFieldData value to null). <o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>rsbaker0 replied on Friday, April 17, 2009</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div> 
+
+<DIV class=Section1>
+<P class=MsoNormal><SPAN>Hmm, maybe. But then they’d need to be restored too, because (in the general case) the original object still remains in memory and usable after it has been serialized.<o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN><o:p></o:p></SPAN></P>
+<P class=MsoNormal><SPAN>In fact, the local data portal configuration relies on that behavior to handle exceptions.</SPAN></div></BLOCKQUOTE></P>
+<P class=MsoNormal>Yes, this wrinkle occurred to me as I was typing the original post.&nbsp; I wonder if&nbsp;it would be possible to clone the FieldDataManager first, manipulate it, and have the clone be serialized so that the original FieldDataManager remains unmolested. Of course, this would be something you would do only if there was a least one such non-serialized field present.</P>
+<P class=MsoNormal>&nbsp;</P>
+<P class=MsoNormal>You might think, what's the fuss about? But I've found the managed fields let me do many things I can't do with a private backing field. For example, it's possible to remove the value for any lazy loaded child object just with the property name. This is very handy for letting a user refresh a child list without refetching the entire object.&nbsp;Many times, though, such objects aren't editable so there is no point in sending them across when the object is saved. </P></DIV></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Programmer1987 replied on Thursday, April 16, 2009</h2><P>thanks a lot ,</P>
+<P>so now I will use readProperty or private field directly to assign or get the value of the field </P>
+<P>and about silverlight i have to write extra code as mentioned in CSLA book </P>
+<P>right :) !!!</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

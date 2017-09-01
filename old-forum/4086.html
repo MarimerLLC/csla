@@ -1,0 +1,41 @@
+<html><header><title>CSLA.Server.ServicedDataPortal.DataPortal' can't access registry key on Vista</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA.Server.ServicedDataPortal.DataPortal' can't access registry key on Vista</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4086.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell posted on Tuesday, December 25, 2007</h2><P>Hello,</P>
+<P>I'm running the CSLA 1.53 code base over .NET 2.0 on Vista.</P>
+<P>When Project Tracker tries to write to the database, adding a new project or something, I get the following error:</P>
+<P>Access to the registry key 'HKEY_CLASSES_ROOT\CSLA.Server.ServicedDataPortal.DataPortal' is denied. </P>
+<P>I assume this is a Vista UAC issue, and that I need to grant administrative rights to Enterprise Services, or something along those lines. any suggestions greatly appreciated.</P>
+<P>Thanks,</P>
+<P>Bob<BR></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Wednesday, December 26, 2007</h2><P><FONT face=Arial size=2>Well, after a little poking around I suspect my problem is that I forgot to register the serviced component&nbsp;in COM+ using regsvcs.exe. I don't have the book with me, so can't refer to Chapter 12 for a week or so. Can anyone refresh my memory with the regsvcs.exe command syntax? I have the component set up properly (I think). Hopefully just ned to register it. Thanks.</FONT></P>
+<P><FONT face=Arial size=2>Best,</FONT></P>
+<P><FONT face=Arial size=2>Bob</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Wednesday, December 26, 2007</h2><P>Go to the dir that has EnterpriseServicesHosts(cs or vb).dll and type</P>
+<P>regsvcs&nbsp; EnterpriseServicesHosts(cs or vb).dll </P>
+<P>use cs or vb depending on which one you've got.</P>
+<P>Ryan</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Wednesday, December 26, 2007</h2><P><FONT face=Arial size=2>Thanks,</FONT></P>
+<P><FONT face=Arial size=2>Actually found my notes from a year ago or so on my hard drive. I'm using the 1.53 code base and running it on Vista. Here's my command window:</FONT></P>
+<P><FONT face=Arial size=2>Microsoft Windows [Version 6.0.6000]<BR>Copyright (c) 2006 Microsoft Corporation.&nbsp; All rights reserved.</FONT></P>
+<P><FONT face=Arial size=2>C:\Users\Bob&gt;cd..</FONT></P>
+<P><FONT face=Arial size=2>C:\Users&gt;cd..</FONT></P>
+<P><FONT face=Arial size=2>C:\&gt;cd inetpub\wwwroot\Dataportalcs\bin</FONT></P>
+<P><FONT face=Arial size=2>C:\inetpub\wwwroot\DataPortalcs\Bin&gt;regsvcs CSLA.Server.ServicedDataPortal.dll<BR>'regsvcs' is not recognized as an internal or external command,<BR>operable program or batch file.</FONT></P>
+<P><FONT face=Arial size=2>C:\inetpub\wwwroot\DataPortalcs\Bin&gt;</FONT></P>
+<P><FONT face=Arial size=2>Any idea why 'regsvcs' isn't recognized? Is it a different tool in Vista? I searched my hard drive for 'regsvcs.exe' and didn't come up with anything.</FONT></P>
+<P><FONT face=Arial size=2>Best,</FONT></P>
+<P><FONT face=Arial size=2>Bob</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, December 26, 2007</h2>Actually I think its regsvr32, and that does exist on Vista.&nbsp; Check Rocky's installation page too; I think its found off of www.lhotka.net.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Wednesday, December 26, 2007</h2><P><FONT face=Arial size=2>Is regsvcs.exe a .Net tool, in which case it sould be in C:\Program Files\Microsoft Visual Studio 8\SDK\v2.0\Bin? I'm running the express editions. Don't have a full version of VS installed, but have the 2.0 Framework installed.</FONT></P>
+<P><FONT face=Arial size=2>Best,</FONT></P>
+<P><FONT face=Arial size=2>Bob</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Wednesday, December 26, 2007</h2><P>It should be there...make sure you are using the command prompt from the Visual Studio Tools Window rather than just the regular command prompt...that way your environment variables are set for you.</P>
+<P>I'm wondering with the old portal if there won't be some issues with the UAC in Vista.&nbsp; If you get the DLL registered and have issues try disabling the UAC in Control Panels -&gt; User Accounts...</P>
+<P>Ryan</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Wednesday, December 26, 2007</h2><P><FONT face=Arial size=2>Thanks ryan,</FONT></P>
+<P><FONT face=Arial size=2>Do you know if&nbsp;it installed with the Framework or with the full version of VS. I would assume it installed with the Framework?!? The only reason I can think it wouldn't be there is because I have the Express Editions of VS 2005 installed (I couldn't install VS 2003 on Vista, and I'll <EM>never</EM> forgive MS for that!)</FONT></P>
+<P><FONT face=Arial size=2>Also, I don't think the VS command prompt window is available with the Express Editions unless I can launch it as a seperate tool by clicking an exe in the VS bin folder.</FONT></P>
+<P><FONT face=Arial size=2>I posted to the MS Express Editions forum to get some more clarification on this stuff.</FONT></P>
+<P><FONT face=Arial size=2>Thanks,</FONT></P>
+<P><FONT face=Arial size=2>Bob</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Wednesday, December 26, 2007</h2><P>It installs with the framework and can be found here: C:\Windows\Microsoft.NET\Framework\v2.0.50727</P>
+<P>Hope that helps</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Thursday, December 27, 2007</h2><P><FONT face=Arial size=2>Got it! Thanks.</FONT></P>
+<P><FONT face=Arial size=2>One of the coolest new features of Vista is its search functionality in Windows Explorer. Even searches files <EM>contents</EM>. No lie. However, if you want the search to include 'system files' (which&nbsp;I guess means anything in the Windows directory), ya' gotta click on the Advanced Search icon, and check the 'Include non-indexed, hidden, and system files (might be slow)' check box.</FONT></P>
+<P><FONT face=Arial size=2>Thanks for the reply. Havn't been able to figure out yet if the Express Editions have the VS Command Window (don't appear to), but I can set add the the environment path variable and all should be well.</FONT></P>
+<P><FONT face=Arial size=2>Thanks again,</FONT></P>
+<P><FONT face=Arial size=2></FONT>&nbsp;</P>
+<P><FONT face=Arial size=2>Bob</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Thursday, December 27, 2007</h2><P><FONT face=Arial size=2>Thought I'd mention that I got the serviced data portal registered OK, and no, Vista UAC doesn't appear to interfere with its functioning. I have UAC turned on and can do updates and deletes.</FONT></P>
+<P><FONT face=Arial size=2>Bob</FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>webjedi replied on Thursday, December 27, 2007</h2><P>You're welcome and it's good to know the UAC doesn't stomp there. </P>
+<P>Best of luck.</P>
+<P>Ryan</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

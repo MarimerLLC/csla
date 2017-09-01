@@ -1,0 +1,15 @@
+<html><header><title>byte?[] to byte[] Need Help!</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>byte?[] to byte[] Need Help!</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/4802.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Liza posted on Monday, May 05, 2008</h2><P>Two questions really.</P>
+<P>1.&nbsp; I have a byte[] field called _recurrence (for purposes of infragistics scheduler) that I need to convert to byte?[].&nbsp; How do you convert from byte[] to byte?[] and vice versa?</P>
+<P>2. In the safe data reader, I get binary array like _recurrence = (byte[])dr["Recurrence"];&nbsp; How can I do this with byte?[]?</P>
+<P>Thanks.</P>
+<P>Liz.</P>
+<P>PS.&nbsp; I hate doing it like this but there really is no other choice!</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tmg4340 replied on Tuesday, May 06, 2008</h2><P><FONT face=Tahoma size=2>Liza -</FONT></P>
+<P><FONT face=Tahoma size=2>Before answering your questions, maybe you can provide some clarification.</FONT></P>
+<P><FONT face=Tahoma size=2>I am guessing that what you're doing is creating an instance of the Recurrence class and serializing that directly to the database.&nbsp; Is that correct?&nbsp; If so, I'm a little surprised that works - I didn't think the Recurrence class would serialize.&nbsp; But that's a different discussion.</FONT></P>
+<P><FONT face=Tahoma size=2>Based on your second question, I'm wondering if the real problem you're having is that not all records in your database table have a recurrence associated with them, and so the field is returning NULL.&nbsp; If so, switching from a "byte[]" to a "byte?[]"&nbsp;won't&nbsp;help you.&nbsp;&nbsp;A NULL field in the database is different than a binary field containing an array of nullable-byte types.</FONT></P><FONT face=Tahoma size=2>
+<P><FONT face=Tahoma size=2>You might want to investigate the "GetBytes" method of the datareader - that returns the number of bytes read from the field, and will return&nbsp;a 0 for a NULL field.&nbsp; That would probably allow you to handle the NULL condition more easily.</FONT></P>
+<P>Having said all that, as far as I know, if you want to convert a byte[] to a byte?[], you'll have to do it manually - i.e. loop through the original byte[] array and copy each value to the&nbsp;byte?[] array.&nbsp; And as for the SafeDataReader, you&nbsp;could do just what you've done here with the new type:</FONT></P>
+<P><FONT face="Courier New" size=2>_recurrence = (byte?[])dr["Recurrence"];</FONT></P>
+<P><FONT face=Tahoma size=2>But I'm guessing that cast doesn't work, for the reasons I've outlined above.&nbsp; So you would be back to the manual copy again.</FONT></P>
+<P><FONT face=Tahoma size=2>HTH</FONT></P>
+<P><FONT face=Tahoma size=2>- Scott</FONT></P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

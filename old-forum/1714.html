@@ -1,0 +1,25 @@
+<html><header><title>REPORTING - using the MSFT .Net control with a BO</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>REPORTING - using the MSFT .Net control with a BO</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1714.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres posted on Wednesday, November 08, 2006</h2><P>I am trying to create reports.</P>
+<P>I'd like for example to attach my Invoice BO to an invoice report in WInForms using the report viewer control.</P>
+<P>seems like the parent Invoice BO works fine.</P>
+<P>but the child details connection BO never displays.</P>
+<P>I am looking at samples from Here: <A href="http://www.gotreportviewer.com/">http://www.gotreportviewer.com/</A></P>
+<P>that help but do not get me what I want.</P>
+<P>can anyone say for sure if this is possible or not ?</P>
+<P>I think it may just be a question of setting the right properties....</P>
+<P>for now I guess I'll do a proc that sends out flat data or 2 tables of data as they work...</P>
+<P>but that just seems so WRONG!!! </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 08, 2006</h2>It should work; you need to create two bindingsources, one for the parent and one for the children collection.&nbsp; You then need to add both to the report for it to display.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Wednesday, November 08, 2006</h2>Oh.. you need to have a list control which contains the textboxes for the child elements.&nbsp; <br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, November 08, 2006</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>ajj3085:</strong></div><div>Oh.. you need to have a list control which contains the textboxes for the child elements.&nbsp; <BR></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>I am trying to use a table for the details.... so far no dice.</P>
+<P>I do have two sources, that's all good.</P>
+<P>but the child table just stays empty.</P>
+<P>if I try and nest the table in a list it freaks out and whines about the settings.</P>
+<P>Hmmmm...</P>
+<P>I know this should work! ( I Guess ? )</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>figuerres replied on Wednesday, November 08, 2006</h2><P>SOLVED!</P>
+<P>Ok here is the lowdown:&nbsp; you have to bind to the report differently than when you bind to a form!<BR>say you have a BO that you show a master&nbsp; and then a gridview ...<BR>when you put the master on the form you get 2 binding sources and you can set them like:</P>
+<P></FONT><FONT size=+0>ChildBindingSource.DataSource = </FONT><FONT size=+0>ParentBindingSource<BR></FONT><FONT size=+0>ParentBindingSource.DataSource = ActEdit</FONT></P>
+<P><FONT size=+0>and the grid fills in with the child rows.</FONT></P>
+<P><FONT size=+0>with a winforms local report that will not work!</FONT></P>
+<P><FONT size=+0>has to be like:</FONT></P><FONT size=2>
+<P><FONT size=+0>ChildBindingSource.DataSource = </FONT><FONT size=+0>ActEdit.DetailsCollection<BR></FONT><FONT size=+0>ParentBindingSource.DataSource = ActEdit</FONT></P></FONT></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

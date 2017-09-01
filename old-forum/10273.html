@@ -1,0 +1,17 @@
+<html><header><title>Validation Rule not firing</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rule not firing</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10273.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel posted on Monday, April 18, 2011</h2><p>Hi everybody,</p>
+<p>I have a collection with children. Child has a validation rule that&nbsp; if it is more than 20 notify user that it&#39;s not allowed.</p>
+<p>I create a property SumAll and calculate it like SumAll=Prop1+Prop2</p>
+<p>The custom validation rule run against this calculated property value.</p>
+<p>Collection is bound to grid.</p>
+<p>Validation is working if properties updated manually entering value to a grid control.</p>
+<p>If I populate collection with children from a database nothing happened.....what did I do wrong?</p>
+<p>I am using CSLA 3.6.2.0</p>
+<p>Thanks</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Tuesday, April 19, 2011</h2><p>In your Fetch method you need to call ValidationRules.CheckRules() in order to execute the rules. </p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Pavel replied on Tuesday, April 19, 2011</h2><p><div style='padding-left: 50px;background-color:silver'><b>JonnyBee<br></b></p>
+<p>In your Fetch method you need to call ValidationRules.CheckRules() in order to execute the rules. </p>
+<div style="clear:both;"></div>
+<p></div></p>
+<p>&nbsp;</p>
+<p>I did it in every possible place in my Child class....did not help.</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

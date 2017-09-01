@@ -1,0 +1,377 @@
+<html><header><title>SortedBindingList DateTime Nulls</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>SortedBindingList DateTime Nulls</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2785.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>johnallenids posted on Thursday, April 26, 2007</h2><P>I am looking for the best way to expose a DateTime field in a read-only child object contained in a read-only list; the DateTime field is not a required field; the list must be displayed in a DataGridView; the DateTime column must be sortable in the grid.</P>
+<P>Then I tried to expose it as a read-only property of type object; if the value was empty, I returned DBNull.Value; if the value was not empty, I returned&nbsp;the DateTime value. However, the SortedBindingList threw an exception on sorting: "Object must be of type DateTime"</P>
+<P>Is there a better way to do this?</P>
+<P>John</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, April 26, 2007</h2>You might consider making your property be a Nullable&lt;DateTime&gt;. I'm not entirely sure SortedBindingList will like that, as I haven't tried it, but at least you'd be using a consistent type.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Thursday, April 26, 2007</h2>Rocky,<br><br>Now that we're on this subject, would it hurt to expose a Nullable&lt;DateTime&gt; in SmartDate ??<br>That would make it even more flexible.<br><br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>johnallenids replied on Monday, April 30, 2007</h2><P>The CompareTo method returns an incorrect value when the Key value&nbsp;is null but the target value&nbsp;is not null; if the Key value is null, zero will always be returned. If I'm not mistaken, it should return zero if both Key and target are null, but return -1 if Key is null but target is not null.</P>
+<P>John</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 30, 2007</h2><P>You may be right, but I need to ask: on what you do base that assertion?</P>
+<P>Technically comparing anything to a null should result in&nbsp;a null result. A null is never &lt; or &gt; any other value - the comparison itself is not valid.</P>
+<P>In SortedBindingList however, I didn't want to just throw a null reference exception (which is the "correct" thing to do) because I felt that would degrade the value of the list class.</P>
+<P>So instead, I opted to say that if null compared to anything is null, then null=anything. That was an arbitrary decision on my part.</P>
+<P>I am guessing here, that the suggestion that null&lt;anything is equally arbitrary. It may be a better option, but it needs consideration, because it could break existing code.</P>
+<P>Or perhaps there's some authority or some similar scenario where null&lt;anything, and that would be nice, because then we'd move from the realm of arbitrary choices to at least basing the decision on precident.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>johnallenids replied on Monday, April 30, 2007</h2><P>I'm not sure if I'm right; I'm only basing this on what I've tested with the Nullable&lt;DateTime&gt; type. Comparing a valid DateTime value to a null returns 1:</P>
+<P><FONT color=#008080 size=2>Nullable</FONT><FONT size=2>&lt;</FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2>&gt; myDate = </FONT><FONT color=#008080 size=2>DateTime</FONT><FONT size=2>.MinValue;</P>
+<P></FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> comparison = ((</FONT><FONT color=#008080 size=2>IComparable</FONT><FONT size=2>)myDate).CompareTo(</FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>);</P>
+<P></FONT><FONT color=#008000 size=2>//comparison is equal to 1</FONT></P>
+<P>So I made the (probably naiive) assumption that if a valid DateTime value was greater than&nbsp; null, than a null would be less than a valid DateTime.</P>
+<P>I don't believe the current code will correctly sort a Nullable&lt;DateTime&gt; column, because the CompareTo method as it is currently implemented returns inconsistent results when comparing a null Key to a DateTime target vs. comparing a DateTime Key to a null target.</P>
+<P><FONT color=#008000 size=2>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, April 30, 2007</h2><P>Ahh, excellent, thank you!</P>
+<P>Given that evidence I think you have identified a bug, so I'll add this to the wish list of things to be fixed/changed.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>johnallenids replied on Monday, May 07, 2007</h2><P>I had a look at the CompareTo method code in the repository; if I'm not mistaken, this still will not sort a &lt;Nullable&gt;DateTime type correctly, because it will not return zero if both Key and target are null. Here's the code I'm currently using:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>int</FONT><FONT size=2> CompareTo(ListItem other)</P>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>object</FONT><FONT size=2> target = other.Key;</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Key </FONT><FONT color=#0000ff size=2>is</FONT><FONT size=2> </FONT><FONT color=#008080 size=2>IComparable</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> ((</FONT><FONT color=#008080 size=2>IComparable</FONT><FONT size=2>)Key).CompareTo(target);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P>{</P>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Key == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> &amp;&amp; target == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Key == </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2> &amp;&amp; target != </FONT><FONT color=#0000ff size=2>null</FONT><FONT size=2>)</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> -1;</P>
+<P></FONT><FONT color=#0000ff size=2>else</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (Key.Equals(target))</P>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> 0;</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> Key.ToString().CompareTo(target.ToString());</P>
+<P>}</P>
+<P>}</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 07, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>True, but I don&#8217;t think it matters. If null&lt;null then
+they&#8217;ll get put in that order, but regardless, all null values will end
+up &lt;&#8221;anything else&#8221; so they&#8217;ll always sort properly
+relative to any real value.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>But there could be perf issues with some sort algorithms that
+could be avoided if null=null, so your change is a good one.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> johnallenids
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 07, 2007 12:20 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SortedBindingList DateTime Nulls<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I had a look at the CompareTo method code in the repository; if I'm not
+mistaken, this still will not sort a &lt;Nullable&gt;DateTime type correctly,
+because it will not return zero if both Key and target are null. Here's the
+code I'm currently using:<o:p></o:p></p>
+
+<p><span>public</span><span> <span>int</span>
+CompareTo(ListItem other)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>object</span><span> target = other.Key;<o:p></o:p></span></p>
+
+<p><span>if</span><span> (Key <span>is</span> <span>IComparable</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> ((<span>IComparable</span>)Key).CompareTo(target);<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>if</span><span> (Key == <span>null</span> &amp;&amp; target == <span>null</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> 0;<o:p></o:p></span></p>
+
+<p><span>else</span><span> <span>if</span> (Key == <span>null</span>
+&amp;&amp; target != <span>null</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> -1;<o:p></o:p></span></p>
+
+<p><span>else</span><span> <span>if</span> (Key.Equals(target))<o:p></o:p></span></p>
+
+<p><span>return</span><span> 0;<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<p><span>return</span><span> Key.ToString().CompareTo(target.ToString());<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus found in this incoming message.<br>
+Checked by AVG Free Edition.<br>
+Version: 7.5.467 / Virus Database: 269.6.5/792 - Release Date: 5/6/2007 9:01 PM</span><o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, May 14, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>OK, I have updated the svn code in a similar manner, so
+hopefully we&#8217;re set now.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thanks, Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> johnallenids
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, May 07, 2007 12:20 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SortedBindingList DateTime Nulls<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I had a look at the CompareTo method code in the repository; if I'm not
+mistaken, this still will not sort a &lt;Nullable&gt;DateTime type correctly,
+because it will not return zero if both Key and target are null. Here's the
+code I'm currently using:<o:p></o:p></p>
+
+<p><span>public</span><span> <span>int</span>
+CompareTo(ListItem other)<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>object</span><span> target = other.Key;<o:p></o:p></span></p>
+
+<p><span>if</span><span> (Key <span>is</span> <span>IComparable</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> ((<span>IComparable</span>)Key).CompareTo(target);<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<p><span>{<o:p></o:p></span></p>
+
+<p><span>if</span><span> (Key == <span>null</span> &amp;&amp; target == <span>null</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> 0;<o:p></o:p></span></p>
+
+<p><span>else</span><span> <span>if</span> (Key == <span>null</span>
+&amp;&amp; target != <span>null</span>)<o:p></o:p></span></p>
+
+<p><span>return</span><span> -1;<o:p></o:p></span></p>
+
+<p><span>else</span><span> <span>if</span> (Key.Equals(target))<o:p></o:p></span></p>
+
+<p><span>return</span><span> 0;<o:p></o:p></span></p>
+
+<p><span>else<o:p></o:p></span></p>
+
+<p><span>return</span><span> Key.ToString().CompareTo(target.ToString());<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p><span>}<o:p></o:p></span></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+<p><span>No virus found in this incoming message.<br>
+Checked by AVG Free Edition.<br>
+Version: 7.5.467 / Virus Database: 269.6.5/792 - Release Date: 5/6/2007 9:01 PM</span><o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>You are suggesting always exposing the Date property as a
+Nullable(Of DateTime)?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, April 26, 2007 3:25 PM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] SortedBindingList DateTime Nulls<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Rocky,<br>
+<br>
+Now that we're on this subject, would it hurt to expose a
+Nullable&lt;DateTime&gt; in SmartDate ??<br>
+That would make it even more flexible.<br>
+<br>
+<br>
+AndrÃ©s<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>xal replied on Tuesday, May 01, 2007</h2>Well, changing the Date property could break code. I was suggesting another property like "NullableDate" to be exposed. That wouldn't hurt, would it?<br><br>Andrés<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Tuesday, May 01, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I&#8217;m not sure. I&#8217;d have to store the value internally
+as a Nullable&lt;DateTime&gt; or I couldn&#8217;t support that new property. So
+then I&#8217;d have to figure out how to covert Nullable&lt;DateTime&gt; to
+DateTime in order to keep the existing Date property functioning. So what does
+a null translate to?<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Also, though this wouldn&#8217;t &#8220;hurt&#8221; exactly, you
+are talking about nearly doubling the number of constructors, conversion
+methods and so forth, because they&#8217;d all have to somehow support both
+DateTime and Nullable&lt;DateTime&gt; parameters and return types (if that&#8217;s
+even possible).<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> xal
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Tuesday, May 01, 2007 11:31 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: SortedBindingList DateTime Nulls<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Well, changing the Date property could break code. I was
+suggesting another property like &quot;NullableDate&quot; to be exposed. That
+wouldn't hurt, would it?<br>
+<br>
+AndrÃ©s<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

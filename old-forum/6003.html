@@ -1,0 +1,20 @@
+<html><header><title>Sorting in WPF (Data grid from WPF Toolkit), CSLA 3.6</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Sorting in WPF (Data grid from WPF Toolkit), CSLA 3.6</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6003.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>maxal posted on Tuesday, December 16, 2008</h2>Hello,<br>
+<br>
+I am trying to use sorting using DataGrid from WPF Toolkit. First, I
+tried this approach in creating list (sourceList is ReadOnlyBaseList):<br>
+<br>
+Transactions = new SortedBindingList&lt;BatchSummary&gt;(sourceList);<br>
+<br>
+It didn't work. Then I tried Linq:<br>
+<br>
+Transactions = from summary in sourceList select summary;<br>
+<br>
+Now sorting works, but I have some questions:<br>
+<br>
+1. Why SortedBindingList didn't work?<br>
+2. What is the right way to do it in 3.6?<br>
+3. There is some support for sorting now with indexes. How to use it?<br>
+<br>
+I really want to archive this utilizing bult-in functionality from DataGrid.<br>
+<br>
+Thank you.</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,44 @@
+<html><header><title>CSLA 4 Async Lazy Load</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA 4 Async Lazy Load</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10238.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>tgddev posted on Tuesday, April 05, 2011</h2><p>Hi,</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Comparing the&nbsp;implementations of async lazy-loading available in the forum and the one provided in th e Objects ebook, page 29, I have two doubts:</p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp;&nbsp;1) &quot;if (!FieldManager.FieldExists(FieldXProperty))&quot; </span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; or</span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&quot;if (!FieldXLoading &amp;&amp; !FieldManager.FieldExists(FieldXProperty))&quot; ?</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;">&nbsp;&nbsp; 2) Are the calls to MarkBusy() / MarkIdle() required or the object busy state is handled automatically by the framework?</span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p>
+<p><span style="font-family:Consolas;font-size:x-small;"><span style="font-family:Consolas;font-size:x-small;"></span></span></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Tuesday, April 05, 2011</h2><p>Indirectly answering your question 1), I had different doubts and compiled the code from the 2008 book and Using Csla 4 ebook and got the following sample:</p>
+<pre style="font-size:13px;background:white;color:black;font-family:Consolas;"><span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Maintains&nbsp;metadata&nbsp;about&nbsp;child&nbsp;</span><span style="color:gray;">&lt;see&nbsp;cref=</span><span style="color:gray;">&quot;Docs&quot;</span><span style="color:gray;">/&gt;</span><span style="color:green;">&nbsp;property.</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:blue;">private</span>&nbsp;<span style="color:blue;">static</span>&nbsp;<span style="color:blue;">readonly</span>&nbsp;<span style="color:darkblue;">PropertyInfo</span>&lt;<span style="color:darkblue;">FolderDocColl</span>&gt;&nbsp;<span style="color:purple;">DocsProperty</span>&nbsp;=&nbsp;
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkcyan;">RegisterProperty</span>&lt;<span style="color:darkblue;">FolderDocColl</span>&gt;(p&nbsp;=&gt;&nbsp;p.<span style="color:purple;">Docs</span>,&nbsp;<span style="color:#a31515;">&quot;Docs&quot;</span>,&nbsp;<span style="color:darkblue;">RelationshipTypes</span>.<span style="font-weight:bold;color:purple;">Child</span>&nbsp;|&nbsp;<span style="color:darkblue;">RelationshipTypes</span>.<span style="font-weight:bold;color:purple;">LazyLoad</span>);
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;Gets&nbsp;the&nbsp;Docs&nbsp;(lazy&nbsp;load&nbsp;child&nbsp;property).</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;/summary&gt;</span>
+<span style="color:gray;">///</span><span style="color:green;">&nbsp;</span><span style="color:gray;">&lt;value&gt;</span><span style="color:green;">The&nbsp;Docs.</span><span style="color:gray;">&lt;/value&gt;</span>
+<span style="color:blue;">public</span>&nbsp;<span style="color:darkblue;">FolderDocColl</span>&nbsp;<span style="color:purple;">Docs</span>
+{
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkcyan;">get</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(!<span style="color:purple;">FieldManager</span>.<span style="color:darkcyan;">FieldExists</span>(<span style="color:purple;">DocsProperty</span>))
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">if</span>&nbsp;(<span style="color:blue;">this</span>.<span style="color:purple;">IsNew</span>)
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">Docs</span>&nbsp;=&nbsp;<span style="color:darkblue;">FolderDocColl</span>.<span style="color:darkcyan;">NewFolderDocColl</span>();
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">else</span>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:purple;">Docs</span>&nbsp;=&nbsp;<span style="color:darkblue;">FolderDocColl</span>.<span style="color:darkcyan;">GetFolderDocColl</span>(<span style="color:darkcyan;">ReadProperty</span>(<span style="color:purple;">FolderIDProperty</span>));
+ 
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">return</span>&nbsp;<span style="color:darkcyan;">GetProperty</span>(<span style="color:purple;">DocsProperty</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:blue;">private</span>&nbsp;<span style="color:darkcyan;">set</span>
+&nbsp;&nbsp;&nbsp;&nbsp;{
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkcyan;">LoadProperty</span>(<span style="color:purple;">DocsProperty</span>,&nbsp;<span style="color:blue;">value</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span style="color:darkcyan;">OnPropertyChanged</span>(<span style="color:purple;">DocsProperty</span>);
+&nbsp;&nbsp;&nbsp;&nbsp;}
+}</pre>
+<p>This also covers the case where you need to load the property when the object is new and need to initialize the lazy loaded property with default values.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tiago replied on Monday, February 11, 2013</h2><p>The point is</p>
+<p><span style="COLOR:darkblue;"><span style="COLOR:darkblue;">FolderDocColl</span><span style="color:#000000;">.</span><span style="COLOR:darkcyan;">GetFolderDocColl</span><span style="color:#000000;">(</span><span style="COLOR:purple;">folderID</span><span style="color:#000000;">)<br />&nbsp;<br />must call</span></span></p>
+<p><span style="COLOR:darkblue;"><span style="COLOR:darkblue;">DataPortal.</span><span style="COLOR:darkcyan;">Fetch</span><span style="color:#000000;">(</span><span style="COLOR:purple;">int folderID</span><span style="color:#000000;">) // <span style="COLOR:darkblue;"><span style="COLOR:darkcyan;">DataPortal_Fetch<span style="color:#000000;">(</span><span style="COLOR:purple;">int folderID</span><span style="color:#000000;">)</span></span></span><br /></span></span></p>
+<p>to execute on the server, as&nbsp;</p>
+<p><span style="COLOR:darkblue;"><span style="COLOR:darkblue;">DataPortal.</span><span style="COLOR:darkcyan;">FetchChild</span><span style="color:#000000;">(</span><span style="COLOR:purple;">int folderID</span><span style="color:#000000;">) // <span style="COLOR:darkblue;"><span style="COLOR:darkcyan;">Child_Fetch</span><span style="color:#000000;">(</span><span style="COLOR:purple;">int folderID</span><span style="color:#000000;">) </span></span><br /></span></span></p>
+<p>willl keep the execution on the client. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Monday, February 11, 2013</h2><p>Your question is about async lazy load. </p>
+<p><b>Use the LoadPropertyAsync method in BusinessBase / ReadOnlyBase. </b></p>
+<p>This method accepts a Task (async/await DataPortal or Factory call)&nbsp; and will make sure that only one async method is triggered for this property and mark the property as busy during load.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

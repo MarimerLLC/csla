@@ -1,0 +1,89 @@
+<html><header><title>Potential Deadlock</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Potential Deadlock</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2472.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jason Gerard posted on Friday, March 02, 2007</h2>&nbsp;&nbsp;&nbsp; I did a cursory search of the forums and I didn't see this brought up anywhere.<br><br>I've never used CSLA before but I picked up the Expert C# book and I was browsing through the CS source for version 2.1.4 and I saw this in the ctor of the BusinessBase class.<br><br>lock (this.GetType())<br>{<br>// blah<br>}<br><br>Locking on a Type can lead to deadlocks since there is only one Type object loaded per app. While you could get away with this if the type your were locking on isn't public and you know for sure no other code is locking on it, that's obviously not the case in this constructor. Also, calling a method to get the type is not as performant as having a local object to lock on.<br><br>The recommended and safer approach is to create a private class level "lock" object to use for locking in that class.<br><br>private object _myLock = new object();<br>...<br>lock(_myLock)<br>{<br>//blah<br>}<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 03, 2007</h2><P>That is a good observation. However, in this case the resource being protected by the lock is a static resource, and so the lock <EM>must</EM> occur at the AppDomain level.</P>
+<P>Arguably I could have done this:</P>
+<P>private static object _myLock = new object();<BR>...<BR>lock(_myLock)<BR>{<BR>//blah<BR>}</P>
+<P>To be slightly more "proper", but the net result is the same as far as I can see.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Saturday, March 03, 2007</h2><P>Having had my morning cup of coffee, the fact is that you can't even use a static field like I said in my previous post, because that would span all instances of <EM>any subclass</EM> of BusinessBase - which is bad.</P>
+<P>What's needed is some per-instance-type object against which the code can lock. The use of this.GetType() is an easy way to get exactly such an object.</P>
+<P>But if you can think of a better way to get an object that is common only to all instances of a specific subclass of BusinessBase, then I'm totally open to using such a technique.</P>
+<P>Something like a Dictionary&lt;type,object&gt; came to mind - but then there are threading (and overhead) issues with creating/populating/maintaining that Dictionary - so it seems like a very problematic approach.</P>
+<P>Also, remember that this lock process occurs only on the very first time the first isntance of a given business object type is created. So anything (like a Dictionary) that involves consuming memory over the lifetime of the AppDomain is a bad solution - because that memory would be wasted - no code would ever access the value after that one, first hit.</P>
+<P>Maybe, just maybe, something like this would work. In BusinessBase:</P>
+<P>protected abstract object GetSyncRoot();</P>
+<P>Then in <EM>every subclass</EM> you'd have to implement that method like this:</P>
+<P>private static object _syncRoot = new object();</P>
+<P>protected override object GetSyncRoot()<BR>{<BR>&nbsp; return _syncRoot;<BR>}</P>
+<P>Of course this would instantly break every object in every application where CSLA is used, and so it is a very poor solution too...</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jason Gerard replied on Monday, March 05, 2007</h2>You could define GetSyncRoot() in the base like so<br><br>protected virtual object GetSyncRoot()<br>{<br>&nbsp; return this.GetType();<br>}<br><br>and update the Constructor to use it.<br><br>Then specify in the book, comments, everywhere that you should override with with an instance type lock.<br><br>Seems a bit of a hack though that would never get overriden.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, March 08, 2007</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Yes, that would work. But I agree that it would likely never
+been overridden, so I think I won&#8217;t change anything at this point.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>If someone comes along with an actual deadlock issue that
+requires a solution, I may make such a change at that time.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<div>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> Jason Gerard
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Monday, March 05, 2007 10:08 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Potential Deadlock<o:p></o:p></span></p>
+
+</div>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>You could define GetSyncRoot() in the base like so<br>
+<br>
+protected virtual object GetSyncRoot()<br>
+{<br>
+&nbsp; return this.GetType();<br>
+}<br>
+<br>
+and update the Constructor to use it.<br>
+<br>
+Then specify in the book, comments, everywhere that you should override with
+with an instance type lock.<br>
+<br>
+Seems a bit of a hack though that would never get overriden.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>antoan replied on Wednesday, March 14, 2007</h2>Pardon my ignorance but can someone explain why it is nessesary to do a lock on the type. What scenario could pose a problem if the type were not locked that way?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, March 14, 2007</h2><P>I discuss this briefly in the <EM>CSLA .NET Version 2.1 Handbook</EM> as well, but the short of it is that the first time an object of any given type is created, its validation and authorization rules are added to a static/Shared list.</P>
+<P>If the first creation of that type happened in&nbsp;<EM>two</EM> objects of the same type at the same time on different threads in the same AppDomain, then you could end up with both objects adding the same information to the same static/Shared lists. The result would be double entries at best, a crash at worst.</P>
+<P>The locking is used to avoid that scenario.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

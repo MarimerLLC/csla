@@ -1,0 +1,13 @@
+<html><header><title>New To GUIDs</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>New To GUIDs</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10416.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebick posted on Monday, June 06, 2011</h2><p>I have used CSLA in a number of incarnations, but always avoided using the GUID (in favor of an int).</p>
+<p>I am trying to do a new project now (using CSLA 3.8.3) using GUIDs and I am running into a strange issue.</p>
+<p>Here is my ID Property:</p>
+<p><em>&nbsp;&nbsp;&nbsp; Private Shared IdProperty As PropertyInfo(Of Guid) = RegisterProperty(New PropertyInfo(Of Guid)(&quot;Id&quot;))<br />&nbsp;&nbsp;&nbsp; &lt;System.ComponentModel.DataObjectField(True, True)&gt; _<br />&nbsp;&nbsp;&nbsp; Public ReadOnly Property Id() As Guid<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Get<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return GetProperty(Of Guid)(IdProperty)<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; End Get<br />&nbsp;&nbsp;&nbsp; End Property</em></p>
+<p>When I do a New, I call this.</p>
+<p><em>LoadProperty(Of Guid)(IdProperty, Guid.NewGuid)</em></p>
+<p>My IdProperty, after this call is all 0s (in a GUID format).</p>
+<p>I played around with something like this:</p>
+<p>Dim g as Guid = Guid.NewGuid.&nbsp; The result of this is that g comes back with what looks like a valid Guid., but if I mouse over the +, it expands out and shows an &quot;Empty&quot; property with is all 0&#39;s.</p>
+<p>The bottom line error I am getting is :</p>
+<p><em>DataPortal.Update.failed (System.ArgumentException: No mapping exists from object type Csla.PropertyInfo 1</em></p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>m2x replied on Monday, June 06, 2011</h2><p>My best guess would be take the () off the ID property declaration. The Guid with all zeros can be checked for using Guid.Empty, which is a Guid&#39;s default value.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebick replied on Monday, June 06, 2011</h2><p>All the properties use the () after them.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ebick replied on Monday, June 06, 2011</h2><p>The Guid wasn&#39;t my issue.&nbsp; Please disregard, I am all set.</p>
+<p>&nbsp;</p>
+<p>Thanks.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

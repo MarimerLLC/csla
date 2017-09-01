@@ -1,0 +1,26 @@
+<html><header><title>Problem while removing an item from list</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Problem while removing an item from list</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12341.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan posted on Thursday, January 30, 2014</h2><p>I need to remove an item from a&nbsp; list which derives from BusinessListBase. When i use remove method to remove that item from the list, actually it gets moved to the DeletedList. But the actual problem is in the deletedlist, each item lost its RecordUpdateLoginId. why is it so? I need this propertys value so that i could update it in the table. Please see commented line &quot;this.DeletedList&quot;</p>
+<p>public void Remove(string categoryName, string runby)<br />{</p>
+<p>Category newCategory = Category.GetCategory(categoryName);<br />newCategory.RecordUpdateLoginId = runby;<br />Remove(newCategory);</p>
+<p>//this.DeletedList</p>
+<p>}</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Thursday, January 30, 2014</h2><p>Why are you updating the record on a delete? Shouldn&#39;t you be deleting it?</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan replied on Thursday, January 30, 2014</h2><p>we are not physically deleting the record.</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>cfarren replied on Thursday, January 30, 2014</h2><p>The DeletedList is processed via the DataPortal_Delete/DeleteSelf method when the list object is saved. Perhaps you could update the record directly in the database via a stored proc from within the DataPortal_Delete method to set the RecordUpdateLoginId to whatever value you want.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan replied on Friday, January 31, 2014</h2><p>Actually my item is getting removed from the list properly using the sp. But the problem is who deleted, that information is not getting passed through the stored procedure to the db. RecordUpdateLoginId is something that comes from the application side and gets stored on the db. </p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JonnyBee replied on Friday, January 31, 2014</h2><p>You get a new object and does NOT add it to the list, and then you Remove the item which is not yet added? </p>
+<p>How do you exepect this to work? </p>
+<p>If you also override the equality operator - then there is a possibility that the Remove will lookup the existing item in the list and Remove that item!!!! </p>
+<p>I would assume that the item is already in the list and so you must </p>
+<ul>
+<li>get that item </li>
+<li>set additional properties </li>
+<li>call Remove </li>
+</ul>
+<p><strong>From MSDN documentation:</strong> <br /><a href="http://msdn.microsoft.com/en-us/library/ms132413(v=vs.110).aspx">http://msdn.microsoft.com/en-us/library/ms132413(v=vs.110).aspx</a>&nbsp;</p>
+<p><strong><em>Collection<span>&lt;</span><span class="typeparameter">T</span><span>&gt;</span><span>.</span>Remove Method</em></strong> <br />Removes the first occurrence of a specific object from the <span><a href="http://msdn.microsoft.com/en-us/library/ms132397(v=vs.110).aspx">Collection<span>&lt;</span>T<span>&gt;</span></a></span>.<br />This method determines equality using the default equality comparer <span><a href="http://msdn.microsoft.com/en-us/library/ms224763(v=vs.110).aspx">EqualityComparer<span>&lt;</span>T<span>&gt;</span><span>.</span>Default</a></span> for <span class="parameter">T</span>, the type of values in the list. <br /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan replied on Friday, January 31, 2014</h2><p>Hi Jonny,</p>
+<p>I am not getting a new object. Actually Category.GetCategory is getting the existing one from database. Then i am setting additional properties like RecordUpdateLoginId and then trying to remove this object from the list. But still when i check the DeletedList, the removed item is there in the deletedlist but RecordUpdateLoginId is still empty. Thats my problem.</p>
+<p>public void Remove(string categoryName, string runby)<br />{</p>
+<p>Category newCategory = Category.GetCategory(categoryName);<br />newCategory.RecordUpdateLoginId = runby;<br />Remove(newCategory);</p>
+<p>//this.DeletedList</p>
+<p>}</p>
+<p>Thanks</p>
+<p>Simi</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>simisreedharan replied on Friday, January 31, 2014</h2><p>yes jonny. You are right. I changed the code as follows and it worked.</p>
+<p>&nbsp;this[categoryName].RecordUpdateLoginId = runby;<br />&nbsp;Remove(this[categoryName]);</p>
+<p>Thanks</p>
+<p>Simi</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

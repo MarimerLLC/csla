@@ -1,0 +1,219 @@
+<html><header><title>Trick for compiling with SL3?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Trick for compiling with SL3?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/6987.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat posted on Friday, May 22, 2009</h2><P>I've been trying to get the CSLALight builds 3.6.1-3 to compile with my new SL 3 installation but cannot get around the error "Failed to generate code for the service reference 'WcfPortal'". If anyone has done this successfully, what is the work around? </P>
+<P>I tried turning off the "Reuse types in referenced assemblies" option but then of course my app can no longer connect to the server. I'm going to keep working on this but if anyone has any insight I would greatly appreciate it!</P>
+<P>Thanks,</P>
+<P>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, May 22, 2009</h2>Search the forum, as I think this has come up.<br /><br />The bad news is that so far SL3 isn't supported by Csla.. so you're largely on your own at this point.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, May 22, 2009</h2><P>I posted to the one thread I could find on this but am awaiting response--that thread contains more unanswered questions than solutions. I do realize that SL3 is beta and, as such, is not supported by Csla. I'm looking for any insight from people who may have gotten&nbsp;this working. </P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Friday, May 22, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+was able to compile CSLA for Silverlight using SL 3.0.&nbsp; Here are the
+steps.<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>1.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Update CSLA for .NET solution<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>a.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Add web project to expose data portal.&nbsp; Use you can use
+project from svn - \cslalighttest\UnitTest\Web<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>b.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>This project was used to generate the initial reference to Wcf
+Portal for CSLA for SL<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>c.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Setup startup project to web and run the solution<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>d.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Portal info should now be available for CSLA SL
+solution.&nbsp;&nbsp; You can test this in browser by using WcfPortal.svc in
+the browser URL<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>2.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Open CSLA light solution<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>a.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Right click on service reference to WcfPortal and select
+configure<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>b.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Uncheck re-use types in all referenced assemblies (root cause of
+the problem &#8211; at least appears to be)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>c.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Check all assemblies listed with exception of System<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>d.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>Click OK<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>e.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You now should be able to update assembly reference and generate
+proxy classes, then compile entire solution<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>f.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>I also had to remove and re-add reference to
+System.Windows.Controls.Data (SL Data Grid stuff)<o:p></o:p></span></p>
+
+<p class=MsoListParagraph><span><span>3.<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+</span></span></span><span>You can now remove Web project from CSLA for .NET solution<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Disclaimer:
+I did not verify that compiled CSLA for SL assembly actually works &#8211; ran
+out of time<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pondosinat
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 22, 2009 1:49 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] Trick for compiling with SL3?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>I posted to the one thread I could find on this but am awaiting
+response--that thread contains more unanswered questions than solutions. I do
+realize that SL3 is beta and, as such, is not supported by Csla. I'm looking
+for any insight from people who may have gotten&nbsp;this working. <o:p></o:p></p>
+
+<p>Thanks<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Friday, May 22, 2009</h2><P>Sergey,</P>
+<P>Thanks for detailing out those steps!&nbsp;I was hoping that unchecking the "System" reference would be the answer but&nbsp;unfortunately still getting the same error from the client when trying to run the Silverlight app- "Could not find default endpoint element that references contract 'WcfPortal.IWcfPortal' in the ServiceModel client configuration section. </P>
+<P>I'm digging further to see what this error is...</P>
+<P>Thanks again for your help,</P>
+<P>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>sergeyb replied on Saturday, May 23, 2009</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I
+am guessing it is a namespace issue.&nbsp; Could you see what you have in references.cs
+file &#8211; you can look for IWcfPortal interface.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><b><span>Sergey Barskiy<o:p></o:p></span></b></p>
+
+<p class=MsoNormal><b><i><span>Principal Consultant<o:p></o:p></span></i></b></p>
+
+<p class=MsoNormal><span>office: 678.405.0687 |
+mobile:&nbsp;404.388.1899</span><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><img width=119 height=26 id="Picture_x0020_1" alt="cid:_2_0648EA840648E85C001BBCB886257279"><br>
+</span><b><span>Microsoft Worldwide Partner of the Year |</span></b><span> </span><b><span>Custom
+Development Solutions, Technical Innovation</span></b><span><o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> pondosinat
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Friday, May 22, 2009 5:35 PM<br>
+<b>To:</b> Sergey Barskiy<br>
+<b>Subject:</b> Re: [CSLA .NET] RE: Trick for compiling with SL3?<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p>Sergey,<o:p></o:p></p>
+
+<p>Thanks for detailing out those steps!&nbsp;I was hoping that unchecking the
+&quot;System&quot; reference would be the answer but&nbsp;unfortunately still
+getting the same error from the client when trying to run the Silverlight app-
+&quot;Could not find default endpoint element that references contract
+'WcfPortal.IWcfPortal' in the ServiceModel client configuration section. <o:p></o:p></p>
+
+<p>I'm digging further to see what this error is...<o:p></o:p></p>
+
+<p>Thanks again for your help,<o:p></o:p></p>
+
+<p>Brian<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>pondosinat replied on Monday, May 25, 2009</h2><P>Hi Sergey,</P>
+<P>Good news! I was able to get my SL3&nbsp;app to run successfully with CSLA. I ended up just running&nbsp;a diff&nbsp;on the two CslaLight folders--the first being the version before auto-upgrading to SL3 and the other after the upgrade. Sure enough, the VS auto-upgrade totally wipded out the references.cs file. So, I just replaced that file with the original 3.6.2 version and everything worked! No need to add or remove references. Here is a quick step by step to get CSLA working with SL3:</P>
+<P>1) Auto-upgrade the CslaLight solution in VS.</P>
+<P>2) Replace the file /Service References/WcfPortal/Reference.cs with the original version before the auto-upgrade.</P>
+<P>3) Update any references to CSLA in your client app.</P>
+<P>That's it!</P>
+<P>Thanks again,</P>
+<P>Brian</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>StuartBale replied on Saturday, June 27, 2009</h2>Woo Hoo<br /><br />This works!<br /><br />I also had to update the System.Windows.Controls.Data reference to the new SL3 assembly.<br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, June 28, 2009</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>StuartBale:</strong></div><div>I also had to update the System.Windows.Controls.Data reference to the new SL3 assembly.</div></BLOCKQUOTE></P>
+<P>This is because in 3.6.x the reference to that assembly is version-specific.</P>
+<P>As someone noted in another thread, perhaps I should change that. But really I shouldn't, because there are two versions of that assembly floating around for SL2 - and only the December 08 one actually works (and that's not that one that comes with the SDK).</P>
+<P>Hopefully in 3.7 I'll be able to change the reference so it is not version-specific, and that'll simplify the process.</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

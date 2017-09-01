@@ -1,0 +1,43 @@
+<html><header><title>same behavior, different properties, how to deal</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>same behavior, different properties, how to deal</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5636.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba posted on Monday, October 20, 2008</h2>Dear all,<br><br>above all, I'm sorry for my english.<br><br>It is clear that when, for example, two business objects behave alike, should be normalized
+in a single business object, so they have some different properties. <br><br> My concern is how to implement the  not common properties, from the original Business Objects.<br><br>Consider this simple use case in which it has a ContactList containing ContactInfo with properties ID and FullName
+(common properties to both individuals and organizations).<br><br>However, when the user selects a ContactInfo for editing, or decides to
+create a new one, this can be individual or organization. This uses a
+EditableRoot Contact, whose responsibility is to manage data
+(general, location, description, ...). And ensure that there are no
+duplicates (personal identification or corporate).<br><br>The problem is that while a person has FirstName, MiddleName and
+LastName, an organization has Trade Name and/or legal name. For this,
+the DataEntry Form has an area of controls that can dynamically change to deal
+with properties that belong only to one person or an organization. I do not know to deal with not common properties in the EditableRoot Contact.
+Please tell me the most appropriate way to do it (taking into account also DataBinding) according to principles or patterns. <br><br> Thank you very much<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, October 20, 2008</h2><P>Hello there,</P>
+<P>We tackle the exact same issue. </P>
+<P>First, profiles can be individuals or organizations and they happen to have a collection of profile names, one of which may be primary. </P>
+<P>Individual names contain more information than Organization names, no doubt - you spelled out the name parts for example. So a profile contains a collection of IProfileName, of which both organization names and individual names are IProfileNames and inherit from ProfileName for some common functionality. We have one in the collection which is the primary name. A profile may have "aliases" or "alternative names".</P>
+<P>So an individual has a collection of individual names and an organization a collection of organization names.</P>
+<P>Obviously, you may not have a *collection* of names with a primary, rather just a child name object. </P>
+<P>The collection object is initialized by the root object (either organization or individual) with the type of objects they are dealing with. So when I say - add a new name, it gives me the appropriate kind of name. </P>
+<P>All common facets to individual name and organization name, such as the regular name property, is exposed as part of IProfileName. Individual names may implement this by providing a calculation on the name parts, organization names may implement it by just providing the legal name or what have you. </P>
+<P>We accomodate this in a Web app, so it's really a matter of which page you bring them to in order to edit/add a profile name - these are different pages for us for individuals / organizations. </P>
+<P>Hope that helps (I'm not sure it helps you in the UI area, as I suspect you're using a WinForms app). </P>
+<P>Chris</P>
+<P>p.s. your English is just fine. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Monday, October 20, 2008</h2>Chris thanks for your quick response,<br><br>In fact, my concern is more general, the example that I proposed about
+names was very limited. To expand a bit more my idea, a contact or
+profile person might have other properties that are not present in
+the organization, such as gender and marital status. <br><br> In my use
+case, both (person and organization) have the same behavior, which is why they are in
+a single business object. But obviously an organization has no gender or
+marital status. <br><br> So, if I add the properties Gender and MaritalStatus To business object Contact, thinking about person, but then if I use Contact as an organization, these two properties remain and obstruct.<br><br>How deal with this situation?<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Monday, October 20, 2008</h2><P>Inheritance.</P>
+<P>Profile is the base class, and contains common behavior and properties. Individual is a Profile. Organization is a Profile. </P>
+<P>Organization and Individual inherit Profile and have their own specific properties such as Gender for Individual and State Tax Id for Organization. </P>
+<P>Profile would likely be abstract, so that you could expose some properties as abstract and allow Individual and Organization to provide implementation for properties and methods that might be implemented differently. Common behavior can be placed right in the Profile class. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Tuesday, October 21, 2008</h2>I know that inheritance can work here, but according to what I read
+here in several posts, it might be inappropriate, because extends properties instead of behavior  (as it should be the user
+inheritance), that is, is a solution-focused data.<br><br>I know that inheritance can work here, but according to what I read
+here in several posts, it might be inappropriate, because I understand
+that we must use inheritance to extend behavior, no properties or state.
+<br><br> That is to say that the proposed solution is data-centric, but it must be  behavior-centric.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Tuesday, October 21, 2008</h2><P>Well, you could have a child object in profile for IProfileTypeSpecificInfo or something like that which you'd swap in the one based on the "profile type"&nbsp;of individual or organization&nbsp;that would&nbsp;give you the properties that you would like - then you wouldn't have inheritence. </P>
+<P>For us there are nuances in behavior between individuals and organizations that make inheritance a route we felt was best - they inherit common behavior from profiles but override and/or implement slightly differently some other behavior in certain cases. </P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jgamba replied on Tuesday, October 21, 2008</h2>Okay, that solution seems to be more behavior-centric. Now only
+remains for me the problem of DataBinding. How can I bind an profile object
+(individual or organization) to a DataEntry Form?</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Cosmin replied on Saturday, November 01, 2008</h2><br>Hi,<br>I have a similar situation(Accounting software). Everything is an Account(Base class) and I have EmployeeAccount, CustomerAccount, VendorAccount, etc. 3-4 levels of inheritance.<br>Some of the account types have different behavior but some of them don't so I just ignored the inheritance rule you're talking about. <br>It helped me a lot because I have lots of common fields and it would be
+overkill to just duplicate all the Account fields to all children
+classes.<br><br>If you feel that inheritance works for you just do it, you'll refactor later if you don't like the result. The rules are to be broken anyway. <br><br>I wonder how you handle your situation in the database? Do you use separate tables for companies and individuals? <br>I suggest you have a look at this document discussing how you can achieve same inheritance in the database using views:<br>http://www.kineticode.com/docs/polymorphic_database_design.pdf<br><br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

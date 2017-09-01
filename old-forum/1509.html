@@ -1,0 +1,129 @@
+<html><header><title>The ConnectionString property has not been initialized</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>The ConnectionString property has not been initialized</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1509.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell posted on Monday, October 16, 2006</h2><P>Hello,</P>
+<P>I'm a not very expert inspired amateur trying to get CSLA 1.5 up and running for the first time. I've made it through the C# book to the point where I have completed the Login form in the PTWin project. I'm assuming that I should be able to login to the Security database at this point and authenticate a user. I feel like all my ducks are sort of in a row. When I click the login button, however, I get the following error message:</P>
+<P>'The ConnectionString property has not been initialized.'</P>
+<P>Can anyone shed any light on why this might be? </P>
+<P>Thanks a lot,</P>
+<P>Bob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Monday, October 16, 2006</h2><P>Please post your app.config file (and web.config if using remoting).&nbsp; This way we can better troubleshoot your problem</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Monday, October 16, 2006</h2><P>Thanks much for the respose. Here is App.config:</P><FONT color=#0000ff size=2>
+<P>&lt;?</FONT><FONT color=#800000 size=2>xml</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>version</FONT><FONT color=#0000ff size=2>="1.0"?&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="Authentication"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="CSLA"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>--&lt;add key="DB:PTracker" value="data source=eliot;initial catalog=PTracker;user id=sa;password=password" /&gt; </P>
+<P>&lt;add key="DB:Security" value="data source=eliot;initial catalog=Security;user id=sa;password=passsword" /&gt;--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="PortalServer"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="http://localhost/MyCSLADataPortal/DataPortal.rem"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="ServicedPortalServer"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="http://localhost/MyCSLADataPortal/ServicedDataPortal.rem"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="DefaultBatchQueueServer"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="tcp://localhost:5050/cslabatch/batchqueue.rem"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>startup</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>supportedRuntime</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>version</FONT><FONT color=#0000ff size=2>="v1.1.4322"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>requiredRuntime</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>version</FONT><FONT color=#0000ff size=2>="v1.1.4322"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>safemode</FONT><FONT color=#0000ff size=2>="true"/&gt;&lt;/</FONT><FONT color=#800000 size=2>startup</FONT><FONT color=#0000ff size=2>&gt;&lt;</FONT><FONT color=#800000 size=2>runtime</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>assemblyBinding</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>xmlns</FONT><FONT color=#0000ff size=2>="urn:schemas-microsoft-com:asm.v1"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>appliesTo</FONT><FONT color=#0000ff size=2>="v1.0.3705"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>assemblyBinding</FONT><FONT color=#0000ff size=2>&gt;&lt;/</FONT><FONT color=#800000 size=2>runtime</FONT><FONT color=#0000ff size=2>&gt;&lt;/</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</FONT></P><FONT color=#000000 size=3>
+<P>And here is Web.config:</P><FONT color=#0000ff size=2>
+<P>&lt;?</FONT><FONT color=#800000 size=2>xml</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>version</FONT><FONT color=#0000ff size=2>="1.0"?&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="Authentication"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="CSLA"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- TODO: update connection strings as appropriate --</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="DB:PTracker"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="data source=eliot;initial catalog=PTracker;user id=sa;password=password"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>key</FONT><FONT color=#0000ff size=2>="DB:Security"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>value</FONT><FONT color=#0000ff size=2>="data source=eliot;initial catalog=Security;user id=sa;password=password"/&gt;</P></FONT><FONT size=2>
+<P></P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- </P>
+<P>&lt;add key="DB:PTracker" value="data source=ineroth;initial catalog=PTracker;integrated security=SSPI" /&gt; </P>
+<P>&lt;add key="DB:Security" value="data source=ineroth;initial catalog=Security;integrated security=SSPI" /&gt; </P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>appSettings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>system.runtime.remoting</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>application</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>service</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>wellknown</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="SingleCall"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>objectUri</FONT><FONT color=#0000ff size=2>="DataPortal.rem"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>type</FONT><FONT color=#0000ff size=2>="CSLA.Server.DataPortal, CSLA.Server.DataPortal"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>wellknown</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="SingleCall"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>objectUri</FONT><FONT color=#0000ff size=2>="ServicedDataPortal.rem"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>type</FONT><FONT color=#0000ff size=2>="CSLA.Server.ServicedDataPortal.DataPortal, CSLA.Server.ServicedDataPortal"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>service</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>channels</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>channel</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="http"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>serverProviders</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>provider</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="wsdl"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- TODO: comment the following two lines for .NET 1.0 --</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>formatter</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="soap"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>typeFilterLevel</FONT><FONT color=#0000ff size=2>="Full"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>formatter</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>ref</FONT><FONT color=#0000ff size=2>="binary"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>typeFilterLevel</FONT><FONT color=#0000ff size=2>="Full"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>serverProviders</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>channel</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>channels</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>application</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>system.runtime.remoting</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>system.web</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- DYNAMIC DEBUG COMPILATION</P>
+<P>Set compilation debug="true" to enable ASPX debugging. Otherwise, setting this value to</P>
+<P>false will improve runtime performance of this application. </P>
+<P>Set compilation debug="true" to insert debugging symbols (.pdb information)</P>
+<P>into the compiled page. Because this creates a larger file that executes</P>
+<P>more slowly, you should set this value to true only when debugging and to</P>
+<P>false at all other times. For more information, refer to the documentation about</P>
+<P>debugging ASP.NET files.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>compilation</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>defaultLanguage</FONT><FONT color=#0000ff size=2>="c#"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>debug</FONT><FONT color=#0000ff size=2>="false"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- CUSTOM ERROR MESSAGES</P>
+<P>Set customErrors mode="On" or "RemoteOnly" to enable custom error messages, "Off" to disable. </P>
+<P>Add &lt;error&gt; tags for each of the errors you want to handle.</P>
+<P>"On" Always display custom (friendly) messages.</P>
+<P>"Off" Always display detailed ASP.NET error information.</P>
+<P>"RemoteOnly" Display custom (friendly) messages only to users not running </P>
+<P>on the local Web server. This setting is recommended for security purposes, so </P>
+<P>that you do not display application detail information to remote clients.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>customErrors</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="RemoteOnly"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- AUTHENTICATION </P>
+<P>This section sets the authentication policies of the application. Possible modes are "Windows", </P>
+<P>"Forms", "Passport" and "None"</P>
+<P>"None" No authentication is performed. </P>
+<P>"Windows" IIS performs authentication (Basic, Digest, or Integrated Windows) according to </P>
+<P>its settings for the application. Anonymous access must be disabled in IIS. </P>
+<P>"Forms" You provide a custom form (Web page) for users to enter their credentials, and then </P>
+<P>you authenticate them in your application. A user credential token is stored in a cookie.</P>
+<P>"Passport" Authentication is performed via a centralized authentication service provided</P>
+<P>by Microsoft that offers a single logon and core profile services for member sites.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>authentication</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="Windows"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- AUTHORIZATION </P>
+<P>This section sets the authorization policies of the application. You can allow or deny access</P>
+<P>to application resources by user or role. Wildcards: "*" mean everyone, "?" means anonymous </P>
+<P>(unauthenticated) users.</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>authorization</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>allow</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>users</FONT><FONT color=#0000ff size=2>="*"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- Allow all users --</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- &lt;allow users="[comma separated list of users]"</P>
+<P>roles="[comma separated list of roles]"/&gt;</P>
+<P>&lt;deny users="[comma separated list of users]"</P>
+<P>roles="[comma separated list of roles]"/&gt;</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>authorization</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- APPLICATION-LEVEL TRACE LOGGING</P>
+<P>Application-level tracing enables trace log output for every page within an application. </P>
+<P>Set trace enabled="true" to enable application trace logging. If pageOutput="true", the</P>
+<P>trace information will be displayed at the bottom of each page. Otherwise, you can view the </P>
+<P>application trace log by browsing the "trace.axd" page from your web application</P>
+<P>root. </P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>trace</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>enabled</FONT><FONT color=#0000ff size=2>="false"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>requestLimit</FONT><FONT color=#0000ff size=2>="10"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>pageOutput</FONT><FONT color=#0000ff size=2>="false"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>traceMode</FONT><FONT color=#0000ff size=2>="SortByTime"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>localOnly</FONT><FONT color=#0000ff size=2>="true"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- SESSION STATE SETTINGS</P>
+<P>By default ASP.NET uses cookies to identify which requests belong to a particular session. </P>
+<P>If cookies are not available, a session can be tracked by adding a session identifier to the URL. </P>
+<P>To disable cookies, set sessionState cookieless="true".</P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>sessionState</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>mode</FONT><FONT color=#0000ff size=2>="Off"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>stateConnectionString</FONT><FONT color=#0000ff size=2>="tcpip=127.0.0.1:42424"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>sqlConnectionString</FONT><FONT color=#0000ff size=2>="data source=127.0.0.1;Trusted_Connection=yes"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>cookieless</FONT><FONT color=#0000ff size=2>="false"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>timeout</FONT><FONT color=#0000ff size=2>="20"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;!</FONT><FONT color=#008000 size=2>-- GLOBALIZATION</P>
+<P>This section sets the globalization settings of the application. </P>
+<P>--</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>globalization</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>requestEncoding</FONT><FONT color=#0000ff size=2>="utf-8"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>responseEncoding</FONT><FONT color=#0000ff size=2>="utf-8"/&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>system.web</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>runtime</FONT><FONT color=#0000ff size=2>&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;</FONT><FONT color=#800000 size=2>assemblyBinding</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>xmlns</FONT><FONT color=#0000ff size=2>="urn:schemas-microsoft-com:asm.v1"</FONT><FONT color=#ff00ff size=2> </FONT><FONT color=#ff0000 size=2>appliesTo</FONT><FONT color=#0000ff size=2>="v1.0.3705"&gt;</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>&lt;/</FONT><FONT color=#800000 size=2>assemblyBinding</FONT><FONT color=#0000ff size=2>&gt;&lt;/</FONT><FONT color=#800000 size=2>runtime</FONT><FONT color=#0000ff size=2>&gt;&lt;/</FONT><FONT color=#800000 size=2>configuration</FONT><FONT color=#0000ff size=2>&gt;</FONT></P>
+<P><FONT color=#000000>Thanks again for your time.</FONT></P>
+<P><FONT color=#000000>Bob</FONT></P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bob Bedell replied on Tuesday, October 17, 2006</h2><P>Got it figured out. Phew. </P>
+<P>I was passing the wrong database name to the DB method that initializes the SQLConnection object in BusinessIdentity's DataPortal_Fetch method. I'm logged in and all is well, for now.</P>
+<P>I've been intending to build CSLA ever since I got my hands on a copy of the VB6 edition of the book, and just never got around to it. Lots of stuff was just way beyond my comprehension back then, but&nbsp;I knew just enough to be thoroughly impressed by what I was looking at.&nbsp;Feels good to finally get it up and running. Pretty exciting.</P>
+<P>Thanks again for the reply.</P>
+<P>Bob</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>guyroch replied on Tuesday, October 17, 2006</h2>Glad to see you up and running, I was just about to look into your config file but I guess I won't have too.&nbsp; Have a great one :)</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

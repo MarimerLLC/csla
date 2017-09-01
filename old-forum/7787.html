@@ -1,0 +1,26 @@
+<html><header><title>Project Tracker in shared web hosting</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Project Tracker in shared web hosting</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7787.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton posted on Wednesday, October 14, 2009</h2>Project Tracker:<br><br>I have uploaded the databases (PTracker and Security) and the precompiled files in a shared web host.<br>The only changes I made to the web.config file is the connection string.<br><br>The site can be accessed (<a href="http://test.tesdaisat.net/">here</a>), but gets errors on the links to the business pages.<br><br>Please help. Thanks.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, October 14, 2009</h2><P>Does your shared provider offer fulltrust? That is required:</P>
+<P><A href="http://www.lhotka.net/cslanet/faq/WebFormsFaq.ashx">http://www.lhotka.net/cslanet/faq/WebFormsFaq.ashx</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>superkuton replied on Thursday, October 15, 2009</h2>It is now working, Rocky.<br>Thanks.<br><br>------------------<br>I modified the web.config files:<br><br>added:<br><font size="3">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;customErrors mode="Off"/&gt;</font><br><blockquote><br></blockquote><font size="3">commented:</font><br><blockquote><font size="3">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;!--&lt;add key="CslaDataPortalProxy" value="Csla.DataPortalClient.WcfProxy, Csla"/&gt;--&gt;</font><br><br><font size="3">&nbsp; &lt;!--</font><br><font size="3">&nbsp;&nbsp;&nbsp; &lt;system.serviceModel&gt;</font><br><font size="3">&nbsp;&nbsp;&nbsp; </font><br><font size="3">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;client&gt;</font><br><font size="3">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;endpoint name="WcfDataPortal" address="http://localhost:4216/WcfHost/WcfPortal.svc" binding="wsHttpBinding" contract="Csla.Server.Hosts.IWcfPortal"/&gt;</font><br><font size="3">&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &lt;/client&gt;</font><br><font size="3">&nbsp;&nbsp;&nbsp; </font><br><font size="3">&nbsp;&nbsp;&nbsp; &lt;/system.serviceModel&gt;</font><br></blockquote></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, October 15, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I suppose you will need to ask them if they offer a fulltrust
+option for .NET code.</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

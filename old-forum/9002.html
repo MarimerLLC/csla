@@ -1,0 +1,67 @@
+<html><header><title>Dynamic Validation Rules</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Dynamic Validation Rules</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9002.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>RogerWillCode posted on Thursday, May 27, 2010</h2><p>Here&#39;s the situation, I have a few CommonRules.StringRequired Validation rules that are common for certain properties of my object regardless.&nbsp; At times though I have some properties that are required based on one particular property.&nbsp; I am trying to decide if I can easily add some Validation Rules for the properties in question dynamically based on the driver value or if I need to create some inheritance objects (which I don&#39;t really want to do).</p>
+<p>Overly simplistic example: </p>
+<p>WidgetTypeDescription Property&nbsp;(driver property) - values: Widget 1, Widget 2, Widget 3</p>
+<p>OwnerProperty (Required for all) - values: Bob, Will, Joe, Jane</p>
+<p>PrimaryMaterialProperty (Required for all) - values: wood, plastic, steel</p>
+<p>SecondaryMaterialProperty (Only required if we are dealing with Widget 3)</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>RockfordLhotka replied on Thursday, May 27, 2010</h2><p>The philosophy behind the CSLA rules system is to make the rules smart, not to make the adding of the rules smart.</p>
+<p>In other words, if you have a rule that should behave differently (such as running or not running) based on various object state information, then you should write your rule to be smart enough to do the right thing based on the state of the object.</p>
+<p>The rules in CommonRules are for the trivial case. As soon as you move behind the trivial case, you should write your own rules that handle your specific situation.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RogerWillCode replied on Friday, May 28, 2010</h2><p>Can&#39;t ask for more than an answer from the source.&nbsp; Thanks for taking the time to answer Rocky.&nbsp; I think I got the custom rule working just fine.&nbsp; I always&nbsp;look for the best/easiest (not always the same) way to do things.</p>
+<p>&nbsp;Basically what I did (in case someone else is looking to do something similar) is this:</p>
+<p>Added one line for each of the properties that may or may not be required in the AddBusinessRules() method</p>
+<p><span style="font-size:x-small;"><font size="2">
+<p>ValidationRules.AddRule&lt;<span style="color:#2b91af;">BusinessObject</span></p>
+</font></span>
+<p><span style="font-size:x-small;">&gt;(Required&lt;</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span><span style="font-size:x-small;">&gt;, </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">new</span></span><span style="font-size:x-small;"> Csla.Validation.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">RuleArgs </span></span><span style="font-size:x-small;">(PropertyNameProperty));</span></p>
+<p><span style="font-size:x-small;">Then I defined the custom rule:</span></p>
+</p>
+<p><span style="font-size:x-small;"><span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">private</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">static</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">bool</span></span><span style="font-size:x-small;"> Required&lt;T&gt;(T target, Csla.Validation.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">RuleArgs</span></span><span style="font-size:x-small;"> e) </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">where</span></span><span style="font-size:x-small;"> T : </span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">BusinessObject</span></span></p>
+<span style="font-size:x-small;">
+<p>{</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">switch</span></span><span style="font-size:x-small;"> (target.ReadProperty(BusinessObjectTypeIDProperty))
+<p>{ </p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp; case</span></span><span style="font-size:x-small;"> 1: </span><span style="color:#008000;font-size:x-small;"><span style="color:#008000;font-size:x-small;"></span></span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;</p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp; switch</span></span><span style="font-size:x-small;"> (e.PropertyName)
+<p>&nbsp;&nbsp;&nbsp;&nbsp; {</p>
+<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case</span></span><span style="font-size:x-small;"> </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;AdditionalMaterialID&quot;</span></span><span style="font-size:x-small;">:<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; case</span></span><span style="font-size:x-small;"> </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;SomeOtherRequiredProperty&quot;</span></span><span style="font-size:x-small;">:</span></p>
+<span style="font-size:x-small;"><font size="2">
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = </p>
+</font></span>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">string</span></span><span style="font-size:x-small;">.Format(Csla.Properties.</span><span style="color:#2b91af;font-size:x-small;"><span style="color:#2b91af;font-size:x-small;">Resources</span></span><span style="font-size:x-small;">.StringRequiredRule, </span><span style="color:#a31515;font-size:x-small;"><span style="color:#a31515;font-size:x-small;">&quot;Value&quot;</span></span><span style="font-size:x-small;">);<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">false</span></span><span style="font-size:x-small;">;<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; default</span></span><span style="font-size:x-small;">:<font size="2">
+<p>&nbsp;</p>
+</font></span></p>
+<p><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</span></span><span style="font-size:x-small;"> </span><span style="color:#0000ff;font-size:x-small;"><span style="color:#0000ff;font-size:x-small;">true</span></span><span style="font-size:x-small;">;
+<p>&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; case 2:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; //similar code</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp; default:</p>
+<p>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return true;</p>
+<p>}</p>
+<p>}// end of custom rule Required</p>
+</span></p>
+</span></p>
+<p><img src="http://forums.lhotka.net/emoticons/emotion-11.gif" alt="Cool" /></p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

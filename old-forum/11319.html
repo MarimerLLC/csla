@@ -1,0 +1,19 @@
+<html><header><title>ProjectTracker: What purpose fulfills the ProjectResourceEditCreator class?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>ProjectTracker: What purpose fulfills the ProjectResourceEditCreator class?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/11319.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy posted on Friday, April 20, 2012</h2><p>Hello,</p>
+<p>I am investigating a little bit within the project tracker sample application.<br />Can someone explain to me for what the separate class ProjectResourceEditCreator is for?</p>
+<p>Sure, I see it creates ProjectResourceEdit instances and fetches them from the database.<br />But why is this separate implemented and not by factory methods within ProjectResourceEdit?</p>
+<p>Thanks for clarification,<br />Alexander<br /><br />btw: is there any overview documentation about the PT sample?</p></div><div style='padding:0 15 3 15;background-color:lightgreen'><h2>JonnyBee replied on Friday, April 20, 2012</h2><p>It is described in the Using CSLA 4 ASP.NET MVC book (and with figures too):</p>
+<p><i>&quot;The ProjectResourceEditCreator exists to support asynchronous smart client applications <br />and stateless web server applications. This type isn&rsquo;t used by synchronous smart client <br />applications</i>&quot;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>alex.enjoy replied on Friday, April 20, 2012</h2><p>Good to know, thank you!<br />I never looked inside the UI books so far.... <img src="http://forums.lhotka.net/emoticons/emotion-10.gif" alt="Embarrassed" /></p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>MarkSutton replied on Friday, July 20, 2012</h2><p>I&#39;d actually like to raise this issue again.</p>
+<p>I&#39;m looking at the current (4.3.12) version of the ProjectTracker project from a WPF-over-3-tiers perspective. &nbsp;I also have the eBooks for CSLA 4.</p>
+<p>The&nbsp;<b>UsingCsla4-05-WPF-SL.pdf </b>book (Rev 0.4 (draft)) states the following:</p>
+<p style="padding-left:30px;"><i>The ProjectResourceEditCreator type is not used by the smart client applications covered in this ebook. For a full discussion of this type, please refer to the Using CSLA 4: ASP.NET MVC ebook.</i></p>
+<p>However, when I run the WPF client in debug and add a resource to a project the following method is being called:</p>
+<p style="padding-left:30px;">class ProjectResourceEditCreator</p>
+<p style="padding-left:30px;">
+<p>public static void GetProjectResourceEditCreator(int resourceId, EventHandler&lt;DataPortalResult&lt;ProjectResourceEditCreator&gt;&gt; callback)</p>
+<p>&nbsp; &nbsp; {</p>
+<p>&nbsp; &nbsp; &nbsp; DataPortal.BeginFetch&lt;ProjectResourceEditCreator&gt;(resourceId, callback);</p>
+<p>&nbsp; &nbsp; }</p>
+</p>
+<p>I&#39;m about to develop a WPF application making asynchronous calls over WCF to a middle tier, and I&#39;m puzzled as to what is the advised pattern.</p>
+<p>Thanks</p>
+<p>Mark</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

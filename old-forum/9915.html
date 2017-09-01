@@ -1,0 +1,13 @@
+<html><header><title>How to create parametrized DataPortal.Fetch() method for editable root collection object?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>How to create parametrized DataPortal.Fetch() method for editable root collection object?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/9915.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasminK posted on Tuesday, January 04, 2011</h2><p>Hi guys, I&#39;ve got a problem.</p>
+<p>Is it possible to have parametrized DataPortal.Fetch() method for editable root collection? (<i>BusinessListBase&lt;Roles, Role&gt;</i>).</p>
+<p>&nbsp;</p>
+<p>For example (I&#39;ll take an example like in ProjectTracker), in RolesEdit WinPart of PTWin in ProjectTracker we have:</p>
+<p>&nbsp;</p>
+<p>private void RolesEdit_Load(object sender, EventArgs e)<br />&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; try<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _roles = Roles.GetRoles();<br />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; }</p>
+<p>but i want to be able to have an overload method of GetRoles() which will have (in my case) an integer parameter. Something like:</p>
+<p>_roles = Roles.GetRoles(someIntParameter);</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Marjon1 replied on Tuesday, January 04, 2011</h2><p>You could do this by having the following code (assuming version 3.8+), I believe the singleCriteria objects have changed in the latest versions not to require the first generic anymore.</p>
+<p>Public Shared Function GetRoles(ByVal SomeIntValue as Integer) as Roles<br />&nbsp;&nbsp; &nbsp; &nbsp; Return DataPortal.Fetch(Of Roles)(New SingleCriteria(Of Roles, Integer)(SomeIntValue))<br />End Function</p>
+<p>Private Sub DataPortal_Fetch(ByVal criteria as SingleCriteria(Of Roles, Integer))<br />&nbsp;&nbsp; &nbsp; &#39;Use the criteria.Value property to access the integer value<br />End Sub&nbsp;</p>
+<p>If you require more than one paramater then you need to create your own criteria class, inheriting from CriteriaBase and use that to populate and access the parameters both in the shared function and DataPortal_Fetch.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JasminK replied on Thursday, January 06, 2011</h2><p>Thanks a lot mate.</p>
+<p>it works just as it should :)</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

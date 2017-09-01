@@ -1,0 +1,188 @@
+<html><header><title>Validation Rule Question</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Validation Rule Question</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/2954.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 posted on Tuesday, May 29, 2007</h2><P>When I code gen a base class I get a rule for password like this:</P><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> StringMaxLength, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> MaxLengthRuleArgs(</FONT><FONT color=#ff00ff size=2>"Password"</FONT><FONT size=2>, 256))</P>
+<P></P></FONT>
+<P>In my derived class I override AddBusinessRules and add additional rules. The question is what happens if I use the same rule as defined in the base class and change the maxLength?</P>
+<P>Like this:</P><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> StringMaxLength, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> MaxLengthRuleArgs(</FONT><FONT color=#ff00ff size=2>"Password"</FONT><FONT size=2>, 128))</P>
+<P></P></FONT>
+<P>1. Will both rules exist and be called? (So the rule is broken if password is over 128 characters long).</P>
+<P>2. Will only the Base rule exist? (256)</P>
+<P>3. Will only the Derived rule exist? (128)</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Tuesday, May 29, 2007</h2><P>Let us know when you test it and find out! </P>
+<P>Curious minds want to know! :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 30, 2007</h2><P>I think both will be called, but the order of execution will be indeterminate unless you use priorities. And the order of execution matters, because both rules will resolve to the same rule name - which is the key used in BrokenRulesCollection to maintain the list.</P>
+<P>So if the 128 runs first, the 256 rule would remove the broken entry. But if 256 runs first, the 128 rule could break and stay in the broken rules list.</P>
+<P>If you use priorities, you could force the 128 rule to run at priority 1, so it would run after the 256 rule. If you do that, you'll probably want to change the stop processing threshold to 2 (it defaults to 1) to ensure that the 128 rule always runs.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, May 30, 2007</h2><P>Rocky,</P>
+<P>Makes sense. I plan to use Priority 1 rules for all rules that hit the DB.</P>
+<P>I can set this rule the same way. My understanding of the processing is that all level 0 rules get run first and only if all of them pass do the level 1 rules get run. So I should not need to modify the stop processing threshold, correct?</P>
+<P>Here is what the ebook said about it:</P>
+<P>"<FONT face="Times New Roman" size=3>In this case, I have explicitly set the </FONT><FONT face="Courier New" size=1>ProcessThroughPriority </FONT><FONT face="Times New Roman" size=3>to </FONT><FONT face="Courier New" size=1>0</FONT><FONT face="Times New Roman" size=3>, which is the default.</P>
+<P align=left>This means that all priority 0 rule methods will be invoked, regardless of success or failure.</P>
+<P align=left>But rules at priority 1 or higher will only be invoked if no prior rule has returned </FONT><FONT face="Courier New" size=1>False</FONT><FONT face="Times New Roman" size=3>with</P>
+<P>a severity if </FONT><FONT face="Courier New" size=1>Error</FONT><FONT face="Times New Roman" size=3>.</FONT>"</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 30, 2007</h2>Is there a way to modify a rule after it has been assigned?<br />Because if there is, you could just change the rule in the base class to the correct setting.</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, May 30, 2007</h2><P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>Is there a way to modify a rule after it has been assigned? Because if there is, you could just change the rule in the base class to the correct setting.</div></BLOCKQUOTE></P>
+<P>You can't modify the rules in CommonRules, nor can you ever modify a RuleArgs once it has been set up (except from within the rule method itself).</P>
+<P>However, you could certainly create a rule method&nbsp;that relied on some external MaxLengthForPropertyX value, rather than a value provided through the RuleArgs - and then the value could change as often as you'd like.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, May 30, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>david.wendelken:</strong></div><div>Is there a way to modify a rule after it has been assigned? Because if there is, you could just change the rule in the base class to the correct setting.</div></BLOCKQUOTE></P>
+<P>You can't modify the rules in CommonRules, nor can you ever modify a RuleArgs once it has been set up (except from within the rule method itself).</P>
+<P>However, you could certainly create a rule method&nbsp;that relied on some external MaxLengthForPropertyX value, rather than a value provided through the RuleArgs - and then the value could change as often as you'd like.</P>
+<P></div></BLOCKQUOTE></P>
+<P>That seems like a much cleaner and much more reliable way to do it.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 02, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>However, you could certainly create a rule method&nbsp;that relied on some external MaxLengthForPropertyX value, rather than a value provided through the RuleArgs - and then the value could change as often as you'd like.</P>
+<P></div></BLOCKQUOTE></P>
+<P>I go back to this original suggestion, as it seems (by far) to be the simplest solution.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Monday, July 02, 2007</h2><P>Rocky,</P>
+<P>I used your suggestion before for getting a list of Status values. I code gen one but if it needs to be changed I just override the function which is called by the rule.</P>
+<P>So I did the same thing here:</P>
+<P>In Gen:<BR>&nbsp;&nbsp;&nbsp; Protected Overrides Sub AddBusinessRules()<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 'Id<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ValidationRules.AddRule(AddressOf StringMaxLength, New MaxLengthRuleArgs("Id", GetIdMaxLength))<BR>&nbsp;&nbsp;&nbsp; End Sub</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overridable Function GetIdMaxLength() As Integer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 30<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>In final type:</P>
+<P>&nbsp;&nbsp;&nbsp; Public Overrides Function GetIdMaxLength() As Integer<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Return 40<BR>&nbsp;&nbsp;&nbsp; End Function</P>
+<P>&nbsp;</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, June 13, 2007</h2><BLOCKQUOTE><div><img src="/Themes/default/images/icon-quote.gif"> <strong>RockfordLhotka:</strong></div><div>
+<P>I think both will be called, but the order of execution will be indeterminate unless you use priorities. And the order of execution matters, because both rules will resolve to the same rule name - which is the key used in BrokenRulesCollection to maintain the list.</P>
+<P>So if the 128 runs first, the 256 rule would remove the broken entry. But if 256 runs first, the 128 rule could break and stay in the broken rules list.</P>
+<P>If you use priorities, you could force the 128 rule to run at priority 1, so it would run after the 256 rule. If you do that, you'll probably want to change the stop processing threshold to 2 (it defaults to 1) to ensure that the 128 rule always runs.</P>
+<P></div></BLOCKQUOTE></P>
+<P>&nbsp;</P>
+<P>Rocky,</P>
+<P>I just ran into the reverse case and the setting of priority will not work. <BR>e.g. Code gen rule is for 128 but the final type rule is for 256. So if the 128 rule breaks then 256 rule will never run if it is priority 1.</P>
+<P>You stated: "the order of execution will be indeterminate ".</P>
+<P>I agree with that statement when discussing normal Delegate functions. But in this case aren't you storing references to the delegates in a list which you loop over to execute them? So isn't the execution&nbsp;order in fact determined by when the rule is added to the list? If I know my code gened rule is added to the list first and then I write a looser rule in my final type (at the same priority level) then it will be added to the list after the code gened rule and should essentially "override" it. Do you agree with this or did I miss something?</P>
+<P>Joe</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 13, 2007</h2>
+
+
+
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>The order of execution <i>within a priority</i> is
+indeterminate. The items get sorted, and I don&#8217;t know how the sort
+algorithm works (it is Microsoft&#8217;s), so you can&#8217;t guarantee order
+of execution.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>However, the answer&nbsp; to your issue is to raise the stop
+processing threshold from 1 to 2 (or something &gt;1 anyway). This is a
+static/Shared method on ValidationRules and can be set in AddBusinessRules().<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> JoeFallon1
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Wednesday, June 13, 2007 8:47 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Validation Rule Question<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<blockquote>
+
+<div>
+
+<p class=MsoNormal><img id="_x0000_i1025" src="/Themes/default/images/icon-quote.gif"><strong>RockfordLhotka:</strong><o:p></o:p></p>
+
+</div>
+
+<div>
+
+<p>I think both will be called, but the order of execution will be
+indeterminate unless you use priorities. And the order of execution matters,
+because both rules will resolve to the same rule name - which is the key used
+in BrokenRulesCollection to maintain the list.<o:p></o:p></p>
+
+<p>So if the 128 runs first, the 256 rule would remove the broken entry. But if
+256 runs first, the 128 rule could break and stay in the broken rules list.<o:p></o:p></p>
+
+<p>If you use priorities, you could force the 128 rule to run at priority 1, so
+it would run after the 256 rule. If you do that, you'll probably want to change
+the stop processing threshold to 2 (it defaults to 1) to ensure that the 128
+rule always runs.<o:p></o:p></p>
+
+</div>
+
+</blockquote>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>Rocky,<o:p></o:p></p>
+
+<p>I just ran into the reverse case and the setting of priority will not work. <br>
+e.g. Code gen rule is for 128 but the final type rule is for 256. So if the 128
+rule breaks then 256 rule will never run if it is priority 1.<o:p></o:p></p>
+
+<p>You stated: &quot;the order of execution will be indeterminate &quot;.<o:p></o:p></p>
+
+<p>I agree with that statement when discussing normal Delegate functions. But
+in this case aren't you storing references to the delegates in a list which you
+loop over to execute them? So isn't the execution&nbsp;order in fact determined
+by when the rule is added to the list? If I know my code gened rule is added to
+the list first and then I write a looser rule in my final type (at the same
+priority level) then it will be added to the list after the code gened rule and
+should essentially &quot;override&quot; it. Do you agree with this or did I
+miss something?<o:p></o:p></p>
+
+<p>Joe<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p>&nbsp;<o:p></o:p></p>
+
+<p class=MsoNormal><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 14, 2007</h2><P>Rocky,</P>
+<P>I re-read the 2.1 doc on Rule Priorities&nbsp;and see what you mean now.</P>
+<P>ValidationRules.ProcessThroughPriority = 1 will force all rules at level 0 and level 1 to be run even if there are broken rules in level 0. They normally stop at level 0 becasue that is the default value of this setting.</P>
+<P>I also see where the sorting can make the rule execution order nondeterministic within a priority.</P>
+<P>Thanks for clearing this up.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Sunday, July 01, 2007</h2><P>Rocky,</P>
+<P>There is a problem with the strategy you mentioned above.</P>
+<P>If my Gen code has this rule:</P><FONT size=2>
+<P>ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> StringMaxLength, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> MaxLengthRuleArgs(</FONT><FONT color=#ff00ff size=2>"Id"</FONT><FONT size=2>, 30))</P>
+<P></P></FONT>
+<P>and my finale type has this code:</P><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>Protected</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overrides</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> AddBusinessRules()<BR>&nbsp; </FONT><FONT color=#0000ff size=2>MyBase</FONT><FONT size=2>.AddBusinessRules()<BR>&nbsp; ValidationRules.ProcessThroughPriority = 1<BR><BR>&nbsp; </FONT><FONT color=#008000 size=2>'Id<BR>&nbsp; </FONT><FONT size=2>ValidationRules.AddRule(</FONT><FONT color=#0000ff size=2>AddressOf</FONT><FONT size=2> StringMaxLength, </FONT><FONT color=#0000ff size=2>New</FONT><FONT size=2> MaxLengthRuleArgs(</FONT><FONT color=#ff00ff size=2>"Id"</FONT><FONT size=2>, 40), 1)<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>The idea was that the rule would break when Id is &gt; 30 but then when the priority 1 rule ran it would "unbreak the rule" and remove it from the Broken Rules collection.</P>
+<P>The problem is in the line of&nbsp;code below form the Remove method:<BR>&nbsp; <FONT size=2><FONT color=#0000ff>If</FONT> <FONT color=#0000ff>Me</FONT>(index).RuleName = rule.RuleName </FONT><FONT color=#0000ff size=2>Then<BR></P>
+<P></FONT><FONT color=#0000ff size=2>Friend</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Overloads</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</FONT><FONT size=2> Remove(</FONT><FONT color=#0000ff size=2>ByVal</FONT><FONT size=2> rule </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> IRuleMethod)<BR>&nbsp; </FONT><FONT size=2>IsReadOnly = </FONT><FONT color=#0000ff size=2>False<BR>&nbsp; </FONT><FONT color=#0000ff size=2>For</FONT><FONT size=2> index </FONT><FONT color=#0000ff size=2>As</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Integer</FONT><FONT size=2> = 0 </FONT><FONT color=#0000ff size=2>To</FONT><FONT size=2> Count - 1<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>If</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>(index).RuleName = rule.RuleName </FONT><FONT color=#0000ff size=2>Then<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT size=2>DecrementCount(</FONT><FONT color=#0000ff size=2>Me</FONT><FONT size=2>(index))<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; RemoveAt(index)<BR>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>Exit</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>For<BR>&nbsp;&nbsp;&nbsp; </FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>If<BR>&nbsp; </FONT><FONT color=#0000ff size=2>Next<BR>&nbsp; </FONT><FONT size=2>IsReadOnly = </FONT><FONT color=#0000ff size=2>True<BR></FONT><FONT color=#0000ff size=2>End</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>Sub</P></FONT>
+<P>The problem is this:</P>
+<P><FONT size=2><FONT color=#0000ff>Me</FONT>(index).RuleName = "rule://StringMaxLength/Id?maxLength=30"</FONT></P>
+<P><FONT size=2>rule.RuleName = "rule://StringMaxLength/Id?maxLength=40"</FONT></P>
+<P><FONT size=2>So the rule does not get unbroken because the names are different by the maxLength parameter.</FONT></P>
+<P><FONT size=2>I think I would prefer to not change the rule name itself so that I lose the extra information.<BR>e.g. Do not change it to: "rule://StringMaxLength/Id"</FONT></P>
+<P><FONT size=2>Perhaps the Remove method should search the RuleName string for a ? and if it finds one then grab everything up to the ? and then compare it to the passed in value. This way the rule names are "the same" and we can ubreak the original rule.</FONT></P>
+<P>Joe</P>
+<P>&nbsp;</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

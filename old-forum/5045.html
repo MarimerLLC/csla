@@ -1,0 +1,84 @@
+<html><header><title>Stack overflow error when override IsValid</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Stack overflow error when override IsValid</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/5045.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah posted on Wednesday, July 02, 2008</h2><P>Hello </P>
+<P>I am facing a stack overflow exception when ever i&nbsp;override&nbsp;&nbsp;</P><FONT color=#0000ff size=2>
+<P>public</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>override</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> IsValid</P>
+<P>{</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>get</FONT><FONT size=2> { </FONT><FONT color=#0000ff size=2>return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>base</FONT><FONT size=2>.IsValid &amp;&amp; </FONT><FONT color=#0000ff size=2>this</FONT><FONT size=2>.IsValid; }</P>
+<P>}</P>
+<P>this piece of code in my business object. System keep on calling this code and finally throw exception.</P>
+<P>I&nbsp;have tried this with CSLA&nbsp;3.0.3.0 &amp;&nbsp;CSLA 3.0.4.0 version and the problem still exists. Please help stuck badly.<img src="/emoticons/emotion-6.gif" alt="Sad [:(]" /></P>
+<P>Regards </P>
+<P>Zafar Ullah</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Wednesday, July 02, 2008</h2><P>What are you trying to accomplish? You're getting recursion because IsValid is essentially calling itself (when you say this.IsValid). Hence your never ending loop. </P>
+<P>If you just have a root object with no children, you shouldn't normally override IsValid unless you have other circumstances. The base class behavior is sufficient. </P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Wednesday, July 02, 2008</h2><P>I agree that this.IsValid is the source of the Stack overflow.</P>
+<P>I sometimes override IsValid to call specific cases of CheckRules and once the rules have been run then I call into base.IsValid to see if any rules are broken.</P>
+<P>In 3.5 the framework should take care of IsValid for the root BO and all of its children. So there is even less of a reason to override it than in previous versions.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah replied on Thursday, July 03, 2008</h2><P>Thanks joe for a quick reply</P>
+<P>You have mention that 3.5 framework will take care of IsValid for the root BO and its childrens. Can you or any body tell how to handle this in 3.0.4.0 version of CSLA. I cant use 3.5 because my web application is not using any feature of 3.5 framework so no need to have that.</P>
+<P>Basically i am checking it because of custom rules implementation.</P>
+<P>Or what u say if i check that manually by making changes in given below method which i call in Add Custom rules method.</P><FONT size=2>
+<P>ValidationRules.AddRule&lt;</FONT><FONT color=#008080 size=2>AMEmp</FONT><FONT size=2>&gt;(UniqueName, </FONT><FONT color=#800000 size=2>"Name"</FONT><FONT size=2>);</P></FONT><FONT color=#0000ff size=2>
+<P>private</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>static</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>bool</FONT><FONT size=2> UniqueName(</FONT><FONT color=#008080 size=2>AMEmp</FONT><FONT size=2> target, Csla.Validation.</FONT><FONT color=#008080 size=2>RuleArgs</FONT><FONT size=2> e) </FONT></P>
+<P><FONT size=2>{</P>
+<P></P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; int</FONT><FONT size=2> result = </FONT><FONT color=#008080 size=2>AMNameList</FONT><FONT size=2>.GetList().Key(target._name+target.number);</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if</FONT><FONT size=2>(result != 0)</P>
+<P>&nbsp;&nbsp;&nbsp; {</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; e.Description = </FONT><FONT color=#800000 size=2>"Name must be unique"</FONT><FONT size=2>;</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>false</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp; else</P></FONT><FONT size=2>
+<P>&nbsp;&nbsp;&nbsp;&nbsp;{</P>
+<P></FONT><FONT color=#0000ff size=2>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; return</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>true</FONT><FONT size=2>;</P>
+<P>&nbsp;&nbsp;&nbsp;&nbsp; }</P>
+<P>}</P></FONT>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, July 03, 2008</h2><P>In earlier versions of CSLA you have to override IsValid to call down into any contained&nbsp;child objects. Same for IsDirty.</P>
+<P>I wrote code to do this call recursively in my own framework. Rocky has now implemented the same concept in 3.5 so developers no longer have to do this. Other posts (from me and others) have some sample code for how to do this. You can look for thme if you really want to know how to do it.</P>
+<P>Also, I am not sure why you are having an issue with the rule. It is attached to a real property and that property changes so the rule should run during the property set&nbsp;in that case. No need to override IsValid just to call that rule.</P>
+<P>What I am talking about is the case where a rule needs to be run *after* all properties have been set. Then you can override IsValid, run the extra rule and then call MyBase.IsValid. </P>
+<P>An example is the case where you have 5 checkboxes on a form and 1 of them *must* be checked. Rather than write the rule and have it run 5 times - you write it once and call it after all properties are set.</P>
+<P>Joe</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah replied on Thursday, July 03, 2008</h2><P>Joe you are absolutly write that the rule should run during the property set&nbsp; and thats how it does and return false to the caller. Now when the run time environment reach Save() and if i check the IsValid property of the current object then its * true * where as it should be * false* because the rule returns false. </P>
+<P>Now during debugging i check base object and its IsValid&nbsp;property&nbsp;is false. </P>
+<P>So as the Broken rule collection is beign accesed from the base class that is why i am checking this.&nbsp;</P>
+<P>I have 2 options now</P>
+<P>1.&nbsp;&nbsp; To check the uniqueness of the columns manually (i.e by calling&nbsp;UniqueName method mentioned&nbsp;in earlier post)&nbsp;just before save and comment out overriden IsValid property. </P>
+<P>2. Or what if before save i just check the broken rule collection and throw ValidationException if collectioncount &gt; 0 .</P>
+<P>Which option is better. also will&nbsp;you please give a link of other post you are talking about.</P>
+<P>Thanks</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Monday, July 07, 2008</h2>Is the broken rule in the root object or on one of the child objects?&nbsp; If it's on the child, you need to do something like this:<br><br>public override bool IsValid {<br>&nbsp; get&nbsp; { return base.IsValid &amp;&amp; child.IsValid; }<br>}<br><br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Zafar Ullah replied on Tuesday, July 08, 2008</h2><P>Thanks Andy,</P>
+<P>but if you see my first post thats exectly as u have written and actully its the issue. </P>
+<P>I go for the second option i.e i check broken rules collection just before saving my BO and if its count is greater then 0 i just throw exception. here i go...</P><FONT color=#0000ff size=2>
+<P>if</FONT><FONT size=2> (obj.BrokenRulesCollection.Count &gt; 0)</P>
+<P></FONT><FONT color=#0000ff size=2>throw</FONT><FONT size=2> </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> Csla.Validation.</FONT><FONT color=#008080 size=2>ValidationException</FONT><FONT size=2>();</P>
+<P>obj = obj.Save();</P></FONT><FONT size=2>
+<P>rowsAffected = 1;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Csla.Validation.</FONT><FONT color=#008080 size=2>ValidationException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P>System.Text.</FONT><FONT color=#008080 size=2>StringBuilder</FONT><FONT size=2> message = </FONT><FONT color=#0000ff size=2>new</FONT><FONT size=2> System.Text.</FONT><FONT color=#008080 size=2>StringBuilder</FONT><FONT size=2>();</P>
+<P></FONT><FONT color=#008000 size=2>//message.AppendFormat("{0}.\\n\\n", ex.Message);</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>if</FONT><FONT size=2> (objWell.BrokenRulesCollection.Count == 1)</P>
+<P>message.AppendFormat(</FONT><FONT color=#800000 size=2>"* {0}: {1}."</FONT><FONT size=2>,</P>
+<P>objWell.BrokenRulesCollection[0].Property,</P>
+<P>objWell.BrokenRulesCollection[0].Description);</P>
+<P></FONT><FONT color=#0000ff size=2>else</P></FONT><FONT size=2>
+<P></FONT><FONT color=#0000ff size=2>foreach</FONT><FONT size=2> (Csla.Validation.</FONT><FONT color=#008080 size=2>BrokenRule</FONT><FONT size=2> rule </FONT><FONT color=#0000ff size=2>in</FONT><FONT size=2> objWell.BrokenRulesCollection)</P>
+<P>message.AppendFormat(</FONT><FONT color=#800000 size=2>"* {0}: {1}.\\n "</FONT><FONT size=2>, rule.Property, rule.Description);</P>
+<P></P>
+<P></FONT><FONT color=#008080 size=2>WebMsgBox</FONT><FONT size=2>.Show(message.ToString());</P>
+<P>rowsAffected = 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (Csla.</FONT><FONT color=#008080 size=2>DataPortalException</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>WebMsgBox</FONT><FONT size=2>.Show(ex.BusinessException.Message);</P>
+<P>rowsAffected = 0;</P>
+<P>}</P>
+<P></FONT><FONT color=#0000ff size=2>catch</FONT><FONT size=2> (</FONT><FONT color=#008080 size=2>Exception</FONT><FONT size=2> ex)</P>
+<P>{</P>
+<P></FONT><FONT color=#008080 size=2>WebMsgBox</FONT><FONT size=2>.Show(ex.Message);</P>
+<P>rowsAffected = 0;</P>
+<P>}</P>
+<P>&nbsp;</P>
+<P>&nbsp;</P></FONT></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Tuesday, July 08, 2008</h2>No, what I wrote and what you wrote are NOT the same...<br><br>You had:<br><font color="#0000ff">public override bool</font> IsValid {<br>&nbsp;&nbsp; <font color="#0000ff">get </font>{ <font color="#0000ff">return base</font>.IsValid &amp;&amp; <font color="#0000ff"><i><b>this</b></i></font>.IsValid; }<br>}<br><br>where-as I wrote:<br><font color="#0000ff">public override bool</font> IsValid {<br>
+&nbsp;&nbsp; <font color="#0000ff">get </font>{ <font color="#0000ff">return base</font>.IsValid &amp;&amp; <i><b>child</b></i>.IsValid; }<br>
+}<br>
+<br>Where <b><i>child </i></b>is either a subclass of BusinessListBase or BusinessBase, depending on what your design was.<br><br>HTH<br>Andy<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Dawn replied on Tuesday, July 08, 2008</h2>I guess your want to validate aganist Root BO name uniqueness, nothing about child collection.&nbsp; So you need not override IsValid, just add the validation rule will be ok.<br>But add this validation rule will not&nbsp; promise the name uniqueness aganist database in multiuser environment, I think the best way is in you DataPortal_Update() method, begin a transaction, then check if there exists same name in database, if exists throw a exception.<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

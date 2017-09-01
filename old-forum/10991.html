@@ -1,0 +1,29 @@
+<html><header><title>CSLA for MonoTouch JIT errors on iPad device</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>CSLA for MonoTouch JIT errors on iPad device</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/10991.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>jhardman posted on Thursday, December 15, 2011</h2><p>Has anybody actually tried the Ios sample called SimpleApp on an iDevice using MonoTouch? &nbsp;I am using CSLA 4.2.2. &nbsp;The sample works ok on the simulator but it fails on an actual iPad device. &nbsp;I expect the same error would occur on iPhone devices as well. &nbsp;It gets the following error:</p>
+<p>System.ExecutionEngineException has been thrown.</p>
+<p>Attempting to JIT compile method &#39;Csla.Core.FieldManager.DefaultPropertyInfoFactory:Create&lt;int&gt; (System.Type,string)&#39; while running with --aot-only.</p>
+<p>&nbsp;</p>
+<p>&nbsp; at Csla.BusinessBase`1[Library.CustomerEdit].RegisterProperty[Int32] (System.Linq.Expressions.Expression`1 propertyLambdaExpression) [0x00000] in &lt;filename unknown&gt;:0&nbsp;</p>
+<p>&nbsp; at Library.CustomerEdit..cctor () [0x00000] in &lt;filename unknown&gt;:0&nbsp;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>It works on the simulator because JIT works in the Mac environment and hence works in the simulator. &nbsp;MonoTouch does not allow JIT because it is a limitation from Apple on iOS.</p>
+<p>The error was occurring when trying to RegisterProperty. &nbsp;So I changed the lines to not use the lambda expression so I didn&#39;t have to modify the CSLA framework e.g.</p>
+<p>changed</p>
+<p>&nbsp;</p>
+<p><span>private</span> <span>static</span> PropertyInfo&lt;<span>int</span>&gt; IdProperty = RegisterProperty&lt;<span>int</span>&gt; (c =&gt; c.Id);</p>
+<div>to</div>
+<div>
+<p><span>private</span> <span>static</span> PropertyInfo&lt;<span>int</span>&gt; IdProperty = RegisterProperty&lt;<span>int</span>&gt; (<span>new</span> PropertyInfo&lt;<span>int</span>&gt;(<span>&quot;Id&quot;</span>));</p>
+</div>
+<div></div>
+<div>After doing this and debugging it again on the iPad, I then get the same exception with a different message:</div>
+<p>Attempting to JIT compile method &#39;Csla.ReadOnlyBase`1&lt;Csla.Security.UnauthenticatedIdentity&gt;:RegisterProperty&lt;bool&gt; (System.Linq.Expressions.Expression`1&lt;System.Func`2&lt;Csla.Security.UnauthenticatedIdentity, object&gt;&gt;)&#39; while running with --aot-only.</p>
+<p>&nbsp; at Csla.Security.CslaIdentityBase`1[Csla.Security.UnauthenticatedIdentity]..cctor () [0x00000] in &lt;filename unknown&gt;:0&nbsp;</p>
+<p>&nbsp;</p>
+<p>The error acutally occurs when getting the CustomerEdit.Name value:</p>
+<p>&nbsp;</p>
+<p><span>get</span> { <span>return</span> GetProperty (NameProperty); }</p>
+<div></div>
+<div>I really like using CSLA and would love to do so in MonoTouch. &nbsp;But it appears that CSLA is not quite ready for MonoTouch even though the 4.2.2 release was specifically for MonoTouch and MonoDroid support.</div>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Friday, December 16, 2011</h2><p>Stuart is looking into this.</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,56 @@
+<html><header><title>Upgrade path from 3.0.2 to 3.6.3</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Upgrade path from 3.0.2 to 3.6.3</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7075.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo posted on Wednesday, June 10, 2009</h2>We've fallen a bit behind and I'm looking at getting us moved forward but this will be a major jump for us.<br><br>I'm particularly concerned about this new property syntax; some of our developers have struggled understanding some of the CSLA principals in the past and this may be too much to swallow at once.<br><br>Anyway, will the 'old style' of properties still work in 3.6?&nbsp; In otherwords using the compiler no-inlining attribute, manually calling PropertyHasChanged, etc.&nbsp;&nbsp; Can you still check rules by the string property name?<br><br>This seems to be the biggest change in 3.6, the core of everything else seems the same; but are there any other areas I should know about major changes that are going to be a 'struggle' to over-come?<br><br>Thanks!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Wednesday, June 10, 2009</h2><P>3.6 is (other than a few breaking changes documented in the change logs) backward compatible with 3.0.</P>
+<P>That is to say, your current code, with minimal changes, should continue to work in 3.6.</P>
+<P>Most of the changes in 3.5 were around code reduction and productivity increases for business developers. That's where a lot of the new syntax and data portal features (all of which are optional) come from.</P>
+<P>Most of the changes in 3.6 were around adding async behaviors to maintain parity with CSLA .NET for Silverlight. These are optional features.</P>
+<P>The thing to keep in mind, is that all the great productivity and code reduction features in 3.5 and higher do require using the new property syntax. You don't have to go there, but most of the value of upgrading comes from going there :)</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, June 11, 2009</h2>Thanks Rocky!<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>matt tag replied on Thursday, June 11, 2009</h2><font size="1" face="Verdana">what is the best documentation for a CSLA veteran to learn about the new 3.5 property syntax (not just the "how", but the "why").<br><br>I opened ProjectTrackervb this morning and could barely understand the code!<br><br>I'm getting old.&nbsp; Now get off my lawn!<br></font></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>JoeFallon1 replied on Thursday, June 11, 2009</h2>Matt,<br />Try reading this thread:<br />http://forums.lhotka.net/forums/thread/33806.aspx<br /><br />Joe<br /><br /></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>boo replied on Thursday, June 11, 2009</h2>Is there an example of what 'FriendlyName' is used for in the PropertyInfo when using RegisterProperty.<br><br>I thought maybe this is what would show up on a broken rule, but it's apparently not for that.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Thursday, June 11, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>I did write <i>Expert 2008 Business Objects</i> :)<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> matt tag
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, June 11, 2009 10:29 AM<br>
+<b>To:</b> rocky@lhotka.net<br>
+<b>Subject:</b> Re: [CSLA .NET] Upgrade path from 3.0.2 to 3.6.3<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal><span>what
+is the best documentation for a CSLA veteran to learn about the new 3.5
+property syntax (not just the &quot;how&quot;, but the &quot;why&quot;).<br>
+<br>
+I opened ProjectTrackervb this morning and could barely understand the code!<br>
+<br>
+I'm getting old.&nbsp; Now get off my lawn!<br>
+</span><br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

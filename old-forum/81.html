@@ -1,0 +1,10 @@
+<html><header><title>Nullable Types</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Nullable Types</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/81.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent posted on Friday, May 12, 2006</h2><P>Hello all.</P>
+<P>In reference to the CSLA 2.0:&nbsp; We currently use a custom datareader that handles nullable types.&nbsp; Looking at the safedatareader, I couldn't tell how it handles assigning to a nullable type.&nbsp; Before we go ahead and extend the safedatareader on our own, I was wondering if I missed something.&nbsp; I searched the old and new forums but didn't find any answer.</P>
+<P>Does anybody have any advice or suggestions?</P>
+<P>Thanks,</P>
+<P>&nbsp;</P>
+<P>Brent</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>tetranz replied on Friday, May 12, 2006</h2>I use nullable types a lot with CSLA 2.<br><br>I do this sort of thing with SafeDataReader<br><br>_myVar = (DateTime?) dr.GetValue("MyVar");<br>_myVar = (int?) dr.GetValue("MyVar");<br>
+<br>... etc ...<br><br>Not perfect I guess but it works just fine. The type of object returned by dr.GetValue can only be the correct column type or null so there is no real danger of the cast failing at runtime.<br><br>Ross<br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Brent replied on Friday, May 12, 2006</h2><P>Thanks Ross.</P>
+<P>That looks good.&nbsp; The custom reader was doing an internal cast so casting in the object will work just as well.</P>
+<P>Brent</P></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

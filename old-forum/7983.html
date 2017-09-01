@@ -1,0 +1,98 @@
+<html><header><title>Object hierarchy</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Object hierarchy</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7983.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>krasimir posted on Thursday, November 12, 2009</h2>Hello,<br><br>I look through many of the discussions here about switchable objects, but I still didn't find the solution for my problem. Right now I'm reading the 2008 edition of the book, and several years ago I read the 2005 edition, and I build one project with CSLA 2.7 two years ago. <br>Still, the concept of Parent and Child objects is probably the most confusing part to me.<br><br>My case is like this:<br>I should build a ShoppingCart object, which will have Products collection with many Product object. Each Product will contain other business objects as properties, but this is not what concerns me.<br><br>What I'm still didn't quite get, is how to implement the Product object?<br>On one hand, it is part of a ShoppingCart, and as such it should be declared as child object - probably the parent will be a Products collection which will be the child of the ShoppingCart object.<br><br>On the other hand, when I'm adding new product to the system, it is not part of any ShoppingCart yet and it is definitely a parent object! Only after the Product is added in the system, it eventually can became part of some ShoppingCart object, but this is not a requirement, but only a possibility.<br><br>So, after read all the answers here, I get to the point when as I see it, I have two options:<br><ol><li>Implement Product as switchable object, in order to satisfy my two use cases, or</li><li>Define two different objects which will probably have different sets of properties - one object which will represent the Product when it is part of some ShoppingCart object, and probably in this case the Product will have a limited set of properties - only these that are displayed to the user when he sees the ShoppingCart. <br>The second object will represent the Product when a new Product is added to the system and it will contain full set of properties.</li></ol>Am I getting it right, or am I completely wrong?<br><br>I will highly appreciate any comments on that!<br><br>Thanks,<br>Krasimir Evtimov<br><br>P.S. If something is not clear, please let me know so I can explain it.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>chrduf replied on Thursday, November 12, 2009</h2>
+
+
+
+
+
+
+ 
+
+ 
+  
+ 
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Hi<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>In this case I would define 2 separate objects for the 2 scenarios.
+Your business and validation logic will likely be different and the objects
+will be less complex than trying to do this as one object.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<div>
+
+<p class=MsoNormal><b><span>From:</span></b><span> krasimir
+[mailto:cslanet@lhotka.net] <br>
+<b>Sent:</b> Thursday, November 12, 2009 11:30 AM<br>
+<b>To:</b> chris.dufour@wigets.net<br>
+<b>Subject:</b> [CSLA .NET] Object hierarchy<o:p></o:p></span></p>
+
+</div>
+
+<p class=MsoNormal><o:p>&nbsp;</o:p></p>
+
+<p class=MsoNormal>Hello,<br>
+<br>
+I look through many of the discussions here about switchable objects, but I
+still didn't find the solution for my problem. Right now I'm reading the 2008
+edition of the book, and several years ago I read the 2005 edition, and I build
+one project with CSLA 2.7 two years ago. <br>
+Still, the concept of Parent and Child objects is probably the most confusing
+part to me.<br>
+<br>
+My case is like this:<br>
+I should build a ShoppingCart object, which will have Products collection with
+many Product object. Each Product will contain other business objects as
+properties, but this is not what concerns me.<br>
+<br>
+What I'm still didn't quite get, is how to implement the Product object?<br>
+On one hand, it is part of a ShoppingCart, and as such it should be declared as
+child object - probably the parent will be a Products collection which will be
+the child of the ShoppingCart object.<br>
+<br>
+On the other hand, when I'm adding new product to the system, it is not part of
+any ShoppingCart yet and it is definitely a parent object! Only after the
+Product is added in the system, it eventually can became part of some
+ShoppingCart object, but this is not a requirement, but only a possibility.<br>
+<br>
+So, after read all the answers here, I get to the point when as I see it, I
+have two options:<o:p></o:p></p>
+
+<ol>
+ <li class=MsoNormal>Implement Product as switchable object, in order
+     to satisfy my two use cases, or<o:p></o:p></li>
+ <li class=MsoNormal>Define two different objects which will probably
+     have different sets of properties - one object which will represent the
+     Product when it is part of some ShoppingCart object, and probably in this
+     case the Product will have a limited set of properties - only these that
+     are displayed to the user when he sees the ShoppingCart. <br>
+     The second object will represent the Product when a new Product is added
+     to the system and it will contain full set of properties.<o:p></o:p></li>
+</ol>
+
+<p class=MsoNormal>Am I getting it right, or am I completely wrong?<br>
+<br>
+I will highly appreciate any comments on that!<br>
+<br>
+Thanks,<br>
+Krasimir Evtimov<br>
+<br>
+P.S. If something is not clear, p lease let me know so I can explain it.<br>
+<br>
+<br>
+<o:p></o:p></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>skagen00 replied on Thursday, November 12, 2009</h2>Is product basically a leather wallet, a CSLA t-shirt, or a Swingline stapler, and you're wondering how to reuse this for shopping cart purposes?<br /><br />Don't!<br /><br />You might have:<br />Product - an editable root for actually configuring products available. <br /><br />ProductInfo - a read-only info object to get qualities about a product the user might order - you might bring in, for example, how many are left - etc. <br /><br />ShoppingCart - an editable root representing a user's shopping cart<br /><br />ShoppingCartItemCollection - a child of ShoppingCart and collection containing ShoppingCartItems.<br /><br />ShoppingCartItem - a child object, with a ProductId, some basic read-only information about a product if it's useful in your use case to display the shopping cart, quantity of item in the cart, etc. <br /><br />Obviously everything depends on your use cases, but I'd echo using multiple objects. Reuse is not the goal. </div><div style='padding:0 15 3 15;background-color:powderblue'><h2>krasimir replied on Monday, November 16, 2009</h2>Thank you very much to both of you!<br><br>So you both suggest me to go with two different objects. I will try to see how the things will go and will report back when I have something to share.<br><br>Meanwhile, if anyone has a different point of view - please share!<br><br>Thanks again<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

@@ -1,0 +1,57 @@
+<html><header><title>constant errors - any thoughts?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>constant errors - any thoughts?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/1656.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>kriscash posted on Wednesday, November 01, 2006</h2>The error:<br><br><span><h1>Server Error in '/PTWebcs' Application.<hr></h1>
+
+            <h2> <i>Object reference not set to an instance of an object.</i> </h2></span>
+
+            <font face="Arial, Helvetica, Geneva, SunSans-Regular, sans-serif ">
+
+            <b> Description: </b>An
+unhandled exception occurred during the execution of the current web
+request. Please review the stack trace for more information about the
+error and where it originated in the code. <br><br>
+
+            <b> Exception Details: </b>System.NullReferenceException: Object reference not set to an instance of an object.<br><br>
+
+            <b>Source Error:</b> <br><br>
+
+            <table bgcolor="#ffffcc">
+               <tr>
+                  <td>
+                      <code></code><pre>Line 171:        if (proxy.IsServerRemote)<br>Line 172:          ApplicationContext.SetGlobalContext(result.GlobalContext);<br><font color="red">Line 173:        throw new DataPortalException("DataPortal.Fetch " + <br></font>Line 174:          Resources.Failed, ex.InnerException, result.ReturnObject);<br>Line 175:      }</pre>
+
+                  </td>
+               </tr>
+            </table>
+
+            <br>
+
+            <b> Source File: </b> D:\ExpertBusinessObjects\csla20cs\Csla\DataPortal\Client\DataPortal.cs<b> &nbsp;&nbsp; Line: </b> 173
+            <br><br>
+
+            <b>Stack Trace:</b> <br><br>
+
+            <table bgcolor="#ffffcc">
+               <tr>
+                  <td>
+                      <code></code><pre>[NullReferenceException: Object reference not set to an instance of an object.]<br><br>[CallMethodException: DataPortal_Fetch method call failed]<br><br>[DataPortalException: DataPortal.Fetch failed]<br>   Csla.DataPortal.Fetch(Object criteria) in D:\ExpertBusinessObjects\csla20cs\Csla\DataPortal\Client\DataPortal.cs:173<br>   Csla.DataPortal.Fetch(Object criteria) in D:\ExpertBusinessObjects\csla20cs\Csla\DataPortal\Client\DataPortal.cs:138<br>   ProjectTracker.Library.Security.PTIdentity.GetIdentity(String username, String password) in D:\ExpertBusinessObjects\ProjectTracker20cs\ProjectTracker.Library\Security\PTIdentity.cs:57<br>   ProjectTracker.Library.Security.PTPrincipal.Login(String username, String password) in D:\ExpertBusinessObjects\ProjectTracker20cs\ProjectTracker.Library\Security\PTPrincipal.cs:15<br>   PTMembershipProvider.ValidateUser(String username, String password) in d:\ExpertBusinessObjects\ProjectTracker20cs\www\PTWeb\App_Code\PTMembershipProvider.cs:11<br>   System.Web.UI.WebControls.Login.OnAuthenticate(AuthenticateEventArgs e) +160<br>   System.Web.UI.WebControls.Login.AttemptLogin() +105<br>   System.Web.UI.WebControls.Login.OnBubbleEvent(Object source, EventArgs e) +99<br>   System.Web.UI.Control.RaiseBubbleEvent(Object source, EventArgs args) +35<br>   System.Web.UI.WebControls.Button.OnCommand(CommandEventArgs e) +115<br>   System.Web.UI.WebControls.Button.RaisePostBackEvent(String eventArgument) +163<br>   System.Web.UI.WebControls.Button.System.Web.UI.IPostBackEventHandler.RaisePostBackEvent(String eventArgument) +7<br>   System.Web.UI.Page.RaisePostBackEvent(IPostBackEventHandler sourceControl, String eventArgument) +11<br>   System.Web.UI.Page.RaisePostBackEvent(NameValueCollection postData) +33<br>   System.Web.UI.Page.ProcessRequestMain(Boolean includeStagesBeforeAsyncPoint, Boolean includeStagesAfterAsyncPoint) +5102<br></pre>
+
+                  </td>
+               </tr>
+            </table>
+
+            </font><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Bayu replied on Wednesday, November 01, 2006</h2>I'm a VB guy, so I don't have the csharp version of this sample here.<br><br>But apparently you should have a look at line 57 of PTIdentity.cs ... somehow a null-reference is thrown there.<br><br>What happens on there?<br><br>Bayu<br><br><br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Wednesday, November 01, 2006</h2><P>Have you ever gotten into the application successfully, or is this a post-installation issue?</P>
+<P>Assuming this is an initial installation issue...</P>
+<P>Can we see the contents of these tags in your web.config file?</P>
+<P>&lt;appSettings&gt;</P>
+<P>&lt;Authentication&gt;</P>
+<P>What is your IIS website security setting?</P>
+<P>What is your Project startup option (custom or...)</P>
+<P>&nbsp;</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>kriscash replied on Thursday, November 02, 2006</h2>Yes this is an installation issue<br>&gt;&gt;Can we see the contents of these tags in your web.config file?<br><br>&lt;appSettings&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaAuthentication" value="Csla" /&gt;<br>&nbsp;&nbsp;&nbsp; &lt;!--&lt;add key="CslaDataPortalProxy" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="Csla.DataPortalClient.RemotingProxy, Csla"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaDataPortalUrl" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="http://localhost:3187/RemotingHost/RemotingPortal.rem"/&gt;--&gt;<br>&nbsp;&nbsp;&nbsp; &lt;!--&lt;add key="CslaDataPortalProxy" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="Csla.DataPortalClient.WebServicesProxy, Csla"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaDataPortalUrl" <br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; value="http://localhost:4334/WebServicesHost/WebServicePortal.asmx"/&gt;--&gt;<br>&nbsp;&nbsp;&nbsp; &lt;add key="CslaDataPortalProxy" <br>&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;value="EnterpriseServicesHost.EnterpriseServicesProxy, EnterpriseServicesHostcs"/&gt;<br>&nbsp; &lt;/appSettings&gt;<br><br><br>&lt;authentication mode="Forms"&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;forms loginUrl="Login.aspx" name="ptracker"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/authentication&gt;<br>&nbsp;&nbsp;&nbsp; &lt;authorization&gt;<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &lt;allow users="*"/&gt;<br>&nbsp;&nbsp;&nbsp; &lt;/authorization&gt;<br><br>&gt;&gt;What is your IIS website security setting?<br><br>It's setup to default without any changes<br><br>&gt;&gt;What is your Project startup option (custom or...)<br><br>It's http://localhost/PTWebcs<br><br><br>Problem is still unresolved.<br></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>david.wendelken replied on Friday, November 03, 2006</h2><P>Sorry for the delay getting back to you - crazy day at the office!</P>
+<P>Are you sure you want to use the CslaDataPortalProxy?&nbsp; It's not necessary unless you really want to connect to the database via a com object.&nbsp; </P>
+<P>If you *do* want to use the above method, there are some very specific setup instructions in the book to follow. I was able to get that method to work when I followed them.</P>
+<P>If you don't want to connect via a com object - my recommendation unless you know why you need a com object :) - just fill in the connect string correctly and comment out the CslaDataPortalProxy entry.&nbsp; My connection strings are for SqlServer, not SqlServer express (which is what is in the sample application).</P><FONT color=#0000ff size=2>
+<P>&lt;</FONT><FONT color=#800000 size=2>connectionStrings</FONT><FONT color=#0000ff size=2>&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"PTracker</FONT><FONT size=2>"<BR></FONT><FONT color=#ff0000 size=2>connectionString</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Data Source=MYCOMPUTERNAME;Integrated Security=SSPI;Initial Catalog=PTracker;Persist Security Info=False;</FONT><FONT size=2>" </FONT><FONT color=#ff0000 size=2>providerName</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>System.Data.SqlClient</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;</FONT><FONT color=#800000 size=2>add</FONT><FONT color=#0000ff size=2> </FONT><FONT color=#ff0000 size=2>name</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Security</FONT><FONT size=2>" </FONT><FONT color=#ff0000 size=2>connectionString</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>Data Source=MYCOMPUTERNAME;Integrated Security=SSPI;Initial Catalog=SECURITY;Persist Security Info=False;</FONT><FONT size=2>" </FONT><FONT color=#ff0000 size=2>providerName</FONT><FONT color=#0000ff size=2>=</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2>System.Data.SqlClient</FONT><FONT size=2>"</FONT><FONT color=#0000ff size=2> /&gt;</P>
+<P>&lt;/</FONT><FONT color=#800000 size=2>connectionStrings</FONT><FONT color=#0000ff size=2>&gt;</P></FONT>
+<P>The above DataSource values assume the system name of your computer is MYCOMPUTERNAME and that you are using the default SqlServer instance.&nbsp; If you created a custom instance of SqlServer, you will need to append \INSTANCENAME to the computer name.&nbsp; (Or maybe it is a / instead of a \. )</P>
+<P>hth</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jerrychen11 replied on Monday, October 06, 2008</h2>Thanks a lot. Commenting out the CslaDataPortalProxy sorts out the problems. <br><br>cheers!<br>Jerry<br></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

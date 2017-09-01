@@ -1,0 +1,207 @@
+<html><header><title>Silverlight via https</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight via https</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/12756.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms posted on Saturday, September 20, 2014</h2><p>Hi everybody,</p>
+<p>&nbsp; &nbsp;for some time I try to access Data of my Silverlight app via https using my local IIS (Win 8.1) . It was no problem to create a certificate. There is no problem to see my data via http - there must be some quirk in some of the config files...</p>
+<p>I was hoping by changing security mode to &quot;Transport&quot; and http to https would do the trick but no success.</p>
+<p>Here are my config files (working for http) - Maybe someone can help ?</p>
+<p>&nbsp;</p>
+<p>&nbsp; &nbsp; &nbsp;TIA</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Uwe</p>
+<p>&nbsp;</p>
+<p>clientConfig:</p>
+<pre><span>&lt;</span><span>configuration</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>system.serviceModel</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>bindings</span><span>&gt;</span><span>			</span>
+<span>	&lt;</span><span>basicHttpBinding</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>binding</span><span>&nbsp;</span>
+<span>		</span><span>name</span><span>=</span>&quot;<span>BasicHttpBinding_IWcfPortal</span>&quot;<span>&nbsp;</span>
+<span>		</span><span>maxBufferSize</span><span>=</span>&quot;<span>2147483647</span>&quot;
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>maxReceivedMessageSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span>&gt;					</span>
+<span>		&lt;</span><span>security</span><span>&nbsp;</span><span>mode</span><span>=</span>&quot;<span>None</span>&quot;<span>&nbsp;/&gt;</span>
+<span>		&lt;!--</span><span>security&nbsp;mode=&quot;Transport&quot;&nbsp;/</span><span>--&gt;</span>
+<span>	&lt;/</span><span>binding</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>basicHttpBinding</span><span>&gt;</span> 
+<span>	&lt;/</span><span>bindings</span><span>&gt;</span>
+<span>		</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>client</span><span>&gt;</span> 
+<span>		&lt;</span><span>endpoint</span><span>&nbsp;</span><span>address</span><span>=</span>&quot;<span>http://localhost/Sl_App_01/WcfPortal.svc</span>&quot;<span>&nbsp;</span><span>binding</span><span>=</span>&quot;<span>basicHttpBinding</span>&quot;
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>bindingConfiguration</span><span>=</span>&quot;<span>basicHttpBinding_IWcfPortal</span>&quot;<span>&nbsp;</span><span>contract</span><span>=</span>&quot;<span>WcfPortal.IWcfPortal</span>&quot;
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><span>name</span><span>=</span>&quot;<span>basicHttpBinding_IWcfPortal</span>&quot;<span>&nbsp;/&gt;</span>
+<span>	&lt;/</span><span>client</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>system.serviceModel</span><span>&gt;</span>
+<span>&lt;/</span><span>configuration</span><span>&gt;</span>
+</pre>
+<p>&nbsp;Web.Config:</p>
+<pre><span>&lt;?</span><span>xml</span><span>&nbsp;</span><span>version</span><span>=</span>&quot;<span>1.0</span>&quot;<span>&nbsp;</span><span>encoding</span><span>=</span>&quot;<span>utf-8</span>&quot;<span>?&gt;</span>
+<span>&lt;</span><span>configuration</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>connectionStrings</span><span>&gt;	&nbsp;&nbsp;</span>
+<span>	&lt;</span><span>add</span><span>&nbsp;</span>
+<span>	</span><span>name</span><span>=</span>&quot;<span>SqlConnStr</span>&quot;<span>&nbsp;</span>
+<span>	</span><span>connectionString</span><span>=</span>&quot;<span>Data&nbsp;Source=localhost;Initial&nbsp;Catalog=***;Integrated&nbsp;Security=&nbsp;false;User&nbsp;ID=***;Password=***</span>&quot;<span>&nbsp;</span>
+<span>	</span><span>providerName</span><span>=</span>&quot;<span>System.Data.SqlClient</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>connectionStrings</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>system.serviceModel</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceBehaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behavior</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>WcfPortalBehavior</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceMetadata</span><span>&nbsp;</span><span>httpGetEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceDebug</span><span>&nbsp;</span><span>includeExceptionDetailInFaults</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behavior</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>behavior</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceMetadata</span><span>&nbsp;</span><span>httpGetEnabled</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>serviceDebug</span><span>&nbsp;</span><span>includeExceptionDetailInFaults</span><span>=</span>&quot;<span>false</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>behavior</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>serviceBehaviors</span><span>&gt;</span>
+<span>	&lt;/</span><span>behaviors</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>services</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>service</span><span>&nbsp;</span><span>behaviorConfiguration</span><span>=</span>&quot;<span>WcfPortalBehavior</span>&quot;<span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>Csla.Server.Hosts.Mobile.WcfPortal</span>&quot;<span>&gt;		&nbsp;&nbsp;</span>
+<span>		&nbsp;&nbsp;&lt;</span><span>endpoint</span><span>&nbsp;</span><span>address</span><span>=</span>&quot;&quot;<span>&nbsp;</span><span>binding</span><span>=</span>&quot;<span>basicHttpBinding</span>&quot;<span>&nbsp;</span><span>contract</span><span>=</span>&quot;<span>Csla.Server.Hosts.Mobile.IWcfPortal</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>identity</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>dns</span><span>&nbsp;</span><span>value</span><span>=</span>&quot;<span>localhost</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>identity</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>endpoint</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>endpoint</span><span>&nbsp;</span><span>address</span><span>=</span>&quot;<span>mex</span>&quot;<span>&nbsp;</span><span>binding</span><span>=</span>&quot;<span>mexHttpBinding</span>&quot;<span>&nbsp;</span><span>contract</span><span>=</span>&quot;<span>IMetadataExchange</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>service</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>services</span><span>&gt;</span>
+<span>	&nbsp;&nbsp;&lt;</span><span>bindings</span><span>&gt;</span>
+<span>		&nbsp;&nbsp;&lt;</span><span>basicHttpBinding</span><span>&gt;</span>
+<span>			&nbsp;&nbsp;&lt;</span><span>binding</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>basicHttpBinding_IWcfPortal</span>&quot;<span>&nbsp;</span><span>maxBufferSize</span><span>=</span>&quot;<span>2147483647</span>&quot;
+<span>				&nbsp;&nbsp;</span><span>maxReceivedMessageSize</span><span>=</span>&quot;<span>2147483647</span>&quot;<span>&gt;</span>
+<span>				&nbsp;&nbsp;&lt;</span><span>security</span><span>&nbsp;</span><span>mode</span><span>=</span>&quot;<span>None</span>&quot;<span>&nbsp;&gt;</span>
+<span>					&nbsp;&nbsp;&lt;!--</span><span>security&nbsp;mode=&quot;Transport&quot;&nbsp;</span><span>--&gt;</span>
+<span>					&nbsp;&nbsp;&lt;</span><span>transport</span><span>&nbsp;</span><span>clientCredentialType</span><span>=</span>&quot;<span>None</span>&quot;<span>/&gt;</span>
+<span>				&nbsp;&nbsp;&lt;/</span><span>security</span><span>&gt;</span>
+<span>			&nbsp;&nbsp;&lt;/</span><span>binding</span><span>&gt;</span>
+<span>		&nbsp;&nbsp;&lt;/</span><span>basicHttpBinding</span><span>&gt;</span> 
+<span>	&nbsp;&nbsp;&lt;/</span><span>bindings</span><span>&gt;</span> 
+<span>&nbsp;&nbsp;&lt;/</span><span>system.serviceModel</span><span>&gt;</span> 
+<span>&nbsp;&nbsp;&lt;</span><span>system.web</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>compilation</span><span>&nbsp;</span><span>debug</span><span>=</span>&quot;<span>true</span>&quot;<span>&nbsp;</span><span>targetFramework</span><span>=</span>&quot;<span>4.5</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>authentication</span><span>&nbsp;</span><span>mode</span><span>=</span>&quot;<span>Windows</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>pages</span><span>&nbsp;</span><span>controlRenderingCompatibilityVersion</span><span>=</span>&quot;<span>3.5</span>&quot;<span>&nbsp;</span><span>clientIDMode</span><span>=</span>&quot;<span>AutoID</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>system.web</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;</span><span>runtime</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>assemblyBinding</span><span>&nbsp;</span><span>xmlns</span><span>=</span>&quot;<span>urn:schemas-microsoft-com:asm.v1</span>&quot;<span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>dependentAssembly</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>assemblyIdentity</span><span>&nbsp;</span><span>name</span><span>=</span>&quot;<span>Csla</span>&quot;<span>&nbsp;</span><span>publicKeyToken</span><span>=</span>&quot;<span>93be5fdc093e4c30</span>&quot;<span>&nbsp;</span><span>culture</span><span>=</span>&quot;<span>neutral</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;</span><span>bindingRedirect</span><span>&nbsp;</span><span>oldVersion</span><span>=</span>&quot;<span>0.0.0.0-4.5.601.0</span>&quot;<span>&nbsp;</span><span>newVersion</span><span>=</span>&quot;<span>4.5.601.0</span>&quot;<span>&nbsp;/&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>dependentAssembly</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&nbsp;&nbsp;&lt;/</span><span>assemblyBinding</span><span>&gt;</span>
+<span>&nbsp;&nbsp;&lt;/</span><span>runtime</span><span>&gt;</span>
+<span>&lt;/</span><span>configuration</span><span>&gt;</span></pre></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, September 22, 2014</h2><p>In current versions of CSLA the default is not to use the client config, but rather to use coded config by subclassing WcfProxy. As a result your client config might not be making any difference.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms replied on Thursday, September 25, 2014</h2><p>Hi Rocky,</p>
+<p>&nbsp; &nbsp; thanks for the hint. Figured it out without client.config:</p>
+<p>I provided my settings at the end of my post...</p>
+<p>Is there a recommended way to avoid recompiling when having to change the endpoint like reading some kind of external config file and using an endpoint variable in Application_Startup as I would do in a winforms app ?</p>
+<p>&nbsp; &nbsp; TIA</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Uwe</p>
+<p>&nbsp;</p>
+<p>Web.Config:</p>
+<p>&nbsp;</p>
+<p>&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</p>
+<p>&lt;configuration&gt;</p>
+<p> &nbsp;&lt;connectionStrings&gt;&nbsp;</p>
+<p><span>	</span> &nbsp;&lt;add&nbsp;</p>
+<p><span>		</span>name=&quot;SqlConnStr&quot; connectionString=&quot;Data Source=localhost;Initial Catalog=***;Integrated Security= false;User ID=***;Password=***&quot; providerName=&quot;System.Data.SqlClient&quot; /&gt;</p>
+<p>&nbsp; &lt;/connectionStrings&gt;</p>
+<p>&nbsp; &lt;system.serviceModel&gt;</p>
+<p>&nbsp; &nbsp; &lt;behaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;serviceBehaviors&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;WcfPortalBehavior&quot;&gt;</p>
+<p><span>		</span> &nbsp;&lt;!--for http and https --&gt;</p>
+<p><span>		</span> &nbsp;&lt;serviceMetadata httpsGetEnabled=&quot;true&quot; httpGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;behavior name=&quot;&quot;&gt;</p>
+<p><span>			</span>&lt;!--for http and https --&gt;</p>
+<p><span>			</span>&lt;serviceMetadata httpsGetEnabled=&quot;true&quot; httpGetEnabled=&quot;true&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;serviceDebug includeExceptionDetailInFaults=&quot;false&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/behavior&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/serviceBehaviors&gt;</p>
+<p><span>	</span>&lt;/behaviors&gt;</p>
+<p>&nbsp; &nbsp; &lt;services&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;service behaviorConfiguration=&quot;WcfPortalBehavior&quot; name=&quot;Csla.Server.Hosts.Mobile.WcfPortal&quot;&gt;<span>		</span> &nbsp;</p>
+<p><span>		</span> &nbsp;&lt;endpoint address=&quot;&quot; binding=&quot;basicHttpBinding&quot; bindingConfiguration=&quot;basicHttpBinding_IWcfPortal&quot; contract=&quot;Csla.Server.Hosts.Mobile.IWcfPortal&quot;&gt;</p>
+<p><span>			</span> &nbsp;&lt;identity&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;dns value=&quot;localhost&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &lt;/identity&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/endpoint&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;endpoint address=&quot;mex&quot; binding=&quot;mexHttpBinding&quot; contract=&quot;IMetadataExchange&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/service&gt;</p>
+<p>&nbsp; &nbsp; &lt;/services&gt;</p>
+<p><span>	</span> &nbsp;&lt;bindings&gt;</p>
+<p><span>		</span> &nbsp;&lt;basicHttpBinding&gt;<span>			</span> &nbsp;</p>
+<p><span>			</span> &nbsp; &lt;binding name=&quot;basicHttpBinding_IWcfPortal&quot; maxBufferSize=&quot;2147483647&quot; maxReceivedMessageSize=&quot;2147483647&quot;&gt;</p>
+<p><span>				</span> &nbsp; &lt;!--for http --&gt;</p>
+<p><span>				</span> &nbsp; &lt;security mode=&quot;None&quot;&gt;</p>
+<p><span>				</span> &nbsp;&nbsp;</p>
+<p><span>				</span> &nbsp; &lt;!--for https --&gt;</p>
+<p><span>					</span> &nbsp; &lt;!--security mode=&quot;Transport&quot;--&gt;</p>
+<p><span>				</span> &nbsp;&lt;/security&gt;</p>
+<p><span>			</span> &nbsp;&lt;/binding&gt;</p>
+<p><span>		</span> &nbsp;&lt;/basicHttpBinding&gt;</p>
+<p>&nbsp;</p>
+<p><span>	</span> &nbsp;&lt;/bindings&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp; &lt;/system.serviceModel&gt;</p>
+<p>&nbsp; &lt;system.web&gt;</p>
+<p>&nbsp; &nbsp; &lt;compilation debug=&quot;true&quot; targetFramework=&quot;4.5&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;authentication mode=&quot;Windows&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &lt;pages controlRenderingCompatibilityVersion=&quot;3.5&quot; clientIDMode=&quot;AutoID&quot; /&gt;</p>
+<p>&nbsp; &lt;/system.web&gt;</p>
+<p>&nbsp; &lt;runtime&gt;</p>
+<p>&nbsp; &nbsp; &lt;assemblyBinding xmlns=&quot;urn:schemas-microsoft-com:asm.v1&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;dependentAssembly&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;assemblyIdentity name=&quot;Csla&quot; publicKeyToken=&quot;93be5fdc093e4c30&quot; culture=&quot;neutral&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;bindingRedirect oldVersion=&quot;0.0.0.0-4.5.601.0&quot; newVersion=&quot;4.5.601.0&quot; /&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &lt;/dependentAssembly&gt;</p>
+<p>&nbsp; &nbsp; &lt;/assemblyBinding&gt;</p>
+<p>&nbsp; &lt;/runtime&gt;</p>
+<p>&lt;/configuration&gt;</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p>
+<p>private void Application_Startup(object sender, StartupEventArgs e)</p>
+<p>{</p>
+<p>&nbsp;<span>			</span>Csla.ApplicationContext.DataPortalProxy<span>		</span>= typeof(Csla.DataPortalClient.WcfProxy).AssemblyQualifiedName;</p>
+<p><span>			</span>Csla.ApplicationContext.DataPortalUrlString = &quot;http://localhost/Sl_App_01/WcfPortal.svc&quot;;<span>			</span></p>
+<p><span>										</span></p>
+<p><span>			</span>// Diese Eintr&auml;ge machen die ClientConfig unn&ouml;tig</p>
+<p><span>			</span>var binding = new BasicHttpBinding();&nbsp;</p>
+<p><span>			</span>binding.MaxBufferSize = int.MaxValue;</p>
+<p><span>			</span>binding.MaxReceivedMessageSize = int.MaxValue;</p>
+<p><span>			</span>binding.ReceiveTimeout = TimeSpan.FromMinutes(1);</p>
+<p>binding.SendTimeout = TimeSpan.FromMinutes(1);</p>
+<p><span>			</span>binding.OpenTimeout = TimeSpan.FromMinutes(1);</p>
+<p><span>			</span>binding.CloseTimeout = TimeSpan.FromMinutes(1);</p>
+<p><span>			</span></p>
+<p><span>			</span>// for https endpoint url</p>
+<p><span>			</span>// binding.Security.Mode = BasicHttpSecurityMode.Transport;</p>
+<p><span>			</span>// for http endpoint url</p>
+<p><span>			</span>binding.Security.Mode = BasicHttpSecurityMode.None ;</p>
+<p><span>								</span></p>
+<p><span>			</span>Csla.DataPortalClient.WcfProxy.DefaultBinding = binding;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;this.RootVisual = new MainPage();</p>
+<p>}</p>
+<div></div>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>g.beraudo@castsoftware.com replied on Friday, September 26, 2014</h2><p>Hi Uwe,</p>
+<p>Here are my 2 cents.</p>
+<p><span>Regarding: &quot;recommended way to avoid recompiling when having to change the endpoint&quot;</span></p>
+<p>On my web (html) page, I customize the object container:</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;object data=&quot;data:application/x-silverlight-2,&quot; type=&quot;application/x-silverlight-2&quot; width=&quot;100%&quot; height=&quot;100%&quot;&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&lt;param name=&quot;... &quot; value &quot;...&quot; /&gt; &lt;!-- keep all existing ones --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&lt;param name=&quot;initParams&quot; value=&quot;WcfProxy=BasicHttpBinding_IWcfPortal_DEV&quot; /&gt; &nbsp;&lt;!-- custom input, which does not exists in prod --&gt;</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &lt;/object&gt;</p>
+<p><span>In my Silverlight code, I do use:</span></p>
+<p>private async void Application_Startup(object sender, StartupEventArgs e) {</p>
+<p>&nbsp; &nbsp; if (e.InitParams.ContainsKey(&quot;WcfProxy&quot;)) {</p>
+<p>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;string paramValue =e.InitParams[&quot;WcfProxy&quot;]</p>
+<p>&nbsp; &nbsp;&nbsp;&nbsp; &nbsp;&nbsp;Csla.DataPortalClient.WcfProxy.DefaultEndPoint =&nbsp;paramValue;</p>
+<p>&nbsp; &nbsp;&nbsp;}</p>
+<p>}</p>
+<p>And it does work fine.</p>
+<p>Gilles</p>
+<p>Ps: I do use CSLA 4.5.500 with the endpoint(s) using configuration, but you can use this tip with hard coded end points too.</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>uwefms replied on Tuesday, September 30, 2014</h2><p>Hi Gilles,</p>
+<p>&nbsp; &nbsp;sorry for the late response - works perfectly - exactly what I wanted.</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp;Thanks</p>
+<p>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Uwe</p>
+<p>&nbsp;</p>
+<p>&nbsp;</p></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>ajj3085 replied on Friday, September 26, 2014</h2><p><div style='padding-left: 50px;background-color:silver'><b>RockfordLhotka<br></b>In current versions of CSLA the default is not to use the client config, but rather to use coded config by subclassing WcfProxy. As a result your client config might not be making any difference.</div></p>
+<p>Sorry if I&#39;m hijacking this thread, but does this mean its not possible to add a binding via config to do things like compression?</p></div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>

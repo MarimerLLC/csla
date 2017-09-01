@@ -1,0 +1,127 @@
+<html><header><title>Silverlight CslaDataProvider - Setting ObjectInstance doesn't clear the Error property.. I think it should?</title></header><body><div style='float:right'><a href='http://cslanet.com'><img src='https://github.com/MarimerLLC/csla/raw/master/Support/Logos/csla%20win8_compact_s.png'/></a></div><p><h1>Silverlight CslaDataProvider - Setting ObjectInstance doesn't clear the Error property.. I think it should?</h1><span style='font-size:small'>Old forum URL: forums.lhotka.net/forums/t/7267.aspx</span></p><hr><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans posted on Monday, July 13, 2009</h2>My scenario requires me to manually fetch and subsequently populate the CslaDataProvider control with the Csla Business Object.<br /><br />That all works fine as I basically set the CslaDataProvider's ObjectInstance property to the new business object I fetched.<br /><br />The issue I get is due to an error from a save affecting a subsequently different business object instance.<br /><br />It can be better understood by considering the following sequence of events:<br />1) Manually Fetch Data<br />2) Set CslaDataProvider.ObjectInstance = fetchedData (and the DataChanged event fires as expected).<br />3) Make object dirty (through edits)<br />4) Call CslaDataProvider.Save() to save data<br />5) Save results in an error which populates the CslaDataProvider.Error property accordingly.<br />6) The DataChanged event fires and the check for Error allows me to catch and handle the error (display message to user)<br />7) I wish to fetch an other object and set the ObjectInstance to the newly fetched object (as in 1 and 2 above).<br />8) The DataChanged event fires again, but the Error from the failed save in 5 is still present and this is the problem. I handle an exception for an instance that's no longer referenced by the CslaDataProvider.<br /><br />My thinking is that setting the ObjectInstance should implicitly clear the error property of the CslaProvider as the error would otherwise have been for a different instance.<br /><br />The Refresh method (which you would use if you are not implementing the "manual" fetch) does clear the error property before fetching.<br /><br />Post Edit: <br />An alternative could be to provide a method to clear the error which I can call before setting the object instance.<br /><br />Do you agree?<br /><br />Many thanks<br />Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, July 13, 2009</h2><P>This does sound like a bug - I'd also expect Error to clear when ObjectInstance is set.</P>
+<P>I'll add it to the bug list.</P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>Jaans replied on Sunday, August 02, 2009</h2>Thanks Rocky!!
+
+I can confirm that 3.7.0 fixes the issue.
+
+Regards,
+Jaans</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Sunday, August 02, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Excellent!</span><b><span><o:p></o:p></span></b></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jbd replied on Monday, August 03, 2009</h2><P class=MsoNormal><FONT face=Arial size=2><SPAN>We seem to have hit a problem using the Silverlight CslaDataProvider in 3.7 and we are not sure if it is a bug or something we are doing wrong. It appears When using the Provider to do a Fetch, it seems that errors are not being propogated.</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>We set up the DataProvider in the xaml like so:</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&lt;csla:CslaDataProvider x:Key="DataProvider"</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsInitialLoadEnabled="False"</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ObjectType="IMS.IManager.BoardingPremises, IMS"</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; FactoryMethod="GetItem"</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; DataChanged="CslaDataProvider_DataChanged"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ManageObjectLifetime="True"/&gt;</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>And in the code behind we are doing the following:</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Provider.FactoryParameters.Clear();</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Provider.FactoryParameters.Add(this._premisesId);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Provider.FactoryParameters.Add(this.UserId);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Provider.FactoryMethod = "GetItem";</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Provider.Saved += new EventHandler&lt;Csla.Core.SavedEventArgs&gt;(Provider_Saved);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.Provider.Refresh();</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>Running in debug and following it from client to server, and back again there seems to be a problem(?) in the SetObjectInstance method. When the QueryCompleted method is called e.Error shows the error which in our case is a database error, up until the point SetObjectInstance is called.&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>490&nbsp;&nbsp;&nbsp; private void QueryCompleted(object sender, EventArgs e)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>491&nbsp;&nbsp;&nbsp; {</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>492&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IDataPortalResult eventArgs = e as IDataPortalResult;</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>493&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetError(eventArgs.Error);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>494&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; SetObjectInstance(eventArgs.Object);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>Following the code through the error is being pushed into the internal variable _error by SetError at line 345.</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>343 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp; private void SetError(Exception value)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>344&nbsp;&nbsp;&nbsp; {</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>345&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _error = value;</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>346&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; IsBusy = false;</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>347&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; OnPropertyChanged(new PropertyChangedEventArgs("Error"));</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>348&nbsp;&nbsp;&nbsp; }</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>SetObjectInstance then sets _error to null at line 164.</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>153&nbsp;&nbsp;&nbsp; private void SetObjectInstance(object value)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>154&nbsp;&nbsp;&nbsp; {</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>155&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; //hook up event handlers for notificaiton propagation</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>156&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_dataObject != null &amp;&amp; _dataObject is INotifyPropertyChanged)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>157&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((INotifyPropertyChanged)_dataObject).PropertyChanged -= new PropertyChangedEventHandler(dataObject_PropertyChanged);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>158&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_dataObject != null &amp;&amp; _dataObject is INotifyChildChanged)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>159&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((INotifyChildChanged)_dataObject).ChildChanged -= new EventHandler&lt;ChildChangedEventArgs&gt;(dataObject_ChildChanged);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>160&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; if (_dataObject != null &amp;&amp; _dataObject is INotifyBusy)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>161&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; ((INotifyBusy)_dataObject).BusyChanged -= new BusyChangedEventHandler(CslaDataProvider_BusyChanged);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>162</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>163&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _dataObject = value;</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>164&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; _error = null;</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>So when we do the following in the DataChanged handler the error is not available and we get some unexpected behaviour.&nbsp; </SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>private void CslaDataProvider_DataChanged(object sender, EventArgs e)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>{</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp; if (this.Provider.Data != null)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp; {</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp; // Do Some stuff</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp; }</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN></SPAN></FONT>&nbsp;</P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp; if (this.Provider.Error != null)</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp; {</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; this.ShowError(this.Provider.Error);</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>&nbsp;&nbsp; }</SPAN></FONT></P>
+<P class=MsoNormal><FONT face=Arial size=2><SPAN>} </SPAN></FONT></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2>
+
+
+
+
+
+
+ 
+
+
+
+
+
+<div class=Section1>
+
+<p class=MsoNormal><span>Definitely seems like a bug, I&#8217;ve added it to the list.<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Thank you so much for the great technical information on the
+issue!!<o:p></o:p></span></p>
+
+<p class=MsoNormal><span><o:p>&nbsp;</o:p></span></p>
+
+<p class=MsoNormal><span>Rocky<o:p></o:p></span></p>
+
+</div>
+
+
+
+</div><div style='padding:0 15 3 15;background-color:powderblue'><h2>RockfordLhotka replied on Monday, August 03, 2009</h2><P>This has been fixed in 3.7.1 and 3.8.0</P>
+<P><A href="http://www.lhotka.net/cslabugs/edit_bug.aspx?id=491">http://www.lhotka.net/cslabugs/edit_bug.aspx?id=491</A></P></div><div style='padding:0 15 3 15;background-color:powderblue'><h2>jbd replied on Tuesday, August 04, 2009</h2>Thanks for the quick response</div><p style='font-size:small'>Copyright (c) Marimer LLC</body></html>
